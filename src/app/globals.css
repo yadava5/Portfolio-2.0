@@ -2,21 +2,16 @@
 
 /**
  * @fileoverview Global styles and CSS custom properties
- * 
+ *
  * Design System:
- * - Dark mode first with light mode toggle
+ * - Dark, multi-theme portfolio
+ * - CSS variables drive all shared color tokens
  * - Glassmorphism effects with backdrop-filter
  * - Holographic gradient animations
- * - CSS-only particle effects
- * 
- * Color Palette:
- * - Background: Deep dark (#030014)
- * - Accent: Purple/violet gradients
- * - Holographic: Rainbow spectrum
  */
 
 /* ============================================
-   CSS Custom Properties - Dark Mode (Default)
+   Theme Tokens - Nebula Base
    ============================================ */
 :root {
   /* Core colors */
@@ -29,6 +24,34 @@
   --accent-primary: #8b5cf6;
   --accent-secondary: #06b6d4;
   --accent-tertiary: #f472b6;
+
+  /* Surface colors */
+  --surface-1: rgba(255, 255, 255, 0.03);
+  --surface-2: rgba(255, 255, 255, 0.05);
+  --surface-3: rgba(255, 255, 255, 0.08);
+  --surface-4: rgba(255, 255, 255, 0.1);
+
+  /* Card backgrounds */
+  --card-bg: #0a0a1f;
+  --card-bg-solid: #0a0a0f;
+
+  /* Accent gradients */
+  --accent-gradient-from: #8b5cf6;
+  --accent-gradient-via: #a855f7;
+  --accent-gradient-to: #f472b6;
+  --accent-gradient: linear-gradient(
+    135deg,
+    var(--accent-gradient-from),
+    var(--accent-gradient-via),
+    var(--accent-gradient-to)
+  );
+
+  /* Glow / semantic colors */
+  --glow-color: rgba(139, 92, 246, 0.3);
+  --glow-strong: rgba(139, 92, 246, 0.45);
+  --status-success: #22c55e;
+  --status-warning: #f59e0b;
+  --status-info: #3b82f6;
 
   /* Glass effect colors */
   --glass-background: rgba(255, 255, 255, 0.03);
@@ -56,17 +79,150 @@
 }
 
 /* ============================================
-   Light Mode Overrides
+   Theme Overrides
    ============================================ */
-:root.light {
-  --background: #fafafa;
-  --background-secondary: #f0f0f5;
-  --foreground: #0a0a0a;
-  --foreground-muted: #525252;
+[data-theme="nebula"] {
+  --background: #030014;
+  --background-secondary: #0a0a1a;
+  --foreground: #f0f0f5;
+  --foreground-muted: #a0a0b0;
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #06b6d4;
+  --accent-tertiary: #f472b6;
+  --card-bg: #0a0a1f;
+  --card-bg-solid: #0a0a0f;
+  --accent-gradient-from: #8b5cf6;
+  --accent-gradient-via: #a855f7;
+  --accent-gradient-to: #f472b6;
+  --glow-color: rgba(139, 92, 246, 0.3);
+  --glow-strong: rgba(139, 92, 246, 0.45);
+  --holo-gradient: linear-gradient(
+    135deg,
+    hsl(280, 80%, 60%),
+    hsl(200, 80%, 60%),
+    hsl(340, 80%, 60%),
+    hsl(280, 80%, 60%)
+  );
+}
 
-  --glass-background: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --glass-shadow: rgba(0, 0, 0, 0.1);
+[data-theme="space"] {
+  --background: #000008;
+  --background-secondary: #080818;
+  --foreground: #e8eaf0;
+  --foreground-muted: #8890a0;
+  --accent-primary: #a8c8ff;
+  --accent-secondary: #c0c0d0;
+  --accent-tertiary: #4fc3f7;
+  --card-bg: #060814;
+  --card-bg-solid: #04050d;
+  --accent-gradient-from: #c0c0d0;
+  --accent-gradient-via: #a8c8ff;
+  --accent-gradient-to: #eef4ff;
+  --glow-color: rgba(168, 200, 255, 0.2);
+  --glow-strong: rgba(168, 200, 255, 0.34);
+  --holo-gradient: linear-gradient(
+    135deg,
+    #c0c0d0,
+    #a8c8ff,
+    #eef4ff,
+    #4fc3f7
+  );
+}
+
+[data-theme="lunar"] {
+  --background: #1a1008;
+  --background-secondary: #241a0e;
+  --foreground: #fff3e0;
+  --foreground-muted: #b0a090;
+  --accent-primary: #ff9800;
+  --accent-secondary: #fff3e0;
+  --accent-tertiary: #ffc107;
+  --card-bg: #2a1c0d;
+  --card-bg-solid: #201509;
+  --accent-gradient-from: #ff9800;
+  --accent-gradient-via: #ffc107;
+  --accent-gradient-to: #fff3e0;
+  --glow-color: rgba(255, 152, 0, 0.25);
+  --glow-strong: rgba(255, 152, 0, 0.4);
+  --holo-gradient: linear-gradient(
+    135deg,
+    #ff9800,
+    #ffc107,
+    #fff3e0,
+    #ff9800
+  );
+}
+
+[data-theme="cyberpunk"] {
+  --background: #0a000a;
+  --background-secondary: #12001a;
+  --foreground: #e0ffe0;
+  --foreground-muted: #80a080;
+  --accent-primary: #00ff41;
+  --accent-secondary: #ff006e;
+  --accent-tertiary: #00d4ff;
+  --card-bg: #120012;
+  --card-bg-solid: #0d000f;
+  --accent-gradient-from: #00ff41;
+  --accent-gradient-via: #00d4ff;
+  --accent-gradient-to: #ff006e;
+  --glow-color: rgba(0, 255, 65, 0.2);
+  --glow-strong: rgba(0, 255, 65, 0.34);
+  --holo-gradient: linear-gradient(
+    135deg,
+    #00ff41,
+    #00d4ff,
+    #ff006e,
+    #00ff41
+  );
+}
+
+[data-theme="ocean"] {
+  --background: #001020;
+  --background-secondary: #001830;
+  --foreground: #e0f4f4;
+  --foreground-muted: #7098a0;
+  --accent-primary: #00bcd4;
+  --accent-secondary: #7affcb;
+  --accent-tertiary: #ff6b6b;
+  --card-bg: #001c2f;
+  --card-bg-solid: #001521;
+  --accent-gradient-from: #00bcd4;
+  --accent-gradient-via: #7affcb;
+  --accent-gradient-to: #ff6b6b;
+  --glow-color: rgba(0, 188, 212, 0.2);
+  --glow-strong: rgba(0, 188, 212, 0.34);
+  --holo-gradient: linear-gradient(
+    135deg,
+    #00bcd4,
+    #7affcb,
+    #8bd3ff,
+    #ff6b6b
+  );
+}
+
+[data-theme="retrowave"] {
+  --background: #1a0030;
+  --background-secondary: #240040;
+  --foreground: #ffe4f0;
+  --foreground-muted: #b080a0;
+  --accent-primary: #ff2d95;
+  --accent-secondary: #b026ff;
+  --accent-tertiary: #ffe14d;
+  --card-bg: #280046;
+  --card-bg-solid: #1d0033;
+  --accent-gradient-from: #ff2d95;
+  --accent-gradient-via: #b026ff;
+  --accent-gradient-to: #ffe14d;
+  --glow-color: rgba(255, 45, 149, 0.25);
+  --glow-strong: rgba(255, 45, 149, 0.38);
+  --holo-gradient: linear-gradient(
+    135deg,
+    #ff2d95,
+    #b026ff,
+    #ffe14d,
+    #ff2d95
+  );
 }
 
 /* ============================================
@@ -80,6 +236,19 @@
   --color-accent-primary: var(--accent-primary);
   --color-accent-secondary: var(--accent-secondary);
   --color-accent-tertiary: var(--accent-tertiary);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-card-bg: var(--card-bg);
+  --color-card-bg-solid: var(--card-bg-solid);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-info: var(--status-info);
+  --color-glow: var(--glow-color);
+  --color-glow-strong: var(--glow-strong);
+  --background-image-accent-gradient: var(--accent-gradient);
+  --background-image-holo-gradient: var(--holo-gradient);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -91,6 +260,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
 }
 
 body {

@@ -1,7 +1,7 @@
 # Themes Implementation Tracker
 
 > This file is updated after every change. Check here before starting any work.
-> Last updated: **2026-03-07**
+> Last updated: **2026-03-08**
 
 ---
 
@@ -12,7 +12,7 @@
 | Phase | Status | Notes |
 |-------|--------|-------|
 | Phase 0 — Branch & Setup | ✅ Done | Branch created, deps installed, plan + tracker files created |
-| Phase 1 — Theme Infrastructure | 🔲 Not Started | CSS vars, ThemeProvider, ThemeSwitcher |
+| Phase 1 — Theme Infrastructure | ✅ Done | CSS theme tokens, `next-themes` provider, and floating theme switcher shipped |
 | Phase 2 — Color Migration | 🔲 Not Started | ~310 refs across 9 files |
 | Phase 3 — Scroll Story Manager | 🔲 Not Started | Scroll progress context for storytelling |
 | Phase 4 — 3D Theme Backgrounds | 🔲 Not Started | 6 scenes with scroll-driven storytelling |
@@ -42,19 +42,19 @@
 
 | Task | Status | Date | Notes |
 |------|--------|------|-------|
-| Add expanded CSS variable tokens to `globals.css` | 🔲 | | `--surface-*`, `--card-bg`, `--accent-gradient-*`, `--glow-*`, `--status-*` |
-| Map new vars to Tailwind tokens in `@theme inline {}` | 🔲 | | |
-| Define `[data-theme="nebula"]` block (current defaults) | 🔲 | | |
-| Define `[data-theme="space"]` block | 🔲 | | |
-| Define `[data-theme="lunar"]` block | 🔲 | | |
-| Define `[data-theme="cyberpunk"]` block | 🔲 | | |
-| Define `[data-theme="ocean"]` block | 🔲 | | |
-| Define `[data-theme="retrowave"]` block | 🔲 | | |
-| Rewrite `ThemeProvider.tsx` with `next-themes` | 🔲 | | `attribute="data-theme"`, `defaultTheme="nebula"` |
-| Create `ThemeSwitcher.tsx` | 🔲 | | Floating button, bottom-right, palette icon |
-| Wire `ThemeSwitcher` into `layout.tsx` | 🔲 | | |
-| Verify: themes switch, CSS vars update | 🔲 | | |
-| Verify: `npm run build` passes | 🔲 | | |
+| Add expanded CSS variable tokens to `globals.css` | ✅ | 2026-03-08 | Added surface, card, gradient, glow, and status tokens |
+| Map new vars to Tailwind tokens in `@theme inline {}` | ✅ | 2026-03-08 | Added color + gradient token mappings |
+| Define `[data-theme="nebula"]` block (current defaults) | ✅ | 2026-03-08 | Mirrors the current default palette |
+| Define `[data-theme="space"]` block | ✅ | 2026-03-08 | | 
+| Define `[data-theme="lunar"]` block | ✅ | 2026-03-08 | |
+| Define `[data-theme="cyberpunk"]` block | ✅ | 2026-03-08 | |
+| Define `[data-theme="ocean"]` block | ✅ | 2026-03-08 | |
+| Define `[data-theme="retrowave"]` block | ✅ | 2026-03-08 | |
+| Rewrite `ThemeProvider.tsx` with `next-themes` | ✅ | 2026-03-08 | `attribute="data-theme"`, `defaultTheme="nebula"`, `storageKey="portfolio-theme"` |
+| Create `ThemeSwitcher.tsx` | ✅ | 2026-03-08 | Floating palette button with 6 theme options |
+| Wire `ThemeSwitcher` into `layout.tsx` | ✅ | 2026-03-08 | |
+| Verify: themes switch, CSS vars update | ✅ | 2026-03-08 | Theme switcher writes `data-theme` via `next-themes`; all palette vars now resolve per theme block |
+| Verify: `npm run build` passes | ✅ | 2026-03-08 | Build passed after Phase 1 implementation |
 
 ---
 
@@ -158,3 +158,4 @@
 | Date | Changes | Files Modified |
 |------|---------|---------------|
 | 2026-03-07 | Phase 0: Created `feat/themes` branch, installed 6 deps, created plan & tracker docs | `package.json`, `package-lock.json`, `THEMES_PLAN.md`, `THEMES_TRACKER.md` |
+| 2026-03-08 | Phase 1 complete: added multi-theme CSS tokens and theme blocks, switched to `next-themes`, created floating `ThemeSwitcher`, verified production build | `src/app/globals.css`, `src/app/layout.tsx`, `src/components/layout/ThemeProvider.tsx`, `src/components/layout/ThemeSwitcher.tsx`, `src/lib/themes.ts`, `THEMES_TRACKER.md` |

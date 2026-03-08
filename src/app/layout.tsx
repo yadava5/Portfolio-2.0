@@ -3,11 +3,12 @@
  *
  * Wraps every page with:
  *   1. Geist font variables (sans + mono)
- *   2. ThemeProvider  — dark mode wrapper
+ *   2. ThemeProvider  — multi-theme wrapper
  *   3. SmoothScroll   — Lenis smooth scrolling
  *   4. Header         — floating glass navigation
  *   5. Footer         — social links + quick nav
  *   6. CustomCursor   — holographic glow trail
+ *   7. ThemeSwitcher  — floating theme picker
  *
  * SEO metadata is pulled from the data layer (`siteMetadata`).
  */
@@ -18,6 +19,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CustomCursor from "@/components/layout/CustomCursor";
@@ -102,6 +104,7 @@ export default function RootLayout({
             <Header />
             <main className="min-h-screen">{children}</main>
             <Footer />
+            <ThemeSwitcher />
           </SmoothScroll>
         </ThemeProvider>
       </body>

@@ -1,12 +1,12 @@
 /**
- * @fileoverview Theme provider — locked to dark mode
- *
- * The portfolio uses dark mode exclusively. This provider ensures
- * the "light" class is never present on the <html> element and
- * exposes a simple pass-through wrapper for the component tree.
+ * @fileoverview Theme provider backed by next-themes.
  */
 
+"use client";
+
 import type { ReactNode } from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { DEFAULT_THEME, THEME_NAMES } from "@/lib/themes";
 
 /** Props for the ThemeProvider component */
 interface ThemeProviderProps {
@@ -14,11 +14,22 @@ interface ThemeProviderProps {
 }
 
 /**
- * Wraps children — dark mode is always active (no toggling).
+ * Wraps the app in the multi-theme provider.
  *
  * @param props - Component props
- * @returns Children unchanged
+ * @returns The provider-wrapped subtree
  */
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  return <>{children}</>;
+  return (
+    <NextThemesProvider
+      attribute="data-theme"
+      defaultTheme={DEFAULT_THEME}
+      enableSystem={false}
+      enableColorScheme={false}
+      storageKey="portfolio-theme"
+      themes={THEME_NAMES}
+    >
+      {children}
+    </NextThemesProvider>
+  );
 }
