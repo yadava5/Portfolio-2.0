@@ -149,7 +149,7 @@
 
 | Issue | Status | Notes |
 |-------|--------|-------|
-| (none yet) | | |
+| About section particle hydration mismatch in local/dev preview | ✅ Resolved 2026-03-08 | Stabilized inline style serialization in `About.tsx` to avoid SSR/client mismatch |
 
 ---
 
@@ -159,3 +159,4 @@
 |------|---------|---------------|
 | 2026-03-07 | Phase 0: Created `feat/themes` branch, installed 6 deps, created plan & tracker docs | `package.json`, `package-lock.json`, `THEMES_PLAN.md`, `THEMES_TRACKER.md` |
 | 2026-03-08 | Phase 1 complete: added multi-theme CSS tokens and theme blocks, switched to `next-themes`, created floating `ThemeSwitcher`, verified production build | `src/app/globals.css`, `src/app/layout.tsx`, `src/components/layout/ThemeProvider.tsx`, `src/components/layout/ThemeSwitcher.tsx`, `src/lib/themes.ts`, `THEMES_TRACKER.md` |
+| 2026-03-08 | Fixed About section hydration mismatch by normalizing floating particle inline style values and animation properties | `src/components/sections/About.tsx`, `THEMES_TRACKER.md` |

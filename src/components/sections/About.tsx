@@ -126,6 +126,11 @@ const PARTICLES = Array.from({ length: 30 }, (_, i) => ({
   op: seededRandom(i * 7 + 6) * 0.3 + 0.05,
 }));
 
+/** Match SSR/client style serialization to avoid hydration mismatches. */
+function formatStyleNumber(value: number): string {
+  return value.toFixed(6).replace(/\.?0+$/, "");
+}
+
 function FloatingParticles() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -134,12 +139,17 @@ function FloatingParticles() {
           key={p.id}
           className="absolute rounded-full bg-violet-400"
           style={{
-            width: p.size,
-            height: p.size,
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            opacity: p.op,
-            animation: `aboutFloat ${p.dur}s ease-in-out ${p.del}s infinite alternate`,
+            width: `${formatStyleNumber(p.size)}px`,
+            height: `${formatStyleNumber(p.size)}px`,
+            left: `${formatStyleNumber(p.x)}%`,
+            top: `${formatStyleNumber(p.y)}%`,
+            opacity: formatStyleNumber(p.op),
+            animationName: "aboutFloat",
+            animationDuration: `${formatStyleNumber(p.dur)}s`,
+            animationTimingFunction: "ease-in-out",
+            animationDelay: `${formatStyleNumber(p.del)}s`,
+            animationIterationCount: "infinite",
+            animationDirection: "alternate",
           }}
         />
       ))}
