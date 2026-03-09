@@ -70,10 +70,10 @@ export default function ThemeSwitcher() {
     >
       <div
         className={cn(
-          "pointer-events-none absolute right-0 bottom-16 w-72 origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth)",
+          "absolute right-0 bottom-16 w-72 origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth)",
           open
-            ? "translate-y-0 scale-100 opacity-100"
-            : "translate-y-3 scale-95 opacity-0"
+            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none translate-y-3 scale-95 opacity-0"
         )}
       >
         <div className="rounded-3xl border border-(--glass-border) bg-(--glass-background) p-3 shadow-2xl shadow-black/45 backdrop-blur-2xl">

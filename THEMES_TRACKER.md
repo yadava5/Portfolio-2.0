@@ -152,6 +152,7 @@
 | About section particle hydration mismatch in local/dev preview | ✅ Resolved 2026-03-08 | Stabilized inline style serialization in `About.tsx` to avoid SSR/client mismatch |
 | Cursor halo / About ambient glow lagged and felt detached from the pointer | ✅ Resolved 2026-03-08 | Replaced full-section glow repaint in `About.tsx` and tightened `CustomCursor` follow timings |
 | About tilt cards felt laggy and glitchy while hovering | ✅ Resolved 2026-03-08 | Replaced direct transform-string writes with GSAP `quickTo` pointer tracking in `About.tsx` |
+| Theme switcher dropdown opened but theme options could not be clicked | ✅ Resolved 2026-03-08 | Fixed dropdown wrapper pointer-events so theme buttons are interactive when open |
 
 ---
 
@@ -164,3 +165,4 @@
 | 2026-03-08 | Fixed About section hydration mismatch by normalizing floating particle inline style values and animation properties | `src/components/sections/About.tsx`, `THEMES_TRACKER.md` |
 | 2026-03-08 | Fixed laggy cursor halo behavior by switching About to a GSAP-positioned ambient glow element and making `CustomCursor` follow more responsively | `src/components/sections/About.tsx`, `src/components/layout/CustomCursor.tsx`, `THEMES_TRACKER.md` |
 | 2026-03-08 | Fixed About card tilt lag by switching hover transforms to GSAP `quickTo` pointer tracking | `src/components/sections/About.tsx`, `THEMES_TRACKER.md` |
+| 2026-03-08 | Fixed theme switcher interaction by enabling pointer events on the open dropdown panel | `src/components/layout/ThemeSwitcher.tsx`, `THEMES_TRACKER.md` |
