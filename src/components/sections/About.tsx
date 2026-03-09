@@ -529,15 +529,50 @@ export function About() {
     const glow = glowRef.current;
     if (!section || !glow) return;
 
+    const xTo = gsap.quickTo(glow, "x", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
+    const yTo = gsap.quickTo(glow, "y", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
+
+    const showGlow = () => {
+      gsap.to(glow, {
+        opacity: 1,
+        duration: 0.2,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hideGlow = () => {
+      gsap.to(glow, {
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
     const handleMove = (e: MouseEvent) => {
       const rect = section.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      glow.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(139,92,246,0.06), transparent 60%)`;
+      xTo(x);
+      yTo(y);
     };
 
+    section.addEventListener("mouseenter", showGlow);
     section.addEventListener("mousemove", handleMove);
-    return () => section.removeEventListener("mousemove", handleMove);
+    section.addEventListener("mouseleave", hideGlow);
+
+    return () => {
+      section.removeEventListener("mouseenter", showGlow);
+      section.removeEventListener("mousemove", handleMove);
+      section.removeEventListener("mouseleave", hideGlow);
+    };
   }, []);
 
   const currentEducation = education[0];
@@ -557,7 +592,11 @@ export function About() {
       {/* Mouse-following ambient glow */}
       <div
         ref={glowRef}
-        className="pointer-events-none absolute inset-0 z-0 transition-[background] duration-300"
+        className="pointer-events-none absolute top-0 left-0 z-0 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(139,92,246,0.16) 0%, rgba(6,182,212,0.08) 35%, transparent 70%)",
+        }}
       />
 
       {/* Floating particles */}

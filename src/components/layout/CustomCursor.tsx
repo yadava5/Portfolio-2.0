@@ -88,19 +88,19 @@ export default function CustomCursor() {
     if (!dot || !glow) return;
 
     /* quickTo creates a reusable tween for a single property — ideal for mousemove */
-    const xDot = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power2.out" });
-    const yDot = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power2.out" });
+    const xDot = gsap.quickTo(dot, "x", { duration: 0.05, ease: "none" });
+    const yDot = gsap.quickTo(dot, "y", { duration: 0.05, ease: "none" });
     const xGlow = gsap.quickTo(glow, "x", {
-      duration: 0.35,
+      duration: 0.14,
       ease: "power3.out",
     });
     const yGlow = gsap.quickTo(glow, "y", {
-      duration: 0.35,
+      duration: 0.14,
       ease: "power3.out",
     });
 
     /** Move both cursors toward the pointer position */
-    function onMouseMove(e: MouseEvent) {
+    function onPointerMove(e: PointerEvent) {
       xDot(e.clientX);
       yDot(e.clientY);
       xGlow(e.clientX);
@@ -155,14 +155,14 @@ export default function CustomCursor() {
       gsap.to(glow, { scale: 1, duration: 0.3, ease: "elastic.out(1, 0.4)" });
     }
 
-    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("pointermove", onPointerMove, { passive: true });
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
     document.addEventListener("mousedown", onMouseDown);
     document.addEventListener("mouseup", onMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("pointermove", onPointerMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
       document.removeEventListener("mousedown", onMouseDown);
