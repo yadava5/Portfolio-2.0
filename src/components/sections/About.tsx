@@ -55,32 +55,84 @@ function TiltCard({
   className?: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const rotateXToRef = useRef<((value: number) => gsap.core.Tween) | null>(
+    null
+  );
+  const rotateYToRef = useRef<((value: number) => gsap.core.Tween) | null>(
+    null
+  );
+  const scaleToRef = useRef<((value: number) => gsap.core.Tween) | null>(null);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const rx = ((y - rect.height / 2) / rect.height) * -10;
-    const ry = ((x - rect.width / 2) / rect.width) * 10;
-    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
+
+    gsap.set(card, {
+      transformPerspective: 900,
+      transformStyle: "preserve-3d",
+      rotationX: 0,
+      rotationY: 0,
+      scale: 1,
+    });
+
+    rotateXToRef.current = gsap.quickTo(card, "rotationX", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
+    rotateYToRef.current = gsap.quickTo(card, "rotationY", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
+    scaleToRef.current = gsap.quickTo(card, "scale", {
+      duration: 0.2,
+      ease: "power2.out",
+    });
+
+    return () => {
+      rotateXToRef.current = null;
+      rotateYToRef.current = null;
+      scaleToRef.current = null;
+      gsap.killTweensOf(card);
+    };
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      const card = cardRef.current;
+      const rotateXTo = rotateXToRef.current;
+      const rotateYTo = rotateYToRef.current;
+      const scaleTo = scaleToRef.current;
+      if (!card || !rotateXTo || !rotateYTo || !scaleTo) return;
+
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+
+      rotateXTo(py * -12);
+      rotateYTo(px * 12);
+      scaleTo(1.015);
+    },
+    []
+  );
+
+  const handlePointerLeave = useCallback(() => {
     const card = cardRef.current;
-    if (!card) return;
-    card.style.transform =
-      "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
+    const rotateXTo = rotateXToRef.current;
+    const rotateYTo = rotateYToRef.current;
+    const scaleTo = scaleToRef.current;
+    if (!card || !rotateXTo || !rotateYTo || !scaleTo) return;
+
+    rotateXTo(0);
+    rotateYTo(0);
+    scaleTo(1);
   }, []);
 
   return (
     <div
       ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
       className={`transition-transform duration-300 ease-out will-change-transform ${className}`}
-      style={{ transformStyle: "preserve-3d" }}
     >
       {children}
     </div>
