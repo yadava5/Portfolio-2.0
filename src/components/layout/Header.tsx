@@ -32,6 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Skills", href: "#skills" },
+  { label: "Testimonials", href: "#testimonials" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -145,6 +146,8 @@ export default function Header() {
   const visible = useScrollDirection();
   const scrolled = useHasScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
 
   /** Close mobile menu on resize to desktop */
   useEffect(() => {
@@ -154,6 +157,50 @@ export default function Header() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  /** Focus trap for mobile menu */
+  useEffect(() => {
+    if (!mobileOpen || !menuRef.current) return;
+
+    // Focus first nav link when menu opens
+    const navLinks = menuRef.current.querySelectorAll("a");
+    if (navLinks.length > 0) {
+      navLinks[0].focus();
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMobileOpen(false);
+        hamburgerRef.current?.focus();
+      }
+
+      if (e.key === "Tab") {
+        const navLinks = menuRef.current?.querySelectorAll("a");
+        if (!navLinks || navLinks.length === 0) return;
+
+        const firstLink = navLinks[0];
+        const lastLink = navLinks[navLinks.length - 1];
+        const activeElement = document.activeElement;
+
+        if (e.shiftKey) {
+          // Shift+Tab from first link → loop to last
+          if (activeElement === firstLink) {
+            e.preventDefault();
+            (lastLink as HTMLAnchorElement).focus();
+          }
+        } else {
+          // Tab from last link → loop to first
+          if (activeElement === lastLink) {
+            e.preventDefault();
+            firstLink.focus();
+          }
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen]);
 
   /** Scroll to a section and close mobile menu */
   const handleNavClick = useCallback(
@@ -230,6 +277,7 @@ export default function Header() {
         <div className="flex items-center gap-2">
           {/* Mobile menu button */}
           <button
+            ref={hamburgerRef}
             onClick={() => setMobileOpen((prev) => !prev)}
             className={cn(
               "text-foreground-muted rounded-lg p-2 transition-colors duration-(--transition-fast) md:hidden",
@@ -252,7 +300,7 @@ export default function Header() {
         )}
         aria-hidden={!mobileOpen}
       >
-        <ul className="flex flex-col gap-1 px-6 py-4" role="list">
+        <ul ref={menuRef} className="flex flex-col gap-1 px-6 py-4" role="list">
           {NAV_ITEMS.map((item) => (
             <li key={item.href}>
               <a

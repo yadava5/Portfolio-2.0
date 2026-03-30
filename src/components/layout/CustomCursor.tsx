@@ -91,13 +91,14 @@ export default function CustomCursor() {
     const xDot = gsap.quickTo(dot, "x", { duration: 0.05, ease: "none" });
     const yDot = gsap.quickTo(dot, "y", { duration: 0.05, ease: "none" });
     const xGlow = gsap.quickTo(glow, "x", {
-      duration: 0.14,
+      duration: 0.2,
       ease: "power3.out",
     });
     const yGlow = gsap.quickTo(glow, "y", {
-      duration: 0.14,
+      duration: 0.2,
       ease: "power3.out",
     });
+    const glowColor = gsap.quickTo(glow, "--cursor-color-hue", { duration: 0.3, ease: "power2.out" });
 
     /** Move both cursors toward the pointer position */
     function onPointerMove(e: PointerEvent) {
@@ -112,13 +113,22 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
 
       if (target.closest(INTERACTIVE_SELECTOR)) {
-        gsap.to(dot, { scale: 0.5, duration: 0.2, ease: "power2.out" });
+        gsap.to(dot, { scale: 0.5, duration: 0.3, ease: "back.out(1.2)" });
         gsap.to(glow, {
-          scale: 1.8,
-          opacity: 0.6,
-          duration: 0.3,
-          ease: "power2.out",
+          scale: 2.8,
+          opacity: 0.85,
+          duration: 0.4,
+          ease: "back.out(1.2)",
         });
+
+        /* Add rotation for buttons specifically - PRIORITY 6 */
+        if (target.closest("button, a[href], [role='button']")) {
+          gsap.to(glow, {
+            rotation: 45,
+            duration: 0.4,
+            ease: "back.out(1.2)",
+          });
+        }
       }
 
       /* Magnetic pull: shift glow toward center of the magnetic element */
@@ -139,6 +149,7 @@ export default function CustomCursor() {
         gsap.to(glow, {
           scale: 1,
           opacity: 0.4,
+          rotation: 0,
           duration: 0.3,
           ease: "power2.out",
         });
@@ -186,10 +197,11 @@ export default function CustomCursor() {
       {/* Glow ring — larger, trails behind */}
       <div
         ref={glowRef}
-        className="absolute top-0 left-0 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 mix-blend-difference"
+        className="absolute top-0 left-0 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 mix-blend-color-dodge pointer-events-none"
         style={{
-          background: "var(--holo-gradient)",
-          filter: "blur(4px)",
+          background: "radial-gradient(circle, var(--accent-primary) 0%, var(--accent-secondary) 100%)",
+          filter: "blur(6px)",
+          boxShadow: "0 0 20px var(--accent-primary)",
         }}
       />
     </div>

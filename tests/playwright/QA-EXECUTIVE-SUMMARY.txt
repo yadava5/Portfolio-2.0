@@ -1,0 +1,225 @@
+═══════════════════════════════════════════════════════════════════════════════
+  ROUND 2 QA: EXECUTIVE SUMMARY
+  Portfolio Ruthless Polish Audit - March 28, 2026
+═══════════════════════════════════════════════════════════════════════════════
+
+OVERALL ASSESSMENT: Portfolio is functionally complete but has significant 
+consistency issues that break user mental model across theme switching.
+
+───────────────────────────────────────────────────────────────────────────────
+ISSUES FOUND: 17 Total
+───────────────────────────────────────────────────────────────────────────────
+
+🔴 CRITICAL (1):
+   #1  Inconsistent project display - different themes show 4, 7, or 9 projects
+       → BLOCKS THEME SWITCHING INTEGRITY
+
+🟠 HIGH (3):
+   #2  Private projects exposed in 3 themes
+   #3  Noir Cinema only shows 4 projects (missing 5 others)
+   #4  Resume link not consistently accessible
+
+🟡 MEDIUM (5):
+   #5  Full name case inconsistency (uppercase vs proper case)
+   #6  Skills display may be inconsistent
+   #7  Date formatting not standardized
+   #8  Dynamic CSS injection (performance/memory issue)
+   #9  Hardcoded slice limits in components
+
+🔵 LOW (8):
+   #10 Color contrast on dark themes
+   #11 Focus indicators may not be visible
+   #12 Aria labels missing
+   #13 Mobile theme switcher overlap
+   #14 Testimonials consistency
+   #15 Education/awards display inconsistency
+   #16 Inconsistent import patterns
+   #17 Component complexity/size
+
+───────────────────────────────────────────────────────────────────────────────
+CRITICAL ISSUE DEEP DIVE
+───────────────────────────────────────────────────────────────────────────────
+
+Project Display Matrix (What User Sees):
+
+Theme           Featured  Other  Private?  Total  Hidden
+─────────────────────────────────────────────────────────
+Paper & Ink         4      3       NO       7     2
+Gallery             4      3       NO       7     2
+Dark Luxe           4      3       NO       7     2
+Editorial           4      5       YES      9     0
+Noir Cinema         4      0       YES      4     5
+Neon Cyber          9      -       YES      9     0
+
+PROBLEM: Switch themes and your portfolio changes size!
+- Editorial shows 9 projects
+- Switch to Paper & Ink, now only 7 visible
+- Switch to Noir Cinema, now only 4 visible
+
+USER IMPACT: Trust broken - feels buggy, not like theme switching
+
+───────────────────────────────────────────────────────────────────────────────
+FILE LOCATIONS WITH ISSUES
+───────────────────────────────────────────────────────────────────────────────
+
+HIGHEST PRIORITY - Fix These First:
+  □ src/components/themes/creative/paper-ink/PaperInkProjects.tsx
+  □ src/components/themes/creative/gallery/GalleryProjects.tsx
+  □ src/components/themes/creative/dark-luxe/DarkLuxeProjects.tsx
+  □ src/components/themes/creative/editorial/EditorialProjects.tsx
+  □ src/components/themes/creative/noir-cinema/NoirCinemaProjects.tsx
+  □ src/components/themes/creative/neon-cyber/NeonCyberProjects.tsx
+  □ src/lib/data/projects.ts (helper functions)
+
+THEN FIX THESE:
+  □ All Hero components (name display case)
+  □ All Skills components (consistency)
+  □ All Experience components (date formatting)
+  □ Dynamic CSS injection patterns
+
+───────────────────────────────────────────────────────────────────────────────
+TEST RESULTS
+───────────────────────────────────────────────────────────────────────────────
+
+Existing Tests: PASS (16/16)
+  ✓ Navigation Links (all nav sections have IDs)
+  ✓ Project Images (all images load)
+  ✓ Company Logos (all logos load)
+
+New Deep QA Tests: PARTIAL (infrastructure works, but tests reveal issues)
+  ✗ Content Completeness > Projects: 9 projects NOT always visible
+  ✗ Content Completeness > Name: Case sensitivity issue
+  ✓ All other categories designed and ready to run
+
+Test Suite: tests/playwright/deep-qa.spec.ts (316 tests across 6 themes)
+  - Comprehensive but times out on full run
+  - Recommend: Run by category instead
+
+───────────────────────────────────────────────────────────────────────────────
+ESTIMATED EFFORT TO FIX
+───────────────────────────────────────────────────────────────────────────────
+
+CRITICAL Issue (#1): 1.5 hours
+  - Choose privacy policy (5 min)
+  - Update 6 theme Projects components (45 min)
+  - Update helper functions (10 min)
+  - Test all themes (20 min)
+
+HIGH Issues (#2-4): 1 hour
+  - Resume link audit (15 min)
+  - Add "Other Projects" to Noir Cinema (20 min)
+  - Fix private project exposure (15 min)
+  - Test (10 min)
+
+MEDIUM Issues (#5-9): 1.5 hours
+  - Standardize name case (15 min)
+  - Fix date formatting (20 min)
+  - Audit skills display (20 min)
+  - Fix CSS injection pattern (20 min)
+  - Add comments for slice limits (5 min)
+
+LOW Issues (#10-17): 1 hour (if doing accessibility)
+  - Color contrast testing (20 min)
+  - Focus indicator fixes (15 min)
+  - Mobile testing (15 min)
+  - Code refactoring (10 min)
+
+TOTAL: ~5 hours for all fixes
+PRIORITY: ~2.5 hours for CRITICAL + HIGH issues
+
+───────────────────────────────────────────────────────────────────────────────
+WHAT'S WORKING WELL
+───────────────────────────────────────────────────────────────────────────────
+
+✓ Theme switching works without errors
+✓ All 6 theme visual designs are distinct and polished
+✓ All images load successfully
+✓ Navigation IDs all present
+✓ No console errors on load
+✓ Animations smooth and perform well
+✓ Responsive design baseline works
+✓ Font/typography hierarchy good
+✓ Overall visual polish is high
+
+───────────────────────────────────────────────────────────────────────────────
+NEXT STEPS
+───────────────────────────────────────────────────────────────────────────────
+
+1. DECISION: Open issue to decide private project policy
+   - Should portfolio hide work marked isPrivate?
+   - Get product/design decision
+   - Document in THEMES_PLAN.md
+
+2. IMPLEMENT: Fix project display across all 6 themes
+   - Apply consistent filtering logic
+   - Verify all themes show same projects
+   - Update tests to verify consistency
+
+3. VALIDATE: Run updated deep-qa tests
+   - Should pass project completeness checks
+   - Should show consistent data per theme
+
+4. ITERATE: Address HIGH priority issues next
+   - Resume link accessibility
+   - Noir Cinema project coverage
+
+5. ONGOING: Address MEDIUM and LOW issues in backlog
+   - Accessibility improvements
+   - Code quality refactoring
+   - Mobile optimization
+
+───────────────────────────────────────────────────────────────────────────────
+DOCUMENTATION FILES GENERATED
+───────────────────────────────────────────────────────────────────────────────
+
+1. QA-ROUND2-FINDINGS.md
+   → Comprehensive issue list with context and recommendations
+   → 200+ lines of detailed findings
+
+2. QA-DETAILED-ANALYSIS.md
+   → Code-level analysis with before/after examples
+   → Specific file paths and line numbers
+   → Technical solutions for each issue
+
+3. deep-qa.spec.ts
+   → 316 automated test cases across 6 themes
+   → Tests for content, links, mobile, a11y, performance
+   → Ready to run (use `--reporter=line` for cleaner output)
+
+4. This file (QA-EXECUTIVE-SUMMARY.txt)
+   → High-level overview for stakeholders
+
+───────────────────────────────────────────────────────────────────────────────
+TESTING COMMAND
+───────────────────────────────────────────────────────────────────────────────
+
+Run baseline tests (fast):
+  npx playwright test tests/playwright/nav-and-images.spec.ts --reporter=line
+
+Run new deep QA tests (slow, by category):
+  npx playwright test deep-qa.spec.ts -g "Content Completeness" --reporter=line
+  npx playwright test deep-qa.spec.ts -g "Link Integrity" --reporter=line
+  npx playwright test deep-qa.spec.ts -g "Mobile Responsiveness" --reporter=line
+
+View detailed results:
+  npx playwright show-report
+
+───────────────────────────────────────────────────────────────────────────────
+QA AGENT CONCLUSION
+───────────────────────────────────────────────────────────────────────────────
+
+This portfolio is BEAUTIFUL but INCONSISTENT. It's like having a car with 
+great paint in 6 different colors, but the doors don't always open the same way.
+
+The critical issue (project display) needs immediate attention. Once that's fixed,
+this will be a genuinely excellent portfolio.
+
+Quality Rating:
+  Design:   9/10 (visually stunning)
+  UX:       7/10 (theme switching breaks mental model)
+  Code:     6/10 (works but not consistent)
+  Polish:   5/10 (details like date formatting need attention)
+
+OVERALL:  7/10 (good, but needs refinement round)
+
+═══════════════════════════════════════════════════════════════════════════════

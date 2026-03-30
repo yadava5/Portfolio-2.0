@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 export interface MagneticButtonProps {
   /** Child elements to wrap */
   children: ReactNode;
-  /** Strength of the magnetic effect (0-1), default 0.3 */
+  /** Strength of the magnetic effect (0-1), default 0.65 */
   strength?: number;
   /** Additional CSS classes */
   className?: string;
@@ -43,7 +43,7 @@ export interface MagneticButtonProps {
  */
 export function MagneticButton({
   children,
-  strength = 0.3,
+  strength = 0.65,
   className,
   disabled = false,
 }: MagneticButtonProps) {
@@ -80,7 +80,7 @@ export function MagneticButton({
         transform: `translate(${position.x}px, ${position.y}px)`,
         transition:
           position.x === 0 && position.y === 0
-            ? "transform 0.3s ease-out"
+            ? "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
             : "none",
       }}
     >

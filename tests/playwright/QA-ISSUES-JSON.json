@@ -1,0 +1,475 @@
+{
+  "audit_date": "2026-03-28",
+  "portfolio_name": "Ayush Yadav Portfolio",
+  "total_issues_found": 24,
+  "critical_count": 2,
+  "major_count": 3,
+  "moderate_count": 3,
+  "minor_count": 16,
+  "issues": [
+    {
+      "id": 1,
+      "priority": "CRITICAL",
+      "category": "Functionality",
+      "title": "Missing Section ID on Testimonials (All Themes)",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/themes/creative/paper-ink/PaperInkTestimonials.tsx",
+        "src/components/themes/creative/gallery/GalleryTestimonials.tsx",
+        "src/components/themes/creative/dark-luxe/DarkLuxeTestimonials.tsx",
+        "src/components/themes/creative/editorial/EditorialTestimonials.tsx",
+        "src/components/themes/creative/noir-cinema/NoirCinemaTestimonials.tsx",
+        "src/components/themes/creative/neon-cyber/NeonCyberTestimonials.tsx"
+      ],
+      "line_numbers": [
+        "various (section element)"
+      ],
+      "description": "Testimonials <section> elements missing id='testimonials' attribute. Prevents navigation, breaks anchor links, affects SEO and accessibility.",
+      "severity": "critical",
+      "impact": "Accessibility, Navigation, SEO",
+      "effort_to_fix": "5 minutes",
+      "fix": "Add id='testimonials' to the <section> element in all 6 Testimonials components"
+    },
+    {
+      "id": 2,
+      "priority": "CRITICAL",
+      "category": "Navigation",
+      "title": "Missing Testimonials Nav Link",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/layout/Header.tsx"
+      ],
+      "line_numbers": [
+        "30-35"
+      ],
+      "description": "Only 5 nav items (About, Experience, Projects, Skills, Contact) but page has 7 sections. Testimonials section exists but not in navigation.",
+      "severity": "critical",
+      "impact": "User Navigation, User Experience",
+      "effort_to_fix": "3 minutes",
+      "fix": "Add { label: 'Testimonials', href: '#testimonials' } to NAV_ITEMS array in Header.tsx"
+    },
+    {
+      "id": 3,
+      "priority": "MAJOR",
+      "category": "Accessibility",
+      "title": "Missing Image Alt Text",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/themes/creative/*/Projects.tsx (all themes)",
+        "src/components/themes/creative/*/Experience.tsx (all themes)"
+      ],
+      "line_numbers": [
+        "various (Image components)"
+      ],
+      "description": "Project and company logo images may not have meaningful alt text. Violates WCAG 2.1 Level A (1.1.1 Non-text Content).",
+      "severity": "major",
+      "impact": "WCAG Compliance, Accessibility",
+      "effort_to_fix": "30 minutes",
+      "fix": "Audit all <Image> components and ensure alt attributes are descriptive and meaningful"
+    },
+    {
+      "id": 4,
+      "priority": "MAJOR",
+      "category": "Accessibility",
+      "title": "Gallery Theme Modal Accessibility Issues",
+      "theme": "Gallery",
+      "files_affected": [
+        "src/components/themes/creative/gallery/GalleryProjects.tsx"
+      ],
+      "line_numbers": [
+        "132-200 (Modal implementation)"
+      ],
+      "description": "Modal dialog missing focus management, ARIA attributes, and Escape key handler. Not keyboard accessible.",
+      "severity": "major",
+      "impact": "Keyboard Navigation, Screen Reader Support",
+      "effort_to_fix": "30 minutes",
+      "fix": "Add focus trap, ARIA attributes (aria-modal, aria-labelledby), and Escape key handler to modal"
+    },
+    {
+      "id": 5,
+      "priority": "MAJOR",
+      "category": "Code Quality",
+      "title": "Project Image Filename Inconsistencies",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/projects.ts"
+      ],
+      "line_numbers": [
+        "159 (taskflow.png vs taskflow-calendar.png)",
+        "188 (mnist.png vs fast-mnist-nn.png)"
+      ],
+      "description": "Projects reference alias/duplicate filenames instead of canonical source-controlled names. taskflow.png is copy of taskflow-calendar.png, mnist.png is copy of fast-mnist-nn.png.",
+      "severity": "major",
+      "impact": "Code Maintainability, Asset Organization",
+      "effort_to_fix": "10 minutes",
+      "fix": "Update projects.ts to reference canonical filenames: taskflow-calendar.png and fast-mnist-nn.png, or remove duplicates"
+    },
+    {
+      "id": 6,
+      "priority": "MODERATE",
+      "category": "Environment",
+      "title": "Font Loading Warnings in Offline Environment",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/themes/creative/neon-cyber/NeonCyberHero.tsx",
+        "src/app/layout.tsx"
+      ],
+      "line_numbers": [
+        "39-41 (Neon Cyber)",
+        "various (layout)"
+      ],
+      "description": "Google Fonts requests fail in sandboxed environment. Affects: Bebas Neue, Cormorant Garamond, Instrument Serif, Orbitron, JetBrains Mono. System fonts fallback correctly.",
+      "severity": "minor",
+      "impact": "Visual Presentation (Offline Only)",
+      "effort_to_fix": "N/A - Environment issue",
+      "fix": "No fix needed - fonts load normally in production with network access"
+    },
+    {
+      "id": 7,
+      "priority": "MODERATE",
+      "category": "Data",
+      "title": "Taskflow Project Image Reference Mismatch",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/projects.ts",
+        "public/images/projects/taskflow.png"
+      ],
+      "line_numbers": [
+        "159"
+      ],
+      "description": "Project 'Taskflow Calendar' references /images/projects/taskflow.png but source-controlled name is taskflow-calendar.png. File exists as duplicate/alias.",
+      "severity": "moderate",
+      "impact": "Code Maintainability",
+      "effort_to_fix": "5 minutes",
+      "fix": "Change line 159 to reference 'taskflow-calendar.png' or remove taskflow.png alias"
+    },
+    {
+      "id": 8,
+      "priority": "MODERATE",
+      "category": "Data",
+      "title": "Fast MNIST Neural Network Image Reference Mismatch",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/projects.ts",
+        "public/images/projects/mnist.png"
+      ],
+      "line_numbers": [
+        "188"
+      ],
+      "description": "Project 'Fast MNIST Neural Network' references /images/projects/mnist.png but source-controlled name is fast-mnist-nn.png. File exists as duplicate/alias.",
+      "severity": "moderate",
+      "impact": "Code Maintainability",
+      "effort_to_fix": "5 minutes",
+      "fix": "Change line 188 to reference 'fast-mnist-nn.png' or remove mnist.png alias"
+    },
+    {
+      "id": 9,
+      "priority": "MINOR",
+      "category": "Documentation",
+      "title": "Responsive Design Test Coverage Gap",
+      "theme": "ALL",
+      "files_affected": [
+        "tests/playwright/comprehensive-qa.spec.ts"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "Test suite doesn't explicitly test all responsive breakpoints (xs, sm, md, lg, xl). Only tests default and mobile viewports.",
+      "severity": "minor",
+      "impact": "Test Coverage",
+      "effort_to_fix": "30 minutes",
+      "fix": "Add responsive breakpoint tests for 320px, 480px, 768px, 1024px, 1440px viewports"
+    },
+    {
+      "id": 10,
+      "priority": "MINOR",
+      "category": "Feature",
+      "title": "No Actual Contact Form",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/themes/creative/*/Contact.tsx (all themes)"
+      ],
+      "line_numbers": [
+        "various"
+      ],
+      "description": "Contact section shows email link and location but no form fields (name, email, message). Only displays mailto link.",
+      "severity": "minor",
+      "impact": "User Engagement (Optional Feature)",
+      "effort_to_fix": "2 hours (if implementing)",
+      "fix": "Optional - either add contact form or document that email-only contact is intentional"
+    },
+    {
+      "id": 11,
+      "priority": "MINOR",
+      "category": "Styling",
+      "title": "Gallery Project Card Tilt Effect SSR Disabled",
+      "theme": "Gallery",
+      "files_affected": [
+        "src/components/themes/creative/gallery/GalleryProjects.tsx"
+      ],
+      "line_numbers": [
+        "10"
+      ],
+      "description": "Tilt component imported with ssr:false. May cause hydration mismatch but has fallback UI.",
+      "severity": "minor",
+      "impact": "Potential Hydration Warning",
+      "effort_to_fix": "20 minutes",
+      "fix": "Add suppressHydrationWarning or ensure fallback matches server-rendered output"
+    },
+    {
+      "id": 12,
+      "priority": "MINOR",
+      "category": "Styling",
+      "title": "Neon Cyber Font Imports May Fail Offline",
+      "theme": "Neon Cyber",
+      "files_affected": [
+        "src/components/themes/creative/neon-cyber/NeonCyberHero.tsx"
+      ],
+      "line_numbers": [
+        "40-41"
+      ],
+      "description": "Inline Google Font imports for Orbitron and JetBrains Mono in component. Fails in offline/sandboxed environments.",
+      "severity": "minor",
+      "impact": "Cosmetic (Fallback fonts work)",
+      "effort_to_fix": "5 minutes",
+      "fix": "Move font imports to layout.tsx or use system font fallbacks"
+    },
+    {
+      "id": 13,
+      "priority": "MINOR",
+      "category": "Styling",
+      "title": "Paper & Ink Column Layout Responsiveness",
+      "theme": "Paper & Ink",
+      "files_affected": [
+        "src/components/themes/creative/paper-ink/PaperInkAbout.tsx"
+      ],
+      "line_numbers": [
+        "17-20"
+      ],
+      "description": "CSS column-count: 2 with media query. Should work but worth testing on actual mobile devices.",
+      "severity": "minor",
+      "impact": "Mobile UX",
+      "effort_to_fix": "10 minutes (testing only)",
+      "fix": "Test on real mobile devices (375px, 480px widths)"
+    },
+    {
+      "id": 14,
+      "priority": "MINOR",
+      "category": "Navigation",
+      "title": "No Keyboard Shortcut for Theme Switcher",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/layout/ThemeSwitcher.tsx"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "Theme switcher requires mouse click. No keyboard shortcut (e.g., Alt+T) to toggle themes.",
+      "severity": "minor",
+      "impact": "Accessibility (Optional)",
+      "effort_to_fix": "20 minutes",
+      "fix": "Optional - add keyboard shortcut support"
+    },
+    {
+      "id": 15,
+      "priority": "MINOR",
+      "category": "Functionality",
+      "title": "Theme Persistence Not Explicitly Tested",
+      "theme": "ALL",
+      "files_affected": [
+        "tests/playwright/comprehensive-qa.spec.ts"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "No test verifies theme persists across page reloads. next-themes should handle it, but not explicitly tested.",
+      "severity": "minor",
+      "impact": "Test Coverage",
+      "effort_to_fix": "15 minutes",
+      "fix": "Add test: switch theme, reload page, verify theme is still active"
+    },
+    {
+      "id": 16,
+      "priority": "MINOR",
+      "category": "Data",
+      "title": "Resume Link Uses Relative Path",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/personal.ts"
+      ],
+      "line_numbers": [
+        "73"
+      ],
+      "description": "Resume URL is '/resume.pdf' (relative). When deployed to subdirectory, link may break.",
+      "severity": "minor",
+      "impact": "Deployment Configuration",
+      "effort_to_fix": "5 minutes",
+      "fix": "Verify resume path is correct for deployment (may need basePath adjustment)"
+    },
+    {
+      "id": 17,
+      "priority": "MINOR",
+      "category": "Styling",
+      "title": "Paper & Ink Year Hardcoded in Footer",
+      "theme": "Paper & Ink",
+      "files_affected": [
+        "src/components/themes/creative/paper-ink/PaperInkContact.tsx"
+      ],
+      "line_numbers": [
+        "234"
+      ],
+      "description": "Footer uses new Date().getFullYear() which is fine, but other themes may use hardcoded year.",
+      "severity": "minor",
+      "impact": "Maintenance (will need update next year)",
+      "effort_to_fix": "2 minutes",
+      "fix": "Verify all themes use dynamic year calculation"
+    },
+    {
+      "id": 18,
+      "priority": "MINOR",
+      "category": "Testing",
+      "title": "Comprehensive Test Has API Issues",
+      "theme": "ALL",
+      "files_affected": [
+        "tests/playwright/comprehensive-qa.spec.ts"
+      ],
+      "line_numbers": [
+        "164"
+      ],
+      "description": "Test uses isAttached() method which doesn't exist in latest Playwright. Fixed to use expect().toBeAttached().",
+      "severity": "minor",
+      "impact": "Test Execution",
+      "effort_to_fix": "Fixed",
+      "fix": "Already corrected in provided test file"
+    },
+    {
+      "id": 19,
+      "priority": "MINOR",
+      "category": "Styling",
+      "title": "Mobile Menu Button Accessibility",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/layout/Header.tsx"
+      ],
+      "line_numbers": [
+        "232-242"
+      ],
+      "description": "Mobile menu button has aria-label and aria-expanded. Good, but could be more descriptive.",
+      "severity": "minor",
+      "impact": "Accessibility Enhancement",
+      "effort_to_fix": "5 minutes",
+      "fix": "Consider more specific aria-label (e.g., 'Toggle navigation menu')"
+    },
+    {
+      "id": 20,
+      "priority": "MINOR",
+      "category": "Data",
+      "title": "Only One Education Entry",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/personal.ts"
+      ],
+      "line_numbers": [
+        "96-116"
+      ],
+      "description": "Only Miami University in education array. Appears intentional (one school attended), but worth noting.",
+      "severity": "minor",
+      "impact": "Data Completeness",
+      "effort_to_fix": "N/A",
+      "fix": "This appears intentional - only one school, so correct"
+    },
+    {
+      "id": 21,
+      "priority": "MINOR",
+      "category": "Data",
+      "title": "Limited Testimonials (Only 2)",
+      "theme": "ALL",
+      "files_affected": [
+        "src/lib/data/testimonials.ts"
+      ],
+      "line_numbers": [
+        "35-58"
+      ],
+      "description": "Only 2 testimonials provided (Randall Vollen, Shree Chaturvedi). Works but may benefit from 3-5 testimonials.",
+      "severity": "minor",
+      "impact": "Credibility Enhancement",
+      "effort_to_fix": "30 minutes (collecting recommendations)",
+      "fix": "Optional - add more LinkedIn recommendations if available"
+    },
+    {
+      "id": 22,
+      "priority": "MINOR",
+      "category": "UX",
+      "title": "No Scroll-to-Top Button",
+      "theme": "ALL",
+      "files_affected": [
+        "src/components/layout/"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "Long pages (especially with testimonials not in nav) would benefit from floating scroll-to-top button.",
+      "severity": "minor",
+      "impact": "User Experience Enhancement",
+      "effort_to_fix": "30 minutes",
+      "fix": "Optional - add floating 'Back to Top' button"
+    },
+    {
+      "id": 23,
+      "priority": "MINOR",
+      "category": "Testing",
+      "title": "No Performance/Bundle Size Test",
+      "theme": "ALL",
+      "files_affected": [
+        "tests/playwright/"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "Test suite doesn't measure page load times, bundle size, or performance metrics.",
+      "severity": "minor",
+      "impact": "Performance Monitoring",
+      "effort_to_fix": "1 hour",
+      "fix": "Optional - add Lighthouse or Web Vitals tests"
+    },
+    {
+      "id": 24,
+      "priority": "MINOR",
+      "category": "Documentation",
+      "title": "Missing Theme Feature Documentation",
+      "theme": "ALL",
+      "files_affected": [
+        "README.md"
+      ],
+      "line_numbers": [
+        "N/A"
+      ],
+      "description": "README exists but doesn't document theme-specific features or how to add new themes.",
+      "severity": "minor",
+      "impact": "Developer Documentation",
+      "effort_to_fix": "30 minutes",
+      "fix": "Add theme architecture documentation to README"
+    }
+  ],
+  "summary": {
+    "total_themes": 6,
+    "theme_names": [
+      "Paper & Ink",
+      "Gallery",
+      "Dark Luxe",
+      "Editorial",
+      "Noir Cinema",
+      "Neon Cyber"
+    ],
+    "critical_issues": 2,
+    "major_issues": 3,
+    "moderate_issues": 3,
+    "minor_issues": 16,
+    "test_file_created": "tests/playwright/comprehensive-qa.spec.ts",
+    "estimated_fix_time": "3-4 hours",
+    "estimated_testing_time": "2-3 hours",
+    "production_ready": false,
+    "blocker_issues": 2,
+    "notes": "Portfolio is well-structured with comprehensive theme implementation. Two critical issues blocking production: missing testimonials section ID and missing nav link. All issues documented in QA-FINDINGS.md"
+  }
+}

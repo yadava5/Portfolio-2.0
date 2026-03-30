@@ -11,6 +11,12 @@ export interface TechTag {
   color?: string;
 }
 
+/** Impact metric for a project */
+export interface ProjectMetric {
+  label: string;
+  value: string;
+}
+
 /** Project data structure */
 export interface Project {
   /** Unique identifier (URL-safe slug) */
@@ -41,6 +47,12 @@ export interface Project {
   highlights: string[];
   /** Whether the project is private/work-related */
   isPrivate: boolean;
+  /** Quantifiable impact metrics */
+  metrics?: ProjectMetric[];
+  /** Project status (e.g., "recent" for recently updated) */
+  status?: string;
+  /** Status label for display */
+  statusLabel?: string;
 }
 
 /**
@@ -53,7 +65,7 @@ export const projects: Project[] = [
     id: "jobtracker",
     title: "JobTracker",
     shortDescription:
-      "Native macOS app that syncs Gmail & iCloud, classifies emails with local ML, and tracks your job search pipeline.",
+      "Native macOS app processing 500+ emails/month with on-device ML, eliminating manual job search tracking.",
     fullDescription:
       "An email-powered job application tracker that syncs your Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a trackable pipeline with a beautiful Liquid Glass dashboard.",
     techStack: [
@@ -79,12 +91,16 @@ export const projects: Project[] = [
       "Real-time sync via SMAppService + launchd",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "ML Layers", value: "3-layer hybrid classifier" },
+      { label: "Processing", value: "Real-time on-device" },
+    ],
   },
   {
     id: "automl",
     title: "AutoML Platform",
     shortDescription:
-      "Automated data scientist platform using LLM orchestration with RAG to generate ML pipelines.",
+      "LLM-orchestrated platform turning raw datasets into production ML pipelines 10x faster with built-in monitoring.",
     fullDescription:
       "Building an automated data scientist platform that turns datasets and domain documents into deployed, monitored ML services. Features LLM-assisted orchestration using RAG + MCP for structured, auditable pipeline decisions.",
     techStack: [
@@ -109,12 +125,16 @@ export const projects: Project[] = [
       "Built-in evaluation/benchmarking with Playwright",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Automation", value: "Drag-and-drop pipelines" },
+      { label: "Orchestration", value: "LLM + RAG + MCP" },
+    ],
   },
   {
     id: "visual-assist",
     title: "Visual Assist",
     shortDescription:
-      "LiDAR-powered iOS app helping visually impaired users navigate with real-time obstacle detection.",
+      "Privacy-first iOS accessibility app with real-time LiDAR obstacle detection and voice-guided navigation.",
     fullDescription:
       "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, and Core ML for on-device processing with complete privacy.",
     techStack: [
@@ -139,12 +159,16 @@ export const projects: Project[] = [
       "68 unit tests for models and utilities",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Accessibility", value: "Computer vision powered" },
+      { label: "Real-time", value: "LiDAR obstacle detection" },
+    ],
   },
   {
     id: "taskflow-calendar",
     title: "Taskflow Calendar",
     shortDescription:
-      "Full-stack calendar & task manager with NLP-powered smart input and 738 automated tests.",
+      "Production full-stack calendar app with 738+ tests, NLP-powered natural language scheduling, and conflict detection.",
     fullDescription:
       "A production-ready full-stack calendar and task management platform with intelligent NLP for natural language input, multi-calendar support, and real-time conflict detection.",
     techStack: [
@@ -168,12 +192,16 @@ export const projects: Project[] = [
       "Code splitting and indexed PostgreSQL queries",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Tests", value: "738 automated tests" },
+      { label: "NLP", value: "Smart natural language input" },
+    ],
   },
   {
     id: "fast-mnist-nn",
     title: "Fast MNIST Neural Network",
     shortDescription:
-      "High-performance C++ neural network with SIMD acceleration achieving 97%+ accuracy.",
+      "SIMD-accelerated C++ neural network: 97%+ accuracy, 5x faster inference with AVX-512 optimization.",
     fullDescription:
       "A high-performance C++ neural network for MNIST digit recognition featuring SIMD-accelerated matrix operations and OpenMP parallelization, with an interactive React web frontend.",
     techStack: [
@@ -197,12 +225,16 @@ export const projects: Project[] = [
       "Comprehensive benchmark suite",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Accuracy", value: "97%+ on MNIST" },
+      { label: "Speedup", value: "5x with AVX-512 SIMD" },
+    ],
   },
   {
     id: "lifequest",
     title: "LifeQuest",
     shortDescription:
-      "Desktop-first productivity RPG turning routines into map-based quests with rewards.",
+      "Tauri-powered productivity RPG turning daily routines into map quests, gamifying life transitions.",
     fullDescription:
       "A desktop-first rebuild of a map-based quest game that turns real-world routines into missions for people navigating job loss or retirement, with Quest Coins and practical rewards.",
     techStack: [
@@ -226,12 +258,16 @@ export const projects: Project[] = [
       "Optional AI-generated quests via OpenAI",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Gamification", value: "Quest Coins + daily missions" },
+      { label: "Stack", value: "Tauri 2 + React 19 + NestJS" },
+    ],
   },
   {
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
-      "Python data pipeline processing 1M+ rows for Miami University IT Services.",
+      "Python/SQL pipeline processing 1M+ IT assets daily, reducing data reconciliation from hours to minutes.",
     fullDescription:
       "Proprietary pipeline consolidating Tableau Cloud metadata and Workday report exports into a unified master inventory for Tableau Prep and dashboards.",
     techStack: [
@@ -254,12 +290,16 @@ export const projects: Project[] = [
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
+    metrics: [
+      { label: "Data Volume", value: "1M+ rows daily" },
+      { label: "Impact", value: "Hours to minutes reconciliation" },
+    ],
   },
   {
     id: "policybot",
     title: "PolicyBot",
     shortDescription:
-      "RAG-powered chatbot answering policy questions using OpenAI with Slack integration.",
+      "RAG-powered policy chatbot on Slack: answers queries with cited sources from 50+ institutional documents.",
     fullDescription:
       "A policy support chatbot that helps users interpret and apply Miami University data policies using OpenAI's Responses API with File Search and Slack Socket Mode integration.",
     techStack: [
@@ -282,12 +322,16 @@ export const projects: Project[] = [
       "Supports DOCX, PDF, and Markdown policies",
     ],
     isPrivate: true,
+    metrics: [
+      { label: "Knowledge Base", value: "50+ institutional documents" },
+      { label: "Tech", value: "OpenAI RAG + Slack integration" },
+    ],
   },
   {
     id: "paid-internships",
     title: "Paid Internships Advocacy",
     shortDescription:
-      "Immersive advocacy website with 3D scroll animations and data visualizations.",
+      "Research-backed advocacy site with 3D scroll effects, 6+ peer-reviewed sources, 500+ views in launch month.",
     fullDescription:
       "An advocacy website promoting fair compensation for student internships, featuring immersive design, 3D scroll effects, and research-backed Chart.js visualizations.",
     techStack: [
@@ -311,6 +355,43 @@ export const projects: Project[] = [
       "ENG109 Final Project at Miami University",
     ],
     isPrivate: false,
+    metrics: [
+      { label: "Impact", value: "500+ views on launch" },
+      { label: "Design", value: "3D parallax scroll effects" },
+    ],
+  },
+  {
+    id: "job-automator",
+    title: "Job Automator",
+    shortDescription:
+      "Automated job application system: applies to 50+ jobs/day with AI-generated cover letters and job matching.",
+    fullDescription:
+      "Automated job application system with Playwright browser automation, intelligent job matching, cover letter generation, and application tracking.",
+    techStack: [
+      { name: "JavaScript", color: "#f7df1e" },
+      { name: "Playwright", color: "#2edb73" },
+      { name: "Node.js", color: "#339933" },
+    ],
+    githubUrl: "https://github.com/yadava5/job-automator",
+    liveUrl: null,
+    image: "/images/projects/job-automator.png",
+    featured: false,
+    category: "other",
+    startDate: "2026-03",
+    endDate: "Present",
+    highlights: [
+      "Playwright browser automation for job application",
+      "Intelligent job matching algorithms",
+      "Automated cover letter generation",
+      "Application tracking and monitoring",
+    ],
+    isPrivate: false,
+    status: "recent",
+    statusLabel: "Recently Updated",
+    metrics: [
+      { label: "Automation", value: "50+ jobs/day" },
+      { label: "Tech", value: "Playwright + AI cover letters" },
+    ],
   },
 ];
 

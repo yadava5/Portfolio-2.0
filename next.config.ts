@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+
+  /** Fix Turbopack root directory for monorepo setup */
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 export default nextConfig;

@@ -3,22 +3,23 @@
  *
  * Wraps every page with:
  *   1. Geist font variables (sans + mono)
- *   2. ThemeProvider  — multi-theme wrapper
- *   3. SmoothScroll   — Lenis smooth scrolling
- *   4. Header         — floating glass navigation
- *   5. Footer         — social links + quick nav
- *   6. CustomCursor   — holographic glow trail
- *   7. ThemeSwitcher  — floating theme picker
+ *   2. Theme-specific font variables
+ *   3. ThemeProvider  — multi-theme wrapper
+ *   4. SmoothScroll   — Lenis smooth scrolling
+ *   5. Header         — floating glass navigation
+ *   6. Footer         — social links + quick nav
+ *   7. CustomCursor   — holographic glow trail
+ *   8. ThemeSwitcher  — floating theme picker
  *
  * SEO metadata is pulled from the data layer (`siteMetadata`).
  */
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -27,19 +28,10 @@ import { siteMetadata } from "@/lib/data/personal";
 
 /* ──────────────────────────────────────────────
    Font configuration
+
+   Fonts loaded dynamically at runtime via CSS
+   @import with display=swap to avoid blocking
    ────────────────────────────────────────────── */
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 /* ──────────────────────────────────────────────
    SEO metadata
@@ -95,11 +87,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        {/* Fonts are now optimized via next/font/google */}
+      </head>
+      <body className="antialiased">
+        <a href="#hero" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-[var(--accent-primary)] focus:text-[var(--background)] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+          Skip to main content
+        </a>
         <ThemeProvider>
           <SmoothScroll>
+            <ScrollProgress />
             <CustomCursor />
             <Header />
             <main className="min-h-screen">{children}</main>

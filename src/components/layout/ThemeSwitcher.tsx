@@ -20,6 +20,7 @@ export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -68,9 +69,12 @@ export default function ThemeSwitcher() {
       ref={containerRef}
       className="fixed right-4 bottom-4 z-[60] md:right-6 md:bottom-6"
     >
+      <div aria-live="polite" className="sr-only">
+        {announcement}
+      </div>
       <div
         className={cn(
-          "absolute right-0 bottom-16 w-72 origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth)",
+          "absolute right-0 bottom-16 w-56 sm:w-64 md:w-72 origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth) max-w-[calc(100vw-2rem)]",
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none translate-y-3 scale-95 opacity-0"
@@ -80,7 +84,7 @@ export default function ThemeSwitcher() {
           <div className="mb-3 px-2">
             <p className="text-foreground text-sm font-semibold">Theme</p>
             <p className="text-foreground-muted text-xs">
-              Dark palettes only. Nebula matches the current default.
+              Six creative themes for your portfolio experience.
             </p>
           </div>
 
@@ -92,40 +96,62 @@ export default function ThemeSwitcher() {
                 <button
                   key={option.name}
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
+                    // Smooth fade transition
+                    document.body.style.transition = "opacity 0.3s ease";
+                    document.body.style.opacity = "0";
+
+                    await new Promise(resolve => setTimeout(resolve, 300));
                     setTheme(option.name);
+                    setAnnouncement(`Theme changed to ${option.label}`);
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
+                    document.body.style.opacity = "1";
+                    await new Promise(resolve => setTimeout(resolve, 400));
+                    document.body.style.transition = "";
+
+                    // Clear announcement after 3 seconds
+                    setTimeout(() => {
+                      setAnnouncement("");
+                    }, 3000);
+
                     setOpen(false);
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-2xl border px-3 py-2.5 text-left transition-all duration-(--transition-fast)",
+                    "flex w-full flex-col rounded-2xl border px-3 py-2.5 text-left transition-all duration-(--transition-fast)",
                     selected
                       ? "border-accent-primary bg-(--surface-3)"
                       : "border-transparent bg-transparent hover:border-(--glass-border) hover:bg-(--surface-2)"
                   )}
                   aria-pressed={selected}
                 >
-                  <span className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5" aria-hidden="true">
-                      {option.colors.map((color) => (
-                        <span
-                          key={color}
-                          className="h-3 w-3 rounded-full border border-white/15"
-                          style={{ backgroundColor: color }}
-                        />
-                      ))}
+                  <span className="flex items-center justify-between">
+                    <span className="flex items-center gap-3">
+                      <span className="flex items-center gap-1.5" aria-hidden="true">
+                        {option.colors.map((color) => (
+                          <span
+                            key={color}
+                            className="h-3 w-3 rounded-full border border-white/15"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </span>
+                      <span className="text-foreground text-xs sm:text-sm font-medium">
+                        {option.label}
+                      </span>
                     </span>
-                    <span className="text-foreground text-sm font-medium">
-                      {option.label}
-                    </span>
-                  </span>
 
-                  <Check
-                    className={cn(
-                      "h-4 w-4 transition-opacity",
-                      selected ? "text-accent-primary opacity-100" : "opacity-0"
-                    )}
-                    aria-hidden="true"
-                  />
+                    <Check
+                      className={cn(
+                        "h-4 w-4 transition-opacity",
+                        selected ? "text-accent-primary opacity-100" : "opacity-0"
+                      )}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="text-foreground-muted text-xs mt-1 ml-10 line-clamp-1 sm:line-clamp-2">
+                    {option.description}
+                  </span>
                 </button>
               );
             })}

@@ -3,51 +3,63 @@
  */
 
 export type ThemeName =
-  | "nebula"
-  | "space"
-  | "lunar"
-  | "cyberpunk"
-  | "ocean"
-  | "retrowave";
+  | "paper-ink"
+  | "dark-luxe"
+  | "editorial"
+  | "noir-cinema"
+  | "neon-cyber";
 
 export interface ThemeOption {
   name: ThemeName;
   label: string;
   colors: [string, string, string];
+  description: string;
+  fontDisplay: string;
+  fontBody: string;
 }
 
-export const DEFAULT_THEME: ThemeName = "nebula";
+export const DEFAULT_THEME: ThemeName = "dark-luxe";
 
 export const THEME_OPTIONS: ThemeOption[] = [
   {
-    name: "nebula",
-    label: "Nebula",
-    colors: ["#8b5cf6", "#06b6d4", "#f472b6"],
+    name: "paper-ink",
+    label: "Paper & Ink",
+    colors: ["#1a1a1a", "#c00000", "#f5f1de"],
+    description: "Newspaper broadsheet layout",
+    fontDisplay: "'Playfair Display', serif",
+    fontBody: "'Source Serif 4', serif",
   },
   {
-    name: "space",
-    label: "Space",
-    colors: ["#a8c8ff", "#c0c0d0", "#4fc3f7"],
+    name: "dark-luxe",
+    label: "Dark Luxe",
+    colors: ["#d4af37", "#1a1a1a", "#b8860b"],
+    description: "Black & gold premium brand",
+    fontDisplay: "'Playfair Display', serif",
+    fontBody: "'Inter', sans-serif",
   },
   {
-    name: "lunar",
-    label: "Lunar",
-    colors: ["#ff9800", "#fff3e0", "#ffc107"],
+    name: "editorial",
+    label: "Editorial",
+    colors: ["#ff4444", "#1a1a1a", "#ffffff"],
+    description: "High-fashion magazine layout",
+    fontDisplay: "'Instrument Serif', serif",
+    fontBody: "'Inter', sans-serif",
   },
   {
-    name: "cyberpunk",
-    label: "Cyberpunk",
-    colors: ["#00ff41", "#ff006e", "#00d4ff"],
+    name: "noir-cinema",
+    label: "Noir Cinema",
+    colors: ["#e8d5b7", "#0a0a0a", "#c0a060"],
+    description: "Cinematic film noir experience",
+    fontDisplay: "'Bebas Neue', sans-serif",
+    fontBody: "'Inter', sans-serif",
   },
   {
-    name: "ocean",
-    label: "Ocean",
-    colors: ["#00bcd4", "#7affcb", "#ff6b6b"],
-  },
-  {
-    name: "retrowave",
-    label: "Retrowave",
-    colors: ["#ff2d95", "#b026ff", "#ffe14d"],
+    name: "neon-cyber",
+    label: "Neon Cyber",
+    colors: ["#00ff88", "#ff006e", "#00d4ff"],
+    description: "Cyberpunk neon HUD interface",
+    fontDisplay: "'Orbitron', sans-serif",
+    fontBody: "'JetBrains Mono', monospace",
   },
 ];
 

@@ -1,0 +1,215 @@
+{
+  "timestamp": "2026-03-28T21:37:57.828Z",
+  "themes": {
+    "paper-ink": {
+      "sections_visible": [
+        "hero"
+      ],
+      "sections_missing": [
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": false,
+      "console_errors": [],
+      "broken_images": [],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: about, experience, projects, skills, contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed; Projects nav link failed; Skills nav link failed"
+        },
+        {
+          "severity": "medium",
+          "section": "cta",
+          "description": "CTA button failed"
+        }
+      ]
+    },
+    "gallery": {
+      "sections_visible": [
+        "hero"
+      ],
+      "sections_missing": [
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": true,
+      "console_errors": [],
+      "broken_images": [
+        "Taskflow Calendar",
+        "Fast MNIST Neural Network"
+      ],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: about, experience, projects, skills, contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed; Projects nav link failed; Skills nav link failed"
+        },
+        {
+          "severity": "medium",
+          "section": "images",
+          "description": "Broken: Taskflow Calendar, Fast MNIST Neural Network"
+        }
+      ]
+    },
+    "dark-luxe": {
+      "sections_visible": [
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "hero"
+      ],
+      "sections_missing": [
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": true,
+      "console_errors": [],
+      "broken_images": [],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed"
+        }
+      ]
+    },
+    "editorial": {
+      "sections_visible": [
+        "experience",
+        "projects",
+        "skills",
+        "hero"
+      ],
+      "sections_missing": [
+        "about",
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": true,
+      "console_errors": [],
+      "broken_images": [
+        "Taskflow Calendar"
+      ],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: about, contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed; Projects nav link failed; Skills nav link failed"
+        },
+        {
+          "severity": "medium",
+          "section": "images",
+          "description": "Broken: Taskflow Calendar"
+        }
+      ]
+    },
+    "noir-cinema": {
+      "sections_visible": [
+        "hero"
+      ],
+      "sections_missing": [
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": false,
+      "console_errors": [],
+      "broken_images": [
+        "Taskflow Calendar"
+      ],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: about, experience, projects, skills, contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed; Projects nav link failed; Skills nav link failed"
+        },
+        {
+          "severity": "medium",
+          "section": "cta",
+          "description": "CTA button failed"
+        },
+        {
+          "severity": "medium",
+          "section": "images",
+          "description": "Broken: Taskflow Calendar"
+        }
+      ]
+    },
+    "neon-cyber": {
+      "sections_visible": [],
+      "sections_missing": [
+        "hero",
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "contact"
+      ],
+      "nav_links_work": false,
+      "cta_buttons_work": true,
+      "console_errors": [],
+      "broken_images": [],
+      "overflow_issues": [],
+      "issues": [
+        {
+          "severity": "high",
+          "section": "general",
+          "description": "Missing: hero, about, experience, projects, skills, contact"
+        },
+        {
+          "severity": "high",
+          "section": "nav",
+          "description": "About nav link failed; Experience nav link failed; Projects nav link failed; Skills nav link failed"
+        }
+      ]
+    }
+  },
+  "crossTheme": {
+    "switcher_works": true,
+    "persistence_works": false,
+    "issues": []
+  }
+}

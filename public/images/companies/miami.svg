@@ -1,0 +1,22 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="companyGradmiami" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c3142d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c3142d;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" fill="white"/>
+
+  <!-- Logo circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#companyGradmiami)"/>
+
+  <!-- Letter -->
+  <text x="100" y="125" font-size="120" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="system-ui, -apple-system, sans-serif">
+    M
+  </text>
+
+  <!-- Border -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#c3142d" stroke-width="2" opacity="0.3"/>
+</svg>

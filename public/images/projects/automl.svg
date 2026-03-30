@@ -1,0 +1,53 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradautoml" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A8D8EA;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:0.95" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#gradautoml)"/>
+
+  <!-- Top accent bar -->
+  <rect width="800" height="8" fill="#A8D8EA" opacity="0.8"/>
+
+  <!-- Icon circle -->
+  <circle cx="400" cy="180" r="80" fill="rgba(255,255,255,0.1)" stroke="#A8D8EA" stroke-width="3"/>
+  <text x="400" y="200" font-size="80" text-anchor="middle" dominant-baseline="middle">🤖</text>
+
+  <!-- Title -->
+  <text x="400" y="320" font-size="48" font-weight="bold" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif">
+    AutoML Platform
+  </text>
+
+  <!-- Subtitle -->
+  <text x="400" y="370" font-size="24" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="system-ui, -apple-system, sans-serif">
+    LLM + RAG + ML Pipelines
+  </text>
+
+  <!-- Tech stack badges -->
+  <g id="tech-stack">
+    <rect x="210" y="440" width="100" height="40" rx="20" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <text x="260" y="465" font-size="14" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.9)" font-family="system-ui, -apple-system, sans-serif">
+      Python
+    </text>
+    <rect x="350" y="440" width="100" height="40" rx="20" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <text x="400" y="465" font-size="14" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.9)" font-family="system-ui, -apple-system, sans-serif">
+      LLM
+    </text>
+    <rect x="490" y="440" width="100" height="40" rx="20" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+    <text x="540" y="465" font-size="14" text-anchor="middle" dominant-baseline="middle" fill="rgba(255,255,255,0.9)" font-family="system-ui, -apple-system, sans-serif">
+      RAG
+    </text>
+  </g>
+
+  <!-- Bottom gradient overlay -->
+  <rect y="520" width="800" height="80" fill="url(#gradautoml)" opacity="0.6"/>
+
+  <!-- Decorative dots -->
+  <circle cx="60" cy="500" r="3" fill="#A8D8EA" opacity="0.6"/>
+  <circle cx="740" cy="80" r="3" fill="#A8D8EA" opacity="0.6"/>
+  <circle cx="100" cy="550" r="2" fill="#A8D8EA" opacity="0.4"/>
+  <circle cx="700" cy="120" r="2" fill="#A8D8EA" opacity="0.4"/>
+</svg>

@@ -50,14 +50,33 @@ export default function Footer() {
 
   return (
     <footer className="relative mt-24">
-      {/* Holographic divider */}
+      {/* Enhanced holographic divider with glow */}
       <div
-        className="mx-auto h-px w-3/4 max-w-(--container-max)"
-        style={{ background: "var(--holo-gradient)" }}
+        className="mx-auto mb-2 h-[2px] w-3/4 max-w-(--container-max) rounded-full shadow-lg"
+        style={{
+          background: "var(--holo-gradient)",
+          boxShadow: "0 0 30px var(--glow-color, rgba(232, 197, 71, 0.3))",
+        }}
         aria-hidden="true"
       />
 
       <div className="mx-auto max-w-(--container-max) px-6 py-12">
+        {/* ── Call-to-action banner ── */}
+        <div className="mb-10 rounded-lg border border-(--glass-border) bg-(--surface-2) p-6">
+          <p className="text-foreground-muted text-center text-sm">
+            Let's build something meaningful together.{" "}
+            <a
+              href="#contact"
+              className={cn(
+                "text-accent-primary font-semibold transition-colors duration-(--transition-fast)",
+                "hover:text-accent-tertiary"
+              )}
+            >
+              Get in touch
+            </a>
+          </p>
+        </div>
+
         <div className="grid gap-10 md:grid-cols-3">
           {/* ── Column 1: Branding ── */}
           <div className="space-y-3">

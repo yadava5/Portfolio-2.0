@@ -9,3 +9,8 @@ export { ScrollReveal } from "./ScrollReveal";
 export { MagneticButton } from "./MagneticButton";
 export { ScrambleText } from "./ScrambleText";
 export { TypewriterText } from "./TypewriterText";
+export { ZoomTransitionWrapper } from "./ZoomTransitionWrapper";
+export { HorizontalScrollSection } from "./HorizontalScrollSection";
+export { FullPageSnap } from "./FullPageSnap";
+export { ZoomInDolly } from "./ZoomInDolly";
+export { HorizontalPageScroll } from "./HorizontalPageScroll";
