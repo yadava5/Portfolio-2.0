@@ -91,7 +91,7 @@ export default function RootLayout({
         {/* Fonts are now optimized via next/font/google */}
       </head>
       <body className="antialiased">
-        <a href="#hero" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-[var(--accent-primary)] focus:text-[var(--background)] focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-[var(--accent-primary)] focus:text-[var(--background)] focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-medium focus:outline-none">
           Skip to main content
         </a>
         <ThemeProvider>
@@ -99,7 +99,7 @@ export default function RootLayout({
             <ScrollProgress />
             <CustomCursor />
             <Header />
-            <main className="min-h-screen">{children}</main>
+            <main id="main-content" className="min-h-screen">{children}</main>
             <Footer />
             <ThemeSwitcher />
           </SmoothScroll>

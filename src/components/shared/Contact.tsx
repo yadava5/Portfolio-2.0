@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
 import { Mail, MapPin, Linkedin, Github } from "lucide-react";
 import { getThemeConfig } from "@/config/themes";
@@ -9,29 +9,143 @@ interface ContactProps {
   themeId?: string;
 }
 
+/** Form validation error messages */
+interface FormErrors {
+  name?: string;
+  email?: string;
+  message?: string;
+}
+
+/** Form field validation state */
+interface FormTouched {
+  name: boolean;
+  email: boolean;
+  message: boolean;
+}
+
 export function Contact({ themeId = "dark-luxe" }: ContactProps) {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [formTouched, setFormTouched] = useState<FormTouched>({
+    name: false,
+    email: false,
+    message: false,
+  });
   const [submitted, setSubmitted] = useState(false);
   const config = getThemeConfig(themeId);
+
+  /** Validate individual field */
+  const validateField = useCallback((name: string, value: string): string | undefined => {
+    switch (name) {
+      case "name":
+        if (!value.trim()) {
+          return "Name is required";
+        }
+        if (value.trim().length < 2) {
+          return "Name must be at least 2 characters";
+        }
+        return undefined;
+
+      case "email":
+        if (!value.trim()) {
+          return "Email is required";
+        }
+        // Basic email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          return "Please enter a valid email address";
+        }
+        return undefined;
+
+      case "message":
+        if (!value.trim()) {
+          return "Message is required";
+        }
+        if (value.trim().length < 10) {
+          return "Message must be at least 10 characters";
+        }
+        return undefined;
+
+      default:
+        return undefined;
+    }
+  }, []);
+
+  /** Validate all fields */
+  const validateForm = useCallback((): boolean => {
+    const errors: FormErrors = {};
+
+    const nameError = validateField("name", formState.name);
+    const emailError = validateField("email", formState.email);
+    const messageError = validateField("message", formState.message);
+
+    if (nameError) errors.name = nameError;
+    if (emailError) errors.email = emailError;
+    if (messageError) errors.message = messageError;
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [formState, validateField]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Validate field as user types (if field was previously touched)
+    if (formTouched[name as keyof FormTouched]) {
+      const error = validateField(name, value);
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: error,
+      }));
+    }
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+
+    // Validate field on blur
+    const error = validateField(name, value);
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validate all fields on submit
+    if (!validateForm()) {
+      // Mark all fields as touched to show errors
+      setFormTouched({
+        name: true,
+        email: true,
+        message: true,
+      });
+      return;
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       setFormState({ name: "", email: "", message: "" });
+      setFormErrors({});
+      setFormTouched({ name: false, email: false, message: false });
       setSubmitted(false);
     }, 3000);
   };
@@ -196,68 +310,119 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               }}
             />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {/* Name field */}
               <div>
-                <label className="block text-sm uppercase tracking-widest text-foreground mb-2">
-                  Name
+                <label
+                  htmlFor="form-name"
+                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                >
+                  Name <span className="text-red-500" aria-label="required">*</span>
                 </label>
                 <input
+                  id="form-name"
                   type="text"
                   name="name"
                   value={formState.name}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
+                  aria-required="true"
+                  aria-invalid={!!formErrors.name}
+                  aria-describedby={formErrors.name ? "name-error" : undefined}
                   className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm"
                   placeholder="Your name"
                   style={{
-                    borderBottomColor: "var(--accent-primary)",
+                    borderBottomColor: formErrors.name ? "#ef4444" : "var(--accent-primary)",
                     borderBottomWidth: "1px",
                     opacity: 0.4,
                   } as React.CSSProperties}
                 />
+                {formErrors.name && (
+                  <p
+                    id="name-error"
+                    role="alert"
+                    className="mt-1 text-sm text-red-500"
+                  >
+                    {formErrors.name}
+                  </p>
+                )}
               </div>
 
               {/* Email field */}
               <div>
-                <label className="block text-sm uppercase tracking-widest text-foreground mb-2">
-                  Email
+                <label
+                  htmlFor="form-email"
+                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                >
+                  Email <span className="text-red-500" aria-label="required">*</span>
                 </label>
                 <input
+                  id="form-email"
                   type="email"
                   name="email"
                   value={formState.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
+                  aria-required="true"
+                  aria-invalid={!!formErrors.email}
+                  aria-describedby={formErrors.email ? "email-error" : undefined}
                   className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm"
                   placeholder="your@email.com"
                   style={{
-                    borderBottomColor: "var(--accent-primary)",
+                    borderBottomColor: formErrors.email ? "#ef4444" : "var(--accent-primary)",
                     borderBottomWidth: "1px",
                     opacity: 0.4,
                   } as React.CSSProperties}
                 />
+                {formErrors.email && (
+                  <p
+                    id="email-error"
+                    role="alert"
+                    className="mt-1 text-sm text-red-500"
+                  >
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               {/* Message field */}
               <div>
-                <label className="block text-sm uppercase tracking-widest text-foreground mb-2">
-                  Message
+                <label
+                  htmlFor="form-message"
+                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                >
+                  Message <span className="text-red-500" aria-label="required">*</span>
                 </label>
                 <textarea
+                  id="form-message"
                   name="message"
                   value={formState.message}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   required
                   rows={5}
+                  aria-required="true"
+                  aria-invalid={!!formErrors.message}
+                  aria-describedby={formErrors.message ? "message-error" : undefined}
                   className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm resize-none"
                   placeholder="Your message..."
                   style={{
-                    borderBottomColor: "var(--accent-primary)",
+                    borderBottomColor: formErrors.message ? "#ef4444" : "var(--accent-primary)",
                     borderBottomWidth: "1px",
                     opacity: 0.4,
                   } as React.CSSProperties}
                 />
+                {formErrors.message && (
+                  <p
+                    id="message-error"
+                    role="alert"
+                    className="mt-1 text-sm text-red-500"
+                  >
+                    {formErrors.message}
+                  </p>
+                )}
               </div>
 
               {/* Submit button */}
@@ -271,7 +436,7 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
 
               {/* Status message */}
               {submitted && (
-                <p className="text-accent-primary text-sm text-center">
+                <p className="text-accent-primary text-sm text-center" role="status">
                   Thank you for your message. I&apos;ll get back to you soon!
                 </p>
               )}

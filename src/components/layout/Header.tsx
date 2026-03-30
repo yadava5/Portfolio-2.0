@@ -12,6 +12,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────
@@ -146,8 +147,6 @@ export default function Header() {
   const visible = useScrollDirection();
   const scrolled = useHasScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLUListElement>(null);
 
   /** Close mobile menu on resize to desktop */
   useEffect(() => {
@@ -157,50 +156,6 @@ export default function Header() {
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
-
-  /** Focus trap for mobile menu */
-  useEffect(() => {
-    if (!mobileOpen || !menuRef.current) return;
-
-    // Focus first nav link when menu opens
-    const navLinks = menuRef.current.querySelectorAll("a");
-    if (navLinks.length > 0) {
-      navLinks[0].focus();
-    }
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setMobileOpen(false);
-        hamburgerRef.current?.focus();
-      }
-
-      if (e.key === "Tab") {
-        const navLinks = menuRef.current?.querySelectorAll("a");
-        if (!navLinks || navLinks.length === 0) return;
-
-        const firstLink = navLinks[0];
-        const lastLink = navLinks[navLinks.length - 1];
-        const activeElement = document.activeElement;
-
-        if (e.shiftKey) {
-          // Shift+Tab from first link → loop to last
-          if (activeElement === firstLink) {
-            e.preventDefault();
-            (lastLink as HTMLAnchorElement).focus();
-          }
-        } else {
-          // Tab from last link → loop to first
-          if (activeElement === lastLink) {
-            e.preventDefault();
-            firstLink.focus();
-          }
-        }
-      }
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileOpen]);
 
   /** Scroll to a section and close mobile menu */
   const handleNavClick = useCallback(
@@ -275,50 +230,89 @@ export default function Header() {
 
         {/* ── Right side actions ── */}
         <div className="flex items-center gap-2">
-          {/* Mobile menu button */}
-          <button
-            ref={hamburgerRef}
-            onClick={() => setMobileOpen((prev) => !prev)}
-            className={cn(
-              "text-foreground-muted rounded-lg p-2 transition-colors duration-(--transition-fast) md:hidden",
-              "hover:text-foreground hover:bg-(--glass-background)",
-              "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
-            )}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-          >
-            <MenuIcon open={mobileOpen} />
-          </button>
+          {/* Mobile menu button (Radix Dialog Trigger) */}
+          <Dialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
+            <Dialog.Trigger asChild>
+              <button
+                className={cn(
+                  "text-foreground-muted rounded-lg p-2 transition-colors duration-(--transition-fast) md:hidden",
+                  "hover:text-foreground hover:bg-(--glass-background)",
+                  "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
+                )}
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              >
+                <MenuIcon open={mobileOpen} />
+              </button>
+            </Dialog.Trigger>
+
+            {/* Mobile drawer with Radix Dialog */}
+            <Dialog.Portal>
+              {/* Overlay */}
+              <Dialog.Overlay
+                className={cn(
+                  "fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-300",
+                  mobileOpen ? "opacity-100" : "opacity-0"
+                )}
+              />
+
+              {/* Dialog content */}
+              <Dialog.Content
+                className={cn(
+                  "fixed left-0 right-0 top-16 z-50 flex max-h-[calc(100vh-64px)] flex-col overflow-hidden border-t border-(--glass-border) bg-(--glass-background) backdrop-blur-xl transition-all duration-300 md:hidden",
+                  mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+                )}
+                aria-label="Mobile navigation menu"
+              >
+                <nav className="flex-1 overflow-y-auto px-6 py-4">
+                  <ul className="flex flex-col gap-1" role="list">
+                    {NAV_ITEMS.map((item) => (
+                      <li key={item.href}>
+                        <a
+                          href={item.href}
+                          onClick={(e) => handleNavClick(e, item.href)}
+                          className={cn(
+                            "text-foreground-muted block rounded-lg px-3 py-2.5 text-sm font-medium",
+                            "transition-colors duration-(--transition-fast)",
+                            "hover:text-foreground hover:bg-(--glass-background)",
+                            "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
+                          )}
+                        >
+                          {item.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+
+                {/* Close button */}
+                <Dialog.Close asChild>
+                  <button
+                    className={cn(
+                      "absolute right-4 top-4 rounded-lg p-2 text-foreground-muted transition-colors duration-(--transition-fast)",
+                      "hover:text-foreground hover:bg-(--glass-background)",
+                      "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
+                    )}
+                    aria-label="Close menu"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 6l-12 12M6 6l12 12" />
+                    </svg>
+                  </button>
+                </Dialog.Close>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
         </div>
       </nav>
-
-      {/* ── Mobile drawer ── */}
-      <div
-        className={cn(
-          "overflow-hidden border-t border-(--glass-border) bg-(--glass-background) backdrop-blur-xl transition-all duration-500 md:hidden",
-          mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-        )}
-        aria-hidden={!mobileOpen}
-      >
-        <ul ref={menuRef} className="flex flex-col gap-1 px-6 py-4" role="list">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                tabIndex={mobileOpen ? 0 : -1}
-                className={cn(
-                  "text-foreground-muted block rounded-lg px-3 py-2.5 text-sm font-medium",
-                  "transition-colors duration-(--transition-fast)",
-                  "hover:text-foreground hover:bg-(--glass-background)"
-                )}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
     </header>
   );
 }
