@@ -25,7 +25,7 @@
 }
 
 [data-theme="editorial"] section[id="hero"]::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -133,11 +133,15 @@
   transition: all 0.3s ease;
 }
 
-[data-theme="editorial"] section[id="projects"] [class*="group"]:nth-child(3n+1) {
+[data-theme="editorial"]
+  section[id="projects"]
+  [class*="group"]:nth-child(3n + 1) {
   border-left: 2px solid var(--editorial-black);
 }
 
-[data-theme="editorial"] section[id="projects"] [class*="group"]:nth-child(-n+3) {
+[data-theme="editorial"]
+  section[id="projects"]
+  [class*="group"]:nth-child(-n + 3) {
   border-top: 2px solid var(--editorial-black);
 }
 
@@ -151,7 +155,10 @@
   color: white;
 }
 
-[data-theme="editorial"] section[id="projects"] [class*="group"]:hover .text-accent-primary {
+[data-theme="editorial"]
+  section[id="projects"]
+  [class*="group"]:hover
+  .text-accent-primary {
   color: var(--editorial-red);
 }
 
@@ -428,7 +435,7 @@
 }
 
 [data-theme="editorial"] #testimonials blockquote {
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-size: 1.25rem;
   color: var(--editorial-black);
   margin-bottom: 1.5rem;
@@ -466,7 +473,10 @@
     bottom: 0;
   }
 
-  [data-theme="editorial"] section[id="projects"] .max-w-6xl > div:nth-child(2) {
+  [data-theme="editorial"]
+    section[id="projects"]
+    .max-w-6xl
+    > div:nth-child(2) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -476,7 +486,10 @@
     column-count: 1;
   }
 
-  [data-theme="editorial"] section[id="projects"] .max-w-6xl > div:nth-child(2) {
+  [data-theme="editorial"]
+    section[id="projects"]
+    .max-w-6xl
+    > div:nth-child(2) {
     grid-template-columns: 1fr;
   }
 
@@ -512,7 +525,7 @@
 
 /* Film grain overlay */
 [data-theme="noir-cinema"] section[id="hero"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image:
@@ -536,10 +549,14 @@
 
 /* Vignette effect */
 [data-theme="noir-cinema"] section[id="hero"]::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -565,13 +582,19 @@
 
 [data-theme="noir-cinema"] section[id="hero"] h1::before,
 [data-theme="noir-cinema"] section[id="hero"] h1::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
   height: 1px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] section[id="hero"] h1::before {
@@ -590,7 +613,7 @@
 
 /* Film grain on projects section */
 [data-theme="noir-cinema"] section[id="projects"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -612,14 +635,20 @@
 }
 
 [data-theme="noir-cinema"] section[id="projects"] h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] section[id="projects"] [class*="group"] {
@@ -632,19 +661,25 @@
 }
 
 [data-theme="noir-cinema"] section[id="projects"] [class*="group"]::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(192, 160, 96, 0.4) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(192, 160, 96, 0.4) 0%,
+    transparent 70%
+  );
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
-[data-theme="noir-cinema"] section[id="projects"] [class*="group"]:hover::before {
+[data-theme="noir-cinema"]
+  section[id="projects"]
+  [class*="group"]:hover::before {
   opacity: 1;
 }
 
@@ -666,7 +701,7 @@
 }
 
 [data-theme="noir-cinema"] section[id="about"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -688,19 +723,25 @@
 }
 
 [data-theme="noir-cinema"] section[id="about"] h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] section[id="about"] p {
   color: var(--noir-tan);
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.95rem;
   line-height: 1.8;
   margin-bottom: 1.5rem;
@@ -726,7 +767,7 @@
 
 [data-theme="noir-cinema"] section[id="about"] h3::before,
 [data-theme="noir-cinema"] section[id="about"] h3::after {
-  content: '◆ ◆ ◆';
+  content: "◆ ◆ ◆";
   position: absolute;
   color: var(--noir-gold);
   opacity: 0.5;
@@ -748,7 +789,7 @@
 }
 
 [data-theme="noir-cinema"] section[id="skills"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -770,14 +811,20 @@
 }
 
 [data-theme="noir-cinema"] section[id="skills"] h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] section[id="skills"] h3 {
@@ -793,7 +840,7 @@
 
 [data-theme="noir-cinema"] section[id="skills"] h3::before,
 [data-theme="noir-cinema"] section[id="skills"] h3::after {
-  content: '◆';
+  content: "◆";
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -816,7 +863,7 @@
 }
 
 [data-theme="noir-cinema"] section[id="contact"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -838,14 +885,20 @@
 }
 
 [data-theme="noir-cinema"] section[id="contact"] h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] section[id="contact"] form {
@@ -858,7 +911,7 @@
 
 [data-theme="noir-cinema"] section[id="contact"] form::before,
 [data-theme="noir-cinema"] section[id="contact"] form::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 20px;
   height: 20px;
@@ -916,7 +969,7 @@
 }
 
 [data-theme="noir-cinema"] #experience::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -938,14 +991,20 @@
 }
 
 [data-theme="noir-cinema"] #experience h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] #experience > div {
@@ -964,7 +1023,7 @@
 }
 
 [data-theme="noir-cinema"] #experience [class*="flex"]::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -8px;
   top: 0;
@@ -1013,7 +1072,7 @@
 }
 
 [data-theme="noir-cinema"] #testimonials::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1036,14 +1095,20 @@
 }
 
 [data-theme="noir-cinema"] #testimonials h2::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 200px;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--noir-gold) 20%,
+    var(--noir-gold) 80%,
+    transparent 100%
+  );
 }
 
 [data-theme="noir-cinema"] #testimonials > div {
@@ -1064,7 +1129,7 @@
 
 [data-theme="noir-cinema"] #testimonials [class*="border"]::before,
 [data-theme="noir-cinema"] #testimonials [class*="border"]::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 15px;
   height: 15px;
@@ -1086,7 +1151,7 @@
 }
 
 [data-theme="noir-cinema"] #testimonials blockquote {
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-size: 1.125rem;
   color: var(--noir-tan);
   margin-bottom: 2rem;
@@ -1126,7 +1191,7 @@
 
 /* Scanlines overlay */
 [data-theme="neon-cyber"] section[id="hero"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image:
@@ -1160,10 +1225,14 @@
 
 /* Matrix rain subtle background */
 [data-theme="neon-cyber"] section[id="hero"]::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 255, 136, 0.05) 0%,
+    transparent 70%
+  );
   z-index: 0;
 }
 
@@ -1192,14 +1261,23 @@
 }
 
 @keyframes neonFlicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
     text-shadow:
       0 0 10px var(--neon-green),
       0 0 20px var(--neon-green),
       0 0 40px var(--neon-cyan);
     opacity: 1;
   }
-  20%, 24%, 55% {
+  20%,
+  24%,
+  55% {
     text-shadow:
       0 0 5px var(--neon-green),
       0 0 10px var(--neon-cyan);
@@ -1224,7 +1302,7 @@
 
 /* Scanlines on projects */
 [data-theme="neon-cyber"] section[id="projects"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1261,7 +1339,7 @@
 /* HUD corner brackets */
 [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before,
 [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 20px;
   height: 20px;
@@ -1318,7 +1396,7 @@
 
 /* Scanlines on about */
 [data-theme="neon-cyber"] section[id="about"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1341,7 +1419,7 @@
 }
 
 [data-theme="neon-cyber"] section[id="about"] h2::before {
-  content: '$ cat about.txt';
+  content: "$ cat about.txt";
   display: block;
   font-size: 0.8rem;
   opacity: 0.7;
@@ -1362,7 +1440,7 @@
 }
 
 [data-theme="neon-cyber"] section[id="about"] p::before {
-  content: '> ';
+  content: "> ";
   color: var(--neon-green);
   font-weight: bold;
   margin-right: 0.5rem;
@@ -1379,7 +1457,7 @@
 }
 
 [data-theme="neon-cyber"] section[id="about"] h3::before {
-  content: '/';
+  content: "/";
   margin-right: 0.5rem;
 }
 
@@ -1398,7 +1476,7 @@
 
 /* Scanlines on skills */
 [data-theme="neon-cyber"] section[id="skills"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1432,7 +1510,7 @@
 }
 
 [data-theme="neon-cyber"] section[id="skills"] h3::before {
-  content: '/skills/';
+  content: "/skills/";
   margin-right: 0.5rem;
 }
 
@@ -1462,7 +1540,7 @@
 
 /* Scanlines on contact */
 [data-theme="neon-cyber"] section[id="contact"]::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1488,14 +1566,16 @@
   border: 2px solid var(--neon-green);
   padding: 2rem;
   background: rgba(0, 255, 136, 0.02);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.05);
+  box-shadow:
+    0 0 20px rgba(0, 255, 136, 0.2),
+    inset 0 0 20px rgba(0, 255, 136, 0.05);
   position: relative;
 }
 
 /* Terminal corner brackets on form */
 [data-theme="neon-cyber"] section[id="contact"] form::before,
 [data-theme="neon-cyber"] section[id="contact"] form::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 20px;
   height: 20px;
@@ -1532,13 +1612,15 @@
 }
 
 [data-theme="neon-cyber"] section[id="contact"] input::before {
-  content: '> ';
+  content: "> ";
 }
 
 [data-theme="neon-cyber"] section[id="contact"] input:focus,
 [data-theme="neon-cyber"] section[id="contact"] textarea:focus {
   border-color: var(--neon-pink);
-  box-shadow: 0 0 10px var(--neon-pink), inset 0 0 10px rgba(255, 0, 110, 0.1);
+  box-shadow:
+    0 0 10px var(--neon-pink),
+    inset 0 0 10px rgba(255, 0, 110, 0.1);
   outline: none;
 }
 
@@ -1556,7 +1638,7 @@
 }
 
 [data-theme="neon-cyber"] section[id="contact"] button::before {
-  content: '> ';
+  content: "> ";
   margin-right: 0.5rem;
 }
 
@@ -1595,7 +1677,7 @@
 }
 
 [data-theme="neon-cyber"] #experience::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1630,13 +1712,15 @@
   padding: 2rem;
   border: 2px solid var(--neon-green);
   background: rgba(0, 255, 136, 0.02);
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 15px rgba(0, 255, 136, 0.05);
+  box-shadow:
+    0 0 15px rgba(0, 255, 136, 0.2),
+    inset 0 0 15px rgba(0, 255, 136, 0.05);
   position: relative;
 }
 
 [data-theme="neon-cyber"] #experience [class*="flex"]::before,
 [data-theme="neon-cyber"] #experience [class*="flex"]::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 15px;
   height: 15px;
@@ -1668,7 +1752,7 @@
 }
 
 [data-theme="neon-cyber"] #experience h3::before {
-  content: '> ';
+  content: "> ";
   color: var(--neon-green);
   text-shadow: 0 0 10px var(--neon-green);
   margin-right: 0.5rem;
@@ -1707,7 +1791,7 @@
 }
 
 [data-theme="neon-cyber"] #testimonials::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -1741,12 +1825,14 @@
   border: 2px solid var(--neon-cyan);
   padding: 2.5rem;
   background: rgba(0, 212, 255, 0.02);
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), inset 0 0 20px rgba(0, 212, 255, 0.05);
+  box-shadow:
+    0 0 20px rgba(0, 212, 255, 0.15),
+    inset 0 0 20px rgba(0, 212, 255, 0.05);
   position: relative;
 }
 
 [data-theme="neon-cyber"] #testimonials [class*="border"]::before {
-  content: '/* ';
+  content: "/* ";
   position: absolute;
   top: 15px;
   left: 15px;
@@ -1757,7 +1843,7 @@
 }
 
 [data-theme="neon-cyber"] #testimonials [class*="border"]::after {
-  content: ' */';
+  content: " */";
   position: absolute;
   bottom: 15px;
   right: 15px;
@@ -2047,14 +2133,13 @@
 
   /* Neon Cyber: Reduce scanline intensity */
   [data-theme="neon-cyber"] section[id="hero"]::before {
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 255, 136, 0.02) 0px,
-        rgba(0, 255, 136, 0.02) 1px,
-        transparent 1px,
-        transparent 2px
-      );
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(0, 255, 136, 0.02) 0px,
+      rgba(0, 255, 136, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    );
   }
 
   /* Neon Cyber: Scale down contact form corners */

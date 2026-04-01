@@ -1,10 +1,17 @@
-import { chromium } from 'playwright';
-import fs from 'fs';
+import { chromium } from "playwright";
+import fs from "fs";
 
-const DIR = '/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/videos-scroll';
+const DIR =
+  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/videos-scroll";
 fs.mkdirSync(DIR, { recursive: true });
 
-const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cyber'];
+const themes = [
+  "dark-luxe",
+  "paper-ink",
+  "editorial",
+  "noir-cinema",
+  "neon-cyber",
+];
 
 (async () => {
   const browser = await chromium.launch();
@@ -16,23 +23,28 @@ const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cybe
       viewport: { width: 1440, height: 900 },
       recordVideo: {
         dir: DIR,
-        size: { width: 1440, height: 900 }
-      }
+        size: { width: 1440, height: 900 },
+      },
     });
     const page = await context.newPage();
 
-    await page.goto('http://localhost:3460', { waitUntil: 'networkidle', timeout: 20000 });
+    await page.goto("http://localhost:3460", {
+      waitUntil: "networkidle",
+      timeout: 20000,
+    });
     await page.waitForTimeout(2000);
 
     // Switch theme
     await page.evaluate((t) => {
-      document.documentElement.setAttribute('data-theme', t);
-      if (typeof localStorage !== 'undefined') localStorage.setItem('theme', t);
+      document.documentElement.setAttribute("data-theme", t);
+      if (typeof localStorage !== "undefined") localStorage.setItem("theme", t);
     }, theme);
     await page.waitForTimeout(2000);
 
     // Slowly scroll through entire page
-    const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+    const totalHeight = await page.evaluate(
+      () => document.documentElement.scrollHeight
+    );
     const viewportHeight = 900;
     const scrollStep = 200; // pixels per step
     const steps = Math.ceil(totalHeight / scrollStep);
@@ -65,9 +77,9 @@ const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cybe
   await browser.close();
 
   // List saved videos
-  const files = fs.readdirSync(DIR).filter(f => f.endsWith('.webm'));
+  const files = fs.readdirSync(DIR).filter((f) => f.endsWith(".webm"));
   console.log(`\nSaved ${files.length} videos:`);
-  files.forEach(f => {
+  files.forEach((f) => {
     const stats = fs.statSync(`${DIR}/${f}`);
     console.log(`  ${f} (${Math.round(stats.size / 1024)}KB)`);
   });

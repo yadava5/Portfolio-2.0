@@ -15,34 +15,36 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
   return (
     <section
       id="experience"
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-background"
+      className="bg-background relative px-4 py-24 md:px-8 md:py-32"
       data-theme={themeId}
       style={{
         backgroundColor:
           themeId === "paper-ink"
             ? "#f5f1de"
             : themeId === "editorial"
-            ? "#fefefe"
-            : undefined,
+              ? "#fefefe"
+              : undefined,
       }}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         {/* Section header */}
         <div className="mb-16 flex flex-col items-center">
           <div
-            className="h-px w-12 mb-6"
+            className="mb-6 h-px w-12"
             style={{
               background:
                 themeId === "dark-luxe" || themeId === "noir-cinema"
                   ? "linear-gradient(to right, transparent, var(--accent-primary), transparent)"
                   : themeId === "neon-cyber"
-                  ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
-                  : "solid black",
+                    ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
+                    : "solid black",
             }}
           />
           <h2
-            className={`text-5xl md:text-6xl font-light text-foreground text-center ${
-              themeId === "paper-ink" || themeId === "editorial" ? "text-black" : ""
+            className={`text-foreground text-center text-5xl font-light md:text-6xl ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-black"
+                : ""
             }`}
             style={{ fontFamily: "var(--font-display)" }}
           >
@@ -54,7 +56,7 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
         <div className="relative">
           {/* Vertical line */}
           <div
-            className="absolute left-1/2 transform -translate-x-1/2 w-px h-full"
+            className="absolute left-1/2 h-full w-px -translate-x-1/2 transform"
             style={{
               background:
                 "linear-gradient(to bottom, var(--accent-primary), var(--accent-primary), transparent)",
@@ -71,15 +73,17 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
                 {/* Content side */}
                 <div className="w-1/2 px-8">
                   <div
-                    className={`border p-6 rounded-sm transition-all duration-300 ${hoverClass}`}
-                    style={{
-                      backgroundColor: "var(--card-bg)",
-                      borderColor: "var(--accent-secondary)",
-                    } as React.CSSProperties & { borderOpacity?: number }}
+                    className={`rounded-sm border p-6 transition-all duration-300 ${hoverClass}`}
+                    style={
+                      {
+                        backgroundColor: "var(--card-bg)",
+                        borderColor: "var(--accent-secondary)",
+                      } as React.CSSProperties & { borderOpacity?: number }
+                    }
                   >
                     {/* Gold dot on timeline */}
                     <div
-                      className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-8 w-4 h-4 rounded-full border-2"
+                      className="absolute top-8 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded-full border-2"
                       style={{
                         backgroundColor: "var(--accent-primary)",
                         borderColor: "var(--background)",
@@ -87,25 +91,28 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
                     />
 
                     {/* Title and Company */}
-                    <p className="text-accent-primary text-sm uppercase tracking-widest mb-2">
+                    <p className="text-accent-primary mb-2 text-sm tracking-widest uppercase">
                       {exp.company}
                     </p>
                     <h3
-                      className="text-2xl font-light text-foreground mb-2"
+                      className="text-foreground mb-2 text-2xl font-light"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       {exp.title}
                     </h3>
 
                     {/* Date range */}
-                    <p className="text-foreground-muted text-sm mb-4">
+                    <p className="text-foreground-muted mb-4 text-sm">
                       {formatDateRange(exp.startDate, exp.endDate)}
                     </p>
 
                     {/* Description */}
-                    <div className="space-y-2 mb-4">
+                    <div className="mb-4 space-y-2">
                       {exp.description.map((desc, i) => (
-                        <p key={i} className="text-foreground-muted text-sm leading-relaxed">
+                        <p
+                          key={i}
+                          className="text-foreground-muted text-sm leading-relaxed"
+                        >
                           • {desc}
                         </p>
                       ))}
@@ -116,14 +123,14 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
                       {exp.skills.slice(0, 5).map((skill) => (
                         <span
                           key={skill}
-                          className="text-xs px-2 py-1 border rounded-sm text-accent-tertiary"
+                          className="text-accent-tertiary rounded-sm border px-2 py-1 text-xs"
                           style={{ borderColor: "var(--accent-primary)" }}
                         >
                           {skill}
                         </span>
                       ))}
                       {exp.skills.length > 5 && (
-                        <span className="text-xs px-2 py-1 text-foreground-muted">
+                        <span className="text-foreground-muted px-2 py-1 text-xs">
                           +{exp.skills.length - 5} more
                         </span>
                       )}
@@ -133,21 +140,27 @@ export function Experience({ themeId = "dark-luxe" }: ExperienceProps) {
                     {exp.achievements.length > 0 && (
                       <div
                         className="mt-4 pt-4"
-                        style={{ borderTop: "1px solid var(--accent-secondary)" }}
+                        style={{
+                          borderTop: "1px solid var(--accent-secondary)",
+                        }}
                       >
-                        <p className="text-xs uppercase tracking-widest text-accent-secondary mb-2">
+                        <p className="text-accent-secondary mb-2 text-xs tracking-widest uppercase">
                           Key Achievements
                         </p>
                         <ul className="space-y-1">
-                          {exp.achievements.slice(0, 2).map((achievement, i) => (
-                            <li
-                              key={i}
-                              className="text-xs text-foreground-muted flex items-start gap-2"
-                            >
-                              <span className="text-accent-primary mt-1">✦</span>
-                              <span>{achievement}</span>
-                            </li>
-                          ))}
+                          {exp.achievements
+                            .slice(0, 2)
+                            .map((achievement, i) => (
+                              <li
+                                key={i}
+                                className="text-foreground-muted flex items-start gap-2 text-xs"
+                              >
+                                <span className="text-accent-primary mt-1">
+                                  ✦
+                                </span>
+                                <span>{achievement}</span>
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     )}

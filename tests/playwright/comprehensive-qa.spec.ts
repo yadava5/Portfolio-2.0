@@ -57,7 +57,10 @@ interface ConsoleMessage {
   type: string;
 }
 
-async function switchThemeAndWait(page: Page, theme: { name: string; label: string }) {
+async function switchThemeAndWait(
+  page: Page,
+  theme: { name: string; label: string }
+) {
   // Scroll down to prevent hero elements overlapping the theme switcher on mobile
   await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
   await page.waitForTimeout(300);
@@ -68,18 +71,24 @@ async function switchThemeAndWait(page: Page, theme: { name: string; label: stri
   await page.waitForTimeout(500);
 
   // Click the target theme
-  const themeButton = page.locator("button[aria-pressed]").filter({ hasText: theme.label });
+  const themeButton = page
+    .locator("button[aria-pressed]")
+    .filter({ hasText: theme.label });
   await themeButton.first().click();
   await page.waitForTimeout(1000);
 
   // Verify the theme attribute was set
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, { timeout: 10000 });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
+    timeout: 10000,
+  });
 
   // Wait for lazy-loaded components to mount
   await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
 
   // Scroll through the full page to ensure all sections are loaded
-  const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const totalHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight
+  );
   const viewportHeight = await page.evaluate(() => window.innerHeight);
   const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
   for (let i = 0; i <= steps; i++) {
@@ -137,21 +146,33 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
 
       // ========== SECTION 2: PERSONAL INFO CONTENT ==========
       // Check for name
-      const nameElements = await page.locator(`:text("${EXPECTED_CONTENT.name}")`).all();
+      const nameElements = await page
+        .locator(`:text("${EXPECTED_CONTENT.name}")`)
+        .all();
       if (nameElements.length === 0) {
-        errors.push(`[${theme.name}] Name "${EXPECTED_CONTENT.name}" not found on page`);
+        errors.push(
+          `[${theme.name}] Name "${EXPECTED_CONTENT.name}" not found on page`
+        );
       }
 
       // Check for email
-      const emailElements = await page.locator(`:text("${EXPECTED_CONTENT.email}")`).all();
+      const emailElements = await page
+        .locator(`:text("${EXPECTED_CONTENT.email}")`)
+        .all();
       if (emailElements.length === 0) {
-        errors.push(`[${theme.name}] Email "${EXPECTED_CONTENT.email}" not found on page`);
+        errors.push(
+          `[${theme.name}] Email "${EXPECTED_CONTENT.email}" not found on page`
+        );
       }
 
       // Check for location
-      const locationElements = await page.locator(`:text("${EXPECTED_CONTENT.location}")`).all();
+      const locationElements = await page
+        .locator(`:text("${EXPECTED_CONTENT.location}")`)
+        .all();
       if (locationElements.length === 0) {
-        warnings.push(`[${theme.name}] Location "${EXPECTED_CONTENT.location}" not found`);
+        warnings.push(
+          `[${theme.name}] Location "${EXPECTED_CONTENT.location}" not found`
+        );
       }
 
       // ========== SECTION 3: NAV LINK FUNCTIONALITY ==========
@@ -165,7 +186,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
           try {
             await expect(targetSection).toBeAttached({ timeout: 5000 });
           } catch {
-            errors.push(`[${theme.name}] Nav link ${href} points to non-existent section`);
+            errors.push(
+              `[${theme.name}] Nav link ${href} points to non-existent section`
+            );
           }
         }
       }
@@ -193,18 +216,23 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         const mailLink = mailLinks[0];
         const href = await mailLink.getAttribute("href");
         if (!href?.includes(EXPECTED_CONTENT.email)) {
-          errors.push(`[${theme.name}] mailto link does not include correct email`);
+          errors.push(
+            `[${theme.name}] mailto link does not include correct email`
+          );
         }
       }
 
       // ========== SECTION 6: PROJECT SECTION CONTENT ==========
       const projectsSection = page.locator("#projects");
-      if (!(await projectsSection.isAttached())) {
+      if ((await projectsSection.count()) === 0) {
         errors.push(`[${theme.name}] Projects section #projects not found`);
       }
 
       // Check for "Featured Work" or similar heading
-      const projectHeadings = await page.locator("h2, h3").filter({ hasText: /Featured|Project/i }).all();
+      const projectHeadings = await page
+        .locator("h2, h3")
+        .filter({ hasText: /Featured|Project/i })
+        .all();
       if (projectHeadings.length === 0) {
         warnings.push(`[${theme.name}] No project section heading found`);
       }
@@ -212,60 +240,80 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 7: PROJECT IMAGES ==========
       for (const imgPath of PROJECT_IMAGES) {
         try {
-          const response = await page.request.get(`http://localhost:3000${imgPath}`);
+          const response = await page.request.get(
+            `http://localhost:3000${imgPath}`
+          );
           if (response.status() !== 200) {
-            errors.push(`[${theme.name}] Project image ${imgPath} returned status ${response.status()}`);
+            errors.push(
+              `[${theme.name}] Project image ${imgPath} returned status ${response.status()}`
+            );
           }
         } catch (e) {
-          errors.push(`[${theme.name}] Failed to fetch project image ${imgPath}`);
+          errors.push(
+            `[${theme.name}] Failed to fetch project image ${imgPath}`
+          );
         }
       }
 
       // ========== SECTION 8: COMPANY LOGOS ==========
       for (const logoPath of COMPANY_LOGOS) {
         try {
-          const response = await page.request.get(`http://localhost:3000${logoPath}`);
+          const response = await page.request.get(
+            `http://localhost:3000${logoPath}`
+          );
           if (response.status() !== 200) {
-            errors.push(`[${theme.name}] Company logo ${logoPath} returned status ${response.status()}`);
+            errors.push(
+              `[${theme.name}] Company logo ${logoPath} returned status ${response.status()}`
+            );
           }
         } catch (e) {
-          errors.push(`[${theme.name}] Failed to fetch company logo ${logoPath}`);
+          errors.push(
+            `[${theme.name}] Failed to fetch company logo ${logoPath}`
+          );
         }
       }
 
       // ========== SECTION 9: EXPERIENCE SECTION ==========
       const experienceSection = page.locator("#experience");
-      if (!(await experienceSection.isAttached())) {
+      if ((await experienceSection.count()) === 0) {
         errors.push(`[${theme.name}] Experience section #experience not found`);
       }
 
       // Check for job titles
-      const jobTitleElements = await page.locator(`:text("ITSM Data Integration")`).all();
+      const jobTitleElements = await page
+        .locator(`:text("ITSM Data Integration")`)
+        .all();
       if (jobTitleElements.length === 0) {
-        warnings.push(`[${theme.name}] Job title not found in Experience section`);
+        warnings.push(
+          `[${theme.name}] Job title not found in Experience section`
+        );
       }
 
       // ========== SECTION 10: SKILLS SECTION ==========
       const skillsSection = page.locator("#skills");
-      if (!(await skillsSection.isAttached())) {
+      if ((await skillsSection.count()) === 0) {
         errors.push(`[${theme.name}] Skills section #skills not found`);
       }
 
       // Check for skill tags
-      const skillElements = await page.locator("[class*='skill'], [class*='tag']").all();
+      const skillElements = await page
+        .locator("[class*='skill'], [class*='tag']")
+        .all();
       if (skillElements.length === 0) {
         warnings.push(`[${theme.name}] No skill elements found`);
       }
 
       // ========== SECTION 11: CONTACT SECTION ==========
       const contactSection = page.locator("#contact");
-      if (!(await contactSection.isAttached())) {
+      if ((await contactSection.count()) === 0) {
         errors.push(`[${theme.name}] Contact section #contact not found`);
       }
 
       // Check for contact form or contact info
       const contactForms = await page.locator("form, [role='form']").all();
-      const hasContactInfo = await page.locator(`:text("${EXPECTED_CONTENT.email}")`).isVisible();
+      const hasContactInfo = await page
+        .locator(`:text("${EXPECTED_CONTENT.email}")`)
+        .isVisible();
 
       if (contactForms.length === 0 && !hasContactInfo) {
         warnings.push(`[${theme.name}] No contact form or email info found`);
@@ -278,7 +326,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       }
 
       // ========== SECTION 13: THEME SWITCHER ==========
-      const themeSwitcher = page.locator("button[aria-label*='Select theme'], button[aria-label*='theme']");
+      const themeSwitcher = page.locator(
+        "button[aria-label*='Select theme'], button[aria-label*='theme']"
+      );
       if (!(await themeSwitcher.isVisible())) {
         errors.push(`[${theme.name}] Theme switcher not visible`);
       }
@@ -286,7 +336,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 14: PLACEHOLDER CONTENT CHECK ==========
       const pageText = await page.textContent("body");
       if (pageText?.includes("Lorem ipsum")) {
-        errors.push(`[${theme.name}] Lorem ipsum placeholder text found on page`);
+        errors.push(
+          `[${theme.name}] Lorem ipsum placeholder text found on page`
+        );
       }
       if (pageText?.includes("PLACEHOLDER")) {
         errors.push(`[${theme.name}] PLACEHOLDER text found on page`);
@@ -316,7 +368,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 16: CONSOLE ERRORS ==========
       const errorLogs = consoleLogs.filter((log) => log.type === "error");
       if (errorLogs.length > 0) {
-        errors.push(`[${theme.name}] ${errorLogs.length} console errors detected`);
+        errors.push(
+          `[${theme.name}] ${errorLogs.length} console errors detected`
+        );
       }
 
       // ========== SECTION 17: ACCESSIBILITY CHECKS ==========
@@ -326,7 +380,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         const ariaLabel = await btn.getAttribute("aria-label");
         const textContent = await btn.textContent();
         if (!ariaLabel && (!textContent || textContent.trim() === "")) {
-          warnings.push(`[${theme.name}] Button without aria-label or text content found`);
+          warnings.push(
+            `[${theme.name}] Button without aria-label or text content found`
+          );
           break;
         }
       }
@@ -342,7 +398,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         }
       }
       if (brokenLinks > 0) {
-        errors.push(`[${theme.name}] Found ${brokenLinks} links without href attribute`);
+        errors.push(
+          `[${theme.name}] Found ${brokenLinks} links without href attribute`
+        );
       }
 
       // ========== SECTION 19: SPECIFIC CONTENT CHECKS ==========
@@ -353,9 +411,13 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       }
 
       // Check for featured projects count
-      const featuredText = await page.locator("text=/5 featured|featured.*project/i").isVisible();
+      const featuredText = await page
+        .locator("text=/5 featured|featured.*project/i")
+        .isVisible();
       if (!featuredText) {
-        warnings.push(`[${theme.name}] Featured projects reference not clearly visible`);
+        warnings.push(
+          `[${theme.name}] Featured projects reference not clearly visible`
+        );
       }
 
       // ========== SECTION 20: VIEWPORT & RESPONSIVENESS ==========
@@ -363,7 +425,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
       const viewportWidth = await page.evaluate(() => window.innerWidth);
       if (bodyWidth > viewportWidth) {
-        warnings.push(`[${theme.name}] Horizontal overflow detected (${bodyWidth}px > ${viewportWidth}px)`);
+        warnings.push(
+          `[${theme.name}] Horizontal overflow detected (${bodyWidth}px > ${viewportWidth}px)`
+        );
       }
 
       // ========== SECTION 21: DARK LUXE SPECIFIC CHECKS ==========
@@ -372,10 +436,15 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         const hasAccentColor = await page.evaluate(() => {
           const html = document.documentElement;
           const computed = getComputedStyle(html);
-          return computed.getPropertyValue("--accent-primary") || computed.getPropertyValue("--color-primary");
+          return (
+            computed.getPropertyValue("--accent-primary") ||
+            computed.getPropertyValue("--color-primary")
+          );
         });
         if (!hasAccentColor) {
-          warnings.push(`[${theme.name}] Dark Luxe theme colors not properly set`);
+          warnings.push(
+            `[${theme.name}] Dark Luxe theme colors not properly set`
+          );
         }
       }
 
@@ -404,7 +473,10 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       }
 
       // Assert no critical errors
-      expect(errors, `[${theme.name}] Critical errors found:\n${errors.join("\n")}`).toHaveLength(0);
+      expect(
+        errors,
+        `[${theme.name}] Critical errors found:\n${errors.join("\n")}`
+      ).toHaveLength(0);
     });
   }
 
@@ -427,7 +499,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     await page.waitForLoadState("networkidle");
 
     // Check each external project link
-    const projectLinks = await page.locator('a[href*="github.com/yadava5"]').all();
+    const projectLinks = await page
+      .locator('a[href*="github.com/yadava5"]')
+      .all();
     for (const link of projectLinks) {
       const href = await link.getAttribute("href");
       expect(href).toBeTruthy();
@@ -472,8 +546,12 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     // Check for either form or contact info
     const form = page.locator("form, [role='form']");
     const nameInput = page.locator('input[type="text"], input[name*="name" i]');
-    const emailInput = page.locator('input[type="email"], input[name*="email" i]');
-    const messageInput = page.locator('textarea, input[type="text"][name*="message" i]');
+    const emailInput = page.locator(
+      'input[type="email"], input[name*="email" i]'
+    );
+    const messageInput = page.locator(
+      'textarea, input[type="text"][name*="message" i]'
+    );
 
     const hasForm = (await form.count()) > 0;
     const hasNameField = (await nameInput.count()) > 0;
@@ -481,7 +559,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     const hasMessageField = (await messageInput.count()) > 0;
 
     // Either have a complete form or clear contact info
-    const hasContactInfo = await page.locator(`:text("${EXPECTED_CONTENT.email}")`).isVisible();
+    const hasContactInfo = await page
+      .locator(`:text("${EXPECTED_CONTENT.email}")`)
+      .isVisible();
 
     const isValid = hasForm && hasNameField && hasEmailField && hasMessageField;
     expect(
@@ -496,7 +576,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
 
-    const switcher = page.locator("button[aria-label*='Select theme'], button[aria-label*='theme']");
+    const switcher = page.locator(
+      "button[aria-label*='Select theme'], button[aria-label*='theme']"
+    );
     await expect(switcher).toBeVisible();
     await expect(switcher).toBeEnabled();
   });
@@ -509,7 +591,10 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     const sectionIds = [];
     for (const section of NAV_SECTIONS) {
       const elements = await page.locator(`#${section.id}`).all();
-      expect(elements.length, `Section #${section.id} should have exactly 1 element`).toBe(1);
+      expect(
+        elements.length,
+        `Section #${section.id} should have exactly 1 element`
+      ).toBe(1);
       sectionIds.push(section.id);
     }
 
@@ -525,7 +610,10 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     });
 
     for (const sectionId of sectionIds) {
-      expect(allIds[sectionId], `Section ID #${sectionId} should be unique`).toBe(1);
+      expect(
+        allIds[sectionId],
+        `Section ID #${sectionId} should be unique`
+      ).toBe(1);
     }
   });
 

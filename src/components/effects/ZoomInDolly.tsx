@@ -76,7 +76,9 @@ export function ZoomInDolly({
     const bgElements = section.querySelectorAll("[data-parallax]");
     bgElements.forEach((element) => {
       const element_ = element as HTMLElement;
-      const speed = parseFloat(element_.dataset.parallax || String(parallaxIntensity));
+      const speed = parseFloat(
+        element_.dataset.parallax || String(parallaxIntensity)
+      );
 
       gsap.to(element_, {
         y: (index: number) => index * speed * 50,
@@ -95,9 +97,9 @@ export function ZoomInDolly({
         if (
           trigger.vars.trigger === section ||
           (trigger.vars.trigger &&
-           typeof trigger.vars.trigger === 'object' &&
-           'closest' in trigger.vars.trigger &&
-           bgElements.length > 0)
+            typeof trigger.vars.trigger === "object" &&
+            "closest" in trigger.vars.trigger &&
+            bgElements.length > 0)
         ) {
           trigger.kill();
         }

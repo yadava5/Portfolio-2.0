@@ -23,8 +23,9 @@ export default function ThemeSwitcher() {
   const [announcement, setAnnouncement] = useState("");
 
   // Hydration guard — avoids mismatch between server and client
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -74,7 +75,7 @@ export default function ThemeSwitcher() {
       </div>
       <div
         className={cn(
-          "absolute right-0 bottom-16 w-56 sm:w-64 md:w-72 origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth) max-w-[calc(100vw-2rem)]",
+          "absolute right-0 bottom-16 w-56 max-w-[calc(100vw-2rem)] origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth) sm:w-64 md:w-72",
           open
             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
             : "pointer-events-none translate-y-3 scale-95 opacity-0"
@@ -101,13 +102,13 @@ export default function ThemeSwitcher() {
                     document.body.style.transition = "opacity 0.3s ease";
                     document.body.style.opacity = "0";
 
-                    await new Promise(resolve => setTimeout(resolve, 300));
+                    await new Promise((resolve) => setTimeout(resolve, 300));
                     setTheme(option.name);
                     setAnnouncement(`Theme changed to ${option.label}`);
-                    await new Promise(resolve => setTimeout(resolve, 50));
+                    await new Promise((resolve) => setTimeout(resolve, 50));
 
                     document.body.style.opacity = "1";
-                    await new Promise(resolve => setTimeout(resolve, 400));
+                    await new Promise((resolve) => setTimeout(resolve, 400));
                     document.body.style.transition = "";
 
                     // Clear announcement after 3 seconds
@@ -127,7 +128,10 @@ export default function ThemeSwitcher() {
                 >
                   <span className="flex items-center justify-between">
                     <span className="flex items-center gap-3">
-                      <span className="flex items-center gap-1.5" aria-hidden="true">
+                      <span
+                        className="flex items-center gap-1.5"
+                        aria-hidden="true"
+                      >
                         {option.colors.map((color) => (
                           <span
                             key={color}
@@ -136,7 +140,7 @@ export default function ThemeSwitcher() {
                           />
                         ))}
                       </span>
-                      <span className="text-foreground text-xs sm:text-sm font-medium">
+                      <span className="text-foreground text-xs font-medium sm:text-sm">
                         {option.label}
                       </span>
                     </span>
@@ -144,12 +148,14 @@ export default function ThemeSwitcher() {
                     <Check
                       className={cn(
                         "h-4 w-4 transition-opacity",
-                        selected ? "text-accent-primary opacity-100" : "opacity-0"
+                        selected
+                          ? "text-accent-primary opacity-100"
+                          : "opacity-0"
                       )}
                       aria-hidden="true"
                     />
                   </span>
-                  <span className="text-foreground-muted text-xs mt-1 ml-10 line-clamp-1 sm:line-clamp-2">
+                  <span className="text-foreground-muted mt-1 ml-10 line-clamp-1 text-xs sm:line-clamp-2">
                     {option.description}
                   </span>
                 </button>
@@ -164,7 +170,7 @@ export default function ThemeSwitcher() {
         onClick={() => setOpen((prev) => !prev)}
         className={cn(
           "group flex items-center gap-3 rounded-full border border-(--glass-border) bg-(--glass-background) px-4 py-3 shadow-xl shadow-black/35 backdrop-blur-xl transition-all duration-(--transition-base) ease-(--easing-smooth)",
-          "hover:-translate-y-0.5 hover:border-accent-primary/40 hover:shadow-(--glow-color)",
+          "hover:border-accent-primary/40 hover:-translate-y-0.5 hover:shadow-(--glow-color)",
           open && "border-accent-primary/40 shadow-(--glow-color)"
         )}
         aria-expanded={open}

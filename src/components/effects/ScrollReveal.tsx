@@ -63,10 +63,34 @@ interface ScrollRevealProps {
 /** Initial (hidden) states for each variant */
 const fromStates: Record<RevealVariant, gsap.TweenVars> = {
   fade: { opacity: 0 },
-  "slide-up": { opacity: 0, y: 50, scale: 0.95, filter: "blur(16px)", rotation: -2 },
-  "slide-down": { opacity: 0, y: -50, scale: 0.95, filter: "blur(16px)", rotation: -2 },
-  "slide-left": { opacity: 0, x: 50, scale: 0.95, filter: "blur(16px)", rotation: -2 },
-  "slide-right": { opacity: 0, x: -50, scale: 0.95, filter: "blur(16px)", rotation: -2 },
+  "slide-up": {
+    opacity: 0,
+    y: 50,
+    scale: 0.95,
+    filter: "blur(16px)",
+    rotation: -2,
+  },
+  "slide-down": {
+    opacity: 0,
+    y: -50,
+    scale: 0.95,
+    filter: "blur(16px)",
+    rotation: -2,
+  },
+  "slide-left": {
+    opacity: 0,
+    x: 50,
+    scale: 0.95,
+    filter: "blur(16px)",
+    rotation: -2,
+  },
+  "slide-right": {
+    opacity: 0,
+    x: -50,
+    scale: 0.95,
+    filter: "blur(16px)",
+    rotation: -2,
+  },
   scale: { opacity: 0, scale: 0.85, filter: "blur(16px)", rotation: -2 },
   blur: { opacity: 0, filter: "blur(16px)", rotation: -2 },
 };
@@ -75,9 +99,27 @@ const fromStates: Record<RevealVariant, gsap.TweenVars> = {
 const toStates: Record<RevealVariant, gsap.TweenVars> = {
   fade: { opacity: 1 },
   "slide-up": { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", rotation: 0 },
-  "slide-down": { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", rotation: 0 },
-  "slide-left": { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", rotation: 0 },
-  "slide-right": { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", rotation: 0 },
+  "slide-down": {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    rotation: 0,
+  },
+  "slide-left": {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    rotation: 0,
+  },
+  "slide-right": {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    rotation: 0,
+  },
   scale: { opacity: 1, scale: 1, filter: "blur(0px)", rotation: 0 },
   blur: { opacity: 1, filter: "blur(0px)", rotation: 0 },
 };

@@ -15,42 +15,48 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
   return (
     <section
       id="testimonials"
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-background"
+      className="bg-background relative px-4 py-24 md:px-8 md:py-32"
       data-theme={themeId}
       style={{
         backgroundColor:
           themeId === "paper-ink"
             ? "#f5f1de"
             : themeId === "editorial"
-            ? "#fefefe"
-            : undefined,
+              ? "#fefefe"
+              : undefined,
       }}
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
         {/* Section header */}
         <div className="mb-16 flex flex-col items-center">
           <div
-            className="h-px w-12 mb-6"
+            className="mb-6 h-px w-12"
             style={{
               background:
                 themeId === "dark-luxe" || themeId === "noir-cinema"
                   ? "linear-gradient(to right, transparent, var(--accent-primary), transparent)"
                   : themeId === "neon-cyber"
-                  ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
-                  : "solid black",
+                    ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
+                    : "solid black",
             }}
           />
           <h2
-            className={`text-5xl md:text-6xl font-light text-foreground text-center ${
-              themeId === "paper-ink" || themeId === "editorial" ? "text-black" : ""
+            className={`text-foreground text-center text-5xl font-light md:text-6xl ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-black"
+                : ""
             }`}
             style={{ fontFamily: "var(--font-display)" }}
           >
             Testimonials
           </h2>
-          <p className={`text-foreground-muted text-lg mt-4 max-w-2xl text-center ${
-            themeId === "paper-ink" || themeId === "editorial" ? "text-gray-600" : ""
-          }`}>
+          <p
+            className={`text-foreground-muted mt-4 max-w-2xl text-center text-lg ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-gray-600"
+                : ""
+            }`}
+          >
             Kind words from colleagues, managers, and collaborators
           </p>
         </div>
@@ -61,14 +67,14 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
-                className={`relative border p-10 md:p-12 rounded-sm transition-all duration-300 ${hoverClass}`}
+                className={`relative rounded-sm border p-10 transition-all duration-300 md:p-12 ${hoverClass}`}
                 style={{
                   backgroundColor: "var(--card-bg)",
                   borderColor: "var(--accent-secondary)",
                 }}
               >
                 {/* Glow effect */}
-                <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-sm">
+                <div className="pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300 hover:opacity-100">
                   <div
                     className="absolute inset-0 opacity-5 blur-lg"
                     style={{
@@ -89,7 +95,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
 
                   {/* Quote text */}
                   <p
-                    className="text-lg md:text-xl text-foreground leading-relaxed mb-8 italic font-light"
+                    className="text-foreground mb-8 text-lg leading-relaxed font-light italic md:text-xl"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {testimonial.quote}
@@ -97,7 +103,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
 
                   {/* Separator */}
                   <div
-                    className="h-px w-8 mb-6"
+                    className="mb-6 h-px w-8"
                     style={{
                       background:
                         "linear-gradient(to right, var(--accent-primary), transparent)",
@@ -109,7 +115,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
                     {/* Avatar placeholder */}
                     <div className="flex-shrink-0">
                       <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center border"
+                        className="flex h-12 w-12 items-center justify-center rounded-full border"
                         style={{
                           backgroundColor: "var(--accent-primary)",
                           borderColor: "var(--accent-primary)",
@@ -126,9 +132,13 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
 
                     {/* Name and info */}
                     <div className="flex-1">
-                      <p className="text-foreground font-medium">{testimonial.name}</p>
-                      <p className="text-foreground-muted text-sm">{testimonial.title}</p>
-                      <p className="text-accent-secondary text-xs uppercase tracking-widest mt-1">
+                      <p className="text-foreground font-medium">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-foreground-muted text-sm">
+                        {testimonial.title}
+                      </p>
+                      <p className="text-accent-secondary mt-1 text-xs tracking-widest uppercase">
                         {testimonial.company}
                       </p>
                       {testimonial.linkedInUrl && (
@@ -136,7 +146,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
                           href={testimonial.linkedInUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-accent-primary text-xs uppercase tracking-widest mt-2 inline-block hover:underline"
+                          className="text-accent-primary mt-2 inline-block text-xs tracking-widest uppercase hover:underline"
                         >
                           View Profile
                         </a>
@@ -146,7 +156,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
                     {/* Relationship badge */}
                     <div className="flex-shrink-0">
                       <span
-                        className="text-xs px-3 py-1 border rounded-sm capitalize"
+                        className="rounded-sm border px-3 py-1 text-xs capitalize"
                         style={{
                           borderColor: "var(--accent-primary)",
                           color: "var(--accent-tertiary)",
@@ -164,7 +174,7 @@ export function Testimonials({ themeId = "dark-luxe" }: TestimonialsProps) {
 
         {/* Empty state */}
         {testimonials.length === 0 && (
-          <div className="text-center py-16">
+          <div className="py-16 text-center">
             <p className="text-foreground-muted">No testimonials yet</p>
           </div>
         )}

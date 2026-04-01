@@ -9,9 +9,19 @@ const THEMES = [
   { name: "neon-cyber", label: "Neon Cyber" },
 ];
 
-const NAV_SECTIONS = ["about", "experience", "projects", "skills", "testimonials", "contact"];
+const NAV_SECTIONS = [
+  "about",
+  "experience",
+  "projects",
+  "skills",
+  "testimonials",
+  "contact",
+];
 
-async function switchThemeAndWait(page: Page, theme: { name: string; label: string }) {
+async function switchThemeAndWait(
+  page: Page,
+  theme: { name: string; label: string }
+) {
   // Scroll down to prevent hero elements overlapping the theme switcher on mobile
   await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
   await page.waitForTimeout(300);
@@ -22,18 +32,24 @@ async function switchThemeAndWait(page: Page, theme: { name: string; label: stri
   await page.waitForTimeout(500);
 
   // Click the target theme
-  const themeButton = page.locator("button[aria-pressed]").filter({ hasText: theme.label });
+  const themeButton = page
+    .locator("button[aria-pressed]")
+    .filter({ hasText: theme.label });
   await themeButton.first().click();
   await page.waitForTimeout(1000);
 
   // Verify the theme attribute was set
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, { timeout: 10000 });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
+    timeout: 10000,
+  });
 
   // Wait for lazy-loaded components to mount — #about is the first section after Hero
   await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
 
   // Scroll through the full page to ensure all sections are loaded
-  const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const totalHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight
+  );
   const viewportHeight = await page.evaluate(() => window.innerHeight);
   const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
   for (let i = 0; i <= steps; i++) {
@@ -105,7 +121,9 @@ test.describe("Project Display Count", () => {
   test.setTimeout(120000);
 
   for (const theme of THEMES) {
-    test(`${theme.name}: displays exactly 8 public projects`, async ({ page }) => {
+    test(`${theme.name}: displays exactly 8 public projects`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -114,20 +132,25 @@ test.describe("Project Display Count", () => {
 
       // Look for project cards/links by finding image or title elements
       // Count unique projects displayed on the page
-      const projectElements = await page.locator('img[alt], h3, h4').filter({
-        has: page.locator('text=/JobTracker|AutoML|Visual Assist|Taskflow|MNIST|LifeQuest|Paid Internships|Job Automator/')
-      }).count();
+      const projectElements = await page
+        .locator("img[alt], h3, h4")
+        .filter({
+          has: page.locator(
+            "text=/JobTracker|AutoML|Visual Assist|Taskflow|MNIST|LifeQuest|Paid Internships|Job Automator/"
+          ),
+        })
+        .count();
 
       // Alternatively, count sections with project titles
       const projectTitles = [
-        'JobTracker',
-        'AutoML Platform',
-        'Visual Assist',
-        'Taskflow Calendar',
-        'Fast MNIST Neural Network',
-        'LifeQuest',
-        'Paid Internships Advocacy',
-        'Job Automator'
+        "JobTracker",
+        "AutoML Platform",
+        "Visual Assist",
+        "Taskflow Calendar",
+        "Fast MNIST Neural Network",
+        "LifeQuest",
+        "Paid Internships Advocacy",
+        "Job Automator",
       ];
 
       let displayedCount = 0;
@@ -136,7 +159,10 @@ test.describe("Project Display Count", () => {
         if (found > 0) displayedCount++;
       }
 
-      expect(displayedCount, `Should display exactly 8 public projects in ${theme.name}`).toBe(8);
+      expect(
+        displayedCount,
+        `Should display exactly 8 public projects in ${theme.name}`
+      ).toBe(8);
     });
   }
 });

@@ -23,7 +23,14 @@ const THEMES = [
   { name: "neon-cyber", label: "Neon Cyber" },
 ];
 
-const NAV_SECTIONS = ["about", "experience", "projects", "skills", "testimonials", "contact"];
+const NAV_SECTIONS = [
+  "about",
+  "experience",
+  "projects",
+  "skills",
+  "testimonials",
+  "contact",
+];
 const EXPECTED_PROJECTS = 9; // JobTracker, AutoML, VisualAssist, TaskFlow, MNIST, LifeQuest, Pipeline, PolicyBot, Advocacy
 
 // Expected data values
@@ -47,7 +54,10 @@ const EXPECTED_DATA = {
   ],
 };
 
-async function switchThemeAndWait(page: Page, theme: { name: string; label: string }) {
+async function switchThemeAndWait(
+  page: Page,
+  theme: { name: string; label: string }
+) {
   // Scroll down to prevent hero elements overlapping the theme switcher on mobile
   await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
   await page.waitForTimeout(300);
@@ -58,18 +68,24 @@ async function switchThemeAndWait(page: Page, theme: { name: string; label: stri
   await page.waitForTimeout(500);
 
   // Click the target theme
-  const themeButton = page.locator("button[aria-pressed]").filter({ hasText: theme.label });
+  const themeButton = page
+    .locator("button[aria-pressed]")
+    .filter({ hasText: theme.label });
   await themeButton.first().click();
   await page.waitForTimeout(1000);
 
   // Verify the theme attribute was set
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, { timeout: 10000 });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
+    timeout: 10000,
+  });
 
   // Wait for lazy-loaded components to mount
   await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
 
   // Scroll through the full page to ensure all sections are loaded
-  const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const totalHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight
+  );
   const viewportHeight = await page.evaluate(() => window.innerHeight);
   const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
   for (let i = 0; i <= steps; i++) {
@@ -86,7 +102,9 @@ test.describe("DEEP QA: Content Completeness", () => {
   test.setTimeout(180000);
 
   for (const theme of THEMES) {
-    test(`${theme.name}: Full name "Ayush Yadav" visible in hero`, async ({ page }) => {
+    test(`${theme.name}: Full name "Ayush Yadav" visible in hero`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -94,14 +112,18 @@ test.describe("DEEP QA: Content Completeness", () => {
       await switchThemeAndWait(page, theme);
 
       // Scroll to hero
-      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await page.evaluate(() =>
+        window.scrollTo({ top: 0, behavior: "instant" })
+      );
       await page.waitForTimeout(500);
 
       const heroText = await page.locator("main").first().textContent();
       expect(heroText).toContain("Ayush Yadav");
     });
 
-    test(`${theme.name}: About section shows education info`, async ({ page }) => {
+    test(`${theme.name}: About section shows education info`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -121,7 +143,9 @@ test.describe("DEEP QA: Content Completeness", () => {
       expect(aboutText).toContain("Computer Science");
 
       // Should mention degree/field details
-      expect(aboutText?.toLowerCase()).toMatch(/bachelor|degree|b\.s\.|b.s|science/i);
+      expect(aboutText?.toLowerCase()).toMatch(
+        /bachelor|degree|b\.s\.|b.s|science/i
+      );
     });
 
     test(`${theme.name}: Experience shows BOTH jobs`, async ({ page }) => {
@@ -141,7 +165,9 @@ test.describe("DEEP QA: Content Completeness", () => {
       expect(expText).toContain("Aramark");
     });
 
-    test(`${theme.name}: Projects section shows ALL ${EXPECTED_PROJECTS} projects`, async ({ page }) => {
+    test(`${theme.name}: Projects section shows ALL ${EXPECTED_PROJECTS} projects`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -172,10 +198,14 @@ test.describe("DEEP QA: Content Completeness", () => {
       const skillsText = await skillsSection.textContent();
 
       // Should mention some tech stack items
-      expect(skillsText?.toLowerCase()).toMatch(/python|typescript|react|sql|data/i);
+      expect(skillsText?.toLowerCase()).toMatch(
+        /python|typescript|react|sql|data/i
+      );
     });
 
-    test(`${theme.name}: Testimonials section exists and has content`, async ({ page }) => {
+    test(`${theme.name}: Testimonials section exists and has content`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -212,7 +242,9 @@ test.describe("DEEP QA: Link Integrity", () => {
   test.setTimeout(120000);
 
   for (const theme of THEMES) {
-    test(`${theme.name}: All project GitHub links valid or private`, async ({ page }) => {
+    test(`${theme.name}: All project GitHub links valid or private`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -220,7 +252,9 @@ test.describe("DEEP QA: Link Integrity", () => {
       await switchThemeAndWait(page, theme);
 
       const projectsSection = page.locator("#projects");
-      const githubLinks = await projectsSection.locator("a[href*='github.com']").all();
+      const githubLinks = await projectsSection
+        .locator("a[href*='github.com']")
+        .all();
 
       expect(githubLinks.length).toBeGreaterThan(0);
 
@@ -240,7 +274,9 @@ test.describe("DEEP QA: Link Integrity", () => {
 
       // Look for social links
       const githubLink = page.locator('a[href*="github.com/yadava5"]');
-      const linkedinLink = page.locator('a[href*="linkedin.com/in/ayush-yadav"]');
+      const linkedinLink = page.locator(
+        'a[href*="linkedin.com/in/ayush-yadav"]'
+      );
       const emailLink = page.locator('a[href*="aesh_1055@icloud.com"]');
 
       // At least one social link should exist
@@ -266,7 +302,9 @@ test.describe("DEEP QA: Link Integrity", () => {
 
       // If no resume link, at least check the file exists
       if (resumeLinks.length === 0) {
-        const response = await page.request.get("http://localhost:3000/resume.pdf");
+        const response = await page.request.get(
+          "http://localhost:3000/resume.pdf"
+        );
         expect(response.status()).toBe(200);
       } else {
         for (const link of resumeLinks) {
@@ -276,7 +314,9 @@ test.describe("DEEP QA: Link Integrity", () => {
       }
     });
 
-    test(`${theme.name}: Nav anchor links navigate correctly`, async ({ page }) => {
+    test(`${theme.name}: Nav anchor links navigate correctly`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -285,12 +325,14 @@ test.describe("DEEP QA: Link Integrity", () => {
 
       for (const section of NAV_SECTIONS) {
         // Scroll to top
-        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+        await page.evaluate(() =>
+          window.scrollTo({ top: 0, behavior: "instant" })
+        );
         await page.waitForTimeout(300);
 
         // Try to find and click nav link for this section
         const navLink = page.locator(`a[href="#${section}"]`).first();
-        if (await navLink.count() > 0) {
+        if ((await navLink.count()) > 0) {
           await navLink.click();
           await page.waitForTimeout(500);
 
@@ -315,7 +357,9 @@ test.describe("DEEP QA: Visual Regression - Section Screenshots", () => {
       await switchThemeAndWait(page, theme);
 
       // Scroll to hero
-      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await page.evaluate(() =>
+        window.scrollTo({ top: 0, behavior: "instant" })
+      );
       await page.waitForTimeout(500);
 
       // Take hero screenshot (viewport height)
@@ -397,7 +441,9 @@ test.describe("DEEP QA: Mobile Responsiveness", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   for (const theme of THEMES) {
-    test(`${theme.name}: Theme switcher accessible on mobile`, async ({ page }) => {
+    test(`${theme.name}: Theme switcher accessible on mobile`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -407,7 +453,9 @@ test.describe("DEEP QA: Mobile Responsiveness", () => {
       await expect(switcher).toBeVisible({ timeout: 5000 });
     });
 
-    test(`${theme.name}: Text readable on mobile (no overflow)`, async ({ page }) => {
+    test(`${theme.name}: Text readable on mobile (no overflow)`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -436,7 +484,7 @@ test.describe("DEEP QA: Mobile Responsiveness", () => {
 
       // Verify we can navigate to sections
       const aboutLink = page.locator('a[href="#about"]').first();
-      if (await aboutLink.count() > 0) {
+      if ((await aboutLink.count()) > 0) {
         await aboutLink.click();
         await page.waitForTimeout(500);
         const about = page.locator("#about");
@@ -450,7 +498,9 @@ test.describe("DEEP QA: Animation & Opacity Sanity", () => {
   test.setTimeout(120000);
 
   for (const theme of THEMES) {
-    test(`${theme.name}: All visible sections have opacity > 0`, async ({ page }) => {
+    test(`${theme.name}: All visible sections have opacity > 0`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -460,7 +510,7 @@ test.describe("DEEP QA: Animation & Opacity Sanity", () => {
       // Check sections
       for (const section of NAV_SECTIONS) {
         const el = page.locator(`#${section}`);
-        if (await el.count() > 0) {
+        if ((await el.count()) > 0) {
           const opacity = await el.evaluate((el) => {
             const computed = window.getComputedStyle(el);
             return parseFloat(computed.opacity);
@@ -471,13 +521,17 @@ test.describe("DEEP QA: Animation & Opacity Sanity", () => {
       }
     });
 
-    test(`${theme.name}: Sections animate in after scroll`, async ({ page }) => {
+    test(`${theme.name}: Sections animate in after scroll`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
 
       // Don't switch theme yet, scroll through to trigger animations
-      const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+      const totalHeight = await page.evaluate(
+        () => document.documentElement.scrollHeight
+      );
       const viewportHeight = await page.evaluate(() => window.innerHeight);
       const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
 
@@ -534,7 +588,9 @@ test.describe("DEEP QA: Accessibility Deep Check", () => {
       expect(focusedElement?.visible).toBe(true);
     });
 
-    test(`${theme.name}: Semantic HTML hierarchy (h1 > h2 > h3)`, async ({ page }) => {
+    test(`${theme.name}: Semantic HTML hierarchy (h1 > h2 > h3)`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -542,7 +598,9 @@ test.describe("DEEP QA: Accessibility Deep Check", () => {
       await switchThemeAndWait(page, theme);
 
       const hierarchy = await page.evaluate(() => {
-        const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+        const headings = Array.from(
+          document.querySelectorAll("h1, h2, h3, h4, h5, h6")
+        );
         const levels = headings.map((h) => parseInt(h.tagName[1]));
         return levels;
       });
@@ -592,8 +650,10 @@ test.describe("DEEP QA: Performance Baselines", () => {
       expect(loadTime).toBeLessThan(5000);
     });
 
-    test(`${theme.name}: No massive layout shifts on load`, async ({ page }) => {
-      let cumulativeShift = 0;
+    test(`${theme.name}: No massive layout shifts on load`, async ({
+      page,
+    }) => {
+      const cumulativeShift = 0;
 
       page.on("framenavigated", async () => {
         // Track layout shift metrics if available
@@ -677,7 +737,10 @@ test.describe("DEEP QA: Visual Consistency Checks", () => {
   });
 
   test("Company logos load successfully", async ({ page }) => {
-    const logos = ["/images/companies/miami.png", "/images/companies/aramark.png"];
+    const logos = [
+      "/images/companies/miami.png",
+      "/images/companies/aramark.png",
+    ];
 
     for (const logo of logos) {
       const response = await page.request.get(`http://localhost:3000${logo}`);
@@ -721,11 +784,16 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
 
-    const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+    const totalHeight = await page.evaluate(
+      () => document.documentElement.scrollHeight
+    );
     const viewportHeight = await page.evaluate(() => window.innerHeight);
 
     for (let y = 0; y < totalHeight; y += viewportHeight * 0.5) {
-      await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), y);
+      await page.evaluate(
+        (y) => window.scrollTo({ top: y, behavior: "instant" }),
+        y
+      );
       await page.waitForTimeout(200);
 
       // Check if anything visible has zero opacity
@@ -755,12 +823,17 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
     await page.waitForTimeout(1500);
 
     const sectionIds = await page.evaluate(() => {
-      return ["about", "experience", "projects", "skills", "testimonials", "contact"].map(
-        (id) => ({
-          id,
-          exists: document.getElementById(id) !== null,
-        })
-      );
+      return [
+        "about",
+        "experience",
+        "projects",
+        "skills",
+        "testimonials",
+        "contact",
+      ].map((id) => ({
+        id,
+        exists: document.getElementById(id) !== null,
+      }));
     });
 
     for (const section of sectionIds) {

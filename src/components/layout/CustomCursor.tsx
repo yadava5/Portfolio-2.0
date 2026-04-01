@@ -99,7 +99,10 @@ export default function CustomCursor() {
       ease: "power3.out",
     });
     /* quickTo for hue — kept alive by GSAP context */
-    gsap.quickTo(glow, "--cursor-color-hue", { duration: 0.3, ease: "power2.out" });
+    gsap.quickTo(glow, "--cursor-color-hue", {
+      duration: 0.3,
+      ease: "power2.out",
+    });
 
     /** Move both cursors toward the pointer position */
     function onPointerMove(e: PointerEvent) {
@@ -198,9 +201,10 @@ export default function CustomCursor() {
       {/* Glow ring — larger, trails behind */}
       <div
         ref={glowRef}
-        className="absolute top-0 left-0 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 mix-blend-color-dodge pointer-events-none"
+        className="pointer-events-none absolute top-0 left-0 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 mix-blend-color-dodge"
         style={{
-          background: "radial-gradient(circle, var(--accent-primary) 0%, var(--accent-secondary) 100%)",
+          background:
+            "radial-gradient(circle, var(--accent-primary) 0%, var(--accent-secondary) 100%)",
           filter: "blur(6px)",
           boxShadow: "0 0 20px var(--accent-primary)",
         }}

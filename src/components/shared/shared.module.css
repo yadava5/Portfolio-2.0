@@ -139,9 +139,11 @@
 
 /* Neon cyber typewriter effect */
 .typewriter {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--font-jetbrains-mono, "JetBrains Mono", monospace);
   color: var(--neon-green);
-  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  text-shadow:
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
   letter-spacing: 0.05em;
   border-right: 2px solid var(--neon-green);
   overflow: hidden;
@@ -175,19 +177,25 @@
 /* Neon cyber text styles */
 .neonTextCyan {
   color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  text-shadow:
+    0 0 10px var(--neon-cyan),
+    0 0 20px var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono, "JetBrains Mono", monospace);
 }
 
 .neonTextGreen {
   color: var(--neon-green);
-  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  text-shadow:
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
+  font-family: var(--font-jetbrains-mono, "JetBrains Mono", monospace);
 }
 
 .neonBorder {
   border: 1px solid var(--neon-green);
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
+  box-shadow:
+    0 0 10px rgba(0, 255, 136, 0.3),
+    inset 0 0 10px rgba(0, 255, 136, 0.1);
 }
 
 /* Paper ink cursor blink */
@@ -269,7 +277,7 @@
 }
 
 .hudBox::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -8px;
   left: -8px;
@@ -281,7 +289,7 @@
 }
 
 .hudBox::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   right: -8px;
@@ -318,7 +326,11 @@
 .vignetteOverlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
   pointer-events: none;
 }
 

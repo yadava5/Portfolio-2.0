@@ -29,39 +29,43 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
     return level.charAt(0).toUpperCase() + level.slice(1);
   };
 
-  const hoverClass = prefersReducedMotion ? "" : "hover:translate-x-2 hover:scale-[1.02]";
+  const hoverClass = prefersReducedMotion
+    ? ""
+    : "hover:translate-x-2 hover:scale-[1.02]";
 
   return (
     <section
       id="skills"
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-background"
+      className="bg-background relative px-4 py-24 md:px-8 md:py-32"
       data-theme={themeId}
       style={{
         backgroundColor:
           themeId === "paper-ink"
             ? "#f5f1de"
             : themeId === "editorial"
-            ? "#fefefe"
-            : undefined,
+              ? "#fefefe"
+              : undefined,
       }}
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
         {/* Section header */}
         <div className="mb-16 flex flex-col items-center">
           <div
-            className="h-px w-12 mb-6"
+            className="mb-6 h-px w-12"
             style={{
               background:
                 themeId === "dark-luxe" || themeId === "noir-cinema"
                   ? "linear-gradient(to right, transparent, var(--accent-primary), transparent)"
                   : themeId === "neon-cyber"
-                  ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
-                  : "solid black",
+                    ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
+                    : "solid black",
             }}
           />
           <h2
-            className={`text-5xl md:text-6xl font-light text-foreground text-center ${
-              themeId === "paper-ink" || themeId === "editorial" ? "text-black" : ""
+            className={`text-foreground text-center text-5xl font-light md:text-6xl ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-black"
+                : ""
             }`}
             style={{ fontFamily: "var(--font-display)" }}
           >
@@ -76,7 +80,7 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
               {/* Category header */}
               <div className="mb-8">
                 <h3
-                  className="text-2xl font-light text-accent-primary mb-2 uppercase tracking-wide"
+                  className="text-accent-primary mb-2 text-2xl font-light tracking-wide uppercase"
                   style={{
                     fontFamily: "var(--font-display)",
                     fontVariant: "small-caps",
@@ -91,11 +95,13 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
                       "linear-gradient(to right, var(--accent-primary), transparent)",
                   }}
                 />
-                <p className="text-foreground-muted text-sm mt-3">{category.description}</p>
+                <p className="text-foreground-muted mt-3 text-sm">
+                  {category.description}
+                </p>
               </div>
 
               {/* Skills grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {category.skills.map((skill) => (
                   <div
                     key={skill.name}
@@ -103,14 +109,16 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
                   >
                     {/* Skill name and level */}
                     <div className="flex items-center justify-between">
-                      <span className="text-foreground font-medium">{skill.name}</span>
-                      <span className="text-xs text-accent-secondary uppercase tracking-widest">
+                      <span className="text-foreground font-medium">
+                        {skill.name}
+                      </span>
+                      <span className="text-accent-secondary text-xs tracking-widest uppercase">
                         {getProficiencyLabel(skill.level)}
                       </span>
                     </div>
 
                     {/* Proficiency bar */}
-                    <div className="h-px bg-accent-secondary/20 relative">
+                    <div className="bg-accent-secondary/20 relative h-px">
                       <div
                         className={`h-full ${getProficiencyColor(skill.level)}`}
                         style={{
@@ -124,12 +132,16 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
                     </div>
 
                     {/* Additional info */}
-                    <div className="flex items-center gap-2 text-xs text-foreground-muted">
+                    <div className="text-foreground-muted flex items-center gap-2 text-xs">
                       {skill.yearsOfExperience && (
                         <span>{skill.yearsOfExperience} years</span>
                       )}
-                      {skill.yearsOfExperience && skill.endorsements && <span>•</span>}
-                      {skill.endorsements && <span>{skill.endorsements} endorsements</span>}
+                      {skill.yearsOfExperience && skill.endorsements && (
+                        <span>•</span>
+                      )}
+                      {skill.endorsements && (
+                        <span>{skill.endorsements} endorsements</span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -140,34 +152,37 @@ export function Skills({ themeId = "dark-luxe" }: SkillsProps) {
 
         {/* Summary stats */}
         <div
-          className="mt-16 pt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
+          className="mt-16 grid grid-cols-1 gap-8 pt-12 text-center md:grid-cols-3"
           style={{ borderTop: "1px solid var(--accent-secondary)" }}
         >
           <div className={`transition-all duration-300 ${hoverClass}`}>
-            <div className="text-4xl text-accent-primary font-light mb-2">
+            <div className="text-accent-primary mb-2 text-4xl font-light">
               {skillCategories.reduce((sum, cat) => sum + cat.skills.length, 0)}
             </div>
-            <p className="text-foreground-muted text-sm uppercase tracking-widest">
+            <p className="text-foreground-muted text-sm tracking-widest uppercase">
               Total Skills
             </p>
           </div>
 
           <div className={`transition-all duration-300 ${hoverClass}`}>
-            <div className="text-4xl text-accent-primary font-light mb-2">
+            <div className="text-accent-primary mb-2 text-4xl font-light">
               {skillCategories.length}
             </div>
-            <p className="text-foreground-muted text-sm uppercase tracking-widest">
+            <p className="text-foreground-muted text-sm tracking-widest uppercase">
               Categories
             </p>
           </div>
 
           <div className={`transition-all duration-300 ${hoverClass}`}>
-            <div className="text-4xl text-accent-primary font-light mb-2">
-              {skillCategories
-                .flatMap((cat) => cat.skills)
-                .filter((s) => s.level === "expert" || s.level === "advanced").length}
+            <div className="text-accent-primary mb-2 text-4xl font-light">
+              {
+                skillCategories
+                  .flatMap((cat) => cat.skills)
+                  .filter((s) => s.level === "expert" || s.level === "advanced")
+                  .length
+              }
             </div>
-            <p className="text-foreground-muted text-sm uppercase tracking-widest">
+            <p className="text-foreground-muted text-sm tracking-widest uppercase">
               Expert Level
             </p>
           </div>

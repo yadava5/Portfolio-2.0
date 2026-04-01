@@ -90,7 +90,10 @@ export function ZoomTransitionWrapper({
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.vars.trigger === section || trigger.vars.trigger === prevSection) {
+        if (
+          trigger.vars.trigger === section ||
+          trigger.vars.trigger === prevSection
+        ) {
           trigger.kill();
         }
       });

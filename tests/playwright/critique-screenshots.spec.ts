@@ -23,11 +23,16 @@ const SECTION_NAMES = [
 
 async function switchTheme(page: Page, theme: { name: string; label: string }) {
   // Click theme switcher
-  const themeButtons = await page.locator("button").filter({ hasText: /Paper|Gallery|Dark|Editorial|Noir|Neon/i }).all();
+  const themeButtons = await page
+    .locator("button")
+    .filter({ hasText: /Paper|Gallery|Dark|Editorial|Noir|Neon/i })
+    .all();
 
   if (themeButtons.length === 0) {
     console.log("Theme buttons not found, looking for theme switcher...");
-    const switcher = await page.locator("button[aria-label*='theme'], button[aria-label*='Theme']").first();
+    const switcher = await page
+      .locator("button[aria-label*='theme'], button[aria-label*='Theme']")
+      .first();
     if (await switcher.isVisible()) {
       await switcher.click();
       await page.waitForTimeout(400);
@@ -35,7 +40,10 @@ async function switchTheme(page: Page, theme: { name: string; label: string }) {
   }
 
   // Find and click the specific theme button
-  const themeButton = page.locator("button").filter({ hasText: theme.label }).first();
+  const themeButton = page
+    .locator("button")
+    .filter({ hasText: theme.label })
+    .first();
   await themeButton.click();
   await page.waitForTimeout(1200);
 }
@@ -74,7 +82,7 @@ for (const theme of THEMES) {
     for (const section of SECTION_NAMES) {
       try {
         const element = page.locator(section.selector);
-        if (await element.count() > 0) {
+        if ((await element.count()) > 0) {
           await scrollToElement(page, section.selector);
           const screenshotPath = path.join(
             screenshotsDir,
@@ -92,7 +100,10 @@ for (const theme of THEMES) {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await switchTheme(page, theme);
     await page.waitForTimeout(800);
-    const fullPath = path.join(screenshotsDir, `${theme.name}-full-desktop.png`);
+    const fullPath = path.join(
+      screenshotsDir,
+      `${theme.name}-full-desktop.png`
+    );
     await page.screenshot({ path: fullPath, fullPage: true });
     console.log(`Captured: ${fullPath}`);
   });
@@ -114,11 +125,11 @@ for (const theme of THEMES) {
     // Screenshot hero and projects sections
     const mobileScreenSections = ["hero", "projects"];
     for (const sectionName of mobileScreenSections) {
-      const section = SECTION_NAMES.find(s => s.name === sectionName);
+      const section = SECTION_NAMES.find((s) => s.name === sectionName);
       if (section) {
         try {
           const element = page.locator(section.selector);
-          if (await element.count() > 0) {
+          if ((await element.count()) > 0) {
             await scrollToElement(page, section.selector);
             const screenshotPath = path.join(
               screenshotsDir,

@@ -68,11 +68,7 @@ export function ScrollEffectWrapper({
 
   // Editorial: All sections snap to full-page
   if (theme === "editorial") {
-    return (
-      <FullPageSnap className={className}>
-        {children}
-      </FullPageSnap>
-    );
+    return <FullPageSnap className={className}>{children}</FullPageSnap>;
   }
 
   // Noir Cinema: All sections zoom-in with parallax

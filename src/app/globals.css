@@ -71,18 +71,14 @@
   --glass-shadow: rgba(0, 0, 0, 0.5);
 
   /* Holographic gradient */
-  --holo-gradient: linear-gradient(
-    135deg,
-    #e8c547,
-    #f5e6c8,
-    #d4a745,
-    #e8c547
-  );
+  --holo-gradient: linear-gradient(135deg, #e8c547, #f5e6c8, #d4a745, #e8c547);
 
   /* Font families (loaded via CSS @import) */
   --font-display: "Playfair Display", "Source Serif 4", serif;
-  --font-body: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-geist-sans: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body:
+    "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-geist-sans:
+    "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-geist-mono: "JetBrains Mono", "Courier New", monospace;
   --font-playfair-display: "Playfair Display", serif;
   --font-source-serif-4: "Source Serif 4", serif;
@@ -135,7 +131,12 @@
   --heading-letter-spacing: 0.1em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   letter-spacing: var(--heading-letter-spacing, 0);
 }
 
@@ -327,7 +328,9 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: 'liga' 1, 'kern' 1;
+  font-feature-settings:
+    "liga" 1,
+    "kern" 1;
   color-scheme: dark;
   width: 100%;
   overflow-x: hidden;
@@ -357,7 +360,7 @@ section {
 
 /* Subtle alternating backgrounds for visual section definition */
 section:nth-child(even) {
-  background-color: rgba(var(--accent-primary-rgb, 232,197,71), 0.02);
+  background-color: rgba(var(--accent-primary-rgb, 232, 197, 71), 0.02);
 }
 
 section[id="hero"] {
@@ -463,16 +466,23 @@ textarea:focus-visible,
    Premium Hover Glow for Interactive Elements
    ============================================ */
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--glow-color, rgba(232, 197, 71, 0.3));
   }
   50% {
-    box-shadow: 0 0 40px var(--glow-color, rgba(232, 197, 71, 0.5)), 0 0 60px var(--glow-color, rgba(232, 197, 71, 0.2));
+    box-shadow:
+      0 0 40px var(--glow-color, rgba(232, 197, 71, 0.5)),
+      0 0 60px var(--glow-color, rgba(232, 197, 71, 0.2));
   }
 }
 
-a, button, [role="button"] {
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+a,
+button,
+[role="button"] {
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* Interactive element hover glow */
@@ -609,7 +619,7 @@ button:not(.no-glow):hover {
 }
 
 [data-theme="paper-ink"] section:not([id="hero"])::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -100%;
   top: 0;
@@ -697,7 +707,7 @@ section + section {
 }
 
 section + section::before {
-  content: '';
+  content: "";
   display: block;
   width: 80%;
   max-width: 600px;
@@ -720,7 +730,8 @@ section + section::before {
 
 /* Subtle opacity pulse animation on scroll */
 @keyframes sectionPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
   }
   50% {
@@ -730,7 +741,7 @@ section + section::before {
 
 /* Gradient fade effect between section backgrounds */
 section:nth-child(even)::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -40px;
   left: 0;
@@ -738,7 +749,7 @@ section:nth-child(even)::after {
   height: 40px;
   background: linear-gradient(
     to bottom,
-    rgba(var(--accent-primary-rgb, 232,197,71), 0.05),
+    rgba(var(--accent-primary-rgb, 232, 197, 71), 0.05),
     transparent
   );
   pointer-events: none;
@@ -853,7 +864,12 @@ section {
   }
 
   /* Headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     color: #000;
     page-break-after: avoid;
     page-break-inside: avoid;
@@ -874,7 +890,8 @@ section {
   }
 
   /* Lists */
-  ul, ol {
+  ul,
+  ol {
     page-break-inside: avoid;
     margin-left: 1.5rem;
   }
@@ -901,7 +918,8 @@ section {
     page-break-inside: avoid;
   }
 
-  td, th {
+  td,
+  th {
     border: 1px solid #999;
     padding: 0.5rem;
     text-align: left;
@@ -969,7 +987,12 @@ section {
   }
 
   /* Prevent text overflow */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     overflow-wrap: break-word;
     word-break: break-word;
     hyphens: auto;
@@ -986,7 +1009,8 @@ section {
    === Dark Luxe Animation Keyframes ===
    ============================================ */
 @keyframes luxeShimmer {
-  0%, 100% {
+  0%,
+  100% {
     filter: drop-shadow(0 0 30px rgba(232, 197, 71, 0.4));
   }
   50% {
@@ -995,7 +1019,8 @@ section {
 }
 
 @keyframes goldDividerPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     box-shadow: 0 0 20px rgba(232, 197, 71, 0.2);
   }
@@ -1006,7 +1031,8 @@ section {
 }
 
 @keyframes skillBarGlow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.8;
     filter: drop-shadow(0 0 5px rgba(232, 197, 71, 0.3));
   }
@@ -1054,7 +1080,9 @@ section {
 
   #projects [class*="featured"]:hover {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 40px rgba(232, 197, 71, 0.3), inset 0 0 40px rgba(232, 197, 71, 0.05);
+    box-shadow:
+      0 0 40px rgba(232, 197, 71, 0.3),
+      inset 0 0 40px rgba(232, 197, 71, 0.05);
     transform: translateY(-8px);
   }
 
@@ -1137,12 +1165,20 @@ section {
   #contact button {
     border-color: var(--accent-primary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(135deg, rgba(232, 197, 71, 0), rgba(232, 197, 71, 0));
+    background: linear-gradient(
+      135deg,
+      rgba(232, 197, 71, 0),
+      rgba(232, 197, 71, 0)
+    );
   }
 
   #contact button:hover {
     border-color: var(--accent-primary);
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    background: linear-gradient(
+      135deg,
+      var(--accent-primary),
+      var(--accent-secondary)
+    );
     color: var(--background);
     box-shadow: 0 0 30px rgba(232, 197, 71, 0.4);
   }
@@ -1200,11 +1236,11 @@ section {
 
   #hero h1 br {
     display: block;
-    content: '';
+    content: "";
   }
 
   #hero::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;

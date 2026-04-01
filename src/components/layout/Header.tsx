@@ -258,8 +258,10 @@ export default function Header() {
               {/* Dialog content */}
               <Dialog.Content
                 className={cn(
-                  "fixed left-0 right-0 top-16 z-50 flex max-h-[calc(100vh-64px)] flex-col overflow-hidden border-t border-(--glass-border) bg-(--glass-background) backdrop-blur-xl transition-all duration-300 md:hidden",
-                  mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+                  "fixed top-16 right-0 left-0 z-50 flex max-h-[calc(100vh-64px)] flex-col overflow-hidden border-t border-(--glass-border) bg-(--glass-background) backdrop-blur-xl transition-all duration-300 md:hidden",
+                  mobileOpen
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-full opacity-0"
                 )}
                 aria-label="Mobile navigation menu"
               >
@@ -288,7 +290,7 @@ export default function Header() {
                 <Dialog.Close asChild>
                   <button
                     className={cn(
-                      "absolute right-4 top-4 rounded-lg p-2 text-foreground-muted transition-colors duration-(--transition-fast)",
+                      "text-foreground-muted absolute top-4 right-4 rounded-lg p-2 transition-colors duration-(--transition-fast)",
                       "hover:text-foreground hover:bg-(--glass-background)",
                       "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
                     )}

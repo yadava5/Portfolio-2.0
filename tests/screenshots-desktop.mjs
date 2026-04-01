@@ -1,31 +1,46 @@
-import { chromium } from 'playwright';
-import fs from 'fs';
-import path from 'path';
+import { chromium } from "playwright";
+import fs from "fs";
+import path from "path";
 
-const DIR = '/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/critique-desktop';
+const DIR =
+  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/critique-desktop";
 fs.mkdirSync(DIR, { recursive: true });
 
-const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cyber'];
+const themes = [
+  "dark-luxe",
+  "paper-ink",
+  "editorial",
+  "noir-cinema",
+  "neon-cyber",
+];
 
 (async () => {
   const browser = await chromium.launch();
 
   for (const theme of themes) {
     console.log(`\n=== ${theme} (Desktop 1440x900) ===`);
-    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 900 },
+    });
 
-    await page.goto('http://localhost:3460', { waitUntil: 'networkidle', timeout: 20000 });
+    await page.goto("http://localhost:3460", {
+      waitUntil: "networkidle",
+      timeout: 20000,
+    });
     await page.waitForTimeout(3000);
 
     // Switch theme
     await page.evaluate((t) => {
-      document.documentElement.setAttribute('data-theme', t);
-      if (typeof localStorage !== 'undefined') localStorage.setItem('theme', t);
+      document.documentElement.setAttribute("data-theme", t);
+      if (typeof localStorage !== "undefined") localStorage.setItem("theme", t);
     }, theme);
     await page.waitForTimeout(2000);
 
     // 1. Full page screenshot
-    await page.screenshot({ path: `${DIR}/${theme}-fullpage.png`, fullPage: true });
+    await page.screenshot({
+      path: `${DIR}/${theme}-fullpage.png`,
+      fullPage: true,
+    });
     console.log(`  Saved fullpage`);
 
     // 2. Hero section (viewport)
@@ -35,12 +50,22 @@ const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cybe
     console.log(`  Saved hero`);
 
     // 3. Scroll to each section and screenshot
-    const sectionIds = ['about', 'experience', 'projects', 'skills', 'testimonials', 'contact'];
+    const sectionIds = [
+      "about",
+      "experience",
+      "projects",
+      "skills",
+      "testimonials",
+      "contact",
+    ];
     for (const sid of sectionIds) {
       try {
         const exists = await page.evaluate((id) => {
           const el = document.getElementById(id);
-          if (el) { el.scrollIntoView({ behavior: 'instant' }); return true; }
+          if (el) {
+            el.scrollIntoView({ behavior: "instant" });
+            return true;
+          }
           return false;
         }, sid);
 
@@ -61,41 +86,48 @@ const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cybe
       const results = {};
 
       // Horizontal overflow
-      results.horizontalOverflow = document.documentElement.scrollWidth - window.innerWidth;
+      results.horizontalOverflow =
+        document.documentElement.scrollWidth - window.innerWidth;
 
       // Section heights
       results.sections = [];
-      document.querySelectorAll('section').forEach(s => {
+      document.querySelectorAll("section").forEach((s) => {
         results.sections.push({
-          id: s.id || '(unnamed)',
+          id: s.id || "(unnamed)",
           height: s.getBoundingClientRect().height,
-          hasText: (s.innerText?.trim().length || 0) > 10
+          hasText: (s.innerText?.trim().length || 0) > 10,
         });
       });
 
       // h1 overflow
-      const h1 = document.querySelector('h1');
+      const h1 = document.querySelector("h1");
       if (h1) {
         const r = h1.getBoundingClientRect();
-        results.h1 = { right: r.right, width: r.width, overflow: r.right > window.innerWidth };
+        results.h1 = {
+          right: r.right,
+          width: r.width,
+          overflow: r.right > window.innerWidth,
+        };
       }
 
       // Images
       results.brokenImages = [];
-      document.querySelectorAll('img').forEach(img => {
+      document.querySelectorAll("img").forEach((img) => {
         if (img.naturalWidth === 0 && img.src) {
-          results.brokenImages.push(img.src.split('/').pop());
+          results.brokenImages.push(img.src.split("/").pop());
         }
       });
 
       // Check overlapping elements
       results.overlaps = [];
-      const allSections = document.querySelectorAll('section');
+      const allSections = document.querySelectorAll("section");
       for (let i = 0; i < allSections.length - 1; i++) {
         const a = allSections[i].getBoundingClientRect();
-        const b = allSections[i+1].getBoundingClientRect();
+        const b = allSections[i + 1].getBoundingClientRect();
         if (a.bottom > b.top + 5) {
-          results.overlaps.push(`${allSections[i].id} overlaps ${allSections[i+1].id} by ${a.bottom - b.top}px`);
+          results.overlaps.push(
+            `${allSections[i].id} overlaps ${allSections[i + 1].id} by ${a.bottom - b.top}px`
+          );
         }
       }
 
@@ -105,12 +137,15 @@ const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cybe
     console.log(`  Diagnostics:`, JSON.stringify(diagnostics, null, 2));
 
     // Save diagnostics
-    fs.writeFileSync(`${DIR}/${theme}-diagnostics.json`, JSON.stringify(diagnostics, null, 2));
+    fs.writeFileSync(
+      `${DIR}/${theme}-diagnostics.json`,
+      JSON.stringify(diagnostics, null, 2)
+    );
 
     await page.close();
   }
 
   await browser.close();
-  console.log('\nAll desktop screenshots complete!');
+  console.log("\nAll desktop screenshots complete!");
   process.exit(0);
 })();

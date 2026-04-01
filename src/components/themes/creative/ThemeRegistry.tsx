@@ -33,8 +33,9 @@ export default function ThemedSections() {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
 
   const activeTheme = (mounted ? theme : "dark-luxe") as ThemeName;
 
@@ -61,7 +62,7 @@ export default function ThemedSections() {
                 <Component themeId={activeTheme} />
               </ScrollEffectWrapper>
               {index < SECTION_NAMES.length - 1 && (
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--accent-primary)] to-transparent opacity-20" />
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--accent-primary)] to-transparent opacity-20" />
               )}
             </div>
           );
@@ -77,14 +78,11 @@ export default function ThemedSections() {
         const Component = sections[name];
         return (
           <div key={`${activeTheme}-${name}`}>
-            <ScrollEffectWrapper
-              theme={activeTheme}
-              section={name}
-            >
+            <ScrollEffectWrapper theme={activeTheme} section={name}>
               <Component themeId={activeTheme} />
             </ScrollEffectWrapper>
             {index < SECTION_NAMES.length - 1 && (
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--accent-primary)] to-transparent opacity-20" />
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--accent-primary)] to-transparent opacity-20" />
             )}
           </div>
         );

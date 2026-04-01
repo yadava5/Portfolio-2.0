@@ -77,7 +77,6 @@ export function HorizontalPageScroll({
           },
         },
       });
-
     }
 
     return () => {

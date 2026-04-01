@@ -47,7 +47,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     }
 
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(c => c - 1), 600);
+      const timer = setTimeout(() => setCountdown((c) => c - 1), 600);
       return () => clearTimeout(timer);
     } else if (!showContent) {
       const timer = setTimeout(() => setShowContent(true), 300);
@@ -80,7 +80,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     if (themeId !== "dark-luxe" || prefersReducedMotion) return null;
 
     return (
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {Array.from({ length: 15 }).map((_, i) => (
           <div
             key={i}
@@ -105,7 +105,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         <>
           {typewriterText && (
             <p
-              className={`${styles.typewriter} text-sm sm:text-base mb-8`}
+              className={`${styles.typewriter} mb-8 text-sm sm:text-base`}
               style={{ minHeight: "1.5em" }}
             >
               {typewriterText}
@@ -113,11 +113,12 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
           )}
           {showName && (
             <h1
-              className="font-bold leading-none tracking-tighter mb-4 sm:mb-6"
+              className="mb-4 leading-none font-bold tracking-tighter sm:mb-6"
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 5rem)",
                 fontFamily: "var(--font-display)",
-                background: "linear-gradient(90deg, #00ff88 0%, #00d4ff 50%, #ff006e 100%)",
+                background:
+                  "linear-gradient(90deg, #00ff88 0%, #00d4ff 50%, #ff006e 100%)",
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -135,17 +136,21 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
       return (
         <div className="mb-6">
           <h1
-            className="font-display font-bold leading-none tracking-tighter overflow-hidden"
+            className="font-display overflow-hidden leading-none font-bold tracking-tighter"
             style={{
               fontSize: "clamp(2.5rem, 8vw, 5rem)",
               color: "var(--foreground)",
               fontFamily: "var(--font-display)",
               transform: `scale(${scrollScale})`,
-              transition: prefersReducedMotion ? "none" : "transform 0.1s ease-out",
+              transition: prefersReducedMotion
+                ? "none"
+                : "transform 0.1s ease-out",
               transformOrigin: "left top",
             }}
           >
-            <span className={styles.dropCap}>{personalInfo.firstName.charAt(0)}</span>
+            <span className={styles.dropCap}>
+              {personalInfo.firstName.charAt(0)}
+            </span>
             {personalInfo.firstName.slice(1)}
           </h1>
           <div
@@ -155,7 +160,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             }}
           />
           <p
-            className="font-display font-bold leading-none tracking-tight mt-4"
+            className="font-display mt-4 leading-none font-bold tracking-tight"
             style={{
               fontSize: "clamp(1.75rem, 6vw, 3.5rem)",
               color: "var(--accent-primary)",
@@ -171,7 +176,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     if (themeId === "paper-ink") {
       return (
         <h1
-          className="text-5xl md:text-6xl tracking-wider leading-tight mb-4"
+          className="mb-4 text-5xl leading-tight tracking-wider md:text-6xl"
           style={{ fontFamily: "var(--font-display)" }}
         >
           THE AYUSH
@@ -187,7 +192,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     if (isNoirCinema) {
       return (
         <h1
-          className="font-bold tracking-tighter mb-6 text-foreground"
+          className="text-foreground mb-6 font-bold tracking-tighter"
           style={{
             fontFamily: "var(--font-display)",
             letterSpacing: "-0.02em",
@@ -210,7 +215,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
 
     return (
       <h1
-        className="text-6xl md:text-8xl font-light tracking-tight mb-4"
+        className="mb-4 text-6xl font-light tracking-tight md:text-8xl"
         style={{
           fontFamily: "var(--font-display)",
         }}
@@ -223,7 +228,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
   return (
     <section
       ref={containerRef}
-      className={`relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background ${
+      className={`bg-background relative flex h-screen w-full flex-col items-center justify-center overflow-hidden ${
         themeId === "paper-ink" ? "pt-32" : ""
       } ${isNeonCyber ? styles.cyberScanlines : ""}`}
       data-theme={themeId}
@@ -232,8 +237,8 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
           themeId === "paper-ink"
             ? "#f5f1de"
             : themeId === "editorial"
-            ? "#fefefe"
-            : undefined,
+              ? "#fefefe"
+              : undefined,
         contain: "layout style paint",
         contentVisibility: "auto",
         containIntrinsicSize: "100vh",
@@ -256,11 +261,11 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
       {/* Noir Cinema letterbox */}
       {isNoirCinema && (
         <>
-          <div className="fixed top-0 left-0 right-0 h-12 md:h-20 bg-black z-40 flex items-center justify-center">
-            <p className="text-xs text-gray-500 tracking-widest">FADE IN</p>
+          <div className="fixed top-0 right-0 left-0 z-40 flex h-12 items-center justify-center bg-black md:h-20">
+            <p className="text-xs tracking-widest text-gray-500">FADE IN</p>
           </div>
-          <div className="fixed bottom-0 left-0 right-0 h-12 md:h-20 bg-black z-40 flex items-center justify-center">
-            <p className="text-xs text-gray-500 tracking-widest">END SCENE</p>
+          <div className="fixed right-0 bottom-0 left-0 z-40 flex h-12 items-center justify-center bg-black md:h-20">
+            <p className="text-xs tracking-widest text-gray-500">END SCENE</p>
           </div>
         </>
       )}
@@ -270,7 +275,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
 
       {themeId === "paper-ink" && (
         <div
-          className="absolute inset-0 opacity-3 pointer-events-none"
+          className="pointer-events-none absolute inset-0 opacity-3"
           style={{
             backgroundImage: `repeating-linear-gradient(
               0deg,
@@ -286,21 +291,29 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
       {/* Content */}
       <div
         className={`relative z-10 flex flex-col ${
-          isCenter ? "items-center justify-center text-center" : "items-start justify-center text-left"
-        } px-4 md:px-8 max-w-4xl w-full`}
+          isCenter
+            ? "items-center justify-center text-center"
+            : "items-start justify-center text-left"
+        } w-full max-w-4xl px-4 md:px-8`}
         style={{
           opacity: showContent ? 1 : 0,
-          transition: prefersReducedMotion ? "none" : "opacity 0.5s ease-out 0.3s",
+          transition: prefersReducedMotion
+            ? "none"
+            : "opacity 0.5s ease-out 0.3s",
         }}
       >
         {themeId === "paper-ink" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
-            <div className="md:col-span-2">
-              {renderHeroName()}
-            </div>
+          <div className="mb-8 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="md:col-span-2">{renderHeroName()}</div>
             <div className="border-l border-black pl-4">
-              <p className="text-xs uppercase tracking-widest font-bold mb-2">Vol. 1 | Issue 1</p>
-              <p className="text-xs md:text-sm mb-4">Oxford, Ohio<br />March 30, 2026</p>
+              <p className="mb-2 text-xs font-bold tracking-widest uppercase">
+                Vol. 1 | Issue 1
+              </p>
+              <p className="mb-4 text-xs md:text-sm">
+                Oxford, Ohio
+                <br />
+                March 30, 2026
+              </p>
               <p className="text-xs font-bold">Est. 2026</p>
             </div>
           </div>
@@ -311,9 +324,9 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         {/* Dividers and secondary content */}
         {themeId === "dark-luxe" && (
           <>
-            <div className="h-px w-24 bg-gradient-to-r from-transparent via-accent-primary to-transparent mb-8" />
+            <div className="via-accent-primary mb-8 h-px w-24 bg-gradient-to-r from-transparent to-transparent" />
             <h2
-              className="text-sm md:text-base tracking-widest uppercase mb-6 text-foreground-muted"
+              className="text-foreground-muted mb-6 text-sm tracking-widest uppercase md:text-base"
               style={{
                 fontVariant: "small-caps",
                 letterSpacing: "0.2em",
@@ -321,7 +334,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             >
               {personalInfo.title}
             </h2>
-            <div className="h-px w-16 bg-accent-secondary mb-8" />
+            <div className="bg-accent-secondary mb-8 h-px w-16" />
           </>
         )}
 
@@ -339,15 +352,16 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         {themeId === "neon-cyber" && (
           <>
             <p
-              className={`${styles.neonTextCyan} text-xs sm:text-sm tracking-widest mb-8`}
+              className={`${styles.neonTextCyan} mb-8 text-xs tracking-widest sm:text-sm`}
             >
               {/* SYSTEM.STATUS: ACTIVE */}
             </p>
             <div className="mb-12">
               <p
-                className="text-base sm:text-lg tracking-wide"
+                className="text-base tracking-wide sm:text-lg"
                 style={{
-                  fontFamily: "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
+                  fontFamily:
+                    "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
                   color: "var(--neon-green)",
                   textShadow: `
                     0 0 10px var(--neon-green),
@@ -359,9 +373,10 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
                 [{personalInfo.title}]
               </p>
               <p
-                className="text-xs sm:text-sm mt-2"
+                className="mt-2 text-xs sm:text-sm"
                 style={{
-                  fontFamily: "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
+                  fontFamily:
+                    "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
                   color: "var(--neon-cyan)",
                   opacity: 0.8,
                 }}
@@ -376,15 +391,15 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
           <>
             <div className="mb-12 md:mb-16">
               <p
-                className="text-xs md:text-sm tracking-widest uppercase text-accent-primary"
+                className="text-accent-primary text-xs tracking-widest uppercase md:text-sm"
                 style={{ letterSpacing: "0.3em" }}
               >
                 A PORTFOLIO PRODUCTION
               </p>
             </div>
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-accent-primary to-transparent mb-8 md:mb-12" />
+            <div className="via-accent-primary mb-8 h-px w-full bg-gradient-to-r from-transparent to-transparent md:mb-12" />
             <h2
-              className="text-base md:text-xl tracking-widest uppercase text-accent-primary mb-6"
+              className="text-accent-primary mb-6 text-base tracking-widest uppercase md:text-xl"
               style={{
                 fontFamily: "var(--font-body)",
                 letterSpacing: "0.15em",
@@ -393,7 +408,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
               {personalInfo.title}
             </h2>
             <p
-              className="text-sm md:text-lg text-foreground-muted max-w-2xl leading-relaxed mb-8"
+              className="text-foreground-muted mb-8 max-w-2xl text-sm leading-relaxed md:text-lg"
               style={{
                 fontFamily: "var(--font-body)",
                 letterSpacing: "0.05em",
@@ -401,15 +416,15 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             >
               {personalInfo.tagline}
             </p>
-            <div className="mt-12 md:mt-16 space-y-2">
+            <div className="mt-12 space-y-2 md:mt-16">
               <p
-                className="text-xs tracking-widest text-accent-primary"
+                className="text-accent-primary text-xs tracking-widest"
                 style={{ letterSpacing: "0.2em" }}
               >
                 DIRECTED BY FATE
               </p>
               <p
-                className="text-xs tracking-widest text-accent-primary"
+                className="text-accent-primary text-xs tracking-widest"
                 style={{ letterSpacing: "0.2em" }}
               >
                 STARRING YOU
@@ -419,17 +434,17 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         )}
 
         {(themeId === "paper-ink" || themeId === "editorial") && (
-          <p className="text-base md:text-lg text-gray-700 leading-relaxed max-w-2xl">
+          <p className="max-w-2xl text-base leading-relaxed text-gray-700 md:text-lg">
             {personalInfo.tagline}
           </p>
         )}
 
         {/* CTA Buttons */}
         {(themeId === "dark-luxe" || themeId === "noir-cinema") && (
-          <div className="flex flex-col sm:flex-row gap-6 mt-12">
+          <div className="mt-12 flex flex-col gap-6 sm:flex-row">
             <a
               href="#projects"
-              className={`px-8 py-3 border border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-background transition-all duration-300 text-sm tracking-widest uppercase ${
+              className={`border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-background border px-8 py-3 text-sm tracking-widest uppercase transition-all duration-300 ${
                 themeId === "noir-cinema" ? "border-2" : ""
               }`}
             >
@@ -439,9 +454,9 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
               href={personalInfo.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-8 py-3 border text-accent-secondary hover:bg-accent-secondary hover:text-background transition-all duration-300 text-sm tracking-widest uppercase ${
+              className={`text-accent-secondary hover:bg-accent-secondary hover:text-background border px-8 py-3 text-sm tracking-widest uppercase transition-all duration-300 ${
                 themeId === "noir-cinema"
-                  ? "border-2 border-foreground text-foreground hover:bg-foreground"
+                  ? "border-foreground text-foreground hover:bg-foreground border-2"
                   : "border-accent-secondary"
               }`}
             >
@@ -451,11 +466,13 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         )}
 
         {themeId === "paper-ink" && (
-          <div className="flex flex-col gap-4 mt-12">
-            <h3 className="text-sm uppercase tracking-widest font-bold">In This Edition</h3>
+          <div className="mt-12 flex flex-col gap-4">
+            <h3 className="text-sm font-bold tracking-widest uppercase">
+              In This Edition
+            </h3>
             <a
               href="#projects"
-              className="px-6 py-3 border-2 border-black hover:bg-black hover:text-[#f5f1de] transition-all duration-300 text-sm font-semibold tracking-wide w-fit"
+              className="w-fit border-2 border-black px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-black hover:text-[#f5f1de]"
             >
               Featured Work →
             </a>
@@ -463,7 +480,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
               href={personalInfo.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 border-2 border-black hover:bg-black hover:text-[#f5f1de] transition-all duration-300 text-sm font-semibold tracking-wide w-fit"
+              className="w-fit border-2 border-black px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-black hover:text-[#f5f1de]"
             >
               Full Resume →
             </a>
@@ -471,10 +488,10 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         )}
 
         {themeId === "editorial" && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-12">
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row">
             <a
               href="#projects"
-              className="px-6 py-3 border-2 border-black hover:bg-black hover:text-[#fefefe] transition-all duration-300 text-sm font-semibold tracking-wide"
+              className="border-2 border-black px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-black hover:text-[#fefefe]"
             >
               Featured Work
             </a>
@@ -482,7 +499,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
               href={personalInfo.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 border-2 border-black hover:bg-black hover:text-[#fefefe] transition-all duration-300 text-sm font-semibold tracking-wide"
+              className="border-2 border-black px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 hover:bg-black hover:text-[#fefefe]"
             >
               Full Resume
             </a>
@@ -491,9 +508,10 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
 
         {themeId === "neon-cyber" && (
           <p
-            className="text-xs sm:text-sm mt-8"
+            className="mt-8 text-xs sm:text-sm"
             style={{
-              fontFamily: "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
+              fontFamily:
+                "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
               color: "var(--neon-green)",
               opacity: 0.7,
             }}
@@ -508,7 +526,9 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         className="absolute bottom-12 z-10 flex flex-col items-center gap-3"
         style={{
           opacity: showContent ? 1 : 0,
-          transition: prefersReducedMotion ? "none" : "opacity 1s ease-out 1.2s",
+          transition: prefersReducedMotion
+            ? "none"
+            : "opacity 1s ease-out 1.2s",
         }}
       >
         <div
@@ -520,7 +540,11 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         >
           <ChevronDown
             size={24}
-            className={themeId === "paper-ink" || themeId === "editorial" ? "text-black" : "text-accent-primary"}
+            className={
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-black"
+                : "text-accent-primary"
+            }
             style={
               isNeonCyber
                 ? {
@@ -533,7 +557,9 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         </div>
         <p
           className={`text-xs tracking-widest uppercase ${
-            themeId === "paper-ink" || themeId === "editorial" ? "text-black" : "text-foreground-muted"
+            themeId === "paper-ink" || themeId === "editorial"
+              ? "text-black"
+              : "text-foreground-muted"
           }`}
         >
           {themeId === "paper-ink" ? "SCROLL" : "Scroll to explore"}

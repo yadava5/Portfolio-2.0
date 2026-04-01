@@ -83,10 +83,20 @@ export function usePrefersReducedMotion(): boolean {
       const legacyHandler = (e: MediaQueryListEvent) => {
         setPrefersReducedMotion(e.matches);
       };
-      (mediaQuery as MediaQueryList & { addListener: (listener: (e: MediaQueryListEvent) => void) => void }).addListener(legacyHandler);
+      (
+        mediaQuery as MediaQueryList & {
+          addListener: (listener: (e: MediaQueryListEvent) => void) => void;
+        }
+      ).addListener(legacyHandler);
 
       return () => {
-        (mediaQuery as MediaQueryList & { removeListener: (listener: (e: MediaQueryListEvent) => void) => void }).removeListener(legacyHandler);
+        (
+          mediaQuery as MediaQueryList & {
+            removeListener: (
+              listener: (e: MediaQueryListEvent) => void
+            ) => void;
+          }
+        ).removeListener(legacyHandler);
       };
     }
   }, []);

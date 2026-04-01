@@ -72,7 +72,9 @@ export function HorizontalScrollSection({
       });
 
       // Add subtle scale animation to content items as they enter viewport
-      const items = content.querySelectorAll("[role='article'], [role='button'], li, .project-card");
+      const items = content.querySelectorAll(
+        "[role='article'], [role='button'], li, .project-card"
+      );
       items.forEach((item, index) => {
         gsap.fromTo(
           item,

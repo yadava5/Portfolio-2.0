@@ -18,7 +18,9 @@ async function switchTheme(page: Page, theme: { name: string; label: string }) {
   await switcher.click({ force: true });
   await page.waitForTimeout(400);
 
-  const themeButton = page.locator("button[aria-pressed]").filter({ hasText: theme.label });
+  const themeButton = page
+    .locator("button[aria-pressed]")
+    .filter({ hasText: theme.label });
   await themeButton.first().click();
   await page.waitForTimeout(800);
 
@@ -30,12 +32,17 @@ async function switchTheme(page: Page, theme: { name: string; label: string }) {
  * animations, then scroll back to the top.
  */
 async function scrollThroughPage(page: Page) {
-  const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const totalHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight
+  );
   const viewportHeight = await page.evaluate(() => window.innerHeight);
   const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
 
   for (let i = 0; i <= steps; i++) {
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), i * viewportHeight * 0.6);
+    await page.evaluate(
+      (y) => window.scrollTo({ top: y, behavior: "instant" }),
+      i * viewportHeight * 0.6
+    );
     await page.waitForTimeout(300);
   }
 
@@ -57,7 +64,9 @@ test.describe("Theme Visual Tests", () => {
   });
 
   for (const theme of THEMES) {
-    test(`${theme.name} theme renders with visible content`, async ({ page }) => {
+    test(`${theme.name} theme renders with visible content`, async ({
+      page,
+    }) => {
       await switchTheme(page, theme);
 
       // Scroll through the page to trigger all viewport-based animations
@@ -73,7 +82,9 @@ test.describe("Theme Visual Tests", () => {
       });
     });
 
-    test(`${theme.name} theme has no critical console errors`, async ({ page }) => {
+    test(`${theme.name} theme has no critical console errors`, async ({
+      page,
+    }) => {
       const errors: string[] = [];
       page.on("console", (msg) => {
         if (msg.type() === "error") errors.push(msg.text());

@@ -18,9 +18,15 @@ test.use({
 async function switchTheme(page: Page, theme: { name: string; label: string }) {
   await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
   await page.waitForTimeout(200);
-  await page.locator("button[aria-label*='Select theme']").click({ force: true });
+  await page
+    .locator("button[aria-label*='Select theme']")
+    .click({ force: true });
   await page.waitForTimeout(300);
-  await page.locator("button[aria-pressed]").filter({ hasText: theme.label }).first().click();
+  await page
+    .locator("button[aria-pressed]")
+    .filter({ hasText: theme.label })
+    .first()
+    .click();
   await page.waitForTimeout(800);
 }
 
@@ -34,24 +40,35 @@ test.describe("Theme Walkthroughs", () => {
       await page.waitForTimeout(1500);
 
       await switchTheme(page, theme);
-      await page.locator("#about").waitFor({ state: "attached", timeout: 10000 });
+      await page
+        .locator("#about")
+        .waitFor({ state: "attached", timeout: 10000 });
 
       // Scroll to top
-      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await page.evaluate(() =>
+        window.scrollTo({ top: 0, behavior: "instant" })
+      );
       await page.waitForTimeout(500);
 
       // Quick scroll through the page
-      const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+      const totalHeight = await page.evaluate(
+        () => document.documentElement.scrollHeight
+      );
       const vh = await page.evaluate(() => window.innerHeight);
       const steps = Math.ceil(totalHeight / (vh * 0.7));
 
       for (let i = 0; i <= steps; i++) {
-        await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), i * vh * 0.7);
+        await page.evaluate(
+          (y) => window.scrollTo({ top: y, behavior: "instant" }),
+          i * vh * 0.7
+        );
         await page.waitForTimeout(400);
       }
 
       await page.waitForTimeout(500);
-      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await page.evaluate(() =>
+        window.scrollTo({ top: 0, behavior: "instant" })
+      );
       await page.waitForTimeout(500);
 
       // Full-page screenshot

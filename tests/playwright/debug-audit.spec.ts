@@ -21,15 +21,19 @@ test("Debug page structure", async ({ page }) => {
         ariaLabel: b.getAttribute("aria-label"),
         visible: b.offsetHeight > 0,
       })),
-      links: Array.from(document.querySelectorAll("a")).slice(0, 5).map((a) => ({
-        text: a.textContent?.substring(0, 30),
-        href: a.href,
-      })),
+      links: Array.from(document.querySelectorAll("a"))
+        .slice(0, 5)
+        .map((a) => ({
+          text: a.textContent?.substring(0, 30),
+          href: a.href,
+        })),
     };
   });
 
   console.log("Page structure:", JSON.stringify(pageInfo, null, 2));
 
   // Take screenshot
-  await page.screenshot({ path: "tests/playwright/screenshots/audit/00-debug.png" });
+  await page.screenshot({
+    path: "tests/playwright/screenshots/audit/00-debug.png",
+  });
 });

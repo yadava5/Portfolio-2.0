@@ -1,7 +1,13 @@
-import { chromium } from 'playwright';
-import fs from 'fs';
+import { chromium } from "playwright";
+import fs from "fs";
 
-const themes = ['dark-luxe', 'paper-ink', 'editorial', 'noir-cinema', 'neon-cyber'];
+const themes = [
+  "dark-luxe",
+  "paper-ink",
+  "editorial",
+  "noir-cinema",
+  "neon-cyber",
+];
 const results = {};
 
 (async () => {
@@ -11,17 +17,20 @@ const results = {};
     console.log(`\nAnalyzing: ${theme}`);
 
     const context = await browser.newContext({
-      viewport: { width: 1440, height: 900 }
+      viewport: { width: 1440, height: 900 },
     });
     const page = await context.newPage();
 
-    await page.goto('http://localhost:3460', { waitUntil: 'networkidle', timeout: 20000 });
+    await page.goto("http://localhost:3460", {
+      waitUntil: "networkidle",
+      timeout: 20000,
+    });
     await page.waitForTimeout(2000);
 
     // Switch theme
     await page.evaluate((t) => {
-      document.documentElement.setAttribute('data-theme', t);
-      if (typeof localStorage !== 'undefined') localStorage.setItem('theme', t);
+      document.documentElement.setAttribute("data-theme", t);
+      if (typeof localStorage !== "undefined") localStorage.setItem("theme", t);
     }, theme);
     await page.waitForTimeout(2000);
 
@@ -35,13 +44,14 @@ const results = {};
         totalHeight,
         viewportHeight,
         sectionCount: sections.length,
-        hasHorizontalScroll: document.body.scrollWidth > document.body.clientWidth,
-        cssTransforms: Array.from(document.querySelectorAll('*'))
-          .filter(el => getComputedStyle(el).transform !== 'none')
-          .length,
-        animations: Array.from(document.querySelectorAll('*'))
-          .filter(el => getComputedStyle(el).animation !== 'none')
-          .length
+        hasHorizontalScroll:
+          document.body.scrollWidth > document.body.clientWidth,
+        cssTransforms: Array.from(document.querySelectorAll("*")).filter(
+          (el) => getComputedStyle(el).transform !== "none"
+        ).length,
+        animations: Array.from(document.querySelectorAll("*")).filter(
+          (el) => getComputedStyle(el).animation !== "none"
+        ).length,
       };
     });
 
@@ -53,11 +63,11 @@ const results = {};
       for (const step of scrollSteps) {
         const start = performance.now();
         window.scrollBy(0, step);
-        await new Promise(r => requestAnimationFrame(r));
+        await new Promise((r) => requestAnimationFrame(r));
         const elapsed = performance.now() - start;
         samples.push({ step, elapsed });
         window.scrollTo(0, 0);
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise((r) => setTimeout(r, 100));
       }
 
       return samples;
@@ -65,7 +75,7 @@ const results = {};
 
     results[theme] = {
       ...metrics,
-      scrollPerformance: scrollMetrics
+      scrollPerformance: scrollMetrics,
     };
 
     await page.close();
@@ -82,10 +92,10 @@ const results = {};
 
   // Save analysis
   fs.writeFileSync(
-    '/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/scroll-analysis.json',
+    "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/scroll-analysis.json",
     JSON.stringify(results, null, 2)
   );
 
-  console.log('\nAnalysis saved to scroll-analysis.json');
+  console.log("\nAnalysis saved to scroll-analysis.json");
   process.exit(0);
 })();

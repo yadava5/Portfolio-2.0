@@ -29,10 +29,7 @@ interface FullPageSnapProps {
  * @param props - Component props
  * @returns Wrapped section with snap behavior
  */
-export function FullPageSnap({
-  children,
-  className = "",
-}: FullPageSnapProps) {
+export function FullPageSnap({ children, className = "" }: FullPageSnapProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

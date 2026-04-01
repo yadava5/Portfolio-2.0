@@ -39,41 +39,44 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
   const config = getThemeConfig(themeId);
 
   /** Validate individual field */
-  const validateField = useCallback((name: string, value: string): string | undefined => {
-    switch (name) {
-      case "name":
-        if (!value.trim()) {
-          return "Name is required";
-        }
-        if (value.trim().length < 2) {
-          return "Name must be at least 2 characters";
-        }
-        return undefined;
+  const validateField = useCallback(
+    (name: string, value: string): string | undefined => {
+      switch (name) {
+        case "name":
+          if (!value.trim()) {
+            return "Name is required";
+          }
+          if (value.trim().length < 2) {
+            return "Name must be at least 2 characters";
+          }
+          return undefined;
 
-      case "email":
-        if (!value.trim()) {
-          return "Email is required";
-        }
-        // Basic email validation regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          return "Please enter a valid email address";
-        }
-        return undefined;
+        case "email":
+          if (!value.trim()) {
+            return "Email is required";
+          }
+          // Basic email validation regex
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            return "Please enter a valid email address";
+          }
+          return undefined;
 
-      case "message":
-        if (!value.trim()) {
-          return "Message is required";
-        }
-        if (value.trim().length < 10) {
-          return "Message must be at least 10 characters";
-        }
-        return undefined;
+        case "message":
+          if (!value.trim()) {
+            return "Message is required";
+          }
+          if (value.trim().length < 10) {
+            return "Message must be at least 10 characters";
+          }
+          return undefined;
 
-      default:
-        return undefined;
-    }
-  }, []);
+        default:
+          return undefined;
+      }
+    },
+    []
+  );
 
   /** Validate all fields */
   const validateForm = useCallback((): boolean => {
@@ -166,52 +169,58 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
   return (
     <section
       id="contact"
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-background"
+      className="bg-background relative px-4 py-24 md:px-8 md:py-32"
       data-theme={themeId}
       style={{
         backgroundColor:
           themeId === "paper-ink"
             ? "#f5f1de"
             : themeId === "editorial"
-            ? "#fefefe"
-            : undefined,
+              ? "#fefefe"
+              : undefined,
       }}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         {/* Section header */}
         <div className="mb-16 flex flex-col items-center">
           <div
-            className="h-px w-12 mb-6"
+            className="mb-6 h-px w-12"
             style={{
               background:
                 themeId === "dark-luxe" || themeId === "noir-cinema"
                   ? "linear-gradient(to right, transparent, var(--accent-primary), transparent)"
                   : themeId === "neon-cyber"
-                  ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
-                  : "solid black",
+                    ? "linear-gradient(to right, transparent, var(--neon-green), transparent)"
+                    : "solid black",
             }}
           />
           <h2
-            className={`text-5xl md:text-6xl font-light text-foreground text-center ${
-              themeId === "paper-ink" || themeId === "editorial" ? "text-black" : ""
+            className={`text-foreground text-center text-5xl font-light md:text-6xl ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-black"
+                : ""
             }`}
             style={{ fontFamily: "var(--font-display)" }}
           >
             Get in Touch
           </h2>
-          <p className={`text-foreground-muted text-lg mt-6 max-w-2xl text-center ${
-            themeId === "paper-ink" || themeId === "editorial" ? "text-gray-600" : ""
-          }`}>
+          <p
+            className={`text-foreground-muted mt-6 max-w-2xl text-center text-lg ${
+              themeId === "paper-ink" || themeId === "editorial"
+                ? "text-gray-600"
+                : ""
+            }`}
+          >
             Interested in working together? Let me know how I can help.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+        <div className="mb-16 grid grid-cols-1 gap-12 md:grid-cols-2">
           {/* Contact Information */}
           <div className="space-y-8">
             <div>
               <h3
-                className="text-2xl font-light text-accent-primary mb-4 uppercase tracking-wide"
+                className="text-accent-primary mb-4 text-2xl font-light tracking-wide uppercase"
                 style={{
                   fontFamily: "var(--font-display)",
                   fontVariant: "small-caps",
@@ -230,12 +239,12 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
 
             {/* Email */}
             <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-1">
-              <Mail className="w-6 h-6 text-accent-primary flex-shrink-0 mt-1" />
+              <Mail className="text-accent-primary mt-1 h-6 w-6 flex-shrink-0" />
               <div>
-                <p className="text-foreground font-medium mb-1">Email</p>
+                <p className="text-foreground mb-1 font-medium">Email</p>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-accent-secondary hover:text-accent-primary transition-colors text-sm"
+                  className="text-accent-secondary hover:text-accent-primary text-sm transition-colors"
                 >
                   {personalInfo.email}
                 </a>
@@ -244,30 +253,34 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
 
             {/* Location */}
             <div className="flex items-start gap-4 transition-all duration-300 hover:translate-x-1">
-              <MapPin className="w-6 h-6 text-accent-primary flex-shrink-0 mt-1" />
+              <MapPin className="text-accent-primary mt-1 h-6 w-6 flex-shrink-0" />
               <div>
-                <p className="text-foreground font-medium mb-1">Location</p>
-                <p className="text-accent-secondary text-sm">{personalInfo.location}</p>
+                <p className="text-foreground mb-1 font-medium">Location</p>
+                <p className="text-accent-secondary text-sm">
+                  {personalInfo.location}
+                </p>
               </div>
             </div>
 
             {/* Availability */}
             <div
-              className="p-6 rounded-sm"
+              className="rounded-sm p-6"
               style={{
                 backgroundColor: "var(--card-bg)",
                 opacity: 0.5,
               }}
             >
-              <p className="text-foreground font-medium mb-2 uppercase tracking-widest text-sm">
+              <p className="text-foreground mb-2 text-sm font-medium tracking-widest uppercase">
                 Availability
               </p>
-              <p className="text-foreground-muted text-sm">{personalInfo.availability}</p>
+              <p className="text-foreground-muted text-sm">
+                {personalInfo.availability}
+              </p>
             </div>
 
             {/* Social Links */}
             <div>
-              <p className="text-foreground font-medium mb-4 uppercase tracking-widest text-sm">
+              <p className="text-foreground mb-4 text-sm font-medium tracking-widest uppercase">
                 Connect
               </p>
               <div className="flex gap-4">
@@ -279,7 +292,7 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 flex items-center justify-center border text-accent-primary hover:bg-accent-primary hover:text-background transition-all duration-300 rounded-sm"
+                      className="text-accent-primary hover:bg-accent-primary hover:text-background flex h-10 w-10 items-center justify-center rounded-sm border transition-all duration-300"
                       style={{ borderColor: "var(--accent-primary)" }}
                       title={link.name}
                     >
@@ -294,7 +307,7 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
           {/* Contact Form */}
           <div>
             <h3
-              className="text-2xl font-light text-accent-primary mb-4 uppercase tracking-wide"
+              className="text-accent-primary mb-4 text-2xl font-light tracking-wide uppercase"
               style={{
                 fontFamily: "var(--font-display)",
                 fontVariant: "small-caps",
@@ -303,7 +316,7 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               Send a Message
             </h3>
             <div
-              className="h-px w-12 mb-8"
+              className="mb-8 h-px w-12"
               style={{
                 background:
                   "linear-gradient(to right, var(--accent-primary), transparent)",
@@ -315,9 +328,12 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               <div>
                 <label
                   htmlFor="form-name"
-                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                  className="text-foreground mb-2 block text-sm tracking-widest uppercase"
                 >
-                  Name <span className="text-red-500" aria-label="required">*</span>
+                  Name{" "}
+                  <span className="text-red-500" aria-label="required">
+                    *
+                  </span>
                 </label>
                 <input
                   id="form-name"
@@ -330,13 +346,17 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
                   aria-required="true"
                   aria-invalid={!!formErrors.name}
                   aria-describedby={formErrors.name ? "name-error" : undefined}
-                  className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm"
+                  className="bg-background text-foreground placeholder-foreground-muted w-full border-b py-2 text-sm transition-colors duration-300 focus:outline-none"
                   placeholder="Your name"
-                  style={{
-                    borderBottomColor: formErrors.name ? "#ef4444" : "var(--accent-primary)",
-                    borderBottomWidth: "1px",
-                    opacity: 0.4,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      borderBottomColor: formErrors.name
+                        ? "#ef4444"
+                        : "var(--accent-primary)",
+                      borderBottomWidth: "1px",
+                      opacity: 0.4,
+                    } as React.CSSProperties
+                  }
                 />
                 {formErrors.name && (
                   <p
@@ -353,9 +373,12 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               <div>
                 <label
                   htmlFor="form-email"
-                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                  className="text-foreground mb-2 block text-sm tracking-widest uppercase"
                 >
-                  Email <span className="text-red-500" aria-label="required">*</span>
+                  Email{" "}
+                  <span className="text-red-500" aria-label="required">
+                    *
+                  </span>
                 </label>
                 <input
                   id="form-email"
@@ -367,14 +390,20 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
                   required
                   aria-required="true"
                   aria-invalid={!!formErrors.email}
-                  aria-describedby={formErrors.email ? "email-error" : undefined}
-                  className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm"
+                  aria-describedby={
+                    formErrors.email ? "email-error" : undefined
+                  }
+                  className="bg-background text-foreground placeholder-foreground-muted w-full border-b py-2 text-sm transition-colors duration-300 focus:outline-none"
                   placeholder="your@email.com"
-                  style={{
-                    borderBottomColor: formErrors.email ? "#ef4444" : "var(--accent-primary)",
-                    borderBottomWidth: "1px",
-                    opacity: 0.4,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      borderBottomColor: formErrors.email
+                        ? "#ef4444"
+                        : "var(--accent-primary)",
+                      borderBottomWidth: "1px",
+                      opacity: 0.4,
+                    } as React.CSSProperties
+                  }
                 />
                 {formErrors.email && (
                   <p
@@ -391,9 +420,12 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               <div>
                 <label
                   htmlFor="form-message"
-                  className="block text-sm uppercase tracking-widest text-foreground mb-2"
+                  className="text-foreground mb-2 block text-sm tracking-widest uppercase"
                 >
-                  Message <span className="text-red-500" aria-label="required">*</span>
+                  Message{" "}
+                  <span className="text-red-500" aria-label="required">
+                    *
+                  </span>
                 </label>
                 <textarea
                   id="form-message"
@@ -405,14 +437,20 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
                   rows={5}
                   aria-required="true"
                   aria-invalid={!!formErrors.message}
-                  aria-describedby={formErrors.message ? "message-error" : undefined}
-                  className="w-full bg-background border-b text-foreground placeholder-foreground-muted focus:outline-none transition-colors duration-300 py-2 text-sm resize-none"
+                  aria-describedby={
+                    formErrors.message ? "message-error" : undefined
+                  }
+                  className="bg-background text-foreground placeholder-foreground-muted w-full resize-none border-b py-2 text-sm transition-colors duration-300 focus:outline-none"
                   placeholder="Your message..."
-                  style={{
-                    borderBottomColor: formErrors.message ? "#ef4444" : "var(--accent-primary)",
-                    borderBottomWidth: "1px",
-                    opacity: 0.4,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      borderBottomColor: formErrors.message
+                        ? "#ef4444"
+                        : "var(--accent-primary)",
+                      borderBottomWidth: "1px",
+                      opacity: 0.4,
+                    } as React.CSSProperties
+                  }
                 />
                 {formErrors.message && (
                   <p
@@ -428,7 +466,7 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
               {/* Submit button */}
               <button
                 type="submit"
-                className="w-full px-6 py-3 border text-accent-primary hover:bg-accent-primary hover:text-background transition-all duration-300 text-sm uppercase tracking-widest font-medium mt-8"
+                className="text-accent-primary hover:bg-accent-primary hover:text-background mt-8 w-full border px-6 py-3 text-sm font-medium tracking-widest uppercase transition-all duration-300"
                 style={{ borderColor: "var(--accent-primary)" }}
               >
                 {submitted ? "Message Sent" : "Send Message"}
@@ -436,7 +474,10 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
 
               {/* Status message */}
               {submitted && (
-                <p className="text-accent-primary text-sm text-center" role="status">
+                <p
+                  className="text-accent-primary text-center text-sm"
+                  role="status"
+                >
                   Thank you for your message. I&apos;ll get back to you soon!
                 </p>
               )}
@@ -454,10 +495,11 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
         />
 
         {/* Footer */}
-        <div className="mt-12 text-center text-foreground-muted text-sm">
+        <div className="text-foreground-muted mt-12 text-center text-sm">
           <p>
             Designed & built by Ayush Yadav •{" "}
-            <span className="text-accent-primary">{config.label} Theme</span> • 2026
+            <span className="text-accent-primary">{config.label} Theme</span> •
+            2026
           </p>
         </div>
       </div>

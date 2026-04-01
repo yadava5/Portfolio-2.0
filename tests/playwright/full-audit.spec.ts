@@ -40,14 +40,19 @@ interface AuditResult {
 
 async function switchTheme(page: Page, theme: { name: string; label: string }) {
   // Click the theme button
-  const themeButton = page.locator("button").filter({ hasText: "Theme" }).first();
+  const themeButton = page
+    .locator("button")
+    .filter({ hasText: "Theme" })
+    .first();
   if (await themeButton.isVisible()) {
     await themeButton.click();
     await page.waitForTimeout(400);
   }
 
   // Click the theme option - search for button containing the full theme label
-  const themeOption = page.locator("button").filter({ hasText: new RegExp(theme.label, "i") });
+  const themeOption = page
+    .locator("button")
+    .filter({ hasText: new RegExp(theme.label, "i") });
   if (await themeOption.first().isVisible()) {
     await themeOption.first().click();
     await page.waitForTimeout(800);
@@ -55,12 +60,17 @@ async function switchTheme(page: Page, theme: { name: string; label: string }) {
 }
 
 async function scrollThroughPage(page: Page) {
-  const totalHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const totalHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight
+  );
   const viewportHeight = await page.evaluate(() => window.innerHeight);
   const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
 
   for (let i = 0; i <= steps; i++) {
-    await page.evaluate((y) => window.scrollTo({ top: y, behavior: "instant" }), i * viewportHeight * 0.6);
+    await page.evaluate(
+      (y) => window.scrollTo({ top: y, behavior: "instant" }),
+      i * viewportHeight * 0.6
+    );
     await page.waitForTimeout(150);
   }
 
@@ -85,7 +95,10 @@ async function checkBrokenImages(page: Page): Promise<string[]> {
 async function checkOverflow(page: Page): Promise<string[]> {
   const overflows = await page.evaluate(() => {
     const result: string[] = [];
-    if (document.documentElement.scrollWidth > document.documentElement.clientWidth) {
+    if (
+      document.documentElement.scrollWidth >
+      document.documentElement.clientWidth
+    ) {
       result.push("Horizontal scroll");
     }
     return result;
@@ -93,31 +106,65 @@ async function checkOverflow(page: Page): Promise<string[]> {
   return overflows;
 }
 
-async function checkVisibleSections(page: Page): Promise<{ visible: string[]; missing: string[] }> {
+async function checkVisibleSections(
+  page: Page
+): Promise<{ visible: string[]; missing: string[] }> {
   const result = await page.evaluate(() => {
     const visible: string[] = [];
 
     // Check for key sections by id
-    if (document.getElementById("about") || Array.from(document.querySelectorAll("h2")).some((h) => h.textContent?.includes("About"))) {
+    if (
+      document.getElementById("about") ||
+      Array.from(document.querySelectorAll("h2")).some((h) =>
+        h.textContent?.includes("About")
+      )
+    ) {
       visible.push("about");
     }
-    if (document.getElementById("experience") || Array.from(document.querySelectorAll("h2")).some((h) => h.textContent?.includes("Experience"))) {
+    if (
+      document.getElementById("experience") ||
+      Array.from(document.querySelectorAll("h2")).some((h) =>
+        h.textContent?.includes("Experience")
+      )
+    ) {
       visible.push("experience");
     }
-    if (document.getElementById("projects") || Array.from(document.querySelectorAll("h2")).some((h) => h.textContent?.includes("Project"))) {
+    if (
+      document.getElementById("projects") ||
+      Array.from(document.querySelectorAll("h2")).some((h) =>
+        h.textContent?.includes("Project")
+      )
+    ) {
       visible.push("projects");
     }
-    if (document.getElementById("skills") || Array.from(document.querySelectorAll("h2")).some((h) => h.textContent?.includes("Skill"))) {
+    if (
+      document.getElementById("skills") ||
+      Array.from(document.querySelectorAll("h2")).some((h) =>
+        h.textContent?.includes("Skill")
+      )
+    ) {
       visible.push("skills");
     }
-    if (document.getElementById("contact") || Array.from(document.querySelectorAll("h2")).some((h) => h.textContent?.includes("Contact"))) {
+    if (
+      document.getElementById("contact") ||
+      Array.from(document.querySelectorAll("h2")).some((h) =>
+        h.textContent?.includes("Contact")
+      )
+    ) {
       visible.push("contact");
     }
     if (document.querySelector("h1")) {
       visible.push("hero");
     }
 
-    const expected = ["hero", "about", "experience", "projects", "skills", "contact"];
+    const expected = [
+      "hero",
+      "about",
+      "experience",
+      "projects",
+      "skills",
+      "contact",
+    ];
     const missing = expected.filter((s) => !visible.includes(s));
 
     return { visible, missing };
@@ -126,13 +173,18 @@ async function checkVisibleSections(page: Page): Promise<{ visible: string[]; mi
   return result;
 }
 
-async function testNavLinks(page: Page): Promise<{ works: boolean; issues: string[] }> {
+async function testNavLinks(
+  page: Page
+): Promise<{ works: boolean; issues: string[] }> {
   const issues: string[] = [];
   const navTexts = ["About", "Experience", "Projects", "Skills"];
 
   for (const text of navTexts) {
     try {
-      const link = page.locator("a").filter({ hasText: new RegExp(text, "i") }).first();
+      const link = page
+        .locator("a")
+        .filter({ hasText: new RegExp(text, "i") })
+        .first();
       if (await link.isVisible()) {
         const scrollBefore = await page.evaluate(() => window.scrollY);
         await link.click({ timeout: 5000 });
@@ -151,9 +203,13 @@ async function testNavLinks(page: Page): Promise<{ works: boolean; issues: strin
   return { works: issues.length === 0, issues };
 }
 
-async function testCtaButtons(page: Page): Promise<{ works: boolean; issues: string[] }> {
+async function testCtaButtons(
+  page: Page
+): Promise<{ works: boolean; issues: string[] }> {
   const issues: string[] = [];
-  const ctas = await page.locator("button, a").filter({ hasText: /View|Explore|Check Out|Get In Touch/ });
+  const ctas = await page
+    .locator("button, a")
+    .filter({ hasText: /View|Explore|Check Out|Get In Touch/ });
   const count = await ctas.count();
 
   for (let i = 0; i < Math.min(count, 2); i++) {
@@ -166,7 +222,11 @@ async function testCtaButtons(page: Page): Promise<{ works: boolean; issues: str
         await page.waitForTimeout(300);
         const scrollAfter = await page.evaluate(() => window.scrollY);
 
-        if (scrollBefore === scrollAfter && !href?.includes("http") && !href?.includes("mailto")) {
+        if (
+          scrollBefore === scrollAfter &&
+          !href?.includes("http") &&
+          !href?.includes("mailto")
+        ) {
           issues.push("CTA button failed");
         }
       }
@@ -221,7 +281,9 @@ test.describe("Full QA Audit", () => {
 
       const dataTheme = await page.locator("html").getAttribute("data-theme");
       if (dataTheme !== theme.name) {
-        console.log(`Warning: Theme not switched to ${theme.name}, got ${dataTheme}`);
+        console.log(
+          `Warning: Theme not switched to ${theme.name}, got ${dataTheme}`
+        );
       }
 
       const sections = await checkVisibleSections(page);
