@@ -56,7 +56,8 @@ export function HorizontalScrollSection({
     const scrollWidth = content.scrollWidth - window.innerWidth;
 
     if (scrollWidth > 0) {
-      const timeline = gsap.to(content, {
+      /* timeline ref kept by ScrollTrigger internally */
+      gsap.to(content, {
         x: -scrollWidth,
         ease: "power1.inOut",
         scrollTrigger: {

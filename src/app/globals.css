@@ -10,6 +10,7 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 @import "tailwindcss";
+@import "../styles/theme-sections.css";
 
 /**
  * @fileoverview Global styles and CSS custom properties
@@ -174,7 +175,7 @@ h1, h2, h3, h4, h5, h6 {
   --background: #0a0a0a;
   --background-secondary: #141414;
   --foreground: #f5f0e8;
-  --foreground-muted: #a09080;
+  --foreground-muted: #b8a896;
   --accent-primary: #e8c547;
   --accent-secondary: #d4a745;
   --accent-tertiary: #f5e6c8;
@@ -232,7 +233,7 @@ h1, h2, h3, h4, h5, h6 {
   --background: #0a0a0a;
   --background-secondary: #121212;
   --foreground: #e8d5b7;
-  --foreground-muted: #8a7a60;
+  --foreground-muted: #a8956e;
   --accent-primary: #c0a060;
   --accent-secondary: #e8d5b7;
   --accent-tertiary: #8a7040;
@@ -978,5 +979,613 @@ section {
   img {
     max-width: 100%;
     height: auto;
+  }
+}
+
+/* ============================================
+   === Dark Luxe Animation Keyframes ===
+   ============================================ */
+@keyframes luxeShimmer {
+  0%, 100% {
+    filter: drop-shadow(0 0 30px rgba(232, 197, 71, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 50px rgba(232, 197, 71, 0.6));
+  }
+}
+
+@keyframes goldDividerPulse {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 20px rgba(232, 197, 71, 0.2);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 40px rgba(232, 197, 71, 0.4);
+  }
+}
+
+@keyframes skillBarGlow {
+  0%, 100% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 5px rgba(232, 197, 71, 0.3));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(232, 197, 71, 0.5));
+  }
+}
+
+/* ============================================
+   === DARK LUXE SECTION STYLES ===
+   Elegant, luxurious aesthetic with gold accents
+   ============================================ */
+
+[data-theme="dark-luxe"] {
+  /* Hero Section */
+  #hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #141414 100%);
+    position: relative;
+  }
+
+  #hero h1 {
+    background: linear-gradient(90deg, #e8c547 0%, #f5e6c8 50%, #d4a745 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(232, 197, 71, 0.4));
+    animation: luxeShimmer 3s ease-in-out infinite;
+    letter-spacing: 0.05em;
+  }
+
+  #hero .h-px {
+    animation: goldDividerPulse 2s ease-in-out infinite;
+  }
+
+  /* Projects Section */
+  #projects {
+    position: relative;
+  }
+
+  #projects [class*="featured"] {
+    border-color: var(--accent-primary);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #projects [class*="featured"]:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 40px rgba(232, 197, 71, 0.3), inset 0 0 40px rgba(232, 197, 71, 0.05);
+    transform: translateY(-8px);
+  }
+
+  #projects .group:hover .group-hover\:opacity-100 {
+    box-shadow: 0 0 30px rgba(232, 197, 71, 0.3);
+  }
+
+  #projects [class*="grid"] > div {
+    border-color: var(--accent-primary);
+    transition: all 0.3s ease;
+  }
+
+  #projects [class*="grid"] > div:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 30px rgba(232, 197, 71, 0.25);
+    transform: translateY(-12px);
+  }
+
+  /* About Section */
+  #about {
+    position: relative;
+  }
+
+  #about h2 {
+    text-shadow: 0 0 20px rgba(232, 197, 71, 0.2);
+  }
+
+  #about .border-b {
+    border-bottom-color: var(--accent-primary);
+    opacity: 0.6;
+  }
+
+  #about [class*="text-accent-primary"] {
+    text-shadow: 0 0 10px rgba(232, 197, 71, 0.3);
+  }
+
+  #about .text-4xl,
+  #about .text-5xl {
+    color: var(--accent-primary);
+    text-shadow: 0 0 15px rgba(232, 197, 71, 0.3);
+    font-weight: 300;
+  }
+
+  /* Skills Section */
+  #skills {
+    position: relative;
+  }
+
+  #skills [style*="background: linear-gradient(to right"] {
+    animation: skillBarGlow 2s ease-in-out infinite;
+  }
+
+  #skills [class*="border-b"] {
+    border-bottom-color: var(--accent-primary);
+  }
+
+  #skills [class*="text-accent-primary"] {
+    color: var(--accent-primary);
+    font-weight: 300;
+  }
+
+  /* Contact Section */
+  #contact {
+    position: relative;
+  }
+
+  #contact input,
+  #contact textarea {
+    border-bottom-color: var(--accent-primary) !important;
+    transition: all 0.3s ease;
+  }
+
+  #contact input:focus,
+  #contact textarea:focus {
+    border-bottom-color: var(--accent-primary) !important;
+    opacity: 1;
+    box-shadow: 0 4px 0 0 rgba(232, 197, 71, 0.2);
+  }
+
+  #contact button {
+    border-color: var(--accent-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, rgba(232, 197, 71, 0), rgba(232, 197, 71, 0));
+  }
+
+  #contact button:hover {
+    border-color: var(--accent-primary);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: var(--background);
+    box-shadow: 0 0 30px rgba(232, 197, 71, 0.4);
+  }
+
+  /* Testimonials Section */
+  #testimonials {
+    position: relative;
+  }
+
+  #testimonials [class*="border"] {
+    border-color: var(--accent-primary);
+  }
+
+  #testimonials .italic {
+    color: var(--accent-tertiary);
+    font-style: italic;
+  }
+
+  /* Experience Section */
+  #experience {
+    position: relative;
+  }
+
+  #experience [class*="border-l"] {
+    border-left-color: var(--accent-primary);
+    padding-left: 1.5rem;
+  }
+
+  #experience [class*="border-l"]:hover {
+    border-left-color: var(--accent-primary);
+    box-shadow: inset 20px 0 20px rgba(232, 197, 71, 0.05);
+  }
+}
+
+/* ============================================
+   === PAPER-INK SECTION STYLES ===
+   Newspaper-inspired aesthetic with red accents
+   ============================================ */
+
+[data-theme="paper-ink"] {
+  /* Hero Section */
+  #hero {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+    position: relative;
+  }
+
+  #hero h1 {
+    color: #1a1a1a;
+    line-height: 1.2;
+    font-size: clamp(2rem, 8vw, 4.5rem);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  #hero h1 br {
+    display: block;
+    content: '';
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #c00000;
+    box-shadow: 0 4px 0 0 #c00000;
+  }
+
+  /* Newspaper masthead styling */
+  #hero .grid {
+    gap: 1.5rem;
+  }
+
+  #hero [class*="border-l"] {
+    border-left: 2px solid #1a1a1a;
+    padding-left: 1rem;
+  }
+
+  #hero .text-xs {
+    font-weight: 700;
+    letter-spacing: 0.15em;
+  }
+
+  /* Projects Section */
+  #projects {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+    position: relative;
+  }
+
+  #projects h2 {
+    color: #1a1a1a;
+    border-top: 3px double #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  #projects h3 {
+    color: #1a1a1a;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-left: 3px solid #c00000;
+    padding-left: 1rem;
+    font-size: 1.25rem;
+  }
+
+  #projects [class*="border"] {
+    border-color: #1a1a1a;
+  }
+
+  #projects [class*="featured"] {
+    border: 1px solid #1a1a1a;
+    border-left: 4px solid #c00000;
+    background: #faf8ef;
+  }
+
+  #projects [class*="featured"]:hover {
+    background: #f0edd9;
+    box-shadow: 0 4px 0 0 rgba(192, 0, 0, 0.3);
+    border-left: 4px solid #c00000;
+  }
+
+  #projects [class*="grid"] > div {
+    border: 1px solid #1a1a1a;
+    background: #faf8ef;
+  }
+
+  #projects [class*="grid"] > div:hover {
+    background: #f0edd9;
+    border-left: 3px solid #c00000;
+    transform: translateY(-4px);
+  }
+
+  /* About Section */
+  #about {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+  }
+
+  #about h2 {
+    color: #1a1a1a;
+    border-top: 2px solid #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  #about h3 {
+    color: #c00000;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.125rem;
+    border-bottom: 2px solid #c00000;
+    padding-bottom: 0.5rem;
+  }
+
+  #about .border {
+    border-color: #1a1a1a;
+    background: #faf8ef;
+  }
+
+  #about p {
+    color: #1a1a1a;
+    line-height: 1.75;
+  }
+
+  #about [class*="border-b"] {
+    border-bottom-color: #c00000;
+  }
+
+  #about .text-4xl,
+  #about .text-5xl {
+    color: #c00000;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  /* Education card styling */
+  #about [class*="border p-8"] {
+    border: 1px solid #1a1a1a;
+    background: #faf8ef;
+    padding: 2rem;
+  }
+
+  /* Skills Section */
+  #skills {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+  }
+
+  #skills h2 {
+    color: #1a1a1a;
+    border-top: 2px solid #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  #skills h3 {
+    color: #c00000;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 2px solid #c00000;
+    padding-bottom: 0.5rem;
+  }
+
+  #skills .h-px {
+    background: #c00000;
+  }
+
+  #skills [style*="background: linear-gradient"] {
+    background: linear-gradient(to right, #c00000, #8b0000) !important;
+  }
+
+  #skills [class*="border-b"] {
+    border-bottom-color: #1a1a1a;
+  }
+
+  #skills .text-foreground {
+    color: #1a1a1a;
+  }
+
+  #skills [class*="text-accent-primary"] {
+    color: #c00000;
+    font-weight: 700;
+  }
+
+  /* Contact Section */
+  #contact {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+  }
+
+  #contact h2 {
+    color: #1a1a1a;
+    border-top: 2px solid #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  #contact h3 {
+    color: #c00000;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 2px solid #c00000;
+    padding-bottom: 0.5rem;
+  }
+
+  #contact input,
+  #contact textarea {
+    background: #faf8ef;
+    color: #1a1a1a;
+    border-bottom-color: #1a1a1a !important;
+  }
+
+  #contact input:focus,
+  #contact textarea:focus {
+    border-bottom-color: #c00000 !important;
+    background: #f0edd9;
+  }
+
+  #contact label {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  #contact button {
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+    background: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: all 0.3s ease;
+  }
+
+  #contact button:hover {
+    background: #1a1a1a;
+    color: #f5f1de;
+    border-color: #c00000;
+    box-shadow: 0 0 0 2px #c00000;
+  }
+
+  #contact .text-foreground-muted {
+    color: #4a4a4a;
+  }
+
+  /* Contact info styling */
+  #contact .flex.items-start {
+    border-bottom: 1px solid #c00000;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  #contact .w-10.h-10 {
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+  }
+
+  #contact .w-10.h-10:hover {
+    background: #1a1a1a;
+    color: #f5f1de;
+  }
+
+  /* Testimonials Section */
+  #testimonials {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+  }
+
+  #testimonials h2 {
+    color: #1a1a1a;
+    border-top: 2px solid #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  #testimonials [class*="border"] {
+    border-color: #1a1a1a;
+  }
+
+  #testimonials .italic {
+    color: #1a1a1a;
+    font-style: italic;
+    line-height: 1.75;
+  }
+
+  #testimonials p {
+    color: #1a1a1a;
+  }
+
+  /* Experience Section */
+  #experience {
+    background: linear-gradient(180deg, #f5f1de 0%, #ebe7d4 100%);
+  }
+
+  #experience h2 {
+    color: #1a1a1a;
+    border-top: 2px solid #c00000;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 1rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  #experience h3 {
+    color: #c00000;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-left: 3px solid #c00000;
+    padding-left: 1rem;
+  }
+
+  #experience [class*="border-l"] {
+    border-left: 3px solid #c00000;
+    padding-left: 1.5rem;
+  }
+
+  #experience .border {
+    border-color: #1a1a1a;
+  }
+
+  #experience p {
+    color: #1a1a1a;
+  }
+
+  #experience .text-foreground-muted {
+    color: #4a4a4a;
+  }
+}
+
+/* ============================================
+   Responsive adjustments for Dark Luxe & Paper-Ink
+   ============================================ */
+
+@media (max-width: 768px) {
+  [data-theme="dark-luxe"] #hero h1 {
+    font-size: clamp(1.75rem, 6vw, 3rem);
+  }
+
+  [data-theme="dark-luxe"] #projects [class*="grid"] > div,
+  [data-theme="dark-luxe"] #projects [class*="featured"] {
+    margin-bottom: 1rem;
+  }
+
+  [data-theme="paper-ink"] #hero h1 {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    text-transform: uppercase;
+  }
+
+  [data-theme="paper-ink"] #projects h2,
+  [data-theme="paper-ink"] #about h2,
+  [data-theme="paper-ink"] #skills h2,
+  [data-theme="paper-ink"] #contact h2 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    border-top-width: 2px;
+  }
+
+  [data-theme="paper-ink"] #hero::before {
+    height: 1px;
+    box-shadow: 0 2px 0 0 #c00000;
+  }
+}
+
+@media (max-width: 640px) {
+  [data-theme="dark-luxe"] #projects [class*="featured"] {
+    flex-direction: column;
+  }
+
+  [data-theme="dark-luxe"] #hero .h-px {
+    width: 3rem;
+  }
+
+  [data-theme="paper-ink"] .grid.grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  [data-theme="paper-ink"] #hero .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  [data-theme="paper-ink"] #hero [class*="border-l"] {
+    border-left: none;
+    border-top: 2px solid #c00000;
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+
+  [data-theme="paper-ink"] #contact .grid {
+    grid-template-columns: 1fr;
   }
 }

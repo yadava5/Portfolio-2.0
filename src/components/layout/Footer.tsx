@@ -64,7 +64,7 @@ export default function Footer() {
         {/* ── Call-to-action banner ── */}
         <div className="mb-10 rounded-lg border border-(--glass-border) bg-(--surface-2) p-6">
           <p className="text-foreground-muted text-center text-sm">
-            Let's build something meaningful together.{" "}
+            Let&apos;s build something meaningful together.{" "}
             <a
               href="#contact"
               className={cn(

@@ -22,9 +22,9 @@ export default function ThemeSwitcher() {
   const [open, setOpen] = useState(false);
   const [announcement, setAnnouncement] = useState("");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Hydration guard — avoids mismatch between server and client
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!open) return;

@@ -98,7 +98,8 @@ export default function CustomCursor() {
       duration: 0.2,
       ease: "power3.out",
     });
-    const glowColor = gsap.quickTo(glow, "--cursor-color-hue", { duration: 0.3, ease: "power2.out" });
+    /* quickTo for hue — kept alive by GSAP context */
+    gsap.quickTo(glow, "--cursor-color-hue", { duration: 0.3, ease: "power2.out" });
 
     /** Move both cursors toward the pointer position */
     function onPointerMove(e: PointerEvent) {

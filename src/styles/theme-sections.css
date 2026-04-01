@@ -1,0 +1,2672 @@
+/**
+ * @fileoverview Theme-specific section styling for Editorial, Noir-Cinema, and Neon-Cyber
+ * Dramatically enhances visual identity for each theme with radical design approaches
+ */
+
+/* ============================================
+   EDITORIAL THEME - Swiss Brutalism / High-Fashion Magazine
+   ============================================ */
+
+[data-theme="editorial"] {
+  --editorial-red: #d95555;
+  --editorial-black: #111111;
+}
+
+/* Editorial Hero: Bold asymmetric grid */
+[data-theme="editorial"] section[id="hero"] {
+  background: #fefefe;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: center;
+  justify-items: stretch;
+  padding: 4rem 0;
+  min-height: 100vh;
+}
+
+[data-theme="editorial"] section[id="hero"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 45%;
+  height: 100%;
+  background: var(--editorial-red);
+  z-index: -1;
+}
+
+[data-theme="editorial"] section[id="hero"] > div {
+  grid-column: 1 / 2;
+  padding: 6rem 4rem;
+}
+
+/* Editorial Hero text styling */
+[data-theme="editorial"] section[id="hero"] h1 {
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--editorial-black);
+  line-height: 0.9;
+  margin-bottom: 2rem;
+}
+
+/* Editorial red line accent after title */
+[data-theme="editorial"] section[id="hero"] .editorialRedLineAccent {
+  height: 4px;
+  background: var(--editorial-red);
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem 0;
+  animation: slideRight 0.8s ease-out forwards;
+}
+
+@keyframes slideRight {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+[data-theme="editorial"] section[id="hero"] .pullQuote {
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--editorial-black);
+  margin: 2rem 0 3rem;
+  max-width: 90%;
+}
+
+/* Editorial button styling */
+[data-theme="editorial"] section[id="hero"] a {
+  border: 2px solid var(--editorial-black);
+  color: var(--editorial-black);
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  display: inline-block;
+  background: white;
+}
+
+[data-theme="editorial"] section[id="hero"] a:hover {
+  background: var(--editorial-black);
+  color: white;
+  transform: none;
+}
+
+/* Editorial Projects: 3-column grid with black dividers */
+[data-theme="editorial"] section[id="projects"] {
+  background: #fefefe;
+  padding: 6rem 0;
+}
+
+[data-theme="editorial"] section[id="projects"] h2 {
+  color: var(--editorial-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="editorial"] section[id="projects"] .max-w-6xl > div:nth-child(2) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 2px solid var(--editorial-black);
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"] {
+  border: 2px solid var(--editorial-black);
+  border-left: none;
+  border-top: none;
+  padding: 2rem;
+  background: white;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"]:nth-child(3n+1) {
+  border-left: 2px solid var(--editorial-black);
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"]:nth-child(-n+3) {
+  border-top: 2px solid var(--editorial-black);
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"]:hover {
+  background: var(--editorial-black);
+  color: white;
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"]:hover h3,
+[data-theme="editorial"] section[id="projects"] [class*="group"]:hover p {
+  color: white;
+}
+
+[data-theme="editorial"] section[id="projects"] [class*="group"]:hover .text-accent-primary {
+  color: var(--editorial-red);
+}
+
+[data-theme="editorial"] section[id="projects"] h3 {
+  color: var(--editorial-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+[data-theme="editorial"] section[id="projects"] p {
+  font-size: 0.875rem;
+  color: var(--editorial-black);
+  transition: color 0.3s ease;
+}
+
+/* Editorial About: Magazine interview layout */
+[data-theme="editorial"] section[id="about"] {
+  background: #fefefe;
+  padding: 6rem 2rem;
+  column-count: 2;
+  column-gap: 4rem;
+}
+
+[data-theme="editorial"] section[id="about"] .max-w-3xl {
+  columns: 2;
+  column-gap: 4rem;
+}
+
+[data-theme="editorial"] section[id="about"] h2 {
+  color: var(--editorial-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  column-span: all;
+  margin-bottom: 3rem;
+}
+
+[data-theme="editorial"] section[id="about"] p {
+  color: var(--editorial-black);
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+[data-theme="editorial"] section[id="about"] p:first-letter {
+  font-size: 2.5em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  padding-right: 0.2em;
+  color: var(--editorial-red);
+}
+
+[data-theme="editorial"] section[id="about"] h3 {
+  color: var(--editorial-red);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  column-span: all;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+[data-theme="editorial"] section[id="about"] [style*="border"] {
+  border-top: 1px solid var(--editorial-black);
+  border-bottom: 1px solid var(--editorial-black);
+}
+
+/* Editorial Skills: Horizontal bar chart style */
+[data-theme="editorial"] section[id="skills"] {
+  background: #fefefe;
+  padding: 6rem 2rem;
+}
+
+[data-theme="editorial"] section[id="skills"] h2 {
+  color: var(--editorial-black);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="editorial"] section[id="skills"] h3 {
+  color: var(--editorial-red);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--editorial-black);
+  padding-bottom: 1rem;
+}
+
+[data-theme="editorial"] section[id="skills"] .grid-cols-1 {
+  display: block;
+}
+
+[data-theme="editorial"] section[id="skills"] [class*="flex"] {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--editorial-black);
+}
+
+[data-theme="editorial"] section[id="skills"] .text-foreground {
+  flex: 0 0 200px;
+  color: var(--editorial-black);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+[data-theme="editorial"] section[id="skills"] [class*="h-px"] {
+  flex: 1;
+  height: 1px;
+  background: var(--editorial-black);
+}
+
+[data-theme="editorial"] section[id="skills"] .text-accent-secondary {
+  flex: 0 0 60px;
+  color: var(--editorial-black);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+/* Editorial Contact: Minimalist form */
+[data-theme="editorial"] section[id="contact"] {
+  background: #fefefe;
+  padding: 6rem 2rem;
+}
+
+[data-theme="editorial"] section[id="contact"] h2 {
+  color: var(--editorial-black);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="editorial"] section[id="contact"] input,
+[data-theme="editorial"] section[id="contact"] textarea {
+  border: none;
+  border-bottom: 1px solid var(--editorial-black);
+  background: transparent;
+  color: var(--editorial-black);
+  font-size: 1rem;
+  padding: 0.75rem 0;
+  opacity: 1;
+}
+
+[data-theme="editorial"] section[id="contact"] input::placeholder,
+[data-theme="editorial"] section[id="contact"] textarea::placeholder {
+  color: #999;
+}
+
+[data-theme="editorial"] section[id="contact"] input:focus,
+[data-theme="editorial"] section[id="contact"] textarea:focus {
+  border-bottom-color: var(--editorial-red);
+  box-shadow: none;
+  outline: none;
+}
+
+[data-theme="editorial"] section[id="contact"] button {
+  border: 2px solid var(--editorial-black);
+  background: white;
+  color: var(--editorial-black);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+
+[data-theme="editorial"] section[id="contact"] button:hover {
+  background: var(--editorial-black);
+  color: white;
+}
+
+/* Editorial Experience: Clean timeline with geometric markers */
+[data-theme="editorial"] #experience {
+  background: #fefefe;
+  padding: 6rem 2rem;
+}
+
+[data-theme="editorial"] #experience h2 {
+  color: var(--editorial-black);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="editorial"] #experience > div {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+[data-theme="editorial"] #experience [class*="flex"] {
+  display: flex;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid var(--editorial-black);
+}
+
+[data-theme="editorial"] #experience [class*="flex"]:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+[data-theme="editorial"] #experience h3 {
+  color: var(--editorial-black);
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="editorial"] #experience .date-marker {
+  color: var(--editorial-red);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="editorial"] #experience .is-current {
+  color: var(--editorial-red);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-top: 1rem;
+}
+
+/* Editorial Testimonials: Magazine pull-quote style */
+[data-theme="editorial"] #testimonials {
+  background: #fefefe;
+  padding: 6rem 2rem;
+}
+
+[data-theme="editorial"] #testimonials h2 {
+  color: var(--editorial-black);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="editorial"] #testimonials > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+[data-theme="editorial"] #testimonials [class*="border"] {
+  border: 2px solid var(--editorial-black);
+  padding: 2rem;
+  background: white;
+  position: relative;
+}
+
+[data-theme="editorial"] #testimonials blockquote {
+  font-family: 'Georgia', serif;
+  font-size: 1.25rem;
+  color: var(--editorial-black);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+[data-theme="editorial"] #testimonials blockquote::before {
+  content: '"';
+  font-size: 3rem;
+  color: var(--editorial-red);
+  opacity: 0.3;
+  position: absolute;
+  top: -10px;
+  left: 10px;
+}
+
+[data-theme="editorial"] #testimonials .author {
+  font-size: 0.875rem;
+  color: var(--editorial-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* Editorial responsive */
+@media (max-width: 1024px) {
+  [data-theme="editorial"] section[id="hero"] {
+    grid-template-columns: 1fr;
+  }
+
+  [data-theme="editorial"] section[id="hero"]::before {
+    width: 100%;
+    height: 30%;
+    top: auto;
+    bottom: 0;
+  }
+
+  [data-theme="editorial"] section[id="projects"] .max-w-6xl > div:nth-child(2) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  [data-theme="editorial"] section[id="about"] {
+    column-count: 1;
+  }
+
+  [data-theme="editorial"] section[id="projects"] .max-w-6xl > div:nth-child(2) {
+    grid-template-columns: 1fr;
+  }
+
+  [data-theme="editorial"] section[id="hero"] h1 {
+    font-size: 2.5rem;
+  }
+
+  [data-theme="editorial"] section[id="skills"] .text-foreground {
+    flex: 0 0 150px;
+  }
+}
+
+/* ============================================
+   NOIR-CINEMA THEME - 1940s Film Noir / Art Deco
+   ============================================ */
+
+[data-theme="noir-cinema"] {
+  --noir-tan: #e8d5b7;
+  --noir-dark: #0a0a0a;
+  --noir-gold: #c0a060;
+}
+
+/* Noir Cinema Hero: Full-screen cinematic vignette */
+[data-theme="noir-cinema"] section[id="hero"] {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Film grain overlay */
+[data-theme="noir-cinema"] section[id="hero"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Vignette effect */
+[data-theme="noir-cinema"] section[id="hero"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-theme="noir-cinema"] section[id="hero"] > div {
+  position: relative;
+  z-index: 3;
+  max-width: 600px;
+  padding: 3rem;
+}
+
+/* Noir Cinema decorative Art Deco borders */
+[data-theme="noir-cinema"] section[id="hero"] h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  color: var(--noir-tan);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 2rem 0;
+}
+
+[data-theme="noir-cinema"] section[id="hero"] h1::before,
+[data-theme="noir-cinema"] section[id="hero"] h1::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] section[id="hero"] h1::before {
+  top: 0;
+}
+
+[data-theme="noir-cinema"] section[id="hero"] h1::after {
+  bottom: 0;
+}
+
+/* Noir Cinema Projects: Cinema marquee style */
+[data-theme="noir-cinema"] section[id="projects"] {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+}
+
+/* Film grain on projects section */
+[data-theme="noir-cinema"] section[id="projects"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] h2 {
+  color: var(--noir-tan);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] section[id="projects"] [class*="group"] {
+  border: 2px solid var(--noir-gold);
+  background: rgba(192, 160, 96, 0.03);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] [class*="group"]::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(192, 160, 96, 0.4) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] [class*="group"]:hover::before {
+  opacity: 1;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] h3 {
+  color: var(--noir-tan);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="noir-cinema"] section[id="projects"] p {
+  color: var(--noir-tan);
+}
+
+/* Noir Cinema About: Screenplay/script layout */
+[data-theme="noir-cinema"] section[id="about"] {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="about"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] section[id="about"] h2 {
+  color: var(--noir-tan);
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="about"] h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] section[id="about"] p {
+  color: var(--noir-tan);
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  border-left: 3px solid var(--noir-gold);
+}
+
+[data-theme="noir-cinema"] section[id="about"] p::first-letter {
+  font-weight: 700;
+  color: var(--noir-gold);
+}
+
+/* Film reel dividers */
+[data-theme="noir-cinema"] section[id="about"] h3 {
+  color: var(--noir-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.875rem;
+  margin: 3rem 0 1.5rem;
+  position: relative;
+  padding: 1rem 0;
+}
+
+[data-theme="noir-cinema"] section[id="about"] h3::before,
+[data-theme="noir-cinema"] section[id="about"] h3::after {
+  content: '◆ ◆ ◆';
+  position: absolute;
+  color: var(--noir-gold);
+  opacity: 0.5;
+}
+
+[data-theme="noir-cinema"] section[id="about"] h3::before {
+  left: 0;
+}
+
+[data-theme="noir-cinema"] section[id="about"] h3::after {
+  right: 0;
+}
+
+/* Noir Cinema Skills: Playbill/poster style */
+[data-theme="noir-cinema"] section[id="skills"] {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="skills"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h2 {
+  color: var(--noir-tan);
+  letter-spacing: 0.1em;
+  margin-bottom: 4rem;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h3 {
+  color: var(--noir-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  position: relative;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h3::before,
+[data-theme="noir-cinema"] section[id="skills"] h3::after {
+  content: '◆';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--noir-gold);
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h3::before {
+  left: 0;
+}
+
+[data-theme="noir-cinema"] section[id="skills"] h3::after {
+  right: 0;
+}
+
+/* Noir Cinema Contact: Telegram/letter style */
+[data-theme="noir-cinema"] section[id="contact"] {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="contact"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] h2 {
+  color: var(--noir-tan);
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] section[id="contact"] form {
+  border: 2px solid var(--noir-gold);
+  padding: 3rem;
+  background: rgba(192, 160, 96, 0.02);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] form::before,
+[data-theme="noir-cinema"] section[id="contact"] form::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--noir-gold);
+}
+
+[data-theme="noir-cinema"] section[id="contact"] form::before {
+  top: -10px;
+  left: -10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] form::after {
+  bottom: -10px;
+  right: -10px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] input,
+[data-theme="noir-cinema"] section[id="contact"] textarea {
+  border: 1px solid var(--noir-gold);
+  background: rgba(192, 160, 96, 0.05);
+  color: var(--noir-tan);
+  padding: 0.75rem 1rem;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] input::placeholder,
+[data-theme="noir-cinema"] section[id="contact"] textarea::placeholder {
+  color: var(--noir-gold);
+  opacity: 0.6;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] button {
+  border: 2px solid var(--noir-gold);
+  background: transparent;
+  color: var(--noir-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+[data-theme="noir-cinema"] section[id="contact"] button:hover {
+  background: var(--noir-gold);
+  color: var(--noir-dark);
+}
+
+/* Noir Cinema Experience: Screenplay format with Art Deco dividers */
+[data-theme="noir-cinema"] #experience {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="noir-cinema"] #experience::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] #experience h2 {
+  color: var(--noir-tan);
+  letter-spacing: 0.1em;
+  margin-bottom: 4rem;
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+[data-theme="noir-cinema"] #experience h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] #experience > div {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+[data-theme="noir-cinema"] #experience [class*="flex"] {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+  padding-left: 3rem;
+  border-left: 3px solid var(--noir-gold);
+  position: relative;
+}
+
+[data-theme="noir-cinema"] #experience [class*="flex"]::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 0;
+  width: 13px;
+  height: 13px;
+  background: var(--noir-gold);
+  opacity: 0.7;
+}
+
+[data-theme="noir-cinema"] #experience h3 {
+  color: var(--noir-tan);
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+[data-theme="noir-cinema"] #experience .date-marker {
+  color: var(--noir-gold);
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+[data-theme="noir-cinema"] #experience p {
+  color: var(--noir-tan);
+  opacity: 0.85;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+[data-theme="noir-cinema"] #experience .is-current {
+  color: var(--noir-gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+/* Noir Cinema Testimonials: Film credits style */
+[data-theme="noir-cinema"] #testimonials {
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 100%);
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="noir-cinema"] #testimonials::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+[data-theme="noir-cinema"] #testimonials h2 {
+  color: var(--noir-tan);
+  letter-spacing: 0.1em;
+  margin-bottom: 4rem;
+  position: relative;
+  padding-bottom: 2rem;
+  text-align: center;
+}
+
+[data-theme="noir-cinema"] #testimonials h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent 0%, var(--noir-gold) 20%, var(--noir-gold) 80%, transparent 100%);
+}
+
+[data-theme="noir-cinema"] #testimonials > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+[data-theme="noir-cinema"] #testimonials [class*="border"] {
+  border: 2px solid var(--noir-gold);
+  padding: 3rem 2rem;
+  background: rgba(192, 160, 96, 0.03);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+[data-theme="noir-cinema"] #testimonials [class*="border"]::before,
+[data-theme="noir-cinema"] #testimonials [class*="border"]::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--noir-gold);
+}
+
+[data-theme="noir-cinema"] #testimonials [class*="border"]::before {
+  top: -8px;
+  left: -8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="noir-cinema"] #testimonials [class*="border"]::after {
+  bottom: -8px;
+  right: -8px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="noir-cinema"] #testimonials blockquote {
+  font-family: 'Georgia', serif;
+  font-size: 1.125rem;
+  color: var(--noir-tan);
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  font-style: italic;
+  text-align: center;
+}
+
+[data-theme="noir-cinema"] #testimonials .author {
+  color: var(--noir-gold);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ============================================
+   NEON-CYBER THEME - Cyberpunk Terminal / HUD
+   ============================================ */
+
+[data-theme="neon-cyber"] {
+  --neon-green: #00ff88;
+  --neon-cyan: #00d4ff;
+  --neon-pink: #ff006e;
+}
+
+/* Neon Cyber Hero: Terminal boot sequence */
+[data-theme="neon-cyber"] section[id="hero"] {
+  background: #050510;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scanlines overlay */
+[data-theme="neon-cyber"] section[id="hero"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 255, 136, 0.03) 0px,
+      rgba(0, 255, 136, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 255, 136, 0.02) 0px,
+      rgba(0, 255, 136, 0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  pointer-events: none;
+  z-index: 1;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+@keyframes scanlineScroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+}
+
+/* Matrix rain subtle background */
+[data-theme="neon-cyber"] section[id="hero"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+  z-index: 0;
+}
+
+[data-theme="neon-cyber"] section[id="hero"] > div {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 700px;
+  padding: 3rem;
+}
+
+[data-theme="neon-cyber"] section[id="hero"] h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-family: var(--font-orbitron);
+  color: var(--neon-green);
+  text-shadow:
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green),
+    0 0 40px var(--neon-cyan),
+    inset 0 0 10px rgba(0, 255, 136, 0.3);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  animation: neonFlicker 0.15s infinite;
+}
+
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow:
+      0 0 10px var(--neon-green),
+      0 0 20px var(--neon-green),
+      0 0 40px var(--neon-cyan);
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    text-shadow:
+      0 0 5px var(--neon-green),
+      0 0 10px var(--neon-cyan);
+    opacity: 0.8;
+  }
+}
+
+[data-theme="neon-cyber"] section[id="hero"] p {
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Neon Cyber Projects: HUD-style cards */
+[data-theme="neon-cyber"] section[id="projects"] {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+/* Scanlines on projects */
+[data-theme="neon-cyber"] section[id="projects"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 4rem;
+  font-weight: 900;
+  position: relative;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"] {
+  border: 2px solid var(--neon-cyan);
+  background: rgba(0, 255, 136, 0.02);
+  box-shadow:
+    0 0 10px rgba(0, 255, 136, 0.3),
+    inset 0 0 10px rgba(0, 255, 136, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* HUD corner brackets */
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before,
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neon-green);
+  z-index: 10;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before {
+  top: -8px;
+  left: -8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
+  bottom: -8px;
+  right: -8px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] [class*="group"]:hover {
+  border-color: var(--neon-green);
+  box-shadow:
+    0 0 20px rgba(0, 255, 136, 0.6),
+    inset 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+[data-theme="neon-cyber"] section[id="projects"] h3 {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.1em;
+}
+
+[data-theme="neon-cyber"] section[id="projects"] p {
+  color: var(--neon-cyan);
+}
+
+/* Terminal-style badges */
+[data-theme="neon-cyber"] section[id="projects"] .text-accent-secondary {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.75rem;
+}
+
+/* Neon Cyber About: Terminal output format */
+[data-theme="neon-cyber"] section[id="about"] {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+/* Scanlines on about */
+[data-theme="neon-cyber"] section[id="about"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] section[id="about"] h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 3rem;
+}
+
+[data-theme="neon-cyber"] section[id="about"] h2::before {
+  content: '$ cat about.txt';
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+}
+
+[data-theme="neon-cyber"] section[id="about"] p {
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--neon-green);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+[data-theme="neon-cyber"] section[id="about"] p::before {
+  content: '> ';
+  color: var(--neon-green);
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+[data-theme="neon-cyber"] section[id="about"] h3 {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.875rem;
+  margin: 2rem 0 1rem;
+  font-family: var(--font-jetbrains-mono);
+}
+
+[data-theme="neon-cyber"] section[id="about"] h3::before {
+  content: '/';
+  margin-right: 0.5rem;
+}
+
+/* HUD readout bars for stats */
+[data-theme="neon-cyber"] section[id="about"] [class*="border-b"] {
+  border-bottom-color: var(--neon-green);
+  border-bottom-width: 2px;
+}
+
+/* Neon Cyber Skills: Terminal directory listing */
+[data-theme="neon-cyber"] section[id="skills"] {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+/* Scanlines on skills */
+[data-theme="neon-cyber"] section[id="skills"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] section[id="skills"] h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="neon-cyber"] section[id="skills"] h3 {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+
+[data-theme="neon-cyber"] section[id="skills"] h3::before {
+  content: '/skills/';
+  margin-right: 0.5rem;
+}
+
+[data-theme="neon-cyber"] section[id="skills"] .text-foreground {
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+}
+
+[data-theme="neon-cyber"] section[id="skills"] [class*="h-px"] {
+  background: var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+  height: 2px;
+}
+
+[data-theme="neon-cyber"] section[id="skills"] .text-accent-secondary {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+  font-family: var(--font-jetbrains-mono);
+}
+
+/* Neon Cyber Contact: Terminal input style */
+[data-theme="neon-cyber"] section[id="contact"] {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+/* Scanlines on contact */
+[data-theme="neon-cyber"] section[id="contact"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 3rem;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] form {
+  border: 2px solid var(--neon-green);
+  padding: 2rem;
+  background: rgba(0, 255, 136, 0.02);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.05);
+  position: relative;
+}
+
+/* Terminal corner brackets on form */
+[data-theme="neon-cyber"] section[id="contact"] form::before,
+[data-theme="neon-cyber"] section[id="contact"] form::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neon-green);
+}
+
+[data-theme="neon-cyber"] section[id="contact"] form::before {
+  top: -10px;
+  left: -10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] form::after {
+  bottom: -10px;
+  right: -10px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] input,
+[data-theme="neon-cyber"] section[id="contact"] textarea {
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid var(--neon-green);
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+  padding: 0.75rem;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] input::placeholder,
+[data-theme="neon-cyber"] section[id="contact"] textarea::placeholder {
+  color: var(--neon-green);
+  opacity: 0.5;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] input::before {
+  content: '> ';
+}
+
+[data-theme="neon-cyber"] section[id="contact"] input:focus,
+[data-theme="neon-cyber"] section[id="contact"] textarea:focus {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-pink), inset 0 0 10px rgba(255, 0, 110, 0.1);
+  outline: none;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] button {
+  border: 2px solid var(--neon-green);
+  background: transparent;
+  color: var(--neon-green);
+  font-family: var(--font-jetbrains-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--neon-green);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] button::before {
+  content: '> ';
+  margin-right: 0.5rem;
+}
+
+[data-theme="neon-cyber"] section[id="contact"] button:hover {
+  background: var(--neon-green);
+  color: #050510;
+  box-shadow: 0 0 30px var(--neon-green);
+  text-shadow: none;
+}
+
+/* CRT flicker animation on button hover */
+@keyframes crtFlicker {
+  0% {
+    opacity: 1;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+[data-theme="neon-cyber"] section[id="contact"] button:active {
+  animation: crtFlicker 0.15s;
+}
+
+/* Neon Cyber Experience: Terminal output format with prompts */
+[data-theme="neon-cyber"] #experience {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="neon-cyber"] #experience::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] #experience h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="neon-cyber"] #experience > div {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+
+[data-theme="neon-cyber"] #experience [class*="flex"] {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border: 2px solid var(--neon-green);
+  background: rgba(0, 255, 136, 0.02);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 15px rgba(0, 255, 136, 0.05);
+  position: relative;
+}
+
+[data-theme="neon-cyber"] #experience [class*="flex"]::before,
+[data-theme="neon-cyber"] #experience [class*="flex"]::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--neon-cyan);
+}
+
+[data-theme="neon-cyber"] #experience [class*="flex"]::before {
+  top: -8px;
+  left: -8px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme="neon-cyber"] #experience [class*="flex"]::after {
+  bottom: -8px;
+  right: -8px;
+  border-left: none;
+  border-top: none;
+}
+
+[data-theme="neon-cyber"] #experience h3 {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+[data-theme="neon-cyber"] #experience h3::before {
+  content: '> ';
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  margin-right: 0.5rem;
+}
+
+[data-theme="neon-cyber"] #experience .date-marker {
+  color: var(--neon-green);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.875rem;
+  text-shadow: 0 0 10px var(--neon-green);
+  margin-bottom: 1rem;
+}
+
+[data-theme="neon-cyber"] #experience p {
+  color: var(--neon-cyan);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+[data-theme="neon-cyber"] #experience .is-current {
+  color: var(--neon-pink);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.875rem;
+  text-shadow: 0 0 10px var(--neon-pink);
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Neon Cyber Testimonials: Code comment style with matrix overlay */
+[data-theme="neon-cyber"] #testimonials {
+  background: #050510;
+  position: relative;
+  padding: 6rem 2rem;
+}
+
+[data-theme="neon-cyber"] #testimonials::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 255, 136, 0.03) 0px,
+    rgba(0, 255, 136, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: scanlineScroll 8s linear infinite;
+}
+
+[data-theme="neon-cyber"] #testimonials h2 {
+  color: var(--neon-green);
+  text-shadow: 0 0 20px var(--neon-green);
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.15em;
+  margin-bottom: 4rem;
+}
+
+[data-theme="neon-cyber"] #testimonials > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+[data-theme="neon-cyber"] #testimonials [class*="border"] {
+  border: 2px solid var(--neon-cyan);
+  padding: 2.5rem;
+  background: rgba(0, 212, 255, 0.02);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), inset 0 0 20px rgba(0, 212, 255, 0.05);
+  position: relative;
+}
+
+[data-theme="neon-cyber"] #testimonials [class*="border"]::before {
+  content: '/* ';
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: var(--neon-green);
+  font-family: var(--font-jetbrains-mono);
+  text-shadow: 0 0 10px var(--neon-green);
+  font-weight: 700;
+}
+
+[data-theme="neon-cyber"] #testimonials [class*="border"]::after {
+  content: ' */';
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  color: var(--neon-green);
+  font-family: var(--font-jetbrains-mono);
+  text-shadow: 0 0 10px var(--neon-green);
+  font-weight: 700;
+}
+
+[data-theme="neon-cyber"] #testimonials blockquote {
+  font-family: var(--font-jetbrains-mono);
+  font-size: 1rem;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  font-style: italic;
+  padding: 0 1rem;
+}
+
+[data-theme="neon-cyber"] #testimonials .author {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
+  font-family: var(--font-jetbrains-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+
+/* ============================================
+   Responsive adjustments for all three themes
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Editorial responsive */
+  [data-theme="editorial"] section[id="hero"] {
+    grid-template-columns: 1fr;
+    padding: 2rem 0;
+  }
+
+  [data-theme="editorial"] section[id="hero"]::before {
+    display: none;
+  }
+
+  [data-theme="editorial"] section[id="hero"] > div {
+    padding: 3rem 1.5rem;
+  }
+
+  /* Noir Cinema responsive */
+  [data-theme="noir-cinema"] section[id="hero"] {
+    min-height: auto;
+  }
+
+  /* Neon Cyber responsive */
+  [data-theme="neon-cyber"] section[id="contact"] form {
+    padding: 1.5rem;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::before,
+  [data-theme="neon-cyber"] section[id="contact"] form::after {
+    width: 15px;
+    height: 15px;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::before {
+    top: -8px;
+    left: -8px;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::after {
+    bottom: -8px;
+    right: -8px;
+  }
+}
+
+/* ============================================
+   COMPREHENSIVE MOBILE REFINEMENTS
+   768px, 640px, and 375px breakpoints
+   ============================================ */
+
+/* ──────────────────────────────────────────────
+   768px Breakpoint (Tablets and larger phones)
+   ────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* All themes: Typography scaling */
+  [data-theme="editorial"] section[id="hero"] h1,
+  [data-theme="noir-cinema"] section[id="hero"] h1,
+  [data-theme="neon-cyber"] section[id="hero"] h1 {
+    font-size: clamp(2rem, 8vw, 5rem);
+    line-height: 1.1;
+  }
+
+  [data-theme="editorial"] section[id="projects"] h2,
+  [data-theme="editorial"] section[id="about"] h2,
+  [data-theme="editorial"] section[id="skills"] h2,
+  [data-theme="editorial"] section[id="contact"] h2,
+  [data-theme="editorial"] #experience h2,
+  [data-theme="editorial"] #testimonials h2,
+  [data-theme="noir-cinema"] section[id="projects"] h2,
+  [data-theme="noir-cinema"] section[id="about"] h2,
+  [data-theme="noir-cinema"] section[id="skills"] h2,
+  [data-theme="noir-cinema"] section[id="contact"] h2,
+  [data-theme="noir-cinema"] #experience h2,
+  [data-theme="noir-cinema"] #testimonials h2,
+  [data-theme="neon-cyber"] section[id="projects"] h2,
+  [data-theme="neon-cyber"] section[id="about"] h2,
+  [data-theme="neon-cyber"] section[id="skills"] h2,
+  [data-theme="neon-cyber"] section[id="contact"] h2,
+  [data-theme="neon-cyber"] #experience h2,
+  [data-theme="neon-cyber"] #testimonials h2 {
+    font-size: clamp(1.5rem, 6vw, 3rem);
+    margin-bottom: 2rem;
+  }
+
+  /* All themes: Section padding */
+  [data-theme="editorial"] section[id="projects"],
+  [data-theme="editorial"] section[id="about"],
+  [data-theme="editorial"] section[id="skills"],
+  [data-theme="editorial"] section[id="contact"],
+  [data-theme="editorial"] #experience,
+  [data-theme="editorial"] #testimonials,
+  [data-theme="noir-cinema"] section[id="projects"],
+  [data-theme="noir-cinema"] section[id="about"],
+  [data-theme="noir-cinema"] section[id="skills"],
+  [data-theme="noir-cinema"] section[id="contact"],
+  [data-theme="noir-cinema"] #experience,
+  [data-theme="noir-cinema"] #testimonials,
+  [data-theme="neon-cyber"] section[id="projects"],
+  [data-theme="neon-cyber"] section[id="about"],
+  [data-theme="neon-cyber"] section[id="skills"],
+  [data-theme="neon-cyber"] section[id="contact"],
+  [data-theme="neon-cyber"] #experience,
+  [data-theme="neon-cyber"] #testimonials {
+    padding: 4rem 1.5rem;
+  }
+
+  /* Editorial: Scale down hero content */
+  [data-theme="editorial"] section[id="hero"] > div {
+    padding: 2.5rem 1.5rem;
+  }
+
+  [data-theme="editorial"] section[id="hero"] .editorialRedLineAccent {
+    max-width: 250px;
+    height: 3px;
+  }
+
+  [data-theme="editorial"] section[id="hero"] .pullQuote {
+    font-size: 1.25rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  [data-theme="editorial"] section[id="about"] {
+    column-count: 1;
+    padding: 4rem 1.5rem;
+  }
+
+  [data-theme="editorial"] section[id="about"] .max-w-3xl {
+    columns: 1;
+    column-gap: 0;
+  }
+
+  [data-theme="editorial"] section[id="about"] p:first-letter {
+    font-size: 2em;
+  }
+
+  /* Editorial: Reduce project card padding */
+  [data-theme="editorial"] section[id="projects"] [class*="group"] {
+    padding: 1.5rem;
+    aspect-ratio: auto;
+    min-height: 200px;
+  }
+
+  [data-theme="editorial"] section[id="projects"] h3 {
+    font-size: 1rem;
+  }
+
+  /* Editorial: Skills section simplification */
+  [data-theme="editorial"] section[id="skills"] [class*="flex"] {
+    flex-direction: column;
+  }
+
+  [data-theme="editorial"] section[id="skills"] .text-foreground {
+    flex: 0 0 auto;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Editorial: Reduce button size */
+  [data-theme="editorial"] section[id="hero"] a {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.7rem;
+  }
+
+  /* Noir Cinema: Simplify hero effects */
+  [data-theme="noir-cinema"] section[id="hero"] {
+    min-height: 60vh;
+  }
+
+  [data-theme="noir-cinema"] section[id="hero"]::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.02) 0px,
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+  }
+
+  [data-theme="noir-cinema"] section[id="hero"] h1::before,
+  [data-theme="noir-cinema"] section[id="hero"] h1::after {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Noir Cinema: Art Deco frames scaled down */
+  [data-theme="noir-cinema"] section[id="projects"] h2::after {
+    width: 30px;
+    height: 3px;
+  }
+
+  [data-theme="noir-cinema"] section[id="projects"] [class*="group"]::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  [data-theme="noir-cinema"] section[id="about"] h3::before,
+  [data-theme="noir-cinema"] section[id="about"] h3::after {
+    width: 15px;
+    height: 15px;
+  }
+
+  [data-theme="noir-cinema"] section[id="skills"] h2::after {
+    width: 30px;
+    height: 3px;
+  }
+
+  [data-theme="noir-cinema"] section[id="contact"] h2::after {
+    width: 30px;
+    height: 3px;
+  }
+
+  /* Neon Cyber: Reduce HUD corner sizes */
+  [data-theme="neon-cyber"] section[id="hero"]::before {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"]::after {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"]::before {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  [data-theme="neon-cyber"] section[id="about"]::before {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  [data-theme="neon-cyber"] section[id="skills"]::before {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"]::before {
+    width: 30px;
+    height: 30px;
+    opacity: 0.6;
+  }
+
+  /* Neon Cyber: Reduce scanline intensity */
+  [data-theme="neon-cyber"] section[id="hero"]::before {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 136, 0.02) 0px,
+        rgba(0, 255, 136, 0.02) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+  }
+
+  /* Neon Cyber: Scale down contact form corners */
+  [data-theme="neon-cyber"] section[id="contact"] form::before,
+  [data-theme="neon-cyber"] section[id="contact"] form::after {
+    width: 12px;
+    height: 12px;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::before {
+    top: -6px;
+    left: -6px;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::after {
+    bottom: -6px;
+    right: -6px;
+  }
+
+  /* Neon Cyber: Simplify project card corners */
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before,
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
+    width: 8px;
+    height: 8px;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before {
+    top: -4px;
+    left: -4px;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
+    bottom: -4px;
+    right: -4px;
+  }
+
+  /* Neon Cyber: Experience section HUD corners */
+  [data-theme="neon-cyber"] #experience [class*="flex"]::before,
+  [data-theme="neon-cyber"] #experience [class*="flex"]::after {
+    width: 8px;
+    height: 8px;
+  }
+
+  [data-theme="neon-cyber"] #experience [class*="flex"]::before {
+    top: -4px;
+    left: -4px;
+  }
+
+  [data-theme="neon-cyber"] #experience [class*="flex"]::after {
+    bottom: -4px;
+    right: -4px;
+  }
+
+  /* Neon Cyber: Testimonials borders reduced */
+  [data-theme="neon-cyber"] #testimonials [class*="border"]::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  [data-theme="neon-cyber"] #testimonials [class*="border"]::after {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* All themes: Ensure body text remains readable */
+  [data-theme="editorial"] section p,
+  [data-theme="noir-cinema"] section p,
+  [data-theme="neon-cyber"] section p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* All themes: Input and form adjustments */
+  [data-theme="editorial"] section[id="contact"] input,
+  [data-theme="editorial"] section[id="contact"] textarea,
+  [data-theme="noir-cinema"] section[id="contact"] input,
+  [data-theme="noir-cinema"] section[id="contact"] textarea,
+  [data-theme="neon-cyber"] section[id="contact"] input,
+  [data-theme="neon-cyber"] section[id="contact"] textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  /* All themes: Button sizing */
+  [data-theme="editorial"] section[id="contact"] button,
+  [data-theme="noir-cinema"] section[id="contact"] button,
+  [data-theme="neon-cyber"] section[id="contact"] button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+
+  /* Experience section flex layout */
+  [data-theme="editorial"] #experience [class*="flex"],
+  [data-theme="noir-cinema"] #experience [class*="flex"],
+  [data-theme="neon-cyber"] #experience [class*="flex"] {
+    flex-direction: column;
+  }
+
+  [data-theme="editorial"] #experience [class*="flex"]:last-child,
+  [data-theme="noir-cinema"] #experience [class*="flex"]:last-child,
+  [data-theme="neon-cyber"] #experience [class*="flex"]:last-child {
+    flex-direction: column;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   640px Breakpoint (Small tablets and large phones)
+   ────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  /* Typography: Further reduction */
+  [data-theme="editorial"] section[id="hero"] h1,
+  [data-theme="noir-cinema"] section[id="hero"] h1,
+  [data-theme="neon-cyber"] section[id="hero"] h1 {
+    font-size: clamp(1.75rem, 6vw, 4rem);
+  }
+
+  [data-theme="editorial"] section[id="projects"] h2,
+  [data-theme="editorial"] section[id="about"] h2,
+  [data-theme="editorial"] section[id="skills"] h2,
+  [data-theme="editorial"] section[id="contact"] h2,
+  [data-theme="editorial"] #experience h2,
+  [data-theme="editorial"] #testimonials h2,
+  [data-theme="noir-cinema"] section[id="projects"] h2,
+  [data-theme="noir-cinema"] section[id="about"] h2,
+  [data-theme="noir-cinema"] section[id="skills"] h2,
+  [data-theme="noir-cinema"] section[id="contact"] h2,
+  [data-theme="noir-cinema"] #experience h2,
+  [data-theme="noir-cinema"] #testimonials h2,
+  [data-theme="neon-cyber"] section[id="projects"] h2,
+  [data-theme="neon-cyber"] section[id="about"] h2,
+  [data-theme="neon-cyber"] section[id="skills"] h2,
+  [data-theme="neon-cyber"] section[id="contact"] h2,
+  [data-theme="neon-cyber"] #experience h2,
+  [data-theme="neon-cyber"] #testimonials h2 {
+    font-size: clamp(1.25rem, 5vw, 2.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  [data-theme="editorial"] section[id="projects"] h3 {
+    font-size: 0.9rem;
+  }
+
+  [data-theme="noir-cinema"] section[id="projects"] h3,
+  [data-theme="neon-cyber"] section[id="projects"] h3 {
+    font-size: 1rem;
+  }
+
+  /* Section padding: Minimum 1rem */
+  [data-theme="editorial"] section[id="projects"],
+  [data-theme="editorial"] section[id="about"],
+  [data-theme="editorial"] section[id="skills"],
+  [data-theme="editorial"] section[id="contact"],
+  [data-theme="editorial"] #experience,
+  [data-theme="editorial"] #testimonials,
+  [data-theme="noir-cinema"] section[id="projects"],
+  [data-theme="noir-cinema"] section[id="about"],
+  [data-theme="noir-cinema"] section[id="skills"],
+  [data-theme="noir-cinema"] section[id="contact"],
+  [data-theme="noir-cinema"] #experience,
+  [data-theme="noir-cinema"] #testimonials,
+  [data-theme="neon-cyber"] section[id="projects"],
+  [data-theme="neon-cyber"] section[id="about"],
+  [data-theme="neon-cyber"] section[id="skills"],
+  [data-theme="neon-cyber"] section[id="contact"],
+  [data-theme="neon-cyber"] #experience,
+  [data-theme="neon-cyber"] #testimonials {
+    padding: 3rem 1rem;
+  }
+
+  [data-theme="editorial"] section[id="hero"] {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+
+  [data-theme="editorial"] section[id="hero"] > div {
+    padding: 2rem 1rem;
+  }
+
+  [data-theme="noir-cinema"] section[id="hero"] {
+    min-height: 50vh;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"] {
+    min-height: 50vh;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"] > div {
+    padding: 2rem 1rem;
+  }
+
+  /* Editorial: Hide asymmetric hero decoration */
+  [data-theme="editorial"] section[id="hero"]::before {
+    display: none;
+  }
+
+  [data-theme="editorial"] section[id="hero"] .editorialRedLineAccent {
+    max-width: 200px;
+    height: 2px;
+  }
+
+  [data-theme="editorial"] section[id="hero"] .pullQuote {
+    font-size: 1.1rem;
+    max-width: 100%;
+  }
+
+  /* Editorial: Project cards stack vertically */
+  [data-theme="editorial"] section[id="projects"] [class*="group"] {
+    aspect-ratio: auto;
+    min-height: 180px;
+    padding: 1.25rem;
+  }
+
+  /* Noir Cinema: Hide decorative frames on small cards */
+  [data-theme="noir-cinema"] section[id="projects"] h2::after {
+    display: none;
+  }
+
+  [data-theme="noir-cinema"] section[id="projects"] [class*="group"]::before {
+    display: none;
+  }
+
+  [data-theme="noir-cinema"] section[id="about"] h3::before,
+  [data-theme="noir-cinema"] section[id="about"] h3::after {
+    display: none;
+  }
+
+  [data-theme="noir-cinema"] section[id="skills"] h2::after {
+    display: none;
+  }
+
+  [data-theme="noir-cinema"] section[id="contact"] h2::after {
+    display: none;
+  }
+
+  /* Neon Cyber: Hide corner brackets on smaller screens */
+  [data-theme="neon-cyber"] section[id="hero"]::before,
+  [data-theme="neon-cyber"] section[id="hero"]::after {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"]::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="about"]::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="skills"]::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"]::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] #experience::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] #testimonials::before {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::before,
+  [data-theme="neon-cyber"] section[id="projects"] [class*="group"]::after {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] #experience [class*="flex"]::before,
+  [data-theme="neon-cyber"] #experience [class*="flex"]::after {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] #testimonials [class*="border"]::before,
+  [data-theme="neon-cyber"] #testimonials [class*="border"]::after {
+    display: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] form::before,
+  [data-theme="neon-cyber"] section[id="contact"] form::after {
+    display: none;
+  }
+
+  /* Neon Cyber: Reduce scanline opacity further */
+  [data-theme="neon-cyber"] section[id="hero"]::before {
+    opacity: 0.3;
+  }
+
+  /* All themes: Text sizing */
+  [data-theme="editorial"] section p,
+  [data-theme="noir-cinema"] section p,
+  [data-theme="neon-cyber"] section p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  [data-theme="editorial"] section[id="projects"] p {
+    font-size: 0.8rem;
+  }
+
+  /* All themes: Form inputs optimized */
+  [data-theme="editorial"] section[id="contact"] input,
+  [data-theme="editorial"] section[id="contact"] textarea,
+  [data-theme="noir-cinema"] section[id="contact"] input,
+  [data-theme="noir-cinema"] section[id="contact"] textarea,
+  [data-theme="neon-cyber"] section[id="contact"] input,
+  [data-theme="neon-cyber"] section[id="contact"] textarea {
+    padding: 0.625rem;
+    font-size: 16px;
+  }
+
+  /* Buttons remain touch-friendly */
+  [data-theme="editorial"] section[id="contact"] button,
+  [data-theme="noir-cinema"] section[id="contact"] button,
+  [data-theme="neon-cyber"] section[id="contact"] button {
+    min-height: 44px;
+    padding: 0.625rem 1.25rem;
+  }
+
+  [data-theme="editorial"] section[id="hero"] a {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.65rem;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   375px Breakpoint (iPhone SE and small phones)
+   ────────────────────────────────────────────── */
+
+@media (max-width: 375px) {
+  /* Typography: Minimum readable sizes */
+  [data-theme="editorial"] section[id="hero"] h1,
+  [data-theme="noir-cinema"] section[id="hero"] h1,
+  [data-theme="neon-cyber"] section[id="hero"] h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  [data-theme="editorial"] section[id="projects"] h2,
+  [data-theme="editorial"] section[id="about"] h2,
+  [data-theme="editorial"] section[id="skills"] h2,
+  [data-theme="editorial"] section[id="contact"] h2,
+  [data-theme="editorial"] #experience h2,
+  [data-theme="editorial"] #testimonials h2,
+  [data-theme="noir-cinema"] section[id="projects"] h2,
+  [data-theme="noir-cinema"] section[id="about"] h2,
+  [data-theme="noir-cinema"] section[id="skills"] h2,
+  [data-theme="noir-cinema"] section[id="contact"] h2,
+  [data-theme="noir-cinema"] #experience h2,
+  [data-theme="noir-cinema"] #testimonials h2,
+  [data-theme="neon-cyber"] section[id="projects"] h2,
+  [data-theme="neon-cyber"] section[id="about"] h2,
+  [data-theme="neon-cyber"] section[id="skills"] h2,
+  [data-theme="neon-cyber"] section[id="contact"] h2,
+  [data-theme="neon-cyber"] #experience h2,
+  [data-theme="neon-cyber"] #testimonials h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  [data-theme="editorial"] section[id="projects"] h3,
+  [data-theme="noir-cinema"] section[id="projects"] h3,
+  [data-theme="neon-cyber"] section[id="projects"] h3 {
+    font-size: 0.95rem;
+  }
+
+  /* Minimum padding: 1rem */
+  [data-theme="editorial"] section[id="projects"],
+  [data-theme="editorial"] section[id="about"],
+  [data-theme="editorial"] section[id="skills"],
+  [data-theme="editorial"] section[id="contact"],
+  [data-theme="editorial"] #experience,
+  [data-theme="editorial"] #testimonials,
+  [data-theme="editorial"] section[id="hero"],
+  [data-theme="noir-cinema"] section[id="projects"],
+  [data-theme="noir-cinema"] section[id="about"],
+  [data-theme="noir-cinema"] section[id="skills"],
+  [data-theme="noir-cinema"] section[id="contact"],
+  [data-theme="noir-cinema"] #experience,
+  [data-theme="noir-cinema"] #testimonials,
+  [data-theme="noir-cinema"] section[id="hero"],
+  [data-theme="neon-cyber"] section[id="projects"],
+  [data-theme="neon-cyber"] section[id="about"],
+  [data-theme="neon-cyber"] section[id="skills"],
+  [data-theme="neon-cyber"] section[id="contact"],
+  [data-theme="neon-cyber"] #experience,
+  [data-theme="neon-cyber"] #testimonials,
+  [data-theme="neon-cyber"] section[id="hero"] {
+    padding: 2rem 1rem;
+  }
+
+  [data-theme="editorial"] section[id="hero"] > div {
+    padding: 1.5rem 1rem;
+  }
+
+  [data-theme="noir-cinema"] section[id="hero"] {
+    min-height: 45vh;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"] {
+    min-height: 45vh;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"] > div {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Body text: Minimum 1rem for readability */
+  [data-theme="editorial"] section p,
+  [data-theme="noir-cinema"] section p,
+  [data-theme="neon-cyber"] section p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  [data-theme="editorial"] section[id="projects"] p,
+  [data-theme="noir-cinema"] section[id="projects"] p,
+  [data-theme="neon-cyber"] section[id="projects"] p {
+    font-size: 0.95rem;
+  }
+
+  /* Hero text adjustments */
+  [data-theme="editorial"] section[id="hero"] .pullQuote {
+    font-size: 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  [data-theme="editorial"] section[id="hero"] .editorialRedLineAccent {
+    max-width: 150px;
+    height: 2px;
+    margin: 1rem 0;
+  }
+
+  [data-theme="editorial"] section[id="hero"] a {
+    padding: 0.5rem 1rem;
+    font-size: 0.6rem;
+    min-height: 44px;
+  }
+
+  /* Project cards: Simplified layout */
+  [data-theme="editorial"] section[id="projects"] [class*="group"] {
+    aspect-ratio: auto;
+    min-height: 150px;
+    padding: 1rem;
+    border: 1px solid var(--editorial-black);
+  }
+
+  /* Remove column layouts */
+  [data-theme="editorial"] section[id="about"] {
+    column-count: 1;
+    padding: 2rem 1rem;
+  }
+
+  [data-theme="editorial"] section[id="about"] .max-w-3xl {
+    columns: 1;
+    column-gap: 0;
+  }
+
+  [data-theme="editorial"] section[id="about"] h2 {
+    column-span: all;
+  }
+
+  [data-theme="editorial"] section[id="about"] h3 {
+    column-span: all;
+  }
+
+  [data-theme="editorial"] section[id="about"] p:first-letter {
+    font-size: 1.5em;
+  }
+
+  /* Form inputs: Full width with better spacing */
+  [data-theme="editorial"] section[id="contact"] input,
+  [data-theme="editorial"] section[id="contact"] textarea,
+  [data-theme="noir-cinema"] section[id="contact"] input,
+  [data-theme="noir-cinema"] section[id="contact"] textarea,
+  [data-theme="neon-cyber"] section[id="contact"] input,
+  [data-theme="neon-cyber"] section[id="contact"] textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+  }
+
+  /* Buttons: Minimum touch target 44px */
+  [data-theme="editorial"] section[id="contact"] button,
+  [data-theme="noir-cinema"] section[id="contact"] button,
+  [data-theme="neon-cyber"] section[id="contact"] button {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Experience: Stack layout */
+  [data-theme="editorial"] #experience > div,
+  [data-theme="noir-cinema"] #experience > div,
+  [data-theme="neon-cyber"] #experience > div {
+    flex-direction: column;
+  }
+
+  [data-theme="editorial"] #experience [class*="flex"],
+  [data-theme="noir-cinema"] #experience [class*="flex"],
+  [data-theme="neon-cyber"] #experience [class*="flex"] {
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  [data-theme="editorial"] #experience [class*="flex"]:last-child,
+  [data-theme="noir-cinema"] #experience [class*="flex"]:last-child,
+  [data-theme="neon-cyber"] #experience [class*="flex"]:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Testimonials: Simplified cards */
+  [data-theme="editorial"] #testimonials > div,
+  [data-theme="noir-cinema"] #testimonials > div,
+  [data-theme="neon-cyber"] #testimonials > div {
+    flex-direction: column;
+  }
+
+  [data-theme="editorial"] #testimonials [class*="border"],
+  [data-theme="noir-cinema"] #testimonials [class*="border"],
+  [data-theme="neon-cyber"] #testimonials [class*="border"] {
+    padding: 1rem;
+  }
+
+  [data-theme="editorial"] #testimonials blockquote {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* Remove complex background effects */
+  [data-theme="noir-cinema"] section[id="hero"]::before {
+    background-image: none;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"]::before {
+    opacity: 0;
+  }
+
+  [data-theme="neon-cyber"] section[id="about"]::before {
+    opacity: 0;
+  }
+
+  [data-theme="neon-cyber"] section[id="skills"]::before {
+    opacity: 0;
+  }
+
+  /* Skills section layout */
+  [data-theme="editorial"] section[id="skills"] [class*="flex"],
+  [data-theme="noir-cinema"] section[id="skills"] [class*="flex"],
+  [data-theme="neon-cyber"] section[id="skills"] [class*="flex"] {
+    flex-direction: column;
+  }
+
+  [data-theme="editorial"] section[id="skills"] .text-foreground,
+  [data-theme="neon-cyber"] section[id="skills"] .text-foreground {
+    flex: 0 0 auto;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Noir Cinema: Vignette effect simplified */
+  [data-theme="noir-cinema"] section[id="hero"]::after {
+    opacity: 0.4;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="editorial"] .editorialRedLineAccent {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"]::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="projects"]::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="about"]::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="skills"]::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"]::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="hero"] h1 {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] section[id="contact"] button:active {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] #experience::before {
+    animation: none;
+  }
+
+  [data-theme="neon-cyber"] #testimonials::before {
+    animation: none;
+  }
+}
