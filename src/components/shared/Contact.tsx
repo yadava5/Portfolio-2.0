@@ -295,8 +295,11 @@ export function Contact({ themeId = "dark-luxe" }: ContactProps) {
                       className="text-accent-primary hover:bg-accent-primary hover:text-background flex h-10 w-10 items-center justify-center rounded-sm border transition-all duration-300"
                       style={{ borderColor: "var(--accent-primary)" }}
                       title={link.name}
+                      aria-label={link.name}
                     >
-                      {IconComponent && <IconComponent size={18} />}
+                      {IconComponent && (
+                        <IconComponent size={18} aria-hidden="true" />
+                      )}
                     </a>
                   );
                 })}

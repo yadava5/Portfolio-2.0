@@ -44,7 +44,8 @@ export const metadata: Metadata = {
   keywords: siteMetadata.keywords,
   authors: [{ name: "Ayush Yadav" }],
   icons: {
-    icon: "/portfolio/favicon.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.ico",
   },
   openGraph: {
     title: siteMetadata.title,

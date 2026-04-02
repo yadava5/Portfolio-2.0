@@ -143,19 +143,20 @@ export const awards: Award[] = [
 /** Site metadata for SEO */
 export const siteMetadata = {
   /** Site title */
-  title: "Ayush Yadav | Data Engineer & Full-Stack Developer",
+  title: "Ayush Yadav | Software Engineer",
   /** Site description */
   description:
-    "Senior CS student at Miami University building data pipelines, ML systems, and full-stack applications. Open to internships and new-grad roles.",
+    "Full-stack engineer and data systems builder. Crafting reliable software, scalable data pipelines, and thoughtful product experiences. Senior CS student at Miami University, open to internships and new-grad roles.",
   /** Site URL */
-  url: "https://yadava5.github.io/portfolio",
+  url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */
-  ogImage: "/portfolio/og-image.png",
+  ogImage: "/og-image.png",
   /** Twitter handle */
   twitterHandle: "@ayushyadav_dev",
   /** Keywords for SEO */
   keywords: [
     "Ayush Yadav",
+    "Software Engineer",
     "Data Engineer",
     "Full-Stack Developer",
     "Machine Learning",
