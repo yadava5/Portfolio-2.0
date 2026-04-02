@@ -313,8 +313,9 @@ export function Projects({ themeId = "dark-luxe" }: ProjectsProps) {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-accent-secondary hover:text-accent-primary transition-colors"
+                          aria-label={`View ${project.title} source code on GitHub`}
                         >
-                          <Github size={18} />
+                          <Github size={18} aria-hidden="true" />
                         </a>
                       )}
                       {project.liveUrl && (
@@ -323,8 +324,9 @@ export function Projects({ themeId = "dark-luxe" }: ProjectsProps) {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-accent-primary hover:text-accent-tertiary transition-colors"
+                          aria-label={`View ${project.title} live demo`}
                         >
-                          <ExternalLink size={18} />
+                          <ExternalLink size={18} aria-hidden="true" />
                         </a>
                       )}
                     </div>
