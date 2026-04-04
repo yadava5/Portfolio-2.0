@@ -17,17 +17,20 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
   const config = getThemeConfig(themeId);
   const [scrollScale, setScrollScale] = useState(1);
   const [typewriterText, setTypewriterText] = useState("");
+  const [cursorPosition, setCursorPosition] = useState(0);
   const [showName, setShowName] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [showContent, setShowContent] = useState(themeId !== "noir-cinema");
 
-  const isCenter = config.layout.heroAlignment === "center";
   const isNeonCyber = themeId === "neon-cyber";
   const isNoirCinema = themeId === "noir-cinema";
+  const isPaperInk = themeId === "paper-ink";
+  const isEditorial = themeId === "editorial";
+  const isDarkLuxe = themeId === "dark-luxe";
 
   // Editorial scroll scaling
   useEffect(() => {
-    if (themeId !== "editorial" || prefersReducedMotion) return;
+    if (!isEditorial || prefersReducedMotion) return;
 
     const handleScroll = () => {
       const scroll = window.scrollY;
@@ -37,7 +40,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [themeId, prefersReducedMotion]);
+  }, [isEditorial, prefersReducedMotion]);
 
   // Noir Cinema countdown
   useEffect(() => {
@@ -59,6 +62,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
   useEffect(() => {
     if (!isNeonCyber || prefersReducedMotion) {
       setShowName(true);
+      setCursorPosition(0);
       return;
     }
 
@@ -67,29 +71,52 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     const interval = setInterval(() => {
       if (index < fullText.length) {
         setTypewriterText(fullText.slice(0, index + 1));
+        setCursorPosition(index + 1);
         index++;
       } else {
         clearInterval(interval);
-        setTimeout(() => setShowName(true), 300);
+        setTimeout(() => {
+          setShowName(true);
+          setCursorPosition(0);
+        }, 300);
       }
     }, 50);
     return () => clearInterval(interval);
   }, [isNeonCyber, prefersReducedMotion]);
+
+  // Deterministic particle positions to avoid SSR/client hydration mismatch
+  const PARTICLE_POSITIONS = [
+    { left: 5, dur: 7.2, delay: 0.3 },
+    { left: 12, dur: 9.1, delay: 2.1 },
+    { left: 20, dur: 11.5, delay: 4.2 },
+    { left: 28, dur: 8.3, delay: 1.0 },
+    { left: 35, dur: 13.0, delay: 3.5 },
+    { left: 42, dur: 6.8, delay: 0.8 },
+    { left: 50, dur: 10.2, delay: 2.7 },
+    { left: 58, dur: 7.9, delay: 4.8 },
+    { left: 65, dur: 12.1, delay: 1.5 },
+    { left: 72, dur: 8.7, delay: 3.2 },
+    { left: 78, dur: 11.0, delay: 0.5 },
+    { left: 84, dur: 9.5, delay: 2.4 },
+    { left: 90, dur: 7.4, delay: 4.0 },
+    { left: 95, dur: 13.3, delay: 1.8 },
+    { left: 99, dur: 8.1, delay: 3.9 },
+  ];
 
   const renderParticles = () => {
     if (themeId !== "dark-luxe" || prefersReducedMotion) return null;
 
     return (
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
+        {PARTICLE_POSITIONS.map((p, i) => (
           <div
             key={i}
             className={styles.goldParticle}
             style={{
-              left: `${Math.random() * 100}%`,
+              left: `${p.left}%`,
               bottom: `-10px`,
-              animationDuration: `${6 + Math.random() * 8}s`,
-              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${p.dur}s`,
+              animationDelay: `${p.delay}s`,
             }}
           />
         ))}
@@ -97,70 +124,97 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
     );
   };
 
-  const renderHeroName = () => {
-    if (isNoirCinema && !showContent) return null;
+  // DARK LUXE: Centered, elegant serif, subtle animations
+  const renderDarkLuxeHero = () => (
+    <div className="flex flex-col items-center justify-center text-center w-full">
+      {renderParticles()}
+      <h1
+        className="mb-4 text-6xl font-light tracking-tight md:text-8xl"
+        style={{
+          fontFamily: "var(--font-display)",
+        }}
+      >
+        {personalInfo.name}
+      </h1>
+      <div className="via-accent-primary mb-8 h-px w-24 bg-gradient-to-r from-transparent to-transparent" />
+      <h2
+        className="text-foreground-muted mb-6 text-sm tracking-widest uppercase md:text-base"
+        style={{
+          fontVariant: "small-caps",
+          letterSpacing: "0.2em",
+        }}
+      >
+        {personalInfo.title}
+      </h2>
+      <div className="bg-accent-secondary mb-8 h-px w-16" />
+    </div>
+  );
 
-    if (isNeonCyber) {
-      return (
-        <>
-          {typewriterText && (
-            <p
-              className={`${styles.typewriter} mb-8 text-sm sm:text-base`}
-              style={{ minHeight: "1.5em" }}
-            >
-              {typewriterText}
-            </p>
-          )}
-          {showName && (
-            <h1
-              className="mb-4 leading-none font-bold tracking-tighter sm:mb-6"
-              style={{
-                fontSize: "clamp(2.5rem, 8vw, 5rem)",
-                fontFamily: "var(--font-display)",
-                background:
-                  "linear-gradient(90deg, #00ff88 0%, #00d4ff 50%, #ff006e 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                filter: "drop-shadow(0 0 20px rgba(0, 255, 136, 0.8))",
-              }}
-            >
-              {personalInfo.name.toUpperCase()}
-            </h1>
-          )}
-        </>
-      );
-    }
-
-    if (themeId === "editorial") {
-      return (
-        <div className="mb-6">
+  // PAPER-INK: Full-width newspaper masthead layout
+  const renderPaperInkHero = () => (
+    <>
+      <div className="mb-8 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="md:col-span-2">
           <h1
-            className="font-display overflow-hidden leading-none font-bold tracking-tighter"
-            style={{
-              fontSize: "clamp(2.5rem, 8vw, 5rem)",
-              color: "var(--foreground)",
-              fontFamily: "var(--font-display)",
-              transform: `scale(${scrollScale})`,
-              transition: prefersReducedMotion
-                ? "none"
-                : "transform 0.1s ease-out",
-              transformOrigin: "left top",
-            }}
+            className="mb-4 text-5xl leading-tight tracking-wider md:text-6xl"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
           >
-            <span className={styles.dropCap}>
-              {personalInfo.firstName.charAt(0)}
-            </span>
-            {personalInfo.firstName.slice(1)}
+            THE AYUSH
+            <br />
+            YADAV
+            <br />
+            PORTFOLIO
           </h1>
-          <div
-            className={`${styles.editorialRedLineAccent} max-w-xs`}
-            style={{
-              animation: prefersReducedMotion ? "none" : undefined,
-            }}
-          />
+        </div>
+        <div className="border-l border-black pl-4">
+          <p className="mb-2 text-xs font-bold tracking-widest uppercase">
+            Vol. 1 | Issue 1
+          </p>
+          <p className="mb-4 text-xs md:text-sm text-gray-600">
+            Oxford, Ohio
+            <br />
+            March 30, 2026
+          </p>
+          <p className="text-xs font-bold">Est. 2026</p>
+        </div>
+      </div>
+      <p className="max-w-2xl text-base leading-relaxed text-gray-700 md:text-lg">
+        {personalInfo.tagline}
+      </p>
+    </>
+  );
+
+  // EDITORIAL: Asymmetric 2-column with red accent line
+  const renderEditorialHero = () => (
+    <div className="grid grid-cols-1 gap-12 w-full md:grid-cols-2 items-start">
+      <div className="pt-8">
+        <h1
+          className="font-display overflow-hidden leading-none font-bold tracking-tighter mb-8"
+          style={{
+            fontSize: "clamp(2.5rem, 8vw, 5rem)",
+            color: "var(--foreground)",
+            fontFamily: "var(--font-display)",
+            transform: `scale(${scrollScale})`,
+            transition: prefersReducedMotion ? "none" : "transform 0.1s ease-out",
+            transformOrigin: "left top",
+          }}
+        >
+          <span className={styles.dropCap}>
+            {personalInfo.firstName.charAt(0)}
+          </span>
+          {personalInfo.firstName.slice(1)}
+        </h1>
+        <div
+          className={`${styles.editorialRedLineAccent} w-20`}
+          style={{
+            animation: prefersReducedMotion ? "none" : undefined,
+          }}
+        />
+      </div>
+      <div className="flex flex-col justify-start gap-8">
+        <div>
           <p
-            className="font-display mt-4 leading-none font-bold tracking-tight"
+            className="font-display leading-none font-bold tracking-tight"
             style={{
               fontSize: "clamp(1.75rem, 6vw, 3.5rem)",
               color: "var(--accent-primary)",
@@ -170,27 +224,26 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             YADAV
           </p>
         </div>
-      );
-    }
-
-    if (themeId === "paper-ink") {
-      return (
-        <h1
-          className="mb-4 text-5xl leading-tight tracking-wider md:text-6xl"
-          style={{ fontFamily: "var(--font-display)" }}
+        <div
+          className={`${styles.pullQuote}`}
+          style={{
+            animation: prefersReducedMotion ? "none" : undefined,
+          }}
         >
-          THE AYUSH
-          <br />
-          YADAV
-          <br />
-          PORTFOLIO
-        </h1>
-      );
-    }
+          {personalInfo.tagline}
+        </div>
+        <p className="text-sm leading-relaxed text-foreground-muted">
+          {personalInfo.title}
+        </p>
+      </div>
+    </div>
+  );
 
-    // Dark Luxe and Noir Cinema
-    if (isNoirCinema) {
-      return (
+  // NOIR-CINEMA: Cinematic letterbox with staggered character reveal
+  const renderNoirCinemaHero = () => {
+    if (!showContent) return null;
+    return (
+      <div className="flex flex-col items-center justify-center text-center w-full">
         <h1
           className="text-foreground mb-6 font-bold tracking-tighter"
           style={{
@@ -210,35 +263,127 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             {personalInfo.name.split(" ").slice(1).join(" ")}
           </span>
         </h1>
-      );
-    }
-
-    return (
-      <h1
-        className="mb-4 text-6xl font-light tracking-tight md:text-8xl"
-        style={{
-          fontFamily: "var(--font-display)",
-        }}
-      >
-        {personalInfo.name}
-      </h1>
+        <div className="mb-12 md:mb-16">
+          <p
+            className="text-accent-primary text-xs tracking-widest uppercase md:text-sm"
+            style={{ letterSpacing: "0.3em" }}
+          >
+            A PORTFOLIO PRODUCTION
+          </p>
+        </div>
+        <div className="via-accent-primary mb-8 h-px w-full bg-gradient-to-r from-transparent to-transparent md:mb-12" />
+        <h2
+          className="text-accent-primary mb-6 text-base tracking-widest uppercase md:text-xl"
+          style={{
+            fontFamily: "var(--font-body)",
+            letterSpacing: "0.15em",
+          }}
+        >
+          {personalInfo.title}
+        </h2>
+        <p
+          className="text-foreground-muted mb-8 max-w-2xl text-sm leading-relaxed md:text-lg"
+          style={{
+            fontFamily: "var(--font-body)",
+            letterSpacing: "0.05em",
+          }}
+        >
+          {personalInfo.tagline}
+        </p>
+        <div className="mt-12 space-y-2 md:mt-16">
+          <p
+            className="text-accent-primary text-xs tracking-widest"
+            style={{ letterSpacing: "0.2em" }}
+          >
+            DIRECTED BY FATE
+          </p>
+          <p
+            className="text-accent-primary text-xs tracking-widest"
+            style={{ letterSpacing: "0.2em" }}
+          >
+            STARRING YOU
+          </p>
+        </div>
+      </div>
     );
   };
 
+  // NEON-CYBER: Terminal aesthetic with HUD styling
+  const renderNeonCyberHero = () => (
+    <div className="w-full flex flex-col items-start justify-start">
+      <div className={`${styles.hudBox} w-full max-w-2xl`}>
+        {typewriterText && (
+          <p
+            className={`${styles.typewriter} mb-8 text-sm sm:text-base`}
+            style={{ minHeight: "1.5em" }}
+          >
+            {typewriterText}
+          </p>
+        )}
+        {showName && (
+          <>
+            <h1
+              className="mb-6 leading-none font-bold tracking-tighter"
+              style={{
+                fontSize: "clamp(2rem, 6vw, 4rem)",
+                fontFamily: "var(--font-display)",
+                background:
+                  "linear-gradient(90deg, #00ff88 0%, #00d4ff 50%, #ff006e 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter: "drop-shadow(0 0 20px rgba(0, 255, 136, 0.8))",
+              }}
+            >
+              {personalInfo.name.toUpperCase()}
+            </h1>
+            <p
+              className="text-base tracking-wide sm:text-lg"
+              style={{
+                fontFamily:
+                  "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
+                color: "var(--neon-green)",
+                textShadow: `
+                  0 0 10px var(--neon-green),
+                  0 0 20px var(--neon-green)
+                `,
+                letterSpacing: "0.15em",
+              }}
+            >
+              [{personalInfo.title}]
+            </p>
+            <p
+              className="mt-2 text-xs sm:text-sm"
+              style={{
+                fontFamily:
+                  "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
+                color: "var(--neon-cyan)",
+                opacity: 0.8,
+              }}
+            >
+              {personalInfo.tagline}
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <section
+      id="hero"
       ref={containerRef}
-      className={`bg-background relative flex h-screen w-full flex-col items-center justify-center overflow-hidden ${
-        themeId === "paper-ink" ? "pt-32" : ""
-      } ${isNeonCyber ? styles.cyberScanlines : ""}`}
+      className={`bg-background relative flex h-screen w-full flex-col overflow-hidden ${
+        isPaperInk ? "pt-32" : ""
+      } ${isNeonCyber ? styles.cyberScanlines : ""} ${
+        isEditorial
+          ? "items-start justify-start px-4 md:px-8"
+          : "items-center justify-center px-4 md:px-8"
+      }`}
       data-theme={themeId}
       style={{
         backgroundColor:
-          themeId === "paper-ink"
-            ? "#f5f1de"
-            : themeId === "editorial"
-              ? "#fefefe"
-              : undefined,
+          isPaperInk ? "#f5f1de" : isEditorial ? "#fefefe" : undefined,
         contain: "layout style paint",
         contentVisibility: "auto",
         containIntrinsicSize: "100vh",
@@ -258,7 +403,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         </div>
       )}
 
-      {/* Noir Cinema letterbox */}
+      {/* Noir Cinema letterbox bars */}
       {isNoirCinema && (
         <>
           <div className="fixed top-0 right-0 left-0 z-40 flex h-12 items-center justify-center bg-black md:h-20">
@@ -270,10 +415,8 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         </>
       )}
 
-      {/* Theme-specific background effects */}
-      {renderParticles()}
-
-      {themeId === "paper-ink" && (
+      {/* Paper Ink scanline effect */}
+      {isPaperInk && (
         <div
           className="pointer-events-none absolute inset-0 opacity-3"
           style={{
@@ -288,13 +431,13 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         />
       )}
 
-      {/* Content */}
+      {/* Main content wrapper */}
       <div
-        className={`relative z-10 flex flex-col ${
-          isCenter
-            ? "items-center justify-center text-center"
-            : "items-start justify-center text-left"
-        } w-full max-w-4xl px-4 md:px-8`}
+        className={`relative z-10 w-full max-w-4xl ${
+          isEditorial
+            ? "pt-20 md:pt-24"
+            : "flex flex-col items-center justify-center"
+        }`}
         style={{
           opacity: showContent ? 1 : 0,
           transition: prefersReducedMotion
@@ -302,170 +445,39 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
             : "opacity 0.5s ease-out 0.3s",
         }}
       >
-        {themeId === "paper-ink" && (
-          <div className="mb-8 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="md:col-span-2">{renderHeroName()}</div>
-            <div className="border-l border-black pl-4">
-              <p className="mb-2 text-xs font-bold tracking-widest uppercase">
-                Vol. 1 | Issue 1
-              </p>
-              <p className="mb-4 text-xs md:text-sm">
-                Oxford, Ohio
-                <br />
-                March 30, 2026
-              </p>
-              <p className="text-xs font-bold">Est. 2026</p>
-            </div>
-          </div>
-        )}
+        {isDarkLuxe && renderDarkLuxeHero()}
+        {isPaperInk && renderPaperInkHero()}
+        {isEditorial && renderEditorialHero()}
+        {isNoirCinema && renderNoirCinemaHero()}
+        {isNeonCyber && renderNeonCyberHero()}
 
-        {themeId !== "paper-ink" && renderHeroName()}
-
-        {/* Dividers and secondary content */}
-        {themeId === "dark-luxe" && (
-          <>
-            <div className="via-accent-primary mb-8 h-px w-24 bg-gradient-to-r from-transparent to-transparent" />
-            <h2
-              className="text-foreground-muted mb-6 text-sm tracking-widest uppercase md:text-base"
-              style={{
-                fontVariant: "small-caps",
-                letterSpacing: "0.2em",
-              }}
-            >
-              {personalInfo.title}
-            </h2>
-            <div className="bg-accent-secondary mb-8 h-px w-16" />
-          </>
-        )}
-
-        {themeId === "editorial" && (
-          <div
-            className={`${styles.pullQuote} mb-8`}
-            style={{
-              animation: prefersReducedMotion ? "none" : undefined,
-            }}
-          >
-            {personalInfo.tagline}
-          </div>
-        )}
-
-        {themeId === "neon-cyber" && (
-          <>
-            <p
-              className={`${styles.neonTextCyan} mb-8 text-xs tracking-widest sm:text-sm`}
-            >
-              {/* SYSTEM.STATUS: ACTIVE */}
-            </p>
-            <div className="mb-12">
-              <p
-                className="text-base tracking-wide sm:text-lg"
-                style={{
-                  fontFamily:
-                    "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
-                  color: "var(--neon-green)",
-                  textShadow: `
-                    0 0 10px var(--neon-green),
-                    0 0 20px var(--neon-green)
-                  `,
-                  letterSpacing: "0.15em",
-                }}
-              >
-                [{personalInfo.title}]
-              </p>
-              <p
-                className="mt-2 text-xs sm:text-sm"
-                style={{
-                  fontFamily:
-                    "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
-                  color: "var(--neon-cyan)",
-                  opacity: 0.8,
-                }}
-              >
-                {personalInfo.tagline}
-              </p>
-            </div>
-          </>
-        )}
-
-        {themeId === "noir-cinema" && (
-          <>
-            <div className="mb-12 md:mb-16">
-              <p
-                className="text-accent-primary text-xs tracking-widest uppercase md:text-sm"
-                style={{ letterSpacing: "0.3em" }}
-              >
-                A PORTFOLIO PRODUCTION
-              </p>
-            </div>
-            <div className="via-accent-primary mb-8 h-px w-full bg-gradient-to-r from-transparent to-transparent md:mb-12" />
-            <h2
-              className="text-accent-primary mb-6 text-base tracking-widest uppercase md:text-xl"
-              style={{
-                fontFamily: "var(--font-body)",
-                letterSpacing: "0.15em",
-              }}
-            >
-              {personalInfo.title}
-            </h2>
-            <p
-              className="text-foreground-muted mb-8 max-w-2xl text-sm leading-relaxed md:text-lg"
-              style={{
-                fontFamily: "var(--font-body)",
-                letterSpacing: "0.05em",
-              }}
-            >
-              {personalInfo.tagline}
-            </p>
-            <div className="mt-12 space-y-2 md:mt-16">
-              <p
-                className="text-accent-primary text-xs tracking-widest"
-                style={{ letterSpacing: "0.2em" }}
-              >
-                DIRECTED BY FATE
-              </p>
-              <p
-                className="text-accent-primary text-xs tracking-widest"
-                style={{ letterSpacing: "0.2em" }}
-              >
-                STARRING YOU
-              </p>
-            </div>
-          </>
-        )}
-
-        {(themeId === "paper-ink" || themeId === "editorial") && (
-          <p className="max-w-2xl text-base leading-relaxed text-gray-700 md:text-lg">
-            {personalInfo.tagline}
-          </p>
-        )}
-
-        {/* CTA Buttons */}
-        {(themeId === "dark-luxe" || themeId === "noir-cinema") && (
+        {/* CTA Buttons - theme-specific */}
+        {(isDarkLuxe || isNoirCinema) && (
           <div className="mt-12 flex flex-col gap-6 sm:flex-row">
             <a
               href="#projects"
               className={`border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-background border px-8 py-3 text-sm tracking-widest uppercase transition-all duration-300 ${
-                themeId === "noir-cinema" ? "border-2" : ""
+                isNoirCinema ? "border-2" : ""
               }`}
             >
-              {themeId === "noir-cinema" ? "Continue Feature" : "View Work"}
+              {isNoirCinema ? "Continue Feature" : "View Work"}
             </a>
             <a
               href={personalInfo.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={`text-accent-secondary hover:bg-accent-secondary hover:text-background border px-8 py-3 text-sm tracking-widest uppercase transition-all duration-300 ${
-                themeId === "noir-cinema"
+                isNoirCinema
                   ? "border-foreground text-foreground hover:bg-foreground border-2"
                   : "border-accent-secondary"
               }`}
             >
-              {themeId === "noir-cinema" ? "View Credits" : "Resume"}
+              {isNoirCinema ? "View Credits" : "Resume"}
             </a>
           </div>
         )}
 
-        {themeId === "paper-ink" && (
+        {isPaperInk && (
           <div className="mt-12 flex flex-col gap-4">
             <h3 className="text-sm font-bold tracking-widest uppercase">
               In This Edition
@@ -487,7 +499,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
           </div>
         )}
 
-        {themeId === "editorial" && (
+        {isEditorial && (
           <div className="mt-12 flex flex-col gap-4 sm:flex-row">
             <a
               href="#projects"
@@ -504,20 +516,6 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
               Full Resume
             </a>
           </div>
-        )}
-
-        {themeId === "neon-cyber" && (
-          <p
-            className="mt-8 text-xs sm:text-sm"
-            style={{
-              fontFamily:
-                "var(--font-jetbrains-mono, 'JetBrains Mono', monospace)",
-              color: "var(--neon-green)",
-              opacity: 0.7,
-            }}
-          >
-            {/* SCROLL TO CONTINUE INITIALIZATION */}
-          </p>
         )}
       </div>
 
@@ -541,9 +539,7 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
           <ChevronDown
             size={24}
             className={
-              themeId === "paper-ink" || themeId === "editorial"
-                ? "text-black"
-                : "text-accent-primary"
+              isPaperInk || isEditorial ? "text-black" : "text-accent-primary"
             }
             style={
               isNeonCyber
@@ -557,12 +553,12 @@ export function Hero({ themeId = "dark-luxe" }: HeroProps) {
         </div>
         <p
           className={`text-xs tracking-widest uppercase ${
-            themeId === "paper-ink" || themeId === "editorial"
+            isPaperInk || isEditorial
               ? "text-black"
               : "text-foreground-muted"
           }`}
         >
-          {themeId === "paper-ink" ? "SCROLL" : "Scroll to explore"}
+          {isPaperInk ? "SCROLL" : "Scroll to explore"}
         </p>
       </div>
     </section>
