@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   /** Disable image optimization for static export */
   images: {
     unoptimized: true,
+    qualities: [75, 85],
   },
 
   /** Fix Turbopack root directory for monorepo setup */
