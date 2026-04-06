@@ -62,11 +62,11 @@ export const personalInfo = {
   /** Current availability */
   availability: "Open to internships and new-grad roles",
 
-  /** Bio paragraphs for about section - supports **bold** markup for highlights */
+  /** Bio paragraphs for about section */
   bio: [
-    "Senior **Computer Science** student graduating **May 2026**, focused on **data pipelines**, **applied machine learning**, and building reliable software systems end-to-end.",
-    "I currently work as an **ITSM Data Integration Student Associate** at Miami University, where I build **Python/SQL pipelines** processing **1M+ rows**, translate messy operational data into trusted datasets, and ship dashboards and automations that teams actually use.",
-    "I enjoy **backend/full-stack engineering**, **data engineering**, and **ML-adjacent product work**—especially where performance, reliability, and clear user impact matter.",
+    "Senior Computer Science student graduating May 2026, focused on data pipelines, applied machine learning, and building reliable software systems end-to-end.",
+    "I currently work as an ITSM Data Integration Student Associate at Miami University, where I build Python/SQL pipelines processing 1M+ rows, translate messy operational data into trusted datasets, and ship dashboards and automations that teams actually use.",
+    "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work—especially where performance, reliability, and clear user impact matter.",
   ],
 
   /** Resume file path */
