@@ -1,358 +1,195 @@
-/**
- * @fileoverview Skills section with interactive 3D hexagonal grid
- *
- * Displays skills organized by category with visual proficiency indicators.
- *
- * Features:
- * - Hexagonal skill cards with hover effects
- * - Category tabs with animated underline
- * - Proficiency visualization (bars + labels)
- * - GSAP stagger animations on scroll
- * - Floating particle background
- *
- * @module components/sections/Skills
- */
-
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Code2,
-  Database,
-  Globe,
-  Cpu,
-  Box,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
+import { skillCategories } from "@/lib/data/skills";
+import { TextReveal } from "@/components/effects/TextReveal";
+import { GlassCard } from "@/components/effects/GlassCard";
+import { NebulaCard } from "@/components/effects/NebulaCard";
+import { WarpTransition } from "@/components/effects/WarpTransition";
+import { TypewriterText } from "@/components/effects/TypewriterText";
+import { GlitchBurst } from "@/components/effects/GlitchBurst";
+import { NeonBorder } from "@/components/effects/NeonBorder";
+import { FloatingEntry } from "@/components/effects/FloatingEntry";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { skillCategories, type SkillLevel } from "@/lib/data/skills";
-import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-/** Icon mapping for categories */
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  languages: <Code2 className="h-5 w-5" />,
-  frontend: <Globe className="h-5 w-5" />,
-  backend: <Database className="h-5 w-5" />,
-  data: <Cpu className="h-5 w-5" />,
-  mobile: <Box className="h-5 w-5" />,
-  devops: <Settings className="h-5 w-5" />,
-  specializations: <Sparkles className="h-5 w-5" />,
-};
-
-/** Proficiency level colors and percentages */
-const LEVEL_CONFIG: Record<
-  SkillLevel,
-  { color: string; percent: number; label: string }
-> = {
-  expert: {
-    color: "from-violet-500 to-fuchsia-500",
-    percent: 95,
-    label: "Expert",
-  },
-  advanced: {
-    color: "from-cyan-500 to-blue-500",
-    percent: 80,
-    label: "Advanced",
-  },
-  intermediate: {
-    color: "from-emerald-500 to-teal-500",
-    percent: 60,
-    label: "Intermediate",
-  },
-  learning: {
-    color: "from-amber-500 to-orange-500",
-    percent: 35,
-    label: "Learning",
-  },
-};
-
-/**
- * Individual skill card with proficiency bar
- */
-interface SkillCardProps {
-  name: string;
-  level: SkillLevel;
-  index: number;
-}
-
-function SkillCard({ name, level, index }: SkillCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLDivElement>(null);
-  const config = LEVEL_CONFIG[level];
-
-  useEffect(() => {
-    if (!cardRef.current || !barRef.current) return;
-
-    // Animate the proficiency bar on scroll
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        barRef.current,
-        { width: "0%" },
-        {
-          width: `${config.percent}%`,
-          duration: 1,
-          delay: index * 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: cardRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
-          },
-        }
-      );
-    });
-
-    return () => ctx.revert();
-  }, [config.percent, index]);
-
-  return (
-    <div
-      ref={cardRef}
-      className={cn(
-        "group relative overflow-hidden rounded-xl",
-        "bg-linear-to-br from-white/5 to-white/2",
-        "border border-white/10 backdrop-blur-sm",
-        "transition-all duration-300",
-        "hover:border-white/20 hover:bg-white/8",
-        "hover:shadow-lg hover:shadow-violet-500/10",
-        "hover:-translate-y-1"
-      )}
-    >
-      {/* Holographic shimmer on hover */}
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500",
-          "group-hover:opacity-100"
-        )}
-        style={{
-          background:
-            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)",
-          backgroundSize: "200% 100%",
-          animation: "shimmer 2s infinite linear",
-        }}
-      />
-
-      <div className="relative z-10 p-4">
-        {/* Skill name */}
-        <div className="mb-3">
-          <h4 className="font-semibold text-white/90">{name}</h4>
-        </div>
-
-        {/* Proficiency bar */}
-        <div
-          className="mb-2 h-2 overflow-hidden rounded-full bg-white/5"
-          role="progressbar"
-          aria-valuenow={config.percent}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`${name} proficiency: ${config.percent}%`}
-        >
-          <div
-            ref={barRef}
-            className={cn("h-full rounded-full bg-linear-to-r", config.color)}
-            style={{ width: "0%" }}
-          />
-        </div>
-
-        {/* Level label */}
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-white/40">{config.label}</span>
-          <span className="text-white/60">{config.percent}%</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Skills section component
- */
 export function Skills() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("languages");
-  const gridRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
-  const activeSkillCategory = skillCategories.find(
-    (cat) => cat.id === activeCategory
-  );
+  if (theme === "liquid-glass") {
+    return (
+      <section id="skills" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto">
+        <TextReveal className="mb-16 text-center">
+          <span className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-widest uppercase text-white/80">
+            Skills & Expertise
+          </span>
+        </TextReveal>
 
-  const handleCategoryChange = useCallback(
-    (categoryId: string) => {
-      if (categoryId === activeCategory) return;
-
-      // Animate out current skills
-      if (gridRef.current) {
-        const cards = gridRef.current.querySelectorAll("[data-skill-card]");
-        gsap.to(cards, {
-          opacity: 0,
-          y: 20,
-          stagger: 0.02,
-          duration: 0.2,
-          ease: "power2.in",
-          onComplete: () => {
-            setActiveCategory(categoryId);
-          },
-        });
-      } else {
-        setActiveCategory(categoryId);
-      }
-    },
-    [activeCategory]
-  );
-
-  // Animate in new skills when category changes
-  useEffect(() => {
-    if (!gridRef.current) return;
-
-    const cards = gridRef.current.querySelectorAll("[data-skill-card]");
-    gsap.fromTo(
-      cards,
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1,
-        y: 0,
-        stagger: 0.05,
-        duration: 0.4,
-        ease: "power2.out",
-      }
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category, idx) => (
+            <TextReveal key={category.id} className={`delay-[${(idx % 2) * 100}ms]`}>
+              <GlassCard className="p-8 h-full">
+                <h3 className="text-2xl font-semibold text-white mb-8 flex items-center gap-3">
+                  <span className="text-indigo-400">✦</span> {category.name}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/80 hover:bg-white/20 hover:border-white/30 transition-all duration-300 cursor-default"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </GlassCard>
+            </TextReveal>
+          ))}
+        </div>
+      </section>
     );
-  }, [activeCategory]);
+  }
 
-  return (
-    <section
-      ref={sectionRef}
-      id="skills"
-      className="relative min-h-screen py-24 md:py-32"
-    >
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Gradient orbs */}
-        <div
-          className="absolute top-1/4 -left-32 h-96 w-96 rounded-full opacity-20"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)",
-            filter: "blur(80px)",
-            animation: "float 8s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute -right-32 bottom-1/4 h-96 w-96 rounded-full opacity-20"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(6,182,212,0.4) 0%, transparent 70%)",
-            filter: "blur(80px)",
-            animation: "float 10s ease-in-out infinite reverse",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 container mx-auto max-w-6xl px-4">
-        {/* Section header */}
-        <ScrollReveal variant="slide-up" className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold md:text-5xl">
-            <span className="bg-linear-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              Skills & Expertise
-            </span>
+  if (theme === "cosmic-voyage") {
+    return (
+      <section id="skills" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl md:text-5xl text-white font-light tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+            Arsenal
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-white/60">
-            Technologies and tools I use to bring ideas to life
+          <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category, idx) => (
+            <WarpTransition key={category.id}>
+              <NebulaCard className="p-8 h-full">
+                <h3 className="text-2xl font-semibold text-white mb-8 flex items-center gap-3" style={{ fontFamily: "var(--font-serif)" }}>
+                  <span className="text-blue-400 text-sm">✧</span> {category.name}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="px-4 py-2 bg-blue-900/10 border border-blue-500/20 text-blue-100/80 hover:bg-blue-800/30 hover:border-blue-400/50 transition-all duration-300 cursor-default text-sm tracking-wider"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </NebulaCard>
+            </WarpTransition>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "retro-terminal") {
+    return (
+      <section id="skills" className="relative min-h-screen py-32 px-4 md:px-12 z-10 max-w-5xl mx-auto font-mono text-[#00ff41]">
+        <div className="mb-12">
+          <p className="text-sm md:text-base mb-4 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ./list_modules.sh
           </p>
-        </ScrollReveal>
+          <h2 className="text-3xl md:text-5xl font-bold uppercase mb-8 border-b border-[#00ff41]/30 pb-4 inline-block">
+            # LOADED_MODULES
+          </h2>
+        </div>
 
-        {/* Category tabs */}
-        <ScrollReveal variant="slide-up" delay={0.1} className="mb-12">
-          <div className="flex flex-wrap justify-center gap-2">
-            {skillCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleCategoryChange(category.id)}
-                className={cn(
-                  "group flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-300",
-                  activeCategory === category.id
-                    ? "bg-linear-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/30"
-                    : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white"
-                )}
-              >
-                <span
-                  className={cn(
-                    "transition-transform duration-300",
-                    activeCategory === category.id
-                      ? "scale-110"
-                      : "group-hover:scale-110"
-                  )}
-                >
-                  {CATEGORY_ICONS[category.id]}
-                </span>
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </ScrollReveal>
-
-        {/* Category description */}
-        {activeSkillCategory && (
-          <ScrollReveal variant="fade" className="mb-8 text-center">
-            <GlassCard className="mx-auto inline-block px-6 py-3">
-              <p className="text-white/70">{activeSkillCategory.description}</p>
-            </GlassCard>
-          </ScrollReveal>
-        )}
-
-        {/* Skills grid */}
-        <div ref={gridRef} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {activeSkillCategory?.skills.map((skill, index) => (
-            <div key={skill.name} data-skill-card>
-              <SkillCard name={skill.name} level={skill.level} index={index} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category) => (
+            <div key={category.id} className="border border-[#00ff41]/30 p-6 bg-black/50 hover:bg-[#00ff41]/5 transition-colors">
+              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3 uppercase">
+                <span className="text-[#ffb000]">&gt;</span> {category.name}
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {category.skills.map((skill) => (
+                  <span
+                    key={skill.name}
+                    className="px-3 py-1 border border-[#00ff41]/50 text-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-colors cursor-default text-sm"
+                  >
+                    {skill.name}
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
+      </section>
+    );
+  }
 
-        {/* Stats summary */}
-        <ScrollReveal variant="slide-up" delay={0.3} className="mt-16">
-          <div className="grid gap-6 sm:grid-cols-3">
-            {[
-              {
-                label: "Skill Categories",
-                value: skillCategories.length,
-                icon: "📚",
-              },
-              {
-                label: "Technologies",
-                value: skillCategories.reduce(
-                  (acc, cat) => acc + cat.skills.length,
-                  0
-                ),
-                icon: "⚡",
-              },
-              {
-                label: "Years Coding",
-                value: "5+",
-                icon: "🚀",
-              },
-            ].map((stat) => (
-              <GlassCard key={stat.label} className="p-6 text-center">
-                <div className="mb-2 text-3xl">{stat.icon}</div>
-                <div className="mb-1 text-3xl font-bold text-white">
-                  {stat.value}
+  if (theme === "synthwave-sunset") {
+    return (
+      <section id="skills" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto font-sans">
+        <GlitchBurst className="mb-16 text-center">
+          <h2 className="text-4xl md:text-6xl text-[#00ffff] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 15px #00ffff" }}>
+            LOADOUT
+          </h2>
+        </GlitchBurst>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category, idx) => (
+            <GlitchBurst key={category.id}>
+              <NeonBorder color={idx % 2 === 0 ? "cyan" : "magenta"} className="p-8 h-full bg-black/60">
+                <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3 uppercase" style={{ fontFamily: "var(--font-display)" }}>
+                  <span className="text-[#ffff00]" style={{ textShadow: "0 0 10px #ffff00" }}>⚡</span> {category.name}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="px-4 py-2 bg-black border-2 border-[#ff00ff] text-white font-bold uppercase hover:bg-[#ff00ff] hover:text-black transition-colors cursor-default shadow-[0_0_10px_#ff00ff,inset_0_0_5px_#ff00ff]"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
                 </div>
-                <div className="text-sm text-white/50">{stat.label}</div>
-              </GlassCard>
-            ))}
-          </div>
-        </ScrollReveal>
-      </div>
+              </NeonBorder>
+            </GlitchBurst>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "bioluminescent-deep") {
+    return (
+      <section id="skills" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto font-serif">
+        <FloatingEntry className="mb-16 text-center">
+          <h2 className="text-4xl md:text-6xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            Capabilities
+          </h2>
+          <div className="h-px w-16 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
+        </FloatingEntry>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillCategories.map((category, idx) => (
+            <FloatingEntry key={category.id}>
+              <div className="p-8 h-full rounded-3xl bg-[#001433]/70 backdrop-blur-xl border border-[#00ffff]/10 shadow-[0_0_30px_rgba(0,255,255,0.05)] hover:shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:border-[#00ffff]/30 transition-all duration-700">
+                <h3 className="text-2xl font-medium text-[#e0f4ff] mb-8 flex items-center gap-3 tracking-wide">
+                  <span className="text-[#00ffff] opacity-70">∿</span> {category.name}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="px-4 py-2 rounded-full bg-[#00ffff]/5 border border-[#00ffff]/20 text-[#e0f4ff]/80 font-sans font-light tracking-wide hover:bg-[#00ffff]/20 hover:border-[#00ffff]/50 hover:text-[#e0f4ff] transition-all duration-500 cursor-default hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </FloatingEntry>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="min-h-screen flex items-center justify-center">
+      <h2 className="text-4xl">Skills - {theme}</h2>
     </section>
   );
 }
-
-export default Skills;
