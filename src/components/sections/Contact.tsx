@@ -1,414 +1,305 @@
-/**
- * @fileoverview Contact section with form and social links
- *
- * Features a glassmorphism contact form and social media links
- * with animated hover effects.
- *
- * Features:
- * - Contact form with validation
- * - Social media links with tooltips
- * - Floating gradient orbs background
- * - GSAP scroll animations
- * - Accessible form controls
- *
- * @module components/sections/Contact
- */
-
 "use client";
 
-import { useState, useRef, FormEvent } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Mail,
-  MapPin,
-  Github,
-  Linkedin,
-  ExternalLink,
-  CheckCircle2,
-  ArrowRight,
-} from "lucide-react";
-
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { MagneticButton } from "@/components/ui/MagneticButton";
+import { useTheme } from "@/hooks/useTheme";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
-import { cn } from "@/lib/utils";
+import { TextReveal } from "@/components/effects/TextReveal";
+import { GlassCard } from "@/components/effects/GlassCard";
+import { NebulaCard } from "@/components/effects/NebulaCard";
+import { WarpTransition } from "@/components/effects/WarpTransition";
+import { TypewriterText } from "@/components/effects/TypewriterText";
+import { GlitchBurst } from "@/components/effects/GlitchBurst";
+import { NeonBorder } from "@/components/effects/NeonBorder";
+import { FloatingEntry } from "@/components/effects/FloatingEntry";
+import { Mail, MapPin, ExternalLink } from "lucide-react";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+export function Contact() {
+  const { theme } = useTheme();
 
-/** Icon mapping for social platforms */
-const SOCIAL_ICONS: Record<string, React.ReactNode> = {
-  Github: <Github className="h-5 w-5" />,
-  Linkedin: <Linkedin className="h-5 w-5" />,
-  Mail: <Mail className="h-5 w-5" />,
-};
+  if (theme === "liquid-glass") {
+    return (
+      <section id="contact" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+        <TextReveal className="mb-12">
+          <span className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-widest uppercase text-white/80">
+            Get In Touch
+          </span>
+        </TextReveal>
 
-/** Form field state */
-interface FormState {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
+        <TextReveal className="mb-16 max-w-2xl">
+          <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tighter">
+            Let&apos;s build something <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">extraordinary</span>.
+          </h2>
+          <p className="text-xl text-white/60 font-light leading-relaxed">
+            I&apos;m currently open for new opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
+          </p>
+        </TextReveal>
 
-/** Initial form state */
-const INITIAL_FORM: FormState = {
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-};
-
-/**
- * Contact information card
- */
-function ContactInfo() {
-  const infoItems = [
-    {
-      icon: <Mail className="h-5 w-5" />,
-      label: "Email",
-      value: personalInfo.email,
-      href: `mailto:${personalInfo.email}`,
-    },
-    {
-      icon: <MapPin className="h-5 w-5" />,
-      label: "Location",
-      value: personalInfo.location,
-    },
-  ];
-
-  return (
-    <GlassCard className="h-full p-8">
-      <h3 className="mb-6 text-2xl font-bold text-white">Get in Touch</h3>
-      <p className="mb-8 text-white/60">
-        {personalInfo.availability}. Feel free to reach out for collaborations,
-        opportunities, or just to say hello!
-      </p>
-
-      {/* Contact details */}
-      <div className="mb-8 space-y-4">
-        {infoItems.map((item) => (
-          <div key={item.label} className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-violet-500/20 to-fuchsia-500/20 text-violet-400">
-              {item.icon}
-            </div>
-            <div>
-              <p className="text-sm text-white/40">{item.label}</p>
-              {item.href ? (
-                <a
-                  href={item.href}
-                  className="text-white/90 transition-colors hover:text-violet-400"
-                >
-                  {item.value}
+        <TextReveal className="w-full">
+          <GlassCard className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col items-center md:items-start gap-4">
+              <div className="flex items-center gap-3 text-white/80">
+                <Mail className="text-indigo-400" size={24} />
+                <a href={`mailto:${personalInfo.email}`} className="text-xl hover:text-white transition-colors">
+                  {personalInfo.email}
                 </a>
-              ) : (
-                <p className="text-white/90">{item.value}</p>
-              )}
+              </div>
+              <div className="flex items-center gap-3 text-white/60">
+                <MapPin className="text-pink-400" size={20} />
+                <span>{personalInfo.location}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300 hover:scale-110"
+                  aria-label={link.name}
+                >
+                  <ExternalLink size={20} />
+                </a>
+              ))}
+            </div>
+          </GlassCard>
+        </TextReveal>
+      </section>
+    );
+  }
+
+  if (theme === "cosmic-voyage") {
+    return (
+      <section id="contact" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+        <div className="mb-12 text-center">
+          <h2 className="text-3xl md:text-5xl text-white font-light tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+            Establish Link
+          </h2>
+          <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-orange-400 to-transparent" />
+        </div>
+
+        <WarpTransition className="mb-16 max-w-2xl">
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-wide" style={{ fontFamily: "var(--font-serif)" }}>
+            Ready to explore <span className="text-orange-400 italic">new frontiers?</span>
+          </h2>
+          <p className="text-xl text-indigo-100/60 font-light leading-relaxed">
+            My comms channels are open. Whether you have a mission in mind or just want to exchange coordinates, I&apos;ll respond as soon as the signal reaches me.
+          </p>
+        </WarpTransition>
+
+        <WarpTransition className="w-full">
+          <NebulaCard className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border-orange-500/20 hover:border-orange-400/40">
+            <div className="flex flex-col items-center md:items-start gap-6">
+              <div className="flex items-center gap-4 text-indigo-100/80">
+                <div className="p-3 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400">
+                  <Mail size={20} />
+                </div>
+                <a href={`mailto:${personalInfo.email}`} className="text-lg tracking-wider hover:text-white transition-colors">
+                  {personalInfo.email}
+                </a>
+              </div>
+              <div className="flex items-center gap-4 text-indigo-100/60">
+                <div className="p-3 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                  <MapPin size={20} />
+                </div>
+                <span className="tracking-wider">{personalInfo.location}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-14 h-14 rounded-full bg-black/50 border border-indigo-500/30 flex items-center justify-center text-indigo-200 hover:bg-indigo-900/40 hover:text-white hover:border-indigo-400 transition-all duration-300 hover:scale-110 shadow-[0_0_15px_rgba(100,0,255,0.2)]"
+                  aria-label={link.name}
+                >
+                  <ExternalLink size={20} />
+                </a>
+              ))}
+            </div>
+          </NebulaCard>
+        </WarpTransition>
+      </section>
+    );
+  }
+
+  if (theme === "retro-terminal") {
+    return (
+      <section id="contact" className="relative min-h-screen py-32 px-4 md:px-12 z-10 max-w-4xl mx-auto flex flex-col font-mono text-[#00ff41]">
+        <div className="mb-12">
+          <p className="text-sm md:text-base mb-4 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ./connect.sh
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold uppercase mb-8 border-b border-[#00ff41]/30 pb-4 inline-block">
+            # INITIATE_CONNECTION
+          </h2>
+        </div>
+
+        <div className="mb-16 max-w-2xl">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 uppercase">
+            <span className="text-[#ffb000]">PING</span> ME FOR COLLABORATION
+          </h2>
+          <p className="text-lg text-[#00ff41]/80 leading-relaxed">
+            SYSTEM STATUS: LISTENING ON ALL PORTS.
+            <br />
+            Awaiting new packets. Drop a message and I&apos;ll ACK as soon as possible.
+          </p>
+        </div>
+
+        <div className="w-full border border-[#00ff41]/50 p-8 md:p-12 bg-black/60 flex flex-col md:flex-row items-center justify-between gap-8 hover:bg-[#00ff41]/5 transition-colors">
+          <div className="flex flex-col items-center md:items-start gap-6 w-full md:w-auto">
+            <div className="flex items-center gap-4 text-[#00ff41]">
+              <span className="text-[#ffb000] font-bold">MAILTO:</span>
+              <a href={`mailto:${personalInfo.email}`} className="text-lg hover:bg-[#00ff41] hover:text-black px-2 py-1 transition-colors uppercase">
+                {personalInfo.email}
+              </a>
+            </div>
+            <div className="flex items-center gap-4 text-[#00ff41]/70">
+              <span className="text-blue-400 font-bold">LOC:</span>
+              <span className="uppercase">{personalInfo.location}</span>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Social links */}
-      <div>
-        <p className="mb-4 text-sm font-medium text-white/40">
-          Connect with me
-        </p>
-        <div className="flex gap-3">
-          {socialLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "group flex h-12 w-12 items-center justify-center rounded-xl",
-                "bg-white/5 text-white/60 transition-all duration-300",
-                "hover:bg-linear-to-br hover:from-violet-500 hover:to-fuchsia-500",
-                "hover:text-white hover:shadow-lg hover:shadow-violet-500/30"
-              )}
-              aria-label={link.name}
-            >
-              {SOCIAL_ICONS[link.icon] || <ExternalLink className="h-5 w-5" />}
-            </a>
-          ))}
+          <div className="flex gap-4">
+            {socialLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-14 h-14 border border-[#00ff41]/50 flex items-center justify-center text-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-all duration-300"
+                aria-label={link.name}
+              >
+                <ExternalLink size={20} />
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
-    </GlassCard>
-  );
-}
+      </section>
+    );
+  }
 
-/**
- * Contact form component
- */
-function ContactForm() {
-  const [formData, setFormData] = useState<FormState>(INITIAL_FORM);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setError(null);
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
-      setError("Please fill in all required fields.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError("Please enter a valid email address.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      // Create mailto link with form data
-      const subject = encodeURIComponent(
-        formData.subject || "Contact from Portfolio"
-      );
-      const body = encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-      );
-
-      // Open email client
-      window.location.href = `mailto:${personalInfo.email}?subject=${subject}&body=${body}`;
-
-      // Success
-      setIsSubmitted(true);
-      setFormData(INITIAL_FORM);
-
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000);
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const inputClasses = cn(
-    "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3",
-    "text-white placeholder:text-white/30",
-    "transition-all duration-300",
-    "focus:border-violet-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-violet-500/20"
-  );
-
-  if (isSubmitted) {
+  if (theme === "synthwave-sunset") {
     return (
-      <GlassCard className="flex h-full flex-col items-center justify-center p-8 text-center">
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-emerald-500/20 to-teal-500/20">
-          <CheckCircle2 className="h-10 w-10 text-emerald-400" />
-        </div>
-        <h3 className="mb-2 text-2xl font-bold text-white">Email Ready!</h3>
-        <p className="text-white/60">
-          Your email client should have opened. Send the email to reach me!
-        </p>
-      </GlassCard>
+      <section id="contact" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-4xl mx-auto flex flex-col items-center justify-center text-center font-sans">
+        <GlitchBurst className="mb-16">
+          <h2 className="text-4xl md:text-6xl text-[#ffff00] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 15px #ffff00" }}>
+            INSERT_COIN
+          </h2>
+        </GlitchBurst>
+
+        <GlitchBurst className="mb-16 max-w-2xl">
+          <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 uppercase tracking-tighter" style={{ fontFamily: "var(--font-display)" }}>
+            READY FOR <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffff] to-[#ff00ff]" style={{ filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))" }}>PLAYER_TWO?</span>
+          </h2>
+          <p className="text-xl text-white/90 font-medium leading-relaxed bg-black/40 p-4 rounded-lg border border-[#00ffff]/30 backdrop-blur-sm" style={{ boxShadow: "0 0 20px rgba(0,255,255,0.2)" }}>
+            The arcade is open. Drop a token in the slot and let&apos;s start a new game together.
+          </p>
+        </GlitchBurst>
+
+        <GlitchBurst className="w-full">
+          <NeonBorder color="cyan" className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 bg-black/60">
+            <div className="flex flex-col items-center md:items-start gap-6">
+              <div className="flex items-center gap-4 text-white font-bold">
+                <div className="p-3 bg-[#ff00ff]/20 border-2 border-[#ff00ff] text-[#ff00ff] shadow-[0_0_10px_#ff00ff]">
+                  <Mail size={24} />
+                </div>
+                <a href={`mailto:${personalInfo.email}`} className="text-xl uppercase tracking-wider hover:text-[#00ffff] transition-colors" style={{ textShadow: "0 0 5px rgba(255,255,255,0.5)" }}>
+                  {personalInfo.email}
+                </a>
+              </div>
+              <div className="flex items-center gap-4 text-white/80 font-bold">
+                <div className="p-3 bg-[#ffff00]/20 border-2 border-[#ffff00] text-[#ffff00] shadow-[0_0_10px_#ffff00]">
+                  <MapPin size={20} />
+                </div>
+                <span className="uppercase tracking-wider">{personalInfo.location}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-16 h-16 bg-black border-2 border-[#00ffff] flex items-center justify-center text-[#00ffff] hover:bg-[#00ffff] hover:text-black transition-all duration-300 hover:scale-110 shadow-[0_0_15px_#00ffff,inset_0_0_10px_#00ffff]"
+                  aria-label={link.name}
+                >
+                  <ExternalLink size={24} />
+                </a>
+              ))}
+            </div>
+          </NeonBorder>
+        </GlitchBurst>
+      </section>
+    );
+  }
+
+  if (theme === "bioluminescent-deep") {
+    return (
+      <section id="contact" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-4xl mx-auto flex flex-col items-center justify-center text-center font-serif">
+        <FloatingEntry className="mb-16 text-center">
+          <h2 className="text-4xl md:text-6xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            Sonar
+          </h2>
+          <div className="h-px w-16 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
+        </FloatingEntry>
+
+        <FloatingEntry className="mb-16 max-w-2xl">
+          <h2 className="text-5xl md:text-7xl font-medium text-[#e0f4ff] mb-8 tracking-wide">
+            Send a <span className="text-[#00ffff] italic drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]">signal</span>.
+          </h2>
+          <p className="text-xl text-[#e0f4ff]/70 font-sans font-light leading-relaxed">
+            My sonar is always on. Whether you have a project in mind or just want to connect, I&apos;ll catch your wave.
+          </p>
+        </FloatingEntry>
+
+        <FloatingEntry className="w-full">
+          <div className="p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 rounded-3xl bg-[#001433]/70 backdrop-blur-xl border border-[#00ffff]/20 shadow-[0_0_40px_rgba(0,255,255,0.1),inset_0_0_20px_rgba(0,255,255,0.05)] hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] transition-all duration-700">
+            <div className="flex flex-col items-center md:items-start gap-6 font-sans font-light tracking-wide">
+              <div className="flex items-center gap-4 text-[#e0f4ff]/90">
+                <div className="p-3 rounded-full bg-[#00ffff]/10 border border-[#00ffff]/30 text-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.2)]">
+                  <Mail size={24} />
+                </div>
+                <a href={`mailto:${personalInfo.email}`} className="text-xl hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)] transition-all duration-300">
+                  {personalInfo.email}
+                </a>
+              </div>
+              <div className="flex items-center gap-4 text-[#e0f4ff]/70">
+                <div className="p-3 rounded-full bg-[#ff00ff]/10 border border-[#ff00ff]/30 text-[#ff00ff] shadow-[0_0_15px_rgba(255,0,255,0.2)]">
+                  <MapPin size={20} />
+                </div>
+                <span className="uppercase tracking-widest text-sm">{personalInfo.location}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-16 h-16 rounded-full bg-[#00ffff]/5 border border-[#00ffff]/30 flex items-center justify-center text-[#00ffff] hover:bg-[#00ffff]/20 hover:text-[#e0f4ff] transition-all duration-500 hover:scale-110 shadow-[0_0_20px_rgba(0,255,255,0.1),inset_0_0_10px_rgba(0,255,255,0.1)] hover:shadow-[0_0_30px_rgba(0,255,255,0.3),inset_0_0_15px_rgba(0,255,255,0.2)]"
+                  aria-label={link.name}
+                >
+                  <ExternalLink size={24} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </FloatingEntry>
+      </section>
     );
   }
 
   return (
-    <GlassCard className="p-8">
-      <h3 className="mb-6 text-2xl font-bold text-white">Send a Message</h3>
-
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-        {/* Name and Email row */}
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label htmlFor="name" className="mb-2 block text-sm text-white/60">
-              Name <span className="text-fuchsia-400">*</span>
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Your name"
-              className={inputClasses}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="mb-2 block text-sm text-white/60">
-              Email <span className="text-fuchsia-400">*</span>
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="your@email.com"
-              className={inputClasses}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Subject */}
-        <div>
-          <label htmlFor="subject" className="mb-2 block text-sm text-white/60">
-            Subject
-          </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            placeholder="What's this about?"
-            className={inputClasses}
-          />
-        </div>
-
-        {/* Message */}
-        <div>
-          <label htmlFor="message" className="mb-2 block text-sm text-white/60">
-            Message <span className="text-fuchsia-400">*</span>
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            placeholder="Your message..."
-            rows={5}
-            className={cn(inputClasses, "resize-none")}
-            required
-          />
-        </div>
-
-        {/* Error message */}
-        {error && (
-          <p role="alert" className="text-sm text-red-400">
-            {error}
-          </p>
-        )}
-
-        {/* Submit button */}
-        <MagneticButton strength={0.2}>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={cn(
-              "group flex w-full items-center justify-center gap-2 rounded-xl py-4",
-              "bg-linear-to-r from-violet-600 to-fuchsia-600",
-              "font-semibold text-white",
-              "transition-all duration-300",
-              "hover:shadow-lg hover:shadow-violet-500/30",
-              "disabled:cursor-not-allowed disabled:opacity-60"
-            )}
-          >
-            {isSubmitting ? (
-              <>
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-                Sending...
-              </>
-            ) : (
-              <>
-                Send Message
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </>
-            )}
-          </button>
-        </MagneticButton>
-      </form>
-    </GlassCard>
-  );
-}
-
-/**
- * Contact section component
- */
-export function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  return (
-    <section
-      ref={sectionRef}
-      id="contact"
-      className="relative min-h-screen py-24 md:py-32"
-    >
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Gradient orbs */}
-        <div
-          className="absolute top-1/4 -right-32 h-125 w-125 rounded-full opacity-20"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%)",
-            filter: "blur(100px)",
-            animation: "float 10s ease-in-out infinite",
-          }}
-        />
-        <div
-          className="absolute bottom-1/4 -left-32 h-125 w-125 rounded-full opacity-20"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(236,72,153,0.5) 0%, transparent 70%)",
-            filter: "blur(100px)",
-            animation: "float 12s ease-in-out infinite reverse",
-          }}
-        />
-
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 container mx-auto max-w-6xl px-4">
-        {/* Section header */}
-        <ScrollReveal variant="slide-up" className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold md:text-5xl">
-            <span className="bg-linear-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              Let&apos;s Connect
-            </span>
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-white/60">
-            Have a project in mind or just want to chat? I&apos;d love to hear
-            from you.
-          </p>
-        </ScrollReveal>
-
-        {/* Contact grid */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          <ScrollReveal variant="slide-right" delay={0.1}>
-            <ContactInfo />
-          </ScrollReveal>
-          <ScrollReveal variant="slide-left" delay={0.2}>
-            <ContactForm />
-          </ScrollReveal>
-        </div>
-      </div>
+    <section className="min-h-screen flex items-center justify-center">
+      <h2 className="text-4xl">Contact - {theme}</h2>
     </section>
   );
 }
-
-export default Contact;
