@@ -1,197 +1,99 @@
-/**
- * @fileoverview Floating theme switcher for the six portfolio themes.
- */
-
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Palette } from "lucide-react";
-import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
-import { DEFAULT_THEME, THEME_OPTIONS, type ThemeName } from "@/lib/themes";
+import { useTheme } from "@/hooks/useTheme";
+import { themeConfigs, themeIds, ThemeId } from "@/config/themes";
+import { Palette, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import gsap from "gsap";
 
-/**
- * Floating theme picker that persists the selected palette in localStorage.
- *
- * @returns Theme switcher button and dropdown
- */
 export default function ThemeSwitcher() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [announcement, setAnnouncement] = useState("");
-
-  // Hydration guard — avoids mismatch between server and client
-  useEffect(() => {
-    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
-  }, []);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (isOpen) {
+      gsap.fromTo(
+        ".theme-menu-item",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, stagger: 0.05, duration: 0.3, ease: "power2.out" }
+      );
+    }
+  }, [isOpen]);
 
-    function handlePointerDown(event: PointerEvent) {
-      const target = event.target;
-      if (
-        containerRef.current &&
-        target instanceof Node &&
-        !containerRef.current.contains(target)
-      ) {
-        setOpen(false);
-      }
+  const handleThemeChange = (id: ThemeId) => {
+    if (id === theme) {
+      setIsOpen(false);
+      return;
     }
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    }
+    // Cross-theme transition animation
+    const overlay = document.createElement("div");
+    overlay.className = "fixed inset-0 z-[99999] bg-black pointer-events-none";
+    overlay.style.opacity = "0";
+    document.body.appendChild(overlay);
 
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
+    gsap.to(overlay, {
+      opacity: 1,
+      duration: 0.4,
+      ease: "power2.inOut",
+      onComplete: () => {
+        setTheme(id);
+        setIsOpen(false);
+        
+        // Scroll to top on theme change for full effect
+        window.scrollTo(0, 0);
 
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open]);
-
-  const activeTheme = useMemo<ThemeName>(() => {
-    if (!mounted) return DEFAULT_THEME;
-    return (theme as ThemeName) ?? DEFAULT_THEME;
-  }, [mounted, theme]);
-
-  const activeOption =
-    THEME_OPTIONS.find((option) => option.name === activeTheme) ??
-    THEME_OPTIONS[0];
+        gsap.to(overlay, {
+          opacity: 0,
+          duration: 0.6,
+          delay: 0.2,
+          ease: "power2.inOut",
+          onComplete: () => overlay.remove(),
+        });
+      },
+    });
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed right-4 bottom-4 z-[60] md:right-6 md:bottom-6"
-    >
-      <div aria-live="polite" className="sr-only">
-        {announcement}
-      </div>
-      <div
-        className={cn(
-          "absolute right-0 bottom-16 w-56 max-w-[calc(100vw-2rem)] origin-bottom-right transition-all duration-(--transition-base) ease-(--easing-smooth) sm:w-64 md:w-72",
-          open
-            ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
-            : "pointer-events-none translate-y-3 scale-95 opacity-0"
-        )}
-      >
-        <div className="rounded-3xl border border-(--glass-border) bg-(--glass-background) p-3 shadow-2xl shadow-black/45 backdrop-blur-2xl">
-          <div className="mb-3 px-2">
-            <p className="text-foreground text-sm font-semibold">Theme</p>
-            <p className="text-foreground-muted text-xs">
-              Six creative themes for your portfolio experience.
-            </p>
+    <div className="fixed bottom-6 right-6 z-[100]">
+      {isOpen && (
+        <div className="absolute bottom-16 right-0 mb-2 flex flex-col gap-2 rounded-2xl bg-black/80 p-4 backdrop-blur-xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] w-64 origin-bottom-right animate-in fade-in zoom-in duration-200">
+          <div className="flex items-center justify-between mb-2 pb-2 border-b border-white/10">
+            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Select Theme</span>
+            <button onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white transition-colors">
+              <X size={16} />
+            </button>
           </div>
-
-          <div className="grid gap-1">
-            {THEME_OPTIONS.map((option) => {
-              const selected = option.name === activeTheme;
-
-              return (
-                <button
-                  key={option.name}
-                  type="button"
-                  onClick={async () => {
-                    // Smooth fade transition
-                    document.body.style.transition = "opacity 0.3s ease";
-                    document.body.style.opacity = "0";
-
-                    await new Promise((resolve) => setTimeout(resolve, 300));
-                    setTheme(option.name);
-                    setAnnouncement(`Theme changed to ${option.label}`);
-                    await new Promise((resolve) => setTimeout(resolve, 50));
-
-                    document.body.style.opacity = "1";
-                    await new Promise((resolve) => setTimeout(resolve, 400));
-                    document.body.style.transition = "";
-
-                    // Clear announcement after 3 seconds
-                    setTimeout(() => {
-                      setAnnouncement("");
-                    }, 3000);
-
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full flex-col rounded-2xl border px-3 py-2.5 text-left transition-all duration-(--transition-fast)",
-                    selected
-                      ? "border-accent-primary bg-(--surface-3)"
-                      : "border-transparent bg-transparent hover:border-(--glass-border) hover:bg-(--surface-2)"
-                  )}
-                  aria-pressed={selected}
-                >
-                  <span className="flex items-center justify-between">
-                    <span className="flex items-center gap-3">
-                      <span
-                        className="flex items-center gap-1.5"
-                        aria-hidden="true"
-                      >
-                        {option.colors.map((color) => (
-                          <span
-                            key={color}
-                            className="h-3 w-3 rounded-full border border-white/15"
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
-                      </span>
-                      <span className="text-foreground text-xs font-medium sm:text-sm">
-                        {option.label}
-                      </span>
-                    </span>
-
-                    <Check
-                      className={cn(
-                        "h-4 w-4 transition-opacity",
-                        selected
-                          ? "text-accent-primary opacity-100"
-                          : "opacity-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="text-foreground-muted mt-1 ml-10 line-clamp-1 text-xs sm:line-clamp-2">
-                    {option.description}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {themeIds.map((id) => (
+            <button
+              key={id}
+              onClick={() => handleThemeChange(id)}
+              className={`theme-menu-item flex flex-col items-start rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                theme === id
+                  ? "bg-white/10 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                  : "border border-transparent hover:bg-white/5 hover:border-white/10"
+              }`}
+            >
+              <span className={`font-semibold mb-1 ${theme === id ? "text-white" : "text-white/80"}`}>
+                {themeConfigs[id].label}
+              </span>
+              <span className="text-xs text-white/40 text-left line-clamp-1">
+                {themeConfigs[id].description}
+              </span>
+            </button>
+          ))}
         </div>
-      </div>
-
+      )}
       <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className={cn(
-          "group flex items-center gap-3 rounded-full border border-(--glass-border) bg-(--glass-background) px-4 py-3 shadow-xl shadow-black/35 backdrop-blur-xl transition-all duration-(--transition-base) ease-(--easing-smooth)",
-          "hover:border-accent-primary/40 hover:-translate-y-0.5 hover:shadow-(--glow-color)",
-          open && "border-accent-primary/40 shadow-(--glow-color)"
-        )}
-        aria-expanded={open}
-        aria-haspopup="dialog"
-        aria-label={`Select theme. Current theme: ${activeOption.label}`}
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex h-14 w-14 items-center justify-center rounded-full backdrop-blur-xl border transition-all duration-300 shadow-2xl ${
+          isOpen 
+            ? "bg-white text-black border-white scale-90" 
+            : "bg-black/80 text-white border-white/20 hover:border-white/50 hover:bg-black hover:scale-110"
+        }`}
+        aria-label="Toggle theme menu"
       >
-        <span
-          className="rounded-full p-2"
-          style={{ background: "var(--accent-gradient)" }}
-          aria-hidden="true"
-        >
-          <Palette className="h-4 w-4 text-black/80" />
-        </span>
-        <span className="hidden text-left sm:block">
-          <span className="text-foreground-muted block text-[10px] font-semibold tracking-[0.2em] uppercase">
-            Theme
-          </span>
-          <span className="text-foreground block text-sm font-semibold">
-            {activeOption.label}
-          </span>
-        </span>
+        <Palette size={24} />
       </button>
     </div>
   );
