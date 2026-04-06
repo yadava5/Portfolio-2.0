@@ -1,34 +1,10 @@
-/**
- * @fileoverview Floating navigation header with glassmorphism effect
- *
- * Features:
- * - Transparent → frosted glass on scroll (via IntersectionObserver)
- * - Smooth anchor-link navigation to page sections
- * - Mobile hamburger menu with slide-in drawer
- * - Hides on scroll-down, reveals on scroll-up
- * - Holographic accent underline on active section
- */
-
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { cn } from "@/lib/utils";
+import { useCallback, useEffect, useState } from "react";
+import { useTheme } from "@/hooks/useTheme";
+import { MagneticButton } from "@/components/effects/MagneticButton";
 
-/* ──────────────────────────────────────────────
-   Navigation items
-   ────────────────────────────────────────────── */
-
-/** Single navigation link definition */
-interface NavItem {
-  /** Display label */
-  label: string;
-  /** Anchor href (e.g. "#projects") */
-  href: string;
-}
-
-/** Ordered list of section links shown in the header */
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS = [
   { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
@@ -37,283 +13,55 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Contact", href: "#contact" },
 ];
 
-/* ──────────────────────────────────────────────
-   Scroll-direction hook (show/hide header)
-   ────────────────────────────────────────────── */
-
-/** Minimum scroll delta (px) before toggling visibility */
-const SCROLL_THRESHOLD = 10;
-
-/**
- * Tracks scroll direction to auto-hide/show the header
- *
- * @returns `true` when the header should be visible
- */
-function useScrollDirection(): boolean {
-  const [visible, setVisible] = useState(true);
-  const lastY = useRef(0);
+export default function Header() {
+  const { theme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    function onScroll() {
-      const currentY = window.scrollY;
-      const diff = currentY - lastY.current;
-
-      if (Math.abs(diff) < SCROLL_THRESHOLD) return;
-
-      /* scrolling up → show, scrolling down → hide, at top → always show */
-      setVisible(diff < 0 || currentY < 80);
-      lastY.current = currentY;
-    }
-
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  return visible;
-}
-
-/* ──────────────────────────────────────────────
-   "Scrolled past hero" detection
-   ────────────────────────────────────────────── */
-
-/**
- * Returns `true` once the user has scrolled beyond the hero viewport
- *
- * Used to transition the header from fully transparent to frosted glass.
- */
-function useHasScrolled(): boolean {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    function check() {
-      setScrolled(window.scrollY > 50);
+  const handleNavClick = useCallback((e: React.MouseEvent<HTMLElement>, href: string) => {
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
     }
-    check();
-    window.addEventListener("scroll", check, { passive: true });
-    return () => window.removeEventListener("scroll", check);
   }, []);
-
-  return scrolled;
-}
-
-/* ──────────────────────────────────────────────
-   Mobile menu toggle icon
-   ────────────────────────────────────────────── */
-
-/**
- * Animated hamburger ↔ X icon for the mobile menu
- *
- * @param props.open - Whether the mobile menu is open
- */
-function MenuIcon({ open }: { open: boolean }) {
-  return (
-    <div className="relative h-5 w-6">
-      <span
-        className={cn(
-          "bg-foreground absolute left-0 block h-0.5 w-full rounded-full transition-all duration-300",
-          open ? "top-2.5 rotate-45" : "top-0.5"
-        )}
-      />
-      <span
-        className={cn(
-          "bg-foreground absolute top-2.5 left-0 block h-0.5 w-full rounded-full transition-opacity duration-300",
-          open ? "opacity-0" : "opacity-100"
-        )}
-      />
-      <span
-        className={cn(
-          "bg-foreground absolute left-0 block h-0.5 w-full rounded-full transition-all duration-300",
-          open ? "top-2.5 -rotate-45" : "top-4.5"
-        )}
-      />
-    </div>
-  );
-}
-
-/* ──────────────────────────────────────────────
-   Header component
-   ────────────────────────────────────────────── */
-
-/**
- * Floating navigation header
- *
- * Renders a fixed-position nav bar that transitions from transparent to
- * frosted glass on scroll, hides/shows based on scroll direction, and
- * includes a mobile drawer for smaller viewports.
- *
- * @returns The rendered header element
- */
-export default function Header() {
-  const visible = useScrollDirection();
-  const scrolled = useHasScrolled();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  /** Close mobile menu on resize to desktop */
-  useEffect(() => {
-    function onResize() {
-      if (window.innerWidth >= 768) setMobileOpen(false);
-    }
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  /** Scroll to a section and close mobile menu */
-  const handleNavClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      e.preventDefault();
-      setMobileOpen(false);
-
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
-    },
-    []
-  );
 
   return (
     <header
-      className={cn(
-        "fixed top-0 right-0 left-0 z-50 transition-all duration-500",
-        visible ? "translate-y-0" : "-translate-y-full",
-        scrolled
-          ? "border-b border-(--glass-border) bg-(--glass-background) shadow-lg shadow-black/50 backdrop-blur-xl"
-          : "bg-transparent"
-      )}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "bg-black/20 backdrop-blur-md border-b border-white/10 py-4" : "bg-transparent py-6"
+      }`}
     >
-      <nav
-        className="mx-auto flex max-w-(--container-max) items-center justify-between px-6 py-4"
-        aria-label="Primary navigation"
-      >
-        {/* ── Logo / Name ── */}
-        <a
-          href="#"
+      <nav className="max-w-6xl mx-auto px-6 flex justify-between items-center">
+        <MagneticButton
           onClick={(e) => {
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="group text-foreground relative text-lg font-bold tracking-tight"
+          className="text-2xl font-bold tracking-tighter text-white"
         >
-          <span className="relative z-10">AY</span>
-          <span
-            className="absolute -inset-x-2 -inset-y-1 z-0 rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{ background: "var(--holo-gradient)", filter: "blur(8px)" }}
-            aria-hidden="true"
-          />
-        </a>
+          AY
+        </MagneticButton>
 
-        {/* ── Desktop links ── */}
-        <ul className="hidden items-center gap-1 md:flex" role="list">
+        <ul className="hidden md:flex items-center gap-8">
           {NAV_ITEMS.map((item) => (
             <li key={item.href}>
-              <a
-                href={item.href}
+              <MagneticButton
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={cn(
-                  "text-foreground-muted relative rounded-lg px-3 py-2 text-sm font-medium",
-                  "transition-colors duration-(--transition-fast)",
-                  "hover:text-foreground",
-                  "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
-                )}
+                className="text-sm font-medium text-white/70 hover:text-white transition-colors"
               >
                 {item.label}
-                {/* Holographic underline on hover */}
-                <span
-                  className="absolute bottom-0.5 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full transition-all duration-300 group-hover:w-4/5"
-                  style={{ background: "var(--holo-gradient)" }}
-                  aria-hidden="true"
-                />
-              </a>
+              </MagneticButton>
             </li>
           ))}
         </ul>
-
-        {/* ── Right side actions ── */}
-        <div className="flex items-center gap-2">
-          {/* Mobile menu button (Radix Dialog Trigger) */}
-          <Dialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
-            <Dialog.Trigger asChild>
-              <button
-                className={cn(
-                  "text-foreground-muted rounded-lg p-2 transition-colors duration-(--transition-fast) md:hidden",
-                  "hover:text-foreground hover:bg-(--glass-background)",
-                  "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
-                )}
-                aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              >
-                <MenuIcon open={mobileOpen} />
-              </button>
-            </Dialog.Trigger>
-
-            {/* Mobile drawer with Radix Dialog */}
-            <Dialog.Portal>
-              {/* Overlay */}
-              <Dialog.Overlay
-                className={cn(
-                  "fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-300",
-                  mobileOpen ? "opacity-100" : "opacity-0"
-                )}
-              />
-
-              {/* Dialog content */}
-              <Dialog.Content
-                className={cn(
-                  "fixed top-16 right-0 left-0 z-50 flex max-h-[calc(100vh-64px)] flex-col overflow-hidden border-t border-(--glass-border) bg-(--glass-background) backdrop-blur-xl transition-all duration-300 md:hidden",
-                  mobileOpen
-                    ? "translate-y-0 opacity-100"
-                    : "-translate-y-full opacity-0"
-                )}
-                aria-label="Mobile navigation menu"
-              >
-                <nav className="flex-1 overflow-y-auto px-6 py-4">
-                  <ul className="flex flex-col gap-1" role="list">
-                    {NAV_ITEMS.map((item) => (
-                      <li key={item.href}>
-                        <a
-                          href={item.href}
-                          onClick={(e) => handleNavClick(e, item.href)}
-                          className={cn(
-                            "text-foreground-muted block rounded-lg px-3 py-2.5 text-sm font-medium",
-                            "transition-colors duration-(--transition-fast)",
-                            "hover:text-foreground hover:bg-(--glass-background)",
-                            "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
-                          )}
-                        >
-                          {item.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-
-                {/* Close button */}
-                <Dialog.Close asChild>
-                  <button
-                    className={cn(
-                      "text-foreground-muted absolute top-4 right-4 rounded-lg p-2 transition-colors duration-(--transition-fast)",
-                      "hover:text-foreground hover:bg-(--glass-background)",
-                      "focus-visible:outline-accent-primary focus-visible:outline-2 focus-visible:outline-offset-2"
-                    )}
-                    aria-label="Close menu"
-                  >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M18 6l-12 12M6 6l12 12" />
-                    </svg>
-                  </button>
-                </Dialog.Close>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
-        </div>
       </nav>
     </header>
   );
