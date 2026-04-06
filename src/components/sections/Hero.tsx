@@ -1,339 +1,174 @@
-/**
- * @fileoverview Hero section with animated text and particles background
- *
- * The above-the-fold introduction section featuring:
- * - Animated text reveal using GSAP
- * - Floating particles background
- * - Scroll-triggered parallax fade-out
- * - Magnetic CTA buttons
- * - Social links
- *
- * Performance optimized with GPU-accelerated transforms.
- */
-
 "use client";
 
-import { cn } from "@/lib/utils";
-import { personalInfo, socialLinks } from "@/lib/data/personal";
-import { ParticlesBg } from "@/components/ui";
-import { MagneticButton, TypewriterText } from "@/components/effects";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
+import { useTheme } from "@/hooks/useTheme";
+import { personalInfo } from "@/lib/data/personal";
+import { TextReveal } from "@/components/effects/TextReveal";
+import { TypewriterText } from "@/components/effects/TypewriterText";
+import { GlitchBurst } from "@/components/effects/GlitchBurst";
+import { FloatingEntry } from "@/components/effects/FloatingEntry";
+import { motion } from "framer-motion";
 
-/* Register GSAP plugin */
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-/* ──────────────────────────────────────────────
-   Social icon SVG paths (24x24 viewBox)
-   ────────────────────────────────────────────── */
-
-const ICON_PATHS: Record<string, string> = {
-  Github:
-    "M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z",
-  Linkedin:
-    "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
-  Mail: "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm16 2-8 5-8-5v2l8 5 8-5V6z",
-};
-
-/* ──────────────────────────────────────────────
-   Utility
-   ────────────────────────────────────────────── */
-
-/**
- * Check if user prefers reduced motion
- */
-function prefersReducedMotion(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-/* ──────────────────────────────────────────────
-   Component
-   ────────────────────────────────────────────── */
-
-/**
- * Hero section with animated intro
- *
- * Features staggered text animations, floating particles,
- * and a parallax fade-out effect on scroll.
- *
- * @returns The hero section element
- */
 export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const taglineRef = useRef<HTMLParagraphElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const socialRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-
-    const ctx = gsap.context(() => {
-      /* Timeline for staggered entrance */
-      const tl = gsap.timeline({
-        defaults: { ease: "power3.out" },
-      });
-
-      /* Animate heading */
-      if (headingRef.current) {
-        gsap.set(headingRef.current, { opacity: 0, y: 50 });
-        tl.to(headingRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-        });
-      }
-
-      /* Animate tagline */
-      if (taglineRef.current) {
-        gsap.set(taglineRef.current, { opacity: 0, y: 30 });
-        tl.to(
-          taglineRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-          },
-          "-=0.4"
-        );
-      }
-
-      /* Animate subtitle */
-      if (subtitleRef.current) {
-        gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
-        tl.to(
-          subtitleRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-          },
-          "-=0.3"
-        );
-      }
-
-      /* Animate CTA buttons */
-      if (ctaRef.current) {
-        gsap.set(ctaRef.current.children, { opacity: 0, y: 20, scale: 0.9 });
-        tl.to(
-          ctaRef.current.children,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.5,
-            stagger: 0.1,
-          },
-          "-=0.2"
-        );
-      }
-
-      /* Animate social icons */
-      if (socialRef.current) {
-        gsap.set(socialRef.current.children, { opacity: 0, y: 20 });
-        tl.to(
-          socialRef.current.children,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.4,
-            stagger: 0.08,
-          },
-          "-=0.2"
-        );
-      }
-
-      /* Scroll-triggered fade out and parallax */
-      if (contentRef.current && sectionRef.current) {
-        ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            gsap.set(contentRef.current, {
-              opacity: 1 - progress * 1.5,
-              y: progress * 100,
-              scale: 1 - progress * 0.1,
-            });
-          },
-        });
-      }
-    });
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section
-      ref={sectionRef}
-      id="hero"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
-    >
-      {/* Particles background */}
-      <ParticlesBg count={50} baseHue={270} interactive />
-
-      {/* Gradient orbs */}
-      <div
-        className="absolute top-1/4 -left-32 h-96 w-96 rounded-full opacity-30 blur-[120px]"
-        style={{ background: "var(--accent-primary)" }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute right-0 bottom-1/4 h-80 w-80 rounded-full opacity-20 blur-[100px]"
-        style={{ background: "var(--accent-secondary)" }}
-        aria-hidden="true"
-      />
-      <div
-        className="absolute top-1/3 right-1/4 h-64 w-64 rounded-full opacity-15 blur-[80px]"
-        style={{ background: "var(--accent-tertiary)" }}
-        aria-hidden="true"
-      />
-
-      {/* Main content */}
-      <div
-        ref={contentRef}
-        className="relative z-10 max-w-4xl text-center will-change-transform"
-      >
-        {/* Availability badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-(--glass-border) bg-(--glass-background) px-4 py-2 backdrop-blur-sm">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-          </span>
-          <span className="text-foreground-muted text-sm">
-            {personalInfo.availability}
-          </span>
-        </div>
-
-        {/* Name heading */}
-        <h1
-          ref={headingRef}
-          className="text-foreground mb-4 text-5xl leading-tight font-bold tracking-tight md:text-7xl lg:text-8xl"
-        >
-          <span className="block">Hi, I&apos;m</span>
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: "var(--holo-gradient)" }}
+  if (theme === "liquid-glass") {
+    return (
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-20">
+          <motion.svg
+            width="600"
+            height="600"
+            viewBox="0 0 600 600"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute"
           >
-            {personalInfo.firstName}
-          </span>
-        </h1>
-
-        {/* Tagline */}
-        <p
-          ref={taglineRef}
-          className="text-accent-primary mb-4 text-lg font-medium tracking-wide md:text-xl"
-        >
-          {personalInfo.tagline}
-        </p>
-
-        {/* Subtitle / short bio with typewriter effect */}
-        <p
-          ref={subtitleRef}
-          className="text-foreground-muted mx-auto mb-8 max-w-2xl text-base md:text-lg"
-        >
-          <TypewriterText
-            text={personalInfo.bio[0].replace(/\*\*/g, "")}
-            delay={800}
-            speed={30}
-            cursorClassName="bg-violet-400"
-          />
-        </p>
-
-        {/* CTA Buttons */}
-        <div ref={ctaRef} className="mb-10 flex flex-wrap justify-center gap-4">
-          <MagneticButton strength={0.2}>
-            <a
-              href="#projects"
-              className={cn(
-                "block rounded-full px-8 py-3 text-sm font-semibold text-white",
-                "bg-accent-primary",
-                "transition-all duration-(--transition-base)",
-                "hover:shadow-lg hover:shadow-violet-500/30"
-              )}
-            >
-              View My Work
-            </a>
-          </MagneticButton>
-
-          <MagneticButton strength={0.2}>
-            <a
-              href="#contact"
-              className={cn(
-                "text-foreground block rounded-full border border-(--glass-border) px-8 py-3 text-sm font-semibold",
-                "transition-all duration-(--transition-base)",
-                "hover:border-violet-500 hover:text-violet-400"
-              )}
-            >
-              Get in Touch
-            </a>
-          </MagneticButton>
-
-          <MagneticButton strength={0.2}>
-            <a
-              href={`${process.env.NODE_ENV === "production" ? "/portfolio" : ""}${personalInfo.resumeUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "text-foreground block rounded-full border border-(--glass-border) px-8 py-3 text-sm font-semibold",
-                "transition-all duration-(--transition-base)",
-                "hover:border-fuchsia-500 hover:text-fuchsia-400"
-              )}
-            >
-              Download CV
-            </a>
-          </MagneticButton>
+            <motion.path
+              d="M300 50C438.071 50 550 161.929 550 300C550 438.071 438.071 550 300 550C161.929 550 50 438.071 50 300C50 161.929 161.929 50 300 50Z"
+              stroke="url(#paint0_linear)"
+              strokeWidth="2"
+              initial={{ pathLength: 0, rotate: 0 }}
+              animate={{ pathLength: 1, rotate: 360 }}
+              transition={{ 
+                pathLength: { duration: 3, ease: "easeInOut" },
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+              }}
+            />
+            <defs>
+              <linearGradient id="paint0_linear" x1="50" y1="50" x2="550" y2="550" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#818cf8" />
+                <stop offset="0.5" stopColor="#c084fc" />
+                <stop offset="1" stopColor="#f472b6" />
+              </linearGradient>
+            </defs>
+          </motion.svg>
         </div>
 
-        {/* Social links */}
-        <div ref={socialRef} className="flex justify-center gap-4">
-          {socialLinks.map((social) => (
-            <a
-              key={social.name}
-              href={social.url}
-              target={social.name !== "Email" ? "_blank" : undefined}
-              rel={social.name !== "Email" ? "noopener noreferrer" : undefined}
-              className={cn(
-                "flex h-12 w-12 items-center justify-center rounded-full",
-                "border border-(--glass-border) bg-(--glass-background)",
-                "text-foreground-muted backdrop-blur-sm",
-                "transition-all duration-(--transition-base)",
-                "hover:border-accent-primary hover:text-accent-primary",
-                "hover:shadow-accent-primary/20 hover:shadow-lg"
-              )}
-              aria-label={`Visit ${social.name}`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-5 w-5"
-                aria-hidden="true"
-              >
-                <path d={ICON_PATHS[social.icon] ?? ""} />
-              </svg>
-            </a>
-          ))}
-        </div>
-      </div>
+        <TextReveal className="mb-6">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+            {personalInfo.name}
+          </h1>
+        </TextReveal>
+        <TextReveal className="mb-8 delay-100">
+          <p className="text-xl md:text-2xl text-white/80 font-light tracking-wide">
+            {personalInfo.title}
+          </p>
+        </TextReveal>
+        <TextReveal className="delay-200">
+          <p className="max-w-2xl text-white/60 text-lg leading-relaxed">
+            {personalInfo.tagline}
+          </p>
+        </TextReveal>
+      </section>
+    );
+  }
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <div className="text-foreground-muted flex flex-col items-center gap-2">
-          <span className="text-xs tracking-widest uppercase">Scroll</span>
-          <div className="border-foreground-muted/30 h-12 w-6 rounded-full border-2 p-1">
-            <div className="bg-foreground-muted/50 h-2 w-full animate-bounce rounded-full" />
+  if (theme === "cosmic-voyage") {
+    return (
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10">
+        <TextReveal className="mb-6">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-widest text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ fontFamily: "var(--font-serif)" }}>
+            {personalInfo.name.split("").map((char, i) => (
+              <span key={i} className="inline-block hover:scale-110 hover:text-indigo-300 transition-transform duration-300 cursor-default">
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          </h1>
+        </TextReveal>
+        <TextReveal className="mb-8 delay-100">
+          <p className="text-xl md:text-2xl text-indigo-200 font-light tracking-[0.2em] uppercase">
+            {personalInfo.title}
+          </p>
+        </TextReveal>
+        <TextReveal className="delay-200">
+          <p className="max-w-2xl text-white/70 text-lg leading-relaxed">
+            {personalInfo.tagline}
+          </p>
+        </TextReveal>
+      </section>
+    );
+  }
+
+  if (theme === "retro-terminal") {
+    return (
+      <section className="relative min-h-screen flex flex-col items-start justify-center px-4 md:px-12 z-10 font-mono text-[#00ff41]">
+        <div className="mb-8">
+          <p className="text-sm md:text-base mb-2 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ./init_profile.sh
+          </p>
+          <div className="text-2xl md:text-5xl font-bold tracking-tight mb-6">
+            <TypewriterText text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`} delay={500} />
           </div>
         </div>
-      </div>
+        
+        <div className="mb-8">
+          <p className="text-sm md:text-base mb-2 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat title.txt
+          </p>
+          <div className="text-xl md:text-2xl text-[#ffb000] mb-4">
+            <TypewriterText text={personalInfo.title.toUpperCase()} delay={1500} />
+          </div>
+        </div>
+
+        <div>
+          <p className="text-sm md:text-base mb-2 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat status.log
+          </p>
+          <div className="max-w-2xl text-base md:text-lg leading-relaxed opacity-90">
+            <TypewriterText text={personalInfo.tagline} delay={2500} />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "synthwave-sunset") {
+    return (
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-sans">
+        <GlitchBurst className="mb-6">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00]" style={{ fontFamily: "var(--font-display)", filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))" }}>
+            {personalInfo.name}
+          </h1>
+        </GlitchBurst>
+        <GlitchBurst className="mb-8 delay-100">
+          <p className="text-xl md:text-3xl text-[#00ffff] font-bold tracking-widest uppercase" style={{ textShadow: "0 0 10px #00ffff" }}>
+            {personalInfo.title}
+          </p>
+        </GlitchBurst>
+        <GlitchBurst className="delay-200">
+          <p className="max-w-2xl text-white/90 text-lg leading-relaxed font-medium bg-black/40 p-4 rounded-lg border border-[#ff00ff]/30 backdrop-blur-sm" style={{ boxShadow: "0 0 20px rgba(255,0,255,0.2)" }}>
+            {personalInfo.tagline}
+          </p>
+        </GlitchBurst>
+      </section>
+    );
+  }
+
+  if (theme === "bioluminescent-deep") {
+    return (
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-serif">
+        <FloatingEntry className="mb-6">
+          <h1 className="text-6xl md:text-8xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]">
+            {personalInfo.name}
+          </h1>
+        </FloatingEntry>
+        <FloatingEntry className="mb-8 delay-100">
+          <p className="text-xl md:text-2xl text-[#00ffff] font-light tracking-widest uppercase opacity-80" style={{ textShadow: "0 0 10px rgba(0,255,255,0.8)" }}>
+            {personalInfo.title}
+          </p>
+        </FloatingEntry>
+        <FloatingEntry className="delay-200">
+          <p className="max-w-2xl text-[#e0f4ff]/70 text-lg leading-relaxed font-sans font-light">
+            {personalInfo.tagline}
+          </p>
+        </FloatingEntry>
+      </section>
+    );
+  }
+
+  return (
+    <section className="min-h-screen flex items-center justify-center">
+      <h1 className="text-4xl">Hero - {theme}</h1>
     </section>
   );
 }
