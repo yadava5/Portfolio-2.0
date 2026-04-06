@@ -1,5 +1,5 @@
-import ThemedSections from "@/components/themes/creative/ThemeRegistry";
+import { ThemeOrchestrator } from "@/components/themes/ThemeOrchestrator";
 
 export default function Home() {
-  return <ThemedSections />;
+  return <ThemeOrchestrator />;
 }
