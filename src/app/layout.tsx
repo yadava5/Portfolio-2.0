@@ -23,7 +23,6 @@ import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import CustomCursor from "@/components/layout/CustomCursor";
 import { siteMetadata } from "@/lib/data/personal";
 
 /* ──────────────────────────────────────────────
@@ -99,7 +98,6 @@ export default function RootLayout({
         <ThemeProvider>
           <SmoothScroll>
             <ScrollProgress />
-            <CustomCursor />
             <Header />
             <main id="main-content" className="min-h-screen">
               {children}
