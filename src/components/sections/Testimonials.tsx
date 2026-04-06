@@ -1,287 +1,200 @@
-/**
- * @fileoverview Testimonials section with animated carousel
- *
- * Displays professional recommendations in an interactive carousel
- * with glassmorphism cards and smooth transitions.
- *
- * Features:
- * - Auto-rotating carousel
- * - Manual navigation controls
- * - Relationship badges (manager, colleague, mentor)
- * - Quote formatting with proper attribution
- * - GSAP scroll animations
- *
- * @module components/sections/Testimonials
- */
-
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Quote,
-  ChevronLeft,
-  ChevronRight,
-  Linkedin,
-  User,
-  Briefcase,
-  Users,
-  GraduationCap,
-} from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
+import { testimonials } from "@/lib/data/testimonials";
+import { TextReveal } from "@/components/effects/TextReveal";
+import { GlassCard } from "@/components/effects/GlassCard";
+import { NebulaCard } from "@/components/effects/NebulaCard";
+import { WarpTransition } from "@/components/effects/WarpTransition";
+import { TypewriterText } from "@/components/effects/TypewriterText";
+import { GlitchBurst } from "@/components/effects/GlitchBurst";
+import { NeonBorder } from "@/components/effects/NeonBorder";
+import { FloatingEntry } from "@/components/effects/FloatingEntry";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScrollReveal } from "@/components/effects/ScrollReveal";
-import { testimonials, type Testimonial } from "@/lib/data/testimonials";
-import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-/** Relationship display config */
-const RELATIONSHIP_CONFIG: Record<
-  Testimonial["relationship"],
-  { label: string; icon: React.ReactNode; color: string }
-> = {
-  manager: {
-    label: "Manager",
-    icon: <Briefcase className="h-3.5 w-3.5" />,
-    color: "from-violet-500/20 to-fuchsia-500/20 text-violet-300",
-  },
-  colleague: {
-    label: "Colleague",
-    icon: <Users className="h-3.5 w-3.5" />,
-    color: "from-cyan-500/20 to-blue-500/20 text-cyan-300",
-  },
-  mentor: {
-    label: "Mentor",
-    icon: <GraduationCap className="h-3.5 w-3.5" />,
-    color: "from-emerald-500/20 to-teal-500/20 text-emerald-300",
-  },
-  client: {
-    label: "Client",
-    icon: <User className="h-3.5 w-3.5" />,
-    color: "from-amber-500/20 to-orange-500/20 text-amber-300",
-  },
-};
-
-/** Auto-rotate interval in milliseconds */
-const AUTO_ROTATE_INTERVAL = 8000;
-
-/**
- * Individual testimonial card
- */
-interface TestimonialCardProps {
-  testimonial: Testimonial;
-  isActive: boolean;
-}
-
-function TestimonialCard({ testimonial, isActive }: TestimonialCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const relationshipConfig = RELATIONSHIP_CONFIG[testimonial.relationship];
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    if (isActive) {
-      gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, y: 30, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power2.out" }
-      );
-    }
-  }, [isActive]);
-
-  if (!isActive) return null;
-
-  return (
-    <div ref={cardRef} className="w-full">
-      <GlassCard className="relative overflow-hidden p-8 md:p-10">
-        {/* Quote icon */}
-        <div className="absolute -top-4 -right-4 opacity-5">
-          <Quote className="h-32 w-32" />
-        </div>
-
-        {/* Relationship badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-linear-to-r px-3 py-1.5 text-xs font-medium">
-          <span
-            className={cn(
-              "flex items-center gap-1.5 rounded-full bg-linear-to-r px-3 py-1",
-              relationshipConfig.color
-            )}
-          >
-            {relationshipConfig.icon}
-            {relationshipConfig.label}
-          </span>
-        </div>
-
-        {/* Quote text */}
-        <blockquote className="relative z-10 mb-8">
-          <p className="text-lg leading-relaxed text-white/80 md:text-xl">
-            &ldquo;{testimonial.quote}&rdquo;
-          </p>
-        </blockquote>
-
-        {/* Attribution */}
-        <div className="relative z-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {/* Avatar placeholder */}
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-violet-500/20 to-fuchsia-500/20">
-              <User className="h-7 w-7 text-violet-400" />
-            </div>
-            <div>
-              <p className="font-semibold text-white">{testimonial.name}</p>
-              <p className="text-sm text-white/50">{testimonial.title}</p>
-              <p className="text-xs text-white/40">{testimonial.company}</p>
-            </div>
-          </div>
-
-          {/* LinkedIn link */}
-          {testimonial.linkedInUrl && (
-            <a
-              href={testimonial.linkedInUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-lg",
-                "bg-white/5 text-white/40 transition-all duration-300",
-                "hover:bg-white/10 hover:text-white"
-              )}
-              aria-label={`View ${testimonial.name}'s LinkedIn profile`}
-            >
-              <Linkedin className="h-5 w-5" />
-            </a>
-          )}
-        </div>
-      </GlassCard>
-    </div>
-  );
-}
-
-/**
- * Testimonials section component
- */
 export function Testimonials() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const { theme } = useTheme();
 
-  const goToNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  }, []);
+  if (theme === "liquid-glass") {
+    return (
+      <section id="testimonials" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto">
+        <TextReveal className="mb-16 text-center">
+          <span className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-widest uppercase text-white/80">
+            What People Say
+          </span>
+        </TextReveal>
 
-  const goToPrev = useCallback(() => {
-    setActiveIndex(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, idx) => (
+            <TextReveal key={testimonial.id} className={`delay-[${(idx % 2) * 100}ms]`}>
+              <GlassCard className="p-8 h-full flex flex-col">
+                <div className="text-indigo-400 mb-6 text-4xl opacity-50">&quot;</div>
+                <p className="text-lg text-white/80 leading-relaxed mb-8 flex-grow font-light italic">
+                  {testimonial.quote}
+                </p>
+                <div className="flex items-center gap-4 mt-auto">
+                  <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white/60 font-semibold text-lg">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-medium">{testimonial.name}</h4>
+                    <p className="text-sm text-indigo-300">{testimonial.title}</p>
+                    <p className="text-xs text-white/40">{testimonial.company}</p>
+                  </div>
+                </div>
+              </GlassCard>
+            </TextReveal>
+          ))}
+        </div>
+      </section>
     );
-  }, []);
+  }
 
-  // Auto-rotate
-  useEffect(() => {
-    if (isPaused || testimonials.length <= 1) return;
+  if (theme === "cosmic-voyage") {
+    return (
+      <section id="testimonials" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl md:text-5xl text-white font-light tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+            Transmissions
+          </h2>
+          <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-pink-400 to-transparent" />
+        </div>
 
-    const interval = setInterval(goToNext, AUTO_ROTATE_INTERVAL);
-    return () => clearInterval(interval);
-  }, [isPaused, goToNext]);
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, idx) => (
+            <WarpTransition key={testimonial.id}>
+              <NebulaCard className="p-8 h-full flex flex-col">
+                <div className="text-pink-400 mb-6 text-4xl opacity-40 font-serif">&quot;</div>
+                <p className="text-lg text-indigo-100/80 leading-relaxed mb-8 flex-grow font-light italic">
+                  {testimonial.quote}
+                </p>
+                <div className="flex items-center gap-4 mt-auto border-t border-white/5 pt-6">
+                  <div className="w-12 h-12 rounded-full bg-pink-900/20 border border-pink-500/30 flex items-center justify-center text-pink-200 font-serif text-lg">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-medium tracking-wide">{testimonial.name}</h4>
+                    <p className="text-sm text-pink-300/80">{testimonial.title}</p>
+                    <p className="text-xs text-indigo-200/40 uppercase tracking-widest mt-1">{testimonial.company}</p>
+                  </div>
+                </div>
+              </NebulaCard>
+            </WarpTransition>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "retro-terminal") {
+    return (
+      <section id="testimonials" className="relative min-h-screen py-32 px-4 md:px-12 z-10 max-w-5xl mx-auto font-mono text-[#00ff41]">
+        <div className="mb-12">
+          <p className="text-sm md:text-base mb-4 opacity-70">
+            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat reviews.log
+          </p>
+          <h2 className="text-3xl md:text-5xl font-bold uppercase mb-8 border-b border-[#00ff41]/30 pb-4 inline-block">
+            # USER_FEEDBACK
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial) => (
+            <div key={testimonial.id} className="border border-dashed border-[#00ff41]/40 p-6 bg-black/40 flex flex-col hover:border-solid transition-all">
+              <div className="text-[#ffb000] mb-4 text-2xl opacity-80">&gt;&gt;</div>
+              <p className="text-base text-[#00ff41]/90 leading-relaxed mb-8 flex-grow">
+                &quot;{testimonial.quote}&quot;
+              </p>
+              <div className="flex items-center gap-4 mt-auto border-t border-[#00ff41]/20 pt-4">
+                <div className="w-10 h-10 bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center text-[#00ff41] font-bold">
+                  {testimonial.name.charAt(0)}
+                </div>
+                <div>
+                  <h4 className="text-white font-bold uppercase">{testimonial.name}</h4>
+                  <p className="text-xs text-[#ffb000]">{testimonial.title}</p>
+                  <p className="text-xs text-[#00ff41]/50 uppercase mt-1">@{testimonial.company}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "synthwave-sunset") {
+    return (
+      <section id="testimonials" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto font-sans">
+        <GlitchBurst className="mb-16 text-center">
+          <h2 className="text-4xl md:text-6xl text-[#ff00ff] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 15px #ff00ff" }}>
+            HIGH_SCORES
+          </h2>
+        </GlitchBurst>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, idx) => (
+            <GlitchBurst key={testimonial.id}>
+              <NeonBorder color="yellow" className="p-8 h-full flex flex-col bg-black/60">
+                <div className="text-[#00ffff] mb-6 text-5xl font-bold opacity-80" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 10px #00ffff" }}>&quot;</div>
+                <p className="text-lg text-white/90 font-medium leading-relaxed mb-8 flex-grow italic">
+                  {testimonial.quote}
+                </p>
+                <div className="flex items-center gap-4 mt-auto border-t-2 border-[#ff00ff]/50 pt-6">
+                  <div className="w-12 h-12 bg-[#ff00ff]/20 border-2 border-[#ff00ff] flex items-center justify-center text-[#ff00ff] font-bold text-xl uppercase shadow-[0_0_10px_#ff00ff]">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold uppercase tracking-wide">{testimonial.name}</h4>
+                    <p className="text-sm font-bold text-[#ffff00]" style={{ textShadow: "0 0 5px #ffff00" }}>{testimonial.title}</p>
+                    <p className="text-xs text-[#00ffff] font-bold uppercase mt-1" style={{ textShadow: "0 0 5px #00ffff" }}>{testimonial.company}</p>
+                  </div>
+                </div>
+              </NeonBorder>
+            </GlitchBurst>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (theme === "bioluminescent-deep") {
+    return (
+      <section id="testimonials" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto font-serif">
+        <FloatingEntry className="mb-16 text-center">
+          <h2 className="text-4xl md:text-6xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            Echoes
+          </h2>
+          <div className="h-px w-16 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#ff00ff] to-transparent opacity-50" />
+        </FloatingEntry>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, idx) => (
+            <FloatingEntry key={testimonial.id}>
+              <div className="p-8 h-full flex flex-col rounded-3xl bg-[#001433]/70 backdrop-blur-xl border border-[#00ffff]/10 shadow-[0_0_30px_rgba(0,255,255,0.05)] hover:shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:border-[#00ffff]/30 transition-all duration-700">
+                <div className="text-[#00ffff] mb-6 text-5xl font-serif opacity-30 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">&quot;</div>
+                <p className="text-lg text-[#e0f4ff]/80 font-sans font-light leading-relaxed mb-8 flex-grow italic">
+                  {testimonial.quote}
+                </p>
+                <div className="flex items-center gap-4 mt-auto pt-6 border-t border-[#00ffff]/10">
+                  <div className="w-12 h-12 rounded-full bg-[#00ffff]/10 border border-[#00ffff]/30 flex items-center justify-center text-[#e0f4ff] font-serif text-xl shadow-[0_0_15px_rgba(0,255,255,0.2)]">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <h4 className="text-[#e0f4ff] font-medium tracking-wide">{testimonial.name}</h4>
+                    <p className="text-sm font-sans font-light text-[#ff00ff] opacity-90">{testimonial.title}</p>
+                    <p className="text-xs font-sans font-light text-[#00ffff]/60 uppercase tracking-widest mt-1">{testimonial.company}</p>
+                  </div>
+                </div>
+              </div>
+            </FloatingEntry>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section
-      ref={sectionRef}
-      id="testimonials"
-      className="relative py-24 md:py-32"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="absolute top-1/2 left-1/2 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-10"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)",
-            filter: "blur(100px)",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 container mx-auto max-w-4xl px-4">
-        {/* Section header */}
-        <ScrollReveal variant="slide-up" className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold md:text-5xl">
-            <span className="bg-linear-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-              What People Say
-            </span>
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-white/60">
-            Professional recommendations from colleagues and mentors
-          </p>
-        </ScrollReveal>
-
-        {/* Testimonial carousel */}
-        <ScrollReveal variant="fade" delay={0.1}>
-          <div className="relative">
-            {/* Cards */}
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={testimonial.id}
-                testimonial={testimonial}
-                isActive={index === activeIndex}
-              />
-            ))}
-
-            {/* Navigation controls */}
-            {testimonials.length > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-4">
-                {/* Previous button */}
-                <button
-                  onClick={goToPrev}
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl",
-                    "bg-white/5 text-white/60 transition-all duration-300",
-                    "hover:bg-white/10 hover:text-white"
-                  )}
-                  aria-label="Previous testimonial"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-
-                {/* Dots */}
-                <div className="flex items-center gap-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setActiveIndex(index)}
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-300",
-                        index === activeIndex
-                          ? "w-8 bg-linear-to-r from-violet-500 to-fuchsia-500"
-                          : "w-2 bg-white/20 hover:bg-white/40"
-                      )}
-                      aria-label={`Go to testimonial ${index + 1}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Next button */}
-                <button
-                  onClick={goToNext}
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl",
-                    "bg-white/5 text-white/60 transition-all duration-300",
-                    "hover:bg-white/10 hover:text-white"
-                  )}
-                  aria-label="Next testimonial"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            )}
-          </div>
-        </ScrollReveal>
-      </div>
+    <section className="min-h-screen flex items-center justify-center">
+      <h2 className="text-4xl">Testimonials - {theme}</h2>
     </section>
   );
 }
-
-export default Testimonials;
