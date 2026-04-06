@@ -1,25 +1,8 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { THEME_OPTIONS, type ThemeName } from "@/lib/themes";
-
-/**
- * Theme configuration object containing colors, fonts, and animation settings
- */
-export interface ThemeConfig {
-  /** Theme name identifier */
-  name: ThemeName;
-  /** Display label for the theme */
-  label: string;
-  /** RGB color tuple: [primary, secondary, tertiary] */
-  colors: [string, string, string];
-  /** Description of the theme */
-  description: string;
-  /** Font family for display/headings */
-  fontDisplay: string;
-  /** Font family for body text */
-  fontBody: string;
-}
+import { defaultThemeId, getThemeConfig, type ThemeConfig } from "@/config/themes";
+export type { ThemeConfig } from "@/config/themes";
 
 /**
  * Hook to read and track the current theme configuration
@@ -69,11 +52,5 @@ export interface ThemeConfig {
  */
 export function useThemeConfig(): ThemeConfig {
   const { theme } = useTheme();
-
-  // Compute theme config directly without useState
-  const themeConfig = !theme
-    ? THEME_OPTIONS[0]
-    : THEME_OPTIONS.find((t) => t.name === theme) || THEME_OPTIONS[0];
-
-  return themeConfig;
+  return getThemeConfig(theme ?? defaultThemeId);
 }
