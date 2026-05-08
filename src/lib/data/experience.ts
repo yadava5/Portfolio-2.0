@@ -5,6 +5,8 @@
  * with detailed responsibilities and achievements.
  */
 
+import { withBasePath } from "@/lib/utils";
+
 /** Work experience entry */
 export interface Experience {
   /** Unique identifier */
@@ -43,7 +45,7 @@ export const experiences: Experience[] = [
     id: "miami-it",
     title: "ITSM Data Integration Student Associate",
     company: "Miami University",
-    logo: "/images/companies/miami.png",
+    logo: withBasePath("/images/companies/miami.png"),
     type: "internship",
     location: "Oxford, Ohio",
     locationType: "on-site",
@@ -77,7 +79,7 @@ export const experiences: Experience[] = [
     id: "aramark",
     title: "Student Worker – Market Street at MacCracken",
     company: "Aramark",
-    logo: "/images/companies/aramark.png",
+    logo: withBasePath("/images/companies/aramark.png"),
     type: "part-time",
     location: "Oxford, Ohio",
     locationType: "on-site",

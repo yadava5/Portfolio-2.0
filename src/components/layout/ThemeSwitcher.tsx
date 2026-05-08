@@ -30,6 +30,7 @@ export default function ThemeSwitcher() {
     // Cross-theme transition animation
     const overlay = document.createElement("div");
     overlay.className = "fixed inset-0 z-[99999] bg-black pointer-events-none";
+    overlay.dataset.themeTransition = "true";
     overlay.style.opacity = "0";
     document.body.appendChild(overlay);
 
@@ -80,6 +81,7 @@ export default function ThemeSwitcher() {
               key={id}
               type="button"
               aria-pressed={theme === id}
+              aria-label={`Use ${themeConfigs[id].label} theme`}
               onClick={() => handleThemeChange(id)}
               className={`theme-menu-item flex flex-col items-start rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
                 theme === id

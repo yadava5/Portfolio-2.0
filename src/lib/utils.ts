@@ -8,6 +8,17 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+const configuredBasePath =
+  process.env.NEXT_PUBLIC_BASE_PATH ??
+  (process.env.NODE_ENV === "production" ? "/Portfolio-2.0" : "");
+
+export const basePath = configuredBasePath.replace(/\/$/, "");
+
+export function withBasePath(path: string): string {
+  if (!path.startsWith("/") || path.startsWith("//")) return path;
+  return `${basePath}${path}`;
+}
+
 /**
  * Merges class names using clsx and tailwind-merge
  *

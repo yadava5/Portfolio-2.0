@@ -5,6 +5,8 @@
  * descriptions, and links. Projects are categorized as featured or standard.
  */
 
+import { withBasePath } from "@/lib/utils";
+
 /** Technology/skill tag */
 export interface TechTag {
   name: string;
@@ -78,7 +80,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/jobtracker",
     liveUrl: null,
-    image: "/images/projects/jobtracker.png",
+    image: withBasePath("/images/projects/jobtracker.png"),
     featured: true,
     category: "ai-ml",
     startDate: "2026-02",
@@ -113,7 +115,7 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: "/images/projects/automl.png",
+    image: withBasePath("/images/projects/automl.png"),
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
@@ -146,7 +148,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/VisualAssist",
     liveUrl: null,
-    image: "/images/projects/visual-assist.png",
+    image: withBasePath("/images/projects/visual-assist.png"),
     featured: true,
     category: "mobile",
     startDate: "2025-03",
@@ -180,7 +182,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/taskflow-calendar",
     liveUrl: null,
-    image: "/images/projects/taskflow.png",
+    image: withBasePath("/images/projects/taskflow.png"),
     featured: true,
     category: "full-stack",
     startDate: "2023-09",
@@ -213,7 +215,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/fast-mnist-nn",
     liveUrl: null,
-    image: "/images/projects/mnist.png",
+    image: withBasePath("/images/projects/mnist.png"),
     featured: false,
     category: "ai-ml",
     startDate: "2025-10",
@@ -246,7 +248,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/lifequest",
     liveUrl: null,
-    image: "/images/projects/lifequest.png",
+    image: withBasePath("/images/projects/lifequest.png"),
     featured: false,
     category: "full-stack",
     startDate: "2025-04",
@@ -278,7 +280,7 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: "/images/projects/pipeline.png",
+    image: withBasePath("/images/projects/pipeline.png"),
     featured: false,
     category: "data",
     startDate: "2025-06",
@@ -310,7 +312,7 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: "/images/projects/policybot.png",
+    image: withBasePath("/images/projects/policybot.png"),
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
@@ -343,7 +345,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/paid-internships-advocacy",
     liveUrl: "https://yadava5.github.io/paid-internships-advocacy",
-    image: "/images/projects/advocacy.png",
+    image: withBasePath("/images/projects/advocacy.png"),
     featured: false,
     category: "other",
     startDate: "2025-01",
@@ -374,7 +376,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/job-automator",
     liveUrl: null,
-    image: "/images/projects/job-automator.png",
+    image: withBasePath("/images/projects/job-automator.png"),
     featured: false,
     category: "other",
     startDate: "2026-03",

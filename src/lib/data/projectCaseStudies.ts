@@ -1,4 +1,5 @@
 import { Project, projects } from "@/lib/data/projects";
+import { withBasePath } from "@/lib/utils";
 
 export type CaseStudyNodeKind =
   | "client"
@@ -120,7 +121,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       { label: "Native workflow", evidence: "The app targets macOS 15+ with SwiftUI and SF Symbols." },
     ],
     artifacts: [
-      { type: "screenshot", label: "Portfolio screenshot", href: "/images/projects/jobtracker.png" },
+      { type: "screenshot", label: "Portfolio screenshot", href: withBasePath("/images/projects/jobtracker.png") },
       { type: "repo", label: "Source code", href: "https://github.com/yadava5/jobtracker" },
     ],
   },
@@ -180,7 +181,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       { label: "Auditability", evidence: "Pipeline decisions are structured through RAG and MCP rather than free-form output." },
     ],
     artifacts: [
-      { type: "screenshot", label: "Portfolio screenshot", href: "/images/projects/automl.png" },
+      { type: "screenshot", label: "Portfolio screenshot", href: withBasePath("/images/projects/automl.png") },
     ],
   },
   {
@@ -237,7 +238,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       { label: "Text access", evidence: "Vision OCR with speech synthesis is part of the project data." },
     ],
     artifacts: [
-      { type: "screenshot", label: "Portfolio screenshot", href: "/images/projects/visual-assist.png" },
+      { type: "screenshot", label: "Portfolio screenshot", href: withBasePath("/images/projects/visual-assist.png") },
       { type: "repo", label: "Source code", href: "https://github.com/yadava5/VisualAssist" },
     ],
   },
@@ -295,7 +296,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       { label: "Conflict detection", evidence: "Project description includes real-time conflict detection." },
     ],
     artifacts: [
-      { type: "screenshot", label: "Portfolio screenshot", href: "/images/projects/taskflow.png" },
+      { type: "screenshot", label: "Portfolio screenshot", href: withBasePath("/images/projects/taskflow.png") },
       { type: "repo", label: "Source code", href: "https://github.com/yadava5/taskflow-calendar" },
     ],
   },
@@ -355,8 +356,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       { label: "Interactive inspection", evidence: "Project data lists an interactive React and TypeScript web app." },
     ],
     artifacts: [
-      { type: "screenshot", label: "Portfolio screenshot", href: "/images/projects/mnist.png" },
-      { type: "diagram", label: "Vector project asset", href: "/images/projects/fast-mnist-nn.svg" },
+      { type: "screenshot", label: "Portfolio screenshot", href: withBasePath("/images/projects/mnist.png") },
+      { type: "diagram", label: "Vector project asset", href: withBasePath("/images/projects/fast-mnist-nn.svg") },
       { type: "repo", label: "Source code", href: "https://github.com/yadava5/fast-mnist-nn" },
     ],
   },

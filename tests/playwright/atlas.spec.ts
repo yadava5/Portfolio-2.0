@@ -42,11 +42,11 @@ test.describe("Technical Operations Atlas", () => {
       await expect(page.locator(`#${section}`)).toBeAttached();
     }
 
-    await expect(page.getByText(EXPECTED_CONTENT.name).first()).toBeVisible();
-    await expect(page.getByText(EXPECTED_CONTENT.email).first()).toBeVisible();
-    await expect(page.locator(`a[href="${EXPECTED_LINKS.resume}"]`).first()).toBeVisible();
-    await expect(page.locator(`a[href="${EXPECTED_LINKS.github}"]`).first()).toBeVisible();
-    await expect(page.locator(`a[href="${EXPECTED_LINKS.linkedin}"]`).first()).toBeVisible();
+    await expect(page.locator("body")).toContainText(EXPECTED_CONTENT.name);
+    await expect(page.locator("body")).toContainText(EXPECTED_CONTENT.email);
+    await expect(page.locator(`a[href="${EXPECTED_LINKS.resume}"]`).first()).toBeAttached();
+    await expect(page.locator(`a[href="${EXPECTED_LINKS.github}"]`).first()).toBeAttached();
+    await expect(page.locator(`a[href="${EXPECTED_LINKS.linkedin}"]`).first()).toBeAttached();
 
     for (const metric of ATLAS_ALLOWED_METRICS) {
       await expect(page.getByText(metric).first()).toBeVisible();

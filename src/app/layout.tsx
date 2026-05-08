@@ -24,6 +24,7 @@ import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
+import { withBasePath } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────
    Font configuration
@@ -43,8 +44,8 @@ export const metadata: Metadata = {
   keywords: siteMetadata.keywords,
   authors: [{ name: "Ayush Yadav" }],
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.ico",
+    icon: withBasePath("/favicon.svg"),
+    shortcut: withBasePath("/favicon.ico"),
   },
   openGraph: {
     title: siteMetadata.title,

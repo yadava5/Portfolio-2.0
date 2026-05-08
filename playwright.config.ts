@@ -1,18 +1,23 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const port = process.env.PORT ?? "3000";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`;
 const nextDevCommand = `${JSON.stringify(
   process.execPath
-)} node_modules/next/dist/bin/next dev --hostname 0.0.0.0 --port 3000`;
+)} node_modules/next/dist/bin/next dev --webpack --hostname 0.0.0.0 --port ${port}`;
+const staticServerCommand = `${JSON.stringify(
+  process.execPath
+)} tests/playwright/static-server.mjs`;
 
 export default defineConfig({
   testDir: "./tests/playwright",
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: "html",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL,
     trace: "on-first-retry",
   },
   projects: [
@@ -31,8 +36,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: nextDevCommand,
-    url: "http://127.0.0.1:3000",
+    command:
+      process.env.PLAYWRIGHT_USE_NEXT_DEV === "1"
+        ? nextDevCommand
+        : staticServerCommand,
+    url: baseURL,
     reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === "1",
     timeout: 120000,
   },

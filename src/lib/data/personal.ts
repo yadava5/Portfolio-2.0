@@ -5,6 +5,8 @@
  * This is the single source of truth for personal information across the site.
  */
 
+import { withBasePath } from "@/lib/utils";
+
 /** Social link entry */
 export interface SocialLink {
   /** Platform name */
@@ -70,7 +72,7 @@ export const personalInfo = {
   ],
 
   /** Resume file path */
-  resumeUrl: "/resume.pdf",
+  resumeUrl: withBasePath("/resume.pdf"),
 };
 
 /** Social media links */
@@ -111,7 +113,7 @@ export const education: Education[] = [
       "STA 301 – Applied Statistics: Probability, hypothesis testing, ANOVA, regression",
       "STA 363 – Statistical Modeling: Regression, experimental design, model selection",
     ],
-    logo: "/images/companies/miami.png",
+    logo: withBasePath("/images/companies/miami.png"),
   },
 ];
 
@@ -150,7 +152,7 @@ export const siteMetadata = {
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */
-  ogImage: "/og-image.png",
+  ogImage: withBasePath("/og-image.png"),
   /** Twitter handle */
   twitterHandle: "@ayushyadav_dev",
   /** Keywords for SEO */

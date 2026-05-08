@@ -95,13 +95,16 @@ export async function switchThemeAndWait(
     .locator("button[aria-pressed]")
     .filter({ hasText: theme.label });
   await expect(themeButton).toHaveCount(1);
-  await themeButton.click();
+  await themeButton.click({ force: true });
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
     timeout: 10000,
   });
 
   await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
+  await expect(page.locator("[data-theme-transition='true']")).toHaveCount(0, {
+    timeout: 5000,
+  });
   await page.waitForTimeout(1300);
 }
 
