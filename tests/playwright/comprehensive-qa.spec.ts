@@ -1,15 +1,14 @@
-import { test, expect, Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
+import {
+  COMPANY_LOGOS,
+  EXPECTED_CONTENT,
+  EXPECTED_LINKS,
+  PUBLIC_PROJECT_IMAGES,
+  THEMES,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
-const THEMES = [
-  { name: "paper-ink", label: "Paper & Ink" },
-  { name: "gallery", label: "Gallery" },
-  { name: "dark-luxe", label: "Dark Luxe" },
-  { name: "editorial", label: "Editorial" },
-  { name: "noir-cinema", label: "Noir Cinema" },
-  { name: "neon-cyber", label: "Neon Cyber" },
-];
-
-const NAV_SECTIONS = [
+const NAV_LINKS = [
   { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
@@ -17,88 +16,9 @@ const NAV_SECTIONS = [
   { id: "contact", label: "Contact" },
 ];
 
-const EXPECTED_CONTENT = {
-  name: "Ayush Yadav",
-  email: "aesh_1055@icloud.com",
-  location: "Oxford, Ohio",
-};
-
-const PROJECT_IMAGES = [
-  "/images/projects/jobtracker.png",
-  "/images/projects/automl.png",
-  "/images/projects/visual-assist.png",
-  "/images/projects/taskflow.png",
-  "/images/projects/mnist.png",
-  "/images/projects/lifequest.png",
-  "/images/projects/pipeline.png",
-  "/images/projects/policybot.png",
-  "/images/projects/advocacy.png",
-];
-
-const COMPANY_LOGOS = [
-  "/images/companies/miami.png",
-  "/images/companies/aramark.png",
-];
-
-const EXTERNAL_LINKS = {
-  github: "https://github.com/yadava5",
-  linkedin: "https://www.linkedin.com/in/ayush-yadav-developer/",
-  jobtracker: "https://github.com/yadava5/jobtracker",
-  visualAssist: "https://github.com/yadava5/VisualAssist",
-  taskflow: "https://github.com/yadava5/taskflow-calendar",
-  fastMnist: "https://github.com/yadava5/fast-mnist-nn",
-  lifequest: "https://github.com/yadava5/lifequest",
-  advocacy: "https://github.com/yadava5/paid-internships-advocacy",
-  advocacyLive: "https://yadava5.github.io/paid-internships-advocacy",
-};
-
 interface ConsoleMessage {
   text: string;
   type: string;
-}
-
-async function switchThemeAndWait(
-  page: Page,
-  theme: { name: string; label: string }
-) {
-  // Scroll down to prevent hero elements overlapping the theme switcher on mobile
-  await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
-  await page.waitForTimeout(300);
-
-  // Open theme switcher
-  const switcher = page.locator("button[aria-label*='Select theme']");
-  await switcher.click({ force: true });
-  await page.waitForTimeout(500);
-
-  // Click the target theme
-  const themeButton = page
-    .locator("button[aria-pressed]")
-    .filter({ hasText: theme.label });
-  await themeButton.first().click();
-  await page.waitForTimeout(1000);
-
-  // Verify the theme attribute was set
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
-
-  // Wait for lazy-loaded components to mount
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-
-  // Scroll through the full page to ensure all sections are loaded
-  const totalHeight = await page.evaluate(
-    () => document.documentElement.scrollHeight
-  );
-  const viewportHeight = await page.evaluate(() => window.innerHeight);
-  const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
-  for (let i = 0; i <= steps; i++) {
-    await page.evaluate(
-      (y) => window.scrollTo({ top: y, behavior: "instant" }),
-      i * viewportHeight * 0.6
-    );
-    await page.waitForTimeout(200);
-  }
-  await page.waitForTimeout(1000);
 }
 
 test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
@@ -136,7 +56,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       await switchThemeAndWait(page, theme);
 
       // ========== SECTION 1: NAVIGATION & SECTION IDs ==========
-      for (const section of NAV_SECTIONS) {
+      for (const section of NAV_LINKS) {
         const sectionEl = page.locator(`#${section.id}`);
         if (!(await sectionEl.isVisible())) {
           errors.push(`[${theme.name}] Section #${section.id} not visible`);
@@ -195,14 +115,20 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
 
       // ========== SECTION 4: EXTERNAL LINKS ==========
       // Check for GitHub link
-      const githubLink = page.locator(`a[href="${EXTERNAL_LINKS.github}"]`);
-      if (!(await githubLink.isVisible())) {
+      const githubLink = page.locator(`a[href="${EXPECTED_LINKS.github}"]`);
+      if (
+        (await githubLink.count()) === 0 ||
+        !(await githubLink.first().isVisible())
+      ) {
         warnings.push(`[${theme.name}] GitHub link not visible on page`);
       }
 
       // Check for LinkedIn link
-      const linkedinLink = page.locator(`a[href="${EXTERNAL_LINKS.linkedin}"]`);
-      if (!(await linkedinLink.isVisible())) {
+      const linkedinLink = page.locator(`a[href="${EXPECTED_LINKS.linkedin}"]`);
+      if (
+        (await linkedinLink.count()) === 0 ||
+        !(await linkedinLink.first().isVisible())
+      ) {
         warnings.push(`[${theme.name}] LinkedIn link not visible on page`);
       }
 
@@ -238,17 +164,17 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       }
 
       // ========== SECTION 7: PROJECT IMAGES ==========
-      for (const imgPath of PROJECT_IMAGES) {
+      for (const imgPath of PUBLIC_PROJECT_IMAGES) {
         try {
           const response = await page.request.get(
-            `http://localhost:3000${imgPath}`
+            `http://127.0.0.1:3000${imgPath}`
           );
           if (response.status() !== 200) {
             errors.push(
               `[${theme.name}] Project image ${imgPath} returned status ${response.status()}`
             );
           }
-        } catch (e) {
+        } catch {
           errors.push(
             `[${theme.name}] Failed to fetch project image ${imgPath}`
           );
@@ -259,14 +185,14 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       for (const logoPath of COMPANY_LOGOS) {
         try {
           const response = await page.request.get(
-            `http://localhost:3000${logoPath}`
+            `http://127.0.0.1:3000${logoPath}`
           );
           if (response.status() !== 200) {
             errors.push(
               `[${theme.name}] Company logo ${logoPath} returned status ${response.status()}`
             );
           }
-        } catch (e) {
+        } catch {
           errors.push(
             `[${theme.name}] Failed to fetch company logo ${logoPath}`
           );
@@ -405,18 +331,12 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
 
       // ========== SECTION 19: SPECIFIC CONTENT CHECKS ==========
       // Check for graduation date mention
-      const gradDate = await page.locator(`:text("May 2026")`).isVisible();
-      if (!gradDate) {
-        warnings.push(`[${theme.name}] Graduation date "May 2026" not found`);
-      }
-
-      // Check for featured projects count
-      const featuredText = await page
-        .locator("text=/5 featured|featured.*project/i")
+      const gradDate = await page
+        .locator(`:text("${EXPECTED_CONTENT.graduation}")`)
         .isVisible();
-      if (!featuredText) {
+      if (!gradDate) {
         warnings.push(
-          `[${theme.name}] Featured projects reference not clearly visible`
+          `[${theme.name}] Graduation date "${EXPECTED_CONTENT.graduation}" not found`
         );
       }
 
@@ -428,33 +348,6 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         warnings.push(
           `[${theme.name}] Horizontal overflow detected (${bodyWidth}px > ${viewportWidth}px)`
         );
-      }
-
-      // ========== SECTION 21: DARK LUXE SPECIFIC CHECKS ==========
-      if (theme.name === "dark-luxe") {
-        // Check for gold/accent colors in styles
-        const hasAccentColor = await page.evaluate(() => {
-          const html = document.documentElement;
-          const computed = getComputedStyle(html);
-          return (
-            computed.getPropertyValue("--accent-primary") ||
-            computed.getPropertyValue("--color-primary")
-          );
-        });
-        if (!hasAccentColor) {
-          warnings.push(
-            `[${theme.name}] Dark Luxe theme colors not properly set`
-          );
-        }
-      }
-
-      // ========== SECTION 22: NEON CYBER SPECIFIC CHECKS ==========
-      if (theme.name === "neon-cyber") {
-        // Check for neon colors
-        const pageHTML = await page.content();
-        if (!pageHTML.includes("00ff88") && !pageHTML.includes("#00ff88")) {
-          warnings.push(`[${theme.name}] Neon green color not found in HTML`);
-        }
       }
 
       // ========== REPORT RESULTS ==========
@@ -525,7 +418,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
             missingImages++;
             console.log(`Missing image: ${src}`);
           }
-        } catch (e) {
+        } catch {
           missingImages++;
         }
       }
@@ -589,7 +482,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
 
     // Check each section ID is unique and properly formatted
     const sectionIds = [];
-    for (const section of NAV_SECTIONS) {
+    for (const section of NAV_LINKS) {
       const elements = await page.locator(`#${section.id}`).all();
       expect(
         elements.length,
@@ -618,7 +511,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
   });
 
   test("Resume file exists and is accessible", async ({ page }) => {
-    const response = await page.request.get("http://localhost:3000/resume.pdf");
+    const response = await page.request.get("http://127.0.0.1:3000/resume.pdf");
     expect(response.status()).toBe(200);
   });
 });

@@ -1,15 +1,6 @@
 import { test, expect, Page } from "@playwright/test";
 import * as fs from "fs";
-import * as path from "path";
-
-const THEMES: { name: string; label: string }[] = [
-  { name: "paper-ink", label: "Paper & Ink" },
-  { name: "gallery", label: "Gallery" },
-  { name: "dark-luxe", label: "Dark Luxe" },
-  { name: "editorial", label: "Editorial" },
-  { name: "noir-cinema", label: "Noir Cinema" },
-  { name: "neon-cyber", label: "Neon Cyber" },
-];
+import { THEMES, scrollThroughPage, switchThemeAndWait } from "./portfolio-fixtures";
 
 interface Issue {
   severity: "high" | "medium" | "low";
@@ -36,47 +27,6 @@ interface AuditResult {
     persistence_works: boolean;
     issues: Issue[];
   };
-}
-
-async function switchTheme(page: Page, theme: { name: string; label: string }) {
-  // Click the theme button
-  const themeButton = page
-    .locator("button")
-    .filter({ hasText: "Theme" })
-    .first();
-  if (await themeButton.isVisible()) {
-    await themeButton.click();
-    await page.waitForTimeout(400);
-  }
-
-  // Click the theme option - search for button containing the full theme label
-  const themeOption = page
-    .locator("button")
-    .filter({ hasText: new RegExp(theme.label, "i") });
-  if (await themeOption.first().isVisible()) {
-    await themeOption.first().click();
-    await page.waitForTimeout(800);
-  }
-}
-
-async function scrollThroughPage(page: Page) {
-  const totalHeight = await page.evaluate(
-    () => document.documentElement.scrollHeight
-  );
-  const viewportHeight = await page.evaluate(() => window.innerHeight);
-  const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
-
-  for (let i = 0; i <= steps; i++) {
-    await page.evaluate(
-      (y) => window.scrollTo({ top: y, behavior: "instant" }),
-      i * viewportHeight * 0.6
-    );
-    await page.waitForTimeout(150);
-  }
-
-  await page.waitForTimeout(500);
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-  await page.waitForTimeout(300);
 }
 
 async function checkBrokenImages(page: Page): Promise<string[]> {
@@ -195,7 +145,7 @@ async function testNavLinks(
           issues.push(`${text} nav link failed`);
         }
       }
-    } catch (e) {
+    } catch {
       console.log(`Error with ${text} nav`);
     }
   }
@@ -230,7 +180,7 @@ async function testCtaButtons(
           issues.push("CTA button failed");
         }
       }
-    } catch (e) {
+    } catch {
       console.log(`CTA button test error`);
     }
   }
@@ -242,7 +192,7 @@ test.describe("Full QA Audit", () => {
   test.setTimeout(120000);
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3000");
+    await page.goto("http://127.0.0.1:3000");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
   });
@@ -276,7 +226,7 @@ test.describe("Full QA Audit", () => {
         }
       });
 
-      await switchTheme(page, theme);
+      await switchThemeAndWait(page, theme);
       await page.waitForTimeout(400);
 
       const dataTheme = await page.locator("html").getAttribute("data-theme");
@@ -360,7 +310,7 @@ test.describe("Full QA Audit", () => {
 
     for (const theme of THEMES) {
       try {
-        await switchTheme(page, theme);
+        await switchThemeAndWait(page, theme);
         const dataTheme = await page.locator("html").getAttribute("data-theme");
 
         if (dataTheme !== theme.name) {
@@ -371,7 +321,7 @@ test.describe("Full QA Audit", () => {
             description: `Failed: ${theme.name}`,
           });
         }
-      } catch (e) {
+      } catch {
         allWork = false;
         issues.push({
           severity: "high",

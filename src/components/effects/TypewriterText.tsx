@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 
@@ -21,27 +21,32 @@ export function TypewriterText({ text, className = "", delay = 0 }: TypewriterTe
     const el = containerRef.current;
     if (!el) return;
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: el,
       start: "top 85%",
       onEnter: () => setIsVisible(true),
     });
+
+    return () => trigger.kill();
   }, []);
 
   useEffect(() => {
     if (!isVisible) return;
 
     let i = 0;
+    let interval: ReturnType<typeof setInterval> | undefined;
     const timer = setTimeout(() => {
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         setDisplayedText(text.substring(0, i));
         i++;
-        if (i > text.length) clearInterval(interval);
+        if (i > text.length && interval) clearInterval(interval);
       }, 30);
-      return () => clearInterval(interval);
     }, delay);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (interval) clearInterval(interval);
+    };
   }, [text, isVisible, delay]);
 
   return (

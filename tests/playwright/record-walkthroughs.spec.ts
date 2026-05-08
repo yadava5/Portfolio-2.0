@@ -1,34 +1,11 @@
-import { test, Page } from "@playwright/test";
-
-const THEMES = [
-  { name: "paper-ink", label: "Paper & Ink" },
-  { name: "gallery", label: "Gallery" },
-  { name: "dark-luxe", label: "Dark Luxe" },
-  { name: "editorial", label: "Editorial" },
-  { name: "noir-cinema", label: "Noir Cinema" },
-  { name: "neon-cyber", label: "Neon Cyber" },
-];
+import { test } from "@playwright/test";
+import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 // Enable video recording
 test.use({
   video: { mode: "on", size: { width: 1440, height: 900 } },
   viewport: { width: 1440, height: 900 },
 });
-
-async function switchTheme(page: Page, theme: { name: string; label: string }) {
-  await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
-  await page.waitForTimeout(200);
-  await page
-    .locator("button[aria-label*='Select theme']")
-    .click({ force: true });
-  await page.waitForTimeout(300);
-  await page
-    .locator("button[aria-pressed]")
-    .filter({ hasText: theme.label })
-    .first()
-    .click();
-  await page.waitForTimeout(800);
-}
 
 test.describe("Theme Walkthroughs", () => {
   test.setTimeout(120000);
@@ -39,7 +16,7 @@ test.describe("Theme Walkthroughs", () => {
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
 
-      await switchTheme(page, theme);
+      await switchThemeAndWait(page, theme);
       await page
         .locator("#about")
         .waitFor({ state: "attached", timeout: 10000 });

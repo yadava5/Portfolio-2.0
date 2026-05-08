@@ -1,13 +1,6 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-
-const THEMES = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
-];
+import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 /**
  * Accessibility audit using axe-core for each theme.
@@ -23,13 +16,8 @@ test.describe("Accessibility Audit", () => {
   });
 
   for (const theme of THEMES) {
-    test(`${theme} - full page accessibility audit`, async ({ page }) => {
-      // Set theme
-      await page.evaluate((themeName) => {
-        document.documentElement.setAttribute("data-theme", themeName);
-      }, theme);
-
-      await page.waitForTimeout(300);
+    test(`${theme.name} - full page accessibility audit`, async ({ page }) => {
+      await switchThemeAndWait(page, theme);
 
       // Run axe analysis on the full page
       // Note: color-contrast is excluded because Tailwind 4's CSS custom
@@ -56,7 +44,7 @@ test.describe("Accessibility Audit", () => {
 
       // Report violations
       if (criticalViolations.length > 0) {
-        console.log(`\n[${theme}] CRITICAL/SERIOUS Violations:`);
+        console.log(`\n[${theme.name}] CRITICAL/SERIOUS Violations:`);
         criticalViolations.forEach((violation) => {
           console.log(`  - ${violation.id}: ${violation.description}`);
           console.log(`    Affected elements: ${violation.nodes.length}`);
@@ -64,7 +52,7 @@ test.describe("Accessibility Audit", () => {
       }
 
       if (moderateViolations.length > 0) {
-        console.log(`\n[${theme}] MODERATE Violations (non-blocking):`);
+        console.log(`\n[${theme.name}] MODERATE Violations (non-blocking):`);
         moderateViolations.forEach((violation) => {
           console.log(`  - ${violation.id}: ${violation.description}`);
           console.log(`    Affected elements: ${violation.nodes.length}`);
@@ -72,7 +60,7 @@ test.describe("Accessibility Audit", () => {
       }
 
       if (minorViolations.length > 0) {
-        console.log(`\n[${theme}] MINOR Violations (non-blocking):`);
+        console.log(`\n[${theme.name}] MINOR Violations (non-blocking):`);
         minorViolations.forEach((violation) => {
           console.log(`  - ${violation.id}: ${violation.description}`);
           console.log(`    Affected elements: ${violation.nodes.length}`);
@@ -81,12 +69,12 @@ test.describe("Accessibility Audit", () => {
 
       // Passes section
       const passCount = results.passes.length;
-      console.log(`\n[${theme}] Passed checks: ${passCount}`);
+      console.log(`\n[${theme.name}] Passed checks: ${passCount}`);
 
       // Test should FAIL only if there are critical or serious violations
       expect(
         criticalViolations.length,
-        `${theme} should have 0 critical/serious violations`
+        `${theme.name} should have 0 critical/serious violations`
       ).toBe(0);
     });
   }
@@ -107,14 +95,7 @@ test.describe("Accessibility Audit", () => {
     for (const theme of THEMES) {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(300);
-
-      // Set theme
-      await page.evaluate((themeName) => {
-        document.documentElement.setAttribute("data-theme", themeName);
-      }, theme);
-
-      await page.waitForTimeout(300);
+      await switchThemeAndWait(page, theme);
 
       // Run analysis (exclude color-contrast — see note in per-theme tests)
       const results = await new AxeBuilder({ page })
@@ -134,7 +115,7 @@ test.describe("Accessibility Audit", () => {
         (v) => v.impact === "minor"
       ).length;
 
-      summaryByTheme[theme] = {
+      summaryByTheme[theme.name] = {
         critical,
         moderate,
         minor,

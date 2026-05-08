@@ -18,7 +18,7 @@ export function FloatingEntry({ children, className = "" }: FloatingEntryProps) 
     const el = wrapperRef.current;
     if (!el) return;
 
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       el,
       {
         opacity: 0,
@@ -38,6 +38,15 @@ export function FloatingEntry({ children, className = "" }: FloatingEntryProps) 
         },
       }
     );
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === el) {
+          trigger.kill();
+        }
+      });
+      tween.kill();
+    };
   }, []);
 
   return (

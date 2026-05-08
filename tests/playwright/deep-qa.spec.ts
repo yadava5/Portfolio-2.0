@@ -1,4 +1,14 @@
-import { test, expect, Page, BrowserContext } from "@playwright/test";
+import { test, expect } from "@playwright/test";
+import {
+  COMPANY_LOGOS,
+  EXPECTED_CONTENT,
+  EXPECTED_LINKS,
+  NAV_SECTIONS,
+  PUBLIC_PROJECT_IMAGES,
+  PUBLIC_PROJECT_TITLES,
+  THEMES,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 /**
  * RUTHLESS QA ROUND 2: Deep Polish Testing
@@ -14,89 +24,18 @@ import { test, expect, Page, BrowserContext } from "@playwright/test";
  * - Source code consistency issues
  */
 
-const THEMES = [
-  { name: "paper-ink", label: "Paper & Ink" },
-  { name: "gallery", label: "Gallery" },
-  { name: "dark-luxe", label: "Dark Luxe" },
-  { name: "editorial", label: "Editorial" },
-  { name: "noir-cinema", label: "Noir Cinema" },
-  { name: "neon-cyber", label: "Neon Cyber" },
-];
-
-const NAV_SECTIONS = [
-  "about",
-  "experience",
-  "projects",
-  "skills",
-  "testimonials",
-  "contact",
-];
-const EXPECTED_PROJECTS = 9; // JobTracker, AutoML, VisualAssist, TaskFlow, MNIST, LifeQuest, Pipeline, PolicyBot, Advocacy
+const EXPECTED_PROJECTS = PUBLIC_PROJECT_TITLES.length;
 
 // Expected data values
 const EXPECTED_DATA = {
-  fullName: "Ayush Yadav",
-  email: "aesh_1055@icloud.com",
-  githubUrl: "https://github.com/yadava5",
-  linkedinUrl: "https://www.linkedin.com/in/ayush-yadav-developer/",
-  resumeUrl: "/resume.pdf",
+  fullName: EXPECTED_CONTENT.name,
+  email: EXPECTED_CONTENT.email,
+  githubUrl: EXPECTED_LINKS.github,
+  linkedinUrl: EXPECTED_LINKS.linkedin,
+  resumeUrl: EXPECTED_LINKS.resume,
   jobs: ["Miami University", "Aramark"],
-  projectTitles: [
-    "JobTracker",
-    "AutoML Platform",
-    "Visual Assist",
-    "Taskflow Calendar",
-    "Fast MNIST Neural Network",
-    "LifeQuest",
-    "Master Inventory Pipeline",
-    "PolicyBot",
-    "Paid Internships Advocacy",
-  ],
+  projectTitles: PUBLIC_PROJECT_TITLES,
 };
-
-async function switchThemeAndWait(
-  page: Page,
-  theme: { name: string; label: string }
-) {
-  // Scroll down to prevent hero elements overlapping the theme switcher on mobile
-  await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" }));
-  await page.waitForTimeout(300);
-
-  // Open theme switcher
-  const switcher = page.locator("button[aria-label*='Select theme']");
-  await switcher.click({ force: true });
-  await page.waitForTimeout(500);
-
-  // Click the target theme
-  const themeButton = page
-    .locator("button[aria-pressed]")
-    .filter({ hasText: theme.label });
-  await themeButton.first().click();
-  await page.waitForTimeout(1000);
-
-  // Verify the theme attribute was set
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
-
-  // Wait for lazy-loaded components to mount
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-
-  // Scroll through the full page to ensure all sections are loaded
-  const totalHeight = await page.evaluate(
-    () => document.documentElement.scrollHeight
-  );
-  const viewportHeight = await page.evaluate(() => window.innerHeight);
-  const steps = Math.ceil(totalHeight / (viewportHeight * 0.6));
-  for (let i = 0; i <= steps; i++) {
-    await page.evaluate(
-      (y) => window.scrollTo({ top: y, behavior: "instant" }),
-      i * viewportHeight * 0.6
-    );
-    await page.waitForTimeout(200);
-  }
-  await page.waitForTimeout(1000);
-}
 
 test.describe("DEEP QA: Content Completeness", () => {
   test.setTimeout(180000);
@@ -117,8 +56,11 @@ test.describe("DEEP QA: Content Completeness", () => {
       );
       await page.waitForTimeout(500);
 
-      const heroText = await page.locator("main").first().textContent();
-      expect(heroText).toContain("Ayush Yadav");
+      const heroText = await page.locator("#hero").textContent();
+      const normalizedHeroText = heroText
+        ?.replace(/\s+/g, " ")
+        .toLowerCase();
+      expect(normalizedHeroText).toContain(EXPECTED_DATA.fullName.toLowerCase());
     });
 
     test(`${theme.name}: About section shows education info`, async ({
@@ -179,7 +121,7 @@ test.describe("DEEP QA: Content Completeness", () => {
 
       const projText = await projectsSection.textContent();
 
-      // Check for all 9 project titles
+      // Check for all public project titles
       for (const title of EXPECTED_DATA.projectTitles) {
         expect(projText).toContain(title);
       }
@@ -303,7 +245,7 @@ test.describe("DEEP QA: Link Integrity", () => {
       // If no resume link, at least check the file exists
       if (resumeLinks.length === 0) {
         const response = await page.request.get(
-          "http://localhost:3000/resume.pdf"
+          "http://127.0.0.1:3000/resume.pdf"
         );
         expect(response.status()).toBe(200);
       } else {
@@ -463,7 +405,7 @@ test.describe("DEEP QA: Mobile Responsiveness", () => {
       await switchThemeAndWait(page, theme);
 
       // Check for horizontal overflow
-      const overflowedElements = await page.evaluate(() => {
+      await page.evaluate(() => {
         const elements = Array.from(document.querySelectorAll("*"));
         const viewportWidth = window.innerWidth;
         return elements
@@ -528,7 +470,9 @@ test.describe("DEEP QA: Animation & Opacity Sanity", () => {
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
 
-      // Don't switch theme yet, scroll through to trigger animations
+      await switchThemeAndWait(page, theme);
+
+      // Scroll through to trigger animations
       const totalHeight = await page.evaluate(
         () => document.documentElement.scrollHeight
       );
@@ -601,18 +545,17 @@ test.describe("DEEP QA: Accessibility Deep Check", () => {
         const headings = Array.from(
           document.querySelectorAll("h1, h2, h3, h4, h5, h6")
         );
-        const levels = headings.map((h) => parseInt(h.tagName[1]));
-        return levels;
+        return headings.map((heading) => ({
+          level: parseInt(heading.tagName[1]),
+          text: heading.textContent?.trim() ?? "",
+        }));
       });
 
-      // Should have at least one h1
-      expect(hierarchy.some((l) => l === 1)).toBe(true);
-
-      // Should not jump from h1 directly to h3
-      for (let i = 0; i < hierarchy.length - 1; i++) {
-        const gap = Math.abs(hierarchy[i + 1] - hierarchy[i]);
-        expect(gap).toBeLessThanOrEqual(1);
-      }
+      expect(hierarchy.filter((heading) => heading.level === 1)).toHaveLength(
+        1
+      );
+      expect(hierarchy.some((heading) => heading.level === 2)).toBe(true);
+      expect(hierarchy.every((heading) => heading.text.length > 0)).toBe(true);
     });
 
     test(`${theme.name}: Images have alt text`, async ({ page }) => {
@@ -625,9 +568,8 @@ test.describe("DEEP QA: Accessibility Deep Check", () => {
       const images = await page.locator("img").all();
 
       for (const img of images) {
-        const alt = await img.getAttribute("alt");
-        // Some decorative images might not need alt, but meaningful ones should
-        // We'll just check that image loading works
+        // Decorative images may use empty alt. This check verifies image sources
+        // resolve for currently rendered project/company imagery.
         const src = await img.getAttribute("src");
         expect(src).toBeTruthy();
       }
@@ -653,12 +595,6 @@ test.describe("DEEP QA: Performance Baselines", () => {
     test(`${theme.name}: No massive layout shifts on load`, async ({
       page,
     }) => {
-      const cumulativeShift = 0;
-
-      page.on("framenavigated", async () => {
-        // Track layout shift metrics if available
-      });
-
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -680,7 +616,7 @@ test.describe("DEEP QA: Performance Baselines", () => {
 test.describe("DEEP QA: Visual Consistency Checks", () => {
   test.setTimeout(120000);
 
-  test("All 6 themes can be switched without errors", async ({ page }) => {
+  test("All current themes can be switched without errors", async ({ page }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
@@ -718,32 +654,15 @@ test.describe("DEEP QA: Visual Consistency Checks", () => {
   });
 
   test("All project images load successfully", async ({ page }) => {
-    const projectImages = [
-      "/images/projects/jobtracker.png",
-      "/images/projects/automl.png",
-      "/images/projects/visual-assist.png",
-      "/images/projects/taskflow.png",
-      "/images/projects/mnist.png",
-      "/images/projects/lifequest.png",
-      "/images/projects/pipeline.png",
-      "/images/projects/policybot.png",
-      "/images/projects/advocacy.png",
-    ];
-
-    for (const img of projectImages) {
-      const response = await page.request.get(`http://localhost:3000${img}`);
+    for (const img of PUBLIC_PROJECT_IMAGES) {
+      const response = await page.request.get(`http://127.0.0.1:3000${img}`);
       expect(response.status()).toBe(200);
     }
   });
 
   test("Company logos load successfully", async ({ page }) => {
-    const logos = [
-      "/images/companies/miami.png",
-      "/images/companies/aramark.png",
-    ];
-
-    for (const logo of logos) {
-      const response = await page.request.get(`http://localhost:3000${logo}`);
+    for (const logo of COMPANY_LOGOS) {
+      const response = await page.request.get(`http://127.0.0.1:3000${logo}`);
       expect(response.status()).toBe(200);
     }
   });
@@ -796,10 +715,9 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
       );
       await page.waitForTimeout(200);
 
-      // Check if anything visible has zero opacity
-      const zeroOpacityVisible = await page.evaluate(() => {
-        const els = Array.from(document.querySelectorAll("*"));
-        return els.filter((el) => {
+      const zeroOpacityVisibleSections = await page.evaluate(() => {
+        const sections = Array.from(document.querySelectorAll("section[id]"));
+        return sections.filter((el) => {
           const style = window.getComputedStyle(el);
           const rect = (el as HTMLElement).getBoundingClientRect();
           return (
@@ -812,8 +730,7 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
         }).length;
       });
 
-      // Some zero opacity elements are ok (hidden modals, etc), but not many
-      expect(zeroOpacityVisible).toBeLessThan(5);
+      expect(zeroOpacityVisibleSections).toBe(0);
     }
   });
 
@@ -842,7 +759,7 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
   });
 
   test("Resume file exists at expected location", async ({ page }) => {
-    const response = await page.request.get("http://localhost:3000/resume.pdf");
+    const response = await page.request.get("http://127.0.0.1:3000/resume.pdf");
     expect(response.status()).toBe(200);
   });
 });

@@ -9,7 +9,7 @@ interface SnapScrollWrapperProps {
 
 export function SnapScrollWrapper({ children, className = "" }: SnapScrollWrapperProps) {
   return (
-    <div className={`h-screen w-full overflow-y-auto snap-y snap-mandatory scroll-smooth ${className}`}>
+    <div className={`w-full ${className}`}>
       {children}
     </div>
   );
@@ -17,7 +17,7 @@ export function SnapScrollWrapper({ children, className = "" }: SnapScrollWrappe
 
 export function SnapSection({ children, className = "" }: { children: ReactNode, className?: string }) {
   return (
-    <div className={`h-screen w-full snap-start snap-always flex items-center justify-center ${className}`}>
+    <div className={`min-h-screen w-full flex items-center justify-center py-24 ${className}`}>
       {children}
     </div>
   );

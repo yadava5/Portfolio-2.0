@@ -13,7 +13,7 @@ export function Hero() {
 
   if (theme === "liquid-glass") {
     return (
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10">
+      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-20">
           <motion.svg
             width="600"
@@ -45,7 +45,7 @@ export function Hero() {
         </div>
 
         <TextReveal className="mb-6">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
             {personalInfo.name}
           </h1>
         </TextReveal>
@@ -65,9 +65,9 @@ export function Hero() {
 
   if (theme === "cosmic-voyage") {
     return (
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10">
+      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden">
         <TextReveal className="mb-6">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-widest text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ fontFamily: "var(--font-serif)" }}>
+          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-wide md:tracking-widest text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ fontFamily: "var(--font-serif)" }}>
             {personalInfo.name.split("").map((char, i) => (
               <span key={i} className="inline-block hover:scale-110 hover:text-indigo-300 transition-transform duration-300 cursor-default">
                 {char === " " ? "\u00A0" : char}
@@ -76,7 +76,7 @@ export function Hero() {
           </h1>
         </TextReveal>
         <TextReveal className="mb-8 delay-100">
-          <p className="text-xl md:text-2xl text-indigo-200 font-light tracking-[0.2em] uppercase">
+          <p className="max-w-full break-words text-xl md:text-2xl text-indigo-200 font-light tracking-[0.12em] md:tracking-[0.2em] uppercase">
             {personalInfo.title}
           </p>
         </TextReveal>
@@ -91,21 +91,21 @@ export function Hero() {
 
   if (theme === "retro-terminal") {
     return (
-      <section className="relative min-h-screen flex flex-col items-start justify-center px-4 md:px-12 z-10 font-mono text-[#00ff41]">
+      <section id="hero" className="relative min-h-screen flex flex-col items-start justify-center px-4 md:px-12 z-10 font-mono text-[#00ff41] overflow-hidden">
         <div className="mb-8">
           <p className="text-sm md:text-base mb-2 opacity-70">
             <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ./init_profile.sh
           </p>
-          <div className="text-2xl md:text-5xl font-bold tracking-tight mb-6">
+          <h1 className="max-w-full break-words text-2xl md:text-5xl font-bold tracking-tight mb-6">
             <TypewriterText text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`} delay={500} />
-          </div>
+          </h1>
         </div>
         
         <div className="mb-8">
           <p className="text-sm md:text-base mb-2 opacity-70">
             <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat title.txt
           </p>
-          <div className="text-xl md:text-2xl text-[#ffb000] mb-4">
+          <div className="max-w-full break-words text-xl md:text-2xl text-[#ffb000] mb-4">
             <TypewriterText text={personalInfo.title.toUpperCase()} delay={1500} />
           </div>
         </div>
@@ -124,14 +124,14 @@ export function Hero() {
 
   if (theme === "synthwave-sunset") {
     return (
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-sans">
+      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-sans overflow-hidden">
         <GlitchBurst className="mb-6">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00]" style={{ fontFamily: "var(--font-display)", filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))" }}>
+          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00]" style={{ fontFamily: "var(--font-display)", filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))" }}>
             {personalInfo.name}
           </h1>
         </GlitchBurst>
         <GlitchBurst className="mb-8 delay-100">
-          <p className="text-xl md:text-3xl text-[#00ffff] font-bold tracking-widest uppercase" style={{ textShadow: "0 0 10px #00ffff" }}>
+          <p className="max-w-full break-words text-xl md:text-3xl text-[#00ffff] font-bold tracking-wide md:tracking-widest uppercase" style={{ textShadow: "0 0 10px #00ffff" }}>
             {personalInfo.title}
           </p>
         </GlitchBurst>
@@ -146,14 +146,14 @@ export function Hero() {
 
   if (theme === "bioluminescent-deep") {
     return (
-      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-serif">
+      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-serif overflow-hidden">
         <FloatingEntry className="mb-6">
-          <h1 className="text-6xl md:text-8xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]">
+          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]">
             {personalInfo.name}
           </h1>
         </FloatingEntry>
         <FloatingEntry className="mb-8 delay-100">
-          <p className="text-xl md:text-2xl text-[#00ffff] font-light tracking-widest uppercase opacity-80" style={{ textShadow: "0 0 10px rgba(0,255,255,0.8)" }}>
+          <p className="max-w-full break-words text-xl md:text-2xl text-[#00ffff] font-light tracking-wide md:tracking-widest uppercase opacity-80" style={{ textShadow: "0 0 10px rgba(0,255,255,0.8)" }}>
             {personalInfo.title}
           </p>
         </FloatingEntry>
@@ -167,7 +167,7 @@ export function Hero() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center">
+    <section id="hero" className="min-h-screen flex items-center justify-center">
       <h1 className="text-4xl">Hero - {theme}</h1>
     </section>
   );

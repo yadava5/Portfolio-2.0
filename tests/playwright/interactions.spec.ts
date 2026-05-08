@@ -1,12 +1,5 @@
-import { test, expect, Page } from "@playwright/test";
-
-const THEMES = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
-];
+import { test, expect } from "@playwright/test";
+import { THEME_IDS } from "./portfolio-fixtures";
 
 const NAV_SECTIONS = [
   { id: "about", label: "About" },
@@ -29,7 +22,7 @@ test.describe("User Interactions", () => {
   test.describe("Theme Switching via data-theme attribute", () => {
     test.setTimeout(60000);
 
-    for (const theme of THEMES) {
+    for (const theme of THEME_IDS) {
       test(`can switch to ${theme} and verify data-theme attribute is applied`, async ({
         page,
       }) => {
@@ -245,9 +238,8 @@ test.describe("User Interactions", () => {
       await page.waitForTimeout(400);
 
       // Look for dropdown/menu that should appear
-      const dropdown = page.locator(
-        '[role="menu"], [role="listbox"], [aria-label*="theme" i]'
-      );
+      const dropdown = page.locator("#theme-switcher-menu");
+      await expect(dropdown).toBeVisible();
 
       // At least one theme option should be visible
       const optionsVisible = await page.locator("[aria-pressed]").count();

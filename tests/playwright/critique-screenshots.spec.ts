@@ -1,56 +1,17 @@
 import { test, Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-
-const THEMES = [
-  { name: "paper-ink", label: "Paper & Ink" },
-  { name: "gallery", label: "Gallery" },
-  { name: "dark-luxe", label: "Dark Luxe" },
-  { name: "editorial", label: "Editorial" },
-  { name: "noir-cinema", label: "Noir Cinema" },
-  { name: "neon-cyber", label: "Neon Cyber" },
-];
+import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 const SECTION_NAMES = [
-  { selector: "[data-section='hero']", name: "hero" },
-  { selector: "[data-section='about']", name: "about" },
-  { selector: "[data-section='experience']", name: "experience" },
-  { selector: "[data-section='projects']", name: "projects" },
-  { selector: "[data-section='skills']", name: "skills" },
-  { selector: "[data-section='testimonials']", name: "testimonials" },
-  { selector: "[data-section='contact']", name: "contact" },
+  { selector: "#hero", name: "hero" },
+  { selector: "#about", name: "about" },
+  { selector: "#experience", name: "experience" },
+  { selector: "#projects", name: "projects" },
+  { selector: "#skills", name: "skills" },
+  { selector: "#testimonials", name: "testimonials" },
+  { selector: "#contact", name: "contact" },
 ];
-
-async function switchTheme(page: Page, theme: { name: string; label: string }) {
-  // Click theme switcher
-  const themeButtons = await page
-    .locator("button")
-    .filter({ hasText: /Paper|Gallery|Dark|Editorial|Noir|Neon/i })
-    .all();
-
-  if (themeButtons.length === 0) {
-    console.log("Theme buttons not found, looking for theme switcher...");
-    const switcher = await page
-      .locator("button[aria-label*='theme'], button[aria-label*='Theme']")
-      .first();
-    if (await switcher.isVisible()) {
-      await switcher.click();
-      await page.waitForTimeout(400);
-    }
-  }
-
-  // Find and click the specific theme button
-  const themeButton = page
-    .locator("button")
-    .filter({ hasText: theme.label })
-    .first();
-  await themeButton.click();
-  await page.waitForTimeout(1200);
-}
-
-async function getViewportHeight(page: Page): Promise<number> {
-  return await page.evaluate(() => window.innerHeight);
-}
 
 async function scrollToElement(page: Page, selector: string) {
   const element = page.locator(selector);
@@ -75,7 +36,7 @@ for (const theme of THEMES) {
     await page.waitForTimeout(1000);
 
     // Switch theme
-    await switchTheme(page, theme);
+    await switchThemeAndWait(page, theme);
     await page.waitForTimeout(800);
 
     // Screenshot each major section
@@ -91,14 +52,14 @@ for (const theme of THEMES) {
           await element.screenshot({ path: screenshotPath });
           console.log(`Captured: ${screenshotPath}`);
         }
-      } catch (e) {
+      } catch {
         console.log(`Could not capture ${theme.name}-${section.name}`);
       }
     }
 
     // Full page screenshot
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await switchTheme(page, theme);
+    await switchThemeAndWait(page, theme);
     await page.waitForTimeout(800);
     const fullPath = path.join(
       screenshotsDir,
@@ -119,7 +80,7 @@ for (const theme of THEMES) {
     await page.waitForTimeout(1000);
 
     // Switch theme
-    await switchTheme(page, theme);
+    await switchThemeAndWait(page, theme);
     await page.waitForTimeout(800);
 
     // Screenshot hero and projects sections
@@ -138,7 +99,7 @@ for (const theme of THEMES) {
             await element.screenshot({ path: screenshotPath });
             console.log(`Captured mobile: ${screenshotPath}`);
           }
-        } catch (e) {
+        } catch {
           console.log(`Could not capture mobile ${theme.name}-${sectionName}`);
         }
       }

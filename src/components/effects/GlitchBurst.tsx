@@ -18,7 +18,7 @@ export function GlitchBurst({ children, className = "" }: GlitchBurstProps) {
     const el = wrapperRef.current;
     if (!el) return;
 
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       el,
       {
         opacity: 0,
@@ -40,6 +40,15 @@ export function GlitchBurst({ children, className = "" }: GlitchBurstProps) {
         },
       }
     );
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === el) {
+          trigger.kill();
+        }
+      });
+      tween.kill();
+    };
   }, []);
 
   return (

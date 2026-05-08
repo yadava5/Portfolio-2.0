@@ -58,12 +58,12 @@ export function Projects() {
                     </div>
                     <div className="flex gap-4">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white font-medium">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white font-medium">
                           <Github size={18} /> Code
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-500/80 hover:bg-indigo-500 transition-colors text-white font-medium">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-500/80 hover:bg-indigo-500 transition-colors text-white font-medium">
                           <ExternalLink size={18} /> Live Demo
                         </a>
                       )}
@@ -100,12 +100,12 @@ export function Projects() {
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-white/50 hover:text-white transition-colors">
                           <Github size={20} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-white/50 hover:text-white transition-colors">
                           <ExternalLink size={20} />
                         </a>
                       )}
@@ -170,12 +170,12 @@ export function Projects() {
                     </div>
                     <div className="flex gap-4">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 border border-white/20 hover:border-white/50 transition-colors text-white text-sm tracking-widest uppercase">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 border border-white/20 hover:border-white/50 transition-colors text-white text-sm tracking-widest uppercase">
                           <Github size={16} /> Source
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-purple-600/80 hover:bg-purple-500 transition-colors text-white text-sm tracking-widest uppercase">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 bg-purple-600/80 hover:bg-purple-500 transition-colors text-white text-sm tracking-widest uppercase">
                           <ExternalLink size={16} /> Launch
                         </a>
                       )}
@@ -214,12 +214,12 @@ export function Projects() {
                   </p>
                   <div className="flex gap-3">
                     {project.githubUrl && (
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-300 hover:text-white transition-colors">
+                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-indigo-300 hover:text-white transition-colors">
                         <Github size={18} />
                       </a>
                     )}
                     {project.liveUrl && (
-                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-300 hover:text-white transition-colors">
+                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-indigo-300 hover:text-white transition-colors">
                         <ExternalLink size={18} />
                       </a>
                     )}
@@ -283,12 +283,12 @@ export function Projects() {
                       </div>
                       <div className="flex gap-4 text-sm font-bold">
                         {project.githubUrl && (
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 border border-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-colors uppercase">
+                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-4 py-2 border border-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-colors uppercase">
                             <Github size={16} /> [SRC]
                           </a>
                         )}
                         {project.liveUrl && (
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#00ff41] text-black hover:bg-transparent hover:text-[#00ff41] border border-[#00ff41] transition-colors uppercase">
+                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-4 py-2 bg-[#00ff41] text-black hover:bg-transparent hover:text-[#00ff41] border border-[#00ff41] transition-colors uppercase">
                             <ExternalLink size={16} /> [RUN]
                           </a>
                         )}
@@ -329,12 +329,12 @@ export function Projects() {
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
                           <Github size={18} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
                           <ExternalLink size={18} />
                         </a>
                       )}
@@ -398,12 +398,12 @@ export function Projects() {
                     </div>
                     <div className="flex gap-4 font-bold uppercase">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 border-2 border-[#00ffff] text-[#00ffff] hover:bg-[#00ffff] hover:text-black transition-colors shadow-[0_0_10px_#00ffff,inset_0_0_10px_#00ffff]">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 border-2 border-[#00ffff] text-[#00ffff] hover:bg-[#00ffff] hover:text-black transition-colors shadow-[0_0_10px_#00ffff,inset_0_0_10px_#00ffff]">
                           <Github size={18} /> INSERT_COIN
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 bg-[#ff00ff] text-white border-2 border-[#ff00ff] hover:bg-transparent hover:text-[#ff00ff] transition-colors shadow-[0_0_15px_#ff00ff]">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 bg-[#ff00ff] text-white border-2 border-[#ff00ff] hover:bg-transparent hover:text-[#ff00ff] transition-colors shadow-[0_0_15px_#ff00ff]">
                           <ExternalLink size={18} /> START_GAME
                         </a>
                       )}
@@ -445,12 +445,12 @@ export function Projects() {
                       </p>
                       <div className="flex gap-3">
                         {project.githubUrl && (
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[#00ffff] hover:text-white transition-colors drop-shadow-[0_0_5px_#00ffff]">
+                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ffff] hover:text-white transition-colors drop-shadow-[0_0_5px_#00ffff]">
                             <Github size={20} />
                           </a>
                         )}
                         {project.liveUrl && (
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[#ff00ff] hover:text-white transition-colors drop-shadow-[0_0_5px_#ff00ff]">
+                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#ff00ff] hover:text-white transition-colors drop-shadow-[0_0_5px_#ff00ff]">
                             <ExternalLink size={20} />
                           </a>
                         )}
@@ -513,12 +513,12 @@ export function Projects() {
                     </div>
                     <div className="flex gap-4 font-sans font-light tracking-widest uppercase text-sm">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#00ffff]/30 text-[#00ffff] hover:bg-[#00ffff]/10 hover:border-[#00ffff]/50 transition-all duration-500">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#00ffff]/30 text-[#00ffff] hover:bg-[#00ffff]/10 hover:border-[#00ffff]/50 transition-all duration-500">
                           <Github size={16} /> Source
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#00ffff]/20 text-[#e0f4ff] border border-[#00ffff]/50 hover:bg-[#00ffff]/30 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)] transition-all duration-500">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#00ffff]/20 text-[#e0f4ff] border border-[#00ffff]/50 hover:bg-[#00ffff]/30 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)] transition-all duration-500">
                           <ExternalLink size={16} /> Explore
                         </a>
                       )}
@@ -558,12 +558,12 @@ export function Projects() {
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
                           <Github size={20} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
                           <ExternalLink size={20} />
                         </a>
                       )}

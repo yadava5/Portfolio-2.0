@@ -1,14 +1,7 @@
 import { test, expect } from "@playwright/test";
 import fs from "fs/promises";
 import path from "path";
-
-const THEMES = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
-];
+import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 const VIEWPORT_SIZES = [
   { name: "mobile", width: 375, height: 667 },
@@ -33,14 +26,14 @@ test.describe("Visual Regression: Theme Screenshots", () => {
     );
     try {
       await fs.mkdir(screenshotDir, { recursive: true });
-    } catch (err) {
+    } catch {
       // Directory may already exist
     }
   });
 
   for (const theme of THEMES) {
     for (const viewport of VIEWPORT_SIZES) {
-      test(`${theme} - ${viewport.name} (${viewport.width}x${viewport.height})`, async ({
+      test(`${theme.name} - ${viewport.name} (${viewport.width}x${viewport.height})`, async ({
         page,
       }) => {
         // Set viewport size before navigation
@@ -53,10 +46,7 @@ test.describe("Visual Regression: Theme Screenshots", () => {
         await page.goto("/");
         await page.waitForLoadState("networkidle");
 
-        // Set theme via data-theme attribute
-        await page.evaluate((themeName) => {
-          document.documentElement.setAttribute("data-theme", themeName);
-        }, theme);
+        await switchThemeAndWait(page, theme);
 
         // Wait for fonts and animations to settle
         await page.waitForLoadState("domcontentloaded");
@@ -75,7 +65,7 @@ test.describe("Visual Regression: Theme Screenshots", () => {
           __dirname,
           "screenshots",
           "visual-regression",
-          `${theme}-${viewport.name}.png`
+          `${theme.name}-${viewport.name}.png`
         );
 
         await page.screenshot({
@@ -101,7 +91,7 @@ test.describe("Visual Regression: Theme Screenshots", () => {
       for (const viewport of VIEWPORT_SIZES) {
         const filePath = path.join(
           screenshotDir,
-          `${theme}-${viewport.name}.png`
+          `${theme.name}-${viewport.name}.png`
         );
         const stats = await fs.stat(filePath);
         expect(stats.isFile()).toBe(true);
