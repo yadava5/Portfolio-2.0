@@ -1,4 +1,5 @@
 export type ThemeId = 
+  | "technical-operations-atlas"
   | "liquid-glass"
   | "cosmic-voyage"
   | "retro-terminal"
@@ -17,6 +18,13 @@ const liquidGlass: ThemeConfig = {
   name: "liquid-glass",
   label: "Liquid Glass",
   description: "Aurora mesh gradient and modern glassmorphism",
+};
+
+const technicalOperationsAtlas: ThemeConfig = {
+  id: "technical-operations-atlas",
+  name: "technical-operations-atlas",
+  label: "Technical Operations Atlas",
+  description: "Evidence-first CS portfolio with recruiter-ready proof",
 };
 
 const cosmicVoyage: ThemeConfig = {
@@ -48,6 +56,7 @@ const bioluminescentDeep: ThemeConfig = {
 };
 
 export const themeConfigs: Record<ThemeId, ThemeConfig> = {
+  "technical-operations-atlas": technicalOperationsAtlas,
   "liquid-glass": liquidGlass,
   "cosmic-voyage": cosmicVoyage,
   "retro-terminal": retroTerminal,
@@ -57,7 +66,7 @@ export const themeConfigs: Record<ThemeId, ThemeConfig> = {
 
 export const themeIds = Object.keys(themeConfigs) as ThemeId[];
 
-export const defaultThemeId: ThemeId = "liquid-glass";
+export const defaultThemeId: ThemeId = "technical-operations-atlas";
 
 export function getThemeConfig(themeId: string): ThemeConfig {
   return themeConfigs[themeId as ThemeId] ?? themeConfigs[defaultThemeId];

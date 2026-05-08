@@ -11,6 +11,7 @@ import { StarCursor } from "@/components/cursors/StarCursor";
 import { BlockCursor } from "@/components/cursors/BlockCursor";
 import { NeonCursor } from "@/components/cursors/NeonCursor";
 import { OrbCursor } from "@/components/cursors/OrbCursor";
+import { TechnicalOperationsAtlas } from "@/components/atlas/TechnicalOperationsAtlas";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Experience } from "@/components/sections/Experience";
@@ -21,6 +22,10 @@ import { Contact } from "@/components/sections/Contact";
 
 export function ThemeOrchestrator() {
   const { theme } = useTheme();
+
+  if (theme === "technical-operations-atlas") {
+    return <TechnicalOperationsAtlas />;
+  }
 
   return (
     <div className="relative min-h-screen w-full">

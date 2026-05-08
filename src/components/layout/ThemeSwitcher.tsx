@@ -9,6 +9,7 @@ import gsap from "gsap";
 export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const menuId = "theme-switcher-menu";
 
   useEffect(() => {
     if (isOpen) {
@@ -57,16 +58,28 @@ export default function ThemeSwitcher() {
   return (
     <div className="fixed bottom-6 right-6 z-[100]">
       {isOpen && (
-        <div className="absolute bottom-16 right-0 mb-2 flex flex-col gap-2 rounded-2xl bg-black/80 p-4 backdrop-blur-xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] w-64 origin-bottom-right animate-in fade-in zoom-in duration-200">
+        <div
+          id={menuId}
+          role="menu"
+          aria-label="Theme options"
+          className="absolute bottom-16 right-0 mb-2 flex flex-col gap-2 rounded-2xl bg-black/80 p-4 backdrop-blur-xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] w-64 origin-bottom-right animate-in fade-in zoom-in duration-200"
+        >
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-white/10">
-            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Select Theme</span>
-            <button onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white transition-colors">
+            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Visual Modes</span>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="text-white/50 hover:text-white transition-colors"
+              aria-label="Close theme menu"
+            >
               <X size={16} />
             </button>
           </div>
           {themeIds.map((id) => (
             <button
               key={id}
+              type="button"
+              aria-pressed={theme === id}
               onClick={() => handleThemeChange(id)}
               className={`theme-menu-item flex flex-col items-start rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
                 theme === id
@@ -85,13 +98,16 @@ export default function ThemeSwitcher() {
         </div>
       )}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-14 w-14 items-center justify-center rounded-full backdrop-blur-xl border transition-all duration-300 shadow-2xl ${
+        className={`flex h-12 w-12 items-center justify-center rounded-full backdrop-blur-xl border transition-all duration-300 shadow-2xl ${
           isOpen 
             ? "bg-white text-black border-white scale-90" 
             : "bg-black/80 text-white border-white/20 hover:border-white/50 hover:bg-black hover:scale-110"
         }`}
-        aria-label="Toggle theme menu"
+        aria-label="Select theme"
+        aria-expanded={isOpen}
+        aria-controls={menuId}
       >
         <Palette size={24} />
       </button>
