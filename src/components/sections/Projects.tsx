@@ -12,8 +12,14 @@ import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";
 import { HorizontalScrollWrapper } from "@/components/effects/HorizontalScrollWrapper";
 import { ParallaxDepthWrapper } from "@/components/effects/ParallaxDepthWrapper";
-import { TerminalRevealWrapper, TerminalStepItem } from "@/components/effects/TerminalRevealWrapper";
-import { SnapScrollWrapper, SnapSection } from "@/components/effects/SnapScrollWrapper";
+import {
+  TerminalRevealWrapper,
+  TerminalStepItem,
+} from "@/components/effects/TerminalRevealWrapper";
+import {
+  SnapScrollWrapper,
+  SnapSection,
+} from "@/components/effects/SnapScrollWrapper";
 import { FluidDistortionWrapper } from "@/components/effects/FluidDistortionWrapper";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
@@ -26,56 +32,74 @@ export function Projects() {
   if (theme === "liquid-glass") {
     return (
       <section id="projects" className="relative z-10 w-full overflow-hidden">
-        <div className="pt-32 px-4 md:px-8 max-w-6xl mx-auto">
+        <div className="mx-auto max-w-6xl px-4 pt-32 md:px-8">
           <TextReveal className="mb-16 text-center">
-            <span className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-widest uppercase text-white/80">
+            <span className="inline-block rounded-full border border-white/20 bg-white/10 px-6 py-2 text-sm font-medium tracking-widest text-white/80 uppercase backdrop-blur-md">
               Featured Work
             </span>
           </TextReveal>
         </div>
 
-        <HorizontalScrollWrapper className="w-full mb-32">
+        <HorizontalScrollWrapper className="mb-32 w-full">
           {featured.map((project, idx) => (
-            <div key={project.id} className="w-[90vw] md:w-[800px] lg:w-[1000px] flex-shrink-0">
+            <div
+              key={project.id}
+              className="w-[90vw] flex-shrink-0 md:w-[800px] lg:w-[1000px]"
+            >
               <TextReveal className={`delay-[${idx * 100}ms] h-full`}>
-                <GlassCard className="p-0 overflow-hidden flex flex-col lg:flex-row group h-full">
-                  <div className="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                    <p className="text-sm font-medium text-indigo-400 uppercase tracking-widest mb-4">
+                <GlassCard className="group flex h-full flex-col overflow-hidden p-0 lg:flex-row">
+                  <div className="flex w-full flex-col justify-center p-8 md:p-12 lg:w-1/2">
+                    <p className="mb-4 text-sm font-medium tracking-widest text-indigo-400 uppercase">
                       {project.category}
                     </p>
-                    <h3 className="text-4xl font-bold text-white mb-6">
+                    <h3 className="mb-6 text-4xl font-bold text-white">
                       {project.title}
                     </h3>
-                    <p className="text-lg text-white/70 leading-relaxed mb-8">
+                    <p className="mb-8 text-lg leading-relaxed text-white/70">
                       {project.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-10">
+                    <div className="mb-10 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
-                        <span key={tech.name} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-white/80">
+                        <span
+                          key={tech.name}
+                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80"
+                        >
                           {tech.name}
                         </span>
                       ))}
                     </div>
                     <div className="flex gap-4">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white font-medium">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 font-medium text-white transition-colors hover:bg-white/20"
+                        >
                           <Github size={18} /> Code
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-500/80 hover:bg-indigo-500 transition-colors text-white font-medium">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="flex items-center gap-2 rounded-full bg-indigo-500/80 px-6 py-3 font-medium text-white transition-colors hover:bg-indigo-500"
+                        >
                           <ExternalLink size={18} /> Live Demo
                         </a>
                       )}
                     </div>
                   </div>
-                  <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full bg-black/20 overflow-hidden">
+                  <div className="relative min-h-[400px] w-full overflow-hidden bg-black/20 lg:min-h-full lg:w-1/2">
                     {project.image && (
                       <Image
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105"
+                        className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
                       />
                     )}
                   </div>
@@ -85,46 +109,65 @@ export function Projects() {
           ))}
         </HorizontalScrollWrapper>
 
-        <div className="max-w-6xl mx-auto px-4 md:px-8 pb-32">
+        <div className="mx-auto max-w-6xl px-4 pb-32 md:px-8">
           <TextReveal className="mb-16 text-center">
-            <h3 className="text-3xl font-light text-white/90">Other Projects</h3>
+            <h3 className="text-3xl font-light text-white/90">
+              Other Projects
+            </h3>
           </TextReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {nonFeatured.map((project, idx) => (
-              <TextReveal key={project.id} className={`delay-[${(idx % 3) * 100}ms]`}>
-                <GlassCard className="p-8 h-full flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <p className="text-xs font-medium text-indigo-400 uppercase tracking-widest">
+              <TextReveal
+                key={project.id}
+                className={`delay-[${(idx % 3) * 100}ms]`}
+              >
+                <GlassCard className="flex h-full flex-col p-8">
+                  <div className="mb-6 flex items-start justify-between">
+                    <p className="text-xs font-medium tracking-widest text-indigo-400 uppercase">
                       {project.category}
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-white/50 hover:text-white transition-colors">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="text-white/50 transition-colors hover:text-white"
+                        >
                           <Github size={20} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-white/50 hover:text-white transition-colors">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="text-white/50 transition-colors hover:text-white"
+                        >
                           <ExternalLink size={20} />
                         </a>
                       )}
                     </div>
                   </div>
-                  <h4 className="text-2xl font-semibold text-white mb-4">
+                  <h4 className="mb-4 text-2xl font-semibold text-white">
                     {project.title}
                   </h4>
-                  <p className="text-white/60 leading-relaxed mb-8 flex-grow">
+                  <p className="mb-8 flex-grow leading-relaxed text-white/60">
                     {project.shortDescription}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-auto">
+                  <div className="mt-auto flex flex-wrap gap-2">
                     {project.techStack.slice(0, 3).map((tech) => (
                       <span key={tech.name} className="text-xs text-white/40">
                         {tech.name}
                       </span>
                     ))}
                     {project.techStack.length > 3 && (
-                      <span className="text-xs text-white/40">+{project.techStack.length - 3}</span>
+                      <span className="text-xs text-white/40">
+                        +{project.techStack.length - 3}
+                      </span>
                     )}
                   </div>
                 </GlassCard>
@@ -138,56 +181,80 @@ export function Projects() {
 
   if (theme === "cosmic-voyage") {
     return (
-      <section id="projects" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-6xl mx-auto">
+      <section
+        id="projects"
+        className="relative z-10 mx-auto min-h-screen max-w-6xl px-4 py-32 md:px-8"
+      >
         <div className="mb-24 text-center">
-          <h2 className="text-3xl md:text-5xl text-white font-light tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+          <h2
+            className="mb-4 text-3xl font-light tracking-[0.3em] text-white uppercase md:text-5xl"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
             Discoveries
           </h2>
-          <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
+          <div className="mx-auto h-px w-24 bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
         </div>
 
-        <div className="space-y-48 mb-32">
+        <div className="mb-32 space-y-48">
           {featured.map((project, idx) => (
             <ParallaxDepthWrapper key={project.id} depth={1 + (idx % 2) * 0.5}>
               <WarpTransition>
-                <NebulaCard className="p-0 overflow-hidden flex flex-col lg:flex-row group">
-                  <div className="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-center relative z-10 bg-black/40 backdrop-blur-sm">
-                    <p className="text-xs font-bold text-purple-400 uppercase tracking-[0.2em] mb-4">
+                <NebulaCard className="group flex flex-col overflow-hidden p-0 lg:flex-row">
+                  <div className="relative z-10 flex w-full flex-col justify-center bg-black/40 p-8 backdrop-blur-sm md:p-12 lg:w-1/2">
+                    <p className="mb-4 text-xs font-bold tracking-[0.2em] text-purple-400 uppercase">
                       {project.category}
                     </p>
-                    <h3 className="text-4xl font-bold text-white mb-6" style={{ fontFamily: "var(--font-serif)" }}>
+                    <h3
+                      className="mb-6 text-4xl font-bold text-white"
+                      style={{ fontFamily: "var(--font-serif)" }}
+                    >
                       {project.title}
                     </h3>
-                    <p className="text-lg text-indigo-100/70 leading-relaxed mb-8">
+                    <p className="mb-8 text-lg leading-relaxed text-indigo-100/70">
                       {project.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-10">
+                    <div className="mb-10 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
-                        <span key={tech.name} className="px-3 py-1 rounded border border-purple-500/30 text-xs text-purple-200 tracking-wider">
+                        <span
+                          key={tech.name}
+                          className="rounded border border-purple-500/30 px-3 py-1 text-xs tracking-wider text-purple-200"
+                        >
                           {tech.name}
                         </span>
                       ))}
                     </div>
                     <div className="flex gap-4">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 border border-white/20 hover:border-white/50 transition-colors text-white text-sm tracking-widest uppercase">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="flex items-center gap-2 border border-white/20 px-6 py-3 text-sm tracking-widest text-white uppercase transition-colors hover:border-white/50"
+                        >
                           <Github size={16} /> Source
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 bg-purple-600/80 hover:bg-purple-500 transition-colors text-white text-sm tracking-widest uppercase">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="flex items-center gap-2 bg-purple-600/80 px-6 py-3 text-sm tracking-widest text-white uppercase transition-colors hover:bg-purple-500"
+                        >
                           <ExternalLink size={16} /> Launch
                         </a>
                       )}
                     </div>
                   </div>
-                  <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full bg-black overflow-hidden">
+                  <div className="relative min-h-[400px] w-full overflow-hidden bg-black lg:min-h-full lg:w-1/2">
                     {project.image && (
                       <Image
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover opacity-60 mix-blend-luminosity group-hover:opacity-100 group-hover:mix-blend-normal transition-all duration-700 group-hover:scale-105"
+                        className="object-cover opacity-60 mix-blend-luminosity transition-all duration-700 group-hover:scale-105 group-hover:opacity-100 group-hover:mix-blend-normal"
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent lg:bg-gradient-to-r" />
@@ -199,41 +266,62 @@ export function Projects() {
         </div>
 
         <div className="mb-16 text-center">
-          <h3 className="text-2xl text-indigo-200 font-light tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-serif)" }}>
+          <h3
+            className="text-2xl font-light tracking-[0.2em] text-indigo-200 uppercase"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
             Other Expeditions
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {nonFeatured.map((project, idx) => (
             <WarpTransition key={project.id}>
-              <NebulaCard className="p-8 h-full flex flex-col">
-                <div className="flex justify-between items-start mb-6">
-                  <p className="text-xs font-bold text-purple-400 uppercase tracking-[0.2em]">
+              <NebulaCard className="flex h-full flex-col p-8">
+                <div className="mb-6 flex items-start justify-between">
+                  <p className="text-xs font-bold tracking-[0.2em] text-purple-400 uppercase">
                     {project.category}
                   </p>
                   <div className="flex gap-3">
                     {project.githubUrl && (
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-indigo-300 hover:text-white transition-colors">
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${project.title} source code`}
+                        className="text-indigo-300 transition-colors hover:text-white"
+                      >
                         <Github size={18} />
                       </a>
                     )}
                     {project.liveUrl && (
-                      <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-indigo-300 hover:text-white transition-colors">
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${project.title} live demo`}
+                        className="text-indigo-300 transition-colors hover:text-white"
+                      >
                         <ExternalLink size={18} />
                       </a>
                     )}
                   </div>
                 </div>
-                <h4 className="text-2xl font-semibold text-white mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+                <h4
+                  className="mb-4 text-2xl font-semibold text-white"
+                  style={{ fontFamily: "var(--font-serif)" }}
+                >
                   {project.title}
                 </h4>
-                <p className="text-indigo-100/60 leading-relaxed mb-8 flex-grow text-sm">
+                <p className="mb-8 flex-grow text-sm leading-relaxed text-indigo-100/60">
                   {project.shortDescription}
                 </p>
-                <div className="flex flex-wrap gap-2 mt-auto">
+                <div className="mt-auto flex flex-wrap gap-2">
                   {project.techStack.slice(0, 3).map((tech) => (
-                    <span key={tech.name} className="text-xs text-purple-300/50 tracking-wider">
+                    <span
+                      key={tech.name}
+                      className="text-xs tracking-wider text-purple-300/50"
+                    >
                       {tech.name}
                     </span>
                   ))}
@@ -248,63 +336,87 @@ export function Projects() {
 
   if (theme === "retro-terminal") {
     return (
-      <section id="projects" className="relative min-h-screen py-32 px-4 md:px-12 z-10 max-w-6xl mx-auto font-mono text-[#00ff41]">
-        <TerminalRevealWrapper stepCount={featured.length + 1} className="space-y-16 mb-32">
+      <section
+        id="projects"
+        className="relative z-10 mx-auto min-h-screen max-w-6xl px-4 py-32 font-mono text-[#00ff41] md:px-12"
+      >
+        <TerminalRevealWrapper
+          stepCount={featured.length + 1}
+          className="mb-32 space-y-16"
+        >
           <div className="mb-12">
-            <p className="text-sm md:text-base mb-4 opacity-70">
-              <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ls -la ./projects
+            <p className="mb-4 text-sm opacity-70 md:text-base">
+              <span className="text-[#ffb000]">root@portfolio</span>:
+              <span className="text-blue-400">~</span>$ ls -la ./projects
             </p>
-            <h2 className="text-3xl md:text-5xl font-bold uppercase mb-8 border-b border-[#00ff41]/30 pb-4 inline-block">
+            <h2 className="mb-8 inline-block border-b border-[#00ff41]/30 pb-4 text-3xl font-bold uppercase md:text-5xl">
               # PROJECT_DIRECTORY
             </h2>
           </div>
 
-          <div className="space-y-16 mb-32">
+          <div className="mb-32 space-y-16">
             {featured.map((project, idx) => (
               <TerminalStepItem key={project.id} step={idx}>
-                <div className="border border-[#00ff41]/30 p-6 md:p-8 bg-black/60 hover:bg-[#00ff41]/5 transition-all duration-300 group">
-                  <div className="flex flex-col lg:flex-row gap-8">
-                    <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                      <p className="text-xs font-bold text-[#ffb000] uppercase mb-4">
+                <div className="group border border-[#00ff41]/30 bg-black/60 p-6 transition-all duration-300 hover:bg-[#00ff41]/5 md:p-8">
+                  <div className="flex flex-col gap-8 lg:flex-row">
+                    <div className="flex w-full flex-col justify-center lg:w-1/2">
+                      <p className="mb-4 text-xs font-bold text-[#ffb000] uppercase">
                         drwxr-xr-x {project.category}
                       </p>
-                      <h3 className="text-3xl font-bold text-white mb-6 uppercase">
+                      <h3 className="mb-6 text-3xl font-bold text-white uppercase">
                         {project.title}
                       </h3>
-                      <p className="text-base text-[#00ff41]/80 leading-relaxed mb-8">
+                      <p className="mb-8 text-base leading-relaxed text-[#00ff41]/80">
                         {project.shortDescription}
                       </p>
-                      <div className="flex flex-wrap gap-2 mb-10">
+                      <div className="mb-10 flex flex-wrap gap-2">
                         {project.techStack.map((tech) => (
-                          <span key={tech.name} className="px-2 py-1 border border-[#00ff41]/50 text-xs text-[#00ff41]">
+                          <span
+                            key={tech.name}
+                            className="border border-[#00ff41]/50 px-2 py-1 text-xs text-[#00ff41]"
+                          >
                             {tech.name}
                           </span>
                         ))}
                       </div>
                       <div className="flex gap-4 text-sm font-bold">
                         {project.githubUrl && (
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-4 py-2 border border-[#00ff41] hover:bg-[#00ff41] hover:text-black transition-colors uppercase">
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${project.title} source code`}
+                            className="flex items-center gap-2 border border-[#00ff41] px-4 py-2 uppercase transition-colors hover:bg-[#00ff41] hover:text-black"
+                          >
                             <Github size={16} /> [SRC]
                           </a>
                         )}
                         {project.liveUrl && (
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-4 py-2 bg-[#00ff41] text-black hover:bg-transparent hover:text-[#00ff41] border border-[#00ff41] transition-colors uppercase">
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${project.title} live demo`}
+                            className="flex items-center gap-2 border border-[#00ff41] bg-[#00ff41] px-4 py-2 text-black uppercase transition-colors hover:bg-transparent hover:text-[#00ff41]"
+                          >
                             <ExternalLink size={16} /> [RUN]
                           </a>
                         )}
                       </div>
                     </div>
-                    <div className="w-full lg:w-1/2 relative min-h-[300px] border border-[#00ff41]/30 overflow-hidden bg-black flex items-center justify-center">
-                      <div className="absolute inset-0 bg-[#00ff41]/10 mix-blend-overlay z-10 pointer-events-none" />
+                    <div className="relative flex min-h-[300px] w-full items-center justify-center overflow-hidden border border-[#00ff41]/30 bg-black lg:w-1/2">
+                      <div className="pointer-events-none absolute inset-0 z-10 bg-[#00ff41]/10 mix-blend-overlay" />
                       {project.image ? (
                         <Image
                           src={project.image}
                           alt={project.title}
                           fill
-                          className="object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-500"
+                          className="object-cover opacity-50 grayscale transition-all duration-500 group-hover:opacity-80 group-hover:grayscale-0"
                         />
                       ) : (
-                        <span className="text-[#00ff41]/30 text-2xl font-bold uppercase tracking-widest">NO_IMAGE_DATA</span>
+                        <span className="text-2xl font-bold tracking-widest text-[#00ff41]/30 uppercase">
+                          NO_IMAGE_DATA
+                        </span>
                       )}
                     </div>
                   </div>
@@ -315,40 +427,60 @@ export function Projects() {
 
           <TerminalStepItem step={featured.length}>
             <div className="mb-12">
-              <p className="text-sm md:text-base mb-4 opacity-70">
-                <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ls -la ./other_projects
+              <p className="mb-4 text-sm opacity-70 md:text-base">
+                <span className="text-[#ffb000]">root@portfolio</span>:
+                <span className="text-blue-400">~</span>$ ls -la
+                ./other_projects
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {nonFeatured.map((project) => (
-                <div key={project.id} className="border border-dashed border-[#00ff41]/40 p-6 h-full flex flex-col hover:border-solid hover:bg-[#00ff41]/5 transition-all">
-                  <div className="flex justify-between items-start mb-6">
+                <div
+                  key={project.id}
+                  className="flex h-full flex-col border border-dashed border-[#00ff41]/40 p-6 transition-all hover:border-solid hover:bg-[#00ff41]/5"
+                >
+                  <div className="mb-6 flex items-start justify-between">
                     <p className="text-xs font-bold text-[#ffb000] uppercase">
                       {project.category}
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="text-[#00ff41]/60 transition-colors hover:text-[#00ff41]"
+                        >
                           <Github size={18} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#00ff41]/60 hover:text-[#00ff41] transition-colors">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="text-[#00ff41]/60 transition-colors hover:text-[#00ff41]"
+                        >
                           <ExternalLink size={18} />
                         </a>
                       )}
                     </div>
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-4 uppercase">
+                  <h4 className="mb-4 text-xl font-bold text-white uppercase">
                     {project.title}
                   </h4>
-                  <p className="text-[#00ff41]/70 leading-relaxed mb-8 flex-grow text-sm">
+                  <p className="mb-8 flex-grow text-sm leading-relaxed text-[#00ff41]/70">
                     {project.shortDescription}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-auto">
+                  <div className="mt-auto flex flex-wrap gap-2">
                     {project.techStack.slice(0, 3).map((tech) => (
-                      <span key={tech.name} className="text-xs text-[#00ff41]/50">
+                      <span
+                        key={tech.name}
+                        className="text-xs text-[#00ff41]/50"
+                      >
                         [{tech.name}]
                       </span>
                     ))}
@@ -368,103 +500,176 @@ export function Projects() {
         <SnapScrollWrapper>
           <SnapSection className="flex-col">
             <GlitchBurst className="text-center">
-              <h2 className="text-4xl md:text-6xl text-[#ffff00] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 15px #ffff00" }}>
+              <h2
+                className="text-4xl font-bold tracking-widest text-[#ffff00] uppercase md:text-6xl"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  textShadow: "0 0 15px #ffff00",
+                }}
+              >
                 ARCADE_CABINETS
               </h2>
-              <p className="mt-8 text-[#00ffff] animate-pulse">SCROLL TO CONTINUE</p>
+              <p className="mt-8 animate-pulse text-[#00ffff]">
+                SCROLL TO CONTINUE
+              </p>
             </GlitchBurst>
           </SnapSection>
 
           {featured.map((project, idx) => (
-            <SnapSection key={project.id} className="px-4 md:px-8 max-w-6xl mx-auto">
+            <SnapSection
+              key={project.id}
+              className="mx-auto max-w-6xl px-4 md:px-8"
+            >
               <GlitchBurst className="w-full">
-                <NeonBorder color={idx % 2 === 0 ? "magenta" : "cyan"} className="p-0 overflow-hidden flex flex-col lg:flex-row group w-full">
-                  <div className="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-center relative z-10 bg-black/60">
-                    <p className="text-sm font-bold text-[#00ffff] uppercase tracking-widest mb-4" style={{ textShadow: "0 0 5px #00ffff" }}>
+                <NeonBorder
+                  color={idx % 2 === 0 ? "magenta" : "cyan"}
+                  className="group flex w-full flex-col overflow-hidden p-0 lg:flex-row"
+                >
+                  <div className="relative z-10 flex w-full flex-col justify-center bg-black/60 p-8 md:p-12 lg:w-1/2">
+                    <p
+                      className="mb-4 text-sm font-bold tracking-widest text-[#00ffff] uppercase"
+                      style={{ textShadow: "0 0 5px #00ffff" }}
+                    >
                       {project.category}
                     </p>
-                    <h3 className="text-4xl font-bold text-white mb-6 uppercase" style={{ fontFamily: "var(--font-display)" }}>
+                    <h3
+                      className="mb-6 text-4xl font-bold text-white uppercase"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
                       {project.title}
                     </h3>
-                    <p className="text-lg text-white/90 leading-relaxed mb-8 font-medium">
+                    <p className="mb-8 text-lg leading-relaxed font-medium text-white/90">
                       {project.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-10">
+                    <div className="mb-10 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
-                        <span key={tech.name} className="px-3 py-1 bg-[#ff00ff]/20 border border-[#ff00ff]/50 text-sm font-bold text-[#ff00ff] uppercase" style={{ textShadow: "0 0 5px #ff00ff" }}>
+                        <span
+                          key={tech.name}
+                          className="border border-[#ff00ff]/50 bg-[#ff00ff]/20 px-3 py-1 text-sm font-bold text-[#ff00ff] uppercase"
+                          style={{ textShadow: "0 0 5px #ff00ff" }}
+                        >
                           {tech.name}
                         </span>
                       ))}
                     </div>
                     <div className="flex gap-4 font-bold uppercase">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 border-2 border-[#00ffff] text-[#00ffff] hover:bg-[#00ffff] hover:text-black transition-colors shadow-[0_0_10px_#00ffff,inset_0_0_10px_#00ffff]">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="flex items-center gap-2 border-2 border-[#00ffff] px-6 py-3 text-[#00ffff] shadow-[0_0_10px_#00ffff,inset_0_0_10px_#00ffff] transition-colors hover:bg-[#00ffff] hover:text-black"
+                        >
                           <Github size={18} /> INSERT_COIN
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 bg-[#ff00ff] text-white border-2 border-[#ff00ff] hover:bg-transparent hover:text-[#ff00ff] transition-colors shadow-[0_0_15px_#ff00ff]">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="flex items-center gap-2 border-2 border-[#ff00ff] bg-[#ff00ff] px-6 py-3 text-white shadow-[0_0_15px_#ff00ff] transition-colors hover:bg-transparent hover:text-[#ff00ff]"
+                        >
                           <ExternalLink size={18} /> START_GAME
                         </a>
                       )}
                     </div>
                   </div>
-                  <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full bg-black overflow-hidden border-l-2 border-[#ff00ff]/50">
+                  <div className="relative min-h-[400px] w-full overflow-hidden border-l-2 border-[#ff00ff]/50 bg-black lg:min-h-full lg:w-1/2">
                     {project.image && (
                       <Image
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-105"
+                        className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
                         style={{ filter: "contrast(1.2) saturate(1.5)" }}
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#ff00ff]/30 to-transparent mix-blend-overlay pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#ff00ff]/30 to-transparent mix-blend-overlay" />
                     {/* Scanline overlay */}
-                    <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)" }} />
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-20"
+                      style={{
+                        backgroundImage:
+                          "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)",
+                      }}
+                    />
                   </div>
                 </NeonBorder>
               </GlitchBurst>
             </SnapSection>
           ))}
 
-          <SnapSection className="flex-col px-4 md:px-8 max-w-6xl mx-auto">
+          <SnapSection className="mx-auto max-w-6xl flex-col px-4 md:px-8">
             <GlitchBurst className="mb-16 text-center">
-              <h3 className="text-3xl text-[#00ffff] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 10px #00ffff" }}>
+              <h3
+                className="text-3xl font-bold tracking-widest text-[#00ffff] uppercase"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  textShadow: "0 0 10px #00ffff",
+                }}
+              >
                 MINI_GAMES
               </h3>
             </GlitchBurst>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+            <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {nonFeatured.map((project, idx) => (
                 <GlitchBurst key={project.id}>
-                  <NeonBorder color="yellow" className="p-8 h-full flex flex-col bg-black/60">
-                    <div className="flex justify-between items-start mb-6">
-                      <p className="text-xs font-bold text-[#ff00ff] uppercase tracking-widest" style={{ textShadow: "0 0 5px #ff00ff" }}>
+                  <NeonBorder
+                    color="yellow"
+                    className="flex h-full flex-col bg-black/60 p-8"
+                  >
+                    <div className="mb-6 flex items-start justify-between">
+                      <p
+                        className="text-xs font-bold tracking-widest text-[#ff00ff] uppercase"
+                        style={{ textShadow: "0 0 5px #ff00ff" }}
+                      >
                         {project.category}
                       </p>
                       <div className="flex gap-3">
                         {project.githubUrl && (
-                          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ffff] hover:text-white transition-colors drop-shadow-[0_0_5px_#00ffff]">
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${project.title} source code`}
+                            className="text-[#00ffff] drop-shadow-[0_0_5px_#00ffff] transition-colors hover:text-white"
+                          >
                             <Github size={20} />
                           </a>
                         )}
                         {project.liveUrl && (
-                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#ff00ff] hover:text-white transition-colors drop-shadow-[0_0_5px_#ff00ff]">
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${project.title} live demo`}
+                            className="text-[#ff00ff] drop-shadow-[0_0_5px_#ff00ff] transition-colors hover:text-white"
+                          >
                             <ExternalLink size={20} />
                           </a>
                         )}
                       </div>
                     </div>
-                    <h4 className="text-2xl font-bold text-white mb-4 uppercase" style={{ fontFamily: "var(--font-display)" }}>
+                    <h4
+                      className="mb-4 text-2xl font-bold text-white uppercase"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
                       {project.title}
                     </h4>
-                    <p className="text-white/80 font-medium leading-relaxed mb-8 flex-grow">
+                    <p className="mb-8 flex-grow leading-relaxed font-medium text-white/80">
                       {project.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mt-auto">
+                    <div className="mt-auto flex flex-wrap gap-2">
                       {project.techStack.slice(0, 3).map((tech) => (
-                        <span key={tech.name} className="text-xs font-bold text-[#ffff00] uppercase" style={{ textShadow: "0 0 5px #ffff00" }}>
+                        <span
+                          key={tech.name}
+                          className="text-xs font-bold text-[#ffff00] uppercase"
+                          style={{ textShadow: "0 0 5px #ffff00" }}
+                        >
                           {tech.name}
                         </span>
                       ))}
@@ -481,60 +686,80 @@ export function Projects() {
 
   if (theme === "bioluminescent-deep") {
     return (
-      <section id="projects" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-6xl mx-auto font-serif">
+      <section
+        id="projects"
+        className="relative z-10 mx-auto min-h-screen max-w-6xl px-4 py-32 font-serif md:px-8"
+      >
         <FluidDistortionWrapper>
           <FloatingEntry className="mb-16 text-center">
-            <h2 className="text-4xl md:text-6xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            <h2 className="text-4xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_15px_rgba(0,255,255,0.4)] md:text-6xl">
               Discoveries
             </h2>
-            <div className="h-px w-16 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
+            <div className="mx-auto mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
           </FloatingEntry>
 
-          <div className="space-y-24 mb-32">
+          <div className="mb-32 space-y-24">
             {featured.map((project, idx) => (
               <FloatingEntry key={project.id}>
-                <div className="p-0 overflow-hidden flex flex-col lg:flex-row group rounded-3xl bg-[#001433]/70 backdrop-blur-xl border border-[#00ffff]/10 shadow-[0_0_30px_rgba(0,255,255,0.05)] hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] hover:border-[#00ffff]/30 transition-all duration-700">
-                  <div className="w-full lg:w-1/2 p-8 md:p-12 flex flex-col justify-center relative z-10">
-                    <p className="text-sm font-sans text-[#00ffff] uppercase tracking-widest mb-4 opacity-80">
+                <div className="group flex flex-col overflow-hidden rounded-3xl border border-[#00ffff]/10 bg-[#001433]/70 p-0 shadow-[0_0_30px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-all duration-700 hover:border-[#00ffff]/30 hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] lg:flex-row">
+                  <div className="relative z-10 flex w-full flex-col justify-center p-8 md:p-12 lg:w-1/2">
+                    <p className="mb-4 font-sans text-sm tracking-widest text-[#00ffff] uppercase opacity-80">
                       {project.category}
                     </p>
-                    <h3 className="text-4xl font-medium text-[#e0f4ff] mb-6 tracking-wide">
+                    <h3 className="mb-6 text-4xl font-medium tracking-wide text-[#e0f4ff]">
                       {project.title}
                     </h3>
-                    <p className="text-lg text-[#e0f4ff]/70 leading-relaxed mb-8 font-sans font-light">
+                    <p className="mb-8 font-sans text-lg leading-relaxed font-light text-[#e0f4ff]/70">
                       {project.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-10">
+                    <div className="mb-10 flex flex-wrap gap-2">
                       {project.techStack.map((tech) => (
-                        <span key={tech.name} className="px-3 py-1 rounded-full bg-[#00ffff]/10 border border-[#00ffff]/20 text-sm font-sans font-light text-[#00ffff] tracking-wide">
+                        <span
+                          key={tech.name}
+                          className="rounded-full border border-[#00ffff]/20 bg-[#00ffff]/10 px-3 py-1 font-sans text-sm font-light tracking-wide text-[#00ffff]"
+                        >
                           {tech.name}
                         </span>
                       ))}
                     </div>
-                    <div className="flex gap-4 font-sans font-light tracking-widest uppercase text-sm">
+                    <div className="flex gap-4 font-sans text-sm font-light tracking-widest uppercase">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#00ffff]/30 text-[#00ffff] hover:bg-[#00ffff]/10 hover:border-[#00ffff]/50 transition-all duration-500">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="flex items-center gap-2 rounded-full border border-[#00ffff]/30 px-6 py-3 text-[#00ffff] transition-all duration-500 hover:border-[#00ffff]/50 hover:bg-[#00ffff]/10"
+                        >
                           <Github size={16} /> Source
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#00ffff]/20 text-[#e0f4ff] border border-[#00ffff]/50 hover:bg-[#00ffff]/30 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)] transition-all duration-500">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="flex items-center gap-2 rounded-full border border-[#00ffff]/50 bg-[#00ffff]/20 px-6 py-3 text-[#e0f4ff] transition-all duration-500 hover:bg-[#00ffff]/30 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]"
+                        >
                           <ExternalLink size={16} /> Explore
                         </a>
                       )}
                     </div>
                   </div>
-                  <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full overflow-hidden">
+                  <div className="relative min-h-[400px] w-full overflow-hidden lg:min-h-full lg:w-1/2">
                     {project.image && (
                       <Image
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover opacity-60 mix-blend-screen group-hover:opacity-90 transition-all duration-700 group-hover:scale-105"
-                        style={{ filter: "sepia(0.5) hue-rotate(180deg) saturate(1.5)" }}
+                        className="object-cover opacity-60 mix-blend-screen transition-all duration-700 group-hover:scale-105 group-hover:opacity-90"
+                        style={{
+                          filter: "sepia(0.5) hue-rotate(180deg) saturate(1.5)",
+                        }}
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#000511] to-transparent lg:bg-gradient-to-r pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#000511] to-transparent lg:bg-gradient-to-r" />
                   </div>
                 </div>
               </FloatingEntry>
@@ -542,42 +767,57 @@ export function Projects() {
           </div>
 
           <FloatingEntry className="mb-16 text-center">
-            <h3 className="text-3xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]">
+            <h3 className="text-3xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]">
               Other Findings
             </h3>
-            <div className="h-px w-12 mx-auto mt-4 bg-gradient-to-r from-transparent via-[#ff00ff] to-transparent opacity-50" />
+            <div className="mx-auto mt-4 h-px w-12 bg-gradient-to-r from-transparent via-[#ff00ff] to-transparent opacity-50" />
           </FloatingEntry>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {nonFeatured.map((project, idx) => (
               <FloatingEntry key={project.id}>
-                <div className="p-8 h-full flex flex-col rounded-3xl bg-[#001433]/50 backdrop-blur-lg border border-[#00ffff]/10 shadow-[0_0_20px_rgba(0,255,255,0.05)] hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-[#00ffff]/30 transition-all duration-700">
-                  <div className="flex justify-between items-start mb-6">
-                    <p className="text-xs font-sans text-[#00ffff] uppercase tracking-widest opacity-80">
+                <div className="flex h-full flex-col rounded-3xl border border-[#00ffff]/10 bg-[#001433]/50 p-8 shadow-[0_0_20px_rgba(0,255,255,0.05)] backdrop-blur-lg transition-all duration-700 hover:border-[#00ffff]/30 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)]">
+                  <div className="mb-6 flex items-start justify-between">
+                    <p className="font-sans text-xs tracking-widest text-[#00ffff] uppercase opacity-80">
                       {project.category}
                     </p>
                     <div className="flex gap-3">
                       {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} source code`} className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} source code`}
+                          className="text-[#00ffff]/60 drop-shadow-[0_0_5px_rgba(0,255,255,0.5)] transition-colors hover:text-[#00ffff]"
+                        >
                           <Github size={20} />
                         </a>
                       )}
                       {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} live demo`} className="text-[#00ffff]/60 hover:text-[#00ffff] transition-colors drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.title} live demo`}
+                          className="text-[#00ffff]/60 drop-shadow-[0_0_5px_rgba(0,255,255,0.5)] transition-colors hover:text-[#00ffff]"
+                        >
                           <ExternalLink size={20} />
                         </a>
                       )}
                     </div>
                   </div>
-                  <h4 className="text-2xl font-medium text-[#e0f4ff] mb-4 tracking-wide">
+                  <h4 className="mb-4 text-2xl font-medium tracking-wide text-[#e0f4ff]">
                     {project.title}
                   </h4>
-                  <p className="text-[#e0f4ff]/60 font-sans font-light leading-relaxed mb-8 flex-grow">
+                  <p className="mb-8 flex-grow font-sans leading-relaxed font-light text-[#e0f4ff]/60">
                     {project.shortDescription}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-auto">
+                  <div className="mt-auto flex flex-wrap gap-2">
                     {project.techStack.slice(0, 3).map((tech) => (
-                      <span key={tech.name} className="text-xs font-sans font-light text-[#00ffff]/70 tracking-wide">
+                      <span
+                        key={tech.name}
+                        className="font-sans text-xs font-light tracking-wide text-[#00ffff]/70"
+                      >
                         {tech.name}
                       </span>
                     ))}
@@ -592,7 +832,7 @@ export function Projects() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center">
+    <section className="flex min-h-screen items-center justify-center">
       <h2 className="text-4xl">Projects - {theme}</h2>
     </section>
   );

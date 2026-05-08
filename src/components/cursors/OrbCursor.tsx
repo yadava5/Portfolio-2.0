@@ -32,7 +32,8 @@ export function OrbCursor() {
 
     const onClick = (e: MouseEvent) => {
       const ripple = document.createElement("div");
-      ripple.className = "fixed pointer-events-none rounded-full border-2 border-[#00ffff] transform -translate-x-1/2 -translate-y-1/2 z-[9997]";
+      ripple.className =
+        "fixed pointer-events-none rounded-full border-2 border-[#00ffff] transform -translate-x-1/2 -translate-y-1/2 z-[9997]";
       ripple.style.left = `${e.clientX}px`;
       ripple.style.top = `${e.clientY}px`;
       ripple.style.width = "10px";
@@ -64,9 +65,10 @@ export function OrbCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full mix-blend-screen"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] h-8 w-8 -translate-x-1/2 -translate-y-1/2 transform rounded-full mix-blend-screen"
         style={{
-          background: "radial-gradient(circle, rgba(0,255,255,0.8) 0%, rgba(0,255,255,0) 70%)",
+          background:
+            "radial-gradient(circle, rgba(0,255,255,0.8) 0%, rgba(0,255,255,0) 70%)",
           boxShadow: "0 0 20px rgba(0,255,255,0.5)",
         }}
       />
@@ -76,7 +78,7 @@ export function OrbCursor() {
           ref={(el) => {
             if (el) trailRef.current[i] = el;
           }}
-          className="fixed top-0 left-0 z-[9998] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
+          className="pointer-events-none fixed top-0 left-0 z-[9998] -translate-x-1/2 -translate-y-1/2 transform rounded-full mix-blend-screen"
           style={{
             width: `${20 - i * 4}px`,
             height: `${20 - i * 4}px`,

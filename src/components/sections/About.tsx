@@ -9,8 +9,14 @@ import { GlitchBurst } from "@/components/effects/GlitchBurst";
 import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";
 import { ParallaxDepthWrapper } from "@/components/effects/ParallaxDepthWrapper";
-import { TerminalRevealWrapper, TerminalStepItem } from "@/components/effects/TerminalRevealWrapper";
-import { SnapScrollWrapper, SnapSection } from "@/components/effects/SnapScrollWrapper";
+import {
+  TerminalRevealWrapper,
+  TerminalStepItem,
+} from "@/components/effects/TerminalRevealWrapper";
+import {
+  SnapScrollWrapper,
+  SnapSection,
+} from "@/components/effects/SnapScrollWrapper";
 import { FluidDistortionWrapper } from "@/components/effects/FluidDistortionWrapper";
 import { HorizontalScrollWrapper } from "@/components/effects/HorizontalScrollWrapper";
 
@@ -20,18 +26,18 @@ export function About() {
   if (theme === "liquid-glass") {
     return (
       <section id="about" className="relative z-10 w-full overflow-hidden">
-        <div className="pt-32 px-4 md:px-8 max-w-5xl mx-auto">
+        <div className="mx-auto max-w-5xl px-4 pt-32 md:px-8">
           <TextReveal className="mb-16 text-center">
-            <span className="inline-block px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium tracking-widest uppercase text-white/80">
+            <span className="inline-block rounded-full border border-white/20 bg-white/10 px-6 py-2 text-sm font-medium tracking-widest text-white/80 uppercase backdrop-blur-md">
               About Me
             </span>
           </TextReveal>
         </div>
-        
+
         <HorizontalScrollWrapper className="w-full">
-          <div className="w-[90vw] md:w-[800px] flex-shrink-0 mx-auto">
+          <div className="mx-auto w-[90vw] flex-shrink-0 md:w-[800px]">
             <GlassCard className="p-8 md:p-12">
-              <div className="space-y-6 text-lg text-white/80 leading-relaxed font-light">
+              <div className="space-y-6 text-lg leading-relaxed font-light text-white/80">
                 {personalInfo.bio.map((paragraph, idx) => (
                   <TextReveal key={idx} className={`delay-[${idx * 100}ms]`}>
                     <p>{paragraph}</p>
@@ -47,17 +53,23 @@ export function About() {
 
   if (theme === "cosmic-voyage") {
     return (
-      <section id="about" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto">
+      <section
+        id="about"
+        className="relative z-10 mx-auto min-h-screen max-w-5xl px-4 py-32 md:px-8"
+      >
         <ParallaxDepthWrapper depth={1.5}>
           <div className="mb-16 text-center">
-            <h2 className="text-3xl md:text-5xl text-white font-light tracking-[0.3em] uppercase mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+            <h2
+              className="mb-4 text-3xl font-light tracking-[0.3em] text-white uppercase md:text-5xl"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
               Origin
             </h2>
-            <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />
+            <div className="mx-auto h-px w-24 bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />
           </div>
-          
-          <div className="p-8 md:p-12 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-md shadow-[0_0_40px_rgba(100,0,255,0.1)]">
-            <div className="space-y-6 text-lg text-indigo-100/80 leading-relaxed font-light">
+
+          <div className="rounded-2xl border border-white/10 bg-black/30 p-8 shadow-[0_0_40px_rgba(100,0,255,0.1)] backdrop-blur-md md:p-12">
+            <div className="space-y-6 text-lg leading-relaxed font-light text-indigo-100/80">
               {personalInfo.bio.map((paragraph, idx) => (
                 <p key={idx}>{paragraph}</p>
               ))}
@@ -70,23 +82,29 @@ export function About() {
 
   if (theme === "retro-terminal") {
     return (
-      <section id="about" className="relative min-h-screen py-32 px-4 md:px-12 z-10 max-w-5xl mx-auto font-mono text-[#00ff41]">
+      <section
+        id="about"
+        className="relative z-10 mx-auto min-h-screen max-w-5xl px-4 py-32 font-mono text-[#00ff41] md:px-12"
+      >
         <TerminalRevealWrapper stepCount={1}>
           <div className="mb-12">
-            <p className="text-sm md:text-base mb-4 opacity-70">
-              <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat about_me.md
+            <p className="mb-4 text-sm opacity-70 md:text-base">
+              <span className="text-[#ffb000]">root@portfolio</span>:
+              <span className="text-blue-400">~</span>$ cat about_me.md
             </p>
-            <h2 className="text-3xl md:text-5xl font-bold uppercase mb-8 border-b border-[#00ff41]/30 pb-4 inline-block">
+            <h2 className="mb-8 inline-block border-b border-[#00ff41]/30 pb-4 text-3xl font-bold uppercase md:text-5xl">
               # ABOUT_ME
             </h2>
           </div>
-          
+
           <TerminalStepItem step={0}>
-            <div className="p-6 md:p-10 border border-[#00ff41]/30 bg-black/50 shadow-[0_0_20px_rgba(0,255,65,0.1)]">
-              <div className="space-y-6 text-base md:text-lg leading-relaxed">
+            <div className="border border-[#00ff41]/30 bg-black/50 p-6 shadow-[0_0_20px_rgba(0,255,65,0.1)] md:p-10">
+              <div className="space-y-6 text-base leading-relaxed md:text-lg">
                 {personalInfo.bio.map((paragraph, idx) => (
                   <div key={idx} className="flex gap-4">
-                    <span className="opacity-50 select-none">{String(idx + 1).padStart(2, '0')}</span>
+                    <span className="opacity-50 select-none">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
                     <p>{paragraph}</p>
                   </div>
                 ))}
@@ -102,15 +120,21 @@ export function About() {
     return (
       <section id="about" className="relative z-10 w-full font-sans">
         <SnapScrollWrapper>
-          <SnapSection className="flex-col px-4 md:px-8 max-w-5xl mx-auto">
-            <GlitchBurst className="mb-16 text-center w-full">
-              <h2 className="text-4xl md:text-6xl text-[#00ffff] font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-display)", textShadow: "0 0 15px #00ffff" }}>
+          <SnapSection className="mx-auto max-w-5xl flex-col px-4 md:px-8">
+            <GlitchBurst className="mb-16 w-full text-center">
+              <h2
+                className="text-4xl font-bold tracking-widest text-[#00ffff] uppercase md:text-6xl"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  textShadow: "0 0 15px #00ffff",
+                }}
+              >
                 PLAYER_ONE
               </h2>
             </GlitchBurst>
-            
-            <NeonBorder color="magenta" className="p-8 md:p-12 w-full">
-              <div className="space-y-6 text-lg text-white/90 leading-relaxed font-medium">
+
+            <NeonBorder color="magenta" className="w-full p-8 md:p-12">
+              <div className="space-y-6 text-lg leading-relaxed font-medium text-white/90">
                 {personalInfo.bio.map((paragraph, idx) => (
                   <GlitchBurst key={idx}>
                     <p>{paragraph}</p>
@@ -126,17 +150,20 @@ export function About() {
 
   if (theme === "bioluminescent-deep") {
     return (
-      <section id="about" className="relative min-h-screen py-32 px-4 md:px-8 z-10 max-w-5xl mx-auto font-serif">
+      <section
+        id="about"
+        className="relative z-10 mx-auto min-h-screen max-w-5xl px-4 py-32 font-serif md:px-8"
+      >
         <FluidDistortionWrapper>
           <FloatingEntry className="mb-16 text-center">
-            <h2 className="text-4xl md:text-6xl text-[#e0f4ff] font-medium tracking-wide drop-shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            <h2 className="text-4xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_15px_rgba(0,255,255,0.4)] md:text-6xl">
               Currents
             </h2>
-            <div className="h-px w-16 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
+            <div className="mx-auto mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#00ffff] to-transparent opacity-50" />
           </FloatingEntry>
-          
-          <div className="p-8 md:p-12 rounded-3xl bg-[#001433]/70 backdrop-blur-xl border border-[#00ffff]/20 shadow-[0_0_30px_rgba(0,255,255,0.1),inset_0_0_20px_rgba(0,255,255,0.05)] hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] transition-shadow duration-700">
-            <div className="space-y-6 text-lg text-[#e0f4ff]/80 leading-relaxed font-sans font-light">
+
+          <div className="rounded-3xl border border-[#00ffff]/20 bg-[#001433]/70 p-8 shadow-[0_0_30px_rgba(0,255,255,0.1),inset_0_0_20px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-shadow duration-700 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] md:p-12">
+            <div className="space-y-6 font-sans text-lg leading-relaxed font-light text-[#e0f4ff]/80">
               {personalInfo.bio.map((paragraph, idx) => (
                 <FloatingEntry key={idx}>
                   <p>{paragraph}</p>
@@ -150,7 +177,7 @@ export function About() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center">
+    <section className="flex min-h-screen items-center justify-center">
       <h2 className="text-4xl">About - {theme}</h2>
     </section>
   );

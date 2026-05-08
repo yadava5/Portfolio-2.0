@@ -13,8 +13,11 @@ export function Hero() {
 
   if (theme === "liquid-glass") {
     return (
-      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-20">
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center"
+      >
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20">
           <motion.svg
             width="600"
             height="600"
@@ -29,13 +32,20 @@ export function Hero() {
               strokeWidth="2"
               initial={{ pathLength: 0, rotate: 0 }}
               animate={{ pathLength: 1, rotate: 360 }}
-              transition={{ 
+              transition={{
                 pathLength: { duration: 3, ease: "easeInOut" },
-                rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
               }}
             />
             <defs>
-              <linearGradient id="paint0_linear" x1="50" y1="50" x2="550" y2="550" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="paint0_linear"
+                x1="50"
+                y1="50"
+                x2="550"
+                y2="550"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop stopColor="#818cf8" />
                 <stop offset="0.5" stopColor="#c084fc" />
                 <stop offset="1" stopColor="#f472b6" />
@@ -45,17 +55,17 @@ export function Hero() {
         </div>
 
         <TextReveal className="mb-6">
-          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+          <h1 className="max-w-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-5xl font-bold tracking-tighter break-words text-transparent sm:text-6xl md:text-8xl">
             {personalInfo.name}
           </h1>
         </TextReveal>
         <TextReveal className="mb-8 delay-100">
-          <p className="text-xl md:text-2xl text-white/80 font-light tracking-wide">
+          <p className="text-xl font-light tracking-wide text-white/80 md:text-2xl">
             {personalInfo.title}
           </p>
         </TextReveal>
         <TextReveal className="delay-200">
-          <p className="max-w-2xl text-white/60 text-lg leading-relaxed">
+          <p className="max-w-2xl text-lg leading-relaxed text-white/60">
             {personalInfo.tagline}
           </p>
         </TextReveal>
@@ -65,23 +75,32 @@ export function Hero() {
 
   if (theme === "cosmic-voyage") {
     return (
-      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden">
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center"
+      >
         <TextReveal className="mb-6">
-          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-wide md:tracking-widest text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]" style={{ fontFamily: "var(--font-serif)" }}>
+          <h1
+            className="max-w-full text-5xl font-bold tracking-wide break-words text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] sm:text-6xl md:text-8xl md:tracking-widest"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
             {personalInfo.name.split("").map((char, i) => (
-              <span key={i} className="inline-block hover:scale-110 hover:text-indigo-300 transition-transform duration-300 cursor-default">
+              <span
+                key={i}
+                className="inline-block cursor-default transition-transform duration-300 hover:scale-110 hover:text-indigo-300"
+              >
                 {char === " " ? "\u00A0" : char}
               </span>
             ))}
           </h1>
         </TextReveal>
         <TextReveal className="mb-8 delay-100">
-          <p className="max-w-full break-words text-xl md:text-2xl text-indigo-200 font-light tracking-[0.12em] md:tracking-[0.2em] uppercase">
+          <p className="max-w-full text-xl font-light tracking-[0.12em] break-words text-indigo-200 uppercase md:text-2xl md:tracking-[0.2em]">
             {personalInfo.title}
           </p>
         </TextReveal>
         <TextReveal className="delay-200">
-          <p className="max-w-2xl text-white/70 text-lg leading-relaxed">
+          <p className="max-w-2xl text-lg leading-relaxed text-white/70">
             {personalInfo.tagline}
           </p>
         </TextReveal>
@@ -91,30 +110,42 @@ export function Hero() {
 
   if (theme === "retro-terminal") {
     return (
-      <section id="hero" className="relative min-h-screen flex flex-col items-start justify-center px-4 md:px-12 z-10 font-mono text-[#00ff41] overflow-hidden">
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen flex-col items-start justify-center overflow-hidden px-4 font-mono text-[#00ff41] md:px-12"
+      >
         <div className="mb-8">
-          <p className="text-sm md:text-base mb-2 opacity-70">
-            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ ./init_profile.sh
+          <p className="mb-2 text-sm opacity-70 md:text-base">
+            <span className="text-[#ffb000]">root@portfolio</span>:
+            <span className="text-blue-400">~</span>$ ./init_profile.sh
           </p>
-          <h1 className="max-w-full break-words text-2xl md:text-5xl font-bold tracking-tight mb-6">
-            <TypewriterText text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`} delay={500} />
+          <h1 className="mb-6 max-w-full text-2xl font-bold tracking-tight break-words md:text-5xl">
+            <TypewriterText
+              text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`}
+              delay={500}
+            />
           </h1>
         </div>
-        
+
         <div className="mb-8">
-          <p className="text-sm md:text-base mb-2 opacity-70">
-            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat title.txt
+          <p className="mb-2 text-sm opacity-70 md:text-base">
+            <span className="text-[#ffb000]">root@portfolio</span>:
+            <span className="text-blue-400">~</span>$ cat title.txt
           </p>
-          <div className="max-w-full break-words text-xl md:text-2xl text-[#ffb000] mb-4">
-            <TypewriterText text={personalInfo.title.toUpperCase()} delay={1500} />
+          <div className="mb-4 max-w-full text-xl break-words text-[#ffb000] md:text-2xl">
+            <TypewriterText
+              text={personalInfo.title.toUpperCase()}
+              delay={1500}
+            />
           </div>
         </div>
 
         <div>
-          <p className="text-sm md:text-base mb-2 opacity-70">
-            <span className="text-[#ffb000]">root@portfolio</span>:<span className="text-blue-400">~</span>$ cat status.log
+          <p className="mb-2 text-sm opacity-70 md:text-base">
+            <span className="text-[#ffb000]">root@portfolio</span>:
+            <span className="text-blue-400">~</span>$ cat status.log
           </p>
-          <div className="max-w-2xl text-base md:text-lg leading-relaxed opacity-90">
+          <div className="max-w-2xl text-base leading-relaxed opacity-90 md:text-lg">
             <TypewriterText text={personalInfo.tagline} delay={2500} />
           </div>
         </div>
@@ -124,19 +155,34 @@ export function Hero() {
 
   if (theme === "synthwave-sunset") {
     return (
-      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-sans overflow-hidden">
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center font-sans"
+      >
         <GlitchBurst className="mb-6">
-          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00]" style={{ fontFamily: "var(--font-display)", filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))" }}>
+          <h1
+            className="max-w-full bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00] bg-clip-text text-5xl font-bold tracking-tighter break-words text-transparent uppercase sm:text-6xl md:text-8xl"
+            style={{
+              fontFamily: "var(--font-display)",
+              filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))",
+            }}
+          >
             {personalInfo.name}
           </h1>
         </GlitchBurst>
         <GlitchBurst className="mb-8 delay-100">
-          <p className="max-w-full break-words text-xl md:text-3xl text-[#00ffff] font-bold tracking-wide md:tracking-widest uppercase" style={{ textShadow: "0 0 10px #00ffff" }}>
+          <p
+            className="max-w-full text-xl font-bold tracking-wide break-words text-[#00ffff] uppercase md:text-3xl md:tracking-widest"
+            style={{ textShadow: "0 0 10px #00ffff" }}
+          >
             {personalInfo.title}
           </p>
         </GlitchBurst>
         <GlitchBurst className="delay-200">
-          <p className="max-w-2xl text-white/90 text-lg leading-relaxed font-medium bg-black/40 p-4 rounded-lg border border-[#ff00ff]/30 backdrop-blur-sm" style={{ boxShadow: "0 0 20px rgba(255,0,255,0.2)" }}>
+          <p
+            className="max-w-2xl rounded-lg border border-[#ff00ff]/30 bg-black/40 p-4 text-lg leading-relaxed font-medium text-white/90 backdrop-blur-sm"
+            style={{ boxShadow: "0 0 20px rgba(255,0,255,0.2)" }}
+          >
             {personalInfo.tagline}
           </p>
         </GlitchBurst>
@@ -146,19 +192,25 @@ export function Hero() {
 
   if (theme === "bioluminescent-deep") {
     return (
-      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 z-10 font-serif overflow-hidden">
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center font-serif"
+      >
         <FloatingEntry className="mb-6">
-          <h1 className="max-w-full break-words text-5xl sm:text-6xl md:text-8xl font-medium tracking-wide text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)]">
+          <h1 className="max-w-full text-5xl font-medium tracking-wide break-words text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)] sm:text-6xl md:text-8xl">
             {personalInfo.name}
           </h1>
         </FloatingEntry>
         <FloatingEntry className="mb-8 delay-100">
-          <p className="max-w-full break-words text-xl md:text-2xl text-[#00ffff] font-light tracking-wide md:tracking-widest uppercase opacity-80" style={{ textShadow: "0 0 10px rgba(0,255,255,0.8)" }}>
+          <p
+            className="max-w-full text-xl font-light tracking-wide break-words text-[#00ffff] uppercase opacity-80 md:text-2xl md:tracking-widest"
+            style={{ textShadow: "0 0 10px rgba(0,255,255,0.8)" }}
+          >
             {personalInfo.title}
           </p>
         </FloatingEntry>
         <FloatingEntry className="delay-200">
-          <p className="max-w-2xl text-[#e0f4ff]/70 text-lg leading-relaxed font-sans font-light">
+          <p className="max-w-2xl font-sans text-lg leading-relaxed font-light text-[#e0f4ff]/70">
             {personalInfo.tagline}
           </p>
         </FloatingEntry>
@@ -167,7 +219,10 @@ export function Hero() {
   }
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center">
+    <section
+      id="hero"
+      className="flex min-h-screen items-center justify-center"
+    >
       <h1 className="text-4xl">Hero - {theme}</h1>
     </section>
   );

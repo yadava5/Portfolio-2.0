@@ -42,7 +42,7 @@ export function StarCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"
       />
       {Array.from({ length: 5 }).map((_, i) => (
         <div
@@ -50,7 +50,7 @@ export function StarCursor() {
           ref={(el) => {
             if (el) trailRef.current[i] = el;
           }}
-          className="fixed top-0 left-0 z-[9998] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="pointer-events-none fixed top-0 left-0 z-[9998] -translate-x-1/2 -translate-y-1/2 transform rounded-full"
           style={{
             width: `${12 - i * 2}px`,
             height: `${12 - i * 2}px`,

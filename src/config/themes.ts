@@ -1,4 +1,4 @@
-export type ThemeId = 
+export type ThemeId =
   | "technical-operations-atlas"
   | "liquid-glass"
   | "cosmic-voyage"

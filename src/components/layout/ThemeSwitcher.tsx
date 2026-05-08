@@ -41,7 +41,7 @@ export default function ThemeSwitcher() {
       onComplete: () => {
         setTheme(id);
         setIsOpen(false);
-        
+
         // Scroll to top on theme change for full effect
         window.scrollTo(0, 0);
 
@@ -57,20 +57,22 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className="fixed right-6 bottom-6 z-[100]">
       {isOpen && (
         <div
           id={menuId}
           role="menu"
           aria-label="Theme options"
-          className="absolute bottom-16 right-0 mb-2 flex flex-col gap-2 rounded-2xl bg-black/80 p-4 backdrop-blur-xl border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] w-64 origin-bottom-right animate-in fade-in zoom-in duration-200"
+          className="animate-in fade-in zoom-in absolute right-0 bottom-16 mb-2 flex w-64 origin-bottom-right flex-col gap-2 rounded-2xl border border-white/10 bg-black/80 p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-xl duration-200"
         >
-          <div className="flex items-center justify-between mb-2 pb-2 border-b border-white/10">
-            <span className="text-white/70 text-xs font-semibold uppercase tracking-widest">Visual Modes</span>
+          <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-2">
+            <span className="text-xs font-semibold tracking-widest text-white/70 uppercase">
+              Visual Modes
+            </span>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="text-white/50 hover:text-white transition-colors"
+              className="text-white/50 transition-colors hover:text-white"
               aria-label="Close theme menu"
             >
               <X size={16} />
@@ -85,14 +87,16 @@ export default function ThemeSwitcher() {
               onClick={() => handleThemeChange(id)}
               className={`theme-menu-item flex flex-col items-start rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
                 theme === id
-                  ? "bg-white/10 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                  : "border border-transparent hover:bg-white/5 hover:border-white/10"
+                  ? "border border-white/20 bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                  : "border border-transparent hover:border-white/10 hover:bg-white/5"
               }`}
             >
-              <span className={`font-semibold mb-1 ${theme === id ? "text-white" : "text-white/80"}`}>
+              <span
+                className={`mb-1 font-semibold ${theme === id ? "text-white" : "text-white/80"}`}
+              >
                 {themeConfigs[id].label}
               </span>
-              <span className="text-xs text-white/40 text-left line-clamp-1">
+              <span className="line-clamp-1 text-left text-xs text-white/40">
                 {themeConfigs[id].description}
               </span>
             </button>
@@ -102,10 +106,10 @@ export default function ThemeSwitcher() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-12 w-12 items-center justify-center rounded-full backdrop-blur-xl border transition-all duration-300 shadow-2xl ${
-          isOpen 
-            ? "bg-white text-black border-white scale-90" 
-            : "bg-black/80 text-white border-white/20 hover:border-white/50 hover:bg-black hover:scale-110"
+        className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-2xl backdrop-blur-xl transition-all duration-300 ${
+          isOpen
+            ? "scale-90 border-white bg-white text-black"
+            : "border-white/20 bg-black/80 text-white hover:scale-110 hover:border-white/50 hover:bg-black"
         }`}
         aria-label="Select theme"
         aria-expanded={isOpen}

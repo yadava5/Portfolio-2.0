@@ -19,7 +19,7 @@ export function CosmicVoyageBg() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
+
     window.addEventListener("resize", resize);
     resize();
 
@@ -34,7 +34,7 @@ export function CosmicVoyageBg() {
 
     const draw = () => {
       time += 0.01;
-      
+
       // Deep space background
       const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       bgGradient.addColorStop(0, "#02000a");
@@ -45,21 +45,22 @@ export function CosmicVoyageBg() {
       // Draw aurora waves
       ctx.save();
       ctx.globalCompositeOperation = "screen";
-      
+
       for (let i = 0; i < 3; i++) {
         ctx.beginPath();
         ctx.moveTo(0, canvas.height);
-        
+
         for (let x = 0; x < canvas.width; x += 50) {
-          const y = canvas.height * 0.4 + 
-                    Math.sin(x * 0.005 + time + i) * 100 + 
-                    Math.cos(x * 0.002 - time * 0.5) * 50;
+          const y =
+            canvas.height * 0.4 +
+            Math.sin(x * 0.005 + time + i) * 100 +
+            Math.cos(x * 0.002 - time * 0.5) * 50;
           ctx.lineTo(x, y);
         }
-        
+
         ctx.lineTo(canvas.width, canvas.height);
         ctx.lineTo(0, canvas.height);
-        
+
         const auroraGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
         if (i === 0) {
           auroraGradient.addColorStop(0, "rgba(0, 255, 150, 0.1)");
@@ -71,7 +72,7 @@ export function CosmicVoyageBg() {
           auroraGradient.addColorStop(0, "rgba(0, 150, 255, 0.1)");
           auroraGradient.addColorStop(1, "transparent");
         }
-        
+
         ctx.fillStyle = auroraGradient;
         ctx.fill();
       }
@@ -105,7 +106,7 @@ export function CosmicVoyageBg() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 w-full h-full pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
     />
   );
 }

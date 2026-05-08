@@ -8,7 +8,10 @@ interface FluidDistortionWrapperProps {
   className?: string;
 }
 
-export function FluidDistortionWrapper({ children, className = "" }: FluidDistortionWrapperProps) {
+export function FluidDistortionWrapper({
+  children,
+  className = "",
+}: FluidDistortionWrapperProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -21,7 +24,7 @@ export function FluidDistortionWrapper({ children, className = "" }: FluidDistor
   const smoothProgress = useSpring(scrollYProgress, {
     damping: 15,
     mass: 0.27,
-    stiffness: 55
+    stiffness: 55,
   });
 
   const yOffset = useTransform(smoothProgress, [0, 1], [50, -50]);
@@ -39,7 +42,7 @@ export function FluidDistortionWrapper({ children, className = "" }: FluidDistor
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
-      style={{ 
+      style={{
         y: yOffset,
         skewY,
         x: mousePos.x * 20,

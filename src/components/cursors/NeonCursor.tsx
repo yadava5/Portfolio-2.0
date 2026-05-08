@@ -42,12 +42,12 @@ export function NeonCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 border-2 border-[#00ffff] rounded-full mix-blend-screen"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] h-6 w-6 -translate-x-1/2 -translate-y-1/2 transform rounded-full border-2 border-[#00ffff] mix-blend-screen"
         style={{
           boxShadow: "0 0 10px #00ffff, inset 0 0 10px #00ffff",
         }}
       >
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-[#ff007f] rounded-full shadow-[0_0_5px_#ff007f]" />
+        <div className="absolute top-1/2 left-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-[#ff007f] shadow-[0_0_5px_#ff007f]" />
       </div>
       {Array.from({ length: 3 }).map((_, i) => (
         <div
@@ -55,7 +55,7 @@ export function NeonCursor() {
           ref={(el) => {
             if (el) trailRef.current[i] = el;
           }}
-          className="fixed top-0 left-0 z-[9998] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 border border-[#ff007f] rounded-full mix-blend-screen"
+          className="pointer-events-none fixed top-0 left-0 z-[9998] h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded-full border border-[#ff007f] mix-blend-screen"
           style={{
             opacity: 0.5 - i * 0.15,
             boxShadow: "0 0 5px #ff007f",

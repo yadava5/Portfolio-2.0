@@ -9,7 +9,11 @@ interface MagneticButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export function MagneticButton({ children, className = "", onClick }: MagneticButtonProps) {
+export function MagneticButton({
+  children,
+  className = "",
+  onClick,
+}: MagneticButtonProps) {
   const ref = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 

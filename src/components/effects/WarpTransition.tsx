@@ -11,7 +11,10 @@ interface WarpTransitionProps {
   className?: string;
 }
 
-export function WarpTransition({ children, className = "" }: WarpTransitionProps) {
+export function WarpTransition({
+  children,
+  className = "",
+}: WarpTransitionProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -31,7 +31,7 @@ export function BlockCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 z-[9999] pointer-events-none w-3 h-5 bg-[#00ff41] animate-pulse mix-blend-screen"
+      className="pointer-events-none fixed top-0 left-0 z-[9999] h-5 w-3 animate-pulse bg-[#00ff41] mix-blend-screen"
       style={{
         boxShadow: "0 0 10px #00ff41",
       }}

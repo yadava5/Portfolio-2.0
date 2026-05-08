@@ -1,7 +1,11 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { defaultThemeId, getThemeConfig, type ThemeConfig } from "@/config/themes";
+import {
+  defaultThemeId,
+  getThemeConfig,
+  type ThemeConfig,
+} from "@/config/themes";
 export type { ThemeConfig } from "@/config/themes";
 
 /**

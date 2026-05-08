@@ -19,13 +19,13 @@ export function SynthwaveSunsetBg() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
+
     window.addEventListener("resize", resize);
     resize();
 
     const draw = () => {
       time += 0.05;
-      
+
       // Sky gradient
       const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height / 2);
       skyGradient.addColorStop(0, "#1a0b2e"); // Dark purple
@@ -42,12 +42,17 @@ export function SynthwaveSunsetBg() {
       ctx.save();
       ctx.beginPath();
       ctx.arc(sunX, sunY, sunRadius, Math.PI, 0);
-      
-      const sunGradient = ctx.createLinearGradient(0, sunY - sunRadius, 0, sunY);
+
+      const sunGradient = ctx.createLinearGradient(
+        0,
+        sunY - sunRadius,
+        0,
+        sunY
+      );
       sunGradient.addColorStop(0, "#ffd700"); // Yellow
       sunGradient.addColorStop(0.5, "#ff007f"); // Pink
       sunGradient.addColorStop(1, "#7f00ff"); // Purple
-      
+
       ctx.fillStyle = sunGradient;
       ctx.fill();
 
@@ -55,8 +60,8 @@ export function SynthwaveSunsetBg() {
       ctx.globalCompositeOperation = "destination-out";
       const numLines = 10;
       for (let i = 0; i < numLines; i++) {
-        const lineY = sunY - (i * sunRadius / numLines);
-        const thickness = 2 + (i * 1.5); // Lines get thicker towards bottom
+        const lineY = sunY - (i * sunRadius) / numLines;
+        const thickness = 2 + i * 1.5; // Lines get thicker towards bottom
         ctx.fillRect(sunX - sunRadius, lineY, sunRadius * 2, thickness);
       }
       ctx.restore();
@@ -67,22 +72,22 @@ export function SynthwaveSunsetBg() {
 
       ctx.strokeStyle = "#ff007f"; // Neon pink
       ctx.lineWidth = 2;
-      
+
       const horizonY = canvas.height / 2;
       const fov = 100;
-      
+
       // Horizontal lines moving towards viewer
       for (let i = 0; i < 20; i++) {
-        const z = ((i * 10 - time * 10) % 100 + 100) % 100;
+        const z = (((i * 10 - time * 10) % 100) + 100) % 100;
         if (z < 1) continue;
-        
+
         const y = horizonY + (fov / z) * 50;
         if (y > canvas.height) continue;
 
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
-        
+
         // Fade lines near horizon
         ctx.globalAlpha = Math.min(1, (y - horizonY) / 100);
         ctx.stroke();
@@ -94,22 +99,32 @@ export function SynthwaveSunsetBg() {
       for (let i = -numVertical; i <= numVertical; i++) {
         const startX = canvas.width / 2 + i * 100;
         const endX = canvas.width / 2 + i * 10; // Converge at horizon
-        
+
         ctx.beginPath();
         ctx.moveTo(startX, canvas.height);
         ctx.lineTo(endX, horizonY);
-        
+
         // Gradient for vertical lines
-        const lineGrad = ctx.createLinearGradient(0, canvas.height, 0, horizonY);
+        const lineGrad = ctx.createLinearGradient(
+          0,
+          canvas.height,
+          0,
+          horizonY
+        );
         lineGrad.addColorStop(0, "#00ffff"); // Cyan at bottom
         lineGrad.addColorStop(1, "rgba(0, 255, 255, 0)"); // Fade at horizon
-        
+
         ctx.strokeStyle = lineGrad;
         ctx.stroke();
       }
 
       // Horizon glow
-      const horizonGlow = ctx.createLinearGradient(0, horizonY - 20, 0, horizonY + 20);
+      const horizonGlow = ctx.createLinearGradient(
+        0,
+        horizonY - 20,
+        0,
+        horizonY + 20
+      );
       horizonGlow.addColorStop(0, "rgba(255, 0, 127, 0)");
       horizonGlow.addColorStop(0.5, "rgba(255, 0, 127, 0.8)");
       horizonGlow.addColorStop(1, "rgba(255, 0, 127, 0)");
@@ -130,7 +145,7 @@ export function SynthwaveSunsetBg() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 w-full h-full pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
     />
   );
 }

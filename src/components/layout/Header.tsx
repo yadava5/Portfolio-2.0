@@ -25,17 +25,20 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleNavClick = useCallback((e: React.MouseEvent<HTMLElement>, targetId: string) => {
-    const target = document.querySelector(targetId);
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLElement>, targetId: string) => {
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    []
+  );
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
           ? "border-b border-zinc-800 bg-zinc-950/88 py-3 backdrop-blur-md"
           : "border-b border-transparent bg-zinc-950/45 py-4 backdrop-blur-sm"

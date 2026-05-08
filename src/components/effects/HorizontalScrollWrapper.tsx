@@ -8,7 +8,10 @@ interface HorizontalScrollWrapperProps {
   className?: string;
 }
 
-export function HorizontalScrollWrapper({ children, className = "" }: HorizontalScrollWrapperProps) {
+export function HorizontalScrollWrapper({
+  children,
+  className = "",
+}: HorizontalScrollWrapperProps) {
   const targetRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,

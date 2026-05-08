@@ -12,7 +12,11 @@ interface TypewriterTextProps {
   delay?: number;
 }
 
-export function TypewriterText({ text, className = "", delay = 0 }: TypewriterTextProps) {
+export function TypewriterText({
+  text,
+  className = "",
+  delay = 0,
+}: TypewriterTextProps) {
   const [displayedText, setDisplayedText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -52,7 +56,7 @@ export function TypewriterText({ text, className = "", delay = 0 }: TypewriterTe
   return (
     <div ref={containerRef} className={className}>
       {displayedText}
-      <span className="inline-block w-2 h-[1em] bg-[#00ff41] ml-1 animate-pulse align-middle" />
+      <span className="ml-1 inline-block h-[1em] w-2 animate-pulse bg-[#00ff41] align-middle" />
     </div>
   );
 }

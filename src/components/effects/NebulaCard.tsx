@@ -48,12 +48,13 @@ export function NebulaCard({ children, className = "" }: NebulaCardProps) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-xl border border-indigo-500/20 bg-black/40 p-6 backdrop-blur-md shadow-2xl transition-all duration-300 hover:border-indigo-400/50 hover:bg-black/60 ${className}`}
+      className={`relative overflow-hidden rounded-xl border border-indigo-500/20 bg-black/40 p-6 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-indigo-400/50 hover:bg-black/60 ${className}`}
       style={{
-        boxShadow: "inset 0 0 30px rgba(100, 0, 255, 0.1), 0 10px 40px rgba(0, 0, 0, 0.5)",
+        boxShadow:
+          "inset 0 0 30px rgba(100, 0, 255, 0.1), 0 10px 40px rgba(0, 0, 0, 0.5)",
       }}
     >
-      <div className="absolute inset-0 pointer-events-none opacity-0 hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-teal-500/20 mix-blend-screen" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-teal-500/20 opacity-0 mix-blend-screen transition-opacity duration-500 hover:opacity-100" />
       {children}
     </div>
   );

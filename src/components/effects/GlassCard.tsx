@@ -20,7 +20,7 @@ export function GlassCard({ children, className = "" }: GlassCardProps) {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     setMousePosition({ x, y });
 
     const xPercent = (x / rect.width - 0.5) * 2;
@@ -56,9 +56,10 @@ export function GlassCard({ children, className = "" }: GlassCardProps) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 p-6 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:border-white/40 hover:bg-white/10 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-white/20 bg-white/5 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-white/40 hover:bg-white/10 ${className}`}
       style={{
-        boxShadow: "inset 0 0 20px rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.3)",
+        boxShadow:
+          "inset 0 0 20px rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.3)",
       }}
     >
       <div
@@ -68,7 +69,7 @@ export function GlassCard({ children, className = "" }: GlassCardProps) {
           background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.1), transparent 40%)`,
         }}
       />
-      <div className="absolute inset-0 pointer-events-none opacity-0 hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 mix-blend-overlay" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 mix-blend-overlay transition-opacity duration-500 hover:opacity-100" />
       {children}
     </div>
   );

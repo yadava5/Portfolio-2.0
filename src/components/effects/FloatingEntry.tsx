@@ -11,7 +11,10 @@ interface FloatingEntryProps {
   className?: string;
 }
 
-export function FloatingEntry({ children, className = "" }: FloatingEntryProps) {
+export function FloatingEntry({
+  children,
+  className = "",
+}: FloatingEntryProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

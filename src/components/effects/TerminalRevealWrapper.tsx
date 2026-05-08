@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, useRef, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  ReactNode,
+} from "react";
 
 const TerminalStepContext = createContext(0);
 
@@ -14,7 +21,11 @@ interface TerminalRevealWrapperProps {
   stepCount: number;
 }
 
-export function TerminalRevealWrapper({ children, className = "", stepCount }: TerminalRevealWrapperProps) {
+export function TerminalRevealWrapper({
+  children,
+  className = "",
+  stepCount,
+}: TerminalRevealWrapperProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +55,7 @@ export function TerminalRevealWrapper({ children, className = "", stepCount }: T
         }}
       >
         {currentStep < stepCount && (
-          <div className="absolute top-4 right-4 text-[#00ff41]/50 text-xs animate-pulse z-10">
+          <div className="absolute top-4 right-4 z-10 animate-pulse text-xs text-[#00ff41]/50">
             [PRESS ENTER OR CLICK TO CONTINUE]
           </div>
         )}
@@ -60,13 +71,17 @@ interface TerminalStepItemProps {
   className?: string;
 }
 
-export function TerminalStepItem({ children, step, className = "" }: TerminalStepItemProps) {
+export function TerminalStepItem({
+  children,
+  step,
+  className = "",
+}: TerminalStepItemProps) {
   const currentStep = useTerminalStep();
   const visible = currentStep > step;
 
   return (
     <div
-      className={`transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"} ${className}`}
+      className={`transition-all duration-500 ${visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"} ${className}`}
     >
       {children}
     </div>

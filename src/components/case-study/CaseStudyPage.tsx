@@ -13,7 +13,7 @@ interface CaseStudyPageProps {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
+    <p className="mb-3 font-mono text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase">
       {children}
     </p>
   );
@@ -23,7 +23,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
   return (
     <article className="min-h-screen bg-[#090b0d] text-zinc-100">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
-      <div className="relative z-10 mx-auto max-w-7xl px-5 pb-20 pt-28 md:px-8 lg:px-10">
+      <div className="relative z-10 mx-auto max-w-7xl px-5 pt-28 pb-20 md:px-8 lg:px-10">
         <Link
           href="/#projects"
           className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-sky-300 hover:text-sky-200"
@@ -34,7 +34,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         <header className="grid gap-8 border-b border-zinc-800 pb-10 md:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-amber-400">
+            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
               {study.treatment.replace("-", " ")}
             </p>
             <h1 className="text-4xl font-semibold tracking-tight text-zinc-50 md:text-6xl">
@@ -88,14 +88,20 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         </header>
 
         <div className="grid gap-8 py-10 lg:grid-cols-[0.75fr_1.25fr]">
-          <section id="problem" className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
+          <section
+            id="problem"
+            className="rounded border border-zinc-800 bg-zinc-950/70 p-5"
+          >
             <SectionLabel>Problem</SectionLabel>
             <p className="text-sm leading-7 text-zinc-300">{study.problem}</p>
             <div className="mt-6">
               <SectionLabel>Constraints</SectionLabel>
               <ul className="grid gap-3">
                 {study.constraints.map((constraint) => (
-                  <li key={constraint} className="text-sm leading-6 text-zinc-400">
+                  <li
+                    key={constraint}
+                    className="text-sm leading-6 text-zinc-400"
+                  >
                     {constraint}
                   </li>
                 ))}
@@ -103,7 +109,10 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             </div>
           </section>
 
-          <section id="artifacts" className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70">
+          <section
+            id="artifacts"
+            className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70"
+          >
             <div className="relative min-h-[280px] bg-zinc-900">
               {project.image ? (
                 <Image
@@ -162,10 +171,14 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                 key={`${artifact.type}-${artifact.label}`}
                 href={artifact.href}
                 target={artifact.href.startsWith("http") ? "_blank" : undefined}
-                rel={artifact.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                rel={
+                  artifact.href.startsWith("http")
+                    ? "noopener noreferrer"
+                    : undefined
+                }
                 className="rounded border border-zinc-800 bg-zinc-950/70 p-4 text-sm text-zinc-300 transition hover:border-amber-400/50 hover:text-zinc-100"
               >
-                <span className="block text-xs uppercase tracking-[0.2em] text-zinc-500">
+                <span className="block text-xs tracking-[0.2em] text-zinc-500 uppercase">
                   {artifact.type}
                 </span>
                 <span className="mt-2 inline-flex items-center gap-2">

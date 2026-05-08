@@ -31,7 +31,7 @@ export function SystemDiagram({ summary, nodes, edges }: SystemDiagramProps) {
         ))}
       </div>
       <div className="mt-5 border-t border-zinc-800 pt-5">
-        <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-3 font-mono text-xs tracking-[0.2em] text-zinc-500 uppercase">
           Data flow
         </p>
         <ol className="grid gap-2">

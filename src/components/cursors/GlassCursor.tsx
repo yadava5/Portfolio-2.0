@@ -33,9 +33,10 @@ export function GlassCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 z-[9999] pointer-events-none transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full mix-blend-screen"
+      className="pointer-events-none fixed top-0 left-0 z-[9999] h-32 w-32 -translate-x-1/2 -translate-y-1/2 transform rounded-full mix-blend-screen"
       style={{
-        background: "radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%)",
+        background:
+          "radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%)",
         filter: "blur(10px)",
       }}
     />

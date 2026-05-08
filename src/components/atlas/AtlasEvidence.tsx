@@ -17,7 +17,7 @@ export function AtlasSectionHeading({
 }: AtlasSectionHeadingProps) {
   return (
     <div className="mb-8 flex flex-col gap-3 md:mb-10">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-400">
+      <p className="text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
         {eyebrow}
       </p>
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -41,7 +41,12 @@ interface MetricCardProps {
   detail: string;
 }
 
-export function MetricCard({ icon: Icon, value, label, detail }: MetricCardProps) {
+export function MetricCard({
+  icon: Icon,
+  value,
+  label,
+  detail,
+}: MetricCardProps) {
   return (
     <div className="rounded border border-zinc-800 bg-zinc-950/70 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.28)]">
       <div className="mb-4 flex items-center gap-3">
@@ -75,7 +80,12 @@ export function ActionLink({ href, label, primary = false }: ActionLinkProps) {
 
   if (isExternal) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
         {label}
         <ArrowUpRight size={16} aria-hidden="true" />
       </a>
@@ -101,7 +111,7 @@ export function PipelineMap({ steps }: { steps: PipelineStep[] }) {
     <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4 md:p-5">
       <div className="mb-5 flex items-center justify-between gap-4 border-b border-zinc-800 pb-4">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-amber-400">
+          <p className="font-mono text-xs tracking-[0.24em] text-amber-400 uppercase">
             Operational Atlas
           </p>
           <p className="mt-1 text-sm text-zinc-500">
@@ -116,15 +126,22 @@ export function PipelineMap({ steps }: { steps: PipelineStep[] }) {
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
-            <li key={step.label} className="relative rounded border border-zinc-800 bg-zinc-900/60 p-4">
+            <li
+              key={step.label}
+              className="relative rounded border border-zinc-800 bg-zinc-900/60 p-4"
+            >
               <div className="mb-4 flex items-center justify-between">
                 <Icon size={20} className="text-amber-300" aria-hidden="true" />
                 <span className="font-mono text-xs text-zinc-600">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </div>
-              <p className="text-sm font-semibold text-zinc-100">{step.label}</p>
-              <p className="mt-1 text-xs leading-5 text-zinc-500">{step.detail}</p>
+              <p className="text-sm font-semibold text-zinc-100">
+                {step.label}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-zinc-500">
+                {step.detail}
+              </p>
             </li>
           );
         })}
@@ -159,14 +176,14 @@ export function ProjectEvidenceCard({
             sizes="(min-width: 768px) 40vw, 100vw"
           />
         ) : null}
-        <div className="absolute left-4 top-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
+        <div className="absolute top-4 left-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
           {String(index + 1).padStart(2, "0")}
         </div>
       </div>
       <div className="flex flex-col p-5 md:p-6">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            <p className="text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">
               {project.category.replace("-", " ")}
             </p>
             <h3 className="mt-2 text-2xl font-semibold text-zinc-50">
@@ -177,12 +194,14 @@ export function ProjectEvidenceCard({
             {project.isPrivate ? "Private proof" : "Public project"}
           </span>
         </div>
-        <p className="text-sm leading-6 text-zinc-400">{project.shortDescription}</p>
+        <p className="text-sm leading-6 text-zinc-400">
+          {project.shortDescription}
+        </p>
         {metrics.length > 0 ? (
           <dl className="mt-5 grid gap-3 sm:grid-cols-2">
             {metrics.slice(0, 2).map((metric) => (
               <div key={metric.label} className="border-l border-zinc-700 pl-3">
-                <dt className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+                <dt className="text-xs tracking-[0.18em] text-zinc-500 uppercase">
                   {metric.label}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-emerald-300">

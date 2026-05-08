@@ -19,13 +19,13 @@ export function RetroTerminalBg() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
+
     window.addEventListener("resize", resize);
     resize();
 
     const draw = () => {
       time += 1;
-      
+
       // Black background
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -39,14 +39,14 @@ export function RetroTerminalBg() {
       // Draw subtle grid
       ctx.strokeStyle = "rgba(0, 255, 65, 0.05)";
       ctx.lineWidth = 1;
-      
+
       for (let x = 0; x < canvas.width; x += 50) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, canvas.height);
         ctx.stroke();
       }
-      
+
       for (let y = 0; y < canvas.height; y += 50) {
         ctx.beginPath();
         ctx.moveTo(0, y);
@@ -56,8 +56,12 @@ export function RetroTerminalBg() {
 
       // Add a subtle vignette
       const gradient = ctx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 1.5
+        canvas.width / 2,
+        canvas.height / 2,
+        0,
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.max(canvas.width, canvas.height) / 1.5
       );
       gradient.addColorStop(0, "rgba(0,0,0,0)");
       gradient.addColorStop(1, "rgba(0,0,0,0.8)");
@@ -79,9 +83,9 @@ export function RetroTerminalBg() {
     <>
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-0 w-full h-full pointer-events-none"
+        className="pointer-events-none fixed inset-0 z-0 h-full w-full"
       />
-      <div className="fixed inset-0 z-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] mix-blend-overlay" />
+      <div className="pointer-events-none fixed inset-0 z-0 mix-blend-overlay shadow-[inset_0_0_100px_rgba(0,0,0,0.9)]" />
     </>
   );
 }

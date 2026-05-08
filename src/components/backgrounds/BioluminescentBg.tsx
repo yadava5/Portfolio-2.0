@@ -19,7 +19,7 @@ export function BioluminescentBg() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
+
     window.addEventListener("resize", resize);
     resize();
 
@@ -46,7 +46,7 @@ export function BioluminescentBg() {
 
     const draw = () => {
       time += 0.02;
-      
+
       // Deep ocean gradient
       const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       bgGradient.addColorStop(0, "#000511"); // Abyss
@@ -58,15 +58,24 @@ export function BioluminescentBg() {
       // Draw caustic light patterns
       ctx.save();
       ctx.globalCompositeOperation = "screen";
-      const causticGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      causticGradient.addColorStop(0, `rgba(0, 255, 255, ${0.05 + Math.sin(time) * 0.02})`);
+      const causticGradient = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+      causticGradient.addColorStop(
+        0,
+        `rgba(0, 255, 255, ${0.05 + Math.sin(time) * 0.02})`
+      );
       causticGradient.addColorStop(1, "transparent");
       ctx.fillStyle = causticGradient;
-      
+
       for (let i = 0; i < 3; i++) {
         ctx.beginPath();
         for (let x = 0; x <= canvas.width; x += 100) {
-          const y = Math.sin(x * 0.01 + time * (i + 1)) * 50 + (i * canvas.height / 3);
+          const y =
+            Math.sin(x * 0.01 + time * (i + 1)) * 50 + (i * canvas.height) / 3;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -80,14 +89,15 @@ export function BioluminescentBg() {
       particles.forEach((p) => {
         p.y -= p.speedY;
         p.x += Math.sin(time + p.phase) * 0.5 + p.speedX;
-        
+
         if (p.y < -10) {
           p.y = canvas.height + 10;
           p.x = Math.random() * canvas.width;
         }
 
-        const currentOpacity = p.opacity * (0.5 + Math.sin(time * 2 + p.phase) * 0.5);
-        
+        const currentOpacity =
+          p.opacity * (0.5 + Math.sin(time * 2 + p.phase) * 0.5);
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${currentOpacity})`;
@@ -101,7 +111,7 @@ export function BioluminescentBg() {
       bubbles.forEach((b) => {
         b.y -= b.speed;
         b.x += Math.sin(time * 2 + b.wobble) * 1;
-        
+
         if (b.y < -20) {
           b.y = canvas.height + 20;
           b.x = Math.random() * canvas.width;
@@ -112,10 +122,16 @@ export function BioluminescentBg() {
         ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
         ctx.lineWidth = 1;
         ctx.stroke();
-        
+
         // Bubble highlight
         ctx.beginPath();
-        ctx.arc(b.x - b.size * 0.3, b.y - b.size * 0.3, b.size * 0.2, 0, Math.PI * 2);
+        ctx.arc(
+          b.x - b.size * 0.3,
+          b.y - b.size * 0.3,
+          b.size * 0.2,
+          0,
+          Math.PI * 2
+        );
         ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
         ctx.fill();
       });
@@ -134,7 +150,7 @@ export function BioluminescentBg() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 w-full h-full pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
     />
   );
 }

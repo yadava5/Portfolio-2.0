@@ -35,7 +35,7 @@ export function ThemeOrchestrator() {
       {theme === "retro-terminal" && <RetroTerminalBg />}
       {theme === "synthwave-sunset" && <SynthwaveSunsetBg />}
       {theme === "bioluminescent-deep" && <BioluminescentBg />}
-      
+
       {/* Cursors */}
       {theme === "liquid-glass" && <GlassCursor />}
       {theme === "cosmic-voyage" && <StarCursor />}

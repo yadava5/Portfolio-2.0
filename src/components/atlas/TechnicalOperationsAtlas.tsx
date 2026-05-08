@@ -68,7 +68,11 @@ const proofMetrics = [
 
 const pipelineSteps = [
   { label: "Ingest", detail: "APIs, email, reports, datasets", icon: Database },
-  { label: "Validate", detail: "Schemas, quality checks, tests", icon: ShieldCheck },
+  {
+    label: "Validate",
+    detail: "Schemas, quality checks, tests",
+    icon: ShieldCheck,
+  },
   { label: "Transform", detail: "Python, SQL, pandas, ETL", icon: Layers3 },
   { label: "Model", detail: "ML workflows and evaluation", icon: Brain },
   { label: "Serve", detail: "Dashboards, apps, APIs", icon: Code2 },
@@ -84,7 +88,11 @@ const depthAreas = [
   {
     title: "ML evaluation",
     icon: Brain,
-    points: ["RAG + MCP orchestration", "HPO and multi-model search", "On-device classifiers"],
+    points: [
+      "RAG + MCP orchestration",
+      "HPO and multi-model search",
+      "On-device classifiers",
+    ],
   },
   {
     title: "Performance",
@@ -94,7 +102,11 @@ const depthAreas = [
   {
     title: "Accessibility",
     icon: Accessibility,
-    points: ["VoiceOver-first flows", "LiDAR obstacle detection", "On-device privacy"],
+    points: [
+      "VoiceOver-first flows",
+      "LiDAR obstacle detection",
+      "On-device privacy",
+    ],
   },
 ];
 
@@ -124,10 +136,10 @@ export function TechnicalOperationsAtlas() {
       <div className="relative z-10">
         <section
           id="hero"
-          className="mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-5 pb-14 pt-28 md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
+          className="mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-5 pt-28 pb-14 md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
         >
           <div className="flex flex-col justify-center">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-amber-400">
+            <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
               Role target
             </p>
             <p className="mb-3 text-xl font-semibold text-zinc-100 md:text-2xl">
@@ -135,27 +147,35 @@ export function TechnicalOperationsAtlas() {
             </p>
             <div className="mb-8 grid gap-3 text-sm text-zinc-400 sm:grid-cols-2">
               <p>
-                <span className="block text-xs uppercase tracking-[0.2em] text-zinc-600">
+                <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
                   Current role
                 </span>
                 {personalInfo.title}
               </p>
               <p>
-                <span className="block text-xs uppercase tracking-[0.2em] text-zinc-600">
+                <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
                   Availability
                 </span>
-                <span className="text-emerald-400">{personalInfo.availability}</span>
+                <span className="text-emerald-400">
+                  {personalInfo.availability}
+                </span>
               </p>
             </div>
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl lg:text-6xl">
-              I build the systems between messy data, reliable models, and useful products.
+              I build the systems between messy data, reliable models, and
+              useful products.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-400 md:text-lg">
               {personalInfo.bio[1]} I focus on data pipelines, applied ML,
-              full-stack systems, performance work, and accessible native products.
+              full-stack systems, performance work, and accessible native
+              products.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ActionLink href={personalInfo.resumeUrl} label="Resume" primary />
+              <ActionLink
+                href={personalInfo.resumeUrl}
+                label="Resume"
+                primary
+              />
               <ActionLink href={getSocialUrl("GitHub")} label="GitHub" />
               <ActionLink href={getSocialUrl("LinkedIn")} label="LinkedIn" />
               <ActionLink href="#contact" label="Contact" />
@@ -171,7 +191,7 @@ export function TechnicalOperationsAtlas() {
             <PipelineMap steps={pipelineSteps} />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-zinc-500">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
                   JobTracker
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
@@ -182,7 +202,7 @@ export function TechnicalOperationsAtlas() {
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-zinc-500">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
                   Visual Assist
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
@@ -193,7 +213,7 @@ export function TechnicalOperationsAtlas() {
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-zinc-500">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
                   PolicyBot
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
@@ -216,13 +236,16 @@ export function TechnicalOperationsAtlas() {
             />
             <div className="grid gap-5">
               {personalInfo.bio.map((paragraph) => (
-                <p key={paragraph} className="text-base leading-7 text-zinc-300">
+                <p
+                  key={paragraph}
+                  className="text-base leading-7 text-zinc-300"
+                >
                   {paragraph}
                 </p>
               ))}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
                     Education
                   </p>
                   <p className="mt-2 font-semibold text-zinc-100">
@@ -233,7 +256,7 @@ export function TechnicalOperationsAtlas() {
                   </p>
                 </div>
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
                     Recognition
                   </p>
                   <p className="mt-2 font-semibold text-zinc-100">
@@ -248,7 +271,10 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="projects" className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
+        <section
+          id="projects"
+          className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10"
+        >
           <AtlasSectionHeading
             eyebrow="Selected Work"
             title="Evidence records for the projects that best explain the engineering."
@@ -268,7 +294,10 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="experience" className="border-y border-zinc-900 bg-zinc-950/50">
+        <section
+          id="experience"
+          className="border-y border-zinc-900 bg-zinc-950/50"
+        >
           <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
             <AtlasSectionHeading
               eyebrow="Experience"
@@ -277,14 +306,15 @@ export function TechnicalOperationsAtlas() {
             />
             <article className="grid gap-8 rounded border border-zinc-800 bg-zinc-950/75 p-5 md:grid-cols-[0.7fr_1.3fr] md:p-8">
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-amber-400">
+                <p className="text-sm tracking-[0.2em] text-amber-400 uppercase">
                   {currentExperience.company}
                 </p>
                 <h3 className="mt-3 text-2xl font-semibold text-zinc-50">
                   {currentExperience.title}
                 </h3>
                 <p className="mt-2 text-sm text-zinc-500">
-                  {currentExperience.startDate} - {currentExperience.endDate} / {currentExperience.location}
+                  {currentExperience.startDate} - {currentExperience.endDate} /{" "}
+                  {currentExperience.location}
                 </p>
               </div>
               <div className="grid gap-6">
@@ -304,7 +334,10 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="skills" className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
+        <section
+          id="skills"
+          className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10"
+        >
           <AtlasSectionHeading
             eyebrow="Technical Depth"
             title="Proof categories instead of a generic skill wall."
@@ -318,8 +351,14 @@ export function TechnicalOperationsAtlas() {
                   key={area.title}
                   className="rounded border border-zinc-800 bg-zinc-950/75 p-5"
                 >
-                  <Icon className="mb-5 text-amber-300" size={24} aria-hidden="true" />
-                  <h3 className="text-xl font-semibold text-zinc-50">{area.title}</h3>
+                  <Icon
+                    className="mb-5 text-amber-300"
+                    size={24}
+                    aria-hidden="true"
+                  />
+                  <h3 className="text-xl font-semibold text-zinc-50">
+                    {area.title}
+                  </h3>
                   <ul className="mt-4 grid gap-2">
                     {area.points.map((point) => (
                       <li key={point} className="text-sm text-zinc-400">
@@ -332,7 +371,7 @@ export function TechnicalOperationsAtlas() {
             })}
           </div>
           <div className="mt-8 rounded border border-zinc-800 bg-zinc-950/60 p-5">
-            <p className="mb-4 text-xs uppercase tracking-[0.2em] text-zinc-500">
+            <p className="mb-4 text-xs tracking-[0.2em] text-zinc-500 uppercase">
               Source-truth skills
             </p>
             <div className="flex flex-wrap gap-2">
@@ -362,12 +401,19 @@ export function TechnicalOperationsAtlas() {
                   className="flex flex-col gap-4 rounded border border-zinc-800 bg-zinc-950/70 p-5 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
-                    <h3 className="font-semibold text-zinc-50">{project.title}</h3>
-                    <p className="mt-1 text-sm text-zinc-500">{project.category}</p>
+                    <h3 className="font-semibold text-zinc-50">
+                      {project.title}
+                    </h3>
+                    <p className="mt-1 text-sm text-zinc-500">
+                      {project.category}
+                    </p>
                   </div>
                   <div className="flex flex-wrap gap-3 text-sm">
                     {getCaseStudyById(project.id) ? (
-                      <a href={`/projects/${project.id}`} className="text-sky-300 hover:text-sky-200">
+                      <a
+                        href={`/projects/${project.id}`}
+                        className="text-sky-300 hover:text-sky-200"
+                      >
                         Case study
                       </a>
                     ) : null}
@@ -399,9 +445,13 @@ export function TechnicalOperationsAtlas() {
                   key={project.id}
                   className="rounded border border-zinc-800 bg-zinc-950/70 p-5"
                 >
-                  <h3 className="font-semibold text-zinc-50">{project.title}</h3>
-                  <p className="mt-1 text-sm text-zinc-500">{project.shortDescription}</p>
-                  <p className="mt-3 text-xs uppercase tracking-[0.2em] text-amber-400">
+                  <h3 className="font-semibold text-zinc-50">
+                    {project.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-zinc-500">
+                    {project.shortDescription}
+                  </p>
+                  <p className="mt-3 text-xs tracking-[0.2em] text-amber-400 uppercase">
                     Private/work-related proof
                   </p>
                 </div>
@@ -410,7 +460,10 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="testimonials" className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
+        <section
+          id="testimonials"
+          className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10"
+        >
           <AtlasSectionHeading
             eyebrow="Recommendations"
             title="People who worked with the output, not just the portfolio."
@@ -425,7 +478,9 @@ export function TechnicalOperationsAtlas() {
                   &quot;{testimonial.quote}&quot;
                 </p>
                 <footer className="mt-5 border-t border-zinc-800 pt-4">
-                  <p className="font-semibold text-zinc-50">{testimonial.name}</p>
+                  <p className="font-semibold text-zinc-50">
+                    {testimonial.name}
+                  </p>
                   <p className="text-sm text-zinc-500">
                     {testimonial.title}, {testimonial.company}
                   </p>
@@ -438,21 +493,25 @@ export function TechnicalOperationsAtlas() {
         <section id="contact" className="border-t border-zinc-900 bg-zinc-950">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[1fr_0.9fr] md:px-8 lg:px-10">
             <div>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-amber-400">
+              <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
                 Contact
               </p>
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 md:text-5xl">
                 Open a channel for software, data, or ML engineering work.
               </h2>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <ActionLink href={`mailto:${personalInfo.email}`} label={personalInfo.email} primary />
+                <ActionLink
+                  href={`mailto:${personalInfo.email}`}
+                  label={personalInfo.email}
+                  primary
+                />
                 <ActionLink href={personalInfo.resumeUrl} label="Resume PDF" />
                 <ActionLink href={getSocialUrl("GitHub")} label="GitHub" />
                 <ActionLink href={getSocialUrl("LinkedIn")} label="LinkedIn" />
               </div>
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950/80 p-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+              <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
                 Resume preview
               </p>
               <dl className="mt-5 grid gap-4 text-sm">
@@ -469,16 +528,28 @@ export function TechnicalOperationsAtlas() {
                 <div>
                   <dt className="text-zinc-500">Links</dt>
                   <dd className="mt-2 flex flex-wrap gap-3">
-                    <a href={github?.url} className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100">
+                    <a
+                      href={github?.url}
+                      className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100"
+                    >
                       <Github size={16} aria-hidden="true" /> GitHub
                     </a>
-                    <a href={linkedIn?.url} className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100">
+                    <a
+                      href={linkedIn?.url}
+                      className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100"
+                    >
                       <Linkedin size={16} aria-hidden="true" /> LinkedIn
                     </a>
-                    <a href={`mailto:${personalInfo.email}`} className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100">
+                    <a
+                      href={`mailto:${personalInfo.email}`}
+                      className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100"
+                    >
                       <Mail size={16} aria-hidden="true" /> Email
                     </a>
-                    <a href={personalInfo.resumeUrl} className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100">
+                    <a
+                      href={personalInfo.resumeUrl}
+                      className="inline-flex items-center gap-2 text-zinc-300 hover:text-zinc-100"
+                    >
                       <FileText size={16} aria-hidden="true" /> Resume
                     </a>
                   </dd>
