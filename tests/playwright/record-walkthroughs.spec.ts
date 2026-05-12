@@ -1,5 +1,9 @@
 import { test } from "@playwright/test";
-import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
+import {
+  artifactPath,
+  THEMES,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 // Enable video recording
 test.use({
@@ -50,7 +54,11 @@ test.describe("Theme Walkthroughs", () => {
 
       // Full-page screenshot
       await page.screenshot({
-        path: `tests/playwright/screenshots/walkthrough-${theme.name}.png`,
+        path: await artifactPath(
+          "walkthroughs",
+          "screenshots",
+          `walkthrough-${theme.name}.png`
+        ),
         fullPage: true,
       });
     });

@@ -1,7 +1,10 @@
 import { test, expect } from "@playwright/test";
 import fs from "fs/promises";
-import path from "path";
-import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
+import {
+  artifactPath,
+  THEMES,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 const VIEWPORT_SIZES = [
   { name: "mobile", width: 375, height: 667 },
@@ -19,13 +22,9 @@ test.describe("Visual Regression: Theme Screenshots", () => {
 
   test.beforeAll(async () => {
     // Ensure screenshots directory exists
-    const screenshotDir = path.join(
-      __dirname,
-      "screenshots",
-      "visual-regression"
-    );
+    const screenshotDir = await artifactPath("visual-regression", ".keep");
     try {
-      await fs.mkdir(screenshotDir, { recursive: true });
+      await fs.rm(screenshotDir, { force: true });
     } catch {
       // Directory may already exist
     }
@@ -61,9 +60,7 @@ test.describe("Visual Regression: Theme Screenshots", () => {
         await page.waitForTimeout(300);
 
         // Take full-page screenshot and save to baseline directory
-        const screenshotPath = path.join(
-          __dirname,
-          "screenshots",
+        const screenshotPath = await artifactPath(
           "visual-regression",
           `${theme.name}-${viewport.name}.png`
         );
@@ -81,16 +78,10 @@ test.describe("Visual Regression: Theme Screenshots", () => {
   }
 
   test("verify all baseline screenshots exist", async () => {
-    const screenshotDir = path.join(
-      __dirname,
-      "screenshots",
-      "visual-regression"
-    );
-
     for (const theme of THEMES) {
       for (const viewport of VIEWPORT_SIZES) {
-        const filePath = path.join(
-          screenshotDir,
+        const filePath = await artifactPath(
+          "visual-regression",
           `${theme.name}-${viewport.name}.png`
         );
         const stats = await fs.stat(filePath);

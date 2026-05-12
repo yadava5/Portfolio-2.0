@@ -1,17 +1,17 @@
 import { chromium } from "playwright";
 import fs from "fs";
-import path from "path";
 
-const DIR =
-  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/critique-desktop";
+const BASE_URL = process.env.PORTFOLIO_BASE_URL ?? "http://127.0.0.1:3000";
+const DIR = "output/playwright/legacy/critique-desktop";
 fs.mkdirSync(DIR, { recursive: true });
 
 const themes = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
+  "technical-operations-atlas",
+  "liquid-glass",
+  "cosmic-voyage",
+  "retro-terminal",
+  "synthwave-sunset",
+  "bioluminescent-deep",
 ];
 
 (async () => {
@@ -23,7 +23,7 @@ const themes = [
       viewport: { width: 1440, height: 900 },
     });
 
-    await page.goto("http://localhost:3460", {
+    await page.goto(BASE_URL, {
       waitUntil: "networkidle",
       timeout: 20000,
     });
@@ -32,7 +32,9 @@ const themes = [
     // Switch theme
     await page.evaluate((t) => {
       document.documentElement.setAttribute("data-theme", t);
-      if (typeof localStorage !== "undefined") localStorage.setItem("theme", t);
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("portfolio-theme", t);
+      }
     }, theme);
     await page.waitForTimeout(2000);
 

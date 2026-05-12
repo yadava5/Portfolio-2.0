@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {
+  artifactPath,
   THEMES,
   scrollThroughPage,
   switchThemeAndWait,
@@ -32,7 +33,7 @@ test.describe("Theme Visual Tests", () => {
 
       // Take full-page screenshot after animations triggered
       await page.screenshot({
-        path: `tests/playwright/screenshots/${theme.name}-full.png`,
+        path: await artifactPath("themes", `${theme.name}-full.png`),
         fullPage: true,
       });
     });

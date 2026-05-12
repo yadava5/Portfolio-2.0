@@ -1,16 +1,17 @@
 import { chromium } from "playwright";
 import fs from "fs";
 
-const DIR =
-  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/videos-interactions";
+const BASE_URL = process.env.PORTFOLIO_BASE_URL ?? "http://127.0.0.1:3000";
+const DIR = "output/playwright/legacy/videos-interactions";
 fs.mkdirSync(DIR, { recursive: true });
 
 const themes = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
+  "technical-operations-atlas",
+  "liquid-glass",
+  "cosmic-voyage",
+  "retro-terminal",
+  "synthwave-sunset",
+  "bioluminescent-deep",
 ];
 
 (async () => {
@@ -23,7 +24,7 @@ const themes = [
     recordVideo: { dir: DIR, size: { width: 1440, height: 900 } },
   });
   const page1 = await ctx1.newPage();
-  await page1.goto("http://localhost:3460", {
+  await page1.goto(BASE_URL, {
     waitUntil: "networkidle",
     timeout: 20000,
   });
@@ -34,7 +35,9 @@ const themes = [
     console.log(`  Switching to ${theme}...`);
     await page1.evaluate((t) => {
       document.documentElement.setAttribute("data-theme", t);
-      if (typeof localStorage !== "undefined") localStorage.setItem("theme", t);
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("portfolio-theme", t);
+      }
     }, theme);
     await page1.waitForTimeout(2500); // Watch transition
 
@@ -56,7 +59,7 @@ const themes = [
     recordVideo: { dir: DIR, size: { width: 1440, height: 900 } },
   });
   const page2 = await ctx2.newPage();
-  await page2.goto("http://localhost:3460", {
+  await page2.goto(BASE_URL, {
     waitUntil: "networkidle",
     timeout: 20000,
   });
@@ -70,7 +73,7 @@ const themes = [
         await buttons[i].hover();
         await page2.waitForTimeout(400);
       }
-    } catch (e) {}
+    } catch {}
   }
 
   // Scroll to projects and hover cards
@@ -89,7 +92,7 @@ const themes = [
         await cards[i].hover();
         await page2.waitForTimeout(600);
       }
-    } catch (e) {}
+    } catch {}
   }
 
   // Test header navigation
@@ -102,7 +105,7 @@ const themes = [
         await navLinks[i].hover();
         await page2.waitForTimeout(300);
       }
-    } catch (e) {}
+    } catch {}
   }
 
   await page2.waitForTimeout(1000);
@@ -117,7 +120,7 @@ const themes = [
     recordVideo: { dir: DIR, size: { width: 375, height: 812 } },
   });
   const page3 = await ctx3.newPage();
-  await page3.goto("http://localhost:3460", {
+  await page3.goto(BASE_URL, {
     waitUntil: "networkidle",
     timeout: 20000,
   });
@@ -130,9 +133,12 @@ const themes = [
   }
 
   // Test theme switch on mobile
-  for (const theme of ["editorial", "neon-cyber"]) {
+  for (const theme of ["technical-operations-atlas", "synthwave-sunset"]) {
     await page3.evaluate((t) => {
       document.documentElement.setAttribute("data-theme", t);
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem("portfolio-theme", t);
+      }
     }, theme);
     await page3.waitForTimeout(1500);
     await page3.evaluate(() => window.scrollTo(0, 0));
