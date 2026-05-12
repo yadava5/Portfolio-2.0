@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yadava5.github.io/portfolio/sitemap.xml
+Sitemap: https://yadava5.github.io/Portfolio-2.0/sitemap.xml

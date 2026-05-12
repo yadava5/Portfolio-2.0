@@ -50,19 +50,19 @@ const proofMetrics = [
     icon: Workflow,
     value: "738",
     label: "Automated tests",
-    detail: "Taskflow Calendar frontend, backend, and integration proof",
+    detail: "Dynamic Calendar frontend, backend, and integration proof",
   },
   {
-    icon: Brain,
-    value: "97%+",
-    label: "MNIST accuracy",
-    detail: "Fast MNIST Neural Network portfolio metric",
+    icon: Mail,
+    value: "500+",
+    label: "Emails/month",
+    detail: "Local classification volume in JobTracker",
   },
   {
-    icon: Cpu,
-    value: "5x",
-    label: "SIMD speedup",
-    detail: "AVX-512 acceleration reported in project data",
+    icon: FileText,
+    value: "50+ docs",
+    label: "Policy sources",
+    detail: "Institutional documents indexed for cited retrieval",
   },
 ];
 
@@ -114,8 +114,18 @@ function getSocialUrl(name: string) {
   return socialLinks.find((link) => link.name === name)?.url ?? "#contact";
 }
 
+function formatEducationEndDate(endDate: string) {
+  const [year, month] = endDate.split("-");
+  const date = new Date(Number(year), Number(month) - 1);
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
 export function TechnicalOperationsAtlas() {
   const currentExperience = experiences[0];
+  const graduationDate = formatEducationEndDate(education[0].endDate);
   const publicProjects = getPublicProjects();
   const caseStudyProjects = projectCaseStudies
     .map((study) => projects.find((project) => project.id === study.projectId))
@@ -136,16 +146,19 @@ export function TechnicalOperationsAtlas() {
       <div className="relative z-10">
         <section
           id="hero"
-          className="mx-auto grid min-h-screen w-full max-w-7xl gap-8 px-5 pt-28 pb-14 md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
+          className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-12 md:min-h-screen md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
         >
           <div className="flex flex-col justify-center">
-            <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
-              Role target
+            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
+              Role target / {graduationDate}
             </p>
-            <p className="mb-3 text-xl font-semibold text-zinc-100 md:text-2xl">
+            <p className="mb-4 text-lg font-semibold text-zinc-100 md:text-2xl">
               Software / Data / ML Engineering
             </p>
-            <div className="mb-8 grid gap-3 text-sm text-zinc-400 sm:grid-cols-2">
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-zinc-50 sm:text-5xl 2xl:text-6xl">
+              Ayush Yadav builds reliable data, ML, and software systems.
+            </h1>
+            <div className="mt-5 grid gap-3 text-sm text-zinc-400 sm:grid-cols-2">
               <p>
                 <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
                   Current role
@@ -161,16 +174,19 @@ export function TechnicalOperationsAtlas() {
                 </span>
               </p>
             </div>
-            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl lg:text-6xl">
-              I build the systems between messy data, reliable models, and
-              useful products.
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-400 md:text-lg">
-              {personalInfo.bio[1]} I focus on data pipelines, applied ML,
-              full-stack systems, performance work, and accessible native
-              products.
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-zinc-400 md:text-lg md:leading-7">
+              <span className="sm:hidden">
+                Senior CS student building data pipelines, ML workflows,
+                full-stack systems, and accessible native products.
+              </span>
+              <span className="hidden sm:inline">
+                Senior CS student focused on data pipelines, applied ML,
+                full-stack systems, performance work, and accessible native
+                products. Current work processes 1M+ operational rows into
+                trusted datasets and dashboards.
+              </span>
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
               <ActionLink
                 href={personalInfo.resumeUrl}
                 label="Resume"
@@ -180,14 +196,14 @@ export function TechnicalOperationsAtlas() {
               <ActionLink href={getSocialUrl("LinkedIn")} label="LinkedIn" />
               <ActionLink href="#contact" label="Contact" />
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-3">
               {proofMetrics.map((metric) => (
                 <MetricCard key={metric.label} {...metric} />
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col justify-center gap-4">
+          <div className="hidden flex-col justify-center gap-4 md:flex">
             <PipelineMap steps={pipelineSteps} />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
@@ -252,7 +268,7 @@ export function TechnicalOperationsAtlas() {
                     {education[0].degree} in {education[0].field}
                   </p>
                   <p className="mt-1 text-sm text-zinc-400">
-                    {education[0].school} - Expected May 2026
+                    {education[0].school} - Expected {graduationDate}
                   </p>
                 </div>
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
@@ -278,7 +294,7 @@ export function TechnicalOperationsAtlas() {
           <AtlasSectionHeading
             eyebrow="Selected Work"
             title="Evidence records for the projects that best explain the engineering."
-            description="Each public case study uses real portfolio data, screenshots, metrics, and explicit private/public link state."
+            description="Public and private-safe case studies use source-truth data, representative visuals, metrics, and explicit private/public link state."
           />
           <div className="grid gap-5">
             {caseStudyProjects.map((project, index) =>
@@ -454,6 +470,14 @@ export function TechnicalOperationsAtlas() {
                   <p className="mt-3 text-xs tracking-[0.2em] text-amber-400 uppercase">
                     Private/work-related proof
                   </p>
+                  {getCaseStudyById(project.id) ? (
+                    <a
+                      href={`/projects/${project.id}`}
+                      className="mt-4 inline-flex text-sm font-semibold text-sky-300 hover:text-sky-200"
+                    >
+                      Private-safe case study
+                    </a>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -518,7 +542,7 @@ export function TechnicalOperationsAtlas() {
                 <div>
                   <dt className="text-zinc-500">Education</dt>
                   <dd className="mt-1 text-zinc-100">
-                    Miami University, B.S. Computer Science, May 2026
+                    Miami University, B.S. Computer Science, {graduationDate}
                   </dd>
                 </div>
                 <div>

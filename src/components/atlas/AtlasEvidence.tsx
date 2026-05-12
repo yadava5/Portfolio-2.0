@@ -48,17 +48,19 @@ export function MetricCard({
   detail,
 }: MetricCardProps) {
   return (
-    <div className="rounded border border-zinc-800 bg-zinc-950/70 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.28)]">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded border border-amber-400/30 bg-amber-400/10 text-amber-300">
+    <div className="rounded border border-zinc-800 bg-zinc-950/70 p-2.5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-4">
+      <div className="mb-2 flex items-center gap-3 sm:mb-4">
+        <span className="flex h-9 w-9 items-center justify-center rounded border border-amber-400/30 bg-amber-400/10 text-amber-300 sm:h-10 sm:w-10">
           <Icon size={18} aria-hidden="true" />
         </span>
-        <span className="font-mono text-3xl font-semibold text-emerald-400">
+        <span className="font-mono text-2xl font-semibold text-emerald-400 sm:text-3xl">
           {value}
         </span>
       </div>
       <p className="text-sm font-semibold text-zinc-100">{label}</p>
-      <p className="mt-1 text-xs leading-5 text-zinc-500">{detail}</p>
+      <p className="mt-1 hidden text-xs leading-5 text-zinc-500 2xl:block">
+        {detail}
+      </p>
     </div>
   );
 }
@@ -170,7 +172,7 @@ export function ProjectEvidenceCard({
         {project.image ? (
           <Image
             src={project.image}
-            alt={`${project.title} interface screenshot`}
+            alt={project.imageAlt}
             fill
             className="object-cover opacity-80 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
             sizes="(min-width: 768px) 40vw, 100vw"
@@ -178,6 +180,9 @@ export function ProjectEvidenceCard({
         ) : null}
         <div className="absolute top-4 left-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
           {String(index + 1).padStart(2, "0")}
+        </div>
+        <div className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+          {project.imageDisclosure}
         </div>
       </div>
       <div className="flex flex-col p-5 md:p-6">

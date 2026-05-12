@@ -55,7 +55,7 @@ export const experiences: Experience[] = [
       "Built scalable Python and SQL pipelines to clean and transform over 1 million rows of raw data, creating a reliable foundation for cross-departmental reporting.",
       "Designed and deployed interactive Tableau dashboards used across multiple university departments for data-driven decision making.",
       "Analyzed IT service management data to uncover trends and KPIs, presenting findings that informed strategic decisions.",
-      "Developed an AI-powered Slack chatbot integrated with Workday, Oracle Analytics Server, and Tableau APIs for real-time data access.",
+      "Developed an AI-powered Slack chatbot integrated with Workday, Oracle Analytics Server, and Tableau APIs for governed data access.",
     ],
     skills: [
       "Python",

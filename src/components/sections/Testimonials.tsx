@@ -6,7 +6,6 @@ import { TextReveal } from "@/components/effects/TextReveal";
 import { GlassCard } from "@/components/effects/GlassCard";
 import { NebulaCard } from "@/components/effects/NebulaCard";
 import { WarpTransition } from "@/components/effects/WarpTransition";
-import { TypewriterText } from "@/components/effects/TypewriterText";
 import { GlitchBurst } from "@/components/effects/GlitchBurst";
 import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";
@@ -80,7 +79,7 @@ export function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {testimonials.map((testimonial, idx) => (
+          {testimonials.map((testimonial) => (
             <WarpTransition key={testimonial.id}>
               <NebulaCard className="flex h-full flex-col p-8">
                 <div className="mb-6 font-serif text-4xl text-pink-400 opacity-40">
@@ -181,7 +180,7 @@ export function Testimonials() {
         </GlitchBurst>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {testimonials.map((testimonial, idx) => (
+          {testimonials.map((testimonial) => (
             <GlitchBurst key={testimonial.id}>
               <NeonBorder
                 color="yellow"
@@ -243,7 +242,7 @@ export function Testimonials() {
         </FloatingEntry>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {testimonials.map((testimonial, idx) => (
+          {testimonials.map((testimonial) => (
             <FloatingEntry key={testimonial.id}>
               <div className="flex h-full flex-col rounded-3xl border border-[#00ffff]/10 bg-[#001433]/70 p-8 shadow-[0_0_30px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-all duration-700 hover:border-[#00ffff]/30 hover:shadow-[0_0_40px_rgba(0,255,255,0.15)]">
                 <div className="mb-6 font-serif text-5xl text-[#00ffff] opacity-30 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">

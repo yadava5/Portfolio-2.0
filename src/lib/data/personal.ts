@@ -58,7 +58,7 @@ export const personalInfo = {
   /** Short tagline for hero section */
   tagline: "Data Pipelines • AI/ML • Full-Stack Development",
   /** Email address */
-  email: "aesh_1055@icloud.com",
+  email: "yadava5@miamioh.edu",
   /** Location */
   location: "Oxford, Ohio",
   /** Current availability */
@@ -89,7 +89,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Email",
-    url: "mailto:aesh_1055@icloud.com",
+    url: "mailto:yadava5@miamioh.edu",
     icon: "Mail",
   },
 ];
@@ -145,10 +145,10 @@ export const awards: Award[] = [
 /** Site metadata for SEO */
 export const siteMetadata = {
   /** Site title */
-  title: "Ayush Yadav | Software Engineer",
+  title: "Ayush Yadav | Technical Operations Atlas",
   /** Site description */
   description:
-    "Full-stack engineer and data systems builder. Crafting reliable software, scalable data pipelines, and thoughtful product experiences. Senior CS student at Miami University, open to internships and new-grad roles.",
+    "Technical Operations Atlas for Ayush Yadav: recruiter-ready software, data, and ML engineering proof with source-truth case studies, private-safe evidence, and current resume links.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */

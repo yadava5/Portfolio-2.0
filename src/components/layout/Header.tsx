@@ -6,7 +6,7 @@ import { FileText, Github, Linkedin, Mail } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
 
 const NAV_ITEMS = [
-  { label: "Work", href: "/#projects", target: "#projects" },
+  { label: "Case Studies", href: "/#projects", target: "#projects" },
   { label: "Experience", href: "/#experience", target: "#experience" },
   { label: "Technical Depth", href: "/#skills", target: "#skills" },
   { label: "Contact", href: "/#contact", target: "#contact" },
@@ -76,10 +76,11 @@ export default function Header() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <a
             href={personalInfo.resumeUrl}
-            className="inline-flex h-10 items-center gap-2 rounded border border-amber-400 bg-amber-400 px-3 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300"
+            aria-label="Resume"
+            className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-amber-400 bg-amber-400 px-0 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300 sm:w-auto sm:px-3"
           >
             <FileText size={16} aria-hidden="true" />
             <span className="hidden sm:inline">Resume</span>
@@ -89,10 +90,11 @@ export default function Header() {
               href={github}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden h-10 items-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-3 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:inline-flex"
+              aria-label="GitHub"
+              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
             >
               <Github size={16} aria-hidden="true" />
-              GitHub
+              <span className="hidden md:inline">GitHub</span>
             </a>
           ) : null}
           {linkedIn ? (
@@ -100,16 +102,18 @@ export default function Header() {
               href={linkedIn}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden h-10 items-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-3 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:inline-flex"
+              aria-label="LinkedIn"
+              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
             >
               <Linkedin size={16} aria-hidden="true" />
-              LinkedIn
+              <span className="hidden md:inline">LinkedIn</span>
             </a>
           ) : null}
           <Link
             href="/#contact"
             onClick={(e) => handleNavClick(e, "#contact")}
-            className="inline-flex h-10 items-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-3 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400"
+            aria-label="Contact"
+            className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 sm:w-auto sm:px-3"
           >
             <Mail size={16} aria-hidden="true" />
             <span className="hidden sm:inline">Contact</span>
