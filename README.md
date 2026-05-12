@@ -1,117 +1,95 @@
-# Ayush Yadav - Portfolio
+# Ayush Yadav - Technical Operations Atlas
 
-A modern, interactive portfolio website featuring a holographic bento dashboard design with glassmorphism effects, smooth GSAP animations, and 60fps performance.
+Recruiter-facing portfolio for software, data, and ML engineering work. The primary surface is the Technical Operations Atlas: a compact proof ledger that connects resume claims to source-truth data, public repositories, private-safe case studies, and browser-verified UI behavior.
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss)
-![GSAP](https://img.shields.io/badge/GSAP-3-88ce02?style=flat-square&logo=greensock)
+![Playwright](https://img.shields.io/badge/Playwright-validated-2edb73?style=flat-square&logo=playwright)
 
-## Features
+## What This Portfolio Optimizes For
 
-- **Holographic Bento Dashboard** - Glassmorphism cards with 3D tilt effects
-- **60fps Animations** - GSAP-powered scroll and hover animations
-- **Smooth Scrolling** - Lenis for butter-smooth scroll experience
-- **Dark Mode First** - Beautiful dark theme with light mode toggle
-- **Accessible** - WCAG AA compliant with reduced motion support
-- **Responsive** - Mobile-first design that works on all devices
-- **SEO Optimized** - Next.js SSR with full meta tags
+- **Recruiter scan speed** - first viewport exposes role target, resume, GitHub, LinkedIn, contact, and proof metrics.
+- **Evidence quality** - public work links to source where available; private work uses explicit private-safe disclosures instead of pretending generated visuals are screenshots.
+- **Case-study depth** - project routes describe problem, constraints, architecture, decisions, validation, outcomes, and artifacts.
+- **Mobile access** - the header and hero both expose Resume, GitHub, LinkedIn, and Contact on small screens.
+- **Validation discipline** - default Playwright checks are assertion-only; screenshot/video artifact suites are opt-in and write to ignored output paths.
 
 ## Tech Stack
 
-| Category | Technologies |
-|----------|-------------|
-| **Framework** | Next.js 15 (App Router) |
-| **Language** | TypeScript 5 |
-| **Styling** | Tailwind CSS 4 |
-| **Animation** | GSAP, Framer Motion, Lenis |
-| **UI Components** | Radix UI, Lucide Icons |
-| **Deployment** | Vercel |
+| Category          | Technologies                    |
+| ----------------- | ------------------------------- |
+| Framework         | Next.js 16 App Router           |
+| UI                | React 19, TypeScript            |
+| Styling           | Tailwind CSS 4                  |
+| Motion            | GSAP, Framer Motion, Lenis      |
+| Testing           | Playwright, axe-core/playwright |
+| Deployment target | GitHub Pages static export      |
 
 ## Getting Started
 
 ```bash
-# Clone the repository
-git clone https://github.com/yadava5/portfolio.git
-cd portfolio
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
+
+## Validation
+
+```bash
+npm run typecheck
+npm run lint
+npm run format:check
+npm run test:e2e
+```
+
+`npm run test:e2e` builds the static site and runs the cleaned assertion suite. It should not leave tracked generated files behind.
+
+Additional browser tools:
+
+```bash
+npm run test:e2e:full
+npm run test:e2e:artifacts
+npm run test:e2e:ui
+npm run test:visual
+```
+
+Artifact-producing suites write reports, screenshots, and videos under `output/playwright/`, which is ignored by git.
 
 ## Project Structure
 
-```
+```text
 src/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx            # Home page
-│   └── globals.css         # Global styles
+├── app/                         # Next.js routes and metadata
 ├── components/
-│   ├── layout/             # Header, Footer, Cursor
-│   ├── sections/           # Hero, About, Projects, etc.
-│   ├── ui/                 # Reusable UI components
-│   └── effects/            # Animation components
-├── hooks/                  # Custom React hooks
+│   ├── atlas/                   # Technical Operations Atlas surface
+│   ├── case-study/              # Evidence-led case-study pages
+│   ├── layout/                  # Header, footer, providers
+│   └── sections/                # Legacy theme sections
+├── config/                      # Theme registry
 └── lib/
-    ├── data/               # Project, experience, skills data
-    └── utils.ts            # Utility functions
+    ├── data/                    # Resume, project, experience, skill data
+    └── utils.ts                 # Base-path helpers
+
+tests/playwright/                # Assertion and visual-audit suites
+output/playwright/               # Generated local artifacts, ignored
+docs/superpowers/plans/          # Execution plans and validation notes
 ```
 
-## Available Scripts
+## Artifact Policy
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format code with Prettier |
-| `npm run typecheck` | Run TypeScript type check |
+Source specs live in `tests/playwright/`. Generated Playwright reports, screenshots, videos, and ad hoc visual-audit output belong in `output/playwright/` and should not be committed unless they are intentionally promoted as durable documentation.
 
-## Design System
-
-### Colors
-
-- **Background**: Deep dark (#030014)
-- **Accent Primary**: Purple (#8b5cf6)
-- **Accent Secondary**: Cyan (#06b6d4)
-- **Accent Tertiary**: Pink (#f472b6)
-
-### Effects
-
-- **Glassmorphism**: `backdrop-filter: blur(12px)` with subtle borders
-- **Holographic**: Animated rainbow gradients with hue-rotate
-- **3D Tilt**: CSS perspective transforms on hover
-
-## Performance
-
-- 60fps scroll and hover animations (GSAP)
-- Code-split routes for fast initial load
-- Optimized images with Next.js Image
-- Reduced motion support for accessibility
-
-## Accessibility
-
-- Semantic HTML throughout
-- Keyboard navigation support
-- Screen reader friendly
-- Color contrast > 4.5:1 (WCAG AA)
-- `prefers-reduced-motion` respected
-
-## Author
+## Contact
 
 **Ayush Yadav**  
-CS @ Miami University '26 | Data Engineer & Full-Stack Developer
+Computer Science, Miami University - Expected May 2026
 
 - [GitHub](https://github.com/yadava5)
 - [LinkedIn](https://www.linkedin.com/in/ayush-yadav-developer/)
-- [Email](mailto:aesh_1055@icloud.com)
+- [Email](mailto:yadava5@miamioh.edu)
 
 ## License
 
