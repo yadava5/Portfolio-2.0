@@ -6,7 +6,6 @@ import { TextReveal } from "@/components/effects/TextReveal";
 import { GlassCard } from "@/components/effects/GlassCard";
 import { NebulaCard } from "@/components/effects/NebulaCard";
 import { WarpTransition } from "@/components/effects/WarpTransition";
-import { TypewriterText } from "@/components/effects/TypewriterText";
 import { GlitchBurst } from "@/components/effects/GlitchBurst";
 import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";

@@ -12,6 +12,23 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
+/output/playwright/
+/.playwright-cli/
+
+# Generated Playwright visual artifacts belong under ignored output/playwright/.
+# Keep generated screenshots and videos out of git unless explicitly promoted.
+/tests/playwright/screenshots/**/*.png
+/tests/playwright/critique-screenshots/**/*.png
+/tests/playwright/videos/
+/tests/playwright/audit-report.json
+/tests/playwright/AUDIT-SUMMARY.txt
+/tests/playwright/EXECUTIVE-SUMMARY.txt
+/tests/playwright/QA-*.md
+/tests/playwright/QA-*.txt
+/tests/playwright/QA-*.json
+!/tests/playwright/screenshots/.gitkeep
 
 # next.js
 /.next/

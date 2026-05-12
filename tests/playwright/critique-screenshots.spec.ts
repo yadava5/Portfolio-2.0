@@ -1,7 +1,9 @@
 import { test, Page } from "@playwright/test";
-import * as fs from "fs";
-import * as path from "path";
-import { THEMES, switchThemeAndWait } from "./portfolio-fixtures";
+import {
+  artifactPath,
+  THEMES,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 const SECTION_NAMES = [
   { selector: "#hero", name: "hero" },
@@ -19,12 +21,6 @@ async function scrollToElement(page: Page, selector: string) {
     await element.scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
   }
-}
-
-// Create screenshots directory
-const screenshotsDir = "tests/playwright/critique-screenshots";
-if (!fs.existsSync(screenshotsDir)) {
-  fs.mkdirSync(screenshotsDir, { recursive: true });
 }
 
 for (const theme of THEMES) {
@@ -45,8 +41,8 @@ for (const theme of THEMES) {
         const element = page.locator(section.selector);
         if ((await element.count()) > 0) {
           await scrollToElement(page, section.selector);
-          const screenshotPath = path.join(
-            screenshotsDir,
+          const screenshotPath = await artifactPath(
+            "critique-screenshots",
             `${theme.name}-${section.name}-desktop.png`
           );
           await element.screenshot({ path: screenshotPath });
@@ -61,8 +57,8 @@ for (const theme of THEMES) {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     await switchThemeAndWait(page, theme);
     await page.waitForTimeout(800);
-    const fullPath = path.join(
-      screenshotsDir,
+    const fullPath = await artifactPath(
+      "critique-screenshots",
       `${theme.name}-full-desktop.png`
     );
     await page.screenshot({ path: fullPath, fullPage: true });
@@ -92,8 +88,8 @@ for (const theme of THEMES) {
           const element = page.locator(section.selector);
           if ((await element.count()) > 0) {
             await scrollToElement(page, section.selector);
-            const screenshotPath = path.join(
-              screenshotsDir,
+            const screenshotPath = await artifactPath(
+              "critique-screenshots",
               `${theme.name}-${sectionName}-mobile.png`
             );
             await element.screenshot({ path: screenshotPath });

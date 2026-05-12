@@ -34,9 +34,14 @@ export interface CaseStudyEvidence {
 }
 
 export interface CaseStudyArtifact {
-  type: "screenshot" | "diagram" | "benchmark" | "repo" | "demo";
+  type: "representative-visual" | "diagram" | "benchmark" | "repo" | "demo";
   label: string;
   href: string;
+}
+
+export interface CaseStudyEvidenceDisclosure {
+  label: string;
+  detail: string;
 }
 
 export interface ProjectCaseStudy {
@@ -45,6 +50,7 @@ export interface ProjectCaseStudy {
   role: string;
   timeframe: string;
   summary: string;
+  evidenceDisclosure?: CaseStudyEvidenceDisclosure;
   problem: string;
   constraints: string[];
   architecture: {
@@ -106,7 +112,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "sync",
           label: "SMAppService",
-          detail: "Real-time background sync",
+          detail: "Background sync",
           kind: "system",
         },
       ],
@@ -142,17 +148,18 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     validation: [
       {
         label: "Email volume",
-        evidence: "Project data describes processing 500+ emails per month.",
+        evidence:
+          "Portfolio source data records processing 500+ emails per month.",
       },
       {
         label: "Classifier design",
         evidence:
-          "Project data lists rules, embeddings, and SetFit as the classifier layers.",
+          "Portfolio source data records rules, embeddings, and SetFit as the classifier layers.",
       },
       {
         label: "Privacy model",
         evidence:
-          "Project data states that ML processing happens locally on-device.",
+          "Portfolio source data records local on-device ML processing.",
       },
     ],
     outcomes: [
@@ -164,7 +171,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Provider coverage",
         evidence:
-          "Gmail OAuth2 and iCloud IMAP are both represented in the project data.",
+          "Portfolio source data records Gmail OAuth2 and iCloud IMAP as supported providers.",
       },
       {
         label: "Native workflow",
@@ -173,8 +180,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "screenshot",
-        label: "Portfolio screenshot",
+        type: "representative-visual",
+        label: "Representative project visual",
         href: withBasePath("/images/projects/jobtracker.png"),
       },
       {
@@ -266,23 +273,24 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Workflow coverage",
         evidence:
-          "Project data lists HPO, multi-model search, and automated training workflows.",
+          "Portfolio source data records HPO, multi-model search, and automated training workflows.",
       },
       {
         label: "Evaluation",
         evidence:
-          "Project data lists built-in evaluation and benchmarking with Playwright.",
+          "Portfolio source data records evaluation and benchmarking with Playwright.",
       },
       {
         label: "Runtime",
-        evidence: "Project data lists Dockerized execution runtime.",
+        evidence:
+          "Portfolio source data records a Dockerized execution runtime.",
       },
     ],
     outcomes: [
       {
         label: "Pipeline speed",
         evidence:
-          "Project data frames the platform as a faster path from raw datasets to ML pipelines.",
+          "Portfolio source data frames the platform as a structured path from raw datasets to ML workflows.",
       },
       {
         label: "Auditability",
@@ -292,8 +300,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "screenshot",
-        label: "Portfolio screenshot",
+        type: "representative-visual",
+        label: "Representative project visual",
         href: withBasePath("/images/projects/automl.png"),
       },
     ],
@@ -309,7 +317,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "Visually impaired users need fast environmental feedback without sending sensitive camera or location context to a remote service.",
     constraints: [
       "Prioritize on-device processing for privacy.",
-      "Support real-time LiDAR obstacle detection and haptic feedback.",
+      "Support LiDAR obstacle detection and haptic feedback.",
       "Respect VoiceOver-first interaction patterns.",
       "Use native iOS frameworks for performance and accessibility.",
     ],
@@ -372,34 +380,35 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     validation: [
       {
         label: "Unit coverage",
-        evidence: "Project data lists 68 unit tests for models and utilities.",
+        evidence:
+          "Portfolio source data records 68 unit tests for models and utilities.",
       },
       {
         label: "Accessibility",
         evidence:
-          "Project data lists VoiceOver-first accessibility and voice commands.",
+          "Portfolio source data records VoiceOver-first accessibility and voice commands.",
       },
       {
         label: "Privacy",
-        evidence: "Project data states on-device Core ML processing.",
+        evidence: "Portfolio source data records on-device Core ML processing.",
       },
     ],
     outcomes: [
       {
-        label: "Real-time detection",
+        label: "LiDAR detection",
         evidence:
           "LiDAR obstacle detection and haptic feedback are core project highlights.",
       },
       {
         label: "Text access",
         evidence:
-          "Vision OCR with speech synthesis is part of the project data.",
+          "Portfolio source data records Vision OCR with speech synthesis.",
       },
     ],
     artifacts: [
       {
-        type: "screenshot",
-        label: "Portfolio screenshot",
+        type: "representative-visual",
+        label: "Representative project visual",
         href: withBasePath("/images/projects/visual-assist.png"),
       },
       {
@@ -484,39 +493,300 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     validation: [
       {
         label: "Automated tests",
-        evidence: "Project data lists 738 automated tests.",
+        evidence: "Portfolio source data records 738 automated tests.",
       },
       {
         label: "Scheduling",
         evidence:
-          "Project data lists NLP smart input with chrono-node and compromise.",
+          "Portfolio source data records NLP smart input with chrono-node and compromise.",
       },
       {
         label: "Data model",
-        evidence: "Project data lists indexed PostgreSQL queries.",
+        evidence: "Portfolio source data records indexed PostgreSQL queries.",
       },
     ],
     outcomes: [
       {
         label: "Planning workspace",
         evidence:
-          "Project data lists multi-pane task workspace and Kanban board.",
+          "Portfolio source data records a multi-pane task workspace and Kanban board.",
       },
       {
         label: "Conflict detection",
-        evidence: "Project description includes real-time conflict detection.",
+        evidence: "Portfolio source data records conflict detection.",
       },
     ],
     artifacts: [
       {
-        type: "screenshot",
-        label: "Portfolio screenshot",
+        type: "representative-visual",
+        label: "Representative project visual",
         href: withBasePath("/images/projects/taskflow.png"),
       },
       {
         type: "repo",
         label: "Source code",
         href: "https://github.com/yadava5/taskflow-calendar",
+      },
+    ],
+  },
+  {
+    projectId: "master-inventory",
+    treatment: "field-systems",
+    role: "Data integration engineer",
+    timeframe: "2025-06 to Present",
+    summary:
+      "Private proof from Miami University ITSM data work: a Python and SQL pipeline that consolidates Workday exports, Tableau metadata, and operational records into a trusted master inventory.",
+    evidenceDisclosure: {
+      label: "Private-safe evidence",
+      detail:
+        "This case study describes the engineering shape, systems, and validation model without exposing institutional records, internal UI, or raw data.",
+    },
+    problem:
+      "Operational reporting breaks down when asset identifiers, ownership fields, Tableau metadata, and Workday exports disagree across systems.",
+    constraints: [
+      "Keep institutional details private while explaining the engineering shape.",
+      "Normalize large operational datasets without losing auditability.",
+      "Create deterministic inventory identifiers across heterogeneous sources.",
+      "Produce outputs that downstream Tableau Prep flows and dashboards can trust.",
+    ],
+    architecture: {
+      summary:
+        "Workday exports and Tableau metadata feed Python/pandas transforms, SQL normalization, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
+      nodes: [
+        {
+          id: "workday",
+          label: "Workday exports",
+          detail: "Operational report inputs",
+          kind: "data",
+        },
+        {
+          id: "tableau",
+          label: "Tableau metadata",
+          detail: "Cloud REST metadata",
+          kind: "api",
+        },
+        {
+          id: "python",
+          label: "Python/pandas",
+          detail: "Cleaning and transforms",
+          kind: "system",
+        },
+        {
+          id: "sql",
+          label: "SQL model",
+          detail: "Unified schema and IDs",
+          kind: "data",
+        },
+        {
+          id: "audit",
+          label: "Run artifacts",
+          detail: "Timestamped validation outputs",
+          kind: "validation",
+        },
+        {
+          id: "dashboard",
+          label: "Tableau Prep",
+          detail: "Dashboard-ready inventory",
+          kind: "client",
+        },
+      ],
+      edges: [
+        { from: "workday", to: "python", label: "report rows" },
+        { from: "tableau", to: "python", label: "metadata" },
+        { from: "python", to: "sql", label: "normalized records" },
+        { from: "sql", to: "audit", label: "validation exports" },
+        { from: "sql", to: "dashboard", label: "trusted dataset" },
+      ],
+    },
+    decisions: [
+      {
+        decision: "Use deterministic inventory IDs",
+        reason:
+          "Cross-system reconciliation needed stable keys instead of display names or inconsistent source IDs.",
+        tradeoff:
+          "ID logic adds up-front modeling work but makes downstream joins and audits more reliable.",
+      },
+      {
+        decision: "Preserve timestamped run artifacts",
+        reason:
+          "Operational data changes over time and stakeholders need to inspect what a run produced.",
+        tradeoff:
+          "Artifact storage adds cleanup overhead but improves debugging and trust.",
+      },
+      {
+        decision: "Keep the proof private but specific",
+        reason:
+          "The work is organizational and cannot expose raw institutional records.",
+        tradeoff:
+          "Recruiters cannot inspect source data, so the portfolio names the systems, constraints, and validation shape.",
+      },
+    ],
+    validation: [
+      {
+        label: "Data volume",
+        evidence:
+          "Private/work summary records 1M+ operational rows flowing through the pipeline.",
+      },
+      {
+        label: "Source integration",
+        evidence:
+          "Private/work summary records Workday exports and Tableau Cloud metadata as inputs.",
+      },
+      {
+        label: "Audit trail",
+        evidence:
+          "Private/work summary records timestamped run artifacts for validation and debugging.",
+      },
+    ],
+    outcomes: [
+      {
+        label: "Reconciliation speed",
+        evidence:
+          "Private/work summary records reconciliation moving from hours of manual comparison toward minutes of pipeline output review.",
+      },
+      {
+        label: "Trusted reporting",
+        evidence:
+          "The unified schema supports Tableau Prep and dashboard workflows without exposing institutional records.",
+      },
+    ],
+    artifacts: [
+      {
+        type: "representative-visual",
+        label: "Private-safe representative visual",
+        href: withBasePath("/images/projects/pipeline.png"),
+      },
+      {
+        type: "diagram",
+        label: "Architecture diagram",
+        href: withBasePath("/images/projects/pipeline.png"),
+      },
+    ],
+  },
+  {
+    projectId: "policybot",
+    treatment: "evidence-ledger",
+    role: "RAG systems engineer",
+    timeframe: "2025-06 to Present",
+    summary:
+      "Private proof from Miami University policy-support work: a Slack-based RAG assistant that retrieves institutional policy context and answers with cited sources.",
+    evidenceDisclosure: {
+      label: "Private-safe evidence",
+      detail:
+        "This case study uses representative visuals and source-truth summaries. Real institutional policy content, Slack messages, and private records are not shown.",
+    },
+    problem:
+      "Policy answers were scattered across documents, pages, and team knowledge, making day-to-day interpretation slow and inconsistent.",
+    constraints: [
+      "Keep institutional policy content governed and source-cited.",
+      "Support DOCX, PDF, and Markdown policy sources.",
+      "Validate quoted passages before presenting answers.",
+      "Meet users where they already work: Slack.",
+    ],
+    architecture: {
+      summary:
+        "Policy documents are indexed for retrieval, validated locally for quote grounding, and delivered through Slack Socket Mode with cited responses.",
+      nodes: [
+        {
+          id: "docs",
+          label: "Policy docs",
+          detail: "DOCX, PDF, Markdown",
+          kind: "data",
+        },
+        {
+          id: "filesearch",
+          label: "File Search",
+          detail: "OpenAI retrieval",
+          kind: "ml",
+        },
+        {
+          id: "validator",
+          label: "Quote validation",
+          detail: "Local citation checks",
+          kind: "validation",
+        },
+        {
+          id: "slack",
+          label: "Slack Socket Mode",
+          detail: "Team workflow surface",
+          kind: "client",
+        },
+        {
+          id: "response",
+          label: "Cited answer",
+          detail: "Grounded policy guidance",
+          kind: "api",
+        },
+      ],
+      edges: [
+        { from: "docs", to: "filesearch", label: "indexed sources" },
+        { from: "filesearch", to: "validator", label: "candidate quotes" },
+        { from: "validator", to: "response", label: "grounded evidence" },
+        { from: "slack", to: "response", label: "user question" },
+        { from: "response", to: "slack", label: "cited reply" },
+      ],
+    },
+    decisions: [
+      {
+        decision: "Use retrieval with explicit citations",
+        reason:
+          "Policy support is only useful when users can see where guidance came from.",
+        tradeoff:
+          "Citations make answers more trustworthy but require stricter source handling.",
+      },
+      {
+        decision: "Add local quote validation",
+        reason: "Generated text should not invent or misquote policy language.",
+        tradeoff:
+          "Validation adds latency and implementation work, but reduces hallucination risk.",
+      },
+      {
+        decision: "Use Slack as the delivery layer",
+        reason:
+          "The target workflow already happens in team communication channels.",
+        tradeoff:
+          "Slack integration adds event handling complexity but lowers adoption friction.",
+      },
+    ],
+    validation: [
+      {
+        label: "Knowledge base",
+        evidence:
+          "Private/work summary records 50+ institutional documents available for retrieval.",
+      },
+      {
+        label: "Citation safety",
+        evidence:
+          "Private/work summary records local validation for quote verification before response delivery.",
+      },
+      {
+        label: "Workflow fit",
+        evidence:
+          "Private/work summary records Slack Socket Mode as the interaction surface.",
+      },
+    ],
+    outcomes: [
+      {
+        label: "Lookup time",
+        evidence:
+          "Manager recommendation describes reduced documentation lookup time and ambiguity.",
+      },
+      {
+        label: "Governed answers",
+        evidence:
+          "Responses are framed around cited sources instead of uncited generated advice.",
+      },
+    ],
+    artifacts: [
+      {
+        type: "representative-visual",
+        label: "Private-safe representative visual",
+        href: withBasePath("/images/projects/policybot.png"),
+      },
+      {
+        type: "diagram",
+        label: "Retrieval architecture",
+        href: withBasePath("/images/projects/policybot.png"),
       },
     ],
   },
@@ -602,15 +872,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     validation: [
       {
         label: "Accuracy",
-        evidence: "Project data lists 97%+ accuracy on MNIST.",
+        evidence: "Portfolio source data records 97%+ accuracy on MNIST.",
       },
       {
         label: "Speedup",
-        evidence: "Project data lists 5x speedup with AVX-512 SIMD.",
+        evidence: "Portfolio source data records 5x speedup with AVX-512 SIMD.",
       },
       {
         label: "Benchmarks",
-        evidence: "Project data lists a comprehensive benchmark suite.",
+        evidence: "Portfolio source data records a benchmark suite.",
       },
     ],
     outcomes: [
@@ -622,13 +892,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Interactive inspection",
         evidence:
-          "Project data lists an interactive React and TypeScript web app.",
+          "Portfolio source data records an interactive React and TypeScript web app.",
       },
     ],
     artifacts: [
       {
-        type: "screenshot",
-        label: "Portfolio screenshot",
+        type: "representative-visual",
+        label: "Representative project visual",
         href: withBasePath("/images/projects/mnist.png"),
       },
       {

@@ -18,7 +18,7 @@ export function TypewriterText({
   delay = 0,
 }: TypewriterTextProps) {
   const [displayedText, setDisplayedText] = useState("");
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -54,9 +54,12 @@ export function TypewriterText({
   }, [text, isVisible, delay]);
 
   return (
-    <div ref={containerRef} className={className}>
-      {displayedText}
-      <span className="ml-1 inline-block h-[1em] w-2 animate-pulse bg-[#00ff41] align-middle" />
-    </div>
+    <span ref={containerRef} className={className}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {displayedText}
+        <span className="ml-1 inline-block h-[1em] w-2 animate-pulse bg-[#00ff41] align-middle" />
+      </span>
+    </span>
   );
 }

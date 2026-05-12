@@ -87,6 +87,15 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </div>
         </header>
 
+        {study.evidenceDisclosure ? (
+          <section className="mt-8 rounded border border-amber-400/30 bg-amber-400/10 p-5">
+            <SectionLabel>{study.evidenceDisclosure.label}</SectionLabel>
+            <p className="text-sm leading-6 text-amber-100/90">
+              {study.evidenceDisclosure.detail}
+            </p>
+          </section>
+        ) : null}
+
         <div className="grid gap-8 py-10 lg:grid-cols-[0.75fr_1.25fr]">
           <section
             id="problem"
@@ -117,13 +126,18 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
               {project.image ? (
                 <Image
                   src={project.image}
-                  alt={`${project.title} screenshot`}
+                  alt={project.imageAlt}
                   fill
                   className="object-cover opacity-90"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />
               ) : null}
             </div>
+            {project.imageDisclosure ? (
+              <p className="border-t border-zinc-800 px-5 py-3 text-xs leading-5 text-zinc-500">
+                {project.imageDisclosure}
+              </p>
+            ) : null}
           </section>
         </div>
 

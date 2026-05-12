@@ -2,16 +2,17 @@ import { chromium } from "playwright";
 import fs from "fs";
 import path from "path";
 
-const SCREENSHOT_DIR =
-  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/revalidation";
+const BASE_URL = process.env.PORTFOLIO_BASE_URL ?? "http://127.0.0.1:3000";
+const SCREENSHOT_DIR = "output/playwright/legacy/revalidation";
 fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
 const themes = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
+  "technical-operations-atlas",
+  "liquid-glass",
+  "cosmic-voyage",
+  "retro-terminal",
+  "synthwave-sunset",
+  "bioluminescent-deep",
 ];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
@@ -31,34 +32,16 @@ const viewports = [
     for (const theme of themes) {
       console.log(`Testing ${theme} at ${vp.name}...`);
 
-      await page.goto("http://localhost:3458", { waitUntil: "networkidle" });
+      await page.goto(BASE_URL, { waitUntil: "networkidle" });
       await page.waitForTimeout(2000);
 
-      // Try to switch theme
-      try {
-        // Look for theme switcher - it might be a select, button, or dropdown
-        const switcher = await page
-          .locator(
-            '[data-testid="theme-switcher"], select, [aria-label*="theme"], button:has-text("Theme")'
-          )
-          .first();
-        if (await switcher.isVisible()) {
-          await switcher.click();
-          await page.waitForTimeout(500);
-
-          // Try to find and click the theme option
-          const option = await page.locator(`text=${theme}`).first();
-          if (await option.isVisible()) {
-            await option.click();
-          } else {
-            // Try select option
-            await switcher.selectOption({ value: theme });
-          }
-          await page.waitForTimeout(1500);
+      await page.evaluate((themeName) => {
+        document.documentElement.setAttribute("data-theme", themeName);
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem("portfolio-theme", themeName);
         }
-      } catch (e) {
-        console.log(`Could not switch to ${theme}: ${e.message}`);
-      }
+      }, theme);
+      await page.waitForTimeout(1500);
 
       // Screenshot hero
       await page.screenshot({
@@ -77,7 +60,7 @@ const viewports = [
             await el.scrollIntoViewIfNeeded();
             await page.waitForTimeout(800);
           }
-        } catch (e) {
+        } catch {
           // Try manual scroll
           await page.evaluate(() => window.scrollBy(0, window.innerHeight));
           await page.waitForTimeout(800);

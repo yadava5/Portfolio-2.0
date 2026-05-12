@@ -6,7 +6,6 @@ import { TextReveal } from "@/components/effects/TextReveal";
 import { GlassCard } from "@/components/effects/GlassCard";
 import { NebulaCard } from "@/components/effects/NebulaCard";
 import { WarpTransition } from "@/components/effects/WarpTransition";
-import { TypewriterText } from "@/components/effects/TypewriterText";
 import { GlitchBurst } from "@/components/effects/GlitchBurst";
 import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";
@@ -275,7 +274,7 @@ export function Projects() {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {nonFeatured.map((project, idx) => (
+          {nonFeatured.map((project) => (
             <WarpTransition key={project.id}>
               <NebulaCard className="flex h-full flex-col p-8">
                 <div className="mb-6 flex items-start justify-between">
@@ -616,7 +615,7 @@ export function Projects() {
             </GlitchBurst>
 
             <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {nonFeatured.map((project, idx) => (
+              {nonFeatured.map((project) => (
                 <GlitchBurst key={project.id}>
                   <NeonBorder
                     color="yellow"
@@ -699,7 +698,7 @@ export function Projects() {
           </FloatingEntry>
 
           <div className="mb-32 space-y-24">
-            {featured.map((project, idx) => (
+            {featured.map((project) => (
               <FloatingEntry key={project.id}>
                 <div className="group flex flex-col overflow-hidden rounded-3xl border border-[#00ffff]/10 bg-[#001433]/70 p-0 shadow-[0_0_30px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-all duration-700 hover:border-[#00ffff]/30 hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] lg:flex-row">
                   <div className="relative z-10 flex w-full flex-col justify-center p-8 md:p-12 lg:w-1/2">
@@ -774,7 +773,7 @@ export function Projects() {
           </FloatingEntry>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {nonFeatured.map((project, idx) => (
+            {nonFeatured.map((project) => (
               <FloatingEntry key={project.id}>
                 <div className="flex h-full flex-col rounded-3xl border border-[#00ffff]/10 bg-[#001433]/50 p-8 shadow-[0_0_20px_rgba(0,255,255,0.05)] backdrop-blur-lg transition-all duration-700 hover:border-[#00ffff]/30 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)]">
                   <div className="mb-6 flex items-start justify-between">

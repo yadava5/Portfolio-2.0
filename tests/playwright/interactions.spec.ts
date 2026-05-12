@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { THEME_IDS } from "./portfolio-fixtures";
+import { isMobileViewport, THEME_IDS } from "./portfolio-fixtures";
 
 const NAV_SECTIONS = [
   { id: "about", label: "About" },
@@ -211,9 +211,9 @@ test.describe("User Interactions", () => {
     test("theme switcher button exists and can be found", async ({ page }) => {
       const themeButton = page.locator("button[aria-label*='theme' i]").first();
 
-      const exists = await themeButton.count();
-      if (exists === 0) {
-        test.skip();
+      if (await isMobileViewport(page)) {
+        await expect(themeButton).toBeHidden();
+        return;
       }
 
       await expect(themeButton).toBeVisible();
@@ -228,9 +228,9 @@ test.describe("User Interactions", () => {
 
       const themeButton = page.locator("button[aria-label*='theme' i]").first();
 
-      const exists = await themeButton.count();
-      if (exists === 0) {
-        test.skip();
+      if (await isMobileViewport(page)) {
+        await expect(themeButton).toBeHidden();
+        return;
       }
 
       // Click theme switcher
@@ -254,9 +254,9 @@ test.describe("User Interactions", () => {
 
       const themeButton = page.locator("button[aria-label*='theme' i]").first();
 
-      const exists = await themeButton.count();
-      if (exists === 0) {
-        test.skip();
+      if (await isMobileViewport(page)) {
+        await expect(themeButton).toBeHidden();
+        return;
       }
 
       await themeButton.click({ force: true });

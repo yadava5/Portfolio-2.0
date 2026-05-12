@@ -1,6 +1,11 @@
 import { test, expect, Page } from "@playwright/test";
 import * as fs from "fs";
-import { THEMES, scrollThroughPage, switchThemeAndWait } from "./portfolio-fixtures";
+import {
+  artifactPath,
+  THEMES,
+  scrollThroughPage,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 interface Issue {
   severity: "high" | "medium" | "low";
@@ -192,7 +197,7 @@ test.describe("Full QA Audit", () => {
   test.setTimeout(120000);
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("http://127.0.0.1:3000");
+    await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
   });
@@ -244,7 +249,11 @@ test.describe("Full QA Audit", () => {
       const overflowIssues = await checkOverflow(page);
 
       await page.screenshot({
-        path: `tests/playwright/screenshots/audit/${theme.name}-full.png`,
+        path: await artifactPath(
+          "full-audit",
+          "screenshots",
+          `${theme.name}-full.png`
+        ),
       });
 
       const issues: Issue[] = [];
@@ -338,7 +347,7 @@ test.describe("Full QA Audit", () => {
   });
 
   test.afterAll(async () => {
-    const reportPath = "tests/playwright/audit-report.json";
+    const reportPath = await artifactPath("full-audit", "audit-report.json");
     fs.writeFileSync(reportPath, JSON.stringify(auditResult, null, 2), "utf-8");
     console.log(`Report saved: ${reportPath}`);
   });

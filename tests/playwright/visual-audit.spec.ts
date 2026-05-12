@@ -1,5 +1,10 @@
 import { test } from "@playwright/test";
-import { THEMES, scrollThroughPage, switchThemeAndWait } from "./portfolio-fixtures";
+import {
+  artifactPath,
+  THEMES,
+  scrollThroughPage,
+  switchThemeAndWait,
+} from "./portfolio-fixtures";
 
 const SCROLL_POSITIONS = [0, 900, 1800, 3200, 5000, 7000, 9000];
 
@@ -20,7 +25,10 @@ for (const theme of THEMES) {
       );
       await page.waitForTimeout(300);
       await page.screenshot({
-        path: `tests/playwright/screenshots/${theme.name}-section-${i}.png`,
+        path: await artifactPath(
+          "visual-audit",
+          `${theme.name}-section-${i}.png`
+        ),
       });
     }
   });

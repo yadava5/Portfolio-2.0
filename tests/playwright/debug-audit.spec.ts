@@ -1,7 +1,8 @@
 import { test } from "@playwright/test";
+import { artifactPath } from "./portfolio-fixtures";
 
 test("Debug page structure", async ({ page }) => {
-  await page.goto("http://127.0.0.1:3000");
+  await page.goto("/");
   await page.waitForLoadState("networkidle");
   await page.waitForTimeout(2000);
 
@@ -34,6 +35,6 @@ test("Debug page structure", async ({ page }) => {
 
   // Take screenshot
   await page.screenshot({
-    path: "tests/playwright/screenshots/audit/00-debug.png",
+    path: await artifactPath("debug-audit", "00-debug.png"),
   });
 });

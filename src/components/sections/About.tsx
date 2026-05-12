@@ -4,7 +4,6 @@ import { useTheme } from "@/hooks/useTheme";
 import { personalInfo } from "@/lib/data/personal";
 import { TextReveal } from "@/components/effects/TextReveal";
 import { GlassCard } from "@/components/effects/GlassCard";
-import { TypewriterText } from "@/components/effects/TypewriterText";
 import { GlitchBurst } from "@/components/effects/GlitchBurst";
 import { NeonBorder } from "@/components/effects/NeonBorder";
 import { FloatingEntry } from "@/components/effects/FloatingEntry";

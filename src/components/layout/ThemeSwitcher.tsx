@@ -57,7 +57,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className="fixed right-6 bottom-6 z-[100]">
+    <div className="fixed right-6 bottom-6 z-[100] hidden md:block">
       {isOpen && (
         <div
           id={menuId}
@@ -67,7 +67,7 @@ export default function ThemeSwitcher() {
         >
           <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-2">
             <span className="text-xs font-semibold tracking-widest text-white/70 uppercase">
-              Visual Modes
+              Secondary Visual Modes
             </span>
             <button
               type="button"

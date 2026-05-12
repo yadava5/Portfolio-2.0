@@ -1,16 +1,17 @@
 import { chromium } from "playwright";
 import fs from "fs";
 
-const DIR =
-  "/sessions/intelligent-vigilant-lamport/mnt/Portfolio/portfolio/test-screenshots/final";
+const BASE_URL = process.env.PORTFOLIO_BASE_URL ?? "http://127.0.0.1:3000";
+const DIR = "output/playwright/legacy/final-check";
 fs.mkdirSync(DIR, { recursive: true });
 
 const themes = [
-  "dark-luxe",
-  "paper-ink",
-  "editorial",
-  "noir-cinema",
-  "neon-cyber",
+  "technical-operations-atlas",
+  "liquid-glass",
+  "cosmic-voyage",
+  "retro-terminal",
+  "synthwave-sunset",
+  "bioluminescent-deep",
 ];
 
 (async () => {
@@ -21,7 +22,7 @@ const themes = [
     const page = await browser.newPage({
       viewport: { width: 1440, height: 900 },
     });
-    await page.goto("http://localhost:3456", {
+    await page.goto(BASE_URL, {
       waitUntil: "networkidle",
       timeout: 15000,
     });
@@ -30,7 +31,7 @@ const themes = [
     // Switch theme via JavaScript
     await page.evaluate((t) => {
       document.documentElement.setAttribute("data-theme", t);
-      localStorage.setItem("theme", t);
+      localStorage.setItem("portfolio-theme", t);
     }, theme);
     await page.waitForTimeout(1500);
 
@@ -65,7 +66,7 @@ const themes = [
     const page = await browser.newPage({
       viewport: { width: 375, height: 812 },
     });
-    await page.goto("http://localhost:3456", {
+    await page.goto(BASE_URL, {
       waitUntil: "networkidle",
       timeout: 15000,
     });
@@ -73,7 +74,7 @@ const themes = [
 
     await page.evaluate((t) => {
       document.documentElement.setAttribute("data-theme", t);
-      localStorage.setItem("theme", t);
+      localStorage.setItem("portfolio-theme", t);
     }, theme);
     await page.waitForTimeout(1500);
 
