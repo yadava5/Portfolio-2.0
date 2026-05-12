@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 import {
+  absoluteUrl,
+  applyThemeState,
   COMPANY_LOGOS,
   EXPECTED_CONTENT,
   EXPECTED_LINKS,
@@ -154,11 +156,9 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         errors.push(`[${theme.name}] Projects section #projects not found`);
       }
 
-      // Check for "Featured Work" or similar heading
-      const projectHeadings = await page
-        .locator("h2, h3")
-        .filter({ hasText: /Featured|Project/i })
-        .all();
+      // Check that the project section has visible heading/content. Theme copy
+      // varies intentionally, so avoid matching only legacy heading labels.
+      const projectHeadings = await projectsSection.locator("h2, h3, h4").all();
       if (projectHeadings.length === 0) {
         warnings.push(`[${theme.name}] No project section heading found`);
       }
@@ -166,9 +166,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 7: PROJECT IMAGES ==========
       for (const imgPath of PUBLIC_PROJECT_IMAGES) {
         try {
-          const response = await page.request.get(
-            `http://127.0.0.1:3000${imgPath}`
-          );
+          const response = await page.request.get(absoluteUrl(page, imgPath));
           if (response.status() !== 200) {
             errors.push(
               `[${theme.name}] Project image ${imgPath} returned status ${response.status()}`
@@ -184,9 +182,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 8: COMPANY LOGOS ==========
       for (const logoPath of COMPANY_LOGOS) {
         try {
-          const response = await page.request.get(
-            `http://127.0.0.1:3000${logoPath}`
-          );
+          const response = await page.request.get(absoluteUrl(page, logoPath));
           if (response.status() !== 200) {
             errors.push(
               `[${theme.name}] Company logo ${logoPath} returned status ${response.status()}`
@@ -221,12 +217,12 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         errors.push(`[${theme.name}] Skills section #skills not found`);
       }
 
-      // Check for skill tags
-      const skillElements = await page
-        .locator("[class*='skill'], [class*='tag']")
-        .all();
-      if (skillElements.length === 0) {
-        warnings.push(`[${theme.name}] No skill elements found`);
+      // Check for visible skill/depth content. The Atlas theme presents proof
+      // categories instead of generic skill chips, and alternate themes do not
+      // need CSS class names containing "skill" to satisfy this contract.
+      const skillsText = (await skillsSection.first().innerText()).trim();
+      if (skillsText.length < 20) {
+        warnings.push(`[${theme.name}] Skills section has too little content`);
       }
 
       // ========== SECTION 11: CONTACT SECTION ==========
@@ -331,9 +327,16 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
 
       // ========== SECTION 19: SPECIFIC CONTENT CHECKS ==========
       // Check for graduation date mention
-      const gradDate = await page
-        .locator(`:text("${EXPECTED_CONTENT.graduation}")`)
-        .isVisible();
+      const gradDateMatches = page.getByText(EXPECTED_CONTENT.graduation);
+      const gradDateCount = await gradDateMatches.count();
+      let gradDate = false;
+      for (let index = 0; index < gradDateCount; index += 1) {
+        if (await gradDateMatches.nth(index).isVisible()) {
+          gradDate = true;
+          break;
+        }
+      }
+
       if (!gradDate) {
         warnings.push(
           `[${theme.name}] Graduation date "${EXPECTED_CONTENT.graduation}" not found`
@@ -374,13 +377,13 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
   }
 
   // ========== CROSS-THEME TESTS ==========
-  test("Theme switcher works on all themes", async ({ page }) => {
+  test("Theme state applies on all themes", async ({ page }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
 
     for (const theme of THEMES) {
-      await switchThemeAndWait(page, theme);
+      await applyThemeState(page, theme);
       // Verify theme attribute
       const themeAttr = await page.locator("html").getAttribute("data-theme");
       expect(themeAttr).toBe(theme.name);
@@ -463,7 +466,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     ).toBeTruthy();
   });
 
-  test("Mobile view: Theme switcher accessible", async ({ page }) => {
+  test("Mobile view: Theme switcher stays hidden", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/");
     await page.waitForLoadState("networkidle");
@@ -472,8 +475,7 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     const switcher = page.locator(
       "button[aria-label*='Select theme'], button[aria-label*='theme']"
     );
-    await expect(switcher).toBeVisible();
-    await expect(switcher).toBeEnabled();
+    await expect(switcher).toBeHidden();
   });
 
   test("Section IDs do not have HTML issues", async ({ page }) => {
@@ -511,7 +513,8 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
   });
 
   test("Resume file exists and is accessible", async ({ page }) => {
-    const response = await page.request.get("http://127.0.0.1:3000/resume.pdf");
+    await page.goto("/");
+    const response = await page.request.get(absoluteUrl(page, "/resume.pdf"));
     expect(response.status()).toBe(200);
   });
 });

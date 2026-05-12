@@ -1,8 +1,14 @@
 import { expect, Page } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
+import path from "node:path";
 import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
+import { experiences } from "../../src/lib/data/experience";
 import { projects } from "../../src/lib/data/projects";
-import { caseStudyIds } from "../../src/lib/data/projectCaseStudies";
+import {
+  caseStudyIds,
+  projectCaseStudies,
+} from "../../src/lib/data/projectCaseStudies";
 
 export const THEMES = themeIds.map((id) => ({
   name: id,
@@ -30,10 +36,15 @@ export const PUBLIC_PROJECT_IMAGES = PUBLIC_PROJECTS.map(
   (project) => project.image
 );
 
-export const COMPANY_LOGOS = [
-  "/images/companies/miami.png",
-  "/images/companies/aramark.png",
-];
+export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
+  .map((study) => {
+    return projects.find((project) => project.id === study.projectId)?.title;
+  })
+  .filter((title): title is string => Boolean(title));
+
+export const CURRENT_EXPERIENCE = experiences[0];
+
+export const COMPANY_LOGOS = experiences.map((experience) => experience.logo);
 
 export const EXPECTED_CONTENT = {
   name: personalInfo.name,
@@ -58,6 +69,24 @@ export const ATLAS_ALLOWED_METRICS = [
   "50+ docs",
 ];
 
+export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
+
+export const RECRUITER_HERO_METRICS = ["1M+", "738", "500+", "50+ docs"];
+
+export const REQUIRED_PRIVATE_CASE_STUDIES = ["master-inventory", "policybot"];
+
+export const PLAYWRIGHT_ARTIFACT_ROOT = path.join("output", "playwright");
+
+export async function artifactPath(...segments: string[]) {
+  const targetPath = path.join(PLAYWRIGHT_ARTIFACT_ROOT, ...segments);
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  return targetPath;
+}
+
+export function absoluteUrl(page: Page, assetPath: string) {
+  return new URL(assetPath, page.url()).toString();
+}
+
 export const PROHIBITED_GENERATED_CONTENT = [
   "CUNY Brooklyn",
   "Offer Success Rate",
@@ -66,9 +95,46 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "Kafka",
   "ClickHouse",
   "1200+ installs",
+  "10x faster",
+  "50+ jobs/day",
+  "500+ views in launch month",
+  "Production full-stack calendar",
+  "production ML pipelines",
 ];
 
-export async function switchThemeAndWait(
+export async function isMobileViewport(page: Page) {
+  const viewport = page.viewportSize();
+  return viewport ? viewport.width < 768 : false;
+}
+
+export async function applyThemeState(
+  page: Page,
+  theme: { name: string; label: string }
+) {
+  await page.waitForLoadState("domcontentloaded");
+  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
+  await page.waitForTimeout(200);
+
+  const currentTheme = await page.locator("html").getAttribute("data-theme");
+  if (currentTheme === theme.name) {
+    await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
+    return;
+  }
+
+  await page.evaluate((themeName) => {
+    window.localStorage.setItem("portfolio-theme", themeName);
+    document.documentElement.setAttribute("data-theme", themeName);
+  }, theme.name);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
+    timeout: 10000,
+  });
+  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
+  await page.waitForTimeout(300);
+}
+
+export async function switchThemeViaUiAndWait(
   page: Page,
   theme: { name: string; label: string }
 ) {
@@ -106,6 +172,18 @@ export async function switchThemeAndWait(
     timeout: 5000,
   });
   await page.waitForTimeout(1300);
+}
+
+export async function switchThemeAndWait(
+  page: Page,
+  theme: { name: string; label: string }
+) {
+  if (await isMobileViewport(page)) {
+    await applyThemeState(page, theme);
+    return;
+  }
+
+  await switchThemeViaUiAndWait(page, theme);
 }
 
 export async function scrollThroughPage(page: Page) {

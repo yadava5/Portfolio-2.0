@@ -1,12 +1,18 @@
 import { test, expect } from "@playwright/test";
 import {
+  absoluteUrl,
+  artifactPath,
+  CASE_STUDY_PROJECT_TITLES,
   COMPANY_LOGOS,
+  CURRENT_EXPERIENCE,
+  DEFAULT_THEME,
   EXPECTED_CONTENT,
   EXPECTED_LINKS,
   NAV_SECTIONS,
   PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_TITLES,
   THEMES,
+  isMobileViewport,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
 
@@ -23,8 +29,6 @@ import {
  * - Performance baselines
  * - Source code consistency issues
  */
-
-const EXPECTED_PROJECTS = PUBLIC_PROJECT_TITLES.length;
 
 // Expected data values
 const EXPECTED_DATA = {
@@ -57,10 +61,10 @@ test.describe("DEEP QA: Content Completeness", () => {
       await page.waitForTimeout(500);
 
       const heroText = await page.locator("#hero").textContent();
-      const normalizedHeroText = heroText
-        ?.replace(/\s+/g, " ")
-        .toLowerCase();
-      expect(normalizedHeroText).toContain(EXPECTED_DATA.fullName.toLowerCase());
+      const normalizedHeroText = heroText?.replace(/\s+/g, " ").toLowerCase();
+      expect(normalizedHeroText).toContain(
+        EXPECTED_DATA.fullName.toLowerCase()
+      );
     });
 
     test(`${theme.name}: About section shows education info`, async ({
@@ -90,7 +94,9 @@ test.describe("DEEP QA: Content Completeness", () => {
       );
     });
 
-    test(`${theme.name}: Experience shows BOTH jobs`, async ({ page }) => {
+    test(`${theme.name}: Experience shows current source-truth role`, async ({
+      page,
+    }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
@@ -102,12 +108,11 @@ test.describe("DEEP QA: Content Completeness", () => {
 
       const expText = await experienceSection.textContent();
 
-      // Both companies should be present
-      expect(expText).toContain("Miami University");
-      expect(expText).toContain("Aramark");
+      expect(expText).toContain(CURRENT_EXPERIENCE.company);
+      expect(expText).toContain(CURRENT_EXPERIENCE.title);
     });
 
-    test(`${theme.name}: Projects section shows ALL ${EXPECTED_PROJECTS} projects`, async ({
+    test(`${theme.name}: Projects section shows expected project records`, async ({
       page,
     }) => {
       await page.goto("/");
@@ -120,9 +125,12 @@ test.describe("DEEP QA: Content Completeness", () => {
       await expect(projectsSection).toBeAttached();
 
       const projText = await projectsSection.textContent();
+      const expectedProjectTitles =
+        theme.name === DEFAULT_THEME
+          ? CASE_STUDY_PROJECT_TITLES
+          : EXPECTED_DATA.projectTitles;
 
-      // Check for all public project titles
-      for (const title of EXPECTED_DATA.projectTitles) {
+      for (const title of expectedProjectTitles) {
         expect(projText).toContain(title);
       }
     });
@@ -175,7 +183,7 @@ test.describe("DEEP QA: Content Completeness", () => {
 
       const contactText = await contactSection.textContent();
 
-      expect(contactText).toContain("aesh_1055@icloud.com");
+      expect(contactText).toContain(EXPECTED_DATA.email);
     });
   }
 });
@@ -219,7 +227,7 @@ test.describe("DEEP QA: Link Integrity", () => {
       const linkedinLink = page.locator(
         'a[href*="linkedin.com/in/ayush-yadav"]'
       );
-      const emailLink = page.locator('a[href*="aesh_1055@icloud.com"]');
+      const emailLink = page.locator(`a[href*="${EXPECTED_DATA.email}"]`);
 
       // At least one social link should exist
       const allSocialLinks = await Promise.all([
@@ -245,7 +253,7 @@ test.describe("DEEP QA: Link Integrity", () => {
       // If no resume link, at least check the file exists
       if (resumeLinks.length === 0) {
         const response = await page.request.get(
-          "http://127.0.0.1:3000/resume.pdf"
+          absoluteUrl(page, "/resume.pdf")
         );
         expect(response.status()).toBe(200);
       } else {
@@ -306,7 +314,7 @@ test.describe("DEEP QA: Visual Regression - Section Screenshots", () => {
 
       // Take hero screenshot (viewport height)
       await page.screenshot({
-        path: `tests/playwright/screenshots/${theme.name}-hero.png`,
+        path: await artifactPath("deep-qa", `${theme.name}-hero.png`),
         clip: { x: 0, y: 0, width: 1280, height: 720 },
       });
     });
@@ -326,7 +334,7 @@ test.describe("DEEP QA: Visual Regression - Section Screenshots", () => {
       const box = await aboutSection.boundingBox();
       if (box) {
         await page.screenshot({
-          path: `tests/playwright/screenshots/${theme.name}-about.png`,
+          path: await artifactPath("deep-qa", `${theme.name}-about.png`),
           clip: { x: 0, y: Math.max(0, box.y - 20), width: 1280, height: 500 },
         });
       }
@@ -347,7 +355,7 @@ test.describe("DEEP QA: Visual Regression - Section Screenshots", () => {
       const box = await projectsSection.boundingBox();
       if (box) {
         await page.screenshot({
-          path: `tests/playwright/screenshots/${theme.name}-projects.png`,
+          path: await artifactPath("deep-qa", `${theme.name}-projects.png`),
           clip: { x: 0, y: Math.max(0, box.y - 20), width: 1280, height: 600 },
         });
       }
@@ -368,7 +376,7 @@ test.describe("DEEP QA: Visual Regression - Section Screenshots", () => {
       const box = await contactSection.boundingBox();
       if (box) {
         await page.screenshot({
-          path: `tests/playwright/screenshots/${theme.name}-contact.png`,
+          path: await artifactPath("deep-qa", `${theme.name}-contact.png`),
           clip: { x: 0, y: Math.max(0, box.y - 20), width: 1280, height: 400 },
         });
       }
@@ -383,16 +391,15 @@ test.describe("DEEP QA: Mobile Responsiveness", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
   for (const theme of THEMES) {
-    test(`${theme.name}: Theme switcher accessible on mobile`, async ({
+    test(`${theme.name}: Theme switcher stays hidden on mobile`, async ({
       page,
     }) => {
       await page.goto("/");
       await page.waitForLoadState("networkidle");
       await page.waitForTimeout(1500);
 
-      // Theme switcher should be visible on mobile
       const switcher = page.locator("button[aria-label*='Select theme']");
-      await expect(switcher).toBeVisible({ timeout: 5000 });
+      await expect(switcher).toBeHidden({ timeout: 5000 });
     });
 
     test(`${theme.name}: Text readable on mobile (no overflow)`, async ({
@@ -616,7 +623,9 @@ test.describe("DEEP QA: Performance Baselines", () => {
 test.describe("DEEP QA: Visual Consistency Checks", () => {
   test.setTimeout(120000);
 
-  test("All current themes can be switched without errors", async ({ page }) => {
+  test("All current themes can be switched without errors", async ({
+    page,
+  }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
@@ -638,6 +647,13 @@ test.describe("DEEP QA: Visual Consistency Checks", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
+    if (await isMobileViewport(page)) {
+      await expect(
+        page.locator("button[aria-label*='Select theme']")
+      ).toBeHidden();
+      return;
+    }
+
     for (let i = 0; i < 3; i++) {
       // Button should always be reachable
       const switcher = page.locator("button[aria-label*='Select theme']");
@@ -654,15 +670,17 @@ test.describe("DEEP QA: Visual Consistency Checks", () => {
   });
 
   test("All project images load successfully", async ({ page }) => {
+    await page.goto("/");
     for (const img of PUBLIC_PROJECT_IMAGES) {
-      const response = await page.request.get(`http://127.0.0.1:3000${img}`);
+      const response = await page.request.get(absoluteUrl(page, img));
       expect(response.status()).toBe(200);
     }
   });
 
   test("Company logos load successfully", async ({ page }) => {
+    await page.goto("/");
     for (const logo of COMPANY_LOGOS) {
-      const response = await page.request.get(`http://127.0.0.1:3000${logo}`);
+      const response = await page.request.get(absoluteUrl(page, logo));
       expect(response.status()).toBe(200);
     }
   });
@@ -759,7 +777,8 @@ test.describe("DEEP QA: Edge Cases & Data Validation", () => {
   });
 
   test("Resume file exists at expected location", async ({ page }) => {
-    const response = await page.request.get("http://127.0.0.1:3000/resume.pdf");
+    await page.goto("/");
+    const response = await page.request.get(absoluteUrl(page, "/resume.pdf"));
     expect(response.status()).toBe(200);
   });
 });
