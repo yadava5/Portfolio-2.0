@@ -4,7 +4,7 @@ import path from "node:path";
 import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
 import { experiences } from "../../src/lib/data/experience";
-import { projects } from "../../src/lib/data/projects";
+import { getPublicProjects, projects } from "../../src/lib/data/projects";
 import {
   caseStudyIds,
   projectCaseStudies,
@@ -28,7 +28,7 @@ export const NAV_SECTIONS = [
   "contact",
 ];
 
-export const PUBLIC_PROJECTS = projects.filter((project) => !project.isPrivate);
+export const PUBLIC_PROJECTS = getPublicProjects();
 export const PUBLIC_PROJECT_TITLES = PUBLIC_PROJECTS.map(
   (project) => project.title
 );
@@ -73,7 +73,11 @@ export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
 
 export const RECRUITER_HERO_METRICS = ["1M+", "738", "500+", "50+ docs"];
 
-export const REQUIRED_PRIVATE_CASE_STUDIES = ["master-inventory", "policybot"];
+export const REQUIRED_PRIVATE_CASE_STUDIES = [
+  "automl",
+  "master-inventory",
+  "policybot",
+];
 
 export const PLAYWRIGHT_ARTIFACT_ROOT = path.join("output", "playwright");
 
