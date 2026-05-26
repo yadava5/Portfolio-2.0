@@ -197,35 +197,41 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Senior capstone engineer",
     timeframe: "2025-09 to Present",
     summary:
-      "An LLM-orchestrated automated data scientist platform that turns datasets and domain documents into auditable ML pipeline decisions.",
+      "A private GitHub-backed agentic AutoML platform that turns datasets and domain documents into auditable ML pipeline decisions with human approval gates.",
+    evidenceDisclosure: {
+      label: "Private proof: GitHub evidence",
+      detail:
+        "The current GitHub repository is yadava5/ai-augmented-auto-ml-toolchain and its README identifies the product as Agentic AutoML Platform. The repository is private, so this portfolio shows a private-safe case study instead of a public source link.",
+    },
     problem:
       "Raw datasets require many repetitive steps before useful modeling: ingestion, feature decisions, training, evaluation, and deployment packaging.",
     constraints: [
       "Make pipeline decisions auditable instead of opaque.",
-      "Support domain documents through RAG and MCP-based orchestration.",
+      "Support domain documents through retrieval and MCP-based orchestration.",
+      "Require human approval before generated actions alter workflow state.",
       "Keep training workflows reproducible with containerized execution.",
       "Validate the product flow with browser-level checks.",
     ],
     architecture: {
       summary:
-        "A React and TypeScript interface coordinates Node/PostgreSQL services, LLM-assisted orchestration, training workflows, Docker runtime, and Playwright evaluation.",
+        "A React and TypeScript interface coordinates Express/PostgreSQL services, LangGraph + MCP orchestration, notebook-based training workflows, Docker execution, and Playwright evaluation.",
       nodes: [
         {
           id: "ui",
-          label: "React UI",
+          label: "React 19 UI",
           detail: "Dataset and workflow surface",
           kind: "client",
         },
         {
           id: "api",
-          label: "Node.js API",
+          label: "Express 5 API",
           detail: "Pipeline orchestration",
           kind: "api",
         },
         {
-          id: "rag",
-          label: "RAG + MCP",
-          detail: "Structured decisions",
+          id: "orchestrator",
+          label: "LangGraph + MCP",
+          detail: "Agentic workflow routing",
           kind: "ml",
         },
         {
@@ -236,7 +242,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "store",
-          label: "PostgreSQL",
+          label: "PostgreSQL 16",
           detail: "Run metadata",
           kind: "data",
         },
@@ -249,7 +255,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
       edges: [
         { from: "ui", to: "api", label: "workflow requests" },
-        { from: "api", to: "rag", label: "domain context" },
+        { from: "api", to: "orchestrator", label: "approved actions" },
         { from: "api", to: "runtime", label: "training jobs" },
         { from: "runtime", to: "store", label: "run records" },
         { from: "evals", to: "ui", label: "browser proof" },
@@ -257,11 +263,18 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     decisions: [
       {
-        decision: "Use RAG + MCP for orchestration",
+        decision: "Use LangGraph + MCP for orchestration",
         reason:
-          "The platform needs structured, auditable decisions tied to domain context.",
+          "The platform needs phase-aware routing, tool calls, and auditable decisions tied to domain context.",
         tradeoff:
           "More infrastructure than a simple model runner, but better for traceable workflows.",
+      },
+      {
+        decision: "Keep human approval gates",
+        reason:
+          "Generated preprocessing, training, and deployment actions should be reviewed before they alter the workflow.",
+        tradeoff:
+          "Approval gates slow down full automation, but they make the system safer and easier to debug.",
       },
       {
         decision: "Containerize execution",
@@ -271,9 +284,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     validation: [
       {
+        label: "Repository identity",
+        evidence:
+          "Live GitHub metadata shows private repo yadava5/ai-augmented-auto-ml-toolchain; README title is Agentic AutoML Platform.",
+      },
+      {
+        label: "Lifecycle coverage",
+        evidence:
+          "Project source records upload, EDA, NL-to-SQL, preprocessing, training, experiments, and deployment phases.",
+      },
+      {
         label: "Workflow coverage",
         evidence:
-          "Portfolio source data records HPO, multi-model search, and automated training workflows.",
+          "Portfolio source data records HPO, multi-model search, notebook training, and automated workflow evaluation.",
       },
       {
         label: "Evaluation",
@@ -295,7 +318,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Auditability",
         evidence:
-          "Pipeline decisions are structured through RAG and MCP rather than free-form output.",
+          "Pipeline decisions are structured through LangGraph and MCP tool calls rather than free-form output.",
       },
     ],
     artifacts: [

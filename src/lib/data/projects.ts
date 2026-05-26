@@ -60,6 +60,8 @@ export interface Project {
   highlights: string[];
   /** Whether the project is private/work-related */
   isPrivate: boolean;
+  /** Whether the project is ready to appear in recruiter-facing portfolio lists */
+  portfolioVisible?: boolean;
   /** Quantifiable impact metrics */
   metrics?: ProjectMetric[];
   /** Project status (e.g., "recent" for recently updated) */
@@ -115,40 +117,43 @@ export const projects: Project[] = [
   },
   {
     id: "automl",
-    title: "AutoML Platform",
+    title: "Agentic AutoML Platform",
     shortDescription:
-      "LLM-orchestrated platform for turning raw datasets and domain documents into auditable ML workflow decisions.",
+      "Private GitHub-backed capstone platform for turning datasets and domain documents into LLM-orchestrated, auditable ML workflows.",
     fullDescription:
-      "Building an automated data scientist platform that turns datasets and domain documents into structured, reproducible ML workflows. Features LLM-assisted orchestration using RAG + MCP for auditable pipeline decisions.",
+      "A private GitHub repository named ai-augmented-auto-ml-toolchain that turns datasets and domain documents into structured, reproducible ML workflows. The platform uses LangGraph and MCP tools for agentic orchestration with human-in-the-loop approval gates.",
     techStack: [
       { name: "TypeScript", color: "#3178c6" },
-      { name: "React", color: "#61dafb" },
-      { name: "Node.js", color: "#339933" },
+      { name: "React 19", color: "#61dafb" },
+      { name: "Express 5", color: "#000000" },
       { name: "PostgreSQL", color: "#336791" },
       { name: "Docker", color: "#2496ed" },
-      { name: "Machine Learning", color: "#ff6f00" },
+      { name: "LangGraph", color: "#ff6f00" },
+      { name: "MCP", color: "#00d4aa" },
     ],
     githubUrl: null,
     liveUrl: null,
     image: withBasePath("/images/projects/automl.png"),
     imageKind: "representative-visual",
-    imageAlt: "Representative ML workflow visual for the AutoML platform",
+    imageAlt:
+      "Representative ML workflow visual for the Agentic AutoML Platform",
     imageDisclosure:
-      "Representative portfolio visual summarizing the workflow surface.",
+      "Representative portfolio visual; GitHub repository ai-augmented-auto-ml-toolchain is private, so no public source link is shown.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
     endDate: "Present",
     highlights: [
-      "LLM-assisted orchestration with RAG + MCP",
-      "Automated training workflows with HPO and multi-model search",
-      "Dockerized execution runtime with reproducible runs",
-      "Built-in evaluation/benchmarking with Playwright",
+      "LangGraph and MCP orchestration for agentic ML workflow phases",
+      "Human-in-the-loop approval gates for generated actions",
+      "Upload, EDA, NL-to-SQL, preprocessing, training, experiments, and deployment phases",
+      "Dockerized execution runtime with reproducible notebook runs",
+      "Built-in Playwright and eval-runner validation paths",
     ],
-    isPrivate: false,
+    isPrivate: true,
     metrics: [
-      { label: "Automation", value: "Drag-and-drop pipelines" },
-      { label: "Orchestration", value: "LLM + RAG + MCP" },
+      { label: "Workflow", value: "7-phase ML lifecycle" },
+      { label: "Orchestration", value: "LangGraph + MCP" },
     ],
   },
   {
@@ -265,43 +270,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: "lifequest",
-    title: "LifeQuest",
-    shortDescription:
-      "Tauri-powered productivity RPG turning daily routines into map quests, gamifying life transitions.",
-    fullDescription:
-      "A desktop-first rebuild of a map-based quest game that turns real-world routines into missions for people navigating job loss or retirement, with Quest Coins and practical rewards.",
-    techStack: [
-      { name: "Tauri", color: "#24c8db" },
-      { name: "React", color: "#61dafb" },
-      { name: "NestJS", color: "#e0234e" },
-      { name: "PostgreSQL", color: "#336791" },
-      { name: "Prisma", color: "#2d3748" },
-    ],
-    githubUrl: "https://github.com/yadava5/lifequest",
-    liveUrl: null,
-    image: withBasePath("/images/projects/lifequest.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative quest workflow visual for LifeQuest",
-    imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
-    featured: false,
-    category: "full-stack",
-    startDate: "2025-04",
-    endDate: "2025-11",
-    highlights: [
-      "Quest loop with daily/weekly quests and Quest Coins",
-      "Tauri 2 + React 19 desktop app",
-      "NestJS API with PostgreSQL + Prisma",
-      "Optional AI-generated quests via OpenAI",
-    ],
-    isPrivate: false,
-    metrics: [
-      { label: "Gamification", value: "Quest Coins + daily missions" },
-      { label: "Stack", value: "Tauri 2 + React 19 + NestJS" },
-    ],
-  },
-  {
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
@@ -412,58 +380,20 @@ export const projects: Project[] = [
       { label: "Design", value: "3D parallax scroll effects" },
     ],
   },
-  {
-    id: "job-automator",
-    title: "Job Automator",
-    shortDescription:
-      "Playwright automation project exploring job matching, cover-letter drafting, and application tracking workflows.",
-    fullDescription:
-      "Automated job application system with Playwright browser automation, intelligent job matching, cover letter generation, and application tracking.",
-    techStack: [
-      { name: "JavaScript", color: "#f7df1e" },
-      { name: "Playwright", color: "#2edb73" },
-      { name: "Node.js", color: "#339933" },
-    ],
-    githubUrl: "https://github.com/yadava5/job-automator",
-    liveUrl: null,
-    image: withBasePath("/images/projects/job-automator.png"),
-    imageKind: "representative-visual",
-    imageAlt:
-      "Representative browser automation workflow visual for Job Automator",
-    imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
-    featured: false,
-    category: "other",
-    startDate: "2026-03",
-    endDate: "Present",
-    highlights: [
-      "Playwright browser automation for job application",
-      "Intelligent job matching algorithms",
-      "Automated cover letter generation",
-      "Application tracking and monitoring",
-    ],
-    isPrivate: false,
-    status: "recent",
-    statusLabel: "Recently Updated",
-    metrics: [
-      { label: "Automation", value: "Workflow automation prototype" },
-      { label: "Tech", value: "Playwright + AI cover letters" },
-    ],
-  },
 ];
 
 /**
  * Get featured projects for the bento grid
  */
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.featured);
+  return projects.filter((p) => p.featured && p.portfolioVisible !== false);
 }
 
 /**
  * Get all public projects
  */
 export function getPublicProjects(): Project[] {
-  return projects.filter((p) => !p.isPrivate);
+  return projects.filter((p) => !p.isPrivate && p.portfolioVisible !== false);
 }
 
 /**
@@ -479,5 +409,7 @@ export function getProjectById(id: string): Project | undefined {
 export function getProjectsByCategory(
   category: Project["category"]
 ): Project[] {
-  return projects.filter((p) => p.category === category);
+  return projects.filter(
+    (p) => p.category === category && p.portfolioVisible !== false
+  );
 }

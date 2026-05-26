@@ -130,7 +130,9 @@ export function TechnicalOperationsAtlas() {
   const caseStudyProjects = projectCaseStudies
     .map((study) => projects.find((project) => project.id === study.projectId))
     .filter(Boolean);
-  const privateProjects = projects.filter((project) => project.isPrivate);
+  const privateProjects = projects.filter(
+    (project) => project.isPrivate && project.portfolioVisible !== false
+  );
   const topSkills = skillCategories.flatMap((category) =>
     category.skills.slice(0, 3).map((skill) => ({
       ...skill,
