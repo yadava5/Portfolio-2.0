@@ -382,18 +382,22 @@ export const projects: Project[] = [
   },
 ];
 
+function isPublicPortfolioProject(project: Project): boolean {
+  return !project.isPrivate && project.portfolioVisible !== false;
+}
+
 /**
  * Get featured projects for the bento grid
  */
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.featured && p.portfolioVisible !== false);
+  return projects.filter((p) => p.featured && isPublicPortfolioProject(p));
 }
 
 /**
  * Get all public projects
  */
 export function getPublicProjects(): Project[] {
-  return projects.filter((p) => !p.isPrivate && p.portfolioVisible !== false);
+  return projects.filter(isPublicPortfolioProject);
 }
 
 /**
@@ -410,6 +414,6 @@ export function getProjectsByCategory(
   category: Project["category"]
 ): Project[] {
   return projects.filter(
-    (p) => p.category === category && p.portfolioVisible !== false
+    (p) => p.category === category && isPublicPortfolioProject(p)
   );
 }

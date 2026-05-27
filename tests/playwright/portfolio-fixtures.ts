@@ -4,7 +4,12 @@ import path from "node:path";
 import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
 import { experiences } from "../../src/lib/data/experience";
-import { getPublicProjects, projects } from "../../src/lib/data/projects";
+import {
+  getFeaturedProjects,
+  getProjectsByCategory,
+  getPublicProjects,
+  projects,
+} from "../../src/lib/data/projects";
 import {
   caseStudyIds,
   projectCaseStudies,
@@ -29,6 +34,13 @@ export const NAV_SECTIONS = [
 ];
 
 export const PUBLIC_PROJECTS = getPublicProjects();
+export const FEATURED_PROJECTS = getFeaturedProjects();
+export const PROJECT_CATEGORIES = Array.from(
+  new Set(projects.map((project) => project.category))
+);
+export const CATEGORY_PROJECTS = PROJECT_CATEGORIES.flatMap((category) =>
+  getProjectsByCategory(category)
+);
 export const PUBLIC_PROJECT_TITLES = PUBLIC_PROJECTS.map(
   (project) => project.title
 );

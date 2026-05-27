@@ -1,7 +1,11 @@
 "use client";
 
 import { useTheme } from "@/hooks/useTheme";
-import { getFeaturedProjects, getPublicProjects } from "@/lib/data/projects";
+import {
+  getFeaturedProjects,
+  getPublicProjects,
+  type Project,
+} from "@/lib/data/projects";
 import { TextReveal } from "@/components/effects/TextReveal";
 import { GlassCard } from "@/components/effects/GlassCard";
 import { NebulaCard } from "@/components/effects/NebulaCard";
@@ -22,6 +26,20 @@ import {
 import { FluidDistortionWrapper } from "@/components/effects/FluidDistortionWrapper";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
+
+function ProjectVisualDisclosure({ project }: { project: Project }) {
+  const label =
+    project.imageKind === "real-screenshot"
+      ? "Project visual"
+      : "Representative visual";
+
+  return (
+    <p className="absolute right-3 bottom-3 left-3 z-20 rounded border border-white/15 bg-black/80 px-3 py-2 text-[11px] leading-4 text-white/75 backdrop-blur-md">
+      <span className="font-semibold text-white">{label}:</span>{" "}
+      {project.imageDisclosure}
+    </p>
+  );
+}
 
 export function Projects() {
   const { theme } = useTheme();
@@ -96,11 +114,12 @@ export function Projects() {
                     {project.image && (
                       <Image
                         src={project.image}
-                        alt={project.title}
+                        alt={project.imageAlt}
                         fill
                         className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
                       />
                     )}
+                    <ProjectVisualDisclosure project={project} />
                   </div>
                 </GlassCard>
               </TextReveal>
@@ -251,12 +270,13 @@ export function Projects() {
                     {project.image && (
                       <Image
                         src={project.image}
-                        alt={project.title}
+                        alt={project.imageAlt}
                         fill
                         className="object-cover opacity-60 mix-blend-luminosity transition-all duration-700 group-hover:scale-105 group-hover:opacity-100 group-hover:mix-blend-normal"
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent lg:bg-gradient-to-r" />
+                    <ProjectVisualDisclosure project={project} />
                   </div>
                 </NebulaCard>
               </WarpTransition>
@@ -408,7 +428,7 @@ export function Projects() {
                       {project.image ? (
                         <Image
                           src={project.image}
-                          alt={project.title}
+                          alt={project.imageAlt}
                           fill
                           className="object-cover opacity-50 grayscale transition-all duration-500 group-hover:opacity-80 group-hover:grayscale-0"
                         />
@@ -417,6 +437,7 @@ export function Projects() {
                           NO_IMAGE_DATA
                         </span>
                       )}
+                      <ProjectVisualDisclosure project={project} />
                     </div>
                   </div>
                 </div>
@@ -580,7 +601,7 @@ export function Projects() {
                     {project.image && (
                       <Image
                         src={project.image}
-                        alt={project.title}
+                        alt={project.imageAlt}
                         fill
                         className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
                         style={{ filter: "contrast(1.2) saturate(1.5)" }}
@@ -595,6 +616,7 @@ export function Projects() {
                           "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)",
                       }}
                     />
+                    <ProjectVisualDisclosure project={project} />
                   </div>
                 </NeonBorder>
               </GlitchBurst>
@@ -750,7 +772,7 @@ export function Projects() {
                     {project.image && (
                       <Image
                         src={project.image}
-                        alt={project.title}
+                        alt={project.imageAlt}
                         fill
                         className="object-cover opacity-60 mix-blend-screen transition-all duration-700 group-hover:scale-105 group-hover:opacity-90"
                         style={{
@@ -759,6 +781,7 @@ export function Projects() {
                       />
                     )}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#000511] to-transparent lg:bg-gradient-to-r" />
+                    <ProjectVisualDisclosure project={project} />
                   </div>
                 </div>
               </FloatingEntry>
