@@ -202,20 +202,13 @@ In `src/lib/data/projects.ts`, change the Fast MNIST fields to:
 ```
 
 ```ts
-    imageAlt: "Real Fast MNIST React workbench screenshot",
-```
-
-```ts
-    imageDisclosure:
-      "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
-```
-
-```ts
     metrics: [
       { label: "Accuracy", value: "97%+ on MNIST" },
       { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
     ],
 ```
+
+Keep the current representative image label until Task 4 promotes the real screenshot.
 
 - [ ] **Step 2: Update Visual Assist project data**
 
@@ -1058,7 +1051,7 @@ Expected: all pass with no warnings requiring edits.
 - [ ] **Step 2: Build the portfolio**
 
 ```bash
-NEXT_PUBLIC_BASE_PATH= node node_modules/next/dist/bin/next build --webpack
+NEXT_PUBLIC_BASE_PATH= /opt/homebrew/bin/node node_modules/next/dist/bin/next build --webpack
 ```
 
 Expected: production build completes successfully.
@@ -1170,7 +1163,7 @@ Use this summary:
 - /opt/homebrew/bin/npm run typecheck
 - /opt/homebrew/bin/npm run lint
 - /opt/homebrew/bin/npm run format:check
-- NEXT_PUBLIC_BASE_PATH= node node_modules/next/dist/bin/next build --webpack
+- NEXT_PUBLIC_BASE_PATH= /opt/homebrew/bin/node node_modules/next/dist/bin/next build --webpack
 - NEXT_PUBLIC_BASE_PATH= /opt/homebrew/bin/npm exec playwright test tests/playwright/atlas.spec.ts tests/playwright/nav-and-images.spec.ts --project=chromium-desktop
 - /opt/homebrew/bin/npm run test:e2e
 - /opt/homebrew/bin/npm run test:e2e:artifacts
