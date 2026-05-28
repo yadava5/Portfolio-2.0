@@ -48,14 +48,17 @@ export const PUBLIC_PROJECT_IMAGES = PUBLIC_PROJECTS.map(
   (project) => project.image
 );
 
+function visualDisclosureLabel(imageKind: string) {
+  if (imageKind === "real-screenshot") return "Project visual:";
+  if (imageKind === "diagram") return "Architecture diagram:";
+  return "Representative visual:";
+}
+
 export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
   title: project.title,
   image: project.image,
   imageKind: project.imageKind,
-  disclosureLabel:
-    project.imageKind === "real-screenshot"
-      ? "Project visual:"
-      : "Representative visual:",
+  disclosureLabel: visualDisclosureLabel(project.imageKind),
   disclosure: project.imageDisclosure,
 }));
 
@@ -63,10 +66,7 @@ export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map((project) => ({
   title: project.title,
   image: project.image,
   imageKind: project.imageKind,
-  disclosureLabel:
-    project.imageKind === "real-screenshot"
-      ? "Project visual:"
-      : "Representative visual:",
+  disclosureLabel: visualDisclosureLabel(project.imageKind),
   disclosure: project.imageDisclosure,
 }));
 

@@ -31,7 +31,9 @@ function ProjectVisualDisclosure({ project }: { project: Project }) {
   const label =
     project.imageKind === "real-screenshot"
       ? "Project visual"
-      : "Representative visual";
+      : project.imageKind === "diagram"
+        ? "Architecture diagram"
+        : "Representative visual";
 
   return (
     <p className="absolute right-3 bottom-3 left-3 z-20 rounded border border-white/15 bg-black/80 px-3 py-2 text-[11px] leading-4 text-white/75 backdrop-blur-md">

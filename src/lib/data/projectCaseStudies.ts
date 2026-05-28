@@ -186,9 +186,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
-        href: withBasePath("/images/projects/jobtracker.png"),
+        type: "diagram",
+        label: "Local classification architecture",
+        href: withBasePath("/images/projects/jobtracker-architecture.svg"),
       },
       {
         type: "repo",
@@ -437,9 +437,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
-        href: withBasePath("/images/projects/visual-assist.png"),
+        type: "diagram",
+        label: "On-device accessibility architecture",
+        href: withBasePath("/images/projects/visual-assist-architecture.svg"),
       },
       {
         type: "repo",
@@ -682,14 +682,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Private-safe representative visual",
-        href: withBasePath("/images/projects/pipeline.png"),
-      },
-      {
         type: "diagram",
-        label: "Architecture diagram",
-        href: withBasePath("/images/projects/pipeline.png"),
+        label: "Private-safe pipeline architecture",
+        href: withBasePath("/images/projects/pipeline-architecture.svg"),
       },
     ],
   },
@@ -809,14 +804,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Private-safe representative visual",
-        href: withBasePath("/images/projects/policybot.png"),
-      },
-      {
         type: "diagram",
-        label: "Retrieval architecture",
-        href: withBasePath("/images/projects/policybot.png"),
+        label: "Retrieval and validation architecture",
+        href: withBasePath("/images/projects/policybot-architecture.svg"),
       },
     ],
   },

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1376" height="768" viewBox="0 0 1376 768" role="img" aria-labelledby="title desc">
+  <title id="title">Visual Assist On-Device Flow</title>
+  <desc id="desc">LiDAR, ARKit, and Vision signals become speech, haptics, and VoiceOver-first guidance</desc>
+  <rect width="1376" height="768" fill="#020617"/>
+  <rect x="32" y="32" width="1312" height="704" rx="28" fill="#07111f" stroke="#1f2937"/>
+  <circle cx="1170" cy="134" r="132" fill="#60a5fa" opacity="0.12"/>
+  <circle cx="196" cy="646" r="164" fill="#60a5fa" opacity="0.08"/>
+  <text x="72" y="118" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="800" fill="#f8fafc">Visual Assist On-Device Flow</text>
+  <text x="72" y="166" font-family="Inter, Arial, sans-serif" font-size="22" fill="#94a3b8">LiDAR, ARKit, and Vision signals become speech, haptics, and VoiceOver-first guidance</text>
+  <line x1="72" y1="206" x2="1304" y2="206" stroke="#1f2937"/>
+  
+        <g>
+          <rect x="72" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
+          <text x="202" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#60a5fa" font-weight="700">STEP 1</text>
+          
+            <rect x="96" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="201" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">LiDAR</text>
+          
+            <rect x="96" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="201" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">ARKit</text>
+          
+            <rect x="96" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="201" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Depth signals</text>
+          
+          <path d="M 332 406 C 372 406, 374 406, 387 406" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 387 406 l -14 -8 l 0 16 z" fill="#60a5fa"/>
+        </g>
+      
+        <g>
+          <rect x="387" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
+          <text x="517" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#60a5fa" font-weight="700">STEP 2</text>
+          
+            <rect x="411" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="516" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Vision OCR</text>
+          
+            <rect x="411" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="516" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Human rectangles</text>
+          
+            <rect x="411" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="516" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Animal recognition</text>
+          
+          <path d="M 647 406 C 687 406, 689 406, 702 406" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 702 406 l -14 -8 l 0 16 z" fill="#60a5fa"/>
+        </g>
+      
+        <g>
+          <rect x="702" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
+          <text x="832" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#60a5fa" font-weight="700">STEP 3</text>
+          
+            <rect x="726" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="831" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Speech</text>
+          
+            <rect x="726" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="831" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Haptics</text>
+          
+            <rect x="726" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="831" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Voice commands</text>
+          
+          <path d="M 962 406 C 1002 406, 1004 406, 1017 406" stroke="#60a5fa" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 1017 406 l -14 -8 l 0 16 z" fill="#60a5fa"/>
+        </g>
+      
+        <g>
+          <rect x="1017" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
+          <text x="1147" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#60a5fa" font-weight="700">STEP 4</text>
+          
+            <rect x="1041" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="1146" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">SwiftUI</text>
+          
+            <rect x="1041" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="1146" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">VoiceOver</text>
+          
+            <rect x="1041" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#60a5fa" stroke-opacity="0.42"/>
+            <text x="1146" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Accessible modes</text>
+          
+          
+        </g>
+      
+  <text x="72" y="672" font-family="Inter, Arial, sans-serif" font-size="18" fill="#94a3b8">Portfolio proof asset: architecture diagram generated from audited repository evidence, not a product screenshot.</text>
+</svg>
