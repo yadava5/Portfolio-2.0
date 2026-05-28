@@ -34,7 +34,13 @@ export interface CaseStudyEvidence {
 }
 
 export interface CaseStudyArtifact {
-  type: "representative-visual" | "diagram" | "benchmark" | "repo" | "demo";
+  type:
+    | "real-screenshot"
+    | "representative-visual"
+    | "diagram"
+    | "benchmark"
+    | "repo"
+    | "demo";
   label: string;
   href: string;
 }
@@ -323,8 +329,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Private-safe experiment registry screenshot",
         href: withBasePath("/images/projects/automl.png"),
       },
     ],
@@ -542,8 +548,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Local mock-login calendar screenshot",
         href: withBasePath("/images/projects/taskflow.png"),
       },
       {
@@ -922,8 +928,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Local React workbench screenshot",
         href: withBasePath("/images/projects/mnist.png"),
       },
       {

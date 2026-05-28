@@ -134,11 +134,11 @@ export const projects: Project[] = [
     githubUrl: null,
     liveUrl: null,
     image: withBasePath("/images/projects/automl.png"),
-    imageKind: "representative-visual",
+    imageKind: "real-screenshot",
     imageAlt:
-      "Representative ML workflow visual for the Agentic AutoML Platform",
+      "Private-safe Agentic AutoML experiment registry screenshot with demo data",
     imageDisclosure:
-      "Representative portfolio visual; GitHub repository ai-augmented-auto-ml-toolchain is private, so no public source link is shown.",
+      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
@@ -211,11 +211,10 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/taskflow-calendar",
     liveUrl: null,
     image: withBasePath("/images/projects/taskflow.png"),
-    imageKind: "representative-visual",
-    imageAlt:
-      "Representative calendar planning interface visual for the Dynamic Calendar Application",
+    imageKind: "real-screenshot",
+    imageAlt: "Real Taskflow local demo calendar screenshot",
     imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
+      "Real local frontend screenshot captured with the repository mock-login flow and demo user state.",
     featured: true,
     category: "full-stack",
     startDate: "2023-09",
@@ -249,10 +248,10 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/fast-mnist-nn",
     liveUrl: null,
     image: withBasePath("/images/projects/mnist.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative neural network benchmark visual for Fast MNIST",
+    imageKind: "real-screenshot",
+    imageAlt: "Real Fast MNIST React workbench screenshot",
     imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
+      "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
     featured: false,
     category: "ai-ml",
     startDate: "2025-10",
@@ -359,10 +358,11 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/paid-internships-advocacy",
     liveUrl: "https://yadava5.github.io/paid-internships-advocacy",
     image: withBasePath("/images/projects/advocacy.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative advocacy website visual for Paid Internships",
+    imageKind: "real-screenshot",
+    imageAlt:
+      "Real Paid Internships Advocacy data visualization page screenshot",
     imageDisclosure:
-      "Representative portfolio visual; public source and live site are linked where available.",
+      "Real screenshot from the public advocacy site data page with cited research charts.",
     featured: false,
     category: "other",
     startDate: "2025-01",
