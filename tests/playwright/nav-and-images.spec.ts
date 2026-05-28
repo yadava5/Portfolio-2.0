@@ -5,6 +5,7 @@ import {
   CASE_STUDY_PROJECT_TITLES,
   COMPANY_LOGOS,
   DEFAULT_THEME,
+  FEATURED_PROJECT_VISUALS,
   FEATURED_PROJECTS,
   NAV_SECTIONS,
   PUBLIC_PROJECT_IMAGES,
@@ -68,9 +69,18 @@ test.describe("Project Visual Disclosures", () => {
       await switchThemeAndWait(page, theme);
       await scrollThroughPage(page);
 
-      await expect(
-        page.getByText(/Representative visual:/).first()
-      ).toBeVisible();
+      for (const project of FEATURED_PROJECT_VISUALS) {
+        const disclosure = page
+          .locator("p")
+          .filter({ hasText: project.disclosureLabel })
+          .filter({ hasText: project.disclosure })
+          .first();
+
+        await expect(
+          disclosure,
+          `${project.title} should disclose ${project.imageKind}`
+        ).toBeVisible();
+      }
     });
   }
 });
