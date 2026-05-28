@@ -42,9 +42,9 @@ const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
 const proofMetrics = [
   {
     icon: Database,
-    value: "1M+",
-    label: "Rows processed",
-    detail: "Python and SQL pipelines for operational datasets",
+    value: "1.9M+",
+    label: "Tableau summary rows",
+    detail: "Private OAS/Tableau data workflow proof",
   },
   {
     icon: Workflow,
@@ -53,16 +53,16 @@ const proofMetrics = [
     detail: "Dynamic Calendar frontend, backend, and integration proof",
   },
   {
-    icon: Mail,
-    value: "500+",
-    label: "Emails/month",
-    detail: "Local classification volume in JobTracker",
+    icon: Accessibility,
+    value: "71",
+    label: "iOS tests",
+    detail: "Visual Assist model and utility coverage",
   },
   {
     icon: FileText,
-    value: "50+ docs",
-    label: "Policy sources",
-    detail: "Institutional documents indexed for cited retrieval",
+    value: "19/20",
+    label: "Policy validation",
+    detail: "PolicyBot structured validation sweep",
   },
 ];
 
@@ -184,8 +184,9 @@ export function TechnicalOperationsAtlas() {
               <span className="hidden sm:inline">
                 Senior CS student focused on data pipelines, applied ML,
                 full-stack systems, performance work, and accessible native
-                products. Current work processes 1M+ operational rows into
-                trusted datasets and dashboards.
+                products. Current work turns operational records, Tableau
+                metadata, and ML workflows into trusted datasets, dashboards,
+                and validated product surfaces.
               </span>
             </p>
             <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
@@ -213,10 +214,10 @@ export function TechnicalOperationsAtlas() {
                   JobTracker
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  500+ emails/month
+                  Local ML
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  Local ML classification for job-search signals.
+                  Three-layer classifier for private job-search email signals.
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
@@ -224,7 +225,7 @@ export function TechnicalOperationsAtlas() {
                   Visual Assist
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  68 tests
+                  71 tests
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
                   Unit coverage for iOS accessibility models and utilities.
@@ -235,10 +236,10 @@ export function TechnicalOperationsAtlas() {
                   PolicyBot
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  50+ docs
+                  19/20
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  Institutional policy retrieval with cited sources.
+                  Structured validation sweep with cited-source checks.
                 </p>
               </div>
             </div>

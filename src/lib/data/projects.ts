@@ -80,7 +80,7 @@ export const projects: Project[] = [
     id: "jobtracker",
     title: "JobTracker",
     shortDescription:
-      "Native macOS app processing 500+ emails/month with on-device ML to replace my manual job-search tracking workflow.",
+      "Native macOS app for local job-search email classification with on-device ML and a trackable application pipeline.",
     fullDescription:
       "An email-powered job application tracker that syncs your Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a trackable pipeline with a beautiful Liquid Glass dashboard.",
     techStack: [
@@ -104,9 +104,9 @@ export const projects: Project[] = [
     endDate: "Present",
     highlights: [
       "Privacy-first: all ML processing happens locally on-device",
-      "3-layer hybrid classifier (rules → embeddings → SetFit)",
+      "3-layer hybrid classifier (rules -> embeddings -> SetFit)",
       "Gmail OAuth2 & iCloud IMAP async integration",
-      "Native macOS 15+ Liquid Glass UI with SF Symbols 7",
+      "Native macOS SwiftUI dashboard",
       "Background sync via SMAppService + launchd",
     ],
     isPrivate: false,
@@ -160,14 +160,14 @@ export const projects: Project[] = [
     id: "visual-assist",
     title: "Visual Assist",
     shortDescription:
-      "Privacy-first iOS accessibility app using LiDAR, Vision, Core ML, haptics, and voice guidance.",
+      "Privacy-first iOS accessibility app using LiDAR, Vision, haptics, and voice guidance.",
     fullDescription:
-      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, and Core ML for on-device processing with complete privacy.",
+      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, haptics, speech, and VoiceOver-first SwiftUI flows for local processing.",
     techStack: [
       { name: "Swift", color: "#fa7343" },
       { name: "SwiftUI", color: "#0071e3" },
       { name: "ARKit", color: "#000000" },
-      { name: "Core ML", color: "#34c759" },
+      { name: "Core Haptics", color: "#34c759" },
       { name: "Vision", color: "#5856d6" },
     ],
     githubUrl: "https://github.com/yadava5/VisualAssist",
@@ -179,14 +179,14 @@ export const projects: Project[] = [
       "Representative portfolio visual; public repository details provide inspection context.",
     featured: true,
     category: "mobile",
-    startDate: "2026-01",
+    startDate: "2025-03",
     endDate: "Present",
     highlights: [
       "LiDAR obstacle detection with haptic feedback",
       "Vision OCR with speech synthesis for text reading",
-      "On-device Core ML for privacy-first processing",
+      "On-device Vision workflows for privacy-first processing",
       "VoiceOver-first accessibility with voice commands",
-      "68 unit tests for models and utilities",
+      "71 unit tests for models and utilities",
     ],
     isPrivate: false,
     metrics: [
@@ -218,8 +218,8 @@ export const projects: Project[] = [
       "Representative portfolio visual; source code is linked for public inspection.",
     featured: true,
     category: "full-stack",
-    startDate: "2023-12",
-    endDate: "2023-12",
+    startDate: "2023-09",
+    endDate: "2025-05",
     highlights: [
       "NLP smart input with chrono-node and compromise",
       "738 automated tests (frontend/backend/integration)",
@@ -236,7 +236,7 @@ export const projects: Project[] = [
     id: "fast-mnist-nn",
     title: "Fast MNIST Neural Network",
     shortDescription:
-      "SIMD-accelerated C++ neural network: 97%+ accuracy, 5x faster inference with AVX-512 optimization.",
+      "C++ neural network for MNIST: 97%+ accuracy, benchmarked SIMD/OpenMP kernels, and an interactive React workbench.",
     fullDescription:
       "A high-performance C++ neural network for MNIST digit recognition featuring SIMD-accelerated matrix operations and OpenMP parallelization, with an interactive React web frontend.",
     techStack: [
@@ -266,20 +266,19 @@ export const projects: Project[] = [
     isPrivate: false,
     metrics: [
       { label: "Accuracy", value: "97%+ on MNIST" },
-      { label: "Speedup", value: "5x with AVX-512 SIMD" },
+      { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
     ],
   },
   {
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
-      "Python/SQL pipeline processing 1M+ operational rows/datasets, reducing manual reconciliation effort.",
+      "Python/pandas pipeline consolidating Tableau Cloud metadata and Workday exports into a private-safe master inventory.",
     fullDescription:
       "Proprietary pipeline consolidating Tableau Cloud metadata and Workday report exports into a unified master inventory for Tableau Prep and dashboards.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "pandas", color: "#150458" },
-      { name: "SQL", color: "#f29111" },
       { name: "Tableau", color: "#e97627" },
     ],
     githubUrl: null,
@@ -295,14 +294,14 @@ export const projects: Project[] = [
     startDate: "2025-06",
     endDate: "Present",
     highlights: [
-      "Processes 1M+ rows of operational data",
+      "Consolidates Tableau and Workday inventory records",
       "Unified schema with deterministic inventory IDs",
       "Tableau REST API integration",
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
     metrics: [
-      { label: "Data Volume", value: "1M+ operational rows" },
+      { label: "Inventory", value: "16.7k consolidated records" },
       { label: "Impact", value: "Reduced manual reconciliation effort" },
     ],
   },
@@ -310,7 +309,7 @@ export const projects: Project[] = [
     id: "policybot",
     title: "PolicyBot",
     shortDescription:
-      "RAG-powered policy chatbot on Slack: answers queries with cited sources from 50+ institutional documents.",
+      "RAG-powered policy chatbot on Slack that answers supported queries with cited sources and quote validation.",
     fullDescription:
       "A policy support chatbot that helps users interpret and apply Miami University data policies using OpenAI's Responses API with File Search and Slack Socket Mode integration.",
     techStack: [
@@ -339,7 +338,7 @@ export const projects: Project[] = [
     ],
     isPrivate: true,
     metrics: [
-      { label: "Knowledge Base", value: "50+ institutional documents" },
+      { label: "Validation", value: "19/20 structured sweep" },
       { label: "Tech", value: "OpenAI RAG + Slack integration" },
     ],
   },
@@ -347,7 +346,7 @@ export const projects: Project[] = [
     id: "paid-internships",
     title: "Paid Internships Advocacy",
     shortDescription:
-      "Research-backed advocacy site with 3D scroll effects, peer-reviewed sources, and interactive data visualizations.",
+      "Research-backed advocacy site with 3D scroll effects, cited sources, and interactive data visualizations.",
     fullDescription:
       "An advocacy website promoting fair compensation for student internships, featuring immersive design, 3D scroll effects, and research-backed Chart.js visualizations.",
     techStack: [

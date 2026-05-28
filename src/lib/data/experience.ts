@@ -52,7 +52,7 @@ export const experiences: Experience[] = [
     startDate: "2025-06",
     endDate: "Present",
     description: [
-      "Built scalable Python and SQL pipelines to clean and transform over 1 million rows of raw data, creating a reliable foundation for cross-departmental reporting.",
+      "Built scalable Python and SQL data workflows for OAS/Tableau reporting, including high-volume transforms over 1 million raw records.",
       "Designed and deployed interactive Tableau dashboards used across multiple university departments for data-driven decision making.",
       "Analyzed IT service management data to uncover trends and KPIs, presenting findings that informed strategic decisions.",
       "Developed an AI-powered Slack chatbot integrated with Workday, Oracle Analytics Server, and Tableau APIs for governed data access.",
@@ -69,7 +69,7 @@ export const experiences: Experience[] = [
       "OpenAI",
     ],
     achievements: [
-      "Processed 1M+ rows of operational data into trusted datasets",
+      "Built OAS/Tableau data workflow over 1M+ operational records",
       "Built usage analytics pipeline for Oracle Analytics Server",
       "Created AI policy-support chatbot reducing documentation lookup time",
       "Integrated Slack workflow bot with Workday and Tableau APIs",

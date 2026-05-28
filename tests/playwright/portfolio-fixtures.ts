@@ -94,18 +94,17 @@ export const EXPECTED_LINKS = {
 };
 
 export const ATLAS_ALLOWED_METRICS = [
-  "1M+",
+  "1.9M+",
   "738",
   "97%+",
-  "5x",
-  "500+ emails/month",
-  "68 tests",
-  "50+ docs",
+  "3.5x",
+  "71 tests",
+  "19/20",
 ];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
 
-export const RECRUITER_HERO_METRICS = ["1M+", "738", "500+", "50+ docs"];
+export const RECRUITER_HERO_METRICS = ["1.9M+", "738", "71", "19/20"];
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [
   "automl",
@@ -138,6 +137,17 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "500+ views in launch month",
   "Production full-stack calendar",
   "production ML pipelines",
+  "5x faster inference",
+  "5x with AVX-512 SIMD",
+  "68 unit tests",
+  "68 tests",
+  "50+ institutional documents",
+  "50+ docs",
+  "processing 500+ emails/month",
+  "500+ emails/month",
+  "macOS 15+ Liquid Glass UI",
+  "Python/SQL pipeline processing 1M+",
+  "Processes 1M+ rows of operational data",
 ];
 
 export async function isMobileViewport(page: Page) {
