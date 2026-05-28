@@ -15,7 +15,8 @@
     "test:e2e:full": "NEXT_PUBLIC_BASE_PATH= next build --webpack && playwright test",
     "test:e2e:artifacts": "playwright test tests/playwright/themes.spec.ts tests/playwright/full-audit.spec.ts tests/playwright/visual-audit.spec.ts tests/playwright/visual-regression.spec.ts tests/playwright/critique-screenshots.spec.ts tests/playwright/record-walkthroughs.spec.ts tests/playwright/debug-audit.spec.ts",
     "test:e2e:ui": "playwright test --ui",
-    "test:visual": "playwright test --update-snapshots"
+    "test:visual": "playwright test --update-snapshots",
+    "assets:promote-proof": "node scripts/asset-truth/promote-proof-assets.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
