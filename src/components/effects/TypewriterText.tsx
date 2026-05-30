@@ -62,7 +62,7 @@ export function TypewriterText({
       clearTimeout(timer);
       if (interval) clearInterval(interval);
     };
-  }, [text, isVisible, delay]);
+  }, [text, isVisible, delay, immediate]);
 
   return (
     <span ref={containerRef} className={className}>
