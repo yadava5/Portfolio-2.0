@@ -180,7 +180,7 @@ export function Hero() {
       >
         <GlitchBurst className="mb-6">
           <h1
-            className="max-w-full bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00] bg-clip-text text-5xl font-bold tracking-tighter break-words text-transparent uppercase sm:text-6xl md:text-8xl"
+            className="max-w-full bg-gradient-to-b from-[#00ffff] via-[#ff7af5] to-[#ffff00] bg-clip-text text-5xl font-bold tracking-normal break-words text-transparent uppercase sm:text-6xl md:text-8xl md:tracking-tighter"
             style={{
               fontFamily: "var(--font-display)",
               filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))",

@@ -259,7 +259,7 @@ export function Contact() {
         <GlitchBurst className="w-full">
           <NeonBorder
             color="cyan"
-            className="flex flex-col items-center justify-between gap-8 bg-black/60 p-8 md:flex-row md:p-12"
+            className="flex flex-col items-center justify-between gap-8 bg-black/70 p-6 md:flex-row md:p-12"
           >
             <div className="flex flex-col items-center gap-6 md:items-start">
               <div className="flex items-center gap-4 font-bold text-white">
@@ -268,7 +268,7 @@ export function Contact() {
                 </div>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-xl tracking-wider uppercase transition-colors hover:text-[#00ffff]"
+                  className="max-w-[16rem] text-base tracking-wide break-all uppercase transition-colors hover:text-[#00ffff] sm:max-w-none md:text-xl md:tracking-wider"
                   style={{ textShadow: "0 0 5px rgba(255,255,255,0.5)" }}
                 >
                   {personalInfo.email}
