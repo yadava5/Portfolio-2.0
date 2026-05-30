@@ -272,18 +272,16 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
       // ========== SECTION 15: IMAGES WITH LOADING ==========
       const images = await page.locator("img").all();
       for (const img of images) {
+        // Responsive themes can keep alternate mobile/desktop copies in the DOM.
+        // Hidden copies are validated by source-image checks above.
+        if (!(await img.isVisible())) continue;
+
         const alt = await img.getAttribute("alt");
         if (!alt || alt.trim() === "") {
           const src = await img.getAttribute("src");
           if (!src?.includes("data:")) {
             warnings.push(`[${theme.name}] Image without alt text: ${src}`);
           }
-        }
-        // Check if image is visible (loaded)
-        const visible = await img.isVisible();
-        if (!visible) {
-          const src = await img.getAttribute("src");
-          warnings.push(`[${theme.name}] Image not visible: ${src}`);
         }
       }
 

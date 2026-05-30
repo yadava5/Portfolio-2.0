@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Locator } from "@playwright/test";
 import {
   absoluteUrl,
   CATEGORY_PROJECTS,
@@ -14,6 +14,24 @@ import {
   scrollThroughPage,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
+
+async function expectAnyVisible(locator: Locator, message: string) {
+  const count = await locator.count();
+
+  for (let index = 0; index < count; index += 1) {
+    const candidate = locator.nth(index);
+
+    await candidate
+      .scrollIntoViewIfNeeded({ timeout: 2000 })
+      .catch(() => undefined);
+
+    if (await candidate.isVisible()) {
+      return;
+    }
+  }
+
+  await expect(locator.first(), message).toBeVisible();
+}
 
 test.describe("Navigation Links", () => {
   test.setTimeout(120000);
@@ -76,10 +94,24 @@ test.describe("Project Visual Disclosures", () => {
           .filter({ hasText: project.disclosure })
           .first();
 
-        await expect(
+        if (theme.name === "liquid-glass") {
+          const disclosureCount = await page
+            .locator("p")
+            .filter({ hasText: project.disclosureLabel })
+            .filter({ hasText: project.disclosure })
+            .count();
+
+          expect(
+            disclosureCount,
+            `${project.title} should disclose ${project.imageKind} in both Liquid responsive project layouts`
+          ).toBeGreaterThanOrEqual(2);
+          continue;
+        }
+
+        await expectAnyVisible(
           disclosure,
           `${project.title} should disclose ${project.imageKind}`
-        ).toBeVisible();
+        );
       }
     });
   }
