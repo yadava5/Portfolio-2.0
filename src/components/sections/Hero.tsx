@@ -99,7 +99,7 @@ export function Hero() {
       >
         <TextReveal className="mb-6">
           <h1
-            className="max-w-full text-5xl font-bold tracking-wide break-words text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] sm:text-6xl md:text-8xl md:tracking-widest"
+            className="max-w-full rounded-2xl bg-black/15 px-3 py-2 text-5xl font-bold tracking-wide break-words text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] sm:text-6xl md:text-8xl md:tracking-widest"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {personalInfo.name.split("").map((char, i) => (
@@ -216,7 +216,7 @@ export function Hero() {
         className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center font-serif"
       >
         <FloatingEntry className="mb-6">
-          <h1 className="max-w-full text-5xl font-medium tracking-wide break-words text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)] sm:text-6xl md:text-8xl">
+          <h1 className="max-w-full rounded-2xl bg-black/15 px-3 py-2 text-5xl font-medium tracking-wide break-words text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)] sm:text-6xl md:text-8xl">
             {personalInfo.name}
           </h1>
         </FloatingEntry>
