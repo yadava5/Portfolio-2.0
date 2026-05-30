@@ -30,6 +30,8 @@ Runs every Playwright spec, including slower deep QA and artifact-producing visu
 
 ```bash
 npm run test:e2e:artifacts
+npm run test:e2e:videos
+npm run test:e2e:score
 ```
 
 Artifact suites are manual QA tools for screenshots, reports, videos, visual comparisons, and walkthrough captures. Their outputs belong under:
@@ -46,6 +48,10 @@ output/playwright/
 ```
 
 Do not restore old generated files under `tests/playwright/screenshots/`, `tests/playwright/videos/`, or `tests/playwright/*.json` unless a specific artifact is being promoted as durable documentation.
+
+The artifact, video, and score commands build the static export before opening the browser. This prevents stale `out/` files from making a visual pass look current when the source has changed.
+
+Use `npm run test:e2e:videos` for focused responsive walkthrough recordings, and `npm run test:e2e:score` for the 10-point desktop/mobile quality gate across every theme.
 
 ## Debugging
 
