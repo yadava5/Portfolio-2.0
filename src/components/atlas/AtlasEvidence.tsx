@@ -74,7 +74,7 @@ interface ActionLinkProps {
 export function ActionLink({ href, label, primary = false }: ActionLinkProps) {
   const isExternal = href.startsWith("http") || href.startsWith("mailto:");
 
-  const className = `inline-flex min-h-11 items-center justify-center gap-2 rounded border px-4 text-sm font-semibold transition ${
+  const className = `inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded border px-4 text-center text-sm font-semibold whitespace-normal transition ${
     primary
       ? "border-amber-400 bg-amber-400 text-zinc-950 hover:bg-amber-300"
       : "border-zinc-700 bg-zinc-950/70 text-zinc-100 hover:border-zinc-400 hover:bg-zinc-900"
@@ -88,16 +88,16 @@ export function ActionLink({ href, label, primary = false }: ActionLinkProps) {
         rel="noopener noreferrer"
         className={className}
       >
-        {label}
-        <ArrowUpRight size={16} aria-hidden="true" />
+        <span className="min-w-0 break-all">{label}</span>
+        <ArrowUpRight className="shrink-0" size={16} aria-hidden="true" />
       </a>
     );
   }
 
   return (
     <a href={href} className={className}>
-      {label}
-      <ArrowUpRight size={16} aria-hidden="true" />
+      <span className="min-w-0 break-all">{label}</span>
+      <ArrowUpRight className="shrink-0" size={16} aria-hidden="true" />
     </a>
   );
 }
@@ -156,19 +156,23 @@ interface ProjectEvidenceCardProps {
   project: Project;
   study?: ProjectCaseStudy;
   index: number;
+  className?: string;
 }
 
 export function ProjectEvidenceCard({
   project,
   study,
   index,
+  className = "",
 }: ProjectEvidenceCardProps) {
   const metrics = project.metrics ?? [];
   const hasCaseStudy = Boolean(study);
 
   return (
-    <article className="group grid overflow-hidden rounded border border-zinc-800 bg-zinc-950/75 transition hover:border-amber-400/50 md:grid-cols-[0.9fr_1.1fr]">
-      <div className="relative min-h-[220px] border-b border-zinc-800 bg-zinc-900 md:border-r md:border-b-0">
+    <article
+      className={`group grid overflow-hidden rounded border border-zinc-800 bg-zinc-950/75 transition hover:border-amber-400/50 md:grid-cols-[0.9fr_1.1fr] ${className}`}
+    >
+      <div className="relative min-h-[180px] border-b border-zinc-800 bg-zinc-900 sm:min-h-[220px] md:border-r md:border-b-0">
         {project.image ? (
           <Image
             src={project.image}
@@ -185,13 +189,13 @@ export function ProjectEvidenceCard({
           {project.imageDisclosure}
         </div>
       </div>
-      <div className="flex flex-col p-5 md:p-6">
+      <div className="flex flex-col p-4 md:p-6">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">
               {project.category.replace("-", " ")}
             </p>
-            <h3 className="mt-2 text-2xl font-semibold text-zinc-50">
+            <h3 className="mt-2 text-xl font-semibold text-zinc-50 md:text-2xl">
               {project.title}
             </h3>
           </div>

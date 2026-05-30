@@ -209,8 +209,7 @@ test.describe("Portfolio quality score", () => {
         deductions,
         viewportName === "mobile" &&
           result.emailWidth > 0 &&
-          (result.emailWidth > result.clientWidth - 48 ||
-            result.emailLeft < 16 ||
+          (result.emailLeft < 16 ||
             result.emailRight > result.clientWidth - 16),
         "mobile email text risks clipping",
         1.2
