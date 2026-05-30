@@ -10,16 +10,27 @@ interface TypewriterTextProps {
   text: string;
   className?: string;
   delay?: number;
+  immediate?: boolean;
 }
 
 export function TypewriterText({
   text,
   className = "",
   delay = 0,
+  immediate = false,
 }: TypewriterTextProps) {
-  const [displayedText, setDisplayedText] = useState("");
+  const [displayedText, setDisplayedText] = useState(() =>
+    immediate ? text : ""
+  );
   const containerRef = useRef<HTMLSpanElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(immediate);
+
+  useEffect(() => {
+    if (immediate) {
+      setDisplayedText(text);
+      setIsVisible(true);
+    }
+  }, [immediate, text]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -35,7 +46,7 @@ export function TypewriterText({
   }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || immediate) return;
 
     let i = 0;
     let interval: ReturnType<typeof setInterval> | undefined;

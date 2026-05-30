@@ -34,16 +34,27 @@ test.describe("Portfolio quality score", () => {
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await switchThemeAndWait(page, theme);
 
-      const earlyRetroTypedText =
-        theme.name === "retro-terminal"
-          ? await page.evaluate(() =>
-              Array.from(
-                document.querySelectorAll<HTMLElement>('[aria-hidden="true"]')
-              )
-                .map((element) => element.innerText)
-                .join(" ")
-            )
-          : "";
+      let earlyRetroTypedText = "";
+      if (theme.name === "retro-terminal") {
+        const retroIdentity = page.locator("#hero h1 [aria-hidden='true']");
+        await retroIdentity.waitFor({ state: "attached", timeout: 10000 });
+        try {
+          await page.waitForFunction(
+            () =>
+              document
+                .querySelector("#hero h1 [aria-hidden='true']")
+                ?.textContent?.toUpperCase()
+                .includes("AYUSH"),
+            undefined,
+            { timeout: 500 }
+          );
+        } catch {
+          // The score deduction below records this as delayed identity text.
+        }
+        earlyRetroTypedText = await retroIdentity.evaluate(
+          (element) => element.textContent ?? ""
+        );
+      }
 
       await page.waitForTimeout(900);
 

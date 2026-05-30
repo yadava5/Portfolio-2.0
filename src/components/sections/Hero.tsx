@@ -140,7 +140,8 @@ export function Hero() {
           <h1 className="mb-6 max-w-full text-2xl font-bold tracking-tight break-words md:text-5xl">
             <TypewriterText
               text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`}
-              delay={500}
+              delay={0}
+              immediate
             />
           </h1>
         </div>
@@ -153,7 +154,7 @@ export function Hero() {
           <div className="mb-4 max-w-full text-xl break-words text-[#ffb000] md:text-2xl">
             <TypewriterText
               text={personalInfo.title.toUpperCase()}
-              delay={1500}
+              delay={400}
             />
           </div>
         </div>
@@ -164,7 +165,7 @@ export function Hero() {
             <span className="text-blue-400">~</span>$ cat status.log
           </p>
           <div className="max-w-2xl text-base leading-relaxed opacity-90 md:text-lg">
-            <TypewriterText text={personalInfo.tagline} delay={2500} />
+            <TypewriterText text={personalInfo.tagline} delay={900} />
           </div>
         </div>
       </section>
