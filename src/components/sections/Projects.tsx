@@ -43,6 +43,81 @@ function ProjectVisualDisclosure({ project }: { project: Project }) {
   );
 }
 
+function LiquidFeaturedProjectCard({
+  project,
+  idx,
+  className,
+}: {
+  project: Project;
+  idx: number;
+  className: string;
+}) {
+  return (
+    <div key={project.id} className={className}>
+      <TextReveal className={`delay-[${idx * 100}ms] h-full`}>
+        <GlassCard className="group flex h-full flex-col overflow-hidden p-0 lg:flex-row">
+          <div className="flex w-full flex-col justify-center p-8 md:p-12 lg:w-1/2">
+            <p className="mb-4 text-sm font-medium tracking-widest text-indigo-400 uppercase">
+              {project.category}
+            </p>
+            <h3 className="mb-6 text-4xl font-bold text-white">
+              {project.title}
+            </h3>
+            <p className="mb-8 text-lg leading-relaxed text-white/70">
+              {project.shortDescription}
+            </p>
+            <div className="mb-10 flex flex-wrap gap-2">
+              {project.techStack.map((tech) => (
+                <span
+                  key={tech.name}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80"
+                >
+                  {tech.name}
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-4">
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${project.title} source code`}
+                  className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 font-medium text-white transition-colors hover:bg-white/20"
+                >
+                  <Github size={18} /> Code
+                </a>
+              )}
+              {project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${project.title} live demo`}
+                  className="flex items-center gap-2 rounded-full bg-indigo-500/80 px-6 py-3 font-medium text-white transition-colors hover:bg-indigo-500"
+                >
+                  <ExternalLink size={18} /> Live Demo
+                </a>
+              )}
+            </div>
+          </div>
+          <div className="relative min-h-[320px] w-full overflow-hidden bg-black/20 md:min-h-[400px] lg:min-h-full lg:w-1/2">
+            {project.image && (
+              <Image
+                src={project.image}
+                alt={project.imageAlt}
+                fill
+                className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
+              />
+            )}
+            <ProjectVisualDisclosure project={project} />
+          </div>
+        </GlassCard>
+      </TextReveal>
+    </div>
+  );
+}
+
 export function Projects() {
   const { theme } = useTheme();
   const featured = getFeaturedProjects();
@@ -59,75 +134,29 @@ export function Projects() {
           </TextReveal>
         </div>
 
-        <HorizontalScrollWrapper className="mb-32 w-full">
+        <div className="mx-auto mb-24 flex max-w-3xl flex-col gap-8 px-4 md:hidden">
           {featured.map((project, idx) => (
-            <div
+            <LiquidFeaturedProjectCard
               key={project.id}
-              className="w-[90vw] flex-shrink-0 md:w-[800px] lg:w-[1000px]"
-            >
-              <TextReveal className={`delay-[${idx * 100}ms] h-full`}>
-                <GlassCard className="group flex h-full flex-col overflow-hidden p-0 lg:flex-row">
-                  <div className="flex w-full flex-col justify-center p-8 md:p-12 lg:w-1/2">
-                    <p className="mb-4 text-sm font-medium tracking-widest text-indigo-400 uppercase">
-                      {project.category}
-                    </p>
-                    <h3 className="mb-6 text-4xl font-bold text-white">
-                      {project.title}
-                    </h3>
-                    <p className="mb-8 text-lg leading-relaxed text-white/70">
-                      {project.shortDescription}
-                    </p>
-                    <div className="mb-10 flex flex-wrap gap-2">
-                      {project.techStack.map((tech) => (
-                        <span
-                          key={tech.name}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/80"
-                        >
-                          {tech.name}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex gap-4">
-                      {project.githubUrl && (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`${project.title} source code`}
-                          className="flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 font-medium text-white transition-colors hover:bg-white/20"
-                        >
-                          <Github size={18} /> Code
-                        </a>
-                      )}
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={`${project.title} live demo`}
-                          className="flex items-center gap-2 rounded-full bg-indigo-500/80 px-6 py-3 font-medium text-white transition-colors hover:bg-indigo-500"
-                        >
-                          <ExternalLink size={18} /> Live Demo
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                  <div className="relative min-h-[400px] w-full overflow-hidden bg-black/20 lg:min-h-full lg:w-1/2">
-                    {project.image && (
-                      <Image
-                        src={project.image}
-                        alt={project.imageAlt}
-                        fill
-                        className="object-cover opacity-80 transition-opacity duration-500 group-hover:scale-105 group-hover:opacity-100"
-                      />
-                    )}
-                    <ProjectVisualDisclosure project={project} />
-                  </div>
-                </GlassCard>
-              </TextReveal>
-            </div>
+              project={project}
+              idx={idx}
+              className="w-full"
+            />
           ))}
-        </HorizontalScrollWrapper>
+        </div>
+
+        <div className="hidden md:block">
+          <HorizontalScrollWrapper className="mb-32 w-full">
+            {featured.map((project, idx) => (
+              <LiquidFeaturedProjectCard
+                key={project.id}
+                project={project}
+                idx={idx}
+                className="w-[88vw] flex-shrink-0 md:w-[720px] lg:w-[860px]"
+              />
+            ))}
+          </HorizontalScrollWrapper>
+        </div>
 
         <div className="mx-auto max-w-6xl px-4 pb-32 md:px-8">
           <TextReveal className="mb-16 text-center">

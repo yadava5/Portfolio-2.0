@@ -42,13 +42,13 @@ export function Contact() {
         </TextReveal>
 
         <TextReveal className="w-full">
-          <GlassCard className="flex flex-col items-center justify-between gap-8 p-8 md:flex-row md:p-12">
+          <GlassCard className="flex flex-col items-center justify-between gap-8 p-6 text-left md:flex-row md:p-12">
             <div className="flex flex-col items-center gap-4 md:items-start">
               <div className="flex items-center gap-3 text-white/80">
                 <Mail className="text-indigo-400" size={24} />
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-xl transition-colors hover:text-white"
+                  className="text-lg break-all transition-colors hover:text-white md:text-xl"
                 >
                   {personalInfo.email}
                 </a>

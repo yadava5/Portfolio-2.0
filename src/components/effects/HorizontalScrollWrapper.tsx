@@ -56,11 +56,14 @@ export function HorizontalScrollWrapper({
   }, []);
 
   const scrollHeight =
-    maxTranslate < 0 ? `calc(100vh + ${Math.abs(maxTranslate)}px)` : "100vh";
+    maxTranslate < 0
+      ? `calc(100vh + ${Math.min(Math.abs(maxTranslate), 650)}px)`
+      : "100vh";
 
   return (
     <section
       ref={targetRef}
+      data-horizontal-scroll-wrapper="true"
       className={`relative ${className}`}
       style={{ height: scrollHeight }}
     >

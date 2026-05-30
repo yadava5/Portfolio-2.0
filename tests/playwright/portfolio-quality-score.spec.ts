@@ -68,6 +68,11 @@ test.describe("Portfolio quality score", () => {
         const headerRect = fixedHeader?.getBoundingClientRect();
         const projects = document.getElementById("projects");
         const projectsRect = projects?.getBoundingClientRect();
+        const horizontalScrollWrapper = document.querySelector<HTMLElement>(
+          '[data-horizontal-scroll-wrapper="true"]'
+        );
+        const horizontalScrollWrapperRect =
+          horizontalScrollWrapper?.getBoundingClientRect();
         const email =
           document.querySelector<HTMLAnchorElement>('a[href^="mailto:"]');
         const emailRect = email?.getBoundingClientRect();
@@ -107,6 +112,9 @@ test.describe("Portfolio quality score", () => {
           clientHeight: document.documentElement.clientHeight,
           sections,
           projectsHeight: projectsRect ? Math.round(projectsRect.height) : 0,
+          horizontalScrollWrapperHeight: horizontalScrollWrapperRect
+            ? Math.round(horizontalScrollWrapperRect.height)
+            : 0,
           headerHeight: headerRect ? Math.round(headerRect.height) : 0,
           emailWidth: emailRect ? Math.round(emailRect.width) : 0,
           emailLeft: emailRect ? Math.round(emailRect.left) : 0,
@@ -161,7 +169,7 @@ test.describe("Portfolio quality score", () => {
       deduct(
         deductions,
         theme.name === "liquid-glass" &&
-          result.projectsHeight >
+          result.horizontalScrollWrapperHeight >
             result.clientHeight * (viewportName === "mobile" ? 4.2 : 3.2),
         "liquid glass projects scroll rhythm is too long",
         1.7

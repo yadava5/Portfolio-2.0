@@ -69,6 +69,24 @@ export function Hero() {
             {personalInfo.tagline}
           </p>
         </TextReveal>
+        <TextReveal className="mt-10 grid w-full max-w-2xl grid-cols-2 gap-3 delay-300 md:grid-cols-4">
+          {[
+            ["1.9M+", "Tableau rows"],
+            ["738", "Automated tests"],
+            ["71", "iOS tests"],
+            ["19/20", "Policy validation"],
+          ].map(([value, label]) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-white/15 bg-white/8 px-4 py-3 backdrop-blur-xl"
+            >
+              <div className="text-2xl font-semibold text-white">{value}</div>
+              <div className="text-xs tracking-wide text-white/55 uppercase">
+                {label}
+              </div>
+            </div>
+          ))}
+        </TextReveal>
       </section>
     );
   }
