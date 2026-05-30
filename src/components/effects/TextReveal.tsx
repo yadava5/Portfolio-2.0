@@ -23,7 +23,7 @@ export function TextReveal({ children, className = "" }: TextRevealProps) {
       {
         opacity: 0,
         y: 40,
-        filter: "blur(10px)",
+        filter: "blur(4px)",
       },
       {
         opacity: 1,
@@ -34,7 +34,7 @@ export function TextReveal({ children, className = "" }: TextRevealProps) {
         scrollTrigger: {
           trigger: el,
           start: "top 85%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
       }
     );
