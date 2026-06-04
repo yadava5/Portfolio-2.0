@@ -247,12 +247,12 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         warnings.push(`[${theme.name}] No resume/CV link found`);
       }
 
-      // ========== SECTION 13: THEME SWITCHER ==========
+      // ========== SECTION 13: ATLAS-ONLY PUBLIC IDENTITY ==========
       const themeSwitcher = page.locator(
         "button[aria-label*='Select theme'], button[aria-label*='theme']"
       );
-      if (!(await themeSwitcher.isVisible())) {
-        errors.push(`[${theme.name}] Theme switcher not visible`);
+      if ((await themeSwitcher.count()) > 0) {
+        errors.push(`[${theme.name}] Theme switcher should not be rendered`);
       }
 
       // ========== SECTION 14: PLACEHOLDER CONTENT CHECK ==========
