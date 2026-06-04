@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Workflow,
 } from "lucide-react";
+import Image from "next/image";
 import {
   ActionLink,
   AtlasSectionHeading,
@@ -179,12 +180,12 @@ export function TechnicalOperationsAtlas() {
             </div>
             <p className="mt-5 max-w-2xl text-sm leading-6 text-zinc-400 md:text-lg md:leading-7">
               <span className="sm:hidden">
-                Computer Science graduate building data pipelines, ML
-                workflows, full-stack systems, and accessible native products.
+                Computer Science graduate building data pipelines, ML workflows,
+                full-stack systems, and accessible native products.
               </span>
               <span className="hidden sm:inline">
-                Computer Science graduate focused on data pipelines, applied
-                ML, full-stack systems, performance work, and accessible native
+                Computer Science graduate focused on data pipelines, applied ML,
+                full-stack systems, performance work, and accessible native
                 products. Current work turns operational records, Tableau
                 metadata, and ML workflows into trusted datasets, dashboards,
                 and validated product surfaces.
@@ -256,9 +257,11 @@ export function TechnicalOperationsAtlas() {
             />
             <div className="grid gap-5">
               <div className="grid gap-5 rounded border border-zinc-800 bg-zinc-950/70 p-5 sm:grid-cols-[140px_1fr] sm:items-center">
-                <img
+                <Image
                   src={personalInfo.portrait.image}
                   alt={personalInfo.portrait.alt}
+                  width={144}
+                  height={216}
                   className="aspect-[2/3] w-32 rounded border border-zinc-800 object-cover object-top sm:w-36"
                 />
                 <div>

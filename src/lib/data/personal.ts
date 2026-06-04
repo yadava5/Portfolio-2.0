@@ -66,7 +66,9 @@ export const personalInfo = {
   availability: "Open to new-grad software, data, and ML engineering roles",
   /** Professional portrait */
   portrait: {
-    image: withBasePath("/images/profile/ayush-yadav-professional-portrait.png"),
+    image: withBasePath(
+      "/images/profile/ayush-yadav-professional-portrait.png"
+    ),
     alt: "Ayush Yadav professional portrait",
   },
 
