@@ -104,8 +104,12 @@ export const EXPECTED_SELECTED_WORK_ORDER = [
 export const EXPECTED_PROOF_ARTIFACTS = {
   automlPoster: "Expo poster proof",
   automlContribution: "Monaco/Jupyter runtime",
+  fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
+  fastMnistSpeedup: "3.50x dot-kernel speedup",
+  fastMnistDisclosure:
+    "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
 };
 
 export const EXPECTED_LINKS = {

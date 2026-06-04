@@ -171,6 +171,27 @@ test.describe("Technical Operations Atlas", () => {
     ).toBeVisible();
   });
 
+  test("Fast MNIST proof stays tied to real demo and benchmark evidence", async ({
+    page,
+  }) => {
+    await page.goto("/projects/fast-mnist-nn/");
+    await page.waitForLoadState("domcontentloaded");
+
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistScreenshot)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistDisclosure)
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("5x faster inference");
+    expect(bodyText).not.toContain("5x with AVX-512 SIMD");
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {
