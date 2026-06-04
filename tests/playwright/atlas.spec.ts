@@ -6,6 +6,8 @@ import {
   EXPECTED_CONTENT,
   EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
+  EXPECTED_PROOF_ARTIFACTS,
+  EXPECTED_SELECTED_WORK_ORDER,
   PROHIBITED_GENERATED_CONTENT,
   RECRUITER_HERO_LINKS,
   RECRUITER_HERO_METRICS,
@@ -135,6 +137,38 @@ test.describe("Technical Operations Atlas", () => {
     for (const stale of STALE_IDENTITY_COPY) {
       expect(bodyText).not.toContain(stale);
     }
+  });
+
+  test("selected work starts with the strongest proof path", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#projects").scrollIntoViewIfNeeded();
+
+    const cards = page.locator("#projects article");
+    for (const [index, title] of EXPECTED_SELECTED_WORK_ORDER.entries()) {
+      await expect(cards.nth(index)).toContainText(title);
+    }
+  });
+
+  test("AutoML and Fast MNIST case studies expose artifact-backed proof", async ({
+    page,
+  }) => {
+    await page.goto("/projects/automl/");
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPoster)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlContribution)
+    ).toBeVisible();
+
+    await page.goto("/projects/fast-mnist-nn/");
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistRelease)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistBenchmark)
+    ).toBeVisible();
   });
 
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({

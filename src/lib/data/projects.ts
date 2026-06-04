@@ -252,7 +252,7 @@ export const projects: Project[] = [
     imageAlt: "Real Fast MNIST React workbench screenshot",
     imageDisclosure:
       "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
-    featured: false,
+    featured: true,
     category: "ai-ml",
     startDate: "2025-10",
     endDate: "2026-01",

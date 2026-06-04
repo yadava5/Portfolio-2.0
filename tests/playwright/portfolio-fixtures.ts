@@ -94,6 +94,20 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   portraitAlt: "Ayush Yadav professional portrait",
 };
 
+export const EXPECTED_SELECTED_WORK_ORDER = [
+  "Agentic AutoML Platform",
+  "Fast MNIST Neural Network",
+  "Visual Assist",
+  "JobTracker",
+];
+
+export const EXPECTED_PROOF_ARTIFACTS = {
+  automlPoster: "Expo poster proof",
+  automlContribution: "Monaco/Jupyter runtime",
+  fastMnistRelease: "v1.0.0 release",
+  fastMnistBenchmark: "Benchmark evidence",
+};
+
 export const EXPECTED_LINKS = {
   github: socialLinks.find((link) => link.name === "GitHub")?.url,
   linkedin: socialLinks.find((link) => link.name === "LinkedIn")?.url,

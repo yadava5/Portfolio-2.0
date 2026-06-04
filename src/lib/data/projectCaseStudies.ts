@@ -40,7 +40,8 @@ export interface CaseStudyArtifact {
     | "diagram"
     | "benchmark"
     | "repo"
-    | "demo";
+    | "demo"
+    | "poster";
   label: string;
   href: string;
 }
@@ -314,6 +315,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         evidence:
           "Portfolio source data records a Dockerized execution runtime.",
       },
+      {
+        label: "Individual contribution",
+        evidence:
+          "Presenter artifact identifies Ayush's work on the Monaco/Jupyter runtime with live WebSocket sync, Docker sandbox constraints, eval runner, and Optuna study streaming UI.",
+      },
+      {
+        label: "Expo artifact",
+        evidence:
+          "Senior design poster records the platform architecture, LangGraph workflow states, run ledger, validation metrics, and product screenshot.",
+      },
     ],
     outcomes: [
       {
@@ -332,6 +343,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         type: "real-screenshot",
         label: "Private-safe experiment registry screenshot",
         href: withBasePath("/images/projects/automl.png"),
+      },
+      {
+        type: "poster",
+        label: "Expo poster proof",
+        href: withBasePath("/images/projects/agentic-automl-poster-proof.png"),
       },
     ],
   },
@@ -932,11 +948,43 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Source code",
         href: "https://github.com/yadava5/fast-mnist-nn",
       },
+      {
+        type: "repo",
+        label: "v1.0.0 release",
+        href: "https://github.com/yadava5/fast-mnist-nn/releases/tag/v1.0.0",
+      },
+      {
+        type: "benchmark",
+        label: "Benchmark evidence",
+        href: "https://github.com/yadava5/fast-mnist-nn",
+      },
     ],
   },
 ];
 
 export const caseStudyIds = projectCaseStudies.map((study) => study.projectId);
+
+const atlasSelectedWorkOrder = [
+  "automl",
+  "fast-mnist-nn",
+  "visual-assist",
+  "jobtracker",
+  "taskflow-calendar",
+  "master-inventory",
+  "policybot",
+];
+
+export const atlasProjectCaseStudies = atlasSelectedWorkOrder.map(
+  (projectId) => {
+    const study = projectCaseStudies.find(
+      (caseStudy) => caseStudy.projectId === projectId
+    );
+    if (!study) {
+      throw new Error(`Missing Atlas case study for project ${projectId}`);
+    }
+    return study;
+  }
+);
 
 export function getCaseStudyById(id: string): ProjectCaseStudy | undefined {
   return projectCaseStudies.find((study) => study.projectId === id);

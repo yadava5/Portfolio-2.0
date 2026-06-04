@@ -30,8 +30,8 @@ import {
 import { experiences } from "@/lib/data/experience";
 import { getPublicProjects, projects } from "@/lib/data/projects";
 import {
+  atlasProjectCaseStudies,
   getCaseStudyById,
-  projectCaseStudies,
 } from "@/lib/data/projectCaseStudies";
 import { skillCategories } from "@/lib/data/skills";
 import { testimonials } from "@/lib/data/testimonials";
@@ -127,7 +127,7 @@ export function TechnicalOperationsAtlas() {
   const currentExperience = experiences[0];
   const graduationDate = formatEducationEndDate(education[0].endDate);
   const publicProjects = getPublicProjects();
-  const caseStudyProjects = projectCaseStudies
+  const caseStudyProjects = atlasProjectCaseStudies
     .map((study) => projects.find((project) => project.id === study.projectId))
     .filter(Boolean);
   const privateProjects = projects.filter(
