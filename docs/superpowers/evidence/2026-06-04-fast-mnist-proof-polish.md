@@ -76,3 +76,28 @@ imageDisclosure:
 ```
 
 Do not replace it with native-server wording until the C++ server is running during the capture and that state is visible in the screenshot.
+
+## Source-Side Follow-Up Validation
+
+The Fast MNIST source-side hero failure was fixed locally on branch
+`yadava5/fix-hero-media-validation` at `c6e5c0b`. The source repo already had
+large uncommitted web redesign changes before the fix, so these edits were not
+staged or committed from this portfolio task.
+
+Local fix applied:
+
+- `/Users/ayush/Documents/Projects/fast-mnist-nn/web/src/index.css`: force
+  `#hero canvas` to fill the responsive hero media frame instead of keeping the
+  emitted `300x150` canvas default.
+- `/Users/ayush/Documents/Projects/fast-mnist-nn/web/tests/e2e/demo.spec.ts`:
+  wait for the hero canvas or poster to settle above a readable size before the
+  blank-media assertion measures it.
+
+Validation from `/Users/ayush/Documents/Projects/fast-mnist-nn/web`:
+
+- `npm run build`: passed.
+- `npm run lint`: passed.
+- `npm run format:check`: passed.
+- `npm run test:e2e -- --grep "blank hero media"`: `6 passed`.
+- `npm run test:e2e -- --project=desktop`: `5 passed`, `1 skipped`.
+- `npm run test:e2e`: `32 passed`, `4 skipped`.
