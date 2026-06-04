@@ -69,6 +69,24 @@ export function Hero() {
             {personalInfo.tagline}
           </p>
         </TextReveal>
+        <TextReveal className="mt-10 grid w-full max-w-2xl grid-cols-2 gap-3 delay-300 md:grid-cols-4">
+          {[
+            ["1.9M+", "Tableau rows"],
+            ["738", "Automated tests"],
+            ["71", "iOS tests"],
+            ["19/20", "Policy validation"],
+          ].map(([value, label]) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-white/15 bg-white/8 px-4 py-3 backdrop-blur-xl"
+            >
+              <div className="text-2xl font-semibold text-white">{value}</div>
+              <div className="text-xs tracking-wide text-white/55 uppercase">
+                {label}
+              </div>
+            </div>
+          ))}
+        </TextReveal>
       </section>
     );
   }
@@ -81,7 +99,7 @@ export function Hero() {
       >
         <TextReveal className="mb-6">
           <h1
-            className="max-w-full text-5xl font-bold tracking-wide break-words text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] sm:text-6xl md:text-8xl md:tracking-widest"
+            className="max-w-full rounded-2xl bg-black/15 px-3 py-2 text-5xl font-bold tracking-wide break-words text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] sm:text-6xl md:text-8xl md:tracking-widest"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {personalInfo.name.split("").map((char, i) => (
@@ -122,7 +140,8 @@ export function Hero() {
           <h1 className="mb-6 max-w-full text-2xl font-bold tracking-tight break-words md:text-5xl">
             <TypewriterText
               text={`> HELLO, I'M ${personalInfo.name.toUpperCase()}`}
-              delay={500}
+              delay={0}
+              immediate
             />
           </h1>
         </div>
@@ -135,7 +154,7 @@ export function Hero() {
           <div className="mb-4 max-w-full text-xl break-words text-[#ffb000] md:text-2xl">
             <TypewriterText
               text={personalInfo.title.toUpperCase()}
-              delay={1500}
+              delay={400}
             />
           </div>
         </div>
@@ -146,7 +165,7 @@ export function Hero() {
             <span className="text-blue-400">~</span>$ cat status.log
           </p>
           <div className="max-w-2xl text-base leading-relaxed opacity-90 md:text-lg">
-            <TypewriterText text={personalInfo.tagline} delay={2500} />
+            <TypewriterText text={personalInfo.tagline} delay={900} />
           </div>
         </div>
       </section>
@@ -161,7 +180,7 @@ export function Hero() {
       >
         <GlitchBurst className="mb-6">
           <h1
-            className="max-w-full bg-gradient-to-b from-[#00ffff] via-[#ff00ff] to-[#ffff00] bg-clip-text text-5xl font-bold tracking-tighter break-words text-transparent uppercase sm:text-6xl md:text-8xl"
+            className="max-w-full bg-gradient-to-b from-[#00ffff] via-[#ff7af5] to-[#ffff00] bg-clip-text text-5xl font-bold tracking-normal break-words text-transparent uppercase sm:text-6xl md:text-8xl md:tracking-tighter"
             style={{
               fontFamily: "var(--font-display)",
               filter: "drop-shadow(0 0 10px rgba(255,0,255,0.8))",
@@ -197,7 +216,7 @@ export function Hero() {
         className="relative z-10 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 text-center font-serif"
       >
         <FloatingEntry className="mb-6">
-          <h1 className="max-w-full text-5xl font-medium tracking-wide break-words text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)] sm:text-6xl md:text-8xl">
+          <h1 className="max-w-full rounded-2xl bg-black/15 px-3 py-2 text-5xl font-medium tracking-wide break-words text-[#e0f4ff] drop-shadow-[0_0_20px_rgba(0,255,255,0.5)] sm:text-6xl md:text-8xl">
             {personalInfo.name}
           </h1>
         </FloatingEntry>

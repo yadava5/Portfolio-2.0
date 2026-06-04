@@ -24,19 +24,19 @@ export function BioluminescentBg() {
     resize();
 
     // Generate particles
-    const particles = Array.from({ length: 150 }).map(() => ({
+    const particles = Array.from({ length: 100 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 3 + 1,
       speedY: Math.random() * 0.5 + 0.1,
       speedX: (Math.random() - 0.5) * 0.5,
       hue: Math.random() > 0.5 ? 180 : 280, // Cyan or Purple
-      opacity: Math.random() * 0.5 + 0.1,
+      opacity: Math.random() * 0.35 + 0.08,
       phase: Math.random() * Math.PI * 2,
     }));
 
     // Generate bubbles
-    const bubbles = Array.from({ length: 30 }).map(() => ({
+    const bubbles = Array.from({ length: 18 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 8 + 2,
@@ -119,7 +119,7 @@ export function BioluminescentBg() {
 
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
         ctx.lineWidth = 1;
         ctx.stroke();
 
@@ -132,7 +132,7 @@ export function BioluminescentBg() {
           0,
           Math.PI * 2
         );
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
         ctx.fill();
       });
 

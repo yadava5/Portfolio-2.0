@@ -4,7 +4,10 @@ import {
   CASE_STUDY_IDS,
   DEFAULT_THEME,
   EXPECTED_CONTENT,
+  EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
+  EXPECTED_PROOF_ARTIFACTS,
+  EXPECTED_SELECTED_WORK_ORDER,
   PROHIBITED_GENERATED_CONTENT,
   RECRUITER_HERO_LINKS,
   RECRUITER_HERO_METRICS,
@@ -19,6 +22,13 @@ const REQUIRED_SECTIONS = [
   "skills",
   "testimonials",
   "contact",
+];
+
+const STALE_IDENTITY_COPY = [
+  "Senior CS student",
+  "Senior Computer Science student",
+  "Expected May 2026",
+  "Open to internships",
 ];
 
 const CASE_STUDY_SECTIONS = [
@@ -86,6 +96,81 @@ test.describe("Technical Operations Atlas", () => {
     }
   });
 
+  test("public surface exposes Atlas only", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      DEFAULT_THEME
+    );
+    await expect(
+      page.getByRole("button", { name: /select theme/i })
+    ).toHaveCount(0);
+  });
+
+  test("shows graduate identity and professional portrait", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    await expect(page.locator("#hero")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.role
+    );
+    await expect(page.locator("#about")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.education
+    );
+    await expect(page.locator("body")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.availability
+    );
+    await expect(
+      page.getByRole("img", {
+        name: EXPECTED_GRADUATE_IDENTITY.portraitAlt,
+      })
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    for (const stale of STALE_IDENTITY_COPY) {
+      expect(bodyText).not.toContain(stale);
+    }
+  });
+
+  test("selected work starts with the strongest proof path", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#projects").scrollIntoViewIfNeeded();
+
+    const cards = page.locator("#projects article");
+    for (const [index, title] of EXPECTED_SELECTED_WORK_ORDER.entries()) {
+      await expect(cards.nth(index)).toContainText(title);
+    }
+  });
+
+  test("AutoML and Fast MNIST case studies expose artifact-backed proof", async ({
+    page,
+  }) => {
+    await page.goto("/projects/automl/");
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPoster)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlContribution)
+    ).toBeVisible();
+
+    await page.goto("/projects/fast-mnist-nn/");
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistRelease)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistBenchmark)
+    ).toBeVisible();
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {
@@ -99,7 +184,7 @@ test.describe("Technical Operations Atlas", () => {
     );
     await expectInFirstViewport(
       page,
-      page.locator("#hero").getByText("Software / Data / ML Engineering")
+      page.locator("#hero").getByText(EXPECTED_GRADUATE_IDENTITY.role)
     );
 
     for (const label of RECRUITER_HERO_LINKS) {
@@ -144,6 +229,33 @@ test.describe("Technical Operations Atlas", () => {
         () => document.documentElement.scrollWidth <= window.innerWidth
       )
     ).toBe(true);
+  });
+
+  test("mobile hero keeps CTAs visible without horizontal overflow", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    for (const label of RECRUITER_HERO_LINKS) {
+      await expectInFirstViewport(
+        page,
+        page.locator("#hero").getByRole("link", { name: new RegExp(label) })
+      );
+    }
+
+    const scrollCheck = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+      heroHeight: document.querySelector("#hero")?.getBoundingClientRect()
+        .height,
+      viewportHeight: window.innerHeight,
+    }));
+
+    expect(scrollCheck.overflow).toBe(false);
+    expect(scrollCheck.heroHeight ?? 0).toBeLessThanOrEqual(
+      scrollCheck.viewportHeight * 1.35
+    );
   });
 
   test("does not expose generated concept hallucinations", async ({ page }) => {

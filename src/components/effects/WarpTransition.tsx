@@ -26,7 +26,7 @@ export function WarpTransition({
       {
         opacity: 0,
         scale: 0.8,
-        filter: "blur(20px)",
+        filter: "blur(6px)",
       },
       {
         opacity: 1,
@@ -37,7 +37,7 @@ export function WarpTransition({
         scrollTrigger: {
           trigger: el,
           start: "top 80%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
       }
     );

@@ -29,7 +29,7 @@ export function CosmicVoyageBg() {
       y: Math.random() * canvas.height,
       size: Math.random() * 2,
       speed: Math.random() * 0.5 + 0.1,
-      opacity: Math.random(),
+      opacity: Math.random() * 0.35 + 0.1,
     }));
 
     const draw = () => {
@@ -86,7 +86,7 @@ export function CosmicVoyageBg() {
           star.x = Math.random() * canvas.width;
         }
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * (0.5 + Math.sin(time * 5 + star.x) * 0.5)})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * (0.45 + Math.sin(time * 5 + star.x) * 0.25)})`;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();

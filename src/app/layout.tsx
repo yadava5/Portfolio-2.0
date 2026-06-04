@@ -9,7 +9,7 @@
  *   5. Header         — floating glass navigation
  *   6. Footer         — social links + quick nav
  *   7. CustomCursor   — holographic glow trail
- *   8. ThemeSwitcher  — floating theme picker
+ *   8. Atlas-only public identity; legacy visual modes are not rendered
  *
  * SEO metadata is pulled from the data layer (`siteMetadata`).
  */
@@ -20,7 +20,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
-import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
@@ -104,7 +103,6 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
-            <ThemeSwitcher />
           </SmoothScroll>
         </ThemeProvider>
       </body>

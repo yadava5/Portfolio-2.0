@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Workflow,
 } from "lucide-react";
+import Image from "next/image";
 import {
   ActionLink,
   AtlasSectionHeading,
@@ -30,8 +31,8 @@ import {
 import { experiences } from "@/lib/data/experience";
 import { getPublicProjects, projects } from "@/lib/data/projects";
 import {
+  atlasProjectCaseStudies,
   getCaseStudyById,
-  projectCaseStudies,
 } from "@/lib/data/projectCaseStudies";
 import { skillCategories } from "@/lib/data/skills";
 import { testimonials } from "@/lib/data/testimonials";
@@ -41,28 +42,28 @@ const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
 
 const proofMetrics = [
   {
-    icon: Database,
-    value: "1M+",
-    label: "Rows processed",
-    detail: "Python and SQL pipelines for operational datasets",
+    icon: Workflow,
+    value: "18,403",
+    label: "AutoML ledger events",
+    detail: "Expo poster proof from Agentic AutoML",
   },
   {
-    icon: Workflow,
+    icon: Cpu,
+    value: "3.5x",
+    label: "Dot-kernel speedup",
+    detail: "Fast MNIST committed benchmark proof",
+  },
+  {
+    icon: ShieldCheck,
     value: "738",
     label: "Automated tests",
     detail: "Dynamic Calendar frontend, backend, and integration proof",
   },
   {
-    icon: Mail,
-    value: "500+",
-    label: "Emails/month",
-    detail: "Local classification volume in JobTracker",
-  },
-  {
-    icon: FileText,
-    value: "50+ docs",
-    label: "Policy sources",
-    detail: "Institutional documents indexed for cited retrieval",
+    icon: Accessibility,
+    value: "71",
+    label: "iOS tests",
+    detail: "Visual Assist model and utility coverage",
   },
 ];
 
@@ -127,10 +128,12 @@ export function TechnicalOperationsAtlas() {
   const currentExperience = experiences[0];
   const graduationDate = formatEducationEndDate(education[0].endDate);
   const publicProjects = getPublicProjects();
-  const caseStudyProjects = projectCaseStudies
+  const caseStudyProjects = atlasProjectCaseStudies
     .map((study) => projects.find((project) => project.id === study.projectId))
     .filter(Boolean);
-  const privateProjects = projects.filter((project) => project.isPrivate);
+  const privateProjects = projects.filter(
+    (project) => project.isPrivate && project.portfolioVisible !== false
+  );
   const topSkills = skillCategories.flatMap((category) =>
     category.skills.slice(0, 3).map((skill) => ({
       ...skill,
@@ -146,14 +149,15 @@ export function TechnicalOperationsAtlas() {
       <div className="relative z-10">
         <section
           id="hero"
-          className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-12 md:min-h-screen md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
+          className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-10 md:min-h-[88vh] md:grid-cols-[0.92fr_1.08fr] md:px-8 lg:px-10"
         >
           <div className="flex flex-col justify-center">
             <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
               Role target / {graduationDate}
             </p>
             <p className="mb-4 text-lg font-semibold text-zinc-100 md:text-2xl">
-              Software / Data / ML Engineering
+              New-grad software engineer focused on data, ML systems, and
+              full-stack reliability
             </p>
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-zinc-50 sm:text-5xl 2xl:text-6xl">
               Ayush Yadav builds reliable data, ML, and software systems.
@@ -176,14 +180,15 @@ export function TechnicalOperationsAtlas() {
             </div>
             <p className="mt-5 max-w-2xl text-sm leading-6 text-zinc-400 md:text-lg md:leading-7">
               <span className="sm:hidden">
-                Senior CS student building data pipelines, ML workflows,
+                Computer Science graduate building data pipelines, ML workflows,
                 full-stack systems, and accessible native products.
               </span>
               <span className="hidden sm:inline">
-                Senior CS student focused on data pipelines, applied ML,
+                Computer Science graduate focused on data pipelines, applied ML,
                 full-stack systems, performance work, and accessible native
-                products. Current work processes 1M+ operational rows into
-                trusted datasets and dashboards.
+                products. Current work turns operational records, Tableau
+                metadata, and ML workflows into trusted datasets, dashboards,
+                and validated product surfaces.
               </span>
             </p>
             <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
@@ -196,14 +201,14 @@ export function TechnicalOperationsAtlas() {
               <ActionLink href={getSocialUrl("LinkedIn")} label="LinkedIn" />
               <ActionLink href="#contact" label="Contact" />
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-3">
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:grid-cols-4 sm:gap-3">
               {proofMetrics.map((metric) => (
                 <MetricCard key={metric.label} {...metric} />
               ))}
             </div>
           </div>
 
-          <div className="hidden flex-col justify-center gap-4 md:flex">
+          <div className="hidden flex-col justify-center gap-5 md:flex">
             <PipelineMap steps={pipelineSteps} />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
@@ -211,10 +216,10 @@ export function TechnicalOperationsAtlas() {
                   JobTracker
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  500+ emails/month
+                  Local ML
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  Local ML classification for job-search signals.
+                  Three-layer classifier for private job-search email signals.
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
@@ -222,7 +227,7 @@ export function TechnicalOperationsAtlas() {
                   Visual Assist
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  68 tests
+                  71 tests
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
                   Unit coverage for iOS accessibility models and utilities.
@@ -233,24 +238,44 @@ export function TechnicalOperationsAtlas() {
                   PolicyBot
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  50+ docs
+                  19/20
                 </p>
                 <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  Institutional policy retrieval with cited sources.
+                  Structured validation sweep with cited-source checks.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="about" className="border-y border-zinc-900 bg-zinc-950/50">
+        <section id="about" className="border-y border-zinc-900 bg-zinc-950/65">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[0.8fr_1.2fr] md:px-8 lg:px-10">
             <AtlasSectionHeading
               eyebrow="Profile"
-              title="Senior CS student shipping data, ML, native, and full-stack systems."
+              title="Computer Science graduate shipping data, ML, native, and full-stack systems."
               description="The site uses one source-truth identity, not generated concept copy."
             />
             <div className="grid gap-5">
+              <div className="grid gap-5 rounded border border-zinc-800 bg-zinc-950/70 p-5 sm:grid-cols-[140px_1fr] sm:items-center">
+                <Image
+                  src={personalInfo.portrait.image}
+                  alt={personalInfo.portrait.alt}
+                  width={144}
+                  height={216}
+                  className="aspect-[2/3] w-32 rounded border border-zinc-800 object-cover object-top sm:w-36"
+                />
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                    Profile
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-zinc-50">
+                    {personalInfo.name}
+                  </p>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    {personalInfo.availability}
+                  </p>
+                </div>
+              </div>
               {personalInfo.bio.map((paragraph) => (
                 <p
                   key={paragraph}
@@ -268,7 +293,8 @@ export function TechnicalOperationsAtlas() {
                     {education[0].degree} in {education[0].field}
                   </p>
                   <p className="mt-1 text-sm text-zinc-400">
-                    {education[0].school} - Expected {graduationDate}
+                    B.S. Computer Science, {education[0].school},{" "}
+                    {graduationDate}
                   </p>
                 </div>
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
@@ -304,6 +330,7 @@ export function TechnicalOperationsAtlas() {
                   project={project}
                   study={getCaseStudyById(project.id)}
                   index={index}
+                  className={index >= 4 ? "hidden md:grid" : ""}
                 />
               ) : null
             )}
@@ -312,7 +339,7 @@ export function TechnicalOperationsAtlas() {
 
         <section
           id="experience"
-          className="border-y border-zinc-900 bg-zinc-950/50"
+          className="border-y border-zinc-900 bg-[#0d1115]"
         >
           <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
             <AtlasSectionHeading
@@ -514,14 +541,14 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="contact" className="border-t border-zinc-900 bg-zinc-950">
+        <section id="contact" className="border-t border-zinc-900 bg-[#080a0c]">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[1fr_0.9fr] md:px-8 lg:px-10">
             <div>
               <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
                 Contact
               </p>
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 md:text-5xl">
-                Open a channel for software, data, or ML engineering work.
+                Open to new-grad software, data, and ML engineering roles.
               </h2>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 <ActionLink

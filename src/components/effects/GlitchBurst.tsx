@@ -36,7 +36,7 @@ export function GlitchBurst({ children, className = "" }: GlitchBurstProps) {
         scrollTrigger: {
           trigger: el,
           start: "top 85%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
       }
     );

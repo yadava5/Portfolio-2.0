@@ -64,7 +64,7 @@ export const themeConfigs: Record<ThemeId, ThemeConfig> = {
   "bioluminescent-deep": bioluminescentDeep,
 };
 
-export const themeIds = Object.keys(themeConfigs) as ThemeId[];
+export const themeIds: ThemeId[] = ["technical-operations-atlas"];
 
 export const defaultThemeId: ThemeId = "technical-operations-atlas";
 

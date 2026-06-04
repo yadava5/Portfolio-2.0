@@ -4,7 +4,12 @@ import path from "node:path";
 import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
 import { experiences } from "../../src/lib/data/experience";
-import { projects } from "../../src/lib/data/projects";
+import {
+  getFeaturedProjects,
+  getProjectsByCategory,
+  getPublicProjects,
+  projects,
+} from "../../src/lib/data/projects";
 import {
   caseStudyIds,
   projectCaseStudies,
@@ -28,13 +33,42 @@ export const NAV_SECTIONS = [
   "contact",
 ];
 
-export const PUBLIC_PROJECTS = projects.filter((project) => !project.isPrivate);
+export const PUBLIC_PROJECTS = getPublicProjects();
+export const FEATURED_PROJECTS = getFeaturedProjects();
+export const PROJECT_CATEGORIES = Array.from(
+  new Set(projects.map((project) => project.category))
+);
+export const CATEGORY_PROJECTS = PROJECT_CATEGORIES.flatMap((category) =>
+  getProjectsByCategory(category)
+);
 export const PUBLIC_PROJECT_TITLES = PUBLIC_PROJECTS.map(
   (project) => project.title
 );
 export const PUBLIC_PROJECT_IMAGES = PUBLIC_PROJECTS.map(
   (project) => project.image
 );
+
+function visualDisclosureLabel(imageKind: string) {
+  if (imageKind === "real-screenshot") return "Project visual:";
+  if (imageKind === "diagram") return "Architecture diagram:";
+  return "Representative visual:";
+}
+
+export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
+  title: project.title,
+  image: project.image,
+  imageKind: project.imageKind,
+  disclosureLabel: visualDisclosureLabel(project.imageKind),
+  disclosure: project.imageDisclosure,
+}));
+
+export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map((project) => ({
+  title: project.title,
+  image: project.image,
+  imageKind: project.imageKind,
+  disclosureLabel: visualDisclosureLabel(project.imageKind),
+  disclosure: project.imageDisclosure,
+}));
 
 export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   .map((study) => {
@@ -53,6 +87,27 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
+export const EXPECTED_GRADUATE_IDENTITY = {
+  role: "New-grad software engineer",
+  education: "B.S. Computer Science, Miami University, May 2026",
+  availability: "Open to new-grad software, data, and ML engineering roles",
+  portraitAlt: "Ayush Yadav professional portrait",
+};
+
+export const EXPECTED_SELECTED_WORK_ORDER = [
+  "Agentic AutoML Platform",
+  "Fast MNIST Neural Network",
+  "Visual Assist",
+  "JobTracker",
+];
+
+export const EXPECTED_PROOF_ARTIFACTS = {
+  automlPoster: "Expo poster proof",
+  automlContribution: "Monaco/Jupyter runtime",
+  fastMnistRelease: "v1.0.0 release",
+  fastMnistBenchmark: "Benchmark evidence",
+};
+
 export const EXPECTED_LINKS = {
   github: socialLinks.find((link) => link.name === "GitHub")?.url,
   linkedin: socialLinks.find((link) => link.name === "LinkedIn")?.url,
@@ -60,20 +115,23 @@ export const EXPECTED_LINKS = {
 };
 
 export const ATLAS_ALLOWED_METRICS = [
-  "1M+",
+  "3.5x",
+  "18,403",
   "738",
-  "97%+",
-  "5x",
-  "500+ emails/month",
-  "68 tests",
-  "50+ docs",
+  "71",
+  "71 tests",
+  "19/20",
 ];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
 
-export const RECRUITER_HERO_METRICS = ["1M+", "738", "500+", "50+ docs"];
+export const RECRUITER_HERO_METRICS = ["18,403", "3.5x", "738", "71"];
 
-export const REQUIRED_PRIVATE_CASE_STUDIES = ["master-inventory", "policybot"];
+export const REQUIRED_PRIVATE_CASE_STUDIES = [
+  "automl",
+  "master-inventory",
+  "policybot",
+];
 
 export const PLAYWRIGHT_ARTIFACT_ROOT = path.join("output", "playwright");
 
@@ -100,6 +158,17 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "500+ views in launch month",
   "Production full-stack calendar",
   "production ML pipelines",
+  "5x faster inference",
+  "5x with AVX-512 SIMD",
+  "68 unit tests",
+  "68 tests",
+  "50+ institutional documents",
+  "50+ docs",
+  "processing 500+ emails/month",
+  "500+ emails/month",
+  "macOS 15+ Liquid Glass UI",
+  "Python/SQL pipeline processing 1M+",
+  "Processes 1M+ rows of operational data",
 ];
 
 export async function isMobileViewport(page: Page) {

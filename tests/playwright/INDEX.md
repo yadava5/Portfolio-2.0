@@ -9,6 +9,8 @@ The Playwright directory now tracks source specs and documentation only. Generat
 | `npm run test:e2e`           | CI/default assertion gate                 |
 | `npm run test:e2e:full`      | Complete browser suite across all specs   |
 | `npm run test:e2e:artifacts` | Opt-in screenshot/report/video generation |
+| `npm run test:e2e:videos`    | Responsive walkthrough video recordings   |
+| `npm run test:e2e:score`     | 10-point portfolio visual quality gate    |
 | `npm run test:e2e:ui`        | Interactive Playwright UI                 |
 | `npm run test:visual`        | Snapshot update workflow                  |
 
@@ -30,6 +32,7 @@ The Playwright directory now tracks source specs and documentation only. Generat
 - `critique-screenshots.spec.ts`
 - `record-walkthroughs.spec.ts`
 - `debug-audit.spec.ts`
+- `portfolio-quality-score.spec.ts`
 
 These are useful manual QA tools, but they should not be the default CI signal. They write via `artifactPath()` to:
 

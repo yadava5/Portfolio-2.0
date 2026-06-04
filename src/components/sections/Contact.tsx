@@ -42,13 +42,13 @@ export function Contact() {
         </TextReveal>
 
         <TextReveal className="w-full">
-          <GlassCard className="flex flex-col items-center justify-between gap-8 p-8 md:flex-row md:p-12">
+          <GlassCard className="flex flex-col items-center justify-between gap-8 p-6 text-left md:flex-row md:p-12">
             <div className="flex flex-col items-center gap-4 md:items-start">
               <div className="flex items-center gap-3 text-white/80">
                 <Mail className="text-indigo-400" size={24} />
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-xl transition-colors hover:text-white"
+                  className="text-lg break-all transition-colors hover:text-white md:text-xl"
                 >
                   {personalInfo.email}
                 </a>
@@ -111,7 +111,7 @@ export function Contact() {
         </WarpTransition>
 
         <WarpTransition className="w-full">
-          <NebulaCard className="flex flex-col items-center justify-between gap-8 border-orange-500/20 p-8 hover:border-orange-400/40 md:flex-row md:p-12">
+          <NebulaCard className="flex flex-col items-center justify-between gap-8 border-orange-500/20 bg-black/55 p-6 hover:border-orange-400/40 md:flex-row md:p-12">
             <div className="flex flex-col items-center gap-6 md:items-start">
               <div className="flex items-center gap-4 text-indigo-100/80">
                 <div className="rounded-full border border-orange-500/20 bg-orange-500/10 p-3 text-orange-400">
@@ -119,7 +119,7 @@ export function Contact() {
                 </div>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-lg tracking-wider transition-colors hover:text-white"
+                  className="text-lg tracking-wider break-all transition-colors hover:text-white"
                 >
                   {personalInfo.email}
                 </a>
@@ -259,7 +259,7 @@ export function Contact() {
         <GlitchBurst className="w-full">
           <NeonBorder
             color="cyan"
-            className="flex flex-col items-center justify-between gap-8 bg-black/60 p-8 md:flex-row md:p-12"
+            className="flex flex-col items-center justify-between gap-8 bg-black/70 p-6 md:flex-row md:p-12"
           >
             <div className="flex flex-col items-center gap-6 md:items-start">
               <div className="flex items-center gap-4 font-bold text-white">
@@ -268,7 +268,7 @@ export function Contact() {
                 </div>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-xl tracking-wider uppercase transition-colors hover:text-[#00ffff]"
+                  className="max-w-[16rem] text-base tracking-wide break-all uppercase transition-colors hover:text-[#00ffff] sm:max-w-none md:text-xl md:tracking-wider"
                   style={{ textShadow: "0 0 5px rgba(255,255,255,0.5)" }}
                 >
                   {personalInfo.email}
@@ -332,7 +332,7 @@ export function Contact() {
         </FloatingEntry>
 
         <FloatingEntry className="w-full">
-          <div className="flex flex-col items-center justify-between gap-8 rounded-3xl border border-[#00ffff]/20 bg-[#001433]/70 p-8 shadow-[0_0_40px_rgba(0,255,255,0.1),inset_0_0_20px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-all duration-700 hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] md:flex-row md:p-12">
+          <div className="flex flex-col items-center justify-between gap-8 rounded-3xl border border-[#00ffff]/20 bg-[#001433]/80 p-6 shadow-[0_0_40px_rgba(0,255,255,0.1),inset_0_0_20px_rgba(0,255,255,0.05)] backdrop-blur-xl transition-all duration-700 hover:shadow-[0_0_50px_rgba(0,255,255,0.2)] md:flex-row md:p-12">
             <div className="flex flex-col items-center gap-6 font-sans font-light tracking-wide md:items-start">
               <div className="flex items-center gap-4 text-[#e0f4ff]/90">
                 <div className="rounded-full border border-[#00ffff]/30 bg-[#00ffff]/10 p-3 text-[#00ffff] shadow-[0_0_15px_rgba(0,255,255,0.2)]">
@@ -340,7 +340,7 @@ export function Contact() {
                 </div>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  className="text-xl transition-all duration-300 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)]"
+                  className="text-lg break-all transition-all duration-300 hover:text-[#00ffff] hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)] md:text-xl"
                 >
                   {personalInfo.email}
                 </a>

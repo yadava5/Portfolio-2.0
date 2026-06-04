@@ -34,7 +34,14 @@ export interface CaseStudyEvidence {
 }
 
 export interface CaseStudyArtifact {
-  type: "representative-visual" | "diagram" | "benchmark" | "repo" | "demo";
+  type:
+    | "real-screenshot"
+    | "representative-visual"
+    | "diagram"
+    | "benchmark"
+    | "repo"
+    | "demo"
+    | "poster";
   label: string;
   href: string;
 }
@@ -147,19 +154,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     validation: [
       {
-        label: "Email volume",
+        label: "Provider integration",
         evidence:
-          "Portfolio source data records processing 500+ emails per month.",
+          "Public repository architecture supports Gmail OAuth2 and iCloud IMAP ingestion for job-search messages.",
       },
       {
         label: "Classifier design",
         evidence:
-          "Portfolio source data records rules, embeddings, and SetFit as the classifier layers.",
+          "Public repository architecture uses rules, embeddings, and SetFit as the classifier layers.",
       },
       {
         label: "Privacy model",
         evidence:
-          "Portfolio source data records local on-device ML processing.",
+          "The app keeps job-search email classification local instead of sending message content to hosted inference.",
       },
     ],
     outcomes: [
@@ -171,18 +178,18 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Provider coverage",
         evidence:
-          "Portfolio source data records Gmail OAuth2 and iCloud IMAP as supported providers.",
+          "Public project data records Gmail OAuth2 and iCloud IMAP as supported providers.",
       },
       {
         label: "Native workflow",
-        evidence: "The app targets macOS 15+ with SwiftUI and SF Symbols.",
+        evidence: "The app targets a native macOS workflow with SwiftUI.",
       },
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
-        href: withBasePath("/images/projects/jobtracker.png"),
+        type: "diagram",
+        label: "Local classification architecture",
+        href: withBasePath("/images/projects/jobtracker-architecture.svg"),
       },
       {
         type: "repo",
@@ -197,35 +204,41 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Senior capstone engineer",
     timeframe: "2025-09 to Present",
     summary:
-      "An LLM-orchestrated automated data scientist platform that turns datasets and domain documents into auditable ML pipeline decisions.",
+      "A private GitHub-backed agentic AutoML platform that turns datasets and domain documents into auditable ML pipeline decisions with human approval gates.",
+    evidenceDisclosure: {
+      label: "Private proof: GitHub evidence",
+      detail:
+        "The current GitHub repository is yadava5/ai-augmented-auto-ml-toolchain and its README identifies the product as Agentic AutoML Platform. The repository is private, so this portfolio shows a private-safe case study instead of a public source link.",
+    },
     problem:
       "Raw datasets require many repetitive steps before useful modeling: ingestion, feature decisions, training, evaluation, and deployment packaging.",
     constraints: [
       "Make pipeline decisions auditable instead of opaque.",
-      "Support domain documents through RAG and MCP-based orchestration.",
+      "Support domain documents through retrieval and MCP-based orchestration.",
+      "Require human approval before generated actions alter workflow state.",
       "Keep training workflows reproducible with containerized execution.",
       "Validate the product flow with browser-level checks.",
     ],
     architecture: {
       summary:
-        "A React and TypeScript interface coordinates Node/PostgreSQL services, LLM-assisted orchestration, training workflows, Docker runtime, and Playwright evaluation.",
+        "A React and TypeScript interface coordinates Express/PostgreSQL services, LangGraph + MCP orchestration, notebook-based training workflows, Docker execution, and Playwright evaluation.",
       nodes: [
         {
           id: "ui",
-          label: "React UI",
+          label: "React 19 UI",
           detail: "Dataset and workflow surface",
           kind: "client",
         },
         {
           id: "api",
-          label: "Node.js API",
+          label: "Express 5 API",
           detail: "Pipeline orchestration",
           kind: "api",
         },
         {
-          id: "rag",
-          label: "RAG + MCP",
-          detail: "Structured decisions",
+          id: "orchestrator",
+          label: "LangGraph + MCP",
+          detail: "Agentic workflow routing",
           kind: "ml",
         },
         {
@@ -236,7 +249,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "store",
-          label: "PostgreSQL",
+          label: "PostgreSQL 16",
           detail: "Run metadata",
           kind: "data",
         },
@@ -249,7 +262,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
       edges: [
         { from: "ui", to: "api", label: "workflow requests" },
-        { from: "api", to: "rag", label: "domain context" },
+        { from: "api", to: "orchestrator", label: "approved actions" },
         { from: "api", to: "runtime", label: "training jobs" },
         { from: "runtime", to: "store", label: "run records" },
         { from: "evals", to: "ui", label: "browser proof" },
@@ -257,11 +270,18 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     decisions: [
       {
-        decision: "Use RAG + MCP for orchestration",
+        decision: "Use LangGraph + MCP for orchestration",
         reason:
-          "The platform needs structured, auditable decisions tied to domain context.",
+          "The platform needs phase-aware routing, tool calls, and auditable decisions tied to domain context.",
         tradeoff:
           "More infrastructure than a simple model runner, but better for traceable workflows.",
+      },
+      {
+        decision: "Keep human approval gates",
+        reason:
+          "Generated preprocessing, training, and deployment actions should be reviewed before they alter the workflow.",
+        tradeoff:
+          "Approval gates slow down full automation, but they make the system safer and easier to debug.",
       },
       {
         decision: "Containerize execution",
@@ -271,9 +291,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     validation: [
       {
+        label: "Repository identity",
+        evidence:
+          "Live GitHub metadata shows private repo yadava5/ai-augmented-auto-ml-toolchain; README title is Agentic AutoML Platform.",
+      },
+      {
+        label: "Lifecycle coverage",
+        evidence:
+          "Project source records upload, EDA, NL-to-SQL, preprocessing, training, experiments, and deployment phases.",
+      },
+      {
         label: "Workflow coverage",
         evidence:
-          "Portfolio source data records HPO, multi-model search, and automated training workflows.",
+          "Portfolio source data records HPO, multi-model search, notebook training, and automated workflow evaluation.",
       },
       {
         label: "Evaluation",
@@ -285,6 +315,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         evidence:
           "Portfolio source data records a Dockerized execution runtime.",
       },
+      {
+        label: "Individual contribution",
+        evidence:
+          "Presenter artifact identifies Ayush's work on the Monaco/Jupyter runtime with live WebSocket sync, Docker sandbox constraints, eval runner, and Optuna study streaming UI.",
+      },
+      {
+        label: "Expo artifact",
+        evidence:
+          "Senior design poster records the platform architecture, LangGraph workflow states, run ledger, validation metrics, and product screenshot.",
+      },
     ],
     outcomes: [
       {
@@ -295,14 +335,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Auditability",
         evidence:
-          "Pipeline decisions are structured through RAG and MCP rather than free-form output.",
+          "Pipeline decisions are structured through LangGraph and MCP tool calls rather than free-form output.",
       },
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Private-safe experiment registry screenshot",
         href: withBasePath("/images/projects/automl.png"),
+      },
+      {
+        type: "poster",
+        label: "Expo poster proof",
+        href: withBasePath("/images/projects/agentic-automl-poster-proof.png"),
       },
     ],
   },
@@ -312,7 +357,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "iOS accessibility engineer",
     timeframe: "2025-03 to Present",
     summary:
-      "A privacy-first iOS accessibility app with LiDAR obstacle detection, Vision OCR, Core ML processing, haptics, and voice guidance.",
+      "A privacy-first iOS accessibility app with LiDAR obstacle detection, Vision OCR, haptics, and voice guidance.",
     problem:
       "Visually impaired users need fast environmental feedback without sending sensitive camera or location context to a remote service.",
     constraints: [
@@ -323,7 +368,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "ARKit, Vision, and Core ML process device context locally, then SwiftUI and VoiceOver expose guidance through speech, haptics, and commands.",
+        "ARKit and Vision process device context locally, then SwiftUI and VoiceOver expose guidance through speech, haptics, and commands.",
       nodes: [
         {
           id: "sensor",
@@ -338,9 +383,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           kind: "ml",
         },
         {
-          id: "coreml",
-          label: "Core ML",
-          detail: "On-device inference",
+          id: "localvision",
+          label: "Local Vision",
+          detail: "On-device recognition",
           kind: "ml",
         },
         {
@@ -357,9 +402,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
       ],
       edges: [
-        { from: "sensor", to: "coreml", label: "environment signal" },
+        { from: "sensor", to: "localvision", label: "environment signal" },
         { from: "vision", to: "feedback", label: "text context" },
-        { from: "coreml", to: "feedback", label: "local inference" },
+        { from: "localvision", to: "feedback", label: "local recognition" },
         { from: "voiceover", to: "feedback", label: "interaction layer" },
       ],
     },
@@ -367,7 +412,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         decision: "Use native iOS frameworks",
         reason:
-          "LiDAR, Vision, Core ML, haptics, and VoiceOver are first-class platform capabilities.",
+          "LiDAR, Vision, haptics, and VoiceOver are first-class platform capabilities.",
         tradeoff:
           "The app targets capable iOS devices rather than every phone.",
       },
@@ -381,7 +426,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Unit coverage",
         evidence:
-          "Portfolio source data records 68 unit tests for models and utilities.",
+          "Local repository audit found 71 VisualAssistTests test functions.",
       },
       {
         label: "Accessibility",
@@ -389,8 +434,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "Portfolio source data records VoiceOver-first accessibility and voice commands.",
       },
       {
-        label: "Privacy",
-        evidence: "Portfolio source data records on-device Core ML processing.",
+        label: "Computer vision",
+        evidence:
+          "Current code uses ARKit, Vision OCR, human rectangles, and animal recognition paths; no custom Core ML model file was present in the audited repo.",
       },
     ],
     outcomes: [
@@ -407,9 +453,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
-        href: withBasePath("/images/projects/visual-assist.png"),
+        type: "diagram",
+        label: "On-device accessibility architecture",
+        href: withBasePath("/images/projects/visual-assist-architecture.svg"),
       },
       {
         type: "repo",
@@ -518,8 +564,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Local mock-login calendar screenshot",
         href: withBasePath("/images/projects/taskflow.png"),
       },
       {
@@ -535,7 +581,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Data integration engineer",
     timeframe: "2025-06 to Present",
     summary:
-      "Private proof from Miami University ITSM data work: a Python and SQL pipeline that consolidates Workday exports, Tableau metadata, and operational records into a trusted master inventory.",
+      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports, Tableau metadata, and operational records into a trusted master inventory.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -551,7 +597,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Workday exports and Tableau metadata feed Python/pandas transforms, SQL normalization, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
+        "Workday exports and Tableau metadata feed Python/pandas transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
       nodes: [
         {
           id: "workday",
@@ -572,8 +618,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           kind: "system",
         },
         {
-          id: "sql",
-          label: "SQL model",
+          id: "records",
+          label: "Unified records",
           detail: "Unified schema and IDs",
           kind: "data",
         },
@@ -593,9 +639,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       edges: [
         { from: "workday", to: "python", label: "report rows" },
         { from: "tableau", to: "python", label: "metadata" },
-        { from: "python", to: "sql", label: "normalized records" },
-        { from: "sql", to: "audit", label: "validation exports" },
-        { from: "sql", to: "dashboard", label: "trusted dataset" },
+        { from: "python", to: "records", label: "normalized records" },
+        { from: "records", to: "audit", label: "validation exports" },
+        { from: "records", to: "dashboard", label: "trusted dataset" },
       ],
     },
     decisions: [
@@ -623,9 +669,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     validation: [
       {
-        label: "Data volume",
+        label: "Inventory outputs",
         evidence:
-          "Private/work summary records 1M+ operational rows flowing through the pipeline.",
+          "Local processed output audit found 16,685 consolidated master inventory rows, with larger OAS/Tableau row-volume proof tracked separately.",
       },
       {
         label: "Source integration",
@@ -652,14 +698,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Private-safe representative visual",
-        href: withBasePath("/images/projects/pipeline.png"),
-      },
-      {
         type: "diagram",
-        label: "Architecture diagram",
-        href: withBasePath("/images/projects/pipeline.png"),
+        label: "Private-safe pipeline architecture",
+        href: withBasePath("/images/projects/pipeline-architecture.svg"),
       },
     ],
   },
@@ -750,9 +791,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     validation: [
       {
-        label: "Knowledge base",
+        label: "Validation sweep",
         evidence:
-          "Private/work summary records 50+ institutional documents available for retrieval.",
+          "Local validation summary reports a 19/20 latest structured sweep, a 17/25 keyword sweep, and fallback behavior for unsupported answers.",
       },
       {
         label: "Citation safety",
@@ -769,7 +810,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Lookup time",
         evidence:
-          "Manager recommendation describes reduced documentation lookup time and ambiguity.",
+          "The assistant is designed to reduce policy lookup friction while preserving citations and fallback behavior.",
       },
       {
         label: "Governed answers",
@@ -779,14 +820,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Private-safe representative visual",
-        href: withBasePath("/images/projects/policybot.png"),
-      },
-      {
         type: "diagram",
-        label: "Retrieval architecture",
-        href: withBasePath("/images/projects/policybot.png"),
+        label: "Retrieval and validation architecture",
+        href: withBasePath("/images/projects/policybot-architecture.svg"),
       },
     ],
   },
@@ -876,7 +912,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         label: "Speedup",
-        evidence: "Portfolio source data records 5x speedup with AVX-512 SIMD.",
+        evidence:
+          "Committed benchmark data supports a 3.50x dot-kernel speedup; classify-throughput rows do not support the prior AVX-512 inference claim.",
       },
       {
         label: "Benchmarks",
@@ -897,8 +934,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     artifacts: [
       {
-        type: "representative-visual",
-        label: "Representative project visual",
+        type: "real-screenshot",
+        label: "Local React workbench screenshot",
         href: withBasePath("/images/projects/mnist.png"),
       },
       {
@@ -911,11 +948,43 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Source code",
         href: "https://github.com/yadava5/fast-mnist-nn",
       },
+      {
+        type: "repo",
+        label: "v1.0.0 release",
+        href: "https://github.com/yadava5/fast-mnist-nn/releases/tag/v1.0.0",
+      },
+      {
+        type: "benchmark",
+        label: "Benchmark evidence",
+        href: "https://github.com/yadava5/fast-mnist-nn",
+      },
     ],
   },
 ];
 
 export const caseStudyIds = projectCaseStudies.map((study) => study.projectId);
+
+const atlasSelectedWorkOrder = [
+  "automl",
+  "fast-mnist-nn",
+  "visual-assist",
+  "jobtracker",
+  "taskflow-calendar",
+  "master-inventory",
+  "policybot",
+];
+
+export const atlasProjectCaseStudies = atlasSelectedWorkOrder.map(
+  (projectId) => {
+    const study = projectCaseStudies.find(
+      (caseStudy) => caseStudy.projectId === projectId
+    );
+    if (!study) {
+      throw new Error(`Missing Atlas case study for project ${projectId}`);
+    }
+    return study;
+  }
+);
 
 export function getCaseStudyById(id: string): ProjectCaseStudy | undefined {
   return projectCaseStudies.find((study) => study.projectId === id);

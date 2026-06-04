@@ -60,6 +60,8 @@ export interface Project {
   highlights: string[];
   /** Whether the project is private/work-related */
   isPrivate: boolean;
+  /** Whether the project is ready to appear in recruiter-facing portfolio lists */
+  portfolioVisible?: boolean;
   /** Quantifiable impact metrics */
   metrics?: ProjectMetric[];
   /** Project status (e.g., "recent" for recently updated) */
@@ -78,7 +80,7 @@ export const projects: Project[] = [
     id: "jobtracker",
     title: "JobTracker",
     shortDescription:
-      "Native macOS app processing 500+ emails/month with on-device ML to replace my manual job-search tracking workflow.",
+      "Native macOS app for local job-search email classification with on-device ML and a trackable application pipeline.",
     fullDescription:
       "An email-powered job application tracker that syncs your Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a trackable pipeline with a beautiful Liquid Glass dashboard.",
     techStack: [
@@ -91,20 +93,20 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/jobtracker",
     liveUrl: null,
-    image: withBasePath("/images/projects/jobtracker.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative macOS dashboard visual for JobTracker",
+    image: withBasePath("/images/projects/jobtracker-architecture.svg"),
+    imageKind: "diagram",
+    imageAlt: "JobTracker local email classification architecture diagram",
     imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
+      "Architecture diagram generated from public repository structure; private email content is not shown.",
     featured: true,
     category: "ai-ml",
     startDate: "2026-02",
     endDate: "Present",
     highlights: [
       "Privacy-first: all ML processing happens locally on-device",
-      "3-layer hybrid classifier (rules → embeddings → SetFit)",
+      "3-layer hybrid classifier (rules -> embeddings -> SetFit)",
       "Gmail OAuth2 & iCloud IMAP async integration",
-      "Native macOS 15+ Liquid Glass UI with SF Symbols 7",
+      "Native macOS SwiftUI dashboard",
       "Background sync via SMAppService + launchd",
     ],
     isPrivate: false,
@@ -115,73 +117,76 @@ export const projects: Project[] = [
   },
   {
     id: "automl",
-    title: "AutoML Platform",
+    title: "Agentic AutoML Platform",
     shortDescription:
-      "LLM-orchestrated platform for turning raw datasets and domain documents into auditable ML workflow decisions.",
+      "Private GitHub-backed capstone platform for turning datasets and domain documents into LLM-orchestrated, auditable ML workflows.",
     fullDescription:
-      "Building an automated data scientist platform that turns datasets and domain documents into structured, reproducible ML workflows. Features LLM-assisted orchestration using RAG + MCP for auditable pipeline decisions.",
+      "A private GitHub repository named ai-augmented-auto-ml-toolchain that turns datasets and domain documents into structured, reproducible ML workflows. The platform uses LangGraph and MCP tools for agentic orchestration with human-in-the-loop approval gates.",
     techStack: [
       { name: "TypeScript", color: "#3178c6" },
-      { name: "React", color: "#61dafb" },
-      { name: "Node.js", color: "#339933" },
+      { name: "React 19", color: "#61dafb" },
+      { name: "Express 5", color: "#000000" },
       { name: "PostgreSQL", color: "#336791" },
       { name: "Docker", color: "#2496ed" },
-      { name: "Machine Learning", color: "#ff6f00" },
+      { name: "LangGraph", color: "#ff6f00" },
+      { name: "MCP", color: "#00d4aa" },
     ],
     githubUrl: null,
     liveUrl: null,
     image: withBasePath("/images/projects/automl.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative ML workflow visual for the AutoML platform",
+    imageKind: "real-screenshot",
+    imageAlt:
+      "Private-safe Agentic AutoML experiment registry screenshot with demo data",
     imageDisclosure:
-      "Representative portfolio visual summarizing the workflow surface.",
+      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
     endDate: "Present",
     highlights: [
-      "LLM-assisted orchestration with RAG + MCP",
-      "Automated training workflows with HPO and multi-model search",
-      "Dockerized execution runtime with reproducible runs",
-      "Built-in evaluation/benchmarking with Playwright",
+      "LangGraph and MCP orchestration for agentic ML workflow phases",
+      "Human-in-the-loop approval gates for generated actions",
+      "Upload, EDA, NL-to-SQL, preprocessing, training, experiments, and deployment phases",
+      "Dockerized execution runtime with reproducible notebook runs",
+      "Built-in Playwright and eval-runner validation paths",
     ],
-    isPrivate: false,
+    isPrivate: true,
     metrics: [
-      { label: "Automation", value: "Drag-and-drop pipelines" },
-      { label: "Orchestration", value: "LLM + RAG + MCP" },
+      { label: "Workflow", value: "7-phase ML lifecycle" },
+      { label: "Orchestration", value: "LangGraph + MCP" },
     ],
   },
   {
     id: "visual-assist",
     title: "Visual Assist",
     shortDescription:
-      "Privacy-first iOS accessibility app using LiDAR, Vision, Core ML, haptics, and voice guidance.",
+      "Privacy-first iOS accessibility app using LiDAR, Vision, haptics, and voice guidance.",
     fullDescription:
-      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, and Core ML for on-device processing with complete privacy.",
+      "A native iOS accessibility app designed to help visually impaired users navigate their environment safely. Built with ARKit, Vision, haptics, speech, and VoiceOver-first SwiftUI flows for local processing.",
     techStack: [
       { name: "Swift", color: "#fa7343" },
       { name: "SwiftUI", color: "#0071e3" },
       { name: "ARKit", color: "#000000" },
-      { name: "Core ML", color: "#34c759" },
+      { name: "Core Haptics", color: "#34c759" },
       { name: "Vision", color: "#5856d6" },
     ],
     githubUrl: "https://github.com/yadava5/VisualAssist",
     liveUrl: null,
-    image: withBasePath("/images/projects/visual-assist.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative iOS accessibility app visual for Visual Assist",
+    image: withBasePath("/images/projects/visual-assist-architecture.svg"),
+    imageKind: "diagram",
+    imageAlt: "Visual Assist on-device accessibility architecture diagram",
     imageDisclosure:
-      "Representative portfolio visual; public repository details provide inspection context.",
+      "Architecture diagram generated from public repository structure; live camera and location context are not shown.",
     featured: true,
     category: "mobile",
-    startDate: "2026-01",
+    startDate: "2025-03",
     endDate: "Present",
     highlights: [
       "LiDAR obstacle detection with haptic feedback",
       "Vision OCR with speech synthesis for text reading",
-      "On-device Core ML for privacy-first processing",
+      "On-device Vision workflows for privacy-first processing",
       "VoiceOver-first accessibility with voice commands",
-      "68 unit tests for models and utilities",
+      "71 unit tests for models and utilities",
     ],
     isPrivate: false,
     metrics: [
@@ -206,15 +211,14 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/taskflow-calendar",
     liveUrl: null,
     image: withBasePath("/images/projects/taskflow.png"),
-    imageKind: "representative-visual",
-    imageAlt:
-      "Representative calendar planning interface visual for the Dynamic Calendar Application",
+    imageKind: "real-screenshot",
+    imageAlt: "Real Taskflow local demo calendar screenshot",
     imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
+      "Real local frontend screenshot captured with the repository mock-login flow and demo user state.",
     featured: true,
     category: "full-stack",
-    startDate: "2023-12",
-    endDate: "2023-12",
+    startDate: "2023-09",
+    endDate: "2025-05",
     highlights: [
       "NLP smart input with chrono-node and compromise",
       "738 automated tests (frontend/backend/integration)",
@@ -231,7 +235,7 @@ export const projects: Project[] = [
     id: "fast-mnist-nn",
     title: "Fast MNIST Neural Network",
     shortDescription:
-      "SIMD-accelerated C++ neural network: 97%+ accuracy, 5x faster inference with AVX-512 optimization.",
+      "C++ neural network for MNIST: 97%+ accuracy, benchmarked SIMD/OpenMP kernels, and an interactive React workbench.",
     fullDescription:
       "A high-performance C++ neural network for MNIST digit recognition featuring SIMD-accelerated matrix operations and OpenMP parallelization, with an interactive React web frontend.",
     techStack: [
@@ -244,11 +248,11 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/fast-mnist-nn",
     liveUrl: null,
     image: withBasePath("/images/projects/mnist.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative neural network benchmark visual for Fast MNIST",
+    imageKind: "real-screenshot",
+    imageAlt: "Real Fast MNIST React workbench screenshot",
     imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
-    featured: false,
+      "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
+    featured: true,
     category: "ai-ml",
     startDate: "2025-10",
     endDate: "2026-01",
@@ -261,80 +265,42 @@ export const projects: Project[] = [
     isPrivate: false,
     metrics: [
       { label: "Accuracy", value: "97%+ on MNIST" },
-      { label: "Speedup", value: "5x with AVX-512 SIMD" },
-    ],
-  },
-  {
-    id: "lifequest",
-    title: "LifeQuest",
-    shortDescription:
-      "Tauri-powered productivity RPG turning daily routines into map quests, gamifying life transitions.",
-    fullDescription:
-      "A desktop-first rebuild of a map-based quest game that turns real-world routines into missions for people navigating job loss or retirement, with Quest Coins and practical rewards.",
-    techStack: [
-      { name: "Tauri", color: "#24c8db" },
-      { name: "React", color: "#61dafb" },
-      { name: "NestJS", color: "#e0234e" },
-      { name: "PostgreSQL", color: "#336791" },
-      { name: "Prisma", color: "#2d3748" },
-    ],
-    githubUrl: "https://github.com/yadava5/lifequest",
-    liveUrl: null,
-    image: withBasePath("/images/projects/lifequest.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative quest workflow visual for LifeQuest",
-    imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
-    featured: false,
-    category: "full-stack",
-    startDate: "2025-04",
-    endDate: "2025-11",
-    highlights: [
-      "Quest loop with daily/weekly quests and Quest Coins",
-      "Tauri 2 + React 19 desktop app",
-      "NestJS API with PostgreSQL + Prisma",
-      "Optional AI-generated quests via OpenAI",
-    ],
-    isPrivate: false,
-    metrics: [
-      { label: "Gamification", value: "Quest Coins + daily missions" },
-      { label: "Stack", value: "Tauri 2 + React 19 + NestJS" },
+      { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
     ],
   },
   {
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
-      "Python/SQL pipeline processing 1M+ operational rows/datasets, reducing manual reconciliation effort.",
+      "Python/pandas pipeline consolidating Tableau Cloud metadata and Workday exports into a private-safe master inventory.",
     fullDescription:
       "Proprietary pipeline consolidating Tableau Cloud metadata and Workday report exports into a unified master inventory for Tableau Prep and dashboards.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "pandas", color: "#150458" },
-      { name: "SQL", color: "#f29111" },
       { name: "Tableau", color: "#e97627" },
     ],
     githubUrl: null,
     liveUrl: null,
-    image: withBasePath("/images/projects/pipeline.png"),
-    imageKind: "representative-visual",
+    image: withBasePath("/images/projects/pipeline-architecture.svg"),
+    imageKind: "diagram",
     imageAlt:
-      "Private-safe representative architecture visual for the Master Inventory Pipeline",
+      "Master Inventory Tableau and Workday pipeline architecture diagram",
     imageDisclosure:
-      "Private-safe representative visual; real institutional data and UI are not shown.",
+      "Private-safe architecture diagram; institutional records, raw exports, and internal UI are not shown.",
     featured: false,
     category: "data",
     startDate: "2025-06",
     endDate: "Present",
     highlights: [
-      "Processes 1M+ rows of operational data",
+      "Consolidates Tableau and Workday inventory records",
       "Unified schema with deterministic inventory IDs",
       "Tableau REST API integration",
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
     metrics: [
-      { label: "Data Volume", value: "1M+ operational rows" },
+      { label: "Inventory", value: "16.7k consolidated records" },
       { label: "Impact", value: "Reduced manual reconciliation effort" },
     ],
   },
@@ -342,7 +308,7 @@ export const projects: Project[] = [
     id: "policybot",
     title: "PolicyBot",
     shortDescription:
-      "RAG-powered policy chatbot on Slack: answers queries with cited sources from 50+ institutional documents.",
+      "RAG-powered policy chatbot on Slack that answers supported queries with cited sources and quote validation.",
     fullDescription:
       "A policy support chatbot that helps users interpret and apply Miami University data policies using OpenAI's Responses API with File Search and Slack Socket Mode integration.",
     techStack: [
@@ -353,12 +319,11 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: withBasePath("/images/projects/policybot.png"),
-    imageKind: "representative-visual",
-    imageAlt:
-      "Private-safe representative retrieval workflow visual for PolicyBot",
+    image: withBasePath("/images/projects/policybot-architecture.svg"),
+    imageKind: "diagram",
+    imageAlt: "PolicyBot retrieval and quote-validation architecture diagram",
     imageDisclosure:
-      "Private-safe representative visual; real institutional policy content and Slack data are not shown.",
+      "Private-safe architecture diagram; real institutional policy text and Slack messages are not shown.",
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
@@ -371,7 +336,7 @@ export const projects: Project[] = [
     ],
     isPrivate: true,
     metrics: [
-      { label: "Knowledge Base", value: "50+ institutional documents" },
+      { label: "Validation", value: "19/20 structured sweep" },
       { label: "Tech", value: "OpenAI RAG + Slack integration" },
     ],
   },
@@ -379,7 +344,7 @@ export const projects: Project[] = [
     id: "paid-internships",
     title: "Paid Internships Advocacy",
     shortDescription:
-      "Research-backed advocacy site with 3D scroll effects, peer-reviewed sources, and interactive data visualizations.",
+      "Research-backed advocacy site with 3D scroll effects, cited sources, and interactive data visualizations.",
     fullDescription:
       "An advocacy website promoting fair compensation for student internships, featuring immersive design, 3D scroll effects, and research-backed Chart.js visualizations.",
     techStack: [
@@ -392,10 +357,11 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/paid-internships-advocacy",
     liveUrl: "https://yadava5.github.io/paid-internships-advocacy",
     image: withBasePath("/images/projects/advocacy.png"),
-    imageKind: "representative-visual",
-    imageAlt: "Representative advocacy website visual for Paid Internships",
+    imageKind: "real-screenshot",
+    imageAlt:
+      "Real Paid Internships Advocacy data visualization page screenshot",
     imageDisclosure:
-      "Representative portfolio visual; public source and live site are linked where available.",
+      "Real screenshot from the public advocacy site data page with cited research charts.",
     featured: false,
     category: "other",
     startDate: "2025-01",
@@ -412,58 +378,24 @@ export const projects: Project[] = [
       { label: "Design", value: "3D parallax scroll effects" },
     ],
   },
-  {
-    id: "job-automator",
-    title: "Job Automator",
-    shortDescription:
-      "Playwright automation project exploring job matching, cover-letter drafting, and application tracking workflows.",
-    fullDescription:
-      "Automated job application system with Playwright browser automation, intelligent job matching, cover letter generation, and application tracking.",
-    techStack: [
-      { name: "JavaScript", color: "#f7df1e" },
-      { name: "Playwright", color: "#2edb73" },
-      { name: "Node.js", color: "#339933" },
-    ],
-    githubUrl: "https://github.com/yadava5/job-automator",
-    liveUrl: null,
-    image: withBasePath("/images/projects/job-automator.png"),
-    imageKind: "representative-visual",
-    imageAlt:
-      "Representative browser automation workflow visual for Job Automator",
-    imageDisclosure:
-      "Representative portfolio visual; source code is linked for public inspection.",
-    featured: false,
-    category: "other",
-    startDate: "2026-03",
-    endDate: "Present",
-    highlights: [
-      "Playwright browser automation for job application",
-      "Intelligent job matching algorithms",
-      "Automated cover letter generation",
-      "Application tracking and monitoring",
-    ],
-    isPrivate: false,
-    status: "recent",
-    statusLabel: "Recently Updated",
-    metrics: [
-      { label: "Automation", value: "Workflow automation prototype" },
-      { label: "Tech", value: "Playwright + AI cover letters" },
-    ],
-  },
 ];
+
+function isPublicPortfolioProject(project: Project): boolean {
+  return !project.isPrivate && project.portfolioVisible !== false;
+}
 
 /**
  * Get featured projects for the bento grid
  */
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.featured);
+  return projects.filter((p) => p.featured && isPublicPortfolioProject(p));
 }
 
 /**
  * Get all public projects
  */
 export function getPublicProjects(): Project[] {
-  return projects.filter((p) => !p.isPrivate);
+  return projects.filter(isPublicPortfolioProject);
 }
 
 /**
@@ -479,5 +411,7 @@ export function getProjectById(id: string): Project | undefined {
 export function getProjectsByCategory(
   category: Project["category"]
 ): Project[] {
-  return projects.filter((p) => p.category === category);
+  return projects.filter(
+    (p) => p.category === category && isPublicPortfolioProject(p)
+  );
 }

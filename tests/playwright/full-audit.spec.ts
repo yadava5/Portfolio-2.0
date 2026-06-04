@@ -340,6 +340,16 @@ test.describe("Full QA Audit", () => {
       }
     }
 
+    const persistenceTheme = THEMES[THEMES.length - 1];
+    await switchThemeAndWait(page, persistenceTheme);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      persistenceTheme.name,
+      { timeout: 10000 }
+    );
+    auditResult.crossTheme.persistence_works = true;
+
     auditResult.crossTheme.switcher_works = allWork;
     auditResult.crossTheme.issues = issues;
 

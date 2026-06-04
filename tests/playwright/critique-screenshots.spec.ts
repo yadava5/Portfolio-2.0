@@ -1,9 +1,5 @@
 import { test, Page } from "@playwright/test";
-import {
-  artifactPath,
-  THEMES,
-  switchThemeAndWait,
-} from "./portfolio-fixtures";
+import { artifactPath, THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 const SECTION_NAMES = [
   { selector: "#hero", name: "hero" },
@@ -24,7 +20,11 @@ async function scrollToElement(page: Page, selector: string) {
 }
 
 for (const theme of THEMES) {
-  test(`critique ${theme.name} - desktop`, async ({ page }) => {
+  test(`critique ${theme.name} - desktop`, async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "chromium-desktop",
+      "Desktop screenshots are captured by the desktop Playwright project."
+    );
     test.setTimeout(120000);
 
     // Load page
@@ -65,7 +65,11 @@ for (const theme of THEMES) {
     console.log(`Captured: ${fullPath}`);
   });
 
-  test(`critique ${theme.name} - mobile`, async ({ page }) => {
+  test(`critique ${theme.name} - mobile`, async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "chromium-mobile",
+      "Mobile screenshots are captured by the mobile Playwright project."
+    );
     test.setTimeout(120000);
 
     // Set mobile viewport

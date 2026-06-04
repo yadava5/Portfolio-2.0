@@ -7,8 +7,7 @@ import {
 
 // Enable video recording
 test.use({
-  video: { mode: "on", size: { width: 1440, height: 900 } },
-  viewport: { width: 1440, height: 900 },
+  video: "on",
 });
 
 test.describe("Theme Walkthroughs", () => {
@@ -39,11 +38,8 @@ test.describe("Theme Walkthroughs", () => {
       const steps = Math.ceil(totalHeight / (vh * 0.7));
 
       for (let i = 0; i <= steps; i++) {
-        await page.evaluate(
-          (y) => window.scrollTo({ top: y, behavior: "instant" }),
-          i * vh * 0.7
-        );
-        await page.waitForTimeout(400);
+        await page.mouse.wheel(0, vh * 0.7);
+        await page.waitForTimeout(350);
       }
 
       await page.waitForTimeout(500);
