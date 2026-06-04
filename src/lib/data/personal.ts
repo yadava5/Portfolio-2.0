@@ -27,7 +27,7 @@ export interface Education {
   field: string;
   /** Start date (YYYY-MM) */
   startDate: string;
-  /** End date (YYYY-MM or "Expected YYYY-MM") */
+  /** End date (YYYY-MM) */
   endDate: string;
   /** Relevant coursework */
   coursework: string[];
@@ -56,19 +56,25 @@ export const personalInfo = {
   /** Professional title/tagline */
   title: "ITSM Data Integration Student Associate",
   /** Short tagline for hero section */
-  tagline: "Data Pipelines • AI/ML • Full-Stack Development",
+  tagline:
+    "New-grad software engineer focused on data, ML systems, and full-stack reliability",
   /** Email address */
   email: "yadava5@miamioh.edu",
   /** Location */
   location: "Oxford, Ohio",
   /** Current availability */
-  availability: "Open to internships and new-grad roles",
+  availability: "Open to new-grad software, data, and ML engineering roles",
+  /** Professional portrait */
+  portrait: {
+    image: withBasePath("/images/profile/ayush-yadav-professional-portrait.png"),
+    alt: "Ayush Yadav professional portrait",
+  },
 
   /** Bio paragraphs for about section */
   bio: [
-    "Senior Computer Science student graduating May 2026, focused on data pipelines, applied machine learning, and building reliable software systems end-to-end.",
-    "I currently work as an ITSM Data Integration Student Associate at Miami University, where I build Python and data pipelines for Tableau/OAS and operational reporting, translate messy records into trusted datasets, and ship dashboards and automations that teams actually use.",
-    "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work—especially where performance, reliability, and clear user impact matter.",
+    "Computer Science graduate from Miami University focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
+    "I work as an ITSM Data Integration Student Associate at Miami University, where I build Python and data pipelines for Tableau/OAS and operational reporting, translate messy records into trusted datasets, and ship dashboards and automations that teams actually use.",
+    "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work, especially where performance, reliability, and clear user impact matter.",
   ],
 
   /** Resume file path */
@@ -148,7 +154,7 @@ export const siteMetadata = {
   title: "Ayush Yadav | Technical Operations Atlas",
   /** Site description */
   description:
-    "Technical Operations Atlas for Ayush Yadav: recruiter-ready software, data, and ML engineering proof with source-truth case studies, private-safe evidence, and current resume links.",
+    "Technical Operations Atlas for Ayush Yadav: new-grad software, data, and ML engineering proof with source-truth case studies, private-safe evidence, and current resume links.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */

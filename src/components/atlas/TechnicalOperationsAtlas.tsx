@@ -155,7 +155,8 @@ export function TechnicalOperationsAtlas() {
               Role target / {graduationDate}
             </p>
             <p className="mb-4 text-lg font-semibold text-zinc-100 md:text-2xl">
-              Software / Data / ML Engineering
+              New-grad software engineer focused on data, ML systems, and
+              full-stack reliability
             </p>
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-zinc-50 sm:text-5xl 2xl:text-6xl">
               Ayush Yadav builds reliable data, ML, and software systems.
@@ -178,12 +179,12 @@ export function TechnicalOperationsAtlas() {
             </div>
             <p className="mt-5 max-w-2xl text-sm leading-6 text-zinc-400 md:text-lg md:leading-7">
               <span className="sm:hidden">
-                Senior CS student building data pipelines, ML workflows,
-                full-stack systems, and accessible native products.
+                Computer Science graduate building data pipelines, ML
+                workflows, full-stack systems, and accessible native products.
               </span>
               <span className="hidden sm:inline">
-                Senior CS student focused on data pipelines, applied ML,
-                full-stack systems, performance work, and accessible native
+                Computer Science graduate focused on data pipelines, applied
+                ML, full-stack systems, performance work, and accessible native
                 products. Current work turns operational records, Tableau
                 metadata, and ML workflows into trusted datasets, dashboards,
                 and validated product surfaces.
@@ -250,10 +251,28 @@ export function TechnicalOperationsAtlas() {
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[0.8fr_1.2fr] md:px-8 lg:px-10">
             <AtlasSectionHeading
               eyebrow="Profile"
-              title="Senior CS student shipping data, ML, native, and full-stack systems."
+              title="Computer Science graduate shipping data, ML, native, and full-stack systems."
               description="The site uses one source-truth identity, not generated concept copy."
             />
             <div className="grid gap-5">
+              <div className="grid gap-5 rounded border border-zinc-800 bg-zinc-950/70 p-5 sm:grid-cols-[140px_1fr] sm:items-center">
+                <img
+                  src={personalInfo.portrait.image}
+                  alt={personalInfo.portrait.alt}
+                  className="aspect-[2/3] w-32 rounded border border-zinc-800 object-cover object-top sm:w-36"
+                />
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                    Profile
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-zinc-50">
+                    {personalInfo.name}
+                  </p>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    {personalInfo.availability}
+                  </p>
+                </div>
+              </div>
               {personalInfo.bio.map((paragraph) => (
                 <p
                   key={paragraph}
@@ -271,7 +290,8 @@ export function TechnicalOperationsAtlas() {
                     {education[0].degree} in {education[0].field}
                   </p>
                   <p className="mt-1 text-sm text-zinc-400">
-                    {education[0].school} - Expected {graduationDate}
+                    B.S. Computer Science, {education[0].school},{" "}
+                    {graduationDate}
                   </p>
                 </div>
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">

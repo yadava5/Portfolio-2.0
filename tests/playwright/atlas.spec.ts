@@ -4,6 +4,7 @@ import {
   CASE_STUDY_IDS,
   DEFAULT_THEME,
   EXPECTED_CONTENT,
+  EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
   PROHIBITED_GENERATED_CONTENT,
   RECRUITER_HERO_LINKS,
@@ -19,6 +20,13 @@ const REQUIRED_SECTIONS = [
   "skills",
   "testimonials",
   "contact",
+];
+
+const STALE_IDENTITY_COPY = [
+  "Senior CS student",
+  "Senior Computer Science student",
+  "Expected May 2026",
+  "Open to internships",
 ];
 
 const CASE_STUDY_SECTIONS = [
@@ -102,6 +110,33 @@ test.describe("Technical Operations Atlas", () => {
     ).toHaveCount(0);
   });
 
+  test("shows graduate identity and professional portrait", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    await expect(page.locator("#hero")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.role
+    );
+    await expect(page.locator("#about")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.education
+    );
+    await expect(page.locator("body")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.availability
+    );
+    await expect(
+      page.getByRole("img", {
+        name: EXPECTED_GRADUATE_IDENTITY.portraitAlt,
+      })
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    for (const stale of STALE_IDENTITY_COPY) {
+      expect(bodyText).not.toContain(stale);
+    }
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {
@@ -115,7 +150,7 @@ test.describe("Technical Operations Atlas", () => {
     );
     await expectInFirstViewport(
       page,
-      page.locator("#hero").getByText("Software / Data / ML Engineering")
+      page.locator("#hero").getByText(EXPECTED_GRADUATE_IDENTITY.role)
     );
 
     for (const label of RECRUITER_HERO_LINKS) {

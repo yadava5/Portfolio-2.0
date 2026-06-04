@@ -87,6 +87,13 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
+export const EXPECTED_GRADUATE_IDENTITY = {
+  role: "New-grad software engineer",
+  education: "B.S. Computer Science, Miami University, May 2026",
+  availability: "Open to new-grad software, data, and ML engineering roles",
+  portraitAlt: "Ayush Yadav professional portrait",
+};
+
 export const EXPECTED_LINKS = {
   github: socialLinks.find((link) => link.name === "GitHub")?.url,
   linkedin: socialLinks.find((link) => link.name === "LinkedIn")?.url,
