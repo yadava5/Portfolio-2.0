@@ -86,6 +86,22 @@ test.describe("Technical Operations Atlas", () => {
     }
   });
 
+  test("public surface exposes Atlas only", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      DEFAULT_THEME
+    );
+    await expect(
+      page.getByRole("button", { name: /select theme/i })
+    ).toHaveCount(0);
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {

@@ -37,21 +37,10 @@
 
 - [ ] **Step 1: Add failing Atlas-only public surface assertions**
 
-In `tests/playwright/atlas.spec.ts`, add this constant near `REQUIRED_SECTIONS`:
-
-```ts
-const STALE_IDENTITY_COPY = [
-  "Senior CS student",
-  "Senior Computer Science student",
-  "Expected May 2026",
-  "Open to internships",
-];
-```
-
 Add this test inside `test.describe("Technical Operations Atlas", () => { ... })` after the default identity test:
 
 ```ts
-test("public surface exposes Atlas only and no stale student copy", async ({
+test("public surface exposes Atlas only", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -65,11 +54,6 @@ test("public surface exposes Atlas only and no stale student copy", async ({
   await expect(page.getByRole("button", { name: /select theme/i })).toHaveCount(
     0
   );
-
-  const bodyText = await page.locator("body").innerText();
-  for (const stale of STALE_IDENTITY_COPY) {
-    expect(bodyText).not.toContain(stale);
-  }
 });
 ```
 
@@ -103,7 +87,7 @@ Run:
 npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts tests/playwright/interactions.spec.ts
 ```
 
-Expected: FAIL. The failure should show that stale student copy still exists and the desktop theme selector is still rendered.
+Expected: FAIL. The failure should show that the desktop theme selector is still rendered.
 
 - [ ] **Step 4: Limit public theme IDs to Atlas**
 
@@ -156,7 +140,7 @@ npm run typecheck
 npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts tests/playwright/interactions.spec.ts
 ```
 
-Expected: TypeScript passes. The Playwright tests may still fail only because graduate copy has not been updated; the theme selector assertions should pass.
+Expected: TypeScript passes. The Playwright tests pass for the Atlas-only public surface.
 
 - [ ] **Step 7: Commit Task 1**
 
@@ -189,6 +173,17 @@ export const EXPECTED_GRADUATE_IDENTITY = {
 };
 ```
 
+In `tests/playwright/atlas.spec.ts`, add this constant near `REQUIRED_SECTIONS`:
+
+```ts
+const STALE_IDENTITY_COPY = [
+  "Senior CS student",
+  "Senior Computer Science student",
+  "Expected May 2026",
+  "Open to internships",
+];
+```
+
 In `tests/playwright/atlas.spec.ts`, add `EXPECTED_GRADUATE_IDENTITY` to the import list from `./portfolio-fixtures`.
 
 Add this test after the single-theme public surface test:
@@ -212,6 +207,11 @@ test("shows graduate identity and professional portrait", async ({ page }) => {
       name: EXPECTED_GRADUATE_IDENTITY.portraitAlt,
     })
   ).toBeVisible();
+
+  const bodyText = await page.locator("body").innerText();
+  for (const stale of STALE_IDENTITY_COPY) {
+    expect(bodyText).not.toContain(stale);
+  }
 });
 ```
 

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { isMobileViewport, THEME_IDS } from "./portfolio-fixtures";
+import { DEFAULT_THEME } from "./portfolio-fixtures";
 
 const NAV_SECTIONS = [
   { id: "about", label: "About" },
@@ -19,34 +19,18 @@ test.describe("User Interactions", () => {
     await page.waitForTimeout(500);
   });
 
-  test.describe("Theme Switching via data-theme attribute", () => {
-    test.setTimeout(60000);
+  test.describe("Single Atlas Theme", () => {
+    test.setTimeout(30000);
 
-    for (const theme of THEME_IDS) {
-      test(`can switch to ${theme} and verify data-theme attribute is applied`, async ({
-        page,
-      }) => {
-        // Set theme
-        await page.evaluate((themeName) => {
-          document.documentElement.setAttribute("data-theme", themeName);
-        }, theme);
-
-        await page.waitForTimeout(300);
-
-        // Verify data-theme attribute is set
-        const dataTheme = await page.evaluate(() =>
-          document.documentElement.getAttribute("data-theme")
-        );
-        expect(dataTheme).toBe(theme);
-
-        // Verify the [data-theme] selector matches (CSS rule exists)
-        const hasMatchingRule = await page.evaluate((themeName) => {
-          const el = document.documentElement;
-          return el.matches(`[data-theme="${themeName}"]`);
-        }, theme);
-        expect(hasMatchingRule).toBe(true);
-      });
-    }
+    test("no public theme selector is rendered", async ({ page }) => {
+      await expect(page.locator("html")).toHaveAttribute(
+        "data-theme",
+        DEFAULT_THEME
+      );
+      await expect(
+        page.getByRole("button", { name: /select theme/i })
+      ).toHaveCount(0);
+    });
   });
 
   test.describe("Navigation", () => {
@@ -202,72 +186,6 @@ test.describe("User Interactions", () => {
         href?.includes("content") ||
         href?.includes("skip");
       expect(isValidTarget).toBe(true);
-    });
-  });
-
-  test.describe("Theme Switcher Button", () => {
-    test.setTimeout(30000);
-
-    test("theme switcher button exists and can be found", async ({ page }) => {
-      const themeButton = page.locator("button[aria-label*='theme' i]").first();
-
-      if (await isMobileViewport(page)) {
-        await expect(themeButton).toBeHidden();
-        return;
-      }
-
-      await expect(themeButton).toBeVisible();
-    });
-
-    test("clicking theme switcher reveals dropdown/menu", async ({
-      page,
-    }) => {
-      // Scroll down slightly to ensure button is not obscured
-      await page.evaluate(() => window.scrollTo({ top: 200 }));
-      await page.waitForTimeout(200);
-
-      const themeButton = page.locator("button[aria-label*='theme' i]").first();
-
-      if (await isMobileViewport(page)) {
-        await expect(themeButton).toBeHidden();
-        return;
-      }
-
-      // Click theme switcher
-      await themeButton.click({ force: true });
-      await page.waitForTimeout(400);
-
-      // Look for dropdown/menu that should appear
-      const dropdown = page.locator("#theme-switcher-menu");
-      await expect(dropdown).toBeVisible();
-
-      // At least one theme option should be visible
-      const optionsVisible = await page.locator("[aria-pressed]").count();
-      expect(optionsVisible).toBeGreaterThan(0);
-    });
-
-    test("theme switcher dropdown contains all available themes", async ({
-      page,
-    }) => {
-      await page.evaluate(() => window.scrollTo({ top: 200 }));
-      await page.waitForTimeout(200);
-
-      const themeButton = page.locator("button[aria-label*='theme' i]").first();
-
-      if (await isMobileViewport(page)) {
-        await expect(themeButton).toBeHidden();
-        return;
-      }
-
-      await themeButton.click({ force: true });
-      await page.waitForTimeout(400);
-
-      // Count theme options
-      const options = page.locator("button[aria-pressed]");
-      const optionCount = await options.count();
-
-      // Should have at least 5 themes
-      expect(optionCount).toBeGreaterThanOrEqual(5);
     });
   });
 });
