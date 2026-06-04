@@ -103,6 +103,9 @@ export const EXPECTED_SELECTED_WORK_ORDER = [
 
 export const EXPECTED_PROOF_ARTIFACTS = {
   automlPoster: "Expo poster proof",
+  automlPresenterProof: "Presenter stack proof",
+  automlPresenterEvidence:
+    "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
   fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",

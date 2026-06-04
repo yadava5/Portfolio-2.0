@@ -159,6 +159,12 @@ test.describe("Technical Operations Atlas", () => {
       page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPoster)
     ).toBeVisible();
     await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterEvidence)
+    ).toBeVisible();
+    await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.automlContribution)
     ).toBeVisible();
 

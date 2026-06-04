@@ -41,7 +41,8 @@ export interface CaseStudyArtifact {
     | "benchmark"
     | "repo"
     | "demo"
-    | "poster";
+    | "poster"
+    | "presentation";
   label: string;
   href: string;
 }
@@ -308,7 +309,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Evaluation",
         evidence:
-          "Portfolio source data records evaluation and benchmarking with Playwright.",
+          "Presenter slide 8 records the stack and validation posture: all-green tests, coverage, logs, packages, and migrations.",
       },
       {
         label: "Runtime",
@@ -343,6 +344,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         type: "real-screenshot",
         label: "Private-safe experiment registry screenshot",
         href: withBasePath("/images/projects/automl.png"),
+      },
+      {
+        type: "presentation",
+        label: "Presenter stack proof",
+        href: withBasePath("/images/projects/agentic-automl-stack-proof.png"),
       },
       {
         type: "poster",
