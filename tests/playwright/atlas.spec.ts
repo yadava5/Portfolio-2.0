@@ -231,6 +231,33 @@ test.describe("Technical Operations Atlas", () => {
     ).toBe(true);
   });
 
+  test("mobile hero keeps CTAs visible without horizontal overflow", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.locator("#hero").waitFor({ state: "attached" });
+
+    for (const label of RECRUITER_HERO_LINKS) {
+      await expectInFirstViewport(
+        page,
+        page.locator("#hero").getByRole("link", { name: new RegExp(label) })
+      );
+    }
+
+    const scrollCheck = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+      heroHeight: document.querySelector("#hero")?.getBoundingClientRect()
+        .height,
+      viewportHeight: window.innerHeight,
+    }));
+
+    expect(scrollCheck.overflow).toBe(false);
+    expect(scrollCheck.heroHeight ?? 0).toBeLessThanOrEqual(
+      scrollCheck.viewportHeight * 1.35
+    );
+  });
+
   test("does not expose generated concept hallucinations", async ({ page }) => {
     await page.goto("/");
     await page.locator("#hero").waitFor({ state: "attached" });

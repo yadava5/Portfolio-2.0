@@ -41,13 +41,19 @@ const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
 
 const proofMetrics = [
   {
-    icon: Database,
-    value: "1.9M+",
-    label: "Tableau summary rows",
-    detail: "Private OAS/Tableau data workflow proof",
+    icon: Workflow,
+    value: "18,403",
+    label: "AutoML ledger events",
+    detail: "Expo poster proof from Agentic AutoML",
   },
   {
-    icon: Workflow,
+    icon: Cpu,
+    value: "3.5x",
+    label: "Dot-kernel speedup",
+    detail: "Fast MNIST committed benchmark proof",
+  },
+  {
+    icon: ShieldCheck,
     value: "738",
     label: "Automated tests",
     detail: "Dynamic Calendar frontend, backend, and integration proof",
@@ -57,12 +63,6 @@ const proofMetrics = [
     value: "71",
     label: "iOS tests",
     detail: "Visual Assist model and utility coverage",
-  },
-  {
-    icon: FileText,
-    value: "19/20",
-    label: "Policy validation",
-    detail: "PolicyBot structured validation sweep",
   },
 ];
 
@@ -148,7 +148,7 @@ export function TechnicalOperationsAtlas() {
       <div className="relative z-10">
         <section
           id="hero"
-          className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-12 md:min-h-screen md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10"
+          className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-10 md:min-h-[88vh] md:grid-cols-[0.92fr_1.08fr] md:px-8 lg:px-10"
         >
           <div className="flex flex-col justify-center">
             <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
@@ -200,14 +200,14 @@ export function TechnicalOperationsAtlas() {
               <ActionLink href={getSocialUrl("LinkedIn")} label="LinkedIn" />
               <ActionLink href="#contact" label="Contact" />
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:gap-3">
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-6 sm:grid-cols-4 sm:gap-3">
               {proofMetrics.map((metric) => (
                 <MetricCard key={metric.label} {...metric} />
               ))}
             </div>
           </div>
 
-          <div className="hidden flex-col justify-center gap-4 md:flex">
+          <div className="hidden flex-col justify-center gap-5 md:flex">
             <PipelineMap steps={pipelineSteps} />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
@@ -247,7 +247,7 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="about" className="border-y border-zinc-900 bg-zinc-950/50">
+        <section id="about" className="border-y border-zinc-900 bg-zinc-950/65">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[0.8fr_1.2fr] md:px-8 lg:px-10">
             <AtlasSectionHeading
               eyebrow="Profile"
@@ -336,7 +336,7 @@ export function TechnicalOperationsAtlas() {
 
         <section
           id="experience"
-          className="border-y border-zinc-900 bg-zinc-950/50"
+          className="border-y border-zinc-900 bg-[#0d1115]"
         >
           <div className="mx-auto max-w-7xl px-5 py-20 md:px-8 lg:px-10">
             <AtlasSectionHeading
@@ -538,14 +538,14 @@ export function TechnicalOperationsAtlas() {
           </div>
         </section>
 
-        <section id="contact" className="border-t border-zinc-900 bg-zinc-950">
+        <section id="contact" className="border-t border-zinc-900 bg-[#080a0c]">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[1fr_0.9fr] md:px-8 lg:px-10">
             <div>
               <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
                 Contact
               </p>
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 md:text-5xl">
-                Open a channel for software, data, or ML engineering work.
+                Open to new-grad software, data, and ML engineering roles.
               </h2>
               <div className="mt-8 grid gap-3 sm:grid-cols-2">
                 <ActionLink

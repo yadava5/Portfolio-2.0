@@ -128,8 +128,14 @@ test.describe("Horizontal Project Rail", () => {
     );
     const finalFeaturedProject = FEATURED_PROJECTS.at(-1);
 
-    if (!liquidGlassTheme || !finalFeaturedProject) {
+    if (!liquidGlassTheme) {
       test.skip(true, "Liquid Glass is no longer a public portfolio theme");
+      return;
+    }
+
+    if (!finalFeaturedProject) {
+      test.skip(true, "No featured project is available for the rail check");
+      return;
     }
 
     await page.goto("/");

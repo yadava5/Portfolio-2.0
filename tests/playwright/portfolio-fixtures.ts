@@ -115,17 +115,17 @@ export const EXPECTED_LINKS = {
 };
 
 export const ATLAS_ALLOWED_METRICS = [
-  "1.9M+",
-  "738",
-  "97%+",
   "3.5x",
+  "18,403",
+  "738",
+  "71",
   "71 tests",
   "19/20",
 ];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
 
-export const RECRUITER_HERO_METRICS = ["1.9M+", "738", "71", "19/20"];
+export const RECRUITER_HERO_METRICS = ["18,403", "3.5x", "738", "71"];
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [
   "automl",
