@@ -25,7 +25,7 @@
 - Inspect only: `/Users/ayush/Documents/Projects/fast-mnist-nn`
 - Create output only: `output/playwright/fast-mnist-proof-polish/`
 
-- [ ] **Step 1: Confirm the source repo state**
+- [x] **Step 1: Confirm the source repo state**
 
 Run:
 
@@ -36,7 +36,7 @@ git -C /Users/ayush/Documents/Projects/fast-mnist-nn log --oneline -5
 
 Expected: record the current branch/head and note that uncommitted web changes exist; do not edit or revert them.
 
-- [ ] **Step 2: Verify Fast MNIST benchmark source truth**
+- [x] **Step 2: Verify Fast MNIST benchmark source truth**
 
 Run:
 
@@ -47,7 +47,7 @@ sed -n '1,120p' /Users/ayush/Documents/Projects/fast-mnist-nn/BENCHMARKS.md
 
 Expected: committed benchmark evidence supports `3.50x` for dot 256 and shows classify throughput where OpenMP/native does not improve the classifier path.
 
-- [ ] **Step 3: Run Fast MNIST web checks**
+- [x] **Step 3: Run Fast MNIST web checks**
 
 Run from `/Users/ayush/Documents/Projects/fast-mnist-nn/web`:
 
@@ -58,7 +58,7 @@ npm run test:e2e -- --project=desktop
 
 Expected: if either command fails, use superpowers:systematic-debugging to identify whether the failure is from the current dirty Fast MNIST worktree or from a reproducible demo issue. Do not change Fast MNIST from this portfolio branch.
 
-- [ ] **Step 4: Capture fresh browser evidence**
+- [x] **Step 4: Capture fresh browser evidence**
 
 Create an artifact directory:
 
@@ -98,11 +98,11 @@ Expected: screenshots are real current Fast MNIST UI, readable at portfolio card
 - Replace: `public/images/projects/mnist.png`
 - Create: `docs/superpowers/evidence/2026-06-04-fast-mnist-proof-polish.md`
 
-- [ ] **Step 1: Choose the strongest current screenshot**
+- [x] **Step 1: Choose the strongest current screenshot**
 
 Use the classifier screenshot when it clearly shows prediction/activation proof. Use the performance screenshot when it better supports the benchmark story. Do not use hero-only art as the primary portfolio proof.
 
-- [ ] **Step 2: Resize the chosen screenshot deterministically**
+- [x] **Step 2: Resize the chosen screenshot deterministically**
 
 Run from the portfolio repo:
 
@@ -125,7 +125,7 @@ NODE
 
 If `fast-mnist-performance.png` is the chosen source, replace the `input` path in the command with that file.
 
-- [ ] **Step 3: Write the evidence note**
+- [x] **Step 3: Write the evidence note**
 
 Create `docs/superpowers/evidence/2026-06-04-fast-mnist-proof-polish.md` with:
 
@@ -141,7 +141,7 @@ Create `docs/superpowers/evidence/2026-06-04-fast-mnist-proof-polish.md` with:
 - Disclosure requirement: portfolio copy must say the screenshot is a real local web demo and benchmark claims come from committed benchmark data.
 ```
 
-- [ ] **Step 4: Commit asset evidence**
+- [x] **Step 4: Commit asset evidence**
 
 Run:
 
@@ -160,7 +160,7 @@ git commit -m "docs: capture fast mnist proof evidence"
 - Modify: `tests/playwright/portfolio-fixtures.ts`
 - Modify: `tests/playwright/atlas.spec.ts`
 
-- [ ] **Step 1: Keep supported Fast MNIST claims only**
+- [x] **Step 1: Keep supported Fast MNIST claims only**
 
 Verify these strings remain in `src/lib/data/projects.ts`:
 
@@ -176,7 +176,7 @@ Verify unsupported strings are absent:
 AVX-512 inference
 ```
 
-- [ ] **Step 2: Tighten Fast MNIST disclosure copy if needed**
+- [x] **Step 2: Tighten Fast MNIST disclosure copy if needed**
 
 If Task 1 proves the demo currently runs in fallback mode, keep:
 
@@ -192,7 +192,7 @@ imageDisclosure:
   "Real local web workbench screenshot backed by the Fast MNIST runtime; benchmark claims are sourced from committed benchmark data.",
 ```
 
-- [ ] **Step 3: Add a focused Fast MNIST proof regression test**
+- [x] **Step 3: Add a focused Fast MNIST proof regression test**
 
 In `tests/playwright/atlas.spec.ts`, extend the existing artifact-backed proof test or add a Fast MNIST-specific assertion that `/projects/fast-mnist-nn/` contains:
 
@@ -203,7 +203,7 @@ Benchmark evidence
 3.50x dot-kernel speedup
 ```
 
-- [ ] **Step 4: Commit data/test updates**
+- [x] **Step 4: Commit data/test updates**
 
 Run:
 
@@ -222,7 +222,7 @@ Skip this commit if Task 3 produces no source or test changes.
 - Inspect output: `output/playwright/fast-mnist-proof-polish/`
 - Modify only if needed: `tests/playwright/*` or Fast MNIST portfolio data files
 
-- [ ] **Step 1: Run static gates**
+- [x] **Step 1: Run static gates**
 
 Run:
 
@@ -234,7 +234,7 @@ npm run format:check
 
 Expected: all pass.
 
-- [ ] **Step 2: Run focused Playwright**
+- [x] **Step 2: Run focused Playwright**
 
 Run:
 
@@ -245,7 +245,7 @@ npm run test:e2e:score -- --project=chromium-desktop
 
 Expected: focused tests pass; score remains 10 or any deduction is investigated before continuing.
 
-- [ ] **Step 3: Inspect the portfolio route with Playwright CLI**
+- [x] **Step 3: Inspect the portfolio route with Playwright CLI**
 
 Start the portfolio dev server:
 
@@ -267,7 +267,7 @@ export PWCLI="$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh"
 
 Expected: Fast MNIST image is readable, disclosure is visible on card/detail surfaces, and no stale unsupported speed claim appears.
 
-- [ ] **Step 4: Stop servers and commit validation-only fixes**
+- [x] **Step 4: Stop servers and commit validation-only fixes**
 
 Stop any dev servers on ports 3000 and 5173. If validation required only test or copy corrections, commit them separately:
 
@@ -282,11 +282,18 @@ Skip this commit if no files changed.
 
 ## Final Verification Checklist
 
-- [ ] Fast MNIST source repo was inspected without modifying or reverting its dirty worktree.
-- [ ] Fast MNIST web demo build/test result is recorded.
-- [ ] Fresh screenshots exist under `output/playwright/fast-mnist-proof-polish/`.
-- [ ] `public/images/projects/mnist.png` is a current, real Fast MNIST proof image if the new capture is better than the existing asset.
-- [ ] Portfolio copy does not claim unsupported broad faster inference.
-- [ ] Fast MNIST case study exposes screenshot, release, and benchmark proof.
-- [ ] Portfolio typecheck, lint, format, focused Playwright, and score gates pass.
-- [ ] Work is split into multiple focused commits.
+- [x] Fast MNIST source repo was inspected without modifying or reverting its dirty worktree.
+- [x] Fast MNIST web demo build/test result is recorded.
+- [x] Fresh screenshots exist under `output/playwright/fast-mnist-proof-polish/`.
+- [x] `public/images/projects/mnist.png` is a current, real Fast MNIST proof image if the new capture is better than the existing asset.
+- [x] Portfolio copy does not claim unsupported broad faster inference.
+- [x] Fast MNIST case study exposes screenshot, release, and benchmark proof.
+- [x] Portfolio typecheck, lint, format, focused Playwright, and score gates pass.
+- [x] Work is split into multiple focused commits.
+
+## Execution Notes
+
+- Fast MNIST source build passed.
+- Fast MNIST desktop Playwright currently has one source-repo failure: the hero media element is `150px` tall while the test expects `>160px`. This portfolio branch did not edit the dirty Fast MNIST repo.
+- Portfolio evidence uses the classifier screenshot because it proves the real workbench, sample prediction, confidence bars, and honest runtime boundary.
+- Portfolio validation passed with `npm run typecheck`, `npm run lint`, `npm run format:check`, focused desktop Playwright, and the Atlas score gate.
