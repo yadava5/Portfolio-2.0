@@ -35,7 +35,7 @@
 - Modify: `src/config/themes.ts`
 - Modify: `src/app/layout.tsx`
 
-- [ ] **Step 1: Add failing Atlas-only public surface assertions**
+- [x] **Step 1: Add failing Atlas-only public surface assertions**
 
 Add this test inside `test.describe("Technical Operations Atlas", () => { ... })` after the default identity test:
 
@@ -57,7 +57,7 @@ test("public surface exposes Atlas only", async ({
 });
 ```
 
-- [ ] **Step 2: Replace theme-switcher interaction tests**
+- [x] **Step 2: Replace theme-switcher interaction tests**
 
 In `tests/playwright/interactions.spec.ts`, delete the entire `test.describe("Theme Switching via data-theme attribute", ...)` block and replace it with:
 
@@ -79,7 +79,7 @@ test.describe("Single Atlas Theme", () => {
 
 In the same file, delete the entire `test.describe("Theme Switcher Button", ...)` block at the bottom. No replacement is needed because the public requirement is now covered by the new single-theme test and `atlas.spec.ts`.
 
-- [ ] **Step 3: Run the failing tests**
+- [x] **Step 3: Run the failing tests**
 
 Run:
 
@@ -89,7 +89,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts te
 
 Expected: FAIL. The failure should show that the desktop theme selector is still rendered.
 
-- [ ] **Step 4: Limit public theme IDs to Atlas**
+- [x] **Step 4: Limit public theme IDs to Atlas**
 
 In `src/config/themes.ts`, replace:
 
@@ -105,7 +105,7 @@ export const themeIds: ThemeId[] = ["technical-operations-atlas"];
 
 Keep the existing `ThemeId` union and `themeConfigs` object unchanged in this pass so legacy files continue to typecheck while the public provider receives only Atlas.
 
-- [ ] **Step 5: Remove the public theme switcher from layout**
+- [x] **Step 5: Remove the public theme switcher from layout**
 
 In `src/app/layout.tsx`, remove:
 
@@ -131,7 +131,7 @@ with:
  *   8. Atlas-only public identity; legacy visual modes are not rendered
 ```
 
-- [ ] **Step 6: Verify Task 1**
+- [x] **Step 6: Verify Task 1**
 
 Run:
 
@@ -142,7 +142,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts te
 
 Expected: TypeScript passes. The Playwright tests pass for the Atlas-only public surface.
 
-- [ ] **Step 7: Commit Task 1**
+- [x] **Step 7: Commit Task 1**
 
 ```bash
 git add src/config/themes.ts src/app/layout.tsx tests/playwright/atlas.spec.ts tests/playwright/interactions.spec.ts
@@ -160,7 +160,7 @@ git commit -m "refactor: expose atlas as the only public theme"
 - Modify: `src/components/atlas/TechnicalOperationsAtlas.tsx`
 - Create: `public/images/profile/ayush-yadav-professional-portrait.png`
 
-- [ ] **Step 1: Add failing graduate identity and portrait assertions**
+- [x] **Step 1: Add failing graduate identity and portrait assertions**
 
 In `tests/playwright/portfolio-fixtures.ts`, add:
 
@@ -215,7 +215,7 @@ test("shows graduate identity and professional portrait", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Run the failing identity test**
+- [x] **Step 2: Run the failing identity test**
 
 Run:
 
@@ -225,7 +225,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts
 
 Expected: FAIL because the app still says senior student, expected graduation, and has no portrait image.
 
-- [ ] **Step 3: Copy the selected portrait asset**
+- [x] **Step 3: Copy the selected portrait asset**
 
 Run:
 
@@ -237,7 +237,7 @@ file public/images/profile/ayush-yadav-professional-portrait.png
 
 Expected: `PNG image data, 1024 x 1536, 8-bit/color RGB`.
 
-- [ ] **Step 4: Update personal source truth**
+- [x] **Step 4: Update personal source truth**
 
 In `src/lib/data/personal.ts`, update the `personalInfo` object with these values:
 
@@ -279,7 +279,7 @@ Update `siteMetadata.description` to:
     "Technical Operations Atlas for Ayush Yadav: new-grad software, data, and ML engineering proof with source-truth case studies, private-safe evidence, and current resume links.",
 ```
 
-- [ ] **Step 5: Update Atlas hero and about copy**
+- [x] **Step 5: Update Atlas hero and about copy**
 
 In `src/components/atlas/TechnicalOperationsAtlas.tsx`, replace the hero role text:
 
@@ -325,7 +325,7 @@ with:
 {education[0].school} - Graduated {graduationDate}
 ```
 
-- [ ] **Step 6: Add the portrait to the About section**
+- [x] **Step 6: Add the portrait to the About section**
 
 In `src/components/atlas/TechnicalOperationsAtlas.tsx`, inside the `#about` section, replace:
 
@@ -357,7 +357,7 @@ with:
   </div>
 ```
 
-- [ ] **Step 7: Verify Task 2**
+- [x] **Step 7: Verify Task 2**
 
 Run:
 
@@ -368,7 +368,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts
 
 Expected: TypeScript passes and Atlas tests pass for graduate identity, portrait, single-theme public surface, required sections, and generated-content guardrails.
 
-- [ ] **Step 8: Commit Task 2**
+- [x] **Step 8: Commit Task 2**
 
 ```bash
 git add public/images/profile/ayush-yadav-professional-portrait.png src/lib/data/personal.ts src/components/atlas/TechnicalOperationsAtlas.tsx tests/playwright/portfolio-fixtures.ts tests/playwright/atlas.spec.ts
@@ -386,7 +386,7 @@ git commit -m "feat: update atlas graduate identity and portrait"
 - Modify: `src/lib/data/projectCaseStudies.ts`
 - Create: `public/images/projects/agentic-automl-poster-proof.png`
 
-- [ ] **Step 1: Add failing project hierarchy and artifact assertions**
+- [x] **Step 1: Add failing project hierarchy and artifact assertions**
 
 In `tests/playwright/portfolio-fixtures.ts`, add:
 
@@ -444,7 +444,7 @@ test("AutoML and Fast MNIST case studies expose artifact-backed proof", async ({
 });
 ```
 
-- [ ] **Step 2: Run the failing proof tests**
+- [x] **Step 2: Run the failing proof tests**
 
 Run:
 
@@ -454,7 +454,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts
 
 Expected: FAIL because AutoML is not first, Fast MNIST is not second, and the new proof artifacts are absent.
 
-- [ ] **Step 3: Render the AutoML poster proof image**
+- [x] **Step 3: Render the AutoML poster proof image**
 
 Run:
 
@@ -466,7 +466,7 @@ file public/images/projects/agentic-automl-poster-proof.png
 
 Expected: `PNG image data` for `public/images/projects/agentic-automl-poster-proof.png`.
 
-- [ ] **Step 4: Reorder the primary project data**
+- [x] **Step 4: Reorder the primary project data**
 
 In `src/lib/data/projects.ts`, move the full `automl` object to the first position in `projects`, move the full `fast-mnist-nn` object to the second position, keep `visual-assist` third, and move `jobtracker` fourth.
 
@@ -478,7 +478,7 @@ Set Fast MNIST to featured:
 
 Keep `portfolioVisible` absent or `true`; do not re-add LifeQuest or Job Automator to recruiter-facing order.
 
-- [ ] **Step 5: Reorder case studies**
+- [x] **Step 5: Reorder case studies**
 
 In `src/lib/data/projectCaseStudies.ts`, reorder `projectCaseStudies` so these objects appear first:
 
@@ -491,7 +491,7 @@ projectId: "jobtracker"
 
 Keep `taskflow-calendar`, `master-inventory`, and `policybot` after those four.
 
-- [ ] **Step 6: Add AutoML poster and contribution proof**
+- [x] **Step 6: Add AutoML poster and contribution proof**
 
 In the AutoML case study object in `src/lib/data/projectCaseStudies.ts`, add these validation entries:
 
@@ -524,7 +524,7 @@ Extend the `CaseStudyArtifact["type"]` union near the top of the file:
     | "poster";
 ```
 
-- [ ] **Step 7: Add Fast MNIST release and benchmark artifacts**
+- [x] **Step 7: Add Fast MNIST release and benchmark artifacts**
 
 In the Fast MNIST case study `artifacts` array, add:
 
@@ -541,7 +541,7 @@ In the Fast MNIST case study `artifacts` array, add:
       },
 ```
 
-- [ ] **Step 8: Verify Task 3**
+- [x] **Step 8: Verify Task 3**
 
 Run:
 
@@ -552,7 +552,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts te
 
 Expected: TypeScript passes. Atlas tests pass. Nav/image tests pass with the new poster asset returning `200`.
 
-- [ ] **Step 9: Commit Task 3**
+- [x] **Step 9: Commit Task 3**
 
 ```bash
 git add public/images/projects/agentic-automl-poster-proof.png src/lib/data/projects.ts src/lib/data/projectCaseStudies.ts tests/playwright/portfolio-fixtures.ts tests/playwright/atlas.spec.ts
@@ -568,7 +568,7 @@ git commit -m "feat: promote atlas proof assets"
 - Modify: `tests/playwright/atlas.spec.ts`
 - Modify: `src/components/atlas/TechnicalOperationsAtlas.tsx`
 
-- [ ] **Step 1: Update proof metric expectations**
+- [x] **Step 1: Update proof metric expectations**
 
 In `tests/playwright/portfolio-fixtures.ts`, replace `ATLAS_ALLOWED_METRICS` with:
 
@@ -588,7 +588,7 @@ Replace `RECRUITER_HERO_METRICS` with:
 export const RECRUITER_HERO_METRICS = ["18,403", "3.5x", "738", "71"];
 ```
 
-- [ ] **Step 2: Add a density/scroll guard**
+- [x] **Step 2: Add a density/scroll guard**
 
 In `tests/playwright/atlas.spec.ts`, add:
 
@@ -620,7 +620,7 @@ test("mobile hero keeps CTAs visible without horizontal overflow", async ({
 });
 ```
 
-- [ ] **Step 3: Run the failing visual-density tests**
+- [x] **Step 3: Run the failing visual-density tests**
 
 Run:
 
@@ -630,7 +630,7 @@ npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts
 
 Expected: FAIL until proof metrics and mobile hero density are updated.
 
-- [ ] **Step 4: Update Atlas proof metrics**
+- [x] **Step 4: Update Atlas proof metrics**
 
 In `src/components/atlas/TechnicalOperationsAtlas.tsx`, replace `proofMetrics` with:
 
@@ -663,7 +663,7 @@ const proofMetrics = [
 ];
 ```
 
-- [ ] **Step 5: Reduce hero density**
+- [x] **Step 5: Reduce hero density**
 
 In `src/components/atlas/TechnicalOperationsAtlas.tsx`, change the hero section class from:
 
@@ -701,7 +701,7 @@ to:
 <div className="hidden flex-col justify-center gap-5 md:flex">
 ```
 
-- [ ] **Step 6: Strengthen section contrast**
+- [x] **Step 6: Strengthen section contrast**
 
 In `src/components/atlas/TechnicalOperationsAtlas.tsx`, update these section class names:
 
@@ -723,7 +723,7 @@ Contact:
 className="border-t border-zinc-900 bg-[#080a0c]"
 ```
 
-- [ ] **Step 7: Make contact copy direct**
+- [x] **Step 7: Make contact copy direct**
 
 In the contact section, replace:
 
@@ -737,7 +737,7 @@ with:
 Open to new-grad software, data, and ML engineering roles.
 ```
 
-- [ ] **Step 8: Verify Task 4**
+- [x] **Step 8: Verify Task 4**
 
 Run:
 
@@ -749,7 +749,7 @@ npm run test:e2e:score -- --project=chromium-desktop
 
 Expected: TypeScript passes. Atlas tests pass. Quality score stays at or above the Atlas threshold in `tests/playwright/portfolio-quality-score.spec.ts`.
 
-- [ ] **Step 9: Commit Task 4**
+- [x] **Step 9: Commit Task 4**
 
 ```bash
 git add src/components/atlas/TechnicalOperationsAtlas.tsx tests/playwright/portfolio-fixtures.ts tests/playwright/atlas.spec.ts
@@ -764,7 +764,7 @@ git commit -m "style: refine atlas recruiter proof flow"
 - Output only: `output/playwright/atlas-single-theme-refinement/`
 - Modify only if validation reveals a real issue: files from Tasks 1-4.
 
-- [ ] **Step 1: Run static validation**
+- [x] **Step 1: Run static validation**
 
 Run:
 
@@ -776,7 +776,7 @@ npm run format:check
 
 Expected: `typecheck` passes. `lint` passes with no errors; existing warnings may remain only if they predate this pass. `format:check` passes.
 
-- [ ] **Step 2: Run targeted Playwright test validation**
+- [x] **Step 2: Run targeted Playwright test validation**
 
 Run:
 
@@ -787,7 +787,7 @@ npm run test:e2e:score -- --project=chromium-desktop
 
 Expected: targeted e2e tests pass and score test passes.
 
-- [ ] **Step 3: Start local dev server for CLI inspection**
+- [x] **Step 3: Start local dev server for CLI inspection**
 
 Run:
 
@@ -797,7 +797,7 @@ PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin npm run dev -- --hostname 12
 
 Expected: Next dev server prints a local URL for `http://127.0.0.1:3000`. Keep this terminal session open while running the next Playwright CLI commands.
 
-- [ ] **Step 4: Prepare Playwright CLI artifact directory**
+- [x] **Step 4: Prepare Playwright CLI artifact directory**
 
 In a second terminal session, run:
 
@@ -811,7 +811,7 @@ cd output/playwright/atlas-single-theme-refinement
 
 Expected: `command -v npx` exits `0`.
 
-- [ ] **Step 5: Capture desktop walkthrough video and screenshots**
+- [x] **Step 5: Capture desktop walkthrough video and screenshots**
 
 Run from `output/playwright/atlas-single-theme-refinement`:
 
@@ -832,7 +832,7 @@ Run from `output/playwright/atlas-single-theme-refinement`:
 
 Expected: snapshots show hero, profile/about, selected work, and lower-page content. Screenshots and `desktop-walkthrough.webm` are written in `output/playwright/atlas-single-theme-refinement`.
 
-- [ ] **Step 6: Capture mobile walkthrough**
+- [x] **Step 6: Capture mobile walkthrough**
 
 Run from `output/playwright/atlas-single-theme-refinement`:
 
@@ -853,7 +853,7 @@ Run from `output/playwright/atlas-single-theme-refinement`:
 
 Expected: mobile hero CTAs are visible early, no horizontal overflow appears, portrait/profile does not crowd text, and no theme selector is visible.
 
-- [ ] **Step 7: Inspect DOM truth through Playwright CLI**
+- [x] **Step 7: Inspect DOM truth through Playwright CLI**
 
 Run:
 
@@ -884,11 +884,11 @@ Expected result:
 }
 ```
 
-- [ ] **Step 8: Fix any validation failures**
+- [x] **Step 8: Fix any validation failures**
 
 If a Task 5 command fails, make the smallest source change that addresses the observed failure, then rerun the failed command and the preceding related command. For visual failures, capture a fresh screenshot after the fix in `output/playwright/atlas-single-theme-refinement/`.
 
-- [ ] **Step 9: Stop the dev server and close CLI sessions**
+- [x] **Step 9: Stop the dev server and close CLI sessions**
 
 Run:
 
@@ -906,7 +906,7 @@ lsof -nP -iTCP:3000 -sTCP:LISTEN
 
 Expected: no listener remains on port 3000.
 
-- [ ] **Step 10: Commit validation updates**
+- [x] **Step 10: Commit validation updates**
 
 Only commit source/test changes from validation fixes. Do not commit generated files under `output/playwright/` unless the repo already tracks that exact artifact pattern.
 
@@ -922,12 +922,12 @@ Skip this commit if Task 5 produces no source/test changes after Tasks 1-4.
 
 ## Final Verification Checklist
 
-- [ ] Public app renders only Technical Operations Atlas.
-- [ ] No visible `Select theme` control exists on desktop or mobile.
-- [ ] No homepage copy says "Senior CS student", "Senior Computer Science student", "Expected May 2026", or "Open to internships".
-- [ ] Portrait image renders with alt text `Ayush Yadav professional portrait`.
-- [ ] Selected work order starts AutoML, Fast MNIST, Visual Assist, JobTracker.
-- [ ] AutoML case study shows poster proof and individual contribution.
-- [ ] Fast MNIST case study shows release and benchmark proof.
-- [ ] `npm run typecheck`, `npm run lint`, `npm run format:check`, targeted Playwright tests, score test, and Playwright CLI walkthrough complete.
-- [ ] Port 3000 is closed before final handoff.
+- [x] Public app renders only Technical Operations Atlas.
+- [x] No visible `Select theme` control exists on desktop or mobile.
+- [x] No homepage copy says "Senior CS student", "Senior Computer Science student", "Expected May 2026", or "Open to internships".
+- [x] Portrait image renders with alt text `Ayush Yadav professional portrait`.
+- [x] Selected work order starts AutoML, Fast MNIST, Visual Assist, JobTracker.
+- [x] AutoML case study shows poster proof and individual contribution.
+- [x] Fast MNIST case study shows release and benchmark proof.
+- [x] `npm run typecheck`, `npm run lint`, `npm run format:check`, targeted Playwright tests, score test, and Playwright CLI walkthrough complete.
+- [x] Port 3000 is closed before final handoff.
