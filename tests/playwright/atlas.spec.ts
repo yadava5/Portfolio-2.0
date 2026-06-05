@@ -7,6 +7,7 @@ import {
   EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
   EXPECTED_PROOF_ARTIFACTS,
+  EXPECTED_SELECTED_WORK_PROOF_LABELS,
   EXPECTED_SELECTED_WORK_ORDER,
   PROHIBITED_GENERATED_CONTENT,
   RECRUITER_HERO_LINKS,
@@ -148,6 +149,25 @@ test.describe("Technical Operations Atlas", () => {
     const cards = page.locator("#projects article");
     for (const [index, title] of EXPECTED_SELECTED_WORK_ORDER.entries()) {
       await expect(cards.nth(index)).toContainText(title);
+    }
+  });
+
+  test("selected work cards expose recruiter-visible proof paths", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#projects").scrollIntoViewIfNeeded();
+
+    for (const proofPath of EXPECTED_SELECTED_WORK_PROOF_LABELS) {
+      const card = page.locator("#projects article").filter({
+        has: page.getByRole("heading", { name: proofPath.title }),
+      });
+
+      await expect(card).toHaveCount(1);
+      await expect(card.getByText("Proof path")).toBeVisible();
+      for (const label of proofPath.labels) {
+        await expect(card.getByText(label)).toBeVisible();
+      }
     }
   });
 

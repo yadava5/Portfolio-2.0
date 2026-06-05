@@ -101,6 +101,28 @@ export const EXPECTED_SELECTED_WORK_ORDER = [
   "JobTracker",
 ];
 
+export const EXPECTED_SELECTED_WORK_PROOF_LABELS = [
+  {
+    title: "Agentic AutoML Platform",
+    labels: ["Presenter stack proof", "Expo poster proof"],
+  },
+  {
+    title: "Fast MNIST Neural Network",
+    labels: ["Local React workbench screenshot", "Benchmark evidence"],
+  },
+  {
+    title: "Visual Assist",
+    labels: [
+      "On-device accessibility architecture",
+      "XCTest source evidence",
+    ],
+  },
+  {
+    title: "JobTracker",
+    labels: ["Local classification architecture", "Backend test suite"],
+  },
+];
+
 export const EXPECTED_PROOF_ARTIFACTS = {
   automlPoster: "Expo poster proof",
   automlPresenterProof: "Presenter stack proof",

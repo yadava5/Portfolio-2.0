@@ -58,6 +58,7 @@ export interface ProjectCaseStudy {
   role: string;
   timeframe: string;
   summary: string;
+  featuredProofLabels?: string[];
   evidenceDisclosure?: CaseStudyEvidenceDisclosure;
   problem: string;
   constraints: string[];
@@ -80,6 +81,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2026-02 to Present",
     summary:
       "A native macOS job-application tracker that syncs email, classifies job-search signals locally, and turns noisy inbox updates into a usable application pipeline.",
+    featuredProofLabels: [
+      "Local classification architecture",
+      "Backend test suite",
+    ],
     evidenceDisclosure: {
       label: "Private-safe proof: no email content",
       detail:
@@ -256,6 +261,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2025-09 to Present",
     summary:
       "A private GitHub-backed agentic AutoML platform that turns datasets and domain documents into auditable ML pipeline decisions with human approval gates.",
+    featuredProofLabels: ["Presenter stack proof", "Expo poster proof"],
     evidenceDisclosure: {
       label: "Private proof: GitHub evidence",
       detail:
@@ -414,6 +420,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2025-03 to Present",
     summary:
       "A privacy-first iOS accessibility app with LiDAR obstacle detection, Vision OCR, haptics, and voice guidance.",
+    featuredProofLabels: [
+      "On-device accessibility architecture",
+      "XCTest source evidence",
+    ],
     problem:
       "Visually impaired users need fast environmental feedback without sending sensitive camera or location context to a remote service.",
     constraints: [
@@ -537,6 +547,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2023-09 to 2025-05",
     summary:
       "A production-style calendar and task management app with natural-language scheduling, conflict detection, PostgreSQL, and broad automated test coverage.",
+    featuredProofLabels: [
+      "Local mock-login calendar screenshot",
+      "Source code",
+    ],
     problem:
       "Calendar and task planning becomes brittle when notes, reminders, scheduling language, and conflict detection are split across tools.",
     constraints: [
@@ -648,6 +662,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2025-06 to Present",
     summary:
       "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports and Tableau metadata into a trusted 35-field master inventory.",
+    featuredProofLabels: [
+      "Processed output proof ledger",
+      "Private-safe pipeline architecture",
+    ],
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -787,6 +805,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2025-06 to Present",
     summary:
       "Private proof from Miami University policy-support work: a Python RAG assistant that routes CLI and Slack questions through OpenAI File Search and cited-source guardrails.",
+    featuredProofLabels: [
+      "Validation ledger proof",
+      "Retrieval and validation architecture",
+    ],
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -919,6 +941,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2025-10 to 2026-01",
     summary:
       "A C++ neural network for MNIST digit recognition with SIMD matrix operations, OpenMP parallelism, benchmarks, and a React/TypeScript frontend.",
+    featuredProofLabels: [
+      "Local React workbench screenshot",
+      "Benchmark evidence",
+    ],
     problem:
       "MNIST inference is small enough to understand but useful for proving whether low-level matrix optimization and benchmark discipline are real.",
     constraints: [
