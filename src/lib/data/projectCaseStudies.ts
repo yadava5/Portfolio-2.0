@@ -647,7 +647,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Data integration engineer",
     timeframe: "2025-06 to Present",
     summary:
-      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports, Tableau metadata, and operational records into a trusted master inventory.",
+      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports and Tableau metadata into a trusted 35-field master inventory.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -737,24 +737,29 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Inventory outputs",
         evidence:
-          "Local processed output audit found 16,685 consolidated master inventory rows, with larger OAS/Tableau row-volume proof tracked separately.",
+          "Local processed output audit found 3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
       },
       {
-        label: "Source integration",
+        label: "Unified schema",
         evidence:
-          "Private/work summary records Workday exports and Tableau Cloud metadata as inputs.",
+          "Source docs and configs record a 35-field unified schema with deterministic inventory_id values generated from row fields.",
       },
       {
         label: "Audit trail",
         evidence:
-          "Private/work summary records timestamped run artifacts for validation and debugging.",
+          "The local source repo writes timestamped run folders plus cumulative processed outputs while keeping raw institutional exports out of version control.",
+      },
+      {
+        label: "Local tests",
+        evidence:
+          "The source repo passed 3 extractor tests and critical ruff syntax/import checks in its local virtualenv during this audit.",
       },
     ],
     outcomes: [
       {
-        label: "Reconciliation speed",
+        label: "Private data boundary",
         evidence:
-          "Private/work summary records reconciliation moving from hours of manual comparison toward minutes of pipeline output review.",
+          "The portfolio shows counts, schema shape, and architecture only; raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
       },
       {
         label: "Trusted reporting",
@@ -776,11 +781,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "RAG systems engineer",
     timeframe: "2025-06 to Present",
     summary:
-      "Private proof from Miami University policy-support work: a Slack-based RAG assistant that retrieves institutional policy context and answers with cited sources.",
+      "Private proof from Miami University policy-support work: a Python RAG assistant that routes CLI and Slack questions through OpenAI File Search and cited-source guardrails.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
-        "This case study uses representative visuals and source-truth summaries. Real institutional policy content, Slack messages, and private records are not shown.",
+        "This case study uses a private-safe architecture diagram plus sanitized source-truth summaries. Real institutional policy content, raw validation transcripts, Slack messages, and private records are not shown.",
     },
     problem:
       "Policy answers were scattered across documents, pages, and team knowledge, making day-to-day interpretation slow and inconsistent.",
@@ -859,17 +864,22 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Validation sweep",
         evidence:
-          "Local validation summary reports a 19/20 latest structured sweep, a 17/25 keyword sweep, and fallback behavior for unsupported answers.",
+          "Committed validation summary reports a 19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks, and locally rejected answers when quotes could not be verified.",
       },
       {
         label: "Citation safety",
         evidence:
-          "Private/work summary records local validation for quote verification before response delivery.",
+          "Source code and docs show OpenAI Responses API with File Search, cited filenames, and local quote verification against policy files when available.",
       },
       {
         label: "Workflow fit",
         evidence:
-          "Private/work summary records Slack Socket Mode as the interaction surface.",
+          "The source repo includes CLI entry points and a Slack Socket Mode bridge; no production usage, workspace adoption, or always-on service claim is made here.",
+      },
+      {
+        label: "Local tests",
+        evidence:
+          "The source repo passed 3 Slack adapter/formatting tests in a temporary audit virtualenv without calling OpenAI or Slack.",
       },
     ],
     outcomes: [

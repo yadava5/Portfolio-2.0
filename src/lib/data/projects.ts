@@ -272,9 +272,9 @@ export const projects: Project[] = [
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
-      "Python/pandas pipeline consolidating Tableau Cloud metadata and Workday exports into a private-safe master inventory.",
+      "Python/pandas pipeline consolidating Tableau metadata and Workday exports into a private-safe 10.5k-row master inventory.",
     fullDescription:
-      "Proprietary pipeline consolidating Tableau Cloud metadata and Workday report exports into a unified master inventory for Tableau Prep and dashboards.",
+      "Proprietary pipeline consolidating Tableau metadata and Workday custom-report exports into a unified 35-field master inventory for Tableau Prep and dashboards.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "pandas", color: "#150458" },
@@ -293,24 +293,24 @@ export const projects: Project[] = [
     startDate: "2025-06",
     endDate: "Present",
     highlights: [
-      "Consolidates Tableau and Workday inventory records",
-      "Unified schema with deterministic inventory IDs",
-      "Tableau REST API integration",
+      "Consolidates 3,731 Tableau rows and 6,743 Workday rows",
+      "35-field unified schema with deterministic inventory IDs",
+      "Tableau REST API and file-mode extraction paths",
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
     metrics: [
-      { label: "Inventory", value: "16.7k consolidated records" },
-      { label: "Impact", value: "Reduced manual reconciliation effort" },
+      { label: "Inventory", value: "10,453 deduped rows" },
+      { label: "Schema", value: "35-field master inventory" },
     ],
   },
   {
     id: "policybot",
     title: "PolicyBot",
     shortDescription:
-      "RAG-powered policy chatbot on Slack that answers supported queries with cited sources and quote validation.",
+      "RAG-powered policy assistant with OpenAI File Search, Slack Socket Mode, cited-source checks, and local quote validation.",
     fullDescription:
-      "A policy support chatbot that helps users interpret and apply Miami University data policies using OpenAI's Responses API with File Search and Slack Socket Mode integration.",
+      "An internal policy support assistant that routes CLI and Slack questions through OpenAI Responses API with File Search, cites source filenames, and rejects answers whose quoted snippets cannot be verified when local policy files are available.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "OpenAI", color: "#412991" },
@@ -330,8 +330,8 @@ export const projects: Project[] = [
     endDate: "Present",
     highlights: [
       "RAG with OpenAI File Search",
-      "Slack Socket Mode integration",
-      "Local validation for quote verification",
+      "CLI and Slack Socket Mode entry points",
+      "Local quote validation and safe fallback behavior",
       "Supports DOCX, PDF, and Markdown policies",
     ],
     isPrivate: true,

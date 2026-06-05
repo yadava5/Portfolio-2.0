@@ -285,6 +285,67 @@ test.describe("Technical Operations Atlas", () => {
     expect(bodyText).not.toContain("SetFit is always active");
   });
 
+  test("Master Inventory proof uses current local source counts", async ({
+    page,
+  }) => {
+    await page.goto("/projects/master-inventory/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const validation = page.locator("#validation");
+
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryRows)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventorySchema)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryTests)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(
+        EXPECTED_PROOF_ARTIFACTS.masterInventoryPrivateBoundary
+      )
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("16,685");
+    expect(bodyText).not.toContain("16.7k");
+    expect(bodyText).not.toContain("OAS metadata");
+    expect(bodyText).not.toContain("Google Cloud");
+    expect(bodyText).not.toContain("GraphQL metadata extraction");
+    expect(bodyText).not.toContain("production dashboard");
+  });
+
+  test("PolicyBot proof stays transcript-backed and deployment-safe", async ({
+    page,
+  }) => {
+    await page.goto("/projects/policybot/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const validation = page.locator("#validation");
+
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotValidation)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotFileSearch)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotLocalTests)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotDeploymentBoundary)
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("50+ institutional documents");
+    expect(bodyText).not.toContain("hallucination-free");
+    expect(bodyText).not.toContain("production deployment");
+    expect(bodyText).not.toContain("active Slack workspace usage");
+    expect(bodyText).not.toContain("runs 24/7");
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {

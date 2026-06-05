@@ -133,6 +133,21 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   fastMnistSpeedup: "3.50x dot-kernel speedup",
   fastMnistDisclosure:
     "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
+  masterInventoryRows:
+    "3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
+  masterInventorySchema: "35-field unified schema",
+  masterInventoryTests:
+    "passed 3 extractor tests and critical ruff syntax/import checks",
+  masterInventoryPrivateBoundary:
+    "raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
+  policybotValidation:
+    "19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks",
+  policybotFileSearch:
+    "OpenAI Responses API with File Search, cited filenames, and local quote verification",
+  policybotLocalTests:
+    "passed 3 Slack adapter/formatting tests in a temporary audit virtualenv",
+  policybotDeploymentBoundary:
+    "no production usage, workspace adoption, or always-on service claim is made here.",
 };
 
 export const EXPECTED_LINKS = {
@@ -148,6 +163,8 @@ export const ATLAS_ALLOWED_METRICS = [
   "71",
   "71 tests",
   "19/20",
+  "10,453",
+  "10.5k",
 ];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
@@ -197,6 +214,15 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "beautiful Liquid Glass dashboard",
   "Python/SQL pipeline processing 1M+",
   "Processes 1M+ rows of operational data",
+  "16,685",
+  "16.7k consolidated records",
+  "Google Cloud",
+  "OAS metadata",
+  "GraphQL metadata extraction",
+  "production dashboard",
+  "production deployment",
+  "active Slack workspace usage",
+  "runs 24/7",
 ];
 
 export async function isMobileViewport(page: Page) {

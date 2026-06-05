@@ -14,6 +14,8 @@ This inventory records the real project artifacts available before concept gener
 | Taskflow Calendar | `taskflow-calendar` | Full-stack productivity app visual, test coverage evidence | `public/images/projects/taskflow.png` | PNG, 1376 x 768 | Present | Use in evidence records and recruiter scan path |
 | Fast MNIST Neural Network | `fast-mnist-nn` | Benchmark/performance visual, model/system diagram | `public/images/projects/mnist.png` | PNG, 1376 x 768 | Present | Use in Fast MNIST case-study concept |
 | Fast MNIST Neural Network | `fast-mnist-nn` | Secondary vector/diagram asset | `public/images/projects/fast-mnist-nn.svg` | SVG | Present | Use only if it reads as technical proof; otherwise prefer a code-native benchmark table |
+| Master Inventory Pipeline | `master-inventory` | Private data pipeline proof | `public/images/projects/pipeline-architecture.svg` | SVG architecture diagram | Present | Use with sanitized row counts only: 3,731 Tableau rows + 6,743 Workday rows -> 10,453-row deduped master CSV |
+| PolicyBot | `policybot` | Private RAG/Slack proof | `public/images/projects/policybot-architecture.svg` | SVG architecture diagram | Present | Use with sanitized validation counts only: 19/20 structured sweep, 17/25 keyword sweep, and fallback/rejection behavior |
 
 ## Supporting Assets
 
@@ -34,6 +36,8 @@ These should be built as HTML/SVG/table components, not generated as decorative 
 | Visual Assist | LiDAR/Vision/Core ML privacy path | Code-native field-system diagram with accessibility labels |
 | Taskflow Calendar | test coverage and scheduling/conflict workflow | Evidence table plus workflow diagram |
 | Fast MNIST | SIMD/OpenMP benchmark and model evaluation | Benchmark table plus architecture diagram |
+| Master Inventory | private-safe processed artifact proof | Sanitized terminal/table proof with counts, schema shape, tests, and privacy boundary; no CSV rows or institutional fields |
+| PolicyBot | private-safe validation proof | Sanitized validation table with counts, quote-verification design, and local Slack tests; no raw validation JSON or policy text |
 
 ## Concept Gate Decision
 
