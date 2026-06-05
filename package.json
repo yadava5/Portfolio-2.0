@@ -18,6 +18,7 @@
     "test:e2e:score": "NEXT_PUBLIC_BASE_PATH= next build --webpack && playwright test tests/playwright/portfolio-quality-score.spec.ts",
     "test:e2e:ui": "playwright test --ui",
     "test:visual": "playwright test --update-snapshots",
+    "resume:build": "node scripts/resume/render-resume.mjs",
     "assets:promote-proof": "node scripts/asset-truth/promote-proof-assets.mjs",
     "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs"
   },
