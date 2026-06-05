@@ -168,6 +168,12 @@ test.describe("Technical Operations Atlas", () => {
       page.getByText(EXPECTED_PROOF_ARTIFACTS.automlContribution)
     ).toBeVisible();
 
+    await page.goto("/projects/automl/#artifacts");
+    await expect(page.locator("section#artifacts")).toBeInViewport();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
+    ).toBeVisible();
+
     await page.goto("/projects/fast-mnist-nn/");
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistRelease)

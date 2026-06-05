@@ -241,11 +241,11 @@ cd output/playwright/automl-proof-hardening
 export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 export PWCLI="$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh"
 "$PWCLI" open http://127.0.0.1:3000/projects/automl/ --headed --session automl-proof
-"$PWCLI" screenshot --session automl-proof --output automl-case-study-top.png
-"$PWCLI" evaluate --session automl-proof "window.scrollTo({ top: document.querySelector('#validation').offsetTop - 80, behavior: 'auto' })"
-"$PWCLI" screenshot --session automl-proof --output automl-validation.png
-"$PWCLI" evaluate --session automl-proof "window.scrollTo({ top: document.querySelector('#artifacts').offsetTop + 700, behavior: 'auto' })"
-"$PWCLI" screenshot --session automl-proof --output automl-artifacts.png
+"$PWCLI" screenshot --session automl-proof --filename automl-case-study-top.png
+"$PWCLI" eval "() => window.scrollTo({ top: document.querySelector('#validation').offsetTop - 80, behavior: 'auto' })" --session automl-proof
+"$PWCLI" screenshot --session automl-proof --filename automl-validation.png
+"$PWCLI" eval "() => document.querySelector('#artifacts').scrollIntoView({ block: 'start' })" --session automl-proof
+"$PWCLI" screenshot --session automl-proof --filename automl-artifact-links.png
 ```
 
 Expected: screenshots show the primary AutoML product image, private-proof disclosure, validation evidence, and artifact links without overlap or misleading copy.

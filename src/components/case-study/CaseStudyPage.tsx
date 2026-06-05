@@ -119,7 +119,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </section>
 
           <section
-            id="artifacts"
+            id="project-visual"
             className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70"
           >
             <div className="relative min-h-[280px] bg-zinc-900">
@@ -178,7 +178,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           <EvidenceTable title="Outcomes" rows={study.outcomes} />
         </section>
 
-        <section className="py-8">
+        <section id="artifacts" className="py-8">
           <SectionLabel>Artifacts</SectionLabel>
           <div className="grid gap-3 md:grid-cols-3">
             {study.artifacts.map((artifact) => (

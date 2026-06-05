@@ -65,3 +65,9 @@ Performance follow-up:
 - Initial manual browser capture raised a Next.js LCP warning for `/images/projects/automl.png`.
 - `src/components/case-study/CaseStudyPage.tsx` now marks the case-study proof image with `loading="eager"`.
 - A fresh Playwright session confirmed the LCP warning was cleared.
+
+Artifact navigation follow-up:
+
+- Manual capture showed the old `#artifacts` anchor landed on the project image block rather than the artifact-link section.
+- `src/components/case-study/CaseStudyPage.tsx` now uses `#project-visual` for the image block and `#artifacts` for the actual artifact-link section.
+- `tests/playwright/atlas.spec.ts` verifies `/projects/automl/#artifacts` brings the artifact section into the viewport.
