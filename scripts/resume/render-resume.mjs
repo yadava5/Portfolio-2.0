@@ -8,7 +8,7 @@ const sections = [
   {
     title: "Summary",
     body: [
-      "Computer Science graduate from Miami University (B.S., May 2026; GPA 3.46) with ITSM Data Integration internship experience building Python/SQL pipelines on 1M+ row datasets, Tableau dashboards, and workflow automations. Proficient in Python, Java, C++, JavaScript/TypeScript, React, and SQL, with projects spanning an iOS LiDAR accessibility app, an AutoML senior capstone platform, and a SIMD/OpenMP-optimized MNIST neural network. Seeking software engineering/data roles.",
+      "Computer Science graduate from Miami University (B.S. Computer Science, May 2026; GPA: 3.46) with experience building Python and SQL data pipelines, full-stack products, applied ML workflows, and reliability-focused tooling. Recent ITSM internship work covered 1M+ operational records, Tableau/OAS reporting, Workday data integration, and automation through APIs. Seeking new-grad software engineering, data engineering, full-stack, or ML-adjacent software roles.",
     ],
   },
   {
@@ -28,55 +28,41 @@ const sections = [
   {
     title: "Technical Skills",
     items: [
-      "<strong>Languages:</strong> Python, Java, C++, JavaScript, HTML, CSS, SQL",
-      "<strong>Frameworks/Libraries:</strong> React, Tauri, NestJS, Prisma, Zod, SwiftUI, ARKit, Vision, OpenMP, PyTorch, Scikit-learn",
-      "<strong>Tools:</strong> Git, Visual Studio Code, Eclipse, Xcode, Linux/Unix CLI, Google Colab",
+      "<strong>Languages:</strong> Python, Java, C++, JavaScript, TypeScript, SQL",
+      "<strong>Web and Systems:</strong> React, Next.js, Node.js, Express, NestJS, PostgreSQL, Prisma, Docker, SwiftUI, ARKit, Vision, OpenMP",
+      "<strong>Data and ML:</strong> ETL, pandas, Tableau, Snowflake, RAG, OpenAI Responses API, File Search, LangGraph, MCP, SetFit, sentence-transformers",
+      "<strong>Tooling and Quality:</strong> Git, GitHub Actions, Playwright, axe-core, CI/CD, Linux/Unix CLI, Xcode, VS Code",
     ],
   },
   {
     title: "Projects",
     groups: [
       {
-        heading:
-          "AutoML - Automated Data Scientist Platform (Senior Capstone, May 2026)",
+        heading: "Agentic AutoML Platform - Senior Capstone (May 2026)",
         items: [
-          "RAG + MCP platform for domain-tuned ML services with deploy and monitor workflow phases.",
-          "Automated training: HPO/multi-model search plus SFT; containerized runs.",
-          "TS monorepo: React (Vite), Express, Postgres, Playwright evals.",
+          "Engineered React and Express/PostgreSQL workflow surfaces for dataset upload, EDA, preprocessing, training, experiment tracking, and deployment phases.",
+          "Used LangGraph and MCP orchestration with human approval gates, Dockerized execution, and Playwright/eval-runner validation.",
         ],
       },
       {
-        heading:
-          "Visual Assist - iOS LiDAR Visual Assistance App (Ongoing; January 2026)",
+        heading: "JobTracker - Local-First macOS Job Search Tracker (2026)",
         items: [
-          "On-device iOS LiDAR navigation with depth scan plus audio/haptics.",
-          "Vision OCR plus object awareness; VoiceOver plus voice commands.",
-          "Wearable planned; current version targets iOS LiDAR devices.",
+          "Built Gmail OAuth2/iCloud IMAP ingestion, SQLite workflow state, and SwiftUI dashboard architecture for private local tracking.",
+          "Designed rules, embeddings, and SetFit classifier gates; validation records 182 backend tests and 0.9791 macro-F1 on 96 samples.",
         ],
       },
       {
-        heading:
-          "LifeQuest - Quest-Based Routine and Community Platform (April 2025)",
+        heading: "Visual Assist - iOS LiDAR Accessibility App (2025-2026)",
         items: [
-          "Desktop quest platform turning routines into missions for job loss/retirement.",
-          "Tauri + React + NestJS (Postgres/Prisma) for quests, progress, rewards.",
-          "Future iOS app will add map-based quest experience.",
+          "Built SwiftUI/ARKit LiDAR obstacle detection, Vision OCR, speech guidance, haptics, and VoiceOver-first flows for on-device use.",
+          "Covered model and utility logic with 71 audited XCTest functions while keeping camera and location context local.",
         ],
       },
       {
-        heading:
-          "Fast MNIST NN - High-Performance C++ Neural Network (HPC Final Project, November 2025)",
+        heading: "Fast MNIST Neural Network - C++ HPC Project (2025-2026)",
         items: [
-          "Collaborated on C++17 MNIST NN with SIMD kernels plus OpenMP hot paths.",
-          "CLI train/eval pipeline; cached MNIST loader for repeat runs.",
-          "Catch2/CTest, Google Benchmark, CI, Doxygen, clang-format.",
-        ],
-      },
-      {
-        heading: "Dynamic Calendar Application (December 2023)",
-        items: [
-          "Collaborated on calendar tool with notes, reminders, location-aware scheduling.",
-          "Integrated external APIs for dynamic address fetching.",
+          "Collaborated on C++17 MNIST train/eval CLI with SIMD/OpenMP kernels, cached dataset loading, and benchmark instrumentation.",
+          "Recorded 97%+ MNIST accuracy and 3.5x dot-kernel speedup in committed benchmark evidence.",
         ],
       },
     ],
@@ -88,9 +74,9 @@ const sections = [
         heading:
           "ITSM Data Integration Student Associate (Intern) - Miami University (Jun 2025 - May 2026)",
         items: [
-          "Built Python/SQL pipelines for 1M+ row datasets; analyzed trends and KPIs.",
-          "Delivered Tableau dashboards with actionable insights for IT/non-IT teams.",
-          "Built Workday/OAS/Tableau report inventory plus API-integrated Slack bot.",
+          "Built Python and SQL ETL workflows for 1M+ OAS/Tableau/Workday records; normalized operational data for KPI reporting.",
+          "Consolidated Tableau metadata and Workday exports into a 10,453-row deduplicated inventory with deterministic IDs and a 35-field schema.",
+          "Delivered Tableau dashboards and private internal automation, including Slack and OpenAI RAG support with cited-source checks.",
         ],
       },
       {
@@ -115,7 +101,9 @@ const sections = [
 function renderList(items = []) {
   if (items.length === 0) return "";
 
-  return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+  return `<div class="bullets">${items
+    .map((item) => `<p class="bullet">- ${item}</p>`)
+    .join("")}</div>`;
 }
 
 function renderSection(section) {
@@ -153,7 +141,7 @@ const html = `<!doctype html>
     <style>
       @page {
         size: Letter;
-        margin: 0.34in 0.48in 0.34in 0.48in;
+        margin: 0.32in 0.46in 0.32in 0.46in;
       }
 
       * {
@@ -164,34 +152,35 @@ const html = `<!doctype html>
         margin: 0;
         color: #111;
         font-family: "Times New Roman", Times, serif;
-        font-size: 9.45pt;
-        line-height: 1.12;
+        font-size: 9.7pt;
+        line-height: 1.13;
+        word-spacing: 0.02em;
       }
 
       header {
         text-align: center;
-        margin-bottom: 8px;
+        margin-bottom: 7px;
       }
 
       h1 {
         margin: 0 0 2px;
-        font-size: 16pt;
+        font-size: 16.2pt;
         line-height: 1;
       }
 
       .contact {
-        font-size: 9.6pt;
+        font-size: 9.55pt;
         font-weight: 700;
       }
 
       section {
-        margin-top: 5px;
+        margin-top: 4.4px;
       }
 
       h2 {
         margin: 0 0 1px;
         color: #2f5f99;
-        font-size: 13.4pt;
+        font-size: 13.2pt;
         line-height: 1;
       }
 
@@ -204,25 +193,16 @@ const html = `<!doctype html>
       }
 
       .group {
-        margin-top: 2px;
+        margin-top: 1.8px;
       }
 
-      ul {
-        margin: 0 0 0 19px;
-        padding: 0;
-        list-style: none;
+      .bullets {
+        margin: 0 0 0 16px;
       }
 
-      li {
+      .bullet {
         margin: 0;
-        padding-left: 10px;
-        position: relative;
-      }
-
-      li::before {
-        content: "-";
-        position: absolute;
-        left: 0;
+        padding-left: 0;
       }
     </style>
   </head>
