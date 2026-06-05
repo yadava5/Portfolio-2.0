@@ -5,6 +5,8 @@ import { resolve } from "node:path";
 const pdfPath = resolve(process.cwd(), "public/resume.pdf");
 const layoutTextPath = "/tmp/portfolio-resume-layout.txt";
 const rawTextPath = "/tmp/portfolio-resume-raw.txt";
+const densityImagePrefix = "/tmp/portfolio-resume-density";
+const densityImagePath = `${densityImagePrefix}.png`;
 
 function run(command, args) {
   return execFileSync(command, args, {
@@ -100,6 +102,47 @@ assert(
   "Raw resume extraction should include real text bullets"
 );
 
+run("pdftoppm", [
+  "-png",
+  "-singlefile",
+  "-r",
+  "144",
+  pdfPath,
+  densityImagePrefix,
+]);
+
+const { default: sharp } = await import("sharp");
+const { data, info: imageInfo } = await sharp(densityImagePath)
+  .removeAlpha()
+  .raw()
+  .toBuffer({ resolveWithObject: true });
+
+let bottom = -1;
+for (let y = 0; y < imageInfo.height; y++) {
+  for (let x = 0; x < imageInfo.width; x++) {
+    const i = (y * imageInfo.width + x) * imageInfo.channels;
+    const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
+    if (r < 245 || g < 245 || b < 245) {
+      bottom = y;
+    }
+  }
+}
+
+const bottomWhitespacePx = imageInfo.height - 1 - bottom;
+const bottomWhitespacePercent = bottomWhitespacePx / imageInfo.height;
+
+assert(
+  bottomWhitespacePercent <= 0.048,
+  `Resume bottom whitespace is too large: ${bottomWhitespacePx}px (${(
+    bottomWhitespacePercent * 100
+  ).toFixed(2)}%)`
+);
+
 console.log(`Resume parser check passed: ${pdfPath}`);
 console.log(`Layout text: ${layoutTextPath}`);
 console.log(`Raw text: ${rawTextPath}`);
+console.log(
+  `Bottom whitespace: ${bottomWhitespacePx}px (${(
+    bottomWhitespacePercent * 100
+  ).toFixed(2)}%)`
+);
