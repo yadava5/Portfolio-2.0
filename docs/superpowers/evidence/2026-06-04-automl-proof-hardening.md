@@ -33,3 +33,35 @@ sharp(input)
   });
 NODE
 ```
+
+## Validation
+
+Static gates:
+
+- `npm run typecheck`: passed.
+- `npm run lint`: passed.
+- `npm run format:check`: passed.
+
+Browser gates:
+
+- `npm run test:e2e -- --project=chromium-desktop tests/playwright/atlas.spec.ts tests/playwright/nav-and-images.spec.ts`: `40 passed`, `6 skipped`.
+- `npm run test:e2e:score -- --project=chromium-desktop`: `1 passed`; Technical Operations Atlas score `10` with no deductions.
+
+Manual Playwright captures from `http://127.0.0.1:3000/projects/automl/`:
+
+- `output/playwright/automl-proof-hardening/automl-case-study-top-eager.png`
+- `output/playwright/automl-proof-hardening/automl-validation.png`
+- `output/playwright/automl-proof-hardening/automl-artifact-links.png`
+
+Browser inspection:
+
+- Fresh Playwright session after the eager-load fix reported `0` console errors and `0` console warnings.
+- The AutoML top capture shows the primary private-safe product screenshot in the first viewport.
+- The validation capture shows the slide-8 evidence row.
+- The artifact-link capture shows the new `PRESENTATION` artifact link labeled `Presenter stack proof`.
+
+Performance follow-up:
+
+- Initial manual browser capture raised a Next.js LCP warning for `/images/projects/automl.png`.
+- `src/components/case-study/CaseStudyPage.tsx` now marks the case-study proof image with `loading="eager"`.
+- A fresh Playwright session confirmed the LCP warning was cleared.
