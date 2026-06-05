@@ -35,6 +35,11 @@ export interface Experience {
   achievements: string[];
 }
 
+function parseYearMonth(dateStr: string): Date {
+  const [year, month] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, 1);
+}
+
 /**
  * Professional experience entries
  *
@@ -50,7 +55,7 @@ export const experiences: Experience[] = [
     location: "Oxford, Ohio",
     locationType: "on-site",
     startDate: "2025-06",
-    endDate: "Present",
+    endDate: "2026-05",
     description: [
       "Built scalable Python and SQL data workflows for OAS/Tableau reporting, including high-volume transforms over 1 million raw records.",
       "Designed and deployed interactive Tableau dashboards used across multiple university departments for data-driven decision making.",
@@ -106,8 +111,8 @@ export const experiences: Experience[] = [
  * @returns Duration string (e.g., "9 months", "1 year 3 months")
  */
 export function calculateDuration(startDate: string, endDate: string): string {
-  const start = new Date(startDate + "-01");
-  const end = endDate === "Present" ? new Date() : new Date(endDate + "-01");
+  const start = parseYearMonth(startDate);
+  const end = endDate === "Present" ? new Date() : parseYearMonth(endDate);
 
   const months =
     (end.getFullYear() - start.getFullYear()) * 12 +
@@ -136,7 +141,7 @@ export function calculateDuration(startDate: string, endDate: string): string {
  */
 export function formatDateRange(startDate: string, endDate: string): string {
   const formatMonth = (dateStr: string) => {
-    const date = new Date(dateStr + "-01");
+    const date = parseYearMonth(dateStr);
     return date.toLocaleDateString("en-US", {
       month: "short",
       year: "numeric",

@@ -92,6 +92,8 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   education: "B.S. Computer Science, Miami University, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
+  recentRoleLabel: "Recent role",
+  recentExperienceRange: "Jun 2025 - May 2026",
 };
 
 export const EXPECTED_SELECTED_WORK_ORDER = [

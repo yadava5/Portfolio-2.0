@@ -659,7 +659,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "master-inventory",
     treatment: "field-systems",
     role: "Data integration engineer",
-    timeframe: "2025-06 to Present",
+    timeframe: "2025-06 to 2026-05",
     summary:
       "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports and Tableau metadata into a trusted 35-field master inventory.",
     featuredProofLabels: [
@@ -802,7 +802,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "policybot",
     treatment: "evidence-ledger",
     role: "RAG systems engineer",
-    timeframe: "2025-06 to Present",
+    timeframe: "2025-06 to 2026-05",
     summary:
       "Private proof from Miami University policy-support work: a Python RAG assistant that routes CLI and Slack questions through OpenAI File Search and cited-source guardrails.",
     featuredProofLabels: [

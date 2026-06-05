@@ -16,10 +16,10 @@ Use these repo and resume facts when revising concepts or implementing the Atlas
 | --- | --- |
 | Name | Ayush Yadav |
 | Site title | Ayush Yadav \| Software Engineer |
-| Current role | ITSM Data Integration Student Associate, Miami University |
+| Recent role | ITSM Data Integration Student Associate, Miami University, Jun 2025 - May 2026 |
 | Location | Oxford, Ohio |
-| Availability | Open to internships and new-grad roles |
-| Education | B.S. Computer Science, Miami University, expected May 2026 |
+| Availability | Open to new-grad software, data, and ML engineering roles |
+| Education | B.S. Computer Science, Miami University, May 2026 |
 | Portfolio email | `aesh_1055@icloud.com` |
 | Resume email | `yadava5@miamioh.edu` |
 | Phone in resume | `(513) 461-4375` |

@@ -54,7 +54,7 @@ export const personalInfo = {
   /** First name for casual display */
   firstName: "Ayush",
   /** Professional title/tagline */
-  title: "ITSM Data Integration Student Associate",
+  title: "New-grad software engineer",
   /** Short tagline for hero section */
   tagline:
     "New-grad software engineer focused on data, ML systems, and full-stack reliability",
@@ -75,7 +75,7 @@ export const personalInfo = {
   /** Bio paragraphs for about section */
   bio: [
     "Computer Science graduate from Miami University focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
-    "I work as an ITSM Data Integration Student Associate at Miami University, where I build Python and data pipelines for Tableau/OAS and operational reporting, translate messy records into trusted datasets, and ship dashboards and automations that teams actually use.",
+    "As an ITSM Data Integration Student Associate at Miami University from June 2025 to May 2026, I built Python and data pipelines for Tableau/OAS and operational reporting, translated messy records into trusted datasets, and shipped dashboards and automations for real team workflows.",
     "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work, especially where performance, reliability, and clear user impact matter.",
   ],
 

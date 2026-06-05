@@ -85,7 +85,7 @@ Source specs live in `tests/playwright/`. Generated Playwright reports, screensh
 ## Contact
 
 **Ayush Yadav**  
-Computer Science, Miami University - Expected May 2026
+Computer Science, Miami University - May 2026
 
 - [GitHub](https://github.com/yadava5)
 - [LinkedIn](https://www.linkedin.com/in/ayush-yadav-developer/)

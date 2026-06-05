@@ -30,6 +30,11 @@ const STALE_IDENTITY_COPY = [
   "Senior Computer Science student",
   "Expected May 2026",
   "Open to internships",
+  "Current role",
+  "Current work",
+  "I work as an ITSM Data Integration Student Associate",
+  "Jun 2025 - Present",
+  "2025-06 - Present",
 ];
 
 const CASE_STUDY_SECTIONS = [
@@ -127,6 +132,15 @@ test.describe("Technical Operations Atlas", () => {
     );
     await expect(page.locator("body")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.availability
+    );
+    await expect(page.locator("#hero")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.recentRoleLabel
+    );
+    await expect(page.locator("#experience")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.recentExperienceRange
+    );
+    await expect(page.locator("#contact")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.recentRoleLabel
     );
     await expect(
       page.getByRole("img", {

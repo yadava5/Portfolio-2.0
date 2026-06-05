@@ -291,7 +291,7 @@ export const projects: Project[] = [
     featured: false,
     category: "data",
     startDate: "2025-06",
-    endDate: "Present",
+    endDate: "2026-05",
     highlights: [
       "Consolidates 3,731 Tableau rows and 6,743 Workday rows",
       "35-field unified schema with deterministic inventory IDs",
@@ -327,7 +327,7 @@ export const projects: Project[] = [
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
-    endDate: "Present",
+    endDate: "2026-05",
     highlights: [
       "RAG with OpenAI File Search",
       "CLI and Slack Socket Mode entry points",

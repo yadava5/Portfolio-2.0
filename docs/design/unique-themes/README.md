@@ -33,7 +33,7 @@ The site should feel like an operational, evidence-heavy computer science portfo
 The first viewport must show these without scrolling:
 
 - role target
-- current role
+- recent role
 - availability
 - strongest proof metric
 - Resume link
@@ -52,7 +52,7 @@ Use real proof from the portfolio content: Miami University ITSM Data Integratio
 
 Visual language: graphite, zinc, white, warm amber, signal green, and small route-blue accents. Use architecture diagrams, project screenshots, test/benchmark evidence, code-native metric tables, and concise case-study summaries. Do not use purple/cyan/pink holographic gradients, generic glassmorphism, bento dashboard cards, dark-luxe gold, burgundy editorial, noir red, neon cyberpunk, centered giant-name hero, devicon badge grids, or hero eyebrow pills.
 
-Required sections: Hero, Selected Work, Experience, Technical Depth, Project Index, Testimonials, Contact. Hero must include role target, current role, availability, 3 proof metrics, Resume, GitHub, LinkedIn, and Contact. Concepts must be readable, practical for HTML/CSS, and responsive.
+Required sections: Hero, Selected Work, Experience, Technical Depth, Project Index, Testimonials, Contact. Hero must include role target, recent role, availability, 3 proof metrics, Resume, GitHub, LinkedIn, and Contact. Concepts must be readable, practical for HTML/CSS, and responsive.
 ```
 
 ## Required Concept Set
