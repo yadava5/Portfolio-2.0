@@ -129,6 +129,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   alt={project.imageAlt}
                   fill
                   className="object-cover opacity-90"
+                  loading="eager"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />
               ) : null}
