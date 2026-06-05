@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1376 768" role="img" aria-labelledby="title desc">
+  <title id="title">PolicyBot Validation Ledger</title>
+  <desc id="desc">Sanitized retrieval validation summary showing structured sweep, keyword sweep, fallback behavior, local tests, and privacy boundary</desc>
+  <rect width="1376" height="768" fill="#020617"/>
+  <rect x="32" y="32" width="1312" height="704" rx="28" fill="#07111f" stroke="#1f2937"/>
+  <text x="72" y="106" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="800" fill="#f8fafc">PolicyBot Validation Ledger</text>
+  <text x="72" y="150" font-family="Inter, Arial, sans-serif" font-size="22" fill="#94a3b8">Sanitized RAG validation summary; no policy text, Slack messages, or raw validation transcripts.</text>
+  <line x1="72" y1="188" x2="1304" y2="188" stroke="#1f2937"/>
+
+  <g>
+    <rect x="72" y="228" width="290" height="128" rx="18" fill="#04141f" stroke="#38bdf8" stroke-opacity="0.55"/>
+    <text x="96" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#7dd3fc">STRUCTURED SWEEP</text>
+    <text x="96" y="314" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#f8fafc">19/20</text>
+    <text x="96" y="338" font-family="Inter, Arial, sans-serif" font-size="16" fill="#94a3b8">latest quoted-answer pass</text>
+  </g>
+
+  <g>
+    <rect x="392" y="228" width="290" height="128" rx="18" fill="#031b16" stroke="#10b981" stroke-opacity="0.55"/>
+    <text x="416" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#6ee7b7">KEYWORD SWEEP</text>
+    <text x="416" y="314" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#f8fafc">17/25</text>
+    <text x="416" y="338" font-family="Inter, Arial, sans-serif" font-size="16" fill="#94a3b8">validated loose prompts</text>
+  </g>
+
+  <g>
+    <rect x="712" y="228" width="290" height="128" rx="18" fill="#1c1604" stroke="#f59e0b" stroke-opacity="0.55"/>
+    <text x="736" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#fbbf24">SAFE FALLBACKS</text>
+    <text x="736" y="314" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#f8fafc">4</text>
+    <text x="736" y="338" font-family="Inter, Arial, sans-serif" font-size="16" fill="#94a3b8">unsupported topics declined</text>
+  </g>
+
+  <g>
+    <rect x="1032" y="228" width="272" height="128" rx="18" fill="#031b16" stroke="#10b981" stroke-opacity="0.55"/>
+    <text x="1056" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#6ee7b7">LOCAL TESTS</text>
+    <text x="1056" y="314" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#f8fafc">3</text>
+    <text x="1056" y="338" font-family="Inter, Arial, sans-serif" font-size="16" fill="#94a3b8">Slack adapter tests passed</text>
+  </g>
+
+  <g>
+    <rect x="72" y="404" width="1232" height="154" rx="18" fill="#030712" stroke="#1f2937"/>
+    <text x="104" y="444" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#38bdf8">GUARDRAIL PATH</text>
+    <text x="104" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">Responses API File Search</text>
+    <path d="M 422 484 L 500 484" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 500 484 l -14 -8 l 0 16 z" fill="#38bdf8"/>
+    <text x="536" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">citation extraction</text>
+    <path d="M 760 484 L 838 484" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 838 484 l -14 -8 l 0 16 z" fill="#38bdf8"/>
+    <text x="874" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">local quote verifier</text>
+    <text x="104" y="532" font-family="Inter, Arial, sans-serif" font-size="17" fill="#94a3b8">Answers are accepted when quotes match local policy files; unsupported or unverified answers fall back instead of overclaiming.</text>
+  </g>
+
+  <g>
+    <rect x="72" y="594" width="384" height="82" rx="16" fill="#111827" stroke="#64748b" stroke-opacity="0.7"/>
+    <text x="96" y="628" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#cbd5e1">NO LIVE CALLS</text>
+    <text x="96" y="656" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">audit skipped OpenAI and Slack</text>
+  </g>
+  <g>
+    <rect x="496" y="594" width="384" height="82" rx="16" fill="#1c1604" stroke="#f59e0b" stroke-opacity="0.45"/>
+    <text x="520" y="628" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#fbbf24">PRIVATE CONTENT</text>
+    <text x="520" y="656" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">raw reports stay unpublished</text>
+  </g>
+  <g>
+    <rect x="920" y="594" width="384" height="82" rx="16" fill="#031b16" stroke="#10b981" stroke-opacity="0.45"/>
+    <text x="944" y="628" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#6ee7b7">PUBLIC CLAIM</text>
+    <text x="944" y="656" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">counts, tests, and guardrails only</text>
+  </g>
+</svg>

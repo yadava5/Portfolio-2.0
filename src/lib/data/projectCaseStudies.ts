@@ -773,6 +773,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Private-safe pipeline architecture",
         href: withBasePath("/images/projects/pipeline-architecture.svg"),
       },
+      {
+        type: "benchmark",
+        label: "Processed output proof ledger",
+        href: withBasePath("/images/projects/master-inventory-proof.svg"),
+      },
     ],
   },
   {
@@ -899,6 +904,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         type: "diagram",
         label: "Retrieval and validation architecture",
         href: withBasePath("/images/projects/policybot-architecture.svg"),
+      },
+      {
+        type: "benchmark",
+        label: "Validation ledger proof",
+        href: withBasePath("/images/projects/policybot-validation-proof.svg"),
       },
     ],
   },

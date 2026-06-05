@@ -38,6 +38,7 @@ Portfolio boundary:
 
 - Do not publish raw validation JSON because it includes full questions and responses.
 - Do not claim production deployment, active Slack workspace usage, always-on service operation, or perfect accuracy.
+- Public proof asset added: `public/images/projects/policybot-validation-proof.svg`, a sanitized validation ledger showing counts, guardrails, and local test status only.
 
 ## Master Inventory
 
@@ -73,3 +74,4 @@ Portfolio boundary:
 - Replace stale `16,685` / `16.7k` inventory claims with the current 10,453-row processed audit.
 - Do not expose raw CSV rows, owner/report/project names, datasource names, `.env`, PAT values, or run folder contents.
 - Do not claim GraphQL extraction, Google Cloud/OAS scope, production dashboard deployment, or a full validation framework.
+- Public proof asset added: `public/images/projects/master-inventory-proof.svg`, a sanitized processed-output ledger showing row counts, schema/test status, and privacy boundary only.

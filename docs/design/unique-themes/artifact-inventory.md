@@ -14,8 +14,8 @@ This inventory records the real project artifacts available before concept gener
 | Taskflow Calendar | `taskflow-calendar` | Full-stack productivity app visual, test coverage evidence | `public/images/projects/taskflow.png` | PNG, 1376 x 768 | Present | Use in evidence records and recruiter scan path |
 | Fast MNIST Neural Network | `fast-mnist-nn` | Benchmark/performance visual, model/system diagram | `public/images/projects/mnist.png` | PNG, 1376 x 768 | Present | Use in Fast MNIST case-study concept |
 | Fast MNIST Neural Network | `fast-mnist-nn` | Secondary vector/diagram asset | `public/images/projects/fast-mnist-nn.svg` | SVG | Present | Use only if it reads as technical proof; otherwise prefer a code-native benchmark table |
-| Master Inventory Pipeline | `master-inventory` | Private data pipeline proof | `public/images/projects/pipeline-architecture.svg` | SVG architecture diagram | Present | Use with sanitized row counts only: 3,731 Tableau rows + 6,743 Workday rows -> 10,453-row deduped master CSV |
-| PolicyBot | `policybot` | Private RAG/Slack proof | `public/images/projects/policybot-architecture.svg` | SVG architecture diagram | Present | Use with sanitized validation counts only: 19/20 structured sweep, 17/25 keyword sweep, and fallback/rejection behavior |
+| Master Inventory Pipeline | `master-inventory` | Private data pipeline proof | `public/images/projects/pipeline-architecture.svg` and `master-inventory-proof.svg` | SVG architecture diagram + proof ledger | Present | Use with sanitized row counts only: 3,731 Tableau rows + 6,743 Workday rows -> 10,453-row deduped master CSV |
+| PolicyBot | `policybot` | Private RAG/Slack proof | `public/images/projects/policybot-architecture.svg` and `policybot-validation-proof.svg` | SVG architecture diagram + proof ledger | Present | Use with sanitized validation counts only: 19/20 structured sweep, 17/25 keyword sweep, and fallback/rejection behavior |
 
 ## Supporting Assets
 
