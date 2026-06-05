@@ -231,6 +231,60 @@ test.describe("Technical Operations Atlas", () => {
     expect(bodyText).not.toContain("Core ML object detection");
   });
 
+  test("JobTracker proof stays source-backed and privacy-safe", async ({
+    page,
+  }) => {
+    await page.goto("/projects/jobtracker/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const validation = page.locator("#validation");
+    const artifacts = page.locator("#artifacts");
+
+    await expect(
+      page.getByRole("img", {
+        name: "JobTracker local email classification architecture diagram",
+      })
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerArchitecture)
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerReadme)
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerArchitectureDocs)
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerBackendTests)
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerBenchmark)
+    ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerWebBeta)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerBackendCoverage)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerClassifierGate)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerNativeBuild)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerPrivacyBoundary)
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("500+ emails/month");
+    expect(bodyText).not.toContain("macOS 15+ Liquid Glass UI");
+    expect(bodyText).not.toContain("beautiful Liquid Glass dashboard");
+    expect(bodyText).not.toContain("production-ready SaaS");
+    expect(bodyText).not.toContain("fully wired dashboard");
+    expect(bodyText).not.toContain("SetFit is always active");
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {

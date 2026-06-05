@@ -107,6 +107,20 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   automlPresenterEvidence:
     "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
+  jobtrackerArchitecture: "Local classification architecture",
+  jobtrackerReadme: "Source-truth README",
+  jobtrackerArchitectureDocs: "Architecture docs",
+  jobtrackerBackendTests: "Backend test suite",
+  jobtrackerBenchmark: "ML strategy and evaluation gates",
+  jobtrackerWebBeta: "Web beta scaffold",
+  jobtrackerBackendCoverage:
+    "Local source validation passed 182 backend tests",
+  jobtrackerClassifierGate:
+    "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+  jobtrackerNativeBuild:
+    "The macOS Debug target built locally with xcodebuild",
+  jobtrackerPrivacyBoundary:
+    "Architecture and source links are shown publicly; private email and application records are not shown.",
   visualAssistArchitecture: "On-device accessibility architecture",
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
@@ -180,6 +194,7 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "processing 500+ emails/month",
   "500+ emails/month",
   "macOS 15+ Liquid Glass UI",
+  "beautiful Liquid Glass dashboard",
   "Python/SQL pipeline processing 1M+",
   "Processes 1M+ rows of operational data",
 ];

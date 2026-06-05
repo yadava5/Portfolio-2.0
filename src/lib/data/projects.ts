@@ -82,7 +82,7 @@ export const projects: Project[] = [
     shortDescription:
       "Native macOS app for local job-search email classification with on-device ML and a trackable application pipeline.",
     fullDescription:
-      "An email-powered job application tracker that syncs your Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a trackable pipeline with a beautiful Liquid Glass dashboard.",
+      "An email-powered job application tracker that syncs Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a local pipeline with a native SwiftUI dashboard.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "FastAPI", color: "#009688" },

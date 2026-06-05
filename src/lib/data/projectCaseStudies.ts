@@ -80,6 +80,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     timeframe: "2026-02 to Present",
     summary:
       "A native macOS job-application tracker that syncs email, classifies job-search signals locally, and turns noisy inbox updates into a usable application pipeline.",
+    evidenceDisclosure: {
+      label: "Private-safe proof: no email content",
+      detail:
+        "The source repository now documents that old screenshots were removed as outdated. This case study uses architecture, source, build, test, and benchmark evidence instead of inbox screenshots or private application data.",
+    },
     problem:
       "Job-search status lives across Gmail, iCloud Mail, employer systems, and one-off messages. Manual tracking misses updates and creates duplicate spreadsheet work.",
     constraints: [
@@ -157,17 +162,37 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         label: "Provider integration",
         evidence:
-          "Public repository architecture supports Gmail OAuth2 and iCloud IMAP ingestion for job-search messages.",
+          "Source docs and backend routers support Gmail OAuth2 and iCloud IMAP ingestion for job-search messages.",
       },
       {
         label: "Classifier design",
         evidence:
-          "Public repository architecture uses rules, embeddings, and SetFit as the classifier layers.",
+          "The ML strategy documents rules, embeddings, and SetFit as the classifier layers, with SetFit enabled only after training gates are met.",
       },
       {
         label: "Privacy model",
         evidence:
           "The app keeps job-search email classification local instead of sending message content to hosted inference.",
+      },
+      {
+        label: "Backend test suite",
+        evidence:
+          "Local source validation passed 182 backend tests under the test/null-keyring environment.",
+      },
+      {
+        label: "Classifier benchmark",
+        evidence:
+          "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+      },
+      {
+        label: "Native build",
+        evidence:
+          "The macOS Debug target built locally with xcodebuild against the JobTracker scheme.",
+      },
+      {
+        label: "Web beta boundary",
+        evidence:
+          "The Next.js web beta typecheck, lint, build, and Playwright login smoke passed, but the dashboard remains a scaffold and is not shown as a finished product screenshot.",
       },
     ],
     outcomes: [
@@ -185,6 +210,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Native workflow",
         evidence: "The app targets a native macOS workflow with SwiftUI.",
       },
+      {
+        label: "Evidence posture",
+        evidence:
+          "Architecture and source links are shown publicly; private email and application records are not shown.",
+      },
     ],
     artifacts: [
       {
@@ -194,8 +224,28 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         type: "repo",
-        label: "Source code",
-        href: "https://github.com/yadava5/jobtracker",
+        label: "Source-truth README",
+        href: "https://github.com/yadava5/jobtracker/blob/integration/web-migration/README.md",
+      },
+      {
+        type: "repo",
+        label: "Architecture docs",
+        href: "https://github.com/yadava5/jobtracker/blob/integration/web-migration/docs/ARCHITECTURE.md",
+      },
+      {
+        type: "benchmark",
+        label: "ML strategy and evaluation gates",
+        href: "https://github.com/yadava5/jobtracker/blob/integration/web-migration/docs/ML_STRATEGY.md",
+      },
+      {
+        type: "repo",
+        label: "Backend test suite",
+        href: "https://github.com/yadava5/jobtracker/tree/integration/web-migration/backend/tests",
+      },
+      {
+        type: "repo",
+        label: "Web beta scaffold",
+        href: "https://github.com/yadava5/jobtracker/tree/integration/web-migration/apps/web",
       },
     ],
   },

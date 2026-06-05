@@ -8,7 +8,7 @@ This inventory records the real project artifacts available before concept gener
 
 | Project | Project id | Required proof role | Existing path | File details | Status | Use in concept |
 | --- | --- | --- | --- | --- | --- | --- |
-| JobTracker | `jobtracker` | Native app/product visual, local ML pipeline evidence | `public/images/projects/jobtracker.png` | PNG, 1376 x 768 | Present | Use in Native Intelligence treatment and homepage selected work |
+| JobTracker | `jobtracker` | Native app/product visual, local ML pipeline evidence | `public/images/projects/jobtracker-architecture.svg` | SVG architecture diagram | Present | Use in Native Intelligence treatment and homepage selected work; old generated PNG was removed because the source repo intentionally omits outdated screenshots |
 | AutoML Platform | `automl` | ML pipeline/workflow visual, orchestration evidence | `public/images/projects/automl.png` | PNG, 1376 x 768 | Present | Use in Technical Operations Atlas selected work and case study |
 | Visual Assist | `visual-assist` | Accessibility/native product visual, LiDAR/field-system evidence | `public/images/projects/visual-assist.png` | PNG, 1376 x 768 | Present | Use in Field Systems treatment and accessibility proof module |
 | Taskflow Calendar | `taskflow-calendar` | Full-stack productivity app visual, test coverage evidence | `public/images/projects/taskflow.png` | PNG, 1376 x 768 | Present | Use in evidence records and recruiter scan path |
