@@ -292,6 +292,7 @@ test.describe("Technical Operations Atlas", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const validation = page.locator("#validation");
+    const artifacts = page.locator("#artifacts");
 
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryRows)
@@ -307,6 +308,14 @@ test.describe("Technical Operations Atlas", () => {
         EXPECTED_PROOF_ARTIFACTS.masterInventoryPrivateBoundary
       )
     ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger)
+    ).toBeVisible();
+    await expect(
+      page.locator(
+        `a[href$="/images/projects/master-inventory-proof.svg"]`
+      )
+    ).toHaveCount(1);
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("16,685");
@@ -324,6 +333,7 @@ test.describe("Technical Operations Atlas", () => {
     await page.waitForLoadState("domcontentloaded");
 
     const validation = page.locator("#validation");
+    const artifacts = page.locator("#artifacts");
 
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotValidation)
@@ -337,6 +347,14 @@ test.describe("Technical Operations Atlas", () => {
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotDeploymentBoundary)
     ).toBeVisible();
+    await expect(
+      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger)
+    ).toBeVisible();
+    await expect(
+      page.locator(
+        `a[href$="/images/projects/policybot-validation-proof.svg"]`
+      )
+    ).toHaveCount(1);
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("50+ institutional documents");

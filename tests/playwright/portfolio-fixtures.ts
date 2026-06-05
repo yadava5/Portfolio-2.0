@@ -140,6 +140,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "passed 3 extractor tests and critical ruff syntax/import checks",
   masterInventoryPrivateBoundary:
     "raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
+  masterInventoryProofLedger: "Processed output proof ledger",
   policybotValidation:
     "19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks",
   policybotFileSearch:
@@ -148,6 +149,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "passed 3 Slack adapter/formatting tests in a temporary audit virtualenv",
   policybotDeploymentBoundary:
     "no production usage, workspace adoption, or always-on service claim is made here.",
+  policybotValidationLedger: "Validation ledger proof",
 };
 
 export const EXPECTED_LINKS = {
