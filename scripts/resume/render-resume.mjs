@@ -152,8 +152,8 @@ const html = `<!doctype html>
         margin: 0;
         color: #111;
         font-family: "Times New Roman", Times, serif;
-        font-size: 10.15pt;
-        line-height: 1.17;
+        font-size: 10.26pt;
+        line-height: 1.18;
         word-spacing: 0.02em;
       }
 
@@ -164,23 +164,23 @@ const html = `<!doctype html>
 
       h1 {
         margin: 0 0 2px;
-        font-size: 17pt;
+        font-size: 17.1pt;
         line-height: 1;
       }
 
       .contact {
-        font-size: 9.55pt;
+        font-size: 9.6pt;
         font-weight: 700;
       }
 
       section {
-        margin-top: 5.1px;
+        margin-top: 5.35px;
       }
 
       h2 {
         margin: 0 0 1px;
         color: #2f5f99;
-        font-size: 13.8pt;
+        font-size: 13.9pt;
         line-height: 1;
       }
 
@@ -193,7 +193,7 @@ const html = `<!doctype html>
       }
 
       .group {
-        margin-top: 2.2px;
+        margin-top: 2.35px;
       }
 
       .bullets {
