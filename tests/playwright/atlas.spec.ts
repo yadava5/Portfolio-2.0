@@ -204,6 +204,33 @@ test.describe("Technical Operations Atlas", () => {
     expect(bodyText).not.toContain("5x with AVX-512 SIMD");
   });
 
+  test("Visual Assist proof stays source-backed and simulator-safe", async ({
+    page,
+  }) => {
+    await page.goto("/projects/visual-assist/");
+    await page.waitForLoadState("domcontentloaded");
+
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistReadme)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistTests)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistCoverage)
+    ).toBeVisible();
+    await expect(
+      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistCoreMlBoundary)
+    ).toBeVisible();
+
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("68 unit tests");
+    expect(bodyText).not.toContain("Core ML object detection");
+  });
+
   test("desktop first viewport exposes recruiter identity, links, and proof", async ({
     page,
   }) => {

@@ -468,6 +468,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Source code",
         href: "https://github.com/yadava5/VisualAssist",
       },
+      {
+        type: "repo",
+        label: "README beta and LiDAR requirements",
+        href: "https://github.com/yadava5/VisualAssist#-requirements",
+      },
+      {
+        type: "repo",
+        label: "XCTest source evidence",
+        href: "https://github.com/yadava5/VisualAssist/tree/main/VisualAssistTests",
+      },
     ],
   },
   {

@@ -107,6 +107,12 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   automlPresenterEvidence:
     "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
+  visualAssistArchitecture: "On-device accessibility architecture",
+  visualAssistReadme: "README beta and LiDAR requirements",
+  visualAssistTests: "XCTest source evidence",
+  visualAssistCoverage:
+    "Local repository audit found 71 VisualAssistTests test functions.",
+  visualAssistCoreMlBoundary: "no custom Core ML model file was present",
   fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
