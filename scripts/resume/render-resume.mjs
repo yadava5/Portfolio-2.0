@@ -141,7 +141,7 @@ const html = `<!doctype html>
     <style>
       @page {
         size: Letter;
-        margin: 0.32in 0.46in 0.32in 0.46in;
+        margin: 0.34in 0.46in 0.34in 0.46in;
       }
 
       * {
@@ -152,19 +152,19 @@ const html = `<!doctype html>
         margin: 0;
         color: #111;
         font-family: "Times New Roman", Times, serif;
-        font-size: 9.7pt;
-        line-height: 1.13;
+        font-size: 10.15pt;
+        line-height: 1.17;
         word-spacing: 0.02em;
       }
 
       header {
         text-align: center;
-        margin-bottom: 7px;
+        margin-bottom: 8px;
       }
 
       h1 {
         margin: 0 0 2px;
-        font-size: 16.2pt;
+        font-size: 17pt;
         line-height: 1;
       }
 
@@ -174,13 +174,13 @@ const html = `<!doctype html>
       }
 
       section {
-        margin-top: 4.4px;
+        margin-top: 5.1px;
       }
 
       h2 {
         margin: 0 0 1px;
         color: #2f5f99;
-        font-size: 13.2pt;
+        font-size: 13.8pt;
         line-height: 1;
       }
 
@@ -193,7 +193,7 @@ const html = `<!doctype html>
       }
 
       .group {
-        margin-top: 1.8px;
+        margin-top: 2.2px;
       }
 
       .bullets {
