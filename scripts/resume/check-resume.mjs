@@ -41,6 +41,9 @@ const requiredPhrases = [
   "Ayush Yadav",
   "Computer Science graduate",
   "May 2026",
+  "3.47 overall GPA",
+  "GPA: 3.47 Overall",
+  "3.65 CS Coursework",
   "Technical Skills",
   "Projects",
   "Experience",
@@ -57,6 +60,9 @@ const requiredPhrases = [
 
 const forbiddenPhrases = [
   "Expected May 2026",
+  "GPA: 3.46",
+  "Dept GPA",
+  "Major GPA",
   "Jun 2025 - Present",
   "Senior CS student",
   "AI expert",

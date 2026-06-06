@@ -8,14 +8,14 @@ const sections = [
   {
     title: "Summary",
     body: [
-      "Computer Science graduate from Miami University (B.S. Computer Science, May 2026; GPA: 3.46) with experience building Python and SQL data pipelines, full-stack products, applied ML workflows, and reliability-focused tooling. Recent ITSM internship work covered 1M+ operational records, Tableau/OAS reporting, Workday data integration, and automation through APIs. Seeking new-grad software engineering, data engineering, full-stack, or ML-adjacent software roles.",
+      "Computer Science graduate from Miami University (B.S. in Computer Science, May 2026; 3.47 overall GPA) with experience building Python and SQL data pipelines, full-stack products, applied ML workflows, and reliability-focused tooling. Recent ITSM internship work covered 1M+ operational records, Tableau/OAS reporting, Workday data integration, and automation through APIs. Seeking new-grad software engineering, data engineering, full-stack, or ML-adjacent software roles.",
     ],
   },
   {
     title: "Education",
     body: [
       "<strong>Miami University, Oxford, OH</strong> | Bachelor of Science in Computer Science - May 2026",
-      "GPA: 3.46 (Dean's List: Fall 2023, Spring 2025, Fall 2025) | Dept GPA: 3.68 | Major GPA: 3.42",
+      "GPA: 3.47 Overall | 3.65 CS Coursework | Dean's List: Fall 2023, Spring 2025, Fall 2025",
       "<strong>Relevant Coursework:</strong>",
     ],
     items: [
