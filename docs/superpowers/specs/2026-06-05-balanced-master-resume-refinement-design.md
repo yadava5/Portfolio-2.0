@@ -152,7 +152,7 @@ The generated PDF must remain text-based and ATS-friendly:
 - Expand uncommon terms once where space allows, especially OpenAI Responses API, File Search, and human approval gates.
 - Keep hyperlinks visible as plain text and, if practical, actual PDF link annotations.
 
-Parser checks should confirm that raw extraction does not glue critical tokens such as `GPA3.46`, `anAutoML`, `VisualAssist`, `StudentAssociate`, or `externalAPIs`.
+Parser checks should confirm that raw extraction does not glue critical tokens such as `GPA3.47`, `anAutoML`, `VisualAssist`, `StudentAssociate`, or `externalAPIs`.
 
 ## Layout Requirements
 
