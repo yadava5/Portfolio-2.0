@@ -23,7 +23,7 @@ import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
-import { withBasePath } from "@/lib/utils";
+import { absoluteSiteUrl } from "@/lib/seo";
 
 /* ──────────────────────────────────────────────
    Font configuration
@@ -37,21 +37,26 @@ import { withBasePath } from "@/lib/utils";
    ────────────────────────────────────────────── */
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yadava5.github.io"),
+  metadataBase: new URL(siteMetadata.url),
   title: siteMetadata.title,
   description: siteMetadata.description,
   keywords: siteMetadata.keywords,
   authors: [{ name: "Ayush Yadav" }],
   icons: {
-    icon: withBasePath("/favicon.svg"),
-    shortcut: withBasePath("/favicon.ico"),
+    icon: absoluteSiteUrl("/favicon.svg"),
+    shortcut: absoluteSiteUrl("/favicon.ico"),
+  },
+  alternates: {
+    canonical: `${siteMetadata.url}/`,
   },
   openGraph: {
     title: siteMetadata.title,
     description: siteMetadata.description,
     url: siteMetadata.url,
     siteName: siteMetadata.title,
-    images: [{ url: siteMetadata.ogImage, width: 1200, height: 630 }],
+    images: [
+      { url: absoluteSiteUrl(siteMetadata.ogImage), width: 1200, height: 630 },
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -59,7 +64,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteMetadata.title,
     description: siteMetadata.description,
-    images: [siteMetadata.ogImage],
+    images: [absoluteSiteUrl(siteMetadata.ogImage)],
   },
   robots: {
     index: true,

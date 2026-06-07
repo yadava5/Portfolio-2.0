@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://yadava5.github.io/Portfolio-2.0/sitemap.xml

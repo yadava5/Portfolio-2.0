@@ -181,6 +181,61 @@ jobs:
           retention-days: 7
 
   # ─────────────────────────────────────────────────────────────
+  # Resume: Verify public resume remains parseable and one page
+  # ─────────────────────────────────────────────────────────────
+  resume-check:
+    name: 📄 Resume Parser Check
+    runs-on: ubuntu-latest
+    needs: [format, eslint, typecheck]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check resume
+        run: npm run resume:check
+
+  # ─────────────────────────────────────────────────────────────
+  # Static SEO: Verify GitHub Pages export metadata and routes
+  # ─────────────────────────────────────────────────────────────
+  static-seo:
+    name: 🔎 Static SEO Export
+    runs-on: ubuntu-latest
+    needs: [format, eslint, typecheck]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production static export
+        run: NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build
+
+      - name: Check static SEO metadata
+        run: npm run test:seo
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser metadata smoke
+        run: NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npx playwright test tests/playwright/static-seo.spec.ts
+
+  # ─────────────────────────────────────────────────────────────
   # Bundle Analysis: Track bundle sizes
   # ─────────────────────────────────────────────────────────────
   bundle-analysis:
