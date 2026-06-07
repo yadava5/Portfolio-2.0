@@ -44,6 +44,9 @@ jobs:
       - name: Verify static SEO export
         run: npm run test:seo
 
+      - name: Verify proof manifest
+        run: npm run test:proof
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

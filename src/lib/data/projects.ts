@@ -68,6 +68,8 @@ export interface Project {
   status?: string;
   /** Status label for display */
   statusLabel?: string;
+  /** Source-truth proof manifest IDs for visible project metrics */
+  proofIds?: string[];
 }
 
 /**
@@ -114,6 +116,7 @@ export const projects: Project[] = [
       { label: "ML Layers", value: "3-layer hybrid classifier" },
       { label: "Processing", value: "Local on-device" },
     ],
+    proofIds: ["jobtracker-local-classifier"],
   },
   {
     id: "automl",
@@ -155,6 +158,7 @@ export const projects: Project[] = [
       { label: "Workflow", value: "7-phase ML lifecycle" },
       { label: "Orchestration", value: "LangGraph + MCP" },
     ],
+    proofIds: ["automl-workflow-proof"],
   },
   {
     id: "visual-assist",
@@ -193,6 +197,7 @@ export const projects: Project[] = [
       { label: "Accessibility", value: "Computer vision powered" },
       { label: "Sensors", value: "LiDAR obstacle detection" },
     ],
+    proofIds: ["visual-assist-tests"],
   },
   {
     id: "taskflow-calendar",
@@ -230,6 +235,7 @@ export const projects: Project[] = [
       { label: "Tests", value: "738 automated tests" },
       { label: "NLP", value: "Smart natural language input" },
     ],
+    proofIds: ["taskflow-tests"],
   },
   {
     id: "fast-mnist-nn",
@@ -267,6 +273,7 @@ export const projects: Project[] = [
       { label: "Accuracy", value: "97%+ on MNIST" },
       { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
     ],
+    proofIds: ["fast-mnist-benchmark"],
   },
   {
     id: "master-inventory",
@@ -303,6 +310,7 @@ export const projects: Project[] = [
       { label: "Inventory", value: "10,453 deduped rows" },
       { label: "Schema", value: "35-field master inventory" },
     ],
+    proofIds: ["master-inventory-ledger"],
   },
   {
     id: "policybot",
@@ -339,6 +347,7 @@ export const projects: Project[] = [
       { label: "Validation", value: "19/20 structured sweep" },
       { label: "Tech", value: "OpenAI RAG + Slack integration" },
     ],
+    proofIds: ["policybot-validation"],
   },
   {
     id: "paid-internships",
@@ -377,6 +386,7 @@ export const projects: Project[] = [
       { label: "Research", value: "6 academic sources" },
       { label: "Design", value: "3D parallax scroll effects" },
     ],
+    proofIds: ["paid-internships-sources"],
   },
 ];
 

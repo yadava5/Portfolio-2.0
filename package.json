@@ -20,6 +20,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:visual": "playwright test --update-snapshots",
     "test:seo": "node scripts/qa/check-static-export-seo.mjs",
+    "test:proof": "node scripts/qa/check-proof-manifest.mjs",
     "resume:build": "node scripts/resume/render-resume.mjs",
     "resume:check": "node scripts/resume/check-resume.mjs",
     "assets:promote-proof": "node scripts/asset-truth/promote-proof-assets.mjs",
