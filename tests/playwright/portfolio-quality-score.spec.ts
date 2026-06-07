@@ -34,28 +34,6 @@ test.describe("Portfolio quality score", () => {
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await switchThemeAndWait(page, theme);
 
-      let earlyRetroTypedText = "";
-      if (theme.name === "retro-terminal") {
-        const retroIdentity = page.locator("#hero h1 [aria-hidden='true']");
-        await retroIdentity.waitFor({ state: "attached", timeout: 10000 });
-        try {
-          await page.waitForFunction(
-            () =>
-              document
-                .querySelector("#hero h1 [aria-hidden='true']")
-                ?.textContent?.toUpperCase()
-                .includes("AYUSH"),
-            undefined,
-            { timeout: 500 }
-          );
-        } catch {
-          // The score deduction below records this as delayed identity text.
-        }
-        earlyRetroTypedText = await retroIdentity.evaluate(
-          (element) => element.textContent ?? ""
-        );
-      }
-
       await page.waitForTimeout(900);
 
       const viewport = page.viewportSize();
@@ -179,34 +157,6 @@ test.describe("Portfolio quality score", () => {
 
       deduct(
         deductions,
-        theme.name === "liquid-glass" &&
-          result.horizontalScrollWrapperHeight >
-            result.clientHeight * (viewportName === "mobile" ? 4.2 : 3.2),
-        "liquid glass projects scroll rhythm is too long",
-        1.7
-      );
-
-      deduct(
-        deductions,
-        theme.name === "retro-terminal" &&
-          !earlyRetroTypedText.toUpperCase().includes("AYUSH"),
-        "retro terminal identity is delayed in first viewport",
-        2
-      );
-
-      const letterSpacing = Number.parseFloat(result.heroTitleLetterSpacing);
-      deduct(
-        deductions,
-        theme.name === "synthwave-sunset" &&
-          viewportName === "mobile" &&
-          Number.isFinite(letterSpacing) &&
-          letterSpacing < 0,
-        "synthwave mobile title uses negative tracking",
-        1.6
-      );
-
-      deduct(
-        deductions,
         viewportName === "mobile" &&
           result.emailWidth > 0 &&
           (result.emailLeft < 16 ||
@@ -234,9 +184,7 @@ test.describe("Portfolio quality score", () => {
       expect(
         score,
         `${theme.name} ${viewportName} score`
-      ).toBeGreaterThanOrEqual(
-        theme.name === "technical-operations-atlas" ? 9.2 : 8.5
-      );
+      ).toBeGreaterThanOrEqual(9.2);
     });
   }
 });

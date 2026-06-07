@@ -70,13 +70,14 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
      *
      * @param time - requestAnimationFrame timestamp
      */
+    let rafId = 0;
     function raf(time: number) {
       lenis.raf(time);
       ScrollTrigger.update();
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     /**
      * Sync Lenis scroll events with ScrollTrigger

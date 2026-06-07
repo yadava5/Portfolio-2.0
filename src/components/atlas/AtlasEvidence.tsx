@@ -159,6 +159,12 @@ interface ProjectEvidenceCardProps {
   className?: string;
 }
 
+function getVisualDisclosureLabel(project: Project) {
+  if (project.imageKind === "real-screenshot") return "Project visual:";
+  if (project.imageKind === "diagram") return "Architecture diagram:";
+  return "Representative visual:";
+}
+
 export function ProjectEvidenceCard({
   project,
   study,
@@ -189,9 +195,12 @@ export function ProjectEvidenceCard({
         <div className="absolute top-4 left-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
           {String(index + 1).padStart(2, "0")}
         </div>
-        <div className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+        <p className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+          <span className="font-semibold text-zinc-200">
+            {getVisualDisclosureLabel(project)}
+          </span>{" "}
           {project.imageDisclosure}
-        </div>
+        </p>
       </div>
       <div className="flex flex-col p-4 md:p-6">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">

@@ -334,7 +334,6 @@ export function TechnicalOperationsAtlas() {
                   project={project}
                   study={getCaseStudyById(project.id)}
                   index={index}
-                  className={index >= 4 ? "hidden md:grid" : ""}
                 />
               ) : null
             )}
