@@ -176,8 +176,8 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: nextjs-build
-          path: .next
+          name: static-export
+          path: out
           retention-days: 7
 
   # ─────────────────────────────────────────────────────────────
@@ -345,7 +345,19 @@ jobs:
   ci-success:
     name: ✅ CI Complete
     runs-on: ubuntu-latest
-    needs: [format, eslint, typecheck, security, build, bundle-analysis]
+    needs:
+      [
+        format,
+        eslint,
+        typecheck,
+        security,
+        build,
+        resume-check,
+        static-seo,
+        proof-manifest,
+        browser-quality,
+        bundle-analysis,
+      ]
     if: always()
     steps:
       - name: Check all jobs
@@ -358,13 +370,23 @@ jobs:
           echo "TypeCheck: ${{ needs.typecheck.result }}"
           echo "Security:  ${{ needs.security.result }}"
           echo "Build:     ${{ needs.build.result }}"
+          echo "Resume:    ${{ needs.resume-check.result }}"
+          echo "StaticSEO: ${{ needs.static-seo.result }}"
+          echo "Proof:     ${{ needs.proof-manifest.result }}"
+          echo "Browser:   ${{ needs.browser-quality.result }}"
           echo "Bundle:    ${{ needs.bundle-analysis.result }}"
           echo ""
           
-          if [[ "${{ needs.format.result }}" == "failure" ]] || \
-             [[ "${{ needs.eslint.result }}" == "failure" ]] || \
-             [[ "${{ needs.typecheck.result }}" == "failure" ]] || \
-             [[ "${{ needs.build.result }}" == "failure" ]]; then
+          if [[ "${{ needs.format.result }}" != "success" ]] || \
+             [[ "${{ needs.eslint.result }}" != "success" ]] || \
+             [[ "${{ needs.typecheck.result }}" != "success" ]] || \
+             [[ "${{ needs.security.result }}" != "success" ]] || \
+             [[ "${{ needs.build.result }}" != "success" ]] || \
+             [[ "${{ needs.resume-check.result }}" != "success" ]] || \
+             [[ "${{ needs.static-seo.result }}" != "success" ]] || \
+             [[ "${{ needs.proof-manifest.result }}" != "success" ]] || \
+             [[ "${{ needs.browser-quality.result }}" != "success" ]] || \
+             [[ "${{ needs.bundle-analysis.result }}" != "success" ]]; then
             echo "❌ CI Pipeline FAILED"
             exit 1
           else
