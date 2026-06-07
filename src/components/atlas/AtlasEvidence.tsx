@@ -159,6 +159,12 @@ interface ProjectEvidenceCardProps {
   className?: string;
 }
 
+function getVisualDisclosureLabel(project: Project) {
+  if (project.imageKind === "real-screenshot") return "Project visual:";
+  if (project.imageKind === "diagram") return "Architecture diagram:";
+  return "Representative visual:";
+}
+
 export function ProjectEvidenceCard({
   project,
   study,
@@ -167,6 +173,10 @@ export function ProjectEvidenceCard({
 }: ProjectEvidenceCardProps) {
   const metrics = project.metrics ?? [];
   const hasCaseStudy = Boolean(study);
+  const proofLabels =
+    study?.featuredProofLabels && study.featuredProofLabels.length > 0
+      ? study.featuredProofLabels
+      : (study?.artifacts.slice(0, 2).map((artifact) => artifact.label) ?? []);
 
   return (
     <article
@@ -185,9 +195,12 @@ export function ProjectEvidenceCard({
         <div className="absolute top-4 left-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
           {String(index + 1).padStart(2, "0")}
         </div>
-        <div className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+        <p className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+          <span className="font-semibold text-zinc-200">
+            {getVisualDisclosureLabel(project)}
+          </span>{" "}
           {project.imageDisclosure}
-        </div>
+        </p>
       </div>
       <div className="flex flex-col p-4 md:p-6">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
@@ -219,6 +232,35 @@ export function ProjectEvidenceCard({
               </div>
             ))}
           </dl>
+        ) : null}
+        {proofLabels.length > 0 ? (
+          <div className="mt-5 rounded border border-zinc-800 bg-zinc-900/45 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="font-mono text-xs tracking-[0.2em] text-amber-400 uppercase">
+                Proof path
+              </p>
+              <p className="text-xs font-medium text-zinc-500">
+                {project.isPrivate
+                  ? "Private-safe artifacts"
+                  : "Inspectable artifacts"}
+              </p>
+            </div>
+            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+              {proofLabels.slice(0, 2).map((label) => (
+                <li
+                  key={label}
+                  className="flex min-h-10 items-start gap-2 rounded border border-zinc-800 bg-zinc-950/70 px-3 py-2 text-xs leading-5 text-zinc-300"
+                >
+                  <CheckCircle2
+                    size={14}
+                    className="mt-0.5 shrink-0 text-emerald-400"
+                    aria-hidden="true"
+                  />
+                  <span className="min-w-0">{label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
         <div className="mt-5 flex flex-wrap gap-2">
           {project.techStack.slice(0, 5).map((tech) => (

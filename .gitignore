@@ -14,7 +14,7 @@
 /coverage
 /playwright-report/
 /test-results/
-/output/playwright/
+/output/
 /.playwright-cli/
 
 # Generated Playwright visual artifacts belong under ignored output/playwright/.

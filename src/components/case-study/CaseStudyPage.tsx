@@ -20,6 +20,11 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
+  const projectVisualClassName =
+    project.imageKind === "diagram"
+      ? "object-contain opacity-95"
+      : "object-cover opacity-90";
+
   return (
     <article className="min-h-screen bg-[#090b0d] text-zinc-100">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
@@ -119,7 +124,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </section>
 
           <section
-            id="artifacts"
+            id="project-visual"
             className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70"
           >
             <div className="relative min-h-[280px] bg-zinc-900">
@@ -128,7 +133,8 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   src={project.image}
                   alt={project.imageAlt}
                   fill
-                  className="object-cover opacity-90"
+                  className={projectVisualClassName}
+                  loading="eager"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />
               ) : null}
@@ -177,7 +183,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           <EvidenceTable title="Outcomes" rows={study.outcomes} />
         </section>
 
-        <section className="py-8">
+        <section id="artifacts" className="py-8">
           <SectionLabel>Artifacts</SectionLabel>
           <div className="grid gap-3 md:grid-cols-3">
             {study.artifacts.map((artifact) => (

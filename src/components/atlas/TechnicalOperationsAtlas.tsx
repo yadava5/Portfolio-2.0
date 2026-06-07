@@ -28,7 +28,7 @@ import {
   personalInfo,
   socialLinks,
 } from "@/lib/data/personal";
-import { experiences } from "@/lib/data/experience";
+import { experiences, formatDateRange } from "@/lib/data/experience";
 import { getPublicProjects, projects } from "@/lib/data/projects";
 import {
   atlasProjectCaseStudies,
@@ -126,6 +126,10 @@ function formatEducationEndDate(endDate: string) {
 
 export function TechnicalOperationsAtlas() {
   const currentExperience = experiences[0];
+  const currentExperienceRange = formatDateRange(
+    currentExperience.startDate,
+    currentExperience.endDate
+  );
   const graduationDate = formatEducationEndDate(education[0].endDate);
   const publicProjects = getPublicProjects();
   const caseStudyProjects = atlasProjectCaseStudies
@@ -165,9 +169,9 @@ export function TechnicalOperationsAtlas() {
             <div className="mt-5 grid gap-3 text-sm text-zinc-400 sm:grid-cols-2">
               <p>
                 <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
-                  Current role
+                  Recent role
                 </span>
-                {personalInfo.title}
+                {currentExperience.title}
               </p>
               <p>
                 <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
@@ -186,7 +190,7 @@ export function TechnicalOperationsAtlas() {
               <span className="hidden sm:inline">
                 Computer Science graduate focused on data pipelines, applied ML,
                 full-stack systems, performance work, and accessible native
-                products. Current work turns operational records, Tableau
+                products. Recent work turned operational records, Tableau
                 metadata, and ML workflows into trusted datasets, dashboards,
                 and validated product surfaces.
               </span>
@@ -330,7 +334,6 @@ export function TechnicalOperationsAtlas() {
                   project={project}
                   study={getCaseStudyById(project.id)}
                   index={index}
-                  className={index >= 4 ? "hidden md:grid" : ""}
                 />
               ) : null
             )}
@@ -356,8 +359,7 @@ export function TechnicalOperationsAtlas() {
                   {currentExperience.title}
                 </h3>
                 <p className="mt-2 text-sm text-zinc-500">
-                  {currentExperience.startDate} - {currentExperience.endDate} /{" "}
-                  {currentExperience.location}
+                  {currentExperienceRange} / {currentExperience.location}
                 </p>
               </div>
               <div className="grid gap-6">
@@ -573,8 +575,10 @@ export function TechnicalOperationsAtlas() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-zinc-500">Current role</dt>
-                  <dd className="mt-1 text-zinc-100">{personalInfo.title}</dd>
+                  <dt className="text-zinc-500">Recent role</dt>
+                  <dd className="mt-1 text-zinc-100">
+                    {currentExperience.title}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-zinc-500">Links</dt>

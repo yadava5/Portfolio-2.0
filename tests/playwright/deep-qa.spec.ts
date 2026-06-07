@@ -12,7 +12,6 @@ import {
   PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_TITLES,
   THEMES,
-  isMobileViewport,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
 
@@ -643,29 +642,33 @@ test.describe("DEEP QA: Visual Consistency Checks", () => {
     }
   });
 
-  test("Theme switcher button is consistently accessible", async ({ page }) => {
+  test("Atlas-only public surface keeps theme selector absent", async ({
+    page,
+  }) => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    if (await isMobileViewport(page)) {
-      await expect(
-        page.locator("button[aria-label*='Select theme']")
-      ).toBeHidden();
-      return;
-    }
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      DEFAULT_THEME
+    );
 
-    for (let i = 0; i < 3; i++) {
-      // Button should always be reachable
-      const switcher = page.locator("button[aria-label*='Select theme']");
-      await expect(switcher).toBeVisible({ timeout: 5000 });
+    const selectors = [
+      page.locator("button[aria-label*='Select theme']"),
+      page.locator("#theme-switcher-menu"),
+    ];
 
-      // Click it
-      await switcher.click({ force: true });
-      await page.waitForTimeout(300);
+    for (const scrollRatio of [0, 0.5, 1]) {
+      await page.evaluate((ratio) => {
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo({ top: maxScroll * ratio, behavior: "instant" });
+      }, scrollRatio);
+      await page.waitForTimeout(200);
 
-      // Close it
-      await page.keyboard.press("Escape");
-      await page.waitForTimeout(300);
+      for (const selector of selectors) {
+        await expect(selector).toHaveCount(0);
+      }
     }
   });
 

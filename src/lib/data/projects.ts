@@ -68,6 +68,8 @@ export interface Project {
   status?: string;
   /** Status label for display */
   statusLabel?: string;
+  /** Source-truth proof manifest IDs for visible project metrics */
+  proofIds?: string[];
 }
 
 /**
@@ -82,7 +84,7 @@ export const projects: Project[] = [
     shortDescription:
       "Native macOS app for local job-search email classification with on-device ML and a trackable application pipeline.",
     fullDescription:
-      "An email-powered job application tracker that syncs your Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a trackable pipeline with a beautiful Liquid Glass dashboard.",
+      "An email-powered job application tracker that syncs Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a local pipeline with a native SwiftUI dashboard.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "FastAPI", color: "#009688" },
@@ -114,6 +116,7 @@ export const projects: Project[] = [
       { label: "ML Layers", value: "3-layer hybrid classifier" },
       { label: "Processing", value: "Local on-device" },
     ],
+    proofIds: ["jobtracker-local-classifier"],
   },
   {
     id: "automl",
@@ -155,6 +158,7 @@ export const projects: Project[] = [
       { label: "Workflow", value: "7-phase ML lifecycle" },
       { label: "Orchestration", value: "LangGraph + MCP" },
     ],
+    proofIds: ["automl-workflow-proof"],
   },
   {
     id: "visual-assist",
@@ -193,6 +197,7 @@ export const projects: Project[] = [
       { label: "Accessibility", value: "Computer vision powered" },
       { label: "Sensors", value: "LiDAR obstacle detection" },
     ],
+    proofIds: ["visual-assist-tests"],
   },
   {
     id: "taskflow-calendar",
@@ -230,6 +235,7 @@ export const projects: Project[] = [
       { label: "Tests", value: "738 automated tests" },
       { label: "NLP", value: "Smart natural language input" },
     ],
+    proofIds: ["taskflow-tests"],
   },
   {
     id: "fast-mnist-nn",
@@ -267,14 +273,15 @@ export const projects: Project[] = [
       { label: "Accuracy", value: "97%+ on MNIST" },
       { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
     ],
+    proofIds: ["fast-mnist-benchmark"],
   },
   {
     id: "master-inventory",
     title: "Master Inventory Pipeline",
     shortDescription:
-      "Python/pandas pipeline consolidating Tableau Cloud metadata and Workday exports into a private-safe master inventory.",
+      "Python/pandas pipeline consolidating Tableau metadata and Workday exports into a private-safe 10.5k-row master inventory.",
     fullDescription:
-      "Proprietary pipeline consolidating Tableau Cloud metadata and Workday report exports into a unified master inventory for Tableau Prep and dashboards.",
+      "Proprietary pipeline consolidating Tableau metadata and Workday custom-report exports into a unified 35-field master inventory for Tableau Prep and dashboards.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "pandas", color: "#150458" },
@@ -291,26 +298,27 @@ export const projects: Project[] = [
     featured: false,
     category: "data",
     startDate: "2025-06",
-    endDate: "Present",
+    endDate: "2026-05",
     highlights: [
-      "Consolidates Tableau and Workday inventory records",
-      "Unified schema with deterministic inventory IDs",
-      "Tableau REST API integration",
+      "Consolidates 3,731 Tableau rows and 6,743 Workday rows",
+      "35-field unified schema with deterministic inventory IDs",
+      "Tableau REST API and file-mode extraction paths",
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
     metrics: [
-      { label: "Inventory", value: "16.7k consolidated records" },
-      { label: "Impact", value: "Reduced manual reconciliation effort" },
+      { label: "Inventory", value: "10,453 deduped rows" },
+      { label: "Schema", value: "35-field master inventory" },
     ],
+    proofIds: ["master-inventory-ledger"],
   },
   {
     id: "policybot",
     title: "PolicyBot",
     shortDescription:
-      "RAG-powered policy chatbot on Slack that answers supported queries with cited sources and quote validation.",
+      "RAG-powered policy assistant with OpenAI File Search, Slack Socket Mode, cited-source checks, and local quote validation.",
     fullDescription:
-      "A policy support chatbot that helps users interpret and apply Miami University data policies using OpenAI's Responses API with File Search and Slack Socket Mode integration.",
+      "An internal policy support assistant that routes CLI and Slack questions through OpenAI Responses API with File Search, cites source filenames, and rejects answers whose quoted snippets cannot be verified when local policy files are available.",
     techStack: [
       { name: "Python", color: "#3776ab" },
       { name: "OpenAI", color: "#412991" },
@@ -327,11 +335,11 @@ export const projects: Project[] = [
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
-    endDate: "Present",
+    endDate: "2026-05",
     highlights: [
       "RAG with OpenAI File Search",
-      "Slack Socket Mode integration",
-      "Local validation for quote verification",
+      "CLI and Slack Socket Mode entry points",
+      "Local quote validation and safe fallback behavior",
       "Supports DOCX, PDF, and Markdown policies",
     ],
     isPrivate: true,
@@ -339,6 +347,7 @@ export const projects: Project[] = [
       { label: "Validation", value: "19/20 structured sweep" },
       { label: "Tech", value: "OpenAI RAG + Slack integration" },
     ],
+    proofIds: ["policybot-validation"],
   },
   {
     id: "paid-internships",
@@ -377,6 +386,7 @@ export const projects: Project[] = [
       { label: "Research", value: "6 academic sources" },
       { label: "Design", value: "3D parallax scroll effects" },
     ],
+    proofIds: ["paid-internships-sources"],
   },
 ];
 

@@ -92,6 +92,8 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   education: "B.S. Computer Science, Miami University, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
+  recentRoleLabel: "Recent role",
+  recentExperienceRange: "Jun 2025 - May 2026",
 };
 
 export const EXPECTED_SELECTED_WORK_ORDER = [
@@ -101,11 +103,77 @@ export const EXPECTED_SELECTED_WORK_ORDER = [
   "JobTracker",
 ];
 
+export const EXPECTED_SELECTED_WORK_PROOF_LABELS = [
+  {
+    title: "Agentic AutoML Platform",
+    labels: ["Presenter stack proof", "Expo poster proof"],
+  },
+  {
+    title: "Fast MNIST Neural Network",
+    labels: ["Local React workbench screenshot", "Benchmark evidence"],
+  },
+  {
+    title: "Visual Assist",
+    labels: [
+      "On-device accessibility architecture",
+      "XCTest source evidence",
+    ],
+  },
+  {
+    title: "JobTracker",
+    labels: ["Local classification architecture", "Backend test suite"],
+  },
+];
+
 export const EXPECTED_PROOF_ARTIFACTS = {
   automlPoster: "Expo poster proof",
+  automlPresenterProof: "Presenter stack proof",
+  automlPresenterEvidence:
+    "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
+  jobtrackerArchitecture: "Local classification architecture",
+  jobtrackerReadme: "Source-truth README",
+  jobtrackerArchitectureDocs: "Architecture docs",
+  jobtrackerBackendTests: "Backend test suite",
+  jobtrackerBenchmark: "ML strategy and evaluation gates",
+  jobtrackerWebBeta: "Web beta scaffold",
+  jobtrackerBackendCoverage:
+    "Local source validation passed 182 backend tests",
+  jobtrackerClassifierGate:
+    "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+  jobtrackerNativeBuild:
+    "The macOS Debug target built locally with xcodebuild",
+  jobtrackerPrivacyBoundary:
+    "Architecture and source links are shown publicly; private email and application records are not shown.",
+  visualAssistArchitecture: "On-device accessibility architecture",
+  visualAssistReadme: "README beta and LiDAR requirements",
+  visualAssistTests: "XCTest source evidence",
+  visualAssistCoverage:
+    "Local repository audit found 71 VisualAssistTests test functions.",
+  visualAssistCoreMlBoundary: "no custom Core ML model file was present",
+  fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
+  fastMnistSpeedup: "3.50x dot-kernel speedup",
+  fastMnistDisclosure:
+    "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
+  masterInventoryRows:
+    "3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
+  masterInventorySchema: "35-field unified schema",
+  masterInventoryTests:
+    "passed 3 extractor tests and critical ruff syntax/import checks",
+  masterInventoryPrivateBoundary:
+    "raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
+  masterInventoryProofLedger: "Processed output proof ledger",
+  policybotValidation:
+    "19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks",
+  policybotFileSearch:
+    "OpenAI Responses API with File Search, cited filenames, and local quote verification",
+  policybotLocalTests:
+    "passed 3 Slack adapter/formatting tests in a temporary audit virtualenv",
+  policybotDeploymentBoundary:
+    "no production usage, workspace adoption, or always-on service claim is made here.",
+  policybotValidationLedger: "Validation ledger proof",
 };
 
 export const EXPECTED_LINKS = {
@@ -121,6 +189,8 @@ export const ATLAS_ALLOWED_METRICS = [
   "71",
   "71 tests",
   "19/20",
+  "10,453",
+  "10.5k",
 ];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
@@ -167,8 +237,18 @@ export const PROHIBITED_GENERATED_CONTENT = [
   "processing 500+ emails/month",
   "500+ emails/month",
   "macOS 15+ Liquid Glass UI",
+  "beautiful Liquid Glass dashboard",
   "Python/SQL pipeline processing 1M+",
   "Processes 1M+ rows of operational data",
+  "16,685",
+  "16.7k consolidated records",
+  "Google Cloud",
+  "OAS metadata",
+  "GraphQL metadata extraction",
+  "production dashboard",
+  "production deployment",
+  "active Slack workspace usage",
+  "runs 24/7",
 ];
 
 export async function isMobileViewport(page: Page) {

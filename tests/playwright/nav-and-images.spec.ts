@@ -76,7 +76,7 @@ test.describe("Project Images", () => {
 test.describe("Project Visual Disclosures", () => {
   test.setTimeout(120000);
 
-  for (const theme of THEMES.filter((theme) => theme.name !== DEFAULT_THEME)) {
+  for (const theme of THEMES) {
     test(`${theme.name}: representative project visuals are disclosed`, async ({
       page,
     }) => {
@@ -94,20 +94,6 @@ test.describe("Project Visual Disclosures", () => {
           .filter({ hasText: project.disclosure })
           .first();
 
-        if (theme.name === "liquid-glass") {
-          const disclosureCount = await page
-            .locator("p")
-            .filter({ hasText: project.disclosureLabel })
-            .filter({ hasText: project.disclosure })
-            .count();
-
-          expect(
-            disclosureCount,
-            `${project.title} should disclose ${project.imageKind} in both Liquid responsive project layouts`
-          ).toBeGreaterThanOrEqual(2);
-          continue;
-        }
-
         await expectAnyVisible(
           disclosure,
           `${project.title} should disclose ${project.imageKind}`
@@ -120,21 +106,16 @@ test.describe("Project Visual Disclosures", () => {
 test.describe("Horizontal Project Rail", () => {
   test.setTimeout(120000);
 
-  test("liquid-glass: final featured project remains visible at the end of the rail", async ({
+  test("technical-operations-atlas: selected work remains reachable after scrolling projects", async ({
     page,
   }) => {
-    const liquidGlassTheme = THEMES.find(
-      (theme) => theme.name === "liquid-glass"
-    );
     const finalFeaturedProject = FEATURED_PROJECTS.at(-1);
 
-    if (!liquidGlassTheme) {
-      test.skip(true, "Liquid Glass is no longer a public portfolio theme");
-      return;
-    }
-
     if (!finalFeaturedProject) {
-      test.skip(true, "No featured project is available for the rail check");
+      test.skip(
+        true,
+        "No featured project is available for the project visibility check"
+      );
       return;
     }
 
@@ -142,24 +123,23 @@ test.describe("Horizontal Project Rail", () => {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
 
-    await switchThemeAndWait(page, liquidGlassTheme);
+    await switchThemeAndWait(page, { name: DEFAULT_THEME, label: "" });
     await page.locator("#projects").waitFor({ state: "attached" });
 
-    await page.evaluate(() => {
+    await page.evaluate((title) => {
       const section = document.querySelector("#projects") as HTMLElement | null;
 
       if (!section) {
         throw new Error("Projects section was not found");
       }
 
-      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      const railEnd = sectionTop + section.offsetHeight - window.innerHeight;
-      window.scrollTo({
-        top: Math.max(sectionTop, railEnd - 2),
-        behavior: "instant",
-      });
-    });
-    await page.waitForTimeout(800);
+      const heading = Array.from(
+        section.querySelectorAll<HTMLHeadingElement>("h3")
+      ).find((candidate) => candidate.textContent?.trim() === title);
+
+      heading?.scrollIntoView({ block: "center", behavior: "instant" });
+    }, finalFeaturedProject.title);
+    await page.waitForTimeout(300);
 
     const headingState = await page.evaluate((title) => {
       const heading = Array.from(

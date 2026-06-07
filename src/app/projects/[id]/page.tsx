@@ -7,6 +7,7 @@ import {
   getCaseStudyProject,
 } from "@/lib/data/projectCaseStudies";
 import { siteMetadata } from "@/lib/data/personal";
+import { absoluteSiteUrl } from "@/lib/seo";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -31,20 +32,23 @@ export async function generateMetadata({
     };
   }
 
+  const projectUrl = `${siteMetadata.url}/projects/${project.id}/`;
+  const projectImage = absoluteSiteUrl(project.image || siteMetadata.ogImage);
+
   return {
     title: `${project.title} Case Study | Ayush Yadav`,
     description: study.summary,
     alternates: {
-      canonical: `${siteMetadata.url}/projects/${project.id}`,
+      canonical: projectUrl,
     },
     openGraph: {
       title: `${project.title} Case Study | Ayush Yadav`,
       description: study.summary,
-      url: `${siteMetadata.url}/projects/${project.id}`,
+      url: projectUrl,
       siteName: siteMetadata.title,
       images: [
         {
-          url: project.image || siteMetadata.ogImage,
+          url: projectImage,
           width: 1200,
           height: 630,
           alt: project.imageAlt,
@@ -56,7 +60,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `${project.title} Case Study | Ayush Yadav`,
       description: study.summary,
-      images: [project.image || siteMetadata.ogImage],
+      images: [projectImage],
     },
   };
 }

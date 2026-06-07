@@ -18,7 +18,7 @@ The Playwright directory now tracks source specs and documentation only. Generat
 
 - `atlas.spec.ts` - Technical Operations Atlas source-truth, recruiter CTAs, private case-study availability, and generated-copy guardrails.
 - `a11y-audit.spec.ts` - axe accessibility checks.
-- `interactions.spec.ts` - theme switcher and key UI interactions.
+- `interactions.spec.ts` - key UI interactions and recruiter-facing navigation.
 - `nav-and-images.spec.ts` - anchor sections, image assets, project records.
 - `comprehensive-qa.spec.ts` - broader content, link, asset, and mobile sanity checks.
 - `deep-qa.spec.ts` - slower scroll, screenshot, animation, semantic, performance, and edge-case checks.
@@ -42,9 +42,9 @@ output/playwright/
 
 ## Current Contract
 
-- The default theme is `technical-operations-atlas`.
-- The desktop theme switcher is visible and tested through UI interactions.
-- The mobile theme switcher stays hidden; tests set theme state directly when they only need to render a theme.
+- The only public theme is `technical-operations-atlas`.
+- The previous theme switcher is intentionally absent from the rendered product.
+- Legacy theme helper loops still derive from `themeIds`, so they render only Atlas until those specs are simplified.
 - Tests derive asset URLs from Playwright `baseURL` or current page URL instead of hardcoding `127.0.0.1:3000`.
 - Project visuals must be labeled as representative visuals unless they are real captured screenshots.
 
