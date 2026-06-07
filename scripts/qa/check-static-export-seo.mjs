@@ -64,9 +64,7 @@ const htmlFiles = requiredRoutes
   .map((route) => [route, fs.readFileSync(htmlForRoute(route), "utf8")]);
 
 for (const [route, html] of htmlFiles) {
-  const canonical = html.match(
-    /<link rel="canonical" href="([^"]+)"/
-  )?.[1];
+  const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
   if (canonical !== `${siteUrl}${route}`) {
     fail(`bad canonical for ${route}: ${canonical ?? "missing"}`);
   }

@@ -17,7 +17,8 @@ export const proofManifest: ProofManifestEntry[] = [
     claim:
       "JobTracker uses a 3-layer rules, embeddings, and SetFit classifier path for local job-search email classification.",
     source: "https://github.com/yadava5/jobtracker",
-    verification: "Public repository architecture and portfolio architecture diagram.",
+    verification:
+      "Public repository architecture and portfolio architecture diagram.",
     visibility: "public",
     privacyBoundary: "No private email content is shown.",
   },
@@ -27,7 +28,8 @@ export const proofManifest: ProofManifestEntry[] = [
     claim:
       "Agentic AutoML presents a 7-phase ML workflow with LangGraph and MCP orchestration.",
     source: "public/images/projects/agentic-automl-poster-proof.png",
-    verification: "Private-safe senior design poster and local AutoML repository audit.",
+    verification:
+      "Private-safe senior design poster and local AutoML repository audit.",
     visibility: "private-safe",
     privacyBoundary:
       "Uses demo/source-truth data and excludes private repository source.",
@@ -36,7 +38,8 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "visual-assist-tests",
     label: "71 iOS tests",
     claim: "Visual Assist has audited XCTest model and utility coverage.",
-    source: "https://github.com/yadava5/VisualAssist/tree/main/VisualAssistTests",
+    source:
+      "https://github.com/yadava5/VisualAssist/tree/main/VisualAssistTests",
     verification: "Public test tree and architecture evidence audit.",
     visibility: "public",
     privacyBoundary: "No live camera, location, or user sensor data is shown.",
@@ -76,7 +79,8 @@ export const proofManifest: ProofManifestEntry[] = [
   {
     id: "policybot-validation",
     label: "19/20 structured sweep",
-    claim: "PolicyBot private-safe proof records a structured validation sweep.",
+    claim:
+      "PolicyBot private-safe proof records a structured validation sweep.",
     source: "public/images/projects/policybot-validation-proof.svg",
     verification: "Private-safe validation ledger.",
     visibility: "private-safe",

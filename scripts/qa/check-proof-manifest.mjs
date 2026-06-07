@@ -67,7 +67,8 @@ for (const block of projectBlocks) {
     (match) => match[1]
   );
 
-  if (proofIds.length === 0) fail(`${title} has visible metrics but no proofIds`);
+  if (proofIds.length === 0)
+    fail(`${title} has visible metrics but no proofIds`);
   for (const proofId of proofIds) {
     if (!manifestIds.has(proofId)) {
       fail(`${title} references missing proof id ${proofId}`);

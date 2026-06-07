@@ -229,8 +229,8 @@ jobs:
       - name: Check static SEO metadata
         run: npm run test:seo
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
 
       - name: Browser metadata smoke
         run: NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npx playwright test tests/playwright/static-seo.spec.ts
@@ -257,6 +257,41 @@ jobs:
 
       - name: Check proof coverage
         run: npm run test:proof
+
+  # ─────────────────────────────────────────────────────────────
+  # Browser Quality: Playwright smoke, reduced motion, performance
+  # ─────────────────────────────────────────────────────────────
+  browser-quality:
+    name: 🎭 Browser Quality Gates
+    runs-on: ubuntu-latest
+    needs: [format, eslint, typecheck]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox
+
+      - name: Check asset budgets
+        run: npm run assets:budget
+
+      - name: Run browser smoke
+        run: npm run test:e2e:browser-smoke
+
+      - name: Run reduced-motion checks
+        run: npm run test:e2e:reduced-motion
+
+      - name: Run performance checks
+        run: npm run test:e2e:performance
 
   # ─────────────────────────────────────────────────────────────
   # Bundle Analysis: Track bundle sizes

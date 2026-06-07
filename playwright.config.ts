@@ -37,6 +37,13 @@ export default defineConfig({
         ...devices["Pixel 5"],
       },
     },
+    {
+      name: "firefox-desktop",
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: { width: 1440, height: 900 },
+      },
+    },
   ],
   webServer: {
     command:

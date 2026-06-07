@@ -12,7 +12,6 @@ import {
   PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_TITLES,
   THEMES,
-  isMobileViewport,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
 
