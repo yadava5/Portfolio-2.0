@@ -247,7 +247,7 @@ In `src/lib/data/personal.ts`, update the `personalInfo` object with these value
   /** Short tagline for hero section */
   tagline: "New-grad software engineer focused on data, ML systems, and full-stack reliability",
   /** Email address */
-  email: "yadava5@miamioh.edu",
+  email: "aesh_1055@icloud.com",
   /** Location */
   location: "Oxford, Ohio",
   /** Current availability */
