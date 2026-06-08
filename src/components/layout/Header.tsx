@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { FileText, Github, Linkedin, Mail } from "lucide-react";
+import { FileText, Github, Linkedin, Mail, X } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
 
 const NAV_ITEMS = [
@@ -14,6 +15,7 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [portraitOpen, setPortraitOpen] = useState(false);
   const github = socialLinks.find((link) => link.name === "GitHub")?.url;
   const linkedIn = socialLinks.find((link) => link.name === "LinkedIn")?.url;
 
@@ -24,6 +26,24 @@ export default function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!portraitOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPortraitOpen(false);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [portraitOpen]);
 
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLElement>, targetId: string) => {
@@ -37,89 +57,126 @@ export default function Header() {
   );
 
   return (
-    <header
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-zinc-800 bg-zinc-950/88 py-3 backdrop-blur-md"
-          : "border-b border-transparent bg-zinc-950/45 py-4 backdrop-blur-sm"
-      }`}
-    >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 md:px-8 lg:px-10">
-        <Link
-          href="/#hero"
-          onClick={(e) => handleNavClick(e, "#hero")}
-          className="group flex items-center gap-3"
-          aria-label="Back to hero"
-        >
-          <span className="flex h-10 w-10 items-center justify-center border border-amber-400/40 bg-zinc-950 text-lg font-bold tracking-tight text-zinc-50">
-            AY
-          </span>
-          <span className="hidden leading-tight sm:block">
-            <span className="block text-sm font-semibold text-zinc-50">
-              Technical Operations Atlas
-            </span>
-            <span className="block text-xs text-zinc-500">by Ayush Yadav</span>
-          </span>
-        </Link>
+    <>
+      <header
+        className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "border-b border-zinc-800 bg-zinc-950/88 py-3 backdrop-blur-md"
+            : "border-b border-transparent bg-zinc-950/45 py-4 backdrop-blur-sm"
+        }`}
+      >
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 md:px-8 lg:px-10">
+          <button
+            type="button"
+            onClick={() => setPortraitOpen(true)}
+            className="group relative h-11 w-11 overflow-hidden rounded-full border border-sky-400/50 bg-zinc-950 transition hover:border-cyan-300 focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+            aria-label="Open Ayush Yadav portrait"
+            aria-haspopup="dialog"
+            aria-expanded={portraitOpen}
+          >
+            <Image
+              src={personalInfo.portrait.image}
+              alt={personalInfo.portrait.alt}
+              fill
+              className="object-cover object-top transition duration-300 group-hover:scale-105"
+              sizes="44px"
+              priority
+            />
+          </button>
 
-        <ul className="hidden items-center gap-6 lg:flex">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.target)}
-                className="text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-50"
+          <ul className="hidden items-center gap-6 lg:flex">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.target)}
+                  className="text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-50"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <a
+              href={personalInfo.resumeUrl}
+              aria-label="Resume"
+              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-sky-400 bg-sky-400 px-0 text-sm font-semibold text-zinc-950 transition hover:bg-sky-300 sm:w-auto sm:px-3"
+            >
+              <FileText size={16} aria-hidden="true" />
+              <span className="hidden sm:inline">Resume</span>
+            </a>
+            {github ? (
+              <a
+                href={github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
               >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Github size={16} aria-hidden="true" />
+                <span className="hidden md:inline">GitHub</span>
+              </a>
+            ) : null}
+            {linkedIn ? (
+              <a
+                href={linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
+              >
+                <Linkedin size={16} aria-hidden="true" />
+                <span className="hidden md:inline">LinkedIn</span>
+              </a>
+            ) : null}
+            <Link
+              href="/#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
+              aria-label="Contact"
+              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 sm:w-auto sm:px-3"
+            >
+              <Mail size={16} aria-hidden="true" />
+              <span className="hidden sm:inline">Contact</span>
+            </Link>
+          </div>
+        </nav>
+      </header>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <a
-            href={personalInfo.resumeUrl}
-            aria-label="Resume"
-            className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-amber-400 bg-amber-400 px-0 text-sm font-semibold text-zinc-950 transition hover:bg-amber-300 sm:w-auto sm:px-3"
-          >
-            <FileText size={16} aria-hidden="true" />
-            <span className="hidden sm:inline">Resume</span>
-          </a>
-          {github ? (
-            <a
-              href={github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
+      {portraitOpen ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-zinc-950/88 px-5 py-8 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ayush Yadav portrait"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setPortraitOpen(false);
+            }
+          }}
+        >
+          <div className="relative max-h-[calc(100vh-4rem)] w-full max-w-sm overflow-hidden rounded border border-sky-400/40 bg-zinc-950 shadow-[0_30px_120px_rgba(0,0,0,0.55)] sm:max-w-md">
+            <button
+              type="button"
+              onClick={() => setPortraitOpen(false)}
+              className="absolute top-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 bg-zinc-950/85 text-zinc-200 transition hover:border-sky-300 hover:text-sky-100 focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 focus:ring-offset-zinc-950 focus:outline-none"
+              aria-label="Close portrait"
             >
-              <Github size={16} aria-hidden="true" />
-              <span className="hidden md:inline">GitHub</span>
-            </a>
-          ) : null}
-          {linkedIn ? (
-            <a
-              href={linkedIn}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 md:w-auto md:px-3"
-            >
-              <Linkedin size={16} aria-hidden="true" />
-              <span className="hidden md:inline">LinkedIn</span>
-            </a>
-          ) : null}
-          <Link
-            href="/#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            aria-label="Contact"
-            className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded border border-zinc-700 bg-zinc-950/80 px-0 text-sm font-semibold text-zinc-200 transition hover:border-zinc-400 sm:w-auto sm:px-3"
-          >
-            <Mail size={16} aria-hidden="true" />
-            <span className="hidden sm:inline">Contact</span>
-          </Link>
+              <X size={18} aria-hidden="true" />
+            </button>
+            <Image
+              src={personalInfo.portrait.image}
+              alt={personalInfo.portrait.alt}
+              width={1024}
+              height={1536}
+              className="h-auto max-h-[calc(100vh-4rem)] w-full object-contain"
+              sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
+              priority
+            />
+          </div>
         </div>
-      </nav>
-    </header>
+      ) : null}
+    </>
   );
 }
