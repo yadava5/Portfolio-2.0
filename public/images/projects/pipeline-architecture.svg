@@ -10,66 +10,66 @@
   
         <g>
           <rect x="72" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
-          <text x="202" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#f59e0b" font-weight="700">STEP 1</text>
+          <text x="202" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#38bdf8" font-weight="700">STEP 1</text>
           
-            <rect x="96" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="96" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="201" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Tableau REST</text>
           
-            <rect x="96" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="96" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="201" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Workday export</text>
           
-            <rect x="96" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="96" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="201" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Source snapshots</text>
           
-          <path d="M 332 406 C 372 406, 374 406, 387 406" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
-             <path d="M 387 406 l -14 -8 l 0 16 z" fill="#f59e0b"/>
+          <path d="M 332 406 C 372 406, 374 406, 387 406" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 387 406 l -14 -8 l 0 16 z" fill="#38bdf8"/>
         </g>
       
         <g>
           <rect x="387" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
-          <text x="517" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#f59e0b" font-weight="700">STEP 2</text>
+          <text x="517" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#38bdf8" font-weight="700">STEP 2</text>
           
-            <rect x="411" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="411" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="516" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Python</text>
           
-            <rect x="411" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="411" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="516" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">pandas</text>
           
-            <rect x="411" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="411" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="516" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Normalization</text>
           
-          <path d="M 647 406 C 687 406, 689 406, 702 406" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
-             <path d="M 702 406 l -14 -8 l 0 16 z" fill="#f59e0b"/>
+          <path d="M 647 406 C 687 406, 689 406, 702 406" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 702 406 l -14 -8 l 0 16 z" fill="#38bdf8"/>
         </g>
       
         <g>
           <rect x="702" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
-          <text x="832" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#f59e0b" font-weight="700">STEP 3</text>
+          <text x="832" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#38bdf8" font-weight="700">STEP 3</text>
           
-            <rect x="726" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="726" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="831" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Deterministic IDs</text>
           
-            <rect x="726" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="726" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="831" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Master inventory</text>
           
-            <rect x="726" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="726" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="831" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Validation checks</text>
           
-          <path d="M 962 406 C 1002 406, 1004 406, 1017 406" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
-             <path d="M 1017 406 l -14 -8 l 0 16 z" fill="#f59e0b"/>
+          <path d="M 962 406 C 1002 406, 1004 406, 1017 406" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" fill="none"/>
+             <path d="M 1017 406 l -14 -8 l 0 16 z" fill="#38bdf8"/>
         </g>
       
         <g>
           <rect x="1017" y="246" width="260" height="308" rx="18" fill="#030712" stroke="#334155"/>
-          <text x="1147" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#f59e0b" font-weight="700">STEP 4</text>
+          <text x="1147" y="282" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="16" fill="#38bdf8" font-weight="700">STEP 4</text>
           
-            <rect x="1041" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="1041" y="305" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="1146" y="333" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Tableau Prep</text>
           
-            <rect x="1041" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="1041" y="379" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="1146" y="407" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Dashboards</text>
           
-            <rect x="1041" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#f59e0b" stroke-opacity="0.42"/>
+            <rect x="1041" y="453" width="210" height="44" rx="10" fill="#111827" stroke="#38bdf8" stroke-opacity="0.42"/>
             <text x="1146" y="481" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">Run artifacts</text>
           
           
