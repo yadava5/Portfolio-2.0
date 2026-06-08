@@ -17,7 +17,7 @@ export function AtlasSectionHeading({
 }: AtlasSectionHeadingProps) {
   return (
     <div className="mb-8 flex flex-col gap-3 md:mb-10">
-      <p className="text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
+      <p className="text-xs font-semibold tracking-[0.28em] text-sky-300 uppercase">
         {eyebrow}
       </p>
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -48,16 +48,18 @@ export function MetricCard({
   detail,
 }: MetricCardProps) {
   return (
-    <div className="rounded border border-zinc-800 bg-zinc-950/70 p-2.5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-4">
-      <div className="mb-2 flex items-center gap-3 sm:mb-4">
-        <span className="flex h-9 w-9 items-center justify-center rounded border border-amber-400/30 bg-amber-400/10 text-amber-300 sm:h-10 sm:w-10">
+    <div className="min-w-0 rounded border border-zinc-800 bg-zinc-950/70 p-2.5 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-4">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-sky-400/35 bg-sky-400/10 text-cyan-300 sm:h-10 sm:w-10">
           <Icon size={18} aria-hidden="true" />
         </span>
-        <span className="font-mono text-2xl font-semibold text-emerald-400 sm:text-3xl">
+      </div>
+      <div className="max-w-full">
+        <span className="block font-mono text-3xl leading-none font-semibold whitespace-nowrap text-emerald-400 sm:text-2xl 2xl:text-3xl">
           {value}
         </span>
       </div>
-      <p className="text-sm font-semibold text-zinc-100">{label}</p>
+      <p className="mt-4 text-sm font-semibold text-zinc-100">{label}</p>
       <p className="mt-1 hidden text-xs leading-5 text-zinc-500 2xl:block">
         {detail}
       </p>
@@ -76,7 +78,7 @@ export function ActionLink({ href, label, primary = false }: ActionLinkProps) {
 
   const className = `inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded border px-4 text-center text-sm font-semibold whitespace-normal transition ${
     primary
-      ? "border-amber-400 bg-amber-400 text-zinc-950 hover:bg-amber-300"
+      ? "border-sky-400 bg-sky-400 text-zinc-950 hover:bg-sky-300"
       : "border-zinc-700 bg-zinc-950/70 text-zinc-100 hover:border-zinc-400 hover:bg-zinc-900"
   }`;
 
@@ -111,37 +113,37 @@ interface PipelineStep {
 export function PipelineMap({ steps }: { steps: PipelineStep[] }) {
   return (
     <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4 md:p-5">
-      <div className="mb-5 flex items-center justify-between gap-4 border-b border-zinc-800 pb-4">
-        <div>
-          <p className="font-mono text-xs tracking-[0.24em] text-amber-400 uppercase">
+      <div className="mb-5 flex flex-col gap-3 border-b border-zinc-800 pb-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <p className="font-mono text-xs tracking-[0.24em] text-sky-300 uppercase">
             Operational Atlas
           </p>
           <p className="mt-1 text-sm text-zinc-500">
             End-to-end data to model to product proof
           </p>
         </div>
-        <p className="hidden text-xs text-emerald-400 md:block">
+        <p className="text-xs leading-5 text-emerald-400 lg:text-right">
           All public claims sourced from repo data
         </p>
       </div>
-      <ol className="grid gap-3 md:grid-cols-6">
+      <ol className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
             <li
               key={step.label}
-              className="relative rounded border border-zinc-800 bg-zinc-900/60 p-4"
+              className="relative min-w-0 rounded border border-zinc-800 bg-zinc-900/60 p-3 xl:p-4"
             >
-              <div className="mb-4 flex items-center justify-between">
-                <Icon size={20} className="text-amber-300" aria-hidden="true" />
+              <div className="mb-4 flex items-center justify-between gap-2">
+                <Icon size={20} className="text-cyan-300" aria-hidden="true" />
                 <span className="font-mono text-xs text-zinc-600">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </div>
-              <p className="text-sm font-semibold text-zinc-100">
+              <p className="text-sm leading-5 font-semibold break-words text-zinc-100">
                 {step.label}
               </p>
-              <p className="mt-1 text-xs leading-5 text-zinc-500">
+              <p className="mt-1 text-xs leading-5 break-words text-zinc-500">
                 {step.detail}
               </p>
             </li>
@@ -173,6 +175,10 @@ export function ProjectEvidenceCard({
 }: ProjectEvidenceCardProps) {
   const metrics = project.metrics ?? [];
   const hasCaseStudy = Boolean(study);
+  const projectImageClassName =
+    project.imageKind === "representative-visual"
+      ? "object-cover opacity-80 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+      : "object-contain p-3 opacity-90 transition duration-500 group-hover:opacity-100";
   const proofLabels =
     study?.featuredProofLabels && study.featuredProofLabels.length > 0
       ? study.featuredProofLabels
@@ -180,22 +186,24 @@ export function ProjectEvidenceCard({
 
   return (
     <article
-      className={`group grid overflow-hidden rounded border border-zinc-800 bg-zinc-950/75 transition hover:border-amber-400/50 md:grid-cols-[0.9fr_1.1fr] ${className}`}
+      className={`group grid overflow-hidden rounded border border-zinc-800 bg-zinc-950/75 transition hover:border-sky-400/50 md:grid-cols-[0.9fr_1.1fr] ${className}`}
     >
-      <div className="relative min-h-[180px] border-b border-zinc-800 bg-zinc-900 sm:min-h-[220px] md:border-r md:border-b-0">
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt={project.imageAlt}
-            fill
-            className="object-cover opacity-80 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
-            sizes="(min-width: 768px) 40vw, 100vw"
-          />
-        ) : null}
-        <div className="absolute top-4 left-4 rounded border border-amber-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-amber-300">
-          {String(index + 1).padStart(2, "0")}
+      <div className="border-b border-zinc-800 bg-zinc-900 md:border-r md:border-b-0">
+        <div className="relative min-h-[220px] sm:min-h-[260px]">
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={project.imageAlt}
+              fill
+              className={projectImageClassName}
+              sizes="(min-width: 768px) 40vw, 100vw"
+            />
+          ) : null}
+          <div className="absolute top-4 left-4 rounded border border-sky-400/40 bg-zinc-950/90 px-3 py-2 font-mono text-xs text-cyan-300">
+            {String(index + 1).padStart(2, "0")}
+          </div>
         </div>
-        <p className="absolute right-4 bottom-4 left-4 rounded border border-zinc-700/80 bg-zinc-950/90 px-3 py-2 text-xs leading-5 text-zinc-400">
+        <p className="border-t border-zinc-800 bg-zinc-950/90 px-4 py-3 text-xs leading-5 text-zinc-400">
           <span className="font-semibold text-zinc-200">
             {getVisualDisclosureLabel(project)}
           </span>{" "}
@@ -236,7 +244,7 @@ export function ProjectEvidenceCard({
         {proofLabels.length > 0 ? (
           <div className="mt-5 rounded border border-zinc-800 bg-zinc-900/45 p-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="font-mono text-xs tracking-[0.2em] text-amber-400 uppercase">
+              <p className="font-mono text-xs tracking-[0.2em] text-sky-300 uppercase">
                 Proof path
               </p>
               <p className="text-xs font-medium text-zinc-500">
