@@ -31,7 +31,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           }
           body {
             background: #0a0a0a;
-            color: #f5f0e8;
+            color: #f8fafc;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Geist", sans-serif;
             line-height: 1.7;
             overflow-x: hidden;
@@ -56,7 +56,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 Critical Error
               </div>
               <h1
-                className="text-3xl font-bold tracking-tight text-[#f5f0e8] sm:text-4xl"
+                className="text-3xl font-bold tracking-tight text-[#f8fafc] sm:text-4xl"
                 style={{ fontFamily: "serif" }}
               >
                 Application Error
@@ -73,8 +73,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                     marginTop: "1.5rem",
                     padding: "1rem",
                     borderRadius: "0.25rem",
-                    backgroundColor: "rgba(232, 197, 71, 0.08)",
-                    border: "1px solid rgba(232, 197, 71, 0.12)",
+                    backgroundColor: "rgba(56, 189, 248, 0.08)",
+                    border: "1px solid rgba(56, 189, 248, 0.12)",
                     textAlign: "left",
                   }}
                 >
@@ -110,7 +110,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                   borderRadius: "0.25rem",
                   fontWeight: "500",
                   color: "#0a0a0a",
-                  backgroundColor: "#e8c547",
+                  backgroundColor: "#38bdf8",
                   border: "none",
                   cursor: "pointer",
                   fontSize: "1rem",
@@ -118,11 +118,11 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 }}
                 onMouseOver={(e) => {
                   (e.target as HTMLButtonElement).style.backgroundColor =
-                    "#d4a745";
+                    "#7dd3fc";
                 }}
                 onMouseOut={(e) => {
                   (e.target as HTMLButtonElement).style.backgroundColor =
-                    "#e8c547";
+                    "#38bdf8";
                 }}
               >
                 Try Again
@@ -133,8 +133,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                   padding: "0.75rem 1.5rem",
                   borderRadius: "0.25rem",
                   fontWeight: "500",
-                  color: "#f5f0e8",
-                  backgroundColor: "rgba(232, 197, 71, 0.1)",
+                  color: "#f8fafc",
+                  backgroundColor: "rgba(56, 189, 248, 0.1)",
                   border: "none",
                   cursor: "pointer",
                   fontSize: "1rem",
@@ -144,11 +144,11 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 }}
                 onMouseOver={(e) => {
                   (e.target as HTMLAnchorElement).style.backgroundColor =
-                    "rgba(232, 197, 71, 0.15)";
+                    "rgba(56, 189, 248, 0.15)";
                 }}
                 onMouseOut={(e) => {
                   (e.target as HTMLAnchorElement).style.backgroundColor =
-                    "rgba(232, 197, 71, 0.1)";
+                    "rgba(56, 189, 248, 0.1)";
                 }}
               >
                 Return Home
@@ -159,7 +159,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             <p
               style={{
                 fontSize: "0.875rem",
-                color: "#a09080",
+                color: "#94a3b8",
                 paddingTop: "1rem",
               }}
             >
