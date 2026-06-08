@@ -9,7 +9,7 @@ export function EvidenceTable({ title, rows }: EvidenceTableProps) {
   return (
     <div className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70">
       <div className="border-b border-zinc-800 px-4 py-3">
-        <h3 className="text-sm font-semibold tracking-[0.18em] text-amber-400 uppercase">
+        <h3 className="text-sm font-semibold tracking-[0.18em] text-sky-300 uppercase">
           {title}
         </h3>
       </div>
