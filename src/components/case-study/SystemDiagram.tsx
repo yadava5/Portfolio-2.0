@@ -8,11 +8,11 @@ interface SystemDiagramProps {
 
 const kindClass: Record<CaseStudyNode["kind"], string> = {
   client: "border-sky-400/40 bg-sky-400/10 text-sky-100",
-  api: "border-amber-400/40 bg-amber-400/10 text-amber-100",
+  api: "border-cyan-400/40 bg-cyan-400/10 text-cyan-100",
   data: "border-emerald-400/40 bg-emerald-400/10 text-emerald-100",
   ml: "border-violet-300/40 bg-violet-300/10 text-violet-100",
   system: "border-zinc-500/50 bg-zinc-800/60 text-zinc-100",
-  validation: "border-lime-400/40 bg-lime-400/10 text-lime-100",
+  validation: "border-teal-400/40 bg-teal-400/10 text-teal-100",
 };
 
 export function SystemDiagram({ summary, nodes, edges }: SystemDiagramProps) {
@@ -41,7 +41,7 @@ export function SystemDiagram({ summary, nodes, edges }: SystemDiagramProps) {
               className="text-sm text-zinc-400"
             >
               <span className="font-mono text-zinc-200">{edge.from}</span>
-              <span className="mx-2 text-amber-300">-&gt;</span>
+              <span className="mx-2 text-cyan-300">-&gt;</span>
               <span className="font-mono text-zinc-200">{edge.to}</span>
               <span className="ml-2 text-zinc-500">{edge.label}</span>
             </li>
