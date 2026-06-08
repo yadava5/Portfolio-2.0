@@ -13,7 +13,7 @@ interface CaseStudyPageProps {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 font-mono text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase">
+    <p className="mb-3 font-mono text-xs font-semibold tracking-[0.2em] text-sky-300 uppercase">
       {children}
     </p>
   );
@@ -21,9 +21,13 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
   const projectVisualClassName =
-    project.imageKind === "diagram"
-      ? "object-contain opacity-95"
+    project.imageKind === "representative-visual"
+      ? "object-cover opacity-90"
       : "object-cover opacity-90";
+  const proofVisualClassName =
+    project.imageKind === "representative-visual"
+      ? projectVisualClassName
+      : "object-contain p-4 opacity-95";
 
   return (
     <article className="min-h-screen bg-[#090b0d] text-zinc-100">
@@ -39,7 +43,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         <header className="grid gap-8 border-b border-zinc-800 pb-10 md:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
+            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-sky-300 uppercase">
               {study.treatment.replace("-", " ")}
             </p>
             <h1 className="text-4xl font-semibold tracking-tight text-zinc-50 md:text-6xl">
@@ -93,9 +97,9 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         </header>
 
         {study.evidenceDisclosure ? (
-          <section className="mt-8 rounded border border-amber-400/30 bg-amber-400/10 p-5">
+          <section className="mt-8 rounded border border-sky-400/30 bg-sky-400/10 p-5">
             <SectionLabel>{study.evidenceDisclosure.label}</SectionLabel>
-            <p className="text-sm leading-6 text-amber-100/90">
+            <p className="text-sm leading-6 text-sky-100/90">
               {study.evidenceDisclosure.detail}
             </p>
           </section>
@@ -133,7 +137,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   src={project.image}
                   alt={project.imageAlt}
                   fill
-                  className={projectVisualClassName}
+                  className={proofVisualClassName}
                   loading="eager"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />
@@ -196,7 +200,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="rounded border border-zinc-800 bg-zinc-950/70 p-4 text-sm text-zinc-300 transition hover:border-amber-400/50 hover:text-zinc-100"
+                className="rounded border border-zinc-800 bg-zinc-950/70 p-4 text-sm text-zinc-300 transition hover:border-sky-400/50 hover:text-zinc-100"
               >
                 <span className="block text-xs tracking-[0.2em] text-zinc-500 uppercase">
                   {artifact.type}
