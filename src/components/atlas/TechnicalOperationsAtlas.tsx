@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   Workflow,
 } from "lucide-react";
-import Image from "next/image";
 import {
   ActionLink,
   AtlasSectionHeading,
@@ -148,7 +147,7 @@ export function TechnicalOperationsAtlas() {
   return (
     <div className="min-h-screen bg-[#090b0d] text-zinc-100">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:48px_48px]" />
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.14),transparent_32rem),radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.10),transparent_26rem),linear-gradient(180deg,rgba(9,11,13,0.2),#090b0d_80%)]" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.12),transparent_32rem),radial-gradient(circle_at_80%_10%,rgba(45,212,191,0.10),transparent_26rem),linear-gradient(180deg,rgba(9,11,13,0.2),#090b0d_80%)]" />
 
       <div className="relative z-10">
         <section
@@ -156,7 +155,7 @@ export function TechnicalOperationsAtlas() {
           className="mx-auto grid w-full max-w-7xl gap-6 px-5 pt-24 pb-10 md:min-h-[88vh] md:grid-cols-[0.92fr_1.08fr] md:px-8 lg:px-10"
         >
           <div className="flex flex-col justify-center">
-            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
+            <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-sky-300 uppercase">
               Role target / {graduationDate}
             </p>
             <p className="mb-4 text-lg font-semibold text-zinc-100 md:text-2xl">
@@ -260,25 +259,20 @@ export function TechnicalOperationsAtlas() {
               description="The site uses one source-truth identity, not generated concept copy."
             />
             <div className="grid gap-5">
-              <div className="grid gap-5 rounded border border-zinc-800 bg-zinc-950/70 p-5 sm:grid-cols-[140px_1fr] sm:items-center">
-                <Image
-                  src={personalInfo.portrait.image}
-                  alt={personalInfo.portrait.alt}
-                  width={144}
-                  height={216}
-                  className="aspect-[2/3] w-32 rounded border border-zinc-800 object-cover object-top sm:w-36"
-                />
-                <div>
-                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
-                    Profile
-                  </p>
-                  <p className="mt-2 text-xl font-semibold text-zinc-50">
-                    {personalInfo.name}
-                  </p>
-                  <p className="mt-1 text-sm text-zinc-400">
-                    {personalInfo.availability}
-                  </p>
-                </div>
+              <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
+                <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                  Profile
+                </p>
+                <p className="mt-2 text-xl font-semibold text-zinc-50">
+                  {personalInfo.name}
+                </p>
+                <p className="mt-1 text-sm text-zinc-400">
+                  {personalInfo.availability}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-zinc-500">
+                  Computer Science graduate focused on systems that can be
+                  inspected, tested, and trusted.
+                </p>
               </div>
               {personalInfo.bio.map((paragraph) => (
                 <p
@@ -352,7 +346,7 @@ export function TechnicalOperationsAtlas() {
             />
             <article className="grid gap-8 rounded border border-zinc-800 bg-zinc-950/75 p-5 md:grid-cols-[0.7fr_1.3fr] md:p-8">
               <div>
-                <p className="text-sm tracking-[0.2em] text-amber-400 uppercase">
+                <p className="text-sm tracking-[0.2em] text-sky-300 uppercase">
                   {currentExperience.company}
                 </p>
                 <h3 className="mt-3 text-2xl font-semibold text-zinc-50">
@@ -397,7 +391,7 @@ export function TechnicalOperationsAtlas() {
                   className="rounded border border-zinc-800 bg-zinc-950/75 p-5"
                 >
                   <Icon
-                    className="mb-5 text-amber-300"
+                    className="mb-5 text-cyan-300"
                     size={24}
                     aria-hidden="true"
                   />
@@ -496,7 +490,7 @@ export function TechnicalOperationsAtlas() {
                   <p className="mt-1 text-sm text-zinc-500">
                     {project.shortDescription}
                   </p>
-                  <p className="mt-3 text-xs tracking-[0.2em] text-amber-400 uppercase">
+                  <p className="mt-3 text-xs tracking-[0.2em] text-sky-300 uppercase">
                     Private/work-related proof
                   </p>
                   {getCaseStudyById(project.id) ? (
@@ -546,7 +540,7 @@ export function TechnicalOperationsAtlas() {
         <section id="contact" className="border-t border-zinc-900 bg-[#080a0c]">
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-20 md:grid-cols-[1fr_0.9fr] md:px-8 lg:px-10">
             <div>
-              <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-amber-400 uppercase">
+              <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-sky-300 uppercase">
                 Contact
               </p>
               <h2 className="max-w-3xl text-4xl font-semibold tracking-tight text-zinc-50 md:text-5xl">
