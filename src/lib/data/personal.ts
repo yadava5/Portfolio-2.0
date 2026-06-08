@@ -59,7 +59,7 @@ export const personalInfo = {
   tagline:
     "New-grad software engineer focused on data, ML systems, and full-stack reliability",
   /** Email address */
-  email: "yadava5@miamioh.edu",
+  email: "aesh_1055@icloud.com",
   /** Location */
   location: "Oxford, Ohio",
   /** Current availability */
@@ -97,7 +97,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Email",
-    url: "mailto:yadava5@miamioh.edu",
+    url: "mailto:aesh_1055@icloud.com",
     icon: "Mail",
   },
 ];
@@ -153,10 +153,10 @@ export const awards: Award[] = [
 /** Site metadata for SEO */
 export const siteMetadata = {
   /** Site title */
-  title: "Ayush Yadav | Technical Operations Atlas",
+  title: "Ayush Yadav | Software, Data, and ML Engineering",
   /** Site description */
   description:
-    "Technical Operations Atlas for Ayush Yadav: new-grad software, data, and ML engineering proof with source-truth case studies, private-safe evidence, and current resume links.",
+    "Ayush Yadav's new-grad software, data, and ML engineering portfolio with source-truth case studies, private-safe evidence, and current resume links.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */
