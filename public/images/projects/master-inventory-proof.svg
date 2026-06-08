@@ -16,8 +16,8 @@
   </g>
 
   <g>
-    <rect x="392" y="228" width="290" height="128" rx="18" fill="#1c1604" stroke="#f59e0b" stroke-opacity="0.55"/>
-    <text x="416" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#fbbf24">WORKDAY OUTPUT</text>
+    <rect x="392" y="228" width="290" height="128" rx="18" fill="#061625" stroke="#38bdf8" stroke-opacity="0.55"/>
+    <text x="416" y="268" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#7dd3fc">WORKDAY OUTPUT</text>
     <text x="416" y="314" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#f8fafc">6,743</text>
     <text x="416" y="338" font-family="Inter, Arial, sans-serif" font-size="16" fill="#94a3b8">processed custom-report rows</text>
   </g>
@@ -38,13 +38,13 @@
 
   <g>
     <rect x="72" y="404" width="1232" height="154" rx="18" fill="#030712" stroke="#1f2937"/>
-    <text x="104" y="444" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#f59e0b">FLOW VERIFIED</text>
+    <text x="104" y="444" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#38bdf8">FLOW VERIFIED</text>
     <text x="104" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">Tableau processed output</text>
-    <path d="M 390 484 L 486 484" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
-    <path d="M 486 484 l -14 -8 l 0 16 z" fill="#f59e0b"/>
+    <path d="M 390 484 L 486 484" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 486 484 l -14 -8 l 0 16 z" fill="#38bdf8"/>
     <text x="522" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">Workday processed output</text>
-    <path d="M 820 484 L 916 484" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
-    <path d="M 916 484 l -14 -8 l 0 16 z" fill="#f59e0b"/>
+    <path d="M 820 484 L 916 484" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 916 484 l -14 -8 l 0 16 z" fill="#38bdf8"/>
     <text x="952" y="492" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e5e7eb">deduped master_inventory.csv</text>
     <text x="104" y="532" font-family="Inter, Arial, sans-serif" font-size="17" fill="#94a3b8">Deterministic inventory_id values, timestamped run folders, and cumulative processed outputs were audited by count only.</text>
   </g>
@@ -60,8 +60,8 @@
     <text x="520" y="656" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">E9, F63, F7, F82 passed</text>
   </g>
   <g>
-    <rect x="920" y="594" width="384" height="82" rx="16" fill="#1c1604" stroke="#f59e0b" stroke-opacity="0.45"/>
-    <text x="944" y="628" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#fbbf24">PUBLIC BOUNDARY</text>
+    <rect x="920" y="594" width="384" height="82" rx="16" fill="#061625" stroke="#38bdf8" stroke-opacity="0.45"/>
+    <text x="944" y="628" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#7dd3fc">PUBLIC BOUNDARY</text>
     <text x="944" y="656" font-family="Inter, Arial, sans-serif" font-size="18" fill="#e5e7eb">counts and schema only</text>
   </g>
 </svg>
