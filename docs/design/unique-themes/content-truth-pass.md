@@ -21,7 +21,7 @@ Use these repo and resume facts when revising concepts or implementing the Atlas
 | Availability | Open to new-grad software, data, and ML engineering roles |
 | Education | B.S. Computer Science, Miami University, May 2026 |
 | Portfolio email | `aesh_1055@icloud.com` |
-| Resume email | `yadava5@miamioh.edu` |
+| Resume email | `aesh_1055@icloud.com` |
 | Phone in resume | `(513) 461-4375` |
 | GitHub | `https://github.com/yadava5` |
 | LinkedIn | `https://www.linkedin.com/in/ayush-yadav-developer/` |
