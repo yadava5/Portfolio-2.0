@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 interface NeonBorderProps {
   children: ReactNode;
   className?: string;
-  color?: "cyan" | "magenta" | "yellow";
+  color?: "cyan" | "magenta" | "sky";
 }
 
 export function NeonBorder({
@@ -17,13 +17,13 @@ export function NeonBorder({
     cyan: "border-[#00ffff] shadow-[0_0_15px_#00ffff,inset_0_0_15px_#00ffff]",
     magenta:
       "border-[#ff00ff] shadow-[0_0_15px_#ff00ff,inset_0_0_15px_#ff00ff]",
-    yellow: "border-[#ffff00] shadow-[0_0_15px_#ffff00,inset_0_0_15px_#ffff00]",
+    sky: "border-[#38bdf8] shadow-[0_0_15px_#38bdf8,inset_0_0_15px_#38bdf8]",
   };
 
   const hoverColorMap = {
     cyan: "hover:shadow-[0_0_30px_#00ffff,inset_0_0_30px_#00ffff]",
     magenta: "hover:shadow-[0_0_30px_#ff00ff,inset_0_0_30px_#ff00ff]",
-    yellow: "hover:shadow-[0_0_30px_#ffff00,inset_0_0_30px_#ffff00]",
+    sky: "hover:shadow-[0_0_30px_#38bdf8,inset_0_0_30px_#38bdf8]",
   };
 
   return (
