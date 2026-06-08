@@ -89,7 +89,7 @@ Computer Science, Miami University - May 2026
 
 - [GitHub](https://github.com/yadava5)
 - [LinkedIn](https://www.linkedin.com/in/ayush-yadav-developer/)
-- [Email](mailto:yadava5@miamioh.edu)
+- [Email](mailto:aesh_1055@icloud.com)
 
 ## License
 
