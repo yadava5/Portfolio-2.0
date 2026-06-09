@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArtifactGallery } from "@/components/case-study/ArtifactGallery";
 import { EvidenceTable } from "@/components/case-study/EvidenceTable";
 import { SystemDiagram } from "@/components/case-study/SystemDiagram";
 import { Project } from "@/lib/data/projects";
@@ -20,14 +21,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
-  const projectVisualClassName =
-    project.imageKind === "representative-visual"
-      ? "object-cover opacity-90"
-      : "object-cover opacity-90";
-  const proofVisualClassName =
-    project.imageKind === "representative-visual"
-      ? projectVisualClassName
-      : "object-contain p-4 opacity-95";
+  const proofVisualClassName = "object-contain p-4 opacity-95";
 
   return (
     <article className="min-h-screen bg-[#090b0d] text-zinc-100">
@@ -131,7 +125,10 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             id="project-visual"
             className="overflow-hidden rounded border border-zinc-800 bg-zinc-950/70"
           >
-            <div className="relative min-h-[280px] bg-zinc-900">
+            <div
+              data-project-visual-frame
+              className="relative aspect-video min-h-[260px] bg-zinc-900"
+            >
               {project.image ? (
                 <Image
                   src={project.image}
@@ -189,29 +186,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         <section id="artifacts" className="py-8">
           <SectionLabel>Artifacts</SectionLabel>
-          <div className="grid gap-3 md:grid-cols-3">
-            {study.artifacts.map((artifact) => (
-              <a
-                key={`${artifact.type}-${artifact.label}`}
-                href={artifact.href}
-                target={artifact.href.startsWith("http") ? "_blank" : undefined}
-                rel={
-                  artifact.href.startsWith("http")
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                className="rounded border border-zinc-800 bg-zinc-950/70 p-4 text-sm text-zinc-300 transition hover:border-sky-400/50 hover:text-zinc-100"
-              >
-                <span className="block text-xs tracking-[0.2em] text-zinc-500 uppercase">
-                  {artifact.type}
-                </span>
-                <span className="mt-2 inline-flex items-center gap-2">
-                  {artifact.label}
-                  <ArrowUpRight size={14} aria-hidden="true" />
-                </span>
-              </a>
-            ))}
-          </div>
+          <ArtifactGallery artifacts={study.artifacts} />
         </section>
       </div>
     </article>
