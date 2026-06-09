@@ -1,6 +1,7 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import {
   ATLAS_ALLOWED_METRICS,
+  CASE_STUDY_LOCAL_ARTIFACTS,
   CASE_STUDY_IDS,
   DEFAULT_THEME,
   EXPECTED_CONTENT,
@@ -102,9 +103,7 @@ test.describe("Technical Operations Atlas", () => {
     }
   });
 
-  test("public surface exposes Atlas only", async ({
-    page,
-  }) => {
+  test("public surface exposes Atlas only", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await page.locator("#hero").waitFor({ state: "attached" });
@@ -346,9 +345,12 @@ test.describe("Technical Operations Atlas", () => {
       artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger)
     ).toBeVisible();
     await expect(
-      page.locator(
-        `a[href$="/images/projects/master-inventory-proof.svg"]`
-      )
+      artifacts.getByRole("button", {
+        name: new RegExp(
+          EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger,
+          "i"
+        ),
+      })
     ).toHaveCount(1);
 
     const bodyText = await page.locator("body").innerText();
@@ -385,9 +387,12 @@ test.describe("Technical Operations Atlas", () => {
       artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger)
     ).toBeVisible();
     await expect(
-      page.locator(
-        `a[href$="/images/projects/policybot-validation-proof.svg"]`
-      )
+      artifacts.getByRole("button", {
+        name: new RegExp(
+          EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger,
+          "i"
+        ),
+      })
     ).toHaveCount(1);
 
     const bodyText = await page.locator("body").innerText();
@@ -510,6 +515,106 @@ test.describe("Technical Operations Atlas", () => {
       for (const forbidden of PROHIBITED_GENERATED_CONTENT) {
         expect(bodyText).not.toContain(forbidden);
       }
+    });
+  }
+
+  for (const id of CASE_STUDY_IDS) {
+    test(`case study route ${id} keeps project visual contained`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto(`/projects/${id}/`);
+      await page.waitForLoadState("domcontentloaded");
+
+      const visualFrame = page.locator(
+        "#project-visual [data-project-visual-frame]"
+      );
+      const image = visualFrame.locator("img");
+
+      await expect(visualFrame).toBeVisible();
+      await expect(image).toBeVisible();
+
+      const fit = await visualFrame.evaluate((frame) => {
+        const image = frame.querySelector("img");
+        const frameRect = frame.getBoundingClientRect();
+        const imageRect = image?.getBoundingClientRect();
+
+        return {
+          hasImage: Boolean(image),
+          imageObjectFit: image ? window.getComputedStyle(image).objectFit : "",
+          pageOverflow:
+            document.documentElement.scrollWidth >
+            document.documentElement.clientWidth,
+          frameHeight: Math.round(frameRect.height),
+          imageHeight: imageRect ? Math.round(imageRect.height) : 0,
+          imageTop: imageRect ? Math.round(imageRect.top - frameRect.top) : 0,
+          imageBottom: imageRect
+            ? Math.round(frameRect.bottom - imageRect.bottom)
+            : 0,
+          imageEscapes:
+            imageRect == null ||
+            imageRect.left < frameRect.left - 1 ||
+            imageRect.right > frameRect.right + 1 ||
+            imageRect.top < frameRect.top - 1 ||
+            imageRect.bottom > frameRect.bottom + 1,
+        };
+      });
+
+      expect(fit.hasImage).toBe(true);
+      expect(fit.imageObjectFit).toBe("contain");
+      expect(fit.pageOverflow).toBe(false);
+      expect(fit.imageEscapes).toBe(false);
+      expect(fit.frameHeight).toBeGreaterThanOrEqual(260);
+      expect(fit.imageHeight).toBe(fit.frameHeight);
+      expect(fit.imageTop).toBe(0);
+      expect(fit.imageBottom).toBe(0);
+    });
+  }
+
+  for (const artifact of CASE_STUDY_LOCAL_ARTIFACTS) {
+    test(`case study local artifact ${artifact.projectId} / ${artifact.label} opens in dismissible viewer`, async ({
+      page,
+    }) => {
+      await page.goto(`/projects/${artifact.projectId}/#artifacts`);
+      await page.waitForLoadState("domcontentloaded");
+
+      const startingUrl = page.url();
+      const artifactControl = page
+        .locator("#artifacts")
+        .getByRole("button", { name: new RegExp(artifact.label, "i") });
+
+      await expect(artifactControl).toBeVisible();
+      await artifactControl.click();
+
+      const viewer = page.getByRole("dialog", {
+        name: new RegExp(artifact.label, "i"),
+      });
+      await expect(viewer).toBeVisible();
+      await expect(
+        viewer.getByRole("button", { name: /close/i })
+      ).toBeVisible();
+      await expect(
+        viewer.getByRole("link", { name: /open original/i })
+      ).toHaveAttribute("href", artifact.href);
+      expect(page.url()).toBe(startingUrl);
+
+      await viewer.getByRole("button", { name: /close/i }).click();
+      await expect(viewer).toBeHidden();
+      expect(page.url()).toBe(startingUrl);
+
+      await artifactControl.click();
+      await expect(viewer).toBeVisible();
+      await page.getByTestId("artifact-viewer-backdrop").click({
+        position: { x: 8, y: 8 },
+      });
+      await expect(viewer).toBeHidden();
+      expect(page.url()).toBe(startingUrl);
+
+      await artifactControl.click();
+      await expect(viewer).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(viewer).toBeHidden();
+      expect(page.url()).toBe(startingUrl);
     });
   }
 

@@ -76,6 +76,17 @@ export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   })
   .filter((title): title is string => Boolean(title));
 
+export const CASE_STUDY_LOCAL_ARTIFACTS = projectCaseStudies.flatMap((study) =>
+  study.artifacts
+    .filter((artifact) => !artifact.href.startsWith("http"))
+    .map((artifact) => ({
+      projectId: study.projectId,
+      label: artifact.label,
+      href: artifact.href,
+      type: artifact.type,
+    }))
+);
+
 export const CURRENT_EXPERIENCE = experiences[0];
 
 export const COMPANY_LOGOS = experiences.map((experience) => experience.logo);
@@ -114,10 +125,7 @@ export const EXPECTED_SELECTED_WORK_PROOF_LABELS = [
   },
   {
     title: "Visual Assist",
-    labels: [
-      "On-device accessibility architecture",
-      "XCTest source evidence",
-    ],
+    labels: ["On-device accessibility architecture", "XCTest source evidence"],
   },
   {
     title: "JobTracker",
@@ -137,12 +145,10 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   jobtrackerBackendTests: "Backend test suite",
   jobtrackerBenchmark: "ML strategy and evaluation gates",
   jobtrackerWebBeta: "Web beta scaffold",
-  jobtrackerBackendCoverage:
-    "Local source validation passed 182 backend tests",
+  jobtrackerBackendCoverage: "Local source validation passed 182 backend tests",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
-  jobtrackerNativeBuild:
-    "The macOS Debug target built locally with xcodebuild",
+  jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
   jobtrackerPrivacyBoundary:
     "Architecture and source links are shown publicly; private email and application records are not shown.",
   visualAssistArchitecture: "On-device accessibility architecture",
