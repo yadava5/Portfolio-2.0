@@ -1,5 +1,5 @@
-import { ThemeOrchestrator } from "@/components/themes/ThemeOrchestrator";
+import { TechnicalOperationsAtlas } from "@/components/atlas/TechnicalOperationsAtlas";
 
 export default function Home() {
-  return <ThemeOrchestrator />;
+  return <TechnicalOperationsAtlas />;
 }

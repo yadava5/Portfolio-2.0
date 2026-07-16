@@ -10,4 +10,3 @@ export {
 } from "./useScrollAnimation";
 export { useGSAPCleanup } from "./useGSAPCleanup";
 export { usePrefersReducedMotion } from "./usePrefersReducedMotion";
-export { useThemeConfig, type ThemeConfig } from "./useThemeConfig";

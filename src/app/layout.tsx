@@ -1,23 +1,21 @@
 /**
- * @fileoverview Root layout — global providers, fonts, and shell structure
+ * @fileoverview Root layout — fonts, SEO metadata, and shell structure
  *
  * Wraps every page with:
- *   1. Geist font variables (sans + mono)
- *   2. Theme-specific font variables
- *   3. ThemeProvider  — multi-theme wrapper
- *   4. SmoothScroll   — Lenis smooth scrolling
- *   5. Header         — floating glass navigation
- *   6. Footer         — social links + quick nav
- *   7. CustomCursor   — holographic glow trail
- *   8. Atlas-only public identity; legacy visual modes are not rendered
+ *   1. Self-hosted variable fonts via `next/font/google`
+ *      (Fraunces display, Newsreader prose, Fragment Mono labels)
+ *   2. SmoothScroll   — Lenis smooth scrolling
+ *   3. Header         — site navigation
+ *   4. Footer         — social links + quick nav
+ *   5. Skip link      — keyboard a11y
  *
  * SEO metadata is pulled from the data layer (`siteMetadata`).
  */
 
 import type { Metadata } from "next";
+import { Fraunces, Newsreader, Fragment_Mono } from "next/font/google";
 import "./globals.css";
 
-import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import Header from "@/components/layout/Header";
@@ -28,9 +26,33 @@ import { absoluteSiteUrl } from "@/lib/seo";
 /* ──────────────────────────────────────────────
    Font configuration
 
-   Fonts loaded dynamically at runtime via CSS
-   @import with display=swap to avoid blocking
+   Self-hosted at build time by next/font (no render-blocking
+   external @import, no layout-shift). Exposed as CSS variables
+   and mapped to Tailwind font tokens in globals.css.
    ────────────────────────────────────────────── */
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  axes: ["opsz", "SOFT", "WONK"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
+});
+
+const fragmentMono = Fragment_Mono({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-fragment-mono",
+  display: "swap",
+});
 
 /* ──────────────────────────────────────────────
    SEO metadata
@@ -79,8 +101,7 @@ export const metadata: Metadata = {
 /**
  * Root layout wrapping every page in the application
  *
- * Provides theme context, smooth scrolling, header/footer chrome,
- * and the custom cursor overlay.
+ * Provides self-hosted fonts, smooth scrolling, and header/footer chrome.
  *
  * @param props - Layout props containing the page content
  * @returns The full-page layout shell
@@ -91,8 +112,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>{/* Fonts are now optimized via next/font/google */}</head>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${newsreader.variable} ${fragmentMono.variable}`}
+    >
       <body className="antialiased">
         <a
           href="#main-content"
@@ -100,16 +124,14 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <ThemeProvider>
-          <SmoothScroll>
-            <ScrollProgress />
-            <Header />
-            <main id="main-content" className="min-h-screen">
-              {children}
-            </main>
-            <Footer />
-          </SmoothScroll>
-        </ThemeProvider>
+        <SmoothScroll>
+          <ScrollProgress />
+          <Header />
+          <main id="main-content" className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );
