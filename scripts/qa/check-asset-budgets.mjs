@@ -1,10 +1,12 @@
 import fs from "node:fs";
 
+// ≤300KB budget per image (WebP/AVIF), per the portfolio rebuild plan.
+// advocacy.png is intentionally omitted: paid-internships is hidden
+// (portfolioVisible: false) and its image is never fetched.
 const budgets = [
-  ["public/images/profile/ayush-yadav-professional-portrait.png", 2_000_000],
-  ["public/images/projects/agentic-automl-poster-proof.png", 1_700_000],
-  ["public/images/projects/advocacy.png", 1_100_000],
-  ["public/og-image.png", 350_000],
+  ["public/images/profile/ayush-yadav-professional-portrait.webp", 300_000],
+  ["public/images/projects/agentic-automl-poster-proof.webp", 300_000],
+  ["public/og-image.png", 300_000],
   ["public/resume.pdf", 300_000],
 ];
 

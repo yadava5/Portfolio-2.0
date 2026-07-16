@@ -67,7 +67,7 @@ export const personalInfo = {
   /** Professional portrait */
   portrait: {
     image: withBasePath(
-      "/images/profile/ayush-yadav-professional-portrait.png"
+      "/images/profile/ayush-yadav-professional-portrait.webp"
     ),
     alt: "Ayush Yadav professional portrait",
   },

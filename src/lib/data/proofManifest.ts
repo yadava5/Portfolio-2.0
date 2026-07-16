@@ -27,7 +27,7 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "7-phase AutoML lifecycle",
     claim:
       "Agentic AutoML presents a 7-phase ML workflow with LangGraph and MCP orchestration.",
-    source: "public/images/projects/agentic-automl-poster-proof.png",
+    source: "public/images/projects/agentic-automl-poster-proof.webp",
     verification:
       "Private-safe senior design poster and local AutoML repository audit.",
     visibility: "private-safe",

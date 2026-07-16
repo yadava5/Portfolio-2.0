@@ -409,7 +409,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         type: "poster",
         label: "Expo poster proof",
-        href: withBasePath("/images/projects/agentic-automl-poster-proof.png"),
+        href: withBasePath("/images/projects/agentic-automl-poster-proof.webp"),
       },
     ],
   },
