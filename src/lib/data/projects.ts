@@ -220,7 +220,7 @@ export const projects: Project[] = [
     imageAlt: "Real Taskflow local demo calendar screenshot",
     imageDisclosure:
       "Real local frontend screenshot captured with the repository mock-login flow and demo user state.",
-    featured: true,
+    featured: false,
     category: "full-stack",
     startDate: "2023-09",
     endDate: "2025-05",
@@ -232,7 +232,7 @@ export const projects: Project[] = [
     ],
     isPrivate: false,
     metrics: [
-      { label: "Tests", value: "738 automated tests" },
+      { label: "Interface", value: "Kanban + multi-calendar workspace" },
       { label: "NLP", value: "Smart natural language input" },
     ],
     proofIds: ["taskflow-tests"],
@@ -372,6 +372,9 @@ export const projects: Project[] = [
     imageDisclosure:
       "Real screenshot from the public advocacy site data page with cited research charts.",
     featured: false,
+    // Freshman ENG109 course project — kept in the repo but hidden from
+    // recruiter-facing lists so it does not dilute the engineering ladder.
+    portfolioVisible: false,
     category: "other",
     startDate: "2025-01",
     endDate: "2025-01",
