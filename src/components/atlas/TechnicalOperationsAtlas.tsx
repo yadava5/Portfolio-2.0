@@ -41,10 +41,10 @@ const linkedIn = socialLinks.find((link) => link.name === "LinkedIn");
 
 const proofMetrics = [
   {
-    icon: Workflow,
-    value: "18,403",
-    label: "AutoML ledger events",
-    detail: "Expo poster proof from Agentic AutoML",
+    icon: Database,
+    value: "1M+",
+    label: "Operational records",
+    detail: "Miami ITSM OAS/Tableau data workflow",
   },
   {
     icon: Cpu,
@@ -54,15 +54,15 @@ const proofMetrics = [
   },
   {
     icon: ShieldCheck,
-    value: "738",
-    label: "Automated tests",
-    detail: "Dynamic Calendar frontend, backend, and integration proof",
+    value: "19/20",
+    label: "Cited-source sweep",
+    detail: "PolicyBot structured validation ledger",
   },
   {
-    icon: Accessibility,
-    value: "71",
-    label: "iOS tests",
-    detail: "Visual Assist model and utility coverage",
+    icon: Workflow,
+    value: "7-phase",
+    label: "Gated ML lifecycle",
+    detail: "Agentic AutoML human-in-the-loop orchestration",
   },
 ];
 
@@ -167,13 +167,13 @@ export function TechnicalOperationsAtlas() {
             </h1>
             <div className="mt-5 grid gap-3 text-sm text-zinc-400 sm:grid-cols-2">
               <p>
-                <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
+                <span className="block text-xs tracking-[0.2em] text-zinc-400 uppercase">
                   Recent role
                 </span>
                 {currentExperience.title}
               </p>
               <p>
-                <span className="block text-xs tracking-[0.2em] text-zinc-600 uppercase">
+                <span className="block text-xs tracking-[0.2em] text-zinc-400 uppercase">
                   Availability
                 </span>
                 <span className="text-emerald-400">
@@ -215,35 +215,35 @@ export function TechnicalOperationsAtlas() {
             <PipelineMap steps={pipelineSteps} />
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-400 uppercase">
                   JobTracker
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
                   Local ML
                 </p>
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
                   Three-layer classifier for private job-search email signals.
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-400 uppercase">
                   Visual Assist
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
-                  71 tests
+                  On-device
                 </p>
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  Unit coverage for iOS accessibility models and utilities.
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
+                  LiDAR obstacle detection with haptic and speech guidance.
                 </p>
               </div>
               <div className="rounded border border-zinc-800 bg-zinc-950/80 p-4">
-                <p className="font-mono text-xs tracking-[0.22em] text-zinc-500 uppercase">
+                <p className="font-mono text-xs tracking-[0.22em] text-zinc-400 uppercase">
                   PolicyBot
                 </p>
                 <p className="mt-3 text-2xl font-semibold text-emerald-400">
                   19/20
                 </p>
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
+                <p className="mt-2 text-xs leading-5 text-zinc-400">
                   Structured validation sweep with cited-source checks.
                 </p>
               </div>
@@ -260,7 +260,7 @@ export function TechnicalOperationsAtlas() {
             />
             <div className="grid gap-5">
               <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
-                <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                <p className="text-xs tracking-[0.2em] text-zinc-400 uppercase">
                   Profile
                 </p>
                 <p className="mt-2 text-xl font-semibold text-zinc-50">
@@ -269,7 +269,7 @@ export function TechnicalOperationsAtlas() {
                 <p className="mt-1 text-sm text-zinc-400">
                   {personalInfo.availability}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-zinc-500">
+                <p className="mt-3 text-sm leading-6 text-zinc-400">
                   Computer Science graduate focused on systems that can be
                   inspected, tested, and trusted.
                 </p>
@@ -284,7 +284,7 @@ export function TechnicalOperationsAtlas() {
               ))}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
-                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                  <p className="text-xs tracking-[0.2em] text-zinc-400 uppercase">
                     Education
                   </p>
                   <p className="mt-2 font-semibold text-zinc-100">
@@ -296,7 +296,7 @@ export function TechnicalOperationsAtlas() {
                   </p>
                 </div>
                 <div className="rounded border border-zinc-800 bg-zinc-950/70 p-5">
-                  <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+                  <p className="text-xs tracking-[0.2em] text-zinc-400 uppercase">
                     Recognition
                   </p>
                   <p className="mt-2 font-semibold text-zinc-100">
@@ -352,7 +352,7 @@ export function TechnicalOperationsAtlas() {
                 <h3 className="mt-3 text-2xl font-semibold text-zinc-50">
                   {currentExperience.title}
                 </h3>
-                <p className="mt-2 text-sm text-zinc-500">
+                <p className="mt-2 text-sm text-zinc-400">
                   {currentExperienceRange} / {currentExperience.location}
                 </p>
               </div>
@@ -410,7 +410,7 @@ export function TechnicalOperationsAtlas() {
             })}
           </div>
           <div className="mt-8 rounded border border-zinc-800 bg-zinc-950/60 p-5">
-            <p className="mb-4 text-xs tracking-[0.2em] text-zinc-500 uppercase">
+            <p className="mb-4 text-xs tracking-[0.2em] text-zinc-400 uppercase">
               Source-truth skills
             </p>
             <div className="flex flex-wrap gap-2">
@@ -443,7 +443,7 @@ export function TechnicalOperationsAtlas() {
                     <h3 className="font-semibold text-zinc-50">
                       {project.title}
                     </h3>
-                    <p className="mt-1 text-sm text-zinc-500">
+                    <p className="mt-1 text-sm text-zinc-400">
                       {project.category}
                     </p>
                   </div>
@@ -487,7 +487,7 @@ export function TechnicalOperationsAtlas() {
                   <h3 className="font-semibold text-zinc-50">
                     {project.title}
                   </h3>
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1 text-sm text-zinc-400">
                     {project.shortDescription}
                   </p>
                   <p className="mt-3 text-xs tracking-[0.2em] text-sky-300 uppercase">
@@ -528,7 +528,7 @@ export function TechnicalOperationsAtlas() {
                   <p className="font-semibold text-zinc-50">
                     {testimonial.name}
                   </p>
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-zinc-400">
                     {testimonial.title}, {testimonial.company}
                   </p>
                 </footer>
@@ -558,24 +558,24 @@ export function TechnicalOperationsAtlas() {
               </div>
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950/80 p-5">
-              <p className="text-xs tracking-[0.2em] text-zinc-500 uppercase">
+              <p className="text-xs tracking-[0.2em] text-zinc-400 uppercase">
                 Resume preview
               </p>
               <dl className="mt-5 grid gap-4 text-sm">
                 <div>
-                  <dt className="text-zinc-500">Education</dt>
+                  <dt className="text-zinc-400">Education</dt>
                   <dd className="mt-1 text-zinc-100">
                     Miami University, B.S. Computer Science, {graduationDate}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-zinc-500">Recent role</dt>
+                  <dt className="text-zinc-400">Recent role</dt>
                   <dd className="mt-1 text-zinc-100">
                     {currentExperience.title}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-zinc-500">Links</dt>
+                  <dt className="text-zinc-400">Links</dt>
                   <dd className="mt-2 flex flex-wrap gap-3">
                     <a
                       href={github?.url}

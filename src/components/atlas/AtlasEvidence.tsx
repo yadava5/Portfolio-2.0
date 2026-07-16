@@ -60,7 +60,7 @@ export function MetricCard({
         </span>
       </div>
       <p className="mt-4 text-sm font-semibold text-zinc-100">{label}</p>
-      <p className="mt-1 hidden text-xs leading-5 text-zinc-500 2xl:block">
+      <p className="mt-1 hidden text-xs leading-5 text-zinc-400 2xl:block">
         {detail}
       </p>
     </div>
@@ -118,7 +118,7 @@ export function PipelineMap({ steps }: { steps: PipelineStep[] }) {
           <p className="font-mono text-xs tracking-[0.24em] text-sky-300 uppercase">
             Operational Atlas
           </p>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-zinc-400">
             End-to-end data to model to product proof
           </p>
         </div>
@@ -136,14 +136,14 @@ export function PipelineMap({ steps }: { steps: PipelineStep[] }) {
             >
               <div className="mb-4 flex items-center justify-between gap-2">
                 <Icon size={20} className="text-cyan-300" aria-hidden="true" />
-                <span className="font-mono text-xs text-zinc-600">
+                <span className="font-mono text-xs text-zinc-400">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </div>
               <p className="text-sm leading-5 font-semibold break-words text-zinc-100">
                 {step.label}
               </p>
-              <p className="mt-1 text-xs leading-5 break-words text-zinc-500">
+              <p className="mt-1 text-xs leading-5 break-words text-zinc-400">
                 {step.detail}
               </p>
             </li>
@@ -213,7 +213,7 @@ export function ProjectEvidenceCard({
       <div className="flex flex-col p-4 md:p-6">
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">
+            <p className="text-xs font-semibold tracking-[0.2em] text-zinc-400 uppercase">
               {project.category.replace("-", " ")}
             </p>
             <h3 className="mt-2 text-xl font-semibold text-zinc-50 md:text-2xl">
@@ -231,7 +231,7 @@ export function ProjectEvidenceCard({
           <dl className="mt-5 grid gap-3 sm:grid-cols-2">
             {metrics.slice(0, 2).map((metric) => (
               <div key={metric.label} className="border-l border-zinc-700 pl-3">
-                <dt className="text-xs tracking-[0.18em] text-zinc-500 uppercase">
+                <dt className="text-xs tracking-[0.18em] text-zinc-400 uppercase">
                   {metric.label}
                 </dt>
                 <dd className="mt-1 text-sm font-semibold text-emerald-300">
@@ -247,7 +247,7 @@ export function ProjectEvidenceCard({
               <p className="font-mono text-xs tracking-[0.2em] text-sky-300 uppercase">
                 Proof path
               </p>
-              <p className="text-xs font-medium text-zinc-500">
+              <p className="text-xs font-medium text-zinc-400">
                 {project.isPrivate
                   ? "Private-safe artifacts"
                   : "Inspectable artifacts"}
