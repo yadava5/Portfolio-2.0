@@ -41,15 +41,17 @@ const fraunces = Fraunces({
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",
+  // Static 400 roman + italic: prose runs at body weight only (plan 3.5), and
+  // the full 200–800 variable range costs ~270KB latin vs ~90KB static.
+  weight: "400",
   style: ["normal", "italic"],
-  axes: ["opsz"],
   display: "swap",
 });
 
 const fragmentMono = Fragment_Mono({
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
+  // Roman only — the label voice is lowercase mono, never italic (plan 3.5).
   variable: "--font-fragment-mono",
   display: "swap",
 });

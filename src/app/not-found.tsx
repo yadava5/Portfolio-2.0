@@ -13,16 +13,11 @@ export default function NotFound() {
       id="not-found"
       className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[var(--background)] px-4 py-8 text-[var(--foreground)]"
     >
-      {/* Background accent */}
-      <div className="pointer-events-none absolute inset-0 opacity-5">
-        <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--accent-primary)] blur-3xl" />
-      </div>
-
       {/* Content container */}
       <div className="relative z-10 mx-auto max-w-2xl space-y-8 text-center">
         {/* 404 display */}
         <div className="space-y-4">
-          <div className="font-display text-7xl font-bold text-[var(--accent-primary)] drop-shadow-lg sm:text-8xl">
+          <div className="font-display text-7xl font-bold text-[var(--accent-primary)] sm:text-8xl">
             404
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">

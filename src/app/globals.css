@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════════════════
+   DAYLIGHT STUDY — design tokens
+   Source of truth: docs/NEW-PORTFOLIO-MASTER-PLAN.md Part 3.4 / 3.5
+   (exact hex values; do not eyeball-adjust)
+   ════════════════════════════════════════════════════════════════ */
+
 /* Fonts are self-hosted via next/font (see src/app/layout.tsx); the
    variables below are set on <html> and referenced here as Tailwind tokens. */
 @theme inline {
@@ -11,9 +17,78 @@
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
+@theme {
+  /* ── Palette (Part 3.4) ─────────────────────────────── */
+  --color-canvas: #faf6ef; /* canvas (day) */
+  --color-surface-1: #f3ede1;
+  --color-surface-2: #eae2d2;
+  --color-ink: #26231c; /* 13.9:1 on canvas */
+  --color-ink-secondary: #5c564a; /* 6.2:1 on canvas */
+  --color-clay: #b04a28; /* kiln clay — text use, 5.1:1 */
+  --color-clay-graphic: #c4532e; /* kiln clay — graphic use */
+  --color-pine: #2f5d50; /* links, approved gates, strokes — 7.0:1 */
+  --color-pass: #2e6b4f; /* 6.1:1 */
+  --color-fail: #a03b23; /* 6.0:1 */
+  --color-ink-dusk: #f6efe2; /* ink after the dusk flip — 12.8:1 on #43372F */
+  --color-clay-night: #e08a5f; /* clay lightened for nightfall — 6.4:1 */
+
+  /* ── Type scale (Part 3.5) ──────────────────────────── */
+  --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-hero--font-weight: 360;
+  --text-chapter: clamp(2rem, 5vw, 4rem);
+  --text-chapter--line-height: 1.1;
+  --text-chapter--letter-spacing: -0.015em;
+  --text-chapter--font-weight: 420;
+  --text-body: 1.1875rem; /* 19px — body 18–20px */
+  --text-body--line-height: 1.65;
+  --text-label: 0.8125rem; /* 13px — mono labels 12–14px */
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.05em;
+}
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #f8fafc;
+  /* ── Day-arc waypoints (Part 3.4) — consumed by the scroll engine ── */
+  --waypoint-01: #fbf3e7; /* dawn */
+  --waypoint-02: #faf6ef; /* morning */
+  --waypoint-03: #f6f3ea; /* noon */
+  --waypoint-04: #f5eddc; /* warm afternoon */
+  --waypoint-05: #f2e4c9; /* golden hour */
+  --waypoint-06: #43372f; /* dusk flip — ink flips to --color-ink-dusk */
+  --waypoint-07: #2c2622; /* nightfall — clay lightens to --color-clay-night */
+
+  /* ── Semantic aliases (legacy names consumed by error/not-found/skip-link) ── */
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  --foreground-muted: var(--color-ink-secondary);
+  --surface-2: var(--color-surface-1); /* raised surface */
+  --surface-3: var(--color-surface-2); /* deeper surface */
+  --accent-primary: var(--color-clay);
+  --accent-secondary: var(--color-pine);
+  --status-warning: var(--color-fail);
+}
+
+/* ── Fraunces axis voices (Part 3.5) ─────────────────────
+   WONK is reserved for exactly one accent word per headline;
+   the page's single WONK=1 use is the ending litany (Part 3.8). */
+@utility fraunces-hero {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0;
+}
+@utility fraunces-display {
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 0,
+    "WONK" 0;
+}
+@utility fraunces-wonk {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 1;
 }
 
 html {
@@ -29,6 +104,15 @@ body {
 
 section[id] {
   scroll-margin-top: 6rem;
+}
+
+/* Mono labels are lowercase, small, tracked — never all-caps shouting (3.5) */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: lowercase;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
