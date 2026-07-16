@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { DEFAULT_THEME } from "./portfolio-fixtures";
 
 const NAV_SECTIONS = [
   { id: "about", label: "About" },
@@ -23,10 +22,6 @@ test.describe("User Interactions", () => {
     test.setTimeout(30000);
 
     test("no public theme selector is rendered", async ({ page }) => {
-      await expect(page.locator("html")).toHaveAttribute(
-        "data-theme",
-        DEFAULT_THEME
-      );
       await expect(
         page.getByRole("button", { name: /select theme/i })
       ).toHaveCount(0);

@@ -1,7 +1,6 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
-import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
 import { experiences } from "../../src/lib/data/experience";
 import {
@@ -15,13 +14,13 @@ import {
   projectCaseStudies,
 } from "../../src/lib/data/projectCaseStudies";
 
-export const THEMES = themeIds.map((id) => ({
-  name: id,
-  label: themeConfigs[id].label,
-}));
-
-export const THEME_IDS = themeIds;
+// The multi-theme system was removed (single Atlas identity ships). These
+// remain as static fixtures so the suite compiles; there is no theme switcher.
 export const DEFAULT_THEME = "technical-operations-atlas";
+export const THEME_IDS = [DEFAULT_THEME];
+export const THEMES = [
+  { name: DEFAULT_THEME, label: "Technical Operations Atlas" },
+];
 export const CASE_STUDY_IDS = caseStudyIds;
 
 export const NAV_SECTIONS = [
@@ -188,20 +187,11 @@ export const EXPECTED_LINKS = {
   resume: personalInfo.resumeUrl,
 };
 
-export const ATLAS_ALLOWED_METRICS = [
-  "3.5x",
-  "18,403",
-  "738",
-  "71",
-  "71 tests",
-  "19/20",
-  "10,453",
-  "10.5k",
-];
+export const ATLAS_ALLOWED_METRICS = ["1M+", "3.5x", "19/20", "7-phase"];
 
 export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
 
-export const RECRUITER_HERO_METRICS = ["18,403", "3.5x", "738", "71"];
+export const RECRUITER_HERO_METRICS = ["1M+", "3.5x", "19/20", "7-phase"];
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [
   "automl",
@@ -262,83 +252,34 @@ export async function isMobileViewport(page: Page) {
   return viewport ? viewport.width < 768 : false;
 }
 
+// Theme switching no longer exists (a single Atlas identity ships). These
+// helpers now just wait for the page to become interactive. `theme` is accepted
+// for call-site compatibility and applied as an inert data attribute.
 export async function applyThemeState(
   page: Page,
   theme: { name: string; label: string }
 ) {
   await page.waitForLoadState("domcontentloaded");
   await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await page.waitForTimeout(200);
-
-  const currentTheme = await page.locator("html").getAttribute("data-theme");
-  if (currentTheme === theme.name) {
-    await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-    return;
-  }
-
   await page.evaluate((themeName) => {
-    window.localStorage.setItem("portfolio-theme", themeName);
     document.documentElement.setAttribute("data-theme", themeName);
   }, theme.name);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
   await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(200);
 }
 
 export async function switchThemeViaUiAndWait(
   page: Page,
   theme: { name: string; label: string }
 ) {
-  await page.waitForLoadState("domcontentloaded");
-  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await page.waitForTimeout(200);
-
-  const currentTheme = await page.locator("html").getAttribute("data-theme");
-  if (currentTheme === theme.name) {
-    await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-    return;
-  }
-
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-
-  const switcher = page.locator("button[aria-label='Select theme']");
-  await expect(switcher).toBeVisible({ timeout: 10000 });
-  await switcher.click({ force: true });
-
-  const menu = page.locator("#theme-switcher-menu");
-  await expect(menu).toBeVisible({ timeout: 5000 });
-
-  const themeButton = menu
-    .locator("button[aria-pressed]")
-    .filter({ hasText: theme.label });
-  await expect(themeButton).toHaveCount(1);
-  await themeButton.click({ force: true });
-
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
-
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-  await expect(page.locator("[data-theme-transition='true']")).toHaveCount(0, {
-    timeout: 5000,
-  });
-  await page.waitForTimeout(1300);
+  await applyThemeState(page, theme);
 }
 
 export async function switchThemeAndWait(
   page: Page,
   theme: { name: string; label: string }
 ) {
-  if (await isMobileViewport(page)) {
-    await applyThemeState(page, theme);
-    return;
-  }
-
-  await switchThemeViaUiAndWait(page, theme);
+  await applyThemeState(page, theme);
 }
 
 export async function scrollThroughPage(page: Page) {

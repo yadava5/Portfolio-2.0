@@ -3,7 +3,6 @@ import {
   ATLAS_ALLOWED_METRICS,
   CASE_STUDY_LOCAL_ARTIFACTS,
   CASE_STUDY_IDS,
-  DEFAULT_THEME,
   EXPECTED_CONTENT,
   EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
@@ -73,11 +72,6 @@ test.describe("Technical Operations Atlas", () => {
     await page.goto("/");
     await page.locator("#hero").waitFor({ state: "attached" });
 
-    await expect(page.locator("html")).toHaveAttribute(
-      "data-theme",
-      DEFAULT_THEME
-    );
-
     for (const section of REQUIRED_SECTIONS) {
       await expect(page.locator(`#${section}`)).toBeAttached();
     }
@@ -108,10 +102,6 @@ test.describe("Technical Operations Atlas", () => {
     await page.goto("/");
     await page.locator("#hero").waitFor({ state: "attached" });
 
-    await expect(page.locator("html")).toHaveAttribute(
-      "data-theme",
-      DEFAULT_THEME
-    );
     await expect(
       page.getByRole("button", { name: /select theme/i })
     ).toHaveCount(0);
