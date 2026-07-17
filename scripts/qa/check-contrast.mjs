@@ -5,9 +5,14 @@
  * plus the semantic-alias pairings introduced in globals.css. Fails the build
  * if any pair drops below its required ratio.
  *
- * The day-arc mid-interpolation sampler (rubric amendment A4) extends this
- * file: `sampleArc()` checks N oklch-interpolated steps between waypoints.
+ * The day-arc mid-interpolation sampler (rubric amendment A4) lives here as
+ * `sampleArc()`: ≥10 oklch-interpolated samples per scrubbed waypoint
+ * segment, each asserted ≥4.5:1 against the ink that is live at that scroll
+ * position. The 05→06 dusk boundary is a STEP (see below), so only its two
+ * endpoint states are rendered — and asserted.
  */
+
+import { interpolate, formatHex } from "culori";
 
 // ── Palette (must mirror src/app/globals.css) ──────────────────────────
 const C = {
@@ -80,6 +85,74 @@ const PAIRS = [
   ["canvas text on pine button", C.canvas, C.pine, 4.5],
 ];
 
+// ── Day-arc sampler (amendment A4) ─────────────────────────────────────
+//
+// The engine (src/components/world/DayArc.tsx) scrubs oklch channels
+// between adjacent waypoints, so mid-interpolation colors are really
+// rendered — every one must hold AA against the ink that is live there.
+//
+// The 05→06 boundary is a STEP by mathematical necessity: any continuous
+// path from #f2e4c9 (Y≈0.78) to #43372f (Y≈0.04) passes through the
+// luminance crossover where the best achievable ratio for EITHER ink is
+// ≈4.1:1 < 4.5:1. So background and ink flip together at the boundary and
+// no interpolated frame exists; sampleArc asserts its endpoints only.
+const SCRUBBED_SEGMENTS = [
+  ["01→02 (dawn→morning)", C.w01, C.w02, C.ink, "ink"],
+  ["02→03 (morning→noon)", C.w02, C.w03, C.ink, "ink"],
+  ["03→04 (noon→afternoon)", C.w03, C.w04, C.ink, "ink"],
+  ["04→05 (afternoon→golden hour)", C.w04, C.w05, C.ink, "ink"],
+  ["06→07 (dusk→nightfall)", C.w06, C.w07, C.inkDusk, "dusk ink"],
+];
+
+const STEP_BOUNDARY = [
+  ["05→06 step, day side", C.ink, C.w05, "ink"],
+  ["05→06 step, dusk side", C.inkDusk, C.w06, "dusk ink"],
+];
+
+/**
+ * Sample every scrubbed day-arc segment in oklch and assert AA at each
+ * rendered interpolation point, plus both endpoint states of the dusk step.
+ *
+ * @param {number} samples - Samples per segment, endpoints included
+ *   (12 ⇒ 10 strictly-interior mid-interpolation points, ≥10 per A4).
+ * @returns {boolean} true when every sample holds ≥4.5:1
+ */
+export function sampleArc(samples = 12) {
+  let ok = true;
+
+  for (const [label, fromHex, toHex, inkHex, inkName] of SCRUBBED_SEGMENTS) {
+    const mix = interpolate([fromHex, toHex], "oklch");
+    let worst = Infinity;
+    let worstHex = fromHex;
+    for (let i = 0; i < samples; i++) {
+      const bg = formatHex(mix(i / (samples - 1)));
+      const ratio = contrast(inkHex, bg);
+      if (ratio < worst) {
+        worst = ratio;
+        worstHex = bg;
+      }
+    }
+    const pass = worst >= 4.5;
+    if (!pass) ok = false;
+    console.log(
+      `${pass ? "PASS" : "FAIL"}  ${worst.toFixed(2)}:1 (min 4.5:1)  ` +
+        `arc ${label} — ${inkName}, worst of ${samples} oklch samples (${worstHex})`
+    );
+  }
+
+  for (const [label, fg, bg, inkName] of STEP_BOUNDARY) {
+    const ratio = contrast(fg, bg);
+    const pass = ratio >= 4.5;
+    if (!pass) ok = false;
+    console.log(
+      `${pass ? "PASS" : "FAIL"}  ${ratio.toFixed(2)}:1 (min 4.5:1)  ` +
+        `arc ${label} — ${inkName} (no interpolation rendered at the step)`
+    );
+  }
+
+  return ok;
+}
+
 let failed = false;
 for (const [label, fg, bg, min] of PAIRS) {
   const ratio = contrast(fg, bg);
@@ -89,6 +162,9 @@ for (const [label, fg, bg, min] of PAIRS) {
     `${ok ? "PASS" : "FAIL"}  ${ratio.toFixed(2)}:1 (min ${min}:1)  ${label}`
   );
 }
+
+console.log("");
+if (!sampleArc()) failed = true;
 
 if (failed) {
   console.error("\nContrast gate FAILED.");

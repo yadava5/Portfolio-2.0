@@ -58,6 +58,22 @@
   --waypoint-06: #43372f; /* dusk flip — ink flips to --color-ink-dusk */
   --waypoint-07: #2c2622; /* nightfall — clay lightens to --color-clay-night */
 
+  /* ── Day-arc oklch channels (amendment A4) ──────────────────────────
+     Numeric channels scrubbed by DayArc.tsx; the LightField base composes
+     `oklch(var(--arc-l) var(--arc-c) var(--arc-h))`. Defaults = waypoint-01
+     (dawn) per scripts/design/waypoints-oklch.mjs — regenerate, never
+     hand-guess. */
+  --arc-l: 0.9671;
+  --arc-c: 0.0181;
+  --arc-h: 78.24;
+
+  /* ── World textures (LightField + reduced-motion chapters) ──────────
+     Both are inline SVG data-URIs with their intensity baked in:
+     grain = feTurbulence noise, ink-tinted, alpha ≤5% (NO-LIST §D cap);
+     contour = hand-wobbled ink contour lines at 5% stroke opacity. */
+  --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0%200%200%200%200.149%200%200%200%200%200.137%200%200%200%200%200.110%200%200%200%200.05%200'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+  --texture-contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%2326231C' stroke-opacity='.05' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
+
   /* ── Semantic aliases (legacy names consumed by error/not-found/skip-link) ── */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -89,6 +105,96 @@
     "opsz" 144,
     "SOFT" 50,
     "WONK" 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE WORLD — light-field layers + day-arc state
+   Consumed by src/components/world/LightField.tsx / DayArc.tsx.
+   All layers are static paint: no keyframes, no filters, no JS.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Raking window-light (INSPIRATION: daylightcomputer / candidate A) —
+   soft diagonal light bands under soft-light, made perceptible at 1440.
+   NOT a radial spotlight (NO-LIST §A). The layer's opacity is driven by
+   the arc's own lightness channel, so the rake dies when the sun sets
+   (dusk step drops --arc-l from ~0.92 to 0.35). CSS-only. */
+.light-field-rake {
+  background:
+    linear-gradient(
+      108deg,
+      rgba(255, 241, 205, 0) 18%,
+      rgba(255, 236, 196, 0.85) 31%,
+      rgba(255, 241, 205, 0) 46%
+    ),
+    linear-gradient(
+      108deg,
+      rgba(255, 246, 222, 0) 55%,
+      rgba(255, 241, 208, 0.55) 66%,
+      rgba(255, 246, 222, 0) 79%
+    ),
+    linear-gradient(
+      108deg,
+      rgba(66, 56, 36, 0.11) 0%,
+      rgba(66, 56, 36, 0) 24%,
+      rgba(66, 56, 36, 0) 80%,
+      rgba(66, 56, 36, 0.09) 100%
+    );
+  mix-blend-mode: soft-light;
+  opacity: clamp(0, calc((var(--arc-l) - 0.45) / 0.4), 1);
+}
+
+/* Fine paper grain — intensity baked into the data-URI alpha (≤5%). */
+.light-field-grain {
+  background-image: var(--texture-grain);
+  background-size: 260px 260px;
+}
+
+/* Faint contour texture, ink-on-paper — 5% stroke opacity baked in. */
+.light-field-contour {
+  background-image: var(--texture-contour);
+  background-size: 420px 420px;
+}
+
+/* Dusk ink flip (amendment A4): a STEP change toggled by DayArc's
+   ScrollTrigger callbacks at the 05→06 boundary — never scrubbed. */
+html[data-arc-phase="dusk"] body {
+  color: var(--color-ink-dusk);
+}
+
+/* Reduced motion (amendment A7): the engine never mounts, so each chapter
+   statically paints its own waypoint (plus grain, so the static version
+   stays a designed deliverable) and chapters past the dusk flip carry
+   dusk ink. Pure CSS — no ScrollTriggers, no scrubbing. */
+@media (prefers-reduced-motion: reduce) {
+  [data-chapter] {
+    background-image: var(--texture-grain);
+    background-size: 260px 260px;
+  }
+  [data-chapter="01"] {
+    background-color: var(--waypoint-01);
+  }
+  [data-chapter="02"] {
+    background-color: var(--waypoint-02);
+  }
+  [data-chapter="03"] {
+    background-color: var(--waypoint-03);
+  }
+  [data-chapter="04"] {
+    background-color: var(--waypoint-04);
+  }
+  [data-chapter="05"] {
+    background-color: var(--waypoint-05);
+  }
+  [data-chapter="06"] {
+    background-color: var(--waypoint-06);
+  }
+  [data-chapter="07"] {
+    background-color: var(--waypoint-07);
+  }
+  [data-chapter="06"],
+  [data-chapter="07"] {
+    color: var(--color-ink-dusk);
+  }
 }
 
 html {
