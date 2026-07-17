@@ -51,3 +51,31 @@ New elevation ideas banked from round 2:
   landscape") + contours converge toward the gate; the clay gate-square
   becomes the site's one recurring glyph (rail, stamp, favicon) → Phase 2/4.
 - Press-and-hold signing stays the Phase-3 crown.
+
+## Iteration 3 — verdicts 78 / 79; craft-vs-content split identified
+
+Fresh critics on the round-2 repairs: **recruiter 78** (dropped from 81 — the
+honest em-dash registry read as "no results yet"; LinkedIn regression; ch02
+narrative tax persists) · **visitor 79** ("Concept: SOTD. Finish: honorable
+mention"; "the only portfolio closer I've seen this year where the CTA is the
+thesis").
+
+**Diagnosis:** scores plateaued high-70s. Residual splits into:
+- CRAFT (fixable now): §03 voice collapse into resume-speak, night texture
+  death + §06 void, mobile wordmark ellipsis, dusk boundary (smudge↔slab →
+  answer: stepped duotone), fig-4.1 redaction typography, LinkedIn+plaintext
+  email, metrics onto cards, ch02 compression, hero mono hierarchy,
+  references endnotes block.
+- CONTENT (blocked on user inputs promised for Phase 3/4): flagship outcome
+  numbers, quantified experience bullets, demo recordings. Cannot close
+  honestly without real data; fabrication banned.
+
+**Ship protocol:** final craft round dispatched (all 10 craft items). On green
+gates + orchestrator verification, Step 4 SHIPS with an explicit documented
+exception: min-critic below 90 attributable to content-debt items, each
+ticketed for Phase 3/4 with user data. Craft bar enforced; content ceiling
+acknowledged transparently rather than gamed.
+
+Elevation ideas banked (3rd independent confirmation): press-to-sign stamp
+(Phase 3 crown); references block (executing now); visitor-local-time day-arc
+("clever → inevitable") → Phase 2/3 spike with SSG/hydration care.
