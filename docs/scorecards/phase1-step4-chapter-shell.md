@@ -27,3 +27,27 @@ receipts, flagship stat strip + fig 4.1 plate, header rework, UNSTAMPED gate
 Elevation ideas banked: visitor-presses-the-stamp interaction (= plan's Ch07
 intent) → Phase 3; sun glyph traveling the rail → Phase 2 thread work;
 real data plates (fig 5.1–5.3 sparklines) → Phase 3 case-study figures.
+
+## Iteration 2 — HOLD (min 78, converging)
+
+Repair pass 1 landed all 9 fixes; gates stayed green ×3 (88/78/88). Fresh
+critics (no anchor): **recruiter 81** ("the one I retell in the debrief, for
+the right reason"; skip-link credited with saving the screen) · **visitor 78**
+("concept's award-tier, craft is one pass short"; "the whole site is the
+thesis — and I'm the human. I'd share it").
+
+Round-3 micro-list dispatched: footnote payoff at ch-01 foot ("every claim on
+this page links to its evidence"), dusk as authored 1px-horizon event in
+static modes, fig 4.1 as typeset registry table (never ship an unreadable
+figure), mobile gate stamp, receipts→links + dedup, github early + mobile
+contact, hero flagship teaser, micro sweep (lowercase apparatus, expo
+attribution, n.b. seating).
+
+New elevation ideas banked from round 2:
+- **Dateline clocks**: ¶ kickers carry times 06:12→22:41 so the scroll is one
+  workday; the gate's local time becomes the system snapping to the visitor's
+  clock → Phase 2.
+- **Contours as loss landscape**: caption the background once ("fig. 0 — loss
+  landscape") + contours converge toward the gate; the clay gate-square
+  becomes the site's one recurring glyph (rail, stamp, favicon) → Phase 2/4.
+- Press-and-hold signing stays the Phase-3 crown.
