@@ -46,9 +46,9 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "738 automated tests",
+    label: "1,145 automated tests",
     claim:
-      "Taskflow portfolio copy uses 738 automated tests as the validation metric.",
+      "Taskflow suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
     source: "https://github.com/yadava5/taskflow-calendar",
     verification: "Public repository and local screenshot audit.",
     visibility: "public",

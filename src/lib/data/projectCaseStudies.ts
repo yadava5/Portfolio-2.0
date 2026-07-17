@@ -561,7 +561,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL and tested across 738 automated checks.",
+        "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL and tested across 1,145 automated checks.",
       nodes: [
         {
           id: "ui",
@@ -589,7 +589,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "tests",
-          label: "738 tests",
+          label: "1,145 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -619,7 +619,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     validation: [
       {
         label: "Automated tests",
-        evidence: "Portfolio source data records 738 automated tests.",
+        evidence:
+          "Measured 2026-07: 634 frontend + 511 backend = 1,145 passing.",
       },
       {
         label: "Scheduling",
