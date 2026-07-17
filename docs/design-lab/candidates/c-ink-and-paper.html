@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayush Yadav — I build machine learning that shows its work.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:  #26231C;
+    --ink2: #5C564A;   /* secondary ink — captions & apparatus only */
+    --paper:#FAF6EF;
+    --clay: #B04A28;   /* appears ONCE: the approval stamp */
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body { overflow-x:clip; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', serif;
+    font-optical-sizing: auto;
+    font-size: 1.125rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--ink); color: var(--paper); }
+
+  /* paper tooth — ink-tinted noise, alpha only, 3% */
+  body::after {
+    content:""; position:fixed; inset:0; z-index:9; pointer-events:none;
+    opacity:.4;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.149  0 0 0 0 0.137  0 0 0 0 0.110  0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap { max-width:1240px; margin:0 auto; padding:0 48px; }
+
+  /* ---------- shared apparatus ---------- */
+  .mono {
+    font-family:'Fragment Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    color:var(--ink2);
+    text-transform:lowercase;
+  }
+
+  .kicker { display:block; margin-bottom:2.4rem; }
+
+  .folio-rule {
+    border-top:1px solid var(--ink);
+    position:relative; height:0;
+  }
+  .folio-rule span {
+    position:absolute; top:0; left:50%; transform:translate(-50%,-50%);
+    background:var(--paper); padding:0 16px;
+    font-family:'Fragment Mono', monospace;
+    font-size:.72rem; letter-spacing:.22em; color:var(--ink2);
+  }
+
+  a { color:var(--ink); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+  a:hover { text-decoration-thickness:2.5px; }
+
+  /* the one drawn line */
+  .thread { position:absolute; pointer-events:none; overflow:visible; }
+  .thread path, .fig path, .u-svg path {
+    fill:none; stroke:var(--ink); stroke-width:1.8;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .thread path { vector-effect:non-scaling-stroke; }
+
+  /* ---------- 01 · hero ---------- */
+  .hero {
+    position:relative;
+    min-height:100vh; min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:120px 0 96px;
+  }
+
+  .masthead-bar {
+    position:absolute; top:0; left:0; right:0;
+    padding-top:36px;
+    display:flex; justify-content:space-between; gap:2rem;
+  }
+
+  h1 {
+    font-family:'Fraunces', serif;
+    font-variation-settings:'opsz' 144;
+    font-weight:500;
+    font-size:clamp(2.7rem, 11.2vw, 12rem);
+    line-height:.95;
+    letter-spacing:-.015em;
+  }
+  h1 .l { display:block; }
+  h1 em { font-style:italic; font-weight:460; }
+  h1 sup {
+    font-family:'Fragment Mono', monospace;
+    font-size:.14em; font-style:normal; color:var(--ink2);
+    vertical-align:super; letter-spacing:0; margin-left:.08em;
+  }
+
+  .u { position:relative; }
+  .u-svg {
+    position:absolute; left:-1%; bottom:-.44em;
+    width:102%; height:.56em; overflow:visible;
+  }
+  .u-svg path { vector-effect:non-scaling-stroke; }
+
+  .hero-sub { margin-top:3rem; font-size:.8rem; }
+
+  /* hero entrance — load-only, CSS only */
+  .rise { opacity:0; transform:translateY(26px); animation:rise .9s cubic-bezier(.2,.6,.2,1) forwards; }
+  .r1 { animation-delay:.1s; } .r2 { animation-delay:.24s; } .r3 { animation-delay:.38s; }
+  .r4 { animation-delay:.7s; }
+  @keyframes rise { to { opacity:1; transform:none; } }
+  .draw { stroke-dasharray:1; stroke-dashoffset:1; animation:draw 1.4s cubic-bezier(.55,0,.25,1) 1s forwards; }
+  @keyframes draw { to { stroke-dashoffset:0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise { opacity:1; transform:none; animation:none; }
+    .draw { stroke-dashoffset:0; animation:none; }
+  }
+
+  /* hero tail of the line — explicit W+H: absolutely-positioned SVGs keep their
+     intrinsic aspect ratio, inset alone will not stretch them */
+  .thread-tail { top:66%; left:80%; width:14%; height:34%; }
+
+  /* ---------- 02 · manifesto ---------- */
+  .manifesto {
+    position:relative;
+    padding:150px 0 170px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 320px;
+    gap:64px;
+    min-height:560px;
+  }
+  .manifesto-copy p {
+    font-size:clamp(1.5rem, 2.6vw, 2.35rem);
+    line-height:1.34;
+    font-weight:420;
+    max-width:30ch;
+  }
+  .manifesto-copy p + p { margin-top:1.2em; font-style:italic; color:var(--ink); }
+  .dropcap::first-letter {
+    font-family:'Fraunces', serif;
+    font-variation-settings:'opsz' 144;
+    font-weight:520; font-style:normal;
+    font-size:3.35em; line-height:.8;
+    float:left; padding:.04em .1em 0 0;
+    color:var(--ink);
+  }
+  .note {
+    align-self:end;
+    border:1px dashed var(--ink2);
+    padding:20px 22px;
+    font-family:'Fragment Mono', monospace;
+    font-size:.74rem; line-height:1.75; letter-spacing:.04em;
+    color:var(--ink2);
+    margin-bottom:8px;
+  }
+  .thread-manifesto { left:0; top:0; width:100%; height:100%; }
+
+  /* ---------- 03 · project ---------- */
+  .project {
+    position:relative;
+    padding:96px 0;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 340px;
+    gap:56px;
+    align-items:start;
+  }
+  h2, h3 {
+    font-family:'Fraunces', serif;
+    font-variation-settings:'opsz' 144;
+    font-weight:520;
+    line-height:1.02;
+    letter-spacing:-.012em;
+  }
+  .project h2 { font-size:clamp(2.6rem, 6.2vw, 5.6rem); margin-bottom:1.6rem; }
+  .project-copy p { font-size:clamp(1.2rem, 1.9vw, 1.6rem); line-height:1.4; max-width:30ch; }
+  .project-copy p + p { font-style:italic; }
+  .metrics { margin-top:2.6rem; display:block; }
+
+  .fig { justify-self:center; }
+  .fig svg { display:block; margin:-96px 0; width:280px; height:680px; }
+  .fig text {
+    font-family:'Fragment Mono', monospace;
+    fill:var(--ink2); font-size:11px; letter-spacing:.08em;
+  }
+  .fig .gate-label { fill:var(--ink); font-size:13px; letter-spacing:.18em; }
+
+  /* ---------- 07 · gate ---------- */
+  .gate {
+    position:relative;
+    padding:150px 0 130px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 340px;
+    gap:56px;
+    align-items:center;
+  }
+  .gate h2 { font-size:clamp(2.5rem, 5.8vw, 5.2rem); margin-bottom:2rem; }
+  .gate-copy p { font-size:clamp(1.25rem, 2vw, 1.7rem); line-height:1.4; max-width:28ch; }
+  .gate-copy p + p { font-style:italic; margin-top:.5em; }
+  .cta { margin-top:3.4rem; }
+  .cta a {
+    font-family:'Fraunces', serif;
+    font-variation-settings:'opsz' 60;
+    font-style:italic; font-weight:480;
+    font-size:clamp(1.5rem, 2.4vw, 2.2rem);
+    line-height:1.2;
+    text-underline-offset:7px;
+  }
+  .gate-col { display:flex; flex-direction:column; align-items:center; }
+  .thread-gate { display:block; width:120px; height:320px; margin-top:-150px; position:static; }
+  .stamp { transform:rotate(-7.5deg); margin-top:10px; }
+  .stamp svg { display:block; width:min(300px, 78vw); height:auto; }
+  .stamp text { font-family:'Fragment Mono', monospace; fill:var(--clay); }
+  .stamp path { fill:none; stroke:var(--clay); }
+
+  /* ---------- footer ---------- */
+  footer { padding:88px 0 56px; }
+  .footnote-rule { width:220px; border-top:1px solid var(--ink); margin-bottom:1.2rem; }
+  .footnote {
+    font-size:.95rem; color:var(--ink2); max-width:52ch; line-height:1.6;
+  }
+  .footnote sup { font-family:'Fragment Mono', monospace; font-size:.72em; margin-right:.35em; }
+  .foot-bar {
+    margin-top:4.5rem;
+    display:flex; justify-content:space-between; align-items:baseline; gap:2rem;
+    flex-wrap:wrap;
+  }
+  .foot-bar a { color:var(--ink2); }
+  .colophon { margin-top:2.6rem; text-align:center; display:block; letter-spacing:.24em; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .wrap { padding:0 22px; }
+    .thread-tail, .thread-manifesto, .thread-gate { display:none; }
+    .manifesto, .project, .gate { grid-template-columns:1fr; gap:44px; padding-top:88px; padding-bottom:88px; min-height:0; }
+    .note { align-self:start; max-width:400px; }
+    .fig svg { margin:0 auto; }
+    .gate-col { align-items:center; }
+    .stamp { margin-top:24px; }
+    .masthead-bar { flex-direction:column; gap:.4rem; padding-top:24px; }
+    .hero { padding-top:96px; }
+    .hero-sub { margin-top:2.2rem; }
+    .foot-bar { flex-direction:column; gap:1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ¶ 01 · masthead ........................................................ -->
+  <section class="hero">
+    <div class="masthead-bar">
+      <span class="mono">ayush yadav · a working paper on trust &amp; machinery</span>
+      <span class="mono">oxford, ohio — summer 2026</span>
+    </div>
+
+    <h1>
+      <span class="l rise r1">I build machine</span>
+      <span class="l rise r2">learning that</span>
+      <span class="l rise r3 u">shows its <em>work.</em><sup>1</sup><svg class="u-svg" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+        <path class="draw" pathLength="1" d="M8 20 C 180 6, 380 30, 560 16 S 850 8, 984 18 C 997 44, 978 82, 941 116"/>
+      </svg></span>
+    </h1>
+
+    <p class="hero-sub mono rise r4">ayush yadav — ml engineer, class of 2026</p>
+
+    <!-- the line leaves the masthead -->
+    <svg class="thread thread-tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M62 0 C 71 20, 47 38, 54 57 C 60 74, 43 88, 47 100"/>
+    </svg>
+  </section>
+
+  <div class="folio-rule"><span>01 / 07</span></div>
+
+  <!-- ¶ 02 · manifesto ....................................................... -->
+  <section class="manifesto">
+    <div class="manifesto-copy">
+      <span class="kicker mono">¶ 02 · manifesto</span>
+      <p class="dropcap">This is a story about learning machines.</p>
+      <p>And the person who doesn&rsquo;t fully trust them yet.</p>
+    </div>
+
+    <aside class="note">
+      n.b. — pages 04&ndash;06 are still in review. nothing on this desk
+      ships without a human pass; this page waited its turn too.
+    </aside>
+
+    <!-- the line passes through the margin -->
+    <svg class="thread thread-manifesto" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M87 0 C 83 16, 63 24, 58 40 C 53 56, 60 70, 72 82 C 78 89, 84 94, 85.2 100"/>
+    </svg>
+  </section>
+
+  <div class="folio-rule"><span>02 / 07</span></div>
+
+  <!-- ¶ 03 · selected system ................................................. -->
+  <section class="project">
+    <div class="project-copy">
+      <span class="kicker mono">¶ 03 · selected system — reviewed spring 2026</span>
+      <h2>Agentic AutoML</h2>
+      <p>The agent drafts the whole pipeline.</p>
+      <p>Nothing runs until a human says go.</p>
+      <span class="metrics mono">7-phase gated lifecycle &nbsp;·&nbsp; langgraph + mcp</span>
+    </div>
+
+    <!-- the line becomes the diagram -->
+    <figure class="fig" aria-label="Hand-drawn pipeline sketch: three nodes flowing into a human gate">
+      <svg viewBox="0 0 280 680" aria-hidden="true">
+        <!-- entry -->
+        <path d="M141 0 C 137 24, 144 50, 139 74"/>
+        <!-- node 1: draft -->
+        <path d="M140 74 c 15 1 27 12 26 27 c -1 14 -13 26 -27 25 c -14 -1 -25 -12 -25 -26 c 0 -14 11 -25 26 -26"/>
+        <text x="182" y="105">draft</text>
+        <path d="M140 127 C 145 148, 135 167, 140 186"/>
+        <path d="M132 177 L 140 189 L 148 176"/>
+        <!-- node 2: train -->
+        <path d="M140 189 c 15 1 27 12 26 27 c -1 14 -13 26 -27 25 c -14 -1 -25 -12 -25 -26 c 0 -14 11 -25 26 -26"/>
+        <text x="182" y="220">train</text>
+        <path d="M140 242 C 136 262, 145 282, 140 301"/>
+        <path d="M132 292 L 140 304 L 148 291"/>
+        <!-- node 3: evaluate -->
+        <path d="M140 304 c 15 1 27 12 26 27 c -1 14 -13 26 -27 25 c -14 -1 -25 -12 -25 -26 c 0 -14 11 -25 26 -26"/>
+        <text x="182" y="335">evaluate</text>
+        <path d="M140 357 C 144 372, 136 384, 140 397"/>
+        <path d="M132 388 L 140 400 L 148 387"/>
+        <!-- the gate box -->
+        <path d="M62 401 C 110 396, 172 399, 218 400 C 221 424, 219 447, 218 468 C 170 472, 108 469, 63 470 C 60 446, 61 423, 62 401 Z"/>
+        <text class="gate-label" x="140" y="431" text-anchor="middle">human gate</text>
+        <text x="140" y="452" text-anchor="middle">go / no-go</text>
+        <!-- exit -->
+        <path d="M140 470 C 135 520, 145 562, 139 612 C 137 640, 142 662, 140 680"/>
+        <!-- fig caption -->
+        <text x="160" y="600">fig. 1 —</text>
+        <text x="160" y="617">the gated run,</text>
+        <text x="160" y="634">abridged.</text>
+      </svg>
+      <figcaption class="visually-hidden" style="position:absolute;left:-9999px;">The agent's pipeline: draft, train, evaluate — then a human gate deciding go or no-go.</figcaption>
+    </figure>
+  </section>
+
+  <div class="folio-rule"><span>03 / 07</span></div>
+
+  <!-- ¶ 07 · the approval gate ............................................... -->
+  <section class="gate">
+    <div class="gate-copy">
+      <span class="kicker mono">¶ 07 · closing page</span>
+      <h2>The Approval Gate</h2>
+      <p>Every pipeline I build ends with a human decision.</p>
+      <p>This one ends with yours.</p>
+      <div class="cta">
+        <span class="mono" style="display:block; margin-bottom:.9rem;">correspondence</span>
+        <a href="mailto:aesh.03.23@gmail.com">Email me &mdash; I read everything.</a>
+      </div>
+    </div>
+
+    <div class="gate-col">
+      <!-- the line arrives at the stamp -->
+      <svg class="thread thread-gate" viewBox="0 0 120 320" aria-hidden="true">
+        <path d="M60 0 C 68 48, 44 106, 53 158 C 60 202, 48 262, 57 314"/>
+      </svg>
+      <!-- kiln clay appears once, here -->
+      <div class="stamp" role="img" aria-label="Rubber stamp reading APPROVED — human in the loop">
+        <svg viewBox="0 0 300 190">
+          <defs>
+            <filter id="rough" x="-4%" y="-4%" width="108%" height="108%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8"/>
+            </filter>
+          </defs>
+          <g filter="url(#rough)" opacity=".92">
+            <path stroke-width="3.5" d="M12 14 C 90 9, 210 12, 288 11 C 291 68, 289 126, 288 178 C 205 181, 95 179, 12 179 C 9 122, 11 66, 12 14 Z"/>
+            <path stroke-width="1.4" d="M26 27 C 95 24, 205 26, 274 25 C 276 72, 275 122, 274 165 C 200 167, 98 166, 26 166 C 24 120, 25 73, 26 27 Z"/>
+            <text x="150" y="59" text-anchor="middle" font-size="10" letter-spacing="3">run &#8470; 007 · july 2026</text>
+            <text x="150" y="112" text-anchor="middle" font-size="40" letter-spacing="8">APPROVED</text>
+            <text x="150" y="146" text-anchor="middle" font-size="11" letter-spacing="3">· human in the loop ·</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="folio-rule"><span>07 / 07</span></div>
+
+  <!-- footer ................................................................. -->
+  <footer>
+    <div class="footnote-rule"></div>
+    <p class="footnote"><sup>1</sup>&ldquo;shows its work&rdquo; &mdash; every model on this page ships with
+    its logs, its evals, and a human signature. miami university, class of 2026.</p>
+
+    <div class="foot-bar mono">
+      <span>&copy; 2026 ayush yadav — set by hand</span>
+      <span><a href="#">github</a> &nbsp;·&nbsp; <a href="#">linkedin</a> &nbsp;·&nbsp; <a href="mailto:aesh.03.23@gmail.com">email</a></span>
+      <span>set in fraunces, newsreader &amp; fragment mono</span>
+    </div>
+    <span class="colophon mono">two inks. one line. seven pages.</span>
+  </footer>
+
+</div>
+
+<!--
+  NO-LIST self-review — near-misses acknowledged (candidate C, "Ink & Paper"):
+
+  1. §D.1 "never a static cream sheet" — direction C mandates a fixed two-color paper,
+     so this candidate is intentionally static. Mitigated with visible ink-tinted paper
+     grain (feTurbulence, alpha-mapped to ink #26231C, ~3% effective) so no frame is a
+     flat #FAF6EF div. The living day-arc remains a build-time concern, not a mockup one.
+  2. §D.1 "no newspaper column/rule framing" — all apparatus here is BOOK apparatus:
+     folios, drop cap, footnote rule, colophon, dashed marginal note. No nameplate
+     masthead, no multi-column text, no vertical column rules; every rule is a single
+     horizontal book rule. The dateline is a book half-title line, not a newspaper one.
+  3. §B banned footer credit — the colophon lists typefaces (a print colophon), not the
+     banned "Built with Next.js/Tailwind/GSAP" tech-stack credit.
+  4. §B entrance-wrapper vocabulary — the hero fade/rise + line draw is load-only, hero
+     only, CSS only (explicitly allowed by the brief), never scroll-linked, and fully
+     disabled under prefers-reduced-motion.
+  5. §B/§D old paper-ink theme — accent is kiln clay #B04A28 (rust), used exactly once
+     (the stamp); no #c00000, no Playfair/Source Serif (Fraunces/Newsreader/Fragment Mono).
+  6. Stamp roughening uses feDisplacementMap (edge distress) — not blur, not glow.
+  7. Two-color audit: ink #26231C + paper #FAF6EF everywhere; #5C564A secondary ink on
+     captions/apparatus only (sanctioned); clay once. No gradients, no other hex anywhere.
+-->
+</body>
+</html>
