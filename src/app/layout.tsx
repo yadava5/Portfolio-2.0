@@ -17,7 +17,6 @@ import { Fraunces, Newsreader, Fragment_Mono } from "next/font/google";
 import "./globals.css";
 
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
@@ -127,7 +126,6 @@ export default function RootLayout({
           Skip to main content
         </a>
         <SmoothScroll>
-          <ScrollProgress />
           <Header />
           <main id="main-content" className="min-h-screen">
             {children}

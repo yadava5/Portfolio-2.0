@@ -1,22 +1,55 @@
 /**
- * @fileoverview Lenis smooth scroll provider
+ * @fileoverview Lenis + GSAP ScrollTrigger scroll engine — the ONE rAF loop
  *
- * Integrates the Lenis smooth scroll library into the React component tree.
- * Lenis provides butter-smooth scrolling (used on the GTA VI website)
- * and syncs with GSAP for scroll-triggered animations.
+ * Architecture (plan 3.9 + rubric amendment A1):
+ *   - Lenis runs with `autoRaf: false`; GSAP's ticker is the single rAF loop
+ *     and drives `lenis.raf(time * 1000)`.
+ *   - `lagSmoothing(0)` keeps scrub positions honest after main-thread stalls.
+ *   - ScrollTrigger start/end positions are re-measured after web fonts load.
+ *   - The live Lenis instance is exposed via context (`useLenis`) so nav
+ *     anchors, the chapter rail, and the day-arc engine all read from this
+ *     single loop — no parallel scroll listeners.
  *
- * Respects prefers-reduced-motion by disabling smooth scroll.
+ * Reduced motion (amendment A7): gated at entry — the engine is NEVER
+ * mounted under `prefers-reduced-motion: reduce`, and a mid-session OS
+ * toggle tears it down/brings it up via the hook's change subscription.
  */
 
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+/** Programmatic scroll settings (plan 3.9): duration 1.2s, expo-out */
+export const SCROLL_DURATION = 1.2;
+export const scrollEasing = (t: number) =>
+  Math.min(1, 1.001 - Math.pow(2, -10 * t));
+
+/** Matches `scroll-padding-top: 6rem` in globals.css */
+export const SCROLL_OFFSET = -96;
+
+const LenisContext = createContext<Lenis | null>(null);
+
+/**
+ * Access the live Lenis instance.
+ * Returns null under reduced motion or before the engine mounts —
+ * callers must fall back to instant, non-animated behavior.
+ */
+export function useLenis(): Lenis | null {
+  return useContext(LenisContext);
 }
 
 /** Props for the SmoothScroll provider */
@@ -25,81 +58,57 @@ interface SmoothScrollProps {
 }
 
 /**
- * Provides smooth scrolling behavior to the entire application
- *
- * Initializes Lenis on mount and tears it down on unmount.
- * Uses requestAnimationFrame for 60fps scroll performance.
- * Disabled automatically when user prefers reduced motion.
+ * Provides the scroll engine to the entire application.
  *
  * @param props - Component props
- * @returns Provider wrapping children with smooth scroll behavior
- *
- * @example
- * ```tsx
- * // In layout.tsx
- * <SmoothScroll>
- *   <main>{children}</main>
- * </SmoothScroll>
- * ```
+ * @returns Context provider wrapping children
  */
 export function SmoothScroll({ children }: SmoothScrollProps) {
-  const lenisRef = useRef<Lenis | null>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [lenis, setLenis] = useState<Lenis | null>(null);
 
   useEffect(() => {
-    /* Skip smooth scroll if user prefers reduced motion */
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
+    /* A7: never mount the engine under reduced motion (no init-then-disable) */
     if (prefersReducedMotion) return;
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      touchMultiplier: 2,
-      infinite: false,
+    const instance = new Lenis({
+      lerp: 0.08 /* plan 3.9 */,
       smoothWheel: true,
       wheelMultiplier: 1,
+      syncTouch: false /* touch smoothing OFF */,
+      autoRaf: false /* GSAP's ticker is THE loop (A1) */,
     });
 
-    lenisRef.current = lenis;
+    instance.on("scroll", ScrollTrigger.update);
 
-    /**
-     * Animation frame loop for Lenis scroll updates
-     * Syncs Lenis with GSAP ScrollTrigger
-     *
-     * @param time - requestAnimationFrame timestamp
-     */
-    let rafId = 0;
-    function raf(time: number) {
-      lenis.raf(time);
-      ScrollTrigger.update();
-      rafId = requestAnimationFrame(raf);
-    }
+    const tick = (time: number) => instance.raf(time * 1000); /* s → ms */
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
 
-    rafId = requestAnimationFrame(raf);
+    /* Scrub start/end positions are measured at init; the web-font swap
+       reflows the page — re-measure once fonts are ready. */
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) ScrollTrigger.refresh();
+    });
 
-    /**
-     * Sync Lenis scroll events with ScrollTrigger
-     */
-    lenis.on("scroll", ScrollTrigger.update);
-
-    /**
-     * Handle window resize to refresh scroll triggers
-     */
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-
+    const handleResize = () => ScrollTrigger.refresh();
     window.addEventListener("resize", handleResize);
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", handleResize);
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLenis(instance);
 
-  return <>{children}</>;
+    return () => {
+      cancelled = true;
+      window.removeEventListener("resize", handleResize);
+      gsap.ticker.remove(tick);
+      gsap.ticker.lagSmoothing(500, 33); /* restore GSAP default */
+      instance.destroy();
+      setLenis(null);
+    };
+  }, [prefersReducedMotion]);
+
+  return (
+    <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+  );
 }

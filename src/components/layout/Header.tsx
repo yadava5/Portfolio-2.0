@@ -5,6 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { FileText, Github, Linkedin, Mail, X } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
+import {
+  useLenis,
+  SCROLL_DURATION,
+  SCROLL_OFFSET,
+  scrollEasing,
+} from "@/components/layout/SmoothScroll";
 
 const NAV_ITEMS = [
   { label: "Case Studies", href: "/#projects", target: "#projects" },
@@ -16,16 +22,25 @@ const NAV_ITEMS = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [portraitOpen, setPortraitOpen] = useState(false);
+  const lenis = useLenis();
   const github = socialLinks.find((link) => link.name === "GitHub")?.url;
   const linkedIn = socialLinks.find((link) => link.name === "LinkedIn")?.url;
 
+  /* Scrolled state reads from the single scroll loop when the engine is
+     mounted; falls back to a passive native listener under reduced motion. */
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
     };
+    if (lenis) {
+      lenis.on("scroll", onScroll);
+      return () => {
+        lenis.off("scroll", onScroll);
+      };
+    }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [lenis]);
 
   useEffect(() => {
     if (!portraitOpen) return;
@@ -36,29 +51,42 @@ export default function Header() {
       }
     };
 
+    /* Pause the scroll engine while the modal locks the page */
+    lenis?.stop();
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
+      lenis?.start();
     };
-  }, [portraitOpen]);
+  }, [portraitOpen, lenis]);
 
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLElement>, targetId: string) => {
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: "smooth" });
+      const target = document.querySelector<HTMLElement>(targetId);
+      if (!target) return;
+      e.preventDefault();
+      if (lenis) {
+        /* Programmatic scrolls: 1.2s expo-out through the engine (plan 3.9) */
+        lenis.scrollTo(target, {
+          duration: SCROLL_DURATION,
+          easing: scrollEasing,
+          offset: SCROLL_OFFSET,
+        });
+      } else {
+        /* Reduced motion: instant jump, no animation */
+        target.scrollIntoView({ behavior: "auto" });
       }
     },
-    []
+    [lenis]
   );
 
   return (
     <>
       <header
+        data-lenis-connected={lenis ? "true" : "false"}
         className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
           scrolled
             ? "border-b border-zinc-800 bg-zinc-950/88 py-3 backdrop-blur-md"
