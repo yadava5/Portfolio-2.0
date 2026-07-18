@@ -64,11 +64,16 @@ export const personalInfo = {
   location: "Oxford, Ohio",
   /** Current availability */
   availability: "Open to new-grad software, data, and ML engineering roles",
-  /** Professional portrait */
+  /** Professional portrait. `thumb` is the 96×96 header-button
+   *  derivative (PERF-AUDIT fix 3 — the full 900×1350 portrait was
+   *  preload-shipped on every route to paint a 26–36px avatar);
+   *  regenerate via `npm run assets:derive`. The portrait MODAL keeps
+   *  the full image. */
   portrait: {
     image: withBasePath(
       "/images/profile/ayush-yadav-professional-portrait.webp"
     ),
+    thumb: withBasePath("/images/profile/ayush-yadav-avatar-96.webp"),
     alt: "Ayush Yadav professional portrait",
   },
 

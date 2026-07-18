@@ -4,12 +4,18 @@
  * Implements rubric amendment A4 exactly:
  *   - Scans `[data-chapter]` sections and, per adjacent segment, runs a
  *     scrubbed ScrollTrigger tween over NUMERIC oklch channel proxies,
- *     writing `--arc-l/--arc-c/--arc-h` on <html>. The background itself
- *     composes `oklch(...)` (LightField) — color strings are never
- *     tweened, so midpoints never collapse through muddy sRGB.
+ *     writing `--arc-l/--arc-c/--arc-h` on the LightField container
+ *     (`[data-light-field]`) — NOT on <html>: unregistered custom
+ *     properties inherit, so a root write invalidated computed style
+ *     for the whole document tree every scrubbed frame (PERF-AUDIT
+ *     fix 2 — 86% of home scroll cost). Every consumer of the vars
+ *     lives inside that container. The background itself composes
+ *     `oklch(...)` (LightField) — color strings are never tweened, so
+ *     midpoints never collapse through muddy sRGB.
  *   - The 05→06 dusk boundary is a pre-verified STEP change: background
  *     channels AND ink flip together via non-scrubbed ScrollTrigger
- *     callbacks (`data-arc-phase="dusk"` on <html>; ink colors come from
+ *     callbacks (`data-arc-phase="dusk"` stays on <html> — a step, not
+ *     a per-frame write; ink colors come from
  *     `--color-ink` / `--color-ink-dusk` in globals.css). A scrubbed
  *     05→06 segment is provably impossible at WCAG AA — see
  *     `sampleArc()` in scripts/qa/check-contrast.mjs.
@@ -32,21 +38,24 @@ import { useLenis } from "@/components/layout/SmoothScroll";
 import { ARC_WAYPOINTS, DUSK_FLIP_CHAPTER } from "./waypoints.generated";
 import type { ArcWaypoint } from "./waypoints.generated";
 
-/** The three scrubbed channel custom properties, written on <html>. */
+/** The three scrubbed channel custom properties, written on the
+ *  LightField container (PERF-AUDIT fix 2 — never on <html>). */
 const CHANNEL_VARS = ["--arc-l", "--arc-c", "--arc-h"] as const;
 
 /**
- * Write the arc's oklch channels onto the root element.
+ * Write the arc's oklch channels onto the light-field container.
  *
- * @param root - The `<html>` element
+ * @param field - The `[data-light-field]` element (the only subtree
+ *   that reads the vars — scoping the write keeps per-frame style
+ *   invalidation to its four layers)
  * @param l - oklch lightness (0–1)
  * @param c - oklch chroma
  * @param h - oklch hue in degrees
  */
-function applyChannels(root: HTMLElement, l: number, c: number, h: number) {
-  root.style.setProperty("--arc-l", l.toFixed(4));
-  root.style.setProperty("--arc-c", c.toFixed(4));
-  root.style.setProperty("--arc-h", h.toFixed(2));
+function applyChannels(field: HTMLElement, l: number, c: number, h: number) {
+  field.style.setProperty("--arc-l", l.toFixed(4));
+  field.style.setProperty("--arc-c", c.toFixed(4));
+  field.style.setProperty("--arc-h", h.toFixed(2));
 }
 
 /**
@@ -66,6 +75,11 @@ export function DayArc() {
     if (!lenis) return;
 
     const root = document.documentElement;
+    /* The channel-write target: the LightField container. Falling back
+       to <html> keeps the arc alive if the field is ever absent, but
+       on every real page (home, world-preview) the container exists. */
+    const field =
+      document.querySelector<HTMLElement>("[data-light-field]") ?? root;
 
     const byId = new Map<string, ArcWaypoint>(
       ARC_WAYPOINTS.map((w) => [w.id, w])
@@ -85,7 +99,7 @@ export function DayArc() {
 
     /* Start the day where the first chapter starts. */
     const first = waypointOf(sections[0]);
-    applyChannels(root, first.l, first.c, first.h);
+    applyChannels(field, first.l, first.c, first.h);
 
     const ctx = gsap.context(() => {
       for (let i = 0; i < sections.length - 1; i++) {
@@ -100,11 +114,11 @@ export function DayArc() {
             trigger: sections[i + 1],
             start: "top 50%",
             onEnter: () => {
-              applyChannels(root, to.l, to.c, to.h);
+              applyChannels(field, to.l, to.c, to.h);
               root.setAttribute("data-arc-phase", "dusk");
             },
             onLeaveBack: () => {
-              applyChannels(root, from.l, from.c, from.h);
+              applyChannels(field, from.l, from.c, from.h);
               root.removeAttribute("data-arc-phase");
             },
           });
@@ -141,7 +155,7 @@ export function DayArc() {
                  segment is active, skip its stale endpoint write. */
               const st = handle.tween?.scrollTrigger;
               if (st && !st.isActive && st.progress === 0) return;
-              applyChannels(root, proxy.l, proxy.c, proxy.h);
+              applyChannels(field, proxy.l, proxy.c, proxy.h);
             },
           }
         );
@@ -151,7 +165,7 @@ export function DayArc() {
     return () => {
       ctx.revert();
       root.removeAttribute("data-arc-phase");
-      for (const name of CHANNEL_VARS) root.style.removeProperty(name);
+      for (const name of CHANNEL_VARS) field.style.removeProperty(name);
     };
   }, [lenis]);
 

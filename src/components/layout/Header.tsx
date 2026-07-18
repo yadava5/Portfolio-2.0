@@ -144,13 +144,17 @@ export default function Header() {
               aria-haspopup="dialog"
               aria-expanded={portraitOpen}
             >
+              {/* The 96px avatar derivative, not the full portrait: the
+                  button paints at 26–36px, and the old priority preload
+                  burned a critical-window slot on every route for 52KB
+                  of unused pixels (PERF-AUDIT fix 3). No priority — a
+                  header thumb must never outrank fonts and CSS. */}
               <Image
-                src={personalInfo.portrait.image}
+                src={personalInfo.portrait.thumb}
                 alt={personalInfo.portrait.alt}
-                fill
-                className="object-cover object-top"
-                sizes="36px"
-                priority
+                width={96}
+                height={96}
+                className="h-full w-full object-cover"
               />
             </button>
             <Link
@@ -253,14 +257,16 @@ export default function Header() {
             >
               <X size={18} aria-hidden="true" />
             </button>
+            {/* The dialog mounts only when opened, so the full portrait
+                loads on demand — priority dropped (PERF-AUDIT fix 3);
+                width/height corrected to the file's real 900×1350. */}
             <Image
               src={personalInfo.portrait.image}
               alt={personalInfo.portrait.alt}
-              width={1024}
-              height={1536}
+              width={900}
+              height={1350}
               className="h-auto max-h-[calc(100vh-4rem)] w-full object-contain"
               sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
-              priority
             />
           </div>
         </div>

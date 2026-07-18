@@ -70,10 +70,13 @@ const WRAP =
 const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 
 /**
- * Stagger index for the hero's CSS load entrance (plan 3.8: 110ms per
- * line — globals.css multiplies `--hero-i`).
+ * Stagger index for the hero's CSS load entrance (60ms per slot —
+ * globals.css multiplies `--hero-i`; retuned from plan 3.8's 110ms per
+ * PERF-AUDIT fix 1). The three headline lines take consecutive slots
+ * 0–2; the byline and directives sit at 4 and 6 so the apparatus keeps
+ * a touch more air behind the headline without holding the LCP line.
  *
- * @param index - Zero-based entrance position
+ * @param index - Zero-based entrance slot
  * @returns Inline style carrying the custom property
  */
 function heroDelay(index: number): CSSProperties {
@@ -346,8 +349,15 @@ function ArrivalChapter() {
           {/* Hero entrance (plan 3.8): per-line de-blur + 14px rise via the
               .hero-enter CSS animation (globals.css) — the page's ONLY
               blur, desktop-only, load-only. The three structural line
-              spans ARE the animation lines: no splitting, text intact. */}
-          <h1 className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]">
+              spans ARE the animation lines: no splitting, text intact.
+              aria-label (PERF-AUDIT §4.3): the block-broken spans
+              concatenate without spaces and glue the footnote ¹ onto the
+              name — the label keeps the accessible name one honest
+              sentence; the footnote link keeps its own "Footnote 1". */}
+          <h1
+            aria-label="I build machine learning that shows its work."
+            className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+          >
             {/* Forced break pattern: "machine learning" never splits */}
             <span className="hero-enter block" style={heroDelay(0)}>
               I build
@@ -374,7 +384,7 @@ function ArrivalChapter() {
                       href="#footnote-1"
                       id="fnref-1"
                       aria-label="Footnote 1"
-                      className="text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
+                      className="tap-target text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
                     >
                       1
                     </LenisAnchor>
@@ -394,7 +404,7 @@ function ArrivalChapter() {
             <span data-thread-name>
               <span
                 className="hero-enter hero-enter-inline"
-                style={heroDelay(3)}
+                style={heroDelay(4)}
               >
                 ayush yadav — ml engineer, class of 2026
               </span>
@@ -408,7 +418,7 @@ function ArrivalChapter() {
             (recruiter-rejudge fix — the index used to live at 55%
             scroll); the skip affordance is SECONDARY, and the scroll cue
             is the QUIETEST — smallest mono, no affordance. */}
-        <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
+        <div className="label-mono hero-enter space-y-3" style={heroDelay(6)}>
           <p className="text-ink">
             <LenisAnchor href="#automl" className="link-draw">
               flagship — agentic automl: seven gated phases ⟶
@@ -453,7 +463,7 @@ function ArrivalChapter() {
             <LenisAnchor
               href="#fnref-1"
               aria-label="Back to the headline"
-              className="link-draw"
+              className="link-draw tap-target"
             >
               ↩
             </LenisAnchor>

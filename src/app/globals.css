@@ -59,10 +59,14 @@
   --waypoint-07: #2c2622; /* nightfall — clay lightens to --color-clay-night */
 
   /* ── Day-arc oklch channels (amendment A4) ──────────────────────────
-     Numeric channels scrubbed by DayArc.tsx; the LightField base composes
-     `oklch(var(--arc-l) var(--arc-c) var(--arc-h))`. Defaults = waypoint-01
-     (dawn) per scripts/design/waypoints-oklch.mjs — regenerate, never
-     hand-guess. */
+     STATIC defaults only. DayArc.tsx scrubs the live values onto the
+     LightField container itself ([data-light-field]) — never onto
+     :root, where every per-frame write would invalidate the whole
+     document's computed style (PERF-AUDIT fix 2). The LightField base
+     composes `oklch(var(--arc-l) var(--arc-c) var(--arc-h))` and the
+     rake reads --arc-l; both live inside the container. Defaults =
+     waypoint-01 (dawn) per scripts/design/waypoints-oklch.mjs —
+     regenerate, never hand-guess. */
   --arc-l: 0.9671;
   --arc-c: 0.0181;
   --arc-h: 78.24;
@@ -328,6 +332,58 @@ html[data-motion-off] .link-draw {
   outline-offset: 3px;
 }
 
+/* Hit-area lift for tiny inline targets (PERF-AUDIT §4 / WCAG 2.5.8):
+   the footnote ¹/↩ and receipt permalink glyphs measure 8–17px. A
+   centered, invisible ::after pad grows the pointer/tap target to
+   ≥24×24 without moving a letterform or changing any visual state —
+   the pseudo-element belongs to the anchor, so clicks on it activate
+   the link. */
+.tap-target {
+  position: relative;
+}
+.tap-target::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 24px);
+  height: max(100%, 24px);
+  transform: translate(-50%, -50%);
+}
+
+/* ── prefers-contrast: more (PERF-AUDIT §4.4) — token-level lift ─────
+   Low-vision adaptation without a redesign: the muted secondary voice
+   strengthens to full ink (12.1:1), the header's muted nav follows its
+   own ink var across the dusk flip, and the hairline apparatus darkens
+   so the page's structure survives. Scoped small on purpose — dusk
+   chapters already mute via opacity on full-strength ink (A4). */
+@media (prefers-contrast: more) {
+  :root {
+    --color-ink-secondary: var(--color-ink);
+  }
+  .site-header {
+    --header-ink-muted: var(--header-ink);
+  }
+  /* Hairline rules read at 45% ink instead of 15–30% (utility classes
+     are layered; these unlayered overrides win the cascade). */
+  .border-ink\/15,
+  .border-ink\/20,
+  .border-ink\/25,
+  .border-ink\/30 {
+    border-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  }
+  .border-current\/15,
+  .border-current\/20 {
+    border-color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  .bg-ink\/30 {
+    background-color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  }
+  .dot-leader {
+    border-bottom-color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+}
+
 /* ════════════════════════════════════════════════════════════════
    THE RED THREAD — seven per-chapter ink segments (amendment A3)
    Rendered by ThreadSegment.tsx inside each chapter section: a dashed
@@ -502,10 +558,14 @@ html[data-motion-off] .thread-segment .thread-node-gate {
 
 /* Hero rise (mobile + the shared final leg): transform/opacity only.
    `to` is omitted so every property resolves to the element's natural
-   computed style — the final state IS the static state. */
+   computed style — the final state IS the static state.
+   LCP retune (PERF-AUDIT fix 1): the entrance starts at opacity 0.15,
+   never 0 — the LCP line's pixels exist from the very first frame, so
+   Chrome records the candidate at first paint instead of ~1.9s in. The
+   measured cost of the old 0→1 hold was ~1.9s of LCP on every load. */
 @keyframes hero-rise {
   from {
-    opacity: 0;
+    opacity: 0.15;
     transform: translateY(14px);
   }
 }
@@ -513,7 +573,7 @@ html[data-motion-off] .thread-segment .thread-node-gate {
    8px→0, load-only; blur NOWHERE else, and never on mobile). */
 @keyframes hero-rise-blur {
   from {
-    opacity: 0;
+    opacity: 0.15;
     transform: translateY(14px);
     filter: blur(8px);
   }
@@ -523,9 +583,12 @@ html[data-motion-off] .thread-segment .thread-node-gate {
 }
 @media (prefers-reduced-motion: no-preference) {
   html[data-motion-ready]:not([data-motion-off]) .hero-enter {
-    /* 1.0s expo.out, 110ms stagger via --hero-i (plan 3.8 exact) */
-    animation: hero-rise 1s cubic-bezier(0.19, 1, 0.22, 1) both;
-    animation-delay: calc(var(--hero-i, 0) * 110ms);
+    /* 0.6s expo.out, 60ms stagger via --hero-i — retuned from the plan-
+       3.8 1.0s/110ms (PERF-AUDIT fix 1): same de-blur character, the
+       headline resolved ~3x sooner. The sub/directive lines keep a
+       touch more air via their --hero-i seats (StoryShell heroDelay). */
+    animation: hero-rise 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: calc(var(--hero-i, 0) * 60ms);
   }
 }
 @media (prefers-reduced-motion: no-preference) and (min-width: 768px) {

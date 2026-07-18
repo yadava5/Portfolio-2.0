@@ -68,6 +68,19 @@ test.describe("day arc — motion", () => {
     /* Still daytime: no dusk step this side of the 05→06 boundary */
     await expect(page.locator("html")).not.toHaveAttribute("data-arc-phase");
 
+    /* Write-target contract (PERF-AUDIT fix 2): the scrubbed channel
+       vars land on the LightField container, NEVER on <html> — a root
+       write invalidates the whole tree's computed style every frame. */
+    const writeTargets = await page.evaluate(() => ({
+      html: document.documentElement.style.getPropertyValue("--arc-l"),
+      field:
+        document
+          .querySelector<HTMLElement>("[data-light-field]")
+          ?.style.getPropertyValue("--arc-l") ?? "",
+    }));
+    expect(writeTargets.html).toBe("");
+    expect(writeTargets.field).not.toBe("");
+
     await noHorizontalOverflow(page);
   });
 
@@ -137,14 +150,21 @@ test.describe("day arc — reduced motion", () => {
   test("no scrubbing: deep scroll writes no channel vars, no dusk step", async ({
     page,
   }) => {
+    /* The engine's write target is the LightField container (PERF-AUDIT
+       fix 2); <html> is probed too so a root-write regression is caught. */
     const arcState = () =>
       page.evaluate(() => ({
         l: document.documentElement.style.getPropertyValue("--arc-l"),
+        fieldL:
+          document
+            .querySelector<HTMLElement>("[data-light-field]")
+            ?.style.getPropertyValue("--arc-l") ?? "",
         phase: document.documentElement.getAttribute("data-arc-phase"),
       }));
 
     const before = await arcState();
     expect(before.l).toBe("");
+    expect(before.fieldL).toBe("");
     expect(before.phase).toBeNull();
 
     await scrollToChapter(page, "07");
@@ -152,6 +172,7 @@ test.describe("day arc — reduced motion", () => {
 
     const after = await arcState();
     expect(after.l).toBe("");
+    expect(after.fieldL).toBe("");
     expect(after.phase).toBeNull();
   });
 });

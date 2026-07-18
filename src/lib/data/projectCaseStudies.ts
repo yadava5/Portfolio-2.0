@@ -792,7 +792,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         type: "real-screenshot",
         label: "Private-safe experiment registry screenshot",
-        href: withBasePath("/images/projects/automl.png"),
+        href: withBasePath("/images/projects/automl.webp"),
         source: "local AutoML repository, demo data",
         boundary: "demo dataset — no client or institutional data",
         date: "2026-06",
@@ -1898,7 +1898,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         type: "real-screenshot",
         label: "Local React workbench screenshot",
-        href: withBasePath("/images/projects/mnist.png"),
+        href: withBasePath("/images/projects/mnist.webp"),
         source: "local web workbench capture",
         boundary: "native inference server offline during capture",
         date: "2026-06",

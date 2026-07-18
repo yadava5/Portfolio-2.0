@@ -42,6 +42,12 @@ export interface Project {
   liveUrl: string | null;
   /** Project image path */
   image: string;
+  /** Intrinsic pixel width of the image, when known (raster captures —
+   *  lets the case-file hero render with explicit dimensions instead
+   *  of `fill`; CLS regression hardening per PERF-AUDIT fix 4) */
+  imageWidth?: number;
+  /** Intrinsic pixel height of the image, when known */
+  imageHeight?: number;
   /** What kind of visual the image represents */
   imageKind: ProjectImageKind;
   /** Accessible alt text for the project image */
@@ -141,7 +147,11 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: withBasePath("/images/projects/automl.png"),
+    // WebP derivative of the promoted capture (assets:derive) — the PNG
+    // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
+    image: withBasePath("/images/projects/automl.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt:
       "Private-safe Agentic AutoML experiment registry screenshot with demo data",
@@ -221,6 +231,8 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/taskflow-calendar",
     liveUrl: "https://taskflow-calendar-ashy.vercel.app",
     image: withBasePath("/images/projects/taskflow.png"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt: "Real Taskflow local demo calendar screenshot",
     imageDisclosure:
@@ -258,7 +270,11 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/fast-mnist-nn",
     liveUrl: "https://fast-mnist.vercel.app",
-    image: withBasePath("/images/projects/mnist.png"),
+    // WebP derivative of the promoted capture (assets:derive, was a
+    // 264KB PNG — PERF-AUDIT fix 4).
+    image: withBasePath("/images/projects/mnist.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt: "Real Fast MNIST React workbench screenshot",
     imageDisclosure:
@@ -372,7 +388,13 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/paid-internships-advocacy",
     liveUrl: "https://yadava5.github.io/paid-internships-advocacy",
-    image: withBasePath("/images/projects/advocacy.png"),
+    // WebP derivative (assets:derive): the 940KB PNG was the largest
+    // file in the export. This project is hidden (portfolioVisible:
+    // false, no case study), so nothing fetches it today — converted
+    // anyway per PERF-AUDIT fix 4 so no future surfacing re-ships it.
+    image: withBasePath("/images/projects/advocacy.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt:
       "Real Paid Internships Advocacy data visualization page screenshot",

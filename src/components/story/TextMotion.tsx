@@ -71,8 +71,9 @@ const MANIFESTO_SPAN = "+=60%";
  *  +0.2s, then +0.3s (plan 3.8 "line-masks with slowing stagger"). */
 const LITANY_DELAYS = [0.12, 0.32, 0.62];
 
-/** Hero entrance settle: last delay (4 × 110ms) + 1.0s run + margin. */
-const HERO_SETTLE_MS = 1800;
+/** Hero entrance settle: last delay (6 × 60ms) + 0.6s run + margin
+ *  (retuned with the entrance itself — PERF-AUDIT fix 1). */
+const HERO_SETTLE_MS = 1200;
 
 /** Weight-breathing range (spec: 360→420 max, ±60): the headline sits
  *  at the token weight 420 mid-viewport and relaxes toward 360 at the

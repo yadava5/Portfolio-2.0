@@ -29,8 +29,15 @@
     "resume:build": "node scripts/resume/render-resume.mjs",
     "resume:check": "node scripts/resume/check-resume.mjs",
     "assets:promote-proof": "node scripts/asset-truth/promote-proof-assets.mjs",
+    "assets:derive": "node scripts/asset-truth/derive-display-variants.mjs",
     "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs"
   },
+  "browserslist": [
+    "chrome 128",
+    "edge 128",
+    "firefox 128",
+    "safari 17.4"
+  ],
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
     "clsx": "^2.1.1",

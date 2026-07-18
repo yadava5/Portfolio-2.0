@@ -22,6 +22,14 @@
 /**
  * Fixed, non-interactive background stack for the Daylight Study world.
  *
+ * `data-light-field` is DayArc's write target (PERF-AUDIT fix 2): the
+ * scrubbed `--arc-l/c/h` channels are set on THIS container, so each
+ * per-frame write invalidates computed style for these four layers
+ * only — a root-level write invalidated the whole document tree every
+ * frame (measured: 86% of all scroll-time main-thread cost). Both
+ * consumers — the base's oklch() composition and the rake's opacity
+ * calc — live inside this subtree and inherit the vars.
+ *
  * @returns The four-layer light field
  */
 export function LightField() {
@@ -29,6 +37,7 @@ export function LightField() {
     <div
       aria-hidden="true"
       data-testid="light-field"
+      data-light-field
       className="pointer-events-none fixed inset-0 z-0"
     >
       <div

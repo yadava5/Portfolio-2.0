@@ -109,6 +109,7 @@ export function EvidenceTable({
       <ol className="mt-3 md:mt-0">
         {rows.map((row, index) => {
           const n = startIndex + index;
+          const padded = String(n).padStart(2, "0");
           const anchor = receiptAnchor(projectId, n);
           const cites = citedFig(row);
           return (
@@ -120,14 +121,18 @@ export function EvidenceTable({
               className={`border-ink/15 grid gap-x-8 gap-y-2 border-t py-4 ${ROW_GRID}`}
             >
               {/* The claim anchors the eye: serif at body size, its
-                  permalink number in the mono hand beside it */}
+                  permalink number in the mono hand beside it. The
+                  accessible name leads with the visible digits (audit
+                  §1.3 label-content-name-mismatch: voice-control users
+                  say "click 01") and the tap-target pad lifts the
+                  17×15 glyph to a ≥24px hit area (WCAG 2.5.8). */}
               <p className="text-ink">
                 <a
                   href={`#${anchor}`}
-                  aria-label={`Permalink to receipt ${n}`}
-                  className="label-mono text-ink-secondary hover:text-ink mr-2 underline-offset-4 hover:underline"
+                  aria-label={`${padded} — permalink to receipt ${n}`}
+                  className="label-mono tap-target text-ink-secondary hover:text-ink mr-2 underline-offset-4 hover:underline"
                 >
-                  {String(n).padStart(2, "0")}
+                  {padded}
                 </a>
                 <span className="label-mono">
                   <KeyLabel>claim</KeyLabel>
