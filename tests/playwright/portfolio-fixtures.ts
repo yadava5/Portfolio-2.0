@@ -216,7 +216,9 @@ export const RECRUITER_HERO_LINKS = [
 export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume"];
 
 // The proof metrics must EXIST on the homepage; they live in the chapters
-// where their stories are told (03 the path, 04 automl, 05 work, 06 values).
+// where their stories are told (03 the path, 04 automl, 05 work). The
+// #values litany cites DIFFERENT real receipts (182 backend tests) so no
+// number reads twice verbatim — 0.9791's home is the #work row.
 export const RECRUITER_HERO_METRICS = [
   "1M+",
   "3.5x",
@@ -229,7 +231,7 @@ export const METRIC_HOME_CHAPTER: Record<string, string> = {
   "19/20": "#path",
   "7-phase": "#automl",
   "3.5x": "#work",
-  "0.9791": "#values",
+  "0.9791": "#work",
 };
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [

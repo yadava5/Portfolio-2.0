@@ -456,6 +456,45 @@ test.describe("Daylight Study — working paper", () => {
     }
   });
 
+  test("gate first viewport carries the address and LinkedIn at 1440", async ({
+    page,
+  }) => {
+    /* A screener landing on the closing chapter must see the plaintext
+       address AND LinkedIn without another scroll (craft round fix 7 —
+       the cluster previously sat below the fold). */
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#gate").waitFor({ state: "attached" });
+    await page.evaluate(() => {
+      document.getElementById("gate")?.scrollIntoView();
+    });
+    /* Wait for the scroll to land: the chapter's top reaches (or passes)
+       the viewport top — under Lenis the final resting offset can sit
+       slightly past the scroll-padding, which is fine; the contract
+       below is about the LINKS' positions, not the section's. */
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const box = document
+              .getElementById("gate")
+              ?.getBoundingClientRect();
+            return box ? box.top : Number.POSITIVE_INFINITY;
+          }),
+        { timeout: 8_000 }
+      )
+      .toBeLessThan(200);
+
+    const emailLink = page
+      .locator(`#gate a[href="mailto:${EXPECTED_CONTENT.email}"]`)
+      .filter({ hasText: EXPECTED_CONTENT.email });
+    await expectInFirstViewport(page, emailLink);
+    await expectInFirstViewport(
+      page,
+      page.locator(`#gate a[href="${EXPECTED_LINKS.linkedin}"]`)
+    );
+  });
+
   test("mobile first viewport keeps recruiter CTAs visible and theme controls out of the way", async ({
     page,
   }) => {

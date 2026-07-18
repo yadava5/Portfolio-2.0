@@ -8,10 +8,12 @@
  * grammar chosen in docs/design-lab/DECISION.md: ¶ kickers, folio rules,
  * datelines, bright/muted headline pairs, mono apparatus, vast whitespace.
  *
- * This is the SHELL: real copy (plan 3.10) and real data (lib/data), no
- * scroll-linked animation and no red thread yet — those are Phase 2/3.
- * All content inherits body ink, which DayArc steps at the dusk flip;
- * chapters 06/07 mute via opacity (≥70%) instead of the day-only
+ * This file carries the shell — real copy (plan 3.10), real data
+ * (lib/data) — plus, since Phase 2 · Step 1, the RED THREAD: each
+ * section is `relative` and mounts a per-chapter ThreadSegment
+ * (amendment A3) as its first child, under the (positioned) content
+ * wrap. All content inherits body ink, which DayArc steps at the dusk
+ * flip; chapters 06/07 mute via opacity (≥70%) instead of the day-only
  * secondary-ink token so every state holds AA (amendment A4).
  */
 
@@ -32,6 +34,7 @@ import {
 } from "@/components/story/apparatus";
 import { CHAPTERS } from "@/components/story/chapters";
 import { ChapterRail } from "@/components/story/ChapterRail";
+import { ThreadSegment } from "@/components/thread/ThreadSegment";
 import { HashRealign } from "@/components/story/HashRealign";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
 import { LocalTime } from "@/components/story/LocalTime";
@@ -39,8 +42,11 @@ import { AwaitingStamp } from "@/components/story/ApprovedStamp";
 
 /** Shared content column: the paper's measure */
 /* The xl+ left padding is the paper's binding margin: it reserves the
-   gutter the fixed chapter rail lives in (rail ≈ 8rem incl. active name). */
-const WRAP = "mx-auto w-full max-w-[1240px] px-6 sm:px-12 xl:pr-16 xl:pl-36";
+   gutter the fixed chapter rail lives in (rail ≈ 8rem incl. active name).
+   `relative` seats the content ABOVE each chapter's ThreadSegment svg
+   (positioned boxes paint in source order; the svg comes first). */
+const WRAP =
+  "relative mx-auto w-full max-w-[1240px] px-6 sm:px-12 xl:pr-16 xl:pl-36";
 
 const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 
@@ -140,13 +146,15 @@ const FURTHER_READING_IDS = [
 ];
 
 /** Ch-06 litany: each mantra carries a proof-manifest-backed receipt that
- *  links to the validation ledger of the case file that proves it. The
- *  mnist receipt is worded differently from the #work row on purpose —
- *  the same number should not read twice verbatim. */
+ *  links to the validation ledger of the case file that proves it. Every
+ *  receipt is worded differently from its #work row on purpose — the
+ *  same number should never read twice verbatim: the jobtracker line
+ *  cites the case study's REAL 182-test backend suite (its 0.9791
+ *  macro-F1 already carries the #work row). */
 const VALUES_LINES = [
   {
     mantra: "Make it learn.",
-    receipt: "macro-F1 0.9791 — jobtracker classifier gates",
+    receipt: "182 backend tests — jobtracker validation ledger",
     href: "/projects/jobtracker/#validation",
   },
   {
@@ -210,6 +218,39 @@ const GATE_REFERENCES: {
 ];
 
 /**
+ * Fig 6.1's reviewer marks — the same hand that draws the thread ticked
+ * the ledger: a check-stroke for a gate a human signed off ("passed"),
+ * a short hold-bar for a gate that stopped the run ("held"). Inline,
+ * currentColor (dusk ink), decorative — the status word carries the
+ * meaning; the legend line under the figure spells both out.
+ *
+ * @param props - The row's disposition
+ * @returns A small aria-hidden ink mark
+ */
+function GateMark({ status }: { status: string }) {
+  const passed = status === "passed";
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 14 10"
+      className="inline-block h-[0.55em] w-[0.77em] translate-y-[0.05em] self-center"
+    >
+      <path
+        d={
+          passed
+            ? "M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2"
+            : "M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+/**
  * Format a YYYY-MM date as "May 2026".
  *
  * @param yearMonth - date string in YYYY-MM form
@@ -232,8 +273,9 @@ function ArrivalChapter() {
     <section
       id={ARRIVAL.anchor}
       data-chapter={ARRIVAL.id}
-      className="flex min-h-svh flex-col pt-28 pb-8"
+      className="relative flex min-h-svh flex-col pt-28 pb-8"
     >
+      <ThreadSegment id={ARRIVAL.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
         <ChapterKicker
           id={ARRIVAL.id}
@@ -250,25 +292,34 @@ function ArrivalChapter() {
               that shows its{" "}
               {/* The ¹ is kerned against the period: the size lives on the
                   <sup> (not the anchor) so align-super raises the small
-                  glyph, not a hero-sized box, and a small negative margin
-                  tucks it into the italic period's right bearing. */}
+                  glyph, not a hero-sized box. The negative margin lives on
+                  a HERO-sized wrapper, so the tuck-in scales with the
+                  italic period's right bearing at every viewport (a
+                  sup-relative margin left the ¹ adrift at 1440). */}
               <span className="whitespace-nowrap">
                 <em className="font-serif italic">work.</em>
-                <sup className="-ml-[0.15em] align-super text-[max(0.14em,0.8125rem)] leading-none">
-                  <LenisAnchor
-                    href="#footnote-1"
-                    id="fnref-1"
-                    aria-label="Footnote 1"
-                    className="text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
-                  >
-                    1
-                  </LenisAnchor>
-                </sup>
+                <span className="-ml-[0.085em]">
+                  <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
+                    <LenisAnchor
+                      href="#footnote-1"
+                      id="fnref-1"
+                      aria-label="Footnote 1"
+                      className="text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
+                    >
+                      1
+                    </LenisAnchor>
+                  </sup>
+                </span>
               </span>
             </span>
           </h1>
+          {/* data-thread-name: the Red Thread originates as this line's
+              trailing flick (ThreadSegment 01 measures it) — on an inline
+              span so the measured box hugs the text, not the column */}
           <p className="label-mono text-ink-secondary mt-10">
-            ayush yadav — ml engineer, class of 2026
+            <span data-thread-name>
+              ayush yadav — ml engineer, class of 2026
+            </span>
           </p>
         </div>
 
@@ -329,8 +380,9 @@ function WhoChapter() {
     <section
       id={WHO.anchor}
       data-chapter={WHO.id}
-      className="pt-[7vh] pb-[9vh]"
+      className="relative pt-[7vh] pb-[9vh]"
     >
+      <ThreadSegment id={WHO.id} />
       <div className={WRAP}>
         <ChapterKicker id={WHO.id} label="who — on trust & machinery" />
 
@@ -381,15 +433,23 @@ function PathChapter() {
     <section
       id={PATH.anchor}
       data-chapter={PATH.id}
-      className="pt-[7vh] pb-[12vh]"
+      className="relative pt-[7vh] pb-[12vh]"
     >
+      <ThreadSegment id={PATH.id} />
       <div className={WRAP}>
         <ChapterKicker id={PATH.id} label="the path — field records" />
 
         <PairHeadline
           className="mt-10"
           bright="Thousands of service tickets. Zero structure."
-          muted="Miami is where I learned that data work starts with mess."
+          muted={
+            <>
+              {/* data-thread-word: the Red Thread underlines this word —
+                  chapter 03's one content gesture (geometry anchor) */}
+              Miami is where I learned that data work starts with{" "}
+              <span data-thread-word>mess</span>.
+            </>
+          }
         />
 
         <div className="mt-16 space-y-14">
@@ -467,8 +527,9 @@ function AutomlChapter() {
     <section
       id={AUTOML.anchor}
       data-chapter={AUTOML.id}
-      className="pt-[8vh] pb-[14vh]"
+      className="relative pt-[8vh] pb-[14vh]"
     >
+      <ThreadSegment id={AUTOML.id} />
       <div className={WRAP}>
         <ChapterKicker
           id={AUTOML.id}
@@ -583,8 +644,9 @@ function WorkChapter() {
     <section
       id={WORK.anchor}
       data-chapter={WORK.id}
-      className="pt-[7vh] pb-[12vh]"
+      className="relative pt-[7vh] pb-[12vh]"
     >
+      <ThreadSegment id={WORK.id} />
       <div className={WRAP}>
         <ChapterKicker id={WORK.id} label="the work — three more systems" />
         <h2 className="sr-only">The work</h2>
@@ -595,8 +657,11 @@ function WorkChapter() {
             if (!project) return null;
             const caseHref = `/projects/${project.id}/`;
             return (
+              /* data-thread-row: the Red Thread ticks each row in the
+                 binding margin as the line passes (geometry anchor) */
               <article
                 key={project.id}
+                data-thread-row
                 className="border-ink/15 grid gap-6 border-t py-12 md:grid-cols-[minmax(0,1fr)_280px] md:gap-12"
               >
                 <div>
@@ -672,8 +737,9 @@ function ValuesChapter() {
     <section
       id={VALUES.anchor}
       data-chapter={VALUES.id}
-      className="flex min-h-svh flex-col pt-[7vh] pb-[10vh]"
+      className="relative flex min-h-svh flex-col pt-[7vh] pb-[10vh]"
     >
+      <ThreadSegment id={VALUES.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
         <ChapterKicker id={VALUES.id} label="how i work — after dark" dusk />
         <h2 className="sr-only">How I work</h2>
@@ -681,8 +747,9 @@ function ValuesChapter() {
         {/* Two figures share the nightfall spread: the litany carries the
             left, and fig 6.1 — a small ledger in fig 4.1's grammar —
             holds the right column so the chapter is composed edge to
-            edge instead of left-hugging a void (fix round 4). */}
-        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end">
+            edge instead of left-hugging a void (fix round 4). 360px keeps
+            every ledger row on one line beside its reviewer mark. */}
+        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
           <figure>
             <ul className="space-y-[4.5vh] border-l border-current/20 pl-6 sm:pl-8">
               {VALUES_LINES.map((line) => (
@@ -705,7 +772,7 @@ function ValuesChapter() {
             </figcaption>
           </figure>
 
-          <figure className="w-full max-w-[340px]">
+          <figure className="w-full max-w-[360px]">
             <ul className="label-mono space-y-3 border-l border-current/20 pl-6">
               <li className="flex justify-between gap-x-3 opacity-60">
                 <span>gate</span>
@@ -714,15 +781,21 @@ function ValuesChapter() {
               {VALUES_GATES.map((row) => (
                 <li
                   key={row.gate}
-                  className="flex justify-between gap-x-3 opacity-80"
+                  className="flex justify-between gap-x-2 opacity-80"
                 >
                   <span>{row.gate}</span>
-                  <span className="text-right">{row.status}</span>
+                  <span className="inline-flex items-baseline gap-x-1 text-right whitespace-nowrap">
+                    <GateMark status={row.status} />
+                    {row.status}
+                  </span>
                 </li>
               ))}
             </ul>
-            <figcaption className="label-mono mt-6 pl-6 opacity-70">
-              fig. 6.1 — the gates, kept.
+            <figcaption className="label-mono mt-6 space-y-1 pl-6 opacity-70">
+              <span className="block">fig. 6.1 — the gates, kept.</span>
+              <span className="block">
+                held — gate stopped the run · passed — human signed off
+              </span>
             </figcaption>
           </figure>
         </div>
@@ -748,8 +821,9 @@ function GateChapter() {
     <section
       id={GATE.anchor}
       data-chapter={GATE.id}
-      className="flex min-h-svh flex-col justify-center py-[14vh]"
+      className="relative flex min-h-svh flex-col justify-center py-[14vh]"
     >
+      <ThreadSegment id={GATE.id} />
       <div className={WRAP}>
         <ChapterKicker
           id={GATE.id}
@@ -757,7 +831,7 @@ function GateChapter() {
           dusk
         />
 
-        <div className="mt-16 grid items-center gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+        <div className="mt-10 grid items-center gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
           <div>
             <div className="max-w-[28ch] font-serif text-[clamp(1.3rem,2.2vw,1.8rem)] leading-snug">
               <p>Every pipeline I build ends with a human decision.</p>
@@ -766,36 +840,30 @@ function GateChapter() {
               </p>
             </div>
 
-            <h2 className="font-display fraunces-hero mt-12 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]">
+            <h2 className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]">
               Ayush Yadav
             </h2>
 
             {/* Mobile seat: the stamp sits between the giant name and the
                 email CTA (the lg+ world keeps it in the right column). */}
-            <div className="mt-10 lg:hidden">
+            <div className="mt-8 lg:hidden">
               <AwaitingStamp compact />
             </div>
 
             {/* Availability renders lowercase via .label-mono — the data
                 file keeps its editorial case (transform in render only). */}
-            <div className={`label-mono mt-10 space-y-2 ${muted}`}>
+            <div className={`label-mono mt-8 space-y-2 ${muted}`}>
               <p>availability — {personalInfo.availability}</p>
               <p>
                 oxford, ohio — <LocalTime /> local
               </p>
             </div>
 
-            <p className="mt-12">
-              <a
-                href={`mailto:${personalInfo.email}`}
-                className="link-draw font-display text-[clamp(1.5rem,2.4vw,2.2rem)] italic"
-              >
-                Email me — I read everything.
-              </a>
-            </p>
-
+            {/* The contact cluster sits with the plaintext address, INSIDE
+                the gate's first viewport at 1440 (a screener must never
+                scroll for LinkedIn or the address itself). */}
             <div
-              className={`label-mono mt-8 flex flex-wrap gap-x-8 gap-y-2 ${muted}`}
+              className={`label-mono mt-5 flex flex-wrap gap-x-8 gap-y-2 ${muted}`}
             >
               {/* The address itself, in plain text (a recruiter should
                   never have to click to learn it) — and still a mailto. */}
@@ -829,6 +897,15 @@ function GateChapter() {
                 </a>
               ) : null}
             </div>
+
+            <p className="mt-10">
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="link-draw font-display text-[clamp(1.5rem,2.4vw,2.2rem)] italic"
+              >
+                Email me — I read everything.
+              </a>
+            </p>
           </div>
 
           <div className="hidden lg:block lg:justify-self-end">

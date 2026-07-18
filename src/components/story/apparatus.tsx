@@ -49,7 +49,9 @@ export function ChapterKicker({
         mutedClass(dusk)
       )}
     >
-      <p>
+      {/* data-thread-kicker: measurement anchor for the Red Thread's
+          underline flourish (ThreadSegment.tsx) — geometry only */}
+      <p data-thread-kicker>
         ¶ {id} / {FOLIO_TOTAL} · {label}
       </p>
       {dateline ? <p className="hidden sm:block">{dateline}</p> : null}
@@ -67,19 +69,39 @@ interface FolioRuleProps {
 /**
  * Folio rule closing a chapter: hairline — `NN / 07` — hairline.
  * Built from flex hairlines (not a masked span) so it sits cleanly on the
- * moving day-arc background.
+ * moving day-arc background. Hairlines run at 70% ink so the rule holds
+ * ~3:1 decorative contrast on every waypoint (the 25% original vanished
+ * on golden hour). Folio 05 is the day's TERMINATOR: a slightly heavier
+ * line — in the static worlds the background (and the thread's ink)
+ * change to nightfall exactly at this rule.
+ *
+ * `data-thread-folio` is the Red Thread's measurement anchor for that
+ * seam (ThreadSegment 05 splits its nightfall dip here) — geometry only.
  */
 export function FolioRule({ id, dusk = false }: FolioRuleProps) {
+  const terminator = id === "05";
   return (
     <div
       aria-hidden="true"
+      data-thread-folio
+      data-folio-terminator={terminator ? "" : undefined}
       className={cn("folio-rule flex items-center gap-4", mutedClass(dusk))}
     >
-      <span className="h-px flex-1 bg-current opacity-25" />
+      <span
+        className={cn(
+          "flex-1 bg-current",
+          terminator ? "h-0.5 opacity-80" : "h-px opacity-70"
+        )}
+      />
       <span className="label-mono tracking-[0.22em]">
         {id} / {FOLIO_TOTAL}
       </span>
-      <span className="h-px flex-1 bg-current opacity-25" />
+      <span
+        className={cn(
+          "flex-1 bg-current",
+          terminator ? "h-0.5 opacity-80" : "h-px opacity-70"
+        )}
+      />
     </div>
   );
 }

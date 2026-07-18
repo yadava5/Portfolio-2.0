@@ -11,6 +11,10 @@
  * The page ships UNSTAMPED: `AwaitingStamp` renders a dashed empty outline
  * — the run is not approved until the recruiter is. `ApprovedStamp` is the
  * pressed state, kept for Phase 3's press-to-approve gate interaction.
+ *
+ * Run number discipline: the stamp reads run no. 041 — the same run the
+ * fig-4.1 registry excerpt shows "awaiting approval". The registry's
+ * awaiting row and the visitor's stamp are THE SAME RUN.
  */
 
 interface AwaitingStampProps {
@@ -22,7 +26,8 @@ interface AwaitingStampProps {
 }
 
 /**
- * The empty stamp outline: run no. 007, awaiting the visitor's signature.
+ * The empty stamp outline: run no. 041 — the SAME run fig 4.1's registry
+ * shows awaiting approval — awaiting the visitor's signature.
  *
  * @param props - `compact` renders the smaller mobile-gate seat
  * @returns A labeled awaiting-stamp graphic
@@ -31,9 +36,15 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
   return (
     <div
       role="img"
-      aria-label="Empty stamp outline — run no. 007, awaiting your signature"
+      aria-label="Empty stamp outline — run no. 041, awaiting your signature"
+      data-thread-stamp
+      /* w-fit: the wrapper must hug the svg — the Red Thread derives its
+         stamp-landmark scale from offsetWidth (a full-width wrapper sent
+         the finale's blot drifting off the frame on phones) */
       className={
-        compact ? "text-clay-night -rotate-[4deg]" : "text-clay-night -rotate-6"
+        compact
+          ? "text-clay-night w-fit -rotate-[4deg]"
+          : "text-clay-night w-fit -rotate-6"
       }
     >
       <svg
@@ -62,10 +73,13 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
             stroke="none"
             fontFamily="var(--font-mono)"
           >
-            run no. 007
+            run no. 041
           </text>
           <path strokeWidth="1" d="M96 106 C 132 103, 176 105, 204 104" />
+          {/* data-thread-sig: the Red Thread's finale underlines this
+              line before blotting on the frame (measured via getBBox) */}
           <text
+            data-thread-sig
             x="150"
             y="130"
             textAnchor="middle"
@@ -136,7 +150,7 @@ export function ApprovedStamp() {
             stroke="none"
             fontFamily="var(--font-mono)"
           >
-            run no. 007 · summer 2026
+            run no. 041 · summer 2026
           </text>
           <text
             x="150"

@@ -78,41 +78,6 @@
   --texture-contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%2326231C' stroke-opacity='.05' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
   --texture-contour-dusk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%23F6EFE2' stroke-opacity='.025' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
 
-  /* ── Dusk boundary band (static worlds only) ────────────────────────
-     A printed duotone sunset: four crisp ~44px bands stepping golden→dusk
-     (discrete oklab mixes of waypoint-05/06 — never a smudge gradient,
-     never a bare 1px cut). It occupies text-free padding at the top of
-     chapter 06; no ink ever sits on a band, so the A4 step contract for
-     TEXT is untouched. */
-  --dusk-band-height: 11rem; /* 4 bands × 44px */
-  --dusk-band-1: color-mix(
-    in oklab,
-    var(--waypoint-05) 80%,
-    var(--waypoint-06)
-  );
-  --dusk-band-2: color-mix(
-    in oklab,
-    var(--waypoint-05) 60%,
-    var(--waypoint-06)
-  );
-  --dusk-band-3: color-mix(
-    in oklab,
-    var(--waypoint-05) 40%,
-    var(--waypoint-06)
-  );
-  --dusk-band-4: color-mix(
-    in oklab,
-    var(--waypoint-05) 20%,
-    var(--waypoint-06)
-  );
-  --dusk-band-steps: linear-gradient(
-    to bottom,
-    var(--dusk-band-1) 0 25%,
-    var(--dusk-band-2) 25% 50%,
-    var(--dusk-band-3) 50% 75%,
-    var(--dusk-band-4) 75% 100%
-  );
-
   /* ── Semantic aliases (legacy names consumed by error/not-found/skip-link) ── */
   --background: var(--color-canvas);
   --foreground: var(--color-ink);
@@ -335,84 +300,237 @@ html[data-motion-off] .link-draw {
   outline-offset: 3px;
 }
 
-/* ── Static-world chapter paint (amendments A4 + A7) ─────────────────
-   Each DAY chapter declares its own waypoint plus the NEXT chapter's, so
-   the static worlds (reduced motion and the quiet toggle) keep the day
-   arc CONTINUOUS: a pre-blended vertical gradient runs across each
-   day→day boundary (01–05, all creams, AA everywhere) instead of a hard
-   seam. The 05→06 dusk boundary is NOT blended: the plan mandates dusk
-   as a STEP for ink, so the golden and dusk fields meet across a stepped
-   duotone band (see the static-world blocks below) — an authored, printed
-   sunset, never a smudge gradient and never a bare cut. No text sits on
-   any band. 06→07 blends within dusk territory. The
-   background-color stays the chapter's own waypoint (fallback + the
-   verifiable contract); the gradient paints over it. */
+/* ════════════════════════════════════════════════════════════════
+   THE RED THREAD — seven per-chapter ink segments (amendment A3)
+   Rendered by ThreadSegment.tsx inside each chapter section: a dashed
+   "future" path (always visible), a solid "past" path drawn by a
+   scrubbed stroke-dashoffset (the NO-LIST's one sanctioned
+   non-transform animation, contained per segment), and a seam node
+   that fills as the line passes. Chapters 06/07 sit in fixed dusk
+   territory, so their segments carry the dusk ink DIRECTLY — the
+   arc-phase attribute is a page-wide signal, not a per-segment one.
+   No filters, no gradients on strokes, no will-change.
+   ════════════════════════════════════════════════════════════════ */
+
+.thread-segment .thread-future {
+  fill: none;
+  stroke: var(--color-ink-secondary);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 2 6;
+  opacity: 0.8;
+}
+.thread-segment .thread-past {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Pressure layer (ink physicality): the same run re-drawn with seeded
+   perpendicular offsets that grow with curvature and pool at terminals
+   (geometry.ts). The union of the two strokes swells ~1.3→2.2px on
+   curves — layered offset strokes, no filters, no gradients. It scrubs
+   in the same tween as .thread-past, so the nib stays one head. */
+.thread-segment .thread-swell {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+/* The nightfall dip (static worlds only): segment 05's tail below the
+   05|06 terminator rule, re-inked in the dusk cream so the pen visibly
+   changes ink exactly at the authored seam. Hidden under motion — the
+   scrubbed world flips ink page-wide at the 05→06 step instead. */
+.thread-segment .thread-dip {
+  display: none;
+  fill: none;
+  stroke: var(--color-ink-dusk);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.thread-segment .thread-node {
+  fill: transparent;
+  stroke: var(--color-ink);
+  stroke-width: 1.5;
+}
+.thread-segment .thread-node.is-filled {
+  fill: var(--color-ink);
+}
+/* Chapter 04's node is the clay gate-square — the one recurring glyph.
+   (Placed after the generic node rules so clay wins at equal weight.) */
+.thread-segment .thread-node-gate {
+  stroke: var(--color-clay-graphic);
+}
+.thread-segment .thread-node-gate.is-filled {
+  fill: var(--color-clay-graphic);
+}
+
+/* Reduced prominence in the narrow left gutter (<1024) */
+.thread-segment[data-thread-compact] .thread-past {
+  stroke-width: 1.1;
+}
+.thread-segment[data-thread-compact] .thread-swell {
+  stroke-width: 0.9;
+}
+.thread-segment[data-thread-compact] .thread-future {
+  stroke-width: 0.75;
+  opacity: 0.6;
+}
+.thread-segment[data-thread-compact] .thread-node {
+  stroke-width: 1.25;
+}
+
+/* Dusk chapters (06/07): pre-verified dusk inks, stepped never scrubbed */
+.thread-segment[data-thread-dusk] .thread-future {
+  stroke: var(--color-ink-dusk);
+  opacity: 0.45;
+}
+.thread-segment[data-thread-dusk] .thread-past {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-swell {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-node {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-node.is-filled {
+  fill: var(--color-ink-dusk);
+}
+
+/* Static worlds (amendment A7): the finished run, guaranteed in CSS —
+   solid thread fully drawn, every node filled — with zero dependence
+   on the engine or on JS timing. ThreadSegment never creates
+   ScrollTriggers in these worlds; these rules make the state hold even
+   mid-teardown when the OS preference flips during a session. */
+@media (prefers-reduced-motion: reduce) {
+  .thread-segment .thread-past,
+  .thread-segment .thread-swell {
+    stroke-dashoffset: 0 !important;
+  }
+  /* The finished run is read, not watched: thin the resting ink so the
+     fully-drawn line sits quiet on the page (the scrubbed nib carries
+     more weight only while it moves). */
+  .thread-segment .thread-past {
+    stroke-width: 1.1;
+  }
+  .thread-segment .thread-swell {
+    stroke-width: 0.8;
+  }
+  .thread-segment .thread-dip {
+    display: inline;
+  }
+  .thread-segment .thread-node {
+    fill: var(--color-ink);
+  }
+  .thread-segment[data-thread-dusk] .thread-node {
+    fill: var(--color-ink-dusk);
+  }
+  .thread-segment .thread-node-gate {
+    fill: var(--color-clay-graphic);
+  }
+}
+html[data-motion-off] .thread-segment .thread-past,
+html[data-motion-off] .thread-segment .thread-swell {
+  stroke-dashoffset: 0 !important;
+}
+html[data-motion-off] .thread-segment .thread-past {
+  stroke-width: 1.1;
+}
+html[data-motion-off] .thread-segment .thread-swell {
+  stroke-width: 0.8;
+}
+html[data-motion-off] .thread-segment .thread-dip {
+  display: inline;
+}
+html[data-motion-off] .thread-segment .thread-node {
+  fill: var(--color-ink);
+}
+html[data-motion-off] .thread-segment[data-thread-dusk] .thread-node {
+  fill: var(--color-ink-dusk);
+}
+html[data-motion-off] .thread-segment .thread-node-gate {
+  fill: var(--color-clay-graphic);
+}
+
+/* ── Static-world chapter paint (amendments A4 + A7) — FINAL FORM ────
+   Each chapter is ONE flat waypoint color. Every color change lands
+   exactly AT the chapter's numbered folio divider: the section's tail
+   padding below its folio rule (--wp-tail, mirroring the section's own
+   padding-bottom) already belongs to the NEXT chapter's field, painted
+   by a two-stop hard gradient — a printed page-turn at the rule, never
+   a smudge gradient, never bands (the round-3 stepped duotone was
+   REMOVED 2026-07-18; the critics read every intermediate band as a
+   seam). The 05|06 divider is the page's one authored seam — the day's
+   terminator line (see .folio-terminator + the thread's .thread-dip). */
+/* NOTE (A3): `content-visibility: auto` + `contain-intrinsic-size` on
+   chapter sections was BUILT AND MEASURED (2026-07-17) and rejected:
+   walking the page swings document height as placeholder sections swap
+   to true heights (183px drift in Chromium, 528px in Firefox at 1440),
+   i.e. ScrollTrigger start/end positions move under the triggers
+   between refreshes and the scrollbar visibly jumps mid-read. The
+   thread's repaint containment already comes from A3's per-chapter
+   segmentation; skip the extra containment. */
 [data-chapter] {
-  --wp-hold: 70%;
+  --wp-tail: 0px;
 }
 [data-chapter="01"] {
-  --wp-from: var(--waypoint-01);
-  --wp-to: var(--waypoint-02);
+  --wp: var(--waypoint-01);
+  --wp-next: var(--waypoint-02);
+  --wp-tail: 2rem; /* = the section's pb-8 */
 }
 [data-chapter="02"] {
-  --wp-from: var(--waypoint-02);
-  --wp-to: var(--waypoint-03);
+  --wp: var(--waypoint-02);
+  --wp-next: var(--waypoint-03);
+  --wp-tail: 9vh;
 }
 [data-chapter="03"] {
-  --wp-from: var(--waypoint-03);
-  --wp-to: var(--waypoint-04);
+  --wp: var(--waypoint-03);
+  --wp-next: var(--waypoint-04);
+  --wp-tail: 12vh;
 }
 [data-chapter="04"] {
-  --wp-from: var(--waypoint-04);
-  --wp-to: var(--waypoint-05);
+  --wp: var(--waypoint-04);
+  --wp-next: var(--waypoint-05);
+  --wp-tail: 14vh;
 }
 [data-chapter="05"] {
-  /* Golden hour holds to the horizon: no blend into dusk (banded, A4) */
-  --wp-from: var(--waypoint-05);
-  --wp-to: var(--waypoint-05);
+  /* Golden hour holds through its folio — the terminator — then dusk */
+  --wp: var(--waypoint-05);
+  --wp-next: var(--waypoint-06);
+  --wp-tail: 12vh;
 }
 [data-chapter="06"] {
-  --wp-from: var(--waypoint-06);
-  --wp-to: var(--waypoint-07);
+  --wp: var(--waypoint-06);
+  --wp-next: var(--waypoint-07);
+  --wp-tail: 10vh;
 }
 [data-chapter="07"] {
-  --wp-from: var(--waypoint-07);
-  --wp-to: var(--waypoint-07);
+  --wp: var(--waypoint-07);
+  --wp-next: var(--waypoint-07);
 }
 
 /* Reduced motion (amendment A7): the engine never mounts, so each chapter
-   statically paints its stretch of the arc (plus grain, so the static
-   version stays a designed deliverable) and chapters past the dusk flip
-   carry dusk ink. Pure CSS — no ScrollTriggers, no scrubbing. */
+   statically paints its flat waypoint (plus grain, so the static version
+   stays a designed deliverable); the tail below its folio rule already
+   wears the next chapter's field, so every color change lands AT the
+   divider. Chapters past the dusk flip carry dusk ink. Pure CSS — no
+   ScrollTriggers, no scrubbing, no bands. */
 @media (prefers-reduced-motion: reduce) {
   [data-chapter] {
-    background-color: var(--wp-from);
+    background-color: var(--wp);
     background-image:
       var(--texture-grain),
       linear-gradient(
         to bottom,
-        var(--wp-from) 0%,
-        var(--wp-from) var(--wp-hold),
-        var(--wp-to) 100%
+        var(--wp) 0 calc(100% - var(--wp-tail)),
+        var(--wp-next) calc(100% - var(--wp-tail)) 100%
       );
-    background-size:
-      260px 260px,
-      100% 100%;
-  }
-  /* Dusk is an EVENT, printed: golden (05) and dusk (06) meet across a
-     stepped duotone band — four crisp halftone bands in the chapter's
-     text-free top padding (see --dusk-band-steps). Grain continues over
-     the band so it stays paper, not plastic. */
-  [data-chapter="06"] {
-    position: relative;
-    padding-top: calc(7vh + var(--dusk-band-height));
-  }
-  [data-chapter="06"]::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: var(--dusk-band-height);
-    background-image: var(--texture-grain), var(--dusk-band-steps);
     background-size:
       260px 260px,
       100% 100%;
@@ -427,30 +545,14 @@ html[data-motion-off] .link-draw {
    mirrors the reduced-motion static world exactly — SmoothScroll checks the
    same flag and never mounts the engine while it is set. */
 html[data-motion-off] [data-chapter] {
-  background-color: var(--wp-from);
+  background-color: var(--wp);
   background-image:
     var(--texture-grain),
     linear-gradient(
       to bottom,
-      var(--wp-from) 0%,
-      var(--wp-from) var(--wp-hold),
-      var(--wp-to) 100%
+      var(--wp) 0 calc(100% - var(--wp-tail)),
+      var(--wp-next) calc(100% - var(--wp-tail)) 100%
     );
-  background-size:
-    260px 260px,
-    100% 100%;
-}
-/* Same authored stepped-band sunset as the reduced-motion world above */
-html[data-motion-off] [data-chapter="06"] {
-  position: relative;
-  padding-top: calc(7vh + var(--dusk-band-height));
-}
-html[data-motion-off] [data-chapter="06"]::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: var(--dusk-band-height);
-  background-image: var(--texture-grain), var(--dusk-band-steps);
   background-size:
     260px 260px,
     100% 100%;

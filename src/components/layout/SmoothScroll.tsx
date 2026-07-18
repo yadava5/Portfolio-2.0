@@ -49,6 +49,22 @@ export const SCROLL_OFFSET = -96;
 /** localStorage key for the quiet in-page motion toggle (amendment A7) */
 const MOTION_STORAGE_KEY = "motion-off";
 
+/**
+ * Read the persisted quiet-toggle preference synchronously (amendment
+ * A7). Static-world consumers (the Red Thread) need this BEFORE the
+ * provider's restore effect runs — child effects fire first, so the
+ * context alone cannot answer "is the engine coming?" on first paint.
+ *
+ * @returns True when the visitor has switched motion off
+ */
+export function readStoredMotionOff(): boolean {
+  try {
+    return window.localStorage.getItem(MOTION_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 const LenisContext = createContext<Lenis | null>(null);
 
 /** Shape of the in-page motion preference (amendment A7) */
@@ -98,13 +114,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
 
   /* Restore the persisted toggle once on the client (SSR-safe default: on) */
   useEffect(() => {
-    try {
-      if (window.localStorage.getItem(MOTION_STORAGE_KEY) === "1") {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMotionOff(true);
-      }
-    } catch {
-      /* storage unavailable — leave motion on */
+    if (readStoredMotionOff()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMotionOff(true);
     }
   }, []);
 

@@ -106,7 +106,8 @@ test.describe("day arc — reduced motion", () => {
     /* A7: the engine never mounts */
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
 
-    /* Each chapter paints its own waypoint statically */
+    /* Each chapter paints its own FLAT waypoint statically (final form:
+       one color per chapter; the stepped dusk-band overlay is gone) */
     const bg = (id: string) =>
       page
         .locator(`[data-chapter='${id}']`)
@@ -115,6 +116,11 @@ test.describe("day arc — reduced motion", () => {
     expect(await bg("04")).toBe(RGB.w04);
     expect(await bg("06")).toBe(RGB.w06);
     expect(await bg("07")).toBe(RGB.w07);
+
+    const bandOverlay = await page
+      .locator("[data-chapter='06']")
+      .evaluate((el) => getComputedStyle(el, "::before").content);
+    expect(bandOverlay).toBe("none");
 
     /* Chapters past the dusk flip carry dusk ink, statically */
     const inkOf = (id: string) =>

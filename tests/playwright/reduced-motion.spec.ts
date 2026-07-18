@@ -32,7 +32,8 @@ test.describe("reduced motion and keyboard access", () => {
     /* A7: the engine never mounts */
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
 
-    /* Chapters carry their own waypoint backgrounds (globals.css) */
+    /* Chapters carry their own FLAT waypoint backgrounds (globals.css,
+       static final form — one color per chapter, no band steps) */
     const bg = (id: string) =>
       page
         .locator(`[data-chapter='${id}']`)
@@ -49,5 +50,58 @@ test.describe("reduced motion and keyboard access", () => {
         .evaluate((el) => getComputedStyle(el).color);
     expect(await ink("01")).toBe("rgb(38, 35, 28)");
     expect(await ink("07")).toBe("rgb(246, 239, 226)");
+  });
+
+  test("color changes land at the folio dividers — no dusk bands", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+
+    /* The round-3 stepped duotone band overlay is gone for good */
+    const bandOverlay = await page
+      .locator("[data-chapter='06']")
+      .evaluate((el) => getComputedStyle(el, "::before").content);
+    expect(bandOverlay).toBe("none");
+
+    /* Each chapter's tail (below its folio rule) already wears the NEXT
+       chapter's field via a two-stop hard gradient: chapter 05's
+       background-image carries the dusk waypoint, so the golden→dusk
+       change lands exactly at the 05|06 terminator */
+    const goldenImage = await page
+      .locator("[data-chapter='05']")
+      .evaluate((el) => getComputedStyle(el).backgroundImage);
+    expect(goldenImage).toContain("rgb(67, 55, 47)");
+
+    /* The terminator itself: folio 05 renders the heavier authored rule */
+    await expect(
+      page.locator("[data-chapter='05'] [data-folio-terminator]")
+    ).toHaveCount(1);
+
+    /* And the seam sits AT the divider: the hard stop's distance from
+       the chapter top equals the folio rule's bottom edge (±3px) */
+    const seam = await page.evaluate(() => {
+      const section = document.querySelector("[data-chapter='05']");
+      const folio = section?.querySelector("[data-folio-terminator]");
+      if (!section || !folio) return null;
+      const sectionBox = section.getBoundingClientRect();
+      const folioBox = folio.getBoundingClientRect();
+      const tail = getComputedStyle(section).getPropertyValue("--wp-tail");
+      const probe = document.createElement("div");
+      probe.style.height = tail;
+      probe.style.position = "absolute";
+      probe.style.visibility = "hidden";
+      section.appendChild(probe);
+      const tailPx = probe.getBoundingClientRect().height;
+      probe.remove();
+      return {
+        drift: Math.abs(
+          sectionBox.height - tailPx - (folioBox.bottom - sectionBox.top)
+        ),
+      };
+    });
+    expect(seam).not.toBeNull();
+    expect(seam!.drift).toBeLessThanOrEqual(3);
   });
 });
