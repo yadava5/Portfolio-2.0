@@ -11,6 +11,9 @@
  *     visitor has opened, and when — the reader's journey becomes the
  *     audit trail (rail ✓, work-row ✓, the one-time "you opened this
  *     file" margin note, the /evidence crosswalk marks).
+ *   - WALKED AUDITS ("run the audit", friend transposition #3): which
+ *     case files' receipts the visitor has walked, and when. Walked is
+ *     walked — revisits show dried ticks and the ORIGINAL walk date.
  *
  * Contract (SSR + hydration safety): every read happens in effects via
  * the hooks below — the server render and the first client render are
@@ -30,6 +33,7 @@ import { useCallback, useEffect, useState } from "react";
 /** Namespaced storage keys (versioned so a schema change can migrate) */
 const APPROVAL_KEY = "paper-memory:v1:approved";
 const VISITED_KEY = "paper-memory:v1:visited";
+const AUDITS_KEY = "paper-memory:v1:audits";
 
 /** Same-document change signal (the `storage` event is cross-tab only) */
 const CHANGE_EVENT = "paper-memory:change";
@@ -136,12 +140,13 @@ export function approveRun(): PaperDate {
 }
 
 /**
- * Every case file the visitor has opened, keyed by project id.
+ * Read a stored id → date record, dropping malformed entries.
  *
- * @returns id → first-opened date (possibly empty, never null)
+ * @param key - Storage key holding a Record<string, PaperDate>
+ * @returns id → date (possibly empty, never null)
  */
-export function readVisitedFiles(): Record<string, PaperDate> {
-  const stored = readJson<Record<string, unknown>>(VISITED_KEY);
+function readDateRecord(key: string): Record<string, PaperDate> {
+  const stored = readJson<Record<string, unknown>>(key);
   const out: Record<string, PaperDate> = {};
   if (stored && typeof stored === "object") {
     for (const [id, value] of Object.entries(stored)) {
@@ -150,6 +155,15 @@ export function readVisitedFiles(): Record<string, PaperDate> {
     }
   }
   return out;
+}
+
+/**
+ * Every case file the visitor has opened, keyed by project id.
+ *
+ * @returns id → first-opened date (possibly empty, never null)
+ */
+export function readVisitedFiles(): Record<string, PaperDate> {
+  return readDateRecord(VISITED_KEY);
 }
 
 /**
@@ -169,6 +183,35 @@ export function recordFileVisit(fileId: string): {
   const date = todayLocal();
   writeJson(VISITED_KEY, { ...visited, [fileId]: date });
   return { date, firstVisit: true };
+}
+
+/**
+ * Every case file whose receipts the visitor has walked ("run the
+ * audit"), keyed by project id.
+ *
+ * @returns id → walk date (possibly empty, never null)
+ */
+export function readFileAudits(): Record<string, PaperDate> {
+  return readDateRecord(AUDITS_KEY);
+}
+
+/**
+ * Record that a case file's audit was walked (idempotent: walked is
+ * walked — the FIRST walk's date is the one the settled line keeps).
+ *
+ * @param fileId - Case-file project id ("automl", "jobtracker", …)
+ * @returns The walk date on record + whether this call created it
+ */
+export function recordFileAudit(fileId: string): {
+  date: PaperDate;
+  firstWalk: boolean;
+} {
+  const audits = readFileAudits();
+  const existing = audits[fileId];
+  if (existing) return { date: existing, firstWalk: false };
+  const date = todayLocal();
+  writeJson(AUDITS_KEY, { ...audits, [fileId]: date });
+  return { date, firstWalk: true };
 }
 
 /**

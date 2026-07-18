@@ -28,6 +28,7 @@ import { ArtifactGallery } from "@/components/case-study/ArtifactGallery";
 import { DossierThread } from "@/components/case-study/DossierThread";
 import { EvidenceTable } from "@/components/case-study/EvidenceTable";
 import { SystemDiagram } from "@/components/case-study/SystemDiagram";
+import { AuditControl, AuditSettled } from "@/components/paper/AuditRun";
 import { CitationInk } from "@/components/paper/CitationInk";
 import { FileMemory } from "@/components/paper/FileMemory";
 import { RegistryRows } from "@/components/paper/RegistryRows";
@@ -37,6 +38,7 @@ import {
   ProjectCaseStudy,
   getCaseStudyProject,
   getNextCaseStudy,
+  receiptAuditState,
 } from "@/lib/data/projectCaseStudies";
 import { withBasePath } from "@/lib/utils";
 
@@ -169,6 +171,14 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
      (+ fig 3 registry excerpt on the flagship) */
   const figStart = study.registryFig ? 4 : 3;
   const receiptsCount = study.receipts.length;
+  /* Run-the-audit counts, from the REAL rows (never hardcoded): the walk
+     covers every row of the [ validation ] section — receipts then
+     outcomes — and ticks only those terminating in artifacts. */
+  const auditRows = [...study.receipts, ...study.outcomes];
+  const auditTotal = auditRows.length;
+  const auditVerified = auditRows.filter(
+    (row) => receiptAuditState(row) === "artifact"
+  ).length;
 
   return (
     <article data-dossier className="dossier-surface text-ink min-h-screen">
@@ -424,11 +434,23 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           ) : null}
 
           <div className="mt-10 space-y-12">
+            {/* Run-the-audit (friend transposition #3): the one control,
+                seated at the receipts table's head. Activation walks
+                every row below — receipts then outcomes — and settles
+                on the honest count. */}
             <EvidenceTable
               projectId={study.projectId}
               title="validation"
               rows={study.receipts}
               startIndex={1}
+              headSlot={
+                <AuditControl
+                  projectId={study.projectId}
+                  verified={auditVerified}
+                  total={auditTotal}
+                  nudgeRegistry={Boolean(study.registryFig)}
+                />
+              }
             />
             <EvidenceTable
               projectId={study.projectId}
@@ -437,6 +459,14 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
               startIndex={receiptsCount + 1}
             />
           </div>
+
+          {/* The audit's settled line — reserved height from SSR; keeps
+              the ORIGINAL walk date on every revisit. */}
+          <AuditSettled
+            projectId={study.projectId}
+            verified={auditVerified}
+            total={auditTotal}
+          />
 
           {/* Epoch-style provenance line: who ran what, in one sentence */}
           <p className="label-mono text-ink-secondary border-ink/15 mt-8 border-t pt-3">

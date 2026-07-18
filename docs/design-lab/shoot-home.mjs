@@ -91,6 +91,18 @@ async function shootDossier(pagePath, prefix) {
     await desk.screenshot({
       path: `docs/design-lab/shots-home/${prefix}-${suffix}.png`,
     });
+    if (id === "validation") {
+      /* Run the audit: the walk's settled state — pine ticks on
+         artifact-backed rows, dashes on described/HELD, the N-of-M
+         line under the tables (persists for the rest of this pass). */
+      await desk.locator("[data-audit-run]").click();
+      await desk.waitForSelector("[data-audit-settled]", { timeout: 15000 });
+      await desk.locator("[data-audit-settled]").scrollIntoViewIfNeeded();
+      await settle(desk, 700);
+      await desk.screenshot({
+        path: `docs/design-lab/shots-home/${prefix}-3b-audit-walked.png`,
+      });
+    }
   }
   await desk.evaluate(() =>
     window.scrollTo({ top: document.body.scrollHeight, behavior: "auto" })

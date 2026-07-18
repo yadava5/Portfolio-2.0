@@ -1004,20 +1004,82 @@ html[data-motion-off] [data-chapter="07"] {
   transition: none;
 }
 
+/* ── Run the audit (friend transposition #3): the receipts walk ──────
+   The control keeps the link-draw grammar — quiet mono ink, NOT a
+   filled CTA; once walked it dries (affordance underline gone, cursor
+   settles — walked is walked, no re-run). Gutter marks live at the row
+   number's shoulder: absolutely positioned (zero layout shift), pine
+   tick = the artifact resolves, ink dash = described only or HELD.
+   Each mark is a ≤250ms opacity swap; the walk's 350ms cadence comes
+   from AuditRun's timers, so the rows tick one by one — an auditor's
+   pace, not a cascade. Dried revisits kill every transition. */
+.audit-run {
+  cursor: pointer;
+}
+.audit-run[data-walked] {
+  cursor: default;
+  opacity: 0.55;
+  background-image: none;
+}
+.audit-mark {
+  position: absolute;
+  top: -7px;
+  left: -10px;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.audit-mark-tick {
+  color: var(--color-pine);
+}
+.audit-mark-dash {
+  color: var(--color-ink-secondary);
+}
+[data-audit-ticked] .audit-mark {
+  opacity: 1;
+}
+[data-audit-dried] .audit-mark {
+  transition: none;
+}
+.audit-settled {
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.audit-settled[data-audit-settled] {
+  opacity: 1;
+}
+.audit-settled.is-dried {
+  transition: none;
+}
+/* Walk's end, automl only: one 300ms underline draw on the awaiting
+   041 row — pointing at the act that remains the reader's. The class
+   is added then removed by AuditRun; the row's own resting grammar
+   takes the retract. Never fires on an approved row. */
+.registry-approve.audit-nudge:not([data-approved]) .registry-strike {
+  background-size:
+    100% 1px,
+    100% 1px;
+  transition-duration: 300ms;
+}
+
 /* Cited plates land under the fixed header, like receipt rows */
 [id^="fig-"] {
   scroll-margin-top: 7rem;
 }
 
 /* Static worlds (A7): every W1 swap is instant — the acts still WORK,
-   they just never perform. (CitationInk never mounts there at all.) */
+   they just never perform. (CitationInk never mounts there at all.)
+   The audit walk follows suit: instant tick application, same settled
+   line, zero animation. */
 @media (prefers-reduced-motion: reduce) {
   [data-stamp]:not([data-inked]) .stamp-awaiting,
   .stamp-hello,
   .registry-approve .registry-strike,
   .registry-mark,
   .visited-mark,
-  .file-memory {
+  .file-memory,
+  .audit-mark,
+  .audit-settled,
+  .audit-run {
     transition: none;
   }
 }
@@ -1026,7 +1088,10 @@ html[data-motion-off] .stamp-hello,
 html[data-motion-off] .registry-approve .registry-strike,
 html[data-motion-off] .registry-mark,
 html[data-motion-off] .visited-mark,
-html[data-motion-off] .file-memory {
+html[data-motion-off] .file-memory,
+html[data-motion-off] .audit-mark,
+html[data-motion-off] .audit-settled,
+html[data-motion-off] .audit-run {
   transition: none;
 }
 

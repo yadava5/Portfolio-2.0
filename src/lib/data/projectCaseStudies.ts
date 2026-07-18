@@ -1985,6 +1985,25 @@ export function getNextCaseStudy(study: ProjectCaseStudy): ProjectCaseStudy {
   return dossierOrder[(index + 1) % dossierOrder.length];
 }
 
+/**
+ * What "run the audit" can honestly do with a row (friend transposition
+ * #3): "artifact" — the row terminates in a resolvable artifact (public
+ * link, checked-in file, or on-page fig) and earns the pine tick;
+ * "held" — the row is stamped HELD, so the audit withholds the tick
+ * even where links exist (the number itself is not yet earned);
+ * "described" — no linkable artifact, described only. Held and
+ * described rows get the honest ink dash instead of a tick.
+ *
+ * @param row - The receipt row
+ * @returns The audit state driving the row's walk mark
+ */
+export function receiptAuditState(
+  row: CaseReceipt
+): "artifact" | "described" | "held" {
+  if (row.held) return "held";
+  return row.artifacts.length > 0 ? "artifact" : "described";
+}
+
 /** Anchor id for receipt row `n` (1-based across receipts then outcomes) */
 export function receiptAnchor(projectId: string, n: number): string {
   return `v-${projectId}-${n}`;

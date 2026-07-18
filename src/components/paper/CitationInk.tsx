@@ -34,6 +34,15 @@ import {
 /** The worlds that earn the stroke: desktop widths, real hover */
 const STROKE_MEDIA = "(min-width: 1024px) and (hover: hover)";
 
+/**
+ * Same-document signal from the audit walk (AuditRun): as each citing
+ * row ticks, the walk asks this machinery — reused, never duplicated —
+ * to draw its stroke to the cited plate. detail.rowId names the row;
+ * null retracts. Ignored entirely outside the engine world (this
+ * component mounts nothing there).
+ */
+export const AUDIT_CITE_EVENT = "paper:audit-cite";
+
 /** One active citation stroke */
 interface CitationStroke {
   d: string;
@@ -203,10 +212,21 @@ export function CitationInk() {
       deactivate(row);
     };
 
+    /* The audit walk borrows the same pen: draw to each citing row's
+       plate as it ticks; a non-citing row (or null) retracts. */
+    const onAuditCite = (event: Event) => {
+      const rowId = (event as CustomEvent<{ rowId: string | null }>).detail
+        ?.rowId;
+      const row = rowId ? document.getElementById(rowId) : null;
+      if (row?.dataset.cites) activate(row);
+      else if (activeRow) deactivate(activeRow);
+    };
+
     host.addEventListener("pointerover", onPointerOver);
     host.addEventListener("pointerout", onPointerOut);
     host.addEventListener("focusin", onFocusIn);
     host.addEventListener("focusout", onFocusOut);
+    window.addEventListener(AUDIT_CITE_EVENT, onAuditCite);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -214,6 +234,7 @@ export function CitationInk() {
       host.removeEventListener("pointerout", onPointerOut);
       host.removeEventListener("focusin", onFocusIn);
       host.removeEventListener("focusout", onFocusOut);
+      window.removeEventListener(AUDIT_CITE_EVENT, onAuditCite);
       setStroke(null);
     };
   }, [lenis]);

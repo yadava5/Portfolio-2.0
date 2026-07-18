@@ -18,6 +18,16 @@
  * itself (`#fig-N`, ids set by ArtifactGallery). The mono link is the
  * always-present affordance; CitationInk draws the margin pen-stroke
  * on hover/focus in the desktop engine world only.
+ *
+ * Run-the-audit (friend transposition #3): every row carries
+ * `data-audit` (artifact | described | held, from receiptAuditState)
+ * plus an always-mounted, aria-hidden mark at the number's shoulder —
+ * a pine tick for rows that terminate in artifacts, an ink dash for
+ * described-only and HELD rows. Marks rest at opacity 0 and appear
+ * when the walk (AuditRun) sets `data-audit-ticked` on the row:
+ * absolutely positioned in the row-number gutter, zero layout shift.
+ * `headSlot` seats the one "run the audit ⟶" control beside the
+ * validation table's title.
  */
 
 import { HeldStamp } from "@/components/paper/HeldStamp";
@@ -26,6 +36,7 @@ import {
   ReceiptArtifactLink,
   ReceiptVisibility,
   receiptAnchor,
+  receiptAuditState,
 } from "@/lib/data/projectCaseStudies";
 
 interface EvidenceTableProps {
@@ -35,6 +46,8 @@ interface EvidenceTableProps {
   rows: CaseReceipt[];
   /** 1-based anchor number of the first row in this group */
   startIndex: number;
+  /** Optional control seated at the table's head, beside the title */
+  headSlot?: React.ReactNode;
 }
 
 const VISIBILITY_LABEL: Record<ReceiptVisibility, string> = {
@@ -86,15 +99,67 @@ function KeyLabel({ children }: { children: string }) {
   return <span className="text-ink-secondary md:hidden">{children}: </span>;
 }
 
+/**
+ * The walk's gutter mark, seated at the row number's shoulder: the
+ * paper's one ✓ hand (VisitedMark's stroke) in pine for rows whose
+ * artifact resolves; a small ink dash for described-only/HELD rows.
+ * Always mounted, aria-hidden, opacity-0 until the row is ticked —
+ * absolutely positioned (audit-mark), so its arrival never moves a
+ * letterform. Anchored to the number itself (not the page margin), so
+ * it stays clear of the dossier thread's lane at every viewport.
+ *
+ * @param props - The row's audit state
+ * @returns The (aria-hidden) mark slot
+ */
+function AuditMark({ state }: { state: "artifact" | "described" | "held" }) {
+  const tick = state === "artifact";
+  return (
+    <span
+      aria-hidden="true"
+      className={`audit-mark ${tick ? "audit-mark-tick" : "audit-mark-dash"}`}
+    >
+      {tick ? (
+        <svg viewBox="0 0 12 9" className="h-[8px] w-[10px]">
+          <path
+            d="M1.3 4.9 C2.8 6.4 3.6 7.1 4.3 6.9 C5.7 5 8.1 2.3 10.8 1.2"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 12 9" className="h-[8px] w-[10px]">
+          <path
+            d="M1.6 5.4 C4.3 4.6 7.9 4.6 10.4 5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 export function EvidenceTable({
   projectId,
   title,
   rows,
   startIndex,
+  headSlot,
 }: EvidenceTableProps) {
   return (
     <div>
-      <h3 className="label-mono text-ink">{title}</h3>
+      {headSlot ? (
+        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+          <h3 className="label-mono text-ink">{title}</h3>
+          {headSlot}
+        </div>
+      ) : (
+        <h3 className="label-mono text-ink">{title}</h3>
+      )}
 
       {/* Real column heads, desktop only — aligned to the row grid.
           On phones each cell carries its own key label instead. */}
@@ -113,12 +178,14 @@ export function EvidenceTable({
           const padded = String(n).padStart(2, "0");
           const anchor = receiptAnchor(projectId, n);
           const cites = citedFig(row);
+          const audit = receiptAuditState(row);
           return (
             <li
               key={anchor}
               id={anchor}
               data-receipt-row
               data-cites={cites ?? undefined}
+              data-audit={audit}
               className={`border-ink/15 grid gap-x-8 gap-y-2 border-t py-4 ${ROW_GRID}`}
             >
               {/* The claim anchors the eye: serif at body size, its
@@ -134,6 +201,7 @@ export function EvidenceTable({
                   className="label-mono tap-target text-ink-secondary hover:text-ink mr-2 underline-offset-4 hover:underline"
                 >
                   {padded}
+                  <AuditMark state={audit} />
                 </a>
                 <span className="label-mono">
                   <KeyLabel>claim</KeyLabel>
