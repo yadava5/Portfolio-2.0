@@ -22,6 +22,7 @@ The Playwright directory now tracks source specs and documentation only. Generat
 - `nav-and-images.spec.ts` - anchor sections, image assets, project records.
 - `comprehensive-qa.spec.ts` - broader content, link, asset, and mobile sanity checks.
 - `text-motion.spec.ts` - plan-3.8 text choreography: hero entrance, line-mask reveals, manifesto scrub, rail audit-trail, reduced-motion/mobile guarantees.
+- `dossier.spec.ts` - case-file dossier contracts: receipts-table row anchors, live-demo rows, /evidence master ledger, /#work folio return, archive header legibility, and the 390px thread-gutter probe.
 - `deep-qa.spec.ts` - slower scroll, screenshot, animation, semantic, performance, and edge-case checks.
 
 ## Artifact Specs

@@ -211,6 +211,34 @@ html[data-arc-phase="dusk"] .site-header-scrolled {
   background-color: var(--waypoint-06);
 }
 
+/* ── Archive variant (case files + /evidence) ─────────────────────────
+   The dossier surfaces are flat archive cream with NO day-arc, so the
+   header must read the surface beneath it (completion map §3: fixes the
+   dark-on-dark landing). Day ink over archive stock, always — including
+   when a client-side navigation arrives from the homepage's dusk
+   territory, so the dusk override is repeated at higher specificity. */
+.site-header[data-surface="archive"],
+html[data-arc-phase="dusk"] .site-header[data-surface="archive"] {
+  --header-ink: var(--color-ink);
+  --header-paper: var(--color-surface-1);
+  --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
+  --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  border-color: color-mix(in srgb, var(--color-ink) 16%, transparent);
+}
+.site-header[data-surface="archive"].site-header-scrolled,
+html[data-arc-phase="dusk"]
+  .site-header[data-surface="archive"].site-header-scrolled {
+  background-color: var(--color-surface-1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header[data-surface="archive"] {
+    background-color: var(--color-surface-1);
+  }
+}
+html[data-motion-off] .site-header[data-surface="archive"] {
+  background-color: var(--color-surface-1);
+}
+
 /* Static world (reduced motion / quiet toggle): the arc never runs, so the
    fixed header keeps a paper backing over the statically-painted chapters. */
 @media (prefers-reduced-motion: reduce) {
@@ -660,6 +688,49 @@ html[data-motion-off] [data-chapter="07"] {
   color: var(--color-ink-dusk);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THE DOSSIER STOCK — case files + /evidence (DOSSIER-SPEC pt 1)
+   The same paper one stop older: flat archive cream (surface-1 — an
+   existing verified token), NO day-arc, and the contour texture kept
+   PERCEPTIBLE (research warning 5: the flat stock forfeits the arc, so
+   grain + contour + Fraunces carry the differentiation). Perceptibility
+   comes from layering the contour at two scales — every layer stays at
+   its baked ≤5% opacity (NO-LIST §D cap). Ink + kiln clay only.
+   ════════════════════════════════════════════════════════════════ */
+.dossier-surface {
+  background-color: var(--color-surface-1);
+  background-image:
+    var(--texture-grain), var(--texture-contour), var(--texture-contour);
+  background-size:
+    260px 260px,
+    420px 420px,
+    640px 640px;
+}
+
+/* Meta-as-ledger dot leaders (DOSSIER-SPEC pt 3): hairline dotted fill
+   between term and value — print furniture, not a pill in sight. */
+.dot-leader {
+  flex: 1 1 2rem;
+  min-width: 2rem;
+  border-bottom: 1px dotted
+    color-mix(in srgb, var(--color-ink) 40%, transparent);
+  transform: translateY(-0.28em);
+}
+
+/* The dossier thread is a finished document's line: resting ink weight
+   (matches the home thread's static-world thinning). */
+.thread-segment .thread-past.thread-inked {
+  stroke-width: 1.1;
+}
+.thread-segment[data-thread-compact] .thread-past.thread-inked {
+  stroke-width: 1;
+}
+
+/* Receipt-row permalinks land under the fixed header */
+li[id^="v-"] {
+  scroll-margin-top: 7rem;
+}
+
 html {
   overflow-x: hidden;
   scroll-padding-top: 6rem;
@@ -684,6 +755,14 @@ section[id] {
   line-height: var(--text-label--line-height);
   letter-spacing: var(--text-label--letter-spacing);
   text-transform: lowercase;
+}
+/* Case exemption for DATA inside the mono voice (dossier receipts):
+   file paths, repo names, commands, and errata quote case-sensitive
+   names (ARCHITECTURE.md, AVX-512) — the voice may not distort them.
+   Unlayered so it beats .label-mono regardless of the utility layer. */
+.label-mono.normal-case,
+.label-mono .normal-case {
+  text-transform: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

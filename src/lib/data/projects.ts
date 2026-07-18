@@ -117,7 +117,11 @@ export const projects: Project[] = [
       { label: "ML Layers", value: "3-layer hybrid classifier" },
       { label: "Processing", value: "Local on-device" },
     ],
-    proofIds: ["jobtracker-local-classifier"],
+    proofIds: [
+      "jobtracker-local-classifier",
+      "jobtracker-macro-f1",
+      "jobtracker-backend-tests",
+    ],
   },
   {
     id: "automl",
@@ -272,7 +276,9 @@ export const projects: Project[] = [
     isPrivate: false,
     metrics: [
       { label: "Accuracy", value: "97%+ on MNIST" },
-      { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
+      // Attribution per BENCHMARKS.md: the 3.5x is the openmp+simd
+      // parallel configuration vs the -O3 baseline, not SIMD alone.
+      { label: "Kernel Speedup", value: "3.5x openmp+simd dot kernel" },
     ],
     proofIds: ["fast-mnist-benchmark"],
   },

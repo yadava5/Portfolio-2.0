@@ -138,11 +138,12 @@ interface Pt {
 
 /**
  * Deterministic PRNG (mulberry32) so wobble is stable per chapter.
+ * Exported for the dossier pages' static thread (DossierThread.tsx).
  *
  * @param seed - Any integer seed
  * @returns A function yielding floats in [0, 1)
  */
-function mulberry32(seed: number): () => number {
+export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -161,11 +162,12 @@ function f(n: number): string {
 /**
  * Smooth a point run into cubic beziers (Catmull-Rom conversion) — the
  * hand-drawn look: the pen passes through every anchor, gently.
+ * Exported for the dossier pages' static thread (DossierThread.tsx).
  *
  * @param pts - Ordered anchor points
  * @returns SVG path data
  */
-function catmullRomPath(pts: Pt[]): string {
+export function catmullRomPath(pts: Pt[]): string {
   if (pts.length < 2) return "";
   let d = `M${f(pts[0].x)} ${f(pts[0].y)}`;
   for (let i = 0; i < pts.length - 1; i++) {
@@ -185,6 +187,7 @@ function catmullRomPath(pts: Pt[]): string {
 /**
  * A small closed irregular loop — an ink pool, not a geometric circle.
  * Emitted as a standalone subpath so it draws when the head arrives.
+ * Exported for the dossier pages' static thread (DossierThread.tsx).
  *
  * @param cx - Center x
  * @param cy - Center y
@@ -192,7 +195,7 @@ function catmullRomPath(pts: Pt[]): string {
  * @param rand - Seeded RNG
  * @returns Closed-subpath data
  */
-function inkPool(
+export function inkPool(
   cx: number,
   cy: number,
   r: number,

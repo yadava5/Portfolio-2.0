@@ -126,9 +126,12 @@ export const EXPECTED_WORK_ROWS = [
     metric: "macro-f1 0.9791 — 96-sample gate",
   },
   {
+    // SIMD-attribution reword (2026-07-18): the 3.5x is the openmp+simd
+    // parallel configuration vs the -O3 baseline, per BENCHMARKS.md.
     title: "Fast MNIST Neural Network",
     href: "/projects/fast-mnist-nn/",
-    metric: "3.5x dot-kernel speedup — committed benchmarks",
+    metric:
+      "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
   },
   {
     title: "Visual Assist",
@@ -149,7 +152,9 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   jobtrackerBackendTests: "Backend test suite",
   jobtrackerBenchmark: "ML strategy and evaluation gates",
   jobtrackerWebBeta: "Web beta scaffold",
-  jobtrackerBackendCoverage: "Local source validation passed 182 backend tests",
+  // Dossier voice rewrite (2026-07-18): first person, same fact/number.
+  jobtrackerBackendCoverage:
+    "182 tests passed under the test/null-keyring environment",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
@@ -158,13 +163,15 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   visualAssistArchitecture: "On-device accessibility architecture",
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
-  visualAssistCoverage:
-    "Local repository audit found 71 VisualAssistTests test functions.",
+  // Dossier voice rewrite (2026-07-18): first person, same fact/number.
+  visualAssistCoverage: "71 test functions cover models and utilities",
   visualAssistCoreMlBoundary: "no custom Core ML model file was present",
   fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
-  fastMnistSpeedup: "3.50x dot-kernel speedup",
+  // SIMD-attribution reword (2026-07-18): honest form per BENCHMARKS.md.
+  fastMnistSpeedup:
+    "openmp+simd dot kernel is 3.50x faster than the -O3 baseline",
   fastMnistDisclosure:
     "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
   masterInventoryRows:

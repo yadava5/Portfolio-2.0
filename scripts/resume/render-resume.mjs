@@ -62,7 +62,7 @@ const sections = [
         heading: "Fast MNIST Neural Network - C++ HPC Project (2025-2026)",
         items: [
           "Collaborated on C++17 MNIST train/eval CLI with SIMD/OpenMP kernels, cached dataset loading, and benchmark instrumentation.",
-          "Recorded 97%+ MNIST accuracy and 3.5x dot-kernel speedup in committed benchmark evidence.",
+          "Recorded 97%+ MNIST accuracy and a 3.5x OpenMP+SIMD dot-kernel speedup (vs the -O3 baseline) in committed benchmark evidence.",
         ],
       },
     ],

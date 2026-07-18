@@ -248,8 +248,12 @@ test.describe("Daylight Study — working paper", () => {
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistScreenshot)
     ).toBeVisible();
+    /* Scoped to #validation: the corrections register intentionally
+       repeats the number when it names what the erratum resolves to. */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
+      page
+        .locator("#validation")
+        .getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
     ).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistDisclosure)
@@ -266,8 +270,12 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/projects/visual-assist/");
     await page.waitForLoadState("domcontentloaded");
 
+    /* Scoped to #artifacts: fig. 1's caption (the image alt, lowercased)
+       legitimately contains the same words as the plate label. */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
+      page
+        .locator("#artifacts")
+        .getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
     ).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistReadme)

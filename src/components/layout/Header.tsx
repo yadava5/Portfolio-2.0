@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FileText, Mail, X } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
 import {
@@ -57,6 +58,11 @@ export default function Header() {
   const lenis = useLenis();
   const { motionOff, toggleMotion } = useMotionPreference();
   const prefersReducedMotion = usePrefersReducedMotion();
+  const pathname = usePathname();
+  /* Case files + /evidence sit on the flat archive stock (no day-arc):
+     the header reads the surface beneath it (completion map §3). */
+  const archiveSurface =
+    pathname?.startsWith("/projects") || pathname?.startsWith("/evidence");
 
   /* Scrolled state reads from the single scroll loop when the engine is
      mounted; falls back to a passive native listener in the static world. */
@@ -119,6 +125,7 @@ export default function Header() {
     <>
       <header
         data-lenis-connected={lenis ? "true" : "false"}
+        data-surface={archiveSurface ? "archive" : undefined}
         className={`site-header fixed top-0 right-0 left-0 z-50 border-b transition-[background-color,padding] duration-500 ${
           scrolled ? "site-header-scrolled py-2.5" : "py-4"
         }`}

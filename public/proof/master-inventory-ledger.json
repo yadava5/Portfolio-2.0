@@ -1,0 +1,40 @@
+{
+  "ledger": "master-inventory-processed-output",
+  "project": "master-inventory",
+  "checked_in": "2026-06",
+  "source": "sanitized local audit of processed pipeline outputs",
+  "boundary": "no raw institutional rows, owners, report names, or PAT values",
+  "rows": [
+    {
+      "label": "tableau output",
+      "value": 3731,
+      "note": "processed metadata rows"
+    },
+    {
+      "label": "workday output",
+      "value": 6743,
+      "note": "processed custom-report rows"
+    },
+    {
+      "label": "master csv",
+      "value": 10453,
+      "note": "deduped master_inventory.csv rows"
+    },
+    {
+      "label": "schema",
+      "value": 35,
+      "note": "source fields defined, deterministic inventory_id"
+    },
+    {
+      "label": "local tests",
+      "value": "3 passed",
+      "note": "pytest, extractor suite"
+    },
+    {
+      "label": "ruff check",
+      "value": "passed",
+      "note": "critical rules E9, F63, F7, F82"
+    }
+  ],
+  "verification": "counts audited locally against processed outputs; timestamped run folders inspected by count only"
+}

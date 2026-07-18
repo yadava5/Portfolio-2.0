@@ -80,6 +80,14 @@ const PAIRS = [
   ["ink on surface-2", C.ink, C.surface2, 4.5],
   ["secondary ink on surface-1", C.inkSecondary, C.surface1, 4.5],
   ["pine on surface-1", C.pine, C.surface1, 4.5],
+  // Dossier archive stock (= surface-1): ink + clay only accents
+  ["clay (text) on archive stock", C.clay, C.surface1, 4.5],
+  [
+    "clay-graphic on archive stock (graphic ≥3:1)",
+    C.clayGraphic,
+    C.surface1,
+    3.0,
+  ],
   // Semantic-alias button pairings (error/404/skip-link)
   ["canvas text on clay button", C.canvas, C.clay, 4.5],
   ["canvas text on pine button", C.canvas, C.pine, 4.5],

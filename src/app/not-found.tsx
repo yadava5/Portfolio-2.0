@@ -37,32 +37,34 @@ export default function NotFound() {
           >
             Home
           </Link>
+          {/* Anchors match the real chapter ids (the old #about/#projects/
+              #experience/#skills anchors died with the Atlas layout). */}
           <Link
-            href="/#about"
+            href="/#who"
             className="rounded bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             About
           </Link>
           <Link
-            href="/#projects"
+            href="/#work"
             className="rounded bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
-            Projects
+            The work
           </Link>
           <Link
-            href="/#experience"
+            href="/#path"
             className="rounded bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
-            Work
+            Experience
           </Link>
           <Link
-            href="/#skills"
+            href="/evidence/"
             className="rounded bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
-            Skills
+            Evidence
           </Link>
           <Link
-            href="/#contact"
+            href="/#gate"
             className="rounded bg-[var(--surface-2)] px-4 py-3 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             Contact
@@ -83,7 +85,7 @@ export default function NotFound() {
         <p className="pt-4 text-sm text-[var(--foreground-muted)]">
           If you believe this is a mistake, please{" "}
           <Link
-            href="/#contact"
+            href="/#gate"
             className="underline hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             contact me

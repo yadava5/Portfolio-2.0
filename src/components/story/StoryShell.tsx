@@ -36,6 +36,7 @@ import {
   getDeansListCount,
 } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
+import { getCaseStudyById } from "@/lib/data/projectCaseStudies";
 import { getProjectById } from "@/lib/data/projects";
 import {
   ChapterKicker,
@@ -56,9 +57,12 @@ import { AwaitingStamp } from "@/components/story/ApprovedStamp";
 /* The xl+ left padding is the paper's binding margin: it reserves the
    gutter the fixed chapter rail lives in (rail ≈ 8rem incl. active name).
    `relative` seats the content ABOVE each chapter's ThreadSegment svg
-   (positioned boxes paint in source order; the svg comes first). */
+   (positioned boxes paint in source order; the svg comes first).
+   Below sm the left padding is a TRUE reserved thread gutter (36px): the
+   compact spine wanders 20±~4px, so the ink can never touch letterforms
+   at 390 (journey-critique fix; probe-tested in dossier.spec.ts). */
 const WRAP =
-  "relative mx-auto w-full max-w-[1240px] px-6 sm:px-12 xl:pr-16 xl:pl-36";
+  "relative mx-auto w-full max-w-[1240px] pl-9 pr-6 sm:px-12 xl:pr-16 xl:pl-36";
 
 const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 
@@ -129,14 +133,16 @@ const PATH_FIELD_RECORDS: {
     observation:
       "A second assistant reads policy and answers with its sources cited, so documentation stops costing an afternoon.",
     receipt: "19/20 cited-source sweep — PolicyBot, the policy assistant",
-    href: "/projects/policybot/#validation",
+    href: "/projects/policybot/#v-policybot-1",
   },
 ];
 
 /** Ch-05 editorial rows: plan 3.10 pair lines + one honest metric each.
- *  Every number is proof-manifest/case-file-backed: 0.9791 macro-F1 on a
- *  96-sample gate (jobtracker validation ledger), the committed 3.5x
- *  benchmark, and the audited 71 XCTest functions (no latency number
+ *  Every number is proof-manifest/case-file-backed and each metric chip
+ *  links its case-file receipt row (footnote 1's contract): 0.9791
+ *  macro-F1 on a 96-sample gate, the committed openmp+simd 3.5x (the
+ *  fast-mnist BENCHMARKS.md attribution — parallelism carries it, not
+ *  SIMD alone), and the audited 71 XCTest functions (no latency number
  *  exists for Visual Assist, so its real proof carries the row). */
 const WORK_ROWS = [
   {
@@ -144,12 +150,15 @@ const WORK_ROWS = [
     bright: "Your inbox already knows where you applied.",
     muted: "JobTracker reads it — and nothing ever leaves your device.",
     metric: "macro-f1 0.9791 — 96-sample gate",
+    metricHref: "/projects/jobtracker/#v-jobtracker-5",
   },
   {
     projectId: "fast-mnist-nn",
     bright: "No frameworks. Just math, memory, and C++.",
-    muted: "Then SIMD made it 3.5× faster.",
-    metric: "3.5x dot-kernel speedup — committed benchmarks",
+    muted: "Then OpenMP and SIMD together made it 3.5× faster.",
+    metric:
+      "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
+    metricHref: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
   {
     projectId: "visual-assist",
@@ -157,6 +166,7 @@ const WORK_ROWS = [
     muted:
       "Visual Assist says it out loud, for the people who need to hear it.",
     metric: "71 xctest functions — on-device, voiceover-first",
+    metricHref: "/projects/visual-assist/#v-visual-assist-1",
   },
 ];
 
@@ -180,19 +190,25 @@ const VALUES_LINES = [
   {
     mantra: "Make it learn.",
     receipt: "182 backend tests — jobtracker validation ledger",
-    href: "/projects/jobtracker/#validation",
+    href: "/projects/jobtracker/#v-jobtracker-4",
     wonk: false,
   },
   {
+    /* "benchmarked in ci" was reworded 2026-07-18: the fast-mnist CI
+       workflow does not run the benchmark suite (checked via gh run
+       list); the honest terminal is the COMMITTED benchmark data the
+       case-file receipt links (EVIDENCE-MODEL finding 4). Attribution
+       honest per BENCHMARKS.md: the 3.5x is openmp+simd vs the -O3
+       baseline — parallelism carries it, not SIMD alone. */
     mantra: "Make it fast.",
-    receipt: "simd dot kernel — 3.5x, benchmarked in ci",
-    href: "/projects/fast-mnist-nn/#validation",
+    receipt: "openmp+simd dot kernel — 3.5x over -O3, committed benchmarks",
+    href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
     wonk: false,
   },
   {
     mantra: "Make it honest.",
     receipt: "19/20 cited-source sweep — policybot validation ledger",
-    href: "/projects/policybot/#validation",
+    href: "/projects/policybot/#v-policybot-1",
     wonk: true,
   },
 ];
@@ -211,6 +227,11 @@ const VALUES_GATES = [
 /** Ch-07 endnotes — footnote 1's promise, kept in full: every receipt on
  *  the page, numbered and linked to its evidence. In-page targets (#path)
  *  route through Lenis; case-file targets are plain routes. */
+/* Every footnote terminates OFF-page at a case-file receipt-row anchor
+   (EVIDENCE-MODEL finding 4: footnote 4 used to link this same page and
+   self-falsify the promise; "benchmarked in ci" linked no run — the
+   fast-mnist CI does not benchmark, so the words changed to match the
+   committed evidence). */
 const GATE_REFERENCES: {
   claim: string;
   source: string;
@@ -219,24 +240,28 @@ const GATE_REFERENCES: {
 }[] = [
   {
     claim: "macro-f1 0.9791, 96-sample gate",
-    source: "jobtracker — validation",
-    href: "/projects/jobtracker/#validation",
+    source: "jobtracker — receipt 05",
+    href: "/projects/jobtracker/#v-jobtracker-5",
   },
   {
-    claim: "3.5x dot-kernel speedup, benchmarked in ci",
-    source: "fast-mnist-nn — validation",
-    href: "/projects/fast-mnist-nn/#validation",
+    claim: "3.5x — openmp+simd dot kernel vs -O3 baseline",
+    source: "fast-mnist-nn — receipt 02",
+    href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+  },
+  {
+    claim: "71 xctest functions, models and utilities",
+    source: "visual-assist — receipt 01",
+    href: "/projects/visual-assist/#v-visual-assist-1",
   },
   {
     claim: "19/20 cited-source sweep",
-    source: "policybot — validation",
-    href: "/projects/policybot/#validation",
+    source: "policybot — receipt 01",
+    href: "/projects/policybot/#v-policybot-1",
   },
   {
     claim: "1M+ operational records transformed",
-    source: "¶ 03 — the path, field records",
-    href: "#path",
-    inPage: true,
+    source: "master-inventory — receipt 05",
+    href: "/projects/master-inventory/#v-master-inventory-5",
   },
   {
     claim: "7-phase gated lifecycle, human go/no-go",
@@ -311,7 +336,10 @@ function ArrivalChapter() {
           dateline="oxford, ohio — summer 2026"
         />
 
-        <div className="my-auto py-16">
+        {/* py-10 (was py-16): the byline→flagship-teaser frame sagged at
+            tall viewports — the centering budget tightens so the teaser
+            enters the first frame (journey-critique viewport-sag fix). */}
+        <div className="my-auto py-10">
           {/* Hero entrance (plan 3.8): per-line de-blur + 14px rise via the
               .hero-enter CSS animation (globals.css) — the page's ONLY
               blur, desktop-only, load-only. The three structural line
@@ -371,15 +399,33 @@ function ArrivalChapter() {
           </p>
         </div>
 
-        {/* Three mono directives, three weights (one glance): the flagship
-            teaser is PRIMARY (full ink + drawn underline), the skip
-            affordance is SECONDARY (secondary ink + underline), and the
-            scroll cue is the QUIETEST — smallest mono, no affordance. */}
+        {/* Mono directives, weighted for one glance: the flagship teaser
+            is PRIMARY (full ink + drawn underline); beneath it the three
+            case-file links surface the work index from the first frame
+            (recruiter-rejudge fix — the index used to live at 55%
+            scroll); the skip affordance is SECONDARY, and the scroll cue
+            is the QUIETEST — smallest mono, no affordance. */}
         <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
           <p className="text-ink">
             <LenisAnchor href="#automl" className="link-draw">
               flagship — agentic automl: seven gated phases ⟶
             </LenisAnchor>
+          </p>
+          {/* Quiet apparatus voice, no buttons: direct routes into the
+              three case files the #work chapter argues. */}
+          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+            case files:{" "}
+            <Link href="/projects/jobtracker/" className="link-draw">
+              jobtracker
+            </Link>{" "}
+            ·{" "}
+            <Link href="/projects/fast-mnist-nn/" className="link-draw">
+              fast-mnist
+            </Link>{" "}
+            ·{" "}
+            <Link href="/projects/visual-assist/" className="link-draw">
+              visual-assist
+            </Link>
           </p>
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
             <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
@@ -567,9 +613,13 @@ function PathChapter() {
               <h3 className="font-display fraunces-display text-2xl">
                 B.S. {degree.field}
               </h3>
+              {/* Biographical register, not a claim chip (evidence-rejudge
+                  footnote-straggler ruling): the ×N grammar read as an
+                  unlinked claim; prose + the transcript boundary keeps the
+                  fact while exempting it from footnote 1's link contract. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
                 B.S. {degree.field}, {degree.school}, {graduation} — dean’s list
-                ×{deansListCount}.
+                in {deansListCount} semesters (transcript on request).
               </p>
             </div>
           </article>
@@ -729,6 +779,7 @@ function WorkChapter() {
             const project = getProjectById(row.projectId);
             if (!project) return null;
             const caseHref = `/projects/${project.id}/`;
+            const study = getCaseStudyById(row.projectId);
             return (
               /* data-thread-row: the Red Thread ticks each row in the
                  binding margin as the line passes (geometry anchor) */
@@ -776,7 +827,15 @@ function WorkChapter() {
                   className="label-mono text-ink-secondary flex flex-row flex-wrap items-baseline gap-x-8 gap-y-3 md:flex-col md:items-end md:justify-end md:text-right"
                   data-tm="block"
                 >
-                  <p>{row.metric}</p>
+                  {/* The metric chip keeps footnote 1's promise: it links
+                      the case-file receipt row that argues it. normal-case
+                      preserves data tokens (-O3); every metric string is
+                      already lowercase in source. */}
+                  <p className="max-w-[38ch] normal-case">
+                    <Link href={row.metricHref} className="link-draw">
+                      {row.metric}
+                    </Link>
+                  </p>
                   <p>
                     <Link href={caseHref} className="link-draw text-ink">
                       the case file ⟶
@@ -792,6 +851,27 @@ function WorkChapter() {
                       >
                         source ⟶
                       </a>
+                    </p>
+                  ) : null}
+                  {/* Quiet demo affordance (completion map §3): liveUrl
+                      was data-only until this round — never rendered. */}
+                  {project.liveUrl ? (
+                    <p>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        demo ↗
+                      </a>
+                    </p>
+                  ) : null}
+                  {/* The case file's own credibility token, echoed small
+                      (recruiter-rejudge status-wording fix). */}
+                  {study ? (
+                    <p className="font-mono text-[0.6875rem] tracking-[0.08em]">
+                      last verified {study.verified}
                     </p>
                   ) : null}
                 </div>
@@ -830,11 +910,14 @@ function WorkChapter() {
    ──────────────────────────────────────────────────────────────── */
 
 function ValuesChapter() {
+  /* min-h tightened from svh (journey-critique viewport-sag fix): the
+     litany's short content left a blank half-frame mid-chapter; at
+     85svh the folio apparatus enters the frame with the figures. */
   return (
     <section
       id={VALUES.anchor}
       data-chapter={VALUES.id}
-      className="relative flex min-h-svh flex-col pt-[7vh] pb-[10vh]"
+      className="relative flex min-h-[85svh] flex-col pt-[7vh] pb-[10vh]"
     >
       <ThreadSegment id={VALUES.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
@@ -872,9 +955,10 @@ function ValuesChapter() {
                     </span>
                   </p>
                   {/* Each receipt is a quiet mono link into the validation
-                      ledger that proves it */}
+                      ledger that proves it. normal-case: receipts carry
+                      data tokens (-O3); source strings stay lowercase. */}
                   <p className="label-mono mt-2 opacity-70" data-tm-receipt>
-                    <Link href={line.href} className="link-draw">
+                    <Link href={line.href} className="link-draw normal-case">
                       {line.receipt}
                     </Link>
                   </p>
@@ -1068,7 +1152,8 @@ function GateChapter() {
                 key={reference.href}
                 className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-t border-current/15 py-2.5"
               >
-                <span className={muted}>
+                {/* normal-case: claims quote data tokens (1M+, -O3) */}
+                <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
                 </span>
                 {reference.inPage ? (
@@ -1083,6 +1168,12 @@ function GateChapter() {
               </li>
             ))}
           </ol>
+          {/* The master ledger: proofManifest rendered at /evidence */}
+          <p className="label-mono mt-4 border-t border-current/15 pt-3">
+            <Link href="/evidence/" className="link-draw">
+              the evidence index — every claim on file ⟶
+            </Link>
+          </p>
         </div>
 
         <div className="mt-[12vh]">
