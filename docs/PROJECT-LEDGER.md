@@ -118,3 +118,18 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   SSR-neutral, live on the subscribe channel. 4 new manifest honesty tests;
   full suite 475 ×3, 0 failed. → **W5 re-judge**: fresh visitor (bar 85) +
   evidence spot-recount of the changed arithmetic.
+- **W5 RE-JUDGE (docs/scorecards/era-w5-rejudge.md)**: evidence **97**
+  (project high — recomputed every changed number to the digit: automl truly
+  0-of-8 pinned, 3.5x=3.5043x from raw CSV, macro-F1 0.97913, manifest
+  garbage-seeded and counts only reals; no regression, no unearned numbers) ·
+  visitor **83** (bar 85 — "the closest it has come"; all three prior
+  complaints fixed + manifest elevation delivered; a crescendo layer remains).
+  Recruiter stands 91 (rounds A/B only strengthened what it praised). Era
+  bar: recruiter + evidence cleared with margin; visitor sole holdout, +2 to
+  go. → **W6 crescendo** (Opus builder, in flight): stamp = physical +
+  chromatic peak (impact press, wet-ink-that-dries, ONE reserved saturated
+  clay contrast-gated on waypoint-07); interaction discoverability (one-time
+  on-enter stamp beat, honest "walk the N claims →" audit hint); bounded
+  stretch (hero-thread signature under the 0.0000%/LCP guarantees, /evidence
+  held-tick disambiguation, empty-band tightening). NO-LIST restated: no glow,
+  no typewriter reveal, no particles; reduced-motion/off = settled, no anim.
