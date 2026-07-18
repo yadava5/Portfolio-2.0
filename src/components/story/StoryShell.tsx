@@ -52,6 +52,9 @@ import { HashRealign } from "@/components/story/HashRealign";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
 import { LocalTime } from "@/components/story/LocalTime";
 import { AwaitingStamp } from "@/components/story/ApprovedStamp";
+import { ApprovedHello } from "@/components/paper/ApprovedHello";
+import { RegistryRows } from "@/components/paper/RegistryRows";
+import { VisitedMark } from "@/components/paper/VisitedMark";
 
 /** Shared content column: the paper's measure */
 /* The xl+ left padding is the paper's binding margin: it reserves the
@@ -714,28 +717,12 @@ function AutomlChapter() {
                 screenshot lives on the case-study page). Two-cell ledger
                 rows: run/model left, status right. The metric column is
                 withheld outright — a proof column must never dangle bare
-                em-dashes — and the caption owns the redaction honestly. */}
+                em-dashes — and the caption owns the redaction honestly.
+                W1: the awaiting row is the press-to-approve control
+                (RegistryRows) — the SAME run the gate stamp awaits. */}
             <figure className="mt-10" data-tm="block">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
-                <li className="text-ink-secondary flex justify-between gap-x-3 opacity-80">
-                  <span>run · model</span>
-                  <span className="text-right">status</span>
-                </li>
-                {AUTOML_REGISTRY_ROWS.map((row) => (
-                  <li
-                    key={row.run}
-                    className={`flex justify-between gap-x-3 ${
-                      row.status === "awaiting approval"
-                        ? "text-ink"
-                        : "text-ink-secondary"
-                    }`}
-                  >
-                    <span>
-                      {row.run} · {row.model}
-                    </span>
-                    <span className="text-right">{row.status}</span>
-                  </li>
-                ))}
+                <RegistryRows rows={AUTOML_REGISTRY_ROWS} />
               </ul>
               <figcaption className="label-mono text-ink-secondary mt-6 space-y-1 pl-6">
                 <span className="block">
@@ -801,6 +788,10 @@ function WorkChapter() {
                     data-tm="block"
                   >
                     <Link href={caseHref}>{project.title}</Link>
+                    {/* The paper remembers (W1): a small ink ✓ once this
+                        file has been opened — reserved width, decorative,
+                        outside the link's accessible name. */}
+                    <VisitedMark fileId={project.id} />
                   </h3>
                   {/* The row's bright line splits an aria-hidden inner
                       span (sr-only twin): aria-label is prohibited on
@@ -891,6 +882,7 @@ function WorkChapter() {
                   <Link href={`/projects/${id}/`} className="link-draw">
                     {project.title}
                   </Link>
+                  <VisitedMark fileId={id} />
                 </li>
               );
             })}
@@ -1123,14 +1115,20 @@ function GateChapter() {
               ) : null}
             </div>
 
-            <p className="mt-10" data-tm="block">
-              <a
-                href={`mailto:${personalInfo.email}`}
-                className="link-draw font-display text-[clamp(1.5rem,2.4vw,2.2rem)] italic"
-              >
-                Email me — I read everything.
-              </a>
-            </p>
+            {/* W1: once run 041 is approved (stamp or registry row) the
+                CTA gains its quiet echo line — space reserved from first
+                paint, and the mailto NEVER depends on approving. */}
+            <div className="mt-10" data-tm="block">
+              <ApprovedHello />
+              <p>
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="link-draw font-display text-[clamp(1.5rem,2.4vw,2.2rem)] italic"
+                >
+                  Email me — I read everything.
+                </a>
+              </p>
+            </div>
           </div>
 
           <div className="hidden lg:block lg:justify-self-end">

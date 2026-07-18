@@ -30,8 +30,10 @@ const XL_BINDING_PAD = 144;
 const BINDING_INSET = 56;
 const BINDING_MIN_X = 136;
 
-/** Spine x for the dossier: binding margin at xl, left gutter below. */
-function dossierSpineX(vw: number): number {
+/** Spine x for the dossier: binding margin at xl, left gutter below.
+ *  Exported for CitationInk — the citation strokes ride the same
+ *  margin lane as this thread, a hand-width to its right. */
+export function dossierSpineX(vw: number): number {
   if (vw < 1280) return 20;
   const wrapLeft = Math.max(0, (vw - WRAP_MAX_WIDTH) / 2);
   return Math.max(BINDING_MIN_X, wrapLeft + XL_BINDING_PAD - BINDING_INSET);

@@ -91,6 +91,18 @@ const PAIRS = [
   // Semantic-alias button pairings (error/404/skip-link)
   ["canvas text on clay button", C.canvas, C.clay, 4.5],
   ["canvas text on pine button", C.canvas, C.pine, 4.5],
+  // W1 stampable registry row: the approved mark's clay gate-square must
+  // hold graphic contrast across chapter 04's whole scrub range (w04→w05
+  // interpolates monotonically in luminance, so endpoints bound it).
+  // NOTE: clay TEXT fails 4.5:1 on golden hour (≈4.3) — that is WHY the
+  // mark's word is body ink and only the square is clay.
+  ["clay-graphic on afternoon (04, graphic ≥3:1)", C.clayGraphic, C.w04, 3.0],
+  [
+    "clay-graphic on golden hour (05, graphic ≥3:1)",
+    C.clayGraphic,
+    C.w05,
+    3.0,
+  ],
 ];
 
 // ── Day-arc sampler (amendment A4) ─────────────────────────────────────

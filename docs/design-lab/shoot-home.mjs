@@ -129,5 +129,63 @@ await settle(ev, 1200);
 await ev.screenshot({ path: "docs/design-lab/shots-home/e1-evidence.png" });
 await ev.close();
 
+/* ── W1: the press-to-sign gate — pre/post approval (one context, so
+   the approval persists through the reload like a real visitor) ── */
+const gate = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await gate.goto("http://127.0.0.1:3000/");
+await gate.evaluate(() => document.fonts.ready);
+await settle(gate, 1500);
+await gate.evaluate(() =>
+  document.getElementById("gate")?.scrollIntoView({ behavior: "auto" })
+);
+await settle(gate);
+await gate.screenshot({
+  path: "docs/design-lab/shots-home/g1-gate-awaiting.png",
+});
+const stampEl = gate.locator("[data-stamp]:visible");
+await stampEl.hover();
+await settle(gate, 400);
+await gate.screenshot({ path: "docs/design-lab/shots-home/g2-gate-hover.png" });
+await stampEl.click();
+await settle(gate, 1000); /* the ~600ms inking, finished + dried */
+await gate.screenshot({
+  path: "docs/design-lab/shots-home/g3-gate-approved.png",
+});
+await gate.reload();
+await gate.evaluate(() => document.fonts.ready);
+await settle(gate, 1200);
+await gate.evaluate(() =>
+  document.getElementById("gate")?.scrollIntoView({ behavior: "auto" })
+);
+await settle(gate);
+await gate.screenshot({
+  path: "docs/design-lab/shots-home/g4-gate-approved-revisit.png",
+});
+/* fig 4.1: the registry echo of the same approval */
+await gate.evaluate(() =>
+  document.getElementById("automl")?.scrollIntoView({ behavior: "auto" })
+);
+await settle(gate);
+await gate.screenshot({
+  path: "docs/design-lab/shots-home/g5-registry-approved.png",
+});
+await gate.close();
+
+/* ── W1: thread-as-citation — hover stroke on the automl receipts ── */
+const cite = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await cite.goto("http://127.0.0.1:3000/projects/automl/");
+await cite.evaluate(() => document.fonts.ready);
+await settle(cite, 1200);
+await cite.evaluate(() =>
+  document.getElementById("validation")?.scrollIntoView({ behavior: "auto" })
+);
+await settle(cite);
+await cite.locator("[data-cites]").first().hover();
+await settle(cite, 700);
+await cite.screenshot({
+  path: "docs/design-lab/shots-home/g6-citation-stroke.png",
+});
+await cite.close();
+
 await browser.close();
 console.log("home + dossier shots done");

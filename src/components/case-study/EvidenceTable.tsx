@@ -11,10 +11,18 @@
  * (claim:/method:/date:/artifact:). No pills, no badges — visibility is
  * bracketed mono text. Rows with no external artifact say so instead of
  * linking the portfolio to itself.
+ *
+ * W1 thread-as-citation: rows whose artifact cites an on-page figure
+ * ("see fig. N …" with a hash href) carry `data-cites="N"`, and the
+ * citation link is sharpened from the appendix section to the plate
+ * itself (`#fig-N`, ids set by ArtifactGallery). The mono link is the
+ * always-present affordance; CitationInk draws the margin pen-stroke
+ * on hover/focus in the desktop engine world only.
  */
 
 import {
   CaseReceipt,
+  ReceiptArtifactLink,
   ReceiptVisibility,
   receiptAnchor,
 } from "@/lib/data/projectCaseStudies";
@@ -40,6 +48,36 @@ const ROW_GRID =
 
 function isExternalHref(href: string): boolean {
   return href.startsWith("http");
+}
+
+/**
+ * The figure number a row cites on-page, if any: an artifact whose
+ * label reads "see fig. N …" and whose href stays on this page.
+ *
+ * @param row - The receipt row
+ * @returns The cited figure number, or null
+ */
+function citedFig(row: CaseReceipt): number | null {
+  for (const artifact of row.artifacts) {
+    if (!artifact.href.startsWith("#")) continue;
+    const match = artifact.label.match(/\bfig\.\s*(\d+)/);
+    if (match) return Number(match[1]);
+  }
+  return null;
+}
+
+/**
+ * Sharpen an on-page citation to the plate it names: `#artifacts`
+ * (the section) becomes `#fig-N` (the figure) when the label carries
+ * a figure number. Off-page hrefs pass through untouched.
+ *
+ * @param artifact - The artifact link
+ * @returns The href to render
+ */
+function citationHref(artifact: ReceiptArtifactLink): string {
+  if (!artifact.href.startsWith("#")) return artifact.href;
+  const match = artifact.label.match(/\bfig\.\s*(\d+)/);
+  return match ? `#fig-${match[1]}` : artifact.href;
 }
 
 /** Mobile-only key label (the /evidence dt grammar) */
@@ -72,11 +110,13 @@ export function EvidenceTable({
         {rows.map((row, index) => {
           const n = startIndex + index;
           const anchor = receiptAnchor(projectId, n);
+          const cites = citedFig(row);
           return (
             <li
               key={anchor}
               id={anchor}
               data-receipt-row
+              data-cites={cites ?? undefined}
               className={`border-ink/15 grid gap-x-8 gap-y-2 border-t py-4 ${ROW_GRID}`}
             >
               {/* The claim anchors the eye: serif at body size, its
@@ -126,7 +166,10 @@ export function EvidenceTable({
                             {artifact.label}
                           </a>
                         ) : (
-                          <a href={artifact.href} className="link-draw">
+                          <a
+                            href={citationHref(artifact)}
+                            className="link-draw"
+                          >
                             {artifact.label}
                           </a>
                         )}

@@ -20,6 +20,10 @@
  * The viewer dialog is KEPT (same contracts: role=dialog labelled
  * "<label> artifact viewer", open-original link, close button, backdrop
  * testid, Escape) and gains a provenance strip: source · date · boundary.
+ *
+ * W1 thread-as-citation: every plate carries `id="fig-N"` so receipts
+ * rows can cite it precisely (`#fig-N` links + CitationInk's hover
+ * stroke). Scroll seating for those anchors lives in globals.css.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -215,6 +219,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
               return (
                 <button
                   key={key}
+                  id={`fig-${fig}`}
                   type="button"
                   className="group block text-left md:col-span-2"
                   onClick={() => setActiveArtifact(artifact)}
@@ -256,6 +261,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
               return (
                 <button
                   key={key}
+                  id={`fig-${fig}`}
                   type="button"
                   className="group block text-left md:col-span-2"
                   onClick={() => setActiveArtifact(artifact)}
@@ -290,6 +296,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
             return (
               <button
                 key={key}
+                id={`fig-${fig}`}
                 type="button"
                 className="group block text-left"
                 onClick={() => setActiveArtifact(artifact)}

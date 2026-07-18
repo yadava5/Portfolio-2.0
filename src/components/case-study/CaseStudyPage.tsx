@@ -28,6 +28,9 @@ import { ArtifactGallery } from "@/components/case-study/ArtifactGallery";
 import { DossierThread } from "@/components/case-study/DossierThread";
 import { EvidenceTable } from "@/components/case-study/EvidenceTable";
 import { SystemDiagram } from "@/components/case-study/SystemDiagram";
+import { CitationInk } from "@/components/paper/CitationInk";
+import { FileMemory } from "@/components/paper/FileMemory";
+import { RegistryRows } from "@/components/paper/RegistryRows";
 import { Project } from "@/lib/data/projects";
 import {
   DOSSIER_TOTAL,
@@ -166,6 +169,9 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
   return (
     <article data-dossier className="dossier-surface text-ink min-h-screen">
       <DossierThread />
+      {/* W1 thread-as-citation: hover/focus strokes from receipts rows
+          to the plates they cite (engine world, desktop only) */}
+      <CitationInk />
       <div className={`${WRAP} pt-28 pb-16`}>
         {/* ── Opening: kicker with two dates + status word ─────────── */}
         <div className="label-mono text-ink-secondary flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
@@ -179,6 +185,10 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             {study.statusDetail ? ` — ${study.statusDetail}` : ""}
           </p>
         </div>
+
+        {/* The paper remembers (W1): records this opening and carries
+            the one-time margin note — reserved height, zero shift. */}
+        <FileMemory fileId={study.projectId} />
 
         <header className="mt-8">
           <h1
@@ -312,30 +322,14 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </div>
         </section>
 
-        {/* ── fig. 3 — registry excerpt (flagship only) ────────────── */}
+        {/* ── fig. 3 — registry excerpt (flagship only) ──────────────
+            W1: the same stampable rows as home fig 4.1 — approving the
+            041 row HERE approves it everywhere (one run, one act). */}
         {study.registryFig ? (
           <section className="mt-16 max-w-[26rem]">
             <figure>
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
-                <li className="text-ink-secondary flex justify-between gap-x-3 opacity-80">
-                  <span>run · model</span>
-                  <span className="text-right">status</span>
-                </li>
-                {study.registryFig.rows.map((row) => (
-                  <li
-                    key={row.run}
-                    className={`flex justify-between gap-x-3 ${
-                      row.status === "awaiting approval"
-                        ? "text-ink"
-                        : "text-ink-secondary"
-                    }`}
-                  >
-                    <span>
-                      {row.run} · {row.model}
-                    </span>
-                    <span className="text-right">{row.status}</span>
-                  </li>
-                ))}
+                <RegistryRows rows={study.registryFig.rows} />
               </ul>
               <figcaption className="label-mono text-ink-secondary mt-5 space-y-1 pl-6">
                 {study.registryFig.caption.map((line) => (

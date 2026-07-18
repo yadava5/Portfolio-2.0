@@ -293,9 +293,12 @@ test.describe("red thread — structure", () => {
 
     /* Run-number discipline: the stamp is the SAME run the fig-4.1
        registry shows awaiting its human (exactly one stamp is laid out
-       per viewport — desktop or compact seat) */
+       per viewport — desktop or compact seat). Since W1 the stamp is a
+       real press-to-sign button; unpressed, it still names run 041. */
     await expect(
-      page.getByRole("img", { name: /run no\. 041, awaiting your signature/ })
+      page.getByRole("button", {
+        name: /approve run no\. 041 — press to sign/i,
+      })
     ).toHaveCount(1);
     const registryRow = page
       .locator("#automl li")

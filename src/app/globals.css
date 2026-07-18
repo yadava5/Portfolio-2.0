@@ -726,6 +726,247 @@ html[data-motion-off] [data-chapter="07"] {
   stroke-width: 1;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   W1 — THE WONDROUS FOUR (Refinement Era)
+   Press-to-sign gate · stampable registry row · thread-as-citation ·
+   the paper remembers. All state swaps are attribute-driven
+   (paperMemory), transform/opacity only, zero layout shift. Motion
+   lives behind the same A7 gates as the engine (reduced-motion media
+   + [data-motion-off]); static worlds swap instantly. Clay appears
+   only on the decisions — these ARE the decisions.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Press-to-sign: the gate stamp's two layers ────────────────────
+   The awaiting layer NEVER unmounts (the Red Thread measures its
+   signature line via getBBox) — inked state is pure opacity. The
+   attribute opacity="0.9" on the group is the resting look; these
+   rules outrank presentation attributes at any specificity. */
+[data-stamp] .stamp-inked {
+  opacity: 0;
+}
+[data-stamp][data-inked] .stamp-inked {
+  opacity: 0.92;
+}
+[data-stamp][data-inked] .stamp-awaiting {
+  opacity: 0;
+}
+/* Quiet pre-press affordance: the dashed outline firms under the hand */
+[data-stamp]:not([data-inked]) .stamp-awaiting {
+  transition: opacity 250ms ease;
+}
+[data-stamp]:not([data-inked]):hover .stamp-awaiting,
+[data-stamp]:not([data-inked]):focus-visible .stamp-awaiting {
+  opacity: 1;
+}
+
+/* The ~600ms inking — engine world only (A7 CSS gates, the same two
+   conditions SmoothScroll checks). One press: the plate takes a paper
+   press (translateY 1.5px · scale 0.995 — the stamp only, nothing
+   reflows), the dashed outline dries out, the APPROVED plate inks in.
+   Static worlds never match these rules: the class flip IS the swap. */
+@keyframes stamp-press {
+  0% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(1.5px) scale(0.995);
+  }
+  55% {
+    transform: translateY(1.5px) scale(0.995);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes stamp-ink-in {
+  from {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0.92;
+  }
+}
+@keyframes stamp-await-out {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-plate {
+    animation: stamp-press 600ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+  }
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-inked {
+    animation: stamp-ink-in 600ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+  }
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-awaiting {
+    animation: stamp-await-out 450ms ease-out both;
+  }
+}
+
+/* ── The CTA's quiet approved echo (space always reserved) ───────── */
+.stamp-hello {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
+}
+.stamp-hello[data-approved-hello] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease;
+}
+
+/* ── Stampable registry row (fig 4.1 + the case-file echo) ─────────
+   Rest: the link-draw grammar (faint resting underline, full line on
+   hover/focus). Press: the drawn underline RISES through the text into
+   the strikethrough — one line, one gesture — and the margin mark inks
+   in beneath: the clay gate-square (the site's one recurring glyph,
+   ≥3:1 on every surface this figure crosses) + the word in body ink. */
+.registry-approve .registry-strike {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in srgb, currentColor 40%, transparent),
+      color-mix(in srgb, currentColor 40%, transparent)
+    );
+  background-repeat: no-repeat;
+  background-size:
+    0% 1px,
+    100% 1px;
+  background-position:
+    left calc(100% - 0.05em),
+    left calc(100% - 0.05em);
+  transition:
+    background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1),
+    background-position 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.registry-approve:not([data-approved]):hover .registry-strike,
+.registry-approve:not([data-approved]):focus-visible .registry-strike {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+.registry-approve[data-approved] .registry-strike {
+  background-size:
+    100% 1px,
+    0% 1px;
+  background-position:
+    left 52%,
+    left calc(100% - 0.05em);
+}
+.registry-mark {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  transform: rotate(-2.5deg);
+  transform-origin: right top;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease 120ms,
+    visibility 0s linear 370ms;
+}
+.registry-approve[data-approved] .registry-mark {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease 120ms;
+}
+.registry-mark-gate {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-clay-graphic);
+}
+
+/* ── Thread-as-citation: the hover pen-stroke (engine world only —
+   CitationInk mounts nothing elsewhere). The thread's own drawing
+   convention: pathLength=1, dasharray 1 2, offset 1.5 → 0. Draw
+   ~400ms, retract ~300ms. No filters. */
+.citation-stroke {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.5;
+  transition: stroke-dashoffset 300ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.citation-stroke.is-drawn {
+  stroke-dashoffset: 0;
+  transition-duration: 400ms;
+}
+
+/* ── The paper remembers: visited ✓ + the opened-note ──────────────
+   The ✓ slot is ALWAYS in the layout (fixed inline width): its arrival
+   never moves a letterform. The rail's mark doubles as the persistent
+   record for chapters that ARE a case file ([data-visited]). */
+.visited-mark {
+  display: inline-flex;
+  width: 14px;
+  justify-content: center;
+  vertical-align: baseline;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.visited-mark[data-visited] {
+  opacity: 1;
+}
+.rail-mark[data-visited] {
+  opacity: 1;
+}
+.file-memory {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.file-memory[data-file-memory] {
+  opacity: 1;
+}
+/* Revisits are dried ink: the note is simply there, no performance */
+.file-memory.is-dried {
+  transition: none;
+}
+
+/* Cited plates land under the fixed header, like receipt rows */
+[id^="fig-"] {
+  scroll-margin-top: 7rem;
+}
+
+/* Static worlds (A7): every W1 swap is instant — the acts still WORK,
+   they just never perform. (CitationInk never mounts there at all.) */
+@media (prefers-reduced-motion: reduce) {
+  [data-stamp]:not([data-inked]) .stamp-awaiting,
+  .stamp-hello,
+  .registry-approve .registry-strike,
+  .registry-mark,
+  .visited-mark,
+  .file-memory {
+    transition: none;
+  }
+}
+html[data-motion-off] [data-stamp]:not([data-inked]) .stamp-awaiting,
+html[data-motion-off] .stamp-hello,
+html[data-motion-off] .registry-approve .registry-strike,
+html[data-motion-off] .registry-mark,
+html[data-motion-off] .visited-mark,
+html[data-motion-off] .file-memory {
+  transition: none;
+}
+
 /* Receipt-row permalinks land under the fixed header */
 li[id^="v-"] {
   scroll-margin-top: 7rem;

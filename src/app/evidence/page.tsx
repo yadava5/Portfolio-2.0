@@ -13,6 +13,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DossierThread } from "@/components/case-study/DossierThread";
+import { VisitedMark } from "@/components/paper/VisitedMark";
 import { proofManifest, ProofVisibility } from "@/lib/data/proofManifest";
 import { siteMetadata } from "@/lib/data/personal";
 import { withBasePath } from "@/lib/utils";
@@ -31,6 +32,18 @@ const VISIBILITY_LABEL: Record<ProofVisibility, string> = {
   "private-safe": "[private-safe]",
   "local-only": "[local — verified on request]",
 };
+
+/**
+ * The case file a receipt crosswalk link lands in ("the paper
+ * remembers": its ✓ marks entries whose file the visitor has opened).
+ *
+ * @param href - Receipt href ("/projects/<id>/#v-…")
+ * @returns The project id, or null for non-case-file receipts
+ */
+function receiptFileId(href: string): string | null {
+  const match = href.match(/^\/projects\/([^/]+)\//);
+  return match ? match[1] : null;
+}
 
 /** Manifest sources are either URLs or checked-in public asset paths. */
 function sourceLink(
@@ -127,9 +140,18 @@ export default function EvidencePage() {
                     <dt className="text-ink-secondary inline">receipt: </dt>
                     <dd className="inline">
                       {entry.receipt ? (
-                        <Link href={entry.receipt.href} className="link-draw">
-                          {entry.receipt.label} ⟶
-                        </Link>
+                        <>
+                          <Link href={entry.receipt.href} className="link-draw">
+                            {entry.receipt.label} ⟶
+                          </Link>
+                          {/* The paper remembers (W1): ✓ once the cited
+                              case file has been opened */}
+                          {receiptFileId(entry.receipt.href) ? (
+                            <VisitedMark
+                              fileId={receiptFileId(entry.receipt.href)!}
+                            />
+                          ) : null}
+                        </>
                       ) : (
                         "no case file — the repository is the record"
                       )}

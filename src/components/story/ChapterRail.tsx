@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { CHAPTERS, isDuskChapter } from "@/components/story/chapters";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
 import { useLenis } from "@/components/layout/SmoothScroll";
+import { useVisitedFiles } from "@/lib/paperMemory";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -41,6 +42,12 @@ if (typeof window !== "undefined") {
  *  a chapter counts as reviewed once its bottom passes 60% viewport —
  *  the moment its thread segment finishes drawing. */
 const REVIEW_BOUNDARY = "clamp(bottom 60%)";
+
+/** The paper remembers (W1): chapters that ARE a case file keep their
+ *  mark once that file has been opened — the reader's journey joins
+ *  the audit trail, persisted across sessions ([data-visited]). Only
+ *  the flagship chapter maps 1:1 onto a dossier. */
+const CHAPTER_CASE_FILES: Record<string, string> = { "04": "automl" };
 
 /**
  * The reviewer's check — the same hand as fig 6.1's GateMark, shrunk
@@ -71,6 +78,7 @@ export function ChapterRail() {
   const [active, setActive] = useState(CHAPTERS[0].id);
   const [reviewed, setReviewed] = useState<ReadonlySet<string>>(new Set());
   const lenis = useLenis();
+  const visitedFiles = useVisitedFiles();
 
   useEffect(() => {
     const sections = Array.from(
@@ -146,6 +154,8 @@ export function ChapterRail() {
       <ul className="flex flex-col gap-2.5">
         {CHAPTERS.map((chapter) => {
           const isActive = chapter.id === active;
+          const caseFile = CHAPTER_CASE_FILES[chapter.id];
+          const visited = caseFile ? visitedFiles.has(caseFile) : false;
           return (
             <li key={chapter.id}>
               <LenisAnchor
@@ -159,6 +169,7 @@ export function ChapterRail() {
                 <span>{chapter.id}</span>
                 <span
                   aria-hidden="true"
+                  data-visited={visited ? "" : undefined}
                   className={cn(
                     "rail-mark self-center",
                     reviewed.has(chapter.id) && "is-checked"
