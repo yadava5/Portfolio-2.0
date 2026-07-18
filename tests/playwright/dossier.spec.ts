@@ -201,6 +201,52 @@ test.describe("dossier — case files", () => {
     );
   });
 
+  test("fast-mnist: the ~97% receipt is stamped HELD until an eval run earns it", async ({
+    page,
+  }) => {
+    await page.goto("/projects/fast-mnist-nn/");
+    await page.waitForLoadState("domcontentloaded");
+
+    /* W2 HELD apparatus (friend transposition #1): the reserved
+       dashed-clay stamp on the one number that terminates in README
+       prose, plus the Newsreader footnote naming when it lifts. */
+    const row = page.locator("#v-fast-mnist-nn-1");
+    await expect(
+      row.getByRole("img", { name: "Stamp: held — not yet earned" })
+    ).toBeVisible();
+    await expect(row).toContainText(
+      "held until a committed eval run earns it — see corrections."
+    );
+
+    /* The footnote's pointer resolves: the register carries the entry */
+    await expect(page.locator("#corrections")).toContainText("HELD stamp");
+
+    /* And the skeuomorph budget holds — no other stamp on this file */
+    await expect(page.getByRole("img", { name: /^Stamp:/ })).toHaveCount(1);
+  });
+
+  test("dossier sections carry the [ section ] · § descriptor heads", async ({
+    page,
+  }) => {
+    await page.goto("/projects/automl/");
+    await page.waitForLoadState("domcontentloaded");
+    for (const head of [
+      "[ problem ] · § as found",
+      "[ architecture ] · § fig. 2, inked",
+      "[ decisions ] · § as filed",
+      "[ validation ] · § the receipts",
+      "[ corrections ] · § the register",
+      "[ appendix ] · § plates & artifacts",
+    ]) {
+      await expect(page.getByText(head), head).toBeVisible();
+    }
+
+    /* Ledger files speak the same grammar over the checked-in table */
+    await page.goto("/projects/master-inventory/");
+    await page.waitForLoadState("domcontentloaded");
+    await expect(page.getByText("[ ledger ] · §")).toBeVisible();
+  });
+
   test("checked-in ledgers render as tables with raw JSON downloads", async ({
     page,
   }) => {

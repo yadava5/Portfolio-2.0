@@ -1,4 +1,5 @@
 import { test, expect, Locator, Page } from "@playwright/test";
+import { CHAPTERS } from "../../src/components/story/chapters";
 import {
   ATLAS_ALLOWED_METRICS,
   CASE_STUDY_LOCAL_ARTIFACTS,
@@ -186,6 +187,43 @@ test.describe("Daylight Study — working paper", () => {
       await expect(rows.nth(index)).toContainText(row.title);
       await expect(rows.nth(index)).toContainText(row.metric);
     }
+  });
+
+  test("the kickers keep the day's fixed clock, dawn to nightfall", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#arrival").waitFor({ state: "attached" });
+
+    /* W2 dateline clocks: the paper's FIXED workday record (06:12 →
+       22:41) in every ¶ kicker, strictly advancing chapter to chapter.
+       Only the gate's LocalTime is the reader's own now. */
+    let previousMinutes = -1;
+    for (const chapter of CHAPTERS) {
+      const kicker = page.locator(`#${chapter.anchor} [data-thread-kicker]`);
+      await expect(kicker).toContainText(`· ${chapter.clock}`);
+      const [hours, minutes] = chapter.clock.split(":").map(Number);
+      const clockMinutes = hours * 60 + minutes;
+      expect(
+        clockMinutes,
+        `${chapter.anchor} clock advances the day`
+      ).toBeGreaterThan(previousMinutes);
+      previousMinutes = clockMinutes;
+    }
+  });
+
+  test("ch-02 opens on the dictionary entry — the practice, defined", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#who").waitFor({ state: "attached" });
+
+    /* W2 glossary apparatus: serif headword, mono pronunciation,
+       Newsreader senses — one instance on the whole paper. */
+    await expect(page.locator("#who")).toContainText("ap·prov·al");
+    await expect(page.locator("#who")).toContainText(
+      "the moment a human signs for a machine’s work"
+    );
   });
 
   test("chapter rows link to their case files", async ({ page }) => {

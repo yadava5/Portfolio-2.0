@@ -128,6 +128,14 @@ export interface CaseReceipt {
   /** When the evidence was recorded (YYYY-MM or YYYY-MM-DD); null = not recorded */
   date: string | null;
   visibility: ReceiptVisibility;
+  /**
+   * W2: the row's number is withheld from full standing until a
+   * committed artifact earns it — EvidenceTable renders the reserved
+   * dashed-clay HELD stamp plus a Newsreader footnote ("{note} — see
+   * corrections."), and the corrections register must carry the
+   * matching entry. Counts against the ≤2 stamps/page budget.
+   */
+  held?: { note: string };
 }
 
 /** Corrections register entry — errata are permanent, never deleted */
@@ -252,14 +260,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: JOBTRACKER_TREE,
     },
     summary:
-      "A native macOS job-application tracker that syncs email, classifies job-search signals locally, and turns noisy inbox updates into a usable application pipeline.",
+      "A native macOS tracker that reads the job search out of the inbox. Email syncs in, a local classifier names each message, and the noise becomes an application pipeline you can act on.",
     evidenceDisclosure: {
       label: "Private-safe proof: no email content",
       detail:
         "The source repository documents that old screenshots were removed as outdated. This case file uses architecture, source, build, test, and benchmark evidence instead of inbox screenshots or private application data.",
     },
     problem:
-      "Job-search status lives across Gmail, iCloud Mail, employer systems, and one-off messages. Manual tracking misses updates and creates duplicate spreadsheet work.",
+      "The status of a job search scatters across Gmail, iCloud Mail, employer systems, and one-off messages. A spreadsheet can't keep up: updates get missed, rows get retyped, and the record drifts from the truth.",
     constraints: [
       "Keep job-search email classification local and privacy-first.",
       "Support both Gmail OAuth2 and iCloud IMAP sources.",
@@ -563,14 +571,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "yadava5/ai-augmented-auto-ml-toolchain",
     summary:
-      "A private GitHub-backed agentic AutoML platform that turns datasets and domain documents into auditable ML pipeline decisions with human approval gates.",
+      "A private, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
     evidenceDisclosure: {
       label: "Private proof: GitHub evidence",
       detail:
         "The current GitHub repository is yadava5/ai-augmented-auto-ml-toolchain and its README identifies the product as Agentic AutoML Platform. The repository is private, so this case file shows private-safe evidence instead of a public source link.",
     },
     problem:
-      "Raw datasets require many repetitive steps before useful modeling: ingestion, feature decisions, training, evaluation, and deployment packaging.",
+      "Between a raw dataset and a useful model sits a chain of repetitive judgment: ingestion, feature decisions, training, evaluation, deployment packaging. Automate the chain carelessly and the judgment disappears with the labor.",
     constraints: [
       "Make pipeline decisions auditable instead of opaque.",
       "Support domain documents through retrieval and MCP-based orchestration.",
@@ -858,9 +866,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: VISUAL_ASSIST_TREE,
     },
     summary:
-      "A privacy-first iOS accessibility app with LiDAR obstacle detection, Vision OCR, haptics, and voice guidance.",
+      "An iOS accessibility app that meets the room before its user does. LiDAR finds the obstacles, Vision reads the text, haptics and speech carry the answer — and the processing stays on the device.",
     problem:
-      "Visually impaired users need fast environmental feedback without sending sensitive camera or location context to a remote service.",
+      "A visually impaired user needs the room described now, not after a round trip — and never at the price of shipping camera or location context to somebody else's server.",
     constraints: [
       "Prioritize on-device processing for privacy.",
       "Support LiDAR obstacle detection and haptic feedback.",
@@ -1057,9 +1065,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: TASKFLOW_TREE,
     },
     summary:
-      "A production-style calendar and task management app with natural-language scheduling, conflict detection, PostgreSQL, and broad automated test coverage.",
+      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite.",
     problem:
-      "Calendar and task planning becomes brittle when notes, reminders, scheduling language, and conflict detection are split across tools.",
+      "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
     constraints: [
       "Support natural language input for scheduling.",
       "Keep full-stack behavior tested across frontend, backend, and integration layers.",
@@ -1230,14 +1238,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that consolidates Workday exports and Tableau metadata into a trusted 35-field master inventory.",
+      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
         "This case file describes the engineering shape, systems, and validation model without exposing institutional records, internal UI, or raw data.",
     },
     problem:
-      "Operational reporting breaks down when asset identifiers, ownership fields, Tableau metadata, and Workday exports disagree across systems.",
+      "Asset identifiers, ownership fields, Tableau metadata, Workday exports — each system keeps its own version of the truth. Reporting built on records that disagree inherits the disagreement.",
     constraints: [
       "Keep institutional details private while explaining the engineering shape.",
       "Normalize large operational datasets without losing auditability.",
@@ -1455,14 +1463,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from Miami University policy-support work: a Python RAG assistant that routes CLI and Slack questions through OpenAI File Search and cited-source guardrails.",
+      "Private proof from Miami University policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
         "This case file uses a private-safe architecture diagram plus sanitized source-truth summaries. Real institutional policy content, raw validation transcripts, Slack messages, and private records are not shown.",
     },
     problem:
-      "Policy answers were scattered across documents, pages, and team knowledge, making day-to-day interpretation slow and inconsistent.",
+      "Policy lived in three places — documents, pages, and people's heads. An answer meant knowing which of the three to ask, and the answers didn't always agree.",
     constraints: [
       "Keep institutional policy content governed and source-cited.",
       "Support DOCX, PDF, and Markdown policy sources.",
@@ -1695,9 +1703,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/fast-mnist-nn/tree/${FAST_MNIST_SHA}`,
     },
     summary:
-      "A C++ neural network for MNIST digit recognition with SIMD matrix operations, OpenMP parallelism, benchmarks, and a React/TypeScript frontend.",
+      "A neural network for MNIST with nothing under it but C++. SIMD matrix kernels, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
     problem:
-      "MNIST inference is small enough to understand but useful for proving whether low-level matrix optimization and benchmark discipline are real.",
+      "MNIST is small enough to hold in your head. That's the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
       "Keep the implementation in C++ with explicit SIMD and OpenMP paths.",
       "Measure speedup without overstating unverified exact benchmark details.",
@@ -1757,7 +1765,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         decision: "Use hand-tuned SIMD paths",
         reason:
-          "The project is meant to demonstrate performance engineering beyond framework use.",
+          "The point is performance engineering you can read — kernels on the page, not framework calls.",
         tradeoff:
           "Hardware-specific paths need careful fallbacks and benchmarking.",
         status: "accepted",
@@ -1811,6 +1819,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         ],
         date: "2026-07",
         visibility: "public",
+        /* W2 HELD stamp (friend transposition #1): the ~97% terminates
+           in README prose, not a committed eval artifact (EVIDENCE-MODEL
+           content-debt). The number stays on file, stamped, until an
+           eval run is checked in — the corrections note below is the
+           register entry the footnote points to. */
+        held: { note: "held until a committed eval run earns it" },
       },
       {
         /* Attribution per BENCHMARKS.md itself: the 3.5x (dot 256) is the
@@ -1892,6 +1906,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-07",
         kind: "note",
         text: "Attribution tightened, number unchanged: the committed 3.50x (dot 256) belongs to the openmp+simd configuration measured against the -O3 baseline. BENCHMARKS.md's own analysis records that -march=native alone barely moves the needle; earlier site copy credited the speedup to SIMD alone.",
+      },
+      {
+        date: "2026-07",
+        kind: "note",
+        text: "The ~97% accuracy receipt now carries the HELD stamp: the number is documented in the repo's README training notes, but no committed eval artifact reproduces it yet. The claim is unchanged and stays on file; the stamp lifts when an eval run is checked in.",
       },
     ],
     artifacts: [

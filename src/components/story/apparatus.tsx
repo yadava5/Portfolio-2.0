@@ -13,9 +13,15 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { CHAPTERS } from "@/components/story/chapters";
 
 /** Total folio count, rendered as `NN / 07` */
 const FOLIO_TOTAL = "07";
+
+/** The chapter's fixed dateline clock (W2) — the paper's workday record */
+function chapterClock(id: string): string | undefined {
+  return CHAPTERS.find((chapter) => chapter.id === id)?.clock;
+}
 
 /** Muted-text class for a chapter: token ink by day, opacity past dusk */
 export function mutedClass(dusk: boolean): string {
@@ -35,6 +41,12 @@ interface ChapterKickerProps {
 
 /**
  * Mono paragraph kicker: `¶ 02 / 07 · who`, with an optional dateline.
+ *
+ * W2 dateline clocks: every home kicker closes on the chapter's fixed
+ * clock from the CHAPTERS contract (`· 08:47`) — seven times of one
+ * workday, dawn 06:12 to nightfall 22:41, matched to the waypoint
+ * light. The scroll reads as a single day's record; only the gate's
+ * LocalTime is the reader's now.
  */
 export function ChapterKicker({
   id,
@@ -42,6 +54,7 @@ export function ChapterKicker({
   dateline,
   dusk = false,
 }: ChapterKickerProps) {
+  const clock = chapterClock(id);
   return (
     <div
       className={cn(
@@ -53,6 +66,7 @@ export function ChapterKicker({
           underline flourish (ThreadSegment.tsx) — geometry only */}
       <p data-thread-kicker>
         ¶ {id} / {FOLIO_TOTAL} · {label}
+        {clock ? ` · ${clock}` : ""}
       </p>
       {dateline ? <p className="hidden sm:block">{dateline}</p> : null}
     </div>

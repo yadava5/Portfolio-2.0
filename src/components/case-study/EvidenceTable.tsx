@@ -20,6 +20,7 @@
  * on hover/focus in the desktop engine world only.
  */
 
+import { HeldStamp } from "@/components/paper/HeldStamp";
 import {
   CaseReceipt,
   ReceiptArtifactLink,
@@ -140,6 +141,23 @@ export function EvidenceTable({
                 <span className="font-serif text-[1.0625rem] leading-6">
                   {row.claim}
                 </span>
+                {/* W2: the HELD apparatus — the reserved dashed-clay
+                    stamp for a number awaiting its committed artifact,
+                    plus the Newsreader footnote naming when it lifts.
+                    The corrections register carries the matching entry
+                    (the footnote's pointer must always resolve). */}
+                {row.held ? (
+                  <span className="mt-3 block">
+                    <HeldStamp />
+                    <span className="text-ink-secondary mt-2 block max-w-[44ch] font-serif text-[0.9375rem] leading-6 italic">
+                      {row.held.note} —{" "}
+                      <a href="#corrections" className="link-draw">
+                        see corrections
+                      </a>
+                      .
+                    </span>
+                  </span>
+                ) : null}
               </p>
               <p className="label-mono text-ink-secondary">
                 <KeyLabel>method</KeyLabel>

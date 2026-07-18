@@ -74,7 +74,11 @@ function breakable(value: string): React.ReactNode {
   ));
 }
 
-/** Mono section heading — the dossier's inner kicker voice */
+/** Mono section heading — the dossier's inner kicker voice.
+ *  W2 (friend transposition): the "[ section ] · § descriptor" form —
+ *  a bracketed mono tag naming the section, the § sign carrying its
+ *  working descriptor ("[ validation ] · § the receipts"). Section ids
+ *  and anchors are untouched; only the printed head changed hands. */
 function SectionKicker({ id, children }: { id?: string; children: string }) {
   return (
     <h2 id={id} className="label-mono text-ink-secondary">
@@ -259,7 +263,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         {/* ── Problem, constraints + fig. 1 (the one rotated plate) ── */}
         <div className="mt-20 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)]">
           <section id="problem">
-            <SectionKicker>the problem —</SectionKicker>
+            <SectionKicker>[ problem ] · § as found</SectionKicker>
             <p className="text-body mt-4 max-w-[52ch] font-serif">
               {study.problem}
             </p>
@@ -326,7 +330,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         {/* ── fig. 2 — architecture, inked ─────────────────────────── */}
         <section id="architecture" className="mt-20">
-          <SectionKicker>the architecture — fig. 2</SectionKicker>
+          <SectionKicker>[ architecture ] · § fig. 2, inked</SectionKicker>
           <div className="mt-6">
             <SystemDiagram
               summary={study.architecture.summary}
@@ -361,7 +365,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         {/* ── Decisions as numbered ADR clauses ────────────────────── */}
         <section id="decisions" className="mt-20 max-w-[44rem]">
-          <SectionKicker>decisions — as filed</SectionKicker>
+          <SectionKicker>[ decisions ] · § as filed</SectionKicker>
           <div className="mt-2">
             {study.decisions.map((decision, index) => (
               <article
@@ -388,7 +392,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         {/* ── Validation: method slip + the receipts table ─────────── */}
         <section id="validation" className="mt-20">
-          <SectionKicker>validation — the receipts</SectionKicker>
+          <SectionKicker>[ validation ] · § the receipts</SectionKicker>
 
           {study.protocol ? (
             <aside className="border-clay-graphic/70 mt-6 max-w-[44rem] border-l-2 pl-5">
@@ -463,7 +467,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         {study.ledger ? (
           <section id="ledger" className="mt-20 max-w-[44rem]">
             <SectionKicker>
-              {`${study.ledger.title} — checked in ${study.ledger.checkedIn}`}
+              {`[ ledger ] · § ${study.ledger.title} — checked in ${study.ledger.checkedIn}`}
             </SectionKicker>
             <table className="mt-4 w-full border-collapse">
               <thead>
@@ -522,7 +526,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         {/* ── Corrections register — permanent, never deleted ──────── */}
         <section id="corrections" className="mt-20 max-w-[44rem]">
-          <SectionKicker>corrections — the register</SectionKicker>
+          <SectionKicker>[ corrections ] · § the register</SectionKicker>
           {study.corrections.length > 0 ? (
             <ul className="mt-2">
               {study.corrections.map((correction) => (
@@ -550,7 +554,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
         {/* ── Plates & artifacts — the appendix ────────────────────── */}
         <section id="artifacts" className="mt-20">
-          <SectionKicker>plates &amp; artifacts — the appendix</SectionKicker>
+          <SectionKicker>[ appendix ] · § plates &amp; artifacts</SectionKicker>
           <div className="mt-6">
             <ArtifactGallery artifacts={study.artifacts} figStart={figStart} />
           </div>

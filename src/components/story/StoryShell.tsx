@@ -119,25 +119,25 @@ const PATH_FIELD_RECORDS: {
   {
     dateline: "jun 2025",
     observation:
-      "The tickets arrive without shape — a million-plus service records, and no two describe their problem alike.",
+      "The tickets arrive without shape. A million-plus service records, and no two name their problem alike.",
     receipt: "1M+ operational records — high-volume python + sql transforms",
   },
   {
     dateline: "the fix",
     observation:
-      "Transforms feeding OAS and Tableau, then dashboards that university departments actually read to make decisions.",
+      "Python and SQL teach the records shape. The transforms feed OAS and Tableau; the dashboards they fill are read across university departments — read, and acted on.",
     receipt: "oas/tableau reporting — dashboards across departments",
   },
   {
     dateline: "the bot",
     observation:
-      "The questions start answering themselves — an AI chatbot in Slack, wired to Workday, Oracle Analytics, and Tableau, governed the whole way.",
+      "The questions start answering themselves — an AI chatbot in Slack, wired to Workday, Oracle Analytics, and Tableau, governed at every joint.",
     receipt: "governed data access — workday · oracle · tableau apis",
   },
   {
     dateline: "the assistant",
     observation:
-      "A second assistant reads policy and answers with its sources cited, so documentation stops costing an afternoon.",
+      "A second assistant reads policy and answers with its sources cited. The lookup that cost an afternoon now costs a question.",
     receipt: "19/20 cited-source sweep — PolicyBot, the policy assistant",
     href: "/projects/policybot/#v-policybot-1",
   },
@@ -504,23 +504,46 @@ function WhoChapter() {
           />
 
           {/* Compressed to one breath (fix round 4): deck pair, ONE short
-              paragraph, and the n.b. aside — smaller, still seated against
-              the bio column so it reads as a note ON the text. */}
+              paragraph, and the right-hand apparatus column — the
+              dictionary entry (W2, friend transposition: the word being
+              defined IS the practice) above the n.b. aside, both seated
+              against the bio so they read as notes ON the text. */}
           <div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14">
             <p className="text-body max-w-[55ch] font-serif" data-tm="block">
-              I’m a computer-science graduate from Miami University, and I build
-              the whole path — data pipelines, applied machine learning, and the
-              software that carries them into real use — with evidence behind
-              every claim and a person holding the final word.
+              I’m a computer-science graduate from Miami University. I build the
+              whole path — data pipelines, applied machine learning, and the
+              software that carries them into real use. The claims on this paper
+              carry receipts. The final word stays human.
             </p>
 
-            <aside
-              className="border-ink-secondary/60 text-ink-secondary self-end justify-self-start border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
-              data-tm="block"
-            >
-              n.b. — nothing on this desk ships without a human pass. this page
-              waited its turn too.
-            </aside>
+            <div className="flex flex-col gap-10 md:justify-between">
+              {/* The printed glossary block: serif headword, mono
+                  pronunciation, Newsreader senses. One instance on the
+                  whole paper; both senses are the thesis, not a claim.
+                  The syllable dots are typography — an sr-only twin
+                  keeps the accessible word whole. */}
+              <div data-tm="block">
+                <p className="font-display fraunces-display text-2xl leading-none">
+                  <span aria-hidden="true">ap·prov·al</span>
+                  <span className="sr-only">approval</span>
+                </p>
+                <p className="label-mono text-ink-secondary mt-2">
+                  <span aria-hidden="true">/ əˈpruː·vəl / · </span>noun
+                </p>
+                <p className="text-ink-secondary mt-3 max-w-[26ch] font-serif text-[0.9375rem] leading-6 italic">
+                  1. the moment a human signs for a machine’s work. 2. the step
+                  I refuse to automate.
+                </p>
+              </div>
+
+              <aside
+                className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
+                data-tm="block"
+              >
+                n.b. — nothing on this desk ships without a human pass. this
+                page waited its turn too.
+              </aside>
+            </div>
           </div>
         </div>
 
@@ -677,8 +700,8 @@ function AutomlChapter() {
               data-tm="block"
             >
               Agentic AutoML turns a dataset and a goal into a structured,
-              auditable ML workflow — planned, argued for, and executed by
-              agents that still cannot press go. That button is human. It stays
+              auditable ML workflow. The agents plan it, argue for it, and run
+              it — and still cannot press go. That button is human. It stays
               human.
             </p>
             {/* Honest stat strip — every clause is proof-manifest-backed */}
