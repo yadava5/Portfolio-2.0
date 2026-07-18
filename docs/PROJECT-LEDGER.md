@@ -93,3 +93,28 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   (bar 85) + evidence spot-recount. Rejected: kicker-clock numeral flicker
   (scramble = banned). User calls surfaced: automl hero demotion, PR #5
   deploy (production /evidence/ 404s until merge).
+- **W5 ROUND A SHIPPED (`134d098` + docs `14398a6`)**: the honesty trio +
+  machinery. e-07 split (earned 3.5x kernel keeps its ✓; ~97% accuracy is
+  now its own explicitly-HELD /evidence entry wearing the case-file stamp,
+  receipt → the HELD row; proof gate enforces it stays held until a
+  committed eval artifact earns it). Capture-vs-artifact tick semantics:
+  explicit `capture` flag → held|described|capture|artifact, hollow ring vs
+  solid tick vs dash, settled line composed from the data — automl now reads
+  the blunt-honest "audit walked · 0 of 8 terminate in pinned artifacts · 6
+  in page captures · 2 described only" (arithmetic asserted per-row vs DOM on
+  7 files ×3). "refused — the gate stopped the run" ends the held/earned word
+  collision. Walk marks in clay at legible weight; "run the audit" transforms
+  in place into the settled ledger line (zero shift via SSR ghost); citation
+  stroke re-origins at the fig-link underline; work-row hierarchy; 90-second
+  screener path; chapter-rail labels. Gates: 436 ×3 + fast gates green.
+- **W5 ROUND B SHIPPED (`c1dc818`)**: hero headline ink-settle beat (paint-
+  only: color + ≤1px same-color drying feather; hero-rise still owns
+  opacity/transform/blur — settled diff 0.0000% maxΔ0, perf gate 3/3, LCP
+  war intact) reseating the byline stipple to read strictly second; decision
+  t-slips seated as true right-margin sidenotes at lg+ (mid-file dead band
+  gone); the **on-file manifest** — the visitor's own persisted trail
+  ("on file: N case files opened · {id} audit walked · run 041 approved,
+  {date}") rendered from paperMemory only, allowlisted, empty-store-silent,
+  SSR-neutral, live on the subscribe channel. 4 new manifest honesty tests;
+  full suite 475 ×3, 0 failed. → **W5 re-judge**: fresh visitor (bar 85) +
+  evidence spot-recount of the changed arithmetic.
