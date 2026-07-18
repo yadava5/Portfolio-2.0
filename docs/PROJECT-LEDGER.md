@@ -75,3 +75,8 @@ per-label metrics · outcome numbers · updated resume · final deployments.
 - **NEW INPUT**: tour of shreechaturvedi.com (friend's portfolio) for
   inspiration transposition — findings land in
   docs/design-lab/FRIEND-PORTFOLIO-TRANSPOSITIONS.md.
+- **Era build COMPLETE**: W2 shipped `d83b9eb` (heavy wordings, clocks, HELD
+  stamp, dictionary, § heads) · run-the-audit shipped `b93be6a` · stipple
+  masthead shipped (CSS halftone mask, 0.0000% settle diff, LCP intact).
+  W3-extras (view transitions, sun glyph, local-time arc) deferred pending
+  W4 verdicts. → W4: triple fresh-eyes critique, bar 90/90/85.
