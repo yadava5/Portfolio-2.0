@@ -613,7 +613,16 @@ test.describe("Daylight Study — working paper", () => {
       await page.waitForLoadState("domcontentloaded");
 
       for (const section of CASE_STUDY_SECTIONS) {
-        await expect(page.getByText(section).first()).toBeVisible();
+        /* filter({ visible: true }): the W5a audit control renders its
+           settled ledger face ("… terminate in pinned artifacts …") as
+           a hidden sizing ghost BEFORE the walk, and that hidden node
+           precedes the appendix in DOM order — a bare .first() resolves
+           to it and can never be visible. The assertion's intent is
+           unchanged: a VISIBLE occurrence of each section word must
+           exist on the route. */
+        await expect(
+          page.getByText(section).filter({ visible: true }).first()
+        ).toBeVisible();
       }
 
       const bodyText = await page.locator("body").innerText();

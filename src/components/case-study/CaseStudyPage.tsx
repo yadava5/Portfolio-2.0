@@ -371,26 +371,41 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </section>
         ) : null}
 
-        {/* ── Decisions as numbered ADR clauses ────────────────────── */}
-        <section id="decisions" className="mt-20 max-w-[44rem]">
+        {/* ── Decisions as numbered ADR clauses ──────────────────────
+            W5 round B (visitor #5): on the dossier grid's lg breakpoint
+            the t-slips seat as TRUE right-margin sidenotes — each
+            article becomes a two-column grid whose left column keeps
+            the continuous 44rem measure (clause head + reason) while
+            the tradeoff slip sits in the right margin beside ITS OWN
+            decision (per-article grid = alignment by entry, top-seated
+            with the d-head). The ¶ reads: reason cites t{n} in the
+            text, the eye travels right, the slip is there — the
+            marginalia the two-ink grid promised. DOM/reading order is
+            untouched (head → reason → slip); below lg the stacked flow
+            is exactly the old one. minmax(0,44rem) lets the measure
+            give first at 1024 so the grid never overflows the wrap. */}
+        <section id="decisions" className="mt-20 max-w-[44rem] lg:max-w-none">
           <SectionKicker>[ decisions ] · § as filed</SectionKicker>
           <div className="mt-2">
             {study.decisions.map((decision, index) => (
               <article
                 key={decision.decision}
-                className="border-ink/15 border-t py-6"
+                className="border-ink/15 border-t py-6 lg:grid lg:grid-cols-[minmax(0,44rem)_minmax(200px,280px)] lg:gap-x-12"
               >
-                <h3 className="label-mono text-ink">
+                <h3 className="label-mono text-ink lg:col-start-1">
                   d{index + 1} — {decision.decision.toLowerCase()} ·{" "}
                   {decision.status}
                 </h3>
-                <p className="text-body mt-3 max-w-[52ch] font-serif">
+                <p className="text-body mt-3 max-w-[52ch] font-serif lg:col-start-1">
                   {decision.reason}
                   <sup className="label-mono text-ink-secondary ml-1">
                     t{index + 1}
                   </sup>
                 </p>
-                <p className="label-mono text-ink-secondary border-ink/20 mt-3 ml-5 border-l pl-4">
+                <p
+                  data-tradeoff-slip
+                  className="label-mono text-ink-secondary border-ink/20 mt-3 ml-5 border-l pl-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:ml-0 lg:self-start"
+                >
                   t{index + 1}. tradeoff — {decision.tradeoff}
                 </p>
               </article>

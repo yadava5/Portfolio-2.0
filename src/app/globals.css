@@ -596,6 +596,46 @@ html[data-motion-off] .thread-segment .thread-node-gate {
     animation-name: hero-rise-blur;
   }
 }
+
+/* ── HEADLINE INK-SETTLE (W5 round B, visitor #3) ───────────────────
+   The masthead's own beat: the three H1 lines land, then their ink
+   DEEPENS — secondary ink → full ink with a ≤1px same-color bleed
+   feather tightening to nothing (letterpress ink drying, not glow: the
+   feather is never lighter than the letterform it hugs, and its end
+   state is zero shadow). Paint-only devices on purpose — the H1 is the
+   LCP element and the three-line block must never reflow: no mask, no
+   weight/tracking animation, opacity floor untouched (hero-rise still
+   owns opacity/transform/blur; this second animation touches color and
+   text-shadow ONLY). Each line settles over 0.4s from its own 60ms
+   seat, so the whole headline is full-ink by ~520ms — before the
+   byline stipple's dots merge (its resolve half runs ~670–1070ms).
+   The footnote ¹ keeps its own secondary ink (explicit class color —
+   inheritance never reaches it). `to` omitted everywhere: the settled
+   state IS the static state, and once TextMotion drops
+   [data-motion-ready] these rules stop matching entirely. */
+@keyframes hero-ink-settle {
+  from {
+    color: var(--color-ink-secondary);
+    text-shadow: 0 0 1px var(--color-ink-secondary);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter-headline {
+    animation-name: hero-rise, hero-ink-settle;
+    animation-duration: 0.6s, 0.4s;
+    animation-timing-function:
+      cubic-bezier(0.19, 1, 0.22, 1), cubic-bezier(0.33, 0, 0.55, 1);
+    animation-fill-mode: both, both;
+    animation-delay:
+      calc(var(--hero-i, 0) * 60ms), calc(var(--hero-i, 0) * 60ms);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter-headline {
+    animation-name: hero-rise-blur, hero-ink-settle;
+  }
+}
+
 /* The hero sub-line animates an INNER wrapper: [data-thread-name]
    itself must never transform (the Red Thread measures its box). */
 .hero-enter-inline {
@@ -1110,6 +1150,25 @@ html[data-motion-off] [data-chapter="07"] {
   transition: none;
 }
 
+/* ── The closing "on file:" manifest (W5 round B) ───────────────────
+   The visitor's own audit trail as a margin note under the gate stamp,
+   in the stamp's nightfall clay (clay-night on waypoint-07 — 6.4:1,
+   the pair check-contrast.mjs already gates). Space is reserved by the
+   component (min-h), so the line's arrival never moves the stamp. On
+   load the record is dried — simply there; only a mid-session first
+   appearance (the store's first entry landing while the reader is on
+   the page) takes the ≤300ms opacity settle, engine world only. */
+.on-file-manifest {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.on-file-manifest[data-on-file] {
+  opacity: 1;
+}
+.on-file-manifest.is-dried {
+  transition: none;
+}
+
 /* ── Run the audit (friend transposition #3): the receipts walk ──────
    The control keeps the link-draw grammar — quiet mono ink, NOT a
    filled CTA. Once walked, the control ITSELF is the settled ledger
@@ -1193,6 +1252,7 @@ html[data-motion-off] [data-chapter="07"] {
   .registry-mark,
   .visited-mark,
   .file-memory,
+  .on-file-manifest,
   .audit-mark,
   .audit-settled,
   .audit-run {
@@ -1205,6 +1265,7 @@ html[data-motion-off] .registry-approve .registry-strike,
 html[data-motion-off] .registry-mark,
 html[data-motion-off] .visited-mark,
 html[data-motion-off] .file-memory,
+html[data-motion-off] .on-file-manifest,
 html[data-motion-off] .audit-mark,
 html[data-motion-off] .audit-settled,
 html[data-motion-off] .audit-run {

@@ -291,6 +291,95 @@ test.describe("dossier — the evidence index", () => {
   });
 });
 
+test.describe("dossier — t-slips as margin sidenotes (W5 round B)", () => {
+  /* Visitor #5: on the dossier grid's lg breakpoint every tradeoff
+     slip seats as a true right-margin sidenote BESIDE its own decision
+     (per-article grid: alignment by entry, top-seated with the d-head)
+     while the clause column keeps its continuous measure; below lg the
+     stacked flow is byte-identical to the old one. DOM order (head →
+     reason → slip) is a reading-order contract in both worlds. */
+  for (const projectId of ["automl", "jobtracker"]) {
+    test(`${projectId}: every tradeoff slip is seated with its decision`, async ({
+      page,
+    }) => {
+      await page.goto(`/projects/${projectId}/`);
+      await page.locator("#decisions [data-tradeoff-slip]").first().waitFor();
+
+      const probe = await page.evaluate(() =>
+        Array.from(document.querySelectorAll("#decisions article")).map(
+          (article) => {
+            const head = article.querySelector("h3");
+            const reason = article.querySelector("p");
+            const slip = article.querySelector("[data-tradeoff-slip]");
+            const box = (el: Element | null) => {
+              const rect = el?.getBoundingClientRect();
+              return rect
+                ? {
+                    left: rect.left,
+                    right: rect.right,
+                    top: rect.top,
+                    bottom: rect.bottom,
+                  }
+                : null;
+            };
+            return {
+              order:
+                head && reason && slip
+                  ? Boolean(
+                      head.compareDocumentPosition(reason) &
+                      Node.DOCUMENT_POSITION_FOLLOWING
+                    ) &&
+                    Boolean(
+                      reason.compareDocumentPosition(slip) &
+                      Node.DOCUMENT_POSITION_FOLLOWING
+                    )
+                  : false,
+              head: box(head),
+              reason: box(reason),
+              slip: box(slip),
+            };
+          }
+        )
+      );
+
+      expect(probe.length).toBeGreaterThanOrEqual(3);
+      const desktop = (page.viewportSize()?.width ?? 0) >= 1024;
+      for (const [index, row] of probe.entries()) {
+        expect(row.head, `decision ${index + 1} head`).not.toBeNull();
+        expect(row.reason, `decision ${index + 1} reason`).not.toBeNull();
+        expect(row.slip, `decision ${index + 1} slip`).not.toBeNull();
+        /* Reading order never changes hands: head → reason → slip */
+        expect(row.order, `decision ${index + 1} DOM order`).toBe(true);
+        if (desktop) {
+          /* Beside, in the right margin: the slip clears the clause
+             column entirely and tops out with its own d-head */
+          expect(
+            row.slip!.left,
+            `decision ${index + 1}: slip sits right of the reason`
+          ).toBeGreaterThanOrEqual(row.reason!.right);
+          expect(
+            Math.abs(row.slip!.top - row.head!.top),
+            `decision ${index + 1}: slip top-seats with its head`
+          ).toBeLessThanOrEqual(8);
+        } else {
+          /* The old stacked flow, untouched */
+          expect(
+            row.slip!.top,
+            `decision ${index + 1}: slip stays below the reason`
+          ).toBeGreaterThanOrEqual(row.reason!.bottom);
+        }
+      }
+
+      /* The widened section never costs horizontal integrity */
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth
+        )
+      ).toBe(true);
+    });
+  }
+});
+
 test.describe("dossier — mobile thread gutter (home)", () => {
   test("at 390 the thread never touches letterforms in chapters 02–06", async ({
     page,

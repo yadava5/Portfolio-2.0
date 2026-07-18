@@ -45,6 +45,7 @@ import {
 
 /** Storage keys (mirrors src/lib/paperMemory.ts) */
 const APPROVAL_KEY = "paper-memory:v1:approved";
+const VISITED_KEY = "paper-memory:v1:visited";
 const AUDITS_KEY = "paper-memory:v1:audits";
 
 /** The mono voice's date for today — same format the page writes */
@@ -694,6 +695,8 @@ test.describe("paper memory — the paper remembers", () => {
     await expect(registryButton(page)).toHaveAttribute("aria-pressed", "false");
     await expect(page.locator("[data-visited]")).toHaveCount(0);
     await expect(page.locator("[data-approved-hello]")).toHaveCount(0);
+    /* W5: the closing manifest forgets with the rest of the paper */
+    await expect(page.locator("[data-on-file]")).toHaveCount(0);
 
     await page.goto("/projects/automl/");
     const note = page.locator("[data-file-memory]");
@@ -706,6 +709,150 @@ test.describe("paper memory — the paper remembers", () => {
     await expect(page.locator("[data-audit-run]")).not.toHaveAttribute(
       "data-walked",
       ""
+    );
+  });
+});
+
+/* ── W5 round B: the closing "on file:" manifest ──────────────────────
+   The gate chapter's margin manifest renders the visitor's OWN audit
+   trail — and only that. Contracts:
+     - empty store → nothing renders (no head, no ceremony);
+     - every segment derives from a real store entry: visited count,
+       walked audits by name (1: "{id} audit walked" · 2: "{a} + {b}
+       audits walked" · 3+: "N audits walked", store order), and the
+       approval WITH its stored date label;
+     - unrecorded items never render — segments without entries are
+       absent, ids outside the real case-file set are filtered;
+     - a stored trail restores DRIED (static); a live act (signing while
+       on the page) inks the line through the subscribe channel. */
+test.describe("paper memory — the on-file manifest", () => {
+  /** A fixed on-record date: assertions never depend on the run date */
+  const RECORD = { iso: "2026-07-18", label: "jul 18, 2026" };
+
+  /** Seed the store before any page script runs (the dried-restore
+   *  path). Init scripts replay on EVERY navigation, so each key seeds
+   *  only when absent — an in-test rewrite survives a reload. */
+  async function seedStore(
+    page: Page,
+    seed: {
+      visited?: Record<string, typeof RECORD>;
+      audits?: Record<string, typeof RECORD>;
+      approval?: typeof RECORD;
+    }
+  ) {
+    await page.addInitScript(
+      ([keys, data]) => {
+        const seedOnce = (key: string, value: unknown) => {
+          if (value && window.localStorage.getItem(key) === null) {
+            window.localStorage.setItem(key, JSON.stringify(value));
+          }
+        };
+        seedOnce(keys.visited, data.visited);
+        seedOnce(keys.audits, data.audits);
+        seedOnce(keys.approval, data.approval);
+      },
+      [
+        { visited: VISITED_KEY, audits: AUDITS_KEY, approval: APPROVAL_KEY },
+        seed,
+      ] as const
+    );
+  }
+
+  /** The one laid-out manifest seat (desktop column or the mobile seat) */
+  function manifest(page: Page) {
+    return page.locator("[data-on-file]:visible");
+  }
+
+  test("an empty store renders nothing — no invented ceremony", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    /* Post-hydration beat: the stamp's own storage effect has run once
+       its aria state is provable, so the manifest's has too */
+    await expect(stamp(page)).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator("[data-on-file]")).toHaveCount(0);
+    await expect(page.locator(".on-file-manifest").first()).toHaveText("");
+  });
+
+  test("a seeded trail composes the exact line — every count from the store", async ({
+    page,
+  }) => {
+    await seedStore(page, {
+      visited: { jobtracker: RECORD, automl: RECORD },
+      audits: { jobtracker: RECORD },
+      approval: RECORD,
+    });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+
+    await expect(manifest(page)).toHaveText(
+      "on file: 2 case files opened · jobtracker audit walked · " +
+        "run 041 approved, jul 18, 2026"
+    );
+    /* Restored ink is dried — static on revisit, no settle performance */
+    await expect(manifest(page)).toHaveClass(/is-dried/);
+  });
+
+  test("unrecorded items never render — approval alone, garbage filtered", async ({
+    page,
+  }) => {
+    await seedStore(page, {
+      approval: RECORD,
+      /* A planted id that is not a case file must never be dressed up */
+      audits: { "not-a-case-file": RECORD },
+    });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+
+    /* Exact text: no opened segment, no walked segment, no garbage id */
+    await expect(manifest(page)).toHaveText(
+      "on file: run 041 approved, jul 18, 2026"
+    );
+  });
+
+  test("audit naming: one by name, two by name, three by count", async ({
+    page,
+  }) => {
+    await seedStore(page, {
+      audits: { jobtracker: RECORD, "fast-mnist-nn": RECORD },
+    });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    await expect(manifest(page)).toHaveText(
+      "on file: jobtracker + fast-mnist-nn audits walked"
+    );
+
+    /* Three or more walks fold to the honest count */
+    await page.evaluate(
+      ([key, record]) => {
+        window.localStorage.setItem(
+          key,
+          JSON.stringify({
+            jobtracker: record,
+            "fast-mnist-nn": record,
+            automl: record,
+          })
+        );
+      },
+      [AUDITS_KEY, RECORD] as const
+    );
+    await page.reload();
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    await expect(manifest(page)).toHaveText("on file: 3 audits walked");
+  });
+
+  test("signing while on the page inks the manifest live", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    await expect(stamp(page)).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator("[data-on-file]")).toHaveCount(0);
+
+    await stamp(page).click();
+    /* The subscribe channel carries the act into the manifest, with the
+       visitor's own date — no reload, no other recorded segments */
+    await expect(manifest(page)).toHaveText(
+      `on file: run 041 approved, ${todayLabel()}`
     );
   });
 });

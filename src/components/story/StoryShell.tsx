@@ -36,7 +36,10 @@ import {
   getDeansListCount,
 } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
-import { getCaseStudyById } from "@/lib/data/projectCaseStudies";
+import {
+  getCaseStudyById,
+  projectCaseStudies,
+} from "@/lib/data/projectCaseStudies";
 import { getProjectById } from "@/lib/data/projects";
 import {
   ChapterKicker,
@@ -53,8 +56,13 @@ import { LenisAnchor } from "@/components/story/LenisAnchor";
 import { LocalTime } from "@/components/story/LocalTime";
 import { AwaitingStamp } from "@/components/story/ApprovedStamp";
 import { ApprovedHello } from "@/components/paper/ApprovedHello";
+import { OnFileManifest } from "@/components/paper/OnFileManifest";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { VisitedMark } from "@/components/paper/VisitedMark";
+
+/** The real case-file ids (server-side): the manifest's allowlist —
+ *  paperMemory entries outside this set are never rendered. */
+const CASE_FILE_IDS = projectCaseStudies.map((study) => study.projectId);
 
 /** Shared content column: the paper's measure */
 /* The xl+ left padding is the paper's binding margin: it reserves the
@@ -73,10 +81,14 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
  * Stagger index for the hero's CSS load entrance (60ms per slot —
  * globals.css multiplies `--hero-i`; retuned from plan 3.8's 110ms per
  * PERF-AUDIT fix 1). The three headline lines take consecutive slots
- * 0–2; the byline and directives sit at 4 and 6 so the apparatus keeps
- * a touch more air behind the headline without holding the LCP line.
+ * 0–2 and carry the ink-settle beat (W5 round B): each line lands and
+ * its ink deepens over 0.4s, so the whole masthead is full-ink by
+ * ~520ms. The byline sits at 4.5 (270ms — after the headline's
+ * presence is established, before its ink finishes drying) so the
+ * stipple's dot-merge resolve reads strictly SECOND; the directives
+ * keep slot 6. Total intro: 270ms + the 0.8s stipple = 1.07s.
  *
- * @param index - Zero-based entrance slot
+ * @param index - Zero-based entrance slot (fractional seats allowed)
  * @returns Inline style carrying the custom property
  */
 function heroDelay(index: number): CSSProperties {
@@ -355,6 +367,11 @@ function ArrivalChapter() {
               .hero-enter CSS animation (globals.css) — the page's ONLY
               blur, desktop-only, load-only. The three structural line
               spans ARE the animation lines: no splitting, text intact.
+              hero-enter-headline (W5 round B, visitor #3): the masthead
+              gets its own beat — the lines land, then their ink deepens
+              secondary→full with a ≤1px drying feather (paint-only; the
+              LCP line's opacity floor and layout are untouched) BEFORE
+              the byline stipple resolves.
               aria-label (PERF-AUDIT §4.3): the block-broken spans
               concatenate without spaces and glue the footnote ¹ onto the
               name — the label keeps the accessible name one honest
@@ -364,16 +381,22 @@ function ArrivalChapter() {
             className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
           >
             {/* Forced break pattern: "machine learning" never splits */}
-            <span className="hero-enter block" style={heroDelay(0)}>
+            <span
+              className="hero-enter hero-enter-headline block"
+              style={heroDelay(0)}
+            >
               I build
             </span>
             <span
-              className="hero-enter block whitespace-nowrap"
+              className="hero-enter hero-enter-headline block whitespace-nowrap"
               style={heroDelay(1)}
             >
               machine learning
             </span>
-            <span className="hero-enter block" style={heroDelay(2)}>
+            <span
+              className="hero-enter hero-enter-headline block"
+              style={heroDelay(2)}
+            >
               that shows its{" "}
               {/* The ¹ is kerned against the period: the size lives on the
                   <sup> (not the anchor) so align-super raises the small
@@ -409,12 +432,15 @@ function ArrivalChapter() {
               the byline inks in from engraving stipple — a halftone
               mask over these real glyphs (globals.css), load-only,
               gone without residue once the entrance settles. The
-              waiting thread flick below is the pen that finishes it. */}
+              waiting thread flick below is the pen that finishes it.
+              Seat 4.5 (W5 round B): the stipple begins at 270ms — after
+              the headline has landed, so the dot-merge resolve reads
+              second; the intro still closes at 1.07s. */}
           <p className="label-mono text-ink-secondary mt-10">
             <span data-thread-name>
               <span
                 className="hero-enter hero-enter-inline hero-enter-stipple"
-                style={heroDelay(4)}
+                style={heroDelay(4.5)}
               >
                 ayush yadav — ml engineer, class of 2026
               </span>
@@ -1130,9 +1156,12 @@ function GateChapter() {
             </h2>
 
             {/* Mobile seat: the stamp sits between the giant name and the
-                email CTA (the lg+ world keeps it in the right column). */}
+                email CTA (the lg+ world keeps it in the right column).
+                The "on file:" manifest (W5 round B) sits under the seal
+                on both seats — the reader's own trail, space reserved. */}
             <div className="mt-8 lg:hidden">
               <AwaitingStamp compact />
+              <OnFileManifest fileIds={CASE_FILE_IDS} />
             </div>
 
             {/* Availability renders lowercase via .label-mono — the data
@@ -1205,6 +1234,7 @@ function GateChapter() {
 
           <div className="hidden lg:block lg:justify-self-end">
             <AwaitingStamp />
+            <OnFileManifest fileIds={CASE_FILE_IDS} />
           </div>
         </div>
 
