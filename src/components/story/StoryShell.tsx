@@ -399,11 +399,16 @@ function ArrivalChapter() {
               entrance rides an INNER wrapper: the measured span itself
               must never transform (descendant transforms do not move an
               ancestor's layout box, so the thread's origin stays true
-              even if a re-measure lands mid-entrance). */}
+              even if a re-measure lands mid-entrance).
+              hero-enter-stipple (friend transposition #4): on desktop
+              the byline inks in from engraving stipple — a halftone
+              mask over these real glyphs (globals.css), load-only,
+              gone without residue once the entrance settles. The
+              waiting thread flick below is the pen that finishes it. */}
           <p className="label-mono text-ink-secondary mt-10">
             <span data-thread-name>
               <span
-                className="hero-enter hero-enter-inline"
+                className="hero-enter hero-enter-inline hero-enter-stipple"
                 style={heroDelay(4)}
               >
                 ayush yadav — ml engineer, class of 2026

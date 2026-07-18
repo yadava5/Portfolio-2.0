@@ -22,6 +22,12 @@ import { test, expect, type Page } from "@playwright/test";
  *  6. RAIL AUDIT TRAIL: ink checks accumulate beside the folio numbers
  *     as the thread finishes each chapter (and retreat on scroll-back);
  *     static worlds show the completed checklist.
+ *  7. STIPPLE MASTHEAD (friend transposition #4): desktop motion world,
+ *     load-only — the byline's REAL glyphs carry a halftone dot-gain
+ *     mask during the entrance window (the dots ARE the letterform:
+ *     no effect layer, no per-dot DOM, the accessible string intact);
+ *     settled state carries no residual mask; mobile and the static
+ *     worlds never see the mask at all.
  */
 
 const HERO_COUNT = 5;
@@ -98,6 +104,25 @@ async function scrollToId(page: Page, id: string) {
   await page.evaluate((sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView();
   }, id);
+}
+
+/** The stipple byline (the hero's [data-thread-name] inner span). */
+const STIPPLE = ".hero-enter-stipple";
+
+/** Computed mask-image on the stipple byline (cross-engine read). */
+function bylineMask(page: Page) {
+  return page.evaluate((sel) => {
+    const el = document.querySelector<HTMLElement>(sel);
+    if (!el) return "missing";
+    const cs = getComputedStyle(el) as CSSStyleDeclaration & {
+      webkitMaskImage?: string;
+    };
+    const std = cs.maskImage;
+    if (std && std !== "none") return std;
+    const webkit = cs.webkitMaskImage;
+    if (webkit && webkit !== "none") return webkit;
+    return "none";
+  }, STIPPLE);
 }
 
 test.describe("text motion — engine world", () => {
@@ -220,6 +245,19 @@ test.describe("text motion — engine world", () => {
     }
   });
 
+  test("mobile never carries the stipple mask — the byline rises plain", async ({
+    page,
+  }) => {
+    test.skip(!isMobile(page), "the stipple screen is ≥768px only");
+
+    /* Sample through the entrance window, mirroring the blur probe:
+       the halftone mask must never reach a phone. */
+    for (let sample = 0; sample < 8; sample++) {
+      expect(await bylineMask(page)).toBe("none");
+      await page.waitForTimeout(150);
+    }
+  });
+
   test("rail marks accumulate as the thread passes, and retreat", async ({
     page,
   }) => {
@@ -300,6 +338,73 @@ test.describe("text motion — engine world", () => {
   });
 });
 
+test.describe("stipple masthead — load window", () => {
+  test("byline inks in from a halftone mask over its real glyphs, then settles clean", async ({
+    page,
+  }) => {
+    test.skip(
+      (page.viewportSize()?.width ?? 0) < 768,
+      "the stipple screen is ≥768px only"
+    );
+
+    /* Navigate on `commit` so the probe attaches during the load
+       window: the mask exists from the very first styled paint (the
+       layout inline script stamps data-motion-ready pre-hero-parse)
+       until TextMotion drops the attribute at ~1.2s. */
+    await page.goto("/", { waitUntil: "commit" });
+    await page.waitForFunction(
+      (sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return false;
+        const cs = getComputedStyle(el) as CSSStyleDeclaration & {
+          webkitMaskImage?: string;
+        };
+        const mask = cs.maskImage ?? cs.webkitMaskImage ?? "none";
+        return mask.includes("radial-gradient");
+      },
+      STIPPLE,
+      { timeout: 10_000 }
+    );
+
+    /* The dots ARE the letterform — a mask over the real text, never
+       an effect layer: no per-dot DOM, no duplicated string, and the
+       accessible line stays one intact piece of text. */
+    const dom = await page.evaluate(() => {
+      const holder = document.querySelector("[data-thread-name]");
+      const span = holder?.firstElementChild ?? null;
+      return {
+        holderChildren: holder?.childElementCount ?? -1,
+        spanChildren: span?.childElementCount ?? -1,
+        ariaHidden: span?.getAttribute("aria-hidden"),
+        text: holder?.textContent?.trim() ?? "",
+      };
+    });
+    expect(dom.holderChildren).toBe(1);
+    expect(dom.spanChildren).toBe(0);
+    expect(dom.ariaHidden).toBeNull();
+    expect(dom.text).toBe("ayush yadav — ml engineer, class of 2026");
+
+    /* Load-only, once: the gate attribute drops, and with it every
+       trace of the screen — no residual mask, byline at rest state. */
+    await expect(page.locator("html")).not.toHaveAttribute(
+      "data-motion-ready",
+      { timeout: 15_000 }
+    );
+    expect(await bylineMask(page)).toBe("none");
+    const settled = await page.evaluate((sel) => {
+      const cs = getComputedStyle(document.querySelector(sel)!);
+      return {
+        opacity: cs.opacity,
+        transform: cs.transform,
+        filter: cs.filter,
+      };
+    }, STIPPLE);
+    expect(settled.opacity).toBe("1");
+    expect(settled.filter).toBe("none");
+    expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(settled.transform);
+  });
+});
+
 test.describe("text motion — reduced motion", () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -366,5 +471,23 @@ test.describe("text motion — reduced motion", () => {
     for (const opacity of await railMarkOpacities(page)) {
       expect(opacity).toBe("1");
     }
+  });
+
+  test("static world never carries the stipple mask — byline prints finished", async ({
+    page,
+  }) => {
+    /* The readiness gate is never stamped under reduced motion, so the
+       halftone rule can never match: the byline paints as plain solid
+       text from the first frame, exactly as before the effect existed. */
+    expect(await bylineMask(page)).toBe("none");
+    const style = await page.evaluate((sel) => {
+      const el = document.querySelector<HTMLElement>(sel);
+      if (!el) return null;
+      const cs = getComputedStyle(el);
+      return { opacity: cs.opacity, transform: cs.transform };
+    }, STIPPLE);
+    expect(style).not.toBeNull();
+    expect(style?.opacity).toBe("1");
+    expect(style?.transform).toBe("none");
   });
 });

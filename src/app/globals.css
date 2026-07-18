@@ -602,6 +602,73 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   display: inline-block;
 }
 
+/* ── STIPPLE MASTHEAD (friend transposition #4) ─────────────────────
+   Under the dawn light the byline "inks in" from engraving stipple: a
+   halftone dot screen MASKS the real glyphs while the screen's dot
+   radius gains 0.7→2.5px until the dots merge solid — letterpress
+   dot-gain coming into register. The dots ARE the letterform (a mask
+   over the byline's own text): no extra DOM, no canvas, no per-dot
+   nodes, and nothing for AT to skip — the line stays one real string.
+   Two offset screens tile a 45° checkerboard lattice (the newspaper
+   screen angle, pitch 2.83px); coverage is total at r ≥ 2.0px, so the
+   registered initial value below IS the no-op state. On this one line
+   the dot-gain REPLACES the desktop de-blur (a blur filter over the
+   screen would smear the dots into particles — NO-LIST E keeps blur
+   off the effect); slot, delay, and rise timing are untouched. The
+   whole rule lives under the load-window gate, so the settled page —
+   and every static world — carries no mask property at all. */
+@property --stipple-r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 2.5px;
+}
+/* `to` omitted: the radius resolves to its registered initial (full
+   coverage), so the screen is already solid before TextMotion drops
+   the gate attribute — no residual mask, no settle pop. */
+@keyframes stipple-gain {
+  from {
+    --stipple-r: 0.7px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter-stipple {
+    animation:
+      hero-rise 0.6s cubic-bezier(0.19, 1, 0.22, 1) both,
+      stipple-gain 0.8s cubic-bezier(0.33, 0, 0.55, 1) both;
+    animation-delay: calc(var(--hero-i, 0) * 60ms);
+    -webkit-mask-image:
+      radial-gradient(
+        circle,
+        #000 calc(var(--stipple-r) - 0.3px),
+        transparent calc(var(--stipple-r) + 0.3px)
+      ),
+      radial-gradient(
+        circle,
+        #000 calc(var(--stipple-r) - 0.3px),
+        transparent calc(var(--stipple-r) + 0.3px)
+      );
+    -webkit-mask-size: 4px 4px;
+    -webkit-mask-position:
+      0 0,
+      2px 2px;
+    mask-image:
+      radial-gradient(
+        circle,
+        #000 calc(var(--stipple-r) - 0.3px),
+        transparent calc(var(--stipple-r) + 0.3px)
+      ),
+      radial-gradient(
+        circle,
+        #000 calc(var(--stipple-r) - 0.3px),
+        transparent calc(var(--stipple-r) + 0.3px)
+      );
+    mask-size: 4px 4px;
+    mask-position:
+      0 0,
+      2px 2px;
+  }
+}
+
 /* Fraunces weight breathing (plan 3.8, optional — adopted): TextMotion
    scrubs `--tm-wght` 360→420→360 via one quickSetter per headline; the
    var composes INTO the axis voice so opsz/SOFT/WONK survive. Fallback
