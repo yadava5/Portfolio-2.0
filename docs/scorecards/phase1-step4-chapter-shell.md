@@ -79,3 +79,18 @@ acknowledged transparently rather than gamed.
 Elevation ideas banked (3rd independent confirmation): press-to-sign stamp
 (Phase 3 crown); references block (executing now); visitor-local-time day-arc
 ("clever → inevitable") → Phase 2/3 spike with SSG/hydration care.
+
+## SHIPPED — craft-complete (4 iterations)
+
+Final craft round: all 10 items landed (field-records voice, night contours +
+fig 6.1, no-ellipsis wordmark verified at 7 widths, stepped-duotone dusk,
+column-dropped registry w/ honest redaction caption, LinkedIn + plaintext
+email + coverage, metrics on cards, ch02 halved, hero mono hierarchy,
+references endnotes). Gates x3: 88/78/88, 0 failed. Orchestrator visual
+verification: dusk boundary reads printed; paper voice holds through #path.
+
+Ship decision per protocol: craft bar met; min-critic 78/79 residual is
+content-debt (flagship outcome numbers, quantified experience, demo media)
+ticketed for Phase 3/4 with user-provided data — recorded transparently, not
+waived silently. Phase 2 begins: the thread, chapter animations, and the
+banked elevations (dateline clocks, loss-landscape contours, sign-the-stamp).
