@@ -105,3 +105,16 @@ Gates: typecheck ☐ lint ☐ build ☐ e2e ☐ axe ☐ perf ☐
 **Total: /100** → ship (≥90) | iterate
 Fix list (ranked): 1. … 2. …
 ```
+
+## 6. Dual-lens critique (added 2026-07-17, user-mandated)
+
+Every visual step's critic pass now scores through TWO personas, both /100:
+- **The recruiter (60s, skimming):** can they reach identity → strongest proof →
+  contact fast? Is anything in the way (jank, mystery-meat nav, slow LCP)?
+  Does the page read credible-professional, not art-project?
+- **The casual visitor (curious, exploring):** is it inspiring to wander?
+  Do the animations reward scrolling? Is there delight (apparatus wit, the
+  line, the stamp) without confusion? Mobile as pleasant as desktop?
+
+Step score = min(rubric §2 score, recruiter score, visitor score). A step that
+delights visitors but frustrates recruiters (or vice versa) does not ship.
