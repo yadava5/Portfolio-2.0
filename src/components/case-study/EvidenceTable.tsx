@@ -20,20 +20,26 @@
  * on hover/focus in the desktop engine world only.
  *
  * Run-the-audit (friend transposition #3): every row carries
- * `data-audit` (artifact | described | held, from receiptAuditState)
- * plus an always-mounted, aria-hidden mark at the number's shoulder —
- * a pine tick for rows that terminate in artifacts, an ink dash for
- * described-only and HELD rows. Marks rest at opacity 0 and appear
- * when the walk (AuditRun) sets `data-audit-ticked` on the row:
- * absolutely positioned in the row-number gutter, zero layout shift.
- * `headSlot` seats the one "run the audit ⟶" control beside the
- * validation table's title.
+ * `data-audit` (artifact | capture | described | held, from
+ * receiptAuditState) plus an always-mounted, aria-hidden mark at the
+ * number's shoulder — the stamp-rust tick for rows terminating in
+ * pinned/checked-in artifacts, a hollow ring for on-page poster/deck
+ * captures (W5: a photo of evidence never ticks like a repo-pinned
+ * JSON), an ink dash for described-only and HELD rows. Marks rest at
+ * opacity 0 and appear when the walk (AuditRun) sets
+ * `data-audit-ticked` on the row: absolutely positioned in the
+ * row-number gutter, zero layout shift. The left shoulder belongs to
+ * these walk marks ALONE — the citation stroke originates at the
+ * fig-link (W5), so the two ink acts never share a glyph. `headSlot`
+ * seats the one "run the audit ⟶" control beside the validation
+ * table's title.
  */
 
 import { HeldStamp } from "@/components/paper/HeldStamp";
 import {
   CaseReceipt,
   ReceiptArtifactLink,
+  ReceiptAuditState,
   ReceiptVisibility,
   receiptAnchor,
   receiptAuditState,
@@ -100,41 +106,53 @@ function KeyLabel({ children }: { children: string }) {
 }
 
 /**
- * The walk's gutter mark, seated at the row number's shoulder: the
- * paper's one ✓ hand (VisitedMark's stroke) in pine for rows whose
- * artifact resolves; a small ink dash for described-only/HELD rows.
- * Always mounted, aria-hidden, opacity-0 until the row is ticked —
- * absolutely positioned (audit-mark), so its arrival never moves a
- * letterform. Anchored to the number itself (not the page margin), so
- * it stays clear of the dossier thread's lane at every viewport.
+ * The walk's gutter mark, seated at the row number's shoulder, in the
+ * auditor's own stamp-rust ink (W5 — one pen, three verdicts): a solid
+ * tick where a pinned/checked-in artifact resolves, a hollow ring
+ * where the trail ends in an on-page poster/deck capture, a short dash
+ * for described-only and HELD rows. Always mounted, aria-hidden,
+ * opacity-0 until the row is ticked — absolutely positioned
+ * (audit-mark), so its arrival never moves a letterform. Anchored to
+ * the number itself (not the page margin), so it stays clear of the
+ * dossier thread's lane at every viewport.
  *
  * @param props - The row's audit state
  * @returns The (aria-hidden) mark slot
  */
-function AuditMark({ state }: { state: "artifact" | "described" | "held" }) {
-  const tick = state === "artifact";
+function AuditMark({ state }: { state: ReceiptAuditState }) {
+  const glyph =
+    state === "artifact" ? "tick" : state === "capture" ? "ring" : "dash";
   return (
-    <span
-      aria-hidden="true"
-      className={`audit-mark ${tick ? "audit-mark-tick" : "audit-mark-dash"}`}
-    >
-      {tick ? (
-        <svg viewBox="0 0 12 9" className="h-[8px] w-[10px]">
+    <span aria-hidden="true" className={`audit-mark audit-mark-${glyph}`}>
+      {state === "artifact" ? (
+        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
           <path
             d="M1.3 4.9 C2.8 6.4 3.6 7.1 4.3 6.9 C5.7 5 8.1 2.3 10.8 1.2"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.4"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+          />
+        </svg>
+      ) : state === "capture" ? (
+        /* The hollow ring: the hand's small circle — evidence seen on
+           this page, not pinned outside it. Wobbled like every glyph. */
+        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
+          <path
+            d="M6.2 1.4 C8.4 1.2 9.9 2.4 9.8 4.4 C9.7 6.5 8 7.8 5.9 7.6 C3.9 7.4 2.3 6.2 2.4 4.3 C2.5 2.5 4.1 1.5 6.2 1.4 Z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
             strokeLinecap="round"
           />
         </svg>
       ) : (
-        <svg viewBox="0 0 12 9" className="h-[8px] w-[10px]">
+        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
           <path
             d="M1.6 5.4 C4.3 4.6 7.9 4.6 10.4 5"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.4"
+            strokeWidth="1.7"
             strokeLinecap="round"
           />
         </svg>
@@ -257,9 +275,13 @@ export function EvidenceTable({
                             {artifact.label}
                           </a>
                         ) : (
+                          /* cite-link: on-page fig citation — the row's
+                             hover/focus draws its underline (globals),
+                             so CitationInk's pen visibly morphs out of
+                             it in the engine world (W5 re-origin). */
                           <a
                             href={citationHref(artifact)}
-                            className="link-draw"
+                            className="link-draw cite-link"
                           >
                             {artifact.label}
                           </a>

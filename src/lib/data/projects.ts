@@ -296,7 +296,10 @@ export const projects: Project[] = [
       // parallel configuration vs the -O3 baseline, not SIMD alone.
       { label: "Kernel Speedup", value: "3.5x openmp+simd dot kernel" },
     ],
-    proofIds: ["fast-mnist-benchmark"],
+    /* W5 e-07 split: the kernel claim is earned (BENCHMARKS.md); the
+       accuracy claim traces to its own HELD manifest entry (README-
+       documented, no committed eval artifact yet). */
+    proofIds: ["fast-mnist-benchmark", "fast-mnist-accuracy"],
   },
   {
     id: "master-inventory",

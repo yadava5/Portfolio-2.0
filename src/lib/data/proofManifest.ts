@@ -28,6 +28,13 @@ export interface ProofManifestEntry {
   date: string | null;
   /** Case-file receipt-row crosswalk; omitted only when no case file exists */
   receipt?: { label: string; href: string };
+  /**
+   * W5: the claim is on file but NOT yet earned — no committed artifact
+   * reproduces the number. The index renders the same HELD treatment as
+   * the case-file stamp (dashed clay, never a tick) plus this note
+   * naming what lifts it. Mirrors CaseReceipt.held.
+   */
+  held?: { note: string };
 }
 
 /* Repo pins mirror src/lib/data/projectCaseStudies.ts — HEAD shas
@@ -146,11 +153,16 @@ export const proofManifest: ProofManifestEntry[] = [
       href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
     },
   },
+  /* W5 split (era-w4 finding 1, P0): the old single entry bundled the
+     ~97% accuracy with the 3.5x kernel under one BENCHMARKS.md source —
+     but BENCHMARKS.md contains no accuracy figure and the case file
+     stamps the ~97% HELD. One earned claim, one held claim, each with
+     its truthful source and its own receipt row. */
   {
     id: "fast-mnist-benchmark",
-    label: "97%+ accuracy · 3.5x openmp+simd dot kernel",
+    label: "3.5x openmp+simd dot kernel",
     claim:
-      "Fast MNIST reaches ~97% test accuracy, and the openmp+simd dot kernel runs 3.5x faster than the -O3 baseline in committed benchmarks.",
+      "The openmp+simd dot kernel runs 3.5x faster than the -O3 baseline (dot 256) in committed benchmarks.",
     source:
       "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
@@ -163,6 +175,24 @@ export const proofManifest: ProofManifestEntry[] = [
       label: "fast-mnist case file · receipt 02",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
     },
+  },
+  {
+    id: "fast-mnist-accuracy",
+    label: "~97% test accuracy",
+    claim:
+      "Fast MNIST reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo's README training notes; no committed eval artifact reproduces it yet.",
+    source: "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/README.md",
+    sourceLabel: `README.md @ ${FAST_MNIST_SHA}`,
+    verification:
+      "README training notes checked against the source at the pinned commit. The number is documentation, not a committed eval run — it stays held until one is checked in.",
+    visibility: "public",
+    privacyBoundary: "No private data.",
+    date: "2026-07",
+    receipt: {
+      label: "fast-mnist case file · receipt 01 (held)",
+      href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-1",
+    },
+    held: { note: "held until a committed eval run earns it" },
   },
   {
     id: "master-inventory-ledger",

@@ -13,6 +13,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DossierThread } from "@/components/case-study/DossierThread";
+import { HeldStamp } from "@/components/paper/HeldStamp";
 import { VisitedMark } from "@/components/paper/VisitedMark";
 import { proofManifest, ProofVisibility } from "@/lib/data/proofManifest";
 import { siteMetadata } from "@/lib/data/personal";
@@ -103,8 +104,27 @@ export default function EvidencePage() {
                   <p className="text-ink mt-2 max-w-[46ch] font-serif text-[1.0625rem] leading-6">
                     {entry.claim}
                   </p>
+                  {/* W5: an unearned number wears the same HELD apparatus
+                      as its case-file row — dashed clay, never a tick —
+                      with the footnote naming when the stamp lifts. */}
+                  {entry.held ? (
+                    <div className="mt-3" data-held-entry>
+                      <HeldStamp />
+                      <p className="text-ink-secondary mt-2 max-w-[44ch] font-serif text-[0.9375rem] leading-6 italic">
+                        {entry.held.note}.
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
                 <dl className="label-mono space-y-1.5">
+                  {entry.held ? (
+                    <div>
+                      <dt className="text-ink-secondary inline">status: </dt>
+                      <dd className="text-clay inline">
+                        held — not yet earned
+                      </dd>
+                    </div>
+                  ) : null}
                   <div>
                     <dt className="text-ink-secondary inline">source: </dt>
                     {/* normal-case: artifact names are case-sensitive data;

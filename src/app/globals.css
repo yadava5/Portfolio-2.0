@@ -714,6 +714,34 @@ html[data-motion-off] .rail-mark {
   transition: none;
 }
 
+/* Rail labels (W5): each folio number's name, revealed on hover AND
+   keyboard focus — plain mono text floated into the binding margin
+   (position: absolute → zero layout, the folio column and its marks
+   never move). The active chapter keeps its name inked. No box, no
+   track, no glow (NO-LIST §C). */
+.rail-label {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 0.375rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rail-link:hover .rail-label,
+.rail-link:focus-visible .rail-label,
+.rail-link[aria-current] .rail-label {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-label {
+    transition: none;
+  }
+}
+html[data-motion-off] .rail-label {
+  transition: none;
+}
+
 /* ── Static-world chapter paint (amendments A4 + A7) — FINAL FORM ────
    Each chapter is ONE flat waypoint color. Every color change lands
    exactly AT the chapter's numbered folio divider: the section's tail
@@ -1024,7 +1052,18 @@ html[data-motion-off] [data-chapter="07"] {
 /* ── Thread-as-citation: the hover pen-stroke (engine world only —
    CitationInk mounts nothing elsewhere). The thread's own drawing
    convention: pathLength=1, dasharray 1 2, offset 1.5 → 0. Draw
-   ~400ms, retract ~300ms. No filters. */
+   ~400ms, retract ~300ms. No filters.
+   W5 re-origin: the stroke starts AT the fig-link, so hovering or
+   focusing anywhere in a citing row draws that link's underline — the
+   line the pen then morphs out of. In static worlds (reduced motion /
+   quiet toggle) this same rule IS the interaction: a plain underline
+   state, no pen (link-draw's transitions are already none there). */
+[data-cites]:hover .cite-link,
+[data-cites]:focus-within .cite-link {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
 .citation-stroke {
   fill: none;
   stroke: var(--color-ink);
@@ -1073,33 +1112,32 @@ html[data-motion-off] [data-chapter="07"] {
 
 /* ── Run the audit (friend transposition #3): the receipts walk ──────
    The control keeps the link-draw grammar — quiet mono ink, NOT a
-   filled CTA; once walked it dries (affordance underline gone, cursor
-   settles — walked is walked, no re-run). Gutter marks live at the row
-   number's shoulder: absolutely positioned (zero layout shift), pine
-   tick = the artifact resolves, ink dash = described only or HELD.
-   Each mark is a ≤250ms opacity swap; the walk's 350ms cadence comes
-   from AuditRun's timers, so the rows tick one by one — an auditor's
-   pace, not a cascade. Dried revisits kill every transition. */
+   filled CTA. Once walked, the control ITSELF is the settled ledger
+   line (W5 payoff transform): the run face swaps for the settled face
+   in the same grid cell — dried apparatus ink, cursor settles, no
+   re-run affordance. Gutter marks live at the row number's shoulder:
+   absolutely positioned (zero layout shift), drawn in the auditor's
+   STAMP-RUST pen (clay-graphic — ≥3:1 on the archive stock and every
+   chapter surface, per check-contrast.mjs) at legible weight: solid
+   tick = a pinned/checked-in artifact resolves, hollow ring = the
+   trail ends in an on-page poster/deck capture, dash = described only
+   or HELD. Each mark is a ≤250ms opacity swap; the walk's 350ms
+   cadence comes from AuditRun's timers, so the rows tick one by one —
+   an auditor's pace, not a cascade. Dried revisits kill every
+   transition. */
 .audit-run {
   cursor: pointer;
 }
 .audit-run[data-walked] {
   cursor: default;
-  opacity: 0.55;
-  background-image: none;
 }
 .audit-mark {
   position: absolute;
-  top: -7px;
-  left: -10px;
+  top: -8px;
+  left: -12px;
+  color: var(--color-clay-graphic);
   opacity: 0;
   transition: opacity 250ms ease;
-}
-.audit-mark-tick {
-  color: var(--color-pine);
-}
-.audit-mark-dash {
-  color: var(--color-ink-secondary);
 }
 [data-audit-ticked] .audit-mark {
   opacity: 1;
@@ -1107,12 +1145,23 @@ html[data-motion-off] [data-chapter="07"] {
 [data-audit-dried] .audit-mark {
   transition: none;
 }
+/* The settled face: dried apparatus ink — quieter than the live act,
+   never faint (secondary ink holds 4.5:1 on the archive stock). A
+   fresh settle fades in ≤250ms (the stamp-hello visibility pattern);
+   dried revisits are simply there. The face doubles as the invisible
+   sizing ghost before the walk — same box, zero shift at the swap. */
 .audit-settled {
+  color: var(--color-ink-secondary);
   opacity: 0;
-  transition: opacity 250ms ease;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
 }
 .audit-settled[data-audit-settled] {
   opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease;
 }
 .audit-settled.is-dried {
   transition: none;

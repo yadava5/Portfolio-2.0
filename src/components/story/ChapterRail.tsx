@@ -1,9 +1,15 @@
 /**
  * @fileoverview ChapterRail — left-edge wayfinding, `01…07` (plan 3.6).
  *
- * Mono lowercase folio numbers at the left edge, xl+ only. Only the
- * active chapter shows its name (NO-LIST §C: no track, no capsule, no
- * glow, no labels-on-hover). Clicks route through the shared Lenis loop.
+ * Mono lowercase folio numbers at the left edge, xl+ only. The active
+ * chapter keeps its name inked; every other chapter reveals its name on
+ * hover AND keyboard focus (W5, recruiter: "the rail is bare numbers").
+ * Labels are PLAIN mono text seated absolutely in the binding margin —
+ * no box, no track, no capsule, no glow (NO-LIST §C bans hover label
+ * BOXES; unboxed apparatus text is the rail's own voice) — and take no
+ * layout, so the folio column and its audit-trail marks never move.
+ * Every anchor carries an explicit "chapter NN — name" aria-label.
+ * Clicks route through the shared Lenis loop.
  *
  * Active state comes from an IntersectionObserver whose root margin
  * collapses the viewport to its center line — the chapter under the
@@ -161,8 +167,9 @@ export function ChapterRail() {
               <LenisAnchor
                 href={`#${chapter.anchor}`}
                 aria-current={isActive ? "true" : undefined}
+                aria-label={`chapter ${chapter.id} — ${chapter.name}`}
                 className={cn(
-                  "label-mono flex items-baseline gap-1.5 transition-opacity duration-300",
+                  "label-mono rail-link relative flex items-baseline gap-1.5 transition-opacity duration-300",
                   isActive ? "" : "opacity-70 hover:opacity-100"
                 )}
               >
@@ -177,7 +184,11 @@ export function ChapterRail() {
                 >
                   <RailCheck />
                 </span>
-                <span className={isActive ? "" : "sr-only"}>
+                {/* The name, revealed on hover/focus (active stays inked).
+                    Absolutely seated so numbers and marks never move;
+                    aria-hidden — the anchor's aria-label already speaks
+                    the full "chapter NN — name". */}
+                <span aria-hidden="true" className="rail-label">
                   {chapter.name}
                 </span>
               </LenisAnchor>

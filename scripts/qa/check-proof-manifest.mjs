@@ -12,6 +12,9 @@ const requiredIds = [
   "visual-assist-tests",
   "taskflow-tests",
   "fast-mnist-benchmark",
+  // W5 e-07 split: the ~97% accuracy is its own explicitly-HELD entry —
+  // it must never be silently dropped or re-merged into the kernel claim.
+  "fast-mnist-accuracy",
   "master-inventory-ledger",
   "policybot-validation",
   "paid-internships-sources",
@@ -52,6 +55,30 @@ for (const entry of entries) {
   ) {
     fail(`${id} private-safe entry needs a real privacy boundary`);
   }
+
+  // W5: a HELD entry is a claim NOT yet earned. It must say so with a
+  // real note (what lifts the stamp) and must crosswalk to the case-file
+  // receipt row that argues the held state — never float unanchored.
+  if (entry.includes("held:")) {
+    if (!entry.match(/held:\s*\{\s*note:\s*"[^"]{16,}"/)) {
+      fail(`${id} held entry needs a real note naming what lifts it`);
+    }
+    if (!entry.match(/receipt:\s*\{/)) {
+      fail(`${id} held entry must crosswalk to its case-file receipt row`);
+    }
+  }
+}
+
+// The fast-mnist accuracy claim is HELD by record (the case file stamps
+// it; BENCHMARKS.md carries no accuracy figure). If someone re-earns it,
+// they must also update this gate — which is the point.
+const accuracyEntry = entries.find((entry) =>
+  entry.includes('id: "fast-mnist-accuracy"')
+);
+if (accuracyEntry && !accuracyEntry.includes("held:")) {
+  fail(
+    "fast-mnist-accuracy must stay HELD until a committed eval artifact earns it"
+  );
 }
 
 const projectBlocks = projectsSource.match(/\n  \{[\s\S]*?\n  \},/g) ?? [];

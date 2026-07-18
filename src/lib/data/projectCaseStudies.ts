@@ -115,6 +115,16 @@ export type ReceiptVisibility = "public" | "private-safe" | "local-only";
 export interface ReceiptArtifactLink {
   label: string;
   href: string;
+  /**
+   * W5 (era-w4 finding 2): the terminal is an on-page CAPTURE of a
+   * poster/deck — a photograph of evidence, not a repo-pinned or
+   * checked-in artifact. The audit walk marks these with the hollow
+   * ring, never the tick, and counts them separately in the settled
+   * line. Explicit data-level flag on purpose: href shape must never
+   * decide honesty (`#ledger` rows terminate in a checked-in JSON and
+   * stay full artifacts).
+   */
+  capture?: boolean;
 }
 
 /** One row of the receipts table (the validation centerpiece) */
@@ -692,6 +702,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 6 — the expo poster",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -705,6 +716,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 5 — the presenter deck",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -718,6 +730,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 5 — the presenter deck",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -731,6 +744,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 5 — the presenter deck",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -744,6 +758,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 6 — the expo poster",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -767,6 +782,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           {
             label: "see fig. 6 — the expo poster",
             href: "#artifacts",
+            capture: true,
           },
         ],
         date: "2026-05",
@@ -1985,23 +2001,85 @@ export function getNextCaseStudy(study: ProjectCaseStudy): ProjectCaseStudy {
   return dossierOrder[(index + 1) % dossierOrder.length];
 }
 
+/** The four honest dispositions a walked row can have */
+export type ReceiptAuditState = "artifact" | "capture" | "described" | "held";
+
 /**
  * What "run the audit" can honestly do with a row (friend transposition
- * #3): "artifact" — the row terminates in a resolvable artifact (public
- * link, checked-in file, or on-page fig) and earns the pine tick;
- * "held" — the row is stamped HELD, so the audit withholds the tick
- * even where links exist (the number itself is not yet earned);
- * "described" — no linkable artifact, described only. Held and
- * described rows get the honest ink dash instead of a tick.
+ * #3, capture split W5): "artifact" — the row terminates in a pinned or
+ * checked-in artifact (repo blob @ sha, committed JSON, CI run) and
+ * earns the tick; "capture" — every terminal is an on-page poster/deck
+ * capture (`capture: true` on the link), marked with the hollow ring —
+ * a photo of evidence is not a pinned artifact; "held" — the row is
+ * stamped HELD, so the audit withholds the tick even where links exist
+ * (the number itself is not yet earned); "described" — no linkable
+ * artifact at all. Held and described rows get the honest ink dash.
  *
  * @param row - The receipt row
  * @returns The audit state driving the row's walk mark
  */
-export function receiptAuditState(
-  row: CaseReceipt
-): "artifact" | "described" | "held" {
+export function receiptAuditState(row: CaseReceipt): ReceiptAuditState {
   if (row.held) return "held";
-  return row.artifacts.length > 0 ? "artifact" : "described";
+  if (row.artifacts.length === 0) return "described";
+  return row.artifacts.some((artifact) => !artifact.capture)
+    ? "artifact"
+    : "capture";
+}
+
+/** Per-state row tally for one case file's walk — the settled line's
+ *  arithmetic, derived from the REAL rows so the counts can never drift
+ *  from the DOM marks (the evidence judge recounts both). */
+export interface ReceiptAuditCounts {
+  total: number;
+  artifact: number;
+  capture: number;
+  described: number;
+  held: number;
+}
+
+/**
+ * Tally every walked row of a case file by its audit state.
+ *
+ * @param study - The case file
+ * @returns Counts over receipts + outcomes (the walk's full coverage)
+ */
+export function receiptAuditCounts(
+  study: ProjectCaseStudy
+): ReceiptAuditCounts {
+  const counts: ReceiptAuditCounts = {
+    total: 0,
+    artifact: 0,
+    capture: 0,
+    described: 0,
+    held: 0,
+  };
+  for (const row of [...study.receipts, ...study.outcomes]) {
+    counts.total += 1;
+    counts[receiptAuditState(row)] += 1;
+  }
+  return counts;
+}
+
+/**
+ * The settled ledger line's sentence, minus the date — one composer so
+ * the control, the live announcement, and the tests can never disagree.
+ * Zero-count segments are omitted; the leading pinned-artifact clause
+ * always renders (an honest "0 of 8" is the point on capture-only
+ * files).
+ *
+ * @param counts - Per-state tallies from receiptAuditCounts
+ * @returns e.g. "audit walked · 4 of 8 terminate in pinned artifacts ·
+ *   2 in page captures · 2 described only"
+ */
+export function auditSettledSentence(counts: ReceiptAuditCounts): string {
+  const parts = [
+    "audit walked",
+    `${counts.artifact} of ${counts.total} terminate in pinned artifacts`,
+  ];
+  if (counts.capture > 0) parts.push(`${counts.capture} in page captures`);
+  if (counts.described > 0) parts.push(`${counts.described} described only`);
+  if (counts.held > 0) parts.push(`${counts.held} held`);
+  return parts.join(" · ");
 }
 
 /** Anchor id for receipt row `n` (1-based across receipts then outcomes) */

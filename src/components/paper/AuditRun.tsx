@@ -5,15 +5,26 @@
  * with DOSSIER's stampable-registry elevation: his "run a sample" reads a
  * digit; ours checks its own evidence. One quiet mono control at the
  * validation table's head walks every receipt row top to bottom (~350ms
- * cadence — a deliberate auditor's pace, not a cascade): rows whose
- * artifact resolves (public link, checked-in file, on-page fig) gain a
- * small PINE tick beside their number; described-only and HELD rows get
- * an honest ink dash — the audit ticks only what it can verify. It ends
- * on a settled mono line ("audit walked · N of M receipts terminate in
- * artifacts · date", N/M computed from the real rows) and, on the automl
- * file only, a single 300ms underline draw on the un-approved 041
- * registry row — pointing the reader to the act that remains theirs.
- * NEVER auto-approving: run 041 stays the visitor's own signature.
+ * cadence — a deliberate auditor's pace, not a cascade), marking each row
+ * with the auditor's stamp-rust pen: a tick where a pinned/checked-in
+ * artifact resolves, a hollow ring where the trail ends in an on-page
+ * poster/deck capture (W5 — a photo of evidence never ticks like a
+ * repo-pinned JSON), an honest ink dash on described-only and HELD rows.
+ * On the automl file only, the walk ends with a single 300ms underline
+ * draw on the un-approved 041 registry row — pointing the reader to the
+ * act that remains theirs. NEVER auto-approving: run 041 stays the
+ * visitor's own signature.
+ *
+ * THE PAYOFF TRANSFORMS IN PLACE (W5, visitor #1): on settle — and on
+ * every dried revisit — the control itself becomes the settled ledger
+ * line at the table head ("audit walked · N of M terminate in pinned
+ * artifacts · … · date", every count derived from the real rows via
+ * auditSettledSentence, the date from paperMemory). The button never
+ * unmounts (mid-walk keyboard focus survives); its two faces are
+ * stacked in one grid cell, with the settled face acting as an
+ * invisible ghost before the walk so the swap — including the dried
+ * post-hydration swap — moves nothing (zero layout shift). There is no
+ * separate below-the-tables settled line anymore.
  *
  * State: persisted per case file (paperMemory "paper-memory:v1:audits").
  * Walked is walked — revisits show dried ticks and the ORIGINAL walk
@@ -31,16 +42,16 @@
  * decoration; the settled result is announced once, politely, via a
  * separate role="status" node that only ever receives text at the
  * moment of a fresh walk — dried revisits announce nothing.
- *
- * Zero layout shift: marks are absolutely positioned in the row-number
- * gutter (EvidenceTable renders them opacity-0 from SSR); the settled
- * line's height is reserved (`min-h`) like FileMemory's note.
  */
 
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AUDIT_CITE_EVENT } from "@/components/paper/CitationInk";
+import {
+  ReceiptAuditCounts,
+  auditSettledSentence,
+} from "@/lib/data/projectCaseStudies";
 import {
   PaperDate,
   readFileAudits,
@@ -56,6 +67,11 @@ const SETTLE_LAG_MS = 150;
 
 /** How long the 041 nudge holds before the underline retracts */
 const NUDGE_HOLD_MS = 1000;
+
+/** Widest date the mono voice can print ("mmm 00, 0000" shape) — the
+ *  ghost face reserves with this before a real walk date exists, so the
+ *  settled swap can never grow the line. */
+const GHOST_DATE = "mmm 00, 0000";
 
 /** The walked-audit record for this file, read fresh from the store */
 function storedAudit(projectId: string): PaperDate | null {
@@ -95,47 +111,54 @@ function dispatchCite(rowId: string | null): void {
 interface AuditControlProps {
   /** This case file's project id ("automl", "jobtracker", …) */
   projectId: string;
-  /** Rows whose artifact resolves (computed from the real rows) */
-  verified: number;
-  /** All rows the walk visits (receipts + outcomes) */
-  total: number;
+  /** Per-state tallies computed from the REAL rows (never hardcoded) */
+  counts: ReceiptAuditCounts;
   /** True on the automl file: nudge the un-approved 041 row at the end */
   nudgeRegistry?: boolean;
 }
 
+/** The settled face's client state: the walk date + how it arrived */
+interface SettledState {
+  label: string;
+  /** True when the walk was already on record at mount (dried ink) */
+  dried: boolean;
+}
+
 /**
- * The quiet mono control at the validation table's head. Owns the walk:
+ * The one control at the validation table's head. Owns the walk:
  * applies row ticks (cadenced or instant per world), records the act,
- * and announces the settled result once.
+ * announces the settled result once — then IS the settled ledger line.
  *
- * @param props - File id, real-row counts, and the automl nudge flag
+ * @param props - File id, real-row tallies, and the automl nudge flag
  * @returns The control + its sr-only description and status node
  */
 export function AuditControl({
   projectId,
-  verified,
-  total,
+  counts,
   nudgeRegistry = false,
 }: AuditControlProps) {
-  const [walked, setWalked] = useState(false);
+  const [settled, setSettled] = useState<SettledState | null>(null);
   const [announce, setAnnounce] = useState("");
   const walkedRef = useRef(false);
   const walkingRef = useRef(false);
   const selfActRef = useRef(false);
   const timersRef = useRef<number[]>([]);
   const descId = `audit-run-desc-${projectId}`;
+  const sentence = auditSettledSentence(counts);
+  const walked = settled !== null;
 
   /* Restore the dried walk + follow cross-tab acts. Direct storage reads
      (the FileMemory pattern) so a stored walk is unambiguously dried. */
   useEffect(() => {
     const sync = () => {
-      if (!storedAudit(projectId)) return;
+      const stored = storedAudit(projectId);
+      if (!stored) return;
       if (!walkedRef.current) {
         walkedRef.current = true;
         /* A cross-tab (or stored) walk arrives without this document's
            own performance — dried ink, never a replay. */
         if (!selfActRef.current) applyDriedTicks();
-        setWalked(true);
+        setSettled((prev) => prev ?? { label: stored.label, dried: true });
       }
     };
     sync();
@@ -155,10 +178,8 @@ export function AuditControl({
     (instant: boolean) => {
       const { date } = recordFileAudit(projectId);
       walkedRef.current = true;
-      setWalked(true);
-      setAnnounce(
-        `audit walked · ${verified} of ${total} receipts terminate in artifacts · ${date.label}`
-      );
+      setSettled((prev) => prev ?? { label: date.label, dried: false });
+      setAnnounce(`${sentence} · ${date.label}`);
       /* The act that remains the reader's: one 300ms underline draw on
          the awaiting 041 row (automl only), never an approval. Static
          worlds skip the gesture — their transitions are none. */
@@ -177,7 +198,7 @@ export function AuditControl({
         }
       }
     },
-    [projectId, verified, total, nudgeRegistry]
+    [projectId, sentence, nudgeRegistry]
   );
 
   /** Activation: walk the receipts (cadenced), or apply instantly (A7) */
@@ -217,7 +238,7 @@ export function AuditControl({
   }, [finish]);
 
   return (
-    <span className="inline-flex items-baseline">
+    <span className="inline-flex max-w-full items-baseline">
       <button
         type="button"
         data-audit-run
@@ -225,14 +246,35 @@ export function AuditControl({
         aria-disabled={walked || undefined}
         aria-describedby={descId}
         onClick={walked ? undefined : walk}
-        className="audit-run link-draw label-mono text-ink border-0 bg-transparent p-0 text-left"
+        className="audit-run label-mono text-ink max-w-full border-0 bg-transparent p-0 text-left md:text-right"
       >
-        run the audit ⟶
+        {/* Two faces, one grid cell: the resting act and the settled
+            ledger line occupy the same box, so the transform-in-place
+            (fresh OR dried) moves nothing below it. The inactive face
+            is invisible AND aria-hidden — one voice at a time. */}
+        <span className="grid max-w-full">
+          <span
+            aria-hidden={walked ? "true" : undefined}
+            className={`col-start-1 row-start-1 ${walked ? "invisible" : ""}`}
+          >
+            <span className={walked ? "" : "link-draw"}>run the audit ⟶</span>
+          </span>
+          <span
+            aria-hidden={walked ? undefined : "true"}
+            data-audit-settled={walked ? "" : undefined}
+            className={`audit-settled col-start-1 row-start-1 ${
+              settled?.dried ? "is-dried" : ""
+            }`}
+          >
+            {sentence} · {settled ? settled.label : GHOST_DATE}
+          </span>
+        </span>
       </button>
       <span id={descId} className="sr-only">
         walks the receipts below, top to bottom, and marks each row this page
-        can verify: a check where the artifact resolves, a dash where a claim is
-        described only or held. walked once, the result stays.
+        can verify: a check where a pinned artifact resolves, a ring where the
+        trail ends in an on-page capture, a dash where a claim is described only
+        or held. walked once, the result settles here and stays.
       </span>
       {/* Announced once, politely, at the moment of a fresh walk —
           dried revisits never speak. */}
@@ -240,74 +282,5 @@ export function AuditControl({
         {announce}
       </span>
     </span>
-  );
-}
-
-interface AuditSettledProps {
-  /** This case file's project id */
-  projectId: string;
-  /** Rows whose artifact resolves (computed from the real rows) */
-  verified: number;
-  /** All rows the walk visits */
-  total: number;
-}
-
-/** The settled line's client state: the walk date + how it arrived */
-interface SettledState {
-  label: string;
-  /** True when the walk was already on record at mount (dried ink) */
-  dried: boolean;
-}
-
-/**
- * The settled mono line under the receipts tables. Height reserved from
- * SSR (zero layout shift): one mono line at md+, two below it — the
- * full sentence wraps once inside the narrow column (measured at 390:
- * an unreserved second line shifted everything below by 18px). Text
- * appears when the walk completes — or immediately, dried, when the
- * paper already remembers it. Keeps the ORIGINAL walk date forever.
- *
- * @param props - File id and the real-row counts
- * @returns The reserved settled line
- */
-export function AuditSettled({
-  projectId,
-  verified,
-  total,
-}: AuditSettledProps) {
-  const [settled, setSettled] = useState<SettledState | null>(null);
-
-  useEffect(() => {
-    const initial = storedAudit(projectId);
-    if (initial) {
-      /* The one sanctioned read-then-set (the FileMemory pattern):
-         storage applies post-hydration, dried — no performance. */
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSettled({ label: initial.label, dried: true });
-    }
-    const sync = () => {
-      const now = storedAudit(projectId);
-      if (!now) return;
-      /* First record wins: a fresh act settles once and never re-dates */
-      setSettled((prev) => prev ?? { label: now.label, dried: false });
-    };
-    return subscribePaperMemory(sync);
-  }, [projectId]);
-
-  return (
-    <p
-      className={`label-mono text-ink-secondary audit-settled mt-6 min-h-[2.3rem] md:min-h-[1.15rem] ${
-        settled?.dried ? "is-dried" : ""
-      }`}
-      data-audit-settled={settled ? "" : undefined}
-      aria-hidden={settled ? undefined : "true"}
-    >
-      {settled ? (
-        <>
-          audit walked · {verified} of {total} receipts terminate in artifacts ·{" "}
-          {settled.label}
-        </>
-      ) : null}
-    </p>
   );
 }

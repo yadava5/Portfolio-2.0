@@ -28,14 +28,19 @@ import {
  *     this file · date" note (dried on revisit), and /evidence marks
  *     visited crosswalk links.
  *  6. RESET: clearing localStorage restores the untouched paper.
- *  7. RUN THE AUDIT (friend transposition #3): one control per case
- *     file walks the [ validation ] rows at a 350ms cadence — a pine
- *     tick only where the artifact resolves, an honest ink dash on
- *     described-only and HELD rows — and settles on "audit walked ·
- *     N of M receipts terminate in artifacts · date" (N/M from the
- *     REAL rows). Persisted per file ("paper-memory:v1:audits"):
- *     revisits are dried with the ORIGINAL date, no re-walk. Static
- *     worlds apply instantly. The walk never auto-approves run 041.
+ *  7. RUN THE AUDIT (friend transposition #3, W5 capture split + payoff
+ *     transform): one control per case file walks the [ validation ]
+ *     rows at a 350ms cadence — a stamp-rust tick only where a
+ *     pinned/checked-in artifact resolves, a hollow ring where every
+ *     terminal is an on-page poster/deck capture, an honest ink dash on
+ *     described-only and HELD rows — and the control ITSELF settles
+ *     into the ledger line at the table head: "audit walked · A of T
+ *     terminate in pinned artifacts [· C in page captures] [· D
+ *     described only] [· H held] · date", every count derived from the
+ *     REAL rows and matching the DOM marks exactly. Persisted per file
+ *     ("paper-memory:v1:audits"): revisits are dried with the ORIGINAL
+ *     date, no re-walk. Static worlds apply instantly. The walk never
+ *     auto-approves run 041.
  */
 
 /** Storage keys (mirrors src/lib/paperMemory.ts) */
@@ -77,32 +82,67 @@ function studyOf(projectId: string): ProjectCaseStudy {
 }
 
 /**
- * The audit's honesty rule, restated independently of the impl: a row
- * earns the pine tick only when it terminates in an artifact AND is
- * not stamped HELD; described-only and HELD rows get the ink dash.
+ * The audit's honesty rule, restated independently of the impl (W5
+ * capture split): HELD rows never tick, whatever links they carry; a
+ * row with no artifacts is described-only (dash); a row whose EVERY
+ * terminal is an on-page poster/deck capture (`capture: true`) earns
+ * only the hollow ring; only a row with at least one pinned/checked-in
+ * terminal earns the tick.
  */
-function rowTicks(row: CaseReceipt): boolean {
-  return !row.held && row.artifacts.length > 0;
+function rowState(
+  row: CaseReceipt
+): "artifact" | "capture" | "described" | "held" {
+  if (row.held) return "held";
+  if (row.artifacts.length === 0) return "described";
+  return row.artifacts.some((artifact) => !artifact.capture)
+    ? "artifact"
+    : "capture";
 }
 
 /** Real-row expectations for one case file's walk */
 function auditExpectations(study: ProjectCaseStudy): {
   rows: CaseReceipt[];
   total: number;
-  verified: number;
+  artifact: number;
+  capture: number;
+  described: number;
+  held: number;
 } {
   const rows = [...study.receipts, ...study.outcomes];
-  return {
-    rows,
-    total: rows.length,
-    verified: rows.filter(rowTicks).length,
-  };
+  const tally = { artifact: 0, capture: 0, described: 0, held: 0 };
+  for (const row of rows) tally[rowState(row)] += 1;
+  return { rows, total: rows.length, ...tally };
 }
 
-/** The settled line's exact text for a file, from the REAL rows */
+/** The settled ledger line's exact text for a file, from the REAL rows —
+ *  composed here independently so the page's arithmetic AND wording are
+ *  cross-checked, never copied. Zero segments are omitted; the leading
+ *  pinned-artifact clause always prints (an honest "0 of 8"). */
 function settledText(study: ProjectCaseStudy, label = todayLabel()): string {
-  const { total, verified } = auditExpectations(study);
-  return `audit walked · ${verified} of ${total} receipts terminate in artifacts · ${label}`;
+  const { total, artifact, capture, described, held } =
+    auditExpectations(study);
+  const parts = [
+    "audit walked",
+    `${artifact} of ${total} terminate in pinned artifacts`,
+  ];
+  if (capture > 0) parts.push(`${capture} in page captures`);
+  if (described > 0) parts.push(`${described} described only`);
+  if (held > 0) parts.push(`${held} held`);
+  parts.push(label);
+  return parts.join(" · ");
+}
+
+/** The glyph a state must render (tick / ring / dash — one per row) */
+function glyphOf(state: ReturnType<typeof rowState>): {
+  tick: boolean;
+  ring: boolean;
+  dash: boolean;
+} {
+  return {
+    tick: state === "artifact",
+    ring: state === "capture",
+    dash: state === "described" || state === "held",
+  };
 }
 
 /** Snapshot every receipt row's audit mark state in one pass */
@@ -110,6 +150,7 @@ async function markSnapshot(page: Page): Promise<
   {
     audit: string | null;
     tick: boolean;
+    ring: boolean;
     dash: boolean;
     opacity: string;
     hidden: string | null;
@@ -121,6 +162,7 @@ async function markSnapshot(page: Page): Promise<
       return {
         audit: row.getAttribute("data-audit"),
         tick: Boolean(row.querySelector(".audit-mark-tick")),
+        ring: Boolean(row.querySelector(".audit-mark-ring")),
         dash: Boolean(row.querySelector(".audit-mark-dash")),
         opacity: mark ? getComputedStyle(mark).opacity : "missing",
         hidden: mark ? mark.getAttribute("aria-hidden") : null,
@@ -355,17 +397,18 @@ test.describe("paper memory — thread-as-citation", () => {
 });
 
 test.describe("paper memory — run the audit", () => {
-  test("the walk ticks only artifact-backed rows and settles the honest count", async ({
+  test("the walk marks each row honestly and settles the exact count", async ({
     page,
   }) => {
     const automl = studyOf("automl");
-    const { rows, total, verified } = auditExpectations(automl);
-    /* The data must really carry described-only rows, or the dash
-       assertion below would be vacuous */
-    expect(rows.some((row) => !row.held && row.artifacts.length === 0)).toBe(
-      true
-    );
-    expect(verified).toBeLessThan(total);
+    const { rows, total, capture, described } = auditExpectations(automl);
+    /* The data must really carry described-only AND capture-only rows,
+       or the dash/ring assertions below would be vacuous. The automl
+       file is the capture split's whole point: poster/deck citations
+       must never tick like repo-pinned artifacts. */
+    expect(described).toBeGreaterThan(0);
+    expect(capture).toBeGreaterThan(0);
+    expect(rows.length).toBe(total);
 
     await page.goto("/projects/automl/");
     await page.locator("[data-receipt-row]").first().waitFor();
@@ -402,20 +445,19 @@ test.describe("paper memory — run the audit", () => {
        the walk takes at least (rows − 1) × 350ms */
     expect(Date.now() - before).toBeGreaterThanOrEqual((total - 1) * 350);
 
-    /* The audit is honest: pine tick ONLY where the artifact resolves;
-       described-only rows (automl rows exist by the guard above) carry
-       the ink dash — and every mark is aria-hidden decoration */
+    /* The audit is honest: tick ONLY where a pinned artifact resolves,
+       ring ONLY on capture-terminated rows, dash on described/HELD —
+       and every mark is aria-hidden decoration. These per-row glyphs
+       are what the settled line's counts must reconcile against. */
     const marks = await markSnapshot(page);
     expect(marks).toHaveLength(total);
     rows.forEach((row, index) => {
-      const expected = row.held
-        ? "held"
-        : row.artifacts.length > 0
-          ? "artifact"
-          : "described";
-      expect(marks[index].audit, `row ${index + 1} audit state`).toBe(expected);
-      expect(marks[index].tick, `row ${index + 1} tick`).toBe(rowTicks(row));
-      expect(marks[index].dash, `row ${index + 1} dash`).toBe(!rowTicks(row));
+      const state = rowState(row);
+      const glyph = glyphOf(state);
+      expect(marks[index].audit, `row ${index + 1} audit state`).toBe(state);
+      expect(marks[index].tick, `row ${index + 1} tick`).toBe(glyph.tick);
+      expect(marks[index].ring, `row ${index + 1} ring`).toBe(glyph.ring);
+      expect(marks[index].dash, `row ${index + 1} dash`).toBe(glyph.dash);
       expect(marks[index].opacity, `row ${index + 1} mark opacity`).toBe("1");
       expect(marks[index].hidden, `row ${index + 1} aria-hidden`).toBe("true");
     });
@@ -507,14 +549,19 @@ test.describe("paper memory — run the audit", () => {
 
       const marks = await markSnapshot(page);
       rows.forEach((row, index) => {
+        const glyph = glyphOf(rowState(row));
         expect(
           marks[index].tick,
           `${study.projectId} row ${index + 1} tick`
-        ).toBe(rowTicks(row));
+        ).toBe(glyph.tick);
+        expect(
+          marks[index].ring,
+          `${study.projectId} row ${index + 1} ring`
+        ).toBe(glyph.ring);
         expect(
           marks[index].dash,
           `${study.projectId} row ${index + 1} dash`
-        ).toBe(!rowTicks(row));
+        ).toBe(glyph.dash);
         expect(
           marks[index].opacity,
           `${study.projectId} row ${index + 1} opacity`

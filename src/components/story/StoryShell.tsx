@@ -222,12 +222,17 @@ const VALUES_LINES = [
 /** Fig 6.1 — the litany's right-hand counterpart in the fig-4.1 ledger
  *  grammar. Three REAL gates from the proof manifest / case files, each
  *  with its honest disposition: the jobtracker classifier gates passed
- *  (96 samples), the policybot sweep held at 19/20 with honest fallbacks,
- *  and the fast-mnist benchmark evidence is committed and held. */
+ *  (96 samples); the policybot sweep and the fast-mnist accuracy gate
+ *  both REFUSED to sign automatically (19/20 with honest fallbacks; the
+ *  ~97% stays HELD until a committed eval run earns it).
+ *  W5 vocabulary fix (evidence #4): the gate-outcome word is "refused" —
+ *  the ¶02 dictionary's "the step I refuse to automate" — because on the
+ *  case files HELD means "claim not yet earned", the opposite valence.
+ *  "held" never names a gate outcome anywhere on the paper. */
 const VALUES_GATES = [
   { gate: "classifier gate — jobtracker", status: "passed" },
-  { gate: "cited-source sweep — policybot", status: "held" },
-  { gate: "benchmark suite — fast-mnist", status: "held" },
+  { gate: "cited-source sweep — policybot", status: "refused" },
+  { gate: "benchmark suite — fast-mnist", status: "refused" },
 ];
 
 /** Ch-07 endnotes — footnote 1's promise, kept in full: every receipt on
@@ -279,7 +284,7 @@ const GATE_REFERENCES: {
 /**
  * Fig 6.1's reviewer marks — the same hand that draws the thread ticked
  * the ledger: a check-stroke for a gate a human signed off ("passed"),
- * a short hold-bar for a gate that stopped the run ("held"). Inline,
+ * a short stop-bar for a gate that stopped the run ("refused"). Inline,
  * currentColor (dusk ink), decorative — the status word carries the
  * meaning; the legend line under the figure spells both out.
  *
@@ -456,6 +461,24 @@ function ArrivalChapter() {
               skip to the work ↓
             </LenisAnchor>
           </div>
+          {/* W5: the 90-second path — one quiet line for screeners who
+              will not scroll 1,500vh (A8's spirit): the work index, the
+              master ledger, the resume PDF. Apparatus voice, no new
+              vocabulary — the same quiet mono as the case-files line. */}
+          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+            in a hurry —{" "}
+            <LenisAnchor href="#work" className="link-draw">
+              the work
+            </LenisAnchor>{" "}
+            ⟶{" "}
+            <Link href="/evidence/" className="link-draw">
+              the evidence
+            </Link>{" "}
+            ⟶{" "}
+            <a href={personalInfo.resumeUrl} className="link-draw">
+              the resume
+            </a>
+          </p>
         </div>
 
         {/* The footnote payoff: the hero's ¹ resolves at the foot of its own
@@ -859,47 +882,57 @@ function WorkChapter() {
                   {/* The metric chip keeps footnote 1's promise: it links
                       the case-file receipt row that argues it. normal-case
                       preserves data tokens (-O3); every metric string is
-                      already lowercase in source. */}
-                  <p className="max-w-[38ch] normal-case">
+                      already lowercase in source. W5 hierarchy: capped at
+                      two mono lines on every viewport — the ledger's
+                      right rag stays quiet (visitor #4). */}
+                  <p className="line-clamp-2 max-w-[38ch] normal-case">
                     <Link href={row.metricHref} className="link-draw">
                       {row.metric}
                     </Link>
                   </p>
+                  {/* W5 hierarchy (visitor #4): ONE primary act per row —
+                      the case file at full ink; source · demo fold into a
+                      single quiet secondary line; the last-verified token
+                      stays (the recruiter's differentiator) but dimmed,
+                      unlinked, on its own line. Every href the row ever
+                      had is still in the DOM. */}
                   <p>
                     <Link href={caseHref} className="link-draw text-ink">
                       the case file ⟶
                     </Link>
                   </p>
-                  {project.githubUrl ? (
+                  {project.githubUrl || project.liveUrl ? (
                     <p>
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link-draw"
-                      >
-                        source ⟶
-                      </a>
-                    </p>
-                  ) : null}
-                  {/* Quiet demo affordance (completion map §3): liveUrl
-                      was data-only until this round — never rendered. */}
-                  {project.liveUrl ? (
-                    <p>
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link-draw"
-                      >
-                        demo ↗
-                      </a>
+                      {project.githubUrl ? (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link-draw"
+                        >
+                          source
+                        </a>
+                      ) : null}
+                      {project.githubUrl && project.liveUrl ? " · " : null}
+                      {project.liveUrl ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link-draw"
+                        >
+                          demo ↗
+                        </a>
+                      ) : null}
                     </p>
                   ) : null}
                   {/* The case file's own credibility token, echoed small
-                      (recruiter-rejudge status-wording fix). */}
+                      (recruiter-rejudge status-wording fix). Dimming is
+                      the house mute — opacity on FULL ink (the dusk-
+                      chapter pattern), which composites to ≥5:1 on the
+                      golden-hour field; secondary ink at 0.7 would not. */}
                   {study ? (
-                    <p className="font-mono text-[0.6875rem] tracking-[0.08em]">
+                    <p className="text-ink font-mono text-[0.6875rem] tracking-[0.08em] opacity-70">
                       last verified {study.verified}
                     </p>
                   ) : null}
@@ -957,9 +990,10 @@ function ValuesChapter() {
         {/* Two figures share the nightfall spread: the litany carries the
             left, and fig 6.1 — a small ledger in fig 4.1's grammar —
             holds the right column so the chapter is composed edge to
-            edge instead of left-hugging a void (fix round 4). 360px keeps
-            every ledger row on one line beside its reviewer mark. */}
-        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            edge instead of left-hugging a void (fix round 4). 392px keeps
+            every ledger row on one line beside its reviewer mark (W5:
+            "refused" runs three characters longer than the old word). */}
+        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-end">
           <figure>
             {/* The ending litany (plan 3.8): line-mask rises with a
                 SLOWING stagger (TextMotion), each receipt fading in
@@ -1003,7 +1037,7 @@ function ValuesChapter() {
             </figcaption>
           </figure>
 
-          <figure className="w-full max-w-[360px]" data-tm="block">
+          <figure className="w-full max-w-[392px]" data-tm="block">
             <ul className="label-mono space-y-3 border-l border-current/20 pl-6">
               <li className="flex justify-between gap-x-3 opacity-60">
                 <span>gate</span>
@@ -1025,7 +1059,7 @@ function ValuesChapter() {
             <figcaption className="label-mono mt-6 space-y-1 pl-6 opacity-70">
               <span className="block">fig. 6.1 — the gates, kept.</span>
               <span className="block">
-                held — gate stopped the run · passed — human signed off
+                refused — the gate stopped the run · passed — human signed off
               </span>
             </figcaption>
           </figure>
