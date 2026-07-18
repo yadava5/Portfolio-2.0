@@ -27,3 +27,13 @@ first-viewport + disposition legend.
 
 Elevations banked: sign-the-stamp (4th confirmation, Phase 3) · rail as
 audit-trail tallies (Phase 2 Step 2, "proof-of-review" brand fit).
+
+## SHIPPED — ink-craft round complete
+
+All 7 craft fixes landed (static-mode final form w/ single authored dusk
+terminator + pen-dip; pressure/pooling/blob ink physics; per-chapter gestures;
+finale blot ON the stamp; run-041 alignment; scruff bundle; recruiter smalls).
+Gates ×3: 99/88/99, 0 failed (+4 new craft specs). Orchestrator frame check:
+d7 finale = the page's best stroke; r2 = one seam, at the divider, as designed.
+Residual = documented content-debt only. Next: Phase 2 Step 2 (chapter text
+animations, manifesto scrub, rail audit-trail elevation).
