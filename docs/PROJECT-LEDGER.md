@@ -80,3 +80,16 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   masthead shipped (CSS halftone mask, 0.0000% settle diff, LCP intact).
   W3-extras (view transitions, sun glyph, local-time arc) deferred pending
   W4 verdicts. → W4: triple fresh-eyes critique, bar 90/90/85.
+- **W4 JUDGED (docs/scorecards/era-w4-triple-judgment.md)**: recruiter **91**
+  ("advance" at ~80s) · evidence **91** (recomputed 3.504x from raw CSV; all
+  walk arithmetic matched independent recounts) · visitor **79** (bar 85 —
+  "two flagship micro-interactions read at 40% of intended volume"). Two bars
+  cleared; visitor holds the era open. All three converged on the e-07
+  held/earned contradiction (P0 honesty). → **W5**: round A honesty+machinery
+  (e-07 split, "refused" legend, capture-tick semantics, walk-payoff
+  transform, citation re-origin, work-row hierarchy, 90s path) · round B
+  entrance+margins+manifest (headline ink-settle under LCP/CLS gates, t-slip
+  margin seating, "on file:" closing manifest) · then fresh visitor re-judge
+  (bar 85) + evidence spot-recount. Rejected: kicker-clock numeral flicker
+  (scramble = banned). User calls surfaced: automl hero demotion, PR #5
+  deploy (production /evidence/ 404s until merge).

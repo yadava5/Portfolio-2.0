@@ -66,3 +66,44 @@ wearing another site's clothes." Rebuild = the missing half of the concept.
   real product screenshots.
 - Scores: recruiter 68 · evidence 64 · visitor 54 (transition ~20). The
   case-file rebuild is the single highest-leverage front-end work remaining.
+
+## REJUDGE ROUND (dossier build) — visitor 72 (was 54, +18)
+"The seam is gone — the same author's filing cabinet." Dossiers ~74, /evidence
+~58 (least designed object — no thread, raw URLs as text, no entry numbers).
+Top fixes: (1) receipts-table hierarchy (real column heads, serif claim line,
+key-labels on mobile stack); (2) BUG: jobtracker fig.2 caption says "clay
+marks the gates" but isGateNode matches nothing — flag the classifier gate in
+data or conditional caption; (3) architecture photocopy — topology should
+shape each figure (jobtracker linear, automl gated loop); (4) /evidence
+redesign (named artifacts + ↗, e-01… numbering, thread down margin);
+(5) plate/dead-zone composition + mobile repro-command break hints.
+Elevations: stampable registry row (reader inks approved on 041 — world
+mechanic = product thesis); THREAD AS CITATION SYSTEM (rows branch a visible
+pen-stroke to the fig they cite — "the move nobody else has").
+Method slip = "most convincing artifact on the site."
+
+## REJUDGE — recruiter 86 (was 68, +18)
+"Trust survives the whole loop." All external links curl-verified 200 +
+commits pinned; return legs click-verified; "best evidence hygiene I've seen
+from a new grad"; published "held" gates = sharp trust rise. Deductions:
+flagship externally unverifiable (−7, content-debt: demo-run ledger / 90s
+gate capture / sanitized skeleton), /evidence source fields cite LOCAL IMAGES
+where public repos exist (−3, fix: strongest-external-artifact rule + pin
+VisualAssist + deep-link e-rows to #v- anchors), work index at 55% scroll
+(−2, fix: hero surfacing of case links or promoted skip button), poster
+thumbnails illegible at climax (−2, fix: crop 2–3 readable panels, full
+poster secondary), status-wording tension ("in progress — core shipped, run
+ledger pending" + echo last-verified on home cards).
+
+## REJUDGE — evidence 86 (was 64, +22). FULL ROUND: 86/86/72 (from 68/64/54)
+"Tell the hiring manager the docs are trustworthy: every receipt resolved,
+every artifact matched its claimed number." All 6 prior gaps verified closed
+(2 with residue). THE find: SIMD attribution contradicted by its own receipt
+(BENCHMARKS.md: 3.5× is the PARALLEL version; "-march=native alone barely
+moves the needle") — P0 reword everywhere: "openmp+simd dot kernel, 3.5× vs
+-O3 baseline". Also: /evidence = "manifest, not yet ledger" (needs dates,
+receipt→#v- crosswalk links, strongest-external-artifact sources, 0.9791 +
+182-tests entries); master-inventory still SVG-picture; footnote stragglers
+(71 xctest, dean's list); ~97% terminates in README prose (content-debt).
+Content-debt ticket adds: flagship demo-run ledger, MNIST eval artifact,
+sweep rubric + miss analysis, per-label metrics on rare classes.
