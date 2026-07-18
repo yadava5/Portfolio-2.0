@@ -53,3 +53,25 @@ homepage length vs 90-second screens (skip-link mitigated) · mobile dossiers ~6
 ## User content-debt (blocks nothing above)
 Flagship demo-run ledger · MNIST eval artifact · sweep rubric + miss analysis ·
 per-label metrics · outcome numbers · updated resume · final deployments.
+
+## Refinement Era log (2026-07-18 →)
+- **W1 SHIPPED (`455ac0d`)**: the four wondrous interactions — press-to-sign
+  gate (run 041, visitor's local date, persisted, keyboard-complete),
+  stampable registry row (synced across home + case file), thread-as-citation
+  pen strokes on receipts, the-paper-remembers visited marks + opened notes.
+  paperMemory.ts store; 27 new tests; gates 146/132/146 ×3, 0 failed.
+- **PERF AUDIT (docs/design-lab/PERF-AUDIT.md)**: TBT 0–40ms, CLS 0.00,
+  a11y 96–100, BP/SEO 100 everywhere; entire gap = LCP. Two majors: hero
+  entrance costs ~2s of LCP (proven 104ms vs 1,940ms); DayArc writes vars on
+  <html> → whole-doc recalc (2,911 vs 61, 86% of scroll cost). Plus portrait
+  52KB→26px slot, case-hero WebPs, 43KB legacy transpile, a11y micro-list
+  (incl. "I buildmachine learning" accname bug).
+- **W3-core IN FLIGHT**: executing all six audit fixes with before→after
+  numbers required (visible in tree: webp derivatives + avatar thumb +
+  browserslist + imageWidth/Height already landing).
+- **Queued**: W2 heavy-wordings prose pass + dateline clocks → W3-extras
+  (view transitions, sun glyph, visitor-local-time spike) → W4 triple
+  re-critique (bar: 90/90/85).
+- **NEW INPUT**: tour of shreechaturvedi.com (friend's portfolio) for
+  inspiration transposition — findings land in
+  docs/design-lab/FRIEND-PORTFOLIO-TRANSPOSITIONS.md.
