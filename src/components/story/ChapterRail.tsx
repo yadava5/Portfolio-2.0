@@ -12,14 +12,55 @@
  * (which fires at the same top-50% boundary) in motion mode, and track
  * the statically-painted chapter behind it in the reduced-motion and
  * motion-off worlds, where no ScrollTrigger ever exists (A7).
+ *
+ * AUDIT TRAIL (Phase 2 · Step 2, banked elevation): as the Red Thread
+ * finishes drawing a chapter, a small ink check appears beside that
+ * folio number — by 07 the rail reads as a completed review checklist.
+ * The marks ride ScrollTrigger callbacks at the thread's own end
+ * boundary (THREAD_TRIGGER_END: the chapter bottom passing 60%
+ * viewport), created only in the engine world (A7) and toggled through
+ * React state with a 0.3s opacity fade (globals.css `.rail-mark`).
+ * Static worlds show the finished run: every mark present, pure CSS.
  */
 
 "use client";
 
 import { useEffect, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
 import { CHAPTERS, isDuskChapter } from "@/components/story/chapters";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
+import { useLenis } from "@/components/layout/SmoothScroll";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+/** The thread's end boundary (thread/constants THREAD_TRIGGER_END):
+ *  a chapter counts as reviewed once its bottom passes 60% viewport —
+ *  the moment its thread segment finishes drawing. */
+const REVIEW_BOUNDARY = "clamp(bottom 60%)";
+
+/**
+ * The reviewer's check — the same hand as fig 6.1's GateMark, shrunk
+ * to tally scale. Decorative (the folio number carries the meaning).
+ *
+ * @returns A tiny aria-hidden ink stroke
+ */
+function RailCheck() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 12 9" className="h-[8px] w-[10px]">
+      <path
+        d="M1.3 4.9 C2.8 6.4 3.6 7.1 4.3 6.9 C5.7 5 8.1 2.3 10.8 1.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 /**
  * Fixed left-edge chapter rail (xl+ viewports).
@@ -28,6 +69,8 @@ import { LenisAnchor } from "@/components/story/LenisAnchor";
  */
 export function ChapterRail() {
   const [active, setActive] = useState(CHAPTERS[0].id);
+  const [reviewed, setReviewed] = useState<ReadonlySet<string>>(new Set());
+  const lenis = useLenis();
 
   useEffect(() => {
     const sections = Array.from(
@@ -51,6 +94,47 @@ export function ChapterRail() {
     return () => observer.disconnect();
   }, []);
 
+  /* Audit-trail triggers — engine world only (A7): the static worlds
+     never reach this (their marks are forced visible in CSS), and the
+     callbacks ride the ONE existing loop — no new scroll listeners. */
+  useEffect(() => {
+    if (!lenis) return;
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-chapter]")
+    );
+    if (sections.length === 0) return;
+
+    const ctx = gsap.context(() => {
+      for (const section of sections) {
+        const id = section.dataset.chapter;
+        if (!id) continue;
+        ScrollTrigger.create({
+          trigger: section,
+          start: REVIEW_BOUNDARY,
+          onEnter: () =>
+            setReviewed((prev) =>
+              prev.has(id) ? prev : new Set(prev).add(id)
+            ),
+          onLeaveBack: () =>
+            setReviewed((prev) => {
+              if (!prev.has(id)) return prev;
+              const next = new Set(prev);
+              next.delete(id);
+              return next;
+            }),
+        });
+      }
+    });
+
+    return () => {
+      ctx.revert();
+      /* Engine retiring (A7 toggle/teardown): drop the class state — the
+         static worlds force every mark visible in CSS, and a remounting
+         engine re-fires onEnter for already-passed chapters on refresh. */
+      setReviewed(new Set());
+    };
+  }, [lenis]);
+
   return (
     <nav
       aria-label="Chapters"
@@ -73,6 +157,15 @@ export function ChapterRail() {
                 )}
               >
                 <span>{chapter.id}</span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "rail-mark self-center",
+                    reviewed.has(chapter.id) && "is-checked"
+                  )}
+                >
+                  <RailCheck />
+                </span>
                 <span className={isActive ? "" : "sr-only"}>
                   {chapter.name}
                 </span>

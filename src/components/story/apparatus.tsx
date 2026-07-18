@@ -115,6 +115,22 @@ interface PairHeadlineProps {
   as?: "h2" | "p";
   /** Dusk ink handling for chapters past the flip */
   dusk?: boolean;
+  /**
+   * Text-motion grammar (plan 3.8, wired by TextMotion.tsx):
+   *   - "headline" (default) — bright takes the line-mask rise (+ the
+   *     Fraunces weight breathing), muted the 200ms-later fade-rise.
+   *   - "manifesto" — the ch-02 deck pair: both lines split to words for
+   *     the page's ONE scrubbed text (opacity 0.25→1).
+   * All attributes are inert data hooks: static worlds render untouched.
+   */
+  motion?: "headline" | "manifesto";
+  /**
+   * Constrain the muted line's entrance to opacity only (no 10px rise).
+   * Required when the muted line carries a Red Thread geometry anchor
+   * ([data-thread-word] in ch 03): the thread measures that box, and a
+   * transformed ancestor would corrupt any re-measure mid-entrance.
+   */
+  mutedFadeOnly?: boolean;
   className?: string;
 }
 
@@ -133,17 +149,40 @@ export function PairHeadline({
   muted,
   as: Bright = "h2",
   dusk = false,
+  motion = "headline",
+  mutedFadeOnly = false,
   className,
 }: PairHeadlineProps) {
+  const manifesto = motion === "manifesto";
   return (
     <div className={className}>
-      <Bright className="font-display text-chapter fraunces-display max-w-[22ch]">
+      <Bright
+        className="font-display text-chapter fraunces-display max-w-[22ch]"
+        data-tm-bright={manifesto ? undefined : "lines"}
+        data-tm-words={manifesto ? "" : undefined}
+        data-breathe={manifesto ? undefined : ""}
+      >
         {bright}
       </Bright>
+      {/* Split targets must never be <p> elements directly: SplitText's
+          aria-label is prohibited on paragraph roles (axe
+          aria-prohibited-attr). The manifesto muted line therefore
+          splits an aria-hidden inner span with an sr-only twin — the
+          screen-reader string stays single and intact in every world. */}
       <p
         className={`mt-[0.35em] max-w-[26ch] font-serif text-[length:var(--text-chapter)] leading-[1.2] tracking-[-0.015em] italic ${mutedClass(dusk)}`}
+        data-tm={manifesto ? undefined : mutedFadeOnly ? "muted-fade" : "muted"}
       >
-        {muted}
+        {manifesto ? (
+          <>
+            <span className="sr-only">{muted}</span>
+            <span aria-hidden="true" className="block" data-tm-words="">
+              {muted}
+            </span>
+          </>
+        ) : (
+          muted
+        )}
       </p>
     </div>
   );

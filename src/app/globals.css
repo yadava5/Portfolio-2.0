@@ -458,6 +458,104 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   fill: var(--color-clay-graphic);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   TEXT MOTION — the chapters' entrance/scrub choreography (plan 3.8)
+   Orchestrated by TextMotion.tsx (engine world only, via useLenis)
+   except the HERO ENTRANCE, which is pure CSS so it plays from the
+   very first paint: a tiny inline script in layout.tsx stamps
+   `data-motion-ready` on <html> BEFORE the hero parses — but only
+   when the motion world is planned (no reduced-motion preference, no
+   stored quiet-toggle). FOUC discipline: the hidden initial state
+   exists ONLY under that JS-set readiness attribute (+ the same A7
+   guards in CSS), so static worlds and JS-dead loads always paint the
+   finished page. TextMotion removes the attribute once the entrance
+   has played (load-only, once — re-enabling motion never replays it).
+   ════════════════════════════════════════════════════════════════ */
+
+/* Hero rise (mobile + the shared final leg): transform/opacity only.
+   `to` is omitted so every property resolves to the element's natural
+   computed style — the final state IS the static state. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+/* Desktop variant adds the page's ONLY blur (plan 3.8: hero de-blur
+   8px→0, load-only; blur NOWHERE else, and never on mobile). */
+@keyframes hero-rise-blur {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(8px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter {
+    /* 1.0s expo.out, 110ms stagger via --hero-i (plan 3.8 exact) */
+    animation: hero-rise 1s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: calc(var(--hero-i, 0) * 110ms);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter {
+    animation-name: hero-rise-blur;
+  }
+}
+/* The hero sub-line animates an INNER wrapper: [data-thread-name]
+   itself must never transform (the Red Thread measures its box). */
+.hero-enter-inline {
+  display: inline-block;
+}
+
+/* Fraunces weight breathing (plan 3.8, optional — adopted): TextMotion
+   scrubs `--tm-wght` 360→420→360 via one quickSetter per headline; the
+   var composes INTO the axis voice so opsz/SOFT/WONK survive. Fallback
+   420 = the chapter-headline token weight, so static worlds (where the
+   var is never written) render identically. font-variation-settings
+   only — no layout-property animation. */
+[data-breathe].fraunces-display {
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 0,
+    "WONK" 0,
+    "wght" var(--tm-wght, 420);
+}
+[data-breathe].fraunces-wonk {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 1,
+    "wght" var(--tm-wght, 420);
+}
+
+/* Rail audit-trail (banked elevation): a small ink check beside each
+   folio number appears as the thread finishes that chapter (trigger
+   callbacks in ChapterRail.tsx toggle .is-checked; 0.3s opacity fade —
+   A7's allowed transition budget). NO track, NO capsule, NO glow
+   (NO-LIST §C). Static worlds show the finished run: every chapter
+   reviewed, all marks present. */
+.rail-mark {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rail-mark.is-checked {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-mark {
+    opacity: 1;
+    transition: none;
+  }
+}
+html[data-motion-off] .rail-mark {
+  opacity: 1;
+  transition: none;
+}
+
 /* ── Static-world chapter paint (amendments A4 + A7) — FINAL FORM ────
    Each chapter is ONE flat waypoint color. Every color change lands
    exactly AT the chapter's numbered folio divider: the section's tail

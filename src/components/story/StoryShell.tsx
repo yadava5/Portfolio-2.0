@@ -15,8 +15,19 @@
  * wrap. All content inherits body ink, which DayArc steps at the dusk
  * flip; chapters 06/07 mute via opacity (≥70%) instead of the day-only
  * secondary-ink token so every state holds AA (amendment A4).
+ *
+ * Phase 2 · Step 2 adds THE TEXT MOTION (plan 3.8) as inert data hooks
+ * wired by TextMotion.tsx: `.hero-enter` (CSS load entrance),
+ * `data-tm-bright` (line-mask rises), `data-tm="muted|muted-fade|
+ * block|name"` (fade-rises), `data-tm-words` (the ch-02 manifesto
+ * scrub), `data-tm-mantra`/`data-tm-receipt` (the ending litany), and
+ * `data-breathe` (Fraunces weight breathing). Rule of the house:
+ * elements that carry Red Thread geometry anchors ([data-thread-*])
+ * are NEVER transformed — the thread measures their boxes — so motion
+ * lives on inner wrappers, children, or siblings instead.
  */
 
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
   personalInfo,
@@ -34,6 +45,7 @@ import {
 } from "@/components/story/apparatus";
 import { CHAPTERS } from "@/components/story/chapters";
 import { ChapterRail } from "@/components/story/ChapterRail";
+import { TextMotion } from "@/components/story/TextMotion";
 import { ThreadSegment } from "@/components/thread/ThreadSegment";
 import { HashRealign } from "@/components/story/HashRealign";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
@@ -49,6 +61,17 @@ const WRAP =
   "relative mx-auto w-full max-w-[1240px] px-6 sm:px-12 xl:pr-16 xl:pl-36";
 
 const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
+
+/**
+ * Stagger index for the hero's CSS load entrance (plan 3.8: 110ms per
+ * line — globals.css multiplies `--hero-i`).
+ *
+ * @param index - Zero-based entrance position
+ * @returns Inline style carrying the custom property
+ */
+function heroDelay(index: number): CSSProperties {
+  return { "--hero-i": index } as CSSProperties;
+}
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
 const AUTOML_PHASES = [
@@ -150,22 +173,27 @@ const FURTHER_READING_IDS = [
  *  receipt is worded differently from its #work row on purpose — the
  *  same number should never read twice verbatim: the jobtracker line
  *  cites the case study's REAL 182-test backend suite (its 0.9791
- *  macro-F1 already carries the #work row). */
+ *  macro-F1 already carries the #work row). The litany's final line —
+ *  "Make it honest." — takes the page's ONLY WONK=1 (plan 3.8): the
+ *  quirk lands on the value he actually leads with. */
 const VALUES_LINES = [
   {
     mantra: "Make it learn.",
     receipt: "182 backend tests — jobtracker validation ledger",
     href: "/projects/jobtracker/#validation",
+    wonk: false,
   },
   {
     mantra: "Make it fast.",
     receipt: "simd dot kernel — 3.5x, benchmarked in ci",
     href: "/projects/fast-mnist-nn/#validation",
+    wonk: false,
   },
   {
     mantra: "Make it honest.",
     receipt: "19/20 cited-source sweep — policybot validation ledger",
     href: "/projects/policybot/#validation",
+    wonk: true,
   },
 ];
 
@@ -284,11 +312,22 @@ function ArrivalChapter() {
         />
 
         <div className="my-auto py-16">
+          {/* Hero entrance (plan 3.8): per-line de-blur + 14px rise via the
+              .hero-enter CSS animation (globals.css) — the page's ONLY
+              blur, desktop-only, load-only. The three structural line
+              spans ARE the animation lines: no splitting, text intact. */}
           <h1 className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]">
             {/* Forced break pattern: "machine learning" never splits */}
-            <span className="block">I build</span>
-            <span className="block whitespace-nowrap">machine learning</span>
-            <span className="block">
+            <span className="hero-enter block" style={heroDelay(0)}>
+              I build
+            </span>
+            <span
+              className="hero-enter block whitespace-nowrap"
+              style={heroDelay(1)}
+            >
+              machine learning
+            </span>
+            <span className="hero-enter block" style={heroDelay(2)}>
               that shows its{" "}
               {/* The ¹ is kerned against the period: the size lives on the
                   <sup> (not the anchor) so align-super raises the small
@@ -315,10 +354,19 @@ function ArrivalChapter() {
           </h1>
           {/* data-thread-name: the Red Thread originates as this line's
               trailing flick (ThreadSegment 01 measures it) — on an inline
-              span so the measured box hugs the text, not the column */}
+              span so the measured box hugs the text, not the column. The
+              entrance rides an INNER wrapper: the measured span itself
+              must never transform (descendant transforms do not move an
+              ancestor's layout box, so the thread's origin stays true
+              even if a re-measure lands mid-entrance). */}
           <p className="label-mono text-ink-secondary mt-10">
             <span data-thread-name>
-              ayush yadav — ml engineer, class of 2026
+              <span
+                className="hero-enter hero-enter-inline"
+                style={heroDelay(3)}
+              >
+                ayush yadav — ml engineer, class of 2026
+              </span>
             </span>
           </p>
         </div>
@@ -327,7 +375,7 @@ function ArrivalChapter() {
             teaser is PRIMARY (full ink + drawn underline), the skip
             affordance is SECONDARY (secondary ink + underline), and the
             scroll cue is the QUIETEST — smallest mono, no affordance. */}
-        <div className="label-mono space-y-3">
+        <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
           <p className="text-ink">
             <LenisAnchor href="#automl" className="link-draw">
               flagship — agentic automl: seven gated phases ⟶
@@ -387,7 +435,11 @@ function WhoChapter() {
         <ChapterKicker id={WHO.id} label="who — on trust & machinery" />
 
         <div className="mt-10">
+          {/* The MANIFESTO (plan 3.8): the page's ONE scrubbed text —
+              TextMotion splits both deck lines to words and scrubs their
+              opacity 0.25→1 across ~60vh of ch-02 scroll. */}
           <PairHeadline
+            motion="manifesto"
             bright="This is a story about learning machines."
             muted="And the person who doesn’t fully trust them yet."
           />
@@ -396,14 +448,17 @@ function WhoChapter() {
               paragraph, and the n.b. aside — smaller, still seated against
               the bio column so it reads as a note ON the text. */}
           <div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14">
-            <p className="text-body max-w-[55ch] font-serif">
+            <p className="text-body max-w-[55ch] font-serif" data-tm="block">
               I’m a computer-science graduate from Miami University, and I build
               the whole path — data pipelines, applied machine learning, and the
               software that carries them into real use — with evidence behind
               every claim and a person holding the final word.
             </p>
 
-            <aside className="border-ink-secondary/60 text-ink-secondary self-end justify-self-start border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase">
+            <aside
+              className="border-ink-secondary/60 text-ink-secondary self-end justify-self-start border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
+              data-tm="block"
+            >
               n.b. — nothing on this desk ships without a human pass. this page
               waited its turn too.
             </aside>
@@ -442,6 +497,9 @@ function PathChapter() {
         <PairHeadline
           className="mt-10"
           bright="Thousands of service tickets. Zero structure."
+          /* The muted line's entrance is opacity-only: it carries the
+             thread's word anchor, and its box must never transform. */
+          mutedFadeOnly
           muted={
             <>
               {/* data-thread-word: the Red Thread underlines this word —
@@ -454,14 +512,20 @@ function PathChapter() {
 
         <div className="mt-16 space-y-14">
           <article className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12">
-            <div className="label-mono text-ink-secondary space-y-1">
+            <div
+              className="label-mono text-ink-secondary space-y-1"
+              data-tm="block"
+            >
               <p>{range}</p>
               <p>
                 {miami.company} · {miami.location}
               </p>
             </div>
             <div>
-              <h3 className="font-display fraunces-display text-2xl">
+              <h3
+                className="font-display fraunces-display text-2xl"
+                data-tm="block"
+              >
                 {miami.title}
               </h3>
               {/* Field records, not résumé bullets: each dated observation
@@ -469,7 +533,7 @@ function PathChapter() {
                   #values claim→evidence grammar (fix round 4). */}
               <div className="mt-7 space-y-8">
                 {PATH_FIELD_RECORDS.map((record) => (
-                  <div key={record.dateline}>
+                  <div key={record.dateline} data-tm="block">
                     <p className="label-mono text-ink-secondary">
                       {record.dateline} —
                     </p>
@@ -492,11 +556,14 @@ function PathChapter() {
           </article>
 
           <article className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12">
-            <div className="label-mono text-ink-secondary space-y-1">
+            <div
+              className="label-mono text-ink-secondary space-y-1"
+              data-tm="block"
+            >
               <p>aug 2022 - may 2026</p>
               <p>{degree.school}</p>
             </div>
-            <div>
+            <div data-tm="block">
               <h3 className="font-display fraunces-display text-2xl">
                 B.S. {degree.field}
               </h3>
@@ -542,17 +609,23 @@ function AutomlChapter() {
               bright="The agent drafts the whole pipeline."
               muted="Nothing runs until a human says go."
             />
-            <p className="text-body mt-12 max-w-[55ch] font-serif">
+            <p
+              className="text-body mt-12 max-w-[55ch] font-serif"
+              data-tm="block"
+            >
               Agentic AutoML turns a dataset and a goal into a structured,
               auditable ML workflow — planned, argued for, and executed by
               agents that still cannot press go. That button is human. It stays
               human.
             </p>
             {/* Honest stat strip — every clause is proof-manifest-backed */}
-            <p className="label-mono border-ink/15 mt-9 inline-block border-t pt-3">
+            <p
+              className="label-mono border-ink/15 mt-9 inline-block border-t pt-3"
+              data-tm="block"
+            >
               7 phases · every one gated · langgraph + mcp orchestration
             </p>
-            <p className="mt-8">
+            <p className="mt-8" data-tm="block">
               <Link
                 href="/projects/automl/"
                 className="link-draw label-mono text-ink"
@@ -563,7 +636,7 @@ function AutomlChapter() {
           </div>
 
           <div>
-            <figure>
+            <figure data-tm="block">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 {AUTOML_PHASES.map((phase, index) => (
                   <li key={phase}>
@@ -592,7 +665,7 @@ function AutomlChapter() {
                 rows: run/model left, status right. The metric column is
                 withheld outright — a proof column must never dangle bare
                 em-dashes — and the caption owns the redaction honestly. */}
-            <figure className="mt-10">
+            <figure className="mt-10" data-tm="block">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 <li className="text-ink-secondary flex justify-between gap-x-3 opacity-80">
                   <span>run · model</span>
@@ -667,18 +740,42 @@ function WorkChapter() {
                 <div>
                   {/* One underline affordance per row: the title is still a
                       link (big target) but carries no underline — "the case
-                      file ⟶" is the row's drawn affordance. */}
-                  <h3 className="font-display fraunces-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight">
+                      file ⟶" is the row's drawn affordance. The title
+                      block-fades (it wraps a link, so it is never split —
+                      fragmenting a link's text would hollow its
+                      accessible name); the row's plan-3.10 pair takes the
+                      chapter bright/muted grammar. */}
+                  <h3
+                    className="font-display fraunces-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight"
+                    data-tm="block"
+                  >
                     <Link href={caseHref}>{project.title}</Link>
                   </h3>
+                  {/* The row's bright line splits an aria-hidden inner
+                      span (sr-only twin): aria-label is prohibited on
+                      paragraph roles, so the <p> itself is never the
+                      SplitText target. */}
                   <p className="mt-5 max-w-[34ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leading-snug">
-                    {row.bright}
+                    <span className="sr-only">{row.bright}</span>
+                    <span
+                      aria-hidden="true"
+                      className="block"
+                      data-tm-bright="lines"
+                    >
+                      {row.bright}
+                    </span>
                   </p>
-                  <p className="text-ink-secondary mt-2 max-w-[38ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leading-snug italic">
+                  <p
+                    className="text-ink-secondary mt-2 max-w-[38ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leading-snug italic"
+                    data-tm="muted"
+                  >
                     {row.muted}
                   </p>
                 </div>
-                <div className="label-mono text-ink-secondary flex flex-row flex-wrap items-baseline gap-x-8 gap-y-3 md:flex-col md:items-end md:justify-end md:text-right">
+                <div
+                  className="label-mono text-ink-secondary flex flex-row flex-wrap items-baseline gap-x-8 gap-y-3 md:flex-col md:items-end md:justify-end md:text-right"
+                  data-tm="block"
+                >
                   <p>{row.metric}</p>
                   <p>
                     <Link href={caseHref} className="link-draw text-ink">
@@ -703,7 +800,7 @@ function WorkChapter() {
           })}
         </div>
 
-        <div className="border-ink/15 border-t pt-6">
+        <div className="border-ink/15 border-t pt-6" data-tm="block">
           <p className="label-mono text-ink-secondary">also on file —</p>
           <ul className="label-mono mt-3 flex flex-wrap gap-x-8 gap-y-2">
             {FURTHER_READING_IDS.map((id) => {
@@ -751,15 +848,32 @@ function ValuesChapter() {
             every ledger row on one line beside its reviewer mark. */}
         <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
           <figure>
+            {/* The ending litany (plan 3.8): line-mask rises with a
+                SLOWING stagger (TextMotion), each receipt fading in
+                behind its mantra. Mantra leading is 1.05 and none of the
+                three lines carries a descender glyph, so the overflow
+                masks cannot clip. */}
             <ul className="space-y-[4.5vh] border-l border-current/20 pl-6 sm:pl-8">
               {VALUES_LINES.map((line) => (
                 <li key={line.mantra}>
-                  <p className="font-display text-chapter fraunces-display leading-[1.05]">
-                    {line.mantra}
+                  {/* The mask target is an aria-hidden inner span with an
+                      sr-only twin (aria-label is prohibited on paragraph
+                      roles); the axis voice + weight breathing live on
+                      the <p>, which the split never touches. */}
+                  <p
+                    className={`font-display text-chapter leading-[1.05] ${
+                      line.wonk ? "fraunces-wonk" : "fraunces-display"
+                    }`}
+                    data-breathe
+                  >
+                    <span className="sr-only">{line.mantra}</span>
+                    <span aria-hidden="true" className="block" data-tm-mantra>
+                      {line.mantra}
+                    </span>
                   </p>
                   {/* Each receipt is a quiet mono link into the validation
                       ledger that proves it */}
-                  <p className="label-mono mt-2 opacity-70">
+                  <p className="label-mono mt-2 opacity-70" data-tm-receipt>
                     <Link href={line.href} className="link-draw">
                       {line.receipt}
                     </Link>
@@ -767,12 +881,15 @@ function ValuesChapter() {
                 </li>
               ))}
             </ul>
-            <figcaption className="label-mono mt-[4.5vh] pl-6 opacity-70 sm:pl-8">
+            <figcaption
+              className="label-mono mt-[4.5vh] pl-6 opacity-70 sm:pl-8"
+              data-tm="block"
+            >
               fig. 6.0 — the litany, with receipts.
             </figcaption>
           </figure>
 
-          <figure className="w-full max-w-[360px]">
+          <figure className="w-full max-w-[360px]" data-tm="block">
             <ul className="label-mono space-y-3 border-l border-current/20 pl-6">
               <li className="flex justify-between gap-x-3 opacity-60">
                 <span>gate</span>
@@ -834,13 +951,33 @@ function GateChapter() {
         <div className="mt-10 grid items-center gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
           <div>
             <div className="max-w-[28ch] font-serif text-[clamp(1.3rem,2.2vw,1.8rem)] leading-snug">
-              <p>Every pipeline I build ends with a human decision.</p>
-              <p className={`mt-2 italic ${muted}`}>
+              {/* Bright line splits an aria-hidden inner span (sr-only
+                  twin) — aria-label is prohibited on paragraph roles. */}
+              <p>
+                <span className="sr-only">
+                  Every pipeline I build ends with a human decision.
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="block"
+                  data-tm-bright="lines"
+                >
+                  Every pipeline I build ends with a human decision.
+                </span>
+              </p>
+              <p className={`mt-2 italic ${muted}`} data-tm="muted">
                 This one ends with yours.
               </p>
             </div>
 
-            <h2 className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]">
+            {/* The terminal flourish rises unmasked (data-tm="name"): at
+                leading 0.95 an overflow mask would clip the y descenders,
+                so the giant name takes the hero's own fade + 14px rise
+                instead — the entrance and the ending share one hand. */}
+            <h2
+              className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+              data-tm="name"
+            >
               Ayush Yadav
             </h2>
 
@@ -852,7 +989,10 @@ function GateChapter() {
 
             {/* Availability renders lowercase via .label-mono — the data
                 file keeps its editorial case (transform in render only). */}
-            <div className={`label-mono mt-8 space-y-2 ${muted}`}>
+            <div
+              className={`label-mono mt-8 space-y-2 ${muted}`}
+              data-tm="block"
+            >
               <p>availability — {personalInfo.availability}</p>
               <p>
                 oxford, ohio — <LocalTime /> local
@@ -864,6 +1004,7 @@ function GateChapter() {
                 scroll for LinkedIn or the address itself). */}
             <div
               className={`label-mono mt-5 flex flex-wrap gap-x-8 gap-y-2 ${muted}`}
+              data-tm="block"
             >
               {/* The address itself, in plain text (a recruiter should
                   never have to click to learn it) — and still a mailto. */}
@@ -898,7 +1039,7 @@ function GateChapter() {
               ) : null}
             </div>
 
-            <p className="mt-10">
+            <p className="mt-10" data-tm="block">
               <a
                 href={`mailto:${personalInfo.email}`}
                 className="link-draw font-display text-[clamp(1.5rem,2.4vw,2.2rem)] italic"
@@ -917,7 +1058,7 @@ function GateChapter() {
             full: every receipt on the page, numbered, linked to its
             evidence. Compact mono rows over hairline rules; it sits in
             nightfall, so muting is opacity, never day tokens (A4). */}
-        <div className="mt-[12vh] max-w-[44rem]">
+        <div className="mt-[12vh] max-w-[44rem]" data-tm="block">
           <h2 className={`label-mono ${muted}`}>
             references — footnote 1, kept.
           </h2>
@@ -969,6 +1110,7 @@ export function StoryShell() {
     <div className="relative z-10">
       <HashRealign />
       <ChapterRail />
+      <TextMotion />
       <ArrivalChapter />
       <WhoChapter />
       <PathChapter />
