@@ -53,7 +53,7 @@ async function waitForScrollSettle(page: Page) {
 test.describe("scroll engine", () => {
   test("engine mounts, no progress bar, page scrolls", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
     /* Engine mounted: Lenis stamps its class on <html> */
     await expect(page.locator("html")).toHaveClass(/\blenis\b/);
@@ -83,7 +83,7 @@ test.describe("scroll engine", () => {
     test.skip(!isDesktop(page), "header nav links are lg+ only");
 
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
     await page.locator("html.lenis").waitFor({ state: "attached" });
     /* Header must actually be consuming the engine before we click */
     await page
@@ -93,11 +93,11 @@ test.describe("scroll engine", () => {
 
     const experienceLink = page
       .locator("header")
-      .getByRole("link", { name: "Experience" });
+      .getByRole("link", { name: "experience" });
 
     /* First navigation: absorbs any late layout shift from font swap */
     await experienceLink.click();
-    await expect(page.locator("#experience")).toBeInViewport({
+    await expect(page.locator("#path")).toBeInViewport({
       timeout: 5_000,
     });
     await waitForScrollSettle(page);
@@ -106,15 +106,15 @@ test.describe("scroll engine", () => {
        hop away, then return. */
     await page
       .locator("header")
-      .getByRole("link", { name: "Case Studies" })
+      .getByRole("link", { name: "the work" })
       .click();
     await waitForScrollSettle(page);
     await experienceLink.click();
     await waitForScrollSettle(page);
 
-    await expect(page.locator("#experience")).toBeInViewport();
+    await expect(page.locator("#path")).toBeInViewport();
     const top = await page
-      .locator("#experience")
+      .locator("#path")
       .evaluate((el) => Math.round(el.getBoundingClientRect().top));
 
     /* lenis.scrollTo offset lands the section top at ~96px */
@@ -132,16 +132,48 @@ test.describe("scroll engine", () => {
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
     /* A7: gate at entry — no Lenis under reduced motion */
     await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
 
     await page
       .locator("header")
-      .getByRole("link", { name: "Experience" })
+      .getByRole("link", { name: "experience" })
       .click();
 
-    await expect(page.locator("#experience")).toBeInViewport();
+    await expect(page.locator("#path")).toBeInViewport();
+  });
+
+  test("quiet motion toggle tears down the engine and persists", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#arrival").waitFor({ state: "attached" });
+    await page.locator("html.lenis").waitFor({ state: "attached" });
+
+    const toggle = page
+      .locator("header")
+      .getByRole("button", { name: /motion/ });
+    test.skip(!(await toggle.isVisible()), "toggle is sm+ only");
+
+    /* A7: the in-page toggle unmounts the engine like reduced motion */
+    await toggle.click();
+    await expect(page.locator("html")).toHaveAttribute("data-motion-off", "");
+    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+
+    /* The preference persists across a reload (localStorage) */
+    await page.reload();
+    await page.locator("#arrival").waitFor({ state: "attached" });
+    await expect(page.locator("html")).toHaveAttribute("data-motion-off", "");
+    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+
+    /* And it comes back on */
+    await page
+      .locator("header")
+      .getByRole("button", { name: /motion/ })
+      .click();
+    await expect(page.locator("html")).not.toHaveAttribute("data-motion-off");
+    await expect(page.locator("html")).toHaveClass(/\blenis\b/);
   });
 });

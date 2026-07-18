@@ -11,11 +11,13 @@ import {
 } from "./portfolio-fixtures";
 
 const NAV_LINKS = [
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
+  { id: "arrival", label: "Arrival" },
+  { id: "who", label: "Who" },
+  { id: "path", label: "The Path" },
+  { id: "automl", label: "AutoML" },
+  { id: "work", label: "The Work" },
+  { id: "values", label: "How I work" },
+  { id: "gate", label: "The Approval Gate" },
 ];
 
 interface ConsoleMessage {
@@ -150,17 +152,17 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         }
       }
 
-      // ========== SECTION 6: PROJECT SECTION CONTENT ==========
-      const projectsSection = page.locator("#projects");
+      // ========== SECTION 6: PROJECT CHAPTER CONTENT ==========
+      const projectsSection = page.locator("#work");
       if ((await projectsSection.count()) === 0) {
-        errors.push(`[${theme.name}] Projects section #projects not found`);
+        errors.push(`[${theme.name}] Work chapter #work not found`);
       }
 
-      // Check that the project section has visible heading/content. Theme copy
-      // varies intentionally, so avoid matching only legacy heading labels.
+      // Check that the work chapter has visible heading/content. Copy varies
+      // intentionally, so avoid matching only legacy heading labels.
       const projectHeadings = await projectsSection.locator("h2, h3, h4").all();
       if (projectHeadings.length === 0) {
-        warnings.push(`[${theme.name}] No project section heading found`);
+        warnings.push(`[${theme.name}] No work chapter heading found`);
       }
 
       // ========== SECTION 7: PROJECT IMAGES ==========
@@ -195,10 +197,10 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         }
       }
 
-      // ========== SECTION 9: EXPERIENCE SECTION ==========
-      const experienceSection = page.locator("#experience");
+      // ========== SECTION 9: EXPERIENCE CHAPTER ==========
+      const experienceSection = page.locator("#path");
       if ((await experienceSection.count()) === 0) {
-        errors.push(`[${theme.name}] Experience section #experience not found`);
+        errors.push(`[${theme.name}] Path chapter #path not found`);
       }
 
       // Check for job titles
@@ -206,29 +208,28 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
         .locator(`:text("ITSM Data Integration")`)
         .all();
       if (jobTitleElements.length === 0) {
+        warnings.push(`[${theme.name}] Job title not found in Path chapter`);
+      }
+
+      // ========== SECTION 10: FLAGSHIP CHAPTER DEPTH ==========
+      const flagshipSection = page.locator("#automl");
+      if ((await flagshipSection.count()) === 0) {
+        errors.push(`[${theme.name}] Flagship chapter #automl not found`);
+      }
+
+      // The flagship chapter replaces the old skills wall as the page's
+      // technical-depth surface; it must carry real content.
+      const flagshipText = (await flagshipSection.first().innerText()).trim();
+      if (flagshipText.length < 20) {
         warnings.push(
-          `[${theme.name}] Job title not found in Experience section`
+          `[${theme.name}] Flagship chapter has too little content`
         );
       }
 
-      // ========== SECTION 10: SKILLS SECTION ==========
-      const skillsSection = page.locator("#skills");
-      if ((await skillsSection.count()) === 0) {
-        errors.push(`[${theme.name}] Skills section #skills not found`);
-      }
-
-      // Check for visible skill/depth content. The Atlas theme presents proof
-      // categories instead of generic skill chips, and alternate themes do not
-      // need CSS class names containing "skill" to satisfy this contract.
-      const skillsText = (await skillsSection.first().innerText()).trim();
-      if (skillsText.length < 20) {
-        warnings.push(`[${theme.name}] Skills section has too little content`);
-      }
-
-      // ========== SECTION 11: CONTACT SECTION ==========
-      const contactSection = page.locator("#contact");
+      // ========== SECTION 11: CONTACT CHAPTER ==========
+      const contactSection = page.locator("#gate");
       if ((await contactSection.count()) === 0) {
-        errors.push(`[${theme.name}] Contact section #contact not found`);
+        errors.push(`[${theme.name}] Gate chapter #gate not found`);
       }
 
       // Check for contact form or contact info
@@ -433,8 +434,8 @@ test.describe("COMPREHENSIVE QA TEST - ALL THEMES", () => {
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1500);
 
-    // Scroll to contact section
-    await page.locator("#contact").scrollIntoViewIfNeeded();
+    // Scroll to the gate chapter (the contact surface)
+    await page.locator("#gate").scrollIntoViewIfNeeded();
     await page.waitForTimeout(500);
 
     // Check for either form or contact info

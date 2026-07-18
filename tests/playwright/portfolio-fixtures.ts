@@ -14,22 +14,22 @@ import {
   projectCaseStudies,
 } from "../../src/lib/data/projectCaseStudies";
 
-// The multi-theme system was removed (single Atlas identity ships). These
+// The multi-theme system was removed (a single identity ships). These
 // remain as static fixtures so the suite compiles; there is no theme switcher.
-export const DEFAULT_THEME = "technical-operations-atlas";
+export const DEFAULT_THEME = "daylight-study";
 export const THEME_IDS = [DEFAULT_THEME];
-export const THEMES = [
-  { name: DEFAULT_THEME, label: "Technical Operations Atlas" },
-];
+export const THEMES = [{ name: DEFAULT_THEME, label: "Daylight Study" }];
 export const CASE_STUDY_IDS = caseStudyIds;
 
+// The seven working-paper chapters (data-chapter 01–07), in storyboard order.
 export const NAV_SECTIONS = [
-  "about",
-  "experience",
-  "projects",
-  "skills",
-  "testimonials",
-  "contact",
+  "arrival",
+  "who",
+  "path",
+  "automl",
+  "work",
+  "values",
+  "gate",
 ];
 
 export const PUBLIC_PROJECTS = getPublicProjects();
@@ -54,6 +54,7 @@ function visualDisclosureLabel(imageKind: string) {
 }
 
 export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
+  id: project.id,
   title: project.title,
   image: project.image,
   imageKind: project.imageKind,
@@ -62,6 +63,7 @@ export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
 }));
 
 export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map((project) => ({
+  id: project.id,
   title: project.title,
   image: project.image,
   imageKind: project.imageKind,
@@ -98,37 +100,40 @@ export const EXPECTED_CONTENT = {
 };
 
 export const EXPECTED_GRADUATE_IDENTITY = {
-  role: "New-grad software engineer",
+  // Hero mono sub-line (rendered lowercase; textContent keeps source case)
+  role: "ml engineer, class of 2026",
   education: "B.S. Computer Science, Miami University, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
-  recentRoleLabel: "Recent role",
+  experienceTitle: experiences[0].title,
   recentExperienceRange: "Jun 2025 - May 2026",
 };
 
+// Storyboard order: the flagship chapter (04) leads, then the Ch-05 rows.
 export const EXPECTED_SELECTED_WORK_ORDER = [
   "Agentic AutoML Platform",
+  "JobTracker",
   "Fast MNIST Neural Network",
   "Visual Assist",
-  "JobTracker",
 ];
 
-export const EXPECTED_SELECTED_WORK_PROOF_LABELS = [
+// Ch-05 editorial rows: each row links to its case file and carries its
+// real proof-backed metric line (fix round 4 — no vague capability copy).
+export const EXPECTED_WORK_ROWS = [
   {
-    title: "Agentic AutoML Platform",
-    labels: ["Presenter stack proof", "Expo poster proof"],
+    title: "JobTracker",
+    href: "/projects/jobtracker/",
+    metric: "macro-f1 0.9791 — 96-sample gate",
   },
   {
     title: "Fast MNIST Neural Network",
-    labels: ["Local React workbench screenshot", "Benchmark evidence"],
+    href: "/projects/fast-mnist-nn/",
+    metric: "3.5x dot-kernel speedup — committed benchmarks",
   },
   {
     title: "Visual Assist",
-    labels: ["On-device accessibility architecture", "XCTest source evidence"],
-  },
-  {
-    title: "JobTracker",
-    labels: ["Local classification architecture", "Backend test suite"],
+    href: "/projects/visual-assist/",
+    metric: "71 xctest functions — on-device, voiceover-first",
   },
 ];
 
@@ -187,11 +192,45 @@ export const EXPECTED_LINKS = {
   resume: personalInfo.resumeUrl,
 };
 
-export const ATLAS_ALLOWED_METRICS = ["1M+", "3.5x", "19/20", "7-phase"];
+export const ATLAS_ALLOWED_METRICS = [
+  "1M+",
+  "3.5x",
+  "19/20",
+  "7-phase",
+  "0.9791",
+];
 
-export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
+// Header CTAs: text nav + github (surfaced early for screeners) + the
+// single filled resume chip. LinkedIn stays at the gate and footer. On
+// phones the "contact" text item collapses to the mail icon (aria-label
+// "Contact") so a screener always has a contact affordance in reach.
+// Below ~420px the header rebalances (avatar shrinks then drops, resume
+// slims) so the "ayush yadav" wordmark never ellipsizes at 320–420px.
+export const RECRUITER_HERO_LINKS = [
+  "the work",
+  "experience",
+  "contact",
+  "github",
+  "Resume",
+];
+export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume"];
 
-export const RECRUITER_HERO_METRICS = ["1M+", "3.5x", "19/20", "7-phase"];
+// The proof metrics must EXIST on the homepage; they live in the chapters
+// where their stories are told (03 the path, 04 automl, 05 work, 06 values).
+export const RECRUITER_HERO_METRICS = [
+  "1M+",
+  "3.5x",
+  "19/20",
+  "7-phase",
+  "0.9791",
+];
+export const METRIC_HOME_CHAPTER: Record<string, string> = {
+  "1M+": "#path",
+  "19/20": "#path",
+  "7-phase": "#automl",
+  "3.5x": "#work",
+  "0.9791": "#values",
+};
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [
   "automl",
@@ -264,7 +303,7 @@ export async function applyThemeState(
   await page.evaluate((themeName) => {
     document.documentElement.setAttribute("data-theme", themeName);
   }, theme.name);
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
+  await page.locator("#who").waitFor({ state: "attached", timeout: 20000 });
   await page.waitForTimeout(200);
 }
 

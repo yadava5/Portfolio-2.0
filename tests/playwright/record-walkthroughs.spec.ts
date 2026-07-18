@@ -1,9 +1,5 @@
 import { test } from "@playwright/test";
-import {
-  artifactPath,
-  THEMES,
-  switchThemeAndWait,
-} from "./portfolio-fixtures";
+import { artifactPath, THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 // Enable video recording
 test.use({

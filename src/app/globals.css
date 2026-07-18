@@ -68,11 +68,50 @@
   --arc-h: 78.24;
 
   /* ── World textures (LightField + reduced-motion chapters) ──────────
-     Both are inline SVG data-URIs with their intensity baked in:
+     All are inline SVG data-URIs with their intensity baked in:
      grain = feTurbulence noise, ink-tinted, alpha ≤5% (NO-LIST §D cap);
-     contour = hand-wobbled ink contour lines at 5% stroke opacity. */
+     contour = hand-wobbled ink contour lines at 5% stroke opacity;
+     contour-dusk = the SAME geometry drawn in the cream dusk ink at 2.5%,
+     so the paper texture survives nightfall instead of dying into the
+     ledger browns (the ink lines vanish on waypoint-06/07). */
   --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0%200%200%200%200.149%200%200%200%200%200.137%200%200%200%200%200.110%200%200%200%200.05%200'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
   --texture-contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%2326231C' stroke-opacity='.05' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
+  --texture-contour-dusk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%23F6EFE2' stroke-opacity='.025' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* ── Dusk boundary band (static worlds only) ────────────────────────
+     A printed duotone sunset: four crisp ~44px bands stepping golden→dusk
+     (discrete oklab mixes of waypoint-05/06 — never a smudge gradient,
+     never a bare 1px cut). It occupies text-free padding at the top of
+     chapter 06; no ink ever sits on a band, so the A4 step contract for
+     TEXT is untouched. */
+  --dusk-band-height: 11rem; /* 4 bands × 44px */
+  --dusk-band-1: color-mix(
+    in oklab,
+    var(--waypoint-05) 80%,
+    var(--waypoint-06)
+  );
+  --dusk-band-2: color-mix(
+    in oklab,
+    var(--waypoint-05) 60%,
+    var(--waypoint-06)
+  );
+  --dusk-band-3: color-mix(
+    in oklab,
+    var(--waypoint-05) 40%,
+    var(--waypoint-06)
+  );
+  --dusk-band-4: color-mix(
+    in oklab,
+    var(--waypoint-05) 20%,
+    var(--waypoint-06)
+  );
+  --dusk-band-steps: linear-gradient(
+    to bottom,
+    var(--dusk-band-1) 0 25%,
+    var(--dusk-band-2) 25% 50%,
+    var(--dusk-band-3) 50% 75%,
+    var(--dusk-band-4) 75% 100%
+  );
 
   /* ── Semantic aliases (legacy names consumed by error/not-found/skip-link) ── */
   --background: var(--color-canvas);
@@ -155,41 +194,228 @@
   background-size: 420px 420px;
 }
 
+/* Past the dusk flip the ink contour dies on the ledger browns; swap to
+   the cream-side variant (same geometry, 2.5%) so the paper keeps its
+   tooth at night. Steps with the flip — never scrubbed (A4). */
+html[data-arc-phase="dusk"] .light-field-contour {
+  background-image: var(--texture-contour-dusk);
+}
+
 /* Dusk ink flip (amendment A4): a STEP change toggled by DayArc's
    ScrollTrigger callbacks at the 05→06 boundary — never scrubbed. */
 html[data-arc-phase="dusk"] body {
   color: var(--color-ink-dusk);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   WORKING-PAPER CHROME — header, footer, links, focus
+   Header/footer cross the dusk flip, so their inks are composed from
+   pre-verified vars only (A4): day ink on paper, dusk ink on the
+   waypoint-06 ledger brown. No backdrop-blur anywhere (NO-LIST).
+   ════════════════════════════════════════════════════════════════ */
+
+.site-header {
+  --header-ink: var(--color-ink);
+  --header-paper: var(--color-canvas);
+  --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
+  --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  border-color: color-mix(in srgb, var(--color-ink) 16%, transparent);
+}
+html[data-arc-phase="dusk"] .site-header {
+  --header-ink: var(--color-ink-dusk);
+  --header-paper: var(--waypoint-06);
+  --header-ink-muted: color-mix(
+    in srgb,
+    var(--color-ink-dusk) 75%,
+    transparent
+  );
+  --header-ink-border: color-mix(
+    in srgb,
+    var(--color-ink-dusk) 32%,
+    transparent
+  );
+  border-color: color-mix(in srgb, var(--color-ink-dusk) 20%, transparent);
+}
+
+/* Scrolled state: paper fade-in. Opaque, so folio rules and kickers pass
+   under it cleanly instead of ghosting through — and never frost. */
+.site-header-scrolled {
+  background-color: var(--color-canvas);
+}
+html[data-arc-phase="dusk"] .site-header-scrolled {
+  background-color: var(--waypoint-06);
+}
+
+/* Static world (reduced motion / quiet toggle): the arc never runs, so the
+   fixed header keeps a paper backing over the statically-painted chapters. */
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    background-color: var(--color-canvas);
+  }
+}
+html[data-motion-off] .site-header {
+  background-color: var(--color-canvas);
+}
+
+/* Folio rules dissolve just before they slide under the fixed header —
+   decorative-only CSS scroll timeline behind @supports (amendment A2);
+   browsers without support get the clean opaque-header pass-under. The
+   view-timeline inset mirrors the header's height, so `exit` begins at
+   the header's bottom edge. Static worlds keep folios fully drawn. */
+@keyframes folio-exit {
+  to {
+    opacity: 0;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion-off]) .folio-rule {
+      /* nonzero duration required: the shorthand's 0s default never runs;
+         with a view timeline the used duration comes from the range */
+      animation: folio-exit 1ms linear both;
+      animation-timeline: view(block 3.75rem 0px);
+      animation-range: exit 0% exit 90%;
+    }
+  }
+}
+
+/* Footer sits in nightfall. Under motion it inherits the arc's dusk ink;
+   in the static world it paints waypoint-07 itself. */
+@media (prefers-reduced-motion: reduce) {
+  .site-footer {
+    background-color: var(--waypoint-07);
+    color: var(--color-ink-dusk);
+  }
+}
+html[data-motion-off] .site-footer {
+  background-color: var(--waypoint-07);
+  color: var(--color-ink-dusk);
+}
+
+/* Underline draw — the ONE hover move sitewide (plan 3.7, 250ms ease-out).
+   A faint resting underline for affordance; hover/focus draws the full-
+   strength line. currentColor keeps it AA on both sides of the dusk flip. */
+.link-draw {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in srgb, currentColor 40%, transparent),
+      color-mix(in srgb, currentColor 40%, transparent)
+    );
+  background-size:
+    0% 1px,
+    100% 1px;
+  background-position:
+    left calc(100% - 0.05em),
+    left calc(100% - 0.05em);
+  background-repeat: no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-draw {
+    transition: none;
+  }
+}
+html[data-motion-off] .link-draw {
+  transition: none;
+}
+
+/* Visible focus on the warm palette: currentColor follows the ink flip,
+   so the ring holds contrast in day chapters and dusk chapters alike. */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ── Static-world chapter paint (amendments A4 + A7) ─────────────────
+   Each DAY chapter declares its own waypoint plus the NEXT chapter's, so
+   the static worlds (reduced motion and the quiet toggle) keep the day
+   arc CONTINUOUS: a pre-blended vertical gradient runs across each
+   day→day boundary (01–05, all creams, AA everywhere) instead of a hard
+   seam. The 05→06 dusk boundary is NOT blended: the plan mandates dusk
+   as a STEP for ink, so the golden and dusk fields meet across a stepped
+   duotone band (see the static-world blocks below) — an authored, printed
+   sunset, never a smudge gradient and never a bare cut. No text sits on
+   any band. 06→07 blends within dusk territory. The
+   background-color stays the chapter's own waypoint (fallback + the
+   verifiable contract); the gradient paints over it. */
+[data-chapter] {
+  --wp-hold: 70%;
+}
+[data-chapter="01"] {
+  --wp-from: var(--waypoint-01);
+  --wp-to: var(--waypoint-02);
+}
+[data-chapter="02"] {
+  --wp-from: var(--waypoint-02);
+  --wp-to: var(--waypoint-03);
+}
+[data-chapter="03"] {
+  --wp-from: var(--waypoint-03);
+  --wp-to: var(--waypoint-04);
+}
+[data-chapter="04"] {
+  --wp-from: var(--waypoint-04);
+  --wp-to: var(--waypoint-05);
+}
+[data-chapter="05"] {
+  /* Golden hour holds to the horizon: no blend into dusk (banded, A4) */
+  --wp-from: var(--waypoint-05);
+  --wp-to: var(--waypoint-05);
+}
+[data-chapter="06"] {
+  --wp-from: var(--waypoint-06);
+  --wp-to: var(--waypoint-07);
+}
+[data-chapter="07"] {
+  --wp-from: var(--waypoint-07);
+  --wp-to: var(--waypoint-07);
+}
+
 /* Reduced motion (amendment A7): the engine never mounts, so each chapter
-   statically paints its own waypoint (plus grain, so the static version
-   stays a designed deliverable) and chapters past the dusk flip carry
-   dusk ink. Pure CSS — no ScrollTriggers, no scrubbing. */
+   statically paints its stretch of the arc (plus grain, so the static
+   version stays a designed deliverable) and chapters past the dusk flip
+   carry dusk ink. Pure CSS — no ScrollTriggers, no scrubbing. */
 @media (prefers-reduced-motion: reduce) {
   [data-chapter] {
-    background-image: var(--texture-grain);
-    background-size: 260px 260px;
+    background-color: var(--wp-from);
+    background-image:
+      var(--texture-grain),
+      linear-gradient(
+        to bottom,
+        var(--wp-from) 0%,
+        var(--wp-from) var(--wp-hold),
+        var(--wp-to) 100%
+      );
+    background-size:
+      260px 260px,
+      100% 100%;
   }
-  [data-chapter="01"] {
-    background-color: var(--waypoint-01);
-  }
-  [data-chapter="02"] {
-    background-color: var(--waypoint-02);
-  }
-  [data-chapter="03"] {
-    background-color: var(--waypoint-03);
-  }
-  [data-chapter="04"] {
-    background-color: var(--waypoint-04);
-  }
-  [data-chapter="05"] {
-    background-color: var(--waypoint-05);
-  }
+  /* Dusk is an EVENT, printed: golden (05) and dusk (06) meet across a
+     stepped duotone band — four crisp halftone bands in the chapter's
+     text-free top padding (see --dusk-band-steps). Grain continues over
+     the band so it stays paper, not plastic. */
   [data-chapter="06"] {
-    background-color: var(--waypoint-06);
+    position: relative;
+    padding-top: calc(7vh + var(--dusk-band-height));
   }
-  [data-chapter="07"] {
-    background-color: var(--waypoint-07);
+  [data-chapter="06"]::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--dusk-band-height);
+    background-image: var(--texture-grain), var(--dusk-band-steps);
+    background-size:
+      260px 260px,
+      100% 100%;
   }
   [data-chapter="06"],
   [data-chapter="07"] {
@@ -197,15 +423,54 @@ html[data-arc-phase="dusk"] body {
   }
 }
 
+/* Quiet in-page motion toggle (amendment A7): `data-motion-off` on <html>
+   mirrors the reduced-motion static world exactly — SmoothScroll checks the
+   same flag and never mounts the engine while it is set. */
+html[data-motion-off] [data-chapter] {
+  background-color: var(--wp-from);
+  background-image:
+    var(--texture-grain),
+    linear-gradient(
+      to bottom,
+      var(--wp-from) 0%,
+      var(--wp-from) var(--wp-hold),
+      var(--wp-to) 100%
+    );
+  background-size:
+    260px 260px,
+    100% 100%;
+}
+/* Same authored stepped-band sunset as the reduced-motion world above */
+html[data-motion-off] [data-chapter="06"] {
+  position: relative;
+  padding-top: calc(7vh + var(--dusk-band-height));
+}
+html[data-motion-off] [data-chapter="06"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--dusk-band-height);
+  background-image: var(--texture-grain), var(--dusk-band-steps);
+  background-size:
+    260px 260px,
+    100% 100%;
+}
+html[data-motion-off] [data-chapter="06"],
+html[data-motion-off] [data-chapter="07"] {
+  color: var(--color-ink-dusk);
+}
+
 html {
   overflow-x: hidden;
   scroll-padding-top: 6rem;
 }
 
+/* No overflow-x on body: html already clips the viewport, and an
+   overflow-x:hidden body becomes a (never-scrolling) scroll container
+   that captures view() timelines and freezes them. */
 body {
   background-color: var(--background);
   color: var(--foreground);
-  overflow-x: hidden;
 }
 
 section[id] {

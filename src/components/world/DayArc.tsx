@@ -113,9 +113,15 @@ export function DayArc() {
 
         /* Scrubbed segment: tween a numeric proxy while section i scrolls
            out of the viewport, so the color lands on `to` exactly as
-           section i+1's top reaches the viewport top. */
+           section i+1's top reaches the viewport top.
+
+           Deferred handle read: when the page loads already scrolled (a
+           #chapter deep link), GSAP fires onUpdate synchronously INSIDE
+           gsap.fromTo() — a direct `const tween` closure read here would
+           hit the TDZ (ReferenceError, observed on Firefox). */
         const proxy = { l: from.l, c: from.c, h: from.h };
-        const tween = gsap.fromTo(
+        const handle: { tween?: gsap.core.Tween } = {};
+        handle.tween = gsap.fromTo(
           proxy,
           { l: from.l, c: from.c, h: from.h },
           {
@@ -133,7 +139,7 @@ export function DayArc() {
             onUpdate: () => {
               /* Guard: when a segment clamps back to 0 while the previous
                  segment is active, skip its stale endpoint write. */
-              const st = tween.scrollTrigger;
+              const st = handle.tween?.scrollTrigger;
               if (st && !st.isActive && st.progress === 0) return;
               applyChannels(root, proxy.l, proxy.c, proxy.h);
             },

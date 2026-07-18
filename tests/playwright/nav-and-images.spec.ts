@@ -76,37 +76,32 @@ test.describe("Project Images", () => {
 test.describe("Project Visual Disclosures", () => {
   test.setTimeout(120000);
 
-  for (const theme of THEMES) {
-    test(`${theme.name}: representative project visuals are disclosed`, async ({
+  // The homepage chapters are editorial rows without project imagery; the
+  // visuals (and their honesty disclosures) live on the case-study routes.
+  for (const project of FEATURED_PROJECT_VISUALS) {
+    test(`${project.id}: case study discloses its ${project.imageKind}`, async ({
       page,
     }) => {
-      await page.goto("/");
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(1500);
+      await page.goto(`/projects/${project.id}/`);
+      await page.waitForLoadState("domcontentloaded");
 
-      await switchThemeAndWait(page, theme);
-      await scrollThroughPage(page);
+      const disclosure = page
+        .locator("#project-visual p")
+        .filter({ hasText: project.disclosure })
+        .first();
 
-      for (const project of FEATURED_PROJECT_VISUALS) {
-        const disclosure = page
-          .locator("p")
-          .filter({ hasText: project.disclosureLabel })
-          .filter({ hasText: project.disclosure })
-          .first();
-
-        await expectAnyVisible(
-          disclosure,
-          `${project.title} should disclose ${project.imageKind}`
-        );
-      }
+      await expectAnyVisible(
+        disclosure,
+        `${project.title} should disclose ${project.imageKind}`
+      );
     });
   }
 });
 
-test.describe("Horizontal Project Rail", () => {
+test.describe("Work Chapter Rows", () => {
   test.setTimeout(120000);
 
-  test("technical-operations-atlas: selected work remains reachable after scrolling projects", async ({
+  test("daylight-study: work rows remain reachable after scrolling the chapter", async ({
     page,
   }) => {
     const finalFeaturedProject = FEATURED_PROJECTS.at(-1);
@@ -124,13 +119,13 @@ test.describe("Horizontal Project Rail", () => {
     await page.waitForTimeout(1500);
 
     await switchThemeAndWait(page, { name: DEFAULT_THEME, label: "" });
-    await page.locator("#projects").waitFor({ state: "attached" });
+    await page.locator("#work").waitFor({ state: "attached" });
 
     await page.evaluate((title) => {
-      const section = document.querySelector("#projects") as HTMLElement | null;
+      const section = document.querySelector("#work") as HTMLElement | null;
 
       if (!section) {
-        throw new Error("Projects section was not found");
+        throw new Error("Work chapter was not found");
       }
 
       const heading = Array.from(
@@ -143,7 +138,7 @@ test.describe("Horizontal Project Rail", () => {
 
     const headingState = await page.evaluate((title) => {
       const heading = Array.from(
-        document.querySelectorAll<HTMLHeadingElement>("#projects h3")
+        document.querySelectorAll<HTMLHeadingElement>("#work h3")
       ).find((candidate) => candidate.textContent?.trim() === title);
 
       if (!heading) return null;

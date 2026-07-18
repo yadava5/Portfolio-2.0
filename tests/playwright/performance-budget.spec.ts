@@ -17,7 +17,7 @@ test("homepage stays within launch performance budgets", async ({ page }) => {
   });
 
   await page.goto("/");
-  await page.locator("#hero").waitFor({ state: "attached" });
+  await page.locator("#arrival").waitFor({ state: "attached" });
   await page.waitForLoadState("networkidle");
 
   const totalBytes = responses.reduce(

@@ -13,14 +13,19 @@
  * Reduced motion (amendment A7): gated at entry — the engine is NEVER
  * mounted under `prefers-reduced-motion: reduce`, and a mid-session OS
  * toggle tears it down/brings it up via the hook's change subscription.
+ * The quiet in-page motion toggle (also A7) is the same gate by hand: it
+ * persists to localStorage, stamps `data-motion-off` on <html> (the static
+ * world's CSS hook), and unmounts/remounts the engine identically.
  */
 
 "use client";
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -41,15 +46,38 @@ export const scrollEasing = (t: number) =>
 /** Matches `scroll-padding-top: 6rem` in globals.css */
 export const SCROLL_OFFSET = -96;
 
+/** localStorage key for the quiet in-page motion toggle (amendment A7) */
+const MOTION_STORAGE_KEY = "motion-off";
+
 const LenisContext = createContext<Lenis | null>(null);
+
+/** Shape of the in-page motion preference (amendment A7) */
+interface MotionPreference {
+  /** true when the visitor has switched the quiet toggle to "motion: off" */
+  motionOff: boolean;
+  /** Flip the toggle (persists to localStorage) */
+  toggleMotion: () => void;
+}
+
+const MotionPreferenceContext = createContext<MotionPreference>({
+  motionOff: false,
+  toggleMotion: () => {},
+});
 
 /**
  * Access the live Lenis instance.
- * Returns null under reduced motion or before the engine mounts —
- * callers must fall back to instant, non-animated behavior.
+ * Returns null under reduced motion, under the in-page motion toggle, or
+ * before the engine mounts — callers must fall back to instant behavior.
  */
 export function useLenis(): Lenis | null {
   return useContext(LenisContext);
+}
+
+/**
+ * Access the quiet in-page motion toggle state (amendment A7).
+ */
+export function useMotionPreference(): MotionPreference {
+  return useContext(MotionPreferenceContext);
 }
 
 /** Props for the SmoothScroll provider */
@@ -65,11 +93,61 @@ interface SmoothScrollProps {
  */
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
+  const [motionOff, setMotionOff] = useState(false);
   const [lenis, setLenis] = useState<Lenis | null>(null);
 
+  /* Restore the persisted toggle once on the client (SSR-safe default: on) */
   useEffect(() => {
-    /* A7: never mount the engine under reduced motion (no init-then-disable) */
-    if (prefersReducedMotion) return;
+    try {
+      if (window.localStorage.getItem(MOTION_STORAGE_KEY) === "1") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMotionOff(true);
+      }
+    } catch {
+      /* storage unavailable — leave motion on */
+    }
+  }, []);
+
+  /* The static world's CSS reads this attribute (globals.css) */
+  useEffect(() => {
+    const root = document.documentElement;
+    if (motionOff) {
+      root.setAttribute("data-motion-off", "");
+    } else {
+      root.removeAttribute("data-motion-off");
+    }
+    return () => {
+      root.removeAttribute("data-motion-off");
+    };
+  }, [motionOff]);
+
+  const toggleMotion = useCallback(() => {
+    setMotionOff((current) => {
+      const next = !current;
+      try {
+        window.localStorage.setItem(MOTION_STORAGE_KEY, next ? "1" : "0");
+      } catch {
+        /* storage unavailable — session-only toggle */
+      }
+      return next;
+    });
+  }, []);
+
+  const motionPreference = useMemo(
+    () => ({ motionOff, toggleMotion }),
+    [motionOff, toggleMotion]
+  );
+
+  useEffect(() => {
+    /* A7: never mount the engine under reduced motion or the quiet toggle
+       (no init-then-disable). The synchronous media-query read closes the
+       first-commit race: this effect otherwise runs once with the hook's
+       SSR-safe `false` before its change subscription delivers `true`,
+       transiently mounting the engine under reduced motion. */
+    if (prefersReducedMotion || motionOff) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
 
     const instance = new Lenis({
       lerp: 0.08 /* plan 3.9 */,
@@ -106,9 +184,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       instance.destroy();
       setLenis(null);
     };
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, motionOff]);
 
   return (
-    <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+    <MotionPreferenceContext.Provider value={motionPreference}>
+      <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+    </MotionPreferenceContext.Provider>
   );
 }
