@@ -1425,6 +1425,115 @@ html[data-motion-off] .audit-run {
   transition: none;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THE PINNED PIPELINE RUN (PREMIUM-FLOW ⭐#2) — fig 4.0, chapter 04
+   PipelineRun.tsx pins the ladder and scrubs an ink run-token down it:
+   each phase INK-SETTLES secondary→full as the token passes, a thin
+   EDGE draws ahead along the rail (the Red Thread's own pathLength=1 /
+   dasharray 1 2 / offset 1.5→0 convention — the two ink lines read as
+   one hand), and at THE HUMAN GATE the token HALTS, pulses ONCE in clay,
+   and HOLDS. The scene NEVER resolves 7.0 deploy (the gated phase never
+   lights) and NEVER approves run 041. transform / opacity /
+   stroke-dashoffset only. Motion lives behind the engine's A7 gates;
+   static worlds rest on the drawn final frame.
+
+   The pinned wrapper carries `contain: paint` (the pin holds a small,
+   scoped layer — never a full-viewport one). Its left padding gives the
+   rail-riding token + clay pulse room so paint containment never clips
+   the bead; the fig-4.1 registry takes the same inset so the two
+   ledgers' rails stay aligned. ════════════════════════════════════ */
+[data-pipeline-pin] {
+  contain: paint;
+}
+.pipeline-overlay {
+  z-index: 0;
+}
+
+/* The edge — the ladder's rail inked ahead of the token, in the Red
+   Thread's ink and its exact drawing convention. */
+.pipeline-edge {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.5;
+}
+
+/* The run token — a bead in the Red Thread's ink. It tints clay only at
+   the human gate (the decision colour); the ring is the single clay
+   pulse on arrival. The bead's fill settle is paint-only. */
+.pipeline-token-bead {
+  fill: var(--color-ink);
+  transition: fill 300ms ease;
+}
+.pipeline-token-ring {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.4;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.pipeline-token.is-halted .pipeline-token-bead {
+  fill: var(--color-clay-graphic);
+}
+/* The pulse fires ONCE on arrival — engine world only (a scrubbed re-arm
+   replays it; static worlds hold the clay bead with no ring). */
+@keyframes pipeline-pulse {
+  from {
+    opacity: 0.55;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .pipeline-token.is-halted .pipeline-token-ring {
+    animation: pipeline-pulse 620ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+}
+
+/* Phase labels ink-settle secondary→full as the token passes (the
+   hero's ink-settle beat, reversible on scroll-back). */
+[data-pipeline-phase] {
+  transition: color 400ms cubic-bezier(0.33, 0, 0.55, 1);
+}
+[data-pipeline-phase][data-pipeline-lit] {
+  color: var(--color-ink);
+}
+
+/* Static worlds (A7): the finished FRAME, guaranteed in CSS with no
+   engine/JS-timing dependence — edge drawn to the gate, phases 1–6 lit
+   (7.0 deploy stays secondary: it is gated), the token resting clay at
+   the gate. Run 041 is untouched — still awaiting its human. */
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-edge {
+    stroke-dashoffset: 0 !important;
+  }
+  [data-pipeline-phase]:not([data-pipeline-gated]) {
+    color: var(--color-ink) !important;
+    transition: none;
+  }
+  .pipeline-token-bead {
+    fill: var(--color-clay-graphic);
+    transition: none;
+  }
+}
+html[data-motion-off] .pipeline-edge {
+  stroke-dashoffset: 0 !important;
+}
+html[data-motion-off] [data-pipeline-phase]:not([data-pipeline-gated]) {
+  color: var(--color-ink) !important;
+  transition: none;
+}
+html[data-motion-off] .pipeline-token-bead {
+  fill: var(--color-clay-graphic);
+  transition: none;
+}
+
 /* Receipt-row permalinks land under the fixed header */
 li[id^="v-"] {
   scroll-margin-top: 7rem;

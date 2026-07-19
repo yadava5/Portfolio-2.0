@@ -57,6 +57,7 @@ import { LocalTime } from "@/components/story/LocalTime";
 import { AwaitingStamp } from "@/components/story/ApprovedStamp";
 import { ApprovedHello } from "@/components/paper/ApprovedHello";
 import { OnFileManifest } from "@/components/paper/OnFileManifest";
+import { PipelineRun } from "@/components/paper/PipelineRun";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { VisitedMark } from "@/components/paper/VisitedMark";
 
@@ -808,29 +809,63 @@ function AutomlChapter() {
               it), keyed off their own trigger so they land on the reading
               path rather than firing with the far-away headline. */}
           <div data-tm-scene data-tm-start="clamp(top 85%)">
-            <figure data-tm="block">
-              <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
-                {AUTOML_PHASES.map((phase, index) => (
-                  <li key={phase}>
-                    {index === AUTOML_PHASES.length - 1 ? (
-                      <span className="text-ink mb-3 flex items-center gap-2">
+            {/* THE PINNED PIPELINE RUN (PREMIUM-FLOW ⭐#2, the flagship).
+                The pin wraps THIS div — separate from the figure the
+                composed-scene reveal transforms ([data-tm='block']) — so
+                the pin and the reveal never fight, and the pin-spacer
+                grows chapter 04 INSIDE the Red Thread's measured region
+                (the seam re-welds on the section resize; the thread spec
+                stays green). PipelineRun scrubs an ink run-token down the
+                ladder as the visitor scrolls the pinned range: each phase
+                ink-settles as the token passes, an edge draws ahead, and
+                at the human gate the token HALTS + pulses clay and HOLDS.
+                It NEVER resolves 7.0 deploy and NEVER approves run 041 —
+                the halt is the payoff; approval stays the visitor's own
+                press act (the registry row below + the ch07 stamp). */}
+            <div data-pipeline-pin className="pl-4">
+              <figure data-tm="block" data-pipeline-scope className="relative">
+                <ul
+                  data-pipeline-track
+                  className="label-mono border-ink/15 space-y-3 border-l pl-6"
+                >
+                  {AUTOML_PHASES.map((phase, index) => {
+                    const isDeploy = index === AUTOML_PHASES.length - 1;
+                    return (
+                      <li key={phase}>
+                        {isDeploy ? (
+                          <span
+                            data-pipeline-gate
+                            className="text-ink mb-3 flex items-center gap-2"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className="bg-clay-graphic inline-block h-2 w-2"
+                            />
+                            the human gate — go / no-go
+                          </span>
+                        ) : null}
+                        {/* Each phase's label ink-settles secondary→full as
+                            the token passes ([data-pipeline-lit]); 7.0 deploy
+                            is the GATED phase — it never lights on scroll,
+                            because deploy is what a human authorises after
+                            the gate, not what scrolling does. */}
                         <span
-                          aria-hidden="true"
-                          className="bg-clay-graphic inline-block h-2 w-2"
-                        />
-                        the human gate — go / no-go
-                      </span>
-                    ) : null}
-                    <span className="text-ink-secondary">
-                      {index + 1}.0 {phase}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <figcaption className="label-mono text-ink-secondary mt-6 pl-6">
-                fig. 4.0 — the 7-phase gated lifecycle, abridged.
-              </figcaption>
-            </figure>
+                          data-pipeline-phase={index}
+                          data-pipeline-gated={isDeploy ? "" : undefined}
+                          className="text-ink-secondary"
+                        >
+                          {index + 1}.0 {phase}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <figcaption className="label-mono text-ink-secondary mt-6 pl-6">
+                  fig. 4.0 — the 7-phase gated lifecycle, abridged.
+                </figcaption>
+                <PipelineRun />
+              </figure>
+            </div>
 
             {/* Typeset registry excerpt in fig. 4.0's grammar (the real
                 screenshot lives on the case-study page). Two-cell ledger
@@ -839,7 +874,10 @@ function AutomlChapter() {
                 em-dashes — and the caption owns the redaction honestly.
                 W1: the awaiting row is the press-to-approve control
                 (RegistryRows) — the SAME run the gate stamp awaits. */}
-            <figure className="mt-10" data-tm="block">
+            {/* pl-4 mirrors the pinned ladder's inset so the two ledgers'
+                left rails stay aligned (the pin wrapper's padding buys the
+                run-token its clay-pulse room under contain: paint). */}
+            <figure className="mt-10 pl-4" data-tm="block">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 <RegistryRows rows={AUTOML_REGISTRY_ROWS} />
               </ul>
