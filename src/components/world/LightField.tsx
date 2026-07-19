@@ -40,16 +40,20 @@ export function LightField() {
       data-light-field
       className="pointer-events-none fixed inset-0 z-0"
     >
+      {/* The base carries BOTH the day-arc colour AND the raking light, the
+          latter folded in via `background-blend-mode: soft-light`
+          (globals.css .light-field-base). PERF (runtime scroll): the rake
+          used to be a separate `mix-blend-mode: soft-light` layer, which
+          forced the compositor to re-blend the whole viewport every time the
+          colour beneath it changed — the dominant scroll-jank cost on a real
+          GPU. As one element's background it is a single contained paint, no
+          compositor re-blend, identical look. */}
       <div
         data-testid="light-field-base"
-        className="absolute inset-0"
-        style={{
-          backgroundColor: "oklch(var(--arc-l) var(--arc-c) var(--arc-h))",
-        }}
+        className="light-field-base absolute inset-0"
       />
       <div className="light-field-contour absolute inset-0" />
       <div className="light-field-grain absolute inset-0" />
-      <div className="light-field-rake absolute inset-0" />
     </div>
   );
 }

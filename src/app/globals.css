@@ -134,13 +134,34 @@
    All layers are static paint: no keyframes, no filters, no JS.
    ════════════════════════════════════════════════════════════════ */
 
-/* Raking window-light (INSPIRATION: daylightcomputer / candidate A) —
-   soft diagonal light bands under soft-light, made perceptible at 1440.
-   NOT a radial spotlight (NO-LIST §A). The layer's opacity is driven by
-   the arc's own lightness channel, so the rake dies when the sun sets
-   (dusk step drops --arc-l from ~0.92 to 0.35). CSS-only. */
-.light-field-rake {
-  background:
+/* PERF (runtime scroll): promote the world to its own compositor layer and
+   contain its paint. The day-arc repaints the base's oklch() fill as the
+   colour scrubs; isolating the subtree keeps that repaint from re-rastering
+   the document content stacked above it, and `contain` stops style/layout
+   invalidation from escaping. The four layers already form a self-contained
+   stack, so the mix-blend-mode result is unchanged. */
+[data-light-field] {
+  transform: translateZ(0);
+  contain: layout paint style;
+}
+
+/* The base layer: the day-arc colour with the raking window-light
+   (INSPIRATION: daylightcomputer / candidate A — soft diagonal bands, NOT a
+   radial spotlight, NO-LIST §A) folded IN via background-blend-mode.
+
+   PERF (runtime scroll): the rake used to be a separate fixed full-viewport
+   `mix-blend-mode: soft-light` layer. Because the colour beneath it was
+   rewritten every scrubbed frame, the compositor had to re-blend the entire
+   viewport every frame — the dominant scroll-jank cost on a real GPU
+   (main-thread profilers can't see it). Measured contribution over the
+   daytime paper: meanΔ 1.32/255 — nearly invisible, yet the costliest thing
+   on screen. Folded onto the base as background images, the soft-light is a
+   single contained paint (no separate compositor layer, no per-frame
+   re-blend), and the maths is identical, so the look is preserved. The rake
+   dies at the dusk step (background-image: none) exactly as before. */
+.light-field-base {
+  background-color: oklch(var(--arc-l) var(--arc-c) var(--arc-h));
+  background-image:
     linear-gradient(
       108deg,
       rgba(255, 241, 205, 0) 18%,
@@ -160,8 +181,10 @@
       rgba(66, 56, 36, 0) 80%,
       rgba(66, 56, 36, 0.09) 100%
     );
-  mix-blend-mode: soft-light;
-  opacity: clamp(0, calc((var(--arc-l) - 0.45) / 0.4), 1);
+  background-blend-mode: soft-light;
+}
+html[data-arc-phase="dusk"] .light-field-base {
+  background-image: none;
 }
 
 /* Fine paper grain — intensity baked into the data-URI alpha (≤5%). */

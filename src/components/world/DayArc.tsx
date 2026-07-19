@@ -42,20 +42,48 @@ import type { ArcWaypoint } from "./waypoints.generated";
  *  LightField container (PERF-AUDIT fix 2 — never on <html>). */
 const CHANNEL_VARS = ["--arc-l", "--arc-c", "--arc-h"] as const;
 
+/* Quantization steps (PERF: runtime scroll). Each per-frame channel write
+ * invalidates the light-field's paint AND forces the soft-light rake to
+ * re-blend the full viewport — a GPU cost that scales with write FREQUENCY,
+ * not size. These steps sit well below the just-noticeable difference for a
+ * full-viewport wash (L 0.4%, C 0.4%, H 0.4°), so skipping sub-step frames
+ * is visually lossless while cutting most repaints during a slow scrub. */
+const Q_L = 0.004;
+const Q_C = 0.004;
+const Q_H = 0.4;
+
 /**
- * Write the arc's oklch channels onto the light-field container.
+ * Build a quantized channel writer bound to one field element.
  *
- * @param field - The `[data-light-field]` element (the only subtree
- *   that reads the vars — scoping the write keeps per-frame style
- *   invalidation to its four layers)
- * @param l - oklch lightness (0–1)
- * @param c - oklch chroma
- * @param h - oklch hue in degrees
+ * Returns a `write(l, c, h, force?)` that skips a write when every channel
+ * moved less than its quantization step since the last committed write —
+ * the repaint (and the rake's full-viewport soft-light re-blend it would
+ * trigger) is elided. `force` always writes: used for the initial paint and
+ * the dusk STEP, which must land exactly on their waypoint.
+ *
+ * @param field - The `[data-light-field]` element (the vars' only subtree)
+ * @returns A quantized setter for `--arc-l/c/h`
  */
-function applyChannels(field: HTMLElement, l: number, c: number, h: number) {
-  field.style.setProperty("--arc-l", l.toFixed(4));
-  field.style.setProperty("--arc-c", c.toFixed(4));
-  field.style.setProperty("--arc-h", h.toFixed(2));
+function makeChannelWriter(field: HTMLElement) {
+  let lastL = Number.NaN;
+  let lastC = Number.NaN;
+  let lastH = Number.NaN;
+  return function write(l: number, c: number, h: number, force = false) {
+    if (
+      !force &&
+      Math.abs(l - lastL) < Q_L &&
+      Math.abs(c - lastC) < Q_C &&
+      Math.abs(h - lastH) < Q_H
+    ) {
+      return;
+    }
+    lastL = l;
+    lastC = c;
+    lastH = h;
+    field.style.setProperty("--arc-l", l.toFixed(3));
+    field.style.setProperty("--arc-c", c.toFixed(3));
+    field.style.setProperty("--arc-h", h.toFixed(1));
+  };
 }
 
 /**
@@ -80,6 +108,7 @@ export function DayArc() {
        on every real page (home, world-preview) the container exists. */
     const field =
       document.querySelector<HTMLElement>("[data-light-field]") ?? root;
+    const write = makeChannelWriter(field);
 
     const byId = new Map<string, ArcWaypoint>(
       ARC_WAYPOINTS.map((w) => [w.id, w])
@@ -97,9 +126,9 @@ export function DayArc() {
     const waypointOf = (el: HTMLElement): ArcWaypoint =>
       byId.get(el.dataset.chapter ?? "") as ArcWaypoint;
 
-    /* Start the day where the first chapter starts. */
+    /* Start the day where the first chapter starts (force: initial paint). */
     const first = waypointOf(sections[0]);
-    applyChannels(field, first.l, first.c, first.h);
+    write(first.l, first.c, first.h, true);
 
     const ctx = gsap.context(() => {
       for (let i = 0; i < sections.length - 1; i++) {
@@ -114,11 +143,11 @@ export function DayArc() {
             trigger: sections[i + 1],
             start: "top 50%",
             onEnter: () => {
-              applyChannels(field, to.l, to.c, to.h);
+              write(to.l, to.c, to.h, true);
               root.setAttribute("data-arc-phase", "dusk");
             },
             onLeaveBack: () => {
-              applyChannels(field, from.l, from.c, from.h);
+              write(from.l, from.c, from.h, true);
               root.removeAttribute("data-arc-phase");
             },
           });
@@ -155,7 +184,7 @@ export function DayArc() {
                  segment is active, skip its stale endpoint write. */
               const st = handle.tween?.scrollTrigger;
               if (st && !st.isActive && st.progress === 0) return;
-              applyChannels(field, proxy.l, proxy.c, proxy.h);
+              write(proxy.l, proxy.c, proxy.h);
             },
           }
         );
