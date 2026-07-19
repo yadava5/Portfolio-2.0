@@ -565,8 +565,13 @@ function WhoChapter() {
               paragraph, and the right-hand apparatus column — the
               dictionary entry (W2, friend transposition: the word being
               defined IS the practice) above the n.b. aside, both seated
-              against the bio so they read as notes ON the text. */}
-          <div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14">
+              against the bio so they read as notes ON the text.
+              data-tm-scene (PREMIUM-FLOW #1): bio → dictionary → n.b.
+              settle as one staggered beat below the scrubbed manifesto. */}
+          <div
+            data-tm-scene
+            className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14"
+          >
             <p className="text-body max-w-[55ch] font-serif" data-tm="block">
               I’m a computer-science graduate from Miami University. I build the
               whole path — data pipelines, applied machine learning, and the
@@ -636,6 +641,7 @@ function PathChapter() {
 
         <PairHeadline
           className="mt-10"
+          scene
           bright="Thousands of service tickets. Zero structure."
           /* The muted line's entrance is opacity-only: it carries the
              thread's word anchor, and its box must never transform. */
@@ -651,7 +657,17 @@ function PathChapter() {
         />
 
         <div className="mt-16 space-y-14">
-          <article className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12">
+          {/* data-tm-scene (PREMIUM-FLOW #1): the field record reveals as
+              a staggered TIMELINE — dateline → title → each observation in
+              sequence — off one trigger, keyed a touch early (top 85%) so
+              the first record settles as the eye arrives and the rest
+              cascade just behind it. This is the "this is a timeline"
+              signal the chapter was missing. */}
+          <article
+            data-tm-scene
+            data-tm-start="clamp(top 85%)"
+            className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12"
+          >
             <div
               className="label-mono text-ink-secondary space-y-1"
               data-tm="block"
@@ -695,7 +711,11 @@ function PathChapter() {
             </div>
           </article>
 
-          <article className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12">
+          <article
+            data-tm-scene
+            data-tm-start="clamp(top 85%)"
+            className="border-ink/15 grid gap-6 border-t pt-8 md:grid-cols-[280px_minmax(0,1fr)] md:gap-12"
+          >
             <div
               className="label-mono text-ink-secondary space-y-1"
               data-tm="block"
@@ -748,7 +768,10 @@ function AutomlChapter() {
         />
 
         <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20">
-          <div>
+          {/* data-tm-scene (PREMIUM-FLOW #1): the thesis column assembles
+              as one beat — headline → body → gated-phases line → case-file
+              link, staggered off a single trigger. */}
+          <div data-tm-scene>
             <PairHeadline
               bright="The agent drafts the whole pipeline."
               muted="Nothing runs until a human says go."
@@ -779,7 +802,12 @@ function AutomlChapter() {
             </p>
           </div>
 
-          <div>
+          {/* data-tm-scene (PREMIUM-FLOW #1): the two figures — the phase
+              ladder then the registry — settle in sequence as one beat
+              (on lg beside the thesis column, on smaller screens below
+              it), keyed off their own trigger so they land on the reading
+              path rather than firing with the far-away headline. */}
+          <div data-tm-scene data-tm-start="clamp(top 85%)">
             <figure data-tm="block">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 {AUTOML_PHASES.map((phase, index) => (
@@ -860,10 +888,18 @@ function WorkChapter() {
             const study = getCaseStudyById(row.projectId);
             return (
               /* data-thread-row: the Red Thread ticks each row in the
-                 binding margin as the line passes (geometry anchor) */
+                 binding margin as the line passes (geometry anchor) — the
+                 box is MEASURED, never transformed, so motion lives on the
+                 children only.
+                 data-tm-scene (PREMIUM-FLOW #1): each row turns face-up as
+                 one beat — title → tagline → consequence → metric chip —
+                 off its own trigger (top 85%), so the three rows deal in
+                 sequence as the thread's curl reaches each node. */
               <article
                 key={project.id}
                 data-thread-row
+                data-tm-scene
+                data-tm-start="clamp(top 85%)"
                 className="border-ink/15 grid gap-6 border-t py-12 md:grid-cols-[minmax(0,1fr)_280px] md:gap-12"
               >
                 <div>
@@ -1022,7 +1058,13 @@ function ValuesChapter() {
             holds the right column so the chapter is composed edge to
             edge instead of left-hugging a void (fix round 4). 392px keeps
             every ledger row on one line beside its reviewer mark (W5:
-            "refused" runs three characters longer than the old word). */}
+            "refused" runs three characters longer than the old word).
+            NOTE (PREMIUM-FLOW #1): ch06 is left UNWRAPPED on purpose — it
+            is already the reference composed chapter. The litany performs
+            its signature slowing cascade and the gates ledger follows it
+            in (each fires at its own top 75%, the star leading); a scene
+            wrapper here made the ledger pre-empt the litany, so the
+            original coordinated timing is preserved untouched. */}
         <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-end">
           <figure>
             {/* The ending litany (plan 3.8): line-mask rises with a
@@ -1128,36 +1170,42 @@ function GateChapter() {
 
         <div className="mt-10 grid items-center gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
           <div>
-            <div className="max-w-[28ch] font-serif text-[clamp(1.3rem,2.2vw,1.8rem)] leading-snug">
-              {/* Bright line splits an aria-hidden inner span (sr-only
+            {/* data-tm-scene (PREMIUM-FLOW #1): the finale's composed beat
+                — closing pledge (line-mask) → its muted echo → the giant
+                name — assembles off ONE shared trigger. ch07 is the bar
+                the rest of the paper now meets. */}
+            <div data-tm-scene>
+              <div className="max-w-[28ch] font-serif text-[clamp(1.3rem,2.2vw,1.8rem)] leading-snug">
+                {/* Bright line splits an aria-hidden inner span (sr-only
                   twin) — aria-label is prohibited on paragraph roles. */}
-              <p>
-                <span className="sr-only">
-                  Every pipeline I build ends with a human decision.
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="block"
-                  data-tm-bright="lines"
-                >
-                  Every pipeline I build ends with a human decision.
-                </span>
-              </p>
-              <p className={`mt-2 italic ${muted}`} data-tm="muted">
-                This one ends with yours.
-              </p>
-            </div>
+                <p>
+                  <span className="sr-only">
+                    Every pipeline I build ends with a human decision.
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="block"
+                    data-tm-bright="lines"
+                  >
+                    Every pipeline I build ends with a human decision.
+                  </span>
+                </p>
+                <p className={`mt-2 italic ${muted}`} data-tm="muted">
+                  This one ends with yours.
+                </p>
+              </div>
 
-            {/* The terminal flourish rises unmasked (data-tm="name"): at
+              {/* The terminal flourish rises unmasked (data-tm="name"): at
                 leading 0.95 an overflow mask would clip the y descenders,
                 so the giant name takes the hero's own fade + 14px rise
                 instead — the entrance and the ending share one hand. */}
-            <h2
-              className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
-              data-tm="name"
-            >
-              Ayush Yadav
-            </h2>
+              <h2
+                className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+                data-tm="name"
+              >
+                Ayush Yadav
+              </h2>
+            </div>
 
             {/* Mobile seat: the stamp sits between the giant name and the
                 email CTA (the lg+ world keeps it in the right column).

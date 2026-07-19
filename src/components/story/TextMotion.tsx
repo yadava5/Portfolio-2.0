@@ -1,32 +1,47 @@
 /**
  * @fileoverview TextMotion — the chapters' entrance/scrub choreography.
  *
- * Implements plan 3.8 exactly, in the engine-mounted world ONLY
- * (amendment A7: `useLenis()` is null under reduced motion and the
- * quiet toggle, so none of this ever exists there — static worlds
- * paint the finished page straight from the server markup):
+ * Implements plan 3.8 + PREMIUM-FLOW item #1 ("composed section
+ * choreography"), in the engine-mounted world ONLY (amendment A7:
+ * `useLenis()` is null under reduced motion and the quiet toggle, so none
+ * of this ever exists there — static worlds paint the finished page
+ * straight from the server markup).
  *
+ * THE COMPOSED-SCENE MODEL (PREMIUM-FLOW #1). Reveals used to fire
+ * per-element, each on its OWN `top 75%` trigger, so a chapter arrived as
+ * scattered pops instead of one authored beat. Now every chapter reveals
+ * as a directed GROUP: an ancestor marked `[data-tm-scene]` is the shared
+ * trigger for all the `data-tm-*` elements beneath it, and those children
+ * play off ONE ScrollTrigger with an internal stagger (DOM order, 70ms
+ * apart — the Linear pattern). Scene order falls out of the markup:
+ * kicker (static running head) → headline → deck → body blocks → figure.
+ * This is the litany's own mechanism (one trigger, staggered delays)
+ * generalized to all seven chapters; it adds NO new visual vocabulary —
+ * the ink-settle / line-mask / block-fade gestures are unchanged, only
+ * their TRIGGER and TIMING are re-composed. Elements outside any scene
+ * keep the original in-place reveal (safe fallback).
+ *
+ * The per-element gesture vocabulary (all transform/opacity only, small):
  *   - CHAPTER BRIGHT LINES (`[data-tm-bright]`): SplitText line-masks
- *     (overflow-clip wrappers), translateY 100%→0, 0.8s quart.out,
- *     once at 75% viewport. `aria: "auto"` keeps the accessible name a
- *     single intact string (aria-label on the container, aria-hidden
- *     fragments), and `autoSplit` re-lines on reflow.
- *   - MUTED LINES (`data-tm="muted"`): fade + 10px rise, 0.7s
- *     cubic.out, 200ms after the bright line. `muted-fade` variants
- *     (the ch-03 line holding [data-thread-word]) fade WITHOUT
- *     transform — the Red Thread measures that box.
+ *     (overflow-clip wrappers), translateY 100%→0, 0.8s quart.out.
+ *     `aria: "auto"` keeps the accessible name a single intact string
+ *     (aria-label on the container, aria-hidden fragments), and
+ *     `autoSplit` re-lines on reflow.
+ *   - MUTED LINES (`data-tm="muted"`): fade + 10px rise, 0.7s cubic.out.
+ *     `muted-fade` variants (the ch-03 line holding [data-thread-word])
+ *     fade WITHOUT transform — the Red Thread measures that box.
  *   - BODY BLOCKS (`data-tm="block"`): whole-block fade + 16px rise,
  *     0.6s — never per-char, never per-word on prose.
- *   - THE MANIFESTO (`[data-tm-words]`, ch 02 deck pair): the page's
- *     ONE scrubbed text — word-by-word opacity 0.25→1 across ~60vh of
- *     chapter-02 scroll, scrub 0.7.
- *   - THE ENDING LITANY (`[data-tm-mantra]`): line-mask rises with a
- *     SLOWING stagger (0.12s → +0.2s → +0.3s); receipts follow each
- *     mantra by 200ms. (The final line's WONK=1 is static typography,
- *     set in the markup — it must hold in every world.)
  *   - THE TERMINAL NAME (`data-tm="name"`): the gate's giant name takes
  *     the hero's own fade + 14px rise (1.0s expo.out) — unmasked, since
  *     leading 0.95 would clip the y descenders inside an overflow mask.
+ *   - THE MANIFESTO (`[data-tm-words]`, ch 02 deck pair): the page's ONE
+ *     scrubbed text — word-by-word opacity 0.25→1 across ~60vh of
+ *     chapter-02 scroll, scrub 0.7. NOT a one-shot; keeps its own trigger.
+ *   - THE ENDING LITANY (`[data-tm-mantra]`): line-mask rises with a
+ *     SLOWING stagger (0.12s → +0.2s → +0.3s), one shared trigger;
+ *     receipts follow each mantra by 200ms. (The final line's WONK=1 is
+ *     static typography, set in the markup — it holds in every world.)
  *   - WEIGHT BREATHING (`[data-breathe]`): Fraunces wght 360→420→360
  *     (±60 max) scroll-linked per headline — ONE quickSetter writing
  *     `--tm-wght`, composed into font-variation-settings by globals.css.
@@ -38,9 +53,9 @@
  * attribute once the entrance has played, so it is load-only forever —
  * re-enabling motion mid-session never replays it.
  *
- * Everything lives in one gsap.context riding the single Lenis+ticker
- * loop (A1); cleanup reverts tweens, triggers, splits, and the
- * breathing vars, so the quiet toggle restores the untouched page.
+ * Everything lives in one gsap.context riding the single native-scroll
+ * ScrollTrigger loop (A1); cleanup reverts tweens, triggers, splits, and
+ * the breathing vars, so the quiet toggle restores the untouched page.
  */
 
 "use client";
@@ -55,10 +70,26 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
-/** Entrance trigger position (plan 3.8: "at 75% viewport", once).
- *  clamp() keeps first/last-chapter triggers inside the reachable
- *  scroll span, mirroring the thread's contract (thread/constants). */
+/** Entrance trigger position for in-place (orphan) reveals (plan 3.8:
+ *  "at 75% viewport", once). clamp() keeps first/last-chapter triggers
+ *  inside the reachable scroll span, mirroring the thread's contract. */
 const ENTER_START = "clamp(top 75%)";
+
+/** Composed-scene trigger position (PREMIUM-FLOW #1). Fires slightly
+ *  earlier than a lone element (larger % = higher in the scroll) so the
+ *  staggered beat STARTS just before the eye arrives and the settle lands
+ *  as the reading path reaches it. Overridable per scene via
+ *  `data-tm-start` for the taller list chapters. */
+const SCENE_START = "clamp(top 82%)";
+
+/** Inter-child stagger inside one scene (plan #1: children 40–90ms apart).
+ *  70ms reads as a directed cascade without dragging — Linear restraint. */
+const SCENE_STAGGER = 0.07;
+
+/** The entrance-vocabulary hooks a scene composes (the manifesto scrub,
+ *  the litany, and weight-breathing keep their own dedicated paths). */
+const ENTRANCE_SELECTOR =
+  "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name']";
 
 /** Scrub smoothing for the manifesto + breathing (plan 3.9: 0.5–1;
  *  0.7 matches THREAD_SCRUB so every scrubbed element shares one lag). */
@@ -110,14 +141,16 @@ function ariaModeOf(el: HTMLElement): "auto" | "none" {
  * state instead of replaying.
  *
  * @param el - The bright headline element (plain text only)
- * @param trigger - Trigger element (defaults to el)
- * @param delay - Seconds after the trigger fires (litany stagger)
+ * @param trigger - Trigger element (the scene, or el itself)
+ * @param delay - Seconds after the trigger fires (the scene stagger slot)
+ * @param start - ScrollTrigger start position
  * @returns The SplitText instance (for cleanup)
  */
 function maskRise(
   el: HTMLElement,
   trigger: Element = el,
-  delay = 0
+  delay = 0,
+  start: string = ENTER_START
 ): SplitText {
   let played = false;
   return SplitText.create(el, {
@@ -133,13 +166,84 @@ function maskRise(
         ease: "power3.out" /* quart.out */,
         stagger: 0.1,
         delay,
-        scrollTrigger: { trigger, start: ENTER_START, once: true },
+        scrollTrigger: { trigger, start, once: true },
         onComplete: () => {
           played = true;
         },
       });
     },
   });
+}
+
+/**
+ * Reveal one entrance element with its vocabulary gesture, off a shared
+ * trigger at a staggered delay. Dispatches by hook: bright → line-mask,
+ * muted → fade+10px, muted-fade → fade only (thread-anchor safe), name →
+ * hero grammar, block (default) → fade+16px. All transform/opacity only,
+ * `once:true`, killed after play.
+ *
+ * @param el - The entrance element
+ * @param trigger - Shared scene trigger (or el itself for orphans)
+ * @param start - ScrollTrigger start position
+ * @param delay - Stagger slot in seconds
+ * @param splits - Sink for SplitText instances (cleanup)
+ */
+function revealEntrance(
+  el: HTMLElement,
+  trigger: Element,
+  start: string,
+  delay: number,
+  splits: SplitText[]
+): void {
+  if (el.hasAttribute("data-tm-bright")) {
+    splits.push(maskRise(el, trigger, delay, start));
+    return;
+  }
+  const scrollTrigger = { trigger, start, once: true } as const;
+  switch (el.getAttribute("data-tm")) {
+    case "muted":
+      gsap.from(el, {
+        opacity: 0,
+        y: 10,
+        duration: 0.7,
+        ease: "power2.out" /* cubic.out */,
+        delay,
+        scrollTrigger,
+      });
+      return;
+    case "muted-fade":
+      /* Thread-anchored line (ch-03 [data-thread-word]): opacity only —
+         the Red Thread measures this box, so it must never transform. */
+      gsap.from(el, {
+        opacity: 0,
+        duration: 0.7,
+        ease: "power2.out",
+        delay,
+        scrollTrigger,
+      });
+      return;
+    case "name":
+      gsap.from(el, {
+        opacity: 0,
+        y: 14,
+        duration: 1,
+        ease: "expo.out",
+        delay,
+        scrollTrigger,
+      });
+      return;
+    case "block":
+    default:
+      gsap.from(el, {
+        opacity: 0,
+        y: 16,
+        duration: 0.6,
+        ease: "power2.out",
+        delay,
+        scrollTrigger,
+      });
+      return;
+  }
 }
 
 /**
@@ -172,53 +276,27 @@ export function TextMotion() {
       if (disposed) return;
 
       ctx = gsap.context(() => {
-        /* ── Chapter bright lines — line-mask rise ─────────────── */
-        for (const el of q("[data-tm-bright]")) {
-          splits.push(maskRise(el));
-        }
-
-        /* ── Muted lines — fade + 10px rise, 200ms later ───────── */
-        for (const el of q("[data-tm='muted']")) {
-          gsap.from(el, {
-            opacity: 0,
-            y: 10,
-            duration: 0.7,
-            ease: "power2.out" /* cubic.out */,
-            delay: 0.2,
-            scrollTrigger: { trigger: el, start: ENTER_START, once: true },
-          });
-        }
-        /* Thread-anchored muted line: opacity only, no transform */
-        for (const el of q("[data-tm='muted-fade']")) {
-          gsap.from(el, {
-            opacity: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            delay: 0.2,
-            scrollTrigger: { trigger: el, start: ENTER_START, once: true },
+        /* ── Composed scenes: one staggered timeline per chapter ────
+           Every entrance element under a [data-tm-scene] fires off that
+           ONE shared trigger, in DOM order (kicker→headline→deck→body→
+           figure), each slot SCENE_STAGGER later — the section assembles
+           as one authored beat instead of scattered pops. */
+        for (const scene of q("[data-tm-scene]")) {
+          const start = scene.getAttribute("data-tm-start") || SCENE_START;
+          const children = Array.from(
+            scene.querySelectorAll<HTMLElement>(ENTRANCE_SELECTOR)
+          ).filter((el) => el.closest("[data-tm-scene]") === scene);
+          children.forEach((el, index) => {
+            revealEntrance(el, scene, start, index * SCENE_STAGGER, splits);
           });
         }
 
-        /* ── Body blocks — whole-block fade + 16px rise ────────── */
-        for (const el of q("[data-tm='block']")) {
-          gsap.from(el, {
-            opacity: 0,
-            y: 16,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: { trigger: el, start: ENTER_START, once: true },
-          });
-        }
-
-        /* ── The terminal name — hero grammar, unmasked ────────── */
-        for (const el of q("[data-tm='name']")) {
-          gsap.from(el, {
-            opacity: 0,
-            y: 14,
-            duration: 1,
-            ease: "expo.out",
-            scrollTrigger: { trigger: el, start: ENTER_START, once: true },
-          });
+        /* ── Orphan entrance elements — reveal in place (fallback) ───
+           Anything not inside a scene keeps the original per-element
+           trigger, so no reveal is ever silently dropped. */
+        for (const el of q(ENTRANCE_SELECTOR)) {
+          if (el.closest("[data-tm-scene]")) continue;
+          revealEntrance(el, el, ENTER_START, 0, splits);
         }
 
         /* ── The manifesto — the page's ONE scrubbed text ──────── */
@@ -244,7 +322,9 @@ export function TextMotion() {
           });
         }
 
-        /* ── The ending litany — slowing line-mask cascade ─────── */
+        /* ── The ending litany — slowing line-mask cascade ─────────
+           The original composed scene (one shared trigger, staggered
+           delays); this is the pattern the rest of the page now shares. */
         const mantras = q("[data-tm-mantra]");
         const receipts = q("[data-tm-receipt]");
         if (mantras.length > 0) {

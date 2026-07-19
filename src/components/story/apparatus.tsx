@@ -145,6 +145,15 @@ interface PairHeadlineProps {
    * transformed ancestor would corrupt any re-measure mid-entrance.
    */
   mutedFadeOnly?: boolean;
+  /**
+   * Mark this pair as its own composed scene (PREMIUM-FLOW #1): stamps
+   * `data-tm-scene` on the root so TextMotion reveals the bright + muted
+   * lines off ONE shared trigger, staggered, instead of two independent
+   * pops. Used where the headline pair is a standalone chapter header
+   * (ch 03); chapters whose pair sits inside a larger scene wrapper (ch
+   * 04) leave this off so the wrapper owns the whole beat.
+   */
+  scene?: boolean;
   className?: string;
 }
 
@@ -165,11 +174,12 @@ export function PairHeadline({
   dusk = false,
   motion = "headline",
   mutedFadeOnly = false,
+  scene = false,
   className,
 }: PairHeadlineProps) {
   const manifesto = motion === "manifesto";
   return (
-    <div className={className}>
+    <div className={className} data-tm-scene={scene ? "" : undefined}>
       <Bright
         className="font-display text-chapter fraunces-display max-w-[22ch]"
         data-tm-bright={manifesto ? undefined : "lines"}
