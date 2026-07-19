@@ -51,7 +51,7 @@ test.describe("day arc — motion", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(PREVIEW);
     await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
-    await page.locator("html.lenis").waitFor({ state: "attached" });
+    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
   });
 
   test("background scrubs between top and deep scroll", async ({ page }) => {
@@ -117,7 +117,7 @@ test.describe("day arc — reduced motion", () => {
     page,
   }) => {
     /* A7: the engine never mounts */
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    await expect(page.locator("header")).toHaveAttribute("data-lenis-connected", "false");
 
     /* Each chapter paints its own FLAT waypoint statically (final form:
        one color per chapter; the stepped dusk-band overlay is gone) */

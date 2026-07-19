@@ -345,7 +345,7 @@ test.describe("paper memory — thread-as-citation", () => {
       "the citation stroke is desktop-only (≥1024, hover)"
     );
     await page.goto("/projects/automl/");
-    await page.locator("html.lenis").waitFor({ state: "attached" });
+    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
 
     /* The always-present mono affordance: the citation link is
        sharpened to the plate anchor, and the plate exists */

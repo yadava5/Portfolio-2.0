@@ -128,7 +128,7 @@ function bylineMask(page: Page) {
 test.describe("text motion — engine world", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.locator("html.lenis").waitFor({ state: "attached" });
+    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
   });
 
   test("hero lines reach their final state — no blur residue", async ({
@@ -382,7 +382,9 @@ test.describe("stipple masthead — load window", () => {
     expect(dom.holderChildren).toBe(1);
     expect(dom.spanChildren).toBe(0);
     expect(dom.ariaHidden).toBeNull();
-    expect(dom.text).toBe("ayush yadav — ml engineer, class of 2026");
+    expect(dom.text).toBe(
+      "ayush yadav — full-stack, data, and systems · class of 2026"
+    );
 
     /* Load-only, once: the gate attribute drops, and with it every
        trace of the screen — no residual mask, byline at rest state. */

@@ -101,7 +101,7 @@ export const EXPECTED_CONTENT = {
 
 export const EXPECTED_GRADUATE_IDENTITY = {
   // Hero mono sub-line (rendered lowercase; textContent keeps source case)
-  role: "ml engineer, class of 2026",
+  role: "full-stack, data, and systems · class of 2026",
   education: "B.S. Computer Science, Miami University, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",

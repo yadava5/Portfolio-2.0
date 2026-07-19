@@ -3,11 +3,15 @@ import { test, expect, type Page } from "@playwright/test";
 /**
  * Scroll-engine contract (rubric amendment A1/A7).
  *
- * The Lenis + GSAP single-rAF engine cannot be verified in rAF-throttled
- * embedded browsers, so this spec is the authoritative check that:
- *  - the engine mounts and drives header anchor scrolling,
+ * The site uses NATIVE scroll (no Lenis) with GSAP ScrollTrigger driving the
+ * scrubbed animations off the browser's own scroll. Scroll-driven motion
+ * cannot be verified in rAF-throttled embedded browsers, so this spec is the
+ * authoritative check that:
+ *  - the motion controller mounts and drives header anchor scrolling
+ *    (the header stamps `data-lenis-connected="true"` when it's live),
  *  - no top progress bar is rendered (NO-LIST §C),
- *  - reduced motion never mounts the engine yet keeps anchors functional.
+ *  - reduced motion / the quiet toggle never mount the controller yet keep
+ *    anchor navigation functional.
  *
  * The header nav only exists at lg+ viewports; nav-click tests are
  * desktop-only by design.
@@ -50,19 +54,23 @@ async function waitForScrollSettle(page: Page) {
   );
 }
 
+/** The motion controller is live once the header reports it connected. */
+function connectedHeader(page: Page) {
+  return page.locator("header[data-lenis-connected='true']");
+}
+
 test.describe("scroll engine", () => {
-  test("engine mounts, no progress bar, page scrolls", async ({ page }) => {
+  test("controller mounts, no progress bar, page scrolls", async ({ page }) => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    /* Engine mounted: Lenis stamps its class on <html> */
-    await expect(page.locator("html")).toHaveClass(/\blenis\b/);
-    await expect(page.locator("html")).not.toHaveClass(/lenis-stopped/);
+    /* Motion controller is live (native scroll + ScrollTrigger) */
+    await connectedHeader(page).waitFor({ state: "attached", timeout: 5_000 });
 
     /* NO-LIST §C: the top progress bar is gone */
     await expect(page.getByTestId("scroll-progress")).toHaveCount(0);
 
-    /* Native programmatic scroll still works (Lenis syncs, doesn't hijack) */
+    /* Native programmatic scroll works */
     await page.evaluate(() => window.scrollTo(0, 800));
     await page.waitForTimeout(400);
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
@@ -77,18 +85,13 @@ test.describe("scroll engine", () => {
     ).toBe(true);
   });
 
-  test("header anchors scroll through Lenis with the 6rem offset", async ({
-    page,
-  }) => {
+  test("header anchors land at the 6rem offset", async ({ page }) => {
     test.skip(!isDesktop(page), "header nav links are lg+ only");
 
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
-    await page.locator("html.lenis").waitFor({ state: "attached" });
-    /* Header must actually be consuming the engine before we click */
-    await page
-      .locator("header[data-lenis-connected='true']")
-      .waitFor({ state: "attached", timeout: 5_000 });
+    /* Header must actually be driving scroll before we click */
+    await connectedHeader(page).waitFor({ state: "attached", timeout: 5_000 });
     await page.evaluate(() => document.fonts.ready);
 
     const experienceLink = page
@@ -117,15 +120,15 @@ test.describe("scroll engine", () => {
       .locator("#path")
       .evaluate((el) => Math.round(el.getBoundingClientRect().top));
 
-    /* lenis.scrollTo offset lands the section top at ~96px */
+    /* scroll-padding-top: 6rem lands the section top at ~96px */
     expect(top).toBeGreaterThan(40);
     expect(top).toBeLessThan(160);
 
-    /* URL hash untouched (handled scroll, not native navigation) */
+    /* URL hash untouched (handled scroll, not native hash navigation) */
     expect(new URL(page.url()).hash).toBe("");
   });
 
-  test("reduced motion never mounts the engine; anchors still land", async ({
+  test("reduced motion never mounts the controller; anchors still land", async ({
     page,
   }) => {
     test.skip(!isDesktop(page), "header nav links are lg+ only");
@@ -134,8 +137,11 @@ test.describe("scroll engine", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    /* A7: gate at entry — no Lenis under reduced motion */
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    /* A7: gate at entry — the controller never connects under reduced motion */
+    await expect(page.locator("header")).toHaveAttribute(
+      "data-lenis-connected",
+      "false"
+    );
 
     await page
       .locator("header")
@@ -145,28 +151,34 @@ test.describe("scroll engine", () => {
     await expect(page.locator("#path")).toBeInViewport();
   });
 
-  test("quiet motion toggle tears down the engine and persists", async ({
+  test("quiet motion toggle tears down the controller and persists", async ({
     page,
   }) => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
-    await page.locator("html.lenis").waitFor({ state: "attached" });
+    await connectedHeader(page).waitFor({ state: "attached", timeout: 5_000 });
 
     const toggle = page
       .locator("header")
       .getByRole("button", { name: /motion/ });
     test.skip(!(await toggle.isVisible()), "toggle is sm+ only");
 
-    /* A7: the in-page toggle unmounts the engine like reduced motion */
+    /* A7: the in-page toggle unmounts the controller like reduced motion */
     await toggle.click();
     await expect(page.locator("html")).toHaveAttribute("data-motion-off", "");
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    await expect(page.locator("header")).toHaveAttribute(
+      "data-lenis-connected",
+      "false"
+    );
 
     /* The preference persists across a reload (localStorage) */
     await page.reload();
     await page.locator("#arrival").waitFor({ state: "attached" });
     await expect(page.locator("html")).toHaveAttribute("data-motion-off", "");
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    await expect(page.locator("header")).toHaveAttribute(
+      "data-lenis-connected",
+      "false"
+    );
 
     /* And it comes back on */
     await page
@@ -174,6 +186,6 @@ test.describe("scroll engine", () => {
       .getByRole("button", { name: /motion/ })
       .click();
     await expect(page.locator("html")).not.toHaveAttribute("data-motion-off");
-    await expect(page.locator("html")).toHaveClass(/\blenis\b/);
+    await connectedHeader(page).waitFor({ state: "attached", timeout: 5_000 });
   });
 });

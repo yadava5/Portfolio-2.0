@@ -311,7 +311,7 @@ test.describe("red thread — structure", () => {
 test.describe("red thread — motion", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.locator("html.lenis").waitFor({ state: "attached" });
+    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
     await waitForThread(page);
   });
 
@@ -431,7 +431,7 @@ test.describe("red thread — reduced motion", () => {
     page,
   }) => {
     /* A7: the engine never mounts and no thread trigger ever exists */
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    await expect(page.locator("header")).toHaveAttribute("data-lenis-connected", "false");
     await expect(page.locator("svg[data-thread-scrub]")).toHaveCount(0);
 
     const offsets = await dashoffsets(page);

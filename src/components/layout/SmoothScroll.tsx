@@ -29,7 +29,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -65,7 +64,27 @@ export function readStoredMotionOff(): boolean {
   }
 }
 
-const LenisContext = createContext<Lenis | null>(null);
+/* The app used to hold a Lenis instance here. It now uses NATIVE scroll (no
+   scroll-jacking, no sub-pixel shimmer, no momentum "slide" — the browser's
+   own buttery scroll), and this thin controller exposes only the surface the
+   app calls: anchor navigation + a scroll-event bridge + the modal lock.
+   Non-null == the motion world is live (children wire their ScrollTriggers). */
+export interface ScrollController {
+  scrollTo: (
+    target: string | HTMLElement,
+    opts?: {
+      offset?: number;
+      duration?: number;
+      easing?: (t: number) => number;
+    }
+  ) => void;
+  on: (event: "scroll", cb: () => void) => void;
+  off: (event: "scroll", cb: () => void) => void;
+  stop: () => void;
+  start: () => void;
+}
+
+const LenisContext = createContext<ScrollController | null>(null);
 
 /** Shape of the in-page motion preference (amendment A7) */
 interface MotionPreference {
@@ -85,7 +104,7 @@ const MotionPreferenceContext = createContext<MotionPreference>({
  * Returns null under reduced motion, under the in-page motion toggle, or
  * before the engine mounts — callers must fall back to instant behavior.
  */
-export function useLenis(): Lenis | null {
+export function useLenis(): ScrollController | null {
   return useContext(LenisContext);
 }
 
@@ -110,7 +129,7 @@ interface SmoothScrollProps {
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [motionOff, setMotionOff] = useState(false);
-  const [lenis, setLenis] = useState<Lenis | null>(null);
+  const [lenis, setLenis] = useState<ScrollController | null>(null);
 
   /* Restore the persisted toggle once on the client (SSR-safe default: on) */
   useEffect(() => {
@@ -161,21 +180,46 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       return;
     }
 
-    const instance = new Lenis({
-      lerp: 0.1 /* Middle setting: 0.08 read "slidey" (long tail), 0.12 read
-        a touch abrupt — 0.1 (Lenis default) tracks the wheel without either.
-        Tune with user feel. */,
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      syncTouch: false /* touch smoothing OFF */,
-      autoRaf: false /* GSAP's ticker is THE loop (A1) */,
-    });
-
-    instance.on("scroll", ScrollTrigger.update);
-
-    const tick = (time: number) => instance.raf(time * 1000); /* s → ms */
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    /* NATIVE SCROLL (no Lenis). ScrollTrigger listens to the window's own
+       scroll, so every scrubbed animation follows the browser's buttery,
+       sub-pixel-clean scroll — no momentum "slide", no shimmer, no
+       scroll-jacking (the "slidey/vibrating/not-smooth" the user hit across
+       four Lenis-tuning passes). The controller is a thin shim over native
+       APIs so the consumers that wire ScrollTriggers (truthy == motion on)
+       and do anchor navigation keep working unchanged. */
+    const scrollListeners = new Map<() => void, EventListener>();
+    const controller: ScrollController = {
+      scrollTo: (target) => {
+        const el =
+          typeof target === "string"
+            ? document.querySelector<HTMLElement>(target)
+            : target;
+        if (!el) return;
+        /* Manual smooth scroll landing the target SCROLL_OFFSET (=6rem
+           header) below the top. NOT scrollIntoView — that applies BOTH
+           scroll-padding-top AND the element's scroll-margin-top, landing
+           at ~12rem (192px). This applies exactly one header offset. */
+        const y =
+          window.scrollY + el.getBoundingClientRect().top + SCROLL_OFFSET;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      },
+      on: (_event, cb) => {
+        const listener: EventListener = () => cb();
+        scrollListeners.set(cb, listener);
+        window.addEventListener("scroll", listener, { passive: true });
+      },
+      off: (_event, cb) => {
+        const listener = scrollListeners.get(cb);
+        if (listener) {
+          window.removeEventListener("scroll", listener);
+          scrollListeners.delete(cb);
+        }
+      },
+      /* The portrait modal locks the page via body overflow itself, so these
+         stay no-ops — callers don't need to change. */
+      stop: () => {},
+      start: () => {},
+    };
 
     /* Scrub start/end positions are measured at init; the web-font swap
        reflows the page — re-measure once fonts are ready. */
@@ -188,14 +232,15 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     window.addEventListener("resize", handleResize);
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLenis(instance);
+    setLenis(controller);
 
     return () => {
       cancelled = true;
       window.removeEventListener("resize", handleResize);
-      gsap.ticker.remove(tick);
-      gsap.ticker.lagSmoothing(500, 33); /* restore GSAP default */
-      instance.destroy();
+      for (const listener of scrollListeners.values()) {
+        window.removeEventListener("scroll", listener);
+      }
+      scrollListeners.clear();
       setLenis(null);
     };
   }, [prefersReducedMotion, motionOff]);

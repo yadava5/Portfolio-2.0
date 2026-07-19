@@ -30,7 +30,7 @@ test.describe("reduced motion and keyboard access", () => {
     await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
 
     /* A7: the engine never mounts */
-    await expect(page.locator("html")).not.toHaveClass(/\blenis\b/);
+    await expect(page.locator("header")).toHaveAttribute("data-lenis-connected", "false");
 
     /* Chapters carry their own FLAT waypoint backgrounds (globals.css,
        static final form — one color per chapter, no band steps) */
