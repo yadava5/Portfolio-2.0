@@ -44,19 +44,34 @@ audit `b93be6a` · masthead `99119f4` · **W5a** `134d098` · **W5b** `c1dc818` 
   run 041, awaiting 300vh earlier, resolved by the visitor's own press that
   ignites the site's only saturated colour and writes back their trail.
 
-## Banked elevations (the visitor's W6 list — optional, bar already met)
+## W7 — the last inch, SHIPPED (`f9d7ca2` + sync `b8d3455`) → visitor 88
 
-The next inch, in the visitor's own ranking (none block the era):
-1. **Make the paper feel the blow** — deepen the strike (~translateY 4px /
-   scale 0.965) + a 1px settle-judder on the manifest line at impact
-   (transform only). "The last inch between 86 and high-80s." → **W7.**
-2. **Let the thread finish the invitation** — on scroll-in, draw the thread's
-   last segment into the stamp corner while the awaiting label warms toward
-   ember. Merges the "quiet CTA" + "notice beat missable" items. → **W7.**
-3. Distress filter costs the stamp date legibility under 12px — drop the
-   displacement scale (2.1 → ~1.3) for the top line or exempt it. → **W7.**
-4. Warm the clay accents a few degrees toward ember across ¶04→¶07 so the
-   peak crescendos rather than arrives (optional).
+The closing visitor's ranked list, taken while fresh (era already met):
+1. **The paper feels the blow** — strike deepened to +4px/scale 0.965
+   impact + a 1px manifest settle-judder, later synced to land WITH the
+   impact frame (315ms, not the click). SHIPPED.
+2. **Warm the invitation** — new `--color-clay-invite #ec814d` on the
+   "press here to sign" line (5.55:1), a step toward ember without being
+   it; the thread underlines it, leading the eye. SHIPPED (2a). The
+   thread-draw-into-stamp (2b) was **skipped** — it would contend with the
+   ScrollTrigger scrub `red-thread.spec.ts` locks and risk the finale.
+3. **Stamp date legibility** — the sub-12px "run no. 041 · {date}" line got
+   a lighter distress cut (displacement 2.1 → 1.3); "2026" reads true.
+   SHIPPED.
+
+**W7 spot-check: visitor 88** (from 86) — "the strike now reads as mass
+hitting paper… visceral-but-tasteful… this ending is essentially done."
+Clean regression bill (ember still exclusive + loudest; finale lands;
+reduced-motion clean; honesty untouched). Its one worth-it note — the
+judder led the blow by ~200ms — is fixed in `b8d3455`. Its one remaining
+note (a windup crossfade double-expose visible only frame-stepped, "blurs
+away at 60fps") left as-is: past the point of diminishing returns.
+
+## Still banked (optional, nobody's asked for them)
+- Warm the clay accents a few degrees toward ember across ¶04→¶07 so the
+  peak crescendos rather than arrives.
+- Pre-W4 deferrals: cross-document View Transitions home↔case, sun glyph on
+  the rail (○→◐→●), visitor-local-time day-arc spike.
 
 ## User-owned calls (surfaced, not taken — neither blocks the era)
 

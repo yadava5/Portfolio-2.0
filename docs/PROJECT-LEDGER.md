@@ -164,3 +164,15 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   label warms to ember; drop the distress scale for the sub-12px stamp date.
   User calls open (neither blocks): merge PR #5 (prod /evidence/ 404s until
   then); automl flagship hero demotion vs pending run-ledger content.
+- **W7 "the last inch" SHIPPED (`f9d7ca2` + sync `b8d3455`) → visitor 88**:
+  the crescendo elevated past the closed bar. Strike deepened (+4px/0.965
+  impact); manifest settle-judder synced to land WITH the impact frame
+  (315ms delay, not the click — spot-check caught it leading the blow by
+  ~200ms); awaiting label warmed to `--color-clay-invite #ec814d` (5.55:1,
+  a step short of ember, which stays exclusive to .stamp-inked); stamp date
+  distress lightened (displacement 2.1→1.3) so "2026" reads true. 2b
+  (thread-into-stamp on scroll-in) SKIPPED — would contend with the locked
+  ScrollTrigger scrub + risk the finale. Spot-check: "essentially done."
+  Gates 496 ×3 · 0 failed · perf 3/3 · invite 5.55:1. **Front-end at a
+  recorded resting point** — arc 68/64/54 → 86/86/72 → **91/97/88** — the
+  loop is paused pending user content-debt + the PR #5 merge decision.
