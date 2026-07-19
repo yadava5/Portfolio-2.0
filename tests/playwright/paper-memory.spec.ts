@@ -994,6 +994,10 @@ test.describe("W7 — the last inch", () => {
        CLS stays 0.00). */
     await expect(m).toHaveAttribute("data-settle", "");
     await expect(m).toHaveCSS("animation-name", "manifest-settle");
+    /* The jolt is delayed to land WITH the stamp's impact frame (42% of
+       the 750ms press ≈ 315ms), not on the click — so the page registers
+       the blow as it lands (W7 spot-check). */
+    await expect(m).toHaveCSS("animation-delay", "0.315s");
   });
 
   test("A7 — the manifest never settles under reduced motion (it simply appears)", async ({

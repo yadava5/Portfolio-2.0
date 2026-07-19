@@ -1267,14 +1267,20 @@ html[data-motion-off] [data-chapter="07"] {
 }
 /* Item 1b — the page registers the blow. When the visitor signs while on
    this page (the first live approval, carried in via the subscribe
-   channel), the manifest line takes a single 1px settle coincident with
-   the press: it lands a hair low and settles to rest. TRANSFORM ONLY, so
-   the reserved min-h never moves and CLS stays 0.00; it never touches the
-   line's text, timing, or composition. `data-settle` is set once by the
-   component (motion world only — A7) and kept, so the settle fires exactly
-   once and the state stays inspectable. Gated by the same two conditions
-   the stamp press uses: reduced-motion and motion-off get the settled line
-   with no animation at all (the manifest simply appears). */
+   channel), the manifest line takes a single 1px settle: it lands a hair
+   low and settles to rest. TRANSFORM ONLY, so the reserved min-h never
+   moves and CLS stays 0.00; it never touches the line's text, timing, or
+   composition. `data-settle` is set once by the component (motion world
+   only — A7) and kept, so the settle fires exactly once and the state
+   stays inspectable. Gated by the same two conditions the stamp press
+   uses: reduced-motion and motion-off get the settled line with no
+   animation at all (the manifest simply appears).
+
+   The 315ms delay lands the jolt WITH the stamp's impact frame (42% of
+   the 750ms press ≈ 315ms), not on the click — so the page registers the
+   blow as it lands, not ~200ms before it (W7 spot-check). No backwards
+   fill: the line rests at 0 through the delay, then snaps a hair low at
+   impact and recovers — the surface absorbing the strike. */
 @keyframes manifest-settle {
   from {
     transform: translateY(1px);
@@ -1285,7 +1291,7 @@ html[data-motion-off] [data-chapter="07"] {
 }
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion-off]) .on-file-manifest[data-settle] {
-    animation: manifest-settle 120ms ease-out both;
+    animation: manifest-settle 120ms ease-out 315ms forwards;
   }
 }
 
