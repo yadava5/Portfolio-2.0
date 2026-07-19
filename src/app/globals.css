@@ -31,6 +31,12 @@
   --color-fail: #a03b23; /* 6.0:1 */
   --color-ink-dusk: #f6efe2; /* ink after the dusk flip — 12.8:1 on #43372F */
   --color-clay-night: #e08a5f; /* clay lightened for nightfall — 6.4:1 */
+  --color-clay-ember: #f57a3e; /* THE inked APPROVED stamp, and nothing
+     else — the kiln clay at its hottest. oklch chroma 0.168 outruns
+     clay-graphic (0.154) and clay-night (0.120), so the crescendo is the
+     single most-saturated note on the site. 5.50:1 on waypoint-07 solid
+     (check-contrast gate); the dried 0.92-opacity plate still holds
+     4.87:1. Reserved: search the tree — it appears on .stamp-inked only. */
 
   /* ── Type scale (Part 3.5) ──────────────────────────── */
   --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
@@ -941,6 +947,11 @@ html[data-motion-off] [data-chapter="07"] {
    rules outrank presentation attributes at any specificity. */
 [data-stamp] .stamp-inked {
   opacity: 0;
+  /* The one place the ember lives: the APPROVED plate inks in the site's
+     loudest chroma (token above), while the awaiting layer keeps the
+     button's calmer clay-night. currentColor on every stroke/fill in the
+     group resolves to this — so the crescendo is chromatically earned. */
+  color: var(--color-clay-ember);
 }
 [data-stamp][data-inked] .stamp-inked {
   opacity: 0.92;
@@ -957,34 +968,65 @@ html[data-motion-off] [data-chapter="07"] {
   opacity: 1;
 }
 
-/* The ~600ms inking — engine world only (A7 CSS gates, the same two
-   conditions SmoothScroll checks). One press: the plate takes a paper
-   press (translateY 1.5px · scale 0.995 — the stamp only, nothing
-   reflows), the dashed outline dries out, the APPROVED plate inks in.
-   Static worlds never match these rules: the class flip IS the swap. */
+/* The ~750ms inking — engine world only (A7 CSS gates, the same two
+   conditions SmoothScroll checks). This is a stamp HITTING PAPER, not a
+   slide: a short wind-up, a firm deeper strike (the "thunk"), one small
+   rebound, and a settle. Transform lives ONLY on .stamp-plate — the SVG
+   raster, nothing in layout — so no reflow, CLS stays 0.00, and the Red
+   Thread (which measures the untransformed wrapper) never re-aims. The
+   per-keyframe easings carry the weight: ease-out lift, then ACCELERATE
+   into the strike (the impact reads as mass), a held beat, one gentle
+   rebound (weight, not bounce — letterpress, not a toy).
+   Static worlds never match the media rules below: the class flip IS the
+   swap, and the end frames equal the dried computed state exactly. */
 @keyframes stamp-press {
   0% {
-    transform: none;
+    transform: translateY(0) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
   }
-  30% {
-    transform: translateY(1.5px) scale(0.995);
+  16% {
+    transform: translateY(-1.5px) scale(1.006); /* wind-up: the hand lifts */
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
   }
-  55% {
-    transform: translateY(1.5px) scale(0.995);
+  42% {
+    transform: translateY(2.5px) scale(0.983); /* IMPACT — the thunk */
+    animation-timing-function: linear;
+  }
+  53% {
+    transform: translateY(2.5px) scale(0.983); /* held under the hand */
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  73% {
+    transform: translateY(-0.8px) scale(1.004); /* one small rebound */
+    animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
   }
   100% {
-    transform: none;
+    transform: translateY(0) scale(1); /* settle */
   }
 }
+/* The ember lands WET then DRIES: opacity overshoots to full density at
+   the strike frame (~42%), sits wet a beat, then settles to the dried
+   0.92 — the same value the static [data-inked] rule holds, so the
+   animation end IS the persisted state. No shadow, no halo: the "wet
+   ink" is pure opacity/saturation within the existing feTurbulence
+   distress, drying to the crisp stamp. (NO-LIST §A: never lighter than
+   the ink; this only ever ranges 0→1→0.92.) */
 @keyframes stamp-ink-in {
-  from {
+  0% {
     opacity: 0;
   }
-  55% {
-    opacity: 0.5;
+  30% {
+    opacity: 0.35; /* ink starts catching as the plate descends */
+    animation-timing-function: cubic-bezier(0.3, 0.7, 0.3, 1);
   }
-  to {
-    opacity: 0.92;
+  44% {
+    opacity: 1; /* WET: full-density strike, coincident with the impact */
+  }
+  60% {
+    opacity: 1; /* the ink sits wet a beat */
+  }
+  100% {
+    opacity: 0.92; /* dries to the settled plate density */
   }
 }
 @keyframes stamp-await-out {
@@ -995,15 +1037,50 @@ html[data-motion-off] [data-chapter="07"] {
     opacity: 0;
   }
 }
+/* One-time attention beat (item 3a): when ¶07 scrolls into view the
+   awaiting outline FIRMS once (opacity 0.9→1→0.9, previewing the hover
+   affordance) and the plate takes a single shallow breath. One beat, no
+   loop; the class is armed once by an IntersectionObserver and dropped on
+   animationend. Reserved for the un-inked stamp only. */
+@keyframes stamp-notice {
+  0% {
+    opacity: 0.9;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+@keyframes stamp-notice-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  45% {
+    transform: translateY(-0.5px) scale(1.012);
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   html:not([data-motion-off]) [data-stamp].is-inking .stamp-plate {
-    animation: stamp-press 600ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+    animation: stamp-press 750ms both;
   }
   html:not([data-motion-off]) [data-stamp].is-inking .stamp-inked {
-    animation: stamp-ink-in 600ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+    animation: stamp-ink-in 720ms cubic-bezier(0.4, 0, 0.4, 1) both;
   }
   html:not([data-motion-off]) [data-stamp].is-inking .stamp-awaiting {
-    animation: stamp-await-out 450ms ease-out both;
+    animation: stamp-await-out 400ms ease-in both;
+  }
+  html:not([data-motion-off])
+    [data-stamp]:not([data-inked]).is-noticing
+    .stamp-awaiting {
+    animation: stamp-notice 1150ms cubic-bezier(0.37, 0, 0.63, 1) both;
+  }
+  html:not([data-motion-off])
+    [data-stamp]:not([data-inked]).is-noticing
+    .stamp-plate {
+    animation: stamp-notice-breathe 1150ms cubic-bezier(0.37, 0, 0.63, 1) both;
   }
 }
 

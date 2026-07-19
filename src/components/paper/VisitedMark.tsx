@@ -20,22 +20,31 @@ import { useVisitedFiles } from "@/lib/paperMemory";
 interface VisitedMarkProps {
   /** Case-file project id this mark remembers ("automl", "jobtracker" …) */
   fileId: string;
+  /**
+   * Optional native tooltip, applied only once the mark is inked. Used on
+   * /evidence to disambiguate this reading-history ✓ from a verification
+   * tick where the two sit close — a purely perceptual clarification that
+   * changes no count and no claim (item 5). Omitted elsewhere.
+   */
+  title?: string;
 }
 
 /**
  * A reserved-width inline slot that inks a small ✓ once its case file
  * has been opened.
  *
- * @param props - The case-file id
+ * @param props - The case-file id and an optional visited-only tooltip
  * @returns The (aria-hidden) mark slot
  */
-export function VisitedMark({ fileId }: VisitedMarkProps) {
+export function VisitedMark({ fileId, title }: VisitedMarkProps) {
   const visited = useVisitedFiles();
+  const isVisited = visited.has(fileId);
   return (
     <span
       aria-hidden="true"
       className="visited-mark"
-      data-visited={visited.has(fileId) ? "" : undefined}
+      data-visited={isVisited ? "" : undefined}
+      title={isVisited ? title : undefined}
     >
       <svg viewBox="0 0 12 9" className="h-[8px] w-[10px]">
         <path

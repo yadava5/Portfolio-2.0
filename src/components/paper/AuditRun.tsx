@@ -257,7 +257,15 @@ export function AuditControl({
             aria-hidden={walked ? "true" : undefined}
             className={`col-start-1 row-start-1 ${walked ? "invisible" : ""}`}
           >
-            <span className={walked ? "" : "link-draw"}>run the audit ⟶</span>
+            {/* Item 3b — the resting hint reads as an invitation with a
+                concrete stake: the real row count (receipts + outcomes,
+                derived from the data, never hardcoded), the count the
+                settled line will resolve. link-draw carries the faint
+                resting underline that fills on hover — the pen-nib
+                affordance, quiet mono, never a filled CTA. */}
+            <span className={walked ? "" : "link-draw"}>
+              walk the {counts.total} claims ⟶
+            </span>
           </span>
           <span
             aria-hidden={walked ? undefined : "true"}

@@ -165,10 +165,20 @@ export default function EvidencePage() {
                             {entry.receipt.label} ⟶
                           </Link>
                           {/* The paper remembers (W1): ✓ once the cited
-                              case file has been opened */}
+                              case file has been opened. Item 5 — where
+                              this reading-history ✓ sits beside a HELD
+                              entry's receipt, a hasty eye could read it as
+                              a verification tick; the visited-only tooltip
+                              says plainly what it is. Perceptual only: no
+                              count, no claim, no HeldStamp touched. */}
                           {receiptFileId(entry.receipt.href) ? (
                             <VisitedMark
                               fileId={receiptFileId(entry.receipt.href)!}
+                              title={
+                                entry.held
+                                  ? "you opened this case file — your reading history, not a verification of this held claim"
+                                  : "you opened this case file — your reading history"
+                              }
                             />
                           ) : null}
                         </>

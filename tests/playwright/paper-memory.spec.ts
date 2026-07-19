@@ -417,7 +417,9 @@ test.describe("paper memory — run the audit", () => {
     /* The control: one per file, apparatus voice, described for SR */
     const control = page.locator("[data-audit-run]");
     await expect(control).toHaveCount(1);
-    await expect(control).toContainText("run the audit");
+    /* Item 3b — the resting hint names the real stake (derived count,
+       never hardcoded): the T claims the settled line will resolve. */
+    await expect(control).toContainText(`walk the ${total} claims`);
     const descId = await control.getAttribute("aria-describedby");
     expect(descId).toBeTruthy();
     await expect(page.locator(`#${descId}`)).toContainText(
@@ -689,8 +691,9 @@ test.describe("paper memory — the paper remembers", () => {
 
     await expect(stamp(page)).toHaveAttribute("aria-pressed", "false");
     await expect(stamp(page)).not.toHaveAttribute("data-inked", "");
+    /* Item 3a — the awaiting micro-label is the imperative invitation */
     await expect(stamp(page).locator(".stamp-awaiting")).toContainText(
-      "awaiting your signature"
+      "press here to sign"
     );
     await expect(registryButton(page)).toHaveAttribute("aria-pressed", "false");
     await expect(page.locator("[data-visited]")).toHaveCount(0);
@@ -710,6 +713,88 @@ test.describe("paper memory — the paper remembers", () => {
       "data-walked",
       ""
     );
+  });
+});
+
+/**
+ * W6 — the crescendo. The ending has to LAND: the APPROVED plate is the
+ * single most-saturated note on the site (a reserved ember, clay-night
+ * everywhere it isn't inked), the press reads as a physical strike (the
+ * stamp-press thunk on the plate, nothing reflowing), and the awaiting
+ * stamp pulls the hand in with a one-time on-enter beat — gated so a
+ * static world gets the resting stamp, no motion at all (A7).
+ */
+test.describe("W6 — the crescendo lands", () => {
+  /** #f57a3e clay-ember and #e08a5f clay-night, as computed rgb() */
+  const EMBER_RGB = "rgb(245, 122, 62)";
+  const CLAY_NIGHT_RGB = "rgb(224, 138, 95)";
+
+  test("the APPROVED plate inks the reserved ember; the awaiting layer stays clay-night", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    const gate = stamp(page);
+    /* The inked layer carries the loudest chroma on the site... */
+    await expect(gate.locator(".stamp-inked")).toHaveCSS("color", EMBER_RGB);
+    /* ...and the awaiting layer keeps the calmer clay-night: the ember is
+       reserved, the crescendo is a real chromatic peak, not the norm. */
+    await expect(gate.locator(".stamp-awaiting")).toHaveCSS(
+      "color",
+      CLAY_NIGHT_RGB
+    );
+  });
+
+  test("pressing performs the letterpress thunk on the plate, then dries and persists", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    const gate = stamp(page);
+    await gate.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await gate.click();
+    /* The press is live: is-inking rides the ~750ms strike, and the
+       transform lives on the plate (nothing in layout moves — the Red
+       Thread measures the untransformed wrapper). */
+    await expect(gate).toHaveClass(/is-inking/, { timeout: 4000 });
+    await expect(gate.locator(".stamp-plate")).toHaveCSS(
+      "animation-name",
+      "stamp-press"
+    );
+    /* It dries to the persisted state: the class clears, the plate rests,
+       APPROVED stays inked. */
+    await expect(gate).not.toHaveClass(/is-inking/, { timeout: 4000 });
+    await expect(gate.locator(".stamp-plate")).toHaveCSS(
+      "animation-name",
+      "none"
+    );
+    await expect(gate).toHaveAttribute("data-inked", "");
+  });
+
+  test("the awaiting stamp beats once as it scrolls into view (motion world)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    const gate = stamp(page);
+    /* Off-screen at load: the beat is armed, not yet fired. */
+    await expect(gate).not.toHaveClass(/is-noticing/);
+    await gate.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    /* Entering the viewport arms the single attention beat (item 3a). */
+    await expect(gate).toHaveClass(/is-noticing/, { timeout: 4000 });
+  });
+
+  test("A7 — the on-enter beat never arms under reduced motion", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    const gate = stamp(page);
+    await gate.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    /* Give any observer its chance — a static world must stay static. */
+    await page.waitForTimeout(700);
+    await expect(gate).not.toHaveClass(/is-noticing/);
   });
 });
 

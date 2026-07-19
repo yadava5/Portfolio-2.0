@@ -31,7 +31,7 @@
 
 "use client";
 
-import { useState, type AnimationEvent } from "react";
+import { useEffect, useRef, useState, type AnimationEvent } from "react";
 import { useRunApproval } from "@/lib/paperMemory";
 
 interface AwaitingStampProps {
@@ -62,21 +62,54 @@ const INNER_FRAME_D =
 export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
   const { approval, approve } = useRunApproval();
   const [inking, setInking] = useState(false);
+  const [noticing, setNoticing] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const approved = approval !== null;
   const filterId = `stamp-rough-${compact ? "c" : "d"}`;
 
+  /* Pull the hand in (item 3a): one attention beat the first time the
+     awaiting stamp scrolls into view — the dashed outline firms once and
+     the plate breathes. A7: armed only in the motion world (the CSS beat
+     is gated the same way the inking is), never on the dried stamp, and
+     disconnected after the single fire. The transform rides .stamp-plate,
+     which the Red Thread never measures, so geometry stays true. */
+  useEffect(() => {
+    if (approved) return; /* dried ink is settled — it never beats */
+    const el = buttonRef.current;
+    if (!el) return;
+    const motion =
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      !document.documentElement.hasAttribute("data-motion-off");
+    if (!motion) return; /* static worlds get the resting stamp, no beat */
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          setNoticing(true);
+        }
+      },
+      { threshold: 0.6 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [approved]);
+
   const handlePress = () => {
     if (approved) return; /* dried ink never re-performs */
-    setInking(true); /* the ~600ms inking — motion world only (CSS) */
+    setNoticing(false); /* the press supersedes any lingering beat */
+    setInking(true); /* the ~750ms inking — motion world only (CSS) */
     approve();
   };
 
   const handleAnimationEnd = (event: AnimationEvent<HTMLButtonElement>) => {
     if (event.animationName === "stamp-press") setInking(false);
+    if (event.animationName === "stamp-notice-breathe") setNoticing(false);
   };
 
   return (
     <button
+      ref={buttonRef}
       type="button"
       data-thread-stamp
       data-stamp
@@ -97,7 +130,7 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
         approved ? "cursor-default" : "cursor-pointer"
       } ${compact ? "text-clay-night -rotate-[4deg]" : "text-clay-night -rotate-6"} ${
         inking ? "is-inking" : ""
-      }`}
+      } ${noticing ? "is-noticing" : ""}`}
     >
       <svg
         viewBox="0 0 300 190"
@@ -150,7 +183,12 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
           </text>
           <path strokeWidth="1" d="M96 106 C 132 103, 176 105, 204 104" />
           {/* data-thread-sig: the Red Thread's finale underlines this
-              line before blotting on the frame (measured via getBBox) */}
+              line before blotting on the frame (measured via getBBox).
+              Item 3a — the micro-label is now an imperative invitation
+              ("press to sign" register): the whole argument's thread
+              arrives and underlines the very act it asks for. Narrower
+              than the old passive line, so the drawn underline never
+              overruns the frame. */}
           <text
             data-thread-sig
             x="150"
@@ -162,7 +200,7 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
             stroke="none"
             fontFamily="var(--font-mono)"
           >
-            awaiting your signature
+            press here to sign
           </text>
         </g>
 

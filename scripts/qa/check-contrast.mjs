@@ -28,6 +28,7 @@ const C = {
   fail: "#a03b23",
   inkDusk: "#f6efe2",
   clayNight: "#e08a5f",
+  clayEmber: "#f57a3e",
   w01: "#fbf3e7",
   w02: "#faf6ef",
   w03: "#f6f3ea",
@@ -65,6 +66,13 @@ const PAIRS = [
   ["clay-graphic on canvas (graphic ≥3:1)", C.clayGraphic, C.canvas, 3.0],
   ["dusk ink on waypoint-06", C.inkDusk, C.w06, 4.5],
   ["night clay on waypoint-07", C.clayNight, C.w07, 4.5],
+  // The APPROVED stamp's reserved ember (globals.css --color-clay-ember):
+  // the site's loudest chroma, and it must hold AA as TEXT on the
+  // nightfall ground it inks — the crescendo has to stay legible, not
+  // just loud. (The plate paints it at 0.92 opacity; the dried composite
+  // over w07 measures ~4.87:1 — also AA — but the token itself is the
+  // honest gate here.)
+  ["clay-ember (approved stamp ink) on waypoint-07", C.clayEmber, C.w07, 4.5],
   // Ink must hold AA on every day waypoint (01–05)
   ["ink on dawn (01)", C.ink, C.w01, 4.5],
   ["secondary ink on dawn (01)", C.inkSecondary, C.w01, 4.5],
