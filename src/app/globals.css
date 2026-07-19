@@ -37,6 +37,13 @@
      single most-saturated note on the site. 5.50:1 on waypoint-07 solid
      (check-contrast gate); the dried 0.92-opacity plate still holds
      4.87:1. Reserved: search the tree — it appears on .stamp-inked only. */
+  --color-clay-invite: #ec814d; /* the awaiting invitation, warmed ONE
+     step from clay-night toward the approved ember — never the ember
+     itself (that peak stays on .stamp-inked, so approving still pops).
+     It leads the eye to the act: the "press here to sign" line carries
+     a hint of the payoff it unlocks. 5.55:1 on waypoint-07 solid
+     (check-contrast gate); the awaiting group paints it at 0.9 opacity
+     → ~4.76:1 composite, still AA. Appears only on .stamp-sign. */
 
   /* ── Type scale (Part 3.5) ──────────────────────────── */
   --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
@@ -968,6 +975,16 @@ html[data-motion-off] [data-chapter="07"] {
   opacity: 1;
 }
 
+/* Item 2a — the resting "press here to sign" line warms toward the ember
+   it unlocks (clay-invite, a step short of the reserved approved peak),
+   so the invitation carries a hint of the payoff and wins the eye on the
+   espresso ground. PAINT ONLY: the Red Thread underlines this exact line
+   via getBBox, which paint never moves — so the finale stays true. The
+   rest of the awaiting group keeps currentColor (clay-night). */
+.stamp-sign {
+  fill: var(--color-clay-invite);
+}
+
 /* The ~750ms inking — engine world only (A7 CSS gates, the same two
    conditions SmoothScroll checks). This is a stamp HITTING PAPER, not a
    slide: a short wind-up, a firm deeper strike (the "thunk"), one small
@@ -985,19 +1002,22 @@ html[data-motion-off] [data-chapter="07"] {
     animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
   }
   16% {
-    transform: translateY(-1.5px) scale(1.006); /* wind-up: the hand lifts */
+    transform: translateY(-1.8px) scale(1.008); /* wind-up: the hand lifts
+       higher — a heavier tool takes more anticipation before the blow */
     animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
   }
   42% {
-    transform: translateY(2.5px) scale(0.983); /* IMPACT — the thunk */
+    transform: translateY(4px) scale(0.965); /* IMPACT — mass hits paper,
+       the thunk: deeper travel + more compression than W6 read as weight */
     animation-timing-function: linear;
   }
   53% {
-    transform: translateY(2.5px) scale(0.983); /* held under the hand */
+    transform: translateY(4px) scale(0.965); /* held under the hand */
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
   }
   73% {
-    transform: translateY(-0.8px) scale(1.004); /* one small rebound */
+    transform: translateY(-1px) scale(1.005); /* one small rebound (weight,
+       not bounce — a struck die settles, it does not spring) */
     animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
   }
   100% {
@@ -1244,6 +1264,29 @@ html[data-motion-off] [data-chapter="07"] {
 }
 .on-file-manifest.is-dried {
   transition: none;
+}
+/* Item 1b — the page registers the blow. When the visitor signs while on
+   this page (the first live approval, carried in via the subscribe
+   channel), the manifest line takes a single 1px settle coincident with
+   the press: it lands a hair low and settles to rest. TRANSFORM ONLY, so
+   the reserved min-h never moves and CLS stays 0.00; it never touches the
+   line's text, timing, or composition. `data-settle` is set once by the
+   component (motion world only — A7) and kept, so the settle fires exactly
+   once and the state stays inspectable. Gated by the same two conditions
+   the stamp press uses: reduced-motion and motion-off get the settled line
+   with no animation at all (the manifest simply appears). */
+@keyframes manifest-settle {
+  from {
+    transform: translateY(1px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .on-file-manifest[data-settle] {
+    animation: manifest-settle 120ms ease-out both;
+  }
 }
 
 /* ── Run the audit (friend transposition #3): the receipts walk ──────

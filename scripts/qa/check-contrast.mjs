@@ -29,6 +29,7 @@ const C = {
   inkDusk: "#f6efe2",
   clayNight: "#e08a5f",
   clayEmber: "#f57a3e",
+  clayInvite: "#ec814d",
   w01: "#fbf3e7",
   w02: "#faf6ef",
   w03: "#f6f3ea",
@@ -73,6 +74,13 @@ const PAIRS = [
   // over w07 measures ~4.87:1 — also AA — but the token itself is the
   // honest gate here.)
   ["clay-ember (approved stamp ink) on waypoint-07", C.clayEmber, C.w07, 4.5],
+  // The awaiting "press here to sign" line (globals.css --color-clay-invite):
+  // warmed a step from clay-night toward the reserved ember so the
+  // invitation leads the eye without stealing the crescendo's peak. It is
+  // TEXT, so it holds AA on the nightfall ground. (The awaiting group
+  // paints it at 0.9 opacity; the resting composite over w07 measures
+  // ~4.76:1 — also AA — but the solid token is the honest gate here.)
+  ["clay-invite (awaiting sign label) on waypoint-07", C.clayInvite, C.w07, 4.5],
   // Ink must hold AA on every day waypoint (01–05)
   ["ink on dawn (01)", C.ink, C.w01, 4.5],
   ["secondary ink on dawn (01)", C.inkSecondary, C.w01, 4.5],

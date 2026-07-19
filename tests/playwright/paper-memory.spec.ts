@@ -941,3 +941,74 @@ test.describe("paper memory — the on-file manifest", () => {
     );
   });
 });
+
+/**
+ * W7 — the last inch. Two of the banked visitor elevations: the awaiting
+ * invitation warms toward the ember it unlocks (item 2a — leads the eye
+ * to the act without stealing the reserved crescendo peak), and the first
+ * live signature makes the page register the blow (item 1b — a 1px
+ * transform settle on the on-file manifest, gated so static worlds simply
+ * see the line appear). The deepened strike (item 1a) and the legible
+ * stamp date (item 3) are covered by the W6 strike test + the manifest
+ * date assertions above; both keep the same DOM contracts.
+ */
+test.describe("W7 — the last inch", () => {
+  /** #ec814d clay-invite · #f57a3e ember · #e08a5f clay-night, as rgb() */
+  const INVITE_RGB = "rgb(236, 129, 77)";
+  const EMBER_RGB = "rgb(245, 122, 62)";
+  const CLAY_NIGHT_RGB = "rgb(224, 138, 95)";
+
+  test("item 2a — the awaiting invitation warms toward ember; the peak stays reserved", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    const gate = stamp(page);
+    /* The 'press here to sign' line carries a hint of the payoff it
+       unlocks: clay-invite, a step from clay-night toward the ember. */
+    await expect(gate.locator(".stamp-sign")).toHaveCSS("fill", INVITE_RGB);
+    /* ...but the reserved ember never leaks onto the invitation (a step
+       SHORT of the peak, so approving still pops), and the rest of the
+       awaiting group keeps the calmer clay-night. */
+    await expect(gate.locator(".stamp-sign")).not.toHaveCSS("fill", EMBER_RGB);
+    await expect(gate.locator(".stamp-awaiting")).toHaveCSS(
+      "color",
+      CLAY_NIGHT_RGB
+    );
+  });
+
+  test("item 1b — signing live settles the manifest (the page registers the blow)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+    await expect(stamp(page)).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator("[data-on-file]")).toHaveCount(0);
+
+    await stamp(page).click();
+    const m = page.locator("[data-on-file]:visible");
+    /* The subscribe channel carries the act into the line, dated today */
+    await expect(m).toHaveText(`on file: run 041 approved, ${todayLabel()}`);
+    /* The live signature arms the one-shot 1px settle — a real transform
+       animation on the line (transform only; the min-h reserve holds, so
+       CLS stays 0.00). */
+    await expect(m).toHaveAttribute("data-settle", "");
+    await expect(m).toHaveCSS("animation-name", "manifest-settle");
+  });
+
+  test("A7 — the manifest never settles under reduced motion (it simply appears)", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
+
+    await stamp(page).click();
+    const m = page.locator("[data-on-file]:visible");
+    /* The act still works — the line appears with the visitor's date... */
+    await expect(m).toHaveText(`on file: run 041 approved, ${todayLabel()}`);
+    /* ...but the settle never arms, and no animation ever runs. */
+    await expect(m).not.toHaveAttribute("data-settle", "");
+    await expect(m).toHaveCSS("animation-name", "none");
+  });
+});

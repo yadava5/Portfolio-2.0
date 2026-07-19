@@ -66,6 +66,7 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const approved = approval !== null;
   const filterId = `stamp-rough-${compact ? "c" : "d"}`;
+  const fineFilterId = `stamp-fine-${compact ? "c" : "d"}`;
 
   /* Pull the hand in (item 3a): one attention beat the first time the
      awaiting stamp scrolls into view — the dashed outline firms once and
@@ -152,6 +153,22 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
             />
             <feDisplacementMap in="SourceGraphic" in2="n" scale="2.1" />
           </filter>
+          {/* Item 3 — a LIGHTER distress for the sub-12px run/date line.
+              The full scale-2.1 displacement smeared "2026" toward "2025";
+              a real stamp's small print is the first thing to blur, but the
+              date has to stay readable. Same noise field (seed 7) so the
+              texture is of a piece with the frame — only the displacement
+              scale drops, keeping a hint of ink without eating the digits. */}
+          <filter id={fineFilterId} x="-4%" y="-4%" width="108%" height="108%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.9"
+              numOctaves="2"
+              seed="7"
+              result="n"
+            />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="1.3" />
+          </filter>
         </defs>
 
         {/* ── The awaiting layer: dashed outline, empty middle ────────
@@ -191,6 +208,7 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
               overruns the frame. */}
           <text
             data-thread-sig
+            className="stamp-sign"
             x="150"
             y="130"
             textAnchor="middle"
@@ -207,51 +225,61 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
         {/* ── The inked layer: the pressed APPROVED stamp ─────────────
             Same frame path (the blot lands identically); the bottom line
             shares the awaiting signature's baseline, so the thread's
-            underline underlines it. Distress filter per candidate C. */}
-        <g
-          className="stamp-inked"
-          filter={`url(#${filterId})`}
-          fill="none"
-          stroke="currentColor"
-        >
-          <path strokeWidth="3.5" d={FRAME_D} />
-          <path strokeWidth="1.4" d={INNER_FRAME_D} />
-          <text
-            x="150"
-            y="56"
-            textAnchor="middle"
-            fontSize="10"
-            letterSpacing="3"
-            fill="currentColor"
-            stroke="none"
-            fontFamily="var(--font-mono)"
-          >
-            run no. 041 · {approval ? approval.label : ""}
-          </text>
-          <text
-            x="150"
-            y="104"
-            textAnchor="middle"
-            fontSize="40"
-            letterSpacing="8"
-            fill="currentColor"
-            stroke="none"
-            fontFamily="var(--font-mono)"
-          >
-            APPROVED
-          </text>
-          <text
-            x="150"
-            y="130"
-            textAnchor="middle"
-            fontSize="11"
-            letterSpacing="1.5"
-            fill="currentColor"
-            stroke="none"
-            fontFamily="var(--font-mono)"
-          >
-            · human in the loop ·
-          </text>
+            underline underlines it. Colour (ember), opacity, and the
+            wet→dry ink animation ride THIS group; the distress FILTERS
+            now live on the two inner groups so the sub-12px date can wear
+            a lighter displacement (item 3) while the frame + APPROVED
+            keep candidate C's full distress. */}
+        <g className="stamp-inked" fill="none" stroke="currentColor">
+          {/* Full distress (scale 2.1) — the frame + wordmark: that texture
+              is the stamp's character. FRAME_D is byte-for-byte unchanged,
+              so every entry/blot coordinate the Red Thread maps from the
+              viewBox stays exact. */}
+          <g filter={`url(#${filterId})`}>
+            <path strokeWidth="3.5" d={FRAME_D} />
+            <path strokeWidth="1.4" d={INNER_FRAME_D} />
+            <text
+              x="150"
+              y="104"
+              textAnchor="middle"
+              fontSize="40"
+              letterSpacing="8"
+              fill="currentColor"
+              stroke="none"
+              fontFamily="var(--font-mono)"
+            >
+              APPROVED
+            </text>
+            <text
+              x="150"
+              y="130"
+              textAnchor="middle"
+              fontSize="11"
+              letterSpacing="1.5"
+              fill="currentColor"
+              stroke="none"
+              fontFamily="var(--font-mono)"
+            >
+              · human in the loop ·
+            </text>
+          </g>
+          {/* Item 3 — the run/date line, ~10px: its own lighter distress so
+              the digits (the visitor's own approval date) read cleanly.
+              Not a coordinate the thread measures. */}
+          <g filter={`url(#${fineFilterId})`}>
+            <text
+              x="150"
+              y="56"
+              textAnchor="middle"
+              fontSize="10"
+              letterSpacing="3"
+              fill="currentColor"
+              stroke="none"
+              fontFamily="var(--font-mono)"
+            >
+              run no. 041 · {approval ? approval.label : ""}
+            </text>
+          </g>
         </g>
       </svg>
     </button>

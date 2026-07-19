@@ -86,6 +86,21 @@ function composeManifest(known: ReadonlySet<string>): string | null {
 }
 
 /**
+ * Whether the motion world is live — the same two gates the stamp press
+ * and SmoothScroll check (amendment A7). The settle-judder (item 1b) only
+ * ever arms here; reduced-motion and motion-off get the settled line with
+ * no animation at all — the manifest simply appears.
+ *
+ * @returns True when motion should play
+ */
+function motionWorld(): boolean {
+  return (
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    !document.documentElement.hasAttribute("data-motion-off")
+  );
+}
+
+/**
  * The reserved margin-manifest line under the gate stamp.
  *
  * @param props - The real case-file ids
@@ -93,13 +108,26 @@ function composeManifest(known: ReadonlySet<string>): string | null {
  */
 export function OnFileManifest({ fileIds }: OnFileManifestProps) {
   const [state, setState] = useState<ManifestState | null>(null);
+  /* Item 1b: armed once when the visitor signs live (the press), never on
+     a dried restore, motion world only. Drives the 1px settle — the page
+     registering the blow — and is kept so the settle fires exactly once. */
+  const [signedLive, setSignedLive] = useState(false);
   const known = useMemo(() => new Set(fileIds), [fileIds]);
 
   useEffect(() => {
     let atMount = true;
+    /* Track the approval across syncs so ONLY its live landing (absent →
+       present while on the page, via the subscribe channel) arms the
+       settle; a stored approval present at mount is a dried restore. */
+    let hadApproval = readApproval() !== null;
     const sync = () => {
       const settled = atMount;
       const text = composeManifest(known);
+      const nowApproval = readApproval() !== null;
+      if (!atMount && !hadApproval && nowApproval && motionWorld()) {
+        setSignedLive(true);
+      }
+      hadApproval = nowApproval;
       setState((prev) => {
         /* A cleared store un-inks the line live — the visitor's right
            to a clean sheet (the useVisitedFiles/useRunApproval rule) */
@@ -119,6 +147,7 @@ export function OnFileManifest({ fileIds }: OnFileManifestProps) {
         state?.dried ? "is-dried" : ""
       }`}
       data-on-file={state ? "" : undefined}
+      data-settle={signedLive ? "" : undefined}
       aria-hidden={state ? undefined : "true"}
     >
       {state ? state.text : null}
