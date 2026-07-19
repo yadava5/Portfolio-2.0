@@ -61,7 +61,7 @@ export const personalInfo = {
   /** Email address */
   email: "aesh_1055@icloud.com",
   /** Location */
-  location: "Oxford, Ohio",
+  location: "Cincinnati, Ohio",
   /** Current availability */
   availability: "Open to new-grad software, data, and ML engineering roles",
   /** Professional portrait. `thumb` is the 96×96 header-button

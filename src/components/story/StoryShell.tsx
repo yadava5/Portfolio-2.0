@@ -356,7 +356,7 @@ function ArrivalChapter() {
         <ChapterKicker
           id={ARRIVAL.id}
           label="arrival — a working paper on trust & machinery"
-          dateline="oxford, ohio — summer 2026"
+          dateline="cincinnati, ohio — summer 2026"
         />
 
         {/* py-10 (was py-16): the byline→flagship-teaser frame sagged at
@@ -377,10 +377,13 @@ function ArrivalChapter() {
               name — the label keeps the accessible name one honest
               sentence; the footnote link keeps its own "Footnote 1". */}
           <h1
-            aria-label="I build machine learning that shows its work."
+            aria-label="I build software that shows its work."
             className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
           >
-            {/* Forced break pattern: "machine learning" never splits */}
+            {/* The broad subject sits on its own line — one bold word, kept
+                deliberately un-specialised (not "machine learning"): the ML
+                depth lives in the flagship, the umbrella stays open to every
+                software/data/systems role. */}
             <span
               className="hero-enter hero-enter-headline block"
               style={heroDelay(0)}
@@ -391,7 +394,7 @@ function ArrivalChapter() {
               className="hero-enter hero-enter-headline block whitespace-nowrap"
               style={heroDelay(1)}
             >
-              machine learning
+              software
             </span>
             <span
               className="hero-enter hero-enter-headline block"
@@ -442,7 +445,7 @@ function ArrivalChapter() {
                 className="hero-enter hero-enter-inline hero-enter-stipple"
                 style={heroDelay(4.5)}
               >
-                ayush yadav — ml engineer, class of 2026
+                ayush yadav — full-stack, data, and systems · class of 2026
               </span>
             </span>
           </p>
@@ -1172,7 +1175,7 @@ function GateChapter() {
             >
               <p>availability — {personalInfo.availability}</p>
               <p>
-                oxford, ohio — <LocalTime /> local
+                cincinnati, ohio — <LocalTime /> local
               </p>
             </div>
 

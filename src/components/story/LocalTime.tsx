@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 
 interface LocalTimeProps {
-  /** IANA timezone (defaults to Oxford, Ohio's zone) */
+  /** IANA timezone (defaults to Cincinnati, Ohio's zone — same Eastern zone) */
   timeZone?: string;
 }
 
