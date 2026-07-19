@@ -160,10 +160,10 @@
    re-blend), and the maths is identical, so the look is preserved. The rake
    dies at the dusk step (background-image: none) exactly as before. */
 .light-field-base {
-  /* PERF: its own compositor layer, so the per-frame colour repaint
-     re-rasters only this fill (+ the folded rake gradients) — never the
-     static contour/grain textures stacked above it in the container. */
-  transform: translateZ(0);
+  /* NOTE: intentionally NOT promoted to its own layer with translateZ.
+     A promoted fixed full-viewport layer sub-pixel-shimmers ("vibrates")
+     during scroll on a real Retina GPU — the container's `contain` already
+     isolates the repaint without that cost. */
   background-color: oklch(var(--arc-l) var(--arc-c) var(--arc-h));
   background-image:
     linear-gradient(

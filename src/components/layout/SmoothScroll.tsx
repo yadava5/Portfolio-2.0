@@ -162,9 +162,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     }
 
     const instance = new Lenis({
-      lerp: 0.12 /* PERF: snappier than plan 3.9's 0.08 — the long 0.08
-        momentum tail read as "slidey"/disconnected; 0.12 tracks the wheel
-        more tightly while staying smooth. Tune with user feel. */,
+      lerp: 0.1 /* Middle setting: 0.08 read "slidey" (long tail), 0.12 read
+        a touch abrupt — 0.1 (Lenis default) tracks the wheel without either.
+        Tune with user feel. */,
       smoothWheel: true,
       wheelMultiplier: 1,
       syncTouch: false /* touch smoothing OFF */,
