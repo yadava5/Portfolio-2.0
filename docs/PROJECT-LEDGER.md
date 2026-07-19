@@ -153,3 +153,14 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   487 ×3 · 0 failed · perf 3/3 · ember 5.50:1 · 4 new crescendo tests.
   → **W6 visitor re-judge** (bar 85, in flight): does the crescendo close
   the +2? Recruiter 91 + evidence 97 stand (untouched surfaces).
+- **ERA CLOSED (docs/scorecards/era-close.md)**: visitor **86** — "it clears
+  85 … the three deductions that pinned it at 83 are each genuinely and
+  natively fixed … very few portfolios earn an ending; this one closes a
+  loop." Final: **recruiter 91 · evidence 97 · visitor 86**, all bars met,
+  from the era's 86/86/72 start (journey 68/64/54). Every number a fresh
+  judge's. Banked elevations (visitor's optional list) → W7: deepen the
+  strike + manifest settle-judder ("make the paper feel the blow"); draw
+  the thread's last segment into the stamp on scroll-in while the awaiting
+  label warms to ember; drop the distress scale for the sub-12px stamp date.
+  User calls open (neither blocks): merge PR #5 (prod /evidence/ 404s until
+  then); automl flagship hero demotion vs pending run-ledger content.
