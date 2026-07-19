@@ -133,3 +133,23 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   stretch (hero-thread signature under the 0.0000%/LCP guarantees, /evidence
   held-tick disambiguation, empty-band tightening). NO-LIST restated: no glow,
   no typewriter reveal, no particles; reduced-motion/off = settled, no anim.
+- **W6 SHIPPED (`e2edb9f`)**: the approval stamp becomes the crescendo.
+  stamp-press rebuilt from a gentle slide into a physical strike
+  (anticipation → +2.5px/0.983 impact on ease-in → one rebound → settle,
+  750ms, transform on .stamp-plate only — CLS 0.00, thread landmark
+  unmoved). New token `--color-clay-ember #f57a3e` reserved SOLELY for the
+  inked APPROVED (defined once, consumed once; oklch chroma 0.168 — the
+  loudest colour on the site; 5.50:1 on waypoint-07, pair added to the
+  contrast gate); the ink over-shoots to full wet then dries to the
+  persisted 0.92 (saturation within the distress vocab, no glow). One-time
+  on-enter attention beat on the awaiting stamp (IntersectionObserver,
+  JS-gated on reduced-motion AND motion-off, one fire, never on the dried
+  stamp); label "awaiting your signature" → imperative "press here to sign";
+  audit resting hint "run the audit →" → honest "walk the {N} claims →"
+  (N = real row count). Evidence-97 residual folded: held-entry visited ✓
+  gets a "not a verification" title. Item 4 (hero-thread signature) SKIPPED
+  to protect the 0.0000% settled-hero diff + LCP; item 6 (case-page empty
+  bands) deferred (locked judges happy; brief bars inventing content). Gates:
+  487 ×3 · 0 failed · perf 3/3 · ember 5.50:1 · 4 new crescendo tests.
+  → **W6 visitor re-judge** (bar 85, in flight): does the crescendo close
+  the +2? Recruiter 91 + evidence 97 stand (untouched surfaces).
