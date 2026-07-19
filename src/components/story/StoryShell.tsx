@@ -377,30 +377,31 @@ function ArrivalChapter() {
               name — the label keeps the accessible name one honest
               sentence; the footnote link keeps its own "Footnote 1". */}
           <h1
-            aria-label="I build software that shows its work."
-            className="font-display fraunces-hero text-[clamp(2.5rem,9vw,9.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+            aria-label="I turn messy data into software you can trust."
+            className="font-display fraunces-hero text-[clamp(2.15rem,7.4vw,7.25rem)] leading-[0.98] font-normal tracking-[-0.015em]"
           >
-            {/* The broad subject sits on its own line — one bold word, kept
-                deliberately un-specialised (not "machine learning"): the ML
-                depth lives in the flagship, the umbrella stays open to every
-                software/data/systems role. */}
+            {/* The hero opens the story the whole paper tells: raw, messy
+                inputs → software you can trust, resolved at the very end when
+                the visitor's own hand approves the run (¶07). Concrete and
+                un-boastful — the claim is trust, and the footnote points
+                straight at the evidence that earns it. */}
             <span
               className="hero-enter hero-enter-headline block"
               style={heroDelay(0)}
             >
-              I build
+              I turn messy data
             </span>
             <span
-              className="hero-enter hero-enter-headline block whitespace-nowrap"
+              className="hero-enter hero-enter-headline block"
               style={heroDelay(1)}
             >
-              software
+              into software
             </span>
             <span
               className="hero-enter hero-enter-headline block"
               style={heroDelay(2)}
             >
-              that shows its{" "}
+              you can{" "}
               {/* The ¹ is kerned against the period: the size lives on the
                   <sup> (not the anchor) so align-super raises the small
                   glyph, not a hero-sized box. The negative margin lives on
@@ -408,7 +409,7 @@ function ArrivalChapter() {
                   italic period's right bearing at every viewport (a
                   sup-relative margin left the ¹ adrift at 1440). */}
               <span className="whitespace-nowrap">
-                <em className="font-serif italic">work.</em>
+                <em className="font-serif italic">trust.</em>
                 <span className="-ml-[0.085em]">
                   <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
                     <LenisAnchor
