@@ -57,7 +57,7 @@ export const personalInfo = {
   title: "New-grad software engineer",
   /** Short tagline for hero section */
   tagline:
-    "New-grad software engineer focused on data, ML systems, and full-stack reliability",
+    "New-grad software engineer — data pipelines, ML systems, and software I can stand behind",
   /** Email address */
   email: "aesh_1055@icloud.com",
   /** Location */
@@ -79,7 +79,7 @@ export const personalInfo = {
 
   /** Bio paragraphs for about section */
   bio: [
-    "Computer Science graduate from Miami University focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
+    "Computer Science graduate focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
     "As an ITSM Data Integration Student Associate at Miami University from June 2025 to May 2026, I built Python and data pipelines for Tableau/OAS and operational reporting, translated messy records into trusted datasets, and shipped dashboards and automations for real team workflows.",
     "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work, especially where performance, reliability, and clear user impact matter.",
   ],
