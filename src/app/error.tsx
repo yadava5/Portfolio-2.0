@@ -22,11 +22,6 @@ export default function Error({ error, reset }: ErrorProps) {
 
   return (
     <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[var(--background)] px-4 py-8 text-[var(--foreground)]">
-      {/* Background accent */}
-      <div className="pointer-events-none absolute inset-0 opacity-5">
-        <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--status-warning)] blur-3xl" />
-      </div>
-
       {/* Content container */}
       <div className="relative z-10 mx-auto max-w-2xl space-y-8 text-center">
         {/* Error display */}

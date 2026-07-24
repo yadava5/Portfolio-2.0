@@ -18,8 +18,8 @@ export interface Skill {
   level: SkillLevel;
   /** Years of experience */
   yearsOfExperience?: number;
-  /** Endorsement count from LinkedIn */
-  endorsements?: number;
+  /** Projects/roles where this skill was actually used (provenance) */
+  usedIn?: string[];
 }
 
 /** Skill category */
@@ -37,7 +37,8 @@ export interface SkillCategory {
 /**
  * Skills organized by category
  *
- * Based on LinkedIn endorsements and project usage
+ * Provenance (`usedIn`) is sourced from the project and experience data,
+ * not from self-reported endorsement counts.
  */
 export const skillCategories: SkillCategory[] = [
   {
@@ -45,12 +46,33 @@ export const skillCategories: SkillCategory[] = [
     name: "Languages",
     description: "Programming languages I work with",
     skills: [
-      { name: "TypeScript", level: "advanced", endorsements: 2 },
-      { name: "Python", level: "advanced", endorsements: 2 },
-      { name: "JavaScript", level: "advanced" },
-      { name: "Swift", level: "intermediate", endorsements: 1 },
-      { name: "C++", level: "intermediate", endorsements: 2 },
-      { name: "SQL", level: "advanced", endorsements: 1 },
+      {
+        name: "TypeScript",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "Glyph", "LifeQuest"],
+      },
+      {
+        name: "Python",
+        level: "advanced",
+        usedIn: ["Applied", "Master Inventory", "PolicyBot", "Miami ITSM"],
+      },
+      {
+        name: "JavaScript",
+        level: "advanced",
+        usedIn: ["Cadence", "Glyph"],
+      },
+      {
+        name: "Swift",
+        level: "intermediate",
+        usedIn: ["Visual Assist"],
+      },
+      { name: "C++", level: "intermediate", usedIn: ["Glyph"] },
+      { name: "Java", level: "advanced", usedIn: ["jetpack-compress"] },
+      {
+        name: "SQL",
+        level: "advanced",
+        usedIn: ["Miami ITSM", "Master Inventory", "Cadence"],
+      },
     ],
   },
   {
@@ -58,12 +80,24 @@ export const skillCategories: SkillCategory[] = [
     name: "Frontend",
     description: "UI frameworks and tools",
     skills: [
-      { name: "React", level: "advanced", endorsements: 2 },
-      { name: "Next.js", level: "advanced" },
-      { name: "Tailwind CSS", level: "advanced" },
-      { name: "SwiftUI", level: "intermediate" },
-      { name: "Framer Motion", level: "intermediate" },
-      { name: "GSAP", level: "intermediate" },
+      {
+        name: "React",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "Glyph", "LifeQuest"],
+      },
+      { name: "Next.js", level: "advanced", usedIn: ["Applied", "Portfolio"] },
+      {
+        name: "Tailwind CSS",
+        level: "advanced",
+        usedIn: ["Cadence", "Portfolio"],
+      },
+      {
+        name: "SwiftUI",
+        level: "intermediate",
+        usedIn: ["Visual Assist"],
+      },
+      { name: "Framer Motion", level: "intermediate", usedIn: ["Portfolio"] },
+      { name: "GSAP", level: "intermediate", usedIn: ["Portfolio"] },
     ],
   },
   {
@@ -71,11 +105,23 @@ export const skillCategories: SkillCategory[] = [
     name: "Backend",
     description: "Server-side technologies",
     skills: [
-      { name: "Node.js", level: "advanced", endorsements: 2 },
-      { name: "NestJS", level: "intermediate", endorsements: 1 },
-      { name: "PostgreSQL", level: "advanced", endorsements: 3 },
-      { name: "Prisma", level: "intermediate", endorsements: 1 },
-      { name: "REST APIs", level: "advanced" },
+      {
+        name: "Node.js",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "LifeQuest"],
+      },
+      { name: "NestJS", level: "intermediate", usedIn: ["LifeQuest"] },
+      {
+        name: "PostgreSQL",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "LifeQuest"],
+      },
+      { name: "Prisma", level: "intermediate" },
+      {
+        name: "REST APIs",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "Miami ITSM"],
+      },
     ],
   },
   {
@@ -83,12 +129,32 @@ export const skillCategories: SkillCategory[] = [
     name: "Data & ML",
     description: "Data engineering and machine learning",
     skills: [
-      { name: "Data Pipelines", level: "advanced", endorsements: 3 },
-      { name: "ETL", level: "advanced", endorsements: 3 },
-      { name: "Machine Learning", level: "intermediate", endorsements: 3 },
-      { name: "Tableau", level: "advanced", endorsements: 1 },
-      { name: "Snowflake", level: "intermediate" },
-      { name: "pandas", level: "advanced" },
+      {
+        name: "Data Pipelines",
+        level: "advanced",
+        usedIn: ["Miami ITSM", "Master Inventory"],
+      },
+      {
+        name: "ETL",
+        level: "advanced",
+        usedIn: ["Miami ITSM", "Master Inventory"],
+      },
+      {
+        name: "Machine Learning",
+        level: "intermediate",
+        usedIn: ["Agentic AutoML", "Applied", "Glyph"],
+      },
+      {
+        name: "Tableau",
+        level: "advanced",
+        usedIn: ["Miami ITSM", "Master Inventory"],
+      },
+      { name: "Snowflake", level: "intermediate", usedIn: ["Miami ITSM"] },
+      {
+        name: "pandas",
+        level: "advanced",
+        usedIn: ["Master Inventory", "Miami ITSM"],
+      },
     ],
   },
   {
@@ -96,9 +162,13 @@ export const skillCategories: SkillCategory[] = [
     name: "Mobile & Native",
     description: "iOS and desktop development",
     skills: [
-      { name: "ARKit", level: "intermediate", endorsements: 1 },
-      { name: "Core ML", level: "intermediate", endorsements: 2 },
-      { name: "Vision", level: "intermediate" },
+      { name: "ARKit", level: "intermediate", usedIn: ["Visual Assist"] },
+      {
+        name: "Core ML",
+        level: "intermediate",
+        usedIn: ["Visual Assist"],
+      },
+      { name: "Vision", level: "intermediate", usedIn: ["Visual Assist"] },
       { name: "Tauri", level: "intermediate" },
     ],
   },
@@ -107,12 +177,24 @@ export const skillCategories: SkillCategory[] = [
     name: "DevOps & Tools",
     description: "Development operations and tooling",
     skills: [
-      { name: "Git", level: "advanced", endorsements: 2 },
-      { name: "GitHub", level: "advanced", endorsements: 2 },
-      { name: "Docker", level: "intermediate", endorsements: 2 },
-      { name: "Kubernetes", level: "learning", endorsements: 2 },
-      { name: "Vercel", level: "advanced" },
-      { name: "CI/CD", level: "intermediate" },
+      {
+        name: "Git",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "Applied", "Glyph"],
+      },
+      {
+        name: "GitHub",
+        level: "advanced",
+        usedIn: ["Portfolio", "Applied"],
+      },
+      { name: "Docker", level: "intermediate", usedIn: ["Agentic AutoML"] },
+      { name: "Kubernetes", level: "learning" },
+      {
+        name: "Vercel",
+        level: "advanced",
+        usedIn: ["Applied", "Cadence", "Glyph", "LifeQuest", "Portfolio"],
+      },
+      { name: "CI/CD", level: "intermediate", usedIn: ["Portfolio"] },
     ],
   },
   {
@@ -120,11 +202,31 @@ export const skillCategories: SkillCategory[] = [
     name: "Specializations",
     description: "Specialized skills and domains",
     skills: [
-      { name: "Parallel Computing", level: "intermediate", endorsements: 2 },
-      { name: "OCR", level: "intermediate", endorsements: 2 },
-      { name: "API Integration", level: "advanced", endorsements: 2 },
-      { name: "Metadata Management", level: "advanced", endorsements: 3 },
-      { name: "Accessibility", level: "intermediate" },
+      {
+        name: "Parallel Computing",
+        level: "intermediate",
+        usedIn: ["Glyph", "jetpack-compress"],
+      },
+      {
+        name: "OCR",
+        level: "intermediate",
+        usedIn: ["Visual Assist", "PolicyBot"],
+      },
+      {
+        name: "API Integration",
+        level: "advanced",
+        usedIn: ["Miami ITSM", "Agentic AutoML"],
+      },
+      {
+        name: "Metadata Management",
+        level: "advanced",
+        usedIn: ["Master Inventory", "Miami ITSM"],
+      },
+      {
+        name: "Accessibility",
+        level: "intermediate",
+        usedIn: ["Visual Assist", "Portfolio"],
+      },
     ],
   },
 ];
@@ -144,13 +246,10 @@ export function getSkillsByLevel(level: SkillLevel): Skill[] {
 }
 
 /**
- * Get top endorsed skills (sorted by endorsement count)
+ * Get skills used in a given project or role (by provenance)
  */
-export function getTopEndorsedSkills(limit: number = 10): Skill[] {
-  return getAllSkills()
-    .filter((skill) => skill.endorsements)
-    .sort((a, b) => (b.endorsements || 0) - (a.endorsements || 0))
-    .slice(0, limit);
+export function getSkillsUsedIn(source: string): Skill[] {
+  return getAllSkills().filter((skill) => skill.usedIn?.includes(source));
 }
 
 /**

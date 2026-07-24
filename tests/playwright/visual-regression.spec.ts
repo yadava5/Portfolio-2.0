@@ -1,10 +1,6 @@
 import { test, expect } from "@playwright/test";
 import fs from "fs/promises";
-import {
-  artifactPath,
-  THEMES,
-  switchThemeAndWait,
-} from "./portfolio-fixtures";
+import { artifactPath, THEMES, switchThemeAndWait } from "./portfolio-fixtures";
 
 const VIEWPORT_SIZES = [
   { name: "mobile", width: 375, height: 667 },
@@ -56,7 +52,9 @@ test.describe("Visual Regression: Theme Screenshots", () => {
         await expect(mainElement).toBeVisible({ timeout: 5000 });
 
         // Scroll to top to ensure consistent baseline
-        await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+        await page.evaluate(() =>
+          window.scrollTo({ top: 0, behavior: "instant" })
+        );
         await page.waitForTimeout(300);
 
         // Take full-page screenshot and save to baseline directory

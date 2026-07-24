@@ -1,25 +1,22 @@
 /**
- * @fileoverview Root layout — global providers, fonts, and shell structure
+ * @fileoverview Root layout — fonts, SEO metadata, and shell structure
  *
  * Wraps every page with:
- *   1. Geist font variables (sans + mono)
- *   2. Theme-specific font variables
- *   3. ThemeProvider  — multi-theme wrapper
- *   4. SmoothScroll   — Lenis smooth scrolling
- *   5. Header         — floating glass navigation
- *   6. Footer         — social links + quick nav
- *   7. CustomCursor   — holographic glow trail
- *   8. Atlas-only public identity; legacy visual modes are not rendered
+ *   1. Self-hosted variable fonts via `next/font/google`
+ *      (Fraunces display, Newsreader prose, Fragment Mono labels)
+ *   2. SmoothScroll   — Lenis smooth scrolling
+ *   3. Header         — site navigation
+ *   4. Footer         — social links + quick nav
+ *   5. Skip link      — keyboard a11y
  *
  * SEO metadata is pulled from the data layer (`siteMetadata`).
  */
 
 import type { Metadata } from "next";
+import { Fraunces, Newsreader, Fragment_Mono } from "next/font/google";
 import "./globals.css";
 
-import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { ScrollProgress } from "@/components/layout/ScrollProgress";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
@@ -28,9 +25,35 @@ import { absoluteSiteUrl } from "@/lib/seo";
 /* ──────────────────────────────────────────────
    Font configuration
 
-   Fonts loaded dynamically at runtime via CSS
-   @import with display=swap to avoid blocking
+   Self-hosted at build time by next/font (no render-blocking
+   external @import, no layout-shift). Exposed as CSS variables
+   and mapped to Tailwind font tokens in globals.css.
    ────────────────────────────────────────────── */
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  axes: ["opsz", "SOFT", "WONK"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  // Static 400 roman + italic: prose runs at body weight only (plan 3.5), and
+  // the full 200–800 variable range costs ~270KB latin vs ~90KB static.
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const fragmentMono = Fragment_Mono({
+  subsets: ["latin"],
+  weight: "400",
+  // Roman only — the label voice is lowercase mono, never italic (plan 3.5).
+  variable: "--font-fragment-mono",
+  display: "swap",
+});
 
 /* ──────────────────────────────────────────────
    SEO metadata
@@ -79,8 +102,7 @@ export const metadata: Metadata = {
 /**
  * Root layout wrapping every page in the application
  *
- * Provides theme context, smooth scrolling, header/footer chrome,
- * and the custom cursor overlay.
+ * Provides self-hosted fonts, smooth scrolling, and header/footer chrome.
  *
  * @param props - Layout props containing the page content
  * @returns The full-page layout shell
@@ -91,25 +113,55 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>{/* Fonts are now optimized via next/font/google */}</head>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${newsreader.variable} ${fragmentMono.variable}`}
+    >
       <body className="antialiased">
+        {/* First-paint world stamp (plan 3.8 + FOUC discipline + governor
+            §F2). Synchronous by design: it must beat the hero's paint.
+            1. `data-tier` — the frame governor's edition for THIS load:
+               "print" under reduced motion, the quiet toggle, or a
+               sessionStorage "study-tier-cap" of print (the lowest tier
+               a previous page of this session reached); otherwise
+               "core". NEVER "full" at load — Full garnish only mounts
+               later once the governor has proof (§F3), so the universal
+               first paint is Core and nothing ever collapses.
+            2. `data-motion-ready` — the text-motion gate (amendment A7):
+               stamped ONLY when the tier is core, i.e. the same gates
+               SmoothScroll checks before mounting the engine plus the
+               governor's ceiling. The hero's hidden entrance state
+               exists only under this attribute, so static worlds and
+               JS-dead loads always paint the finished page; TextMotion
+               removes it after the entrance plays (load-only, once).
+            3. A document that LOADS hidden (background tab, embedded
+               preview pane, prerender) starts at the print floor too:
+               hidden documents get no rAF, so engine-held motion could
+               never play there — yet such surfaces are read and
+               screenshotted. SmoothScroll re-opens the gate (print →
+               core, engine mounts) at the first visibilitychange to
+               visible, so a real reader who foregrounds the tab still
+               gets the full motion world. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
+          }}
+        />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded focus:bg-[var(--accent-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-[var(--background)] focus:outline-none"
         >
           Skip to main content
         </a>
-        <ThemeProvider>
-          <SmoothScroll>
-            <ScrollProgress />
-            <Header />
-            <main id="main-content" className="min-h-screen">
-              {children}
-            </main>
-            <Footer />
-          </SmoothScroll>
-        </ThemeProvider>
+        <SmoothScroll>
+          <Header />
+          <main id="main-content" className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );

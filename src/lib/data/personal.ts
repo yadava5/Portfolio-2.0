@@ -57,24 +57,29 @@ export const personalInfo = {
   title: "New-grad software engineer",
   /** Short tagline for hero section */
   tagline:
-    "New-grad software engineer focused on data, ML systems, and full-stack reliability",
+    "New-grad software engineer — data pipelines, ML systems, and software I can stand behind",
   /** Email address */
   email: "aesh_1055@icloud.com",
   /** Location */
-  location: "Oxford, Ohio",
+  location: "Cincinnati, Ohio",
   /** Current availability */
   availability: "Open to new-grad software, data, and ML engineering roles",
-  /** Professional portrait */
+  /** Professional portrait. `thumb` is the 96×96 header-button
+   *  derivative (PERF-AUDIT fix 3 — the full 900×1350 portrait was
+   *  preload-shipped on every route to paint a 26–36px avatar);
+   *  regenerate via `npm run assets:derive`. The portrait MODAL keeps
+   *  the full image. */
   portrait: {
     image: withBasePath(
-      "/images/profile/ayush-yadav-professional-portrait.png"
+      "/images/profile/ayush-yadav-professional-portrait.webp"
     ),
+    thumb: withBasePath("/images/profile/ayush-yadav-avatar-96.webp"),
     alt: "Ayush Yadav professional portrait",
   },
 
   /** Bio paragraphs for about section */
   bio: [
-    "Computer Science graduate from Miami University focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
+    "Computer Science graduate focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
     "As an ITSM Data Integration Student Associate at Miami University from June 2025 to May 2026, I built Python and data pipelines for Tableau/OAS and operational reporting, translated messy records into trusted datasets, and shipped dashboards and automations for real team workflows.",
     "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work, especially where performance, reliability, and clear user impact matter.",
   ],

@@ -1,0 +1,36 @@
+{
+  "ledger": "policybot-validation",
+  "project": "policybot",
+  "checked_in": "2026-06",
+  "source": "sanitized summary of the committed validation sweeps",
+  "boundary": "no policy text, Slack messages, or raw validation transcripts",
+  "disclosure": "sweeps are self-graded; grader identity and per-case pass criteria are not yet publicly documented",
+  "rows": [
+    {
+      "label": "structured sweep",
+      "value": "19/20",
+      "note": "latest quoted-answer pass"
+    },
+    {
+      "label": "keyword sweep",
+      "value": "17/25",
+      "note": "validated loose prompts"
+    },
+    {
+      "label": "safe fallbacks",
+      "value": 4,
+      "note": "unsupported topics declined instead of overclaiming"
+    },
+    {
+      "label": "local tests",
+      "value": "3 passed",
+      "note": "Slack adapter/formatting, no OpenAI or Slack calls"
+    },
+    {
+      "label": "guardrail path",
+      "value": "File Search -> citation extraction -> local quote verifier",
+      "note": "unverified answers fall back"
+    }
+  ],
+  "verification": "answers are accepted when quotes match local policy files; unsupported or unverified answers fall back"
+}

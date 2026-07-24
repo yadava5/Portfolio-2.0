@@ -42,6 +42,12 @@ export interface Project {
   liveUrl: string | null;
   /** Project image path */
   image: string;
+  /** Intrinsic pixel width of the image, when known (raster captures —
+   *  lets the case-file hero render with explicit dimensions instead
+   *  of `fill`; CLS regression hardening per PERF-AUDIT fix 4) */
+  imageWidth?: number;
+  /** Intrinsic pixel height of the image, when known */
+  imageHeight?: number;
   /** What kind of visual the image represents */
   imageKind: ProjectImageKind;
   /** Accessible alt text for the project image */
@@ -80,21 +86,21 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: "jobtracker",
-    title: "JobTracker",
+    title: "Applied",
     shortDescription:
-      "Native macOS app for local job-search email classification with on-device ML and a trackable application pipeline.",
+      "A Next.js job-search tool: connect Gmail, fetch your inbox, and a 3-layer hybrid classifier turns it into a live dashboard of your real applications.",
     fullDescription:
-      "An email-powered job application tracker that syncs Gmail and iCloud Mail, identifies job-related messages (rejections, interviews, offers) using a 3-layer hybrid ML classifier, and organizes them into a local pipeline with a native SwiftUI dashboard.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and runs a 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) to build a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue. The same classifier is also shipped as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers).",
     techStack: [
+      { name: "Next.js 16", color: "#000000" },
+      { name: "TypeScript", color: "#3178c6" },
+      { name: "PostgreSQL", color: "#336791" },
       { name: "Python", color: "#3776ab" },
-      { name: "FastAPI", color: "#009688" },
-      { name: "SwiftUI", color: "#0071e3" },
-      { name: "SQLite", color: "#003b57" },
       { name: "SetFit", color: "#ff6f00" },
-      { name: "sentence-transformers", color: "#ff9800" },
+      { name: "ONNX Runtime", color: "#8a2be2" },
     ],
     githubUrl: "https://github.com/yadava5/jobtracker",
-    liveUrl: null,
+    liveUrl: "https://getapplied.vercel.app",
     image: withBasePath("/images/projects/jobtracker-architecture.svg"),
     imageKind: "diagram",
     imageAlt: "JobTracker local email classification architecture diagram",
@@ -105,18 +111,22 @@ export const projects: Project[] = [
     startDate: "2026-02",
     endDate: "Present",
     highlights: [
-      "Privacy-first: all ML processing happens locally on-device",
-      "3-layer hybrid classifier (rules -> embeddings -> SetFit)",
-      "Gmail OAuth2 & iCloud IMAP async integration",
-      "Native macOS SwiftUI dashboard",
-      "Background sync via SMAppService + launchd",
+      "Real Gmail connect -> fetch -> 3-layer hybrid classify (rules -> e5 similarity -> gated SetFit)",
+      "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
+      "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
+      "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
+      "Also ships as an in-browser int8 ONNX classifier (22.8 MB, output-identical)",
     ],
     isPrivate: false,
     metrics: [
-      { label: "ML Layers", value: "3-layer hybrid classifier" },
-      { label: "Processing", value: "Local on-device" },
+      { label: "Classifier", value: "3-layer hybrid — rules -> e5 -> SetFit" },
+      { label: "Runs in-browser", value: "int8 ONNX, output-identical" },
     ],
-    proofIds: ["jobtracker-local-classifier"],
+    proofIds: [
+      "jobtracker-local-classifier",
+      "jobtracker-macro-f1",
+      "jobtracker-backend-tests",
+    ],
   },
   {
     id: "automl",
@@ -124,7 +134,7 @@ export const projects: Project[] = [
     shortDescription:
       "Private GitHub-backed capstone platform for turning datasets and domain documents into LLM-orchestrated, auditable ML workflows.",
     fullDescription:
-      "A private GitHub repository named ai-augmented-auto-ml-toolchain that turns datasets and domain documents into structured, reproducible ML workflows. The platform uses LangGraph and MCP tools for agentic orchestration with human-in-the-loop approval gates.",
+      "A senior-design platform (private repo ai-augmented-auto-ml-toolchain) that turns datasets and domain documents into production ML via LLM-orchestrated pipelines. It uses LangGraph and MCP tools for agentic orchestration with human-in-the-loop approval gates across a 7-phase ML lifecycle; its default model is GPT-5.4.",
     techStack: [
       { name: "TypeScript", color: "#3178c6" },
       { name: "React 19", color: "#61dafb" },
@@ -135,13 +145,17 @@ export const projects: Project[] = [
       { name: "MCP", color: "#00d4aa" },
     ],
     githubUrl: null,
-    liveUrl: null,
-    image: withBasePath("/images/projects/automl.png"),
+    liveUrl: "https://agentic-automl.vercel.app",
+    // WebP derivative of the promoted capture (assets:derive) — the PNG
+    // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
+    image: withBasePath("/images/projects/automl.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt:
       "Private-safe Agentic AutoML experiment registry screenshot with demo data",
     imageDisclosure:
-      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private.",
+      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private. The landing is hosted on a teammate's Vercel account, so the owner cannot deploy it directly.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
@@ -151,7 +165,7 @@ export const projects: Project[] = [
       "Human-in-the-loop approval gates for generated actions",
       "Upload, EDA, NL-to-SQL, preprocessing, training, experiments, and deployment phases",
       "Dockerized execution runtime with reproducible notebook runs",
-      "Built-in Playwright and eval-runner validation paths",
+      "Default model GPT-5.4; built-in Playwright and eval-runner validation paths",
     ],
     isPrivate: true,
     metrics: [
@@ -193,6 +207,10 @@ export const projects: Project[] = [
       "71 unit tests for models and utilities",
     ],
     isPrivate: false,
+    // Retired from recruiter-facing lists (not one of the six live
+    // showcase projects) — data, case study, and route are preserved so
+    // the private-safe dossier still resolves and nothing 404s.
+    portfolioVisible: false,
     metrics: [
       { label: "Accessibility", value: "Computer vision powered" },
       { label: "Sensors", value: "LiDAR obstacle detection" },
@@ -201,21 +219,24 @@ export const projects: Project[] = [
   },
   {
     id: "taskflow-calendar",
-    title: "Dynamic Calendar Application",
+    title: "Cadence",
     shortDescription:
-      "Full-stack calendar app with notes, reminders, location-aware scheduling, and conflict detection.",
+      "A calendar and task app you drive in plain English: type a sentence and it files the event or task — and now schedules Google Meet meetings with multi-attendee invites.",
     fullDescription:
-      "A full-stack calendar and task management platform with intelligent NLP for natural language input, multi-calendar support, and conflict detection.",
+      "Cadence (formerly TaskFlow) is a full-stack calendar and task manager that takes its scheduling in plain English — type a sentence and it files the event or task. It now schedules Google Meet meetings with multi-attendee Gmail invites and Meet links via the calendar.events scope. Built on React 19, serverless functions, and PostgreSQL (Supabase); NLP via chrono-node and compromise.",
     techStack: [
       { name: "React 19", color: "#61dafb" },
       { name: "TypeScript", color: "#3178c6" },
       { name: "PostgreSQL", color: "#336791" },
-      { name: "Vercel", color: "#000000" },
-      { name: "Tailwind CSS", color: "#06b6d4" },
+      { name: "Supabase", color: "#3ecf8e" },
+      { name: "Google Calendar API", color: "#4285f4" },
+      { name: "chrono-node", color: "#8b5cf6" },
     ],
-    githubUrl: "https://github.com/yadava5/taskflow-calendar",
-    liveUrl: null,
+    githubUrl: "https://github.com/yadava5/cadence",
+    liveUrl: "https://usecadenceapp.vercel.app",
     image: withBasePath("/images/projects/taskflow.png"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt: "Real Taskflow local demo calendar screenshot",
     imageDisclosure:
@@ -225,35 +246,40 @@ export const projects: Project[] = [
     startDate: "2023-09",
     endDate: "2025-05",
     highlights: [
-      "NLP smart input with chrono-node and compromise",
-      "738 automated tests (frontend/backend/integration)",
-      "Multi-pane task workspace with Kanban board",
-      "Code splitting and indexed PostgreSQL queries",
+      "Plain-English input parsed into events and tasks (chrono-node + compromise)",
+      "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
+      "1,145 automated tests (634 frontend + 511 backend), all passing",
+      "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
     metrics: [
-      { label: "Tests", value: "738 automated tests" },
-      { label: "NLP", value: "Smart natural language input" },
+      { label: "Input", value: "Plain-English -> events + tasks" },
+      { label: "Meetings", value: "Google Meet + multi-attendee invites" },
     ],
     proofIds: ["taskflow-tests"],
   },
   {
     id: "fast-mnist-nn",
-    title: "Fast MNIST Neural Network",
+    title: "Glyph",
     shortDescription:
-      "C++ neural network for MNIST: 97%+ accuracy, benchmarked SIMD/OpenMP kernels, and an interactive React workbench.",
+      "A course C++ MLP hand-optimized across four instruction sets (AVX-512, AVX2, NEON, wasm-simd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
     fullDescription:
-      "A high-performance C++ neural network for MNIST digit recognition featuring SIMD-accelerated matrix operations and OpenMP parallelization, with an interactive React web frontend.",
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. It reaches 97.01% on 10,000 test digits.",
     techStack: [
       { name: "C++", color: "#00599c" },
-      { name: "SIMD", color: "#ff6b6b" },
+      { name: "AVX-512 / AVX2", color: "#ff6b6b" },
+      { name: "NEON", color: "#a5b4fc" },
+      { name: "wasm-simd128", color: "#654ff0" },
       { name: "OpenMP", color: "#92d050" },
       { name: "React", color: "#61dafb" },
-      { name: "TypeScript", color: "#3178c6" },
     ],
-    githubUrl: "https://github.com/yadava5/fast-mnist-nn",
-    liveUrl: null,
-    image: withBasePath("/images/projects/mnist.png"),
+    githubUrl: "https://github.com/yadava5/glyph",
+    liveUrl: "https://getglyph.vercel.app",
+    // WebP derivative of the promoted capture (assets:derive, was a
+    // 264KB PNG — PERF-AUDIT fix 4).
+    image: withBasePath("/images/projects/mnist.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt: "Real Fast MNIST React workbench screenshot",
     imageDisclosure:
@@ -263,17 +289,101 @@ export const projects: Project[] = [
     startDate: "2025-10",
     endDate: "2026-01",
     highlights: [
-      "97%+ accuracy on MNIST dataset",
-      "SIMD acceleration (AVX2/AVX-512/NEON)",
-      "Interactive React + TypeScript web app",
-      "Comprehensive benchmark suite",
+      "Hand-optimized across 4 instruction sets: AVX-512, AVX2, NEON, wasm-simd128",
+      "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
+      "97.01% on 10,000 test digits",
+      "Honest attribution: the 3.5x is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
     ],
     isPrivate: false,
     metrics: [
-      { label: "Accuracy", value: "97%+ on MNIST" },
-      { label: "Kernel Speedup", value: "3.5x dot-kernel speedup" },
+      { label: "Accuracy", value: "97.01% on 10,000 digits" },
+      // Attribution per BENCHMARKS.md: the 3.5x is the openmp+simd
+      // parallel configuration vs the -O3 baseline, not SIMD alone.
+      { label: "Kernel Speedup", value: "3.5x openmp+simd dot kernel" },
     ],
-    proofIds: ["fast-mnist-benchmark"],
+    /* W5 e-07 split: the kernel claim is earned (BENCHMARKS.md); the
+       accuracy claim traces to its own HELD manifest entry (README-
+       documented, no committed eval artifact yet). */
+    proofIds: ["fast-mnist-benchmark", "fast-mnist-accuracy"],
+  },
+  {
+    id: "lifequest",
+    title: "LifeQuest",
+    shortDescription:
+      "A social-good concept for job-seekers: gamify the daily search into missions so momentum survives the grind. A playable prototype on a real full-stack backend.",
+    fullDescription:
+      "LifeQuest is a social-good concept for job-seekers that turns the daily search into missions so momentum survives the grind. It is a working prototype — a playable mission card and a tier ladder on a real full-stack backend — framed honestly as a concept that would need a partner or funder to scale, not a finished product.",
+    techStack: [
+      { name: "React", color: "#61dafb" },
+      { name: "TypeScript", color: "#3178c6" },
+      { name: "NestJS", color: "#e0234e" },
+      { name: "PostgreSQL", color: "#336791" },
+      { name: "Supabase", color: "#3ecf8e" },
+    ],
+    githubUrl: "https://github.com/yadava5/lifequest",
+    liveUrl: "https://getlifequest.vercel.app",
+    // Static fallback only: a project-specific animated scene replaces
+    // this in the front-end pass. Reuses an existing diagram asset — the
+    // disclosure is explicit that it does not depict LifeQuest.
+    image: withBasePath("/images/projects/pipeline-architecture.svg"),
+    imageKind: "representative-visual",
+    imageAlt: "LifeQuest — placeholder visual, project scene pending",
+    imageDisclosure:
+      "Placeholder static visual reused from an existing diagram — not a depiction of LifeQuest. A project-specific scene is pending; the real prototype is at the live URL. LifeQuest is an early concept, not a finished product.",
+    featured: true,
+    category: "full-stack",
+    startDate: "2025-03",
+    endDate: "Present",
+    highlights: [
+      "Turns the daily job search into missions to keep momentum",
+      "Playable mission card + tier ladder on a real full-stack backend",
+      "A working prototype — a concept that needs a partner/funder to scale",
+      "Full-stack persistence (Postgres); not a finished product",
+    ],
+    isPrivate: false,
+    proofIds: [],
+  },
+  {
+    id: "jetpack-compress",
+    title: "jetpack-compress",
+    shortDescription:
+      "A JDK 25 parallel, gzip-compatible compression engine — virtual threads + Vector-API SIMD — with a live visualizing landing.",
+    fullDescription:
+      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (~6.5x vs single-threaded java.util.zip, +/-50% on the quick benchmark). It hand-vectorizes Adler-32 via the JDK Vector API (~2.8x vs scalar; honestly shown not to beat the JDK intrinsic), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
+    techStack: [
+      { name: "Java", color: "#f89820" },
+      { name: "JDK 25", color: "#5382a1" },
+      { name: "Vector API (SIMD)", color: "#ff6b6b" },
+      { name: "Virtual Threads", color: "#6db33f" },
+      { name: "Maven", color: "#c71a36" },
+      { name: "JMH", color: "#007396" },
+    ],
+    githubUrl: "https://github.com/yadava5/jetpack-compress",
+    liveUrl: "https://jetpack-compress.vercel.app",
+    // Static fallback only: a project-specific animated scene replaces
+    // this in the front-end pass. Reuses an existing diagram asset — the
+    // disclosure is explicit that it does not depict jetpack-compress.
+    image: withBasePath("/images/projects/pipeline-architecture.svg"),
+    imageKind: "representative-visual",
+    imageAlt: "jetpack-compress — placeholder visual, project scene pending",
+    imageDisclosure:
+      "Placeholder static visual reused from an existing diagram — not a depiction of jetpack-compress. A project-specific scene is pending; the real engine is at the live URL and public repo.",
+    featured: true,
+    category: "other",
+    startDate: "2026-07",
+    endDate: "Present",
+    highlights: [
+      "Parallel gzip on virtual threads: ~6.5x vs single-threaded java.util.zip (+/-50%)",
+      "Hand-vectorized Adler-32 (~2.8x vs scalar) — honestly does NOT beat the JDK intrinsic",
+      "FFM memory-mapped I/O, a CLI, and a JMH harness",
+      "72 tests pass; DEFLATE entropy coding delegated to zlib on purpose",
+    ],
+    isPrivate: false,
+    metrics: [
+      { label: "Tests", value: "72 passing on JDK 25" },
+      { label: "Throughput", value: "~6.5x vs 1-thread gzip (+/-50%)" },
+    ],
+    proofIds: ["jetpack-tests"],
   },
   {
     id: "master-inventory",
@@ -306,6 +416,9 @@ export const projects: Project[] = [
       "Timestamped run artifacts for auditing",
     ],
     isPrivate: true,
+    // Retired from recruiter-facing lists (not one of the six live
+    // showcase projects); private-safe case study + route preserved.
+    portfolioVisible: false,
     metrics: [
       { label: "Inventory", value: "10,453 deduped rows" },
       { label: "Schema", value: "35-field master inventory" },
@@ -343,6 +456,9 @@ export const projects: Project[] = [
       "Supports DOCX, PDF, and Markdown policies",
     ],
     isPrivate: true,
+    // Retired from recruiter-facing lists (not one of the six live
+    // showcase projects); private-safe case study + route preserved.
+    portfolioVisible: false,
     metrics: [
       { label: "Validation", value: "19/20 structured sweep" },
       { label: "Tech", value: "OpenAI RAG + Slack integration" },
@@ -365,13 +481,22 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/paid-internships-advocacy",
     liveUrl: "https://yadava5.github.io/paid-internships-advocacy",
-    image: withBasePath("/images/projects/advocacy.png"),
+    // WebP derivative (assets:derive): the 940KB PNG was the largest
+    // file in the export. This project is hidden (portfolioVisible:
+    // false, no case study), so nothing fetches it today — converted
+    // anyway per PERF-AUDIT fix 4 so no future surfacing re-ships it.
+    image: withBasePath("/images/projects/advocacy.webp"),
+    imageWidth: 1376,
+    imageHeight: 768,
     imageKind: "real-screenshot",
     imageAlt:
       "Real Paid Internships Advocacy data visualization page screenshot",
     imageDisclosure:
       "Real screenshot from the public advocacy site data page with cited research charts.",
     featured: false,
+    // Freshman ENG109 course project — kept in the repo but hidden from
+    // recruiter-facing lists so it does not dilute the engineering ladder.
+    portfolioVisible: false,
     category: "other",
     startDate: "2025-01",
     endDate: "2025-01",

@@ -1,16 +1,21 @@
 import { test, expect } from "@playwright/test";
-import { DEFAULT_THEME } from "./portfolio-fixtures";
 
+// The seven working-paper chapters. In-page anchors (`a[href="#…"]`) come
+// from the chapter rail (xl+) and the hero's "skip to the work" affordance;
+// clicks route through Lenis (which keeps the URL hash clean by design), so
+// navigation is asserted by landing the target chapter in the viewport.
 const NAV_SECTIONS = [
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
+  { id: "arrival", label: "Arrival" },
+  { id: "who", label: "Who" },
+  { id: "path", label: "The Path" },
+  { id: "automl", label: "AutoML" },
+  { id: "work", label: "The Work" },
+  { id: "values", label: "How I work" },
+  { id: "gate", label: "The Approval Gate" },
 ];
 
 /**
- * Test user interactions: theme switching, navigation, forms, and skip link.
+ * Test user interactions: single identity, navigation, forms, and skip link.
  */
 test.describe("User Interactions", () => {
   test.beforeEach(async ({ page }) => {
@@ -19,14 +24,10 @@ test.describe("User Interactions", () => {
     await page.waitForTimeout(500);
   });
 
-  test.describe("Single Atlas Theme", () => {
+  test.describe("Single Identity", () => {
     test.setTimeout(30000);
 
     test("no public theme selector is rendered", async ({ page }) => {
-      await expect(page.locator("html")).toHaveAttribute(
-        "data-theme",
-        DEFAULT_THEME
-      );
       await expect(
         page.getByRole("button", { name: /select theme/i })
       ).toHaveCount(0);
@@ -41,34 +42,33 @@ test.describe("User Interactions", () => {
         // Click on section navigation
         const navLink = page.locator(`a[href="#${section.id}"]`).first();
 
-        // Check if link exists
+        // Check if a visible in-page anchor exists at this viewport
         const linkExists = await navLink.count();
-        if (linkExists === 0) {
+        if (linkExists === 0 || !(await navLink.isVisible())) {
           test.skip();
         }
 
         await navLink.click();
-        await page.waitForTimeout(500);
 
-        // Verify URL hash changed
-        const url = page.url();
-        expect(url).toContain(`#${section.id}`);
+        // Verify the chapter landed in the viewport (Lenis-handled scroll)
+        await expect(page.locator(`#${section.id}`)).toBeInViewport({
+          timeout: 5000,
+        });
       });
     }
 
-    test("hash navigation works for all sections in sequence", async ({
+    test("anchor navigation works for all sections in sequence", async ({
       page,
     }) => {
       for (const section of NAV_SECTIONS) {
         const navLink = page.locator(`a[href="#${section.id}"]`).first();
         const linkExists = await navLink.count();
 
-        if (linkExists > 0) {
+        if (linkExists > 0 && (await navLink.isVisible())) {
           await navLink.click();
-          await page.waitForTimeout(400);
-
-          const url = page.url();
-          expect(url).toContain(`#${section.id}`);
+          await expect(page.locator(`#${section.id}`)).toBeInViewport({
+            timeout: 5000,
+          });
         }
       }
     });
@@ -82,10 +82,14 @@ test.describe("User Interactions", () => {
     }) => {
       // Find contact form elements
       const nameInput = page
-        .locator('input[name="name"], input[placeholder*="Name" i], input[id*="name" i]')
+        .locator(
+          'input[name="name"], input[placeholder*="Name" i], input[id*="name" i]'
+        )
         .first();
       const emailInput = page
-        .locator('input[name="email"], input[type="email"], input[placeholder*="Email" i]')
+        .locator(
+          'input[name="email"], input[type="email"], input[placeholder*="Email" i]'
+        )
         .first();
       const messageInput = page
         .locator('textarea[name="message"], textarea[placeholder*="Message" i]')
@@ -140,9 +144,7 @@ test.describe("User Interactions", () => {
   test.describe("Skip Link", () => {
     test.setTimeout(30000);
 
-    test("skip link exists and is accessible via Tab key", async ({
-      page,
-    }) => {
+    test("skip link exists and is accessible via Tab key", async ({ page }) => {
       // Press Tab to focus skip link
       await page.keyboard.press("Tab");
       await page.waitForTimeout(100);

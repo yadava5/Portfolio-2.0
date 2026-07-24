@@ -1,30 +1,27 @@
 import { test, expect, Locator, Page } from "@playwright/test";
+import { CHAPTERS } from "../../src/components/story/chapters";
+import { PROJECT_SCENE_MANIFEST } from "../../src/components/scenes/manifest";
 import {
   ATLAS_ALLOWED_METRICS,
   CASE_STUDY_LOCAL_ARTIFACTS,
   CASE_STUDY_IDS,
-  DEFAULT_THEME,
   EXPECTED_CONTENT,
   EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
+  EXPECTED_MASTHEAD,
   EXPECTED_PROOF_ARTIFACTS,
-  EXPECTED_SELECTED_WORK_PROOF_LABELS,
-  EXPECTED_SELECTED_WORK_ORDER,
+  EXPECTED_WORK_ROWS,
+  METRIC_HOME_CHAPTER,
+  NAV_SECTIONS,
   PROHIBITED_GENERATED_CONTENT,
   RECRUITER_HERO_LINKS,
+  RECRUITER_HERO_LINKS_MOBILE,
   RECRUITER_HERO_METRICS,
   REQUIRED_PRIVATE_CASE_STUDIES,
 } from "./portfolio-fixtures";
 
-const REQUIRED_SECTIONS = [
-  "hero",
-  "about",
-  "experience",
-  "projects",
-  "skills",
-  "testimonials",
-  "contact",
-];
+/** The seven working-paper chapters (stable anchors, storyboard order) */
+const REQUIRED_SECTIONS = NAV_SECTIONS;
 
 const STALE_IDENTITY_COPY = [
   "Senior CS student",
@@ -61,22 +58,24 @@ async function expectInFirstViewport(page: Page, locator: Locator) {
   expect(box!.y + box!.height).toBeLessThanOrEqual(viewport!.height);
 }
 
-function heroMetricValue(page: Page, metric: string) {
+/** Recruiter CTA in the fixed header (compact icon links carry aria-labels) */
+function headerLink(page: Page, label: string) {
   return page
-    .locator("#hero span.font-mono")
-    .filter({ hasText: metric })
+    .locator("header")
+    .getByRole("link", { name: new RegExp(`^${label}$`, "i") })
     .first();
 }
 
-test.describe("Technical Operations Atlas", () => {
+/** A proof metric inside the chapter where its story now lives */
+function chapterMetric(page: Page, metric: string) {
+  const chapter = METRIC_HOME_CHAPTER[metric];
+  return page.locator(chapter).getByText(metric).first();
+}
+
+test.describe("Daylight Study — working paper", () => {
   test("is the default source-truth portfolio identity", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
-
-    await expect(page.locator("html")).toHaveAttribute(
-      "data-theme",
-      DEFAULT_THEME
-    );
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
     for (const section of REQUIRED_SECTIONS) {
       await expect(page.locator(`#${section}`)).toBeAttached();
@@ -94,6 +93,16 @@ test.describe("Technical Operations Atlas", () => {
       page.locator(`a[href="${EXPECTED_LINKS.linkedin}"]`).first()
     ).toBeAttached();
 
+    /* The gate chapter itself carries LinkedIn and the address as visible
+       text (never only an "Email me" label); the colophon repeats LinkedIn. */
+    await expect(page.locator("#gate")).toContainText(EXPECTED_CONTENT.email);
+    await expect(
+      page.locator(`#gate a[href="${EXPECTED_LINKS.linkedin}"]`)
+    ).toBeAttached();
+    await expect(
+      page.locator(`footer a[href="${EXPECTED_LINKS.linkedin}"]`)
+    ).toBeAttached();
+
     const renderedSourceText = await page.locator("body").evaluate((body) => {
       return body.textContent ?? "";
     });
@@ -103,15 +112,26 @@ test.describe("Technical Operations Atlas", () => {
     }
   });
 
-  test("public surface exposes Atlas only", async ({ page }) => {
+  test("chapters carry the day-arc waypoint contract", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#arrival").waitFor({ state: "attached" });
+
+    for (const [index, section] of REQUIRED_SECTIONS.entries()) {
+      const chapterId = String(index + 1).padStart(2, "0");
+      await expect(page.locator(`#${section}`)).toHaveAttribute(
+        "data-chapter",
+        chapterId
+      );
+    }
+  });
+
+  test("public surface exposes a single identity (no theme switcher)", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
-    await expect(page.locator("html")).toHaveAttribute(
-      "data-theme",
-      DEFAULT_THEME
-    );
     await expect(
       page.getByRole("button", { name: /select theme/i })
     ).toHaveCount(0);
@@ -121,25 +141,30 @@ test.describe("Technical Operations Atlas", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
-    await expect(page.locator("#hero")).toContainText(
-      EXPECTED_GRADUATE_IDENTITY.role
+    /* Masthead rewrite (owner ruling, 2026-07-24): the byline/role line
+       is deleted, so the hero's identity check becomes the masthead
+       itself — line by line, because the block spans concatenate
+       without spaces (the h1 aria-label keeps the honest sentence). */
+    for (const line of EXPECTED_MASTHEAD.lines) {
+      await expect(page.locator("#arrival h1")).toContainText(line);
+    }
+    await expect(page.locator("#arrival h1")).toHaveAttribute(
+      "aria-label",
+      EXPECTED_MASTHEAD.ariaLabel
     );
-    await expect(page.locator("#about")).toContainText(
+    await expect(page.locator("#path")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.education
     );
     await expect(page.locator("body")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.availability
     );
-    await expect(page.locator("#hero")).toContainText(
-      EXPECTED_GRADUATE_IDENTITY.recentRoleLabel
+    await expect(page.locator("#path")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.experienceTitle
     );
-    await expect(page.locator("#experience")).toContainText(
+    await expect(page.locator("#path")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.recentExperienceRange
-    );
-    await expect(page.locator("#contact")).toContainText(
-      EXPECTED_GRADUATE_IDENTITY.recentRoleLabel
     );
     await expect(
       page.getByRole("img", {
@@ -153,34 +178,84 @@ test.describe("Technical Operations Atlas", () => {
     }
   });
 
-  test("selected work starts with the strongest proof path", async ({
+  test("the story leads with the flagship, then the work rows in order", async ({
     page,
   }) => {
     await page.goto("/");
-    await page.locator("#projects").scrollIntoViewIfNeeded();
+    await page.locator("#automl").waitFor({ state: "attached" });
 
-    const cards = page.locator("#projects article");
-    for (const [index, title] of EXPECTED_SELECTED_WORK_ORDER.entries()) {
-      await expect(cards.nth(index)).toContainText(title);
+    /* Ch 04 is the flagship beat */
+    await expect(page.locator("#automl")).toContainText("Agentic AutoML");
+    await expect(page.locator("#automl")).toContainText(
+      "Nothing runs until a human says go."
+    );
+
+    /* Ch 05 rows follow in storyboard order, each carrying its real
+       proof-backed metric line (fix round 4) */
+    const rows = page.locator("#work article");
+    for (const [index, row] of EXPECTED_WORK_ROWS.entries()) {
+      await expect(rows.nth(index)).toContainText(row.title);
+      await expect(rows.nth(index)).toContainText(row.metric);
     }
   });
 
-  test("selected work cards expose recruiter-visible proof paths", async ({
+  test("the kickers keep the day's fixed clock, dawn to nightfall", async ({
     page,
   }) => {
     await page.goto("/");
-    await page.locator("#projects").scrollIntoViewIfNeeded();
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
-    for (const proofPath of EXPECTED_SELECTED_WORK_PROOF_LABELS) {
-      const card = page.locator("#projects article").filter({
-        has: page.getByRole("heading", { name: proofPath.title }),
+    /* W2 dateline clocks: the paper's FIXED workday record (06:12 →
+       22:41) in every ¶ kicker, strictly advancing chapter to chapter.
+       Only the gate's LocalTime is the reader's own now. */
+    let previousMinutes = -1;
+    for (const chapter of CHAPTERS) {
+      const kicker = page.locator(`#${chapter.anchor} [data-thread-kicker]`);
+      await expect(kicker).toContainText(`· ${chapter.clock}`);
+      const [hours, minutes] = chapter.clock.split(":").map(Number);
+      const clockMinutes = hours * 60 + minutes;
+      expect(
+        clockMinutes,
+        `${chapter.anchor} clock advances the day`
+      ).toBeGreaterThan(previousMinutes);
+      previousMinutes = clockMinutes;
+    }
+  });
+
+  test("ch-02 opens on the dictionary entry — the practice, defined", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#who").waitFor({ state: "attached" });
+
+    /* W2 glossary apparatus: serif headword, mono pronunciation,
+       Newsreader senses — one instance on the whole paper. */
+    await expect(page.locator("#who")).toContainText("ap·prov·al");
+    await expect(page.locator("#who")).toContainText(
+      "the moment a human signs for a machine’s work"
+    );
+  });
+
+  /* jetpack-compress has no case route yet — its row's links go to the
+     live engine (external), asserted via the same fixture href. */
+  test("chapter rows link to their case files or live demo", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator("#work").waitFor({ state: "attached" });
+
+    await expect(
+      page.locator('#automl a[href="/projects/automl/"]').first()
+    ).toBeAttached();
+
+    for (const row of EXPECTED_WORK_ROWS) {
+      const article = page.locator("#work article").filter({
+        has: page.getByRole("heading", { name: row.title }),
       });
-
-      await expect(card).toHaveCount(1);
-      await expect(card.getByText("Proof path")).toBeVisible();
-      for (const label of proofPath.labels) {
-        await expect(card.getByText(label)).toBeVisible();
-      }
+      await expect(article).toHaveCount(1);
+      await expect(
+        article.locator(`a[href="${row.href}"]`).first()
+      ).toBeAttached();
     }
   });
 
@@ -225,11 +300,19 @@ test.describe("Technical Operations Atlas", () => {
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistScreenshot)
     ).toBeVisible();
+    /* Scoped to #validation: the corrections register intentionally
+       repeats the number when it names what the erratum resolves to. */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
+      page
+        .locator("#validation")
+        .getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
     ).toBeVisible();
+    /* Living scene (2026-07-24): fig. 1 is now the drawn race/forward-
+       pass figure — its honest manifest disclosure replaces the old
+       image disclosure; the real workbench screenshot still ships in
+       #artifacts (asserted above). */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistDisclosure)
+      page.getByText(PROJECT_SCENE_MANIFEST["fast-mnist-nn"].disclosure)
     ).toBeVisible();
 
     const bodyText = await page.locator("body").innerText();
@@ -243,8 +326,12 @@ test.describe("Technical Operations Atlas", () => {
     await page.goto("/projects/visual-assist/");
     await page.waitForLoadState("domcontentloaded");
 
+    /* Scoped to #artifacts: fig. 1's caption (the image alt, lowercased)
+       legitimately contains the same words as the plate label. */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
+      page
+        .locator("#artifacts")
+        .getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
     ).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistReadme)
@@ -273,9 +360,13 @@ test.describe("Technical Operations Atlas", () => {
     const validation = page.locator("#validation");
     const artifacts = page.locator("#artifacts");
 
+    /* Living scene (2026-07-24): fig. 1 is now the sorting-line figure
+       (role="img" with its honest manifest name); the architecture
+       diagram itself still ships as the #artifacts plate asserted just
+       below. */
     await expect(
       page.getByRole("img", {
-        name: "JobTracker local email classification architecture diagram",
+        name: PROJECT_SCENE_MANIFEST.jobtracker.alt,
       })
     ).toBeVisible();
     await expect(
@@ -403,32 +494,87 @@ test.describe("Technical Operations Atlas", () => {
     expect(bodyText).not.toContain("runs 24/7");
   });
 
-  test("desktop first viewport exposes recruiter identity, links, and proof", async ({
+  test("desktop first viewport exposes recruiter identity and CTAs; proof metrics exist in their chapters", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
+    /* Masthead rewrite (owner ruling, 2026-07-24): the hero byline that
+       carried name + role is deleted, so the recruiter identity in the
+       first viewport is (a) the header running head — the name's one
+       home on this page — and (b) the masthead claim itself. */
     await expectInFirstViewport(
       page,
-      page.locator("#hero").getByText(EXPECTED_CONTENT.name)
+      page
+        .locator("header")
+        .getByRole("link", { name: EXPECTED_CONTENT.name })
+        .first()
     );
     await expectInFirstViewport(
       page,
-      page.locator("#hero").getByText(EXPECTED_GRADUATE_IDENTITY.role)
+      page.getByRole("heading", { name: EXPECTED_MASTHEAD.ariaLabel })
     );
 
+    /* Recruiter CTAs are supplied by the fixed header — first viewport */
     for (const label of RECRUITER_HERO_LINKS) {
-      await expectInFirstViewport(
-        page,
-        page.locator("#hero").getByRole("link", { name: new RegExp(label) })
-      );
+      await expectInFirstViewport(page, headerLink(page, label));
     }
 
+    /* Proof metrics moved to the chapters that tell their stories */
     for (const metric of RECRUITER_HERO_METRICS) {
-      await expectInFirstViewport(page, heroMetricValue(page, metric));
+      await expect(chapterMetric(page, metric)).toBeVisible();
     }
+  });
+
+  test("gate first viewport carries the address and LinkedIn at 1440", async ({
+    page,
+  }) => {
+    /* A screener landing on the closing chapter must see the plaintext
+       address AND LinkedIn without another scroll (craft round fix 7 —
+       the cluster previously sat below the fold). */
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#gate").waitFor({ state: "attached" });
+    /* Latent race, exposed by the heavier scene hydration (2026-07-24):
+       the flagship's ONE pin (ch04) inserts ~1 viewport of pin-spacer
+       ABOVE the gate when ScrollTrigger initializes — a scrollIntoView
+       issued before that lands the gate a full spacer too high. Real
+       anchor navigation re-aligns via HashRealign/LenisAnchor; the probe
+       waits for the settled layout the same way a visitor's click does. */
+    await page
+      .locator(".pin-spacer")
+      .first()
+      .waitFor({ state: "attached", timeout: 8_000 });
+    await page.evaluate(() => {
+      document.getElementById("gate")?.scrollIntoView();
+    });
+    /* Wait for the scroll to land: the chapter's top reaches (or passes)
+       the viewport top — under Lenis the final resting offset can sit
+       slightly past the scroll-padding, which is fine; the contract
+       below is about the LINKS' positions, not the section's. */
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const box = document
+              .getElementById("gate")
+              ?.getBoundingClientRect();
+            return box ? box.top : Number.POSITIVE_INFINITY;
+          }),
+        { timeout: 8_000 }
+      )
+      .toBeLessThan(200);
+
+    const emailLink = page
+      .locator(`#gate a[href="mailto:${EXPECTED_CONTENT.email}"]`)
+      .filter({ hasText: EXPECTED_CONTENT.email });
+    await expectInFirstViewport(page, emailLink);
+    await expectInFirstViewport(
+      page,
+      page.locator(`#gate a[href="${EXPECTED_LINKS.linkedin}"]`)
+    );
   });
 
   test("mobile first viewport keeps recruiter CTAs visible and theme controls out of the way", async ({
@@ -436,21 +582,10 @@ test.describe("Technical Operations Atlas", () => {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
-    for (const label of RECRUITER_HERO_LINKS) {
-      await expectInFirstViewport(
-        page,
-        page.locator("#hero").getByRole("link", { name: new RegExp(label) })
-      );
-    }
-
-    const mobileHeader = page.locator("header");
-    for (const label of RECRUITER_HERO_LINKS) {
-      await expectInFirstViewport(
-        page,
-        mobileHeader.getByRole("link", { name: label })
-      );
+    for (const label of RECRUITER_HERO_LINKS_MOBILE) {
+      await expectInFirstViewport(page, headerLink(page, label));
     }
 
     await expect(
@@ -461,6 +596,15 @@ test.describe("Technical Operations Atlas", () => {
         () => document.documentElement.scrollWidth <= window.innerWidth
       )
     ).toBe(true);
+
+    /* The wordmark never ellipsizes or clips on phones (fix round 4) */
+    const wordmark = page.locator("header").getByRole("link", {
+      name: "ayush yadav",
+    });
+    await expect(wordmark).toBeVisible();
+    expect(
+      await wordmark.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)
+    ).toBe(true);
   });
 
   test("mobile hero keeps CTAs visible without horizontal overflow", async ({
@@ -468,18 +612,15 @@ test.describe("Technical Operations Atlas", () => {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
-    for (const label of RECRUITER_HERO_LINKS) {
-      await expectInFirstViewport(
-        page,
-        page.locator("#hero").getByRole("link", { name: new RegExp(label) })
-      );
+    for (const label of RECRUITER_HERO_LINKS_MOBILE) {
+      await expectInFirstViewport(page, headerLink(page, label));
     }
 
     const scrollCheck = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > window.innerWidth,
-      heroHeight: document.querySelector("#hero")?.getBoundingClientRect()
+      heroHeight: document.querySelector("#arrival")?.getBoundingClientRect()
         .height,
       viewportHeight: window.innerHeight,
     }));
@@ -492,7 +633,7 @@ test.describe("Technical Operations Atlas", () => {
 
   test("does not expose generated concept hallucinations", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#hero").waitFor({ state: "attached" });
+    await page.locator("#arrival").waitFor({ state: "attached" });
 
     const bodyText = await page.locator("body").innerText();
     for (const forbidden of PROHIBITED_GENERATED_CONTENT) {
@@ -508,7 +649,16 @@ test.describe("Technical Operations Atlas", () => {
       await page.waitForLoadState("domcontentloaded");
 
       for (const section of CASE_STUDY_SECTIONS) {
-        await expect(page.getByText(section).first()).toBeVisible();
+        /* filter({ visible: true }): the W5a audit control renders its
+           settled ledger face ("… terminate in pinned artifacts …") as
+           a hidden sizing ghost BEFORE the walk, and that hidden node
+           precedes the appendix in DOM order — a bare .first() resolves
+           to it and can never be visible. The assertion's intent is
+           unchanged: a VISIBLE occurrence of each section word must
+           exist on the route. */
+        await expect(
+          page.getByText(section).filter({ visible: true }).first()
+        ).toBeVisible();
       }
 
       const bodyText = await page.locator("body").innerText();
@@ -529,9 +679,42 @@ test.describe("Technical Operations Atlas", () => {
       const visualFrame = page.locator(
         "#project-visual [data-project-visual-frame]"
       );
-      const image = visualFrame.locator("img");
-
       await expect(visualFrame).toBeVisible();
+
+      /* Living scenes (src/components/scenes): routes with a registered
+         scene replace the static fig. 1 image with an inked SVG figure —
+         assert the scene's containment instead of the image's. */
+      if (PROJECT_SCENE_MANIFEST[id]) {
+        const sceneSvg = visualFrame.locator("svg[role='img']").first();
+        await expect(visualFrame).toHaveAttribute("data-scene", "");
+        await expect(sceneSvg).toBeVisible();
+
+        const sceneFit = await visualFrame.evaluate((frame) => {
+          const svg = frame.querySelector("svg");
+          const frameRect = frame.getBoundingClientRect();
+          const svgRect = svg?.getBoundingClientRect();
+          return {
+            hasSvg: Boolean(svg),
+            pageOverflow:
+              document.documentElement.scrollWidth >
+              document.documentElement.clientWidth,
+            frameHeight: Math.round(frameRect.height),
+            svgEscapes:
+              svgRect == null ||
+              svgRect.left < frameRect.left - 1 ||
+              svgRect.right > frameRect.right + 1 ||
+              svgRect.top < frameRect.top - 1 ||
+              svgRect.bottom > frameRect.bottom + 1,
+          };
+        });
+        expect(sceneFit.hasSvg).toBe(true);
+        expect(sceneFit.pageOverflow).toBe(false);
+        expect(sceneFit.svgEscapes).toBe(false);
+        expect(sceneFit.frameHeight).toBeGreaterThanOrEqual(260);
+        return;
+      }
+
+      const image = visualFrame.locator("img");
       await expect(image).toBeVisible();
 
       const fit = await visualFrame.evaluate((frame) => {

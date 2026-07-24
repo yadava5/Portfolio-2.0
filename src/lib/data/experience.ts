@@ -80,27 +80,6 @@ export const experiences: Experience[] = [
       "Integrated Slack workflow bot with Workday and Tableau APIs",
     ],
   },
-  {
-    id: "aramark",
-    title: "Student Worker – Market Street at MacCracken",
-    company: "Aramark",
-    logo: withBasePath("/images/companies/aramark.png"),
-    type: "part-time",
-    location: "Oxford, Ohio",
-    locationType: "on-site",
-    startDate: "2023-08",
-    endDate: "2023-12",
-    description: [
-      "Assisted with checkout operations, handling customer transactions quickly and accurately.",
-      "Operated the grill station, preparing food while following safety and sanitation standards.",
-      "Supported team efficiency by collaborating with coworkers in high-volume dining environment.",
-    ],
-    skills: ["Customer Service", "Time Management", "Teamwork"],
-    achievements: [
-      "Maintained high accuracy in transaction handling",
-      "Ensured food safety compliance during high-volume periods",
-    ],
-  },
 ];
 
 /**

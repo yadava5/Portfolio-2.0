@@ -34,7 +34,7 @@ export {
   skillCategories,
   getAllSkills,
   getSkillsByLevel,
-  getTopEndorsedSkills,
+  getSkillsUsedIn,
   getSkillCategory,
   type Skill,
   type SkillCategory,

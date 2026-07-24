@@ -21,7 +21,10 @@ const contentTypes = new Map([
 
 function resolveRequestPath(urlPath) {
   const decodedPath = decodeURIComponent(urlPath.split("?")[0] ?? "/");
-  const normalizedPath = normalize(decodedPath).replace(/^(\.\.(\/|\\|$))+/, "");
+  const normalizedPath = normalize(decodedPath).replace(
+    /^(\.\.(\/|\\|$))+/,
+    ""
+  );
   const filePath = join(root, normalizedPath);
 
   if (!filePath.startsWith(root + sep) && filePath !== root) {
@@ -46,7 +49,9 @@ function resolveRequestPath(urlPath) {
 }
 
 if (!existsSync(join(root, "index.html"))) {
-  console.error("Static export not found. Run `NEXT_PUBLIC_BASE_PATH= next build --webpack` first.");
+  console.error(
+    "Static export not found. Run `NEXT_PUBLIC_BASE_PATH= next build --webpack` first."
+  );
   process.exit(1);
 }
 
@@ -59,7 +64,8 @@ const server = createServer((request, response) => {
     return;
   }
 
-  const type = contentTypes.get(extname(filePath)) ?? "application/octet-stream";
+  const type =
+    contentTypes.get(extname(filePath)) ?? "application/octet-stream";
   response.writeHead(filePath.endsWith("404.html") ? 404 : 200, {
     "Content-Type": type,
   });

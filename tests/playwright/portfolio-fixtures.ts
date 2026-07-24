@@ -1,7 +1,6 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
-import { themeConfigs, themeIds } from "../../src/config/themes";
 import { personalInfo, socialLinks } from "../../src/lib/data/personal";
 import { experiences } from "../../src/lib/data/experience";
 import {
@@ -14,23 +13,24 @@ import {
   caseStudyIds,
   projectCaseStudies,
 } from "../../src/lib/data/projectCaseStudies";
+import { PROJECT_SCENE_MANIFEST } from "../../src/components/scenes/manifest";
 
-export const THEMES = themeIds.map((id) => ({
-  name: id,
-  label: themeConfigs[id].label,
-}));
-
-export const THEME_IDS = themeIds;
-export const DEFAULT_THEME = "technical-operations-atlas";
+// The multi-theme system was removed (a single identity ships). These
+// remain as static fixtures so the suite compiles; there is no theme switcher.
+export const DEFAULT_THEME = "daylight-study";
+export const THEME_IDS = [DEFAULT_THEME];
+export const THEMES = [{ name: DEFAULT_THEME, label: "Daylight Study" }];
 export const CASE_STUDY_IDS = caseStudyIds;
 
+// The seven working-paper chapters (data-chapter 01–07), in storyboard order.
 export const NAV_SECTIONS = [
-  "about",
-  "experience",
-  "projects",
-  "skills",
-  "testimonials",
-  "contact",
+  "arrival",
+  "who",
+  "path",
+  "automl",
+  "work",
+  "values",
+  "gate",
 ];
 
 export const PUBLIC_PROJECTS = getPublicProjects();
@@ -54,27 +54,48 @@ function visualDisclosureLabel(imageKind: string) {
   return "Representative visual:";
 }
 
-export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
-  title: project.title,
-  image: project.image,
-  imageKind: project.imageKind,
-  disclosureLabel: visualDisclosureLabel(project.imageKind),
-  disclosure: project.imageDisclosure,
-}));
+// Living scenes (src/components/scenes): a registered scene replaces the
+// static fig. 1 image on that project's case file, and its HONEST
+// disclosure comes from the scene manifest instead of the image data.
+function projectVisual(project: (typeof PUBLIC_PROJECTS)[number]) {
+  const scene = PROJECT_SCENE_MANIFEST[project.id];
+  return {
+    id: project.id,
+    title: project.title,
+    image: project.image,
+    imageKind: project.imageKind,
+    disclosureLabel: visualDisclosureLabel(project.imageKind),
+    disclosure: scene ? scene.disclosure : project.imageDisclosure,
+    hasScene: Boolean(scene),
+  };
+}
 
-export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map((project) => ({
-  title: project.title,
-  image: project.image,
-  imageKind: project.imageKind,
-  disclosureLabel: visualDisclosureLabel(project.imageKind),
-  disclosure: project.imageDisclosure,
-}));
+export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map(projectVisual);
+
+export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map(projectVisual);
 
 export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   .map((study) => {
     return projects.find((project) => project.id === study.projectId)?.title;
   })
   .filter((title): title is string => Boolean(title));
+
+// The project records the HOME paper actually surfaces (ch04 flagship +
+// the four ch05 rows + the "also on file" index). Visual Assist was
+// retired from home 2026-07-24 (portfolioVisible: false — its case file
+// stays reachable from /evidence); jetpack-compress holds a row but has
+// no case route yet. Cadence moved index → prime row and automl left
+// the index (it IS the flagship) in the same-day dedupe ruling, so the
+// surfaced set is unchanged.
+export const EXPECTED_HOME_PROJECT_TITLES = [
+  "Agentic AutoML Platform",
+  "Applied",
+  "Glyph",
+  "jetpack-compress",
+  "Cadence",
+  "Master Inventory Pipeline",
+  "PolicyBot",
+];
 
 export const CASE_STUDY_LOCAL_ARTIFACTS = projectCaseStudies.flatMap((study) =>
   study.artifacts
@@ -98,38 +119,74 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
+// The masthead (owner ruling, 2026-07-24): "Scroll. It's all real." —
+// two structural line spans whose textContent concatenates WITHOUT a
+// space between blocks (and the footnote ¹ glues onto "real."), so
+// assertions target each line, never the joined sentence. The h1's
+// aria-label carries the one honest sentence.
+export const EXPECTED_MASTHEAD = {
+  ariaLabel: "Scroll. It's all real.",
+  lines: ["Scroll.", "It's all real."],
+};
+
 export const EXPECTED_GRADUATE_IDENTITY = {
-  role: "New-grad software engineer",
-  education: "B.S. Computer Science, Miami University, May 2026",
+  // Hero byline retired with the masthead rewrite (owner ruling,
+  // 2026-07-24): the role line is gone from the page, so no fixture
+  // carries it — identity is the header running head ("ayush yadav")
+  // plus the #path education/experience records below.
+  education: "B.S. Computer Science, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
-  recentRoleLabel: "Recent role",
+  experienceTitle: experiences[0].title,
   recentExperienceRange: "Jun 2025 - May 2026",
 };
 
+// Storyboard order: the flagship chapter (04) leads, then the Ch-05 rows.
+// Third slot swapped Visual Assist → jetpack-compress (2026-07-24): the
+// six live showcase projects hold the prime rows; visual-assist is
+// retired (portfolioVisible: false) and keeps its case-file route.
+// Fourth row added (dedupe ruling, 2026-07-24): Cadence promotes from
+// "also on file" to a prime row — its scene was already registered, and
+// a project appears ONCE on the home paper (automl left the index too:
+// it IS the ch04 flagship).
 export const EXPECTED_SELECTED_WORK_ORDER = [
   "Agentic AutoML Platform",
-  "Fast MNIST Neural Network",
-  "Visual Assist",
-  "JobTracker",
+  "Applied",
+  "Glyph",
+  "jetpack-compress",
+  "Cadence",
 ];
 
-export const EXPECTED_SELECTED_WORK_PROOF_LABELS = [
+// Ch-05 editorial rows: each row links to its case file — or, for
+// jetpack-compress (no case file yet), to the live engine — and carries
+// its real proof-backed metric line (no vague capability copy).
+export const EXPECTED_WORK_ROWS = [
   {
-    title: "Agentic AutoML Platform",
-    labels: ["Presenter stack proof", "Expo poster proof"],
+    title: "Applied",
+    href: "/projects/jobtracker/",
+    metric: "macro-f1 0.98 — 96-sample gate",
   },
   {
-    title: "Fast MNIST Neural Network",
-    labels: ["Local React workbench screenshot", "Benchmark evidence"],
+    // SIMD-attribution reword (2026-07-18): the 3.5x is the openmp+simd
+    // parallel configuration vs the -O3 baseline, per BENCHMARKS.md.
+    title: "Glyph",
+    href: "/projects/fast-mnist-nn/",
+    metric:
+      "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
   },
   {
-    title: "Visual Assist",
-    labels: ["On-device accessibility architecture", "XCTest source evidence"],
+    // jetpack-tests manifest entry: 72 tests / 0 failures on JDK 25 at
+    // the pinned public commit. External href — no case route exists.
+    title: "jetpack-compress",
+    href: "https://jetpack-compress.vercel.app",
+    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
   },
   {
-    title: "JobTracker",
-    labels: ["Local classification architecture", "Backend test suite"],
+    // taskflow-tests manifest entry: 634 frontend + 511 backend = 1,145
+    // passing (vitest); the chip cites the case file's receipt 01.
+    title: "Cadence",
+    href: "/projects/taskflow-calendar/",
+    metric: "1,145 automated tests — 634 frontend + 511 backend, vitest",
   },
 ];
 
@@ -145,7 +202,9 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   jobtrackerBackendTests: "Backend test suite",
   jobtrackerBenchmark: "ML strategy and evaluation gates",
   jobtrackerWebBeta: "Web beta scaffold",
-  jobtrackerBackendCoverage: "Local source validation passed 182 backend tests",
+  // Dossier voice rewrite (2026-07-18): first person, same fact/number.
+  jobtrackerBackendCoverage:
+    "182 tests passed under the test/null-keyring environment",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
@@ -154,13 +213,15 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   visualAssistArchitecture: "On-device accessibility architecture",
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
-  visualAssistCoverage:
-    "Local repository audit found 71 VisualAssistTests test functions.",
+  // Dossier voice rewrite (2026-07-18): first person, same fact/number.
+  visualAssistCoverage: "71 test functions cover models and utilities",
   visualAssistCoreMlBoundary: "no custom Core ML model file was present",
   fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
-  fastMnistSpeedup: "3.50x dot-kernel speedup",
+  // SIMD-attribution reword (2026-07-18): honest form per BENCHMARKS.md.
+  fastMnistSpeedup:
+    "openmp+simd dot kernel is 3.50x faster than the -O3 baseline",
   fastMnistDisclosure:
     "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
   masterInventoryRows:
@@ -189,19 +250,46 @@ export const EXPECTED_LINKS = {
 };
 
 export const ATLAS_ALLOWED_METRICS = [
+  "1M+",
   "3.5x",
-  "18,403",
-  "738",
-  "71",
-  "71 tests",
   "19/20",
-  "10,453",
-  "10.5k",
+  "7-phase",
+  "0.9791",
 ];
 
-export const RECRUITER_HERO_LINKS = ["Resume", "GitHub", "LinkedIn", "Contact"];
+// Header CTAs: text nav + github (surfaced early for screeners) + the
+// single filled resume chip. LinkedIn stays at the gate and footer. On
+// phones the "contact" text item collapses to the mail icon (aria-label
+// "Contact") so a screener always has a contact affordance in reach.
+// Below ~420px the header rebalances (avatar shrinks then drops, resume
+// slims) so the "ayush yadav" wordmark never ellipsizes at 320–420px.
+export const RECRUITER_HERO_LINKS = [
+  "the work",
+  "experience",
+  "contact",
+  "github",
+  "Resume",
+];
+export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume"];
 
-export const RECRUITER_HERO_METRICS = ["18,403", "3.5x", "738", "71"];
+// The proof metrics must EXIST on the homepage; they live in the chapters
+// where their stories are told (03 the path, 04 automl, 05 work). The
+// #values litany cites DIFFERENT real receipts (182 backend tests) so no
+// number reads twice verbatim — 0.9791's home is the #work row.
+export const RECRUITER_HERO_METRICS = [
+  "1M+",
+  "3.5x",
+  "19/20",
+  "7-phase",
+  "0.9791",
+];
+export const METRIC_HOME_CHAPTER: Record<string, string> = {
+  "1M+": "#path",
+  "19/20": "#path",
+  "7-phase": "#automl",
+  "3.5x": "#work",
+  "0.9791": "#work",
+};
 
 export const REQUIRED_PRIVATE_CASE_STUDIES = [
   "automl",
@@ -262,83 +350,34 @@ export async function isMobileViewport(page: Page) {
   return viewport ? viewport.width < 768 : false;
 }
 
+// Theme switching no longer exists (a single Atlas identity ships). These
+// helpers now just wait for the page to become interactive. `theme` is accepted
+// for call-site compatibility and applied as an inert data attribute.
 export async function applyThemeState(
   page: Page,
   theme: { name: string; label: string }
 ) {
   await page.waitForLoadState("domcontentloaded");
   await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await page.waitForTimeout(200);
-
-  const currentTheme = await page.locator("html").getAttribute("data-theme");
-  if (currentTheme === theme.name) {
-    await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-    return;
-  }
-
   await page.evaluate((themeName) => {
-    window.localStorage.setItem("portfolio-theme", themeName);
     document.documentElement.setAttribute("data-theme", themeName);
   }, theme.name);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-  await page.waitForTimeout(300);
+  await page.locator("#who").waitFor({ state: "attached", timeout: 20000 });
+  await page.waitForTimeout(200);
 }
 
 export async function switchThemeViaUiAndWait(
   page: Page,
   theme: { name: string; label: string }
 ) {
-  await page.waitForLoadState("domcontentloaded");
-  await page.locator("main").waitFor({ state: "attached", timeout: 10000 });
-  await page.waitForTimeout(200);
-
-  const currentTheme = await page.locator("html").getAttribute("data-theme");
-  if (currentTheme === theme.name) {
-    await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-    return;
-  }
-
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
-
-  const switcher = page.locator("button[aria-label='Select theme']");
-  await expect(switcher).toBeVisible({ timeout: 10000 });
-  await switcher.click({ force: true });
-
-  const menu = page.locator("#theme-switcher-menu");
-  await expect(menu).toBeVisible({ timeout: 5000 });
-
-  const themeButton = menu
-    .locator("button[aria-pressed]")
-    .filter({ hasText: theme.label });
-  await expect(themeButton).toHaveCount(1);
-  await themeButton.click({ force: true });
-
-  await expect(page.locator("html")).toHaveAttribute("data-theme", theme.name, {
-    timeout: 10000,
-  });
-
-  await page.locator("#about").waitFor({ state: "attached", timeout: 20000 });
-  await expect(page.locator("[data-theme-transition='true']")).toHaveCount(0, {
-    timeout: 5000,
-  });
-  await page.waitForTimeout(1300);
+  await applyThemeState(page, theme);
 }
 
 export async function switchThemeAndWait(
   page: Page,
   theme: { name: string; label: string }
 ) {
-  if (await isMobileViewport(page)) {
-    await applyThemeState(page, theme);
-    return;
-  }
-
-  await switchThemeViaUiAndWait(page, theme);
+  await applyThemeState(page, theme);
 }
 
 export async function scrollThroughPage(page: Page) {

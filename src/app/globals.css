@@ -1,22 +1,1943 @@
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&display=swap");
-
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════════════════
+   DAYLIGHT STUDY — design tokens
+   Source of truth: docs/NEW-PORTFOLIO-MASTER-PLAN.md Part 3.4 / 3.5
+   (exact hex values; do not eyeball-adjust)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Fonts are self-hosted via next/font (see src/app/layout.tsx); the
+   variables below are set on <html> and referenced here as Tailwind tokens. */
 @theme inline {
-  --font-sans: "Inter", "Geist", sans-serif;
-  --font-serif: "Cormorant Garamond", "Source Serif 4", serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-display: "Orbitron", sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-mono:
+    var(--font-fragment-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
+@theme {
+  /* ── Palette (Part 3.4) ─────────────────────────────── */
+  --color-canvas: #faf6ef; /* canvas (day) */
+  --color-surface-1: #f3ede1;
+  --color-surface-2: #eae2d2;
+  --color-ink: #26231c; /* 13.9:1 on canvas */
+  --color-ink-secondary: #5c564a; /* 6.2:1 on canvas */
+  --color-clay: #b04a28; /* kiln clay — text use, 5.1:1 */
+  --color-clay-graphic: #c4532e; /* kiln clay — graphic use */
+  --color-pine: #2f5d50; /* links, approved gates, strokes — 7.0:1 */
+  --color-pass: #2e6b4f; /* 6.1:1 */
+  --color-fail: #a03b23; /* 6.0:1 */
+  --color-ink-dusk: #f6efe2; /* ink after the dusk flip — 12.8:1 on #43372F */
+  --color-clay-night: #e08a5f; /* clay lightened for nightfall — 6.4:1 */
+  --color-clay-ember: #f57a3e; /* THE inked APPROVED stamp, and nothing
+     else — the kiln clay at its hottest. oklch chroma 0.168 outruns
+     clay-graphic (0.154) and clay-night (0.120), so the crescendo is the
+     single most-saturated note on the site. 5.50:1 on waypoint-07 solid
+     (check-contrast gate); the dried 0.92-opacity plate still holds
+     4.87:1. Reserved: search the tree — it appears on .stamp-inked only. */
+  --color-clay-invite: #ec814d; /* the awaiting invitation, warmed ONE
+     step from clay-night toward the approved ember — never the ember
+     itself (that peak stays on .stamp-inked, so approving still pops).
+     It leads the eye to the act: the "press here to sign" line carries
+     a hint of the payoff it unlocks. 5.55:1 on waypoint-07 solid
+     (check-contrast gate); the awaiting group paints it at 0.9 opacity
+     → ~4.76:1 composite, still AA. Appears only on .stamp-sign. */
+
+  /* ── Type scale (Part 3.5) ──────────────────────────── */
+  --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-hero--font-weight: 360;
+  --text-chapter: clamp(2rem, 5vw, 4rem);
+  --text-chapter--line-height: 1.1;
+  --text-chapter--letter-spacing: -0.015em;
+  --text-chapter--font-weight: 420;
+  --text-body: 1.1875rem; /* 19px — body 18–20px */
+  --text-body--line-height: 1.65;
+  --text-label: 0.8125rem; /* 13px — mono labels 12–14px */
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.05em;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f8fafc;
+  /* ── Day-arc waypoints (Part 3.4) — consumed by the scroll engine ── */
+  --waypoint-01: #fbf3e7; /* dawn */
+  --waypoint-02: #faf6ef; /* morning */
+  --waypoint-03: #f6f3ea; /* noon */
+  --waypoint-04: #f5eddc; /* warm afternoon */
+  --waypoint-05: #f2e4c9; /* golden hour */
+  --waypoint-06: #43372f; /* dusk flip — ink flips to --color-ink-dusk */
+  --waypoint-07: #2c2622; /* nightfall — clay lightens to --color-clay-night */
+
+  /* ── Day-arc oklch channels (amendment A4) ──────────────────────────
+     STATIC defaults only. DayArc.tsx scrubs the live values onto the
+     LightField container itself ([data-light-field]) — never onto
+     :root, where every per-frame write would invalidate the whole
+     document's computed style (PERF-AUDIT fix 2). The LightField base
+     composes `oklch(var(--arc-l) var(--arc-c) var(--arc-h))` and the
+     rake reads --arc-l; both live inside the container. Defaults =
+     waypoint-01 (dawn) per scripts/design/waypoints-oklch.mjs —
+     regenerate, never hand-guess. */
+  --arc-l: 0.9671;
+  --arc-c: 0.0181;
+  --arc-h: 78.24;
+
+  /* ── World textures (LightField + reduced-motion chapters) ──────────
+     All are inline SVG data-URIs with their intensity baked in:
+     grain = feTurbulence noise, ink-tinted, alpha ≤5% (NO-LIST §D cap);
+     contour = hand-wobbled ink contour lines at 5% stroke opacity;
+     contour-dusk = the SAME geometry drawn in the cream dusk ink at 2.5%,
+     so the paper texture survives nightfall instead of dying into the
+     ledger browns (the ink lines vanish on waypoint-06/07). */
+  --texture-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0%200%200%200%200.149%200%200%200%200%200.137%200%200%200%200%200.110%200%200%200%200.05%200'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+  --texture-contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%2326231C' stroke-opacity='.05' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
+  --texture-contour-dusk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='none' stroke='%23F6EFE2' stroke-opacity='.025' stroke-width='1'%3E%3Cpath d='M0,42C70,30,140,56,210,44S350,32,420,42'/%3E%3Cpath d='M0,126C60,114,150,140,230,126S360,112,420,126'/%3E%3Cpath d='M0,210C80,198,150,224,220,212S340,196,420,210'/%3E%3Cpath d='M0,294C70,282,160,308,240,296S350,280,420,294'/%3E%3Cpath d='M0,378C60,366,150,392,230,378S360,364,420,378'/%3E%3Cpath d='M96,232C130,214,196,216,226,238C252,258,240,286,198,292C150,298,78,268,96,232Z'/%3E%3Cpath d='M132,246C156,236,196,238,212,252C226,264,216,276,190,278C160,280,116,264,132,246Z'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* ── Semantic aliases (legacy names consumed by error/not-found/skip-link) ── */
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  --foreground-muted: var(--color-ink-secondary);
+  --surface-2: var(--color-surface-1); /* raised surface */
+  --surface-3: var(--color-surface-2); /* deeper surface */
+  --accent-primary: var(--color-clay);
+  --accent-secondary: var(--color-pine);
+  --status-warning: var(--color-fail);
+}
+
+/* ── Fraunces axis voices (Part 3.5) ─────────────────────
+   WONK is reserved for exactly one accent word per headline;
+   the page's single WONK=1 use is the ending litany (Part 3.8). */
+@utility fraunces-hero {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0;
+}
+@utility fraunces-display {
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 0,
+    "WONK" 0;
+}
+@utility fraunces-wonk {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE WORLD — light-field layers + day-arc state
+   Consumed by src/components/world/LightField.tsx / DayArc.tsx.
+   All layers are static paint: no keyframes, no filters, no JS.
+   ════════════════════════════════════════════════════════════════ */
+
+/* PERF (runtime scroll): promote the world to its own compositor layer and
+   contain its paint. The day-arc repaints the base's oklch() fill as the
+   colour scrubs; isolating the subtree keeps that repaint from re-rastering
+   the document content stacked above it, and `contain` stops style/layout
+   invalidation from escaping. The four layers already form a self-contained
+   stack, so the mix-blend-mode result is unchanged. */
+[data-light-field] {
+  transform: translateZ(0);
+  contain: layout paint style;
+}
+
+/* The base layer: the day-arc colour with the raking window-light
+   (INSPIRATION: daylightcomputer / candidate A — soft diagonal bands, NOT a
+   radial spotlight, NO-LIST §A) folded IN via background-blend-mode.
+
+   PERF (runtime scroll): the rake used to be a separate fixed full-viewport
+   `mix-blend-mode: soft-light` layer. Because the colour beneath it was
+   rewritten every scrubbed frame, the compositor had to re-blend the entire
+   viewport every frame — the dominant scroll-jank cost on a real GPU
+   (main-thread profilers can't see it). Measured contribution over the
+   daytime paper: meanΔ 1.32/255 — nearly invisible, yet the costliest thing
+   on screen. Folded onto the base as background images, the soft-light is a
+   single contained paint (no separate compositor layer, no per-frame
+   re-blend), and the maths is identical, so the look is preserved. The rake
+   dies BEFORE the dusk step — see --rake-f below. */
+.light-field-base {
+  /* NOTE: intentionally NOT promoted to its own layer with translateZ.
+     A promoted fixed full-viewport layer sub-pixel-shimmers ("vibrates")
+     during scroll on a real Retina GPU — the container's `contain` already
+     isolates the repaint without that cost. */
+
+  /* THE RAKE FADE (shots-dusk2 retune): soft-light's response curve makes
+     the bands STRONGEST over the darkening dusk paper (measured meanΔ
+     1.32/255 over daytime paper, but plainly visible bands by the day
+     floor) — so killing them at the flip was a large part of the slam
+     the before.webm study recorded. Instead the bands' alpha is derived
+     from --arc-l: full strength at golden hour (L 0.923) and above,
+     linearly to ZERO at the day floor (L 0.640, dusk-choreo DAY_FLOOR_L
+     — mirrored here), so the raking light has completely dissolved
+     BEFORE the ink flips. Costs nothing extra: the alpha only changes
+     when --arc-l is written, and that write already repaints this layer. */
+  --rake-f: clamp(0, calc((var(--arc-l) - 0.64) / 0.283), 1);
+  background-color: oklch(var(--arc-l) var(--arc-c) var(--arc-h));
+  background-image:
+    linear-gradient(
+      108deg,
+      rgb(255 241 205 / 0%) 18%,
+      rgb(255 236 196 / calc(85% * var(--rake-f))) 31%,
+      rgb(255 241 205 / 0%) 46%
+    ),
+    linear-gradient(
+      108deg,
+      rgb(255 246 222 / 0%) 55%,
+      rgb(255 241 208 / calc(55% * var(--rake-f))) 66%,
+      rgb(255 246 222 / 0%) 79%
+    ),
+    linear-gradient(
+      108deg,
+      rgb(66 56 36 / calc(11% * var(--rake-f))) 0%,
+      rgb(66 56 36 / 0%) 24%,
+      rgb(66 56 36 / 0%) 80%,
+      rgb(66 56 36 / calc(9% * var(--rake-f))) 100%
+    );
+  background-blend-mode: soft-light;
+}
+/* Belt and braces: past the flip the gradients are already at alpha 0 —
+   drop them entirely so the night side pays for a plain color fill. */
+html[data-arc-phase="dusk"] .light-field-base {
+  background-image: none;
+}
+
+/* Fine paper grain — intensity baked into the data-URI alpha (≤5%). */
+.light-field-grain {
+  background-image: var(--texture-grain);
+  background-size: 260px 260px;
+}
+
+/* Faint contour texture, ink-on-paper — 5% stroke opacity baked in. */
+.light-field-contour {
+  background-image: var(--texture-contour);
+  background-size: 420px 420px;
+}
+
+/* Past the dusk flip the ink contour dies on the ledger browns; swap to
+   the cream-side variant (same geometry, 2.5%) so the paper keeps its
+   tooth at night. Steps with the CHROME (one stop after the flip,
+   data-arc-chrome — shots-dusk2 retune): the invisible-on-dark ink
+   contour rides through the flip frame, and the cream tooth fades in on
+   its own quiet frame instead of piling onto the slam. Never scrubbed
+   (A4). */
+html[data-arc-chrome="dusk"] .light-field-contour {
+  background-image: var(--texture-contour-dusk);
+}
+
+/* Dusk ink flip (amendment A4): a STEP change toggled by DayArc's
+   ScrollTrigger callbacks at the 05→06 boundary — never scrubbed. */
+html[data-arc-phase="dusk"] body {
+  color: var(--color-ink-dusk);
+}
+
+/* ── THE GLOAMING (brief B9) — the dusk choreography's voice state ────
+   Present ONLY inside the bounded 05→06 transition range (DayArc steps
+   it at the range edges, where both voice states are pre-verified; it is
+   never written per frame). As the light dies the paper loses its
+   half-tones: every muted voice deepens to FULL ink so each of the
+   twelve rendered stops keeps WCAG AA (A4's spirit — a visitor stopping
+   mid-dusk is always reading AA text):
+   - secondary ink → body ink (pre-flip; #5c564a dies below Y≈0.62);
+     after the flip it maps to the dusk cream so chapter 05's tail
+     labels stay legible while it scrolls out over the ledger browns;
+   - the kiln clay cools to umber #61250f (scripts/design/dusk-choreo.mjs
+     GLOAMING_CLAY, mirrored here) — ≥3:1 on every day-side stop where
+     clay-graphic itself dies below Y≈0.64; past the flip the scenes'
+     own night step (clay-night) takes over;
+   - opacity mutes in chapters 05/06 press to full strength (an
+     ink@0.70 composite fails 4.5:1 below Y≈0.65). Instant steps, no
+     transitions: state changes land atomically with the background
+     write in the same frame, so no mid-blend frame can under-run AA.
+   check-contrast.mjs asserts every stop against exactly these voices. */
+html[data-arc-gloaming] {
+  --color-ink-secondary: var(--color-ink);
+}
+html[data-arc-gloaming][data-arc-phase="dusk"] {
+  --color-ink-secondary: var(--color-ink-dusk);
+}
+html[data-arc-gloaming]:not([data-arc-phase="dusk"]) {
+  --color-clay: #61250f;
+  --color-clay-graphic: #61250f;
+}
+html[data-arc-gloaming]
+  :is([data-chapter="05"], [data-chapter="06"])
+  :is(.opacity-60, .opacity-70, .opacity-80) {
+  opacity: 1;
+}
+/* The scene figures' quiet SVG text (.sc-quiet, 12.5px/10px mono) mutes
+   via its own opacity: 0.72 — NOT the utility classes above — so the
+   gloaming must press it too: at the deepened day floor an ink@0.72
+   composite reads ~2.9:1 (shots-dusk2 small-font audit). Text only —
+   the figures' density-encoding marks (.scene-block etc.) keep their
+   meaning-bearing mutes; they are graphic texture, not reading text. */
+html[data-arc-gloaming]
+  :is([data-chapter="05"], [data-chapter="06"])
+  .scene-fig
+  text.sc-quiet {
+  opacity: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   WORKING-PAPER CHROME — header, footer, links, focus
+   Header/footer cross the dusk flip, so their inks are composed from
+   pre-verified vars only (A4): day ink on paper, dusk ink on the
+   waypoint-06 ledger brown. The header follows data-arc-CHROME, not
+   data-arc-phase (shots-dusk2 retune): it dims one choreography stop
+   AFTER the field flips, so the masthead is not part of the one big
+   frame — both of its voices are independently AA on their own papers,
+   so the stagger is safe in both scroll directions. No backdrop-blur
+   anywhere (NO-LIST).
+   ════════════════════════════════════════════════════════════════ */
+
+.site-header {
+  --header-ink: var(--color-ink);
+  --header-paper: var(--color-canvas);
+  --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
+  --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
+}
+html[data-arc-chrome="dusk"] .site-header {
+  --header-ink: var(--color-ink-dusk);
+  --header-paper: var(--waypoint-06);
+  --header-ink-muted: color-mix(
+    in srgb,
+    var(--color-ink-dusk) 75%,
+    transparent
+  );
+  --header-ink-border: color-mix(
+    in srgb,
+    var(--color-ink-dusk) 32%,
+    transparent
+  );
+  --header-rule: color-mix(in srgb, var(--color-ink-dusk) 20%, transparent);
+}
+
+/* The masthead's bottom rule, drawn as a hairline pseudo-element so it
+   can RULE ITSELF once during the hero's load window (motion worlds
+   only — same [data-motion-ready] gate + removal as the hero entrance,
+   so static worlds and JS-dead loads always paint the finished rule;
+   the end state IS the static state, amendment A7). transform-only,
+   ~1px of contained paint. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  pointer-events: none;
+  background-color: var(--header-rule);
+  transform-origin: left center;
+}
+@keyframes masthead-rule {
+  from {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .site-header::after {
+    animation: masthead-rule 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: 120ms;
+  }
+}
+/* Forced colors strip background hairlines — hand the rule back to a
+   real border so Windows High Contrast keeps the masthead's edge. */
+@media (forced-colors: active) {
+  .site-header {
+    border-bottom: 1px solid CanvasText;
+  }
+  .site-header::after {
+    display: none;
+  }
+}
+
+/* Scrolled state: paper fade-in. Opaque, so folio rules and kickers pass
+   under it cleanly instead of ghosting through — and never frost. */
+.site-header-scrolled {
+  background-color: var(--color-canvas);
+}
+html[data-arc-chrome="dusk"] .site-header-scrolled {
+  background-color: var(--waypoint-06);
+}
+
+/* ── Archive variant (case files + /evidence) ─────────────────────────
+   The dossier surfaces are flat archive cream with NO day-arc, so the
+   header must read the surface beneath it (completion map §3: fixes the
+   dark-on-dark landing). Day ink over archive stock, always — including
+   when a client-side navigation arrives from the homepage's dusk
+   territory, so the dusk override is repeated at higher specificity. */
+.site-header[data-surface="archive"],
+html[data-arc-chrome="dusk"] .site-header[data-surface="archive"] {
+  --header-ink: var(--color-ink);
+  --header-paper: var(--color-surface-1);
+  --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
+  --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
+  --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
+}
+.site-header[data-surface="archive"].site-header-scrolled,
+html[data-arc-chrome="dusk"]
+  .site-header[data-surface="archive"].site-header-scrolled {
+  background-color: var(--color-surface-1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header[data-surface="archive"] {
+    background-color: var(--color-surface-1);
+  }
+}
+html[data-motion-off] .site-header[data-surface="archive"] {
+  background-color: var(--color-surface-1);
+}
+
+/* Static world (reduced motion / quiet toggle): the arc never runs, so the
+   fixed header keeps a paper backing over the statically-painted chapters. */
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    background-color: var(--color-canvas);
+  }
+}
+html[data-motion-off] .site-header {
+  background-color: var(--color-canvas);
+}
+
+/* ── THE RUNNING HEAD (brief B8) — day mark + dateline ────────────────
+   The masthead's day glyph: a drawn circle (the day) whose ink disc
+   rises one step per chapter — ○ dawn → ◐ warm afternoon → ● nightfall.
+   Seven DISCRETE transform states keyed by `data-phase` (the chapter
+   id): state changes land only at section crossings via
+   useActiveChapter's IntersectionObserver, so scrolling costs nothing —
+   there is no scrubbed frame, only a 600ms compositor glide between
+   steps in motion worlds. Static worlds (reduced motion / quiet
+   toggle) step instantly: the mark is truthful wayfinding STATE at any
+   scroll position, exactly like the chapter rail (equity requirement).
+   transform/opacity only; the disc moves inside a static clipPath;
+   contain: paint on the 15px glyph. */
+.daymark {
+  contain: paint;
+}
+.daymark-fill {
+  /* dawn (01): the vessel is empty — the whole disc sits below the clip */
+  transform: translateY(12.4px);
+  transition: transform 600ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.daymark[data-phase="02"] .daymark-fill {
+  transform: translateY(10.33px);
+}
+.daymark[data-phase="03"] .daymark-fill {
+  transform: translateY(8.27px);
+}
+.daymark[data-phase="04"] .daymark-fill {
+  transform: translateY(6.2px);
+}
+.daymark[data-phase="05"] .daymark-fill {
+  transform: translateY(4.13px);
+}
+.daymark[data-phase="06"] .daymark-fill {
+  transform: translateY(2.07px);
+}
+.daymark[data-phase="07"] .daymark-fill {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .daymark-fill {
+    transition: none;
+  }
+}
+html[data-motion-off] .daymark-fill {
+  transition: none;
+}
+
+/* The dateline resets like a running head on a fresh leaf: a 340ms
+   rise when the chapter changes (the swap span is keyed by chapter id).
+   Motion worlds only — static worlds swap instantly and truthfully.
+   `to` omitted: the settled state IS the static state (A7). */
+@keyframes dateline-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .dateline-swap {
+    animation: dateline-in 340ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  }
+}
+
+/* Folio rules dissolve just before they slide under the fixed header —
+   decorative-only CSS scroll timeline behind @supports (amendment A2);
+   browsers without support get the clean opaque-header pass-under. The
+   view-timeline inset mirrors the header's height, so `exit` begins at
+   the header's bottom edge. Static worlds keep folios fully drawn. */
+@keyframes folio-exit {
+  to {
+    opacity: 0;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion-off]) .folio-rule {
+      /* nonzero duration required: the shorthand's 0s default never runs;
+         with a view timeline the used duration comes from the range */
+      animation: folio-exit 1ms linear both;
+      animation-timeline: view(block 3.75rem 0px);
+      animation-range: exit 0% exit 90%;
+    }
+  }
+}
+
+/* Footer sits in nightfall. Under motion it inherits the arc's dusk ink;
+   in the static world it paints waypoint-07 itself. */
+@media (prefers-reduced-motion: reduce) {
+  .site-footer {
+    background-color: var(--waypoint-07);
+    color: var(--color-ink-dusk);
+  }
+}
+html[data-motion-off] .site-footer {
+  background-color: var(--waypoint-07);
+  color: var(--color-ink-dusk);
+}
+
+/* Underline draw — the ONE hover move sitewide (plan 3.7, 250ms ease-out).
+   A faint resting underline for affordance; hover/focus draws the full-
+   strength line. currentColor keeps it AA on both sides of the dusk flip. */
+.link-draw {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in srgb, currentColor 40%, transparent),
+      color-mix(in srgb, currentColor 40%, transparent)
+    );
+  background-size:
+    0% 1px,
+    100% 1px;
+  background-position:
+    left calc(100% - 0.05em),
+    left calc(100% - 0.05em);
+  background-repeat: no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+/* Section-aware active state (brief B8): the nav item whose chapter is
+   under the viewport's center line keeps its ink line fully drawn — the
+   250ms draw plays at the crossing in motion worlds; static worlds show
+   the line already drawn. STATE, not hover: the same mark is visible to
+   touch, keyboard, and motionless readers alike. */
+.link-draw[aria-current] {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-draw {
+    transition: none;
+  }
+}
+html[data-motion-off] .link-draw {
+  transition: none;
+}
+
+/* Quiet variant for the wordmark: no resting hairline (the identity is
+   not an affordance queue), but hover/focus still draws the full ink
+   line — the one sanctioned hover move, minus the resting layer. */
+.link-draw-quiet {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: left calc(100% - 0.05em);
+  background-repeat: no-repeat;
+  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.link-draw-quiet:hover,
+.link-draw-quiet:focus-visible {
+  background-size: 100% 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-draw-quiet {
+    transition: none;
+  }
+}
+html[data-motion-off] .link-draw-quiet {
+  transition: none;
+}
+
+/* Visible focus on the warm palette: currentColor follows the ink flip,
+   so the ring holds contrast in day chapters and dusk chapters alike. */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Hit-area lift for tiny inline targets (PERF-AUDIT §4 / WCAG 2.5.8):
+   the footnote ¹/↩ and receipt permalink glyphs measure 8–17px. A
+   centered, invisible ::after pad grows the pointer/tap target to
+   ≥24×24 without moving a letterform or changing any visual state —
+   the pseudo-element belongs to the anchor, so clicks on it activate
+   the link. */
+.tap-target {
+  position: relative;
+}
+.tap-target::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 24px);
+  height: max(100%, 24px);
+  transform: translate(-50%, -50%);
+}
+
+/* ── prefers-contrast: more (PERF-AUDIT §4.4) — token-level lift ─────
+   Low-vision adaptation without a redesign: the muted secondary voice
+   strengthens to full ink (12.1:1), the header's muted nav follows its
+   own ink var across the dusk flip, and the hairline apparatus darkens
+   so the page's structure survives. Scoped small on purpose — dusk
+   chapters already mute via opacity on full-strength ink (A4). */
+@media (prefers-contrast: more) {
+  :root {
+    --color-ink-secondary: var(--color-ink);
+  }
+  .site-header {
+    --header-ink-muted: var(--header-ink);
+  }
+  /* Hairline rules read at 45% ink instead of 15–30% (utility classes
+     are layered; these unlayered overrides win the cascade). */
+  .border-ink\/15,
+  .border-ink\/20,
+  .border-ink\/25,
+  .border-ink\/30 {
+    border-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  }
+  .border-current\/15,
+  .border-current\/20 {
+    border-color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  .bg-ink\/30 {
+    background-color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  }
+  .dot-leader {
+    border-bottom-color: color-mix(in srgb, var(--color-ink) 70%, transparent);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE RED THREAD — seven per-chapter ink segments (amendment A3)
+   Rendered by ThreadSegment.tsx inside each chapter section: a dashed
+   "future" path (always visible), a solid "past" path drawn by a
+   scrubbed stroke-dashoffset (the NO-LIST's one sanctioned
+   non-transform animation, contained per segment), and a seam node
+   that fills as the line passes. Chapters 06/07 sit in fixed dusk
+   territory, so their segments carry the dusk ink DIRECTLY — the
+   arc-phase attribute is a page-wide signal, not a per-segment one.
+   No filters, no gradients on strokes, no will-change.
+   ════════════════════════════════════════════════════════════════ */
+
+.thread-segment .thread-future {
+  fill: none;
+  stroke: var(--color-ink-secondary);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 2 6;
+  opacity: 0.8;
+}
+.thread-segment .thread-past {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Pressure layer (ink physicality): the same run re-drawn with seeded
+   perpendicular offsets that grow with curvature and pool at terminals
+   (geometry.ts). The union of the two strokes swells ~1.3→2.2px on
+   curves — layered offset strokes, no filters, no gradients. It scrubs
+   in the same tween as .thread-past, so the nib stays one head. */
+.thread-segment .thread-swell {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+/* The nightfall dip (static worlds only): segment 05's tail below the
+   05|06 terminator rule, re-inked in the dusk cream so the pen visibly
+   changes ink exactly at the authored seam. Hidden under motion — the
+   scrubbed world flips ink page-wide at the 05→06 step instead. */
+.thread-segment .thread-dip {
+  display: none;
+  fill: none;
+  stroke: var(--color-ink-dusk);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.thread-segment .thread-node {
+  fill: transparent;
+  stroke: var(--color-ink);
+  stroke-width: 1.5;
+}
+.thread-segment .thread-node.is-filled {
+  fill: var(--color-ink);
+}
+/* Chapter 04's node is the clay gate-square — the one recurring glyph.
+   (Placed after the generic node rules so clay wins at equal weight.) */
+.thread-segment .thread-node-gate {
+  stroke: var(--color-clay-graphic);
+}
+.thread-segment .thread-node-gate.is-filled {
+  fill: var(--color-clay-graphic);
+}
+
+/* Reduced prominence in the narrow left gutter (<1024) */
+.thread-segment[data-thread-compact] .thread-past {
+  stroke-width: 1.1;
+}
+.thread-segment[data-thread-compact] .thread-swell {
+  stroke-width: 0.9;
+}
+.thread-segment[data-thread-compact] .thread-future {
+  stroke-width: 0.75;
+  opacity: 0.6;
+}
+.thread-segment[data-thread-compact] .thread-node {
+  stroke-width: 1.25;
+}
+
+/* Dusk chapters (06/07): pre-verified dusk inks, stepped never scrubbed */
+.thread-segment[data-thread-dusk] .thread-future {
+  stroke: var(--color-ink-dusk);
+  opacity: 0.45;
+}
+.thread-segment[data-thread-dusk] .thread-past {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-swell {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-node {
+  stroke: var(--color-ink-dusk);
+}
+.thread-segment[data-thread-dusk] .thread-node.is-filled {
+  fill: var(--color-ink-dusk);
+}
+
+/* Static worlds (amendment A7): the finished run, guaranteed in CSS —
+   solid thread fully drawn, every node filled — with zero dependence
+   on the engine or on JS timing. ThreadSegment never creates
+   ScrollTriggers in these worlds; these rules make the state hold even
+   mid-teardown when the OS preference flips during a session. */
+@media (prefers-reduced-motion: reduce) {
+  .thread-segment .thread-past,
+  .thread-segment .thread-swell {
+    stroke-dashoffset: 0 !important;
+  }
+  /* The finished run is read, not watched: thin the resting ink so the
+     fully-drawn line sits quiet on the page (the scrubbed nib carries
+     more weight only while it moves). */
+  .thread-segment .thread-past {
+    stroke-width: 1.1;
+  }
+  .thread-segment .thread-swell {
+    stroke-width: 0.8;
+  }
+  .thread-segment .thread-dip {
+    display: inline;
+  }
+  .thread-segment .thread-node {
+    fill: var(--color-ink);
+  }
+  .thread-segment[data-thread-dusk] .thread-node {
+    fill: var(--color-ink-dusk);
+  }
+  .thread-segment .thread-node-gate {
+    fill: var(--color-clay-graphic);
+  }
+}
+html[data-motion-off] .thread-segment .thread-past,
+html[data-motion-off] .thread-segment .thread-swell {
+  stroke-dashoffset: 0 !important;
+}
+html[data-motion-off] .thread-segment .thread-past {
+  stroke-width: 1.1;
+}
+html[data-motion-off] .thread-segment .thread-swell {
+  stroke-width: 0.8;
+}
+html[data-motion-off] .thread-segment .thread-dip {
+  display: inline;
+}
+html[data-motion-off] .thread-segment .thread-node {
+  fill: var(--color-ink);
+}
+html[data-motion-off] .thread-segment[data-thread-dusk] .thread-node {
+  fill: var(--color-ink-dusk);
+}
+html[data-motion-off] .thread-segment .thread-node-gate {
+  fill: var(--color-clay-graphic);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TEXT MOTION — the chapters' entrance/scrub choreography (plan 3.8)
+   Orchestrated by TextMotion.tsx (engine world only, via useLenis)
+   except the HERO ENTRANCE, which is pure CSS so it plays from the
+   very first paint: a tiny inline script in layout.tsx stamps
+   `data-motion-ready` on <html> BEFORE the hero parses — but only
+   when the motion world is planned (no reduced-motion preference, no
+   stored quiet-toggle). FOUC discipline: the hidden initial state
+   exists ONLY under that JS-set readiness attribute (+ the same A7
+   guards in CSS), so static worlds and JS-dead loads always paint the
+   finished page. TextMotion removes the attribute once the entrance
+   has played (load-only, once — re-enabling motion never replays it).
+   ════════════════════════════════════════════════════════════════ */
+
+/* Hero rise (mobile + the shared final leg): transform/opacity only.
+   `to` is omitted so every property resolves to the element's natural
+   computed style — the final state IS the static state.
+   LCP retune (PERF-AUDIT fix 1): the entrance starts at opacity 0.15,
+   never 0 — the LCP line's pixels exist from the very first frame, so
+   Chrome records the candidate at first paint instead of ~1.9s in. The
+   measured cost of the old 0→1 hold was ~1.9s of LCP on every load. */
+@keyframes hero-rise {
+  from {
+    opacity: 0.15;
+    transform: translateY(14px);
+  }
+}
+/* Desktop variant adds the page's ONLY blur (plan 3.8: hero de-blur
+   8px→0, load-only; blur NOWHERE else, and never on mobile). */
+@keyframes hero-rise-blur {
+  from {
+    opacity: 0.15;
+    transform: translateY(14px);
+    filter: blur(8px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter {
+    /* 0.6s expo.out, 60ms stagger via --hero-i — retuned from the plan-
+       3.8 1.0s/110ms (PERF-AUDIT fix 1): same de-blur character, the
+       headline resolved ~3x sooner. The directive block keeps a touch
+       more air via its --hero-i seat (StoryShell heroDelay). */
+    animation: hero-rise 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: calc(var(--hero-i, 0) * 60ms);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter {
+    animation-name: hero-rise-blur;
+  }
+}
+
+/* ── HEADLINE INK-SETTLE (W5 round B, visitor #3) ───────────────────
+   The masthead's own beat: the two H1 lines land, then their ink
+   DEEPENS — secondary ink → full ink with a ≤1px same-color bleed
+   feather tightening to nothing (letterpress ink drying, not glow: the
+   feather is never lighter than the letterform it hugs, and its end
+   state is zero shadow). Paint-only devices on purpose — the H1 is the
+   LCP element and the two-line block must never reflow: no mask, no
+   weight/tracking animation, opacity floor untouched (hero-rise still
+   owns opacity/transform/blur; this second animation touches color and
+   text-shadow ONLY). The lines sit at seats 0 and 2 (StoryShell
+   heroDelay) and each settles over 0.4s from its seat, so the whole
+   headline is full-ink by ~520ms — the same close the old three-line
+   stack kept. The footnote ¹ keeps its own secondary ink (explicit
+   class color — inheritance never reaches it). `to` omitted
+   everywhere: the settled state IS the static state, and once
+   TextMotion drops [data-motion-ready] these rules stop matching
+   entirely. */
+@keyframes hero-ink-settle {
+  from {
+    color: var(--color-ink-secondary);
+    text-shadow: 0 0 1px var(--color-ink-secondary);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter-headline {
+    animation-name: hero-rise, hero-ink-settle;
+    animation-duration: 0.6s, 0.4s;
+    animation-timing-function:
+      cubic-bezier(0.19, 1, 0.22, 1), cubic-bezier(0.33, 0, 0.55, 1);
+    animation-fill-mode: both, both;
+    animation-delay:
+      calc(var(--hero-i, 0) * 60ms), calc(var(--hero-i, 0) * 60ms);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html[data-motion-ready]:not([data-motion-off]) .hero-enter-headline {
+    animation-name: hero-rise-blur, hero-ink-settle;
+  }
+}
+
+/* The H1's closing line animates an INNER wrapper: [data-thread-name]
+   itself must never transform (the Red Thread measures its box).
+   Historical note: the STIPPLE MASTHEAD (friend transposition #4) —
+   the byline's halftone dot-gain mask — retired with the byline
+   itself (owner ruling, 2026-07-24); the masthead's only load beats
+   are hero-rise(-blur) + hero-ink-settle above. */
+.hero-enter-inline {
+  display: inline-block;
+}
+
+/* Fraunces weight breathing (plan 3.8, optional — adopted): TextMotion
+   scrubs `--tm-wght` 360→420→360 via one quickSetter per headline; the
+   var composes INTO the axis voice so opsz/SOFT/WONK survive. Fallback
+   420 = the chapter-headline token weight, so static worlds (where the
+   var is never written) render identically. font-variation-settings
+   only — no layout-property animation. */
+[data-breathe].fraunces-display {
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 0,
+    "WONK" 0,
+    "wght" var(--tm-wght, 420);
+}
+[data-breathe].fraunces-wonk {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 1,
+    "wght" var(--tm-wght, 420);
+}
+
+/* Rail audit-trail (banked elevation): a small ink check beside each
+   folio number appears as the thread finishes that chapter (trigger
+   callbacks in ChapterRail.tsx toggle .is-checked; 0.3s opacity fade —
+   A7's allowed transition budget). NO track, NO capsule, NO glow
+   (NO-LIST §C). Static worlds show the finished run: every chapter
+   reviewed, all marks present. */
+.rail-mark {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rail-mark.is-checked {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-mark {
+    opacity: 1;
+    transition: none;
+  }
+}
+html[data-motion-off] .rail-mark {
+  opacity: 1;
+  transition: none;
+}
+
+/* Rail labels (W5): each folio number's name, revealed on hover AND
+   keyboard focus — plain mono text floated into the binding margin
+   (position: absolute → zero layout, the folio column and its marks
+   never move). The active chapter keeps its name inked. No box, no
+   track, no glow (NO-LIST §C). */
+.rail-label {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 0.375rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rail-link:hover .rail-label,
+.rail-link:focus-visible .rail-label,
+.rail-link[aria-current] .rail-label {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rail-label {
+    transition: none;
+  }
+}
+html[data-motion-off] .rail-label {
+  transition: none;
+}
+
+/* ── Static-world chapter paint (amendments A4 + A7) — FINAL FORM ────
+   Each chapter is ONE flat waypoint color. Every color change lands
+   exactly AT the chapter's numbered folio divider: the section's tail
+   padding below its folio rule (--wp-tail, mirroring the section's own
+   padding-bottom) already belongs to the NEXT chapter's field, painted
+   by a two-stop hard gradient — a printed page-turn at the rule, never
+   a smudge gradient, never bands (the round-3 stepped duotone was
+   REMOVED 2026-07-18; the critics read every intermediate band as a
+   seam). The 05|06 divider is the page's one authored seam — the day's
+   terminator line (see .folio-terminator + the thread's .thread-dip). */
+/* NOTE (A3): `content-visibility: auto` + `contain-intrinsic-size` on
+   chapter sections was BUILT AND MEASURED (2026-07-17) and rejected:
+   walking the page swings document height as placeholder sections swap
+   to true heights (183px drift in Chromium, 528px in Firefox at 1440),
+   i.e. ScrollTrigger start/end positions move under the triggers
+   between refreshes and the scrollbar visibly jumps mid-read. The
+   thread's repaint containment already comes from A3's per-chapter
+   segmentation; skip the extra containment. */
+[data-chapter] {
+  --wp-tail: 0px;
+}
+[data-chapter="01"] {
+  --wp: var(--waypoint-01);
+  --wp-next: var(--waypoint-02);
+  --wp-tail: 2rem; /* = the section's pb-8 */
+}
+[data-chapter="02"] {
+  --wp: var(--waypoint-02);
+  --wp-next: var(--waypoint-03);
+  --wp-tail: 9vh;
+}
+[data-chapter="03"] {
+  --wp: var(--waypoint-03);
+  --wp-next: var(--waypoint-04);
+  --wp-tail: 12vh;
+}
+[data-chapter="04"] {
+  --wp: var(--waypoint-04);
+  --wp-next: var(--waypoint-05);
+  --wp-tail: 14vh;
+}
+[data-chapter="05"] {
+  /* Golden hour holds through its folio — the terminator — then dusk */
+  --wp: var(--waypoint-05);
+  --wp-next: var(--waypoint-06);
+  --wp-tail: 12vh;
+}
+[data-chapter="06"] {
+  --wp: var(--waypoint-06);
+  --wp-next: var(--waypoint-07);
+  --wp-tail: 10vh;
+}
+[data-chapter="07"] {
+  --wp: var(--waypoint-07);
+  --wp-next: var(--waypoint-07);
+}
+
+/* Reduced motion (amendment A7): the engine never mounts, so each chapter
+   statically paints its flat waypoint (plus grain, so the static version
+   stays a designed deliverable); the tail below its folio rule already
+   wears the next chapter's field, so every color change lands AT the
+   divider. Chapters past the dusk flip carry dusk ink. Pure CSS — no
+   ScrollTriggers, no scrubbing, no bands. */
+@media (prefers-reduced-motion: reduce) {
+  [data-chapter] {
+    background-color: var(--wp);
+    background-image:
+      var(--texture-grain),
+      linear-gradient(
+        to bottom,
+        var(--wp) 0 calc(100% - var(--wp-tail)),
+        var(--wp-next) calc(100% - var(--wp-tail)) 100%
+      );
+    background-size:
+      260px 260px,
+      100% 100%;
+  }
+  [data-chapter="06"],
+  [data-chapter="07"] {
+    color: var(--color-ink-dusk);
+  }
+}
+
+/* Quiet in-page motion toggle (amendment A7): `data-motion-off` on <html>
+   mirrors the reduced-motion static world exactly — SmoothScroll checks the
+   same flag and never mounts the engine while it is set. */
+html[data-motion-off] [data-chapter] {
+  background-color: var(--wp);
+  background-image:
+    var(--texture-grain),
+    linear-gradient(
+      to bottom,
+      var(--wp) 0 calc(100% - var(--wp-tail)),
+      var(--wp-next) calc(100% - var(--wp-tail)) 100%
+    );
+  background-size:
+    260px 260px,
+    100% 100%;
+}
+html[data-motion-off] [data-chapter="06"],
+html[data-motion-off] [data-chapter="07"] {
+  color: var(--color-ink-dusk);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE PRINT EDITION (governor §F1c) — tier rails (§F2)
+   `data-tier` on <html> is the frame governor's edition: "core" (the
+   universal default — the whole SVG/GSAP spine), "full" (core + earned
+   garnish, granted only after measured smooth scrolling, §F3), "print"
+   (the static world, reframed as an authored monograph — reduced
+   motion, the quiet toggle, a sessionStorage ceiling, or a mid-session
+   governor downshift all land here; the head script stamps it before
+   first paint so there is never a richer flash that collapses).
+   The print floor REUSES the static world above wholesale (SmoothScroll
+   stamps data-motion-off whenever the tier is print, so every static
+   rule already applies); this block only adds the monograph dressing —
+   additive, layout-neutral (outline, never border), no new DOM. Every
+   caption and number it frames is the same proof-cited resting content
+   (honesty bar D6: the monograph states what the motion states). */
+html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
+  outline: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  outline-offset: 14px;
+}
+/* Scene mounts read the tier with CSS alone (§F2 API): any Full-only
+   garnish a scene declares stays unmounted below its tier. Nothing
+   ships Full-only garnish yet — this is the rail it will hang on. */
+html:not([data-tier="full"]) [data-tier-garnish] {
+  display: none;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE DOSSIER STOCK — case files + /evidence (DOSSIER-SPEC pt 1)
+   The same paper one stop older: flat archive cream (surface-1 — an
+   existing verified token), NO day-arc, and the contour texture kept
+   PERCEPTIBLE (research warning 5: the flat stock forfeits the arc, so
+   grain + contour + Fraunces carry the differentiation). Perceptibility
+   comes from layering the contour at two scales — every layer stays at
+   its baked ≤5% opacity (NO-LIST §D cap). Ink + kiln clay only.
+   ════════════════════════════════════════════════════════════════ */
+.dossier-surface {
+  background-color: var(--color-surface-1);
+  background-image:
+    var(--texture-grain), var(--texture-contour), var(--texture-contour);
+  background-size:
+    260px 260px,
+    420px 420px,
+    640px 640px;
+}
+
+/* Meta-as-ledger dot leaders (DOSSIER-SPEC pt 3): hairline dotted fill
+   between term and value — print furniture, not a pill in sight. */
+.dot-leader {
+  flex: 1 1 2rem;
+  min-width: 2rem;
+  border-bottom: 1px dotted
+    color-mix(in srgb, var(--color-ink) 40%, transparent);
+  transform: translateY(-0.28em);
+}
+
+/* The dossier thread is a finished document's line: resting ink weight
+   (matches the home thread's static-world thinning). */
+.thread-segment .thread-past.thread-inked {
+  stroke-width: 1.1;
+}
+.thread-segment[data-thread-compact] .thread-past.thread-inked {
+  stroke-width: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   W1 — THE WONDROUS FOUR (Refinement Era)
+   Press-to-sign gate · stampable registry row · thread-as-citation ·
+   the paper remembers. All state swaps are attribute-driven
+   (paperMemory), transform/opacity only, zero layout shift. Motion
+   lives behind the same A7 gates as the engine (reduced-motion media
+   + [data-motion-off]); static worlds swap instantly. Clay appears
+   only on the decisions — these ARE the decisions.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Press-to-sign: the gate stamp's two layers ────────────────────
+   The awaiting layer NEVER unmounts (the Red Thread measures its
+   signature line via getBBox) — inked state is pure opacity. The
+   attribute opacity="0.9" on the group is the resting look; these
+   rules outrank presentation attributes at any specificity. */
+[data-stamp] .stamp-inked {
+  opacity: 0;
+  /* The one place the ember lives: the APPROVED plate inks in the site's
+     loudest chroma (token above), while the awaiting layer keeps the
+     button's calmer clay-night. currentColor on every stroke/fill in the
+     group resolves to this — so the crescendo is chromatically earned. */
+  color: var(--color-clay-ember);
+}
+[data-stamp][data-inked] .stamp-inked {
+  opacity: 0.92;
+}
+[data-stamp][data-inked] .stamp-awaiting {
+  opacity: 0;
+}
+/* Quiet pre-press affordance: the dashed outline firms under the hand */
+[data-stamp]:not([data-inked]) .stamp-awaiting {
+  transition: opacity 250ms ease;
+}
+[data-stamp]:not([data-inked]):hover .stamp-awaiting,
+[data-stamp]:not([data-inked]):focus-visible .stamp-awaiting {
+  opacity: 1;
+}
+
+/* Item 2a — the resting "press here to sign" line warms toward the ember
+   it unlocks (clay-invite, a step short of the reserved approved peak),
+   so the invitation carries a hint of the payoff and wins the eye on the
+   espresso ground. PAINT ONLY: the Red Thread underlines this exact line
+   via getBBox, which paint never moves — so the finale stays true. The
+   rest of the awaiting group keeps currentColor (clay-night). */
+.stamp-sign {
+  fill: var(--color-clay-invite);
+}
+
+/* The ~750ms inking — engine world only (A7 CSS gates, the same two
+   conditions SmoothScroll checks). This is a stamp HITTING PAPER, not a
+   slide: a short wind-up, a firm deeper strike (the "thunk"), one small
+   rebound, and a settle. Transform lives ONLY on .stamp-plate — the SVG
+   raster, nothing in layout — so no reflow, CLS stays 0.00, and the Red
+   Thread (which measures the untransformed wrapper) never re-aims. The
+   per-keyframe easings carry the weight: ease-out lift, then ACCELERATE
+   into the strike (the impact reads as mass), a held beat, one gentle
+   rebound (weight, not bounce — letterpress, not a toy).
+   Static worlds never match the media rules below: the class flip IS the
+   swap, and the end frames equal the dried computed state exactly. */
+@keyframes stamp-press {
+  0% {
+    transform: translateY(0) scale(1);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1);
+  }
+  16% {
+    transform: translateY(-1.8px) scale(1.008); /* wind-up: the hand lifts
+       higher — a heavier tool takes more anticipation before the blow */
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
+  }
+  42% {
+    transform: translateY(4px) scale(0.965); /* IMPACT — mass hits paper,
+       the thunk: deeper travel + more compression than W6 read as weight */
+    animation-timing-function: linear;
+  }
+  53% {
+    transform: translateY(4px) scale(0.965); /* held under the hand */
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  73% {
+    transform: translateY(-1px) scale(1.005); /* one small rebound (weight,
+       not bounce — a struck die settles, it does not spring) */
+    animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
+  }
+  100% {
+    transform: translateY(0) scale(1); /* settle */
+  }
+}
+/* The ember lands WET then DRIES: opacity overshoots to full density at
+   the strike frame (~42%), sits wet a beat, then settles to the dried
+   0.92 — the same value the static [data-inked] rule holds, so the
+   animation end IS the persisted state. No shadow, no halo: the "wet
+   ink" is pure opacity/saturation within the existing feTurbulence
+   distress, drying to the crisp stamp. (NO-LIST §A: never lighter than
+   the ink; this only ever ranges 0→1→0.92.) */
+@keyframes stamp-ink-in {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.35; /* ink starts catching as the plate descends */
+    animation-timing-function: cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  44% {
+    opacity: 1; /* WET: full-density strike, coincident with the impact */
+  }
+  60% {
+    opacity: 1; /* the ink sits wet a beat */
+  }
+  100% {
+    opacity: 0.92; /* dries to the settled plate density */
+  }
+}
+@keyframes stamp-await-out {
+  from {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* One-time attention beat (item 3a): when ¶07 scrolls into view the
+   awaiting outline FIRMS once (opacity 0.9→1→0.9, previewing the hover
+   affordance) and the plate takes a single shallow breath. One beat, no
+   loop; the class is armed once by an IntersectionObserver and dropped on
+   animationend. Reserved for the un-inked stamp only. */
+@keyframes stamp-notice {
+  0% {
+    opacity: 0.9;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+@keyframes stamp-notice-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  45% {
+    transform: translateY(-0.5px) scale(1.012);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-plate {
+    animation: stamp-press 750ms both;
+  }
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-inked {
+    animation: stamp-ink-in 720ms cubic-bezier(0.4, 0, 0.4, 1) both;
+  }
+  html:not([data-motion-off]) [data-stamp].is-inking .stamp-awaiting {
+    animation: stamp-await-out 400ms ease-in both;
+  }
+  html:not([data-motion-off])
+    [data-stamp]:not([data-inked]).is-noticing
+    .stamp-awaiting {
+    animation: stamp-notice 1150ms cubic-bezier(0.37, 0, 0.63, 1) both;
+  }
+  html:not([data-motion-off])
+    [data-stamp]:not([data-inked]).is-noticing
+    .stamp-plate {
+    animation: stamp-notice-breathe 1150ms cubic-bezier(0.37, 0, 0.63, 1) both;
+  }
+}
+
+/* ── The CTA's quiet approved echo (space always reserved) ───────── */
+.stamp-hello {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
+}
+.stamp-hello[data-approved-hello] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease;
+}
+
+/* ── Stampable registry row (fig 4.1 + the case-file echo) ─────────
+   Rest: the link-draw grammar (faint resting underline, full line on
+   hover/focus). Press: the drawn underline RISES through the text into
+   the strikethrough — one line, one gesture — and the margin mark inks
+   in beneath: the clay gate-square (the site's one recurring glyph,
+   ≥3:1 on every surface this figure crosses) + the word in body ink. */
+.registry-approve .registry-strike {
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(
+      color-mix(in srgb, currentColor 40%, transparent),
+      color-mix(in srgb, currentColor 40%, transparent)
+    );
+  background-repeat: no-repeat;
+  background-size:
+    0% 1px,
+    100% 1px;
+  background-position:
+    left calc(100% - 0.05em),
+    left calc(100% - 0.05em);
+  transition:
+    background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1),
+    background-position 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.registry-approve:not([data-approved]):hover .registry-strike,
+.registry-approve:not([data-approved]):focus-visible .registry-strike {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+.registry-approve[data-approved] .registry-strike {
+  background-size:
+    100% 1px,
+    0% 1px;
+  background-position:
+    left 52%,
+    left calc(100% - 0.05em);
+}
+.registry-mark {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  transform: rotate(-2.5deg);
+  transform-origin: right top;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease 120ms,
+    visibility 0s linear 370ms;
+}
+.registry-approve[data-approved] .registry-mark {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease 120ms;
+}
+.registry-mark-gate {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-clay-graphic);
+}
+
+/* ── Thread-as-citation: the hover pen-stroke (engine world only —
+   CitationInk mounts nothing elsewhere). The thread's own drawing
+   convention: pathLength=1, dasharray 1 2, offset 1.5 → 0. Draw
+   ~400ms, retract ~300ms. No filters.
+   W5 re-origin: the stroke starts AT the fig-link, so hovering or
+   focusing anywhere in a citing row draws that link's underline — the
+   line the pen then morphs out of. In static worlds (reduced motion /
+   quiet toggle) this same rule IS the interaction: a plain underline
+   state, no pen (link-draw's transitions are already none there). */
+[data-cites]:hover .cite-link,
+[data-cites]:focus-within .cite-link {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+.citation-stroke {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.5;
+  transition: stroke-dashoffset 300ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.citation-stroke.is-drawn {
+  stroke-dashoffset: 0;
+  transition-duration: 400ms;
+}
+
+/* ── The paper remembers: visited ✓ + the opened-note ──────────────
+   The ✓ slot is ALWAYS in the layout (fixed inline width): its arrival
+   never moves a letterform. The rail's mark doubles as the persistent
+   record for chapters that ARE a case file ([data-visited]). */
+.visited-mark {
+  display: inline-flex;
+  width: 14px;
+  justify-content: center;
+  vertical-align: baseline;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.visited-mark[data-visited] {
+  opacity: 1;
+}
+.rail-mark[data-visited] {
+  opacity: 1;
+}
+.file-memory {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.file-memory[data-file-memory] {
+  opacity: 1;
+}
+/* Revisits are dried ink: the note is simply there, no performance */
+.file-memory.is-dried {
+  transition: none;
+}
+
+/* ── The closing "on file:" manifest (W5 round B) ───────────────────
+   The visitor's own audit trail as a margin note under the gate stamp,
+   in the stamp's nightfall clay (clay-night on waypoint-07 — 6.4:1,
+   the pair check-contrast.mjs already gates). Space is reserved by the
+   component (min-h), so the line's arrival never moves the stamp. On
+   load the record is dried — simply there; only a mid-session first
+   appearance (the store's first entry landing while the reader is on
+   the page) takes the ≤300ms opacity settle, engine world only. */
+.on-file-manifest {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.on-file-manifest[data-on-file] {
+  opacity: 1;
+}
+.on-file-manifest.is-dried {
+  transition: none;
+}
+/* Item 1b — the page registers the blow. When the visitor signs while on
+   this page (the first live approval, carried in via the subscribe
+   channel), the manifest line takes a single 1px settle: it lands a hair
+   low and settles to rest. TRANSFORM ONLY, so the reserved min-h never
+   moves and CLS stays 0.00; it never touches the line's text, timing, or
+   composition. `data-settle` is set once by the component (motion world
+   only — A7) and kept, so the settle fires exactly once and the state
+   stays inspectable. Gated by the same two conditions the stamp press
+   uses: reduced-motion and motion-off get the settled line with no
+   animation at all (the manifest simply appears).
+
+   The 315ms delay lands the jolt WITH the stamp's impact frame (42% of
+   the 750ms press ≈ 315ms), not on the click — so the page registers the
+   blow as it lands, not ~200ms before it (W7 spot-check). No backwards
+   fill: the line rests at 0 through the delay, then snaps a hair low at
+   impact and recovers — the surface absorbing the strike. */
+@keyframes manifest-settle {
+  from {
+    transform: translateY(1px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .on-file-manifest[data-settle] {
+    animation: manifest-settle 120ms ease-out 315ms forwards;
+  }
+}
+
+/* ── Run the audit (friend transposition #3): the receipts walk ──────
+   The control keeps the link-draw grammar — quiet mono ink, NOT a
+   filled CTA. Once walked, the control ITSELF is the settled ledger
+   line (W5 payoff transform): the run face swaps for the settled face
+   in the same grid cell — dried apparatus ink, cursor settles, no
+   re-run affordance. Gutter marks live at the row number's shoulder:
+   absolutely positioned (zero layout shift), drawn in the auditor's
+   STAMP-RUST pen (clay-graphic — ≥3:1 on the archive stock and every
+   chapter surface, per check-contrast.mjs) at legible weight: solid
+   tick = a pinned/checked-in artifact resolves, hollow ring = the
+   trail ends in an on-page poster/deck capture, dash = described only
+   or HELD. Each mark is a ≤250ms opacity swap; the walk's 350ms
+   cadence comes from AuditRun's timers, so the rows tick one by one —
+   an auditor's pace, not a cascade. Dried revisits kill every
+   transition. */
+.audit-run {
+  cursor: pointer;
+}
+.audit-run[data-walked] {
+  cursor: default;
+}
+.audit-mark {
+  position: absolute;
+  top: -8px;
+  left: -12px;
+  color: var(--color-clay-graphic);
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+[data-audit-ticked] .audit-mark {
+  opacity: 1;
+}
+[data-audit-dried] .audit-mark {
+  transition: none;
+}
+/* The settled face: dried apparatus ink — quieter than the live act,
+   never faint (secondary ink holds 4.5:1 on the archive stock). A
+   fresh settle fades in ≤250ms (the stamp-hello visibility pattern);
+   dried revisits are simply there. The face doubles as the invisible
+   sizing ghost before the walk — same box, zero shift at the swap. */
+.audit-settled {
+  color: var(--color-ink-secondary);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 250ms ease,
+    visibility 0s linear 250ms;
+}
+.audit-settled[data-audit-settled] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 250ms ease;
+}
+.audit-settled.is-dried {
+  transition: none;
+}
+/* Walk's end, automl only: one 300ms underline draw on the awaiting
+   041 row — pointing at the act that remains the reader's. The class
+   is added then removed by AuditRun; the row's own resting grammar
+   takes the retract. Never fires on an approved row. */
+.registry-approve.audit-nudge:not([data-approved]) .registry-strike {
+  background-size:
+    100% 1px,
+    100% 1px;
+  transition-duration: 300ms;
+}
+
+/* Cited plates land under the fixed header, like receipt rows */
+[id^="fig-"] {
+  scroll-margin-top: 7rem;
+}
+
+/* Static worlds (A7): every W1 swap is instant — the acts still WORK,
+   they just never perform. (CitationInk never mounts there at all.)
+   The audit walk follows suit: instant tick application, same settled
+   line, zero animation. */
+@media (prefers-reduced-motion: reduce) {
+  [data-stamp]:not([data-inked]) .stamp-awaiting,
+  .stamp-hello,
+  .registry-approve .registry-strike,
+  .registry-mark,
+  .visited-mark,
+  .file-memory,
+  .on-file-manifest,
+  .audit-mark,
+  .audit-settled,
+  .audit-run {
+    transition: none;
+  }
+}
+html[data-motion-off] [data-stamp]:not([data-inked]) .stamp-awaiting,
+html[data-motion-off] .stamp-hello,
+html[data-motion-off] .registry-approve .registry-strike,
+html[data-motion-off] .registry-mark,
+html[data-motion-off] .visited-mark,
+html[data-motion-off] .file-memory,
+html[data-motion-off] .on-file-manifest,
+html[data-motion-off] .audit-mark,
+html[data-motion-off] .audit-settled,
+html[data-motion-off] .audit-run {
+  transition: none;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE PINNED PIPELINE RUN (PREMIUM-FLOW ⭐#2) — fig 4.0, chapter 04
+   PipelineRun.tsx pins the ladder and scrubs an ink run-token down it:
+   each phase INK-SETTLES secondary→full as the token passes, a thin
+   EDGE draws ahead along the rail (the Red Thread's own pathLength=1 /
+   dasharray 1 2 / offset 1.5→0 convention — the two ink lines read as
+   one hand), and at THE HUMAN GATE the token HALTS, pulses ONCE in clay,
+   and HOLDS. The scene NEVER resolves 7.0 deploy (the gated phase never
+   lights) and NEVER approves run 041. transform / opacity /
+   stroke-dashoffset only. Motion lives behind the engine's A7 gates;
+   static worlds rest on the drawn final frame.
+
+   The pinned wrapper carries `contain: paint` (the pin holds a small,
+   scoped layer — never a full-viewport one). Its left padding gives the
+   rail-riding token + clay pulse room so paint containment never clips
+   the bead; the fig-4.1 registry takes the same inset so the two
+   ledgers' rails stay aligned. ════════════════════════════════════ */
+[data-pipeline-pin] {
+  contain: paint;
+}
+.pipeline-overlay {
+  z-index: 0;
+}
+
+/* The edge — the ladder's rail inked ahead of the token, in the Red
+   Thread's ink and its exact drawing convention. */
+.pipeline-edge {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.5;
+}
+
+/* The run token — a bead in the Red Thread's ink. It tints clay only at
+   the human gate (the decision colour); the ring is the single clay
+   pulse on arrival. The bead's fill settle is paint-only. */
+.pipeline-token-bead {
+  fill: var(--color-ink);
+  transition: fill 300ms ease;
+}
+.pipeline-token-ring {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.4;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.pipeline-token.is-halted .pipeline-token-bead {
+  fill: var(--color-clay-graphic);
+}
+/* The pulse fires ONCE on arrival — engine world only (a scrubbed re-arm
+   replays it; static worlds hold the clay bead with no ring). */
+@keyframes pipeline-pulse {
+  from {
+    opacity: 0.55;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .pipeline-token.is-halted .pipeline-token-ring {
+    animation: pipeline-pulse 620ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+}
+
+/* Phase labels ink-settle secondary→full as the token passes (the
+   hero's ink-settle beat, reversible on scroll-back). */
+[data-pipeline-phase] {
+  transition: color 400ms cubic-bezier(0.33, 0, 0.55, 1);
+}
+[data-pipeline-phase][data-pipeline-lit] {
+  color: var(--color-ink);
+}
+
+/* Static worlds (A7): the finished FRAME, guaranteed in CSS with no
+   engine/JS-timing dependence — edge drawn to the gate, phases 1–6 lit
+   (7.0 deploy stays secondary: it is gated), the token resting clay at
+   the gate. Run 041 is untouched — still awaiting its human. */
+@media (prefers-reduced-motion: reduce) {
+  .pipeline-edge {
+    stroke-dashoffset: 0 !important;
+  }
+  [data-pipeline-phase]:not([data-pipeline-gated]) {
+    color: var(--color-ink) !important;
+    transition: none;
+  }
+  .pipeline-token-bead {
+    fill: var(--color-clay-graphic);
+    transition: none;
+  }
+}
+html[data-motion-off] .pipeline-edge {
+  stroke-dashoffset: 0 !important;
+}
+html[data-motion-off] [data-pipeline-phase]:not([data-pipeline-gated]) {
+  color: var(--color-ink) !important;
+  transition: none;
+}
+html[data-motion-off] .pipeline-token-bead {
+  fill: var(--color-clay-graphic);
+  transition: none;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE LIVING SCENES (FABLE-VISUAL-BRIEF §B) — per-project figures
+   Rendered by src/components/scenes/*: self-contained inked SVG
+   figures whose SERVER MARKUP is the settled frame (the print
+   edition). Motion is a one-shot scroll-in run (useSceneRun) that
+   exists only in the engine world, so these classes style the
+   FINISHED figure — there are no undrawn/hidden states here, and the
+   static worlds need no overrides at all. Ink vocabulary shared with
+   PipelineRun/the Red Thread: pathLength=1 · dasharray 1 2 ·
+   dashoffset 0 drawn / 1.5 undrawn; clay marks the gate/seam moment
+   only. transform / opacity / stroke-dashoffset are the only animated
+   properties (D3), and every figure contains its paint (D4). */
+[data-scene] {
+  contain: paint;
+}
+/* ── The case-file plate (owner fix round: "no stark white boxes") ──
+   A figure plate is PAPER, never a bright card: warm archive stock one
+   stop deeper than the dossier page (surface-2 — an existing verified
+   token), carrying the same baked grain + contour the world's paper
+   wears (both at their ≤5% NO-LIST cap), framed by a double hairline —
+   the outer ink rule on .plate-paper's border plus this inner offset
+   rule — the monograph's tipped-in plate grammar. Breathing margins
+   come from the mount's padding; nothing here animates, so the plate
+   is identical in every world and tier. */
+.plate-paper {
+  background-color: var(--color-surface-2);
+  background-image: var(--texture-grain), var(--texture-contour);
+  background-size:
+    260px 260px,
+    420px 420px;
+}
+.plate-inner-rule {
+  outline: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+  outline-offset: -1px;
+}
+
+/* ── The portrait plate (header avatar → Radix dialog) ─────────────
+   The photograph DEVELOPS like a print: the veil washes in, the plate
+   rises a hair, the image resolves top-to-bottom (clip-path — the D3
+   whitelist's third property), and the dateline caption settles last.
+   CSS-only, double-gated like the stamp press (reduced-motion media +
+   the data-motion-off attribute, which the quiet toggle, the governor's
+   print floor, and hidden-surface loads all stamp) — every static world
+   opens the finished plate: same DOM, final frame, no JS motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .portrait-veil {
+    animation: portrait-veil-in 240ms ease-out both;
+  }
+  html:not([data-motion-off]) .portrait-riser {
+    animation: portrait-riser-in 420ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+  }
+  html:not([data-motion-off]) .portrait-develop {
+    animation: portrait-develop-in 640ms cubic-bezier(0.33, 0, 0.55, 1) 160ms
+      both;
+  }
+  html:not([data-motion-off]) .portrait-caption {
+    animation: portrait-caption-in 360ms ease-out 560ms both;
+  }
+}
+@keyframes portrait-veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes portrait-riser-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes portrait-develop-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.55;
+  }
+  to {
+    clip-path: inset(0 0 0% 0);
+    opacity: 1;
+  }
+}
+@keyframes portrait-caption-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* All scene ink rides currentColor (amendment A4): ch05's third row can
+   sit in near-dusk light in the motion world, where the body ink flips
+   cream — the figures must flip with it. Quiet voices mute via OPACITY
+   on the full-strength ink (the dusk-chapter pattern), never the
+   day-only secondary token. */
+.scene-fig text {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  fill: currentColor;
+}
+.scene-fig .sc-quiet {
+  fill: currentColor;
+  opacity: 0.72;
+}
+.scene-fig .sc-clay {
+  fill: var(--color-clay);
+}
+.scene-fig .sc-small {
+  /* 9.5px → 10px (shots-dusk2 small-font audit): the axis/tick voice was
+     the smallest text on the site and rendered ~9.3px where a scene
+     scales below 1:1. Half a point buys real legibility at 1x DPR and
+     no tick label collides at any scene's coordinates. */
+  font-size: 10px;
+}
+/* The drawing edge — the Red Thread's own convention, settled drawn. */
+.scene-edge {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+.scene-edge-heavy {
+  stroke-width: 2.4;
+}
+/* Quieter structural rails (drawn in the same convention). */
+.scene-rail {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 45%, transparent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+/* Static apparatus: gate posts, axis ticks, dashed measure guides. */
+.scene-post {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 72%, transparent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.scene-guide {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 25%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+/* The clay gate/seam square + its one arrival pulse (engine-only). */
+.scene-gate {
+  fill: var(--color-clay-graphic);
+}
+/* NOTE: no transform-box/transform-origin here — the pulse is scaled by
+   GSAP (svgOrigin), and a CSS fill-box would re-base the attribute
+   matrix and throw the ring off its gate (measured, 2026-07-24). */
+.scene-pulse {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.4;
+  opacity: 0;
+}
+.scene-claytick {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+/* Applied: mail-line glyphs; the race: lane beads. */
+.scene-mail {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.scene-bead {
+  fill: currentColor;
+}
+/* Glyph forward pass: stipple cells, hidden cells, readout slots. */
+.scene-cell {
+  fill: currentColor;
+  opacity: 0.85;
+}
+.scene-hidden {
+  fill: currentColor;
+  opacity: 0.75;
+}
+.scene-slot {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 35%, transparent);
+  stroke-width: 1;
+}
+.scene-slot-win {
+  fill: currentColor;
+}
+/* jetpack: byte blocks — denser ink at rest = compressed. */
+.scene-block {
+  fill: currentColor;
+  opacity: 0.55;
+}
+/* Past the dusk flip, clay lightens to its night grade (A4 — the same
+   step the arc gives text clay); the archive dossier never dusks, so a
+   lingering arc attribute from a client-side navigation must not dim
+   its clay (the header's own archive re-override pattern). */
+html[data-arc-phase="dusk"] .scene-fig .sc-clay {
+  fill: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] .scene-gate {
+  fill: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] .scene-pulse,
+html[data-arc-phase="dusk"] .scene-claytick {
+  stroke: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-fig .sc-clay {
+  fill: var(--color-clay);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-gate {
+  fill: var(--color-clay-graphic);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-pulse,
+html[data-arc-phase="dusk"] [data-dossier] .scene-claytick {
+  stroke: var(--color-clay-graphic);
+}
+
+/* Receipt-row permalinks land under the fixed header */
+li[id^="v-"] {
+  scroll-margin-top: 7rem;
 }
 
 html {
@@ -24,14 +1945,33 @@ html {
   scroll-padding-top: 6rem;
 }
 
+/* No overflow-x on body: html already clips the viewport, and an
+   overflow-x:hidden body becomes a (never-scrolling) scroll container
+   that captures view() timelines and freezes them. */
 body {
   background-color: var(--background);
   color: var(--foreground);
-  overflow-x: hidden;
 }
 
 section[id] {
   scroll-margin-top: 6rem;
+}
+
+/* Mono labels are lowercase, small, tracked — never all-caps shouting (3.5) */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: lowercase;
+}
+/* Case exemption for DATA inside the mono voice (dossier receipts):
+   file paths, repo names, commands, and errata quote case-sensitive
+   names (ARCHITECTURE.md, AVX-512) — the voice may not distort them.
+   Unlayered so it beats .label-mono regardless of the utility layer. */
+.label-mono.normal-case,
+.label-mono .normal-case {
+  text-transform: none;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

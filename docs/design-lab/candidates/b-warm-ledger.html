@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayush Yadav — Run Ledger (Direction B: The Warm Ledger)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  /* ————————————————————————————————————————————————
+     DIRECTION B — "THE WARM LEDGER"
+     warm brown-black · cream ink · kiln clay thread
+     ———————————————————————————————————————————————— */
+
+  :root {
+    --ink:      #1D1712;               /* canvas: warm brown-black, hue ~28° */
+    --ink-deep: #181310;               /* footer well */
+    --card:     #271E15;               /* ledger-entry board */
+    --card-lo:  #221A12;
+    --cream:    #F6EFE2;               /* primary type */
+    --dim:      #B8AC9C;               /* secondary type */
+    --clay:     #E08A5F;               /* kiln clay, night-lightened */
+    --pine:     #7FA99A;               /* pine-light, sparing */
+    --rule:     rgba(246, 239, 226, .14);
+    --rule-soft:rgba(246, 239, 226, .08);
+    --thread:   rgba(224, 138, 95, .60);
+
+    --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --body:  "Newsreader", "Iowan Old Style", Georgia, serif;
+    --mono:  "Fragment Mono", "Courier New", monospace;
+
+    --pad: clamp(20px, 4vw, 52px);     /* main gutter */
+    --tx:  clamp(30px, 6vw, 78px);     /* thread x inside main */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { overflow-x: clip; }
+
+  body {
+    background-color: var(--ink);
+    color: var(--cream);
+    font-family: var(--body);
+    font-optical-sizing: auto;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* lamplight raking diagonally across leather — light, not flat hex.
+     composited fixed layer (no background-attachment:fixed repaint cost) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(113deg,
+        rgba(246, 239, 226, .055) 0%,
+        rgba(246, 239, 226, .022) 26%,
+        rgba(246, 239, 226, 0) 54%),
+      linear-gradient(0deg,
+        rgba(224, 138, 95, .035) 0%,
+        rgba(224, 138, 95, 0) 34%);
+  }
+
+  /* paper grain — present, ≤5%, over everything */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: .05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection { background: rgba(224, 138, 95, .32); color: var(--cream); }
+
+  a { color: inherit; }
+
+  em { font-style: italic; }
+
+  /* ————— shared apparatus ————— */
+
+  .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  .entry-no {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    color: var(--clay);
+  }
+
+  .stamp-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--dim);
+  }
+
+  /* ═════════════════ HERO — nº 000, the thesis ═════════════════ */
+
+  .hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(20px, 3vh, 36px) var(--pad) clamp(28px, 5vh, 56px);
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 3px double var(--rule);  /* ledger double rule */
+  }
+
+  .masthead .label { color: var(--cream); }
+  .masthead .right { text-align: right; }
+
+  .hero-main { padding: clamp(24px, 6vh, 64px) 0; }
+
+  .hero-main .entry-no { display: block; margin-bottom: clamp(18px, 3vh, 30px); }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 480;
+    font-variation-settings: "opsz" 130;
+    font-size: clamp(2.55rem, 6.6vw, 6.15rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+
+  .hero h1 em {
+    font-weight: 430;
+    color: var(--clay);
+  }
+
+  .hero .sub {
+    font-family: var(--mono);
+    font-size: clamp(.8rem, 1.15vw, .95rem);
+    text-transform: lowercase;
+    letter-spacing: .04em;
+    color: var(--dim);
+    margin-top: clamp(20px, 3.4vh, 34px);
+  }
+
+  .hero-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .thesis {
+    font-family: var(--body);
+    font-style: italic;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--dim);
+    max-width: 34ch;
+    padding-left: 18px;
+    border-left: 2px solid var(--clay);
+    line-height: 1.45;
+  }
+
+  .thesis b {
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .open-cue { text-align: right; }
+  .open-cue .label { display: block; margin-bottom: 6px; }
+  .open-cue .tick {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--clay);
+  }
+
+  /* CSS-only load entrance (load-only; no scroll-triggered reveals) */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero .masthead   { animation: rise .7s cubic-bezier(.2,.65,.25,1) both .05s; }
+  .hero .entry-no   { animation: rise .7s cubic-bezier(.2,.65,.25,1) both .15s; }
+  .hero h1          { animation: rise .8s cubic-bezier(.2,.65,.25,1) both .25s; }
+  .hero .sub        { animation: rise .8s cubic-bezier(.2,.65,.25,1) both .40s; }
+  .hero .hero-foot  { animation: rise .8s cubic-bezier(.2,.65,.25,1) both .55s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  /* ═════════════════ THE LEDGER SPINE ═════════════════ */
+
+  main.ledger {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 var(--pad);
+  }
+
+  /* binding thread — clay stitches down the spine */
+  .thread {
+    position: absolute;
+    left: calc(var(--pad) + var(--tx) - var(--pad));  /* = var(--tx) from main edge */
+    left: var(--tx);
+    top: 0;
+    bottom: 190px;
+    width: 2px;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--thread) 0 7px,
+      transparent 7px 15px
+    );
+  }
+
+  main.ledger > section {
+    position: relative;
+    padding-left: calc(var(--tx) + 42px - var(--pad));
+  }
+
+  /* stitch node — a knot at each entry */
+  .node {
+    position: absolute;
+    left: calc(var(--tx) - var(--pad));
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    background: var(--clay);
+    border: 1px solid rgba(246, 239, 226, .55);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .entry-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px 22px;
+    flex-wrap: wrap;
+    margin-bottom: clamp(20px, 3.5vh, 34px);
+  }
+
+  /* ————— manifesto beat — margin note ————— */
+
+  .manifesto {
+    padding-top: clamp(96px, 15vh, 170px);
+    padding-bottom: clamp(96px, 15vh, 170px);
+  }
+
+  .manifesto p {
+    font-family: var(--body);
+    font-weight: 380;
+    font-size: clamp(1.65rem, 3.4vw, 2.95rem);
+    line-height: 1.28;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+
+  .manifesto p + p { margin-top: .45em; }
+
+  .manifesto em { color: var(--clay); }
+
+  .manifesto .dimline { color: var(--dim); }
+  .manifesto .dimline em { color: var(--clay); }
+
+  /* ————— project — ledger entry nº 001 ————— */
+
+  .project { padding-bottom: clamp(110px, 16vh, 190px); }
+
+  .ticket {
+    position: relative;
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    background: linear-gradient(180deg, #2B2118 0%, #251C14 55%, #211912 100%);
+    border-radius: 6px;
+    /* physical board: top-edge highlight + grounded bottom shadow. no glow. */
+    box-shadow:
+      inset 0 1px 0 rgba(246, 239, 226, .10),
+      inset 0 -1px 0 rgba(0, 0, 0, .45),
+      0 2px 3px -1px rgba(0, 0, 0, .38),
+      0 20px 36px -24px rgba(0, 0, 0, .62);
+  }
+
+  /* the next ticket in the stack, peeking beneath */
+  .ticket::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: -9px;
+    height: 22px;
+    z-index: -1;
+    background: #1F1810;
+    border-radius: 6px;
+    box-shadow:
+      inset 0 1px 0 rgba(246, 239, 226, .05),
+      0 10px 18px -12px rgba(0, 0, 0, .6);
+  }
+
+  /* perforated stub */
+  .ticket .stub {
+    position: relative;
+    border-right: 1px dashed rgba(246, 239, 226, .22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ticket .stub span {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+  }
+
+  /* punch holes — canvas shows through */
+  .ticket .stub::before,
+  .ticket .stub::after {
+    content: "";
+    position: absolute;
+    right: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .5);
+  }
+  .ticket .stub::before { top: -7px; }
+  .ticket .stub::after  { bottom: -7px; }
+
+  .ticket .body { padding: clamp(24px, 3.4vw, 42px) clamp(22px, 3.6vw, 48px); }
+
+  .ticket .row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px 24px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  .status {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--pine);
+  }
+
+  .ticket h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-variation-settings: "opsz" 90;
+    font-size: clamp(2rem, 3.9vw, 3.4rem);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin: clamp(22px, 3.4vh, 34px) 0 clamp(14px, 2.4vh, 20px);
+  }
+
+  .ticket .desc {
+    font-family: var(--body);
+    font-weight: 380;
+    font-size: clamp(1.15rem, 1.85vw, 1.5rem);
+    line-height: 1.4;
+    max-width: 34ch;
+    color: var(--cream);
+  }
+
+  .ticket .desc em { color: var(--clay); }
+
+  /* ruled account columns with dotted leaders */
+  .cols {
+    margin-top: clamp(26px, 4vh, 40px);
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  .cols .row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 0;
+    font-family: var(--mono);
+    font-size: clamp(.78rem, 1.05vw, .88rem);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .cols .row:last-child { border-bottom: 3px double var(--rule); } /* totals rule */
+
+  .cols .k { color: var(--dim); letter-spacing: .1em; text-transform: uppercase; font-size: .92em; }
+  .cols .leader { flex: 1; border-bottom: 1px dotted rgba(184, 172, 156, .38); transform: translateY(-.3em); min-width: 24px; }
+  .cols .v { color: var(--cream); text-align: right; }
+  .cols .v .accent { color: var(--pine); }
+
+  /* ————— gate teaser — nº 002 ————— */
+
+  .gate { padding-bottom: clamp(120px, 17vh, 200px); }
+
+  .gate-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .gate h2 {
+    font-family: var(--serif);
+    font-weight: 470;
+    font-variation-settings: "opsz" 110;
+    font-size: clamp(2rem, 4.4vw, 3.9rem);
+    line-height: 1.08;
+    letter-spacing: -0.012em;
+    max-width: 17ch;
+    text-wrap: balance;
+  }
+
+  .gate h2 em { color: var(--clay); font-weight: 430; }
+
+  .gate .cta {
+    display: inline-block;
+    margin-top: clamp(28px, 4.5vh, 44px);
+    font-family: var(--serif);
+    font-weight: 450;
+    font-size: clamp(1.3rem, 2.1vw, 1.8rem);
+    color: var(--cream);
+    text-decoration: underline;
+    text-decoration-color: var(--clay);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 7px;
+    transition: color .25s ease, text-decoration-color .25s ease;
+  }
+
+  .gate .cta:hover {
+    color: var(--clay);
+    text-decoration-color: var(--cream);
+  }
+
+  .gate .cta-note {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    color: var(--dim);
+  }
+
+  /* the clay rubber stamp */
+  .stamp-well {
+    display: flex;
+    justify-content: center;
+  }
+
+  .stamp {
+    --sink: var(--clay);
+    display: grid;
+    place-items: center;
+    gap: 6px;
+    width: min(312px, 80vw);
+    padding: 30px 18px 26px;
+    border: 3px solid var(--sink);
+    border-radius: 12px 15px 11px 16px;   /* slightly uneven — hand-pressed */
+    transform: rotate(-6.5deg);
+    color: var(--sink);
+    text-align: center;
+    /* ink distress: noise mask eats pinholes out of the impression */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.16' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23m)'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.16' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 1 1 1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23m)'/%3E%3C/svg%3E");
+  }
+
+  .stamp::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border: 1px solid var(--sink);
+    border-radius: 8px 11px 7px 12px;
+    opacity: .8;
+    pointer-events: none;
+  }
+
+  .stamp { position: relative; }
+
+  .stamp .word {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-variation-settings: "opsz" 40;
+    font-size: clamp(1.8rem, 2.9vw, 2.3rem);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    text-indent: .1em; /* optically recenter tracked caps */
+  }
+
+  .stamp .small {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    opacity: .92;
+  }
+
+  /* ————— footer ————— */
+
+  footer {
+    background: var(--ink-deep);
+    border-top: 3px double var(--rule);
+  }
+
+  .foot-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 26px var(--pad) 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px 24px;
+    flex-wrap: wrap;
+  }
+
+  /* ═════════════════ RESPONSIVE ═════════════════ */
+
+  .br-desk { display: none; }
+
+  @media (min-width: 860px) {
+    .br-desk { display: inline; }
+    .hero h1 { max-width: none; }
+  }
+
+  @media (max-width: 900px) {
+    .gate-grid { grid-template-columns: 1fr; }
+    .stamp-well { justify-content: flex-start; padding-top: 10px; }
+    .stamp { transform: rotate(-5deg); margin-left: 4px; }
+  }
+
+  @media (max-width: 560px) {
+    .ticket { grid-template-columns: 1fr; }
+    .ticket .stub {
+      border-right: none;
+      border-bottom: 1px dashed rgba(246, 239, 226, .22);
+      padding: 12px 0;
+    }
+    .ticket .stub span { writing-mode: horizontal-tb; transform: none; }
+    .ticket .stub::before { top: auto; bottom: -7px; left: -7px; right: auto; }
+    .ticket .stub::after  { bottom: -7px; right: -7px; }
+    .cols .row { flex-wrap: nowrap; }
+    .cols .v { max-width: 55%; overflow-wrap: anywhere; }
+    .open-cue { text-align: left; }
+    .stamp { width: min(280px, 84vw); }
+    .stamp .word { font-size: 1.65rem; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ═══════════ nº 000 · THESIS ═══════════ -->
+  <header class="hero">
+    <div class="masthead">
+      <span class="label">Run Ledger — Ayush Yadav</span>
+      <span class="label right">Vol.&nbsp;I · Opened 2026</span>
+    </div>
+
+    <div class="hero-main">
+      <span class="entry-no">nº 000 — thesis · logged 2026-07-17 08:12</span>
+      <h1>I build machine learning <br class="br-desk">that <em>shows its work.</em></h1>
+      <p class="sub">ayush yadav — ml engineer, class of 2026</p>
+    </div>
+
+    <div class="hero-foot">
+      <p class="thesis">&ldquo;A model is only as good as <b>the human who approves it</b>.&rdquo;</p>
+      <div class="open-cue">
+        <span class="label">The ledger opens below</span>
+        <span class="tick">— — — ¦ — — —</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="ledger">
+    <div class="thread" aria-hidden="true"></div>
+
+    <!-- ═══════════ MARGIN NOTE · MANIFESTO ═══════════ -->
+    <section class="manifesto">
+      <span class="node" aria-hidden="true"></span>
+      <div class="entry-head">
+        <span class="entry-no">margin note</span>
+        <span class="stamp-time">read before running anything</span>
+      </div>
+      <p>This is a story about learning&nbsp;machines.</p>
+      <p class="dimline">And the person who <em>doesn&rsquo;t fully trust</em> them&nbsp;yet.</p>
+    </section>
+
+    <!-- ═══════════ nº 001 · PROJECT ENTRY ═══════════ -->
+    <section class="project">
+      <span class="node" aria-hidden="true"></span>
+      <div class="entry-head">
+        <span class="entry-no">nº 001 — run record</span>
+        <span class="stamp-time">logged 2026-07-17 09:41 EDT</span>
+      </div>
+
+      <article class="ticket">
+        <div class="stub"><span>run · nº 001</span></div>
+        <div class="body">
+          <div class="row-top">
+            <span class="label">agentic-automl</span>
+            <span class="status">status — awaiting human approval</span>
+          </div>
+          <h2>Agentic AutoML</h2>
+          <p class="desc">The agent drafts the whole pipeline. Nothing runs until a human says <em>go.</em></p>
+          <div class="cols">
+            <div class="row">
+              <span class="k">lifecycle</span>
+              <span class="leader"></span>
+              <span class="v">7-phase, gated</span>
+            </div>
+            <div class="row">
+              <span class="k">orchestration</span>
+              <span class="leader"></span>
+              <span class="v">LangGraph + MCP</span>
+            </div>
+            <div class="row">
+              <span class="k">runs without sign-off</span>
+              <span class="leader"></span>
+              <span class="v"><span class="accent">none. ever.</span></span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ═══════════ nº 002 · THE APPROVAL GATE ═══════════ -->
+    <section class="gate">
+      <span class="node" aria-hidden="true"></span>
+      <div class="entry-head">
+        <span class="entry-no">nº 002 — the approval gate</span>
+        <span class="stamp-time">pending · awaiting your signature</span>
+      </div>
+
+      <div class="gate-grid">
+        <div>
+          <h2>Every pipeline I build ends with a human decision. <em>This one ends with yours.</em></h2>
+          <a class="cta" href="mailto:aesh.03.23@gmail.com">Email me — I read everything.</a>
+          <span class="cta-note">replies logged same day · oxford, ohio</span>
+        </div>
+        <div class="stamp-well">
+          <div class="stamp" role="img" aria-label="Rubber stamp reading approved">
+            <span class="small">human · in · the · loop</span>
+            <span class="word">Approved</span>
+            <span class="small">gate 07 / 07 · 2026</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <span class="label">End of Vol. I — nº 003 is yours to open</span>
+      <span class="stamp-time">© 2026 ayush yadav · set in fraunces, newsreader &amp; fragment mono</span>
+    </div>
+  </footer>
+
+<!--
+  NO-LIST SELF-REVIEW — near-misses considered & resolved:
+  · Banned "near-black + neon cyan console": canvas is #1D1712 (hue ~26°, warm
+    brown), zero cyan/blue anywhere; only cool-adjacent hex is pine #7FA99A
+    (green 159°, muted, used twice, endorsed by §D2 two-accent system). Checked
+    every frame — reads as leather/dark paper under lamplight, not console.
+  · §D1 "no newspaper column/rule framing": ruling here is horizontal ledger
+    account rules + dotted leaders + double totals rule — no vertical newspaper
+    columns, no masthead nameplate, display is Fraunces not Playfair, accent is
+    clay #E08A5F (rust-orange), never newspaper red.
+  · "No glow shadows / glassmorphism": all shadows are neutral dark drop/inset
+    shadows (physical board dimensionality); no backdrop-filter, no colored glow.
+  · "ScrollReveal wrapper vocabulary": entrance is load-only hero stagger
+    (explicitly permitted), no scroll-triggered reveals, no parallax fade-out,
+    honors prefers-reduced-motion.
+  · "Radial spotlight hero": light is a raking *linear* gradient (Daylight
+    principle: light, not hex) — no radial spotlight, no dotted grid.
+  · "Pulsing availability badge": the pine status line is static text, no
+    animation, no ping.
+  · "Bouncing scroll indicator": scroll cue is a static mono stitch glyph.
+  · Grain kept at 5% opacity (§D2 requires present but ≤5%).
+  · Clay + pine are two fixed accents, no hue-cycling, no gradients in text,
+    no purple, no pure #FFF/#000 (cream #F6EFE2 on #1D1712 ≈ 12.9:1).
+-->
+</body>
+</html>

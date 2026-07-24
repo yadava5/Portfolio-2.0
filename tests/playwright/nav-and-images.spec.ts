@@ -1,10 +1,12 @@
 import { test, expect, type Locator } from "@playwright/test";
 import {
   absoluteUrl,
+  CASE_STUDY_IDS,
   CATEGORY_PROJECTS,
-  CASE_STUDY_PROJECT_TITLES,
   COMPANY_LOGOS,
   DEFAULT_THEME,
+  EXPECTED_HOME_PROJECT_TITLES,
+  EXPECTED_WORK_ROWS,
   FEATURED_PROJECT_VISUALS,
   FEATURED_PROJECTS,
   NAV_SECTIONS,
@@ -14,6 +16,14 @@ import {
   scrollThroughPage,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
+
+// Featured projects whose visuals + honesty disclosures live on a
+// case-study route. Some featured projects (e.g. LifeQuest,
+// jetpack-compress) link straight to the live app and have no case
+// file, so they carry no disclosure route to assert.
+const FEATURED_CASE_STUDY_VISUALS = FEATURED_PROJECT_VISUALS.filter((project) =>
+  CASE_STUDY_IDS.includes(project.id)
+);
 
 async function expectAnyVisible(locator: Locator, message: string) {
   const count = await locator.count();
@@ -76,45 +86,43 @@ test.describe("Project Images", () => {
 test.describe("Project Visual Disclosures", () => {
   test.setTimeout(120000);
 
-  for (const theme of THEMES) {
-    test(`${theme.name}: representative project visuals are disclosed`, async ({
+  // The homepage chapters are editorial rows without project imagery; the
+  // visuals (and their honesty disclosures) live on the case-study routes.
+  for (const project of FEATURED_CASE_STUDY_VISUALS) {
+    test(`${project.id}: case study discloses its ${project.imageKind}`, async ({
       page,
     }) => {
-      await page.goto("/");
-      await page.waitForLoadState("networkidle");
-      await page.waitForTimeout(1500);
+      await page.goto(`/projects/${project.id}/`);
+      await page.waitForLoadState("domcontentloaded");
 
-      await switchThemeAndWait(page, theme);
-      await scrollThroughPage(page);
+      const disclosure = page
+        .locator("#project-visual p")
+        .filter({ hasText: project.disclosure })
+        .first();
 
-      for (const project of FEATURED_PROJECT_VISUALS) {
-        const disclosure = page
-          .locator("p")
-          .filter({ hasText: project.disclosureLabel })
-          .filter({ hasText: project.disclosure })
-          .first();
-
-        await expectAnyVisible(
-          disclosure,
-          `${project.title} should disclose ${project.imageKind}`
-        );
-      }
+      await expectAnyVisible(
+        disclosure,
+        `${project.title} should disclose ${project.imageKind}`
+      );
     });
   }
 });
 
-test.describe("Horizontal Project Rail", () => {
+test.describe("Work Chapter Rows", () => {
   test.setTimeout(120000);
 
-  test("technical-operations-atlas: selected work remains reachable after scrolling projects", async ({
+  test("daylight-study: work rows remain reachable after scrolling the chapter", async ({
     page,
   }) => {
-    const finalFeaturedProject = FEATURED_PROJECTS.at(-1);
+    // Target the last row actually rendered in the work chapter (an
+    // #work h3), not merely the last featured project — some featured
+    // projects link to the live app and have no work-chapter row.
+    const finalWorkRow = EXPECTED_WORK_ROWS.at(-1);
 
-    if (!finalFeaturedProject) {
+    if (!finalWorkRow) {
       test.skip(
         true,
-        "No featured project is available for the project visibility check"
+        "No work-chapter row is available for the project visibility check"
       );
       return;
     }
@@ -124,13 +132,13 @@ test.describe("Horizontal Project Rail", () => {
     await page.waitForTimeout(1500);
 
     await switchThemeAndWait(page, { name: DEFAULT_THEME, label: "" });
-    await page.locator("#projects").waitFor({ state: "attached" });
+    await page.locator("#work").waitFor({ state: "attached" });
 
     await page.evaluate((title) => {
-      const section = document.querySelector("#projects") as HTMLElement | null;
+      const section = document.querySelector("#work") as HTMLElement | null;
 
       if (!section) {
-        throw new Error("Projects section was not found");
+        throw new Error("Work chapter was not found");
       }
 
       const heading = Array.from(
@@ -138,12 +146,12 @@ test.describe("Horizontal Project Rail", () => {
       ).find((candidate) => candidate.textContent?.trim() === title);
 
       heading?.scrollIntoView({ block: "center", behavior: "instant" });
-    }, finalFeaturedProject.title);
+    }, finalWorkRow.title);
     await page.waitForTimeout(300);
 
     const headingState = await page.evaluate((title) => {
       const heading = Array.from(
-        document.querySelectorAll<HTMLHeadingElement>("#projects h3")
+        document.querySelectorAll<HTMLHeadingElement>("#work h3")
       ).find((candidate) => candidate.textContent?.trim() === title);
 
       if (!heading) return null;
@@ -155,7 +163,7 @@ test.describe("Horizontal Project Rail", () => {
         right: rect.right,
         viewportWidth: window.innerWidth,
       };
-    }, finalFeaturedProject.title);
+    }, finalWorkRow.title);
 
     expect(headingState).not.toBeNull();
     expect(headingState?.left).toBeGreaterThanOrEqual(0);
@@ -198,9 +206,12 @@ test.describe("Project Display Count", () => {
       await switchThemeAndWait(page, theme);
       await scrollThroughPage(page);
 
+      /* Living-scenes row swap (2026-07-24): the home paper surfaces the
+         showcase set (EXPECTED_HOME_PROJECT_TITLES), not every case-study
+         title — Visual Assist is retired from home but keeps its route. */
       const expectedTitles =
         theme.name === DEFAULT_THEME
-          ? CASE_STUDY_PROJECT_TITLES
+          ? EXPECTED_HOME_PROJECT_TITLES
           : PUBLIC_PROJECT_TITLES;
       let displayedCount = 0;
       for (const title of expectedTitles) {

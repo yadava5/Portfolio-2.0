@@ -136,7 +136,7 @@ test.describe("Accessibility Audit", () => {
     }
   });
 
-  test("technical-operations-atlas color tokens meet contrast budget", () => {
+  test("daylight-study color tokens meet contrast budget", () => {
     function luminance(rgb: [number, number, number]) {
       const channel = rgb.map((value) => {
         const normalized = value / 255;
@@ -158,18 +158,40 @@ test.describe("Accessibility Audit", () => {
       return (bright + 0.05) / (dark + 0.05);
     }
 
-    const atlasBase = [9, 11, 13] as [number, number, number];
-    const atlasCard = [24, 24, 27] as [number, number, number];
+    // Daylight Study tokens (globals.css / plan Part 3.4 — exact hexes)
+    const ink = [38, 35, 28] as [number, number, number]; // #26231C
+    const inkSecondary = [92, 86, 74] as [number, number, number]; // #5C564A
+    const inkDusk = [246, 239, 226] as [number, number, number]; // #F6EFE2
+    const canvas = [250, 246, 239] as [number, number, number]; // #FAF6EF
+    const clay = [176, 74, 40] as [number, number, number]; // #B04A28
+    const clayNight = [224, 138, 95] as [number, number, number]; // #E08A5F
+    const pine = [47, 93, 80] as [number, number, number]; // #2F5D50
+    const w01 = [251, 243, 231] as [number, number, number]; // dawn
+    const w03 = [246, 243, 234] as [number, number, number]; // noon
+    const w04 = [245, 237, 220] as [number, number, number]; // afternoon
+    const w05 = [242, 228, 201] as [number, number, number]; // golden hour
+    const w06 = [67, 55, 47] as [number, number, number]; // dusk
+    const w07 = [44, 38, 34] as [number, number, number]; // nightfall
+
     const tokenPairs = [
-      { name: "zinc-50 on base", fg: [250, 250, 250], bg: atlasBase },
-      { name: "zinc-100 on base", fg: [244, 244, 245], bg: atlasBase },
-      { name: "zinc-200 on card", fg: [228, 228, 231], bg: atlasCard },
-      { name: "zinc-300 on card", fg: [212, 212, 216], bg: atlasCard },
-      { name: "zinc-400 on base", fg: [161, 161, 170], bg: atlasBase },
-      { name: "amber-400 on base", fg: [251, 191, 36], bg: atlasBase },
-      { name: "sky-300 on base", fg: [125, 211, 252], bg: atlasBase },
-      { name: "emerald-400 on base", fg: [52, 211, 153], bg: atlasBase },
-      { name: "zinc-950 on amber-400", fg: [9, 9, 11], bg: [251, 191, 36] },
+      // Day chapters: ink + secondary ink on every day waypoint
+      { name: "ink on canvas", fg: ink, bg: canvas },
+      { name: "ink on dawn (01)", fg: ink, bg: w01 },
+      { name: "ink on noon (03)", fg: ink, bg: w03 },
+      { name: "ink on afternoon (04)", fg: ink, bg: w04 },
+      { name: "ink on golden hour (05)", fg: ink, bg: w05 },
+      { name: "secondary ink on canvas", fg: inkSecondary, bg: canvas },
+      { name: "secondary ink on dawn (01)", fg: inkSecondary, bg: w01 },
+      { name: "secondary ink on golden hour (05)", fg: inkSecondary, bg: w05 },
+      // Accents on day paper
+      { name: "clay text on canvas", fg: clay, bg: canvas },
+      { name: "pine on canvas", fg: pine, bg: canvas },
+      // Dusk chapters: stepped ink on the dusk/nightfall waypoints
+      { name: "dusk ink on dusk (06)", fg: inkDusk, bg: w06 },
+      { name: "dusk ink on nightfall (07)", fg: inkDusk, bg: w07 },
+      { name: "night clay on nightfall (07)", fg: clayNight, bg: w07 },
+      // Skip link (canvas text on clay fill)
+      { name: "canvas on clay button", fg: canvas, bg: clay },
     ] satisfies {
       name: string;
       fg: [number, number, number];
