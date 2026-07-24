@@ -267,7 +267,9 @@ export default function Header() {
                 both sides of the dusk flip (pre-verified header vars). */}
             <a
               href={personalInfo.resumeUrl}
-              aria-label="Resume"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Resume (opens in a new tab)"
               className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) transition-colors hover:bg-transparent hover:text-(--header-ink) min-[420px]:h-9 min-[420px]:px-3"
             >
               <FileText
