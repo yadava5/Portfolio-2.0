@@ -3,9 +3,9 @@ import {
   absoluteUrl,
   CASE_STUDY_IDS,
   CATEGORY_PROJECTS,
-  CASE_STUDY_PROJECT_TITLES,
   COMPANY_LOGOS,
   DEFAULT_THEME,
+  EXPECTED_HOME_PROJECT_TITLES,
   EXPECTED_WORK_ROWS,
   FEATURED_PROJECT_VISUALS,
   FEATURED_PROJECTS,
@@ -206,9 +206,12 @@ test.describe("Project Display Count", () => {
       await switchThemeAndWait(page, theme);
       await scrollThroughPage(page);
 
+      /* Living-scenes row swap (2026-07-24): the home paper surfaces the
+         showcase set (EXPECTED_HOME_PROJECT_TITLES), not every case-study
+         title — Visual Assist is retired from home but keeps its route. */
       const expectedTitles =
         theme.name === DEFAULT_THEME
-          ? CASE_STUDY_PROJECT_TITLES
+          ? EXPECTED_HOME_PROJECT_TITLES
           : PUBLIC_PROJECT_TITLES;
       let displayedCount = 0;
       for (const title of expectedTitles) {
