@@ -258,6 +258,20 @@ export function PipelineRun() {
     }, svg);
     svg.setAttribute("data-pipeline-scrub", "");
 
+    /* THE PIN-SPACER RE-MEASURE (day-arc early-flip fix). This pin is
+       created LAST — after the geometry state round-trip — so every
+       trigger created at engine-mount (DayArc's segments and its dusk
+       choreography on #values, ThreadSegment scrubs …) measured its
+       start/end on the layout WITHOUT the ~1-viewport pin-spacer this
+       create() just inserted above them. Left stale, #values sat a full
+       spacer below its recorded trigger and `data-arc-phase="dusk"`
+       fired one chapter early. sort() puts the refresh order back in
+       document order (this trigger was created out of order), and
+       refresh() re-measures everything with pins accounted for. One
+       synchronous re-measure at hydration — never during scroll. */
+    ScrollTrigger.sort();
+    ScrollTrigger.refresh();
+
     return () => {
       svg.removeAttribute("data-pipeline-scrub");
       haltedRef.current = false;
