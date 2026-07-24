@@ -31,25 +31,27 @@ const RANGE_START = 0.92;
 const topFractionAt = (p) => RANGE_START * (1 - p);
 
 /* Stop positions from waypoints.generated.ts DUSK_CHOREO (+ half a step
-   so each shot lands INSIDE its stop's span, not on its boundary). */
+   so each shot lands INSIDE its stop's span, not on its boundary —
+   shots-dusk2 retune: 12 stops, flip 0.72, chrome stagger 0.7775). */
 const STOPS = [
-  { name: "stop-00-w05-golden", p: 0.04 },
-  { name: "stop-01", p: 0.0917 + 0.045 },
-  { name: "stop-02", p: 0.1833 + 0.045 },
-  { name: "stop-03", p: 0.275 + 0.045 },
-  { name: "stop-04", p: 0.3667 + 0.045 },
-  { name: "stop-05-day-floor", p: 0.4583 + 0.045 },
-  { name: "stop-06-night-entry", p: 0.55 + 0.04 },
-  { name: "stop-07", p: 0.64 + 0.04 },
-  { name: "stop-08", p: 0.73 + 0.04 },
-  { name: "stop-09", p: 0.82 + 0.04 },
-  { name: "stop-10-w06-dusk", p: 0.955 },
+  { name: "stop-00-w05-golden", p: 0.05 },
+  { name: "stop-01", p: 0.11 + 0.055 },
+  { name: "stop-02", p: 0.22 + 0.055 },
+  { name: "stop-03", p: 0.33 + 0.055 },
+  { name: "stop-04", p: 0.44 + 0.055 },
+  { name: "stop-05", p: 0.55 + 0.055 },
+  { name: "stop-06-day-floor", p: 0.66 + 0.03 },
+  { name: "stop-07-night-entry", p: 0.72 + 0.028 },
+  { name: "stop-08-chrome-dusk", p: 0.7775 + 0.028 },
+  { name: "stop-09", p: 0.835 + 0.028 },
+  { name: "stop-10", p: 0.8925 + 0.028 },
+  { name: "stop-11-w06-dusk", p: 0.97 },
 ];
 
 const BOUNDARY = [
   { name: "boundary-late-ch05-no-dusk", fraction: 1.2 },
-  { name: "boundary-pre-flip-day", fraction: topFractionAt(0.5) },
-  { name: "boundary-post-flip-dusk", fraction: topFractionAt(0.6) },
+  { name: "boundary-pre-flip-day", fraction: topFractionAt(0.69) },
+  { name: "boundary-post-flip-dusk", fraction: topFractionAt(0.75) },
 ];
 
 const browser = await chromium.launch();
