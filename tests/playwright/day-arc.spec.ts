@@ -24,8 +24,9 @@ import { test, expect, type Page } from "@playwright/test";
 const PREVIEW = "/world-preview/";
 
 /* The choreography's scroll range (DayArc.tsx): trigger [data-chapter=06],
-   start "top 92%", end "top top"; the flip lands at range fraction 0.55
-   (waypoints.generated DUSK_FLIP_POS). */
+   start "top 92%", end "top top"; the flip lands at range fraction 0.72
+   (waypoints.generated DUSK_FLIP_POS) and the chrome — header, contour —
+   follows one stop later at 0.7775 (DUSK_CHROME_POS). */
 const RANGE_START = 0.92;
 
 /** Viewport fraction of section-06's top at a given range progress. */
@@ -167,11 +168,15 @@ test.describe("day arc — motion", () => {
           ? parseFloat(field.style.getPropertyValue("--arc-l"))
           : Number.NaN;
       });
-    const DAY_MID_L = 0.8304; /* stop 2  #dbc4a3 */
-    const DAY_FLOOR_L = 0.655; /* stop 5  #a38c79 */
-    const NIGHT_ENTRY_L = 0.42; /* stop 6  #5a493c */
+    const DAY_MID_L = 0.8287; /* stop 2  #dac3a2 */
+    const DAY_FLOOR_L = 0.64; /* stop 6  #9e8774 */
+    const NIGHT_ENTRY_L = 0.43; /* stop 7  #5d4c3e */
     const W06_L = 0.3471;
     const close = (a: number, b: number) => Math.abs(a - b) < 0.002;
+    const arcChrome = () =>
+      page.evaluate(() =>
+        document.documentElement.getAttribute("data-arc-chrome")
+      );
 
     /* Mid day-side descent: a rendered stop that is neither waypoint —
        the old single step never painted anything between them. */
@@ -182,20 +187,28 @@ test.describe("day arc — motion", () => {
     expect(await arcPhase(page)).toBeNull();
     expect(await gloaming(page)).toBe(true);
 
-    /* The day floor: as deep as full ink can stand — still day ink */
-    await scrollDuskTo(page, topFractionAt(0.5));
+    /* The day floor dwell: as deep as full ink can stand — still day ink */
+    await scrollDuskTo(page, topFractionAt(0.69));
     await expect
       .poll(async () => close(await arcL(), DAY_FLOOR_L), { timeout: 5_000 })
       .toBe(true);
     expect(await arcPhase(page)).toBeNull();
 
-    /* Past the flip: night entry + the ink step, together */
-    await scrollDuskTo(page, topFractionAt(0.6));
+    /* Past the flip: night entry + the ink step, together — but the
+       chrome (header, contour) has NOT flipped yet: the stagger window */
+    await scrollDuskTo(page, topFractionAt(0.75));
     await expect
       .poll(async () => close(await arcL(), NIGHT_ENTRY_L), { timeout: 5_000 })
       .toBe(true);
     expect(await arcPhase(page)).toBe("dusk");
+    expect(await arcChrome()).toBeNull();
     expect(await gloaming(page)).toBe(true);
+
+    /* One stop later the chrome follows the world into dusk */
+    await scrollDuskTo(page, topFractionAt(0.85));
+    await expect
+      .poll(() => arcChrome(), { timeout: 5_000 })
+      .toBe("dusk");
 
     /* Range end: settled on waypoint-06, the gloaming released */
     await scrollDuskTo(page, 0);
@@ -204,13 +217,16 @@ test.describe("day arc — motion", () => {
       .toBe(true);
     await expect.poll(() => gloaming(page), { timeout: 5_000 }).toBe(false);
     expect(await arcPhase(page)).toBe("dusk");
+    expect(await arcChrome()).toBe("dusk");
 
-    /* Reverse through the flip: day floor returns, dusk releases */
-    await scrollDuskTo(page, topFractionAt(0.5));
+    /* Reverse through the flip: day floor returns, dusk AND the chrome
+       release (the stagger reverses symmetrically) */
+    await scrollDuskTo(page, topFractionAt(0.69));
     await expect
       .poll(async () => close(await arcL(), DAY_FLOOR_L), { timeout: 5_000 })
       .toBe(true);
     await expect.poll(() => arcPhase(page), { timeout: 5_000 }).toBeNull();
+    expect(await arcChrome()).toBeNull();
   });
 
   test("gloaming deepens the muted voices only inside the range", async ({
@@ -268,7 +284,7 @@ test.describe("day arc — home boundary (pin-spacer regression)", () => {
     expect(await arcPhase(page)).toBeNull();
 
     /* Past the flip fraction: dusk lands, exactly at its chapter */
-    await scrollDuskTo(page, topFractionAt(0.7));
+    await scrollDuskTo(page, topFractionAt(0.8));
     await expect.poll(() => arcPhase(page), { timeout: 5_000 }).toBe("dusk");
 
     /* And back out — the boundary reverses at the same fraction */
