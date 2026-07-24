@@ -81,10 +81,12 @@ export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   .filter((title): title is string => Boolean(title));
 
 // The project records the HOME paper actually surfaces (ch04 flagship +
-// the three ch05 rows + the "also on file" index). Visual Assist was
+// the four ch05 rows + the "also on file" index). Visual Assist was
 // retired from home 2026-07-24 (portfolioVisible: false — its case file
 // stays reachable from /evidence); jetpack-compress holds a row but has
-// no case route yet.
+// no case route yet. Cadence moved index → prime row and automl left
+// the index (it IS the flagship) in the same-day dedupe ruling, so the
+// surfaced set is unchanged.
 export const EXPECTED_HOME_PROJECT_TITLES = [
   "Agentic AutoML Platform",
   "Applied",
@@ -143,11 +145,16 @@ export const EXPECTED_GRADUATE_IDENTITY = {
 // Third slot swapped Visual Assist → jetpack-compress (2026-07-24): the
 // six live showcase projects hold the prime rows; visual-assist is
 // retired (portfolioVisible: false) and keeps its case-file route.
+// Fourth row added (dedupe ruling, 2026-07-24): Cadence promotes from
+// "also on file" to a prime row — its scene was already registered, and
+// a project appears ONCE on the home paper (automl left the index too:
+// it IS the ch04 flagship).
 export const EXPECTED_SELECTED_WORK_ORDER = [
   "Agentic AutoML Platform",
   "Applied",
   "Glyph",
   "jetpack-compress",
+  "Cadence",
 ];
 
 // Ch-05 editorial rows: each row links to its case file — or, for
@@ -173,6 +180,13 @@ export const EXPECTED_WORK_ROWS = [
     title: "jetpack-compress",
     href: "https://jetpack-compress.vercel.app",
     metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+  },
+  {
+    // taskflow-tests manifest entry: 634 frontend + 511 backend = 1,145
+    // passing (vitest); the chip cites the case file's receipt 01.
+    title: "Cadence",
+    href: "/projects/taskflow-calendar/",
+    metric: "1,145 automated tests — 634 frontend + 511 backend, vitest",
   },
 ];
 
