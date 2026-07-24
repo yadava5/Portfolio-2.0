@@ -117,9 +117,21 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
+// The masthead (owner ruling, 2026-07-24): "Scroll. It's all real." —
+// two structural line spans whose textContent concatenates WITHOUT a
+// space between blocks (and the footnote ¹ glues onto "real."), so
+// assertions target each line, never the joined sentence. The h1's
+// aria-label carries the one honest sentence.
+export const EXPECTED_MASTHEAD = {
+  ariaLabel: "Scroll. It's all real.",
+  lines: ["Scroll.", "It's all real."],
+};
+
 export const EXPECTED_GRADUATE_IDENTITY = {
-  // Hero mono sub-line (rendered lowercase; textContent keeps source case)
-  role: "full-stack, data, and systems · class of 2026",
+  // Hero byline retired with the masthead rewrite (owner ruling,
+  // 2026-07-24): the role line is gone from the page, so no fixture
+  // carries it — identity is the header running head ("ayush yadav")
+  // plus the #path education/experience records below.
   education: "B.S. Computer Science, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
