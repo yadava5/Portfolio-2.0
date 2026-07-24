@@ -406,7 +406,7 @@ test.describe("text motion — reduced motion", () => {
       "Thousands of service tickets. Zero structure."
     );
     await expect(page.locator("#who [data-tm-words]").first()).toHaveText(
-      "This is a story about learning machines."
+      "This is a record of what I’ve built."
     );
 
     /* No inline motion styles anywhere in the choreography vocabulary,
