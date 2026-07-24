@@ -30,6 +30,31 @@ function governorState(page: Page) {
   return page.evaluate(() => window.__frameGovernor?.state() ?? null);
 }
 
+/**
+ * Sustained catastrophic jank — three >100ms frames (+4 each) fed through
+ * the REAL scorer (probe → addPenalty → downshift), clearing the ≥8 line
+ * by a full 4 points.
+ *
+ * Why three and not two. The score decays 1/sec of wall time and
+ * `addPenalty` decays BEFORE it adds, so two +4 frames only sum to a clean
+ * 8.0 when literally zero time is measurable between the two calls.
+ * Chromium coarsens `performance.now()` to 100µs in a non-isolated page, so
+ * whether the pair straddles a tick is a coin flip decided by how hot the
+ * JIT is — back-to-back injects scored 8.0 (downshift) on an idle worker
+ * and 7.9999 (NO downshift, tier stayed core) on a worker warmed by the
+ * preceding atlas suite. The ≥8 boundary is measure-zero; nothing may sit
+ * on it. Three frames model what §F2 actually means by "sustained" and land
+ * the same real downshift deterministically — the assertions that follow
+ * (print floor, engine unmounted, cap persisted) are untouched.
+ */
+async function injectSustainedJank(page: Page) {
+  await page.evaluate(() => {
+    window.__frameGovernor?.injectFrame(120);
+    window.__frameGovernor?.injectFrame(120);
+    window.__frameGovernor?.injectFrame(120);
+  });
+}
+
 test.describe("frame governor — first-paint tier", () => {
   test("the motion world boots at Core with the governor watching", async ({
     page,
@@ -153,11 +178,13 @@ test.describe("frame governor — scoring (probe drives the real scorer)", () =>
       document.getElementById("who")?.scrollIntoView();
     });
 
-    await page.evaluate(() => {
-      /* Sustained: two catastrophic frames back-to-back (+4 each) */
-      window.__frameGovernor?.injectFrame(120);
-      window.__frameGovernor?.injectFrame(120);
+    /* The subject is core → print: state the starting tier so a governor
+       that promoted itself mid-setup fails HERE, not five assertions on. */
+    expect(await governorState(page)).toMatchObject({
+      tier: "core",
+      watching: true,
     });
+    await injectSustainedJank(page);
 
     /* The floor: tier print, engine gone, static world stamped */
     await expect(page.locator("html")).toHaveAttribute("data-tier", "print");
@@ -210,29 +237,34 @@ test.describe("frame governor — scoring (probe drives the real scorer)", () =>
       return el ? el.getBoundingClientRect().top : null;
     });
 
-    await page.evaluate(() => {
-      window.__frameGovernor?.injectFrame(120);
-      window.__frameGovernor?.injectFrame(120);
-    });
+    await injectSustainedJank(page);
     await expect(page.locator("html")).toHaveAttribute("data-tier", "print");
 
     /* After the engine unmounts and the spacer unwinds, the chapter the
-       visitor was reading sits where it sat (±16px of settling). */
-    await expect
-      .poll(
-        () =>
-          page.evaluate(() => {
-            const el = document.getElementById("values");
-            return el ? Math.round(el.getBoundingClientRect().top) : null;
-          }),
-        { timeout: 5_000 }
-      )
-      .toBeLessThan((before ?? 0) + 16);
-    const after = await page.evaluate(() => {
-      const el = document.getElementById("values");
-      return el ? el.getBoundingClientRect().top : null;
-    });
-    expect(Math.abs((after ?? 0) - (before ?? 0))).toBeLessThanOrEqual(16);
+       visitor was reading sits where it sat (±16px of settling).
+
+       Poll the ABSOLUTE drift, not an upper bound. The unwind removes the
+       ch04 pin-spacer first and SmoothScroll's double-rAF compensation
+       scrolls back a frame later, so there is an intermediate layout where
+       the chapter has ridden up — a one-sided `toBeLessThan(before + 16)`
+       is satisfied by exactly that uncompensated frame, and the one-shot
+       re-read that used to follow it then sampled a position still in
+       flight (observed: read 67, settled 100 one round-trip later, against
+       a `before` of 100). Two-sided is the actual contract. */
+    const drift = () =>
+      page.evaluate((baseline) => {
+        const el = document.getElementById("values");
+        return el
+          ? Math.abs(el.getBoundingClientRect().top - (baseline ?? 0))
+          : Number.POSITIVE_INFINITY;
+      }, before);
+
+    await expect.poll(drift, { timeout: 5_000 }).toBeLessThanOrEqual(16);
+
+    /* The compensation is a landing, not a bounce: it still holds after
+       the layout has had time to move again. */
+    await page.waitForTimeout(300);
+    expect(await drift()).toBeLessThanOrEqual(16);
   });
 });
 
