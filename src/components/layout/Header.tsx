@@ -29,7 +29,8 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Mail, X } from "lucide-react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { FileText, Mail } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
 import {
   useLenis,
@@ -108,27 +109,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [lenis]);
 
-  useEffect(() => {
-    if (!portraitOpen) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPortraitOpen(false);
-      }
-    };
-
-    /* Pause the scroll engine while the modal locks the page */
-    lenis?.stop();
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-      lenis?.start();
-    };
-  }, [portraitOpen, lenis]);
-
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLElement>, targetId: string) => {
       const target = document.querySelector<HTMLElement>(targetId);
@@ -164,27 +144,87 @@ export default function Header() {
             "ayush yadav" NEVER ellipsizes, 320px up (fix round 4). */}
         <nav className="mx-auto flex max-w-[1240px] items-center justify-between gap-2 px-6 sm:gap-3 sm:px-12 xl:pr-16 xl:pl-36">
           <div className="flex items-center gap-2 min-[420px]:gap-3">
-            <button
-              type="button"
-              onClick={() => setPortraitOpen(true)}
-              className="relative hidden h-7 w-7 shrink-0 overflow-hidden rounded-full border border-(--header-ink-border) transition-colors hover:border-(--header-ink) min-[375px]:block min-[420px]:h-9 min-[420px]:w-9"
-              aria-label="Open Ayush Yadav portrait"
-              aria-haspopup="dialog"
-              aria-expanded={portraitOpen}
-            >
-              {/* The 96px avatar derivative, not the full portrait: the
-                  button paints at 26–36px, and the old priority preload
-                  burned a critical-window slot on every route for 52KB
-                  of unused pixels (PERF-AUDIT fix 3). No priority — a
-                  header thumb must never outrank fonts and CSS. */}
-              <Image
-                src={personalInfo.portrait.thumb}
-                alt={personalInfo.portrait.alt}
-                width={96}
-                height={96}
-                className="h-full w-full object-cover"
-              />
-            </button>
+            {/* THE PORTRAIT PLATE (owner fix round — "awkward plain
+                dialog"). The avatar opens a tipped-in portrait plate that
+                DEVELOPS like a print: warm plate-paper mat, ink hairlines,
+                the photograph washing in top-to-bottom (clip-path — D3
+                whitelist), then a mono dateline caption settling under it.
+                Motion is CSS-only and double-gated (reduced-motion media +
+                html:not([data-motion-off]) — the quiet toggle, the
+                governor's print floor, and hidden-surface loads all stamp
+                data-motion-off), so every static world opens the finished
+                plate instantly: same DOM, honest final frame, zero JS
+                motion. Radix Dialog owns the a11y: focus trap + restore,
+                esc, overlay press, aria-modal, labelled by the sr-only
+                Title. */}
+            <Dialog.Root open={portraitOpen} onOpenChange={setPortraitOpen}>
+              <Dialog.Trigger asChild>
+                <button
+                  type="button"
+                  className="relative hidden h-7 w-7 shrink-0 overflow-hidden rounded-full border border-(--header-ink-border) transition-colors hover:border-(--header-ink) min-[375px]:block min-[420px]:h-9 min-[420px]:w-9"
+                  aria-label="Open Ayush Yadav portrait"
+                >
+                  {/* The 96px avatar derivative, not the full portrait: the
+                      button paints at 26–36px, and the old priority preload
+                      burned a critical-window slot on every route for 52KB
+                      of unused pixels (PERF-AUDIT fix 3). No priority — a
+                      header thumb must never outrank fonts and CSS. */}
+                  <Image
+                    src={personalInfo.portrait.thumb}
+                    alt={personalInfo.portrait.alt}
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                {/* The viewer wash the artifact viewer already speaks —
+                    deep ink, never frost. */}
+                <Dialog.Overlay className="portrait-veil bg-ink/60 fixed inset-0 z-[120]" />
+                <Dialog.Content
+                  aria-describedby={undefined}
+                  className="fixed top-1/2 left-1/2 z-[121] w-[calc(100vw-2.5rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 outline-none sm:max-w-md"
+                >
+                  <Dialog.Title className="sr-only">
+                    Ayush Yadav — portrait
+                  </Dialog.Title>
+                  {/* The static tilt lives on the figure; the entrance
+                      animates the inner riser only, so transforms never
+                      fight (and the tilt holds in static worlds). */}
+                  <figure className="-rotate-[0.4deg]">
+                    <div className="portrait-riser plate-paper border-ink/40 border p-2 shadow-none sm:p-3">
+                      <div className="plate-inner-rule overflow-hidden">
+                        {/* Mounts only when opened — the full portrait
+                            loads on demand (PERF-AUDIT fix 3); real
+                            900×1350 intrinsics. */}
+                        <Image
+                          src={personalInfo.portrait.image}
+                          alt={personalInfo.portrait.alt}
+                          width={900}
+                          height={1350}
+                          className="portrait-develop h-auto max-h-[calc(100vh-11rem)] w-full object-contain"
+                          sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
+                        />
+                      </div>
+                      {/* The dateline caption — the story's own settled
+                          dateline (StoryShell ch01), no new claims. */}
+                      <figcaption className="portrait-caption label-mono text-ink flex items-baseline justify-between gap-4 px-1 pt-3 pb-1">
+                        <span>the author — cincinnati, ohio · summer 2026</span>
+                        <Dialog.Close asChild>
+                          <button
+                            type="button"
+                            className="link-draw label-mono text-ink cursor-pointer whitespace-nowrap"
+                          >
+                            close ✕
+                          </button>
+                        </Dialog.Close>
+                      </figcaption>
+                    </div>
+                  </figure>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
             <Link
               href="/"
               className="label-mono link-draw-quiet whitespace-nowrap text-(--header-ink)"
@@ -283,42 +323,6 @@ export default function Header() {
           </div>
         </nav>
       </header>
-
-      {portraitOpen ? (
-        <div
-          className="bg-canvas/90 fixed inset-0 z-[120] flex items-center justify-center px-5 py-8"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Ayush Yadav portrait"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setPortraitOpen(false);
-            }
-          }}
-        >
-          <div className="border-ink/25 bg-canvas relative max-h-[calc(100vh-4rem)] w-full max-w-sm overflow-hidden rounded-xs border sm:max-w-md">
-            <button
-              type="button"
-              onClick={() => setPortraitOpen(false)}
-              className="border-ink/30 bg-canvas text-ink hover:border-ink absolute top-3 right-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors"
-              aria-label="Close portrait"
-            >
-              <X size={18} aria-hidden="true" />
-            </button>
-            {/* The dialog mounts only when opened, so the full portrait
-                loads on demand — priority dropped (PERF-AUDIT fix 3);
-                width/height corrected to the file's real 900×1350. */}
-            <Image
-              src={personalInfo.portrait.image}
-              alt={personalInfo.portrait.alt}
-              width={900}
-              height={1350}
-              className="h-auto max-h-[calc(100vh-4rem)] w-full object-contain"
-              sizes="(min-width: 640px) 448px, calc(100vw - 40px)"
-            />
-          </div>
-        </div>
-      ) : null}
     </>
   );
 }
