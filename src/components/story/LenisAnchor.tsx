@@ -43,8 +43,14 @@ export function LenisAnchor({ href, children, ...rest }: LenisAnchorProps) {
         offset: SCROLL_OFFSET,
       });
     } else {
-      /* Static world: instant jump, no animation */
-      target.scrollIntoView({ behavior: "auto" });
+      /* Static world: instant jump, no animation. Manual offset math —
+         the SAME landing contract as the controller. scrollIntoView
+         would apply BOTH scroll-padding-top AND scroll-margin-top
+         (~12rem = 192px, the double-count); this applies exactly one
+         6rem header offset, so every world lands identically. */
+      const y =
+        window.scrollY + target.getBoundingClientRect().top + SCROLL_OFFSET;
+      window.scrollTo({ top: y, behavior: "auto" });
     }
   };
 
