@@ -56,9 +56,12 @@ const SEGMENTS: { text: string; at: number; span?: string }[] = [
 const spanX = (at: number) => SX + at * CW;
 const spanW = (len: number) => len * CW;
 
-/** Chip stack (left column) — rest geometry. */
+/** Chip stack (left column) — rest geometry. 176 wide: the longest label
+ *  ("invite — sam · priya", 20 mono chars ≈ 160px at 12.5px + 0.04em
+ *  tracking) must SIT INSIDE the box with breathing room — at 160 the
+ *  text ran through the right border (the settled-frame overlap fix). */
 const CHIP_X = 12;
-const CHIP_W = 160;
+const CHIP_W = 176;
 const CHIP_H = 22;
 const CHIP_Y = { when: 108, who: 140, meet: 172 };
 
@@ -188,11 +191,13 @@ export function CadenceScene() {
         ))}
 
         {/* sentence → chips: the parse thread, named for the real parsers
-            (the label seats under the thread's end, as the chips' header) */}
+            (the label seats under the thread's end, as the chips' header).
+            The tail stops at y 82 — ~9px of air above the label's cap
+            height (91.5) so the ink never grazes the text at any scale. */}
         <path
           data-sc-thread
           className="scene-edge"
-          d="M 90 50 C 90 66, 42 70, 22 86"
+          d="M 90 50 C 90 64, 44 66, 21 82"
           pathLength={1}
         />
         <text x={SX} y="99" className="sc-quiet sc-small">
@@ -249,11 +254,16 @@ export function CadenceScene() {
           </text>
         </g>
 
-        {/* chips → grid: the event snapping into place */}
+        {/* chips → grid: the event snapping into place. Terminates at the
+            EDGES with air on both ends: departs 8px right of the when-
+            chip's border (188 → 196) at its vertical center, arcs ~11px
+            clear above the "12:00" hour label (top ≈ 144), and lands 7px
+            short of the event block's left edge (312) at block center —
+            the connector points between the boxes, never through them. */}
         <path
           data-sc-snap
           className="scene-edge"
-          d="M 176 119 C 224 119, 252 132, 308 147"
+          d="M 196 119 C 240 119, 264 128, 305 147"
           pathLength={1}
         />
 
