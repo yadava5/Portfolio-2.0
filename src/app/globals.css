@@ -228,7 +228,7 @@ html[data-arc-phase="dusk"] body {
   --header-paper: var(--color-canvas);
   --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
   --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
-  border-color: color-mix(in srgb, var(--color-ink) 16%, transparent);
+  --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
 }
 html[data-arc-phase="dusk"] .site-header {
   --header-ink: var(--color-ink-dusk);
@@ -243,7 +243,46 @@ html[data-arc-phase="dusk"] .site-header {
     var(--color-ink-dusk) 32%,
     transparent
   );
-  border-color: color-mix(in srgb, var(--color-ink-dusk) 20%, transparent);
+  --header-rule: color-mix(in srgb, var(--color-ink-dusk) 20%, transparent);
+}
+
+/* The masthead's bottom rule, drawn as a hairline pseudo-element so it
+   can RULE ITSELF once during the hero's load window (motion worlds
+   only — same [data-motion-ready] gate + removal as the hero entrance,
+   so static worlds and JS-dead loads always paint the finished rule;
+   the end state IS the static state, amendment A7). transform-only,
+   ~1px of contained paint. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  pointer-events: none;
+  background-color: var(--header-rule);
+  transform-origin: left center;
+}
+@keyframes masthead-rule {
+  from {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .site-header::after {
+    animation: masthead-rule 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: 120ms;
+  }
+}
+/* Forced colors strip background hairlines — hand the rule back to a
+   real border so Windows High Contrast keeps the masthead's edge. */
+@media (forced-colors: active) {
+  .site-header {
+    border-bottom: 1px solid CanvasText;
+  }
+  .site-header::after {
+    display: none;
+  }
 }
 
 /* Scrolled state: paper fade-in. Opaque, so folio rules and kickers pass
@@ -267,7 +306,7 @@ html[data-arc-phase="dusk"] .site-header[data-surface="archive"] {
   --header-paper: var(--color-surface-1);
   --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
   --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
-  border-color: color-mix(in srgb, var(--color-ink) 16%, transparent);
+  --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
 }
 .site-header[data-surface="archive"].site-header-scrolled,
 html[data-arc-phase="dusk"]
@@ -292,6 +331,69 @@ html[data-motion-off] .site-header[data-surface="archive"] {
 }
 html[data-motion-off] .site-header {
   background-color: var(--color-canvas);
+}
+
+/* ── THE RUNNING HEAD (brief B8) — day mark + dateline ────────────────
+   The masthead's day glyph: a drawn circle (the day) whose ink disc
+   rises one step per chapter — ○ dawn → ◐ warm afternoon → ● nightfall.
+   Seven DISCRETE transform states keyed by `data-phase` (the chapter
+   id): state changes land only at section crossings via
+   useActiveChapter's IntersectionObserver, so scrolling costs nothing —
+   there is no scrubbed frame, only a 600ms compositor glide between
+   steps in motion worlds. Static worlds (reduced motion / quiet
+   toggle) step instantly: the mark is truthful wayfinding STATE at any
+   scroll position, exactly like the chapter rail (equity requirement).
+   transform/opacity only; the disc moves inside a static clipPath;
+   contain: paint on the 15px glyph. */
+.daymark {
+  contain: paint;
+}
+.daymark-fill {
+  /* dawn (01): the vessel is empty — the whole disc sits below the clip */
+  transform: translateY(12.4px);
+  transition: transform 600ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.daymark[data-phase="02"] .daymark-fill {
+  transform: translateY(10.33px);
+}
+.daymark[data-phase="03"] .daymark-fill {
+  transform: translateY(8.27px);
+}
+.daymark[data-phase="04"] .daymark-fill {
+  transform: translateY(6.2px);
+}
+.daymark[data-phase="05"] .daymark-fill {
+  transform: translateY(4.13px);
+}
+.daymark[data-phase="06"] .daymark-fill {
+  transform: translateY(2.07px);
+}
+.daymark[data-phase="07"] .daymark-fill {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .daymark-fill {
+    transition: none;
+  }
+}
+html[data-motion-off] .daymark-fill {
+  transition: none;
+}
+
+/* The dateline resets like a running head on a fresh leaf: a 340ms
+   rise when the chapter changes (the swap span is keyed by chapter id).
+   Motion worlds only — static worlds swap instantly and truthfully.
+   `to` omitted: the settled state IS the static state (A7). */
+@keyframes dateline-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .dateline-swap {
+    animation: dateline-in 340ms cubic-bezier(0.19, 1, 0.22, 1) both;
+  }
 }
 
 /* Folio rules dissolve just before they slide under the fixed header —
@@ -356,12 +458,45 @@ html[data-motion-off] .site-footer {
     100% 1px,
     100% 1px;
 }
+/* Section-aware active state (brief B8): the nav item whose chapter is
+   under the viewport's center line keeps its ink line fully drawn — the
+   250ms draw plays at the crossing in motion worlds; static worlds show
+   the line already drawn. STATE, not hover: the same mark is visible to
+   touch, keyboard, and motionless readers alike. */
+.link-draw[aria-current] {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
 @media (prefers-reduced-motion: reduce) {
   .link-draw {
     transition: none;
   }
 }
 html[data-motion-off] .link-draw {
+  transition: none;
+}
+
+/* Quiet variant for the wordmark: no resting hairline (the identity is
+   not an affordance queue), but hover/focus still draws the full ink
+   line — the one sanctioned hover move, minus the resting layer. */
+.link-draw-quiet {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: left calc(100% - 0.05em);
+  background-repeat: no-repeat;
+  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+.link-draw-quiet:hover,
+.link-draw-quiet:focus-visible {
+  background-size: 100% 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-draw-quiet {
+    transition: none;
+  }
+}
+html[data-motion-off] .link-draw-quiet {
   transition: none;
 }
 
