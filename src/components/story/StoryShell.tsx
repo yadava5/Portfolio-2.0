@@ -777,7 +777,7 @@ function AutomlChapter() {
     <section
       id={AUTOML.anchor}
       data-chapter={AUTOML.id}
-      className="relative pt-[8vh] pb-[14vh]"
+      className="relative pt-[8vh] pb-[12vh]"
     >
       <ThreadSegment id={AUTOML.id} />
       <div className={WRAP}>
@@ -786,7 +786,19 @@ function AutomlChapter() {
           label="the capstone — senior design expo — spring 2026"
         />
 
-        <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20">
+        {/* THE PINNED PLATE (lg+): data-pipeline-pin-wide is the pin
+            target on two-column layouts, so the HELD viewport is the
+            WHOLE flagship plate — thesis copy left, fig 4.0 + fig 4.1
+            right — never a lone rail beside blank paper. (Pinning only
+            the ladder stretched this grid row by the pin distance and
+            left the prose column as ~1 viewport of empty page while the
+            token scrubbed — the blank-paper report, fix round 3.) On
+            stacked layouts the narrower [data-pipeline-pin] below pins
+            instead; PipelineRun picks the target per breakpoint. */}
+        <div
+          data-pipeline-pin-wide
+          className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20"
+        >
           {/* data-tm-scene (PREMIUM-FLOW #1): the thesis column assembles
               as one beat — headline → body → gated-phases line → case-file
               link, staggered off a single trigger. */}
@@ -824,22 +836,32 @@ function AutomlChapter() {
               ladder then the registry — settle in sequence as one beat
               (on lg beside the thesis column, on smaller screens below
               it), keyed off their own trigger so they land on the reading
-              path rather than firing with the far-away headline. */}
-          <div data-tm-scene data-tm-start="clamp(top 85%)">
+              path rather than firing with the far-away headline.
+              data-pipeline-pin: the STACKED-layout pin target — below lg
+              the held beat is this whole rail (ladder + caption + the
+              4.1 registry with its awaiting row), a full figure column
+              rather than the ladder alone over blank paper. On lg the
+              grid above ([data-pipeline-pin-wide]) pins instead. The
+              wrapper still carries contain:paint (globals.css) — the
+              scrubbed token, pulse, and registry all paint inside it. */}
+          <div data-pipeline-pin data-tm-scene data-tm-start="clamp(top 85%)">
             {/* THE PINNED PIPELINE RUN (PREMIUM-FLOW ⭐#2, the flagship).
-                The pin wraps THIS div — separate from the figure the
-                composed-scene reveal transforms ([data-tm='block']) — so
-                the pin and the reveal never fight, and the pin-spacer
-                grows chapter 04 INSIDE the Red Thread's measured region
-                (the seam re-welds on the section resize; the thread spec
-                stays green). PipelineRun scrubs an ink run-token down the
-                ladder as the visitor scrolls the pinned range: each phase
-                ink-settles as the token passes, an edge draws ahead, and
-                at the human gate the token HALTS + pulses clay and HOLDS.
-                It NEVER resolves 7.0 deploy and NEVER approves run 041 —
-                the halt is the payoff; approval stays the visitor's own
-                press act (the registry row below + the ch07 stamp). */}
-            <div data-pipeline-pin className="pl-4">
+                The pin target is an ANCESTOR wrapper — never the figure
+                the composed-scene reveal transforms ([data-tm='block'])
+                — so the pin and the reveal never fight, and the
+                pin-spacer grows chapter 04 INSIDE the Red Thread's
+                measured region (the seam re-welds on the section resize;
+                the thread spec stays green). PipelineRun scrubs an ink
+                run-token down the ladder as the visitor scrolls the
+                pinned range: each phase ink-settles as the token passes,
+                an edge draws ahead, and at the human gate the token
+                HALTS + pulses clay and HOLDS. It NEVER resolves 7.0
+                deploy and NEVER approves run 041 — the halt is the
+                payoff; approval stays the visitor's own press act (the
+                registry row below + the ch07 stamp). pl-4 buys the
+                rail-riding token + clay pulse room under the column's
+                contain: paint. */}
+            <div className="pl-4">
               <figure data-tm="block" data-pipeline-scope className="relative">
                 <ul
                   data-pipeline-track
