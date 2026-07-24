@@ -570,7 +570,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "automl",
     treatment: "evidence-ledger",
     fileNo: 1,
-    role: "Capstone lead — sole engineer",
+    role: "Capstone engineer — my slice below",
     timeframe: "2025-09 to Present",
     filed: "2025-09",
     verified: "2026-07",
@@ -1254,7 +1254,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from Miami University ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
+      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -1395,7 +1395,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         claim:
           "1M+ operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
         method:
-          "role scope, jun 2025 – may 2026 — Miami University ITSM data integration",
+          "role scope, jun 2025 – may 2026 — institutional ITSM data integration",
         artifacts: [],
         date: null,
         visibility: "local-only",
@@ -1479,7 +1479,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from Miami University policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
+      "Private proof from institutional policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
