@@ -167,7 +167,7 @@ const WORK_ROWS = [
   {
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
-    muted: "JobTracker reads it — and nothing ever leaves your device.",
+    muted: "Applied reads it — the classifier even runs in your browser.",
     metric: "macro-f1 0.9791 — 96-sample gate",
     metricHref: "/projects/jobtracker/#v-jobtracker-5",
   },
