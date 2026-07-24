@@ -13,6 +13,7 @@ import {
   caseStudyIds,
   projectCaseStudies,
 } from "../../src/lib/data/projectCaseStudies";
+import { PROJECT_SCENE_MANIFEST } from "../../src/components/scenes/manifest";
 
 // The multi-theme system was removed (a single identity ships). These
 // remain as static fixtures so the suite compiles; there is no theme switcher.
@@ -53,29 +54,46 @@ function visualDisclosureLabel(imageKind: string) {
   return "Representative visual:";
 }
 
-export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map((project) => ({
-  id: project.id,
-  title: project.title,
-  image: project.image,
-  imageKind: project.imageKind,
-  disclosureLabel: visualDisclosureLabel(project.imageKind),
-  disclosure: project.imageDisclosure,
-}));
+// Living scenes (src/components/scenes): a registered scene replaces the
+// static fig. 1 image on that project's case file, and its HONEST
+// disclosure comes from the scene manifest instead of the image data.
+function projectVisual(project: (typeof PUBLIC_PROJECTS)[number]) {
+  const scene = PROJECT_SCENE_MANIFEST[project.id];
+  return {
+    id: project.id,
+    title: project.title,
+    image: project.image,
+    imageKind: project.imageKind,
+    disclosureLabel: visualDisclosureLabel(project.imageKind),
+    disclosure: scene ? scene.disclosure : project.imageDisclosure,
+    hasScene: Boolean(scene),
+  };
+}
 
-export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map((project) => ({
-  id: project.id,
-  title: project.title,
-  image: project.image,
-  imageKind: project.imageKind,
-  disclosureLabel: visualDisclosureLabel(project.imageKind),
-  disclosure: project.imageDisclosure,
-}));
+export const PUBLIC_PROJECT_VISUALS = PUBLIC_PROJECTS.map(projectVisual);
+
+export const FEATURED_PROJECT_VISUALS = FEATURED_PROJECTS.map(projectVisual);
 
 export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   .map((study) => {
     return projects.find((project) => project.id === study.projectId)?.title;
   })
   .filter((title): title is string => Boolean(title));
+
+// The project records the HOME paper actually surfaces (ch04 flagship +
+// the three ch05 rows + the "also on file" index). Visual Assist was
+// retired from home 2026-07-24 (portfolioVisible: false — its case file
+// stays reachable from /evidence); jetpack-compress holds a row but has
+// no case route yet.
+export const EXPECTED_HOME_PROJECT_TITLES = [
+  "Agentic AutoML Platform",
+  "Applied",
+  "Glyph",
+  "jetpack-compress",
+  "Cadence",
+  "Master Inventory Pipeline",
+  "PolicyBot",
+];
 
 export const CASE_STUDY_LOCAL_ARTIFACTS = projectCaseStudies.flatMap((study) =>
   study.artifacts
@@ -110,15 +128,19 @@ export const EXPECTED_GRADUATE_IDENTITY = {
 };
 
 // Storyboard order: the flagship chapter (04) leads, then the Ch-05 rows.
+// Third slot swapped Visual Assist → jetpack-compress (2026-07-24): the
+// six live showcase projects hold the prime rows; visual-assist is
+// retired (portfolioVisible: false) and keeps its case-file route.
 export const EXPECTED_SELECTED_WORK_ORDER = [
   "Agentic AutoML Platform",
   "Applied",
   "Glyph",
-  "Visual Assist",
+  "jetpack-compress",
 ];
 
-// Ch-05 editorial rows: each row links to its case file and carries its
-// real proof-backed metric line (fix round 4 — no vague capability copy).
+// Ch-05 editorial rows: each row links to its case file — or, for
+// jetpack-compress (no case file yet), to the live engine — and carries
+// its real proof-backed metric line (no vague capability copy).
 export const EXPECTED_WORK_ROWS = [
   {
     title: "Applied",
@@ -134,9 +156,11 @@ export const EXPECTED_WORK_ROWS = [
       "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
   },
   {
-    title: "Visual Assist",
-    href: "/projects/visual-assist/",
-    metric: "71 xctest functions — on-device, voiceover-first",
+    // jetpack-tests manifest entry: 72 tests / 0 failures on JDK 25 at
+    // the pinned public commit. External href — no case route exists.
+    title: "jetpack-compress",
+    href: "https://jetpack-compress.vercel.app",
+    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
   },
 ];
 
