@@ -1606,13 +1606,27 @@ html[data-motion-off] .audit-run {
    stroke-dashoffset only. Motion lives behind the engine's A7 gates;
    static worlds rest on the drawn final frame.
 
-   The pinned wrapper carries `contain: paint` (the pin holds a small,
-   scoped layer — never a full-viewport one). Its left padding gives the
-   rail-riding token + clay pulse room so paint containment never clips
-   the bead; the fig-4.1 registry takes the same inset so the two
-   ledgers' rails stay aligned. ════════════════════════════════════ */
-[data-pipeline-pin] {
-  contain: paint;
+   The figure column ([data-pipeline-pin] — the stacked-layout pin
+   target and, on lg, the rail inside the pinned plate grid) carries
+   `contain: paint`: the scrubbed token, edge, pulse, and registry all
+   paint inside one small scoped layer — never a full-viewport one. The
+   ladder wrapper's left padding gives the rail-riding token + clay
+   pulse room so paint containment never clips the bead; the fig-4.1
+   registry takes the same inset so the two ledgers' rails stay
+   aligned. The lg pin target ([data-pipeline-pin-wide], the whole
+   plate grid) is deliberately NOT contained — the Fraunces headline's
+   italic overhang sits at its very edge.
+
+   Containment is an ENGINE-WORLD paint scope only (it exists to bound
+   the scrub's per-frame invalidation). In the static worlds nothing in
+   the column repaints — and the print tier's monograph dressing draws
+   a 14px-offset outline around each captioned figure, which a
+   contained column would clip to bare top/bottom rules. Same gates as
+   the motion it serves. ════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) [data-pipeline-pin] {
+    contain: paint;
+  }
 }
 .pipeline-overlay {
   z-index: 0;
