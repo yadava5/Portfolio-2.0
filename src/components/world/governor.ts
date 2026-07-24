@@ -61,6 +61,11 @@ const DECAY_PER_SEC = 1;
 const DOWNSHIFT_AT = 8;
 /** A frame counts as scroll-active within this window of a scroll event. */
 const ACTIVE_WINDOW_MS = 240;
+/** Scroll-while-hidden only forces the print floor after the document has
+ *  been hidden this long — a cmd-tab mid-momentum (or mid-flight) can leak
+ *  a few trailing scroll events into the first instants of hiddenness, and
+ *  a real reader must never come back to a downshifted page for that. */
+const HIDDEN_SCROLL_GRACE_MS = 600;
 /** §F3: accumulated smooth active scrolling required before full. */
 const PROMOTE_AFTER_SMOOTH_MS = 3000;
 /** §F3: garnish is desktop-first — phones never get it, even capable. */
@@ -157,7 +162,15 @@ function decayedScore(now: number): number {
 }
 
 function addPenalty(points: number, now: number): void {
-  jankScore = decayedScore(now) + points;
+  /* Same-burst penalties (sub-frame gaps) stack UNDECAYED: two
+     back-to-back catastrophic frames are exactly the sustained case the
+     ≥8 line exists for, and the continuous decay used to shave an
+     epsilon off the boundary (4 + 3.9997 < 8) — a flaky contract. Any
+     real gap (> one frame) still melts the score at 1/sec. */
+  if (now - lastScoreTs > 50) {
+    jankScore = decayedScore(now);
+  }
+  jankScore += points;
   lastScoreTs = now;
   stableMs = 0;
   if (jankScore >= DOWNSHIFT_AT) downshift();
@@ -172,13 +185,22 @@ function downshift(): void {
     return;
   }
   if (tier === "core") {
-    /* Core → Print: the print edition takes over. SmoothScroll
-       subscribes and unmounts the engine (static === final frame, so
-       the swap costs no CLS); the governor has nothing left to govern. */
-    persistCap("print");
-    stopWatching();
-    setTier("print");
+    forcePrintFloor();
   }
+}
+
+/** Core/Full → Print in one move: the print edition takes over.
+ *  SmoothScroll subscribes and unmounts the engine (static === final
+ *  frame, so the swap costs no CLS); the governor has nothing left to
+ *  govern. Session-capped — every later page this session starts at the
+ *  floor the device (or surface) proved it needs. */
+function forcePrintFloor(): void {
+  if (tier === "print") return;
+  jankScore = 0;
+  everDownshifted = true;
+  persistCap("print");
+  stopWatching();
+  setTier("print");
 }
 
 function promotionAllowed(): boolean {
@@ -252,8 +274,38 @@ function sample(): void {
   }
 }
 
+/** When the document last became hidden (engine world only — the
+ *  listener lives exactly as long as the watcher). -Infinity means "was
+ *  already hidden when watching began", which trips the guard at once. */
+let hiddenSinceTs = -Infinity;
+
+function onVisibilityFlip(): void {
+  if (document.visibilityState === "hidden") {
+    hiddenSinceTs = performance.now();
+  }
+}
+
 function markScrolled(): void {
-  lastScrollTs = performance.now();
+  const now = performance.now();
+  lastScrollTs = now;
+  /* THE BLANK-PLATE GUARD. A scroll event while `document.hidden` means
+     the page is being consumed through a surface whose rAF is frozen —
+     embedded preview panes, occluded webviews, programmatic captures.
+     A frozen rAF means every engine-held reveal is stuck at its start
+     frame (invisible ink), and screenshots of such a surface show blank
+     paper where figures should be. The honest edition for a surface
+     that scrolls without frames is the print floor — the complete
+     resting monograph, no rAF required. Guards: a controller flight's
+     suppression window, and a short grace after hiding, so a cmd-tab
+     mid-momentum (trailing scroll events in the first instants of
+     hiddenness) never downshifts a real reader's page. */
+  if (
+    document.visibilityState === "hidden" &&
+    now >= suppressUntilTs &&
+    now - hiddenSinceTs > HIDDEN_SCROLL_GRACE_MS
+  ) {
+    forcePrintFloor();
+  }
 }
 
 function onLongTasks(list: PerformanceObserverEntryList): void {
@@ -286,6 +338,11 @@ export function startWatching(): void {
   if (tier === "print") return; /* nothing below the floor to govern */
   watching = true;
   lastFrameTs = Number.NaN;
+  hiddenSinceTs =
+    document.visibilityState === "hidden"
+      ? -Infinity
+      : Number.POSITIVE_INFINITY;
+  document.addEventListener("visibilitychange", onVisibilityFlip);
   window.addEventListener("scroll", markScrolled, { passive: true });
   gsap.ticker.add(sample);
   try {
@@ -300,6 +357,7 @@ export function startWatching(): void {
 export function stopWatching(): void {
   if (!watching) return;
   watching = false;
+  document.removeEventListener("visibilitychange", onVisibilityFlip);
   window.removeEventListener("scroll", markScrolled);
   gsap.ticker.remove(sample);
   longtaskObserver?.disconnect();
