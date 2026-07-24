@@ -119,20 +119,26 @@ export default function RootLayout({
       className={`${fraunces.variable} ${newsreader.variable} ${fragmentMono.variable}`}
     >
       <body className="antialiased">
-        {/* Text-motion readiness (plan 3.8 + FOUC discipline): stamp
-            `data-motion-ready` on <html> BEFORE the hero parses, and ONLY
-            when the motion world is planned — the same two gates
-            SmoothScroll checks before mounting the engine (amendment A7:
-            OS reduced-motion preference, quiet-toggle localStorage key —
-            MOTION_STORAGE_KEY in SmoothScroll.tsx). The hero's hidden
-            entrance state exists only under this attribute, so static
-            worlds and JS-dead loads always paint the finished page;
-            TextMotion.tsx removes it after the entrance plays (load-only,
-            once). Synchronous by design: it must beat the hero's paint. */}
+        {/* First-paint world stamp (plan 3.8 + FOUC discipline + governor
+            §F2). Synchronous by design: it must beat the hero's paint.
+            1. `data-tier` — the frame governor's edition for THIS load:
+               "print" under reduced motion, the quiet toggle, or a
+               sessionStorage "study-tier-cap" of print (the lowest tier
+               a previous page of this session reached); otherwise
+               "core". NEVER "full" at load — Full garnish only mounts
+               later once the governor has proof (§F3), so the universal
+               first paint is Core and nothing ever collapses.
+            2. `data-motion-ready` — the text-motion gate (amendment A7):
+               stamped ONLY when the tier is core, i.e. the same gates
+               SmoothScroll checks before mounting the engine plus the
+               governor's ceiling. The hero's hidden entrance state
+               exists only under this attribute, so static worlds and
+               JS-dead loads always paint the finished page; TextMotion
+               removes it after the entrance plays (load-only, once). */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              'try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&localStorage.getItem("motion-off")!=="1"){document.documentElement.setAttribute("data-motion-ready","")}}catch(e){}',
+              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
           }}
         />
         <a
