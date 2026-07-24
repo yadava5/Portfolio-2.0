@@ -158,35 +158,49 @@
    on screen. Folded onto the base as background images, the soft-light is a
    single contained paint (no separate compositor layer, no per-frame
    re-blend), and the maths is identical, so the look is preserved. The rake
-   dies at the dusk step (background-image: none) exactly as before. */
+   dies BEFORE the dusk step — see --rake-f below. */
 .light-field-base {
   /* NOTE: intentionally NOT promoted to its own layer with translateZ.
      A promoted fixed full-viewport layer sub-pixel-shimmers ("vibrates")
      during scroll on a real Retina GPU — the container's `contain` already
      isolates the repaint without that cost. */
+
+  /* THE RAKE FADE (shots-dusk2 retune): soft-light's response curve makes
+     the bands STRONGEST over the darkening dusk paper (measured meanΔ
+     1.32/255 over daytime paper, but plainly visible bands by the day
+     floor) — so killing them at the flip was a large part of the slam
+     the before.webm study recorded. Instead the bands' alpha is derived
+     from --arc-l: full strength at golden hour (L 0.923) and above,
+     linearly to ZERO at the day floor (L 0.640, dusk-choreo DAY_FLOOR_L
+     — mirrored here), so the raking light has completely dissolved
+     BEFORE the ink flips. Costs nothing extra: the alpha only changes
+     when --arc-l is written, and that write already repaints this layer. */
+  --rake-f: clamp(0, calc((var(--arc-l) - 0.64) / 0.283), 1);
   background-color: oklch(var(--arc-l) var(--arc-c) var(--arc-h));
   background-image:
     linear-gradient(
       108deg,
-      rgba(255, 241, 205, 0) 18%,
-      rgba(255, 236, 196, 0.85) 31%,
-      rgba(255, 241, 205, 0) 46%
+      rgb(255 241 205 / 0%) 18%,
+      rgb(255 236 196 / calc(85% * var(--rake-f))) 31%,
+      rgb(255 241 205 / 0%) 46%
     ),
     linear-gradient(
       108deg,
-      rgba(255, 246, 222, 0) 55%,
-      rgba(255, 241, 208, 0.55) 66%,
-      rgba(255, 246, 222, 0) 79%
+      rgb(255 246 222 / 0%) 55%,
+      rgb(255 241 208 / calc(55% * var(--rake-f))) 66%,
+      rgb(255 246 222 / 0%) 79%
     ),
     linear-gradient(
       108deg,
-      rgba(66, 56, 36, 0.11) 0%,
-      rgba(66, 56, 36, 0) 24%,
-      rgba(66, 56, 36, 0) 80%,
-      rgba(66, 56, 36, 0.09) 100%
+      rgb(66 56 36 / calc(11% * var(--rake-f))) 0%,
+      rgb(66 56 36 / 0%) 24%,
+      rgb(66 56 36 / 0%) 80%,
+      rgb(66 56 36 / calc(9% * var(--rake-f))) 100%
     );
   background-blend-mode: soft-light;
 }
+/* Belt and braces: past the flip the gradients are already at alpha 0 —
+   drop them entirely so the night side pays for a plain color fill. */
 html[data-arc-phase="dusk"] .light-field-base {
   background-image: none;
 }
@@ -205,8 +219,12 @@ html[data-arc-phase="dusk"] .light-field-base {
 
 /* Past the dusk flip the ink contour dies on the ledger browns; swap to
    the cream-side variant (same geometry, 2.5%) so the paper keeps its
-   tooth at night. Steps with the flip — never scrubbed (A4). */
-html[data-arc-phase="dusk"] .light-field-contour {
+   tooth at night. Steps with the CHROME (one stop after the flip,
+   data-arc-chrome — shots-dusk2 retune): the invisible-on-dark ink
+   contour rides through the flip frame, and the cream tooth fades in on
+   its own quiet frame instead of piling onto the slam. Never scrubbed
+   (A4). */
+html[data-arc-chrome="dusk"] .light-field-contour {
   background-image: var(--texture-contour-dusk);
 }
 
@@ -221,7 +239,7 @@ html[data-arc-phase="dusk"] body {
    it at the range edges, where both voice states are pre-verified; it is
    never written per frame). As the light dies the paper loses its
    half-tones: every muted voice deepens to FULL ink so each of the
-   eleven rendered stops keeps WCAG AA (A4's spirit — a visitor stopping
+   twelve rendered stops keeps WCAG AA (A4's spirit — a visitor stopping
    mid-dusk is always reading AA text):
    - secondary ink → body ink (pre-flip; #5c564a dies below Y≈0.62);
      after the flip it maps to the dusk cream so chapter 05's tail
@@ -250,12 +268,29 @@ html[data-arc-gloaming]
   :is(.opacity-60, .opacity-70, .opacity-80) {
   opacity: 1;
 }
+/* The scene figures' quiet SVG text (.sc-quiet, 12.5px/10px mono) mutes
+   via its own opacity: 0.72 — NOT the utility classes above — so the
+   gloaming must press it too: at the deepened day floor an ink@0.72
+   composite reads ~2.9:1 (shots-dusk2 small-font audit). Text only —
+   the figures' density-encoding marks (.scene-block etc.) keep their
+   meaning-bearing mutes; they are graphic texture, not reading text. */
+html[data-arc-gloaming]
+  :is([data-chapter="05"], [data-chapter="06"])
+  .scene-fig
+  text.sc-quiet {
+  opacity: 1;
+}
 
 /* ════════════════════════════════════════════════════════════════
    WORKING-PAPER CHROME — header, footer, links, focus
    Header/footer cross the dusk flip, so their inks are composed from
    pre-verified vars only (A4): day ink on paper, dusk ink on the
-   waypoint-06 ledger brown. No backdrop-blur anywhere (NO-LIST).
+   waypoint-06 ledger brown. The header follows data-arc-CHROME, not
+   data-arc-phase (shots-dusk2 retune): it dims one choreography stop
+   AFTER the field flips, so the masthead is not part of the one big
+   frame — both of its voices are independently AA on their own papers,
+   so the stagger is safe in both scroll directions. No backdrop-blur
+   anywhere (NO-LIST).
    ════════════════════════════════════════════════════════════════ */
 
 .site-header {
@@ -265,7 +300,7 @@ html[data-arc-gloaming]
   --header-ink-border: color-mix(in srgb, var(--color-ink) 28%, transparent);
   --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
 }
-html[data-arc-phase="dusk"] .site-header {
+html[data-arc-chrome="dusk"] .site-header {
   --header-ink: var(--color-ink-dusk);
   --header-paper: var(--waypoint-06);
   --header-ink-muted: color-mix(
@@ -325,7 +360,7 @@ html[data-arc-phase="dusk"] .site-header {
 .site-header-scrolled {
   background-color: var(--color-canvas);
 }
-html[data-arc-phase="dusk"] .site-header-scrolled {
+html[data-arc-chrome="dusk"] .site-header-scrolled {
   background-color: var(--waypoint-06);
 }
 
@@ -336,7 +371,7 @@ html[data-arc-phase="dusk"] .site-header-scrolled {
    when a client-side navigation arrives from the homepage's dusk
    territory, so the dusk override is repeated at higher specificity. */
 .site-header[data-surface="archive"],
-html[data-arc-phase="dusk"] .site-header[data-surface="archive"] {
+html[data-arc-chrome="dusk"] .site-header[data-surface="archive"] {
   --header-ink: var(--color-ink);
   --header-paper: var(--color-surface-1);
   --header-ink-muted: color-mix(in srgb, var(--color-ink) 72%, transparent);
@@ -344,7 +379,7 @@ html[data-arc-phase="dusk"] .site-header[data-surface="archive"] {
   --header-rule: color-mix(in srgb, var(--color-ink) 16%, transparent);
 }
 .site-header[data-surface="archive"].site-header-scrolled,
-html[data-arc-phase="dusk"]
+html[data-arc-chrome="dusk"]
   .site-header[data-surface="archive"].site-header-scrolled {
   background-color: var(--color-surface-1);
 }
@@ -1764,7 +1799,11 @@ html[data-motion-off] .pipeline-token-bead {
   fill: var(--color-clay);
 }
 .scene-fig .sc-small {
-  font-size: 9.5px;
+  /* 9.5px → 10px (shots-dusk2 small-font audit): the axis/tick voice was
+     the smallest text on the site and rendered ~9.3px where a scene
+     scales below 1:1. Half a point buys real legibility at 1x DPR and
+     no tick label collides at any scene's coordinates. */
+  font-size: 10px;
 }
 /* The drawing edge — the Red Thread's own convention, settled drawn. */
 .scene-edge {
