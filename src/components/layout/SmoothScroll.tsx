@@ -148,6 +148,33 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [motionOff, setMotionOff] = useState(false);
   const [lenis, setLenis] = useState<ScrollController | null>(null);
+  /* Page visibility joins the motion gate (the blank-plate fix). A hidden
+     document freezes rAF, so a mounted engine could hide content behind
+     reveals that can never play — yet hidden pages ARE consumed: embedded
+     preview panes, link unfurlers, and background-tab loads all render or
+     screenshot the page while `document.hidden` is true. The engine
+     therefore mounts only once the document has actually been seen; until
+     then the gate reports closed and the complete static world (server
+     markup + print CSS) stands. A later visible→hidden flip does NOT
+     unmount (a cmd-tab away must resume seamlessly); the governor handles
+     the one dangerous case — scrolling while hidden — by forcing the
+     print floor (see markScrolled). */
+  const [pageEverVisible, setPageEverVisible] = useState(
+    () =>
+      typeof document === "undefined" || document.visibilityState !== "hidden"
+  );
+  useEffect(() => {
+    if (pageEverVisible) return;
+    const onVisibilityChange = () => {
+      if (document.visibilityState !== "hidden") {
+        setPageEverVisible(true);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [pageEverVisible]);
   /* The frame governor's print floor (§F2). Seeded from the head
      script's pre-paint `data-tier` stamp so a sessionStorage-capped
      load never mounts the engine at all. */
@@ -183,9 +210,10 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     applyGate(
       prefersReducedMotion ||
         motionOff ||
+        !pageEverVisible ||
         window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
     );
-  }, [prefersReducedMotion, motionOff]);
+  }, [prefersReducedMotion, motionOff, pageEverVisible]);
 
   /* Follow governor downshifts. On core→print, remember which section
      sits under the viewport top: unmounting the engine unwinds the ch04
@@ -279,7 +307,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
        effect otherwise runs once with the hook's SSR-safe `false` before
        its change subscription delivers `true`, transiently mounting the
        engine under reduced motion. */
-    if (prefersReducedMotion || motionOff || tierPrint) return;
+    if (prefersReducedMotion || motionOff || tierPrint || !pageEverVisible) {
+      return;
+    }
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
@@ -356,7 +386,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       scrollListeners.clear();
       setLenis(null);
     };
-  }, [prefersReducedMotion, motionOff, tierPrint]);
+  }, [prefersReducedMotion, motionOff, tierPrint, pageEverVisible]);
 
   return (
     <MotionPreferenceContext.Provider value={motionPreference}>
