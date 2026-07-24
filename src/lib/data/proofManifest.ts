@@ -46,13 +46,15 @@ const VISUAL_ASSIST_SHA = "22ebdaa";
 const TASKFLOW_SHA = "69a59e7";
 const FAST_MNIST_SHA = "c6e5c0b";
 const PAID_INTERNSHIPS_SHA = "77a865d";
+/* jetpack-compress HEAD verified public via `gh api` on 2026-07-24. */
+const JETPACK_SHA = "af2c4b1";
 
 export const proofManifest: ProofManifestEntry[] = [
   {
     id: "jobtracker-local-classifier",
     label: "3-layer local classifier",
     claim:
-      "JobTracker uses a 3-layer rules, embeddings, and SetFit classifier path for local job-search email classification.",
+      "Applied uses a 3-layer rules, embeddings, and SetFit classifier path for job-search email classification.",
     source:
       "https://github.com/yadava5/jobtracker/blob/3225eb4/docs/ML_STRATEGY.md",
     sourceLabel: `docs/ML_STRATEGY.md @ ${JOBTRACKER_SHA}`,
@@ -70,7 +72,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-macro-f1",
     label: "macro-F1 0.9791",
     claim:
-      "JobTracker's rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
+      "Applied's rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
     source:
       "https://github.com/yadava5/jobtracker/blob/3225eb4/backend/data/evaluation/baseline_hybrid_v3.json",
     sourceLabel: `baseline_hybrid_v3.json @ ${JOBTRACKER_SHA}`,
@@ -89,7 +91,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-backend-tests",
     label: "182 backend tests",
     claim:
-      "The JobTracker backend suite passed 182 tests locally under the test/null-keyring environment.",
+      "The Applied backend suite passed 182 tests locally under the test/null-keyring environment.",
     source: "https://github.com/yadava5/jobtracker/tree/3225eb4/backend/tests",
     sourceLabel: `backend/tests @ ${JOBTRACKER_SHA}`,
     verification: "Local run against the pinned public test tree.",
@@ -141,7 +143,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "taskflow-tests",
     label: "1,145 automated tests",
     claim:
-      "Taskflow suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
+      "Cadence suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
     source: "https://github.com/yadava5/taskflow-calendar/tree/69a59e7",
     sourceLabel: `taskflow-calendar @ ${TASKFLOW_SHA}`,
     verification: "Local vitest run against the pinned public source.",
@@ -180,7 +182,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "fast-mnist-accuracy",
     label: "~97% test accuracy",
     claim:
-      "Fast MNIST reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo's README training notes; no committed eval artifact reproduces it yet.",
+      "Glyph reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo's README training notes; no committed eval artifact reproduces it yet.",
     source: "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/README.md",
     sourceLabel: `README.md @ ${FAST_MNIST_SHA}`,
     verification:
@@ -240,5 +242,19 @@ export const proofManifest: ProofManifestEntry[] = [
     visibility: "public",
     privacyBoundary: "No private data.",
     date: null,
+  },
+  {
+    id: "jetpack-tests",
+    label: "72 tests pass",
+    claim:
+      "jetpack-compress compiles clean on JDK 25 and its full suite passes — 72 tests (Tests run: 72, Failures: 0).",
+    source:
+      "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+    sourceLabel: `README.md @ ${JETPACK_SHA}`,
+    verification:
+      "README status line read against the public repo at the pinned commit; `mvn test` runs the 72-test JUnit 5 suite.",
+    visibility: "public",
+    privacyBoundary: "No private data.",
+    date: "2026-07",
   },
 ];
