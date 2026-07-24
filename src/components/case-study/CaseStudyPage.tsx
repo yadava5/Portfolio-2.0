@@ -22,7 +22,6 @@
  */
 
 import { Fragment } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArtifactGallery } from "@/components/case-study/ArtifactGallery";
 import { DossierThread } from "@/components/case-study/DossierThread";
@@ -32,6 +31,7 @@ import { AuditControl } from "@/components/paper/AuditRun";
 import { CitationInk } from "@/components/paper/CitationInk";
 import { FileMemory } from "@/components/paper/FileMemory";
 import { RegistryRows } from "@/components/paper/RegistryRows";
+import { ProjectPlateVisual } from "@/components/scenes/ProjectScene";
 import { Project } from "@/lib/data/projects";
 import {
   DOSSIER_TOTAL,
@@ -291,48 +291,12 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </section>
 
           <section id="project-visual">
-            <figure className="-rotate-[0.4deg]">
-              <div className="border-ink/35 bg-canvas border p-3 sm:p-4">
-                <div
-                  data-project-visual-frame
-                  className="relative aspect-video min-h-[260px]"
-                >
-                  {/* Raster captures carry intrinsic width/height (CLS
-                      regression hardening, PERF-AUDIT fix 4) — the
-                      absolute classes reproduce `fill` exactly, so the
-                      frame's aspect-video box still owns the layout.
-                      SVG diagrams keep `fill` (no fixed pixel size). */}
-                  {project.imageWidth && project.imageHeight ? (
-                    <Image
-                      src={project.image}
-                      alt={project.imageAlt}
-                      width={project.imageWidth}
-                      height={project.imageHeight}
-                      className="absolute inset-0 h-full w-full object-contain"
-                      loading="eager"
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                    />
-                  ) : (
-                    <Image
-                      src={project.image}
-                      alt={project.imageAlt}
-                      fill
-                      className="object-contain"
-                      loading="eager"
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                    />
-                  )}
-                </div>
-              </div>
-              <figcaption className="label-mono mt-3">
-                <p className="text-ink">
-                  fig. 1 — {project.imageAlt.toLowerCase()}.
-                </p>
-                <p className="text-ink-secondary mt-1">
-                  description: {project.imageDisclosure}
-                </p>
-              </figcaption>
-            </figure>
+            {/* The generic scene mount (living scenes, FABLE-VISUAL-BRIEF
+                §B): a registered scene replaces the static fig. 1 image
+                inside the same rotated plate; projects without one keep
+                the exact prior Image + disclosure rendering. Registry:
+                src/components/scenes/index.tsx — never edit here. */}
+            <ProjectPlateVisual project={project} />
           </section>
         </div>
 
