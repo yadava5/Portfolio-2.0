@@ -8,6 +8,7 @@ import {
   EXPECTED_CONTENT,
   EXPECTED_GRADUATE_IDENTITY,
   EXPECTED_LINKS,
+  EXPECTED_MASTHEAD,
   EXPECTED_PROOF_ARTIFACTS,
   EXPECTED_WORK_ROWS,
   METRIC_HOME_CHAPTER,
@@ -142,8 +143,16 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    await expect(page.locator("#arrival")).toContainText(
-      EXPECTED_GRADUATE_IDENTITY.role
+    /* Masthead rewrite (owner ruling, 2026-07-24): the byline/role line
+       is deleted, so the hero's identity check becomes the masthead
+       itself — line by line, because the block spans concatenate
+       without spaces (the h1 aria-label keeps the honest sentence). */
+    for (const line of EXPECTED_MASTHEAD.lines) {
+      await expect(page.locator("#arrival h1")).toContainText(line);
+    }
+    await expect(page.locator("#arrival h1")).toHaveAttribute(
+      "aria-label",
+      EXPECTED_MASTHEAD.ariaLabel
     );
     await expect(page.locator("#path")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.education
@@ -492,16 +501,20 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    await expectInFirstViewport(
-      page,
-      page.locator("#arrival").getByText(EXPECTED_CONTENT.name).first()
-    );
+    /* Masthead rewrite (owner ruling, 2026-07-24): the hero byline that
+       carried name + role is deleted, so the recruiter identity in the
+       first viewport is (a) the header running head — the name's one
+       home on this page — and (b) the masthead claim itself. */
     await expectInFirstViewport(
       page,
       page
-        .locator("#arrival")
-        .getByText(EXPECTED_GRADUATE_IDENTITY.role)
+        .locator("header")
+        .getByRole("link", { name: EXPECTED_CONTENT.name })
         .first()
+    );
+    await expectInFirstViewport(
+      page,
+      page.getByRole("heading", { name: EXPECTED_MASTHEAD.ariaLabel })
     );
 
     /* Recruiter CTAs are supplied by the fixed header — first viewport */
