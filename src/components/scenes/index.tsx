@@ -20,6 +20,8 @@
 
 import type { ComponentType } from "react";
 import { AppliedScene } from "@/components/scenes/AppliedScene";
+import { AutomlEchoScene } from "@/components/scenes/AutomlEchoScene";
+import { CadenceScene } from "@/components/scenes/CadenceScene";
 import { GlyphScene } from "@/components/scenes/GlyphScene";
 import { JetpackScene } from "@/components/scenes/JetpackScene";
 import {
@@ -31,6 +33,8 @@ const SCENE_COMPONENTS: Record<string, ComponentType> = {
   jobtracker: AppliedScene,
   "fast-mnist-nn": GlyphScene,
   "jetpack-compress": JetpackScene,
+  "taskflow-calendar": CadenceScene,
+  automl: AutomlEchoScene,
 };
 
 export interface ProjectScene {
