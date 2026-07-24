@@ -39,6 +39,7 @@ import {
   startWatching,
   stopWatching,
   subscribeTier,
+  suppressSampling,
 } from "@/components/world/governor";
 
 if (typeof window !== "undefined") {
@@ -304,6 +305,10 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
            at ~12rem (192px). This applies exactly one header offset. */
         const y =
           window.scrollY + el.getBoundingClientRect().top + SCROLL_OFFSET;
+        /* §F2: a smooth flight is machine scrolling — the governor must
+           not score its frame cadence as the visitor's jank (firefox
+           false-downshifted mid-flight). Window ≈ flight + settle. */
+        suppressSampling(SCROLL_DURATION * 1000 + 600);
         window.scrollTo({ top: y, behavior: "smooth" });
       },
       on: (_event, cb) => {
