@@ -52,6 +52,24 @@ export interface ProjectSceneMeta {
  *   benchmark) from projects.ts; 72 tests / 0 failures / JDK 25 @
  *   af2c4b1 from proofManifest jetpack-tests. "1f 8b" is the gzip
  *   member magic (RFC 1952 format notation, not a project metric).
+ * - taskflow-calendar (Cadence): chrono-node + compromise and the
+ *   Google Meet multi-attendee invite flow from projects.ts
+ *   (fullDescription, highlights, metrics) + the case architecture's
+ *   nlp node; 1,145 tests (634 frontend + 511 backend, vitest) from
+ *   proofManifest taskflow-tests @ 69a59e7. The sentence in the figure
+ *   ("lunch with sam and priya next tuesday at noon — add a meet") is
+ *   an ILLUSTRATIVE example, labeled so in the figure and disclosure —
+ *   never user data, and no parser runs in the card (brief B2).
+ * - automl: the 7-phase lifecycle + LangGraph + MCP from projects.ts
+ *   metrics and proofManifest automl-workflow-proof; default model
+ *   GPT-5.4 from projects.ts fullDescription/highlights; the phase
+ *   names + "the human gate — go / no-go" from the home fig 4.0 ladder
+ *   (StoryShell AUTOML_PHASES, AUTOML-TRANSPOSITIONS #1); "generated
+ *   actions hold at the approval edge until a human says go" verbatim
+ *   from the case architecture annotation; run 041 · xgboost — awaiting
+ *   approval from the case registryFig transcription. The figure NEVER
+ *   resolves 7.0 deploy and never approves 041 (the flagship's honesty
+ *   contract — approving stays the visitor's own press act).
  */
 export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
   jobtracker: {
@@ -71,6 +89,24 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     provenance:
       "3.5x — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
     alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1x while the openmp+simd lane reaches 3.5x on the dot-256 kernel axis. Beside it, the forward pass: a stippled digit seven feeds an MLP into a ten-slot readout, and slot seven fills.",
+  },
+  "taskflow-calendar": {
+    caption:
+      "the parse — a plain-english sentence resolves into chips on the week grid + a google meet link",
+    disclosure:
+      "A drawn figure that runs — not a screenshot. The sentence is an illustrative example, never user data. The parse path is the app's real one — chrono-node and compromise resolve plain English into events and tasks — and the clay Meet chip mirrors the shipped Google Meet flow: multi-attendee Gmail invites with Meet links. No parser runs in this card; the choreography is scripted.",
+    provenance:
+      "chrono-node + compromise · google meet — multi-attendee invites · 1,145 tests passing — taskflow-calendar @ 69a59e7",
+    alt: "The parse: an illustrative plain-English sentence — lunch with sam and priya next tuesday at noon, add a meet — has its spans underlined and resolved into chips: tue 12:00 lunch, invites for sam and priya, and a Google Meet link chip. The event rests on a drawn week grid at tuesday noon with a small clay Meet mark. In the real app, chrono-node and compromise do this parse.",
+  },
+  automl: {
+    caption:
+      "the halt, echoed — the run crosses the 7-phase lifecycle and stops at the human gate",
+    disclosure:
+      "A drawn figure that runs — not a screenshot. A card-scale echo of the pinned home scene: the ink run token crosses the lifecycle's first six phases and halts at the clay human gate — 7.0 deploy never resolves, because deploying is a person's decision, not this card's. The phases and the gate are the platform's real 7-phase, LangGraph + MCP-orchestrated workflow (default model GPT-5.4); run 041 stays awaiting its human.",
+    provenance:
+      "7-phase lifecycle · langgraph + mcp · default model gpt-5.4 · registry run 041 — awaiting approval",
+    alt: "The halt, echoed: an ink run token has crossed six lifecycle phases — ingest, explore, preprocess, engineer, train, evaluate — and rests in clay at the human gate. Past the gate, a quiet untraveled rail leads to 7.0 deploy, which stays unresolved. Generated actions hold at the approval edge until a human says go.",
   },
   "jetpack-compress": {
     caption:
