@@ -81,13 +81,14 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 /**
  * Stagger index for the hero's CSS load entrance (60ms per slot —
  * globals.css multiplies `--hero-i`; retuned from plan 3.8's 110ms per
- * PERF-AUDIT fix 1). The three headline lines take consecutive slots
- * 0–2 and carry the ink-settle beat (W5 round B): each line lands and
- * its ink deepens over 0.4s, so the whole masthead is full-ink by
- * ~520ms. The byline sits at 4.5 (270ms — after the headline's
- * presence is established, before its ink finishes drying) so the
- * stipple's dot-merge resolve reads strictly SECOND; the directives
- * keep slot 6. Total intro: 270ms + the 0.8s stipple = 1.07s.
+ * PERF-AUDIT fix 1). The two headline lines take seats 0 and 2 — a
+ * double-width beat between the imperative and its payoff, so the dare
+ * lands before the claim answers it — and carry the ink-settle beat
+ * (W5 round B): each line lands and its ink deepens over 0.4s, so the
+ * whole masthead is full-ink by ~520ms, same close as the old
+ * three-line stack. The directives take seat 4 (240ms): the furniture
+ * arrives only once the claim is on the page. Total intro: 240ms +
+ * the 0.6s rise = 840ms.
  *
  * @param index - Zero-based entrance slot (fractional seats allowed)
  * @returns Inline style carrying the custom property
@@ -370,97 +371,92 @@ function ArrivalChapter() {
           dateline="cincinnati, ohio — summer 2026"
         />
 
-        {/* py-10 (was py-16): the byline→flagship-teaser frame sagged at
-            tall viewports — the centering budget tightens so the teaser
-            enters the first frame (journey-critique viewport-sag fix). */}
+        {/* py-10 (was py-16): the masthead→flagship-teaser frame sagged
+            at tall viewports — the centering budget tightens so the
+            teaser enters the first frame (journey-critique fix). The
+            byline is gone (owner ruling, 2026-07-24): the running head
+            already signs the paper, so the masthead stands alone and
+            the hero breathes. */}
         <div className="my-auto py-10">
           {/* Hero entrance (plan 3.8): per-line de-blur + 14px rise via the
               .hero-enter CSS animation (globals.css) — the page's ONLY
-              blur, desktop-only, load-only. The three structural line
+              blur, desktop-only, load-only. The two structural line
               spans ARE the animation lines: no splitting, text intact.
               hero-enter-headline (W5 round B, visitor #3): the masthead
               gets its own beat — the lines land, then their ink deepens
               secondary→full with a ≤1px drying feather (paint-only; the
-              LCP line's opacity floor and layout are untouched) BEFORE
-              the byline stipple resolves.
+              LCP line's opacity floor and layout are untouched).
               aria-label (PERF-AUDIT §4.3): the block-broken spans
               concatenate without spaces and glue the footnote ¹ onto the
-              name — the label keeps the accessible name one honest
-              sentence; the footnote link keeps its own "Footnote 1". */}
+              claim — the label keeps the accessible name one honest
+              sentence; the footnote link keeps its own "Footnote 1".
+              Type scale: the two-word dare earns a bigger cut than the
+              old three-line sentence — clamp retuned 2.15→3.375rem
+              floor (the closing line probes 219px wide in a 260px
+              column at 320) and 7.25→9rem ceiling, same tight 0.98
+              leading; verified no overflow 320→1680 and the closing
+              line NEVER wraps, so the thread's measured box hugs one
+              true line of text. */}
           <h1
-            aria-label="I turn messy data into software you can trust."
-            className="font-display fraunces-hero text-[clamp(2.15rem,7.4vw,7.25rem)] leading-[0.98] font-normal tracking-[-0.015em]"
+            aria-label="Scroll. It's all real."
+            className="font-display fraunces-hero text-[clamp(3.375rem,9vw,9rem)] leading-[0.98] font-normal tracking-[-0.015em]"
           >
-            {/* The hero opens the story the whole paper tells: raw, messy
-                inputs → software you can trust, resolved at the very end when
-                the visitor's own hand approves the run (¶07). Concrete and
-                un-boastful — the claim is trust, and the footnote points
-                straight at the evidence that earns it. */}
+            {/* The masthead is the paper's dare: everything the scroll
+                is about to show — figures, demos, approvals — is real,
+                receipt-backed machinery, resolved when the visitor's own
+                hand approves the run (¶07). The claim is *real*, and
+                the footnote points straight at the evidence that earns
+                it. Two beats: the imperative, then the payoff. */}
             <span
               className="hero-enter hero-enter-headline block"
               style={heroDelay(0)}
             >
-              I turn messy data
+              Scroll.
             </span>
-            <span
-              className="hero-enter hero-enter-headline block"
-              style={heroDelay(1)}
-            >
-              into software
-            </span>
-            <span
-              className="hero-enter hero-enter-headline block"
-              style={heroDelay(2)}
-            >
-              you can{" "}
-              {/* The ¹ is kerned against the period: the size lives on the
-                  <sup> (not the anchor) so align-super raises the small
-                  glyph, not a hero-sized box. The negative margin lives on
-                  a HERO-sized wrapper, so the tuck-in scales with the
-                  italic period's right bearing at every viewport (a
-                  sup-relative margin left the ¹ adrift at 1440). */}
-              <span className="whitespace-nowrap">
-                <em className="font-serif italic">trust.</em>
-                <span className="-ml-[0.085em]">
-                  <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
-                    <LenisAnchor
-                      href="#footnote-1"
-                      id="fnref-1"
-                      aria-label="Footnote 1"
-                      className="tap-target text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
-                    >
-                      1
-                    </LenisAnchor>
-                  </sup>
+            {/* data-thread-name: the Red Thread originates as this
+                closing line's trailing flick (ThreadSegment 01 measures
+                it) — on an inline span so the measured box hugs the
+                text, not the column: the thread leaves the footnote's
+                heel, the claim's own receipt trail. The entrance rides
+                the INNER inline-block wrapper: the measured span itself
+                must never transform (descendant transforms do not move
+                an ancestor's layout box, so the thread's origin stays
+                true even if a re-measure lands mid-entrance). */}
+            <span className="block">
+              <span data-thread-name>
+                <span
+                  className="hero-enter hero-enter-headline hero-enter-inline"
+                  style={heroDelay(2)}
+                >
+                  It&apos;s all{" "}
+                  {/* The ¹ is kerned against the period: the size lives on
+                      the <sup> (not the anchor) so align-super raises the
+                      small glyph, not a hero-sized box. The negative
+                      margin lives on a HERO-sized wrapper, so the tuck-in
+                      scales with the italic period's right bearing at
+                      every viewport (a sup-relative margin left the ¹
+                      adrift at 1440). The em mirrors the old cut on
+                      "trust." — the one italic word is the one being
+                      sworn to. */}
+                  <span className="whitespace-nowrap">
+                    <em className="font-serif italic">real.</em>
+                    <span className="-ml-[0.085em]">
+                      <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
+                        <LenisAnchor
+                          href="#footnote-1"
+                          id="fnref-1"
+                          aria-label="Footnote 1"
+                          className="tap-target text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
+                        >
+                          1
+                        </LenisAnchor>
+                      </sup>
+                    </span>
+                  </span>
                 </span>
               </span>
             </span>
           </h1>
-          {/* data-thread-name: the Red Thread originates as this line's
-              trailing flick (ThreadSegment 01 measures it) — on an inline
-              span so the measured box hugs the text, not the column. The
-              entrance rides an INNER wrapper: the measured span itself
-              must never transform (descendant transforms do not move an
-              ancestor's layout box, so the thread's origin stays true
-              even if a re-measure lands mid-entrance).
-              hero-enter-stipple (friend transposition #4): on desktop
-              the byline inks in from engraving stipple — a halftone
-              mask over these real glyphs (globals.css), load-only,
-              gone without residue once the entrance settles. The
-              waiting thread flick below is the pen that finishes it.
-              Seat 4.5 (W5 round B): the stipple begins at 270ms — after
-              the headline has landed, so the dot-merge resolve reads
-              second; the intro still closes at 1.07s. */}
-          <p className="label-mono text-ink-secondary mt-10">
-            <span data-thread-name>
-              <span
-                className="hero-enter hero-enter-inline hero-enter-stipple"
-                style={heroDelay(4.5)}
-              >
-                ayush yadav — full-stack, data, and systems · class of 2026
-              </span>
-            </span>
-          </p>
         </div>
 
         {/* Mono directives, weighted for one glance: the flagship teaser
@@ -469,7 +465,7 @@ function ArrivalChapter() {
             (recruiter-rejudge fix — the index used to live at 55%
             scroll); the skip affordance is SECONDARY, and the scroll cue
             is the QUIETEST — smallest mono, no affordance. */}
-        <div className="label-mono hero-enter space-y-3" style={heroDelay(6)}>
+        <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
           <p className="text-ink">
             <LenisAnchor href="#automl" className="link-draw">
               the capstone — agentic automl: seven gated phases ⟶
