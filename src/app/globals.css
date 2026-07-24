@@ -1718,6 +1718,86 @@ html[data-motion-off] .pipeline-token-bead {
 [data-scene] {
   contain: paint;
 }
+/* ── The case-file plate (owner fix round: "no stark white boxes") ──
+   A figure plate is PAPER, never a bright card: warm archive stock one
+   stop deeper than the dossier page (surface-2 — an existing verified
+   token), carrying the same baked grain + contour the world's paper
+   wears (both at their ≤5% NO-LIST cap), framed by a double hairline —
+   the outer ink rule on .plate-paper's border plus this inner offset
+   rule — the monograph's tipped-in plate grammar. Breathing margins
+   come from the mount's padding; nothing here animates, so the plate
+   is identical in every world and tier. */
+.plate-paper {
+  background-color: var(--color-surface-2);
+  background-image: var(--texture-grain), var(--texture-contour);
+  background-size:
+    260px 260px,
+    420px 420px;
+}
+.plate-inner-rule {
+  outline: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+  outline-offset: -1px;
+}
+
+/* ── The portrait plate (header avatar → Radix dialog) ─────────────
+   The photograph DEVELOPS like a print: the veil washes in, the plate
+   rises a hair, the image resolves top-to-bottom (clip-path — the D3
+   whitelist's third property), and the dateline caption settles last.
+   CSS-only, double-gated like the stamp press (reduced-motion media +
+   the data-motion-off attribute, which the quiet toggle, the governor's
+   print floor, and hidden-surface loads all stamp) — every static world
+   opens the finished plate: same DOM, final frame, no JS motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .portrait-veil {
+    animation: portrait-veil-in 240ms ease-out both;
+  }
+  html:not([data-motion-off]) .portrait-riser {
+    animation: portrait-riser-in 420ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+  }
+  html:not([data-motion-off]) .portrait-develop {
+    animation: portrait-develop-in 640ms cubic-bezier(0.33, 0, 0.55, 1) 160ms
+      both;
+  }
+  html:not([data-motion-off]) .portrait-caption {
+    animation: portrait-caption-in 360ms ease-out 560ms both;
+  }
+}
+@keyframes portrait-veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes portrait-riser-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes portrait-develop-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.55;
+  }
+  to {
+    clip-path: inset(0 0 0% 0);
+    opacity: 1;
+  }
+}
+@keyframes portrait-caption-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 /* All scene ink rides currentColor (amendment A4): ch05's third row can
    sit in near-dusk light in the motion world, where the body ink flips
    cream — the figures must flip with it. Quiet voices mute via OPACITY
