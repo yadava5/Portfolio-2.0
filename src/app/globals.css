@@ -216,6 +216,41 @@ html[data-arc-phase="dusk"] body {
   color: var(--color-ink-dusk);
 }
 
+/* ── THE GLOAMING (brief B9) — the dusk choreography's voice state ────
+   Present ONLY inside the bounded 05→06 transition range (DayArc steps
+   it at the range edges, where both voice states are pre-verified; it is
+   never written per frame). As the light dies the paper loses its
+   half-tones: every muted voice deepens to FULL ink so each of the
+   eleven rendered stops keeps WCAG AA (A4's spirit — a visitor stopping
+   mid-dusk is always reading AA text):
+   - secondary ink → body ink (pre-flip; #5c564a dies below Y≈0.62);
+     after the flip it maps to the dusk cream so chapter 05's tail
+     labels stay legible while it scrolls out over the ledger browns;
+   - the kiln clay cools to umber #61250f (scripts/design/dusk-choreo.mjs
+     GLOAMING_CLAY, mirrored here) — ≥3:1 on every day-side stop where
+     clay-graphic itself dies below Y≈0.64; past the flip the scenes'
+     own night step (clay-night) takes over;
+   - opacity mutes in chapters 05/06 press to full strength (an
+     ink@0.70 composite fails 4.5:1 below Y≈0.65). Instant steps, no
+     transitions: state changes land atomically with the background
+     write in the same frame, so no mid-blend frame can under-run AA.
+   check-contrast.mjs asserts every stop against exactly these voices. */
+html[data-arc-gloaming] {
+  --color-ink-secondary: var(--color-ink);
+}
+html[data-arc-gloaming][data-arc-phase="dusk"] {
+  --color-ink-secondary: var(--color-ink-dusk);
+}
+html[data-arc-gloaming]:not([data-arc-phase="dusk"]) {
+  --color-clay: #61250f;
+  --color-clay-graphic: #61250f;
+}
+html[data-arc-gloaming]
+  :is([data-chapter="05"], [data-chapter="06"])
+  :is(.opacity-60, .opacity-70, .opacity-80) {
+  opacity: 1;
+}
+
 /* ════════════════════════════════════════════════════════════════
    WORKING-PAPER CHROME — header, footer, links, focus
    Header/footer cross the dusk flip, so their inks are composed from
@@ -1059,6 +1094,32 @@ html[data-motion-off] [data-chapter] {
 html[data-motion-off] [data-chapter="06"],
 html[data-motion-off] [data-chapter="07"] {
   color: var(--color-ink-dusk);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THE PRINT EDITION (governor §F1c) — tier rails (§F2)
+   `data-tier` on <html> is the frame governor's edition: "core" (the
+   universal default — the whole SVG/GSAP spine), "full" (core + earned
+   garnish, granted only after measured smooth scrolling, §F3), "print"
+   (the static world, reframed as an authored monograph — reduced
+   motion, the quiet toggle, a sessionStorage ceiling, or a mid-session
+   governor downshift all land here; the head script stamps it before
+   first paint so there is never a richer flash that collapses).
+   The print floor REUSES the static world above wholesale (SmoothScroll
+   stamps data-motion-off whenever the tier is print, so every static
+   rule already applies); this block only adds the monograph dressing —
+   additive, layout-neutral (outline, never border), no new DOM. Every
+   caption and number it frames is the same proof-cited resting content
+   (honesty bar D6: the monograph states what the motion states). */
+html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
+  outline: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  outline-offset: 14px;
+}
+/* Scene mounts read the tier with CSS alone (§F2 API): any Full-only
+   garnish a scene declares stays unmounted below its tier. Nothing
+   ships Full-only garnish yet — this is the rail it will hang on. */
+html:not([data-tier="full"]) [data-tier-garnish] {
+  display: none;
 }
 
 /* ════════════════════════════════════════════════════════════════
