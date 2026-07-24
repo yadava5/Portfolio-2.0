@@ -16,7 +16,12 @@
  */
 
 import { interpolate, formatHex, rgb } from "culori";
-import { buildDuskStops, GLOAMING_CLAY } from "../design/dusk-choreo.mjs";
+import {
+  buildDuskStops,
+  CHROME_POS,
+  FLIP_POS,
+  GLOAMING_CLAY,
+} from "../design/dusk-choreo.mjs";
 
 // ── Palette (must mirror src/app/globals.css) ──────────────────────────
 const C = {
@@ -214,6 +219,17 @@ export function sampleArc(samples = 12) {
 //     mutes), the final stop the normal dusk mutes on w06 — those are
 //     the exact frames where DayArc steps the gloaming on/off.
 //   - Core-reduced band (§F1b): 8–12 rendered stops.
+//
+// Retune claims (the shots-dusk2 slow-scroll study — the before video
+// measured a ΔL 0.235 one-frame flip with every surface in sync):
+//   - THE FLIP PAIR IS NARROW: ΔL ≤ 0.215 and ΔY ≤ 0.185 — the deepest
+//     day floor and lightest night entry the ink floors allow.
+//   - EVERY Core step is small: same-side stop-to-stop ΔL ≤ 0.055
+//     (uniform-rate schedule — no eased mid-descent lurch).
+//   - THE CHROME STAGGER is safe: between FLIP_POS and CHROME_POS the
+//     header still wears its day voice on its own canvas paper while
+//     the field is already night — both header voices are asserted on
+//     their own papers, so the stagger holds AA in both directions.
 
 /** Gamma-space alpha composite — how the browser paints opacity mutes. */
 function compositeHex(fgHex, alpha, bgHex) {
@@ -306,6 +322,50 @@ export function sampleDuskChoreo(pairSamples = 8) {
     );
   }
 
+  /* Retune guards (shots-dusk2): the one unavoidable step stays narrow,
+     every rendered step stays small, and the staggered chrome window is
+     AA on both of its papers. */
+  const flipIdx = stops.findIndex((s) => s.side === "night");
+  const floor = stops[flipIdx - 1];
+  const entry = stops[flipIdx];
+  const flipDL = floor.l - entry.l;
+  const flipDY = luminance(floor.hex) - luminance(entry.hex);
+  const guard = (label, value, max) => {
+    const pass = value <= max;
+    if (!pass) ok = false;
+    console.log(
+      `${pass ? "PASS" : "FAIL"}  ${value.toFixed(3)} (max ${max})  ${label}`
+    );
+  };
+  guard("flip pair ΔL (oklch) — the one rendered jump", flipDL, 0.215);
+  guard("flip pair ΔY (WCAG luminance)", flipDY, 0.185);
+  let worstStep = 0;
+  for (let i = 1; i < stops.length; i++) {
+    if (stops[i].side !== stops[i - 1].side) continue;
+    worstStep = Math.max(worstStep, Math.abs(stops[i - 1].l - stops[i].l));
+  }
+  guard("largest same-side Core step ΔL (uniform rate)", worstStep, 0.055);
+  if (!(CHROME_POS > FLIP_POS && CHROME_POS < 1)) {
+    ok = false;
+    console.log(
+      `FAIL  chrome stagger CHROME_POS ${CHROME_POS} must sit inside (FLIP_POS, 1)`
+    );
+  } else {
+    console.log(
+      `PASS  chrome stagger window (${FLIP_POS} → ${CHROME_POS.toFixed(4)})`
+    );
+  }
+  check(
+    "chrome stagger window — header day voice on its canvas paper",
+    contrast(C.ink, C.canvas),
+    4.5
+  );
+  check(
+    "chrome stagger landed — header dusk voice on waypoint-06 paper",
+    contrast(C.inkDusk, C.w06),
+    4.5
+  );
+
   /* Range edges: the exact frames where the gloaming steps on/off. */
   check(
     "gloaming entry frame — secondary ink on w05 (stop 0)",
@@ -325,6 +385,23 @@ export function sampleDuskChoreo(pairSamples = 8) {
   check(
     "gloaming exit frame — dusk ink@0.60 mute composite on w06",
     contrast(compositeHex(C.inkDusk, 0.6, C.w06), C.w06),
+    4.5
+  );
+
+  /* Scene-figure quiet SVG text (.sc-quiet, opacity 0.72 — its OWN mute,
+     not the utility classes): the gloaming presses it to full ink inside
+     the range (globals.css — at the day floor its composite reads ~2.9:1,
+     found by the shots-dusk2 small-font audit), so the RANGE states are
+     covered by the per-stop full-ink checks above. The rest frames are
+     where it still renders muted — assert both. */
+  check(
+    "scene quiet text rest frame — ink@0.72 composite on w05",
+    contrast(compositeHex(C.ink, 0.72, C.w05), C.w05),
+    4.5
+  );
+  check(
+    "scene quiet text rest frame — dusk ink@0.72 composite on w06",
+    contrast(compositeHex(C.inkDusk, 0.72, C.w06), C.w06),
     4.5
   );
 
