@@ -61,16 +61,27 @@ function runState(page: Page): Promise<RunState> {
   });
 }
 
-/** Pin start (≈ wrapper top at 22% of the viewport) + pinned distance. */
+/** Pin start + pinned distance. The pin target is layout-dependent (the
+ *  whole plate grid on lg, the figure column stacked — the dense-plate
+ *  fix), so measure the element PipelineRun stamped [data-pipeline-pinned]
+ *  and mirror its seat formula: top parks at 22% of the viewport unless
+ *  the plate is too tall to fit, then it slides up to the header floor. */
 function pinRange(page: Page) {
   return page.evaluate(() => {
-    const wrap = document.querySelector("[data-pipeline-pin]");
+    const wrap =
+      document.querySelector("[data-pipeline-pinned]") ??
+      document.querySelector("[data-pipeline-pin]");
     if (!wrap) return null;
     const rect = wrap.getBoundingClientRect();
     const docTop = rect.top + window.scrollY;
+    const vh = window.innerHeight;
+    const seat = Math.min(
+      Math.round(vh * 0.22),
+      Math.max(72, vh - rect.height - 24)
+    );
     return {
-      start: Math.round(docTop - 0.22 * window.innerHeight),
-      dist: Math.round(window.innerHeight * 1.05),
+      start: Math.round(docTop - seat),
+      dist: Math.round(vh * 1.05),
     };
   });
 }
