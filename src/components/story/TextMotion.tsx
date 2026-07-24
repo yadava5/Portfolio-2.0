@@ -137,6 +137,29 @@ function ariaModeOf(el: HTMLElement): "auto" | "none" {
 }
 
 /**
+ * Is a trigger ALREADY past its start line at build time? (The viewport
+ * fraction is parsed from the "clamp(top N%)" convention.)
+ *
+ * Load-bearing crash guard: a `once:true` trigger created past-start
+ * fires and SELF-KILLS synchronously inside whatever refresh loop first
+ * touches it (another trigger's init, the pin's creation) — and killing
+ * mutates GSAP's trigger list mid-iteration, which crashed hydration
+ * with "reading 'end' of undefined" on a deep-scroll reload (browser
+ * scroll restoration puts most of the paper past-start at once). Such
+ * an element gets its entrance played DIRECTLY instead — visually
+ * identical (the trigger fired at creation anyway), with no trigger to
+ * corrupt the list.
+ *
+ * @param trigger - The trigger element
+ * @param start - ScrollTrigger start string ("clamp(top 82%)")
+ * @returns True when the start line is already above the viewport line
+ */
+function pastStart(trigger: Element, start: string): boolean {
+  const pct = Number(/(\d+(?:\.\d+)?)%/.exec(start)?.[1] ?? "75") / 100;
+  return trigger.getBoundingClientRect().top <= window.innerHeight * pct;
+}
+
+/**
  * One chapter bright line: SplitText line-mask rise. Re-splits on
  * reflow (autoSplit); once played, later re-splits render the final
  * state instead of replaying.
@@ -154,6 +177,9 @@ function maskRise(
   start: string = ENTER_START
 ): SplitText {
   let played = false;
+  /* Past-start at build (deep-scroll reload / already-read content):
+     play directly, create NO trigger — see pastStart(). */
+  const immediate = pastStart(trigger, start);
   return SplitText.create(el, {
     type: "lines",
     mask: "lines",
@@ -167,7 +193,7 @@ function maskRise(
         ease: "power3.out" /* quart.out */,
         stagger: 0.1,
         delay,
-        scrollTrigger: { trigger, start, once: true },
+        ...(immediate ? {} : { scrollTrigger: { trigger, start, once: true } }),
         onComplete: () => {
           played = true;
         },
@@ -200,7 +226,10 @@ function revealEntrance(
     splits.push(maskRise(el, trigger, delay, start));
     return;
   }
-  const scrollTrigger = { trigger, start, once: true } as const;
+  /* Past-start at build → play directly, no trigger (see pastStart). */
+  const scrollTrigger = pastStart(trigger, start)
+    ? undefined
+    : ({ trigger, start, once: true } as const);
   switch (el.getAttribute("data-tm")) {
     case "muted":
       gsap.from(el, {
@@ -330,6 +359,8 @@ export function TextMotion() {
         const receipts = q("[data-tm-receipt]");
         if (mantras.length > 0) {
           const litanyTrigger = mantras[0].closest("figure") ?? mantras[0];
+          /* Past-start at build → play directly, no trigger. */
+          const litanyImmediate = pastStart(litanyTrigger, ENTER_START);
           mantras.forEach((mantra, index) => {
             const delay = LITANY_DELAYS[index] ?? 0;
             splits.push(maskRise(mantra, litanyTrigger, delay));
@@ -341,11 +372,15 @@ export function TextMotion() {
                 duration: 0.7,
                 ease: "power2.out",
                 delay: delay + 0.2,
-                scrollTrigger: {
-                  trigger: litanyTrigger,
-                  start: ENTER_START,
-                  once: true,
-                },
+                ...(litanyImmediate
+                  ? {}
+                  : {
+                      scrollTrigger: {
+                        trigger: litanyTrigger,
+                        start: ENTER_START,
+                        once: true,
+                      },
+                    }),
               });
             }
           });
