@@ -1,5 +1,6 @@
 import { test, expect, Locator, Page } from "@playwright/test";
 import { CHAPTERS } from "../../src/components/story/chapters";
+import { PROJECT_SCENE_MANIFEST } from "../../src/components/scenes/manifest";
 import {
   ATLAS_ALLOWED_METRICS,
   CASE_STUDY_LOCAL_ARTIFACTS,
@@ -226,7 +227,11 @@ test.describe("Daylight Study — working paper", () => {
     );
   });
 
-  test("chapter rows link to their case files", async ({ page }) => {
+  /* jetpack-compress has no case route yet — its row's links go to the
+     live engine (external), asserted via the same fixture href. */
+  test("chapter rows link to their case files or live demo", async ({
+    page,
+  }) => {
     await page.goto("/");
     await page.locator("#work").waitFor({ state: "attached" });
 
@@ -293,8 +298,12 @@ test.describe("Daylight Study — working paper", () => {
         .locator("#validation")
         .getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
     ).toBeVisible();
+    /* Living scene (2026-07-24): fig. 1 is now the drawn race/forward-
+       pass figure — its honest manifest disclosure replaces the old
+       image disclosure; the real workbench screenshot still ships in
+       #artifacts (asserted above). */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistDisclosure)
+      page.getByText(PROJECT_SCENE_MANIFEST["fast-mnist-nn"].disclosure)
     ).toBeVisible();
 
     const bodyText = await page.locator("body").innerText();
@@ -342,9 +351,13 @@ test.describe("Daylight Study — working paper", () => {
     const validation = page.locator("#validation");
     const artifacts = page.locator("#artifacts");
 
+    /* Living scene (2026-07-24): fig. 1 is now the sorting-line figure
+       (role="img" with its honest manifest name); the architecture
+       diagram itself still ships as the #artifacts plate asserted just
+       below. */
     await expect(
       page.getByRole("img", {
-        name: "JobTracker local email classification architecture diagram",
+        name: PROJECT_SCENE_MANIFEST.jobtracker.alt,
       })
     ).toBeVisible();
     await expect(
@@ -511,6 +524,16 @@ test.describe("Daylight Study — working paper", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await page.locator("#gate").waitFor({ state: "attached" });
+    /* Latent race, exposed by the heavier scene hydration (2026-07-24):
+       the flagship's ONE pin (ch04) inserts ~1 viewport of pin-spacer
+       ABOVE the gate when ScrollTrigger initializes — a scrollIntoView
+       issued before that lands the gate a full spacer too high. Real
+       anchor navigation re-aligns via HashRealign/LenisAnchor; the probe
+       waits for the settled layout the same way a visitor's click does. */
+    await page
+      .locator(".pin-spacer")
+      .first()
+      .waitFor({ state: "attached", timeout: 8_000 });
     await page.evaluate(() => {
       document.getElementById("gate")?.scrollIntoView();
     });
@@ -643,9 +666,42 @@ test.describe("Daylight Study — working paper", () => {
       const visualFrame = page.locator(
         "#project-visual [data-project-visual-frame]"
       );
-      const image = visualFrame.locator("img");
-
       await expect(visualFrame).toBeVisible();
+
+      /* Living scenes (src/components/scenes): routes with a registered
+         scene replace the static fig. 1 image with an inked SVG figure —
+         assert the scene's containment instead of the image's. */
+      if (PROJECT_SCENE_MANIFEST[id]) {
+        const sceneSvg = visualFrame.locator("svg[role='img']").first();
+        await expect(visualFrame).toHaveAttribute("data-scene", "");
+        await expect(sceneSvg).toBeVisible();
+
+        const sceneFit = await visualFrame.evaluate((frame) => {
+          const svg = frame.querySelector("svg");
+          const frameRect = frame.getBoundingClientRect();
+          const svgRect = svg?.getBoundingClientRect();
+          return {
+            hasSvg: Boolean(svg),
+            pageOverflow:
+              document.documentElement.scrollWidth >
+              document.documentElement.clientWidth,
+            frameHeight: Math.round(frameRect.height),
+            svgEscapes:
+              svgRect == null ||
+              svgRect.left < frameRect.left - 1 ||
+              svgRect.right > frameRect.right + 1 ||
+              svgRect.top < frameRect.top - 1 ||
+              svgRect.bottom > frameRect.bottom + 1,
+          };
+        });
+        expect(sceneFit.hasSvg).toBe(true);
+        expect(sceneFit.pageOverflow).toBe(false);
+        expect(sceneFit.svgEscapes).toBe(false);
+        expect(sceneFit.frameHeight).toBeGreaterThanOrEqual(260);
+        return;
+      }
+
+      const image = visualFrame.locator("img");
       await expect(image).toBeVisible();
 
       const fit = await visualFrame.evaluate((frame) => {
