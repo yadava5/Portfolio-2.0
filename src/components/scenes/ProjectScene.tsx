@@ -67,11 +67,15 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
     const { Scene, meta } = scene;
     return (
       <figure className="-rotate-[0.4deg]">
-        <div className="border-ink/35 bg-canvas border p-3 sm:p-4">
+        {/* The paper plate (owner fix round): warm archive stock + baked
+            grain, double hairline frame, breathing margins — a tipped-in
+            monograph plate, never a stark bright card (globals.css
+            .plate-paper). */}
+        <div className="plate-paper border-ink/40 border p-2 sm:p-3">
           <div
             data-project-visual-frame
             data-scene=""
-            className="relative min-h-[260px] py-6 sm:px-2"
+            className="plate-inner-rule relative min-h-[260px] px-4 py-10 sm:px-8"
           >
             <Scene />
           </div>
@@ -88,10 +92,12 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
 
   return (
     <figure className="-rotate-[0.4deg]">
-      <div className="border-ink/35 bg-canvas border p-3 sm:p-4">
+      {/* Same paper-plate dressing as the scene branch — a raster capture
+          is still a plate in the monograph, not a floating white card. */}
+      <div className="plate-paper border-ink/40 border p-2 sm:p-3">
         <div
           data-project-visual-frame
-          className="relative aspect-video min-h-[260px]"
+          className="plate-inner-rule relative aspect-video min-h-[260px]"
         >
           {/* Raster captures carry intrinsic width/height (CLS
               regression hardening, PERF-AUDIT fix 4) — the
