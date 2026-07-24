@@ -174,7 +174,7 @@ const WORK_ROWS = [
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
     muted: "Applied reads it — the classifier even runs in your browser.",
-    metric: "macro-f1 0.9791 — 96-sample gate",
+    metric: "macro-f1 0.98 — 96-sample gate",
     metricHref: "/projects/jobtracker/#v-jobtracker-5",
   },
   {
@@ -473,7 +473,7 @@ function ArrivalChapter() {
         <div className="label-mono hero-enter space-y-3" style={heroDelay(6)}>
           <p className="text-ink">
             <LenisAnchor href="#automl" className="link-draw">
-              flagship — agentic automl: seven gated phases ⟶
+              the capstone — agentic automl: seven gated phases ⟶
             </LenisAnchor>
           </p>
           {/* Quiet apparatus voice, no buttons: direct routes into the
@@ -585,7 +585,7 @@ function WhoChapter() {
             className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14"
           >
             <p className="text-body max-w-[55ch] font-serif" data-tm="block">
-              I’m a computer-science graduate from Miami University. I build the
+              I’m a recent computer-science graduate. I build the
               whole path — data pipelines, applied machine learning, and the
               software that carries them into real use. The claims on this paper
               carry receipts. The final word stays human.
@@ -662,7 +662,7 @@ function PathChapter() {
             <>
               {/* data-thread-word: the Red Thread underlines this word —
                   chapter 03's one content gesture (geometry anchor) */}
-              Miami is where I learned that data work starts with{" "}
+              This is where I learned that data work starts with{" "}
               <span data-thread-word>mess</span>.
             </>
           }
@@ -733,7 +733,6 @@ function PathChapter() {
               data-tm="block"
             >
               <p>aug 2022 - may 2026</p>
-              <p>{degree.school}</p>
             </div>
             <div data-tm="block">
               <h3 className="font-display fraunces-display text-2xl">
@@ -744,8 +743,9 @@ function PathChapter() {
                   unlinked claim; prose + the transcript boundary keeps the
                   fact while exempting it from footnote 1's link contract. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {degree.school}, {graduation} — dean’s list
-                in {deansListCount} semesters (transcript on request).
+                B.S. {degree.field}, {graduation} — dean’s list in{" "}
+                {deansListCount} semesters, 3.65 GPA in major coursework
+                (transcript on request).
               </p>
             </div>
           </article>
@@ -794,8 +794,7 @@ function AutomlChapter() {
             >
               Agentic AutoML turns a dataset and a goal into a structured,
               auditable ML workflow. The agents plan it, argue for it, and run
-              it — and still cannot press go. That button is human. It stays
-              human.
+              it — and still cannot press go. That button stays human.
             </p>
             {/* Honest stat strip — every clause is proof-manifest-backed */}
             <p
