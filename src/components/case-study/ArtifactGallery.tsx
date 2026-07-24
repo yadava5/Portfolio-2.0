@@ -64,7 +64,7 @@ function PanelCrop({
   const source = artifact.sourceSize;
   if (!source) return null;
   return (
-    <span className="border-ink/35 bg-canvas group-hover:border-ink block border p-3 transition-colors sm:p-4">
+    <span className="plate-paper border-ink/40 group-hover:border-ink block border p-3 transition-colors sm:p-4">
       <span
         className="relative block w-full overflow-hidden"
         style={{ aspectRatio: `${panel.width} / ${panel.height}` }}
@@ -267,7 +267,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                   onClick={() => setActiveArtifact(artifact)}
                 >
                   <span className="grid gap-x-10 gap-y-3 md:grid-cols-[minmax(0,1fr)_260px]">
-                    <span className="border-ink/35 bg-canvas group-hover:border-ink block border p-3 transition-colors sm:p-4">
+                    <span className="plate-paper border-ink/40 group-hover:border-ink block border p-3 transition-colors sm:p-4">
                       <span className="relative block aspect-[4/3] w-full md:aspect-video">
                         <Image
                           src={artifact.href}
@@ -301,7 +301,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                 className="group block text-left"
                 onClick={() => setActiveArtifact(artifact)}
               >
-                <span className="border-ink/35 bg-canvas group-hover:border-ink block border p-3 transition-colors sm:p-4">
+                <span className="plate-paper border-ink/40 group-hover:border-ink block border p-3 transition-colors sm:p-4">
                   <span className="relative block aspect-[4/3] w-full">
                     <Image
                       src={artifact.href}
