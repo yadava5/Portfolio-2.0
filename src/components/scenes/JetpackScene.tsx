@@ -79,14 +79,16 @@ export function JetpackScene() {
 
     /* ── The run ─────────────────────────────────────────────────── */
     tl.to(input, { strokeDashoffset: 0, duration: 0.4, ease: "power1.inOut" })
-      .to(
-        splits,
-        { strokeDashoffset: 0, duration: 0.3, stagger: 0.06 },
-        0.35
-      )
+      .to(splits, { strokeDashoffset: 0, duration: 0.3, stagger: 0.06 }, 0.35)
       .to(rails, { strokeDashoffset: 0, duration: 0.3, stagger: 0.06 }, 0.5)
       .to(label, { opacity: 1, duration: 0.35 }, 0.55)
-      /* every block at once — the virtual threads working in parallel */
+      /* every block at once — the virtual threads working in parallel.
+         x snaps to whole SVG units (1 unit = 1 CSS px at full width):
+         four fill rects sliding through sub-pixel positions over the
+         fine-dashed rails re-rasterized every frame as a moiré glitter;
+         on the pixel grid the slide reads as solid ink moving. scaleX
+         stays continuous — the shrink is one antialiased edge, and IS
+         the compression picture. */
       .to(
         blocks,
         {
@@ -96,6 +98,7 @@ export function JetpackScene() {
           duration: 0.55,
           stagger: 0.06,
           ease: "power2.inOut",
+          snap: { x: 1 },
         },
         0.85
       )
@@ -106,12 +109,12 @@ export function JetpackScene() {
         pulse,
         { opacity: 0.55, scale: 0.5, svgOrigin: "378 118" },
         {
-              opacity: 0,
-              scale: 1.9,
-              duration: 0.55,
-              ease: "power2.out",
-              immediateRender: false,
-            },
+          opacity: 0,
+          scale: 1.9,
+          duration: 0.55,
+          ease: "power2.out",
+          immediateRender: false,
+        },
         1.65
       )
       .to(output, { strokeDashoffset: 0, duration: 0.4 }, 1.75)
