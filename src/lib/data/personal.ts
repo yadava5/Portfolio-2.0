@@ -161,7 +161,7 @@ export const siteMetadata = {
   title: "Ayush Yadav | Software, Data, and ML Engineering",
   /** Site description */
   description:
-    "Ayush Yadav's new-grad software, data, and ML engineering portfolio with source-truth case studies, private-safe evidence, and current resume links.",
+    "Ayush Yadav's portfolio: a recent computer-science graduate, with case studies of the projects he has built and the evidence behind every claim.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /** Open Graph image path */
