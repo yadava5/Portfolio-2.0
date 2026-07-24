@@ -64,14 +64,28 @@ export function useSceneRun<T extends HTMLElement>(
     const root = rootRef.current;
     if (!root || !lenis) return;
 
+    /* Past-start at build (deep-scroll reload / mid-page remount): run
+       the one-shot DIRECTLY with no trigger. A once:true trigger created
+       past its start fires and self-kills inside the first refresh loop
+       that touches it, mutating GSAP's trigger list mid-iteration — the
+       hydration crash TextMotion's pastStart() documents. The timeline
+       without a trigger simply plays (same beat the trigger would have
+       fired at creation), and dies on completion — still zero rAF after
+       settle. */
+    const immediate =
+      root.getBoundingClientRect().top <= window.innerHeight * 0.8;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "power2.out" },
-        scrollTrigger: {
-          trigger: root,
-          start: SCENE_START,
-          once: true,
-        },
+        ...(immediate
+          ? {}
+          : {
+              scrollTrigger: {
+                trigger: root,
+                start: SCENE_START,
+                once: true,
+              },
+            }),
       });
       buildRef.current(tl, root);
     }, root);
