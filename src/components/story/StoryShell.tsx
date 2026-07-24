@@ -60,6 +60,7 @@ import { OnFileManifest } from "@/components/paper/OnFileManifest";
 import { PipelineRun } from "@/components/paper/PipelineRun";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { VisitedMark } from "@/components/paper/VisitedMark";
+import { ProjectRowScene } from "@/components/scenes/ProjectScene";
 
 /** The real case-file ids (server-side): the manifest's allowlist —
  *  paperMemory entries outside this set are never rendered. */
@@ -158,11 +159,16 @@ const PATH_FIELD_RECORDS: {
 
 /** Ch-05 editorial rows: plan 3.10 pair lines + one honest metric each.
  *  Every number is proof-manifest/case-file-backed and each metric chip
- *  links its case-file receipt row (footnote 1's contract): 0.9791
- *  macro-F1 on a 96-sample gate, the committed openmp+simd 3.5x (the
- *  fast-mnist BENCHMARKS.md attribution — parallelism carries it, not
- *  SIMD alone), and the audited 71 XCTest functions (no latency number
- *  exists for Visual Assist, so its real proof carries the row). */
+ *  links its receipt (footnote 1's contract): 0.9791 macro-F1 on a
+ *  96-sample gate, the committed openmp+simd 3.5x (the fast-mnist
+ *  BENCHMARKS.md attribution — parallelism carries it, not SIMD alone),
+ *  and jetpack's 72/0 suite on JDK 25 (the jetpack-tests manifest entry;
+ *  no case file exists yet, so its chip cites the pinned README and the
+ *  row's primary act is the live engine — external, never a 404).
+ *  Third row swapped visual-assist → jetpack-compress (orchestrator
+ *  ruling, 2026-07-24): the six live showcase projects hold the prime
+ *  rows; visual-assist is retired (portfolioVisible: false) and its
+ *  case file remains reachable from /evidence. */
 const WORK_ROWS = [
   {
     projectId: "jobtracker",
@@ -180,12 +186,17 @@ const WORK_ROWS = [
     metricHref: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
   {
-    projectId: "visual-assist",
-    bright: "LiDAR measures the room.",
+    /* Facts from src/lib/data/projects.ts (jetpack-compress): parallel
+       gzip-compatible engine — split into blocks, compressed on virtual
+       threads, stitched into one byte-valid member; 72 tests on JDK 25
+       (proofManifest jetpack-tests @ af2c4b1). */
+    projectId: "jetpack-compress",
+    bright: "One gzip stream. Every core writing it.",
     muted:
-      "Visual Assist says it out loud, for the people who need to hear it.",
-    metric: "71 xctest functions — on-device, voiceover-first",
-    metricHref: "/projects/visual-assist/#v-visual-assist-1",
+      "jetpack-compress splits the bytes across virtual threads — and stitches one byte-valid member.",
+    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+    metricHref:
+      "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
   },
 ];
 
@@ -919,11 +930,19 @@ function WorkChapter() {
         <h2 className="sr-only">The work</h2>
 
         <div className="mt-10">
-          {WORK_ROWS.map((row) => {
+          {WORK_ROWS.map((row, rowIndex) => {
             const project = getProjectById(row.projectId);
             if (!project) return null;
             const caseHref = `/projects/${project.id}/`;
             const study = getCaseStudyById(row.projectId);
+            /* No case file yet (jetpack-compress): every act on the row
+               goes to the real public surfaces instead — the title and
+               primary act to the live engine, the metric chip to the
+               pinned README the proof manifest cites. Never a 404. */
+            const titleHref = study
+              ? caseHref
+              : (project.liveUrl ?? project.githubUrl ?? caseHref);
+            const externalMetric = row.metricHref.startsWith("http");
             return (
               /* data-thread-row: the Red Thread ticks each row in the
                  binding margin as the line passes (geometry anchor) — the
@@ -932,7 +951,13 @@ function WorkChapter() {
                  data-tm-scene (PREMIUM-FLOW #1): each row turns face-up as
                  one beat — title → tagline → consequence → metric chip —
                  off its own trigger (top 85%), so the three rows deal in
-                 sequence as the thread's curl reaches each node. */
+                 sequence as the thread's curl reaches each node.
+                 THE ROW WRAPPER CONTRACT (living scenes): the ONE generic
+                 scene mount (ProjectRowScene) renders last in the row —
+                 a registered scene becomes the row's fig 5.n; projects
+                 without one render exactly as before. Builders add scenes
+                 via the registry (src/components/scenes/index.tsx) and
+                 NEVER touch this wrapper again. */
               <article
                 key={project.id}
                 data-thread-row
@@ -952,11 +977,22 @@ function WorkChapter() {
                     className="font-display fraunces-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight"
                     data-tm="block"
                   >
-                    <Link href={caseHref}>{project.title}</Link>
+                    {study ? (
+                      <Link href={titleHref}>{project.title}</Link>
+                    ) : (
+                      <a
+                        href={titleHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {project.title}
+                      </a>
+                    )}
                     {/* The paper remembers (W1): a small ink ✓ once this
                         file has been opened — reserved width, decorative,
-                        outside the link's accessible name. */}
-                    <VisitedMark fileId={project.id} />
+                        outside the link's accessible name. Only rows WITH
+                        a case file can ever earn the mark. */}
+                    {study ? <VisitedMark fileId={project.id} /> : null}
                   </h3>
                   {/* The row's bright line splits an aria-hidden inner
                       span (sr-only twin): aria-label is prohibited on
@@ -990,22 +1026,46 @@ function WorkChapter() {
                       two mono lines on every viewport — the ledger's
                       right rag stays quiet (visitor #4). */}
                   <p className="line-clamp-2 max-w-[38ch] normal-case">
-                    <Link href={row.metricHref} className="link-draw">
-                      {row.metric}
-                    </Link>
+                    {externalMetric ? (
+                      <a
+                        href={row.metricHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        {row.metric}
+                      </a>
+                    ) : (
+                      <Link href={row.metricHref} className="link-draw">
+                        {row.metric}
+                      </Link>
+                    )}
                   </p>
                   {/* W5 hierarchy (visitor #4): ONE primary act per row —
-                      the case file at full ink; source · demo fold into a
-                      single quiet secondary line; the last-verified token
-                      stays (the recruiter's differentiator) but dimmed,
-                      unlinked, on its own line. Every href the row ever
-                      had is still in the DOM. */}
+                      the case file at full ink (or, when no case file
+                      exists, the live engine, honestly marked external);
+                      source · demo fold into a single quiet secondary
+                      line; the last-verified token stays (the recruiter's
+                      differentiator) but dimmed, unlinked, on its own
+                      line. Every href the row ever had is still in the
+                      DOM. */}
                   <p>
-                    <Link href={caseHref} className="link-draw text-ink">
-                      the case file ⟶
-                    </Link>
+                    {study ? (
+                      <Link href={caseHref} className="link-draw text-ink">
+                        the case file ⟶
+                      </Link>
+                    ) : project.liveUrl ? (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw text-ink"
+                      >
+                        the live demo ↗
+                      </a>
+                    ) : null}
                   </p>
-                  {project.githubUrl || project.liveUrl ? (
+                  {project.githubUrl || (study && project.liveUrl) ? (
                     <p>
                       {project.githubUrl ? (
                         <a
@@ -1017,8 +1077,10 @@ function WorkChapter() {
                           source
                         </a>
                       ) : null}
-                      {project.githubUrl && project.liveUrl ? " · " : null}
-                      {project.liveUrl ? (
+                      {project.githubUrl && study && project.liveUrl
+                        ? " · "
+                        : null}
+                      {study && project.liveUrl ? (
                         <a
                           href={project.liveUrl}
                           target="_blank"
@@ -1041,6 +1103,14 @@ function WorkChapter() {
                     </p>
                   ) : null}
                 </div>
+                {/* The living scene (FABLE-VISUAL-BRIEF §B): the row's
+                    figure, registry-driven — fig 5.n in chapter-figure
+                    grammar. Rows without a registered scene render
+                    nothing here, exactly as before. */}
+                <ProjectRowScene
+                  projectId={project.id}
+                  figNo={`5.${rowIndex}`}
+                />
               </article>
             );
           })}
