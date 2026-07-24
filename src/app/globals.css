@@ -1669,6 +1669,154 @@ html[data-motion-off] .pipeline-token-bead {
   transition: none;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THE LIVING SCENES (FABLE-VISUAL-BRIEF §B) — per-project figures
+   Rendered by src/components/scenes/*: self-contained inked SVG
+   figures whose SERVER MARKUP is the settled frame (the print
+   edition). Motion is a one-shot scroll-in run (useSceneRun) that
+   exists only in the engine world, so these classes style the
+   FINISHED figure — there are no undrawn/hidden states here, and the
+   static worlds need no overrides at all. Ink vocabulary shared with
+   PipelineRun/the Red Thread: pathLength=1 · dasharray 1 2 ·
+   dashoffset 0 drawn / 1.5 undrawn; clay marks the gate/seam moment
+   only. transform / opacity / stroke-dashoffset are the only animated
+   properties (D3), and every figure contains its paint (D4). */
+[data-scene] {
+  contain: paint;
+}
+/* All scene ink rides currentColor (amendment A4): ch05's third row can
+   sit in near-dusk light in the motion world, where the body ink flips
+   cream — the figures must flip with it. Quiet voices mute via OPACITY
+   on the full-strength ink (the dusk-chapter pattern), never the
+   day-only secondary token. */
+.scene-fig text {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  fill: currentColor;
+}
+.scene-fig .sc-quiet {
+  fill: currentColor;
+  opacity: 0.72;
+}
+.scene-fig .sc-clay {
+  fill: var(--color-clay);
+}
+.scene-fig .sc-small {
+  font-size: 9.5px;
+}
+/* The drawing edge — the Red Thread's own convention, settled drawn. */
+.scene-edge {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+.scene-edge-heavy {
+  stroke-width: 2.4;
+}
+/* Quieter structural rails (drawn in the same convention). */
+.scene-rail {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 45%, transparent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+/* Static apparatus: gate posts, axis ticks, dashed measure guides. */
+.scene-post {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 72%, transparent);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.scene-guide {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 25%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+/* The clay gate/seam square + its one arrival pulse (engine-only). */
+.scene-gate {
+  fill: var(--color-clay-graphic);
+}
+/* NOTE: no transform-box/transform-origin here — the pulse is scaled by
+   GSAP (svgOrigin), and a CSS fill-box would re-base the attribute
+   matrix and throw the ring off its gate (measured, 2026-07-24). */
+.scene-pulse {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.4;
+  opacity: 0;
+}
+.scene-claytick {
+  fill: none;
+  stroke: var(--color-clay-graphic);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+/* Applied: mail-line glyphs; the race: lane beads. */
+.scene-mail {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.scene-bead {
+  fill: currentColor;
+}
+/* Glyph forward pass: stipple cells, hidden cells, readout slots. */
+.scene-cell {
+  fill: currentColor;
+  opacity: 0.85;
+}
+.scene-hidden {
+  fill: currentColor;
+  opacity: 0.75;
+}
+.scene-slot {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 35%, transparent);
+  stroke-width: 1;
+}
+.scene-slot-win {
+  fill: currentColor;
+}
+/* jetpack: byte blocks — denser ink at rest = compressed. */
+.scene-block {
+  fill: currentColor;
+  opacity: 0.55;
+}
+/* Past the dusk flip, clay lightens to its night grade (A4 — the same
+   step the arc gives text clay); the archive dossier never dusks, so a
+   lingering arc attribute from a client-side navigation must not dim
+   its clay (the header's own archive re-override pattern). */
+html[data-arc-phase="dusk"] .scene-fig .sc-clay {
+  fill: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] .scene-gate {
+  fill: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] .scene-pulse,
+html[data-arc-phase="dusk"] .scene-claytick {
+  stroke: var(--color-clay-night);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-fig .sc-clay {
+  fill: var(--color-clay);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-gate {
+  fill: var(--color-clay-graphic);
+}
+html[data-arc-phase="dusk"] [data-dossier] .scene-pulse,
+html[data-arc-phase="dusk"] [data-dossier] .scene-claytick {
+  stroke: var(--color-clay-graphic);
+}
+
 /* Receipt-row permalinks land under the fixed header */
 li[id^="v-"] {
   scroll-margin-top: 7rem;
