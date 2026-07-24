@@ -830,8 +830,8 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   html[data-motion-ready]:not([data-motion-off]) .hero-enter {
     /* 0.6s expo.out, 60ms stagger via --hero-i — retuned from the plan-
        3.8 1.0s/110ms (PERF-AUDIT fix 1): same de-blur character, the
-       headline resolved ~3x sooner. The sub/directive lines keep a
-       touch more air via their --hero-i seats (StoryShell heroDelay). */
+       headline resolved ~3x sooner. The directive block keeps a touch
+       more air via its --hero-i seat (StoryShell heroDelay). */
     animation: hero-rise 0.6s cubic-bezier(0.19, 1, 0.22, 1) both;
     animation-delay: calc(var(--hero-i, 0) * 60ms);
   }
@@ -843,21 +843,22 @@ html[data-motion-off] .thread-segment .thread-node-gate {
 }
 
 /* ── HEADLINE INK-SETTLE (W5 round B, visitor #3) ───────────────────
-   The masthead's own beat: the three H1 lines land, then their ink
+   The masthead's own beat: the two H1 lines land, then their ink
    DEEPENS — secondary ink → full ink with a ≤1px same-color bleed
    feather tightening to nothing (letterpress ink drying, not glow: the
    feather is never lighter than the letterform it hugs, and its end
    state is zero shadow). Paint-only devices on purpose — the H1 is the
-   LCP element and the three-line block must never reflow: no mask, no
+   LCP element and the two-line block must never reflow: no mask, no
    weight/tracking animation, opacity floor untouched (hero-rise still
    owns opacity/transform/blur; this second animation touches color and
-   text-shadow ONLY). Each line settles over 0.4s from its own 60ms
-   seat, so the whole headline is full-ink by ~520ms — before the
-   byline stipple's dots merge (its resolve half runs ~670–1070ms).
-   The footnote ¹ keeps its own secondary ink (explicit class color —
-   inheritance never reaches it). `to` omitted everywhere: the settled
-   state IS the static state, and once TextMotion drops
-   [data-motion-ready] these rules stop matching entirely. */
+   text-shadow ONLY). The lines sit at seats 0 and 2 (StoryShell
+   heroDelay) and each settles over 0.4s from its seat, so the whole
+   headline is full-ink by ~520ms — the same close the old three-line
+   stack kept. The footnote ¹ keeps its own secondary ink (explicit
+   class color — inheritance never reaches it). `to` omitted
+   everywhere: the settled state IS the static state, and once
+   TextMotion drops [data-motion-ready] these rules stop matching
+   entirely. */
 @keyframes hero-ink-settle {
   from {
     color: var(--color-ink-secondary);
@@ -881,77 +882,14 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   }
 }
 
-/* The hero sub-line animates an INNER wrapper: [data-thread-name]
-   itself must never transform (the Red Thread measures its box). */
+/* The H1's closing line animates an INNER wrapper: [data-thread-name]
+   itself must never transform (the Red Thread measures its box).
+   Historical note: the STIPPLE MASTHEAD (friend transposition #4) —
+   the byline's halftone dot-gain mask — retired with the byline
+   itself (owner ruling, 2026-07-24); the masthead's only load beats
+   are hero-rise(-blur) + hero-ink-settle above. */
 .hero-enter-inline {
   display: inline-block;
-}
-
-/* ── STIPPLE MASTHEAD (friend transposition #4) ─────────────────────
-   Under the dawn light the byline "inks in" from engraving stipple: a
-   halftone dot screen MASKS the real glyphs while the screen's dot
-   radius gains 0.7→2.5px until the dots merge solid — letterpress
-   dot-gain coming into register. The dots ARE the letterform (a mask
-   over the byline's own text): no extra DOM, no canvas, no per-dot
-   nodes, and nothing for AT to skip — the line stays one real string.
-   Two offset screens tile a 45° checkerboard lattice (the newspaper
-   screen angle, pitch 2.83px); coverage is total at r ≥ 2.0px, so the
-   registered initial value below IS the no-op state. On this one line
-   the dot-gain REPLACES the desktop de-blur (a blur filter over the
-   screen would smear the dots into particles — NO-LIST E keeps blur
-   off the effect); slot, delay, and rise timing are untouched. The
-   whole rule lives under the load-window gate, so the settled page —
-   and every static world — carries no mask property at all. */
-@property --stipple-r {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 2.5px;
-}
-/* `to` omitted: the radius resolves to its registered initial (full
-   coverage), so the screen is already solid before TextMotion drops
-   the gate attribute — no residual mask, no settle pop. */
-@keyframes stipple-gain {
-  from {
-    --stipple-r: 0.7px;
-  }
-}
-@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
-  html[data-motion-ready]:not([data-motion-off]) .hero-enter-stipple {
-    animation:
-      hero-rise 0.6s cubic-bezier(0.19, 1, 0.22, 1) both,
-      stipple-gain 0.8s cubic-bezier(0.33, 0, 0.55, 1) both;
-    animation-delay: calc(var(--hero-i, 0) * 60ms);
-    -webkit-mask-image:
-      radial-gradient(
-        circle,
-        #000 calc(var(--stipple-r) - 0.3px),
-        transparent calc(var(--stipple-r) + 0.3px)
-      ),
-      radial-gradient(
-        circle,
-        #000 calc(var(--stipple-r) - 0.3px),
-        transparent calc(var(--stipple-r) + 0.3px)
-      );
-    -webkit-mask-size: 4px 4px;
-    -webkit-mask-position:
-      0 0,
-      2px 2px;
-    mask-image:
-      radial-gradient(
-        circle,
-        #000 calc(var(--stipple-r) - 0.3px),
-        transparent calc(var(--stipple-r) + 0.3px)
-      ),
-      radial-gradient(
-        circle,
-        #000 calc(var(--stipple-r) - 0.3px),
-        transparent calc(var(--stipple-r) + 0.3px)
-      );
-    mask-size: 4px 4px;
-    mask-position:
-      0 0,
-      2px 2px;
-  }
 }
 
 /* Fraunces weight breathing (plan 3.8, optional — adopted): TextMotion
