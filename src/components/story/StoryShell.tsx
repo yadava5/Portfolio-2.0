@@ -139,19 +139,19 @@ const PATH_FIELD_RECORDS: {
   {
     dateline: "the fix",
     observation:
-      "Python and SQL teach the records shape. The transforms feed OAS and Tableau; the dashboards they fill are read across university departments — read, and acted on.",
+      "Python and SQL teach the records shape. The transforms feed OAS and Tableau, and the dashboards they fill are read across university departments.",
     receipt: "oas/tableau reporting — dashboards across departments",
   },
   {
     dateline: "the bot",
     observation:
-      "The questions start answering themselves — an AI chatbot in Slack, wired to Workday, Oracle Analytics, and Tableau, governed at every joint.",
+      "A chatbot in Slack takes the routine questions — wired to Workday, Oracle Analytics, and Tableau, with access governed at every joint.",
     receipt: "governed data access — workday · oracle · tableau apis",
   },
   {
     dateline: "the assistant",
     observation:
-      "A second assistant reads policy and answers with its sources cited. The lookup that cost an afternoon now costs a question.",
+      "A second assistant reads policy and answers with its sources cited — and drops the answers whose quotes it cannot verify.",
     receipt: "19/20 cited-source sweep — PolicyBot, the policy assistant",
     href: "/projects/policybot/#v-policybot-1",
   },
@@ -173,7 +173,7 @@ const WORK_ROWS = [
   {
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
-    muted: "Applied reads it — the classifier even runs in your browser.",
+    muted: "Applied reads it — and the classifier runs in your browser.",
     metric: "macro-f1 0.98 — 96-sample gate",
     metricHref: "/projects/jobtracker/#v-jobtracker-5",
   },
@@ -263,9 +263,9 @@ const VALUES_LINES = [
  *  both REFUSED to sign automatically (19/20 with honest fallbacks; the
  *  ~97% stays HELD until a committed eval run earns it).
  *  W5 vocabulary fix (evidence #4): the gate-outcome word is "refused" —
- *  the ¶02 dictionary's "the step I refuse to automate" — because on the
- *  case files HELD means "claim not yet earned", the opposite valence.
- *  "held" never names a gate outcome anywhere on the paper. */
+ *  the figure's own legend defines it ("the gate stopped the run") —
+ *  because on the case files HELD means "claim not yet earned", the
+ *  opposite valence. "held" never names a gate outcome on the paper. */
 const VALUES_GATES = [
   { gate: "classifier gate — jobtracker", status: "passed" },
   { gate: "cited-source sweep — policybot", status: "refused" },
@@ -380,7 +380,7 @@ function ArrivalChapter() {
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
         <ChapterKicker
           id={ARRIVAL.id}
-          label="arrival — a working paper on trust & machinery"
+          label="arrival — a working paper on what i’ve built"
           dateline="cincinnati, ohio — summer 2026"
         />
 
@@ -569,7 +569,7 @@ function WhoChapter() {
     >
       <ThreadSegment id={WHO.id} />
       <div className={WRAP}>
-        <ChapterKicker id={WHO.id} label="who — on trust & machinery" />
+        <ChapterKicker id={WHO.id} label="who — the short version" />
 
         <div className="mt-10">
           {/* The MANIFESTO (plan 3.8): the page's ONE scrubbed text —
@@ -577,8 +577,8 @@ function WhoChapter() {
               opacity 0.25→1 across ~60vh of ch-02 scroll. */}
           <PairHeadline
             motion="manifesto"
-            bright="This is a story about learning machines."
-            muted="And the person who doesn’t fully trust them yet."
+            bright="This is a record of what I’ve built."
+            muted="And how each piece was checked before I called it done."
           />
 
           {/* Compressed to one breath (fix round 4): deck pair, ONE short
@@ -593,10 +593,10 @@ function WhoChapter() {
             className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14"
           >
             <p className="text-body max-w-[55ch] font-serif" data-tm="block">
-              I’m a recent computer-science graduate. I build the whole path —
-              data pipelines, applied machine learning, and the software that
-              carries them into real use. The claims on this paper carry
-              receipts. The final word stays human.
+              I’m a recent computer-science graduate from Miami University. I
+              build the whole path — the interface, the services behind it, the
+              data they run on, and the machine learning when the problem calls
+              for it. The claims on this paper carry receipts.
             </p>
 
             <div className="flex flex-col gap-10 md:justify-between">
@@ -615,7 +615,7 @@ function WhoChapter() {
                 </p>
                 <p className="text-ink-secondary mt-3 max-w-[26ch] font-serif text-[0.9375rem] leading-6 italic">
                   1. the moment a human signs for a machine’s work. 2. the step
-                  I refuse to automate.
+                  I leave to a person.
                 </p>
               </div>
 
@@ -623,8 +623,8 @@ function WhoChapter() {
                 className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
                 data-tm="block"
               >
-                n.b. — nothing on this desk ships without a human pass. this
-                page waited its turn too.
+                n.b. — every project below opens into its own case file,
+                source, or live build.
               </aside>
             </div>
           </div>
@@ -669,7 +669,7 @@ function PathChapter() {
             <>
               {/* data-thread-word: the Red Thread underlines this word —
                   chapter 03's one content gesture (geometry anchor) */}
-              This is where I learned that data work starts with{" "}
+              This is where I learned that the work starts in the{" "}
               <span data-thread-word>mess</span>.
             </>
           }
@@ -783,7 +783,7 @@ function AutomlChapter() {
       <div className={WRAP}>
         <ChapterKicker
           id={AUTOML.id}
-          label="the flagship — senior design expo — spring 2026"
+          label="the capstone — senior design expo — spring 2026"
         />
 
         <div className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20">
@@ -800,8 +800,8 @@ function AutomlChapter() {
               data-tm="block"
             >
               Agentic AutoML turns a dataset and a goal into a structured,
-              auditable ML workflow. The agents plan it, argue for it, and run
-              it — and still cannot press go. That button stays human.
+              auditable ML workflow. The agents plan it and run it, then stop at
+              the seventh phase and wait for a person.
             </p>
             {/* Honest stat strip — every clause is proof-manifest-backed */}
             <p
