@@ -26,12 +26,20 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import {
+  applyGate,
+  getTier,
+  startWatching,
+  stopWatching,
+  subscribeTier,
+} from "@/components/world/governor";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -49,16 +57,25 @@ export const SCROLL_OFFSET = -96;
 const MOTION_STORAGE_KEY = "motion-off";
 
 /**
- * Read the persisted quiet-toggle preference synchronously (amendment
- * A7). Static-world consumers (the Red Thread) need this BEFORE the
- * provider's restore effect runs — child effects fire first, so the
- * context alone cannot answer "is the engine coming?" on first paint.
+ * Read "is the static world in force?" synchronously (amendment A7 +
+ * governor §F2). Static-world consumers (the Red Thread, the pipeline)
+ * need this BEFORE the provider's restore effect runs — child effects
+ * fire first, so the context alone cannot answer "is the engine coming?"
+ * on first paint. True under EITHER standing print-floor signal:
+ *   - the visitor's persisted quiet toggle (localStorage), or
+ *   - `data-tier="print"` — the frame governor's floor, stamped
+ *     pre-paint by the layout.tsx head script (sessionStorage ceiling)
+ *     or mid-session by a governor downshift.
+ * (The OS reduced-motion media query is the callers' own third check.)
  *
- * @returns True when the visitor has switched motion off
+ * @returns True when the static world is in force
  */
 export function readStoredMotionOff(): boolean {
   try {
-    return window.localStorage.getItem(MOTION_STORAGE_KEY) === "1";
+    return (
+      window.localStorage.getItem(MOTION_STORAGE_KEY) === "1" ||
+      document.documentElement.dataset.tier === "print"
+    );
   } catch {
     return false;
   }
@@ -130,19 +147,81 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [motionOff, setMotionOff] = useState(false);
   const [lenis, setLenis] = useState<ScrollController | null>(null);
+  /* The frame governor's print floor (§F2). Seeded from the head
+     script's pre-paint `data-tier` stamp so a sessionStorage-capped
+     load never mounts the engine at all. */
+  const [tierPrint, setTierPrint] = useState(
+    () => typeof window !== "undefined" && getTier() === "print"
+  );
+  /* Downshift scroll anchor: the section under the viewport top when the
+     governor drops to print — restored after the pin-spacer unwinds so
+     the reader's line doesn't jump (§F2: zero layout surprise). */
+  const downshiftAnchor = useRef<{ el: Element; top: number } | null>(null);
 
-  /* Restore the persisted toggle once on the client (SSR-safe default: on) */
+  /* Restore the persisted toggle once on the client (SSR-safe default:
+     on). Raw localStorage read on purpose: readStoredMotionOff() now also
+     reports the governor's print floor, which is NOT the user's toggle —
+     the header control must reflect only the visitor's own choice. */
   useEffect(() => {
-    if (readStoredMotionOff()) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setMotionOff(true);
+    try {
+      if (window.localStorage.getItem(MOTION_STORAGE_KEY) === "1") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMotionOff(true);
+      }
+    } catch {
+      /* storage unavailable — default stays on */
     }
   }, []);
 
-  /* The static world's CSS reads this attribute (globals.css) */
+  /* Report the motion gate to the governor (§F2 precedence: the gate
+     always wins — reduced motion / the quiet toggle force print and
+     disable measurement; an open gate restores the session ceiling).
+     Declared BEFORE the tier subscription and engine effects so a gate
+     change resolves the tier first. */
+  useEffect(() => {
+    applyGate(
+      prefersReducedMotion ||
+        motionOff ||
+        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+    );
+  }, [prefersReducedMotion, motionOff]);
+
+  /* Follow governor downshifts. On core→print, remember which section
+     sits under the viewport top: unmounting the engine unwinds the ch04
+     pin-spacer (~1 viewport of scroll distance) and would otherwise
+     yank the page up mid-read. */
+  useEffect(
+    () =>
+      subscribeTier((tier) => {
+        const print = tier === "print";
+        if (print && !downshiftAnchor.current) {
+          /* Anchor the section under the READING line (just below the
+             6rem fixed header), not merely the first one still on
+             screen: a section whose tail barely clips the viewport top
+             can itself reflow between the motion and static worlds
+             (SplitText un-splitting), which would leak that delta into
+             everything below it. */
+          const section = Array.from(
+            document.querySelectorAll<HTMLElement>("[data-chapter]")
+          ).find((el) => el.getBoundingClientRect().bottom > 120);
+          if (section) {
+            downshiftAnchor.current = {
+              el: section,
+              top: section.getBoundingClientRect().top,
+            };
+          }
+        }
+        setTierPrint(print);
+      }),
+    []
+  );
+
+  /* The static world's CSS reads this attribute (globals.css). It is
+     stamped for the visitor's quiet toggle AND for the governor's print
+     floor — both mean "the static world is in force". */
   useEffect(() => {
     const root = document.documentElement;
-    if (motionOff) {
+    if (motionOff || tierPrint) {
       root.setAttribute("data-motion-off", "");
     } else {
       root.removeAttribute("data-motion-off");
@@ -150,7 +229,30 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     return () => {
       root.removeAttribute("data-motion-off");
     };
-  }, [motionOff]);
+  }, [motionOff, tierPrint]);
+
+  /* After a governor downshift unmounts the engine (lenis → null) and
+     the children have reverted their pins, re-align the reader's line.
+     Double rAF: the pin-spacer removal must have laid out first. */
+  useEffect(() => {
+    if (lenis !== null || !tierPrint) return;
+    const anchor = downshiftAnchor.current;
+    if (!anchor) return;
+    downshiftAnchor.current = null;
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        const drift = anchor.el.getBoundingClientRect().top - anchor.top;
+        if (Math.abs(drift) > 1) {
+          window.scrollBy({ top: drift, behavior: "instant" });
+        }
+      });
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [lenis, tierPrint]);
 
   const toggleMotion = useCallback(() => {
     setMotionOff((current) => {
@@ -170,12 +272,13 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   );
 
   useEffect(() => {
-    /* A7: never mount the engine under reduced motion or the quiet toggle
-       (no init-then-disable). The synchronous media-query read closes the
-       first-commit race: this effect otherwise runs once with the hook's
-       SSR-safe `false` before its change subscription delivers `true`,
-       transiently mounting the engine under reduced motion. */
-    if (prefersReducedMotion || motionOff) return;
+    /* A7 + §F2: never mount the engine under reduced motion, the quiet
+       toggle, or the governor's print floor (no init-then-disable). The
+       synchronous media-query read closes the first-commit race: this
+       effect otherwise runs once with the hook's SSR-safe `false` before
+       its change subscription delivers `true`, transiently mounting the
+       engine under reduced motion. */
+    if (prefersReducedMotion || motionOff || tierPrint) return;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
@@ -231,11 +334,16 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     const handleResize = () => ScrollTrigger.refresh();
     window.addEventListener("resize", handleResize);
 
+    /* The frame governor watches exactly while the engine lives (§F2):
+       longtask observer + scroll-gated sampling on THE one rAF loop. */
+    startWatching();
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenis(controller);
 
     return () => {
       cancelled = true;
+      stopWatching();
       window.removeEventListener("resize", handleResize);
       for (const listener of scrollListeners.values()) {
         window.removeEventListener("scroll", listener);
@@ -243,7 +351,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       scrollListeners.clear();
       setLenis(null);
     };
-  }, [prefersReducedMotion, motionOff]);
+  }, [prefersReducedMotion, motionOff, tierPrint]);
 
   return (
     <MotionPreferenceContext.Provider value={motionPreference}>
