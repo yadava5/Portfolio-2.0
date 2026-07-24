@@ -79,6 +79,8 @@ let lastScoreTs = 0;
 let stableMs = 0;
 let lastScrollTs = -Infinity;
 let lastFrameTs = Number.NaN;
+/** Sampling is ignored until this timestamp (programmatic flights). */
+let suppressUntilTs = 0;
 
 let longtaskObserver: PerformanceObserver | null = null;
 const listeners = new Set<(tier: Tier) => void>();
@@ -223,6 +225,14 @@ function maybePromote(): void {
  */
 function sample(): void {
   const now = performance.now();
+  if (now < suppressUntilTs) {
+    /* Controller-driven flight in progress: machine scrolling is not
+       the visitor's experience (§F2 measures the visitor). Firefox in
+       particular paces smooth window.scrollTo at a cadence that reads
+       as sustained jank and false-downshifted the engine mid-flight. */
+    lastFrameTs = Number.NaN;
+    return;
+  }
   if (now - lastScrollTs > ACTIVE_WINDOW_MS) {
     lastFrameTs = Number.NaN;
     return;
@@ -248,9 +258,22 @@ function markScrolled(): void {
 
 function onLongTasks(list: PerformanceObserverEntryList): void {
   const now = performance.now();
+  if (now < suppressUntilTs + 200) return; /* programmatic flight */
   if (now - lastScrollTs > ACTIVE_WINDOW_MS + 200) return;
   const count = list.getEntries().length;
   if (count > 0) addPenalty(LONGTASK_PENALTY * count, now);
+}
+
+/**
+ * Ignore sampling for the next `ms` milliseconds (§F2: the governor
+ * measures the VISITOR's scroll experience; a controller-driven smooth
+ * flight is machine scrolling). The window extends, never shrinks, and
+ * the frame clock re-seeds so the first post-flight frame scores clean.
+ */
+export function suppressSampling(ms: number): void {
+  const until = performance.now() + ms;
+  if (until > suppressUntilTs) suppressUntilTs = until;
+  lastFrameTs = Number.NaN;
 }
 
 /**
