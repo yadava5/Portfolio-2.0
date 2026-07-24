@@ -33,7 +33,6 @@ import {
   personalInfo,
   socialLinks,
   education,
-  getDeansListCount,
 } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
@@ -639,7 +638,6 @@ function PathChapter() {
   const degree = education[0];
   const range = formatDateRange(miami.startDate, miami.endDate);
   const graduation = formatMonthYear(degree.endDate);
-  const deansListCount = getDeansListCount();
 
   return (
     <section
@@ -743,9 +741,9 @@ function PathChapter() {
                   unlinked claim; prose + the transcript boundary keeps the
                   fact while exempting it from footnote 1's link contract. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — dean’s list in{" "}
-                {deansListCount} semesters, 3.65 GPA in major coursework
-                (transcript on request).
+                B.S. {degree.field}, {graduation} — dean’s list, spring &
+                fall 2025 — 3.65 GPA in major coursework (transcript on
+                request).
               </p>
             </div>
           </article>
