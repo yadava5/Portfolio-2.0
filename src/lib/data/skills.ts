@@ -49,28 +49,29 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "TypeScript",
         level: "advanced",
-        usedIn: ["Agentic AutoML", "TaskFlow", "Fast MNIST"],
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "Glyph", "LifeQuest"],
       },
       {
         name: "Python",
         level: "advanced",
-        usedIn: ["JobTracker", "Master Inventory", "PolicyBot", "Miami ITSM"],
+        usedIn: ["Applied", "Master Inventory", "PolicyBot", "Miami ITSM"],
       },
       {
         name: "JavaScript",
         level: "advanced",
-        usedIn: ["TaskFlow", "Fast MNIST"],
+        usedIn: ["Cadence", "Glyph"],
       },
       {
         name: "Swift",
         level: "intermediate",
-        usedIn: ["Visual Assist", "JobTracker"],
+        usedIn: ["Visual Assist"],
       },
-      { name: "C++", level: "intermediate", usedIn: ["Fast MNIST"] },
+      { name: "C++", level: "intermediate", usedIn: ["Glyph"] },
+      { name: "Java", level: "advanced", usedIn: ["jetpack-compress"] },
       {
         name: "SQL",
         level: "advanced",
-        usedIn: ["Miami ITSM", "Master Inventory", "TaskFlow"],
+        usedIn: ["Miami ITSM", "Master Inventory", "Cadence"],
       },
     ],
   },
@@ -82,18 +83,18 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "React",
         level: "advanced",
-        usedIn: ["Agentic AutoML", "TaskFlow", "Fast MNIST"],
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "Glyph", "LifeQuest"],
       },
-      { name: "Next.js", level: "advanced", usedIn: ["Portfolio"] },
+      { name: "Next.js", level: "advanced", usedIn: ["Applied", "Portfolio"] },
       {
         name: "Tailwind CSS",
         level: "advanced",
-        usedIn: ["TaskFlow", "Portfolio"],
+        usedIn: ["Cadence", "Portfolio"],
       },
       {
         name: "SwiftUI",
         level: "intermediate",
-        usedIn: ["JobTracker", "Visual Assist"],
+        usedIn: ["Visual Assist"],
       },
       { name: "Framer Motion", level: "intermediate", usedIn: ["Portfolio"] },
       { name: "GSAP", level: "intermediate", usedIn: ["Portfolio"] },
@@ -104,12 +105,16 @@ export const skillCategories: SkillCategory[] = [
     name: "Backend",
     description: "Server-side technologies",
     skills: [
-      { name: "Node.js", level: "advanced", usedIn: ["Agentic AutoML"] },
-      { name: "NestJS", level: "intermediate" },
+      {
+        name: "Node.js",
+        level: "advanced",
+        usedIn: ["Agentic AutoML", "LifeQuest"],
+      },
+      { name: "NestJS", level: "intermediate", usedIn: ["LifeQuest"] },
       {
         name: "PostgreSQL",
         level: "advanced",
-        usedIn: ["Agentic AutoML", "TaskFlow"],
+        usedIn: ["Agentic AutoML", "Applied", "Cadence", "LifeQuest"],
       },
       { name: "Prisma", level: "intermediate" },
       {
@@ -137,7 +142,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Machine Learning",
         level: "intermediate",
-        usedIn: ["Agentic AutoML", "JobTracker", "Fast MNIST"],
+        usedIn: ["Agentic AutoML", "Applied", "Glyph"],
       },
       {
         name: "Tableau",
@@ -161,7 +166,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Core ML",
         level: "intermediate",
-        usedIn: ["Visual Assist", "JobTracker"],
+        usedIn: ["Visual Assist"],
       },
       { name: "Vision", level: "intermediate", usedIn: ["Visual Assist"] },
       { name: "Tauri", level: "intermediate" },
@@ -175,16 +180,20 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Git",
         level: "advanced",
-        usedIn: ["Agentic AutoML", "JobTracker", "Fast MNIST"],
+        usedIn: ["Agentic AutoML", "Applied", "Glyph"],
       },
       {
         name: "GitHub",
         level: "advanced",
-        usedIn: ["Portfolio", "JobTracker"],
+        usedIn: ["Portfolio", "Applied"],
       },
       { name: "Docker", level: "intermediate", usedIn: ["Agentic AutoML"] },
       { name: "Kubernetes", level: "learning" },
-      { name: "Vercel", level: "advanced", usedIn: ["TaskFlow", "Portfolio"] },
+      {
+        name: "Vercel",
+        level: "advanced",
+        usedIn: ["Applied", "Cadence", "Glyph", "LifeQuest", "Portfolio"],
+      },
       { name: "CI/CD", level: "intermediate", usedIn: ["Portfolio"] },
     ],
   },
@@ -196,7 +205,7 @@ export const skillCategories: SkillCategory[] = [
       {
         name: "Parallel Computing",
         level: "intermediate",
-        usedIn: ["Fast MNIST"],
+        usedIn: ["Glyph", "jetpack-compress"],
       },
       {
         name: "OCR",
