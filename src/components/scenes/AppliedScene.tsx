@@ -64,9 +64,16 @@ export function AppliedScene() {
     const mails = q<SVGGElement>("[data-sc-mail]");
     const pulse = q<SVGCircleElement>("[data-sc-pulse]");
 
-    /* ── Start frame: undrawn line, unlit gates, mail queued at intake ── */
+    /* ── Start frame: undrawn line, unlit gates, mail queued at intake ──
+       Glyph rest coordinates are whole SVG units and every glyph tween
+       below snaps x/y to whole units: the figure renders 1 unit = 1 CSS
+       px at its max width, so strokes land on the pixel grid instead of
+       shimmering across it (the "glittery" sub-pixel crawl). Gate labels
+       ink-settle by OPACITY ONLY — translating 12px mono text through
+       sub-pixel positions re-rasterizes it every frame and reads as
+       flicker, and ink-settle is the house fade anyway. */
     gsap.set([...edges, ...rails], { strokeDashoffset: 1.5 });
-    gsap.set(gates, { opacity: 0, y: 6 });
+    gsap.set(gates, { opacity: 0 });
     gsap.set(labels, { opacity: 0 });
     mails.forEach((mail, i) => {
       gsap.set(mail, { x: 26, y: 56 + i * 34 });
@@ -78,28 +85,44 @@ export function AppliedScene() {
       duration: 0.5,
       ease: "power1.inOut",
     })
-      .to(gates, { opacity: 1, y: 0, duration: 0.4, stagger: 0.12 }, 0.15)
+      .to(gates, { opacity: 1, duration: 0.4, stagger: 0.12 }, 0.15)
       .to(
         q("[data-sc-fan]"),
         { strokeDashoffset: 0, duration: 0.35, stagger: 0.07 },
         0.55
       )
-      .to(
-        rails,
-        { strokeDashoffset: 0, duration: 0.35, stagger: 0.07 },
-        0.7
-      )
+      .to(rails, { strokeDashoffset: 0, duration: 0.35, stagger: 0.07 }, 0.7)
       .to(labels, { opacity: 1, duration: 0.4, stagger: 0.07 }, 0.8);
 
-    /* Mail streams the line. The last glyph holds at the SetFit square
-       (the gate checking) while the clay ring pulses once. */
+    /* Mail streams the line ONE AT A TIME (0.4s apart — the previous
+       0.18s stagger put three glyphs on the lane at once, colliding
+       through each other and the gate posts: the "glitchy" read). Each
+       glyph rides the fan into its lane as a CURVE — x and y tween as
+       two overlapping tweens with different eases, so the path bows like
+       the drawn bezier instead of cutting a hard diagonal across it. */
+    const SNAP = { snap: { x: 1, y: 1 } } as const;
+    const fanInto = (mail: SVGGElement, lane: number, at: number) => {
+      tl.to(
+        mail,
+        { x: 362, duration: 0.3, ease: "power1.out", ...SNAP },
+        at
+      ).to(
+        mail,
+        { y: restY(lane), duration: 0.3, ease: "power1.inOut", ...SNAP },
+        at
+      );
+    };
     mails.forEach((mail, i) => {
       const last = i === mails.length - 1;
-      const at = 0.95 + i * 0.18;
-      const ride = { y: 116, ease: "power1.inOut" };
+      const at = 0.95 + i * 0.4;
+      const ride = { y: 116, ease: "power1.inOut", ...SNAP };
       if (last) {
         tl.to(mail, { x: 56, ...ride, duration: 0.25 }, at)
-          .to(mail, { x: 254, duration: 0.4, ease: "power1.inOut" }, at + 0.25)
+          .to(
+            mail,
+            { x: 254, duration: 0.4, ease: "power1.inOut", ...SNAP },
+            at + 0.25
+          )
           /* the gate's single clay pulse, while the mail waits */
           .fromTo(
             pulse,
@@ -113,30 +136,29 @@ export function AppliedScene() {
             },
             at + 0.62
           )
-          .to(mail, { x: 282, duration: 0.18, ease: "power1.in" }, at + 0.95)
           .to(
             mail,
-            { x: 362, y: restY(i), duration: 0.3, ease: "power1.inOut" },
-            at + 1.13
-          )
-          .to(
-            mail,
-            { x: restX, duration: 0.3, ease: "back.out(1.2)" },
-            at + 1.43
+            { x: 282, duration: 0.18, ease: "power1.in", ...SNAP },
+            at + 0.95
           );
+        fanInto(mail, i, at + 1.13);
+        tl.to(
+          mail,
+          { x: restX, duration: 0.3, ease: "power1.out", ...SNAP },
+          at + 1.43
+        );
       } else {
-        tl.to(mail, { x: 56, ...ride, duration: 0.25 }, at)
-          .to(mail, { x: 308, duration: 0.5, ease: "power1.inOut" }, at + 0.25)
-          .to(
-            mail,
-            { x: 362, y: restY(i), duration: 0.3, ease: "power1.inOut" },
-            at + 0.75
-          )
-          .to(
-            mail,
-            { x: restX, duration: 0.3, ease: "back.out(1.2)" },
-            at + 1.05
-          );
+        tl.to(mail, { x: 56, ...ride, duration: 0.25 }, at).to(
+          mail,
+          { x: 308, duration: 0.5, ease: "power1.inOut", ...SNAP },
+          at + 0.25
+        );
+        fanInto(mail, i, at + 0.75);
+        tl.to(
+          mail,
+          { x: restX, duration: 0.3, ease: "power1.out", ...SNAP },
+          at + 1.05
+        );
       }
     });
   });
