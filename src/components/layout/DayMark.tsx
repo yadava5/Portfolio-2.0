@@ -21,8 +21,8 @@
  *     static worlds step instantly — the mark itself is truthful STATE
  *     at any scroll position, motion or none (equity requirement).
  *   - `currentColor` everywhere, composed from --header-ink, so the
- *     dusk flip (html[data-arc-phase]) re-inks the glyph for free at
- *     pre-verified AA contrast.
+ *     chrome's dusk step (html[data-arc-chrome]) re-inks the glyph for
+ *     free at pre-verified AA contrast.
  *   - The visible cluster is aria-hidden; a single sr-only sentence
  *     ("now reading — …") speaks the whole state. No live region: the
  *     mark must never chatter at a screen reader on every crossing.
