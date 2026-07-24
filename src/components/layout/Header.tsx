@@ -122,8 +122,12 @@ export default function Header() {
           offset: SCROLL_OFFSET,
         });
       } else {
-        /* Static world: instant jump, no animation */
-        target.scrollIntoView({ behavior: "auto" });
+        /* Static world: instant jump via the manual offset math — the
+           same landing contract as the controller (scrollIntoView would
+           double-count scroll-padding + scroll-margin to ~192px). */
+        const y =
+          window.scrollY + target.getBoundingClientRect().top + SCROLL_OFFSET;
+        window.scrollTo({ top: y, behavior: "auto" });
       }
     },
     [lenis]
