@@ -198,15 +198,28 @@ const WORK_ROWS = [
     metricHref:
       "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
   },
+  {
+    /* Fourth row (orchestrator ruling, 2026-07-24): Cadence promotes
+       from "also on file" to a prime row. Pair lines are projects.ts's
+       own settled shortDescription split at its colon — no new claims;
+       the metric chip is the taskflow-tests manifest entry (1,145 =
+       634 frontend + 511 backend, vitest) citing its case receipt.
+       CadenceScene (already registered) becomes fig 5.3 automatically
+       via the row wrapper's generic scene mount. */
+    projectId: "taskflow-calendar",
+    bright: "A calendar and task app you drive in plain English.",
+    muted:
+      "Type a sentence and it files the event or task — and now schedules Google Meet meetings with multi-attendee invites.",
+    metric: "1,145 automated tests — 634 frontend + 511 backend, vitest",
+    metricHref: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+  },
 ];
 
-/** Quiet index of the remaining case files (plan 2.2: demote, don't delete) */
-const FURTHER_READING_IDS = [
-  "automl",
-  "master-inventory",
-  "policybot",
-  "taskflow-calendar",
-];
+/** Quiet index of the remaining case files (plan 2.2: demote, don't
+ *  delete). Dedupe ruling 2026-07-24: a project may appear ONCE on the
+ *  home paper — automl left (it IS the ch04 flagship above) and
+ *  taskflow-calendar left (promoted to the fourth #work row). */
+const FURTHER_READING_IDS = ["master-inventory", "policybot"];
 
 /** Ch-06 litany: each mantra carries a proof-manifest-backed receipt that
  *  links to the validation ledger of the case file that proves it. Every
@@ -580,10 +593,10 @@ function WhoChapter() {
             className="mt-10 grid gap-8 md:grid-cols-[minmax(0,34rem)_minmax(200px,280px)] md:gap-14"
           >
             <p className="text-body max-w-[55ch] font-serif" data-tm="block">
-              I’m a recent computer-science graduate. I build the
-              whole path — data pipelines, applied machine learning, and the
-              software that carries them into real use. The claims on this paper
-              carry receipts. The final word stays human.
+              I’m a recent computer-science graduate. I build the whole path —
+              data pipelines, applied machine learning, and the software that
+              carries them into real use. The claims on this paper carry
+              receipts. The final word stays human.
             </p>
 
             <div className="flex flex-col gap-10 md:justify-between">
@@ -919,7 +932,7 @@ function WorkChapter() {
     >
       <ThreadSegment id={WORK.id} />
       <div className={WRAP}>
-        <ChapterKicker id={WORK.id} label="the work — three more systems" />
+        <ChapterKicker id={WORK.id} label="the work — four more systems" />
         <h2 className="sr-only">The work</h2>
 
         <div className="mt-10">
