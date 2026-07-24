@@ -134,11 +134,19 @@ export default function RootLayout({
                governor's ceiling. The hero's hidden entrance state
                exists only under this attribute, so static worlds and
                JS-dead loads always paint the finished page; TextMotion
-               removes it after the entrance plays (load-only, once). */}
+               removes it after the entrance plays (load-only, once).
+            3. A document that LOADS hidden (background tab, embedded
+               preview pane, prerender) starts at the print floor too:
+               hidden documents get no rAF, so engine-held motion could
+               never play there — yet such surfaces are read and
+               screenshotted. SmoothScroll re-opens the gate (print →
+               core, engine mounts) at the first visibilitychange to
+               visible, so a real reader who foregrounds the tab still
+               gets the full motion world. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
+              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
           }}
         />
         <a
