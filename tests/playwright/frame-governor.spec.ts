@@ -98,6 +98,23 @@ test.describe("frame governor — first-paint tier", () => {
 
 test.describe("frame governor — scoring (probe drives the real scorer)", () => {
   test.beforeEach(async ({ page }) => {
+    /* Pin the session ceiling to Core BEFORE load. These tests assert
+       the Core→Print scoring path; on a loaded CI machine the governor
+       can promote Core→Full between the setup scroll and the injected
+       frames (stable-scroll time accumulates while waits stretch), so
+       the same +8 landed Full→Core and the assertions flaked — verified
+       flaky at the pre-retune base too. A stamped "core" cap disables
+       promotion (readCap() gates promotionAllowed) without touching the
+       downshift path under test. The CDP forced-jank describe below
+       stays unpinned — it exercises the real promotion machinery.
+       Init scripts re-run on EVERY load, so only stamp when absent —
+       the "ceiling holds across a reload" assertion depends on the
+       persisted print cap surviving the reload. */
+    await page.addInitScript(() => {
+      if (!window.sessionStorage.getItem("study-tier-cap")) {
+        window.sessionStorage.setItem("study-tier-cap", "core");
+      }
+    });
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
     await page
