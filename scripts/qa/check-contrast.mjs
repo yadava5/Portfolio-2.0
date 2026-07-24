@@ -8,11 +8,15 @@
  * The day-arc mid-interpolation sampler (rubric amendment A4) lives here as
  * `sampleArc()`: ≥10 oklch-interpolated samples per scrubbed waypoint
  * segment, each asserted ≥4.5:1 against the ink that is live at that scroll
- * position. The 05→06 dusk boundary is a STEP (see below), so only its two
- * endpoint states are rendered — and asserted.
+ * position. A continuous 05→06 scrub remains mathematically impossible at
+ * AA (see STEP_BOUNDARY below); the choreographed multi-stop transition
+ * that replaced the single step (brief B9) is asserted stop-by-stop —
+ * including its Full-tier fine-scrub interpolations and its gloaming
+ * voice states — by `sampleDuskChoreo()`.
  */
 
-import { interpolate, formatHex } from "culori";
+import { interpolate, formatHex, rgb } from "culori";
+import { buildDuskStops, GLOAMING_CLAY } from "../design/dusk-choreo.mjs";
 
 // ── Palette (must mirror src/app/globals.css) ──────────────────────────
 const C = {
@@ -80,7 +84,12 @@ const PAIRS = [
   // TEXT, so it holds AA on the nightfall ground. (The awaiting group
   // paints it at 0.9 opacity; the resting composite over w07 measures
   // ~4.76:1 — also AA — but the solid token is the honest gate here.)
-  ["clay-invite (awaiting sign label) on waypoint-07", C.clayInvite, C.w07, 4.5],
+  [
+    "clay-invite (awaiting sign label) on waypoint-07",
+    C.clayInvite,
+    C.w07,
+    4.5,
+  ],
   // Ink must hold AA on every day waypoint (01–05)
   ["ink on dawn (01)", C.ink, C.w01, 4.5],
   ["secondary ink on dawn (01)", C.inkSecondary, C.w01, 4.5],
@@ -184,6 +193,144 @@ export function sampleArc(samples = 12) {
   return ok;
 }
 
+// ── Dusk choreography sampler (brief B9) ───────────────────────────────
+//
+// The 05→06 boundary is no longer ONE step: DayArc renders the committed
+// DUSK_CHOREO stop schedule (derived by scripts/design/dusk-choreo.mjs —
+// imported here, so the site and its proof share one source). Contract
+// asserted at build time, per stop:
+//   - DAY-side stops render under the GLOAMING (globals.css
+//     [data-arc-gloaming]): every muted voice is already FULL ink and
+//     clay marks are the deepened umber — so the live voices are body
+//     ink (4.5:1) and gloaming clay (graphic, 3:1).
+//   - NIGHT-side stops render dusk ink (4.5:1) and clay-night (3:1) —
+//     the scenes' night step lands WITH the flip.
+//   - The flip pair (day floor → night entry) is a step; nothing between
+//     them is ever rendered (the forbidden band).
+//   - Full tier fine-scrubs BETWEEN same-side stops: interior
+//     interpolation samples are asserted for each adjacent pair.
+//   - The range edges are the un-gloamed resting states: stop 0 must
+//     hold the normal day voices on w05 (secondary ink + the ink@0.70
+//     mutes), the final stop the normal dusk mutes on w06 — those are
+//     the exact frames where DayArc steps the gloaming on/off.
+//   - Core-reduced band (§F1b): 8–12 rendered stops.
+
+/** Gamma-space alpha composite — how the browser paints opacity mutes. */
+function compositeHex(fgHex, alpha, bgHex) {
+  const f = rgb(fgHex);
+  const b = rgb(bgHex);
+  return formatHex({
+    mode: "rgb",
+    r: f.r * alpha + b.r * (1 - alpha),
+    g: f.g * alpha + b.g * (1 - alpha),
+    b: f.b * alpha + b.b * (1 - alpha),
+  });
+}
+
+/**
+ * Assert the whole dusk choreography. Logs one line per check.
+ *
+ * @param {number} pairSamples - interior samples per fine-scrub pair
+ * @returns {boolean} true when every rendered state holds its floor
+ */
+export function sampleDuskChoreo(pairSamples = 8) {
+  let ok = true;
+  const check = (label, ratio, min) => {
+    const pass = ratio >= min;
+    if (!pass) ok = false;
+    console.log(
+      `${pass ? "PASS" : "FAIL"}  ${ratio.toFixed(2)}:1 (min ${min}:1)  ${label}`
+    );
+  };
+
+  const stops = buildDuskStops(C.w05, C.w06);
+
+  if (stops.length < 8 || stops.length > 12) {
+    ok = false;
+    console.log(
+      `FAIL  dusk choreography renders ${stops.length} stops — the Core-reduced band is 8–12 (§F1b)`
+    );
+  } else {
+    console.log(
+      `PASS  dusk choreography renders ${stops.length} stops (Core-reduced band 8–12)`
+    );
+  }
+
+  stops.forEach((stop, i) => {
+    const tag = `dusk stop ${i}/${stops.length - 1} (${stop.side}, ${stop.hex})`;
+    if (stop.side === "day") {
+      check(`${tag} — body ink`, contrast(C.ink, stop.hex), 4.5);
+      check(
+        `${tag} — gloaming clay (graphic ≥3:1)`,
+        contrast(GLOAMING_CLAY, stop.hex),
+        3.0
+      );
+    } else {
+      check(`${tag} — dusk ink`, contrast(C.inkDusk, stop.hex), 4.5);
+      check(
+        `${tag} — clay-night (graphic ≥3:1)`,
+        contrast(C.clayNight, stop.hex),
+        3.0
+      );
+    }
+  });
+
+  /* Full-tier fine scrub: every interpolated frame between same-side
+     stops is really rendered — sample the interiors. */
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (a.side !== b.side) {
+      console.log(
+        `PASS  —          dusk pair ${i}→${i + 1} is THE FLIP (never interpolated; ` +
+          `ink flips with the background)`
+      );
+      continue;
+    }
+    const mix = interpolate([a.hex, b.hex], "oklch");
+    const inkHex = a.side === "day" ? C.ink : C.inkDusk;
+    let worst = Infinity;
+    let worstHex = a.hex;
+    for (let k = 1; k <= pairSamples; k++) {
+      const bg = formatHex(mix(k / (pairSamples + 1)));
+      const ratio = contrast(inkHex, bg);
+      if (ratio < worst) {
+        worst = ratio;
+        worstHex = bg;
+      }
+    }
+    check(
+      `dusk fine-scrub pair ${i}→${i + 1} (${a.side}) — worst of ${pairSamples} samples (${worstHex})`,
+      worst,
+      4.5
+    );
+  }
+
+  /* Range edges: the exact frames where the gloaming steps on/off. */
+  check(
+    "gloaming entry frame — secondary ink on w05 (stop 0)",
+    contrast(C.inkSecondary, C.w05),
+    4.5
+  );
+  check(
+    "gloaming entry frame — ink@0.70 mute composite on w05 (stop 0)",
+    contrast(compositeHex(C.ink, 0.7, C.w05), C.w05),
+    4.5
+  );
+  check(
+    "gloaming exit frame — dusk ink@0.70 mute composite on w06",
+    contrast(compositeHex(C.inkDusk, 0.7, C.w06), C.w06),
+    4.5
+  );
+  check(
+    "gloaming exit frame — dusk ink@0.60 mute composite on w06",
+    contrast(compositeHex(C.inkDusk, 0.6, C.w06), C.w06),
+    4.5
+  );
+
+  return ok;
+}
+
 let failed = false;
 for (const [label, fg, bg, min] of PAIRS) {
   const ratio = contrast(fg, bg);
@@ -196,6 +343,9 @@ for (const [label, fg, bg, min] of PAIRS) {
 
 console.log("");
 if (!sampleArc()) failed = true;
+
+console.log("");
+if (!sampleDuskChoreo()) failed = true;
 
 if (failed) {
   console.error("\nContrast gate FAILED.");
