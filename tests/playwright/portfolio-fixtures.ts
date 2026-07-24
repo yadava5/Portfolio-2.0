@@ -268,9 +268,9 @@ export const RECRUITER_HERO_LINKS = [
   "experience",
   "contact",
   "github",
-  "Resume",
+  "Resume (opens in a new tab)",
 ];
-export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume"];
+export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume (opens in a new tab)"];
 
 // The proof metrics must EXIST on the homepage; they live in the chapters
 // where their stories are told (03 the path, 04 automl, 05 work). The

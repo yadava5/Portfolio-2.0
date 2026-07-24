@@ -31,11 +31,23 @@
  * resting figure holds with zero engine dependence.
  *
  * The Red Thread rule of the house holds here too: the pin wraps a
- * SEPARATE wrapper ([data-pipeline-pin]) from the figure the composed-
- * scene reveal transforms ([data-tm='block']), and the pin-spacer grows
- * chapter 04 INSIDE the region ThreadSegment measures — so the thread
- * re-welds its 04|05 seam on the section ResizeObserver and its spec
- * stays green (the pin adds scroll distance, never a moved landmark).
+ * SEPARATE wrapper from the figure the composed-scene reveal transforms
+ * ([data-tm='block']), and the pin-spacer grows chapter 04 INSIDE the
+ * region ThreadSegment measures — so the thread re-welds its 04|05 seam
+ * on the section ResizeObserver and its spec stays green (the pin adds
+ * scroll distance, never a moved landmark).
+ *
+ * THE DENSE HELD PLATE (blank-paper fix, round 3). Pinning the ladder
+ * alone stretched the ch04 grid row by the pin distance: the prose
+ * column scrolled away mid-hold and the visitor stared at ~1 viewport
+ * of empty paper beside a lone rail. The pin target is now chosen per
+ * layout — on two-column (lg) layouts it is the WHOLE flagship grid
+ * ([data-pipeline-pin-wide]: thesis copy + fig 4.0 + fig 4.1 held
+ * together); on stacked layouts it is the full figure column
+ * ([data-pipeline-pin]: ladder + registry). Both fit the viewport at
+ * the pinned offset, so the held beat is always a full plate. The
+ * chosen element is stamped [data-pipeline-pinned] for the spec. Still
+ * exactly ONE pin (A8) — only its wrapper grew.
  */
 
 "use client";
@@ -66,6 +78,19 @@ const EDGE_UNDRAWN = 1.5;
 /** Pinned scroll distance as a fraction of the viewport (A8: one beat at
  *  ~80–100vh + a short hold). The token travels over TRAVEL_END of it. */
 const PIN_VH = 1.05;
+
+/** The two-column (lg) layout — Tailwind's lg breakpoint, where the ch04
+ *  grid seats the thesis beside the rail and the WIDE pin target holds
+ *  the whole plate. Below it the figure column pins instead. */
+const WIDE_QUERY = "(min-width: 1024px)";
+
+/** Held-plate seating: the pin parks the plate's top at 22% of the
+ *  viewport (the original seat) unless the plate is too tall to fit —
+ *  then it slides up as far as the fixed header allows so the plate's
+ *  foot stays on screen through the hold. */
+const PIN_TOP_FRACTION = 0.22;
+const PIN_TOP_MIN = 72; /* fixed header (~56px) + breath */
+const PIN_BOTTOM_GAP = 24;
 
 /**
  * Whether the motion world is planned this session — the same synchronous
@@ -161,8 +186,23 @@ export function PipelineRun() {
   const tokenRef = useRef<SVGGElement>(null);
   const lenis = useLenis();
   const [geom, setGeom] = useState<RunGeometry | null>(null);
+  /* Which pin target the layout calls for (lazy init: the state never
+     renders, so reading matchMedia here cannot mismatch hydration). */
+  const [wide, setWide] = useState(
+    () =>
+      typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
+  );
   /* Fire the clay pulse exactly once per gate arrival (re-armable) */
   const haltedRef = useRef(false);
+
+  /* ── Track the layout breakpoint (re-targets the pin on a flip) ──── */
+  useEffect(() => {
+    const query = window.matchMedia(WIDE_QUERY);
+    const apply = () => setWide(query.matches);
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
 
   /* ── Measure + re-measure (mount · resize · fonts) ─────────────── */
   useEffect(() => {
@@ -203,7 +243,11 @@ export function PipelineRun() {
     const token = tokenRef.current;
     if (!svg || !edge || !token || !geom) return;
     const scope = svg.closest<HTMLElement>("[data-pipeline-scope]");
-    const pin = svg.closest<HTMLElement>("[data-pipeline-pin]");
+    /* The dense-plate pin target (see the header comment): the whole
+       grid on two-column layouts, the figure column when stacked. */
+    const pin =
+      (wide ? svg.closest<HTMLElement>("[data-pipeline-pin-wide]") : null) ??
+      svg.closest<HTMLElement>("[data-pipeline-pin]");
     if (!scope) return;
 
     const litPhases = (fraction: number) => {
@@ -240,13 +284,24 @@ export function PipelineRun() {
       return; /* engine still mounting → this effect re-runs with lenis */
     }
 
+    const pinEl = pin ?? scope;
     const ctx = gsap.context(() => {
       render(0);
       ScrollTrigger.create({
-        trigger: pin ?? scope,
-        start: "top 22%",
-        end: `+=${Math.round(window.innerHeight * PIN_VH)}`,
-        pin: pin ?? scope,
+        trigger: pinEl,
+        /* Seat the plate at 22% — or as high as the header allows when
+           the plate would not otherwise fit above the fold (function
+           start: re-measured on every refresh, pins reverted). */
+        start: () => {
+          const vh = window.innerHeight;
+          const top = Math.min(
+            Math.round(vh * PIN_TOP_FRACTION),
+            Math.max(PIN_TOP_MIN, vh - pinEl.offsetHeight - PIN_BOTTOM_GAP)
+          );
+          return `top ${top}px`;
+        },
+        end: () => `+=${Math.round(window.innerHeight * PIN_VH)}`,
+        pin: pinEl,
         pinType: "fixed",
         pinSpacing: true,
         anticipatePin: 1,
@@ -257,6 +312,8 @@ export function PipelineRun() {
       });
     }, svg);
     svg.setAttribute("data-pipeline-scrub", "");
+    /* Which element the pin actually holds — the spec's measuring hook */
+    pinEl.setAttribute("data-pipeline-pinned", "");
 
     /* THE PIN-SPACER RE-MEASURE (day-arc early-flip fix). This pin is
        created LAST — after the geometry state round-trip — so every
@@ -274,10 +331,11 @@ export function PipelineRun() {
 
     return () => {
       svg.removeAttribute("data-pipeline-scrub");
+      pinEl.removeAttribute("data-pipeline-pinned");
       haltedRef.current = false;
       ctx.revert();
     };
-  }, [lenis, geom]);
+  }, [lenis, geom, wide]);
 
   const railX = geom?.railX ?? 0;
   const phase0Y = geom?.phase0Y ?? 0;
