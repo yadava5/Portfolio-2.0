@@ -620,18 +620,21 @@ test.describe("paper memory — the paper remembers", () => {
     );
     await expect(page.locator("[data-file-memory]")).toHaveClass(/is-dried/);
 
-    /* Home: the jobtracker work row carries the ✓; unvisited rows don't */
+    /* Home: the jobtracker (Applied) work row carries the ✓; unvisited
+       rows don't. Rows render the product title, so filter on the
+       rendered name — Applied for the opened jobtracker file, Glyph for
+       the unvisited fast-mnist file. */
     await page.goto("/");
     await page.locator("#work").waitFor({ state: "attached" });
     const jobtrackerRow = page
       .locator("#work article")
-      .filter({ hasText: /jobtracker/i });
+      .filter({ hasText: /applied/i });
     await expect(
       jobtrackerRow.locator(".visited-mark[data-visited]")
     ).toBeAttached();
     const mnistRow = page
       .locator("#work article")
-      .filter({ hasText: /fast-mnist/i });
+      .filter({ hasText: /glyph/i });
     await expect(mnistRow.locator(".visited-mark[data-visited]")).toHaveCount(
       0
     );

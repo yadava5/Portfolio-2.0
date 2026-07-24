@@ -112,8 +112,8 @@ export const EXPECTED_GRADUATE_IDENTITY = {
 // Storyboard order: the flagship chapter (04) leads, then the Ch-05 rows.
 export const EXPECTED_SELECTED_WORK_ORDER = [
   "Agentic AutoML Platform",
-  "JobTracker",
-  "Fast MNIST Neural Network",
+  "Applied",
+  "Glyph",
   "Visual Assist",
 ];
 
@@ -121,14 +121,14 @@ export const EXPECTED_SELECTED_WORK_ORDER = [
 // real proof-backed metric line (fix round 4 — no vague capability copy).
 export const EXPECTED_WORK_ROWS = [
   {
-    title: "JobTracker",
+    title: "Applied",
     href: "/projects/jobtracker/",
     metric: "macro-f1 0.9791 — 96-sample gate",
   },
   {
     // SIMD-attribution reword (2026-07-18): the 3.5x is the openmp+simd
     // parallel configuration vs the -O3 baseline, per BENCHMARKS.md.
-    title: "Fast MNIST Neural Network",
+    title: "Glyph",
     href: "/projects/fast-mnist-nn/",
     metric:
       "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
