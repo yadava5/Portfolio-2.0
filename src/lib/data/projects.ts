@@ -155,7 +155,7 @@ export const projects: Project[] = [
     imageAlt:
       "Private-safe Agentic AutoML experiment registry screenshot with demo data",
     imageDisclosure:
-      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private (Miami GitLab). The landing is hosted on a teammate's Vercel account, so the owner cannot deploy it directly.",
+      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private. The landing is hosted on a teammate's Vercel account, so the owner cannot deploy it directly.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
