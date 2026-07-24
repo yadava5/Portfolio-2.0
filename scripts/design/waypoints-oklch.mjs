@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { oklch } from "culori";
-import { buildDuskStops, FLIP_POS } from "./dusk-choreo.mjs";
+import { buildDuskStops, FLIP_POS, CHROME_POS } from "./dusk-choreo.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const cssPath = resolve(repoRoot, "src/app/globals.css");
@@ -164,13 +164,16 @@ export interface DuskStop {
 }
 
 /**
- * The dusk choreography (brief B9): the 05→06 boundary rendered as
- * ${duskStops.length} discrete stops over a bounded scroll range. The ink flips WITH the
- * background at DUSK_FLIP_POS — the mid-luminance band where neither ink
- * holds AA is never rendered (the flip is the one intentional jump).
- * Core tier steps stop-to-stop; Full tier fine-scrubs between same-side
- * stops. check-contrast.mjs asserts AA at every stop AND every sampled
- * fine-scrub interpolation.
+ * The dusk choreography (brief B9, retuned per the shots-dusk2 slow-scroll
+ * study): the 05→06 boundary rendered as ${duskStops.length} discrete stops over a
+ * bounded scroll range, L linear in progress on each side (uniform ΔL per
+ * step). The ink flips WITH the background at DUSK_FLIP_POS — the
+ * mid-luminance band where neither ink holds AA is never rendered (the
+ * flip is the one intentional jump, narrowed to ΔL 0.21 and kept lonely:
+ * the rake has already faded out, and the chrome follows at
+ * DUSK_CHROME_POS). Core tier steps stop-to-stop; Full tier fine-scrubs
+ * between same-side stops. check-contrast.mjs asserts AA at every stop
+ * AND every sampled fine-scrub interpolation.
  */
 export const DUSK_CHOREO: readonly DuskStop[] = [
 ${duskBody}
@@ -178,6 +181,12 @@ ${duskBody}
 
 /** Range fraction at which the day→night flip lands (both directions). */
 export const DUSK_FLIP_POS = ${FLIP_POS};
+
+/**
+ * Range fraction at which the chrome (header, contour texture) follows
+ * the field into dusk — one night stop after the flip, both directions.
+ */
+export const DUSK_CHROME_POS = ${round(CHROME_POS, 4)};
 `;
 
 mkdirSync(dirname(outPath), { recursive: true });
