@@ -3,10 +3,12 @@ import { test, expect, type Page } from "@playwright/test";
 /**
  * Text-motion contract (plan 3.8) on the homepage.
  *
- *  1. HERO ENTRANCE: the five `.hero-enter` elements (three headline
- *     lines + mono sub + directives) reach their final state after
- *     load — opacity 1, no transform, no blur residue — and the
- *     `data-motion-ready` gate attribute is removed (load-only, once).
+ *  1. HERO ENTRANCE: the three `.hero-enter` elements (two headline
+ *     lines + directives — the byline and its stipple mask retired
+ *     with the masthead rewrite, owner ruling 2026-07-24) reach their
+ *     final state after load — opacity 1, no transform, no blur
+ *     residue — and the `data-motion-ready` gate attribute is removed
+ *     (load-only, once).
  *  2. CHAPTER HEADLINES: bright lines are SplitText line-masked —
  *     hidden (translated inside overflow-clip wrappers) until their
  *     chapter scrolls to 75% viewport, then revealed once; the
@@ -22,15 +24,14 @@ import { test, expect, type Page } from "@playwright/test";
  *  6. RAIL AUDIT TRAIL: ink checks accumulate beside the folio numbers
  *     as the thread finishes each chapter (and retreat on scroll-back);
  *     static worlds show the completed checklist.
- *  7. STIPPLE MASTHEAD (friend transposition #4): desktop motion world,
- *     load-only — the byline's REAL glyphs carry a halftone dot-gain
- *     mask during the entrance window (the dots ARE the letterform:
- *     no effect layer, no per-dot DOM, the accessible string intact);
- *     settled state carries no residual mask; mobile and the static
- *     worlds never see the mask at all.
+ *  7. MASTHEAD THREAD ANCHOR: the H1's closing line ("It's all
+ *     real.¹") is the Red Thread's measured origin box
+ *     ([data-thread-name]) — the measured span itself never
+ *     transforms (the entrance rides its inner wrapper), and in every
+ *     world the line reads as one intact string, claim + receipt.
  */
 
-const HERO_COUNT = 5;
+const HERO_COUNT = 3;
 
 function isDesktop(page: Page) {
   return (page.viewportSize()?.width ?? 0) >= 1280;
@@ -106,24 +107,29 @@ async function scrollToId(page: Page, id: string) {
   }, id);
 }
 
-/** The stipple byline (the hero's [data-thread-name] inner span). */
-const STIPPLE = ".hero-enter-stipple";
-
-/** Computed mask-image on the stipple byline (cross-engine read). */
-function bylineMask(page: Page) {
-  return page.evaluate((sel) => {
-    const el = document.querySelector<HTMLElement>(sel);
-    if (!el) return "missing";
-    const cs = getComputedStyle(el) as CSSStyleDeclaration & {
-      webkitMaskImage?: string;
+/** The masthead's closing line — the Red Thread's measured origin.
+ *  Holder = the never-transformed [data-thread-name] span; the
+ *  entrance animates its inner `.hero-enter` wrapper only. */
+function threadAnchorState(page: Page) {
+  return page.evaluate(() => {
+    const holder = document.querySelector<HTMLElement>("[data-thread-name]");
+    const inner = holder?.firstElementChild as HTMLElement | null;
+    if (!holder || !inner) return null;
+    const holderStyle = getComputedStyle(holder);
+    const innerStyle = getComputedStyle(inner);
+    return {
+      holderTransform: holderStyle.transform,
+      innerIsEntrance: inner.classList.contains("hero-enter"),
+      text: holder.textContent?.trim() ?? "",
+      innerOpacity: innerStyle.opacity,
+      innerTransform: innerStyle.transform,
+      innerFilter: innerStyle.filter,
     };
-    const std = cs.maskImage;
-    if (std && std !== "none") return std;
-    const webkit = cs.webkitMaskImage;
-    if (webkit && webkit !== "none") return webkit;
-    return "none";
-  }, STIPPLE);
+  });
 }
+
+/** The closing line's one intact string: the claim plus its receipt ¹. */
+const THREAD_ANCHOR_TEXT = "It's all real.1";
 
 test.describe("text motion — engine world", () => {
   test.beforeEach(async ({ page }) => {
@@ -245,19 +251,6 @@ test.describe("text motion — engine world", () => {
     }
   });
 
-  test("mobile never carries the stipple mask — the byline rises plain", async ({
-    page,
-  }) => {
-    test.skip(!isMobile(page), "the stipple screen is ≥768px only");
-
-    /* Sample through the entrance window, mirroring the blur probe:
-       the halftone mask must never reach a phone. */
-    for (let sample = 0; sample < 8; sample++) {
-      expect(await bylineMask(page)).toBe("none");
-      await page.waitForTimeout(150);
-    }
-  });
-
   test("rail marks accumulate as the thread passes, and retreat", async ({
     page,
   }) => {
@@ -338,72 +331,45 @@ test.describe("text motion — engine world", () => {
   });
 });
 
-test.describe("stipple masthead — load window", () => {
-  test("byline inks in from a halftone mask over its real glyphs, then settles clean", async ({
+test.describe("masthead thread anchor — load window", () => {
+  test("the closing line's measured span never transforms — the entrance rides its inner wrapper", async ({
     page,
   }) => {
-    test.skip(
-      (page.viewportSize()?.width ?? 0) < 768,
-      "the stipple screen is ≥768px only"
-    );
-
     /* Navigate on `commit` so the probe attaches during the load
-       window: the mask exists from the very first styled paint (the
-       layout inline script stamps data-motion-ready pre-hero-parse)
-       until TextMotion drops the attribute at ~1.2s. */
+       window (the layout inline script stamps data-motion-ready
+       pre-hero-parse; TextMotion drops it at ~1.1s). The Red Thread
+       measures the [data-thread-name] box, so the discipline under
+       test is: even MID-ENTRANCE the holder itself is transform-free —
+       a re-measure landing during the rise still finds the true box —
+       while the rise/ink-settle ride the inner `.hero-enter` wrapper. */
     await page.goto("/", { waitUntil: "commit" });
     await page.waitForFunction(
-      (sel) => {
-        const el = document.querySelector(sel);
-        if (!el) return false;
-        const cs = getComputedStyle(el) as CSSStyleDeclaration & {
-          webkitMaskImage?: string;
-        };
-        const mask = cs.maskImage ?? cs.webkitMaskImage ?? "none";
-        return mask.includes("radial-gradient");
-      },
-      STIPPLE,
+      () => document.documentElement.hasAttribute("data-motion-ready"),
       { timeout: 10_000 }
     );
 
-    /* The dots ARE the letterform — a mask over the real text, never
-       an effect layer: no per-dot DOM, no duplicated string, and the
-       accessible line stays one intact piece of text. */
-    const dom = await page.evaluate(() => {
-      const holder = document.querySelector("[data-thread-name]");
-      const span = holder?.firstElementChild ?? null;
-      return {
-        holderChildren: holder?.childElementCount ?? -1,
-        spanChildren: span?.childElementCount ?? -1,
-        ariaHidden: span?.getAttribute("aria-hidden"),
-        text: holder?.textContent?.trim() ?? "",
-      };
-    });
-    expect(dom.holderChildren).toBe(1);
-    expect(dom.spanChildren).toBe(0);
-    expect(dom.ariaHidden).toBeNull();
-    expect(dom.text).toBe(
-      "ayush yadav — full-stack, data, and systems · class of 2026"
-    );
+    const during = await threadAnchorState(page);
+    expect(during).not.toBeNull();
+    expect(during!.holderTransform).toBe("none");
+    expect(during!.innerIsEntrance).toBe(true);
 
-    /* Load-only, once: the gate attribute drops, and with it every
-       trace of the screen — no residual mask, byline at rest state. */
+    /* Load-only, once: the gate drops, the inner wrapper rests clean
+       (opacity 1, no transform, no blur residue), and the line reads
+       as ONE intact string — the claim glued to its receipt ¹, exactly
+       what the h1 aria-label swears to in one honest sentence. */
     await expect(page.locator("html")).not.toHaveAttribute(
       "data-motion-ready",
       { timeout: 15_000 }
     );
-    expect(await bylineMask(page)).toBe("none");
-    const settled = await page.evaluate((sel) => {
-      const cs = getComputedStyle(document.querySelector(sel)!);
-      return {
-        opacity: cs.opacity,
-        transform: cs.transform,
-        filter: cs.filter,
-      };
-    }, STIPPLE);
-    expect(settled.opacity).toBe("1");
-    expect(settled.filter).toBe("none");
-    expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(settled.transform);
+    const settled = await threadAnchorState(page);
+    expect(settled).not.toBeNull();
+    expect(settled!.holderTransform).toBe("none");
+    expect(settled!.text).toBe(THREAD_ANCHOR_TEXT);
+    expect(settled!.innerOpacity).toBe("1");
+    expect(settled!.innerFilter).toBe("none");
+    expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(
+      settled!.innerTransform
+    );
   });
 });
 
@@ -475,21 +441,18 @@ test.describe("text motion — reduced motion", () => {
     }
   });
 
-  test("static world never carries the stipple mask — byline prints finished", async ({
+  test("static world prints the closing line finished — claim and receipt intact", async ({
     page,
   }) => {
     /* The readiness gate is never stamped under reduced motion, so the
-       halftone rule can never match: the byline paints as plain solid
-       text from the first frame, exactly as before the effect existed. */
-    expect(await bylineMask(page)).toBe("none");
-    const style = await page.evaluate((sel) => {
-      const el = document.querySelector<HTMLElement>(sel);
-      if (!el) return null;
-      const cs = getComputedStyle(el);
-      return { opacity: cs.opacity, transform: cs.transform };
-    }, STIPPLE);
+       thread's origin line paints as plain, settled text from the very
+       first frame — the static world IS the final frame (A7), and the
+       ¹ receipt is right there in it. */
+    const style = await threadAnchorState(page);
     expect(style).not.toBeNull();
-    expect(style?.opacity).toBe("1");
-    expect(style?.transform).toBe("none");
+    expect(style!.text).toBe(THREAD_ANCHOR_TEXT);
+    expect(style!.holderTransform).toBe("none");
+    expect(style!.innerOpacity).toBe("1");
+    expect(style!.innerTransform).toBe("none");
   });
 });
