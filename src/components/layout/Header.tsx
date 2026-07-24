@@ -1,16 +1,25 @@
 /**
- * @fileoverview Header — working-paper chrome over the day-arc world.
+ * @fileoverview Header — the working paper's RUNNING HEAD over the day-arc
+ * world (brief B8).
  *
- * Transparent over the world with a hairline bottom rule; mono lowercase
- * wordmark; text nav (no boxed-chip rows — letterpress, not SaaS) routed
- * through the single Lenis loop (A1). One recruiter affordance: the
- * filled-ink resume chip. GitHub/LinkedIn live at the gate and in the
- * footer. Ink is composed from pre-verified vars that step at the dusk
- * flip via `html[data-arc-phase="dusk"]` (see .site-header in
- * globals.css). The scrolled state fades in opaque paper — never frost.
- * Carries the quiet in-page motion toggle (amendment A7); when the OS
- * itself forces reduced motion the control reports the effective state
- * as system-owned instead of pretending motion is on.
+ * A printed monograph's masthead, not a SaaS navbar: mono lowercase
+ * wordmark; the DayMark running head (a circle of the day filling with
+ * ink, ○ → ◐ → ●, plus the chapter's fixed dateline clock and name); a
+ * text nav whose ACTIVE item keeps its ink underline drawn — the chrome
+ * always says where in the workday the reader stands. Section state
+ * comes from useActiveChapter (IntersectionObserver at the viewport
+ * center line — fires at crossings only, no scroll listeners, nothing
+ * on the one scroll loop). Anchors route through the single scroll
+ * controller (A1). One recruiter affordance: the filled-ink resume chip
+ * (letterpress un-fill on hover). Ink is composed from pre-verified
+ * vars that step at the dusk flip via `html[data-arc-phase="dusk"]`
+ * (see .site-header in globals.css). The scrolled state fades in opaque
+ * paper — never frost. The masthead's bottom rule draws itself once in
+ * the hero's load window (`.site-header::after`, motion worlds only);
+ * every static world paints the finished rule. Carries the quiet
+ * in-page motion toggle (amendment A7); when the OS itself forces
+ * reduced motion the control reports the effective state as
+ * system-owned instead of pretending motion is on.
  */
 
 "use client";
@@ -29,21 +38,34 @@ import {
   scrollEasing,
 } from "@/components/layout/SmoothScroll";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useActiveChapter } from "@/hooks/useActiveChapter";
+import { DayMark } from "@/components/layout/DayMark";
 
 const NAV_ITEMS = [
   /* "the work" stays visible on phones: a screener must reach the
-     flagship without seven chapters of scrolling. */
-  { label: "the work", href: "/#work", target: "#work", className: "" },
+     flagship without seven chapters of scrolling. `chapter` is the
+     section-aware underline contract: while that chapter is under the
+     viewport's center line, the item keeps its ink line drawn
+     (aria-current + .link-draw[aria-current] in globals.css). */
+  {
+    label: "the work",
+    href: "/#work",
+    target: "#work",
+    chapter: "05",
+    className: "",
+  },
   {
     label: "experience",
     href: "/#path",
     target: "#path",
+    chapter: "03",
     className: "hidden md:list-item",
   },
   {
     label: "contact",
     href: "/#gate",
     target: "#gate",
+    chapter: "07",
     className: "hidden md:list-item",
   },
 ];
@@ -63,6 +85,11 @@ export default function Header() {
      the header reads the surface beneath it (completion map §3). */
   const archiveSurface =
     pathname?.startsWith("/projects") || pathname?.startsWith("/evidence");
+  /* The running head exists only where the day passes: the home story.
+     SSR prerenders its truthful top-of-page state (dawn) so the masthead
+     never pops in after hydration; archive routes get null — the mark
+     hides rather than assert a time of day on flat stock. */
+  const activeChapter = useActiveChapter(pathname === "/");
 
   /* Scrolled state reads from the single scroll loop when the engine is
      mounted; falls back to a passive native listener in the static world. */
@@ -126,7 +153,7 @@ export default function Header() {
       <header
         data-lenis-connected={lenis ? "true" : "false"}
         data-surface={archiveSurface ? "archive" : undefined}
-        className={`site-header fixed top-0 right-0 left-0 z-50 border-b transition-[background-color,padding] duration-500 ${
+        className={`site-header fixed top-0 right-0 left-0 z-50 transition-[background-color,padding] duration-500 ${
           scrolled ? "site-header-scrolled py-2.5" : "py-4"
         }`}
       >
@@ -159,24 +186,39 @@ export default function Header() {
             </button>
             <Link
               href="/"
-              className="label-mono whitespace-nowrap text-(--header-ink)"
+              className="label-mono link-draw-quiet whitespace-nowrap text-(--header-ink)"
             >
               ayush yadav
             </Link>
+            {/* The running head: where the reader stands in the workday.
+                Chapter state changes only at section crossings — never
+                per scrolled frame. */}
+            {activeChapter ? <DayMark chapter={activeChapter} /> : null}
           </div>
 
-          <ul className="flex items-center gap-4 sm:gap-6 lg:gap-7">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href} className={item.className}>
-                <Link
-                  href={item.href}
-                  onClick={(e) => handleNavClick(e, item.target)}
-                  className="label-mono link-draw whitespace-nowrap text-(--header-ink-muted) transition-colors hover:text-(--header-ink)"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+          {/* gap-4 through the tablet band (the md row also carries the
+              day glyph now — measured, not guessed); the airy gap-7
+              returns at lg where the width exists. */}
+          <ul className="flex items-center gap-4 lg:gap-7">
+            {NAV_ITEMS.map((item) => {
+              const isActive = activeChapter?.id === item.chapter;
+              return (
+                <li key={item.href} className={item.className}>
+                  <Link
+                    href={item.href}
+                    onClick={(e) => handleNavClick(e, item.target)}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`label-mono link-draw whitespace-nowrap transition-colors hover:text-(--header-ink) ${
+                      isActive
+                        ? "text-(--header-ink)"
+                        : "text-(--header-ink-muted)"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
             {GITHUB_URL ? (
               <li className="hidden md:list-item">
                 <a
@@ -194,7 +236,7 @@ export default function Header() {
           <div className="flex items-center gap-2 sm:gap-3">
             {prefersReducedMotion ? (
               <span
-                className="label-mono mr-1 hidden text-(--header-ink-muted) sm:inline-flex"
+                className="label-mono hidden text-(--header-ink-muted) sm:inline-flex"
                 title="Motion is disabled by your system preference"
               >
                 motion: off — system
@@ -204,7 +246,7 @@ export default function Header() {
                 type="button"
                 onClick={toggleMotion}
                 aria-pressed={motionOff}
-                className="label-mono mr-1 hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex"
+                className="label-mono hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex"
               >
                 motion: {motionOff ? "off" : "on"}
               </button>
@@ -220,10 +262,13 @@ export default function Header() {
             </a>
             {/* The FileText icon shows when there is room (≥420px) and
                 stands in alone on the very smallest frames (<360px). */}
+            {/* Letterpress un-fill: the filled chip lifts to its outline
+                on hover — ink and paper trade places, both states AA on
+                both sides of the dusk flip (pre-verified header vars). */}
             <a
               href={personalInfo.resumeUrl}
               aria-label="Resume"
-              className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) min-[420px]:h-9 min-[420px]:px-3"
+              className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) transition-colors hover:bg-transparent hover:text-(--header-ink) min-[420px]:h-9 min-[420px]:px-3"
             >
               <FileText
                 size={15}
