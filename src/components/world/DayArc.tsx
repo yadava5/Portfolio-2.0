@@ -13,18 +13,24 @@
  *     `oklch(...)` (LightField) — color strings are never tweened, so
  *     midpoints never collapse through muddy sRGB.
  *   - The 05→06 dusk boundary is the CHOREOGRAPHED multi-stop transition
- *     (brief B9): eleven pre-verified stops over a bounded range as
- *     chapter 06 rises through the viewport. A continuous scrub across
- *     the whole span is still provably impossible at WCAG AA (see
- *     `sampleArc()` in scripts/qa/check-contrast.mjs), so the day side
- *     descends only as far as full ink can stand, the ink and background
- *     flip TOGETHER across the forbidden band in one small step
- *     (`data-arc-phase="dusk"` on <html> — a step, not a per-frame
- *     write), and the night side settles onto waypoint-06. During the
- *     range, `data-arc-gloaming` on <html> (also stepped, only at the
+ *     (brief B9, retuned per the shots-dusk2 slow-scroll study): twelve
+ *     pre-verified stops over a bounded range as chapter 06 rises
+ *     through the viewport, L linear in progress per side so the
+ *     darkening rate is steady. A continuous scrub across the whole
+ *     span is still provably impossible at WCAG AA (see `sampleArc()`
+ *     in scripts/qa/check-contrast.mjs), so the day side descends only
+ *     as far as full ink can stand, dwells there, and the ink and
+ *     background flip TOGETHER across the forbidden band in one small
+ *     step (`data-arc-phase="dusk"` on <html> — a step, not a per-frame
+ *     write), and the night side settles onto waypoint-06. The flip is
+ *     kept LONELY: the raking light has already faded out (its alpha is
+ *     derived from `--arc-l` in globals.css) and the chrome — header
+ *     paper/ink, contour texture — follows one stop later via
+ *     `data-arc-chrome="dusk"` (also a step). During the range,
+ *     `data-arc-gloaming` on <html> (also stepped, only at the
  *     range edges where both voice states are verified) deepens every
  *     muted voice to full ink so EVERY rendered stop holds AA.
- *     Tiering (§F2): Core steps stop-to-stop (~11 forced writes per
+ *     Tiering (§F2): Core steps stop-to-stop (~12 forced writes per
  *     pass); Full fine-scrubs between same-side stops per frame. The
  *     governor coarsens Full→Core automatically on downshift — the tier
  *     is read per frame from the governor's module state (no DOM read).
@@ -48,6 +54,7 @@ import { getTier } from "@/components/world/governor";
 import {
   ARC_WAYPOINTS,
   DUSK_CHOREO,
+  DUSK_CHROME_POS,
   DUSK_FLIP_CHAPTER,
   DUSK_FLIP_POS,
 } from "./waypoints.generated";
@@ -151,17 +158,21 @@ export function DayArc() {
         const to = waypointOf(sections[i + 1]);
 
         if (to.id === DUSK_FLIP_CHAPTER) {
-          /* B9: the choreographed dusk — eleven verified stops while
-             chapter 06 rises from 92% of the viewport to its top. Root
-             attributes are STEPS (gloaming at the range edges, the ink
-             flip at DUSK_FLIP_POS); only the LightField channels move
-             per frame, and only on the Full tier — Core renders the
-             discrete stops (~11 forced writes per pass). All state is
-             derived from one progress value so both directions and
-             deep-linked refreshes land exactly. */
+          /* B9 (retuned per the shots-dusk2 slow-scroll study): the
+             choreographed dusk — twelve verified stops while chapter 06
+             rises from 92% of the viewport to its top. Root attributes
+             are STEPS (gloaming at the range edges, the ink flip at
+             DUSK_FLIP_POS, the chrome — header + contour — one stop
+             later at DUSK_CHROME_POS so the masthead dims a beat after
+             the world); only the LightField channels move per frame,
+             and only on the Full tier — Core renders the discrete stops
+             (~12 forced writes per pass). All state is derived from one
+             progress value so both directions and deep-linked refreshes
+             land exactly. */
           let stopIndex = -1;
           let gloamingOn = false;
           let duskOn = false;
+          let chromeOn = false;
 
           const applyDusk = (p: number) => {
             /* Root steps first, same frame as the channel write. */
@@ -170,6 +181,12 @@ export function DayArc() {
               duskOn = dusk;
               if (dusk) root.setAttribute("data-arc-phase", "dusk");
               else root.removeAttribute("data-arc-phase");
+            }
+            const chrome = p >= DUSK_CHROME_POS;
+            if (chrome !== chromeOn) {
+              chromeOn = chrome;
+              if (chrome) root.setAttribute("data-arc-chrome", "dusk");
+              else root.removeAttribute("data-arc-chrome");
             }
             const gloaming = p > 0 && p < 1;
             if (gloaming !== gloamingOn) {
@@ -267,6 +284,7 @@ export function DayArc() {
     return () => {
       ctx.revert();
       root.removeAttribute("data-arc-phase");
+      root.removeAttribute("data-arc-chrome");
       root.removeAttribute("data-arc-gloaming");
       for (const name of CHANNEL_VARS) field.style.removeProperty(name);
     };
