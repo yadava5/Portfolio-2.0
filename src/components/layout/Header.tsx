@@ -12,8 +12,9 @@
  * on the one scroll loop). Anchors route through the single scroll
  * controller (A1). One recruiter affordance: the filled-ink resume chip
  * (letterpress un-fill on hover). Ink is composed from pre-verified
- * vars that step at the dusk flip via `html[data-arc-phase="dusk"]`
- * (see .site-header in globals.css). The scrolled state fades in opaque
+ * vars that step one choreography stop AFTER the dusk flip via
+ * `html[data-arc-chrome="dusk"]` (see .site-header in globals.css —
+ * the shots-dusk2 stagger: the masthead dims a beat after the world). The scrolled state fades in opaque
  * paper — never frost. The masthead's bottom rule draws itself once in
  * the hero's load window (`.site-header::after`, motion worlds only);
  * every static world paints the finished rule. Carries the quiet
