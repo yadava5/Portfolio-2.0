@@ -1,0 +1,84 @@
+/**
+ * @fileoverview The living-scene manifest — pure metadata, zero imports.
+ *
+ * One entry per project that owns a LIVING SCENE (FABLE-VISUAL-BRIEF §B):
+ * the caption/disclosure strings the mounts print beside the figure, kept
+ * separate from the component registry (index.tsx) so non-React consumers
+ * (the Playwright fixtures) can read the honest strings without pulling
+ * client components into a Node context.
+ *
+ * HONESTY CONTRACT (brief D6): every clause in these strings traces to
+ * src/lib/data — the manifest may only RESTATE settled data, never add a
+ * number. Provenance per entry is documented inline.
+ *
+ * BUILDER-2 CONTRACT: adding a scene = (1) a new Scene component in this
+ * directory, (2) one entry here, (3) one line in index.tsx. No mount,
+ * StoryShell, or CaseStudyPage edit is ever needed — the generic mounts
+ * (ProjectScene.tsx) pick the scene up by project id on every surface
+ * that renders project visuals (ch05 work rows + the case-file hero).
+ */
+
+export interface ProjectSceneMeta {
+  /** Figure caption clause, lowercase mono voice ("fig. n — {caption}.") */
+  caption: string;
+  /**
+   * Honest description for the case-file plate ("description: …") — must
+   * say the figure is a drawing that runs, never a screenshot, and cite
+   * where its numbers come from.
+   */
+  disclosure: string;
+  /** One provenance line printed under the figure (lowercase mono). */
+  provenance: string;
+  /** Accessible name for the resting figure (role="img" aria-label). */
+  alt: string;
+}
+
+/**
+ * Scene metadata by project id (src/lib/data/projects.ts ids).
+ *
+ * Number provenance:
+ * - jobtracker: gates "rules → e5 similarity → gated SetFit" and the
+ *   in-browser int8 ONNX 22.8 MB from projects.ts fullDescription;
+ *   96 messages / 12 per label × 8 labels and the eval mix
+ *   65 · 17 · 8 · 6 from projectCaseStudies.ts (jobtracker protocol);
+ *   macro-F1 0.9791 from proofManifest jobtracker-macro-f1.
+ * - fast-mnist-nn: 3.5x openmp+simd dot kernel vs -O3 (dot 256) from
+ *   proofManifest fast-mnist-benchmark; the four instruction sets from
+ *   projects.ts highlights. The forward-pass panel draws the MLP's
+ *   mechanism only — no accuracy number (the ~97% claim is HELD in the
+ *   manifest until a committed eval run earns it).
+ * - jetpack-compress: split → virtual threads → one byte-valid gzip
+ *   member, ~6.5x vs single-threaded java.util.zip (±50%, quick
+ *   benchmark) from projects.ts; 72 tests / 0 failures / JDK 25 @
+ *   af2c4b1 from proofManifest jetpack-tests. "1f 8b" is the gzip
+ *   member magic (RFC 1952 format notation, not a project metric).
+ */
+export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
+  jobtracker: {
+    caption:
+      "the sorting line — the 96-message eval set through rules → e5 similarity → gated setfit",
+    disclosure:
+      "A drawn figure that runs — not a screenshot. Geometry from the repository's real 3-layer classifier path (rules → e5 similarity → gated SetFit); the four lanes and their counts are the committed eval set's own mix (96 messages, 12 per label × 8 labels); macro-F1 0.9791 from the committed baseline.",
+    provenance:
+      "96 messages · 12 per label × 8 labels · macro-f1 0.9791 — committed eval baseline · ships in-browser: int8 onnx, 22.8 mb",
+    alt: "The sorting line: the 96-message eval set flows through three classifier gates — rules, e5 similarity, and a gated SetFit model — and sorts into its four scenario lanes: 65 core-positive, 17 edge-noise, 8 historical-miss, 6 core-negative. Macro-F1 0.9791.",
+  },
+  "fast-mnist-nn": {
+    caption:
+      "the race — equal time, measured distance · and the forward pass, drawn",
+    disclosure:
+      "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5x lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP's mechanism and claims no accuracy number.",
+    provenance:
+      "3.5x — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
+    alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1x while the openmp+simd lane reaches 3.5x on the dot-256 kernel axis. Beside it, the forward pass: a stippled digit seven feeds an MLP into a ten-slot readout, and slot seven fills.",
+  },
+  "jetpack-compress": {
+    caption:
+      "split → parallel → stitch — virtual-thread gzip into one byte-valid member",
+    disclosure:
+      "A drawn figure that runs — not a screenshot. Geometry from the engine's real path: the input stream splits into blocks, compresses concurrently on virtual threads, and stitches into one byte-valid gzip member. The optional in-card gzip runs your browser's own CompressionStream and is labeled live — it is not jetpack's JDK output.",
+    provenance:
+      "~6.5x vs single-threaded java.util.zip (±50%, quick benchmark) · 72 tests, 0 failures · jdk 25 @ af2c4b1",
+    alt: "Split, compress in parallel, stitch: an input byte stream splits into blocks across virtual-thread lanes, each block compresses, and the lanes stitch back into one byte-valid gzip member marked with the 1f 8b gzip header.",
+  },
+};
