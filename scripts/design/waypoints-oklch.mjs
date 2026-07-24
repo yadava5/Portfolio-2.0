@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { oklch } from "culori";
+import { buildDuskStops, FLIP_POS } from "./dusk-choreo.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const cssPath = resolve(repoRoot, "src/app/globals.css");
@@ -92,6 +93,19 @@ const body = rows
   )
   .join("\n");
 
+/* The dusk choreography (brief B9): multi-stop 05→06 schedule, derived
+   from the same waypoint tokens by scripts/design/dusk-choreo.mjs — the
+   module check-contrast.mjs asserts. */
+const w05row = rows.find((r) => r.id === "05");
+const w06row = rows.find((r) => r.id === "06");
+const duskStops = buildDuskStops(w05row.hex, w06row.hex);
+const duskBody = duskStops
+  .map(
+    (s) =>
+      `  { side: "${s.side}", hex: "${s.hex}", l: ${s.l}, c: ${s.c}, h: ${s.h}, pos: ${s.pos} },`
+  )
+  .join("\n");
+
 const output = `/**
  * GENERATED FILE — do not edit by hand.
  *
@@ -132,6 +146,38 @@ ${body}
  * scripts/qa/check-contrast.mjs sampleArc() for the proof this is required.
  */
 export const DUSK_FLIP_CHAPTER = "06";
+
+/** One rendered stop of the dusk choreography (brief B9). */
+export interface DuskStop {
+  /** Which ink is live at this stop ("day" = --color-ink, "night" = --color-ink-dusk) */
+  readonly side: "day" | "night";
+  /** Composed hex (for tests/screenshots; the engine writes channels) */
+  readonly hex: string;
+  /** oklch lightness (0–1) */
+  readonly l: number;
+  /** oklch chroma */
+  readonly c: number;
+  /** oklch hue (degrees) */
+  readonly h: number;
+  /** Range fraction at which this stop becomes current */
+  readonly pos: number;
+}
+
+/**
+ * The dusk choreography (brief B9): the 05→06 boundary rendered as
+ * ${duskStops.length} discrete stops over a bounded scroll range. The ink flips WITH the
+ * background at DUSK_FLIP_POS — the mid-luminance band where neither ink
+ * holds AA is never rendered (the flip is the one intentional jump).
+ * Core tier steps stop-to-stop; Full tier fine-scrubs between same-side
+ * stops. check-contrast.mjs asserts AA at every stop AND every sampled
+ * fine-scrub interpolation.
+ */
+export const DUSK_CHOREO: readonly DuskStop[] = [
+${duskBody}
+];
+
+/** Range fraction at which the day→night flip lands (both directions). */
+export const DUSK_FLIP_POS = ${FLIP_POS};
 `;
 
 mkdirSync(dirname(outPath), { recursive: true });
