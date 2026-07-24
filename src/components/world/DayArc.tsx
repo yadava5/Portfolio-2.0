@@ -12,13 +12,22 @@
  *     lives inside that container. The background itself composes
  *     `oklch(...)` (LightField) — color strings are never tweened, so
  *     midpoints never collapse through muddy sRGB.
- *   - The 05→06 dusk boundary is a pre-verified STEP change: background
- *     channels AND ink flip together via non-scrubbed ScrollTrigger
- *     callbacks (`data-arc-phase="dusk"` stays on <html> — a step, not
- *     a per-frame write; ink colors come from
- *     `--color-ink` / `--color-ink-dusk` in globals.css). A scrubbed
- *     05→06 segment is provably impossible at WCAG AA — see
- *     `sampleArc()` in scripts/qa/check-contrast.mjs.
+ *   - The 05→06 dusk boundary is the CHOREOGRAPHED multi-stop transition
+ *     (brief B9): eleven pre-verified stops over a bounded range as
+ *     chapter 06 rises through the viewport. A continuous scrub across
+ *     the whole span is still provably impossible at WCAG AA (see
+ *     `sampleArc()` in scripts/qa/check-contrast.mjs), so the day side
+ *     descends only as far as full ink can stand, the ink and background
+ *     flip TOGETHER across the forbidden band in one small step
+ *     (`data-arc-phase="dusk"` on <html> — a step, not a per-frame
+ *     write), and the night side settles onto waypoint-06. During the
+ *     range, `data-arc-gloaming` on <html> (also stepped, only at the
+ *     range edges where both voice states are verified) deepens every
+ *     muted voice to full ink so EVERY rendered stop holds AA.
+ *     Tiering (§F2): Core steps stop-to-stop (~11 forced writes per
+ *     pass); Full fine-scrubs between same-side stops per frame. The
+ *     governor coarsens Full→Core automatically on downshift — the tier
+ *     is read per frame from the governor's module state (no DOM read).
  *   - Rides the ONE existing scroll loop (amendment A1): `useLenis()`
  *     supplies the engine; ScrollTrigger is already registered by
  *     SmoothScroll. No extra rAF, no scroll listeners here.
@@ -35,7 +44,13 @@ import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "@/components/layout/SmoothScroll";
-import { ARC_WAYPOINTS, DUSK_FLIP_CHAPTER } from "./waypoints.generated";
+import { getTier } from "@/components/world/governor";
+import {
+  ARC_WAYPOINTS,
+  DUSK_CHOREO,
+  DUSK_FLIP_CHAPTER,
+  DUSK_FLIP_POS,
+} from "./waypoints.generated";
 import type { ArcWaypoint } from "./waypoints.generated";
 
 /** The three scrubbed channel custom properties, written on the
@@ -136,20 +151,78 @@ export function DayArc() {
         const to = waypointOf(sections[i + 1]);
 
         if (to.id === DUSK_FLIP_CHAPTER) {
-          /* A4: the dusk boundary is a STEP — background channels and ink
-             flip together, instantly, at a pre-verified point. Scrubbing
-             this segment cannot hold AA (check-contrast.mjs proves it). */
+          /* B9: the choreographed dusk — eleven verified stops while
+             chapter 06 rises from 92% of the viewport to its top. Root
+             attributes are STEPS (gloaming at the range edges, the ink
+             flip at DUSK_FLIP_POS); only the LightField channels move
+             per frame, and only on the Full tier — Core renders the
+             discrete stops (~11 forced writes per pass). All state is
+             derived from one progress value so both directions and
+             deep-linked refreshes land exactly. */
+          let stopIndex = -1;
+          let gloamingOn = false;
+          let duskOn = false;
+
+          const applyDusk = (p: number) => {
+            /* Root steps first, same frame as the channel write. */
+            const dusk = p >= DUSK_FLIP_POS;
+            if (dusk !== duskOn) {
+              duskOn = dusk;
+              if (dusk) root.setAttribute("data-arc-phase", "dusk");
+              else root.removeAttribute("data-arc-phase");
+            }
+            const gloaming = p > 0 && p < 1;
+            if (gloaming !== gloamingOn) {
+              gloamingOn = gloaming;
+              if (gloaming) root.setAttribute("data-arc-gloaming", "");
+              else root.removeAttribute("data-arc-gloaming");
+            }
+
+            /* Virgin creation-refresh at p=0 (page loaded above the
+               range): the resting day belongs to the day segments —
+               writing w05 here would repaint dawn as golden hour. Real
+               scroll-outs (stopIndex ≥ 0) DO write, restoring w05. */
+            if (p === 0 && stopIndex === -1) return;
+
+            /* Current stop: the last stop whose pos ≤ p. */
+            let index = DUSK_CHOREO.length - 1;
+            while (index > 0 && DUSK_CHOREO[index].pos > p) index--;
+            const stop = DUSK_CHOREO[index];
+
+            if (getTier() === "full") {
+              /* Fine scrub (Full): interpolate toward the next stop of
+                 the SAME side; hold across the flip pair — the forbidden
+                 band is never rendered. Quantized writes elide sub-JND
+                 frames exactly like the day segments. */
+              const next = DUSK_CHOREO[index + 1];
+              if (next && next.side === stop.side) {
+                const u = (p - stop.pos) / (next.pos - stop.pos);
+                write(
+                  stop.l + (next.l - stop.l) * u,
+                  stop.c + (next.c - stop.c) * u,
+                  stop.h + (next.h - stop.h) * u
+                );
+              } else {
+                write(stop.l, stop.c, stop.h, index !== stopIndex);
+              }
+              stopIndex = index;
+              return;
+            }
+
+            /* Stepped scrub (Core): write only when the stop changes. */
+            if (index !== stopIndex) {
+              stopIndex = index;
+              write(stop.l, stop.c, stop.h, true);
+            }
+          };
+
           ScrollTrigger.create({
             trigger: sections[i + 1],
-            start: "top 50%",
-            onEnter: () => {
-              write(to.l, to.c, to.h, true);
-              root.setAttribute("data-arc-phase", "dusk");
-            },
-            onLeaveBack: () => {
-              write(from.l, from.c, from.h, true);
-              root.removeAttribute("data-arc-phase");
-            },
+            start: "top 92%",
+            end: "top top",
+            scrub: true,
+            onUpdate: (self) => applyDusk(self.progress),
+            onRefresh: (self) => applyDusk(self.progress),
           });
           continue;
         }
@@ -194,6 +267,7 @@ export function DayArc() {
     return () => {
       ctx.revert();
       root.removeAttribute("data-arc-phase");
+      root.removeAttribute("data-arc-gloaming");
       for (const name of CHANNEL_VARS) field.style.removeProperty(name);
     };
   }, [lenis]);
