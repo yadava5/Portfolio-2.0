@@ -41,6 +41,7 @@ import {
 } from "@/lib/data/projectCaseStudies";
 import { getProjectById } from "@/lib/data/projects";
 import { proofManifest } from "@/lib/data/proofManifest";
+import { getManagerTestimonial } from "@/lib/data/testimonials";
 import {
   ChapterKicker,
   FolioRule,
@@ -1164,7 +1165,11 @@ function AutomlChapter() {
 }
 
 /* ────────────────────────────────────────────────────────────────
-   05 · The Work — three editorial rows + the quiet index
+   05 · The Work — four editorial rows + the quiet index
+   (CRITIC-LEDGER F60: this said "three". Cadence made it four two
+   commits before the ledger was written, and the comment did not
+   notice — the exact failure mode of a comment layer that out-writes
+   the content layer.)
    ──────────────────────────────────────────────────────────────── */
 
 function WorkChapter() {
@@ -1546,6 +1551,8 @@ function GateChapter() {
   const github = socialLinks.find((link) => link.name === "GitHub")?.url;
   const linkedIn = socialLinks.find((link) => link.name === "LinkedIn")?.url;
   const muted = mutedClass(true);
+  /* CRITIC-LEDGER F58 — see the block below the endnotes. */
+  const managerReference = getManagerTestimonial();
 
   return (
     /* CRITIC-LEDGER F08: py-[14vh] is 118px of empty brown at each end
@@ -1763,8 +1770,87 @@ function GateChapter() {
               </li>
             ))}
           </ol>
+          {/* CRITIC-LEDGER F58 — the reference that was on file and
+              never on the page.
+
+              src/lib/data/testimonials.ts held a ~180-word
+              recommendation from the author's actual manager, with a
+              LinkedIn URL, and had zero importers: on a site arguing
+              that every claim should terminate at an artifact outside
+              itself, the only third-party artifact in the repository
+              was the one thing it did not show.
+
+              It lands HERE, under a heading that already says
+              "references", because that is the word a hiring reader
+              means by it — the endnotes above are references to
+              evidence, and this is a reference to a person. Same
+              apparatus, one register warmer: the passage sets in the
+              chapter's serif so it reads as someone else's voice, not
+              the site's; everything around it stays in the mono hand.
+
+              Honesty conditions, all four visible on the page: the
+              passage is a contiguous verbatim excerpt (module-scope
+              gate in testimonials.ts), it is DISCLOSED as an excerpt
+              with the full text's location, the person is named with
+              their own title, and the link goes to them rather than to
+              a screenshot of them. One reference, not two — see the
+              note on the second entry in testimonials.ts. */}
+          {managerReference ? (
+            <div className="mt-[8vh]" data-tm="block">
+              <h2 className={`label-mono ${muted}`}>
+                on file — references, the other kind.
+              </h2>
+              {/* Deliberately NOT a <figure>/<figcaption>: the print
+                  tier draws its monograph outline around every
+                  captioned figure in a chapter (globals.css
+                  html[data-tier="print"]), and at outline-offset 14px
+                  that rule boxed the quotation and struck through the
+                  disclosure line under it. A blockquote with the
+                  attribution as a following sibling is the other
+                  pattern the HTML spec names for exactly this, and it
+                  keeps the two worlds identical (A7). */}
+              <div className="mt-4 border-t border-current/15 pt-4">
+                <blockquote className="max-w-[54ch] font-serif text-[1.0625rem] leading-7">
+                  <p>
+                    &hellip;
+                    {managerReference.excerpt ?? managerReference.quote}
+                  </p>
+                </blockquote>
+                <p className="label-mono mt-4 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">
+                  {/* normal-case: a person's name and their own title
+                      are data — the mono voice may lowercase the site's
+                      words, never someone else's name. */}
+                  <span className="normal-case">
+                    {managerReference.linkedInUrl ? (
+                      <a
+                        href={managerReference.linkedInUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        {managerReference.name} ↗
+                      </a>
+                    ) : (
+                      managerReference.name
+                    )}
+                    {" — "}
+                    <span className={muted}>{managerReference.title}</span>
+                  </span>
+                  <span className={muted}>
+                    {managerReference.standing ?? managerReference.relationship}{" "}
+                    · recorded {managerReference.date}
+                  </span>
+                </p>
+              </div>
+              <p className={`label-mono mt-3 ${muted}`}>
+                excerpted, not edited — the full recommendation is on the
+                linkedin profile in the colophon.
+              </p>
+            </div>
+          ) : null}
+
           {/* The master ledger: proofManifest rendered at /evidence */}
-          <p className="label-mono mt-4 border-t border-current/15 pt-3">
+          <p className="label-mono mt-[8vh] border-t border-current/15 pt-3">
             <Link href="/evidence/" className="link-draw">
               the evidence index — every claim on file ⟶
             </Link>
