@@ -887,9 +887,24 @@ function AutomlChapter() {
             token scrubbed — the blank-paper report, fix round 3.) On
             stacked layouts the narrower [data-pipeline-pin] below pins
             instead; PipelineRun picks the target per breakpoint. */}
+        {/* The figure rail widens 340px → 400px (CRITIC-LEDGER F56): fig
+            4.1 gains a third column (the redacted metric cell), and the
+            340px rail could not hold it — after the ledger's own
+            `border-l pl-6` the usable measure was 299px, while
+            `039 · random forest` (165px) + the mark (29px) + `awaiting
+            approval` (148px) + gaps needs ~358px. Every row wrapped.
+            400px buys 359px of measure and the four rows rule up on one
+            line each, with the mark and the status cell landing at the
+            same x on every row.
+            The cost, measured and accepted: the thesis column goes 592px
+            → 552px at 1280+, so the ¶04 paragraph sets to a slightly
+            narrower measure than its max-w-[55ch] (592px) allows. It
+            still sets in three lines at every width ≥1280, and the
+            trade buys the figure the reader is asked to ACT on an
+            honest data column. */}
         <div
           data-pipeline-pin-wide
-          className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20"
+          className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-20"
         >
           {/* data-tm-scene (PREMIUM-FLOW #1): the thesis column assembles
               as one beat — headline → body → gated-phases line → case-file
@@ -1039,13 +1054,24 @@ function AutomlChapter() {
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 <RegistryRows rows={AUTOML_REGISTRY_ROWS} />
               </ul>
+              {/* CRITIC-LEDGER F56: the caption used to say metrics were
+                  withheld while the table showed no column they could
+                  have occupied. Now the column is drawn and redacted, so
+                  the caption's job is to define the mark and give the
+                  reason — both reasons are the automl case file's own
+                  words: the repository is private, AND "a demo-data run
+                  ledger with a complete metric trail has not shipped
+                  yet". The second is why this figure does not print a
+                  shaped f1: there may be no per-run number to withhold. */}
               <figcaption className="label-mono text-ink-secondary mt-6 space-y-1 pl-6">
                 <span className="block">
                   fig. 4.1 — experiment registry, transcribed private-safe
                   excerpt.
                 </span>
                 <span className="block">
-                  metrics withheld — private repository; see the case file.
+                  <span aria-hidden="true">▓▓▓</span> — not published: the
+                  repository is private, and the demo-data metric trail has not
+                  shipped. See the case file.
                 </span>
               </figcaption>
             </figure>
