@@ -5,7 +5,9 @@
  * rail-check hand (ChapterRail's RailCheck, tally scale) that appears —
  * `[data-visited]`, ≤300ms opacity, instant in static worlds — beside
  * any reference to a case file the visitor has opened: home #work rows,
- * the "also on file" index, and the /evidence receipt crosswalk.
+ * the "cited above, argued in full" index under them (headed "also on
+ * file" until the certification round's D6), and the /evidence receipt
+ * crosswalk.
  *
  * The span is ALWAYS in the layout (fixed inline width) so the mark's
  * arrival never shifts a letterform; it is decorative (aria-hidden) —
