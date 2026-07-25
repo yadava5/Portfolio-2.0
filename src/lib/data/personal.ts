@@ -214,9 +214,14 @@ export function getCurrentEducation(): Education | undefined {
   return education[0];
 }
 
-/**
- * Count total Dean's List appearances
- */
-export function getDeansListCount(): number {
-  return awards.filter((a) => a.name === "Dean's List").length;
-}
+/* `getDeansListCount()` stood here from W2's F53 fix — the ¶03
+   education line was to derive "spring & fall 2025" from the awards
+   array so the two could never contradict. The 2026-07-24 owner
+   directive settled that line as confirmed copy instead (semesters
+   named, GPA once), and the helper's last call site went with it. It
+   was exported from src/lib/data/index.ts and called by nothing:
+   dead code whose docstring described a contract the page no longer
+   holds. Removed rather than left as a comment about a function that
+   isn't there (certification round, D1). The Fall-2023 award still
+   sits in `awards` above, and the open question about it is recorded
+   where the copy is — StoryShell's education block. */
