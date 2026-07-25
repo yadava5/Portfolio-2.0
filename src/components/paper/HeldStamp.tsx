@@ -1,23 +1,19 @@
 /**
  * @fileoverview The HELD stamp — reserved clay for a claim not yet earned.
  *
- * W2 (Refinement Era), transposed from the friend-portfolio tour's
- * "unearned number" apparatus (FRIEND-PORTFOLIO-TRANSPOSITIONS #1): his
- * retraction is a section; ours is a stamp. Clay is reserved for
- * decisions and gates (DECISION.md §2) — and an honestly-withheld claim
- * IS a gate: the page stops the number at the door until a committed
- * artifact earns it. Dashed frame in the gate/private stamps' wobbled
- * hand, Fragment Mono lettering, `text-clay` ink (the 5.1:1 text token
- * the dossier stock already carries).
+ * Rendered beside any number the site states but cannot yet reproduce
+ * from a committed artifact; the caller supplies the footnote naming
+ * what lifts it. Static SVG, server-rendered, no motion in any world.
  *
- * Applied once for now — the fast-mnist ~97% accuracy receipt, whose
- * own claim says "documented in the repo, not measured on this page" —
- * with a Newsreader footnote naming when the stamp lifts. Phase 3
- * applies the same mark to the flagship's withheld numbers. The ≤2
- * stamps/page skeuomorph budget (DOSSIER-RESEARCH warning 1) holds:
- * fast-mnist carries no other stamp.
- *
- * Static SVG, server-rendered, no motion in any world.
+ * Design rationale (clay is reserved for decisions and gates; a
+ * withheld claim is a gate) lives in DECISION.md §2 and W2 of
+ * FRIEND-PORTFOLIO-TRANSPOSITIONS — CRITIC-LEDGER F60: it used to live
+ * here, as a 27-line essay heading a 47-line component, and it went
+ * stale in the usual way. It promised that "Phase 3 applies the same
+ * mark to the flagship's withheld numbers" — a phase that never
+ * shipped, still being promised by a file nobody re-reads — and it
+ * pinned the ≤2-stamps-per-page budget to one specific case file while
+ * three surfaces now call this component.
  */
 
 /**
