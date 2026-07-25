@@ -197,11 +197,18 @@ test.describe("text motion — engine world", () => {
       })
       .toBeGreaterThan(5);
 
-    /* At rest above the range every word idles at 0.25 */
+    /* At rest above the range every word idles at MANIFESTO_REST.
+       This assertion used to demand 0.2–0.3 — i.e. it pinned the
+       CRITIC-LEDGER F06 fault in place: ink at 0.25 composites to
+       1.66:1 on dawn paper, so the chapter's thesis sentence rendered
+       half-redacted for anyone who stopped on it. The rest is now AA
+       for the manifesto's 64px setting (0.60 → 4.12:1); what the test
+       actually guards — that the words REST muted and travel to full
+       ink with scroll — is unchanged and asserted below. */
     const resting = await manifestoOpacities(page);
     for (const opacity of resting) {
-      expect(opacity).toBeGreaterThan(0.2);
-      expect(opacity).toBeLessThan(0.3);
+      expect(opacity).toBeGreaterThan(0.55);
+      expect(opacity).toBeLessThan(0.65);
     }
 
     /* Deep past chapter 02 the scrub has completed: every word full ink */
