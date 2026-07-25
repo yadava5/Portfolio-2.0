@@ -43,8 +43,15 @@ export function ProjectRowScene({
       <Scene />
       {/* Muting is OPACITY on the inherited ink (amendment A4): this row
           can sit in near-dusk light, where the day-only secondary token
-          would die on the ledger browns. */}
-      <figcaption className="label-mono mt-4 space-y-1 opacity-70">
+          would die on the ledger browns.
+          CRITIC-LEDGER F36: fig 5.1's provenance line runs ~120
+          characters ("3.5x — openmp+simd dot kernel vs -O3 baseline,
+          committed benchmarks · avx-512 · avx2 · neon · wasm-simd128")
+          and set to ~1,400px unbounded — roughly twice the comfortable
+          measure for 13px mono. max-w-[68ch] is the cap the ledger asks
+          for; it binds only the captions that exceed it, so every
+          shorter caption is unchanged. */}
+      <figcaption className="label-mono mt-4 max-w-[68ch] space-y-1 opacity-70">
         <span className="block">
           fig. {figNo} — {meta.caption}.
         </span>
