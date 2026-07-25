@@ -403,10 +403,7 @@ export function PipelineRun() {
           const vh = window.innerHeight;
           const top = Math.min(
             Math.round(vh * PIN_TOP_FRACTION),
-            Math.max(
-              anchorLanding(),
-              vh - pinEl.offsetHeight - PIN_BOTTOM_GAP
-            )
+            Math.max(anchorLanding(), vh - pinEl.offsetHeight - PIN_BOTTOM_GAP)
           );
           return `top ${top}px`;
         },

@@ -1,21 +1,38 @@
 /**
- * @fileoverview Lenis + GSAP ScrollTrigger scroll engine — the ONE rAF loop
+ * @fileoverview The scroll engine — NATIVE scroll + GSAP ScrollTrigger.
  *
- * Architecture (plan 3.9 + rubric amendment A1):
- *   - Lenis runs with `autoRaf: false`; GSAP's ticker is the single rAF loop
- *     and drives `lenis.raf(time * 1000)`.
- *   - `lagSmoothing(0)` keeps scrub positions honest after main-thread stalls.
- *   - ScrollTrigger start/end positions are re-measured after web fonts load.
- *   - The live Lenis instance is exposed via context (`useLenis`) so nav
- *     anchors, the chapter rail, and the day-arc engine all read from this
- *     single loop — no parallel scroll listeners.
+ * THERE IS NO LENIS (CRITIC-LEDGER F82). This header described a Lenis
+ * instance running with `autoRaf: false`, driven by `lenis.raf(time *
+ * 1000)` off GSAP's ticker, exposed through context. None of that has
+ * been true since the engine moved to the browser's own scroll — four
+ * Lenis-tuning passes could not get rid of the momentum "slide" and the
+ * sub-pixel shimmer, so the library went and native scroll took over.
+ * What survives is the NAME: `useLenis()`, `LenisContext`,
+ * `LenisAnchor`, `data-lenis-connected`. Those are load-bearing across
+ * the components and the specs and are deliberately not renamed in this
+ * wave; read them as "the scroll controller".
+ *
+ * Architecture (plan 3.9 + rubric amendment A1), as it actually is:
+ *   - The window scrolls itself. ScrollTrigger listens to the window's
+ *     own scroll event, so every scrubbed animation follows the
+ *     browser's sub-pixel-clean scroll and there is no scroll-jacking.
+ *   - GSAP's ticker remains the ONE rAF loop; the frame governor rides
+ *     it (§F2) and nothing else adds a scroll-time rAF.
+ *   - ScrollTrigger start/end positions are re-measured after web fonts
+ *     load, and after the ch04 pin builds its spacer (PipelineRun then
+ *     announces `paper:layout-settled` so hash landings re-assert).
+ *   - This provider publishes a thin CONTROLLER — anchor navigation, a
+ *     scroll-event bridge, and the modal lock — through context. A
+ *     non-null controller means the motion world is live; that is what
+ *     children actually test it for.
  *
  * Reduced motion (amendment A7): gated at entry — the engine is NEVER
  * mounted under `prefers-reduced-motion: reduce`, and a mid-session OS
- * toggle tears it down/brings it up via the hook's change subscription.
- * The quiet in-page motion toggle (also A7) is the same gate by hand: it
- * persists to localStorage, stamps `data-motion-off` on <html> (the static
- * world's CSS hook), and unmounts/remounts the engine identically.
+ * toggle tears it down/brings it up via the hook's subscription. The
+ * quiet in-page motion toggle (also A7) is the same gate by hand: it
+ * persists to localStorage, stamps `data-motion-off` on <html> (the
+ * static world's CSS hook), and unmounts/remounts the engine
+ * identically.
  */
 
 "use client";
