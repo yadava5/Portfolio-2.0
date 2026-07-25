@@ -952,9 +952,10 @@ function PathChapter() {
                   the stated boundary is the transcript, offered on
                   request. F53's ledger objection was reviewed and
                   overruled by the standing biographical ruling + the
-                  owner's directive. Open question on record: personal.ts
-                  carries a third award (Fall 2023) the owner has not yet
-                  confirmed for this line.
+                  owner's directive. Fall 2023 CONFIRMED 2026-07-25:
+                  "Fall 2023 Dean's List" congratulations mail from
+                  cca@miamioh.edu (2024-01-11) in the owner's Miami
+                  inbox — all three personal.ts awards now print.
 
                   Certification round, N5: this line opened by repeating
                   the h3 above it verbatim — "B.S. Computer Science" set
@@ -973,8 +974,8 @@ function PathChapter() {
               <p className="text-body mt-5 max-w-[55ch] font-serif">
                 {graduation}
                 {" — "}
-                dean’s list, spring &amp; fall 2025 — 3.65 GPA in major
-                coursework (transcript on request).
+                dean’s list, fall 2023 &amp; spring/fall 2025 — 3.65 GPA in
+                major coursework (transcript on request).
               </p>
             </div>
           </article>
