@@ -81,7 +81,8 @@ export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
   .filter((title): title is string => Boolean(title));
 
 // The project records the HOME paper actually surfaces (ch04 flagship +
-// the four ch05 rows + the "also on file" index). Visual Assist was
+// the four ch05 rows + the "cited above, argued in full" index — headed
+// "also on file" until the certification round's D6). Visual Assist was
 // retired from home 2026-07-24 (portfolioVisible: false — its case file
 // stays reachable from /evidence); jetpack-compress holds a row but has
 // no case route yet. Cadence moved index → prime row and automl left
@@ -138,7 +139,14 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   // 2026-07-24) and returned as the STANDFIRST (F02, 2026-07-25): the
   // first frame states who this is and what he does. Identity is now
   // the standfirst + the header running head + the #path records below.
-  education: "B.S. Computer Science, May 2026",
+  // N5 (certification round): this was ONE string, and the page printed
+  // it twice on the same row — as the h3, and again as the run-in to
+  // the prose 20px under it. The prose dropped the echo, so the record
+  // now reads in two registers: the heading names the degree, the line
+  // under it dates it and states what followed. Both are asserted, so
+  // neither half can quietly go missing.
+  education: "B.S. Computer Science",
+  educationRecord: "May 2026 — dean’s list, spring & fall 2025",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
   experienceTitle: experiences[0].title,
@@ -150,7 +158,7 @@ export const EXPECTED_GRADUATE_IDENTITY = {
 // six live showcase projects hold the prime rows; visual-assist is
 // retired (portfolioVisible: false) and keeps its case-file route.
 // Fourth row added (dedupe ruling, 2026-07-24): Cadence promotes from
-// "also on file" to a prime row — its scene was already registered, and
+// the demoted index to a prime row — its scene was already registered, and
 // a project appears ONCE on the home paper (automl left the index too:
 // it IS the ch04 flagship).
 export const EXPECTED_SELECTED_WORK_ORDER = [
