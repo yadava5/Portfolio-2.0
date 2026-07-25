@@ -1,105 +1,82 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 /**
- * Hook to detect if user prefers reduced motion
+ * The `prefers-reduced-motion: reduce` media query, as an external store.
  *
- * Reads the `prefers-reduced-motion: reduce` media query and returns a boolean.
- * Listens for changes to the media query so animations can be disabled dynamically
- * if the user toggles the setting in their OS preferences.
+ * CRITIC-LEDGER F81 counted five suppressions of
+ * `react-hooks/set-state-in-effect` across the motion plumbing and read
+ * them as one architecture fighting the framework. Two of the five were
+ * genuinely that — a preference living outside React, mirrored into
+ * state by an effect. This is one of them, and `useSyncExternalStore`
+ * is the API React ships for exactly this shape: subscribe to the
+ * source, read it on demand, never copy it.
  *
- * SSR-safe: Returns false on the server to avoid hydration mismatches,
- * then updates to the correct value on the client.
+ * The read is also one render EARLIER than the effect could manage.
+ * With the old mirror, the first client render always reported "motion
+ * on" and a reduced-motion reader's correction arrived after commit;
+ * now the very first client render reports the truth, and React
+ * reconciles the server's `false` itself.
  *
- * @returns boolean - true if user prefers reduced motion, false otherwise
+ * The legacy `addListener` fallback is gone with it: `addEventListener`
+ * on `MediaQueryList` is supported by every browser in this project's
+ * browserslist (Chrome/Edge 128, Firefox 128, Safari 17.4) by many
+ * years, and the fallback was ~20 lines of casts for none of them.
+ */
+const QUERY = "(prefers-reduced-motion: reduce)";
+
+/**
+ * Subscribe to OS-level changes of the preference.
+ *
+ * @param onChange - React's re-read callback
+ * @returns The unsubscribe
+ */
+function subscribe(onChange: () => void): () => void {
+  if (typeof window === "undefined" || !window.matchMedia) return () => {};
+  const mediaQuery = window.matchMedia(QUERY);
+  mediaQuery.addEventListener("change", onChange);
+  return () => mediaQuery.removeEventListener("change", onChange);
+}
+
+/**
+ * Read the preference now.
+ *
+ * @returns True when the reader has asked their OS for reduced motion
+ */
+function getSnapshot(): boolean {
+  return window.matchMedia?.(QUERY).matches === true;
+}
+
+/**
+ * The server has no reader and no media queries. Reporting "motion on"
+ * keeps the prerendered HTML identical for everyone; the client's first
+ * render corrects it before any engine mounts (SmoothScroll re-checks
+ * `matchMedia` synchronously at its own gate for the same reason).
+ *
+ * @returns False, always
+ */
+function getServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * Whether the reader has asked their OS for reduced motion.
+ *
+ * Live: an OS toggle mid-session re-renders every consumer, which is
+ * how amendment A7's "never init-then-disable" gate tears the engine
+ * down and brings it back without a reload.
+ *
+ * @returns True if the user prefers reduced motion
  *
  * @example
  * ```tsx
  * export function AnimatedComponent() {
  *   const prefersReducedMotion = usePrefersReducedMotion();
- *
- *   return (
- *     <motion.div
- *       animate={{ opacity: 1 }}
- *       transition={{
- *         duration: prefersReducedMotion ? 0 : 0.5,
- *       }}
- *     >
- *       Content
- *     </motion.div>
- *   );
- * }
- * ```
- *
- * @example
- * ```tsx
- * export function SmoothScroll() {
- *   const prefersReducedMotion = usePrefersReducedMotion();
- *
- *   useEffect(() => {
- *     if (prefersReducedMotion) {
- *       // Disable smooth scroll
- *       return;
- *     }
- *     // Initialize smooth scroll
- *   }, [prefersReducedMotion]);
+ *   return <div data-still={prefersReducedMotion ? "" : undefined} />;
  * }
  * ```
  */
 export function usePrefersReducedMotion(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    // Check if the media query is supported
-    if (!window.matchMedia) {
-      return;
-    }
-
-    // Create the media query list
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    // Set initial value
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    /**
-     * Handle changes to the media query
-     * @param e - MediaQueryListEvent or change event
-     */
-    const handleChange = (e: MediaQueryListEvent) => {
-      setPrefersReducedMotion(e.matches);
-    };
-
-    // Modern browsers: use addEventListener
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", handleChange);
-
-      return () => {
-        mediaQuery.removeEventListener("change", handleChange);
-      };
-    } else {
-      // Legacy browsers: use addListener (deprecated but needed for older browsers)
-      const legacyHandler = (e: MediaQueryListEvent) => {
-        setPrefersReducedMotion(e.matches);
-      };
-      (
-        mediaQuery as MediaQueryList & {
-          addListener: (listener: (e: MediaQueryListEvent) => void) => void;
-        }
-      ).addListener(legacyHandler);
-
-      return () => {
-        (
-          mediaQuery as MediaQueryList & {
-            removeListener: (
-              listener: (e: MediaQueryListEvent) => void
-            ) => void;
-          }
-        ).removeListener(legacyHandler);
-      };
-    }
-  }, []);
-
-  return prefersReducedMotion;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
