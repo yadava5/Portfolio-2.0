@@ -2119,6 +2119,16 @@ section[id] {
   line-height: var(--text-label--line-height);
   letter-spacing: var(--text-label--letter-spacing);
   text-transform: lowercase;
+  /* Small-type widows (CRITIC-LEDGER F02's closing note). The apparatus
+     voice sets long strings in a narrow measure — the gate's
+     availability line, "open to new-grad software, data, and ml
+     engineering roles", dropped "roles" onto a line of its own at 390.
+     A widow in 13px mono reads as a mistake, and this voice carries the
+     lines a screener actually uses. `pretty` is the one text-wrap value
+     whose defined job is to avoid short last lines; where it is not
+     supported it computes to the normal greedy wrap, so nothing
+     regresses. Paragraph-level, so it costs nothing per frame. */
+  text-wrap: pretty;
 }
 /* Case exemption for DATA inside the mono voice (dossier receipts):
    file paths, repo names, commands, and errata quote case-sensitive
