@@ -24,11 +24,12 @@
  * engine — every static world — simply has no listener.
  *
  * The module also owns the two other halves of a landing:
- *   - WHERE it lands. `SCROLL_OFFSET`/`landingTop()` are the one anchor
- *     landing contract — the target's top, one fixed-masthead height
- *     below the viewport top. `scrollIntoView` would apply BOTH
- *     `scroll-padding-top` and the element's `scroll-margin-top` (~12rem)
- *     and land somewhere else, so nothing here uses it.
+ *   - WHERE it lands. `anchorLanding()`/`landingTop()` are the one
+ *     anchor landing contract — the target's top, one masthead band
+ *     below the viewport top — and that band has exactly ONE owner:
+ *     `scroll-padding-top` on `html` (globals.css). `scrollIntoView`
+ *     is never used here because it would ADD the element's own
+ *     `scroll-margin-top` on top of that band (CRITIC-LEDGER F69).
  *   - WHAT IT LEAVES BEHIND. `pushLanding()` writes the section into the
  *     history stack (CRITIC-LEDGER F05: nav clicks wrote nothing, so no
  *     section was linkable and Back left the site), and
@@ -49,11 +50,37 @@
 export const ARRIVAL_EVENT = "paper:arrival";
 
 /**
- * The anchor landing offset: matches `scroll-padding-top: 6rem` in
- * globals.css, i.e. one fixed masthead. Negative because it is added to
- * the target's document top.
+ * Last-resort masthead band, in px, for the one environment that cannot
+ * report the real one (SSR, or a stylesheet that has not parsed yet).
+ * Kept equal to globals.css's authored `scroll-padding-top: 6rem`.
  */
-export const SCROLL_OFFSET = -96;
+const ANCHOR_LANDING_FALLBACK = 96;
+
+/**
+ * The masthead band every landing clears — THE number, read from the
+ * one place that declares it.
+ *
+ * CRITIC-LEDGER F69 counted four constants claiming to be this height
+ * and measured three different landings for one 68px masthead: the
+ * browser's own fragment jump jumped 192px (`scroll-padding-top: 6rem`
+ * on the container PLUS `scroll-margin-top: 6rem` on the section — a
+ * scroll-into-view operation adds them), a cited figure 208px (its
+ * `scroll-margin-top` was 7rem), and this contract 96px. The
+ * `scroll-margin-top` rules are gone; `scroll-padding-top` is the sole
+ * declaration, so the browser's landing and this one are the same
+ * number by construction and cannot drift apart in a later edit.
+ *
+ * A computed-style read costs one layout query per LANDING — landings
+ * are rare (a click, a hash, a traversal), never per frame.
+ *
+ * @returns The masthead band in px
+ */
+export function anchorLanding(): number {
+  if (typeof window === "undefined") return ANCHOR_LANDING_FALLBACK;
+  const declared = getComputedStyle(document.documentElement).scrollPaddingTop;
+  const px = Number.parseFloat(declared);
+  return Number.isFinite(px) && px > 0 ? px : ANCHOR_LANDING_FALLBACK;
+}
 
 /**
  * Document scroll position that lands `el` under the fixed masthead.
@@ -62,7 +89,7 @@ export const SCROLL_OFFSET = -96;
  * @returns The scrollY the landing should end at
  */
 export function landingTop(el: HTMLElement): number {
-  return window.scrollY + el.getBoundingClientRect().top + SCROLL_OFFSET;
+  return window.scrollY + el.getBoundingClientRect().top - anchorLanding();
 }
 
 /**
