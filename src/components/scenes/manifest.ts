@@ -46,7 +46,10 @@ export interface ProjectSceneMeta {
  *   proofManifest fast-mnist-benchmark; the four instruction sets from
  *   projects.ts highlights. The forward-pass panel draws the MLP's
  *   mechanism only — no accuracy number (the ~97% claim is HELD in the
- *   manifest until a committed eval run earns it).
+ *   manifest until a committed eval run earns it). The caption's
+ *   "a drawn 7, answered" (F37) restates the figure's own drawn digit
+ *   and its labeled readout — the case study's "you draw a digit and
+ *   watch the network read it" — not a measured result.
  * - jetpack-compress: split → virtual threads → one byte-valid gzip
  *   member, ~6.5x vs single-threaded java.util.zip (±50%, quick
  *   benchmark) from projects.ts; 72 tests / 0 failures / JDK 25 @
@@ -83,7 +86,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
   },
   "fast-mnist-nn": {
     caption:
-      "the race — equal time, measured distance · and the forward pass, drawn",
+      "the race — equal time, measured distance · the forward pass — a drawn 7, answered",
     disclosure:
       "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5x lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP's mechanism and claims no accuracy number.",
     provenance:
