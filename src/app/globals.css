@@ -448,10 +448,25 @@ html[data-motion-off] .site-header {
 .daymark {
   contain: paint;
 }
+/* THE STATIC-WORLD GATE, WRITTEN ONCE (CRITIC-LEDGER F70).
+   The static world is the UNION of two conditions — an OS preference
+   (a media query) and `data-motion-off` (a selector) — and CSS cannot
+   express that union in one rule, which is why ~14 gates in this file
+   were each written out twice, verbatim, 130 lines apart. The
+   INTERSECTION, though, is one rule: `@media (prefers-reduced-motion:
+   no-preference) { html:not([data-motion-off]) … }`. So wherever motion
+   is something the engine world ADDS — a transition, an animation — the
+   declaration moves into that single motion-gated rule and its absence
+   IS the static state (which is A7's own principle: the resting state
+   is the finished state). Both copies collapse into one.
+   Gates where the static world REPLACES a value rather than dropping
+   one keep their pair, deliberately: inverting those would make the
+   motion world's correctness depend on remembering to un-set every
+   static property, and trade a visible duplication for an invisible
+   omission. See docs/design-lab/WAVE4-STATUS.md. */
 .daymark-fill {
   /* dawn (01): the vessel is empty — the whole disc sits below the clip */
   transform: translateY(12.4px);
-  transition: transform 600ms cubic-bezier(0.22, 0.61, 0.21, 1);
 }
 .daymark[data-phase="02"] .daymark-fill {
   transform: translateY(10.33px);
@@ -471,13 +486,10 @@ html[data-motion-off] .site-header {
 .daymark[data-phase="07"] .daymark-fill {
   transform: translateY(0);
 }
-@media (prefers-reduced-motion: reduce) {
-  .daymark-fill {
-    transition: none;
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .daymark-fill {
+    transition: transform 600ms cubic-bezier(0.22, 0.61, 0.21, 1);
   }
-}
-html[data-motion-off] .daymark-fill {
-  transition: none;
 }
 
 /* The dateline resets like a running head on a fresh leaf: a 340ms
@@ -550,7 +562,6 @@ html[data-motion-off] .site-footer {
   background-repeat: no-repeat;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
 }
 .link-draw:hover,
 .link-draw:focus-visible {
@@ -568,13 +579,17 @@ html[data-motion-off] .site-footer {
     100% 1px,
     100% 1px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .link-draw {
-    transition: none;
+/* Colour rides the SAME 250ms as the draw. The masthead's nav items used
+   to carry Tailwind's `transition-colors` (150ms) beside this class, so
+   one element ran two hover timings — and the static world only looked
+   correct because the old `transition: none` pair happened to kill both.
+   The house has one hover move; this is it. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .link-draw {
+    transition:
+      background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1),
+      color 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
   }
-}
-html[data-motion-off] .link-draw {
-  transition: none;
 }
 
 /* Quiet variant for the wordmark: no resting hairline (the identity is
@@ -585,19 +600,15 @@ html[data-motion-off] .link-draw {
   background-size: 0% 1px;
   background-position: left calc(100% - 0.05em);
   background-repeat: no-repeat;
-  transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
 }
 .link-draw-quiet:hover,
 .link-draw-quiet:focus-visible {
   background-size: 100% 1px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .link-draw-quiet {
-    transition: none;
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .link-draw-quiet {
+    transition: background-size 250ms cubic-bezier(0.22, 0.61, 0.21, 1);
   }
-}
-html[data-motion-off] .link-draw-quiet {
-  transition: none;
 }
 
 /* Visible focus on the warm palette: currentColor follows the ink flip,
@@ -982,24 +993,20 @@ html[data-motion-off] .thread-segment .thread-node-gate {
    reviewed, all marks present. */
 .rail-mark {
   opacity: 0;
-  transition: opacity 300ms ease;
 }
 .rail-mark.is-checked {
   opacity: 1;
 }
-/* CRITIC-LEDGER F14: these two blocks used to force EVERY mark visible
-   wherever the engine was absent, so a static-world reader in chapter 04
-   saw a rail claiming all seven chapters were reviewed — three of them
-   below the fold. The marks are now earned in every world (ChapterRail
-   mounts a monotone IntersectionObserver when there is no engine), so
-   only the transition is suppressed here. */
-@media (prefers-reduced-motion: reduce) {
-  .rail-mark {
-    transition: none;
+/* CRITIC-LEDGER F14: a pair of blocks here used to force EVERY mark
+   visible wherever the engine was absent, so a static-world reader in
+   chapter 04 saw a rail claiming all seven chapters were reviewed —
+   three of them below the fold. The marks are now earned in every world
+   (ChapterRail mounts a monotone IntersectionObserver when there is no
+   engine); only the fade is the engine's, so only the fade is gated. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .rail-mark {
+    transition: opacity 300ms ease;
   }
-}
-html[data-motion-off] .rail-mark {
-  transition: none;
 }
 
 /* Rail labels (W5): each folio number's name, revealed on hover AND
@@ -1023,15 +1030,11 @@ html[data-motion-off] .rail-mark {
   margin-left: 0.375rem;
   white-space: nowrap;
   opacity: 1;
-  transition: opacity 300ms ease;
 }
-@media (prefers-reduced-motion: reduce) {
-  .rail-label {
-    transition: none;
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .rail-label {
+    transition: opacity 300ms ease;
   }
-}
-html[data-motion-off] .rail-label {
-  transition: none;
 }
 
 /* ── Static-world chapter paint (amendments A4 + A7) — FINAL FORM ────
@@ -1797,13 +1800,19 @@ html[data-motion-off] .audit-run {
 [data-pipeline-note] {
   grid-area: 1 / 1;
   opacity: 0;
-  transition: opacity 160ms cubic-bezier(0.33, 0, 0.55, 1);
 }
 [data-pipeline-note]:last-child {
   opacity: 1;
 }
-[data-registry-row] {
-  transition: opacity 420ms cubic-bezier(0.33, 0, 0.55, 1);
+/* The turn is the engine's; the resting line is everyone's (F70 — one
+   gate, not a `transition: none` pair). */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) [data-pipeline-note] {
+    transition: opacity 160ms cubic-bezier(0.33, 0, 0.55, 1);
+  }
+  html:not([data-motion-off]) [data-registry-row] {
+    transition: opacity 420ms cubic-bezier(0.33, 0, 0.55, 1);
+  }
 }
 [data-pipeline-pinned] [data-pipeline-note],
 [data-pipeline-pinned] [data-registry-row] {
@@ -1835,14 +1844,6 @@ html[data-motion-off] .audit-run {
     fill: var(--color-clay-graphic);
     transition: none;
   }
-  [data-pipeline-note],
-  [data-registry-row] {
-    transition: none;
-  }
-}
-html[data-motion-off] [data-pipeline-note],
-html[data-motion-off] [data-registry-row] {
-  transition: none;
 }
 html[data-motion-off] .pipeline-edge {
   stroke-dashoffset: 0 !important;
