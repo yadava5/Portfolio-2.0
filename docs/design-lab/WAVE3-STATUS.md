@@ -170,7 +170,12 @@ world, /evidence, two case files, 404):
 | Fixed-position boxes (repeat on every sheet) | header + rail | 0 |
 | Reveal targets still faded at print time | — | 0 |
 | Of F04's five blanked strings, missing | 5 (chapters 06/07 blank) | 0 |
-| Home pages | 10, three of them blank | 9, none blank |
+| Home pages (motion world) | 10, three of them blank | 8, none blank |
+| Home pages (static world) | — | 14, none blank |
+
+The static world prints longer because its chapters carry their waypoint
+paint as real block backgrounds rather than a fixed field, so the page
+boxes are taller. Longer is not the fault; blank was.
 
 *Note on the "1": the first probe run was already past F04's original
 condition (the dusk chapters were legible) because the token rebinding had
