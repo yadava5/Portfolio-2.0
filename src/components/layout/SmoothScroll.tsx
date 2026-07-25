@@ -28,6 +28,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import gsap from "gsap";
@@ -73,6 +74,80 @@ const FLIGHT_SUPPRESS_MS = 1800;
 
 /** localStorage key for the quiet in-page motion toggle (amendment A7) */
 const MOTION_STORAGE_KEY = "motion-off";
+
+/* ── THE QUIET TOGGLE, AS AN EXTERNAL STORE (CRITIC-LEDGER F81) ──────
+   The visitor's motion preference lives in localStorage, which is not
+   React state. It used to be MIRRORED into React state by an effect
+   that read storage once on mount — one of the five
+   `react-hooks/set-state-in-effect` suppressions the ledger counts, and
+   the shape `useSyncExternalStore` exists for. The store is module
+   scope because the preference is per-DOCUMENT, exactly like the one
+   scroll loop and the one governor: two providers would be two
+   answers. */
+const motionOffListeners = new Set<() => void>();
+
+/**
+ * Subscribe to quiet-toggle changes, including another tab's.
+ *
+ * @param onChange - React's re-read callback
+ * @returns The unsubscribe
+ */
+function subscribeMotionOff(onChange: () => void): () => void {
+  motionOffListeners.add(onChange);
+  /* `storage` fires only in OTHER documents, so a second tab of the
+     paper follows the reader's choice; this tab's own writes notify
+     through the set. */
+  window.addEventListener("storage", onChange);
+  return () => {
+    motionOffListeners.delete(onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+/**
+ * Read the visitor's OWN toggle — deliberately not `readStoredMotionOff`,
+ * which also reports the governor's print floor. The header control must
+ * reflect the reader's choice, not the device's verdict.
+ *
+ * @returns True when the visitor has asked for motion off
+ */
+function getMotionOffSnapshot(): boolean {
+  try {
+    return window.localStorage.getItem(MOTION_STORAGE_KEY) === "1";
+  } catch {
+    return motionOffFallback; /* storage unavailable — session only */
+  }
+}
+
+/**
+ * No storage on the server: the prerendered HTML is the motion world's,
+ * which is what the layout head script also assumes.
+ *
+ * @returns False, always
+ */
+function getMotionOffServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * Persist the visitor's choice and tell every subscriber in this
+ * document.
+ *
+ * @param next - The new preference
+ */
+function writeMotionOff(next: boolean): void {
+  try {
+    window.localStorage.setItem(MOTION_STORAGE_KEY, next ? "1" : "0");
+  } catch {
+    /* storage unavailable — the toggle still works for this session,
+       but `getMotionOffSnapshot` cannot see it, so hold it in memory. */
+    motionOffFallback = next;
+  }
+  for (const listener of motionOffListeners) listener();
+}
+
+/** Session-only preference when localStorage refuses writes. */
+let motionOffFallback = false;
 
 /**
  * Read "is the static world in force?" synchronously (amendment A7 +
@@ -162,7 +237,13 @@ interface SmoothScrollProps {
  */
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [motionOff, setMotionOff] = useState(false);
+  /* The visitor's own toggle, read from where it lives (F81) rather
+     than mirrored into state by a mount effect. */
+  const motionOff = useSyncExternalStore(
+    subscribeMotionOff,
+    getMotionOffSnapshot,
+    getMotionOffServerSnapshot
+  );
   const [lenis, setLenis] = useState<ScrollController | null>(null);
   /* Page visibility joins the motion gate (the blank-plate fix). A hidden
      document freezes rAF, so a mounted engine could hide content behind
@@ -201,21 +282,6 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
      governor drops to print — restored after the pin-spacer unwinds so
      the reader's line doesn't jump (§F2: zero layout surprise). */
   const downshiftAnchor = useRef<{ el: Element; top: number } | null>(null);
-
-  /* Restore the persisted toggle once on the client (SSR-safe default:
-     on). Raw localStorage read on purpose: readStoredMotionOff() now also
-     reports the governor's print floor, which is NOT the user's toggle —
-     the header control must reflect only the visitor's own choice. */
-  useEffect(() => {
-    try {
-      if (window.localStorage.getItem(MOTION_STORAGE_KEY) === "1") {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMotionOff(true);
-      }
-    } catch {
-      /* storage unavailable — default stays on */
-    }
-  }, []);
 
   /* Report the motion gate to the governor (§F2 precedence: the gate
      always wins — reduced motion / the quiet toggle force print and
@@ -302,15 +368,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   }, [lenis, tierPrint]);
 
   const toggleMotion = useCallback(() => {
-    setMotionOff((current) => {
-      const next = !current;
-      try {
-        window.localStorage.setItem(MOTION_STORAGE_KEY, next ? "1" : "0");
-      } catch {
-        /* storage unavailable — session-only toggle */
-      }
-      return next;
-    });
+    writeMotionOff(!getMotionOffSnapshot());
   }, []);
 
   const motionPreference = useMemo(
@@ -393,6 +451,14 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
        longtask observer + scroll-gated sampling on THE one rAF loop. */
     startWatching();
 
+    /* CRITIC-LEDGER F81. The last suppression in this file, and the one
+       that cannot become a store read: `controller` does not EXIST
+       until this effect builds it, and its lifetime is the effect's —
+       the listener map, the fonts-ready refresh, the resize handler and
+       the governor's watch all live and die with it. There is nothing
+       external to subscribe to; publishing the object the effect just
+       created is the effect's whole purpose. (The quiet toggle, which
+       WAS an external read, is now `useSyncExternalStore` above.) */
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenis(controller);
 
