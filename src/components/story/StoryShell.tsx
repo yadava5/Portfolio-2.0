@@ -807,7 +807,7 @@ function AutomlChapter() {
     <section
       id={AUTOML.anchor}
       data-chapter={AUTOML.id}
-      className="relative pt-[8vh] pb-[12vh]"
+      className="relative pt-[8vh] pb-[6vh]"
     >
       <ThreadSegment id={AUTOML.id} />
       <div className={WRAP}>
@@ -963,7 +963,10 @@ function AutomlChapter() {
           </div>
         </div>
 
-        <div className="mt-[10vh]">
+        {/* Seam tuned (CRITIC-LEDGER F07): the ¶04→¶05 hand-off stacked a
+            10vh folio lead-in on a 12vh tail on a 7vh head — 29vh of
+            pure padding, arriving on top of the pin's own tail. 6+6+5. */}
+        <div className="mt-[6vh]">
           <FolioRule id={AUTOML.id} />
         </div>
       </div>
@@ -980,7 +983,7 @@ function WorkChapter() {
     <section
       id={WORK.anchor}
       data-chapter={WORK.id}
-      className="relative pt-[7vh] pb-[12vh]"
+      className="relative pt-[5vh] pb-[6vh]"
     >
       <ThreadSegment id={WORK.id} />
       <div className={WRAP}>
@@ -1192,7 +1195,10 @@ function WorkChapter() {
           </ul>
         </div>
 
-        <div className="mt-[10vh]">
+        {/* Seam tuned (CRITIC-LEDGER F62): the same 29vh stack sat at the
+            ¶05→¶06 turn, so the reader's reward for finishing the work
+            index was most of a screen of blank paper AT the dusk flip. */}
+        <div className="mt-[6vh]">
           <FolioRule id={WORK.id} />
         </div>
       </div>
@@ -1212,7 +1218,7 @@ function ValuesChapter() {
     <section
       id={VALUES.anchor}
       data-chapter={VALUES.id}
-      className="relative flex min-h-[85svh] flex-col pt-[7vh] pb-[10vh]"
+      className="relative flex min-h-[85svh] flex-col pt-[5vh] pb-[10vh]"
     >
       <ThreadSegment id={VALUES.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
