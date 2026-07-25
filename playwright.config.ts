@@ -7,16 +7,16 @@ import { defineConfig, devices } from "@playwright/test";
    else does. The specs that drive the probe live here, so this is where
    the requirement is stated: a probe spec run against a probe-less
    build should fail with an instruction, not a null dereference. */
-const PROBE_SPECS = ["frame-governor"];
+const PROBE_SPECS = ["frame-governor", "text-garnish"];
 if (
   process.env.NEXT_PUBLIC_TEST_PROBES !== "1" &&
   process.argv.some((arg) => PROBE_SPECS.some((spec) => arg.includes(spec)))
 ) {
   throw new Error(
-    "frame-governor.spec.ts drives window.__frameGovernor, which only exists " +
-      "in a build made with NEXT_PUBLIC_TEST_PROBES=1. Run " +
-      "`npm run test:e2e:probes`, or export NEXT_PUBLIC_TEST_PROBES=1 for " +
-      "both the build and the test run."
+    "frame-governor.spec.ts and text-garnish.spec.ts drive " +
+      "window.__frameGovernor, which only exists in a build made with " +
+      "NEXT_PUBLIC_TEST_PROBES=1. Run `npm run test:e2e:probes`, or export " +
+      "NEXT_PUBLIC_TEST_PROBES=1 for both the build and the test run."
   );
 }
 
