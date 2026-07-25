@@ -953,14 +953,18 @@ html[data-motion-off] .thread-segment .thread-node-gate {
 .rail-mark.is-checked {
   opacity: 1;
 }
+/* CRITIC-LEDGER F14: these two blocks used to force EVERY mark visible
+   wherever the engine was absent, so a static-world reader in chapter 04
+   saw a rail claiming all seven chapters were reviewed — three of them
+   below the fold. The marks are now earned in every world (ChapterRail
+   mounts a monotone IntersectionObserver when there is no engine), so
+   only the transition is suppressed here. */
 @media (prefers-reduced-motion: reduce) {
   .rail-mark {
-    opacity: 1;
     transition: none;
   }
 }
 html[data-motion-off] .rail-mark {
-  opacity: 1;
   transition: none;
 }
 
@@ -969,19 +973,23 @@ html[data-motion-off] .rail-mark {
    (position: absolute → zero layout, the folio column and its marks
    never move). The active chapter keeps its name inked. No box, no
    track, no glow (NO-LIST §C). */
+/* CRITIC-LEDGER F13: every inactive name used to rest at opacity 0, so
+   the rail painted seven bare two-digit numbers — a reader crossing it
+   met wayfinding that would not say where anything went until they
+   hovered it, and a keyboard reader crossed seven 33px targets. The
+   names now REST visible. They carry no new ink budget: the enclosing
+   .rail-link already sits at opacity 0.7 when inactive, which composites
+   body ink to 5.6:1 on canvas — above the AA floor the labels never met
+   while they were invisible. Hover/focus/active still bring them to
+   full, so the active chapter stays the loudest thing on the rail. */
 .rail-label {
   position: absolute;
   top: 0;
   left: 100%;
   margin-left: 0.375rem;
   white-space: nowrap;
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-.rail-link:hover .rail-label,
-.rail-link:focus-visible .rail-label,
-.rail-link[aria-current] .rail-label {
   opacity: 1;
+  transition: opacity 300ms ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .rail-label {
