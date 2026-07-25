@@ -21,9 +21,24 @@
  *
  * Panel two, the forward pass: a stippled digit seven feeds the MLP's
  * mechanism — hidden cells waving lit left→right — into a ten-slot
- * readout where slot seven ink-fills and takes the clay tick. Mechanism
+ * readout where slot seven ink-fills and takes the pulse. Mechanism
  * only: the panel claims no accuracy number (the ~97% is HELD in the
  * proof manifest until a committed eval run earns it).
+ *
+ * THE PANEL NAMES ITS OWN STAGES (CRITIC-LEDGER F37): a cold reader saw
+ * "a dot-matrix 7, a partial second glyph, and an unlabelled 0–9
+ * checkbox column". Three quiet 13px labels now head the columns —
+ * input · hidden · readout — and a clay `answer · 7` line closes the
+ * readout, so the two-second read is "the network reads a drawn 7 and
+ * answers 7" (the case study's own words: "you draw a digit and watch
+ * the network read it"). The 7 is the drawn digit, not a data claim; no
+ * number joins the figure. The readout pitch steps 12.2 → 13.5 so the
+ * 11px digits' 13-unit em boxes clear each other — the small redraw
+ * WAVE2-STATUS's F66/F32 ESCALATE note said this column needed (nine
+ * adjacent-pair em-box collisions in the F37 census before, zero
+ * after). The wide race plate's viewBox gains 2 units of depth for the
+ * same census reason: the axis caption's em-box descent (baseline 188,
+ * descent 3) crossed y=190; no ink moves.
  *
  * One-shot scroll-in run; the server markup is the settled frame (both
  * lanes at their measured lengths, the digit read) for every static
@@ -65,8 +80,22 @@ const GLYPH_Y = 48;
 
 const SLOT_X = 150;
 const SLOT_Y0 = 28;
-const SLOT_PITCH = 12.2;
+/* 12.2 → 13.5 (F37): the 11px slot digits' em boxes measure 13 units
+   tall, so the old pitch overlapped every adjacent pair by 0.8 in the
+   census. 13.5 clears them with margin and the column (ends y 157.5)
+   still leaves the answer line its floor. */
+const SLOT_PITCH = 13.5;
 const WIN = 7; /* the slot the drawn seven lands in */
+
+/* Stage-label centers (F37), measured against the drawn columns:
+   glyph x 14–54.2 → 34; hidden cells x 84–112 (center 98, seated at 94
+   so the three inter-label gaps run ~12/13, not 20/7 — a 7-unit gap
+   reads as the phrase "hidden readout"); slots + digits x 150–171
+   (center 160.6, seated at 162 for the same rhythm). Labels are 13px
+   (8.56 units/char), so the widest, `readout`, spans 132.7–192.6
+   inside the 210 canvas. */
+const LABEL_Y = 14;
+const LABEL_X = { input: 34, hidden: 94, readout: 162 } as const;
 
 /** One race panel — both editions draw from the same derivation. */
 function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
@@ -78,7 +107,7 @@ function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
     <svg
       role="img"
       aria-label={PROJECT_SCENE_MANIFEST["fast-mnist-nn"].alt}
-      viewBox={narrow ? "0 0 280 216" : "0 0 400 190"}
+      viewBox={narrow ? "0 0 280 216" : "0 0 400 192"}
       data-sc-plate={edition}
       className={
         narrow
@@ -272,6 +301,20 @@ export function GlyphScene() {
         viewBox="0 0 210 190"
         className="block h-auto w-full max-w-[210px]"
       >
+        {/* the stages, named (F37) — static in every world, so the
+            settled/print frames carry the same reading */}
+        {(["input", "hidden", "readout"] as const).map((stage) => (
+          <text
+            key={stage}
+            x={LABEL_X[stage]}
+            y={LABEL_Y}
+            textAnchor="middle"
+            className="sc-quiet"
+          >
+            {stage}
+          </text>
+        ))}
+
         {/* the stippled seven */}
         {SEVEN.flatMap((row, r) =>
           row
@@ -352,12 +395,27 @@ export function GlyphScene() {
                   height="8"
                 />
               )}
-              <text x={SLOT_X + 14} y={y + 8} className="sc-quiet sc-small">
+              {/* the predicted slot's digit answers in clay (F37) */}
+              <text
+                x={SLOT_X + 14}
+                y={y + 8}
+                className={win ? "sc-clay sc-small" : "sc-quiet sc-small"}
+              >
                 {i}
               </text>
             </g>
           );
         })}
+        {/* the readout's conclusion, in clay — the drawn digit read
+            back out. Mechanism, not a metric: 7 is the glyph above. */}
+        <text
+          x={LABEL_X.readout}
+          y="184"
+          textAnchor="middle"
+          className="sc-clay"
+        >
+          answer · {WIN}
+        </text>
         <circle
           data-sc-pulse
           className="scene-pulse"
