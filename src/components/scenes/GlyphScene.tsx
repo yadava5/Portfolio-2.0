@@ -10,6 +10,15 @@
  * No per-instruction-set multipliers are drawn because none are in the
  * settled data — the four ISAs ride the caption as names only.
  *
+ * TWO AUTHORED RACE PANELS (CRITIC-LEDGER F66, phone half): the wide
+ * 400-unit panel and a narrow 280-unit edition for columns under
+ * 380px. The race is a RATIO figure — 0 → 1x → 3.5x on one axis — so
+ * the narrow edition re-derives the same geometry on a shorter axis
+ * (both lanes scale together; the measured 3.5:1 relation is exact in
+ * both editions) and wraps the axis caption to two lines. Every mark,
+ * unit and word survives. The forward-pass panel is 210 units and
+ * already rides ≥1:1 in every seat, so it is shared, not re-authored.
+ *
  * Panel two, the forward pass: a stippled digit seven feeds the MLP's
  * mechanism — hidden cells waving lit left→right — into a ten-slot
  * readout where slot seven ink-fills and takes the clay tick. Mechanism
@@ -27,13 +36,14 @@ import { useSceneRun } from "@/components/scenes/useSceneRun";
 import { PROJECT_SCENE_MANIFEST } from "@/components/scenes/manifest";
 import gsap from "gsap";
 
-/* ── Race geometry: axis x0 → x1 spans 0 → 3.5x ────────────────────── */
-const AXIS_X0 = 16;
-const AXIS_X1 = 384;
-/** x of a multiplier on the axis */
-const mx = (m: number) => AXIS_X0 + ((AXIS_X1 - AXIS_X0) * m) / 3.5;
-const X_1 = mx(1); /* ≈ 121.1 */
-const X_35 = AXIS_X1;
+/* ── Race geometry: axis x0 → x1 spans 0 → 3.5x, per edition ───────── */
+const RACE_GEOM = {
+  wide: { x0: 16, x1: 384 },
+  narrow: { x0: 12, x1: 268 },
+} as const;
+/** x of a multiplier on the axis. */
+const mx = (g: { x0: number; x1: number }, m: number) =>
+  g.x0 + ((g.x1 - g.x0) * m) / 3.5;
 
 /* ── Forward-pass geometry ─────────────────────────────────────────── */
 /** The stippled seven: 7×9 cell bitmap (mechanism illustration). */
@@ -58,14 +68,135 @@ const SLOT_Y0 = 28;
 const SLOT_PITCH = 12.2;
 const WIN = 7; /* the slot the drawn seven lands in */
 
+/** One race panel — both editions draw from the same derivation. */
+function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
+  const g = RACE_GEOM[edition];
+  const x1x = mx(g, 1);
+  const x35 = g.x1;
+  const narrow = edition === "narrow";
+  return (
+    <svg
+      role="img"
+      aria-label={PROJECT_SCENE_MANIFEST["fast-mnist-nn"].alt}
+      viewBox={narrow ? "0 0 280 216" : "0 0 400 190"}
+      data-sc-plate={edition}
+      className={
+        narrow
+          ? "scene-plate-narrow h-auto w-full max-w-[280px]"
+          : "scene-plate-wide block h-auto w-full max-w-[400px]"
+      }
+    >
+      {/* quiet guides at the measured marks */}
+      <path className="scene-guide" d={`M ${x1x} 54 V 152`} />
+      <path className="scene-guide" d={`M ${x35} 96 V 152`} />
+
+      {/* lane 1 — the -O3 scalar baseline (the axis carries its 1x) */}
+      <text x={g.x0} y="50" className="sc-quiet">
+        -O3 scalar
+      </text>
+      <path
+        data-sc-lane-scalar
+        className="scene-edge"
+        d={`M ${g.x0} 62 H ${x1x}`}
+        pathLength={1}
+      />
+      <circle
+        data-sc-bead-scalar
+        className="scene-bead"
+        cx={x1x}
+        cy="62"
+        r="3.2"
+      />
+
+      {/* lane 2 — openmp+simd, same time, 3.5x the distance (the axis
+          carries the clay 3.5x, once) */}
+      <text x={g.x0} y="104" className="sc-quiet">
+        openmp + simd
+      </text>
+      <path
+        data-sc-lane-simd
+        className="scene-edge"
+        d={`M ${g.x0} 116 H ${x35}`}
+        pathLength={1}
+      />
+      <circle
+        data-sc-bead-simd
+        className="scene-bead"
+        cx={x35}
+        cy="116"
+        r="3.2"
+      />
+      {/* the clay tick on the measured landing */}
+      <path
+        data-sc-claytick
+        className="scene-claytick"
+        d={`M ${x35 - 18} 146 c 2.2 2.4 3.5 3.4 4.6 3.1 c 2 -2.8 5.5 -6.4 9.8 -8.2`}
+        pathLength={1}
+      />
+
+      {/* the axis — real units */}
+      <path
+        className="scene-rail"
+        d={`M ${g.x0} 152 H ${g.x1}`}
+        pathLength={1}
+      />
+      {(
+        [
+          { x: g.x0, label: "0", anchor: "middle", clay: false },
+          { x: x1x, label: "1x", anchor: "middle", clay: false },
+          { x: x35, label: "3.5x", anchor: "end", clay: true },
+        ] as const
+      ).map((tickDef) => (
+        <g key={tickDef.label}>
+          <path className="scene-post" d={`M ${tickDef.x} 152 V 158`} />
+          <text
+            x={tickDef.x}
+            y="172"
+            textAnchor={tickDef.anchor}
+            className={tickDef.clay ? "sc-clay" : "sc-quiet"}
+          >
+            {tickDef.label}
+          </text>
+        </g>
+      ))}
+      {/* the provenance caption: one line on the wide axis, wrapped to
+          two on the narrow one — same words, same order */}
+      {narrow ? (
+        <>
+          <text x={g.x0} y="192" className="sc-quiet">
+            dot 256 kernel —
+          </text>
+          <text x={g.x0} y="210" className="sc-quiet">
+            committed benchmarks
+          </text>
+        </>
+      ) : (
+        <text x={g.x0} y="188" className="sc-quiet">
+          dot 256 kernel — committed benchmarks
+        </text>
+      )}
+    </svg>
+  );
+}
+
 export function GlyphScene() {
   const rootRef = useSceneRun<HTMLDivElement>((tl, root) => {
+    /* The race runs on whichever panel the container query shows; the
+       forward pass is a single shared panel. */
+    const plates = Array.from(
+      root.querySelectorAll<SVGSVGElement>("[data-sc-plate]")
+    );
+    const race =
+      plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
+    const g = RACE_GEOM[race.dataset.scPlate === "narrow" ? "narrow" : "wide"];
+    const x1x = mx(g, 1);
+    const qr = gsap.utils.selector(race);
     const q = gsap.utils.selector(root);
-    const laneA = q<SVGPathElement>("[data-sc-lane-scalar]");
-    const laneB = q<SVGPathElement>("[data-sc-lane-simd]");
-    const beadA = q<SVGCircleElement>("[data-sc-bead-scalar]");
-    const beadB = q<SVGCircleElement>("[data-sc-bead-simd]");
-    const tick = q<SVGPathElement>("[data-sc-claytick]");
+    const laneA = qr<SVGPathElement>("[data-sc-lane-scalar]");
+    const laneB = qr<SVGPathElement>("[data-sc-lane-simd]");
+    const beadA = qr<SVGCircleElement>("[data-sc-bead-scalar]");
+    const beadB = qr<SVGCircleElement>("[data-sc-bead-simd]");
+    const tick = qr<SVGPathElement>("[data-sc-claytick]");
     const cells = q<SVGRectElement>("[data-sc-cell]");
     const hidden = q<SVGRectElement>("[data-sc-hidden]");
     const nedges = q<SVGPathElement>("[data-sc-nedge]");
@@ -76,8 +207,8 @@ export function GlyphScene() {
     gsap.set([...laneA, ...laneB, ...tick, ...nedges], {
       strokeDashoffset: 1.5,
     });
-    gsap.set(beadA, { x: -(X_1 - AXIS_X0) });
-    gsap.set(beadB, { x: -(X_35 - AXIS_X0) });
+    gsap.set(beadA, { x: -(x1x - g.x0) });
+    gsap.set(beadB, { x: -(g.x1 - g.x0) });
     gsap.set(cells, { opacity: 0 });
     gsap.set(hidden, { opacity: 0.15 });
     gsap.set(winSlot, { opacity: 0.15 });
@@ -131,90 +262,9 @@ export function GlyphScene() {
       className="scene-fig flex flex-wrap items-start gap-x-10 gap-y-6"
       data-scene-glyph
     >
-      {/* ── the race ── */}
-      <svg
-        role="img"
-        aria-label={PROJECT_SCENE_MANIFEST["fast-mnist-nn"].alt}
-        viewBox="0 0 400 190"
-        className="block h-auto w-full max-w-[400px]"
-      >
-        {/* quiet guides at the measured marks */}
-        <path className="scene-guide" d={`M ${X_1} 54 V 152`} />
-        <path className="scene-guide" d={`M ${X_35} 96 V 152`} />
-
-        {/* lane 1 — the -O3 scalar baseline (the axis carries its 1x) */}
-        <text x={AXIS_X0} y="50" className="sc-quiet">
-          -O3 scalar
-        </text>
-        <path
-          data-sc-lane-scalar
-          className="scene-edge"
-          d={`M ${AXIS_X0} 62 H ${X_1}`}
-          pathLength={1}
-        />
-        <circle
-          data-sc-bead-scalar
-          className="scene-bead"
-          cx={X_1}
-          cy="62"
-          r="3.2"
-        />
-
-        {/* lane 2 — openmp+simd, same time, 3.5x the distance (the axis
-            carries the clay 3.5x, once) */}
-        <text x={AXIS_X0} y="104" className="sc-quiet">
-          openmp + simd
-        </text>
-        <path
-          data-sc-lane-simd
-          className="scene-edge"
-          d={`M ${AXIS_X0} 116 H ${X_35}`}
-          pathLength={1}
-        />
-        <circle
-          data-sc-bead-simd
-          className="scene-bead"
-          cx={X_35}
-          cy="116"
-          r="3.2"
-        />
-        {/* the clay tick on the measured landing */}
-        <path
-          data-sc-claytick
-          className="scene-claytick"
-          d="M 366 146 c 2.2 2.4 3.5 3.4 4.6 3.1 c 2 -2.8 5.5 -6.4 9.8 -8.2"
-          pathLength={1}
-        />
-
-        {/* the axis — real units */}
-        <path
-          className="scene-rail"
-          d={`M ${AXIS_X0} 152 H ${AXIS_X1}`}
-          pathLength={1}
-        />
-        {(
-          [
-            { x: AXIS_X0, label: "0", anchor: "middle", clay: false },
-            { x: X_1, label: "1x", anchor: "middle", clay: false },
-            { x: X_35, label: "3.5x", anchor: "end", clay: true },
-          ] as const
-        ).map((tickDef) => (
-          <g key={tickDef.label}>
-            <path className="scene-post" d={`M ${tickDef.x} 152 V 158`} />
-            <text
-              x={tickDef.x}
-              y="172"
-              textAnchor={tickDef.anchor}
-              className={tickDef.clay ? "sc-clay" : "sc-quiet"}
-            >
-              {tickDef.label}
-            </text>
-          </g>
-        ))}
-        <text x={AXIS_X0} y="188" className="sc-quiet">
-          dot 256 kernel — committed benchmarks
-        </text>
-      </svg>
+      {/* ── the race, in both editions (CSS shows one) ── */}
+      <RacePanel edition="wide" />
+      <RacePanel edition="narrow" />
 
       {/* ── the forward pass ── */}
       <svg
