@@ -126,11 +126,7 @@ export function CadenceScene() {
       .to(block, { opacity: 0.55, duration: 0.25 }, 1.75)
       .to(block, { scale: 1, duration: 0.35, ease: "back.out(1.4)" }, 1.75)
       /* the clay Google Meet chip snaps in last (brief B2) … */
-      .to(
-        chipMeet,
-        { x: 0, y: 0, duration: 0.55, ease: "back.out(1.15)" },
-        1.6
-      )
+      .to(chipMeet, { x: 0, y: 0, duration: 0.55, ease: "back.out(1.15)" }, 1.6)
       .to(chipMeet, { opacity: 1, duration: 0.3 }, 1.6)
       /* … and its badge lands on the event with the one clay pulse */
       .to(badge, { opacity: 1, duration: 0.2 }, 2.2)

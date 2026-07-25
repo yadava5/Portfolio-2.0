@@ -203,8 +203,7 @@ export function PipelineRun() {
   /* Which pin target the layout calls for (lazy init: the state never
      renders, so reading matchMedia here cannot mismatch hydration). */
   const [wide, setWide] = useState(
-    () =>
-      typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
+    () => typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
   );
   /* Fire the clay pulse exactly once per gate arrival (re-armable) */
   const haltedRef = useRef(false);

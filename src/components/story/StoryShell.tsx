@@ -29,11 +29,7 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import {
-  personalInfo,
-  socialLinks,
-  education,
-} from "@/lib/data/personal";
+import { personalInfo, socialLinks, education } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
   getCaseStudyById,
@@ -686,8 +682,8 @@ function WhoChapter() {
                 className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
                 data-tm="block"
               >
-                n.b. — every project below opens into its own case file,
-                source, or live build.
+                n.b. — every project below opens into its own case file, source,
+                or live build.
               </aside>
             </div>
           </div>
@@ -813,9 +809,8 @@ function PathChapter() {
                   unlinked claim; prose + the transcript boundary keeps the
                   fact while exempting it from footnote 1's link contract. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — dean’s list, spring &
-                fall 2025 — 3.65 GPA in major coursework (transcript on
-                request).
+                B.S. {degree.field}, {graduation} — dean’s list, spring & fall
+                2025 — 3.65 GPA in major coursework (transcript on request).
               </p>
             </div>
           </article>

@@ -109,14 +109,18 @@ export function GlyphScene() {
       .to(winSlot, { opacity: 1, duration: 0.35 }, RACE + 0.1)
       .fromTo(
         pulse,
-        { opacity: 0.55, scale: 0.5, svgOrigin: `${SLOT_X + 4} ${SLOT_Y0 + WIN * SLOT_PITCH + 4}` },
         {
-              opacity: 0,
-              scale: 1.9,
-              duration: 0.55,
-              ease: "power2.out",
-              immediateRender: false,
-            },
+          opacity: 0.55,
+          scale: 0.5,
+          svgOrigin: `${SLOT_X + 4} ${SLOT_Y0 + WIN * SLOT_PITCH + 4}`,
+        },
+        {
+          opacity: 0,
+          scale: 1.9,
+          duration: 0.55,
+          ease: "power2.out",
+          immediateRender: false,
+        },
         RACE + 0.1
       );
   });
@@ -196,10 +200,7 @@ export function GlyphScene() {
           ] as const
         ).map((tickDef) => (
           <g key={tickDef.label}>
-            <path
-              className="scene-post"
-              d={`M ${tickDef.x} 152 V 158`}
-            />
+            <path className="scene-post" d={`M ${tickDef.x} 152 V 158`} />
             <text
               x={tickDef.x}
               y="172"
@@ -223,19 +224,21 @@ export function GlyphScene() {
       >
         {/* the stippled seven */}
         {SEVEN.flatMap((row, r) =>
-          row.split("").map((bit, c) =>
-            bit === "1" ? (
-              <rect
-                key={`${r}-${c}`}
-                data-sc-cell
-                className="scene-cell"
-                x={GLYPH_X + c * PITCH}
-                y={GLYPH_Y + r * PITCH}
-                width={CELL}
-                height={CELL}
-              />
-            ) : null
-          )
+          row
+            .split("")
+            .map((bit, c) =>
+              bit === "1" ? (
+                <rect
+                  key={`${r}-${c}`}
+                  data-sc-cell
+                  className="scene-cell"
+                  x={GLYPH_X + c * PITCH}
+                  y={GLYPH_Y + r * PITCH}
+                  width={CELL}
+                  height={CELL}
+                />
+              ) : null
+            )
         )}
 
         {/* the MLP's hidden cells, waving lit left → right */}
