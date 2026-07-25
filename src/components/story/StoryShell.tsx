@@ -442,9 +442,14 @@ function ArrivalChapter() {
               leading; verified no overflow 320→1680 and the closing
               line NEVER wraps, so the thread's measured box hugs one
               true line of text. */}
+          {/* CRITIC-LEDGER F64: this clamp used to be hand-rolled here
+              (and re-declared its own leading/tracking) while the
+              `--text-hero` token sat unused. Same rendered pixels — the
+              token adopted these measured values — but the size now has
+              exactly one source of truth. */}
           <h1
             aria-label="Scroll. It's all real."
-            className="font-display fraunces-hero text-[clamp(3.375rem,9vw,9rem)] leading-[0.98] font-normal tracking-[-0.015em]"
+            className="font-display fraunces-hero text-hero"
           >
             {/* The masthead is the paper's dare: everything the scroll
                 is about to show — figures, demos, approvals — is real,
@@ -559,8 +564,14 @@ function ArrivalChapter() {
               one project now has exactly one public name on every surface;
               the slug survives only inside the href, where it belongs.
               `normal-case` on the links is the house pattern for proper
-              nouns and data tokens inside apparatus voice. */}
-          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+              nouns and data tokens inside apparatus voice.
+              CRITIC-LEDGER F33/F65: this line (and the two below) used to
+              override the enclosing .label-mono with an 11px/0.08em cut —
+              the smallest type class on the page, on the two lines a
+              screener is most likely to use. The overrides are gone; the
+              lines inherit the 13px label token the design system says
+              is the floor. */}
+          <p className="text-ink-secondary">
             case files:{" "}
             <Link
               href="/projects/jobtracker/"
@@ -592,14 +603,12 @@ function ArrivalChapter() {
               read-on path and the `in a hurry` line below is the screener
               path — both already say where they go. The scroll cue keeps
               its own quiet line. */}
-          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
-            scroll — the story starts here
-          </p>
+          <p className="text-ink-secondary">scroll — the story starts here</p>
           {/* W5: the 90-second path — one quiet line for screeners who
               will not scroll 1,500vh (A8's spirit): the work index, the
               master ledger, the resume PDF. Apparatus voice, no new
               vocabulary — the same quiet mono as the case-files line. */}
-          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+          <p className="text-ink-secondary">
             in a hurry —{" "}
             <LenisAnchor href="#work" className="link-draw">
               the work
@@ -1237,9 +1246,12 @@ function WorkChapter() {
                       (recruiter-rejudge status-wording fix). Dimming is
                       the house mute — opacity on FULL ink (the dusk-
                       chapter pattern), which composites to ≥5:1 on the
-                      golden-hour field; secondary ink at 0.7 would not. */}
+                      golden-hour field; secondary ink at 0.7 would not.
+                      CRITIC-LEDGER F33/F65: the 11px override is gone —
+                      the token inherits from the column's .label-mono, so
+                      the whole right rail is now one type size. */}
                   {study ? (
-                    <p className="text-ink font-mono text-[0.6875rem] tracking-[0.08em] opacity-70">
+                    <p className="text-ink opacity-70">
                       last verified {study.verified}
                     </p>
                   ) : null}
@@ -1451,8 +1463,13 @@ function GateChapter() {
                 leading 0.95 an overflow mask would clip the y descenders,
                 so the giant name takes the hero's own fade + 14px rise
                 instead — the entrance and the ending share one hand. */}
+              {/* CRITIC-LEDGER F64: the reprise's clamp was the second
+                  hand-rolled "hero" scale (8vw / 8.5rem cap vs the
+                  masthead's 9 / 9rem). It is a deliberately quieter cut,
+                  so it now consumes its own declared token instead of
+                  disagreeing with the masthead anonymously. */}
               <h2
-                className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+                className="font-display fraunces-hero text-hero-reprise mt-8"
                 data-tm="name"
               >
                 Ayush Yadav
