@@ -20,7 +20,7 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { siteMetadata } from "@/lib/data/personal";
-import { absoluteSiteUrl } from "@/lib/seo";
+import { absoluteSiteUrl, jsonLdHtml, siteGraph } from "@/lib/seo";
 
 /* ──────────────────────────────────────────────
    Font configuration
@@ -119,6 +119,17 @@ export default function RootLayout({
       className={`${fraunces.variable} ${newsreader.variable} ${fragmentMono.variable}`}
     >
       <body className="antialiased">
+        {/* CRITIC-LEDGER F23: the site shipped ZERO structured data —
+            no Person, no sameAs to the GitHub/LinkedIn URLs already in
+            personal.ts — on a portfolio whose search surface is a name
+            query. Person + WebSite ride every route from here; the case
+            files and /evidence add their own page-level node on top.
+            Composed in src/lib/seo.ts from the data layer, so nothing
+            in it can drift from what the page prints. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(siteGraph()) }}
+        />
         {/* First-paint world stamp (plan 3.8 + FOUC discipline + governor
             §F2). Synchronous by design: it must beat the hero's paint.
             1. `data-tier` — the frame governor's edition for THIS load:
