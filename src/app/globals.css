@@ -2181,3 +2181,220 @@ section[id] {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* ════════════════════════════════════════════════════════════════
+   THE PAPER EDITION — @media print (CRITIC-LEDGER F04)
+
+   Until now this file carried ZERO print rules across 2,000 lines, and
+   Cmd+P (backgrounds OFF, the browser default) lost the end of the
+   argument outright: chapters 06 and 07 set cream ink
+   (--color-ink-dusk) over a background that does not print, so "Make it
+   learn / fast / honest", fig 6.1, the pledge, the name, the
+   availability line, the email address, the resume link and the whole
+   references list came out as blank white pages — 3 of 10. The fixed
+   header and the chapter rail printed on every one of the ten, and on
+   page 8 the masthead struck through body text.
+
+   The edition below is the static world one more stop removed: one ink
+   on one paper, the chrome demoted to a masthead that prints once, the
+   world layers gone, and every reveal target resting at full strength.
+   It is a media query — nothing here can reach the screen.
+
+   Order matters: this block is the last in the file, so its :root
+   rebindings win over @theme's on equal specificity.
+   ════════════════════════════════════════════════════════════════ */
+@media print {
+  /* ── 1. ONE INK ────────────────────────────────────────────────
+     Rebinding the TOKENS (not the rules that consume them) is what
+     makes this cheap: every `color`, `fill`, `stroke` and
+     `color-mix()` in the file — utilities included, since Tailwind's
+     theme colors compile to the same vars — resolves to a printable
+     ink in one move.
+       · the night ink becomes the day ink: cream-on-nothing was the
+         whole of F04's blank pages;
+       · the three lightened night clays (night/ember/invite) measure
+         2.6:1, 2.2:1 and 2.4:1 on white — they collapse onto the day
+         clay, which is 5.5:1 there;
+       · --color-ink-secondary (7.2:1 on white) and --color-clay
+         (5.5:1) are left ALONE: the two-ink hierarchy is the
+         document's, and it survives the trip to paper intact. */
+  :root {
+    --color-ink-dusk: #26231c;
+    --color-clay-night: #b04a28;
+    --color-clay-ember: #b04a28;
+    --color-clay-invite: #b04a28;
+    --background: #ffffff;
+    --foreground: #26231c;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #26231c !important;
+  }
+
+  /* ── 2. ONE PAPER ──────────────────────────────────────────────
+     The day-arc, the dusk flip, the grain and the dossier stock are
+     all background paint. With backgrounds off they print as nothing
+     (and with backgrounds ON they print as a solid ledger brown that
+     eats a toner cartridge), so they come off entirely and the
+     chapters inherit the ink above. */
+  [data-chapter],
+  [data-chapter="06"],
+  [data-chapter="07"],
+  .dossier-surface,
+  .site-footer,
+  .plate-paper {
+    background: none !important;
+    color: inherit !important;
+  }
+
+  /* ── 3. THE WORLD LAYERS COME OFF ──────────────────────────────
+     Fixed-position boxes repeat on EVERY printed page. The light
+     field, the chapter rail, the two threads and the pipeline
+     overlay are all aria-hidden decoration whose meaning is carried
+     by the text they sit behind — they print as nothing but noise. */
+  [data-light-field],
+  nav[aria-label="Chapters"],
+  [data-thread-segment],
+  [data-dossier-thread],
+  .pipeline-overlay,
+  [data-citation-ink] {
+    display: none !important;
+  }
+
+  /* ── 4. THE MASTHEAD PRINTS ONCE ───────────────────────────────
+     Static, not fixed: it becomes the first thing on page 1 instead
+     of a bar stamped over all ten. Its underline/ruling ::after is a
+     scroll affordance with nothing to say on paper. */
+  .site-header {
+    position: static !important;
+    padding-block: 0 !important;
+    background: none !important;
+    color: #26231c !important;
+    --header-ink: #26231c;
+    --header-paper: #ffffff;
+  }
+  .site-header::after {
+    display: none !important;
+  }
+
+  /* Reverse-out chips — knockout text sitting on an ink block. The
+     block is a BACKGROUND, and backgrounds do not print at Cmd+P
+     defaults, so they came out white-on-white: measured 1.00:1 on the
+     masthead's `resume` chip and the 404's return CTA — the two
+     affordances a screener actually reaches for. On paper they trade
+     back: ink on paper inside a hairline frame, which is what a
+     printed button is. */
+  [data-print-invert] {
+    background: none !important;
+    color: #26231c !important;
+    border: 1px solid #26231c !important;
+  }
+
+  /* ── 5. EVERY REVEAL TARGET RESTS INKED ────────────────────────
+     The pre-hide and the entrance tweens both write opacity, and a
+     print can be taken at any point in that window (or with the
+     engine mid-scrub). A7 says the resting state is the finished
+     state; on paper there is nothing BUT the resting state.
+     Transforms go too: a `y: 16` frozen mid-tween prints as a
+     nudged line. */
+  [data-tm],
+  [data-tm-bright],
+  [data-tm-mantra],
+  [data-tm-receipt],
+  .hero-enter,
+  .hero-enter-headline,
+  .hero-enter-inline {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+  }
+
+  /* ── 6. THE PIN UNWINDS ────────────────────────────────────────
+     GSAP's pin-spacer holds ~1 viewport of scroll distance and the
+     pinned child is inline-styled `position: fixed`. On paper that
+     is a blank page followed by a stamp printed over chapter 05.
+     Inline styles need !important to unwind. */
+  .pin-spacer {
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+  [data-pipeline-pin],
+  [data-pipeline-pin-wide],
+  [data-pipeline-pinned] {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    width: auto !important;
+    transform: none !important;
+  }
+
+  /* ── 7. ROWS DO NOT BREAK ──────────────────────────────────────
+     A receipt whose claim lands on page 4 and whose artifact lands
+     on page 5 is not a receipt. The registry rows, the evidence
+     ledger entries, the case-file receipts, the endnotes and every
+     captioned figure hold together. */
+  li,
+  figure,
+  tr,
+  [data-registry-row],
+  [data-receipt-row],
+  [data-pipeline-note],
+  blockquote {
+    break-inside: avoid;
+  }
+  /* A headline is never split. Measured on the first pass: chapter 06's
+     litany broke mid-glyph — "Make it honest." sheared in half across
+     the page boundary, its receipt line printed on the next sheet. A
+     headline and the line that proves it are one object. */
+  h1,
+  h2,
+  h3,
+  [data-tm-mantra],
+  [data-tm-receipt] {
+    break-inside: avoid;
+  }
+  h1,
+  h2,
+  h3,
+  [data-tm-mantra] {
+    break-after: avoid;
+  }
+
+  /* ── 8. PAGE FURNITURE ─────────────────────────────────────────
+     A generous outer margin (the document is a working paper, not a
+     dense report), and no viewport-height minimums: `min-h-screen`
+     on a 1200px-tall printer page invents blank paper. */
+  @page {
+    margin: 18mm 16mm;
+  }
+  main,
+  [data-chapter],
+  section {
+    min-height: 0 !important;
+  }
+
+  /* ── 9. THE URL TRAVELS WITH THE LINK ──────────────────────────
+     The site's whole argument is that a claim terminates at an
+     artifact somewhere else. On screen the URL lives in the href and
+     never on the page (a deliberate rule); on paper the href is
+     unreachable, so external destinations print their address once,
+     in the apparatus voice. Same-site links stay bare — their
+     destination is in the reader's hands already. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    word-break: break-all;
+    color: var(--color-ink-secondary);
+  }
+  /* …except where the label already IS the address, or the link is a
+     glyph in a run of prose. */
+  .site-header a[href^="http"]::after,
+  .site-footer a[href^="http"]::after {
+    content: none;
+  }
+}
