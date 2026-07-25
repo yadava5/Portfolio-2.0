@@ -81,9 +81,33 @@ function pinRange(page: Page) {
     );
     return {
       start: Math.round(docTop - seat),
-      dist: Math.round(vh * 1.05),
+      /* PIN_VH — cut 1.05 → 0.95 when the frozen tail was removed
+         (CRITIC-LEDGER F77): the hold is now ~100px, and it carries the
+         halt's own note rather than nothing. */
+      dist: Math.round(vh * 0.95),
     };
   });
+}
+
+/** What the HOLD develops (F03): written register rows + the live note. */
+function holdState(page: Page) {
+  return page.evaluate(() => ({
+    written: document.querySelectorAll("[data-registry-written]").length,
+    rows: document.querySelectorAll("[data-registry-row]").length,
+    note:
+      document.querySelector("[data-pipeline-note][data-current]")
+        ?.textContent ?? null,
+    /* every row and note that a reader can actually see */
+    visibleRows: Array.from(
+      document.querySelectorAll<HTMLElement>("[data-registry-row]")
+    ).filter((el) => Number(getComputedStyle(el).opacity) > 0.9).length,
+    visibleNotes: Array.from(
+      document.querySelectorAll<HTMLElement>("[data-pipeline-note]")
+    ).filter((el) => Number(getComputedStyle(el).opacity) > 0.9).length,
+    lastNote:
+      document.querySelector("[data-pipeline-note]:last-child")?.textContent ??
+      null,
+  }));
 }
 
 async function waitForOverlay(page: Page) {
@@ -163,6 +187,78 @@ test.describe("pipeline run — motion world", () => {
       .toBe(false);
     expect((await runState(page)).litCount, "phases retreat").toBeLessThan(6);
   });
+
+  test("the hold DEVELOPS: the register writes itself and the note turns", async ({
+    page,
+  }) => {
+    const range = await pinRange(page);
+    expect(range).not.toBeNull();
+    const { start, dist } = range!;
+
+    /* Early: the register is still being written, and the note is the
+       first constraint the run is held to. */
+    await page.evaluate((y) => window.scrollTo(0, y), start + 20);
+    await expect
+      .poll(
+        async () => {
+          const state = await holdState(page);
+          return state.visibleRows === 1 && state.visibleNotes === 1;
+        },
+        { timeout: 6_000 }
+      )
+      .toBe(true);
+    const early = await holdState(page);
+    expect(early.rows, "four registry rows exist").toBe(4);
+    expect(early.written, "only the first row is written").toBe(1);
+    expect(early.note, "the note is real copy").toBeTruthy();
+
+    /* Mid-run: more rows written, and the note has turned to a
+       DIFFERENT one — the payoff the ledger found missing. */
+    await page.evaluate(
+      (y) => window.scrollTo(0, y),
+      start + Math.round(dist * 0.55)
+    );
+    /* The scrub is smoothed and the note turns over ~380ms (lift, then
+       ink), so poll for the SETTLED turn rather than racing either. */
+    await expect
+      .poll(
+        async () => {
+          const state = await holdState(page);
+          return state.note !== early.note && state.visibleNotes === 1;
+        },
+        { timeout: 6_000 }
+      )
+      .toBe(true);
+    const mid = await holdState(page);
+    expect(mid.written, "more of the register is written").toBeGreaterThan(
+      early.written
+    );
+
+    /* At the halt: the register is COMPLETE — 041 written in last, still
+       awaiting — and the note is the approval constraint, i.e. the
+       resting note the static world prints. */
+    await page.evaluate(
+      (y) => window.scrollTo(0, y),
+      start + Math.round(dist * 0.98)
+    );
+    /* Poll the INKED count, not the attribute: the rows fade in over
+       420ms, so the attribute lands before the ink does. */
+    await expect
+      .poll(async () => (await holdState(page)).visibleRows, { timeout: 5_000 })
+      .toBe(4);
+    const held = await holdState(page);
+    expect(held.written, "the whole register is written").toBe(4);
+    expect(held.note, "the halt's note is the resting note").toBe(
+      held.lastNote
+    );
+    expect((await runState(page)).awaiting, "041 still awaiting").toBe(true);
+
+    /* And it reverses with the scrub — the register un-writes. */
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect
+      .poll(async () => (await holdState(page)).written, { timeout: 6_000 })
+      .toBeLessThan(4);
+  });
 });
 
 test.describe("pipeline run — static fallback (reduced motion)", () => {
@@ -213,5 +309,18 @@ test.describe("pipeline run — static fallback (reduced motion)", () => {
     /* Run 041 is still the visitor's to sign */
     expect(st.awaiting).toBe(true);
     expect(st.pressed).toBe("false");
+
+    /* The developing parts print FINISHED here (A7 + F03): the whole
+       register is inked and the resting note is the one the halt turns
+       to — the static frame is the animation's final frame, not a
+       half-written one. */
+    const hold = await holdState(page);
+    expect(hold.visibleRows, "the complete register").toBe(hold.rows);
+    expect(hold.visibleNotes, "exactly one note, the resting one").toBe(1);
+    expect(hold.lastNote, "and it is the last note").toBeTruthy();
+    const restingNote = await page
+      .locator("[data-pipeline-note]:last-child")
+      .evaluate((el) => Number(getComputedStyle(el).opacity));
+    expect(restingNote).toBe(1);
   });
 });
