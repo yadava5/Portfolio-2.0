@@ -59,10 +59,16 @@ async function expectInFirstViewport(page: Page, locator: Locator) {
 }
 
 /** Recruiter CTA in the fixed header (compact icon links carry aria-labels) */
+/** Literal text as an exact-match regex — labels carry parentheses
+ *  ("Resume (opens in a new tab)"), which are regex GROUPS unescaped. */
+function exactly(label: string): RegExp {
+  return new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+}
+
 function headerLink(page: Page, label: string) {
   return page
     .locator("header")
-    .getByRole("link", { name: new RegExp(`^${label}$`, "i") })
+    .getByRole("link", { name: exactly(label) })
     .first();
 }
 
@@ -143,16 +149,19 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    /* Masthead rewrite (owner ruling, 2026-07-24): the byline/role line
-       is deleted, so the hero's identity check becomes the masthead
-       itself — line by line, because the block spans concatenate
-       without spaces (the h1 aria-label keeps the honest sentence). */
+    /* The masthead reads line by line, because the block spans
+       concatenate without spaces (the h1 aria-label keeps the honest
+       sentence) — and under it the STANDFIRST states who this is
+       (CRITIC-LEDGER F02). */
     for (const line of EXPECTED_MASTHEAD.lines) {
       await expect(page.locator("#arrival h1")).toContainText(line);
     }
     await expect(page.locator("#arrival h1")).toHaveAttribute(
       "aria-label",
       EXPECTED_MASTHEAD.ariaLabel
+    );
+    await expect(page.locator("#arrival [data-hero-standfirst]")).toHaveText(
+      EXPECTED_MASTHEAD.standfirst
     );
     await expect(page.locator("#path")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.education
@@ -501,10 +510,10 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    /* Masthead rewrite (owner ruling, 2026-07-24): the hero byline that
-       carried name + role is deleted, so the recruiter identity in the
-       first viewport is (a) the header running head — the name's one
-       home on this page — and (b) the masthead claim itself. */
+    /* Recruiter identity in the first viewport: (a) the header running
+       head, (b) the masthead claim, and (c) the STANDFIRST that answers
+       "who is this and what do they do" without a scroll — the P0 the
+       ledger opened with (F02). */
     await expectInFirstViewport(
       page,
       page
@@ -515,6 +524,10 @@ test.describe("Daylight Study — working paper", () => {
     await expectInFirstViewport(
       page,
       page.getByRole("heading", { name: EXPECTED_MASTHEAD.ariaLabel })
+    );
+    await expectInFirstViewport(
+      page,
+      page.locator("#arrival [data-hero-standfirst]")
     );
 
     /* Recruiter CTAs are supplied by the fixed header — first viewport */
