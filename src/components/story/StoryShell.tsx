@@ -255,7 +255,8 @@ const WORK_ROWS: {
   },
   {
     /* Fourth row (orchestrator ruling, 2026-07-24): Cadence promotes
-       from "also on file" to a prime row. Pair lines are projects.ts's
+       from the index below to a prime row (that index was headed "also
+       on file" then; see FURTHER_READING_IDS). Pair lines are projects.ts's
        own settled shortDescription split at its colon — no new claims;
        the metric chip is the taskflow-tests manifest entry (1,145 =
        634 frontend + 511 backend, vitest) citing its case receipt.
@@ -270,10 +271,21 @@ const WORK_ROWS: {
   },
 ];
 
-/** Quiet index of the remaining case files (plan 2.2: demote, don't
- *  delete). Dedupe ruling 2026-07-24: a project may appear ONCE on the
- *  home paper — automl left (it IS the ch04 flagship above) and
- *  taskflow-calendar left (promoted to the fourth #work row). */
+/** The two case files ¶03 and ¶06 cite but ¶05 does not show (plan 2.2:
+ *  demote, don't delete). Dedupe ruling 2026-07-24: a project may appear
+ *  ONCE on the home paper — automl left (it IS the ch04 flagship above)
+ *  and taskflow-calendar left (promoted to the fourth #work row).
+ *
+ *  Certification round, D6: both survivors are `portfolioVisible: false`
+ *  — retired from recruiter-facing SHOWCASE lists (projects.ts) — and
+ *  the heading over them read "also on file —", which is showcase
+ *  grammar: two more projects, quieter. They are not that. They are the
+ *  case files behind two claims this page already made in its own prose
+ *  ("a million-plus service records" in ¶03; the 19/20 sweep in ¶03 and
+ *  ¶06), which is exactly why the endnotes cite them and exactly what
+ *  F22 meant by "an endnote is a receipt for a claim the page makes".
+ *  The heading now says which of the two things this list is; the rows
+ *  themselves are unchanged, and the files stay reachable. */
 const FURTHER_READING_IDS = ["master-inventory", "policybot"];
 
 /** Ch-06 litany: each mantra carries a proof-manifest-backed receipt that
@@ -942,10 +954,27 @@ function PathChapter() {
                   overruled by the standing biographical ruling + the
                   owner's directive. Open question on record: personal.ts
                   carries a third award (Fall 2023) the owner has not yet
-                  confirmed for this line. */}
+                  confirmed for this line.
+
+                  Certification round, N5: this line opened by repeating
+                  the h3 above it verbatim — "B.S. Computer Science" set
+                  twice, 20px apart, the second time as the run-in to its
+                  own sentence. The heading names the degree, so the
+                  prose starts at the first thing the heading does not
+                  carry. The echo is all that left; every fact the line
+                  stated, it still states, in the owner-confirmed
+                  wording. */}
+              {/* The spaces around the first em dash are an EXPRESSION,
+                  not JSX text: with `{graduation}` promoted to the first
+                  child, the transform trimmed the leading space off the
+                  text node that followed it and the line rendered
+                  "May 2026— dean’s list" (caught by atlas.spec's
+                  identity contract, verified in the export). */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — dean’s list, spring & fall
-                2025 — 3.65 GPA in major coursework (transcript on request).
+                {graduation}
+                {" — "}
+                dean’s list, spring &amp; fall 2025 — 3.65 GPA in major
+                coursework (transcript on request).
               </p>
             </div>
           </article>
@@ -1416,7 +1445,9 @@ function WorkChapter() {
         </div>
 
         <div className="border-ink/15 border-t pt-6" data-tm="block">
-          <p className="label-mono text-ink-secondary">also on file —</p>
+          <p className="label-mono text-ink-secondary">
+            cited above, argued in full —
+          </p>
           <ul className="label-mono mt-3 flex flex-wrap gap-x-8 gap-y-2">
             {FURTHER_READING_IDS.map((id) => {
               const project = getProjectById(id);
