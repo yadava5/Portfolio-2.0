@@ -3,12 +3,11 @@ import { test, expect, type Page } from "@playwright/test";
 /**
  * Text-motion contract (plan 3.8) on the homepage.
  *
- *  1. HERO ENTRANCE: the three `.hero-enter` elements (two headline
- *     lines + directives — the byline and its stipple mask retired
- *     with the masthead rewrite, owner ruling 2026-07-24) reach their
- *     final state after load — opacity 1, no transform, no blur
- *     residue — and the `data-motion-ready` gate attribute is removed
- *     (load-only, once).
+ *  1. HERO ENTRANCE: the four `.hero-enter` elements (two headline
+ *     lines, the standfirst that names the author — CRITIC-LEDGER F02
+ *     — and the directives) reach their final state after load —
+ *     opacity 1, no transform, no blur residue — and the
+ *     `data-motion-ready` gate attribute is removed (load-only, once).
  *  2. CHAPTER HEADLINES: bright lines are SplitText line-masked —
  *     hidden (translated inside overflow-clip wrappers) until their
  *     chapter scrolls to 75% viewport, then revealed once; the
@@ -31,7 +30,7 @@ import { test, expect, type Page } from "@playwright/test";
  *     world the line reads as one intact string, claim + receipt.
  */
 
-const HERO_COUNT = 3;
+const HERO_COUNT = 4;
 
 function isDesktop(page: Page) {
   return (page.viewportSize()?.width ?? 0) >= 1280;
@@ -198,11 +197,18 @@ test.describe("text motion — engine world", () => {
       })
       .toBeGreaterThan(5);
 
-    /* At rest above the range every word idles at 0.25 */
+    /* At rest above the range every word idles at MANIFESTO_REST.
+       This assertion used to demand 0.2–0.3 — i.e. it pinned the
+       CRITIC-LEDGER F06 fault in place: ink at 0.25 composites to
+       1.66:1 on dawn paper, so the chapter's thesis sentence rendered
+       half-redacted for anyone who stopped on it. The rest is now AA
+       for the manifesto's 64px setting (0.60 → 4.12:1); what the test
+       actually guards — that the words REST muted and travel to full
+       ink with scroll — is unchanged and asserted below. */
     const resting = await manifestoOpacities(page);
     for (const opacity of resting) {
-      expect(opacity).toBeGreaterThan(0.2);
-      expect(opacity).toBeLessThan(0.3);
+      expect(opacity).toBeGreaterThan(0.55);
+      expect(opacity).toBeLessThan(0.65);
     }
 
     /* Deep past chapter 02 the scrub has completed: every word full ink */

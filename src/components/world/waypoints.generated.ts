@@ -32,10 +32,31 @@ export const ARC_WAYPOINTS: readonly ArcWaypoint[] = [
   { id: "01", name: "dawn", hex: "#fbf3e7", l: 0.9671, c: 0.0181, h: 78.24 },
   { id: "02", name: "morning", hex: "#faf6ef", l: 0.9743, c: 0.0102, h: 81.8 },
   { id: "03", name: "noon", hex: "#f6f3ea", l: 0.964, c: 0.0123, h: 91.52 },
-  { id: "04", name: "warm afternoon", hex: "#f5eddc", l: 0.9478, c: 0.0241, h: 85.79 },
-  { id: "05", name: "golden hour", hex: "#f2e4c9", l: 0.923, c: 0.0388, h: 83.83 },
+  {
+    id: "04",
+    name: "warm afternoon",
+    hex: "#f5eddc",
+    l: 0.9478,
+    c: 0.0241,
+    h: 85.79,
+  },
+  {
+    id: "05",
+    name: "golden hour",
+    hex: "#f2e4c9",
+    l: 0.923,
+    c: 0.0388,
+    h: 83.83,
+  },
   { id: "06", name: "dusk", hex: "#43372f", l: 0.3471, c: 0.0218, h: 55.56 },
-  { id: "07", name: "nightfall", hex: "#2c2622", l: 0.2739, c: 0.0116, h: 55.85 },
+  {
+    id: "07",
+    name: "nightfall",
+    hex: "#2c2622",
+    l: 0.2739,
+    c: 0.0116,
+    h: 55.85,
+  },
 ];
 
 /**
@@ -82,9 +103,23 @@ export const DUSK_CHOREO: readonly DuskStop[] = [
   { side: "day", hex: "#ac9681", l: 0.6872, c: 0.0405, h: 65.64, pos: 0.55 },
   { side: "day", hex: "#9e8774", l: 0.64, c: 0.0388, h: 62, pos: 0.66 },
   { side: "night", hex: "#5d4c3e", l: 0.43, c: 0.032, h: 60, pos: 0.72 },
-  { side: "night", hex: "#57473a", l: 0.4093, c: 0.0295, h: 58.89, pos: 0.7775 },
+  {
+    side: "night",
+    hex: "#57473a",
+    l: 0.4093,
+    c: 0.0295,
+    h: 58.89,
+    pos: 0.7775,
+  },
   { side: "night", hex: "#504137", l: 0.3886, c: 0.0269, h: 57.78, pos: 0.835 },
-  { side: "night", hex: "#493c33", l: 0.3679, c: 0.0244, h: 56.67, pos: 0.8925 },
+  {
+    side: "night",
+    hex: "#493c33",
+    l: 0.3679,
+    c: 0.0244,
+    h: 56.67,
+    pos: 0.8925,
+  },
   { side: "night", hex: "#43372f", l: 0.3471, c: 0.0218, h: 55.56, pos: 0.95 },
 ];
 
@@ -92,7 +127,10 @@ export const DUSK_CHOREO: readonly DuskStop[] = [
 export const DUSK_FLIP_POS = 0.72;
 
 /**
- * Range fraction at which the chrome (header, contour texture) follows
+ * Range fraction at which the paper TEXTURE (the contour plate) follows
  * the field into dusk — one night stop after the flip, both directions.
+ * The masthead no longer waits for it: it composes the field's own
+ * channels and flips with data-arc-phase (CRITIC-LEDGER F61 — a chrome
+ * that lags a scrubbing field reads as an unstyled bar, not a beat).
  */
 export const DUSK_CHROME_POS = 0.7775;

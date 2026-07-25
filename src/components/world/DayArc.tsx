@@ -24,9 +24,11 @@
  *     step (`data-arc-phase="dusk"` on <html> — a step, not a per-frame
  *     write), and the night side settles onto waypoint-06. The flip is
  *     kept LONELY: the raking light has already faded out (its alpha is
- *     derived from `--arc-l` in globals.css) and the chrome — header
- *     paper/ink, contour texture — follows one stop later via
- *     `data-arc-chrome="dusk"` (also a step). During the range,
+ *     derived from `--arc-l` in globals.css) and only the paper TEXTURE
+ *     (the contour plate) follows one stop later via
+ *     `data-arc-chrome="dusk"` (also a step). The MASTHEAD flips with
+ *     the field, not after it — it composes the same channels, so its
+ *     paper and the page's paper are one surface (F61). During the range,
  *     `data-arc-gloaming` on <html> (also stepped, only at the
  *     range edges where both voice states are verified) deepens every
  *     muted voice to full ink so EVERY rendered stop holds AA.
@@ -61,7 +63,8 @@ import {
 import type { ArcWaypoint } from "./waypoints.generated";
 
 /** The three scrubbed channel custom properties, written on the
- *  LightField container (PERF-AUDIT fix 2 — never on <html>). */
+ *  LightField container and the masthead (PERF-AUDIT fix 2 — never
+ *  on <html>; F61 — the header's paper IS the field's paper). */
 const CHANNEL_VARS = ["--arc-l", "--arc-c", "--arc-h"] as const;
 
 /* Quantization steps (PERF: runtime scroll). Each per-frame channel write
@@ -86,7 +89,7 @@ const Q_H = 0.4;
  * @param field - The `[data-light-field]` element (the vars' only subtree)
  * @returns A quantized setter for `--arc-l/c/h`
  */
-function makeChannelWriter(field: HTMLElement) {
+function makeChannelWriter(targets: HTMLElement[]) {
   let lastL = Number.NaN;
   let lastC = Number.NaN;
   let lastH = Number.NaN;
@@ -102,9 +105,14 @@ function makeChannelWriter(field: HTMLElement) {
     lastL = l;
     lastC = c;
     lastH = h;
-    field.style.setProperty("--arc-l", l.toFixed(3));
-    field.style.setProperty("--arc-c", c.toFixed(3));
-    field.style.setProperty("--arc-h", h.toFixed(1));
+    const lText = l.toFixed(3);
+    const cText = c.toFixed(3);
+    const hText = h.toFixed(1);
+    for (const target of targets) {
+      target.style.setProperty("--arc-l", lText);
+      target.style.setProperty("--arc-c", cText);
+      target.style.setProperty("--arc-h", hText);
+    }
   };
 }
 
@@ -125,12 +133,30 @@ export function DayArc() {
     if (!lenis) return;
 
     const root = document.documentElement;
-    /* The channel-write target: the LightField container. Falling back
-       to <html> keeps the arc alive if the field is ever absent, but
-       on every real page (home, world-preview) the container exists. */
+    /* The channel-write targets: the LightField container, and the
+       MASTHEAD. Falling back to <html> keeps the arc alive if the field
+       is ever absent, but on every real page (home, world-preview) the
+       container exists.
+
+       Why the header is a second target (CRITIC-LEDGER F61, P1 "looks
+       broken"): its scrolled paper was the fixed cream token while the
+       field scrubbed away underneath it, so at scrollY 7728 the page was
+       tan (#cdb394, L 0.78) with a #FAF6EF masthead and a hard
+       horizontal edge at y=78. The stagger was authored as a beat; at
+       1440x900 it reads as an unstyled bar. Writing the SAME channels
+       onto the header makes its paper the field's paper at every stop,
+       in both scroll directions — and makes the masthead's ink contrast
+       exactly the body's, which check-contrast already proves at every
+       rendered stop. Two small subtrees, not <html>: the per-frame
+       invalidation stays scoped (PERF-AUDIT fix 2 / brief D4). */
     const field =
       document.querySelector<HTMLElement>("[data-light-field]") ?? root;
-    const write = makeChannelWriter(field);
+    const masthead = document.querySelector<HTMLElement>(".site-header");
+    const targets = masthead ? [field, masthead] : [field];
+    const write = makeChannelWriter(targets);
+    /* The masthead composes the arc colour only while the arc is live —
+       archive routes and every static world keep the paper token. */
+    masthead?.setAttribute("data-arc-paper", "");
 
     const byId = new Map<string, ArcWaypoint>(
       ARC_WAYPOINTS.map((w) => [w.id, w])
@@ -162,9 +188,9 @@ export function DayArc() {
              choreographed dusk — twelve verified stops while chapter 06
              rises from 92% of the viewport to its top. Root attributes
              are STEPS (gloaming at the range edges, the ink flip at
-             DUSK_FLIP_POS, the chrome — header + contour — one stop
-             later at DUSK_CHROME_POS so the masthead dims a beat after
-             the world); only the LightField channels move per frame,
+             DUSK_FLIP_POS — the masthead's ink flips WITH it, F61 — and
+             the contour plate one stop later at DUSK_CHROME_POS); only
+             the scrubbed channels move per frame,
              and only on the Full tier — Core renders the discrete stops
              (~12 forced writes per pass). All state is derived from one
              progress value so both directions and deep-linked refreshes
@@ -286,7 +312,10 @@ export function DayArc() {
       root.removeAttribute("data-arc-phase");
       root.removeAttribute("data-arc-chrome");
       root.removeAttribute("data-arc-gloaming");
-      for (const name of CHANNEL_VARS) field.style.removeProperty(name);
+      masthead?.removeAttribute("data-arc-paper");
+      for (const target of targets) {
+        for (const name of CHANNEL_VARS) target.style.removeProperty(name);
+      }
     };
   }, [lenis]);
 

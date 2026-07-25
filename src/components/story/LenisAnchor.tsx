@@ -16,6 +16,11 @@ import {
   SCROLL_OFFSET,
   scrollEasing,
 } from "@/components/layout/SmoothScroll";
+import {
+  announceArrival,
+  landingTop,
+  pushLanding,
+} from "@/components/story/arrival";
 
 interface LenisAnchorProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   /** In-page target, e.g. "#automl" */
@@ -36,6 +41,10 @@ export function LenisAnchor({ href, children, ...rest }: LenisAnchorProps) {
     const target = document.querySelector<HTMLElement>(href);
     if (!target) return;
     event.preventDefault();
+    /* The section becomes a URL the reader can copy, and a stop Back can
+       return to (CRITIC-LEDGER F05). Pushed BEFORE the flight so the
+       address bar changes with the click, not a second later. */
+    pushLanding(href);
     if (lenis) {
       lenis.scrollTo(target, {
         duration: SCROLL_DURATION,
@@ -43,14 +52,12 @@ export function LenisAnchor({ href, children, ...rest }: LenisAnchorProps) {
         offset: SCROLL_OFFSET,
       });
     } else {
-      /* Static world: instant jump, no animation. Manual offset math —
-         the SAME landing contract as the controller. scrollIntoView
-         would apply BOTH scroll-padding-top AND scroll-margin-top
-         (~12rem = 192px, the double-count); this applies exactly one
-         6rem header offset, so every world lands identically. */
-      const y =
-        window.scrollY + target.getBoundingClientRect().top + SCROLL_OFFSET;
-      window.scrollTo({ top: y, behavior: "auto" });
+      /* Static world: instant jump, no animation, SAME landing contract
+         as the controller (arrival.ts) — scrollIntoView would apply BOTH
+         scroll-padding-top AND scroll-margin-top (~12rem = 192px, the
+         double-count), so every world lands identically. */
+      window.scrollTo({ top: landingTop(target), behavior: "auto" });
+      announceArrival();
     }
   };
 

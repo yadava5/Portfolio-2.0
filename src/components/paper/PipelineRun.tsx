@@ -59,14 +59,19 @@ import {
   readStoredMotionOff,
   useLenis,
 } from "@/components/layout/SmoothScroll";
+import { announceLayoutSettled } from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 /** Progress (0–1) at which the token reaches the gate and HALTS; the
- *  remainder of the pinned range is the HOLD — the pipeline waiting. */
-const TRAVEL_END = 0.82;
+ *  remainder of the pinned range is the HOLD — the pipeline waiting.
+ *  Raised 0.82 → 0.88 with PIN_VH cut to 0.95 (CRITIC-LEDGER F77): the
+ *  old tail was 18% of 1.05vh ≈ 170px of scroll in which NOTHING moved,
+ *  which on a trackpad reads as a hang. What is left is ~100px, and it
+ *  is no longer empty — the halt brings its own note up with it. */
+const TRAVEL_END = 0.88;
 
 /** The edge draws a hair AHEAD of the token (the ink runs on ahead of
  *  the nib). >1 leads; the drawn fraction is clamped to 1. */
@@ -77,7 +82,16 @@ const EDGE_UNDRAWN = 1.5;
 
 /** Pinned scroll distance as a fraction of the viewport (A8: one beat at
  *  ~80–100vh + a short hold). The token travels over TRAVEL_END of it. */
-const PIN_VH = 1.05;
+const PIN_VH = 0.95;
+
+/**
+ * Travel fractions at which each registry row inks itself in (F03).
+ * Row 0 is on the page from the first frame — a register that starts
+ * empty reads as broken, not as developing — and the last row (041, the
+ * one awaiting its human) lands just before the halt, so the ledger is
+ * complete exactly when the token stops and asks for a signature.
+ */
+const REGISTRY_WRITE_AT = [0, 0.28, 0.52, 0.76];
 
 /** The two-column (lg) layout — Tailwind's lg breakpoint, where the ch04
  *  grid seats the thesis beside the rail and the WIDE pin target holds
@@ -189,8 +203,7 @@ export function PipelineRun() {
   /* Which pin target the layout calls for (lazy init: the state never
      renders, so reading matchMedia here cannot mismatch hydration). */
   const [wide, setWide] = useState(
-    () =>
-      typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
+    () => typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
   );
   /* Fire the clay pulse exactly once per gate arrival (re-armable) */
   const haltedRef = useRef(false);
@@ -250,6 +263,22 @@ export function PipelineRun() {
       svg.closest<HTMLElement>("[data-pipeline-pin]");
     if (!scope) return;
 
+    /* THE PLATE'S OTHER TWO DEVELOPING PARTS (CRITIC-LEDGER F03). Both
+       live outside the ladder figure — the running note in the thesis
+       column, the register beside it — so they are found from the
+       chapter, and both are optional: a page without them scrubs
+       exactly as before. */
+    const chapter = scope.closest<HTMLElement>("[data-chapter]") ?? document;
+    const notes = Array.from(
+      chapter.querySelectorAll<HTMLElement>("[data-pipeline-note]")
+    ).map((el) => ({
+      el,
+      phase: Number(el.getAttribute("data-pipeline-note")),
+    }));
+    const registryRows = Array.from(
+      chapter.querySelectorAll<HTMLElement>("[data-registry-row]")
+    );
+
     const litPhases = (fraction: number) => {
       /* Toggle only on a real change — no redundant per-frame attribute
          writes to dirty style while scrubbing. */
@@ -259,6 +288,40 @@ export function PipelineRun() {
         if (lit && !has) el.setAttribute("data-pipeline-lit", "");
         else if (!lit && has) el.removeAttribute("data-pipeline-lit");
       }
+    };
+
+    /**
+     * The current note: the LAST one whose phase the token has reached.
+     * A phase with no note of its own simply holds the previous one —
+     * the figure never invents a line to fill a slot (D6). The gated
+     * phase's note (phase index === the ladder length) belongs to the
+     * halt, which is the only thing that phase ever resolves to.
+     */
+    const currentNote = (fraction: number, halted: boolean) => {
+      let current: HTMLElement | null = null;
+      for (const note of notes) {
+        const gated = note.phase >= geom.phases.length;
+        const reached = gated
+          ? halted
+          : fraction >= (geom.phases[note.phase]?.threshold ?? 1);
+        if (reached) current = note.el;
+      }
+      for (const note of notes) {
+        const isCurrent = note.el === current;
+        const has = note.el.hasAttribute("data-current");
+        if (isCurrent && !has) note.el.setAttribute("data-current", "");
+        else if (!isCurrent && has) note.el.removeAttribute("data-current");
+      }
+    };
+
+    /** The register writes itself in as the run passes down the ladder. */
+    const writeRegistry = (fraction: number) => {
+      registryRows.forEach((row, index) => {
+        const written = fraction >= (REGISTRY_WRITE_AT[index] ?? 1);
+        const has = row.hasAttribute("data-registry-written");
+        if (written && !has) row.setAttribute("data-registry-written", "");
+        else if (!written && has) row.removeAttribute("data-registry-written");
+      });
     };
     const setHalted = (halted: boolean) => {
       if (halted === haltedRef.current) return;
@@ -274,7 +337,13 @@ export function PipelineRun() {
       const drawn = Math.min(1, t * EDGE_LEAD);
       edge.style.strokeDashoffset = String(EDGE_UNDRAWN * (1 - drawn));
       litPhases(t);
-      setHalted(p >= TRAVEL_END);
+      const halted = p >= TRAVEL_END;
+      setHalted(halted);
+      /* The hold's payoff (F03): the register builds and the note turns
+         as the run descends — opacity only, both reversible on
+         scroll-back exactly like the phase lights. */
+      writeRegistry(t);
+      currentNote(t, halted);
     };
 
     /* Static worlds (A7): render the resting FINAL frame — the run
@@ -328,11 +397,21 @@ export function PipelineRun() {
        synchronous re-measure at hydration — never during scroll. */
     ScrollTrigger.sort();
     ScrollTrigger.refresh();
+    /* That re-measure moves the page under any hash landing by the
+       spacer distance — let the landing contract re-assert itself
+       (CRITIC-LEDGER F09's mechanism; see story/arrival.ts). */
+    announceLayoutSettled();
 
     return () => {
       svg.removeAttribute("data-pipeline-scrub");
       pinEl.removeAttribute("data-pipeline-pinned");
       haltedRef.current = false;
+      /* Hand the plate back untouched: the quiet toggle must restore the
+         complete register and the resting note, not a half-written one. */
+      for (const row of registryRows) {
+        row.removeAttribute("data-registry-written");
+      }
+      for (const note of notes) note.el.removeAttribute("data-current");
       ctx.revert();
     };
   }, [lenis, geom, wide]);

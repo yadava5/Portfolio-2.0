@@ -33,6 +33,7 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { announceArrival, landingTop } from "@/components/story/arrival";
 import {
   applyGate,
   getTier,
@@ -51,8 +52,10 @@ export const SCROLL_DURATION = 1.2;
 export const scrollEasing = (t: number) =>
   Math.min(1, 1.001 - Math.pow(2, -10 * t));
 
-/** Matches `scroll-padding-top: 6rem` in globals.css */
-export const SCROLL_OFFSET = -96;
+/* The anchor landing contract lives with the rest of the landing rules
+   (components/story/arrival.ts) — ONE offset, one owner. Re-exported
+   here because every existing caller imports it from the engine. */
+export { SCROLL_OFFSET } from "@/components/story/arrival";
 
 /** localStorage key for the quiet in-page motion toggle (amendment A7) */
 const MOTION_STORAGE_KEY = "motion-off";
@@ -329,17 +332,19 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
             ? document.querySelector<HTMLElement>(target)
             : target;
         if (!el) return;
-        /* Manual smooth scroll landing the target SCROLL_OFFSET (=6rem
-           header) below the top. NOT scrollIntoView — that applies BOTH
-           scroll-padding-top AND the element's scroll-margin-top, landing
-           at ~12rem (192px). This applies exactly one header offset. */
-        const y =
-          window.scrollY + el.getBoundingClientRect().top + SCROLL_OFFSET;
+        /* The shared anchor landing contract: the target lands one 6rem
+           masthead below the top (arrival.ts). NOT scrollIntoView —
+           that applies BOTH scroll-padding-top AND the element's
+           scroll-margin-top, landing at ~12rem (192px). */
+        const y = landingTop(el);
         /* §F2: a smooth flight is machine scrolling — the governor must
            not score its frame cadence as the visitor's jank (firefox
            false-downshifted mid-flight). Window ≈ flight + settle. */
         suppressSampling(SCROLL_DURATION * 1000 + 600);
         window.scrollTo({ top: y, behavior: "smooth" });
+        /* A flight crosses no trigger lines on the way in: tell the
+           reveal engine where the reader landed (CRITIC-LEDGER F01). */
+        announceArrival();
       },
       on: (_event, cb) => {
         const listener: EventListener = () => cb();

@@ -39,6 +39,7 @@ import {
   SCROLL_OFFSET,
   scrollEasing,
 } from "@/components/layout/SmoothScroll";
+import { landingTop, pushLanding } from "@/components/story/arrival";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useActiveChapter } from "@/hooks/useActiveChapter";
 import { DayMark } from "@/components/layout/DayMark";
@@ -114,6 +115,10 @@ export default function Header() {
       const target = document.querySelector<HTMLElement>(targetId);
       if (!target) return;
       e.preventDefault();
+      /* The nav writes history: one entry per section asked for, so the
+         chapter is linkable and Back walks back through the paper
+         instead of leaving the site (CRITIC-LEDGER F05). */
+      pushLanding(targetId);
       if (lenis) {
         /* Programmatic scrolls: 1.2s expo-out through the engine (plan 3.9) */
         lenis.scrollTo(target, {
@@ -122,12 +127,10 @@ export default function Header() {
           offset: SCROLL_OFFSET,
         });
       } else {
-        /* Static world: instant jump via the manual offset math — the
-           same landing contract as the controller (scrollIntoView would
-           double-count scroll-padding + scroll-margin to ~192px). */
-        const y =
-          window.scrollY + target.getBoundingClientRect().top + SCROLL_OFFSET;
-        window.scrollTo({ top: y, behavior: "auto" });
+        /* Static world: instant jump via the shared landing contract
+           (arrival.ts — scrollIntoView would double-count
+           scroll-padding + scroll-margin to ~192px). */
+        window.scrollTo({ top: landingTop(target), behavior: "auto" });
       }
     },
     [lenis]

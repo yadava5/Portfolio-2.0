@@ -145,7 +145,7 @@ export const projects: Project[] = [
       { name: "MCP", color: "#00d4aa" },
     ],
     githubUrl: null,
-    liveUrl: "https://agentic-automl.vercel.app",
+    liveUrl: "https://agentic-automl-platform.vercel.app",
     // WebP derivative of the promoted capture (assets:derive) — the PNG
     // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
     image: withBasePath("/images/projects/automl.webp"),

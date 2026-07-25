@@ -127,13 +127,17 @@ export const EXPECTED_CONTENT = {
 export const EXPECTED_MASTHEAD = {
   ariaLabel: "Scroll. It's all real.",
   lines: ["Scroll.", "It's all real."],
+  // The standfirst (CRITIC-LEDGER F02): one serif line under the claim
+  // carrying name — discipline · city. Composed from personalInfo, so
+  // it can never drift from the data layer.
+  standfirst: "Ayush Yadav — software engineer · Cincinnati, Ohio",
 };
 
 export const EXPECTED_GRADUATE_IDENTITY = {
-  // Hero byline retired with the masthead rewrite (owner ruling,
-  // 2026-07-24): the role line is gone from the page, so no fixture
-  // carries it — identity is the header running head ("ayush yadav")
-  // plus the #path education/experience records below.
+  // The hero byline retired with the masthead rewrite (owner ruling,
+  // 2026-07-24) and returned as the STANDFIRST (F02, 2026-07-25): the
+  // first frame states who this is and what he does. Identity is now
+  // the standfirst + the header running head + the #path records below.
   education: "B.S. Computer Science, May 2026",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",

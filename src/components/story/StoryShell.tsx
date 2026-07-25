@@ -29,11 +29,7 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import {
-  personalInfo,
-  socialLinks,
-  education,
-} from "@/lib/data/personal";
+import { personalInfo, socialLinks, education } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
   getCaseStudyById,
@@ -118,6 +114,39 @@ const AUTOML_REGISTRY_ROWS = [
   { run: "040", model: "gbm", status: "approved" },
   { run: "041", model: "xgboost", status: "awaiting approval" },
 ];
+
+/**
+ * The ¶04 hold's running note (CRITIC-LEDGER F03).
+ *
+ * The pin costs the reader a viewport of scroll, and across it the left
+ * column used to be pixel-identical — six colour steps and a travelling
+ * dot, carrying no information the static frame did not already have.
+ * So the hold now SAYS something, and every word of it is the case
+ * file's own: these are `getCaseStudyById("automl").constraints`,
+ * VERBATIM, each surfacing where it actually governs the run —
+ * documents at ingest, auditable decisions at preprocess, containers at
+ * train, browser checks at evaluate, and the approval rule at the halt.
+ *
+ * `phase` is the ladder index the note belongs to (0 = 1.0 ingest …
+ * 6 = 7.0 deploy, the gated one — its note lands on the HALT, which is
+ * the only thing the gate ever resolves to). 2.0 explore and 4.0
+ * engineer have no honestly-sourced line of their own, so they hold the
+ * previous note rather than invent one (brief D6). If a constraint ever
+ * leaves the case file, its line leaves this figure with it — the
+ * filter below is the whole enforcement mechanism.
+ */
+const AUTOML_RUN_NOTES = (() => {
+  const constraints = getCaseStudyById("automl")?.constraints ?? [];
+  return [
+    { phase: 0, text: constraints[1] } /* domain documents → ingest */,
+    { phase: 2, text: constraints[0] } /* auditable decisions → preprocess */,
+    { phase: 4, text: constraints[3] } /* containerized runs → train */,
+    { phase: 5, text: constraints[4] } /* browser-level checks → evaluate */,
+    { phase: 6, text: constraints[2] } /* human approval → the halt */,
+  ].filter((note): note is { phase: number; text: string } =>
+    Boolean(note.text)
+  );
+})();
 
 /** Ch-03 field records — the Miami year retold in the paper's own voice.
  *  Every fact traces to src/lib/data/experience.ts (descriptions and
@@ -378,10 +407,13 @@ function ArrivalChapter() {
     >
       <ThreadSegment id={ARRIVAL.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
+        {/* The dateline keeps the season; the city moved to the
+            standfirst below, where a masthead's place-line belongs —
+            printed once instead of twice with different tails (F31). */}
         <ChapterKicker
           id={ARRIVAL.id}
           label="arrival — a working paper on what i’ve built"
-          dateline="cincinnati, ohio — summer 2026"
+          dateline="summer 2026"
         />
 
         {/* py-10 (was py-16): the masthead→flagship-teaser frame sagged
@@ -470,6 +502,33 @@ function ArrivalChapter() {
               </span>
             </span>
           </h1>
+
+          {/* THE STANDFIRST (CRITIC-LEDGER F02, the P0 identity fault).
+              The masthead of a working paper carries its author; this one
+              did not. "Ayush Yadav" appeared as 13px mono chrome in the
+              header and then not again as a heading until document
+              y≈9,750 of 10,560 — 92% scroll — so a screener who read the
+              first frame learned a dare and seven links. One serif line,
+              directly under the claim: name — discipline · city. Every
+              token is the data layer's own (personalInfo.name /
+              .location; the discipline is personalInfo.title without its
+              "new-grad" qualifier, which the gate's availability line
+              still carries) — no new claim enters the page.
+              It also fills the ~200px hole the my-auto centring left
+              under the masthead (F45), and takes the location OFF the ¶01
+              dateline so the city is printed once (F31).
+              19px is an existing step in the rendered type census — no
+              new size. Full ink on dawn paper (12.1:1). Entrance seat 3:
+              after the claim (seats 0/2), before the directives (seat 4),
+              on the same load-only CSS beat, so every static world paints
+              it finished (A7). */}
+          <p
+            data-hero-standfirst
+            className="hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading-snug"
+            style={heroDelay(3)}
+          >
+            {personalInfo.name} — software engineer · {personalInfo.location}
+          </p>
         </div>
 
         {/* Mono directives, weighted for one glance: the flagship teaser
@@ -623,8 +682,8 @@ function WhoChapter() {
                 className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
                 data-tm="block"
               >
-                n.b. — every project below opens into its own case file,
-                source, or live build.
+                n.b. — every project below opens into its own case file, source,
+                or live build.
               </aside>
             </div>
           </div>
@@ -750,9 +809,8 @@ function PathChapter() {
                   unlinked claim; prose + the transcript boundary keeps the
                   fact while exempting it from footnote 1's link contract. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — dean’s list, spring &
-                fall 2025 — 3.65 GPA in major coursework (transcript on
-                request).
+                B.S. {degree.field}, {graduation} — dean’s list, spring & fall
+                2025 — 3.65 GPA in major coursework (transcript on request).
               </p>
             </div>
           </article>
@@ -777,7 +835,7 @@ function AutomlChapter() {
     <section
       id={AUTOML.anchor}
       data-chapter={AUTOML.id}
-      className="relative pt-[8vh] pb-[12vh]"
+      className="relative pt-[8vh] pb-[6vh]"
     >
       <ThreadSegment id={AUTOML.id} />
       <div className={WRAP}>
@@ -822,6 +880,33 @@ function AutomlChapter() {
             >
               7 phases · every one gated · langgraph + mcp orchestration
             </p>
+
+            {/* THE RUNNING NOTE (CRITIC-LEDGER F03): the hold's payoff.
+                Every note is stacked in ONE grid cell, so the block's
+                height is reserved from first paint and the swap is pure
+                opacity — no layout property is ever animated (D3), and
+                nothing under the pin can reflow mid-hold. The last note
+                is the resting frame: static worlds, and the motion world
+                at the halt, both show the approval constraint, which is
+                exactly what the halted token means (A7). */}
+            {AUTOML_RUN_NOTES.length > 0 ? (
+              <div className="mt-8" data-tm="block">
+                <p className="label-mono text-ink-secondary">
+                  what the run is held to — quoted from the case file
+                </p>
+                <div data-pipeline-notes className="mt-3 grid">
+                  {AUTOML_RUN_NOTES.map((note) => (
+                    <p
+                      key={note.text}
+                      data-pipeline-note={note.phase}
+                      className="text-ink-secondary max-w-[46ch] font-serif text-[1.1875rem] leading-snug italic"
+                    >
+                      {note.text}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <p className="mt-8" data-tm="block">
               <Link
                 href="/projects/automl/"
@@ -933,7 +1018,10 @@ function AutomlChapter() {
           </div>
         </div>
 
-        <div className="mt-[10vh]">
+        {/* Seam tuned (CRITIC-LEDGER F07): the ¶04→¶05 hand-off stacked a
+            10vh folio lead-in on a 12vh tail on a 7vh head — 29vh of
+            pure padding, arriving on top of the pin's own tail. 6+6+5. */}
+        <div className="mt-[6vh]">
           <FolioRule id={AUTOML.id} />
         </div>
       </div>
@@ -950,7 +1038,7 @@ function WorkChapter() {
     <section
       id={WORK.anchor}
       data-chapter={WORK.id}
-      className="relative pt-[7vh] pb-[12vh]"
+      className="relative pt-[5vh] pb-[6vh]"
     >
       <ThreadSegment id={WORK.id} />
       <div className={WRAP}>
@@ -1162,7 +1250,10 @@ function WorkChapter() {
           </ul>
         </div>
 
-        <div className="mt-[10vh]">
+        {/* Seam tuned (CRITIC-LEDGER F62): the same 29vh stack sat at the
+            ¶05→¶06 turn, so the reader's reward for finishing the work
+            index was most of a screen of blank paper AT the dusk flip. */}
+        <div className="mt-[6vh]">
           <FolioRule id={WORK.id} />
         </div>
       </div>
@@ -1182,7 +1273,7 @@ function ValuesChapter() {
     <section
       id={VALUES.anchor}
       data-chapter={VALUES.id}
-      className="relative flex min-h-[85svh] flex-col pt-[7vh] pb-[10vh]"
+      className="relative flex min-h-[85svh] flex-col pt-[5vh] pb-[10vh]"
     >
       <ThreadSegment id={VALUES.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
@@ -1359,8 +1450,15 @@ function GateChapter() {
               data-tm="block"
             >
               <p>availability — {personalInfo.availability}</p>
+              {/* The live clock says so in words (F28): the ¶ kickers'
+                  06:12→22:41 are the recorded day's datelines, and a
+                  reader had no way to tell which of the two was fiction.
+                  LocalTime renders nothing until it has a real time, so
+                  the prerendered line is simply the place (F29/F49 — it
+                  used to ship "—:—" to crawlers and first paint). */}
               <p>
-                cincinnati, ohio — <LocalTime /> local
+                cincinnati, ohio
+                <LocalTime />
               </p>
             </div>
 

@@ -183,8 +183,11 @@ ${duskBody}
 export const DUSK_FLIP_POS = ${FLIP_POS};
 
 /**
- * Range fraction at which the chrome (header, contour texture) follows
+ * Range fraction at which the paper TEXTURE (the contour plate) follows
  * the field into dusk — one night stop after the flip, both directions.
+ * The masthead no longer waits for it: it composes the field's own
+ * channels and flips with data-arc-phase (CRITIC-LEDGER F61 — a chrome
+ * that lags a scrubbing field reads as an unstyled bar, not a beat).
  */
 export const DUSK_CHROME_POS = ${round(CHROME_POS, 4)};
 `;
