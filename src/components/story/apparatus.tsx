@@ -193,8 +193,19 @@ export function PairHeadline({
           aria-prohibited-attr). The manifesto muted line therefore
           splits an aria-hidden inner span with an sr-only twin — the
           screen-reader string stays single and intact in every world. */}
+      {/* CRITIC-LEDGER F35 — hierarchy inversion in every bright/muted
+          pair. Both lines set at --text-chapter, but the muted line runs
+          longer (26ch vs 22ch), sets in Newsreader ITALIC with swashes,
+          and takes two or three lines where the bright takes one. So the
+          subordinate line was physically larger, longer and more
+          decorated than the line it is subordinate to: at ¶02 the bright
+          was one 64px Fraunces line against two 64px italic ones; at ¶04
+          it was two against three.
+          0.82 is the ledger's own ≈0.8× step, applied to the token
+          rather than to a hand-rolled size, so the pair keeps ONE source
+          of truth and the muted line reads as the echo it is. */}
       <p
-        className={`mt-[0.35em] max-w-[26ch] font-serif text-[length:var(--text-chapter)] leading-[1.2] tracking-[-0.015em] italic ${mutedClass(dusk)}`}
+        className={`mt-[0.35em] max-w-[26ch] font-serif text-[length:calc(var(--text-chapter)*0.82)] leading-[1.2] tracking-[-0.015em] italic ${mutedClass(dusk)}`}
         data-tm={manifesto ? undefined : mutedFadeOnly ? "muted-fade" : "muted"}
       >
         {manifesto ? (
