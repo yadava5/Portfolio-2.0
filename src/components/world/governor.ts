@@ -24,7 +24,10 @@
  *   Downshift is one-way and mid-session only (full→core→print, print is
  *   the floor); the lowest tier reached persists to sessionStorage as the
  *   NEXT load's ceiling — sessionStorage deliberately, not localStorage:
- *   devices get borrowed and a bad afternoon shouldn't brand them.
+ *   devices get borrowed and a bad afternoon shouldn't brand them. That
+ *   ceiling now EXPIRES as well (CRITIC-LEDGER F73, `CAP_TTL_MS`): the
+ *   same reasoning one step further in, since a bad thirty seconds
+ *   shouldn't brand a tab either.
  *
  * Upshift happens at most ONCE, never after any downshift, and only via
  * the §F3 gates: ≥3s of accumulated smooth active scrolling at Core,
@@ -51,6 +54,47 @@ export type Tier = "full" | "core" | "print";
 /** sessionStorage key: the lowest tier reached this session (the next
  *  load's ceiling — read synchronously by the layout.tsx head script). */
 export const TIER_CAP_KEY = "study-tier-cap";
+
+/**
+ * sessionStorage key: the epoch ms at which that ceiling stops standing.
+ *
+ * An INSTANT, not a duration, on purpose. The layout.tsx head script has
+ * to honour the same expiry before first paint (otherwise an expired cap
+ * still stamps `data-tier="print"` and the module upgrades it a moment
+ * later — a flash). An instant lets that script compare against
+ * `Date.now()` and nothing else, so the TTL below stays the only place
+ * the duration is written: no second copy to drift (the F69 lesson,
+ * applied before it becomes F69).
+ */
+export const TIER_CAP_UNTIL_KEY = "study-tier-cap-until";
+
+/**
+ * How long a proven-slow verdict stands before it has to be re-earned
+ * (CRITIC-LEDGER F73).
+ *
+ * The cap used to be permanent for the session: four slow frames during
+ * one scroll wrote `print` to sessionStorage and every page in the tab
+ * started at the static edition for the rest of the visit, with no
+ * indication and no way back. Measured with the frame probe: inject
+ * four 200ms frames, and `/evidence` then `/` both load at `print` with
+ * `watching: false`, so no amount of subsequent smooth scrolling can
+ * ever restore anything — there is nothing left measuring.
+ *
+ * A single GC pause, a background tab compiling something, an
+ * extension's long task: the evidence for "this device cannot do it" is
+ * a few hundred milliseconds old and the tab may have shed the load
+ * minutes ago. So the verdict expires and the next load re-measures. If
+ * the device really is slow it re-caps inside one scroll, and that
+ * downshift is designed to be seamless (static IS the resting frame, so
+ * the swap costs no CLS). The cost of being wrong in this direction is
+ * one downshift; the cost of being wrong in the old direction was the
+ * whole session.
+ *
+ * A cap written WITHOUT a timestamp is honoured forever — that is a
+ * ceiling somebody set deliberately (a test fixture, a support
+ * instruction), not a measurement that decayed.
+ */
+const CAP_TTL_MS = 5 * 60 * 1000;
 
 /* ── Scoring constants (§F2) ─────────────────────────────────────── */
 const FRAME_SLOW = 32; /* ms — dropped below ~30fps  → +1 */
@@ -136,18 +180,37 @@ function setTier(next: Tier): void {
 function persistCap(lowest: Tier): void {
   try {
     const existing = window.sessionStorage.getItem(TIER_CAP_KEY);
-    /* Only ever lower the ceiling. */
-    if (existing === "print") return;
+    /* Only ever lower the ceiling — but always restamp the clock, so a
+       device that keeps proving itself keeps its verdict fresh. */
+    const until = String(Date.now() + CAP_TTL_MS);
+    if (existing === "print") {
+      window.sessionStorage.setItem(TIER_CAP_UNTIL_KEY, until);
+      return;
+    }
     window.sessionStorage.setItem(TIER_CAP_KEY, lowest);
+    window.sessionStorage.setItem(TIER_CAP_UNTIL_KEY, until);
   } catch {
     /* storage unavailable — session-only governance */
   }
 }
 
+/**
+ * The session ceiling, if it still stands (F73). An expired verdict is
+ * cleared on the way out, so the next reader of the raw key — including
+ * the layout.tsx head script on the following navigation — sees nothing.
+ *
+ * @returns The standing cap, or null
+ */
 function readCap(): Tier | null {
   try {
     const cap = window.sessionStorage.getItem(TIER_CAP_KEY);
-    return cap === "print" || cap === "core" ? cap : null;
+    if (cap !== "print" && cap !== "core") return null;
+    const until = Number(window.sessionStorage.getItem(TIER_CAP_UNTIL_KEY));
+    if (!Number.isFinite(until) || until <= 0) return cap; /* deliberate */
+    if (Date.now() <= until) return cap;
+    window.sessionStorage.removeItem(TIER_CAP_KEY);
+    window.sessionStorage.removeItem(TIER_CAP_UNTIL_KEY);
+    return null;
   } catch {
     return null;
   }
