@@ -27,7 +27,10 @@
   --color-clay: #b04a28; /* kiln clay — text use, 5.1:1 */
   --color-clay-graphic: #c4532e; /* kiln clay — graphic use */
   --color-pine: #2f5d50; /* links, approved gates, strokes — 7.0:1 */
-  --color-pass: #2e6b4f; /* 6.1:1 */
+  /* (CRITIC-LEDGER F80: `--color-pass` lived here with zero consumers —
+     a pass/fail pair for a site that never renders a pass mark. Gone.
+     `--color-fail` stays: `--status-warning` below is its consumer, and
+     error.tsx renders that.) */
   --color-fail: #a03b23; /* 6.0:1 */
   --color-ink-dusk: #f6efe2; /* ink after the dusk flip — 12.8:1 on #43372F */
   --color-clay-night: #e08a5f; /* clay lightened for nightfall — 6.4:1 */
@@ -1155,16 +1158,23 @@ html[data-motion-off] [data-chapter="07"] {
    rule already applies); this block only adds the monograph dressing —
    additive, layout-neutral (outline, never border), no new DOM. Every
    caption and number it frames is the same proof-cited resting content
-   (honesty bar D6: the monograph states what the motion states). */
+   (honesty bar D6: the monograph states what the motion states).
+
+   THE FLOURISH HAS TO BE VISIBLE TO BE ONE (CRITIC-LEDGER F80). This
+   outline is the print edition's ONLY dressing, and at `currentColor
+   22%` it composited to 1.86:1 against the nightfall ground in chapter
+   06 — the ledger measured 1.87 — and under 3:1 on the day papers too.
+   An authored edition whose entire authorship is below the WCAG
+   non-text bar is not an edition. 55% is the mix that clears 3:1 on
+   EVERY paper a captioned figure actually sits on, which is not the
+   canvas token but the day-arc waypoint under it: measured 3.47:1 on
+   ch04's paper, 3.38:1 on ch05's golden-hour paper (the darkest day
+   ground, and the binding constraint) and 4.25:1 on ch06's nightfall.
+   Re-measure with docs/design-lab/probe-w4tier.mjs. It stays a 1px
+   hairline at a 14px offset: a figure rule in a monograph, not a box. */
 html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
-  outline: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  outline: 1px solid color-mix(in srgb, currentColor 55%, transparent);
   outline-offset: 14px;
-}
-/* Scene mounts read the tier with CSS alone (§F2 API): any Full-only
-   garnish a scene declares stays unmounted below its tier. Nothing
-   ships Full-only garnish yet — this is the rail it will hang on. */
-html:not([data-tier="full"]) [data-tier-garnish] {
-  display: none;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -2168,16 +2178,10 @@ body {
   text-transform: none;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
+/* (CRITIC-LEDGER F80: `.no-scrollbar` lived here with zero consumers,
+   carrying IE and Edge-legacy properties for a browserslist that starts
+   at Chrome/Edge 128. A utility for hiding a scrollbar on a site that
+   deliberately scrolls natively, used nowhere. Gone.) */
 
 /* ════════════════════════════════════════════════════════════════
    THE PAPER EDITION — @media print (CRITIC-LEDGER F04)
