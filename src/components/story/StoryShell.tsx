@@ -36,6 +36,7 @@ import {
   projectCaseStudies,
 } from "@/lib/data/projectCaseStudies";
 import { getProjectById } from "@/lib/data/projects";
+import { proofManifest } from "@/lib/data/proofManifest";
 import {
   ChapterKicker,
   FolioRule,
@@ -56,6 +57,14 @@ import { PipelineRun } from "@/components/paper/PipelineRun";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { VisitedMark } from "@/components/paper/VisitedMark";
 import { ProjectRowScene } from "@/components/scenes/ProjectScene";
+
+/** The `jetpack-tests` proof-manifest entry's verification month — the
+ *  source of the ¶05 jetpack row's `last verified` token (F39). Read
+ *  from the manifest so the row can never claim a date the evidence
+ *  ledger does not carry. */
+const JETPACK_VERIFIED = proofManifest.find(
+  (entry) => entry.id === "jetpack-tests"
+)?.date;
 
 /** The real case-file ids (server-side): the manifest's allowlist —
  *  paperMemory entries outside this set are never rendered. */
@@ -198,7 +207,15 @@ const PATH_FIELD_RECORDS: {
  *  ruling, 2026-07-24): the six live showcase projects hold the prime
  *  rows; visual-assist is retired (portfolioVisible: false) and its
  *  case file remains reachable from /evidence. */
-const WORK_ROWS = [
+const WORK_ROWS: {
+  projectId: string;
+  bright: string;
+  muted: string;
+  metric: string;
+  metricHref: string;
+  /** Only for rows with no case file — see F39 */
+  verifiedFallback?: string | null;
+}[] = [
   {
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
@@ -223,9 +240,17 @@ const WORK_ROWS = [
     bright: "One gzip stream. Every core writing it.",
     muted:
       "jetpack-compress splits the bytes across virtual threads — and stitches one byte-valid member.",
-    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+    /* The non-breaking space is deliberate (CRITIC-LEDGER F38): this
+       chip right-aligns in the ¶05 rail, and `@ af2c4b1` used to break
+       so the commit sha landed alone on its own line while every other
+       chip set as one. The sha and its `@` now travel together. */
+    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
     metricHref:
       "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+    /* F39: no case file exists yet, so the row's `last verified` token
+       comes from the SAME proof-manifest entry its metric chip cites —
+       read from the manifest, never typed here. */
+    verifiedFallback: JETPACK_VERIFIED,
   },
   {
     /* Fourth row (orchestrator ruling, 2026-07-24): Cadence promotes
@@ -1119,6 +1144,10 @@ function WorkChapter() {
               ? caseHref
               : (project.liveUrl ?? project.githubUrl ?? caseHref);
             const externalMetric = row.metricHref.startsWith("http");
+            /* F39: the case file's verified month, or — for a row with
+               no case file — the proof-manifest entry its metric chip
+               already cites. Never a literal in this component. */
+            const verified = study?.verified ?? row.verifiedFallback;
             return (
               /* data-thread-row: the Red Thread ticks each row in the
                  binding margin as the line passes (geometry anchor) — the
@@ -1198,10 +1227,14 @@ function WorkChapter() {
                   {/* The metric chip keeps footnote 1's promise: it links
                       the case-file receipt row that argues it. normal-case
                       preserves data tokens (-O3); every metric string is
-                      already lowercase in source. W5 hierarchy: capped at
-                      two mono lines on every viewport — the ledger's
-                      right rag stays quiet (visitor #4). */}
-                  <p className="line-clamp-2 max-w-[38ch] normal-case">
+                      already lowercase in source.
+                      CRITIC-LEDGER F38: `line-clamp-2` is gone. It was a
+                      SILENT truncation — any chip that grew past two mono
+                      lines would have lost its tail with no indication,
+                      on the one element that carries the row's number.
+                      The column is capped instead (max-w-[38ch]), so a
+                      long chip wraps honestly rather than disappearing. */}
+                  <p className="max-w-[38ch] normal-case">
                     {externalMetric ? (
                       <a
                         href={row.metricHref}
@@ -1241,31 +1274,28 @@ function WorkChapter() {
                       </a>
                     ) : null}
                   </p>
-                  {project.githubUrl || (study && project.liveUrl) ? (
+                  {/* CRITIC-LEDGER F40: the same `the case file ⟶ /
+                      source / demo ↗` triplet repeated verbatim on every
+                      row — three identical clusters inside 3,027px, with
+                      `source` and `demo ↗` rendering 52×15px and 8px
+                      apart on a phone. One primary act per row now: the
+                      secondary line only survives where the row has NO
+                      case file to fold it into (jetpack-compress), and
+                      there it carries `source` alone, because the repo
+                      is otherwise unreachable from this page. Nothing is
+                      lost for the other rows: the case file's own ledger
+                      already prints `repo … @ sha` and `live demo ↗`
+                      (CaseStudyPage LedgerRows). */}
+                  {!study && project.githubUrl ? (
                     <p>
-                      {project.githubUrl ? (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link-draw"
-                        >
-                          source
-                        </a>
-                      ) : null}
-                      {project.githubUrl && study && project.liveUrl
-                        ? " · "
-                        : null}
-                      {study && project.liveUrl ? (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link-draw"
-                        >
-                          demo ↗
-                        </a>
-                      ) : null}
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        source
+                      </a>
                     </p>
                   ) : null}
                   {/* The case file's own credibility token, echoed small
@@ -1275,10 +1305,20 @@ function WorkChapter() {
                       golden-hour field; secondary ink at 0.7 would not.
                       CRITIC-LEDGER F33/F65: the 11px override is gone —
                       the token inherits from the column's .label-mono, so
-                      the whole right rail is now one type size. */}
-                  {study ? (
+                      the whole right rail is now one type size.
+                      CRITIC-LEDGER F39: this token used to render on
+                      three rows of four — the one row without a case
+                      file (jetpack-compress) simply dropped it, so the
+                      ledger's right rag went 5 lines / 5 / 3 / 5 and the
+                      row that left the site was the one missing its
+                      verification date. The fallback is NOT invented: it
+                      is the `jetpack-tests` proof-manifest entry's own
+                      `date`, the same field, the same month, read at
+                      module scope so it can never drift from the ledger
+                      that owns it. Every row now closes the same way. */}
+                  {verified ? (
                     <p className="text-ink opacity-70">
-                      last verified {study.verified}
+                      last verified {verified}
                     </p>
                   ) : null}
                 </div>
