@@ -1213,6 +1213,166 @@ html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
 }
 
 /* ════════════════════════════════════════════════════════════════
+   THE GARNISH RAIL (§F1a/§F3) — full-tier cursor-feel on the text
+   `[data-tier-garnish]` returns from its F80 deletion WITH consumers:
+   this block is the whole cursor-response layer, and it is what Full
+   now buys beside DayArc's fine dusk scrub. One hand, one gesture
+   family — LETTERPRESS: ink and pressure, never neon.
+     · press      — display text presses into the paper under the hand
+                    (1px settle + a ≤1px same-color ink bleed that dries
+                    on release). Chapter bright headlines + the ¶05 row
+                    titles.
+     · press-axis — the masthead's "Scroll." — the page's ONE variable-
+                    axis hover: wght +32 / SOFT 50→78, the glyphs
+                    spreading under real pressure. Sanctioned ONLY here:
+                    a single word on its own block line, so the axis
+                    reflow is contained to advances nothing else reads
+                    (the Red Thread measures the OTHER masthead line).
+                    NO translateY on this one: the axis IS the press —
+                    pressed metal type prints heavier, it does not
+                    slide — and the page's largest glyph run never
+                    takes a transient compositor layer for a 1px dip
+                    nobody would read at 120px. Measured under 4× CPU
+                    (probe-textmicro.mjs, CDP-only input): the whole
+                    press+release cycle peaks at 9.4ms/frame. (An early
+                    probe draft read 42–59ms here — that spike was the
+                    harness's own injected locator script, not the
+                    effect; the honest meter drives the mouse via CDP.)
+     · wet        — the ink re-wets under the cursor (the hero
+                    standfirst): the entrance's own hero-ink-settle
+                    feather, re-summoned by touch. Paint only.
+     · wet-line   — the wet with a settle ripple: hovering the masthead
+                    claim wets "It's / all / real." in a 50ms cascade
+                    toward the word being sworn to (.garnish-word seats,
+                    --garnish-i). Dries evenly, no delay, slower.
+     · tilt       — the gate's giant name is a printing PLATE under the
+                    hand: perspective here, pointer-driven rotateX/Y on
+                    the inner [data-garnish-plate] (TextGarnish.tsx,
+                    transform-only, mounted at Full). CSS adds only the
+                    perspective and the wet; it must NEVER transition
+                    the plate's transform — the pointer drive owns it.
+   EQUITY + HONESTY RAILS (the D5 triple gate, plus two):
+     · hover is pure garnish — zero meaning carried; every rule below
+       exists only inside `html[data-tier="full"]`, which the governor
+       grants after §F3 proof (capable desktop, ≥3s measured-smooth,
+       ≥1024px). Core / print / reduced / touch render byte-identical
+       text: outside the rail these attributes style NOTHING.
+     · (hover:hover) and (pointer:fine) — a touch screen inside a
+       desktop viewport never arms it.
+     · paint + transform only, except the ONE bounded axis press; the
+       bleed is never lighter than the letterform it hugs (currentColor
+       mixes), so AA is arithmetically unchanged in every hover state.
+     · elements the thread or the entrance holds by inline style are
+       never the hover target — the press rides links and headline
+       roots TextMotion does not write transforms onto.
+   ════════════════════════════════════════════════════════════════ */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* — the press: display text settles into the paper — */
+  html[data-tier="full"]:not([data-motion-off]) [data-tier-garnish="press"] {
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 0%, transparent);
+    /* release: the ink dries slower than it wetted (letterpress, not a
+       button) — same 0.22/0.61 hand as link-draw, longer tail */
+    transition:
+      transform 420ms cubic-bezier(0.22, 0.61, 0.21, 1),
+      text-shadow 480ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="press"]:hover,
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="press"]:focus-visible {
+    transform: translateY(1px);
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 55%, transparent);
+    transition:
+      transform 200ms cubic-bezier(0.22, 0.61, 0.21, 1),
+      text-shadow 220ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  /* The ¶05 row titles are inline anchors; transforms need a box.
+     inline-block on a single-line link that is its column's only line
+     content lays out identically (probed in text-garnish.spec.ts). */
+  html[data-tier="full"]:not([data-motion-off]) a[data-tier-garnish="press"] {
+    display: inline-block;
+  }
+
+  /* — press-axis: the one variable-axis hover on the site.
+     The base re-states the h1's inherited axes VERBATIM plus the wght
+     the weight token already sets (400), so the un-hovered render is
+     bit-identical and the transition has a from-list to interpolate.
+     No transform here (see the rail header) — the press is carried by
+     the axes themselves. Budgeted: measured under 4× CPU throttle in
+     docs/design-lab/probe-textmicro.mjs (max 9.4ms/frame) — the reflow
+     is one word's own line, ≤1 concurrent by construction (one element
+     carries it). — */
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="press-axis"] {
+    font-variation-settings:
+      "opsz" 144,
+      "SOFT" 50,
+      "WONK" 0,
+      "wght" 400;
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 0%, transparent);
+    transition:
+      text-shadow 480ms cubic-bezier(0.22, 0.61, 0.21, 1),
+      font-variation-settings 520ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="press-axis"]:hover {
+    font-variation-settings:
+      "opsz" 144,
+      "SOFT" 78,
+      "WONK" 0,
+      "wght" 432;
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 55%, transparent);
+    transition:
+      text-shadow 220ms cubic-bezier(0.22, 0.61, 0.21, 1),
+      font-variation-settings 320ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+
+  /* — the wet: ink freshens under the cursor, paint only — */
+  html[data-tier="full"]:not([data-motion-off]) [data-tier-garnish="wet"],
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="wet-line"]
+    .garnish-word {
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 0%, transparent);
+    transition: text-shadow 500ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  html[data-tier="full"]:not([data-motion-off]) [data-tier-garnish="wet"]:hover,
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="wet-line"]:hover
+    .garnish-word {
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 55%, transparent);
+    transition: text-shadow 220ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  /* the settle ripple: wetting travels toward "real." (seats 0→1→2);
+     drying (the base rule above) carries no delay — the line dries as
+     one. Delay only ever ADDS on the way in, so a mid-cascade exit
+     still relaxes from wherever each word had reached. */
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="wet-line"]:hover
+    .garnish-word {
+    transition-delay: calc(var(--garnish-i, 0) * 50ms);
+  }
+
+  /* — the tilt: perspective for the plate; wet rides along. The plate's
+     transform is pointer-driven (TextGarnish.tsx) and deliberately NOT
+     transitioned here. — */
+  html[data-tier="full"]:not([data-motion-off]) [data-tier-garnish="tilt"] {
+    perspective: 900px;
+  }
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="tilt"]
+    [data-garnish-plate] {
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 0%, transparent);
+    transition: text-shadow 500ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+  html[data-tier="full"]:not([data-motion-off])
+    [data-tier-garnish="tilt"]:hover
+    [data-garnish-plate] {
+    text-shadow: 0 0 0.9px color-mix(in srgb, currentColor 55%, transparent);
+    transition: text-shadow 220ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
    THE DOSSIER STOCK — case files + /evidence (DOSSIER-SPEC pt 1)
    The same paper one stop older: flat archive cream (surface-1 — an
    existing verified token), NO day-arc, and the contour texture kept
