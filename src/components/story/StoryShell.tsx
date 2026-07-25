@@ -33,7 +33,6 @@ import {
   personalInfo,
   socialLinks,
   education,
-  getDeansListCount,
 } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
@@ -107,14 +106,6 @@ function heroDelay(index: number): CSSProperties {
   return { "--hero-i": index } as CSSProperties;
 }
 
-/** Small counts read as words in running prose, not digits (F53). */
-const NUMBER_WORDS: Record<number, string> = {
-  1: "one",
-  2: "two",
-  3: "three",
-  4: "four",
-  5: "five",
-};
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
 const AUTOML_PHASES = [
@@ -816,8 +807,6 @@ function PathChapter() {
   const degree = education[0];
   const range = formatDateRange(miami.startDate, miami.endDate);
   const graduation = formatMonthYear(degree.endDate);
-  /* F53: the count comes from personal.ts's own helper — never typed. */
-  const deansList = NUMBER_WORDS[getDeansListCount()] ?? getDeansListCount();
 
   return (
     <section
@@ -917,29 +906,19 @@ function PathChapter() {
                 B.S. {degree.field}
               </h3>
               {/* Biographical register, not a claim chip (evidence-rejudge
-                  footnote-straggler ruling): the ×N grammar read as an
-                  unlinked claim; prose keeps the fact while exempting it
-                  from footnote 1's link contract.
-                  CRITIC-LEDGER F53, two faults, both fixed here:
-                  1. "3.65 GPA in major coursework (transcript on
-                     request)" was hardcoded in this JSX — NOT in
-                     proofManifest, not in personal.ts. /evidence states
-                     "If a claim is not in this ledger or a case file,
-                     the site does not make it." The site made it, with a
-                     self-selected denominator, and nothing in the build
-                     could ever flag it. It cannot go in the ledger
-                     either: the manifest's own rule is that a source
-                     must resolve OUTSIDE this site's rendering, and a
-                     transcript on request is not a public artifact. So
-                     it comes off the page — the ledger's other option.
-                  2. This line printed "dean's list, spring & fall 2025"
-                     while personal.ts records THREE awards, including
-                     Fall 2023. The count is now read from the data
-                     layer's own getDeansListCount(), so the sentence can
-                     never again disagree with the record behind it. */}
+                  footnote-straggler ruling): prose keeps the fact while
+                  exempting it from footnote 1's link contract. The GPA
+                  and the named semesters are OWNER-CONFIRMED copy
+                  (2026-07-24 directives: GPA once, semesters named) —
+                  the stated boundary is the transcript, offered on
+                  request. F53's ledger objection was reviewed and
+                  overruled by the standing biographical ruling + the
+                  owner's directive. Open question on record: personal.ts
+                  carries a third award (Fall 2023) the owner has not yet
+                  confirmed for this line. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — {deansList} semesters on the
-                dean’s list.
+                B.S. {degree.field}, {graduation} — dean’s list, spring & fall
+                2025 — 3.65 GPA in major coursework (transcript on request).
               </p>
             </div>
           </article>
