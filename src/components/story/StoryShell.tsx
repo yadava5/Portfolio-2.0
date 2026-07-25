@@ -1395,8 +1395,15 @@ function GateChapter() {
               data-tm="block"
             >
               <p>availability — {personalInfo.availability}</p>
+              {/* The live clock says so in words (F28): the ¶ kickers'
+                  06:12→22:41 are the recorded day's datelines, and a
+                  reader had no way to tell which of the two was fiction.
+                  LocalTime renders nothing until it has a real time, so
+                  the prerendered line is simply the place (F29/F49 — it
+                  used to ship "—:—" to crawlers and first paint). */}
               <p>
-                cincinnati, ohio — <LocalTime /> local
+                cincinnati, ohio
+                <LocalTime />
               </p>
             </div>
 
