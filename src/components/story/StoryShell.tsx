@@ -25,6 +25,14 @@
  * elements that carry Red Thread geometry anchors ([data-thread-*])
  * are NEVER transformed — the thread measures their boxes — so motion
  * lives on inner wrappers, children, or siblings instead.
+ *
+ * The cursor-feel layer (FABLE brief §F1a) rides the same inert-hook
+ * pattern: `data-tier-garnish="press|press-axis|wet|wet-line|tilt"` +
+ * `.garnish-word` seats are styled ONLY inside `html[data-tier="full"]`
+ * (the governor's earned tier — globals.css garnish rail), and
+ * TextGarnish.tsx drives the one pointer-tracked piece (the gate
+ * name's plate tilt) on an inner wrapper. Every other tier — core,
+ * print, reduced motion, touch — renders these attributes as nothing.
  */
 
 import type { CSSProperties } from "react";
@@ -47,6 +55,7 @@ import {
 import { CHAPTERS } from "@/components/story/chapters";
 import { ChapterRail } from "@/components/story/ChapterRail";
 import { TextMotion } from "@/components/story/TextMotion";
+import { TextGarnish } from "@/components/story/TextGarnish";
 import { ThreadSegment } from "@/components/thread/ThreadSegment";
 import { HashRealign } from "@/components/story/HashRealign";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
@@ -101,6 +110,19 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
  */
 function heroDelay(index: number): CSSProperties {
   return { "--hero-i": index } as CSSProperties;
+}
+
+/**
+ * Seat index for the masthead's settle ripple (garnish rail §F1a): the
+ * full-tier wet cascade travels `--garnish-i` × 50ms toward "real." —
+ * the word being sworn to wets last, so the ripple lands ON the claim.
+ * Inert everywhere the rail is dark (core/print/reduced/touch).
+ *
+ * @param index - Zero-based cascade seat
+ * @returns Inline style carrying the custom property
+ */
+function garnishSeat(index: number): CSSProperties {
+  return { "--garnish-i": index } as CSSProperties;
 }
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
@@ -510,9 +532,18 @@ function ArrivalChapter() {
                 hand approves the run (¶07). The claim is *real*, and
                 the footnote points straight at the evidence that earns
                 it. Two beats: the imperative, then the payoff. */}
+            {/* data-tier-garnish="press-axis" (garnish rail §F1a): the
+                dare answers the hand — the site's ONE variable-axis
+                hover. Under a full-tier cursor the glyphs press into the
+                paper: wght +32, SOFT 50→78, a 1px settle, the ink bleed.
+                Sanctioned exactly here because the word owns its block
+                line: the axis reflow moves advances nothing else reads
+                (the thread's measured line is the one BELOW). Inert
+                outside html[data-tier="full"]. */}
             <span
               className="hero-enter hero-enter-headline block"
               style={heroDelay(0)}
+              data-tier-garnish="press-axis"
             >
               Scroll.
             </span>
@@ -527,11 +558,26 @@ function ArrivalChapter() {
                 true even if a re-measure lands mid-entrance). */}
             <span className="block">
               <span data-thread-name>
+                {/* data-tier-garnish="wet-line" (garnish rail §F1a): the
+                    claim's ink re-wets under a full-tier cursor — the
+                    entrance's own hero-ink-settle feather, re-summoned
+                    by touch, cascading seat 0 → 1 → 2 so the wetting
+                    lands ON "real." Paint-only (text-shadow on the
+                    .garnish-word spans), so the [data-thread-name] box
+                    outside never moves and the footnote ¹ keeps its own
+                    ink. The spans are transparent to the accessible
+                    name (the h1's aria-label owns it). */}
                 <span
                   className="hero-enter hero-enter-headline hero-enter-inline"
                   style={heroDelay(2)}
+                  data-tier-garnish="wet-line"
                 >
-                  It&apos;s all{" "}
+                  <span className="garnish-word" style={garnishSeat(0)}>
+                    It&apos;s
+                  </span>{" "}
+                  <span className="garnish-word" style={garnishSeat(1)}>
+                    all
+                  </span>{" "}
                   {/* The ¹ is kerned against the period: the size lives on
                       the <sup> (not the anchor) so align-super raises the
                       small glyph, not a hero-sized box. The negative
@@ -542,7 +588,12 @@ function ArrivalChapter() {
                       "trust." — the one italic word is the one being
                       sworn to. */}
                   <span className="whitespace-nowrap">
-                    <em className="font-serif italic">real.</em>
+                    <em
+                      className="garnish-word font-serif italic"
+                      style={garnishSeat(2)}
+                    >
+                      real.
+                    </em>
                     <span className="-ml-[0.085em]">
                       <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
                         <LenisAnchor
@@ -580,8 +631,12 @@ function ArrivalChapter() {
               after the claim (seats 0/2), before the directives (seat 4),
               on the same load-only CSS beat, so every static world paints
               it finished (A7). */}
+          {/* data-tier-garnish="wet" (§F1a): the byline's one tasteful
+              response — the whole line's ink freshens under a full-tier
+              cursor, no cascade, no transform. Inert elsewhere. */}
           <p
             data-hero-standfirst
+            data-tier-garnish="wet"
             className="hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading-snug"
             style={heroDelay(3)}
           >
@@ -1292,13 +1347,24 @@ function WorkChapter() {
                     className="font-display fraunces-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight"
                     data-tm="block"
                   >
+                    {/* data-tier-garnish="press" (§F1a): the title takes
+                        the full-tier letterpress press (1px settle + ink
+                        bleed, :focus-visible included — link parity with
+                        link-draw). It rides the ANCHOR, not the h3: the
+                        h3 is a data-tm block whose entrance leaves an
+                        inline transform, and the thread only measures
+                        the [data-thread-row] article, which an inner
+                        transform never moves. Inert outside Full. */}
                     {study ? (
-                      <Link href={titleHref}>{project.title}</Link>
+                      <Link href={titleHref} data-tier-garnish="press">
+                        {project.title}
+                      </Link>
                     ) : (
                       <a
                         href={titleHref}
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-tier-garnish="press"
                       >
                         {project.title}
                       </a>
@@ -1668,11 +1734,22 @@ function GateChapter() {
                   masthead's 9 / 9rem). It is a deliberately quieter cut,
                   so it now consumes its own declared token instead of
                   disagreeing with the masthead anonymously. */}
+              {/* data-tier-garnish="tilt" (§F1a): under a full-tier
+                  cursor the name is a printing plate under the hand —
+                  TextGarnish drives rotateX/Y + a hair of press on the
+                  INNER [data-garnish-plate] span (the h2 belongs to the
+                  data-tm="name" entrance; two writers never share one
+                  transform), with the rail's perspective + ink-wet on
+                  hover. The block span reproduces the raw-text layout
+                  exactly, so every other tier renders byte-identical. */}
               <h2
                 className="font-display fraunces-hero text-hero-reprise mt-8"
                 data-tm="name"
+                data-tier-garnish="tilt"
               >
-                Ayush Yadav
+                <span data-garnish-plate className="block">
+                  Ayush Yadav
+                </span>
               </h2>
             </div>
 
@@ -1941,6 +2018,7 @@ export function StoryShell() {
       <HashRealign />
       <ChapterRail />
       <TextMotion />
+      <TextGarnish />
       <ArrivalChapter />
       <WhoChapter />
       <PathChapter />
