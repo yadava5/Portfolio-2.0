@@ -90,7 +90,7 @@ claim, detailed after the table.
 | F34 | a fourth typeface leaks in | fixed@w2 · verified@w4 | The only `ui-sans-serif` nodes left are three `sr-only` spans. Nothing painted uses it |
 | F35 | hierarchy inversion in every bright/muted pair | fixed@w2 | |
 | F36 | fig 5.1's 120-character caption | fixed@w2 | |
-| **F37** | **the fast-mnist scene is uninterpretable** | **OPEN — unclaimed at campaign close** | The one fault of 82 that closes without a disposition. See "The one that got away" |
+| **F37** | **the fast-mnist scene is uninterpretable** | **fixed@f37-pass** | Closed 2026-07-25, after this table first printed: the forward pass names its stages (input · hidden · readout) and answers in clay; the F66 11px floor holds and the plates' 9 census collisions go to 0. See "The one that got away" |
 | F38 | jetpack chip breaks a sha onto its own line | fixed@w2 | |
 | F39 | ragged row affordances | fixed@w2 | |
 | F40 | three identical case-file/source/demo triplets | fixed@w2 | |
@@ -141,13 +141,13 @@ claim, detailed after the table.
 
 | Disposition | Count | Faults |
 |---|---|---|
-| **Fixed** — the fault as stated is closed | **67** | F01–F14, F16, F17, F19–F23, F25–F31, F33–F36, F38–F41, F44–F51, F54–F58, F60–F69, F73–F79, F82 |
+| **Fixed** — the fault as stated is closed | **68** | F01–F14, F16, F17, F19–F23, F25–F31, F33–F41, F44–F51, F54–F58, F60–F69, F73–F79, F82 |
 | **Fixed in part**, remainder a recorded decision | **7** | F24, F43, F52, F59, F70, F80, F81 |
 | **Not-a-defect** — the claim did not survive checking | **4** | F15, F53, F71, F72 |
 | **Design-call / wontfix**, with reasons | **3** | F18, F32, F42 |
-| **Open** | **1** | F37 |
+| **Open** | **0** | — (F37 closed post-campaign; see its row) |
 
-Of the 67, this wave was the primary closer for **seven** (F16, F63,
+Of the 68, this wave was the primary closer for **seven** (F16, F63,
 F68, F69, F73, F79, F82) and verified two more that Wave 1 had already
 closed but nobody had re-measured (F09, F77). It also carried the fixed
 half of four of the seven split rows (F70, F80, F81, and F15's
@@ -502,6 +502,47 @@ unlabelled 0–9 checkbox column (`argmax`) and the dot-matrix glyph
 (`input · 28×28`), or cut the second glyph. It is the only fault of 82
 this campaign closes without a disposition, and it is recorded as open
 rather than quietly re-filed.
+
+### Brought back — fixed@f37-pass (2026-07-25)
+
+The scenes pass landed, one day after the table above first printed.
+The forward-pass panel now names its own stages: three quiet 13px
+labels head the drawn columns — `input` over the stippled 7, `hidden`
+over the cell columns the ledger read as "a partial second glyph",
+`readout` over the 0–9 slots — and the readout concludes in clay: the
+winning digit `7` takes the clay voice and an `answer · 7` line closes
+the column. The two-second read is the case study's own sentence ("you
+draw a digit and watch the network read it"). Mechanism only: the 7 is
+the drawn glyph, no number joins the figure, and the ~97% stays HELD.
+The ledger's `argmax` was declined as jargon and its `28×28` as a
+number no settled data carries; the honest labels are the three words
+above. The caption follows — "and the forward pass, drawn" → "the
+forward pass — a drawn 7, answered" (`manifest.ts`; restates the
+figure, adds nothing). Labels are static text, so every world — engine,
+quiet, reduced-motion, print — carries the same reading in its settled
+frame.
+
+The redraw also cleared the two census artifacts the plates already
+carried (`shoot-f37.mjs`, the F66 harness + a label-inventory reading;
+row + case seats, 390 + 1440):
+
+| Reading (glyph plates) | Before | After |
+|---|---|---|
+| forward-pass labels | none | input · hidden · readout · answer · 7 |
+| min rendered text at 390 | 11.0px row / 11.07px plate | unchanged — the F66 floor holds |
+| text collisions (0.5-unit em-box bar) | 9 — adjacent slot digits, 12.2 pitch under 13-unit boxes | 0 — pitch 13.5, the redraw WAVE2's ESCALATE note priced |
+| viewBox overflows at 1440 | 1 — the wide race caption's em-box descent past y 190 | 0 — viewBox depth 190 → 192, no ink moved |
+
+Verified: build, `tsc --noEmit`, `eslint`, `prettier --check` clean;
+contrast, proof-manifest and asset-budget gates passed; Playwright
+**chromium-desktop 97 passed / 1 skipped** (atlas, red-thread,
+text-motion, paper-memory, reduced-motion, performance-budget) and
+**chromium-mobile 57 passed / 2 skipped** (atlas, text-motion), all
+against the live static export on :3300. Evidence:
+`docs/design-lab/shots-f37/` — both seats × 390/1440, before/after,
+plus the probe JSONs behind every number above.
+
+**With this row the ledger closes 82 of 82.**
 
 ---
 
