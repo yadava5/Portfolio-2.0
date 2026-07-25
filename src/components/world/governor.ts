@@ -35,15 +35,17 @@
  * idle moment (nothing structural moves; Full is Core plus garnish).
  * Everyone's first paint is Core (or Print) — never a Full flash.
  *
- * WHAT FULL ACTUALLY BUYS (CRITIC-LEDGER F80, corrected). The ledger
- * reads Full as indistinguishable from Core because `[data-tier-garnish]`
- * — the CSS rail Full was meant to hang garnish on — had zero consumers.
- * The rail is gone; the TIER is not, because it has a real consumer the
- * ledger did not find: `DayArc.tsx` branches on `getTier() === "full"`
- * to fine-scrub the dusk choreography between stops instead of stepping
- * across them. Full is a smoother nightfall on a device that earned it.
- * That is one behaviour, not a suite — but it is a behaviour, and the
- * three editions are three.
+ * WHAT FULL ACTUALLY BUYS (F80, second correction). The ledger read
+ * Full as indistinguishable from Core because `[data-tier-garnish]` —
+ * the CSS rail Full was meant to hang garnish on — had zero consumers,
+ * and Wave 4 deleted the empty rule. The rail is BACK, with its first
+ * real consumer suite: the cursor-feel text layer (globals.css garnish
+ * rail + TextGarnish.tsx) — the letterpress press/wet/tilt hover
+ * vocabulary that exists only inside `html[data-tier="full"]`. Full's
+ * other consumer stands as before: `DayArc.tsx` branches on
+ * `getTier() === "full"` to fine-scrub the dusk choreography between
+ * stops. Full is a smoother nightfall plus text that answers the hand,
+ * on a device that earned both.
  *
  * Precedence (§F2): motion gate → governor → scene minTier. Reduced
  * motion / the quiet toggle force print and DISABLE the governor
@@ -513,6 +515,8 @@ declare global {
       };
       injectFrame: (deltaMs: number) => void;
       injectLongTask: () => void;
+      /** Deterministic §F3 core→full promotion (text-garnish.spec.ts) */
+      promote: () => void;
       /** Detach the samplers without touching the tier — for A/B
        *  overhead measurement only (the PERF-AUDIT harness). */
       pause: () => void;
@@ -544,6 +548,15 @@ if (
     },
     injectLongTask: () => {
       addPenalty(LONGTASK_PENALTY, performance.now());
+    },
+    /** Deterministic §F3 promotion for the garnish specs: tops up the
+     *  smooth-scroll account and runs the REAL promotion path — every
+     *  promotionAllowed gate still applies (viewport, Data Saver, cap,
+     *  no prior downshift, watching). Same probe-only build gate as the
+     *  rest of this object; production never ships it. */
+    promote: () => {
+      stableMs = PROMOTE_AFTER_SMOOTH_MS;
+      maybePromote();
     },
     pause: () => {
       stopWatching();
