@@ -146,7 +146,14 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
+              /* data-tm-prehide (CRITIC-LEDGER F76) rides the SAME
+                 condition as data-motion-ready: it exists only when the
+                 motion world is actually planned, so a reduced-motion
+                 reader, the quiet toggle, the governor's print floor, a
+                 hidden load, and a JS-dead load all paint the finished
+                 page (A7). TextMotion drops it the instant it starts
+                 building tweens. */
+              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
           }}
         />
         {/* CRITIC-LEDGER F34: a fourth typeface leaked in here. The
