@@ -59,6 +59,7 @@ import {
   readStoredMotionOff,
   useLenis,
 } from "@/components/layout/SmoothScroll";
+import { announceLayoutSettled } from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -328,6 +329,10 @@ export function PipelineRun() {
        synchronous re-measure at hydration — never during scroll. */
     ScrollTrigger.sort();
     ScrollTrigger.refresh();
+    /* That re-measure moves the page under any hash landing by the
+       spacer distance — let the landing contract re-assert itself
+       (CRITIC-LEDGER F09's mechanism; see story/arrival.ts). */
+    announceLayoutSettled();
 
     return () => {
       svg.removeAttribute("data-pipeline-scrub");
