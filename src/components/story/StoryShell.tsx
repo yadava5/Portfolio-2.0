@@ -544,32 +544,57 @@ function ArrivalChapter() {
             </LenisAnchor>
           </p>
           {/* Quiet apparatus voice, no buttons: direct routes into the
-              three case files the #work chapter argues. */}
+              case files the #work chapter argues.
+              CRITIC-LEDGER F11/F12: this line used to promote
+              `jobtracker · fast-mnist · visual-assist` — two repository
+              slugs the page never says again, and one project the data
+              layer RETIRES (visual-assist, portfolioVisible: false). The
+              first frame therefore advertised a trio that the paper does
+              not argue, under names its own headings contradict.
+              It now names the PRODUCTS, in the order ¶05 deals them:
+              Applied · Glyph · Cadence — the three prime rows that have a
+              case file to open (jetpack-compress has none, so it is not
+              a "case file" and stays out of this line). The names are the
+              same strings the ¶05 <h3>s and the case-file <h1>s carry, so
+              one project now has exactly one public name on every surface;
+              the slug survives only inside the href, where it belongs.
+              `normal-case` on the links is the house pattern for proper
+              nouns and data tokens inside apparatus voice. */}
           <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
             case files:{" "}
-            <Link href="/projects/jobtracker/" className="link-draw">
-              jobtracker
+            <Link
+              href="/projects/jobtracker/"
+              className="link-draw normal-case"
+            >
+              Applied
             </Link>{" "}
             ·{" "}
-            <Link href="/projects/fast-mnist-nn/" className="link-draw">
-              fast-mnist
+            <Link
+              href="/projects/fast-mnist-nn/"
+              className="link-draw normal-case"
+            >
+              Glyph
             </Link>{" "}
             ·{" "}
-            <Link href="/projects/visual-assist/" className="link-draw">
-              visual-assist
+            <Link
+              href="/projects/taskflow-calendar/"
+              className="link-draw normal-case"
+            >
+              Cadence
             </Link>
           </p>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
-              scroll — the story starts here
-            </p>
-            <LenisAnchor
-              href="#automl"
-              className="link-draw text-ink-secondary"
-            >
-              skip to the work ↓
-            </LenisAnchor>
-          </div>
+          {/* CRITIC-LEDGER F10: a `skip to the work ↓` affordance used to
+              sit here pointing at #automl, 32px from the `in a hurry —
+              the work` link that points at #work. Two links whose labels
+              both read "the work", landing on different chapters, with
+              the header nav's "the work" as a third reading. The skip
+              function is not lost: the capstone directive above is the
+              read-on path and the `in a hurry` line below is the screener
+              path — both already say where they go. The scroll cue keeps
+              its own quiet line. */}
+          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+            scroll — the story starts here
+          </p>
           {/* W5: the 90-second path — one quiet line for screeners who
               will not scroll 1,500vh (A8's spirit): the work index, the
               master ledger, the resume PDF. Apparatus voice, no new
