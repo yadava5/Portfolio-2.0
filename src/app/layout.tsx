@@ -149,9 +149,19 @@ export default function RootLayout({
               'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","")}}catch(e){}',
           }}
         />
+        {/* CRITIC-LEDGER F34: a fourth typeface leaked in here. The
+            colophon reads "set in fraunces, newsreader & fragment mono",
+            and the one element that broke it was the skip link — the
+            FIRST thing a keyboard reader ever sees, rendering in
+            ui-sans-serif. It is now set in Fragment Mono at the label
+            token's own size — the apparatus voice the rest of the chrome
+            uses. (`font-mono` rides the element unconditionally rather
+            than behind `focus:`: .label-mono is a plain rule, not a
+            Tailwind utility, so it takes no variant — and the family is
+            free while the link is sr-only.) */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded focus:bg-[var(--accent-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-[var(--background)] focus:outline-none"
+          className="sr-only font-mono text-[length:var(--text-label)] tracking-[0.05em] focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:rounded focus:bg-[var(--accent-primary)] focus:px-4 focus:py-2 focus:text-[var(--background)] focus:outline-none"
         >
           Skip to main content
         </a>
