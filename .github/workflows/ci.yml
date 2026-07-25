@@ -263,6 +263,12 @@ jobs:
       - name: Check proof coverage
         run: npm run test:proof
 
+      - name: Check contrast choreography (every dusk stop AA)
+        run: npm run test:contrast
+
+      - name: Check og cards (rendered footer URL casing + freshness)
+        run: npm run assets:check-og
+
   # ─────────────────────────────────────────────────────────────
   # Browser Quality: Playwright smoke, reduced motion, performance
   # ─────────────────────────────────────────────────────────────
