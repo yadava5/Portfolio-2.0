@@ -46,10 +46,30 @@
      → ~4.76:1 composite, still AA. Appears only on .stamp-sign. */
 
   /* ── Type scale (Part 3.5) ──────────────────────────── */
-  --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
-  --text-hero--line-height: 1.05;
-  --text-hero--letter-spacing: -0.02em;
-  --text-hero--font-weight: 360;
+  /* CRITIC-LEDGER F64 — the flagship type token was DEAD. `--text-hero`
+     had zero consumers while two hand-rolled clamps did the real work:
+     three "hero" sizes, three vw slopes (8 / 8.5 / 9), three caps
+     (120 / 136 / 144px), and a tracking value (-0.02em) that neither
+     shipping element used — both re-declared -0.015em inline. A
+     stylesheet whose header reads "do not eyeball-adjust" had an
+     eyeballed headline scale.
+     The token now carries the MEASURED values rather than the other way
+     round: the shipping clamps were probed for no-overflow 320→1680 and
+     for "It's all real." never wrapping — the Red Thread measures that
+     line's box, so its width is a contract, not a preference. Adopting
+     the aspirational numbers would have moved a geometry anchor.
+     The ¶07 name is a deliberately quieter cut than the masthead (the
+     ending is the echo, not the entrance), so it gets its OWN named
+     token instead of being a fourth anonymous clamp. Two hero steps,
+     both declared here, both consumed — nothing eyeballed downstream. */
+  --text-hero: clamp(3.375rem, 9vw, 9rem);
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.015em;
+  --text-hero--font-weight: 400;
+  --text-hero-reprise: clamp(3rem, 8vw, 8.5rem);
+  --text-hero-reprise--line-height: 0.95;
+  --text-hero-reprise--letter-spacing: -0.015em;
+  --text-hero-reprise--font-weight: 400;
   --text-chapter: clamp(2rem, 5vw, 4rem);
   --text-chapter--line-height: 1.1;
   --text-chapter--letter-spacing: -0.015em;
@@ -1373,7 +1393,12 @@ html:not([data-tier="full"]) [data-tier-garnish] {
   align-items: center;
   gap: 4px;
   white-space: nowrap;
-  font-size: 0.6875rem;
+  /* CRITIC-LEDGER F65: the label token documents "13px — mono labels
+     12–14px" and the design system's own component broke that floor at
+     11px. A rotated margin note is the one place a step down from 13 is
+     legible, so this takes the BOTTOM of the stated band, not a fifth
+     invented size. */
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   transform: rotate(-2.5deg);
   transform-origin: right top;
