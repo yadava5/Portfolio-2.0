@@ -35,6 +35,16 @@
  * idle moment (nothing structural moves; Full is Core plus garnish).
  * Everyone's first paint is Core (or Print) — never a Full flash.
  *
+ * WHAT FULL ACTUALLY BUYS (CRITIC-LEDGER F80, corrected). The ledger
+ * reads Full as indistinguishable from Core because `[data-tier-garnish]`
+ * — the CSS rail Full was meant to hang garnish on — had zero consumers.
+ * The rail is gone; the TIER is not, because it has a real consumer the
+ * ledger did not find: `DayArc.tsx` branches on `getTier() === "full"`
+ * to fine-scrub the dusk choreography between stops instead of stepping
+ * across them. Full is a smoother nightfall on a device that earned it.
+ * That is one behaviour, not a suite — but it is a behaviour, and the
+ * three editions are three.
+ *
  * Precedence (§F2): motion gate → governor → scene minTier. Reduced
  * motion / the quiet toggle force print and DISABLE the governor
  * entirely (SmoothScroll calls applyGate; the engine and this watcher
