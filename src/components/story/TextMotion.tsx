@@ -36,8 +36,9 @@
  *     the hero's own fade + 14px rise (1.0s expo.out) — unmasked, since
  *     leading 0.95 would clip the y descenders inside an overflow mask.
  *   - THE MANIFESTO (`[data-tm-words]`, ch 02 deck pair): the page's ONE
- *     scrubbed text — word-by-word opacity 0.25→1 across ~60vh of
- *     chapter-02 scroll, scrub 0.7. NOT a one-shot; keeps its own trigger.
+ *     scrubbed text — word-by-word opacity MANIFESTO_REST→1 across ~60vh
+ *     of chapter-02 scroll, scrub 0.7. NOT a one-shot; keeps its own
+ *     trigger. The rest is AA ink, never a redaction (F06).
  *   - THE ENDING LITANY (`[data-tm-mantra]`): line-mask rises with a
  *     SLOWING stagger (0.12s → +0.2s → +0.3s), one shared trigger;
  *     receipts follow each mantra by 200ms. (The final line's WONK=1 is
@@ -101,6 +102,22 @@ const TM_SCRUB = 0.7;
 
 /** The manifesto's scroll span: ~60vh of chapter-02 scroll. */
 const MANIFESTO_SPAN = "+=60%";
+
+/**
+ * The manifesto's resting ink (CRITIC-LEDGER F06, a P0).
+ *
+ * The scrub used to rest at 0.25, which composites body ink #26231C onto
+ * dawn paper #FAF6EF at **1.66:1** — so a reader who stopped on the
+ * thesis sentence read "And how each piece was checked before ▓▓▓▓▓."
+ * That is a WCAG 1.4.3 failure on text as displayed, and it is the
+ * sentence the chapter exists to say.
+ *
+ * 0.60 composites to #7b7770 — **4.12:1**, which clears AA for the
+ * manifesto's 64px setting (3:1 large text) with margin, and clears AAA
+ * large (4.5:1) too. The gesture survives: the scrub still travels 0.60
+ * → 1.00 word by word, it just starts from ink a reader can read.
+ */
+const MANIFESTO_REST = 0.6;
 
 /** Litany delays — the slowing stagger: 0.12s to the first line, then
  *  +0.2s, then +0.3s (plan 3.8 "line-masks with slowing stagger"). */
@@ -421,7 +438,7 @@ export function TextMotion() {
           );
           splits.push(...wordSplits);
           const words = wordSplits.flatMap((split) => split.words);
-          gsap.set(words, { opacity: 0.25 });
+          gsap.set(words, { opacity: MANIFESTO_REST });
           gsap.to(words, {
             opacity: 1,
             duration: 0.3,
