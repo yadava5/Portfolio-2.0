@@ -47,7 +47,18 @@ export function useActiveChapter(enabled: boolean): ChapterMeta | null {
     if (sections.length === 0) {
       /* No day passes here — hide the mark rather than freeze a lie.
          (Defensive: `enabled` is only true on the story surface, which
-         always carries chapters.) */
+         always carries chapters.)
+
+         CRITIC-LEDGER F81 counts this among five suppressions of one
+         rule and reads them as one architecture fighting the framework.
+         Two of the five were exactly that — a preference living outside
+         React, mirrored into state on mount — and both are now
+         `useSyncExternalStore` reads. This is not one of them: there is
+         no external store to subscribe to, only a DOM CENSUS that can
+         be taken once the tree exists. An effect measuring the mounted
+         document and recording what it found is what effects are for;
+         the rule is a heuristic for the mirror pattern, and this is a
+         deliberate exception, not a fifth instance of one mistake. */
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setChapterless(true);
       return;
