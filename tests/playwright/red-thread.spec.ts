@@ -384,16 +384,23 @@ test.describe("red thread — motion", () => {
       .toBe("rgb(246, 239, 226)");
   });
 
-  test("the nightfall dip is a static-world stroke — hidden under motion", async ({
+  test("the nightfall dip is a static-world stroke — not built under motion", async ({
     page,
   }) => {
-    /* Segment 05 generates its dip whenever the folio rule measures,
-       but the motion world flips ink page-wide at the 05→06 step
-       instead — the cream tail must never double-print while the arc
-       is live. */
+    /* The motion world flips ink page-wide at the 05→06 step, so the
+       cream tail must never double-print while the arc is live.
+
+       CRITIC-LEDGER F79: segment 05 used to GENERATE its dip whenever
+       the folio rule measured — a `dipRun()` and a second catmull-rom
+       pass on every re-measure — and ship the path in the DOM for a
+       world that renders it `display: none`. The gate is now the same
+       one that paints it, so under motion the node is absent, not
+       merely hidden. Asserting absence rather than `toBeHidden()`
+       because the old assertion passes either way: a node that does
+       not exist is also not visible. */
     await expect(
       page.locator("svg[data-thread-segment='05'] path.thread-dip")
-    ).toBeHidden();
+    ).toHaveCount(0);
   });
 
   test("quiet motion toggle completes the thread without the engine", async ({
