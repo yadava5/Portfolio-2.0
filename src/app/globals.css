@@ -1635,11 +1635,6 @@ html:not([data-tier="full"]) [data-tier-garnish] {
   transition-duration: 300ms;
 }
 
-/* Cited plates land under the fixed header, like receipt rows */
-[id^="fig-"] {
-  scroll-margin-top: 7rem;
-}
-
 /* Static worlds (A7): every W1 swap is instant — the acts still WORK,
    they just never perform. (CitationInk never mounts there at all.)
    The audit walk follows suit: instant tick application, same settled
@@ -2122,11 +2117,17 @@ html[data-arc-phase="dusk"] [data-dossier] .scene-claytick {
   stroke: var(--color-clay-graphic);
 }
 
-/* Receipt-row permalinks land under the fixed header */
-li[id^="v-"] {
-  scroll-margin-top: 7rem;
-}
-
+/* THE MASTHEAD BAND — one declaration, every landing (F69).
+   `scroll-padding-top` is the ONLY place this number is authored. It
+   governs the browser's own fragment jumps, sequential-focus scrolling
+   and every scroll-into-view; components/story/arrival.ts reads it back
+   through `anchorLanding()` for the engine's programmatic landings, so
+   a shared `/#gate`, a nav click and a Tab into a chapter all stop on
+   the same pixel. Per-target `scroll-margin-top` rules used to sit on
+   sections, cited figures and receipt rows — a scroll-into-view ADDS
+   the target's margin to the container's padding, so those landed at
+   192px and 208px against this contract's 96px. Do not reintroduce
+   them: give the band a different value here instead. */
 html {
   overflow-x: hidden;
   scroll-padding-top: 6rem;
@@ -2138,10 +2139,6 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-}
-
-section[id] {
-  scroll-margin-top: 6rem;
 }
 
 /* Mono labels are lowercase, small, tracked — never all-caps shouting (3.5) */
