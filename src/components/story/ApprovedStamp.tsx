@@ -133,12 +133,25 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
         inking ? "is-inking" : ""
       } ${noticing ? "is-noticing" : ""}`}
     >
+      {/* CRITIC-LEDGER F67 — the site's signature act rendered at ~6.3px
+          on a phone. SVG text is authored in USER units, so the plate's
+          width ÷ 300 IS the type's scale factor: the compact seat's
+          `min(190px,52vw)` put it at 0.66 (measured at 390), turning the
+          11-unit invitation into 7.26px and the visitor's own approval
+          date into 6.6px — then pushed both through a 1.3-unit
+          displacement filter. Both seats now render the plate at its
+          authored 300 units wherever there is room, so the viewBox scale
+          is 1:1 and an authored unit IS a pixel. 88vw on the compact
+          seat keeps a margin at 320 (the narrowest supported width,
+          where the plate lands at 0.94 and the smallest line reads
+          ~11.3px). The mobile seat can afford the size now because it
+          moved BELOW the contact cluster — see the gate's F08 note. */}
       <svg
         viewBox="0 0 300 190"
         className={`stamp-plate ${
           compact
-            ? "block h-auto w-[min(190px,52vw)]"
-            : "block h-auto w-[min(280px,72vw)]"
+            ? "block h-auto w-[min(300px,88vw)]"
+            : "block h-auto w-[min(300px,72vw)]"
         }`}
         aria-hidden="true"
       >
@@ -171,21 +184,30 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
           </filter>
         </defs>
 
-        {/* ── The awaiting layer: dashed outline, empty middle ────────
+        {/* ── The awaiting layer: an unsigned plate, not a dropzone ───
             Fades to 0 when inked but STAYS rendered — [data-thread-sig]
-            keeps its getBBox, so the thread finale never re-aims. */}
+            keeps its getBBox, so the thread finale never re-aims.
+
+            CRITIC-LEDGER F20: this frame was a ~297×206 DASHED rectangle,
+            ~90% empty — the universal signifier of "drop a file here /
+            content missing", which is what a reader saw at the moment the
+            page asks for its one decision. It is now the paper's own
+            double rule: the same wobbled outer frame drawn SOLID, with
+            the inked layer's existing inner ring at a hairline weight.
+            Nothing invented — INNER_FRAME_D is the path the pressed stamp
+            already draws, so the awaiting and inked states are now the
+            same drawing at two ink weights, which is what an unsigned
+            form actually looks like.
+            FRAME_D itself is byte-for-byte untouched: the Red Thread maps
+            its entry and blot coordinates from these exact points. */}
         <g
           className="stamp-awaiting"
           fill="none"
           stroke="currentColor"
           opacity="0.9"
         >
-          <path
-            strokeWidth="2.5"
-            strokeDasharray="7 7"
-            strokeLinecap="round"
-            d={FRAME_D}
-          />
+          <path strokeWidth="2.2" strokeLinecap="round" d={FRAME_D} />
+          <path strokeWidth="0.8" strokeLinecap="round" d={INNER_FRAME_D} />
           <text
             x="150"
             y="88"
@@ -212,7 +234,10 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
             x="150"
             y="130"
             textAnchor="middle"
-            fontSize="11"
+            /* 11 → 12 (F67): the smallest authored line on the stamp, and
+               the one the whole argument's thread arrives to underline.
+               Measured inside the 12→288 frame at 12 units. */
+            fontSize="12"
             letterSpacing="1.5"
             fill="currentColor"
             stroke="none"
@@ -254,7 +279,10 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
               x="150"
               y="130"
               textAnchor="middle"
-              fontSize="11"
+              /* 11 → 12 (F67): shares the awaiting signature's baseline,
+                 so it takes the same step — the thread's underline
+                 underlines both states at the same measure. */
+              fontSize="12"
               letterSpacing="1.5"
               fill="currentColor"
               stroke="none"
@@ -263,15 +291,20 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
               · human in the loop ·
             </text>
           </g>
-          {/* Item 3 — the run/date line, ~10px: its own lighter distress so
-              the digits (the visitor's own approval date) read cleanly.
-              Not a coordinate the thread measures. */}
+          {/* Item 3 — the run/date line: its own lighter distress so the
+              digits (the visitor's own approval date) read cleanly. Not a
+              coordinate the thread measures.
+              10 → 11 (F67): this was the smallest thing on the stamp and
+              it carries the visitor's OWN date — the one line that must
+              never be decorative. It stops at 11 rather than 12 because
+              its +3 letter-spacing over ~25 characters is what fills the
+              frame's width; 12 would run it into the wobbled edge. */}
           <g filter={`url(#${fineFilterId})`}>
             <text
               x="150"
               y="56"
               textAnchor="middle"
-              fontSize="10"
+              fontSize="11"
               letterSpacing="3"
               fill="currentColor"
               stroke="none"
