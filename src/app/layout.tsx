@@ -134,11 +134,19 @@ export default function RootLayout({
             §F2). Synchronous by design: it must beat the hero's paint.
             1. `data-tier` — the frame governor's edition for THIS load:
                "print" under reduced motion, the quiet toggle, or a
-               sessionStorage "study-tier-cap" of print (the lowest tier
-               a previous page of this session reached); otherwise
-               "core". NEVER "full" at load — Full garnish only mounts
-               later once the governor has proof (§F3), so the universal
-               first paint is Core and nothing ever collapses.
+               STILL-STANDING sessionStorage "study-tier-cap" of print
+               (the lowest tier a previous page of this session reached);
+               otherwise "core". NEVER "full" at load — Full garnish only
+               mounts later once the governor has proof (§F3), so the
+               universal first paint is Core and nothing ever collapses.
+               "Still standing" is `study-tier-cap-until`, an EXPIRY
+               INSTANT the governor writes beside the cap
+               (CRITIC-LEDGER F73: the cap used to be permanent, so four
+               slow frames in one scroll demoted every page in the tab
+               for the rest of the session). Comparing an instant means
+               the TTL itself lives in exactly one place — governor.ts —
+               and this critical-path script carries no copy of it.
+               A cap with no expiry is honoured as set deliberately.
             2. `data-motion-ready` — the text-motion gate (amendment A7):
                stamped ONLY when the tier is core, i.e. the same gates
                SmoothScroll checks before mounting the engine plus the
@@ -164,7 +172,7 @@ export default function RootLayout({
                  hidden load, and a JS-dead load all paint the finished
                  page (A7). TextMotion drops it the instant it starts
                  building tweens. */
-              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||sessionStorage.getItem("study-tier-cap")==="print"||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
+              'try{var d=document.documentElement,u=+sessionStorage.getItem("study-tier-cap-until"),c=sessionStorage.getItem("study-tier-cap")==="print"&&!(u>0&&Date.now()>u),p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||c||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
           }}
         />
         {/* CRITIC-LEDGER F34: a fourth typeface leaked in here. The
