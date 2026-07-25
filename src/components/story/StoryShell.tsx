@@ -738,7 +738,11 @@ function WhoChapter() {
               for it. The claims on this paper carry receipts.
             </p>
 
-            <div className="flex flex-col gap-10 md:justify-between">
+            {/* F46, second half: `md:justify-between` pushed the n.b.
+                note to the bottom of the column, ~130px clear of the
+                dictionary entry it annotates, so the two apparatus
+                blocks read as unrelated. They are one note stack now. */}
+            <div className="flex flex-col gap-6">
               {/* The printed glossary block: serif headword, mono
                   pronunciation, Newsreader senses. One instance on the
                   whole paper; both senses are the thesis, not a claim.
@@ -758,8 +762,20 @@ function WhoChapter() {
                 </p>
               </div>
 
+              {/* CRITIC-LEDGER F46: this was the ONLY dashed container in
+                  the day world — an orphan style whose one relative on
+                  the whole site is the gate stamp, in clay, after dark.
+                  A dashed box reads as "content missing" (the same
+                  signifier F20 removed from the stamp), and it sat 130px
+                  below the dictionary block it belongs with.
+                  It is now a hairline rule and an indent — the apparatus
+                  grammar every other note on the paper already uses (the
+                  hero's footnote separator, the folio rules, the ¶05 row
+                  rules) — and it sits directly under the entry it
+                  annotates. F32: `text-xs` was also a 12px one-off; the
+                  note takes the label token like every other aside. */}
               <aside
-                className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
+                className="label-mono text-ink-secondary border-ink/15 border-t pt-3 leading-6"
                 data-tm="block"
               >
                 n.b. — every project below opens into its own case file, source,
@@ -1416,7 +1432,16 @@ function ValuesChapter() {
             in (each fires at its own top 75%, the star leading); a scene
             wrapper here made the ledger pre-empt the litany, so the
             original coordinated timing is preserved untouched. */}
-        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-end">
+        {/* CRITIC-LEDGER F17: `lg:items-end` bottom-aligned fig 6.1 into
+            the corner of a 1250px frame — the gates ledger began at
+            y≈733 and the entire upper-right quadrant (x 1230→1770,
+            y 90→700) was empty paper. The chapter read as left-hugging
+            with a figure dropped in the corner, which is the exact
+            composition problem the old code comment claimed to have
+            fixed. Top-aligning sets the ledger's first row against the
+            first mantra, so the two figures start on the same line and
+            the spread is composed edge to edge. */}
+        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-start">
           <figure>
             {/* The ending litany (plan 3.8): line-mask rises with a
                 SLOWING stagger (TextMotion), each receipt fading in
@@ -1673,11 +1698,19 @@ function GateChapter() {
             full: every receipt on the page, numbered, linked to its
             evidence. Compact mono rows over hairline rules; it sits in
             nightfall, so muting is opacity, never day tokens (A4). */}
-        <div className="mt-[12vh] max-w-[44rem]" data-tm="block">
+        {/* CRITIC-LEDGER F19: the references block was capped at 44rem
+            inside a 1240px column, so it ended at x≈950 of 1770 and left
+            ~700px of dead right margin under the most important content
+            on the page. The cap is gone and the list sets in TWO columns
+            at lg — the ledger's own fix, and the form a printed
+            endnote apparatus actually takes. `break-inside: avoid` keeps
+            a reference and its source on the same line of the same
+            column. */}
+        <div className="mt-[12vh]" data-tm="block">
           <h2 className={`label-mono ${muted}`}>
             references — footnote 1, kept.
           </h2>
-          <ol className="label-mono mt-4">
+          <ol className="label-mono mt-4 lg:columns-2 lg:gap-x-16 [&>li]:break-inside-avoid">
             {GATE_REFERENCES.map((reference, index) => (
               <li
                 key={reference.href}
