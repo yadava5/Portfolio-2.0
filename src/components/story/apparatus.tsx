@@ -193,11 +193,21 @@ export function PairHeadline({
   const manifesto = motion === "manifesto";
   return (
     <div className={className} data-tm-scene={scene ? "" : undefined}>
+      {/* data-tier-garnish (FABLE brief §F1a): the chapter bright takes
+          the full-tier letterpress press — a 1px settle + same-color ink
+          bleed under the cursor. Pure garnish on a rail that styles
+          nothing outside html[data-tier="full"], so every other tier
+          renders this attribute inert. The manifesto is excluded: its
+          words are the page's one scrubbed text and already answer the
+          reader's hand through scroll. The hover target is the heading
+          ROOT — TextMotion tweens the SplitText lines inside it, never
+          the root, so no inline transform ever fights the press. */}
       <Bright
         className="font-display text-chapter fraunces-display max-w-[22ch]"
         data-tm-bright={manifesto ? undefined : "lines"}
         data-tm-words={manifesto ? "" : undefined}
         data-breathe={manifesto ? undefined : ""}
+        data-tier-garnish={manifesto ? undefined : "press"}
       >
         {bright}
       </Bright>
