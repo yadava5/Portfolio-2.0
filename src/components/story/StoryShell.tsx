@@ -29,11 +29,7 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import {
-  personalInfo,
-  socialLinks,
-  education,
-} from "@/lib/data/personal";
+import { personalInfo, socialLinks, education } from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
   getCaseStudyById,
@@ -106,7 +102,6 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 function heroDelay(index: number): CSSProperties {
   return { "--hero-i": index } as CSSProperties;
 }
-
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
 const AUTOML_PHASES = [
@@ -588,11 +583,42 @@ function ArrivalChapter() {
             (recruiter-rejudge fix — the index used to live at 55%
             scroll); the skip affordance is SECONDARY, and the scroll cue
             is the QUIETEST — smallest mono, no affordance. */}
+        {/* CRITIC-LEDGER F16 — THE PHONE GETS TWO AFFORDANCES, NOT SEVEN.
+            Measured at 390 before this change: nine interactive elements
+            inside ¶01, every one under the 44px bar, including three
+            case-file names 16px apart on one 15px-tall line. The ledger's
+            prescription is "below sm, collapse the hero to two
+            affordances (the capstone, the resume) at 44px row height, and
+            move the case-file index into ¶05 where it belongs".
+
+            The index is ALREADY in ¶05 — all four work rows carry their
+            own case-file link — so the hero's copy of it is a duplicate
+            that costs a phone reader three sub-44px targets in the first
+            frame. Below sm it goes, along with the three-link `in a
+            hurry` run, and a single 44px resume row takes their place.
+            Nothing is lost from the phone: the masthead already carries
+            `the work` and a resume chip, and /evidence keeps its entries
+            in ¶05's index line and the gate.
+
+            At sm and up nothing changes at all — the desktop first frame
+            is Wave 1's composition and is not this wave's to re-cut. */}
         <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
           <p className="text-ink">
-            <LenisAnchor href="#automl" className="link-draw">
+            <LenisAnchor
+              href="#automl"
+              className="link-draw inline-flex min-h-11 items-center sm:min-h-0"
+            >
               the capstone — agentic automl: seven gated phases ⟶
             </LenisAnchor>
+          </p>
+          {/* The phone's second affordance, and its last (F16). */}
+          <p className="text-ink-secondary sm:hidden">
+            <a
+              href={personalInfo.resumeUrl}
+              className="link-draw inline-flex min-h-11 items-center"
+            >
+              the resume ⟶
+            </a>
           </p>
           {/* Quiet apparatus voice, no buttons: direct routes into the
               case files the #work chapter argues.
@@ -617,7 +643,7 @@ function ArrivalChapter() {
               screener is most likely to use. The overrides are gone; the
               lines inherit the 13px label token the design system says
               is the floor. */}
-          <p className="text-ink-secondary">
+          <p className="text-ink-secondary hidden sm:block">
             case files:{" "}
             <Link
               href="/projects/jobtracker/"
@@ -660,7 +686,7 @@ function ArrivalChapter() {
               for a list of peers (·), and reserving `⟶` for "deeper
               into this argument" is what makes it mean anything when it
               does appear. */}
-          <p className="text-ink-secondary">
+          <p className="text-ink-secondary hidden sm:block">
             in a hurry —{" "}
             <LenisAnchor href="#work" className="link-draw">
               the work

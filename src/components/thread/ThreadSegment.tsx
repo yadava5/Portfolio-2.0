@@ -29,9 +29,24 @@
  * ScrollTrigger is ever created, and the segment renders the finished
  * run — solid path fully drawn, node filled. globals.css repeats that
  * state with `!important` under `prefers-reduced-motion` and
- * `[data-motion-off]`, so the static world holds with zero engine (and
- * zero JS-timing) dependence. Chapters 06/07 are fixed to dusk
- * territory and carry the dusk ink directly (`data-thread-dusk`).
+ * `[data-motion-off]`, so the static world holds with zero engine and
+ * zero JS-TIMING dependence: no rAF, no ScrollTrigger, nothing that has
+ * to fire in the right order.
+ *
+ * WHAT IT IS NOT is zero-JS (CRITIC-LEDGER F71/F82, corrected — this
+ * header used to claim exactly that). Every path here is GENERATED from
+ * measured boxes, so the server has nothing to render: `state` starts
+ * null and the SVG comes back empty. Probed with `javaScriptEnabled:
+ * false`: seven `.thread-segment` elements, zero `d` attributes among
+ * them. A scripting-disabled reader gets no thread at all. That is
+ * survivable — the segment is `aria-hidden` and carries no content —
+ * but it is not what "holds with zero JS dependence" says, and the ~54
+ * lines of static-world CSS this file points at are live only once the
+ * measurement pass has run (they are NOT dead: the reduced-motion
+ * reader, who has JS, is exactly who they are for).
+ *
+ * Chapters 06/07 are fixed to dusk territory and carry the dusk ink
+ * directly (`data-thread-dusk`).
  */
 
 "use client";
@@ -210,6 +225,7 @@ export function ThreadSegment({ id }: ThreadSegmentProps) {
     const section = svg?.closest<HTMLElement>("[data-chapter]");
     if (!svg || !section) return;
     let disposed = false;
+    let queued = 0;
 
     const apply = () => {
       if (disposed) return;
@@ -239,27 +255,53 @@ export function ThreadSegment({ id }: ThreadSegmentProps) {
         folio: folioEl ? localBox(folioEl, rect) : null,
         stamp: stampEl ? localBox(stampEl, rect) : null,
         marks: stampEl ? measureStampMarks(stampEl, rect) : null,
+        /* The nightfall dip paints only in the static worlds, so only
+           the static worlds pay to build it (CRITIC-LEDGER F79). Read
+           at measure time, which is also when a world change re-runs
+           this effect. */
+        wantsDip: !motionWorldPlanned(),
       });
       if (!geometry) return;
       setState((prev) =>
-        prev && prev.geometry.d === geometry.d
+        prev &&
+        prev.geometry.d === geometry.d &&
+        prev.geometry.dDip === geometry.dDip
           ? prev
           : { geometry, undrawn: motionWorldPlanned() }
       );
     };
 
+    /* ONE rebuild per frame, whatever the observer says (F63). A window
+       drag fires ResizeObserver on every frame, and each callback used
+       to run the full generator — the spine, the wobble, two
+       catmull-rom passes and the swell run — synchronously inside the
+       observer, times seven mounted segments. Coalescing to a rAF makes
+       a drag cost one rebuild per frame instead of one per notification,
+       and moves it out of the observer's own callback. */
+    const schedule = () => {
+      if (disposed || queued) return;
+      queued = requestAnimationFrame(() => {
+        queued = 0;
+        apply();
+      });
+    };
+
     apply();
-    const observer = new ResizeObserver(apply);
+    const observer = new ResizeObserver(schedule);
     observer.observe(section);
     /* The mono/serif swap can change the kicker's width without changing
        the section's size — re-measure once fonts settle. */
-    document.fonts?.ready.then(apply);
+    document.fonts?.ready.then(schedule);
 
     return () => {
       disposed = true;
+      if (queued) cancelAnimationFrame(queued);
       observer.disconnect();
     };
-  }, [id]);
+    /* `lenis` is a dependency because the WORLD is an input to the
+       geometry: the nightfall dip is built only where it paints (F79),
+       so a mid-session flip of the quiet toggle has to re-measure. */
+  }, [id, lenis]);
 
   /* ── Wire (or retire) the scrubbed drawing ───────────────────── */
   useEffect(() => {

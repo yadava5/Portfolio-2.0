@@ -35,9 +35,6 @@ import { personalInfo, socialLinks } from "@/lib/data/personal";
 import {
   useLenis,
   useMotionPreference,
-  SCROLL_DURATION,
-  SCROLL_OFFSET,
-  scrollEasing,
 } from "@/components/layout/SmoothScroll";
 import { landingTop, pushLanding } from "@/components/story/arrival";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -120,16 +117,12 @@ export default function Header() {
          instead of leaving the site (CRITIC-LEDGER F05). */
       pushLanding(targetId);
       if (lenis) {
-        /* Programmatic scrolls: 1.2s expo-out through the engine (plan 3.9) */
-        lenis.scrollTo(target, {
-          duration: SCROLL_DURATION,
-          easing: scrollEasing,
-          offset: SCROLL_OFFSET,
-        });
+        /* The browser's own smooth flight to the shared landing */
+        lenis.scrollTo(target);
       } else {
         /* Static world: instant jump via the shared landing contract
-           (arrival.ts — scrollIntoView would double-count
-           scroll-padding + scroll-margin to ~192px). */
+           (arrival.ts — scrollIntoView would add the target's own
+           scroll-margin-top to the masthead band, F69). */
         window.scrollTo({ top: landingTop(target), behavior: "auto" });
       }
     },
@@ -256,7 +249,7 @@ export default function Header() {
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item.target)}
                     aria-current={isActive ? "true" : undefined}
-                    className={`label-mono link-draw whitespace-nowrap transition-colors hover:text-(--header-ink) ${
+                    className={`label-mono link-draw whitespace-nowrap hover:text-(--header-ink) ${
                       isActive
                         ? "text-(--header-ink)"
                         : "text-(--header-ink-muted)"
@@ -273,7 +266,7 @@ export default function Header() {
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label-mono link-draw text-(--header-ink-muted) transition-colors hover:text-(--header-ink)"
+                  className="label-mono link-draw text-(--header-ink-muted) hover:text-(--header-ink)"
                 >
                   github
                 </a>

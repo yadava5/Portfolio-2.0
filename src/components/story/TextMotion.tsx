@@ -43,10 +43,19 @@
  *     SLOWING stagger (0.12s → +0.2s → +0.3s), one shared trigger;
  *     receipts follow each mantra by 200ms. (The final line's WONK=1 is
  *     static typography, set in the markup — it holds in every world.)
- *   - WEIGHT BREATHING (`[data-breathe]`): Fraunces wght 360→420→360
- *     (±60 max) scroll-linked per headline — ONE quickSetter writing
+ *   - WEIGHT BREATHING (`[data-breathe]`): Fraunces wght 396→420→396
+ *     (BREATHE_MIN + BREATHE_SPAN, quantized to BREATHE_STEPS = 4
+ *     buckets) scroll-linked per headline — ONE quickSetter writing
  *     `--tm-wght`, composed into font-variation-settings by globals.css.
- *     No layout property is ever animated.
+ *     CRITIC-LEDGER F82: this line used to read "360→420→360 (±60 max)",
+ *     which F75 narrowed and quantized in Wave 2, and it claimed "No
+ *     layout property is ever animated" — which was never true HERE.
+ *     `wght` changes glyph ADVANCE WIDTHS in Fraunces, so the breath
+ *     reflows its own line; that is exactly why F75 cut the span from
+ *     60 to 24 and bucketed it, and why the setter skips unchanged
+ *     buckets. The honest statement is the one the NO-LIST wants: no
+ *     property that moves OTHER elements is animated — the breath is
+ *     contained to the headline's own box.
  *
  * The hero entrance itself is pure CSS (globals.css `.hero-enter`,
  * gated by the `data-motion-ready` attribute a layout inline script

@@ -1,21 +1,17 @@
 /**
  * @fileoverview LenisAnchor — in-page anchor routed through the ONE loop.
  *
- * A plain `<a href="#…">` whose click is handed to the shared Lenis
- * instance (1.2s expo-out, 6rem offset — plan 3.9 / amendment A1). When
- * the engine is absent (reduced motion or the quiet motion toggle), it
- * falls back to an instant native jump — never init-then-disable (A7).
+ * A plain `<a href="#…">` whose click is handed to the shared scroll
+ * controller: the browser's own smooth flight to the shared landing
+ * contract (arrival.ts). When the engine is absent (reduced motion or
+ * the quiet motion toggle), it falls back to an instant jump to the
+ * SAME position — never init-then-disable (A7).
  */
 
 "use client";
 
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
-import {
-  useLenis,
-  SCROLL_DURATION,
-  SCROLL_OFFSET,
-  scrollEasing,
-} from "@/components/layout/SmoothScroll";
+import { useLenis } from "@/components/layout/SmoothScroll";
 import {
   announceArrival,
   landingTop,
@@ -46,16 +42,12 @@ export function LenisAnchor({ href, children, ...rest }: LenisAnchorProps) {
        address bar changes with the click, not a second later. */
     pushLanding(href);
     if (lenis) {
-      lenis.scrollTo(target, {
-        duration: SCROLL_DURATION,
-        easing: scrollEasing,
-        offset: SCROLL_OFFSET,
-      });
+      lenis.scrollTo(target);
     } else {
       /* Static world: instant jump, no animation, SAME landing contract
-         as the controller (arrival.ts) — scrollIntoView would apply BOTH
-         scroll-padding-top AND scroll-margin-top (~12rem = 192px, the
-         double-count), so every world lands identically. */
+         as the controller (arrival.ts), so every world lands
+         identically. Not scrollIntoView: it would add the target's own
+         `scroll-margin-top` to the masthead band (F69). */
       window.scrollTo({ top: landingTop(target), behavior: "auto" });
       announceArrival();
     }

@@ -40,9 +40,15 @@ export function FileMemory({ fileId }: FileMemoryProps) {
   const [memory, setMemory] = useState<MemoryState | null>(null);
 
   useEffect(() => {
-    /* The one sanctioned read-then-set: localStorage is external state
-       that must apply post-hydration (SSR-safety contract) — the same
-       pattern SmoothScroll uses to restore the quiet toggle. */
+    /* CRITIC-LEDGER F81. This is NOT the mirror pattern the rule is
+       aimed at, and it is not what SmoothScroll's quiet-toggle read was
+       (that one is now a `useSyncExternalStore` subscription).
+       `recordFileVisit` WRITES — it stamps this visit into the paper's
+       memory — and returns what it wrote. A write must not happen
+       during render or in a snapshot getter, both of which React may
+       call more than once; an effect is the only correct place for it.
+       The state that follows is the write's receipt, not a copy of an
+       external value. */
     const { date, firstVisit } = recordFileVisit(fileId);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMemory({ label: date.label, firstVisit });

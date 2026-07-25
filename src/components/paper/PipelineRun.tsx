@@ -27,8 +27,21 @@
  * drawn to the gate, the token resting (clay) at the gate, phases 1–6
  * lit, `7.0 deploy` still secondary, run 041 still awaiting. No pin, no
  * scrub, no rAF. globals.css repeats the lit/drawn state with `!important`
- * under `prefers-reduced-motion` and `[data-motion-off]`, so the honest
- * resting figure holds with zero engine dependence.
+ * under `prefers-reduced-motion` and `[data-motion-off]`, so the resting
+ * figure holds with zero GSAP, ScrollTrigger or rAF dependence.
+ *
+ * WHAT THAT PARAGRAPH DOES NOT SAY (CRITIC-LEDGER F71/F82, corrected):
+ * it is not zero-JS. This overlay is a MEASURED layer — `railX`,
+ * `phase0Y` and `gateY` come from the laid-out ladder, which no server
+ * can know — so before the measurement effect runs it renders an empty
+ * 0×0 `<svg>`, and with scripting disabled entirely it stays that way.
+ * Probed with `javaScriptEnabled: false`: overlay 0×0, zero children.
+ * That is survivable because the overlay is `aria-hidden` DECORATION:
+ * the seven `<li>` phase labels, the human-gate marker and the register
+ * are server markup and carry the whole argument without it. What a
+ * no-JS reader loses is the ink, not the claim. A reader with JS and
+ * reduced motion — the case A7 is actually about — gets the complete
+ * figure, because the measurement pass is not the engine.
  *
  * The Red Thread rule of the house holds here too: the pin wraps a
  * SEPARATE wrapper from the figure the composed-scene reveal transforms
@@ -59,7 +72,10 @@ import {
   readStoredMotionOff,
   useLenis,
 } from "@/components/layout/SmoothScroll";
-import { announceLayoutSettled } from "@/components/story/arrival";
+import {
+  anchorLanding,
+  announceLayoutSettled,
+} from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -100,10 +116,14 @@ const WIDE_QUERY = "(min-width: 1024px)";
 
 /** Held-plate seating: the pin parks the plate's top at 22% of the
  *  viewport (the original seat) unless the plate is too tall to fit —
- *  then it slides up as far as the fixed header allows so the plate's
- *  foot stays on screen through the hold. */
+ *  then it slides up as far as the masthead band allows so the plate's
+ *  foot stays on screen through the hold.
+ *
+ *  The floor is the READING LINE — `anchorLanding()`, the same band
+ *  every landing clears (CRITIC-LEDGER F69). It used to be a fourth
+ *  hand-written belief about the masthead's height (`72 /* ~56px *\/`,
+ *  against a measured 68px), which is exactly the drift F69 names. */
 const PIN_TOP_FRACTION = 0.22;
-const PIN_TOP_MIN = 72; /* fixed header (~56px) + breath */
 const PIN_BOTTOM_GAP = 24;
 
 /**
@@ -205,8 +225,6 @@ export function PipelineRun() {
   const [wide, setWide] = useState(
     () => typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
   );
-  /* Fire the clay pulse exactly once per gate arrival (re-armable) */
-  const haltedRef = useRef(false);
 
   /* ── Track the layout breakpoint (re-targets the pin on a flip) ──── */
   useEffect(() => {
@@ -323,9 +341,29 @@ export function PipelineRun() {
         else if (!written && has) row.removeAttribute("data-registry-written");
       });
     };
+    /**
+     * The halt marker. THE CLASS IS THE STATE (CRITIC-LEDGER F72).
+     *
+     * F72 predicted a lie a reader could see — the bead snapping back
+     * to `1.0 ingest` under a fully-drawn rail after a governor
+     * downshift. That did NOT reproduce: driven for real with the frame
+     * probe, a core→print downshift taken past the gate leaves the
+     * token at the gate (ty 182, `is-halted` set, edge dashoffset 0).
+     * Three re-measure paths were probed too — taller viewport, wider
+     * viewport, and a crossing of `WIDE_QUERY` — and none stranded the
+     * mark either.
+     *
+     * The guard it named was still unsound and is gone. It early-outed
+     * on a `haltedRef` that the cleanup reset to `false` WITHOUT
+     * removing the class the ref stood for, so the two could disagree
+     * and the guard would then refuse the write that reconciles them.
+     * Nothing today reaches that window; the next edit to the effect's
+     * dependencies might. Reading the class back cannot desync from the
+     * class, and the write stays idempotent, so the clay pulse still
+     * fires exactly once per real arrival.
+     */
     const setHalted = (halted: boolean) => {
-      if (halted === haltedRef.current) return;
-      haltedRef.current = halted;
+      if (token.classList.contains("is-halted") === halted) return;
       token.classList.toggle("is-halted", halted);
     };
 
@@ -365,7 +403,7 @@ export function PipelineRun() {
           const vh = window.innerHeight;
           const top = Math.min(
             Math.round(vh * PIN_TOP_FRACTION),
-            Math.max(PIN_TOP_MIN, vh - pinEl.offsetHeight - PIN_BOTTOM_GAP)
+            Math.max(anchorLanding(), vh - pinEl.offsetHeight - PIN_BOTTOM_GAP)
           );
           return `top ${top}px`;
         },
@@ -405,7 +443,6 @@ export function PipelineRun() {
     return () => {
       svg.removeAttribute("data-pipeline-scrub");
       pinEl.removeAttribute("data-pipeline-pinned");
-      haltedRef.current = false;
       /* Hand the plate back untouched: the quiet toggle must restore the
          complete register and the resting note, not a half-written one. */
       for (const row of registryRows) {

@@ -104,6 +104,18 @@ export interface SegmentEnv {
   stamp: ThreadBox | null;
   /** Stamp landmarks measured through its rotation (chapter 07) */
   marks: StampMarks | null;
+  /**
+   * Whether the nightfall dip is wanted — i.e. whether this reader is
+   * in a world that PAINTS it (CRITIC-LEDGER F79).
+   *
+   * `.thread-dip` is `display: none` by default and `inline` only in
+   * the static worlds, yet `dipRun()` + a second `catmullRomPath()` ran
+   * on every chapter-05 re-measure and the path shipped in the DOM
+   * regardless. Probed in the motion world: 1 dip node present, 0
+   * painted. The flag puts the computation behind the same gate as the
+   * paint, so the majority world pays for neither.
+   */
+  wantsDip: boolean;
 }
 
 /** The chapter node seated on the segment's first point. */
@@ -686,7 +698,7 @@ export function buildSegment(env: SegmentEnv): SegmentGeometry | null {
   }
 
   let dDip: string | null = null;
-  if (env.id === "05" && env.folio) {
+  if (env.wantsDip && env.id === "05" && env.folio) {
     const run = dipRun(built.pts, env.folio);
     if (run && run.length >= 2) dDip = catmullRomPath(run);
   }

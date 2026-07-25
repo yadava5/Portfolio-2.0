@@ -1,21 +1,38 @@
 /**
- * @fileoverview Lenis + GSAP ScrollTrigger scroll engine — the ONE rAF loop
+ * @fileoverview The scroll engine — NATIVE scroll + GSAP ScrollTrigger.
  *
- * Architecture (plan 3.9 + rubric amendment A1):
- *   - Lenis runs with `autoRaf: false`; GSAP's ticker is the single rAF loop
- *     and drives `lenis.raf(time * 1000)`.
- *   - `lagSmoothing(0)` keeps scrub positions honest after main-thread stalls.
- *   - ScrollTrigger start/end positions are re-measured after web fonts load.
- *   - The live Lenis instance is exposed via context (`useLenis`) so nav
- *     anchors, the chapter rail, and the day-arc engine all read from this
- *     single loop — no parallel scroll listeners.
+ * THERE IS NO LENIS (CRITIC-LEDGER F82). This header described a Lenis
+ * instance running with `autoRaf: false`, driven by `lenis.raf(time *
+ * 1000)` off GSAP's ticker, exposed through context. None of that has
+ * been true since the engine moved to the browser's own scroll — four
+ * Lenis-tuning passes could not get rid of the momentum "slide" and the
+ * sub-pixel shimmer, so the library went and native scroll took over.
+ * What survives is the NAME: `useLenis()`, `LenisContext`,
+ * `LenisAnchor`, `data-lenis-connected`. Those are load-bearing across
+ * the components and the specs and are deliberately not renamed in this
+ * wave; read them as "the scroll controller".
+ *
+ * Architecture (plan 3.9 + rubric amendment A1), as it actually is:
+ *   - The window scrolls itself. ScrollTrigger listens to the window's
+ *     own scroll event, so every scrubbed animation follows the
+ *     browser's sub-pixel-clean scroll and there is no scroll-jacking.
+ *   - GSAP's ticker remains the ONE rAF loop; the frame governor rides
+ *     it (§F2) and nothing else adds a scroll-time rAF.
+ *   - ScrollTrigger start/end positions are re-measured after web fonts
+ *     load, and after the ch04 pin builds its spacer (PipelineRun then
+ *     announces `paper:layout-settled` so hash landings re-assert).
+ *   - This provider publishes a thin CONTROLLER — anchor navigation, a
+ *     scroll-event bridge, and the modal lock — through context. A
+ *     non-null controller means the motion world is live; that is what
+ *     children actually test it for.
  *
  * Reduced motion (amendment A7): gated at entry — the engine is NEVER
  * mounted under `prefers-reduced-motion: reduce`, and a mid-session OS
- * toggle tears it down/brings it up via the hook's change subscription.
- * The quiet in-page motion toggle (also A7) is the same gate by hand: it
- * persists to localStorage, stamps `data-motion-off` on <html> (the static
- * world's CSS hook), and unmounts/remounts the engine identically.
+ * toggle tears it down/brings it up via the hook's subscription. The
+ * quiet in-page motion toggle (also A7) is the same gate by hand: it
+ * persists to localStorage, stamps `data-motion-off` on <html> (the
+ * static world's CSS hook), and unmounts/remounts the engine
+ * identically.
  */
 
 "use client";
@@ -28,12 +45,17 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { announceArrival, landingTop } from "@/components/story/arrival";
+import {
+  anchorLanding,
+  announceArrival,
+  landingTop,
+} from "@/components/story/arrival";
 import {
   applyGate,
   getTier,
@@ -47,18 +69,102 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/** Programmatic scroll settings (plan 3.9): duration 1.2s, expo-out */
-export const SCROLL_DURATION = 1.2;
-export const scrollEasing = (t: number) =>
-  Math.min(1, 1.001 - Math.pow(2, -10 * t));
-
-/* The anchor landing contract lives with the rest of the landing rules
-   (components/story/arrival.ts) — ONE offset, one owner. Re-exported
-   here because every existing caller imports it from the engine. */
-export { SCROLL_OFFSET } from "@/components/story/arrival";
+/**
+ * How long the frame governor ignores its own samples after a
+ * programmatic flight starts (§F2: it measures the VISITOR's scroll,
+ * and a smooth `window.scrollTo` is machine scrolling — Firefox paces
+ * one at a cadence that reads as sustained jank and false-downshifted
+ * the engine mid-flight).
+ *
+ * An UPPER BOUND on a browser-chosen duration, not a duration we set:
+ * `behavior: "smooth"` is the user agent's animation and no web API
+ * reports or controls its length. Overshooting only means the governor
+ * idles a beat longer than it had to.
+ *
+ * CRITIC-LEDGER F68: this used to read `SCROLL_DURATION * 1000 + 600`,
+ * where `SCROLL_DURATION = 1.2` was the Lenis-era "1.2s expo-out" — a
+ * setting no code had applied since the engine moved to native scroll.
+ * The number survives (1800ms is the window that was verified); the
+ * claim that we choose it does not.
+ */
+const FLIGHT_SUPPRESS_MS = 1800;
 
 /** localStorage key for the quiet in-page motion toggle (amendment A7) */
 const MOTION_STORAGE_KEY = "motion-off";
+
+/* ── THE QUIET TOGGLE, AS AN EXTERNAL STORE (CRITIC-LEDGER F81) ──────
+   The visitor's motion preference lives in localStorage, which is not
+   React state. It used to be MIRRORED into React state by an effect
+   that read storage once on mount — one of the five
+   `react-hooks/set-state-in-effect` suppressions the ledger counts, and
+   the shape `useSyncExternalStore` exists for. The store is module
+   scope because the preference is per-DOCUMENT, exactly like the one
+   scroll loop and the one governor: two providers would be two
+   answers. */
+const motionOffListeners = new Set<() => void>();
+
+/**
+ * Subscribe to quiet-toggle changes, including another tab's.
+ *
+ * @param onChange - React's re-read callback
+ * @returns The unsubscribe
+ */
+function subscribeMotionOff(onChange: () => void): () => void {
+  motionOffListeners.add(onChange);
+  /* `storage` fires only in OTHER documents, so a second tab of the
+     paper follows the reader's choice; this tab's own writes notify
+     through the set. */
+  window.addEventListener("storage", onChange);
+  return () => {
+    motionOffListeners.delete(onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+/**
+ * Read the visitor's OWN toggle — deliberately not `readStoredMotionOff`,
+ * which also reports the governor's print floor. The header control must
+ * reflect the reader's choice, not the device's verdict.
+ *
+ * @returns True when the visitor has asked for motion off
+ */
+function getMotionOffSnapshot(): boolean {
+  try {
+    return window.localStorage.getItem(MOTION_STORAGE_KEY) === "1";
+  } catch {
+    return motionOffFallback; /* storage unavailable — session only */
+  }
+}
+
+/**
+ * No storage on the server: the prerendered HTML is the motion world's,
+ * which is what the layout head script also assumes.
+ *
+ * @returns False, always
+ */
+function getMotionOffServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * Persist the visitor's choice and tell every subscriber in this
+ * document.
+ *
+ * @param next - The new preference
+ */
+function writeMotionOff(next: boolean): void {
+  try {
+    window.localStorage.setItem(MOTION_STORAGE_KEY, next ? "1" : "0");
+  } catch {
+    /* storage unavailable — the toggle still works for this session,
+       but `getMotionOffSnapshot` cannot see it, so hold it in memory. */
+    motionOffFallback = next;
+  }
+  for (const listener of motionOffListeners) listener();
+}
+
+/** Session-only preference when localStorage refuses writes. */
+let motionOffFallback = false;
 
 /**
  * Read "is the static world in force?" synchronously (amendment A7 +
@@ -91,14 +197,13 @@ export function readStoredMotionOff(): boolean {
    app calls: anchor navigation + a scroll-event bridge + the modal lock.
    Non-null == the motion world is live (children wire their ScrollTriggers). */
 export interface ScrollController {
-  scrollTo: (
-    target: string | HTMLElement,
-    opts?: {
-      offset?: number;
-      duration?: number;
-      easing?: (t: number) => number;
-    }
-  ) => void;
+  /* One argument, because there is one landing (F68). The signature
+     used to advertise `{offset, duration, easing}`; the body never
+     destructured `opts` and both call sites passed all three, so a
+     reader of the type learned three things the engine does not do.
+     The offset is the shared landing contract (arrival.ts) and the
+     flight is the browser's own smooth scroll. */
+  scrollTo: (target: string | HTMLElement) => void;
   on: (event: "scroll", cb: () => void) => void;
   off: (event: "scroll", cb: () => void) => void;
   stop: () => void;
@@ -149,7 +254,13 @@ interface SmoothScrollProps {
  */
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const prefersReducedMotion = usePrefersReducedMotion();
-  const [motionOff, setMotionOff] = useState(false);
+  /* The visitor's own toggle, read from where it lives (F81) rather
+     than mirrored into state by a mount effect. */
+  const motionOff = useSyncExternalStore(
+    subscribeMotionOff,
+    getMotionOffSnapshot,
+    getMotionOffServerSnapshot
+  );
   const [lenis, setLenis] = useState<ScrollController | null>(null);
   /* Page visibility joins the motion gate (the blank-plate fix). A hidden
      document freezes rAF, so a mounted engine could hide content behind
@@ -189,21 +300,6 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
      the reader's line doesn't jump (§F2: zero layout surprise). */
   const downshiftAnchor = useRef<{ el: Element; top: number } | null>(null);
 
-  /* Restore the persisted toggle once on the client (SSR-safe default:
-     on). Raw localStorage read on purpose: readStoredMotionOff() now also
-     reports the governor's print floor, which is NOT the user's toggle —
-     the header control must reflect only the visitor's own choice. */
-  useEffect(() => {
-    try {
-      if (window.localStorage.getItem(MOTION_STORAGE_KEY) === "1") {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMotionOff(true);
-      }
-    } catch {
-      /* storage unavailable — default stays on */
-    }
-  }, []);
-
   /* Report the motion gate to the governor (§F2 precedence: the gate
      always wins — reduced motion / the quiet toggle force print and
      disable measurement; an open gate restores the session ceiling).
@@ -227,15 +323,17 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       subscribeTier((tier) => {
         const print = tier === "print";
         if (print && !downshiftAnchor.current) {
-          /* Anchor the section under the READING line (just below the
-             6rem fixed header), not merely the first one still on
-             screen: a section whose tail barely clips the viewport top
-             can itself reflow between the motion and static worlds
-             (SplitText un-splitting), which would leak that delta into
-             everything below it. */
+          /* Anchor the section under the READING line — the masthead
+             band every landing clears, plus a line of breath (F69: this
+             was a fifth hand-written 120) — not merely the first one
+             still on screen: a section whose tail barely clips the
+             viewport top can itself reflow between the motion and
+             static worlds (SplitText un-splitting), which would leak
+             that delta into everything below it. */
+          const readingLine = anchorLanding() + 24;
           const section = Array.from(
             document.querySelectorAll<HTMLElement>("[data-chapter]")
-          ).find((el) => el.getBoundingClientRect().bottom > 120);
+          ).find((el) => el.getBoundingClientRect().bottom > readingLine);
           if (section) {
             downshiftAnchor.current = {
               el: section,
@@ -287,15 +385,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   }, [lenis, tierPrint]);
 
   const toggleMotion = useCallback(() => {
-    setMotionOff((current) => {
-      const next = !current;
-      try {
-        window.localStorage.setItem(MOTION_STORAGE_KEY, next ? "1" : "0");
-      } catch {
-        /* storage unavailable — session-only toggle */
-      }
-      return next;
-    });
+    writeMotionOff(!getMotionOffSnapshot());
   }, []);
 
   const motionPreference = useMemo(
@@ -339,8 +429,8 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         const y = landingTop(el);
         /* §F2: a smooth flight is machine scrolling — the governor must
            not score its frame cadence as the visitor's jank (firefox
-           false-downshifted mid-flight). Window ≈ flight + settle. */
-        suppressSampling(SCROLL_DURATION * 1000 + 600);
+           false-downshifted mid-flight). */
+        suppressSampling(FLIGHT_SUPPRESS_MS);
         window.scrollTo({ top: y, behavior: "smooth" });
         /* A flight crosses no trigger lines on the way in: tell the
            reveal engine where the reader landed (CRITIC-LEDGER F01). */
@@ -378,6 +468,14 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
        longtask observer + scroll-gated sampling on THE one rAF loop. */
     startWatching();
 
+    /* CRITIC-LEDGER F81. The last suppression in this file, and the one
+       that cannot become a store read: `controller` does not EXIST
+       until this effect builds it, and its lifetime is the effect's —
+       the listener map, the fonts-ready refresh, the resize handler and
+       the governor's watch all live and die with it. There is nothing
+       external to subscribe to; publishing the object the effect just
+       created is the effect's whole purpose. (The quiet toggle, which
+       WAS an external read, is now `useSyncExternalStore` above.) */
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLenis(controller);
 

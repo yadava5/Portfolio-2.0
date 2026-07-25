@@ -1,15 +1,22 @@
 /**
  * @fileoverview LightField — the world's fixed background stack.
  *
- * Four static-paint layers (DECISION.md §3, "the world from A/plan"),
- * bottom to top:
+ * THREE painted elements carrying FOUR authored layers (DECISION.md §3,
+ * "the world from A/plan"), bottom to top:
  *   1. base    — day-arc color composed from the numeric oklch channel
- *                vars (`--arc-l/c/h`) that DayArc scrubs (amendment A4)
+ *                vars (`--arc-l/c/h`) that DayArc scrubs (amendment A4),
+ *                AND the raking light folded into the same element via
+ *                `background-blend-mode: soft-light` (see the note on
+ *                the element below: as its own `mix-blend-mode` layer
+ *                the rake forced a whole-viewport compositor re-blend
+ *                every time the colour beneath it changed)
  *   2. contour — faint ink contour texture, 5% (ink-on-paper apparatus)
  *   3. grain   — fine feTurbulence paper grain, ≤5% (NO-LIST §D cap)
- *   4. rake    — perceptible diagonal raking light under soft-light;
- *                its opacity is derived from `--arc-l`, so it fades out
- *                when the dusk step drops the arc's lightness
+ *
+ * CRITIC-LEDGER F82: this list used to name the rake as a fourth
+ * element and a reviewer counting divs found three. The rake did not go
+ * anywhere — it moved into the base — but a header that miscounts the
+ * DOM is exactly the kind of thing someone debugs against.
  *
  * Everything is CSS-only (globals.css: .light-field-*): no JS animation,
  * no blur filters, no orbs, no radial spotlight. The stack is fixed,

@@ -9,8 +9,11 @@
  * reserved for decisions, and this is the page's decision (DECISION.md §2).
  *
  * W1 (Refinement Era): the stamp is now a real `<button>` — the visitor
- * performs the site's thesis. One press (~600ms inking animation in the
- * motion world; instant swap in static worlds) dries the dashed outline
+ * performs the site's thesis. One press (the plate takes 750ms and the
+ * ink 720ms in the motion world — read off `stamp-press` and
+ * `stamp-ink-in` in globals.css, where the numbers live; this header
+ * said "~600ms" and was wrong by a quarter, CRITIC-LEDGER F82. Instant
+ * swap in static worlds) dries the dashed outline
  * into the solid APPROVED stamp carrying the visitor's own local date,
  * persisted via paperMemory. On revisit the stamp is ALREADY inked —
  * static, dried, never re-performed (gwern subtraction). Approving here
