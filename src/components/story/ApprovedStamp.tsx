@@ -13,9 +13,14 @@
  * ink 720ms in the motion world — read off `stamp-press` and
  * `stamp-ink-in` in globals.css, where the numbers live; this header
  * said "~600ms" and was wrong by a quarter, CRITIC-LEDGER F82. Instant
- * swap in static worlds) dries the dashed outline
- * into the solid APPROVED stamp carrying the visitor's own local date,
- * persisted via paperMemory. On revisit the stamp is ALREADY inked —
+ * swap in static worlds) dries the hairline unsigned plate into the
+ * solid APPROVED stamp carrying the visitor's own local date,
+ * persisted via paperMemory. (This header said "the dashed outline"
+ * until the certification round: F20 replaced that dashed rectangle
+ * with the paper's own double rule two waves earlier, and the sentence
+ * describing the site's signature act went on naming a mark that is no
+ * longer on the page — the same F82 class of fault.) On revisit the
+ * stamp is ALREADY inked —
  * static, dried, never re-performed (gwern subtraction). Approving here
  * approves run 041 everywhere (fig 4.1's registry row is the SAME run).
  * The act gates nothing: the mailto stays reachable without approving.
@@ -72,8 +77,10 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
   const fineFilterId = `stamp-fine-${compact ? "c" : "d"}`;
 
   /* Pull the hand in (item 3a): one attention beat the first time the
-     awaiting stamp scrolls into view — the dashed outline firms once and
-     the plate breathes. A7: armed only in the motion world (the CSS beat
+     awaiting stamp scrolls into view — the unsigned plate's rule firms
+     once (F20's double rule, not the dashed frame this comment used to
+     name) and the plate breathes. A7: armed only in the motion world
+     (the CSS beat
      is gated the same way the inking is), never on the dried stamp, and
      disconnected after the single fire. The transform rides .stamp-plate,
      which the Red Thread never measures, so geometry stays true. */
