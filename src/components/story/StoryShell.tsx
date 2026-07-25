@@ -29,7 +29,12 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { personalInfo, socialLinks, education } from "@/lib/data/personal";
+import {
+  personalInfo,
+  socialLinks,
+  education,
+  getDeansListCount,
+} from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
   getCaseStudyById,
@@ -101,6 +106,15 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 function heroDelay(index: number): CSSProperties {
   return { "--hero-i": index } as CSSProperties;
 }
+
+/** Small counts read as words in running prose, not digits (F53). */
+const NUMBER_WORDS: Record<number, string> = {
+  1: "one",
+  2: "two",
+  3: "three",
+  4: "four",
+  5: "five",
+};
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
 const AUTOML_PHASES = [
@@ -802,6 +816,8 @@ function PathChapter() {
   const degree = education[0];
   const range = formatDateRange(miami.startDate, miami.endDate);
   const graduation = formatMonthYear(degree.endDate);
+  /* F53: the count comes from personal.ts's own helper — never typed. */
+  const deansList = NUMBER_WORDS[getDeansListCount()] ?? getDeansListCount();
 
   return (
     <section
@@ -902,11 +918,28 @@ function PathChapter() {
               </h3>
               {/* Biographical register, not a claim chip (evidence-rejudge
                   footnote-straggler ruling): the ×N grammar read as an
-                  unlinked claim; prose + the transcript boundary keeps the
-                  fact while exempting it from footnote 1's link contract. */}
+                  unlinked claim; prose keeps the fact while exempting it
+                  from footnote 1's link contract.
+                  CRITIC-LEDGER F53, two faults, both fixed here:
+                  1. "3.65 GPA in major coursework (transcript on
+                     request)" was hardcoded in this JSX — NOT in
+                     proofManifest, not in personal.ts. /evidence states
+                     "If a claim is not in this ledger or a case file,
+                     the site does not make it." The site made it, with a
+                     self-selected denominator, and nothing in the build
+                     could ever flag it. It cannot go in the ledger
+                     either: the manifest's own rule is that a source
+                     must resolve OUTSIDE this site's rendering, and a
+                     transcript on request is not a public artifact. So
+                     it comes off the page — the ledger's other option.
+                  2. This line printed "dean's list, spring & fall 2025"
+                     while personal.ts records THREE awards, including
+                     Fall 2023. The count is now read from the data
+                     layer's own getDeansListCount(), so the sentence can
+                     never again disagree with the record behind it. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
-                B.S. {degree.field}, {graduation} — dean’s list, spring & fall
-                2025 — 3.65 GPA in major coursework (transcript on request).
+                B.S. {degree.field}, {graduation} — {deansList} semesters on the
+                dean’s list.
               </p>
             </div>
           </article>
@@ -1497,7 +1530,12 @@ function ValuesChapter() {
                   className="flex justify-between gap-x-2 opacity-80"
                 >
                   <span>{row.gate}</span>
-                  <span className="inline-flex items-baseline gap-x-1 text-right whitespace-nowrap">
+                  {/* CRITIC-LEDGER F44: `gap-x-1` is 4px, and the check
+                      stroke's bounding box already fills its own width,
+                      so fig 6.1 rendered `✓passed` with the glyph
+                      touching the word. gap-x-2 puts a real space
+                      between the mark and what it marks. */}
+                  <span className="inline-flex items-baseline gap-x-2 text-right whitespace-nowrap">
                     <GateMark status={row.status} />
                     {row.status}
                   </span>
