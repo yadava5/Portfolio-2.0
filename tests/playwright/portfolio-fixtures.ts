@@ -146,7 +146,7 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   // under it dates it and states what followed. Both are asserted, so
   // neither half can quietly go missing.
   education: "B.S. Computer Science",
-  educationRecord: "May 2026 — dean’s list, spring & fall 2025",
+  educationRecord: "May 2026 — dean’s list, fall 2023 & spring/fall 2025",
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
   experienceTitle: experiences[0].title,
