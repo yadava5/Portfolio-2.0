@@ -108,9 +108,72 @@ export function ChapterRail() {
     return () => observer.disconnect();
   }, []);
 
-  /* Audit-trail triggers — engine world only (A7): the static worlds
-     never reach this (their marks are forced visible in CSS), and the
-     callbacks ride the ONE existing loop — no new scroll listeners. */
+  /* THE STATIC WORLD'S OWN AUDIT TRAIL (CRITIC-LEDGER F14).
+     The marks used to be forced visible by CSS wherever the engine was
+     absent, so a reduced-motion or motion-off reader sitting in chapter
+     04 saw `01✓ 02✓ 03✓ 04✓ 05✓ 06✓ 07✓` — the rail told them they had
+     read the whole paper, including three chapters below the fold. A
+     "visited" mark that is always true is not a mark.
+     This observer earns them instead, on the SAME boundary the engine
+     uses (a chapter's bottom passing 60% of the viewport) expressed as
+     a rootMargin, and it is MONOTONE — it only ever adds. That is the
+     honest static-world reading: the engine world can retreat its marks
+     because it scrubs a timeline, but a static reader who has passed a
+     chapter has passed it. No scroll listener, no rAF: one
+     IntersectionObserver, the same primitive the active-chapter state
+     already uses (PERF-AUDIT — nothing new on the scroll path).
+     It runs ONLY when there is no engine, so the two systems can never
+     both drive the set. */
+  useEffect(() => {
+    if (lenis) return; /* the engine world owns the marks below */
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-chapter]")
+    );
+    if (sections.length === 0) return;
+
+    /* The observer is the CUE, not the measurement. An entry's
+       boundingClientRect is a snapshot from the moment the change was
+       recorded, and a long jump (a hash landing, a scrollbar drag,
+       end-key) coalesces intermediate states — probed, that left
+       chapters 02 and 05 unmarked after a jump to the foot of the page.
+       So each callback re-reads the live geometry of all seven
+       sections: seven getBoundingClientRect calls on an already-
+       throttled callback, and it can never miss a chapter. */
+    const sweep = () => {
+      const boundary = window.innerHeight * 0.6;
+      /* Mirrors the engine boundary's `clamp(...)`: the last chapter's
+         bottom can never reach 60% of the viewport because the document
+         stops there, so a reader at the foot of the page has finished it
+         by definition. Without this the static rail stalled one mark
+         short of the engine rail at the same scroll position. */
+      const atEnd =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 2;
+      const passed = sections
+        .filter(
+          (section) =>
+            atEnd || section.getBoundingClientRect().bottom <= boundary
+        )
+        .map((section) => section.dataset.chapter)
+        .filter((id): id is string => Boolean(id));
+      if (passed.length === 0) return;
+      setReviewed((prev) => {
+        if (passed.every((id) => prev.has(id))) return prev;
+        const next = new Set(prev);
+        for (const id of passed) next.add(id);
+        return next;
+      });
+    };
+
+    const observer = new IntersectionObserver(sweep, {
+      rootMargin: "0px 0px -60% 0px",
+    });
+    for (const section of sections) observer.observe(section);
+    return () => observer.disconnect();
+  }, [lenis]);
+
+  /* Audit-trail triggers — engine world only (A7): the callbacks ride
+     the ONE existing loop — no new scroll listeners. */
   useEffect(() => {
     if (!lenis) return;
     const sections = Array.from(
