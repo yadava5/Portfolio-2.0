@@ -1701,10 +1701,59 @@ html[data-motion-off] .audit-run {
   color: var(--color-ink);
 }
 
+/* ── THE HOLD DEVELOPS (CRITIC-LEDGER F03) ────────────────────────────
+   The pin costs a viewport of scroll, and it used to carry six colour
+   steps and a travelling dot — nothing the static frame did not already
+   show. Two more things now develop across it, both opacity-only (D3),
+   both reversible on scroll-back like the phase lights:
+
+   THE RUNNING NOTE. Every note is stacked in ONE grid cell, so the
+   block's height is reserved at first paint and the swap can never
+   reflow the pinned plate. The RESTING state is the LAST note — the
+   approval constraint, which is exactly what the halted token means —
+   so static worlds, the print edition and the final held frame all
+   print the same line (A7).
+
+   THE REGISTER. Rows ink in as the run-token passes down the ladder, so
+   the ledger the visitor is asked to approve is built in front of them.
+   Both hiding rules are scoped INSIDE [data-pipeline-pinned], which only
+   exists while the engine holds the plate — every static world, the
+   case-file figure, and a JS-dead load print the complete register and
+   the resting note with no override needed. */
+/* The notes share one grid cell, so the swap must never CROSS-fade —
+   two different sentences at half ink in the same box is a smudge, not
+   a turn. The outgoing line lifts first (160ms) and the incoming one
+   inks in after it has gone (220ms, delayed 160ms): a page turning,
+   never two pages at once. */
+[data-pipeline-note] {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 160ms cubic-bezier(0.33, 0, 0.55, 1);
+}
+[data-pipeline-note]:last-child {
+  opacity: 1;
+}
+[data-registry-row] {
+  transition: opacity 420ms cubic-bezier(0.33, 0, 0.55, 1);
+}
+[data-pipeline-pinned] [data-pipeline-note],
+[data-pipeline-pinned] [data-registry-row] {
+  opacity: 0;
+}
+[data-pipeline-pinned] [data-pipeline-note][data-current] {
+  opacity: 1;
+  transition: opacity 220ms cubic-bezier(0.33, 0, 0.55, 1) 160ms;
+}
+[data-pipeline-pinned] [data-registry-row][data-registry-written] {
+  opacity: 1;
+}
+
 /* Static worlds (A7): the finished FRAME, guaranteed in CSS with no
    engine/JS-timing dependence — edge drawn to the gate, phases 1–6 lit
    (7.0 deploy stays secondary: it is gated), the token resting clay at
-   the gate. Run 041 is untouched — still awaiting its human. */
+   the gate. Run 041 is untouched — still awaiting its human. The note
+   and the register need no rule here: their hiding lives inside
+   [data-pipeline-pinned], which no static world ever stamps. */
 @media (prefers-reduced-motion: reduce) {
   .pipeline-edge {
     stroke-dashoffset: 0 !important;
@@ -1717,6 +1766,14 @@ html[data-motion-off] .audit-run {
     fill: var(--color-clay-graphic);
     transition: none;
   }
+  [data-pipeline-note],
+  [data-registry-row] {
+    transition: none;
+  }
+}
+html[data-motion-off] [data-pipeline-note],
+html[data-motion-off] [data-registry-row] {
+  transition: none;
 }
 html[data-motion-off] .pipeline-edge {
   stroke-dashoffset: 0 !important;
