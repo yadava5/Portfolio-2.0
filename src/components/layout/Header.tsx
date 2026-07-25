@@ -249,7 +249,7 @@ export default function Header() {
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item.target)}
                     aria-current={isActive ? "true" : undefined}
-                    className={`label-mono link-draw whitespace-nowrap transition-colors hover:text-(--header-ink) ${
+                    className={`label-mono link-draw whitespace-nowrap hover:text-(--header-ink) ${
                       isActive
                         ? "text-(--header-ink)"
                         : "text-(--header-ink-muted)"
@@ -266,7 +266,7 @@ export default function Header() {
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label-mono link-draw text-(--header-ink-muted) transition-colors hover:text-(--header-ink)"
+                  className="label-mono link-draw text-(--header-ink-muted) hover:text-(--header-ink)"
                 >
                   github
                 </a>
