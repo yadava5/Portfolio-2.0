@@ -119,20 +119,58 @@ const MANIFESTO_SPAN = "+=60%";
  */
 const MANIFESTO_REST = 0.6;
 
-/** Litany delays — the slowing stagger: 0.12s to the first line, then
- *  +0.2s, then +0.3s (plan 3.8 "line-masks with slowing stagger"). */
-const LITANY_DELAYS = [0.12, 0.32, 0.62];
+/**
+ * Litany delay — the slowing stagger (plan 3.8, "line-masks with
+ * slowing stagger"): 0.12s to the first line, and each line after it
+ * waits longer than the last.
+ *
+ * CRITIC-LEDGER F78: this was a three-entry magic array read as
+ * `LITANY_DELAYS[index] ?? 0`, so a FOURTH mantra would take delay 0 and
+ * play AHEAD of the three deliberately-slowed lines — silently
+ * inverting the chapter's signature choreography, with nothing in the
+ * build to catch it. Deriving the delay makes the stagger a rule
+ * instead of a lookup: it holds for any number of lines, and the
+ * quadratic term is what makes it SLOW rather than merely stagger
+ * (gaps of 0.20s, 0.30s, 0.40s …, reproducing the original
+ * 0.12 / 0.32 / 0.62 exactly for the three lines that ship).
+ *
+ * @param index - Zero-based mantra position
+ * @returns Delay in seconds
+ */
+function litanyDelay(index: number): number {
+  return 0.12 + 0.2 * index + 0.05 * index * (index - 1);
+}
 
 /** Hero entrance settle: last delay (4 × 60ms, the directives' seat)
  *  + 0.6s run + margin (retuned for the two-line masthead — the byline
  *  stipple that used to close the intro at ~1.07s is retired). */
 const HERO_SETTLE_MS = 1100;
 
-/** Weight-breathing range (spec: 360→420 max, ±60): the headline sits
- *  at the token weight 420 mid-viewport and relaxes toward 360 at the
- *  edges — a sine over trigger progress. */
-const BREATHE_MIN = 360;
-const BREATHE_SPAN = 60;
+/**
+ * Weight-breathing range: the headline sits at the token weight 420
+ * mid-viewport and relaxes toward BREATHE_MIN at the edges — a sine
+ * over trigger progress.
+ *
+ * CRITIC-LEDGER F75 — two faults, both about the A7 rule that a motion
+ * world must END where the static world RESTS:
+ *  1. The floor was 360 against a static fallback of 420, so a motion
+ *     reader saw a measurably LIGHTER headline everywhere except dead
+ *     centre. The end state was not the static state. The floor is now
+ *     396: the breath is still visible (it is a variable-weight axis,
+ *     not a fade) but the extreme never drops a headline below the
+ *     weight a static reader gets by more than half a step.
+ *  2. `wght` changes glyph ADVANCE WIDTHS in Fraunces, so writing a new
+ *     value every frame is a layout property in all but name — on
+ *     several headlines at once, since apparatus.tsx puts data-breathe
+ *     on most of them. BREATHE_STEPS quantizes the axis so the setter
+ *     only writes when the value actually changes bucket: 4 discrete
+ *     weights across the whole travel instead of ~60 distinct ones, and
+ *     the quickSetter is skipped entirely between buckets.
+ */
+const BREATHE_MIN = 396;
+const BREATHE_SPAN = 24;
+/** Quantization buckets for the breath (see BREATHE_MIN, fault 2). */
+const BREATHE_STEPS = 4;
 
 /**
  * Typed element query.
@@ -399,6 +437,21 @@ export function TextMotion() {
     document.fonts?.ready.then(() => {
       if (disposed) return;
 
+      /* THE PRE-HIDE HAND-OFF (CRITIC-LEDGER F76).
+         The CSS pre-hide (globals.css, `html[data-tm-prehide]`) holds
+         every reveal target at opacity 0 from first paint, so chapter
+         content can no longer flash visible → hidden → re-entering
+         while the webfonts settle. It must come OFF right here, one
+         statement before the tweens are built: `gsap.from()` reads the
+         element's CURRENT computed style as its END state, so a tween
+         created while the pre-hide still matched would animate from 0
+         to 0 and strand the content invisible forever. Probed: leaving
+         the attribute up stranded 43 elements on this page.
+         The removal is unconditional and synchronous with tween
+         creation, so there is no window in which the page is hidden and
+         nothing is coming to reveal it. */
+      document.documentElement.removeAttribute("data-tm-prehide");
+
       ctx = gsap.context(() => {
         /* ── Composed scenes: one staggered timeline per chapter ────
            Every entrance element under a [data-tm-scene] fires off that
@@ -463,7 +516,7 @@ export function TextMotion() {
           /* Past-start at build → play directly, no trigger. */
           const litanyImmediate = pastStart(litanyTrigger, ENTER_START);
           mantras.forEach((mantra, index) => {
-            const delay = LITANY_DELAYS[index] ?? 0;
+            const delay = litanyDelay(index);
             splits.push(
               maskRise(mantra, litanyTrigger, delay, ENTER_START, pending)
             );
@@ -494,15 +547,22 @@ export function TextMotion() {
           breatheEls.push(el);
           const setWght = gsap.quickSetter(el, "--tm-wght");
           const proxy = { p: 0 };
+          /* F75: the last written bucket. `wght` moves glyph advance
+             widths, so the setter must fire only when the quantized
+             value actually changes — not on every frame of every
+             breathing headline. */
+          let lastWght = -1;
           gsap.to(proxy, {
             p: 1,
             ease: "none",
             onUpdate: () => {
-              setWght(
-                Math.round(
-                  BREATHE_MIN + BREATHE_SPAN * Math.sin(proxy.p * Math.PI)
-                )
-              );
+              const bucket =
+                Math.round(Math.sin(proxy.p * Math.PI) * BREATHE_STEPS) /
+                BREATHE_STEPS;
+              const wght = Math.round(BREATHE_MIN + BREATHE_SPAN * bucket);
+              if (wght === lastWght) return;
+              lastWght = wght;
+              setWght(wght);
             },
             scrollTrigger: {
               trigger: el,

@@ -29,13 +29,18 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { personalInfo, socialLinks, education } from "@/lib/data/personal";
+import {
+  personalInfo,
+  socialLinks,
+  education,
+} from "@/lib/data/personal";
 import { experiences, formatDateRange } from "@/lib/data/experience";
 import {
   getCaseStudyById,
   projectCaseStudies,
 } from "@/lib/data/projectCaseStudies";
 import { getProjectById } from "@/lib/data/projects";
+import { proofManifest } from "@/lib/data/proofManifest";
 import {
   ChapterKicker,
   FolioRule,
@@ -56,6 +61,14 @@ import { PipelineRun } from "@/components/paper/PipelineRun";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { VisitedMark } from "@/components/paper/VisitedMark";
 import { ProjectRowScene } from "@/components/scenes/ProjectScene";
+
+/** The `jetpack-tests` proof-manifest entry's verification month — the
+ *  source of the ¶05 jetpack row's `last verified` token (F39). Read
+ *  from the manifest so the row can never claim a date the evidence
+ *  ledger does not carry. */
+const JETPACK_VERIFIED = proofManifest.find(
+  (entry) => entry.id === "jetpack-tests"
+)?.date;
 
 /** The real case-file ids (server-side): the manifest's allowlist —
  *  paperMemory entries outside this set are never rendered. */
@@ -92,6 +105,7 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 function heroDelay(index: number): CSSProperties {
   return { "--hero-i": index } as CSSProperties;
 }
+
 
 /** Ch-04 pipeline phases in decimal numbering (AUTOML-TRANSPOSITIONS #1) */
 const AUTOML_PHASES = [
@@ -198,7 +212,15 @@ const PATH_FIELD_RECORDS: {
  *  ruling, 2026-07-24): the six live showcase projects hold the prime
  *  rows; visual-assist is retired (portfolioVisible: false) and its
  *  case file remains reachable from /evidence. */
-const WORK_ROWS = [
+const WORK_ROWS: {
+  projectId: string;
+  bright: string;
+  muted: string;
+  metric: string;
+  metricHref: string;
+  /** Only for rows with no case file — see F39 */
+  verifiedFallback?: string | null;
+}[] = [
   {
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
@@ -223,9 +245,17 @@ const WORK_ROWS = [
     bright: "One gzip stream. Every core writing it.",
     muted:
       "jetpack-compress splits the bytes across virtual threads — and stitches one byte-valid member.",
-    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+    /* The non-breaking space is deliberate (CRITIC-LEDGER F38): this
+       chip right-aligns in the ¶05 rail, and `@ af2c4b1` used to break
+       so the commit sha landed alone on its own line while every other
+       chip set as one. The sha and its `@` now travel together. */
+    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
     metricHref:
       "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+    /* F39: no case file exists yet, so the row's `last verified` token
+       comes from the SAME proof-manifest entry its metric chip cites —
+       read from the manifest, never typed here. */
+    verifiedFallback: JETPACK_VERIFIED,
   },
   {
     /* Fourth row (orchestrator ruling, 2026-07-24): Cadence promotes
@@ -325,10 +355,25 @@ const GATE_REFERENCES: {
     source: "fast-mnist-nn — receipt 02",
     href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
+  /* CRITIC-LEDGER F22: reference 3 used to cite `visual-assist —
+     receipt 01`. The link resolves, but projects.ts:213 marks that
+     project `portfolioVisible: false` — "retired from recruiter-facing
+     lists" — and after the hero stopped promoting it (F11) the project
+     appeared NOWHERE else on this page. An endnote is a receipt for a
+     claim the page makes; this one was a receipt for nothing.
+     The two references below replace it with the two ¶05 rows the
+     endnotes were missing, so footnote 1's promise now closes over
+     every metric chip the page prints: Cadence's 1,145 tests and
+     jetpack's 72. Both strings are the rows' own. */
   {
-    claim: "71 xctest functions, models and utilities",
-    source: "visual-assist — receipt 01",
-    href: "/projects/visual-assist/#v-visual-assist-1",
+    claim: "1,145 automated tests — 634 frontend + 511 backend",
+    source: "taskflow-calendar — receipt 01",
+    href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+  },
+  {
+    claim: "72 tests, 0 failures on jdk 25",
+    source: "jetpack-compress — readme @ af2c4b1",
+    href: "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
   },
   {
     claim: "19/20 cited-source sweep",
@@ -442,9 +487,14 @@ function ArrivalChapter() {
               leading; verified no overflow 320→1680 and the closing
               line NEVER wraps, so the thread's measured box hugs one
               true line of text. */}
+          {/* CRITIC-LEDGER F64: this clamp used to be hand-rolled here
+              (and re-declared its own leading/tracking) while the
+              `--text-hero` token sat unused. Same rendered pixels — the
+              token adopted these measured values — but the size now has
+              exactly one source of truth. */}
           <h1
             aria-label="Scroll. It's all real."
-            className="font-display fraunces-hero text-[clamp(3.375rem,9vw,9rem)] leading-[0.98] font-normal tracking-[-0.015em]"
+            className="font-display fraunces-hero text-hero"
           >
             {/* The masthead is the paper's dare: everything the scroll
                 is about to show — figures, demos, approvals — is real,
@@ -544,46 +594,81 @@ function ArrivalChapter() {
             </LenisAnchor>
           </p>
           {/* Quiet apparatus voice, no buttons: direct routes into the
-              three case files the #work chapter argues. */}
-          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+              case files the #work chapter argues.
+              CRITIC-LEDGER F11/F12: this line used to promote
+              `jobtracker · fast-mnist · visual-assist` — two repository
+              slugs the page never says again, and one project the data
+              layer RETIRES (visual-assist, portfolioVisible: false). The
+              first frame therefore advertised a trio that the paper does
+              not argue, under names its own headings contradict.
+              It now names the PRODUCTS, in the order ¶05 deals them:
+              Applied · Glyph · Cadence — the three prime rows that have a
+              case file to open (jetpack-compress has none, so it is not
+              a "case file" and stays out of this line). The names are the
+              same strings the ¶05 <h3>s and the case-file <h1>s carry, so
+              one project now has exactly one public name on every surface;
+              the slug survives only inside the href, where it belongs.
+              `normal-case` on the links is the house pattern for proper
+              nouns and data tokens inside apparatus voice.
+              CRITIC-LEDGER F33/F65: this line (and the two below) used to
+              override the enclosing .label-mono with an 11px/0.08em cut —
+              the smallest type class on the page, on the two lines a
+              screener is most likely to use. The overrides are gone; the
+              lines inherit the 13px label token the design system says
+              is the floor. */}
+          <p className="text-ink-secondary">
             case files:{" "}
-            <Link href="/projects/jobtracker/" className="link-draw">
-              jobtracker
+            <Link
+              href="/projects/jobtracker/"
+              className="link-draw normal-case"
+            >
+              Applied
             </Link>{" "}
             ·{" "}
-            <Link href="/projects/fast-mnist-nn/" className="link-draw">
-              fast-mnist
+            <Link
+              href="/projects/fast-mnist-nn/"
+              className="link-draw normal-case"
+            >
+              Glyph
             </Link>{" "}
             ·{" "}
-            <Link href="/projects/visual-assist/" className="link-draw">
-              visual-assist
+            <Link
+              href="/projects/taskflow-calendar/"
+              className="link-draw normal-case"
+            >
+              Cadence
             </Link>
           </p>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
-              scroll — the story starts here
-            </p>
-            <LenisAnchor
-              href="#automl"
-              className="link-draw text-ink-secondary"
-            >
-              skip to the work ↓
-            </LenisAnchor>
-          </div>
+          {/* CRITIC-LEDGER F10: a `skip to the work ↓` affordance used to
+              sit here pointing at #automl, 32px from the `in a hurry —
+              the work` link that points at #work. Two links whose labels
+              both read "the work", landing on different chapters, with
+              the header nav's "the work" as a third reading. The skip
+              function is not lost: the capstone directive above is the
+              read-on path and the `in a hurry` line below is the screener
+              path — both already say where they go. The scroll cue keeps
+              its own quiet line. */}
+          <p className="text-ink-secondary">scroll — the story starts here</p>
           {/* W5: the 90-second path — one quiet line for screeners who
               will not scroll 1,500vh (A8's spirit): the work index, the
               master ledger, the resume PDF. Apparatus voice, no new
               vocabulary — the same quiet mono as the case-files line. */}
-          <p className="text-ink-secondary font-mono text-[0.6875rem] tracking-[0.08em] lowercase">
+          {/* CRITIC-LEDGER F41: these two `⟶` were SEPARATORS between
+              three sibling links, not destination markers — the glyph
+              doing punctuation's job. The paper already has a separator
+              for a list of peers (·), and reserving `⟶` for "deeper
+              into this argument" is what makes it mean anything when it
+              does appear. */}
+          <p className="text-ink-secondary">
             in a hurry —{" "}
             <LenisAnchor href="#work" className="link-draw">
               the work
             </LenisAnchor>{" "}
-            ⟶{" "}
+            ·{" "}
             <Link href="/evidence/" className="link-draw">
               the evidence
             </Link>{" "}
-            ⟶{" "}
+            ·{" "}
             <a href={personalInfo.resumeUrl} className="link-draw">
               the resume
             </a>
@@ -658,7 +743,11 @@ function WhoChapter() {
               for it. The claims on this paper carry receipts.
             </p>
 
-            <div className="flex flex-col gap-10 md:justify-between">
+            {/* F46, second half: `md:justify-between` pushed the n.b.
+                note to the bottom of the column, ~130px clear of the
+                dictionary entry it annotates, so the two apparatus
+                blocks read as unrelated. They are one note stack now. */}
+            <div className="flex flex-col gap-6">
               {/* The printed glossary block: serif headword, mono
                   pronunciation, Newsreader senses. One instance on the
                   whole paper; both senses are the thesis, not a claim.
@@ -678,8 +767,20 @@ function WhoChapter() {
                 </p>
               </div>
 
+              {/* CRITIC-LEDGER F46: this was the ONLY dashed container in
+                  the day world — an orphan style whose one relative on
+                  the whole site is the gate stamp, in clay, after dark.
+                  A dashed box reads as "content missing" (the same
+                  signifier F20 removed from the stamp), and it sat 130px
+                  below the dictionary block it belongs with.
+                  It is now a hairline rule and an indent — the apparatus
+                  grammar every other note on the paper already uses (the
+                  hero's footnote separator, the folio rules, the ¶05 row
+                  rules) — and it sits directly under the entry it
+                  annotates. F32: `text-xs` was also a 12px one-off; the
+                  note takes the label token like every other aside. */}
               <aside
-                className="border-ink-secondary/60 text-ink-secondary border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase"
+                className="label-mono text-ink-secondary border-ink/15 border-t pt-3 leading-6"
                 data-tm="block"
               >
                 n.b. — every project below opens into its own case file, source,
@@ -805,9 +906,16 @@ function PathChapter() {
                 B.S. {degree.field}
               </h3>
               {/* Biographical register, not a claim chip (evidence-rejudge
-                  footnote-straggler ruling): the ×N grammar read as an
-                  unlinked claim; prose + the transcript boundary keeps the
-                  fact while exempting it from footnote 1's link contract. */}
+                  footnote-straggler ruling): prose keeps the fact while
+                  exempting it from footnote 1's link contract. The GPA
+                  and the named semesters are OWNER-CONFIRMED copy
+                  (2026-07-24 directives: GPA once, semesters named) —
+                  the stated boundary is the transcript, offered on
+                  request. F53's ledger objection was reviewed and
+                  overruled by the standing biographical ruling + the
+                  owner's directive. Open question on record: personal.ts
+                  carries a third award (Fall 2023) the owner has not yet
+                  confirmed for this line. */}
               <p className="text-body mt-5 max-w-[55ch] font-serif">
                 B.S. {degree.field}, {graduation} — dean’s list, spring & fall
                 2025 — 3.65 GPA in major coursework (transcript on request).
@@ -853,9 +961,24 @@ function AutomlChapter() {
             token scrubbed — the blank-paper report, fix round 3.) On
             stacked layouts the narrower [data-pipeline-pin] below pins
             instead; PipelineRun picks the target per breakpoint. */}
+        {/* The figure rail widens 340px → 400px (CRITIC-LEDGER F56): fig
+            4.1 gains a third column (the redacted metric cell), and the
+            340px rail could not hold it — after the ledger's own
+            `border-l pl-6` the usable measure was 299px, while
+            `039 · random forest` (165px) + the mark (29px) + `awaiting
+            approval` (148px) + gaps needs ~358px. Every row wrapped.
+            400px buys 359px of measure and the four rows rule up on one
+            line each, with the mark and the status cell landing at the
+            same x on every row.
+            The cost, measured and accepted: the thesis column goes 592px
+            → 552px at 1280+, so the ¶04 paragraph sets to a slightly
+            narrower measure than its max-w-[55ch] (592px) allows. It
+            still sets in three lines at every width ≥1280, and the
+            trade buys the figure the reader is asked to ACT on an
+            honest data column. */}
         <div
           data-pipeline-pin-wide
-          className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-20"
+          className="mt-10 grid gap-14 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-20"
         >
           {/* data-tm-scene (PREMIUM-FLOW #1): the thesis column assembles
               as one beat — headline → body → gated-phases line → case-file
@@ -1005,13 +1128,24 @@ function AutomlChapter() {
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 <RegistryRows rows={AUTOML_REGISTRY_ROWS} />
               </ul>
+              {/* CRITIC-LEDGER F56: the caption used to say metrics were
+                  withheld while the table showed no column they could
+                  have occupied. Now the column is drawn and redacted, so
+                  the caption's job is to define the mark and give the
+                  reason — both reasons are the automl case file's own
+                  words: the repository is private, AND "a demo-data run
+                  ledger with a complete metric trail has not shipped
+                  yet". The second is why this figure does not print a
+                  shaped f1: there may be no per-run number to withhold. */}
               <figcaption className="label-mono text-ink-secondary mt-6 space-y-1 pl-6">
                 <span className="block">
                   fig. 4.1 — experiment registry, transcribed private-safe
                   excerpt.
                 </span>
                 <span className="block">
-                  metrics withheld — private repository; see the case file.
+                  <span aria-hidden="true">▓▓▓</span> — not published: the
+                  repository is private, and the demo-data metric trail has not
+                  shipped. See the case file.
                 </span>
               </figcaption>
             </figure>
@@ -1059,6 +1193,10 @@ function WorkChapter() {
               ? caseHref
               : (project.liveUrl ?? project.githubUrl ?? caseHref);
             const externalMetric = row.metricHref.startsWith("http");
+            /* F39: the case file's verified month, or — for a row with
+               no case file — the proof-manifest entry its metric chip
+               already cites. Never a literal in this component. */
+            const verified = study?.verified ?? row.verifiedFallback;
             return (
               /* data-thread-row: the Red Thread ticks each row in the
                  binding margin as the line passes (geometry anchor) — the
@@ -1138,10 +1276,14 @@ function WorkChapter() {
                   {/* The metric chip keeps footnote 1's promise: it links
                       the case-file receipt row that argues it. normal-case
                       preserves data tokens (-O3); every metric string is
-                      already lowercase in source. W5 hierarchy: capped at
-                      two mono lines on every viewport — the ledger's
-                      right rag stays quiet (visitor #4). */}
-                  <p className="line-clamp-2 max-w-[38ch] normal-case">
+                      already lowercase in source.
+                      CRITIC-LEDGER F38: `line-clamp-2` is gone. It was a
+                      SILENT truncation — any chip that grew past two mono
+                      lines would have lost its tail with no indication,
+                      on the one element that carries the row's number.
+                      The column is capped instead (max-w-[38ch]), so a
+                      long chip wraps honestly rather than disappearing. */}
+                  <p className="max-w-[38ch] normal-case">
                     {externalMetric ? (
                       <a
                         href={row.metricHref}
@@ -1181,41 +1323,51 @@ function WorkChapter() {
                       </a>
                     ) : null}
                   </p>
-                  {project.githubUrl || (study && project.liveUrl) ? (
+                  {/* CRITIC-LEDGER F40: the same `the case file ⟶ /
+                      source / demo ↗` triplet repeated verbatim on every
+                      row — three identical clusters inside 3,027px, with
+                      `source` and `demo ↗` rendering 52×15px and 8px
+                      apart on a phone. One primary act per row now: the
+                      secondary line only survives where the row has NO
+                      case file to fold it into (jetpack-compress), and
+                      there it carries `source` alone, because the repo
+                      is otherwise unreachable from this page. Nothing is
+                      lost for the other rows: the case file's own ledger
+                      already prints `repo … @ sha` and `live demo ↗`
+                      (CaseStudyPage LedgerRows). */}
+                  {!study && project.githubUrl ? (
                     <p>
-                      {project.githubUrl ? (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link-draw"
-                        >
-                          source
-                        </a>
-                      ) : null}
-                      {project.githubUrl && study && project.liveUrl
-                        ? " · "
-                        : null}
-                      {study && project.liveUrl ? (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="link-draw"
-                        >
-                          demo ↗
-                        </a>
-                      ) : null}
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        source
+                      </a>
                     </p>
                   ) : null}
                   {/* The case file's own credibility token, echoed small
                       (recruiter-rejudge status-wording fix). Dimming is
                       the house mute — opacity on FULL ink (the dusk-
                       chapter pattern), which composites to ≥5:1 on the
-                      golden-hour field; secondary ink at 0.7 would not. */}
-                  {study ? (
-                    <p className="text-ink font-mono text-[0.6875rem] tracking-[0.08em] opacity-70">
-                      last verified {study.verified}
+                      golden-hour field; secondary ink at 0.7 would not.
+                      CRITIC-LEDGER F33/F65: the 11px override is gone —
+                      the token inherits from the column's .label-mono, so
+                      the whole right rail is now one type size.
+                      CRITIC-LEDGER F39: this token used to render on
+                      three rows of four — the one row without a case
+                      file (jetpack-compress) simply dropped it, so the
+                      ledger's right rag went 5 lines / 5 / 3 / 5 and the
+                      row that left the site was the one missing its
+                      verification date. The fallback is NOT invented: it
+                      is the `jetpack-tests` proof-manifest entry's own
+                      `date`, the same field, the same month, read at
+                      module scope so it can never drift from the ledger
+                      that owns it. Every row now closes the same way. */}
+                  {verified ? (
+                    <p className="text-ink opacity-70">
+                      last verified {verified}
                     </p>
                   ) : null}
                 </div>
@@ -1292,7 +1444,16 @@ function ValuesChapter() {
             in (each fires at its own top 75%, the star leading); a scene
             wrapper here made the ledger pre-empt the litany, so the
             original coordinated timing is preserved untouched. */}
-        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-end">
+        {/* CRITIC-LEDGER F17: `lg:items-end` bottom-aligned fig 6.1 into
+            the corner of a 1250px frame — the gates ledger began at
+            y≈733 and the entire upper-right quadrant (x 1230→1770,
+            y 90→700) was empty paper. The chapter read as left-hugging
+            with a figure dropped in the corner, which is the exact
+            composition problem the old code comment claimed to have
+            fixed. Top-aligning sets the ledger's first row against the
+            first mantra, so the two figures start on the same line and
+            the spread is composed edge to edge. */}
+        <div className="my-auto grid gap-x-20 gap-y-14 py-10 lg:grid-cols-[minmax(0,1fr)_392px] lg:items-start">
           <figure>
             {/* The ending litany (plan 3.8): line-mask rises with a
                 SLOWING stagger (TextMotion), each receipt fading in
@@ -1348,7 +1509,12 @@ function ValuesChapter() {
                   className="flex justify-between gap-x-2 opacity-80"
                 >
                   <span>{row.gate}</span>
-                  <span className="inline-flex items-baseline gap-x-1 text-right whitespace-nowrap">
+                  {/* CRITIC-LEDGER F44: `gap-x-1` is 4px, and the check
+                      stroke's bounding box already fills its own width,
+                      so fig 6.1 rendered `✓passed` with the glyph
+                      touching the word. gap-x-2 puts a real space
+                      between the mark and what it marks. */}
+                  <span className="inline-flex items-baseline gap-x-2 text-right whitespace-nowrap">
                     <GateMark status={row.status} />
                     {row.status}
                   </span>
@@ -1382,10 +1548,16 @@ function GateChapter() {
   const muted = mutedClass(true);
 
   return (
+    /* CRITIC-LEDGER F08: py-[14vh] is 118px of empty brown at each end
+       of the closing page on an 844-tall phone — measured from the 06/07
+       folio rule to the ¶07 kicker, 52% of the viewport carried nothing.
+       The desktop composition earns that air (the gate is a spread); a
+       phone does not, so the padding is a mobile-first 6vh that opens
+       back up at lg. */
     <section
       id={GATE.anchor}
       data-chapter={GATE.id}
-      className="relative flex min-h-svh flex-col justify-center py-[14vh]"
+      className="relative flex min-h-svh flex-col justify-center py-[6vh] lg:py-[14vh]"
     >
       <ThreadSegment id={GATE.id} />
       <div className={WRAP}>
@@ -1426,21 +1598,17 @@ function GateChapter() {
                 leading 0.95 an overflow mask would clip the y descenders,
                 so the giant name takes the hero's own fade + 14px rise
                 instead — the entrance and the ending share one hand. */}
+              {/* CRITIC-LEDGER F64: the reprise's clamp was the second
+                  hand-rolled "hero" scale (8vw / 8.5rem cap vs the
+                  masthead's 9 / 9rem). It is a deliberately quieter cut,
+                  so it now consumes its own declared token instead of
+                  disagreeing with the masthead anonymously. */}
               <h2
-                className="font-display fraunces-hero mt-8 text-[clamp(3rem,8vw,8.5rem)] leading-[0.95] font-normal tracking-[-0.015em]"
+                className="font-display fraunces-hero text-hero-reprise mt-8"
                 data-tm="name"
               >
                 Ayush Yadav
               </h2>
-            </div>
-
-            {/* Mobile seat: the stamp sits between the giant name and the
-                email CTA (the lg+ world keeps it in the right column).
-                The "on file:" manifest (W5 round B) sits under the seal
-                on both seats — the reader's own trail, space reserved. */}
-            <div className="mt-8 lg:hidden">
-              <AwaitingStamp compact />
-              <OnFileManifest fileIds={CASE_FILE_IDS} />
             </div>
 
             {/* Availability renders lowercase via .label-mono — the data
@@ -1516,6 +1684,25 @@ function GateChapter() {
                 </a>
               </p>
             </div>
+
+            {/* Mobile seat for the stamp (the lg+ world keeps it in the
+                right column). The "on file:" manifest (W5 round B) sits
+                under the seal on both seats — the reader's own trail,
+                space reserved.
+                CRITIC-LEDGER F08: this block used to sit between the
+                giant name and the availability line, where its plate
+                pushed `availability` to the fold edge and the email
+                address off the phone screen entirely. The order now puts
+                every contact affordance ABOVE the seal — a screener
+                reaches the address without scrolling past a graphic —
+                and the act the page asks for closes the column, which is
+                also where it reads best. This is what buys the stamp its
+                F67 size increase: it can be full-scale down here without
+                costing the reader anything. */}
+            <div className="mt-10 lg:hidden">
+              <AwaitingStamp compact />
+              <OnFileManifest fileIds={CASE_FILE_IDS} />
+            </div>
           </div>
 
           <div className="hidden lg:block lg:justify-self-end">
@@ -1528,11 +1715,19 @@ function GateChapter() {
             full: every receipt on the page, numbered, linked to its
             evidence. Compact mono rows over hairline rules; it sits in
             nightfall, so muting is opacity, never day tokens (A4). */}
-        <div className="mt-[12vh] max-w-[44rem]" data-tm="block">
+        {/* CRITIC-LEDGER F19: the references block was capped at 44rem
+            inside a 1240px column, so it ended at x≈950 of 1770 and left
+            ~700px of dead right margin under the most important content
+            on the page. The cap is gone and the list sets in TWO columns
+            at lg — the ledger's own fix, and the form a printed
+            endnote apparatus actually takes. `break-inside: avoid` keeps
+            a reference and its source on the same line of the same
+            column. */}
+        <div className="mt-[12vh]" data-tm="block">
           <h2 className={`label-mono ${muted}`}>
             references — footnote 1, kept.
           </h2>
-          <ol className="label-mono mt-4">
+          <ol className="label-mono mt-4 lg:columns-2 lg:gap-x-16 [&>li]:break-inside-avoid">
             {GATE_REFERENCES.map((reference, index) => (
               <li
                 key={reference.href}
@@ -1542,10 +1737,24 @@ function GateChapter() {
                 <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
                 </span>
+                {/* CRITIC-LEDGER F41: the glyph is now load-bearing
+                    again. `⟶` means "deeper into this argument" (an
+                    in-page anchor or a case file); `↗` means "leaves
+                    the site". A reference that terminates at a public
+                    repo is the second kind, and says so. */}
                 {reference.inPage ? (
                   <LenisAnchor href={reference.href} className="link-draw">
                     {reference.source} ⟶
                   </LenisAnchor>
+                ) : reference.href.startsWith("http") ? (
+                  <a
+                    href={reference.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-draw normal-case"
+                  >
+                    {reference.source} ↗
+                  </a>
                 ) : (
                   <Link href={reference.href} className="link-draw">
                     {reference.source} ⟶

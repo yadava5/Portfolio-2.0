@@ -133,7 +133,9 @@ const THREAD_ANCHOR_TEXT = "It's all real.1";
 test.describe("text motion — engine world", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
+    await page
+      .locator("header[data-lenis-connected='true']")
+      .waitFor({ state: "attached", timeout: 5000 });
   });
 
   test("hero lines reach their final state — no blur residue", async ({
@@ -328,8 +330,23 @@ test.describe("text motion — engine world", () => {
     );
     expect(residue).toBe(0);
 
-    /* The static world reads as a completed review */
+    /* CRITIC-LEDGER F14 — the retired assertion here demanded that
+       every rail mark be lit the instant motion was switched off. The
+       reader is at the TOP of the page: they have reviewed nothing, and
+       a checklist that ticks itself is not a checklist. The honest
+       reading is an empty rail, with the marks still EARNABLE — the
+       engine hands the audit trail to a static observer as it retires
+       (probed: toggling drops data-lenis-connected to false, and
+       scrolling to the foot of the page then lights all seven). */
     if (isDesktop(page)) {
+      for (const opacity of await railMarkOpacities(page)) {
+        expect(opacity).toBe("0");
+      }
+
+      await page.evaluate(() =>
+        window.scrollTo(0, document.documentElement.scrollHeight)
+      );
+      await page.waitForTimeout(800);
       for (const opacity of await railMarkOpacities(page)) {
         expect(opacity).toBe("1");
       }
@@ -440,8 +457,48 @@ test.describe("text motion — reduced motion", () => {
     expect(await page.locator(".fraunces-wonk").count()).toBe(1);
   });
 
-  test("static world shows the completed rail checklist", async ({ page }) => {
+  /* CRITIC-LEDGER F14 — this test used to assert that every mark was
+     lit the moment a static world loaded, which is what the CSS forced.
+     That was the fault, not the contract: a reduced-motion reader
+     sitting at the top of the page was told they had reviewed all seven
+     chapters. The rail now EARNS its marks in every world, off a
+     monotone IntersectionObserver, so the static rail must read the
+     same as the engine rail at the same scroll position. */
+  test("static world earns its rail marks — none at the top", async ({
+    page,
+  }) => {
     await expect(page.locator(".rail-mark")).toHaveCount(7);
+    for (const opacity of await railMarkOpacities(page)) {
+      expect(opacity).toBe("0");
+    }
+  });
+
+  test("static world banks the marks it passes, and never retreats", async ({
+    page,
+  }) => {
+    await scrollToId(page, "automl");
+    await page.waitForTimeout(600);
+    const atFlagship = await railMarkOpacities(page);
+    /* Chapters 01–03 are behind the reader; 04 is under them */
+    expect(atFlagship.slice(0, 3)).toEqual(["1", "1", "1"]);
+    expect(atFlagship.slice(4)).toEqual(["0", "0", "0"]);
+
+    /* Monotone: the static world has no timeline to scrub, so a chapter
+       once passed stays passed even on the way back up. */
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.waitForTimeout(600);
+    expect((await railMarkOpacities(page)).slice(0, 3)).toEqual([
+      "1",
+      "1",
+      "1",
+    ]);
+
+    /* At the foot of the paper the checklist is complete — the same
+       reading the engine world gives (the boundary's clamp). */
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight)
+    );
+    await page.waitForTimeout(800);
     for (const opacity of await railMarkOpacities(page)) {
       expect(opacity).toBe("1");
     }

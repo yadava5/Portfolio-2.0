@@ -94,22 +94,25 @@ export function DayMark({ chapter }: DayMarkProps) {
             </g>
           </svg>
         </span>
-        {/* Keyed by chapter: the dateline re-sets itself like a running
-            head on a fresh leaf (340ms rise, motion worlds only). The
-            name column reserves the longest chapter name so the nav
-            never shifts when the text changes (CLS 0 discipline). */}
-        {/* display:none below lg (not width-0): an empty flex item would
-            still spend its column gap in the 480–1023px band. */}
-        <span
-          key={chapter.id}
-          className="dateline-swap label-mono hidden items-center gap-2 whitespace-nowrap text-(--header-ink-muted) lg:flex lg:gap-2.5"
-        >
-          <span>{chapter.clock}</span>
-          <span className="inline-block min-w-[12ch] text-(--header-ink)">
-            <span className="text-(--header-ink-muted)">·&nbsp;</span>
-            {chapter.name}
-          </span>
-        </span>
+        {/* THE DATELINE IS GONE (CRITIC-LEDGER F30 + F28).
+            It used to print the active chapter's clock and name here, at
+            lg+. Measured in the top 170px of the first frame, that made
+            "arrival" appear THREE times — running head, ¶ kicker, and
+            the chapter rail — and "06:12" twice, running head and
+            kicker, saying the same sentence within a hand's width of
+            each other.
+            Worse (F28): the header clock is the paper's FICTIONAL
+            workday record, and three lines below it in ¶07 the gate
+            prints the reader's REAL local time. A reader had no way to
+            tell which of the two clocks was the fiction. The ledger's
+            own remedy is to "drop it from the header and leave it to the
+            ¶ kickers", which is what this does — the kickers carry the
+            record, in the page, where the dateline grammar explains it.
+            What stays is the part that was never a duplicate: the ink
+            disc, the one surface that answers "where am I in the
+            workday" while the kickers are scrolled away. The sr-only
+            sentence above still speaks chapter, name and clock in full,
+            so nothing is lost from the accessibility tree. */}
       </span>
     </span>
   );

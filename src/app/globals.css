@@ -46,10 +46,30 @@
      → ~4.76:1 composite, still AA. Appears only on .stamp-sign. */
 
   /* ── Type scale (Part 3.5) ──────────────────────────── */
-  --text-hero: clamp(3.25rem, 8.5vw, 7.5rem);
-  --text-hero--line-height: 1.05;
-  --text-hero--letter-spacing: -0.02em;
-  --text-hero--font-weight: 360;
+  /* CRITIC-LEDGER F64 — the flagship type token was DEAD. `--text-hero`
+     had zero consumers while two hand-rolled clamps did the real work:
+     three "hero" sizes, three vw slopes (8 / 8.5 / 9), three caps
+     (120 / 136 / 144px), and a tracking value (-0.02em) that neither
+     shipping element used — both re-declared -0.015em inline. A
+     stylesheet whose header reads "do not eyeball-adjust" had an
+     eyeballed headline scale.
+     The token now carries the MEASURED values rather than the other way
+     round: the shipping clamps were probed for no-overflow 320→1680 and
+     for "It's all real." never wrapping — the Red Thread measures that
+     line's box, so its width is a contract, not a preference. Adopting
+     the aspirational numbers would have moved a geometry anchor.
+     The ¶07 name is a deliberately quieter cut than the masthead (the
+     ending is the echo, not the entrance), so it gets its OWN named
+     token instead of being a fourth anonymous clamp. Two hero steps,
+     both declared here, both consumed — nothing eyeballed downstream. */
+  --text-hero: clamp(3.375rem, 9vw, 9rem);
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.015em;
+  --text-hero--font-weight: 400;
+  --text-hero-reprise: clamp(3rem, 8vw, 8.5rem);
+  --text-hero-reprise--line-height: 0.95;
+  --text-hero-reprise--letter-spacing: -0.015em;
+  --text-hero-reprise--font-weight: 400;
   --text-chapter: clamp(2rem, 5vw, 4rem);
   --text-chapter--line-height: 1.1;
   --text-chapter--letter-spacing: -0.015em;
@@ -889,6 +909,37 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   }
 }
 
+/* ── The pre-hide, extended past the hero (CRITIC-LEDGER F76) ───────
+   TextMotion's `gsap.from()` calls all sit inside
+   `document.fonts.ready.then(...)`, but the readiness pre-hide above
+   covered ONLY `.hero-enter`. Between first paint and fonts-ready — the
+   whole window that matters on a slow connection — every chapter reveal
+   target rendered at its natural opacity, and the effect then snapped it
+   back to `opacity: 0, y: 16` to animate it in. Chapter content flashed
+   visible → hidden → re-entering.
+   These are the same targets TextMotion animates from, pre-hidden under
+   the SAME gate as the hero, so the guarantee is unchanged in every
+   other world: no readiness attribute (reduced motion, the quiet
+   toggle, the governor's print floor, a JS-dead load) means these rules
+   never match and the page paints finished (A7).
+   Only OPACITY is pre-set — never a transform — because the Red Thread
+   and PipelineRun measure these boxes.
+   The gate is its own attribute, not `data-motion-ready`: the hero's
+   readiness flag lives until the entrance has played (~1.1s), whereas
+   this one must come off the instant TextMotion starts building tweens.
+   `gsap.from()` captures the element's CURRENT computed style as its
+   END state, so a tween created while this rule still matched would
+   animate 0 → 0 and strand the content invisible. TextMotion removes
+   the attribute one statement before it creates them. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-tm-prehide]:not([data-motion-off]) [data-tm],
+  html[data-tm-prehide]:not([data-motion-off]) [data-tm-bright],
+  html[data-tm-prehide]:not([data-motion-off]) [data-tm-mantra],
+  html[data-tm-prehide]:not([data-motion-off]) [data-tm-receipt] {
+    opacity: 0;
+  }
+}
+
 /* The H1's closing line animates an INNER wrapper: [data-thread-name]
    itself must never transform (the Red Thread measures its box).
    Historical note: the STIPPLE MASTHEAD (friend transposition #4) —
@@ -933,14 +984,18 @@ html[data-motion-off] .thread-segment .thread-node-gate {
 .rail-mark.is-checked {
   opacity: 1;
 }
+/* CRITIC-LEDGER F14: these two blocks used to force EVERY mark visible
+   wherever the engine was absent, so a static-world reader in chapter 04
+   saw a rail claiming all seven chapters were reviewed — three of them
+   below the fold. The marks are now earned in every world (ChapterRail
+   mounts a monotone IntersectionObserver when there is no engine), so
+   only the transition is suppressed here. */
 @media (prefers-reduced-motion: reduce) {
   .rail-mark {
-    opacity: 1;
     transition: none;
   }
 }
 html[data-motion-off] .rail-mark {
-  opacity: 1;
   transition: none;
 }
 
@@ -949,19 +1004,23 @@ html[data-motion-off] .rail-mark {
    (position: absolute → zero layout, the folio column and its marks
    never move). The active chapter keeps its name inked. No box, no
    track, no glow (NO-LIST §C). */
+/* CRITIC-LEDGER F13: every inactive name used to rest at opacity 0, so
+   the rail painted seven bare two-digit numbers — a reader crossing it
+   met wayfinding that would not say where anything went until they
+   hovered it, and a keyboard reader crossed seven 33px targets. The
+   names now REST visible. They carry no new ink budget: the enclosing
+   .rail-link already sits at opacity 0.7 when inactive, which composites
+   body ink to 5.6:1 on canvas — above the AA floor the labels never met
+   while they were invisible. Hover/focus/active still bring them to
+   full, so the active chapter stays the loudest thing on the rail. */
 .rail-label {
   position: absolute;
   top: 0;
   left: 100%;
   margin-left: 0.375rem;
   white-space: nowrap;
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-.rail-link:hover .rail-label,
-.rail-link:focus-visible .rail-label,
-.rail-link[aria-current] .rail-label {
   opacity: 1;
+  transition: opacity 300ms ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .rail-label {
@@ -1373,7 +1432,12 @@ html:not([data-tier="full"]) [data-tier-garnish] {
   align-items: center;
   gap: 4px;
   white-space: nowrap;
-  font-size: 0.6875rem;
+  /* CRITIC-LEDGER F65: the label token documents "13px — mono labels
+     12–14px" and the design system's own component broke that floor at
+     11px. A rotated margin note is the one place a step down from 13 is
+     legible, so this takes the BOTTOM of the stated band, not a fifth
+     invented size. */
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
   transform: rotate(-2.5deg);
   transform-origin: right top;
@@ -1889,7 +1953,10 @@ html[data-motion-off] .pipeline-token-bead {
    day-only secondary token. */
 .scene-fig text {
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  /* 12.5px → 13px (CRITIC-LEDGER F32): 12.5 was a one-off outside the
+     label band carried by 35 nodes. 13px IS --text-label — the figures
+     now speak in the same mono size as the rest of the apparatus. */
+  font-size: 13px;
   letter-spacing: 0.04em;
   fill: currentColor;
 }
@@ -1901,11 +1968,15 @@ html[data-motion-off] .pipeline-token-bead {
   fill: var(--color-clay);
 }
 .scene-fig .sc-small {
-  /* 9.5px → 10px (shots-dusk2 small-font audit): the axis/tick voice was
-     the smallest text on the site and rendered ~9.3px where a scene
-     scales below 1:1. Half a point buys real legibility at 1x DPR and
-     no tick label collides at any scene's coordinates. */
-  font-size: 10px;
+  /* 10px → 11px (CRITIC-LEDGER F32/F33): the axis/tick voice was the
+     smallest text on the site. It cannot reach the label token's 12px
+     floor: the ten-slot readout in the Glyph forward-pass plate is
+     drawn on a 12.2-unit pitch, and at 12px the adjacent digits' boxes
+     overlap (measured — 2 units of vertical intersection). 11px is the
+     largest step those hand-placed coordinates hold, verified collision
+     -free at 320→1440. The rest of the distance is a redraw, not a
+     size: see the ESCALATE note in CRITIC-LEDGER's WAVE2-STATUS. */
+  font-size: 11px;
 }
 /* The drawing edge — the Red Thread's own convention, settled drawn. */
 .scene-edge {
@@ -2048,6 +2119,16 @@ section[id] {
   line-height: var(--text-label--line-height);
   letter-spacing: var(--text-label--letter-spacing);
   text-transform: lowercase;
+  /* Small-type widows (CRITIC-LEDGER F02's closing note). The apparatus
+     voice sets long strings in a narrow measure — the gate's
+     availability line, "open to new-grad software, data, and ml
+     engineering roles", dropped "roles" onto a line of its own at 390.
+     A widow in 13px mono reads as a mistake, and this voice carries the
+     lines a screener actually uses. `pretty` is the one text-wrap value
+     whose defined job is to avoid short last lines; where it is not
+     supported it computes to the normal greedy wrap, so nothing
+     regresses. Paragraph-level, so it costs nothing per frame. */
+  text-wrap: pretty;
 }
 /* Case exemption for DATA inside the mono voice (dossier receipts):
    file paths, repo names, commands, and errata quote case-sensitive

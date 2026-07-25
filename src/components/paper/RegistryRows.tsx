@@ -51,9 +51,29 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
 
   return (
     <>
-      <li className="text-ink-secondary flex justify-between gap-x-3 opacity-80">
-        <span>run · model</span>
-        <span className="text-right">status</span>
+      {/* THE METRIC COLUMN (CRITIC-LEDGER F21/F56).
+          The figure used to be two cells — `run · model` and `status` —
+          so the visitor was invited to exercise the site's whole thesis,
+          the human go/no-go, on a row with NO data column at all. The
+          caption said metrics were withheld; the table showed no place
+          they could have gone, so a reader could not see WHAT was being
+          withheld, only that something was.
+          The column is now drawn, labelled, and redacted. The mark is
+          deliberately NOT the ledger's suggested `f1 ▓▓▓▓`: the automl
+          case file states that "a demo-data run ledger with a complete
+          metric trail has not shipped yet", so naming an f1 per run
+          would invent a value that may not exist. `▓▓` says only what
+          is true — there is a metric column, and its contents are not
+          published — and the figcaption carries the case file's own two
+          reasons. Redaction, not a number. */}
+      <li className="text-ink-secondary flex justify-between gap-x-2 opacity-80">
+        <span className="min-w-0 flex-1">run · model</span>
+        <span className="hidden w-[2.2em] shrink-0 text-right sm:inline">
+          metrics
+        </span>
+        <span className="text-right whitespace-nowrap sm:w-[11.4em] sm:shrink-0">
+          status
+        </span>
       </li>
       {rows.map((row, index) => {
         const awaiting = row.status === "awaiting approval";
@@ -69,13 +89,28 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
                (static, reduced motion, the case-file figure) never sees
                the hiding rule at all and prints the complete register. */
             data-registry-row={index}
-            className={`flex justify-between gap-x-3 ${
+            className={`flex justify-between gap-x-2 ${
               awaiting ? "text-ink" : "text-ink-secondary"
             }`}
           >
-            <span>
+            <span className="min-w-0 flex-1">
               {row.run} · {row.model}
             </span>
+            {/* The redacted metric cell. aria-hidden + an sr-only twin:
+                a screen reader must hear "metrics not published", never
+                a run of block glyphs.
+                `hidden sm:inline` is a measured concession, not a
+                preference: below sm the figure sets in the story column,
+                where run 041's row already spends 273px of a 289px
+                measure. A third column costs ~36px and there is not
+                36px. Phone readers are not left guessing — the
+                figcaption states the redaction in words in every world,
+                and the sr-only twin keeps it in the accessibility tree
+                at every width. */}
+            <span className="text-ink-secondary hidden w-[2.2em] shrink-0 text-right opacity-70 sm:inline">
+              <span aria-hidden="true">▓▓</span>
+            </span>
+            <span className="sr-only">metrics not published</span>
             {awaiting ? (
               <button
                 type="button"
@@ -84,7 +119,16 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
                 aria-pressed={approved}
                 aria-label={`Approve run no. ${row.run}`}
                 onClick={approved ? undefined : approve}
-                className={`registry-approve relative appearance-none border-0 bg-transparent p-0 text-right lowercase ${
+                /* w-[11.4em] shrink-0 whitespace-nowrap — the same cell
+                   the header declares, so the three columns rule up on
+                   every row. 11.4em is measured: "awaiting approval" is
+                   the widest string this column ever carries and sets to
+                   ~148px at the 13px label token. Natural widths were
+                   tried first and rejected — with the status cell free
+                   to shrink to "approved" (69px), the redaction mark
+                   landed 79px further left on run 041 than on the other
+                   three, which is a ragged column, not a ledger. */
+                className={`registry-approve relative appearance-none border-0 bg-transparent p-0 text-right whitespace-nowrap lowercase sm:w-[11.4em] sm:shrink-0 ${
                   approved ? "cursor-default" : "cursor-pointer"
                 }`}
               >
@@ -95,7 +139,9 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
                 </span>
               </button>
             ) : (
-              <span className="text-right">{row.status}</span>
+              <span className="text-right whitespace-nowrap sm:w-[11.4em] sm:shrink-0">
+                {row.status}
+              </span>
             )}
           </li>
         );
