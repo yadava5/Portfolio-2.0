@@ -1951,6 +1951,38 @@ html[data-motion-off] .pipeline-token-bead {
    cream — the figures must flip with it. Quiet voices mute via OPACITY
    on the full-strength ink (the dusk-chapter pattern), never the
    day-only secondary token. */
+/* ── The small editions (CRITIC-LEDGER F66, phone half) ─────────────
+   A scene plate scales as min(1, column ÷ viewBox-width), so a
+   512-unit plate in a 330px phone column renders its 13px voice at
+   ~8.4px — and Wave 2 measured the naive fix dead: enlarging the
+   authored size past ~13.4 units clips Applied's labels and collides
+   Cadence in 13 places. The real answer is editorial, not mechanical:
+   every scene is AUTHORED TWICE — the wide plate (unchanged), and a
+   recomposed narrow edition on a 280-unit canvas whose only text
+   voice is the 13px label token. The figure itself is the container,
+   so each seat (ch05 row, case plate) chooses by its own measured
+   column, not the viewport.
+   Why 380: measured on the live export — the phone column is 330px
+   (row) / 281px (case plate) at 390, both narrow; the 1440 case
+   plate column is 399px and must keep the wide plate. 380 splits the
+   measured bands with margin on both sides.
+   Why 280: the narrowest normative seat (the case plate at 390)
+   measures 281px, so the narrow edition rides at 1:1 there — its
+   13px voice renders 13px, never below the 11px floor. */
+.scene-fig {
+  container-type: inline-size;
+}
+.scene-plate-narrow {
+  display: none;
+}
+@container (width < 380px) {
+  .scene-plate-wide {
+    display: none;
+  }
+  .scene-plate-narrow {
+    display: block;
+  }
+}
 .scene-fig text {
   font-family: var(--font-mono);
   /* 12.5px → 13px (CRITIC-LEDGER F32): 12.5 was a one-off outside the
