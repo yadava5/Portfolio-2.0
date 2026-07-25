@@ -119,6 +119,39 @@ const AUTOML_REGISTRY_ROWS = [
   { run: "041", model: "xgboost", status: "awaiting approval" },
 ];
 
+/**
+ * The ¶04 hold's running note (CRITIC-LEDGER F03).
+ *
+ * The pin costs the reader a viewport of scroll, and across it the left
+ * column used to be pixel-identical — six colour steps and a travelling
+ * dot, carrying no information the static frame did not already have.
+ * So the hold now SAYS something, and every word of it is the case
+ * file's own: these are `getCaseStudyById("automl").constraints`,
+ * VERBATIM, each surfacing where it actually governs the run —
+ * documents at ingest, auditable decisions at preprocess, containers at
+ * train, browser checks at evaluate, and the approval rule at the halt.
+ *
+ * `phase` is the ladder index the note belongs to (0 = 1.0 ingest …
+ * 6 = 7.0 deploy, the gated one — its note lands on the HALT, which is
+ * the only thing the gate ever resolves to). 2.0 explore and 4.0
+ * engineer have no honestly-sourced line of their own, so they hold the
+ * previous note rather than invent one (brief D6). If a constraint ever
+ * leaves the case file, its line leaves this figure with it — the
+ * filter below is the whole enforcement mechanism.
+ */
+const AUTOML_RUN_NOTES = (() => {
+  const constraints = getCaseStudyById("automl")?.constraints ?? [];
+  return [
+    { phase: 0, text: constraints[1] } /* domain documents → ingest */,
+    { phase: 2, text: constraints[0] } /* auditable decisions → preprocess */,
+    { phase: 4, text: constraints[3] } /* containerized runs → train */,
+    { phase: 5, text: constraints[4] } /* browser-level checks → evaluate */,
+    { phase: 6, text: constraints[2] } /* human approval → the halt */,
+  ].filter((note): note is { phase: number; text: string } =>
+    Boolean(note.text)
+  );
+})();
+
 /** Ch-03 field records — the Miami year retold in the paper's own voice.
  *  Every fact traces to src/lib/data/experience.ts (descriptions and
  *  achievements); receipts follow the #values claim→evidence grammar.
@@ -852,6 +885,33 @@ function AutomlChapter() {
             >
               7 phases · every one gated · langgraph + mcp orchestration
             </p>
+
+            {/* THE RUNNING NOTE (CRITIC-LEDGER F03): the hold's payoff.
+                Every note is stacked in ONE grid cell, so the block's
+                height is reserved from first paint and the swap is pure
+                opacity — no layout property is ever animated (D3), and
+                nothing under the pin can reflow mid-hold. The last note
+                is the resting frame: static worlds, and the motion world
+                at the halt, both show the approval constraint, which is
+                exactly what the halted token means (A7). */}
+            {AUTOML_RUN_NOTES.length > 0 ? (
+              <div className="mt-8" data-tm="block">
+                <p className="label-mono text-ink-secondary">
+                  what the run is held to — quoted from the case file
+                </p>
+                <div data-pipeline-notes className="mt-3 grid">
+                  {AUTOML_RUN_NOTES.map((note) => (
+                    <p
+                      key={note.text}
+                      data-pipeline-note={note.phase}
+                      className="text-ink-secondary max-w-[46ch] font-serif text-[1.1875rem] leading-snug italic"
+                    >
+                      {note.text}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <p className="mt-8" data-tm="block">
               <Link
                 href="/projects/automl/"
