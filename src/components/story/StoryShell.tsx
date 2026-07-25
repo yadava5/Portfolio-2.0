@@ -1419,10 +1419,16 @@ function GateChapter() {
   const muted = mutedClass(true);
 
   return (
+    /* CRITIC-LEDGER F08: py-[14vh] is 118px of empty brown at each end
+       of the closing page on an 844-tall phone — measured from the 06/07
+       folio rule to the ¶07 kicker, 52% of the viewport carried nothing.
+       The desktop composition earns that air (the gate is a spread); a
+       phone does not, so the padding is a mobile-first 6vh that opens
+       back up at lg. */
     <section
       id={GATE.anchor}
       data-chapter={GATE.id}
-      className="relative flex min-h-svh flex-col justify-center py-[14vh]"
+      className="relative flex min-h-svh flex-col justify-center py-[6vh] lg:py-[14vh]"
     >
       <ThreadSegment id={GATE.id} />
       <div className={WRAP}>
@@ -1474,15 +1480,6 @@ function GateChapter() {
               >
                 Ayush Yadav
               </h2>
-            </div>
-
-            {/* Mobile seat: the stamp sits between the giant name and the
-                email CTA (the lg+ world keeps it in the right column).
-                The "on file:" manifest (W5 round B) sits under the seal
-                on both seats — the reader's own trail, space reserved. */}
-            <div className="mt-8 lg:hidden">
-              <AwaitingStamp compact />
-              <OnFileManifest fileIds={CASE_FILE_IDS} />
             </div>
 
             {/* Availability renders lowercase via .label-mono — the data
@@ -1557,6 +1554,25 @@ function GateChapter() {
                   Email me — I read everything.
                 </a>
               </p>
+            </div>
+
+            {/* Mobile seat for the stamp (the lg+ world keeps it in the
+                right column). The "on file:" manifest (W5 round B) sits
+                under the seal on both seats — the reader's own trail,
+                space reserved.
+                CRITIC-LEDGER F08: this block used to sit between the
+                giant name and the availability line, where its plate
+                pushed `availability` to the fold edge and the email
+                address off the phone screen entirely. The order now puts
+                every contact affordance ABOVE the seal — a screener
+                reaches the address without scrolling past a graphic —
+                and the act the page asks for closes the column, which is
+                also where it reads best. This is what buys the stamp its
+                F67 size increase: it can be full-scale down here without
+                costing the reader anything. */}
+            <div className="mt-10 lg:hidden">
+              <AwaitingStamp compact />
+              <OnFileManifest fileIds={CASE_FILE_IDS} />
             </div>
           </div>
 
