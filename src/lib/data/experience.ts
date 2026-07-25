@@ -133,9 +133,10 @@ export function formatDateRange(startDate: string, endDate: string): string {
   return `${start} - ${end}`;
 }
 
-/**
- * Get the current/most recent experience
- */
-export function getCurrentExperience(): Experience | undefined {
-  return experiences.find((exp) => exp.endDate === "Present");
-}
+/* CRITIC-LEDGER F59: `getCurrentExperience()` lived here and returned
+   `experiences.find((exp) => exp.endDate === "Present")`. No entry in
+   this file has ever carried "Present" — the one role ended 2026-05 —
+   so the function could only ever return `undefined`, and it had zero
+   call sites to notice. Deleted rather than repaired: "the current
+   experience" is a claim the site does not currently have, and a
+   helper that manufactures one is how it would quietly acquire it. */
