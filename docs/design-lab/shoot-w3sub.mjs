@@ -37,17 +37,11 @@ const report = {};
   const block = page.locator("#gate").getByText("on file — references");
   await block.scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
+  /* Viewport capture, not a full-page one: the block has to be read
+     where a reader meets it — scrolled into the closing page, with the
+     endnotes above it and the evidence-index line below. */
   await page.screenshot({
     path: path.join(OUT, `${TAG}-gate-references.png`),
-    clip: await page
-      .locator("#gate")
-      .boundingBox()
-      .then((b) => ({
-        x: 0,
-        y: Math.max(0, 0),
-        width: 1440,
-        height: 900,
-      })),
   });
   report.gateReferences = await page.evaluate(() => {
     const heads = [...document.querySelectorAll("#gate h2")].map((h) =>
