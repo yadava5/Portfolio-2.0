@@ -211,12 +211,15 @@ export function EvidenceTable({
                   accessible name leads with the visible digits (audit
                   §1.3 label-content-name-mismatch: voice-control users
                   say "click 01") and the tap-target pad lifts the
-                  17×15 glyph to a ≥24px hit area (WCAG 2.5.8). */}
+                  17×15 glyph to a 37×45 hit area — real padding since
+                  the certification round, so the box a census reads is
+                  the box a finger lands on. `--tap-gap-end` carries the
+                  8px that used to be `mr-2`; see .tap-target. */}
               <p className="text-ink">
                 <a
                   href={`#${anchor}`}
                   aria-label={`${padded} — permalink to receipt ${n}`}
-                  className="label-mono tap-target text-ink-secondary hover:text-ink mr-2 underline-offset-4 hover:underline"
+                  className="label-mono tap-target text-ink-secondary hover:text-ink underline-offset-4 [--tap-gap-end:0.5rem] hover:underline"
                 >
                   {padded}
                   <AuditMark state={audit} />
