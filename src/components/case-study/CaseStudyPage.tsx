@@ -177,6 +177,10 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
      (pinned artifact / page capture / described / held) so its counts
      always match the DOM marks under an independent recount. */
   const auditCounts = receiptAuditCounts(study);
+  /* CRITIC-LEDGER F57: does this file actually carry a local-only row? */
+  const hasLocalOnlyRow = [...study.receipts, ...study.outcomes].some(
+    (row) => row.visibility === "local-only"
+  );
 
   return (
     <article data-dossier className="dossier-surface text-ink min-h-screen">
@@ -437,11 +441,23 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             />
           </div>
 
-          {/* Epoch-style provenance line: who ran what, in one sentence */}
+          {/* Epoch-style provenance line: who ran what, in one sentence.
+
+              CRITIC-LEDGER F57: the `[local — verified on request]`
+              clause printed unconditionally. `local-only` visibility is
+              used TWICE in 2,088 lines of case-study data, so five of
+              seven case files explained a badge that never appears on
+              them — an apparatus footnote for absent evidence, which
+              reads as either boilerplate or a hint that something is
+              being held back. The legend now renders where its badge
+              does; the other two clauses are true of every file and
+              stay. */}
           <p className="label-mono text-ink-secondary border-ink/15 mt-8 border-t pt-3">
-            rows marked [local — verified on request] were run by me on personal
-            or demo data · ci rows link the public run · repo pins are the exact
-            commits verified {study.verified}.
+            {hasLocalOnlyRow
+              ? "rows marked [local — verified on request] were run by me on personal or demo data · "
+              : null}
+            ci rows link the public run · repo pins are the exact commits
+            verified {study.verified}.
           </p>
 
           {/* Boundary rows — the file's honest edges */}
