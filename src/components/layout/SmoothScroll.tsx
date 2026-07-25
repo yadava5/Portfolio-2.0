@@ -33,6 +33,7 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { announceArrival } from "@/components/story/arrival";
 import {
   applyGate,
   getTier,
@@ -340,6 +341,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
            false-downshifted mid-flight). Window ≈ flight + settle. */
         suppressSampling(SCROLL_DURATION * 1000 + 600);
         window.scrollTo({ top: y, behavior: "smooth" });
+        /* A flight crosses no trigger lines on the way in: tell the
+           reveal engine where the reader landed (CRITIC-LEDGER F01). */
+        announceArrival();
       },
       on: (_event, cb) => {
         const listener: EventListener = () => cb();
