@@ -83,11 +83,24 @@ interface FolioRuleProps {
 /**
  * Folio rule closing a chapter: hairline — `NN / 07` — hairline.
  * Built from flex hairlines (not a masked span) so it sits cleanly on the
- * moving day-arc background. Hairlines run at 70% ink so the rule holds
- * ~3:1 decorative contrast on every waypoint (the 25% original vanished
- * on golden hour). Folio 05 is the day's TERMINATOR: a slightly heavier
- * line — in the static worlds the background (and the thread's ink)
- * change to nightfall exactly at this rule.
+ * moving day-arc background. The rule holds ~3:1 decorative contrast on
+ * every waypoint (the 25% original vanished on golden hour) — MEASURED
+ * across all seven folios: 3.32 / 3.36 / 3.31 / 3.23 / 3.79 / 3.72 /
+ * 4.26, worst case 3.23:1 at folio 04.
+ *
+ * The ink alpha that produces it is NOT a single 70% (CRITIC-LEDGER
+ * F82, which read the header as claiming so). The hairline's own
+ * `opacity-70` composes with whatever the enclosing `mutedClass` sets:
+ * in the day register that is a COLOUR (`text-ink-secondary`, no
+ * opacity) so the composed alpha is 0.70, while past the dusk flip it
+ * is `opacity-70`, so the two multiply to 0.49. Both land above 3:1
+ * because the dusk ink is a cream on a dark ground and buys back what
+ * the second multiply costs. Re-measure with
+ * docs/design-lab/probe-w4claims.mjs before changing either opacity.
+ *
+ * Folio 05 is the day's TERMINATOR: a slightly heavier line at 0.80 —
+ * in the static worlds the background (and the thread's ink) change to
+ * nightfall exactly at this rule.
  *
  * `data-thread-folio` is the Red Thread's measurement anchor for that
  * seam (ThreadSegment 05 splits its nightfall dip here) — geometry only.
