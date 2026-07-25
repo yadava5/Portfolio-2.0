@@ -119,6 +119,42 @@ test.describe("frame governor — first-paint tier", () => {
       )
       .toBe("rgb(44, 38, 34)");
   });
+
+  test("an EXPIRED print cap floors nothing — the verdict is re-earned", async ({
+    page,
+  }) => {
+    /* CRITIC-LEDGER F73. The cap used to be permanent for the session:
+       four slow frames during one scroll wrote `print` and every later
+       page in the tab started at the static edition, with no indication
+       and no way back. It now carries an expiry instant, honoured in
+       two places that must agree — the layout.tsx head script before
+       first paint, and readCap() in the governor. A cap whose instant
+       has passed must leave NO trace in either: not a print stamp, not
+       a suppressed entrance gate, and not the stale keys themselves. */
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("study-tier-cap", "print");
+      window.sessionStorage.setItem(
+        "study-tier-cap-until",
+        String(Date.now() - 1_000)
+      );
+    });
+    await page.goto("/");
+    await page.locator("#arrival").waitFor({ state: "attached" });
+
+    await expect(page.locator("html")).toHaveAttribute("data-tier", "core");
+    await expect(page.locator("html")).not.toHaveAttribute("data-motion-off");
+    await expect(page.locator("header")).toHaveAttribute(
+      "data-lenis-connected",
+      "true"
+    );
+    /* readCap() clears an expired verdict on the way out, so the next
+       navigation's head script cannot see it either. */
+    await expect
+      .poll(() =>
+        page.evaluate(() => window.sessionStorage.getItem("study-tier-cap"))
+      )
+      .toBeNull();
+  });
 });
 
 test.describe("frame governor — scoring (probe drives the real scorer)", () => {
