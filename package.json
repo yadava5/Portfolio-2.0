@@ -20,6 +20,7 @@
     "test:e2e:videos": "NEXT_PUBLIC_BASE_PATH= next build --webpack && playwright test tests/playwright/record-walkthroughs.spec.ts",
     "test:e2e:score": "NEXT_PUBLIC_BASE_PATH= next build --webpack && playwright test tests/playwright/portfolio-quality-score.spec.ts",
     "test:e2e:static-seo": "NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 next build --webpack && NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 playwright test tests/playwright/static-seo.spec.ts",
+    "test:e2e:probes": "NEXT_PUBLIC_TEST_PROBES=1 NEXT_PUBLIC_BASE_PATH= next build --webpack && NEXT_PUBLIC_TEST_PROBES=1 playwright test tests/playwright/frame-governor.spec.ts",
     "test:e2e:ui": "playwright test --ui",
     "test:visual": "playwright test --update-snapshots",
     "assets:budget": "node scripts/qa/check-asset-budgets.mjs",
@@ -30,7 +31,9 @@
     "resume:check": "node scripts/resume/check-resume.mjs",
     "assets:promote-proof": "node scripts/asset-truth/promote-proof-assets.mjs",
     "assets:derive": "node scripts/asset-truth/derive-display-variants.mjs",
-    "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs"
+    "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs",
+    "assets:render-og": "node scripts/asset-truth/render-og-cards.mjs",
+    "assets:check-og": "node scripts/asset-truth/render-og-cards.mjs --check"
   },
   "browserslist": [
     "chrome 128",
