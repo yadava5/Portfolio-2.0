@@ -17,14 +17,47 @@ import { HeldStamp } from "@/components/paper/HeldStamp";
 import { VisitedMark } from "@/components/paper/VisitedMark";
 import { proofManifest, ProofVisibility } from "@/lib/data/proofManifest";
 import { siteMetadata } from "@/lib/data/personal";
+import { absoluteSiteUrl, evidenceGraph, jsonLdHtml } from "@/lib/seo";
 import { withBasePath } from "@/lib/utils";
 
+const EVIDENCE_URL = `${siteMetadata.url}/evidence/`;
+const EVIDENCE_TITLE = "The Evidence Index | Ayush Yadav";
+const EVIDENCE_DESCRIPTION =
+  "The master ledger behind the portfolio: every claim, its source, how it was verified, its visibility, and its privacy boundary.";
+const EVIDENCE_IMAGE = absoluteSiteUrl("/og/evidence.png");
+
+/* CRITIC-LEDGER F26: this page had a title, a description and a
+   canonical — and no `openGraph` block at all. Next fell back to the
+   root layout's, so the funnel's DESTINATION shared as the homepage:
+   og:title, og:description and og:url all pointed at `/`. The one link
+   worth pasting into a recruiter thread — "here is the ledger behind
+   every number" — unfurled as the front door. */
 export const metadata: Metadata = {
-  title: "The Evidence Index | Ayush Yadav",
-  description:
-    "The master ledger behind the portfolio: every claim, its source, how it was verified, its visibility, and its privacy boundary.",
+  title: EVIDENCE_TITLE,
+  description: EVIDENCE_DESCRIPTION,
   alternates: {
-    canonical: `${siteMetadata.url}/evidence/`,
+    canonical: EVIDENCE_URL,
+  },
+  openGraph: {
+    title: EVIDENCE_TITLE,
+    description: EVIDENCE_DESCRIPTION,
+    url: EVIDENCE_URL,
+    siteName: siteMetadata.title,
+    images: [
+      {
+        url: EVIDENCE_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "The evidence index — Ayush Yadav's proof ledger",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: EVIDENCE_TITLE,
+    description: EVIDENCE_DESCRIPTION,
+    images: [EVIDENCE_IMAGE],
   },
 };
 
@@ -62,9 +95,35 @@ function sourceLink(
   return null;
 }
 
+/**
+ * The honest qualifier on a source's independence (CRITIC-LEDGER F55).
+ *
+ * The manifest's own rule (proofManifest.ts:4-6) is that `source` is
+ * the strongest artifact OUTSIDE this site's rendering. Three entries
+ * pointed at `public/…` paths that `sourceLink()` rewrites to this very
+ * origin, and printed them behind `↗` — the glyph this site reserves
+ * for "leaves the site". Two more terminate in the author's own README.
+ * Neither is dishonest evidence; both are weaker than a committed run,
+ * and the page now says which is which instead of dressing all five as
+ * the same thing.
+ */
+const SOURCE_KIND_NOTE = {
+  "self-hosted": "[self-hosted — checked into this site's repository]",
+  "self-authored": "[self-authored — the author's own documentation]",
+} as const;
+
 export default function EvidencePage() {
   return (
     <article data-dossier className="dossier-surface text-ink min-h-screen">
+      {/* CRITIC-LEDGER F23: the ledger as a CollectionPage. Its
+          numberOfItems is the manifest's own length, so the graph can
+          never claim more entries than the page renders. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdHtml(evidenceGraph(proofManifest.length)),
+        }}
+      />
       <DossierThread />
       <div className="relative mx-auto w-full max-w-[1240px] pt-28 pr-6 pb-16 pl-9 sm:px-12 xl:pr-16 xl:pl-36">
         <p className="label-mono text-ink-secondary">
@@ -139,11 +198,21 @@ export default function EvidencePage() {
                           }
                           className="link-draw"
                         >
-                          {entry.sourceLabel} ↗
+                          {/* F41's glyph contract, applied to the one
+                              place that broke it: ↗ leaves the site, ⟶
+                              goes deeper into this argument. A
+                              `public/…` source is served from this
+                              origin — it never left. */}
+                          {entry.sourceLabel} {link.external ? "↗" : "⟶"}
                         </a>
                       ) : (
                         entry.sourceLabel
                       )}
+                      {entry.sourceKind ? (
+                        <span className="text-ink-secondary block">
+                          {SOURCE_KIND_NOTE[entry.sourceKind]}
+                        </span>
+                      ) : null}
                     </dd>
                   </div>
                   <div>
@@ -157,13 +226,28 @@ export default function EvidencePage() {
                     <dd className="inline">{entry.verification}</dd>
                   </div>
                   <div>
-                    <dt className="text-ink-secondary inline">receipt: </dt>
+                    {/* CRITIC-LEDGER F43: "receipt" ran 23 times on a
+                        12-entry page — the dt said it, then the value
+                        said it again two words later ("receipt:
+                        jobtracker case file · receipt 04"). The term
+                        the reader needs here is not the artifact's
+                        name, it is the RELATION: where this claim is
+                        argued at length. The receipt numbers stay —
+                        they are the anchors. */}
+                    <dt className="text-ink-secondary inline">argued in: </dt>
                     <dd className="inline">
                       {entry.receipt ? (
                         <>
                           <Link href={entry.receipt.href} className="link-draw">
                             {entry.receipt.label} ⟶
                           </Link>
+                          {/* CRITIC-LEDGER F44: the crosswalk arrow and
+                              the reading-history ✓ set flush against
+                              each other — `receipt 02 ⟶✓`, one glyph
+                              reading as a ligature of the other. A thin
+                              space (U+2009) parts them without opening
+                              a word space inside the value. */}
+                          {"\u2009"}
                           {/* The paper remembers (W1): ✓ once the cited
                               case file has been opened. Item 5 — where
                               this reading-history ✓ sits beside a HELD

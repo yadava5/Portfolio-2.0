@@ -8,6 +8,17 @@
  * finale) — while the event snaps onto a drawn week grid and takes a
  * small clay Meet badge. The sentence literally becomes the schedule.
  *
+ * TWO AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half): the wide
+ * 512-unit plate (sentence on one line, chips left / grid right) and a
+ * narrow 280-unit edition for columns under 380px. Wave 2 measured the
+ * mechanical alternative dead — enlarging this plate's authored sizes
+ * collides in 13 places — so the narrow edition is a REDRAW: the same
+ * sentence wraps to three lines on its natural phrase seams, and the
+ * page reads downward — sentence → chips → week grid — the way a phone
+ * column actually flows. Every span, chip, grid mark and label
+ * survives at the full 13px voice; the honesty label stays the first
+ * line of the plate. Same words, same parse, same clay finale.
+ *
  * HONESTY (D6): the sentence is an ILLUSTRATIVE example, labeled so in
  * the figure and the manifest disclosure — never real user data. No
  * parser runs in this card (brief B2: no live LLM/NLP from a static
@@ -32,7 +43,7 @@ import gsap from "gsap";
 
 /** Monospace advance (SVG user units) the sentence is typeset on. */
 const CW = 7.5;
-/** Sentence origin + underline baseline. */
+/** Sentence origin + underline baseline — wide plate. */
 const SX = 12;
 const SY = 34;
 const UY = 41;
@@ -75,9 +86,51 @@ const DAYS = ["m", "t", "w", "t", "f", "s", "s"];
 /** The parsed event: tuesday × the noon row. */
 const BLOCK = { x: 312, y: 138, w: 26, h: 22 };
 
+/* ── Narrow edition geometry (280-unit canvas, top-to-bottom flow) ─── */
+/** Sentence origin + the three line baselines (natural phrase seams). */
+const SX_M = 10;
+const LINE_Y_M = [44, 66, 88];
+/** The SAME sentence, re-set on three lines: (line, col) per segment.
+ *  The wide plate's bare connective spaces become the line breaks. */
+const SEGMENTS_M: { text: string; line: number; col: number; span?: string }[] =
+  [
+    { text: "“", line: 0, col: 0 },
+    { text: "lunch", line: 0, col: 1, span: "title" },
+    { text: " with ", line: 0, col: 6 },
+    { text: "sam", line: 0, col: 12, span: "who" },
+    { text: " and ", line: 0, col: 15 },
+    { text: "priya", line: 0, col: 20, span: "who2" },
+    { text: "next tuesday at noon", line: 1, col: 0, span: "when" },
+    { text: "— ", line: 2, col: 0 },
+    { text: "add a meet", line: 2, col: 2, span: "meet" },
+    { text: "”", line: 2, col: 12 },
+  ];
+const spanXM = (col: number) => SX_M + col * CW;
+
+/** Chip stack — narrow edition (4 wider units so the 13px voice keeps
+ *  its breathing room inside the box). */
+const CHIP_X_M = 10;
+const CHIP_W_M = 184;
+const CHIP_Y_M = { when: 152, who: 184, meet: 216 };
+
+/** Week grid — narrow edition, BELOW the chips. */
+const GRID_X_M = 58;
+const GRID_Y_M = 268;
+
+/** The parsed event + its clay Meet badge — narrow edition. */
+const BLOCK_M = { x: 90, y: 301, w: 26, h: 22 };
+const BADGE_M = { x: 111, y: 296 };
+
 export function CadenceScene() {
   const rootRef = useSceneRun<HTMLDivElement>((tl, root) => {
-    const q = gsap.utils.selector(root);
+    /* Choreograph the edition the container query shows. */
+    const plates = Array.from(
+      root.querySelectorAll<SVGSVGElement>("[data-sc-plate]")
+    );
+    const plate =
+      plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
+    const narrow = plate.dataset.scPlate === "narrow";
+    const q = gsap.utils.selector(plate);
     const underlines = q<SVGPathElement>("[data-sc-underline]");
     const thread = q<SVGPathElement>("[data-sc-thread]");
     const guides = q<SVGPathElement>("[data-sc-gridline]");
@@ -95,10 +148,17 @@ export function CadenceScene() {
       strokeDashoffset: 1.5,
     });
     gsap.set(gridLabels, { opacity: 0 });
-    /* Each chip starts AT its sentence span (the lift-out), invisible */
-    gsap.set(chipWhen, { x: 195, y: -78, opacity: 0 });
-    gsap.set(chipWho, { x: 90, y: -110, opacity: 0 });
-    gsap.set(chipMeet, { x: 368, y: -142, opacity: 0 });
+    /* Each chip starts AT its sentence span (the lift-out), invisible.
+       The narrow offsets aim at the same spans on their wrapped lines. */
+    if (narrow) {
+      gsap.set(chipWhen, { x: 0, y: -101, opacity: 0 });
+      gsap.set(chipWho, { x: 90, y: -155, opacity: 0 });
+      gsap.set(chipMeet, { x: 15, y: -143, opacity: 0 });
+    } else {
+      gsap.set(chipWhen, { x: 195, y: -78, opacity: 0 });
+      gsap.set(chipWho, { x: 90, y: -110, opacity: 0 });
+      gsap.set(chipMeet, { x: 368, y: -142, opacity: 0 });
+    }
     gsap.set(block, { opacity: 0, scale: 0.6, transformOrigin: "50% 50%" });
     gsap.set(badge, { opacity: 0 });
 
@@ -132,7 +192,11 @@ export function CadenceScene() {
       .to(badge, { opacity: 1, duration: 0.2 }, 2.2)
       .fromTo(
         pulse,
-        { opacity: 0.55, scale: 0.5, svgOrigin: "336 136" },
+        {
+          opacity: 0.55,
+          scale: 0.5,
+          svgOrigin: narrow ? "114 299" : "336 136",
+        },
         {
           opacity: 0,
           scale: 1.9,
@@ -150,7 +214,8 @@ export function CadenceScene() {
         role="img"
         aria-label={PROJECT_SCENE_MANIFEST["taskflow-calendar"].alt}
         viewBox="0 0 512 216"
-        className="block h-auto w-full max-w-[512px]"
+        data-sc-plate="wide"
+        className="scene-plate-wide block h-auto w-full max-w-[512px]"
       >
         {/* the honesty label: this sentence is an example, not user data */}
         <text x={SX} y="16" className="sc-quiet sc-small">
@@ -323,6 +388,185 @@ export function CadenceScene() {
           height="6"
         />
         <circle data-sc-pulse className="scene-pulse" cx="336" cy="136" r="7" />
+      </svg>
+
+      {/* ── the narrow edition: the same parse, reading downward ──
+          The sentence wraps on its phrase seams (three lines), the
+          chips rest beneath it, and the week grid takes the foot of
+          the plate — sentence → chips → schedule, the phone column's
+          own reading order. Same spans, same chips, same clay Meet
+          finale; the only voice is the 13px label token. */}
+      <svg
+        role="img"
+        aria-label={PROJECT_SCENE_MANIFEST["taskflow-calendar"].alt}
+        viewBox="0 0 280 372"
+        data-sc-plate="narrow"
+        className="scene-plate-narrow h-auto w-full max-w-[280px]"
+      >
+        {/* the honesty label — pinned so the full clause holds the
+            280-unit measure (273.5 natural → 264, a 3% squeeze) */}
+        <text
+          x="8"
+          y="16"
+          textLength="264"
+          lengthAdjust="spacingAndGlyphs"
+          className="sc-quiet"
+        >
+          typed — an illustrative sentence
+        </text>
+
+        {/* the sentence, wrapped on its natural phrase seams */}
+        {SEGMENTS_M.map((seg) => (
+          <text
+            key={`${seg.line}-${seg.col}`}
+            x={spanXM(seg.col)}
+            y={LINE_Y_M[seg.line]}
+            textLength={spanW(seg.text.length)}
+            lengthAdjust="spacingAndGlyphs"
+            xmlSpace="preserve"
+            className={seg.span ? undefined : "sc-quiet"}
+          >
+            {seg.text}
+          </text>
+        ))}
+        {SEGMENTS_M.filter((seg) => seg.span).map((seg) => (
+          <path
+            key={seg.span}
+            data-sc-underline
+            className={seg.span === "meet" ? "scene-claytick" : "scene-edge"}
+            d={`M ${spanXM(seg.col)} ${LINE_Y_M[seg.line] + 7} h ${spanW(
+              seg.text.length
+            )}`}
+            pathLength={1}
+          />
+        ))}
+
+        {/* sentence → chips: the parse thread + the parsers' names */}
+        <path
+          data-sc-thread
+          className="scene-edge"
+          d="M 40 100 C 34 110, 22 114, 14 124"
+          pathLength={1}
+        />
+        <text x={SX_M} y="138" className="sc-quiet">
+          chrono-node + compromise
+        </text>
+
+        {/* the resolved chips (when · invitees · the clay meet link) */}
+        <g data-sc-chip="when">
+          <rect
+            className="scene-slot"
+            x={CHIP_X_M}
+            y={CHIP_Y_M.when}
+            width={CHIP_W_M}
+            height={CHIP_H}
+            rx="3"
+          />
+          <text x={CHIP_X_M + 10} y={CHIP_Y_M.when + 15}>
+            tue · 12:00 — lunch
+          </text>
+        </g>
+        <g data-sc-chip="who">
+          <rect
+            className="scene-slot"
+            x={CHIP_X_M}
+            y={CHIP_Y_M.who}
+            width={CHIP_W_M}
+            height={CHIP_H}
+            rx="3"
+          />
+          <text x={CHIP_X_M + 10} y={CHIP_Y_M.who + 15}>
+            invite — sam · priya
+          </text>
+        </g>
+        <g data-sc-chip="meet">
+          <rect
+            className="scene-slot"
+            x={CHIP_X_M}
+            y={CHIP_Y_M.meet}
+            width={CHIP_W_M}
+            height={CHIP_H}
+            rx="3"
+          />
+          <rect
+            className="scene-gate"
+            x={CHIP_X_M + 10}
+            y={CHIP_Y_M.meet + 7}
+            width="8"
+            height="8"
+          />
+          <text x={CHIP_X_M + 24} y={CHIP_Y_M.meet + 15}>
+            google meet
+          </text>
+        </g>
+
+        {/* chips → grid: departs the when-chip's right border with air
+            (194 → 198), arcs through the open right column, and lands
+            just clear of the event block's top-right corner — between
+            the boxes, never through them. */}
+        <path
+          data-sc-snap
+          className="scene-edge"
+          d="M 198 163 C 246 178, 246 260, 122 297"
+          pathLength={1}
+        />
+
+        {/* the week grid, at the foot of the plate */}
+        <g data-sc-grid-labels>
+          {DAYS.map((day, i) => (
+            <text
+              key={i}
+              x={GRID_X_M + COL_W * i + COL_W / 2}
+              y="261"
+              textAnchor="middle"
+              className="sc-quiet"
+            >
+              {day}
+            </text>
+          ))}
+          <text x="52" y="317" textAnchor="end" className="sc-quiet">
+            12:00
+          </text>
+        </g>
+        {Array.from({ length: 8 }, (_, i) => (
+          <path
+            key={`v${i}`}
+            data-sc-gridline
+            className="scene-guide"
+            d={`M ${GRID_X_M + COL_W * i} ${GRID_Y_M} V ${GRID_Y_M + ROW_H * 3}`}
+            pathLength={1}
+          />
+        ))}
+        {Array.from({ length: 4 }, (_, i) => (
+          <path
+            key={`h${i}`}
+            data-sc-gridline
+            className="scene-guide"
+            d={`M ${GRID_X_M} ${GRID_Y_M + ROW_H * i} H ${
+              GRID_X_M + COL_W * 7
+            }`}
+            pathLength={1}
+          />
+        ))}
+
+        {/* the filed event — tuesday, noon — with its clay Meet badge */}
+        <rect
+          data-sc-block
+          className="scene-block"
+          x={BLOCK_M.x}
+          y={BLOCK_M.y}
+          width={BLOCK_M.w}
+          height={BLOCK_M.h}
+        />
+        <rect
+          data-sc-badge
+          className="scene-gate"
+          x={BADGE_M.x}
+          y={BADGE_M.y}
+          width="6"
+          height="6"
+        />
+        <circle data-sc-pulse className="scene-pulse" cx="114" cy="299" r="7" />
       </svg>
     </div>
   );

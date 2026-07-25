@@ -9,6 +9,8 @@
 
 import { useEffect } from "react";
 
+import { withBasePath } from "@/lib/utils";
+
 interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
@@ -51,12 +53,19 @@ export default function Error({ error, reset }: ErrorProps) {
         <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
           <button
             onClick={reset}
+            data-print-invert
             className="rounded bg-[var(--accent-primary)] px-6 py-3 font-medium text-[var(--background)] transition-colors hover:bg-[var(--accent-secondary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             Try Again
           </button>
+          {/* CRITIC-LEDGER F27: this said `href = "/"`. Deployed under
+              basePath `/Portfolio-2.0`, the one button offered to a
+              reader who has already hit an error sent them to
+              yadava5.github.io — GitHub's user root, off the site
+              entirely. withBasePath() is the same helper every other
+              hard-coded path on the site goes through. */}
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={() => (window.location.href = withBasePath("/"))}
             className="inline-block rounded bg-[var(--surface-2)] px-6 py-3 font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             Return Home

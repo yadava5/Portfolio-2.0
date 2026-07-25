@@ -17,7 +17,10 @@ const requiredIds = [
   "fast-mnist-accuracy",
   "master-inventory-ledger",
   "policybot-validation",
-  "paid-internships-sources",
+  // CRITIC-LEDGER F54: `paid-internships-sources` was cut. It was a
+  // bibliography count from a freshman writing course, for a project
+  // projects.ts hides from recruiters — the ledger's only row with
+  // neither a date nor a receipt. It is deliberately NOT required here.
 ];
 
 function fail(message) {

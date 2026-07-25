@@ -10,6 +10,17 @@
  * protocol mix). No invented numbers anywhere: the lanes are the eval
  * set's published composition, and macro-F1 0.9791 rides the caption.
  *
+ * TWO AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half): the wide
+ * plate (512 units, the original) and a narrow edition (280 units)
+ * for columns under 380px, where the wide plate's scale would push
+ * its 13px voice below legibility. The narrow edition is a REDRAW,
+ * not a shrink: the classifier lane runs VERTICALLY (mail falls
+ * through the gates), then fans into the same four counted lanes
+ * stacked full-width — every gate, label and count survives, so the
+ * caption's claims hold in both editions. CSS (globals.css, the
+ * scene-plate container query) picks the edition per seat; the run
+ * choreographs whichever plate is actually visible.
+ *
  * Motion is a one-shot scroll-in run (useSceneRun — no pin): the lane
  * inks, the gates settle, the fan draws, then four mail glyphs stream
  * the line; the LAST one pauses at the SetFit square while the clay
@@ -24,7 +35,7 @@ import { useSceneRun } from "@/components/scenes/useSceneRun";
 import { PROJECT_SCENE_MANIFEST } from "@/components/scenes/manifest";
 import gsap from "gsap";
 
-/** Bucket rail y-centers (SVG user units), top → bottom. */
+/** Bucket rail y-centers (SVG user units), top → bottom — wide plate. */
 const RAIL_Y = [44, 100, 156, 212];
 
 /** The eval set's real scenario mix (projectCaseStudies protocol). */
@@ -35,18 +46,24 @@ const LANES = [
   { name: "core-negative", count: "6" },
 ];
 
-/** Settled mail-glyph position for lane i. */
+/** Settled mail-glyph position for lane i — wide plate. */
 const restX = 462;
 const restY = (i: number) => RAIL_Y[i] - 12;
 
+/* ── Narrow edition geometry (280-unit canvas, vertical intake) ────── */
+/** Bucket rail y-centers, narrow edition. */
+const RAIL_Y_M = [216, 246, 276, 306];
+/** The vertical classifier lane's x + the gates' y-centers. */
+const LANE_X_M = 24;
+const GATE_Y_M = { rules: 78, e5: 122, setfit: 166 };
+/** Settled mail-glyph position for lane i, narrow edition. */
+const restXM = 244;
+const restYM = (i: number) => RAIL_Y_M[i] - 12;
+
 /** One mail glyph — three short message lines (the inbox's handwriting). */
-function MailGlyph({ lane }: { lane: number }) {
+function MailGlyph({ x, y }: { x: number; y: number }) {
   return (
-    <g
-      data-sc-mail
-      className="scene-mail"
-      transform={`translate(${restX}, ${restY(lane)})`}
-    >
+    <g data-sc-mail className="scene-mail" transform={`translate(${x}, ${y})`}>
       <path d="M0 0 h16" />
       <path d="M0 5 h16" />
       <path d="M0 10 h10" />
@@ -56,7 +73,15 @@ function MailGlyph({ lane }: { lane: number }) {
 
 export function AppliedScene() {
   const rootRef = useSceneRun<HTMLDivElement>((tl, root) => {
-    const q = gsap.utils.selector(root);
+    /* Choreograph the plate the CSS container query actually shows —
+       the hidden edition keeps standing as its own settled frame. */
+    const plates = Array.from(
+      root.querySelectorAll<SVGSVGElement>("[data-sc-plate]")
+    );
+    const plate =
+      plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
+    const narrow = plate.dataset.scPlate === "narrow";
+    const q = gsap.utils.selector(plate);
     const edges = q<SVGPathElement>("[data-sc-lane], [data-sc-fan]");
     const rails = q<SVGPathElement>("[data-sc-rail]");
     const gates = q<SVGGElement>("[data-sc-gate]");
@@ -76,7 +101,10 @@ export function AppliedScene() {
     gsap.set(gates, { opacity: 0 });
     gsap.set(labels, { opacity: 0 });
     mails.forEach((mail, i) => {
-      gsap.set(mail, { x: 26, y: 56 + i * 34 });
+      /* Wide: queued down the inbox column. Narrow: queued across the
+         top, under the inbox head — the lane is vertical there. */
+      if (narrow) gsap.set(mail, { x: 40 + i * 26, y: 26 });
+      else gsap.set(mail, { x: 26, y: 56 + i * 34 });
     });
 
     /* ── The run ─────────────────────────────────────────────────── */
@@ -97,10 +125,76 @@ export function AppliedScene() {
     /* Mail streams the line ONE AT A TIME (0.4s apart — the previous
        0.18s stagger put three glyphs on the lane at once, colliding
        through each other and the gate posts: the "glitchy" read). Each
-       glyph rides the fan into its lane as a CURVE — x and y tween as
-       two overlapping tweens with different eases, so the path bows like
-       the drawn bezier instead of cutting a hard diagonal across it. */
+       glyph rides the fan into its lane as a CURVE — the two travel
+       axes tween as overlapping tweens with different eases, so the
+       path bows like the drawn bezier instead of cutting a hard
+       diagonal across it. The narrow edition runs the same score with
+       the axes swapped: mail FALLS the vertical lane, then rides its
+       rail out to rest. */
     const SNAP = { snap: { x: 1, y: 1 } } as const;
+    if (narrow) {
+      const fanInto = (mail: SVGGElement, lane: number, at: number) => {
+        tl.to(
+          mail,
+          { y: restYM(lane), duration: 0.3, ease: "power1.inOut", ...SNAP },
+          at
+        ).to(mail, { x: 48, duration: 0.3, ease: "power1.out", ...SNAP }, at);
+      };
+      mails.forEach((mail, i) => {
+        const last = i === mails.length - 1;
+        const at = 0.95 + i * 0.4;
+        const ride = { x: LANE_X_M - 8, ease: "power1.inOut", ...SNAP };
+        if (last) {
+          tl.to(mail, { y: 44, ...ride, duration: 0.25 }, at)
+            .to(
+              mail,
+              { y: 146, duration: 0.4, ease: "power1.inOut", ...SNAP },
+              at + 0.25
+            )
+            /* the gate's single clay pulse, while the mail waits */
+            .fromTo(
+              pulse,
+              {
+                opacity: 0.55,
+                scale: 0.5,
+                svgOrigin: `${LANE_X_M} ${GATE_Y_M.setfit}`,
+              },
+              {
+                opacity: 0,
+                scale: 1.9,
+                duration: 0.55,
+                ease: "power2.out",
+                immediateRender: false,
+              },
+              at + 0.62
+            )
+            .to(
+              mail,
+              { y: 178, duration: 0.18, ease: "power1.in", ...SNAP },
+              at + 0.95
+            );
+          fanInto(mail, i, at + 1.13);
+          tl.to(
+            mail,
+            { x: restXM, duration: 0.3, ease: "power1.out", ...SNAP },
+            at + 1.43
+          );
+        } else {
+          tl.to(mail, { y: 44, ...ride, duration: 0.25 }, at).to(
+            mail,
+            { y: 182, duration: 0.5, ease: "power1.inOut", ...SNAP },
+            at + 0.25
+          );
+          fanInto(mail, i, at + 0.75);
+          tl.to(
+            mail,
+            { x: restXM, duration: 0.3, ease: "power1.out", ...SNAP },
+            at + 1.05
+          );
+        }
+      });
+      return;
+    }
     const fanInto = (mail: SVGGElement, lane: number, at: number) => {
       tl.to(
         mail,
@@ -169,7 +263,8 @@ export function AppliedScene() {
         role="img"
         aria-label={PROJECT_SCENE_MANIFEST.jobtracker.alt}
         viewBox="0 0 512 250"
-        className="block h-auto w-full max-w-[512px]"
+        data-sc-plate="wide"
+        className="scene-plate-wide block h-auto w-full max-w-[512px]"
       >
         {/* intake — the inbox column (empty at rest: the mail is sorted) */}
         <text x="12" y="38" className="sc-quiet">
@@ -239,7 +334,105 @@ export function AppliedScene() {
 
         {/* the sorted mail, resting in its lanes */}
         {RAIL_Y.map((_, i) => (
-          <MailGlyph key={i} lane={i} />
+          <MailGlyph key={i} x={restX} y={restY(i)} />
+        ))}
+      </svg>
+
+      {/* ── the narrow edition: the same sorting line, recomposed ──
+          The intake lane drops VERTICALLY through the three gates
+          (labels seated to the right at full 13px), then fans into
+          the four counted lanes stacked full-width. Same gates, same
+          counts, same clay — an authored small plate, not a shrink. */}
+      <svg
+        role="img"
+        aria-label={PROJECT_SCENE_MANIFEST.jobtracker.alt}
+        viewBox="0 0 280 336"
+        data-sc-plate="narrow"
+        className="scene-plate-narrow h-auto w-full max-w-[280px]"
+      >
+        <text x="10" y="18" className="sc-quiet">
+          inbox
+        </text>
+
+        {/* the classifier lane, falling */}
+        <path
+          data-sc-lane
+          className="scene-edge"
+          d={`M ${LANE_X_M} 38 V 190`}
+          pathLength={1}
+        />
+
+        {/* gate 1 — rules */}
+        <g data-sc-gate>
+          <path
+            className="scene-post"
+            d={`M 10 ${GATE_Y_M.rules} H 38`}
+          />
+          <text x="48" y={GATE_Y_M.rules + 4} className="sc-quiet">
+            rules
+          </text>
+        </g>
+        {/* gate 2 — e5 similarity */}
+        <g data-sc-gate>
+          <path className="scene-post" d={`M 10 ${GATE_Y_M.e5} H 38`} />
+          <text x="48" y={GATE_Y_M.e5 + 4} className="sc-quiet">
+            e5 similarity
+          </text>
+        </g>
+        {/* gate 3 — the gated SetFit square */}
+        <g data-sc-gate>
+          <text x="48" y={GATE_Y_M.setfit + 4} className="sc-clay">
+            setfit — gated
+          </text>
+          <rect
+            className="scene-gate"
+            x={LANE_X_M - 4}
+            y={GATE_Y_M.setfit - 4}
+            width="8"
+            height="8"
+          />
+        </g>
+        <circle
+          data-sc-pulse
+          className="scene-pulse"
+          cx={LANE_X_M}
+          cy={GATE_Y_M.setfit}
+          r="7"
+        />
+
+        {/* the fan into the four scenario lanes */}
+        {RAIL_Y_M.map((y) => (
+          <path
+            key={y}
+            data-sc-fan
+            className="scene-edge"
+            d={`M ${LANE_X_M} 190 C ${LANE_X_M} ${Math.round(
+              190 + (y - 190) * 0.45
+            )}, 30 ${y}, 48 ${y}`}
+            pathLength={1}
+          />
+        ))}
+        {RAIL_Y_M.map((y) => (
+          <path
+            key={y}
+            data-sc-rail
+            className="scene-rail"
+            d={`M 48 ${y} H 270`}
+            pathLength={1}
+          />
+        ))}
+
+        {/* lane labels under their rails — name quiet, REAL count ink */}
+        {LANES.map((lane, i) => (
+          <text key={lane.name} data-sc-bucket x="48" y={RAIL_Y_M[i] + 16}>
+            <tspan className="sc-quiet">{lane.name} </tspan>
+            <tspan>{lane.count}</tspan>
+          </text>
+        ))}
+
+        {/* the sorted mail, resting in its lanes */}
+        {RAIL_Y_M.map((_, i) => (
+          <MailGlyph key={i} x={restXM} y={restYM(i)} />
         ))}
       </svg>
     </div>

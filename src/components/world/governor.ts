@@ -402,7 +402,33 @@ export function useTier(): { tier: Tier; stableForMs: number } {
 /* ── Test probe (frame-governor.spec.ts) ─────────────────────────────
    Unit-style assertions need to drive the REAL scorer deterministically:
    the probe feeds synthetic frame deltas / long tasks through the same
-   addPenalty path the samplers use. A handful of bytes, no behavior. */
+   addPenalty path the samplers use. A handful of bytes, no behavior.
+
+   CRITIC-LEDGER F74 — it shipped to production, unconditionally. Any
+   script on the page could call `injectFrame(200)` four times and force
+   every reader to the print tier: a remote control for someone else's
+   experience, mounted on every load.
+
+   The obvious fix (`NODE_ENV !== "production"`) does not work here. The
+   e2e scripts run a real `next build`, so NODE_ENV is "production" in
+   the very build frame-governor.spec.ts exercises — gating on it would
+   delete the probe from the only build that tests it, and the spec
+   would go green by never running its own assertions.
+
+   The gate is therefore an explicit, opt-in build flag.
+   NEXT_PUBLIC_TEST_PROBES is set by the test:e2e:* scripts in
+   package.json and by nothing else, so:
+     · `npm run build`      (and every deploy) → flag unset → no probe;
+     · `npm run test:e2e:*` → flag "1"         → probe present.
+   Next inlines NEXT_PUBLIC_* at build time, so with the flag unset the
+   condition folds to `false` and the whole block is dead code the
+   bundler drops — the harness is not merely disabled in production, it
+   is not shipped.
+
+   playwright.config.ts asserts the same flag before it starts the
+   static server, so a probe-dependent spec run against a probe-less
+   build fails loudly with a build instruction rather than a null
+   dereference. */
 declare global {
   interface Window {
     __frameGovernor?: {
@@ -421,7 +447,10 @@ declare global {
   }
 }
 
-if (typeof window !== "undefined") {
+if (
+  process.env.NEXT_PUBLIC_TEST_PROBES === "1" &&
+  typeof window !== "undefined"
+) {
   window.__frameGovernor = {
     state: () => ({
       tier: getTier(),

@@ -21,11 +21,12 @@ export {
 } from "./projects";
 
 // Experience
+// (CRITIC-LEDGER F59: getCurrentExperience() is gone — it could only
+// ever return undefined. See the note in experience.ts.)
 export {
   experiences,
   calculateDuration,
   formatDateRange,
-  getCurrentExperience,
   type Experience,
 } from "./experience";
 
@@ -42,11 +43,14 @@ export {
 } from "./skills";
 
 // Testimonials
+// (CRITIC-LEDGER F58: `getRandomTestimonial()` is gone. A reference
+// chosen by Math.random() is a reference nobody stands behind — which
+// one a reader sees should be an editorial decision with a reason, and
+// on this site it is: see the note on the second entry.)
 export {
   testimonials,
   getManagerTestimonial,
   getTestimonialsByRelationship,
-  getRandomTestimonial,
   type Testimonial,
 } from "./testimonials";
 

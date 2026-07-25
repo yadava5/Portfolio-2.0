@@ -26,6 +26,29 @@ export interface ProofManifestEntry {
   privacyBoundary: string;
   /** When the evidence was recorded (YYYY-MM or YYYY-MM-DD); null = not recorded */
   date: string | null;
+  /**
+   * How far the source stands from the author's own hand
+   * (CRITIC-LEDGER F55). Omitted = the strongest case: a third-party-
+   * hostable artifact — committed code, a test tree, a CI run — that
+   * someone else could recompute the claim from.
+   *
+   *   `self-hosted`   — the artifact is real and checked in, but it is
+   *                     checked into THIS repository and served from
+   *                     this origin. `sourceLink()` rewrites `public/`
+   *                     to a same-origin URL, so the ↗ glyph the page
+   *                     prints ("leaves the site") resolved straight
+   *                     back into the portfolio. The reader is owed
+   *                     that fact, not a glyph that hides it.
+   *   `self-authored` — the source is the author's own prose (a README
+   *                     status line) rather than a run, a test, or a
+   *                     data file. It is documentation of a result, not
+   *                     the result.
+   *
+   * /evidence prints the qualifier verbatim. Nothing about the claim
+   * changes; what changes is that the reader can see how far it stands
+   * from an independent artifact before deciding what it is worth.
+   */
+  sourceKind?: "self-hosted" | "self-authored";
   /** Case-file receipt-row crosswalk; omitted only when no case file exists */
   receipt?: { label: string; href: string };
   /**
@@ -45,7 +68,6 @@ const JOBTRACKER_SHA = "3225eb4";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const TASKFLOW_SHA = "69a59e7";
 const FAST_MNIST_SHA = "c6e5c0b";
-const PAID_INTERNSHIPS_SHA = "77a865d";
 /* jetpack-compress HEAD verified public via `gh api` on 2026-07-24. */
 const JETPACK_SHA = "af2c4b1";
 
@@ -117,6 +139,7 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary:
       "Uses demo/source-truth data and excludes private repository source.",
     date: "2026-05",
+    sourceKind: "self-hosted",
     receipt: {
       label: "automl case file · receipt 02",
       href: "/projects/automl/#v-automl-2",
@@ -190,6 +213,7 @@ export const proofManifest: ProofManifestEntry[] = [
     visibility: "public",
     privacyBoundary: "No private data.",
     date: "2026-07",
+    sourceKind: "self-authored",
     receipt: {
       label: "fast-mnist case file · receipt 01 (held)",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-1",
@@ -209,6 +233,7 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary:
       "Raw institutional exports, report names, owner names, and rows are excluded.",
     date: "2026-06",
+    sourceKind: "self-hosted",
     receipt: {
       label: "master inventory case file · receipt 01",
       href: "/projects/master-inventory/#v-master-inventory-1",
@@ -226,23 +251,23 @@ export const proofManifest: ProofManifestEntry[] = [
     visibility: "private-safe",
     privacyBoundary: "Raw policy text and Slack messages are excluded.",
     date: "2026-06",
+    sourceKind: "self-hosted",
     receipt: {
       label: "policybot case file · receipt 01",
       href: "/projects/policybot/#v-policybot-1",
     },
   },
-  {
-    id: "paid-internships-sources",
-    label: "6 academic sources",
-    claim:
-      "Paid Internships Advocacy cites six academic or institutional sources.",
-    source: "https://github.com/yadava5/paid-internships-advocacy/tree/77a865d",
-    sourceLabel: `paid-internships-advocacy @ ${PAID_INTERNSHIPS_SHA}`,
-    verification: "Public repository/source-page audit.",
-    visibility: "public",
-    privacyBoundary: "No private data.",
-    date: null,
-  },
+  /* CRITIC-LEDGER F54 — the blank row is gone.
+     e-11 was `paid-internships-sources`: a BIBLIOGRAPHY COUNT from a
+     freshman writing course, for a project projects.ts deliberately
+     hides from recruiters (`portfolioVisible: false`). It rendered
+     `date: not recorded` and `no case file — the repository is the
+     record`, so on a 12-row ledger it was one of two rows with no date
+     AND one of two with no receipt — the two weakest cells on the page,
+     in the same row, arguing the least. A padded ledger is worse than a
+     short one: every row a reader discounts costs the eleven around it.
+     The project itself is untouched in projects.ts; what came off is
+     the claim that it is evidence. */
   {
     id: "jetpack-tests",
     label: "72 tests pass",
@@ -256,5 +281,6 @@ export const proofManifest: ProofManifestEntry[] = [
     visibility: "public",
     privacyBoundary: "No private data.",
     date: "2026-07",
+    sourceKind: "self-authored",
   },
 ];

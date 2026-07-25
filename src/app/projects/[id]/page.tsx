@@ -7,7 +7,7 @@ import {
   getCaseStudyProject,
 } from "@/lib/data/projectCaseStudies";
 import { siteMetadata } from "@/lib/data/personal";
-import { absoluteSiteUrl } from "@/lib/seo";
+import { absoluteSiteUrl, caseStudyGraph, jsonLdHtml } from "@/lib/seo";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -33,7 +33,15 @@ export async function generateMetadata({
   }
 
   const projectUrl = `${siteMetadata.url}/projects/${project.id}/`;
-  const projectImage = absoluteSiteUrl(project.image || siteMetadata.ogImage);
+  /* CRITIC-LEDGER F25: this was `project.image`, which for jobtracker,
+     visual-assist, master-inventory and policybot is an
+     `*-architecture.svg` — declared 1200×630 and rejected outright by
+     every major platform, so the flagship first row shared as a bare
+     link. Each case file now has its own rendered raster card
+     (public/og/case-<id>.png, `npm run assets:render-og`): the site's
+     paper, the file number, the title and this same summary. */
+  const projectImage = absoluteSiteUrl(`/og/case-${project.id}.png`);
+  const projectImageAlt = `Case file card — ${project.title}, from Ayush Yadav's portfolio`;
 
   return {
     title: `${project.title} Case Study | Ayush Yadav`,
@@ -51,10 +59,12 @@ export async function generateMetadata({
           url: projectImage,
           width: 1200,
           height: 630,
-          alt: project.imageAlt,
+          alt: projectImageAlt,
         },
       ],
       type: "article",
+      publishedTime: study.filed,
+      modifiedTime: study.verified,
     },
     twitter: {
       card: "summary_large_image",
@@ -74,5 +84,20 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  return <CaseStudyPage project={project} study={study} />;
+  return (
+    <>
+      {/* CRITIC-LEDGER F23: the case file as a TechArticle about a
+          typed project node (SoftwareSourceCode where a public repo
+          exists, WebApplication where only a demo does, neither
+          promised where the repo is private). Dates are the kicker's
+          own filed/verified. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdHtml(caseStudyGraph(project, study)),
+        }}
+      />
+      <CaseStudyPage project={project} study={study} />
+    </>
+  );
 }

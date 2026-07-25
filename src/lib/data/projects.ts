@@ -264,7 +264,16 @@ export const projects: Project[] = [
     shortDescription:
       "A course C++ MLP hand-optimized across four instruction sets (AVX-512, AVX2, NEON, wasm-simd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
     fullDescription:
-      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. It reaches 97.01% on 10,000 test digits.",
+      /* CRITIC-LEDGER F59: this said "It reaches 97.01% on 10,000 test
+         digits". The site's own ledger stamps that number HELD — the
+         accuracy is documented in the repo's README training notes and
+         no committed eval artifact reproduces it — and these three
+         fields (fullDescription, highlights, metrics) have zero
+         consumers today. A dead field is a loaded gun: the day someone
+         renders it, the page ships a precise figure the ledger two
+         clicks away refuses to make. They now say what the ledger
+         says. */
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
     techStack: [
       { name: "C++", color: "#00599c" },
       { name: "AVX-512 / AVX2", color: "#ff6b6b" },
@@ -291,12 +300,12 @@ export const projects: Project[] = [
     highlights: [
       "Hand-optimized across 4 instruction sets: AVX-512, AVX2, NEON, wasm-simd128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
-      "97.01% on 10,000 test digits",
+      "~97% test accuracy documented in the README — HELD until a committed eval run earns it",
       "Honest attribution: the 3.5x is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
     ],
     isPrivate: false,
     metrics: [
-      { label: "Accuracy", value: "97.01% on 10,000 digits" },
+      { label: "Accuracy", value: "~97% (README) — held, no eval run" },
       // Attribution per BENCHMARKS.md: the 3.5x is the openmp+simd
       // parallel configuration vs the -O3 baseline, not SIMD alone.
       { label: "Kernel Speedup", value: "3.5x openmp+simd dot kernel" },

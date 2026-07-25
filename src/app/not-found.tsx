@@ -5,7 +5,22 @@
  * with quick navigation links and a home button.
  */
 
+import type { Metadata } from "next";
 import Link from "next/link";
+
+/* CRITIC-LEDGER F51: `out/404.html` shipped the HOMEPAGE title
+   ("Ayush Yadav | Software, Data, and ML Engineering") and inherited
+   `robots: {index: true}` from the root layout — while /world-preview,
+   a debug bench, correctly carried noindex. The error page was being
+   treated less carefully than the dev page, and an indexed 404 that
+   claims to be the homepage is a duplicate-title signal on the one
+   name query this site exists to win. */
+export const metadata: Metadata = {
+  title: "Not found | Ayush Yadav",
+  description:
+    "That page is not on file. The chapters, the case files, and the evidence index are.",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (
@@ -75,6 +90,7 @@ export default function NotFound() {
         <div className="pt-4">
           <Link
             href="/"
+            data-print-invert
             className="inline-block rounded bg-[var(--accent-primary)] px-8 py-3 font-medium text-[var(--background)] transition-colors hover:bg-[var(--accent-secondary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
           >
             Return to Home

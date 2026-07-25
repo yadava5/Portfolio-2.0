@@ -9,6 +9,16 @@
  * whispers the thesis the flagship performs; it never competes with the
  * pin (one-shot scroll-in, no scrub, no pin — amendment A8).
  *
+ * TWO AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half): the wide
+ * 512-unit plate (unchanged) and a narrow 280-unit edition for columns
+ * under 380px, where the wide rail's 13px voice would render ~7px. The
+ * narrow edition STANDS THE LADDER UP — the run rail falls vertically,
+ * the six phase labels seat beside their stations at the full 13px
+ * voice, and the token halts at the gate above a quiet rail that still
+ * leads to an unresolved 7.0 deploy. The lifecycle citation and the
+ * approval-edge annotation keep every word, re-broken across lines for
+ * the narrow measure. Same phases, same halt, same honesty.
+ *
  * HONESTY CONTRACT (load-bearing, the flagship's own): the scene ENDS
  * ON THE HALT. It never resolves 7.0 deploy (deploying is what a person
  * authorises after the gate) and it never touches run 041's approval —
@@ -31,7 +41,7 @@ import { useSceneRun } from "@/components/scenes/useSceneRun";
 import { PROJECT_SCENE_MANIFEST } from "@/components/scenes/manifest";
 import gsap from "gsap";
 
-/** The rail + station geometry (SVG user units). */
+/** The rail + station geometry (SVG user units) — wide plate. */
 const RAIL_Y = 118;
 const RAIL_X0 = 20;
 /** Where the resting token sits — just short of the gate. */
@@ -52,19 +62,34 @@ const PHASES = [
   { label: "6.0 evaluate", x: 324, above: false },
 ];
 
+/* ── Narrow edition geometry: the ladder stood upright ─────────────── */
+const RAIL_X_M = 40;
+/** The vertical run rail's head. */
+const RAIL_HEAD_Y_M = 72;
+/** Station y-centers, one per phase, top → bottom. */
+const PHASE_Y_M = [88, 126, 164, 202, 240, 278];
+/** The clay gate square center + the resting token, just above it. */
+const GATE_Y_M = 320;
+const TOKEN_Y_M = 306;
+/** Deploy's station, below the gate on the quiet rail. */
+const DEPLOY_Y_M = 368;
+
 /** Token travel: from the rail head to the halt, constant speed (the
  *  flagship's scrub has no easing either — a run, not a flourish). */
 const RIDE_START = 0.5;
 const RIDE_DURATION = 1.1;
-const rideDelta = TOKEN_X - RAIL_X0;
-/** When the token's constant-speed ride passes a station. */
-const passesAt = (x: number) =>
-  RIDE_START + ((x - RAIL_X0) / rideDelta) * RIDE_DURATION;
 const HALT = RIDE_START + RIDE_DURATION;
 
 export function AutomlEchoScene() {
   const rootRef = useSceneRun<HTMLDivElement>((tl, root) => {
-    const q = gsap.utils.selector(root);
+    /* Choreograph the edition the container query shows. */
+    const plates = Array.from(
+      root.querySelectorAll<SVGSVGElement>("[data-sc-plate]")
+    );
+    const plate =
+      plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
+    const narrow = plate.dataset.scPlate === "narrow";
+    const q = gsap.utils.selector(plate);
     const rails = q<SVGPathElement>("[data-sc-rail-run], [data-sc-rail-quiet]");
     const beads = q<SVGCircleElement>("[data-sc-station]");
     const deployStation = q<SVGCircleElement>("[data-sc-station-deploy]");
@@ -77,13 +102,21 @@ export function AutomlEchoScene() {
     const pulse = q<SVGCircleElement>("[data-sc-pulse]");
     const note = q<SVGGElement>("[data-sc-note]");
 
+    /* The ride's axis: x along the wide rail, y down the narrow one. */
+    const railHead = narrow ? RAIL_HEAD_Y_M : RAIL_X0;
+    const tokenRest = narrow ? TOKEN_Y_M : TOKEN_X;
+    const rideDelta = tokenRest - railHead;
+    /** When the token's constant-speed ride passes a station. */
+    const passesAt = (c: number) =>
+      RIDE_START + ((c - railHead) / rideDelta) * RIDE_DURATION;
+
     /* ── Start frame: apparatus undrawn, run not yet begun ─────────── */
     gsap.set(rails, { strokeDashoffset: 1.5 });
     gsap.set([...beads, ...deployStation, ...gate, ...deploy, ...note], {
       opacity: 0,
     });
     gsap.set(labels, { opacity: 0.45 });
-    gsap.set(token, { x: -rideDelta });
+    gsap.set(token, narrow ? { y: -rideDelta } : { x: -rideDelta });
     gsap.set(beadInk, { opacity: 1 });
     gsap.set(beadClay, { opacity: 0 });
 
@@ -97,11 +130,18 @@ export function AutomlEchoScene() {
       .to(gate, { opacity: 1, duration: 0.35 }, 0.3)
       .to(deployStation, { opacity: 1, duration: 0.3 }, 0.4)
       .to(deploy, { opacity: 1, duration: 0.3 }, 0.4)
-      .to(token, { x: 0, duration: RIDE_DURATION, ease: "none" }, RIDE_START);
+      .to(
+        token,
+        narrow
+          ? { y: 0, duration: RIDE_DURATION, ease: "none" }
+          : { x: 0, duration: RIDE_DURATION, ease: "none" },
+        RIDE_START
+      );
 
     /* each phase ink-settles the instant the token passes it */
-    PHASES.forEach((phase, i) => {
-      tl.to(labels[i], { opacity: 1, duration: 0.3 }, passesAt(phase.x));
+    labels.forEach((labelEl, i) => {
+      const at = passesAt(narrow ? PHASE_Y_M[i] : PHASES[i].x);
+      tl.to(labelEl, { opacity: 1, duration: 0.3 }, at);
     });
 
     /* the halt: the bead turns clay, the gate pulses ONCE, and the
@@ -110,7 +150,13 @@ export function AutomlEchoScene() {
       .to(beadClay, { opacity: 1, duration: 0.2 }, HALT)
       .fromTo(
         pulse,
-        { opacity: 0.55, scale: 0.5, svgOrigin: `${GATE_X} ${RAIL_Y}` },
+        {
+          opacity: 0.55,
+          scale: 0.5,
+          svgOrigin: narrow
+            ? `${RAIL_X_M} ${GATE_Y_M}`
+            : `${GATE_X} ${RAIL_Y}`,
+        },
         {
           opacity: 0,
           scale: 1.9,
@@ -129,7 +175,8 @@ export function AutomlEchoScene() {
         role="img"
         aria-label={PROJECT_SCENE_MANIFEST.automl.alt}
         viewBox="0 0 512 206"
-        className="block h-auto w-full max-w-[512px]"
+        data-sc-plate="wide"
+        className="scene-plate-wide block h-auto w-full max-w-[512px]"
       >
         {/* the settled orchestration facts, quietly cited */}
         <text x="12" y="20" className="sc-quiet sc-small">
@@ -246,6 +293,142 @@ export function AutomlEchoScene() {
             generated actions hold at the approval edge
           </text>
           <text x="12" y="196" className="sc-quiet">
+            until a human says go
+          </text>
+        </g>
+      </svg>
+
+      {/* ── the narrow edition: the ladder stood upright ──
+          The same six phases fall a vertical rail (labels beside their
+          stations, full 13px), the token rests clay at the gate, and
+          the quiet rail still leads to an unresolved 7.0 deploy. The
+          citation and the annotation keep every word, re-broken for
+          the 280-unit measure. */}
+      <svg
+        role="img"
+        aria-label={PROJECT_SCENE_MANIFEST.automl.alt}
+        viewBox="0 0 280 440"
+        data-sc-plate="narrow"
+        className="scene-plate-narrow h-auto w-full max-w-[280px]"
+      >
+        {/* the settled orchestration facts, quietly cited */}
+        <text x="10" y="18" className="sc-quiet">
+          7-phase lifecycle ·
+        </text>
+        <text x="10" y="36" className="sc-quiet">
+          langgraph + mcp ·
+        </text>
+        <text x="10" y="54" className="sc-quiet">
+          default model gpt-5.4
+        </text>
+
+        {/* the traveled rail — head to the gate */}
+        <path
+          data-sc-rail-run
+          className="scene-edge"
+          d={`M ${RAIL_X_M} ${RAIL_HEAD_Y_M} V ${GATE_Y_M - 8}`}
+          pathLength={1}
+        />
+        {/* the untraveled rail — the gate to deploy, quiet on purpose */}
+        <path
+          data-sc-rail-quiet
+          className="scene-rail"
+          d={`M ${RAIL_X_M} ${GATE_Y_M + 8} V ${DEPLOY_Y_M}`}
+          pathLength={1}
+        />
+
+        {/* six run stations + their decimal labels, seated beside */}
+        {PHASES.map((phase, i) => (
+          <circle
+            key={phase.label}
+            data-sc-station
+            className="scene-bead"
+            cx={RAIL_X_M}
+            cy={PHASE_Y_M[i]}
+            r="2.6"
+          />
+        ))}
+        {PHASES.map((phase, i) => (
+          <text key={phase.label} data-sc-phase x="56" y={PHASE_Y_M[i] + 4}>
+            {phase.label}
+          </text>
+        ))}
+
+        {/* the human gate — the flagship's own words and clay square */}
+        <g data-sc-gate>
+          <text x="56" y={GATE_Y_M - 4} className="sc-clay">
+            the human gate
+          </text>
+          <text x="56" y={GATE_Y_M + 12} className="sc-clay">
+            go / no-go
+          </text>
+          <rect
+            className="scene-gate"
+            x={RAIL_X_M - 4}
+            y={GATE_Y_M - 4}
+            width="8"
+            height="8"
+          />
+        </g>
+        <circle
+          data-sc-pulse
+          className="scene-pulse"
+          cx={RAIL_X_M}
+          cy={GATE_Y_M}
+          r="7"
+        />
+
+        {/* deploy: an open station on the quiet rail, never resolved */}
+        <circle
+          data-sc-station-deploy
+          className="scene-slot"
+          cx={RAIL_X_M}
+          cy={DEPLOY_Y_M}
+          r="3.2"
+        />
+        <g data-sc-deploy>
+          <text x="56" y={DEPLOY_Y_M + 4} className="sc-quiet">
+            7.0 deploy
+          </text>
+        </g>
+
+        {/* the run token, resting at the gate — the markup IS the halt */}
+        <g data-sc-token>
+          <circle
+            cx={RAIL_X_M}
+            cy={TOKEN_Y_M}
+            r="6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <circle
+            data-sc-bead-ink
+            className="scene-bead"
+            opacity="0"
+            cx={RAIL_X_M}
+            cy={TOKEN_Y_M}
+            r="3.4"
+          />
+          <circle
+            data-sc-bead-clay
+            className="scene-gate"
+            cx={RAIL_X_M}
+            cy={TOKEN_Y_M}
+            r="3.4"
+          />
+        </g>
+
+        {/* the settled architecture annotation, verbatim across three
+            lines — the narrow measure's honest break */}
+        <g data-sc-note>
+          <text x="10" y="398" className="sc-quiet">
+            generated actions hold
+          </text>
+          <text x="10" y="416" className="sc-quiet">
+            at the approval edge
+          </text>
+          <text x="10" y="434" className="sc-quiet">
             until a human says go
           </text>
         </g>

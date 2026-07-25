@@ -159,13 +159,29 @@ export const awards: Award[] = [
 export const siteMetadata = {
   /** Site title */
   title: "Ayush Yadav | Software, Data, and ML Engineering",
-  /** Site description */
+  /**
+   * Site description.
+   *
+   * CRITIC-LEDGER F52 (the decaying half): this read "a recent
+   * computer-science graduate". Graduation was 2026-05; "recent" has a
+   * shelf life measured in months and nothing in the build would ever
+   * flag it — the ledger asked for a review date. A review date only
+   * moves the decay; the sentence below has none, because it describes
+   * what the SITE is (the thing that stays true) rather than how new
+   * its author is. Seven case files, each claim terminating at an
+   * artifact — the argument the whole document makes.
+   */
   description:
-    "Ayush Yadav's portfolio: a recent computer-science graduate, with case studies of the projects he has built and the evidence behind every claim.",
+    "Ayush Yadav's portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
-  /** Open Graph image path */
-  ogImage: withBasePath("/og-image.png"),
+  /**
+   * Default Open Graph image — the home card (CRITIC-LEDGER F25). Real
+   * raster, rendered from the data layer by
+   * `npm run assets:render-og`; every route with its own card overrides
+   * this in its own metadata block.
+   */
+  ogImage: withBasePath("/og/home.png"),
   /** Twitter handle */
   twitterHandle: "@ayushyadav_dev",
   /** Keywords for SEO */
