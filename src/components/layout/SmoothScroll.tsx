@@ -33,7 +33,11 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { announceArrival, landingTop } from "@/components/story/arrival";
+import {
+  anchorLanding,
+  announceArrival,
+  landingTop,
+} from "@/components/story/arrival";
 import {
   applyGate,
   getTier,
@@ -47,15 +51,25 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/** Programmatic scroll settings (plan 3.9): duration 1.2s, expo-out */
-export const SCROLL_DURATION = 1.2;
-export const scrollEasing = (t: number) =>
-  Math.min(1, 1.001 - Math.pow(2, -10 * t));
-
-/* The anchor landing contract lives with the rest of the landing rules
-   (components/story/arrival.ts) — ONE offset, one owner. Re-exported
-   here because every existing caller imports it from the engine. */
-export { SCROLL_OFFSET } from "@/components/story/arrival";
+/**
+ * How long the frame governor ignores its own samples after a
+ * programmatic flight starts (§F2: it measures the VISITOR's scroll,
+ * and a smooth `window.scrollTo` is machine scrolling — Firefox paces
+ * one at a cadence that reads as sustained jank and false-downshifted
+ * the engine mid-flight).
+ *
+ * An UPPER BOUND on a browser-chosen duration, not a duration we set:
+ * `behavior: "smooth"` is the user agent's animation and no web API
+ * reports or controls its length. Overshooting only means the governor
+ * idles a beat longer than it had to.
+ *
+ * CRITIC-LEDGER F68: this used to read `SCROLL_DURATION * 1000 + 600`,
+ * where `SCROLL_DURATION = 1.2` was the Lenis-era "1.2s expo-out" — a
+ * setting no code had applied since the engine moved to native scroll.
+ * The number survives (1800ms is the window that was verified); the
+ * claim that we choose it does not.
+ */
+const FLIGHT_SUPPRESS_MS = 1800;
 
 /** localStorage key for the quiet in-page motion toggle (amendment A7) */
 const MOTION_STORAGE_KEY = "motion-off";
@@ -91,14 +105,13 @@ export function readStoredMotionOff(): boolean {
    app calls: anchor navigation + a scroll-event bridge + the modal lock.
    Non-null == the motion world is live (children wire their ScrollTriggers). */
 export interface ScrollController {
-  scrollTo: (
-    target: string | HTMLElement,
-    opts?: {
-      offset?: number;
-      duration?: number;
-      easing?: (t: number) => number;
-    }
-  ) => void;
+  /* One argument, because there is one landing (F68). The signature
+     used to advertise `{offset, duration, easing}`; the body never
+     destructured `opts` and both call sites passed all three, so a
+     reader of the type learned three things the engine does not do.
+     The offset is the shared landing contract (arrival.ts) and the
+     flight is the browser's own smooth scroll. */
+  scrollTo: (target: string | HTMLElement) => void;
   on: (event: "scroll", cb: () => void) => void;
   off: (event: "scroll", cb: () => void) => void;
   stop: () => void;
@@ -227,15 +240,17 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       subscribeTier((tier) => {
         const print = tier === "print";
         if (print && !downshiftAnchor.current) {
-          /* Anchor the section under the READING line (just below the
-             6rem fixed header), not merely the first one still on
-             screen: a section whose tail barely clips the viewport top
-             can itself reflow between the motion and static worlds
-             (SplitText un-splitting), which would leak that delta into
-             everything below it. */
+          /* Anchor the section under the READING line — the masthead
+             band every landing clears, plus a line of breath (F69: this
+             was a fifth hand-written 120) — not merely the first one
+             still on screen: a section whose tail barely clips the
+             viewport top can itself reflow between the motion and
+             static worlds (SplitText un-splitting), which would leak
+             that delta into everything below it. */
+          const readingLine = anchorLanding() + 24;
           const section = Array.from(
             document.querySelectorAll<HTMLElement>("[data-chapter]")
-          ).find((el) => el.getBoundingClientRect().bottom > 120);
+          ).find((el) => el.getBoundingClientRect().bottom > readingLine);
           if (section) {
             downshiftAnchor.current = {
               el: section,
@@ -339,8 +354,8 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         const y = landingTop(el);
         /* §F2: a smooth flight is machine scrolling — the governor must
            not score its frame cadence as the visitor's jank (firefox
-           false-downshifted mid-flight). Window ≈ flight + settle. */
-        suppressSampling(SCROLL_DURATION * 1000 + 600);
+           false-downshifted mid-flight). */
+        suppressSampling(FLIGHT_SUPPRESS_MS);
         window.scrollTo({ top: y, behavior: "smooth" });
         /* A flight crosses no trigger lines on the way in: tell the
            reveal engine where the reader landed (CRITIC-LEDGER F01). */
