@@ -378,10 +378,13 @@ function ArrivalChapter() {
     >
       <ThreadSegment id={ARRIVAL.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
+        {/* The dateline keeps the season; the city moved to the
+            standfirst below, where a masthead's place-line belongs —
+            printed once instead of twice with different tails (F31). */}
         <ChapterKicker
           id={ARRIVAL.id}
           label="arrival — a working paper on what i’ve built"
-          dateline="cincinnati, ohio — summer 2026"
+          dateline="summer 2026"
         />
 
         {/* py-10 (was py-16): the masthead→flagship-teaser frame sagged
@@ -470,6 +473,33 @@ function ArrivalChapter() {
               </span>
             </span>
           </h1>
+
+          {/* THE STANDFIRST (CRITIC-LEDGER F02, the P0 identity fault).
+              The masthead of a working paper carries its author; this one
+              did not. "Ayush Yadav" appeared as 13px mono chrome in the
+              header and then not again as a heading until document
+              y≈9,750 of 10,560 — 92% scroll — so a screener who read the
+              first frame learned a dare and seven links. One serif line,
+              directly under the claim: name — discipline · city. Every
+              token is the data layer's own (personalInfo.name /
+              .location; the discipline is personalInfo.title without its
+              "new-grad" qualifier, which the gate's availability line
+              still carries) — no new claim enters the page.
+              It also fills the ~200px hole the my-auto centring left
+              under the masthead (F45), and takes the location OFF the ¶01
+              dateline so the city is printed once (F31).
+              19px is an existing step in the rendered type census — no
+              new size. Full ink on dawn paper (12.1:1). Entrance seat 3:
+              after the claim (seats 0/2), before the directives (seat 4),
+              on the same load-only CSS beat, so every static world paints
+              it finished (A7). */}
+          <p
+            data-hero-standfirst
+            className="hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading-snug"
+            style={heroDelay(3)}
+          >
+            {personalInfo.name} — software engineer · {personalInfo.location}
+          </p>
         </div>
 
         {/* Mono directives, weighted for one glance: the flagship teaser
