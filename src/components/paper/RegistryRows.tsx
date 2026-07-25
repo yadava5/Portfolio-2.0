@@ -55,11 +55,20 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
         <span>run · model</span>
         <span className="text-right">status</span>
       </li>
-      {rows.map((row) => {
+      {rows.map((row, index) => {
         const awaiting = row.status === "awaiting approval";
         return (
           <li
             key={row.run}
+            /* The write order (CRITIC-LEDGER F03): under the ch04 pin the
+               registry DEVELOPS — each row inks in as the run-token
+               passes down the ladder, so the ledger the visitor is asked
+               to approve is built in front of them instead of sitting
+               finished before the run starts. PipelineRun stamps
+               data-registry-written per row; every world without the pin
+               (static, reduced motion, the case-file figure) never sees
+               the hiding rule at all and prints the complete register. */
+            data-registry-row={index}
             className={`flex justify-between gap-x-3 ${
               awaiting ? "text-ink" : "text-ink-secondary"
             }`}
