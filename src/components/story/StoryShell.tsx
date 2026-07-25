@@ -350,10 +350,25 @@ const GATE_REFERENCES: {
     source: "fast-mnist-nn — receipt 02",
     href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
+  /* CRITIC-LEDGER F22: reference 3 used to cite `visual-assist —
+     receipt 01`. The link resolves, but projects.ts:213 marks that
+     project `portfolioVisible: false` — "retired from recruiter-facing
+     lists" — and after the hero stopped promoting it (F11) the project
+     appeared NOWHERE else on this page. An endnote is a receipt for a
+     claim the page makes; this one was a receipt for nothing.
+     The two references below replace it with the two ¶05 rows the
+     endnotes were missing, so footnote 1's promise now closes over
+     every metric chip the page prints: Cadence's 1,145 tests and
+     jetpack's 72. Both strings are the rows' own. */
   {
-    claim: "71 xctest functions, models and utilities",
-    source: "visual-assist — receipt 01",
-    href: "/projects/visual-assist/#v-visual-assist-1",
+    claim: "1,145 automated tests — 634 frontend + 511 backend",
+    source: "taskflow-calendar — receipt 01",
+    href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+  },
+  {
+    claim: "72 tests, 0 failures on jdk 25",
+    source: "jetpack-compress — readme @ af2c4b1",
+    href: "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
   },
   {
     claim: "19/20 cited-source sweep",
@@ -633,16 +648,22 @@ function ArrivalChapter() {
               will not scroll 1,500vh (A8's spirit): the work index, the
               master ledger, the resume PDF. Apparatus voice, no new
               vocabulary — the same quiet mono as the case-files line. */}
+          {/* CRITIC-LEDGER F41: these two `⟶` were SEPARATORS between
+              three sibling links, not destination markers — the glyph
+              doing punctuation's job. The paper already has a separator
+              for a list of peers (·), and reserving `⟶` for "deeper
+              into this argument" is what makes it mean anything when it
+              does appear. */}
           <p className="text-ink-secondary">
             in a hurry —{" "}
             <LenisAnchor href="#work" className="link-draw">
               the work
             </LenisAnchor>{" "}
-            ⟶{" "}
+            ·{" "}
             <Link href="/evidence/" className="link-draw">
               the evidence
             </Link>{" "}
-            ⟶{" "}
+            ·{" "}
             <a href={personalInfo.resumeUrl} className="link-draw">
               the resume
             </a>
@@ -1666,10 +1687,24 @@ function GateChapter() {
                 <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
                 </span>
+                {/* CRITIC-LEDGER F41: the glyph is now load-bearing
+                    again. `⟶` means "deeper into this argument" (an
+                    in-page anchor or a case file); `↗` means "leaves
+                    the site". A reference that terminates at a public
+                    repo is the second kind, and says so. */}
                 {reference.inPage ? (
                   <LenisAnchor href={reference.href} className="link-draw">
                     {reference.source} ⟶
                   </LenisAnchor>
+                ) : reference.href.startsWith("http") ? (
+                  <a
+                    href={reference.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-draw normal-case"
+                  >
+                    {reference.source} ↗
+                  </a>
                 ) : (
                   <Link href={reference.href} className="link-draw">
                     {reference.source} ⟶
