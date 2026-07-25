@@ -312,12 +312,20 @@ export default function Header() {
                 stands in alone on the very smallest frames (<360px). */}
             {/* Letterpress un-fill: the filled chip lifts to its outline
                 on hover — ink and paper trade places, both states AA on
-                both sides of the dusk flip (pre-verified header vars). */}
+                both sides of the dusk flip (pre-verified header vars).
+
+                data-print-invert (CRITIC-LEDGER F04): the chip's legible
+                state IS the ink block behind it, and backgrounds do not
+                print at Cmd+P defaults — measured 1.00:1, white knockout
+                on white paper, on the one affordance a screener reaches
+                for. The print edition trades it back: ink on paper in the
+                hairline frame this element already carries. */}
             <a
               href={personalInfo.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Resume (opens in a new tab)"
+              data-print-invert
               className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) transition-colors hover:bg-transparent hover:text-(--header-ink) min-[420px]:h-9 min-[420px]:px-3"
             >
               <FileText
