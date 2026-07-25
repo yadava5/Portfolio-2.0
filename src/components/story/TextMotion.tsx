@@ -65,6 +65,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useLenis } from "@/components/layout/SmoothScroll";
+import { ARRIVAL_EVENT } from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -160,6 +161,70 @@ function pastStart(trigger: Element, start: string): boolean {
 }
 
 /**
+ * One entrance still waiting on its scroll trigger.
+ *
+ * A trigger line is only crossed by SCROLLING. A landing — header nav,
+ * an in-page anchor, a shared `/#hash`, Back/Forward — crosses nothing,
+ * so every reveal whose start line sits below the landed viewport line
+ * stays at `opacity: 0` forever (CRITIC-LEDGER F01). The engine keeps a
+ * roster of the un-fired reveals so an arrival can settle the ones the
+ * reader has demonstrably already reached.
+ */
+interface PendingReveal {
+  /** The reveal target — its box decides whether an arrival settles it */
+  readonly el: HTMLElement;
+  /** Play the entrance now and retire its trigger (idempotent) */
+  readonly force: () => void;
+}
+
+/**
+ * Settle every pending reveal the reader has ALREADY arrived at.
+ *
+ * The rule is the reader's own frame: anything whose top is above the
+ * fold — on screen, or scrolled past on the way in — is content they
+ * have arrived at, so it presents itself. Anything still below the fold
+ * keeps its trigger and its choreography, which is why scrolling
+ * downward through the paper is completely unchanged by this pass.
+ *
+ * @param pending - The roster of un-fired reveals
+ */
+function reconcileArrival(pending: PendingReveal[]): void {
+  const fold = window.innerHeight;
+  for (const item of pending) {
+    if (item.el.getBoundingClientRect().top < fold) item.force();
+  }
+}
+
+/**
+ * Enrol a triggered tween in the arrival roster.
+ *
+ * Forcing kills the trigger but KEEPS the animation (`kill(false, true)`)
+ * and plays it from the top, so the gesture the reader sees is the same
+ * authored one — only its cue changed from "you scrolled here" to "you
+ * asked to be here".
+ *
+ * @param el - The reveal target
+ * @param tween - The entrance tween ScrollTrigger is holding
+ * @param pending - The roster to enrol in
+ */
+function armReveal(
+  el: HTMLElement,
+  tween: gsap.core.Tween,
+  pending: PendingReveal[]
+): void {
+  let forced = false;
+  pending.push({
+    el,
+    force: () => {
+      if (forced || tween.progress() > 0 || tween.isActive()) return;
+      forced = true;
+      tween.scrollTrigger?.kill(false, true);
+      tween.play(0);
+    },
+  });
+}
+
+/**
  * One chapter bright line: SplitText line-mask rise. Re-splits on
  * reflow (autoSplit); once played, later re-splits render the final
  * state instead of replaying.
@@ -168,26 +233,32 @@ function pastStart(trigger: Element, start: string): boolean {
  * @param trigger - Trigger element (the scene, or el itself)
  * @param delay - Seconds after the trigger fires (the scene stagger slot)
  * @param start - ScrollTrigger start position
+ * @param pending - Arrival roster (omit for reveals with no trigger)
  * @returns The SplitText instance (for cleanup)
  */
 function maskRise(
   el: HTMLElement,
   trigger: Element = el,
   delay = 0,
-  start: string = ENTER_START
+  start: string = ENTER_START,
+  pending?: PendingReveal[]
 ): SplitText {
   let played = false;
+  let forced = false;
+  /* The live tween: autoSplit re-lines on reflow, so the arrival roster
+     must reach whichever tween the CURRENT split is holding. */
+  let tween: gsap.core.Tween | null = null;
   /* Past-start at build (deep-scroll reload / already-read content):
      play directly, create NO trigger — see pastStart(). */
   const immediate = pastStart(trigger, start);
-  return SplitText.create(el, {
+  const split = SplitText.create(el, {
     type: "lines",
     mask: "lines",
     autoSplit: true,
     aria: ariaModeOf(el),
     onSplit: (self) => {
       if (played) return gsap.set(self.lines, { yPercent: 0 });
-      return gsap.from(self.lines, {
+      tween = gsap.from(self.lines, {
         yPercent: 100,
         duration: 0.8,
         ease: "power3.out" /* quart.out */,
@@ -198,82 +269,81 @@ function maskRise(
           played = true;
         },
       });
+      return tween;
     },
   });
+  if (!immediate && pending) {
+    pending.push({
+      el,
+      force: () => {
+        if (forced || played || !tween) return;
+        forced = true;
+        tween.scrollTrigger?.kill(false, true);
+        tween.play(0);
+      },
+    });
+  }
+  return split;
+}
+
+/**
+ * The per-hook entrance gesture. All transform/opacity only, all small.
+ *   - `muted`      → fade + 10px rise, 0.7s cubic.out
+ *   - `muted-fade` → fade only: the ch-03 line holding [data-thread-word]
+ *                    is a box the Red Thread MEASURES, never transforms
+ *   - `name`       → the gate's giant name takes the hero's own grammar
+ *   - `block`      → whole-block fade + 16px rise (the prose default)
+ *
+ * @param el - The entrance element
+ * @returns Tween vars for this element's vocabulary
+ */
+function entranceVars(el: HTMLElement): gsap.TweenVars {
+  switch (el.getAttribute("data-tm")) {
+    case "muted":
+      return { opacity: 0, y: 10, duration: 0.7, ease: "power2.out" };
+    case "muted-fade":
+      return { opacity: 0, duration: 0.7, ease: "power2.out" };
+    case "name":
+      return { opacity: 0, y: 14, duration: 1, ease: "expo.out" };
+    case "block":
+    default:
+      return { opacity: 0, y: 16, duration: 0.6, ease: "power2.out" };
+  }
 }
 
 /**
  * Reveal one entrance element with its vocabulary gesture, off a shared
- * trigger at a staggered delay. Dispatches by hook: bright → line-mask,
- * muted → fade+10px, muted-fade → fade only (thread-anchor safe), name →
- * hero grammar, block (default) → fade+16px. All transform/opacity only,
- * `once:true`, killed after play.
+ * trigger at a staggered delay. Bright lines take the line-mask; every
+ * other hook takes its `entranceVars` fade. `once:true`, killed after
+ * play, and enrolled in the arrival roster until it fires.
  *
  * @param el - The entrance element
  * @param trigger - Shared scene trigger (or el itself for orphans)
  * @param start - ScrollTrigger start position
  * @param delay - Stagger slot in seconds
  * @param splits - Sink for SplitText instances (cleanup)
+ * @param pending - Arrival roster (see reconcileArrival)
  */
 function revealEntrance(
   el: HTMLElement,
   trigger: Element,
   start: string,
   delay: number,
-  splits: SplitText[]
+  splits: SplitText[],
+  pending: PendingReveal[]
 ): void {
   if (el.hasAttribute("data-tm-bright")) {
-    splits.push(maskRise(el, trigger, delay, start));
+    splits.push(maskRise(el, trigger, delay, start, pending));
     return;
   }
   /* Past-start at build → play directly, no trigger (see pastStart). */
-  const scrollTrigger = pastStart(trigger, start)
-    ? undefined
-    : ({ trigger, start, once: true } as const);
-  switch (el.getAttribute("data-tm")) {
-    case "muted":
-      gsap.from(el, {
-        opacity: 0,
-        y: 10,
-        duration: 0.7,
-        ease: "power2.out" /* cubic.out */,
-        delay,
-        scrollTrigger,
-      });
-      return;
-    case "muted-fade":
-      /* Thread-anchored line (ch-03 [data-thread-word]): opacity only —
-         the Red Thread measures this box, so it must never transform. */
-      gsap.from(el, {
-        opacity: 0,
-        duration: 0.7,
-        ease: "power2.out",
-        delay,
-        scrollTrigger,
-      });
-      return;
-    case "name":
-      gsap.from(el, {
-        opacity: 0,
-        y: 14,
-        duration: 1,
-        ease: "expo.out",
-        delay,
-        scrollTrigger,
-      });
-      return;
-    case "block":
-    default:
-      gsap.from(el, {
-        opacity: 0,
-        y: 16,
-        duration: 0.6,
-        ease: "power2.out",
-        delay,
-        scrollTrigger,
-      });
-      return;
-  }
+  const immediate = pastStart(trigger, start);
+  const tween = gsap.from(el, {
+    ...entranceVars(el),
+    delay,
+    ...(immediate ? {} : { scrollTrigger: { trigger, start, once: true } }),
+  });
+  if (!immediate) armReveal(el, tween, pending);
 }
 
 /**
@@ -299,6 +369,10 @@ export function TextMotion() {
     let ctx: gsap.Context | null = null;
     const splits: SplitText[] = [];
     const breatheEls: HTMLElement[] = [];
+    /* The un-fired reveals, and the landing signal that settles them. */
+    const pending: PendingReveal[] = [];
+    const onArrival = () => reconcileArrival(pending);
+    window.addEventListener(ARRIVAL_EVENT, onArrival);
 
     /* Split AFTER webfonts settle so line boxes are final (SplitText's
        autoSplit also re-lines if a straggler font lands later). */
@@ -317,7 +391,14 @@ export function TextMotion() {
             scene.querySelectorAll<HTMLElement>(ENTRANCE_SELECTOR)
           ).filter((el) => el.closest("[data-tm-scene]") === scene);
           children.forEach((el, index) => {
-            revealEntrance(el, scene, start, index * SCENE_STAGGER, splits);
+            revealEntrance(
+              el,
+              scene,
+              start,
+              index * SCENE_STAGGER,
+              splits,
+              pending
+            );
           });
         }
 
@@ -326,7 +407,7 @@ export function TextMotion() {
            trigger, so no reveal is ever silently dropped. */
         for (const el of q(ENTRANCE_SELECTOR)) {
           if (el.closest("[data-tm-scene]")) continue;
-          revealEntrance(el, el, ENTER_START, 0, splits);
+          revealEntrance(el, el, ENTER_START, 0, splits, pending);
         }
 
         /* ── The manifesto — the page's ONE scrubbed text ──────── */
@@ -363,26 +444,28 @@ export function TextMotion() {
           const litanyImmediate = pastStart(litanyTrigger, ENTER_START);
           mantras.forEach((mantra, index) => {
             const delay = LITANY_DELAYS[index] ?? 0;
-            splits.push(maskRise(mantra, litanyTrigger, delay));
+            splits.push(
+              maskRise(mantra, litanyTrigger, delay, ENTER_START, pending)
+            );
             const receipt = receipts[index];
-            if (receipt) {
-              gsap.from(receipt, {
-                opacity: 0,
-                y: 10,
-                duration: 0.7,
-                ease: "power2.out",
-                delay: delay + 0.2,
-                ...(litanyImmediate
-                  ? {}
-                  : {
-                      scrollTrigger: {
-                        trigger: litanyTrigger,
-                        start: ENTER_START,
-                        once: true,
-                      },
-                    }),
-              });
-            }
+            if (!receipt) return;
+            const tween = gsap.from(receipt, {
+              opacity: 0,
+              y: 10,
+              duration: 0.7,
+              ease: "power2.out",
+              delay: delay + 0.2,
+              ...(litanyImmediate
+                ? {}
+                : {
+                    scrollTrigger: {
+                      trigger: litanyTrigger,
+                      start: ENTER_START,
+                      once: true,
+                    },
+                  }),
+            });
+            if (!litanyImmediate) armReveal(receipt, tween, pending);
           });
         }
 
@@ -413,11 +496,20 @@ export function TextMotion() {
 
       /* Splitting nudges line boxes; settle every trigger's position. */
       ScrollTrigger.refresh();
+
+      /* The reader may already BE somewhere: a shared `/#chapter`, a
+         reload the browser restored deep in the paper, a Back that
+         landed before the fonts did. Everything above the fold has been
+         arrived at, so settle it now rather than leaving it holding for
+         a trigger line the reader will never cross. */
+      if (window.scrollY > 0) reconcileArrival(pending);
     });
 
     return () => {
       disposed = true;
       window.clearTimeout(heroTimer);
+      window.removeEventListener(ARRIVAL_EVENT, onArrival);
+      pending.length = 0;
       ctx?.revert();
       for (const split of splits) split.revert();
       splits.length = 0;
