@@ -100,14 +100,23 @@ test.describe("Daylight Study — working paper", () => {
     ).toBeAttached();
 
     /* The gate chapter itself carries LinkedIn and the address as visible
-       text (never only an "Email me" label); the colophon repeats LinkedIn. */
+       text (never only an "Email me" label).
+       CRITIC-LEDGER F47: the colophon used to REPEAT the same three
+       social links ~400px below the gate's contact cluster, in the same
+       13px mono, in the same dusk field — and this test required it.
+       The split is now the ledger's: the gate keeps the links (it is the
+       contact section, and the destination of the site's own "contact"
+       nav since F01), the footer keeps the colophon. */
     await expect(page.locator("#gate")).toContainText(EXPECTED_CONTENT.email);
     await expect(
       page.locator(`#gate a[href="${EXPECTED_LINKS.linkedin}"]`)
     ).toBeAttached();
     await expect(
       page.locator(`footer a[href="${EXPECTED_LINKS.linkedin}"]`)
-    ).toBeAttached();
+    ).toHaveCount(0);
+    await expect(page.locator("footer")).toContainText(
+      "set in fraunces, newsreader & fragment mono"
+    );
 
     const renderedSourceText = await page.locator("body").evaluate((body) => {
       return body.textContent ?? "";
