@@ -175,6 +175,9 @@ test.describe("Daylight Study — working paper", () => {
     await expect(page.locator("#path")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.education
     );
+    await expect(page.locator("#path")).toContainText(
+      EXPECTED_GRADUATE_IDENTITY.educationRecord
+    );
     await expect(page.locator("body")).toContainText(
       EXPECTED_GRADUATE_IDENTITY.availability
     );

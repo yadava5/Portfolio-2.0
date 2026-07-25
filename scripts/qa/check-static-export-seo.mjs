@@ -140,14 +140,90 @@ if (!fs.existsSync(evidenceHtmlPath)) {
 
 // CRITIC-LEDGER F51: `404.html` shipped the homepage title and
 // inherited `index: true` from the root layout.
-const notFoundPath = path.join(outDir, "404.html");
-if (fs.existsSync(notFoundPath)) {
+//
+// Certification round, N6: the fix left TWO authorities. Next emits its
+// own `<meta name="robots" content="noindex">` for the not-found route,
+// and `not-found.tsx` exported `robots: {index:false, follow:true}` on
+// top of it, so all three 404 outputs shipped two robots tags. They
+// agreed — this time. A page gets ONE robots directive.
+for (const notFound of ["404.html", "404/index.html", "_not-found/index.html"]) {
+  const notFoundPath = path.join(outDir, notFound);
+  if (!fs.existsSync(notFoundPath)) continue;
   const html = fs.readFileSync(notFoundPath, "utf8");
-  if (!/<meta name="robots" content="[^"]*noindex/.test(html)) {
-    fail("404.html is indexable");
+  const robotsTags = [
+    ...html.matchAll(/<meta name="robots" content="([^"]*)"/g),
+  ].map((match) => match[1]);
+  if (robotsTags.length === 0 || !robotsTags.some((tag) => /noindex/.test(tag))) {
+    fail(`${notFound} is indexable`);
+  }
+  if (robotsTags.length > 1) {
+    fail(
+      `${notFound} carries ${robotsTags.length} robots directives (${robotsTags.join(" | ")}) — one authority`
+    );
   }
   if (html.includes(`<title>${siteTitle}</title>`)) {
-    fail("404.html carries the homepage title");
+    fail(`${notFound} carries the homepage title`);
+  }
+}
+
+/* ── The one URL on this site that cannot be clicked ───────────────
+   Certification round, N1. The social cards draw a colophon URL into
+   the PNG — it is the site's address as a reader would RETYPE it, and
+   it read `yadava5.github.io/portfolio-2.0` on all nine cards while
+   every canonical, `<loc>` and `og:url` above said `Portfolio-2.0`.
+   GitHub Pages paths are case-sensitive: the printed one 404s.
+
+   Nothing can read text back out of a PNG, so the gate holds the two
+   places the drawn string comes from instead: the renderer must derive
+   its folio from `siteMetadata.url` (never a literal), and no lowercase
+   spelling of the address may survive anywhere in the export. Both
+   fail on the lowercase variant, which is the point. */
+const ogRendererPath = path.join(root, "scripts/asset-truth/render-og-cards.mjs");
+if (!fs.existsSync(ogRendererPath)) {
+  fail("missing scripts/asset-truth/render-og-cards.mjs");
+} else {
+  const renderer = fs.readFileSync(ogRendererPath, "utf8");
+  const folioRoot = siteUrl.replace(/^https?:\/\//, "");
+  const [host] = folioRoot.split("/");
+  for (const match of renderer.matchAll(
+    new RegExp(`${host.replace(/\./g, "\\.")}[^\\s"'\`)]*`, "gi")
+  )) {
+    if (!match[0].startsWith(folioRoot)) {
+      fail(
+        `og card renderer prints "${match[0]}" — the site is ${folioRoot} (paths are case-sensitive)`
+      );
+    }
+  }
+  const folios = [...renderer.matchAll(/folio:\s*([^,\n]+)/g)].map((m) => m[1]);
+  if (folios.length === 0) fail("og card renderer declares no folio lines");
+  for (const folio of folios) {
+    if (!folio.includes("FOLIO_ROOT")) {
+      fail(`og card folio ${folio} is not derived from siteMetadata.url`);
+    }
+  }
+}
+
+const exportedFiles = [];
+(function walk(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full);
+    else if (/\.(html|txt|xml)$/.test(entry.name)) exportedFiles.push(full);
+  }
+})(outDir);
+const lowercaseAddress = new RegExp(
+  siteUrl.replace(/^https?:\/\//, "").replace(/\./g, "\\."),
+  "i"
+);
+for (const file of exportedFiles) {
+  for (const match of fs
+    .readFileSync(file, "utf8")
+    .matchAll(new RegExp(lowercaseAddress.source, "gi"))) {
+    if (!match[0].startsWith(siteUrl.replace(/^https?:\/\//, ""))) {
+      fail(
+        `${path.relative(outDir, file)} prints "${match[0]}" — the site is ${siteUrl.replace(/^https?:\/\//, "")}`
+      );
+    }
   }
 }
 

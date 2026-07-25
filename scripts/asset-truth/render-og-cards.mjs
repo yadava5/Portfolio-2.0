@@ -154,6 +154,26 @@ const siteDescription = siteMetadataBlock
   ?.replace(/^Ayush Yadav's portfolio[:—-]\s*/, "");
 if (!siteDescription) throw new Error("could not read siteMetadata.description");
 
+/**
+ * The colophon URL, DERIVED — never typed (certification round, N1).
+ *
+ * The three folio lines below used to be hand-written string literals,
+ * and all three spelled the repository segment in lower case against a
+ * repository named `Portfolio-2.0`. GitHub Pages serves case-sensitive
+ * paths, so the one URL on this whole site that a reader cannot click —
+ * it is DRAWN into a PNG, so it can only be retyped — was the one URL
+ * that 404s. Every canonical, every `<loc>`, and every `og:url` carried
+ * the correct spelling at the same time.
+ *
+ * It now comes off `siteMetadata.url`, the same constant those three
+ * agree with, so the card's footer cannot disagree with the site's own
+ * address again. scripts/qa/check-static-export-seo.mjs asserts the
+ * casing independently, and fails on the lowercase variant.
+ */
+const siteUrl = siteMetadataBlock?.match(/url:\s*"([^"]+)"/)?.[1];
+if (!siteUrl) throw new Error("could not read siteMetadata.url");
+const FOLIO_ROOT = siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
 /** projects.ts → { id: title } */
 const projectTitles = new Map(
   Array.from(
@@ -187,21 +207,21 @@ const cards = [
     kicker: "¶ the portfolio — a working paper",
     title: "Ayush Yadav",
     deck: siteDescription,
-    folio: "yadava5.github.io/portfolio-2.0",
+    folio: FOLIO_ROOT,
   },
   {
     file: "evidence.png",
     kicker: `¶ the evidence index — every claim on file`,
     title: "The evidence index",
     deck: "The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was recorded, and the case-file receipt that argues it in full.",
-    folio: "yadava5.github.io/portfolio-2.0/evidence",
+    folio: `${FOLIO_ROOT}/evidence`,
   },
   ...studies.map((study) => ({
     file: `case-${study.projectId}.png`,
     kicker: `¶ case file ${String(study.fileNo).padStart(2, "0")} / ${total}`,
     title: projectTitles.get(study.projectId) ?? study.projectId,
     deck: study.summary,
-    folio: `yadava5.github.io/portfolio-2.0/projects/${study.projectId}`,
+    folio: `${FOLIO_ROOT}/projects/${study.projectId}`,
   })),
 ];
 
@@ -213,9 +233,19 @@ if (CHECK_ONLY) {
       console.error(`OG card check failed: missing public/og/${card.file}`);
       failed = true;
     }
+    /* N1: the drawn footer must be the site's own address, character for
+       character. A lowercase repository segment resolves for nobody. */
+    if (!card.folio.startsWith(FOLIO_ROOT)) {
+      console.error(
+        `OG card check failed: ${card.file} folio "${card.folio}" is not under ${FOLIO_ROOT}`
+      );
+      failed = true;
+    }
   }
   if (failed) process.exit(1);
-  console.log(`OG card check passed — ${cards.length} cards on file.`);
+  console.log(
+    `OG card check passed — ${cards.length} cards on file, all folioed ${FOLIO_ROOT}.`
+  );
   process.exit(0);
 }
 

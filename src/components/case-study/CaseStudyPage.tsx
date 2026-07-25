@@ -91,8 +91,15 @@ function SectionKicker({ id, children }: { id?: string; children: string }) {
 
 /**
  * The private-file stamp — the page's single stamp (DOSSIER-SPEC pt 7):
- * dashed clay frame in the gate stamp's hand, carrying a status from a
- * closed set. Rendered only on private case files.
+ * a dashed clay frame in the wobbled hand of the gate stamp, carrying a
+ * status from a closed set. Rendered only on private case files.
+ *
+ * The dash is the point and it stays: on this site an unsigned or
+ * unearned STAMP is dashed (this one; HeldStamp), and nothing else is —
+ * F20 took the dash off the gate stamp when it acquired a signature,
+ * F46 took it off the last note box, and the certification round's N3
+ * took it off the disclosure aside below. ("in the gate stamp's hand"
+ * read as if that stamp were still dashed; it means the hand.)
  */
 function PrivateStamp() {
   return (
@@ -263,8 +270,21 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
 
           <div className="flex flex-col items-start gap-6 lg:items-end">
             {isPrivate ? <PrivateStamp /> : null}
+            {/* CRITIC-LEDGER F20/F46, applied here (certification round,
+                N3). This was a dashed box in 12px mono — the one grammar
+                the home paper does not have, because F20 took it off the
+                approval stamp ("a dashed box reads as content missing")
+                and F46 took the last one off ¶02. It survived on the
+                four case files that carry a disclosure, so the same
+                register said two different things depending on which
+                surface a reader was standing on.
+                It now takes F46's exact replacement: a hairline rule and
+                the label token — the apparatus grammar every other note
+                on this site already uses. Dashed ink stays reserved for
+                what it was reserved for: a STAMP that is not yet signed
+                (PrivateStamp above, HeldStamp in the ledger). */}
             {study.evidenceDisclosure ? (
-              <aside className="border-ink-secondary/60 text-ink-secondary max-w-[44ch] border border-dashed p-4 font-mono text-xs leading-6 tracking-[0.05em] lowercase">
+              <aside className="label-mono text-ink-secondary border-ink/15 max-w-[44ch] border-t pt-3 leading-6">
                 {study.evidenceDisclosure.label} —{" "}
                 {study.evidenceDisclosure.detail}
               </aside>

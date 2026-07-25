@@ -18,9 +18,16 @@
  * paper — never frost. The masthead's bottom rule draws itself once in
  * the hero's load window (`.site-header::after`, motion worlds only);
  * every static world paints the finished rule. Carries the quiet
- * in-page motion toggle (amendment A7); when the OS itself forces
- * reduced motion the control reports the effective state as
- * system-owned instead of pretending motion is on.
+ * in-page motion toggle (amendment A7) at `sm` and up; below that the
+ * colophon holds it — MotionToggle.tsx states the measured reason.
+ *
+ * Hit areas (certification round, D7): every affordance in this row is
+ * a ≥44px box on a phone, and NONE of it is visible. The row's width
+ * budget is spent (DayMark.tsx measured it), so each target is grown by
+ * padding and given the growth back as an equal negative margin: the
+ * border box a finger and a census both measure is 44, while the margin
+ * box that lays the row out — and the masthead's 320→1440 fit — is
+ * exactly what it was.
  */
 
 "use client";
@@ -32,14 +39,11 @@ import { usePathname } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FileText, Mail } from "lucide-react";
 import { personalInfo, socialLinks } from "@/lib/data/personal";
-import {
-  useLenis,
-  useMotionPreference,
-} from "@/components/layout/SmoothScroll";
+import { useLenis } from "@/components/layout/SmoothScroll";
 import { landingTop, pushLanding } from "@/components/story/arrival";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useActiveChapter } from "@/hooks/useActiveChapter";
 import { DayMark } from "@/components/layout/DayMark";
+import { MotionToggle } from "@/components/layout/MotionToggle";
 
 const NAV_ITEMS = [
   /* "the work" stays visible on phones: a screener must reach the
@@ -78,8 +82,6 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [portraitOpen, setPortraitOpen] = useState(false);
   const lenis = useLenis();
-  const { motionOff, toggleMotion } = useMotionPreference();
-  const prefersReducedMotion = usePrefersReducedMotion();
   const pathname = usePathname();
   /* Case files + /evidence sit on the flat archive stock (no day-arc):
      the header reads the surface beneath it (completion map §3). */
@@ -159,23 +161,30 @@ export default function Header() {
                 Title. */}
             <Dialog.Root open={portraitOpen} onOpenChange={setPortraitOpen}>
               <Dialog.Trigger asChild>
+                {/* D7: the button is the 44×44 hit box, the span is the
+                    28/36px plate — the negative margin hands the extra
+                    back to the row, so the avatar occupies exactly the
+                    28px (36px ≥420) it always did. */}
                 <button
                   type="button"
-                  className="relative hidden h-7 w-7 shrink-0 overflow-hidden rounded-full border border-(--header-ink-border) transition-colors hover:border-(--header-ink) min-[375px]:block min-[420px]:h-9 min-[420px]:w-9"
+                  className="group relative -m-2 hidden h-11 w-11 shrink-0 items-center justify-center min-[375px]:flex min-[420px]:-m-1"
                   aria-label="Open Ayush Yadav portrait"
                 >
-                  {/* The 96px avatar derivative, not the full portrait: the
-                      button paints at 26–36px, and the old priority preload
-                      burned a critical-window slot on every route for 52KB
-                      of unused pixels (PERF-AUDIT fix 3). No priority — a
-                      header thumb must never outrank fonts and CSS. */}
-                  <Image
-                    src={personalInfo.portrait.thumb}
-                    alt={personalInfo.portrait.alt}
-                    width={96}
-                    height={96}
-                    className="h-full w-full object-cover"
-                  />
+                  <span className="block h-7 w-7 overflow-hidden rounded-full border border-(--header-ink-border) transition-colors group-hover:border-(--header-ink) min-[420px]:h-9 min-[420px]:w-9">
+                    {/* The 96px avatar derivative, not the full portrait:
+                        the button paints at 26–36px, and the old priority
+                        preload burned a critical-window slot on every
+                        route for 52KB of unused pixels (PERF-AUDIT fix 3).
+                        No priority — a header thumb must never outrank
+                        fonts and CSS. */}
+                    <Image
+                      src={personalInfo.portrait.thumb}
+                      alt={personalInfo.portrait.alt}
+                      width={96}
+                      height={96}
+                      className="h-full w-full object-cover"
+                    />
+                  </span>
                 </button>
               </Dialog.Trigger>
               <Dialog.Portal>
@@ -227,7 +236,7 @@ export default function Header() {
             </Dialog.Root>
             <Link
               href="/"
-              className="label-mono link-draw-quiet whitespace-nowrap text-(--header-ink)"
+              className="label-mono link-draw-quiet tap-target-block whitespace-nowrap text-(--header-ink)"
             >
               ayush yadav
             </Link>
@@ -249,7 +258,7 @@ export default function Header() {
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item.target)}
                     aria-current={isActive ? "true" : undefined}
-                    className={`label-mono link-draw whitespace-nowrap hover:text-(--header-ink) ${
+                    className={`label-mono link-draw tap-target-block whitespace-nowrap hover:text-(--header-ink) ${
                       isActive
                         ? "text-(--header-ink)"
                         : "text-(--header-ink-muted)"
@@ -266,7 +275,7 @@ export default function Header() {
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="label-mono link-draw text-(--header-ink-muted) hover:text-(--header-ink)"
+                  className="label-mono link-draw tap-target-block text-(--header-ink-muted) hover:text-(--header-ink)"
                 >
                   github
                 </a>
@@ -275,31 +284,23 @@ export default function Header() {
           </ul>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {prefersReducedMotion ? (
-              <span
-                className="label-mono hidden text-(--header-ink-muted) sm:inline-flex"
-                title="Motion is disabled by your system preference"
-              >
-                motion: off — system
-              </span>
-            ) : (
-              <button
-                type="button"
-                onClick={toggleMotion}
-                aria-pressed={motionOff}
-                className="label-mono hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex"
-              >
-                motion: {motionOff ? "off" : "on"}
-              </button>
-            )}
+            {/* The masthead seat. Below `sm` the row has no width for it
+                and the colophon carries it instead — MotionToggle.tsx
+                holds the measurement and the reasoning (N4). */}
+            <MotionToggle className="hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex" />
             {/* Mobile contact affordance: the text nav's "contact" item is
-                md+ only, so phones get a quiet mail icon beside resume. */}
+                md+ only, so phones get a quiet mail icon beside resume.
+                D7: the anchor is the 44×44 hit box, the span is the
+                32/36px chip — the negative margin returns the difference,
+                so the chip sits exactly where it sat. */}
             <a
               href={`mailto:${personalInfo.email}`}
               aria-label="Contact"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-xs border border-(--header-ink-border) text-(--header-ink) transition-colors hover:border-(--header-ink) min-[420px]:h-9 min-[420px]:w-9 md:hidden"
+              className="group -m-1.5 inline-flex h-11 w-11 items-center justify-center min-[420px]:-m-1 md:hidden"
             >
-              <Mail size={15} aria-hidden="true" />
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xs border border-(--header-ink-border) text-(--header-ink) transition-colors group-hover:border-(--header-ink) min-[420px]:h-9 min-[420px]:w-9">
+                <Mail size={15} aria-hidden="true" />
+              </span>
             </a>
             {/* The FileText icon shows when there is room (≥420px) and
                 stands in alone on the very smallest frames (<360px). */}
@@ -318,15 +319,19 @@ export default function Header() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Resume (opens in a new tab)"
-              data-print-invert
-              className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) transition-colors hover:bg-transparent hover:text-(--header-ink) min-[420px]:h-9 min-[420px]:px-3"
+              className="group -my-1.5 inline-flex h-11 items-center min-[420px]:-my-1"
             >
-              <FileText
-                size={15}
-                aria-hidden="true"
-                className="hidden max-[359px]:block min-[420px]:block"
-              />
-              <span className="max-[359px]:hidden">resume</span>
+              <span
+                data-print-invert
+                className="label-mono inline-flex h-8 items-center gap-2 rounded-xs border border-(--header-ink) bg-(--header-ink) px-2.5 text-(--header-paper) transition-colors group-hover:bg-transparent group-hover:text-(--header-ink) min-[420px]:h-9 min-[420px]:px-3"
+              >
+                <FileText
+                  size={15}
+                  aria-hidden="true"
+                  className="hidden max-[359px]:block min-[420px]:block"
+                />
+                <span className="max-[359px]:hidden">resume</span>
+              </span>
             </a>
           </div>
         </nav>

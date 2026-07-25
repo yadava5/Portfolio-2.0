@@ -66,7 +66,23 @@ export interface Project {
   highlights: string[];
   /** Whether the project is private/work-related */
   isPrivate: boolean;
-  /** Whether the project is ready to appear in recruiter-facing portfolio lists */
+  /**
+   * Whether the project may appear in a SHOWCASE list — the bento grid,
+   * the public project index, the category filters. `false` retires it
+   * from the places that read as "here is my work".
+   *
+   * What it does NOT filter (certification round, D6 — the flag's reach
+   * was never written down, so a reader could fairly read a retired
+   * project's presence elsewhere as the flag being ignored):
+   * `isPublicPortfolioProject` below is the flag's ONLY consumer, and a
+   * retired project keeps everything that makes it evidence — its case
+   * file, its route, its receipt anchors, its proof-manifest entries,
+   * and any endnote that cites a claim the page actually makes. A
+   * retired project is not hidden work; it is work that no longer
+   * argues for itself, only for a sentence elsewhere. Two of them
+   * (policybot, master-inventory) carry claims ¶03 and ¶06 print, so
+   * the endnotes cite them — that is the flag working, not leaking.
+   */
   portfolioVisible?: boolean;
   /** Quantifiable impact metrics */
   metrics?: ProjectMetric[];

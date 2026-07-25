@@ -48,9 +48,12 @@ occurrences in the deploy bundle: **0**.
 ## Disposition — every ledger fault, F01–F82
 
 Terminal statuses: **fixed@wN** · **wontfix** · **design-call** ·
-**not-a-defect**. `w1`/`w2`/`w3` cite the earlier status docs; `w4` is
-this wave. Rows marked **†** carry a correction to the ledger's own
-claim, detailed after the table.
+**not-a-defect** · **partial**. `w1`/`w2`/`w3` cite the earlier status
+docs; `w4` is this wave; **`@cert`** is the certification-response round
+below. Rows marked **†** carry a correction to the ledger's own claim,
+detailed after the table. Rows marked **‡** were re-labelled by the
+CERTIFICATION-RESPONSE round at the end of this document — five rows
+where this table claimed more than the export could support.
 
 | # | Fault (short) | Terminal status | Note |
 |---|---|---|---|
@@ -68,7 +71,7 @@ claim, detailed after the table.
 | F12 | one project, three names | fixed@w2 | |
 | F13 | rail is seven tab stops with invisible labels | fixed@w2 | |
 | F14 | motion off, the rail claims you've read everything | fixed@w2 | |
-| F15 † | static world paints boxes the motion world doesn't | not-a-defect@w3 · **legibility fixed@w4** | w3 root-caused the rectangles as the print tier's authored figure outline, not a containment artifact. w4 found that outline was invisible anyway (F80) and raised it to a measured ≥3:1 |
+| F15 †‡ | static world paints boxes the motion world doesn't | not-a-defect@w3 · **design-call@cert** | w3 root-caused the rectangles as the print tier's authored figure outline, not a containment artifact. w4 found that outline was invisible anyway (F80) and raised it to a measured ≥3:1 — which makes the reported difference **larger**, not smaller (1.86:1 → 3.38:1). It is a design call, not a non-defect. See "CERT-RESPONSE" |
 | **F16** | **mobile hero is seven 13px links in a 320px stack** | **fixed@w4** | Below `sm` the case-file index and the three-link `in a hurry` run give way to one 44px resume row. Visible hero affordances at 390: **9 → 2**, both 44px (330×44, 110×44). Sitewide elements under 30px tall or 24px wide: **34 → 28** |
 | F17 | fig 6.1 bottom-aligned into a void | fixed@w2 | |
 | **F18** † | **chapter pacing 4:1 out of balance** | **design-call — declined@w4** | Re-measured: **3.95:1**, ¶05 at 30.5% of the page and ¶06 at 7.8% — essentially unmoved. See "The three declines" |
@@ -95,7 +98,7 @@ claim, detailed after the table.
 | F39 | ragged row affordances | fixed@w2 | |
 | F40 | three identical case-file/source/demo triplets | fixed@w2 | |
 | F41 | every link ends in ⟶ | fixed@w2 · extended@w3 | |
-| **F42** † | **the em dash has eaten the punctuation** | **wontfix@w4** | The ledger's own proposed rule — one per paragraph — is **already met by 123 of 133 paragraphs (92%)**. See "The three declines" |
+| **F42** †‡ | **the em dash has eaten the punctuation** | **wontfix@w4 · composition corrected@cert** | The ledger's own proposed rule — one per paragraph — is **already met by 124 of 134 paragraphs (93%)**. What the w4 row never said is what the other ten ARE: **9 apparatus (mono), 1 prose**. See "The three declines" and "CERT-RESPONSE" |
 | **F43** | **vocabulary overload ("gate" ×15 on home)** | fixed (/evidence)@w3 · **wontfix (home)@w4** | The 15 instances carry three distinct senses, and both the technical ones and the metaphor are load-bearing. See "The three declines" |
 | F44 | `⟶✓` and `✓passed` set without a space | fixed@w2 + w3 | |
 | F45 | ~200px hole in the hero | fixed@w1 | |
@@ -103,7 +106,7 @@ claim, detailed after the table.
 | F47 | duplicate social links 400px apart | fixed@w2 | |
 | F48 | unguarded `getFullYear()` | fixed@w2 | |
 | F49 | prerender ships `—:—`, no usable `<h1>` | fixed@w3 | |
-| F50 | sitemap `lastmod` is a stale constant | fixed@w3 | |
+| F50 ‡ | sitemap `lastmod` is a stale constant | fixed@w3 · **partial@cert** | The stale half is closed; the *constant* half is not. All nine `<lastmod>` values still print one date (`2026-07-01T00:00:00.000Z`), because all seven case files carry a hand-typed `verified: "2026-07"`. Nothing derives it from a commit, a file mtime or a run. See "CERT-RESPONSE" |
 | F51 | `404.html` carries the homepage title | fixed@w3 | |
 | F52 | hardcoded seasons + a decaying self-description | fixed (description)@w3 · **wontfix (season)** | `"summer 2026"` at `StoryShell.tsx` and `Header.tsx` is one dateline in two places; w3's reasoning stands — deriving one and not the other makes them disagree in October, and deriving both is a home-dateline decision no wave was given |
 | **F53** † | **the GPA claim breaks the site's own rule** | **not-a-defect — owner-overruled** | w2 removed it; it is back, by an owner directive dated 2026-07-24 recorded in `StoryShell.tsx:909-919` ("GPA once, semesters named"; the stated boundary is the transcript, offered on request). The ledger's objection was reviewed and overruled by the standing biographical ruling. Recorded here because WAVE2-STATUS still reads "fixed" |
@@ -113,10 +116,10 @@ claim, detailed after the table.
 | F57 | the local-only legend prints on 7 pages for 2 rows | fixed@w3 | |
 | F58 | two real recommendations render nowhere | fixed@w3 | |
 | F59 † | half of `projects.ts` is never rendered | fixed (the live half)@w3 · **design-call (the rest)** | w3 corrected the ledger (three "zero call sites" helpers are imported by the fixtures) and neutralised the `97.01%` the ledger stamps HELD. Which dead FIELDS to keep is a data-model decision that belongs with whoever decides whether `lifequest` ships |
-| F60 | the comment layer out-writes the content layer | fixed@w3 · **extended@w4** | w3 cut `HeldStamp`'s essay and the "three editorial rows"; w4's F82 sweep corrected six more headers |
+| F60 ‡ | the comment layer out-writes the content layer | fixed@w3 · extended@w4 · **partial@cert** | w3 cut `HeldStamp`'s essay and the "three editorial rows"; w4's F82 sweep corrected six more headers — both real, neither the fault. Measured across `src/**/*.{ts,tsx,css}`: **6,710 comment lines to 13,908 code lines (0.48:1)**, and comments still out-write code in **21 of 71 files**. See "CERT-RESPONSE" |
 | F61 | the header paints a cream bar over a dusk page | fixed@w1 | |
 | F62 | the ¶05 → ¶06 seam is a 690px void | fixed@w1 | |
-| **F63** † | **Red Thread jumps 97px sideways at 1280** | **fixed@w4** | Both halves, and the ledger's number is wrong by an order of magnitude. See "The engine, fault by fault" |
+| **F63** †‡ | **Red Thread jumps 97px sideways at 1280** | fixed@w4 (clearance) · **design-call@cert** | The rail-clearance half is fixed and holds (136 → 152). The *sideways jump* is not: swept 1024→1440 and bisected, the spine relocates at exactly **1279 → 1280, x 1253 → 152 — 1101px**, because `xl` brings the chapter rail in and the thread crosses the page to sit beside it. Designed reflow, not drift — but "fixed@w4" claimed a jump was gone that is still there, an order of magnitude larger than the ledger's 97. See "CERT-RESPONSE" |
 | F64 | the flagship type token is dead | fixed@w2 | |
 | F65 | the label token's 12px floor | fixed@w2 | |
 | F66 | scene text at ~6–8px on a phone | fixed (sibling, 2026-07-25) | Per-scene authored narrow editions; min rendered text 11.0px at 390, zero desktop leak — **as reported in the shared checkout's WAVE2-STATUS row**, which was not yet committed when this wave closed. Not re-verified here (scene ownership) |
@@ -602,3 +605,221 @@ Measured deltas, home page, 1440×900 unless noted:
 | Painted distinct (size × family) pairs | 16 incl. 3 sr-only | 15 painted |
 | `__frameGovernor` in the deploy bundle | 0 (w3) | 0 |
 | Verified-false load-bearing comments | 9 + 1 | 0 |
+
+---
+
+# CERTIFICATION-RESPONSE — the round after the ledger closed
+
+**Branch `redesign/daylight-study` @ `8dd4c14`** (origin/main after PR
+#11) → this worktree. An independent certifier re-audited the shipped
+export and filed eight **D** findings (defects it could reproduce) and
+six **N** findings (things it could name but the ledger had no row for).
+This section answers all fourteen, and it is deliberately the section
+that says where the table above overstated.
+
+**Method:** every finding re-probed against the live static export
+(`NEXT_PUBLIC_BASE_PATH= next build --webpack` → `out/` on :3200)
+BEFORE and AFTER the change, with one new reusable harness:
+
+| Probe | What it decides |
+|---|---|
+| `docs/design-lab/probe-certresp.mjs` | the sitewide tap-target census at 390 + 1440; the motion toggle's measured box in BOTH seats at 13 widths; the masthead's document width, header height and wordmark box 320→1440; the Red Thread's spine x swept 1024→1440 and bisected to the pixel; the em-dash census by paragraph register; and the rewritten surfaces, shot |
+
+Evidence: `docs/design-lab/shots-certresp/` — `certresp-before.json`,
+`certresp-after.json`, and the before/after captures behind every number
+below.
+
+---
+
+## The fourteen findings, and where each one landed
+
+| # | Finding (short) | Terminal status | What actually changed |
+|---|---|---|---|
+| **N1** | og cards print `…/portfolio-2.0` — lowercase, 404s on GitHub Pages | **fixed@cert** | The folio is DERIVED from `siteMetadata.url` (never typed), all 9 cards re-rendered, and the SEO gate — which runs in CI and on deploy — fails on the lowercase spelling. Proved by planting it |
+| **N2** | `ApprovedStamp.tsx` still calls the stamp's frame "dashed" | **fixed@cert** | Three F82-class corrections: the file header, the attention-beat comment, and the matching `globals.css` note. F20 replaced that dash two waves ago |
+| **N3** | the dashed "private-safe proof" note box survives on the case files | **fixed@cert** | F46's exact replacement applied: hairline top rule + the label token. Measured after: `border-top: 1px solid`, `0px` on the other three sides, 13px type. Dashed ink is now reserved sitewide for an unsigned STAMP (`PrivateStamp`, `HeldStamp`) and nothing else. **Correction to the finding:** it was on the **4** case files that carry an `evidenceDisclosure`, not all 7 |
+| **N4** | the quiet motion toggle measures 0×0 at 390 | **fixed@cert** | One control, two seats — masthead `sm`+, colophon below `sm`, exactly complementary. Measured at 13 widths: a visible motion control at every one (320–480: **87×44** in the colophon; 640–1440: 87×18 in the masthead). The masthead could not take it: 27–33px of slack between its clusters at 320–414 against 52px needed, the same budget `DayMark.tsx` recorded when it declined to enter below 480 |
+| **N5** | "B.S. Computer Science" printed twice, adjacently | **fixed@cert** | The heading keeps the degree; the prose under it starts at the date. Every fact survives in the owner-confirmed wording. `atlas.spec.ts`'s identity contract now asserts **both** registers, so neither half can go missing quietly |
+| **N6** | two `<meta name="robots">` on all three 404 outputs | **fixed@cert** | `robots: null` clears the root layout's inherited `index, follow` and leaves Next's own `noindex` standing alone. One directive on `404.html`, `404/index.html`, `_not-found/index.html`. The SEO gate now fails on a second one |
+| **D1** | /evidence states a rule the biographical line breaks | **fixed@cert** | Owner directive stands: the ¶03 line is untouched. The ledger's own sentence now carries the exemption and its boundary in one clause. `getDeansListCount()` — zero call sites since the owner settled that copy — removed with its re-export. The Fall-2023 question is left where it was recorded |
+| **D2–D5, D8** | the WAVE4 status table claims more than the export supports | **relabelled@cert** | Five rows re-labelled with measurements, above and below: **F50** fixed→partial, **F63** fixed→design-call, **F60** fixed→partial, **F15** not-a-defect→design-call, **F42** composition corrected |
+| **D6** | the endnotes and the home index feature retired case files | **fixed@cert** | Ruling followed: the files stay reachable. The endnote list is unchanged and correct — both entries cite claims ¶03 and ¶06 actually print, which is F22's own test. The heading over the home index changed from "also on file —" (showcase grammar) to **"cited above, argued in full —"**, and `portfolioVisible`'s reach is now written down where the flag is declared |
+| **D7** | sub-44 mobile targets where navigation lives | **fixed@cert** | Every masthead affordance at 390 is now a ≥44px box, with the row's layout unchanged to the pixel. The hero's ¹/↩ pair is padding-based too. Numbers below |
+
+---
+
+## D7 — the targets, measured
+
+Home, 390×844, every `a/button/input/select/summary/[role=button]` with
+a painted box (`probe-certresp.mjs`, census section):
+
+| Target | Before | After |
+|---|---|---|
+| header — portrait plate | 28 × 28 | **44 × 44** |
+| header — wordmark | 96 × 18 | **96 × 48** |
+| header — "the work" | 69 × 15 | **69 × 45** |
+| header — contact | 32 × 32 | **44 × 44** |
+| header — resume | 74 × 32 | **74 × 44** |
+| sitewide, under 44 in either axis | 42 of 46 | **37 of 47** |
+| sitewide, under 30px tall or 24px wide | 27 | **22** |
+| the same census at 1440 — under 30/24 | 50 of 61 | **43 of 61** |
+
+None of it is visible. Each target is grown by padding and handed the
+growth straight back as an equal negative margin, so the border box a
+finger and a census both measure is 44 while the margin box that lays
+the row out is exactly what it was. The masthead sweep proves it —
+identical at all 13 widths, before and after:
+
+| Width | 320 | 340 | 360 | 375 | 390 | 414 | 430 | 480 | 640 | 768 | 1024 | 1280 | 1440 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| header height, before | 64 | 64 | 64 | 80 | 64 | 64 | 68 | 68 | 68 | 80 | 68 | 68 | 68 |
+| header height, after | 64 | 64 | 64 | 80 | 64 | 64 | 68 | 68 | 68 | 80 | 68 | 68 | 68 |
+| document width, before | 323 | 341 | 360 | 375 | 390 | 414 | 430 | 480 | 640 | 768 | 1024 | 1280 | 1440 |
+| document width, after | 323 | 341 | 360 | 375 | 390 | 414 | 430 | 480 | 640 | 768 | 1024 | 1280 | 1440 |
+
+The wordmark never clips at any width, before or after
+(`scrollWidth ≤ clientWidth`), so the 320–390 rules the header's own
+comments set are intact.
+
+**Found while re-verifying, not caused by it:** the document is 3px
+wider than the viewport at 320 and 1px at 340 — identical before and
+after. The overhang is the gate stamp's rotated bounding box
+(`w-[min(300px,88vw)]` at `-4°`, right edge 323): the box overhangs, the
+ink does not. Recorded here rather than folded into a target fix it has
+nothing to do with.
+
+Two hit areas kept the old `.tap-target` name and changed technique. It
+was a centred invisible `::after` pad — a real 24×24 landing area that
+no measurement can see, because a pseudo-element is not part of the
+anchor's box. Every census, including the certifier's, read the hero's
+¹ as 8×15. It is padding now (**28 × 45**, advance unchanged), so the
+box a finger lands on and the box a tool reports are the same box.
+
+---
+
+## The five status-table relabels (D2–D5, D8)
+
+**F50 — sitemap `lastmod`.** w3 replaced one seven-week-stale constant
+with a per-case-file `verified` field, and the fault's real harm (a
+sitemap contradicting the pages it indexes) is gone. But `verified` is
+itself a hand-typed constant, all seven case files carry the same
+`"2026-07"`, and the export therefore still prints ONE `<lastmod>` on
+all nine URLs: `2026-07-01T00:00:00.000Z`. Nothing derives it from a
+commit, an mtime or a run. **fixed@w3 → partial.**
+
+**F63 — the Red Thread at 1280.** Swept 1024→1440 in 16px steps and
+bisected: the spine's start x tracks the viewport 1:1 up to 1279
+(`x = winW − 26`, so 1253 at 1279), then at 1280 it is **152**. That is
+a **1101px** lateral relocation at a one-pixel boundary — the thread
+crossing from the right margin to the left because `xl` brings the
+chapter rail in beside it (the certifier's own `spine-1279.png` /
+`spine-1280.png` show it plainly). It is designed reflow at a
+breakpoint, not drift, and it is not something to "fix" without
+redesigning the xl layout — but **fixed@w4** was the wrong word for a
+jump that is still there and is eleven times the ledger's 97px. The
+clearance half w4 actually fixed (136 → 152, from inside the rail's
+measured edge to clear of it) stands and is unaffected. **fixed@w4 →
+design-call**, clearance fix noted.
+
+**F60 — the comment layer.** w3 cut `HeldStamp`'s essay; w4's F82 sweep
+corrected six headers. Both happened; neither addressed the fault as
+stated. Measured across the 71 files of `src/**/*.{ts,tsx,css}`:
+**6,710 comment lines against 13,908 code lines (0.48:1)**, and comments
+still outnumber code in **21 of 71 files** — up to 3.2:1
+(`useGSAPCleanup.ts`, `usePrefersReducedMotion.ts`), and 1.09:1 even in
+one of the largest (`TextMotion.tsx`, 301/276). This round ADDED to that
+layer rather than cutting it, deliberately: every change here is a
+decision a future reader has to be able to re-derive, and an
+undocumented negative margin is how the next F82 gets written. Whether
+the ratio is a fault or the house style is an owner call, and the honest
+label until someone makes it is **partial**, not fixed.
+**fixed@w3 · extended@w4 → partial.**
+
+**F15 — boxes the motion world doesn't paint.** w3 root-caused the
+rectangles correctly (the print tier's authored figure outline, not a
+containment artifact) and w4 raised them from 1.86:1 to 3.38:1 for
+legibility. Both true — and together they mean the static world now
+paints those boxes **louder** than when the fault was filed. The
+observation was never wrong; the disposition was. The outline is a
+deliberate print-edition mark the motion world does not need, which is a
+design call to defend, not a non-defect to dismiss.
+**not-a-defect@w3 → design-call**, with the delta stated.
+
+**F42 — the em dash.** The w4 census is reproduced exactly
+(`p, li, figcaption`, innerText): **10 of 134 paragraphs** carry more
+than one em dash — 124 of 134 already meet the ledger's proposed rule.
+What the row never said is what those ten are: **9 are apparatus** (the
+mono register — chapter kickers, endnote lines, metric chips, where the
+dash is the field separator the whole voice is built on) **and 1 is
+prose** — the ¶03 education line, which is owner-confirmed copy. So the
+"epidemic" is one serif sentence and nine label lines doing a label
+line's job. The decline stands; the reason it stands is now on the
+record instead of a bare percentage. **wontfix@w4, composition
+corrected.**
+
+---
+
+## What this round did not touch, and why
+
+- **The ¶03 GPA line.** The owner's directive is explicit and outranks
+  ledger logic: the line stays as it is. D1 was answered at the other
+  end — the ledger's rule sentence — because that is where the
+  contradiction lived once the copy was settled.
+- **The Fall-2023 award.** Still an open owner question, still recorded
+  in the code comment beside the copy it would change. A third semester
+  was not added and the two on the page were not touched.
+- **`PrivateStamp` / `HeldStamp`.** Both stay dashed. N3 unified the
+  NOTE grammar, not the stamp grammar: on this site a dashed frame means
+  an unsigned or unearned stamp, and that is now the only thing dashed
+  ink says.
+- **The endnote list.** Unchanged. Both entries the finding named cite
+  claims the page prints in its own prose, which is exactly the test F22
+  set. Renaming the index heading was the honest edit; deleting receipts
+  for claims the page makes would have been the dishonest one.
+
+---
+
+## Verification at close
+
+Build clean · `tsc --noEmit` clean · `eslint . --ext .ts,.tsx` clean ·
+`prettier --check` clean on every `src/**` file touched (the pre-existing
+`scripts/**` and `tests/**` warnings are outside the repo's
+`format:check` glob and were already there at `8dd4c14`).
+
+Gates: contrast **passed** · proof-manifest **passed** · asset-budget
+**passed** · static-export SEO **passed** (against a
+`NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0` production build) · og-card check
+**passed**, 9 cards, all folioed `yadava5.github.io/Portfolio-2.0`.
+
+Both new gate rules were verified to FAIL before they were verified to
+pass — a gate that has never failed is a comment:
+
+| Planted fault | Gate output |
+|---|---|
+| `folio: "yadava5.github.io/portfolio-2.0"` | `og card renderer prints "yadava5.github.io/portfolio-2.0" — the site is yadava5.github.io/Portfolio-2.0 (paths are case-sensitive)`, plus `og card folio … is not derived from siteMetadata.url` |
+| a second robots directive on the 404s | `404.html carries 2 robots directives (noindex \| index, follow) — one authority`, on all three outputs |
+
+Playwright, all against the live static export on **:3200**:
+**chromium-desktop 179 passed / 2 skipped** (atlas, a11y-audit,
+interactions, nav-and-images, comprehensive-qa, text-motion, dossier,
+paper-memory, day-arc, red-thread, reduced-motion, scroll-engine,
+pipeline-run) · **chromium-mobile 48 passed** (atlas) ·
+**firefox-desktop 5 passed** (scroll-engine).
+
+## Spec edits, and why they were justified
+
+**`portfolio-fixtures.ts` + `atlas.spec.ts` — one assertion split in
+two, none removed.** `EXPECTED_GRADUATE_IDENTITY.education` was the
+single string `"B.S. Computer Science, May 2026"`, which is precisely
+the duplication N5 removed: it could only pass while the prose repeated
+the heading. It is now the degree (`education`) plus the record under it
+(`educationRecord`), and `atlas.spec.ts` asserts BOTH — a strictly
+larger contract than before, covering the education line's opening as
+well as the degree.
+
+That split also caught a real defect in the edit that caused it: with
+`{graduation}` promoted to the first child of its paragraph, the JSX
+transform dropped the leading space off the text node after it and the
+export shipped `May 2026— dean's list`. The spacing is an explicit
+expression now, and catching that is why the assertion was worth
+keeping strict.

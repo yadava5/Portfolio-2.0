@@ -14,12 +14,30 @@ import Link from "next/link";
    a debug bench, correctly carried noindex. The error page was being
    treated less carefully than the dev page, and an indexed 404 that
    claims to be the homepage is a duplicate-title signal on the one
-   name query this site exists to win. */
+   name query this site exists to win.
+
+   Certification round, N6 — the title half of that fix stands; the
+   robots half is now Next's job alone. Next emits its OWN
+   `<meta name="robots" content="noindex">` for the not-found route, so
+   the `robots: {index:false, follow:true}` that used to sit here put a
+   SECOND robots tag on all three 404 outputs (`404.html`,
+   `404/index.html`, `_not-found/index.html`). The two agreed, which is
+   the only reason it never bit: a crawler reading two directives has to
+   pick one, and nothing here decided which.
+
+   `robots: null` is the fix rather than deleting the key: deleting it
+   does not silence this page, it INHERITS the root layout's
+   `index, follow` — which is how the duplicate then read
+   "noindex | index, follow", two directives that disagree. `null`
+   clears the inherited field and leaves Next's own noindex standing
+   alone. `follow` was never load-bearing: it is the default, and this
+   page links only to this site's own chapters. One page, one directive.
+   scripts/qa/check-static-export-seo.mjs now fails on a second one. */
 export const metadata: Metadata = {
   title: "Not found | Ayush Yadav",
   description:
     "That page is not on file. The chapters, the case files, and the evidence index are.",
-  robots: { index: false, follow: true },
+  robots: null,
 };
 
 export default function NotFound() {

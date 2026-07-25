@@ -63,7 +63,6 @@ export {
   siteMetadata,
   getFormattedLocation,
   getCurrentEducation,
-  getDeansListCount,
   type SocialLink,
   type Education,
   type Award,

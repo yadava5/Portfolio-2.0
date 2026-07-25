@@ -6,10 +6,18 @@
  * here.) It sits in nightfall: under motion it inherits the arc's dusk
  * ink; in the static worlds (reduced motion / motion off) `.site-footer`
  * paints waypoint-07 itself (globals.css).
+ *
+ * It also carries the PHONE seat of the quiet motion toggle
+ * (certification round, N4). A colophon states how an edition is set —
+ * this one already names its three faces — so "motion: on" belongs in
+ * the same breath, and unlike the masthead the colophon has the width
+ * to give it a real 44px target. The masthead keeps the `sm`+ seat;
+ * MotionToggle.tsx holds the measurement behind the split.
  */
 
 "use client";
 
+import { MotionToggle } from "@/components/layout/MotionToggle";
 import { personalInfo } from "@/lib/data/personal";
 
 /**
@@ -42,6 +50,13 @@ export default function Footer() {
           </p>
           <p>set in fraunces, newsreader &amp; fragment mono</p>
         </div>
+
+        {/* The phone seat, exactly complementary to the masthead's
+            (`hidden sm:inline-flex` there, `sm:hidden` here): one
+            control is reachable at every width, never two. `-my-3`
+            keeps the colophon's 8-unit rhythm while the button itself
+            measures a full 44px. */}
+        <MotionToggle className="-my-3 inline-flex h-11 w-fit items-center opacity-80 transition-opacity hover:opacity-100 sm:hidden" />
 
         <p className="label-mono text-center tracking-[0.24em] opacity-70">
           two inks. one line. seven chapters.

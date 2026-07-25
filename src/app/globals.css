@@ -618,23 +618,55 @@ html[data-motion-off] .site-footer {
   outline-offset: 3px;
 }
 
-/* Hit-area lift for tiny inline targets (PERF-AUDIT §4 / WCAG 2.5.8):
-   the footnote ¹/↩ and receipt permalink glyphs measure 8–17px. A
-   centered, invisible ::after pad grows the pointer/tap target to
-   ≥24×24 without moving a letterform or changing any visual state —
-   the pseudo-element belongs to the anchor, so clicks on it activate
-   the link. */
-.tap-target {
+/* Hit-area lift for tiny inline targets (PERF-AUDIT §4 / WCAG 2.5.5):
+   the footnote ¹/↩ and receipt permalink glyphs measure 8–17px.
+
+   This used to be a centered, invisible `::after` pad. It gave a finger
+   ≥24×24 to land on, but a pseudo-element is not part of the anchor's
+   own box — so every census that measures what is actually there
+   (`getBoundingClientRect`, an audit tool, a screenshot ruler) still
+   read 8×15, and the certification round read it that way too. The pad
+   is now PADDING: the anchor's own border box grows, so the box a
+   finger lands on and the box a measurement reports are the same box.
+
+   The growth is handed straight back as an equal negative margin, and
+   that is what makes it free:
+     · on an inline box (the ¹ inside the hero's [data-thread-name], the
+       ↩ in the footnote line) block padding never enters the line box
+       and block margins do not apply at all — the line, the leading and
+       the Red Thread's measured landmark are untouched;
+     · on a blockified flex item (the masthead's wordmark) the negative
+       margin returns the padding exactly, so the row lays out at the
+       size it always did.
+   Nothing moves, nothing repaints; only the box grows. */
+.tap-target,
+.tap-target-block {
   position: relative;
+  padding-block: 0.9375rem;
+  margin-block: -0.9375rem;
 }
-.tap-target::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: max(100%, 24px);
-  height: max(100%, 24px);
-  transform: translate(-50%, -50%);
+/* The inline axis, for glyph-width targets only. The masthead's text
+   affordances are already 69–96px wide, and inline padding there would
+   only reach across an 8px gap into a neighbour's box.
+
+   `--tap-gap-end` is how a consumer keeps a gap it already had: this
+   rule is unlayered, so it beats a Tailwind `mr-*` utility outright,
+   and a `mr-2` beside it would silently become −10px (measured: the
+   /projects receipt permalink pulled the claim text 8px left). Set the
+   variable instead of a margin utility — the returned padding and the
+   wanted gap then resolve in one declaration. */
+.tap-target {
+  padding-inline: 0.625rem;
+  margin-inline-start: -0.625rem;
+  margin-inline-end: calc(var(--tap-gap-end, 0rem) - 0.625rem);
+}
+/* The drawn ink line stays welded to the baseline: with the gradient's
+   positioning area resolved against the CONTENT box, the tap padding
+   above cannot drag the underline down to the bottom of the new box.
+   A no-op for every link that carries no padding. */
+.link-draw,
+.link-draw-quiet {
+  background-origin: content-box;
 }
 
 /* ── prefers-contrast: more (PERF-AUDIT §4.4) — token-level lift ─────
@@ -1247,7 +1279,9 @@ html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
 [data-stamp][data-inked] .stamp-awaiting {
   opacity: 0;
 }
-/* Quiet pre-press affordance: the dashed outline firms under the hand */
+/* Quiet pre-press affordance: the unsigned plate firms under the hand.
+   (Read "the dashed outline" until the certification round — F20 traded
+   that dashed frame for the paper's double rule two waves earlier.) */
 [data-stamp]:not([data-inked]) .stamp-awaiting {
   transition: opacity 250ms ease;
 }

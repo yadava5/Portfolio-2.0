@@ -138,11 +138,24 @@ export default function EvidencePage() {
           >
             The evidence index
           </h1>
+          {/* Certification round, D1: the closing sentence stated a rule
+              the site's own biographical register does not keep. The
+              degree, the dean's list and the GPA are printed in ¶03 as
+              prose and are deliberately NOT manifest entries — a
+              transcript offered on request is not a public artifact, so
+              it cannot enter a ledger whose every row terminates at one.
+              The rule was right about claims; it was silent about the
+              one register that is exempt, and silence read as a
+              contradiction. It now names the exemption and its boundary
+              in the same breath, which is what the ¶03 line already
+              says. */}
           <p className="text-body text-ink-secondary mt-6 max-w-[58ch] font-serif">
             The master ledger behind every number on this site: the claim, the
             strongest artifact it terminates at, when it was recorded, and the
             case-file receipt that argues it in full. If a claim is not in this
-            ledger or a case file, the site does not make it.
+            ledger or a case file, the site does not make it — apart from the
+            biographical register (degree, dean’s list, GPA), which the
+            transcript on request backs.
           </p>
         </header>
 
