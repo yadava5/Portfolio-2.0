@@ -153,9 +153,7 @@ export function AutomlEchoScene() {
         {
           opacity: 0.55,
           scale: 0.5,
-          svgOrigin: narrow
-            ? `${RAIL_X_M} ${GATE_Y_M}`
-            : `${GATE_X} ${RAIL_Y}`,
+          svgOrigin: narrow ? `${RAIL_X_M} ${GATE_Y_M}` : `${GATE_X} ${RAIL_Y}`,
         },
         {
           opacity: 0,

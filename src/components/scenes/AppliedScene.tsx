@@ -364,10 +364,7 @@ export function AppliedScene() {
 
         {/* gate 1 — rules */}
         <g data-sc-gate>
-          <path
-            className="scene-post"
-            d={`M 10 ${GATE_Y_M.rules} H 38`}
-          />
+          <path className="scene-post" d={`M 10 ${GATE_Y_M.rules} H 38`} />
           <text x="48" y={GATE_Y_M.rules + 4} className="sc-quiet">
             rules
           </text>
