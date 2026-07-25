@@ -124,8 +124,60 @@ test.describe("scroll engine", () => {
     expect(top).toBeGreaterThan(40);
     expect(top).toBeLessThan(160);
 
-    /* URL hash untouched (handled scroll, not native hash navigation) */
+    /* The nav WRITES the section into the URL (CRITIC-LEDGER F05). This
+       assertion used to demand an empty hash — "handled scroll, not
+       native hash navigation" — which is exactly the fault: with no
+       hash, no section of the paper was linkable and Back left the
+       site. The scroll is still handled (the landing offset above
+       proves it: a native hash jump would land at ~192px). */
+    expect(new URL(page.url()).hash).toBe("#path");
+  });
+
+  test("the nav writes history: sections are linkable, Back stays in", async ({
+    page,
+  }) => {
+    test.skip(!isDesktop(page), "header nav links are lg+ only");
+
+    await page.goto("/");
+    await page.locator("#arrival").waitFor({ state: "attached" });
+    await connectedHeader(page).waitFor({ state: "attached", timeout: 5_000 });
+    await page.evaluate(() => document.fonts.ready);
+
+    const nav = (name: string) =>
+      page.locator("header").getByRole("link", { name }).click();
+
+    /* One history entry per section asked for */
+    await nav("the work");
+    await waitForScrollSettle(page);
+    expect(new URL(page.url()).hash).toBe("#work");
+
+    await nav("contact");
+    await waitForScrollSettle(page);
+    expect(new URL(page.url()).hash).toBe("#gate");
+    const gateY = await page.evaluate(() => Math.round(window.scrollY));
+
+    /* Back walks the paper backwards — it never ejects the reader */
+    await page.goBack();
+    await waitForScrollSettle(page);
+    expect(new URL(page.url()).hash).toBe("#work");
+    await expect(page.locator("#work")).toBeInViewport();
+
+    await page.goBack();
+    await waitForScrollSettle(page);
     expect(new URL(page.url()).hash).toBe("");
+    expect(page.url()).toContain("/");
+    expect(await page.evaluate(() => Math.round(window.scrollY))).toBeLessThan(
+      200
+    );
+
+    /* Forward returns to the landing it left, not a stale offset */
+    await page.goForward();
+    await page.goForward();
+    await waitForScrollSettle(page);
+    expect(new URL(page.url()).hash).toBe("#gate");
+    expect(
+      Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - gateY)
+    ).toBeLessThan(120);
   });
 
   test("reduced motion never mounts the controller; anchors still land", async ({

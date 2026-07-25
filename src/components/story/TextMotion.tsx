@@ -65,7 +65,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { useLenis } from "@/components/layout/SmoothScroll";
-import { ARRIVAL_EVENT } from "@/components/story/arrival";
+import {
+  announceLayoutSettled,
+  ARRIVAL_EVENT,
+} from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -496,6 +499,9 @@ export function TextMotion() {
 
       /* Splitting nudges line boxes; settle every trigger's position. */
       ScrollTrigger.refresh();
+      /* A refresh moves the page under a hash landing by the pin
+         distance — tell the landing contract it may re-assert (F09). */
+      announceLayoutSettled();
 
       /* The reader may already BE somewhere: a shared `/#chapter`, a
          reload the browser restored deep in the paper, a Back that
