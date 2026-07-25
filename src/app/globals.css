@@ -1914,7 +1914,10 @@ html[data-motion-off] .pipeline-token-bead {
    day-only secondary token. */
 .scene-fig text {
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  /* 12.5px → 13px (CRITIC-LEDGER F32): 12.5 was a one-off outside the
+     label band carried by 35 nodes. 13px IS --text-label — the figures
+     now speak in the same mono size as the rest of the apparatus. */
+  font-size: 13px;
   letter-spacing: 0.04em;
   fill: currentColor;
 }
@@ -1926,11 +1929,15 @@ html[data-motion-off] .pipeline-token-bead {
   fill: var(--color-clay);
 }
 .scene-fig .sc-small {
-  /* 9.5px → 10px (shots-dusk2 small-font audit): the axis/tick voice was
-     the smallest text on the site and rendered ~9.3px where a scene
-     scales below 1:1. Half a point buys real legibility at 1x DPR and
-     no tick label collides at any scene's coordinates. */
-  font-size: 10px;
+  /* 10px → 11px (CRITIC-LEDGER F32/F33): the axis/tick voice was the
+     smallest text on the site. It cannot reach the label token's 12px
+     floor: the ten-slot readout in the Glyph forward-pass plate is
+     drawn on a 12.2-unit pitch, and at 12px the adjacent digits' boxes
+     overlap (measured — 2 units of vertical intersection). 11px is the
+     largest step those hand-placed coordinates hold, verified collision
+     -free at 320→1440. The rest of the distance is a redraw, not a
+     size: see the ESCALATE note in CRITIC-LEDGER's WAVE2-STATUS. */
+  font-size: 11px;
 }
 /* The drawing edge — the Red Thread's own convention, settled drawn. */
 .scene-edge {
