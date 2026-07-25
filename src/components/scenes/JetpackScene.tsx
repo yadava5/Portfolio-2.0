@@ -226,7 +226,21 @@ export function JetpackScene() {
           d="M 382 118 H 500"
           pathLength={1}
         />
-        <text data-sc-member x="392" y="140" className="sc-quiet">
+        {/* Right-anchored on the output rail's terminus (x=500) instead
+            of left-anchored at x=392: measured on the live export, the
+            left-anchored label ran to x≈515 — three units PAST the
+            512-unit viewBox, where the outer <svg> clips it, at every
+            viewport. The figure voice moving 12.5px → 13px (the label
+            token) would have widened the clip to eight units. Hanging
+            the caption off the end of the rail it describes keeps it
+            inside the plate and ties it to its own drawing. */}
+        <text
+          data-sc-member
+          x="500"
+          y="140"
+          textAnchor="end"
+          className="sc-quiet"
+        >
           one gzip member
         </text>
       </svg>
