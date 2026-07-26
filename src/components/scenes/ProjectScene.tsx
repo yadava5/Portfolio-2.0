@@ -102,9 +102,32 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
       {/* Same paper-plate dressing as the scene branch — a raster capture
           is still a plate in the monograph, not a floating white card. */}
       <div className="plate-paper border-ink/40 border p-2 sm:p-3">
+        {/* No 260px floor here — removing it IS fix round 5's largest
+            repair. `aspect-video` + a definite `min-height` transfers
+            THROUGH the ratio in both directions: a box that must be
+            260px tall at 16/9 must also be 462px wide, so the frame took
+            a 462px used width no matter how narrow its column was. Below
+            462px of column that width is both an overflow and a
+            min-content contribution the grid item (min-width: auto)
+            refuses to shrink under — which is why the three case files
+            whose fig. 1 is a raster plate (master-inventory, policybot,
+            visual-assist) ran 198px past a 320px viewport, were still
+            104px over at 414, and — the part no earlier round measured —
+            were 45px over at exactly 1024, where the dossier's two-column
+            grid hands this plate a 384px track.
+            The floor could never do its job anyway: it only bites when
+            the column is under 462px, and that is precisely where it
+            breaks the layout. A 16:9 plate in a 260px column is 146px
+            tall, which is a plate, not a sliver. The one width where the
+            floor was ever load-bearing is an accident of arithmetic —
+            at 1440 the frame is 462.22px wide, whose ratio height is
+            259.875px, so the floor was rounding the desktop plate up by
+            one eighth of a pixel. That eighth is the whole desktop
+            delta; the frame keeps its width, its outline and its
+            aspect. */}
         <div
           data-project-visual-frame
-          className="plate-inner-rule relative aspect-video min-h-[260px]"
+          className="plate-inner-rule relative aspect-video"
         >
           {/* Raster captures carry intrinsic width/height (CLS
               regression hardening, PERF-AUDIT fix 4) — the
