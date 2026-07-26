@@ -75,6 +75,27 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
           status
         </span>
       </li>
+      {/* Fix round 3, S12 — the redaction keeps its block, and gains its
+          reason one line earlier.
+
+          `▓▓` under a column headed `metrics` is, to a skimmer, four
+          runs with no numbers: it reads BROKEN before it reads
+          PRINCIPLED, and the sentence that turns it around ("private
+          repository; the demo-data run ledger has not shipped") lived in
+          the figcaption, below every row. The block itself is not the
+          problem — it is the honesty, and it stays exactly as it was
+          (`▓▓`, aria-hidden, sr-only twin, no invented f1). What moves
+          is WHEN the reader learns what it means: a dim note directly
+          under the column head, so "withheld" arrives before the first
+          redacted cell rather than after the last one.
+
+          `sm:block` mirrors the metric column's own gate — below sm
+          there is no metric column to caption (the measured 36px does
+          not exist there), and the figcaption carries the whole
+          statement in words in every world and at every width. */}
+      <li className="text-ink-secondary hidden text-right opacity-70 sm:block">
+        metrics withheld — the caption says why
+      </li>
       {rows.map((row, index) => {
         const awaiting = row.status === "awaiting approval";
         return (
