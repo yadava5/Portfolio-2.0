@@ -14,15 +14,18 @@
  *     off-page (repo file @ commit, CI run, dated checked-in ledger) or the
  *     row carries no artifact link and is honest about why.
  *   - Repo pins are the repos' HEAD commits as verified via `gh` on
- *     2026-07-18 (the kicker's "last verified" date). Private repos carry
- *     no sha and no link — only their verified name.
+ *     2026-07-18 (the kicker's "last verified" date) — except Applied,
+ *     re-pinned 3225eb4 → 36a2f54 on 2026-07-26 when it shipped as a web
+ *     app and the old pin froze the file in the desktop era. Private
+ *     repos carry no sha and no link — only their verified name.
  *   - Dates are real and recorded: committed-artifact dates come from the
  *     artifacts themselves (e.g. baseline_hybrid_v3.json `generated_at`
  *     2026-03-03; bench-20251226-154121 run files); audit dates come from
  *     this repo's own public history (proof ledgers checked in 2026-06-05,
- *     jobtracker suite audit 2026-06, VisualAssist test-count audit
- *     2026-05, AVX-512 retraction 2026-05-28). Where no date was recorded,
- *     the row says so instead of inventing one.
+ *     jobtracker suite audit 2026-06 then re-run 2026-07-26 at the new
+ *     pin, VisualAssist test-count audit 2026-05, AVX-512 retraction
+ *     2026-05-28). Where no date was recorded, the row says so instead of
+ *     inventing one.
  */
 
 import { Project, projects } from "@/lib/data/projects";
@@ -234,10 +237,24 @@ export interface ProjectCaseStudy {
   artifacts: CaseStudyArtifact[];
 }
 
-/* Repo pins — HEAD shas verified via `gh api` on 2026-07-18. */
-const JOBTRACKER_SHA = "3225eb4";
-const JOBTRACKER_BLOB = `https://github.com/yadava5/jobtracker/blob/${JOBTRACKER_SHA}`;
-const JOBTRACKER_TREE = `https://github.com/yadava5/jobtracker/tree/${JOBTRACKER_SHA}`;
+/* Repo pins — HEAD shas verified via `gh api` on 2026-07-18.
+
+   APPLIED (re-pin, 2026-07-26). The old pin `3225eb4` froze this file in
+   the era when the native macOS app was the product and `apps/web` was a
+   login shell. It is not that any more: Applied ships as a hosted Next.js
+   app at getapplied.vercel.app. Every receipt below is re-pinned to
+   `36a2f54`, the PUBLIC head of `integration/web-migration` — the branch
+   that carries the web app — read back with `gh api` on 2026-07-26; each
+   linked path was fetched at that sha and returned 200.
+
+   The repository was also renamed `yadava5/jobtracker` → `yadava5/applied`
+   (GitHub still redirects the old paths; these pins name the current one).
+   The case file's own id stays `jobtracker` because the route
+   /projects/jobtracker/ is public and links to it are already in the
+   world — renaming the id would break them to no one's benefit. */
+const APPLIED_SHA = "36a2f54";
+const APPLIED_BLOB = `https://github.com/yadava5/applied/blob/${APPLIED_SHA}`;
+const APPLIED_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SHA}`;
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
 const VISUAL_ASSIST_TREE = `https://github.com/yadava5/VisualAssist/tree/${VISUAL_ASSIST_SHA}`;
@@ -246,121 +263,145 @@ const TASKFLOW_TREE = `https://github.com/yadava5/taskflow-calendar/tree/${TASKF
 const FAST_MNIST_SHA = "c6e5c0b";
 const FAST_MNIST_BLOB = `https://github.com/yadava5/fast-mnist-nn/blob/${FAST_MNIST_SHA}`;
 
-/** Backend CI run that executes the blocking v3 classifier gates (public) */
-const JOBTRACKER_CI_RUN =
-  "https://github.com/yadava5/jobtracker/actions/runs/24665061332";
+/** Backend CI run that executes the blocking v3 classifier gates (public).
+ *  Re-read 2026-07-26 via `gh api .../actions/runs/24665061332/jobs`: the
+ *  run is Backend CI on 6a7c230 (2026-04-20) and its step list carries
+ *  BOTH gates — "Run classifier non-regression gate (rules v3)" and
+ *  "Run hybrid benchmark gate (v3 deterministic)" — each `success`. It is
+ *  an older commit than the pin above, so the row's label says its date
+ *  out loud rather than letting the link imply it ran at `36a2f54`. */
+const APPLIED_CI_RUN =
+  "https://github.com/yadava5/applied/actions/runs/24665061332";
 
 export const projectCaseStudies: ProjectCaseStudy[] = [
   {
     projectId: "jobtracker",
     treatment: "native-intelligence",
     fileNo: 4,
-    role: "Designer and sole engineer",
+    role: "Designer and sole engineer — desktop app, web app, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
     verified: "2026-07",
-    status: "in progress",
-    /* Both clauses trace to receipts: 06 (macOS build) + 07/boundary
-       (web beta passes gates but remains a scaffold). */
-    statusDetail: "native core working, web beta a scaffold",
+    status: "shipped",
+    /* Both clauses trace to receipts: 07 (the dashboard renders real
+       applications from the API) + 09 (the hosted slot runs layer 1
+       only, by design, and the boundary rows say so). */
+    statusDetail: "web app live; the hosted classifier runs layer 1 only",
     repoPin: {
-      repo: "yadava5/jobtracker",
-      sha: JOBTRACKER_SHA,
+      repo: "yadava5/applied",
+      sha: APPLIED_SHA,
       branch: "integration/web-migration",
-      href: JOBTRACKER_TREE,
+      href: APPLIED_TREE,
     },
     summary:
-      "A native macOS tracker that reads the job search out of the inbox. Email syncs in, a local classifier names each message, and the noise becomes an application pipeline you can act on.",
+      "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It shipped twice: first as a native macOS app, now as a hosted web app — and the two share one backend package.",
     evidenceDisclosure: {
       label: "Private-safe proof: no email content",
       detail:
-        "The source repository documents that old screenshots were removed as outdated. This case file uses architecture, source, build, test, and benchmark evidence instead of inbox screenshots or private application data.",
+        "Applied reads a real inbox, so this case file shows none of it. Every receipt below terminates in source, a migration, a committed eval artifact, or a test run — never in a screenshot of mail. The repository's own README and docs/WEB_ARCHITECTURE.md still describe apps/web as an unwired scaffold and are deliberately NOT cited here: they are behind the code, and a stale doc is not evidence.",
     },
     problem:
-      "The status of a job search scatters across Gmail, iCloud Mail, employer systems, and one-off messages. A spreadsheet can't keep up: updates get missed, rows get retyped, and the record drifts from the truth.",
+      "The status of a job search scatters across Gmail, employer systems, and one-off messages. A spreadsheet can't keep up: updates get missed, rows get retyped, and the record drifts from the truth. The first answer was a desktop app, which meant the record only existed on one machine.",
     constraints: [
-      "Keep job-search email classification local and privacy-first.",
-      "Support both Gmail OAuth2 and iCloud IMAP sources.",
+      "Ask for the least Gmail access that can work — read-only, and metadata rather than message bodies.",
       "Classify noisy inbox messages into useful application states.",
-      "Fit the workflow into a native macOS dashboard instead of another web tab.",
+      "Make row isolation the database's job, not the query writer's.",
+      "Fit the whole classifier into a serverless slot, or be honest about which layers didn't fit.",
+      "Never let a routine sync delete an application the current scan happened to miss.",
     ],
     architecture: {
       summary:
-        "Email sources feed an async sync layer, then a three-layer classifier, then local SQLite storage and a SwiftUI dashboard.",
+        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves this and the desktop app; the desktop branch is where the two heavier classifier layers still live.",
       /* The true topology is a straight pipeline, so fig. 2 draws one:
-         sources ⟶ classifier ⟶ store ⟶ dashboard, with background sync
-         as the single off-spine branch. */
+         inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard, with the desktop
+         app as the single off-spine branch. */
       variant: "linear",
-      flow: [["gmail", "icloud"], ["classifier"], ["store"], ["ui"]],
-      /* Quoted from receipt 02 (docs/ML_STRATEGY.md) — the classifier IS
-         the pipeline's gate. */
+      flow: [["gmail"], ["fetch"], ["classifier"], ["store"], ["ui"]],
+      /* Traces to receipt 08: the GUC is left unset when no identity is
+         bound, so auth.uid() is NULL and the policies deny. */
       annotation:
-        "the gate is real: setfit stays off until its training gates are met",
+        "no identity bound, no rows — the guc is unset and rls denies",
       nodes: [
-        { id: "gmail", label: "Gmail", detail: "OAuth2 sync", kind: "api" },
         {
-          id: "icloud",
-          label: "iCloud Mail",
-          detail: "IMAP sync",
+          id: "gmail",
+          label: "Gmail",
+          detail: "gmail.readonly — nothing wider",
           kind: "api",
+        },
+        {
+          id: "fetch",
+          label: "Metadata fetch",
+          detail: "Subject, From, Date, snippet — no bodies",
+          kind: "system",
         },
         {
           id: "classifier",
           label: "Classifier",
-          detail: "Rules, embeddings, gated SetFit",
+          detail: "Rules on the hosted path; e5 + SetFit on the desktop one",
           kind: "ml",
-          /* Receipt 02: SetFit is enabled only after its training gates
-             pass — this node genuinely stops the run (fig. 2's clay). */
-          gate: true,
         },
         {
           id: "store",
-          label: "SQLite",
-          detail: "Local application state",
+          label: "Postgres",
+          detail: "RLS on, FORCE'd, per-transaction JWT claims",
           kind: "data",
+          /* Receipt 08: a query with no bound identity reads nothing —
+             this node genuinely stops the run (fig. 2's clay). */
+          gate: true,
         },
         {
           id: "ui",
-          label: "SwiftUI",
-          detail: "Native macOS dashboard",
+          label: "Next.js",
+          detail: "Pipeline board, review queue, stat tiles",
           kind: "client",
         },
         {
-          id: "sync",
-          label: "SMAppService",
-          detail: "Background sync",
+          id: "macos",
+          label: "SwiftUI",
+          detail: "The desktop app, still in the repo",
           kind: "system",
         },
       ],
       edges: [
-        { from: "gmail", to: "classifier", label: "messages" },
-        { from: "icloud", to: "classifier", label: "messages" },
-        { from: "classifier", to: "store", label: "classified events" },
+        { from: "gmail", to: "fetch", label: "read-only" },
+        { from: "fetch", to: "classifier", label: "subject + snippet" },
+        { from: "classifier", to: "store", label: "verdicts, scoped by user" },
         { from: "store", to: "ui", label: "pipeline state" },
-        { from: "sync", to: "store", label: "background updates" },
+        { from: "classifier", to: "macos", label: "layers 2–3 — desktop only" },
       ],
     },
     decisions: [
       {
-        decision: "Use on-device classification",
-        reason: "The project handles personal job-search email.",
-        tradeoff:
-          "Local ML reduces hosted-service convenience but keeps sensitive messages private.",
-        status: "accepted",
-      },
-      {
-        decision: "Use a three-layer classifier",
+        decision: "Fetch Gmail metadata, never message bodies",
         reason:
-          "Rules, embeddings, and SetFit cover different levels of signal quality.",
+          "The subject line, the sender, and Gmail's own snippet are enough to name an application email.",
         tradeoff:
-          "More moving parts than a single model, but easier to debug and tune.",
+          "A body-blind classifier gives up signal on ambiguous mail, and buys a privacy boundary that holds without being trusted.",
         status: "accepted",
       },
       {
-        decision: "Use SQLite for local state",
-        reason: "The product is a native personal workflow tool.",
+        decision: "Run the hosted classifier on the rules layer alone",
+        reason:
+          "torch, sentence-transformers, and SetFit do not fit a serverless function slot — not the size limit, and not the cold start.",
         tradeoff:
-          "Local persistence is simpler than multi-user cloud sync, but intentionally device-scoped.",
+          "The hosted verdict is weaker than the desktop one. The alternative was pretending otherwise, so the limit is written into the code, the tests, and the boundary rows below.",
+        status: "accepted",
+      },
+      {
+        decision: "Enforce row isolation in Postgres, not in the handlers",
+        reason:
+          "Application-level `WHERE user_id = …` is one forgotten clause away from a leak.",
+        tradeoff:
+          "Every transaction pays a `set_config` round trip, and the app must run as a role that cannot bypass its own policies.",
+        status: "accepted",
+      },
+      {
+        decision:
+          "Make routine sync additive; keep destruction behind a button",
+        reason:
+          "A bounded scan of a large inbox will miss applications it already found, and re-syncing wiped them.",
+        tradeoff:
+          "Stale rows survive until an explicit rebuild, which is the cheaper failure.",
         status: "accepted",
       },
     ],
@@ -394,18 +435,28 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
       ],
     },
+    /* Receipt ORDER is load-bearing (WAVE3 §crosswalk): rows 04 and 05
+       keep the anchors #v-jobtracker-4 (backend suite) and
+       #v-jobtracker-5 (macro-F1) that the home paper's ¶05 metric chip,
+       the ¶06 litany, proofManifest, and dossier.spec all point at. New
+       rows were appended, never inserted above them. */
     receipts: [
       {
         claim:
-          "Gmail OAuth2 and iCloud IMAP both feed the pipeline as first-class sources.",
-        method: "traced the provider routers and sync docs in the public repo",
+          "Connecting Gmail asks for gmail.readonly and nothing wider — and the consent step deliberately does not merge previously granted scopes.",
+        method:
+          "read the OAuth router and the settings field it draws its scope list from, at the pinned commit",
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · docs/ARCHITECTURE.md`,
-            href: `${JOBTRACKER_BLOB}/docs/ARCHITECTURE.md`,
+            label: `applied @ ${APPLIED_SHA} · cloud/gmail_oauth.py`,
+            href: `${APPLIED_BLOB}/backend/jobtracker/cloud/gmail_oauth.py`,
+          },
+          {
+            label: `applied @ ${APPLIED_SHA} · tests/test_gmail_oauth_cloud.py`,
+            href: `${APPLIED_BLOB}/backend/tests/test_gmail_oauth_cloud.py`,
           },
         ],
-        date: "2026-06",
+        date: "2026-07-26",
         visibility: "public",
       },
       {
@@ -414,37 +465,39 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "ML strategy doc, read against the backend source",
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · docs/ML_STRATEGY.md`,
-            href: `${JOBTRACKER_BLOB}/docs/ML_STRATEGY.md`,
+            label: `applied @ ${APPLIED_SHA} · docs/ML_STRATEGY.md`,
+            href: `${APPLIED_BLOB}/docs/ML_STRATEGY.md`,
           },
         ],
-        date: "2026-06",
+        date: "2026-07-26",
         visibility: "public",
       },
       {
         claim:
-          "Classification runs on-device; message content is not sent to hosted inference.",
-        method: "architecture audit of the classify path",
+          "The hosted fetch reads metadata only — Subject, From, Date, and Gmail's own snippet. Full message bodies are never downloaded on the web path.",
+        method:
+          'read the cloud Gmail client: messages.list plus batched messages.get(format="metadata"), read-only, no mutation',
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · README.md`,
-            href: `${JOBTRACKER_BLOB}/README.md`,
+            label: `applied @ ${APPLIED_SHA} · cloud/gmail_client.py`,
+            href: `${APPLIED_BLOB}/backend/jobtracker/cloud/gmail_client.py`,
           },
         ],
-        date: "2026-06",
+        date: "2026-07-26",
         visibility: "public",
       },
       {
         claim:
-          "I ran the backend suite locally: 182 tests passed under the test/null-keyring environment.",
-        method: "local run against the public test tree",
+          "I ran the backend suite locally at the pinned commit: 271 tests passed, 10 skipped, under the test/null-keyring environment.",
+        method:
+          "local run against the public test tree; the 10 skips are the Postgres RLS module, which needs a live database",
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · backend/tests`,
-            href: `${JOBTRACKER_TREE}/backend/tests`,
+            label: `applied @ ${APPLIED_SHA} · backend/tests`,
+            href: `${APPLIED_TREE}/backend/tests`,
           },
         ],
-        date: "2026-06",
+        date: "2026-07-26",
         visibility: "public",
       },
       {
@@ -454,12 +507,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "committed baseline, deterministic profile — protocol in the method slip",
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · baseline_hybrid_v3.json`,
-            href: `${JOBTRACKER_BLOB}/backend/data/evaluation/baseline_hybrid_v3.json`,
+            label: `applied @ ${APPLIED_SHA} · baseline_hybrid_v3.json`,
+            href: `${APPLIED_BLOB}/backend/data/evaluation/baseline_hybrid_v3.json`,
           },
           {
-            label: "backend-ci run ↗",
-            href: JOBTRACKER_CI_RUN,
+            label: "backend-ci run, 2026-04-20 ↗",
+            href: APPLIED_CI_RUN,
           },
         ],
         date: "2026-03-03",
@@ -467,101 +520,188 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The macOS Debug target built locally with xcodebuild against the JobTracker scheme.",
-        method: "local build; no build artifact is published",
-        artifacts: [],
+          "The macOS Debug target built locally with xcodebuild against the JobTracker scheme, and the desktop app is still in the repository.",
+        method:
+          "local build — no build artifact is published; the source tree is public and linked",
+        artifacts: [
+          {
+            label: `applied @ ${APPLIED_SHA} · apps/macos`,
+            href: `${APPLIED_TREE}/apps/macos`,
+          },
+        ],
         date: null,
         visibility: "local-only",
       },
       {
         claim:
-          "The web beta passes typecheck, lint, build, and a Playwright login smoke — but the dashboard remains a scaffold, not a finished product.",
-        method: "local gate run over the public web workspace",
+          "The dashboard renders real applications: it reads the summary and application endpoints server-side and draws a pipeline board, a stage funnel, and a review queue from what comes back.",
+        method:
+          "read the page component and the router it calls, at the pinned commit",
         artifacts: [
           {
-            label: `jobtracker @ ${JOBTRACKER_SHA} · apps/web`,
-            href: `${JOBTRACKER_TREE}/apps/web`,
+            label: `applied @ ${APPLIED_SHA} · apps/web/app/(app)/dashboard`,
+            href: `${APPLIED_TREE}/apps/web/app/%28app%29/dashboard`,
+          },
+          {
+            label: `applied @ ${APPLIED_SHA} · cloud/applications.py`,
+            href: `${APPLIED_BLOB}/backend/jobtracker/cloud/applications.py`,
           },
         ],
-        date: "2026-06",
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "Row isolation is enforced by Postgres, not by the handlers: the app runs as a role that cannot bypass RLS, every transaction sets request.jwt.claims locally, and user_credentials is FORCE'd so even the table owner is held to the policies.",
+        method:
+          "read the engine's begin-listener and the three RLS migrations at the pinned commit",
+        artifacts: [
+          {
+            label: `applied @ ${APPLIED_SHA} · database/connection.py`,
+            href: `${APPLIED_BLOB}/backend/jobtracker/database/connection.py`,
+          },
+          {
+            label: `applied @ ${APPLIED_SHA} · c5_force_user_credentials_rls.py`,
+            href: `${APPLIED_BLOB}/backend/alembic/versions/c5_force_user_credentials_rls.py`,
+          },
+          {
+            label: `applied @ ${APPLIED_SHA} · tests/test_rls_postgres.py`,
+            href: `${APPLIED_BLOB}/backend/tests/test_rls_postgres.py`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "The hosted classifier runs the rules layer alone. On the serverless path it returns after layer 1 even when the rules were unsure — embeddings and SetFit are never imported there.",
+        method:
+          "read the cloud short-circuit in the hybrid classifier and the import-hygiene test that holds it",
+        artifacts: [
+          {
+            label: `applied @ ${APPLIED_SHA} · classifier/hybrid.py`,
+            href: `${APPLIED_BLOB}/backend/jobtracker/classifier/hybrid.py`,
+          },
+          {
+            label: `applied @ ${APPLIED_SHA} · tests/test_main_cloud.py`,
+            href: `${APPLIED_BLOB}/backend/tests/test_main_cloud.py`,
+          },
+        ],
+        date: "2026-07-26",
         visibility: "public",
       },
     ],
     outcomes: [
       {
         claim:
-          "Job updates land in a trackable pipeline instead of a spreadsheet.",
+          "Job updates land in a trackable pipeline instead of a spreadsheet — and now in a browser instead of on one Mac.",
         method: "the product's own workflow, described — not a usage metric",
-        artifacts: [],
-        date: null,
+        artifacts: [
+          {
+            label: "getapplied.vercel.app ↗",
+            href: "https://getapplied.vercel.app",
+          },
+        ],
+        date: "2026-07-26",
         visibility: "public",
       },
       {
         claim:
-          "The classifier also runs fully in-browser via quantized ONNX — a public demo space.",
-        method: "ported the local classifier; the space is inspectable",
+          "All three classifier layers do run in a browser — as a public Hugging Face Space, on an int8 ONNX export of the same model. That is a separate deployment from the web app, not the verdict getapplied.vercel.app returns.",
+        method:
+          "ported the local classifier and exported it quantized; both the space and the export script are inspectable",
         artifacts: [
           {
             label: "huggingface.co/spaces/yadava5/jobtracker-classifier ↗",
             href: "https://huggingface.co/spaces/yadava5/jobtracker-classifier",
           },
+          {
+            label: `applied @ ${APPLIED_SHA} · ml/browser/export_onnx.py`,
+            href: `${APPLIED_BLOB}/ml/browser/export_onnx.py`,
+          },
         ],
-        date: "2026-07",
+        date: "2026-07-26",
         visibility: "public",
       },
     ],
     notClaiming: [
-      "I'm not claiming the web dashboard is finished — it builds and passes its smoke test, but it remains a scaffold and is not shown as a product screenshot.",
-      "No production email-volume numbers are claimed. Architecture and source links are shown publicly; private email and application records are not shown.",
+      "I'm not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit stay on the desktop path and in the Hugging Face Space.",
+      "I'm not claiming CI proves the RLS policies enforce. The Postgres RLS suite skips unless a live database URL is supplied, and no workflow supplies one; what is linked is the migrations, the per-transaction identity wiring, and the tests themselves.",
+      "I'm not citing the repository's README or docs/WEB_ARCHITECTURE.md as evidence for the web app. Both still describe apps/web as an unwired scaffold with a placeholder dashboard — they are behind the code, and this file cites the code.",
+      "No production email-volume or user numbers are claimed. Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
     ],
-    corrections: [],
+    corrections: [
+      {
+        date: "2026-07-26",
+        kind: "erratum",
+        text: 'Until today this file described a native macOS app whose "web beta is a scaffold", and pinned every receipt at 3225eb4. That stopped being true: Applied ships as a hosted web app at getapplied.vercel.app. The caveat is retired because it is false now, not because it was wrong then — and the receipts are re-pinned to 36a2f54, the public head of the branch that carries the web app. The scaffold claim\'s own successor is receipt 07.',
+      },
+      {
+        date: "2026-07-26",
+        kind: "erratum",
+        text: "The backend-suite row read 182 tests, audited at the old pin. Re-run at 36a2f54 on 2026-07-26 it is 271 passed and 10 skipped. Nothing was retracted — the tree grew, and the number moved with it. The 10 skips are named in the row rather than folded into the total.",
+      },
+      {
+        date: "2026-07-26",
+        kind: "note",
+        text: "The repository was renamed yadava5/jobtracker → yadava5/applied. GitHub still redirects the old links, so nothing this file ever published is broken; the pins name the current repository instead of relying on a redirect. The case-file route stays /projects/jobtracker/ for the same reason.",
+      },
+    ],
+    /* Provenance strips carry the whole correction here. Three of these
+       plates are DESKTOP-era records that are still real files at the new
+       pin — the honest edit was to say which era each one speaks for, not
+       to unlink them. The README in particular is no longer offered as
+       "source-truth": it still calls apps/web a scaffold. */
     artifacts: [
       {
         type: "diagram",
         label: "Local classification architecture",
         href: withBasePath("/images/projects/jobtracker-architecture.svg"),
         source: "rendered from the public repository structure",
-        boundary: "no private email content is shown",
+        boundary:
+          "draws the desktop path — the hosted app is rules-only; no private email content is shown",
         date: "2026-06",
       },
       {
         type: "repo",
-        label: "Source-truth README",
-        href: `${JOBTRACKER_BLOB}/README.md`,
-        source: `yadava5/jobtracker @ ${JOBTRACKER_SHA}`,
-        boundary: "public repository file",
+        label: "README — the desktop-era record",
+        href: `${APPLIED_BLOB}/README.md`,
+        source: `yadava5/applied @ ${APPLIED_SHA}`,
+        boundary:
+          "lags the shipped web app — still calls apps/web a scaffold; linked as a record, not as evidence",
         date: "2026-07",
       },
       {
         type: "repo",
         label: "Architecture docs",
-        href: `${JOBTRACKER_BLOB}/docs/ARCHITECTURE.md`,
-        source: `yadava5/jobtracker @ ${JOBTRACKER_SHA}`,
-        boundary: "public repository file",
+        href: `${APPLIED_BLOB}/docs/ARCHITECTURE.md`,
+        source: `yadava5/applied @ ${APPLIED_SHA}`,
+        boundary: "the desktop path — written before the web app",
         date: "2026-07",
       },
       {
         type: "benchmark",
         label: "ML strategy and evaluation gates",
-        href: `${JOBTRACKER_BLOB}/docs/ML_STRATEGY.md`,
-        source: `yadava5/jobtracker @ ${JOBTRACKER_SHA}`,
+        href: `${APPLIED_BLOB}/docs/ML_STRATEGY.md`,
+        source: `yadava5/applied @ ${APPLIED_SHA}`,
         boundary: "public repository file",
         date: "2026-07",
       },
       {
         type: "repo",
         label: "Backend test suite",
-        href: `${JOBTRACKER_TREE}/backend/tests`,
-        source: `yadava5/jobtracker @ ${JOBTRACKER_SHA}`,
+        href: `${APPLIED_TREE}/backend/tests`,
+        source: `yadava5/applied @ ${APPLIED_SHA}`,
         boundary: "public repository tree",
         date: "2026-07",
       },
       {
         type: "repo",
-        label: "Web beta scaffold",
-        href: `${JOBTRACKER_TREE}/apps/web`,
-        source: `yadava5/jobtracker @ ${JOBTRACKER_SHA}`,
-        boundary: "scaffold — not a finished product",
+        label: "Web app source",
+        href: `${APPLIED_TREE}/apps/web`,
+        source: `yadava5/applied @ ${APPLIED_SHA}`,
+        boundary:
+          "public repository tree — the shipped app, live at getapplied",
         date: "2026-07",
       },
     ],
