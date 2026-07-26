@@ -242,7 +242,15 @@ const WORK_ROWS: {
   {
     projectId: "jobtracker",
     bright: "Your inbox already knows where you applied.",
-    muted: "Applied reads it — and the classifier runs in your browser.",
+    /* 2026-07-26: the muted line read "…and the classifier runs in your
+       browser." All three classifier layers DO run in a browser — in the
+       Hugging Face Space, on the int8 ONNX export. But sitting under
+       "Applied reads it", the sentence reads as a claim about what
+       getapplied.vercel.app does, and there the hosted verdict is the
+       rules layer alone (classifier/hybrid.py short-circuits on the
+       serverless path; case-file receipt 09). The row now states what
+       the product does end to end, which needs no asterisk. */
+    muted: "Applied reads it — inbox in, a pipeline of real applications out.",
     metric: "macro-f1 0.98 — 96-sample gate",
     metricHref: "/projects/jobtracker/#v-jobtracker-5",
   },
@@ -310,18 +318,49 @@ const WORK_ROWS: {
  *  themselves are unchanged, and the files stay reachable. */
 const FURTHER_READING_IDS = ["master-inventory", "policybot"];
 
+/** ¶05's second index line (2026-07-26).
+ *
+ *  LifeQuest is `featured: true` in projects.ts and live at
+ *  getlifequest.vercel.app, and it surfaced NOWHERE on this paper — no
+ *  row, no mention, no case file. A page headed "selected work" that
+ *  silently omits a live project is making a quiet claim about the set
+ *  being complete, so the omission was the dishonest state.
+ *
+ *  The smallest honest fix is an index entry, not a scene and not a case
+ *  file. There is nothing to argue in full yet: projects.ts calls it a
+ *  concept and a working prototype, so the line says exactly that and
+ *  links the running prototype rather than a page that would have to
+ *  invent an argument for it. The gloss is projects.ts's own
+ *  shortDescription — its head clause and its closing sentence, joined —
+ *  so no claim is made here that the data layer does not already make.
+ *
+ *  It gets its own heading rather than joining "cited above, argued in
+ *  full": those two entries are receipts for claims ¶03 and ¶06 print in
+ *  their prose (F22). This one is not a receipt for anything. It is a
+ *  project that exists, listed as what it is. */
+const IN_PROGRESS_ENTRIES: { projectId: string; gloss: string }[] = [
+  {
+    projectId: "lifequest",
+    gloss: "a social-good concept for job-seekers; a playable prototype",
+  },
+];
+
 /** Ch-06 litany: each mantra carries a proof-manifest-backed receipt that
  *  links to the validation ledger of the case file that proves it. Every
  *  receipt is worded differently from its #work row on purpose — the
  *  same number should never read twice verbatim: the jobtracker line
- *  cites the case study's REAL 182-test backend suite (its 0.9791
- *  macro-F1 already carries the #work row). The litany's final line —
+ *  cites the case study's REAL backend suite (its 0.9791 macro-F1
+ *  already carries the #work row). The litany's final line —
  *  "Make it honest." — takes the page's ONLY WONK=1 (plan 3.8): the
- *  quirk lands on the value he actually leads with. */
+ *  quirk lands on the value he actually leads with.
+ *  2026-07-26: 182 → 271. The Applied case file was re-pinned from
+ *  3225eb4 to 36a2f54 and the suite was re-run at the new pin; this
+ *  receipt reads the same row (#v-jobtracker-4) it always did, so the
+ *  two must move together or the litany starts quoting a dead number. */
 const VALUES_LINES = [
   {
     mantra: "Make it learn.",
-    receipt: "182 backend tests — jobtracker validation ledger",
+    receipt: "271 backend tests — jobtracker validation ledger",
     href: "/projects/jobtracker/#v-jobtracker-4",
     wonk: false,
   },
@@ -1525,6 +1564,33 @@ function WorkChapter() {
                     {project.title}
                   </Link>
                   <VisitedMark fileId={id} />
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* See IN_PROGRESS_ENTRIES. External link on purpose: there is
+              no /projects/lifequest/ route — only case files get one —
+              and a link to the running prototype is the honest terminal
+              for a project whose whole claim is that it runs. */}
+          <p className="label-mono text-ink-secondary mt-8">
+            also live, without a case file —
+          </p>
+          <ul className="label-mono mt-3 flex flex-wrap gap-x-8 gap-y-2">
+            {IN_PROGRESS_ENTRIES.map(({ projectId, gloss }) => {
+              const project = getProjectById(projectId);
+              if (!project?.liveUrl) return null;
+              return (
+                <li key={projectId}>
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-draw"
+                  >
+                    {project.title} ↗
+                  </a>
+                  <span> — {gloss}</span>
                 </li>
               );
             })}
