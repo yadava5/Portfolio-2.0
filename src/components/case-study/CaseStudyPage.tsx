@@ -30,6 +30,7 @@ import { SystemDiagram } from "@/components/case-study/SystemDiagram";
 import { AuditControl } from "@/components/paper/AuditRun";
 import { CitationInk } from "@/components/paper/CitationInk";
 import { FileMemory } from "@/components/paper/FileMemory";
+import { ValidationGlance } from "@/components/paper/ProofGlance";
 import { RegistryRows } from "@/components/paper/RegistryRows";
 import { ProjectPlateVisual } from "@/components/scenes/ProjectScene";
 import { Project } from "@/lib/data/projects";
@@ -38,7 +39,9 @@ import {
   ProjectCaseStudy,
   getCaseStudyProject,
   getNextCaseStudy,
+  auditTallyClauses,
   receiptAuditCounts,
+  receiptAuditState,
 } from "@/lib/data/projectCaseStudies";
 import { withBasePath } from "@/lib/utils";
 
@@ -404,6 +407,20 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         {/* ── Validation: method slip + the receipts table ─────────── */}
         <section id="validation" className="mt-20">
           <SectionKicker>[ validation ] · § the receipts</SectionKicker>
+
+          {/* The glance strip (evviz round): the section's two-second
+              read — one drawn verdict mark per receipt row in walk
+              order, captioned with the SAME tally clauses the walked
+              control settles into (auditTallyClauses — one composer,
+              zero drift). Always-inked static figure: the scan layer,
+              not the performance; the walk below still earns its marks
+              row by row. */}
+          <ValidationGlance
+            states={[...study.receipts, ...study.outcomes].map(
+              receiptAuditState
+            )}
+            clauses={auditTallyClauses(auditCounts)}
+          />
 
           {study.protocol ? (
             <aside className="border-clay-graphic/70 mt-6 max-w-[44rem] border-l-2 pl-5">
