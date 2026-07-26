@@ -43,9 +43,13 @@ export function MotionToggle({ className = "" }: MotionToggleProps) {
   const { motionOff, toggleMotion } = useMotionPreference();
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  /* data-motion-toggle (fix round 3, S5): the one hook the paper edition
+     needs. A control that changes how the SCREEN behaves has nothing to
+     say on paper, and it printed in both seats — masthead and colophon. */
   if (prefersReducedMotion) {
     return (
       <span
+        data-motion-toggle
         className={`label-mono ${className}`}
         title="Motion is disabled by your system preference"
       >
@@ -54,11 +58,24 @@ export function MotionToggle({ className = "" }: MotionToggleProps) {
     );
   }
 
+  /* N7 (fix round 3): "motion: on" states the CURRENT state and never
+     said what pressing it does — the mirror of the system note above,
+     which has carried its explanation since it was written. A `title` is
+     the free half of the fix (hover for a pointer, nothing for anyone
+     else); `aria-pressed` already carries the toggle semantics for
+     assistive tech, and the label is the accessible name, so nothing
+     here changes what a screen reader hears. */
   return (
     <button
       type="button"
       onClick={toggleMotion}
       aria-pressed={motionOff}
+      data-motion-toggle
+      title={
+        motionOff
+          ? "Motion is off for this browser — press to turn the page's animation back on"
+          : "Motion is on — press to read this page as a still document"
+      }
       className={`label-mono ${className}`}
     >
       motion: {motionOff ? "off" : "on"}

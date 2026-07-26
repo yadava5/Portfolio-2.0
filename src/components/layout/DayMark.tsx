@@ -51,11 +51,25 @@ export function DayMark({ chapter }: DayMarkProps) {
      full dateline (clock · name) joins at lg, where the row can carry
      it; below 480 the ¶ kickers in the page carry the same record. */
   return (
-    <span className="hidden items-center gap-2 border-l border-(--header-ink-border) pl-2.5 min-[480px]:flex lg:gap-2.5 lg:pl-3.5">
+    <span
+      data-day-mark
+      className="hidden items-center gap-2 border-l border-(--header-ink-border) pl-2.5 min-[480px]:flex lg:gap-2.5 lg:pl-3.5"
+    >
       <span className="sr-only">
         {`now reading — chapter ${chapter.id}, ${chapter.name}, ${chapter.clock}`}
       </span>
-      <span aria-hidden="true" className="flex items-center gap-2 lg:gap-2.5">
+      {/* N6 (fix round 3): below `lg` the cluster is a filling circle and
+          nothing else, and a sighted pointer reader had no way to learn
+          what it counts — the sentence that explains it was sr-only. The
+          `title` hands the same sentence to a hover. It sits on the
+          aria-hidden half deliberately: assistive tech skips this subtree
+          entirely and keeps hearing the sr-only line above, so the
+          accessible name is untouched and nothing is announced twice. */}
+      <span
+        aria-hidden="true"
+        title={`now reading — chapter ${chapter.id}, ${chapter.name}, ${chapter.clock}`}
+        className="flex items-center gap-2 lg:gap-2.5"
+      >
         <span
           className="daymark inline-flex text-(--header-ink)"
           data-phase={chapter.id}
