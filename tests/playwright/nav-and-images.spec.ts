@@ -6,16 +6,21 @@ import {
   COMPANY_LOGOS,
   DEFAULT_THEME,
   EXPECTED_HOME_PROJECT_TITLES,
+  EXPECTED_SYSTEM_CARD_IDS,
   EXPECTED_WORK_ROWS,
   FEATURED_PROJECT_VISUALS,
   FEATURED_PROJECTS,
   NAV_SECTIONS,
   PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_TITLES,
+  SYSTEM_CARD_HOME_IDS,
+  SYSTEM_CARD_PROJECTS,
   THEMES,
   scrollThroughPage,
   switchThemeAndWait,
 } from "./portfolio-fixtures";
+import { getProjectById, projects } from "../../src/lib/data/projects";
+import { caseStudyIds } from "../../src/lib/data/projectCaseStudies";
 
 // Featured projects whose visuals + honesty disclosures live on a
 // case-study route. Some featured projects (e.g. LifeQuest,
@@ -170,6 +175,87 @@ test.describe("Work Chapter Rows", () => {
     expect(headingState?.right).toBeLessThanOrEqual(
       headingState?.viewportWidth ?? 0
     );
+  });
+});
+
+/* System Cards (2026-07-26) — the placement model's missing terminal.
+   Each live app serves an interactive card at `<liveUrl>/system-card`
+   and the portfolio links landing · live app · that card. Two contracts
+   here, and neither is a restatement of the data:
+
+   1. The URL is DERIVED, not typed. `systemCardUrl` is a literal string
+      in projects.ts (a claim that a document exists at an address, which
+      this site does not compose at render time) — so the invariant that
+      it names the same host the live-demo row prints has to be checked
+      somewhere, or a typo ships a link to a stranger's domain.
+   2. The link REACHES the two projects with no case file. The other
+      four fold it into their case-file rail; jetpack-compress and
+      LifeQuest have no rail, so ¶05 is the only surface either card can
+      be reached from, and a silent regression there is invisible. */
+test.describe("System Cards", () => {
+  test("every system-card URL derives from its project's live URL", () => {
+    for (const project of SYSTEM_CARD_PROJECTS) {
+      expect(
+        project.liveUrl,
+        `${project.title} has a system card but no live URL to derive it from`
+      ).toBeTruthy();
+      expect(
+        project.systemCardUrl,
+        `${project.title}: system card must be <liveUrl>/system-card`
+      ).toBe(`${project.liveUrl}/system-card`);
+    }
+  });
+
+  test("the six live apps each carry a system card, and nothing else does", () => {
+    for (const id of EXPECTED_SYSTEM_CARD_IDS) {
+      expect(
+        getProjectById(id)?.systemCardUrl,
+        `${id} should carry a system card`
+      ).toBeTruthy();
+    }
+    expect(SYSTEM_CARD_PROJECTS.map((project) => project.id).sort()).toEqual(
+      [...EXPECTED_SYSTEM_CARD_IDS].sort()
+    );
+    /* The seventh project with a liveUrl serves no card — the field is
+       what keeps the site from linking a 404 into existence. */
+    const liveWithoutCard = projects.filter(
+      (project) => project.liveUrl && !project.systemCardUrl
+    );
+    expect(liveWithoutCard.map((project) => project.id)).toEqual([
+      "paid-internships",
+    ]);
+  });
+
+  test("¶05 links the card for the two projects with no case file", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.locator("#work").waitFor({ state: "attached" });
+    await scrollThroughPage(page);
+
+    for (const id of SYSTEM_CARD_HOME_IDS) {
+      const project = getProjectById(id)!;
+      /* These two have no case route, which is exactly why the home
+         paper has to carry the link — assert that premise too, so this
+         test explains itself if one of them later earns a case file. */
+      expect(caseStudyIds, `${id} still has no case file`).not.toContain(id);
+      await expect(
+        page.locator(`#work a[href="${project.systemCardUrl}"]`),
+        `¶05 should link ${project.title}'s system card`
+      ).toHaveCount(1);
+      await expect(
+        page.locator(`#work a[href="${project.systemCardUrl}"]`)
+      ).toHaveAttribute("target", "_blank");
+    }
+
+    /* And it did NOT sprout on the rows that have a case file to fold
+       it into (F40's rule: one primary act per row, secondaries live on
+       the file). Four cards, four case files, zero extra clusters. */
+    const homeCardLinks = await page
+      .locator("#work a[href*='/system-card']")
+      .count();
+    expect(homeCardLinks).toBe(SYSTEM_CARD_HOME_IDS.length);
   });
 });
 
