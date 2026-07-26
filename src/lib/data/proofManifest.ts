@@ -80,7 +80,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-local-classifier",
     label: "3-layer local classifier",
     claim:
-      "Applied's classifier is a 3-layer rules, embeddings, and SetFit path — all three run on the desktop app and in the browser Space; the hosted web app runs the rules layer alone.",
+      "Applied’s classifier is a 3-layer rules, embeddings, and SetFit path — all three run on the desktop app and in the browser Space; the hosted web app runs the rules layer alone.",
     source:
       "https://github.com/yadava5/applied/blob/36a2f54/docs/ML_STRATEGY.md",
     sourceLabel: `docs/ML_STRATEGY.md @ ${APPLIED_SHA}`,
@@ -98,7 +98,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-macro-f1",
     label: "macro-F1 0.9791",
     claim:
-      "Applied's rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
+      "Applied’s rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
     source:
       "https://github.com/yadava5/applied/blob/36a2f54/backend/data/evaluation/baseline_hybrid_v3.json",
     sourceLabel: `baseline_hybrid_v3.json @ ${APPLIED_SHA}`,
@@ -190,9 +190,9 @@ export const proofManifest: ProofManifestEntry[] = [
      its truthful source and its own receipt row. */
   {
     id: "fast-mnist-benchmark",
-    label: "3.5x openmp+simd dot kernel",
+    label: "3.5× openmp+simd dot kernel",
     claim:
-      "The openmp+simd dot kernel runs 3.5x faster than the -O3 baseline (dot 256) in committed benchmarks.",
+      "The openmp+simd dot kernel runs 3.5× faster than the -O3 baseline (dot 256) in committed benchmarks.",
     source:
       "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
@@ -210,7 +210,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "fast-mnist-accuracy",
     label: "~97% test accuracy",
     claim:
-      "Glyph reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo's README training notes; no committed eval artifact reproduces it yet.",
+      "Glyph reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo’s README training notes; no committed eval artifact reproduces it yet.",
     source: "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/README.md",
     sourceLabel: `README.md @ ${FAST_MNIST_SHA}`,
     verification:
@@ -233,7 +233,7 @@ export const proofManifest: ProofManifestEntry[] = [
     source: "public/proof/master-inventory-ledger.json",
     sourceLabel: "master-inventory-ledger.json — checked in 2026-06",
     verification:
-      "Sanitized processed-output ledger, checked into this site's public repository.",
+      "Sanitized processed-output ledger, checked into this site’s public repository.",
     visibility: "private-safe",
     privacyBoundary:
       "Raw institutional exports, report names, owner names, and rows are excluded.",
@@ -252,7 +252,7 @@ export const proofManifest: ProofManifestEntry[] = [
     source: "public/proof/policybot-validation-ledger.json",
     sourceLabel: "policybot-validation-ledger.json — checked in 2026-06",
     verification:
-      "Sanitized validation ledger, checked into this site's public repository.",
+      "Sanitized validation ledger, checked into this site’s public repository.",
     visibility: "private-safe",
     privacyBoundary: "Raw policy text and Slack messages are excluded.",
     date: "2026-06",
