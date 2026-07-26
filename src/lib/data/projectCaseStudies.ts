@@ -260,6 +260,24 @@ const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUA
 const VISUAL_ASSIST_TREE = `https://github.com/yadava5/VisualAssist/tree/${VISUAL_ASSIST_SHA}`;
 const TASKFLOW_SHA = "69a59e7";
 const TASKFLOW_TREE = `https://github.com/yadava5/taskflow-calendar/tree/${TASKFLOW_SHA}`;
+/* CADENCE — the second pin on the same file, and the reason for it.
+
+   The repository was renamed `yadava5/taskflow-calendar` → `yadava5/cadence`
+   (GitHub redirects the old paths; both resolve). The security work — the
+   IDOR fixes, the RLS migrations, the isolation suite, the middleware fix —
+   landed AFTER `69a59e7`, so it is not at that commit and cannot be pinned
+   there. `54c79e0` is the repo's PUBLIC head, read back with
+   `gh api repos/yadava5/cadence/commits/HEAD` on 2026-07-26 (committed
+   2026-07-24); local, `origin/main`, and the public head all agree. Every
+   path linked below was fetched at this sha and returned 200.
+
+   The suite receipts (01–03) deliberately STAY at `69a59e7`: 1,145 is the
+   count measured at that commit, and re-pinning it to a commit nobody
+   re-ran it at would turn a measurement into a guess. Two pins, each
+   naming the commit its own number was taken from. The corrections
+   register carries the note. */
+const CADENCE_SHA = "54c79e0";
+const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
 const FAST_MNIST_SHA = "c6e5c0b";
 const FAST_MNIST_BLOB = `https://github.com/yadava5/fast-mnist-nn/blob/${FAST_MNIST_SHA}`;
 
@@ -1215,13 +1233,20 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     status: "shipped",
     /* Traces to the boundary row: a demo deployment with mock login. */
     statusDetail: "demo deployment, mock login",
+    /* The headline pin names the CURRENT repository at its current
+       public head — the Applied re-pin round's ruling, applied here: a
+       ledger row that answers "where does this code live" may not name
+       a redirect. Receipts 01–03 keep `taskflow-calendar @ 69a59e7`,
+       which answers a different question — where a number was taken —
+       and the corrections register explains the split rather than
+       leaving a reader to guess which pin is stale. */
     repoPin: {
-      repo: "yadava5/taskflow-calendar",
-      sha: TASKFLOW_SHA,
-      href: TASKFLOW_TREE,
+      repo: "yadava5/cadence",
+      sha: CADENCE_SHA,
+      href: `https://github.com/yadava5/cadence/tree/${CADENCE_SHA}`,
     },
     summary:
-      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite.",
+      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found seven of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
     problem:
       "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
     constraints: [
@@ -1288,6 +1313,23 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "More test maintenance, but higher confidence in app behavior.",
         status: "accepted",
       },
+      {
+        decision:
+          "Carry the user id to Postgres in a transaction-local GUC, not a per-user connection",
+        reason:
+          "Cadence shares a Supabase pooler, so a session-level SET can be handed to whichever tenant borrows that connection next. An AsyncLocalStorage store carries the id the auth middleware already verified, and every statement runs inside a transaction that first sets app.user_id with set_config(..., true) — the third argument is what makes the setting die with the transaction.",
+        tradeoff:
+          "Every read costs a transaction, and any query path that goes around the wrapper silently loses its scope — which is why the isolation suite drives the real query() and withTransaction() instead of raw SQL, and why one of its tests exists only to prove the GUC does not survive on a reused pool.",
+        status: "accepted",
+      },
+      {
+        decision: "Ship the RLS migration inert and cut over by hand",
+        reason:
+          "Turning FORCE ROW LEVEL SECURITY on before every request reliably sets the GUC locks the app out of its own data. The migration states the order in its own header — the GUC wiring deploys first, the policies are applied after — and nothing in the app auto-applies the file.",
+        tradeoff:
+          "The database is enforcing nothing yet. Until someone runs 0002 against production, the isolation is the application's discipline and not Postgres's, which is what the boundary rows say out loud.",
+        status: "accepted",
+      },
     ],
     receipts: [
       {
@@ -1328,6 +1370,134 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-07",
         visibility: "public",
       },
+      /* ── the isolation work (receipts 04–10) ─────────────────────
+         Rows 04 onward are the per-user isolation story, pinned to
+         `cadence @ 54c79e0` — the public head, where this work lives.
+         Read them in order: 04 is the bug, 05–07 are the database
+         answer and its exact standing, 08–10 are the rest of what the
+         same pass closed.
+
+         Row 05 is the one that must not be skimmed. The DB-level RLS
+         is NOT enforcing anything in production, and every row that
+         touches it says so in its own words rather than relying on 05
+         to carry the caveat for the group. */
+      {
+        claim:
+          "I found and fixed 7 IDOR-vulnerable endpoints. GET and DELETE on tasks and events, and GET on calendars, task-lists, and attachments, all looked a record up by id alone — so any signed-in user could read or delete another user's records by guessing one. Every lookup is now scoped to the caller and a miss returns 404, not 403: an id that is not yours should not be confirmed to exist.",
+        method:
+          "read the five fix(security) commits and the service methods at the pin; 6 of the 7 routes carry a named cross-tenant regression test",
+        artifacts: [
+          {
+            label: `lib/services/TaskService.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/services/TaskService.ts`,
+          },
+          {
+            label: `lib/services/__tests__ @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/services/__tests__/TaskService.test.ts`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "The database-level answer to that bug is written, tested, and NOT live. 0002_enable_rls.sql puts 22 policies and FORCE ROW LEVEL SECURITY on 7 tenant tables, and its own header says: “Nothing in the app auto-applies this file.” It is deployed inert — production cutover is a final staged step that has not been taken. What prevents a cross-user read today is the application-level scoping in receipt 04, not Postgres.",
+        method:
+          "read the migration and every path that could apply it at the pin — the only code in the repo that reads lib/config/migrations/ is the test file",
+        artifacts: [
+          {
+            label: `0002_enable_rls.sql @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/config/migrations/0002_enable_rls.sql`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "The per-request identity reaches Postgres without a connection per user: authenticateJWT enters an AsyncLocalStorage store with the id it just verified, and every query runs in a transaction that first executes SELECT set_config('app.user_id', $1, true). The third argument is the whole point — it makes the setting transaction-local, so it cannot ride a pooled connection to the next tenant.",
+        method:
+          "source audit of rlsContext.ts, database.ts, and middleware/auth.ts at the pin",
+        artifacts: [
+          {
+            label: `lib/config/rlsContext.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/config/rlsContext.ts`,
+          },
+          {
+            label: `lib/config/database.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/config/database.ts`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B's rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They do not run in ordinary CI — the suite skips itself unless RLS_TEST_PG_ADMIN_URL names a database.",
+        method:
+          "re-run 2026-07-26 against a throwaway postgres:16 container, applying the real 0002 migration and a NOSUPERUSER NOBYPASSRLS role, driving the production query() and withTransaction()",
+        artifacts: [
+          {
+            label: `lib/__tests__/rls.postgres.test.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/__tests__/rls.postgres.test.ts`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "A globally-unique tags table became per-user. name was unique across the whole application, so two people could not both keep an “urgent” tag. The migration backfills each tag's owner from the tasks it is attached to, clones any tag two users shared so each keeps a private copy, drops the orphans, and swaps the global unique index for (userId, name) with a cascading foreign key.",
+        method: "read the data migration and the Prisma schema at the pin",
+        artifacts: [
+          {
+            label: `0001_tags_add_userid.sql @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/config/migrations/0001_tags_add_userid.sql`,
+          },
+          {
+            label: `prisma/schema.prisma @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/packages/backend/prisma/schema.prisma`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "A thrown auth error was orphaned in the middleware pipeline. composeMiddleware awaited only each middleware's own return value, so when a middleware called next() without awaiting it and the downstream authenticateJWT rejected, nothing caught the rejection and no response was ever sent — a request with an expired token hung until the platform timed it out instead of getting its 401. The composer now holds the promise next() starts and awaits it.",
+        method:
+          "read the fix and its named regression test at the pin — “propagates a downstream throw even when an upstream middleware calls next() without awaiting it”",
+        artifacts: [
+          {
+            label: `lib/middleware/index.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/middleware/index.ts`,
+          },
+          {
+            label: `middleware/__tests__/index.test.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/lib/middleware/__tests__/index.test.ts`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
+      {
+        claim:
+          "Two more holes closed in the same pass: POST and PUT /api/upload accepted uploads with no authentication at all and wrote public-read blobs, and now sit behind the auth middleware chain; and DELETE /api/account cascades one user's own rows through a single transaction — task tags, attachments, tasks, events, task lists, calendars, profile, then the user.",
+        method:
+          "source audit of both handlers at the pin; the deletion flow also carries an end-to-end spec",
+        artifacts: [
+          {
+            label: `server-handlers/upload/index.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/server-handlers/upload/index.ts`,
+          },
+          {
+            label: `server-handlers/account/index.ts @ ${CADENCE_SHA}`,
+            href: `${CADENCE_BLOB}/server-handlers/account/index.ts`,
+          },
+        ],
+        date: "2026-07-26",
+        visibility: "public",
+      },
     ],
     outcomes: [
       {
@@ -1336,8 +1506,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "the deployed demo, mock-login flow",
         artifacts: [
           {
-            label: "taskflow-calendar-ashy.vercel.app ↗",
-            href: "https://taskflow-calendar-ashy.vercel.app",
+            /* 2026-07-26: was `taskflow-calendar-ashy.vercel.app`, the
+               pre-rename deploy. It still answers, which is worse than a
+               404 — the file printed one host in its meta ledger and a
+               different one here for the same app. Erratum on file. */
+            label: "usecadenceapp.vercel.app ↗",
+            href: "https://usecadenceapp.vercel.app",
           },
         ],
         date: "2026-07",
@@ -1360,8 +1534,23 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge. The repo's own CI is red on main right now, and I'd rather tell you that than hide it.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
+      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against a real Postgres — but 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application's discipline today.",
+      "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
+      "The 11 isolation tests are not in CI. The suite skips unless an admin Postgres URL is handed to it, so an ordinary CI run reports zero of them — I ran them by hand on the date in the row.",
+      "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit's message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
-    corrections: [],
+    corrections: [
+      {
+        date: "2026-07-26",
+        kind: "note",
+        text: "The repository was renamed yadava5/taskflow-calendar → yadava5/cadence, and this file now carries two pins on purpose. The ledger above and receipts 04–10 name cadence @ 54c79e0, the current public head — where the code lives and where the isolation work landed. Receipts 01–03 stay at taskflow-calendar @ 69a59e7, because that is the commit the 1,145-test count was measured at, and re-pinning a number to a commit nobody re-ran it at turns a measurement into a guess. GitHub redirects the old paths; both resolve.",
+      },
+      {
+        date: "2026-07-26",
+        kind: "erratum",
+        text: "The workspace outcome row linked taskflow-calendar-ashy.vercel.app. That deploy still answers, so nothing 404'd — but it is not the app any more, and the file was printing one host in its meta ledger and another one two sections down. The row now links usecadenceapp.vercel.app, the same host as the rest of the file.",
+      },
+    ],
     artifacts: [
       {
         type: "real-screenshot",
@@ -1377,6 +1566,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         href: TASKFLOW_TREE,
         source: `yadava5/taskflow-calendar @ ${TASKFLOW_SHA}`,
         boundary: "public repository",
+        date: "2026-07",
+      },
+      {
+        type: "repo",
+        label: "Row-level security migration",
+        href: `${CADENCE_BLOB}/lib/config/migrations/0002_enable_rls.sql`,
+        source: `yadava5/cadence @ ${CADENCE_SHA}`,
+        /* The provenance strip is where a plate states what it is NOT.
+           This one is a migration that has never been applied to the
+           production database, and the strip says so wherever the
+           artifact is opened — including from the viewer dialog, where
+           receipt 05's wording is not on screen. */
+        boundary: "public repository — hand-run, and not applied in production",
         date: "2026-07",
       },
     ],
