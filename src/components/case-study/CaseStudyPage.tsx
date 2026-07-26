@@ -54,11 +54,29 @@ interface CaseStudyPageProps {
 const WRAP =
   "relative mx-auto w-full max-w-[1240px] pl-9 pr-6 sm:px-12 xl:pr-16 xl:pl-36";
 
-const TOTAL = String(DOSSIER_TOTAL).padStart(2, "0");
+/**
+ * The case-file counter, DELIBERATELY unpadded (fix round 3, N17).
+ *
+ * These were `String(n).padStart(2, "0")`, and the archive happens to
+ * hold exactly as many case files as the story has chapters — so the
+ * kicker printed `¶ case file 05 / 07`, the folio rule printed
+ * `case file 05 / 07`, and the next-file teaser printed `¶ 06 / 07 ·
+ * glyph — …`: the same digits, the same slash, the same seat and the
+ * same mono as the home paper's `¶ 05 / 07 · how i work — after dark`.
+ * A reader arriving from ¶05 read a chapter position on a page that is
+ * not a chapter, and the teaser was indistinguishable from a chapter
+ * link.
+ *
+ * Three differences now separate the two series, and each one is
+ * legible on its own: the words "case file", unpadded digits, and `of`
+ * for `/`. Chapters are a SEQUENCE you are partway through; case files
+ * are a HOLDING you are looking at one of.
+ */
+const TOTAL = String(DOSSIER_TOTAL);
 
-/** Two-digit dossier number */
+/** Dossier number — plain, so it can never read as a chapter position */
 function fileNo(study: ProjectCaseStudy): string {
-  return String(study.fileNo).padStart(2, "0");
+  return String(study.fileNo);
 }
 
 /**
@@ -201,8 +219,18 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
       <div className={`${WRAP} pt-28 pb-16`}>
         {/* ── Opening: kicker with two dates + status word ─────────── */}
         <div className="label-mono text-ink-secondary flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+          {/* N17 (fix round 3): the counter said `case file 1 / 8` in the
+              same mono, the same seat and the same `N / M` shape as the
+              home story's chapter counter (`¶ 01 / 07 · arrival …`) — two
+              different countable series wearing one format, so a reader
+              arriving from ¶05 read "1 / 8" as a chapter position in an
+              eight-chapter paper that has seven. `of` is the whole fix:
+              chapters are a SEQUENCE (you are 1 of the way through), case
+              files are a HOLDING (this is one file out of eight on
+              file), and the two words say which is which without a new
+              glyph, a new size, or a new line. */}
           <p data-dossier-kicker>
-            ¶ case file {fileNo(study)} / {TOTAL} ·{" "}
+            ¶ case file {fileNo(study)} of {TOTAL} ·{" "}
             {project.title.toLowerCase()} — filed {study.filed} · last verified{" "}
             {study.verified}
           </p>
@@ -420,15 +448,32 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                 </h3>
                 <p className="text-body mt-3 max-w-[52ch] font-serif lg:col-start-1">
                   {decision.reason}
-                  <sup className="label-mono text-ink-secondary ml-1">
-                    t{index + 1}
+                  {/* Fix round 3, S10 — the house marker, at last. This
+                      set `t1` in the FULL 13px label class with `ml-1`
+                      of air in front of it, so a sidenote marker read as
+                      a word: a 4px gap, then a letter, then a digit,
+                      hanging off the end of a serif sentence. The
+                      masthead's own ¹ is the grammar the paper already
+                      has — a bare numeral in the mono hand, sized by the
+                      same `max(0.14em, label)` expression, raised by
+                      `align-super`, tucked against the preceding period
+                      instead of spaced off it. The `t` is not lost: it
+                      moved into the slip, which now opens with the
+                      matching numeral and the word "tradeoff", so the
+                      pairing is stated rather than encoded in a prefix
+                      the reader had to decode. Numbering is unchanged —
+                      marker n still points at slip n, and the `d`-head
+                      series above is untouched. */}
+                  <sup className="text-ink-secondary align-super font-mono text-[max(0.14em,0.8125rem)] leading-none tracking-normal">
+                    {index + 1}
                   </sup>
                 </p>
                 <p
                   data-tradeoff-slip
                   className="label-mono text-ink-secondary border-ink/20 mt-3 ml-5 border-l pl-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:ml-0 lg:self-start"
                 >
-                  t{index + 1}. tradeoff — {decision.tradeoff}
+                  <sup className="align-super leading-none">{index + 1}</sup>{" "}
+                  tradeoff — {decision.tradeoff}
                 </p>
               </article>
             ))}
@@ -651,7 +696,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           >
             <span className="h-px flex-1 bg-current" />
             <span className="label-mono tracking-[0.22em]">
-              case file {fileNo(study)} / {TOTAL}
+              case file {fileNo(study)} of {TOTAL}
             </span>
             <span className="h-px flex-1 bg-current" />
           </div>
@@ -670,8 +715,12 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                 href={`/projects/${next.projectId}/`}
                 className="link-draw text-ink"
               >
-                ¶ {fileNo(next)} / {TOTAL} · {nextProject.title.toLowerCase()} —
-                filed {next.filed} ⟶
+                {/* N17: the `¶` goes too. This is a link inside a
+                    sentence, not a kicker, and `¶ 06 / 07 · glyph` was
+                    the chapter counter's exact form on a case-file
+                    footer. */}
+                case file {fileNo(next)} of {TOTAL} ·{" "}
+                {nextProject.title.toLowerCase()} — filed {next.filed} ⟶
               </Link>
             </p>
           ) : null}
