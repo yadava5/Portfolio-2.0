@@ -441,6 +441,54 @@ test.describe("Daylight Study — working paper", () => {
     expect(bodyText).not.toContain("SetFit is always active");
   });
 
+  /* Cadence's isolation section (2026-07-26), in the same grammar as
+     the four per-project proof tests above: the evidence is on the page
+     AND the limits that keep it honest are on the page.
+
+     Why atlas and not only dossier: dossier owns the wording of the
+     inert standing (it asserts the caveat sits in both seats and that
+     no phrasing promotes it). Atlas owns the recruiter-facing question
+     — is the claim source-backed? So this test asserts the two headline
+     security claims are visible and terminate in a PINNED artifact
+     label (`@ 54c79e0`), which is the thing a reader checks. Neither
+     test would catch what the other catches. */
+  test("Cadence proof is pinned, and its limits ship with its numbers", async ({
+    page,
+  }) => {
+    await page.goto("/projects/taskflow-calendar/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const validation = page.locator("#validation");
+
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceIdorReceipt)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceIsolationTests)
+    ).toBeVisible();
+    /* Both terminate off-page at the public head where that work lives —
+       a security claim with no pin is a security claim with no receipt. */
+    await expect(
+      validation.locator("a[href*='github.com/yadava5/cadence/blob/54c79e0']")
+    ).not.toHaveCount(0);
+
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceInertBoundary)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceRoleBoundary)
+    ).toBeVisible();
+
+    /* The overclaims a summariser reaches for. The middle two matter
+       most: this file may never imply the database is doing the work,
+       and it may never round "I ran them by hand" up to a CI badge. */
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText).not.toContain("RLS in production");
+    expect(bodyText).not.toContain("enforced at the database in production");
+    expect(bodyText).not.toContain("11/11 in CI");
+    expect(bodyText).not.toContain("zero known vulnerabilities");
+  });
+
   test("Master Inventory proof uses current local source counts", async ({
     page,
   }) => {
