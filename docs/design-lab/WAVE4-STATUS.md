@@ -965,3 +965,233 @@ the kicker with the new status line and pin ledger, the rewritten
 summary, fig. 2's RLS gate, the receipts table, all four boundary rows,
 the three-entry corrections register, the relabelled provenance strips,
 and ¶05's closing index at 1440 and 390.
+
+---
+
+# System Cards + Cadence's isolation section — 2026-07-26
+
+Two rounds in one pass. The first gave the placement model the terminal
+it was missing; the second gave the portfolio's strongest systems claim
+its receipts, and its limits.
+
+## Round 1 — the System Card links
+
+Every live app now serves an interactive System Card at
+`<liveUrl>/system-card` (all six fetched, all six 200). The placement
+model says this site is the hub linking **landing · live app ·
+booklet-as-documentation**, and the third of those three had no link
+anywhere on the portfolio.
+
+`projects.ts` gains `systemCardUrl` on the six. It is a literal string,
+not a template — the field is a claim that a document exists at an
+address, and a composed link would have printed one for
+`paid-internships`, which has a live URL and serves no card. The
+invariant `systemCardUrl === liveUrl + "/system-card"` is asserted
+instead of assumed.
+
+### Where the link landed
+
+| Surface | Who | Form |
+|---|---|---|
+| Case-file meta ledger | the four with case files — Applied, AutoML, Cadence, Glyph | `system card ⋯ /system-card ↗`, seated under `live demo` |
+| ¶05 jetpack rail | jetpack-compress | `system card ↗`, beside `source` |
+| ¶05 index line | LifeQuest | `LifeQuest ↗ — <gloss> · system card ↗` |
+| `/evidence` | **declined** | see below |
+
+The ledger row prints a **path, not a host**. The row directly above it
+just printed the host, so `/system-card` composes with it — same
+building, that door — and it is the only row in the ledger whose value
+is a path, which is what it is. The composition is load-bearing, so the
+dossier spec asserts the **order**, not merely the presence: a bare
+`/system-card` under a rail with no host row is a link to nowhere a
+reader can name.
+
+The two home surfaces carry it because those two projects have **no case
+file to fold it into**. That is F40's rule, unchanged: a row with a case
+file does not repeat that file's terminals in ¶05's rail — and the four
+case files now print `system card ↗` themselves. Home gains exactly two
+links, not six.
+
+**`/evidence` declined.** The ledger's every row is a claim terminating
+at the strongest artifact outside this site's rendering. A System Card
+is documentation, not a claim's terminal — putting one there would have
+meant either inventing a manifest entry (a claim nobody made) or bolting
+a link block onto a page whose whole form is claim → source →
+verification → boundary. The brief said don't force it.
+
+### The 390 question, measured
+
+The brief asked whether the jetpack rail can take a fourth link at 390
+without crowding, and said to place it only where it fits. It fits, and
+the measurement is the reason (`probe-syscards.mjs` — it measures the
+same built page twice, once as shipped and once with the new link
+`display:none`, so the "before" is a real re-flow, not a second build):
+
+| ¶05 jetpack rail | before | after |
+|---|---|---|
+| rail height @ 390 | 97px | **97px** |
+| rail lines @ 390 | 3 | **3** |
+| rail content height @ 1440 | 127px | 157px |
+| rail lines @ 1440 | 4 | **5** |
+| document scrollWidth @ 390 | 390 | **390** |
+
+At 390 the rail does **not grow**: `system card ↗` (113×15) lands on the
+line that already held `last verified 2026-07`, filling slack that was
+already there. Nothing moved. At 1440 the rail gains a line inside a
+grid cell whose 175px box is set by the taller text column, so the row's
+height is unchanged there too.
+
+LifeQuest's index line at 390: the two links land on **different lines,
+21px apart**, with 55 characters of gloss between them in reading order
+— which is why the gloss sits between them rather than after both. At
+1440 they share a line 565px apart.
+
+**On 44px, stated plainly.** Every link added here is 15px tall, exactly
+like the siblings it sits beside (`the live demo ↗` 130×15, `source`
+52×15, `the case file ⟶` 136×15, `/system-card ↗` 121×15). The
+certification round's **D7 grew the masthead — "where navigation lives"
+— and deliberately left the rest**, closing at 37 of 47 sitewide targets
+under 44 in some axis. These three join that residual set. What the
+brief actually asked about — crowding — does not occur: the new link is
+never adjacent to another link on the same line at 390, and the rail's
+line count is unchanged. Growing ¶05's mono rail to 44px is a rail-wide
+decision, not one a single link should make on its way past.
+
+## Round 2 — Cadence's security story, verified then told
+
+Verified against the **public** repo before a word was written. Public
+HEAD `54c79e0` (committed 2026-07-24), read back with
+`gh api repos/yadava5/cadence/commits/HEAD`; local, `origin/main`, and
+the public head all agree. Every linked path was fetched at that sha and
+returned 200.
+
+### What was checked, and what the numbers actually are
+
+| Claim | Verdict | What the file prints |
+|---|---|---|
+| 7 IDOR endpoints found & fixed | **true, exactly 7** | the routes, ownership scoping, 404-on-miss |
+| "…with tests" | **6 of 7 routes** carry a named cross-tenant test — `GET /api/task-lists/:id` is scoped but has none | "6 of the 7 routes carry a named cross-tenant regression test" — never "a test per endpoint" |
+| RLS: 22 policies, FORCE, 7 tenant tables | **true** (counted: 22 `CREATE POLICY`, 7 `FORCE ROW LEVEL SECURITY`, 7 `ENABLE`) | all three numbers |
+| AsyncLocalStorage + tx-local `set_config` | **true** — `set_config('app.user_id', $1, true)`, third arg `true` | the mechanism, and why the `true` matters over a shared pooler |
+| global `tags` → per-user | **true** | backfill, clone-on-share, `(userId, name)` |
+| 11/11 real-Postgres isolation tests | **true — 11 counted, 11 re-run and passing** on a throwaway `postgres:16` container, applying the real `0002` and a `NOSUPERUSER NOBYPASSRLS` role | the count **and** that the suite skips in ordinary CI |
+| middleware hang ~45s | code + named test **true**; **the 45s is not** | the failure, **not the seconds** — below |
+| account-deletion cascade, upload gated | **true** | both |
+
+### The INERT caveat, as written
+
+It is stated in the receipt that makes the claim — not only in the
+boundary block, because a reader who skims the receipts and stops must
+still land on it. Receipt 05, verbatim:
+
+> The database-level answer to that bug is written, tested, and NOT
+> live. `0002_enable_rls.sql` puts 22 policies and FORCE ROW LEVEL
+> SECURITY on 7 tenant tables, and its own header says: "Nothing in the
+> app auto-applies this file." It is deployed inert — production cutover
+> is a final staged step that has not been taken. What prevents a
+> cross-user read today is the application-level scoping in receipt 04,
+> not Postgres.
+
+And again in the boundary rows, which gained four:
+
+> The DB-enforced RLS is not turned on in production. […] Isolation is
+> the application's discipline today.
+>
+> The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for
+> the app to connect as. It cannot show you which role the production
+> `DATABASE_URL` actually uses — that is database state, not repository
+> state, and no file here can settle it.
+>
+> The 11 isolation tests are not in CI. […] I ran them by hand on the
+> date in the row.
+>
+> The hang in receipt 09 was timed once, by hand, against the deployed
+> app, and that number lives in the fix commit's message and nowhere
+> else — no log, no test, and no timeout setting reproduces it. So this
+> file describes the failure and not its seconds.
+
+**The number that did not ship.** The handoff offered "~45s". It is real
+— a manual production `curl` written into commit `57786dc`'s body — but
+no log, test, or timeout config reproduces it, and a self-reported
+one-off does not clear this site's bar for a printed figure. The receipt
+says the request "hung until the platform timed it out", which the code
+and its regression test fully support, and the boundary row says why the
+seconds are missing. **Two decisions ship as ADR clauses** (d3: the GUC
+over a shared pooler; d4: ship inert and cut over by hand), because the
+inert state is a *decision*, not an omission.
+
+### Two pins on one file, on purpose
+
+The repo was renamed `yadava5/taskflow-calendar` → `yadava5/cadence`.
+The meta ledger and receipts 04–10 name `cadence @ 54c79e0` — where the
+code lives and where the isolation work landed. Receipts 01–03 stay at
+`taskflow-calendar @ 69a59e7`, **because that is the commit the
+1,145-test count was measured at**; re-pinning a number to a commit
+nobody re-ran it at turns a measurement into a guess. The corrections
+register carries the note, and the dossier spec asserts both pins and
+the note — delete the explanation and the suite fails.
+
+### Corrections register: 0 entries → 2
+
+- **note** — the two-pin split above.
+- **erratum** — the workspace outcome row linked
+  `taskflow-calendar-ashy.vercel.app`. It still answers (200), which is
+  worse than a 404: the file printed one host in its meta ledger and a
+  different one two sections down, for the same app. Now
+  `usecadenceapp.vercel.app`, and the erratum is permanent.
+
+### Proof manifest: unchanged, deliberately
+
+The brief conditioned manifest entries on the numbers surfacing as
+**chips**. They do not — ¶05's Cadence chip is still `1,145 automated
+tests` citing receipt 01, and no security number was promoted to the
+home paper this round. `/evidence`'s own rule ("if a claim is not in
+this ledger **or a case file**, the site does not make it") covers
+case-file receipts. Adding entries for claims nothing chips would have
+padded a ledger the site already trimmed once for exactly that (F54).
+
+## Spec edits, and why each was justified
+
+| Edit | Justification |
+|---|---|
+| `portfolio-fixtures`: **+`EXPECTED_SYSTEM_CARD_IDS`, `SYSTEM_CARD_PROJECTS`, `SYSTEM_CARD_HOME_IDS`** | The id list is written out rather than derived from `projects.systemCardUrl` — a fixture computed from the data it checks agrees by construction and can never catch a project losing its card |
+| `nav-and-images`: **+3 tests** — URL derivation, the six-and-only-six set, ¶05's two links | The URL is a literal, so the invariant that it names the host the live-demo row prints has to be checked somewhere or a typo ships a link to a stranger's domain. The ¶05 test also asserts its own premise (neither project has a case file) so it explains itself if one later earns one, and counts home's card links to prove they did **not** sprout on the four rows that fold them into a case file |
+| `dossier`: **+1 test per case file with a card (4)** | Asserts the **order** — the card sits under the live-demo row — because the row prints a path and the host above it is what makes the path readable. Presence alone would pass a broken composition |
+| `dossier`: **+`cadence: the RLS receipt carries its own inert standing`** | The caveat is asserted in **both** seats (receipt and boundary block), plus five phrasings a well-meaning rewrite would reach for, each of which promotes the claim. This is the test that stops the file drifting into saying the database is doing work it is not doing |
+| `dossier`: **+`cadence: the two pins each name the commit their number came from`** | Asserts `69a59e7` on receipt 01, `54c79e0` on receipt 07, the register's explanation, and that the superseded demo host is gone from the page while its erratum stays on it |
+| `portfolio-fixtures`: **+4 `EXPECTED_PROOF_ARTIFACTS` keys** (`cadenceIdorReceipt`, `cadenceIsolationTests`, `cadenceInertBoundary`, `cadenceRoleBoundary`) | Exactly the `jobtracker*Boundary` pattern from the re-pin round: a claim and the limits that keep it honest are asserted **together**, so a future edit cannot keep the claim and drop the limit |
+| `atlas`: **+`Cadence proof is pinned, and its limits ship with its numbers`** | Atlas's per-project "proof stays source-backed" family had no Cadence entry. Dossier owns the *wording* of the inert standing; atlas owns the recruiter's question — is it **pinned**? So it asserts a `blob/54c79e0` terminal exists in `#validation`, which dossier does not check |
+| `PROHIBITED_GENERATED_CONTENT`: **not touched** | The obvious move — ban "RLS is live" sitewide — is wrong. **Applied's RLS is live and verified**, and its case file legitimately says so. A sitewide ban would forbid a true claim in order to guard a different project's false one. The guard belongs on the Cadence route, which is where it is |
+
+## Verification at close
+
+`tsc --noEmit` clean · `eslint . --ext .ts,.tsx` clean ·
+`prettier --check "src/**"` clean · production build clean
+(`NEXT_PUBLIC_BASE_PATH=`).
+
+Gates: **proof-manifest passed** · **contrast passed**.
+
+Playwright against the static export on **:3200** —
+**chromium-desktop 141 passed** (atlas, dossier, nav-and-images,
+paper-memory, comprehensive-qa; 127 → 141, +14, none removed) ·
+**chromium-mobile 49 passed** (atlas).
+
+**Links.** Every external `href` the built export ships on `/`,
+`/evidence/` and the four touched case routes was fetched live: **67 of
+69 return 200.** The two exceptions are the pre-existing LinkedIn
+profile links, which return LinkedIn's `999` anti-bot status to a
+non-browser agent; neither was touched. All **six** `/system-card` URLs
+and all **13** `yadava5/cadence@54c79e0` paths resolve.
+
+Evidence in `docs/design-lab/shots-syscards/` (`shoot-syscards.mjs`):
+the meta-ledger rail on two case files and at 390, ¶05's jetpack rail
+and closing index at both widths, and Cadence's deck, decisions,
+receipt 05, isolation rows, boundary rows and corrections register.
+Measurements in `probe-syscards.mjs`.
+
+**Found while verifying, not caused by it.** The Glyph case file's demo
+terminal is still `fast-mnist.vercel.app`
+(`projectCaseStudies.ts:2245`) — the same two-host defect just corrected
+on Cadence, on a file this round did not own. It resolves (200) and the
+handoff records it as a surviving alias, so nothing is broken; it is
+recorded here rather than folded into a round it has nothing to do with.

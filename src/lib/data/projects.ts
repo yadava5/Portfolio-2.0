@@ -40,6 +40,28 @@ export interface Project {
   githubUrl: string | null;
   /** Live demo URL (if available) */
   liveUrl: string | null;
+  /**
+   * The app's own hosted System Card — the interactive architecture-and-
+   * evidence booklet every live app now serves at `<liveUrl>/system-card`
+   * (all six verified 200 on 2026-07-26).
+   *
+   * Why it is its own field rather than a link composed at render time:
+   * the value is a CLAIM that a document exists at that address, and this
+   * site does not compose claims. Six apps serve one; `paid-internships`
+   * has a liveUrl and serves none. A field says which — a template would
+   * have printed a link to a 404 for the seventh.
+   *
+   * The invariant `systemCardUrl === liveUrl + "/system-card"` holds for
+   * every entry and is ASSERTED, not merely intended: see the
+   * "system-card URLs derive from their live URL" contract in
+   * tests/playwright/nav-and-images.spec.ts. Typing a host here that the
+   * live demo row does not print fails the suite.
+   *
+   * Placement (the portfolio is the hub): the case-file link rail
+   * (CaseStudyPage meta ledger) for the four with case files, and ¶05's
+   * index lines for the two without — jetpack-compress and LifeQuest.
+   */
+  systemCardUrl?: string;
   /** Project image path */
   image: string;
   /** Intrinsic pixel width of the image, when known (raster captures —
@@ -128,6 +150,7 @@ export const projects: Project[] = [
        /projects/jobtracker/ route. */
     githubUrl: "https://github.com/yadava5/applied",
     liveUrl: "https://getapplied.vercel.app",
+    systemCardUrl: "https://getapplied.vercel.app/system-card",
     image: withBasePath("/images/projects/jobtracker-architecture.svg"),
     imageKind: "diagram",
     imageAlt: "JobTracker local email classification architecture diagram",
@@ -176,6 +199,11 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: "https://agentic-automl-platform.vercel.app",
+    /* The one system card whose host had to be checked twice: the AutoML
+       deploy moved from a teammate's `agentic-automl` to the owner's own
+       `agentic-automl-platform` (handoff 2026-07-26), and the dead host
+       still resolves. This is the owner's. */
+    systemCardUrl: "https://agentic-automl-platform.vercel.app/system-card",
     // WebP derivative of the promoted capture (assets:derive) — the PNG
     // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
     image: withBasePath("/images/projects/automl.webp"),
@@ -264,6 +292,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/cadence",
     liveUrl: "https://usecadenceapp.vercel.app",
+    systemCardUrl: "https://usecadenceapp.vercel.app/system-card",
     image: withBasePath("/images/projects/taskflow.png"),
     imageWidth: 1376,
     imageHeight: 768,
@@ -314,6 +343,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/glyph",
     liveUrl: "https://getglyph.vercel.app",
+    systemCardUrl: "https://getglyph.vercel.app/system-card",
     // WebP derivative of the promoted capture (assets:derive, was a
     // 264KB PNG — PERF-AUDIT fix 4).
     image: withBasePath("/images/projects/mnist.webp"),
@@ -361,6 +391,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/lifequest",
     liveUrl: "https://getlifequest.vercel.app",
+    systemCardUrl: "https://getlifequest.vercel.app/system-card",
     // Static fallback only: a project-specific animated scene replaces
     // this in the front-end pass. Reuses an existing diagram asset — the
     // disclosure is explicit that it does not depict LifeQuest.
@@ -399,6 +430,7 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/jetpack-compress",
     liveUrl: "https://jetpack-compress.vercel.app",
+    systemCardUrl: "https://jetpack-compress.vercel.app/system-card",
     // Static fallback only: a project-specific animated scene replaces
     // this in the front-end pass. Reuses an existing diagram asset — the
     // disclosure is explicit that it does not depict jetpack-compress.

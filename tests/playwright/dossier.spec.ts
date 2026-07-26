@@ -120,6 +120,51 @@ test.describe("dossier — case files", () => {
     });
   }
 
+  /* The system-card row (2026-07-26). The rail already carried repo and
+     live demo; the app's own documentation was the third terminal the
+     placement model names and the only one this site never linked.
+
+     Two things are asserted, and the second is the one that matters.
+     The row prints a PATH (`/system-card ↗`), not a host — it composes
+     with the live-demo row directly above it, which just printed the
+     host. That composition is load-bearing: a bare `/system-card` under
+     a rail with no host row is a link to nowhere a reader can name. So
+     the test asserts the ORDER, not merely the presence. */
+  for (const study of projectCaseStudies) {
+    const project = projects.find((entry) => entry.id === study.projectId);
+    if (!project?.systemCardUrl) continue;
+    test(`${study.projectId}: meta ledger renders the system card under the live demo`, async ({
+      page,
+    }) => {
+      await page.goto(`/projects/${study.projectId}/`);
+      await page.waitForLoadState("domcontentloaded");
+
+      const card = page.locator(
+        `a[data-system-card][href="${project.systemCardUrl}"]`
+      );
+      await expect(card).toBeVisible();
+      await expect(card).toContainText("↗");
+      await expect(card).toHaveAttribute("target", "_blank");
+      await expect(card).toHaveAttribute("rel", /noopener/);
+
+      const demo = page.locator("a[data-live-demo]");
+      await expect(demo).toBeVisible();
+      const seats = await page.evaluate(() => {
+        const box = (sel: string) =>
+          document.querySelector(sel)?.getBoundingClientRect().top ?? null;
+        return {
+          demo: box("a[data-live-demo]"),
+          card: box("a[data-system-card]"),
+        };
+      });
+      expect(seats.demo).not.toBeNull();
+      expect(
+        seats.card!,
+        "the path only reads under the row that printed the host"
+      ).toBeGreaterThan(seats.demo!);
+    });
+  }
+
   for (const study of projectCaseStudies) {
     test(`${study.projectId}: folio footer returns to /#work and links /evidence`, async ({
       page,
@@ -226,6 +271,92 @@ test.describe("dossier — case files", () => {
 
     /* And the skeuomorph budget holds — no other stamp on this file */
     await expect(page.getByRole("img", { name: /^Stamp:/ })).toHaveCount(1);
+  });
+
+  /* Cadence's isolation section (2026-07-26). The file now argues the
+     portfolio's strongest systems story — 7 IDOR endpoints fixed,
+     DB-enforced RLS written against a shared pooler, 11/11 isolation
+     tests — and exactly one sentence in it is dangerous: the RLS is
+     deployed INERT. Nothing in the database is enforcing anything.
+
+     A reader who skims the receipts and stops before the boundary rows
+     must still land on that fact, so it is stated in the receipt that
+     makes the claim, not only in the boundary block below. This test is
+     the reason a future edit cannot quietly promote the claim: it
+     asserts the caveat is present in BOTH seats, and that the page
+     nowhere says the DB-level isolation is live. */
+  test("cadence: the RLS receipt carries its own inert standing", async ({
+    page,
+  }) => {
+    await page.goto("/projects/taskflow-calendar/");
+    await page.waitForLoadState("domcontentloaded");
+
+    /* Seat 1 — inside the receipt row that claims it (#v-…-5) */
+    const row = page.locator("#v-taskflow-calendar-5");
+    await expect(row).toContainText("NOT live");
+    await expect(row).toContainText(
+      "Nothing in the app auto-applies this file"
+    );
+    await expect(row).toContainText("deployed inert");
+
+    /* Seat 2 — the boundary block, where it also has to stand alone */
+    const boundaries = page
+      .locator("#validation div")
+      .filter({ hasText: "NOT claiming" })
+      .last();
+    await expect(boundaries).toContainText(
+      "The DB-enforced RLS is not turned on in production"
+    );
+    /* The two limits that keep the surrounding numbers honest */
+    await expect(boundaries).toContainText(
+      "The 11 isolation tests are not in CI"
+    );
+    await expect(boundaries).toContainText(
+      "which role the production DATABASE_URL actually uses"
+    );
+
+    /* And the page never says the opposite. These are the phrasings a
+       well-meaning rewrite would reach for; each one is a promotion of
+       the claim, so each one fails the suite. */
+    const body = await page.locator("body").innerText();
+    for (const overclaim of [
+      "RLS is live",
+      "RLS is enforced",
+      "RLS enforced in production",
+      "row-level security is live",
+      "database-enforced isolation is live",
+    ]) {
+      expect(body.toLowerCase()).not.toContain(overclaim.toLowerCase());
+    }
+  });
+
+  test("cadence: the two pins each name the commit their number came from", async ({
+    page,
+  }) => {
+    await page.goto("/projects/taskflow-calendar/");
+    await page.waitForLoadState("domcontentloaded");
+
+    /* The suite count stays at the commit it was measured at; the
+       isolation receipts pin the public head where that work landed.
+       The register explains the split — delete the note and this
+       fails, which is the point of a permanent register. */
+    await expect(page.locator("#v-taskflow-calendar-1")).toContainText(
+      "69a59e7"
+    );
+    await expect(page.locator("#v-taskflow-calendar-7")).toContainText(
+      "54c79e0"
+    );
+    await expect(page.locator("#corrections")).toContainText(
+      "yadava5/taskflow-calendar → yadava5/cadence"
+    );
+    /* The superseded demo host is gone from the page, and its erratum
+       is on file — the register is how a number changes here. */
+    await expect(
+      page.locator('a[href="https://taskflow-calendar-ashy.vercel.app"]')
+    ).toHaveCount(0);
+    await expect(page.locator("#corrections")).toContainText(
+      "taskflow-calendar-ashy.vercel.app"
+    );
   });
 
   test("dossier sections carry the [ section ] · § descriptor heads", async ({

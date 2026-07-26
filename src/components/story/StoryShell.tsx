@@ -1513,6 +1513,28 @@ function WorkChapter() {
                       </a>
                     </p>
                   ) : null}
+                  {/* The system card (2026-07-26) — the app's own hosted
+                      documentation, on the SAME condition as `source`
+                      above, and for the same reason F40 gave. A row with
+                      a case file folds its terminals into that file, and
+                      the case file's meta ledger now prints
+                      `system card ↗` itself; a row without one
+                      (jetpack-compress) has nowhere to fold, so the link
+                      lives here or nowhere. Three rows are untouched:
+                      this cluster does not grow on the page where F40
+                      found three identical clusters inside 3,027px. */}
+                  {!study && project.systemCardUrl ? (
+                    <p>
+                      <a
+                        href={project.systemCardUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        system card ↗
+                      </a>
+                    </p>
+                  ) : null}
                   {/* The case file's own credibility token, echoed small
                       (recruiter-rejudge status-wording fix). Dimming is
                       the house mute — opacity on FULL ink (the dusk-
@@ -1591,6 +1613,27 @@ function WorkChapter() {
                     {project.title} ↗
                   </a>
                   <span> — {gloss}</span>
+                  {/* Its documentation, on the one line it has (2026-07-26).
+                      LifeQuest has no case file to carry a link rail, so
+                      the index line is the only place on this site the
+                      card can be reached. The gloss sits BETWEEN the two
+                      links on purpose — 55 characters of prose is the
+                      separation that keeps two 15px targets from setting
+                      8px apart on a phone (F40's actual complaint), and
+                      at 390 the line wraps between them anyway. */}
+                  {project.systemCardUrl ? (
+                    <>
+                      <span> · </span>
+                      <a
+                        href={project.systemCardUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-draw"
+                      >
+                        system card ↗
+                      </a>
+                    </>
+                  ) : null}
                 </li>
               );
             })}

@@ -9,7 +9,7 @@
  *
  *   kicker (two dates + status) → title (thread underlines it) → deck →
  *   meta ledger (mono dot-leaders — role, timeframe, stack, repo @ sha,
- *   live demo ↗) → problem/constraints + fig. 1 (the one rotated plate)
+ *   live demo ↗, system card ↗) → problem/constraints + fig. 1 (the plate)
  *   → fig. 2 architecture, inked → decisions as ADR clauses → method
  *   slip → VALIDATION as the receipts table (per-row anchors
  *   #v-<id>-<n>) → boundary rows → ledger (checked-in JSON, where one
@@ -266,6 +266,37 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   className="link-draw"
                 >
                   {liveHost} ↗
+                </a>
+              </LedgerRow>
+            ) : null}
+            {/* The app's own documentation, seated with the other two
+                terminals (2026-07-26). The placement model says this site
+                is the hub linking landing · live app · booklet-as-
+                documentation, and the third of those three had no link
+                anywhere on the site. This ledger is where a reader
+                already goes for "where does this thing live" — repo,
+                then demo, then its card.
+
+                It prints the PATH, not the host: the row directly above
+                just printed the host, and repeating it would set the
+                same 24 characters twice inside one dl. `/system-card`
+                composes with the line above it — same building, that
+                door — and it is the only row here whose value is a path,
+                which is exactly what it is. The render condition keeps
+                that composition honest: no liveUrl, no host printed
+                above, no bare path underneath. (systemCardUrl is derived
+                from liveUrl in the data anyway; this is belt and
+                braces.) */}
+            {project.liveUrl && project.systemCardUrl ? (
+              <LedgerRow term="system card">
+                <a
+                  href={project.systemCardUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-system-card
+                  className="link-draw normal-case"
+                >
+                  /system-card ↗
                 </a>
               </LedgerRow>
             ) : null}
