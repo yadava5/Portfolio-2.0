@@ -79,7 +79,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     caption:
       "the sorting line — the 96-message eval set through rules → e5 similarity → gated setfit",
     disclosure:
-      "A drawn figure that runs — not a screenshot. Geometry from the repository's real 3-layer classifier path (rules → e5 similarity → gated SetFit); the four lanes and their counts are the committed eval set's own mix (96 messages, 12 per label × 8 labels); macro-F1 0.9791 from the committed baseline.",
+      "A drawn figure that runs — not a screenshot. Geometry from the repository’s real 3-layer classifier path (rules → e5 similarity → gated SetFit); the four lanes and their counts are the committed eval set’s own mix (96 messages, 12 per label × 8 labels); macro-F1 0.9791 from the committed baseline.",
     provenance:
       "96 messages · 12 per label × 8 labels · macro-f1 0.9791 — committed eval baseline · ships in-browser: int8 onnx, 22.8 mb",
     alt: "The sorting line: the 96-message eval set flows through three classifier gates — rules, e5 similarity, and a gated SetFit model — and sorts into its four scenario lanes: 65 core-positive, 17 edge-noise, 8 historical-miss, 6 core-negative. Macro-F1 0.9791.",
@@ -88,16 +88,16 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     caption:
       "the race — equal time, measured distance · the forward pass — a drawn 7, answered",
     disclosure:
-      "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5x lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP's mechanism and claims no accuracy number.",
+      "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5× lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP’s mechanism and claims no accuracy number.",
     provenance:
-      "3.5x — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
-    alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1x while the openmp+simd lane reaches 3.5x on the dot-256 kernel axis. Beside it, the forward pass: a stippled digit seven feeds an MLP into a ten-slot readout, and slot seven fills.",
+      "3.5× — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
+    alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1× while the openmp+simd lane reaches 3.5× on the dot-256 kernel axis. Beside it, the forward pass: a stippled digit seven feeds an MLP into a ten-slot readout, and slot seven fills.",
   },
   "taskflow-calendar": {
     caption:
       "the parse — a plain-english sentence resolves into chips on the week grid + a google meet link",
     disclosure:
-      "A drawn figure that runs — not a screenshot. The sentence is an illustrative example, never user data. The parse path is the app's real one — chrono-node and compromise resolve plain English into events and tasks — and the clay Meet chip mirrors the shipped Google Meet flow: multi-attendee Gmail invites with Meet links. No parser runs in this card; the choreography is scripted.",
+      "A drawn figure that runs — not a screenshot. The sentence is an illustrative example, never user data. The parse path is the app’s real one — chrono-node and compromise resolve plain English into events and tasks — and the clay Meet chip mirrors the shipped Google Meet flow: multi-attendee Gmail invites with Meet links. No parser runs in this card; the choreography is scripted.",
     provenance:
       "chrono-node + compromise · google meet — multi-attendee invites · 1,145 tests passing — taskflow-calendar @ 69a59e7",
     alt: "The parse: an illustrative plain-English sentence — lunch with sam and priya next tuesday at noon, add a meet — has its spans underlined and resolved into chips: tue 12:00 lunch, invites for sam and priya, and a Google Meet link chip. The event rests on a drawn week grid at tuesday noon with a small clay Meet mark. In the real app, chrono-node and compromise do this parse.",
@@ -106,7 +106,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     caption:
       "the halt, echoed — the run crosses the 7-phase lifecycle and stops at the human gate",
     disclosure:
-      "A drawn figure that runs — not a screenshot. A card-scale echo of the pinned home scene: the ink run token crosses the lifecycle's first six phases and halts at the clay human gate — 7.0 deploy never resolves, because deploying is a person's decision, not this card's. The phases and the gate are the platform's real 7-phase, LangGraph + MCP-orchestrated workflow (default model GPT-5.4); run 041 stays awaiting its human.",
+      "A drawn figure that runs — not a screenshot. A card-scale echo of the pinned home scene: the ink run token crosses the lifecycle’s first six phases and halts at the clay human gate — 7.0 deploy never resolves, because deploying is a person’s decision, not this card’s. The phases and the gate are the platform’s real 7-phase, LangGraph + MCP-orchestrated workflow (default model GPT-5.4); run 041 stays awaiting its human.",
     provenance:
       "7-phase lifecycle · langgraph + mcp · default model gpt-5.4 · registry run 041 — awaiting approval",
     alt: "The halt, echoed: an ink run token has crossed six lifecycle phases — ingest, explore, preprocess, engineer, train, evaluate — and rests in clay at the human gate. Past the gate, a quiet untraveled rail leads to 7.0 deploy, which stays unresolved. Generated actions hold at the approval edge until a human says go.",
@@ -115,9 +115,9 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     caption:
       "split → parallel → stitch — virtual-thread gzip into one byte-valid member",
     disclosure:
-      "A drawn figure that runs — not a screenshot. Geometry from the engine's real path: the input stream splits into blocks, compresses concurrently on virtual threads, and stitches into one byte-valid gzip member. The optional in-card gzip runs your browser's own CompressionStream and is labeled live — it is not jetpack's JDK output.",
+      "A drawn figure that runs — not a screenshot. Geometry from the engine’s real path: the input stream splits into blocks, compresses concurrently on virtual threads, and stitches into one byte-valid gzip member. The optional in-card gzip runs your browser’s own CompressionStream and is labeled live — it is not jetpack’s JDK output.",
     provenance:
-      "~6.5x vs single-threaded java.util.zip (±50%, quick benchmark) · 72 tests, 0 failures · jdk 25 @ af2c4b1",
+      "~6.5× vs single-threaded java.util.zip (±50%, quick benchmark) · 72 tests, 0 failures · jdk 25 @ af2c4b1",
     alt: "Split, compress in parallel, stitch: an input byte stream splits into blocks across virtual-thread lanes, each block compresses, and the lanes stitch back into one byte-valid gzip member marked with the 1f 8b gzip header.",
   },
 };
