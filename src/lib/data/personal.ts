@@ -170,9 +170,19 @@ export const siteMetadata = {
    * what the SITE is (the thing that stays true) rather than how new
    * its author is. Seven case files, each claim terminating at an
    * artifact — the argument the whole document makes.
+   *
+   * Fix round 4: the possessive was a STRAIGHT apostrophe. It never
+   * showed in the round-3 glyph sweep because that sweep read painted
+   * prose, and this sentence is never painted — it is the meta
+   * description, the og/twitter description, and the deck drawn on
+   * `public/og/home.png`. It is the site's first sentence in a search
+   * result and in every shared link, so it is the LAST place the
+   * typographic rule should lapse. Re-render the card after editing
+   * this line (`npm run assets:render-og`) — the deck is read from
+   * here, and the drawn card and the meta tag must say the same thing.
    */
   description:
-    "Ayush Yadav's portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
+    "Ayush Yadav’s portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
   /** Site URL */
   url: "https://yadava5.github.io/Portfolio-2.0",
   /**

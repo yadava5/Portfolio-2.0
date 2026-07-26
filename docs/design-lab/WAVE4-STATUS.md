@@ -684,9 +684,12 @@ comments set are intact.
 **Found while re-verifying, not caused by it:** the document is 3px
 wider than the viewport at 320 and 1px at 340 — identical before and
 after. The overhang is the gate stamp's rotated bounding box
-(`w-[min(300px,88vw)]` at `-4°`, right edge 323): the box overhangs, the
-ink does not. Recorded here rather than folded into a target fix it has
-nothing to do with.
+(`w-[min(300px,88vw)]` at `-4°`, right edge 323). **Corrected and closed
+@fix4:** this sentence used to end "the box overhangs, the ink does
+not", which is exactly backwards — the layout box ended at 317.6, INSIDE
+the 320 screen, and it was the painted (rotated) box, the ink, that
+reached 323.5. Measured in `probe-fix4-overflow.mjs`; the fix and the
+numbers are in **§FIX4** below.
 
 Two hit areas kept the old `.tap-target` name and changed technique. It
 was a centred invisible `::after` pad — a real 24×24 landing area that
@@ -1319,7 +1322,7 @@ furniture). Nothing on the list regressed.
 ### Found while verifying, not caused by it
 
 At **320px the document overflows by 3px**: the gate's APPROVED stamp
-plate renders 293px wide inside a 266px content box
+plate renders 293px wide inside a 260px content box
 (`ApprovedStamp.tsx` — `w-[min(300px,88vw)]`, whose own comment claims
 "88vw on the compact seat keeps a margin at 320"). The element chain is
 `BUTTON.block < DIV.mt-10 < … < SECTION#gate`, and nothing in this round
@@ -1327,6 +1330,10 @@ touched that component, its CSS, or its container. Measured in
 `probe-320-overflow.mjs`. Recorded here rather than folded into a round
 it has nothing to do with — the fix is a one-token change to a
 signature-act measurement and deserves its own look.
+
+**Closed @fix4** — and the guess above was right about the size of the
+fix (one token, `88vw` → `86vw`) and wrong by 6px about the content box,
+which measures **260**, not 266. §FIX4 below.
 
 ### What this round did not resolve
 
@@ -1341,3 +1348,237 @@ Screenshots and PDFs are written to
 `docs/design-lab/shots-fix3-nitpick/` and, per this repo's rule on
 binaries, are **not committed**; the harness that regenerates them and
 the measurements it records (`fix3-notes.json`) are.
+
+---
+
+## FIX4 — the one open bug, and a consistency sweep
+
+Branch `redesign/daylight-study` @ `37eea03` (origin/main after PR #17,
+fix round 3 merged) → this worktree. One bug: **the home page was 3px
+wider than a 320px viewport.** Round 3 found it, measured it, and
+declined to fold it into a round it had nothing to do with. This round
+closes it, then sweeps the three consistency claims round 3 made, to see
+whether they survived the merge.
+
+Two probes, both reusable, both in `docs/design-lab/`:
+
+| Probe | What it decides |
+|---|---|
+| `probe-fix4-overflow.mjs` | `scrollWidth − innerWidth` at any width list, on any path, with the offending element chains AND the stamp's layout box vs its painted box |
+| `probe-fix4-prose.mjs` | straight quotes across painted prose, the SPOKEN layer (`alt`/`aria-label`/`title`) and the SHARED layer (`<title>`, og/twitter descriptions), plus the `↗` contract on every external link, per page |
+
+And one shot rig, `shoot-fix4.mjs`, which takes the seal at the two
+widths that decide it and records the numbers off the same frame as the
+picture.
+
+### The overflow — what it actually was
+
+The gate's mobile stamp seat sits in the story column, which is
+`pl-9 pr-6` at base: at 320 that is a **260px content box**, from x=36 to
+x=296. Three facts, measured, in the order they compound:
+
+1. **The plate was authored against the wrong box.** `w-[min(300px,88vw)]`
+   is 281.6px at 320 — **21.6px wider than the content box it sits in**.
+   Its layout box therefore ran [36, 317.6]: well past the column, but
+   still 2.4px inside the screen. On its own, it did not overflow.
+2. **Nothing could contain it.** The seat's ancestors measure 281.6 too,
+   not 260: a grid item's `min-width: auto` resolves to min-content, and
+   a fixed-width svg IS its own min-content, so the track blew out to fit
+   the plate. That rules out the tidy fixes — there is no wrapper at the
+   content-box width to clamp or clip, because the plate had already
+   widened every wrapper it has.
+3. **The tilt was never budgeted.** A rotated element's painted box is
+   wider than its layout box. For a 300×190 plate at `-4°` the bounding
+   box is `w·cos4° + 0.633w·sin4° = 1.0417w` — **4.17% wider** — and half
+   that excess lands on each side. At 320: 293.3 painted, [30.1, 323.5].
+
+`36 + 281.6 + 5.9 = 323.5`. Hence `scrollWidth` 323 against a 320
+viewport, and 341 against 340. **The ink overhung; the box did not** —
+the reverse of what this document recorded above, now corrected there.
+
+### The fix — `88vw` → `86vw`, and why 86 is the only answer
+
+The plate's own width is the only lever (see fact 2), and it is squeezed
+from both sides: the painted right edge must clear the screen, and the
+plate's scale sets the type size, because SVG text is authored in user
+units and `plateWidth ÷ 300` IS the scale factor (the F67 argument). The
+smallest authored line on the stamp is 12 units, and F66/F67 put an
+**11px floor** under rendered text. At 320 that pins the plate between
+275 (floor) and ~278 (screen). Three whole values were tried:
+
+| compact width | plate @320 | painted right edge | smallest line | verdict |
+|---|---|---|---|---|
+| `88vw` (before) | 281.6 | **323.5** | 11.28px | overflows by 3px |
+| `87vw` | 278.4 | **320.2** | 11.14px | still overflows |
+| **`86vw`** (after) | **275.2** | **316.9** | **11.00px** | fits, 3.1px margin |
+| `85vw` | 272.0 | 313.6 | **10.88px** | under the 11px floor |
+
+**86 is the only whole vw that clears the screen without breaking the
+type floor**, which is a better reason to write a number down than
+taste. From ~349px up the `min()` clamps to the authored 300 and the
+value stops mattering: no phone width reports a different seal than it
+did before, and every width from 350 to 2560 is byte-for-byte the page
+it was.
+
+### Before and after, measured
+
+`probe-fix4-overflow.mjs`, `scrollWidth − innerWidth` on `/`:
+
+| Width | 320 | 330 | 340 | 349 | 350 | 360 | 375 | 390 | 414 | 480–2560 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| before | **3** | 3 | **1** | 0 | 0 | **0** | 0 | **0** | 0 | 0 |
+| after | **0** | 0 | **0** | 0 | 0 | **0** | 0 | **0** | 0 | 0 |
+
+The stamp itself, off the same frames (`shoot-fix4.mjs`):
+
+| | layout box | painted box | painted right | plate scale | smallest line |
+|---|---|---|---|---|---|
+| 320 before | 282 | 293.35 | **320.47** (off-screen) | 0.94 | 11.28px |
+| 320 after | 275 | 286.67 | **316.93** (3.1px margin) | 0.92 | 11.00px |
+| 1440 before | 300 | 318.22 | 1285.11 | 1.00 | 12.00px |
+| 1440 after | 300 | 318.22 | 1285.11 | 1.00 | 12.00px |
+
+**The visual verdict.** At **1440** the seal is not merely unchanged in
+its numbers: `stamp-1440-before.png` and `stamp-1440-after.png` are
+**byte-identical** (`sha256 188bf281…`). The lg+ seat is a separate
+`72vw` cap that has clamped to 300 since it was written — at 1024+ that
+expression evaluates to ~737 — so the desktop crescendo could not have
+moved. At **320** the before-frame shows the plate's right rule *cut off
+by the screen edge*, with a stray glyph fragment at x=320; the
+after-frame shows the whole double frame, both rules closed, `run no.
+041` and `press here to sign` at the same weight, tilt intact at -4°.
+The plate is **2.3% narrower** — 281.6 → 275.2 — which is 6px on a
+275px graphic and is not a difference a reader can see. Nothing about
+the approval crescendo is neutered; it is the same stamp, now entirely
+on the page.
+
+Two comments in `ApprovedStamp.tsx` were F82-class false and are
+corrected at the same time:
+
+- `"88vw on the compact seat keeps a margin at 320"` — it kept none; the
+  plate overshot its content box by 21.6px and its ink left the screen.
+  The replacement derives the tilt tax and says where each pixel goes.
+- the `compact` prop doc placed the seat *"between the giant name and the
+  email CTA"*. It has not sat there since F08 moved it BELOW the whole
+  contact cluster; the sentence describing the site's signature act named
+  a position it had left, the same fault class as F20's dashed frame and
+  the `~600ms` press.
+
+### The consistency sweep
+
+**1 · Round 3's claims, re-probed on the merged tree — all hold.**
+
+| Round-3 claim | Re-measured | Verdict |
+|---|---|---|
+| masthead sweep: `navHeight 36` at every width | 36 at all ten (640 / 700 / 768 / 819 / 820 / 900 / 1000 / 1100 / 1240 / 1440), `baselines 2` at every one | holds |
+| widows: 0 | 0 on all six surfaces (home / evidence / cadence × 1440 + 390) | holds |
+| no letter-`x` ratios | `timesLetter` empty on all nine pages; the `×` sign is the real multiplication sign everywhere it appears | holds |
+| the 404 carries 0 straight apostrophes | 0 | holds |
+
+**Nothing regressed in the merge.** The round-3 harness
+(`shoot-fix3-nitpick.mjs`) also now reports `sweep.overflow@320` as
+`scrollWidth 320, offenders []` — its own record of the fault above,
+closed.
+
+**2 · Straight quotes — 12 found, all outside painted prose, all fixed.**
+
+Round 3 got PAINTED prose to zero and its probe read `textContent`. Three
+layers reach a reader that `textContent` does not:
+
+| Where | Count | Source |
+|---|---|---|
+| `meta[description]`, `og:description`, `twitter:description` on `/` and the 404 | 5 | `personal.ts` — `siteMetadata.description` |
+| `og:image:alt` on all seven case files | 7 | `app/projects/[id]/page.tsx` — `projectImageAlt` |
+| a `title` tooltip rendered only in the motion-OFF state | 1 | `MotionToggle.tsx` |
+
+All three now set `’`. The probe reads painted prose, the spoken layer
+and the shared layer across all nine pages plus the 404: **0**.
+
+**Found while fixing it — a drawn asset that could only be wrong
+quietly.** `render-og-cards.mjs` strips the description's opening
+`"Ayush Yadav's portfolio: "` before drawing the deck, because the card
+already sets `Ayush Yadav` as its title in 80px display and keeping the
+prefix prints the name twice (the F30 echo). **That strip regex was
+written for the straight apostrophe.** Curling the source silently
+stopped it matching, and the home card re-rendered with its own title
+repeated in its deck — while `npm run assets:check-og` passed, because
+that gate verifies a card EXISTS and is correctly folioed, never what it
+says. The regex now accepts either apostrophe, and `public/og/home.png`
+re-renders **byte-identical to `HEAD`** — the typography fix costs the
+asset layer nothing.
+
+**Deliberately not touched:** the two code literals the site quotes on
+purpose (`messages.get(format="metadata")`,
+`set_config('app.user_id', $1, true)` — a curly quote there would
+misquote the artifact), the verbatim recommendation excerpt the
+build-time no-paraphrase check pins character-for-character, and the
+straight apostrophes in `projects.ts` `fullDescription`/`highlights` and
+`personal.ts` `awards[].name`, which have **no render consumer** on any
+of the ten surfaces (the scenes transposed that copy by hand; F59's
+recorded design call owns the dead fields).
+
+**3 · The `↗` contract — 0 missing where round 3 claimed it, 59
+elsewhere, declined.**
+
+`probe-fix4-prose.mjs` classifies by ORIGIN rather than by
+`target="_blank"`, so it also catches the inverse fault. Unmarked
+external links, as `unmarked / total external`:
+
+| `/` | `/evidence/` | 404 | automl | policybot | master-inv. | jobtracker | cadence | glyph | visual-assist |
+|---|---|---|---|---|---|---|---|---|---|
+| **0** / 12 | **0** / 9 | **0** / 1 | 0 / 3 | 0 / 1 | 0 / 1 | **21** / 27 | **19** / 23 | **10** / 14 | **9** / 10 |
+
+Round 3's six were the last on the surfaces it swept, and its claim
+holds. Internal links wrongly wearing the glyph: **0**. The nine
+same-origin `resume` links open a new tab and correctly wear nothing —
+`↗` means *this leaves the site*, and the site's own paper does not.
+
+The remaining **59 are declined**, with the reason recorded rather than
+deferred. Every one sits in a case file's evidence apparatus — the
+`EvidenceTable` artifact rows and `ArtifactGallery` links — where the
+label is already a repo path at a pinned sha
+(`lib/config/rlsContext.ts @ 54c79e0`) inside a column headed
+`artifact`, and where the same pages' meta ledgers (repo pin, live demo,
+system card) DO carry the glyph. Hanging 59 marks off the densest
+furniture on the site is a design call on the apparatus, not a
+consistency nit; the probe records the count and enforces the claimed
+surfaces, so the next round argues with a number.
+
+### Found while verifying, not caused by it
+
+- **The case files overflow at narrow widths.** Home is 0 at every width
+  from 320 to 2560; `/projects/jobtracker/` is **72px** over at 320, 52
+  at 340, 32 at 360 and 2 at 390. The offenders are the evidence table's
+  `OL` rows and a `DD` of artifact links — long unbroken repo paths. Not
+  this round's bug, not this round's component, and structurally a
+  different problem from a rotated graphic: recorded here, measured by
+  the same probe (`PATHS=/projects/jobtracker probe-fix4-overflow.mjs`).
+- **Two OG cards are already stale.** On an otherwise clean tree,
+  `npm run assets:render-og` rewrites `case-jobtracker.png` and
+  `case-taskflow-calendar.png`; the other seven come back byte-identical,
+  so this is content drift, not compression. The committed jobtracker
+  card still draws a summary the data no longer holds. Both files were
+  **reverted** here: the current summaries exceed the card's three-line
+  deck, so re-rendering truncates them mid-sentence, which is a copy
+  decision and not a fix round's to make. The deeper fault is that
+  `--check` cannot see this at all.
+
+### Verification at close
+
+`NEXT_PUBLIC_BASE_PATH= next build --webpack` clean · `tsc --noEmit`
+clean · `eslint` clean (0 errors, 0 warnings) · `prettier --check` clean
+on the enforced scope (`src/**`) and on every file this round added ·
+**contrast gate passed** · **proof-manifest passed** · **og-card check
+passed** (9 cards) · **asset-budget passed** · **static-export SEO
+passed**.
+
+Playwright against the static export on **:3400** —
+**chromium-desktop 193 passed, 2 skipped** (atlas, a11y-audit,
+interactions, nav-and-images, comprehensive-qa, text-motion, dossier,
+paper-memory, day-arc, red-thread, reduced-motion, scroll-engine,
+pipeline-run) · **chromium-mobile 49 passed** (atlas) ·
+**firefox-desktop 5 passed** (scroll-engine).
+
+Screenshots go to `docs/design-lab/shots-fix4/` and, per this repo's rule
+on binaries, are **not committed**; the rig that regenerates them
+(`shoot-fix4.mjs`) and the numbers it records (`fix4-stamp-*.json`) are.

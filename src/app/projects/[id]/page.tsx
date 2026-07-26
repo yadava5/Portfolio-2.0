@@ -41,7 +41,11 @@ export async function generateMetadata({
      (public/og/case-<id>.png, `npm run assets:render-og`): the site's
      paper, the file number, the title and this same summary. */
   const projectImage = absoluteSiteUrl(`/og/case-${project.id}.png`);
-  const projectImageAlt = `Case file card — ${project.title}, from Ayush Yadav's portfolio`;
+  /* Fix round 4: `’`, not `'`. This string is the og:image alt on all
+     seven case files — the line a screen reader gets when a shared card
+     will not load — and the round-3 apostrophe sweep could not see it,
+     because an attribute is not painted prose. */
+  const projectImageAlt = `Case file card — ${project.title}, from Ayush Yadav’s portfolio`;
 
   return {
     title: `${project.title} Case Study | Ayush Yadav`,

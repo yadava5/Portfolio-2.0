@@ -149,9 +149,20 @@ const studiesSource = read("src/lib/data/projectCaseStudies.ts");
 const siteMetadataBlock = personalSource.match(
   /export const siteMetadata = \{[\s\S]*?\n\};/
 )?.[0];
+/* The deck drops the description's opening self-reference: the card
+   already sets "Ayush Yadav" as its title in 80px display, so keeping
+   the prefix would print the name twice, 90px apart (the F30 echo).
+
+   BOTH apostrophes, and this is not defensive padding — fix round 4
+   turned the source's `'` into a `’` and this line, written for the
+   straight one, silently stopped matching. Nothing failed: the card
+   rendered, the `--check` gate passed (it verifies a card EXISTS and is
+   correctly folioed, not what it says), and the home card would have
+   shipped with its title repeated in its own deck. A drawn asset can
+   only be wrong quietly, so the match has to survive the typography. */
 const siteDescription = siteMetadataBlock
   ?.match(/description:\s*\n?\s*"([^"]+)"/)?.[1]
-  ?.replace(/^Ayush Yadav's portfolio[:—-]\s*/, "");
+  ?.replace(/^Ayush Yadav[’']s portfolio[:—-]\s*/, "");
 if (!siteDescription) throw new Error("could not read siteMetadata.description");
 
 /**

@@ -73,7 +73,11 @@ export function MotionToggle({ className = "" }: MotionToggleProps) {
       data-motion-toggle
       title={
         motionOff
-          ? "Motion is off for this browser — press to turn the page's animation back on"
+          ? /* `’`, not `'` (fix round 4): the motion-OFF branch is the
+               one a straight apostrophe survived in, because the sweep
+               that caught the rest read the page in its default state,
+               where this string is not the one rendered. */
+            "Motion is off for this browser — press to turn the page’s animation back on"
           : "Motion is on — press to read this page as a still document"
       }
       className={`label-mono ${className}`}
