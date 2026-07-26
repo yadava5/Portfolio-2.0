@@ -2061,25 +2061,37 @@ export function receiptAuditCounts(
 }
 
 /**
- * The settled ledger line's sentence, minus the date — one composer so
- * the control, the live announcement, and the tests can never disagree.
- * Zero-count segments are omitted; the leading pinned-artifact clause
- * always renders (an honest "0 of 8" is the point on capture-only
- * files).
+ * The tally clauses shared by the audit's settled line and the
+ * validation glance strip (evviz round) — ONE composer for the
+ * arithmetic, so the scan-first strip, the walked control, and the
+ * tests can never disagree on a count. Zero-count segments are
+ * omitted; the leading pinned-artifact clause always renders (an
+ * honest "0 of 8" is the point on capture-only files).
+ *
+ * @param counts - Per-state tallies from receiptAuditCounts
+ * @returns e.g. ["4 of 8 terminate in pinned artifacts",
+ *   "2 in page captures", "2 described only"]
+ */
+export function auditTallyClauses(counts: ReceiptAuditCounts): string[] {
+  const parts = [
+    `${counts.artifact} of ${counts.total} terminate in pinned artifacts`,
+  ];
+  if (counts.capture > 0) parts.push(`${counts.capture} in page captures`);
+  if (counts.described > 0) parts.push(`${counts.described} described only`);
+  if (counts.held > 0) parts.push(`${counts.held} held`);
+  return parts;
+}
+
+/**
+ * The settled ledger line's sentence, minus the date — the walk's own
+ * voice over the shared tally clauses.
  *
  * @param counts - Per-state tallies from receiptAuditCounts
  * @returns e.g. "audit walked · 4 of 8 terminate in pinned artifacts ·
  *   2 in page captures · 2 described only"
  */
 export function auditSettledSentence(counts: ReceiptAuditCounts): string {
-  const parts = [
-    "audit walked",
-    `${counts.artifact} of ${counts.total} terminate in pinned artifacts`,
-  ];
-  if (counts.capture > 0) parts.push(`${counts.capture} in page captures`);
-  if (counts.described > 0) parts.push(`${counts.described} described only`);
-  if (counts.held > 0) parts.push(`${counts.held} held`);
-  return parts.join(" · ");
+  return ["audit walked", ...auditTallyClauses(counts)].join(" · ");
 }
 
 /** Anchor id for receipt row `n` (1-based across receipts then outcomes) */
