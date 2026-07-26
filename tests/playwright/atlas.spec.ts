@@ -31,8 +31,14 @@ const STALE_IDENTITY_COPY = [
   "Current role",
   "Current work",
   "I work as an ITSM Data Integration Student Associate",
+  /* Fix round 3, S13: date ranges now set with an en dash, so the guard
+     names BOTH spellings of the stale range. Dropping the hyphen forms
+     would have quietly retired a guard rather than kept it — a stale
+     phrase pasted back in the old grammar must still fail. */
   "Jun 2025 - Present",
+  "Jun 2025 – Present",
   "2025-06 - Present",
+  "2025-06 – Present",
 ];
 
 const CASE_STUDY_SECTIONS = [
