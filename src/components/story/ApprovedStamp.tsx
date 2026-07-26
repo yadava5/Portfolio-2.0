@@ -44,8 +44,14 @@ import { useRunApproval } from "@/lib/paperMemory";
 
 interface AwaitingStampProps {
   /**
-   * Compact seat for the mobile gate: smaller plate, gentler ~-4° tilt,
-   * sized to sit between the giant name and the email CTA (fix round 3).
+   * Compact seat for the mobile gate (below `lg`): the same 300-unit
+   * plate, capped to 86vw so its ROTATED box still fits a 320px screen,
+   * and a gentler -4° tilt than the lg+ seat's -6°. It closes the
+   * column — BELOW the contact cluster and the email CTA, not between
+   * the giant name and the CTA, which is where this line said it sat
+   * until fix round 4. F08 moved the seat down two waves earlier
+   * (`StoryShell.tsx`, the gate's F08 note) and the sentence describing
+   * its place never followed: the same F82 class of fault.
    */
   compact?: boolean;
 }
@@ -151,16 +157,39 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
           date into 6.6px — then pushed both through a 1.3-unit
           displacement filter. Both seats now render the plate at its
           authored 300 units wherever there is room, so the viewBox scale
-          is 1:1 and an authored unit IS a pixel. 88vw on the compact
-          seat keeps a margin at 320 (the narrowest supported width,
-          where the plate lands at 0.94 and the smallest line reads
-          ~11.3px). The mobile seat can afford the size now because it
-          moved BELOW the contact cluster — see the gate's F08 note. */}
+          is 1:1 and an authored unit IS a pixel. The mobile seat can
+          afford the size now because it moved BELOW the contact cluster
+          — see the gate's F08 note.
+
+          Fix round 4 — 88vw → 86vw, and the reason, because the old
+          number carried a comment that said the opposite of what it did
+          ("88vw ... keeps a margin at 320", F82 class). It kept no
+          margin. Measured at 320: the seat starts at x=36 (`pl-9` on the
+          gate's column), 88vw laid the plate out 281.6 wide, and its box
+          therefore ended at 317.6 — 2.4px inside the screen but 21.6px
+          PAST its own 260px content box. Then the tilt. A rotated
+          element's painted box is wider than its layout box: a 300×190
+          plate turned -4° measures `w·cos4 + 0.633w·sin4 = 1.0417w`,
+          4.17% wider, and HALF that excess (5.9px at 320) lands on the
+          right. 36 + 281.6 + 5.9 = 323.5, so the document was 3px wider
+          than a 320 viewport and 1px wider than 340 — the ink overhung,
+          the box did not, which is the reverse of what WAVE4-STATUS
+          recorded. 86 is the only whole vw that closes it without
+          costing the stamp anything a reader can see: 87vw still lands
+          at 320.2 (overflow), 85vw drops the smallest line to 10.9px
+          (under the F66/F67 11px floor). At 86vw the plate is 275.2 at
+          320 — scale 0.917, smallest line 11.0px exactly — and its
+          PAINTED right edge lands at 316.9, a real 3px margin. From
+          ~349px up the `min()` clamps to the authored 300 and nothing
+          about the seal changes at any width a phone actually reports.
+          The lg+ seat is untouched: at 1024+ its 72vw is ~737, so it has
+          clamped to 300 for as long as it has existed, and its -6° box
+          (318.2 painted) sits inside a 48px gutter. */}
       <svg
         viewBox="0 0 300 190"
         className={`stamp-plate ${
           compact
-            ? "block h-auto w-[min(300px,88vw)]"
+            ? "block h-auto w-[min(300px,86vw)]"
             : "block h-auto w-[min(300px,72vw)]"
         }`}
         aria-hidden="true"
