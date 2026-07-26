@@ -45,6 +45,37 @@ import { useActiveChapter } from "@/hooks/useActiveChapter";
 import { DayMark } from "@/components/layout/DayMark";
 import { MotionToggle } from "@/components/layout/MotionToggle";
 
+/**
+ * The width at which the full text nav is affordable (fix round 3, B2).
+ *
+ * The three extra items used to arrive at Tailwind's `md` (768px) — a
+ * width the masthead does not fit at. Measured, not guessed: the full
+ * row NEEDS 740px of content, and `md`'s content box is 672. The line
+ * broke and the nav wrapped onto extra ragged baselines at exactly the
+ * width a tablet screener meets the site.
+ *
+ * The whole band was then swept at 20px steps, 760 → 1024, reading the
+ * row's baseline count and its slack:
+ *
+ *     800 → 1 item  · content 704            (compact row, fine)
+ *     820 → 4 items · content 724, needs 740 · WRAPS  (navH 48)
+ *     840 → 4 items · content 744            · slack 4
+ *     860 → 4 items · content 764            · slack 24
+ *     880 → 4 items · content 784            · slack 44   ← the stop
+ *
+ * 820 was the first instinct and the sweep rejected it: it is 16px short
+ * and wraps exactly as `md` did. 840 technically fits on 4px, which is
+ * inside font-swap jitter and is not what "fits" means for a masthead.
+ * 880 is the first stop with real air, and the `lg` gap-7 still arrives
+ * at 1024 as before. `whitespace-nowrap` was the other candidate and it
+ * is already on every item — the items were never wrapping internally,
+ * the LINE was, so nowrap could not have helped.
+ *
+ * Below this stop the row is the phone masthead it always was: wordmark
+ * + day mark + "the work" + the mail chip + resume. The mail affordance
+ * is pinned to the SAME stop, so contact is reachable at every width and
+ * never twice at any width.
+ */
 const NAV_ITEMS = [
   /* "the work" stays visible on phones: a screener must reach the
      flagship without seven chapters of scrolling. `chapter` is the
@@ -63,14 +94,14 @@ const NAV_ITEMS = [
     href: "/#path",
     target: "#path",
     chapter: "03",
-    className: "hidden md:list-item",
+    className: "hidden min-[880px]:list-item",
   },
   {
     label: "contact",
     href: "/#gate",
     target: "#gate",
     chapter: "07",
-    className: "hidden md:list-item",
+    className: "hidden min-[880px]:list-item",
   },
 ];
 
@@ -270,14 +301,19 @@ export default function Header() {
               );
             })}
             {GITHUB_URL ? (
-              <li className="hidden md:list-item">
+              <li className="hidden min-[880px]:list-item">
                 <a
                   href={GITHUB_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="label-mono link-draw tap-target-block text-(--header-ink-muted) hover:text-(--header-ink)"
                 >
-                  github
+                  {/* Fix round 3, S7: this is the only masthead item that
+                      leaves the site, and it sat in a row of three
+                      in-page anchors wearing the identical mark. `↗` is
+                      the site's leaving glyph (F41) and it belongs here
+                      first. */}
+                  github ↗
                 </a>
               </li>
             ) : null}
@@ -288,15 +324,17 @@ export default function Header() {
                 and the colophon carries it instead — MotionToggle.tsx
                 holds the measurement and the reasoning (N4). */}
             <MotionToggle className="hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex" />
-            {/* Mobile contact affordance: the text nav's "contact" item is
-                md+ only, so phones get a quiet mail icon beside resume.
+            {/* Mobile contact affordance: the text nav's "contact" item
+                arrives at 820px (B2), so everything below that gets a
+                quiet mail icon beside resume — exactly complementary, one
+                contact affordance at every width and never two.
                 D7: the anchor is the 44×44 hit box, the span is the
                 32/36px chip — the negative margin returns the difference,
                 so the chip sits exactly where it sat. */}
             <a
               href={`mailto:${personalInfo.email}`}
               aria-label="Contact"
-              className="group -m-1.5 inline-flex h-11 w-11 items-center justify-center min-[420px]:-m-1 md:hidden"
+              className="group -m-1.5 inline-flex h-11 w-11 items-center justify-center min-[420px]:-m-1 min-[880px]:hidden"
             >
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-xs border border-(--header-ink-border) text-(--header-ink) transition-colors group-hover:border-(--header-ink) min-[420px]:h-9 min-[420px]:w-9">
                 <Mail size={15} aria-hidden="true" />
