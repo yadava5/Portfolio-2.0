@@ -229,7 +229,24 @@ const PATH_FIELD_RECORDS: {
  *  Third row swapped visual-assist → jetpack-compress (orchestrator
  *  ruling, 2026-07-24): the six live showcase projects hold the prime
  *  rows; visual-assist is retired (portfolioVisible: false) and its
- *  case file remains reachable from /evidence. */
+ *  case file remains reachable from /evidence.
+ *
+ *  TWO REGISTERS, one law (fix round 3, S3/S14) — the site has a serif
+ *  PROSE voice and a lowercase-mono APPARATUS voice, and they spell
+ *  things differently on purpose:
+ *    · `bright` / `muted` are prose. Product names take their brand
+ *      casing (Applied, Cadence, Glyph, jetpack-compress), sentences are
+ *      sentence case, and a metric written out reads `macro-F1`.
+ *    · `metric` is a CHIP — the apparatus voice. It is lowercase all the
+ *      way down (`macro-f1`, `jdk 25`, `openmp+simd`), which is the
+ *      register talking, not a second spelling of the term. Endnote
+ *      claims (GATE_REFERENCES) and scene proof lines (scenes/manifest)
+ *      are the same voice and stay lowercase with it.
+ *  What is NOT register-dependent: the ratio glyph. Every "times" on the
+ *  site is `×` (U+00D7) at the benchmark's own one-decimal precision —
+ *  `3.5×` in the deck, the chip, /evidence, the case-file receipt, and
+ *  the axis of the chart beside it (BENCHMARKS.md @ c6e5c0b writes
+ *  "3.5× faster"; see docs/design-lab/one-times-sign.mjs). */
 const WORK_ROWS: {
   projectId: string;
   bright: string;
@@ -259,7 +276,7 @@ const WORK_ROWS: {
     bright: "No frameworks. Just math, memory, and C++.",
     muted: "Then OpenMP and SIMD together made it 3.5× faster.",
     metric:
-      "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
+      "openmp+simd dot kernel — 3.5× vs -O3 baseline, committed benchmarks",
     metricHref: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
   {
@@ -372,7 +389,7 @@ const VALUES_LINES = [
        honest per BENCHMARKS.md: the 3.5x is openmp+simd vs the -O3
        baseline — parallelism carries it, not SIMD alone. */
     mantra: "Make it fast.",
-    receipt: "openmp+simd dot kernel — 3.5x over -O3, committed benchmarks",
+    receipt: "openmp+simd dot kernel — 3.5× over -O3, committed benchmarks",
     href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
     wonk: false,
   },
@@ -420,7 +437,7 @@ const GATE_REFERENCES: {
     href: "/projects/jobtracker/#v-jobtracker-5",
   },
   {
-    claim: "3.5x — openmp+simd dot kernel vs -O3 baseline",
+    claim: "3.5× — openmp+simd dot kernel vs -O3 baseline",
     source: "fast-mnist-nn — receipt 02",
     href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
   },
@@ -562,7 +579,7 @@ function ArrivalChapter() {
               token adopted these measured values — but the size now has
               exactly one source of truth. */}
           <h1
-            aria-label="Scroll. It's all real."
+            aria-label="Scroll. It’s all real."
             className="font-display fraunces-hero text-hero"
           >
             {/* The masthead is the paper's dare: everything the scroll
@@ -611,8 +628,16 @@ function ArrivalChapter() {
                   style={heroDelay(2)}
                   data-tier-garnish="wet-line"
                 >
+                  {/* Fix round 3, S1: `It&apos;s` typed the ASCII
+                      typewriter apostrophe (U+0027) into the largest
+                      glyph run on the site — 100px of Fraunces, where a
+                      vertical tick beside the curly quotes the rest of
+                      the page sets (¶02 "I’ve", the dean’s list, every
+                      case deck) is not a subtlety. U+2019 is the mark;
+                      the aria-label above carries the same character so
+                      the spoken name and the drawn name are one string. */}
                   <span className="garnish-word" style={garnishSeat(0)}>
-                    It&apos;s
+                    It’s
                   </span>{" "}
                   <span className="garnish-word" style={garnishSeat(1)}>
                     all
@@ -717,7 +742,34 @@ function ArrivalChapter() {
               the capstone — agentic automl: seven gated phases ⟶
             </LenisAnchor>
           </p>
-          {/* The phone's second affordance, and its last (F16). */}
+          {/* Fix round 3, S6 — the escape hatch comes back to the phone,
+              in the shape F16 allows.
+
+              F16 removed the three-link `in a hurry` RUN from below `sm`
+              and it was right to: three 15px targets 16px apart on one
+              line is not an affordance, it is a dare. But the run
+              carried the only first-frame route to /evidence, and
+              deleting the run deleted the route — a phone reader who
+              wanted the ledger had to scroll ¶05 or reach the gate,
+              which is exactly the reader least likely to do either.
+
+              So the hatch returns as a ROW, not a run: its own line, its
+              own 44px box, 12px of `space-y-3` above and below it. Two
+              phone affordances become three (capstone · evidence ·
+              resume) against the nine F16 measured, and every one of
+              them is a full target. The label is the ledger's own name,
+              so it sets short: measured at 320 it holds one line inside
+              the 272px column with room to spare — no wrap, no
+              neighbour to crowd. */}
+          <p className="text-ink-secondary sm:hidden">
+            <Link
+              href="/evidence/"
+              className="link-draw inline-flex min-h-11 items-center"
+            >
+              the evidence index ⟶
+            </Link>
+          </p>
+          {/* The phone's last affordance (F16). */}
           <p className="text-ink-secondary sm:hidden">
             <a
               href={personalInfo.resumeUrl}
@@ -1032,7 +1084,10 @@ function PathChapter() {
               className="label-mono text-ink-secondary space-y-1"
               data-tm="block"
             >
-              <p>aug 2022 - may 2026</p>
+              {/* Fix round 3, S13 — the en dash, matching the row 200px
+                  above it (formatDateRange) and the case files. Three
+                  date lines in one chapter had two grammars. */}
+              <p>aug 2022 – may 2026</p>
             </div>
             <div data-tm="block">
               <h3 className="font-display fraunces-display text-2xl">
@@ -1233,12 +1288,42 @@ function AutomlChapter() {
                         {isDeploy ? (
                           <span
                             data-pipeline-gate
-                            className="text-ink mb-3 flex items-center gap-2"
+                            className="text-ink mb-3 flex items-center"
                           >
+                            {/* N8 (fix round 3) — the gate takes the number
+                                column, unnumbered.
+
+                                Every other row of fig. 4.0 sets as one mono
+                                run, `N.0 phase`, so its label starts four
+                                monospace characters in. The gate's clay
+                                square + `gap-2` measured ~16px, which put
+                                "the human gate" ~15px LEFT of "ingest",
+                                "explore" and the five below it — a ragged
+                                edge in the one figure whose whole subject
+                                is an orderly sequence, and the row that
+                                most needs to look deliberate.
+
+                                It is not renumbered: the gate is not an
+                                eighth phase, it is what stands BETWEEN 6.0
+                                and 7.0, and giving it a number would make
+                                the seven-phase claim false. It gets the
+                                slot instead — the number column's own
+                                width, with the clay square seated where
+                                the digit would be. Empty on purpose, and
+                                now visibly so.
+
+                                `4ch + 0.2em`, not `4ch`: `.label-mono`
+                                tracks at 0.05em, so four characters of
+                                this row carry four tracking gaps the `ch`
+                                unit knows nothing about. At a flat 4ch
+                                the labels still sat 3px apart (measured);
+                                with the tracking added they rule up. */}
                             <span
                               aria-hidden="true"
-                              className="bg-clay-graphic inline-block h-2 w-2"
-                            />
+                              className="inline-flex w-[calc(4ch+0.2em)] shrink-0 items-center"
+                            >
+                              <span className="bg-clay-graphic inline-block h-2 w-2" />
+                            </span>
                             the human gate — go / no-go
                           </span>
                         ) : null}
@@ -1399,6 +1484,14 @@ function WorkChapter() {
                         {project.title}
                       </Link>
                     ) : (
+                      /* Fix round 3, S7: a row with no case file sends its
+                         TITLE off-site (jetpack-compress → the live
+                         engine), and the biggest link in ¶05 was the one
+                         external link on the page wearing no `↗`. The
+                         glyph is cut to 0.42em and raised so it reads as
+                         the apparatus mark it is rather than a second
+                         headline glyph — inside the anchor, so it is part
+                         of the accessible name like every other one. */
                       <a
                         href={titleHref}
                         target="_blank"
@@ -1406,6 +1499,10 @@ function WorkChapter() {
                         data-tier-garnish="press"
                       >
                         {project.title}
+                        <span className="align-super text-[0.42em] tracking-normal">
+                          {" "}
+                          ↗
+                        </span>
                       </a>
                     )}
                     {/* The paper remembers (W1): a small ink ✓ once this
@@ -1450,6 +1547,10 @@ function WorkChapter() {
                       The column is capped instead (max-w-[38ch]), so a
                       long chip wraps honestly rather than disappearing. */}
                   <p className="max-w-[38ch] normal-case">
+                    {/* Fix round 3, S7: an EXTERNAL metric chip terminates
+                        at a README on GitHub, not at a receipt on this
+                        site — the `↗` says which, and only the external
+                        branch gets it. */}
                     {externalMetric ? (
                       <a
                         href={row.metricHref}
@@ -1457,7 +1558,7 @@ function WorkChapter() {
                         rel="noopener noreferrer"
                         className="link-draw"
                       >
-                        {row.metric}
+                        {row.metric} ↗
                       </a>
                     ) : (
                       <Link href={row.metricHref} className="link-draw">
@@ -1509,7 +1610,11 @@ function WorkChapter() {
                         rel="noopener noreferrer"
                         className="link-draw"
                       >
-                        source
+                        {/* Fix round 3, S7 — `source` is a repository on
+                            GitHub; it wears the leaving mark like its
+                            neighbours `the live demo ↗` and
+                            `system card ↗`, which it sat between. */}
+                        source ↗
                       </a>
                     </p>
                   ) : null}
@@ -1576,19 +1681,33 @@ function WorkChapter() {
           <p className="label-mono text-ink-secondary">
             cited above, argued in full —
           </p>
-          <ul className="label-mono mt-3 flex flex-wrap gap-x-8 gap-y-2">
-            {FURTHER_READING_IDS.map((id) => {
-              const project = getProjectById(id);
-              if (!project) return null;
-              return (
-                <li key={id}>
-                  <Link href={`/projects/${id}/`} className="link-draw">
+          {/* N12 (fix round 3) — the missing `·`.
+              This index printed its peers on whitespace alone
+              ("master inventory pipeline    policybot"), while every
+              other peer list on the paper carries the middot: the hero's
+              `Applied · Glyph · Cadence`, the ¶05 scene provenance
+              lines, the gate's contact cluster, the /evidence record
+              head, and the "also live" line 40px below this one. Two
+              underlined links parted by a gap read as one wrapped title
+              at a glance; the dot is what says "these are two things".
+              The separator is aria-hidden — it is punctuation between
+              list items, and a screen reader already hears them as
+              separate `li`s. The gap tightens to 3 because the dot is
+              now doing the parting. */}
+          <ul className="label-mono mt-3 flex flex-wrap gap-x-3 gap-y-2">
+            {FURTHER_READING_IDS.map((id) => getProjectById(id))
+              .filter((project) => project !== undefined)
+              .map((project, index, shown) => (
+                <li key={project.id}>
+                  <Link href={`/projects/${project.id}/`} className="link-draw">
                     {project.title}
                   </Link>
-                  <VisitedMark fileId={id} />
+                  <VisitedMark fileId={project.id} />
+                  {index < shown.length - 1 ? (
+                    <span aria-hidden="true"> ·</span>
+                  ) : null}
                 </li>
-              );
-            })}
+              ))}
           </ul>
 
           {/* See IN_PROGRESS_ENTRIES. External link on purpose: there is
@@ -1737,9 +1856,26 @@ function ValuesChapter() {
 
           <figure className="w-full max-w-[392px]" data-tm="block">
             <ul className="label-mono space-y-3 border-l border-current/20 pl-6">
-              <li className="flex justify-between gap-x-3 opacity-60">
-                <span>gate</span>
-                <span className="text-right">disposition</span>
+              {/* Fix round 3, S11 — the key sits at the HEAD, where it is
+                  read before it is needed. Two of the three rows say
+                  "refused", and the sentence that makes that a virtue —
+                  the gate did its job — sat in the figcaption BELOW the
+                  ledger. A reader meeting "◼ refused · ◼ refused" first
+                  reads a scoreboard with two losses on it, and only
+                  afterwards learns the word means the machinery stopped
+                  the run as designed. Nothing is softened: the rows still
+                  say refused, twice, in the same ink. The definition just
+                  arrives first. Its other half ("passed — human signed
+                  off") stays in the caption; the word `passed` was never
+                  the one at risk of being misread. */}
+              <li className="opacity-60">
+                <span className="flex justify-between gap-x-3">
+                  <span>gate</span>
+                  <span className="text-right">disposition</span>
+                </span>
+                <span className="mt-1 block text-right">
+                  refused — the gate stopped the run
+                </span>
               </li>
               {VALUES_GATES.map((row) => (
                 <li
@@ -1761,9 +1897,7 @@ function ValuesChapter() {
             </ul>
             <figcaption className="label-mono mt-6 space-y-1 pl-6 opacity-70">
               <span className="block">fig. 6.1 — the gates, kept.</span>
-              <span className="block">
-                refused — the gate stopped the run · passed — human signed off
-              </span>
+              <span className="block">passed — human signed off</span>
             </figcaption>
           </figure>
         </div>
@@ -1899,6 +2033,13 @@ function GateChapter() {
               <a href={personalInfo.resumeUrl} className="link-draw">
                 resume
               </a>
+              {/* Fix round 3, S7: `↗` means "this leaves the site" (F41's
+                  glyph contract), and it was the ONE rule the contact
+                  cluster broke — `github` and `linkedin` opened new tabs
+                  with nothing saying so, sitting two words from `resume`
+                  and the mailto, which do not. The glyph rides inside the
+                  link text, as it does on every other external link on
+                  the site, so it is in the accessible name too. */}
               {github ? (
                 <a
                   href={github}
@@ -1906,7 +2047,7 @@ function GateChapter() {
                   rel="noopener noreferrer"
                   className="link-draw"
                 >
-                  github
+                  github ↗
                 </a>
               ) : null}
               {linkedIn ? (
@@ -1916,7 +2057,7 @@ function GateChapter() {
                   rel="noopener noreferrer"
                   className="link-draw"
                 >
-                  linkedin
+                  linkedin ↗
                 </a>
               ) : null}
             </div>
@@ -2054,10 +2195,23 @@ function GateChapter() {
                   pattern the HTML spec names for exactly this, and it
                   keeps the two worlds identical (A7). */}
               <div className="mt-4 border-t border-current/15 pt-4">
+                {/* N18 (fix round 3): the one passage on this site
+                    written by somebody else set WITHOUT quotation marks,
+                    while fig 5.3 — an illustrative sentence the author
+                    made up — sets its own words inside “ ”. That is the
+                    marking backwards. The quotes are added in the markup,
+                    never in the data: `testimonials.ts` runs a
+                    module-scope gate asserting the excerpt is a
+                    contiguous verbatim substring of the quote, and a
+                    curly quote inside the string would be an edit to
+                    someone else's sentence. The leading ellipsis stays —
+                    the passage opens mid-letter — and the closing one
+                    joins it, because it closes mid-letter too. */}
                 <blockquote className="max-w-[54ch] font-serif text-[1.0625rem] leading-7">
                   <p>
-                    &hellip;
+                    &ldquo;&hellip;
                     {managerReference.excerpt ?? managerReference.quote}
+                    &hellip;&rdquo;
                   </p>
                 </blockquote>
                 <p className="label-mono mt-4 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1">

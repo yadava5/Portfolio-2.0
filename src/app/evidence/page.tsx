@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: EVIDENCE_IMAGE,
         width: 1200,
         height: 630,
-        alt: "The evidence index — Ayush Yadav's proof ledger",
+        alt: "The evidence index — Ayush Yadav’s proof ledger",
       },
     ],
     type: "website",
@@ -110,8 +110,8 @@ function sourceLink(
  * the same thing.
  */
 const SOURCE_KIND_NOTE = {
-  "self-hosted": "[self-hosted — checked into this site's repository]",
-  "self-authored": "[self-authored — the author's own documentation]",
+  "self-hosted": "[self-hosted — checked into this site’s repository]",
+  "self-authored": "[self-authored — the author’s own documentation]",
 } as const;
 
 export default function EvidencePage() {
@@ -176,10 +176,15 @@ export default function EvidencePage() {
         <ol className="mt-12">
           {proofManifest.map((entry, index) => {
             const link = sourceLink(entry.source);
+            /* data-receipt-row (fix round 3, S4): a ledger entry is a
+               deep-link target exactly as a case-file receipt is
+               (`/evidence/#e-05`), so it wears the same asked-for mark —
+               one rule in globals.css, one grammar. */
             return (
               <li
                 key={entry.id}
                 id={entry.id}
+                data-receipt-row
                 className="border-ink/20 border-t py-8"
               >
                 {/* evviz record head — the scan line: entry number on the

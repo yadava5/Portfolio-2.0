@@ -153,7 +153,16 @@ export const projects: Project[] = [
     systemCardUrl: "https://getapplied.vercel.app/system-card",
     image: withBasePath("/images/projects/jobtracker-architecture.svg"),
     imageKind: "diagram",
-    imageAlt: "JobTracker local email classification architecture diagram",
+    /* Fix round 3, S14 — the product is Applied. `JobTracker` here was
+       the retired name, still describing the CURRENT diagram, in the one
+       string on this record that only a screen-reader user ever hears:
+       the alt text said one product name while every heading, deck and
+       case-file title on the route said another. (The two other
+       `JobTracker`s in this tree are correct and stay: `Applied
+       (formerly JobTracker)` is history stated as history, and
+       "the JobTracker scheme" in the Cadence-era receipt is an Xcode
+       scheme name — a code identifier, not prose.) */
+    imageAlt: "Applied local email classification architecture diagram",
     imageDisclosure:
       "Architecture diagram generated from public repository structure; private email content is not shown.",
     featured: true,
@@ -361,14 +370,14 @@ export const projects: Project[] = [
       "Hand-optimized across 4 instruction sets: AVX-512, AVX2, NEON, wasm-simd128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
       "~97% test accuracy documented in the README — HELD until a committed eval run earns it",
-      "Honest attribution: the 3.5x is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
+      "Honest attribution: the 3.5× is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
     ],
     isPrivate: false,
     metrics: [
       { label: "Accuracy", value: "~97% (README) — held, no eval run" },
       // Attribution per BENCHMARKS.md: the 3.5x is the openmp+simd
       // parallel configuration vs the -O3 baseline, not SIMD alone.
-      { label: "Kernel Speedup", value: "3.5x openmp+simd dot kernel" },
+      { label: "Kernel Speedup", value: "3.5× openmp+simd dot kernel" },
     ],
     /* W5 e-07 split: the kernel claim is earned (BENCHMARKS.md); the
        accuracy claim traces to its own HELD manifest entry (README-
@@ -419,7 +428,7 @@ export const projects: Project[] = [
     shortDescription:
       "A JDK 25 parallel, gzip-compatible compression engine — virtual threads + Vector-API SIMD — with a live visualizing landing.",
     fullDescription:
-      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (~6.5x vs single-threaded java.util.zip, +/-50% on the quick benchmark). It hand-vectorizes Adler-32 via the JDK Vector API (~2.8x vs scalar; honestly shown not to beat the JDK intrinsic), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
+      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (~6.5× vs single-threaded java.util.zip, +/-50% on the quick benchmark). It hand-vectorizes Adler-32 via the JDK Vector API (~2.8× vs scalar; honestly shown not to beat the JDK intrinsic), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
     techStack: [
       { name: "Java", color: "#f89820" },
       { name: "JDK 25", color: "#5382a1" },
@@ -444,15 +453,15 @@ export const projects: Project[] = [
     startDate: "2026-07",
     endDate: "Present",
     highlights: [
-      "Parallel gzip on virtual threads: ~6.5x vs single-threaded java.util.zip (+/-50%)",
-      "Hand-vectorized Adler-32 (~2.8x vs scalar) — honestly does NOT beat the JDK intrinsic",
+      "Parallel gzip on virtual threads: ~6.5× vs single-threaded java.util.zip (+/-50%)",
+      "Hand-vectorized Adler-32 (~2.8× vs scalar) — honestly does NOT beat the JDK intrinsic",
       "FFM memory-mapped I/O, a CLI, and a JMH harness",
       "72 tests pass; DEFLATE entropy coding delegated to zlib on purpose",
     ],
     isPrivate: false,
     metrics: [
       { label: "Tests", value: "72 passing on JDK 25" },
-      { label: "Throughput", value: "~6.5x vs 1-thread gzip (+/-50%)" },
+      { label: "Throughput", value: "~6.5× vs 1-thread gzip (+/-50%)" },
     ],
     proofIds: ["jetpack-tests"],
   },

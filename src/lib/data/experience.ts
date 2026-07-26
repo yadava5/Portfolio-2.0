@@ -114,9 +114,15 @@ export function calculateDuration(startDate: string, endDate: string): string {
 /**
  * Format date range for display
  *
+ * The separator is an EN DASH (fix round 3, S13). A range is what the en
+ * dash is for, the site already sets one in the case files
+ * ("jun 2025 – may 2026", for this same role), and this function's
+ * hyphen was printing a second grammar for the same fact two clicks
+ * apart. Every date range the page renders now uses the one mark.
+ *
  * @param startDate - Start date in YYYY-MM format
  * @param endDate - End date in YYYY-MM format or "Present"
- * @returns Formatted date range (e.g., "Jun 2025 - Present")
+ * @returns Formatted date range (e.g., "Jun 2025 – Present")
  */
 export function formatDateRange(startDate: string, endDate: string): string {
   const formatMonth = (dateStr: string) => {
@@ -130,7 +136,7 @@ export function formatDateRange(startDate: string, endDate: string): string {
   const start = formatMonth(startDate);
   const end = endDate === "Present" ? "Present" : formatMonth(endDate);
 
-  return `${start} - ${end}`;
+  return `${start} – ${end}`;
 }
 
 /* CRITIC-LEDGER F59: `getCurrentExperience()` lived here and returned

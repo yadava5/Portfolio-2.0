@@ -67,12 +67,21 @@ const SEGMENTS: { text: string; at: number; span?: string }[] = [
 const spanX = (at: number) => SX + at * CW;
 const spanW = (len: number) => len * CW;
 
-/** Chip stack (left column) — rest geometry. 176 wide: the longest label
- *  ("invite — sam · priya", 20 mono chars ≈ 160px at 12.5px + 0.04em
- *  tracking) must SIT INSIDE the box with breathing room — at 160 the
- *  text ran through the right border (the settled-frame overlap fix). */
+/** Chip stack (left column) — rest geometry.
+ *
+ *  N13 (fix round 3): 176 was still not wide enough, and the shipped
+ *  frame proved it — "invite — sam · priya" set from x=22 and ENDED at
+ *  x≈188, which is exactly where the chip's right border is drawn, so
+ *  the rule ran down through the final `a` of the invitee's name. The
+ *  estimate in the old note was the error: chip labels are not
+ *  `textLength`-pinned like the sentence, so they set at the font's own
+ *  ~8.3 units/char, not the 7.5 the sentence is typeset on. Measured
+ *  against the render rather than re-estimated: 20 chars ≈ 166 units,
+ *  and the box now carries the same 10 units of padding on the right
+ *  that it always had on the left (22 + 166 + 10 = 198 ≤ 208).
+ *  Geometry only — same words, same chips, same choreography. */
 const CHIP_X = 12;
-const CHIP_W = 176;
+const CHIP_W = 196;
 const CHIP_H = 22;
 const CHIP_Y = { when: 108, who: 140, meet: 172 };
 
@@ -81,7 +90,13 @@ const GRID_X = 280;
 const COL_W = 30;
 const GRID_Y = 104;
 const ROW_H = 30;
-const DAYS = ["m", "t", "w", "t", "f", "s", "s"];
+/** N16 (fix round 3): the week header read `m t w t f s s` — two `t`s
+ *  and two `s`s, so the column the parsed event lands in (tuesday) was
+ *  indistinguishable from thursday at a glance, in a figure whose entire
+ *  claim is "the sentence resolved to THIS day". Two-letter forms for
+ *  the four ambiguous days; the 30-unit columns carry them centred with
+ *  room to spare, and no other geometry moves. */
+const DAYS = ["m", "t", "w", "th", "f", "sa", "su"];
 
 /** The parsed event: tuesday × the noon row. */
 const BLOCK = { x: 312, y: 138, w: 26, h: 22 };
@@ -317,14 +332,15 @@ export function CadenceScene() {
 
         {/* chips → grid: the event snapping into place. Terminates at the
             EDGES with air on both ends: departs 8px right of the when-
-            chip's border (188 → 196) at its vertical center, arcs ~11px
-            clear above the "12:00" hour label (top ≈ 144), and lands 7px
-            short of the event block's left edge (312) at block center —
-            the connector points between the boxes, never through them. */}
+            chip's border (208 → 216 since N13 widened the chips) at its
+            vertical center, arcs clear above the "12:00" hour label
+            (top ≈ 144), and lands 7px short of the event block's left
+            edge (312) at block center — the connector points between the
+            boxes, never through them. */}
         <path
           data-sc-snap
           className="scene-edge"
-          d="M 196 119 C 240 119, 264 128, 305 147"
+          d="M 216 119 C 250 119, 272 129, 305 147"
           pathLength={1}
         />
 

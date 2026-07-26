@@ -215,8 +215,16 @@ export function ChapterRail() {
   return (
     <nav
       aria-label="Chapters"
+      /* chapter-rail-seat (fix round 3, S15): the rail follows the
+         CONTENT COLUMN, not the viewport edge. It used to sit at a flat
+         `left-4` — fine to 1440, absurd at 2560, where the nitpick shoot
+         measured the rail at x=16 and the first character of the page at
+         x=804: 788px of empty paper between the wayfinding and the thing
+         it points at, on a 27" display. The seat rule caps that gap at
+         the 1440 value and never moves the 1440 layout by a pixel; see
+         globals.css for the arithmetic. */
       className={cn(
-        "fixed top-1/2 left-4 z-30 hidden -translate-y-1/2 xl:block",
+        "chapter-rail-seat fixed top-1/2 z-30 hidden -translate-y-1/2 xl:block",
         isDuskChapter(active) ? "text-ink-dusk" : "text-ink"
       )}
     >

@@ -1391,6 +1391,167 @@ html[data-tier="print"] [data-chapter] figure:has(> figcaption) {
     640px 640px;
 }
 
+/* ── THE RAIL'S SEAT (fix round 3, S15) ───────────────────────────
+   The chapter rail is `position: fixed`, so a flat `left: 1rem` measures
+   from the VIEWPORT — and the content column does not. The column is
+   `max-w-[1240px] mx-auto` with `xl:pl-36`, so its first character sits
+   at `50% - 620px + 144px`. At 1440 that is x=244 and the rail is at
+   x=16: a 228px gutter, which is the composition. At 2560 the column
+   starts at x=804 and the rail is still at x=16 — 788px of blank paper
+   between the wayfinding and the page it indexes (measured).
+
+   So the rail is seated off the CONTAINER instead:
+
+     left = max(1rem, 50% - 620px - 84px)
+
+   620px is half the container; 84px is the exact distance the rail sat
+   INSIDE the container's left edge at 1440 (100 − 16). The `max()` is
+   what makes this a pure widening fix: below ~1608px the second term is
+   ≤ 1rem, so every viewport from `xl` (1280) through 1440 keeps
+   `left: 16px` to the pixel and nothing about the shipped composition
+   moves. Above it the rail travels with the column and the 228px gutter
+   holds at every width. One declaration, no JS, no measurement, no
+   resize listener. */
+.chapter-rail-seat {
+  left: max(1rem, calc(50% - 704px));
+}
+
+/* ── NO WIDOWS (fix round 3, S8) ──────────────────────────────────
+   The nitpick shoot measured a last line under 25% of the column on 30
+   paragraphs across the eight surfaces — "orchestration." alone under
+   the AutoML principle, "C++." alone under the Glyph deck, "faster."
+   alone under its 24px pair, "English." under Cadence's, "go." under
+   the litany at 390. One word on a line is not a line; it is the
+   previous line's leftovers, and on 24–26px display prose it is the
+   loudest thing on the row.
+
+   `text-wrap: pretty` is the whole fix and it is the RIGHT one here:
+   unlike `balance` it does not re-cut every line of a paragraph (which
+   would move the boxes the Red Thread and the SplitText line-splitter
+   measure) — it only rebreaks the LAST few lines to avoid the orphan,
+   which is precisely the defect. Where a browser in the browserslist
+   has not shipped it (Safari 17.4), the text sets exactly as it does
+   today: this is a progressive hint, never a layout dependency.
+
+   Scoped to the PROSE voices — serif body, the ¶05 deck pair, the
+   litany, the case decks — never to the mono apparatus, whose lines are
+   short data strings that must not be re-broken. */
+.font-serif,
+.text-body,
+[data-tm-bright],
+[data-tm="muted"],
+[data-tm-mantra],
+[data-tm-receipt] {
+  text-wrap: pretty;
+}
+
+/* ── ONE COPY, NOT TWO (fix round 3, S9) ──────────────────────────
+   Several passages ship twice on purpose: a `.sr-only` twin carrying
+   the clean authored sentence, and an `aria-hidden` visual twin the
+   line-splitter is allowed to cut up (aria-label is prohibited on
+   paragraph roles, so this pairing is how a split line keeps an honest
+   accessible name). Select such a paragraph and the clipboard got BOTH
+   — the ¶05 deck lines pasted twice, and an /evidence row pasted its
+   spoken key ("visibility: ") that no sighted reader ever saw.
+
+   The sr-only twin leaves the selection. Not the visual one: making the
+   thing a reader can SEE unselectable would mean dragging across the
+   site's most-read prose paints no highlight at all — a worse defect
+   than the one being fixed, and on more surfaces. This way selection
+   behaves exactly as it looks, the paste is the text on screen, once,
+   and nothing about the accessible name moves (user-select is a
+   selection API; the a11y tree does not read it). */
+.sr-only {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── The asked-for row (fix round 3, S4) ──────────────────────────
+   A deep link into a receipt (`/projects/jobtracker/#v-jobtracker-5`,
+   the destination of every home footnote and every /evidence crosswalk)
+   used to land the reader on a page of thirty identical hairline rows
+   with NOTHING marking the one they asked for. The row now lifts: the
+   paper under it goes one stop lighter — `--color-canvas`, the house
+   day stock over the dossier's older cream — with a clay rule standing
+   in the margin beside it. A page held up to the light.
+
+   The wash LIGHTENS on purpose. A clay tint was the first instinct and
+   it fails the honesty gate: clay TEXT already sits at 4.67:1 on archive
+   stock, and a 4% clay wash drops it to 4.46 — the HELD stamp inside a
+   targeted row would have gone sub-AA. Lifting toward canvas moves every
+   ink in the row the other way (ink 12.4→13.9, secondary 5.8→6.2, clay
+   text 4.67→5.1), so the mark cannot cost legibility anywhere. The clay
+   is spent where clay is safe: a 2px graphic rule, never behind a glyph.
+
+   It fades to a RESIDUE, not to nothing (amendment A7): the animation's
+   final frame is opacity 0.45, which is exactly what the static rule
+   declares — so a reduced-motion reader, the quiet toggle, the print
+   edition and a JS-dead load all paint the identical settled mark, and
+   a reader who scrolls away and back can still see which row was asked
+   for. `opacity` only (D3), one element, on landing — never per frame.
+
+   Not `scroll-margin-top`: F69 counted four constants claiming to be the
+   masthead band and measured three different landings. `scroll-padding-
+   top: 6rem` on `html` is the SOLE declaration, and the nitpick shoot
+   measured the deep-linked receipt landing at top: 96 with
+   clearsHeader: true. A `scroll-margin-top` here would be added to that
+   band, not instead of it — the exact bug F69 removed. */
+li[data-receipt-row]:target {
+  position: relative;
+  /* Own the stacking context so the wash below can sit at z-index -1
+     WITHOUT falling behind the page's own paper. */
+  isolation: isolate;
+}
+li[data-receipt-row]:target::before {
+  content: "";
+  position: absolute;
+  inset: -0.375rem -0.75rem;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--color-canvas);
+  border-inline-start: 2px solid var(--color-clay-graphic);
+  opacity: 0.45;
+}
+@keyframes receipt-target-settle {
+  from {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) li[data-receipt-row]:target::before {
+    animation: receipt-target-settle 2s cubic-bezier(0.22, 0.61, 0.21, 1) both;
+  }
+}
+/* Forced colors drop background paint entirely; hand the mark back as a
+   real border so Windows High Contrast still shows which row was asked
+   for. */
+@media (forced-colors: active) {
+  li[data-receipt-row]:target {
+    outline: 2px solid Highlight;
+    outline-offset: 4px;
+  }
+  li[data-receipt-row]:target::before {
+    display: none;
+  }
+}
+
+/* ── The notice stock (404 — fix round 3, B1) ─────────────────────
+   A 404 is neither an archive document nor a chapter of the day, so it
+   takes neither the dossier's older cream nor the arc: it is a NOTICE
+   printed on the house paper — `--color-canvas`, the exact stock the
+   masthead's default `--header-paper` already assumes, so the chrome
+   and the page beneath it are one sheet at any width. It wears the same
+   baked grain + contour every other surface wears (both at their ≤5%
+   NO-LIST §D cap). Nothing here animates: one still page, identical in
+   every world and tier. */
+.notice-surface {
+  background-color: var(--color-canvas);
+  background-image: var(--texture-grain), var(--texture-contour);
+  background-size:
+    260px 260px,
+    420px 420px;
+}
+
 /* Meta-as-ledger dot leaders (DOSSIER-SPEC pt 3): hairline dotted fill
    between term and value — print furniture, not a pill in sight. */
 .dot-leader {
@@ -2439,11 +2600,29 @@ body {
   [data-chapter="06"],
   [data-chapter="07"],
   .dossier-surface,
+  .notice-surface,
   .site-footer,
   .plate-paper {
     background: none !important;
     color: inherit !important;
   }
+
+  /* NOT `print-color-adjust: exact` (fix round 3, S5 — asked, measured,
+     declined). Forcing the paper ground to print would put the grain,
+     the contour, the archive cream AND chapters 06/07's ledger browns
+     onto the page: that is the solid-brown cartridge-eater the block
+     above was written to avoid, and on a mono printer it is a grey
+     wash under every glyph. The paper edition's ground is DELIBERATE —
+     white stock, two inks — and it is the only ground on which the
+     dusk chapters print at all.
+
+     The word "print" naming two different things is what made this look
+     like an oversight, so: `html[data-tier="print"]` is the FRAME
+     GOVERNOR's lowest motion tier (governor.ts §F2 — a still screen,
+     full colour, reached by reduced-motion, the quiet toggle, or four
+     slow frames). `@media print` is this block — the paper edition, ink
+     on stock. A reader can be in either without the other. They share a
+     word and nothing else, and neither is trying to be the other. */
 
   /* ── 3. THE WORLD LAYERS COME OFF ──────────────────────────────
      Fixed-position boxes repeat on EVERY printed page. The light
@@ -2472,6 +2651,31 @@ body {
     --header-paper: #ffffff;
   }
   .site-header::after {
+    display: none !important;
+  }
+
+  /* …and it prints as a NAME, not a menu (fix round 3, S5). The nitpick
+     shoot measured `header` and its `nav` both `visible: true` on all
+     three routes, which means page 1 of every printout opened with
+     "the work · experience · contact · github · resume" — five controls
+     that do nothing on paper, above a document whose whole argument is
+     that it does not need them. What survives is the running head a
+     printed monograph actually has: the wordmark, plus the one chip
+     that names a DOCUMENT rather than a scroll position — the resume,
+     whose print treatment F04 already authored two rules below.
+     Everything that only steers a screen goes: the chapter list, the
+     day glyph (it counts scroll position), the portrait trigger, the
+     mail chip, and the motion toggle in both of its seats.
+
+     The COLOPHON stays. A colophon is the one piece of chrome that is
+     more at home on paper than on screen — it names the edition, the
+     year and the three faces the document is set in — so `.site-footer`
+     keeps its rules above and loses only its toggle. */
+  .site-header ul,
+  .site-header [data-day-mark],
+  .site-header a[href^="mailto:"],
+  .site-header button,
+  [data-motion-toggle] {
     display: none !important;
   }
 
@@ -2541,6 +2745,22 @@ body {
   [data-pipeline-note],
   blockquote {
     break-inside: avoid;
+  }
+  /* The SIDEBAR rows go with them (fix round 3, S5). Both proof surfaces
+     carry their facts in `dl` pairs — /evidence's source/date/
+     verification/argued-in/boundary column, and the case files' meta
+     ledger with its dotted leaders — and a `dt` that lands on page 4
+     with its `dd` on page 5 is the same broken object §7 was written
+     about. The leader itself is the tell: a row of dots running to the
+     bottom of a sheet and a value with no term at the top of the next.
+     `dt`/`dd` cover the ones whose wrapper is the `dl` itself. */
+  dl > div,
+  dt,
+  dd {
+    break-inside: avoid;
+  }
+  dt {
+    break-after: avoid;
   }
   /* A headline is never split. Measured on the first pass: chapter 06's
      litany broke mid-glyph — "Make it honest." sheared in half across

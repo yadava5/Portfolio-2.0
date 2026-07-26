@@ -172,8 +172,8 @@ function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
       {(
         [
           { x: g.x0, label: "0", anchor: "middle", clay: false },
-          { x: x1x, label: "1x", anchor: "middle", clay: false },
-          { x: x35, label: "3.5x", anchor: "end", clay: true },
+          { x: x1x, label: "1×", anchor: "middle", clay: false },
+          { x: x35, label: "3.5×", anchor: "end", clay: true },
         ] as const
       ).map((tickDef) => (
         <g key={tickDef.label}>

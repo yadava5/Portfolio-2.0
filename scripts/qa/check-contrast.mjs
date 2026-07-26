@@ -53,6 +53,34 @@ function srgbToLin(c) {
   return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
 }
 
+/**
+ * Composite an sRGB colour over an opaque backdrop at a given alpha.
+ *
+ * The CSS the site ships paints a solid `--color-canvas` pseudo-element
+ * at `opacity: <alpha>` over the surface beneath it, which is exactly
+ * source-over in sRGB — so the gate can assert the colour a reader's eye
+ * actually receives rather than the token that was authored.
+ *
+ * @param {string} top - Hex of the overlay colour
+ * @param {string} bottom - Hex of the opaque backdrop
+ * @param {number} alpha - Overlay opacity, 0–1
+ * @returns {string} Hex of the composited colour
+ */
+function blend(top, bottom, alpha) {
+  const parse = (hex) => {
+    const n = hex.replace("#", "");
+    return [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16));
+  };
+  const [t, b] = [parse(top), parse(bottom)];
+  return `#${t
+    .map((channel, i) =>
+      Math.round(channel * alpha + b[i] * (1 - alpha))
+        .toString(16)
+        .padStart(2, "0")
+    )
+    .join("")}`;
+}
+
 function luminance(hex) {
   const n = hex.replace("#", "");
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16));
@@ -121,6 +149,32 @@ const PAIRS = [
   // Semantic-alias button pairings (error/404/skip-link)
   ["canvas text on clay button", C.canvas, C.clay, 4.5],
   ["canvas text on pine button", C.canvas, C.pine, 4.5],
+  // ── The asked-for row (fix round 3, S4) ────────────────────────────
+  // A deep-linked receipt lifts its paper toward `--color-canvas`: peak
+  // opacity 1 during the 2s settle, resting residue 0.45, both composited
+  // over the dossier's archive stock. Every ink a receipt row can print
+  // is asserted on BOTH composites, because the first instinct — a clay
+  // wash — was measured and rejected: a 4% clay tint drops clay TEXT (the
+  // HELD stamp inside such a row) from 4.67:1 to 4.46:1, i.e. sub-AA. The
+  // lifted wash moves every ink the other way, and this gate is what says
+  // so out loud rather than in a comment.
+  ...[
+    ["settle peak", 1],
+    ["resting residue", 0.45],
+  ].flatMap(([phase, alpha]) => {
+    const bg = blend(C.canvas, C.surface1, alpha);
+    return [
+      [`ink on target row (${phase})`, C.ink, bg, 4.5],
+      [`secondary ink on target row (${phase})`, C.inkSecondary, bg, 4.5],
+      [`clay (text) on target row (${phase})`, C.clay, bg, 4.5],
+      [
+        `clay-graphic margin rule on target row (${phase}, graphic ≥3:1)`,
+        C.clayGraphic,
+        bg,
+        3.0,
+      ],
+    ];
+  }),
   // W1 stampable registry row: the approved mark's clay gate-square must
   // hold graphic contrast across chapter 04's whole scrub range (w04→w05
   // interpolates monotonically in luminance, so endpoints bound it).
