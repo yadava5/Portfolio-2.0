@@ -153,14 +153,20 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
-// The masthead (owner ruling, 2026-07-24): "Scroll. It's all real." —
+// The masthead (owner ruling, 2026-07-24): "Scroll. It’s all real." —
 // two structural line spans whose textContent concatenates WITHOUT a
 // space between blocks (and the footnote ¹ glues onto "real."), so
 // assertions target each line, never the joined sentence. The h1's
 // aria-label carries the one honest sentence.
+//
+// Fix round 3, S1: the apostrophe is U+2019, not the ASCII tick. The
+// fixture moved because the PAGE moved — the masthead was the last
+// straight apostrophe on a site that sets curly quotes everywhere else,
+// and it sat in the biggest type on the site. Nothing else about the
+// assertion changed: same words, same two lines, same spoken sentence.
 export const EXPECTED_MASTHEAD = {
-  ariaLabel: "Scroll. It's all real.",
-  lines: ["Scroll.", "It's all real."],
+  ariaLabel: "Scroll. It’s all real.",
+  lines: ["Scroll.", "It’s all real."],
   // The standfirst (CRITIC-LEDGER F02): one serif line under the claim
   // carrying name — discipline · city. Composed from personalInfo, so
   // it can never drift from the data layer.
@@ -183,7 +189,10 @@ export const EXPECTED_GRADUATE_IDENTITY = {
   availability: "Open to new-grad software, data, and ML engineering roles",
   portraitAlt: "Ayush Yadav professional portrait",
   experienceTitle: experiences[0].title,
-  recentExperienceRange: "Jun 2025 - May 2026",
+  // Fix round 3, S13: date ranges set with an EN DASH sitewide
+  // (experience.formatDateRange) — the site already used one in the
+  // case files for this same role, and the hyphen was the odd grammar.
+  recentExperienceRange: "Jun 2025 – May 2026",
 };
 
 // Storyboard order: the flagship chapter (04) leads, then the Ch-05 rows.
@@ -217,7 +226,7 @@ export const EXPECTED_WORK_ROWS = [
     title: "Glyph",
     href: "/projects/fast-mnist-nn/",
     metric:
-      "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
+      "openmp+simd dot kernel — 3.5× vs -O3 baseline, committed benchmarks",
   },
   {
     // jetpack-tests manifest entry: 72 tests / 0 failures on JDK 25 at
@@ -284,7 +293,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   fastMnistBenchmark: "Benchmark evidence",
   // SIMD-attribution reword (2026-07-18): honest form per BENCHMARKS.md.
   fastMnistSpeedup:
-    "openmp+simd dot kernel is 3.50x faster than the -O3 baseline",
+    "openmp+simd dot kernel is 3.5× faster than the -O3 baseline",
   fastMnistDisclosure:
     "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
   masterInventoryRows:
@@ -331,7 +340,7 @@ export const EXPECTED_LINKS = {
 
 export const ATLAS_ALLOWED_METRICS = [
   "1M+",
-  "3.5x",
+  "3.5×",
   "19/20",
   "7-phase",
   "0.9791",
@@ -343,11 +352,16 @@ export const ATLAS_ALLOWED_METRICS = [
 // "Contact") so a screener always has a contact affordance in reach.
 // Below ~420px the header rebalances (avatar shrinks then drops, resume
 // slims) so the "ayush yadav" wordmark never ellipsizes at 320–420px.
+// Fix round 3, S7: the masthead's `github` is the one item in this row
+// that leaves the site, and it now carries the house leaving glyph `↗`
+// inside its text — so it is inside the accessible name this fixture
+// asserts. The spec moved because the site's glyph contract (F41) was
+// finally applied to every external link instead of most of them.
 export const RECRUITER_HERO_LINKS = [
   "the work",
   "experience",
   "contact",
-  "github",
+  "github ↗",
   "Resume (opens in a new tab)",
 ];
 export const RECRUITER_HERO_LINKS_MOBILE = [
@@ -362,7 +376,7 @@ export const RECRUITER_HERO_LINKS_MOBILE = [
 // number reads twice verbatim — 0.9791's home is the #work row.
 export const RECRUITER_HERO_METRICS = [
   "1M+",
-  "3.5x",
+  "3.5×",
   "19/20",
   "7-phase",
   "0.9791",
@@ -371,7 +385,7 @@ export const METRIC_HOME_CHAPTER: Record<string, string> = {
   "1M+": "#path",
   "19/20": "#path",
   "7-phase": "#automl",
-  "3.5x": "#work",
+  "3.5×": "#work",
   "0.9791": "#work",
 };
 
