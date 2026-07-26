@@ -1195,3 +1195,149 @@ terminal is still `fast-mnist.vercel.app`
 on Cadence, on a file this round did not own. It resolves (200) and the
 handoff records it as a surviving alias, so nothing is broken; it is
 recorded here rather than folded into a round it has nothing to do with.
+
+---
+
+# FIX ROUND 3 — the Nitpicking Viewer's report, closed — 2026-07-26
+
+An independent viewer walked the shipped site at nine widths, in four
+worlds, with a magnifier, and filed 2 blockers (B), 15 shipping notes (S)
+and 18 nits (N). Its evidence: `docs/design-lab/shots-nitpick/`. This
+round's own frames and measurements: `docs/design-lab/shots-fix3-nitpick/`
+(`shoot-fix3-nitpick.mjs` · `probe-header-fit.mjs` ·
+`probe-320-overflow.mjs`, with the viewer's before-frames carried in by
+`copy-before-shots.mjs`).
+
+Two sweeps ran once and are kept as evidence rather than described:
+`curl-quotes.mjs` (S2 — string literals only, code literals protected by
+exact substring) and `one-times-sign.mjs` (S3 — the ratio glyph).
+
+## The blockers
+
+| id | finding | status | what landed |
+|---|---|---|---|
+| **B1** | the 404 was the last SaaS page on a printed monograph — a 7xl clay "404", Title Case "Page Not Found", six `--surface-2` chips, the retired word "About", and the way home offered **three** times | **fixed** | Rebuilt as a NOTICE on the house stock (`.notice-surface` — canvas + the same baked grain/contour, matching the masthead's own `--header-paper`): ¶ kicker, Fraunces head, serif deck, and the site's vocabulary as a mono dot-leader index read from `CHAPTERS`, so it can never name a chapter the story lacks. Glyph roles kept (`⟶` deeper, `⟵` back). **One** return affordance. The real `Footer` colophon closes it. Every link is a `next/link`, so basePath applies (F27's lesson). Measured: 0 straight apostrophes, 1 link to `/`, title `Not on file`, `robots: null` unchanged |
+| **B2** | the masthead collapsed to three ragged baselines at **exactly 768** — Tailwind's `md` fires before the row fits | **fixed** | Swept 760→1024 at 20px steps (`probe-header-fit.mjs`): the full row **needs 740px** of content; `md` gives 672; **820 gives 724 and still wraps** (navHeight 48); 840 fits on 4px; **880 is the first stop with real air (slack 44)**. Reveal moved to `min-[880px]`, and the mail chip's `md:hidden` pinned to the same stop so contact is reachable at every width and never twice. Re-measured at 640/700/768/819/820/900/1000/1100/1240/1440: **navHeight 36 at every one** |
+
+## The fifteen shipping notes
+
+| id | status | what landed |
+|---|---|---|
+| **S1** | **fixed** | `It's` → `It’s` (U+2019) in the masthead's visible span **and** the h1's `aria-label`, so the drawn name and the spoken name are one string. The last straight apostrophe on the site sat in its largest glyph run |
+| **S2** | **fixed** | 40 strings in `projectCaseStudies.ts`, 5 in `proofManifest.ts`, 5 in `scenes/manifest.ts`, 3 in `evidence/page.tsx`. `"web beta is a scaffold"` → `“ ”`. **Two exceptions kept straight, on purpose:** `set_config('app.user_id', $1, true)` (Postgres syntax quoted verbatim in a Cadence receipt) and `messages.get(format="metadata")` (a Gmail API argument). A curly quote inside a literal a reader might paste is a bug, not a refinement. The rule is now written at the top of `projectCaseStudies.ts`. **Measured: 0 straight apostrophes in rendered text on all nine routes**, those two code literals excepted |
+| **S3** | **fixed** | The upstream artifact settled both halves: **BENCHMARKS.md @ c6e5c0b writes "3.5× faster"** in its own Analysis section — U+00D7, one decimal — so `3.50x` was neither the benchmark's precision nor its glyph. `3.5×` now everywhere: home deck, chip, /evidence, the Glyph receipt, and the axis of the chart beside it (`1×` with it). `~6.5×` and `~2.8×` follow the same law. **Measured: zero letter-`x` ratios in rendered text on any route.** macro-F1: the rule was written down rather than changed — prose is `macro-F1`, the lowercase-mono apparatus (chips, endnote claims, scene proof lines) stays `macro-f1`, because that is the register talking, not a second spelling |
+| **S4** | **fixed** (one half declined, measured) | A deep-linked receipt now **lifts**: the paper under it goes one stop lighter toward `--color-canvas` with a 2px clay rule in the margin, fading over 2s to a **residue** (opacity 0.45) rather than to nothing — so the animation's final frame **is** the static rule, and reduced-motion / motion-off / print / JS-dead all paint the identical settled mark (A7). `opacity` only (D3). The wash LIGHTENS deliberately: a clay tint was measured and rejected — 4% clay drops clay TEXT (a HELD stamp inside such a row) from 4.67:1 to **4.46:1**, sub-AA. Applied to `[data-receipt-row]`, and `/evidence` entries now carry that attribute so both proof surfaces share one rule. **`scroll-margin-top` declined**: F69 removed exactly that, `scroll-padding-top: 6rem` on `html` is the sole authority, and the landing measures `top: 96, clearsHeader: true` — a margin here would be **added** to the band, not instead of it |
+| **S5** | **fixed** (one half declined, measured) | The masthead prints as a **name, not a menu**: the chapter list, day glyph, portrait trigger, mail chip and the motion toggle (both seats) leave the paper edition; the wordmark and the resume chip (whose print treatment F04 authored) stay. **The colophon stays** — it is the one piece of chrome more at home on paper than on screen. `break-inside: avoid` extended to the sidebar `dl` rows on both proof surfaces (a `dt` on page 4 with its `dd` on page 5 is the same broken object §7 was written about). `.notice-surface` joins the grounds that come off. **`print-color-adjust: exact` declined**: it would print the grain, the contour and chapters 06/07's ledger browns — the cartridge-eater F04 exists to avoid. The two meanings of "print" are now disambiguated in the file: `html[data-tier="print"]` is the frame governor's motion tier, `@media print` is the paper edition. Three PDFs re-rendered at `printBackground: false` (the Cmd+P default) |
+| **S6** | **fixed** | The escape hatch returns to the phone in the shape F16 allows — a **row**, not a run: its own line, its own 44px box, `space-y-3` around it. F16 was right to delete the three-link run (three 15px targets 16px apart), but deleting the run deleted the only first-frame route to /evidence. Two phone affordances become three, against the nine F16 measured. **Measured at 320/360/390: every hero affordance ≥44px, none wraps** |
+| **S7** | **fixed** | All six unmarked external links wear `↗` (F41's glyph contract): masthead github, the gate's github + linkedin, the jetpack row title (0.42em, raised — the apparatus mark, not a second headline glyph), the jdk metric chip, and `source`. **Measured: 12 of 12 visible `target="_blank"` links on `/` are marked**; the 13th is `resume`, which is same-site |
+| **S8** | **fixed** | `text-wrap: pretty` on the prose voices — serif body, the ¶05 deck pair, the litany, the receipts. Deliberately **not** `balance`: `pretty` rebreaks only the last lines, so the boxes the Red Thread and the line-splitter measure do not move. **Measured: 30 paragraphs with a <25% last line before, `0` after — at 1440 and 390, on home, /evidence and a case file.** No NBSP proved necessary, so none was added |
+| **S9** | **fixed** (inverted target, stated) | The `.sr-only` twin leaves the selection, so a paired paragraph pastes **once**. The brief asked for the opposite — `user-select: none` on the aria-hidden VISUAL twin — and that was declined after thinking it through: making the thing a reader can SEE unselectable means dragging across the site's most-read prose paints no highlight at all, a worse defect than the one being fixed and on more surfaces. Same cure, no cost, and nothing about the accessible name moves. **Measured: 1 occurrence, `duplicated: false`** |
+| **S10** | **fixed** | The case-file sidenote marker was `t1` in the **full** 13px label class with `ml-1` of air. It is now the masthead's own grammar — a bare numeral in the mono hand, sized by the same `max(0.14em, label)` expression, `align-super`, tucked against the period. The `t` moved into the slip, which opens with the matching numeral and the word "tradeoff". **Measured: `marginLeft: 0px`, Fragment Mono, `vertical-align: super`, on all four rows** |
+| **S11** | **fixed** | The disposition key moved to the **table head**, above the rows. Two of three rows say "refused"; the sentence that makes that a virtue sat in the figcaption BELOW them, so the first read was a scoreboard with two losses. Nothing is softened — the rows still say refused, twice, in the same ink. "passed — human signed off" stays in the caption; `passed` was never the word at risk |
+| **S12** | **fixed** | The redaction keeps its `▓▓` (it IS the honesty — aria-hidden, sr-only twin, no invented f1; **5 blocks intact**). What moved is WHEN the reader learns what it means: a dim `metrics withheld — the caption says why` directly under the column head, gated `sm:block` exactly like the metric column it captions |
+| **S13** | **fixed** | `formatDateRange` and the hard-coded education line now set the **en dash**, matching the case files' own `jun 2025 – may 2026` for the same role. Three date lines in one chapter had two grammars; they have one |
+| **S14** | **fixed** (one true inconsistency) | `imageAlt: "JobTracker …"` described the CURRENT diagram with the retired product name, in the one string on that record only a screen-reader user hears → `Applied`. The other two `JobTracker`s are correct and stay: `Applied (formerly JobTracker)` is history stated as history, and "the JobTracker scheme" is an Xcode scheme name. The 24 lowercase `applied`s are repo paths and artifact labels — data tokens, correctly lowercase. The register rule is now stated where the data lives |
+| **S15** | **fixed** | The rail follows the **content column**: `left: max(1rem, calc(50% - 704px))`. 620 is half the container, 84 is the distance the rail sat inside the container's left edge at 1440. The `max()` makes it a pure widening fix. **Measured: 1280 and 1440 unchanged at `left: 16`; the gutter is 195px at 1440, 1920 AND 2560** — it was 788px of blank paper at 2560 |
+
+## The nits
+
+| id | status | what landed, or why not |
+|---|---|---|
+| **N1** | **fixed** | The flagship's plates were numbered by array order while the receipts cited the poster **first** — a reader met "see fig. 6", then "fig. 5" three times. Figures are numbered in order of first reference: poster → fig 4, deck → fig 5, the uncited registry screenshot → fig 6. The grid is better for it (the one `md:col-span-2` plate now rules the full width at the top). **Measured: plate ids `fig-4, fig-5, fig-6`; first citations `4,5,5,5,4,4`** |
+| **N2** | **declined** | `fig .0` is a house choice — the chapter-figure grammar starts each chapter's series at `.0` deliberately |
+| **N3** | **fixed** | One glyph per role, everywhere: `↗` leaves the site, `⟶` goes deeper into this argument, `⟵` returns. S7 closed the last six exceptions, and no new arrow was invented (S12's caption says "the caption says why" rather than reaching for a `↓`) |
+| **N4** | **declined — design call for the owner** | Three vocabularies (chapter names, case-file terms, apparatus labels) is a register decision above a fix round's pay grade. Flagged, not touched |
+| **N5** | **fixed** | The glance strip's separator now carries the meaning: `·` joins the parts that SUM to the total, an em dash introduces the subset. Reads `11 entries · 8 public · 3 private-safe — 1 of them held, not yet earned` (8+3=11). Every number still computed from the rows the marks are drawn from |
+| **N6** | **fixed (free half)** | The day mark's sr-only sentence is now also a `title` on the aria-hidden cluster — a hover for pointer readers, nothing announced twice |
+| **N7** | **fixed (free half)** | "motion: on" states the current state; the `title` now says what pressing it does. `aria-pressed` already carried the semantics, and the label is still the accessible name |
+| **N8** | **fixed** | The gate row takes the number column, **unnumbered**. It is NOT renumbered — the gate is what stands between 6.0 and 7.0, and numbering it would make the seven-phase claim false. The clay square sits where the digit would be, in a `calc(4ch + 0.2em)` slot (the `+0.2em` is `.label-mono`'s four tracking gaps, which `ch` knows nothing about). **Measured: gate label and phase label both land at x=952 — exact** |
+| **N9** | **checked, no change** | ch02's tail was compared against its neighbouring seams: at 1440 the chapters measure 900 / 764 / 1563 / 1777 / 3129 / 765 / 1778px — ch02 (764) is the SHORTEST chapter on the paper, not an outlier tail. The editorial breathing is authored |
+| **N10** | **declined** | The garnish is deliberately quiet (§F1a, full tier only), and the rail's hover already draws its label. A louder nudge is a design change, not a fix |
+| **N11** | **declined** | Recorded design call |
+| **N12** | **fixed** | The `cited above, argued in full` index printed its peers on whitespace alone while every other peer list on the paper carries the middot — two underlined links parted by a gap read as one wrapped title. The separator is aria-hidden (the `li`s already say "separate"), and the gap tightened to 3 because the dot now does the parting. **Measured: `master inventory pipeline · policybot`** |
+| **N13** | **fixed** | fig 5.3's `invite — sam · priya` ended at x≈188 — exactly where its chip border is drawn — so the rule ran through the final `a`. The old estimate was the error: chip labels are not `textLength`-pinned, so they set at ~8.3 units/char, not 7.5. Chip widened 176 → 196 (the same 10 units of padding it always had on the left), and the snap connector's departure moved 196 → 216 to keep its 8px of air. **Measured: `textInsideBy: 15`, `overlapsBorder: false`, `snapStartsRightOfChip: 8`.** Geometry only |
+| **N14** | **declined** | Recorded design call |
+| **N15** | **no change needed** | `#gate` already lands 96px below the viewport top through the single `scroll-padding-top` authority; adding `scroll-margin` here is the F69 bug |
+| **N16** | **fixed** | The week header read `m t w t f s s` — two `t`s and two `s`s, in a figure whose whole claim is "the sentence resolved to THIS day". Now `m t w th f sa su`. **Measured: 7 distinct labels**, and the 30-unit columns carry them centred |
+| **N17** | **fixed** | The archive holds exactly as many case files as the story has chapters, so `¶ case file 05 / 07` and the teaser's `¶ 06 / 07 · glyph` were the chapter counter's exact form. Three differences now separate the series, each legible alone: the words "case file", **unpadded** digits, and `of` for `/`; the teaser also drops its `¶` (it is a link in a sentence, not a kicker). **Measured: `¶ case file 5 of 7 · cadence — filed 2023-09 · last verified 2026-07`** |
+| **N18** | **fixed** | The one passage written by somebody else set without quotation marks, while fig 5.3 sets the author's own invented sentence inside `“ ”`. The marks are added in the MARKUP, never in the data — `testimonials.ts` gates the excerpt as a contiguous verbatim substring, and a curly quote inside the string would be an edit to someone else's sentence. Both ellipses stay: it opens mid-letter and closes mid-letter |
+
+## Spec edits, and why they were justified
+
+| Edit | Justification |
+|---|---|
+| `portfolio-fixtures`: `EXPECTED_MASTHEAD` → `It’s` | The fixture moved because the PAGE moved (S1). Same words, same two lines, same spoken sentence — one character, and it is the character the rest of the site already sets |
+| `text-garnish`: wet-line seat 0 → `It’s`; `text-motion`: `THREAD_ANCHOR_TEXT` → `It’s all real.1` | Same string, same reason. Both specs assert the masthead's exact text; leaving them would have asserted a spelling the site no longer has |
+| `portfolio-fixtures`: `ATLAS_ALLOWED_METRICS`, `RECRUITER_HERO_METRICS`, `METRIC_HOME_CHAPTER`, the Glyph chip and `fastMnistSpeedup` → `3.5×` | S3. The upstream benchmark's own notation is `3.5×`; the fixtures were asserting a spelling that contradicted the artifact they exist to protect |
+| `portfolio-fixtures`: `RECRUITER_HERO_LINKS` → `github ↗` | S7 put the glyph inside the link text, which is inside the accessible name. Asserting the bare word would assert an unmarked external link — the exact defect |
+| `portfolio-fixtures`: `recentExperienceRange` → en dash | S13. The guard still binds; only the mark changed |
+| `atlas`: `STALE_IDENTITY_COPY` **+ both en-dash spellings** | The stale-phrase guard named only the hyphen forms. Dropping them would have quietly retired a guard; adding the en-dash twins keeps a stale phrase failing **in either grammar** |
+| `paper-memory`: the citation test reads the cited figure from the DOM instead of hard-coding `6` | N1 renumbered the flagship's plates. Swapping one literal for another would rot again; the spec now asserts the crosswalk **closes** — a row citing a plate that does not exist fails wherever the numbers land. Strictly stronger, not looser |
+| `check-contrast`: **+8 pairings, +`blend()`** | S4 introduced a composited ground. The gate now asserts every ink a receipt row can print on that wash at BOTH its settle peak and its resting residue — which is what caught the clay-wash instinct at 4.46:1 before it shipped |
+
+## Verification at close
+
+`tsc --noEmit` clean · `eslint . --ext .ts,.tsx` clean ·
+`prettier --check "src/**/*.{ts,tsx,css,json}"` clean · production build
+clean at both `NEXT_PUBLIC_BASE_PATH=` and `/Portfolio-2.0`.
+
+Gates: **contrast passed** (with the 8 new target-row pairings) ·
+**proof-manifest passed** · **og-card check passed** (9 cards) ·
+**static-export SEO passed**.
+
+Playwright against the static export on **:3200** —
+**chromium-desktop 193 passed, 2 skipped** (atlas, a11y-audit,
+interactions, nav-and-images, comprehensive-qa, text-motion, dossier,
+paper-memory, day-arc, red-thread, reduced-motion, scroll-engine,
+pipeline-run) · **chromium-mobile 49 passed** (atlas) ·
+**firefox-desktop 5 passed** (scroll-engine).
+
+The **9-width masthead sweep** (640 / 700 / 768 / 819 / 820 / 900 / 1000
+/ 1100 / 1240 / 1440 — ten stops, including exactly 768 and both sides of
+the rejected 820 candidate): **navHeight 36 at every width**, one
+baseline everywhere. **320 → 2560** in twelve steps:
+`scrollWidth === clientWidth` at every width **except 320** — see below.
+
+Print: three PDFs re-rendered at `printBackground: false`
+(`shots-fix3-nitpick/print-{home,case,evidence}.pdf`), with the viewer's
+before-frames beside them.
+
+### The delight list, re-checked
+
+Day-arc light (`day-arc` 100% pass) · red thread (`red-thread` 100%) ·
+rail check-marks (`text-motion` — marks accumulate and retreat) · litany
+receipts (`text-motion`, static and engine) · the ap·prov·al entry
+(`paper-memory` press-to-sign, one run every surface, keyboard, reduced
+motion) · the colophon (**explicitly protected** — S5 hides the toggle
+inside it and nothing else) · the honesty apparatus (proof gate green;
+the redaction blocks are intact and now explained EARLIER, not softened;
+HELD stamps untouched) · back-button scroll restore (`scroll-engine` —
+the nav writes history, Back stays in) · dotted leaders (the case-file
+meta ledger untouched, and the new 404's index is set in the same
+furniture). Nothing on the list regressed.
+
+### Found while verifying, not caused by it
+
+At **320px the document overflows by 3px**: the gate's APPROVED stamp
+plate renders 293px wide inside a 266px content box
+(`ApprovedStamp.tsx` — `w-[min(300px,88vw)]`, whose own comment claims
+"88vw on the compact seat keeps a margin at 320"). The element chain is
+`BUTTON.block < DIV.mt-10 < … < SECTION#gate`, and nothing in this round
+touched that component, its CSS, or its container. Measured in
+`probe-320-overflow.mjs`. Recorded here rather than folded into a round
+it has nothing to do with — the fix is a one-token change to a
+signature-act measurement and deserves its own look.
+
+### What this round did not resolve
+
+Nothing on the B/S/N list is open. Four nits were **declined** with the
+reasons above (N2, N4, N10, N11/N14), and two halves of otherwise-fixed
+notes were declined **on measurement** (S4's `scroll-margin-top`, S5's
+`print-color-adjust: exact`) — in both cases because the requested change
+would reintroduce a defect a previous round removed, and the file now
+says so at the point where the next builder will reach for it.
+
+Screenshots and PDFs are written to
+`docs/design-lab/shots-fix3-nitpick/` and, per this repo's rule on
+binaries, are **not committed**; the harness that regenerates them and
+the measurements it records (`fix3-notes.json`) are.
