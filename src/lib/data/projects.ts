@@ -103,10 +103,17 @@ export const projects: Project[] = [
   {
     id: "jobtracker",
     title: "Applied",
+    /* Layer honesty (2026-07-26, with the case-file re-pin to 36a2f54):
+       these strings used to say a 3-layer classifier builds the hosted
+       dashboard. It does not. `classifier/hybrid.py` short-circuits after
+       the rules layer whenever `deployment == "cloud"` — the torch /
+       sentence-transformers / setfit stack does not fit the serverless
+       slot. All three layers are real; they run on the desktop app and in
+       the browser Space. Case-file receipt 09 argues the limit. */
     shortDescription:
-      "A Next.js job-search tool: connect Gmail, fetch your inbox, and a 3-layer hybrid classifier turns it into a live dashboard of your real applications.",
+      "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and runs a 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) to build a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue. The same classifier is also shipped as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers).",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) runs on the desktop app and as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
@@ -115,7 +122,11 @@ export const projects: Project[] = [
       { name: "SetFit", color: "#ff6f00" },
       { name: "ONNX Runtime", color: "#8a2be2" },
     ],
-    githubUrl: "https://github.com/yadava5/jobtracker",
+    /* Repo renamed yadava5/jobtracker → yadava5/applied (verified via
+       `gh api`, 2026-07-26). The old path still redirects; this names the
+       current one. The project `id` stays `jobtracker` — it is the public
+       /projects/jobtracker/ route. */
+    githubUrl: "https://github.com/yadava5/applied",
     liveUrl: "https://getapplied.vercel.app",
     image: withBasePath("/images/projects/jobtracker-architecture.svg"),
     imageKind: "diagram",
@@ -127,15 +138,18 @@ export const projects: Project[] = [
     startDate: "2026-02",
     endDate: "Present",
     highlights: [
-      "Real Gmail connect -> fetch -> 3-layer hybrid classify (rules -> e5 similarity -> gated SetFit)",
+      "Real Gmail connect -> metadata fetch -> classify, end to end on the hosted app",
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
-      "Also ships as an in-browser int8 ONNX classifier (22.8 MB, output-identical)",
+      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) runs on the desktop app and as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
     ],
     isPrivate: false,
     metrics: [
-      { label: "Classifier", value: "3-layer hybrid — rules -> e5 -> SetFit" },
+      {
+        label: "Classifier",
+        value: "3-layer hybrid — rules -> e5 -> SetFit (hosted: rules only)",
+      },
       { label: "Runs in-browser", value: "int8 ONNX, output-identical" },
     ],
     proofIds: [
