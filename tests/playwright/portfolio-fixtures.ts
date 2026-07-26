@@ -105,6 +105,32 @@ export const EXPECTED_HOME_PROJECT_TITLES = [
   "LifeQuest",
 ];
 
+// System Cards (2026-07-26). Every live app serves an interactive
+// architecture-and-evidence card at `<liveUrl>/system-card`; the
+// portfolio is the hub that links landing · live app · that card, and
+// the third of the three had no link anywhere on this site.
+//
+// The id list is written out rather than derived from the data it
+// checks: a fixture computed from `projects.systemCardUrl` would agree
+// with the data by construction and could never catch a project losing
+// its card. This one fails if any of the six goes quiet.
+export const EXPECTED_SYSTEM_CARD_IDS = [
+  "jobtracker",
+  "automl",
+  "taskflow-calendar",
+  "fast-mnist-nn",
+  "lifequest",
+  "jetpack-compress",
+];
+export const SYSTEM_CARD_PROJECTS = projects.filter(
+  (project) => project.systemCardUrl
+);
+// The two that carry the link on the HOME paper. The other four fold it
+// into their case file's meta ledger, which is the same discipline F40
+// applied to `source` and `demo ↗`: a row with a case file does not
+// repeat that file's terminals in ¶05's rail.
+export const SYSTEM_CARD_HOME_IDS = ["jetpack-compress", "lifequest"];
+
 export const CASE_STUDY_LOCAL_ARTIFACTS = projectCaseStudies.flatMap((study) =>
   study.artifacts
     .filter((artifact) => !artifact.href.startsWith("http"))
@@ -278,6 +304,23 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   policybotDeploymentBoundary:
     "no production usage, workspace adoption, or always-on service claim is made here.",
   policybotValidationLedger: "Validation ledger proof",
+  // Cadence's isolation section (2026-07-26). The file went from three
+  // receipts to ten, and the seven new ones argue the portfolio's
+  // strongest systems claim — which makes them the ones most worth
+  // asserting, because an overstated security claim is the most
+  // expensive kind to be wrong about.
+  //
+  // Four strings, chosen as the load-bearing ones: the bug, the number,
+  // and the two limits without which the number reads as more than it
+  // is. `cadenceInertBoundary` and `cadenceRoleBoundary` follow exactly
+  // the jobtracker* boundary keys added in the re-pin round — a claim
+  // and the limits that keep it honest are asserted together, so a
+  // future edit cannot keep the claim and drop the limit.
+  cadenceIdorReceipt: "I found and fixed 7 IDOR-vulnerable endpoints",
+  cadenceIsolationTests:
+    "11 of 11 isolation tests pass against a real Postgres",
+  cadenceInertBoundary: "The DB-enforced RLS is not turned on in production",
+  cadenceRoleBoundary: "which role the production DATABASE_URL actually uses",
 };
 
 export const EXPECTED_LINKS = {
