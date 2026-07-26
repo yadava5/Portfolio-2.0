@@ -2242,8 +2242,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "the live demo itself",
         artifacts: [
           {
-            label: "fast-mnist.vercel.app ↗",
-            href: "https://fast-mnist.vercel.app",
+            /* 2026-07-26: was `fast-mnist.vercel.app`, the pre-rename
+               alias. It still answers, which is worse than a 404 — the
+               file printed one host in its meta ledger and a different
+               one here for the same app. Erratum on file (the same
+               two-host defect corrected on Cadence the same day). */
+            label: "getglyph.vercel.app ↗",
+            href: "https://getglyph.vercel.app",
           },
         ],
         date: "2026-07",
@@ -2259,6 +2264,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-05-28",
         kind: "erratum",
         text: "Retracted the earlier AVX-512 inference-speedup claim: the committed classify-throughput rows do not support it. The number this file stands behind is the 3.50x dot-kernel speedup, and the receipt above links the committed data.",
+      },
+      {
+        date: "2026-07-26",
+        kind: "erratum",
+        text: "The live-demo outcome row linked fast-mnist.vercel.app. That alias still answers, so nothing 404'd — but it is not the brand URL, and the file was printing one host in its meta ledger and another in the row. The row now links getglyph.vercel.app, the same host as the rest of the file.",
       },
       {
         date: "2026-07",
