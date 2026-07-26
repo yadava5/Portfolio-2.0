@@ -345,13 +345,28 @@ test.describe("paper memory — thread-as-citation", () => {
       "the citation stroke is desktop-only (≥1024, hover)"
     );
     await page.goto("/projects/automl/");
-    await page.locator("header[data-lenis-connected='true']").waitFor({ state: "attached", timeout: 5000 });
+    await page
+      .locator("header[data-lenis-connected='true']")
+      .waitFor({ state: "attached", timeout: 5000 });
 
     /* The always-present mono affordance: the citation link is
-       sharpened to the plate anchor, and the plate exists */
-    const row = page.locator("[data-cites='6']").first();
-    await expect(row.locator('a[href="#fig-6"]').first()).toBeVisible();
-    await expect(page.locator("#fig-6")).toBeAttached();
+       sharpened to the plate anchor, and the plate exists.
+
+       Fix round 3, N1: this used to hard-code `6`, and N1 renumbered the
+       flagship's plates so they ascend in the order the receipts first
+       cite them (the poster led the argument but carried the highest
+       number). Rather than swap one literal for another, the spec now
+       READS the figure the first citing row names and asserts the
+       crosswalk closes on it — which is the property that actually
+       matters, and which no future renumbering can rot. It is a
+       stronger assertion, not a looser one: a row citing a plate that
+       does not exist now fails wherever the numbers land. */
+    const row = page.locator("[data-cites]").first();
+    await expect(row).toBeAttached();
+    const cited = await row.getAttribute("data-cites");
+    expect(cited).toMatch(/^\d+$/);
+    await expect(row.locator(`a[href="#fig-${cited}"]`).first()).toBeVisible();
+    await expect(page.locator(`#fig-${cited}`)).toBeAttached();
 
     /* Hover: the pen stroke draws (~400ms) to fully inked */
     await row.hover();
