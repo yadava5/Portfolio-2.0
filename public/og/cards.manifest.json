@@ -1,0 +1,41 @@
+{
+  "note": "Written by scripts/asset-truth/render-og-cards.mjs. `npm run assets:check-og` fails when a card's content hash no longer matches the data layer.",
+  "cards": {
+    "case-automl.png": {
+      "svg": "c7867a3495a9a64d6b9da27d9893f5108cf80a9031ea4276152b40f1a6a1f537",
+      "png": "9a083843d43195e8bffc6e4c44df19a6c17b29ebb3295af7726a129e45556979"
+    },
+    "case-fast-mnist-nn.png": {
+      "svg": "1a8c7bba1061018fcbf2c673da6059a501d5d74910d374a9f4361779d28f9c9d",
+      "png": "6fa113d444b3b0c2cfc937aaaf9ed15dcfaa8a24e66056da232c94439558e62c"
+    },
+    "case-jobtracker.png": {
+      "svg": "400fa4cf72c9a5f03225a8745c9f474f58cb3a13f5af4d4fd43debf21095b521",
+      "png": "23fb748084b326837212216be1f8c48038b5bff754fe8c4bb7c26eb66be4f4f1"
+    },
+    "case-master-inventory.png": {
+      "svg": "729a25aa060aa1607f42a00da2847a4ce317a5be3d759ca202774876bb984dd5",
+      "png": "9c1d62cddaaf9d9f71750014e6ef7489667ebe875429a5e8401db5ad3e255fe6"
+    },
+    "case-policybot.png": {
+      "svg": "6ed226d7bfa55ad16acbbb9f245a755c613b3e3118be5211efed66d1580e5d02",
+      "png": "1c6ed74c641cb940388cce1a8f3cdf9a7128d4f420a89b54d23236a6d8b2651b"
+    },
+    "case-taskflow-calendar.png": {
+      "svg": "05641cb5ffb3e766ea6311fefc7cae8af3031b600e5913cb60894ef96f9348f3",
+      "png": "2e0abf75f73a93ed91edd7e9415e795dfff98b322d4db5e6a9c1ad5b013c24f7"
+    },
+    "case-visual-assist.png": {
+      "svg": "e90b98a1965c82a5174b83363deb8e458d25b43eeb9a845f6363ffa825c40586",
+      "png": "7e5e4d33764b07518556138960d376a2df77d21b3c6dbd0d57e80257f55e5c53"
+    },
+    "evidence.png": {
+      "svg": "bdebd53e59936b4433231bfe8262d37ed3dcfb578cea683b1c89ede5e4076c81",
+      "png": "c39c2fa5ca7745a7356a2785f3643cb0539adc6ce2dc73e3709929c845b10624"
+    },
+    "home.png": {
+      "svg": "f280394294e55debb874abadf528951b72af9687225987c17d4251e6fdecfa92",
+      "png": "44eaafb9c143f85888661ea1c8c1c66bb25df4feb59bc9659788952308c27d3b"
+    }
+  }
+}
