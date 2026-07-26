@@ -64,7 +64,11 @@ export interface ProofManifestEntry {
    verified via `gh api` on 2026-07-18. `source` values stay plain
    string literals so scripts/qa/check-proof-manifest.mjs can parse
    them; the consts below feed the display labels only. */
-const JOBTRACKER_SHA = "3225eb4";
+/* Applied re-pinned 3225eb4 → 36a2f54 on 2026-07-26 (repo also renamed
+   yadava5/jobtracker → yadava5/applied). See the re-pin note in
+   projectCaseStudies.ts; the case file's corrections register carries the
+   erratum. Every `source` below was fetched at this sha and returned 200. */
+const APPLIED_SHA = "36a2f54";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const TASKFLOW_SHA = "69a59e7";
 const FAST_MNIST_SHA = "c6e5c0b";
@@ -76,15 +80,15 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-local-classifier",
     label: "3-layer local classifier",
     claim:
-      "Applied uses a 3-layer rules, embeddings, and SetFit classifier path for job-search email classification.",
+      "Applied's classifier is a 3-layer rules, embeddings, and SetFit path — all three run on the desktop app and in the browser Space; the hosted web app runs the rules layer alone.",
     source:
-      "https://github.com/yadava5/jobtracker/blob/3225eb4/docs/ML_STRATEGY.md",
-    sourceLabel: `docs/ML_STRATEGY.md @ ${JOBTRACKER_SHA}`,
+      "https://github.com/yadava5/applied/blob/36a2f54/docs/ML_STRATEGY.md",
+    sourceLabel: `docs/ML_STRATEGY.md @ ${APPLIED_SHA}`,
     verification:
-      "ML strategy doc read against the backend source at the pinned commit.",
+      "ML strategy doc read against the backend source at the pinned commit; the hosted limit is the cloud short-circuit in classifier/hybrid.py, argued at case-file receipt 09.",
     visibility: "public",
     privacyBoundary: "No private email content is shown.",
-    date: "2026-06",
+    date: "2026-07-26",
     receipt: {
       label: "jobtracker case file · receipt 02",
       href: "/projects/jobtracker/#v-jobtracker-2",
@@ -96,10 +100,10 @@ export const proofManifest: ProofManifestEntry[] = [
     claim:
       "Applied's rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
     source:
-      "https://github.com/yadava5/jobtracker/blob/3225eb4/backend/data/evaluation/baseline_hybrid_v3.json",
-    sourceLabel: `baseline_hybrid_v3.json @ ${JOBTRACKER_SHA}`,
+      "https://github.com/yadava5/applied/blob/36a2f54/backend/data/evaluation/baseline_hybrid_v3.json",
+    sourceLabel: `baseline_hybrid_v3.json @ ${APPLIED_SHA}`,
     verification:
-      "Committed 2026-03-03 baseline (deterministic profile) plus the public backend-ci gate run.",
+      "Committed 2026-03-03 baseline (deterministic profile) plus the public backend-ci gate run of 2026-04-20. The artifact is byte-identical at the new pin — re-read 2026-07-26, same 96 samples, same 0.9791.",
     visibility: "public",
     privacyBoundary:
       "The committed baseline JSON records metrics and label counts, not message content.",
@@ -111,16 +115,17 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "jobtracker-backend-tests",
-    label: "182 backend tests",
+    label: "271 backend tests",
     claim:
-      "The Applied backend suite passed 182 tests locally under the test/null-keyring environment.",
-    source: "https://github.com/yadava5/jobtracker/tree/3225eb4/backend/tests",
-    sourceLabel: `backend/tests @ ${JOBTRACKER_SHA}`,
-    verification: "Local run against the pinned public test tree.",
+      "The Applied backend suite passed 271 tests locally, with 10 skipped, under the test/null-keyring environment.",
+    source: "https://github.com/yadava5/applied/tree/36a2f54/backend/tests",
+    sourceLabel: `backend/tests @ ${APPLIED_SHA}`,
+    verification:
+      "Local run against the pinned public test tree, 2026-07-26. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-06",
+    date: "2026-07-26",
     receipt: {
       label: "jobtracker case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",

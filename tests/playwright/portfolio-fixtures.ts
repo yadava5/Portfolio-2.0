@@ -88,6 +88,12 @@ export const CASE_STUDY_PROJECT_TITLES = projectCaseStudies
 // no case route yet. Cadence moved index → prime row and automl left
 // the index (it IS the flagship) in the same-day dedupe ruling, so the
 // surfaced set is unchanged.
+// 2026-07-26: LifeQuest joins. It is `featured: true` and live, and it
+// had no surface on the home paper at all — the set this list asserts
+// was silently short one live project. It now holds ¶05's second index
+// line ("also live, without a case file —"), external-linked because it
+// has no case route. Adding it here is what makes the omission
+// impossible to reintroduce quietly.
 export const EXPECTED_HOME_PROJECT_TITLES = [
   "Agentic AutoML Platform",
   "Applied",
@@ -96,6 +102,7 @@ export const EXPECTED_HOME_PROJECT_TITLES = [
   "Cadence",
   "Master Inventory Pipeline",
   "PolicyBot",
+  "LifeQuest",
 ];
 
 export const CASE_STUDY_LOCAL_ARTIFACTS = projectCaseStudies.flatMap((study) =>
@@ -209,19 +216,37 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
   jobtrackerArchitecture: "Local classification architecture",
-  jobtrackerReadme: "Source-truth README",
+  // Re-pin round (2026-07-26). Two artifact labels changed because the
+  // old ones asserted something false:
+  //   · "Source-truth README" — the README still calls apps/web an
+  //     unwired scaffold. It is a real file at the pin and stays linked,
+  //     but the page may not call a stale doc source-truth.
+  //   · "Web beta scaffold" — apps/web IS the shipped product now.
+  // Both keys still assert a visible artifact label; neither assertion
+  // was dropped.
+  jobtrackerReadme: "README — the desktop-era record",
   jobtrackerArchitectureDocs: "Architecture docs",
   jobtrackerBackendTests: "Backend test suite",
   jobtrackerBenchmark: "ML strategy and evaluation gates",
-  jobtrackerWebBeta: "Web beta scaffold",
+  jobtrackerWebBeta: "Web app source",
   // Dossier voice rewrite (2026-07-18): first person, same fact/number.
+  // 2026-07-26: 182 → 271 (suite re-run at the new pin 36a2f54; the 10
+  // skips are named in the row, so the assertion carries them too).
   jobtrackerBackendCoverage:
-    "182 tests passed under the test/null-keyring environment",
+    "271 tests passed, 10 skipped, under the test/null-keyring environment",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
+  // 2026-07-26: the boundary row was rewritten when the receipts moved
+  // from docs to source. Same promise, named against what is now linked.
   jobtrackerPrivacyBoundary:
-    "Architecture and source links are shown publicly; private email and application records are not shown.",
+    "Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
+  // 2026-07-26: the two boundary rows that carry the re-pin's whole
+  // point. If either disappears the page is overclaiming again.
+  jobtrackerRulesOnlyBoundary:
+    "On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot.",
+  jobtrackerStaleDocsBoundary:
+    "Both still describe apps/web as an unwired scaffold with a placeholder dashboard",
   visualAssistArchitecture: "On-device accessibility architecture",
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
@@ -282,7 +307,11 @@ export const RECRUITER_HERO_LINKS = [
   "github",
   "Resume (opens in a new tab)",
 ];
-export const RECRUITER_HERO_LINKS_MOBILE = ["the work", "Contact", "Resume (opens in a new tab)"];
+export const RECRUITER_HERO_LINKS_MOBILE = [
+  "the work",
+  "Contact",
+  "Resume (opens in a new tab)",
+];
 
 // The proof metrics must EXIST on the homepage; they live in the chapters
 // where their stories are told (03 the path, 04 automl, 05 work). The

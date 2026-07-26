@@ -823,3 +823,145 @@ transform dropped the leading space off the text node after it and the
 export shipped `May 2026— dean's list`. The spacing is an explicit
 expression now, and catching that is why the assertion was worth
 keeping strict.
+
+---
+
+# CONTENT-HONESTY — task #34 (the Applied re-pin) + LifeQuest's placement
+
+*2026-07-26. Two content debts, both of the same shape: the page said
+something that used to be true.*
+
+## Task #34 — the Applied dossier, re-verified and re-pinned
+
+The case file pinned every receipt at `3225eb4` and described the era
+when the native macOS app WAS the product and "the web beta is a
+scaffold". Applied now ships as a hosted Next.js app at
+getapplied.vercel.app. The scaffold caveat dies here — not because it was
+wrong when written, but because it is false now.
+
+**New pin: `36a2f54`** — the public head of `integration/web-migration`,
+the branch that carries the web app, read back with
+`gh api repos/yadava5/applied/branches` on 2026-07-26. The repository was
+also renamed **`yadava5/jobtracker` → `yadava5/applied`**; GitHub still
+redirects the old paths, so nothing previously published is broken, but
+the pins now name the current repo rather than leaning on a redirect. The
+case-file route stays `/projects/jobtracker/` — it is public and linked.
+
+**Every receipt's fate.**
+
+| # | Receipt | Fate |
+|---|---|---|
+| 01 | Gmail OAuth2 + iCloud IMAP as first-class sources (`docs/ARCHITECTURE.md`) | **rewritten** — that doc is the desktop story. The row is now the least-privilege `gmail.readonly` grant, cited to `cloud/gmail_oauth.py` + `tests/test_gmail_oauth_cloud.py` |
+| 02 | 3-layer classifier, SetFit gated (`docs/ML_STRATEGY.md`) | **kept, re-pinned** — path resolves 200 at the new sha; claim unchanged |
+| 03 | "Classification runs on-device; content is not sent to hosted inference" | **rewritten — it had become false.** Hosted classification runs on Vercel. Replaced by the stronger, still-true privacy fact: the cloud fetch is `format="metadata"`, headers + snippet, **no bodies** (`cloud/gmail_client.py`) |
+| 04 | 182 backend tests | **kept, re-run** — suite re-run at `36a2f54` on 2026-07-26: **271 passed, 10 skipped**. The 10 skips are `test_rls_postgres.py` (needs a live Postgres) and are named in the row, not folded into the total. Anchor `#v-jobtracker-4` deliberately preserved |
+| 05 | macro-F1 0.9791, 96 samples | **kept, re-pinned** — `baseline_hybrid_v3.json` is byte-identical at the new sha (re-read: same 96 samples, same 0.9791, same 2 mismatches). The protocol slip's 65 · 17 · 8 · 6 mix was re-counted from `classifier_eval_v3.jsonl` and matches exactly. Anchor `#v-jobtracker-5` preserved |
+| 05a | the backend-ci run link | **kept, relabelled.** `gh api .../runs/24665061332/jobs` confirms both gate steps ran and succeeded. It is an OLDER commit than the pin, so the label now prints its date (`backend-ci run, 2026-04-20 ↗`) instead of letting the link imply it ran at `36a2f54` |
+| 06 | macOS Debug target built locally | **kept, widened** — still `local-only` with no artifact, but the row now also states the desktop app is still in the repo and links `apps/macos` |
+| 07 | "web beta passes gates but remains a scaffold" | **rewritten — this is the row the caveat died in.** Now: the dashboard reads the summary and application endpoints server-side and draws a pipeline board, stage funnel, and review queue |
+| 08 | — | **new.** DB-enforced RLS: non-BYPASSRLS role, per-transaction `request.jwt.claims` set `is_local`, `user_credentials` FORCE'd |
+| 09 | — | **new, and the point of the round.** The hosted classifier runs the rules layer ALONE |
+| out-1 | "pipeline instead of a spreadsheet" | **kept, extended** — now terminates in the live app |
+| out-2 | "the classifier runs fully in-browser via quantized ONNX" | **rewritten.** True — but of the Hugging Face Space, not of getapplied. The row says which deployment it is talking about |
+
+**No receipt was dropped, and no pin was left dead.** Every path was
+fetched at `36a2f54` before it was written; the rule was that a receipt
+whose artifact had vanished would keep the OLD sha (a pin to history is
+honest, a 404 is not). None had to — every kept path survived.
+
+### The finding the brief did not have
+
+The brief described Applied as "real Gmail connect → fetch → **3-layer
+classify** → dashboard". The code says otherwise, and the code wins.
+`classifier/hybrid.py` short-circuits after layer 1 whenever
+`settings.deployment == "cloud"` — returning even when the rules were
+*unsure* — because torch + sentence-transformers + setfit do not fit the
+serverless slot. All three layers are real; they run on the desktop app
+and in the HF Space's int8 ONNX build. They do not run at
+getapplied.vercel.app.
+
+So the round did not simply retire a stale caveat, it installed a true
+one. That correction propagated to four places: receipt 09, a boundary
+row, the `jobtracker-local-classifier` manifest entry, and
+`projects.ts`'s own description strings (which asserted the 3-layer
+dashboard in prose no page currently renders — latent, but it is the
+string the next writer would have copied).
+
+### Why the README stopped being cited
+
+`README.md`, `docs/WEB_ARCHITECTURE.md`, and `apps/web/README.md` all
+still describe `apps/web` as an unwired scaffold with a placeholder
+dashboard. They are real files at the pin and they stay linked — but the
+artifact label **"Source-truth README" is gone**, because a page may not
+call a stale doc source-truth. It reads "README — the desktop-era record"
+with a provenance strip saying it lags. A boundary row states outright
+that these docs are not cited as evidence and why. Every receipt for the
+web app terminates in source.
+
+## LifeQuest — the omission was the dishonest state
+
+LifeQuest is `featured: true` in `projects.ts`, live at
+getlifequest.vercel.app — and it surfaced **nowhere** on the home paper.
+No row, no mention, no case file. A chapter headed "selected work" that
+silently omits a live project is making a quiet claim about the set being
+complete.
+
+The smallest honest fix is an index entry, not a scene and not a case
+file. ¶05's closing block now carries a second line under "cited above,
+argued in full —":
+
+> **also live, without a case file —**
+> **lifequest ↗** — a social-good concept for job-seekers; a playable prototype
+
+Four deliberate choices in one line:
+
+- **Its own heading, not the existing list.** Those two entries are
+  receipts for claims ¶03 and ¶06 print in their own prose (F22). This is
+  not a receipt for anything; it is a project that exists, listed as what
+  it is.
+- **External link.** There is no `/projects/lifequest/` route —
+  `generateStaticParams` builds case files only — so an internal link
+  would have shipped a 404. The running prototype is the honest terminal
+  for a project whose whole claim is that it runs.
+- **The gloss is `projects.ts`'s own `shortDescription`** (head clause +
+  closing sentence). No claim is made here the data layer does not make.
+- **"concept" and "prototype" both survive.** The line cannot be read as
+  a shipped product, which is what the data says it is not.
+
+## Spec edits, and why each was justified
+
+| Edit | Justification |
+|---|---|
+| `EXPECTED_HOME_PROJECT_TITLES` += `"LifeQuest"` | The set this list asserts was silently short one live project. Adding it is what makes the omission impossible to reintroduce quietly — the assertion is now strictly larger |
+| `jobtrackerReadme`: `"Source-truth README"` → `"README — the desktop-era record"` | The old string asserted the page calls a stale doc source-truth. Same key, same visible-artifact assertion, honest label |
+| `jobtrackerWebBeta`: `"Web beta scaffold"` → `"Web app source"` | `apps/web` IS the shipped product. Key deliberately kept so the crosswalk to the superseded claim stays legible in the diff |
+| `jobtrackerBackendCoverage`: 182 → `"271 tests passed, 10 skipped, …"` | The number moved with the tree. The skips are inside the asserted string, so a future edit cannot quietly drop them |
+| `jobtrackerPrivacyBoundary` reworded | The boundary row was rewritten when the receipts moved from docs to source. Same promise, named against what is now actually linked |
+| **+2 new keys** — `jobtrackerRulesOnlyBoundary`, `jobtrackerStaleDocsBoundary`, both asserted in `atlas.spec.ts` | The file now claims a shipped web app. The two limits that keep that claim honest are asserted, not merely written: delete either boundary row and the suite fails. **Net: assertions added, none removed** |
+| `StoryShell` ¶06 litany `"182 backend tests"` → `"271"` | It deep-links `#v-jobtracker-4`, the row whose number changed. The two move together or the litany quotes a dead number |
+| `StoryShell` ¶05 Applied muted line | Read "…and the classifier runs in your browser." All three layers DO run in a browser — in the HF Space. Under "Applied reads it" the sentence reads as a claim about getapplied, where the verdict is rules-only. Now: "inbox in, a pipeline of real applications out" — true end to end, needs no asterisk |
+
+## Verification at close
+
+`tsc --noEmit` clean · `eslint . --ext .ts,.tsx` clean ·
+`prettier --check "src/**"` clean · production build clean (8 static
+routes, `NEXT_PUBLIC_BASE_PATH=`).
+
+Gates: **proof-manifest passed** · **contrast passed**.
+
+Playwright against the static export on **:3200** —
+**chromium-desktop 127 passed** (atlas, dossier, nav-and-images,
+paper-memory, comprehensive-qa) · **chromium-mobile 48 passed** (atlas).
+
+**Links.** Every external `href` the built export ships on `/` and
+`/projects/jobtracker/` was fetched live: **31 of 33 return 200.** The
+two exceptions are the pre-existing LinkedIn profile links, which return
+LinkedIn's `999` anti-bot status to a non-browser agent and `301` to a
+browser one. Neither was touched this round. Every one of the 21 pinned
+`yadava5/applied@36a2f54` paths resolves.
+
+Evidence in `docs/design-lab/shots-dossier/` (`shoot-dossier-repin.mjs`):
+the kicker with the new status line and pin ledger, the rewritten
+summary, fig. 2's RLS gate, the receipts table, all four boundary rows,
+the three-entry corrections register, the relabelled provenance strips,
+and ¶05's closing index at 1440 and 390.

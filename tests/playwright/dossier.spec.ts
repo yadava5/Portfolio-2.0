@@ -19,8 +19,11 @@ import { test, expect, Page } from "@playwright/test";
 import { projects } from "../../src/lib/data/projects";
 import { proofManifest } from "../../src/lib/data/proofManifest";
 import {
+  auditTallyClauses,
   projectCaseStudies,
   receiptAnchor,
+  receiptAuditCounts,
+  receiptAuditState,
 } from "../../src/lib/data/projectCaseStudies";
 
 /** Anchors the homepage registry/litany deep-link into case files */
@@ -289,6 +292,73 @@ test.describe("dossier — the evidence index", () => {
       page.locator('#gate a[href="/evidence/"]').first()
     ).toBeAttached();
   });
+});
+
+test.describe("proof glance — the scan strips recount (evviz round)", () => {
+  /* The glance strips are NEW presentation (scan-first summary figures
+     over the same rows), so they get NEW recount contracts: every drawn
+     mark and every caption count must equal an independent recount of
+     the data the strip claims to summarize — computed, never typed. No
+     pre-existing dossier contract changed hands in this round. */
+
+  test("/evidence glance draws one visibility mark per manifest entry", async ({
+    page,
+  }) => {
+    await page.goto("/evidence/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const strip = page.locator("[data-proof-glance]");
+    await expect(strip).toHaveCount(1);
+    await expect(strip.locator("[data-glance-vis]")).toHaveCount(
+      proofManifest.length
+    );
+    /* Every HELD entry — and only a HELD entry — carries the clay dash */
+    await expect(strip.locator("[data-glance-held]")).toHaveCount(
+      proofManifest.filter((entry) => entry.held).length
+    );
+    /* The caption's counts are the manifest's own arithmetic */
+    await expect(strip).toContainText(`${proofManifest.length} entries`);
+    for (const visibility of ["public", "private-safe", "local-only"]) {
+      const n = proofManifest.filter(
+        (entry) => entry.visibility === visibility
+      ).length;
+      await expect(
+        strip.locator(`[data-glance-vis="${visibility}"]`)
+      ).toHaveCount(n);
+    }
+  });
+
+  for (const projectId of ["automl", "jobtracker", "fast-mnist-nn"]) {
+    test(`${projectId}: validation glance marks match the rows' audit states`, async ({
+      page,
+    }) => {
+      const study = projectCaseStudies.find(
+        (candidate) => candidate.projectId === projectId
+      )!;
+      const expected = [...study.receipts, ...study.outcomes].map(
+        receiptAuditState
+      );
+
+      await page.goto(`/projects/${projectId}/`);
+      await page.waitForLoadState("domcontentloaded");
+
+      const strip = page.locator("#validation [data-proof-glance]");
+      await expect(strip).toHaveCount(1);
+      /* One mark per receipt row, in walk order, each carrying the
+         exact audit state the walk's gutter mark will earn */
+      const states = await strip
+        .locator("[data-glance-state]")
+        .evaluateAll((marks) =>
+          marks.map((mark) => mark.getAttribute("data-glance-state"))
+        );
+      expect(states).toEqual(expected);
+      /* The caption speaks the settled line's own tally clauses — one
+         composer (auditTallyClauses), so strip and walk cannot drift */
+      await expect(strip).toContainText(
+        auditTallyClauses(receiptAuditCounts(study)).join(" · ")
+      );
+    });
+  }
 });
 
 test.describe("dossier — t-slips as margin sidenotes (W5 round B)", () => {

@@ -36,6 +36,7 @@
  */
 
 import { HeldStamp } from "@/components/paper/HeldStamp";
+import { AuditGlyph, VisibilityGlyph } from "@/components/paper/proofGlyphs";
 import {
   CaseReceipt,
   ReceiptArtifactLink,
@@ -116,6 +117,10 @@ function KeyLabel({ children }: { children: string }) {
  * the number itself (not the page margin), so it stays clear of the
  * dossier thread's lane at every viewport.
  *
+ * The drawn paths themselves live in proofGlyphs (evviz round): the
+ * walk's gutter, the validation glance strip, and the /evidence ledger
+ * glance share one hand, so the marks can never drift apart.
+ *
  * @param props - The row's audit state
  * @returns The (aria-hidden) mark slot
  */
@@ -124,39 +129,7 @@ function AuditMark({ state }: { state: ReceiptAuditState }) {
     state === "artifact" ? "tick" : state === "capture" ? "ring" : "dash";
   return (
     <span aria-hidden="true" className={`audit-mark audit-mark-${glyph}`}>
-      {state === "artifact" ? (
-        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
-          <path
-            d="M1.3 4.9 C2.8 6.4 3.6 7.1 4.3 6.9 C5.7 5 8.1 2.3 10.8 1.2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-          />
-        </svg>
-      ) : state === "capture" ? (
-        /* The hollow ring: the hand's small circle — evidence seen on
-           this page, not pinned outside it. Wobbled like every glyph. */
-        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
-          <path
-            d="M6.2 1.4 C8.4 1.2 9.9 2.4 9.8 4.4 C9.7 6.5 8 7.8 5.9 7.6 C3.9 7.4 2.3 6.2 2.4 4.3 C2.5 2.5 4.1 1.5 6.2 1.4 Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 12 9" className="h-[9px] w-[11px]">
-          <path
-            d="M1.6 5.4 C4.3 4.6 7.9 4.6 10.4 5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-          />
-        </svg>
-      )}
+      <AuditGlyph state={state} className="h-[9px] w-[11px]" />
     </span>
   );
 }
@@ -298,7 +271,13 @@ export function EvidenceTable({
                     no linkable artifact — described only
                   </p>
                 )}
+                {/* evviz: the visibility grade drawn beside its label —
+                    the ink scale (solid / half / open+dash), aria-hidden;
+                    the bracketed mono text stays the semantic carrier. */}
                 <p className="text-ink-secondary mt-1">
+                  <span className="mr-1.5 inline-flex align-baseline">
+                    <VisibilityGlyph visibility={row.visibility} />
+                  </span>
                   {VISIBILITY_LABEL[row.visibility]}
                 </p>
               </div>

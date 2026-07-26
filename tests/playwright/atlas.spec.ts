@@ -420,6 +420,17 @@ test.describe("Daylight Study — working paper", () => {
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerPrivacyBoundary)
     ).toBeVisible();
+    /* Re-pin round (2026-07-26). The file now claims a shipped web app,
+       so the two limits that keep that claim honest are asserted, not
+       merely written: the hosted classifier is rules-only, and the
+       repo's own README/WEB_ARCHITECTURE are stale and NOT cited as
+       evidence. Deleting either boundary row now fails the suite. */
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerRulesOnlyBoundary)
+    ).toBeVisible();
+    await expect(
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerStaleDocsBoundary)
+    ).toBeVisible();
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("500+ emails/month");
