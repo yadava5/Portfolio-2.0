@@ -180,9 +180,18 @@ export function SystemDiagram({
                   <span aria-hidden="true" className="text-ink-secondary mx-2">
                     ⟶
                   </span>
+                  {/* fix round 5: JSX eats the whitespace between these
+                      spans, so the whole edge was ONE unbreakable inline
+                      run held apart by margins — no space, no wrap, and
+                      the off-spine list ran past a 320px column. <wbr />
+                      restores the break opportunities the layout always
+                      read as being there (after the arrow, before the
+                      edge's label). Inert wherever the row fits. */}
+                  <wbr />
                   <span className="text-ink">
                     {nodeById.get(edge.to)?.label ?? edge.to}
                   </span>
+                  <wbr />
                   <span className="text-ink-secondary ml-3">{edge.label}</span>
                 </li>
               ))}
@@ -236,7 +245,11 @@ export function SystemDiagram({
                 <span aria-hidden="true" className="text-ink-secondary mx-2">
                   ⟶
                 </span>
+                {/* the same soft breaks as the off-spine list above —
+                    see the note there (fix round 5) */}
+                <wbr />
                 <span className="text-ink">{to?.label ?? edge.to}</span>
+                <wbr />
                 <span
                   className={`ml-3 ${edge.gate ? "text-clay" : "text-ink-secondary"}`}
                 >
