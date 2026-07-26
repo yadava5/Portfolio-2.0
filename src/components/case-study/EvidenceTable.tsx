@@ -229,7 +229,39 @@ export function EvidenceTable({
                   {row.date ? row.date : "date not recorded"}
                 </span>
               </p>
-              <div className="label-mono">
+              {/* wrap-anywhere, not break-words — fix round 5's
+                  narrow-width repair, and one word is the whole of it.
+                  `overflow-wrap: break-word` lets a long run BREAK, but
+                  it does not reduce that run's min-content width, and a
+                  grid item's automatic minimum size IS its min-content
+                  width. So this cell's minimum stayed at the full
+                  356px of
+                  `huggingface.co/spaces/yadava5/jobtracker-classifier`,
+                  the row's single narrow track was sized to it, and the
+                  jobtracker case file shoved the document 72px past a
+                  320px viewport (52 at 340, 32 at 360, 2 at 390).
+                  `anywhere` is the one value that reduces the
+                  contribution too, so the track can be the 260px it has.
+                  overflow-wrap inherits, which is why one declaration on
+                  the cell covers the links, the plain-text labels and
+                  the visibility line.
+
+                  Deliberately NOT breakable() here, though that helper
+                  exists and the meta ledger uses it. Seeding <wbr> at
+                  the separators moves DESKTOP breaks: the desktop cell
+                  holds 35 characters at the label's 8.68px advance, and
+                  greedy line-breaking would then fill line 1 to
+                  `applied @ 36a2f54 · cloud/gmail_` and orphan
+                  `oauth.py` — a break inside a filename where the row
+                  currently breaks cleanly at the ` · `. Measured: with
+                  the hints the desktop receipts table moved 3,346
+                  pixels; without them it moves zero. The narrow cost is
+                  bounded and known — only a token longer than the 29
+                  characters a 260px cell holds is cut mid-path (3 of
+                  jobtracker's 18 artifact labels), and a pinned sha is a
+                  standalone 7-character word, so `anywhere` can never
+                  split one. */}
+              <div className="label-mono wrap-anywhere">
                 {row.artifacts.length > 0 ? (
                   /* normal-case: artifact labels carry case-sensitive
                      paths (ARCHITECTURE.md) — data, not voice */
@@ -246,7 +278,7 @@ export function EvidenceTable({
                             href={artifact.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="link-draw break-words"
+                            className="link-draw"
                           >
                             {artifact.label}
                           </a>

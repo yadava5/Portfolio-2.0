@@ -21,13 +21,13 @@
  * carries a number, date, or status — nothing survives lorem ipsum.
  */
 
-import { Fragment } from "react";
 import Link from "next/link";
 import { ArtifactGallery } from "@/components/case-study/ArtifactGallery";
 import { DossierThread } from "@/components/case-study/DossierThread";
 import { EvidenceTable } from "@/components/case-study/EvidenceTable";
 import { SystemDiagram } from "@/components/case-study/SystemDiagram";
 import { AuditControl } from "@/components/paper/AuditRun";
+import { breakable } from "@/components/paper/Breakable";
 import { CitationInk } from "@/components/paper/CitationInk";
 import { FileMemory } from "@/components/paper/FileMemory";
 import { ValidationGlance } from "@/components/paper/ProofGlance";
@@ -79,23 +79,10 @@ function fileNo(study: ProjectCaseStudy): string {
   return String(study.fileNo);
 }
 
-/**
- * Soft break hints for command/path data: a <wbr> after each separator
- * so narrow columns wrap at token boundaries, never mid-word (the
- * "classif/ier" break from the rejudge round).
- *
- * @param value - A repro command, path, or filename
- * @returns The value with <wbr> after every . / _ - = separator
- */
-function breakable(value: string): React.ReactNode {
-  const parts = value.split(/(?<=[./_\-=])/);
-  return parts.map((part, index) => (
-    <Fragment key={`${index}-${part}`}>
-      {index > 0 ? <wbr /> : null}
-      {part}
-    </Fragment>
-  ));
-}
+/* breakable() moved to components/paper/Breakable.tsx in fix round 5 —
+   the eval-protocol slip, the receipts table and the meta ledger below
+   all needed the same hand, and EvidenceTable cannot import from here
+   (this file imports it). Behaviour is unchanged. */
 
 /** Mono section heading — the dossier's inner kicker voice.
  *  W2 (friend transposition): the "[ section ] · § descriptor" form —
@@ -171,7 +158,18 @@ function PrivateStamp() {
   );
 }
 
-/** One mono dot-leader row of the meta ledger (no pills, no cards) */
+/** One mono dot-leader row of the meta ledger (no pills, no cards)
+ *
+ *  wrap-anywhere, not break-words (fix round 5): this `dd` is a flex
+ *  item, so its automatic minimum size is its min-content width, and
+ *  `overflow-wrap: break-word` does not reduce that — a demo host like
+ *  `agentic-automl-platform.vercel.app` kept the whole row 39px wider
+ *  than a 320px column no matter how the text was allowed to break.
+ *  `anywhere` is the value that reduces the contribution too. Where the
+ *  break LANDS is still decided by the <wbr> hints breakable() seeds at
+ *  the separators, so a host splits after a dot and a repo pin's sha is
+ *  never cut in half. The leader and the right-aligned value are
+ *  untouched at every width the row already fitted. */
 function LedgerRow({
   term,
   children,
@@ -183,7 +181,7 @@ function LedgerRow({
     <div className="flex items-baseline gap-3">
       <dt className="label-mono text-ink-secondary shrink-0">{term}</dt>
       <span aria-hidden="true" className="dot-leader" />
-      <dd className="label-mono text-ink max-w-[70%] text-right break-words">
+      <dd className="label-mono text-ink max-w-[70%] text-right wrap-anywhere">
         {children}
       </dd>
     </div>
@@ -275,13 +273,15 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   rel="noopener noreferrer"
                   className="link-draw normal-case"
                 >
-                  {study.repoPin.repo} @ {study.repoPin.sha}
-                  {study.repoPin.branch ? ` · ${study.repoPin.branch}` : ""}
+                  {breakable(
+                    `${study.repoPin.repo} @ ${study.repoPin.sha}` +
+                      (study.repoPin.branch ? ` · ${study.repoPin.branch}` : "")
+                  )}
                 </a>
               </LedgerRow>
             ) : (
               <LedgerRow term="repo">
-                private — {study.privateRepoName}
+                private — {breakable(study.privateRepoName ?? "")}
               </LedgerRow>
             )}
             {project.liveUrl ? (
@@ -293,7 +293,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   data-live-demo
                   className="link-draw"
                 >
-                  {liveHost} ↗
+                  {liveHost ? breakable(liveHost) : null} ↗
                 </a>
               </LedgerRow>
             ) : null}

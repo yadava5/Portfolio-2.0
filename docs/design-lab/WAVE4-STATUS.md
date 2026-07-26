@@ -1582,3 +1582,257 @@ pipeline-run) · **chromium-mobile 49 passed** (atlas) ·
 Screenshots go to `docs/design-lab/shots-fix4/` and, per this repo's rule
 on binaries, are **not committed**; the rig that regenerates them
 (`shoot-fix4.mjs`) and the numbers it records (`fix4-stamp-*.json`) are.
+
+---
+
+## FIX5 — the case files, made to fit; and a card that can no longer go stale quietly
+
+Branch `redesign/daylight-study` @ `da804c4` (fix round 4, unpushed) →
+this worktree. Round 4 closed the home page and, in closing it, wrote
+down two things it declined to fix: the **case files overflow at narrow
+widths**, and **two OG cards are already stale**. This round closes both,
+and finds that round 4 under-measured the first one twice over.
+
+One probe and one shot rig, both reusable, both in `docs/design-lab/`:
+
+| Harness | What it decides |
+|---|---|
+| `probe-fix5-overflow.mjs` | `scrollWidth − innerWidth` for every route × every width, plus, per offending element, its text, its box, its `overflow-wrap`/`word-break`/`min-width` up the ancestor chain, whether that ancestor is a grid/flex item, and whether the ink is **clipped** (painted past the edge inside a clipping frame) or **shoving** (actually widening the document) |
+| `shoot-fix5.mjs` | the receipts row, the whole `#validation` section and the fig. 1 plate at **320** (where it breaks) and **1440** (where it must not change), with the geometry recorded off the same frame as the picture |
+
+### What was actually over, and by how much
+
+Round 4 measured `/projects/jobtracker/` at four widths and attributed
+the fault to "long unbroken repo paths". Both halves needed correcting.
+Swept across all nine routes and sixteen widths, `scrollWidth −
+innerWidth` **before**:
+
+| route | 320 | 340 | 360 | 390 | 414 | 430 | 480 | 540–834 | 1024 | 1180–1600 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `/` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/evidence/` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/projects/automl/` | **15** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/projects/fast-mnist-nn/` | **15** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/projects/taskflow-calendar/` | **59** | **39** | **19** | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/projects/jobtracker/` | **72** | **52** | **32** | **2** | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/projects/master-inventory/` | **198** | **178** | **158** | **128** | **104** | **88** | **38** | 0 | **45** | 0 |
+| `/projects/policybot/` | **198** | **178** | **158** | **128** | **104** | **88** | **38** | 0 | **45** | 0 |
+| `/projects/visual-assist/` | **198** | **178** | **158** | **128** | **104** | **88** | **38** | 0 | **45** | 0 |
+
+Two corrections to the record. **Six routes were over, not one**, and the
+worst three were nearly three times jobtracker's number and still 104px
+over at 414 — a plain iPhone. And **the fault reappears at exactly
+1024**, the dossier's two-column breakpoint, which no round had swept
+because nobody expected a narrow-width bug on a desktop width.
+
+There were four offenders, not one, and only one of them is a repo path.
+
+**A · `aspect-video` + `min-h-[260px]` — 198px, and the 1024 case.**
+The fig. 1 raster plate's frame is a 16/9 box with a 260px floor. An
+aspect ratio transfers a definite `min-height` **into the inline axis**:
+a box that must be 260px tall at 16/9 must also be 462px wide, and the
+browser resolves it that way — the frame measured `width: 462.219px`
+inside a `plate-paper` whose content box was 382px. Below 462px of
+available column that width is both an overflow AND a min-content
+contribution the grid item (`min-width: auto`) refuses to shrink under,
+so the whole `#problem` / `#project-visual` grid track blew out to 480px
+against a 260px container. This hit the three case files whose fig. 1 is
+a raster capture rather than a registered scene.
+
+The floor could never do its job: it only bites when the column is under
+462px, which is precisely where it breaks the layout. It is **removed**.
+A 16:9 plate in a 260px column is 146px tall, which is a plate, not a
+sliver. The one width where the floor was load-bearing is an accident of
+arithmetic — at 1440 the frame is 462.22px wide, whose ratio height is
+**259.875px**, so the floor was rounding the desktop plate up by an
+eighth of a pixel. That eighth is the entire desktop delta of this fix.
+
+**B · the receipts table's artifact cell — 72px.**
+The cell carried `break-words`. `overflow-wrap: break-word` lets a long
+run *break*; it does not reduce that run's **min-content width**, and a
+grid item's automatic minimum size *is* its min-content width. So the
+cell's minimum stayed at the full 356px of
+`huggingface.co/spaces/yadava5/jobtracker-classifier`, and the row's
+single narrow track was sized to it. `wrap-anywhere`
+(`overflow-wrap: anywhere`) is the one value that reduces the
+contribution too — one declaration on the cell, and `overflow-wrap`
+inherits, so it covers the links, the plain-text labels and the
+visibility line at once.
+
+**C · the meta ledger's `dd` — 15 to 59px.**
+Same trap, flex instead of grid: `dd` is a flex item whose min-content
+was a demo host with no break opportunity
+(`agentic-automl-platform.vercel.app`). Also `wrap-anywhere`, plus the
+house's own `breakable()` on the three values that are single tokens
+(demo host, repo pin, private repo name) so the break lands on a dot or a
+slash rather than mid-word. Those values fit on one line at desktop, so
+the hints are inert there.
+
+**D · the architecture figure's flow rows — the last 10px.**
+`<span>from</span><span>⟶</span><span>to</span><span>label</span>`: JSX
+strips the newline-and-indent whitespace between sibling elements, so
+each edge row was **one unbreakable inline run held apart by margins** —
+no space anywhere in it, and therefore no wrap. Two `<wbr />` restore the
+break opportunities the layout always read as being there. Inert wherever
+the row fits.
+
+**After**, all nine routes at all sixteen widths (320, 340, 360, 390,
+414, 430, 480, 540, 640, 768, 834, 1024, 1180, 1280, 1440, 1600):
+**0 — every cell**.
+
+### `breakable()` was tried on the receipts table, and rejected on measurement
+
+The obvious move was to seed `<wbr>` at the separators of every artifact
+label, the same device the eval-protocol slip has used since the rejudge
+round. It was implemented, shot, and **backed out**, because it moved
+DESKTOP breaks and made them worse. The desktop artifact cell holds 35
+characters at the label's measured 8.68px advance; with the hints, greedy
+line-breaking filled line 1 to `applied @ 36a2f54 · cloud/gmail_` and
+orphaned `oauth.py` — a break inside a filename where the row currently
+breaks cleanly at the ` · `. Measured: **with the hints the desktop
+receipts table moved 3,346 pixels; without them it moves zero.**
+
+The narrow-width cost of leaving them out is bounded and known: only a
+token longer than the **29 characters** a 260px cell holds is cut
+mid-path — 3 of jobtracker's 18 artifact labels — and a pinned sha is a
+standalone 7-character word, so `anywhere` can never split one. Round 4's
+worry ("a visibly truncated pinned sha is a legibility loss") is answered
+structurally, not by promise.
+
+`breakable()` itself moved out of `CaseStudyPage.tsx` into
+`components/paper/Breakable.tsx`, because the meta ledger needed it and
+`EvidenceTable` cannot import from the file that imports it. Behaviour
+unchanged.
+
+### Desktop, unchanged — proven, not asserted
+
+The run-to-run noise floor was measured first (the same build, shot
+twice), because the jobtracker hero is a live scene and the paper grain
+reshuffles: `head-jobtracker-1440` moves **92,714 px** between two
+identical runs. Against that floor, before vs after at 1440:
+
+| frame @1440 | pixels changed | verdict |
+|---|---|---|
+| `receipt-jobtracker-1440` | **0** | byte-identical (same sha256) |
+| `validation-jobtracker-1440` | **0** | byte-identical |
+| `receipt-master-inventory-1440` | **0** | byte-identical |
+| `validation-master-inventory-1440` | **0** | byte-identical |
+| jobtracker full geometry block @1440 | — | **IDENTICAL** in every field |
+| `plate-master-inventory-1440` | 6,251 (2.8% of crop) | the intended 0.125px — see A |
+
+The evidence apparatus — the dotted leaders, the pinned-sha labels, the
+three-track receipt grid, the `[public]` line — is **the same pixels it
+was** at 1440. The only desktop change on the site is a fig. 1 plate
+becoming one eighth of a pixel shorter.
+
+### The two stale OG cards — four were wrong, and the gate could not see any of them
+
+Round 4 found that `case-jobtracker.png` and `case-taskflow-calendar.png`
+re-render differently from their committed bytes, reverted the re-render
+because the new decks truncate mid-sentence, and named the deeper fault:
+`--check` verifies a card EXISTS and is correctly folioed, not what it
+says. Re-measured here, **four of the seven case decks were cut
+mid-clause** — jobtracker, taskflow-calendar, master-inventory and
+policybot. Two had drifted from their bytes; two had been *drawn* that
+way. `It shipped twice: first…` is not a copy decision anybody made.
+
+**The deck is now a whole-sentence prefix of the summary.** As many
+complete sentences as three lines hold, never a fragment. Nothing is
+rewritten, paraphrased or invented for the card — every word on it is a
+word the case file already prints, so no new prose entered the site
+through an asset script. Where one sentence is too long for three lines
+at 27px the type steps down (25, then 23) rather than the sentence being
+cut; if even one sentence cannot be set whole at 23px the render
+**throws**, because a drawn asset can only be wrong quietly.
+
+| card | summary | sentences | deck |
+|---|---|---|---|
+| jobtracker | 303ch | 3 | 27px · **2 sentences** · 191ch |
+| automl | 203ch | 2 | 27px · 2 · 203ch |
+| visual-assist | 194ch | 2 | 27px · 2 · 194ch |
+| taskflow-calendar | 485ch | 3 | 27px · **1 sentence** · 201ch |
+| master-inventory | 223ch | 1 | **25px** · 1 · 223ch |
+| policybot | 215ch | 1 | **25px** · 1 · 215ch |
+| fast-mnist-nn | 203ch | 2 | 27px · 2 · 203ch |
+
+Three cards re-render: `case-jobtracker.png`, `case-master-inventory.png`,
+`case-policybot.png`. **`case-taskflow-calendar.png` comes back
+byte-identical** — its committed card was drawn when the summary WAS that
+one sentence, and the honest deck is exactly what it already showed. That
+is the strongest available evidence that this fitting is a restoration
+rather than a new opinion.
+
+### The drift gate
+
+`assets:check-og` now compares both halves, through
+`public/og/cards.manifest.json`, written by the render:
+
+- **`svg`** — sha256 of the card's SVG, **recomputed from the data layer
+  on every check**. Change a summary, a title, a `fileNo` or the site
+  description without re-rendering, and the gate fails with the card's
+  name and the instruction. This is the drift check that did not exist.
+- **`png`** — sha256 of the committed raster, so a file replaced,
+  truncated or re-optimised by anything other than the renderer fails
+  too.
+
+It compares the SVG rather than a fresh raster on purpose: rasterisation
+is host-dependent (the card falls back through whatever serif the render
+host has), but the content a card *draws* is deterministic. Comparing the
+drawn content on every host, and the committed bytes against the host
+that drew them, is the strongest honest pair. The gate also fails on a
+manifest entry no route claims, and on a missing manifest.
+
+Both halves were **proven to fail**, then restored:
+
+```
+OG card check failed: case-jobtracker.png is STALE — the data layer has moved
+  since it was drawn (card content 400fa4cf72c9 → 58f223cfb23c).
+  Run `npm run assets:render-og` and commit the result.
+OG card check failed: home.png bytes do not match the manifest
+  (44eaafb9c143 → ee866babd709) — the file was changed by something other
+  than the renderer.
+```
+
+### Round 4's claims, re-run on the merged tree
+
+| claim | probe | result |
+|---|---|---|
+| home 0 overflow at 320/340/360/390 | `probe-fix4-overflow.mjs` | **0 / 0 / 0 / 0** |
+| masthead `navHeight` 36 across the width sweep | `probe-header-fit.mjs` | **36 at all 10 widths** (760→1024), slack 44–241 |
+| 0 straight apostrophes in painted prose, the spoken layer and the shared layer | `probe-fix4-prose.mjs` | **0**, with the two code literals excused as before |
+| internal links wearing `↗` | `probe-fix4-prose.mjs` | **0**; claimed surfaces unmarked **0**; the 59 apparatus links still the recorded design call |
+| 0 widows (last line < 25% of widest, 2+ lines) | S8 rule, re-run over all 9 routes × 1440/390/320 | **0** |
+
+### Verification at close
+
+`NEXT_PUBLIC_BASE_PATH= next build --webpack` clean · `tsc --noEmit`
+clean · `eslint` clean (0 errors, 0 warnings) · `prettier --check` clean
+on the enforced scope (`src/**`) and on every file this round touched ·
+**contrast gate passed** · **proof-manifest passed** · **og-card check
+passed** (9 cards, all drawn from the current data layer) ·
+**asset-budget passed** · **static-export SEO passed**.
+
+Playwright against the static export on **:3500** —
+**chromium-desktop 193 passed, 2 skipped** (atlas, a11y-audit,
+interactions, nav-and-images, comprehensive-qa, text-motion, dossier,
+paper-memory, day-arc, red-thread, reduced-motion, scroll-engine,
+pipeline-run) · **chromium-mobile 49 passed** (atlas) ·
+**firefox-desktop 5 passed** (scroll-engine).
+
+Screenshots go to `docs/design-lab/shots-fix5/` and, per this repo's rule
+on binaries, are **not committed**; the rig that regenerates them
+(`shoot-fix5.mjs`), the probe that measures them
+(`probe-fix5-overflow.mjs`) and the numbers they record
+(`fix5-apparatus-*.json`) are.
+
+### Left open, deliberately
+
+- **`case-master-inventory.png`'s two-line title sits ~5px under the
+  kicker rule.** `titleTop` is a fixed 250 minus a one-line offset, so a
+  62px two-line title rises to within 5px of the rule at `y=166`. It is
+  tight, it is not new, and nothing this round changed it — the title
+  arithmetic is a card-layout question, not a deck-fitting one.
+- **`/evidence`'s artifact `dd` still carries `break-words`.** It
+  measures 0 overflow at all sixteen widths because its labels are
+  shorter, so it was left alone rather than swept on principle; if a
+  longer label lands there, `probe-fix5-overflow.mjs` will say so.
