@@ -187,8 +187,9 @@ test.describe("garnish rail — armed at full", () => {
         })
       );
     }, WET_LINE);
+    /* Fix round 3, S1: the masthead's apostrophe is U+2019. */
     expect(seats).toEqual([
-      { text: "It's", seat: "0" },
+      { text: "It’s", seat: "0" },
       { text: "all", seat: "1" },
       { text: "real.", seat: "2" },
     ]);

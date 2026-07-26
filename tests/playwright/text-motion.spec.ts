@@ -127,8 +127,9 @@ function threadAnchorState(page: Page) {
   });
 }
 
-/** The closing line's one intact string: the claim plus its receipt ¹. */
-const THREAD_ANCHOR_TEXT = "It's all real.1";
+/** The closing line's one intact string: the claim plus its receipt ¹.
+ *  Fix round 3, S1 — the apostrophe is U+2019, matching the page. */
+const THREAD_ANCHOR_TEXT = "It’s all real.1";
 
 test.describe("text motion — engine world", () => {
   test.beforeEach(async ({ page }) => {
