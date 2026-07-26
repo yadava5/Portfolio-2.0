@@ -88,19 +88,39 @@ export interface LedgerGlanceEntry {
   held: boolean;
 }
 
-/** Zero-count clauses are omitted, mirroring auditSettledSentence */
-function ledgerClauses(entries: LedgerGlanceEntry[]): string[] {
+/**
+ * The ledger caption, composed so the ARITHMETIC READS (fix round 3, N5).
+ *
+ * Every clause used to hang off the same `·` separator, so the strip
+ * said "11 entries · 8 public · 3 private-safe · 1 held — not yet
+ * earned". The visibility grades partition the ledger — 8 + 3 = 11, the
+ * whole of it — but HELD is a property some of those same entries carry,
+ * not a fourth grade, and a reader adding the row up got 12 out of 11
+ * and stopped trusting the count. That is a bad trade on the one figure
+ * whose entire job is to be trusted at a glance.
+ *
+ * So the separator now carries the meaning: `·` joins the parts that sum
+ * to the total, and an em dash introduces the subset clause — "…8 public
+ * · 3 private-safe — 1 of them held". Every number is still counted from
+ * the same rows the marks are drawn from; nothing here is typed.
+ *
+ * @param entries - Visibility + held per manifest entry, in ledger order
+ * @returns The caption text after "at a glance — "
+ */
+function ledgerCaption(entries: LedgerGlanceEntry[]): string {
   const count = (visibility: ProofGlyphVisibility) =>
     entries.filter((entry) => entry.visibility === visibility).length;
   const held = entries.filter((entry) => entry.held).length;
+  /* Zero-count clauses are omitted, mirroring auditSettledSentence. */
   const parts = [`${entries.length} entries`];
   if (count("public") > 0) parts.push(`${count("public")} public`);
   if (count("private-safe") > 0)
     parts.push(`${count("private-safe")} private-safe`);
   if (count("local-only") > 0)
     parts.push(`${count("local-only")} local — verified on request`);
-  if (held > 0) parts.push(`${held} held — not yet earned`);
-  return parts;
+  const sum = parts.join(" · ");
+  if (held === 0) return sum;
+  return `${sum} — ${held} of them held, not yet earned`;
 }
 
 /**
@@ -140,7 +160,7 @@ export function LedgerGlance({ entries }: { entries: LedgerGlanceEntry[] }) {
         ))}
       </div>
       <figcaption className="label-mono text-ink-secondary mt-2.5 max-w-[68ch]">
-        at a glance — {ledgerClauses(entries).join(" · ")}
+        at a glance — {ledgerCaption(entries)}
       </figcaption>
     </figure>
   );
