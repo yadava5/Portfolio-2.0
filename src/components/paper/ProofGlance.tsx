@@ -24,6 +24,22 @@
  * Marks are aria-hidden decoration; the caption text is the semantic
  * carrier. Static server-rendered SVG — no motion, no client JS, so
  * every world and tier (incl. print) gets the identical honest still.
+ *
+ * THE CAPTION TAKES THE STRIP'S MEASURE (fix round 6). Both captions
+ * carried `max-w-[68ch]` — the reading measure for running prose, which
+ * this is not. Measured on /evidence at 1440: the strip is 1032px wide,
+ * the caption was capped at 546px, and the tally broke mid-phrase
+ * ("…3 private-safe — 1 of / them held, not yet earned") with 486px of
+ * clean paper beside it. On the one figure whose whole job is a
+ * two-second read, the two-second read wrapped. The cap is gone: the
+ * caption now runs the measure of the figure it captions, which is what
+ * a print caption does, and the whole tally sets on one 730px line.
+ * `.label-mono` already carries `text-wrap: pretty` (globals.css), so
+ * where the caption MUST wrap — every width under ~830 — the house's own
+ * wrap policy still keeps the last line off an orphan; no local
+ * override was added. The validation strip's own figure is capped at
+ * 44rem, so its caption is bounded by the plate it belongs to and
+ * nothing about it moves.
  */
 
 import {
@@ -75,7 +91,7 @@ export function ValidationGlance({
           </span>
         ))}
       </div>
-      <figcaption className="label-mono text-ink-secondary mt-2.5 max-w-[68ch]">
+      <figcaption className="label-mono text-ink-secondary mt-2.5">
         at a glance — {clauses.join(" · ")}
       </figcaption>
     </figure>
@@ -159,7 +175,7 @@ export function LedgerGlance({ entries }: { entries: LedgerGlanceEntry[] }) {
           </span>
         ))}
       </div>
-      <figcaption className="label-mono text-ink-secondary mt-2.5 max-w-[68ch]">
+      <figcaption className="label-mono text-ink-secondary mt-2.5">
         at a glance — {ledgerCaption(entries)}
       </figcaption>
     </figure>
