@@ -65,10 +65,45 @@ const INNER_FRAME_D =
   "M26 27 C 95 24, 205 26, 274 25 C 276 72, 275 122, 274 165 C 200 167, 98 166, 26 166 C 24 120, 25 73, 26 27 Z";
 
 /**
+ * The REGISTER MARKS — this control's focus state (fix round 6).
+ *
+ * The global ring (`:focus-visible { outline: 2px solid … }`) was a
+ * fourth straight-ruled rectangle sitting 3px off a hand-wobbled double
+ * frame, on a plate the page tilts −4°/−6°. Focused and unfocused
+ * differed only by COUNTING LINES, and a machine-perfect rectangle
+ * beside a deliberately imperfect one reads as misregistration — a
+ * printing FAULT — on the one control the whole argument arrives at.
+ *
+ * A press shop already has a mark for "this plate is the one being set":
+ * the corner register mark. Four 40-unit L's just outside the frame's
+ * corners, drawn INSIDE the same viewBox so they ride the plate's tilt
+ * exactly (a transformed element's outline rides it too, but a drawn
+ * mark belongs to the drawing — it is the plate's own furniture, in the
+ * plate's own ink). They are apparatus, so they take no distress filter:
+ * the frame is stamped, the register is ruled, and that difference is
+ * the point.
+ *
+ * Geometry: FRAME_D spans x 12→288, y 11→179 inside a 300×190 viewBox,
+ * so the marks sit at 6 / 294 / 6 / 184 — 5–6 units clear of the frame,
+ * and 5 units clear of the viewBox edge, so nothing is clipped and the
+ * plate's authored 1:1 unit-per-pixel scale (F67) is untouched. FRAME_D
+ * and INNER_FRAME_D are byte-for-byte unchanged, so every coordinate the
+ * Red Thread maps out of this viewBox still holds.
+ */
+const REGISTER_D = [
+  "M6 46 L6 6 L46 6",
+  "M254 6 L294 6 L294 46",
+  "M294 144 L294 184 L254 184",
+  "M46 184 L6 184 L6 144",
+];
+
+/**
  * The gate stamp: run no. 041 — the SAME run fig 4.1's registry shows
  * awaiting approval — awaiting the visitor's press. A real button:
- * Enter/Space activate, `aria-pressed` carries the state, and the
- * focus ring rides the global `:focus-visible` outline.
+ * Enter/Space activate, `aria-pressed` carries the state, and focus
+ * lights the plate's own REGISTER MARKS (REGISTER_D below) rather than
+ * the global `:focus-visible` rectangle — fix round 6; the sentence
+ * here named the global ring until then.
  *
  * @param props - `compact` renders the smaller mobile-gate seat
  * @returns The press-to-sign stamp
@@ -222,6 +257,29 @@ export function AwaitingStamp({ compact = false }: AwaitingStampProps) {
             <feDisplacementMap in="SourceGraphic" in2="n" scale="1.3" />
           </filter>
         </defs>
+
+        {/* ── The register marks: this control's focus state ──────────
+            Painted for BOTH states (awaiting and dried) — the pressed
+            stamp is still a focusable control and still owes a reader a
+            focus indicator. currentColor is the plate's own ink, which
+            at the gate is `--color-clay-night` (6.4:1 on waypoint-07,
+            the check-contrast gate's own number) — above the ≈5.9:1 the
+            global ring measured and well past WCAG 1.4.11's 3:1 for a
+            focus indicator. Visibility is CSS (`.stamp-register` in
+            globals.css) driven by `:focus-visible` on the button, so the
+            keyboard semantics are unchanged and a pointer press never
+            lights it. */}
+        <g
+          className="stamp-register"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="square"
+        >
+          {REGISTER_D.map((d) => (
+            <path key={d} d={d} />
+          ))}
+        </g>
 
         {/* ── The awaiting layer: an unsigned plate, not a dropzone ───
             Fades to 0 when inked but STAYS rendered — [data-thread-sig]

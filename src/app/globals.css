@@ -611,10 +611,44 @@ html[data-motion-off] .site-footer {
   }
 }
 
-/* Visible focus on the warm palette: currentColor follows the ink flip,
-   so the ring holds contrast in day chapters and dusk chapters alike. */
+/* ── ONE RING, ONE INK (fix round 6) ─────────────────────────────────
+   The ring was `2px solid currentColor`, which sounds like one rule and
+   renders as several: a focused element's ring is that ELEMENT's colour,
+   and this paper deliberately speaks in three voices at once. Censused
+   on the cream ground at 1440, the same role — a link on paper — wore
+   three different ring inks:
+
+     rgb(38, 35, 28)                     43 elements   (--color-ink)
+     rgb(92, 86, 74)                     15 elements   (--color-ink-secondary)
+     color(srgb .149 .137 .110 / 0.72)    5 elements   (--header-ink-muted)
+
+   A focus ring is not part of the voice — it is the reader's cursor, and
+   it should be one mark. `--focus-ink` is that mark: the FULL ink of the
+   surface the element sits on, regardless of how quietly the element
+   itself is set. It still follows the dusk flip (that was currentColor's
+   one real virtue), because it is re-pointed everywhere the body ink is:
+   the arc's `data-arc-phase` step, and the two static worlds where
+   chapters 06/07 carry dusk ink locally.
+
+   `currentColor` stays as the fallback in the `var()` so any surface
+   that has not opted in cannot end up ringless. Two controls sit outside
+   this rule on purpose and neither is a third ink: the skip link takes
+   `focus:outline-none` and IS its own indicator (a clay chip that
+   materialises out of sr-only — the fourth ink the census reported,
+   paper-on-clay, was its never-rendered outline-color), and the gate
+   stamp draws register marks instead (see `.stamp-register`). */
+:root {
+  --focus-ink: var(--color-ink);
+}
+html[data-arc-phase="dusk"] {
+  --focus-ink: var(--color-ink-dusk);
+}
+/* The masthead's nav is set in a muted ink by design; its ring is not. */
+.site-header {
+  --focus-ink: var(--header-ink);
+}
 :focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid var(--focus-ink, currentColor);
   outline-offset: 3px;
 }
 
@@ -640,10 +674,39 @@ html[data-motion-off] .site-footer {
        size it always did.
    Nothing moves, nothing repaints; only the box grows. */
 .tap-target,
-.tap-target-block {
+.tap-target-block,
+.tap-target-tight {
   position: relative;
   padding-block: 0.9375rem;
   margin-block: -0.9375rem;
+}
+/* ── The tight variant (fix round 6) ─────────────────────────────────
+   A 44px box is free in a horizontal row (the masthead) and free at the
+   bottom of a stack, because the growth lands on empty paper. In a
+   VERTICAL stack of 13px mono affordances it lands on the neighbour: the
+   case files' meta ledger sets adjacent terminals 28–29px apart at
+   desktop, so a 45px box on each reaches 8px past the line above it.
+   Hit-testing resolves to the last-painted box, so that band belongs to
+   the LOWER link, and the measurement said what that costs — probed at
+   390 on /projects/fast-mnist-nn/, the repo pin's own line box ended 2px
+   INSIDE the live-demo link's grown box. Two pixels is the descender
+   zone of a 15px line, but "probably above the glyphs" is not a
+   standard, and a tap that opens the wrong document is a worse defect
+   than a small target.
+
+   So the ledger takes the largest lift that provably TILES: 6px each
+   side, a 27px border box on a one-line value and 45px on a two-line
+   one, measured clear of every neighbour at 390 and 1440 with 1–2px to
+   spare. 27 > 24, so these rows now meet WCAG 2.5.8 (AA) by SIZE where
+   they previously met it only by the spacing exception; 2.5.5's 44px
+   (AAA) carries an explicit exception for inline targets whose size is
+   constrained by the line height of the text around them, which is
+   exactly this. The ¶05 affordance rail keeps the full 44
+   (`.tap-target-block`): its pitch is 31px and every one of its six
+   grown pairs was measured glyph-safe. */
+.tap-target-tight {
+  padding-block: 0.375rem;
+  margin-block: -0.375rem;
 }
 /* The inline axis, for glyph-width targets only. The masthead's text
    affordances are already 69–96px wide, and inline padding there would
@@ -1155,6 +1218,8 @@ html[data-motion-off] .thread-segment .thread-node-gate {
   [data-chapter="06"],
   [data-chapter="07"] {
     color: var(--color-ink-dusk);
+    /* the one ring follows the ink here too (fix round 6) */
+    --focus-ink: var(--color-ink-dusk);
   }
 }
 
@@ -1177,6 +1242,7 @@ html[data-motion-off] [data-chapter] {
 html[data-motion-off] [data-chapter="06"],
 html[data-motion-off] [data-chapter="07"] {
   color: var(--color-ink-dusk);
+  --focus-ink: var(--color-ink-dusk);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1609,6 +1675,49 @@ li[data-receipt-row]:target::before {
 [data-stamp]:not([data-inked]):hover .stamp-awaiting,
 [data-stamp]:not([data-inked]):focus-visible .stamp-awaiting {
   opacity: 1;
+}
+
+/* ── THE REGISTER MARKS — the stamp's focus state (fix round 6) ───────
+   The global ring put a straight-ruled rectangle 3px off a hand-wobbled
+   double frame on a plate that is tilted −4°/−6°. Focused and unfocused
+   differed only by how many lines you counted, and a machine-perfect
+   rectangle beside a deliberately imperfect one reads as a plate out of
+   register — a printing FAULT, on the one control the whole argument
+   arrives at. The plate now lights its own corner register marks
+   (ApprovedStamp.tsx REGISTER_D): drawn inside the same viewBox, so
+   they carry the tilt exactly and belong to the drawing rather than
+   sitting beside it, and ruled rather than distressed, because the
+   frame is stamped and the register is apparatus.
+
+   `outline: none` is only safe because something visible replaces it,
+   and this does — 3-unit strokes at four corners of a 300-unit plate,
+   in the plate's own clay-night (6.4:1 on waypoint-07 per the
+   check-contrast gate; the ring it replaces measured ≈5.9:1). Both
+   states light: a dried stamp is still a focusable control and still
+   owes a keyboard reader a mark.
+
+   Forced-colors takes the outline BACK: a system palette repaints SVG
+   strokes unpredictably, and a focus indicator is the last thing that
+   may depend on a drawing surviving translation. */
+.stamp-register {
+  opacity: 0;
+}
+[data-stamp]:focus-visible {
+  outline: none;
+}
+[data-stamp]:focus-visible .stamp-register {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .stamp-register {
+    transition: opacity 160ms ease;
+  }
+}
+@media (forced-colors: active) {
+  [data-stamp]:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 3px;
+  }
 }
 
 /* Item 2a — the resting "press here to sign" line warms toward the ember
@@ -2497,6 +2606,20 @@ html[data-arc-phase="dusk"] [data-dossier] .scene-claytick {
 html {
   overflow-x: hidden;
   scroll-padding-top: 6rem;
+  /* The paper is a paper (fix round 6). This monograph has exactly one
+     edition — the day arc runs cream → nightfall under its own control
+     and there is no dark-mode variant to offer. With `color-scheme`
+     undeclared the UA still assumed the OS preference for the chrome it
+     owns, so a reader in OS dark mode got dark scrollbars, dark form
+     controls and a dark canvas flash on a cream page: browser chrome
+     dressed for an edition this site does not print. `light` is the
+     honest declaration — it names what is actually rendered and changes
+     nothing the stylesheet already paints. It is NOT a claim that the
+     page is bright: chapters 06/07 are the darkest surfaces on the
+     site, and `color-scheme` describes the palette a UA should compose
+     ITS widgets from, which here is the cream stock the scrollbar sits
+     beside. */
+  color-scheme: light;
 }
 
 /* No overflow-x on body: html already clips the viewport, and an

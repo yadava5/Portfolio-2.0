@@ -1836,3 +1836,545 @@ on binaries, are **not committed**; the rig that regenerates them
   measures 0 overflow at all sixteen widths because its labels are
   shorter, so it was left alone rather than swept on principle; if a
   longer label lands there, `probe-fix5-overflow.mjs` will say so.
+
+## FIX6 — the 404 that ran off the phone, a folio put back on the right, and a day that stops standing still
+
+Branch `redesign/daylight-study` @ `0e80206` (== `origin/main`, fix round
+5 shipped) → this worktree. The nitpicking viewer's second pass named
+three conditions for flipping its verdict, four more sores, and one
+design call. All nine of its DELIGHT LIST items had to survive intact.
+
+Two harnesses, both reusable, both committed:
+
+| Harness | What it decides |
+|---|---|
+| `probe-fix6.mjs` | seven flags, one process: `--overflow` (every route **including the 404**, 320→2560), `--leaders` (the 404 index's dot leaders, per row, per width), `--dateline` (the ¶ running head 320→900 in 20px steps, with the folio's flush), `--masthead` (the B2 sweep as built), `--navfit` (what each nav candidate WOULD cost, forced visible in the live DOM), `--targets` (the ≥44px census plus an overlap census), `--hover` (the hover response read off `background-size`, which is where this paper actually draws it), `--arc` (the composed canvas sampled down the home page) |
+| `shoot-fix6.mjs` | the six frames a table cannot settle — 404 at 320/390/430, the running head at 640/768/800, the masthead at 768, ¶05's affordance rail at 390, the gate stamp at 1440 resting and focused — each with its geometry recorded off the SAME frame as the picture, and `PHASE=before\|after` so a `git checkout -- src` / build / shoot / restore / build / shoot cycle produces two comparable halves |
+
+---
+
+### 1 · BLOCKER — the 404 scrolled sideways on every phone. **CLOSED.**
+
+`IndexRow` (`src/app/not-found.tsx`) put `shrink-0` on **both** flex
+children. The row is three items — affordance, dot leader, note — and
+with two of the three frozen and the leader floored at `2rem`, nothing
+could give, so the only variable left was the document's width.
+
+`scrollWidth − innerWidth` on `/no-such-page/`, before:
+
+| 320 | 340 | 360 | 375 | 390 | 414 | 430 | 480+ |
+|---|---|---|---|---|---|---|---|
+| **104** | **84** | **64** | **49** | **34** | **10** | 0 | 0 |
+
+The offender was the same element at every width — `span.label-mono.text-ink-secondary.shrink-0`,
+text `every claim on file`, left 259, right 424, `overflow-wrap: normal`,
+`flex-shrink: 0` — i.e. the note of the **only row that points at
+`/evidence/`**, on the one page whose whole job is to say where a reader
+can go instead. `.notice-surface` stops at the viewport edge, so past 320
+the ink printed onto raw canvas.
+
+The cure is fix round 5's own ledger grammar: **`wrap-anywhere`**, not
+`shrink-0`. `overflow-wrap: anywhere` is the one value that reduces a
+flex item's MIN-CONTENT contribution as well as letting the text break —
+`break-word` does the second without the first, which is exactly the trap
+FIX5 documented on the receipts table.
+
+`breakable()` — the other half of that grammar — was **deliberately left
+out, on measurement**, the same test FIX5 used to back it out of the
+receipts table: every string this row can print is prose with spaces in
+it (`the evidence index`, `every claim on file`, `chapter 04`) and not
+one of them contains a `.` `/` `_` `-` or `=`. The helper would emit zero
+`<wbr>` here. An inert helper is ceremony, not a fix.
+
+**After — every route, every width, `scrollWidth − innerWidth`:**
+
+| route | 320 | 340 | 360 | 375 | 390 | 414 | 430 | 480 | 540 | 640 | 768 | 834 | 1024 | 1180 | 1280 | 1440 | 1600 | 1920 | 2560 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `/` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| `/evidence/` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| the seven `/projects/*` | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **`/no-such-page/`** | **0** | **0** | **0** | **0** | **0** | **0** | **0** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+Ten routes × nineteen widths = **190 cells, every one 0**. (FIX5's "every
+route" table had nine rows; the site has ten surfaces. The 404 is a route
+and this round sweeps it like one.)
+
+**The leaders were the acceptance half** — 0 overflow with dead leaders
+is not the fix. `--leaders`, per width: the minimum leader across the
+seven rows, and the evidence row's right edge before → after.
+
+| width | min leader | rows | evidence row right — before → after | leaders drawn |
+|---|---|---|---|---|
+| 320 | 32.0 | 7 | 424 (**104 past the edge**) → **296** | yes |
+| 340 | 32.0 | 7 | 424 → **316** | yes |
+| 360 | 32.0 | 7 | 424 → **336** | yes |
+| 375 | 32.0 | 7 | 424 → **351** | yes |
+| 390 | 32.0 | 7 | 424 → **366** | yes |
+| 414 | 32.0 | 7 | 424 → **390** | yes |
+| 430 | 32.0 | 7 | 424 → **406** | yes |
+| 480 | 63.5 | 7 | 456 → 456 | yes |
+| 640 | 175.5 | 7 | 592 → 592 | yes |
+| 1440 | 175.5 | 7 | 788 → 788 | yes |
+
+Every row's right edge is now the paper's own margin (`vw − 24`). The
+leader never falls below its `2rem` floor at any width, so the dotted
+rule draws on all seven rows everywhere. Below 430 the long evidence row
+sets on two lines; the six chapter rows stay on one. **Nothing at 480 and
+above moves by a pixel.**
+
+---
+
+### 2 · SORE — the running head orphaned its folio. **CLOSED.**
+
+`summer 2026` is a FOLIO: it is a folio because of where it sits, and
+where it sits is flush right. The kicker row is `flex-wrap` +
+`justify-between`, and `justify-between` seats a lone item on a line at
+flex-**start** — so every width where both halves could not share a line
+printed the folio flush LEFT.
+
+Swept 320 → 900 in 20px steps (`--dateline`):
+
+| width band | 320–620 | 640 | 660–760 | 780–900 |
+|---|---|---|---|---|
+| **folio, before** | hidden (`sm`) | **left** | **left** | right |
+| **folio, after** | hidden (`sm`) | **right** | **right** | right |
+| row lines (unchanged) | 3 / 2 / 1 | 3 | 2 | 1 |
+
+`ms-auto` is the entire fix — an auto inline-start margin eats the free
+space on the folio's own line, and where both halves share a line it and
+`justify-between` resolve to the identical seat, so **780 and up is
+unchanged** (folioRight 732 / 752 / 772 / 792 / 812 / 832 / 852, before
+and after). The kicker's own box is untouched: no `w-full`, no grid. That
+was not a style preference — the Red Thread reads
+`[data-thread-kicker]`'s box to place its underline flourish
+(`ThreadSegment.tsx` → `geometry.ts`), so widening it to the column would
+have moved the flourish on all seven chapters.
+
+**`text-balance` was tried and reverted.** It changed no measured line
+count at any of the 30 swept widths, and `.label-mono` already carries
+`text-wrap: pretty` — the house's own rule for exactly this, and the
+reason the two-line cases do not end on an orphan. Overriding the mono
+voice's wrap policy on one element for nothing is not a fix.
+
+**One band is left at three lines, named rather than hidden**: at 640
+exactly, `sm:px-12` doubles WRAP's gutter and the content box DROPS from
+580 to 544 while the ch01 kicker needs ~556. The paper gets narrower as
+the screen gets wider. That is 12px, it belongs to `WRAP` rather than to
+the kicker, and it is a 20px-wide band — and the folio above it is now
+flush right at that width too.
+
+**Where that band DID need an authored break, it got one.** The 640 shot
+showed the kicker setting `…on what i’ve built` / `· 06:12` — the
+dateline clock alone on a line, which reads as a stray rather than as the
+end of the running head. Both spaces around the clock's separator are now
+NO-BREAK, so `built · 06:12` is one run and the wrap lands a word
+earlier: `¶ 01 / 07 · arrival — a working paper on what` / `i’ve built ·
+06:12` / `summer 2026` flush right. Thirteen characters, so it still fits
+the 260px content box at 320 with room, and the run is inert at every
+width where the kicker already fits on one line.
+
+**The same defect class on the case file, also closed.** The dossier
+kicker set `— filed 2025-06 · last / verified 2026-07` at 768 — a wrap
+INSIDE "last verified", on the row that dates the file. `filed NN` and
+`last verified NN` are now `whitespace-nowrap` units, so the row still
+breaks but breaks at the ` · ` between them, where a reader already
+segments it. Its status half — the same orphaned-folio geometry — took
+the same `ms-auto`.
+
+---
+
+### 3 · SORE — one chapter link marooned in the masthead. **CLOSED at 768.**
+
+B2 (fix round 3) swept the row as a WHOLE and found one stop, 880. What
+it did not measure is what the row looks like BETWEEN the stops: from 640
+to 879 the masthead carried exactly one item with 141–241px of empty
+paper around it — a nav that reads as one that failed to load.
+
+So the sweep was re-run **per item** (`--navfit`), forcing each candidate
+visible in the live DOM and re-measuring the whole row, including the
+complementary swap (revealing `contact` retires the mail chip). Cells are
+**needs / slack**; the `ul`'s rendered height is the wrap detector:
+
+| width | content | 1 item | +experience | +experience +contact (−mail) | ul h (1/2/3) |
+|---|---|---|---|---|---|
+| 640 | 544 | 523 / 21 | **wraps** | **wraps** | 24 / 48 / 48 |
+| 660 | 564 | 523 / 41 | **wraps** | **wraps** | 24 / 48 / 48 |
+| 680 | 584 | 523 / 61 | **wraps** | **wraps** | 24 / 48 / 48 |
+| 700 | 604 | 523 / 81 | **wraps** | **wraps** | 24 / 48 / 48 |
+| 720 | 624 | 523 / 101 | **wraps** | **wraps** | 24 / 48 / 48 |
+| 740 | 644 | 523 / 121 | 626 / **18** | **wraps** | 24 / 24 / 48 |
+| 760 | 664 | 523 / 141 | 626 / 38 | 655 / 9 | 24 / 24 / 24 |
+| **768** | **672** | 523 / 149 | **626 / 46 ←** | 655 / 17 | 24 / 24 / 24 |
+| 800 | 704 | 523 / 181 | 626 / 78 | 655 / 49 | 24 / 24 / 24 |
+| 880 | 784 | **740 / 44** — all four, B2's stop, untouched | | | 24 |
+
+`experience` costs a flat 103px (87 of item + the 16px `gap-4`), so its
+needs sit at 626 the moment the row stops wrapping. 740 is the first
+width where it technically fits — on **18px**, the same kind of number B2
+rejected at 840 — and **768 is the first stop with B2's own bar of real
+air: 46px, against the 44px B2 accepted at 880.** Verified at 1px
+granularity: 767 → one item, 768 → two, `ulH` 24 and `headerH` 68 at both.
+
+This is not the `md` mistake B2 removed. The FULL row needs 740 of
+content and md has 672; the row plus ONE item needs 626. The class is
+written `min-[768px]` rather than `md:` so nobody re-reads it as the stop
+that was deleted.
+
+**`contact` is DECLINED at an intermediate stop, on the measurement.** It
+cannot arrive without retiring the mail chip (56px back), which nets 655
+— **17px** of slack at 768, inside the jitter band B2 named. It would fit
+with air only from ~800, and a third breakpoint 32px after the second is
+fussier than the defect it closes. Contact stays reachable below 880 as
+the mail chip, exactly as before.
+
+Corrected in passing: the mail chip's own comment claimed the text
+`contact` item "arrives at 820px (B2)" — 820 is the width B2 measured and
+**rejected**. F82-class drift, now saying 880.
+
+---
+
+### 4 · SORE — 15px affordances below the fold. **CLOSED, at two different sizes, and the second one is the finding.**
+
+Census at 390, interactive boxes under 24px tall (`--targets`):
+
+| route | before | after |
+|---|---|---|
+| `/` | 24 | **17** |
+| `/evidence/` | 8 | 8 |
+| `/projects/automl/` | 7 | **6** |
+| `/projects/fast-mnist-nn/` | 10 | **8** |
+| `/projects/jobtracker/` | 10 | **9** |
+| `/projects/master-inventory/` | 3 | 3 |
+| `/projects/policybot/` | 3 | 3 |
+| `/projects/taskflow-calendar/` | 14 | **12** |
+| `/projects/visual-assist/` | 5 | 5 |
+| `/no-such-page/` | 8 | **7** |
+
+¶05's affordance rail, off the shot rig's own frame at 390:
+
+| element | before | after |
+|---|---|---|
+| the metric chip (`72 tests, 0 failures …`) | 252×**33** | 252×**63** |
+| `the live demo ↗` | 130×**15** | 130×**45** |
+| `source ↗` | 69×**15** | 69×**45** |
+| `system card ↗` | 113×**15** | 113×**45** |
+| `the case file ⟶` (×3 rows) | 136×**15** | 136×**45** |
+
+Header.tsx's D7 technique verbatim: padding grows the anchor's own border
+box, an equal negative margin hands the growth straight back, and because
+these anchors are inline inside their `<p>`, block padding never enters
+the line box and block margins do not apply at all. **The rail's rhythm
+is unchanged at every width.**
+
+**A 44px box in a 31px-pitch stack meets its neighbour, so the trade was
+measured rather than asserted.** Six pairs on `/` now intersect, all by
+15px. For each, the probe checks whether the UPPER link's own line box
+ends before the lower link's grown box begins:
+
+```
+15px  "macro-f1 0.98 — 96-sample gate" ∩ "the case file ⟶"   glyphsSafe = true
+15px  "openmp+simd dot kernel — 3.5×"  ∩ "the case file ⟶"   glyphsSafe = true
+15px  "72 tests, 0 failures — jdk 25"  ∩ "the live demo ↗"   glyphsSafe = true
+15px  "72 tests, 0 failures — jdk 25"  ∩ "source ↗"          glyphsSafe = true
+15px  "the live demo ↗"                ∩ "system card ↗"     glyphsSafe = true
+15px  "1,145 automated tests — 634 …"  ∩ "the case file ⟶"   glyphsSafe = true
+```
+
+Hit-testing resolves to the last-painted box and these are in DOM order
+top→bottom, so the shared band always belongs to the LOWER link — and it
+begins 15px ABOVE that link's first glyph. Every upper link's visible
+text sits entirely inside its own exclusive band, so **no reader tapping
+ON a link can reach the one below it**, and the bottom affordance of each
+stack gets the full unshared 44 (there is 290px of paper under it).
+
+**The case-file meta ledger could NOT take 44, and that is the finding.**
+Its adjacent terminals sit 28–29px apart at desktop, and a 45px box on
+each reached **2px inside the line box above it** — probed at 390 on
+`/projects/fast-mnist-nn/`, `yadava5/fast-mnist-nn @ c6e5c0b` ∩
+`getglyph.vercel.app ↗`, `glyphsSafe = false`. Two pixels is the
+descender zone of a 15px line, but "probably above the glyphs" is not a
+standard, and a tap that opens the wrong document is a worse defect than
+a small target. So the ledger takes a new `.tap-target-tight` — 6px each
+side, a **27px** border box on a one-line value and 45 on a two-line one
+— which tiles with 1–2px clear at both 390 and 1440. Case-file overlap
+census after: **0 pairs on every one of the seven files.**
+
+27 > 24, so those rows now meet **WCAG 2.5.8 (AA) by SIZE** where they
+previously met it only by the spacing exception; 2.5.5's 44px (AAA)
+carries an explicit exception for inline targets constrained by the line
+height of surrounding text, which is exactly this case. The masthead can
+afford 44 because its targets are a horizontal row with no vertical
+neighbours.
+
+---
+
+### 5 · SORE — the stamp's focus ring was a fourth line. **REDESIGNED.**
+
+Measured before, at 1440, focused: `outline: 2px solid rgb(224,138,95)`,
+`outline-offset: 3px`, on a plate whose computed `rotate` is `-6deg`.
+(The ring did turn with the plate — Tailwind v4 tilts with the individual
+`rotate` property, which is also why a rig reading `transform` reports
+`none` on a plate that is visibly turned.) But it is a machine-perfect
+rectangle sitting 3px off a hand-wobbled double frame, and focused vs
+unfocused differed only by how many lines you counted. Beside a
+deliberately imperfect frame, a perfect one reads as a plate out of
+register: a printing FAULT, on the one control the whole argument arrives
+at.
+
+The plate now lights its own **corner register marks** — the press shop's
+mark for "this is the plate being set". Four 40-unit L's drawn INSIDE the
+same `viewBox 0 0 300 190` at 6 / 294 / 6 / 184, so they carry the tilt
+because they belong to the drawing rather than sitting beside it, and
+ruled rather than distressed, because the frame is stamped and the
+register is apparatus.
+
+| | before | after |
+|---|---|---|
+| focused outline | `2px solid rgb(224,138,95)` off 3px | `0px none` |
+| `.stamp-register` opacity | (did not exist) | **1** |
+| ink | `rgb(224,138,95)` — `--color-clay-night` | **the same token** |
+| contrast on waypoint-07 | ≈5.9:1 | **6.4:1** (the check-contrast gate's own number for clay-night) |
+| `:focus-visible` semantics | yes | **yes** — CSS-driven, a pointer press never lights it |
+| static / reduced-motion | ring, instant | marks, instant (the 160ms fade sits behind the same two A7 gates as everything else) |
+| forced-colors | system ring | **system ring restored** — a focus indicator may not depend on an SVG surviving palette translation |
+
+`FRAME_D` and `INNER_FRAME_D` are byte-for-byte unchanged, so every
+coordinate the Red Thread maps out of this viewBox still holds, and the
+crescendo is untouched: the marks light on focus in BOTH states (a dried
+stamp is still a focusable control), and nothing about the press moved.
+
+---
+
+### 6 · NITS
+
+**Two right-arrow glyphs at one size, 61px apart — unified.** Home set
+`gzip this figure in your browser ⟶` (U+27F6, 13px Fragment Mono, y 6965)
+and, 61px below it, `split → parallel → stitch` (U+2192, 13px, same
+family). The house glyph is `⟶`: it is what `SystemDiagram.tsx` already
+rules its stage edges with and what F41 reserved for "onward". Every
+painted flow arrow in the mono voice is now that glyph — three scene
+manifest strings, three case-file value cells, two corrections-register
+entries. **Scanned across the 13 built HTML files with `<script>` blocks
+stripped: 0 painted U+2192 remain.** Arrows inside source COMMENTS are
+untouched; nothing renders them. One test assertion moved with the copy
+(`dossier.spec.ts` — the register still has to EXPLAIN the rename, which
+is what that test is about; only the glyph the sentence is set in
+changed).
+
+**The glance strip wrapping mid-phrase at 1440 — closed.** Measured on
+`/evidence/`: the strip is 1032px wide, the caption was capped at
+`max-w-[68ch]` = 546px, and the tally broke as `…3 private-safe — 1 of /
+them held, not yet earned` with **486px of clean paper beside it**. 68ch
+is the reading measure for running prose; this is a mono tally line, and
+a print caption takes the measure of the figure it captions. The cap is
+gone and the whole tally sets on one 730px line. `.label-mono` already
+carries `text-wrap: pretty`, so at every width under ~830 where it must
+wrap the house's own policy still keeps the last line off an orphan — no
+local override was added. The validation strip's figure is capped at
+44rem, so its caption is bounded by its own plate and nothing there moves.
+
+**Two clocks 404px apart in ¶07 — labelled.** The running head prints
+`· 22:41` at y 9024 and the gate prints `it's 7:32 pm here right now` at
+y 9428. F28 made the LIVE one say so; nothing ever said what the other
+one was, so the pair still read as a page whose clock is broken. The
+clause now names both: *"cincinnati, ohio · it's 7:32 pm here right now —
+the ¶ clocks are the day this paper records"*. The label went here rather
+than into the seven kickers on measurement — the kickers are the tightest
+line on the page (item 2 above), seven of them would have to carry the
+words, and only one place on the site ever shows both clocks at once.
+
+**`color-scheme` — declared.** Before: no `<meta>`, `:root` `normal`,
+`body` `normal`. A reader in OS dark mode therefore got dark scrollbars
+and dark form controls beside cream paper, because the UA assumed the OS
+preference for the chrome it owns. `color-scheme: light` on `html` names
+what is actually rendered and changes nothing the stylesheet paints. It
+is not a claim that the page is bright — ¶06/07 are the darkest surfaces
+on the site; it describes the palette a UA composes ITS widgets from,
+which here is the cream stock the scrollbar sits beside.
+
+**Three focus-ring inks for one role on one ground — now one.** Censused
+at 1440 on the cream ground, `outline: 2px solid currentColor` rendered
+as three inks for the same role (a link on paper):
+
+| ink | elements |
+|---|---|
+| `rgb(38, 35, 28)` — `--color-ink` | 43 |
+| `rgb(92, 86, 74)` — `--color-ink-secondary` | 15 |
+| `color(srgb .149 .137 .110 / 0.72)` — `--header-ink-muted` | 5 |
+
+A focus ring is not part of the voice; it is the reader's cursor.
+`--focus-ink` is now that one mark — the FULL ink of the surface the
+element sits on, however quietly the element itself is set — and it still
+follows the dusk flip, because it is re-pointed everywhere the body ink
+is: the arc's `data-arc-phase` step and both static worlds'
+`[data-chapter="06"/"07"]` rules. `currentColor` stays as the `var()`
+fallback so no surface can end up ringless. Two controls sit outside the
+rule on purpose and neither is a fourth ink: the skip link takes
+`focus:outline-none` and IS its own indicator (a clay chip materialising
+out of `sr-only` — the `rgb(250,246,239)` the census reported was its
+never-rendered `outline-color`), and the gate stamp draws register marks
+(item 5).
+
+**The wordmark hover — DECLINED, with the measurement.** The nitpick-2
+rig diffed `color`, `text-decoration` and `border-bottom` on hover and
+reported `changed: []` for `ayush yadav`. This paper's one hover move is
+none of those: `.link-draw` / `.link-draw-quiet` grow a linear-gradient's
+`background-size` from 0% to 100% of a 1px band. Read at the property the
+ink is actually drawn with (`--hover`):
+
+```
+ayush yadav    self   bg 0px 1px → 100% 1px        ← the house line, drawn
+the work       self   bg 0px 1px, 100% 1px → 100% 1px, 100% 1px
+experience     self   bg 0px 1px, 100% 1px → 100% 1px, 100% 1px
+github ↗       self   bg 0px 1px, 100% 1px → 100% 1px, 100% 1px
+portrait       child  (group-hover border on the inner plate)
+resume         child  (group-hover letterpress un-fill on the inner chip)
+```
+
+The wordmark carries `.link-draw-quiet` — the same move minus the resting
+hairline, which is authored: the identity is not an affordance queue. It
+draws on hover and on `:focus-visible`. The finding was a probe blind
+spot, and `probe-fix6.mjs --hover` now reads `background-size` **and**
+the first element child (three masthead affordances are `group-hover`
+controls whose response lives on an inner span), so the blind spot cannot
+recur. No code changed.
+
+**`— filed … last verified` splitting** — covered in item 2.
+
+**Figures carried no `id`.** `ArtifactGallery` has printed `id="fig-N"`
+since W1, and `EvidenceTable`'s crosswalk already turns any `see fig. N …`
+label into `#fig-N` — but the case file's own first three figures had no
+ids, so `see fig. 4` was a live link while `fig. 1`, `fig. 2` and
+`fig. 3` were dead references to plates on the same page. `fig-1` (both
+branches of `ProjectPlateVisual` — scene and raster), `fig-2` (both
+branches of `SystemDiagram` — linear rail and card grid) and `fig-3` (the
+flagship's registry excerpt) now carry them, so the existing crosswalk
+covers 1–3 as well as 4+ with no new machinery.
+
+---
+
+### 7 · DESIGN CALL — the day arc stood still for 2,900px. **DONE, inside the guards.**
+
+Measured first (`--arc`, 1440×900, sampled every 350px). Chapter tops and
+heights: `01@0+900 02@900+764 03@1664+1563 04@3227+1777 05@5004+3129
+06@8133+765 07@8898+1796`. The dusk range opens at ch06's top at 92% of
+the viewport — scrollY 7305.
+
+Every day segment ended as the NEXT chapter's top reached the viewport
+top. That is right for six of them and wrong for the last: chapter 05 is
+**3,129px — 29% of the page**, the four work rows, the longest continuous
+read on the site — and nothing was scheduled to happen in it. Golden hour
+arrived at ¶05's first line and then held:
+
+| y | before | after |
+|---|---|---|
+| 3500 | L 0.940 C 0.028 H 85.2 | L 0.946 C 0.025 H 85.6 |
+| 3850 | L 0.931 C 0.034 H 84.5 | L 0.946 C 0.025 H 85.6 |
+| **4200** | **L 0.923 C 0.039 H 83.8** | **L 0.940 C 0.029 H 85.2** |
+| 4550 | = same as previous | L 0.940 C 0.029 H 85.2 |
+| 4900 | = same as previous | L 0.935 C 0.032 H 84.8 |
+| 5250 | = same as previous | L 0.935 C 0.032 H 84.8 |
+| **5600** | **= same as previous** | **L 0.930 C 0.035 H 84.3** |
+| 5950 | = same as previous | L 0.930 C 0.035 H 84.3 |
+| 6300 | = same as previous | L 0.924 C 0.038 H 83.9 |
+| 6650 | = same as previous | L 0.924 C 0.038 H 83.9 |
+| **7000** | **= same as previous** | **L 0.924 C 0.038 H 83.9** |
+| 7350 | L 0.900 (dusk range) | L 0.900 (dusk range) |
+
+Eight consecutive samples were byte-identical before; the viewer's three
+probe points (4200 / 5600 / 7000) are now **three different grounds**,
+ΔL 0.016 across the stretch that was flat. Distinct arc states across the
+whole read: 19 → 21 (the remaining repeats are the `Q_L = 0.004`
+quantization doing its job — visually lossless by design, and the reason
+a 350px sample step lands twice in one bucket).
+
+**The fix moves no colour and adds no waypoint.** The 04→05 tween simply
+keeps running until the dusk choreography takes over: `endTrigger` is the
+dusk-flip chapter and `end` is a new shared constant `DUSK_RANGE_START`
+(`"top 92%"`) — the same string the choreography's own trigger opens on,
+so the two ranges abut on the same pixel in both directions and neither
+can render a value the other has not agreed to. Two hand-typed `"top 92%"`
+would have been a gap or an overlap waiting for someone to change one.
+
+Against the guards this call had to clear:
+
+| guard | result |
+|---|---|
+| `sampleArc()` 04→05 segment, ≥10 interpolation samples | **PASS** — same endpoints, same interpolation, only the scroll distance changed; every value rendered is a point the gate has always sampled |
+| flip pair ΔL (max 0.215) | **PASS 0.210** — `DUSK_CHOREO` untouched |
+| flip pair ΔY (max 0.185) | **PASS 0.180** |
+| largest same-side Core step ΔL (max 0.055) | **PASS 0.047** |
+| chrome stagger window | **PASS** (0.72 → 0.7775) |
+| Core stop count ≤ ~16 | **12**, unchanged |
+| no per-frame `<html>` writes | unchanged — the writer still targets `[data-light-field]` and `.site-header` only |
+| per-frame cost | identical: one tween, one range, the same quantized writes to the same two subtrees. No ScrollTrigger added or removed |
+
+The whole contrast gate passes end to end, and `day-arc.spec.ts` — which
+asserts dawn at the top, the twelve stops, the flip, the chrome stagger
+and both static worlds — passes unchanged.
+
+---
+
+### The DELIGHT LIST, re-checked
+
+| # | delight | after this round |
+|---|---|---|
+| 1 | the day arc | **improved** — three new grounds across ¶04–05, same twelve dusk stops, same seven waypoints |
+| 2 | the red thread | intact — `[data-thread-kicker]`'s box deliberately not touched (item 2); `FRAME_D` byte-identical (item 5); `red-thread.spec.ts` passes |
+| 3 | the rail marks | intact — untouched |
+| 4 | the litany receipts | intact — untouched |
+| 5 | ap·prov·al | intact — the press, its timings and its crescendo untouched; only the FOCUS state changed |
+| 6 | the colophon | intact — untouched |
+| 7 | the honesty apparatus | intact and extended — the glance tally now sets in one line, and both clocks are labelled |
+| 8 | back-restore | intact — untouched |
+| 9 | the dotted leaders | intact and repaired — drawn on all seven 404 rows at all ten swept widths, never below their 2rem floor |
+
+### Verification at close
+
+`NEXT_PUBLIC_BASE_PATH= next build --webpack` clean · `tsc --noEmit`
+clean · `eslint` clean (0 errors, 0 warnings) · `prettier --check` clean
+on the enforced scope (`src/**`) and on every file this round touched ·
+**contrast gate passed** · **proof-manifest passed** · **og-card check
+passed** (9 cards) · **asset-budget passed** · **static-export SEO
+passed**.
+
+Playwright against the static export on **:3600** — **chromium-desktop
+195 passed, 2 skipped** (atlas, a11y-audit, interactions, nav-and-images,
+comprehensive-qa, text-motion, dossier, paper-memory, day-arc, red-thread,
+reduced-motion, scroll-engine, pipeline-run) · **chromium-mobile 49
+passed** (atlas) · **firefox-desktop 5 passed** (scroll-engine).
+
+Probe sweeps at close: **overflow 190/190 cells at 0** across ten routes ×
+nineteen widths · **the ¶ running head's folio flush right at every width
+it renders**, 320→900 in 20px steps · **the masthead's second stop
+verified at 1px granularity** (767 → 1 item, 768 → 2, `ulH` 24 at both) ·
+**44px census at 390 before/after on all ten routes** · **0 overlapping
+target pairs on all seven case files, 6 on home and every one measured
+glyph-safe** · **0 painted U+2192 in the built HTML**.
+
+Screenshots go to `docs/design-lab/shots-fix6/` (before- and after-
+prefixed) and, per this repo's rule on binaries, are **not committed**;
+the rig that regenerates them (`shoot-fix6.mjs`), the probe that measures
+them (`probe-fix6.mjs`) and the geometry they record
+(`before-geometry.json` / `after-geometry.json`) are.
+
+### Left open, deliberately
+
+- **The ch01 running head takes two lines at exactly 640–659.** The cause
+  is `WRAP`'s `sm:px-12`, which drops the content box from 580 to 544 at
+  the same width the folio appears; the kicker needs ~556. It is 12px, it
+  belongs to the wrap rather than to the kicker, and changing `WRAP` moves
+  the measure of every chapter on the site. `--dateline` will say so if it
+  ever widens.
+- **`contact` still arrives at 880, not at an intermediate stop.**
+  Measured, not assumed: 17px of slack at 768 after retiring the mail
+  chip, inside the jitter band B2 named. §3 above carries the table.
+- **The ¶05 "in progress" index line keeps its 15px terminals**
+  (`LifeQuest ↗`, its `system card ↗`). Its wrapped-line pitch is 23px, so
+  a 44px lift would capture 7px of a neighbour's glyphs — the one place
+  where the census's own overlap check says no. The line's existing
+  comment already records the 55-characters-of-prose separation that keeps
+  the two apart.
+- **`/evidence`'s six 15px artifact links.** They are outside the two
+  surfaces this round's item 4 names, they measure 0 overlap, and lifting
+  them is a `/evidence` question rather than a case-file one.

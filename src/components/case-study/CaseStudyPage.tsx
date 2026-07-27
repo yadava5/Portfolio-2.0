@@ -160,6 +160,24 @@ function PrivateStamp() {
 
 /** One mono dot-leader row of the meta ledger (no pills, no cards)
  *
+ *  Fix round 6 — the ledger's three TERMINALS (repo, live demo, system
+ *  card) are the links a reader leaves this page by, and at 390 they
+ *  measured 15px tall: `/system-card ↗` 121×15, `getapplied.vercel.app
+ *  ↗` 200×15, the repo pin 217×15. They now carry `.tap-target-tight`,
+ *  the masthead's D7 technique at the size this stack can actually
+ *  carry — padding grows the anchor's own border box, an equal negative
+ *  margin hands the growth straight back, and on an inline box block
+ *  padding never enters the line box and block margins do not apply at
+ *  all, so the leaders, the right rag and the row pitch are the pixels
+ *  they were.
+ *
+ *  It is the TIGHT variant, not the 44px one, and globals.css records
+ *  why on the measurement: adjacent terminals here sit 28–29px apart at
+ *  desktop, and a 45px box on each reached 2px inside the line box above
+ *  it (probed at 390 on /projects/fast-mnist-nn/) — a tap that opens the
+ *  wrong document is a worse defect than a small target. 27px tiles with
+ *  1–2px clear at 390 and 1440 and clears WCAG 2.5.8 (AA) by size.
+ *
  *  wrap-anywhere, not break-words (fix round 5): this `dd` is a flex
  *  item, so its automatic minimum size is its min-content width, and
  *  `overflow-wrap: break-word` does not reduce that — a demo host like
@@ -227,12 +245,32 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
               files are a HOLDING (this is one file out of eight on
               file), and the two words say which is which without a new
               glyph, a new size, or a new line. */}
+          {/* Fix round 6 — the same folio grammar the home story's ¶
+              kicker now carries (apparatus.tsx), and for the same two
+              faults measured on this row.
+
+              ONE · the dates broke mid-phrase. At 768 the line set as
+              `— filed 2025-06 · last / verified 2026-07`: a wrap INSIDE
+              "last verified", which turns a two-word label into two
+              orphaned words on the row that dates the file. `filed NN`
+              and `last verified NN` are single labels and now wrap as
+              units; the row still breaks — at the ` · ` between them,
+              which is where the reader's eye already segments it.
+              TWO · the status was the orphaned folio. This row is
+              `flex-wrap` + `justify-between`, so the moment the status
+              could not share a line with the kicker it wrapped to its
+              own line at flex-START. `ms-auto` seats it flush right on
+              its own line and resolves to the identical position where
+              both halves share one line. */}
           <p data-dossier-kicker>
             ¶ case file {fileNo(study)} of {TOTAL} ·{" "}
-            {project.title.toLowerCase()} — filed {study.filed} · last verified{" "}
-            {study.verified}
+            {project.title.toLowerCase()} —{" "}
+            <span className="whitespace-nowrap">filed {study.filed}</span> ·{" "}
+            <span className="whitespace-nowrap">
+              last verified {study.verified}
+            </span>
           </p>
-          <p data-dossier-status>
+          <p data-dossier-status className="ms-auto">
             status: {study.status}
             {study.statusDetail ? ` — ${study.statusDetail}` : ""}
           </p>
@@ -271,7 +309,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   href={study.repoPin.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="link-draw normal-case"
+                  className="link-draw tap-target-tight normal-case"
                 >
                   {breakable(
                     `${study.repoPin.repo} @ ${study.repoPin.sha}` +
@@ -291,7 +329,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-live-demo
-                  className="link-draw"
+                  className="link-draw tap-target-tight"
                 >
                   {liveHost ? breakable(liveHost) : null} ↗
                 </a>
@@ -322,7 +360,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   data-system-card
-                  className="link-draw normal-case"
+                  className="link-draw tap-target-tight normal-case"
                 >
                   /system-card ↗
                 </a>
@@ -406,7 +444,9 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             041 row HERE approves it everywhere (one run, one act). */}
         {study.registryFig ? (
           <section className="mt-16 max-w-[26rem]">
-            <figure>
+            {/* id="fig-3" (fix round 6) — the flagship's registry excerpt
+                is cited by number in the prose above it. */}
+            <figure id="fig-3">
               <ul className="label-mono border-ink/15 space-y-3 border-l pl-6">
                 <RegistryRows rows={study.registryFig.rows} />
               </ul>

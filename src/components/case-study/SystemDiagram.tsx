@@ -136,7 +136,10 @@ export function SystemDiagram({
   if (variant === "linear" && flow) {
     const branches = offSpineEdges(edges, flow);
     return (
-      <figure>
+      /* id="fig-2" (fix round 6): the section kicker directly above this
+         figure reads "[ architecture ] · § fig. 2, inked" and there was
+         nothing on the page for a "fig. 2" reference to land on. */
+      <figure id="fig-2">
         <p className="text-body max-w-[55ch] font-serif">{summary}</p>
 
         <div className="mt-8 flex flex-col gap-y-3 lg:flex-row lg:items-center lg:gap-y-0">
@@ -212,7 +215,7 @@ export function SystemDiagram({
         approval edge in clay and hooks the returning edge ─────────── */
   const firstNodeId = nodes[0]?.id;
   return (
-    <figure>
+    <figure id="fig-2">
       <p className="text-body max-w-[55ch] font-serif">{summary}</p>
 
       <div className="mt-8 grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">

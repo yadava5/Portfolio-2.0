@@ -73,8 +73,50 @@ import { MotionToggle } from "@/components/layout/MotionToggle";
  *
  * Below this stop the row is the phone masthead it always was: wordmark
  * + day mark + "the work" + the mail chip + resume. The mail affordance
- * is pinned to the SAME stop, so contact is reachable at every width and
+ * is pinned to the 880 stop, so contact is reachable at every width and
  * never twice at any width.
+ *
+ * ── Fix round 6: the second stop, at 768 ──────────────────────────────
+ *
+ * B2 swept the row as a WHOLE and found one stop. The consequence it did
+ * not measure is what the row looks like between the two: from 640 to
+ * 879 the masthead carries exactly ONE chapter link, floating in a
+ * `justify-between` row with 141–241px of empty paper on either side of
+ * it. A single item in the middle of an otherwise empty nav reads as a
+ * nav that failed to load, not as a deliberate compact row.
+ *
+ * So the sweep was re-run PER ITEM — `docs/design-lab/probe-fix6.mjs
+ * --navfit` forces each candidate visible in the live DOM and
+ * re-measures the whole row, including the complementary swap (revealing
+ * `contact` retires the mail chip, because contact must be reachable at
+ * every width and never twice at any width). needs / slack, and the
+ * ul's rendered height as the wrap detector:
+ *
+ *     width  content   1 item      +experience   +experience+contact
+ *       640      544   523 / 21    544 /  0 ✗    544 /  0 ✗   (h 24/48/48)
+ *       680      584   523 / 61    584 /  0 ✗    584 /  0 ✗   (h 24/48/48)
+ *       720      624   523 /101    624 /  0 ✗    624 /  0 ✗   (h 24/48/48)
+ *       740      644   523 /121    626 / 18      644 /  0 ✗   (h 24/24/48)
+ *       760      664   523 /141    626 / 38      655 /  9     (h 24/24/24)
+ *       768      672   523 /149    626 / 46 ←    655 / 17     (h 24/24/24)
+ *       800      704   523 /181    626 / 78      655 / 49     (h 24/24/24)
+ *       880      784   740 / 44 (all four — B2's stop, unchanged)
+ *
+ * `experience` costs a flat 103px (87px of item + the 16px `gap-4`), so
+ * its needs sit at 626 from the moment the row stops wrapping. 740 is
+ * the first width where it technically fits — on 18px, which is the same
+ * kind of number B2 rejected at 840 — and 768 is the first stop with
+ * B2's own bar of real air (46px, against the 44px B2 accepted at 880).
+ * It is also `md`, a real device width, and the width the row was judged
+ * at. This is NOT the old `md` mistake B2 removed: the FULL row needs
+ * 740px of content and md has 672, but the row plus ONE item needs 626.
+ *
+ * `contact` is DECLINED at an intermediate stop, on the measurement. It
+ * cannot arrive without retiring the mail chip (56px back), which nets
+ * 655 — 17px of slack at 768, inside the jitter band B2 named. It would
+ * fit with air only from ~800, and a third breakpoint 32px after the
+ * second is fussier than the defect it would close. Contact stays
+ * reachable below 880 as the mail chip, exactly as before.
  */
 const NAV_ITEMS = [
   /* "the work" stays visible on phones: a screener must reach the
@@ -89,12 +131,16 @@ const NAV_ITEMS = [
     chapter: "05",
     className: "",
   },
+  /* The second stop (fix round 6): `experience` arrives at 768 — needs
+     626 against a 672 content box, 46px of slack. See the per-item sweep
+     in the block above; `min-[768px]` rather than `md:` deliberately, so
+     nobody reads this as the `md` stop B2 removed. */
   {
     label: "experience",
     href: "/#path",
     target: "#path",
     chapter: "03",
-    className: "hidden min-[880px]:list-item",
+    className: "hidden min-[768px]:list-item",
   },
   {
     label: "contact",
@@ -325,9 +371,14 @@ export default function Header() {
                 holds the measurement and the reasoning (N4). */}
             <MotionToggle className="hidden text-(--header-ink-muted) transition-colors hover:text-(--header-ink) sm:inline-flex" />
             {/* Mobile contact affordance: the text nav's "contact" item
-                arrives at 820px (B2), so everything below that gets a
-                quiet mail icon beside resume — exactly complementary, one
-                contact affordance at every width and never two.
+                arrives at 880px (B2's stop — this comment said 820, the
+                width B2 measured and REJECTED, an F82-class drift caught
+                in fix round 6), so everything below that gets a quiet
+                mail icon beside resume — exactly complementary, one
+                contact affordance at every width and never two. Fix
+                round 6's second stop moves `experience` to 768 and
+                deliberately leaves `contact` here: revealing it early
+                nets 17px of slack, inside the jitter band.
                 D7: the anchor is the 44×44 hit box, the span is the
                 32/36px chip — the negative margin returns the difference,
                 so the chip sits exactly where it sat. */}

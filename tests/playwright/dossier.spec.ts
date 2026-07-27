@@ -346,8 +346,14 @@ test.describe("dossier — case files", () => {
     await expect(page.locator("#v-taskflow-calendar-7")).toContainText(
       "54c79e0"
     );
+    /* `⟶`, not `→` (fix round 6): the paper set two different
+       right-arrow glyphs at the same 13px in the same Fragment Mono —
+       61px apart on the home page — and unified on the house glyph,
+       the one SystemDiagram rules its stage edges with. This assertion
+       is about the register EXPLAINING the rename, which it still does;
+       only the glyph the sentence is set in moved. */
     await expect(page.locator("#corrections")).toContainText(
-      "yadava5/taskflow-calendar → yadava5/cadence"
+      "yadava5/taskflow-calendar ⟶ yadava5/cadence"
     );
     /* The superseded demo host is gone from the page, and its erratum
        is on file — the register is how a number changes here. */

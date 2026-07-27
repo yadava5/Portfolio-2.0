@@ -73,7 +73,12 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
   if (scene) {
     const { Scene, meta } = scene;
     return (
-      <figure className="-rotate-[0.4deg]">
+      /* id="fig-1": every plate on this site is citable by its number
+         (ArtifactGallery has printed id="fig-N" since W1), and the case
+         file's own first three figures were the ones that were not — so
+         "see fig. 4" was a link and "fig. 1" was a dead reference to the
+         plate directly above the sentence. Fix round 6. */
+      <figure id="fig-1" className="-rotate-[0.4deg]">
         {/* The paper plate (owner fix round): warm archive stock + baked
             grain, double hairline frame, breathing margins — a tipped-in
             monograph plate, never a stark bright card (globals.css
@@ -98,7 +103,7 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
   }
 
   return (
-    <figure className="-rotate-[0.4deg]">
+    <figure id="fig-1" className="-rotate-[0.4deg]">
       {/* Same paper-plate dressing as the scene branch — a raster capture
           is still a plate in the monograph, not a floating white card. */}
       <div className="plate-paper border-ink/40 border p-2 sm:p-3">

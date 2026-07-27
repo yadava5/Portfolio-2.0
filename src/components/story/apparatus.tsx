@@ -47,6 +47,35 @@ interface ChapterKickerProps {
  * workday, dawn 06:12 to nightfall 22:41, matched to the waypoint
  * light. The scroll reads as a single day's record; only the gate's
  * LocalTime is the reader's now.
+ *
+ * FOLIO SEAT (fix round 6). The dateline is a FOLIO: it is a folio
+ * because of where it sits, and where it sits is flush right. The row is
+ * `flex-wrap` + `justify-between`, and `justify-between` places a single
+ * item on a line at flex-START — so at every width where both halves did
+ * not fit on one line, the folio wrapped onto its own line and printed
+ * flush LEFT. Swept 320 → 900 in 20px steps: hidden below 640 (it is a
+ * `sm` element), flush left 640 → 760, flush right only from 780 up.
+ * `ms-auto` is the whole fix: an auto inline-start margin eats the free
+ * space on the folio's own line, so a wrapped folio is right-aligned;
+ * where both halves share a line the auto margin and `justify-between`
+ * resolve to the same seat, so nothing at 780+ moves by a pixel.
+ *
+ * The kicker's own box is UNTOUCHED — no `w-full`, no grid. The Red
+ * Thread reads `[data-thread-kicker]`'s box to place its underline
+ * flourish (ThreadSegment.tsx → geometry.ts), so widening that box to
+ * the column would move the flourish on every chapter. `ms-auto` is
+ * paint-neutral for the kicker: it changes only the folio's own line.
+ *
+ * ONE band still sets the ch01 kicker on two lines and is left alone,
+ * measured: at 640 exactly, `sm:px-12` doubles WRAP's gutter and the
+ * content box DROPS from 580 to 544 while that kicker needs ~556 — the
+ * paper gets narrower as the screen gets wider. It is 12px, it belongs
+ * to WRAP rather than to the kicker, and `.label-mono` already carries
+ * `text-wrap: pretty` (globals.css), which is the house's rule for
+ * exactly this and is why the two lines do not end in an orphan. Adding
+ * `text-balance` here was tried and reverted: it changed no measured
+ * line count at any of the 30 swept widths, and it would have overridden
+ * the mono voice's own wrap policy on one element for nothing.
  */
 export function ChapterKicker({
   id,
@@ -66,9 +95,21 @@ export function ChapterKicker({
           underline flourish (ThreadSegment.tsx) — geometry only */}
       <p data-thread-kicker>
         ¶ {id} / {FOLIO_TOTAL} · {label}
-        {clock ? ` · ${clock}` : ""}
+        {/* The clock never leaves the line its chapter name ends on
+            (fix round 6). Shot at 640, the ch01 running head set
+            `…on what i’ve built` / `· 06:12` — the dateline clock alone
+            on a line, which reads as a stray rather than as the end of
+            the kicker. Both spaces around the separator are NO-BREAK, so
+            `built · 06:12` is one run and the wrap lands a word earlier.
+            13 characters, so it fits the 260px content box at 320 with
+            room; `.label-mono`'s `text-wrap: pretty` handles the rest. */}
+        {clock ? ` · ${clock}` : ""}
       </p>
-      {dateline ? <p className="hidden sm:block">{dateline}</p> : null}
+      {dateline ? (
+        <p data-kicker-folio className="ms-auto hidden sm:block">
+          {dateline}
+        </p>
+      ) : null}
     </div>
   );
 }
