@@ -350,7 +350,17 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                     className="self-center"
                   />
                 </a>
-                <span className="text-ink-secondary normal-case">
+                {/* N19 sweep (fix round 7) — THE ORPHANED FOLIO
+                    (globals.css). `[type] · source` is the row's
+                    provenance folio; the row is `flex-wrap` +
+                    `justify-between`, so wherever the label and the
+                    provenance could not share a line the provenance
+                    printed flush LEFT under the label instead of flush
+                    right. Measured on /projects/jobtracker/ at 360,
+                    390, 430 and 640 — the whole phone band and the
+                    small-tablet step. `folio-seat` moves nothing at
+                    the widths that were already right. */}
+                <span className="folio-seat text-ink-secondary normal-case">
                   [{artifact.type}] · {artifact.source}
                 </span>
               </li>
