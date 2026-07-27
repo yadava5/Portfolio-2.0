@@ -2378,3 +2378,358 @@ them (`probe-fix6.mjs`) and the geometry they record
 - **`/evidence`'s six 15px artifact links.** They are outside the two
   surfaces this round's item 4 names, they measure 0 overlap, and lifting
   them is a `/evidence` question rather than a case-file one.
+
+---
+
+## FIX7 — the closing punch list: one seating rule, one arrow rule, links that name themselves
+
+The Nitpicking Viewer PASSED the site at 94/100 ("THIS PASSES A
+NITPICKER") and named five remaining items. All five are answered below;
+three are fixed, one is fixed further than it asked, and one is declined
+on a measurement that contradicts its premise.
+
+Everything here was measured against the **shipped artifact** —
+`NEXT_PUBLIC_BASE_PATH= next build --webpack` into `out/`, served static
+on **:3700** — never against a dev server. Rigs:
+`docs/design-lab/probe-fix7.mjs` (seating + construct sweep + link
+labels), `probe-fix7-arrow.mjs` (the `↗` census and its density cost),
+`probe-fix7-print.mjs` (the PDFs and the folio paging),
+`probe-fix7-preload.mjs` (N23), `shoot-fix7.mjs` (the frames).
+
+### N19 — the ¶07 reference list had no consistent seating rule · **FIXED**
+
+The third appearance of one bug, so this round gave it a NAME. It is
+recorded once, in full, in `globals.css` as **THE ORPHANED FOLIO**, and
+the cure is a named utility — `folio-seat` (`margin-inline-start: auto`)
+— so a fourth sweep is a `grep` rather than a fix round.
+
+The pattern: `flex` + `flex-wrap` + `justify-between` with a left half
+and a right half. `justify-between` is defined per LINE and places a
+line's single item at flex-START, so at every width where the halves
+cannot share a line the right half wraps onto its own line and prints
+flush **LEFT**. The row silently changes its seating rule as the
+viewport moves.
+
+**The sweep, 640 → 1920 in 40px steps (33 widths), 7 receipts each.**
+"right / LEFT" is the seat; "L1 / L2" is only which line the receipt
+landed on, which is prose length and not a rule.
+
+| width | before (right / **LEFT**) | after (right / LEFT) | after L1 / L2 |
+|---|---|---|---|
+| 640 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 680 | 2 / **5** | 7 / 0 | 2 / 5 |
+| 720 | 3 / **4** | 7 / 0 | 3 / 4 |
+| 760 | 5 / **2** | 7 / 0 | 5 / 2 |
+| 800 | 6 / **1** | 7 / 0 | 6 / 1 |
+| 840 | 6 / **1** | 7 / 0 | 6 / 1 |
+| 880 – 1000 | 7 / 0 | 7 / 0 | 7 / 0 |
+| 1040 | 0 / **7** | 7 / 0 | 0 / 7 |
+| 1080 | 0 / **7** | 7 / 0 | 0 / 7 |
+| 1120 | 0 / **7** | 7 / 0 | 0 / 7 |
+| 1160 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1200 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1240 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1280 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1320 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1360 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1400 | 1 / **6** | 7 / 0 | 1 / 6 |
+| **1440** | **1 / 6** | **7 / 0** | 1 / 6 |
+| 1480 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1520 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1560 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1600 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1640 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1680 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1720 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1760 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1800 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1840 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1880 | 1 / **6** | 7 / 0 | 1 / 6 |
+| 1920 | 1 / **6** | 7 / 0 | 1 / 6 |
+
+**Before: 26 of 33 widths MIXED. After: 33 of 33 uniform, flush right,
+zero LEFT seats at any width.** At 1440 the viewer's exact reading is
+reproduced — six receipts on line 2 flush left, row 5 (`policybot —
+receipt 01 ⟶`) alone on line 1 flush right — and cured; see
+`shots-fix7/fix7-n19-refs-1440-{before,after}.png`.
+
+Paint-neutral by construction: auto margins resolve BEFORE
+`justify-content`, so a receipt that already shared its claim's line
+lands in the identical seat. The four widths that were uniform-right
+before (880 – 1000) moved zero pixels.
+
+#### The repo-wide construct sweep
+
+Every `flex-wrap` + `justify-between` container in `src/`, read live at
+320 / 360 / 390 / 430 / 640 / 768 / 900 / 1024 / 1160 / 1280 / 1440 /
+1920 across five routes. Nine exist; **six faulted**, two were already
+cured in FIX6, and one is measured incapable of faulting.
+
+| # | construct | faulted at | disposition |
+|---|---|---|---|
+| 1 | `apparatus.tsx` — ¶ kicker dateline | — (cured FIX6) | renamed to `folio-seat` |
+| 2 | `CaseStudyPage.tsx` — dossier status word | — (cured FIX6) | renamed to `folio-seat` |
+| 3 | `StoryShell.tsx` — ¶07 reference receipts | everywhere, 320 – 1920 | **fixed** (N19) |
+| 4 | `StoryShell.tsx` — manager-reference provenance | 640, 768, 900, 1024, 1160, 1280, 1440, 1920 | **fixed** |
+| 5 | `EvidenceTable.tsx` — head (`run the audit ⟶`) | automl 1024 / 1280 / 1440 / 1920; jobtracker 768 | **fixed** |
+| 6 | `ArtifactGallery.tsx` — artifact index row | 360, 390, 430, 640 | **fixed** |
+| 7 | `CaseStudyPage.tsx` — footer pager | 320, 360, 390, 430 | **fixed** |
+| 8 | `evidence/page.tsx` — footer pager | 390, 430 | **fixed** |
+| 9 | `evidence/page.tsx` — record head (`e-NN` / grade) | never | **cleared, in a comment at the call site** |
+
+\#9 is the one left bare, and deliberately: 132 row-readings across 12
+widths, seated `line1-right` 132 times and wrapped zero. It cannot
+orphan because it cannot wrap; adding the class there would be a class
+with no measured job. The reasoning lives at the call site so the next
+sweep does not have to re-derive it.
+
+The two pagers (#7, #8) look like peers rather than folios, and the
+GLYPHS are what decide it: `⟵` returns, `⟶` goes on. A right-pointing
+arrow printed on the left, under a left-pointing arrow, contradicts the
+grammar the whole apparatus runs on. Seated.
+
+**After: 0 faulting constructs at any swept width, on any route.**
+
+### N20 — the `↗` grammar broke on the case files · **FIXED (FIX4's decline reversed)**
+
+FIX4 declined to hang the marks and called it density. That decline is
+reversed, on a measurement rather than on taste.
+
+**The census — cross-origin `target="_blank"` links, whole site:**
+
+| | before | after |
+|---|---|---|
+| `_blank` links, all | 111 | 111 |
+| …same-origin (the resume — never leaves the site) | 10 | 10 |
+| …cross-origin | 101 | 101 |
+| …**cross-origin wearing a visible mark** | **55** | **101** |
+| …**cross-origin bare** | **46** | **0** |
+
+The viewer counted 59 bare by looking for the text glyph alone; 13 of
+those are `ArtifactGallery` index rows that wear a drawn `ArrowUpRight`
+instead. 46 is the count of links with NO visible mark of any kind. Both
+numbers describe the same defect.
+
+**Why the absence could not simply be authored.** The other option —
+state the rule in the column head so a reader infers it — cannot be
+stated truthfully, because the artifact column is not uniform: across
+the seven case files it carries **59 external artifacts AND 13 on-page
+fig citations**, and **13 of the 59 already wore the glyph**, because
+five labels in `projectCaseStudies.ts` had it typed into the DATA. One
+column, two kinds of link, and the same kind marked 13 times and bare
+46. There is no sentence a column head could carry that makes that a
+rule a reader could infer. So: mark them all.
+
+**What that costs**, measured before shipping by injecting the glyph and
+re-reading the cell on the four dense files:
+
+| file | width | links marked | cell height | artifact lines | doc height | **overflow** |
+|---|---|---|---|---|---|---|
+| jobtracker | 320 | 16 | 1329 → 1347 (+18) | 38 → 39 | 14493 → 14511 | **0 → 0** |
+| jobtracker | 390 | 16 | 1147 → 1147 | 35 → 35 | 12586 → 12586 | **0 → 0** |
+| jobtracker | 1440 | 16 | 1257 → 1257 | 32 → 32 | 7214 → 7214 | **0 → 0** |
+| taskflow | 320 | 17 | 1305 → 1305 | 41 → 41 | 15366 → 15366 | **0 → 0** |
+| taskflow | 390 | 17 | 958 → 1052 (+94) | 27 → 31 | 13042 → 13133 | **0 → 0** |
+| taskflow | 1440 | 17 | 1947 → 1947 | 22 → 24 | 7682 → 7682 | **0 → 0** |
+| fast-mnist | 320 / 390 / 1440 | 7 | unchanged | +0 / +0 / +1 | unchanged | **0 → 0** |
+| visual-assist | 320 / 390 / 1440 | 6 | unchanged | +0 / +0 / +3 | unchanged | **0 → 0** |
+
+Worst case is taskflow at 390: **+94px on a 13,042px document
+(+0.7%)**. **Overflow stays 0 at every width including 320** — the width
+FIX5 fought to fit. The furniture survives it.
+
+**How it ships.** The glyph is rendered by the component and glued with
+U+00A0 (`LEAVES_SITE` in `EvidenceTable.tsx`) — the cell runs
+`overflow-wrap: anywhere`, which is otherwise free to drop a lone arrow
+onto the next line. The five hand-typed glyphs were **removed from the
+data**; `ReceiptArtifactLink.label` now documents that a mark is
+furniture and that this file holds facts.
+
+**Two more, found by the same sweep in the meta ledger** — and they are
+the cleanest statement of the whole complaint: three terminals in one
+`dl` (repo, live demo, system card), all three off-site, and only two of
+them said so. The repo pin now carries the mark. And the `live demo`
+row, caught in the before/after shot, was dropping its existing `↗` onto
+a line of its own at 390 (`getapplied.vercel.app` / `↗`) — same
+no-break glue, same reason. See
+`shots-fix7/fix7-n20-ledger-390-{before,after}.png`.
+
+### N21 — ambiguous link text on the primary route into the work · **FIXED**
+
+Three home links read exactly `the case file ⟶` at three different case
+files; two read `system card ↗` at two different products. In context
+that passes WCAG 2.4.4; read as a link LIST — the rotor, the tab ring, a
+screener skimming affordances rather than prose — it fails 2.4.9.
+
+Visible text, not a hidden twin: 2.4.9 is about the visible text, so an
+`sr-only` suffix would only move the failure somewhere a sighted
+keyboard reader still meets it. No `aria-label` compromise was needed —
+the row had the room.
+
+| link | before | after |
+|---|---|---|
+| ¶05 work row × 3 | `the case file ⟶` | `applied — the case file ⟶` · `glyph — …` · `cadence — …` |
+| ¶05 jetpack row | `system card ↗` | `jetpack-compress system card ↗` |
+| ¶05 "also live" line | `system card ↗` | `lifequest system card ↗` |
+
+The case-file form borrows the one already printed on this same page:
+¶07's reference list sets `automl — the case file ⟶`. The system card
+takes a plain noun phrase instead, because that string also has to work
+inside the "also live" index line, whose em-dash is already spent
+parting a project from its gloss — and one phrase printed two ways is
+the ambiguity N21 was raised about.
+
+`.label-mono` lowercases the rail, so the title arrives in the apparatus
+voice with no `normal-case` exception and no second type colour.
+**Measured at 390 before choosing:** the rail's line box is 342px and
+the longest of the three sets **227px on ONE line** — the row keeps its
+shape and the 44px target D7 built stays exactly 44. See
+`shots-fix7/fix7-n21-worklinks-390-after.png`.
+
+**After: zero duplicate link texts pointing at different destinations**
+on the home page at 390, 768 and 1440. The three remaining duplicate
+strings (`Applied`, `Glyph`, `Cadence`, each twice) point at the SAME
+href both times, which is what 2.4.4 and 2.4.9 both ask for.
+
+### N22 — print folio orphans · **FIXED, verified by re-rendering**
+
+Read out of the PDF, not out of the stylesheet. `pdftotext` page heads,
+Letter, `printBackground: false` (the Cmd+P default, the condition F04
+was measured under):
+
+| sheet | before | after |
+|---|---|---|
+| 2 | **`02 / 07`**, then `¶ 03 / 07` | `I’m a recent computer-science graduate…` |
+| 7 | **`05 / 07`**, then `¶ 06 / 07` | `lifequest ↗ … · lifequest system card ↗` |
+
+**Two orphans → zero.** All seven folios still print, in order; the home
+paper is 9 sheets before and 9 sheets after.
+
+The declaration is `break-before: avoid`; the WRAPPER is what makes it
+bite. Every chapter mounts its folio as the only child of a spacing div,
+so the break opportunity the engine actually takes is the one BEFORE
+that div, in the chapter's column. Declaring the avoid on the rule alone
+suppresses the inner opportunity and leaves the outer one open — which
+is why the folio still moved on the first attempt.
+`:has(> [data-thread-folio])` names the wrapper without hard-coding any
+chapter's spacing class, and that box does have the chapter's last block
+as its previous sibling: the predecessor Chrome needs in order to
+honour the constraint at all. Both are declared.
+
+### N23 — "4 unused font preloads warn on `/no-such-page/` only" · **DECLINED, on the measurement**
+
+The premise does not reproduce on the shipped artifact, and the real
+number is one, not four — and it is not 404-specific.
+
+`probe-fix7-preload.mjs`: 390px viewport, full-page scroll, an
+**8-second tail** (well past Chrome's ~3s emission window), every
+console level captured, four routes.
+
+| route | preload warnings | woff2 fetched | faces actually painted |
+|---|---|---|---|
+| `/` | **0** | 4 | Fraunces, Newsreader roman, **Newsreader italic**, Fragment Mono |
+| `/evidence/` | **0** | 4 | Fraunces, Newsreader roman, **Newsreader italic**, Fragment Mono |
+| `/projects/automl/` | **0** | 4 | Fraunces, Newsreader roman, Fragment Mono |
+| `/no-such-page/` | **0** | 4 | Fraunces, Newsreader roman, Fragment Mono |
+
+The viewer's own rig (`nitpick3-last.mjs`) was re-run against the static
+export and also recorded **zero** preload warnings on `/no-such-page/`.
+The only console line there is the document's own 404 status, which the
+static server is supposed to send. The font hashes in the viewer's
+capture (`…-s.p.<deployment-id>.woff2`) are not the ones this build
+emits (`…-s.p.woff2`), so that reading came from a different serving
+mode.
+
+What IS real, read from `document.fonts` rather than from the console:
+the 404 route downloads four woff2 and activates three. **`Newsreader
+italic` (23,024 B) is fetched and never painted** — one unused preload,
+not four — and `/projects/automl/` sets no italic either and carries the
+identical unused preload. It is not a 404 defect.
+
+**Not trimmed, deliberately.** `next/font` preloads per CALL, and one
+`Newsreader()` call emits both style files. Splitting italic into a
+second call so it can carry `preload: false` gives it a DIFFERENT family
+name, and CSS font matching never falls through to a later family for a
+missing style — it takes the first family that has the glyph and
+SYNTHESIZES the oblique. That would trade 23KB on two routes for a
+synthetic slant on the prose italic voice, which this paper uses for
+every muted consequence line. The 23KB stays; the reasoning is recorded
+in `layout.tsx` so it is not re-opened a fourth time.
+
+### The DELIGHT LIST, re-checked
+
+The viewer's own `nitpick3-regress.mjs`, re-run against this build and
+compared with its recorded baseline:
+
+```
+BASELINE delight.home {"redThread": 12, "threadSvg": 7, "railMarks": 0,
+                       "lightField": true, "arcPhaseAttr": null,
+                       "stamps": 2, "colophon": true, "leaders": 0}
+FIX7     delight.home {"redThread": 12, "threadSvg": 7, "railMarks": 0,
+                       "lightField": true, "arcPhaseAttr": null,
+                       "stamps": 2, "colophon": true, "leaders": 0}
+BASELINE delight.404  {"dottedLeaders": 7}
+FIX7     delight.404  {"dottedLeaders": 7}
+```
+
+| # | delight | after this round |
+|---|---|---|
+| 1 | the day arc | intact — untouched |
+| 2 | the red thread | intact — `[data-thread-kicker]`'s box untouched again; `red-thread.spec.ts` passes |
+| 3 | the rail marks | intact — untouched |
+| 4 | the litany receipts | intact — untouched |
+| 5 | ap·prov·al | intact — `nitpick3-stamp.mjs` reads 5,057 changed px at 390 against the baseline's 5,058 (1px of antialiasing). At 1440 the baseline reading was degenerate (0×0 box, 52×52 frame, 0px changed — the rig missed the stamp); this run reaches it properly: 318×220, register opacity 1, 5,048 changed px |
+| 6 | the colophon | intact — untouched |
+| 7 | the honesty apparatus | intact and **extended** — every off-site terminal on the site now says that it is off-site |
+| 8 | back-restore | intact — untouched |
+| 9 | the dotted leaders | intact — 7 on the 404, unchanged |
+
+### Verification at close
+
+`NEXT_PUBLIC_BASE_PATH= next build --webpack` clean · `tsc --noEmit`
+clean · `eslint` clean (0 errors, 0 warnings) · `prettier --check` clean
+on the enforced scope · **contrast gate passed** · **proof-manifest
+passed** · **og-card check passed** (9 cards) · **asset-budget passed**
+· **static-export SEO passed (24/24)**.
+
+Playwright against the static export on **:3700** — **chromium-desktop
+193 passed, 2 skipped** (atlas, a11y-audit, interactions,
+nav-and-images, comprehensive-qa, text-motion, dossier, paper-memory,
+day-arc, red-thread, reduced-motion, scroll-engine, pipeline-run) ·
+**chromium-mobile 49 passed** (atlas) · **firefox-desktop 5 passed**
+(scroll-engine).
+
+The viewer's own rigs, re-run and still holding: **overflow 0** across
+ten routes × nineteen widths and at 320 end to end · **0 mis-hits** on
+the anchor hit test (`/`, `/evidence/`, two case files,
+`/no-such-page/` — 32 + 34 + 48 + 17 anchors, every one landing) · **the
+¶ dateline folio flush right** at every width it renders (`folioR` 0) ·
+**masthead 767 → 1 item, 768 → 2**, header height 68 at both · **focus
+ink singular** — one `2px solid rgb(38, 35, 28)` across 16 elements plus
+the documented 0.72-alpha motion toggle · **CLS 0** on `/evidence/`,
+`/projects/automl/` and `/no-such-page/`, home unchanged at its recorded
+1.2151.
+
+One rig, `nitpick3-flip.mjs`, still dies at its stamp screenshot. Not a
+regression: its fallback selector matches ¶02's `ap·prov·al` dictionary
+box rather than the gate stamp and then clips outside the viewport, and
+the viewer's own `flip-notes.json` carries no `stamp.*` key either.
+Everything before that point ran and matches (404 sweep overflow 0,
+dateline sweep, masthead sweep), and the gate stamp itself is covered
+properly by `nitpick3-stamp.mjs`.
+
+Screenshots and PDFs go to `docs/design-lab/shots-fix7/` (before- and
+after-suffixed) and, per this repo's rule on binaries, are **not
+committed**; the four probes and the shot rig that regenerate them are.
+
+### Left open, deliberately
+
+- **`/no-such-page/` still preloads one font it does not paint**
+  (Newsreader italic, 23KB) — as does `/projects/automl/`. N23 above
+  carries the cost of the only available cure.
+- **`evidence/page.tsx`'s record head keeps the bare construct.**
+  Measured incapable of wrapping (132 / 132 readings seated right); the
+  clearance is written at the call site rather than papered over with a
+  class that would do nothing.
+- **Home's CLS stays at its recorded 1.2151.** Unchanged by this round
+  and outside its remit; the other three routes are 0.

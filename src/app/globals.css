@@ -151,6 +151,43 @@
     "WONK" 1;
 }
 
+/* ── THE ORPHANED FOLIO ─────────────────────────────────────────────
+   The house cure for ONE named layout bug, which this repository has
+   now shipped three times in three different files. Name it here so a
+   fourth is a grep away instead of a fix round away.
+
+   THE PATTERN. A `flex` + `flex-wrap` + `justify-between` row with a
+   left half and a right half. `justify-between` is defined per LINE,
+   and it places a line's single item at flex-START — so at every width
+   where the two halves cannot share a line, the RIGHT half wraps onto
+   its own line and prints flush LEFT. The row silently changes its
+   seating rule as the viewport moves, which is exactly the thing a
+   printed folio may never do: a folio is a folio because of where it
+   sits, and where it sits is flush right.
+
+   Confirmed occurrences, each caught by a different reviewer:
+     fix 6 — the ¶ chapter kicker's dateline (apparatus.tsx)
+     fix 6 — the case file's status word  (CaseStudyPage.tsx)
+     fix 7 — the ¶07 reference receipts, the manager-reference
+             provenance, the artifact index, the evidence-table head,
+             and both footer pagers (N19, swept 640→1920)
+
+   THE CURE. `margin-inline-start: auto` on the RIGHT half. An auto
+   inline-start margin eats all free space on the item's OWN line, so a
+   wrapped right half is right-aligned; where both halves already share
+   a line, auto margins resolve before `justify-content` and land the
+   item in the identical place — so applying this moves ZERO pixels at
+   any width that was already correct. It is `ms-`, not `ml-`, so the
+   rule survives a right-to-left document.
+
+   WHEN NOT TO USE IT: only when the right half is not a folio — when
+   the two halves are peers whose stacked order carries the meaning
+   rather than their seats. Say so at the call site; do not leave the
+   construct bare and unexplained. */
+@utility folio-seat {
+  margin-inline-start: auto;
+}
+
 /* ════════════════════════════════════════════════════════════════
    THE WORLD — light-field layers + day-arc state
    Consumed by src/components/world/LightField.tsx / DayArc.tsx.
@@ -2901,6 +2938,38 @@ body {
   h3,
   [data-tm-mantra] {
     break-after: avoid;
+  }
+
+  /* ── 7b. A FOLIO NEVER OPENS A SHEET (fix round 7, N22) ────────
+     `NN / 07` is a CLOSING rule: it means "chapter NN ends here". Sent
+     to the head of the next sheet it stops meaning that and starts
+     reading as a heading for a page whose chapter has not begun.
+     Measured on the before PDF (docs/design-lab/probe-fix7-print.mjs,
+     `printBackground:false`, Letter): sheet 2 opened `02 / 07` then a
+     gap then `¶ 03 / 07`, and sheet 7 opened `05 / 07` then
+     `¶ 06 / 07` — two of the seven folios printed as orphans, one of
+     them the day's terminator.
+
+     `break-before: avoid` is the declaration; the WRAPPER is what
+     makes it bite. Every chapter mounts its folio as the only child of
+     a spacing div (`<div class="mt-[7vh]"><FolioRule/></div>`), so the
+     break opportunity the engine actually takes is the one BEFORE that
+     div, in the chapter's column — not the one before the rule itself.
+     Declaring the avoid on the rule alone suppresses the inner
+     opportunity and leaves the outer one open, which is why the folio
+     still moved. `:has(> [data-thread-folio])` names the wrapper
+     without hard-coding any chapter's spacing class, and that box does
+     have the chapter's last block as its previous sibling — the
+     predecessor Chrome needs in order to honour the constraint at all.
+     Both are declared so a folio mounted without a wrapper is still
+     covered.
+
+     Verified by RE-RENDERING the PDFs and reading page heads with
+     pdftotext, never by reading the stylesheet: 2 orphans → 0. */
+  [data-thread-folio],
+  :has(> [data-thread-folio]) {
+    break-before: avoid;
+    break-inside: avoid;
   }
 
   /* ── 8. PAGE FURNITURE ─────────────────────────────────────────

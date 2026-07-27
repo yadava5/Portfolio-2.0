@@ -1619,13 +1619,39 @@ function WorkChapter() {
                       link can reach the one below it. The bottom
                       affordance of each stack gets the full unshared 44
                       — there is 290px of paper under it. */}
+                  {/* N21 (fix round 7) — the link says WHICH file.
+                      Three rows printed the identical string
+                      `the case file ⟶` at three different case files,
+                      and two printed `system card ↗` at two different
+                      products. In context that passes WCAG 2.4.4; read
+                      as a link LIST — the rotor, the tab ring, a
+                      screener skimming the affordances rather than the
+                      prose — it fails 2.4.9, because the text alone
+                      names no destination.
+
+                      The cure is already printed on this page: ¶07's
+                      reference list sets `automl — the case file ⟶`.
+                      The row borrows that form rather than inventing
+                      one. No sr-only twin: 2.4.9 is about the VISIBLE
+                      text, so a hidden suffix would only move the
+                      failure somewhere a sighted keyboard reader still
+                      meets it.
+
+                      `.label-mono` lowercases the rail, so the title
+                      arrives in the apparatus voice (`applied — the
+                      case file ⟶`) without a second type colour or a
+                      `normal-case` exception. Measured at 390 before
+                      choosing: the rail's own line box is 342px and
+                      the longest of the three sets 227px on ONE line —
+                      the row keeps its shape, and the 44px target the
+                      D7 pass built stays exactly 44. */}
                   <p>
                     {study ? (
                       <Link
                         href={caseHref}
                         className="link-draw tap-target-block text-ink"
                       >
-                        the case file ⟶
+                        {project.title} — the case file ⟶
                       </Link>
                     ) : project.liveUrl ? (
                       <a
@@ -1684,7 +1710,15 @@ function WorkChapter() {
                         rel="noopener noreferrer"
                         className="link-draw tap-target-block"
                       >
-                        system card ↗
+                        {/* N21: which product's card. The system card
+                            takes a plain noun phrase rather than the
+                            case file's em-dash form — this string also
+                            has to work inside the "also live" index
+                            line below, whose em-dash is already spent
+                            parting a project from its gloss, and one
+                            phrase printed two ways is the ambiguity
+                            N21 was raised about. */}
+                        {project.title} system card ↗
                       </a>
                     </p>
                   ) : null}
@@ -1797,7 +1831,12 @@ function WorkChapter() {
                         rel="noopener noreferrer"
                         className="link-draw"
                       >
-                        system card ↗
+                        {/* N21, the second of the pair. Adding the
+                            product name repeats a word already on this
+                            line — and that is the point: the line reads
+                            fine either way, the LINK only reads as one
+                            thing with it. */}
+                        {project.title} system card ↗
                       </a>
                     </>
                   ) : null}
@@ -2177,13 +2216,41 @@ function GateChapter() {
                 <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
                 </span>
-                {/* CRITIC-LEDGER F41: the glyph is now load-bearing
-                    again. `⟶` means "deeper into this argument" (an
-                    in-page anchor or a case file); `↗` means "leaves
-                    the site". A reference that terminates at a public
-                    repo is the second kind, and says so. */}
+                {/* N19 (fix round 7) — `folio-seat` is THE ORPHANED
+                    FOLIO's cure, named and explained once in
+                    globals.css. This row is the same `flex-wrap` +
+                    `justify-between` construct fix round 6 diagnosed on
+                    the ¶ kicker and the case file's status word, and it
+                    was never swept for elsewhere: `justify-between`
+                    seats a lone wrapped item at flex-START, so every
+                    reference whose claim and receipt could not share a
+                    line printed its receipt flush LEFT.
+
+                    Measured on the closing page of the paper, swept
+                    640 → 1920 in 40px steps (probe-fix7.mjs): MIXED at
+                    26 of the 33 widths — at 1440 six of the seven rows
+                    dropped their receipt to a second line flush left
+                    while row 5, whose claim happened to be short
+                    enough, kept its receipt on line 1 flush right. One
+                    row out of alignment with six, at the reference
+                    desktop width, under the heading that promises
+                    footnote 1 is kept.
+
+                    Paint-neutral where the two halves already shared a
+                    line: an auto inline-start margin resolves before
+                    `justify-content` and lands the receipt in the
+                    identical seat. Re-swept after: uniform at all 33.
+
+                    CRITIC-LEDGER F41: the glyph is load-bearing. `⟶`
+                    means "deeper into this argument" (an in-page anchor
+                    or a case file); `↗` means "leaves the site". A
+                    reference that terminates at a public repo is the
+                    second kind, and says so. */}
                 {reference.inPage ? (
-                  <LenisAnchor href={reference.href} className="link-draw">
+                  <LenisAnchor
+                    href={reference.href}
+                    className="link-draw folio-seat"
+                  >
                     {reference.source} ⟶
                   </LenisAnchor>
                 ) : reference.href.startsWith("http") ? (
@@ -2191,12 +2258,12 @@ function GateChapter() {
                     href={reference.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="link-draw normal-case"
+                    className="link-draw folio-seat normal-case"
                   >
                     {reference.source} ↗
                   </a>
                 ) : (
-                  <Link href={reference.href} className="link-draw">
+                  <Link href={reference.href} className="link-draw folio-seat">
                     {reference.source} ⟶
                   </Link>
                 )}
@@ -2282,7 +2349,17 @@ function GateChapter() {
                     {" — "}
                     <span className={muted}>{managerReference.title}</span>
                   </span>
-                  <span className={muted}>
+                  {/* N19, second instance in this file (fix round 7).
+                      Same construct, same fault: the standing-and-date
+                      half is the FOLIO of this attribution line — it is
+                      the provenance of somebody else's sentence — and
+                      it wrapped flush LEFT at 8 of the 12 swept widths
+                      (640, 768, 900, 1024, 1160, 1280, 1440, 1920),
+                      which is every width at and above the one the
+                      reference desktop uses. `folio-seat` (globals.css)
+                      is the same cure, and moves nothing at the four
+                      widths that were already right. */}
+                  <span className={`folio-seat ${muted}`}>
                     {managerReference.standing ?? managerReference.relationship}{" "}
                     · recorded {managerReference.date}
                   </span>

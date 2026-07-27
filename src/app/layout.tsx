@@ -37,6 +37,34 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+/* N23 (fix round 7) — the "unused font preload" report, settled here so
+   it is not re-opened a fourth time.
+
+   THE CLAIM: four preloads warn as unused on `/no-such-page/` and on no
+   other route. MEASURED against the shipped artifact
+   (`next build` → `out/`, served static, the GitHub Pages target) with
+   docs/design-lab/probe-fix7-preload.mjs — 390px viewport, full-page
+   scroll, an 8-second tail, well past Chrome's ~3s emission window,
+   every console level captured: ZERO preload warnings on `/`,
+   `/evidence/`, `/projects/automl/` AND `/no-such-page/`. The only
+   console line on the 404 route is the document's own 404 status, which
+   the static server is supposed to send.
+
+   What IS real, read from `document.fonts` rather than from the console:
+   `/no-such-page/` fetches four woff2 and activates three — Fraunces,
+   Newsreader roman, Fragment Mono. `Newsreader italic` (23KB) is
+   downloaded and never painted. So the number is ONE, not four — and it
+   is not a 404 defect either: `/projects/automl/` sets no italic and
+   carries the identical unused preload.
+
+   NOT TRIMMED, deliberately. `next/font` preloads per CALL, and one
+   `Newsreader()` call emits both style files. Splitting italic into a
+   second call so it can carry `preload: false` gives it a DIFFERENT
+   family name, and CSS font matching never falls through to a later
+   family for a missing style — it takes the first family that has the
+   glyph and SYNTHESIZES the oblique. That would trade 23KB on two
+   routes for a synthetic slant on the prose italic voice, which this
+   paper uses for every muted consequence line. The 23KB stays. */
 const newsreader = Newsreader({
   subsets: ["latin"],
   variable: "--font-newsreader",

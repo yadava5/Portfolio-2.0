@@ -67,6 +67,20 @@ const VISIBILITY_LABEL: Record<ReceiptVisibility, string> = {
 const ROW_GRID =
   "md:grid-cols-[minmax(0,2.1fr)_minmax(0,1.3fr)_minmax(0,1.6fr)]";
 
+/**
+ * The leaving mark (N20, fix round 7) — the site's `↗`, glued to the
+ * label it follows by U+00A0. The no-break space is not decoration: the
+ * artifact cell runs `overflow-wrap: anywhere` (see the long note at
+ * the cell), and a normal space in front of a one-glyph run is an
+ * invitation to print the arrow alone on the next line.
+ *
+ * It is a constant so the glyph appears in this file exactly once, and
+ * so it is never typed into `projectCaseStudies.ts` again — five
+ * artifact labels used to carry it as DATA, which is how one column
+ * ended up with two grammars.
+ */
+const LEAVES_SITE = "\u00A0\u2197";
+
 function isExternalHref(href: string): boolean {
   return href.startsWith("http");
 }
@@ -143,8 +157,24 @@ export function EvidenceTable({
 }: EvidenceTableProps) {
   return (
     <div>
+      {/* N19 sweep (fix round 7) — THE ORPHANED FOLIO, caught here by
+          the repo-wide pass rather than by a reader. `run the audit ⟶`
+          is this table's folio: it sits opposite the table's name, and
+          the row is `flex-wrap` + `justify-between`, so at every width
+          where the control could not share a line with the title it
+          wrapped to its own line at flex-START. Measured on
+          /projects/automl/ at 1024, 1280, 1440 and 1920 — every desktop
+          width — and on /projects/jobtracker/ at 768. `folio-seat`
+          (globals.css) seats it right on its own line and resolves to
+          the identical position wherever the two already shared one.
+          The seat rides the container as a last-child variant, not a
+          wrapper element: `headSlot` is a component with its own
+          `max-w-full` plumbing (AuditRun's inline-flex root), and
+          interposing a box between it and the flex line would change
+          what that max-width resolves against. This way the DOM is
+          byte-for-byte what it was and exactly one property moves. */}
       {headSlot ? (
-        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+        <div className="[&>:last-child]:folio-seat flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
           <h3 className="label-mono text-ink">{title}</h3>
           {headSlot}
         </div>
@@ -273,6 +303,54 @@ export function EvidenceTable({
                             <KeyLabel>artifact</KeyLabel>
                           </span>
                         ) : null}
+                        {/* N20 (fix round 7) — the `↗` grammar, applied
+                            to the last column that broke it.
+
+                            StoryShell's F41 note defines the glyph:
+                            `↗` leaves the site, `⟶` goes deeper into
+                            this argument. This cell printed its
+                            artifact labels bare, so the SAME artifact
+                            wore the mark on /evidence/ and lost it on
+                            its own case file. Fix round 4 declined to
+                            hang the marks and called it density; that
+                            decline is reversed here, on a measurement
+                            rather than on taste.
+
+                            WHY THE ABSENCE COULD NOT SIMPLY BE
+                            AUTHORED. The other cure — say the rule in
+                            the column head, so a reader infers "every
+                            link in this column is off-site" — cannot
+                            be stated truthfully, because the column is
+                            not uniform. Across the seven files it
+                            carries 59 external artifacts AND 13
+                            on-page fig citations, and 13 of the 59
+                            already wore the glyph because five labels
+                            in projectCaseStudies.ts had it typed into
+                            the DATA. One column, two kinds of link,
+                            and the same kind marked 13 times and bare
+                            46. There is no sentence a column head
+                            could carry that makes that a rule.
+
+                            WHAT IT COSTS, measured on the four dense
+                            files at 320 / 390 / 1440
+                            (probe-fix7-arrow.mjs): overflow stays 0 at
+                            every width — including 320, the width fix
+                            round 5 fought to fit. Worst case is
+                            taskflow at 390, +94px of cell on a
+                            13,042px document (+0.7%); jobtracker gains
+                            one line at 320 and nothing at 390 or 1440;
+                            the other measured cells gain lines inside
+                            a grid row whose height another column
+                            already sets, so they cost zero.
+
+                            The glyph is rendered HERE and never stored
+                            in the data: a mark is furniture, and the
+                            five hand-typed ones are exactly how a
+                            column ends up with two grammars. The space
+                            is NO-BREAK — this cell runs
+                            `overflow-wrap: anywhere` (see the note
+                            above), which would otherwise be free to
+                            drop a lone arrow onto its own line. */}
                         {isExternalHref(artifact.href) ? (
                           <a
                             href={artifact.href}
@@ -281,6 +359,7 @@ export function EvidenceTable({
                             className="link-draw"
                           >
                             {artifact.label}
+                            {LEAVES_SITE}
                           </a>
                         ) : (
                           /* cite-link: on-page fig citation — the row's
