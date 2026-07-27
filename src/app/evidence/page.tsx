@@ -192,6 +192,17 @@ export default function EvidencePage() {
                     bracketed label) on the right. The sr-only "visibility:"
                     keeps the old dl row's spoken key; only the seat moved
                     (presentation, zero fact edits). */}
+                {/* N19 sweep (fix round 7) — this row is the ONE
+                    `flex-wrap` + `justify-between` construct in the
+                    repo left deliberately bare, and it is recorded here
+                    so the next sweep does not have to re-derive it. Its
+                    two halves are `e-NN` and a bracketed grade, both
+                    short: swept at 320 / 360 / 390 / 430 / 640 / 768 /
+                    900 / 1024 / 1160 / 1280 / 1440 / 1920 across every
+                    entry on the page, 132 row-readings, seated
+                    line1-right 132 times and wrapped ZERO. It cannot
+                    orphan because it cannot wrap. Adding `folio-seat`
+                    here would be a class with no measured job. */}
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                   <p className="label-mono text-ink-secondary">
                     e-{String(index + 1).padStart(2, "0")}
@@ -361,9 +372,18 @@ export default function EvidencePage() {
             <Link href="/#work" className="link-draw text-ink">
               back to the work ⟵
             </Link>
+            {/* N19 sweep (fix round 7) — THE ORPHANED FOLIO
+                (globals.css), on a pager. The two halves look like
+                peers, and the GLYPHS are what make them not: `⟵`
+                returns, `⟶` goes on, and the site's whole apparatus
+                reads those as directions. Measured at 390 and 430, the
+                forward link could not share the line and wrapped to
+                flex-START — an arrow pointing right, printed on the
+                left, under the arrow pointing left. `folio-seat` keeps
+                the direction and the seat agreeing at every width. */}
             <Link
               href="/projects/automl/"
-              className="link-draw text-ink-secondary"
+              className="link-draw folio-seat text-ink-secondary"
             >
               first case file — agentic automl ⟶
             </Link>
