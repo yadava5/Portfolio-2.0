@@ -36,8 +36,21 @@ export interface ProjectSceneMeta {
 /**
  * Scene metadata by project id (src/lib/data/projects.ts ids).
  *
+ * ONE RIGHT ARROW (fix round 6). The home page set two different
+ * right-arrow glyphs at the same 13px in the same Fragment Mono 61px
+ * apart: the jetpack figure's control (`gzip this figure in your browser
+ * ⟶`, U+27F6) and, directly beneath it, this file's caption (`split →
+ * parallel → stitch`, U+2192). Two glyphs for one direction, at one
+ * size, in one voice, inside one glance — which reads as a font
+ * fallback, not as a distinction. The house glyph is `⟶`: it is what
+ * SystemDiagram.tsx already rules its stage edges with, and what F41
+ * reserved for "onward". Every painted flow arrow in the mono voice is
+ * now that glyph — here, in the case-file value cells, and in the
+ * corrections register. Arrows inside SOURCE COMMENTS are left as `→`;
+ * nothing renders them.
+ *
  * Number provenance:
- * - jobtracker: gates "rules → e5 similarity → gated SetFit" and the
+ * - jobtracker: gates "rules ⟶ e5 similarity ⟶ gated SetFit" and the
  *   in-browser int8 ONNX 22.8 MB from projects.ts fullDescription;
  *   96 messages / 12 per label × 8 labels and the eval mix
  *   65 · 17 · 8 · 6 from projectCaseStudies.ts (jobtracker protocol);
@@ -50,7 +63,7 @@ export interface ProjectSceneMeta {
  *   "a drawn 7, answered" (F37) restates the figure's own drawn digit
  *   and its labeled readout — the case study's "you draw a digit and
  *   watch the network read it" — not a measured result.
- * - jetpack-compress: split → virtual threads → one byte-valid gzip
+ * - jetpack-compress: split ⟶ virtual threads ⟶ one byte-valid gzip
  *   member, ~6.5x vs single-threaded java.util.zip (±50%, quick
  *   benchmark) from projects.ts; 72 tests / 0 failures / JDK 25 @
  *   af2c4b1 from proofManifest jetpack-tests. "1f 8b" is the gzip
@@ -77,9 +90,9 @@ export interface ProjectSceneMeta {
 export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
   jobtracker: {
     caption:
-      "the sorting line — the 96-message eval set through rules → e5 similarity → gated setfit",
+      "the sorting line — the 96-message eval set through rules ⟶ e5 similarity ⟶ gated setfit",
     disclosure:
-      "A drawn figure that runs — not a screenshot. Geometry from the repository’s real 3-layer classifier path (rules → e5 similarity → gated SetFit); the four lanes and their counts are the committed eval set’s own mix (96 messages, 12 per label × 8 labels); macro-F1 0.9791 from the committed baseline.",
+      "A drawn figure that runs — not a screenshot. Geometry from the repository’s real 3-layer classifier path (rules ⟶ e5 similarity ⟶ gated SetFit); the four lanes and their counts are the committed eval set’s own mix (96 messages, 12 per label × 8 labels); macro-F1 0.9791 from the committed baseline.",
     provenance:
       "96 messages · 12 per label × 8 labels · macro-f1 0.9791 — committed eval baseline · ships in-browser: int8 onnx, 22.8 mb",
     alt: "The sorting line: the 96-message eval set flows through three classifier gates — rules, e5 similarity, and a gated SetFit model — and sorts into its four scenario lanes: 65 core-positive, 17 edge-noise, 8 historical-miss, 6 core-negative. Macro-F1 0.9791.",
@@ -113,7 +126,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
   },
   "jetpack-compress": {
     caption:
-      "split → parallel → stitch — virtual-thread gzip into one byte-valid member",
+      "split ⟶ parallel ⟶ stitch — virtual-thread gzip into one byte-valid member",
     disclosure:
       "A drawn figure that runs — not a screenshot. Geometry from the engine’s real path: the input stream splits into blocks, compresses concurrently on virtual threads, and stitches into one byte-valid gzip member. The optional in-card gzip runs your browser’s own CompressionStream and is labeled live — it is not jetpack’s JDK output.",
     provenance:
