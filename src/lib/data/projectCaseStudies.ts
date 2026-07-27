@@ -134,6 +134,17 @@ export interface CaseStudyEvidenceDisclosure {
 export type ReceiptVisibility = "public" | "private-safe" | "local-only";
 
 export interface ReceiptArtifactLink {
+  /**
+   * What the artifact is called — a filename, a pinned path, a host.
+   * NO GLYPH (N20, fix round 7). `↗` is the site's mark for "this
+   * leaves the site" and EvidenceTable renders it for every artifact
+   * whose href is external, so a label that carries one prints it
+   * twice — and a label that omits one used to print none at all.
+   * Five labels in this file did carry it by hand, which is precisely
+   * how the receipts column ended up marking 13 of its 59 external
+   * links and leaving 46 bare. A mark is furniture; furniture belongs
+   * to the component, and this file holds facts.
+   */
   label: string;
   href: string;
   /**
@@ -547,7 +558,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             href: `${APPLIED_BLOB}/backend/data/evaluation/baseline_hybrid_v3.json`,
           },
           {
-            label: "backend-ci run, 2026-04-20 ↗",
+            label: "backend-ci run, 2026-04-20",
             href: APPLIED_CI_RUN,
           },
         ],
@@ -634,7 +645,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "the product’s own workflow, described — not a usage metric",
         artifacts: [
           {
-            label: "getapplied.vercel.app ↗",
+            label: "getapplied.vercel.app",
             href: "https://getapplied.vercel.app",
           },
         ],
@@ -648,7 +659,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "ported the local classifier and exported it quantized; both the space and the export script are inspectable",
         artifacts: [
           {
-            label: "huggingface.co/spaces/yadava5/jobtracker-classifier ↗",
+            label: "huggingface.co/spaces/yadava5/jobtracker-classifier",
             href: "https://huggingface.co/spaces/yadava5/jobtracker-classifier",
           },
           {
@@ -1543,7 +1554,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
                pre-rename deploy. It still answers, which is worse than a
                404 — the file printed one host in its meta ledger and a
                different one here for the same app. Erratum on file. */
-            label: "usecadenceapp.vercel.app ↗",
+            label: "usecadenceapp.vercel.app",
             href: "https://usecadenceapp.vercel.app",
           },
         ],
@@ -2279,7 +2290,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
                file printed one host in its meta ledger and a different
                one here for the same app. Erratum on file (the same
                two-host defect corrected on Cadence the same day). */
-            label: "getglyph.vercel.app ↗",
+            label: "getglyph.vercel.app",
             href: "https://getglyph.vercel.app",
           },
         ],
