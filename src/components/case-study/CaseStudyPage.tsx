@@ -259,9 +259,13 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
               TWO · the status was the orphaned folio. This row is
               `flex-wrap` + `justify-between`, so the moment the status
               could not share a line with the kicker it wrapped to its
-              own line at flex-START. `ms-auto` seats it flush right on
-              its own line and resolves to the identical position where
-              both halves share one line. */}
+              own line at flex-START. An auto inline-start margin seats
+              it flush right on its own line and resolves to the
+              identical position where both halves share one line.
+              Fix round 7 named that margin `folio-seat` and explained
+              it once in globals.css (THE ORPHANED FOLIO), after the
+              same construct produced a third fault in a third file;
+              the class is what a future sweep greps for. */}
           <p data-dossier-kicker>
             ¶ case file {fileNo(study)} of {TOTAL} ·{" "}
             {project.title.toLowerCase()} —{" "}
@@ -270,7 +274,7 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
               last verified {study.verified}
             </span>
           </p>
-          <p data-dossier-status className="ms-auto">
+          <p data-dossier-status className="folio-seat">
             status: {study.status}
             {study.statusDetail ? ` — ${study.statusDetail}` : ""}
           </p>
@@ -315,6 +319,18 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                     `${study.repoPin.repo} @ ${study.repoPin.sha}` +
                       (study.repoPin.branch ? ` · ${study.repoPin.branch}` : "")
                   )}
+                  {/* N20 (fix round 7). The sweep that marked the
+                      receipts table found this row too, and it is the
+                      cleanest statement of the whole complaint: THREE
+                      terminals in one `dl` — repo, live demo, system
+                      card — all three off-site, and only two of them
+                      said so. The mark is glued with a no-break space
+                      because this `dd` runs `wrap-anywhere` and
+                      `breakable()` has already seeded break hints
+                      through the pin; a plain space would let a 217px
+                      pin end and drop the arrow alone onto the next
+                      line. */}
+                  {"\u00A0\u2197"}
                 </a>
               </LedgerRow>
             ) : (
@@ -331,7 +347,16 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
                   data-live-demo
                   className="link-draw tap-target-tight"
                 >
-                  {liveHost ? breakable(liveHost) : null} ↗
+                  {liveHost ? breakable(liveHost) : null}
+                  {/* N20, caught in the before/after shot of the row
+                      above: at 390 this row set
+                      `getapplied.vercel.app` and dropped its `↗` onto
+                      a line of its own, so the mark that says "this
+                      leaves the site" printed under the thing it
+                      qualifies, touching nothing. Same no-break glue
+                      as the repo pin, same reason — this `dd` runs
+                      `wrap-anywhere`. */}
+                  {"\u00A0\u2197"}
                 </a>
               </LedgerRow>
             ) : null}
@@ -744,7 +769,17 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
             <Link href="/#work" className="link-draw text-ink">
               back to the work ⟵
             </Link>
-            <Link href="/evidence/" className="link-draw text-ink-secondary">
+            {/* N19 sweep (fix round 7) — THE ORPHANED FOLIO
+                (globals.css), the case file's copy of the pager fixed
+                on /evidence/ for the same reason. Measured at 320, 360,
+                390 and 430 on every case file: the forward link wrapped
+                to flex-START, printing `⟶` on the left under `⟵`.
+                Paint-neutral from 640 up, where the two already shared
+                a line. */}
+            <Link
+              href="/evidence/"
+              className="link-draw folio-seat text-ink-secondary"
+            >
               the evidence index ⟶
             </Link>
           </div>
