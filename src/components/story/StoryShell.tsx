@@ -1551,17 +1551,25 @@ function WorkChapter() {
                         at a README on GitHub, not at a receipt on this
                         site — the `↗` says which, and only the external
                         branch gets it. */}
+                    {/* Lifted with the rest of the rail (fix round 6):
+                        the chip carries the row's NUMBER and links the
+                        receipt that argues it — the one target in this
+                        column a screener reaches for first, and it was
+                        15px tall on a phone. */}
                     {externalMetric ? (
                       <a
                         href={row.metricHref}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="link-draw"
+                        className="link-draw tap-target-block"
                       >
                         {row.metric} ↗
                       </a>
                     ) : (
-                      <Link href={row.metricHref} className="link-draw">
+                      <Link
+                        href={row.metricHref}
+                        className="link-draw tap-target-block"
+                      >
                         {row.metric}
                       </Link>
                     )}
@@ -1574,9 +1582,49 @@ function WorkChapter() {
                       differentiator) but dimmed, unlinked, on its own
                       line. Every href the row ever had is still in the
                       DOM. */}
+                  {/* D7 / fix round 6 — the 44px bar reaches ¶05.
+                      Certification round D7 lifted every masthead
+                      affordance to a 44px border box; S6 gave the hero's
+                      phone affordances their own 44px rows. This rail —
+                      the primary act of each work row, 8,000px further
+                      into the read, where the reader is MORE committed —
+                      was still handing a phone 15px-tall targets
+                      (measured at 390: `the case file ⟶` 136×15, `the
+                      live demo ↗` 130×15, `source ↗` 69×15, `system card
+                      ↗` 113×15).
+
+                      Header.tsx's technique, unchanged: the padding
+                      grows the anchor's own border box and an equal
+                      negative margin hands the growth straight back, so
+                      the box a finger lands on and the box a census
+                      reports are both 44 while the box that LAYS OUT the
+                      rail is exactly what it was. These anchors are
+                      inline inside their `<p>`, so block padding never
+                      enters the line box and block margins do not apply
+                      at all — the rail's rhythm is untouched at every
+                      width. `.link-draw` already resolves its underline
+                      against the CONTENT box (globals.css), so the drawn
+                      ink stays welded to the baseline.
+
+                      The stack's arithmetic, because a 44px box in a
+                      31px-pitch stack necessarily meets its neighbour:
+                      hit-testing resolves to the LAST painted box, and
+                      these are in DOM order top→bottom, so the shared
+                      band always belongs to the LOWER link. Each link's
+                      EXCLUSIVE band is therefore one full pitch (31px at
+                      390 — itself over the 24px WCAG 2.5.8 AA floor) and
+                      it begins 15px ABOVE that link's own first glyph:
+                      the upper link's visible text sits entirely inside
+                      its own exclusive band, so no reader tapping ON a
+                      link can reach the one below it. The bottom
+                      affordance of each stack gets the full unshared 44
+                      — there is 290px of paper under it. */}
                   <p>
                     {study ? (
-                      <Link href={caseHref} className="link-draw text-ink">
+                      <Link
+                        href={caseHref}
+                        className="link-draw tap-target-block text-ink"
+                      >
                         the case file ⟶
                       </Link>
                     ) : project.liveUrl ? (
@@ -1584,7 +1632,7 @@ function WorkChapter() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="link-draw text-ink"
+                        className="link-draw tap-target-block text-ink"
                       >
                         the live demo ↗
                       </a>
@@ -1608,7 +1656,7 @@ function WorkChapter() {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="link-draw"
+                        className="link-draw tap-target-block"
                       >
                         {/* Fix round 3, S7 — `source` is a repository on
                             GitHub; it wears the leaving mark like its
@@ -1634,7 +1682,7 @@ function WorkChapter() {
                         href={project.systemCardUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="link-draw"
+                        className="link-draw tap-target-block"
                       >
                         system card ↗
                       </a>
