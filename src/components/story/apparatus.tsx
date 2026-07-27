@@ -55,16 +55,21 @@ interface ChapterKickerProps {
  * not fit on one line, the folio wrapped onto its own line and printed
  * flush LEFT. Swept 320 → 900 in 20px steps: hidden below 640 (it is a
  * `sm` element), flush left 640 → 760, flush right only from 780 up.
- * `ms-auto` is the whole fix: an auto inline-start margin eats the free
- * space on the folio's own line, so a wrapped folio is right-aligned;
- * where both halves share a line the auto margin and `justify-between`
- * resolve to the same seat, so nothing at 780+ moves by a pixel.
+ * `folio-seat` is the whole fix: an auto inline-start margin eats the
+ * free space on the folio's own line, so a wrapped folio is
+ * right-aligned; where both halves share a line the auto margin and
+ * `justify-between` resolve to the same seat, so nothing at 780+ moves
+ * by a pixel. Fix round 7 gave that margin a NAME and one explanation
+ * (globals.css → THE ORPHANED FOLIO) after the same construct produced
+ * a third fault in a third file, and swept the repo for the rest; this
+ * call site reads `folio-seat` so a grep finds every one of them.
  *
  * The kicker's own box is UNTOUCHED — no `w-full`, no grid. The Red
  * Thread reads `[data-thread-kicker]`'s box to place its underline
  * flourish (ThreadSegment.tsx → geometry.ts), so widening that box to
- * the column would move the flourish on every chapter. `ms-auto` is
- * paint-neutral for the kicker: it changes only the folio's own line.
+ * the column would move the flourish on every chapter. The auto margin
+ * is paint-neutral for the kicker: it changes only the folio's own
+ * line.
  *
  * ONE band still sets the ch01 kicker on two lines and is left alone,
  * measured: at 640 exactly, `sm:px-12` doubles WRAP's gutter and the
@@ -106,7 +111,7 @@ export function ChapterKicker({
         {clock ? ` · ${clock}` : ""}
       </p>
       {dateline ? (
-        <p data-kicker-folio className="ms-auto hidden sm:block">
+        <p data-kicker-folio className="folio-seat hidden sm:block">
           {dateline}
         </p>
       ) : null}
