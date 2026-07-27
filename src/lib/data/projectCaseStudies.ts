@@ -457,7 +457,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "judge",
           value:
-            "predicted vs expected label → macro-F1; the ci gate fails below the configured floor",
+            "predicted vs expected label ⟶ macro-F1; the ci gate fails below the configured floor",
         },
         {
           label: "run",
@@ -680,7 +680,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07-26",
         kind: "note",
-        text: "The repository was renamed yadava5/jobtracker → yadava5/applied. GitHub still redirects the old links, so nothing this file ever published is broken; the pins name the current repository instead of relying on a redirect. The case-file route stays /projects/jobtracker/ for the same reason.",
+        text: "The repository was renamed yadava5/jobtracker ⟶ yadava5/applied. GitHub still redirects the old links, so nothing this file ever published is broken; the pins name the current repository instead of relying on a redirect. The case-file route stays /projects/jobtracker/ for the same reason.",
       },
     ],
     /* Provenance strips carry the whole correction here. Three of these
@@ -1576,7 +1576,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07-26",
         kind: "note",
-        text: "The repository was renamed yadava5/taskflow-calendar → yadava5/cadence, and this file now carries two pins on purpose. The ledger above and receipts 04–10 name cadence @ 54c79e0, the current public head — where the code lives and where the isolation work landed. Receipts 01–03 stay at taskflow-calendar @ 69a59e7, because that is the commit the 1,145-test count was measured at, and re-pinning a number to a commit nobody re-ran it at turns a measurement into a guess. GitHub redirects the old paths; both resolve.",
+        text: "The repository was renamed yadava5/taskflow-calendar ⟶ yadava5/cadence, and this file now carries two pins on purpose. The ledger above and receipts 04–10 name cadence @ 54c79e0, the current public head — where the code lives and where the isolation work landed. Receipts 01–03 stay at taskflow-calendar @ 69a59e7, because that is the commit the 1,145-test count was measured at, and re-pinning a number to a commit nobody re-ran it at turns a measurement into a guess. GitHub redirects the old paths; both resolve.",
       },
       {
         date: "2026-07-26",
@@ -2050,7 +2050,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           label: "guardrail path",
-          value: "File Search → citation extraction → local quote verifier",
+          value: "File Search ⟶ citation extraction ⟶ local quote verifier",
           note: "unverified answers fall back",
         },
       ],
@@ -2183,7 +2183,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           label: "metric",
-          value: "openmp+simd dot kernel vs the -O3 baseline → 3.5× at dot 256",
+          value: "openmp+simd dot kernel vs the -O3 baseline ⟶ 3.5× at dot 256",
         },
         {
           label: "run",
