@@ -3,7 +3,11 @@
  *
  * Implements rubric amendment A4 exactly:
  *   - Scans `[data-chapter]` sections and, per adjacent segment, runs a
- *     scrubbed ScrollTrigger tween over NUMERIC oklch channel proxies,
+ *     scrubbed ScrollTrigger tween over NUMERIC oklch channel proxies
+ *     (each segment spans its own chapter's scroll-out, EXCEPT the last
+ *     day segment, which runs on to the dusk range's own opening pixel —
+ *     see "THE LONG APPROACH" below; the reader's longest chapter used
+ *     to be lit by one unchanging colour for ~2,900px),
  *     writing `--arc-l/--arc-c/--arc-h` on the LightField container
  *     (`[data-light-field]`) — NOT on <html>: unregistered custom
  *     properties inherit, so a root write invalidated computed style
@@ -66,6 +70,19 @@ import type { ArcWaypoint } from "./waypoints.generated";
  *  LightField container and the masthead (PERF-AUDIT fix 2 — never
  *  on <html>; F61 — the header's paper IS the field's paper). */
 const CHANNEL_VARS = ["--arc-l", "--arc-c", "--arc-h"] as const;
+
+/**
+ * Where the dusk choreography's scroll range OPENS — the dusk-flip
+ * chapter's top at 92% of the viewport.
+ *
+ * It is a constant rather than two string literals (fix round 6) because
+ * two ranges now depend on it: the choreography starts here, and the
+ * last day segment ENDS here, so the day's arrival at golden hour and
+ * the dusk's departure from it are the same pixel by construction. Two
+ * hand-typed "top 92%" would have been a gap or an overlap waiting for
+ * someone to change one of them.
+ */
+const DUSK_RANGE_START = "top 92%";
 
 /* Quantization steps (PERF: runtime scroll). Each per-frame channel write
  * invalidates the light-field's paint AND forces the soft-light rake to
@@ -261,7 +278,7 @@ export function DayArc() {
 
           ScrollTrigger.create({
             trigger: sections[i + 1],
-            start: "top 92%",
+            start: DUSK_RANGE_START,
             end: "top top",
             scrub: true,
             onUpdate: (self) => applyDusk(self.progress),
@@ -274,10 +291,44 @@ export function DayArc() {
            out of the viewport, so the color lands on `to` exactly as
            section i+1's top reaches the viewport top.
 
+           THE LONG APPROACH (fix round 6). One segment does not end
+           there, and it is the one the reader spends longest inside.
+           Every day segment used to finish as the NEXT chapter's top
+           reached the viewport top, which is right for six of them and
+           wrong for the last: chapter 05 is 3,129px tall — 29% of the
+           whole page, the four work rows, the longest continuous read on
+           the site — and the dusk range does not open until 828px before
+           chapter 06. So golden hour arrived at ¶05's first line and
+           then held, PIXEL-IDENTICAL, for ~2,900px. Sampled at 1440
+           (`docs/design-lab/probe-fix6.mjs --arc`), the composed canvas
+           at y=4200, 4550, 4900 … 7000 was the same three channels eight
+           samples running: L 0.923 / C 0.039 / H 83.8. The light payoff
+           of a day-arc site was entirely back-loaded to nightfall.
+
+           The fix moves no colour and adds no waypoint: the 04→05 tween
+           simply keeps running until the dusk choreography takes over,
+           so the arc ARRIVES at golden hour exactly where the day starts
+           to die instead of two thousand pixels early. `endTrigger` is
+           the dusk-flip chapter and `end` is DUSK_RANGE_START — the same
+           string the choreography's own trigger opens on — so the two
+           ranges abut on the same pixel in both directions and neither
+           can render a value the other has not agreed to. The afternoon
+           now deepens the whole way down ¶05 (measured ΔL 0.017 across
+           the stretch that was flat), and every value it renders is a
+           point on the SAME 04→05 interpolation check-contrast has
+           always sampled at ≥10 places — no new colour enters the site,
+           no new stop is scheduled, DUSK_CHOREO is untouched at 12, and
+           the per-frame cost is identical: one tween, one range, the
+           same quantized writes to the same two subtrees.
+
            Deferred handle read: when the page loads already scrolled (a
            #chapter deep link), GSAP fires onUpdate synchronously INSIDE
            gsap.fromTo() — a direct `const tween` closure read here would
            hit the TDZ (ReferenceError, observed on Firefox). */
+        const duskChapter = sections[i + 2];
+        const runsIntoDusk =
+          duskChapter?.dataset.chapter === DUSK_FLIP_CHAPTER &&
+          sections[i + 1]?.dataset.chapter !== DUSK_FLIP_CHAPTER;
         const proxy = { l: from.l, c: from.c, h: from.h };
         const handle: { tween?: gsap.core.Tween } = {};
         handle.tween = gsap.fromTo(
@@ -292,7 +343,9 @@ export function DayArc() {
             scrollTrigger: {
               trigger: sections[i],
               start: "top top",
-              end: "bottom top",
+              ...(runsIntoDusk
+                ? { endTrigger: duskChapter, end: DUSK_RANGE_START }
+                : { end: "bottom top" }),
               scrub: true,
             },
             onUpdate: () => {
