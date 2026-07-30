@@ -425,11 +425,34 @@ const VALUES_GATES = [
    self-falsify the promise; "benchmarked in ci" linked no run — the
    fast-mnist CI does not benchmark, so the words changed to match the
    committed evidence). */
+/* `describedOnly` marks a reference whose destination row carries NO
+   artifact — the honesty engine's own distinction, finally printed
+   where the reader meets it.
+
+   The fault it fixes: this list is the closing argument for the
+   sentence the site's JSON-LD makes out loud — "every claim terminates
+   at an artifact you can open." Six of these seven land on a GitHub
+   blob at a pinned sha or a checked-in ledger row. The seventh, the
+   1M+ operational records, lands on a receipt whose own data reads
+   `artifacts: []`, `date: null`, `visibility: "local-only"`, and whose
+   case file states in notClaiming: "role-scope work with no public
+   artifact — verifiable in interview, not on this page."
+
+   That was all true and all said — three clicks away. Here it was
+   typographically IDENTICAL to its six honest neighbours: same
+   `receipt NN`, same `⟶`, no mark. The biggest number on the page wore
+   the strongest furniture and cashed out at nothing, on the one list
+   whose whole job is that it never does that.
+
+   Marked, not deleted (the errata rule): the claim is real role-scope
+   work and stays. The reader now learns it is described-only BEFORE
+   spending the click, in the site's existing visibility vocabulary. */
 const GATE_REFERENCES: {
   claim: string;
   source: string;
   href: string;
   inPage?: boolean;
+  describedOnly?: boolean;
 }[] = [
   {
     claim: "macro-f1 0.9791, 96-sample gate",
@@ -468,8 +491,9 @@ const GATE_REFERENCES: {
   },
   {
     claim: "1M+ operational records transformed",
-    source: "master-inventory — receipt 05",
+    source: "master-inventory — described only",
     href: "/projects/master-inventory/#v-master-inventory-5",
+    describedOnly: true,
   },
   {
     claim: "7-phase gated lifecycle, human go/no-go",
@@ -2212,9 +2236,23 @@ function GateChapter() {
                 key={reference.href}
                 className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-t border-current/15 py-2.5"
               >
-                {/* normal-case: claims quote data tokens (1M+, -O3) */}
+                {/* normal-case: claims quote data tokens (1M+, -O3).
+                    The described-only mark rides INSIDE this span on
+                    purpose: the row is the `flex-wrap` +
+                    `justify-between` construct whose lone-wrapped-item
+                    seating N19 repaired with `folio-seat`, and a third
+                    flex child would re-open exactly that fault. As part
+                    of the claim it also reads in the right order — the
+                    reader learns the receipt is described-only while
+                    still reading the claim, not after following it. */}
                 <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
+                  {reference.describedOnly ? (
+                    <span className="whitespace-nowrap">
+                      {" "}
+                      [local — verified on request]
+                    </span>
+                  ) : null}
                 </span>
                 {/* N19 (fix round 7) — `folio-seat` is THE ORPHANED
                     FOLIO's cure, named and explained once in
