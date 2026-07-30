@@ -235,7 +235,7 @@ jobs:
         run: npm run test:seo
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Browser metadata smoke
         run: NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npx playwright test tests/playwright/static-seo.spec.ts
@@ -290,7 +290,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Check asset budgets
         run: npm run assets:budget
