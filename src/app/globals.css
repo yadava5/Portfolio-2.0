@@ -545,11 +545,25 @@ html[data-motion-off] .site-header {
   }
 }
 
-/* Folio rules dissolve just before they slide under the fixed header —
-   decorative-only CSS scroll timeline behind @supports (amendment A2);
-   browsers without support get the clean opaque-header pass-under. The
-   view-timeline inset mirrors the header's height, so `exit` begins at
-   the header's bottom edge. Static worlds keep folios fully drawn. */
+/* Folio rules draw in as they clear the viewport's bottom edge and
+   dissolve just before they slide under the fixed header — decorative-
+   only CSS scroll timeline behind @supports (amendment A2); browsers
+   without support get fully drawn rules and the clean opaque-header
+   pass-under. One shared view timeline drives both ranges: its start
+   inset mirrors the header's height, so `exit` begins at the header's
+   bottom edge; `entry` is the exit's mirror (nothing until 10%
+   entered, whole ink once fully entered — the reverse of "gone by
+   90%"). Opacity only, deliberately: `data-thread-folio` is the Red
+   Thread's geometry anchor, and an entry transform would move what the
+   thread measures. Both keyframes omit their settled side, so the
+   resting frame IS the drawn rule (A7) — static worlds keep folios
+   fully drawn, and the entry's opacity-0 frame exists only while the
+   rule is still below the viewport. */
+@keyframes folio-enter {
+  from {
+    opacity: 0;
+  }
+}
 @keyframes folio-exit {
   to {
     opacity: 0;
@@ -558,11 +572,77 @@ html[data-motion-off] .site-header {
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     html:not([data-motion-off]) .folio-rule {
-      /* nonzero duration required: the shorthand's 0s default never runs;
-         with a view timeline the used duration comes from the range */
-      animation: folio-exit 1ms linear both;
+      /* nonzero durations required: the shorthand's 0s default never
+         runs; with a view timeline the used duration comes from the
+         range. The fills are one-sided ON PURPOSE: each animation
+         exists only on its own side of the journey, and in the gap
+         between the ranges neither fills, so the rule rests on its
+         underlying full ink. `both, both` MEASURED identical in
+         Chromium (the synthesized neutral keyframes composite through
+         the effect stack correctly) — but that identity leans on
+         cross-animation neutral-keyframe compositing, the murkiest
+         corner of two same-property animations; the one-sided form
+         says the same thing without depending on it. Known, correct
+         edge: folio 01 loads INSIDE the first viewport, already past
+         its own entry band — after-phase, no forwards fill, full ink
+         from the first frame. */
+      animation:
+        folio-enter 1ms linear backwards,
+        folio-exit 1ms linear forwards;
       animation-timeline: view(block 3.75rem 0px);
-      animation-range: exit 0% exit 90%;
+      animation-range:
+        entry 10% entry 100%,
+        exit 0% exit 90%;
+    }
+  }
+}
+
+/* The step reveal (brief B10): a caption settles a beat after its
+   plate. Every content figcaption rises 6px and inks toward its
+   resting strength across its first 8rem of climb from the viewport's
+   bottom edge — the figure above it is already standing by then, so
+   the caption reads as typeset a moment later. Same decorative-only
+   compositor timeline as the folio rules; Firefox and every static
+   world simply render the resting caption. The range end is a LENGTH
+   (`cover 8rem`), not a percentage: entry 0%→100% of a two-line
+   caption spans ~40px of scroll (a pop, not a settle), and a cover
+   percentage scales with viewport height (a 2560px screen would hold
+   captions mid-settle at the reading line). 8rem finishes the ink
+   well below where the eye reads.
+   The from-floor is 0.7, NOT the higher floor the reveal grammar
+   usually takes: keyframe opacity REPLACES the underlying value, and
+   two captions (fig 5.n's provenance line, fig 6.1's key) REST at the
+   house muted `opacity-70` — any from above 0.7 would run those
+   backwards (arrive bright, dim to rest). 0.7 is the site's own
+   muted-caption alpha, so a stalled frame is indistinguishable from
+   an authored muted voice — never destructive (A7). `to` omitted: the
+   settled state IS the static state.
+   Excluded because another system already owns their motion:
+   `.portrait-caption` (the portrait plate's develop choreography) and
+   `[data-tm]` self-or-ancestor (TextMotion's entrance grammar — fig
+   4.0/4.1's captions ride their figures' block reveal inside the one
+   pin, and fig 6.0's caption IS a data-tm block).
+   Fill is `backwards`, NOT `both` — this is a MEASURED pixel-identity
+   requirement, not a nicety: a finished both-fill keeps applying an
+   identity matrix, the matrix keeps the caption on its own composited
+   layer, and composited text drops to grayscale antialiasing — so the
+   "settled" caption rendered measurably different bytes from the
+   static world's. With backwards the finished animation releases the
+   element completely: the resting caption IS the static caption,
+   byte for byte (A7, held to the pixel). */
+@keyframes caption-settle {
+  from {
+    opacity: 0.7;
+    transform: translateY(6px);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion-off])
+      figcaption:not(.portrait-caption, [data-tm], [data-tm] *) {
+      animation: caption-settle 1ms linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% cover 8rem;
     }
   }
 }
@@ -2381,7 +2461,8 @@ html[data-motion-off] .pipeline-token-bead {
    the outer ink rule on .plate-paper's border plus this inner offset
    rule — the monograph's tipped-in plate grammar. Breathing margins
    come from the mount's padding; nothing here animates, so the plate
-   is identical in every world and tier. */
+   is identical in every world and tier (see the cut-on-measurement
+   note below for the depth accent that was tried and closed). */
 .plate-paper {
   background-color: var(--color-surface-2);
   background-image: var(--texture-grain), var(--texture-contour);
@@ -2393,6 +2474,33 @@ html[data-motion-off] .pipeline-token-bead {
   outline: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
   outline-offset: -1px;
 }
+
+/* PLATE DEPTH WAS TRIED HERE AND CUT ON THE MEASUREMENT — do not
+   re-add it to the raster plates without reading this first.
+   The brief's B10 asks for one depth accent: the print inside a plate
+   riding a couple of px behind its mat as the plate crosses the
+   viewport. Built as `translateY(-2px → 2px)` on
+   `.plate-paper:not(.portrait-riser) img` over `cover 0% → 100%`, it
+   failed `atlas.spec.ts:762` ("case study route <id> keeps project
+   visual contained") on visual-assist, master-inventory and policybot,
+   in both chromium projects — 6 failures.
+   The reason is structural, not a tuning problem. In the raster branch
+   of ProjectPlateVisual the image is `absolute inset-0 h-full w-full
+   object-contain`: it IS the frame's full extent. The spec asserts
+   `imageTop === 0`, `imageBottom === 0`, `imageHeight === frameHeight`
+   and `imageEscapes === false` — so the image has exactly zero slack
+   and ANY translation escapes the frame. Those assertions are FIX5's
+   overflow repair (the `aspect-video` + `min-height` transfer that ran
+   six case routes 198px past a 320px viewport); they are worth more
+   than a 2px accent. (The min-width:1024px gate does not save it: the
+   spec sets a 1440×900 viewport explicitly, which is also why the
+   chromium-MOBILE project failed.)
+   The remaining `.plate-paper` mounts are ArtifactGallery's crop
+   plates, whose images are deliberately offset inside an
+   overflow-hidden window — drifting those shifts an authored crop for
+   no legible gain. So the accent has no home on this site's plates and
+   the item is closed, not deferred. Depth is texture, not content
+   (§B10); the caption settle and the folio draw-in carry Layer 1. */
 
 /* ── The portrait plate (header avatar → Radix dialog) ─────────────
    The photograph DEVELOPS like a print: the veil washes in, the plate
@@ -2870,6 +2978,15 @@ body {
     transform: none !important;
     animation: none !important;
     filter: none !important;
+  }
+
+  /* The scroll-driven layer (folio draw-in/out, caption settle) rests
+     at its AUTHORED values — killing the animation is the whole fix,
+     and opacity must NOT force to 1 here: fig 5.n's caption rests
+     muted at 0.7 on purpose, on paper as on screen. */
+  figcaption,
+  .folio-rule {
+    animation: none !important;
   }
 
   /* ── 6. THE PIN UNWINDS ────────────────────────────────────────
