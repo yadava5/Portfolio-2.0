@@ -99,3 +99,93 @@ distinct on every axis:
 - No blur filters on mobile; hero de-blur is the only blur on the page (load-only)
 - No `animation-timeline` for load-bearing behavior (Firefox still flagged) — decorative-only behind `@supports`
 - No autoplay scrolling, no scroll hijack, no touch smoothing
+
+## F. Amendments — the living world (owner decision, 2026-07-30)
+
+> Sections A–E above are **unchanged**. This section narrows three of their bans
+> and re-affirms two, on the record, because the owner reviewed three hero
+> prototypes and chose a direction that the list as written forbids. Amending in
+> the open beats breaking quietly: NO-LIST is enforced as "any violation =
+> automatic rubric fail", so an unamended build of this direction fails by
+> construction rather than on merit.
+>
+> **Note on §A's status.** §A is a verbatim lift of MASTER-PLAN 2.4 and records
+> no per-item rationale. F1 below therefore states what the ban plainly *targets*
+> from the surrounding evidence (§B's old-portfolio DNA, §D's differentiation
+> clause) and does not invent a reason §A never gave.
+
+### F1 · The ink field — narrows §A "floating blurred orbs & blobs", "no glow"
+
+What §A's neighbours make plain is the target: §B's evidenced DNA is
+`#030014`/`#0a0a1a` **near-black indigo** with violet/cyan/pink, "blurred
+gradient orbs (blur 80–120px)", "holographic hsl(280/200/340) gradients" and a
+"mouse-following radial ambient glow". `PREMIUM-FLOW-PLAN.md` declines the
+Linear-style "WebGL mesh/aurora hero" with the reason "**we're paper, not a dark
+gradient**". The banned thing is a **cool, smooth, glowing gradient on
+near-black**.
+
+**Permitted:** a warm, arc-driven **ink field** — a low-frequency wash rendered
+in the day-arc's *current* oklch colour, inside the existing `[data-light-field]`
+container, **beneath** the contour and grain layers.
+
+Binding conditions, all five:
+1. It carries the existing grain and contour **on top of it** (§D's "visible real
+   paper grain (≤5% opacity but *present*)" is unaffected).
+2. It stays inside the warm corridor — it reads as ink diffusing in damp paper,
+   never as light emitting from behind glass. No bloom, no additive blend.
+3. It is **not a smooth gradient**: fbm/turbulence with visible tooth, matching
+   the grain's own character.
+4. Clay and pine stay legible on it — every waypoint and ≥10 mid-interpolation
+   samples per segment re-asserted by `npm run test:contrast` (amendment A4).
+5. It passes D7's screenshot test: a still frame must still read unmistakably as
+   this paper.
+
+**Still banned, unchanged:** glow as a *lighting effect* (bloom, glow
+drop-shadows, halos), glass/backdrop-blur, mesh gradients, gradient text, any
+cool or purple hue, and pointer-following ambience of any kind.
+
+### F2 · Bounded WebGL — narrows FABLE §E1's 🔴 on background 3D
+
+§E1 reads "Fullscreen persistent WebGL backgrounds stay 🔴 (the jank the owner
+fled)". The load-bearing word is **persistent**.
+
+**Permitted:** a WebGL field that **draws only while the day-arc is changing** —
+i.e. only while the reader is scrolling — and idles at zero frames otherwise.
+That is the contract `DayArc` already honours; this only draws it richer.
+
+Conditions: Full tier only (Core keeps the CSS field, which is already good);
+fallback chain WebGL2 → CSS field → static; DPR-capped ≤1.5; rendered at reduced
+resolution; `contain` inside the existing light-field container; and a trace
+proving **zero rAF frames while the page is idle**.
+
+### F3 · The one rAF loop — RE-AFFIRMED, unchanged
+
+§E's "No second rAF loop" stands. The ink field rides `gsap.ticker` like
+everything else; the governor and `TextGarnish` already do. This is restated
+rather than relaxed because it is the rule most likely to be eroded by an
+"ambient" feature, and because the site's **zero-idle-animation** property —
+verified by grep: no `infinite`, no `repeat: -1`, no `yoyo` anywhere in
+`src/` — is a genuine asset worth keeping.
+
+### F4 · One pin — RE-AFFIRMED, unchanged
+
+Amendment A8 / brief D2 stand: **exactly one pinned chapter**, spent on
+`PipelineRun` (ch04). The owner's request for Apple-style transitions where "a
+whole slide slides down" is **not** licence for a second pin, and not licence for
+scroll-snap (banned in §A, §C and D1 — §C's warrant is "user said no", his own
+rejection of the elevator iteration).
+
+The sanctioned reading is the third one: **the section arrives as one authored
+group**, which `PREMIUM-FLOW-PLAN.md` §A already adopted ("Verdict — ADOPT, this
+is the #1 fix"), plus the B10 boundary cross-fade, plus the world stepping in
+discrete beats *behind* content that never moves. Content staying in normal flow
+is what keeps the Red Thread's measured seams inside their ±2px contract.
+
+### F5 · Dark is the arc's night, never a default
+
+§D names "the scroll-driven dawn→dusk arc — **the canvas never sits still on one
+hex**" as one of only four things separating this site from a daylightcomputer
+clone. A darker, richer world is permitted **as the arc's night end** — which is
+already law at `--waypoint-06 #43372f` and `--waypoint-07 #2c2622`, ink flipping
+cream at 12.8:1. A static dark default is not permitted: it would delete the
+differentiator and trade a live canvas for a dead one.

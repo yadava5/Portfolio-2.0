@@ -494,6 +494,24 @@ governor (§F3) and only if its resting/2D frame already ships.
 
 # D. Hard constraints for builders (any violation = auto-fail)
 
+> **AMENDED 2026-07-30 — read `docs/NO-LIST.md` §F before building world layers.**
+> The owner reviewed three hero prototypes and chose a richer, darker, more
+> atmospheric direction than this brief was written for. Two constraints below
+> are narrowed and two are re-affirmed:
+> - **D3's** "no full-viewport background re-blend on scroll" and **§E1's** 🔴 on
+>   background WebGL are narrowed by **NO-LIST F1/F2**: a warm, grain-bearing,
+>   arc-driven ink field that draws **only while the day-arc is changing** — and
+>   idles at zero frames — is permitted, Full-tier, behind a WebGL2 → CSS → static
+>   fallback chain. The 🔴 was on *persistent* backgrounds; this is not one.
+> - **D2 (one pin) and D4's one-rAF rule are RE-AFFIRMED, unchanged.** The
+>   owner's "a whole slide slides down, like Apple" is satisfied by the composed
+>   per-chapter entrance §A of PREMIUM-FLOW-PLAN already adopted, plus B10's
+>   boundary cross-fade, plus the world stepping in discrete beats behind content
+>   that never moves. Not a second pin. Not scroll-snap.
+> - **D5, D6 and D7 are untouched and bind the new work hardest**: the field needs
+>   an authored resting frame, may state nothing it cannot prove, and must still
+>   screenshot as this paper.
+
 **D1 · Native scroll only.** GSAP ScrollTrigger reads native `window` scroll. **Never reintroduce
 Lenis** (it's a vestigial unused dep — safe to remove while here). No wheel listeners, no
 `preventDefault` on scroll, no scroll-snap, no wheel-hijack, no touch smoothing (NO-LIST §C/E).
