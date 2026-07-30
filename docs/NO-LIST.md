@@ -163,9 +163,21 @@ proving **zero rAF frames while the page is idle**.
 §E's "No second rAF loop" stands. The ink field rides `gsap.ticker` like
 everything else; the governor and `TextGarnish` already do. This is restated
 rather than relaxed because it is the rule most likely to be eroded by an
-"ambient" feature, and because the site's **zero-idle-animation** property —
-verified by grep: no `infinite`, no `repeat: -1`, no `yoyo` anywhere in
-`src/` — is a genuine asset worth keeping.
+"ambient" feature, and because the site schedules **no idle app animation** —
+verified by grep: no `infinite`, no `repeat: -1`, no `yoyo` anywhere in `src/`.
+
+**Correction, measured 2026-07-30 — do not repeat the stronger claim.** An
+earlier draft of this amendment (and the plan behind it) said the page sits at
+"zero rAF when idle." **That is false and never was true on this build.** Three
+seconds of stillness schedules **~732 rAF callbacks**, from two 120 Hz
+library keep-alive loops identified by stack: GSAP's core ticker and
+ScrollTrigger's own internal `requestAnimationFrame` loop. A same-rig baseline
+build measured **734** — i.e. the app rides those frames with **zero work of its
+own**, and that is the property actually worth protecting.
+
+So the correct acceptance test for any new world layer is **not** "zero rAF
+while idle" (unachievable without patching vendored GSAP) but: **the idle
+callback count must not rise, and no app work may execute on an idle frame.**
 
 ### F4 · One pin — RE-AFFIRMED, unchanged
 
