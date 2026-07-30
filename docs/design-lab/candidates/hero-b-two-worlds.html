@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ayush yadav — hero candidate B · two worlds</title>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HERO CANDIDATE B — "Two worlds."
+     The argument: the landing's job (win five seconds) is not the
+     dossier's job (convince an engineer who reads). So the landing is
+     a night-world stage — a live GLSL ember field, a glass plate, his
+     network reading your handwriting — and the paper dossier is laid
+     over it like a folder on a desk. The seam is owned, not hidden.
+     Night tokens are the site's own dusk system: nightfall #2C2622,
+     ink-dusk #F6EFE2 (Lc 94), muted #D4CABB (Lc 72), ember #F57A3E
+     (Lc 47 — display and graphics only, never small text).
+     Zero dependencies: the shader is ~90 lines of raw WebGL.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    /* world 01 — night */
+    --night:#2C2622;
+    --night-deep:#221D1A;
+    --ink-dusk:#F6EFE2;
+    --dusk-muted:#D4CABB;
+    --ember:#F57A3E;
+    --clay-night:#E08A5F;
+    --glass:rgba(246,239,226,.05);
+    --glass-line:rgba(246,239,226,.16);
+    /* world 02 — paper */
+    --canvas:#FAF6EF;
+    --surface-1:#F3EDE1;
+    --surface-2:#EAE2D2;
+    --ink:#26231C;
+    --ink-2:#5C564A;
+    --clay:#B04A28;
+    --pine:#2F5D50;
+    --hair:rgba(38,35,28,.16);
+    --hair-strong:rgba(38,35,28,.32);
+    --pad-x:clamp(20px, 5vw, 72px);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    color-scheme:dark;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--night-deep);
+    color:var(--ink-dusk);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--ember); color:var(--night-deep)}
+  a{color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px}
+  a:focus-visible{outline:2px solid var(--ember); outline-offset:3px; border-radius:1px}
+  img,canvas,svg{max-width:100%}
+
+  /* ————— WORLD 01 · the night stage ————— */
+  .night-zone{height:100svh; position:relative}
+  .stage{
+    position:sticky; top:0; height:100svh; overflow:hidden;
+    display:grid; grid-template-rows:auto 1fr auto;
+    transform-origin:50% 30%;
+  }
+  #sky{position:absolute; inset:0; width:100%; height:100%; display:block;
+       background:radial-gradient(120% 90% at 50% 10%, #362E28 0%, var(--night) 45%, var(--night-deep) 100%)}
+  .stage > *{position:relative}
+
+  .bar{
+    display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+    padding:1.2rem var(--pad-x) 0;
+  }
+  .bar .who{
+    font-family:var(--display); font-weight:480; font-size:1.3rem; letter-spacing:.01em;
+    text-decoration:none;
+  }
+  .bar .who i{font-style:normal; color:var(--clay-night)}
+  .bar nav{display:flex; gap:1.6rem; font-family:var(--mono); font-size:.78rem}
+  .bar nav a{text-decoration:none; color:var(--dusk-muted)}
+  .bar nav a:hover{color:var(--ink-dusk); text-decoration:underline; text-underline-offset:5px}
+
+  .centre{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:clamp(1rem, 2.6vh, 1.8rem); padding:1rem var(--pad-x);
+    text-align:center;
+  }
+  .ghost{
+    position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    font-family:var(--display); font-weight:640; font-variation-settings:"opsz" 144;
+    font-size:min(58vh, 58vw); line-height:1; color:var(--ember);
+    opacity:0; filter:blur(10px); mix-blend-mode:screen;
+    transform:scale(1.06);
+  }
+  .ghost.lit{opacity:.22; transform:scale(1)}
+  @media (prefers-reduced-motion: no-preference){
+    .ghost{transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.22,1,.36,1)}
+    .ghost.flash{opacity:.34; transition:none}
+  }
+  h1{
+    font-family:var(--display);
+    font-size:clamp(2.7rem, 5.6vw, 5rem);
+    font-weight:400; letter-spacing:-.01em; line-height:1.04;
+    font-variation-settings:"opsz" 144;
+  }
+  h1 .dot{color:var(--ember)}
+  .sub{
+    font-family:var(--mono); font-size:clamp(.72rem, 1.05vw, .84rem);
+    letter-spacing:.08em; color:var(--dusk-muted); max-width:60ch; line-height:1.9;
+  }
+  .sub b{font-weight:400; color:var(--ink-dusk)}
+
+  .glass{
+    width:min(400px, 90vw);
+    background:var(--glass);
+    border:1px solid var(--glass-line);
+    border-radius:18px;
+    backdrop-filter:blur(14px) saturate(1.15);
+    -webkit-backdrop-filter:blur(14px) saturate(1.15);
+    box-shadow:0 30px 80px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(246,239,226,.09);
+    padding:.9rem .9rem 1rem;
+  }
+  .glass-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--dusk-muted); padding:0 .2rem .7rem;
+  }
+  .glass-head .live{display:inline-flex; gap:.5em; align-items:center; color:var(--clay-night)}
+  .glass-head button{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+    background:none; border:none; color:var(--dusk-muted); cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; margin-left:.6em; padding:0;
+  }
+  .glass-head button:hover{color:var(--ink-dusk)}
+  .glass-head button:focus-visible{outline:2px solid var(--ember); outline-offset:2px}
+  .live-dot{width:6px; height:6px; border-radius:50%; background:var(--ember)}
+  @media (prefers-reduced-motion: no-preference){
+    .live-dot{animation:pulse 2.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  }
+  .well{
+    position:relative; border-radius:12px; overflow:hidden; aspect-ratio:1;
+    border:1px solid rgba(246,239,226,.12);
+    background:rgba(34,29,26,.35);
+  }
+  #pad{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
+  .hint{
+    position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    font-style:italic; font-size:1.2rem; color:var(--dusk-muted); transition:opacity .4s ease;
+  }
+  .hint.gone{opacity:0}
+  .glass-read{
+    display:grid; grid-template-columns:auto 1fr auto; gap:.9rem; align-items:end;
+    padding:.85rem .2rem 0;
+  }
+  .verdict{
+    font-family:var(--display); font-size:2.9rem; font-weight:560; line-height:1;
+    color:var(--ember); min-width:1.2ch; text-align:center;
+    font-variation-settings:"opsz" 144;
+  }
+  .verdict.idle{color:rgba(246,239,226,.22)}
+  @media (prefers-reduced-motion: no-preference){
+    .verdict.stamp{animation:stamp .38s cubic-bezier(.2,1.4,.4,1)}
+    @keyframes stamp{0%{transform:scale(1.5); opacity:0}60%{transform:scale(.95); opacity:1}100%{transform:scale(1)}}
+  }
+  .bars{display:grid; grid-template-columns:repeat(10,1fr); gap:3px; align-items:end; height:44px}
+  .bar-i{display:flex; flex-direction:column; justify-content:flex-end; height:100%}
+  .bar-i i{display:block; min-height:2px; height:2px; background:rgba(246,239,226,.14);
+    transition:height .45s cubic-bezier(.22,1,.36,1), background .3s ease}
+  .bar-i.top i{background:var(--ember)}
+  .bar-i b{font-family:var(--mono); font-weight:400; font-size:.56rem; color:var(--dusk-muted);
+    text-align:center; margin-top:3px}
+  .glass-meta{font-family:var(--mono); font-size:.66rem; color:var(--dusk-muted);
+    text-align:right; line-height:1.8; white-space:nowrap}
+  .glass-meta .num{color:var(--ink-dusk)}
+
+  .cue{
+    display:flex; justify-content:center; padding:0 var(--pad-x) 1.6rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--dusk-muted); text-align:center;
+  }
+  .cue i{font-style:normal}
+  @media (prefers-reduced-motion: no-preference){
+    .cue span{animation:sink 2.6s ease-in-out infinite}
+    @keyframes sink{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  }
+
+  .dim{position:absolute; inset:0; background:var(--night-deep); opacity:0; pointer-events:none}
+
+  /* ————— the seam, owned ————— */
+  .dossier{
+    position:relative; z-index:2;
+    background:var(--canvas); color:var(--ink);
+    border-radius:22px 22px 0 0;
+    box-shadow:0 -34px 70px -20px rgba(0,0,0,.55);
+    color-scheme:light;
+  }
+  .tab{
+    position:absolute; top:-2.15rem; left:clamp(20px, 6vw, 84px);
+    background:var(--canvas); color:var(--ink-2);
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+    padding:.6rem 1.3rem .5rem; border-radius:10px 10px 0 0;
+    box-shadow:0 -12px 24px -12px rgba(0,0,0,.5);
+  }
+  .tab b{font-weight:400; color:var(--clay)}
+  .ribbon{
+    position:absolute; top:-46px; right:clamp(28px, 9vw, 130px);
+    width:30px; height:calc(46px + 8.5rem);
+    background:linear-gradient(180deg, var(--ember) 0%, var(--clay) 78%);
+    clip-path:polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 14px), 0 100%);
+  }
+  .dossier-inner{padding:clamp(3rem, 7vh, 5rem) var(--pad-x) 0}
+  .seam-note{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--clay);
+  }
+  .dossier h2{
+    font-family:var(--display); font-size:clamp(2.2rem, 4.4vw, 3.6rem); font-weight:560;
+    letter-spacing:-.01em; margin:.6rem 0 .8rem;
+  }
+  .dossier .lede{max-width:58ch; color:var(--ink-2); font-size:1.1rem}
+  .dossier .lede em{color:var(--ink)}
+
+  .ledger{margin-top:2.6rem; border-top:1px solid var(--hair-strong)}
+  .row{
+    display:grid; grid-template-columns:3.2rem minmax(0,15rem) 1fr auto;
+    gap:1.2rem; align-items:baseline;
+    padding:1.05rem .2rem; border-bottom:1px solid var(--hair);
+    text-decoration:none; transition:background .25s ease;
+  }
+  .row:hover{background:var(--surface-1)}
+  .row .idx{font-family:var(--mono); font-size:.72rem; color:var(--clay)}
+  .row h3{font-family:var(--display); font-size:1.35rem; font-weight:580}
+  .row p{font-size:.98rem; color:var(--ink-2); line-height:1.5}
+  .row .tag{font-family:var(--mono); font-size:.68rem; color:var(--pine); white-space:nowrap}
+
+  .receipts{
+    margin-top:2.6rem; padding:1.2rem 0 1.4rem;
+    border-top:1px solid var(--hair-strong);
+    display:flex; flex-wrap:wrap; gap:.6rem 1rem; align-items:baseline;
+    font-family:var(--mono); font-size:.75rem; color:var(--ink-2); line-height:1.8;
+  }
+  .receipts .dia{color:var(--clay); font-size:.65rem}
+  .receipts a{color:var(--pine)}
+  .dossier footer{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem;
+    padding:1.3rem var(--pad-x) 2rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.72rem; color:var(--ink-2);
+  }
+
+  /* entrance */
+  .rise{opacity:0; transform:translateY(22px)}
+  .is-in .rise{opacity:1; transform:none;
+    transition:opacity 1s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.22,1,.36,1)}
+  .is-in .rise.d1{transition-delay:.1s}
+  .is-in .rise.d2{transition-delay:.22s}
+  .is-in .rise.d3{transition-delay:.36s}
+  @media (prefers-reduced-motion: reduce){
+    .rise{opacity:1 !important; transform:none !important; transition:none !important}
+    .cue span,.live-dot{animation:none !important}
+  }
+
+  @media (max-width:760px){
+    .bar{padding-top:1rem}
+    .bar .who{font-size:1.12rem}
+    .bar nav{gap:1rem}
+    .hide-s{display:none}
+    h1{font-size:clamp(2.4rem, 11vw, 3rem)}
+    .sub{font-size:.7rem; max-width:34ch}
+    .glass{width:min(340px, 92vw)}
+    .verdict{font-size:2.3rem}
+    .row{grid-template-columns:2.4rem 1fr; grid-template-rows:auto auto; row-gap:.3rem}
+    .row p{grid-column:2}
+    .row .tag{display:none}
+    .ribbon{right:20px; width:22px}
+  }
+</style>
+</head>
+<body>
+<div id="page">
+
+  <!-- ————— WORLD 01 · night ————— -->
+  <div class="night-zone">
+    <section class="stage" id="stage" aria-label="live demo">
+      <canvas id="sky" aria-hidden="true"></canvas>
+      <div class="ghost" id="ghost" aria-hidden="true"></div>
+      <div class="dim" id="dim" aria-hidden="true"></div>
+
+      <div class="bar rise">
+        <a class="who" href="#">Ayush<i>&#8202;·&#8202;</i>Yadav</a>
+        <nav>
+          <a href="#dossier">the dossier</a>
+          <a class="hide-s" href="#dossier">résumé</a>
+          <a href="https://github.com/yadava5">github&#8239;↗</a>
+        </nav>
+      </div>
+
+      <div class="centre">
+        <h1 class="rise d1">Draw a digit<span class="dot">.</span></h1>
+        <p class="sub rise d1">
+          a neural network <b>Ayush Yadav</b> wrote in C++ — hand-written SIMD,
+          45.9&#8202;KB of WebAssembly — is awake in this tab. it will read your
+          handwriting. <b>no server.</b>
+        </p>
+        <div class="glass rise d2">
+          <div class="glass-head">
+            <span>input — 28×28 <button id="clear" type="button">clear</button></span>
+            <span class="live"><span class="live-dot"></span><span id="status">waking…</span></span>
+          </div>
+          <div class="well">
+            <canvas id="pad"></canvas>
+            <div class="hint" id="hint">draw 0–9</div>
+          </div>
+          <div class="glass-read">
+            <div class="verdict idle" id="verdict">·</div>
+            <div class="bars" id="bars" aria-label="softmax distribution"></div>
+            <div class="glass-meta">
+              <div>conf <span class="num" id="conf">—</span></div>
+              <div>fwd <span class="num" id="time">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cue rise d3"><span>↓&nbsp; the <i class="hide-s">spectacle ends — the </i>evidence begins</span></div>
+    </section>
+  </div>
+
+  <!-- ————— WORLD 02 · paper ————— -->
+  <section class="dossier" id="dossier">
+    <div class="tab">dossier — <b>A. Yadav</b></div>
+    <div class="ribbon" aria-hidden="true"></div>
+    <div class="dossier-inner">
+      <p class="seam-note">world 02 — same facts, quieter light</p>
+      <h2>The evidence, on paper.</h2>
+      <p class="lede">
+        The stage above wins the first five seconds. This folder is for the
+        engineer who stays: <em>six shipped products</em>, each with receipts —
+        the network you just used is № 03.
+      </p>
+
+      <div class="ledger">
+        <a class="row" href="#"><span class="idx">01</span><h3>Applied</h3>
+          <p>Gmail in, a classified dashboard of your real job applications out.</p>
+          <span class="tag">next.js · postgres · onnx</span></a>
+        <a class="row" href="#"><span class="idx">02</span><h3>Cadence</h3>
+          <p>A scheduler that takes plans the way you'd say them out loud.</p>
+          <span class="tag">calendar · nlp</span></a>
+        <a class="row" href="#"><span class="idx">03</span><h3>Glyph</h3>
+          <p>The C++ MLP reading your digits above — AVX-512, AVX2, NEON, wasm-simd128.</p>
+          <span class="tag">c++ · simd · wasm</span></a>
+        <a class="row" href="#"><span class="idx">04</span><h3>LifeQuest</h3>
+          <p>Habit-building shaped like a quest log.</p>
+          <span class="tag">product</span></a>
+        <a class="row" href="#"><span class="idx">05</span><h3>jetpack-compress</h3>
+          <p>Parallel gzip on Java virtual threads.</p>
+          <span class="tag">java · concurrency</span></a>
+        <a class="row" href="#"><span class="idx">06</span><h3>Agentic AutoML</h3>
+          <p>Raw dataset to trained, evaluated model — with a paper trail.</p>
+          <span class="tag">agents · ml</span></a>
+      </div>
+
+      <p class="receipts">
+        <span>glyph — 97.01% on the 10,000-image MNIST test set</span><span class="dia">◆</span>
+        <span>SIMD dot kernel 3.5× vs -O3</span><span class="dia">◆</span>
+        <span><a href="https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt">eval artifact — mnist_eval.txt</a></span>
+      </p>
+    </div>
+    <footer>
+      <span>© 2026 Ayush Yadav · Cincinnati, Ohio</span>
+      <span>world 01 shader: raw WebGL, zero dependencies</span>
+      <span>Fraunces · Newsreader · Fragment Mono</span>
+    </footer>
+  </section>
+</div>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const statusEl = $("status"), hint = $("hint"), verdict = $("verdict"),
+      confEl = $("conf"), timeEl = $("time"), barsEl = $("bars"),
+      ghost = $("ghost"), stage = $("stage"), dim = $("dim");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+window.__demo = { last: null, ready: null };
+
+/* softmax scaffold */
+const bars = [];
+for (let d = 0; d < 10; d++) {
+  const w = document.createElement("div");
+  w.className = "bar-i";
+  w.innerHTML = `<i></i><b>${d}</b>`;
+  barsEl.appendChild(w);
+  bars.push(w);
+}
+requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById("page").classList.add("is-in")));
+
+/* ————— the ember sky: raw WebGL fbm, reacts to inference ————— */
+const sky = $("sky");
+let pulse = 0, pulseT = 0;
+(function ember() {
+  const gl = sky.getContext("webgl", { antialias: false, alpha: false });
+  if (!gl) return; // CSS gradient fallback already painted
+  const vs = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+  const fs = `
+precision highp float;
+uniform vec2 R;uniform float T;uniform vec2 M;uniform float P;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;
+  for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.55;}return v;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/R; vec2 q=uv; q.x*=R.x/R.y;
+  /* slow upward drift + mouse-led lean */
+  vec2 drift=vec2(T*.012+(M.x-.5)*.06, -T*.045+(M.y-.5)*.04);
+  float f=fbm(q*2.6+drift);
+  float g=fbm(q*5.2-drift*1.4+f);
+  /* base night gradient (matches the CSS fallback) */
+  vec3 deep=vec3(.133,.114,.102), night=vec3(.173,.149,.133), warm=vec3(.212,.180,.157);
+  float vert=smoothstep(1.05,.0,uv.y);
+  vec3 col=mix(deep,night,vert); col=mix(col,warm,smoothstep(.55,1.,vert)*.6);
+  /* ember filaments — kept calm in the centre so the type stays clean */
+  float edge=smoothstep(.12,.62,distance(uv,vec2(.5,.52)));
+  float fil=smoothstep(.62,.94,g)*edge;
+  vec3 emberC=vec3(.96,.478,.243);
+  col+=emberC*fil*.16;
+  /* inference pulse: a slow bloom rising from the plate */
+  float d=distance(q,vec2(.5*R.x/R.y,.42));
+  col+=emberC*P*.22*smoothstep(.9,.0,d)*(.6+.4*f);
+  /* vignette */
+  col*=1.-.32*smoothstep(.45,1.,distance(uv,vec2(.5,.45)));
+  gl_FragColor=vec4(col,1.);
+}`;
+  const mk = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs));
+  gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(pr); gl.useProgram(pr);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uR = gl.getUniformLocation(pr, "R"), uT = gl.getUniformLocation(pr, "T"),
+        uM = gl.getUniformLocation(pr, "M"), uP = gl.getUniformLocation(pr, "P");
+  let mx = .5, my = .5;
+  addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; }, { passive: true });
+  function size() {
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    sky.width = Math.round(sky.clientWidth * dpr);
+    sky.height = Math.round(sky.clientHeight * dpr);
+    gl.viewport(0, 0, sky.width, sky.height);
+  }
+  addEventListener("resize", () => { size(); if (reduceMotion) frame(8); });
+  size();
+  function frame(t) {
+    gl.uniform2f(uR, sky.width, sky.height);
+    gl.uniform1f(uT, t);
+    gl.uniform2f(uM, mx, 1 - my);
+    gl.uniform1f(uP, pulse);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+  if (reduceMotion) { frame(8); window.__emberStill = () => frame(8); return; }
+  let covered = false;
+  addEventListener("scroll", () => { covered = scrollY > innerHeight * 1.05; }, { passive: true });
+  (function loop(ms) {
+    if (!document.hidden && !covered) {
+      const t = ms / 1000;
+      pulse = Math.max(0, pulse - (t - pulseT) * .55);
+      pulseT = t;
+      frame(t);
+    }
+    requestAnimationFrame(loop);
+  })(0);
+})();
+
+/* stage recedes as the dossier is laid over it */
+if (!reduceMotion) {
+  addEventListener("scroll", () => {
+    const c = Math.min(1, Math.max(0, scrollY / innerHeight));
+    stage.style.transform = `scale(${1 - c * .05})`;
+    dim.style.opacity = c * .55;
+  }, { passive: true });
+}
+
+/* ————— classifier (adapted from fast-mnist-nn wasmClassifier.ts) ————— */
+const ready = (async () => {
+  const mod = await import("./wasm/fast_mnist.js");
+  const instance = await mod.default({ locateFile: (p) => `wasm/${p}` });
+  const resp = await fetch("wasm/model.weights.bin");
+  if (!resp.ok) throw new Error(`weights ${resp.status}`);
+  const bytes = new Uint8Array(await resp.arrayBuffer());
+  const c = new instance.WasmClassifier();
+  c.loadWeightsFromBinary(bytes);
+  return c;
+})();
+window.__demo.ready = ready;
+ready.then(
+  () => { statusEl.textContent = "awake · local"; },
+  (e) => { statusEl.textContent = "serve over http to run"; console.warn(e); }
+);
+
+/* ————— pad: strokes in 0..280 space, ember-lit ————— */
+const PAD = 280, BRUSH = 22, GRID = 28;
+const pad = $("pad");
+const ctx = pad.getContext("2d");
+let strokes = [], current = null;
+function fitPad() {
+  const r = pad.getBoundingClientRect();
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  pad.width = Math.round(r.width * dpr);
+  pad.height = Math.round(r.height * dpr);
+  repaint();
+}
+function tracePath(c, pts, s) {
+  if (pts.length < 2) {
+    c.beginPath();
+    c.arc(pts[0].x * s, pts[0].y * s, c.lineWidth / 2, 0, Math.PI * 2);
+    c.fillStyle = c.strokeStyle; c.fill();
+    return;
+  }
+  c.beginPath();
+  c.moveTo(pts[0].x * s, pts[0].y * s);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+    c.quadraticCurveTo(pts[i].x * s, pts[i].y * s, mx * s, my * s);
+  }
+  c.lineTo(pts[pts.length - 1].x * s, pts[pts.length - 1].y * s);
+  c.stroke();
+}
+function repaint() {
+  const s = pad.width / PAD;
+  ctx.clearRect(0, 0, pad.width, pad.height);
+  ctx.lineWidth = BRUSH * s;
+  ctx.lineCap = ctx.lineJoin = "round";
+  ctx.strokeStyle = "#F6EFE2";
+  ctx.shadowColor = "rgba(245,122,62,.55)";
+  ctx.shadowBlur = 16 * s;
+  for (const st of strokes) tracePath(ctx, st, s);
+  ctx.shadowBlur = 0;
+}
+const off = document.createElement("canvas"); off.width = off.height = PAD;
+const small = document.createElement("canvas"); small.width = small.height = GRID;
+function extractPixels() {
+  const oc = off.getContext("2d");
+  oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
+  oc.strokeStyle = oc.fillStyle = "#fff";
+  oc.lineWidth = BRUSH; oc.lineCap = oc.lineJoin = "round";
+  for (const st of strokes) tracePath(oc, st, 1);
+  const sc = small.getContext("2d");
+  sc.drawImage(off, 0, 0, GRID, GRID);
+  const { data } = sc.getImageData(0, 0, GRID, GRID);
+  const px = new Array(GRID * GRID);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+  return px;
+}
+
+let timer = null, busy = false, again = false;
+async function classifyNow() {
+  if (busy) { again = true; return; }
+  busy = true;
+  try {
+    const c = await ready;
+    const px = extractPixels();
+    const t0 = performance.now();
+    const r = c.classify(px);
+    const ms = performance.now() - t0;
+    const conf = Array.from(r.confidence);
+    const p = Number(r.prediction);
+    verdict.textContent = String(p);
+    verdict.classList.remove("idle");
+    verdict.classList.remove("stamp"); void verdict.offsetWidth;
+    verdict.classList.add("stamp");
+    confEl.textContent = (conf[p] * 100).toFixed(1) + "%";
+    timeEl.textContent = ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms";
+    bars.forEach((b, d) => {
+      b.querySelector("i").style.height = Math.max(2, conf[d] * 44) + "px";
+      b.classList.toggle("top", d === p);
+    });
+    /* the spectacle beat: sky pulse + ghost digit behind the glass */
+    pulse = 1;
+    if (window.__emberStill) window.__emberStill();
+    ghost.textContent = String(p);
+    if (!reduceMotion) {
+      ghost.classList.remove("lit");
+      ghost.classList.add("flash"); void ghost.offsetWidth;
+      ghost.classList.remove("flash"); ghost.classList.add("lit");
+    } else {
+      ghost.classList.add("lit");
+    }
+    window.__demo.last = { prediction: p, confidence: conf[p], ms };
+  } catch (e) { /* status line already reports load failure */ }
+  busy = false;
+  if (again) { again = false; classifyNow(); }
+}
+const queueClassify = () => { clearTimeout(timer); timer = setTimeout(classifyNow, 120); };
+
+function toPadXY(ev) {
+  const r = pad.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(PAD, ((ev.clientX - r.left) / r.width) * PAD)),
+    y: Math.max(0, Math.min(PAD, ((ev.clientY - r.top) / r.height) * PAD)),
+  };
+}
+pad.addEventListener("pointerdown", (ev) => {
+  pad.setPointerCapture(ev.pointerId);
+  current = [toPadXY(ev)];
+  strokes.push(current);
+  hint.classList.add("gone");
+  repaint();
+});
+pad.addEventListener("pointermove", (ev) => {
+  if (!current) return;
+  current.push(toPadXY(ev));
+  repaint();
+  queueClassify();
+});
+const lift = () => { if (current) { current = null; classifyNow(); } };
+pad.addEventListener("pointerup", lift);
+pad.addEventListener("pointercancel", lift);
+$("clear").addEventListener("click", () => {
+  strokes = []; current = null; repaint();
+  hint.classList.remove("gone");
+  verdict.textContent = "·"; verdict.classList.add("idle");
+  confEl.textContent = "—"; timeEl.textContent = "—";
+  ghost.classList.remove("lit");
+  bars.forEach((b) => { b.querySelector("i").style.height = "2px"; b.classList.remove("top"); });
+  window.__demo.last = null;
+});
+addEventListener("resize", fitPad);
+fitPad();
+</script>
+</body>
+</html>
