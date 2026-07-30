@@ -288,7 +288,14 @@ const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
 const VISUAL_ASSIST_TREE = `https://github.com/yadava5/VisualAssist/tree/${VISUAL_ASSIST_SHA}`;
 const TASKFLOW_SHA = "69a59e7";
-const TASKFLOW_TREE = `https://github.com/yadava5/taskflow-calendar/tree/${TASKFLOW_SHA}`;
+/* `yadava5/cadence`, not `yadava5/taskflow-calendar`. The repo was
+   renamed with the product, and GitHub keeps the old path working by
+   redirect — but a redirect is not a permalink: it dies the moment any
+   repo named `taskflow-calendar` exists under this account again. A
+   receipt on a site whose thesis is "every claim terminates at an
+   artifact you can open" cannot rest on that. Verified 200 at the
+   canonical name before this was written. */
+const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
    The repository was renamed `yadava5/taskflow-calendar` → `yadava5/cadence`
@@ -308,7 +315,16 @@ const TASKFLOW_TREE = `https://github.com/yadava5/taskflow-calendar/tree/${TASKF
 const CADENCE_SHA = "54c79e0";
 const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
 const FAST_MNIST_SHA = "c6e5c0b";
-const FAST_MNIST_BLOB = `https://github.com/yadava5/fast-mnist-nn/blob/${FAST_MNIST_SHA}`;
+/* `yadava5/glyph` for the same reason as Cadence above — the rename is
+   real, the old path is only a redirect. Verified 200 at the canonical
+   name for both pins used here. */
+const FAST_MNIST_BLOB = `https://github.com/yadava5/glyph/blob/${FAST_MNIST_SHA}`;
+/* The MNIST evaluation landed AFTER the c6e5c0b pin, so it needs its
+   own: commit 97de736, "docs(backend): commit the measured MNIST
+   evaluation (#137)", 2026-07-27, on origin/main. This is the artifact
+   that earns a claim the site had been holding since W2. */
+const GLYPH_EVAL_SHA = "97de736";
+const GLYPH_EVAL_BLOB = `https://github.com/yadava5/glyph/blob/${GLYPH_EVAL_SHA}`;
 
 /** Backend CI run that executes the blocking v3 classifier gates (public).
  *  Re-read 2026-07-26 via `gh api .../actions/runs/24665061332/jobs`: the
@@ -1594,6 +1610,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "erratum",
         text: "The workspace outcome row linked taskflow-calendar-ashy.vercel.app. That deploy still answers, so nothing 404’d — but it is not the app any more, and the file was printing one host in its meta ledger and another one two sections down. The row now links usecadenceapp.vercel.app, the same host as the rest of the file.",
       },
+      {
+        date: "2026-07-30",
+        kind: "note",
+        text: "Receipts 01–03 now read cadence @ 69a59e7 rather than taskflow-calendar @ 69a59e7. The pin is unchanged and that is the whole point of the 2026-07-26 note above: 69a59e7 is still the commit the 1,145-test count was measured at, and nothing has been re-pinned. What changed is only the repository’s name in the label, because the old name now survives on a GitHub redirect and a redirect is not a permalink — it stops resolving the moment any repo called taskflow-calendar exists under this account again. A receipt on a page arguing that every claim terminates at an artifact you can open should not depend on that. The canonical path was fetched and returned 200 before the label was changed.",
+      },
     ],
     artifacts: [
       {
@@ -1608,7 +1629,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         type: "repo",
         label: "Source code",
         href: TASKFLOW_TREE,
-        source: `yadava5/taskflow-calendar @ ${TASKFLOW_SHA}`,
+        source: `yadava5/cadence @ ${TASKFLOW_SHA}`,
         boundary: "public repository",
         date: "2026-07",
       },
@@ -2100,9 +2121,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        the committed benchmark run. */
     statusDetail: "v1.0.0 tagged, benchmarks committed",
     repoPin: {
-      repo: "yadava5/fast-mnist-nn",
+      repo: "yadava5/glyph",
       sha: FAST_MNIST_SHA,
-      href: `https://github.com/yadava5/fast-mnist-nn/tree/${FAST_MNIST_SHA}`,
+      href: `https://github.com/yadava5/glyph/tree/${FAST_MNIST_SHA}`,
     },
     summary:
       "A neural network for MNIST with nothing under it but C++. SIMD matrix kernels, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
@@ -2209,23 +2230,47 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     receipts: [
       {
+        /* THE HELD STAMP COMES OFF — the condition it named was met.
+           From W2 until 2026-07-27 this row read "~97% … documented in
+           the repo, not measured on this page" and carried
+           `held: { note: "held until a committed eval run earns it" }`,
+           because the number terminated in README prose.
+
+           That eval run is now checked in. Commit 97de736 ("docs(backend):
+           commit the measured MNIST evaluation (#137)", 2026-07-27, on
+           origin/main) adds `benchmarks/mnist_eval.txt` — a generated
+           report naming its generator (`apps/eval_model.cpp`), the model
+           it scored, that model's sha256, and the per-class table — plus
+           `mnist_misclassified.csv` listing all 299 errors.
+
+           So the claim is stated at the measured value, not the rounded
+           one: 9,701 of 10,000, which is 97.01%, and the macro-F1 the
+           same run reports. Holding an earned claim is its own dishonesty
+           — it under-claims verified work — and the stamp exists to mark
+           what is NOT yet earned, so leaving it here would make the mark
+           mean nothing. Both pins verified 200 before this was written.
+
+           Honest boundary, kept: the 10,000-image test set itself is not
+           vendored in the repo (it is the standard public MNIST set), so
+           what is committed is the generator, the model, and the output —
+           reproducible by anyone who fetches MNIST, not a self-contained
+           replay. The method line says exactly that. */
         claim:
-          "The network reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo, not measured on this page.",
-        method: "README training notes, checked against the source",
+          "The network scores 97.01% on the 10,000-image MNIST test set — 9,701 correct, 299 wrong, macro-F1 0.9698 — measured by a committed eval run, not README prose.",
+        method:
+          "committed eval report: generator apps/eval_model.cpp, model.weights pinned by sha256, 784→100→10 sigmoid MLP; the public MNIST test set is not vendored in the repo",
         artifacts: [
           {
-            label: `fast-mnist-nn @ ${FAST_MNIST_SHA} · README.md`,
-            href: `${FAST_MNIST_BLOB}/README.md`,
+            label: `glyph @ ${GLYPH_EVAL_SHA} · benchmarks/mnist_eval.txt`,
+            href: `${GLYPH_EVAL_BLOB}/benchmarks/mnist_eval.txt`,
+          },
+          {
+            label: `glyph @ ${GLYPH_EVAL_SHA} · apps/eval_model.cpp`,
+            href: `${GLYPH_EVAL_BLOB}/apps/eval_model.cpp`,
           },
         ],
-        date: "2026-07",
+        date: "2026-07-27",
         visibility: "public",
-        /* W2 HELD stamp (friend transposition #1): the ~97% terminates
-           in README prose, not a committed eval artifact (EVIDENCE-MODEL
-           content-debt). The number stays on file, stamped, until an
-           eval run is checked in — the corrections note below is the
-           register entry the footnote points to. */
-        held: { note: "held until a committed eval run earns it" },
       },
       {
         /* Attribution per BENCHMARKS.md itself: the 3.5x (dot 256) is the
@@ -2319,6 +2364,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         text: "Attribution tightened, number unchanged: the committed 3.5× (dot 256) belongs to the openmp+simd configuration measured against the -O3 baseline. BENCHMARKS.md’s own analysis records that -march=native alone barely moves the needle; earlier site copy credited the speedup to SIMD alone.",
       },
       {
+        date: "2026-07-30",
+        kind: "note",
+        text: "The accuracy claim is no longer held. From the first filing this file stamped ~97% HELD, because the number lived in README prose and no committed run reproduced it — the stamp named its own release condition: held until a committed eval run earns it. That run was committed on 2026-07-27 (glyph @ 97de736), and it brings its own generator, apps/eval_model.cpp, the model it scored pinned by sha256, and a 299-row list of every image it got wrong. So the stamp comes off and the number is stated as measured rather than rounded: 9,701 of 10,000, 97.01%, macro-F1 0.9698. Holding a claim that has been earned is not caution, it is under-claiming, and it would empty the stamp of meaning for the claims that are still genuinely unearned. Honest boundary kept: the 10,000-image MNIST test set is not vendored in the repository, so the run reproduces with the standard public dataset rather than from the repo alone.",
+      },
+      {
+        date: "2026-07-30",
+        kind: "note",
+        text: "Receipts and the repo pin now read yadava5/glyph rather than yadava5/fast-mnist-nn. No commit or number moved — c6e5c0b is the same benchmark commit it always was, and the v1.0.0 release is the same tag. The repository was renamed with the product, and the old paths now answer only through a GitHub redirect, which stops resolving if any repo named fast-mnist-nn appears under this account again. Every canonical path in this file was fetched and returned 200 before the labels were changed.",
+      },
+      {
         date: "2026-07",
         kind: "note",
         text: "The ~97% accuracy receipt now carries the HELD stamp: the number is documented in the repo’s README training notes, but no committed eval artifact reproduces it yet. The claim is unchanged and stays on file; the stamp lifts when an eval run is checked in.",
@@ -2344,16 +2399,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         type: "repo",
         label: "Source code",
-        href: `https://github.com/yadava5/fast-mnist-nn/tree/${FAST_MNIST_SHA}`,
-        source: `yadava5/fast-mnist-nn @ ${FAST_MNIST_SHA}`,
+        href: `https://github.com/yadava5/glyph/tree/${FAST_MNIST_SHA}`,
+        source: `yadava5/glyph @ ${FAST_MNIST_SHA}`,
         boundary: "public repository",
         date: "2026-07",
       },
       {
         type: "repo",
         label: "v1.0.0 release",
-        href: "https://github.com/yadava5/fast-mnist-nn/releases/tag/v1.0.0",
-        source: "yadava5/fast-mnist-nn releases",
+        href: "https://github.com/yadava5/glyph/releases/tag/v1.0.0",
+        source: "yadava5/glyph releases",
         boundary: "public release",
         date: "2026-07",
       },
@@ -2361,7 +2416,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         type: "benchmark",
         label: "Benchmark evidence",
         href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
-        source: `yadava5/fast-mnist-nn @ ${FAST_MNIST_SHA}`,
+        source: `yadava5/glyph @ ${FAST_MNIST_SHA}`,
         boundary: "committed 2025-12-26 run data",
         date: "2025-12-26",
       },

@@ -72,6 +72,8 @@ const APPLIED_SHA = "36a2f54";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const TASKFLOW_SHA = "69a59e7";
 const FAST_MNIST_SHA = "c6e5c0b";
+/* The MNIST eval landed after that pin — its own commit, verified 200. */
+const GLYPH_EVAL_SHA = "97de736";
 /* jetpack-compress HEAD verified public via `gh api` on 2026-07-24. */
 const JETPACK_SHA = "af2c4b1";
 
@@ -172,7 +174,7 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "1,145 automated tests",
     claim:
       "Cadence suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
-    source: "https://github.com/yadava5/taskflow-calendar/tree/69a59e7",
+    source: "https://github.com/yadava5/cadence/tree/69a59e7",
     sourceLabel: `taskflow-calendar @ ${TASKFLOW_SHA}`,
     verification: "Local vitest run against the pinned public source.",
     visibility: "public",
@@ -193,8 +195,7 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "3.5× openmp+simd dot kernel",
     claim:
       "The openmp+simd dot kernel runs 3.5× faster than the -O3 baseline (dot 256) in committed benchmarks.",
-    source:
-      "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/BENCHMARKS.md",
+    source: "https://github.com/yadava5/glyph/blob/c6e5c0b/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
     verification:
       "Committed 2025-12-26 benchmark run data in the public fast-mnist-nn repository.",
@@ -207,23 +208,31 @@ export const proofManifest: ProofManifestEntry[] = [
     },
   },
   {
+    /* EARNED 2026-07-27 — this entry was HELD from W2 until the eval run
+       it named was committed. `held` is removed because its stated
+       condition ("held until a committed eval run earns it") was met by
+       glyph@97de736, which commits benchmarks/mnist_eval.txt, its
+       generator apps/eval_model.cpp, and mnist_misclassified.csv.
+       The label moves from the rounded "~97%" to the measured 97.01%:
+       once a number has an artifact, stating it approximately is a
+       second, smaller inaccuracy. */
     id: "fast-mnist-accuracy",
-    label: "~97% test accuracy",
+    label: "97.01% MNIST test accuracy",
     claim:
-      "Glyph reaches ~97% test accuracy on MNIST after ~30 epochs — documented in the repo’s README training notes; no committed eval artifact reproduces it yet.",
-    source: "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/README.md",
-    sourceLabel: `README.md @ ${FAST_MNIST_SHA}`,
+      "Glyph scores 97.01% on the 10,000-image MNIST test set — 9,701 correct, 299 wrong, macro-F1 0.9698 — in a committed eval run whose report names its generator and pins the scored model by sha256.",
+    source:
+      "https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt",
+    sourceLabel: `mnist_eval.txt @ ${GLYPH_EVAL_SHA}`,
     verification:
-      "README training notes checked against the source at the pinned commit. The number is documentation, not a committed eval run — it stays held until one is checked in.",
+      "Committed eval report read at the pinned commit: 9701/10000 = 97.0100%, macro P/R/F1 0.9701/0.9698/0.9698, model.weights pinned by sha256, 784→100→10 sigmoid MLP. The generator (apps/eval_model.cpp) and the 299-row miss list are committed beside it. The public MNIST test set is not vendored in the repo, so the run is reproducible with the standard dataset rather than self-contained.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07",
+    date: "2026-07-27",
     sourceKind: "self-authored",
     receipt: {
-      label: "fast-mnist case file · receipt 01 (held)",
+      label: "glyph case file · receipt 01",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-1",
     },
-    held: { note: "held until a committed eval run earns it" },
   },
   {
     id: "master-inventory-ledger",
