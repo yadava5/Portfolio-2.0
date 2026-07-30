@@ -61,3 +61,10 @@ AGENT-*
 FEEDBACK-*
 ASSESSMENT-*
 TECHNICAL-*
+
+# agent worktrees — a full second copy of this repo lives here while a
+# sub-agent builds. `npm run lint` is `eslint .` from the root, so an
+# un-ignored worktree gets linted as if it were source: one measured
+# 307 errors / 8,975 warnings against a tree whose real count is
+# 0 errors / 17 warnings. Never commit them, never lint them.
+.claude/worktrees/
