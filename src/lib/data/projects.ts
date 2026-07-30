@@ -306,7 +306,15 @@ export const projects: Project[] = [
     imageWidth: 1376,
     imageHeight: 768,
     imageKind: "real-screenshot",
-    imageAlt: "Real Taskflow local demo calendar screenshot",
+    /* The product is Cadence. This alt text still said "Taskflow" — the
+       pre-rename brand — and alt text is read aloud, so it was the one
+       place a visitor could still be told the old name. The prose
+       occurrences of "TaskFlow"/"JobTracker" elsewhere in this file are
+       DELIBERATE and stay: "Cadence (formerly TaskFlow)" is history
+       stated as history, and "the JobTracker scheme" is a literal Xcode
+       scheme name (Fix round 3, S14). A brand in a caption is history;
+       a brand in an alt is a wrong label. */
+    imageAlt: "Real Cadence local demo calendar screenshot",
     imageDisclosure:
       "Real local frontend screenshot captured with the repository mock-login flow and demo user state.",
     featured: true,
