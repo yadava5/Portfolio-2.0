@@ -15,7 +15,11 @@
  *     fix 2 — 86% of home scroll cost). Every consumer of the vars
  *     lives inside that container. The background itself composes
  *     `oklch(...)` (LightField) — color strings are never tweened, so
- *     midpoints never collapse through muddy sRGB.
+ *     midpoints never collapse through muddy sRGB. Each day segment is
+ *     re-timed by THE SEAM SETTLE (stage 1): a per-segment ease that
+ *     concentrates the turn in a band anchored to the seam, so a
+ *     chapter's light arrives as a beat rather than a smear — same
+ *     tween, same writer, same channel line (see the SETTLE block).
  *   - The 05→06 dusk boundary is the CHOREOGRAPHED multi-stop transition
  *     (brief B9, retuned per the shots-dusk2 slow-scroll study): twelve
  *     pre-verified stops over a bounded range as chapter 06 rises
@@ -93,6 +97,126 @@ const DUSK_RANGE_START = "top 92%";
 const Q_L = 0.004;
 const Q_C = 0.004;
 const Q_H = 0.4;
+
+/* ── THE SEAM SETTLE (the Seam, stage 1) ─────────────────────────────
+ * The day used to turn at a constant rate across a whole chapter's
+ * scroll-out — a smear so gradual it was ambient, never an event. The
+ * owner's ask is that a chapter's ARRIVAL read as a discrete beat, so
+ * each day segment now spends most of its colour distance inside a
+ * SETTLE BAND anchored to the seam itself: a slow linear drift while
+ * the chapter body is read, then the remaining travel eased across the
+ * band as the seam (folio rule → incoming kicker) crosses the viewport,
+ * landing on the next waypoint as the new chapter's head reaches the
+ * reading line. NOT a new animation: the same one scrubbed tween per
+ * segment, re-timed by a per-segment ease — both directions and
+ * deep-linked refreshes derive from the one progress value exactly as
+ * before, and every rendered colour is still a point on the SAME
+ * from→to channel line check-contrast samples at ≥10 places (all three
+ * channels share one ease, so the interpolation path is unchanged —
+ * only WHERE along the scroll each point renders moves).
+ *
+ * The band is fixed in VIEWPORT terms, not progress terms, so every
+ * seam turns over at the same read speed regardless of chapter height:
+ * it opens as the seam rises past SETTLE_ENTER_VH of the viewport and
+ * closes at SETTLE_EXIT_VH — computed per segment from the trigger's
+ * own refreshed pixels (onRefresh), so resizes and the ch04 pin-spacer
+ * keep it honest. SETTLE_DRIFT keeps the canvas ALIVE between seams
+ * (NO-LIST §D: "the canvas never sits still on one hex") — the drift
+ * share still crosses the H quantum several times per chapter.
+ *
+ * The 04→05 long-approach segment (fix round 6) is the one authored
+ * exception: its trigger runs past its own seam to the dusk range's
+ * opening pixel, so its band anchors on the REAL ¶04|05 seam and the
+ * remaining APPROACH_TAIL share drifts linearly down ¶05's body — the
+ * afternoon still deepens the whole way to the dusk choreography
+ * (tail ΔL ≈ 0.015, a quantized turn every ~650px — the pre-change
+ * linear cadence, so fix 6's "never flat down ¶05" finding is kept),
+ * and the two ranges still abut on the same pixel. The approach's
+ * smaller drift share leaves its pre-seam stretch — which is mostly
+ * the ch04 pin hold — near-still: the world holds its breath while
+ * the run is held, then golden hour arrives AT ¶05's door. */
+const SETTLE_ENTER_VH = 0.85;
+const SETTLE_EXIT_VH = 0.3;
+const SETTLE_DRIFT = 0.35;
+const APPROACH_DRIFT = 0.12;
+const APPROACH_TAIL = 0.6;
+
+/** One segment's settle-band shape, in trigger-progress space. Mutable:
+ *  onRefresh rewrites it from the trigger's settled pixel positions. */
+interface SeamShape {
+  /** Progress where the band opens (drift below, settle above) */
+  a: number;
+  /** Progress where the band closes (hold or tail-drift above) */
+  b: number;
+  /** EFFECTIVE colour share crossed by the pre-band drift. Derived by
+   *  refreshSeamShape from the authored share: when a short chapter
+   *  leaves less room than the ideal band wants (its ideal `a` clamps
+   *  toward 0), the share scales down with the surviving width so the
+   *  drift keeps its SLOPE — a fixed share over a vanishing width would
+   *  render as a colour cliff on the first scrolled frame (measured on
+   *  the 85svh ch06: L stepped 0.347→0.320 in one frame before this). */
+  drift: number;
+  /** Colour share reserved for the post-band drift (long approach) */
+  tail: number;
+}
+
+/**
+ * Build the seam-settle ease for one segment. Piecewise over trigger
+ * progress p: linear drift 0→drift on [0,a]; smoothstep drift→(1−tail)
+ * across the band [a,b] — the beat, easing out so it LANDS on the
+ * waypoint rather than slamming; linear (1−tail)→1 on [b,1] (the long
+ * approach's living tail; tail = 0 collapses this to a hold at 1).
+ *
+ * @param shape - The segment's mutable band parameters
+ * @returns A gsap ease function reading the live shape
+ */
+function seamEase(shape: SeamShape): gsap.EaseFunction {
+  return (p: number): number => {
+    const rest = 1 - shape.tail;
+    if (p <= shape.a) return shape.a > 0 ? (shape.drift * p) / shape.a : 0;
+    if (p >= shape.b) {
+      return shape.b < 1
+        ? rest + shape.tail * ((p - shape.b) / (1 - shape.b))
+        : rest;
+    }
+    const u = (p - shape.a) / (shape.b - shape.a);
+    return shape.drift + (rest - shape.drift) * u * u * (3 - 2 * u);
+  };
+}
+
+/**
+ * Recompute a segment's band from its trigger's settled pixels: the
+ * band opens/closes as the SEAM (the next chapter's top) crosses the
+ * viewport-height anchors. Clamped so degenerate spans (short chapters,
+ * tiny viewports) collapse gracefully toward "the whole segment is the
+ * settle" rather than inverting — and the drift SHARE scales with the
+ * width that survives clamping, so its slope holds and the ease stays
+ * continuous (see SeamShape.drift).
+ *
+ * @param shape - The mutable shape to rewrite
+ * @param driftShare - The authored drift share for this segment
+ * @param start - Trigger start (px scroll)
+ * @param end - Trigger end (px scroll)
+ * @param seam - Scroll position at which the seam reaches the viewport
+ *   top (= `end` for normal segments; the ¶04|05 seam for the approach)
+ */
+function refreshSeamShape(
+  shape: SeamShape,
+  driftShare: number,
+  start: number,
+  end: number,
+  seam: number
+): void {
+  const span = end - start;
+  if (span <= 0) return;
+  const vh = window.innerHeight;
+  const hi = shape.tail > 0 ? 0.98 : 1;
+  const a = (seam - SETTLE_ENTER_VH * vh - start) / span;
+  const b = (seam - SETTLE_EXIT_VH * vh - start) / span;
+  shape.a = Math.min(Math.max(a, 0), hi - 0.04);
+  shape.b = Math.min(Math.max(b, shape.a + 0.02), hi);
+  shape.drift = a > 0 ? driftShare * Math.min(1, shape.a / a) : 0;
+}
 
 /**
  * Build a quantized channel writer bound to one field element.
@@ -329,6 +453,20 @@ export function DayArc() {
         const runsIntoDusk =
           duskChapter?.dataset.chapter === DUSK_FLIP_CHAPTER &&
           sections[i + 1]?.dataset.chapter !== DUSK_FLIP_CHAPTER;
+        /* THE SEAM SETTLE (see the block above Q_L): the segment's one
+           scrubbed tween, re-timed so the turn lands AT the seam. The
+           shape starts as a placeholder and is rewritten from real
+           pixels the moment the trigger first refreshes — a deep-linked
+           creation-refresh may render one frame off the placeholder,
+           which is still a point on the same channel line. */
+        const driftShare = runsIntoDusk ? APPROACH_DRIFT : SETTLE_DRIFT;
+        const shape: SeamShape = {
+          a: 0.5,
+          b: 0.85,
+          drift: driftShare,
+          tail: runsIntoDusk ? APPROACH_TAIL : 0,
+        };
+        const seamSection = sections[i + 1];
         const proxy = { l: from.l, c: from.c, h: from.h };
         const handle: { tween?: gsap.core.Tween } = {};
         handle.tween = gsap.fromTo(
@@ -338,7 +476,7 @@ export function DayArc() {
             l: to.l,
             c: to.c,
             h: to.h,
-            ease: "none",
+            ease: seamEase(shape),
             immediateRender: false,
             scrollTrigger: {
               trigger: sections[i],
@@ -347,6 +485,15 @@ export function DayArc() {
                 ? { endTrigger: duskChapter, end: DUSK_RANGE_START }
                 : { end: "bottom top" }),
               scrub: true,
+              onRefresh: (self) => {
+                /* Normal segments end AT their seam ("bottom top" —
+                   sections abut); the long approach's end is the dusk
+                   opening, so its seam is measured off the section. */
+                const seam = runsIntoDusk
+                  ? window.scrollY + seamSection.getBoundingClientRect().top
+                  : self.end;
+                refreshSeamShape(shape, driftShare, self.start, self.end, seam);
+              },
             },
             onUpdate: () => {
               /* Guard: when a segment clamps back to 0 while the previous

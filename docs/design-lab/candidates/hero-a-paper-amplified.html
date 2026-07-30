@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ayush yadav — hero candidate A · the paper, amplified</title>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HERO CANDIDATE A — "The paper, amplified."
+     The argument: keep the warm-paper identity (it is the brand across
+     six booklets) but spend the first viewport on evidence, not a pun.
+     Enormous Fraunces name, the live C++/WASM digit reader as the
+     centrepiece, clay used with conviction. Zero dependencies.
+     canvas #FAF6EF · ink #26231C (Lc 97.5) · ink-2 #5C564A (Lc 80.1)
+     clay #B04A28 (Lc 71.3 as text) · pine #2F5D50 (Lc 80.8)
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    --canvas:#FAF6EF;
+    --surface-1:#F3EDE1;
+    --surface-2:#EAE2D2;
+    --ink:#26231C;
+    --ink-2:#5C564A;
+    --clay:#B04A28;
+    --clay-g:#C4532E;
+    --clay-deep:#8F3A1E;
+    --pine:#2F5D50;
+    --hair:rgba(38,35,28,.16);
+    --hair-strong:rgba(38,35,28,.32);
+    --pad-x:clamp(20px, 5vw, 72px);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+    color-scheme:light;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* paper grain, ≤5% */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:60; pointer-events:none;
+    background-image:var(--grain); background-size:260px 260px;
+    opacity:.045; mix-blend-mode:multiply;
+  }
+  ::selection{background:var(--clay); color:var(--canvas)}
+  a{color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px}
+  a:hover{color:var(--clay-deep)}
+  a:focus-visible{outline:2px solid var(--clay); outline-offset:3px; border-radius:1px}
+  img,canvas,svg{max-width:100%}
+
+  /* —— entrance choreography ————————————————————— */
+  .rise{opacity:0; transform:translateY(26px)}
+  .is-in .rise{
+    opacity:1; transform:none;
+    transition:opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+  }
+  .is-in .rise.d1{transition-delay:.08s}
+  .is-in .rise.d2{transition-delay:.16s}
+  .is-in .rise.d3{transition-delay:.26s}
+  .is-in .rise.d4{transition-delay:.36s}
+  .is-in .rise.d5{transition-delay:.48s}
+  .reveal{opacity:0; transform:translateY(30px)}
+  .reveal.is-in{opacity:1; transform:none; transition:opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1)}
+  @media (prefers-reduced-motion: reduce){
+    .rise,.reveal{opacity:1 !important; transform:none !important; transition:none !important}
+  }
+
+  /* —— masthead ————————————————————————————————— */
+  header{
+    display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
+    padding:1.05rem var(--pad-x) .95rem;
+    border-bottom:1px solid var(--hair-strong);
+    box-shadow:0 3px 0 -2px var(--hair); /* double rule */
+    position:relative; z-index:10;
+  }
+  .mast-name{
+    font-family:var(--mono); font-size:.8rem; letter-spacing:.14em;
+    text-transform:uppercase; text-decoration:none;
+  }
+  .mast-name b{font-weight:400; color:var(--clay)}
+  nav{display:flex; gap:1.6rem; font-family:var(--mono); font-size:.8rem}
+  nav a{text-decoration:none}
+  nav a:hover{color:var(--clay-deep); text-decoration:underline; text-underline-offset:5px}
+
+  /* —— hero ————————————————————————————————————— */
+  .hero{
+    min-height:calc(100svh - 3.6rem);
+    display:grid;
+    grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+    gap:clamp(2rem, 4vw, 4.5rem);
+    align-items:center;
+    padding:clamp(1.5rem,3.5vh,3rem) var(--pad-x) clamp(4.5rem,7vh,5.5rem);
+    position:relative;
+  }
+  .kicker{
+    font-family:var(--mono); font-size:.78rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--ink-2);
+  }
+  .kicker em{font-style:normal; color:var(--clay)}
+  h1{
+    font-family:var(--display);
+    font-size:clamp(3.9rem, 9.4vw, 8.4rem);
+    line-height:.98;
+    font-weight:590;
+    letter-spacing:-.018em;
+    margin:.35rem 0 0;
+    font-variation-settings:"opsz" 144;
+  }
+  .slug{
+    width:clamp(120px, 34%, 260px); height:7px;
+    background:var(--clay-g); margin:1.4rem 0 1.5rem;
+  }
+  .deck{
+    font-size:clamp(1.15rem, 1.5vw, 1.4rem);
+    line-height:1.5;
+    max-width:36ch;
+    color:var(--ink);
+  }
+  .deck em{font-family:var(--body); font-style:italic; color:var(--clay)}
+  .facts{
+    display:flex; flex-wrap:wrap; column-gap:.7rem; row-gap:.45rem; align-items:baseline;
+    margin-top:1.5rem;
+    font-family:var(--mono); font-size:.78rem; line-height:1.7; color:var(--ink-2);
+    max-width:56ch;
+  }
+  .facts .dia{color:var(--clay); font-size:.65rem}
+  .facts a{color:var(--pine)}
+  .actions{display:flex; flex-wrap:wrap; gap:1.7rem; margin-top:1.6rem; font-family:var(--mono); font-size:.85rem}
+  .actions a{text-decoration:none; border-bottom:1.5px solid var(--clay); padding-bottom:2px}
+  .actions a:hover{color:var(--clay-deep); border-color:var(--clay-deep)}
+
+  /* —— the specimen plate ———————————————————————— */
+  .plate-wrap{position:relative}
+  .plate{
+    position:relative;
+    background:var(--surface-1);
+    border:1px solid var(--hair-strong);
+    box-shadow:0 1px 0 var(--hair), 0 18px 44px -22px rgba(38,35,28,.35);
+    padding:1rem 1rem 1.1rem;
+    transition:box-shadow .5s ease, transform .5s ease;
+  }
+  @media (hover:hover) and (prefers-reduced-motion: no-preference){
+    .plate:hover{transform:translateY(-3px); box-shadow:0 1px 0 var(--hair), 0 26px 54px -24px rgba(38,35,28,.42)}
+  }
+  /* registration ticks on all four corners */
+  .plate::before,.plate::after,
+  .plate .tick-a,.plate .tick-b{
+    content:""; position:absolute; width:14px; height:14px; pointer-events:none;
+  }
+  .plate::before{top:-7px; left:-7px; border-top:1px solid var(--ink); border-left:1px solid var(--ink)}
+  .plate::after{top:-7px; right:-7px; border-top:1px solid var(--ink); border-right:1px solid var(--ink)}
+  .plate .tick-a{bottom:-7px; left:-7px; border-bottom:1px solid var(--ink); border-left:1px solid var(--ink)}
+  .plate .tick-b{bottom:-7px; right:-7px; border-bottom:1px solid var(--ink); border-right:1px solid var(--ink)}
+  .plate-head{
+    display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ink-2);
+    padding:0 .1rem .75rem;
+  }
+  .plate-head .live{color:var(--clay); display:inline-flex; align-items:center; gap:.45em}
+  .live-dot{
+    width:7px; height:7px; border-radius:50%; background:var(--clay-g); display:inline-block;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .live-dot{animation:pulse 2.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  }
+  .pad-frame{
+    position:relative; background:#FFFDF6;
+    border:1px solid var(--hair);
+    aspect-ratio:1; overflow:hidden;
+  }
+  /* faint 28×28 grid so the medium is legible */
+  .pad-frame::before{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 calc(100%/28 - 1px), rgba(38,35,28,.05) calc(100%/28 - 1px) calc(100%/28)),
+      repeating-linear-gradient(90deg, transparent 0 calc(100%/28 - 1px), rgba(38,35,28,.05) calc(100%/28 - 1px) calc(100%/28));
+  }
+  #pad{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
+  .pad-hint{
+    position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    font-family:var(--body); font-style:italic; font-size:1.25rem; color:var(--ink-2);
+    transition:opacity .4s ease;
+  }
+  .pad-hint.gone{opacity:0}
+  .readout{
+    display:grid; grid-template-columns:auto 1fr auto; gap:1rem; align-items:end;
+    padding:.9rem .1rem 0;
+  }
+  .verdict{
+    font-family:var(--display); font-size:3.4rem; line-height:1; font-weight:600;
+    color:var(--clay); min-width:1.2ch; text-align:center;
+    font-variation-settings:"opsz" 144;
+  }
+  .verdict.idle{color:var(--hair-strong)}
+  @media (prefers-reduced-motion: no-preference){
+    .verdict.pop{animation:verdict-in .38s cubic-bezier(.2,1.4,.4,1)}
+    @keyframes verdict-in{0%{transform:scale(1.45); opacity:0}60%{transform:scale(.96); opacity:1}100%{transform:scale(1)}}
+  }
+  .bars{
+    display:grid; grid-template-columns:repeat(10,1fr); gap:4px; align-items:end;
+    height:56px; align-self:end;
+  }
+  .bar{position:relative; display:flex; flex-direction:column; justify-content:flex-end; height:100%}
+  .bar i{
+    display:block; background:var(--surface-2); min-height:2px; height:2px;
+    transition:height .45s cubic-bezier(.22,1,.36,1), background .3s ease;
+  }
+  .bar.top i{background:var(--clay-g)}
+  .bar b{
+    font-family:var(--mono); font-weight:400; font-size:.6rem; color:var(--ink-2);
+    text-align:center; margin-top:4px;
+  }
+  .bar.top b{color:var(--clay)}
+  .meta{
+    font-family:var(--mono); font-size:.7rem; color:var(--ink-2); text-align:right;
+    line-height:1.8; white-space:nowrap;
+  }
+  .meta .num{color:var(--ink)}
+  .plate-foot{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    padding:.8rem .1rem 0; font-family:var(--mono); font-size:.72rem; color:var(--ink-2);
+  }
+  .plate-foot button{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    background:none; border:1px solid var(--hair-strong); color:var(--ink);
+    padding:.45em .9em; cursor:pointer;
+  }
+  .plate-foot button:hover{border-color:var(--clay); color:var(--clay-deep)}
+  .plate-foot button:focus-visible{outline:2px solid var(--clay); outline-offset:2px}
+  .seen{display:inline-flex; align-items:center; gap:.6em}
+  #seen28{
+    width:28px; height:28px; image-rendering:pixelated; border:1px solid var(--hair-strong);
+    background:#000; display:inline-block; vertical-align:middle;
+  }
+  /* the stamp — appears on first successful read */
+  .stamp{
+    position:absolute; top:-1.4rem; right:-.9rem; z-index:5;
+    font-family:var(--mono); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--clay); border:2.5px double var(--clay);
+    padding:.55em .8em; transform:rotate(6deg);
+    background:var(--canvas);
+    opacity:0; pointer-events:none;
+  }
+  .stamp.inked{opacity:.92}
+  @media (prefers-reduced-motion: no-preference){
+    .stamp.inked{animation:ink .5s cubic-bezier(.2,1.4,.4,1)}
+    @keyframes ink{0%{transform:rotate(6deg) scale(1.7); opacity:0}55%{transform:rotate(6deg) scale(.94); opacity:1}100%{transform:rotate(6deg) scale(1); opacity:.92}}
+  }
+
+  /* —— shipped ticker ————————————————————————————— */
+  .ticker{
+    position:absolute; left:0; right:0; bottom:0;
+    border-block:1px solid var(--hair);
+    overflow:hidden; white-space:nowrap;
+    font-family:var(--mono); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink-2); padding:.7rem 0;
+  }
+  .ticker .belt{display:inline-block; padding-left:0}
+  @media (prefers-reduced-motion: no-preference){
+    .ticker .belt{animation:belt 46s linear infinite}
+    .ticker:hover .belt{animation-play-state:paused}
+    @keyframes belt{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  }
+  .ticker .dia{color:var(--clay); margin:0 .9em}
+
+  /* —— the work, briefly ————————————————————————— */
+  .work{
+    padding:clamp(3.5rem,8vh,6rem) var(--pad-x) clamp(3rem,6vh,4rem);
+  }
+  .work-head{display:flex; align-items:baseline; gap:1.2rem; margin-bottom:2.2rem}
+  .work-head h2{font-family:var(--display); font-size:clamp(1.9rem,3vw,2.6rem); font-weight:560}
+  .work-head .rule{flex:1; height:1px; background:var(--hair-strong)}
+  .work-head .count{font-family:var(--mono); font-size:.78rem; color:var(--ink-2)}
+  .grid{
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
+    border-top:1px solid var(--hair-strong); border-left:1px solid var(--hair-strong);
+  }
+  .card{
+    border-right:1px solid var(--hair-strong); border-bottom:1px solid var(--hair-strong);
+    padding:1.4rem 1.4rem 1.6rem; background:var(--canvas);
+    transition:background .3s ease;
+  }
+  .card:hover{background:var(--surface-1)}
+  .card .idx{font-family:var(--mono); font-size:.7rem; color:var(--clay); letter-spacing:.12em}
+  .card h3{font-family:var(--display); font-size:1.45rem; font-weight:580; margin:.5rem 0 .4rem}
+  .card p{font-size:1rem; line-height:1.55; color:var(--ink-2)}
+
+  footer{
+    border-top:1px solid var(--hair-strong);
+    padding:1.4rem var(--pad-x) 2.2rem;
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem;
+    font-family:var(--mono); font-size:.75rem; color:var(--ink-2);
+  }
+
+  /* —— 390-class layout ——————————————————————————— */
+  @media (max-width:760px){
+    header{padding:.85rem var(--pad-x) .8rem}
+    .mast-name .role{display:none}
+    nav{gap:1rem}
+    nav a{white-space:nowrap}
+    nav .hide-s{display:none}
+    .plate-head{font-size:.62rem; letter-spacing:.07em}
+    .plate-head .live{white-space:nowrap}
+    .hero{
+      grid-template-columns:1fr;
+      gap:1.6rem;
+      align-content:start;
+      padding-top:1.6rem;
+      padding-bottom:4.6rem;
+      min-height:0;
+    }
+    h1{font-size:clamp(3.4rem, 16.5vw, 4.6rem)}
+    .slug{margin:1rem 0 1.1rem}
+    .deck{font-size:1.08rem; max-width:none}
+    /* plate right after the deck; facts + actions follow it */
+    .hero-copy{display:contents}
+    .kicker{order:1} h1{order:2} .slug{order:3} .deck{order:4}
+    .plate-wrap{order:5}
+    .facts{order:6; margin-top:.2rem}
+    .actions{order:7; margin-top:.4rem}
+    .stamp{top:-2.3rem; right:.2rem; font-size:.6rem}
+    .verdict{font-size:2.7rem}
+    .grid{grid-template-columns:1fr}
+    .ticker{font-size:.7rem}
+  }
+</style>
+</head>
+<body>
+<div class="page" id="page">
+
+  <header class="rise">
+    <a class="mast-name" href="#">Ayush <b>Yadav</b><span class="role"> — Software Engineer</span></a>
+    <nav>
+      <a href="#work">the work</a>
+      <a class="hide-s" href="#work">experience</a>
+      <a class="hide-s" href="#work">résumé</a>
+      <a href="https://github.com/yadava5">github&#8239;↗</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="kicker rise d1">Cincinnati, Ohio · <em>six shipped products</em> · one live network</p>
+      <h1 class="rise d1">Ayush Yadav</h1>
+      <div class="slug rise d2" aria-hidden="true"></div>
+      <p class="deck rise d2">
+        I wrote a neural network in C++ with hand-written SIMD and compiled
+        it to 45.9&#8202;KB of WebAssembly. It is running on this page —
+        <em>draw a digit</em> and it will read it. No server. Nothing faked.
+      </p>
+      <p class="facts rise d3">
+        <span>97.01% on the 10,000-image MNIST test set</span><span class="dia">◆</span>
+        <span>SIMD dot kernel 3.5× vs -O3</span><span class="dia">◆</span>
+        <span><a href="https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt">eval artifact — mnist_eval.txt</a></span>
+      </p>
+      <p class="actions rise d4">
+        <a href="#work">see the work&#8202;↓</a>
+        <a href="#work">résumé</a>
+        <a href="https://github.com/yadava5">github&#8202;↗</a>
+      </p>
+    </div>
+
+    <div class="plate-wrap rise d3">
+      <div class="stamp" id="stamp">read locally · no server</div>
+      <figure class="plate">
+        <span class="tick-a"></span><span class="tick-b"></span>
+        <figcaption class="plate-head">
+          <span>Fig. 01 — draw a digit, 0–9</span>
+          <span class="live"><span class="live-dot"></span><span id="status">loading network…</span></span>
+        </figcaption>
+        <div class="pad-frame">
+          <canvas id="pad"></canvas>
+          <div class="pad-hint" id="hint">draw here</div>
+        </div>
+        <div class="readout">
+          <div class="verdict idle" id="verdict">·</div>
+          <div class="bars" id="bars" aria-label="softmax distribution"></div>
+          <div class="meta">
+            <div>conf <span class="num" id="conf">—</span></div>
+            <div>fwd <span class="num" id="time">—</span></div>
+          </div>
+        </div>
+        <div class="plate-foot">
+          <span class="seen">net sees&nbsp;<canvas id="seen28" width="28" height="28"></canvas>&nbsp;28×28</span>
+          <button id="clear" type="button">clear</button>
+        </div>
+      </figure>
+    </div>
+
+    <div class="ticker rise d5" aria-hidden="true">
+      <span class="belt" id="belt"></span>
+    </div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="work-head reveal">
+      <h2>The work, briefly</h2>
+      <div class="rule"></div>
+      <span class="count">6 shipped</span>
+    </div>
+    <div class="grid">
+      <article class="card reveal">
+        <span class="idx">01</span>
+        <h3>Applied</h3>
+        <p>Connect Gmail and a classifier turns your inbox into a live dashboard of your real job applications.</p>
+      </article>
+      <article class="card reveal">
+        <span class="idx">02</span>
+        <h3>Cadence</h3>
+        <p>A natural-language scheduler that plans calendars and tasks the way you'd say them out loud.</p>
+      </article>
+      <article class="card reveal">
+        <span class="idx">03</span>
+        <h3>Glyph</h3>
+        <p>The C++ MLP on this page — hand-optimized across AVX-512, AVX2, NEON and wasm-simd128.</p>
+      </article>
+      <article class="card reveal">
+        <span class="idx">04</span>
+        <h3>LifeQuest</h3>
+        <p>Habit-building shaped like a quest log, so the day-to-day earns its own progress bar.</p>
+      </article>
+      <article class="card reveal">
+        <span class="idx">05</span>
+        <h3>jetpack-compress</h3>
+        <p>Parallel gzip built on Java virtual threads — throughput without losing the format.</p>
+      </article>
+      <article class="card reveal">
+        <span class="idx">06</span>
+        <h3>Agentic AutoML</h3>
+        <p>An agent pipeline that takes a raw dataset to a trained, evaluated model with a paper trail.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Ayush Yadav</span>
+    <span>the network on this page is mine — C++ → WebAssembly, MIT</span>
+    <span>set in Fraunces · Newsreader · Fragment Mono</span>
+  </footer>
+</div>
+
+<script type="module">
+/* ——— the live network: load, draw, classify ——— */
+const $ = (id) => document.getElementById(id);
+const statusEl = $("status"), hint = $("hint"), verdict = $("verdict"),
+      confEl = $("conf"), timeEl = $("time"), barsEl = $("bars"),
+      seen = $("seen28"), stamp = $("stamp");
+
+window.__demo = { last: null, ready: null };
+
+/* softmax bars scaffold */
+const bars = [];
+for (let d = 0; d < 10; d++) {
+  const w = document.createElement("div");
+  w.className = "bar";
+  w.innerHTML = `<i></i><b>${d}</b>`;
+  barsEl.appendChild(w);
+  bars.push(w);
+}
+
+/* ticker belt (duplicated for the loop) */
+const belt = $("belt");
+const items = ["Applied","Cadence","Glyph","LifeQuest","jetpack-compress","Agentic AutoML"];
+const run = "shipped — " + items.join(' <span class="dia">◆</span> ') + ' <span class="dia">◆</span> ';
+belt.innerHTML = run.repeat(4) + run.repeat(4);
+
+/* entrance */
+requestAnimationFrame(() => requestAnimationFrame(() => $("page").classList.add("is-in")));
+const io = new IntersectionObserver((es) => {
+  for (const e of es) if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+}, { threshold: 0.15 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+/* —— classifier (adapted from fast-mnist-nn/web/src/lib/wasmClassifier.ts) —— */
+const ready = (async () => {
+  const mod = await import("./wasm/fast_mnist.js");
+  const instance = await mod.default({ locateFile: (p) => `wasm/${p}` });
+  const resp = await fetch("wasm/model.weights.bin");
+  if (!resp.ok) throw new Error(`weights ${resp.status}`);
+  const bytes = new Uint8Array(await resp.arrayBuffer());
+  const c = new instance.WasmClassifier();
+  c.loadWeightsFromBinary(bytes);
+  return c;
+})();
+window.__demo.ready = ready;
+ready.then(
+  () => { statusEl.textContent = "live · local"; },
+  (e) => { statusEl.textContent = "serve over http to run"; console.warn(e); }
+);
+
+/* —— drawing pad: strokes in 0..280 space, mirrors the trained brush —— */
+const PAD = 280, BRUSH = 22, GRID = 28;
+const pad = $("pad");
+const ctx = pad.getContext("2d");
+let strokes = [], current = null;
+
+function fitPad() {
+  const r = pad.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  pad.width = Math.round(r.width * dpr);
+  pad.height = Math.round(r.height * dpr);
+  repaint();
+}
+function repaint() {
+  const s = pad.width / PAD;
+  ctx.clearRect(0, 0, pad.width, pad.height);
+  ctx.lineWidth = BRUSH * s;
+  ctx.lineCap = ctx.lineJoin = "round";
+  ctx.strokeStyle = "#26231C";
+  for (const st of strokes) tracePath(ctx, st, s);
+}
+function tracePath(c, pts, s) {
+  if (pts.length < 2) {
+    c.beginPath();
+    c.arc(pts[0].x * s, pts[0].y * s, c.lineWidth / 2, 0, Math.PI * 2);
+    c.fillStyle = c.strokeStyle; c.fill();
+    return;
+  }
+  c.beginPath();
+  c.moveTo(pts[0].x * s, pts[0].y * s);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+    c.quadraticCurveTo(pts[i].x * s, pts[i].y * s, mx * s, my * s);
+  }
+  c.lineTo(pts[pts.length - 1].x * s, pts[pts.length - 1].y * s);
+  c.stroke();
+}
+/* rasterize white-on-black 280→28, matching the reference pipeline */
+const off = document.createElement("canvas"); off.width = off.height = PAD;
+const small = document.createElement("canvas"); small.width = small.height = GRID;
+function extractPixels() {
+  const oc = off.getContext("2d");
+  oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
+  oc.strokeStyle = oc.fillStyle = "#fff";
+  oc.lineWidth = BRUSH; oc.lineCap = oc.lineJoin = "round";
+  for (const st of strokes) tracePath(oc, st, 1);
+  const sc = small.getContext("2d");
+  sc.drawImage(off, 0, 0, GRID, GRID);
+  const { data } = sc.getImageData(0, 0, GRID, GRID);
+  const px = new Array(GRID * GRID);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+  return px;
+}
+function paintSeen(px) {
+  const sc = seen.getContext("2d");
+  const img = sc.createImageData(GRID, GRID);
+  for (let i = 0; i < px.length; i++) {
+    const v = Math.round(px[i] * 255);
+    img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v;
+    img.data[i * 4 + 3] = 255;
+  }
+  sc.putImageData(img, 0, 0);
+}
+
+let timer = null, busy = false, again = false;
+async function classifyNow() {
+  if (busy) { again = true; return; }
+  busy = true;
+  try {
+    const c = await ready;
+    const px = extractPixels();
+    paintSeen(px);
+    const t0 = performance.now();
+    const r = c.classify(px);
+    const ms = performance.now() - t0;
+    const conf = Array.from(r.confidence);
+    const p = Number(r.prediction);
+    verdict.textContent = String(p);
+    verdict.classList.remove("idle");
+    verdict.classList.remove("pop"); void verdict.offsetWidth;
+    verdict.classList.add("pop");
+    confEl.textContent = (conf[p] * 100).toFixed(1) + "%";
+    timeEl.textContent = ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms";
+    bars.forEach((b, d) => {
+      b.querySelector("i").style.height = Math.max(2, conf[d] * 56) + "px";
+      b.classList.toggle("top", d === p);
+    });
+    if (!stamp.classList.contains("inked")) stamp.classList.add("inked");
+    window.__demo.last = { prediction: p, confidence: conf[p], ms };
+  } catch (e) { /* file:// or load failure — status line already says so */ }
+  busy = false;
+  if (again) { again = false; classifyNow(); }
+}
+const queueClassify = () => { clearTimeout(timer); timer = setTimeout(classifyNow, 120); };
+
+function toPadXY(ev) {
+  const r = pad.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(PAD, ((ev.clientX - r.left) / r.width) * PAD)),
+    y: Math.max(0, Math.min(PAD, ((ev.clientY - r.top) / r.height) * PAD)),
+  };
+}
+pad.addEventListener("pointerdown", (ev) => {
+  pad.setPointerCapture(ev.pointerId);
+  current = [toPadXY(ev)];
+  strokes.push(current);
+  hint.classList.add("gone");
+  repaint();
+});
+pad.addEventListener("pointermove", (ev) => {
+  if (!current) return;
+  current.push(toPadXY(ev));
+  repaint();
+  queueClassify();
+});
+const lift = () => { if (current) { current = null; classifyNow(); } };
+pad.addEventListener("pointerup", lift);
+pad.addEventListener("pointercancel", lift);
+$("clear").addEventListener("click", () => {
+  strokes = []; current = null; repaint();
+  hint.classList.remove("gone");
+  verdict.textContent = "·"; verdict.classList.add("idle");
+  confEl.textContent = "—"; timeEl.textContent = "—";
+  bars.forEach((b) => { b.querySelector("i").style.height = "2px"; b.classList.remove("top"); });
+  seen.getContext("2d").clearRect(0, 0, GRID, GRID);
+  window.__demo.last = null;
+});
+window.addEventListener("resize", fitPad);
+fitPad();
+</script>
+</body>
+</html>

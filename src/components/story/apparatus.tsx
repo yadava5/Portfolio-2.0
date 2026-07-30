@@ -37,6 +37,26 @@ interface ChapterKickerProps {
   dateline?: string;
   /** Dusk ink handling for chapters past the flip */
   dusk?: boolean;
+  /**
+   * Entrance grammar (the Seam, stage 1): how the running head ARRIVES.
+   *   - "lead"    — joins the chapter's FIRST composed scene as slot 0
+   *     (`data-tm-lead`): the head prints, then the scene cascades
+   *     behind it off the same trigger — one authored entrance, never
+   *     two pops (PREMIUM-FLOW #1 extended to the whole chapter head).
+   *   - "solo"    — its own once-trigger (`data-tm` only). For chapters
+   *     whose first scene sits too far below the head to share a cue:
+   *     ch02 (the scrubbed manifesto intervenes) and ch06 (deliberately
+   *     unwrapped — the litany's coordinated timing is scar tissue).
+   *   - "printed" — no entrance hook at all. The masthead's running
+   *     head (ch01) is already on the page when it opens; the hero's
+   *     CSS entrance is the arrival choreography there. The DEFAULT,
+   *     because it is the component's own pre-stage behavior: a caller
+   *     that says nothing gets the static running head it always had.
+   * Every mode is OPACITY-ONLY by vocabulary (`data-tm="kicker"`):
+   * [data-thread-kicker]'s box is the Red Thread's flourish anchor and
+   * must never transform, mid-entrance included.
+   */
+  arrive?: "lead" | "solo" | "printed";
 }
 
 /**
@@ -87,10 +107,13 @@ export function ChapterKicker({
   label,
   dateline,
   dusk = false,
+  arrive = "printed",
 }: ChapterKickerProps) {
   const clock = chapterClock(id);
   return (
     <div
+      data-tm={arrive === "printed" ? undefined : "kicker"}
+      data-tm-lead={arrive === "lead" ? "" : undefined}
       className={cn(
         "label-mono flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1",
         mutedClass(dusk)

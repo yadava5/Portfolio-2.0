@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ayush yadav — hero candidate C · full modern</title>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HERO CANDIDATE C — "Full modern."
+     The argument: abandon the paper. A 2026 studio register — blue-
+     black, mono-structural, volt accent — with the honest spectacle:
+     his actual 784→100→10 network rendered as a 3D constellation in
+     raw WebGL, activations lit by real inference as you draw. Heavy
+     motion, maximum first-five-seconds impact; the booklet coherence
+     is the price and it is paid openly.
+     bg #0A0C10 · text #EDF1F6 (Lc 98) · secondary #AFB9C8 (Lc 64)
+     volt #C8F751 (Lc 92) · volt-dim #9DC53E (Lc 64) · deco #5A6270
+     Zero dependencies: the 3D scene is hand-rolled WebGL, not three.js.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    --bg:#0A0C10;
+    --panel:rgba(15,18,24,.78);
+    --line:rgba(237,241,246,.1);
+    --line-strong:rgba(237,241,246,.22);
+    --text:#EDF1F6;
+    --sec:#AFB9C8;
+    --deco:#5A6270;
+    --volt:#C8F751;
+    --volt-dim:#9DC53E;
+    --pad-x:clamp(20px, 4.5vw, 64px);
+    --display:"Fraunces", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    color-scheme:dark;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:var(--mono); font-size:1rem; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--volt); color:var(--bg)}
+  a{color:inherit; text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--volt); outline-offset:3px}
+  img,canvas,svg{max-width:100%}
+
+  /* the constellation — fixed behind everything */
+  #net{position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0}
+  /* no-WebGL fallback: a static dot field so the page never goes void */
+  body.no-gl #net{
+    background:
+      radial-gradient(1.5px 1.5px at 22% 28%, rgba(175,185,200,.5) 45%, transparent 55%),
+      radial-gradient(1.5px 1.5px at 64% 18%, rgba(175,185,200,.36) 45%, transparent 55%),
+      radial-gradient(2px 2px at 78% 52%, rgba(200,247,81,.4) 45%, transparent 55%),
+      radial-gradient(1.5px 1.5px at 41% 62%, rgba(175,185,200,.42) 45%, transparent 55%),
+      radial-gradient(1.5px 1.5px at 86% 78%, rgba(175,185,200,.3) 45%, transparent 55%),
+      radial-gradient(1px 1px at 12% 74%, rgba(175,185,200,.4) 45%, transparent 55%),
+      radial-gradient(60% 48% at 62% 40%, rgba(38,48,66,.5) 0%, transparent 100%),
+      var(--bg);
+    background-size:340px 340px, 420px 420px, 520px 520px, 380px 380px, 460px 460px, 300px 300px, 100% 100%, auto;
+  }
+  .scrim{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:
+      radial-gradient(52% 44% at 24% 72%, rgba(10,12,16,.78) 0%, rgba(10,12,16,0) 100%),
+      linear-gradient(180deg, rgba(10,12,16,.6) 0%, rgba(10,12,16,0) 14%, rgba(10,12,16,0) 72%, rgba(10,12,16,.85) 100%);
+  }
+  main{position:relative; z-index:2}
+
+  /* HUD */
+  .hud{
+    position:fixed; top:0; left:0; right:0; z-index:5;
+    display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    padding:1.1rem var(--pad-x);
+    font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+    background:linear-gradient(180deg, rgba(10,12,16,.85), rgba(10,12,16,0));
+  }
+  .hud .id b{font-weight:400; color:var(--volt)}
+  .hud nav{display:flex; gap:1.5rem}
+  .hud nav a{color:var(--sec)}
+  .hud nav a:hover{color:var(--volt)}
+
+  /* hero */
+  .hero{
+    min-height:100svh;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:end;
+    gap:2rem;
+    padding:5.5rem var(--pad-x) 4.6rem;
+  }
+  .headline h1{
+    font-family:var(--display);
+    font-size:clamp(3rem, 7.6vw, 6.8rem);
+    font-weight:640; letter-spacing:-.02em; line-height:.98;
+    font-variation-settings:"opsz" 144;
+  }
+  .headline h1 .volt{color:var(--volt)}
+  .headline .sys{
+    margin-top:1.3rem; font-size:.76rem; letter-spacing:.1em; color:var(--sec);
+    line-height:2;
+  }
+  .headline .sys b{font-weight:400; color:var(--text)}
+  .headline .sys .v{color:var(--volt-dim)}
+  .cta{display:flex; gap:1.4rem; margin-top:1.5rem; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase}
+  .cta a{border:1px solid var(--line-strong); padding:.75em 1.3em; transition:border-color .25s, color .25s, background .25s}
+  .cta a:hover{border-color:var(--volt); color:var(--volt)}
+  .cta a.solid{background:var(--volt); color:var(--bg); border-color:var(--volt)}
+  .cta a.solid:hover{background:transparent; color:var(--volt)}
+
+  /* headline entrance: masked line reveal */
+  .mask{display:block; overflow:hidden}
+  .mask > span{display:block; transform:translateY(112%)}
+  .is-in .mask > span{transform:none; transition:transform 1s cubic-bezier(.19,1,.22,1)}
+  .is-in .mask.m2 > span{transition-delay:.09s}
+  .is-in .mask.m3 > span{transition-delay:.18s}
+  .fade{opacity:0; transform:translateY(14px)}
+  .is-in .fade{opacity:1; transform:none; transition:opacity .9s ease .45s, transform .9s ease .45s}
+  @media (prefers-reduced-motion: reduce){
+    .mask > span,.fade{opacity:1 !important; transform:none !important; transition:none !important}
+  }
+
+  /* input console */
+  .console{
+    width:300px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 24px 70px -30px rgba(0,0,0,.8);
+  }
+  .console-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:.7rem .85rem;
+    border-bottom:1px solid var(--line);
+    font-size:.64rem; letter-spacing:.16em; text-transform:uppercase; color:var(--sec);
+  }
+  .console-head .live{color:var(--volt-dim)}
+  .console-head button{
+    background:none; border:none; font-family:var(--mono); font-size:.64rem;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--sec);
+    cursor:pointer; text-decoration:underline; text-underline-offset:3px; padding:0;
+  }
+  .console-head button:hover{color:var(--volt)}
+  .well{position:relative; aspect-ratio:1; border-bottom:1px solid var(--line)}
+  .well::before{ /* crosshair guides */
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.55;
+    background:
+      linear-gradient(90deg, transparent calc(50% - .5px), var(--line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px)),
+      linear-gradient(0deg, transparent calc(50% - .5px), var(--line) calc(50% - .5px) calc(50% + .5px), transparent calc(50% + .5px));
+  }
+  #pad{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair; position:relative; z-index:1}
+  .hint{
+    position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    font-size:.7rem; letter-spacing:.22em; text-transform:uppercase; color:var(--deco);
+    transition:opacity .4s ease; z-index:0;
+  }
+  .hint.gone{opacity:0}
+  .console-read{
+    display:grid; grid-template-columns:auto 1fr; gap:.4rem 1rem; align-items:end;
+    padding:.75rem .85rem .85rem;
+  }
+  .verdict{
+    grid-row:1 / 3;
+    font-family:var(--display); font-size:3.2rem; font-weight:600; line-height:.9;
+    color:var(--volt); min-width:1.1ch;
+    font-variation-settings:"opsz" 144;
+  }
+  .verdict.idle{color:var(--deco)}
+  @media (prefers-reduced-motion: no-preference){
+    .verdict.stamp{animation:stamp .35s cubic-bezier(.2,1.4,.4,1)}
+    @keyframes stamp{0%{transform:scale(1.5); opacity:0}60%{transform:scale(.95); opacity:1}100%{transform:scale(1)}}
+  }
+  .bars{display:grid; grid-template-columns:repeat(10,1fr); gap:2px; align-items:end; height:30px}
+  .bar i{display:block; min-height:2px; height:2px; background:rgba(237,241,246,.14);
+    transition:height .4s cubic-bezier(.22,1,.36,1), background .3s}
+  .bar.top i{background:var(--volt)}
+  .stats{font-size:.62rem; letter-spacing:.1em; color:var(--sec); white-space:nowrap}
+  .stats .num{color:var(--text)}
+
+  /* proof strip */
+  .proof{
+    position:absolute; left:var(--pad-x); right:var(--pad-x); bottom:1.15rem;
+    display:flex; flex-wrap:wrap; gap:.5rem 1.6rem;
+    font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--sec);
+  }
+  .proof .v{color:var(--volt-dim)}
+  .proof a{color:var(--sec); text-decoration:underline; text-underline-offset:3px}
+  .proof a:hover{color:var(--volt)}
+  .hero-zone{position:relative}
+
+  /* selected work */
+  .work{
+    padding:clamp(5rem,12vh,8rem) var(--pad-x) clamp(3rem,7vh,5rem);
+  }
+  .work .label{font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--volt-dim)}
+  .list{margin-top:1.6rem; border-top:1px solid var(--line-strong)}
+  .item{
+    display:grid; grid-template-columns:4rem minmax(0,1fr) auto; gap:1.5rem; align-items:baseline;
+    padding:1.5rem .2rem; border-bottom:1px solid var(--line);
+    transition:padding-left .3s cubic-bezier(.22,1,.36,1);
+  }
+  .item:hover{padding-left:1rem}
+  .item .n{font-size:.7rem; color:var(--deco)}
+  .item h3{
+    font-family:var(--display); font-weight:560; letter-spacing:-.01em;
+    font-size:clamp(1.7rem, 3.4vw, 2.9rem); line-height:1.05;
+    transition:color .25s;
+  }
+  .item:hover h3{color:var(--volt)}
+  .item p{font-size:.74rem; letter-spacing:.06em; color:var(--sec); max-width:34ch; text-align:right}
+  .item.reveal{opacity:0; transform:translateY(26px)}
+  .item.reveal.is-in{opacity:1; transform:none; transition:opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1)}
+  @media (prefers-reduced-motion: reduce){
+    .item.reveal{opacity:1; transform:none}
+    .item,.item h3{transition:none}
+  }
+
+  /* contact */
+  .contact{
+    min-height:64svh; display:grid; place-content:center; text-align:center; gap:1.6rem;
+    padding:3rem var(--pad-x) 5rem;
+  }
+  .contact h2{
+    font-family:var(--display); font-weight:640; letter-spacing:-.02em;
+    font-size:clamp(2.6rem, 7vw, 5.6rem); line-height:1;
+  }
+  .contact h2 em{font-family:"Newsreader", Georgia, serif; font-style:italic; font-weight:400; color:var(--volt)}
+  .contact .mail{
+    justify-self:center;
+    font-size:.8rem; letter-spacing:.16em; text-transform:uppercase; color:var(--sec);
+    border:1px solid var(--line-strong); padding:.9em 1.6em; cursor:pointer;
+    background:none; font-family:var(--mono);
+    transition:border-color .25s, color .25s;
+  }
+  .contact .mail:hover{border-color:var(--volt); color:var(--volt)}
+  footer{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:1rem;
+    padding:1.2rem var(--pad-x) 1.8rem;
+    border-top:1px solid var(--line);
+    font-size:.66rem; letter-spacing:.12em; text-transform:uppercase; color:var(--deco);
+  }
+
+  /* output-node digit labels, projected from the 3D scene */
+  .tag9{position:fixed; z-index:1; pointer-events:none; font-size:.66rem; color:var(--deco);
+    transform:translate(-50%,-50%); transition:color .3s ease; letter-spacing:0}
+  .tag9.hot{color:var(--volt)}
+
+  @media (max-width:900px){
+    .hide-s{display:none}
+    .hud nav a{white-space:nowrap}
+    .hero{
+      grid-template-columns:1fr; align-items:start; align-content:start;
+      gap:1.7rem; padding-top:4.6rem; padding-bottom:5rem;
+    }
+    .headline h1{font-size:clamp(2.7rem, 12.5vw, 4rem)}
+    .cta{margin-top:1.1rem}
+    .console{width:min(340px, 100%); justify-self:center}
+    .proof{position:static; margin-top:-2.4rem; padding:0 var(--pad-x) 2rem}
+    .item{grid-template-columns:2.6rem 1fr}
+    .item p{display:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="net" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+<div id="tags" aria-hidden="true"></div>
+
+<header class="hud">
+  <span class="id">Ayush Yadav<span class="hide-s"> — <b>Software Engineer</b></span></span>
+  <nav>
+    <a href="#work">Work</a>
+    <a class="hide-s" href="#work">Experience</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/yadava5">GitHub&#8239;↗</a>
+  </nav>
+</header>
+
+<main id="page">
+  <div class="hero-zone">
+    <section class="hero">
+      <div class="headline">
+        <h1>
+          <span class="mask"><span>This is my</span></span>
+          <span class="mask m2"><span>neural network<span class="volt">.</span></span></span>
+          <span class="mask m3"><span>Draw on it.</span></span>
+        </h1>
+        <p class="sys fade">
+          <b>784&#8202;→&#8202;100&#8202;→&#8202;10</b> · written in C++ · hand-written SIMD ·
+          compiled to <b>45.9&#8202;KB</b> of wasm · <span class="v">inference in this tab, no server</span>
+        </p>
+        <p class="cta fade">
+          <a class="solid" href="#work">Selected work</a>
+          <a href="#contact">Contact</a>
+        </p>
+      </div>
+
+      <aside class="console fade" aria-label="draw a digit">
+        <div class="console-head">
+          <span>Input — 28×28 <button id="clear" type="button">clear</button></span>
+          <span class="live" id="status">booting…</span>
+        </div>
+        <div class="well">
+          <canvas id="pad"></canvas>
+          <div class="hint" id="hint">draw a digit</div>
+        </div>
+        <div class="console-read">
+          <div class="verdict idle" id="verdict">·</div>
+          <div class="bars" id="bars" aria-label="softmax distribution"></div>
+          <div class="stats">conf <span class="num" id="conf">—</span> · fwd <span class="num" id="time">—</span></div>
+        </div>
+      </aside>
+    </section>
+    <p class="proof">
+      <span><span class="v">97.01%</span> — MNIST test, 10,000 images</span>
+      <span>SIMD dot <span class="v">3.5×</span> vs -O3</span>
+      <span><a href="https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt">eval artifact ↗</a></span>
+      <span>0 servers</span>
+    </p>
+  </div>
+
+  <section class="work" id="work">
+    <p class="label">Selected work — 6 shipped</p>
+    <div class="list">
+      <a class="item reveal" href="#"><span class="n">01</span><h3>Applied</h3><p>Gmail in — a classified dashboard of your real applications out</p></a>
+      <a class="item reveal" href="#"><span class="n">02</span><h3>Cadence</h3><p>a scheduler that takes plans the way you say them</p></a>
+      <a class="item reveal" href="#"><span class="n">03</span><h3>Glyph</h3><p>the network behind this page — AVX-512 / AVX2 / NEON / wasm-simd128</p></a>
+      <a class="item reveal" href="#"><span class="n">04</span><h3>LifeQuest</h3><p>habit-building shaped like a quest log</p></a>
+      <a class="item reveal" href="#"><span class="n">05</span><h3>jetpack-compress</h3><p>parallel gzip on Java virtual threads</p></a>
+      <a class="item reveal" href="#"><span class="n">06</span><h3>Agentic AutoML</h3><p>raw dataset → trained, evaluated model, with a paper trail</p></a>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <h2>Build the <em>real</em> thing.</h2>
+    <button class="mail" id="mail" type="button">aesh.03.23@gmail.com — copy</button>
+  </section>
+
+  <footer>
+    <span>© 2026 Ayush Yadav</span>
+    <span>scene: hand-rolled WebGL — no three.js</span>
+    <span>Fraunces · Fragment Mono</span>
+  </footer>
+</main>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const statusEl = $("status"), hint = $("hint"), verdict = $("verdict"),
+      confEl = $("conf"), timeEl = $("time"), barsEl = $("bars");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+window.__demo = { last: null, ready: null };
+
+const bars = [];
+for (let d = 0; d < 10; d++) {
+  const w = document.createElement("div");
+  w.className = "bar";
+  w.innerHTML = `<i></i>`;
+  barsEl.appendChild(w);
+  bars.push(w);
+}
+requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("is-in")));
+
+/* scroll reveals */
+const io = new IntersectionObserver((es) => {
+  for (const e of es) if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+}, { threshold: 0.2 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+/* copy email */
+$("mail").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText("aesh.03.23@gmail.com"); $("mail").textContent = "copied ✓"; }
+  catch { location.href = "mailto:aesh.03.23@gmail.com"; }
+  setTimeout(() => { $("mail").textContent = "aesh.03.23@gmail.com — copy"; }, 1600);
+});
+
+/* ————————————————————————————————————————————————
+   THE CONSTELLATION — his actual topology, raw WebGL.
+   784 input points (28×28 plane) → 100 hidden (10×10) → 10 output.
+   Activations come from real inference; the pulse walks the wave
+   through the layers when a classification lands.
+   ———————————————————————————————————————————————— */
+const net = $("net");
+const gl = net.getContext("webgl", { antialias: true, alpha: false });
+const N_IN = 784, N_HID = 100, N_OUT = 10;
+const Z_IN = -2.1, Z_HID = 0, Z_OUT = 2.0;
+const scene = { pulse: 1e3, idle: 1, scroll: 0 };
+const outTags = [];
+
+if (!gl) document.body.classList.add("no-gl");
+if (gl) {
+  /* — geometry — */
+  const pos = [], size = [];
+  for (let i = 0; i < N_IN; i++) {              // 28×28 plane
+    const r = Math.floor(i / 28), c = i % 28;
+    pos.push((c / 27 - .5) * 3.3, (.5 - r / 27) * 3.3, Z_IN);
+    size.push(2.6);
+  }
+  for (let i = 0; i < N_HID; i++) {             // 10×10 plane
+    const r = Math.floor(i / 10), c = i % 10;
+    pos.push((c / 9 - .5) * 1.75, (.5 - r / 9) * 1.75, Z_HID);
+    size.push(4.6);
+  }
+  for (let i = 0; i < N_OUT; i++) {             // output column
+    pos.push(0.0, (.5 - i / 9) * 2.9, Z_OUT);
+    size.push(7.5);
+  }
+  const nPts = N_IN + N_HID + N_OUT;
+  const act = new Float32Array(nPts);
+
+  /* line pairs: seeded sample input→hidden, full hidden→output */
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pairs = [];
+  for (let j = 0; j < N_HID; j++)
+    for (let k = 0; k < 12; k++) pairs.push([Math.floor(rnd() * N_IN), N_IN + j]);
+  for (let j = 0; j < N_HID; j++)
+    for (let o = 0; o < N_OUT; o++) pairs.push([N_IN + j, N_IN + N_HID + o]);
+  const lPos = new Float32Array(pairs.length * 6);
+  const lAct = new Float32Array(pairs.length * 2);
+  pairs.forEach(([a, b], i) => {
+    lPos.set(pos.slice(a * 3, a * 3 + 3), i * 6);
+    lPos.set(pos.slice(b * 3, b * 3 + 3), i * 6 + 3);
+  });
+
+  /* — shaders — */
+  const compile = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
+  const link = (v, f) => { const p = gl.createProgram(); gl.attachShader(p, compile(gl.VERTEX_SHADER, v)); gl.attachShader(p, compile(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return p; };
+  const V = `
+attribute vec3 aPos; attribute float aAct; attribute float aSize;
+uniform mat4 uVP; uniform float uT, uIdle, uPulse, uDim, uDpr;
+varying float vB;
+float front(float z){ return smoothstep(.5, -.15, z - mix(${Z_IN.toFixed(1)}, ${Z_OUT.toFixed(1)}+ .6, clamp(uPulse / .8, 0., 1.))); }
+void main(){
+  float shimmer = uIdle * .25 * (0.5 + 0.5 * sin(uT * 1.2 + dot(aPos.xy, vec2(4.7, 9.1))));
+  float a = clamp(aAct, 0., 1.) * front(aPos.z);
+  vB = (0.08 + shimmer * .5 + a) * uDim;
+  gl_Position = uVP * vec4(aPos, 1.);
+  gl_PointSize = aSize * uDpr * (2.6 / gl_Position.w) * (1. + a * .9);
+}`;
+  const Fp = `
+precision mediump float; varying float vB; uniform vec3 uCool, uHot;
+void main(){
+  vec2 d = gl_PointCoord - .5;
+  float m = smoothstep(.5, .12, length(d));
+  vec3 c = mix(uCool, uHot, clamp(vB * 1.4 - .12, 0., 1.));
+  gl_FragColor = vec4(c * vB * m, 1.);
+}`;
+  const Vl = `
+attribute vec3 aPos; attribute float aAct;
+uniform mat4 uVP; uniform float uT, uIdle, uPulse, uDim;
+varying float vB; varying float vZ;
+void main(){
+  vB = clamp(aAct, 0., 1.); vZ = aPos.z;
+  gl_Position = uVP * vec4(aPos, 1.);
+}`;
+  const Fl = `
+precision mediump float; varying float vB; varying float vZ;
+uniform float uPulse, uDim; uniform vec3 uCool, uHot;
+void main(){
+  float zf = mix(${Z_IN.toFixed(1)} - .4, ${Z_OUT.toFixed(1)} + .4, clamp(uPulse / .8, 0., 1.));
+  float wave = exp(-pow((vZ - zf) * 1.6, 2.));
+  float b = (.028 + vB * .10 + wave * (vB * .5 + .05)) * uDim;
+  vec3 c = mix(uCool, uHot, clamp(b * 6., 0., 1.));
+  gl_FragColor = vec4(c * b, 1.);
+}`;
+  const progP = link(V, Fp), progL = link(Vl, Fl);
+
+  const buf = (data, usage) => { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, usage || gl.STATIC_DRAW); return b; };
+  const bPos = buf(new Float32Array(pos)), bSize = buf(new Float32Array(size)),
+        bAct = buf(act, gl.DYNAMIC_DRAW),
+        bLPos = buf(lPos), bLAct = buf(lAct, gl.DYNAMIC_DRAW);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.ONE, gl.ONE); /* additive */
+  gl.clearColor(10/255 * .55, 12/255 * .55, 16/255 * .55, 1);
+
+  /* — minimal mat4 — */
+  const persp = (fov, asp, n, f) => {
+    const t = 1 / Math.tan(fov / 2), d = 1 / (n - f);
+    return [t/asp,0,0,0, 0,t,0,0, 0,0,(n+f)*d,-1, 0,0,2*n*f*d,0];
+  };
+  const lookAt = (e, c) => {
+    const s = (a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const nrm = (v)=>{const l=Math.hypot(...v);return v.map(x=>x/l)};
+    const z = nrm([e[0]-c[0],e[1]-c[1],e[2]-c[2]]);
+    const x = nrm(s([0,1,0], z)), y = s(z, x);
+    return [x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+      -(x[0]*e[0]+x[1]*e[1]+x[2]*e[2]), -(y[0]*e[0]+y[1]*e[1]+y[2]*e[2]), -(z[0]*e[0]+z[1]*e[1]+z[2]*e[2]), 1];
+  };
+  const mul = (a, b) => {
+    const r = new Array(16).fill(0);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++)
+      for (let k = 0; k < 4; k++) r[j*4+i] += a[k*4+i]*b[j*4+k];
+    return r;
+  };
+
+  /* output digit labels (DOM, projected) */
+  const tags = $("tags");
+  for (let d = 0; d < 10; d++) {
+    const s = document.createElement("span");
+    s.className = "tag9"; s.textContent = d;
+    tags.appendChild(s); outTags.push(s);
+  }
+
+  let mx = 0, my = 0;
+  addEventListener("pointermove", (e) => {
+    mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5;
+  }, { passive: true });
+  addEventListener("scroll", () => {
+    scene.scroll = Math.min(1, scrollY / innerHeight);
+  }, { passive: true });
+
+  function sizeGL() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    net.width = Math.round(innerWidth * dpr);
+    net.height = Math.round(innerHeight * dpr);
+    gl.viewport(0, 0, net.width, net.height);
+    scene.dpr = dpr;
+  }
+  addEventListener("resize", () => { sizeGL(); if (reduceMotion) draw(9); });
+  sizeGL();
+
+  const attr = (p, name, b, n) => {
+    const l = gl.getAttribLocation(p, name);
+    if (l < 0) return;
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.enableVertexAttribArray(l);
+    gl.vertexAttribPointer(l, n, gl.FLOAT, false, 0, 0);
+  };
+  const COOL = [0.36, 0.46, 0.62], HOT = [0.784, 0.969, 0.318]; /* volt */
+
+  let vp;
+  function draw(t) {
+    const narrow = innerWidth < 900;
+    const th = (narrow ? .92 : .66) + .24 * Math.sin(t * .1) + mx * .22;
+    const ph = .16 + my * .1;
+    const r = (narrow ? 8.6 : 6.4) + scene.scroll * 3.2;
+    const eye = [r * Math.sin(th) * Math.cos(ph), 1.1 + r * Math.sin(ph), r * Math.cos(th) * Math.cos(ph)];
+    const centre = [narrow ? 0 : -.55, narrow ? .9 : .05, 0];
+    vp = mul(persp(.72, net.width / net.height, .1, 60), lookAt(eye, centre));
+    const dim = 1 - scene.scroll * .62;
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    /* lines */
+    gl.useProgram(progL);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progL, "uVP"), false, new Float32Array(vp));
+    gl.uniform1f(gl.getUniformLocation(progL, "uPulse"), scene.pulse);
+    gl.uniform1f(gl.getUniformLocation(progL, "uDim"), dim);
+    gl.uniform3fv(gl.getUniformLocation(progL, "uCool"), COOL);
+    gl.uniform3fv(gl.getUniformLocation(progL, "uHot"), HOT);
+    attr(progL, "aPos", bLPos, 3);
+    attr(progL, "aAct", bLAct, 1);
+    gl.drawArrays(gl.LINES, 0, pairs.length * 2);
+    /* points */
+    gl.useProgram(progP);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progP, "uVP"), false, new Float32Array(vp));
+    gl.uniform1f(gl.getUniformLocation(progP, "uT"), t);
+    gl.uniform1f(gl.getUniformLocation(progP, "uIdle"), scene.idle);
+    gl.uniform1f(gl.getUniformLocation(progP, "uPulse"), scene.pulse);
+    gl.uniform1f(gl.getUniformLocation(progP, "uDim"), dim);
+    gl.uniform1f(gl.getUniformLocation(progP, "uDpr"), scene.dpr);
+    gl.uniform3fv(gl.getUniformLocation(progP, "uCool"), COOL);
+    gl.uniform3fv(gl.getUniformLocation(progP, "uHot"), HOT);
+    attr(progP, "aPos", bPos, 3);
+    attr(progP, "aSize", bSize, 1);
+    attr(progP, "aAct", bAct, 1);
+    gl.drawArrays(gl.POINTS, 0, nPts);
+
+    /* project output labels */
+    const argmax = window.__demo.last ? window.__demo.last.prediction : -1;
+    for (let d = 0; d < N_OUT; d++) {
+      const i = (N_IN + N_HID + d) * 3;
+      const x = pos[i], y = pos[i+1], z = pos[i+2];
+      const cx = vp[0]*x + vp[4]*y + vp[8]*z + vp[12];
+      const cy = vp[1]*x + vp[5]*y + vp[9]*z + vp[13];
+      const cw = vp[3]*x + vp[7]*y + vp[11]*z + vp[15];
+      const sx = (cx / cw * .5 + .5) * innerWidth + 14;
+      const sy = (.5 - cy / cw * .5) * innerHeight;
+      const tag = outTags[d];
+      tag.style.transform = `translate(${sx.toFixed(1)}px, ${sy.toFixed(1)}px)`;
+      tag.style.opacity = scene.scroll > .7 ? 0 : 1;
+      tag.classList.toggle("hot", d === argmax);
+    }
+  }
+
+  if (reduceMotion) {
+    scene.idle = 0; scene.pulse = 1e3;
+    draw(9);
+    window.__redraw = () => draw(9);
+  } else {
+    let last = 0;
+    (function loop(ms) {
+      const t = ms / 1000;
+      scene.pulse += t - last; last = t;
+      if (!document.hidden) draw(t);
+      requestAnimationFrame(loop);
+    })(0);
+  }
+
+  /* live activation feed */
+  window.__feed = (inputPx, hidden, conf) => {
+    scene.idle = 0;
+    const hMax = Math.max(1e-6, ...hidden);
+    for (let i = 0; i < N_IN; i++) act[i] = inputPx[i];
+    for (let j = 0; j < N_HID; j++) act[N_IN + j] = hidden[j] / hMax;
+    for (let o = 0; o < N_OUT; o++) act[N_IN + N_HID + o] = conf[o];
+    gl.bindBuffer(gl.ARRAY_BUFFER, bAct);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, act);
+    pairs.forEach(([a, b], i) => { lAct[i * 2] = act[a]; lAct[i * 2 + 1] = act[b]; });
+    gl.bindBuffer(gl.ARRAY_BUFFER, bLAct);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, lAct);
+    scene.pulse = 0;
+    if (window.__redraw) { scene.pulse = 1e3; window.__redraw(); }
+  };
+}
+
+/* ————— classifier (adapted from fast-mnist-nn wasmClassifier.ts) ————— */
+const ready = (async () => {
+  const mod = await import("./wasm/fast_mnist.js");
+  const instance = await mod.default({ locateFile: (p) => `wasm/${p}` });
+  const resp = await fetch("wasm/model.weights.bin");
+  if (!resp.ok) throw new Error(`weights ${resp.status}`);
+  const bytes = new Uint8Array(await resp.arrayBuffer());
+  const c = new instance.WasmClassifier();
+  c.loadWeightsFromBinary(bytes);
+  return c;
+})();
+window.__demo.ready = ready;
+ready.then(
+  () => { statusEl.textContent = "live"; },
+  (e) => { statusEl.textContent = "serve over http"; console.warn(e); }
+);
+
+/* ————— pad ————— */
+const PAD = 280, BRUSH = 22, GRID = 28;
+const pad = $("pad");
+const ctx = pad.getContext("2d");
+let strokes = [], current = null;
+function fitPad() {
+  const r = pad.getBoundingClientRect();
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  pad.width = Math.round(r.width * dpr);
+  pad.height = Math.round(r.height * dpr);
+  repaint();
+}
+function tracePath(c, pts, s) {
+  if (pts.length < 2) {
+    c.beginPath();
+    c.arc(pts[0].x * s, pts[0].y * s, c.lineWidth / 2, 0, Math.PI * 2);
+    c.fillStyle = c.strokeStyle; c.fill();
+    return;
+  }
+  c.beginPath();
+  c.moveTo(pts[0].x * s, pts[0].y * s);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+    c.quadraticCurveTo(pts[i].x * s, pts[i].y * s, mx * s, my * s);
+  }
+  c.lineTo(pts[pts.length - 1].x * s, pts[pts.length - 1].y * s);
+  c.stroke();
+}
+function repaint() {
+  const s = pad.width / PAD;
+  ctx.clearRect(0, 0, pad.width, pad.height);
+  ctx.lineWidth = BRUSH * s;
+  ctx.lineCap = ctx.lineJoin = "round";
+  ctx.strokeStyle = "#C8F751";
+  ctx.shadowColor = "rgba(200,247,81,.4)";
+  ctx.shadowBlur = 12 * s;
+  for (const st of strokes) tracePath(ctx, st, s);
+  ctx.shadowBlur = 0;
+}
+const off = document.createElement("canvas"); off.width = off.height = PAD;
+const small = document.createElement("canvas"); small.width = small.height = GRID;
+function extractPixels() {
+  const oc = off.getContext("2d");
+  oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
+  oc.strokeStyle = oc.fillStyle = "#fff";
+  oc.lineWidth = BRUSH; oc.lineCap = oc.lineJoin = "round";
+  for (const st of strokes) tracePath(oc, st, 1);
+  const sc = small.getContext("2d");
+  sc.drawImage(off, 0, 0, GRID, GRID);
+  const { data } = sc.getImageData(0, 0, GRID, GRID);
+  const px = new Array(GRID * GRID);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+  return px;
+}
+
+let timer = null, busy = false, again = false;
+async function classifyNow() {
+  if (busy) { again = true; return; }
+  busy = true;
+  try {
+    const c = await ready;
+    const px = extractPixels();
+    const t0 = performance.now();
+    const r = c.classify(px);
+    const ms = performance.now() - t0;
+    const conf = Array.from(r.confidence);
+    const hidden = Array.from(r.hidden_activations);
+    const p = Number(r.prediction);
+    verdict.textContent = String(p);
+    verdict.classList.remove("idle");
+    verdict.classList.remove("stamp"); void verdict.offsetWidth;
+    verdict.classList.add("stamp");
+    confEl.textContent = (conf[p] * 100).toFixed(1) + "%";
+    timeEl.textContent = ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms";
+    bars.forEach((b, d) => {
+      b.querySelector("i").style.height = Math.max(2, conf[d] * 30) + "px";
+      b.classList.toggle("top", d === p);
+    });
+    window.__demo.last = { prediction: p, confidence: conf[p], ms };
+    if (window.__feed) window.__feed(px, hidden, conf);
+  } catch (e) { /* status line reports it */ }
+  busy = false;
+  if (again) { again = false; classifyNow(); }
+}
+const queueClassify = () => { clearTimeout(timer); timer = setTimeout(classifyNow, 120); };
+
+function toPadXY(ev) {
+  const r = pad.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(PAD, ((ev.clientX - r.left) / r.width) * PAD)),
+    y: Math.max(0, Math.min(PAD, ((ev.clientY - r.top) / r.height) * PAD)),
+  };
+}
+pad.addEventListener("pointerdown", (ev) => {
+  pad.setPointerCapture(ev.pointerId);
+  current = [toPadXY(ev)];
+  strokes.push(current);
+  hint.classList.add("gone");
+  repaint();
+});
+pad.addEventListener("pointermove", (ev) => {
+  if (!current) return;
+  current.push(toPadXY(ev));
+  repaint();
+  queueClassify();
+});
+const lift = () => { if (current) { current = null; classifyNow(); } };
+pad.addEventListener("pointerup", lift);
+pad.addEventListener("pointercancel", lift);
+$("clear").addEventListener("click", () => {
+  strokes = []; current = null; repaint();
+  hint.classList.remove("gone");
+  verdict.textContent = "·"; verdict.classList.add("idle");
+  confEl.textContent = "—"; timeEl.textContent = "—";
+  bars.forEach((b) => { b.querySelector("i").style.height = "2px"; b.classList.remove("top"); });
+  window.__demo.last = null;
+});
+addEventListener("resize", fitPad);
+fitPad();
+</script>
+</body>
+</html>
