@@ -2460,10 +2460,9 @@ html[data-motion-off] .pipeline-token-bead {
    wears (both at their ≤5% NO-LIST cap), framed by a double hairline —
    the outer ink rule on .plate-paper's border plus this inner offset
    rule — the monograph's tipped-in plate grammar. Breathing margins
-   come from the mount's padding; the mount itself never animates, so
-   the frame is identical in every world and tier (the one motion near
-   a plate is the print-behind-the-mat drift below, and it rides the
-   raster inside, never the frame). */
+   come from the mount's padding; nothing here animates, so the plate
+   is identical in every world and tier (see the cut-on-measurement
+   note below for the depth accent that was tried and closed). */
 .plate-paper {
   background-color: var(--color-surface-2);
   background-image: var(--texture-grain), var(--texture-contour);
@@ -2476,42 +2475,32 @@ html[data-motion-off] .pipeline-token-bead {
   outline-offset: -1px;
 }
 
-/* Plate depth (brief B10's one depth accent — desktop only, ≥1024px).
-   As a plate crosses the viewport the print INSIDE the frame rides
-   ~4px less than the page over the whole journey (entering 2px high,
-   resting centred, leaving 2px low — the lag of a sheet mounted a
-   hair BEHIND its mat). Paper depth, never glass. The subject is the
-   plate's raster <img> alone, which is also what keeps ownership
-   clean: the SVG scene plates carry no <img>, so useSceneRun's
-   figures are never touched, and `.portrait-riser` is excluded
-   because the portrait plate belongs to the dialog's develop
-   choreography. Same decorative-only compositor timeline as the folio
-   rules; below 1024px, in Firefox, and in every static world the
-   print sits centred — translateY(0) IS the mid-journey frame, so the
-   still equals the composed reading position (A7). `contain: paint`
-   bounds the drift's invalidation to the plate mount (D4); the
-   mount's 8–12px padding keeps the 2px drift clear of the clip edge,
-   and the crop plates' own overflow clips theirs. */
-@keyframes plate-depth {
-  from {
-    transform: translateY(-2px);
-  }
-  to {
-    transform: translateY(2px);
-  }
-}
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-    html:not([data-motion-off]) .plate-paper:not(.portrait-riser) {
-      contain: paint;
-    }
-    html:not([data-motion-off]) .plate-paper:not(.portrait-riser) img {
-      animation: plate-depth 1ms linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-    }
-  }
-}
+/* PLATE DEPTH WAS TRIED HERE AND CUT ON THE MEASUREMENT — do not
+   re-add it to the raster plates without reading this first.
+   The brief's B10 asks for one depth accent: the print inside a plate
+   riding a couple of px behind its mat as the plate crosses the
+   viewport. Built as `translateY(-2px → 2px)` on
+   `.plate-paper:not(.portrait-riser) img` over `cover 0% → 100%`, it
+   failed `atlas.spec.ts:762` ("case study route <id> keeps project
+   visual contained") on visual-assist, master-inventory and policybot,
+   in both chromium projects — 6 failures.
+   The reason is structural, not a tuning problem. In the raster branch
+   of ProjectPlateVisual the image is `absolute inset-0 h-full w-full
+   object-contain`: it IS the frame's full extent. The spec asserts
+   `imageTop === 0`, `imageBottom === 0`, `imageHeight === frameHeight`
+   and `imageEscapes === false` — so the image has exactly zero slack
+   and ANY translation escapes the frame. Those assertions are FIX5's
+   overflow repair (the `aspect-video` + `min-height` transfer that ran
+   six case routes 198px past a 320px viewport); they are worth more
+   than a 2px accent. (The min-width:1024px gate does not save it: the
+   spec sets a 1440×900 viewport explicitly, which is also why the
+   chromium-MOBILE project failed.)
+   The remaining `.plate-paper` mounts are ArtifactGallery's crop
+   plates, whose images are deliberately offset inside an
+   overflow-hidden window — drifting those shifts an authored crop for
+   no legible gain. So the accent has no home on this site's plates and
+   the item is closed, not deferred. Depth is texture, not content
+   (§B10); the caption settle and the folio draw-in carry Layer 1. */
 
 /* ── The portrait plate (header avatar → Radix dialog) ─────────────
    The photograph DEVELOPS like a print: the veil washes in, the plate
@@ -2991,13 +2980,12 @@ body {
     filter: none !important;
   }
 
-  /* The scroll-driven layer (folio draw-in/out, caption settle, plate
-     depth) rests at its AUTHORED values — killing the animation is the
-     whole fix, and opacity must NOT force to 1 here: fig 5.n's caption
-     rests muted at 0.7 on purpose, on paper as on screen. */
+  /* The scroll-driven layer (folio draw-in/out, caption settle) rests
+     at its AUTHORED values — killing the animation is the whole fix,
+     and opacity must NOT force to 1 here: fig 5.n's caption rests
+     muted at 0.7 on purpose, on paper as on screen. */
   figcaption,
-  .folio-rule,
-  .plate-paper img {
+  .folio-rule {
     animation: none !important;
   }
 
