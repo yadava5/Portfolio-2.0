@@ -249,28 +249,52 @@ test.describe("dossier — case files", () => {
     );
   });
 
-  test("fast-mnist: the ~97% receipt is stamped HELD until an eval run earns it", async ({
+  /* THE HELD STAMP CAME OFF, AND THIS TEST TURNED OVER WITH IT.
+     From W2 until 2026-07-27 this asserted the opposite: that receipt 01
+     wore the dashed-clay "not yet earned" stamp because the ~97%
+     terminated in README prose. The stamp named its own release
+     condition — "held until a committed eval run earns it" — and that
+     run was committed (glyph@97de736: benchmarks/mnist_eval.txt, its
+     generator, and a 299-row miss list).
+
+     A spec that asserts a claim STAYS held is only honest while the
+     claim is unearned; kept past that, it would force the site to
+     under-state work it can now prove. So the guard inverts rather than
+     disappears: the row must now terminate at the committed eval report
+     and state the MEASURED value, and the stamp must be gone. The
+     failure this catches is a silent re-rounding back to "~97%", or the
+     artifact link being dropped while the number stays. */
+  test("glyph: the accuracy receipt is earned, and cites the committed eval run", async ({
     page,
   }) => {
     await page.goto("/projects/fast-mnist-nn/");
     await page.waitForLoadState("domcontentloaded");
 
-    /* W2 HELD apparatus (friend transposition #1): the reserved
-       dashed-clay stamp on the one number that terminates in README
-       prose, plus the Newsreader footnote naming when it lifts. */
     const row = page.locator("#v-fast-mnist-nn-1");
-    await expect(
-      row.getByRole("img", { name: "Stamp: held — not yet earned" })
-    ).toBeVisible();
-    await expect(row).toContainText(
-      "held until a committed eval run earns it — see corrections."
+
+    /* The measured value, not the rounded one */
+    await expect(row).toContainText("97.01%");
+    await expect(row).toContainText("9,701");
+    await expect(row).toContainText("macro-F1 0.9698");
+
+    /* It terminates at the committed artifact, not at README prose */
+    const artifact = row.getByRole("link", { name: /mnist_eval\.txt/ });
+    await expect(artifact).toBeVisible();
+    await expect(artifact).toHaveAttribute(
+      "href",
+      "https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt"
     );
 
-    /* The footnote's pointer resolves: the register carries the entry */
-    await expect(page.locator("#corrections")).toContainText("HELD stamp");
+    /* The held apparatus is gone from this row — no stamp, no hold note */
+    await expect(
+      row.getByRole("img", { name: "Stamp: held — not yet earned" })
+    ).toHaveCount(0);
+    await expect(row).not.toContainText("held until a committed eval run");
 
-    /* And the skeuomorph budget holds — no other stamp on this file */
-    await expect(page.getByRole("img", { name: /^Stamp:/ })).toHaveCount(1);
+    /* The register records the change rather than hiding it (amend, never
+       delete): the erratum entries above it stay, and a note explains
+       why the stamp lifted. */
+    await expect(page.locator("#corrections")).toContainText("no longer held");
   });
 
   /* Cadence's isolation section (2026-07-26). The file now argues the

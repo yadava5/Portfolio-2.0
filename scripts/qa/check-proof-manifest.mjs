@@ -72,16 +72,46 @@ for (const entry of entries) {
   }
 }
 
-// The fast-mnist accuracy claim is HELD by record (the case file stamps
-// it; BENCHMARKS.md carries no accuracy figure). If someone re-earns it,
-// they must also update this gate — which is the point.
+// The fast-mnist accuracy claim WAS held by record from W2 until
+// 2026-07-27. The gate then read: "must stay HELD until a committed eval
+// artifact earns it … if someone re-earns it, they must also update this
+// gate — which is the point." That artifact was committed
+// (glyph@97de736: benchmarks/mnist_eval.txt + apps/eval_model.cpp), so
+// the claim is earned and the guard MOVES rather than disappears.
+//
+// What it now protects: an earned accuracy claim must keep terminating
+// at that committed eval report. The failure this catches is the entry
+// quietly sliding back to README prose — the exact state the hold
+// existed to mark — while still presenting as earned. A number with a
+// stamp removed and its artifact gone is worse than a held number.
 const accuracyEntry = entries.find((entry) =>
   entry.includes('id: "fast-mnist-accuracy"')
 );
-if (accuracyEntry && !accuracyEntry.includes("held:")) {
-  fail(
-    "fast-mnist-accuracy must stay HELD until a committed eval artifact earns it"
-  );
+if (accuracyEntry) {
+  /* Read the FIELD, never the entry text. The first cut of this guard
+     tested `accuracyEntry.includes("benchmarks/mnist_eval.txt")` and
+     silently passed while the source had been swapped back to README.md
+     — because the entry's own explanatory comment names the artifact,
+     and the comment lives inside the object braces. A gate that matches
+     prose is not a gate. Verified by swapping the source and watching
+     this fail. */
+  const source = accuracyEntry.match(/source:\s*"([^"]+)"/)?.[1] ?? "";
+  const label = accuracyEntry.match(/label:\s*"([^"]+)"/)?.[1] ?? "";
+  if (accuracyEntry.includes("held:")) {
+    fail(
+      "fast-mnist-accuracy is earned by glyph@97de736 — remove the held stamp or restore its README source"
+    );
+  }
+  if (!source.endsWith("/benchmarks/mnist_eval.txt")) {
+    fail(
+      `fast-mnist-accuracy must terminate at the committed eval report, not README prose (source is ${source || "missing"})`
+    );
+  }
+  if (label.startsWith("~")) {
+    fail(
+      `fast-mnist-accuracy has a measured artifact — state the measured value, not an approximation (label is "${label}")`
+    );
+  }
 }
 
 const projectBlocks = projectsSource.match(/\n  \{[\s\S]*?\n  \},/g) ?? [];

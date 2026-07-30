@@ -417,8 +417,22 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
           </div>
         </div>
 
-        {/* ── Problem, constraints + fig. 1 (the one rotated plate) ── */}
-        <div className="mt-20 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)]">
+        {/* ── Problem, constraints + fig. 1 (the one rotated plate) ──
+            The 11px floor round: at xl the plate column narrows the
+            problem column to 22.5rem so fig. 1's seat reaches 512px.
+            Measured: the xl container is 1032px (1240 − pl-36 − pr-16),
+            and the old 30rem + gap-x-16 split handed the plate column
+            488px → a 399px scene seat (488 − plate border/padding 26 −
+            inner px-8 64), where the 512-unit wide scenes rendered
+            their 13px voice at 10.14px — under the site's hard 11px
+            floor. 22.5rem + 64 leaves the plate column 608px → a 518px
+            seat, so every wide edition rides 1:1 (max-w-capped) with
+            6px to spare, on the exact pattern of the Glyph race whose
+            400-unit canvas already sat 1:1 in the old seat. lg keeps
+            the 30rem split: its 928px container hands the plate 384px
+            either way, which the sub-434px container query serves with
+            the narrow editions at 1:1. */}
+        <div className="mt-20 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] xl:grid-cols-[minmax(0,22.5rem)_minmax(0,1fr)]">
           <section id="problem">
             <SectionKicker>[ problem ] · § as found</SectionKicker>
             <p className="text-body mt-4 max-w-[52ch] font-serif">

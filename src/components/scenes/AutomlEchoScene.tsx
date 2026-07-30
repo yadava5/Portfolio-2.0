@@ -9,15 +9,31 @@
  * whispers the thesis the flagship performs; it never competes with the
  * pin (one-shot scroll-in, no scrub, no pin — amendment A8).
  *
- * TWO AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half): the wide
- * 512-unit plate (unchanged) and a narrow 280-unit edition for columns
- * under 380px, where the wide rail's 13px voice would render ~7px. The
- * narrow edition STANDS THE LADDER UP — the run rail falls vertically,
- * the six phase labels seat beside their stations at the full 13px
- * voice, and the token halts at the gate above a quiet rail that still
- * leads to an unresolved 7.0 deploy. The lifecycle citation and the
- * approval-edge annotation keep every word, re-broken across lines for
- * the narrow measure. Same phases, same halt, same honesty.
+ * THREE AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half + the 11px
+ * floor round): the wide 512-unit plate, a narrow 280-unit edition for
+ * columns under 434px (where the wide rail's 13px voice would drop
+ * under the site's 11px floor — 13 × 434/512 = 11.02px is the wide
+ * canvas's own floor seat), and a tight 240-unit edition for columns
+ * under 256px. The upright editions STAND THE LADDER UP — the run
+ * rail falls vertically, the six phase labels seat beside their
+ * stations at the full 13px voice, and the token halts at the gate
+ * above a quiet rail that still leads to an unresolved 7.0 deploy.
+ * The lifecycle citation and the approval-edge annotation keep every
+ * word, re-broken across lines for the narrow measure. Same phases,
+ * same halt, same honesty. The ladder's inked column ends at 189.8
+ * units, so the tight edition is the same drawing on a 240-unit
+ * canvas (floor seat 240 × 11/13 = 203.1px — 8px under the narrowest
+ * measured seat, 211.8px at a 320 viewport, where its voice renders
+ * 11.47px); its one geometry change is the clay gate lockup's pitch,
+ * 16 → 18 units, because the measured ink boxes (ascent 12.86 +
+ * descent 3.86 = 16.72) overlap a 16-unit pitch by 0.72 — new-drawn
+ * geometry takes the census-clean pitch while the shipped narrow
+ * plate stays byte-identical. The WIDE plate's citation also left the
+ * 11px sc-small voice in this round: at 13px its one line runs 517
+ * units — past the 512 canvas (the Jetpack clip lesson) — so it rides
+ * as two lines at the shipped 18-unit caption pitch, every word in
+ * order, ending 328.3 units wide with 15.28 units of ink clearance
+ * above the gate's clay label.
  *
  * HONESTY CONTRACT (load-bearing, the flagship's own): the scene ENDS
  * ON THE HALT. It never resolves 7.0 deploy (deploying is what a person
@@ -62,7 +78,11 @@ const PHASES = [
   { label: "6.0 evaluate", x: 324, above: false },
 ];
 
-/* ── Narrow edition geometry: the ladder stood upright ─────────────── */
+/* ── Upright edition geometry: the ladder stood on end ──────────────
+   One set of coordinates serves the narrow AND tight canvases — the
+   inked column ends at 189.8 units, inside both. The only per-edition
+   values are the frame and the gate lockup's line seats (see
+   UPRIGHT_FRAME). */
 const RAIL_X_M = 40;
 /** The vertical run rail's head. */
 const RAIL_HEAD_Y_M = 72;
@@ -73,6 +93,26 @@ const GATE_Y_M = 320;
 const TOKEN_Y_M = 306;
 /** Deploy's station, below the gate on the quiet rail. */
 const DEPLOY_Y_M = 368;
+
+/** The upright frames: viewBox + seat classes + the gate lockup's two
+ *  baselines. The narrow lockup (316/332, a 16-unit pitch) ships
+ *  byte-identical; the tight edition takes 314/332 because the
+ *  measured 13px ink box (16.72 units) overlaps a 16-unit pitch by
+ *  0.72 and new-drawn geometry must census clean (18-unit pitch =
+ *  1.28 clear, the caption precedent). */
+const UPRIGHT_FRAME = {
+  narrow: {
+    viewBox: "0 0 280 440",
+    className: "scene-plate-narrow h-auto w-full max-w-[280px]",
+    gateY: [316, 332] as const,
+  },
+  tight: {
+    viewBox: "0 0 240 440",
+    className: "scene-plate-tight h-auto w-full max-w-[240px]",
+    gateY: [314, 332] as const,
+  },
+} as const;
+type UprightEdition = keyof typeof UPRIGHT_FRAME;
 
 /** Token travel: from the rail head to the halt, constant speed (the
  *  flagship's scrub has no easing either — a run, not a flourish). */
@@ -88,7 +128,8 @@ export function AutomlEchoScene() {
     );
     const plate =
       plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
-    const narrow = plate.dataset.scPlate === "narrow";
+    /* Both upright editions ride the same coordinates — one flag. */
+    const narrow = plate.dataset.scPlate !== "wide";
     const q = gsap.utils.selector(plate);
     const rails = q<SVGPathElement>("[data-sc-rail-run], [data-sc-rail-quiet]");
     const beads = q<SVGCircleElement>("[data-sc-station]");
@@ -176,9 +217,16 @@ export function AutomlEchoScene() {
         data-sc-plate="wide"
         className="scene-plate-wide block h-auto w-full max-w-[512px]"
       >
-        {/* the settled orchestration facts, quietly cited */}
-        <text x="12" y="20" className="sc-quiet sc-small">
-          7-phase lifecycle · langgraph + mcp · default model gpt-5.4
+        {/* the settled orchestration facts, quietly cited — two lines at
+            the one 13px voice (the 11px floor round: the single line at
+            13px runs 517 units, past the 512 canvas — the Jetpack clip
+            lesson — and the 11px sc-small voice broke the floor at every
+            seat under 512px). Same words, same order. */}
+        <text x="12" y="20" className="sc-quiet">
+          7-phase lifecycle · langgraph + mcp ·
+        </text>
+        <text x="12" y="38" className="sc-quiet">
+          default model gpt-5.4
         </text>
 
         {/* the traveled rail — head to the gate */}
@@ -296,141 +344,152 @@ export function AutomlEchoScene() {
         </g>
       </svg>
 
-      {/* ── the narrow edition: the ladder stood upright ──
-          The same six phases fall a vertical rail (labels beside their
-          stations, full 13px), the token rests clay at the gate, and
-          the quiet rail still leads to an unresolved 7.0 deploy. The
-          citation and the annotation keep every word, re-broken for
-          the 280-unit measure. */}
-      <svg
-        role="img"
-        aria-label={PROJECT_SCENE_MANIFEST.automl.alt}
-        viewBox="0 0 280 440"
-        data-sc-plate="narrow"
-        className="scene-plate-narrow h-auto w-full max-w-[280px]"
-      >
-        {/* the settled orchestration facts, quietly cited */}
-        <text x="10" y="18" className="sc-quiet">
-          7-phase lifecycle ·
-        </text>
-        <text x="10" y="36" className="sc-quiet">
-          langgraph + mcp ·
-        </text>
-        <text x="10" y="54" className="sc-quiet">
-          default model gpt-5.4
-        </text>
-
-        {/* the traveled rail — head to the gate */}
-        <path
-          data-sc-rail-run
-          className="scene-edge"
-          d={`M ${RAIL_X_M} ${RAIL_HEAD_Y_M} V ${GATE_Y_M - 8}`}
-          pathLength={1}
-        />
-        {/* the untraveled rail — the gate to deploy, quiet on purpose */}
-        <path
-          data-sc-rail-quiet
-          className="scene-rail"
-          d={`M ${RAIL_X_M} ${GATE_Y_M + 8} V ${DEPLOY_Y_M}`}
-          pathLength={1}
-        />
-
-        {/* six run stations + their decimal labels, seated beside */}
-        {PHASES.map((phase, i) => (
-          <circle
-            key={phase.label}
-            data-sc-station
-            className="scene-bead"
-            cx={RAIL_X_M}
-            cy={PHASE_Y_M[i]}
-            r="2.6"
-          />
-        ))}
-        {PHASES.map((phase, i) => (
-          <text key={phase.label} data-sc-phase x="56" y={PHASE_Y_M[i] + 4}>
-            {phase.label}
-          </text>
-        ))}
-
-        {/* the human gate — the flagship's own words and clay square */}
-        <g data-sc-gate>
-          <text x="56" y={GATE_Y_M - 4} className="sc-clay">
-            the human gate
-          </text>
-          <text x="56" y={GATE_Y_M + 12} className="sc-clay">
-            go / no-go
-          </text>
-          <rect
-            className="scene-gate"
-            x={RAIL_X_M - 4}
-            y={GATE_Y_M - 4}
-            width="8"
-            height="8"
-          />
-        </g>
-        <circle
-          data-sc-pulse
-          className="scene-pulse"
-          cx={RAIL_X_M}
-          cy={GATE_Y_M}
-          r="7"
-        />
-
-        {/* deploy: an open station on the quiet rail, never resolved */}
-        <circle
-          data-sc-station-deploy
-          className="scene-slot"
-          cx={RAIL_X_M}
-          cy={DEPLOY_Y_M}
-          r="3.2"
-        />
-        <g data-sc-deploy>
-          <text x="56" y={DEPLOY_Y_M + 4} className="sc-quiet">
-            7.0 deploy
-          </text>
-        </g>
-
-        {/* the run token, resting at the gate — the markup IS the halt */}
-        <g data-sc-token>
-          <circle
-            cx={RAIL_X_M}
-            cy={TOKEN_Y_M}
-            r="6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.4"
-          />
-          <circle
-            data-sc-bead-ink
-            className="scene-bead"
-            opacity="0"
-            cx={RAIL_X_M}
-            cy={TOKEN_Y_M}
-            r="3.4"
-          />
-          <circle
-            data-sc-bead-clay
-            className="scene-gate"
-            cx={RAIL_X_M}
-            cy={TOKEN_Y_M}
-            r="3.4"
-          />
-        </g>
-
-        {/* the settled architecture annotation, verbatim across three
-            lines — the narrow measure's honest break */}
-        <g data-sc-note>
-          <text x="10" y="398" className="sc-quiet">
-            generated actions hold
-          </text>
-          <text x="10" y="416" className="sc-quiet">
-            at the approval edge
-          </text>
-          <text x="10" y="434" className="sc-quiet">
-            until a human says go
-          </text>
-        </g>
-      </svg>
+      {/* ── the upright editions: the ladder stood on end ── */}
+      <UprightPlate edition="narrow" />
+      <UprightPlate edition="tight" />
     </div>
+  );
+}
+
+/** One upright plate — the narrow and tight editions draw the same
+ *  ladder; only the canvas and the gate lockup's pitch differ (see
+ *  UPRIGHT_FRAME). The same six phases fall a vertical rail (labels
+ *  beside their stations, full 13px), the token rests clay at the
+ *  gate, and the quiet rail still leads to an unresolved 7.0 deploy.
+ *  The citation and the annotation keep every word, re-broken for the
+ *  upright measure. The markup IS the settled frame in both. */
+function UprightPlate({ edition }: { edition: UprightEdition }) {
+  const frame = UPRIGHT_FRAME[edition];
+  return (
+    <svg
+      role="img"
+      aria-label={PROJECT_SCENE_MANIFEST.automl.alt}
+      viewBox={frame.viewBox}
+      data-sc-plate={edition}
+      className={frame.className}
+    >
+      {/* the settled orchestration facts, quietly cited */}
+      <text x="10" y="18" className="sc-quiet">
+        7-phase lifecycle ·
+      </text>
+      <text x="10" y="36" className="sc-quiet">
+        langgraph + mcp ·
+      </text>
+      <text x="10" y="54" className="sc-quiet">
+        default model gpt-5.4
+      </text>
+
+      {/* the traveled rail — head to the gate */}
+      <path
+        data-sc-rail-run
+        className="scene-edge"
+        d={`M ${RAIL_X_M} ${RAIL_HEAD_Y_M} V ${GATE_Y_M - 8}`}
+        pathLength={1}
+      />
+      {/* the untraveled rail — the gate to deploy, quiet on purpose */}
+      <path
+        data-sc-rail-quiet
+        className="scene-rail"
+        d={`M ${RAIL_X_M} ${GATE_Y_M + 8} V ${DEPLOY_Y_M}`}
+        pathLength={1}
+      />
+
+      {/* six run stations + their decimal labels, seated beside */}
+      {PHASES.map((phase, i) => (
+        <circle
+          key={phase.label}
+          data-sc-station
+          className="scene-bead"
+          cx={RAIL_X_M}
+          cy={PHASE_Y_M[i]}
+          r="2.6"
+        />
+      ))}
+      {PHASES.map((phase, i) => (
+        <text key={phase.label} data-sc-phase x="56" y={PHASE_Y_M[i] + 4}>
+          {phase.label}
+        </text>
+      ))}
+
+      {/* the human gate — the flagship's own words and clay square
+            (line seats per edition: see UPRIGHT_FRAME.gateY) */}
+      <g data-sc-gate>
+        <text x="56" y={frame.gateY[0]} className="sc-clay">
+          the human gate
+        </text>
+        <text x="56" y={frame.gateY[1]} className="sc-clay">
+          go / no-go
+        </text>
+        <rect
+          className="scene-gate"
+          x={RAIL_X_M - 4}
+          y={GATE_Y_M - 4}
+          width="8"
+          height="8"
+        />
+      </g>
+      <circle
+        data-sc-pulse
+        className="scene-pulse"
+        cx={RAIL_X_M}
+        cy={GATE_Y_M}
+        r="7"
+      />
+
+      {/* deploy: an open station on the quiet rail, never resolved */}
+      <circle
+        data-sc-station-deploy
+        className="scene-slot"
+        cx={RAIL_X_M}
+        cy={DEPLOY_Y_M}
+        r="3.2"
+      />
+      <g data-sc-deploy>
+        <text x="56" y={DEPLOY_Y_M + 4} className="sc-quiet">
+          7.0 deploy
+        </text>
+      </g>
+
+      {/* the run token, resting at the gate — the markup IS the halt */}
+      <g data-sc-token>
+        <circle
+          cx={RAIL_X_M}
+          cy={TOKEN_Y_M}
+          r="6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.4"
+        />
+        <circle
+          data-sc-bead-ink
+          className="scene-bead"
+          opacity="0"
+          cx={RAIL_X_M}
+          cy={TOKEN_Y_M}
+          r="3.4"
+        />
+        <circle
+          data-sc-bead-clay
+          className="scene-gate"
+          cx={RAIL_X_M}
+          cy={TOKEN_Y_M}
+          r="3.4"
+        />
+      </g>
+
+      {/* the settled architecture annotation, verbatim across three
+            lines — the upright measure's honest break */}
+      <g data-sc-note>
+        <text x="10" y="398" className="sc-quiet">
+          generated actions hold
+        </text>
+        <text x="10" y="416" className="sc-quiet">
+          at the approval edge
+        </text>
+        <text x="10" y="434" className="sc-quiet">
+          until a human says go
+        </text>
+      </g>
+    </svg>
   );
 }

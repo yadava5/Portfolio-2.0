@@ -2566,29 +2566,40 @@ html[data-motion-off] .pipeline-token-bead {
    cream — the figures must flip with it. Quiet voices mute via OPACITY
    on the full-strength ink (the dusk-chapter pattern), never the
    day-only secondary token. */
-/* ── The small editions (CRITIC-LEDGER F66, phone half) ─────────────
+/* ── The small editions (CRITIC-LEDGER F66, phone half + the 11px
+   floor round) ─────────────────────────────────────────────────────
    A scene plate scales as min(1, column ÷ viewBox-width), so a
    512-unit plate in a 330px phone column renders its 13px voice at
    ~8.4px — and Wave 2 measured the naive fix dead: enlarging the
    authored size past ~13.4 units clips Applied's labels and collides
    Cadence in 13 places. The real answer is editorial, not mechanical:
-   every scene is AUTHORED TWICE — the wide plate (unchanged), and a
-   recomposed narrow edition on a 280-unit canvas whose only text
-   voice is the 13px label token. The figure itself is the container,
-   so each seat (ch05 row, case plate) chooses by its own measured
-   column, not the viewport.
-   Why 380: measured on the live export — the phone column is 330px
-   (row) / 281px (case plate) at 390, both narrow; the 1440 case
-   plate column is 399px and must keep the wide plate. 380 splits the
-   measured bands with margin on both sides.
+   every scene is AUTHORED PER SEAT — the wide plate, a recomposed
+   narrow edition on a 280-unit canvas, and (for the scenes whose case
+   plates measure down to 211.8px) a tight edition on a 240-unit
+   canvas — every edition speaking only the 13px label token (plus
+   Glyph's 11px readout digits, which ride a 210-unit panel that never
+   renders under 1:1 in any measured seat). The figure itself is the
+   container, so each seat (ch05 row, case plate) chooses by its own
+   measured column, not the viewport.
+   Why 434: the wide plates are 512-unit canvases, and 13-unit text on
+   512 units holds the 11px floor only from a 512 × 11/13 = 433.2px
+   seat up (at the old 380 boundary the wide plate could render its
+   voice at 9.65px; the 1440 case plate sat it at 399px → 10.14px).
+   From a 434px seat the wide voice is ≥ 11.02px; below it the narrow
+   edition rides ≥ 1:1-capped 13px. The old "the 1440 case plate is
+   399px and must keep the wide plate" constraint died in this round:
+   CaseStudyPage widens that seat to 518px at xl, so the wide plate
+   rides 1:1 on desktop. (Glyph's wide race is a 400-unit canvas that
+   would hold from 338.5px, but it rides the shared boundary — one
+   rule, and its narrow edition is legal everywhere below it.)
    Why 280: the case plate at 390 measures 281px, so the narrow
    edition rides at 1:1 there — its 13px voice renders 13px.
    BUT 281px is not the narrowest seat: at a 320 viewport the case
-   plate hands the figure 211.1px, where 280 units render the 13px
-   voice at 9.75px — under the 11px floor (a 280-unit canvas drops
-   below it for any seat under 280 × 11/13 = 236.9px). The Glyph race
-   carries a third, 232-unit tight edition for that band; see the
-   swap below. */
+   plate hands the figure 211.8px, where 280 units render the 13px
+   voice at 9.83px — under the 11px floor (a 280-unit canvas drops
+   below it for any seat under 280 × 11/13 = 236.9px). The four
+   case-route scenes carry tight editions for that band; see the swap
+   below. */
 .scene-fig {
   container-type: inline-size;
 }
@@ -2596,7 +2607,7 @@ html[data-motion-off] .pipeline-token-bead {
 .scene-plate-tight {
   display: none;
 }
-@container (width < 380px) {
+@container (width < 434px) {
   .scene-plate-wide {
     display: none;
   }
@@ -2605,15 +2616,19 @@ html[data-motion-off] .pipeline-token-bead {
   }
 }
 /* The tight swap — structural, not nominal: a scene's narrow plate
-   steps aside only when that scene has AUTHORED a tight edition (today
-   the Glyph race alone; a scene without one keeps its narrow plate, as
-   hiding it here would render nothing). Any scene that later authors a
-   .scene-plate-tight inherits the swap without touching this file.
+   steps aside only when that scene has AUTHORED a tight edition (the
+   four case-route scenes — the Glyph race at 232 units, Applied,
+   Cadence and the AutoML echo at 240; a scene without one keeps its
+   narrow plate, as hiding it here would render nothing — Jetpack,
+   whose only mount is the ch05 row and whose narrowest measured seat
+   is 260px at a 320 viewport, stays two editions). Any scene that
+   later authors a .scene-plate-tight inherits the swap without
+   touching this file.
    Why 256: the 280-unit narrow edition holds the 11px floor down to
-   a 236.9px seat, the 232-unit tight edition from 203.1px up — and
-   the narrowest measured seat is the case plate's 211.1px at a 320
-   viewport. 256 splits the bands with 19.9px of margin on the narrow
-   side and 8.0px under the tight side's smallest measured seat. */
+   a 236.9px seat, the 240-unit tight editions from 203.1px up — and
+   the narrowest measured seat is the case plate's 211.8px at a 320
+   viewport. 256 splits the bands with 19.1px of margin on the narrow
+   side and 8.7px under the tight side's smallest measured seat. */
 @container (width < 256px) {
   .scene-fig:has(.scene-plate-tight) .scene-plate-narrow {
     display: none;
