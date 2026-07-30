@@ -20,6 +20,29 @@
  * reverts the context (ctx.revert() restores the settled inline state)
  * — the static world is always the finished figure, never a frozen lie.
  *
+ * TWO WORLDS THE TRIGGER CANNOT SEE (both A7 faults, both measured):
+ *   - A LANDING (CRITIC-LEDGER F01, the scenes' turn): header nav, a
+ *     shared `/#hash`, Back/Forward — a landing crosses no trigger
+ *     lines, so a scene that lands inside the viewport but above no
+ *     start line holds its undrawn start frame forever (measured: the
+ *     glyph plate stranded at 2px visible on a 1200px `/#work`
+ *     landing). The engine already owns the cue for this —
+ *     `ARRIVAL_EVENT` — so an arrived-at scene plays its run DIRECTLY,
+ *     the same beat TextMotion's roster grants its reveals.
+ *   - THE PAPER EDITION (@media print): a third world that neither
+ *     reduced-motion nor the quiet toggle stamps, printed straight
+ *     from the motion world's inline styles (measured fresh-load: 96
+ *     of 254 scene elements undrawn — fig 5.3 a blank gap). Paper has
+ *     no scroll coming, so on `beforeprint` — which headless
+ *     Chromium's printToPDF path fires synchronously BEFORE the print
+ *     snapshot (probed: a handler's DOM edit landed in the PDF) — and
+ *     on the `matchMedia("print")` flip that covers emulated print
+ *     media, the run COMPLETES: progress(1) renders the timeline's own
+ *     end state, which is the settled markup by construction. The
+ *     settle is permanent — after the paper edition has shown the
+ *     finished figure, rewinding it on screen would be the
+ *     visible → hidden → re-entering flash F76 bans.
+ *
  * Property discipline (D3): build callbacks may animate transform /
  * opacity / clip-path and the sanctioned stroke-dashoffset ONLY.
  */
@@ -30,6 +53,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "@/components/layout/SmoothScroll";
+import { ARRIVAL_EVENT } from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -74,8 +98,9 @@ export function useSceneRun<T extends HTMLElement>(
        settle. */
     const immediate =
       root.getBoundingClientRect().top <= window.innerHeight * 0.8;
+    let tl: gsap.core.Timeline | null = null;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      tl = gsap.timeline({
         defaults: { ease: "power2.out" },
         ...(immediate
           ? {}
@@ -90,11 +115,47 @@ export function useSceneRun<T extends HTMLElement>(
       buildRef.current(tl, root);
     }, root);
 
+    /* Arrived-at settle (F01 — see the header): a landing that leaves
+       this scene inside the viewport has crossed no trigger line, so
+       the arrival is the cue. Same reconciliation rule as TextMotion's
+       roster — anything whose top is above the fold has been arrived
+       at — and the same gesture: the trigger dies, the authored run
+       plays from the top. Scenes still below the fold keep their
+       trigger and their choreography untouched. */
+    const onArrival = () => {
+      if (!tl || tl.progress() > 0 || tl.isActive()) return;
+      if (root.getBoundingClientRect().top >= window.innerHeight) return;
+      tl.scrollTrigger?.kill(false, true);
+      tl.play(0);
+    };
+    window.addEventListener(ARRIVAL_EVENT, onArrival);
+
+    /* Paper-edition settle (see the header): the print worlds fire one
+       of these two cues, and the run completes SYNCHRONOUSLY — the
+       snapshot is taken in the same task, so a tweened play would print
+       its first frame. progress(1) is the animation's own end state,
+       i.e. each element's authored settled value (scene-pulse rests at
+       its authored 0, never a forced 1). */
+    const onPrint = () => {
+      if (!tl || tl.progress() === 1) return;
+      tl.scrollTrigger?.kill(false, true);
+      tl.progress(1);
+    };
+    const printMedia = window.matchMedia("print");
+    const onPrintMedia = (event: MediaQueryListEvent) => {
+      if (event.matches) onPrint();
+    };
+    window.addEventListener("beforeprint", onPrint);
+    printMedia.addEventListener("change", onPrintMedia);
+
     /* Marks "the engine drives this figure" for specs/screenshot runs
        (the pipeline's data-pipeline-scrub convention). */
     root.setAttribute("data-scene-run", "");
 
     return () => {
+      window.removeEventListener(ARRIVAL_EVENT, onArrival);
+      window.removeEventListener("beforeprint", onPrint);
+      printMedia.removeEventListener("change", onPrintMedia);
       root.removeAttribute("data-scene-run");
       ctx.revert();
     };
