@@ -75,6 +75,7 @@ import {
 import {
   anchorLanding,
   announceLayoutSettled,
+  ARRIVAL_EVENT,
 } from "@/components/story/arrival";
 
 if (typeof window !== "undefined") {
@@ -225,6 +226,16 @@ export function PipelineRun() {
   const [wide, setWide] = useState(
     () => typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches
   );
+  /* An arrival settled the register this session (CRITIC-LEDGER F01 —
+     see the run effect). Refs, not effect locals: the run effect
+     rebuilds on geom/wide changes and its cleanup strips the written
+     attributes, so a settle already granted must survive the rebuild. */
+  const registrySettledRef = useRef(false);
+  /* Whether an engine build has happened yet — only the FIRST may read
+     a deep scroll position as a landing; later rebuilds (a resize, a
+     breakpoint flip) happen mid-session, where scrollY > 0 merely
+     means the reader is reading. */
+  const engineBuiltRef = useRef(false);
 
   /* ── Track the layout breakpoint (re-targets the pin on a flip) ──── */
   useEffect(() => {
@@ -332,13 +343,19 @@ export function PipelineRun() {
       }
     };
 
-    /** The register writes itself in as the run passes down the ladder. */
+    /** The register writes itself in as the run passes down the ladder.
+     *  Once an ARRIVAL has settled it (see below), writing stays
+     *  monotonic — a row is still added the moment the token passes it,
+     *  but never removed again: un-inking a row the reader has already
+     *  been shown is the visible → hidden → re-entering flash F76 bans,
+     *  and A7 outranks replaying the develop beat. */
     const writeRegistry = (fraction: number) => {
       registryRows.forEach((row, index) => {
         const written = fraction >= (REGISTRY_WRITE_AT[index] ?? 1);
         const has = row.hasAttribute("data-registry-written");
         if (written && !has) row.setAttribute("data-registry-written", "");
-        else if (!written && has) row.removeAttribute("data-registry-written");
+        else if (!written && has && !registrySettledRef.current)
+          row.removeAttribute("data-registry-written");
       });
     };
     /**
@@ -440,7 +457,42 @@ export function PipelineRun() {
        (CRITIC-LEDGER F09's mechanism; see story/arrival.ts). */
     announceLayoutSettled();
 
+    /* THE LANDED REGISTER (CRITIC-LEDGER F01, back again — the reveal
+       keyed to a trigger a landing never satisfies). A `/#automl`
+       landing parks the plate in view ABOVE the pin's start line:
+       progress 0, rows 039–041 at opacity 0 with their layout boxes
+       standing (measured at 1440×900: one row over three blank bands,
+       and 041 — the row the APPROVED stamp invites the reader to sign
+       — invisible), and no scroll ever coming to write them. The
+       arrival contract already names the cue, and TextMotion's roster
+       already names the rule: anything whose top is above the fold has
+       been arrived at, so it presents itself. Rows still below the
+       fold keep the develop beat, as does every reader who reaches the
+       plate by scrolling — this settles nothing a trigger would still
+       legitimately fire for. */
+    const settleRegistry = () => {
+      const fold = window.innerHeight;
+      for (const row of registryRows) {
+        if (row.hasAttribute("data-registry-written")) continue;
+        if (row.getBoundingClientRect().top >= fold) continue;
+        row.setAttribute("data-registry-written", "");
+        registrySettledRef.current = true;
+      }
+    };
+    window.addEventListener(ARRIVAL_EVENT, settleRegistry);
+    /* The reader may already BE here (TextMotion's own deep-landing
+       pass): a pasted /#automl or a deep-scroll restore lands before
+       this pin exists, so its arrival announcement is long gone. Only
+       the first engine build reads scrollY as that landing; a rebuild
+       instead re-asserts the settle an arrival already granted, since
+       its own cleanup stripped the attributes. */
+    const firstEngineBuild = !engineBuiltRef.current;
+    engineBuiltRef.current = true;
+    if (registrySettledRef.current || (firstEngineBuild && window.scrollY > 0))
+      settleRegistry();
+
     return () => {
+      window.removeEventListener(ARRIVAL_EVENT, settleRegistry);
       svg.removeAttribute("data-pipeline-scrub");
       pinEl.removeAttribute("data-pipeline-pinned");
       /* Hand the plate back untouched: the quiet toggle must restore the
