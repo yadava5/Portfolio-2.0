@@ -19,7 +19,11 @@
  * generalized to all seven chapters; it adds NO new visual vocabulary —
  * the ink-settle / line-mask / block-fade gestures are unchanged, only
  * their TRIGGER and TIMING are re-composed. Elements outside any scene
- * keep the original in-place reveal (safe fallback).
+ * keep the original in-place reveal (safe fallback), with ONE addition
+ * (the Seam, stage 1): a chapter's running head marked [data-tm-lead]
+ * is adopted by its section's first scene as slot 0, so the head prints
+ * and the scene assembles behind it — the chapter arrives as one
+ * authored entrance, not a static kicker plus a separate cascade.
  *
  * The per-element gesture vocabulary (all transform/opacity only, small):
  *   - CHAPTER BRIGHT LINES (`[data-tm-bright]`): SplitText line-masks
@@ -103,7 +107,7 @@ const SCENE_STAGGER = 0.07;
 /** The entrance-vocabulary hooks a scene composes (the manifesto scrub,
  *  the litany, and weight-breathing keep their own dedicated paths). */
 const ENTRANCE_SELECTOR =
-  "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name']";
+  "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name'], [data-tm='kicker']";
 
 /** Scrub smoothing for the manifesto + breathing (plan 3.9: 0.5–1;
  *  0.7 matches THREAD_SCRUB so every scrubbed element shares one lag). */
@@ -358,6 +362,11 @@ function maskRise(
  *   - `muted`      → fade + 10px rise, 0.7s cubic.out
  *   - `muted-fade` → fade only: the ch-03 line holding [data-thread-word]
  *                    is a box the Red Thread MEASURES, never transforms
+ *   - `kicker`     → fade only, a beat quicker: the running head prints
+ *                    FIRST at a chapter seam (slot 0 of the composed
+ *                    entrance — see the lead pass), and
+ *                    [data-thread-kicker] is another measured box, so
+ *                    the head never transforms either
  *   - `name`       → the gate's giant name takes the hero's own grammar
  *   - `block`      → whole-block fade + 16px rise (the prose default)
  *
@@ -370,6 +379,8 @@ function entranceVars(el: HTMLElement): gsap.TweenVars {
       return { opacity: 0, y: 10, duration: 0.7, ease: "power2.out" };
     case "muted-fade":
       return { opacity: 0, duration: 0.7, ease: "power2.out" };
+    case "kicker":
+      return { opacity: 0, duration: 0.6, ease: "power2.out" };
     case "name":
       return { opacity: 0, y: 14, duration: 1, ease: "expo.out" };
     case "block":
@@ -466,13 +477,42 @@ export function TextMotion() {
            Every entrance element under a [data-tm-scene] fires off that
            ONE shared trigger, in DOM order (kicker→headline→deck→body→
            figure), each slot SCENE_STAGGER later — the section assembles
-           as one authored beat instead of scattered pops. */
-        for (const scene of q("[data-tm-scene]")) {
+           as one authored beat instead of scattered pops.
+
+           THE LEAD PASS (the Seam, stage 1). A chapter's running head
+           sits OUTSIDE every scene wrapper (the kicker is the seam's own
+           furniture), so it used to be either static or a second,
+           independent trigger — and the chapter arrived in parts.
+           An element marked [data-tm-lead] is ADOPTED by the FIRST
+           scene of its own [data-chapter] section: it takes slot 0 of
+           that scene's cascade and the scene's children shift one slot
+           later, so head → headline → deck → body play as ONE authored
+           entrance off ONE trigger. Later scenes in the section adopt
+           nothing, and a lead whose section has no scene falls through
+           to the orphan pass below — its own trigger, never dropped
+           (ch06 stays unwrapped on purpose; its head arrives solo). */
+        const scenes = q("[data-tm-scene]");
+        const firstSceneOf = new Map<HTMLElement, HTMLElement>();
+        for (const scene of scenes) {
+          const section = scene.closest<HTMLElement>("[data-chapter]");
+          if (section && !firstSceneOf.has(section)) {
+            firstSceneOf.set(section, scene);
+          }
+        }
+        const adopted = new Set<HTMLElement>();
+        for (const scene of scenes) {
           const start = scene.getAttribute("data-tm-start") || SCENE_START;
+          const section = scene.closest<HTMLElement>("[data-chapter]");
+          const leads =
+            section && firstSceneOf.get(section) === scene
+              ? Array.from(
+                  section.querySelectorAll<HTMLElement>("[data-tm-lead]")
+                ).filter((el) => !el.closest("[data-tm-scene]"))
+              : [];
           const children = Array.from(
             scene.querySelectorAll<HTMLElement>(ENTRANCE_SELECTOR)
           ).filter((el) => el.closest("[data-tm-scene]") === scene);
-          children.forEach((el, index) => {
+          [...leads, ...children].forEach((el, index) => {
             revealEntrance(
               el,
               scene,
@@ -482,13 +522,15 @@ export function TextMotion() {
               pending
             );
           });
+          for (const lead of leads) adopted.add(lead);
         }
 
         /* ── Orphan entrance elements — reveal in place (fallback) ───
            Anything not inside a scene keeps the original per-element
-           trigger, so no reveal is ever silently dropped. */
+           trigger, so no reveal is ever silently dropped. (Adopted
+           leads are not orphans: they already played off their scene.) */
         for (const el of q(ENTRANCE_SELECTOR)) {
-          if (el.closest("[data-tm-scene]")) continue;
+          if (el.closest("[data-tm-scene]") || adopted.has(el)) continue;
           revealEntrance(el, el, ENTER_START, 0, splits, pending);
         }
 
