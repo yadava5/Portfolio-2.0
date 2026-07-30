@@ -64,6 +64,37 @@ export default defineConfig({
         viewport: { width: 1440, height: 900 },
       },
     },
+    /* SAFARI — added 2026-07-30, and it was the largest hole in this
+       matrix. Until today every one of these specs ran on Chromium
+       twice and Firefox once: ZERO WebKit coverage, on a site whose
+       readers open it from a LinkedIn message on an iPhone. Every iOS
+       browser is WebKit regardless of its badge, so this project is not
+       "one more desktop browser" — it is the whole mobile-Safari
+       surface, which the chromium-mobile project only ever emulated in
+       Blink.
+       It matters here more than on an average site because this build
+       leans on features Safari has historically shipped last or
+       differently: `oklch()` colour (the entire day-arc is oklch
+       channel scrubs), `:has()` (the print folio-orphan fix), `contain:
+       paint`, and `animation-timeline: view()` (the folio dissolve and
+       caption settle — Chrome 115+, Safari 18+, Firefox not at all,
+       which is why they sit behind `@supports`).
+       Desktop and mobile seats both, because the two differ in more
+       than width on WebKit — viewport units, scroll anchoring and
+       compositing all behave differently on iOS. */
+    {
+      name: "webkit-desktop",
+      use: {
+        ...devices["Desktop Safari"],
+        viewport: { width: 1440, height: 900 },
+      },
+    },
+    {
+      name: "webkit-mobile",
+      use: {
+        ...devices["iPhone 14"],
+      },
+    },
   ],
   webServer: {
     command:
