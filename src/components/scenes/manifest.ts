@@ -58,7 +58,9 @@ export interface ProjectSceneMeta {
  * - fast-mnist-nn: 3.5x openmp+simd dot kernel vs -O3 (dot 256) from
  *   proofManifest fast-mnist-benchmark; the four instruction sets from
  *   projects.ts highlights. The forward-pass panel draws the MLP's
- *   mechanism only — no accuracy number (the ~97% claim is HELD in the
+ *   mechanism only, as an axonometric figure — input plane, two
+ *   receding hidden planes, far readout ribbon, depth drawn in ink —
+ *   and claims no accuracy number (the ~97% claim is HELD in the
  *   manifest until a committed eval run earns it). The caption's
  *   "a drawn 7, answered" (F37) restates the figure's own drawn digit
  *   and its labeled readout — the case study's "you draw a digit and
@@ -99,12 +101,12 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
   },
   "fast-mnist-nn": {
     caption:
-      "the race — equal time, measured distance · the forward pass — a drawn 7, answered",
+      "the race — equal time, measured distance · the forward pass, drawn into depth — a drawn 7, answered",
     disclosure:
-      "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5× lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP’s mechanism and claims no accuracy number.",
+      "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5× lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP’s mechanism as an axonometric figure — the drawn seven on a near input plane, two hidden layers receding as planes, a ten-slot readout on the far plane — and claims no accuracy number.",
     provenance:
       "3.5× — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
-    alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1× while the openmp+simd lane reaches 3.5× on the dot-256 kernel axis. Beside it, the forward pass: a stippled digit seven feeds an MLP into a ten-slot readout, and slot seven fills.",
+    alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1× while the openmp+simd lane reaches 3.5× on the dot-256 kernel axis. Beside it, the forward pass drawn in axonometric depth: a stippled digit seven rides the near input plane, feeds two receding hidden planes, and on the far plane’s ten-slot readout, slot seven fills.",
   },
   "taskflow-calendar": {
     caption:
