@@ -2247,11 +2247,21 @@ function GateChapter() {
                     still reading the claim, not after following it. */}
                 <span className={`normal-case ${muted}`}>
                   {index + 1}. {reference.claim}
+                  {/* NOT `whitespace-nowrap` — measured. Holding this
+                      28-character mark on one line makes it an
+                      unbreakable run, which becomes the span's
+                      min-content contribution and blows the page out
+                      horizontally: scrollWidth 392 against a 320
+                      viewport (+72) and against 390 (+2), failing
+                      atlas.spec's mobile-overflow assertions and the
+                      dossier thread-gutter check in both chromium and
+                      firefox. It is the same trap globals.css already
+                      records — an unbreakable run does not reduce
+                      min-content, so the flex item refuses to shrink.
+                      The mark wraps with the claim it qualifies, which
+                      is where it belongs anyway. */}
                   {reference.describedOnly ? (
-                    <span className="whitespace-nowrap">
-                      {" "}
-                      [local — verified on request]
-                    </span>
+                    <span> [local — verified on request]</span>
                   ) : null}
                 </span>
                 {/* N19 (fix round 7) — `folio-seat` is THE ORPHANED
