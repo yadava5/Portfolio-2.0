@@ -16,33 +16,49 @@
  * the narrow edition re-derives the same geometry on a shorter axis
  * (both lanes scale together; the measured 3.5:1 relation is exact in
  * both editions) and wraps the axis caption to two lines. Every mark,
- * unit and word survives. The forward-pass panel is 210 units and
- * already rides ≥1:1 in every seat, so it is shared, not re-authored.
+ * unit and word survives. The forward-pass panel stays a single shared
+ * edition: it is 210 units wide and rides >=1:1 in every seat — the
+ * axonometric round below spent its new room on panel HEIGHT
+ * (190 -> 233 units), never width, precisely so that guarantee holds.
  *
- * Panel two, the forward pass: a stippled digit seven feeds the MLP's
- * mechanism — hidden cells waving lit left→right — into a ten-slot
- * readout where slot seven ink-fills and takes the pulse. Mechanism
- * only: the panel claims no accuracy number (the ~97% is HELD in the
- * proof manifest until a committed eval run earns it).
+ * Panel two, the forward pass — THE DRAWN-DEPTH ROUND: rebuilt from a
+ * flat left-to-right diagram into an axonometric figure. The stippled
+ * seven rides a near input plane (a 28x28-style field with edge
+ * ruling), the MLP's two hidden layers stand as cell-gridded planes
+ * receding along one consistent depth axis, and the ten-slot readout
+ * rides the far plane; the activation wave travels INTO the depth as
+ * the scene runs. Depth is carried by drawn geometry only — mirrored
+ * 2:1 axes (plane-width u down-right at (0.894, 0.447), depth d
+ * up-right at (0.894, -0.447)), foreshortened cell parallelograms,
+ * near strokes marginally heavier than far (1.5 -> 1.2 -> 1.0 via the
+ * scene-plane-* classes), far->near paint order — never a CSS 3D
+ * transform (a tilting plate is the banned HoloCard direction; drawn
+ * axonometry renders identically at every tier and needs no fallback
+ * chain). Mechanism only: the panel claims no accuracy number (the
+ * ~97% is HELD in the proof manifest until a committed eval earns it).
  *
- * THE PANEL NAMES ITS OWN STAGES (CRITIC-LEDGER F37): a cold reader saw
- * "a dot-matrix 7, a partial second glyph, and an unlabelled 0–9
- * checkbox column". Three quiet 13px labels now head the columns —
- * input · hidden · readout — and a clay `answer · 7` line closes the
- * readout, so the two-second read is "the network reads a drawn 7 and
- * answers 7" (the case study's own words: "you draw a digit and watch
- * the network read it"). The 7 is the drawn digit, not a data claim; no
- * number joins the figure. The readout pitch steps 12.2 → 13.5 so the
- * 11px digits' 13-unit em boxes clear each other — the small redraw
- * WAVE2-STATUS's F66/F32 ESCALATE note said this column needed (nine
- * adjacent-pair em-box collisions in the F37 census before, zero
- * after). The wide race plate's viewBox gains 2 units of depth for the
- * same census reason: the axis caption's em-box descent (baseline 188,
- * descent 3) crossed y=190; no ink moves.
+ * THE PANEL NAMES ITS OWN STAGES (CRITIC-LEDGER F37, re-seated for the
+ * axonometric geometry): a cold reader once saw "a dot-matrix 7, a
+ * partial second glyph, and an unlabelled 0-9 checkbox column", so the
+ * three 13px labels — input · hidden · readout — and the closing clay
+ * `answer · 7` line are load-bearing and survive the redraw. Each
+ * label now seats against its own plane: `input` under the near
+ * plane's lowest corner, `hidden` centered under the receding pair,
+ * `readout` above the far plane's top edge, the answer line
+ * right-anchored under the readout ribbon. The F37 em-box census was
+ * re-run on the new geometry (13px mono = 8.56 units/char, ascent
+ * 0.95em / descent 0.23em — the same measured metrics as the original
+ * census): 14 text elements, 0 collisions. The tight pairs, measured:
+ * hidden~answer clears by 3.86 vertically on a 6.35 horizontal
+ * overlap; readout~digit-0 clears by 7.85; every adjacent digit pair
+ * clears by 0.52 — the 12.2 -> 13.5 readout pitch that fixed the nine
+ * F37 collisions is kept verbatim (11px digits' em boxes measure 13
+ * units; 13.5 is the floor that clears them). The 7 is the drawn
+ * digit, not a data claim; no number joins the figure.
  *
  * One-shot scroll-in run; the server markup is the settled frame (both
- * lanes at their measured lengths, the digit read) for every static
- * world.
+ * lanes at their measured lengths, every plane fully inked, the digit
+ * read) for every static world.
  */
 
 "use client";
@@ -60,7 +76,14 @@ const RACE_GEOM = {
 const mx = (g: { x0: number; x1: number }, m: number) =>
   g.x0 + ((g.x1 - g.x0) * m) / 3.5;
 
-/* ── Forward-pass geometry ─────────────────────────────────────────── */
+/* ── Forward-pass geometry — the axonometric projection ────────────── */
+/** Mirrored 2:1 axonometric axes: plane-width u runs down-right, the
+ *  depth axis d runs up-right — one consistent drawn projection, the
+ *  technical-illustration dialect, no CSS 3D anywhere. Plane height v
+ *  stays screen-vertical. */
+const AU = { x: 0.894, y: 0.447 };
+const AD = { x: 0.894, y: -0.447 };
+
 /** The stippled seven: 7×9 cell bitmap (mechanism illustration). */
 const SEVEN = [
   "1111111",
@@ -75,27 +98,91 @@ const SEVEN = [
 ];
 const CELL = 4.2;
 const PITCH = 6;
-const GLYPH_X = 14;
-const GLYPH_Y = 48;
+const GLYPH_PAD = 6;
 
-const SLOT_X = 150;
-const SLOT_Y0 = 28;
+/** A layer plane: depth along the axis + face size (w across, h up). */
+interface Plane {
+  d: number;
+  w: number;
+  h: number;
+}
+
+/* Face sizes are honest to the drawing, not to layer widths (the data
+   claims no hidden sizes): the input field wraps the 7×9 stipple at
+   pitch 6 with a 6-unit pad; the hidden planes carry 3×4 cell grids at
+   pitch 8; the readout ribbon carries the ten 8-unit slots at the F37
+   pitch of 13.5 with 5-unit pads. Depths 0/56/100/142 give the plane
+   silhouettes 14/14/18-unit air gaps — no accidental overlap, so the
+   far→near paint order is correct by construction. */
+const P_INPUT: Plane = { d: 0, w: 52.2, h: 64.2 };
+const P_H1: Plane = { d: 56, w: 27.2, h: 35.2 };
+const P_H2: Plane = { d: 100, w: 27.2, h: 35.2 };
+const P_OUT: Plane = { d: 142, w: 16, h: 139.5 };
+
+const HID_PITCH = 8;
+const HID_CELL = 5.2;
+const HID_PAD = 3;
+
+const SLOT = 8;
+const SLOT_U = 4;
 /* 12.2 → 13.5 (F37): the 11px slot digits' em boxes measure 13 units
    tall, so the old pitch overlapped every adjacent pair by 0.8 in the
-   census. 13.5 clears them with margin and the column (ends y 157.5)
-   still leaves the answer line its floor. */
+   census. 13.5 clears them (by 0.52/pair, re-measured on the
+   axonometric seats). */
 const SLOT_PITCH = 13.5;
+const SLOT_PAD = 5;
 const WIN = 7; /* the slot the drawn seven lands in */
 
-/* Stage-label centers (F37), measured against the drawn columns:
-   glyph x 14–54.2 → 34; hidden cells x 84–112 (center 98, seated at 94
-   so the three inter-label gaps run ~12/13, not 20/7 — a 7-unit gap
-   reads as the phrase "hidden readout"); slots + digits x 150–171
-   (center 160.6, seated at 162 for the same rhythm). Labels are 13px
-   (8.56 units/char), so the widest, `readout`, spans 132.7–192.6
-   inside the 210 canvas. */
-const LABEL_Y = 14;
-const LABEL_X = { input: 34, hidden: 94, readout: 162 } as const;
+/** The depth line runs through the face centers; C0 is the input face
+ *  center — x seats the near plane's left edge at 6, y is solved so
+ *  the topmost em box (`readout`) rests at y=6 in the 210×233 canvas. */
+const C0 = { x: 6 + (P_INPUT.w / 2) * AU.x, y: 163.15 };
+
+const axCenter = (p: Plane) => ({
+  x: C0.x + p.d * AD.x,
+  y: C0.y + p.d * AD.y,
+});
+/** A face point: u from the left edge, v up from the bottom edge. */
+const axPt = (p: Plane, u: number, v: number) => {
+  const c = axCenter(p);
+  return {
+    x: c.x + (u - p.w / 2) * AU.x,
+    y: c.y + (u - p.w / 2) * AU.y - (v - p.h / 2),
+  };
+};
+const r2 = (n: number) => Math.round(n * 100) / 100;
+const fmt = (q: { x: number; y: number }) => `${r2(q.x)} ${r2(q.y)}`;
+/** A plane's outline parallelogram. */
+const axPoly = (p: Plane) =>
+  `M ${fmt(axPt(p, 0, 0))} L ${fmt(axPt(p, p.w, 0))} L ${fmt(
+    axPt(p, p.w, p.h)
+  )} L ${fmt(axPt(p, 0, p.h))} Z`;
+/** A foreshortened s×s face cell at (u, v) from its bottom-left. */
+const axCell = (p: Plane, u: number, v: number, s: number) =>
+  `M ${fmt(axPt(p, u, v))} L ${fmt(axPt(p, u + s, v))} L ${fmt(
+    axPt(p, u + s, v + s)
+  )} L ${fmt(axPt(p, u, v + s))} Z`;
+
+/** v of slot i's bottom edge (i=0 rides the ribbon top). */
+const slotV = (i: number) => P_OUT.h - SLOT_PAD - SLOT - i * SLOT_PITCH;
+/** The winning slot's face center — the pulse origin + edge landing. */
+const WIN_C = axPt(P_OUT, SLOT_U + SLOT / 2, slotV(WIN) + SLOT / 2);
+/** The ribbon's right silhouette edge — the digit column seats +6. */
+const OUT_RIGHT = axPt(P_OUT, P_OUT.w, 0).x;
+
+/* Stage-label seats (F37, re-measured for the axonometric geometry —
+   census in the header): `input` centered under the near plane,
+   `hidden` centered under the receding pair, `readout` above the far
+   plane's top edge, the clay answer right-anchored under the ribbon. */
+const LBL = {
+  input: { x: C0.x, y: 223.3 },
+  hidden: {
+    x: (axPt(P_H1, 0, 0).x + axPt(P_H2, P_H2.w, 0).x) / 2,
+    y: 178.2,
+  },
+  readout: { x: axCenter(P_OUT).x, y: 18.4 },
+  answer: { x: 204, y: 197.4 },
+} as const;
 
 /** One race panel — both editions draw from the same derivation. */
 function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
@@ -226,20 +313,39 @@ export function GlyphScene() {
     const beadA = qr<SVGCircleElement>("[data-sc-bead-scalar]");
     const beadB = qr<SVGCircleElement>("[data-sc-bead-simd]");
     const tick = qr<SVGPathElement>("[data-sc-claytick]");
-    const cells = q<SVGRectElement>("[data-sc-cell]");
-    const hidden = q<SVGRectElement>("[data-sc-hidden]");
-    const nedges = q<SVGPathElement>("[data-sc-nedge]");
-    const winSlot = q<SVGRectElement>("[data-sc-win]");
+    const cells = q<SVGPathElement>("[data-sc-cell]");
+    const planeIn = q<SVGPathElement>('[data-sc-plane="input"]');
+    const planeH1 = q<SVGPathElement>('[data-sc-plane="h1"]');
+    const planeH2 = q<SVGPathElement>('[data-sc-plane="h2"]');
+    const planeOut = q<SVGPathElement>('[data-sc-plane="out"]');
+    const hid1 = q<SVGPathElement>('[data-sc-hidden="1"]');
+    const hid2 = q<SVGPathElement>('[data-sc-hidden="2"]');
+    const edge1 = q<SVGPathElement>('[data-sc-nedge="1"]');
+    const edge2 = q<SVGPathElement>('[data-sc-nedge="2"]');
+    const edge3 = q<SVGPathElement>('[data-sc-nedge="3"]');
+    const winSlot = q<SVGPathElement>("[data-sc-win]");
     const pulse = q<SVGCircleElement>("[data-sc-pulse]");
 
     /* ── Start frame ─────────────────────────────────────────────── */
-    gsap.set([...laneA, ...laneB, ...tick, ...nedges], {
-      strokeDashoffset: 1.5,
-    });
+    gsap.set(
+      [
+        ...laneA,
+        ...laneB,
+        ...tick,
+        ...edge1,
+        ...edge2,
+        ...edge3,
+        ...planeIn,
+        ...planeH1,
+        ...planeH2,
+        ...planeOut,
+      ],
+      { strokeDashoffset: 1.5 }
+    );
     gsap.set(beadA, { x: -(x1x - g.x0) });
     gsap.set(beadB, { x: -(g.x1 - g.x0) });
     gsap.set(cells, { opacity: 0 });
-    gsap.set(hidden, { opacity: 0.15 });
+    gsap.set([...hid1, ...hid2], { opacity: 0.15 });
     gsap.set(winSlot, { opacity: 0.15 });
 
     /* ── The race: one duration, two measured distances ──────────── */
@@ -254,25 +360,36 @@ export function GlyphScene() {
       /* the measured landing takes its clay tick */
       .to(tick, { strokeDashoffset: 0, duration: 0.3 }, RACE);
 
-    /* ── The forward pass, reading alongside ─────────────────────── */
-    tl.to(
-      cells,
-      {
-        opacity: 0.85,
-        duration: 0.25,
-        stagger: { each: 0.008, from: "random" },
-      },
-      0.2
-    )
-      .to(hidden, { opacity: 0.75, duration: 0.3, stagger: 0.05 }, 0.7)
-      .to(nedges, { strokeDashoffset: 0, duration: 0.3, stagger: 0.1 }, 0.9)
+    /* ── The forward pass: the wave travels into the drawn depth ──
+       Plane by plane along the axis — the near plane inks and stipples
+       first, each edge carries the activation up the depth line, each
+       plane outlines as the wave arrives, and the far ribbon settles
+       last on the winning slot (in step with the race's landing). */
+    tl.to(planeIn, { strokeDashoffset: 0, duration: 0.35 }, 0.05)
+      .to(
+        cells,
+        {
+          opacity: 0.85,
+          duration: 0.25,
+          stagger: { each: 0.008, from: "random" },
+        },
+        0.2
+      )
+      .to(edge1, { strokeDashoffset: 0, duration: 0.25 }, 0.5)
+      .to(planeH1, { strokeDashoffset: 0, duration: 0.3 }, 0.55)
+      .to(hid1, { opacity: 0.75, duration: 0.25, stagger: 0.02 }, 0.6)
+      .to(edge2, { strokeDashoffset: 0, duration: 0.25 }, 0.75)
+      .to(planeH2, { strokeDashoffset: 0, duration: 0.3 }, 0.8)
+      .to(hid2, { opacity: 0.75, duration: 0.25, stagger: 0.02 }, 0.85)
+      .to(planeOut, { strokeDashoffset: 0, duration: 0.35 }, 0.95)
+      .to(edge3, { strokeDashoffset: 0, duration: 0.3 }, 1.0)
       .to(winSlot, { opacity: 1, duration: 0.35 }, RACE + 0.1)
       .fromTo(
         pulse,
         {
           opacity: 0.55,
           scale: 0.5,
-          svgOrigin: `${SLOT_X + 4} ${SLOT_Y0 + WIN * SLOT_PITCH + 4}`,
+          svgOrigin: `${r2(WIN_C.x)} ${r2(WIN_C.y)}`,
         },
         {
           opacity: 0,
@@ -295,110 +412,128 @@ export function GlyphScene() {
       <RacePanel edition="wide" />
       <RacePanel edition="narrow" />
 
-      {/* ── the forward pass ── */}
+      {/* ── the forward pass, drawn into depth ── */}
       <svg
         aria-hidden="true"
-        viewBox="0 0 210 190"
+        viewBox="0 0 210 233"
         className="block h-auto w-full max-w-[210px]"
       >
-        {/* the stages, named (F37) — static in every world, so the
-            settled/print frames carry the same reading */}
-        {(["input", "hidden", "readout"] as const).map((stage) => (
-          <text
-            key={stage}
-            x={LABEL_X[stage]}
-            y={LABEL_Y}
-            textAnchor="middle"
-            className="sc-quiet"
-          >
-            {stage}
-          </text>
-        ))}
+        {/* the depth axis, made visible — a quiet guide through the
+            four face centers (static apparatus, like the race guides) */}
+        <path
+          className="scene-guide"
+          d={`M ${fmt(axPt(P_INPUT, P_INPUT.w / 2, P_INPUT.h / 2))} L ${fmt(
+            axPt(P_OUT, P_OUT.w / 2, P_OUT.h / 2)
+          )}`}
+        />
 
-        {/* the stippled seven */}
+        {/* the planes, painted far → near (correct occlusion order);
+            near strokes ride heavier than far (scene-plane-*) */}
+        <path
+          data-sc-plane="out"
+          className="scene-plane-far"
+          d={axPoly(P_OUT)}
+          pathLength={1}
+        />
+        <path
+          data-sc-plane="h2"
+          className="scene-plane-mid"
+          d={axPoly(P_H2)}
+          pathLength={1}
+        />
+        <path
+          data-sc-plane="h1"
+          className="scene-plane-mid"
+          d={axPoly(P_H1)}
+          pathLength={1}
+        />
+        <path
+          data-sc-plane="input"
+          className="scene-plane-near"
+          d={axPoly(P_INPUT)}
+          pathLength={1}
+        />
+
+        {/* the near plane's 28×28-style edge ruling (static) */}
+        {Array.from({ length: 8 }, (_, k) => {
+          const a = axPt(P_INPUT, (k + 1) * PITCH, 0);
+          return (
+            <path
+              key={`rb-${k}`}
+              className="scene-plane-rule"
+              d={`M ${fmt(a)} l 0 -2.5`}
+            />
+          );
+        })}
+        {Array.from({ length: 10 }, (_, k) => {
+          const a = axPt(P_INPUT, 0, (k + 1) * PITCH);
+          return (
+            <path
+              key={`rl-${k}`}
+              className="scene-plane-rule"
+              d={`M ${fmt(a)} l ${r2(2.5 * AU.x)} ${r2(2.5 * AU.y)}`}
+            />
+          );
+        })}
+
+        {/* the stippled seven, foreshortened on the near plane
+            (bitmap row r counts from the top; face v from the bottom) */}
         {SEVEN.flatMap((row, r) =>
           row
             .split("")
             .map((bit, c) =>
               bit === "1" ? (
-                <rect
+                <path
                   key={`${r}-${c}`}
                   data-sc-cell
                   className="scene-cell"
-                  x={GLYPH_X + c * PITCH}
-                  y={GLYPH_Y + r * PITCH}
-                  width={CELL}
-                  height={CELL}
+                  d={axCell(
+                    P_INPUT,
+                    GLYPH_PAD + c * PITCH,
+                    P_INPUT.h - GLYPH_PAD - r * PITCH - CELL,
+                    CELL
+                  )}
                 />
               ) : null
             )
         )}
 
-        {/* the MLP's hidden cells, waving lit left → right */}
-        {[84, 106].map((x) =>
-          Array.from({ length: 6 }, (_, i) => (
-            <rect
-              key={`${x}-${i}`}
-              data-sc-hidden
-              className="scene-hidden"
-              x={x}
-              y={52 + i * 11}
-              width="6"
-              height="6"
-            />
-          ))
+        {/* the hidden layers' cell grids, column-major so the lit wave
+            sweeps each face toward the depth */}
+        {([P_H1, P_H2] as const).map((plane, n) =>
+          Array.from({ length: 3 }, (_, c) =>
+            Array.from({ length: 4 }, (_, r) => (
+              <path
+                key={`h${n}-${c}-${r}`}
+                data-sc-hidden={n + 1}
+                className="scene-hidden"
+                d={axCell(
+                  plane,
+                  HID_PAD + c * HID_PITCH,
+                  HID_PAD + r * HID_PITCH,
+                  HID_CELL
+                )}
+              />
+            ))
+          )
         )}
 
-        {/* sparse connectors: in → hidden → the winning slot */}
-        <path
-          data-sc-nedge
-          className="scene-edge"
-          d="M 62 75 H 82"
-          pathLength={1}
-        />
-        <path
-          data-sc-nedge
-          className="scene-edge"
-          d="M 92 75 H 104"
-          pathLength={1}
-        />
-        <path
-          data-sc-nedge
-          className="scene-edge"
-          d={`M 114 78 C 130 80, 132 ${SLOT_Y0 + WIN * SLOT_PITCH + 4}, 146 ${
-            SLOT_Y0 + WIN * SLOT_PITCH + 4
-          }`}
-          pathLength={1}
-        />
-
-        {/* the ten-slot readout; slot seven filled, clay-ticked */}
+        {/* the ten-slot readout on the far ribbon; slot seven filled */}
         {Array.from({ length: 10 }, (_, i) => {
-          const y = SLOT_Y0 + i * SLOT_PITCH;
           const win = i === WIN;
+          const d = axCell(P_OUT, SLOT_U, slotV(i), SLOT);
+          const digit = axPt(P_OUT, SLOT_U, slotV(i));
           return (
             <g key={i}>
               {win ? (
-                <rect
-                  data-sc-win
-                  className="scene-slot-win"
-                  x={SLOT_X}
-                  y={y}
-                  width="8"
-                  height="8"
-                />
+                <path data-sc-win className="scene-slot-win" d={d} />
               ) : (
-                <rect
-                  className="scene-slot"
-                  x={SLOT_X}
-                  y={y}
-                  width="8"
-                  height="8"
-                />
+                <path className="scene-slot" d={d} />
               )}
               {/* the predicted slot's digit answers in clay (F37) */}
               <text
-                x={SLOT_X + 14}
-                y={y + 8}
+                x={r2(OUT_RIGHT + 6)}
+                y={r2(digit.y - 1.5)}
                 className={win ? "sc-clay sc-small" : "sc-quiet sc-small"}
               >
                 {i}
@@ -406,12 +541,55 @@ export function GlyphScene() {
             </g>
           );
         })}
+
+        {/* sparse connectors — the activation's path up the depth line:
+            near face → hidden faces → the winning slot */}
+        <path
+          data-sc-nedge="1"
+          className="scene-edge"
+          d={`M ${fmt(axPt(P_INPUT, P_INPUT.w - 6, P_INPUT.h / 2))} L ${fmt(
+            axPt(P_H1, 2, P_H1.h / 2 - 2)
+          )}`}
+          pathLength={1}
+        />
+        <path
+          data-sc-nedge="2"
+          className="scene-edge"
+          d={`M ${fmt(axPt(P_H1, P_H1.w - 2, P_H1.h / 2 - 2))} L ${fmt(
+            axPt(P_H2, 2, P_H2.h / 2 - 2)
+          )}`}
+          pathLength={1}
+        />
+        <path
+          data-sc-nedge="3"
+          className="scene-edge"
+          d={`M ${fmt(axPt(P_H2, P_H2.w - 2, P_H2.h / 2 - 2))} C ${r2(
+            axPt(P_H2, P_H2.w - 2, P_H2.h / 2 - 2).x + 14
+          )} ${r2(axPt(P_H2, P_H2.w - 2, P_H2.h / 2 - 2).y - 7)}, ${r2(
+            WIN_C.x - 16
+          )} ${r2(WIN_C.y)}, ${r2(WIN_C.x - 5)} ${r2(WIN_C.y)}`}
+          pathLength={1}
+        />
+
+        {/* the stages, named (F37) — static in every world, so the
+            settled/print frames carry the same reading */}
+        {(["input", "hidden", "readout"] as const).map((stage) => (
+          <text
+            key={stage}
+            x={r2(LBL[stage].x)}
+            y={LBL[stage].y}
+            textAnchor="middle"
+            className="sc-quiet"
+          >
+            {stage}
+          </text>
+        ))}
         {/* the readout's conclusion, in clay — the drawn digit read
             back out. Mechanism, not a metric: 7 is the glyph above. */}
         <text
-          x={LABEL_X.readout}
-          y="184"
-          textAnchor="middle"
+          x={LBL.answer.x}
+          y={LBL.answer.y}
+          textAnchor="end"
           className="sc-clay"
         >
           answer · {WIN}
@@ -419,8 +597,8 @@ export function GlyphScene() {
         <circle
           data-sc-pulse
           className="scene-pulse"
-          cx={SLOT_X + 4}
-          cy={SLOT_Y0 + WIN * SLOT_PITCH + 4}
+          cx={r2(WIN_C.x)}
+          cy={r2(WIN_C.y)}
           r="8"
         />
       </svg>
