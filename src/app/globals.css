@@ -2707,6 +2707,38 @@ html[data-motion-off] .pipeline-token-bead {
 .scene-slot-win {
   fill: currentColor;
 }
+/* Glyph forward pass, drawn depth (the axonometric round): the layer
+   planes carry depth in ink — the near plane's outline rides
+   marginally heavier and denser than the far plane's, one consistent
+   2:1 axis, no CSS 3D transform anywhere. Outlines draw in via the
+   sanctioned pathLength=1 dash trick, so the class default
+   (dashoffset 0) IS the settled fully-inked frame. */
+.scene-plane-near,
+.scene-plane-mid,
+.scene-plane-far {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+.scene-plane-near {
+  stroke: color-mix(in srgb, currentColor 78%, transparent);
+  stroke-width: 1.5;
+}
+.scene-plane-mid {
+  stroke: color-mix(in srgb, currentColor 62%, transparent);
+  stroke-width: 1.2;
+}
+.scene-plane-far {
+  stroke: color-mix(in srgb, currentColor 50%, transparent);
+  stroke-width: 1;
+}
+/* The near plane's 28×28-style edge ruling (static apparatus). */
+.scene-plane-rule {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 30%, transparent);
+  stroke-width: 0.8;
+}
 /* jetpack: byte blocks — denser ink at rest = compressed. */
 .scene-block {
   fill: currentColor;
