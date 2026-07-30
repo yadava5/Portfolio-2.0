@@ -2581,13 +2581,19 @@ html[data-motion-off] .pipeline-token-bead {
    (row) / 281px (case plate) at 390, both narrow; the 1440 case
    plate column is 399px and must keep the wide plate. 380 splits the
    measured bands with margin on both sides.
-   Why 280: the narrowest normative seat (the case plate at 390)
-   measures 281px, so the narrow edition rides at 1:1 there — its
-   13px voice renders 13px, never below the 11px floor. */
+   Why 280: the case plate at 390 measures 281px, so the narrow
+   edition rides at 1:1 there — its 13px voice renders 13px.
+   BUT 281px is not the narrowest seat: at a 320 viewport the case
+   plate hands the figure 211.1px, where 280 units render the 13px
+   voice at 9.75px — under the 11px floor (a 280-unit canvas drops
+   below it for any seat under 280 × 11/13 = 236.9px). The Glyph race
+   carries a third, 232-unit tight edition for that band; see the
+   swap below. */
 .scene-fig {
   container-type: inline-size;
 }
-.scene-plate-narrow {
+.scene-plate-narrow,
+.scene-plate-tight {
   display: none;
 }
 @container (width < 380px) {
@@ -2595,6 +2601,24 @@ html[data-motion-off] .pipeline-token-bead {
     display: none;
   }
   .scene-plate-narrow {
+    display: block;
+  }
+}
+/* The tight swap — structural, not nominal: a scene's narrow plate
+   steps aside only when that scene has AUTHORED a tight edition (today
+   the Glyph race alone; a scene without one keeps its narrow plate, as
+   hiding it here would render nothing). Any scene that later authors a
+   .scene-plate-tight inherits the swap without touching this file.
+   Why 256: the 280-unit narrow edition holds the 11px floor down to
+   a 236.9px seat, the 232-unit tight edition from 203.1px up — and
+   the narrowest measured seat is the case plate's 211.1px at a 320
+   viewport. 256 splits the bands with 19.9px of margin on the narrow
+   side and 8.0px under the tight side's smallest measured seat. */
+@container (width < 256px) {
+  .scene-fig:has(.scene-plate-tight) .scene-plate-narrow {
+    display: none;
+  }
+  .scene-plate-tight {
     display: block;
   }
 }
