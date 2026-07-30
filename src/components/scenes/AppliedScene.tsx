@@ -10,16 +10,32 @@
  * protocol mix). No invented numbers anywhere: the lanes are the eval
  * set's published composition, and macro-F1 0.9791 rides the caption.
  *
- * TWO AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half): the wide
- * plate (512 units, the original) and a narrow edition (280 units)
- * for columns under 380px, where the wide plate's scale would push
- * its 13px voice below legibility. The narrow edition is a REDRAW,
- * not a shrink: the classifier lane runs VERTICALLY (mail falls
- * through the gates), then fans into the same four counted lanes
- * stacked full-width — every gate, label and count survives, so the
- * caption's claims hold in both editions. CSS (globals.css, the
- * scene-plate container query) picks the edition per seat; the run
- * choreographs whichever plate is actually visible.
+ * THREE AUTHORED EDITIONS (CRITIC-LEDGER F66, phone half + the 11px
+ * floor round): the wide plate (512 units, the original), a narrow
+ * edition (280 units) for columns under 434px — where the wide
+ * plate's scale would push its 13px voice below the site's 11px
+ * floor (13 × 434/512 = 11.02px is the wide canvas's own floor
+ * seat) — and a tight edition (240 units) for columns under 256px,
+ * because the case plate hands this figure 211.8px at a 320 viewport
+ * and the narrow canvas drops under the floor below a 236.9px seat.
+ * The narrow edition is a REDRAW, not a shrink: the classifier lane
+ * runs VERTICALLY (mail falls through the gates), then fans into the
+ * same four counted lanes stacked full-width — every gate, label and
+ * count survives, so the caption's claims hold in every edition. The
+ * tight edition is the same upright drawing with the lane rails
+ * pulled in (48 → 232 of 240; the longest label ink,
+ * `historical-miss 8`, ends at 184.3) and the resting mail at
+ * x 206 — the same 10-unit air short of the rail's end the narrow
+ * edition keeps (244 + 16 vs 270). Every vertical pitch is the
+ * shipped narrow edition's own, so the F37 census carries over:
+ * measured ink boxes (13px = 8.551 units/char, ascent 12.86, descent
+ * 3.86), gate labels 27.28 apart, count rows 13.28 apart, each label
+ * 3.14 under its rail, resting mail ~ its count label disjoint in x
+ * (206 vs ink ending 184.3). Zero collisions. 240 units hold the
+ * 13px voice ≥ 11px down to a 203.1px seat — 8px under the narrowest
+ * measured seat. CSS (globals.css, the scene-plate container query)
+ * picks the edition per seat; the run choreographs whichever plate
+ * is actually visible.
  *
  * Motion is a one-shot scroll-in run (useSceneRun — no pin): the lane
  * inks, the gates settle, the fan draws, then four mail glyphs stream
@@ -50,15 +66,36 @@ const LANES = [
 const restX = 462;
 const restY = (i: number) => RAIL_Y[i] - 12;
 
-/* ── Narrow edition geometry (280-unit canvas, vertical intake) ────── */
-/** Bucket rail y-centers, narrow edition. */
+/* ── Upright edition geometry (narrow 280 / tight 240, vertical
+   intake). One set of coordinates serves both canvases; only the
+   frame, the rail ends and the mail rest differ (UPRIGHT_FRAME). ── */
+/** Bucket rail y-centers, upright editions. */
 const RAIL_Y_M = [216, 246, 276, 306];
 /** The vertical classifier lane's x + the gates' y-centers. */
 const LANE_X_M = 24;
 const GATE_Y_M = { rules: 78, e5: 122, setfit: 166 };
-/** Settled mail-glyph position for lane i, narrow edition. */
-const restXM = 244;
+/** Settled mail-glyph y for lane i, upright editions. */
 const restYM = (i: number) => RAIL_Y_M[i] - 12;
+
+/** The upright frames: viewBox + seat classes + the two x values that
+ *  scale with the canvas — the lane rails' end and the resting mail
+ *  (both keep the narrow edition's proportions: rail 10 units short of
+ *  the right margin, mail 10 units of air short of the rail's end). */
+const UPRIGHT_FRAME = {
+  narrow: {
+    viewBox: "0 0 280 336",
+    className: "scene-plate-narrow h-auto w-full max-w-[280px]",
+    railEnd: 270,
+    restX: 244,
+  },
+  tight: {
+    viewBox: "0 0 240 336",
+    className: "scene-plate-tight h-auto w-full max-w-[240px]",
+    railEnd: 232,
+    restX: 206,
+  },
+} as const;
+type UprightEdition = keyof typeof UPRIGHT_FRAME;
 
 /** One mail glyph — three short message lines (the inbox's handwriting). */
 function MailGlyph({ x, y }: { x: number; y: number }) {
@@ -80,7 +117,12 @@ export function AppliedScene() {
     );
     const plate =
       plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
-    const narrow = plate.dataset.scPlate === "narrow";
+    /* Both upright editions run the same vertical score; the one value
+       that scales with the canvas is the mail's resting x. */
+    const scPlate = plate.dataset.scPlate;
+    const narrow = scPlate !== "wide";
+    const restXM =
+      UPRIGHT_FRAME[scPlate === "tight" ? "tight" : "narrow"].restX;
     const q = gsap.utils.selector(plate);
     const edges = q<SVGPathElement>("[data-sc-lane], [data-sc-fan]");
     const rails = q<SVGPathElement>("[data-sc-rail]");
@@ -338,100 +380,112 @@ export function AppliedScene() {
         ))}
       </svg>
 
-      {/* ── the narrow edition: the same sorting line, recomposed ──
+      {/* ── the upright editions: the same sorting line, recomposed ──
           The intake lane drops VERTICALLY through the three gates
           (labels seated to the right at full 13px), then fans into
           the four counted lanes stacked full-width. Same gates, same
-          counts, same clay — an authored small plate, not a shrink. */}
-      <svg
-        role="img"
-        aria-label={PROJECT_SCENE_MANIFEST.jobtracker.alt}
-        viewBox="0 0 280 336"
-        data-sc-plate="narrow"
-        className="scene-plate-narrow h-auto w-full max-w-[280px]"
-      >
-        <text x="10" y="18" className="sc-quiet">
-          inbox
-        </text>
+          counts, same clay — authored small plates, not shrinks. */}
+      <UprightPlate edition="narrow" />
+      <UprightPlate edition="tight" />
+    </div>
+  );
+}
 
-        {/* the classifier lane, falling */}
+/** One upright plate — the narrow and tight editions draw the same
+ *  vertical sorting line; only the canvas, the rail ends and the mail
+ *  rest differ (UPRIGHT_FRAME). The markup IS the settled frame in
+ *  both (inbox empty, mail sorted into its counted lanes). */
+function UprightPlate({ edition }: { edition: UprightEdition }) {
+  const frame = UPRIGHT_FRAME[edition];
+  return (
+    <svg
+      role="img"
+      aria-label={PROJECT_SCENE_MANIFEST.jobtracker.alt}
+      viewBox={frame.viewBox}
+      data-sc-plate={edition}
+      className={frame.className}
+    >
+      <text x="10" y="18" className="sc-quiet">
+        inbox
+      </text>
+
+      {/* the classifier lane, falling */}
+      <path
+        data-sc-lane
+        className="scene-edge"
+        d={`M ${LANE_X_M} 38 V 190`}
+        pathLength={1}
+      />
+
+      {/* gate 1 — rules */}
+      <g data-sc-gate>
+        <path className="scene-post" d={`M 10 ${GATE_Y_M.rules} H 38`} />
+        <text x="48" y={GATE_Y_M.rules + 4} className="sc-quiet">
+          rules
+        </text>
+      </g>
+      {/* gate 2 — e5 similarity */}
+      <g data-sc-gate>
+        <path className="scene-post" d={`M 10 ${GATE_Y_M.e5} H 38`} />
+        <text x="48" y={GATE_Y_M.e5 + 4} className="sc-quiet">
+          e5 similarity
+        </text>
+      </g>
+      {/* gate 3 — the gated SetFit square */}
+      <g data-sc-gate>
+        <text x="48" y={GATE_Y_M.setfit + 4} className="sc-clay">
+          setfit — gated
+        </text>
+        <rect
+          className="scene-gate"
+          x={LANE_X_M - 4}
+          y={GATE_Y_M.setfit - 4}
+          width="8"
+          height="8"
+        />
+      </g>
+      <circle
+        data-sc-pulse
+        className="scene-pulse"
+        cx={LANE_X_M}
+        cy={GATE_Y_M.setfit}
+        r="7"
+      />
+
+      {/* the fan into the four scenario lanes */}
+      {RAIL_Y_M.map((y) => (
         <path
-          data-sc-lane
+          key={y}
+          data-sc-fan
           className="scene-edge"
-          d={`M ${LANE_X_M} 38 V 190`}
+          d={`M ${LANE_X_M} 190 C ${LANE_X_M} ${Math.round(
+            190 + (y - 190) * 0.45
+          )}, 30 ${y}, 48 ${y}`}
           pathLength={1}
         />
-
-        {/* gate 1 — rules */}
-        <g data-sc-gate>
-          <path className="scene-post" d={`M 10 ${GATE_Y_M.rules} H 38`} />
-          <text x="48" y={GATE_Y_M.rules + 4} className="sc-quiet">
-            rules
-          </text>
-        </g>
-        {/* gate 2 — e5 similarity */}
-        <g data-sc-gate>
-          <path className="scene-post" d={`M 10 ${GATE_Y_M.e5} H 38`} />
-          <text x="48" y={GATE_Y_M.e5 + 4} className="sc-quiet">
-            e5 similarity
-          </text>
-        </g>
-        {/* gate 3 — the gated SetFit square */}
-        <g data-sc-gate>
-          <text x="48" y={GATE_Y_M.setfit + 4} className="sc-clay">
-            setfit — gated
-          </text>
-          <rect
-            className="scene-gate"
-            x={LANE_X_M - 4}
-            y={GATE_Y_M.setfit - 4}
-            width="8"
-            height="8"
-          />
-        </g>
-        <circle
-          data-sc-pulse
-          className="scene-pulse"
-          cx={LANE_X_M}
-          cy={GATE_Y_M.setfit}
-          r="7"
+      ))}
+      {RAIL_Y_M.map((y) => (
+        <path
+          key={y}
+          data-sc-rail
+          className="scene-rail"
+          d={`M 48 ${y} H ${frame.railEnd}`}
+          pathLength={1}
         />
+      ))}
 
-        {/* the fan into the four scenario lanes */}
-        {RAIL_Y_M.map((y) => (
-          <path
-            key={y}
-            data-sc-fan
-            className="scene-edge"
-            d={`M ${LANE_X_M} 190 C ${LANE_X_M} ${Math.round(
-              190 + (y - 190) * 0.45
-            )}, 30 ${y}, 48 ${y}`}
-            pathLength={1}
-          />
-        ))}
-        {RAIL_Y_M.map((y) => (
-          <path
-            key={y}
-            data-sc-rail
-            className="scene-rail"
-            d={`M 48 ${y} H 270`}
-            pathLength={1}
-          />
-        ))}
+      {/* lane labels under their rails — name quiet, REAL count ink */}
+      {LANES.map((lane, i) => (
+        <text key={lane.name} data-sc-bucket x="48" y={RAIL_Y_M[i] + 16}>
+          <tspan className="sc-quiet">{lane.name} </tspan>
+          <tspan>{lane.count}</tspan>
+        </text>
+      ))}
 
-        {/* lane labels under their rails — name quiet, REAL count ink */}
-        {LANES.map((lane, i) => (
-          <text key={lane.name} data-sc-bucket x="48" y={RAIL_Y_M[i] + 16}>
-            <tspan className="sc-quiet">{lane.name} </tspan>
-            <tspan>{lane.count}</tspan>
-          </text>
-        ))}
-
-        {/* the sorted mail, resting in its lanes */}
-        {RAIL_Y_M.map((_, i) => (
-          <MailGlyph key={i} x={restXM} y={restYM(i)} />
-        ))}
-      </svg>
-    </div>
+      {/* the sorted mail, resting in its lanes */}
+      {RAIL_Y_M.map((_, i) => (
+        <MailGlyph key={i} x={frame.restX} y={restYM(i)} />
+      ))}
+    </svg>
   );
 }
