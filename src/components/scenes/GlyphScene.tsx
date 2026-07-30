@@ -10,16 +10,27 @@
  * No per-instruction-set multipliers are drawn because none are in the
  * settled data — the four ISAs ride the caption as names only.
  *
- * TWO AUTHORED RACE PANELS (CRITIC-LEDGER F66, phone half): the wide
- * 400-unit panel and a narrow 280-unit edition for columns under
- * 380px. The race is a RATIO figure — 0 → 1x → 3.5x on one axis — so
- * the narrow edition re-derives the same geometry on a shorter axis
- * (both lanes scale together; the measured 3.5:1 relation is exact in
- * both editions) and wraps the axis caption to two lines. Every mark,
- * unit and word survives. The forward-pass panel stays a single shared
- * edition: it is 210 units wide and rides >=1:1 in every seat — the
- * axonometric round below spent its new room on panel HEIGHT
- * (190 -> 233 units), never width, precisely so that guarantee holds.
+ * THREE AUTHORED RACE PANELS (CRITIC-LEDGER F66, phone half): the wide
+ * 400-unit panel, a narrow 280-unit edition for columns under 380px,
+ * and a tight 232-unit edition for columns under 256px. F66 sized the
+ * narrow edition to "the narrowest normative seat" — the 281px case
+ * plate at 390 — but the case plate's measured seat at a 320 viewport
+ * is 211.1px, where 280 units render the 13px voice at 9.75px, under
+ * the site's 11px floor (the 280-unit axis drops below the floor for
+ * any seat under 280×11/13 = 236.9px). The tight edition re-derives
+ * the race a second time on a 210-unit axis (1x lands at exactly 60
+ * units, so 210/60 = 3.5 is exact even in floats): 13 units on a
+ * 232-unit canvas hold >=11px down to a 203.1px seat — 8px below the
+ * narrowest measured seat. The race is a RATIO figure — 0 → 1x → 3.5x
+ * on one axis — so every edition re-derives the same geometry on its
+ * own axis (both lanes scale together; the measured 3.5:1 relation is
+ * exact in all three) and the two phone editions wrap the axis caption
+ * to two lines. Every mark, unit and word survives. The forward-pass
+ * panel stays a single shared edition: it is 210 units wide and rides
+ * >=1:1 in every seat — the axonometric round below spent its new room
+ * on panel HEIGHT (190 -> 233 units), never width, precisely so that
+ * guarantee holds (210 × 11/13 = 177.7px is its own floor seat, well
+ * under every measured column).
  *
  * Panel two, the forward pass — THE DRAWN-DEPTH ROUND: rebuilt from a
  * flat left-to-right diagram into an axonometric figure. The stippled
@@ -71,10 +82,35 @@ import gsap from "gsap";
 const RACE_GEOM = {
   wide: { x0: 16, x1: 384 },
   narrow: { x0: 12, x1: 268 },
+  tight: { x0: 12, x1: 222 },
 } as const;
+type RaceEdition = keyof typeof RACE_GEOM;
 /** x of a multiplier on the axis. */
 const mx = (g: { x0: number; x1: number }, m: number) =>
   g.x0 + ((g.x1 - g.x0) * m) / 3.5;
+
+/* ── Race plate frames: viewBox + seat classes, per edition ──────────
+   Each canvas is its axis plus the same margins; the max-w caps every
+   edition at 1:1 so the 13px voice never renders above the label token.
+   The F37 em-box census on the tight axis (13px mono = 8.56 units/char,
+   ascent 0.95em, descent 0.23em): 0↔1x ticks clear by 47.2 units,
+   1x↔3.5x by 107.2, ticks↔caption by 4.66 vertically, the caption's
+   two lines by 2.66 (the narrow edition's shipped clearance) — zero
+   collisions, longest line ends at 183.2 of 232 units. */
+const RACE_FRAME = {
+  wide: {
+    viewBox: "0 0 400 192",
+    className: "scene-plate-wide block h-auto w-full max-w-[400px]",
+  },
+  narrow: {
+    viewBox: "0 0 280 216",
+    className: "scene-plate-narrow h-auto w-full max-w-[280px]",
+  },
+  tight: {
+    viewBox: "0 0 232 216",
+    className: "scene-plate-tight h-auto w-full max-w-[232px]",
+  },
+} as const;
 
 /* ── Forward-pass geometry — the axonometric projection ────────────── */
 /** Mirrored 2:1 axonometric axes: plane-width u runs down-right, the
@@ -184,23 +220,19 @@ const LBL = {
   answer: { x: 204, y: 197.4 },
 } as const;
 
-/** One race panel — both editions draw from the same derivation. */
-function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
+/** One race panel — all three editions draw from the same derivation. */
+function RacePanel({ edition }: { edition: RaceEdition }) {
   const g = RACE_GEOM[edition];
   const x1x = mx(g, 1);
   const x35 = g.x1;
-  const narrow = edition === "narrow";
+  const wide = edition === "wide";
   return (
     <svg
       role="img"
       aria-label={PROJECT_SCENE_MANIFEST["fast-mnist-nn"].alt}
-      viewBox={narrow ? "0 0 280 216" : "0 0 400 192"}
+      viewBox={RACE_FRAME[edition].viewBox}
       data-sc-plate={edition}
-      className={
-        narrow
-          ? "scene-plate-narrow h-auto w-full max-w-[280px]"
-          : "scene-plate-wide block h-auto w-full max-w-[400px]"
-      }
+      className={RACE_FRAME[edition].className}
     >
       {/* quiet guides at the measured marks */}
       <path className="scene-guide" d={`M ${x1x} 54 V 152`} />
@@ -276,8 +308,12 @@ function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
         </g>
       ))}
       {/* the provenance caption: one line on the wide axis, wrapped to
-          two on the narrow one — same words, same order */}
-      {narrow ? (
+          two on the phone editions — same words, same order */}
+      {wide ? (
+        <text x={g.x0} y="188" className="sc-quiet">
+          dot 256 kernel — committed benchmarks
+        </text>
+      ) : (
         <>
           <text x={g.x0} y="192" className="sc-quiet">
             dot 256 kernel —
@@ -286,10 +322,6 @@ function RacePanel({ edition }: { edition: "wide" | "narrow" }) {
             committed benchmarks
           </text>
         </>
-      ) : (
-        <text x={g.x0} y="188" className="sc-quiet">
-          dot 256 kernel — committed benchmarks
-        </text>
       )}
     </svg>
   );
@@ -304,7 +336,11 @@ export function GlyphScene() {
     );
     const race =
       plates.find((p) => p.getBoundingClientRect().width > 0) ?? plates[0];
-    const g = RACE_GEOM[race.dataset.scPlate === "narrow" ? "narrow" : "wide"];
+    const plate = race.dataset.scPlate;
+    const g =
+      plate === "narrow" || plate === "tight"
+        ? RACE_GEOM[plate]
+        : RACE_GEOM.wide;
     const x1x = mx(g, 1);
     const qr = gsap.utils.selector(race);
     const q = gsap.utils.selector(root);
@@ -408,9 +444,10 @@ export function GlyphScene() {
       className="scene-fig flex flex-wrap items-start gap-x-10 gap-y-6"
       data-scene-glyph
     >
-      {/* ── the race, in both editions (CSS shows one) ── */}
+      {/* ── the race, in all three editions (CSS shows one) ── */}
       <RacePanel edition="wide" />
       <RacePanel edition="narrow" />
+      <RacePanel edition="tight" />
 
       {/* ── the forward pass, drawn into depth ── */}
       <svg
