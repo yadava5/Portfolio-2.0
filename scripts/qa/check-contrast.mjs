@@ -506,6 +506,82 @@ if (!sampleArc()) failed = true;
 console.log("");
 if (!sampleDuskChoreo()) failed = true;
 
+/* ── THE DOUBLE MUTE — a source guard, because colour math cannot see it
+   ────────────────────────────────────────────────────────────────────
+   A fresh critic found the registry figure's column heads at 4.18:1 and
+   its redaction note at 3.36:1 — both under the 4.5:1 AA floor for 13px
+   text — while this gate reported green. The gate was not wrong about
+   any colour it knew; it simply could not see the fault, because the
+   fault was not in a token. It was `opacity-80` / `opacity-70` written
+   in JSX ON TOP of `text-ink-secondary`.
+
+   `--color-ink-secondary` is ALREADY the muted voice (6.76 canvas /
+   6.25 w04 / 5.79 w05, all asserted above). Measured, a second mute on
+   top of it:
+     @0.90 -> 5.28 · 4.97 · 4.66   clears, but 0.16 of margin against a
+                                   CONTINUOUSLY SCRUBBED ground
+     @0.80 -> 4.18 · 3.97 · 3.79   the column heads
+     @0.70 -> 3.36 · 3.23 · 3.07   the redaction note
+   So the only safe second mute is none, and both consumers had theirs
+   removed.
+
+   No arrangement of token pairs can catch the next one — the offending
+   value never exists as a colour, only as a class stacked at the call
+   site. So this reads the source instead. It is deliberately narrow:
+   ONE token, the one that is already muted. */
+{
+  const { readdirSync, readFileSync, statSync } = await import("node:fs");
+  const { join } = await import("node:path");
+  const walk = (dir) =>
+    readdirSync(dir).flatMap((name) => {
+      const full = join(dir, name);
+      return statSync(full).isDirectory()
+        ? walk(full)
+        : /\.(tsx|ts)$/.test(name)
+          ? [full]
+          : [];
+    });
+
+  /* Scan ONLY the contents of a className string, never the raw line.
+     The naive line-level version produced three findings and all three
+     were false: this file's own explanatory comment (which names both
+     classes in prose), and `return dusk ? "opacity-70" :
+     "text-ink-secondary"` in apparatus.tsx — a ternary whose two arms
+     are ALTERNATIVES and never co-occur. A gate that cries wolf is the
+     lint gate this session already had to repair; precision is the
+     whole point. */
+  const CLASSNAME = /className\s*=\s*(?:"([^"]*)"|`([^`]*)`|\{`([^`]*)`\})/g;
+  const offenders = [];
+  for (const file of walk("src")) {
+    const text = readFileSync(file, "utf8");
+    text.split("\n").forEach((line, i) => {
+      for (const m of line.matchAll(CLASSNAME)) {
+        const classes = m[1] ?? m[2] ?? m[3] ?? "";
+        if (
+          /\btext-ink-secondary\b/.test(classes) &&
+          /\bopacity-(?:[1-9]?[0-9])\b/.test(classes)
+        ) {
+          offenders.push(`${file}:${i + 1}  ${classes.slice(0, 90)}`);
+        }
+      }
+    });
+  }
+
+  console.log("");
+  if (offenders.length) {
+    failed = true;
+    console.log(
+      `FAIL  the muted voice is double-muted in ${offenders.length} place(s) — ` +
+        `--color-ink-secondary is already muted; an opacity on top drops it under 4.5:1`
+    );
+    offenders.forEach((o) => console.log(`      ${o}`));
+  } else {
+    console.log(
+      "PASS  no double mute — --color-ink-secondary carries no stacked opacity in src/"
+    );
+  }
+}
+
 if (failed) {
   console.error("\nContrast gate FAILED.");
   process.exit(1);

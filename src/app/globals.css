@@ -3089,6 +3089,40 @@ body {
     transform: none !important;
   }
 
+  /* ── 6b. THE RUN PRINTS SETTLED (CRITIC-LEDGER F01's pattern on
+     paper). This media query is a THIRD world: neither reduced-motion
+     nor [data-motion-off] stamps it, so a motion-world Cmd+P taken
+     before the reader scrolled the pin printed the DEVELOP state —
+     measured fresh-load: registry rows 1,0,0,0 (one row over three
+     blank bands, 041 among the blanks), phases 2.0–6.0 in secondary
+     ink beside a lit 1.0, and the FIRST running note where the static
+     worlds print the resting last one. Paper has no scroll coming to
+     finish the run, so it prints the frame reduced-motion already
+     rests on: register complete, phases 1–6 lit, the resting note —
+     and 7.0 deploy still secondary, because it is gated and paper
+     must not imply it ran. All three states are attribute-driven CSS
+     (never GSAP inline styles); the !important mirrors the static
+     worlds' own blocks and holds against the higher-specificity
+     [data-current] / [data-registry-written] screen rules. The
+     transitions come off with them — paper is a still world, and the
+     420ms row fade measurably straddles the media flip (rows read
+     0.9966, not 1, under emulated print without it). */
+  [data-pipeline-phase]:not([data-pipeline-gated]) {
+    color: var(--color-ink) !important;
+    transition: none !important;
+  }
+  [data-pipeline-pinned] [data-registry-row] {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  [data-pipeline-pinned] [data-pipeline-note] {
+    opacity: 0 !important;
+    transition: none !important;
+  }
+  [data-pipeline-pinned] [data-pipeline-note]:last-child {
+    opacity: 1 !important;
+  }
+
   /* ── 7. ROWS DO NOT BREAK ──────────────────────────────────────
      A receipt whose claim lands on page 4 and whose artifact lands
      on page 5 is not a receipt. The registry rows, the evidence
