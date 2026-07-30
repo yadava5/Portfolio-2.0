@@ -310,11 +310,22 @@ test.describe("Daylight Study — working paper", () => {
     ).toBeVisible();
 
     await page.goto("/projects/fast-mnist-nn/");
+    /* Scoped to the LINK, not to free text. These two assertions mean
+       "the artifact is exposed and openable", and a bare getByText for
+       "v1.0.0 release" started matching the corrections register too
+       once it gained a note naming that tag (the repo rename entry) —
+       a strict-mode violation on prose, not a missing artifact. The
+       register is allowed to discuss the artifacts; the test should
+       still be asking about the links. */
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistRelease)
+      page.getByRole("link", {
+        name: EXPECTED_PROOF_ARTIFACTS.fastMnistRelease,
+      })
     ).toBeVisible();
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistBenchmark)
+      page.getByRole("link", {
+        name: EXPECTED_PROOF_ARTIFACTS.fastMnistBenchmark,
+      })
     ).toBeVisible();
   });
 

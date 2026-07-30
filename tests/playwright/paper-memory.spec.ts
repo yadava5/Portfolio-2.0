@@ -540,13 +540,27 @@ test.describe("paper memory — run the audit", () => {
   test("static worlds: instant application, same settled line — every file", async ({
     page,
   }) => {
-    /* The corpus must carry at least one HELD row somewhere, so the
-       held-dash rule is really exercised by this loop */
-    expect(
-      projectCaseStudies.some((study) =>
-        [...study.receipts, ...study.outcomes].some((row) => row.held)
-      )
-    ).toBe(true);
+    /* THIS PRECONDITION INVERTED, AND THE INVERSION IS A REAL COVERAGE
+       LOSS — recorded here rather than hidden.
+
+       It used to assert the corpus carried at least one HELD row, so
+       this loop genuinely exercised the held-dash rule. Exactly one row
+       ever satisfied it: Glyph's ~97% accuracy. On 2026-07-27 the
+       committed eval run the hold named (glyph@97de736) landed, the
+       claim was earned, and the corpus now has ZERO held rows.
+
+       So the honest assertion is the opposite one. It is not decoration:
+       if a held row is ever reintroduced this fails loudly, which is the
+       prompt to restore real held-dash coverage — the rendering branch
+       (EvidenceTable `row.held ?`) is still live code and is currently
+       exercised by NO production data. That gap is logged, not pretended
+       away. The loop below already handles held rows correctly via
+       glyphOf(rowState(row)), so coverage returns automatically the
+       moment a held claim does. */
+    const heldRows = projectCaseStudies.flatMap((study) =>
+      [...study.receipts, ...study.outcomes].filter((row) => row.held)
+    );
+    expect(heldRows).toHaveLength(0);
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     for (const study of projectCaseStudies) {
@@ -610,11 +624,17 @@ test.describe("paper memory — run the audit", () => {
       settledText(study),
       { timeout: 5_000 }
     );
-    /* The HELD row's number is dashed, never ticked — held means held */
-    const heldRow = page.locator(`#${receiptAnchor("fast-mnist-nn", 1)}`);
-    await expect(heldRow).toHaveAttribute("data-audit", "held");
-    await expect(heldRow.locator(".audit-mark-dash")).toHaveCount(1);
-    await expect(heldRow.locator(".audit-mark-tick")).toHaveCount(0);
+    /* This row used to be THE held row — dashed, never ticked, because
+       its ~97% terminated in README prose. glyph@97de736 committed the
+       eval run the hold was waiting on, so the row now terminates at a
+       pinned artifact and the walk ticks it like any other earned claim.
+       Asserting the audit STATE (not merely a glyph) is the point: it is
+       what stops a row being ticked while its artifact is missing, in
+       either direction. */
+    const earnedRow = page.locator(`#${receiptAnchor("fast-mnist-nn", 1)}`);
+    await expect(earnedRow).toHaveAttribute("data-audit", "artifact");
+    await expect(earnedRow.locator(".audit-mark-tick")).toHaveCount(1);
+    await expect(earnedRow.locator(".audit-mark-dash")).toHaveCount(0);
   });
 });
 
