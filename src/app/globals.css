@@ -546,25 +546,41 @@ html[data-motion-off] .site-header {
 }
 
 /* Folio rules draw in as they clear the viewport's bottom edge and
-   dissolve just before they slide under the fixed header — decorative-
-   only CSS scroll timeline behind @supports (amendment A2); browsers
-   without support get fully drawn rules and the clean opaque-header
-   pass-under. One shared view timeline drives both ranges: its start
-   inset mirrors the header's height, so `exit` begins at the header's
-   bottom edge; `entry` is the exit's mirror (nothing until 10%
-   entered, whole ink once fully entered — the reverse of "gone by
-   90%"). Opacity only, deliberately: `data-thread-folio` is the Red
-   Thread's geometry anchor, and an entry transform would move what the
-   thread measures. Both keyframes omit their settled side, so the
-   resting frame IS the drawn rule (A7) — static worlds keep folios
-   fully drawn, and the entry's opacity-0 frame exists only while the
-   rule is still below the viewport. */
+   DISSOLVE across the upper half of the leaf on their way out — the
+   outgoing chapter's hand-off (brief B10, the Seam): while a folio is
+   letting go in the upper third, the NEXT chapter's kicker is inking in
+   near the reading line (TextMotion's `kicker` entrance), so the seam
+   reads as a cross-fade with a hair of overlap instead of a hard cut.
+   Decorative-only CSS scroll timeline behind @supports (amendment A2);
+   browsers without support get fully drawn rules and the clean
+   opaque-header pass-under. One shared view timeline drives both
+   ranges: its start inset mirrors the header's height. `entry` is
+   unchanged (nothing until 10% entered, whole ink once fully entered);
+   the exit band used to be `exit 0% → exit 90%` — invisible until the
+   rule was already sliding under the masthead, which is why the seam
+   hard-cut — and now OPENS at cover 42% (the rule around 55–60% of the
+   viewport, right as the incoming kicker's trigger fires ~145px below
+   it). The 55% keyframe holds the dissolve shallow through the middle
+   of the travel (≈0.45 near 30% of the viewport — receding, never
+   absent; the folio is aria-hidden furniture and its decorative ink is
+   allowed to let go) and the fade still completes only as the rule
+   slides under the header, so the range's final frame remains the
+   concealed rule it always was. Opacity only, deliberately:
+   `data-thread-folio` is the Red Thread's geometry anchor, and an
+   entry transform would move what the thread measures. Both keyframes
+   omit their settled side, so the resting frame IS the drawn rule
+   (A7) — static worlds keep folios fully drawn, and the entry's
+   opacity-0 frame exists only while the rule is still below the
+   viewport. */
 @keyframes folio-enter {
   from {
     opacity: 0;
   }
 }
 @keyframes folio-exit {
+  55% {
+    opacity: 0.45;
+  }
   to {
     opacity: 0;
   }
@@ -592,7 +608,7 @@ html[data-motion-off] .site-header {
       animation-timeline: view(block 3.75rem 0px);
       animation-range:
         entry 10% entry 100%,
-        exit 0% exit 90%;
+        cover 42% exit 90%;
     }
   }
 }
