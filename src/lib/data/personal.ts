@@ -58,8 +58,12 @@ export const personalInfo = {
   /** Short tagline for hero section */
   tagline:
     "New-grad software engineer — data pipelines, ML systems, and software I can stand behind",
-  /** Email address */
-  email: "aesh_1055@icloud.com",
+  /** Email address — owner's decision 2026-07-30: the address he uses
+      everywhere else, replacing aesh_1055@icloud.com. One public
+      address across the site, the résumé and the case files; a reader
+      who takes the contact line from one surface and the mailto from
+      another must land in the same inbox. */
+  email: "aesh.03.23@gmail.com",
   /** Location */
   location: "Cincinnati, Ohio",
   /** Current availability */
@@ -102,7 +106,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "Email",
-    url: "mailto:aesh_1055@icloud.com",
+    url: "mailto:aesh.03.23@gmail.com",
     icon: "Mail",
   },
 ];
