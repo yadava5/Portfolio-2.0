@@ -9,6 +9,66 @@
 
 ---
 
+## ERRATUM — re-measured 2026-07-30. Both headline findings are FIXED and no longer reproduce.
+
+> Amended, not rewritten (the errata discipline: correct in place, never delete). Everything
+> below this block is the 2026-07-18 reading and is preserved verbatim as history. **Do not
+> quote §1.2 or §3 as the live state of the site** — they describe a tree that no longer exists.
+
+Re-measured on `redesign/daylight-study` @ `fb608e8`, same harness (`out/` via
+`tests/playwright/static-server.mjs`, Chromium 1440×900, CDP CPU throttle, Playwright
+`reducedMotion`), motion-world engagement verified (`data-motion-ready=true`, `hero-rise-blur`
++ `hero-ink-settle` running, `tier=core`) so the convergence below is real and not a static
+fallback.
+
+**§1.2 — the hero-entrance LCP cost is gone.** Quick win #1 is in source: `hero-rise` starts at
+`opacity: 0.15` rather than 0 (globals.css:986, comment cites "PERF-AUDIT fix 1"), stagger
+110→60 ms, duration 1.0→0.6 s (globals.css:1004–1009). Pixels exist at first paint.
+
+| Condition | 2026-07-18 | 2026-07-30 |
+|---|---|---|
+| motion, 1× CPU | 1,940 ms | **76 ms** |
+| motion, 4× CPU | 2,232 ms | **236 ms** |
+| reduced-motion, 1× CPU | 104 ms | **76 ms** |
+| reduced-motion, 4× CPU | 160 ms | **232 ms** |
+
+Motion now converges with reduced-motion — a ~1.86 s / ~2.0 s reduction in the motion cases.
+(The LCP element is still the hero `span.hero-enter`, but the hero copy itself has changed since
+the audit, so the element *text* no longer matches §1.1.)
+
+**§3 — the `<html>` per-frame custom-property write is gone.** Quick win #2 is in source:
+`DayArc.tsx:129–131` writes `--arc-l/--arc-c/--arc-h` over `targets = [field, masthead]`
+(`[data-light-field]` at :170, `.site-header` at :171; document root is a fallback only if the
+field is absent). `<html>` now receives only the stepped *attributes*
+(`data-arc-phase/-chrome/-gloaming`, :225/:231/:237), never the per-frame channels. The
+86 %-style-recalc mechanism is scoped away, and the frame numbers corroborate it:
+
+| Metric | `/` 07-18 | `/` 07-30 | jobtracker 07-18 | jobtracker 07-30 |
+|---|---|---|---|---|
+| avg frame | 12.4 ms | **9.1 ms** | 8.3 ms | 8.3 ms |
+| p95 | 25.0 ms | **16.5 ms** | 9.2 ms | 9.2 ms |
+| worst | 100.7 ms | **50.7 ms** | 9.4 ms | 9.4 ms |
+| frames > 25 ms | 4.4 % | **0.8 %** | 0 % | 0 % |
+| frames > 50 ms | 2 | **1** | 0 | 0 |
+
+`npm run test:e2e:performance` passes 3/3 (chromium-desktop, chromium-mobile, firefox-desktop).
+
+**What HAS regressed since the audit is byte weight — this is now the live deficit.**
+
+| Asset | 2026-07-18 | 2026-07-30 |
+|---|---|---|
+| Home JS (excl. `noModule` polyfill) | 601 KB raw / 196 KB gz | **721 KB raw / 232 KB gz** |
+| CSS on `/` | 73.4 KB raw / 13.8 KB gz (1 file) | **105.7 KB raw / 19.2 KB gz (2 files)** |
+| Fonts preloaded on `/` | 178.9 KB | 178.6 KB (unchanged) |
+| Total `out/` | — | 7.19 MB, 183 files |
+
+Largest chunks: `794-…` 217.6 KB raw / 59.6 KB gz · react-dom 195.2/61.4 · framework 185.2/58.4
+· main 134.3/38.6 · `app/projects/[id]/page-…` 76.6/24.2 · gsap core 50.4/19.3. §2's byte-diet
+items (#4 WebP heroes, #5 browserslist, #10 font axes) are the levers that still apply; §5's
+#1 and #2 are done.
+
+---
+
 ## 1. Lighthouse scorecard (verbatim)
 
 | Run | Perf | A11y | Best-Pr. | SEO | FCP | LCP | TBT | CLS | SI | TTI |
