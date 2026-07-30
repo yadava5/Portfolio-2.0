@@ -2707,6 +2707,62 @@ html[data-motion-off] .pipeline-token-bead {
 .scene-slot-win {
   fill: currentColor;
 }
+/* Glyph forward pass, drawn depth (the axonometric round): the layer
+   planes carry depth in ink — the near plane's outline rides
+   marginally heavier and denser than the far plane's, one consistent
+   2:1 axis, no CSS 3D transform anywhere. Outlines draw in via the
+   sanctioned pathLength=1 dash trick, so the class default
+   (dashoffset 0) IS the settled fully-inked frame. */
+.scene-plane-near,
+.scene-plane-mid,
+.scene-plane-far {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+}
+/* THE DEPTH RAMP IS FLOORED BY CONTRAST, NOT BY TASTE (CRITIC-LEDGER
+   F80's rule, applied to a new mark). The first cut of this ramp was
+   78 / 62 / 50 with a 30% edge rule, and two rungs did not clear the
+   WCAG 1.4.11 non-text bar of 3:1 against the paper they actually sit
+   on. Measured, ink composited on each ground (dusk grounds measured
+   with the flipped ink):
+     far  @50%  → 3.07 canvas · 3.02 w04 · **2.95 w05** · 3.82 w06
+     rule @30%  → 1.86 canvas · 1.85 w04 ·   1.83 w05 · 2.32 w06
+   w05 (golden hour, #f2e4c9) is the darkest day ground and therefore
+   the binding constraint — and it is precisely where this figure sits,
+   because the Glyph scene lives in ¶05. A plane outline is the
+   figure's structure, not decoration: if it is under the bar the
+   drawing's depth is asserted rather than seen. The 1.86:1 on the edge
+   rule is the SAME number F80 rejected before raising that outline to
+   55%.
+   The ramp is re-floored at 86 / 72 / 58 — the original's gradient
+   spacing preserved (gaps of 14, against the first cut's 16 and 12) so
+   depth still reads, with every rung clear: worst case 8.22 / 5.54 /
+   3.68 across all five grounds. The edge rule takes F80's own 55%
+   (worst 3.38); its 0.8 stroke-width against the near plane's 1.5
+   keeps it subordinate without hiding it. 51% is the measured minimum
+   any of these could take; 58 and 55 carry deliberate margin.
+   Re-measure by compositing --color-ink (or --color-ink-dusk on w06 /
+   w07) at each alpha over canvas, w04, w05, w06, w07. */
+.scene-plane-near {
+  stroke: color-mix(in srgb, currentColor 86%, transparent);
+  stroke-width: 1.5;
+}
+.scene-plane-mid {
+  stroke: color-mix(in srgb, currentColor 72%, transparent);
+  stroke-width: 1.2;
+}
+.scene-plane-far {
+  stroke: color-mix(in srgb, currentColor 58%, transparent);
+  stroke-width: 1;
+}
+/* The near plane's 28×28-style edge ruling (static apparatus). */
+.scene-plane-rule {
+  fill: none;
+  stroke: color-mix(in srgb, currentColor 55%, transparent);
+  stroke-width: 0.8;
+}
 /* jetpack: byte blocks — denser ink at rest = compressed. */
 .scene-block {
   fill: currentColor;

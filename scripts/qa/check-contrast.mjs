@@ -459,6 +459,34 @@ export function sampleDuskChoreo(pairSamples = 8) {
     4.5
   );
 
+  /* Glyph forward-pass depth ramp (.scene-plane-near/-mid/-far and the
+     near plane's edge rule). These are GRAPHICAL objects carrying the
+     figure's structure, so the bar is WCAG 1.4.11's 3:1, not 4.5.
+     They are gated because the first cut shipped two rungs under it —
+     far@0.50 measured 2.95:1 on w05 and the edge rule@0.30 measured
+     1.86:1, the same number CRITIC-LEDGER F80 rejected. w05 (golden
+     hour) is the darkest day ground and the binding constraint, and it
+     is where ¶05's Glyph scene actually sits. Assert the day floor on
+     w05 and the night floor on w07; the lighter grounds are strictly
+     easier. */
+  for (const [name, alpha] of [
+    ["near", 0.86],
+    ["mid", 0.72],
+    ["far", 0.58],
+    ["edge rule", 0.55],
+  ]) {
+    check(
+      `glyph depth plane ${name}@${alpha} on w05 (darkest day ground)`,
+      contrast(compositeHex(C.ink, alpha, C.w05), C.w05),
+      3
+    );
+    check(
+      `glyph depth plane ${name}@${alpha} — dusk ink on w07 (nightfall)`,
+      contrast(compositeHex(C.inkDusk, alpha, C.w07), C.w07),
+      3
+    );
+  }
+
   return ok;
 }
 
