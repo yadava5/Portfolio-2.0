@@ -66,7 +66,13 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
           is true — there is a metric column, and its contents are not
           published — and the figcaption carries the case file's own two
           reasons. Redaction, not a number. */}
-      <li className="text-ink-secondary flex justify-between gap-x-2 opacity-80">
+      {/* No `opacity-80` here either — the same double mute as the note
+          below, measured on the painted pixels: `--color-ink-secondary`
+          at an effective 0.8 renders these three column heads at
+          **4.18:1** on the canvas and 3.79:1 on w05, under the 4.5:1 AA
+          floor for 13px text. The token alone carries 6.76 / 6.25 /
+          5.79 and is still the quiet voice against the 14.55:1 ink. */}
+      <li className="text-ink-secondary flex justify-between gap-x-2">
         <span className="min-w-0 flex-1">run · model</span>
         <span className="hidden w-[2.2em] shrink-0 text-right sm:inline">
           metrics
@@ -92,8 +98,26 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
           `sm:block` mirrors the metric column's own gate — below sm
           there is no metric column to caption (the measured 36px does
           not exist there), and the figcaption carries the whole
-          statement in words in every world and at every width. */}
-      <li className="text-ink-secondary hidden text-right opacity-70 sm:block">
+          statement in words in every world and at every width.
+
+          THE DOUBLE MUTE IS GONE (fresh-critic S2). This line carried
+          `opacity-70` ON TOP of `text-ink-secondary`, and
+          `--color-ink-secondary` is ALREADY the muted voice. Measured
+          on the painted pixels at 13px: ink rgb(92,86,74) at an
+          effective 0.7 over the canvas composites to rgb(139,134,124)
+          = **3.36:1**, against an AA floor of 4.5:1 for body text — and
+          3.07:1 on w05, the darkest day ground. The bitter part: this
+          is the very line FIX3/S12 added to make the redaction legible
+          ("what moves is WHEN the reader learns what it means"), and it
+          had become the least legible line in the figure.
+          The secondary token alone measures 6.76 canvas / 6.25 w04 /
+          5.79 w05 — clear on every day ground, and still plainly
+          subordinate to the primary ink's 14.55:1, which is the
+          hierarchy this line wanted. An extra mute could only reach
+          0.90 (worst 4.66) before failing, and 0.16 of margin against a
+          continuously SCRUBBED background is not margin, so the second
+          mute is removed rather than tuned. */}
+      <li className="text-ink-secondary hidden text-right sm:block">
         metrics withheld — the caption says why
       </li>
       {rows.map((row, index) => {
@@ -128,7 +152,14 @@ export function RegistryRows({ rows }: RegistryRowsProps) {
                 figcaption states the redaction in words in every world,
                 and the sr-only twin keeps it in the accessibility tree
                 at every width. */}
-            <span className="text-ink-secondary hidden w-[2.2em] shrink-0 text-right opacity-70 sm:inline">
+            {/* Full-strength secondary here too. As an aria-hidden mark
+                with an sr-only twin the redaction bar answers to the
+                3:1 non-text bar rather than 4.5, and at 0.7 it measured
+                3.07:1 on w05 — passing by 0.07 against a ground that
+                SCRUBS. A redaction that is hard to see is not doing its
+                job either; at full strength it reads as a firm bar and
+                clears with room. */}
+            <span className="text-ink-secondary hidden w-[2.2em] shrink-0 text-right sm:inline">
               <span aria-hidden="true">▓▓</span>
             </span>
             <span className="sr-only">metrics not published</span>
