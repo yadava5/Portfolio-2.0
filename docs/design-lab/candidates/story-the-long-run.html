@@ -16,25 +16,41 @@
      one chapter's figure to the whole page: the portfolio IS one
      pipeline run (run 042, started 06:12), the reader is the human in
      the loop, and the Red Thread is the rail. An ink run-token rides
-     the thread at mid-viewport, so scrolling IS travelling. Six
-     stations — Applied, Cadence, Glyph, jetpack-compress, LifeQuest,
-     and the gate itself (Agentic AutoML's thesis performed) — assemble
-     as you approach, work while you're there (scroll-scrubbed, so a
-     still frame is always mid-composition), and send their OUTPUT down
-     the thread as a travelling artifact when you leave. A run manifest
-     rides the corner and stamps a line per station. The light runs the
-     site's real day arc, dawn #fbf3e7 to nightfall #2c2622, with the
-     pre-verified 12-stop dusk choreography and the ink flip at 0.72.
-     At 22:41 the token halts at the clay gate. Scrolling cannot
-     approve; only your press can.
+     the thread at mid-viewport, so scrolling IS travelling.
 
-     Every number is proof-cited from src/lib/data: macro-F1 0.9791 on
-     the 96-message gate; 97.01% (9,701/10,000, macro-F1 0.9698); 3.5×
-     SIMD dot-256 vs -O3; 1,145 automated tests (634 FE + 511 BE);
-     72 tests, 0 failures on JDK 25; 7 phases, every one gated. The
-     Glyph station runs the REAL C++/WASM network (45.9 KB wasm +
-     310.6 KB weights); jetpack's ratio is computed live with the
-     browser's own CompressionStream and labelled as such.
+     ROUND 4 — the run carries the WHOLE home story, not six product
+     stations. A pipeline has provenance, a history and an operating
+     discipline, so the line now makes eleven stops: the start; WHO
+     built it (¶02 — the engineer of record signs the line); the YARD
+     it left (¶03 — the Miami ITSM job, told with its real freight:
+     1.6M+ OAS query logs into a 57.8M-row SQLite field-usage table,
+     the 10,453×35 master inventory, compliance 0%→97% across 61
+     projects — plus the school record, filed with the run); the six
+     stations — Applied, Cadence, Glyph, jetpack-compress, LifeQuest,
+     Agentic AutoML — which assemble as you approach, work while you're
+     there (scroll-scrubbed, so a still frame is always mid-
+     composition), and send their OUTPUT down the thread when you
+     leave; the REVIEW (¶10 — how I work: the litany, and three real
+     gates with their honest dispositions, two of which refused to sign
+     automatically); and the gate. Every station's output now lands
+     somewhere real: each hands off to its case file, source, or live
+     build on the working paper. A run manifest rides the corner and
+     stamps a line per station. The light runs the site's real day arc,
+     dawn #fbf3e7 to nightfall #2c2622 — station datelines stay pinned
+     to their waypoints — with the pre-verified 12-stop dusk
+     choreography and the ink flip at 0.72. At 22:41 the token halts at
+     the clay gate. Scrolling cannot approve; only your press can.
+
+     Every number is proof-cited from src/lib/data or the résumé as
+     verified against committed artifacts (2026-07-30): macro-F1 0.9791
+     on the 96-sample gate (8 classes, 2 misclassified); 97.01%
+     (9,701/10,000, macro-F1 0.9698); 3.5× SIMD dot-256 vs -O3; 6.5×
+     gzip throughput (455 vs 66 MB/s, the conservative 99% CI bound);
+     1,145 automated tests (634 FE + 511 BE); 72 tests, 0 failures on
+     JDK 25; 7 phases, every one gated. The Glyph station runs the REAL
+     C++/WASM network (45.9 KB wasm + 310.6 KB weights); jetpack's
+     ratio is computed live with the browser's own CompressionStream
+     and labelled as such.
 
      Zero dependencies. The wash is ~60 lines of raw WebGL that draws
      only while the scroll position changes; one rAF loop that stops
@@ -174,8 +190,10 @@
      early-night field — measured Lc 53 at the flip stop; cream holds 84+ */
   #mast.gone{opacity:0} /* the chrome bows out for the terminal plate */
   @media (prefers-reduced-motion: no-preference){
-    #mast{transition:opacity .45s ease} /* quick enough that the card
-      never co-prints with the clock for more than a beat */
+    #mast{transition:opacity .22s ease} /* round-3 leftover: at .45s the
+      gate card and the clock co-printed for near half a second while
+      the chrome faded. .22s + the earlier trigger in the engine keep
+      the co-print under a single beat */
   }
 
   :root{--plate-solid:rgba(255,252,244,.86)}
@@ -293,9 +311,13 @@
      chosen by MEASURED width, never by viewport guesswork. */
   .figsvg{width:100%; height:auto; display:block}
   .figsvg text{font-family:var(--mono); font-size:12px; letter-spacing:.05em; fill:var(--ink-2)}
-  .figsvg.tight{max-width:430px; margin-inline:auto}
+  /* tight cap 330, not 430 — the round-3 census passed but the 430–606
+     viewport band rendered tight figures at up to 19.7px (11 authored ×
+     430/240): a poster, not a figure. 330 keeps the whole tight range
+     inside the same 11–15px band the wide editions live in. */
+  .figsvg.tight{max-width:330px; margin-inline:auto}
   .figsvg.tight text{font-size:11px; letter-spacing:.03em}
-  #amlFig.tight{max-width:360px}
+  #amlFig.tight{max-width:330px}
   .figsvg .lit{fill:var(--ink)}
   .figsvg .lane{stroke:var(--hair-strong); stroke-width:1; fill:none}
   .figsvg .gatecol{stroke:var(--hair-strong)}
@@ -393,6 +415,12 @@
   .bench{margin-top:1.1rem; border-top:1px solid var(--hair); padding-top:.8rem}
   .bench .brow{display:grid; grid-template-columns:7.6rem 1fr 3rem; gap:.6rem; align-items:center;
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2); margin-top:.4rem}
+  .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "455 mb/s" + the lane names */
+  @media (min-width:821px){ /* wide seats afford the un-wrapped lane names */
+    .bench.jet .brow{grid-template-columns:10.6rem 1fr 4.6rem}
+  }
+  .bench .bfoot{font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
+    margin-top:.55rem; line-height:1.8}
   .bench .btrack{height:6px; position:relative; background:transparent}
   .bench .bfill{position:absolute; left:0; top:0; bottom:0; width:100%; background:var(--ink-2);
     transform-origin:left center; transform:scaleX(0)}
@@ -497,19 +525,22 @@
     .gatecard .gl li{transition:transform .35s cubic-bezier(.22,1,.36,1)}
     .gatecard .gl li:hover{transform:translateX(3px)}
   }
-  .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
+  .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; position:relative}
   #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink)}
-  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2); letter-spacing:.05em}
-  #stamp{ /* inside the card (contain:paint) and near the decide row, so
-             the ink lands where the hand just was */
-    position:absolute; right:clamp(.8rem, 3vw, 3.2rem); bottom:4.8rem; z-index:3;
+  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2); letter-spacing:.05em; max-width:24ch}
+  #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
+             round-3 card-bottom offset drifted when the aftergate grew
+             the card, and at 1440 the ink grazed its own note. Anchored
+             here, the stamp lands where the hand just was and the note
+             keeps a measured clearance at every width. */
+    position:absolute; right:0; top:50%; z-index:3;
     font-family:var(--mono); font-size:1.05rem; letter-spacing:.34em; color:var(--ember);
     border:3px double var(--ember); padding:.5rem .9rem .5rem 1.15rem;
-    transform:rotate(-7deg) scale(1.5); opacity:0; pointer-events:none;
+    transform:translateY(-62%) rotate(-7deg) scale(1.5); opacity:0; pointer-events:none;
     mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.35' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 .12'/%3E%3CfeComposite in='SourceGraphic' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
     mask-size:cover;
   }
-  #stamp.inked{opacity:1; transform:rotate(-7deg) scale(1)}
+  #stamp.inked{opacity:1; transform:translateY(-62%) rotate(-7deg) scale(1)}
   @media (prefers-reduced-motion: no-preference){
     #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
   }
@@ -522,19 +553,119 @@
   .b8 footer{margin-top:12vh; padding-top:1rem; border-top:1px solid var(--hair);
     font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); line-height:2; max-width:72ch}
 
+  /* ————— ¶02 · who — the engineer of record ————— */
+  .bwho{min-height:118vh}
+  .engcard header{display:flex; justify-content:space-between; gap:1rem;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ink-2);
+    padding-bottom:.6rem; border-bottom:1px solid var(--hair-strong)}
+  .engcard header i{font-style:normal; color:var(--clay)}
+  .sigwell{position:relative; padding:1.15rem 0 .9rem; border-bottom:1px solid var(--hair)}
+  .sig{
+    font-family:var(--body); font-style:italic; font-size:clamp(1.9rem, 3vw, 2.5rem);
+    letter-spacing:.01em; color:var(--ink); display:inline-block; line-height:1.1;
+    clip-path:inset(-10% 100% -14% 0); /* the engine writes the name on */
+  }
+  .signib{ /* the pen nib riding the writing edge */
+    position:absolute; top:50%; left:0; width:5px; height:5px; border-radius:50%;
+    background:var(--clay-g); opacity:0; transform:translate(0,-50%);
+  }
+  .sigrole{font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ink-2); margin-top:.4rem}
+  .engrows{list-style:none; margin-top:.35rem}
+  .engrows li{display:grid; grid-template-columns:5.6rem 1fr; gap:.6rem;
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.05em; color:var(--ink-2);
+    padding:.5rem 0; border-bottom:1px solid var(--hair)}
+  .engrows li b{font-weight:400; color:var(--ink)}
+  .engrows li:last-child{border-bottom:none}
+  .dict{margin-top:1.6rem; border-top:1px solid var(--hair-strong); padding-top:1rem; max-width:30ch}
+  .dict .hw{font-family:var(--display); font-weight:430; font-size:1.5rem; line-height:1}
+  .dict .pr{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); margin-top:.45rem}
+  .dict .sense{font-style:italic; color:var(--ink-2); font-size:.95rem; line-height:1.55; margin-top:.55rem}
+  .nb{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
+    border-top:1px solid var(--hair); padding-top:.6rem; margin-top:1.3rem; max-width:46ch; line-height:1.9}
+
+  /* ————— ¶03 · the yard — the ITSM freight + the school record ————— */
+  .bpath{min-height:158vh; flex-direction:column; justify-content:center}
+  .bpath .beat-inner{width:100%}
+  .figsvg .feed{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.1}
+  .figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
+  .figsvg .rec.landed{stroke:var(--pine)}
+  .figsvg .meter{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .meterfill{fill:var(--pine)}
+  .figsvg .meterlbl{fill:var(--ink)}
+  .schoolrec{max-width:1180px; margin:clamp(2.2rem,5vh,4rem) auto 0; width:100%;
+    border-top:1px solid var(--hair-strong); padding-top:1rem}
+  .schoolrec .shead{display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ink)}
+  .schoolrec .shead i{font-style:normal; color:var(--clay)}
+  .schoolrec .srows{display:grid; grid-template-columns:1fr 1fr; gap:0 clamp(2rem,4vw,4rem); margin-top:.4rem}
+  .schoolrec .srow{display:grid; grid-template-columns:7.4rem 1fr; gap:.6rem; align-items:baseline;
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.045em; color:var(--ink-2);
+    padding:.6rem 0; border-bottom:1px solid var(--hair); line-height:1.75}
+  .schoolrec .srow .sk{color:var(--clay)}
+  .schoolrec .srow b{font-weight:400; color:var(--ink)}
+  @media (max-width:820px){ .schoolrec .srows{grid-template-columns:1fr} }
+
+  /* ————— station handoffs: the output lands somewhere real ————— */
+  .handoff{margin-top:1.1rem; padding-top:.65rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:2}
+  .handoff .dep{color:var(--clay)}
+  .handoff a{color:var(--pine)}
+
+  /* ————— ¶10 · the review — how i work, at night ————— */
+  .bhow{min-height:126vh}
+  .litany{margin-top:1.6rem}
+  .litany .mline{border-top:1px solid var(--hair); padding:.9rem 0 .95rem}
+  .litany .mline p{font-family:var(--display); font-weight:430; font-variation-settings:"opsz" 100, "SOFT" 40;
+    font-size:clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing:-.01em; line-height:1.15}
+  .litany .mline.wonk p{font-variation-settings:"opsz" 100, "SOFT" 100, "WONK" 1}
+  .litany .mline p em{font-style:normal; color:var(--clay)}
+  .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
+  .litany .mline .rct a{color:var(--pine)}
+  .gates{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
+    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
+  .gates .ghead i{font-style:normal; color:var(--clay)}
+  .gates .grow{display:grid; grid-template-columns:1fr 2.2rem 4.6rem; gap:.7rem; align-items:center;
+    padding:.72rem 0; border-bottom:1px solid var(--hair)}
+  .gates .grow .gname{color:var(--ink)}
+  .gates .grow svg{display:block; width:22px; height:16px; overflow:visible}
+  .gates .grow .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
+  .gates .grow.refused .gmark{stroke:var(--clay-g)}
+  /* the disposition words stay printed at full ink — the drawn MARK is
+     the animation. (A dimmed resting word would sit under the Lc 60
+     dim-text floor on the night plate; the quests taught that lesson.) */
+  .gates .grow .gword{text-align:right}
+  .gates .grow.passed .gword{color:var(--pine)}
+  .gates .grow.refused .gword{color:var(--clay)}
+  .settled .gates .gmark{stroke-dashoffset:0 !important}
+  @media (prefers-reduced-motion: reduce){
+    .gates .gmark{stroke-dashoffset:0 !important}
+  }
+  .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
+  .gates .gclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
+    font-size:.76rem; line-height:1.9; color:var(--ink-2)}
+  .gates .gclose b{font-weight:400; color:var(--ink)}
+
   /* ————— fx: only the JS world hides pre-entrance ————— */
   .js body:not(.settled) [data-fx]{opacity:0}
   .settled [data-fx]{opacity:1 !important; transform:none !important}
+  .settled .sig{clip-path:none}
 
   /* ————— reduced motion: the settled world ————— */
   @media (prefers-reduced-motion: reduce){
     [data-fx]{opacity:1 !important; transform:none !important}
     .cue .a{animation:none}
+    .sig{clip-path:none} /* the settled world: the name is written */
     #manifest li{transform:none; opacity:1; transition:none}
     /* dusk beats carry their own resting colors (the thread passes behind) */
     .b6{background:#43372f}
-    .b7,.b8{background:#2c2622}
-    .b6,.b7,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#e08a5f; --clay-g:#e08a5f; --pine:#9dbfb0;
+    .b7,.bhow,.b8{background:#2c2622}
+    /* clay/pine take the LIVE night-world text inks — the round-3 RM
+       overrides (#e08a5f / #9dbfb0) measured Lc 43–56 as kicker and
+       link text on these grounds, under the 60 floor; #f4b090/#aecfc0
+       measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
+    .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0;
       --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.4);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
@@ -577,7 +708,7 @@
     .deck{max-width:20ch}
     .station{min-height:150vh}
     .padcard{width:min(300px, 86vw); margin:0 auto}
-    #stamp{right:.6rem; bottom:4.6rem; font-size:.9rem}
+    #stamp{font-size:.9rem; letter-spacing:.28em}
     /* manifest collapses to a pill; tap to open */
     #manifest{width:auto; right:14px; bottom:14px; padding:.5rem .7rem}
     #manifest ol, #manifest .foot{display:none}
@@ -594,6 +725,12 @@
        9px here; the clip hid it) */
     .gatecard .gl li{grid-template-columns:1.5rem 1fr}
     .gatecard .gl li .gm{grid-column:2}
+    /* the stamp rides the spent BUTTON's zone, not the note: at 320 the
+       wrapped note filled the row's midline and the ink sat on the
+       timestamp (measured −68px). Ink over the pressed button is the
+       hand's own spot; ink over the receipt text is a defect. */
+    #stamp{top:0; transform:translateY(-30%) rotate(-7deg) scale(1.5)}
+    #stamp.inked{transform:translateY(-30%) rotate(-7deg) scale(1)}
   }
   @media (min-width:821px){
     #mtoggle{pointer-events:none}
@@ -622,7 +759,7 @@
     <span id="mcount">0 / 6</span>
   </header>
   <ol>
-    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">macro-f1 0.9791 · 96-message gate</span></li>
+    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">macro-f1 0.9791 · 96-sample gate</span></li>
     <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,145 tests</span></li>
     <li data-st="3"><span class="idx">03</span><b>glyph</b><span class="m">97.01% · 10,000-image test set</span></li>
     <li data-st="4"><span class="idx">04</span><b>jetpack-compress</b><span class="m">72 tests, 0 failures · jdk 25</span></li>
@@ -642,39 +779,115 @@
       <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
       <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
       <p class="thesis" data-fx="in .09 .34 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
-      <p class="cue mono" data-fx="in .12 .38 y 3 | out .8 .98 y -4"><span class="a">↓</span> follow the line — six stations, then a gate</p>
+      <p class="cue mono" data-fx="in .12 .38 y 3 | out .8 .98 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
     </div>
   </section>
 
-  <!-- ¶ 02 · 08:47 — Applied: the sorting line -->
-  <section class="beat station b2" data-beat="1">
+  <!-- ¶ 02 · 06:58 — who: the engineer of record signs the line -->
+  <section class="beat station bwho" data-beat="1">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 02 · first station — <i>08:47</i></p>
-        <h2 data-fx="in .07 .32 x -9 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">Your inbox already knows where you applied.</p>
-        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">rules ⟶ e5 similarity ⟶ gated setfit<br>
-          <b>macro-f1 0.9791</b> · 96-message eval — 12 per label × 8 labels<br>
-          ships in-browser: int8 onnx, 22.8&#8202;mb</p>
+        <p class="kicker" data-fx="in .05 .28 x -7">¶ 02 · who — <i>06:58</i></p>
+        <h2 data-fx="in .07 .32 x -9 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">This is a record of what I&rsquo;ve built.</p>
+        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">And how each piece was checked before I called it done.</p>
+        <p class="prov" data-fx="in .16 .44 y 4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the whole path — the interface, the services behind it, the data they run on, and the machine learning when the problem calls for it. Every claim on this line carries a receipt.</p>
+        <div class="dict" data-fx="in .19 .48 y 4 | drift 12">
+          <p class="hw"><span aria-hidden="true">ap&#183;prov&#183;al</span><span class="sr" style="position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)">approval</span></p>
+          <p class="pr"><span aria-hidden="true">/ &#601;&#712;pru&#720;&#183;v&#601;l / · </span>noun</p>
+          <p class="sense">1. the moment a human signs for a machine&rsquo;s work. 2. the step I leave to a person.</p>
+        </div>
+        <p class="nb" data-fx="in .21 .5 y 3 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
       </div>
       <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
-        <figcaption>fig. 02 — the sorting line, scrubbed by your scroll. <i>the clay gate is where the model defers to review<span class="hoverinv"> — hover a bucket to trace its mail</span>.</i></figcaption>
+        <div class="engcard">
+          <header><span>engineer of record</span><span>filed <i>06:58</i></span></header>
+          <div class="sigwell">
+            <span class="sig" id="sig">Ayush Yadav</span>
+            <span class="signib" id="signib" aria-hidden="true"></span>
+            <p class="sigrole">signs the line before you ride it</p>
+          </div>
+          <ul class="engrows">
+            <li><span>base</span><b>cincinnati, oh</b></li>
+            <li><span>builds</span><b>interfaces · services · data · ml</b></li>
+            <li><span>degree</span><b>b.s. computer science — miami university, may 2026</b></li>
+            <li><span>handles</span><span><a href="https://github.com/yadava5">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a></span></li>
+          </ul>
+        </div>
+        <figcaption>fig. 02 — the engineer signs on as the run leaves the depot. <i>the operator seat stays yours.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 03 · 12:06 — Cadence: the parse -->
-  <section class="beat station flip b3" data-beat="2">
+  <!-- ¶ 03 · 07:52 — the yard: the Miami ITSM job, told with its freight.
+       The strongest untold story on the site gets a real beat: three
+       feeders — five years of OAS query logs, the Tableau/Workday silos,
+       a legacy Laravel reporter — worked into shape and merged onto the
+       main line. The school record files with the run below. -->
+  <section class="beat station flip bpath" data-beat="2">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 03 · second station — <i>12:06</i></p>
+        <p class="kicker" data-fx="in .05 .28 x 7">¶ 03 · the yard — <i>07:52</i></p>
+        <h2 data-fx="in .07 .32 x 9 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .1 .36 x 7 | drift 18">Five years of query logs. Zero structure.</p>
+        <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
+        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
+          <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
+          tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
+          legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
+        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the freight has papers</span> — <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
+        <figcaption>fig. 03 — the yard: three feeders, one line out. <i>the merge is the same thread you are riding.</i></figcaption>
+      </figure>
+    </div>
+    <div class="schoolrec" data-fx="in .3 .52 y 6 | out .8 .98 y -5 | drift 10">
+      <div class="shead"><span>the school record — filed with the run</span><span>miami university · oxford, oh · <i>may 2026</i></span></div>
+      <div class="srows">
+        <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b>3.65</b> · dean&rsquo;s list — fall 2023 · spring 2025 · fall 2025</span></div>
+        <div class="srow"><span class="sk">coursework</span><span>high-performance computing · data structures &amp; algorithms · machine learning · deep learning · databases</span></div>
+        <div class="srow"><span class="sk">certificates &rsquo;26</span><span>azure ai essentials · snowflake data engineering · data analysis &amp; github (microsoft)</span></div>
+        <div class="srow"><span class="sk">feb 2025</span><span><b>finalist, mucat design innovation</b> — lidar visual-assistance proposal · <b>$2,500</b> prototyping grant</span></div>
+        <div class="srow"><span class="sk">mar 2025</span><span>social innovation weekend — <b>lifequest</b> co-built in a weekend · react + nestjs · 7-person team · held at station 05 tonight</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ¶ 04 · 08:47 — Applied: the sorting line -->
+  <section class="beat station b2" data-beat="3">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .05 .28 x -7">¶ 04 · first station — <i>08:47</i></p>
+        <h2 data-fx="in .07 .32 x -9 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">Your inbox already knows where you applied.</p>
+        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
+        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
+          <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified (hybrid v3)<br>
+          ci blocks any build under 0.95 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
+          postgres row-level security — a non-bypassrls role</p>
+        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
+        <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>the clay gate is where the model defers to review<span class="hoverinv"> — hover a bucket to trace its mail</span>.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 05 · 12:06 — Cadence: the parse -->
+  <section class="beat station flip b3" data-beat="4">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .05 .28 x 7">¶ 05 · second station — <i>12:06</i></p>
         <h2 data-fx="in .07 .32 x 9 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .1 .36 x 7 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
         <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
         <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>1,145 automated tests</b> — 634 frontend + 511 backend<br>
-          the <b>when</b> is parsed by chrono-node · this sample is scripted, not a live call</p>
+          4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
+          <b>36 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
+          rls across <b>7 tables</b> · owner-scoped checks on 6 services · idor suite in ci</p>
+        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ↗</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
@@ -694,21 +907,23 @@
           <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
           <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
         </div>
-        <figcaption>fig. 03 — the parse: the sentence resolves into the schedule as you scroll. <i>hover a chip to see its words.</i></figcaption>
+        <figcaption>fig. 05 — the parse: the sentence resolves into the schedule as you scroll. <i>hover a chip to see its words.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 04 · 15:23 — Glyph: the run needs a sample -->
-  <section class="beat station b4" data-beat="3">
+  <!-- ¶ 06 · 15:23 — Glyph: the run needs a sample -->
+  <section class="beat station b4" data-beat="5">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 04 · third station — <i>15:23</i></p>
+        <p class="kicker" data-fx="in .05 .28 x -7">¶ 06 · third station — <i>15:23</i></p>
         <h2 data-fx="in .07 .32 x -9 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .1 .36 x -7 | drift 18">No frameworks. Just math, memory, and C++.</p>
         <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
         <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
-          simd dot-256 kernel <b>3.5×</b> vs -O3 · 784 ⟶ 100 ⟶ 10</p>
+          simd dot-256 kernel <b>3.5×</b> vs -O3 · 784 ⟶ 100 ⟶ 10<br>
+          4 instruction sets — avx-512 · avx2 · neon · wasm-simd128 · 2-person team</p>
+        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
@@ -737,46 +952,56 @@
           <div class="brow"><span>scalar -O3</span><span class="btrack"><span class="bfill" id="bScalar"></span></span><span class="bval">1×</span></div>
           <div class="brow simd"><span>hand-written simd</span><span class="btrack"><span class="bfill" id="bSimd"></span></span><span class="bval">3.5×</span></div>
         </div>
-        <figcaption>fig. 04 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
+        <figcaption>fig. 06 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 05 · 19:36 — jetpack-compress: split, work, stitch -->
-  <section class="beat station flip b5" data-beat="4">
+  <!-- ¶ 07 · 19:36 — jetpack-compress: split, work, stitch -->
+  <section class="beat station flip b5" data-beat="6">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 05 · fourth station — <i>19:36</i></p>
+        <p class="kicker" data-fx="in .05 .28 x 7">¶ 07 · fourth station — <i>19:36</i></p>
         <h2 data-fx="in .07 .32 x 9 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .1 .36 x 7 | drift 18">One gzip stream, many virtual threads.</p>
         <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">jdk <b>25</b> · <b>72 tests, 0 failures</b></p>
+        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>6.5×</b> single-threaded java.util.zip — 455 vs 66&#8202;mb/s (99% ci bound; point 6.89×)<br>
+          adler-32 vectorised <b>2.9×</b> scalar — 4.38&#8202;gb/s, bit-identical to java.util.zip.Adler32<br>
+          jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
+          <b>72 tests, 0 failures</b></p>
         <div class="gzrow" data-fx="in .19 .48 y 4 | drift 12">
           <button class="btn" id="gzbtn" type="button">gzip a sample in this tab</button>
           <span class="mono" id="gzout" aria-live="polite"></span>
         </div>
         <p class="mono" data-fx="in .2 .5 y 3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
+        <p class="handoff" data-fx="in .21 .52 y 3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md">the readme @ af2c4b1 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
-        <figcaption>fig. 05 — split ⟶ compress in parallel ⟶ stitch. <i>the member seam takes the clay tick<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
+        <div class="bench jet" aria-label="benchmark: virtual-thread engine versus single-threaded java.util.zip">
+          <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
+          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack"><span class="bfill" id="jScalar"></span></span><span class="bval">66&#8202;mb/s</span></div>
+          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">455&#8202;mb/s</span></div>
+          <p class="bfoot">6.5× is the conservative 99% ci bound — the point estimate is 6.89×</p>
+        </div>
+        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch. <i>the member seam takes the clay tick<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 06 · 21:07 — dusk falls here. LifeQuest, told honestly.
-       Every element that carries text is on the b6 dusk contract
+  <!-- ¶ 08 · 21:07 — dusk falls here. LifeQuest, told honestly.
+       Every element that carries text is on the dusk contract
        (data-fx-sync): its exit window is rewritten in PAGE space so the
        ledger and the figure leave together, fully gone before the first
        darkening stop — the round-2 census caught the per-element
        windows leaking op-1.0 text onto the sub-AA band at 768–2560. -->
-  <section class="beat station b6" data-beat="5">
+  <section class="beat station b6" data-beat="7">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="b6">¶ 06 · the honest hour — <i>21:07</i></p>
-        <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="b6" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
-        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="b6" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. It would need a partner to scale, and it says so.</p>
-        <div class="quests" data-fx="in .12 .38 y 6 | out .48 .58 y 4 | drift 10" data-fx-sync="b6">
+        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · the honest hour — <i>21:07</i></p>
+        <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="dusk" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
+        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. Born at Social Innovation Weekend, March 2025 — a 7-person team, one weekend, React + NestJS. It would need a partner to scale, and it says so.</p>
+        <div class="quests" data-fx="in .12 .38 y 6 | out .48 .58 y 4 | drift 10" data-fx-sync="dusk">
           <div class="q" data-q="0"><span class="qi">01</span><span class="qm">—</span><span class="qn">mission card — playable</span><span class="qs">…</span></div>
           <div class="q" data-q="1"><span class="qi">02</span><span class="qm">—</span><span class="qn">tier ladder — working</span><span class="qs">…</span></div>
           <div class="q" data-q="2"><span class="qi">03</span><span class="qm">—</span><span class="qn">full-stack backend — real</span><span class="qs">…</span></div>
@@ -785,63 +1010,107 @@
           <div class="q held-target" data-q="4"><span class="qi">05</span><span class="qm">—</span><span class="qn">finished product — not claimed</span><span class="qs">…</span>
             <span class="qnote">held on purpose — nothing resolves that didn&rsquo;t happen</span></div>
         </div>
-        <p class="mono" data-fx="in .84 .95 y 4 | out 2 2.5 | drift 0" data-fx-sync="b6in" style="margin-top:1.6rem">dusk. the light is the record: what shipped is lit, what didn&rsquo;t stays dashed.</p>
+        <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file — a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest">source ↗</a> · <a href="https://getlifequest.vercel.app">live prototype ↗</a></p>
+        <p class="mono" data-fx="in .84 .95 y 4 | out 2 2.5 | drift 0" data-fx-sync="duskin" style="margin-top:1.6rem">dusk. the light is the record: what shipped is lit, what didn&rsquo;t stays dashed.</p>
       </div>
-      <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="b6">
+      <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
         <svg id="questFig" class="figsvg" viewBox="0 0 440 380" role="img" aria-label="A staircase of five steps drawn in ink: the three built steps are solid and get climbed, the two unbuilt steps stay pencil-dashed, and the climber pauses on the third with a clay ring — a deliberate hold, not a fall."></svg>
-        <figcaption>fig. 06 — the ladder is the ledger: three steps in ink, two in pencil. <i>the climb pauses the way the run halts — on purpose.</i></figcaption>
+        <figcaption>fig. 08 — the ladder is the ledger: three steps in ink, two in pencil. <i>the climb pauses the way the run halts — on purpose.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 07 · 22:05 — Agentic AutoML: the notebook, worked by tools -->
-  <section class="beat station flip b7" data-beat="6">
+  <!-- ¶ 09 · 22:05 — Agentic AutoML: the notebook, worked by tools -->
+  <section class="beat station flip b7" data-beat="8">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 07 · last station — <i>22:05</i></p>
+        <p class="kicker" data-fx="in .05 .28 x 7">¶ 09 · last station — <i>22:05</i></p>
         <h2 data-fx="in .07 .32 x 9 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .1 .36 x 7 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
         <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The senior-design flagship: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
         <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
           <b>12 mcp tools</b> — most of them notebook hands: read_cell · write_cell · run_cell …<br>
-          langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> on its working branch<br>
-          <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the repo, public — gpl-3.0 ↗</a></p>
+          the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
+          langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> · 2-person team — my seat: backend</p>
         <p class="mono" data-fx="in .19 .48 y 3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
+        <p class="handoff" data-fx="in .21 .52 y 3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the repo, public — gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
         <svg id="amlFig" class="figsvg" viewBox="0 0 560 372" role="img" aria-label="A LangGraph supervisor drives a drawn notebook through seven lifecycle phases; the twelve real MCP tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — six clay gates open, and the run halts at the seventh gate before deploy, which never lights."></svg>
-        <figcaption>fig. 07 — the twelve tools are mcpServer.ts&rsquo;s, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
+        <figcaption>fig. 09 — the twelve tools are mcpServer.ts&rsquo;s, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 08 · 22:41 — the approval gate -->
-  <section class="beat b8" data-beat="7">
+  <!-- ¶ 10 · 22:23 — the review: how i work, told as three real gates.
+       The night shift's discipline beat: the litany each carries a
+       linked receipt, and the ledger beside it shows my own gates'
+       honest dispositions — two REFUSED to sign automatically. That is
+       the argument for the human gate one stop down the line. -->
+  <section class="beat station bhow" data-beat="9">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .05 .28 x -7">¶ 10 · the review — <i>22:23</i></p>
+        <h2 data-fx="in .07 .32 x -9 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .1 .36 x -6 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
+        <div class="litany" data-fx="in .13 .4 y 5 | drift 14">
+          <div class="mline"><p>Make it learn.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 backend tests — jobtracker validation ledger ↗</a></p></div>
+          <div class="mline"><p>Make it fast.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, committed benchmarks ↗</a></p></div>
+          <div class="mline wonk"><p>Make it <em>honest</em>.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep — policybot validation ledger ↗</a></p></div>
+        </div>
+      </div>
+      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="gates" id="gatesFig">
+          <div class="ghead"><span>the reviewer&rsquo;s marks</span><span>three real gates · <i>dispositions honest</i></span></div>
+          <div class="grow passed" data-g="0"><span class="gname">classifier gate — jobtracker</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2"/></svg>
+            <span class="gword">passed</span></div>
+          <div class="grow refused" data-g="1"><span class="gname">cited-source sweep — policybot</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+            <span class="gword">refused</span></div>
+          <div class="grow refused" data-g="2"><span class="gname">benchmark suite — fast-mnist</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+            <span class="gword">refused</span></div>
+          <p class="gleg">✓ a human signed for it · — the gate stopped the run</p>
+          <p class="gclose">two of my own gates <b>refused</b> to sign automatically. that discipline is why the next stop on this line is a person.</p>
+        </div>
+        <figcaption>fig. 10 — the marks are drawn by the same hand as the thread. <i>a refused gate is the system working.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 11 · 22:41 — the approval gate -->
+  <section class="beat b8" data-beat="10">
     <div class="beat-inner">
       <div>
-        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 08 · the approval gate — <i>22:41</i></p>
+        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 11 · the approval gate — <i>22:41</i></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
         <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
           <li data-ph="0"><span>06:12 · the start</span></li>
-          <li data-ph="1"><span>08:47 · applied</span></li>
-          <li data-ph="2"><span>12:06 · cadence</span></li>
-          <li data-ph="3"><span>15:23 · glyph</span></li>
-          <li data-ph="4"><span>19:36 · jetpack-compress</span></li>
-          <li data-ph="5"><span>21:07 · lifequest</span></li>
-          <li data-ph="6"><span>22:05 · agentic automl</span></li>
+          <li data-ph="1"><span>06:58 · who</span></li>
+          <li data-ph="2"><span>07:52 · the yard</span></li>
+          <li data-ph="3"><span>08:47 · applied</span></li>
+          <li data-ph="4"><span>12:06 · cadence</span></li>
+          <li data-ph="5"><span>15:23 · glyph</span></li>
+          <li data-ph="6"><span>19:36 · jetpack-compress</span></li>
+          <li data-ph="7"><span>21:07 · lifequest</span></li>
+          <li data-ph="8"><span>22:05 · agentic automl</span></li>
+          <li data-ph="9"><span>22:23 · the review</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
-          <li data-ph="7"><span>deploy — yours; no scroll reaches it</span></li>
+          <li data-ph="10"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
         <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the run token you have been following halts here. it will wait as long as it takes.</p>
       </div>
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
-          <div id="stamp" aria-hidden="true">APPROVED</div>
           <h3>run 042 — the manifest, complete.</h3>
-          <p class="mono" style="font-size:.7rem">six stations · every claim proof-cited · one signature missing</p>
+          <p class="mono" style="font-size:.7rem">one day · eleven stops · six stations proof-cited · one signature missing</p>
           <ul class="gl">
-            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">macro-f1 0.9791 · 96-message gate</span></li>
+            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">macro-f1 0.9791 · 96-sample gate</span></li>
             <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,145 automated tests — 634 fe + 511 be</span></li>
             <li data-st="3"><span class="gi">03</span><b>glyph</b><span class="gm">97.01% — 9,701/10,000 · macro-f1 0.9698</span></li>
             <li data-st="4"><span class="gi">04</span><b>jetpack-compress</b><span class="gm">72 tests, 0 failures · jdk 25</span></li>
@@ -852,20 +1121,22 @@
           <div class="decide">
             <button class="btn" id="approve" type="button">approve run 042</button>
             <span class="note" id="gateNote">scrolling could not press this button.</span>
+            <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
           <div class="aftergate" id="aftergate">
             <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
             <div class="row mono">
               <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
               <a href="https://github.com/yadava5">github ↗</a>
+              <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
               <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
             </div>
           </div>
         </div>
         <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
-          end of scroll, not of story · © 2026 ayush yadav — miami university, class of 2026<br>
+          end of scroll, not of story · © 2026 ayush yadav — cincinnati, oh · miami university, class of 2026<br>
           set in fraunces, newsreader &amp; fragment mono · zero dependencies · the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
-          the light ran dawn 06:12 ⟶ nightfall 22:41 — the site&rsquo;s own day arc, ink flip verified at every stop
+          the light ran dawn 06:12 ⟶ nightfall 22:41 — the site&rsquo;s own day arc, ink flip verified at every stop · every station&rsquo;s output landed in a case file, source, or live build
         </footer>
       </div>
     </div>
@@ -920,16 +1191,26 @@ function oklchToRgb(l, c, h) {
 }
 const rgbCss = (r) => `rgb(${r.map((x) => Math.round(x * 255)).join(",")})`;
 
-/* arc position → rgb + night flag. Beats 0–4 scrub waypoint i→i+1 over
-   the middle of the beat; beat 5 runs the 12-stop dusk choreography
-   (flip at .72, the mid band never rendered); beat 6 scrubs dusk→night. */
+/* arc position → rgb + night flag. Seven DAY beats now ride the five
+   day waypoints: the STATION datelines stay pinned to their waypoints
+   (applied=W1 08:47, cadence=W2 12:06, glyph=W3 15:23, jetpack=W4
+   19:36) and the two new morning chapters — who, the yard — split the
+   dawn→08:47 leg in thirds, so the light still tells the clock's
+   truth. Beat 7 runs the 12-stop dusk choreography (flip at .72, the
+   mid band never rendered); beat 8 scrubs dusk→night; 9–10 hold night. */
+const DAY_ANCHOR = [0, 1 / 3, 2 / 3, 1, 2, 3, 4, 4]; /* waypoint index per day beat */
 function arcColor(beat, p) {
-  if (beat <= 4) {
+  if (beat <= 6) {
     const t = smooth((p - 0.15) / 0.7);
-    const a = WAY[beat], b = WAY[Math.min(beat + 1, 4)];
-    return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: false, sun: beat + t };
+    const u = clamp(lerp(DAY_ANCHOR[beat], DAY_ANCHOR[beat + 1], t), 0, 4);
+    const i = Math.min(3, Math.floor(u)), f = u - i;
+    const a = WAY[i], b = WAY[i + 1];
+    return {
+      rgb: oklchToRgb(lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)),
+      night: false, sun: (beat + t) * (5 / 7), /* the sun still crosses one whole day */
+    };
   }
-  if (beat === 5) {
+  if (beat === 7) {
     /* the darkening runs p .58→.94 — strictly AFTER the ledger's fx
        window ([.12,.4] in, [.48,.58] out), so no text renders on any
        sub-AA mid-band stop; the closing line arrives post-flip */
@@ -944,11 +1225,12 @@ function arcColor(beat, p) {
       night: pos >= FLIP_POS, sun: 5 + clamp(p, 0, 1),
     };
   }
-  if (beat === 6) { /* automl works the night shift: dusk deepens to nightfall */
+  if (beat === 8) { /* automl works the night shift: dusk deepens to nightfall */
     const t = smooth(p / 0.6);
     const a = WAY[5], b = WAY[6];
     return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
   }
+  /* beats 9–10 — the review and the gate hold nightfall */
   return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
 }
 
@@ -1049,25 +1331,26 @@ function cacheGeometry() {
   docH = document.documentElement.scrollHeight;
   for (const b of beats) { b.top = absTop(b.el); b.h = b.el.offsetHeight; }
   for (const f of fx) { f.top = absTop(f.el); f.h = f.el.offsetHeight || 1; }
+  who.w = who.sig.offsetWidth; /* the nib's runway (clip doesn't change layout) */
   window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h })); /* probe hook */
 
-  /* the b6 dusk contract, in PAGE space. The fx windows are per-element
+  /* the dusk contract, in PAGE space. The fx windows are per-element
      scroll fractions; the darkening is a fraction of the BEAT — two
      different clocks, and round 2 trusted the comment instead of
      measuring (the census caught op-1.0 ledger text on the sub-AA day
      stops at 768–2560). Here the ledger's and the figure's exits are
      rewritten to end 40px of scroll BEFORE the first darkening frame,
      together — one curtain, not two — and the closing line's entrance
-     is pinned after the ink flip. */
-  const b6 = beats[5];
-  const yDark = b6.top + 0.58 * b6.h - vh * 0.62; /* darkening starts */
-  const yFlip = b6.top + (0.58 + (FLIP_POS / 0.95) * 0.36) * b6.h - vh * 0.62;
+     is pinned after the ink flip. (LifeQuest rides beat 7 now.) */
+  const bDusk = beats[7];
+  const yDark = bDusk.top + 0.58 * bDusk.h - vh * 0.62; /* darkening starts */
+  const yFlip = bDusk.top + (0.58 + (FLIP_POS / 0.95) * 0.36) * bDusk.h - vh * 0.62;
   const Y2 = yDark - 40, Y1 = Y2 - vh * 0.3;
   for (const f of fx) {
-    if (f.el.dataset.fxSync === "b6") {
+    if (f.el.dataset.fxSync === "dusk") {
       f.spec.out[0] = (Y1 + vh - f.top) / (vh + f.h);
       f.spec.out[1] = (Y2 + vh - f.top) / (vh + f.h);
-    } else if (f.el.dataset.fxSync === "b6in") {
+    } else if (f.el.dataset.fxSync === "duskin") {
       f.spec.in[0] = (yFlip + 30 + vh - f.top) / (vh + f.h);
       f.spec.in[1] = (yFlip + 30 + vh * 0.18 + vh - f.top) / (vh + f.h);
     }
@@ -1097,9 +1380,14 @@ function sizeThread() {
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
-  /* the last station x hugs the ladder column: the line must arrive at
-     the gate along the margin, never slashing across the ledger card */
-  const stx = stacked ? [50, 26, 74, 26, 74, 26, 74, 20] : [50, 31, 69, 33, 67, 33, 67, 24];
+  /* eleven stops: arrival, who(N), the yard(F), applied(N), cadence(F),
+     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
+     Normal stations keep the thread by the prose margin; flips cross it.
+     The last x hugs the ladder column: the line must arrive at the gate
+     along the margin, never slashing across the ledger card */
+  const stx = stacked
+    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 20]
+    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 24];
   const anchors = [];
   anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
   for (let i = 0; i < beats.length; i++) {
@@ -1182,17 +1470,32 @@ const TRAV = [
         c.beginPath(); c.moveTo(Math.cos(a) * 7, 1 + Math.sin(a) * 7);
         c.lineTo(Math.cos(a) * 10, 1 + Math.sin(a) * 10); c.stroke();
       } } },
-  { beat: 1, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
+  { beat: 1, n: 1, label: "the engineer’s credentials → manifest", draw: (c) => { /* the signed card */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-11, -7, 22, 14, 2); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.beginPath(); c.rect(-8, -4, 6, 6.5); c.stroke(); /* the portrait well */
+      c.strokeStyle = inkC["--ink"]; c.beginPath();
+      c.moveTo(1, -2.5); c.lineTo(8, -2.5); c.stroke();
+      c.strokeStyle = inkC["--clay-g"]; c.beginPath(); /* the fresh signature */
+      c.moveTo(1, 3); c.quadraticCurveTo(3.5, 0.5, 5, 3); c.quadraticCurveTo(6.5, 5, 8, 2.4); c.stroke(); } },
+  { beat: 2, n: 2, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.rect(-9, -6.5, 18, 13); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.beginPath(); /* rows and fields */
+      c.moveTo(-9, -2); c.lineTo(9, -2); c.moveTo(-9, 2.4); c.lineTo(9, 2.4);
+      c.moveTo(-3, -6.5); c.lineTo(-3, 6.5); c.moveTo(3, -6.5); c.lineTo(3, 6.5); c.stroke();
+      c.fillStyle = inkC["--pine"]; c.fillRect(3.6, -6, 4.9, 3.5); /* the flagged field */ } },
+  { beat: 3, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.3;
       c.beginPath(); c.rect(-7, -5, 14, 10); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-7, -5); c.lineTo(0, 1.2); c.lineTo(7, -5); c.stroke(); } },
-  { beat: 2, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
+  { beat: 4, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-11, -7, 22, 14, 3); c.fill(); c.stroke();
       c.strokeStyle = inkC["--ink"]; c.beginPath();
       c.moveTo(-7, -2.5); c.lineTo(2, -2.5); c.moveTo(-7, 2); c.lineTo(5, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.beginPath(); c.arc(7, -2.5, 2, 0, 7); c.fill(); } },
-  { beat: 3, n: 1,
+  { beat: 5, n: 1,
     label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
     draw: (c) => {
       if (glyphDigit !== null) {
@@ -1203,19 +1506,25 @@ const TRAV = [
         c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.setLineDash([3, 3]);
         c.strokeRect(-8, -8, 16, 16); c.setLineDash([]);
       } } },
-  { beat: 4, n: 2, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
+  { beat: 6, n: 2, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
-  { beat: 5, n: 2, label: "the held marks, carried as they are", draw: (c) => { /* a held dash */
+  { beat: 7, n: 2, label: "the held marks, carried as they are", draw: (c) => { /* a held dash */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
       c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
-  { beat: 6, n: 1, label: "run 042 → the human gate", draw: (c) => { /* the sealed run report */
+  { beat: 8, n: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
+  { beat: 9, n: 1, label: "run 042, reviewed → the human gate", draw: (c) => { /* the reviewed report */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
+      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
+      c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
 ].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
 const setGlyphTraveller = (d) => { glyphDigit = String(d); };
 
@@ -1421,6 +1730,150 @@ function scrubApplied(p) {
     m.rect.setAttribute("class", past ? `mk ${m.cls}` : "mk");
     m.flap.setAttribute("stroke", past && m.cls === "sorted-ok" ? "var(--pine)" : past && m.cls === "sorted-rv" ? "var(--clay-g)" : "var(--ink)");
   }
+}
+
+/* Who — the engineer of record signs the line. The name is written on
+   by a clip-path wipe with a nib dot riding the writing edge — no fake
+   stroke data, just the type being revealed at writing speed. */
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "" };
+function scrubWho(p) {
+  const t = smooth((p - 0.28) / 0.34);
+  const v = (100 - t * 100).toFixed(1);
+  if (v === who.last) return;
+  who.last = v;
+  who.sig.style.clipPath = `inset(-10% ${v}% -14% 0)`;
+  who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
+  who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
+}
+
+/* The yard — the ITSM job as freight: three feeders (query logs, the
+   Tableau/Workday silos, a legacy Laravel reporter), each through the
+   python·sql works, landing in its product, merging onto the main
+   line. Records travel and LAND (unlike jet's blocks they stay put —
+   the yard's whole point is what the freight became). The compliance
+   meter fills to its real 97%. Wide 560/12px; tight 240/11px. */
+const yard = { svg: $("pathFig"), recs: [], meter: null, meterW: 0, trunk: null };
+function buildPath(tight) {
+  const s = yard.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  yard.recs = []; yard._mw = null; /* fresh meter: the diff cache must not skip it */
+  const src = [
+    ["1.6m+ oas query logs", "5 yrs · 1,153 users"],
+    ["tableau + workday", "hash-dedup · rest api"],
+    ["legacy laravel", "teamdynamix · gitlab"],
+  ];
+  const prod = [
+    ["field-usage table", "sqlite · 57.8m rows"],
+    ["master inventory", "10,453 × 35 fields"],
+    ["etl feed", "37-month dashboard"],
+  ];
+  if (!tight) {
+    /* measured, not estimated: Fragment Mono runs ~7.25 units/char at
+       12 — the first cut's 6.9 guess ran "rest api" under the box, and
+       records landed ON the product text (there is no empty row in a
+       34-unit box). Boxes start at 278 (details end ≤272), stand 44
+       tall, and the records dock on the y+18 row BELOW both text bands. */
+    s.setAttribute("viewBox", "0 0 560 330");
+    const laneY = [78, 158, 238];
+    el("text", { x: 16, y: 30 }).textContent = "the freight";
+    laneY.forEach((y, i) => {
+      el("text", { x: 120, y: y - 24, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 120, y: y - 10 }).textContent = src[i][1];
+      el("path", { d: `M 120 ${y} H 270`, class: "lane" });
+      el("line", { x1: 205, y1: y - 12, x2: 205, y2: y + 12, class: "gatecol lane" });
+      el("path", { d: `M 446 ${y - 20} h -168 v 44 h 168`, class: "prod" });
+      el("text", { x: 286, y: y - 6, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 286, y: y + 8 }).textContent = prod[i][1];
+      el("path", { d: `M 446 ${y} C 468 ${y} 464 158 486 158`, class: "stitch" });
+    });
+    el("text", { x: 205, y: 318, "text-anchor": "middle" }).textContent = "python · sql — the works";
+    yard.trunk = el("path", { d: "M 486 158 H 534", class: "stitch" });
+    el("path", { d: "M 534 152 L 546 158 L 534 164 Z", fill: "var(--pine)", stroke: "none" });
+    /* the destination sign sits UNDER the switch: every stitch curve
+       lives at x ≤ 486, so a label spanning 491–556 crosses nothing */
+    el("text", { x: 556, y: 178, "text-anchor": "end" }).textContent = "main line";
+    el("rect", { x: 278, y: 276, width: 168, height: 6, class: "meter" });
+    yard.meter = el("rect", { x: 278, y: 276, width: 0, height: 6, class: "meterfill" });
+    yard.meterW = 168;
+    el("text", { x: 278, y: 300, class: "meterlbl" }).textContent = "compliance 0% ⟶ 97% · 61 projects";
+    const lanes = [0, 1, 2, 0, 1, 0, 2, 1];
+    lanes.forEach((ln, i) => {
+      const y = laneY[ln];
+      const g = el("g", { class: "recg" });
+      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
+      yard.recs.push({ g, r, delay: i * 0.045,
+        line: [[-24, y], [120, y], [205, y], [270, y], [300 + (i % 3) * 46, y + 18]] });
+    });
+  } else {
+    /* the tight yard: the same freight, stacked. Records dock on the
+       box's LOWER-RIGHT row (Y+102, x 200) — clear of both text bands. */
+    s.setAttribute("viewBox", "0 0 240 430");
+    el("text", { x: 8, y: 16 }).textContent = "the freight";
+    for (let i = 0; i < 3; i++) {
+      const Y = 32 + i * 118;
+      el("text", { x: 8, y: Y + 10, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 8, y: Y + 24 }).textContent = src[i][1];
+      el("path", { d: `M 120 ${Y + 30} V ${Y + 62}`, class: "lane" });
+      el("line", { x1: 112, y1: Y + 46, x2: 128, y2: Y + 46, class: "gatecol lane" });
+      if (i === 0) el("text", { x: 136, y: Y + 50 }).textContent = "python · sql";
+      el("path", { d: `M 8 ${Y + 68} v 40 h 224 v -40`, class: "prod" });
+      el("text", { x: 14, y: Y + 82, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 14, y: Y + 96 }).textContent = prod[i][1];
+      const g = el("g", { class: "recg" });
+      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
+      yard.recs.push({ g, r, delay: i * 0.07,
+        line: [[120, Y + 14], [120, Y + 46], [120, Y + 60], [200, Y + 100]] });
+    }
+    el("rect", { x: 8, y: 392, width: 224, height: 6, class: "meter" });
+    yard.meter = el("rect", { x: 8, y: 392, width: 0, height: 6, class: "meterfill" });
+    yard.meterW = 224;
+    el("text", { x: 8, y: 416, class: "meterlbl" }).textContent = "0% ⟶ 97% · 61 projects";
+    el("text", { x: 232, y: 428, "text-anchor": "end" }).textContent = "⟶ the main line";
+    yard.trunk = null;
+  }
+  if (yard.trunk) {
+    const L = yard.trunk.getTotalLength();
+    yard.trunk.style.strokeDasharray = L; yard.trunk.style.strokeDashoffset = L; yard.trunk._len = L;
+  }
+}
+function scrubPath(p) {
+  for (const rc of yard.recs) {
+    const t = smooth((p - 0.16 - rc.delay) / 0.36);
+    const [x, y] = polyAt(rc.line, t);
+    rc.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    rc.g.setAttribute("opacity", t <= 0 ? 0 : 1);
+    const landed = t > 0.62; /* past the works: the record is shaped */
+    if (rc._landed !== landed) { rc._landed = landed; rc.r.setAttribute("class", landed ? "rec landed" : "rec"); }
+  }
+  const mw = (smooth((p - 0.42) / 0.3) * 0.97 * yard.meterW).toFixed(1);
+  if (mw !== yard._mw) { yard._mw = mw; yard.meter.setAttribute("width", mw); }
+  if (yard.trunk) { /* the merge inks early enough that a mid-beat still shows it */
+    const t = smooth((p - 0.34) / 0.24);
+    yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
+  }
+}
+
+/* The review — the reviewer's marks draw themselves: a check-stroke for
+   the gate a human signed, a stop-bar for the two that refused. DOM
+   rows carry the words (the census floor is the page's own); only the
+   marks are ink. */
+const how = { rows: [...document.querySelectorAll("#gatesFig .grow")].map((row) => {
+  const mk = row.querySelector(".gmark");
+  return { row, mk, len: 0 };
+}) };
+for (const r of how.rows) {
+  r.len = r.mk.getTotalLength();
+  r.mk.style.strokeDasharray = r.len;
+  r.mk.style.strokeDashoffset = r.len;
+}
+function scrubHow(p) {
+  how.rows.forEach((r, i) => {
+    const t = smooth((p - 0.26 - i * 0.09) / 0.14);
+    const off = (r.len * (1 - t)).toFixed(2);
+    if (off !== r._off) { r._off = off; r.mk.style.strokeDashoffset = off; }
+    const marked = t >= 1;
+    if (r._marked !== marked) { r._marked = marked; r.row.classList.toggle("marked", marked); }
+  });
 }
 
 /* Cadence — the parse. Chips fly measured word → measured slot. */
@@ -1636,6 +2089,7 @@ function buildAml(tight) {
   const s = aml.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
   aml.tools = []; aml.dots = []; aml.cells = []; aml.runs = []; aml.gates = []; aml.plabels = [];
+  aml._lit = -1; /* fresh elements: the diff cache must not skip them */
   aml.vert = !!tight;
   if (!tight) {
     s.setAttribute("viewBox", "0 0 560 372");
@@ -1737,25 +2191,35 @@ function scrubAml(p) {
   aml.bead.setAttribute("opacity", smooth((p - 0.12) / 0.05).toFixed(2));
   aml.ring.setAttribute(axis, HALT);
   aml.ring.setAttribute("opacity", e >= 1 ? 1 : 0); /* halted: the site's own ring */
+  /* class writes are DIFFED — round 3 rewrote ~36 class attributes per
+     frame with unchanged values (6 gates + 6 labels + 12 tools + 12
+     dots); each is a state that flips a handful of times per pass, so
+     the cached-value guard turns almost every frame into zero writes */
   aml.gates.forEach((g, i) => {
     if (i === 6) return; /* the human gate does not open for a scroll */
     const open = xb > aml.phx[i] - aml.gateLead;
-    g.setAttribute("class", open ? "phgate open" : "phgate");
+    if (g._open !== open) { g._open = open; g.setAttribute("class", open ? "phgate open" : "phgate"); }
   });
   aml.plabels.forEach((l, i) => {
     if (i === 6) return; /* deploy never lights */
-    l.setAttribute("class", xb > aml.phx[i] ? "phlbl lit" : "phlbl dim");
+    const lit = xb > aml.phx[i];
+    if (l._lit !== lit) { l._lit = lit; l.setAttribute("class", lit ? "phlbl lit" : "phlbl dim"); }
   });
   /* tools light in source order as the run advances — order is the file's,
      the firing schedule is an illustration, not a claim */
   const lit = Math.floor(clamp(e * 1.08, 0, 1) * 12);
-  aml.tools.forEach((t, i) => t.setAttribute("class", i < lit ? "tname on" : "tname"));
-  aml.dots.forEach((d, i) => d.setAttribute("class", i < lit ? "tdot on" : "tdot"));
+  if (aml._lit !== lit) {
+    aml._lit = lit;
+    aml.tools.forEach((t, i) => t.setAttribute("class", i < lit ? "tname on" : "tname"));
+    aml.dots.forEach((d, i) => d.setAttribute("class", i < lit ? "tdot on" : "tdot"));
+  }
   /* the notebook fills as the phases pass */
   aml.cells.forEach((c, i) => {
     const t = smooth((e - 0.08 - i * 0.13) / 0.12);
-    c.style.strokeDashoffset = (c._len * (1 - t)).toFixed(1);
-    aml.runs[i].setAttribute("opacity", t >= 1 ? 1 : 0);
+    const off = (c._len * (1 - t)).toFixed(1);
+    if (c._off !== off) { c._off = off; c.style.strokeDashoffset = off; }
+    const ran = t >= 1;
+    if (aml.runs[i]._on !== ran) { aml.runs[i]._on = ran; aml.runs[i].setAttribute("opacity", ran ? 1 : 0); }
   });
 }
 
@@ -1764,7 +2228,7 @@ function scrubAml(p) {
    Wide 560-unit boxes author at 12 ⟶ need a ≥515px seat; the 440-unit
    climb at 11 ⟶ ≥450 (margin over 405); the net authors at 14.5 on 460
    ⟶ ≥355. Anything narrower rebuilds on its tight 240-unit plate. */
-const editions = { applied: null, jet: null, aml: null, quest: null, net: null };
+const editions = { applied: null, jet: null, aml: null, quest: null, net: null, path: null };
 function innerW(el) {
   const cs = getComputedStyle(el);
   return el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
@@ -1776,6 +2240,7 @@ function chooseEditions() {
     aml: [innerW(aml.svg.parentElement), 515, buildAml],
     quest: [innerW(climb.svg.parentElement), 450, buildClimb],
     net: [$("netwrap").clientWidth, 355, buildNet],
+    path: [innerW(yard.svg.parentElement), 515, buildPath],
   };
   let changed = false;
   for (const [k, [w, min, build]] of Object.entries(seats)) {
@@ -1792,6 +2257,13 @@ function scrubBench(p) {
   const t = smooth((p - 0.34) / 0.3);
   $("bScalar").style.transform = `scaleX(${(t * (1 / 3.5)).toFixed(3)})`;
   $("bSimd").style.transform = `scaleX(${t.toFixed(3)})`;
+}
+/* the bench lanes (jetpack) — 66 vs 455 MB/s, drawn at the point-
+   estimate ratio; the label carries the conservative 6.5× CI bound */
+function scrubJetBench(p) {
+  const t = smooth((p - 0.3) / 0.3);
+  $("jScalar").style.transform = `scaleX(${(t * (66 / 455)).toFixed(3)})`;
+  $("jPar").style.transform = `scaleX(${t.toFixed(3)})`;
 }
 
 /* LifeQuest — the honest ledger: three resolve, two stay held. Rows
@@ -1819,8 +2291,8 @@ const phases = [...document.querySelectorAll(".ladder li[data-ph]")];
 function scrubGate(p) {
   phases.forEach((li) => {
     const i = +li.dataset.ph;
-    if (i === 7) return; /* gated */
-    li.classList.toggle("lit", p > 0.1 + i * 0.042);
+    if (i === 10) return; /* deploy — gated; a scroll never lights it */
+    li.classList.toggle("lit", p > 0.1 + i * 0.03);
   });
 }
 
@@ -1840,11 +2312,11 @@ $("mtoggle").addEventListener("click", () => {
 });
 
 /* ————— masthead clock + phase ————— */
-const CLOCKS = [372, 527, 726, 923, 1176, 1267, 1325, 1361]; /* the site's own datelines, minutes */
-const PHASE_NAMES = ["the start", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the gate — held"];
+const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1361]; /* the datelines, minutes — station stops are the site's own */
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the gate — held"];
 let lastClock = -1, lastPhase = -1;
 function setMast(beat, p) {
-  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, 7)];
+  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, 10)];
   const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
   if (m !== lastClock) { /* write only on minute change: no idle layout */
     lastClock = m;
@@ -1910,34 +2382,47 @@ function work(y) {
     $("sun").style.opacity = arc.sun < 4.6 ? 1 : clamp(1 - (arc.sun - 4.6) / 0.75, 0, 1);
   }
 
-  /* the thread + token: scrolling IS travelling */
-  const tokenY = clamp(y + vh * 0.55, samples.length ? samples[0].y : 0, gatePageY);
+  /* the thread + token: scrolling IS travelling. The 12-row ladder can
+     seat the dock BELOW the reading line's deepest reach on short-tall
+     viewports (measured at 1440×900: dock 12612, max reach 12501) — so
+     over the final half-viewport of scroll the token glides whatever
+     shortfall remains. Still a pure function of y: any jump lands right. */
+  let tokenY = clamp(y + vh * 0.55, samples.length ? samples[0].y : 0, gatePageY);
+  const yEnd = Math.max(1, docH - vh);
+  const short = gatePageY - (yEnd + vh * 0.55);
+  if (short > 0) tokenY = clamp(tokenY + short * smooth((y - (yEnd - vh * 0.5)) / (vh * 0.5)), 0, gatePageY);
   const tokenL = lenAtY(tokenY);
   const halted = tokenL >= pathLen - 2;
   window.__world.halted = halted;
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
   /* stations scrub only near their own beat */
-  if (Math.abs(beat - 1) <= 1) scrubApplied(beat < 1 ? 0 : beat > 1 ? 1 : bp);
-  if (Math.abs(beat - 2) <= 1) scrubCadence(beat < 2 ? 0 : beat > 2 ? 1 : bp);
-  if (Math.abs(beat - 3) <= 1) scrubBench(beat < 3 ? 0 : beat > 3 ? 1 : bp);
-  if (Math.abs(beat - 4) <= 1) scrubJet(beat < 4 ? 0 : beat > 4 ? 1 : bp);
-  if (Math.abs(beat - 5) <= 1) { const p5 = beat < 5 ? 0 : beat > 5 ? 1 : bp; scrubQuests(p5); scrubClimb(p5); }
-  if (Math.abs(beat - 6) <= 1) scrubAml(beat < 6 ? 0 : beat > 6 ? 1 : bp);
-  if (beat >= 6) scrubGate(beat < 7 ? 0 : bp);
+  if (Math.abs(beat - 1) <= 1) scrubWho(beat < 1 ? 0 : beat > 1 ? 1 : bp);
+  if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
+  if (Math.abs(beat - 3) <= 1) scrubApplied(beat < 3 ? 0 : beat > 3 ? 1 : bp);
+  if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
+  if (Math.abs(beat - 5) <= 1) scrubBench(beat < 5 ? 0 : beat > 5 ? 1 : bp);
+  if (Math.abs(beat - 6) <= 1) { const p6 = beat < 6 ? 0 : beat > 6 ? 1 : bp; scrubJet(p6); scrubJetBench(p6); }
+  if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
+  if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
+  if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
+  if (beat >= 9) scrubGate(beat < 10 ? 0 : bp);
 
-  /* manifest stamps: one line as each station completes (reversible) */
+  /* manifest stamps: one line as each station completes (reversible).
+     The six stations ride beats 3–8 now. */
   let stamped = 0;
-  for (let i = 1; i <= 6; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
+  for (let i = 3; i <= 8; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
   if (stamped !== window.__world.stamped) setStamps(stamped);
   /* at the gate, the corner manifest LANDS into the page's own ledger;
-     at a station it folds to a pill so the work owns the corner */
-  $("manifest").classList.toggle("landed", beat === 7 && bp > 0.22);
+     at a stop it folds to a pill so the work owns the corner */
+  $("manifest").classList.toggle("landed", beat === 10 && bp > 0.22);
   $("manifest").classList.toggle("compact",
-    !mobile && beat >= 1 && beat <= 6 && bp > 0.18 && bp < 0.8);
+    !mobile && beat >= 1 && beat <= 9 && bp > 0.18 && bp < 0.8);
   /* the chrome bows out sooner on stacked seats — the card reaches the
-     masthead earlier when the columns are a single stack */
-  $("mast").classList.toggle("gone", beat === 7 && bp > (stacked ? 0.4 : 0.6));
+     masthead earlier when the columns are a single stack. Round-3
+     leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
+     so the fade completes before the card's headline reaches the clock */
+  $("mast").classList.toggle("gone", beat === 10 && bp > (stacked ? 0.32 : 0.5));
   setMast(beat, bp);
 
   /* fx: arrive → drift → depart, a pure function of position */
@@ -2280,9 +2765,10 @@ $("approve").addEventListener("click", () => {
 /* if the module ever dies, the story must still read: settle everything */
 addEventListener("error", () => document.body.classList.add("settled"));
 function settleAll() {
-  scrubApplied(1); scrubCadence(1); scrubBench(1); scrubJet(1);
-  scrubQuests(1); scrubClimb(1); scrubAml(1); scrubGate(1);
-  setStamps(6); setMast(7, 1);
+  scrubWho(1); scrubPath(1); scrubApplied(1); scrubCadence(1);
+  scrubBench(1); scrubJet(1); scrubJetBench(1); scrubQuests(1);
+  scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
+  setStamps(6); setMast(10, 1);
 }
 async function boot() {
   await document.fonts.ready.catch(() => {});
