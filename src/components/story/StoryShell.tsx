@@ -569,6 +569,10 @@ function ArrivalChapter() {
           id={ARRIVAL.id}
           label="arrival — a working paper on what i’ve built"
           dateline="summer 2026"
+          /* "printed" (the Seam): the masthead's running head is already
+             on the page when it opens — the hero's CSS entrance is the
+             arrival choreography here, and it must stay load-only. */
+          arrive="printed"
         />
 
         {/* py-10 (was py-16): the masthead→flagship-teaser frame sagged
@@ -922,7 +926,15 @@ function WhoChapter() {
     >
       <ThreadSegment id={WHO.id} />
       <div className={WRAP}>
-        <ChapterKicker id={WHO.id} label="who — the short version" />
+        {/* "solo" (the Seam): the head takes its own once-trigger. The
+            chapter's first scene is the bio grid a full manifesto below
+            it — adopting the head there would hold the running head
+            hostage to a trigger the reader meets much later. */}
+        <ChapterKicker
+          id={WHO.id}
+          label="who — the short version"
+          arrive="solo"
+        />
 
         <div className="mt-10">
           {/* The MANIFESTO (plan 3.8): the page's ONE scrubbed text —
@@ -1025,7 +1037,13 @@ function PathChapter() {
     >
       <ThreadSegment id={PATH.id} />
       <div className={WRAP}>
-        <ChapterKicker id={PATH.id} label="the path — field records" />
+        {/* "lead" (the Seam): the head takes slot 0 of the headline
+            pair's scene below — ¶03 arrives as one authored entrance. */}
+        <ChapterKicker
+          id={PATH.id}
+          label="the path — field records"
+          arrive="lead"
+        />
 
         <PairHeadline
           className="mt-10"
@@ -1177,9 +1195,12 @@ function AutomlChapter() {
     >
       <ThreadSegment id={AUTOML.id} />
       <div className={WRAP}>
+        {/* "lead" (the Seam): the head opens the thesis column's scene —
+            the flagship announces itself before the argument assembles. */}
         <ChapterKicker
           id={AUTOML.id}
           label="the capstone — senior design expo — spring 2026"
+          arrive="lead"
         />
 
         {/* THE PINNED PLATE (lg+): data-pipeline-pin-wide is the pin
@@ -1440,7 +1461,13 @@ function WorkChapter() {
     >
       <ThreadSegment id={WORK.id} />
       <div className={WRAP}>
-        <ChapterKicker id={WORK.id} label="the work — four more systems" />
+        {/* "lead" (the Seam): the head opens the first work row's scene,
+            so the index's first deal and its running head are one beat. */}
+        <ChapterKicker
+          id={WORK.id}
+          label="the work — four more systems"
+          arrive="lead"
+        />
         <h2 className="sr-only">The work</h2>
 
         <div className="mt-10">
@@ -1897,7 +1924,16 @@ function ValuesChapter() {
     >
       <ThreadSegment id={VALUES.id} />
       <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
-        <ChapterKicker id={VALUES.id} label="how i work — after dark" dusk />
+        {/* "solo" (the Seam): ch06 is deliberately UNWRAPPED — the
+            litany's slowing cascade and the gates ledger keep their own
+            coordinated triggers (see the scene note below), so the head
+            arrives on its own cue just ahead of them. */}
+        <ChapterKicker
+          id={VALUES.id}
+          label="how i work — after dark"
+          dusk
+          arrive="solo"
+        />
         <h2 className="sr-only">How I work</h2>
 
         {/* Two figures share the nightfall spread: the litany carries the
@@ -2046,10 +2082,13 @@ function GateChapter() {
     >
       <ThreadSegment id={GATE.id} />
       <div className={WRAP}>
+        {/* "lead" (the Seam): the head opens the finale's composed beat —
+            pledge → echo → the giant name follow it off one trigger. */}
         <ChapterKicker
           id={GATE.id}
           label="the approval gate — closing page"
           dusk
+          arrive="lead"
         />
 
         <div className="mt-10 grid items-center gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
