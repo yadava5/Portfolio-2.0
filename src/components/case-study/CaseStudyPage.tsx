@@ -300,6 +300,36 @@ export function CaseStudyPage({ project, study }: CaseStudyPageProps) {
         <div className="mt-12 grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,34rem)_minmax(0,1fr)]">
           <dl className="border-ink/20 space-y-2.5 border-t pt-4">
             <LedgerRow term="role">{study.role.toLowerCase()}</LedgerRow>
+            {/* A named collaborator gets a row of his own, above the
+                timeframe, because a person is not a footnote to a date.
+
+                `normal-case` is load-bearing here and is the reason this
+                could not simply be appended to `role`: the ledger runs
+                `.label-mono`, which sets `text-transform: lowercase`, and
+                the role row lowercases its value again in JS. Either
+                would have printed "shree chaturvedi". The site already
+                has the escape hatch — the repo row below uses it because
+                "repo names/shas are case-sensitive data" — and a person's
+                name is the most case-sensitive data on the page. */}
+            {study.collaborator ? (
+              <LedgerRow term="with">
+                {study.collaborator.href ? (
+                  <a
+                    href={study.collaborator.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="link-draw tap-target-tight normal-case"
+                  >
+                    {study.collaborator.name}
+                  </a>
+                ) : (
+                  <span className="normal-case">{study.collaborator.name}</span>
+                )}
+                {study.collaborator.scope
+                  ? ` — ${study.collaborator.scope}`
+                  : ""}
+              </LedgerRow>
+            ) : null}
             <LedgerRow term="timeframe">
               {study.timeframe.toLowerCase()}
             </LedgerRow>
