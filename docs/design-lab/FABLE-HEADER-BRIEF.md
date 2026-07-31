@@ -163,25 +163,38 @@ The owner set a hierarchy, and it is a design instruction, not a footnote:
 > some other headings or things, we can make **different kind of animations for
 > those as well** — **not on the level of my name**, but my name is the focus."
 
-So there are two tiers, and the gap between them is what makes the name read as
-the peak:
+He then confirmed the split himself, and assigned the tiers:
 
-- **Tier 1 — the name.** The only place that gets per-letter mechanisms. Four
-  to six independent machines that arrive separately and come together into one
-  word. Nothing else on the site is allowed this.
-- **Tier 2 — every other heading.** Chapter headlines, case-file titles,
-  section kickers. They get *their own* character and may differ from each
-  other, but they are **one gesture per heading**, not per-letter, and they must
-  never compete with the nameplate for attention.
+> "go with **tier 1**, but for the **other small headings and titles use tier
+> 2**! for the **main heading and my name go with tier 1**! i **strongly
+> support tier 1 for my name** in the start!"
 
-**Design the gap deliberately.** If a chapter headline is 80% as lively as the
-name, the name stops being the focus and the page has two peaks. State how you
-are keeping tier 2 subordinate — by scale, by count of moving parts, by
-duration, by whether it is per-letter at all — rather than leaving it to taste.
+So the assignment is settled — this is no longer a proposal to weigh:
 
-Tier 2 is a **proposal** this round, not a build. Sketch it, name the mechanism
-you would give two or three real headings, show one if it is cheap — but the
-name is where the effort goes. Do not let tier 2 eat the round.
+- **Tier 1 — the name, and the main heading.** Per-letter mechanisms. Four to
+  six independent machines that arrive separately and come together into one
+  word. The name is the anchor case and the one he has now backed three times.
+- **Tier 2 — every other small heading and title.** Chapter headlines,
+  case-file titles, section kickers. Their own character, allowed to differ
+  from each other, but **one gesture per heading**, never per-letter.
+
+**Two things in tier 1, and they are not equal.** He also said, in the same
+breath as assigning them, *"my name is the focus."* Both statements hold if
+tier 1 describes the **class of mechanism**, not the intensity: the main
+heading may use per-letter machines, and the name must still clearly outrank
+it. Resolve that with **count and scale**, not by denying the main heading its
+tier — for instance, the name carrying 4–6 machines while the main heading
+carries one or two, at deck scale rather than nameplate scale. Whatever you
+choose, say why the name still reads first.
+
+**Design the gap deliberately.** If a small chapter headline is 80% as lively
+as the name, the page has three peaks and none of them is the focus. State how
+tier 2 stays subordinate — by scale, by count of moving parts, by duration, by
+not being per-letter at all — rather than leaving it to taste.
+
+Effort split: **the name is the round.** Tier 1's main heading and all of tier
+2 are proposals — sketch them, name the mechanisms, show one if it is cheap.
+Do not let them eat the round.
 
 ---
 
