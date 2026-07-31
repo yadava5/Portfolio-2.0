@@ -331,26 +331,73 @@ test.describe("dossier — case files", () => {
     await expect(boundaries).toContainText(
       "The DB-enforced RLS is not turned on in production"
     );
-    /* The two limits that keep the surrounding numbers honest */
+    /* The limit that keeps the surrounding numbers honest: what the
+       tests prove is scoped, and the deployed role stays unknowable. */
     await expect(boundaries).toContainText(
-      "The 11 isolation tests are not in CI"
+      "not that they are switched on in production"
     );
     await expect(boundaries).toContainText(
       "which role the production DATABASE_URL actually uses"
     );
 
-    /* And the page never says the opposite. These are the phrasings a
-       well-meaning rewrite would reach for; each one is a promotion of
-       the claim, so each one fails the suite. */
-    const body = await page.locator("body").innerText();
-    for (const overclaim of [
+    /* THIS ASSERTION USED TO PIN A FALSE SENTENCE (2026-07-30).
+       It required the page to say "The 11 isolation tests are not in
+       CI" — and they are. The workflow at cadence @ 54c79e0 provisions
+       a postgres:16 service and sets RLS_TEST_PG_ADMIN_URL, so the
+       skip guard never fires; run 30133037462 logs
+       `✓ lib/__tests__/rls.postgres.test.ts (11 tests) 232ms`. So this
+       spec was enforcing an under-claim, exactly the way
+       check-resume.mjs was enforcing a stale résumé: a guard pinned to
+       a snapshot of PROSE cannot tell that the prose went stale, and
+       ends up defending the error.
+       The rewrite asserts the SUBSTANCE that must survive — the tests
+       prove the policies work, not that they are on — and the retired
+       sentence moves to the forbidden list below, so the false
+       disclaimer cannot come back. */
+
+    /* The page never says the opposite, in either direction. The first
+       five are promotions a well-meaning rewrite would reach for. The
+       last three are the under-claims this spec itself used to require —
+       because a false disclaimer is the same broken receipt as a false
+       boast, and this file has now made both mistakes.
+
+       READ EVERYWHERE EXCEPT THE CORRECTIONS REGISTER. That section
+       exists to QUOTE retracted wording — this repo amends, it never
+       deletes — so a retracted sentence appearing there is the register
+       working, not the page regressing. The first cut of this check read
+       the whole body and failed on the erratum quoting the very sentence
+       it retracts, which is the third time in one session that a guard
+       here has matched the site's own account of a mistake instead of
+       the mistake: the contrast guard matched its own comment prose, and
+       the probe-route leak needle matched Glyph's erratum. A guard that
+       cannot tell a claim from a retraction of that claim will always
+       punish the honest version.
+
+       Read from the LIVE dom and subtract, rather than cloning and
+       removing. The clone version was written first and was wrong for a
+       second reason worth recording: `innerText` is rendering-aware, but
+       a DETACHED node has no rendering, so on a clone it degrades to
+       `textContent` — and started matching the retracted sentence inside
+       the JSON-LD block and the RSC payload script, neither of which a
+       reader can see. */
+    const rendered = await page.locator("main").innerText();
+    const register = await page
+      .locator("#corrections")
+      .innerText()
+      .catch(() => "");
+    expect(register).toContain("do not run in ordinary CI"); /* it quotes */
+    const body = rendered.replace(register, "");
+    for (const wrong of [
       "RLS is live",
       "RLS is enforced",
       "RLS enforced in production",
       "row-level security is live",
       "database-enforced isolation is live",
+      "isolation tests are not in CI",
+      "do not run in ordinary CI",
+      "CI is red on main",
     ]) {
-      expect(body.toLowerCase()).not.toContain(overclaim.toLowerCase());
+      expect(body.toLowerCase()).not.toContain(wrong.toLowerCase());
     }
   });
 
