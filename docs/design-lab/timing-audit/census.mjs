@@ -12,6 +12,9 @@ const URLP = 'http://127.0.0.1:8088/story-the-long-run.html';
 const VPS = [
   { tag: 'desk', width: 1440, height: 900 },
   { tag: 'mob', width: 390, height: 844 },
+  // round 5: the 821–1249 stacked band was unmeasured — it swaps plate
+  // editions and thread anchors, so beat 7 can fail differently here.
+  { tag: 'mid', width: 1024, height: 768 },
 ];
 
 const COARSE = Number(process.env.COARSE || 16);
