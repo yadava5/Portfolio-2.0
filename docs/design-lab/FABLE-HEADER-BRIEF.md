@@ -163,38 +163,37 @@ The owner set a hierarchy, and it is a design instruction, not a footnote:
 > some other headings or things, we can make **different kind of animations for
 > those as well** — **not on the level of my name**, but my name is the focus."
 
-He then confirmed the split himself, and assigned the tiers:
+He then assigned the tiers, and then narrowed tier 1 to a single element:
 
-> "go with **tier 1**, but for the **other small headings and titles use tier
-> 2**! for the **main heading and my name go with tier 1**! i **strongly
-> support tier 1 for my name** in the start!"
+> "not the headings — like the **4-6 independent machines and focus on
+> characters is only for my name "Ayush Yadav" at the start**!"
 
-So the assignment is settled — this is no longer a proposal to weigh:
+**Tier 1 is exactly one element on the entire site: the nameplate.** When he
+said "the main heading and my name", those were the same thing — his name *is*
+the page's main heading — and this message settles it. There is no second
+tier-1 element.
 
-- **Tier 1 — the name, and the main heading.** Per-letter mechanisms. Four to
-  six independent machines that arrive separately and come together into one
-  word. The name is the anchor case and the one he has now backed three times.
-- **Tier 2 — every other small heading and title.** Chapter headlines,
-  case-file titles, section kickers. Their own character, allowed to differ
-  from each other, but **one gesture per heading**, never per-letter.
+- **Tier 1 — `Ayush Yadav`, the nameplate at the start. Nothing else, ever.**
+  Per-character mechanisms: four to six independent machines that arrive
+  separately and come together into one word. This treatment exists once on the
+  site and its scarcity is what gives it force.
+- **Tier 2 — every other heading and title on the site, without exception.**
+  The hero claim, chapter headlines, case-file titles, section kickers. Each may
+  have its own character and they may differ from each other, but **one gesture
+  per heading, never per-character.**
 
-**Two things in tier 1, and they are not equal.** He also said, in the same
-breath as assigning them, *"my name is the focus."* Both statements hold if
-tier 1 describes the **class of mechanism**, not the intensity: the main
-heading may use per-letter machines, and the name must still clearly outrank
-it. Resolve that with **count and scale**, not by denying the main heading its
-tier — for instance, the name carrying 4–6 machines while the main heading
-carries one or two, at deck scale rather than nameplate scale. Whatever you
-choose, say why the name still reads first.
+**Do not give per-character mechanisms to anything but the name.** If a second
+element does what the name does, the name is no longer the thing that does it —
+and this is now the third time he has made the point in his own words.
 
-**Design the gap deliberately.** If a small chapter headline is 80% as lively
-as the name, the page has three peaks and none of them is the focus. State how
-tier 2 stays subordinate — by scale, by count of moving parts, by duration, by
-not being per-letter at all — rather than leaving it to taste.
+**Design the gap deliberately.** If a heading is 80% as lively as the name, the
+page has two peaks and neither is the focus. State how tier 2 stays subordinate
+— by scale, by count of moving parts, by duration, and above all by not being
+per-character — rather than leaving it to taste.
 
-Effort split: **the name is the round.** Tier 1's main heading and all of tier
-2 are proposals — sketch them, name the mechanisms, show one if it is cheap.
-Do not let them eat the round.
+Effort split: **the name is the round.** Tier 2 is a proposal — sketch it, name
+the gesture you would give two or three real headings, show one only if it is
+cheap. Do not let it eat the round.
 
 ---
 
