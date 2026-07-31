@@ -1,172 +1,213 @@
-# Fable brief — round 10: ship the storytelling, and make the name arrive as one
+# Fable brief — round 11: the prototype's engine, the live site's words
 
-> **This is the round that fixes a delivery failure, and the failure is mine.**
-> Rounds 4, 5 and 6 built the scroll storytelling. Every one of them committed
-> **zero files to `src/`**. All of it is still sitting in
-> `docs/design-lab/candidates/`. Only the header (round 9) was ever ported. The
-> owner has been shown screenshots of prototypes for several rounds and
-> reasonably assumed the work was landing on his site. It was not.
+## §−1 · THE DIRECTIVE — this supersedes any narrower reading below
 
----
+The owner has now stated the target in one sentence, and it decides every open
+question in this document:
 
-## §0 · The owner's verdict, and the measurement that proves him right
+> "i want the **scroll flow and transitions like that prototype** with the
+> **text content I have in the live portfolio**! but the **flow, architecture,
+> diagrams animations, and the bar flowing from top to bottom** should be like
+> the prototype!"
 
-> "it's all **static**. There's no motion. There's no moment of things coming
-> altogether … Aside from my name machinery, **everything else is static** …
-> There's no kind of scroll telling. There's **no left, right, top, bottom**, or
-> anything going on in the whole page. So see what you missed."
+He then narrowed what survives, and this is the sharper version:
 
-I scrolled the live site in Chromium and WebKit and censused what actually
-transforms. **He is exactly right, and the shape of the defect is precise:**
+> "but the name should be what we worked on, the machinery — **that is the only
+> thing to keep from the current live portfolio architecture**!"
 
-| transform kind, elements that ever change it | **live site** | round-6 prototype |
-|---|---|---|
-| **horizontal — translateX** | **0** | 43 |
-| vertical — translateY | 57 | 90 |
-| **scale / depth** | **4** | 61 |
-| rotate | **1** | 19 |
-| translateZ | **0** | 8 |
+**Keep from the live site — exactly two things:**
 
-**The live site moves on exactly one axis.** Fifty-seven elements slide up or
-down and fade. Nothing enters from the left or the right, ever. Nothing recedes
-into the paper or comes toward the reader. That is the entire complaint, and it
-is not a matter of taste — it is a missing dimension.
+1. **All text content.** Every claim, receipt, figure caption, case-file link
+   and number. It is verified, pinned to artifacts, and the honesty engine
+   depends on it. **No prototype copy replaces live copy, ever.**
+2. **The nameplate machinery.** Approved, finished, untouched.
 
-**A hypothesis I had and disproved, recorded so you don't repeat it:** I first
-measured raw motion density and found the live site *busier* than the prototype
-(36.1 vs 9.7 elements moving per scroll step). That looked like it contradicted
-him. It does not — round 5's whole achievement was *reducing* mid-flight motion
-so stations assemble and hold. Density was the wrong instrument. Direction was
-the right one.
+**That is the whole list.** Everything else about production's architecture —
+the segmented thread, the one-shot entrance model, the chapter rail, the
+composition — **yields to the prototype.** Do not treat the live architecture
+as a baseline to be improved; treat the prototype's as the target and the live
+site as the source of words.
 
----
+**On production's richer text tooling** — blur, masks, clip-path,
+letter-spacing, variable font axes, per-word/line splits, which the prototype
+lacks entirely: these are *tools*, not architecture. Keep any that serve the
+prototype's grammar and drop any that fight it. **The prototype's architecture
+decides; the tools follow.** I previously told you to preserve this vocabulary
+as a goal in itself — that was wrong and is withdrawn.
 
-## §1 · Job one — port the storytelling into production
+**Adopt from the prototype:**
 
-The source of truth is `docs/design-lab/candidates/story-the-long-run-relief.html`
-(round 6) and the round-5 work inside it. **This is a translation, not a copy:**
-the prototype runs a bespoke `data-fx` engine; production runs GSAP +
-ScrollTrigger + `TextMotion`. Your own round-5 report already named what
-generalises, and it stands:
+- **The scroll flow** — scroll-coupled and reversible, the body of this brief.
+- **The transitions** — its entrance/exit grammar, applied to the live content.
+- **The architecture** — the continuous thread with a **travelling token**, the
+  **running head** carrying run state and clock, the **corner manifest** that
+  stamps per station.
+- **The diagram animations** — figures that move against scroll rather than
+  playing once.
+- **"The bar flowing from top to bottom"** — the thread as **one continuous
+  line down the whole page**, not the segmented per-chapter thread production
+  ships today. This is named explicitly and is not optional.
 
-1. **Deadlines and entrances must share one clock.** Any shared exit (a
-   contrast deadline, a pin release) must be derived from measured content
-   geometry, not from beat fractions.
-2. **Exit-by-departure** — prose leaving behind the mast scrim rather than
-   fading in place is what makes a "finished picture" possible in a
-   viewport-sized station.
-3. **Tall elements' entrances must be fold-aware** — per-element ScrollTrigger
-   start/end, not a shared stagger.
-4. **The last line of a section deserves dwell ≥ its headline's** — the lines
-   carrying case-file, source and live-build links currently have the shortest
-   life on the page.
-5. **The hero is complete at load.**
+The full measured gap is in `docs/design-lab/GAP-PROTOTYPE-VS-LIVE.md`.
 
-And the round-6 relief cut is the part that answers this brief most directly —
-**the six directions**: rise, press, recede, lay, the wings (left/right), and
-the drift ladder. That is where the missing 43 horizontal and 61 depth
-transforms come from.
+**Stage it. Ship each stage green.** The order below is by value-per-risk:
 
-**Constraints on the port, all real:**
+1. scroll-coupling (already in flight)
+2. the continuous thread + travelling token — "the bar flowing top to bottom"
+3. the running head and the corner manifest
+4. diagram/figure animations coupled to scroll
 
-- **The production CUT is on the record and still binds.** Plate depth broke
-  `atlas.spec.ts:762` with 6 failures because the raster is `absolute inset-0
-  h-full w-full` — zero slack, so any translation escapes its box. Reasoning is
-  in `globals.css`. Scale-based depth with `s < 1` cannot escape its box; that
-  is why rise/recede are the shippable spine and why `lay` may need the slack
-  the prototype has. Read it before designing the port.
-- **A8/D2 — exactly one pin**, already spent on `PipelineRun`. Do not add one.
-- **A9 guards scroll length.** The live document is 10,919px. Round 6's
-  prototype is 13,632px. Growth needs a reason and a number.
-- **The red thread's 2px seam contract** (`red-thread.spec.ts:108-165`, dx ≤ 2,
-  dy ≤ 14) is the canary for any layout regression. Any transform or positioned
-  ancestor between `<section>` and the viewport changes `getBoundingClientRect`
-  and fails it.
-- **No second rAF loop.** Ride `gsap.ticker`.
-- **A7** — reduced-motion, motion-off and print must each render a complete
-  authored world equal to the final frame.
-
-**Ship it in stages if that is safer, and say which stage you shipped.** A
-partial port that is green and live beats a complete one that is not. But
-"horizontal motion exists on the live site" is the floor for calling this round
-done.
+A stage that lands green and live beats two stages that do not.
 
 ---
 
-## §2 · Job two — the nameplate arrives as ONE thing
+# Round 11 detail: make the world move WITH the reader, both ways
 
-> "my name thing, they are working by **timing**, but I want them to **come
-> altogether at the same time**, like, things working — and see what more polish
-> you can do with the naming thing."
-
-**This reverses my round-9 instruction, and my instruction was the wrong call.**
-I told you to sequence the ensemble so each machine had a solo moment. You did
-exactly that — seat 1.95s, park 3.65s, click 5.0s, plant 5.85s, fold 6.8s — and
-the result reads as five things taking turns rather than one thing being made.
-
-He wants the opposite shape: **all five machines running at once, visibly
-working, converging on the finished name together.**
-
-**This is not "go back to round 8."** Round 8 was concurrent *and* 2.85s total
-with five sub-200ms payoffs, and he rejected it as too fast. The target is
-**concurrent AND unhurried** — five machines all turning, running, flying and
-seating simultaneously, each still slow enough to watch, all arriving together.
-
-Think of a machine shop where five operations run in parallel and the piece
-comes together at the end — not a relay.
-
-Specifics to hold:
-
-- **Keep everything round 9 fixed.** Nothing meaningful under ~350ms. The
-  figures — the bird's articulated wings and body, the dial's bezel and needle,
-  the landed poses that ARE the letterform — all stay. Those were the right
-  fixes and he did not complain about them.
-- **Overlap the machines**, so the middle of the performance has all five
-  visibly at work.
-- **Land them together**, or near enough that the name resolving reads as one
-  event rather than five. A small deliberate spread is fine if it makes the
-  final letter feel like a keystone; five separate arrivals is not.
-- **Total length is yours to choose.** 7.8s exists because the payoffs were
-  serialised; concurrency should shorten it naturally. Do not let it get fast
-  again — the moves keep their duration, they just stop queueing.
-- **"See what more polish you can do"** is an open invitation. Take it.
+> **The nameplate is approved and finished.** "i like the name now though!" — do
+> not touch `Nameplate.tsx` or its choreography this round.
 
 ---
 
-## §3 · Then show the whole page
+## §0 · What the owner actually meant, and he was right
 
-He wants to see it all together afterwards, so leave the site in a state worth
-scrolling end to end.
+Round 10 shipped the missing *directions* — horizontal 0 → 20, depth 4 → 20 on
+the live site. He confirmed that was not the point:
 
-## §4 · Gates — the bar is exact
+> "the animations and the page things are **not like this anymore**:
+> `story-the-long-run.html`. I really liked this concept as **moving with the
+> viewer and flowing back as well if we go back**! now the diagram animations
+> are **just running once**, and **nothing is flowing backwards** — you just
+> switched back to the old flowing state."
 
-`typecheck` · `lint` 0 errors · `format:check` · `test:contrast` · `test:proof`
-· `assets:check-og` · `test:seo` · `test:probe-routes` · `resume:check` ·
-`performance-budget` · full Playwright **935 passed / 40 skipped / 0 failed**
-across five browsers including both Safari seats.
+He is describing **scroll-coupling**, not direction. In the prototype, an
+element's opacity and transform are a pure function of scroll position:
 
-Re-measure **LCP and CLS on the real page** and report them plainly; current
-production is **84ms at 1× / 216ms at 4× CPU, CLS 0.00001**. And re-run the
-direction census above — **horizontal and depth transform counts on the live
-build are the number that says this round worked.**
+```js
+p  = (scrollY + vh - elTop) / (vh + elH)
+op = ein(p) * (1 - eout(p))
+```
+
+Scroll up and it runs backwards, exactly, because there is no state — only
+position. Round 10 ported the *vocabulary* and kept production's **one-shot**
+model, so the site plays each entrance once and freezes. That is the gap.
+
+## §1 · Measured, both ways
+
+A shared scroll ladder sampled top-down, then re-sampled bottom-up along the
+**same** stops; an element is "scrubbed" if its value at a given scroll
+position is the same in both directions, "one-shot" if it differs by more than
+8 units:
+
+| | moving elements | **scrubbed** | one-shot | reverses |
+|---|---|---|---|---|
+| **live production** | 48 | **3** | 45 | **6%** |
+| the prototype | 50 | **14** | 36 | **28%** |
+
+The prototype is **~4.7× more reversible.** (Neither is 100% — the prototype
+has a settle path of its own — but the direction of the difference is the
+complaint, and it is real.)
+
+**And the source says it plainly**, which is the part that matters:
+
+- `src/components/story/TextMotion.tsx:452` —
+  `scrollTrigger: { trigger, start, once: true }`. **Every chapter entrance,
+  including the wings / press / rise ported in round 10, is one-shot.**
+- `src/components/scenes/useSceneRun.ts:11` — *"`once: true` means the timeline
+  plays a single time and dies — ZERO rAF work after the scene settles."*
+
+Only four things on the site are scrubbed today: the manifesto word scrub, the
+red thread, the day arc, and `PipelineRun`.
+
+**An instrument failure of mine, recorded so you don't trust the first number:**
+my first hysteresis probe sampled the down-pass and up-pass at *different*
+scroll positions, so nothing ever matched and it reported "0 moving elements"
+on both pages. The corrected probe uses one shared ladder. If a measurement
+returns a suspiciously clean null, suspect the instrument.
+
+---
+
+## §2 · The job
+
+**Convert the entrance vocabulary from one-shot to scroll-coupled**, so the
+world moves with the reader and runs backwards when they scroll up.
+
+### The perf objection, and why it does not apply
+
+`once: true` exists for a real reason and the docstring states it: *ZERO rAF
+work after the scene settles*. NO-LIST §F3 forbids a second rAF loop, and this
+project measured the cost of idle work.
+
+**A scrubbed ScrollTrigger does not violate that.** It computes on scroll
+events and is dormant when the page is still — the same contract the thread,
+the day arc and `PipelineRun` already honour, and they are all scrubbed today.
+The property to protect is *zero work while idle*, not *zero work while
+scrolling*. Verify it rather than trusting me: measure idle rAF callbacks with
+the page still, before and after.
+
+### What to convert, in priority order
+
+1. **The chapter entrance vocabulary** — the wings, press and rise from round
+   10, plus the existing headline/deck/prose entrances. These are the ones a
+   reader scrolls back through most.
+2. **The scene figures** (`useSceneRun`) — this one is a genuine judgement
+   call. Some figures *narrate* (the pipeline run, the race) and reversing them
+   is correct; some *conclude*, and rewinding a conclusion may read as a
+   glitch. Decide per scene, say which you reversed and why, and if any stay
+   one-shot say what makes them different.
+3. **Departures** — round 10's exit-by-departure is already scrubbed; confirm
+   it, and make sure a reader scrolling up sees a station *return* rather than
+   pop.
+
+### What must not break
+
+- **A7** — reduced-motion, motion-off and print must each render the complete
+  final frame. A scrubbed world has no "final frame" until you scroll, so the
+  static worlds must still paint the settled state directly. This is the single
+  highest-risk part of the change.
+- **A8/D2** — exactly one pin, on `PipelineRun`. Scrubbing is not pinning; do
+  not add one.
+- **The red thread's 2px seam contract** (`red-thread.spec.ts:108-165`) is the
+  canary. A scrubbed transform on a positioned ancestor will break it.
+- **A9** — scroll length is 10,919px. Scrubbing should not need more.
+- **Do not reintroduce the round-5 defect.** Stations must still *assemble and
+  hold* — the fix was that a reader sees a finished picture. Scroll-coupling
+  must not turn every station back into a permanent smear. Coupling the
+  entrance and exit is the ask; the settled middle stays settled.
+
+---
+
+## §3 · Gates
+
+typecheck · lint 0 errors · format:check · test:contrast · test:proof ·
+assets:check-og · test:seo · test:probe-routes · resume:check ·
+performance-budget · full Playwright **935 / 40 / 0** across five browsers.
+
+**Report the reversibility number** from the probe above, re-run on the live
+build — that is the number that says this round worked. Also report **idle rAF
+with the page still** (must stay 0) and LCP/CLS (currently 76ms 1× / 220ms 4×,
+CLS 0.00001).
+
+One known flake, already filed, not yours: `pipeline-run.spec.ts:191` on
+webkit-mobile fails roughly one full-suite run in two under parallel load and
+passes 3/3 in isolation. If you see it, re-run before assuming you caused it —
+but if you can fix it while you are in that file, do.
 
 Expect specs to fail. A spec that fails because the site got better is one to
-update deliberately with its reasoning recorded — this repo has now had three
-guards pinning stale state in place (`check-resume.mjs`, `dossier.spec.ts`, a
-masthead fixture). Do not satisfy a stale assertion; correct it and say why.
+update deliberately with reasoning recorded. This repo has now had four guards
+pinning stale state; do not satisfy a stale assertion.
 
-## §5 · Unchanged rules
+## §4 · Unchanged
 
-Only the nameplate gets per-character machines · never use "glyph" to mean
-"letter" (Glyph is his product) · zero new dependencies · `mulberry32`, never
-`Math.random` · warm paper, ink, light — no glow, glass, aurora, neon,
-particles · clay reserved for decisions and gates.
+The nameplate is done — do not touch it. Only the nameplate gets per-character
+machines. Never use "glyph" to mean "letter". Zero new dependencies.
+`mulberry32`, never `Math.random`. Warm paper, ink, light. Clay reserved for
+decisions and gates.
 
-**Measure, don't assert.** Every claim terminates in a re-runnable command or an
-openable file. Disproving something in this brief with a measurement is a good
-outcome — report it loudly, as I did above with the density metric.
+**Measure, don't assert.** Every claim terminates in a re-runnable command or
+an openable file. Disproving something here with a measurement is a good
+outcome — report it loudly, as I did above with my own broken probe.
 
-## §6 · Standing law
+## §5 · Standing law
 
 `docs/design-lab/FABLE-VISUAL-BRIEF.md` · `docs/NO-LIST.md` (§A–§F) ·
 `docs/BUILD-RUBRIC.md` (A1–A9).
