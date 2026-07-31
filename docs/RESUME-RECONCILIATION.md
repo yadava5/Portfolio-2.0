@@ -59,34 +59,98 @@ both verified live as `cadence` and `glyph` after deploy), and Glyph's
 
 ## 1 · Two things I want you to look at first
 
-### 1a · Glyph's teammate is uncredited on the site
+### 1a · Glyph's teammate was uncredited — **FIXED**
 
 Your résumé says Glyph was a **2-person team** and that you hand-wrote the SIMD
-kernels **"with a teammate"**. The site credits **no collaborator anywhere** for
-Glyph — no team size, no second name. It reads as solo.
+kernels **"with a teammate"**. The site credited **no collaborator anywhere** —
+no team size, no second name. It read as solo. On a site whose thesis is that
+every claim terminates in an openable artifact, under-crediting a person is the
+one inaccuracy that costs more than a wrong number.
 
-On a site whose entire thesis is that every claim terminates in an openable
-artifact, under-crediting a person is the one kind of inaccuracy that costs
-more than a wrong number. This is the top item on the list for that reason.
+**Now fixed, and on AutoML too.** **Shree Chaturvedi** is named on both, in a
+new `collaborator` ledger row that sits above `timeframe` — a person is not a
+footnote to a date — with his LinkedIn so the credit terminates somewhere
+openable, and a `scope` so it says what he did rather than that he existed
+("the SIMD kernels, written together" / "capstone teammate").
 
-(AutoML is the mirror image and already handled correctly — the site says
-"my slice below" and the résumé says "2-person team".)
+AutoML was **not** the mirror image I first called it. "My slice below"
+discloses that a team existed without crediting anyone, which is a thinner
+thing than it looks: a reader learns there was someone else and cannot learn
+who. Both files now name him.
 
-### 1b · Cadence's RLS: the résumé claims what the site says is switched off
+Two notes on how it was done:
 
-- **Résumé:** "**Enforced** multi-tenant isolation across 7 tables with
-  PostgreSQL row-level security…"
-- **Site:** RLS is "left … **deliberately switched off until a staged
-  cutover**" — `projectCaseStudies.ts:1378`
+- The credit is a **field**, not more prose in `role`, because the meta ledger
+  lowercases that value twice (`.label-mono` sets `text-transform: lowercase`
+  and the row calls `.toLowerCase()`). Appending the name would have published
+  "shree chaturvedi". The row uses the same `normal-case` escape hatch the repo
+  pin already uses for case-sensitive data.
+- His email is public on the capstone's landing page and is **deliberately not
+  republished here**. LinkedIn does what a credit link needs to do; putting
+  someone else's address on a third site is a favour nobody asked for. Say the
+  word if you want it added.
 
-The site is being careful and the résumé is not. Read side by side by anyone
-who clicks through, the résumé over-claims. **Recommend changing the résumé**
-to match the site's wording (owner-scoped checks in the service layer, proven
-by the IDOR suite), not the other way round.
+### 1b · Cadence's RLS — I had this backwards, and the correction is in your favour
 
-Note also the two 7s are different things: the résumé's "7 tables", the site's
-"**7 IDOR-vulnerable endpoints**" found and fixed (`:1515`). Don't let them
-read as the same fact.
+**What I wrote here first:** that the résumé over-claims and the site is being
+careful. That was **one word right and three statements wrong.**
+
+An investigation against the actual repository and its CI logs found that
+**the portfolio was the document making false statements** — and all three
+were *under*-claims. The case file said the 11 isolation tests "do not run in
+ordinary CI", that they "are not in CI", and that "the repo's own CI is red on
+main right now."
+
+Verified directly, not from prose. The workflow at `cadence @ 54c79e0` — the
+commit the case file pins — provisions a `postgres:16` service and sets
+`RLS_TEST_PG_ADMIN_URL`, so the skip guard never fires. Run `30133037462`
+records:
+
+```
+✓ lib/__tests__/rls.postgres.test.ts (11 tests) 232ms      2026-07-24T23:11:13Z
+```
+
+and every main-branch run since **2026-07-23** is green, including the pin.
+The suite is genuine database-level proof — it builds its own
+`NOSUPERUSER NOBYPASSRLS` role, applies the real migration, and asserts a raw
+unfiltered `SELECT` as one user returns only that user's rows.
+
+**Likely origin, worth knowing because it will recur:** the identical caveat is
+*true* of Applied, whose backend workflow really does provision no database. It
+appears to have been copied to a repo whose CI had since gained one. **A caveat
+goes stale exactly like a boast** — and nobody re-checks the sentences that
+make them look worse.
+
+**Fixed on the site.** All three retracted, with an erratum.
+
+**What was actually wrong on the résumé: one word.** "**Enforced**" — the
+migration is written, committed, `FORCE`d on 7 tables with 22 policies, and
+CI-proven, but nothing applies it and production still connects as the owner
+role. Suggested replacement, which loses almost nothing:
+
+> "**Built** DB-enforced multi-tenant isolation for **7 tables** — 22 PostgreSQL
+> row-level-security policies with `FORCE`, a non-`BYPASSRLS` app role, and
+> per-request transaction-local GUC identity — plus owner-scoped checks on
+> **6 services**; **proven by an 11-test isolation and IDOR suite running in CI
+> against ephemeral Postgres**, with production cutover staged."
+
+The strongest clause in your current résumé line — the CI one — is the part
+that was already true and that the site was disowning.
+
+**Making it actually true is small.** The code is done; what remains is
+operational — apply `0001`, then `0003` with a real password, confirm the GUC
+wiring is live (it is), apply `0002`, repoint `DATABASE_URL` at `cadence_app`.
+The rollback role is already written and commented out. It's a demo deployment
+with mock login, so there are no production users to break. Worth a separate
+thread.
+
+**One more thing found:** the two 7s were real and independent — 7 tenant
+tables, and 7 IDOR endpoints found and fixed. But the endpoint count is now
+**stale**: commit `75180a3` fixed an eighth of the same class, and its own
+message says so. Absorbing that makes the number bigger *and* dissolves the
+coincidence. That commit also contains the best line in the codebase, which
+belongs on the site: *"a test can pin a vulnerability in place and report green
+forever"* — the pre-existing test asserted the vulnerable query.
 
 ---
 
