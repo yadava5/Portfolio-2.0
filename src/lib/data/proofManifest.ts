@@ -181,7 +181,11 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary: "No private data.",
     date: "2026-07",
     receipt: {
-      label: "taskflow case file · receipt 01",
+      /* The product is Cadence. `taskflow-calendar` is the ROUTE SLUG and
+         stays — it is a pinned identifier and every receipt anchor is
+         built from it — but it was leaking into the link's rendered TEXT
+         on /evidence, where a reader sees a name the site retired. */
+      label: "cadence case file · receipt 01",
       href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
     },
   },
@@ -203,7 +207,11 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary: "No private data.",
     date: "2025-12-26",
     receipt: {
-      label: "fast-mnist case file · receipt 02",
+      /* Same slug-into-display-text leak, and this one was provably an
+         oversight rather than a decision: the entry 27 lines below already
+         renders "glyph case file · receipt 01" against the same route. One
+         file was calling the same product two names. */
+      label: "glyph case file · receipt 02",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
     },
   },

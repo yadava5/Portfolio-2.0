@@ -68,3 +68,16 @@ TECHNICAL-*
 # 307 errors / 8,975 warnings against a tree whose real count is
 # 0 errors / 17 warnings. Never commit them, never lint them.
 .claude/worktrees/
+
+# Timing-audit measurement byproducts. The probes (census.mjs, analyze.mjs,
+# inventory.mjs, video.mjs) regenerate all of this from the prototype, so the
+# re-runnable script is the tracked evidence and the render is not:
+#   video/  ~9.5 MB of webm walkthroughs + decoded frames
+#   stills/ ~6.3 MB of PNGs captured at exact defect scroll positions
+#   the raw sweep dumps the analysis JSONs are derived from
+docs/design-lab/timing-audit/video/
+docs/design-lab/timing-audit/stills/
+docs/design-lab/timing-audit/opgrid-*.json
+docs/design-lab/timing-audit/staticboxes-*.json
+docs/design-lab/timing-audit/hover-*.json
+docs/design-lab/timing-audit/census-*.json

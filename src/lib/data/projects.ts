@@ -367,7 +367,12 @@ export const projects: Project[] = [
     imageWidth: 1376,
     imageHeight: 768,
     imageKind: "real-screenshot",
-    imageAlt: "Real Fast MNIST React workbench screenshot",
+    /* The de-staling pass recorded above for jobtracker and taskflow
+       missed this one, and it is the alt text — so the retired name was
+       being read aloud to screen-reader users and painted as the figure's
+       caption in the reduced-motion world, the two audiences least able
+       to see that the rest of the page says Glyph. */
+    imageAlt: "Real Glyph React workbench screenshot",
     imageDisclosure:
       "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
     featured: true,

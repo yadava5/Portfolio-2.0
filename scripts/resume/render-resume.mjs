@@ -1,6 +1,49 @@
+/**
+ * RETIRED GENERATOR — it is no longer the source of the served résumé, and
+ * running it would undo a correction.
+ *
+ * This script hard-codes a résumé and renders it to public/resume.pdf. It
+ * produced the PDF the site served until 2026-07-30, and every fact in the
+ * literals below is now stale: the email is yadava5@miamioh.edu (the site
+ * and the real résumé both say aesh.03.23@gmail.com), the GPA line reads
+ * "3.47 Overall", and the projects are JobTracker, Fast MNIST and Visual
+ * Assist — names the site no longer uses for products it now calls Applied,
+ * Glyph and Cadence. It also has no jetpack.
+ *
+ * The résumé is authored by the owner in Word/LibreOffice now, so a
+ * hard-coded generator is a second, competing source of truth for the same
+ * document — and this is exactly how the served PDF drifted for two weeks
+ * without anyone noticing.
+ *
+ * Kept rather than deleted because the layout work in it is real and may be
+ * wanted again. It refuses to run without an explicit opt-in so it cannot
+ * silently overwrite the authored PDF. If you genuinely want to regenerate
+ * from these literals, update them first, then set RESUME_RENDER_OK=1 — and
+ * `npm run resume:check` will still refuse the result unless it agrees with
+ * personal.ts.
+ */
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { chromium } from "playwright";
+
+if (process.env.RESUME_RENDER_OK !== "1") {
+  console.error(
+    [
+      "render-resume.mjs is retired and refused to run.",
+      "",
+      "public/resume.pdf is now the owner's authored résumé (2026-07-30), not",
+      "this script's output. Running it would overwrite that document with the",
+      "stale literals below — wrong email, wrong GPA line, and the old project",
+      "names (JobTracker / Fast MNIST / Visual Assist).",
+      "",
+      "To replace the résumé, copy the authored PDF over public/resume.pdf and",
+      "run `npm run resume:check`, which cross-checks it against personal.ts.",
+      "To regenerate from this script anyway, fix the literals and set",
+      "RESUME_RENDER_OK=1.",
+    ].join("\n")
+  );
+  process.exit(1);
+}
 
 const outputPath = resolve(process.cwd(), "public/resume.pdf");
 
