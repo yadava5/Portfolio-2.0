@@ -7,7 +7,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 
 const OUT = new URL('./', import.meta.url).pathname;
 mkdirSync(OUT, { recursive: true });
-const URLP = 'http://127.0.0.1:8088/story-the-long-run.html';
+const URLP = process.env.URLP || 'http://127.0.0.1:8088/story-the-long-run.html';
 
 const VPS = [
   { tag: 'desk', width: 1440, height: 900 },

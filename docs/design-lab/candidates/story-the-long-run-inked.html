@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ayush yadav — the long run · story candidate</title>
+<title>ayush yadav — the long run · story candidate · inked surfaces</title>
 <script>document.documentElement.classList.add("js");</script>
 <style>
   /* ————————————————————————————————————————————————————————————————
@@ -365,6 +365,37 @@
   }
   .chip.meet{border-color:var(--clay-g); color:var(--clay)}
   .chip:hover{border-color:var(--ink)}
+
+  /* ————— round-5 part-3 variant: the ink ledger ————— formerly inert
+     surfaces resolve their state in the page's own vocabulary — ink
+     settling, earned marks — never depth, glass or glow. Each is a
+     threshold class toggled by its figure's EXISTING scrub (reversible,
+     a pure function of scroll at the trigger); CSS transitions do the
+     easing, the ladder's own .lit pattern. The pencil resting value
+     (.3) is the page's precedent: the sentence's read-once words
+     already dim to .32 (.w.dim). The settled world pins every final
+     state with transitions off — the static frame stays the animation's
+     last frame (A7). */
+  /* b4 — the week takes the ink: pencil until the parse commits, then
+     ink radiates outward from the noon slot (delays set in
+     cacheCadence); tuesday EARNS its clay instead of owning it */
+  #cadWeek .hd span, #cadWeek .grid i{opacity:.32; transition:opacity .5s ease}
+  #cadWeek .hd span.tu{color:var(--ink-2); transition:opacity .5s ease, color .5s ease}
+  #cadWeek.inked .hd span, #cadWeek.inked .grid i{opacity:1}
+  #cadWeek.inked .hd span.tu{color:var(--clay)}
+  #slotWhen{transition:background .5s ease, box-shadow .5s ease}
+  #cadWeek.inked #slotWhen{background:rgba(196,83,46,.16); box-shadow:inset 2px 0 0 var(--clay-g)}
+  /* b2 — the school record files row by row once the card is up */
+  .schoolrec .srow{opacity:.3; transition:opacity .45s ease}
+  .schoolrec.filed .srow{opacity:1}
+  /* b1 — the engineer's rows ink as the hand finishes the name */
+  .engrows li{opacity:.3; transition:opacity .45s ease}
+  .engcard.signed .engrows li{opacity:1}
+  /* the settled world: full ink, instantly — even if a scrub died */
+  .settled #cadWeek .hd span, .settled #cadWeek .grid i,
+  .settled .schoolrec .srow, .settled .engrows li{opacity:1 !important; transition:none !important}
+  .settled #cadWeek .hd span.tu{color:var(--clay) !important}
+  .settled #slotWhen{background:rgba(196,83,46,.16); box-shadow:inset 2px 0 0 var(--clay-g)}
 
   /* glyph — the pad + the drawn net */
   .glyphrow{display:flex; gap:clamp(1rem, 2vw, 1.6rem); align-items:stretch; flex-wrap:wrap}
@@ -1078,12 +1109,15 @@
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
-        <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
-          <div class="mline"><p>Make it learn.</p>
+        <!-- round-5 part-3: three lines written as three beats now ARRIVE
+             as three beats — each mline carries its own window; the wonk
+             line ("honest", the thesis) lands last -->
+        <div class="litany">
+          <div class="mline" data-fx="in .08 .24 y 5 | drift 14"><p>Make it learn.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 backend tests — jobtracker validation ledger ↗</a></p></div>
-          <div class="mline"><p>Make it fast.</p>
+          <div class="mline" data-fx="in .12 .28 y 4 | drift 12"><p>Make it fast.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, committed benchmarks ↗</a></p></div>
-          <div class="mline wonk"><p>Make it <em>honest</em>.</p>
+          <div class="mline wonk" data-fx="in .16 .32 y 4 | drift 10"><p>Make it <em>honest</em>.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep — policybot validation ledger ↗</a></p></div>
         </div>
       </div>
@@ -1845,6 +1879,12 @@ function scrubWho(p) {
   who.sig.style.clipPath = `inset(-10% ${v}% -14% 0)`;
   who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
   who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
+  /* the rows ink once the hand has finished the name */
+  const signed = t >= 1;
+  if (who._signed !== signed) {
+    who._signed = signed;
+    document.querySelector(".engcard").classList.toggle("signed", signed);
+  }
 }
 
 /* The yard — the ITSM job as freight: three feeders (query logs, the
@@ -1952,6 +1992,12 @@ function scrubPath(p) {
     const t = smooth((p - 0.34) / 0.24);
     yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
   }
+  /* the school record files row by row once the card is up */
+  const filed = p >= 0.5;
+  if (yard._filed !== filed) {
+    yard._filed = filed;
+    document.querySelector(".schoolrec").classList.toggle("filed", filed);
+  }
 }
 
 /* The review — the reviewer's marks draw themselves: a check-stroke for
@@ -1994,6 +2040,14 @@ function cacheCadence() {
     c.start = [wr.left - figR.left, wr.top - figR.top - 4];
     c.word = cad.fig.querySelector(wordOf[c.w]);
   }
+  /* the ink radiates from the commitment point: per-cell transition
+     delay by grid distance from tuesday-noon (col 1, row 1) */
+  [...document.querySelectorAll("#cadWeek .grid i")].forEach((c, i) => {
+    c.style.transitionDelay = `${Math.round(Math.hypot(i % 7 - 1, (i / 7 | 0) - 1) * 70)}ms`;
+  });
+  [...document.querySelectorAll("#cadWeek .hd span")].forEach((c, i) => {
+    c.style.transitionDelay = `${Math.abs(i - 1) * 70}ms`;
+  });
   cad.ready = true;
 }
 function scrubCadence(p) {
@@ -2007,6 +2061,10 @@ function scrubCadence(p) {
     c.el.style.opacity = smooth((p - c.at + 0.02) / 0.08).toFixed(2);
     c.word.classList.toggle("dim", t > 0.18);
   }
+  /* the week takes the ink once the when-chip has landed (.38+.22 ≈ .6,
+     legible from ~.55) — reversible, like every threshold here */
+  const inked = p >= 0.55;
+  if (cad._inked !== inked) { cad._inked = inked; $("cadWeek").classList.toggle("inked", inked); }
 }
 for (const id of ["chWho", "chWhen", "chMeet"]) {
   $(id).addEventListener("mouseenter", () => cad.fig.setAttribute("data-hl", $(id).dataset.w));

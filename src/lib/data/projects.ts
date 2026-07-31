@@ -368,10 +368,23 @@ export const projects: Project[] = [
     imageHeight: 768,
     imageKind: "real-screenshot",
     /* The de-staling pass recorded above for jobtracker and taskflow
-       missed this one, and it is the alt text — so the retired name was
-       being read aloud to screen-reader users and painted as the figure's
-       caption in the reduced-motion world, the two audiences least able
-       to see that the rest of the page says Glyph. */
+       missed this one. Corrected here.
+
+       ERRATUM (same day, against my own commit message): I claimed this
+       string "was what screen-reader users heard". It was not, and I
+       should have checked the build before saying so. `imageAlt` is read
+       by ProjectScene.tsx:145,155,165, which is the FALLBACK arm — it
+       renders only for a project with no drawn scene in
+       PROJECT_SCENE_MANIFEST. Glyph has one (`fast-mnist-nn`), and that
+       scene supplies its own alt ("The race: two ink lanes drawn for the
+       same instant of time…"), which is what assistive tech actually
+       gets. Measured: grepping out/ for this string returns 0 files,
+       likewise for Applied's and Cadence's, while Visual Assist's —
+       which has no drawn scene — appears in 4.
+
+       So the name was dormant, not spoken. Still worth fixing, because a
+       latent falsehood surfaces the moment a scene is removed, but the
+       severity I stated was wrong. */
     imageAlt: "Real Glyph React workbench screenshot",
     imageDisclosure:
       "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",

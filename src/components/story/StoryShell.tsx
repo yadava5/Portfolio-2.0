@@ -273,7 +273,13 @@ const WORK_ROWS: {
   },
   {
     projectId: "fast-mnist-nn",
-    bright: "No frameworks. Just math, memory, and C++.",
+    /* Was "No frameworks. Just math, memory, and C++." — true of the
+       artifact, but on a first-person page, above a first-person case
+       file, it read as "I wrote this network". The network is a course
+       MLP that already existed; the work is the optimization. The row
+       is what a reader meets FIRST, so the hook has to be true on its
+       own rather than corrected one click later. */
+    bright: "An existing network, taken down to the metal.",
     muted: "Then OpenMP and SIMD together made it 3.5× faster.",
     metric:
       "openmp+simd dot kernel — 3.5× vs -O3 baseline, committed benchmarks",
