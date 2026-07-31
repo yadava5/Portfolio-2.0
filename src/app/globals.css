@@ -1295,15 +1295,16 @@ html[data-motion-off] .thread-segment .thread-node-gate {
      only (Nameplate.tsx takes over with inline styles, then stamps
      data-np-done at each letter's dry). The same rule carries the
      JS-dead safety: if no machine ever lands this letter, it releases
-     itself at 8.6s — past the whole performance — so a dead script
-     can never strand the name. [data-motion-ready] outlives the show
-     (HERO_SETTLE_MS covers the CSS layer; the machines hold their own
-     letters inline once hydrated). */
+     itself at 5.6s — past the whole performance (round 10's concurrent
+     ensemble ends ≈4.5s; round 9's relay needed 8.6s here) — so a
+     dead script can never strand the name. [data-motion-ready]
+     outlives the show (HERO_SETTLE_MS covers the CSS layer; the
+     machines hold their own letters inline once hydrated). */
   html[data-motion-ready]:not([data-motion-off])
     [data-np-machines]
     .np-ch.np-m:not([data-np-done]) {
     opacity: 0;
-    animation: np-safety-release 0.5s ease 8.6s both;
+    animation: np-safety-release 0.5s ease 5.6s both;
   }
 
   /* the baseline rule draws with the show and settles to the whisper */
@@ -3303,6 +3304,9 @@ body {
   [data-tm-bright],
   [data-tm-mantra],
   [data-tm-receipt],
+  /* the round-10 departure wrappers: a chapter caught mid-recede
+     (y −18 / scale .988, scrubbed) must print seated, not nudged */
+  [data-tm-depart],
   .hero-enter,
   .hero-enter-headline,
   .hero-enter-inline {

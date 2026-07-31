@@ -24,12 +24,17 @@
  *   v — a bird: fusiform body, articulated curved wings, asymmetric
  *       beats, banking; it flares and folds into the v's own strokes.
  *
- * THE PHRASE (census-header9): payoffs at ~1.95s (seat), 3.65s (park),
- * 5.0s (click), 5.85s (plant), 6.8s (fold), one letterpress press at
- * ~7.4s; travels overlap (peak three machines moving), payoffs do not;
- * nothing meaningful under 350ms. Total ≈ 7.8s — the reading matter
- * below rises at ~2s, so a reader reads and scrolls immediately while
- * the plate finishes performing above.
+ * THE PHRASE (round 10 — concurrent and unhurried, owner-directed):
+ * all five machines run AT ONCE — every one is in motion from ~1.73s
+ * to ~2.64s — and the landings sweep left → right across the name
+ * 140ms apart (A ~2.64s, s ~2.78s, dial ~2.92s, runner ~3.06s, the
+ * v's fold LAST at ~3.20s, the keystone). ONE shared drying wave then
+ * resolves the five letters as a single event and the letterpress
+ * press closes the line; total ≈ 4.5s. Every move keeps its round-9
+ * duration — nothing meaningful under 350ms — only the queueing is
+ * gone (round 9 serialized the payoffs and read as five things taking
+ * turns; the owner asked for one thing being made). The reading
+ * matter below still rises at ~2s, WHILE the whole shop is running.
  *
  * WORLDS AND TIERS. The base DOM state is the FINAL frame: full ink,
  * settled axes (A7 by construction — probe-header9 measured 0px
@@ -101,7 +106,17 @@ type G = {
   txtStyle: string;
 };
 
-type Machine = { parts: SVGElement[]; play: () => Promise<void> };
+type Machine = {
+  /** Run the machine to its LANDED pose — letterform assembled, ink
+   *  still wet. The shared drying wave (performEnsemble) owns the rest:
+   *  round 10 moved the dry out of each machine so the five letters
+   *  resolve as ONE event instead of five. */
+  play: () => Promise<void>;
+  /** What the shared dry needs: the text-bearing groups, the letter
+   *  indices to restore, and any scaffold (boss, pin, bead) that fades
+   *  with the drying ink. */
+  settle: { parts: SVGElement[]; idxs: number[]; scaffold?: SVGElement[] };
+};
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const deg = (r: number) => (r * 180) / Math.PI;
@@ -555,18 +570,23 @@ const fPath = (g: G, i: number, unit: "cap" | "x", pts: [number, number][]) => {
 
 /** The dry: fill animates wet→ink on the machine's own text pieces
  *  (identical geometry beneath the span — nothing pulses), scaffold
- *  fades, then the invisible swap to the span. */
+ *  fades, then the invisible swap to the span. `delay` is the drying
+ *  wave's seat (round 10): the ensemble dries all five letters in one
+ *  left-to-right sweep, 90ms apart, so the name resolves as ONE piece
+ *  coming together rather than five finishes. */
 async function dry(
   letters: HTMLElement[],
   parts: SVGElement[],
   idxs: number[],
   scaffold: SVGElement[] = [],
-  ms = 380
+  ms = 380,
+  delay = 0
 ) {
   for (const p of parts)
     p.querySelectorAll("text").forEach((t) =>
       t.animate([{ fill: INK_WET }, { fill: INK }], {
         duration: ms,
+        delay,
         fill: "both",
         easing: "ease",
       })
@@ -574,10 +594,11 @@ async function dry(
   for (const p of scaffold)
     p.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: ms,
+      delay,
       fill: "both",
       easing: "ease",
     });
-  await sleep(ms + 40);
+  await sleep(delay + ms + 40);
   for (const i of idxs) {
     letters[i].style.opacity = "";
     letters[i].dataset.npDone = "";
@@ -715,7 +736,7 @@ function mkDividers(
     { transform: "rotate(0deg)" },
   ];
   return {
-    parts: [gAll],
+    settle: { parts: [gAll], idxs: [0], scaffold: [boss, pin] },
     async play() {
       gAll.animate(
         [
@@ -754,7 +775,6 @@ function mkDividers(
         easing: "cubic-bezier(.42,.05,.24,1)",
       });
       await sleep(500);
-      await dry(letters, [gAll], [0], [boss, pin]);
     },
   };
 }
@@ -788,7 +808,7 @@ function mkRoad(svg: SVGSVGElement, g: G, letters: HTMLElement[]): Machine {
   bead.style.offsetRotate = "0deg";
   bead.style.opacity = "0";
   return {
-    parts: [gRd],
+    settle: { parts: [gRd], idxs: [3], scaffold: [bead] },
     async play() {
       bead.animate(
         [
@@ -809,7 +829,6 @@ function mkRoad(svg: SVGSVGElement, g: G, letters: HTMLElement[]): Machine {
       rw.s.animate([{ strokeDashoffset: rw.L }, { strokeDashoffset: 0 }], opt);
       bead.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], opt);
       await sleep(1150 + 230);
-      await dry(letters, [gRd], [3], [bead]);
     },
   };
 }
@@ -971,7 +990,7 @@ function mkDial(
   const DET = 360 / 7;
   const STEPS = 12;
   return {
-    parts: [gDl],
+    settle: { parts: [gDl], idxs: [7] },
     async play() {
       gF.animate(
         [
@@ -1053,7 +1072,6 @@ function mkDial(
         easing: "ease",
       });
       await sleep(660);
-      await dry(letters, [gDl], [7]);
     },
   };
 }
@@ -1074,7 +1092,7 @@ function mkRunner(
   outer.style.transform = `translate(${runup}px, 0)`;
   const bh = 0.055 * g.xH;
   return {
-    parts: [outer],
+    settle: { parts: [outer], idxs: [9] },
     async play() {
       outer.animate(
         [
@@ -1105,7 +1123,6 @@ function mkRunner(
         { duration: 1250, fill: "both", easing: "linear" }
       );
       await sleep(1330);
-      await dry(letters, [outer], [9]);
     },
   };
 }
@@ -1346,7 +1363,7 @@ function mkBird(
     }));
 
   return {
-    parts: [gB, gLock],
+    settle: { parts: [gB, gLock], idxs: [10] },
     async play() {
       const DUR = 2000;
       gB.animate(tKf, { duration: DUR, fill: "both", easing: "linear" });
@@ -1413,7 +1430,6 @@ function mkBird(
         fill: "both",
       });
       await sleep(690);
-      await dry(letters, [gB, gLock], [10]);
     },
   };
 }
@@ -1423,10 +1439,22 @@ function mkBird(
    ════════════════════════════════════════════════════════════════════ */
 
 /**
- * The arrival ensemble. Five payoffs, each alone — seat ~1.95s, park
- * ~3.65s, click ~5.0s, plant ~5.85s, fold ~6.8s — travels overlap
- * (≤3 machines moving at once), payoffs never do; one letterpress
- * press closes the line.
+ * The arrival ensemble — round 10: CONCURRENT AND UNHURRIED.
+ *
+ * The owner's direction reversed round 9's relay ("they are working by
+ * timing — I want them to come altogether at the same time"): all five
+ * machines now run AT ONCE — by ~1.75s every one of them is visibly
+ * working — and the piece comes together at the end like a machine
+ * shop closing a job, not five operations taking turns.
+ *
+ * Every move keeps its round-9 duration (nothing meaningful under
+ * ~350ms — the fix he did not complain about); only the queueing is
+ * gone. Start offsets are DERIVED from each machine's own length so
+ * the LANDINGS sweep left → right across the name, 140ms apart —
+ * A ~2.64s, s ~2.78s, dial ~2.92s, runner ~3.06s, and the v's fold
+ * LAST at ~3.20s, the keystone. Then ONE shared drying wave (90ms per
+ * letter, left → right) resolves all five letters as a single event,
+ * and the letterpress press closes the line at ~4.5s total.
  *
  * @param plate - Overlay coordinate space
  * @param h1 - The nameplate (press target)
@@ -1444,13 +1472,6 @@ async function performEnsemble(
 ): Promise<boolean> {
   const svg = mkOverlay(plate, g);
   const rnd = mulberry32(0x8ead + 9);
-  const M: Record<string, () => Machine> = {
-    dividers: () => mkDividers(svg, g, letters, rnd),
-    road: () => mkRoad(svg, g, letters),
-    dial: () => mkDial(svg, g, letters, rnd),
-    runner: () => mkRunner(svg, g, letters, rnd),
-    bird: () => mkBird(svg, g, letters, rnd),
-  };
   let aborted = false;
   const guard = async (p: Promise<unknown>) => {
     await p;
@@ -1459,20 +1480,48 @@ async function performEnsemble(
       throw new Error("np-abort");
     }
   };
+  /* Letter order, with each start = target landing − the machine's own
+     played length (dividers 2250, road 1780, dial 2720, runner 1330,
+     bird 2690 — the sums of their round-9 move durations). The dial
+     opens the floor at 0.2s; the runner, shortest, joins last and
+     still has the whole middle in company: from 1.73s to 2.64s ALL
+     FIVE are in motion at once. */
+  const plan: { start: number; make: () => Machine }[] = [
+    { start: 390, make: () => mkDividers(svg, g, letters, rnd) },
+    { start: 1000, make: () => mkRoad(svg, g, letters) },
+    { start: 200, make: () => mkDial(svg, g, letters, rnd) },
+    { start: 1730, make: () => mkRunner(svg, g, letters, rnd) },
+    { start: 510, make: () => mkBird(svg, g, letters, rnd) },
+  ];
+  const built: (Machine | null)[] = plan.map(() => null);
   try {
-    const stage = async (ms: number, m: () => Machine) => {
-      await guard(sleep(ms));
-      await guard(m().play());
-    };
-    await Promise.all([
-      stage(260, M.dividers),
-      stage(2050, M.road),
-      stage(3000, M.dial),
-      stage(4600, M.runner),
-      stage(4200, M.bird),
-    ]);
+    await Promise.all(
+      plan.map(async ({ start, make }, k) => {
+        await guard(sleep(start));
+        const m = make();
+        built[k] = m;
+        await guard(m.play());
+      })
+    );
+    /* the wave: every machine has LANDED wet — one beat, then the name
+       dries as one piece, left to right, scaffolds fading with it */
+    await guard(sleep(120));
+    await Promise.all(
+      built.map((m, k) =>
+        m
+          ? dry(
+              letters,
+              m.settle.parts,
+              m.settle.idxs,
+              m.settle.scaffold,
+              380,
+              k * 90
+            )
+          : Promise.resolve()
+      )
+    );
     /* the press: one letterpress settle once the line is full —
-       origin at the landing */
+       origin at the keystone's landing */
     h1.style.transformOrigin = "82% 78%";
     const press = h1.animate(
       [

@@ -30,12 +30,40 @@
  *     (overflow-clip wrappers), translateY 100%→0, 0.8s quart.out.
  *     `aria: "auto"` keeps the accessible name a single intact string
  *     (aria-label on the container, aria-hidden fragments), and
- *     `autoSplit` re-lines on reflow.
- *   - MUTED LINES (`data-tm="muted"`): fade + 10px rise, 0.7s cubic.out.
- *     `muted-fade` variants (the ch-03 line holding [data-thread-word])
- *     fade WITHOUT transform — the Red Thread measures that box.
+ *     `autoSplit` re-lines on reflow. Round 10 (the relief port) adds
+ *     THE WINGS: each masked line also carries a horizontal offset
+ *     toward its chapter's side (even chapters from the left, odd from
+ *     the right — the round-6 alternation), so headlines slide INTO
+ *     their own line boxes. The offset lives on the lines INSIDE the
+ *     overflow masks, so no probe box ever moves and nothing can cross
+ *     the Red Thread's lanes.
+ *   - MUTED LINES (`data-tm="muted"`): fade + 8px rise, 0.7s cubic.out,
+ *     plus the chapter-side wing (whole-element x, amplitude clamped
+ *     per breakpoint so a from-state box can never enter the thread's
+ *     spine lane — see wingMuted()). `muted-fade` variants (the ch-03
+ *     line holding [data-thread-word]) fade WITHOUT transform — the
+ *     Red Thread measures that box.
  *   - BODY BLOCKS (`data-tm="block"`): whole-block fade + 16px rise,
  *     0.6s — never per-char, never per-word on prose.
+ *   - PRESS MARKS (`data-tm="press"`, round 10): marks made ON the
+ *     record — provenance strips, dispatch lines, the apparatus rails —
+ *     arrive from the reader's side: scale 1.035 pressing down to 1
+ *     (+ an optional `data-tm-deg` settling rotation, the stamp's own
+ *     degree). The APPROVED stamp always owned this direction; the
+ *     marks now rhyme with it (round-6 relief: "press").
+ *   - RISEN MATERIAL (`data-tm="rise"`, round 10): the record's own
+ *     material — ledgers, card decks, scene figures — surfaces from
+ *     the paper: scale 0.965 → 1 with a 12px rise. Scale-based depth
+ *     with s < 1 cannot escape its box, which is why this is the
+ *     shippable spine of the relief cut (the translation-based plate
+ *     depth was tried and CUT — globals.css records the measurement).
+ *   - EXIT BY DEPARTURE (`[data-tm-depart]`, round 10): chapters 02,
+ *     03, 05 and 06 mark their content wrap, and ONE scrubbed trigger
+ *     per chapter backs the finished station into the paper (y −18,
+ *     scale .988) as its section departs behind the masthead — the
+ *     round-5 "leave by departing, don't dissolve mid-frame" exit.
+ *     Ch 04 is exempt (a transformed ancestor breaks the pin), ch 01
+ *     hands off through the masthead, ch 07 is the ending and parks.
  *   - THE TERMINAL NAME (`data-tm="name"`): the gate's giant name takes
  *     the hero's own fade + 14px rise (1.0s expo.out) — unmasked, since
  *     leading 0.95 would clip the y descenders inside an overflow mask.
@@ -107,7 +135,7 @@ const SCENE_STAGGER = 0.07;
 /** The entrance-vocabulary hooks a scene composes (the manifesto scrub,
  *  the litany, and weight-breathing keep their own dedicated paths). */
 const ENTRANCE_SELECTOR =
-  "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name'], [data-tm='kicker']";
+  "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name'], [data-tm='kicker'], [data-tm='press'], [data-tm='rise']";
 
 /** Scrub smoothing for the manifesto + breathing (plan 3.9: 0.5–1;
  *  0.7 matches THREAD_SCRUB so every scrubbed element shares one lag). */
@@ -131,6 +159,80 @@ const MANIFESTO_SPAN = "+=60%";
  * → 1.00 word by word, it just starts from ink a reader can read.
  */
 const MANIFESTO_REST = 0.6;
+
+/**
+ * THE WINGS (round 10 — the relief port's horizontal axis).
+ *
+ * Which side a chapter's type enters from: even chapters from the left,
+ * odd from the right — the round-6 prototype's alternation, unchanged.
+ * Chapter 01 never reaches this (the hero is complete at load, its
+ * entrance is the nameplate + CSS rail).
+ *
+ * @param el - Any element inside a chapter section
+ * @returns −1 (enters from the left) or +1 (from the right)
+ */
+function chapterSide(el: HTMLElement): number {
+  const id = el
+    .closest<HTMLElement>("[data-chapter]")
+    ?.getAttribute("data-chapter");
+  return id && Number(id) % 2 === 0 ? -1 : 1;
+}
+
+/**
+ * The muted lines' wing amplitude, clamped per breakpoint AGAINST THE
+ * THREAD'S LANES — measured, not felt (red-thread.spec's crossing
+ * probe and dossier.spec's 390 gutter probe both read every from-state
+ * box, opacity notwithstanding):
+ *   - compact (<1024): the 36px left gutter is the thread's RESERVED
+ *     lane (dossier.spec:662 holds ink ≥4px clear of every letterform
+ *     box, from-states included — a −10 wing measured 26 against a
+ *     reach bound of ~22 and failed on all five engines). So at
+ *     compact widths every wing enters FROM THE RIGHT: direction
+ *     survives on the phone, the gutter stays the thread's. 14 clears
+ *     the viewport edge at 320 (296 + 14 = 310).
+ *   - binding (≥1280): the spine tops out at textEdge − 48 (constants
+ *     bindingLane), so ±22 keeps ≥24px of clear margin.
+ *   - lg (1024–1279): the spine rides the RIGHT gutter and every muted
+ *     line is max-w-capped ≥500px short of it; ±22 is safe both ways.
+ *
+ * @param side - The chapter's wing side (±1)
+ * @param vw - Viewport width at build time
+ * @returns Signed x offset in px for the from-state
+ */
+function wingMuted(side: number, vw: number): number {
+  if (vw <= 1023) return 14;
+  return side * 22;
+}
+
+/**
+ * The masked lines' wing amplitude. These offsets live INSIDE the
+ * SplitText overflow masks, so they are clipped, never probed and can
+ * afford the full round-6 travel. At compact widths they follow the
+ * muted wings rightward (wingMuted): one direction per chapter — a
+ * headline entering left over an echo entering right reads as a
+ * misprint, not a composition.
+ *
+ * @param side - The chapter's wing side (±1)
+ * @param vw - Viewport width at build time
+ * @returns Signed x offset in px for the line from-state
+ */
+function wingLine(side: number, vw: number): number {
+  if (vw <= 1023) return 28;
+  return side * 44;
+}
+
+/** Exit by departure (round 10): how far a finished station backs into
+ *  the paper as its section leaves behind the masthead. Scale-based
+ *  depth (s < 1 cannot escape its box — the recorded plate-depth CUT).
+ *  The transform rides the chapter's content WRAP, which the Red
+ *  Thread never measures (its anchors are measured children, and
+ *  ThreadSegment re-measures only on section RESIZE — a transform is
+ *  not one). The one exposure — a live window resize landing while a
+ *  departure is mid-scrub — shifts a measured anchor by at most 18px
+ *  down / 7px sideways for that build, the same class of exposure the
+ *  entrance from-states have always had. */
+const DEPART_Y = -18;
+const DEPART_SCALE = 0.988;
 
 /**
  * Litany delay — the slowing stagger (plan 3.8, "line-masks with
@@ -329,15 +431,20 @@ function maskRise(
   /* Past-start at build (deep-scroll reload / already-read content):
      play directly, create NO trigger — see pastStart(). */
   const immediate = pastStart(trigger, start);
+  /* The wing (round 10): each line slides INTO its own mask from the
+     chapter's side while it rises — the offset is clipped by the
+     overflow wrapper, so the element's probe box never moves. */
+  const wing = wingLine(chapterSide(el), document.documentElement.clientWidth);
   const split = SplitText.create(el, {
     type: "lines",
     mask: "lines",
     autoSplit: true,
     aria: ariaModeOf(el),
     onSplit: (self) => {
-      if (played) return gsap.set(self.lines, { yPercent: 0 });
+      if (played) return gsap.set(self.lines, { yPercent: 0, x: 0 });
       tween = gsap.from(self.lines, {
         yPercent: 100,
+        x: wing,
         duration: 0.8,
         ease: "power3.out" /* quart.out */,
         stagger: 0.1,
@@ -366,7 +473,10 @@ function maskRise(
 
 /**
  * The per-hook entrance gesture. All transform/opacity only, all small.
- *   - `muted`      → fade + 10px rise, 0.7s cubic.out
+ *   - `muted`      → fade + rise + the chapter-side wing (round 10):
+ *                    the echo line follows its headline in from the
+ *                    same side, amplitude clamped per breakpoint so
+ *                    its from-state box clears the thread's lanes
  *   - `muted-fade` → fade only: the ch-03 line holding [data-thread-word]
  *                    is a box the Red Thread MEASURES, never transforms
  *   - `kicker`     → fade only, a beat quicker: the running head prints
@@ -375,6 +485,12 @@ function maskRise(
  *                    [data-thread-kicker] is another measured box, so
  *                    the head never transforms either
  *   - `name`       → the gate's giant name takes the hero's own grammar
+ *   - `press`      → a mark arriving from the reader's side (round 10):
+ *                    scale 1.035 pressing down to 1, an optional
+ *                    `data-tm-deg` settling out — the stamp's rhyme
+ *   - `rise`       → material surfacing from the paper (round 10):
+ *                    scale 0.965 → 1 with a 12px rise; s < 1 depth
+ *                    cannot escape its box (the plate-depth CUT)
  *   - `block`      → whole-block fade + 16px rise (the prose default)
  *
  * @param el - The entrance element
@@ -383,13 +499,42 @@ function maskRise(
 function entranceVars(el: HTMLElement): gsap.TweenVars {
   switch (el.getAttribute("data-tm")) {
     case "muted":
-      return { opacity: 0, y: 10, duration: 0.7, ease: "power2.out" };
+      return {
+        opacity: 0,
+        x: wingMuted(chapterSide(el), document.documentElement.clientWidth),
+        y: 8,
+        duration: 0.7,
+        ease: "power2.out",
+      };
     case "muted-fade":
       return { opacity: 0, duration: 0.7, ease: "power2.out" };
     case "kicker":
       return { opacity: 0, duration: 0.6, ease: "power2.out" };
     case "name":
       return { opacity: 0, y: 14, duration: 1, ease: "expo.out" };
+    case "press":
+      return {
+        opacity: 0,
+        scale: 1.035,
+        rotation: parseFloat(el.getAttribute("data-tm-deg") ?? "0") || 0,
+        /* Compact widths pivot on the LEFT edge: a centred 1.035 grows
+           a full-column mark ~6px into the thread's reserved 390
+           gutter (dossier.spec:662's ≥4px clearance), while a left
+           pivot grows rightward only — the gutter never hears it. */
+        transformOrigin:
+          document.documentElement.clientWidth <= 1023 ? "0% 30%" : "50% 30%",
+        duration: 0.7,
+        ease: "power3.out",
+      };
+    case "rise":
+      return {
+        opacity: 0,
+        scale: 0.965,
+        y: 12,
+        transformOrigin: "50% 62%",
+        duration: 0.9,
+        ease: "power2.out",
+      };
     case "block":
     default:
       return { opacity: 0, y: 16, duration: 0.6, ease: "power2.out" };
@@ -597,6 +742,35 @@ export function TextMotion() {
                   }),
             });
             if (!litanyImmediate) armReveal(receipt, tween, pending);
+          });
+        }
+
+        /* ── Exit by departure (round 10, the relief port) ─────────
+           One scrubbed trigger per marked chapter: as the section's
+           tail crosses the upper third, the finished station backs
+           into the paper — y −18, scale .988 from the top edge — and
+           rides off behind the masthead instead of dissolving in
+           place. Chapters mark their content WRAP with
+           [data-tm-depart] (02, 03, 05, 06 — never the pinned 04, the
+           hero, or the parked ending), so the picture leaves as ONE
+           assembled piece, which is what makes it a finished picture
+           in the first place (round-5 grammar). Scrubbed, so scrolling
+           back re-assembles it; no opacity is touched — legibility is
+           never traded mid-frame, the mast scrim does the occluding. */
+        for (const wrap of q("[data-tm-depart]")) {
+          const section = wrap.closest<HTMLElement>("[data-chapter]");
+          if (!section) continue;
+          gsap.to(wrap, {
+            y: DEPART_Y,
+            scale: DEPART_SCALE,
+            transformOrigin: "50% 0%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "clamp(bottom 45%)",
+              end: "clamp(bottom 12%)",
+              scrub: TM_SCRUB,
+            },
           });
         }
 
