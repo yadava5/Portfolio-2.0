@@ -1016,8 +1016,7 @@ html[data-arc-phase="dusk"] .run-manifest {
   padding-block: 0.1875rem;
 }
 .run-manifest-line + .run-manifest-line {
-  border-top: 1px solid
-    color-mix(in srgb, var(--rm-ink) 10%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--rm-ink) 10%, transparent);
 }
 .run-manifest-no {
   opacity: 0.75;
