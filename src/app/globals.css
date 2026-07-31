@@ -928,6 +928,27 @@ html[data-arc-phase="dusk"] {
    No filters, no gradients on strokes, no will-change.
    ════════════════════════════════════════════════════════════════ */
 
+/* THE RAIL (round 12): the motion world's thread — one fixed
+   full-viewport canvas (ThreadRail.tsx) redrawn against scroll, the
+   prototype's `canvas.thread` architecture. Sits ABOVE the light field
+   (later in the DOM at the same stacking level) and BELOW every
+   chapter's text (earlier in the DOM); never eats a pointer. The
+   static worlds render the per-chapter SVG segments below instead —
+   the two never paint at once. */
+.thread-rail {
+  position: fixed;
+  inset: 0;
+  /* Explicit, because a canvas is REPLACED: with width:auto an
+     over-constrained `inset: 0` resolves to the INTRINSIC bitmap size
+     (CSS2 §10.3.8), which is the viewport × the capped DPR — measured
+     1.5× too large on every deviceScaleFactor>1 seat before this rule
+     (the webkit-mobile spec run caught it; dpr-1 screenshots cannot). */
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .thread-segment .thread-future {
   fill: none;
   stroke: var(--color-ink-secondary);
@@ -3232,6 +3253,7 @@ body {
      by the text they sit behind — they print as nothing but noise. */
   [data-light-field],
   nav[aria-label="Chapters"],
+  [data-thread-rail],
   [data-thread-segment],
   [data-dossier-thread],
   .pipeline-overlay,
