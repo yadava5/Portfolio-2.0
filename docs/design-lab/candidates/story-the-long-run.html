@@ -430,6 +430,12 @@
   /* lifequest — the honest ledger + the climb (raw field; dusk happens here).
      The figure carries no plate box: the drawing sits directly on the paper,
      because the drawing stopping IS the content */
+  /* the honest hour anchors its content to the beat's TOP: cacheGeometry
+     derives this beat's height from the dusk contract (show → curtain →
+     darkening → closing line) and writes it back, and flex-start keeps
+     the content's page position independent of that height — centering
+     would move the content every time the runway is resized */
+  .b6{align-items:flex-start}
   .b6 .beat-inner{grid-template-columns:minmax(0,30rem) minmax(0,1fr); align-items:start}
   .plate.bare{background:none; border:none; box-shadow:none; padding:0; contain:layout}
   .figsvg .tread{fill:none; stroke:var(--ink); stroke-width:2}
@@ -991,10 +997,15 @@
 
   <!-- ¶ 08 · 21:07 — dusk falls here. LifeQuest, told honestly.
        Every element that carries text is on the dusk contract
-       (data-fx-sync): its exit window is rewritten in PAGE space so the
-       ledger and the figure leave together, fully gone before the first
-       darkening stop — the round-2 census caught the per-element
-       windows leaking op-1.0 text onto the sub-AA band at 768–2560. -->
+       (data-fx-sync): cacheGeometry rewrites BOTH its windows in PAGE
+       space — entrances end as each element clears the fold, all six
+       hold a settled corridor together, then one shared curtain takes
+       them to op 0, 40px before the first darkening stop (the round-2
+       census caught per-element windows leaking op-1.0 text onto the
+       sub-AA band at 768–2560; the round-4 curtain then preceded its
+       own content — p.handoff never rendered at 1440×900). The declared
+       in/out fractions below are pre-boot values only; x/y/drift stay
+       live. The beat's height is derived from the same contract. -->
   <section class="beat station b6" data-beat="7">
     <div class="beat-inner">
       <div class="prose">
@@ -1176,6 +1187,12 @@ const DUSK = [ /* side(0 day/1 night), l, c, h, pos — DUSK_CHOREO verbatim */
   [1, 0.3679, 0.0244, 56.67, 0.8925], [1, 0.3471, 0.0218, 55.56, 0.95],
 ];
 const FLIP_POS = 0.72;
+/* beat 7's darkening window as fractions of the beat — round 4 hard-coded
+   .58/.36 here while the content's geometry varied per viewport, which is
+   how the curtain came to precede its own content (measured: p.handoff
+   op 0.00 everywhere at 1440×900). cacheGeometry now derives the window
+   from the content and writes it here; these are only pre-boot values. */
+const dusk7 = { start: 0.58, span: 0.36 };
 
 function oklchToRgb(l, c, h) {
   const hr = (h * Math.PI) / 180, A = c * Math.cos(hr), B = c * Math.sin(hr);
@@ -1211,10 +1228,12 @@ function arcColor(beat, p) {
     };
   }
   if (beat === 7) {
-    /* the darkening runs p .58→.94 — strictly AFTER the ledger's fx
-       window ([.12,.4] in, [.48,.58] out), so no text renders on any
-       sub-AA mid-band stop; the closing line arrives post-flip */
-    const pos = clamp((p - 0.58) / 0.36, 0, 1) * 0.95;
+    /* the darkening window (dusk7) is derived by cacheGeometry from the
+       ledger's measured geometry: it opens 40px of scroll AFTER the
+       shared curtain has taken every dusk element to op 0, so no text
+       renders on any sub-AA mid-band stop; the closing line arrives
+       post-flip */
+    const pos = clamp((p - dusk7.start) / dusk7.span, 0, 1) * 0.95;
     let i = 0;
     while (i < DUSK.length - 1 && DUSK[i + 1][4] <= pos) i++;
     const a = DUSK[i], b = DUSK[Math.min(i + 1, DUSK.length - 1)];
@@ -1328,33 +1347,90 @@ const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
 window.__fx = fx; /* probe hook */
 function cacheGeometry() {
   vw = innerWidth; vh = innerHeight; mobile = vw <= 820; stacked = vw <= 1249;
-  docH = document.documentElement.scrollHeight;
-  for (const b of beats) { b.top = absTop(b.el); b.h = b.el.offsetHeight; }
-  for (const f of fx) { f.top = absTop(f.el); f.h = f.el.offsetHeight || 1; }
+  const measure = () => {
+    docH = document.documentElement.scrollHeight;
+    for (const b of beats) { b.top = absTop(b.el); b.h = b.el.offsetHeight; }
+    for (const f of fx) { f.top = absTop(f.el); f.h = f.el.offsetHeight || 1; }
+  };
+  measure();
   who.w = who.sig.offsetWidth; /* the nib's runway (clip doesn't change layout) */
-  window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h })); /* probe hook */
 
-  /* the dusk contract, in PAGE space. The fx windows are per-element
-     scroll fractions; the darkening is a fraction of the BEAT — two
-     different clocks, and round 2 trusted the comment instead of
-     measuring (the census caught op-1.0 ledger text on the sub-AA day
-     stops at 768–2560). Here the ledger's and the figure's exits are
-     rewritten to end 40px of scroll BEFORE the first darkening frame,
-     together — one curtain, not two — and the closing line's entrance
-     is pinned after the ink flip. (LifeQuest rides beat 7 now.) */
+  /* the dusk contract, in PAGE space — derived, not declared. Round 4
+     rewrote only the EXITS into a shared curtain ending 40px before the
+     first darkening frame (the round-2 census caught op-1.0 ledger text
+     on the sub-AA day stops at 768–2560) but left the entrances on
+     per-element clocks — and because the curtain subtracts f.top, the
+     later an element entered the earlier its curtain arrived. Measured
+     at 1440×900: p.handoff's whole exit lay BEFORE its entrance (op 0.00
+     at every scroll position — the LifeQuest links never rendered) and
+     div.quests peaked at 0.24; at 390×844 the figure collapsed to 0.04
+     instead. The conflict was geometric: the deepest element is only
+     fully above the fold from top+h−vh, and the curtain sat earlier.
+     So round 5 derives the whole chain from the measured content:
+       entrances  each element settles as it clears the fold (or 0.22vh
+                  after its top enters — whichever is later);
+       corridor   every dusk element holds op 1 TOGETHER for 0.35vh;
+       curtain    one shared exit over 0.24vh — all gone 40px before
+                  the first darkening frame (the AA deadline, unchanged);
+       darkening  0.4vh for the twelve stops, flip at FLIP_POS;
+       closing    the duskin line arrives 20px after the flip;
+     and the beat's own height is derived from that chain and written
+     back (flex-start keeps the content's position independent of it),
+     so the contract holds at ANY viewport, not only the measured ones. */
   const bDusk = beats[7];
-  const yDark = bDusk.top + 0.58 * bDusk.h - vh * 0.62; /* darkening starts */
-  const yFlip = bDusk.top + (0.58 + (FLIP_POS / 0.95) * 0.36) * bDusk.h - vh * 0.62;
-  const Y2 = yDark - 40, Y1 = Y2 - vh * 0.3;
+  let yShow = 0;
+  for (const f of fx) {
+    if (f.el.dataset.fxSync !== "dusk") continue;
+    /* enter as the fold reveals it: never before its top is on screen
+       (that reads as a pop), never completing below the fold (round 4's
+       Tier-E1 class), and never slower than 0.22vh of scroll */
+    const enter = f.top - vh + 8;
+    /* +28, not +16: op crosses 0.98 ~11% of the window before its end
+       (smoothstep tail + the 1/50 quantiser), measured 4–5px short */
+    const yDone = Math.max(f.top + f.h - vh + 28, enter + vh * 0.15);
+    const y0 = Math.max(enter, yDone - vh * 0.22);
+    f.spec.in[0] = (y0 + vh - f.top) / (vh + f.h);
+    f.spec.in[1] = (yDone + vh - f.top) / (vh + f.h);
+    yShow = Math.max(yShow, yDone);
+  }
+  const Y1 = yShow + vh * 0.35, Y2 = Y1 + vh * 0.24;   /* corridor, curtain */
+  const yDark = Y2 + 40, darkSpan = vh * 0.4;          /* the sky's show */
+  const yFlip = yDark + (FLIP_POS / 0.95) * darkSpan;
+  const yEnd = Math.max(yDark + darkSpan, yFlip + 20 + vh * 0.16) + vh * 0.1;
   for (const f of fx) {
     if (f.el.dataset.fxSync === "dusk") {
-      f.spec.out[0] = (Y1 + vh - f.top) / (vh + f.h);
-      f.spec.out[1] = (Y2 + vh - f.top) / (vh + f.h);
+      const o1 = (Y1 + vh - f.top) / (vh + f.h);
+      const o2 = (Y2 + vh - f.top) / (vh + f.h);
+      /* elements high in the beat have scrolled off the top before the
+         curtain: their window lies past the engine's p≤1.1 apply range,
+         where a fade would freeze mid-value. They PARK lit instead
+         (spec-space out 2 2.5, the same declaration beat 10 uses) —
+         off-screen, so the AA deadline is untouched, and parked-at-1
+         is exactly the settled world's frame. Everything the reader can
+         still see at Y1 leaves on the shared curtain. */
+      if (o2 > 1.06) { f.spec.out[0] = 2; f.spec.out[1] = 2.5; }
+      else { f.spec.out[0] = o1; f.spec.out[1] = o2; }
     } else if (f.el.dataset.fxSync === "duskin") {
-      f.spec.in[0] = (yFlip + 30 + vh - f.top) / (vh + f.h);
-      f.spec.in[1] = (yFlip + 30 + vh * 0.18 + vh - f.top) / (vh + f.h);
+      /* the closing line is PLACED, not just timed: its seat is wherever
+         the flip lands, half a viewport under the reading line, so the
+         sentence arrives centred in the dark it names */
+      const m0 = parseFloat(getComputedStyle(f.el).marginTop) || 0;
+      const d = yFlip + vh * 0.52 - f.top;
+      if (Math.abs(d) > 2) f.el.style.marginTop = (m0 + d) + "px";
+      f.spec.in[0] = (yFlip + 20 + vh - (f.top + d)) / (vh + f.h);
+      f.spec.in[1] = (yFlip + 20 + vh * 0.16 + vh - (f.top + d)) / (vh + f.h);
     }
   }
+  /* write the derived height back and re-measure everything below the
+     beat (its own content does not move — flex-start — so the contract
+     anchors computed above stay true) */
+  const need = Math.ceil(yEnd + vh * 0.62 - bDusk.top);
+  if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
+  measure();
+  /* hand the darkening window to arcColor, as fractions of the beat */
+  dusk7.start = (yDark + vh * 0.62 - bDusk.top) / bDusk.h;
+  dusk7.span = darkSpan / bDusk.h;
+  window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h })); /* probe hook */
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
