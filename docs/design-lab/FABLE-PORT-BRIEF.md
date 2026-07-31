@@ -1,4 +1,67 @@
-# Fable brief — round 11: make the world move WITH the reader, both ways
+# Fable brief — round 11: the prototype's engine, the live site's words
+
+## §−1 · THE DIRECTIVE — this supersedes any narrower reading below
+
+The owner has now stated the target in one sentence, and it decides every open
+question in this document:
+
+> "i want the **scroll flow and transitions like that prototype** with the
+> **text content I have in the live portfolio**! but the **flow, architecture,
+> diagrams animations, and the bar flowing from top to bottom** should be like
+> the prototype!"
+
+He then narrowed what survives, and this is the sharper version:
+
+> "but the name should be what we worked on, the machinery — **that is the only
+> thing to keep from the current live portfolio architecture**!"
+
+**Keep from the live site — exactly two things:**
+
+1. **All text content.** Every claim, receipt, figure caption, case-file link
+   and number. It is verified, pinned to artifacts, and the honesty engine
+   depends on it. **No prototype copy replaces live copy, ever.**
+2. **The nameplate machinery.** Approved, finished, untouched.
+
+**That is the whole list.** Everything else about production's architecture —
+the segmented thread, the one-shot entrance model, the chapter rail, the
+composition — **yields to the prototype.** Do not treat the live architecture
+as a baseline to be improved; treat the prototype's as the target and the live
+site as the source of words.
+
+**On production's richer text tooling** — blur, masks, clip-path,
+letter-spacing, variable font axes, per-word/line splits, which the prototype
+lacks entirely: these are *tools*, not architecture. Keep any that serve the
+prototype's grammar and drop any that fight it. **The prototype's architecture
+decides; the tools follow.** I previously told you to preserve this vocabulary
+as a goal in itself — that was wrong and is withdrawn.
+
+**Adopt from the prototype:**
+
+- **The scroll flow** — scroll-coupled and reversible, the body of this brief.
+- **The transitions** — its entrance/exit grammar, applied to the live content.
+- **The architecture** — the continuous thread with a **travelling token**, the
+  **running head** carrying run state and clock, the **corner manifest** that
+  stamps per station.
+- **The diagram animations** — figures that move against scroll rather than
+  playing once.
+- **"The bar flowing from top to bottom"** — the thread as **one continuous
+  line down the whole page**, not the segmented per-chapter thread production
+  ships today. This is named explicitly and is not optional.
+
+The full measured gap is in `docs/design-lab/GAP-PROTOTYPE-VS-LIVE.md`.
+
+**Stage it. Ship each stage green.** The order below is by value-per-risk:
+
+1. scroll-coupling (already in flight)
+2. the continuous thread + travelling token — "the bar flowing top to bottom"
+3. the running head and the corner manifest
+4. diagram/figure animations coupled to scroll
+
+A stage that lands green and live beats two stages that do not.
+
+---
+
+# Round 11 detail: make the world move WITH the reader, both ways
 
 > **The nameplate is approved and finished.** "i like the name now though!" — do
 > not touch `Nameplate.tsx` or its choreography this round.
