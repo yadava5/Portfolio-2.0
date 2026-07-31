@@ -1,160 +1,206 @@
-# Fable brief — round 7: the name comes alive
+# Fable brief — round 8: the name is ten machines, and only some of them run
 
-**The owner's ask, verbatim.** Quote it back to yourself before every decision:
-
-> "What I wanna do with my header, like, especially where my name is or the
-> specific fonts — I want them to **come alive**. If you have seen how Google
-> is written when you open Google first time, the characters are **running,
-> spinning**, and all kind of things. So I want my name to be appearing
-> similar way, and it should be **functional** and do something more — like
-> there's a **tool working**, or a **bird coming in**, or some kind of cool
-> work going on, **math, trigonometric diagrams working in background** or
-> something similar. So you can **experiment and mix and match** with cool
-> things with the header. And any specific font or kind of things, and you can
-> also look at the **coloring**. So **go deep into this thing.**"
+> **This brief REPLACES round 7's. Round 7 was rejected. Read §0 first — the
+> reason it was rejected is an instruction I got wrong, and repeating it will
+> produce the same rejected result.**
 
 ---
 
-## What he is actually describing, and the trap in it
+## §0 · What round 7 got wrong, and whose fault it was
 
-He named a Google Doodle. A doodle is: **a wordmark that performs, once, on
-arrival, and rewards you for having watched.** That is the shape to hit — not
-the aesthetic. Google's doodles are playful because Google is playful; this
-site is a working paper with an evidence ledger, and a bouncing rainbow
-wordmark would read as a different person's portfolio.
+Three candidates were built — a handwriting nib, a variable-axis compositor, a
+WASM digit reader. The owner's verdict:
 
-**Do not translate this literally.** He has corrected a literal reading before,
-sharply. Earlier in this project he said the storytelling should feel like
-"birds flying left to right, the trees came, the bushes changed" — and when
-that was taken at face value he said: *"I mean that as an example of what kind
-of storytelling I want. Not exactly as forests. So what the hell? You just
-start making a forest or something. Like, what you're doing? Think about it
-again."*
+> "**not like these** … they are **too basic and generic**!"
 
-So "a bird coming in" is **an example of a thing that arrives and crosses**,
-not a request for fauna. "Trigonometric diagrams working in background" is
-**an example of visible machinery that means something**. Your round-5 answer
-to the 3D-tile question is the model: he named a tile, you argued the tile was
-wrong, and you were right. Do that again here.
+**The cause was in my brief, not in the execution.** Round 7's brief said, in
+bold:
 
-**But do not under-deliver either.** He said *go deep*, and he has said the
-appearance is what he is least happy with. The failure mode on this one is
-timidity, not excess. A tasteful 4px letter-spacing tween is not what he asked
-for.
+> *"**Do not translate this literally.** … So 'a bird coming in' is **an example
+> of a thing that arrives and crosses**, not a request for fauna."*
 
-## The one hard constraint: "it should be **functional**"
+That was wrong. I over-corrected from an earlier incident where a storytelling
+metaphor about forests was built as an actual forest, and I applied that lesson
+where it did not belong. The owner has now said the opposite in plain words:
 
-This is the word that separates a good answer from a screensaver. Whatever the
-name does, it should be **doing something real**, not miming. This site's whole
-grammar is that every element IS the idea it represents — the design law's D6
-forbids decoration that states nothing.
+> "a settings dial revolving, **a** is a bit running, one character can be a
+> **bird flying and coming in the right place** to the name — **these are a
+> real suggestions and can be used**, and figure out the rest by yourself!!!"
 
-Candidate readings of "functional", for you to weigh:
+**So: the bird is a bird. Build the bird.** The dial is a dial. These are
+literal and they are approved. What is *not* approved is stopping at the three
+he named — "figure out the rest by yourself" is the actual assignment.
 
-- the wordmark is **drawn by a process the reader can see running** — a plotter,
-  a solver, a rasteriser — and the process is one of his real ones
-- the letterforms are **the output of something measurable**, so the animation
-  is a computation and not a keyframe
-- it **responds** to something true — the time of day (this site already has a
-  06:12→22:41 arc), the visitor's own hardware, the scroll
-- it **states a fact** while it performs, the way the site's figures do
+The other half of why round 7 read as generic: **all three treated the name as
+one object with one effect applied to all of it.** A nib writes every letter. An
+axis animates every glyph. A read head crosses every letter. Ten characters,
+one idea, applied ten times. That is the definition of a transition effect, and
+he has now named that distinction himself.
 
-At least one of these should be load-bearing in what you build.
+---
 
-## Material that already exists and is his
+## §1 · The actual specification
 
-You are not short of real machinery to draw from. All of this is already in the
-repo or already shipped:
+> "if have 10 characters in the name, i want **4-6 characters having different
+> kind of animations** and **not like efects of transition itself** — the
+> transition will be the layer, and the animation itself will be like a
+> settings dail revolving, a is bit running, one character can be a bird flying
+> and coming in the right place to the name"
 
-- **A real C++/WASM neural network.** 45.9KB wasm + 42.3KB glue + 310.6KB
-  weights, ~6ms forward pass, MIT © Ayush Yadav, vendored at
-  `docs/design-lab/candidates/wasm/`. It classifies hand-drawn digits at 97.01%.
-  A wordmark that is *read* by his own network is functional in the strongest
-  sense of the word.
-- **The day arc** — seven waypoints, 06:12 to 22:41, already scrubbing a real
-  dawn→night colour world.
-- **The red thread** — one continuous ink line down the whole run.
-- **`mulberry32`** in `src/components/thread/geometry.ts:158` — the existing
-  deterministic generative hand, therefore SSR-safe. Any generated stroke
-  should reuse it rather than `Math.random`.
-- **The SIMD race, the gzip stream, the approval gate, the parse** — four real
-  processes with real visual logic, already drawn elsewhere on the site.
-- **`TextGarnish`** — the existing micro-interaction vocabulary (rotateX ≤ 2.2°,
-  press scale 0.9965, `gsap.quickTo` on the one ticker, full-tier only).
+**Ayush Yadav** is exactly ten characters: `A y u s h · Y a d a v`.
 
-## Typography and colour — he explicitly opened both
+Three rules, all binding:
 
-> "And any specific font or kind of things, and you can also look at the
-> coloring."
+1. **Only 4–6 of the 10 animate.** Not all ten. The still letters are not
+   leftovers — they are what makes the moving ones legible. A name where
+   everything moves is noise; a name where five things move is a scene.
+2. **Every animated character gets a DIFFERENT kind of animation.** Not the
+   same motion staggered. Not one idea at five intensities. Five *different
+   mechanisms*.
+3. **Two layers, and they are independent.** The **transition** is the arrival
+   choreography — how the nameplate gets on stage. The **animation** is what a
+   given character *is* and *does* once it is there. Round 7 collapsed them
+   into one; keep them apart.
 
-This is a real invitation and you should take it. Currently: **Fraunces** for
-display (variable, with optical size and wonk axes), a mono, and a serif; ink
-`#26231c`, clay for decisions and gates, warm paper.
+---
 
-Things worth actually evaluating rather than assuming:
+## §2 · The idea that makes this not-generic
 
-- Fraunces' **`wonk` and `SOFT` axes** are already available and largely
-  unspent — a variable axis animating is a font *doing* something, not a font
-  being moved.
-- Whether the name wants a **different face from the rest of the display
-  type** — a wordmark is allowed to be its own thing.
-- Whether the current ink/clay pair is enough, or whether the name earns one
-  more reserved colour. **§F is narrow — read it before you decide.** Warm
-  paper, ink, light. No glow, glass, aurora, neon, particles.
-- Real variable-font axes, real optical sizing, real kerning — this site is
-  typographically the strongest thing about the current design, so the header
-  should be its best paragraph, not its loudest.
+**The glyph must BE the mechanism, not contain one.**
 
-## Where this lives, and the honest constraint about it
+A bird flying in and perching *next to* a letter is decoration — and this site's
+design law (D6) forbids decoration that states nothing. A bird that flies in and
+**lands as the letter**, because a distant bird's silhouette and a lowercase
+`v` are the same two strokes, is the site's own grammar: every visual IS the
+idea it represents.
 
-The header is **shipped production code**, not a prototype:
-`src/components/layout/Header.tsx` and `src/app/globals.css`. That means real
-constraints apply:
+That is the test for every mechanism you design. Ask: *if I removed the letter,
+would the mechanism still make sense?* If yes, it is decoration sitting near a
+letter. **The answer should be no — the mechanism should be unreadable without
+the letterform, and the letterform should be complete when the mechanism
+rests.**
 
-- **The masthead sets his name at 13px today.** That is part of why the page
-  feels flat, and it is fair game.
-- **A7** — the static/reduced-motion/print world must equal the animation's
-  final frame. A name that only exists after an animation is a broken name.
-- **LCP.** The masthead is above the fold. Anything that delays or reflows the
-  name is a regression; measure it, do not assume it.
-- **No second rAF loop** (NO-LIST §E, re-affirmed as §F3). Ride `gsap.ticker`.
-  The site's idle cost is currently ~732 callbacks from that one ticker and it
-  must not gain a second source.
-- **The frame governor** (`full | core | print`) — the rich version is
-  full-tier; core and print get an honest static form.
-- **Zero new dependencies** unless you can show the bytes buy something nothing
-  already loaded can do. Home JS is 721KB raw / 232 gz and that is already the
-  live perf regression.
-- **Safari.** Both WebKit seats are in the matrix now and they are not
-  cosmetic — variable-font animation and SVG text metrics differ there. Measure
-  in webkit, not just chromium.
+The three he named already pass that test, which is why they are good
+suggestions:
 
-**Prototype first.** Build in `docs/design-lab/candidates/` where you are free,
-prove it, and only then propose the production port. Do not touch `src/` until
-the direction is picked.
+- **the bird → `v`.** A `v` is a bird. It flies in from off-canvas, banks, and
+  settles into the exact position and weight of the final letter of "Yadav".
+  When it lands it is simply a `v` and always was.
+- **the dial → `a`.** The bowl of an `a` is a circle on a stem. A dial revolves,
+  passes detents, and clicks to rest — and at rest the dial's face and the
+  bowl's counter are the same shape. He said "**a** is a bit running", and there
+  are two `a`s in the name, so one can revolve and one can run.
+- **something runs.** An `s` is a path with no endpoints in the same place — a
+  thing can traverse it. A `u` is a vessel. A `y`'s descender is a plumb line
+  that swings and settles.
 
-## What you owe
+**Seeds, not a spec.** He said figure out the rest yourself, so the remaining
+picks and their mechanisms are yours to author and defend. Some starting
+observations about this specific name, offered because they are geometric facts
+rather than opinions:
 
-1. **Options with your own recommendation**, including what you rejected and
-   why. That reasoning is the part that reads as judgment, and it is what he
-   asked for when he said "experiment and mix and match".
-2. **At least two genuinely different directions built and openable** — not one
-   idea at two intensities. He is choosing a direction here, and a single
-   candidate is a decision made for him.
-3. **A typography and colour proposal**, since he opened both by name. Show the
-   axes actually moving, not described.
-4. **Measured**: LCP unchanged or better, no second rAF loop, the static form
-   equals the final frame, and it holds in both Safari seats. Use the existing
-   probes in `docs/design-lab/timing-audit/` where they apply.
+| glyph | what its geometry already is |
+|---|---|
+| `A` | a truss, a pair of dividers, an apex hinge, a ladder with one rung |
+| `y` | a plumb bob / pendulum on a descender; a tuning fork inverted |
+| `u` | a vessel, a magnet, a bowl that can hold or spill |
+| `s` | a continuous path, an oscilloscope trace, a switchback road |
+| `h` | a figure standing; an arch; a lever with a fulcrum |
+| `Y` | a slingshot, an antenna, a bird from the front, a river fork |
+| `a` | a dial, a gauge, a wheel with a stem |
+| `d` | a flagpole with a bowl; a clock hand at its pivot |
+| `a` | the second one — a different machine from the first `a` |
+| `v` | a bird; a funnel; a needle's tip; a check mark |
 
-## Standing law
+Pick **4–6**. Leave the rest completely still. Defend the picks — why those, why
+those mechanisms, and why the still ones are still.
+
+---
+
+## §3 · "Not effects of transition itself"
+
+He is drawing a real distinction and it should shape the code, not just the
+prose:
+
+- **Transition layer** — arrival. Fades, slides, staggers, masks. Generic by
+  nature, and that is fine; this is the layer round 7 spent its whole budget on.
+- **Mechanism layer** — what the character *is*. A dial revolves because it is a
+  dial. A bird flies because it is a bird. This layer has **no** relationship to
+  opacity ramps or entrance easing.
+
+The mechanisms should be able to run **without** the transition, and the
+transition should work with the mechanisms removed. If a mechanism only reads
+during the arrival, it is a transition effect wearing a costume.
+
+**A consequence worth thinking hard about:** if a dial can revolve, when does it
+revolve? On arrival only? On hover? On the day arc? Continuously — which this
+site forbids (no idle rAF, §F3)? The honest and probably best answer is that
+these are **mechanisms at rest that perform on arrival and answer on
+interaction**, but that is your call to make and argue.
+
+---
+
+## §4 · Restraint is the craft here
+
+The failure mode is now **cluttered**, not timid. Round 7 was timid; do not
+solve that by animating everything. Ten letters each doing a trick is a
+children's book. Five letters doing five different real things, on a page of
+still type, is a machine shop — and the site is a working paper.
+
+Two disciplines from the site's own law that apply directly:
+
+- **Clay is reserved for decisions and gates.** A mechanism should not spend
+  clay to be noticed. Ink and paper and light are the palette.
+- **The ≤2 stamps-per-page budget** exists because this project already learned
+  that apparatus multiplies. The same instinct applies to mechanisms.
+
+---
+
+## §5 · Hard constraints (unchanged from round 7)
+
+- **Prototype in `docs/design-lab/candidates/` first.** Do NOT touch `src/`
+  until a direction is picked. The header is production code above the fold.
+- **A7** — the static / reduced-motion / print form must equal the animation's
+  final frame, **to the pixel**. A name that only exists after an animation is a
+  broken name. Round 7 hit 0px on A and B and ~0.01% on C; 0px is the bar.
+- **LCP.** Round 7 measured this and the spread was decisive: **B 320/340/43ms
+  vs A 2224/1309/1250 and C 2520/1766/1765**. SVG-heavy nameplates cannot be
+  the LCP element. Whatever you build, measure it — `docs/design-lab/probe-header7.mjs`
+  already does exactly this and is committed.
+- **No second rAF loop** (§F3). Ride `gsap.ticker`.
+- **Zero new dependencies.**
+- **Both WebKit seats.** Variable-font animation, SVG text metrics and
+  `offset-path` all differ there.
+- **`mulberry32`** (`src/components/thread/geometry.ts:158`) for anything
+  generative — never `Math.random`, because SSR.
+- Voice: warm paper, ink, light. No glow, glass, aurora, neon, particles.
+
+## §6 · What you owe
+
+1. **One built candidate minimum, ideally two**, openable, with 4–6 distinct
+   per-glyph mechanisms actually running.
+2. **A written defence of the picks** — which characters, which mechanisms, why
+   those, and specifically **why each mechanism could not be swapped onto a
+   different letter**. If it could be, it is not derived from the letterform and
+   it will read as generic again.
+3. **The transition layer designed separately** and described as such.
+4. **Measured**: LCP, idle rAF, static-equals-final-frame pixel diff, both
+   Safari seats. The probe exists; extend it rather than rewriting it.
+
+## §7 · Standing law
 
 `docs/design-lab/FABLE-VISUAL-BRIEF.md` (THE DESIGN LAW, §D / D1–D8) ·
-`docs/NO-LIST.md` (§A–§F; **§F** is the ink-field carve-out and it is narrow) ·
-`docs/BUILD-RUBRIC.md` (A1–A9; note **A7**, **A8/D2** one pin already spent,
-**A9** guards added scroll length).
+`docs/NO-LIST.md` (§A–§F) · `docs/BUILD-RUBRIC.md` (A1–A9; **A7**, and **A9**
+guards added scroll length).
 
 `BUILD-RUBRIC §6`: step score = **min**(rubric, recruiter, visitor). The
 recruiter lens asks "does this read credible-professional, **not
-art-project**?" — which is the exact tension in this ask, and naming how you
-resolved it is part of the deliverable.
+art-project**?" — and a bird landing as a letter is precisely where that
+tension lives. Resolving it is part of the work, not a reason to avoid it.
+
+**The round-7 candidates are on disk** (`header-a-hand.html`,
+`header-b-compositor.html`, `header-c-reader.html`) and their probe report is
+at `docs/design-lab/shots-header7/report.json`. Read them to know what has
+already been tried and rejected — and reuse anything worth keeping. A's
+letterform-skeleton machinery and C's raster pipeline are both real work; the
+verdict was on the concept, not the craft.
