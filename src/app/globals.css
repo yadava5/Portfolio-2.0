@@ -3316,6 +3316,23 @@ body {
     filter: none !important;
   }
 
+  /* …and the FRAGMENTS inside them (round 11, measured). SplitText's
+     line masks put the inline transform on child divs, which the
+     element-level rules above cannot reach: a fresh-load Cmd+P on the
+     one-shot build already printed 34 line fragments displaced a full
+     line-height into their overflow-clip masks — i.e. blank headlines
+     (docs/design-lab/probe-print11.mjs). The scrubbed world holds
+     from-states at every unscrolled position, so the fragments now
+     settle with their targets. The manifesto's word fragments join
+     them: their authored rest mid-scrub is muted ink, but the paper
+     edition is the record read to the end — every word prints full. */
+  [data-tm-bright] div,
+  [data-tm-mantra] div,
+  [data-tm-words] div {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   /* The scroll-driven layer (folio draw-in/out, caption settle) rests
      at its AUTHORED values — killing the animation is the whole fix,
      and opacity must NOT force to 1 here: fig 5.n's caption rests
