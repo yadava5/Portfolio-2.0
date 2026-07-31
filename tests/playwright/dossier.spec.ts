@@ -662,41 +662,59 @@ test.describe("dossier — mobile thread gutter (home)", () => {
   test("at 390 the thread never touches letterforms in chapters 02–06", async ({
     page,
   }) => {
+    /* ROUND 12: the motion world's thread is the canvas rail, so the
+       gutter contract is probed from the rail's own page-space sample
+       run (canvas.__rail) instead of per-segment SVG paths. Same
+       property, same 4px floor: in the compact gutter chapters the
+       ink's rightmost reach stays clear of every letterform. */
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page
-      .locator("svg[data-thread-segment='03'] path.thread-past")
-      .waitFor({ state: "attached", timeout: 15000 });
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              document.querySelector<HTMLCanvasElement>(
+                "canvas[data-thread-rail]"
+              )?.__rail?.sampleCount ?? 0
+          ),
+        { timeout: 15000 }
+      )
+      .toBeGreaterThan(200);
     /* Give ResizeObserver/font re-measures a beat to settle */
     await page.waitForTimeout(600);
 
     const probe = await page.evaluate(() => {
       const GUTTER_CHAPTERS = ["02", "03", "04", "05", "06"];
+      const rail = document.querySelector<HTMLCanvasElement>(
+        "canvas[data-thread-rail]"
+      )?.__rail;
+      if (!rail) return [];
+      const samples = rail.samples();
       const results: {
         seg: string;
         threadRight: number;
         textLeft: number;
       }[] = [];
       for (const id of GUTTER_CHAPTERS) {
-        const svg = document.querySelector(`svg[data-thread-segment='${id}']`);
-        const past = svg?.querySelector<SVGPathElement>("path.thread-past");
-        const section = svg?.closest("[data-chapter]");
-        if (!svg || !past || !section) continue;
-        /* The ink's rightmost reach, sampled along the path */
-        const svgBox = svg.getBoundingClientRect();
-        const total = past.getTotalLength();
+        const section = document.querySelector(`[data-chapter='${id}']`);
+        if (!section) continue;
+        const rect = section.getBoundingClientRect();
+        const top = rect.top + window.scrollY;
+        const bottom = rect.bottom + window.scrollY;
+        /* The ink's rightmost reach inside this chapter's page band */
         let right = -Infinity;
-        for (let i = 0; i <= 140; i++) {
-          const pt = past.getPointAtLength((total * i) / 140);
-          right = Math.max(right, svgBox.left + pt.x);
+        for (const p of samples) {
+          if (p.y >= top && p.y <= bottom) right = Math.max(right, p.x);
         }
+        if (right === -Infinity) continue;
         /* The nearest letterforms: text elements inside the chapter */
         let textLeft = Infinity;
         for (const el of section.querySelectorAll("p, h2, h3, li, a, span")) {
           if (!el.textContent?.trim()) continue;
-          const rect = el.getBoundingClientRect();
-          if (rect.width < 2 || rect.height < 2) continue;
-          textLeft = Math.min(textLeft, rect.left);
+          const box = el.getBoundingClientRect();
+          if (box.width < 2 || box.height < 2) continue;
+          textLeft = Math.min(textLeft, box.left);
         }
         results.push({ seg: id, threadRight: right, textLeft });
       }
