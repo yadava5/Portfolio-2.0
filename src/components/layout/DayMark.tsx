@@ -28,7 +28,9 @@
  *     mark must never chatter at a screen reader on every crossing.
  */
 
+import { RUN_NO } from "@/components/story/chapters";
 import type { ChapterMeta } from "@/components/story/chapters";
+import { RunClock } from "@/components/layout/RunClock";
 
 /** Props for the DayMark running head */
 interface DayMarkProps {
@@ -56,7 +58,7 @@ export function DayMark({ chapter }: DayMarkProps) {
       className="hidden items-center gap-2 border-l border-(--header-ink-border) pl-2.5 min-[480px]:flex lg:gap-2.5 lg:pl-3.5"
     >
       <span className="sr-only">
-        {`now reading — chapter ${chapter.id}, ${chapter.name}, ${chapter.clock}`}
+        {`run ${RUN_NO} — now reading chapter ${chapter.id}, ${chapter.name}, ${chapter.clock}`}
       </span>
       {/* N6 (fix round 3): below `lg` the cluster is a filling circle and
           nothing else, and a sighted pointer reader had no way to learn
@@ -108,25 +110,28 @@ export function DayMark({ chapter }: DayMarkProps) {
             </g>
           </svg>
         </span>
-        {/* THE DATELINE IS GONE (CRITIC-LEDGER F30 + F28).
-            It used to print the active chapter's clock and name here, at
-            lg+. Measured in the top 170px of the first frame, that made
-            "arrival" appear THREE times — running head, ¶ kicker, and
-            the chapter rail — and "06:12" twice, running head and
-            kicker, saying the same sentence within a hand's width of
-            each other.
-            Worse (F28): the header clock is the paper's FICTIONAL
-            workday record, and three lines below it in ¶07 the gate
-            prints the reader's REAL local time. A reader had no way to
-            tell which of the two clocks was the fiction. The ledger's
-            own remedy is to "drop it from the header and leave it to the
-            ¶ kickers", which is what this does — the kickers carry the
-            record, in the page, where the dateline grammar explains it.
-            What stays is the part that was never a duplicate: the ink
-            disc, the one surface that answers "where am I in the
-            workday" while the kickers are scrolled away. The sr-only
-            sentence above still speaks chapter, name and clock in full,
-            so nothing is lost from the accessibility tree. */}
+        {/* THE RUN STATE (round 12, Stage C) — and an override of
+            CRITIC-LEDGER F30/F28, on the record. F30 removed the lg+
+            dateline here as a triplicate of the ¶ kicker and the rail;
+            F28 objected that the fictional workday clock sat unlabelled
+            beside the gate's REAL local time. The owner then asked,
+            four times, for the prototype's running head — run id ·
+            advancing clock · current station — so the dateline returns
+            in the prototype's own form, which also answers F28: the
+            `run 041 ·` prefix names the record as the RUN's, not the
+            reader's (the ¶07 gate line even says so: "the ¶ clocks are
+            the day this paper records"). The clock now ADVANCES with
+            scroll (RunClock — minute-by-minute between kicker
+            datelines, the reading line's own position), so it is no
+            longer the kicker's duplicate: the kicker says when a
+            chapter IS, this says where in the day the reader STANDS.
+            At xl+ where the row has the width — measured, not guessed:
+            the cluster sets at 217px and the 1024 row holds 148px of
+            slack (content 928, children 756 + gaps), so at lg it
+            wraps; at 1280 the row carries it on one 24px line. */}
+        <span className="label-mono hidden whitespace-nowrap text-(--header-ink-muted) xl:inline">
+          run {RUN_NO} · <RunClock chapter={chapter} /> · {chapter.name}
+        </span>
       </span>
     </span>
   );
