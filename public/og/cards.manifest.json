@@ -2,8 +2,8 @@
   "note": "Written by scripts/asset-truth/render-og-cards.mjs. `npm run assets:check-og` fails when a card's content hash no longer matches the data layer.",
   "cards": {
     "case-automl.png": {
-      "svg": "c7867a3495a9a64d6b9da27d9893f5108cf80a9031ea4276152b40f1a6a1f537",
-      "png": "9a083843d43195e8bffc6e4c44df19a6c17b29ebb3295af7726a129e45556979"
+      "svg": "9936047ee0b8e05cd43d07332ddd4bfd31bf86bf183333579a3257a5d4874ef3",
+      "png": "728a8a534d4fdeec0fcd2638f3552e5ab75ba8aea75951422b0c9e1f143e008f"
     },
     "case-fast-mnist-nn.png": {
       "svg": "1a8c7bba1061018fcbf2c673da6059a501d5d74910d374a9f4361779d28f9c9d",
