@@ -7,87 +7,95 @@
  * of this ever exists there — static worlds paint the finished page
  * straight from the server markup).
  *
- * THE COMPOSED-SCENE MODEL (PREMIUM-FLOW #1). Reveals used to fire
- * per-element, each on its OWN `top 75%` trigger, so a chapter arrived as
- * scattered pops instead of one authored beat. Now every chapter reveals
- * as a directed GROUP: an ancestor marked `[data-tm-scene]` is the shared
- * trigger for all the `data-tm-*` elements beneath it, and those children
- * play off ONE ScrollTrigger with an internal stagger (DOM order, 70ms
- * apart — the Linear pattern). Scene order falls out of the markup:
- * kicker (static running head) → headline → deck → body blocks → figure.
- * This is the litany's own mechanism (one trigger, staggered delays)
- * generalized to all seven chapters; it adds NO new visual vocabulary —
- * the ink-settle / line-mask / block-fade gestures are unchanged, only
- * their TRIGGER and TIMING are re-composed. Elements outside any scene
- * keep the original in-place reveal (safe fallback), with ONE addition
- * (the Seam, stage 1): a chapter's running head marked [data-tm-lead]
- * is adopted by its section's first scene as slot 0, so the head prints
- * and the scene assembles behind it — the chapter arrives as one
- * authored entrance, not a static kicker plus a separate cascade.
+ * THE SCROLL-COUPLED MODEL (round 11 — the long-run port's engine).
+ * Every entrance used to be a `once: true` trigger: it played a single
+ * time and froze, so the choreography ran exactly once per session and
+ * scrolling back up met a finished, motionless page. The owner's
+ * verdict on that was direct — "moving with the viewer and flowing
+ * back as well if we go back … now the animations are just running
+ * once" — and the round-6 prototype he means makes every element's
+ * state a pure function of scroll position. This file now does the
+ * same with ScrollTrigger's own grammar: each composed scene is ONE
+ * timeline scrubbed across a bounded window of scroll (`SCRUB_SPAN`
+ * viewport-% of travel, ending above the reading line), so a chapter
+ * assembles WITH the reader on the way down, holds settled through the
+ * middle of the viewport (the round-5 contract: stations assemble and
+ * HOLD), and runs exactly backwards when the reader scrolls up. No
+ * state, only position — which retires the past-start crash guard
+ * outright (a `once:true` trigger created past its start fired and
+ * SELF-KILLED inside the first refresh loop, corrupting GSAP's trigger
+ * list mid-iteration; a scrubbed trigger never self-kills — it just
+ * computes its progress).
  *
- * The per-element gesture vocabulary (all transform/opacity only, small):
- *   - CHAPTER BRIGHT LINES (`[data-tm-bright]`): SplitText line-masks
- *     (overflow-clip wrappers), translateY 100%→0, 0.8s quart.out.
- *     `aria: "auto"` keeps the accessible name a single intact string
- *     (aria-label on the container, aria-hidden fragments), and
- *     `autoSplit` re-lines on reflow. Round 10 (the relief port) adds
- *     THE WINGS: each masked line also carries a horizontal offset
- *     toward its chapter's side (even chapters from the left, odd from
- *     the right — the round-6 alternation), so headlines slide INTO
- *     their own line boxes. The offset lives on the lines INSIDE the
- *     overflow masks, so no probe box ever moves and nothing can cross
- *     the Red Thread's lanes.
- *   - MUTED LINES (`data-tm="muted"`): fade + 8px rise, 0.7s cubic.out,
- *     plus the chapter-side wing (whole-element x, amplitude clamped
- *     per breakpoint so a from-state box can never enter the thread's
- *     spine lane — see wingMuted()). `muted-fade` variants (the ch-03
- *     line holding [data-thread-word]) fade WITHOUT transform — the
- *     Red Thread measures that box.
- *   - BODY BLOCKS (`data-tm="block"`): whole-block fade + 16px rise,
- *     0.6s — never per-char, never per-word on prose.
- *   - PRESS MARKS (`data-tm="press"`, round 10): marks made ON the
- *     record — provenance strips, dispatch lines, the apparatus rails —
- *     arrive from the reader's side: scale 1.035 pressing down to 1
- *     (+ an optional `data-tm-deg` settling rotation, the stamp's own
- *     degree). The APPROVED stamp always owned this direction; the
- *     marks now rhyme with it (round-6 relief: "press").
- *   - RISEN MATERIAL (`data-tm="rise"`, round 10): the record's own
- *     material — ledgers, card decks, scene figures — surfaces from
- *     the paper: scale 0.965 → 1 with a 12px rise. Scale-based depth
- *     with s < 1 cannot escape its box, which is why this is the
- *     shippable spine of the relief cut (the translation-based plate
- *     depth was tried and CUT — globals.css records the measurement).
- *   - EXIT BY DEPARTURE (`[data-tm-depart]`, round 10): chapters 02,
- *     03, 05 and 06 mark their content wrap, and ONE scrubbed trigger
- *     per chapter backs the finished station into the paper (y −18,
- *     scale .988) as its section departs behind the masthead — the
- *     round-5 "leave by departing, don't dissolve mid-frame" exit.
- *     Ch 04 is exempt (a transformed ancestor breaks the pin), ch 01
- *     hands off through the masthead, ch 07 is the ending and parks.
- *   - THE TERMINAL NAME (`data-tm="name"`): the gate's giant name takes
- *     the hero's own fade + 14px rise (1.0s expo.out) — unmasked, since
- *     leading 0.95 would clip the y descenders inside an overflow mask.
- *   - THE MANIFESTO (`[data-tm-words]`, ch 02 deck pair): the page's ONE
- *     scrubbed text — word-by-word opacity MANIFESTO_REST→1 across ~60vh
- *     of chapter-02 scroll, scrub 0.7. NOT a one-shot; keeps its own
- *     trigger. The rest is AA ink, never a redaction (F06).
- *   - THE ENDING LITANY (`[data-tm-mantra]`): line-mask rises with a
- *     SLOWING stagger (0.12s → +0.2s → +0.3s), one shared trigger;
- *     receipts follow each mantra by 200ms. (The final line's WONK=1 is
- *     static typography, set in the markup — it holds in every world.)
- *   - WEIGHT BREATHING (`[data-breathe]`): Fraunces wght 396→420→396
- *     (BREATHE_MIN + BREATHE_SPAN, quantized to BREATHE_STEPS = 4
- *     buckets) scroll-linked per headline — ONE quickSetter writing
- *     `--tm-wght`, composed into font-variation-settings by globals.css.
- *     CRITIC-LEDGER F82: this line used to read "360→420→360 (±60 max)",
- *     which F75 narrowed and quantized in Wave 2, and it claimed "No
- *     layout property is ever animated" — which was never true HERE.
- *     `wght` changes glyph ADVANCE WIDTHS in Fraunces, so the breath
- *     reflows its own line; that is exactly why F75 cut the span from
- *     60 to 24 and bucketed it, and why the setter skips unchanged
- *     buckets. The honest statement is the one the NO-LIST wants: no
- *     property that moves OTHER elements is animated — the breath is
- *     contained to the headline's own box.
+ * THE LANDING GRANT (CRITIC-LEDGER F01, narrowed, still load-bearing).
+ * Position-coupling almost solves landings by itself: any jump — nav,
+ * `/#hash`, Back/Forward, a deep-scroll reload — computes a correct
+ * frame, so nothing can STRAND at opacity 0 the way a missed `once`
+ * trigger did. But "correct frame" includes the entrance band, and
+ * measured on this build a `/#gate` landing parked the mailto/resume/
+ * github cluster at opacity 0 at 77% of the landed viewport — the
+ * exact screener F01 was written for ("the contact cluster sits INSIDE
+ * the gate's first viewport — a screener must never scroll for the
+ * address"). So a LANDING keeps its old grant, narrowed:
+ * settleArrived() finds every window whose trigger box is already
+ * above the fold, retires its trigger and plays the authored cascade
+ * to completion — content the reader ASKED to be at presents itself,
+ * and only those windows give up their reversibility. Everything below
+ * the fold keeps its choreography, both directions. The cue is
+ * ARRIVAL_EVENT plus the deep-scroll reload check after the build's
+ * refresh.
+ *
+ * PERF (NO-LIST §F3, the corrected claim): a scrubbed trigger computes
+ * on scroll events and is DORMANT while the page is still — the same
+ * contract the thread, the day arc and PipelineRun already honour. The
+ * idle acceptance is not "zero rAF" (GSAP's keep-alive loops own ~734
+ * callbacks/3s on every build of this site) but "no app work on an
+ * idle frame": measured before and after this port at 0 idle style
+ * writes (docs/design-lab/probe-idle-raf11.mjs).
+ *
+ * THE COMPOSED-SCENE MODEL (PREMIUM-FLOW #1) is unchanged in shape:
+ * an ancestor marked `[data-tm-scene]` is the shared trigger for all
+ * the `data-tm-*` elements beneath it, and those children play off ONE
+ * scrubbed timeline with an internal stagger (DOM order, SCENE_STAGGER
+ * apart — now scroll-distance, not seconds). Scene order falls out of
+ * the markup: kicker (running head, adopted as slot 0 via
+ * [data-tm-lead] — the Seam) → headline → deck → body blocks → figure.
+ *
+ * The per-element gesture vocabulary (all transform/opacity only,
+ * small) is round 10's, unchanged: line-mask rises with the chapter
+ * WINGS (even chapters from the left, odd from the right, offsets
+ * clipped inside the SplitText masks), muted fades with the clamped
+ * whole-element wing (wingMuted — the thread's lanes are measured, not
+ * felt), PRESS marks (scale 1.035 → 1 + settling degree), RISEN
+ * material (0.965 → 1 + 12px), block fades, the gate's unmasked NAME.
+ * `muted-fade` and `kicker` stay opacity-only: the Red Thread MEASURES
+ * those boxes.
+ *
+ * Dedicated paths that keep their own triggers:
+ *   - THE MANIFESTO (`[data-tm-words]`, ch 02): word-by-word opacity
+ *     MANIFESTO_REST→1 across ~60vh, scrub 0.7 — was already the
+ *     page's one scrubbed text; now it simply has company.
+ *   - THE ENDING LITANY (`[data-tm-mantra]`): the slowing stagger
+ *     (litanyDelay) survives scrubbing as spatial rhythm — later lines
+ *     take proportionally more scroll — with receipts 0.2 behind each
+ *     mantra, all on one scrubbed timeline off one shared trigger.
+ *   - EXIT BY DEPARTURE (`[data-tm-depart]`): round 10's scrubbed
+ *     chapter exit (y −18, scale .988 behind the masthead), untouched —
+ *     it was the one piece of the entrance grammar that already flowed
+ *     both ways, and it is the model the rest now follows.
+ *   - WEIGHT BREATHING (`[data-breathe]`): scrubbed quickSetter on
+ *     `--tm-wght`, quantized to BREATHE_STEPS buckets (F75), untouched.
+ *
+ * THE PAPER EDITION (A7, the scrubbed world's sharpest edge): a
+ * scrubbed page has no final frame until it is scrolled, so a fresh-
+ * load Cmd+P finds every below-fold entrance holding its from-state.
+ * The print block (globals.css §5) settles the TARGETS with
+ * `!important`; the SplitText line fragments INSIDE the masked
+ * headlines carry their own inline transforms, which element-level
+ * rules cannot reach — measured on the one-shot build too (34
+ * fragments printed displaced into their clip masks, i.e. blank
+ * headlines). The print block now resets the fragments as well; this
+ * component needs no print handler of its own.
  *
  * The hero entrance itself is pure CSS (globals.css `.hero-enter`,
  * gated by the `data-motion-ready` attribute a layout inline script
@@ -116,20 +124,30 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
-/** Entrance trigger position for in-place (orphan) reveals (plan 3.8:
- *  "at 75% viewport", once). clamp() keeps first/last-chapter triggers
- *  inside the reachable scroll span, mirroring the thread's contract. */
+/** Entrance window start for in-place (orphan) reveals (plan 3.8's
+ *  75% line, kept). clamp() keeps first/last-chapter triggers inside
+ *  the reachable scroll span, mirroring the thread's contract. */
 const ENTER_START = "clamp(top 75%)";
 
-/** Composed-scene trigger position (PREMIUM-FLOW #1). Fires slightly
- *  earlier than a lone element (larger % = higher in the scroll) so the
- *  staggered beat STARTS just before the eye arrives and the settle lands
- *  as the reading path reaches it. Overridable per scene via
- *  `data-tm-start` for the taller list chapters. */
+/** Composed-scene window start (PREMIUM-FLOW #1). Slightly earlier
+ *  than a lone element (larger % = higher in the scroll) so the
+ *  staggered beat STARTS just before the eye arrives. Overridable per
+ *  scene via `data-tm-start` for the taller list chapters. */
 const SCENE_START = "clamp(top 82%)";
 
-/** Inter-child stagger inside one scene (plan #1: children 40–90ms apart).
- *  70ms reads as a directed cascade without dragging — Linear restraint. */
+/** How much viewport the entrance window spans, in viewport-% of
+ *  scroll travel. 26% ≈ the prototype's own per-element in-window
+ *  (its `in .06 .24` settles an element by ~76% of viewport): the
+ *  gesture lives in the lower third and is DONE before the element
+ *  reaches the reading line, so the settled middle stays settled
+ *  (round 5) and a parked page never rests on a half-risen line
+ *  anywhere the eye actually reads. */
+const SCRUB_SPAN = 26;
+
+/** Inter-child stagger inside one scene, in timeline seconds — under
+ *  scrub these are UNITS OF SCROLL, not time: the whole timeline maps
+ *  onto the SCRUB_SPAN window, so 0.07 keeps the same directed-cascade
+ *  proportions the one-shot build had. */
 const SCENE_STAGGER = 0.07;
 
 /** The entrance-vocabulary hooks a scene composes (the manifesto scrub,
@@ -137,8 +155,8 @@ const SCENE_STAGGER = 0.07;
 const ENTRANCE_SELECTOR =
   "[data-tm-bright], [data-tm='muted'], [data-tm='muted-fade'], [data-tm='block'], [data-tm='name'], [data-tm='kicker'], [data-tm='press'], [data-tm='rise']";
 
-/** Scrub smoothing for the manifesto + breathing (plan 3.9: 0.5–1;
- *  0.7 matches THREAD_SCRUB so every scrubbed element shares one lag). */
+/** Scrub smoothing (plan 3.9: 0.5–1; 0.7 matches THREAD_SCRUB so every
+ *  scrubbed element shares one lag). */
 const TM_SCRUB = 0.7;
 
 /** The manifesto's scroll span: ~60vh of chapter-02 scroll. */
@@ -182,7 +200,9 @@ function chapterSide(el: HTMLElement): number {
  * The muted lines' wing amplitude, clamped per breakpoint AGAINST THE
  * THREAD'S LANES — measured, not felt (red-thread.spec's crossing
  * probe and dossier.spec's 390 gutter probe both read every from-state
- * box, opacity notwithstanding):
+ * box, opacity notwithstanding — and under scrub the from-states are
+ * standing boxes at every scroll position above their window, so the
+ * clamps below are MORE load-bearing than they were one-shot):
  *   - compact (<1024): the 36px left gutter is the thread's RESERVED
  *     lane (dossier.spec:662 holds ink ≥4px clear of every letterform
  *     box, from-states included — a −10 wing measured 26 against a
@@ -236,8 +256,11 @@ const DEPART_SCALE = 0.988;
 
 /**
  * Litany delay — the slowing stagger (plan 3.8, "line-masks with
- * slowing stagger"): 0.12s to the first line, and each line after it
- * waits longer than the last.
+ * slowing stagger"): 0.12 to the first line, and each line after it
+ * waits longer than the last. Under scrub these are scroll units: the
+ * slowing survives as spatial rhythm — each mantra takes MORE scroll
+ * than the one before it, which is the same authored deceleration
+ * read against the reader's own hand.
  *
  * CRITIC-LEDGER F78: this was a three-entry magic array read as
  * `LITANY_DELAYS[index] ?? 0`, so a FOURTH mantra would take delay 0 and
@@ -246,11 +269,11 @@ const DEPART_SCALE = 0.988;
  * build to catch it. Deriving the delay makes the stagger a rule
  * instead of a lookup: it holds for any number of lines, and the
  * quadratic term is what makes it SLOW rather than merely stagger
- * (gaps of 0.20s, 0.30s, 0.40s …, reproducing the original
+ * (gaps of 0.20, 0.30, 0.40 …, reproducing the original
  * 0.12 / 0.32 / 0.62 exactly for the three lines that ship).
  *
  * @param index - Zero-based mantra position
- * @returns Delay in seconds
+ * @returns Delay in timeline units
  */
 function litanyDelay(index: number): number {
   return 0.12 + 0.2 * index + 0.05 * index * (index - 1);
@@ -318,157 +341,123 @@ function ariaModeOf(el: HTMLElement): "auto" | "none" {
 }
 
 /**
- * Is a trigger ALREADY past its start line at build time? (The viewport
- * fraction is parsed from the "clamp(top N%)" convention.)
+ * One scrubbed entrance window awaiting the reader.
  *
- * Load-bearing crash guard: a `once:true` trigger created past-start
- * fires and SELF-KILLS synchronously inside whatever refresh loop first
- * touches it (another trigger's init, the pin's creation) — and killing
- * mutates GSAP's trigger list mid-iteration, which crashed hydration
- * with "reading 'end' of undefined" on a deep-scroll reload (browser
- * scroll restoration puts most of the paper past-start at once). Such
- * an element gets its entrance played DIRECTLY instead — visually
- * identical (the trigger fired at creation anyway), with no trigger to
- * corrupt the list.
- *
- * @param trigger - The trigger element
- * @param start - ScrollTrigger start string ("clamp(top 82%)")
- * @returns True when the start line is already above the viewport line
+ * The landing grant (see the header): a landing settles every window
+ * whose trigger box is already above the fold.
  */
-function pastStart(trigger: Element, start: string): boolean {
-  const pct = Number(/(\d+(?:\.\d+)?)%/.exec(start)?.[1] ?? "75") / 100;
-  return trigger.getBoundingClientRect().top <= window.innerHeight * pct;
+interface EntranceWindow {
+  /** The window's trigger element — its box decides "arrived at" */
+  readonly el: Element;
+  /** The scrubbed timeline riding that trigger */
+  readonly tl: gsap.core.Timeline;
 }
 
 /**
- * One entrance still waiting on its scroll trigger.
+ * Settle every entrance window the reader has ALREADY arrived at.
  *
- * A trigger line is only crossed by SCROLLING. A landing — header nav,
- * an in-page anchor, a shared `/#hash`, Back/Forward — crosses nothing,
- * so every reveal whose start line sits below the landed viewport line
- * stays at `opacity: 0` forever (CRITIC-LEDGER F01). The engine keeps a
- * roster of the un-fired reveals so an arrival can settle the ones the
- * reader has demonstrably already reached.
+ * The rule is the reader's own frame: any window whose trigger box
+ * tops above the fold is content they asked to be at, so its trigger
+ * retires and the authored cascade plays to completion from wherever
+ * the scrub had carried it. Windows below the fold are untouched —
+ * scrolling onward through the paper keeps its full two-way
+ * choreography, which is why this pass is invisible to a reader who
+ * only ever scrolls. Idempotent: a settled window has no trigger left
+ * to retire.
+ *
+ * @param windows - The scrubbed entrance windows
  */
-interface PendingReveal {
-  /** The reveal target — its box decides whether an arrival settles it */
-  readonly el: HTMLElement;
-  /** Play the entrance now and retire its trigger (idempotent) */
-  readonly force: () => void;
-}
-
-/**
- * Settle every pending reveal the reader has ALREADY arrived at.
- *
- * The rule is the reader's own frame: anything whose top is above the
- * fold — on screen, or scrolled past on the way in — is content they
- * have arrived at, so it presents itself. Anything still below the fold
- * keeps its trigger and its choreography, which is why scrolling
- * downward through the paper is completely unchanged by this pass.
- *
- * @param pending - The roster of un-fired reveals
- */
-function reconcileArrival(pending: PendingReveal[]): void {
+function settleArrived(windows: EntranceWindow[]): void {
   const fold = window.innerHeight;
-  for (const item of pending) {
-    if (item.el.getBoundingClientRect().top < fold) item.force();
+  for (const { el, tl } of windows) {
+    if (!tl.scrollTrigger) continue;
+    if (el.getBoundingClientRect().top >= fold) continue;
+    if (tl.progress() === 1) continue;
+    tl.scrollTrigger.kill(false, true);
+    tl.play();
   }
 }
 
 /**
- * Enrol a triggered tween in the arrival roster.
+ * The scrubbed window's end line for a given start.
  *
- * Forcing kills the trigger but KEEPS the animation (`kill(false, true)`)
- * and plays it from the top, so the gesture the reader sees is the same
- * authored one — only its cue changed from "you scrolled here" to "you
- * asked to be here".
+ * Both ends stay inside the reachable scroll span via clamp(), same as
+ * the start (a window whose clamp collapses it to a point degrades to
+ * an instant settle at that scroll — the pre-scrub behavior — rather
+ * than to an unreachable trigger).
  *
- * @param el - The reveal target
- * @param tween - The entrance tween ScrollTrigger is holding
- * @param pending - The roster to enrol in
+ * @param start - ScrollTrigger start string ("clamp(top 82%)")
+ * @returns The matching end string, SCRUB_SPAN viewport-% later
  */
-function armReveal(
-  el: HTMLElement,
-  tween: gsap.core.Tween,
-  pending: PendingReveal[]
-): void {
-  let forced = false;
-  pending.push({
-    el,
-    force: () => {
-      if (forced || tween.progress() > 0 || tween.isActive()) return;
-      forced = true;
-      tween.scrollTrigger?.kill(false, true);
-      tween.play(0);
+function scrubEnd(start: string): string {
+  const pct = Number(/(\d+(?:\.\d+)?)%/.exec(start)?.[1] ?? "75");
+  return `clamp(top ${pct - SCRUB_SPAN}%)`;
+}
+
+/**
+ * One scrubbed entrance timeline: the shared spine every composed
+ * scene, orphan and litany rides. State is a pure function of scroll —
+ * dormant when the page is still, backwards when the reader is.
+ *
+ * @param trigger - The window's trigger element
+ * @param start - ScrollTrigger start position
+ * @returns The timeline (add children at their stagger slots)
+ */
+function scrubTimeline(trigger: Element, start: string): gsap.core.Timeline {
+  return gsap.timeline({
+    scrollTrigger: {
+      trigger,
+      start,
+      end: scrubEnd(start),
+      scrub: TM_SCRUB,
     },
   });
 }
 
 /**
- * One chapter bright line: SplitText line-mask rise. Re-splits on
- * reflow (autoSplit); once played, later re-splits render the final
- * state instead of replaying.
+ * One chapter bright line: SplitText line-mask rise, added to its
+ * scene's scrubbed timeline at its stagger slot. autoSplit re-lines on
+ * reflow: SplitText reverts the returned tween, onSplit builds its
+ * replacement into the same slot, and the scrubbed trigger re-renders
+ * the position-correct frame on the next update — no `played` state,
+ * because there is no state.
  *
  * @param el - The bright headline element (plain text only)
- * @param trigger - Trigger element (the scene, or el itself)
- * @param delay - Seconds after the trigger fires (the scene stagger slot)
- * @param start - ScrollTrigger start position
- * @param pending - Arrival roster (omit for reveals with no trigger)
+ * @param tl - The scene's scrubbed timeline
+ * @param position - Timeline slot (the scene stagger)
  * @returns The SplitText instance (for cleanup)
  */
 function maskRise(
   el: HTMLElement,
-  trigger: Element = el,
-  delay = 0,
-  start: string = ENTER_START,
-  pending?: PendingReveal[]
+  tl: gsap.core.Timeline,
+  position: number
 ): SplitText {
-  let played = false;
-  let forced = false;
-  /* The live tween: autoSplit re-lines on reflow, so the arrival roster
-     must reach whichever tween the CURRENT split is holding. */
-  let tween: gsap.core.Tween | null = null;
-  /* Past-start at build (deep-scroll reload / already-read content):
-     play directly, create NO trigger — see pastStart(). */
-  const immediate = pastStart(trigger, start);
   /* The wing (round 10): each line slides INTO its own mask from the
      chapter's side while it rises — the offset is clipped by the
      overflow wrapper, so the element's probe box never moves. */
   const wing = wingLine(chapterSide(el), document.documentElement.clientWidth);
-  const split = SplitText.create(el, {
+  return SplitText.create(el, {
     type: "lines",
     mask: "lines",
     autoSplit: true,
     aria: ariaModeOf(el),
     onSplit: (self) => {
-      if (played) return gsap.set(self.lines, { yPercent: 0, x: 0 });
-      tween = gsap.from(self.lines, {
+      /* The TWEEN is created standalone and then seated in the
+         timeline: `tl.from()` returns the TIMELINE, and returning that
+         here would hand SplitText the whole scene to revert on every
+         reflow re-split. Returning the tween keeps the contract to one
+         headline's lines. */
+      const tween = gsap.from(self.lines, {
         yPercent: 100,
         x: wing,
         duration: 0.8,
         ease: "power3.out" /* quart.out */,
         stagger: 0.1,
-        delay,
-        ...(immediate ? {} : { scrollTrigger: { trigger, start, once: true } }),
-        onComplete: () => {
-          played = true;
-        },
       });
+      tl.add(tween, position);
       return tween;
     },
   });
-  if (!immediate && pending) {
-    pending.push({
-      el,
-      force: () => {
-        if (forced || played || !tween) return;
-        forced = true;
-        tween.scrollTrigger?.kill(false, true);
-        tween.play(0);
-      },
-    });
-  }
-  return split;
 }
 
 /**
@@ -542,38 +531,29 @@ function entranceVars(el: HTMLElement): gsap.TweenVars {
 }
 
 /**
- * Reveal one entrance element with its vocabulary gesture, off a shared
- * trigger at a staggered delay. Bright lines take the line-mask; every
- * other hook takes its `entranceVars` fade. `once:true`, killed after
- * play, and enrolled in the arrival roster until it fires.
+ * Add one entrance element to a scrubbed timeline at its stagger slot.
+ * Bright lines take the line-mask; every other hook takes its
+ * `entranceVars` gesture. `.from()` renders the from-state at build
+ * (the pre-hide hand-off below depends on that), and the trigger's
+ * first update then renders whatever frame the reader's position has
+ * already earned.
  *
  * @param el - The entrance element
- * @param trigger - Shared scene trigger (or el itself for orphans)
- * @param start - ScrollTrigger start position
- * @param delay - Stagger slot in seconds
+ * @param tl - The scrubbed timeline (scene, orphan, or litany)
+ * @param position - Stagger slot in timeline units
  * @param splits - Sink for SplitText instances (cleanup)
- * @param pending - Arrival roster (see reconcileArrival)
  */
-function revealEntrance(
+function addEntrance(
   el: HTMLElement,
-  trigger: Element,
-  start: string,
-  delay: number,
-  splits: SplitText[],
-  pending: PendingReveal[]
+  tl: gsap.core.Timeline,
+  position: number,
+  splits: SplitText[]
 ): void {
   if (el.hasAttribute("data-tm-bright")) {
-    splits.push(maskRise(el, trigger, delay, start, pending));
+    splits.push(maskRise(el, tl, position));
     return;
   }
-  /* Past-start at build → play directly, no trigger (see pastStart). */
-  const immediate = pastStart(trigger, start);
-  const tween = gsap.from(el, {
-    ...entranceVars(el),
-    delay,
-    ...(immediate ? {} : { scrollTrigger: { trigger, start, once: true } }),
-  });
-  if (!immediate) armReveal(el, tween, pending);
+  tl.from(el, entranceVars(el), position);
 }
 
 /**
@@ -599,9 +579,10 @@ export function TextMotion() {
     let ctx: gsap.Context | null = null;
     const splits: SplitText[] = [];
     const breatheEls: HTMLElement[] = [];
-    /* The un-fired reveals, and the landing signal that settles them. */
-    const pending: PendingReveal[] = [];
-    const onArrival = () => reconcileArrival(pending);
+    /* The scrubbed windows, and the landing signal that settles the
+       arrived-at ones (the F01 grant, narrowed — see the header). */
+    const windows: EntranceWindow[] = [];
+    const onArrival = () => settleArrived(windows);
     window.addEventListener(ARRIVAL_EVENT, onArrival);
 
     /* Split AFTER webfonts settle so line boxes are final (SplitText's
@@ -625,11 +606,12 @@ export function TextMotion() {
       document.documentElement.removeAttribute("data-tm-prehide");
 
       ctx = gsap.context(() => {
-        /* ── Composed scenes: one staggered timeline per chapter ────
-           Every entrance element under a [data-tm-scene] fires off that
-           ONE shared trigger, in DOM order (kicker→headline→deck→body→
-           figure), each slot SCENE_STAGGER later — the section assembles
-           as one authored beat instead of scattered pops.
+        /* ── Composed scenes: one scrubbed timeline per chapter ─────
+           Every entrance element under a [data-tm-scene] rides that
+           ONE shared window, in DOM order (kicker→headline→deck→body→
+           figure), each slot SCENE_STAGGER later — the section
+           assembles as one authored beat that the reader's own hand
+           drives, forward and back.
 
            THE LEAD PASS (the Seam, stage 1). A chapter's running head
            sits OUTSIDE every scene wrapper (the kicker is the seam's own
@@ -639,9 +621,9 @@ export function TextMotion() {
            scene of its own [data-chapter] section: it takes slot 0 of
            that scene's cascade and the scene's children shift one slot
            later, so head → headline → deck → body play as ONE authored
-           entrance off ONE trigger. Later scenes in the section adopt
+           entrance off ONE window. Later scenes in the section adopt
            nothing, and a lead whose section has no scene falls through
-           to the orphan pass below — its own trigger, never dropped
+           to the orphan pass below — its own window, never dropped
            (ch06 stays unwrapped on purpose; its head arrives solo). */
         const scenes = q("[data-tm-scene]");
         const firstSceneOf = new Map<HTMLElement, HTMLElement>();
@@ -664,29 +646,26 @@ export function TextMotion() {
           const children = Array.from(
             scene.querySelectorAll<HTMLElement>(ENTRANCE_SELECTOR)
           ).filter((el) => el.closest("[data-tm-scene]") === scene);
+          const tl = scrubTimeline(scene, start);
+          windows.push({ el: scene, tl });
           [...leads, ...children].forEach((el, index) => {
-            revealEntrance(
-              el,
-              scene,
-              start,
-              index * SCENE_STAGGER,
-              splits,
-              pending
-            );
+            addEntrance(el, tl, index * SCENE_STAGGER, splits);
           });
           for (const lead of leads) adopted.add(lead);
         }
 
         /* ── Orphan entrance elements — reveal in place (fallback) ───
-           Anything not inside a scene keeps the original per-element
-           trigger, so no reveal is ever silently dropped. (Adopted
-           leads are not orphans: they already played off their scene.) */
+           Anything not inside a scene keeps a per-element window, so no
+           reveal is ever silently dropped. (Adopted leads are not
+           orphans: they already ride their scene's timeline.) */
         for (const el of q(ENTRANCE_SELECTOR)) {
           if (el.closest("[data-tm-scene]") || adopted.has(el)) continue;
-          revealEntrance(el, el, ENTER_START, 0, splits, pending);
+          const tl = scrubTimeline(el, ENTER_START);
+          windows.push({ el, tl });
+          addEntrance(el, tl, 0, splits);
         }
 
-        /* ── The manifesto — the page's ONE scrubbed text ──────── */
+        /* ── The manifesto — the original scrubbed text ──────────── */
         const deckLines = q("[data-tm-words]");
         if (deckLines.length > 0) {
           const wordSplits = deckLines.map((el) =>
@@ -710,38 +689,26 @@ export function TextMotion() {
         }
 
         /* ── The ending litany — slowing line-mask cascade ─────────
-           The original composed scene (one shared trigger, staggered
-           delays); this is the pattern the rest of the page now shares. */
+           One scrubbed timeline off one shared trigger; the slowing
+           stagger (litanyDelay) becomes spatial — each mantra takes
+           more scroll than the last — and receipts follow each mantra
+           by 0.2 of the same window. */
         const mantras = q("[data-tm-mantra]");
         const receipts = q("[data-tm-receipt]");
         if (mantras.length > 0) {
           const litanyTrigger = mantras[0].closest("figure") ?? mantras[0];
-          /* Past-start at build → play directly, no trigger. */
-          const litanyImmediate = pastStart(litanyTrigger, ENTER_START);
+          const tl = scrubTimeline(litanyTrigger, ENTER_START);
+          windows.push({ el: litanyTrigger, tl });
           mantras.forEach((mantra, index) => {
             const delay = litanyDelay(index);
-            splits.push(
-              maskRise(mantra, litanyTrigger, delay, ENTER_START, pending)
-            );
+            splits.push(maskRise(mantra, tl, delay));
             const receipt = receipts[index];
             if (!receipt) return;
-            const tween = gsap.from(receipt, {
-              opacity: 0,
-              y: 10,
-              duration: 0.7,
-              ease: "power2.out",
-              delay: delay + 0.2,
-              ...(litanyImmediate
-                ? {}
-                : {
-                    scrollTrigger: {
-                      trigger: litanyTrigger,
-                      start: ENTER_START,
-                      once: true,
-                    },
-                  }),
-            });
-            if (!litanyImmediate) armReveal(receipt, tween, pending);
+            tl.from(
+              receipt,
+              { opacity: 0, y: 10, duration: 0.7, ease: "power2.out" },
+              delay + 0.2
+            );
           });
         }
 
@@ -806,7 +773,9 @@ export function TextMotion() {
         }
       });
 
-      /* Splitting nudges line boxes; settle every trigger's position. */
+      /* Splitting nudges line boxes; settle every trigger's position.
+         The scrubbed windows then render whatever frame the current
+         scroll has earned. */
       ScrollTrigger.refresh();
       /* A refresh moves the page under a hash landing by the pin
          distance — tell the landing contract it may re-assert (F09). */
@@ -814,17 +783,17 @@ export function TextMotion() {
 
       /* The reader may already BE somewhere: a shared `/#chapter`, a
          reload the browser restored deep in the paper, a Back that
-         landed before the fonts did. Everything above the fold has been
-         arrived at, so settle it now rather than leaving it holding for
-         a trigger line the reader will never cross. */
-      if (window.scrollY > 0) reconcileArrival(pending);
+         landed before the fonts did. Whatever is above the fold has
+         been arrived at — it presents itself settled rather than
+         holding the entrance band's frame (the F01 grant). */
+      if (window.scrollY > 0) settleArrived(windows);
     });
 
     return () => {
       disposed = true;
       window.clearTimeout(heroTimer);
       window.removeEventListener(ARRIVAL_EVENT, onArrival);
-      pending.length = 0;
+      windows.length = 0;
       ctx?.revert();
       for (const split of splits) split.revert();
       splits.length = 0;
