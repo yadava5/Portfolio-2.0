@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>header candidate C — the reader</title>
+<script>
+  /* Static-world stamp before first paint: ?static=1 or reduced motion
+     sets data-motion-off; every animation is gated on its absence.
+     The classifier still RUNS in the static world — results are
+     content, not motion; only the choreography is withheld. */
+  (function () {
+    var p = new URLSearchParams(location.search);
+    if (p.get("static") === "1" ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.setAttribute("data-motion-off", "");
+    }
+  })();
+</script>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HEADER CANDIDATE C — "The reader."
+     The name arrives as the machine sees it — a coarse ink raster —
+     and RESOLVES to print as a read head crosses it. Below, the
+     author's own digit classifier (the real C++ → WASM network,
+     784→100→10, 97.01% on MNIST) is shown each letter and prints its
+     honest best guess. It reads digits; the name is not one; the name
+     survives. Every number on the page is computed in this tab.
+     Tokens are the site's own. Zero dependencies. One bounded rAF: none —
+     CSS drives the choreography; the classifier runs on load, once.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    --canvas:#FAF6EF;
+    --w1:#FBF3E7;
+    --ink:#26231C;
+    --ink-2:#5C564A;
+    --clay:#B04A28;
+    --pine:#2F5D50;
+    --hair:rgba(38,35,28,.16);
+    --hair-strong:rgba(38,35,28,.32);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    --pad-x:clamp(20px, 5vw, 72px);
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.149 0 0 0 0 0.137 0 0 0 0 0.110 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+    color-scheme:light;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  body{
+    background:var(--w1);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:80; pointer-events:none;
+    background-image:var(--grain); background-size:260px 260px;
+  }
+  ::selection{background:var(--clay); color:var(--canvas)}
+  a{color:inherit; text-decoration:none}
+  a:focus-visible{outline:2px solid var(--clay); outline-offset:3px; border-radius:1px}
+
+  .mono{
+    font-family:var(--mono); font-size:.8125rem; line-height:1.4;
+    letter-spacing:.05em; text-transform:lowercase;
+  }
+
+  /* —— masthead (production running head) ————————————————— */
+  .mast{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:1rem var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .mast-left{display:flex; align-items:center; gap:.75rem}
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(38,35,28,.28); overflow:hidden; flex:none;
+    background:#F5EDDC;
+  }
+  .avatar svg{display:block; width:100%; height:100%}
+  .mast-name{
+    opacity:0; transform:translateY(2px);
+    transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;
+  }
+  html[data-motion-off] .mast-name{transition:none}
+  body.headed .mast-name{opacity:1; transform:none; pointer-events:auto}
+  .daymark{display:inline-flex; align-items:center; margin-left:.15rem;
+    padding-left:.85rem; border-left:1px solid rgba(38,35,28,.28)}
+  .mast nav{display:flex; gap:1.6rem; align-items:center; white-space:nowrap}
+  .mast nav a{color:color-mix(in srgb, var(--ink) 72%, transparent)}
+  .mast nav a:hover{color:var(--ink)}
+  .mast nav a[aria-current]{color:var(--ink);
+    text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:5px}
+  .mast-right{display:flex; align-items:center; gap:1rem}
+  .chip{
+    display:inline-flex; align-items:center; height:36px; padding:0 .8rem;
+    border:1px solid var(--ink); background:var(--ink);
+    color:var(--w1); border-radius:2px;
+  }
+  .chip:hover{background:transparent; color:var(--ink)}
+  .toggle{background:none; border:none; cursor:pointer;
+    color:color-mix(in srgb, var(--ink) 72%, transparent); font:inherit}
+  .toggle:hover{color:var(--ink)}
+  @media (max-width:879px){ .mast nav a:nth-child(n+2){display:none} }
+  @media (max-width:639px){
+    .toggle{display:none}
+    .mast{padding:.8rem var(--pad-x)}
+    .mast nav{gap:1rem}
+  }
+
+  main{max-width:1240px; margin:0 auto; padding:5.5rem var(--pad-x) 0}
+  .kicker{
+    display:flex; justify-content:space-between; gap:1rem;
+    padding-top:2.6rem;
+  }
+  .kicker .folio{margin-inline-start:auto; color:var(--ink-2)}
+
+  /* —— THE NAMEPLATE ————————————————————————————————————— */
+  .plate{position:relative; margin-top:clamp(2.4rem, 6vh, 4.6rem)}
+  .nameplate{
+    position:relative;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(3.55rem, 11.6vw, 10.6rem);
+    line-height:1.06;
+    letter-spacing:-.018em;
+    font-variation-settings:"opsz" 144, "SOFT" 50, "WONK" 0;
+    font-optical-sizing:none;
+    white-space:nowrap;
+    width:max-content; max-width:100%;
+  }
+  .g{display:inline-block; position:relative}
+  .g.sp{width:.24em}
+  /* BASE = FINAL FRAME: sharp print (.vec visible, raster hidden).
+     The motion world starts every glyph AS its raster — the name is
+     present from the first performed frame, in the form the machine
+     sees — and each resolves to print the moment the read head
+     crosses it. Opacity swaps only (whitelist). */
+  .g .vec{opacity:1}
+  .g canvas.coarse{
+    position:absolute; pointer-events:none;
+    image-rendering:pixelated;
+    opacity:0;
+  }
+  /* the hold (fonts landing, <900ms): nothing painted yet.
+     Every perform rule is gated on body:not(.done): when the show ends
+     the .done class un-matches them ALL, landing every element on its
+     base state — which IS the final frame — with no inline styles and
+     no lingering animation layers (the A7 diff measured those). */
+  html:not([data-motion-off]):not([data-perform]) .g .vec{opacity:0}
+  html[data-perform] body:not(.done) .g .vec{
+    opacity:0;
+    animation:resolve .22s ease-out both;
+    animation-delay:var(--rd);
+  }
+  @keyframes resolve{to{opacity:1}}
+  html[data-perform] body:not(.done) .g canvas.coarse{
+    opacity:1;
+    animation:dissolve .34s ease-out both;
+    animation-delay:calc(var(--rd) + 60ms);
+  }
+  @keyframes dissolve{to{opacity:0}}
+
+  /* the read head: one hairline that arrives and crosses (lives inside
+     the h1, so it spans the name's box and nothing else) */
+  .readhead{
+    position:absolute; top:-.3em; bottom:-.18em; left:0; width:1px;
+    display:block;
+    background:var(--ink); opacity:0;
+  }
+  html[data-motion-off] .readhead{display:none}
+  .readhead i{
+    position:absolute; bottom:-1.6em; left:.5rem; font-style:normal;
+    font-family:var(--mono); font-size:.6875rem; letter-spacing:.05em;
+    color:var(--ink-2); white-space:nowrap;
+  }
+  html[data-perform] body:not(.done) .readhead{
+    animation:scan var(--scanms) cubic-bezier(.25,.35,.55,.75) both;
+  }
+  @keyframes scan{
+    0%{opacity:0; transform:translateX(0)}
+    4%{opacity:.85}
+    96%{opacity:.85}
+    100%{opacity:0; transform:translateX(var(--pw))}
+  }
+
+  /* —— the specimen strip: what the network was shown, and what it said —— */
+  .strip{
+    margin-top:1.4rem;
+    display:flex; align-items:flex-start; gap:.65rem; flex-wrap:wrap;
+  }
+  .cell{
+    display:grid; gap:.3rem; justify-items:center;
+    opacity:1;
+  }
+  html:not([data-motion-off]):not([data-perform]) .cell{opacity:0}
+  html[data-perform] body:not(.done) .cell{
+    opacity:0;
+    animation:cellin .4s ease-out both;
+    animation-delay:calc(var(--rd) + 120ms);
+  }
+  @keyframes cellin{to{opacity:1}}
+  .cell canvas{
+    width:52px; height:52px;
+    border:1px solid var(--hair);
+    image-rendering:pixelated;
+    background:var(--canvas);
+  }
+  .cell .verdict{
+    font-family:var(--mono); font-size:.6875rem; letter-spacing:.04em;
+    color:var(--ink); white-space:nowrap;
+  }
+  .cell .verdict b{font-weight:400; color:var(--ink)}
+  .cell .verdict s{text-decoration:none; color:var(--ink-2)}
+  .stripnote{
+    margin-top:.9rem; max-width:64ch; color:var(--ink-2);
+  }
+  .stripnote b{font-weight:400; color:var(--ink)}
+  html:not([data-motion-off]):not([data-perform]) .stripnote{opacity:0}
+  html[data-perform] body:not(.done) .stripnote{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both;
+    animation-delay:calc(var(--scandone) + .25s);
+  }
+  .dateline{margin-top:.85rem; color:var(--ink)}
+  html:not([data-motion-off]):not([data-perform]) .dateline{opacity:0}
+  html[data-perform] body:not(.done) .dateline{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both;
+    animation-delay:calc(var(--scandone) + .12s);
+  }
+
+  /* —— the claim + directives (re-seated, same words) —————— */
+  .claim{
+    margin-top:clamp(2rem, 5vh, 3.2rem);
+    font-family:var(--display);
+    font-variation-settings:"opsz" 72, "SOFT" 0, "WONK" 0;
+    font-weight:560;
+    font-size:clamp(1.7rem, 2.6vw, 2.45rem);
+    line-height:1.2; letter-spacing:-.012em;
+  }
+  .claim em{font-family:var(--body); font-style:italic}
+  .claim sup{
+    font-family:var(--mono); font-size:.8125rem; letter-spacing:0;
+    vertical-align:super; color:var(--ink-2); margin-left:.15em;
+  }
+  .directives{margin-top:2rem; display:grid; gap:.8rem}
+  .directives a{text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:5px}
+  .directives a:hover{color:var(--clay)}
+  .directives .quiet{color:var(--ink-2)}
+  @keyframes rise{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  .after{opacity:1}
+  html:not([data-motion-off]):not([data-perform]) .after{opacity:0}
+  html[data-perform] body:not(.done) .after{
+    animation:rise .8s cubic-bezier(.22,1,.36,1) both;
+  }
+  /* the reading matter does not wait for the read head — the claim is
+     the LCP element and lands inside the budget (measured) */
+  html[data-perform] body:not(.done) .after.a1{animation-delay:.85s}
+  html[data-perform] body:not(.done) .after.a2{animation-delay:.97s}
+  html[data-perform] body:not(.done) .after.a3{animation-delay:1.09s}
+
+  .rail{
+    position:fixed; left:1.4rem; top:50%; transform:translateY(-50%);
+    display:grid; gap:.55rem; color:var(--ink-2); z-index:10;
+  }
+  .rail b{font-weight:400; color:var(--ink)}
+  @media (max-width:1180px){.rail{display:none}}
+
+  .stub{padding:22vh 0 30vh; color:var(--ink-2)}
+  .stub .kk{display:flex; justify-content:space-between; gap:1rem}
+  footer.note{
+    padding:1.2rem 0 3rem; color:var(--ink-2);
+    border-top:1px solid var(--hair);
+  }
+</style>
+</head>
+<body>
+
+<header class="mast" aria-label="masthead">
+  <div class="mast-left">
+    <span class="avatar" aria-hidden="true">
+      <svg viewBox="0 0 36 36"><rect width="36" height="36" fill="#F5EDDC"/><circle cx="18" cy="14" r="6" fill="#8a7a64"/><path d="M6 34c1.8-7 8-9.5 12-9.5S28.2 27 30 34Z" fill="#8a7a64"/></svg>
+    </span>
+    <a class="mono mast-name" href="#top">ayush yadav</a>
+    <span class="daymark" aria-hidden="true">
+      <svg viewBox="0 0 18 18" width="15" height="15"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+    </span>
+  </div>
+  <nav class="mono" aria-label="chapters">
+    <a href="#" aria-current="true">the work</a>
+    <a href="#">experience</a>
+    <a href="#">contact</a>
+    <a href="#">github ↗</a>
+  </nav>
+  <div class="mast-right mono">
+    <button class="toggle" id="motionToggle" type="button">motion: on</button>
+    <a class="chip" href="#">resume</a>
+  </div>
+</header>
+
+<aside class="rail mono" aria-hidden="true">
+  <span><b>01</b>&nbsp;&nbsp;arrival</span>
+  <span>02&nbsp;&nbsp;who</span>
+  <span>03&nbsp;&nbsp;the path</span>
+  <span>04&nbsp;&nbsp;automl</span>
+  <span>05&nbsp;&nbsp;the work</span>
+  <span>06&nbsp;&nbsp;how i work</span>
+  <span>07&nbsp;&nbsp;the gate</span>
+</aside>
+
+<main id="top">
+  <div class="kicker mono">
+    <span>¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12</span>
+    <span class="folio">summer 2026</span>
+  </div>
+
+  <!-- THE NAMEPLATE — the name arrives as the machine sees it and
+       resolves to print behind a read head; the author's own network
+       prints its honest guess for every letter below. -->
+  <section class="plate" id="plate">
+    <h1 class="nameplate" id="nameplate" aria-label="Ayush Yadav"><span
+      class="readhead" id="readhead" aria-hidden="true"><i>reading —</i></span></h1>
+
+    <div class="strip" id="strip" aria-hidden="true"></div>
+    <p class="stripnote mono" id="stripnote">
+      fig. 0.1 — the name, read by the author’s own digit classifier
+      (c++ → wasm · 784→100→10 · <b>97.01%</b> on digits). it knows only
+      digits; its best guesses are printed.
+      <span id="susline">waking the reader · 398.8 kB…</span>
+    </p>
+    <p class="dateline mono">software engineer · cincinnati, ohio</p>
+  </section>
+
+  <div class="below">
+    <p class="claim after a1">Scroll. It’s all <em>real.</em><sup>1</sup></p>
+    <div class="directives mono">
+      <p class="after a2"><a href="#">the capstone — agentic automl: seven gated phases ⟶</a></p>
+      <p class="after a2">case files: <a href="#">Applied</a> · <a href="#">Glyph</a> · <a href="#">Cadence</a></p>
+      <p class="after a3 quiet">scroll — the story starts here</p>
+      <p class="after a3 quiet">in a hurry — <a href="#">the work</a> · <a href="#">the evidence</a> · <a href="#">the resume</a></p>
+    </div>
+
+    <section class="stub">
+      <div class="kk mono">
+        <span>¶ 02 / 07 · who — the maker behind the paper · 09:05</span>
+        <span>02 / 07</span>
+      </div>
+      <p style="max-width:38ch; margin-top:2rem">… the story continues (stub —
+      this candidate is a first-viewport study; scroll here only to see the
+      running head receive the name).</p>
+    </section>
+
+    <footer class="note mono">
+      1. every claim on this page links to its evidence. ↩
+    </footer>
+  </div>
+</main>
+
+<script type="module">
+  const NAME = "Ayush Yadav";
+  const LETTERS = [...NAME].filter((c) => c !== " ");
+  const h1 = document.getElementById("nameplate");
+  const strip = document.getElementById("strip");
+  const still = () => document.documentElement.hasAttribute("data-motion-off");
+
+  /* ——— spans per glyph (aria-hidden; h1 carries the name) ————— */
+  const glyphs = [];
+  for (const ch of NAME) {
+    const s = document.createElement("span");
+    s.className = "g" + (ch === " " ? " sp" : "");
+    const vec = document.createElement("span");
+    vec.className = "vec";
+    vec.textContent = ch === " " ? " " : ch;
+    s.appendChild(vec);
+    s.setAttribute("aria-hidden", "true");
+    h1.appendChild(s);
+    if (ch !== " ") glyphs.push(s);
+  }
+
+  /* ——— measured kerning (per-glyph spans defeat kern pairs) ———— */
+  function rekern() {
+    const chars = [...NAME];
+    const meter = document.createElement("span");
+    meter.style.cssText =
+      "position:absolute;visibility:hidden;white-space:pre;font:inherit;letter-spacing:inherit;";
+    h1.appendChild(meter);
+    const w = (s) => { meter.textContent = s; return meter.getBoundingClientRect().width; };
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    const all = [...h1.querySelectorAll(".g")];
+    for (let k = 1; k < chars.length; k++) {
+      const kern = w(chars[k - 1] + chars[k]) - (w(chars[k - 1]) + w(chars[k]));
+      if (Math.abs(kern) > 0.25) all[k].style.marginLeft = (kern / fs).toFixed(4) + "em";
+    }
+    meter.remove();
+  }
+
+  /* ——— the baseline seat (marker trick — exact, browser-resolved) — */
+  function baselineY() {
+    const m = document.createElement("span");
+    m.style.cssText = "display:inline-block;width:0;height:0;visibility:hidden";
+    h1.appendChild(m);
+    const y = m.getBoundingClientRect().bottom - h1.getBoundingClientRect().top;
+    m.remove();
+    return y;
+  }
+
+  /* ——— a Fraunces display instance for canvas rasters (falls back
+         to the default instance where variationSettings is not
+         supported — indistinguishable at 28×28) ————————————— */
+  let rasterFamily = "Fraunces";
+  try {
+    const face = new FontFace("Fraunces Display",
+      'url("fonts/fraunces-latin-var.woff2") format("woff2")',
+      { variationSettings: '"opsz" 144, "SOFT" 50, "WONK" 0', weight: "100 900" });
+    await face.load();
+    document.fonts.add(face);
+    rasterFamily = "Fraunces Display";
+  } catch { /* default instance */ }
+
+  /* ——— the machine's frames ————————————————————————————————
+     (1) the strip cell: the glyph drawn white-on-black in a 280-box,
+         centred by ink bounds, downsampled to the SAME 28×28 = 784
+         floats the network is fed — the cell paints those floats,
+         ink-on-paper. What you see is literally the input vector.
+     (2) the coarse overlay: the glyph's own box downsampled to ~9px
+         blocks and stretched back over the vector glyph — the raster
+         the name wears until the read head passes. */
+  const PAD = 280, GRID = 28;
+  function glyphPixels(ch) {
+    const off = new OffscreenCanvas(PAD, PAD);
+    const oc = off.getContext("2d", { willReadFrequently: true });
+    oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
+    oc.fillStyle = "#fff";
+    oc.font = "600 190px '" + rasterFamily + "'";
+    oc.textBaseline = "alphabetic";
+    const m = oc.measureText(ch);
+    const w = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+    const hUp = m.actualBoundingBoxAscent, hDn = m.actualBoundingBoxDescent;
+    const x = (PAD - w) / 2 + m.actualBoundingBoxLeft;
+    const y = (PAD - (hUp + hDn)) / 2 + hUp;
+    oc.fillText(ch, x, y);
+    const small = new OffscreenCanvas(GRID, GRID);
+    const sc = small.getContext("2d", { willReadFrequently: true });
+    sc.drawImage(off, 0, 0, GRID, GRID);
+    const { data } = sc.getImageData(0, 0, GRID, GRID);
+    const px = new Array(GRID * GRID);
+    for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+    return px;
+  }
+  function paintCell(canvas, px) {
+    canvas.width = GRID; canvas.height = GRID;
+    const c = canvas.getContext("2d");
+    const img = c.createImageData(GRID, GRID);
+    /* ink on paper: value = ink alpha over the canvas tone */
+    for (let i = 0; i < px.length; i++) {
+      img.data[i * 4] = 38; img.data[i * 4 + 1] = 35; img.data[i * 4 + 2] = 28;
+      img.data[i * 4 + 3] = Math.round(px[i] * 255);
+    }
+    c.putImageData(img, 0, 0);
+  }
+  function paintCoarse(span, baseY) {
+    const r = span.getBoundingClientRect();
+    const h1r = h1.getBoundingClientRect();
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    const padY = fs * 0.16;
+    const boxW = Math.max(1, Math.round(r.width));
+    const boxH = Math.max(1, Math.round(fs * 1.06 + padY * 2));
+    const block = Math.max(6, Math.round(fs / 17));
+    const gw = Math.max(2, Math.round(boxW / block));
+    const gh = Math.max(2, Math.round(boxH / block));
+    const off = new OffscreenCanvas(gw, gh);
+    const oc = off.getContext("2d");
+    oc.scale(gw / boxW, gh / boxH);
+    oc.fillStyle = "#26231C";
+    oc.font = "600 " + fs + "px '" + rasterFamily + "'";
+    oc.textBaseline = "alphabetic";
+    const top = r.top - h1r.top - padY;
+    oc.fillText(span.textContent, 0, baseY - top);
+    const cv = document.createElement("canvas");
+    cv.className = "coarse";
+    cv.width = gw; cv.height = gh;
+    cv.getContext("2d").drawImage(off, 0, 0);
+    cv.style.left = "0px";
+    cv.style.top = (-padY) + "px";
+    cv.style.width = boxW + "px";
+    cv.style.height = boxH + "px";
+    span.appendChild(cv);
+  }
+
+  /* ——— the strip: one cell per letter ————————————————————— */
+  const cells = LETTERS.map((ch) => {
+    const cell = document.createElement("span");
+    cell.className = "cell";
+    const cv = document.createElement("canvas");
+    const v = document.createElement("span");
+    v.className = "verdict";
+    v.innerHTML = ch.toLowerCase() + "&nbsp;→&nbsp;·";
+    cell.append(cv, v);
+    strip.appendChild(cell);
+    return { ch, cell, cv, v };
+  });
+
+  /* ——— the real network (vendored from fast-mnist-nn, MIT © Ayush
+         Yadav) — loaded after first paint; results are content ———— */
+  const netReady = (async () => {
+    const mod = await import("./wasm/fast_mnist.js");
+    const instance = await mod.default({ locateFile: (p) => `wasm/${p}` });
+    const resp = await fetch("wasm/model.weights.bin");
+    if (!resp.ok) throw new Error(`weights ${resp.status}`);
+    const bytes = new Uint8Array(await resp.arrayBuffer());
+    const c = new instance.WasmClassifier();
+    c.loadWeightsFromBinary(bytes);
+    return c;
+  })();
+  window.__demo = { last: null, ready: netReady };
+
+  /* ——— choreography: fonts → kern → rasters → scan delays ————— */
+  Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 900))])
+    .then(async () => {
+      rekern();
+      const baseY = baselineY();
+      const h1r = h1.getBoundingClientRect();
+      const pw = h1r.width;
+      const scanms = Math.max(1400, Math.min(2100, pw * 1.35));
+      document.getElementById("readhead").style.setProperty("--pw", pw + "px");
+      h1.parentElement.style.setProperty("--scanms", scanms + "ms");
+      h1.parentElement.style.setProperty("--scandone", scanms + "ms");
+
+      /* per-glyph resolve delay = the moment the head crosses its centre */
+      let li = 0;
+      for (const span of h1.querySelectorAll(".g")) {
+        if (span.classList.contains("sp")) continue;
+        const r = span.getBoundingClientRect();
+        const centre = (r.left + r.right) / 2 - h1r.left;
+        const rd = Math.round((centre / pw) * scanms);
+        span.style.setProperty("--rd", rd + "ms");
+        cells[li].cell.style.setProperty("--rd", rd + "ms");
+        paintCoarse(span, baseY);
+        li++;
+      }
+
+      /* strip cells paint their real 784-float input now */
+      const inputs = cells.map(({ ch, cv }) => {
+        const px = glyphPixels(ch);
+        paintCell(cv, px);
+        return px;
+      });
+
+      if (!still()) {
+        document.documentElement.setAttribute("data-perform", "");
+        /* settle hygiene: after the last animation ends (stripnote,
+           scandone + .95s) the .done class un-matches every perform
+           rule — each element lands on base = the final frame — and
+           the spent rasters + read head leave the DOM. The settled
+           frame then rasterises exactly as the static world does. */
+        setTimeout(() => {
+          document.body.classList.add("done");
+          h1.querySelectorAll("canvas.coarse").forEach((c) => c.remove());
+          document.getElementById("readhead")?.remove();
+        }, scanms + 1050);
+      }
+
+      /* the read: his network, each letter, honest verdicts + true ms */
+      try {
+        const net = await netReady;
+        let total = 0;
+        const results = inputs.map((px, k) => {
+          const t0 = performance.now();
+          const r = net.classify(px);
+          total += performance.now() - t0;
+          return { d: Number(r.prediction), c: Array.from(r.confidence)[Number(r.prediction)] };
+        });
+        results.forEach((r, k) => {
+          cells[k].v.innerHTML =
+            cells[k].ch.toLowerCase() + "&nbsp;→&nbsp;<b>" + r.d + "</b>&nbsp;<s>" +
+            Math.round(r.c * 100) + "%</s>";
+        });
+        document.getElementById("susline").innerHTML =
+          "read in <b>" + (total < 1 ? (total * 1000).toFixed(0) + " µs" : total.toFixed(1) + " ms") +
+          "</b>, locally — 0 for 10, as it should be. the name stands.";
+        window.__demo.last = { results, totalMs: total };
+      } catch (e) {
+        document.getElementById("susline").textContent =
+          "serve this folder over http to run the read — the strip shows the input; no verdict is faked.";
+        console.warn(e);
+      }
+    });
+
+  /* ——— running head handoff ————————————————————————————— */
+  new IntersectionObserver(
+    ([e]) => document.body.classList.toggle("headed", !e.isIntersecting),
+    { rootMargin: "-64px 0px 0px 0px" }
+  ).observe(h1);
+
+  /* ——— motion toggle (functional, honest) ————————————————— */
+  document.getElementById("motionToggle").addEventListener("click", () => {
+    const off = document.documentElement.toggleAttribute("data-motion-off");
+    document.getElementById("motionToggle").textContent = off ? "motion: off" : "motion: on";
+  });
+</script>
+</body>
+</html>
