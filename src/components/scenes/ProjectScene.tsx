@@ -39,7 +39,14 @@ export function ProjectRowScene({
   if (!scene) return null;
   const { Scene, meta } = scene;
   return (
-    <figure data-scene="" className="mt-2 md:col-span-2">
+    /* data-tm="rise" (round 10, the relief port): the plate SURFACES
+       from the paper — scale .965 → 1 with a 12px rise, the last slot
+       of its row's composed cascade — while the scene's own one-shot
+       run draws the ink inside it (useSceneRun, an independent
+       trigger). Scale-based depth with s < 1 cannot escape its box,
+       which is what the recorded plate-depth CUT requires; static
+       worlds render the attribute inert like every data-tm hook. */
+    <figure data-scene="" data-tm="rise" className="mt-2 md:col-span-2">
       <Scene />
       {/* Muting is OPACITY on the inherited ink (amendment A4): this row
           can sit in near-dusk light, where the day-only secondary token
