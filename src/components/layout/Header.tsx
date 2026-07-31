@@ -311,9 +311,14 @@ export default function Header() {
                 </Dialog.Content>
               </Dialog.Portal>
             </Dialog.Root>
+            {/* masthead-name (header round 9): while the home nameplate
+                is on stage the running head does not repeat the author —
+                Nameplate.tsx scopes the hide to body.has-nameplate and
+                hands the name back on scroll-out (the handoff). Archive
+                routes never carry the class, so their wordmark stands. */}
             <Link
               href="/"
-              className="label-mono link-draw-quiet tap-target-block whitespace-nowrap text-(--header-ink)"
+              className="label-mono link-draw-quiet tap-target-block masthead-name whitespace-nowrap text-(--header-ink)"
             >
               ayush yadav
             </Link>

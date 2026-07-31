@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>header candidate B — the compositor</title>
+<script>
+  /* Static-world stamp, before first paint (mirrors layout.tsx's head
+     script): ?static=1, or the OS asking for reduced motion, sets
+     data-motion-off — and every animation below is gated on its absence,
+     so the static world IS the final frame, never a paused animation. */
+  (function () {
+    var p = new URLSearchParams(location.search);
+    if (p.get("static") === "1" ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.setAttribute("data-motion-off", "");
+    }
+    /* Motion world: the stage is held (glyphs at opacity 0, no flash)
+       until fonts resolve and kerning is measured — then data-perform
+       starts the show. Static world never holds anything. */
+  })();
+</script>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HEADER CANDIDATE B — "The compositor."
+     The name is SET, and the machinery of setting it shows. Fraunces
+     finally spent at nameplate scale; the glyphs arrive through the
+     optical-size axis (a real interpolation, not a keyframe); the
+     metric hairlines are MEASURED from this render (1cap / 1ex / em
+     markers — browser-resolved, never asserted) and stay at a whisper
+     as apparatus. Every value printed is read back from the live DOM.
+     Tokens are the site's own (globals.css @theme). Zero dependencies,
+     zero rAF — CSS transitions/animations only.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    /* globals.css @theme, verbatim */
+    --canvas:#FAF6EF;
+    --w1:#FBF3E7; --w2:#FAF6EF; --w3:#F6F3EA; --w4:#F5EDDC;
+    --w5:#F2E4C9; --w6:#43372F; --w7:#2C2622;
+    --ink:#26231C;
+    --ink-2:#5C564A;
+    --ink-dusk:#F6EFE2;
+    --clay:#B04A28;
+    --clay-g:#C4532E;
+    --pine:#2F5D50;
+    --hair:rgba(38,35,28,.16);
+    --hair-strong:rgba(38,35,28,.32);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    --pad-x:clamp(20px, 5vw, 72px);
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.149 0 0 0 0 0.137 0 0 0 0 0.110 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+    /* the day, scrubbable (design-lab control below the fold) */
+    --paper:var(--w1);
+    --paper-ink:var(--ink);
+    --paper-ink-2:var(--ink-2);
+    color-scheme:light;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html[data-motion-off]{scroll-behavior:auto}
+  body{
+    background:var(--paper);
+    color:var(--paper-ink);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .45s linear;
+  }
+  html[data-motion-off] body{transition:none}
+  /* paper grain, ≤5% (globals.css --texture-grain, intensity baked) */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:80; pointer-events:none;
+    background-image:var(--grain); background-size:260px 260px;
+  }
+  ::selection{background:var(--clay); color:var(--canvas)}
+  a{color:inherit; text-decoration:none}
+  a:focus-visible{outline:2px solid var(--clay); outline-offset:3px; border-radius:1px}
+
+  .mono{
+    font-family:var(--mono); font-size:.8125rem; line-height:1.4;
+    letter-spacing:.05em; text-transform:lowercase;
+  }
+
+  /* —— masthead (the production running head, faithfully) ——————— */
+  .mast{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:1rem var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .mast-left{display:flex; align-items:center; gap:.75rem}
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(38,35,28,.28); overflow:hidden; flex:none;
+    background:var(--w4);
+  }
+  .avatar svg{display:block; width:100%; height:100%}
+  /* THE HANDOFF: the running head does not repeat the author while the
+     nameplate is on stage — a monograph's running head starts after the
+     title page. It fades in when the nameplate scrolls out (IO-driven,
+     class toggle only). Static world: same truth, same mechanism-free
+     initial state (visible only after scroll). */
+  .mast-name{
+    opacity:0; transform:translateY(2px);
+    transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;
+  }
+  html[data-motion-off] .mast-name{transition:none}
+  body.headed .mast-name{opacity:1; transform:none; pointer-events:auto}
+  .daymark{display:inline-flex; align-items:center; margin-left:.15rem;
+    padding-left:.85rem; border-left:1px solid rgba(38,35,28,.28)}
+  .mast nav{display:flex; gap:1.6rem; align-items:center; white-space:nowrap}
+  .mast nav a{color:color-mix(in srgb, var(--paper-ink) 72%, transparent)}
+  .mast nav a:hover{color:var(--paper-ink)}
+  .mast nav a[aria-current]{color:var(--paper-ink);
+    text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:5px}
+  .mast-right{display:flex; align-items:center; gap:1rem}
+  .chip{
+    display:inline-flex; align-items:center; height:36px; padding:0 .8rem;
+    border:1px solid var(--paper-ink); background:var(--paper-ink);
+    color:var(--paper); border-radius:2px;
+  }
+  .chip:hover{background:transparent; color:var(--paper-ink)}
+  .toggle{background:none; border:none; cursor:pointer;
+    color:color-mix(in srgb, var(--paper-ink) 72%, transparent);
+    font:inherit}
+  .toggle:hover{color:var(--paper-ink)}
+  /* production's masthead budget: the row narrows honestly (B2/fix-6
+     stops — one chapter link on phones, no toggle below 640) */
+  @media (max-width:879px){
+    .mast nav a:nth-child(n+2){display:none}
+  }
+  @media (max-width:639px){
+    .toggle{display:none}
+    .mast{padding:.8rem var(--pad-x)}
+    .mast nav{gap:1rem}
+  }
+
+  /* —— the page ————————————————————————————————————————————— */
+  main{max-width:1240px; margin:0 auto; padding:5.5rem var(--pad-x) 0}
+  .kicker{
+    display:flex; justify-content:space-between; gap:1rem;
+    padding-top:2.6rem; color:var(--paper-ink);
+  }
+  .kicker .folio{margin-inline-start:auto; color:var(--paper-ink-2)}
+
+  /* —— THE NAMEPLATE STAGE ————————————————————————————————— */
+  .plate{
+    position:relative;
+    margin-top:clamp(2.4rem, 6vh, 4.6rem);
+  }
+  .nameplate{
+    position:relative;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(3.55rem, 11.6vw, 10.6rem);
+    line-height:1.06;
+    letter-spacing:-.018em;
+    font-optical-sizing:none;      /* the axis is DRIVEN, below */
+    white-space:nowrap;
+    width:max-content; max-width:100%;
+  }
+  /* Every glyph is a span (aria-hidden; the h1 carries aria-label).
+     BASE STATE = FINAL FRAME: full ink, settled axes. The motion world
+     adds a backwards-filling entrance animation on top — so the static
+     world is the final frame by construction, not by promise (A7). */
+  .g{
+    display:inline-block;
+    font-variation-settings:"opsz" 144, "SOFT" 50, "WONK" 0, "wght" 600;
+    transition:font-variation-settings .32s cubic-bezier(.22,.61,.21,1);
+  }
+  .g.sp{width:.24em}
+  /* the compositor's hand: glyphs arrive THROUGH the optical axis —
+     caption cut → display cut. A real interpolation the font performs. */
+  @keyframes setglyph{
+    0%  {opacity:0; transform:translateY(.16em);
+         font-variation-settings:"opsz" 18, "SOFT" 0, "WONK" 0, "wght" 660}
+    55% {opacity:1}
+    78% {transform:none;
+         font-variation-settings:"opsz" 120, "SOFT" 34, "WONK" 0, "wght" 588}
+    100%{opacity:1; transform:none;
+         font-variation-settings:"opsz" 144, "SOFT" 50, "WONK" 0, "wght" 600}
+  }
+  /* pre-performance hold: no flash of the finished plate, no restart */
+  html:not([data-motion-off]):not([data-perform]) .g{opacity:0}
+  html[data-perform] .perform .g{
+    animation:setglyph .82s cubic-bezier(.3,.75,.35,1) both;
+    animation-delay:calc(.24s + var(--i) * 55ms);
+  }
+  /* the press: one letterpress settle when the line is full (the
+     TextGarnish press vocabulary — scale 0.9965, nothing louder) */
+  @keyframes press{
+    0%{transform:scale(1)} 45%{transform:scale(.9965)} 100%{transform:scale(1)}
+  }
+  html[data-perform] .perform .nameplate{
+    animation:press .3s ease-out 1;
+    animation-delay:1.12s;
+    transform-origin:14% 78%;
+  }
+  /* hover garnish — the same axes, under the reader's hand (full-tier
+     grammar: fvs only, no transform, 320ms, neighbour falloff) */
+  .g.hot{font-variation-settings:"opsz" 144, "SOFT" 82, "WONK" 0, "wght" 628}
+  .g.warm{font-variation-settings:"opsz" 144, "SOFT" 66, "WONK" 0, "wght" 613}
+
+  /* —— the measured apparatus: metric hairlines ————————————— */
+  /* Three lines only, each one the browser's OWN resolution of a real
+     metric against the rendered variable instance: baseline (an
+     inline-block marker's seat), x-height (1ex), cap height (1cap).
+     No invented guides — an ascender line would be an assertion. */
+  .metrics{position:absolute; inset:0; pointer-events:none}
+  .metrics .rule{
+    position:absolute; left:-.6rem; width:calc(var(--nw, 60vw) + 3.4rem);
+    height:1px;
+    background:var(--paper-ink);
+    opacity:0; transform:scaleX(0); transform-origin:left center;
+  }
+  .metrics .rule i{
+    position:absolute; left:calc(100% + .8rem); top:-.55em;
+    font-style:normal; white-space:nowrap;
+    font-family:var(--mono); font-size:.6875rem; letter-spacing:.05em;
+    color:var(--paper-ink-2);
+    opacity:0; transition:opacity .4s ease .1s;
+  }
+  @media (max-width:900px){ .metrics .rule i{display:none} }
+  /* settled state: the rules stay at a whisper (contour-line grammar,
+     4–6%; baseline a touch firmer); the labels retire with the show —
+     the readout line below carries the facts at rest. */
+  .settled .metrics .rule{opacity:.05; transform:none}
+  .settled .metrics .rule.base{opacity:.09}
+  .settled .metrics .rule i{opacity:0}
+  @keyframes ruledraw{
+    from{opacity:0; transform:scaleX(0)}
+    to  {opacity:.32; transform:scaleX(1)}
+  }
+  html[data-perform] .perform .metrics .rule{
+    animation:ruledraw .55s cubic-bezier(.25,.9,.3,1) both;
+    animation-delay:calc(var(--d) * 90ms);
+  }
+  /* label ink at .92 measures 5.45:1 / Lc 73.4 on dawn paper — the
+     .8 first cut sat at 4.14:1, under the 4.5 small-text bar */
+  html[data-perform] .perform .metrics .rule i{opacity:.92}
+  html[data-perform] .perform.settled .metrics .rule{
+    animation:none; transform:none;
+    transition:opacity .7s ease;
+  }
+  html[data-perform] .perform.settled .metrics .rule i{opacity:0}
+  /* settle hygiene: finished entrance animations come off the glyphs —
+     their base state IS the final frame, so nothing moves; the settled
+     raster then matches the static world's exactly */
+  html[data-perform] .perform.settled .g{animation:none}
+  html[data-perform] .perform.settled .nameplate{animation:none}
+
+  /* —— the axis readout — facts, read back from this render ———— */
+  .axisline{
+    margin-top:1.15rem; color:var(--paper-ink-2);
+    display:flex; flex-wrap:wrap; gap:.35rem 1.4rem;
+  }
+  .axisline b{font-weight:400; color:var(--paper-ink)}
+  @media (max-width:519px){ .axisline .msr{display:none} }
+  /* the apparatus lines arrive with the show, not before it */
+  html:not([data-motion-off]):not([data-perform]) .axisline,
+  html:not([data-motion-off]):not([data-perform]) .dateline{opacity:0}
+  html[data-perform] .axisline{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:1.02s}
+  html[data-perform] .dateline{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:1.14s}
+  .dateline{margin-top:.55rem; color:var(--paper-ink)}
+
+  /* —— the claim, re-seated (same words, deck scale) ——————————— */
+  .claim{
+    margin-top:clamp(2rem, 5vh, 3.4rem);
+    font-family:var(--display);
+    font-variation-settings:"opsz" 72, "SOFT" 0, "WONK" 0;
+    font-weight:560;
+    font-size:clamp(1.7rem, 2.6vw, 2.45rem);
+    line-height:1.2; letter-spacing:-.012em;
+  }
+  .claim em{font-family:var(--body); font-style:italic}
+  .claim sup{
+    font-family:var(--mono); font-size:.8125rem; letter-spacing:0;
+    vertical-align:super; color:var(--paper-ink-2); margin-left:.15em;
+  }
+  .directives{margin-top:2.1rem; display:grid; gap:.8rem; color:var(--paper-ink)}
+  .directives a{text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:5px}
+  .directives a:hover{color:var(--clay)}
+  .directives .quiet{color:var(--paper-ink-2)}
+
+  /* entrance cadence for the block below the plate (production's
+     hero-enter beat — opacity+rise only, load-only) */
+  .after{opacity:1; transform:none}
+  @keyframes rise{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  html:not([data-motion-off]):not([data-perform]) .below .after{opacity:0}
+  html[data-perform] .below .after{
+    animation:rise .8s cubic-bezier(.22,1,.36,1) both;
+  }
+  html[data-perform] .below .after.a1{animation-delay:1.34s}
+  html[data-perform] .below .after.a2{animation-delay:1.46s}
+  html[data-perform] .below .after.a3{animation-delay:1.58s}
+
+  /* —— rail (context, static) ————————————————————————————— */
+  .rail{
+    position:fixed; left:1.4rem; top:50%; transform:translateY(-50%);
+    display:grid; gap:.55rem; color:var(--paper-ink-2); z-index:10;
+  }
+  .rail b{font-weight:400; color:var(--paper-ink)}
+  @media (max-width:1180px){.rail{display:none}}
+
+  /* —— below the fold: the day control (design-lab only) + stub —— */
+  .lab{
+    margin-top:clamp(5rem, 14vh, 9rem);
+    border-top:1px solid var(--hair);
+    padding:2.2rem 0 4rem;
+  }
+  .lab .labhead{color:var(--paper-ink-2); margin-bottom:1.2rem}
+  .lab .labrow{display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap}
+  .lab input[type="range"]{
+    flex:1 1 260px; accent-color:var(--clay); height:2px;
+  }
+  .lab output{min-width:22ch; color:var(--paper-ink)}
+  .stub{padding:20vh 0 30vh; color:var(--paper-ink-2)}
+  .stub .kk{display:flex; justify-content:space-between; gap:1rem}
+
+  footer.note{
+    padding:0 0 3rem; color:var(--paper-ink-2);
+    border-top:1px solid var(--hair); padding-top:1.2rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="mast" aria-label="masthead">
+  <div class="mast-left">
+    <span class="avatar" aria-hidden="true">
+      <!-- stand-in for the portrait thumb; the production header keeps its Image -->
+      <svg viewBox="0 0 36 36"><rect width="36" height="36" fill="#F5EDDC"/><circle cx="18" cy="14" r="6" fill="#8a7a64"/><path d="M6 34c1.8-7 8-9.5 12-9.5S28.2 27 30 34Z" fill="#8a7a64"/></svg>
+    </span>
+    <a class="mono mast-name" href="#top">ayush yadav</a>
+    <span class="daymark" aria-hidden="true">
+      <svg viewBox="0 0 18 18" width="15" height="15"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+    </span>
+  </div>
+  <nav class="mono" aria-label="chapters">
+    <a href="#" aria-current="true">the work</a>
+    <a href="#">experience</a>
+    <a href="#">contact</a>
+    <a href="#">github ↗</a>
+  </nav>
+  <div class="mast-right mono">
+    <button class="toggle" id="motionToggle" type="button">motion: on</button>
+    <a class="chip" href="#">resume</a>
+  </div>
+</header>
+
+<aside class="rail mono" aria-hidden="true">
+  <span><b>01</b>&nbsp;&nbsp;arrival</span>
+  <span>02&nbsp;&nbsp;who</span>
+  <span>03&nbsp;&nbsp;the path</span>
+  <span>04&nbsp;&nbsp;automl</span>
+  <span>05&nbsp;&nbsp;the work</span>
+  <span>06&nbsp;&nbsp;how i work</span>
+  <span>07&nbsp;&nbsp;the gate</span>
+</aside>
+
+<main id="top">
+  <div class="kicker mono">
+    <span>¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12</span>
+    <span class="folio">summer 2026</span>
+  </div>
+
+  <!-- THE NAMEPLATE — the name, finally at masthead scale, SET by the
+       compositor: metric rules first (measured, not asserted), then the
+       glyphs arrive through the optical-size axis, then one press. -->
+  <section class="plate perform" id="plate">
+    <div class="metrics" id="metrics" aria-hidden="true">
+      <div class="rule cap"  style="--d:0"><i id="mCap"></i></div>
+      <div class="rule xh"   style="--d:1"><i id="mX"></i></div>
+      <div class="rule base" style="--d:2"><i id="mBase"></i></div>
+    </div>
+    <h1 class="nameplate" id="nameplate" aria-label="Ayush Yadav"></h1>
+    <p class="axisline mono" id="axisline" aria-hidden="true"></p>
+    <p class="dateline mono">software engineer · cincinnati, ohio</p>
+  </section>
+
+  <div class="below">
+    <p class="claim after a1">Scroll. It’s all <em>real.</em><sup>1</sup></p>
+
+    <div class="directives mono">
+      <p class="after a2"><a href="#">the capstone — agentic automl: seven gated phases ⟶</a></p>
+      <p class="after a2">case files: <a href="#">Applied</a> · <a href="#">Glyph</a> · <a href="#">Cadence</a></p>
+      <p class="after a3 quiet">scroll — the story starts here</p>
+      <p class="after a3 quiet">in a hurry — <a href="#">the work</a> · <a href="#">the evidence</a> · <a href="#">the resume</a></p>
+    </div>
+
+    <!-- design-lab control, NOT shipped UI: the day, compressed to a
+         knob, proving the nameplate answers the arc (wght/SOFT respond;
+         ink flips cream at the dusk waypoint — all printed live). -->
+    <section class="lab">
+      <p class="labhead mono">design-lab control — drag the day (this knob is the scroll, compressed; not shipped ui)</p>
+      <div class="labrow">
+        <span class="mono">06:12</span>
+        <input id="day" type="range" min="0" max="1000" value="0" aria-label="scrub the day">
+        <span class="mono">22:41</span>
+        <output class="mono" id="dayout">waypoint 01 · wght 600 · soft 50</output>
+      </div>
+    </section>
+
+    <section class="stub">
+      <div class="kk mono">
+        <span>¶ 02 / 07 · who — the maker behind the paper · 09:05</span>
+        <span>02 / 07</span>
+      </div>
+      <p style="max-width:38ch; margin-top:2rem">… the story continues (stub —
+      this candidate is a first-viewport study; scroll here only to see the
+      running head receive the name).</p>
+    </section>
+
+    <footer class="note mono">
+      1. every claim on this page links to its evidence. ↩
+    </footer>
+  </div>
+</main>
+
+<script type="module">
+  /* ——— the nameplate, one span per glyph ————————————————— */
+  const NAME = "Ayush Yadav";
+  const plate = document.getElementById("plate");
+  const h1 = document.getElementById("nameplate");
+  let i = 0;
+  for (const ch of NAME) {
+    const s = document.createElement("span");
+    s.className = "g" + (ch === " " ? " sp" : "");
+    s.style.setProperty("--i", i++);
+    s.textContent = ch === " " ? " " : ch;
+    s.setAttribute("aria-hidden", "true");
+    h1.appendChild(s);
+  }
+
+  /* ——— the measured apparatus ———————————————————————————
+     The browser resolves 1cap / 1ex / 1em against the rendered
+     variable instance; we read the resolved boxes back and print them.
+     Runs in every world — it is content, not motion. */
+  const capOK = CSS.supports("height", "1cap");
+  function measure() {
+    const probe = document.createElement("span");
+    probe.style.cssText =
+      "position:absolute;visibility:hidden;white-space:nowrap;" +
+      "font:inherit;letter-spacing:inherit;";
+    probe.innerHTML =
+      '<span data-m="em" style="display:inline-block;width:0;height:1em"></span>' +
+      '<span data-m="ex" style="display:inline-block;width:0;height:1ex"></span>' +
+      (capOK ? '<span data-m="cap" style="display:inline-block;width:0;height:1cap"></span>' : "") +
+      '<span data-m="base" style="display:inline-block;width:0;height:0"></span>';
+    h1.appendChild(probe);
+    const px = {};
+    probe.querySelectorAll("[data-m]").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      px[el.dataset.m] = { top: r.top, h: r.height, bottom: r.bottom };
+    });
+    const h1r = h1.getBoundingClientRect();
+    const baseY = px.base.bottom - h1r.top;   /* baseline seat — exact */
+    const geom = {
+      base: baseY,
+      x: baseY - px.ex.h,
+      cap: capOK ? baseY - px.cap.h : null,
+      exH: px.ex.h, capH: capOK ? px.cap.h : null, emH: px.em.h,
+    };
+    probe.remove();
+    return geom;
+  }
+
+  /* Per-glyph spans defeat the font's kern pairs (Ya, av …). Restore
+     them by MEASUREMENT: for each adjacent pair, the kern is the width
+     of the pair set together minus the summed singles — read from
+     hidden spans inheriting the plate's own font, applied in em so it
+     survives the clamp. Real kerning, machine-recovered. */
+  function rekern() {
+    const chars = [...NAME];
+    const meter = document.createElement("span");
+    meter.style.cssText =
+      "position:absolute;visibility:hidden;white-space:pre;font:inherit;" +
+      "letter-spacing:inherit;font-variation-settings:\"opsz\" 144, \"SOFT\" 50, \"WONK\" 0, \"wght\" 600;";
+    h1.appendChild(meter);
+    const w = (s) => { meter.textContent = s; return meter.getBoundingClientRect().width; };
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    let applied = 0;
+    for (let k = 1; k < chars.length; k++) {
+      const kern = w(chars[k - 1] + chars[k]) - (w(chars[k - 1]) + w(chars[k]));
+      if (Math.abs(kern) > 0.25) {
+        glyphs[k].style.marginLeft = (kern / fs).toFixed(4) + "em";
+        applied++;
+      }
+    }
+    meter.remove();
+    return applied;
+  }
+
+  function layoutRules() {
+    const g = measure();
+    const nw = h1.getBoundingClientRect().width;
+    document.getElementById("metrics").style.setProperty("--nw", nw + "px");
+    const set = (cls, y, label, el) => {
+      const r = document.querySelector(".rule." + cls);
+      if (y == null) { r.style.display = "none"; return; }
+      r.style.top = y + "px";
+      if (el) el.textContent = label;
+    };
+    set("base", g.base, "baseline", document.getElementById("mBase"));
+    set("xh", g.x, "x " + Math.round(g.exH) + "px", document.getElementById("mX"));
+    set("cap", g.cap, g.capH ? "cap " + Math.round(g.capH) + "px" : "", document.getElementById("mCap"));
+
+    /* the readout: axes as SET (definitionally true) + boxes as READ */
+    const A = Math.round(glyphs[0].getBoundingClientRect().width);
+    document.getElementById("axisline").innerHTML =
+      "<span>fraunces · <b>opsz 144</b> · <b>wght 600</b> · <b>soft 50</b></span>" +
+      "<span class=\"msr\">measured this render — line <b>" + Math.round(nw) + "px</b> · A advance <b>" + A + "px</b>" +
+      (g.capH ? " · cap <b>" + Math.round(g.capH) + "px</b>" : "") +
+      " · x <b>" + Math.round(g.exH) + "px</b></span>";
+  }
+
+  /* The show waits for real type (capped — a slow font must not stall
+     the page; production preloads these files). Static world: measure
+     and settle instantly, nothing ever hidden. */
+  Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 900))])
+    .then(() => {
+      rekern();
+      layoutRules();
+      const still = document.documentElement.hasAttribute("data-motion-off");
+      if (!still) document.documentElement.setAttribute("data-perform", "");
+      setTimeout(() => plate.classList.add("settled"), still ? 0 : 2050);
+    });
+  addEventListener("resize", layoutRules);
+
+  /* ——— hover garnish: the same axes, under the reader's hand ——— */
+  const glyphs = [...h1.querySelectorAll(".g")];
+  h1.addEventListener("pointermove", (e) => {
+    if (document.documentElement.hasAttribute("data-motion-off")) return;
+    const t = e.target.closest(".g");
+    glyphs.forEach((s) => s.classList.remove("hot", "warm"));
+    if (!t) return;
+    const k = glyphs.indexOf(t);
+    t.classList.add("hot");
+    if (glyphs[k - 1]) glyphs[k - 1].classList.add("warm");
+    if (glyphs[k + 1]) glyphs[k + 1].classList.add("warm");
+  });
+  h1.addEventListener("pointerleave", () =>
+    glyphs.forEach((s) => s.classList.remove("hot", "warm")));
+
+  /* ——— the handoff: running head receives the name after the
+         nameplate leaves the stage (crossings only, no scroll work) — */
+  new IntersectionObserver(
+    ([e]) => document.body.classList.toggle("headed", !e.isIntersecting),
+    { rootMargin: "-64px 0px 0px 0px" }
+  ).observe(h1);
+
+  /* ——— motion toggle (functional in the prototype, honest) ————— */
+  document.getElementById("motionToggle").addEventListener("click", () => {
+    const off = document.documentElement.toggleAttribute("data-motion-off");
+    document.getElementById("motionToggle").textContent = off ? "motion: off" : "motion: on";
+    if (off) plate.classList.add("settled");
+  });
+
+  /* ——— the day, compressed to a knob (design-lab proof) —————
+     wght/SOFT answer the arc; ink flips cream at waypoint-06 exactly
+     as the site's dusk flip does. Values printed live. */
+  const W = ["#FBF3E7","#FAF6EF","#F6F3EA","#F5EDDC","#F2E4C9","#43372F","#2C2622"];
+  const day = document.getElementById("day");
+  const out = document.getElementById("dayout");
+  day.addEventListener("input", () => {
+    const t = day.value / 1000;
+    const seg = Math.min(5, Math.floor(t * 6));
+    const f = t * 6 - seg;
+    const dusk = seg >= 5 || (seg === 4 && f > 0.999);
+    const c = `color-mix(in oklab, ${W[seg]} ${((1 - f) * 100).toFixed(1)}%, ${W[seg + 1]})`;
+    document.documentElement.style.setProperty("--paper", c);
+    document.documentElement.style.setProperty("--paper-ink", dusk ? "var(--ink-dusk)" : "var(--ink)");
+    document.documentElement.style.setProperty("--paper-ink-2",
+      dusk ? "color-mix(in srgb, var(--ink-dusk) 75%, transparent)" : "var(--ink-2)");
+    /* the nameplate answers: cream on the ledger browns runs optically
+       heavier, so the wght eases DOWN at the flip; SOFT warms with the
+       afternoon. Printed, not asserted. */
+    const wght = dusk ? 576 : Math.round(600 - 14 * Math.sin(Math.PI * Math.min(t / 0.833, 1)));
+    const soft = dusk ? 62 : Math.round(50 + 22 * Math.min(Math.max((t - 0.5) / 0.33, 0), 1));
+    glyphs.forEach((s) =>
+      s.style.setProperty("font-variation-settings",
+        `"opsz" 144, "SOFT" ${soft}, "WONK" 0, "wght" ${wght}`));
+    out.textContent =
+      `waypoint 0${seg + 1}${f > 0.02 && seg < 5 ? "→0" + (seg + 2) : ""} · wght ${wght} · soft ${soft}${dusk ? " · ink: cream" : ""}`;
+  });
+</script>
+</body>
+</html>

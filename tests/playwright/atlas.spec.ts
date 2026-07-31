@@ -164,12 +164,15 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    /* The masthead reads line by line, because the block spans
-       concatenate without spaces (the h1 aria-label keeps the honest
-       sentence) — and under it the STANDFIRST states who this is
-       (CRITIC-LEDGER F02). */
-    for (const line of EXPECTED_MASTHEAD.lines) {
-      await expect(page.locator("#arrival h1")).toContainText(line);
+    /* Round 9: the h1 IS the author — the nameplate's per-character
+       spans concatenate to the name (the space span carries a real
+       space), and the claim keeps its words in the deck paragraph
+       under the place-line. */
+    await expect(page.locator("#arrival h1")).toHaveText(
+      EXPECTED_MASTHEAD.ariaLabel
+    );
+    for (const line of EXPECTED_MASTHEAD.claimLines) {
+      await expect(page.locator("#arrival")).toContainText(line);
     }
     await expect(page.locator("#arrival h1")).toHaveAttribute(
       "aria-label",
@@ -611,7 +614,11 @@ test.describe("Daylight Study — working paper", () => {
     );
     await expectInFirstViewport(
       page,
-      page.getByRole("heading", { name: EXPECTED_MASTHEAD.ariaLabel })
+      /* scoped to ¶01: the name is now TWO headings on the page — the
+         nameplate h1 and the ¶07 reprise h2 that always carried it */
+      page.locator("#arrival").getByRole("heading", {
+        name: EXPECTED_MASTHEAD.ariaLabel,
+      })
     );
     await expectInFirstViewport(
       page,

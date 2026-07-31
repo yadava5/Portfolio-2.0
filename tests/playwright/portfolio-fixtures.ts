@@ -153,24 +153,21 @@ export const EXPECTED_CONTENT = {
   graduation: "May 2026",
 };
 
-// The masthead (owner ruling, 2026-07-24): "Scroll. It’s all real." —
-// two structural line spans whose textContent concatenates WITHOUT a
-// space between blocks (and the footnote ¹ glues onto "real."), so
-// assertions target each line, never the joined sentence. The h1's
-// aria-label carries the one honest sentence.
+// The masthead (header round 9, owner-approved candidate D): the h1
+// mantle passed from the dare to the AUTHOR — the nameplate
+// "Ayush Yadav", ten per-character spans (five of them machines), the
+// aria-label carrying the one honest name. The claim keeps its words
+// ("Scroll. It’s all real.¹", U+2019, fix round 3 S1) in a deck-scale
+// paragraph beneath the place-line, and the standfirst's name moved
+// INTO the h1 — the place-line keeps discipline · city (F02's
+// first-frame identity now leads the page at nameplate scale).
 //
-// Fix round 3, S1: the apostrophe is U+2019, not the ASCII tick. The
-// fixture moved because the PAGE moved — the masthead was the last
-// straight apostrophe on a site that sets curly quotes everywhere else,
-// and it sat in the biggest type on the site. Nothing else about the
-// assertion changed: same words, same two lines, same spoken sentence.
+// The fixture moved because the PAGE moved — this is the deliberate
+// spec update the round-9 brief requires recorded, not a drift.
 export const EXPECTED_MASTHEAD = {
-  ariaLabel: "Scroll. It’s all real.",
-  lines: ["Scroll.", "It’s all real."],
-  // The standfirst (CRITIC-LEDGER F02): one serif line under the claim
-  // carrying name — discipline · city. Composed from personalInfo, so
-  // it can never drift from the data layer.
-  standfirst: "Ayush Yadav — software engineer · Cincinnati, Ohio",
+  ariaLabel: "Ayush Yadav",
+  claimLines: ["Scroll.", "It’s all real."],
+  standfirst: "software engineer · Cincinnati, Ohio",
 };
 
 export const EXPECTED_GRADUATE_IDENTITY = {
@@ -325,7 +322,11 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // the jobtracker* boundary keys added in the re-pin round — a claim
   // and the limits that keep it honest are asserted together, so a
   // future edit cannot keep the claim and drop the limit.
-  cadenceIdorReceipt: "I found and fixed 7 IDOR-vulnerable endpoints",
+  // e51395b (2026-07-30): the count was stale at seven — the page now
+  // says eight across nine endpoints (the erratum carries the story).
+  // This fixture was pinning the RETRACTED number in place: the exact
+  // failure mode the correction's own prose warns about.
+  cadenceIdorReceipt: "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
   cadenceIsolationTests:
     "11 of 11 isolation tests pass against a real Postgres",
   cadenceInertBoundary: "The DB-enforced RLS is not turned on in production",

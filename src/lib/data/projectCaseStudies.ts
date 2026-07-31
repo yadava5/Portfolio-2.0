@@ -353,6 +353,17 @@ const AUTOML_SHA = "e506c91";
 const AUTOML_BLOB = `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/${AUTOML_SHA}`;
 const CADENCE_SHA = "54c79e0";
 const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
+/**
+ * The eighth IDOR, found after CADENCE_SHA was pinned.
+ *
+ * A third pin on this file, and deliberately so — the same reasoning the
+ * 2026-07-26 note gives for keeping receipts 01–03 at 69a59e7. A receipt
+ * names the commit its finding was made at; moving CADENCE_SHA forward
+ * to swallow this one would silently restate seven older findings as
+ * though they had been re-verified at a commit nobody re-read them at.
+ */
+const CADENCE_IDOR8_SHA = "75180a3";
+const CADENCE_IDOR8_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_IDOR8_SHA}`;
 const FAST_MNIST_SHA = "c6e5c0b";
 /* `yadava5/glyph` for the same reason as Cadence above — the rename is
    real, the old path is only a redirect. Verified 200 at the canonical
@@ -1412,7 +1423,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/cadence/tree/${CADENCE_SHA}`,
     },
     summary:
-      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found seven of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
+      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
     problem:
       "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
     constraints: [
@@ -1549,9 +1560,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
          to carry the caveat for the group. */
       {
         claim:
-          "I found and fixed 7 IDOR-vulnerable endpoints. GET and DELETE on tasks and events, and GET on calendars, task-lists, and attachments, all looked a record up by id alone — so any signed-in user could read or delete another user’s records by guessing one. Every lookup is now scoped to the caller and a miss returns 404, not 403: an id that is not yours should not be confirmed to exist.",
+          "I found and fixed 8 IDOR vulnerabilities across 9 endpoints. GET and DELETE on tasks, events and tags, and GET on calendars, task-lists and attachments, all looked a record up by id alone — so any signed-in user could read or delete another user’s records by guessing one. Every lookup is now scoped to the caller and a miss returns 404, not 403: an id that is not yours should not be confirmed to exist. The eighth was found three days after the other seven were filed, on tags, and it carried the sharpest finding of the set — the regression test that was supposed to cover it asserted `WHERE id = $1` with the id as its only parameter. It was pinning the vulnerable query in place and reporting green.",
         method:
-          "read the five fix(security) commits and the service methods at the pin; 6 of the 7 routes carry a named cross-tenant regression test",
+          "read the six fix(security) commits and the service methods at their pins; 7 of the 9 routes carry a named cross-tenant regression test, and the eighth finding also corrected the test that had been certifying the bug",
         artifacts: [
           {
             label: `lib/services/TaskService.ts @ ${CADENCE_SHA}`,
@@ -1561,8 +1572,20 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             label: `lib/services/__tests__ @ ${CADENCE_SHA}`,
             href: `${CADENCE_BLOB}/lib/services/__tests__/TaskService.test.ts`,
           },
+          /* The eighth finding lands at its OWN commit, three days after
+             the pin the other seven were read at, because that is where
+             it exists. Both files are cited: the fix, and the test that
+             had been asserting the vulnerable query. */
+          {
+            label: `lib/services/TagService.ts @ ${CADENCE_IDOR8_SHA}`,
+            href: `${CADENCE_IDOR8_BLOB}/lib/services/TagService.ts`,
+          },
+          {
+            label: `TagService.test.ts @ ${CADENCE_IDOR8_SHA}`,
+            href: `${CADENCE_IDOR8_BLOB}/lib/services/__tests__/TagService.test.ts`,
+          },
         ],
-        date: "2026-07-26",
+        date: "2026-07-27",
         visibility: "public",
       },
       {
@@ -1706,6 +1729,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
     corrections: [
+      {
+        date: "2026-07-30",
+        kind: "erratum",
+        text: "The IDOR count was stale at seven. An eighth of exactly the same class — TagService reading and deleting by id alone — was found and fixed on 2026-07-27 at cadence @ 75180a3, three days after the other seven were filed, and this file went on saying seven. It now says eight across nine endpoints, and the eighth carries its own pin rather than moving the pin the first seven were read at: a receipt names the commit its finding was made at, and re-pointing CADENCE_SHA forward would silently restate seven older findings as if they had been re-verified somewhere nobody re-read them. The eighth also brought the sharpest finding in the set, and it is the reason this correction is worth more than the number: the regression test that was supposed to cover that route asserted WHERE id = $1 with the id as its only parameter. It was pinning the vulnerable query in place and reporting green. A test can certify a bug. This very page learned the same lesson from the other end on the same day — a Playwright spec here was requiring the page to repeat a false sentence about CI, and retracting the sentence broke the spec that was defending it.",
+      },
       {
         date: "2026-07-30",
         kind: "erratum",

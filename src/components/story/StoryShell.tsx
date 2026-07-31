@@ -59,6 +59,7 @@ import { TextGarnish } from "@/components/story/TextGarnish";
 import { ThreadSegment } from "@/components/thread/ThreadSegment";
 import { HashRealign } from "@/components/story/HashRealign";
 import { LenisAnchor } from "@/components/story/LenisAnchor";
+import { Nameplate } from "@/components/story/Nameplate";
 import { LocalTime } from "@/components/story/LocalTime";
 import { AwaitingStamp } from "@/components/story/ApprovedStamp";
 import { ApprovedHello } from "@/components/paper/ApprovedHello";
@@ -95,15 +96,17 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
 
 /**
  * Stagger index for the hero's CSS load entrance (60ms per slot —
- * globals.css multiplies `--hero-i`; retuned from plan 3.8's 110ms per
- * PERF-AUDIT fix 1). The two headline lines take seats 0 and 2 — a
- * double-width beat between the imperative and its payoff, so the dare
- * lands before the claim answers it — and carry the ink-settle beat
- * (W5 round B): each line lands and its ink deepens over 0.4s, so the
- * whole masthead is full-ink by ~520ms, same close as the old
- * three-line stack. The directives take seat 4 (240ms): the furniture
- * arrives only once the claim is on the page. Total intro: 240ms +
- * the 0.6s rise = 840ms.
+ * globals.css multiplies `--hero-i`).
+ *
+ * Round 9 retimed the seats around the nameplate's phrase: the reading
+ * matter rises WHILE the machines perform above, early enough that a
+ * screener reads and scrolls immediately, late enough that the
+ * dividers' seat (payoff 1, ~1.95s) has the stage to itself. The
+ * place-line takes seat 34 (~2.05s), the claim seat 38 (~2.28s, with
+ * the ink-settle beat), the directives seat 41 (~2.46s). The nameplate
+ * itself is not on this rail — its still letters ride np-settype from
+ * first paint and its machine letters arrive as what they are
+ * (Nameplate.tsx).
  *
  * @param index - Zero-based entrance slot (fractional seats allowed)
  * @returns Inline style carrying the custom property
@@ -607,76 +610,84 @@ function ArrivalChapter() {
               leading; verified no overflow 320→1680 and the closing
               line NEVER wraps, so the thread's measured box hugs one
               true line of text. */}
-          {/* CRITIC-LEDGER F64: this clamp used to be hand-rolled here
-              (and re-declared its own leading/tracking) while the
-              `--text-hero` token sat unused. Same rendered pixels — the
-              token adopted these measured values — but the size now has
-              exactly one source of truth. */}
-          <h1
-            aria-label="Scroll. It’s all real."
-            className="font-display fraunces-hero text-hero"
+          {/* THE NAMEPLATE (header round 9, candidate D — owner-approved).
+              The h1 mantle passes from the dare to the author: ten
+              characters, five of them machines derived from their own
+              letterforms (Nameplate.tsx holds the whole argument). The
+              masthead's 13px wordmark hides while the plate is on stage
+              and receives the name on scroll-out — the running head of
+              a monograph starts after the title page. */}
+          <Nameplate />
+
+          {/* The place-line keeps the standfirst's job (CRITIC-LEDGER
+              F02: identity in the first frame) minus the name the h1
+              now carries at nameplate scale. Mono, lowercase — the
+              working paper's dateline voice; tokens are the data
+              layer's own. Rises at ~2.05s, after the dividers' seat
+              (payoff 1) has had the stage to itself. */}
+          <p
+            data-hero-standfirst
+            className="label-mono hero-enter text-ink mt-6"
+            style={heroDelay(34)}
           >
-            {/* The masthead is the paper's dare: everything the scroll
-                is about to show — figures, demos, approvals — is real,
-                receipt-backed machinery, resolved when the visitor's own
-                hand approves the run (¶07). The claim is *real*, and
-                the footnote points straight at the evidence that earns
-                it. Two beats: the imperative, then the payoff. */}
-            {/* data-tier-garnish="press-axis" (garnish rail §F1a): the
-                dare answers the hand — the site's ONE variable-axis
-                hover. Under a full-tier cursor the glyphs press into the
-                paper: wght +32, SOFT 50→78, a 1px settle, the ink bleed.
-                Sanctioned exactly here because the word owns its block
-                line: the axis reflow moves advances nothing else reads
-                (the thread's measured line is the one BELOW). Inert
-                outside html[data-tier="full"]. */}
+            software engineer · {personalInfo.location}
+          </p>
+
+          {/* THE CLAIM, re-seated at deck scale (round 9): same words,
+              same footnote, same garnish — the h1 scale now belongs to
+              the name above. One inline line, so the accessible name
+              reads naturally and no aria-label is needed.
+              data-tier-garnish="press-axis" came OFF here deliberately:
+              the site's one variable-axis hover moved to the nameplate
+              (A9 — one kinetic axis per chapter; the letterform surface
+              owns the answer now). "wet-line" stays — paint-only. */}
+          <p className="font-display fraunces-display text-claim-deck mt-[clamp(2rem,5vh,3.4rem)]">
+            {/* The dare keeps its beat: everything the scroll is about
+                to show — figures, demos, approvals — is real,
+                receipt-backed machinery, resolved when the visitor's
+                own hand approves the run (¶07). The claim is *real*,
+                and the footnote points straight at the evidence. */}
             <span
-              className="hero-enter hero-enter-headline block"
-              style={heroDelay(0)}
-              data-tier-garnish="press-axis"
+              className="hero-enter hero-enter-headline hero-enter-inline"
+              style={heroDelay(38)}
             >
-              Scroll.
-            </span>
+              <span className="garnish-word" style={garnishSeat(0)}>
+                Scroll.
+              </span>
+            </span>{" "}
             {/* data-thread-name: the Red Thread originates as this
-                closing line's trailing flick (ThreadSegment 01 measures
-                it) — on an inline span so the measured box hugs the
-                text, not the column: the thread leaves the footnote's
-                heel, the claim's own receipt trail. The entrance rides
-                the INNER inline-block wrapper: the measured span itself
-                must never transform (descendant transforms do not move
-                an ancestor's layout box, so the thread's origin stays
-                true even if a re-measure lands mid-entrance). */}
-            <span className="block">
-              <span data-thread-name>
-                {/* data-tier-garnish="wet-line" (garnish rail §F1a): the
-                    claim's ink re-wets under a full-tier cursor — the
-                    entrance's own hero-ink-settle feather, re-summoned
-                    by touch, cascading seat 0 → 1 → 2 so the wetting
-                    lands ON "real." Paint-only (text-shadow on the
-                    .garnish-word spans), so the [data-thread-name] box
-                    outside never moves and the footnote ¹ keeps its own
-                    ink. The spans are transparent to the accessible
-                    name (the h1's aria-label owns it). */}
-                <span
-                  className="hero-enter hero-enter-headline hero-enter-inline"
-                  style={heroDelay(2)}
-                  data-tier-garnish="wet-line"
-                >
-                  {/* Fix round 3, S1: `It&apos;s` typed the ASCII
-                      typewriter apostrophe (U+0027) into the largest
-                      glyph run on the site — 100px of Fraunces, where a
-                      vertical tick beside the curly quotes the rest of
-                      the page sets (¶02 "I’ve", the dean’s list, every
-                      case deck) is not a subtlety. U+2019 is the mark;
-                      the aria-label above carries the same character so
-                      the spoken name and the drawn name are one string. */}
-                  <span className="garnish-word" style={garnishSeat(0)}>
-                    It’s
-                  </span>{" "}
-                  <span className="garnish-word" style={garnishSeat(1)}>
-                    all
-                  </span>{" "}
-                  {/* The ¹ is kerned against the period: the size lives on
+                line's trailing flick (ThreadSegment 01 measures it) —
+                on an inline span so the measured box hugs the text:
+                the thread leaves the footnote's heel, the claim's own
+                receipt trail. The entrance rides the INNER inline
+                wrapper: the measured span itself must never transform
+                (descendant transforms do not move an ancestor's layout
+                box, so the thread's origin stays true even if a
+                re-measure lands mid-entrance). */}
+            <span data-thread-name>
+              {/* data-tier-garnish="wet-line" (garnish rail §F1a): the
+                  claim's ink re-wets under a full-tier cursor — the
+                  entrance's own hero-ink-settle feather, re-summoned
+                  by touch, cascading toward "real." so the wetting
+                  lands ON the word being sworn to. Paint-only
+                  (text-shadow on the .garnish-word spans), so the
+                  [data-thread-name] box outside never moves and the
+                  footnote ¹ keeps its own ink. */}
+              <span
+                className="hero-enter hero-enter-headline hero-enter-inline"
+                style={heroDelay(38)}
+                data-tier-garnish="wet-line"
+              >
+                {/* Fix round 3, S1: `It&apos;s` typed the ASCII
+                    typewriter apostrophe (U+0027) into the largest
+                    glyph run on the site — U+2019 is the mark. */}
+                <span className="garnish-word" style={garnishSeat(1)}>
+                  It’s
+                </span>{" "}
+                <span className="garnish-word" style={garnishSeat(2)}>
+                  all
+                </span>{" "}
+                {/* The ¹ is kerned against the period: the size lives on
                       the <sup> (not the anchor) so align-super raises the
                       small glyph, not a hero-sized box. The negative
                       margin lives on a HERO-sized wrapper, so the tuck-in
@@ -685,60 +696,28 @@ function ArrivalChapter() {
                       adrift at 1440). The em mirrors the old cut on
                       "trust." — the one italic word is the one being
                       sworn to. */}
-                  <span className="whitespace-nowrap">
-                    <em
-                      className="garnish-word font-serif italic"
-                      style={garnishSeat(2)}
-                    >
-                      real.
-                    </em>
-                    <span className="-ml-[0.085em]">
-                      <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
-                        <LenisAnchor
-                          href="#footnote-1"
-                          id="fnref-1"
-                          aria-label="Footnote 1"
-                          className="tap-target text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
-                        >
-                          1
-                        </LenisAnchor>
-                      </sup>
-                    </span>
+                <span className="whitespace-nowrap">
+                  <em
+                    className="garnish-word font-serif italic"
+                    style={garnishSeat(3)}
+                  >
+                    real.
+                  </em>
+                  <span className="-ml-[0.085em]">
+                    <sup className="align-super text-[max(0.14em,0.8125rem)] leading-none">
+                      <LenisAnchor
+                        href="#footnote-1"
+                        id="fnref-1"
+                        aria-label="Footnote 1"
+                        className="tap-target text-ink-secondary hover:text-ink font-mono tracking-normal underline-offset-4 transition-colors hover:underline"
+                      >
+                        1
+                      </LenisAnchor>
+                    </sup>
                   </span>
                 </span>
               </span>
             </span>
-          </h1>
-
-          {/* THE STANDFIRST (CRITIC-LEDGER F02, the P0 identity fault).
-              The masthead of a working paper carries its author; this one
-              did not. "Ayush Yadav" appeared as 13px mono chrome in the
-              header and then not again as a heading until document
-              y≈9,750 of 10,560 — 92% scroll — so a screener who read the
-              first frame learned a dare and seven links. One serif line,
-              directly under the claim: name — discipline · city. Every
-              token is the data layer's own (personalInfo.name /
-              .location; the discipline is personalInfo.title without its
-              "new-grad" qualifier, which the gate's availability line
-              still carries) — no new claim enters the page.
-              It also fills the ~200px hole the my-auto centring left
-              under the masthead (F45), and takes the location OFF the ¶01
-              dateline so the city is printed once (F31).
-              19px is an existing step in the rendered type census — no
-              new size. Full ink on dawn paper (12.1:1). Entrance seat 3:
-              after the claim (seats 0/2), before the directives (seat 4),
-              on the same load-only CSS beat, so every static world paints
-              it finished (A7). */}
-          {/* data-tier-garnish="wet" (§F1a): the byline's one tasteful
-              response — the whole line's ink freshens under a full-tier
-              cursor, no cascade, no transform. Inert elsewhere. */}
-          <p
-            data-hero-standfirst
-            data-tier-garnish="wet"
-            className="hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading-snug"
-            style={heroDelay(3)}
-          >
-            {personalInfo.name} — software engineer · {personalInfo.location}
           </p>
         </div>
 
@@ -767,7 +746,7 @@ function ArrivalChapter() {
 
             At sm and up nothing changes at all — the desktop first frame
             is Wave 1's composition and is not this wave's to re-cut. */}
-        <div className="label-mono hero-enter space-y-3" style={heroDelay(4)}>
+        <div className="label-mono hero-enter space-y-3" style={heroDelay(41)}>
           <p className="text-ink">
             <LenisAnchor
               href="#automl"

@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>header candidate A — the hand</title>
+<script>
+  /* Static-world stamp before first paint: ?static=1 or reduced motion
+     sets data-motion-off; every animation is gated on its absence. The
+     static world opens on the finished signature — A7 by construction. */
+  (function () {
+    var p = new URLSearchParams(location.search);
+    if (p.get("static") === "1" ||
+        matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.setAttribute("data-motion-off", "");
+    }
+  })();
+</script>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     HEADER CANDIDATE A — "The hand."
+     The name is WRITTEN, not typeset: one continuous monoline stroke,
+     a visible nib, wet ink drying to the site's ink behind the pen.
+     The stroke that finishes the final v does not stop — it becomes
+     the red thread: a pause-pool where the pen lifts, then the dashed
+     future line the whole site already speaks (solid past / dashed
+     future). The site's one-line grammar, performed at the masthead.
+     Letterforms are generated from authored cubic skeletons with
+     deterministic hand-shake (mulberry32 — the repo's own PRNG,
+     src/components/thread/geometry.ts:158). stroke-dashoffset is the
+     sanctioned draw; the nib rides offset-path. Zero rAF, zero deps.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    --canvas:#FAF6EF;
+    --w1:#FBF3E7;
+    --ink:#26231C;
+    --ink-2:#5C564A;
+    --ink-wet:#4A382A;      /* fresh ink, warm — dries to --ink */
+    --clay:#B04A28;
+    --pine:#2F5D50;
+    --hair:rgba(38,35,28,.16);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    --pad-x:clamp(20px, 5vw, 72px);
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.149 0 0 0 0 0.137 0 0 0 0 0.110 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+    color-scheme:light;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  body{
+    background:var(--w1);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::after{
+    content:""; position:fixed; inset:0; z-index:80; pointer-events:none;
+    background-image:var(--grain); background-size:260px 260px;
+  }
+  ::selection{background:var(--clay); color:var(--canvas)}
+  a{color:inherit; text-decoration:none}
+  a:focus-visible{outline:2px solid var(--clay); outline-offset:3px; border-radius:1px}
+
+  .mono{
+    font-family:var(--mono); font-size:.8125rem; line-height:1.4;
+    letter-spacing:.05em; text-transform:lowercase;
+  }
+
+  /* —— masthead (production running head) ————————————————— */
+  .mast{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:1rem var(--pad-x);
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  }
+  .mast-left{display:flex; align-items:center; gap:.75rem}
+  .avatar{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(38,35,28,.28); overflow:hidden; flex:none;
+    background:#F5EDDC;
+  }
+  .avatar svg{display:block; width:100%; height:100%}
+  .mast-name{
+    opacity:0; transform:translateY(2px);
+    transition:opacity .35s ease, transform .35s ease;
+    pointer-events:none;
+  }
+  html[data-motion-off] .mast-name{transition:none}
+  body.headed .mast-name{opacity:1; transform:none; pointer-events:auto}
+  .daymark{display:inline-flex; align-items:center; margin-left:.15rem;
+    padding-left:.85rem; border-left:1px solid rgba(38,35,28,.28)}
+  .mast nav{display:flex; gap:1.6rem; align-items:center; white-space:nowrap}
+  .mast nav a{color:color-mix(in srgb, var(--ink) 72%, transparent)}
+  .mast nav a:hover{color:var(--ink)}
+  .mast nav a[aria-current]{color:var(--ink);
+    text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:5px}
+  .mast-right{display:flex; align-items:center; gap:1rem}
+  .chip{
+    display:inline-flex; align-items:center; height:36px; padding:0 .8rem;
+    border:1px solid var(--ink); background:var(--ink);
+    color:var(--w1); border-radius:2px;
+  }
+  .chip:hover{background:transparent; color:var(--ink)}
+  .toggle{background:none; border:none; cursor:pointer;
+    color:color-mix(in srgb, var(--ink) 72%, transparent); font:inherit}
+  .toggle:hover{color:var(--ink)}
+  @media (max-width:879px){ .mast nav a:nth-child(n+2){display:none} }
+  @media (max-width:639px){
+    .toggle{display:none}
+    .mast{padding:.8rem var(--pad-x)}
+    .mast nav{gap:1rem}
+  }
+
+  main{max-width:1240px; margin:0 auto; padding:5.5rem var(--pad-x) 0}
+  .kicker{
+    display:flex; justify-content:space-between; gap:1rem;
+    padding-top:2.6rem;
+  }
+  .kicker .folio{margin-inline-start:auto; color:var(--ink-2)}
+
+  /* —— THE SIGNATURE PLATE —————————————————————————————— */
+  .plate{position:relative; margin-top:clamp(1.4rem, 4vh, 3rem)}
+  .sig{
+    display:block;
+    width:min(1000px, 100%);
+    height:auto;
+    overflow:visible;          /* the thread continues past the box */
+  }
+  .sig path{
+    fill:none;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .sig .s-ink{stroke:var(--ink)}
+  .sig .s-wet{stroke:var(--ink-wet); opacity:0}
+  .sig .s-future{
+    stroke:var(--ink); stroke-dasharray:2.5 8.5; opacity:.6;
+  }
+  .sig .s-pool{fill:var(--ink); stroke:none}
+  /* motion world: the write. Keyframes are injected by JS with
+     per-letter cadence (measured arc lengths). The base state is the
+     FINISHED signature; the animations rewind it and play it forward. */
+  html:not([data-motion-off]):not([data-perform]) .sig .s-ink{opacity:0}
+  html:not([data-motion-off]):not([data-perform]) .sig .s-pool{opacity:0}
+  html:not([data-motion-off]):not([data-perform]) .nib{opacity:0}
+  /* the WET stroke leads (fresh ink at the pen); the settled ink
+     follows a beat behind — the line visibly dries */
+  html[data-perform] .sig .s-ink{ animation:write var(--wms) var(--ease-write) both;
+    animation-delay:.3s }
+  html[data-perform] .sig .s-wet{ animation:wet var(--wms) var(--ease-write) both }
+  html[data-perform] .sig .s-pool{ opacity:0;
+    animation:poolin .3s ease-out both; animation-delay:calc(var(--wms)) }
+  html[data-perform] .sig .s-future{ opacity:0;
+    animation:futurein .5s ease-out both; animation-delay:calc(var(--wms) + .25s) }
+  html:not([data-motion-off]):not([data-perform]) .sig .s-future{opacity:0}
+  @keyframes poolin{to{opacity:1}}
+  @keyframes futurein{to{opacity:.6}}
+  /* the nib: a small ink bead riding the same path, same cadence */
+  .nib{
+    position:absolute; left:0; top:0; width:7px; height:7px;
+    margin:-3.5px 0 0 -3.5px;
+    border-radius:50%; background:var(--ink);
+    opacity:0; pointer-events:none;
+  }
+  html[data-perform] .nib{ animation:nibride var(--wms) var(--ease-write) both }
+  html[data-motion-off] .nib{display:none}
+
+  /* the annotation that settles after the write */
+  .sigline{
+    margin-top:1rem; color:var(--ink-2); max-width:52ch;
+  }
+  .sigline b{font-weight:400; color:var(--ink)}
+  .dateline{margin-top:.55rem; color:var(--ink)}
+  html:not([data-motion-off]):not([data-perform]) .sigline,
+  html:not([data-motion-off]):not([data-perform]) .dateline{opacity:0}
+  /* the annotation rises while the pen still writes (LCP: WebKit pegs
+     the page's largest text paint on this block — measured 3.1 s when
+     it waited for the whole write) */
+  html[data-perform] .sigline{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both;
+    animation-delay:1.15s}
+  html[data-perform] .dateline{
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both;
+    animation-delay:1.27s}
+
+  /* —— the claim + directives (same words, re-seated) —————— */
+  .claim{
+    margin-top:clamp(2rem, 5vh, 3.2rem);
+    font-family:var(--display);
+    font-variation-settings:"opsz" 72, "SOFT" 0, "WONK" 0;
+    font-weight:560;
+    font-size:clamp(1.7rem, 2.6vw, 2.45rem);
+    line-height:1.2; letter-spacing:-.012em;
+  }
+  .claim em{font-family:var(--body); font-style:italic}
+  .claim sup{
+    font-family:var(--mono); font-size:.8125rem; letter-spacing:0;
+    vertical-align:super; color:var(--ink-2); margin-left:.15em;
+  }
+  .directives{margin-top:2rem; display:grid; gap:.8rem}
+  .directives a{text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:5px}
+  .directives a:hover{color:var(--clay)}
+  .directives .quiet{color:var(--ink-2)}
+  @keyframes rise{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  /* the reading matter does NOT wait for the pen: it rises while the
+     name is still being written (measured: gating it on the write put
+     WebKit's LCP at 3.1 s — the claim is the LCP element and must land
+     inside the budget) */
+  .after{opacity:1}
+  html:not([data-motion-off]):not([data-perform]) .after{opacity:0}
+  html[data-perform] .after{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+  html[data-perform] .after.a1{animation-delay:.9s}
+  html[data-perform] .after.a2{animation-delay:1.02s}
+  html[data-perform] .after.a3{animation-delay:1.14s}
+
+  .rail{
+    position:fixed; left:1.4rem; top:50%; transform:translateY(-50%);
+    display:grid; gap:.55rem; color:var(--ink-2); z-index:10;
+  }
+  .rail b{font-weight:400; color:var(--ink)}
+  @media (max-width:1180px){.rail{display:none}}
+
+  .stub{padding:22vh 0 30vh; color:var(--ink-2)}
+  .stub .kk{display:flex; justify-content:space-between; gap:1rem}
+  footer.note{
+    padding:1.2rem 0 3rem; color:var(--ink-2);
+    border-top:1px solid var(--hair);
+  }
+</style>
+</head>
+<body>
+
+<header class="mast" aria-label="masthead">
+  <div class="mast-left">
+    <span class="avatar" aria-hidden="true">
+      <svg viewBox="0 0 36 36"><rect width="36" height="36" fill="#F5EDDC"/><circle cx="18" cy="14" r="6" fill="#8a7a64"/><path d="M6 34c1.8-7 8-9.5 12-9.5S28.2 27 30 34Z" fill="#8a7a64"/></svg>
+    </span>
+    <a class="mono mast-name" href="#top">ayush yadav</a>
+    <span class="daymark" aria-hidden="true">
+      <svg viewBox="0 0 18 18" width="15" height="15"><circle cx="9" cy="9" r="6.1" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+    </span>
+  </div>
+  <nav class="mono" aria-label="chapters">
+    <a href="#" aria-current="true">the work</a>
+    <a href="#">experience</a>
+    <a href="#">contact</a>
+    <a href="#">github ↗</a>
+  </nav>
+  <div class="mast-right mono">
+    <button class="toggle" id="motionToggle" type="button">motion: on</button>
+    <a class="chip" href="#">resume</a>
+  </div>
+</header>
+
+<aside class="rail mono" aria-hidden="true">
+  <span><b>01</b>&nbsp;&nbsp;arrival</span>
+  <span>02&nbsp;&nbsp;who</span>
+  <span>03&nbsp;&nbsp;the path</span>
+  <span>04&nbsp;&nbsp;automl</span>
+  <span>05&nbsp;&nbsp;the work</span>
+  <span>06&nbsp;&nbsp;how i work</span>
+  <span>07&nbsp;&nbsp;the gate</span>
+</aside>
+
+<main id="top">
+  <div class="kicker mono">
+    <span>¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12</span>
+    <span class="folio">summer 2026</span>
+  </div>
+
+  <!-- THE SIGNATURE — the author's hand writes the name in one line;
+       the line does not stop: it pools where the pen lifts and runs on
+       as the dashed future thread. h1 carries the real text (sr-only);
+       the drawing is presentation. -->
+  <section class="plate" id="plate">
+    <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Ayush Yadav</h1>
+    <svg class="sig" id="sig" aria-hidden="true" focusable="false"></svg>
+    <span class="nib" id="nib" aria-hidden="true"></span>
+    <p class="sigline mono">written in <b>one line</b> — the same line runs to ¶07
+      and stops at the gate.</p>
+    <p class="dateline mono">software engineer · cincinnati, ohio</p>
+  </section>
+
+  <div class="below">
+    <p class="claim after a1">Scroll. It’s all <em>real.</em><sup>1</sup></p>
+    <div class="directives mono">
+      <p class="after a2"><a href="#">the capstone — agentic automl: seven gated phases ⟶</a></p>
+      <p class="after a2">case files: <a href="#">Applied</a> · <a href="#">Glyph</a> · <a href="#">Cadence</a></p>
+      <p class="after a3 quiet">scroll — the story starts here</p>
+      <p class="after a3 quiet">in a hurry — <a href="#">the work</a> · <a href="#">the evidence</a> · <a href="#">the resume</a></p>
+    </div>
+
+    <section class="stub">
+      <div class="kk mono">
+        <span>¶ 02 / 07 · who — the maker behind the paper · 09:05</span>
+        <span>02 / 07</span>
+      </div>
+      <p style="max-width:38ch; margin-top:2rem">… the story continues (stub —
+      this candidate is a first-viewport study; scroll here only to see the
+      running head receive the name).</p>
+    </section>
+
+    <footer class="note mono">
+      1. every claim on this page links to its evidence. ↩
+    </footer>
+  </div>
+</main>
+
+<script type="module">
+  /* ——— deterministic PRNG — copied from the repo's own hand:
+         src/components/thread/geometry.ts:158 (mulberry32) ————— */
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6d2b79f5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ——— the hand: authored cubic skeletons ——————————————————
+     Glyph-local coordinates: baseline y=200, x-height ~110, ascender
+     ~48, descender ~272. Every letter enters and exits at the seam
+     (y≈190) so the whole name is ONE chain. [c1x,c1y,c2x,c2y,x,y] per
+     cubic, from the running point. `adv` advances the cursor. */
+  const LETTERS = {
+    a: { adv: 92, mark: true, segs: [
+      [14,182, 34,152, 52,124],          /* entry rise to bowl top   */
+      [38,111, 13,116, 7,142],           /* bowl: over the top, left */
+      [1,168, 16,196, 38,197],           /* bowl: base               */
+      [54,198, 60,172, 58,124],          /* bowl: close up the right */
+      [60,148, 60,172, 63,193],          /* the downstroke           */
+      [68,199, 80,196, 92,190],          /* exit                     */
+    ]},
+    y: { adv: 78, mark: true, segs: [
+      [10,178, 20,148, 26,120],          /* entry to first branch    */
+      [22,152, 24,184, 36,194],          /* down                     */
+      [48,202, 58,186, 60,158],          /* up the far side          */
+      [61,140, 61,128, 61,118],          /* to the stem top          */
+      [63,168, 66,218, 58,250],          /* the descender            */
+      [52,272, 32,276, 26,258],          /* swing left               */
+      [22,248, 30,236, 42,228],          /* the hook back            */
+      [56,218, 68,204, 78,190],          /* exit, crossing the tail  */
+    ]},
+    u: { adv: 90, mark: true, segs: [
+      [10,176, 22,146, 26,120],
+      [22,152, 24,184, 38,196],
+      [50,202, 60,188, 62,162],
+      [63,142, 63,130, 63,120],
+      [65,148, 65,172, 68,193],
+      [73,199, 82,196, 90,190],
+    ]},
+    s: { adv: 74, mark: true, segs: [
+      [12,178, 28,146, 38,112],          /* steep rise to the apex   */
+      [46,122, 50,150, 44,176],          /* downstroke bows RIGHT    */
+      [40,192, 30,200, 24,193],          /* the bottom tie curls in  */
+      [20,187, 24,182, 30,184],          /* …knots                   */
+      [40,194, 56,197, 74,190],          /* exit under the knot      */
+    ]},
+    h: { adv: 96, mark: true, segs: [
+      [10,160, 20,90, 24,48],            /* rise to the ascender     */
+      [26,90, 26,150, 26,192],           /* the return downstroke    */
+      [30,146, 40,120, 54,115],          /* the shoulder springs     */
+      [66,111, 73,127, 73,148],
+      [73,166, 73,181, 75,193],          /* the leg                  */
+      [80,199, 87,196, 96,190],          /* exit                     */
+    ]},
+    d: { adv: 92, mark: true, segs: [
+      [14,182, 34,152, 52,124],
+      [38,111, 13,116, 7,142],
+      [1,168, 16,196, 38,197],
+      [54,198, 60,172, 58,124],
+      [59,96, 60,68, 62,44],             /* up the ascender          */
+      [62,96, 62,150, 64,193],           /* back down                */
+      [69,199, 80,196, 92,190],          /* exit                     */
+    ]},
+    v: { adv: 78, mark: true, segs: [
+      [8,178, 15,152, 18,124],
+      [18,158, 26,190, 40,195],
+      [54,199, 63,179, 64,148],
+      [65,134, 65,126, 64,120],          /* the final upstroke       */
+    ]},
+    " ": { adv: 54, mark: false, segs: [
+      [14,197, 36,188, 54,178],          /* the word link — rises    */
+    ]},
+  };
+  const WORD = "ayush yadav";
+  const BASE = 200, SLANT = 0.21;
+
+  const rnd = mulberry32(7);
+  const jit = (amp) => (rnd() - 0.5) * 2 * amp;
+
+  /* assemble: absolute points, slant, hand-shake; collect per-letter
+     boundary indices for the cadence */
+  function buildSignature() {
+    let cx = 0;
+    let cur = [0, 190];
+    const pts = [[...cur]];
+    const cmds = [];
+    const letterEnds = [];      /* index into cmds at each letter end */
+    for (const ch of WORD) {
+      const L = LETTERS[ch];
+      for (const s of L.segs) {
+        cmds.push([
+          cx + s[0] + jit(1.6), s[1] + jit(1.6),
+          cx + s[2] + jit(1.6), s[3] + jit(1.6),
+          cx + s[4] + jit(1.1), s[5] + jit(1.1),
+        ]);
+      }
+      cx += L.adv;
+      letterEnds.push(cmds.length);
+    }
+    /* the line runs on: from the final v's tip an outswash carries
+       RIGHT first (so the v stays a v), then dives and sweeps back
+       left toward where the page's thread lives */
+    const vx = cx - LETTERS.v.adv;      /* final letter origin */
+    cmds.push([vx + 84,116, vx + 106,122, vx + 122,138]);         /* outswash     */
+    cmds.push([vx + 138,154, vx + 136,190, vx + 108,216]);        /* the dive     */
+    cmds.push([vx + 70,244, vx - 40,258, vx - 190,264]);          /* sweep left   */
+    const stopX = vx - 190, stopY = 264;
+    letterEnds.push(cmds.length);
+
+    /* slant everything */
+    const sl = (x, y) => x + (BASE - y) * SLANT;
+    let d = `M ${sl(0,190).toFixed(1)} 190`;
+    for (const c of cmds) {
+      d += ` C ${sl(c[0],c[1]).toFixed(1)} ${c[1].toFixed(1)}, ${sl(c[2],c[3]).toFixed(1)} ${c[3].toFixed(1)}, ${sl(c[4],c[5]).toFixed(1)} ${c[5].toFixed(1)}`;
+    }
+    return { d, letterEnds, stop: [sl(stopX, stopY), stopY], width: cx };
+  }
+
+  const SIG = buildSignature();
+  const svg = document.getElementById("sig");
+  const NS = "http://www.w3.org/2000/svg";
+  /* viewBox: a little air each side; overflow visible carries the
+     future line beyond it */
+  svg.setAttribute("viewBox", "-16 24 " + (SIG.width + 70) + " 300");
+
+  const mk = (cls, d, w) => {
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("class", cls);
+    p.setAttribute("d", d);
+    p.setAttribute("stroke-width", w);
+    svg.appendChild(p);
+    return p;
+  };
+  /* wet under ink: identical geometry — the final frame is pure ink */
+  const wet = mk("s-wet", SIG.d, 11.5);
+  const ink = mk("s-ink", SIG.d, 11);
+
+  /* the pause-pool where the pen lifts (the thread's own start-pool
+     grammar), then the dashed FUTURE line running on out of the plate */
+  const pool = document.createElementNS(NS, "ellipse");
+  pool.setAttribute("class", "s-pool");
+  pool.setAttribute("cx", SIG.stop[0]); pool.setAttribute("cy", SIG.stop[1]);
+  pool.setAttribute("rx", 8.5); pool.setAttribute("ry", 6.5);
+  svg.appendChild(pool);
+  /* the dashed FUTURE line: on a wide page it runs on down the paper
+     (clear of the 52ch sigline measure — checked at 1440); on a phone
+     every column is full-bleed, so the tail would cross the very words
+     that explain it — there the pool is the honest terminus and the
+     thread resumes in ¶02. */
+  const wide = matchMedia("(min-width: 700px)").matches;
+  const fut = mk("s-future",
+     wide
+       ? `M ${SIG.stop[0]} ${SIG.stop[1]} c -40 14, -70 44, -84 92 c -10 34, -12 72, -10 112` +
+         ` c 2 42, -2 88, -12 132 c -8 36, -10 74, -8 110`
+       : `M ${SIG.stop[0]} ${SIG.stop[1]} c -16 8, -28 20, -34 38`,
+     3.2);
+
+  /* ——— cadence: measured arc lengths → per-letter keyframes ————
+     Time per letter ∝ length^0.92, a breath at the word gap. The nib
+     rides the same percentages, so pen and stroke agree. */
+  const L = ink.getTotalLength();
+  const isStill = document.documentElement.hasAttribute("data-motion-off");
+  if (!isStill) {
+    /* dash props exist only while the write runs — the static world
+       and the settled world both paint an UNdashed path (measured: a
+       dashed-at-offset-0 path AA-drifts 1,707 px against the plain
+       path on Chromium) */
+    ink.style.strokeDasharray = L;
+    wet.style.strokeDasharray = L;
+  }
+  const probe = document.createElementNS(NS, "path");
+  probe.setAttribute("d", SIG.d);
+  const lens = [0];
+  {
+    /* boundary lengths: walk cumulative cmd counts */
+    const dParts = SIG.d.split(" C ");
+    let acc = "M" + dParts[0].slice(1).split(" ").slice(-2).join(" ");
+    /* simpler: sample boundaries by building partial paths */
+    let di = SIG.d.indexOf("C");
+    const chunks = SIG.d.slice(di).split("C").filter(Boolean);
+    let partial = SIG.d.slice(0, di);
+    let ci = 0;
+    for (let k = 0; k < chunks.length; k++) {
+      partial += "C" + chunks[k];
+      if (k + 1 === SIG.letterEnds[ci]) {
+        probe.setAttribute("d", partial);
+        lens.push(probe.getTotalLength());
+        ci++;
+      }
+    }
+  }
+  const fracs = lens.map((v) => v / L);
+  /* time weights */
+  const wts = [];
+  for (let i = 1; i < lens.length; i++) wts.push(Math.pow(lens[i] - lens[i - 1], 0.92));
+  const GAP_AFTER = 5;              /* breath after "ayush" (index of space) */
+  const total = wts.reduce((a, b) => a + b, 0);
+  let tAcc = 0;
+  const times = [0];
+  wts.forEach((w, i) => {
+    tAcc += w / total;
+    times.push(tAcc);
+  });
+  /* inject keyframes: dashoffset walks the measured boundaries at the
+     weighted times; the nib walks the same table */
+  let kfW = "@keyframes write{0%{stroke-dashoffset:" + L.toFixed(1) + "}";
+  let kfN = "@keyframes nibride{0%{offset-distance:0%}2%{opacity:1}";
+  let kfT = "@keyframes wet{0%{stroke-dashoffset:" + L.toFixed(1) + ";opacity:.85}";
+  for (let i = 1; i < times.length; i++) {
+    const pc = (times[i] * 92).toFixed(2) + "%";   /* write ends at 92% */
+    kfW += pc + "{stroke-dashoffset:" + (L * (1 - fracs[i])).toFixed(1) + "}";
+    kfN += pc + "{offset-distance:" + (fracs[i] * 100).toFixed(2) + "%}";
+    kfT += pc + "{stroke-dashoffset:" + (L * (1 - fracs[i])).toFixed(1) + "}";
+  }
+  kfW += "100%{stroke-dashoffset:0}}";
+  kfN += "96%{opacity:1}100%{offset-distance:100%;opacity:0}}";
+  kfT += "97%{opacity:.85}100%{stroke-dashoffset:0;opacity:0}}";
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(kfW + kfN + kfT);
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+
+  /* the nib rides INSIDE the svg — a circle on offset-path in user
+     units, so it needs no px↔viewBox conversion at any width */
+  document.getElementById("nib").remove();
+  const nibC = document.createElementNS(NS, "circle");
+  nibC.setAttribute("class", "nib-svg");
+  nibC.setAttribute("r", 8.5);
+  nibC.setAttribute("fill", "var(--ink)");
+  nibC.style.offsetPath = `path("${SIG.d}")`;
+  nibC.style.offsetRotate = "0deg";
+  svg.appendChild(nibC);
+  const nibCss = new CSSStyleSheet();
+  nibCss.replaceSync(
+    ".sig .nib-svg{opacity:0}" +
+    "html[data-perform] .sig .nib-svg{animation:nibride var(--wms) var(--ease-write) both}" +
+    "html[data-motion-off] .sig .nib-svg{display:none}");
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, nibCss];
+
+  /* duration: measured length at a writing speed, clamped */
+  const WMS = Math.round(Math.min(2750, Math.max(2100, L * 0.55)));
+  document.documentElement.style.setProperty("--wms", WMS + "ms");
+  document.documentElement.style.setProperty("--ease-write", "linear");
+
+  /* start the show (fonts only gate the mono/serif below — the
+     signature needs no font, so a short beat is enough) */
+  if (!document.documentElement.hasAttribute("data-motion-off")) {
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() =>
+        document.documentElement.setAttribute("data-perform", "")));
+    /* settle hygiene: once written, the path is a PATH again — drop the
+       finished dash animation and the spent layers so the settled frame
+       rasterises exactly like the static world's (measured: leaving the
+       finished animation composited cost a 0.53% AA drift on Chromium) */
+    /* finished text animations come off as soon as they end — base
+       state IS the final frame, so nothing moves; WebKit otherwise
+       keeps the block on an animation layer whose text AA differs
+       from the static world's (measured: a deterministic 7,243 px
+       drift), and a later sweep re-attributes LCP to the repaint */
+    setTimeout(() => {
+      document.querySelectorAll(".sigline,.dateline,.after")
+        .forEach((el) => { el.style.animation = "none"; });
+    }, 2100);
+    setTimeout(() => {
+      ink.style.animation = "none";
+      ink.style.strokeDasharray = "";
+      wet.remove();
+      nibC.remove();
+      /* the pool and the dashed future line too — their perform rule
+         holds opacity:0 and lets the animation fill it, so the clear
+         must carry the final value with it (a finished animation
+         layer AA-drifts the dashes against the static world) */
+      pool.style.animation = "none"; pool.style.opacity = "1";
+      fut.style.animation = "none"; fut.style.opacity = "0.6";
+    }, WMS + 450);
+  }
+
+  /* running head handoff */
+  new IntersectionObserver(
+    ([e]) => document.body.classList.toggle("headed", !e.isIntersecting),
+    { rootMargin: "-64px 0px 0px 0px" }
+  ).observe(svg);
+
+  /* motion toggle (functional, honest) */
+  document.getElementById("motionToggle").addEventListener("click", () => {
+    const off = document.documentElement.toggleAttribute("data-motion-off");
+    document.getElementById("motionToggle").textContent = off ? "motion: off" : "motion: on";
+  });
+</script>
+</body>
+</html>
