@@ -2181,7 +2181,20 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "fast-mnist-nn",
     treatment: "evidence-ledger",
     fileNo: 2,
-    role: "C++ performance engineer",
+    /* Two people built this, and until 2026-07-30 the file said so
+       nowhere — it read as sole authorship on every surface. The
+       résumé has always been the accurate document here ("2-person
+       team"; the kernels written "with a teammate"), so the omission
+       was the site's.
+       Scoped with the same device this repo already uses for the other
+       team project: automl's role is "Capstone engineer — my slice
+       below", which discloses the team and delimits the claim in the
+       meta ledger a reader hits before any receipt. Same shape here.
+       The teammate is deliberately NOT named: the résumé does not name
+       them either, and guessing a real person's name onto a public page
+       would be a worse error than the one being fixed. Naming them is a
+       one-line change the owner can make. */
+    role: "C++ performance engineer — two-person project, my slice below",
     timeframe: "2025-10 to 2026-01",
     filed: "2025-10",
     verified: "2026-07",
@@ -2194,8 +2207,17 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       sha: FAST_MNIST_SHA,
       href: `https://github.com/yadava5/glyph/tree/${FAST_MNIST_SHA}`,
     },
+    /* The old first sentence — "A neural network for MNIST with nothing
+       under it but C++" — claimed the network. The network was a course
+       MLP that already existed; the work here is what was done TO it.
+       projects.ts:352 already said "a course C++ MLP", so the site was
+       telling two stories about the same artifact and this file was
+       telling the flattering one. Optimizing someone else's network
+       across four instruction sets is a harder and more specific thing
+       than writing another MNIST MLP, so the accurate sentence is also
+       the stronger one. */
     summary:
-      "A neural network for MNIST with nothing under it but C++. SIMD matrix kernels, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
+      "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Four instruction sets, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
     problem:
       "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
@@ -2415,8 +2437,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is the openmp+simd dot kernel’s 3.5× over the baseline build, and parallelism carries it.",
       "The workbench screenshot was captured with the native inference server offline, so benchmark claims come from committed benchmark data, not the live page.",
+      "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with a teammate on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
     corrections: [
+      {
+        date: "2026-07-30",
+        kind: "erratum",
+        text: "Credited the collaborator and stopped claiming the network. This file described a two-person project as though one person had built it, and its summary opened by claiming a neural network that already existed — a course MLP this work optimized rather than authored. Both were omissions on the site's side: the résumé has consistently said 2-person team and named the kernels as written with a teammate. The meta ledger now scopes the role the way the capstone's already does, and the not-claiming list states what is not mine. Under-crediting a collaborator is the one error on this site that costs more than a wrong number, because a number can be re-measured and a person cannot be un-omitted. The teammate is not named here only because naming them is the owner's to do, not mine to guess.",
+      },
       {
         date: "2026-05-28",
         kind: "erratum",
