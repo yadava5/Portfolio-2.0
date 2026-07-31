@@ -33,9 +33,24 @@ he named — "figure out the rest by yourself" is the actual assignment.
 
 The other half of why round 7 read as generic: **all three treated the name as
 one object with one effect applied to all of it.** A nib writes every letter. An
-axis animates every glyph. A read head crosses every letter. Ten characters,
+axis animates every letter. A read head crosses every letter. Ten characters,
 one idea, applied ten times. That is the definition of a transition effect, and
 he has now named that distinction himself.
+
+### A terminology rule, because one word in this repo is taken
+
+**Do not use the word "glyph" to mean "letter" anywhere in this project.**
+
+"Glyph" is the correct typographic term for a single letterform, and round 7's
+brief used it freely — but **Glyph is also the owner's product**, the
+SIMD-optimised MNIST network at `getglyph.vercel.app` with its own case file.
+Writing "per-glyph mechanisms" in a brief about his name reads as though the
+neural network were somehow involved in his masthead. It is not, and the owner
+asked directly why it kept coming up.
+
+Say **letter**, **character**, or **letterform**. Reserve "Glyph" for the
+product. This applies to comments, commit messages and any copy you write, not
+just to this document.
 
 ---
 
@@ -66,7 +81,7 @@ Three rules, all binding:
 
 ## §2 · The idea that makes this not-generic
 
-**The glyph must BE the mechanism, not contain one.**
+**The letterform must BE the mechanism, not contain one.**
 
 A bird flying in and perching *next to* a letter is decoration — and this site's
 design law (D6) forbids decoration that states nothing. A bird that flies in and
@@ -99,7 +114,7 @@ picks and their mechanisms are yours to author and defend. Some starting
 observations about this specific name, offered because they are geometric facts
 rather than opinions:
 
-| glyph | what its geometry already is |
+| letter | what its geometry already is |
 |---|---|
 | `A` | a truss, a pair of dividers, an apex hinge, a ladder with one rung |
 | `y` | a plumb bob / pendulum on a descender; a tuning fork inverted |
@@ -137,6 +152,36 @@ revolve? On arrival only? On hover? On the day arc? Continuously — which this
 site forbids (no idle rAF, §F3)? The honest and probably best answer is that
 these are **mechanisms at rest that perform on arrival and answer on
 interaction**, but that is your call to make and argue.
+
+---
+
+## §3.5 · The name is the peak — and the rest of the page has a floor
+
+The owner set a hierarchy, and it is a design instruction, not a footnote:
+
+> "my name is the **first thing in the whole page**. After that, if there is
+> some other headings or things, we can make **different kind of animations for
+> those as well** — **not on the level of my name**, but my name is the focus."
+
+So there are two tiers, and the gap between them is what makes the name read as
+the peak:
+
+- **Tier 1 — the name.** The only place that gets per-letter mechanisms. Four
+  to six independent machines that arrive separately and come together into one
+  word. Nothing else on the site is allowed this.
+- **Tier 2 — every other heading.** Chapter headlines, case-file titles,
+  section kickers. They get *their own* character and may differ from each
+  other, but they are **one gesture per heading**, not per-letter, and they must
+  never compete with the nameplate for attention.
+
+**Design the gap deliberately.** If a chapter headline is 80% as lively as the
+name, the name stops being the focus and the page has two peaks. State how you
+are keeping tier 2 subordinate — by scale, by count of moving parts, by
+duration, by whether it is per-letter at all — rather than leaving it to taste.
+
+Tier 2 is a **proposal** this round, not a build. Sketch it, name the mechanism
+you would give two or three real headings, show one if it is cheap — but the
+name is where the effort goes. Do not let tier 2 eat the round.
 
 ---
 
@@ -178,7 +223,7 @@ Two disciplines from the site's own law that apply directly:
 ## §6 · What you owe
 
 1. **One built candidate minimum, ideally two**, openable, with 4–6 distinct
-   per-glyph mechanisms actually running.
+   per-letter mechanisms actually running.
 2. **A written defence of the picks** — which characters, which mechanisms, why
    those, and specifically **why each mechanism could not be swapped onto a
    different letter**. If it could be, it is not derived from the letterform and
