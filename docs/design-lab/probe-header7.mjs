@@ -1,4 +1,4 @@
-// HEADER ROUND 7 — the measurement probe for the three nameplate candidates.
+// HEADER ROUNDS 7/8 — the measurement probe for the nameplate candidates.
 //
 // Serves docs/design-lab/candidates over http (the wasm needs it), then for
 // each candidate × browser × viewport measures the four claims the brief
@@ -11,17 +11,19 @@
 //                      the final frame
 //   4. errors        — console errors / page errors, which must be zero
 //
-// Run:  node docs/design-lab/probe-header7.mjs
-// (kills its own server; writes shots to docs/design-lab/shots-header7/)
+// Run:  node docs/design-lab/probe-header7.mjs      (round 7 — a/b/c, as ever)
+//       node docs/design-lab/probe-header7.mjs 8    (round 8 — d/e, same rig)
+// (kills its own server; writes shots to docs/design-lab/shots-header<N>/)
 
 import { chromium, webkit } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import sharp from "sharp";
 
+const ROUND = process.argv[2] === "8" ? 8 : 7;
 const ROOT = new URL("..", import.meta.url).pathname; // docs/
 const CAND = ROOT + "design-lab/candidates";
-const OUT = ROOT + "design-lab/shots-header7";
+const OUT = ROOT + `design-lab/shots-header${ROUND}`;
 mkdirSync(OUT, { recursive: true });
 
 const PORT = 4417;
@@ -31,11 +33,16 @@ const server = spawn("npx", ["serve", CAND, "-l", String(PORT)], {
 });
 await new Promise((r) => setTimeout(r, 2500));
 
-const PAGES = [
-  ["a", "header-a-hand"],
-  ["b", "header-b-compositor"],
-  ["c", "header-c-reader"],
-];
+const PAGES = ROUND === 8
+  ? [
+      ["d", "header-d-ensemble"],
+      ["e", "header-e-pour"],
+    ]
+  : [
+      ["a", "header-a-hand"],
+      ["b", "header-b-compositor"],
+      ["c", "header-c-reader"],
+    ];
 const SEATS = [
   ["chromium-desk", chromium, { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 }],
   ["webkit-desk", webkit, { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 }],
