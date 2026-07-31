@@ -218,6 +218,31 @@ export interface ProjectCaseStudy {
   /** Dossier position, 1-based ("case file NN / 07") */
   fileNo: number;
   role: string;
+  /**
+   * A named collaborator on a team project.
+   *
+   * Added 2026-07-30. Two of these seven files describe two-person
+   * projects, and until now neither named the second person — automl
+   * said "my slice below" and glyph said nothing at all, so both read
+   * as sole authorship. Scoping the role disclosed that a team existed;
+   * it did not credit anyone.
+   *
+   * It is a field rather than more prose in `role` because the meta
+   * ledger lowercases that value twice over (`.label-mono` sets
+   * `text-transform: lowercase`, and the row calls `.toLowerCase()`),
+   * which would have printed a person's name in lowercase. The renderer
+   * gives this row the same `normal-case` treatment the repo pin gets,
+   * for the same reason: some strings are data, not typography.
+   *
+   * `scope` says what they worked on, so the credit is specific rather
+   * than decorative.
+   */
+  collaborator?: {
+    name: string;
+    /** Somewhere the reader can confirm the person is real */
+    href?: string;
+    scope: string;
+  };
   timeframe: string;
   /** Kicker dates: filed = project start; verified = last evidence check */
   filed: string;
@@ -788,6 +813,18 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     treatment: "evidence-ledger",
     fileNo: 1,
     role: "Capstone engineer — my slice below",
+    /* The same collaborator as glyph. This file has disclosed a team
+       since it was written ("my slice below") but never named him, which
+       is a thinner kind of credit than it looks — a reader learns there
+       was someone else and cannot learn who. He is already in this
+       repo's own data as a testimonial (testimonials.ts:93, deliberately
+       unsurfaced for a documented reason), and the two of them are named
+       together on the platform's public landing page. */
+    collaborator: {
+      name: "Shree Chaturvedi",
+      href: "https://www.linkedin.com/in/chaturs/",
+      scope: "capstone teammate",
+    },
     timeframe: "2025-09 to Present",
     filed: "2025-09",
     verified: "2026-07",
@@ -1562,7 +1599,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They do not run in ordinary CI — the suite skips itself unless RLS_TEST_PG_ADMIN_URL names a database.",
+          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They run in CI: the workflow provisions a postgres:16 service and hands the suite RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there — 11 of 11 executed at this pin on 2026-07-24.",
         method:
           "re-run 2026-07-26 against a throwaway postgres:16 container, applying the real 0002 migration and a NOSUPERUSER NOBYPASSRLS role, driving the production query() and withTransaction()",
         artifacts: [
@@ -1661,14 +1698,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge. The repo’s own CI is red on main right now, and I’d rather tell you that than hide it.",
+      "1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
       "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against a real Postgres — but 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
       "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
-      "The 11 isolation tests are not in CI. The suite skips unless an admin Postgres URL is handed to it, so an ordinary CI run reports zero of them — I ran them by hand on the date in the row.",
+      "What the 11 isolation tests prove is that the policies work, not that they are switched on in production. They run in CI against an ephemeral Postgres — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration — so the evidence is machine-checked, not hand-run. What no test here can show is which role the deployed database actually connects as; that is database state, and receipt 05 is where the staged-off standing is written down.",
       "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
     corrections: [
+      {
+        date: "2026-07-30",
+        kind: "erratum",
+        text: "Three statements on this page were false, and every one of them was an UNDER-claim — this file was disowning work it had actually done. It said the 11 isolation tests “do not run in ordinary CI”, that they “are not in CI”, and that “the repo’s own CI is red on main right now”. Checked against the run logs rather than against memory: the workflow at cadence @ 54c79e0 provisions a postgres:16 service and sets RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there, and run 30133037462 records ✓ lib/__tests__/rls.postgres.test.ts (11 tests) 232ms on 2026-07-24. Main has been green since 2026-07-23. The likely origin is a copy: the identical caveat is TRUE of Applied, whose backend workflow really does provision no database, and it appears to have been carried across to a repo whose CI had since gained one. A false disclaimer is the same broken receipt as a false boast, and arguably the worse one, because a reader has no reason to doubt a claim that costs its author something. What has NOT changed is the standing that matters: the migration is still hand-run, still not applied in production, and receipt 05 still says so.",
+      },
       {
         date: "2026-07-26",
         kind: "note",
@@ -2195,6 +2237,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        would be a worse error than the one being fixed. Naming them is a
        one-line change the owner can make. */
     role: "C++ performance engineer — two-person project, my slice below",
+    collaborator: {
+      name: "Shree Chaturvedi",
+      href: "https://www.linkedin.com/in/chaturs/",
+      scope: "the SIMD kernels, written together",
+    },
     timeframe: "2025-10 to 2026-01",
     filed: "2025-10",
     verified: "2026-07",
@@ -2437,13 +2484,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is the openmp+simd dot kernel’s 3.5× over the baseline build, and parallelism carries it.",
       "The workbench screenshot was captured with the native inference server offline, so benchmark claims come from committed benchmark data, not the live page.",
-      "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with a teammate on a two-person project; the product, the landing page and the benchmark discipline are mine.",
+      "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
     corrections: [
       {
         date: "2026-07-30",
         kind: "erratum",
-        text: "Credited the collaborator and stopped claiming the network. This file described a two-person project as though one person had built it, and its summary opened by claiming a neural network that already existed — a course MLP this work optimized rather than authored. Both were omissions on the site's side: the résumé has consistently said 2-person team and named the kernels as written with a teammate. The meta ledger now scopes the role the way the capstone's already does, and the not-claiming list states what is not mine. Under-crediting a collaborator is the one error on this site that costs more than a wrong number, because a number can be re-measured and a person cannot be un-omitted. The teammate is not named here only because naming them is the owner's to do, not mine to guess.",
+        text: "Credited the collaborator and stopped claiming the network. This file described a two-person project as though one person had built it, and its summary opened by claiming a neural network that already existed — a course MLP this work optimized rather than authored. Both were omissions on the site's side: the résumé has consistently said 2-person team and named the kernels as written with a teammate. The meta ledger now scopes the role the way the capstone's already does, and the not-claiming list states what is not mine. Under-crediting a collaborator is the one error on this site that costs more than a wrong number, because a number can be re-measured and a person cannot be un-omitted. The collaborator is Shree Chaturvedi, named here and in the meta ledger above, and he is the same teammate as on the capstone.",
       },
       {
         date: "2026-05-28",
