@@ -54,6 +54,7 @@ import {
 } from "@/components/story/apparatus";
 import { CHAPTERS } from "@/components/story/chapters";
 import { ChapterRail } from "@/components/story/ChapterRail";
+import { RunManifest } from "@/components/story/RunManifest";
 import { TextMotion } from "@/components/story/TextMotion";
 import { TextGarnish } from "@/components/story/TextGarnish";
 import { ThreadSegment } from "@/components/thread/ThreadSegment";
@@ -2517,6 +2518,10 @@ export function StoryShell() {
     <div className="relative z-10">
       <HashRealign />
       <ChapterRail />
+      {/* The corner manifest (round 12, Stage C): the run's ledger,
+          filling as the reading line passes each chapter — the rail
+          names the chapters, this records the cargo. xl+ only. */}
+      <RunManifest />
       <TextMotion />
       <TextGarnish />
       <ArrivalChapter />

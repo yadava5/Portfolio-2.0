@@ -928,6 +928,118 @@ html[data-arc-phase="dusk"] {
    No filters, no gradients on strokes, no will-change.
    ════════════════════════════════════════════════════════════════ */
 
+/* THE RAIL (round 12): the motion world's thread — one fixed
+   full-viewport canvas (ThreadRail.tsx) redrawn against scroll, the
+   prototype's `canvas.thread` architecture. Sits ABOVE the light field
+   (later in the DOM at the same stacking level) and BELOW every
+   chapter's text (earlier in the DOM); never eats a pointer. The
+   static worlds render the per-chapter SVG segments below instead —
+   the two never paint at once. */
+.thread-rail {
+  position: fixed;
+  inset: 0;
+  /* Explicit, because a canvas is REPLACED: with width:auto an
+     over-constrained `inset: 0` resolves to the INTRINSIC bitmap size
+     (CSS2 §10.3.8), which is the viewport × the capped DPR — measured
+     1.5× too large on every deviceScaleFactor>1 seat before this rule
+     (the webkit-mobile spec run caught it; dpr-1 screenshots cannot). */
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── THE CORNER MANIFEST (round 12, Stage C — RunManifest.tsx) ─────
+   The run's ledger, bottom-right, xl+ only (the width that affords the
+   ChapterRail affords this). A tipped-in paper slip — solid stock with
+   a hairline frame, the portrait plate's grammar, never frost — whose
+   lines ink as the reading line passes their chapters. Inks step at
+   the dusk flip exactly like the masthead's (html[data-arc-phase]),
+   pre-verified pairs on both grounds. Non-interactive: pointer-events
+   none, aria-hidden content (the page itself speaks every line). */
+.run-manifest {
+  --rm-ink: var(--color-ink);
+  --rm-ink-dim: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  --rm-paper: var(--color-canvas);
+  --rm-frame: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 40;
+  display: none;
+  max-width: 300px;
+  pointer-events: none;
+  border: 1px solid var(--rm-frame);
+  background-color: var(--rm-paper);
+  padding: 0.625rem 0.75rem;
+  contain: paint;
+}
+html[data-arc-phase="dusk"] .run-manifest {
+  --rm-ink: var(--color-ink-dusk);
+  --rm-ink-dim: color-mix(in srgb, var(--color-ink-dusk) 58%, transparent);
+  --rm-paper: var(--waypoint-06);
+  --rm-frame: color-mix(in srgb, var(--color-ink-dusk) 30%, transparent);
+}
+@media (min-width: 1280px) {
+  .run-manifest {
+    display: block;
+  }
+}
+.run-manifest-head {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: var(--rm-ink);
+}
+/* The fold (RunManifest.tsx): the pill is the resting state — the
+   cargo list shows only for the stamping beat, so the corner never
+   occludes what the reader is reading (measured over fig 4.1 mid-pin
+   and over the gate stamp before this rule). A display step at a
+   discrete event, not a scrubbed motion; static worlds simply never
+   open. */
+.run-manifest-lines {
+  display: none;
+  margin-top: 0.375rem;
+  list-style: none;
+}
+.run-manifest[data-open] .run-manifest-lines {
+  display: block;
+}
+.run-manifest-line {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: var(--rm-ink-dim);
+  padding-block: 0.1875rem;
+}
+.run-manifest-line + .run-manifest-line {
+  border-top: 1px solid color-mix(in srgb, var(--rm-ink) 10%, transparent);
+}
+.run-manifest-no {
+  opacity: 0.75;
+  margin-right: 0.125rem;
+}
+/* The stamp: a passed chapter's line takes full ink. A short opacity
+   settle in the motion world only (triple-gate: media query + the
+   quiet toggle); every static world steps instantly — state, not
+   motion (A7). */
+.run-manifest-line[data-stamped] {
+  color: var(--rm-ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion-off]) .run-manifest-line {
+    transition: color 360ms ease;
+  }
+}
+@media print {
+  .run-manifest {
+    display: none !important;
+  }
+}
+
 .thread-segment .thread-future {
   fill: none;
   stroke: var(--color-ink-secondary);
@@ -3232,6 +3344,7 @@ body {
      by the text they sit behind — they print as nothing but noise. */
   [data-light-field],
   nav[aria-label="Chapters"],
+  [data-thread-rail],
   [data-thread-segment],
   [data-dossier-thread],
   .pipeline-overlay,

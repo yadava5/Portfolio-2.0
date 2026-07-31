@@ -141,6 +141,18 @@ export interface SegmentGeometry {
   node: ThreadNodeSpec;
   /** True below 1024px — reduced-prominence styling hook */
   compact: boolean;
+  /**
+   * The raw anchor run `d` was smoothed from, section-local px — the
+   * rail's input (round 12): ThreadRail concatenates the seven runs in
+   * page space and redraws them from one fixed canvas, so the motion
+   * world's line is THE SAME line the static SVG shows, not a second
+   * geometry agreeing with the first.
+   */
+  run: ThreadPoint[];
+  /** The terminal ink-pool subpaths (`d`'s prefix + suffix — chapter
+   *  01's landing pool, chapter 07's resting blot), section-local path
+   *  data the rail replays through Path2D. Empty for other chapters. */
+  pools: string;
 }
 
 interface Pt {
@@ -194,6 +206,60 @@ export function catmullRomPath(pts: Pt[]): string {
     d += ` C${f(c1x)} ${f(c1y)} ${f(c2x)} ${f(c2y)} ${f(p2.x)} ${f(p2.y)}`;
   }
   return d;
+}
+
+/**
+ * Evaluate the SAME Catmull-Rom cubics `catmullRomPath` serializes,
+ * densely, for canvas polyline drawing (round 12 — the rail). The
+ * control points are byte-for-byte the ones the SVG path carries, so
+ * the sampled polyline lies ON the static world's curve; only the
+ * sampling density is new.
+ *
+ * @param pts - Ordered anchor points
+ * @param maxStep - Target spacing between samples, px
+ * @returns Dense samples along the curve (includes both endpoints)
+ */
+export function sampleCatmullRom(pts: Pt[], maxStep: number): Pt[] {
+  if (pts.length < 2) return pts.slice();
+  const out: Pt[] = [{ x: pts[0].x, y: pts[0].y }];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    /* Steps from the control POLYGON length (an upper bound on the
+       Bézier's arc length), DOUBLED: the polygon bounds the AVERAGE
+       span, but uniform-t sampling runs fastest mid-curve — measured
+       at ~1.8× the average on an asymmetric straight (a chord estimate
+       was worse still: 25px spans on a 14px target through loops).
+       ×2 keeps every emitted span under maxStep. */
+    const poly =
+      Math.hypot(c1x - p1.x, c1y - p1.y) +
+      Math.hypot(c2x - c1x, c2y - c1y) +
+      Math.hypot(p2.x - c2x, p2.y - c2y);
+    const steps = Math.max(1, Math.ceil((poly * 2) / maxStep));
+    for (let s = 1; s <= steps; s++) {
+      const t = s / steps;
+      const u = 1 - t;
+      /* Cubic Bézier through p1, c1, c2, p2 */
+      const x =
+        u * u * u * p1.x +
+        3 * u * u * t * c1x +
+        3 * u * t * t * c2x +
+        t * t * t * p2.x;
+      const y =
+        u * u * u * p1.y +
+        3 * u * u * t * c1y +
+        3 * u * t * t * c2y +
+        t * t * t * p2.y;
+      out.push({ x, y });
+    }
+  }
+  return out;
 }
 
 /**
@@ -260,11 +326,13 @@ function irregularRing(
  * curvature-driven distance (a nib presses through bends) plus a small
  * pool near the run's terminals. Straights collapse onto the main
  * stroke; the union swells only where the hand slows.
+ * Exported (round 12) so the rail can lay the same pressure stroke
+ * under its canvas line.
  *
  * @param pts - The main anchor run
  * @returns Offset anchor run for the swell path
  */
-function swellRun(pts: Pt[]): Pt[] {
+export function swellRun(pts: Pt[]): Pt[] {
   if (pts.length < 3) return pts.slice();
   /* Cumulative arc distances for terminal pooling */
   const dist: number[] = [0];
@@ -703,5 +771,13 @@ export function buildSegment(env: SegmentEnv): SegmentGeometry | null {
     if (run && run.length >= 2) dDip = catmullRomPath(run);
   }
 
-  return { d, dSwell, dDip, node, compact };
+  return {
+    d,
+    dSwell,
+    dDip,
+    node,
+    compact,
+    run: built.pts,
+    pools: `${built.prefix ?? ""}${built.suffix ?? ""}`,
+  };
 }

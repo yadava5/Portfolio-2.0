@@ -51,12 +51,15 @@ export const THREAD_BINDING_MIN = 1280;
  *  seamless even while round linecaps render. */
 export const SEAM_OVERSHOOT = 6;
 
-/** ScrollTrigger contract (A3): the drawing head roughly tracks the
- *  reading position. `clamp()` keeps the first and last segments'
- *  ranges inside the reachable scroll span so they fully draw. */
-export const THREAD_TRIGGER_START = "clamp(top 80%)";
-export const THREAD_TRIGGER_END = "clamp(bottom 60%)";
-export const THREAD_SCRUB = 0.7;
+/** The rail's reading line (round 12): the drawing head — and the
+ *  token riding it — sits at this fraction of the viewport height. A
+ *  PURE function of scroll, both directions: scrolling back retracts
+ *  the ink and carries the token with it. It replaces the retired
+ *  per-segment ScrollTrigger contract (`clamp(top 80%)` →
+ *  `clamp(bottom 60%)`, scrub 0.7); 0.62 sits inside that old band and
+ *  matches the prototype's beat-progress line, so ChapterRail's marks
+ *  (which ink at the 60% boundary) stay in step with the nib. */
+export const RAIL_HEAD_VH = 0.62;
 
 /** Mirrors StoryShell's WRAP: `max-w-[1240px] … xl:pl-36`. */
 const WRAP_MAX_WIDTH = 1240;
