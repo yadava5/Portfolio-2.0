@@ -44,7 +44,6 @@ await page.evaluate(() => {
 });
 await page.evaluate(() => document.querySelector('button[data-replay="bird"]').click());
 await page.waitForTimeout(300);
-const DUR = 2000;
 for (const t of [0.06, 0.14, 0.23, 0.33, 0.44, 0.55, 0.68, 0.80, 0.88, 0.93, 0.97, 1.0]) {
   const pos = await page.evaluate((tt) => {
     document.getAnimations().forEach((a) => {
@@ -75,10 +74,6 @@ await page.waitForFunction(() =>
   document.getElementById("plate").classList.contains("settled"), null, { timeout: 15000 });
 
 /* —— the landing, real time: flare → cut → fold → dry —— */
-const vbox = await page.evaluate(() => {
-  const r = document.querySelectorAll("#nameplate .ch")[10].getBoundingClientRect();
-  return { x: r.x, y: r.y, w: r.width, h: r.height };
-});
 await page.evaluate(() => window.scrollTo(0, 0));
 const vbox2 = await page.evaluate(() => {
   const r = document.querySelectorAll("#nameplate .ch")[10].getBoundingClientRect();
