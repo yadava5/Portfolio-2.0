@@ -1338,7 +1338,18 @@ const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0,
 const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
 let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false;
 
-/* fx elements: arrive → settle-with-drift → depart. Nothing parks. */
+/* fx elements: arrive → settle-with-drift → depart, except where the
+   contract says park. Parking is declared, not accidental: the gate
+   beat and the dusk closing line declare `out 2 2.5` (a window no
+   scroll reaches — the ending holds its final frame), and cacheGeometry
+   writes the same spec-space declaration onto any dusk element whose
+   shared curtain falls beyond the engine's p≤1.1 apply range at the
+   current viewport (it has scrolled off the top before the curtain;
+   fading it there would freeze mid-value). Parked-at-1 equals the
+   settled world's frame, so the static contract (A7) is preserved.
+   Round 4's version of this comment said "Nothing parks" while eight
+   elements declared otherwise — the census caught the ninth, which
+   parked at op 0 by bug, not by declaration. */
 const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
   const spec = { in: [0.06, 0.32, 0, 5, 0, 1], out: [0.76, 0.98, 0, -4, 0, 1], drift: 10 };
   for (const clause of el.dataset.fx.split("|")) {
