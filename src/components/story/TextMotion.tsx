@@ -157,7 +157,14 @@ function litanyDelay(index: number): number {
 /** Hero entrance settle: last delay (4 × 60ms, the directives' seat)
  *  + 0.6s run + margin (retuned for the two-line masthead — the byline
  *  stipple that used to close the intro at ~1.07s is retired). */
-const HERO_SETTLE_MS = 1100;
+/* Round 9: 1100 → 3600. [data-motion-ready] must now outlive the
+   nameplate's CSS layer — the still letters' opsz arrival ends ~1.5s
+   and the retimed reading matter (claim seat 38 + 0.8s rise) ends
+   ~3.4s; removing the attribute at 1100ms cut both mid-flight. The
+   machines are not affected (they hold their letters with inline
+   styles once hydrated), and the cost is only that the hero keeps its
+   filter/compositing path ~2.5s longer on three elements. */
+const HERO_SETTLE_MS = 3600;
 
 /**
  * Weight-breathing range: the headline sits at the token weight 420
