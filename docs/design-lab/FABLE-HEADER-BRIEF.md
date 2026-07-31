@@ -1,263 +1,205 @@
-# Fable brief — round 8: the name is ten machines, and only some of them run
+# Fable brief — round 9: D is chosen. Now make it good.
 
-> **This brief REPLACES round 7's. Round 7 was rejected. Read §0 first — the
-> reason it was rejected is an instruction I got wrong, and repeating it will
-> produce the same rejected result.**
-
----
-
-## §0 · What round 7 got wrong, and whose fault it was
-
-Three candidates were built — a handwriting nib, a variable-axis compositor, a
-WASM digit reader. The owner's verdict:
-
-> "**not like these** … they are **too basic and generic**!"
-
-**The cause was in my brief, not in the execution.** Round 7's brief said, in
-bold:
-
-> *"**Do not translate this literally.** … So 'a bird coming in' is **an example
-> of a thing that arrives and crosses**, not a request for fauna."*
-
-That was wrong. I over-corrected from an earlier incident where a storytelling
-metaphor about forests was built as an actual forest, and I applied that lesson
-where it did not belong. The owner has now said the opposite in plain words:
-
-> "a settings dial revolving, **a** is a bit running, one character can be a
-> **bird flying and coming in the right place** to the name — **these are a
-> real suggestions and can be used**, and figure out the rest by yourself!!!"
-
-**So: the bird is a bird. Build the bird.** The dial is a dial. These are
-literal and they are approved. What is *not* approved is stopping at the three
-he named — "figure out the rest by yourself" is the actual assignment.
-
-The other half of why round 7 read as generic: **all three treated the name as
-one object with one effect applied to all of it.** A nib writes every letter. An
-axis animates every letter. A read head crosses every letter. Ten characters,
-one idea, applied ten times. That is the definition of a transition effect, and
-he has now named that distinction himself.
-
-### A terminology rule, because one word in this repo is taken
-
-**Do not use the word "glyph" to mean "letter" anywhere in this project.**
-
-"Glyph" is the correct typographic term for a single letterform, and round 7's
-brief used it freely — but **Glyph is also the owner's product**, the
-SIMD-optimised MNIST network at `getglyph.vercel.app` with its own case file.
-Writing "per-glyph mechanisms" in a brief about his name reads as though the
-neural network were somehow involved in his masthead. It is not, and the owner
-asked directly why it kept coming up.
-
-Say **letter**, **character**, or **letterform**. Reserve "Glyph" for the
-product. This applies to comments, commit messages and any copy you write, not
-just to this document.
+> **Round 8's candidate D is APPROVED as the direction.** This brief replaces
+> the round-8 text. The concept is settled and is not up for revision — the
+> five letter-machines, the picks, and the letterform-locked defence all stand.
+> What follows is a refinement round, and then a production port.
 
 ---
 
-## §1 · The actual specification
+## §0 · The verdict
 
-> "if have 10 characters in the name, i want **4-6 characters having different
-> kind of animations** and **not like efects of transition itself** — the
-> transition will be the layer, and the animation itself will be like a
-> settings dail revolving, a is bit running, one character can be a bird flying
-> and coming in the right place to the name"
+> "i want to go with **D**, but the animations we have right now, **lacks a lot
+> in refinement, timing, transition, quality of the figures** and further polish
+> **to the smallest inch** in the elements — or you can say the **bird and
+> similar objects** — and **too fast**! do a playwright of the D and see for
+> yourself … once it's at least **7-8 times better**, add that in the **main
+> page**, not this demo website."
 
-**Ayush Yadav** is exactly ten characters: `A y u s h · Y a d a v`.
-
-Three rules, all binding:
-
-1. **Only 4–6 of the 10 animate.** Not all ten. The still letters are not
-   leftovers — they are what makes the moving ones legible. A name where
-   everything moves is noise; a name where five things move is a scene.
-2. **Every animated character gets a DIFFERENT kind of animation.** Not the
-   same motion staggered. Not one idea at five intensities. Five *different
-   mechanisms*.
-3. **Two layers, and they are independent.** The **transition** is the arrival
-   choreography — how the nameplate gets on stage. The **animation** is what a
-   given character *is* and *does* once it is there. Round 7 collapsed them
-   into one; keep them apart.
+He is right on every count. I ran the Playwright pass myself before writing
+this, and the numbers below are measured, not impressions. **Do not treat "7–8×
+better" as hyperbole to be managed** — treat it as the instruction that this is
+a long, unglamorous polish round, and that shipping something 20% better is a
+failed round.
 
 ---
 
-## §2 · The idea that makes this not-generic
+## §1 · What I measured (re-runnable, and you should re-run it)
 
-**The letterform must BE the mechanism, not contain one.**
+Timeline of every animation on D's document timeline, Chromium, 1440×620:
 
-A bird flying in and perching *next to* a letter is decoration — and this site's
-design law (D6) forbids decoration that states nothing. A bird that flies in and
-**lands as the letter**, because a distant bird's silhouette and a lowercase
-`v` are the same two strokes, is the site's own grammar: every visual IS the
-idea it represents.
+```
+start   end    dur    what
+   45    865    820   the still letters' entrance (transition layer)
+  284    924    640   machine
+  609   1289    680   machine
+  825    955    130   ← 130ms
+  908   1128    220   machine
+  917   1867    950   machine
+ 1125   1965    840   machine
+ 1125   2085    960   machine
+ 1159   1339    180   ← 180ms
+ 1275   1395    120   ← 120ms
+ 1275   2355   1080   the bird's whole flight
+ 1867   2067    200   ← 200ms
+ 2150   2330    180   ← 180ms
+ 2600   2900    300   nameplate settle
+```
 
-That is the test for every mechanism you design. Ask: *if I removed the letter,
-would the mechanism still make sense?* If yes, it is decoration sitting near a
-letter. **The answer should be no — the mechanism should be unreadable without
-the letterform, and the letterform should be complete when the mechanism
-rests.**
+**Finding 1 — five moves are ≤200ms.** 120, 130, 180, 180, 200. These are the
+*clicks, the flare, the landing* — the moments that carry the meaning of each
+machine — and they are the fastest things on the page. At 120–130ms a move is
+roughly seven frames; the eye registers that something changed but never sees
+it happen. **This is the whole of "too fast", located.** The detents, the
+landing, the divider's seat onto its mark should be the moments you can *watch*.
 
-The three he named already pass that test, which is why they are good
-suggestions:
+**Finding 2 — the machines pile up.** Concurrency, sampled every 100ms:
 
-- **the bird → `v`.** A `v` is a bird. It flies in from off-canvas, banks, and
-  settles into the exact position and weight of the final letter of "Yadav".
-  When it lands it is simply a `v` and always was.
-- **the dial → `a`.** The bowl of an `a` is a circle on a stem. A dial revolves,
-  passes detents, and clicks to rest — and at rest the dial's face and the
-  bowl's counter are the same shape. He said "**a** is a bit running", and there
-  are two `a`s in the name, so one can revolve and one can run.
-- **something runs.** An `s` is a path with no endpoints in the same place — a
-  thing can traverse it. A `u` is a vessel. A `y`'s descender is a plumb line
-  that swings and settles.
+```
+ 300ms  #        1
+ 700ms  ###      3
+ 900ms  #####    5
+1200ms  ########        8
+1300ms  #########       9   ← peak
+1500ms  #####    5
+1900ms  #####    5
+2100ms  ##       2
+2300ms  ###      3
+```
 
-**Seeds, not a spec.** He said figure out the rest yourself, so the remaining
-picks and their mechanisms are yours to author and defend. Some starting
-observations about this specific name, offered because they are geometric facts
-rather than opinions:
+**Peak nine moving parts at once**, and a plateau of five from 1400–2000ms.
+Meanwhile the first 300ms is completely empty. Five machines that should read as
+an *ensemble* — arriving, each getting its beat — instead collide in the middle
+third. The word "ensemble" is in the candidate's own name; make it true.
 
-| letter | what its geometry already is |
-|---|---|
-| `A` | a truss, a pair of dividers, an apex hinge, a ladder with one rung |
-| `y` | a plumb bob / pendulum on a descender; a tuning fork inverted |
-| `u` | a vessel, a magnet, a bowl that can hold or spill |
-| `s` | a continuous path, an oscilloscope trace, a switchback road |
-| `h` | a figure standing; an arch; a lever with a fulcrum |
-| `Y` | a slingshot, an antenna, a bird from the front, a river fork |
-| `a` | a dial, a gauge, a wheel with a stem |
-| `d` | a flagpole with a bowl; a clock hand at its pivot |
-| `a` | the second one — a different machine from the first `a` |
-| `v` | a bird; a funnel; a needle's tip; a check mark |
+**Finding 3 — the whole performance is 2.85s** (45ms → 2900ms) for five
+machines plus a transition layer. That is ~0.5s of attention per machine even
+if they were perfectly sequenced, and they are not.
 
-Pick **4–6**. Leave the rest completely still. Defend the picks — why those, why
-those mechanisms, and why the still ones are still.
+**A finding I got wrong, corrected here so you don't chase it:** I first
+suspected linear easing everywhere. **Wrong** — the census shows authored
+per-keyframe curves throughout (`cubic-bezier(0.3,0.75,0.35,1)`,
+`cubic-bezier(0.22,1,0.36,1)`, and others). Easing quality is not the defect.
+Duration, sequencing and figure quality are.
 
----
-
-## §3 · "Not effects of transition itself"
-
-He is drawing a real distinction and it should shape the code, not just the
-prose:
-
-- **Transition layer** — arrival. Fades, slides, staggers, masks. Generic by
-  nature, and that is fine; this is the layer round 7 spent its whole budget on.
-- **Mechanism layer** — what the character *is*. A dial revolves because it is a
-  dial. A bird flies because it is a bird. This layer has **no** relationship to
-  opacity ramps or entrance easing.
-
-The mechanisms should be able to run **without** the transition, and the
-transition should work with the mechanisms removed. If a mechanism only reads
-during the arrival, it is a transition effect wearing a costume.
-
-**A consequence worth thinking hard about:** if a dial can revolve, when does it
-revolve? On arrival only? On hover? On the day arc? Continuously — which this
-site forbids (no idle rAF, §F3)? The honest and probably best answer is that
-these are **mechanisms at rest that perform on arrival and answer on
-interaction**, but that is your call to make and argue.
+Re-run any of this with `node docs/design-lab/probe-header7.mjs 8`, and the
+timeline probes are in the session scratchpad pattern — rebuild them, they are
+twenty lines of `document.getAnimations()`.
 
 ---
 
-## §3.5 · The name is the peak — and the rest of the page has a floor
+## §2 · The figures — and the bird is the headline
 
-The owner set a hierarchy, and it is a design instruction, not a footnote:
+I captured the bird at 3× device scale through its flight. **It is not yet a
+bird.** At mid-flight it is **two straight tapered bars with a dot between
+them**. It reads as a moustache, or a pair of dashes, or a wide `∨` — not a
+creature.
 
-> "my name is the **first thing in the whole page**. After that, if there is
-> some other headings or things, we can make **different kind of animations for
-> those as well** — **not on the level of my name**, but my name is the focus."
+What is missing, specifically:
 
-He then assigned the tiers, and then narrowed tier 1 to a single element:
+- **Curvature.** Real bird silhouettes read as alive because the wings *bend* —
+  a shallow S through each wing, leading edge convex, trailing edge concave.
+  Two straight bars cannot read as flight at any speed.
+- **A body.** The centre is a dot, which reads as a hinge pin. A bird has a
+  slight fusiform mass where the wings meet, and usually a hint of head
+  forward of it.
+- **Asymmetry through the cycle.** Both wings currently move as a mirrored
+  pair. Real flapping is asymmetric in phase and amplitude, especially while
+  banking, and that asymmetry is 80% of why an animated bird reads as alive
+  rather than as a metronome.
+- **Silhouette variation with attitude.** A bird banking presents a
+  foreshortened wing. Right now the span is constant.
 
-> "not the headings — like the **4-6 independent machines and focus on
-> characters is only for my name "Ayush Yadav" at the start**!"
+**And the landing is the weakest single moment on the page.** At t≈2320 the
+landed form is two strokes of very unequal weight with **rounded terminals and
+a vertex that does not close** — the two strokes approach the apex and stop
+near each other. The real Fraunces `v` has a sharp closed vertex and a serif.
+So the crossfade from bird-pose to letter is doing work it cannot hide.
 
-**Tier 1 is exactly one element on the entire site: the nameplate.** When he
-said "the main heading and my name", those were the same thing — his name *is*
-the page's main heading — and this message settles it. There is no second
-tier-1 element.
+**The whole promise of this machine is that the bird IS the letter.** If the
+landed pose is a crude approximation that then dissolves into the real glyph,
+the promise breaks at exactly the moment it should pay off. **The landed pose
+must be the letterform** — same vertex, same terminals, same stroke weights,
+same optical alignment — so that the crossfade has nothing left to do.
 
-- **Tier 1 — `Ayush Yadav`, the nameplate at the start. Nothing else, ever.**
-  Per-character mechanisms: four to six independent machines that arrive
-  separately and come together into one word. This treatment exists once on the
-  site and its scarcity is what gives it force.
-- **Tier 2 — every other heading and title on the site, without exception.**
-  The hero claim, chapter headlines, case-file titles, section kickers. Each may
-  have its own character and they may differ from each other, but **one gesture
-  per heading, never per-character.**
-
-**Do not give per-character mechanisms to anything but the name.** If a second
-element does what the name does, the name is no longer the thing that does it —
-and this is now the third time he has made the point in his own words.
-
-**Design the gap deliberately.** If a heading is 80% as lively as the name, the
-page has two peaks and neither is the focus. State how tier 2 stays subordinate
-— by scale, by count of moving parts, by duration, and above all by not being
-per-character — rather than leaving it to taste.
-
-Effort split: **the name is the round.** Tier 2 is a proposal — sketch it, name
-the gesture you would give two or three real headings, show one only if it is
-cheap. Do not let it eat the round.
+Apply the same scrutiny to every other machine. The dial currently reads as a
+small gear or an asterisk more than a dial face; look at it at 3× and decide
+whether its ticks, its indicator and its detent feel are carrying the idea.
 
 ---
 
-## §4 · Restraint is the craft here
+## §3 · What "7–8× better" should mean concretely
 
-The failure mode is now **cluttered**, not timid. Round 7 was timid; do not
-solve that by animating everything. Ten letters each doing a trick is a
-children's book. Five letters doing five different real things, on a page of
-still type, is a machine shop — and the site is a working paper.
+Not a number to hit — a standard. Concretely, at minimum:
 
-Two disciplines from the site's own law that apply directly:
-
-- **Clay is reserved for decisions and gates.** A mechanism should not spend
-  clay to be noticed. Ink and paper and light are the palette.
-- **The ≤2 stamps-per-page budget** exists because this project already learned
-  that apparatus multiplies. The same instinct applies to mechanisms.
+1. **Nothing meaningful under ~350ms.** The click, the flare, the landing, the
+   seat: these are the payoffs. Give them time to be seen. Slow is not the same
+   as sluggish — a detent can take 400ms and still feel crisp if it is shaped.
+2. **Sequence the ensemble.** Peak concurrency should be low single digits, and
+   each machine should have a moment where it is the only thing moving. Total
+   length may grow — **that is allowed and probably necessary.** Judge the
+   ceiling by whether the page still feels alive rather than slow, and say what
+   you chose and why.
+3. **Redraw the figures to the smallest inch.** Curvature, mass, terminals,
+   joins, optical weight against Fraunces. The bird first, then every other
+   machine at 3× zoom.
+4. **The landed/settled pose of every machine must BE the letterform** — no
+   crossfade papering over a mismatch.
+5. **Motion quality inside each move**: anticipation before the big moves,
+   follow-through and settle after, secondary motion where a real object would
+   have it (the bird's wings continue a beat after the body stops).
+6. Keep everything round 8 already got right — 0px static diff on all seats, 0
+   idle rAF, the letterform-locked defence, five machines and five still.
 
 ---
 
-## §5 · Hard constraints (unchanged from round 7)
+## §4 · Then port it to production
 
-- **Prototype in `docs/design-lab/candidates/` first.** Do NOT touch `src/`
-  until a direction is picked. The header is production code above the fold.
-- **A7** — the static / reduced-motion / print form must equal the animation's
-  final frame, **to the pixel**. A name that only exists after an animation is a
-  broken name. Round 7 hit 0px on A and B and ~0.01% on C; 0px is the bar.
-- **LCP.** Round 7 measured this and the spread was decisive: **B 320/340/43ms
-  vs A 2224/1309/1250 and C 2520/1766/1765**. SVG-heavy nameplates cannot be
-  the LCP element. Whatever you build, measure it — `docs/design-lab/probe-header7.mjs`
-  already does exactly this and is committed.
-- **No second rAF loop** (§F3). Ride `gsap.ticker`.
-- **Zero new dependencies.**
-- **Both WebKit seats.** Variable-font animation, SVG text metrics and
-  `offset-path` all differ there.
-- **`mulberry32`** (`src/components/thread/geometry.ts:158`) for anything
-  generative — never `Math.random`, because SSR.
-- Voice: warm paper, ink, light. No glow, glass, aurora, neon, particles.
+Once it is genuinely there — **not before** — port it into the real site:
 
-## §6 · What you owe
+- `src/components/layout/Header.tsx` and `src/app/globals.css` are the targets.
+  The nameplate replaces the 13px masthead name.
+- **The design-lab replay row does not ship.** Nor does the debug overlay, nor
+  the measured-values readout unless you can argue it earns its place on a real
+  page.
+- **A7**: the static, reduced-motion and print worlds must equal the final
+  frame **to the pixel**, as they do in the prototype.
+- **The frame governor** — full tier gets the machines; core and print get the
+  finished nameplate with no machinery mounted.
+- **No second rAF loop.** Ride `gsap.ticker`.
+- **LCP**: the prototype measured D at 672 / 1246 / 60ms across the three
+  seats. Re-measure on the real page — real font loading, real payload — and
+  report it. If the nameplate becomes the LCP element and regresses the number,
+  say so plainly rather than shipping it quietly.
+- **Full gates before anything is called done**: `typecheck`, `lint`,
+  `format:check`, `test:contrast`, `test:proof`, `assets:check-og`, `test:seo`,
+  `test:probe-routes`, `resume:check`, and the full Playwright suite — which is
+  currently **935 passed / 40 skipped / 0 failed** across five browsers
+  including both Safari seats. That is the number to hold.
+- Expect existing specs to fail when the masthead changes. **A spec that fails
+  because the site got better is a spec to update, deliberately, with its
+  reasoning recorded** — this project has twice had guards that were pinning
+  stale prose in place, and the lesson is written into `dossier.spec.ts` and
+  `check-resume.mjs`.
 
-1. **One built candidate minimum, ideally two**, openable, with 4–6 distinct
-   per-letter mechanisms actually running.
-2. **A written defence of the picks** — which characters, which mechanisms, why
-   those, and specifically **why each mechanism could not be swapped onto a
-   different letter**. If it could be, it is not derived from the letterform and
-   it will read as generic again.
-3. **The transition layer designed separately** and described as such.
-4. **Measured**: LCP, idle rAF, static-equals-final-frame pixel diff, both
-   Safari seats. The probe exists; extend it rather than rewriting it.
+**Tier 2 is still only a proposal.** Do not build it this round.
 
-## §7 · Standing law
+---
 
-`docs/design-lab/FABLE-VISUAL-BRIEF.md` (THE DESIGN LAW, §D / D1–D8) ·
-`docs/NO-LIST.md` (§A–§F) · `docs/BUILD-RUBRIC.md` (A1–A9; **A7**, and **A9**
-guards added scroll length).
+## §5 · The rules that have not changed
 
-`BUILD-RUBRIC §6`: step score = **min**(rubric, recruiter, visitor). The
-recruiter lens asks "does this read credible-professional, **not
-art-project**?" — and a bird landing as a letter is precisely where that
-tension lives. Resolving it is part of the work, not a reason to avoid it.
+- **Only the nameplate `Ayush Yadav` gets per-character machines.** Nothing else
+  on the site, ever. He has stated this four times.
+- Do not use the word **"glyph"** to mean "letter" — Glyph is his product.
+  Say letter, character, or letterform.
+- Zero new dependencies · `mulberry32` for anything generative, never
+  `Math.random` · warm paper, ink, light — no glow, glass, aurora, neon,
+  particles · clay stays reserved for decisions and gates.
+- **Measure, don't assert.** Every claim terminates in a re-runnable command or
+  an openable file. Disproving something in this brief with a measurement is a
+  good outcome — report it loudly, as I have done above with the easing.
 
-**The round-7 candidates are on disk** (`header-a-hand.html`,
-`header-b-compositor.html`, `header-c-reader.html`) and their probe report is
-at `docs/design-lab/shots-header7/report.json`. Read them to know what has
-already been tried and rejected — and reuse anything worth keeping. A's
-letterform-skeleton machinery and C's raster pipeline are both real work; the
-verdict was on the concept, not the craft.
+## §6 · Standing law
+
+`docs/design-lab/FABLE-VISUAL-BRIEF.md` · `docs/NO-LIST.md` (§A–§F) ·
+`docs/BUILD-RUBRIC.md` (A1–A9; **A7** especially).
