@@ -312,6 +312,20 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    re-ran it at would turn a measurement into a guess. Two pins, each
    naming the commit its own number was taken from. The corrections
    register carries the note. */
+/* Agentic AutoML went PUBLIC on 2026-07-30. Until then this file's
+   strongest claims terminated at page captures and a metadata check no
+   reader could repeat — its own ledger line was the blunt "0 of 8
+   terminate in pinned artifacts". Public means the architecture claims
+   can finally cite the code.
+   Pinned to the default branch head, "ci: increase build heap for
+   GitHub Actions" (2026-05-08). Both paths below were fetched
+   ANONYMOUSLY — no token, the way a reader arrives — and returned 200
+   before anything here was written.
+   What did NOT change: this project still claims no accuracy or
+   performance number, because no eval artifact exists to earn one. The
+   work is the architecture and the gates. */
+const AUTOML_SHA = "e506c91";
+const AUTOML_BLOB = `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/${AUTOML_SHA}`;
 const CADENCE_SHA = "54c79e0";
 const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
 const FAST_MNIST_SHA = "c6e5c0b";
@@ -781,10 +795,20 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     /* Traces to the corrections note + boundary row: the platform core
        is built; the demo-data run ledger has not shipped yet. */
     statusDetail: "core shipped, run ledger pending",
-    repoPin: null,
-    privateRepoName: "yadava5/ai-augmented-auto-ml-toolchain",
+    /* `repoPin: null` was what drove the PRIVATE REPOSITORY stamp —
+       CaseStudyPage computes `isPrivate = study.repoPin === null`, so
+       the moment the owner made the repo public on 2026-07-30 this page
+       was printing a large dashed stamp asserting the opposite, in
+       clay, with an aria-label to match. Pinning the repo removes the
+       stamp by telling the truth rather than by hiding a component.
+       Tree URL fetched anonymously, 200, before it was written here. */
+    repoPin: {
+      repo: "yadava5/ai-augmented-auto-ml-toolchain",
+      sha: AUTOML_SHA,
+      href: `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/tree/${AUTOML_SHA}`,
+    },
     summary:
-      "A private, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+      "A public, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
     evidenceDisclosure: {
       label: "Private proof: GitHub evidence",
       detail:
@@ -890,12 +914,28 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     receipts: [
       {
+        /* THE REPO WENT PUBLIC ON 2026-07-30 and this row said the
+           opposite, which made it the one false sentence on the file.
+           It read "lives in the private repo …" with `artifacts: []`
+           and `visibility: private-safe` — accurate when written, and
+           untrue the moment the owner flipped it.
+           Verified before rewriting, anonymously (no token, the way a
+           reader arrives): the repo returns 200 and the API reports
+           `private: false`. The README at the pinned sha states the
+           seven phases, the LangGraph + MCP core and the human gate in
+           its own words, so the claim now terminates at that file
+           rather than at a metadata check nobody else can run. */
         claim:
-          "The platform lives in the private repo yadava5/ai-augmented-auto-ml-toolchain; its README titles it Agentic AutoML Platform.",
-        method: "live GitHub metadata check",
-        artifacts: [],
-        date: "2026-07",
-        visibility: "private-safe",
+          "The platform is the public repo yadava5/ai-augmented-auto-ml-toolchain; its README titles it Agentic AutoML Platform and states the seven-phase lifecycle, the LangGraph and MCP core, and a human approval gate at every step.",
+        method: "read at the pinned commit on the public repo",
+        artifacts: [
+          {
+            label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · README.md`,
+            href: `${AUTOML_BLOB}/README.md`,
+          },
+        ],
+        date: "2026-07-30",
+        visibility: "public",
       },
       {
         claim:
@@ -978,29 +1018,50 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         visibility: "private-safe",
       },
       {
+        /* This claim used to rest on a photograph of a poster panel.
+           With the repo public it rests on the registry itself: the MCP
+           server file, read at the pinned sha, registers exactly twelve
+           tools. Naming them is deliberate — this project's booklets
+           once shipped FABRICATED tool names and a correctness audit
+           had to replace them with the real twelve, so the count and
+           the names now point at the file that decides them.
+           They are also a better story than a count: the agent is not
+           holding twelve abstract "tools", it is operating a notebook
+           the way a person would — read a cell, write a cell, run it,
+           reorder them, profile a dataset, search the docs. */
         claim:
-          "Pipeline decisions run through LangGraph and MCP tool calls rather than free-form output.",
-        method: "poster workflow-state panel",
+          "Pipeline decisions run through LangGraph and MCP tool calls rather than free-form output: the server registers exactly twelve tools, and they are notebook and dataset operations — list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell.",
+        method:
+          "counted and read in the MCP server source at the pinned public commit",
         artifacts: [
+          {
+            label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/mcp/mcpServer.ts`,
+            href: `${AUTOML_BLOB}/backend/src/services/mcp/mcpServer.ts`,
+          },
           {
             label: "see fig. 4 — the expo poster",
             href: "#artifacts",
             capture: true,
           },
         ],
-        date: "2026-05",
-        visibility: "private-safe",
+        date: "2026-07-30",
+        visibility: "public",
       },
     ],
     notClaiming: [
       "No per-run metrics are published here. The registry excerpt shows run, model, and status only — a demo-data run ledger with a complete metric trail has not shipped yet.",
-      "The repository is private, so source is not inspectable from this page. The evidence is the expo poster, the presenter deck, and the private-safe registry capture — verifiable in interview.",
+      "The source is now public and pinned above, so the architecture claims are inspectable. What is still NOT claimed is a result: no accuracy, throughput, or benchmark figure appears on this file, because no committed eval artifact earns one. The work this file argues is the architecture and the human gate.",
     ],
     corrections: [
       {
         date: "2026-07",
         kind: "note",
         text: "Per-run metrics remain withheld while the repository is private; the eval protocol for the platform’s own model runs is not yet publicly documented. Nothing here has been retracted — this register is waiting on a demo-data run ledger.",
+      },
+      {
+        date: "2026-07-30",
+        kind: "erratum",
+        text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above still stands: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
       },
     ],
     registryFig: {
@@ -1012,7 +1073,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
       caption: [
         "fig. 3 — experiment registry, transcribed private-safe excerpt.",
-        "metrics withheld — private repository; see the boundary rows below.",
+        /* The REASON changed, not the withholding. This read "metrics
+           withheld — private repository", which was the true reason
+           until 2026-07-30 and is now the wrong one: the source is
+           public and pinned in the meta ledger above. The metrics are
+           still withheld because no committed eval artifact exists to
+           earn them — which is a stronger, more honest sentence than
+           the old one, since it no longer lets a reader assume the
+           numbers are sitting behind a lock. */
+        "metrics withheld — no committed eval run earns them yet; the source itself is public, pinned above.",
       ],
     },
     /* PLATE ORDER IS CITATION ORDER (fix round 3, N1).
