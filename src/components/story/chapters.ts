@@ -41,3 +41,37 @@ export const CHAPTERS: readonly ChapterMeta[] = [
 export function isDuskChapter(id: string): boolean {
   return id >= "06";
 }
+
+/**
+ * The run this paper IS (round 12, Stage C — the running head and the
+ * corner manifest name it). One number, one source: fig 4.1's registry
+ * shows run 041 awaiting approval and the gate stamp signs the same
+ * run — red-thread.spec.ts asserts the stamp⇄registry agreement, and
+ * this constant is how the chrome joins it without a third hand-typed
+ * copy (the F69 lesson).
+ */
+export const RUN_NO = "041";
+
+/**
+ * A chapter dateline as minutes since midnight — the interpolation
+ * space for the running head's clock (the prototype's own trick: tween
+ * minutes between station stops, render on minute change only).
+ *
+ * @param clock - A CHAPTERS dateline ("06:12" … "22:41")
+ * @returns Minutes since midnight
+ */
+export function clockMinutes(clock: string): number {
+  const [h, m] = clock.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/**
+ * Minutes back to the dateline form the kickers use.
+ *
+ * @param minutes - Minutes since midnight
+ * @returns "HH:MM"
+ */
+export function minutesClock(minutes: number): string {
+  const m = Math.max(0, Math.round(minutes));
+  return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
