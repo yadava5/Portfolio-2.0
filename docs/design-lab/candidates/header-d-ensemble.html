@@ -57,6 +57,32 @@
          replay row below proves it by running them on a settled page
          with no transition at all.
 
+     ROUND 9 (the owner's verdict: "too fast … refine to the smallest
+     inch … the landed pose must BE the letterform"):
+       · LETTERFORM-LOCK, made literal. Machines are no longer drawn
+         approximations of the letters — they are built out of the
+         REAL letterform: SVG <text> in the same face/axes, cut into
+         pieces with clipPaths and revealed with mask wipes, at the
+         geometry measured off this render's own pixels
+         (scan-letterform9.mjs). The dividers' legs ARE the A's stems
+         rotating about the stems' true intersection point; the road
+         reveals the REAL s behind the bead; the a inks on from its
+         own bowl–stem junction; the second a runs in whole; the bird
+         folds into the v's own strokes. Settled pose = the letter by
+         construction (svgtext-align: 0px diff on chromium), so the
+         dry is nothing but wet ink (#4A382A) becoming ink (#26231C).
+       · NOTHING MEANINGFUL UNDER 350ms. Every payoff — the seat, the
+         park, the click, the plant, the fold — is 350–2000ms and
+         shaped (anticipation → move → overshoot → settle).
+       · THE ENSEMBLE IS PHRASED. Five payoffs at ~1.9s, 3.6s, 5.0s,
+         5.9s, 6.8s — each machine is alone for its payoff; travels
+         may overlap (≤3 machines moving at once, measured by
+         census-header9.mjs). Total ≈ 7.7s against round 8's 2.85s —
+         chosen because the reading matter below rises at ~2s, so a
+         recruiter reads/scrolls immediately while the plate finishes
+         performing above; the length is the machines', not the
+         page's.
+
      The base DOM state is the FINAL frame: full ink, settled axes, no
      overlays. The motion world holds letters back and performs on
      top; the static world never holds anything (A7 by construction,
@@ -231,7 +257,7 @@
   html:not([data-motion-off]):not([data-perform]) .ch{opacity:0}
   html[data-perform] .perform .ch:not(.m){
     animation:settype .82s cubic-bezier(.3,.75,.35,1) both;
-    animation-delay:calc(.24s + var(--i) * 55ms);
+    animation-delay:calc(.18s + var(--i) * 55ms);
   }
   /* machine letters stay withheld until their machine's crossfade
      releases them (WAAPI, then an inline style carries the final 1) */
@@ -265,7 +291,7 @@
   html:not([data-motion-off]):not([data-perform]) .metrics .rule{opacity:0}
   html[data-perform] .perform .metrics .rule{
     transform-origin:left center;
-    animation:ruledraw .55s cubic-bezier(.25,.9,.3,1) both;
+    animation:ruledraw .65s cubic-bezier(.25,.9,.3,1) both;
   }
   html[data-perform] .perform.settled .metrics .rule{
     animation:none; transform:none;
@@ -289,10 +315,13 @@
   @media (max-width:519px){ .axisline .msr{display:none} }
   html:not([data-motion-off]):not([data-perform]) .axisline,
   html:not([data-motion-off]):not([data-perform]) .dateline{opacity:0}
+  /* the reading matter rises at ~2s — early enough that a recruiter
+     reads and scrolls while the machines are still performing above,
+     late enough that the dividers' seat (payoff 1, ~1.9s) is alone */
   html[data-perform] .axisline{
-    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:1.02s}
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:1.98s}
   html[data-perform] .dateline{
-    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:1.14s}
+    animation:rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:2.12s}
   .dateline{margin-top:.55rem; color:var(--ink)}
 
   /* —— the claim, re-seated (same words, deck scale) ——————————— */
@@ -321,9 +350,9 @@
   html[data-perform] .below .after{
     animation:rise .8s cubic-bezier(.22,1,.36,1) both;
   }
-  html[data-perform] .below .after.a1{animation-delay:1.30s}
-  html[data-perform] .below .after.a2{animation-delay:1.42s}
-  html[data-perform] .below .after.a3{animation-delay:1.54s}
+  html[data-perform] .below .after.a1{animation-delay:2.28s}
+  html[data-perform] .below .after.a2{animation-delay:2.44s}
+  html[data-perform] .below .after.a3{animation-delay:2.60s}
   html[data-perform] .perform-done .after{animation:none}
 
   /* —— rail (context, static) ————————————————————————————— */
@@ -482,7 +511,7 @@
   const plate = document.getElementById("plate");
   const h1 = document.getElementById("nameplate");
   const still = () => html.hasAttribute("data-motion-off");
-  const debug = html.hasAttribute("data-debug");
+  let debug = html.hasAttribute("data-debug");   /* let: __mech.buildResting */
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   /* ——— the nameplate, one span per character ————————————— */
@@ -586,8 +615,18 @@
     const hr = h1.getBoundingClientRect();
     const fs = parseFloat(getComputedStyle(h1).fontSize);
     const base = (hr.top - pr.top) + t.base;
+    /* the machines are BUILT from the real letterform: SVG <text> in
+       the same face and axes (svgtext-align-test: raster-identical to
+       the span, 0px diff on chromium). Read the settled style off a
+       machine letter — machine letters never run settype, so their
+       computed axes are the base (= final) values by construction. */
+    const cs = getComputedStyle(letters[0]);
+    const txtStyle =
+      `font-family:${cs.fontFamily};font-size:${cs.fontSize};` +
+      `font-weight:${cs.fontWeight};letter-spacing:${cs.letterSpacing};` +
+      `font-variation-settings:${cs.fontVariationSettings};font-optical-sizing:none`;
     return {
-      fs, base,
+      fs, base, txtStyle,
       xH: t.exH, capH: t.capH,
       W: pr.width, H: pr.height,
       nameW: hr.width,
@@ -595,10 +634,8 @@
         const r = s.getBoundingClientRect();
         return { x: r.left - pr.left, w: r.width };
       }),
-      sw: fs * 0.072,          /* the machines' working stroke */
-      swFoldL: fs * 0.125,     /* the v's heavy left stroke, measured */
-      swFoldR: fs * 0.033,     /* …and its hairline right */
-      beadR: fs * 0.050,
+      sw: fs * 0.072,          /* the scaffolds' working stroke */
+      beadR: fs * 0.052,
     };
   }
 
@@ -611,6 +648,7 @@
   };
   const INK_WET = "#4A382A", INK = "#26231C", PINE = "#2F5D50";
   const strokeCol = debug ? PINE : INK_WET;
+  let mid = 0;                    /* unique ids for clip/mask defs */
   function mkOverlay(g) {
     const svg = el("svg", {
       class: "mech",
@@ -618,6 +656,7 @@
       "aria-hidden": "true", focusable: "false",
     });
     svg.setAttribute("style", "width:100%;height:100%");
+    el("defs", {}, svg);
     plate.appendChild(svg);
     return svg;
   }
@@ -631,84 +670,192 @@
   };
   /* screen-coords angle helpers (y down; CSS rotate positive = cw) */
   const deg = (r) => (r * 180) / Math.PI;
-  const angleOf = (dx, dy) => deg(Math.atan2(dy, dx));
-  const norm180 = (a) => ((a + 540) % 360) - 180;
 
-  /* crossfade: the machine's ink dries into the typeset letter.
-     Both sides animate opacity via WAAPI; the letter then carries an
-     inline 1 (beats the withhold rule) and the machine's parts die. */
-  async function crossfade(parts, idxs, ms = 180) {
-    for (const p of parts)
-      p.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ms, fill: "both", easing: "ease" });
-    for (const i of idxs)
-      letters[i].animate([{ opacity: 0 }, { opacity: 1 }], { duration: ms, fill: "both", easing: "ease" });
-    await sleep(ms);
-    for (const i of idxs) {
-      letters[i].getAnimations().forEach((a) => a.cancel());
-      letters[i].style.opacity = "1";
+  /* ——— the letterform, as material ————————————————————————
+     Round 9's lock: machines are cut from the REAL letter. mkText
+     renders the same character in the same face/axes at the same seat
+     (svgtext-align-test: 0px raster diff vs the span on chromium);
+     clipped() hands back a piece of it bounded by a polygon measured
+     from scan-letterform9; wipe() reveals a piece along a skeleton
+     with a masked stroke (the one sanctioned dash draw). Fractions:
+     fx of the letter box width; fy 0 = cap/x line, 1 = baseline. */
+  function mkText(parent, g, i) {
+    const t = el("text", {
+      x: g.box[i].x.toFixed(2), y: g.base.toFixed(2), fill: strokeCol,
+    }, parent);
+    t.setAttribute("style", g.txtStyle);
+    t.textContent = letters[i].textContent;
+    return t;
+  }
+  function clipped(svg, g, i, poly, unit) {
+    const b = g.box[i], h = unit === "cap" ? g.capH : g.xH, top = g.base - h;
+    const id = `m9c${++mid}`;
+    el("path", {
+      d: "M " + poly.map(([fx, fy]) =>
+        `${(b.x + fx * b.w).toFixed(1)} ${(top + fy * h).toFixed(1)}`).join(" L ") + " Z",
+    }, el("clipPath", { id }, svg.querySelector("defs")));
+    const gRot = el("g", {}, svg);
+    const gCl = el("g", { "clip-path": `url(#${id})` }, gRot);
+    return { gRot, gCl, text: mkText(gCl, g, i) };
+  }
+  function wipe(svg, g, target, dPath, widthPx) {
+    const id = `m9m${++mid}`;
+    const mask = el("mask", {
+      id, maskUnits: "userSpaceOnUse",
+      x: 0, y: 0, width: g.W.toFixed(0), height: g.H.toFixed(0),
+    }, svg.querySelector("defs"));
+    const s = el("path", {
+      d: dPath, fill: "none", stroke: "#fff",
+      "stroke-width": widthPx, "stroke-linecap": "round", "stroke-linejoin": "round",
+    }, mask);
+    const L = s.getTotalLength();
+    /* Round caps paint at every dash boundary — with dasharray L and
+       offset L, the first dash's end cap pokes a half-width dot onto
+       the path START, and the next dash's start cap pokes one onto
+       the END: both terminals pre-revealed (caught at 3× as grey
+       patches at the dial's junction and the s's foot). The gap is
+       sized so no second dash exists on the path, and the offset
+       carries the cap fully clear. */
+    const L0 = L + widthPx / 2 + 1;
+    if (!debug) {
+      s.style.strokeDasharray = `${L} ${L + widthPx + 2}`;
+      s.style.strokeDashoffset = `${L0}`;
     }
+    target.setAttribute("mask", `url(#${id})`);
+    return { s, L: L0 };
+  }
+  /* a polyline path from letter-box fractions */
+  const fPath = (g, i, unit, pts) => {
+    const b = g.box[i], h = unit === "cap" ? g.capH : g.xH, top = g.base - h;
+    return "M " + pts.map(([fx, fy]) =>
+      `${(b.x + fx * b.w).toFixed(1)} ${(top + fy * h).toFixed(1)}`).join(" L ");
+  };
+
+  /* the dry: the machine's wet ink (#4A382A) dries into the typeset
+     letter (#26231C). Round 9 makes this honest — every settled pose
+     IS the letterform, so the dry is the FILL animating wet→ink on
+     the machine's own text pieces, then an invisible swap to the span
+     (same glyph, same seat, same colour). Round 8 cross-faded two
+     copies, which dips combined coverage to 75% at the midpoint — the
+     letter visibly paled, then re-inked; nothing pulses now. Only the
+     SCAFFOLD fades — the tool parts that are not the letter: the
+     hinge, the bead. 380ms: the slowest thing on each machine,
+     watchable (round 8's 180ms was the brief's "landing you never
+     see"). */
+  async function crossfade(parts, idxs, ms = 380, scaffold = []) {
+    for (const p of parts)
+      p.querySelectorAll("text").forEach((t) =>
+        t.animate([{ fill: INK_WET }, { fill: INK }],
+          { duration: ms, fill: "both", easing: "ease" }));
+    for (const p of scaffold)
+      p.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ms, fill: "both", easing: "ease" });
+    await sleep(ms + 40);
+    for (const i of idxs) letters[i].style.opacity = "1";
     for (const p of parts) p.remove();
   }
 
   /* ═══════════════ THE FIVE MACHINES ═══════════════
      Each returns { parts, play() } — geometry built at call time from
      the live measure, so the machine always lands on this render's
-     letter, at any viewport. In debug they draw their resting pose. */
+     letter, at any viewport. In debug they draw their resting pose.
+     All fractions below cite scan-letterform9.mjs (this face, opsz
+     144 / SOFT 50 / wght 600). */
 
   /* —— A · the dividers ———————————————————————————————————
-     Two straight strokes hinged at one apex — the only letterform in
-     the name that IS that. They stand closed on the baseline, open to
-     the letter's exact stance (overshoot, then onto the mark, the way
-     a hand opens dividers), and the crossbar ties the setting. */
+     The legs ARE the A's own stems — the letter clipped in two along
+     the counter's midline and hinged where the stem centrelines truly
+     intersect: (0.473, −0.109·cap), ABOVE the apex slab, where a real
+     divider's boss sits. Closed they stand point-to-point on the
+     baseline (the assembly rides 5–6px lower — leg length exceeds the
+     vertical drop, the true kinematics of dividers standing on their
+     points); they open with anticipation, swing past the mark, spring
+     back a hair and seat. The crossbar (the letter's own, revealed by
+     a wipe) ties the setting; the hinge is the one piece of tool that
+     lifts off with the dry. */
   function mkDividers(svg, g, rnd) {
-    /* anchors fit from pixel scans of this face at 5 row heights:
-       apex .508, feet .071/.864 (stem centerlines extrapolated to the
-       baseline), crossbar centred at .38 cap */
     const b = g.box[0], capTop = g.base - g.capH;
-    const ax = b.x + 0.508 * b.w, ay = capTop + 0.005 * g.capH;
-    const flx = b.x + 0.071 * b.w, frx = b.x + 0.864 * b.w;
-    const barY = g.base - 0.38 * g.capH;
-    const legX = (fx) => ax + (fx - ax) * ((barY - ay) / (g.base - ay));
-    const gL = el("g", {}, svg), gR = el("g", {}, svg);
-    stroke(el("path", { d: `M ${ax} ${ay} L ${flx} ${g.base}` }, gL), g.sw);
-    stroke(el("path", { d: `M ${ax} ${ay} L ${frx} ${g.base}` }, gR), g.sw);
-    const bar = stroke(el("path", { d: `M ${legX(flx)} ${barY} L ${legX(frx)} ${barY}` }, svg), g.sw * 0.8);
-    const hinge = el("circle", { cx: ax, cy: ay, r: g.fs * 0.045, fill: strokeCol }, svg);
-    /* opening angles: rotate each leg so it starts vertical (closed) */
+    /* scan: stem centrelines x(fy) — left .3945@.125 slope −.335,
+       right .555@.125 slope +.35 → intersection (.473, −.109);
+       feet at baseline .101 / .861; counter midline x = .435;
+       crossbar band fy .578–.686, inner edges .255 / .615 */
+    const px = b.x + 0.473 * b.w, py = capTop - 0.109 * g.capH;
+    const feet = { L: b.x + 0.101 * b.w, R: b.x + 0.861 * b.w };
+    /* the legs' crossbar notches follow the stems' own inner-edge
+       slopes (scan: left inner .274@.575 → .242@.675, right .598 →
+       .633) — a straight notch bit a visible step out of each stem
+       mid-rotation (3× frames, first pass) */
+    const legL = clipped(svg, g, 0, [
+      [-0.15, -0.30], [0.435, -0.30], [0.435, 0.578], [0.282, 0.578],
+      [0.250, 0.686], [0.435, 0.686], [0.435, 1.12], [-0.15, 1.12],
+    ], "cap");
+    const legR = clipped(svg, g, 0, [
+      [0.435, -0.30], [1.20, -0.30], [1.20, 1.12], [0.435, 1.12],
+      [0.435, 0.686], [0.625, 0.686], [0.590, 0.578], [0.435, 0.578],
+    ], "cap");
+    const barP = clipped(svg, g, 0, [
+      [0.240, 0.572], [0.635, 0.572], [0.635, 0.688], [0.240, 0.688],
+    ], "cap");
+    const barW = wipe(svg, g, barP.gCl,
+      fPath(g, 0, "cap", [[0.230, 0.630], [0.645, 0.630]]), 0.16 * g.capH);
+    /* the whole tool in one group: legs + the hinge boss above them */
+    const gAll = el("g", { "data-census": "dividers" }, svg);
+    gAll.appendChild(legL.gRot); gAll.appendChild(legR.gRot); gAll.appendChild(barP.gRot);
+    const boss = stroke(el("circle", { cx: px, cy: py, r: g.fs * 0.058 }, gAll), g.sw * 0.55);
+    const pin = el("circle", { cx: px, cy: py, r: g.fs * 0.030, fill: strokeCol }, gAll);
+    gAll.style.transformBox = "view-box";
+    /* closed = each leg rotated about the hinge until vertical */
     const phi = (dx, dy) => deg(Math.atan2(-dx, dy));   /* R(φ)·(0,1) = dir */
-    const phiL = phi(flx - ax, g.base - ay), phiR = phi(frx - ax, g.base - ay);
-    for (const [grp, p] of [[gL, phiL], [gR, phiR]]) {
-      grp.style.transformOrigin = `${ax}px ${ay}px`;
-      grp.style.transformBox = "view-box";
-      if (!debug) grp.style.transform = `rotate(${-p}deg)`;
+    const dyF = g.base - py;
+    const clL = -phi(feet.L - px, dyF), clR = -phi(feet.R - px, dyF);
+    const legLen = Math.max(Math.hypot(feet.L - px, dyF), Math.hypot(feet.R - px, dyF));
+    const cTy = legLen - dyF;      /* closed assembly sits lower by this */
+    for (const [p, cl] of [[legL, clL], [legR, clR]]) {
+      p.gRot.style.transformOrigin = `${px}px ${py}px`;
+      p.gRot.style.transformBox = "view-box";
+      if (!debug) p.gRot.style.transform = `rotate(${cl}deg)`;
     }
-    const barLen = legX(frx) - legX(flx);
     if (!debug) {
-      bar.style.strokeDasharray = `${barLen}`;
-      bar.style.strokeDashoffset = `${barLen}`;
+      gAll.style.transform = `translateY(${cTy.toFixed(1)}px)`;
+      gAll.style.opacity = "0";
     }
-    const parts = [gL, gR, bar, hinge];
+    const parts = [gAll];
+    const openKf = (cl, ov) => [
+      { transform: `rotate(${cl}deg)`, easing: "cubic-bezier(.55,.08,.60,.35)" },
+      { transform: `rotate(${(cl * 1.075).toFixed(2)}deg)`, offset: 0.09,
+        easing: "cubic-bezier(.32,.55,.18,1)" },              /* anticipation: press closed */
+      { transform: `rotate(${(-Math.sign(cl) * ov).toFixed(2)}deg)`, offset: 0.80,
+        easing: "cubic-bezier(.36,.02,.30,1)" },              /* swing past the mark */
+      { transform: `rotate(${(Math.sign(cl) * ov * 0.28).toFixed(2)}deg)`, offset: 0.92,
+        easing: "cubic-bezier(.35,.10,.30,1)" },              /* spring back a hair */
+      { transform: "rotate(0deg)" },                          /* seat */
+    ];
     return {
       parts,
-      open: deg(Math.atan2(frx - ax, g.base - ay)) - deg(Math.atan2(flx - ax, g.base - ay)),
+      open: Math.abs(clL) + Math.abs(clR),
       async play() {
-        const ov = 2.5 + rnd() * 2;      /* opening past the mark, then onto it */
-        const opt = { duration: 640, fill: "both", easing: "cubic-bezier(.3,.7,.3,1)" };
-        gL.animate([
-          { transform: `rotate(${-phiL}deg)` },
-          { transform: `rotate(${-Math.sign(phiL) * ov}deg)`, offset: 0.70 },
-          { transform: "rotate(0deg)" },
-        ], opt);
-        gR.animate([
-          { transform: `rotate(${-phiR}deg)` },
-          { transform: `rotate(${-Math.sign(phiR) * ov}deg)`, offset: 0.70 },
-          { transform: "rotate(0deg)" },
-        ], opt);
-        await sleep(620);
-        bar.animate([{ strokeDashoffset: barLen }, { strokeDashoffset: 0 }],
-          { duration: 220, fill: "both", easing: "cubic-bezier(.4,0,.3,1)" });
-        await sleep(250);
-        await crossfade(parts, [0]);
+        gAll.animate([
+          { opacity: 0, transform: `translateY(${(cTy - 8).toFixed(1)}px)` },
+          { opacity: 1, transform: `translateY(${cTy.toFixed(1)}px)` },
+        ], { duration: 380, fill: "both", easing: "cubic-bezier(.25,.7,.3,1)" });
+        await sleep(440);
+        const ov = 2.4 + rnd() * 1.6;
+        /* the right (heavy) leg leads; the left follows 90ms later —
+           the way a hand opens dividers, never a mirrored pair */
+        legR.gRot.animate(openKf(clR, ov), { duration: 1250, fill: "both" });
+        legL.gRot.animate(openKf(clL, ov * 0.9), { duration: 1160, delay: 90, fill: "both" });
+        /* the hinge rides the legs' spread: cos-coupled height */
+        gAll.animate([
+          { transform: `translateY(${cTy.toFixed(1)}px)` },
+          { transform: `translateY(${(cTy * 1.02).toFixed(1)}px)`, offset: 0.09 },
+          { transform: "translateY(-0.5px)", offset: 0.80 },
+          { transform: "translateY(0.2px)", offset: 0.92 },
+          { transform: "translateY(0px)" },
+        ], { duration: 1250, fill: "both" });
+        await sleep(1310);
+        barW.s.animate([{ strokeDashoffset: barW.L }, { strokeDashoffset: 0 }],
+          { duration: 450, fill: "both", easing: "cubic-bezier(.42,.05,.24,1)" });
+        await sleep(500);
+        await crossfade(parts, [0], 380, [boss, pin]);
       },
     };
   }
@@ -716,11 +863,14 @@
   /* —— s · the road ————————————————————————————————————————
      The only letter here that is ONE continuous open path with no
      junctions and no retraced stroke — the one road a runner can take
-     end to end without lifting. An ink bead runs it; the stroke draws
-     behind the bead (the site's own token-and-edge grammar); the bead
-     parks exactly where the letter's bottom terminal already is. */
+     end to end without lifting. An ink bead runs it, and the REAL
+     letter is revealed behind it — a masked wipe along the skeleton,
+     so what the bead lays down is the letterform itself, thicks and
+     thins and terminals, not a uniform trace. The bead parks exactly
+     where the letter's bottom terminal already is, sits a beat, and
+     dries into it. */
   function sPathD(g) {
-    /* landmarks from pixel scans of this face: top terminal ≈ .86,
+    /* skeleton from pixel scans of this face: top terminal ≈ .86,
        top peak .637, left wall .21 @ .27 down, spine centre .478 at
        mid, lower-right .86 @ .80 down, bottom terminal ≈ .15 @ .82 */
     const b = g.box[3], xT = g.base - g.xH, w = b.w, h = g.xH, x = b.x;
@@ -735,129 +885,182 @@
   }
   function mkRoad(svg, g) {
     const d = sPathD(g);
-    const path = stroke(el("path", { d }, svg), g.sw);
-    const bead = el("circle", { r: g.beadR, fill: strokeCol }, svg);
+    const gRd = el("g", { "data-census": "road" }, svg);
+    const gT = el("g", {}, gRd);
+    mkText(gT, g, 3);
+    /* mask width: the scan's widest perpendicular stroke is ~.19 of
+       the box (the spine); counters are ≥.27 boxes away from the
+       skeleton. .46·w — probe-lock9 caught .38 under-covering the
+       upper curve's inner belly (346px); .52 clears it — including
+       the concave pocket under the top terminal ball — and the
+       nearest counter (.27 boxes off-skeleton) stays outside the
+       half-width */
+    const rw = wipe(svg, g, gT, d, 0.52 * g.box[3].w);
+    const bead = el("circle", { r: g.beadR, fill: strokeCol }, gRd);
     bead.style.offsetPath = `path("${d}")`;
     bead.style.offsetRotate = "0deg";
-    const L = path.getTotalLength();
-    if (!debug) {
-      path.style.strokeDasharray = `${L}`;
-      path.style.strokeDashoffset = `${L}`;
-    } else {
-      bead.style.offsetDistance = "100%";
-    }
-    const parts = [path, bead];
+    if (!debug) bead.style.opacity = "0";
+    else bead.style.offsetDistance = "100%";
+    const parts = [gRd];
     return {
-      parts, length: L,
+      parts, length: rw.L,
       async play() {
-        const opt = { duration: 680, fill: "both", easing: "cubic-bezier(.42,.06,.30,1)" };
-        path.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], opt);
+        /* the bead drops onto the top terminal — the pen touches down */
+        bead.animate([
+          { opacity: 0, transform: `translateY(${(-0.10 * g.xH).toFixed(1)}px)` },
+          { opacity: 1, transform: "translateY(0px)" },
+        ], { duration: 350, fill: "both", easing: "cubic-bezier(.3,.6,.25,1)" });
+        await sleep(400);
+        /* one run, end to end: quick through the open curves, slowed
+           by the spine, decelerating into the park */
+        const opt = { duration: 1150, fill: "both", easing: "cubic-bezier(.40,.06,.16,1)" };
+        rw.s.animate([{ strokeDashoffset: rw.L }, { strokeDashoffset: 0 }], opt);
         bead.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], opt);
-        await sleep(680 + 140);          /* the bead sits a beat, parked */
-        await crossfade(parts, [3]);
+        await sleep(1150 + 230);         /* the bead sits a beat, parked */
+        await crossfade(parts, [3], 380, [bead]);
       },
     };
   }
 
   /* —— a · the dial ————————————————————————————————————————
-     A bowl on a stem is a dial, and the double-storey a wears its own
-     indicator: the shoulder springing off the bowl. The face revolves
-     through detents, decaying, and clicks home at the exact point
-     where the bowl meets its stem — then the rest of the letter inks
-     on FROM the click point. Set the dial; the letter engages. */
+     A bowl on a stem is a dial. The scaffold face is the bowl's own
+     centreline — an ellipse fit from the scan — wearing a tapered
+     indicator needle and a hub, with seven short detent marks outside
+     the rim (the home mark longer, at the bowl–stem junction: −40°,
+     where the bowl truly meets the stem on this face). The needle
+     spins through twelve decaying detents, hesitates on the last
+     stops, catches with an overshoot and clicks home — and the REAL
+     letter inks on from the click point: bowl, shoulder and stem
+     revealed along their own skeletons while the scaffold retires
+     beneath. Set the dial; the letter engages. */
   function dialGeom(g, i) {
-    /* the bowl, fit from pixel scans of this face: left wall .19–.22,
-       right side merged with the stem at .757, floor to ~.48 of the
-       x-height — an ellipse at (.475, .755) r(.285, .235). The rest
-       angle points the notch at the bowl–stem junction (−12°). */
+    /* scan: bowl centreline ellipse (.475, .755) r (.285, .235); the
+       bowl–stem junction sits at ≈(.72, .56) → rest angle −40° */
     const b = g.box[i], xT = g.base - g.xH, w = b.w, h = g.xH, x = b.x;
     return {
       cx: x + 0.475 * w, cy: xT + 0.755 * h,
       rx: 0.285 * w, ry: 0.235 * h,
-      x, w, h, xT,
-      rest: -12,                                  /* deg — the stem junction */
-      p: (fx, fy) => `${(x + fx * w).toFixed(1)} ${(xT + fy * h).toFixed(1)}`,
+      x, w, h, xT, rest: -40,
+      pt: (r, a) => [
+        x + 0.475 * w + r * 0.285 * w * Math.cos((a * Math.PI) / 180),
+        xT + 0.755 * h + r * 0.235 * h * Math.sin((a * Math.PI) / 180),
+      ],
     };
+  }
+  /* the tapered indicator needle, ellipse-aware (computed corners,
+     not a scaled circle — stroke weights must not distort) */
+  function needleD(g, d, a) {
+    const [x0, y0] = d.pt(0.12, a), [x1, y1] = d.pt(0.80, a);
+    const nx = -(y1 - y0), ny = x1 - x0, L = Math.hypot(nx, ny);
+    const ux = nx / L, uy = ny / L;
+    const w0 = g.fs * 0.020, w1 = g.fs * 0.006;
+    return `M ${(x0 + ux * w0).toFixed(1)} ${(y0 + uy * w0).toFixed(1)}` +
+      ` L ${(x1 + ux * w1).toFixed(1)} ${(y1 + uy * w1).toFixed(1)}` +
+      ` L ${(x1 - ux * w1).toFixed(1)} ${(y1 - uy * w1).toFixed(1)}` +
+      ` L ${(x0 - ux * w0).toFixed(1)} ${(y0 - uy * w0).toFixed(1)} Z`;
   }
   function mkDial(svg, g, rnd) {
     const d = dialGeom(g, 7);
-    const face = stroke(el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, svg), g.sw);
-    /* the indicator notch, drawn at rest; the group revolves */
-    const gN = el("g", {}, svg);
-    const nx = (r) => d.cx + r * d.rx * Math.cos((d.rest * Math.PI) / 180);
-    const ny = (r) => d.cy + r * d.ry * Math.sin((d.rest * Math.PI) / 180);
-    stroke(el("path", { d: `M ${nx(0.42)} ${ny(0.42)} L ${nx(0.88)} ${ny(0.88)}` }, gN), g.sw * 0.75);
+    const gDl = el("g", { "data-census": "dial" }, svg);
+    const gF = el("g", {}, gDl);                    /* scaffold: retires */
+    /* the bezel is a FINE rim (.5·sw): at full working stroke it was
+       more than half the bowl's radius and the face read as a fat
+       knob at 3× — a dial face is a drawn instrument, not a donut */
+    stroke(el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, gF), g.sw * 0.5);
+    el("circle", { cx: d.cx, cy: d.cy, r: g.fs * 0.020, fill: strokeCol }, gF);
+    const gN = el("g", {}, gF);
+    el("path", { d: needleD(g, d, d.rest), fill: strokeCol }, gN);
     gN.style.transformOrigin = `${d.cx}px ${d.cy}px`;
     gN.style.transformBox = "view-box";
-    /* seven detents, scaffolding only — they retire with the spin.
-       They start OUTSIDE the face stroke's own half-width (measured:
-       at 1.12–1.24 r they vanished under the rim ink) */
-    const ticks = el("g", { opacity: debug ? 0.5 : 0.35 }, svg);
+    /* seven detent marks: short, light, outside the rim; the HOME
+       mark (the junction) longer and heavier — a dial face, not an
+       asterisk (round 8's equal long ticks read as a gear) */
     for (let k = 0; k < 7; k++) {
-      const a = (k * 360) / 7 + d.rest, ar = (a * Math.PI) / 180;
-      stroke(el("path", {
-        d: `M ${d.cx + 1.34 * d.rx * Math.cos(ar)} ${d.cy + 1.34 * d.ry * Math.sin(ar)}` +
-           ` L ${d.cx + 1.55 * d.rx * Math.cos(ar)} ${d.cy + 1.55 * d.ry * Math.sin(ar)}`,
-      }, ticks), Math.max(1, g.sw * 0.35));
+      const a = (k * 360) / 7 + d.rest, home = k === 0;
+      const [xa, ya] = d.pt(1.20, a), [xb, yb] = d.pt(home ? 1.46 : 1.32, a);
+      stroke(el("path", { d: `M ${xa.toFixed(1)} ${ya.toFixed(1)} L ${xb.toFixed(1)} ${yb.toFixed(1)}` }, gF),
+        home ? g.sw * 0.5 : Math.max(1, g.sw * 0.28));
     }
-    /* the rest of the letter, drawn FROM the junction: up the stem and
-       over the shoulder (peak .52, left wall to .228); down to the
-       foot. Stem centreline .757, from the same scans. */
-    const up = stroke(el("path", {
-      d: `M ${d.p(.757,.685)} C ${d.p(.762,.52)} ${d.p(.762,.34)} ${d.p(.752,.185)}` +
-         ` C ${d.p(.74,.075)} ${d.p(.63,.02)} ${d.p(.52,.055)}` +
-         ` C ${d.p(.40,.09)} ${d.p(.27,.16)} ${d.p(.228,.285)}`,
-    }, svg), g.sw);
-    const down = stroke(el("path", {
-      d: `M ${d.p(.757,.685)} C ${d.p(.757,.80)} ${d.p(.755,.90)} ${d.p(.77,.985)}`,
-    }, svg), g.sw);
-    const dashPrep = (p) => {
-      const L = p.getTotalLength();
-      if (!debug) { p.style.strokeDasharray = `${L}`; p.style.strokeDashoffset = `${L}`; }
-      return L;
-    };
-    const upL = dashPrep(up), downL = dashPrep(down);
-    if (!debug) { face.style.opacity = "0"; gN.style.opacity = "0"; ticks.style.opacity = "0"; }
-    const parts = [face, gN, ticks, up, down];
-    const DET = 360 / 7, TURNS = 16;
+    gF.style.transformOrigin = `${d.cx}px ${d.cy}px`;
+    gF.style.transformBox = "view-box";
+    if (!debug) gF.style.opacity = "0";
+    /* the letter, in three pieces, each revealed along its own
+       skeleton from the click point (regions + skeletons from scan) */
+    const bowl = clipped(svg, g, 7, [
+      [-0.08, 0.465], [0.72, 0.465], [0.72, 1.10], [-0.08, 1.10]], "x");
+    const bowlSk = [];
+    for (let k = 0; k <= 30; k++) {
+      const [x, y] = d.pt(1.0, d.rest - (k * 360) / 30);
+      bowlSk.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
+    }
+    /* .44·w: the bowl's bottom-left corner is .17·w half-thick
+       (scan fy .9) — .36's half-width was borderline there */
+    const bowlW = wipe(svg, g, bowl.gCl, "M " + bowlSk.join(" L "), 0.44 * d.w);
+    const shoulder = clipped(svg, g, 7, [
+      [-0.08, -0.10], [1.12, -0.10], [1.12, 0.475], [-0.08, 0.475]], "x");
+    const shoulderW = wipe(svg, g, shoulder.gCl, fPath(g, 7, "x", [
+      [0.759, 0.48], [0.757, 0.34], [0.750, 0.20], [0.715, 0.115],
+      [0.62, 0.072], [0.50, 0.072], [0.385, 0.105], [0.29, 0.17],
+      [0.24, 0.27], [0.218, 0.40]]), 0.30 * d.w);
+    const stemP = clipped(svg, g, 7, [
+      [0.575, 0.465], [1.12, 0.465], [1.12, 1.10], [0.575, 1.10]], "x");
+    const stemW = wipe(svg, g, stemP.gCl, fPath(g, 7, "x", [
+      [0.759, 0.47], [0.758, 0.62], [0.757, 0.76], [0.762, 0.86],
+      [0.78, 0.925], [0.83, 0.955], [0.90, 0.955], [0.97, 0.935]]),
+      /* .46·w: probe-lock9 caught .34 missing the bowl-bottom sweep
+         into the tail (131px) — everything inside this clip is letter
+         ink, so width costs nothing */
+      0.46 * d.w);
+    gDl.appendChild(bowl.gRot); gDl.appendChild(shoulder.gRot); gDl.appendChild(stemP.gRot);
+    const parts = [gDl];
+    const DET = 360 / 7, STEPS = 12;
     return {
-      parts, det: DET, turns: (TURNS * DET) / 360,
+      parts, det: DET, turns: +((STEPS * DET) / 360).toFixed(1),
       async play() {
-        /* face + ticks appear */
-        for (const [n, o] of [[face, 1], [gN, 1], [ticks, 0.35]])
-          n.animate([{ opacity: 0 }, { opacity: o }], { duration: 130, fill: "both" });
-        await sleep(90);
-        /* the spin: sixteen detents, decaying; the last three hesitate
-           on their stops; final catch overshoots then settles home */
-        const kf = [{ transform: `rotate(${-TURNS * DET}deg)`, offset: 0 }];
+        /* the face materialises — 400ms, watchable (was 130) */
+        gF.animate([
+          { opacity: 0, transform: "scale(.97)" },
+          { opacity: 1, transform: "scale(1)" },
+        ], { duration: 400, fill: "both", easing: "cubic-bezier(.25,.6,.3,1)" });
+        await sleep(650);
+        /* the spin: twelve detents, decaying — a blur that resolves
+           into clicks; the last two hesitate on their stops; the
+           final catch overshoots and springs home. 1350ms (was 950
+           over sixteen — every stop under 60ms, unreadable). */
+        const kf = [{ transform: `rotate(${-STEPS * DET}deg)`, offset: 0 }];
         const ivs = []; let iv = 1;
-        for (let k = 0; k < TURNS; k++) { ivs.push(iv); iv *= 1.20; }
+        for (let k = 0; k < STEPS; k++) { ivs.push(iv); iv *= 1.26; }
         const T = ivs.reduce((a, b) => a + b, 0);
         let acc = 0;
-        for (let k = 1; k <= TURNS; k++) {
+        for (let k = 1; k <= STEPS; k++) {
           acc += ivs[k - 1];
-          const off = acc / T, ang = -(TURNS - k) * DET;
-          if (k >= TURNS - 2 && k < TURNS) {      /* hesitation on the stop */
-            kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.998, off) });
-            kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.999, off + 0.012) });
-          } else if (k === TURNS) {
-            const ov = 3.5 + rnd() * 2.5;
-            kf.push({ transform: `rotate(${ov}deg)`, offset: Math.max(0, off - 0.045) });
-            kf.push({ transform: `rotate(0deg)`, offset: 1 });
+          const off = acc / T, ang = -(STEPS - k) * DET;
+          if (k >= STEPS - 2 && k < STEPS) {      /* hesitation on the stop */
+            kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.996, off) });
+            kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.998, off + 0.014) });
+          } else if (k === STEPS) {
+            const ov = 3.6 + rnd() * 1.8;
+            kf.push({ transform: `rotate(${ov.toFixed(2)}deg)`, offset: Math.max(0, off - 0.055) });
+            kf.push({ transform: `rotate(${(-ov * 0.22).toFixed(2)}deg)`, offset: Math.max(0, off - 0.02) });
+            kf.push({ transform: "rotate(0deg)", offset: 1 });
           } else {
             kf.push({ transform: `rotate(${ang}deg)`, offset: off });
           }
         }
-        gN.animate(kf, { duration: 950, fill: "both", easing: "linear" });
-        await sleep(950);
-        /* click home: scaffolding retires, the letter inks on from the
-           junction — both directions at once */
-        ticks.animate([{ opacity: 0.35 }, { opacity: 0 }], { duration: 200, fill: "both" });
-        up.animate([{ strokeDashoffset: upL }, { strokeDashoffset: 0 }],
-          { duration: 220, fill: "both", easing: "cubic-bezier(.4,0,.3,1)" });
-        down.animate([{ strokeDashoffset: downL }, { strokeDashoffset: 0 }],
-          { duration: 220, fill: "both", easing: "cubic-bezier(.4,0,.3,1)" });
-        await sleep(280);
+        gN.animate(kf, { duration: 1350, fill: "both", easing: "linear" });
+        await sleep(1410);
+        /* click home: the letter inks on FROM the junction — bowl
+           around its ring, shoulder over the top, stem to the foot's
+           out-turn — while the scaffold face becomes the bowl */
+        bowlW.s.animate([{ strokeDashoffset: bowlW.L }, { strokeDashoffset: 0 }],
+          { duration: 550, fill: "both", easing: "cubic-bezier(.35,.05,.25,1)" });
+        shoulderW.s.animate([{ strokeDashoffset: shoulderW.L }, { strokeDashoffset: 0 }],
+          { duration: 500, delay: 60, fill: "both", easing: "cubic-bezier(.35,.05,.25,1)" });
+        stemW.s.animate([{ strokeDashoffset: stemW.L }, { strokeDashoffset: 0 }],
+          { duration: 450, delay: 100, fill: "both", easing: "cubic-bezier(.35,.05,.25,1)" });
+        gF.animate([{ opacity: 1 }, { opacity: 0 }],
+          { duration: 400, delay: 120, fill: "both", easing: "ease" });
+        await sleep(660);
         await crossfade(parts, [7]);
       },
     };
@@ -867,32 +1070,20 @@
      "a is a bit running" — his words, honoured on the letter that can:
      the double-storey a is the one letterform that carries its weight
      forward over a foot (the bowl overhangs the baseline ahead of the
-     stem). It arrives late, at a run — lean and gait decaying — and
-     decelerating INTO its own lean is how it becomes the letter. */
-  function aSkeleton(svg, g, i) {
-    /* same measured anatomy as the dial letter: bowl ellipse + one
-       path from the hook's left wall over the peak and down the stem */
-    const b = g.box[i], xT = g.base - g.xH, w = b.w, h = g.xH, x = b.x;
-    const p = (fx, fy) => `${(x + fx * w).toFixed(1)} ${(xT + fy * h).toFixed(1)}`;
-    const grp = el("g", {}, svg);
-    stroke(el("ellipse", {
-      cx: x + 0.475 * w, cy: xT + 0.755 * h, rx: 0.285 * w, ry: 0.235 * h,
-    }, grp), g.sw);
-    stroke(el("path", {
-      d: `M ${p(.228,.285)} C ${p(.27,.16)} ${p(.40,.09)} ${p(.52,.055)}` +
-         ` C ${p(.63,.02)} ${p(.74,.075)} ${p(.752,.185)}` +
-         ` C ${p(.762,.34)} ${p(.762,.52)} ${p(.757,.685)}` +
-         ` C ${p(.757,.80)} ${p(.755,.90)} ${p(.77,.985)}`,
-    }, grp), g.sw);
-    return { grp, foot: { x: x + 0.77 * w, y: g.base } };
-  }
+     stem). Round 9 retires the wireframe skeleton: the REAL letter
+     runs in whole — full weight, serifs, tail — bounding on its own
+     foot, lean and gait decaying, planting past upright the way
+     momentum does, rocking back, standing. Decelerating INTO its own
+     lean is how it becomes the letter; the dry is colour alone. */
   function mkRunner(svg, g, rnd) {
-    const { grp, foot } = aSkeleton(svg, g, 9);
-    const outer = el("g", {}, svg);
-    outer.appendChild(grp);
-    const runup = (g.W - g.box[9].x) + 40;    /* from beyond the right edge */
-    grp.style.transformOrigin = `${foot.x}px ${foot.y}px`;
-    grp.style.transformBox = "view-box";
+    const b = g.box[9];
+    const outer = el("g", { "data-census": "runner" }, svg);
+    const gait = el("g", {}, outer);
+    mkText(gait, g, 9);
+    const runup = (g.W - b.x) + 40;           /* from beyond the right edge */
+    /* the foot: the stem's ground contact, .77 of the box (scan) */
+    gait.style.transformOrigin = `${(b.x + 0.77 * b.w).toFixed(1)}px ${g.base.toFixed(1)}px`;
+    gait.style.transformBox = "view-box";
     if (!debug) outer.style.transform = `translate(${runup}px, 0)`;
     const parts = [outer];
     const bh = 0.055 * g.xH;                  /* gait bounce height */
@@ -902,19 +1093,27 @@
         outer.animate([
           { transform: `translate(${runup}px, 0)` },
           { transform: "translate(0px, 0)" },
-        ], { duration: 840, fill: "both", easing: "cubic-bezier(.18,.9,.24,1)" });
+        ], { duration: 1250, fill: "both", easing: "cubic-bezier(.16,.84,.22,1)" });
         const j = (v) => v * (1 + (rnd() - 0.5) * 0.2);
-        grp.animate([
-          { transform: "rotate(-8.5deg) translateY(0)" },
-          { transform: `rotate(-7.6deg) translateY(${-j(bh)}px)`, offset: 0.16 },
-          { transform: "rotate(-6.6deg) translateY(0)", offset: 0.30 },
-          { transform: `rotate(-5.2deg) translateY(${-j(bh * 0.62)}px)`, offset: 0.45 },
-          { transform: "rotate(-3.8deg) translateY(0)", offset: 0.60 },
-          { transform: `rotate(-2.2deg) translateY(${-j(bh * 0.3)}px)`, offset: 0.74 },
-          { transform: "rotate(-1deg) translateY(0)", offset: 0.87 },
-          { transform: "rotate(0deg) translateY(0)" },
-        ], { duration: 960, fill: "both", easing: "linear" });
-        await sleep(1000);
+        /* four bounds decaying; airborne stretch, landing squash
+           (≤1.5%, about the foot); plants PAST upright at .86 —
+           momentum — rocks back, stands. One continuous 1250ms move. */
+        const G = (r, y, sy) =>
+          `rotate(${r}deg) translateY(${typeof y === "number" ? y.toFixed(1) : y}px) scaleY(${sy})`;
+        gait.animate([
+          { transform: G(-9.5, 0, 0.988) },
+          { transform: G(-8.6, -j(bh), 1.006), offset: 0.11 },
+          { transform: G(-7.4, 0, 0.985), offset: 0.22 },
+          { transform: G(-6.0, -j(bh * 0.72), 1.005), offset: 0.33 },
+          { transform: G(-4.6, 0, 0.987), offset: 0.44 },
+          { transform: G(-3.2, -j(bh * 0.45), 1.004), offset: 0.55 },
+          { transform: G(-1.9, 0, 0.990), offset: 0.66 },
+          { transform: G(-0.9, -j(bh * 0.22), 1.002), offset: 0.76 },
+          { transform: G(1.3, 0, 0.995), offset: 0.86 },
+          { transform: G(-0.4, 0, 1), offset: 0.94 },
+          { transform: G(0, 0, 1) },
+        ], { duration: 1250, fill: "both", easing: "linear" });
+        await sleep(1330);
         await crossfade(parts, [9]);
       },
     };
@@ -922,58 +1121,140 @@
 
   /* —— v · the bird ————————————————————————————————————————
      A distant bird's silhouette and a lowercase v are the same two
-     strokes. The wings are DRAWN as the letter's own stems, hinged at
-     the apex; identity pose = the letter. It flies in over the still
-     letters — flap, flap, glide — flares at touchdown the way real
-     birds land, folds to the letter's exact angles, and the stroke
-     takes the letter's weight as it dries. */
+     strokes. Round 9 makes both halves of that claim true:
+
+     IN FLIGHT it is a creature, not a pair of dashes (the brief's
+     headline finding): a fusiform body with a head forward and a
+     forked tail aft; wings as filled tapered shapes with a convex
+     leading edge and notched primaries, articulated at a wrist so the
+     outer wing lags and whips — the S through the wing; the two wings
+     asymmetric in phase and amplitude (the left leads); the body
+     banking into the path's bends, bobbing against the flap, pitching
+     up into the flare. Five beats decaying to a glide, then the
+     flare — wings swept high, nose up — braking onto the vertex.
+
+     AT THE LANDING it is the letter — literally. At the flare's
+     raised pose (minimum silhouette, the film cut's hiding place) the
+     drawn bird retires and the v's OWN strokes take over: the real
+     letterform clipped in two along the counter midline (x=.622,
+     constant per scan), hinged at the vertex. They fold down to the
+     letter's exact stance — heavy left leading, hairline right
+     following — overshoot a hair, settle, and the dry is colour
+     alone. Same vertex, same terminals, same weights, by
+     construction. */
   function birdGeom(g) {
-    /* apex .524 at the baseline, stem centrelines .185/.955 near the
-       top — from pixel scans of this face. Fraunces cuts the left
-       stroke calligraphically heavy and the right hairline-thin; the
-       wings take those weights only at the fold. */
-    const b = g.box[10], xT = g.base - g.xH;
-    const apex = { x: b.x + 0.524 * b.w, y: g.base - 0.01 * g.xH };
-    const Lt = { x: b.x + 0.185 * b.w, y: xT + 0.04 * g.xH };
-    const Rt = { x: b.x + 0.955 * b.w, y: xT + 0.04 * g.xH };
-    return { apex, dL: { x: Lt.x - apex.x, y: Lt.y - apex.y }, dR: { x: Rt.x - apex.x, y: Rt.y - apex.y } };
+    /* scan: vertex .520 at the baseline (blunt, .163 wide — Fraunces
+       closes it sharp and sturdy); stroke centrelines at fy .25:
+       left .258 (heavy, w .285), right .881 (hairline, w .080) */
+    const b = g.box[10];
+    const vx = b.x + 0.520 * b.w, vy = g.base - 0.005 * g.xH;
+    const up = (0.995 - 0.25) * g.xH;
+    const tiltL = deg(Math.atan2((0.258 - 0.520) * b.w, up));   /* ≈ −18° */
+    const tiltR = deg(Math.atan2((0.881 - 0.520) * b.w, up));   /* ≈ +24° */
+    return { vx, vy, tiltL, tiltR };
   }
-  function flightD(g, apex) {
+  function flightD(g, vx, vy) {
     const capTop = g.base - g.capH;
     const yc = capTop - Math.min(0.42 * g.capH, 64);
     const W = g.W, p = (x, y) => `${x.toFixed(1)} ${y.toFixed(1)}`;
-    return `M ${p(-60, yc)} ` +
-      `C ${p(W * .20, yc - 16)} ${p(W * .38, yc + 12)} ${p(W * .56, yc - 4)} ` +
-      `C ${p(W * .72, yc - 18)} ${p(apex.x - 110, apex.y - 120)} ${p(apex.x - 30, apex.y - 38)} ` +
-      `C ${p(apex.x - 12, apex.y - 14)} ${p(apex.x - 3, apex.y - 3)} ${p(apex.x, apex.y)}`;
+    return `M ${p(-70, yc + 4)} ` +
+      `C ${p(W * .14, yc - 20)} ${p(W * .27, yc + 14)} ${p(W * .42, yc - 4)} ` +
+      `C ${p(W * .56, yc - 24)} ${p(W * .68, yc - 6)} ${p(W * .78, yc + 6)} ` +
+      `C ${p(vx - 170, vy - 190)} ${p(vx - 120, vy - 140)} ${p(vx - 58, vy - 64)} ` +
+      `C ${p(vx - 30, vy - 30)} ${p(vx - 10, vy - 9)} ${p(vx, vy - 4)}`;
   }
   function mkBird(svg, g, rnd) {
     const bg = birdGeom(g);
-    const gB = el("g", {}, svg);
-    const wing = (d) => {
-      const grp = el("g", {}, gB);
-      stroke(el("path", {
-        d: `M 0 0 C ${(0.30 * d.x).toFixed(1)} ${(0.30 * d.y - 0.014 * g.fs).toFixed(1)},` +
-           ` ${(0.65 * d.x).toFixed(1)} ${(0.65 * d.y - 0.02 * g.fs).toFixed(1)},` +
-           ` ${d.x.toFixed(1)} ${d.y.toFixed(1)}`,
-      }, grp), g.sw * 0.72);
-      grp.style.transformBox = "view-box";
-      grp.style.transformOrigin = "0px 0px";
-      return grp;
+    const fs = g.fs, j = (v) => v * (1 + (rnd() - 0.5) * 0.14);
+
+    /* —— the letter's own strokes, hinged at the vertex (the lock) */
+    const gLock = el("g", { "data-census": "bird" }, svg);
+    const lockL = clipped(svg, g, 10, [
+      [-0.20, -0.12], [0.622, -0.12], [0.622, 0.78], [0.74, 1.00],
+      [0.74, 1.14], [-0.20, 1.14]], "x");
+    const lockR = clipped(svg, g, 10, [
+      [0.622, -0.12], [1.20, -0.12], [1.20, 1.14], [0.40, 1.14],
+      [0.622, 0.78]], "x");
+    gLock.appendChild(lockL.gRot); gLock.appendChild(lockR.gRot);
+    /* raised = the flare pose: strokes swept high (screen tilts
+       −12/+14 — a narrow raised V; nearer vertical put both top
+       serifs horizontal and the cut pose read as a block) before
+       folding out to their true stance */
+    const RAISE_L = -12 - bg.tiltL, RAISE_R = 14 - bg.tiltR;
+    for (const [p, r] of [[lockL, RAISE_L], [lockR, RAISE_R]]) {
+      p.gRot.style.transformOrigin = `${bg.vx}px ${bg.vy}px`;
+      p.gRot.style.transformBox = "view-box";
+      if (!debug) p.gRot.style.transform = `rotate(${r.toFixed(1)}deg)`;
+    }
+    if (!debug) gLock.style.opacity = "0";
+
+    /* —— the drawn bird (flight only; retires at the cut) */
+    const gB = el("g", { "data-census": "bird" }, svg);
+    const gAtt = el("g", {}, gB);                 /* attitude: bank+pitch+bob */
+    for (const n of [gB, gAtt]) {
+      n.style.transformBox = "view-box";
+      n.style.transformOrigin = "0px 0px";
+    }
+    /* body: fusiform, head + beak forward, forked tail aft (units fs) */
+    const bp = (x, y) => `${(x * fs).toFixed(1)} ${(y * fs).toFixed(1)}`;
+    const body = el("path", {
+      d: `M ${bp(0.105, -0.004)}` +
+        ` C ${bp(0.098, -0.014)} ${bp(0.085, -0.021)} ${bp(0.070, -0.023)}` +
+        ` C ${bp(0.052, -0.025)} ${bp(0.030, -0.020)} ${bp(0.006, -0.015)}` +
+        ` C ${bp(-0.030, -0.008)} ${bp(-0.062, -0.003)} ${bp(-0.085, -0.004)}` +
+        ` L ${bp(-0.106, -0.010)} L ${bp(-0.094, 0.000)} L ${bp(-0.104, 0.010)}` +
+        ` C ${bp(-0.075, 0.014)} ${bp(-0.040, 0.018)} ${bp(-0.005, 0.018)}` +
+        ` C ${bp(0.030, 0.017)} ${bp(0.060, 0.011)} ${bp(0.082, 0.003)}` +
+        ` C ${bp(0.092, 0.000)} ${bp(0.100, -0.002)} ${bp(0.105, -0.004)} Z`,
+      fill: strokeCol,
+    }, gAtt);
+    body.style.transformBox = "view-box";
+    body.style.transformOrigin = "0px 0px";
+    /* wings: filled, tapered, S-curved; inner arm + outer hand at a
+       wrist. cs scales the chord — the left wing carries the heavy
+       stroke's weight, the right the hairline's, the letter's DNA
+       airborne. mx mirrors for the right side. */
+    const gWings = el("g", {}, gAtt);
+    const wing = (mx, cs) => {
+      const w = (x, y) => `${(mx * cs * x * fs).toFixed(1)} ${(y * fs).toFixed(1)}`;
+      const sh = el("g", {}, gWings);
+      el("path", {
+        d: `M ${w(0.048, 0.010)}` +
+          ` C ${w(0.058, -0.050)} ${w(0.054, -0.105)} ${w(0.040, -0.158)}` +
+          ` L ${w(-0.030, -0.150)}` +
+          ` C ${w(-0.038, -0.100)} ${w(-0.042, -0.048)} ${w(-0.037, 0.010)} Z`,
+        fill: strokeCol,
+      }, sh);
+      const wr = el("g", {}, sh);
+      /* the hand roots at +0.020 — deep overlap into the arm, so the
+         wrist articulation never opens a seam (3× frames caught the
+         +0.004 root stepping) */
+      el("path", {
+        d: `M ${w(0.044, 0.020)}` +
+          ` C ${w(0.030, -0.048)} ${w(0.013, -0.098)} ${w(-0.014, -0.141)}` +
+          ` L ${w(-0.022, -0.134)} L ${w(-0.026, -0.116)}` +
+          ` L ${w(-0.036, -0.122)} L ${w(-0.038, -0.102)}` +
+          ` C ${w(-0.041, -0.062)} ${w(-0.040, -0.022)} ${w(-0.038, 0.020)} Z`,
+        fill: strokeCol,
+      }, wr);
+      for (const n of [sh, wr]) {
+        n.style.transformBox = "view-box";
+        n.style.transformOrigin = "0px 0px";
+      }
+      return { sh, wr };
     };
-    const wL = wing(bg.dL), wR = wing(bg.dR);
-    const body = el("circle", { cx: 0, cy: 0, r: g.fs * 0.042, fill: strokeCol }, gB);
-    /* flap deltas: identity = folded (the letter); down = out level */
-    const foldL = angleOf(bg.dL.x, bg.dL.y), foldR = angleOf(bg.dR.x, bg.dR.y);
-    const dnL = norm180(174 - foldL), dnR = norm180(6 - foldR);
+    const wLf = wing(-1, 1.00);                   /* heavy — the left stroke */
+    const wRt = wing(1, 0.52);                    /* hairline — the right */
+    const WRIST = -0.152 * fs;
+
     /* the approach, sampled: translate keyframes along the authored
        path at decelerating arc positions (no offset-anchor pitfalls) */
-    const fd = flightD(g, bg.apex);
+    const fd = flightD(g, bg.vx, bg.vy);
     const meas = el("path", { d: fd, fill: "none", stroke: "none" }, svg);
     const FL = meas.getTotalLength();
-    const N = 48, tKf = [];
+    const N = 56, tKf = [];
     for (let k = 0; k <= N; k++) {
-      const t = k / N, s = 1 - Math.pow(1 - t, 1.9);   /* landing slows */
+      const t = k / N, s = 1 - Math.pow(1 - t, 1.78);   /* landing slows */
       const pt = meas.getPointAtLength(s * FL);
       tKf.push({
         transform: `translate(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px)`,
@@ -984,43 +1265,96 @@
       meas.setAttribute("stroke", PINE);
       meas.setAttribute("stroke-width", 1);
       meas.setAttribute("stroke-dasharray", "3 6");
-      gB.style.transform = `translate(${bg.apex.x}px, ${bg.apex.y}px)`;
+      gLock.style.opacity = "1";
+      gB.style.display = "none";
     } else {
       meas.remove();
-      gB.style.transform = "translate(-60px, -60px)";
-      gB.style.opacity = "0";
+      gB.style.transform = "translate(-70px, -70px)";
     }
-    const parts = [gB];
-    const j = (v) => v * (1 + (rnd() - 0.5) * 0.16);
-    const wingKf = (dn) => [
-      { transform: `rotate(${dn * 0.85}deg)`, offset: 0 },
-      { transform: "rotate(0deg)", offset: j(0.10) },
-      { transform: `rotate(${dn}deg)`, offset: j(0.20) },
-      { transform: "rotate(0deg)", offset: j(0.31) },
-      { transform: `rotate(${dn * 0.95}deg)`, offset: j(0.42) },
-      { transform: "rotate(0deg)", offset: j(0.52) },
-      { transform: `rotate(${dn * 0.55}deg)`, offset: 0.62 },
-      { transform: `rotate(${dn * 0.50}deg)`, offset: 0.86 },   /* glide */
-      { transform: `rotate(${-Math.sign(dn) * 7}deg)`, offset: 0.94 }, /* flare */
-      { transform: "rotate(0deg)", offset: 1 },                 /* fold = v */
+    const parts = [gB, gLock];
+
+    /* attitude: bank into the path's bends, bob against the flap,
+       pitch up hard into the flare, level as the feet touch (−5°
+       held at the cut — the raised strokes inherit it in screen
+       terms, RAISE_* above assumes exactly this) */
+    const ATT_END = -5;
+    const attKf = [
+      [0.00, 3, 0], [0.05, 6, -1.8], [0.10, -4, 1.2], [0.16, -7, -1.6],
+      [0.24, 4, 1.0], [0.32, 7, -1.4], [0.42, -5, 0.8], [0.52, -2, -0.8],
+      [0.62, 2, 0.4], [0.75, 4, 1.6], [0.86, -2, 0.6],
+      [0.93, -19, -2.5], [0.97, -10, -0.8], [1.00, ATT_END, 0],
+    ].map(([o, r, y]) => ({
+      offset: o, transform: `rotate(${r}deg) translateY(${y}px)`,
+    }));
+
+    /* the flap: five beats decaying to a glide, then the flare.
+       ω = sweep from vertical (90 ≈ level); ρ = wrist lag/whip.
+       The left wing LEADS by ~1.5% of the cycle and beats fuller;
+       the right runs shallower — the mirrored-metronome fix. */
+    const wF_L = ATT_END - (-12);                 /* raised ω, left  ≈ +7 */
+    const wF_R = 14 - ATT_END;                    /* raised ω, right ≈ 19 */
+    const FLAP = [
+      /* t     ω     ρ   — ρ clamped ±15: the ±20 whip opened the
+         wrist into a scissor gap at 3× */
+      [0.000, 55, 12], [0.045, 96, 15], [0.075, 90, -7], [0.115, 30, -15],
+      [0.150, 38, 5], [0.185, 99, 14], [0.215, 92, -7], [0.255, 34, -15],
+      [0.290, 40, 4], [0.325, 94, 13], [0.360, 88, -6], [0.395, 40, -13],
+      [0.430, 46, 4], [0.465, 86, 11], [0.500, 80, -5], [0.535, 48, -11],
+      [0.600, 70, -4], [0.660, 73, -3], [0.760, 71, -4], [0.840, 67, -5],
+      [0.880, 30, -12], [0.930, -4, -5], [0.965, 1.5, -1], [1.000, 0, 0],
     ];
+    const flapKf = (s, lead, amp, wEnd) =>
+      FLAP.map(([t, w, r], i) => {
+        const last3 = i >= FLAP.length - 3;
+        const om = last3 ? w + wEnd : (t < 0.6 ? j(w * amp) : w);
+        const o = i === 0 || i === FLAP.length - 1
+          ? t : Math.min(0.999, Math.max(0.001, t + lead));
+        return { offset: o, transform: `rotate(${(s * om).toFixed(1)}deg)`, rho: r };
+      });
+    const wristKf = (kf, s) => kf.map(({ offset, rho }) => ({
+      offset: Math.min(0.999, offset + 0.02),
+      transform: `translate(0px, ${WRIST.toFixed(1)}px) rotate(${(s * rho).toFixed(1)}deg)`,
+    }));
+
     return {
       parts, flight: FL,
       async play() {
-        const DUR = 1080;
-        gB.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 120, fill: "both" });
+        const DUR = 2000;
         gB.animate(tKf, { duration: DUR, fill: "both", easing: "linear" });
-        wL.animate(wingKf(dnL), { duration: DUR, fill: "both", easing: "ease-in-out" });
-        wR.animate(wingKf(dnR), { duration: DUR, fill: "both", easing: "ease-in-out" });
-        /* the strokes take the letter's weights as the wings fold —
-           heavy left, hairline right, the calligraphic v */
-        for (const [w, target] of [[wL.firstChild, g.swFoldL], [wR.firstChild, g.swFoldR]])
-          w.animate([
-            { strokeWidth: g.sw * 0.72, offset: 0 },
-            { strokeWidth: g.sw * 0.72, offset: 0.86 },
-            { strokeWidth: target, offset: 1 },
-          ], { duration: DUR, fill: "both" });
-        await sleep(DUR + 60);
+        gAtt.animate(attKf, { duration: DUR, fill: "both", easing: "linear" });
+        const kL = flapKf(-1, -0.015, 1.0, wF_L);
+        const kR = flapKf(1, 0.015, 0.88 + rnd() * 0.1, wF_R);
+        wLf.sh.animate(kL.map(({ offset, transform }) => ({ offset, transform })),
+          { duration: DUR, fill: "both", easing: "linear" });
+        wRt.sh.animate(kR.map(({ offset, transform }) => ({ offset, transform })),
+          { duration: DUR, fill: "both", easing: "linear" });
+        wLf.wr.animate(wristKf(kL, -1), { duration: DUR, fill: "both", easing: "linear" });
+        wRt.wr.animate(wristKf(kR, 1), { duration: DUR, fill: "both", easing: "linear" });
+        await sleep(DUR);
+        /* THE CUT — at the raised pose, minimum silhouette: the drawn
+           bird retires, the letter's strokes take over and FOLD to
+           the letter's stance. Heavy left leads; hairline right
+           follows 80ms later; both overshoot a hair and settle. The
+           body flattens into the vertex ink beneath them. */
+        gLock.style.opacity = "1";
+        gWings.animate([{ opacity: 1 }, { opacity: 0 }],
+          { duration: 90, fill: "both", easing: "ease" });
+        body.animate([
+          { opacity: 1, transform: "scaleY(1)" },
+          { opacity: 0, transform: "scaleY(.78)" },
+        ], { duration: 360, fill: "both", easing: "ease" });
+        const ovF = 2.8 + rnd() * 1.4;
+        const foldKf = (from, ov) => [
+          { transform: `rotate(${from.toFixed(1)}deg)`, easing: "cubic-bezier(.42,.05,.28,1)" },
+          { transform: `rotate(${(-Math.sign(from) * ov).toFixed(2)}deg)`, offset: 0.55,
+            easing: "cubic-bezier(.35,.10,.30,1)" },
+          { transform: `rotate(${(Math.sign(from) * ov * 0.32).toFixed(2)}deg)`, offset: 0.78,
+            easing: "cubic-bezier(.35,.10,.30,1)" },
+          { transform: "rotate(0deg)" },
+        ];
+        lockL.gRot.animate(foldKf(RAISE_L, ovF), { duration: 550, fill: "both" });
+        lockR.gRot.animate(foldKf(RAISE_R, ovF * 0.8), { duration: 550, delay: 80, fill: "both" });
+        await sleep(690);
         await crossfade(parts, [10]);
       },
     };
@@ -1032,9 +1366,16 @@
      are phrased left→right so the eye reads one cascade, never more
      than two or three moving at once. */
   let runToken = 0, busy = false;
-  async function performMachines(which) {
+  /* gPre: the arrival show must aim at the SETTLED layout, measured
+     BEFORE [data-perform] engages — settype's first keyframe (opsz 18,
+     wght 660) changes glyph advances, so a measure taken mid-show reads
+     a narrower line and every machine to the right of the A lands short
+     (round 9 caught this as a doubled v at the dry). The base state is
+     the final frame (A7), so the pre-show measure IS the landing truth.
+     Replays measure live: the plate is settled by then. */
+  async function performMachines(which, gPre) {
     const token = ++runToken;
-    const g = measureAll();
+    const g = gPre || measureAll();
     const svg = mkOverlay(g);
     const rnd = mulberry32(0x8EAD + 8);       /* seeded per round, stable */
     const M = {
@@ -1050,22 +1391,26 @@
         letters[{ dividers: 0, road: 3, dial: 7, runner: 9, bird: 10 }[which]].style.opacity = "0";
         await guard(M[which]().play());
       } else {                                 /* the arrival ensemble */
+        /* the phrase (round 9): five payoffs, each alone —
+             seat ~1.9s · park ~3.6s · click ~5.0s · plant ~5.9s ·
+             fold ~6.8s — travels overlap (≤3 machines moving), the
+           payoffs never do. census-header9.mjs measures this. */
         const stage = async (ms, m) => { await guard(sleep(ms)); await guard(m().play()); };
         await Promise.all([
-          stage(240, M.dividers),
-          stage(560, M.road),
-          stage(780, M.dial),
-          stage(1080, M.runner),
-          stage(1230, M.bird),
+          stage(260, M.dividers),
+          stage(2050, M.road),
+          stage(3000, M.dial),
+          stage(4600, M.runner),
+          stage(4200, M.bird),
         ]);
         /* the press: one letterpress settle once the line is full —
            transition layer's closing beat, origin at the landing */
         h1.style.transformOrigin = "82% 78%";
         const press = h1.animate([
           { transform: "scale(1)" },
-          { transform: "scale(.9965)", offset: 0.45 },
+          { transform: "scale(.995)", offset: 0.45 },
           { transform: "scale(1)" },
-        ], { duration: 300, easing: "ease-out" });
+        ], { duration: 420, easing: "ease-out" });
         await guard(press.finished.catch(() => {}));
       }
     } catch { /* aborted: toggle flipped or a newer run started */ }
@@ -1098,18 +1443,20 @@
     const tmp = mkOverlay(g);
     const road = Math.round(stroke(el("path", { d: sPathD(g) }, tmp), 1).getTotalLength());
     const bg = birdGeom(g);
-    const flight = Math.round(el("path", { d: flightD(g, bg.apex) }, tmp).getTotalLength() + 0);
+    const flight = Math.round(el("path", { d: flightD(g, bg.vx, bg.vy), fill: "none" }, tmp).getTotalLength());
     tmp.remove();
+    /* dividers' true spread: the stems' rotation from vertical about
+       their measured intersection (scan constants, mkDividers) */
     const b0 = g.box[0], capTop = g.base - g.capH;
-    const ax = b0.x + 0.5 * b0.w, ay = capTop + 0.02 * g.capH;
+    const px = b0.x + 0.473 * b0.w, py = capTop - 0.109 * g.capH;
     const open = Math.round(
-      deg(Math.atan2(b0.x + 0.895 * b0.w - ax, g.base - ay)) -
-      deg(Math.atan2(b0.x + 0.115 * b0.w - ax, g.base - ay)));
+      Math.abs(deg(Math.atan2(b0.x + 0.101 * b0.w - px, g.base - py))) +
+      Math.abs(deg(Math.atan2(b0.x + 0.861 * b0.w - px, g.base - py))));
     const runup = Math.round((g.W - g.box[9].x) + 40);
     document.getElementById("axisline").innerHTML =
       "<span>ten characters · <b>five machines</b> · five still</span>" +
       `<span class="msr">measured this render — dividers open <b>${open}°</b>` +
-      ` · road <b>${road}px</b> · dial <b>7 detents, 2.3 turns</b>` +
+      ` · road <b>${road}px</b> · dial <b>7 detents, 1.7 turns</b>` +
       ` · run-up <b>${runup}px</b> · flight <b>${flight}px</b></span>`;
     document.getElementById("metrics").style.setProperty("--nw", g.nameW + "px");
     document.getElementById("baseRule").style.top = g.base + "px";
@@ -1129,8 +1476,9 @@
         return;
       }
       if (still()) { plate.classList.add("settled"); return; }
+      const gShow = measureAll();      /* base layout = the final frame */
       html.setAttribute("data-perform", "");
-      const done = await performMachines(null);
+      const done = await performMachines(null, gShow);
       if (done && !still()) {
         await sleep(80);
         settleNow();
@@ -1171,9 +1519,7 @@
     if (!canAnswer("dial")) return;
     const g = measureAll(), svg = mkOverlay(g), d = dialGeom(g, 7);
     const gN = el("g", {}, svg);
-    const nx = (r, a) => d.cx + r * d.rx * Math.cos((a * Math.PI) / 180);
-    const ny = (r, a) => d.cy + r * d.ry * Math.sin((a * Math.PI) / 180);
-    stroke(el("path", { d: `M ${nx(0.42, d.rest)} ${ny(0.42, d.rest)} L ${nx(0.88, d.rest)} ${ny(0.88, d.rest)}` }, gN), g.sw * 0.75);
+    el("path", { d: needleD(g, d, d.rest), fill: strokeCol }, gN);
     gN.style.transformOrigin = `${d.cx}px ${d.cy}px`;
     gN.style.transformBox = "view-box";
     const a = gN.animate([
@@ -1184,26 +1530,31 @@
     ], { duration: 460, easing: "ease-in-out" });
     a.finished.then(() => svg.remove()).catch(() => svg.remove());
   });
-  letters[10].addEventListener("pointerenter", () => {  /* bird: a ruffle */
+  letters[10].addEventListener("pointerenter", () => {  /* bird: a ruffle —
+    the letter's own strokes flick at the vertex hinge, hairline first,
+    heavy after: the same lock pieces the landing folds. The span hides
+    for the answer so the strokes never double. */
     if (!canAnswer("bird")) return;
     const g = measureAll(), svg = mkOverlay(g), bg = birdGeom(g);
-    const gB = el("g", {}, svg);
-    gB.style.transform = `translate(${bg.apex.x}px, ${bg.apex.y}px)`;
-    const mkW = (dvec, sw) => {
-      const grp = el("g", {}, gB);
-      stroke(el("path", { d: `M 0 0 L ${dvec.x.toFixed(1)} ${dvec.y.toFixed(1)}` }, grp), sw);
-      grp.style.transformBox = "view-box";
-      grp.style.transformOrigin = "0px 0px";
-      return grp;
+    const mkP = (poly) => {
+      const p = clipped(svg, g, 10, poly, "x");
+      p.gRot.style.transformOrigin = `${bg.vx}px ${bg.vy}px`;
+      p.gRot.style.transformBox = "view-box";
+      p.text.setAttribute("fill", INK);
+      return p;
     };
-    const wL = mkW(bg.dL, g.swFoldL), wR = mkW(bg.dR, g.swFoldR);
-    const flick = (grp, s) => grp.animate([
+    const pL = mkP([[-0.20, -0.12], [0.622, -0.12], [0.622, 0.78], [0.74, 1.00], [0.74, 1.14], [-0.20, 1.14]]);
+    const pR = mkP([[0.622, -0.12], [1.20, -0.12], [1.20, 1.14], [0.40, 1.14], [0.622, 0.78]]);
+    letters[10].style.opacity = "0";
+    const flick = (grp, ampDeg, delay) => grp.animate([
       { transform: "rotate(0deg)" },
-      { transform: `rotate(${s * 13}deg)`, offset: 0.4 },
+      { transform: `rotate(${ampDeg}deg)`, offset: 0.42 },
       { transform: "rotate(0deg)" },
-    ], { duration: 280, easing: "ease-in-out" });
-    flick(wL, 1); const a = flick(wR, -1);
-    a.finished.then(() => svg.remove()).catch(() => svg.remove());
+    ], { duration: 380, delay, easing: "ease-in-out", fill: "both" });
+    flick(pL.gRot, -3, 40);
+    const a = flick(pR.gRot, -8, 0);
+    const done = () => { letters[10].style.opacity = ""; svg.remove(); };
+    a.finished.then(done).catch(done);
   });
   letters[9].addEventListener("pointerenter", () => {   /* runner: one hop */
     if (!canAnswer("runner")) return;
@@ -1249,9 +1600,10 @@
         bird: mkBird(svg, g, rnd),
       };
       const stage = async (ms, m) => { await sleep(ms); if (token === runToken && !still()) await m.play(); };
+      /* the ensemble's own phrase, minus the transition's head start */
       await Promise.all([
-        stage(0, M.dividers), stage(300, M.road), stage(500, M.dial),
-        stage(800, M.runner), stage(950, M.bird),
+        stage(0, M.dividers), stage(1790, M.road), stage(2740, M.dial),
+        stage(4340, M.runner), stage(3940, M.bird),
       ]).catch(() => {});
       svg.remove();
       for (const i of [0, 3, 7, 9, 10]) { letters[i].style.opacity = ""; }
@@ -1262,8 +1614,24 @@
     busy = false;
   });
 
-  /* scripting hook for the probes (design-lab) */
-  window.__mech = { settleNow, performMachines };
+  /* scripting hooks for the probes (design-lab). buildResting mounts
+     one machine at its resting pose with no animations — probe-lock9
+     strips the scaffold, recolours the ink and pixel-diffs the result
+     against the span: the landed-pose-IS-the-letterform gate. */
+  window.__mech = {
+    settleNow, performMachines,
+    buildResting(which) {
+      const was = debug;
+      debug = true;
+      const g = measureAll();
+      const svg = mkOverlay(g);
+      const rnd = mulberry32(1);
+      ({ dividers: mkDividers, road: mkRoad, dial: mkDial,
+         runner: mkRunner, bird: mkBird })[which](svg, g, rnd);
+      debug = was;
+      return svg;
+    },
+  };
 </script>
 </body>
 </html>
