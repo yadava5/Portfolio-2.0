@@ -158,3 +158,45 @@ paper, ink, light. Clay reserved for decisions and gates.
 **Measure, don't assert.** Two of my own probes have been wrong this session —
 one sampled mismatched scroll positions, one waited 70ms for a 700ms scrub lag
 and nearly reported a working fix as broken. Report contradictions loudly.
+
+---
+
+## §4 · Two corrections from the owner, mid-round
+
+### Test scope: Chrome and Safari only, for now
+
+> "we can take the test of browsers later on for all 5, just test for safari and
+> chrome! … only testing for safari and chrome is cause to save token and time
+> for now, we'll do the testing for the other browser at the end of this
+> project!"
+
+Local iteration drops `firefox-desktop`:
+
+```
+npx playwright test --project=chromium-desktop --project=chromium-mobile \
+                    --project=webkit-desktop --project=webkit-mobile
+```
+
+Both mobile seats stay — Safari mobile is where this project's real defects have
+surfaced. **`package.json` and the CI workflow are NOT changed**, so CI keeps
+running all five and the branch never silently loses Firefox coverage. The full
+five-browser pass happens at the end of the project. If a touched spec has
+Firefox-specific behaviour, say so rather than assuming.
+
+### "Reversibility" means the rail and the diagrams, visibly
+
+> "when i mean reversibility, i mean by **rail going back**, and the **diagram
+> and animation flowing backward**!"
+
+Round 11's *100% reversible* was element-level opacity/transform hysteresis.
+Technically true, and **not what he is asking about.** What he means:
+
+- **the rail retracts** on scroll-up — the line un-draws back toward the name and
+  **the token travels backwards along it**
+- **the diagrams run backward** — a figure that assembled un-assembles, its
+  intermediate steps legible in reverse
+
+**This is a looked-at test, not a computed one.** A canvas rail that redraws to
+the same length going up passes the old metric while looking completely dead.
+Capture the rail and a figure at one scroll position approached downward and
+then upward, and *look* at both frames.
