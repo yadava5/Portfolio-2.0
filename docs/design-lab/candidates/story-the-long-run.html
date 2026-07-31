@@ -793,8 +793,13 @@
       <h1 data-fx="in .0 .22 y 5 | drift 26">Ayush Yadav</h1>
       <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
       <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
-      <p class="thesis" data-fx="in .09 .34 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
-      <p class="cue mono" data-fx="in .12 .38 y 3 | out .8 .98 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
+      <!-- the whole opening frame is complete AT LOAD (in-windows resolve
+           at or before y 0): a hero that assembles itself costs LCP and
+           reads as a loading screen, and the census showed the thesis at
+           op 0.8 and the cue at op 0 on arrival — the scroll instruction
+           was invisible until you had already scrolled. Round-5 call. -->
+      <p class="thesis" data-fx="in 0 .08 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
+      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
     </div>
   </section>
 
@@ -802,19 +807,19 @@
   <section class="beat station bwho" data-beat="1">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 02 · who — <i>06:58</i></p>
-        <h2 data-fx="in .07 .32 x -9 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">This is a record of what I&rsquo;ve built.</p>
-        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">And how each piece was checked before I called it done.</p>
-        <p class="prov" data-fx="in .16 .44 y 4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the whole path — the interface, the services behind it, the data they run on, and the machine learning when the problem calls for it. Every claim on this line carries a receipt.</p>
-        <div class="dict" data-fx="in .19 .48 y 4 | drift 12">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the whole path — the interface, the services behind it, the data they run on, and the machine learning when the problem calls for it. Every claim on this line carries a receipt.</p>
+        <div class="dict" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
           <p class="hw"><span aria-hidden="true">ap&#183;prov&#183;al</span><span class="sr" style="position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)">approval</span></p>
           <p class="pr"><span aria-hidden="true">/ &#601;&#712;pru&#720;&#183;v&#601;l / · </span>noun</p>
           <p class="sense">1. the moment a human signs for a machine&rsquo;s work. 2. the step I leave to a person.</p>
         </div>
-        <p class="nb" data-fx="in .21 .5 y 3 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
+        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="engcard">
           <header><span>engineer of record</span><span>filed <i>06:58</i></span></header>
           <div class="sigwell">
@@ -842,22 +847,22 @@
   <section class="beat station flip bpath" data-beat="2">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 03 · the yard — <i>07:52</i></p>
-        <h2 data-fx="in .07 .32 x 9 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x 7 | drift 18">Five years of query logs. Zero structure.</p>
-        <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Five years of query logs. Zero structure.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
           <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
           tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
           legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
-        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the freight has papers</span> — <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the freight has papers</span> — <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
         <figcaption>fig. 03 — the yard: three feeders, one line out. <i>the merge is the same thread you are riding.</i></figcaption>
       </figure>
     </div>
-    <div class="schoolrec" data-fx="in .3 .52 y 6 | out .8 .98 y -5 | drift 10">
+    <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
       <div class="shead"><span>the school record — filed with the run</span><span>miami university · oxford, oh · <i>may 2026</i></span></div>
       <div class="srows">
         <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b>3.65</b> · dean&rsquo;s list — fall 2023 · spring 2025 · fall 2025</span></div>
@@ -873,17 +878,17 @@
   <section class="beat station b2" data-beat="3">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 04 · first station — <i>08:47</i></p>
-        <h2 data-fx="in .07 .32 x -9 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">Your inbox already knows where you applied.</p>
-        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
           <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified (hybrid v3)<br>
           ci blocks any build under 0.95 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
           postgres row-level security — a non-bypassrls role</p>
-        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
         <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>the clay gate is where the model defers to review<span class="hoverinv"> — hover a bucket to trace its mail</span>.</i></figcaption>
       </figure>
@@ -894,17 +899,17 @@
   <section class="beat station flip b3" data-beat="4">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 05 · second station — <i>12:06</i></p>
-        <h2 data-fx="in .07 .32 x 9 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x 7 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
-        <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>1,145 automated tests</b> — 634 frontend + 511 backend<br>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1,145 automated tests</b> — 634 frontend + 511 backend<br>
           4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
           <b>36 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
           rls across <b>7 tables</b> · owner-scoped checks on 6 services · idor suite in ci</p>
-        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ↗</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ↗</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
           <p class="sent">&ldquo;<span class="w">lunch with</span> <span class="w w-who">Sam</span>
             <span class="w w-when">next Tuesday at noon</span><span class="w">,</span>
@@ -931,16 +936,16 @@
   <section class="beat station b4" data-beat="5">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 06 · third station — <i>15:23</i></p>
-        <h2 data-fx="in .07 .32 x -9 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x -7 | drift 18">No frameworks. Just math, memory, and C++.</p>
-        <p class="mutedln" data-fx="in .13 .4 x -6 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">No frameworks. Just math, memory, and C++.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
           simd dot-256 kernel <b>3.5×</b> vs -O3 · 784 ⟶ 100 ⟶ 10<br>
           4 instruction sets — avx-512 · avx2 · neon · wasm-simd128 · 2-person team</p>
-        <p class="handoff" data-fx="in .19 .48 y 3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
           <div class="padcard">
             <div class="padwell">
@@ -976,22 +981,22 @@
   <section class="beat station flip b5" data-beat="6">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 07 · fourth station — <i>19:36</i></p>
-        <h2 data-fx="in .07 .32 x 9 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x 7 | drift 18">One gzip stream, many virtual threads.</p>
-        <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14"><b>6.5×</b> single-threaded java.util.zip — 455 vs 66&#8202;mb/s (99% ci bound; point 6.89×)<br>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.5×</b> single-threaded java.util.zip — 455 vs 66&#8202;mb/s (99% ci bound; point 6.89×)<br>
           adler-32 vectorised <b>2.9×</b> scalar — 4.38&#8202;gb/s, bit-identical to java.util.zip.Adler32<br>
           jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
           <b>72 tests, 0 failures</b></p>
-        <div class="gzrow" data-fx="in .19 .48 y 4 | drift 12">
+        <div class="gzrow" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
           <button class="btn" id="gzbtn" type="button">gzip a sample in this tab</button>
           <span class="mono" id="gzout" aria-live="polite"></span>
         </div>
-        <p class="mono" data-fx="in .2 .5 y 3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
-        <p class="handoff" data-fx="in .21 .52 y 3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md">the readme @ af2c4b1 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
+        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md">the readme @ af2c4b1 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
         <div class="bench jet" aria-label="benchmark: virtual-thread engine versus single-threaded java.util.zip">
           <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
@@ -1044,18 +1049,18 @@
   <section class="beat station flip b7" data-beat="8">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x 7">¶ 09 · last station — <i>22:05</i></p>
-        <h2 data-fx="in .07 .32 x 9 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .1 .36 x 7 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
-        <p class="mutedln" data-fx="in .13 .4 x 6 | drift 16">The senior-design flagship: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
-        <p class="prov mono" data-fx="in .16 .44 y 4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · last station — <i>22:05</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The senior-design flagship: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
           <b>12 mcp tools</b> — most of them notebook hands: read_cell · write_cell · run_cell …<br>
           the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
           langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> · 2-person team — my seat: backend</p>
-        <p class="mono" data-fx="in .19 .48 y 3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
-        <p class="handoff" data-fx="in .21 .52 y 3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the repo, public — gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
+        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the repo, public — gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
         <svg id="amlFig" class="figsvg" viewBox="0 0 560 372" role="img" aria-label="A LangGraph supervisor drives a drawn notebook through seven lifecycle phases; the twelve real MCP tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — six clay gates open, and the run halts at the seventh gate before deploy, which never lights."></svg>
         <figcaption>fig. 09 — the twelve tools are mcpServer.ts&rsquo;s, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
       </figure>
@@ -1070,10 +1075,10 @@
   <section class="beat station bhow" data-beat="9">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 x -7">¶ 10 · the review — <i>22:23</i></p>
-        <h2 data-fx="in .07 .32 x -9 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
-        <p class="mutedln" data-fx="in .1 .36 x -6 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
-        <div class="litany" data-fx="in .13 .4 y 5 | drift 14">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
+        <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 backend tests — jobtracker validation ledger ↗</a></p></div>
           <div class="mline"><p>Make it fast.</p>
@@ -1082,7 +1087,7 @@
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep — policybot validation ledger ↗</a></p></div>
         </div>
       </div>
-      <figure class="plate" data-fx="in .04 .34 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="gates" id="gatesFig">
           <div class="ghead"><span>the reviewer&rsquo;s marks</span><span>three real gates · <i>dispositions honest</i></span></div>
           <div class="grow passed" data-g="0"><span class="gname">classifier gate — jobtracker</span>
