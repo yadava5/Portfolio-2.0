@@ -98,15 +98,18 @@ const [ARRIVAL, WHO, PATH, AUTOML, WORK, VALUES, GATE] = CHAPTERS;
  * Stagger index for the hero's CSS load entrance (60ms per slot —
  * globals.css multiplies `--hero-i`).
  *
- * Round 9 retimed the seats around the nameplate's phrase: the reading
- * matter rises WHILE the machines perform above, early enough that a
- * screener reads and scrolls immediately, late enough that the
- * dividers' seat (payoff 1, ~1.95s) has the stage to itself. The
- * place-line takes seat 34 (~2.05s), the claim seat 38 (~2.28s, with
- * the ink-settle beat), the directives seat 41 (~2.46s). The nameplate
- * itself is not on this rail — its still letters ride np-settype from
- * first paint and its machine letters arrive as what they are
- * (Nameplate.tsx).
+ * Round 9 retimed the seats around the nameplate's phrase; round 10
+ * KEEPS them under the concurrent ensemble: the reading matter rises
+ * WHILE all five machines run above (place-line seat 34 ~2.05s, claim
+ * seat 38 ~2.28s with the ink-settle beat, directives seat 41 ~2.46s),
+ * which is now the show's busiest stretch — the machine shop in full
+ * swing over a page already becoming readable, landings sweeping
+ * left → right from ~2.64s (Nameplate.tsx performEnsemble). A screener
+ * still reads and scrolls immediately; there is no solo seat to
+ * protect anymore, because the owner asked for one thing being made,
+ * not five taking turns. The nameplate itself is not on this rail —
+ * its still letters ride np-settype from first paint and its machine
+ * letters arrive as what they are (Nameplate.tsx).
  *
  * @param index - Zero-based entrance slot (fractional seats allowed)
  * @returns Inline style carrying the custom property
@@ -910,7 +913,12 @@ function WhoChapter() {
       className="relative pt-[7vh] pb-[9vh]"
     >
       <ThreadSegment id={WHO.id} />
-      <div className={WRAP}>
+      {/* data-tm-depart (round 10): the finished chapter backs into the
+          paper as it leaves behind the mast — TextMotion's one scrubbed
+          departure per marked chapter. On the WRAP, never the section:
+          the ThreadSegment svg is the section's other child and must
+          never ride a transform (the seam spec measures it). */}
+      <div className={WRAP} data-tm-depart="">
         {/* "solo" (the Seam): the head takes its own once-trigger. The
             chapter's first scene is the bio grid a full manifesto below
             it — adopting the head there would hold the running head
@@ -958,8 +966,11 @@ function WhoChapter() {
                   pronunciation, Newsreader senses. One instance on the
                   whole paper; both senses are the thesis, not a claim.
                   The syllable dots are typography — an sr-only twin
-                  keeps the accessible word whole. */}
-              <div data-tm="block">
+                  keeps the accessible word whole.
+                  data-tm="rise" (round 10): the entry is the record's
+                  own material — it surfaces from the paper (s .965 → 1)
+                  rather than sliding in like a line of prose. */}
+              <div data-tm="rise">
                 <p className="font-display fraunces-display text-2xl leading-none">
                   <span aria-hidden="true">ap·prov·al</span>
                   <span className="sr-only">approval</span>
@@ -985,9 +996,14 @@ function WhoChapter() {
                   rules) — and it sits directly under the entry it
                   annotates. F32: `text-xs` was also a 12px one-off; the
                   note takes the label token like every other aside. */}
+              {/* data-tm="press" (round 10): an n.b. is a mark made ON
+                  the record — it arrives from the reader's side and
+                  presses down (s 1.035 → 1), settling through half a
+                  degree the way the gate stamp lands. */}
               <aside
                 className="label-mono text-ink-secondary border-ink/15 border-t pt-3 leading-6"
-                data-tm="block"
+                data-tm="press"
+                data-tm-deg="0.5"
               >
                 n.b. — every project below opens into its own case file, source,
                 or live build.
@@ -1021,7 +1037,9 @@ function PathChapter() {
       className="relative pt-[7vh] pb-[12vh]"
     >
       <ThreadSegment id={PATH.id} />
-      <div className={WRAP}>
+      {/* data-tm-depart (round 10): see ¶02 — the field records leave
+          as one assembled piece behind the mast. */}
+      <div className={WRAP} data-tm-depart="">
         {/* "lead" (the Seam): the head takes slot 0 of the headline
             pair's scene below — ¶03 arrives as one authored entrance. */}
         <ChapterKicker
@@ -1232,10 +1250,14 @@ function AutomlChapter() {
               auditable ML workflow. The agents plan it and run it, then stop at
               the seventh phase and wait for a person.
             </p>
-            {/* Honest stat strip — every clause is proof-manifest-backed */}
+            {/* Honest stat strip — every clause is proof-manifest-backed.
+                data-tm="press" (round 10): a provenance strip is a mark
+                made ON the record — it presses in from the reader's
+                side, settling through the stamp's half degree. */}
             <p
               className="label-mono border-ink/15 mt-9 inline-block border-t pt-3"
-              data-tm="block"
+              data-tm="press"
+              data-tm-deg="-0.5"
             >
               7 phases · every one gated · langgraph + mcp orchestration
             </p>
@@ -1266,7 +1288,11 @@ function AutomlChapter() {
                 </div>
               </div>
             ) : null}
-            <p className="mt-8" data-tm="block">
+            {/* data-tm="press" (round 10): the dispatch line — same
+                hand as the stat strip above, no settling degree (two
+                rotated marks in one column would read as sloppy type,
+                not a stamp rhyme). */}
+            <p className="mt-8" data-tm="press">
               <Link
                 href="/projects/automl/"
                 className="link-draw label-mono text-ink"
@@ -1445,7 +1471,9 @@ function WorkChapter() {
       className="relative pt-[5vh] pb-[6vh]"
     >
       <ThreadSegment id={WORK.id} />
-      <div className={WRAP}>
+      {/* data-tm-depart (round 10): see ¶02 — the dealt index leaves as
+          one assembled piece behind the mast. */}
+      <div className={WRAP} data-tm-depart="">
         {/* "lead" (the Seam): the head opens the first work row's scene,
             so the index's first deal and its running head are one beat. */}
         <ChapterKicker
@@ -1568,9 +1596,16 @@ function WorkChapter() {
                     {row.muted}
                   </p>
                 </div>
+                {/* data-tm="press" (round 10): the metric rail is the
+                    row's apparatus — receipts pressed onto the record
+                    from the reader's side (s 1.035 → 1), the relief
+                    cut's counterweight to the scene figure rising
+                    below. No degree: a rotated hairline in a
+                    right-aligned mono column reads as misregistration,
+                    not a stamp. */}
                 <div
                   className="label-mono text-ink-secondary flex flex-row flex-wrap items-baseline gap-x-8 gap-y-3 md:flex-col md:items-end md:justify-end md:text-right"
-                  data-tm="block"
+                  data-tm="press"
                 >
                   {/* The metric chip keeps footnote 1's promise: it links
                       the case-file receipt row that argues it. normal-case
@@ -1908,7 +1943,9 @@ function ValuesChapter() {
       className="relative flex min-h-[85svh] flex-col pt-[5vh] pb-[10vh]"
     >
       <ThreadSegment id={VALUES.id} />
-      <div className={`${WRAP} flex min-h-0 flex-1 flex-col`}>
+      {/* data-tm-depart (round 10): see ¶02 — the litany and its gates
+          ledger recede together as the gate chapter arrives. */}
+      <div className={`${WRAP} flex min-h-0 flex-1 flex-col`} data-tm-depart="">
         {/* "solo" (the Seam): ch06 is deliberately UNWRAPPED — the
             litany's slowing cascade and the gates ledger keep their own
             coordinated triggers (see the scene note below), so the head
@@ -1986,7 +2023,10 @@ function ValuesChapter() {
             </figcaption>
           </figure>
 
-          <figure className="w-full max-w-[392px]" data-tm="block">
+          {/* data-tm="rise" (round 10): fig 6.1 is a LEDGER — the
+              record's own material surfaces from the paper (s .965 → 1)
+              while the litany's lines mask-rise beside it. */}
+          <figure className="w-full max-w-[392px]" data-tm="rise">
             <ul className="label-mono space-y-3 border-l border-current/20 pl-6">
               {/* Fix round 3, S11 — the key sits at the HEAD, where it is
                   read before it is needed. Two of the three rows say
