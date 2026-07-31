@@ -37,11 +37,23 @@ run so it can't overwrite the correction. Verified both ways — the checker
 passes on the new PDF and **fails on the old one**, naming the email as the
 reason.
 
-Also fixed: three retired product names still reaching readers —
-`"taskflow case file"` and `"fast-mnist case file"` in `/evidence` link text
-(`proofManifest.ts:184,206`), and Glyph's `imageAlt` still reading
-`"Real Fast MNIST React workbench screenshot"` (`projects.ts:370`), which is
-what screen-reader users heard.
+Also fixed: three retired product names — `"taskflow case file"` and
+`"fast-mnist case file"` in `/evidence` link text (`proofManifest.ts:184,206`,
+both verified live as `cadence` and `glyph` after deploy), and Glyph's
+`imageAlt`, which still read `"Real Fast MNIST React workbench screenshot"`
+(`projects.ts:370`).
+
+> **Erratum, same day, against my own commit message and PR.** I wrote that
+> the Glyph `imageAlt` "was what screen-reader users heard". **It was not.**
+> `imageAlt` is read by `ProjectScene.tsx:145,155,165`, which is the
+> **fallback arm** — it renders only for a project with no drawn scene in
+> `PROJECT_SCENE_MANIFEST`. Glyph has one, and that scene supplies its own
+> alt. Measured after deploy: grepping `out/` for the string returns **0
+> files**, as it does for Applied's and Cadence's, while Visual Assist's —
+> which has no drawn scene — appears in **4**. The retired name was
+> **dormant, not spoken**. The fix stands (a latent falsehood surfaces the
+> moment a scene is removed) but the severity I stated was wrong, and I
+> should have checked the build before stating it.
 
 ---
 
