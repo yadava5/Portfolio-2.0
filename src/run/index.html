@@ -548,6 +548,9 @@
   .ladder .gaterow .gsq2{display:inline-flex; width:2.6ch; align-items:center}
   .ladder .gaterow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
   .gatecard{
+    /* --veil is the card's own fill, handed to the epigraph's veil so the
+       unlit patch is the card, not a brown rectangle laid on top of it. */
+    --veil:var(--plate);
     background:var(--plate); border:1px solid var(--plate-line); box-shadow:var(--shadow);
     padding:clamp(1.1rem, 2vw, 1.7rem); position:relative; contain:paint;
   }
@@ -566,7 +569,13 @@
   }
   .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; position:relative}
   #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink)}
-  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2); letter-spacing:.05em; max-width:24ch}
+  /* three lines' worth, reserved. The note goes from "scrolling could not
+     press this button." to "approved by hand — 15:59, your local time."
+     — two lines to three — and that 16px was the last thing still growing
+     the gate on approval, and therefore still moving the document under a
+     reader who was already at the bottom. */
+  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
+    letter-spacing:.05em; max-width:24ch; min-height:3.9em; line-height:1.3}
   #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
              round-3 card-bottom offset drifted when the aftergate grew
              the card, and at 1440 the ink grazed its own note. Anchored
@@ -588,14 +597,17 @@
      the closing epigraph moved in. It now collapses to zero height via a 0fr
      grid row and opens to 1fr, which animates height without ever measuring
      it in JS. The card is exactly as tall as what it is currently saying. */
-  .aftergate{display:grid; grid-template-rows:0fr; margin-top:0;
-    opacity:0; pointer-events:none}
-  .aftergate > .agin{overflow:hidden; min-height:0}
-  .aftergate.shown{grid-template-rows:1fr; margin-top:1.4rem;
-    opacity:1; pointer-events:auto}
+  /* NOT a collapsing row any more. Expanding it grew the gate by 71px on
+     approval, which grew the document, which moved the last scroll
+     position down — so scrolling to the bottom AFTER approving cut
+     '¶ 12 · the approval gate' off the top. Measured at 1440x700 and
+     1440x800; invisible at 900+ , which is why one probe missed it.
+     It holds its space from the start, so the gate is the same height
+     before the decision and after, at every viewport. */
+  .aftergate{margin-top:1.2rem; opacity:0; pointer-events:none}
+  .aftergate.shown{opacity:1; pointer-events:auto}
   @media (prefers-reduced-motion: no-preference){
-    .aftergate{transition:grid-template-rows .85s cubic-bezier(.22,1,.36,1),
-      margin-top .85s cubic-bezier(.22,1,.36,1), opacity .7s ease .2s}
+    .aftergate{transition:opacity .8s ease .15s}
   }
   .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
 
@@ -622,195 +634,112 @@
     100%{opacity:0;   transform:scale(6.2)}
   }
   /* ————— the lamp ————— */
-  /* The run ends at 22:41 in the dark, and ¶09 already put the word on the
-     page: "lamplight. the machine works on; somebody stays to watch it."
-     So the closing epigraph is not lit by the page — a lamp lights it, and
-     the reader can put it out.
-
-     The whole thing is one drawn object and one falling cone, built to the
-     same rules as the rest of the run: ink at the thread's weight, clay for
-     anything warm, no glow around objects, and every state a pure function
-     of one data attribute. The signature move is the MASK — the light does
-     not fade the words up, it falls DOWN them, so you watch the line be lit
-     rather than watch it appear. */
-  /* inherits:TRUE, and it is load-bearing. The veil that does the revealing
-     is .endquote::after, and a pseudo-element only sees a registered custom
-     property if it inherits. With inherits:false the mask resolved against
-     the initial 0% forever: --lit animated correctly to 132%, the computed
-     mask stayed at "transparent -24%, black 0%", and the epigraph never
-     came out of the dark however brightly the lamp was lit. */
+  /* A WALL LAMP, not a pendant. He was right that a fitting hanging in mid-air
+     inside a card has nothing to hang from — this one is bolted to the right
+     edge on a backplate, reaches in on a swing arm, and throws its light down
+     and to the LEFT across the closing line. It is always mounted and always
+     drawn; approving only switches it on. That is also what removes the flash
+     the old version had, where the lamp sat in place for a beat, vanished, and
+     dropped in: nothing arrives any more, so nothing can pop. */
   @property --lit{syntax:"<percentage>"; inherits:true; initial-value:0%}
 
-  .endlight{position:relative; margin:0 0 .35rem; padding:6.1rem 0 .1rem;
+  .endlight{position:relative; margin:1.5rem 0 .2rem; padding:4.6rem 0 .1rem;
     isolation:isolate}
 
-  /* the cone: light falling in the shape a shade throws. It opens from a
-     sliver to its full spread, because a filament reaching current widens
-     the pool it casts. */
-  /* The cone. Three things make it read as LIGHT rather than as a shape:
-     it is warm (a lamp is amber, not cream — cream on this brown reads grey),
-     its gradient dies well before the silhouette does, and a two-axis mask
-     fades every edge so the clip-path boundary is never actually visible.
-     The first version had a hard-edged grey triangle; at 3x it looked like a
-     paper cut-out taped to the page. */
+  /* the light: a warm pool under the shade, offset right to sit beneath the
+     fitting, spreading down and left over the words. No clip-path — light has
+     no outline — and one mask layer fades its foot and its very top. */
   .endlight::before{content:""; position:absolute; z-index:-1;
-    left:50%; top:4.7rem; width:min(36rem,132%); height:calc(100% - 4rem);
-    transform:translateX(-50%) scaleX(.16); transform-origin:50% 0;
-    /* The silhouette IS the gradient. An earlier version cut a trapezoid with
-       clip-path and tried to hide the seam with a two-layer mask — at 3x the
-       edges were still plainly visible and it read as a paper cut-out taped to
-       the page. A radial pool hung from the shade needs no clipping: light has
-       no outline. One mask layer fades its foot, so nothing here depends on
-       mask-composite being supported. Warm, because a lamp is amber — cream on
-       this brown reads grey, which was half of why it looked like a shape. */
-    background:radial-gradient(41% 90% at 50% 0%,
-      rgba(246,216,172,.195) 0%, rgba(244,210,166,.132) 16%,
-      rgba(240,202,158,.066) 34%, rgba(238,198,152,.024) 54%,
-      rgba(236,196,150,.007) 72%, rgba(236,196,150,0) 88%);
-    /* the mask fades the FOOT and the very top. Without the top stop the
-       gradient still carries alpha across the element's top corners, which
-       draws a hard horizontal band right where the light is supposed to be
-       leaving the shade — the one edge a lamp can never have. */
-    -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 42%,transparent 95%);
-    mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 42%,transparent 95%);
+    left:50%; top:4rem; width:min(34rem,126%); height:calc(100% - 3.6rem);
+    transform:translateX(-42%) scaleX(.2); transform-origin:72% 0;
+    background:radial-gradient(46% 92% at 72% 0%,
+      rgba(246,216,172,.20) 0%, rgba(244,210,166,.135) 16%,
+      rgba(240,202,158,.068) 34%, rgba(238,198,152,.025) 55%,
+      rgba(236,196,150,.007) 73%, rgba(236,196,150,0) 88%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 8%,#000 44%,transparent 96%);
+    mask-image:linear-gradient(180deg,transparent 0%,#000 8%,#000 44%,transparent 96%);
     opacity:0; pointer-events:none}
-  .endlight[data-lamp="on"]::before{opacity:1; transform:translateX(-50%) scaleX(1)}
+  .endlight[data-lamp="on"]::before{opacity:1; transform:translateX(-42%) scaleX(1)}
 
-  .lampbtn{position:absolute; top:0; left:50%; transform:translateX(-50%);
-    display:block; width:80px; height:96px; padding:0; margin:0;
+  .lampbtn{position:absolute; top:0; right:0;
+    display:block; width:168px; height:74px; padding:0; margin:0;
     background:none; border:0; cursor:pointer; line-height:0}
   .lampbtn:focus-visible{outline:1px solid var(--clay); outline-offset:6px}
-  .lampsvg{display:block; width:80px; height:96px; overflow:visible}
+  .lampsvg{display:block; width:168px; height:74px; overflow:visible}
   .lampsvg *{transform-box:view-box}
 
-  /* Ink, at the thread's own weight. The parts are drawn as a real fitting is
-     built — canopy, flex, shade, rim, screw cap, envelope, filament, chain —
-     because a five-line triangle reads as a placeholder no matter how well it
-     is animated. */
   .lampsvg line, .lampsvg path, .lampsvg ellipse, .lampsvg circle{fill:none;
     stroke:var(--ink-2); stroke-width:1.25; stroke-linecap:round; stroke-linejoin:round}
-  .lampsvg .l-ceil{stroke:var(--ink-2); stroke-width:1; opacity:.5}
-  .lampsvg .l-canopy{stroke:var(--ink-2); stroke-width:1.1}
-  .lampsvg .l-flex{stroke-width:1.1}
+  .lampsvg .l-wall{stroke:var(--ink-2); stroke-width:1; opacity:.32}
+  .lampsvg .l-plate{stroke-width:1.15}
+  .lampsvg .l-boltA, .lampsvg .l-boltB{stroke-width:.9; opacity:.5}
   .lampsvg .l-shade, .lampsvg .l-rim{stroke:var(--ink); stroke-width:1.45}
-  /* the far side of the rim, seen THROUGH the shade's mouth — the one line
-     that makes a cone out of a triangle */
-  .lampsvg .l-rimback{stroke:var(--ink-2); stroke-width:.9; opacity:.45}
-  .lampsvg .l-sheen{stroke:var(--ink-2); stroke-width:.9; opacity:.3}
+  .lampsvg .l-rimback{stroke:var(--ink-2); stroke-width:.9; opacity:.42}
+  .lampsvg .l-sheen{stroke:var(--ink-2); stroke-width:.9; opacity:.28}
   .lampsvg .l-throat{fill:url(#throatgrad); stroke:none; opacity:0}
-  .lampsvg .l-thread, .lampsvg .l-stem{stroke-width:.85; opacity:.55}
-  .lampsvg .l-fil{stroke-width:1; opacity:.75}
-  .lampsvg .l-bead{stroke-width:1}
+  .lampsvg .l-thread{stroke-width:.85; opacity:.55}
+  .lampsvg .l-fil{stroke-width:1; opacity:.7}
   .lampbtn:hover .l-knob{stroke:var(--clay)}
 
-  /* lit: current reaches the filament, the envelope takes it, the shade's
-     throat warms and the rim catches the edge of it. Nothing outside the
-     fitting glows — the light itself is the pool below. */
   .endlight[data-lamp="on"] .l-fil{stroke:var(--clay); stroke-width:1.5; opacity:1}
   .endlight[data-lamp="on"] .l-glass{stroke:var(--clay); opacity:.92}
   .endlight[data-lamp="on"] .l-rim{stroke:var(--clay)}
-  .endlight[data-lamp="on"] .l-rimback{stroke:var(--clay); opacity:.6}
-  .endlight[data-lamp="on"] .l-throat{opacity:.24}
-  .endlight[data-lamp="on"] .l-sheen{opacity:.5}
+  .endlight[data-lamp="on"] .l-rimback{stroke:var(--clay); opacity:.58}
+  .endlight[data-lamp="on"] .l-throat{opacity:.26}
+  .endlight[data-lamp="on"] .l-sheen{opacity:.48}
+  .lampsvg .l-chain{transform-origin:154px 54px}
 
-  /* transform origins: the flex pays out from the canopy, the body hangs from
-     the flex, the chain stretches from where it meets the rim */
-  .lampsvg .l-flexg{transform-origin:50px 7.5px}
-  .lampsvg .l-body{transform-origin:50px 32px}
-  .lampsvg .l-chain{transform-origin:70px 65px}
+  /* THE REVEAL — a veil, not a fade. The line sits at full ink permanently and
+     the dark lies over it, retreating as the light arrives. Unlit it reads as
+     a page in an unlit room; lit it takes a warm shadow and looks like it is
+     catching the lamp.
 
-  @media (prefers-reduced-motion: no-preference){
-    .lampsvg .l-fil, .lampsvg .l-glass, .lampsvg .l-rim, .lampsvg .l-rimback,
-    .lampsvg .l-knob{transition:stroke .5s ease, opacity .5s ease}
-    .lampsvg .l-throat, .lampsvg .l-sheen{transition:opacity .65s ease}
-
-    /* THE ARRIVAL. The lamp is not there and then faded in — it is LOWERED,
-       on its own flex, from the ceiling it hangs off. The cord pays out while
-       the body descends, and both settle through a damped overshoot, because
-       something on a wire does not simply stop. */
-    .arriving .l-flexg{animation:payout 1.2s cubic-bezier(.36,.07,.25,1) both}
-    .arriving .l-body {animation:lower  1.2s cubic-bezier(.36,.07,.25,1) both}
-    .arriving .l-mount{animation:mountin .5s ease both}
-
-    /* the pull: the chain takes the weight, overshoots, settles */
-    .pulling .l-chain{animation:pullchain .78s cubic-bezier(.3,1.4,.5,1) both}
-    /* and the whole fitting swings on its flex */
-    .pulling .l-body{animation:sway 1.75s cubic-bezier(.25,.9,.3,1) both}
-    /* three beats of a filament finding its current */
-    .endlight[data-lamp="on"] .l-throat{animation:filament 1.3s ease-out both}
-  }
-  @keyframes mountin{ 0%{opacity:0} 100%{opacity:1} }
-  @keyframes payout{
-    0%{transform:scaleY(.1); opacity:0}
-    8%{opacity:1}
-    62%{transform:scaleY(1.055)} 78%{transform:scaleY(.982)}
-    90%{transform:scaleY(1.009)} 100%{transform:scaleY(1)}
-  }
-  @keyframes lower{
-    0%{transform:translateY(-54px); opacity:0}
-    8%{opacity:1}
-    62%{transform:translateY(3.6px)} 78%{transform:translateY(-1.7px)}
-    90%{transform:translateY(.8px)} 100%{transform:translateY(0)}
-  }
-  @keyframes pullchain{
-    0%{transform:translateY(0) scaleY(1)} 20%{transform:translateY(7px) scaleY(1.34)}
-    46%{transform:translateY(-1.4px) scaleY(.96)} 68%{transform:translateY(2.4px) scaleY(1.09)}
-    85%{transform:translateY(-.5px) scaleY(.99)} 100%{transform:translateY(0) scaleY(1)}
-  }
-  @keyframes sway{
-    0%{transform:rotate(0deg)} 11%{transform:rotate(1.9deg)}
-    29%{transform:rotate(-1.25deg)} 48%{transform:rotate(.76deg)}
-    66%{transform:rotate(-.38deg)} 83%{transform:rotate(.16deg)}
-    100%{transform:rotate(0deg)}
-  }
-  @keyframes filament{
-    0%{opacity:0} 7%{opacity:.3} 13%{opacity:.05}
-    26%{opacity:.34} 36%{opacity:.09} 100%{opacity:.24}
-  }
-
-  /* THE REVEAL — a veil, not a fade.
-     The first version faded the epigraph up from opacity 0, which meant the
-     lamp CREATED the words rather than lighting them. Wrong idea: the line is
-     always there, on the page, in the dark — the way a page on a desk is
-     always there before you reach for the switch.
-
-     So the quote sits at full ink permanently, and a dark veil lies over it.
-     The veil RETREATS downward as --lit grows, with a soft shoulder, so the
-     light travels line by line and each one comes up out of the dark as it
-     arrives. Unlit it reads as text in an unlit room; lit it takes a warm
-     shadow, so the letters look like they are catching the lamp rather than
-     merely being visible. */
+     The veil's colour is now taken from the card it sits on, via a variable,
+     rather than a hard-coded brown — a fixed value showed as a visibly
+     different patch against the card's own background. */
   .endquote{position:relative; margin:0; --lit:0%}
   .endquote blockquote{font-family:var(--display); font-style:italic;
     font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.5; color:var(--ink);
-    margin:0; text-align:center; text-wrap:balance; transform:translateY(5px)}
+    margin:0; text-align:center; text-wrap:balance}
   .endquote figcaption{margin-top:.6rem; font-family:var(--mono);
     font-size:.66rem; letter-spacing:.05em; color:var(--ink-2); text-align:center}
-  /* the veil is an ellipse, not a rectangle: a flat fill drew a visible box
-     around the epigraph, which is the one thing darkness never has an edge of.
-     Its own gradient softens every side; the mask only handles the retreat. */
   .endquote::after{content:""; position:absolute; inset:-1.5rem -2.2rem -1.1rem;
     background:radial-gradient(ellipse 58% 66% at 50% 50%,
-      rgba(37,31,27,.88) 0%, rgba(37,31,27,.86) 42%,
-      rgba(37,31,27,.58) 70%, rgba(37,31,27,.18) 87%, rgba(37,31,27,0) 100%);
+      var(--veil) 0%, var(--veil) 44%,
+      color-mix(in srgb, var(--veil) 62%, transparent) 72%,
+      color-mix(in srgb, var(--veil) 18%, transparent) 88%,
+      transparent 100%);
     pointer-events:none;
     -webkit-mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 24%),#000 var(--lit));
     mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 24%),#000 var(--lit))}
   .endlight[data-lamp="on"] .endquote{--lit:132%}
-  .endlight[data-lamp="on"] .endquote blockquote{transform:none;
+  .endlight[data-lamp="on"] .endquote blockquote{
     text-shadow:0 0 24px rgba(246,214,168,.24), 0 0 7px rgba(246,214,168,.13)}
   @media print{ .endquote::after{display:none} }
-  .lampnote{margin:.35rem 0 0; text-align:center; font-size:.64rem;
+  .lampnote{margin:.7rem 0 0; text-align:center; font-size:.64rem;
     letter-spacing:.07em; color:var(--ink-2); opacity:.6}
 
   @media (prefers-reduced-motion: no-preference){
-    /* the light itself: the pool opens, and the veil retreats down the words */
-    .endlight::before{transition:opacity 1.05s ease .18s,
-      transform 1.25s cubic-bezier(.19,1,.32,1) .18s}
-    .endquote{transition:--lit 1.6s cubic-bezier(.36,.86,.3,1) .22s}
-    .endquote blockquote{transition:transform 1.1s cubic-bezier(.22,1,.36,1) .26s,
-      text-shadow 1.1s ease .4s}
+    .endlight::before{transition:opacity 1.05s ease .12s,
+      transform 1.3s cubic-bezier(.19,1,.32,1) .12s}
+    .endquote{transition:--lit 1.5s cubic-bezier(.36,.86,.3,1) .2s}
+    .endquote blockquote{transition:text-shadow 1.1s ease .35s}
+    .lampsvg .l-fil, .lampsvg .l-glass, .lampsvg .l-rim, .lampsvg .l-rimback,
+    .lampsvg .l-knob{transition:stroke .5s ease, opacity .5s ease}
+    .lampsvg .l-throat, .lampsvg .l-sheen{transition:opacity .6s ease}
+    .pulling .l-chain{animation:pullchain .78s cubic-bezier(.3,1.4,.5,1) both}
+    .endlight[data-lamp="on"] .l-throat{animation:filament 1.3s ease-out both}
   }
+  @keyframes pullchain{
+    0%{transform:translateY(0) scaleY(1)} 20%{transform:translateY(6px) scaleY(1.4)}
+    46%{transform:translateY(-1.2px) scaleY(.96)} 68%{transform:translateY(2px) scaleY(1.1)}
+    85%{transform:translateY(-.4px) scaleY(.99)} 100%{transform:translateY(0) scaleY(1)}
+  }
+  @keyframes filament{
+    0%{opacity:0} 7%{opacity:.32} 13%{opacity:.05}
+    26%{opacity:.36} 36%{opacity:.1} 100%{opacity:.26}
+  }
+
   @media (prefers-reduced-motion: reduce){
     .approved .ladder .gaterow .gsq2 i::after{animation:none; opacity:0}
     .endlight::before{transition:none; transform:translateX(-50%) scaleX(1)}
@@ -1393,6 +1322,24 @@ h1[data-np-measuring] .np-ch {
   .hourline{margin:.35rem 0 0; font-family:var(--display); font-style:italic;
     font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45;
     color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em}
+
+  /* Short windows. The gate carries a headline, a thirteen-row ladder, the
+     manifest, the lamp and the closing line, and on a 800px-tall screen that
+     is more than one viewport — so the kicker was already above the fold
+     before anyone approved anything. Nothing here changes the design; it
+     just stops the ending spending height it does not need when there is
+     none to spare. Measured: recovers ~60px, which is what 1440x800 was
+     short by. */
+  @media (max-height: 880px){
+    .b8{padding-top:2vh; padding-bottom:1.4vh}
+    .ladder{margin-top:1.15rem}
+    .ladder li{margin:.33rem 0}
+    .endlight{margin:.7rem 0 .1rem; padding:3.9rem 0 .1rem}
+    .endlight::before{top:3.5rem}
+    .lampnote{margin-top:.5rem}
+    .b8 footer{margin-top:.55rem; line-height:1.62}
+    .gatecard .decide{margin-top:.9rem}
+  }
 </style>
 </head>
 <body>
@@ -1878,79 +1825,58 @@ h1[data-np-measuring] .np-ch {
             <span class="note" id="gateNote">scrolling could not press this button.</span>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
+          <!-- The lamp and the closing line are ALWAYS here, unlit. They are
+               not part of the reward's expansion, because a collapsing block
+               changes the gate's height, and a gate that changes height after
+               approval pushes its own header off the top of the screen. This
+               way the card is exactly as tall before the decision as after,
+               and the epigraph waits in the dark instead of not existing. -->
+          <div class="endlight" id="endlight" data-lamp="off">
+            <button class="lampbtn" id="lampbtn" type="button" aria-pressed="false"
+                    aria-controls="endquote" aria-label="Turn the reading lamp on to light the closing line">
+              <svg class="lampsvg" viewBox="0 0 168 74" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="throatgrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--clay)" stop-opacity=".1"/>
+                    <stop offset="100%" stop-color="var(--clay)" stop-opacity=".85"/>
+                  </linearGradient>
+                </defs>
+                <!-- the wall it is bolted to, and the backplate -->
+                <line class="l-wall"  x1="166" y1="4" x2="166" y2="70"/>
+                <path class="l-plate" d="M158 20 L164 20 L164 54 L158 54 Z"/>
+                <circle class="l-boltA" cx="161" cy="27" r="1.1"/>
+                <circle class="l-boltB" cx="161" cy="47" r="1.1"/>
+                <!-- the swing arm, with its elbow -->
+                <path class="l-arm" d="M158 37 L118 37"/>
+                <circle class="l-elbow" cx="118" cy="37" r="2.6"/>
+                <path class="l-drop" d="M118 37 L118 44"/>
+                <!-- the shade, thrown open toward the page -->
+                <path class="l-throat" d="M96 64 L118 44 L140 64 Z"/>
+                <path class="l-shade" d="M96 64 L118 44 L140 64"/>
+                <ellipse class="l-rim" cx="118" cy="64" rx="22" ry="4.2"/>
+                <path class="l-rimback" d="M96 64 A22 4.2 0 0 1 140 64"/>
+                <line class="l-sheen" x1="104" y1="58" x2="112" y2="49"/>
+                <!-- the lamp itself -->
+                <path class="l-cap" d="M114 64 L114 68.6 L122 68.6 L122 64"/>
+                <line class="l-thread" x1="114" y1="66.2" x2="122" y2="66.2"/>
+                <path class="l-glass" d="M114.4 69 C112.4 71.6 112.4 76 115 78 C116.7 79.3 119.3 79.3 121 78 C123.6 76 123.6 71.6 121.6 69 Z"/>
+                <path class="l-fil" d="M115.8 72.6 L117 74.8 L118 72.2 L119 74.8 L120.2 72.6"/>
+                <!-- the switch, on the wall plate where a wall switch lives -->
+                <g class="l-chain">
+                  <line class="l-pull" x1="154" y1="54" x2="154" y2="64"/>
+                  <circle class="l-knob" cx="154" cy="67" r="3"/>
+                </g>
+              </svg>
+            </button>
+            <figure class="endquote" id="endquote">
+              <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
+              <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
+            </figure>
+            <p class="lampnote mono" id="lampnote">the lamp is off &middot; pull the switch</p>
+          </div>
+
           <div class="aftergate" id="aftergate">
             <div class="agin">
-              <!-- The day ran out at 22:41 and the page is dark. ¶09 already
-                   said it — "lamplight. the machine works on; somebody stays
-                   to watch it." So the closing line is not lit by the page:
-                   it is lit by a lamp somebody switched on, and it can be
-                   switched off again. Nothing else in the aftergate depends
-                   on the lamp — the thanks and the links stay readable. -->
-              <div class="endlight" id="endlight" data-lamp="off">
-                <button class="lampbtn" id="lampbtn" type="button" aria-pressed="false"
-                        aria-controls="endquote" aria-label="Turn the reading lamp on to light the closing line">
-                  <svg class="lampsvg" viewBox="0 0 100 120" aria-hidden="true" focusable="false">
-                    <defs>
-                      <linearGradient id="throatgrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="var(--clay)" stop-opacity=".08"/>
-                        <stop offset="62%" stop-color="var(--clay)" stop-opacity=".62"/>
-                        <stop offset="100%" stop-color="var(--clay)" stop-opacity=".9"/>
-                      </linearGradient>
-                    </defs>
-
-                    <!-- the ceiling, and the canopy the flex comes out of -->
-                    <g class="l-mount">
-                      <line class="l-ceil" x1="34" y1="1" x2="66" y2="1"/>
-                      <path class="l-canopy" d="M43.5 1 L56.5 1 L54 7.5 L46 7.5 Z"/>
-                    </g>
-
-                    <!-- the flex. Paid out from the canopy as the lamp lowers,
-                         so the cord does not slide down with the shade. -->
-                    <g class="l-flexg">
-                      <path class="l-flex" d="M50 7.5 C51.1 15 48.9 22 50 30"/>
-                    </g>
-
-                    <!-- everything that hangs -->
-                    <g class="l-body">
-                      <!-- the lit interior, painted BEFORE the outline so the
-                           shade's own strokes stay crisp on top of it -->
-                      <path class="l-throat" d="M22 64 L50 32 L78 64 Z"/>
-                      <!-- the shade: two tangents to the rim, and the FULL rim
-                           ellipse. Drawing the far arc as well as the near one
-                           is what makes it read as a cone in space rather than
-                           a triangle on a page. -->
-                      <path class="l-shade" d="M22 64 L50 32 L78 64"/>
-                      <ellipse class="l-rim" cx="50" cy="64" rx="28" ry="5.6"/>
-                      <path class="l-rimback" d="M22 64 A28 5.6 0 0 1 78 64"/>
-                      <line class="l-sheen" x1="34" y1="56" x2="44" y2="42"/>
-
-                      <!-- the bulb: screw base with its threads, the envelope,
-                           the two supports, and a filament that takes current -->
-                      <path class="l-cap" d="M45.4 64 L45.4 70.6 L54.6 70.6 L54.6 64"/>
-                      <line class="l-thread" x1="45.4" y1="66.4" x2="54.6" y2="66.4"/>
-                      <line class="l-thread" x1="45.4" y1="68.5" x2="54.6" y2="68.5"/>
-                      <path class="l-glass" d="M45.6 71 C43 75 43 81.5 46.4 84.6 C48.6 86.6 51.4 86.6 53.6 84.6 C57 81.5 57 75 54.4 71 Z"/>
-                      <line class="l-stem" x1="47.6" y1="71" x2="47.6" y2="77"/>
-                      <line class="l-stem" x1="52.4" y1="71" x2="52.4" y2="77"/>
-                      <path class="l-fil" d="M47.6 77 L49 80.4 L50 76.8 L51 80.4 L52.4 77"/>
-
-                      <!-- the chain: beads, then the ring you pull -->
-                      <g class="l-chain">
-                        <line class="l-pull" x1="70" y1="65" x2="70" y2="89"/>
-                        <circle class="l-bead" cx="70" cy="74" r="1.3"/>
-                        <circle class="l-bead" cx="70" cy="79" r="1.3"/>
-                        <circle class="l-bead" cx="70" cy="84" r="1.3"/>
-                        <circle class="l-knob" cx="70" cy="93" r="3.4"/>
-                      </g>
-                    </g>
-                  </svg>
-                </button>
-                <figure class="endquote" id="endquote">
-                  <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
-                  <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
-                </figure>
-                <p class="lampnote mono" id="lampnote">the lamp is off &middot; pull the cord</p>
-              </div>
               <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.35rem">Thank you. The interesting part is whatever comes next.</p>
               <div class="row mono">
                 <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
@@ -3735,17 +3661,11 @@ $("approve").addEventListener("click", () => {
      that arrives with it. It is a real switch afterwards, so the reader can
      put it out again. RM lights it immediately: a reader who has asked for
      less motion should not have to wait through a beat they cannot see. */
-  /* The lamp is LOWERED before it is lit. It starts down as the aftergate
-     has finished OPENING — .agin clips with overflow:hidden, so a descent
-     started any earlier happens behind the clip and is never seen. It then
-     takes 1.2s on its flex, and only after it has settled does the cord pull
-     itself and the light fall: a fitting arrives, then is switched on. */
-  const el = $("endlight");
-  if (!RM) {
-    setTimeout(() => el.classList.add("arriving"), 880);
-    setTimeout(() => el.classList.remove("arriving"), 880 + 1300);
-  }
-  setTimeout(() => { pullCord(); setLamp(true); }, RM ? 0 : 2120);
+  /* The lamp is already on the wall, unlit, and has been since the reader
+     arrived — so there is nothing to fly in and nothing to pop. Approving
+     throws the switch: the chain takes the weight, the filament finds its
+     current, and the light falls across the closing line. */
+  setTimeout(() => { pullCord(); setLamp(true); }, RM ? 0 : 900);
 
   /* Approving expands the aftergate, which grows the right column by ~340px.
      `.b8` centres its grid, so the WHOLE composition re-seats and the ladder
@@ -3773,8 +3693,8 @@ function setLamp(on) {
   btn.setAttribute("aria-label",
     on ? "Turn the reading lamp off" : "Turn the reading lamp on to light the closing line");
   $("lampnote").innerHTML = on
-    ? "the lamp is lit &middot; pull the cord to put it out"
-    : "the lamp is off &middot; pull the cord";
+    ? "the lamp is lit &middot; pull the switch to put it out"
+    : "the lamp is off &middot; pull the switch";
 }
 let pullTimer = 0;
 /* the chain answers the hand before the light does. Restart on every pull by
