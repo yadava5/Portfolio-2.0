@@ -21,8 +21,8 @@ await page.click("#approve");
 await page.waitForTimeout(4200);
 
 const box = async () => page.evaluate(() => {
-  const r = document.getElementById("endlight").getBoundingClientRect();
-  const pad = 26;
+  const r = document.querySelector(".gatecard").getBoundingClientRect();
+  const pad = 8;
   return { x: Math.max(0, r.x - pad), y: Math.max(0, r.y - pad),
            width: Math.min(r.width + pad * 2, innerWidth - Math.max(0, r.x - pad)),
            height: Math.min(r.height + pad * 2, innerHeight - Math.max(0, r.y - pad)) };
