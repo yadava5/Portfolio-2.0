@@ -568,8 +568,25 @@
     .aftergate{transition:opacity .7s ease .25s, transform .7s cubic-bezier(.22,1,.36,1) .25s}
   }
   .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
-  .b8 footer{margin-top:12vh; padding-top:1rem; border-top:1px solid var(--hair);
-    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); line-height:2; max-width:72ch}
+  /* The close. The page opens on one thing — the name, alone — and ended on a
+     mono block wedged into the right column under the gate card, with the
+     thread's terminus a thousand pixels above it. Scrolled to the bottom that
+     read as the page running out rather than finishing.
+
+     The colophon now spans both columns and centres, so the last screen is a
+     composed mark. It stays QUIET on purpose: the decision at the gate is the
+     ending, and a second loud endpoint would compete with it for that job —
+     this is a colophon closing a working paper, not a second nameplate. */
+  .b8 footer{grid-column:1 / -1; margin:12vh auto 0; padding-top:2.4rem;
+    border-top:1px solid var(--hair); text-align:center; max-width:72ch;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em;
+    color:var(--ink-2); line-height:2}
+  .b8 footer .cspan{display:block; font-size:.66rem; letter-spacing:.17em;
+    text-transform:uppercase; opacity:.72; line-height:1.8}
+  .b8 footer .cname{display:block; font-family:var(--display); font-size:clamp(1.1rem,2.1vw,1.5rem);
+    letter-spacing:.02em; line-height:1.25; color:var(--ink); margin:.5rem 0 1.5rem;
+    font-variation-settings:"opsz" 144, "SOFT" 50, "WONK" 0, "wght" 500}
+  .b8 footer .cmeta{display:block}
 
   /* ————— ¶02 · who — the engineer of record ————— */
   .bwho{min-height:118vh}
@@ -660,9 +677,11 @@
   @media (prefers-reduced-motion: reduce){
     .gates .gmark{stroke-dashoffset:0 !important}
   }
-  /* ¶11's plate. Same docket grammar as .gates, but the marks are STATIC:
-     a drawn-on signature would animate a thing that was already done, by
-     someone else, before the reader arrived. They are records, not events. */
+  /* ¶11's plate. Same docket grammar as .gates. It carries NO signature
+     mark: nobody signed anything here. Two people wrote recommendations on
+     LinkedIn, in public, under their own names — so the plate is a citation
+     card, and drawing a "signature" for a named real person would be a
+     fabricated artifact attributed to them. It was, briefly, and it is not. */
   .signs{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
   .signs .shead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
     padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
@@ -671,9 +690,7 @@
     padding:.85rem 0; border-bottom:1px solid var(--hair)}
   .signs .srow .sname{color:var(--ink)}
   .signs .srow .srole{grid-column:1 / -1; font-size:.7rem; color:var(--ink-2)}
-  .signs .srow svg{display:block; width:74px; height:22px; overflow:visible}
-  .signs .srow .smark{fill:none; stroke:var(--ink); stroke-width:1.2;
-    stroke-linecap:round; stroke-linejoin:round; opacity:.72}
+  .signs .srow .swhen{color:var(--ink-2); text-align:right; white-space:nowrap}
   .signs .sclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
     font-size:.7rem; line-height:1.9}
   .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
@@ -1540,13 +1557,13 @@ h1[data-np-measuring] .np-ch {
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:32 — the co-signers -->
+  <!-- ¶ 11 · 22:32 — the references -->
   <section id="cosigners" class="beat station bsign" data-beat="10">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the co-signers — <i>22:32</i></p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references — <i>22:32</i></p>
         <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">past ten, and these are the only words on this page I did not write.</p>
-        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people signed before you<span style="color:var(--clay)">.</span></h2>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
@@ -1563,20 +1580,20 @@ h1[data-np-measuring] .np-ch {
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="signs">
-          <div class="shead"><span>the counter-signatures</span><span>two hands &middot; <i>on the record</i></span></div>
+          <div class="shead"><span>the references</span><span>written on linkedin &middot; <i>in public</i></span></div>
           <div class="srow">
             <span class="sname">Randall Vollen</span>
-            <svg viewBox="0 0 92 22" aria-hidden="true"><path class="smark" d="M3 16.5c3.6-11.2 6.4-12.4 8-3.6 1.2 6.6 4.4-5.2 8.4-6.6 4.6-1.6 3.2 10.4 7.6 8.2 5-2.6 6.4-9.2 10.4-3.4 3 4.4 7-6 11.6-4.6 3.8 1.2 3 8.6 6.8 6.6 4.2-2.2 5.6-8.8 9.6-5.2 3.4 3 7.2-2.2 11 .4 2.6 1.8 4.8 4.2 8.6 2"/></svg>
-            <span class="srole">signed for station 03 &middot; the yard</span>
+            <span class="swhen">linkedin &middot; 2026</span>
+            <span class="srole">data, AI &amp; analytics executive &mdash; managed the ITSM work at station 03</span>
           </div>
           <div class="srow">
             <span class="sname">Shree Chaturvedi</span>
-            <svg viewBox="0 0 92 22" aria-hidden="true"><path class="smark" d="M4 15.8c2.8-9.6 5.6-11.8 7.4-4.2 1.6 6.8 5.2-4.4 9.2-5.4 4.4-1.1 2.6 9.8 7 8 4.8-2 7-8.6 10.8-3.2 3.2 4.6 6.4-5.6 11-4.4 3.6 1 3.4 8.2 7 6.2 4-2.2 6.2-8.2 10-4.6 3.2 3 6.6-1.8 10.4.8 2.4 1.6 4.4 3.8 8 1.6"/></svg>
-            <span class="srole">signed for stations 06 &amp; 09 &middot; glyph, automl</span>
+            <span class="swhen">linkedin &middot; 2026</span>
+            <span class="srole">computer science + mathematics &mdash; the teammate on stations 06 and 09</span>
           </div>
           <p class="sclose">three of the twelve stops carry a name that is not mine.</p>
         </div>
-        <figcaption>fig. 11 — each signature sits beside the station that person worked on.</figcaption>
+        <figcaption>fig. 11 &mdash; each reference sits beside the station that person actually worked on.</figcaption>
       </figure>
     </div>
   </section>
@@ -1600,7 +1617,7 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="7"><span>21:07 · lifequest</span></li>
           <li data-ph="8"><span>22:05 · agentic automl</span></li>
           <li data-ph="9"><span>22:23 · the review</span></li>
-          <li data-ph="10"><span>22:32 · the co-signers</span></li>
+          <li data-ph="10"><span>22:32 · the references</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
           <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
@@ -1634,12 +1651,14 @@ h1[data-np-measuring] .np-ch {
             </div>
           </div>
         </div>
-        <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
-          end of scroll, not of story · © 2026 ayush yadav — cincinnati, oh · miami university, class of 2026<br>
-          set in fraunces, newsreader &amp; fragment mono · zero dependencies · the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
-          the light ran dawn 06:12 ⟶ nightfall 22:41 — the site&rsquo;s own day arc, ink flip verified at every stop · every station&rsquo;s output landed in a case file, source, or live build
-        </footer>
       </div>
+      <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
+        <span class="cspan">run 042 &middot; 06:12 &rarr; 22:41 &middot; twelve stops &middot; complete</span>
+        <span class="cname">Ayush Yadav</span>
+        <span class="cmeta">&copy; 2026 ayush yadav &mdash; cincinnati, oh &middot; miami university, class of 2026<br>
+        set in fraunces, newsreader &amp; fragment mono &middot; zero dependencies &middot; the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
+        the light ran dawn 06:12 &#10230; nightfall 22:41 &mdash; the site&rsquo;s own day arc, ink flip verified at every stop &middot; every station&rsquo;s output landed in a case file, source, or live build</span>
+      </footer>
     </div>
   </section>
 
@@ -2100,7 +2119,7 @@ const TRAV = [
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
-  { beat: 7, n: 2, label: "the held marks, carried as they are", draw: (c) => { /* a held dash */
+  { beat: 7, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
       c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
@@ -2109,25 +2128,30 @@ const TRAV = [
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
-  { beat: 9, n: 1, label: "run 042, reviewed → the co-signers", draw: (c) => { /* the reviewed report */
+  { beat: 9, n: 1, label: "run 042, reviewed → the references", draw: (c) => { /* the reviewed report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
       c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
-  /* the last corridor. Two copies, because two people signed — this is the
-     only cargo on the line drawn by somebody else's hand. Without it the
-     run's final stretch carried nothing, which read as the line dying. */
-  { beat: 10, n: 2, label: "run 042, countersigned → the human gate", draw: (c) => { /* the co-signed sheet */
+  /* the last corridor. Two copies, because two people wrote — this is the
+     only cargo on the line whose words are somebody else's. Without it the
+     run's final stretch carried nothing, which read as the line dying.
+
+     Drawn as written text, NOT as a signature: nobody signed anything here,
+     and a drawn signature mark for a named real person is a fabricated
+     artifact attributed to them. This carried two invented squiggles once. */
+  { beat: 10, n: 2, label: "two recommendations, carried as written → the human gate", draw: (c) => { /* a written page */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
-      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; /* two hands, two marks */
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; /* ruled lines: it is writing */
       c.beginPath();
-      c.moveTo(-6, -2.4); c.bezierCurveTo(-4.2, -4.4, -2.6, -0.4, -0.8, -2.4);
-      c.moveTo(-6, 2.4); c.bezierCurveTo(-4.2, 0.4, -2.6, 4.4, -0.8, 2.4);
+      c.moveTo(-6, -2.6); c.lineTo(4, -2.6);
+      c.moveTo(-6, 0); c.lineTo(6, 0);
+      c.moveTo(-6, 2.6); c.lineTo(2, 2.6);
       c.stroke();
-      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5;
-      c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
+      c.fillStyle = inkC["--clay-g"]; /* the quote mark: the words are borrowed */
+      c.fillRect(6.2, -4.4, 1.6, 2.4); } },
 ].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
 const setGlyphTraveller = (d) => { glyphDigit = String(d); };
 
