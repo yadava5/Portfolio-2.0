@@ -633,68 +633,26 @@
     65% {opacity:.16; transform:scale(4.4)}
     100%{opacity:0;   transform:scale(6.2)}
   }
-  /* ————— the room lamp ————— */
-  /* Fixed to the right edge of the PAGE. The edge of the screen is the wall it
-     is bolted to, so it needs no card to live in and no ceiling to hang from —
-     which is what was wrong with every version before this one. It fades in at
-     the last station, waits there unlit, and lights the ending when the cord
-     is pulled. Everything is a pure function of two attributes on <body>. */
+  /* The gate's hour line still read "dark." on a page that had turned back
+     to paper. Both lines occupy the same grid cell, so the swap costs no
+     height and cannot move the composition — the one thing the ending is
+     not allowed to do. */
+  .dawnline{display:grid}
+  .dawnline > span{grid-area:1/1}
+  .dawnline .hl-dawn{opacity:0}
+  body[data-dawn="on"] .dawnline .hl-night{opacity:0}
+  body[data-dawn="on"] .dawnline .hl-dawn{opacity:1}
+  @media (prefers-reduced-motion: no-preference){
+    .dawnline > span{transition:opacity 1.1s ease 2.1s}
+  }
+
+  /* ————— the closing epigraph ————— */
+  /* No lamp. The ending is the next morning — see the daybreak block in the
+     engine — so the line is not lit by an object in the room, it comes up with
+     the light. The veil holds the words in the dark and retreats as --lit
+     crosses them, and --lit is driven by the sunrise's own progress. */
   @property --lit{syntax:"<percentage>"; inherits:true; initial-value:0%}
 
-  /* the light. `screen` because light ADDS: the page under it genuinely
-     brightens instead of wearing a pale shape. Anchored at the shade's mouth
-     and spilling down and to the left across the ending. */
-  .roomlight{position:fixed; inset:0; z-index:3; pointer-events:none;
-    opacity:0; mix-blend-mode:screen;
-    background:radial-gradient(58% 62% at calc(100% - 11rem) 20rem,
-      rgba(255,214,158,.20) 0%, rgba(252,206,150,.125) 18%,
-      rgba(248,198,142,.058) 36%, rgba(244,192,138,.020) 56%,
-      rgba(242,190,136,.005) 74%, rgba(242,190,136,0) 88%);
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 62%,transparent 100%);
-    mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 62%,transparent 100%)}
-  body[data-lamp="on"] .roomlight{opacity:1}
-  /* it only exists at the gate — nothing lights the earlier stations */
-  .roomlight, .walllamp{visibility:hidden}
-  body.atgate .roomlight, body.atgate .walllamp{visibility:visible}
-
-  .walllamp{position:fixed; right:0; top:clamp(1rem,7vh,6rem); z-index:4;
-    width:clamp(210px,20vw,340px); aspect-ratio:340/330;
-    padding:0; margin:0; background:none; border:0; cursor:pointer;
-    opacity:0; transform:translateX(14px); line-height:0}
-  body.atgate .walllamp{opacity:1; transform:none}
-  .walllamp:focus-visible{outline:1px solid var(--clay); outline-offset:-6px}
-  .walllamp svg{display:block; width:100%; height:100%; overflow:visible}
-  .walllamp svg *{transform-box:view-box}
-
-  .walllamp line, .walllamp path, .walllamp ellipse, .walllamp circle{fill:none;
-    stroke:var(--ink-2); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
-  .walllamp .l-wall{stroke-width:1.6; opacity:.26}
-  .walllamp .l-brace{stroke-width:1.7; opacity:.6}
-  .walllamp .l-shade, .walllamp .l-rim{stroke:var(--ink); stroke-width:2.6}
-  .walllamp .l-rimback{stroke-width:1.5; opacity:.4}
-  .walllamp .l-sheen{stroke-width:1.5; opacity:.26}
-  .walllamp .l-throat{fill:url(#throatgrad); stroke:none; opacity:0}
-  .walllamp .l-thread{stroke-width:1.4; opacity:.5}
-  .walllamp .l-fil{stroke-width:2; opacity:.7}
-  .walllamp .l-ring{stroke-width:2.6}
-  .walllamp:hover .l-ring, .walllamp:hover .l-bead{stroke:var(--clay)}
-
-  body[data-lamp="on"] .walllamp .l-fil{stroke:var(--clay); stroke-width:2.8; opacity:1}
-  body[data-lamp="on"] .walllamp .l-glass{stroke:var(--clay); opacity:.94}
-  body[data-lamp="on"] .walllamp .l-rim{stroke:var(--clay)}
-  body[data-lamp="on"] .walllamp .l-rimback{stroke:var(--clay); opacity:.55}
-  body[data-lamp="on"] .walllamp .l-throat{opacity:.3}
-  body[data-lamp="on"] .walllamp .l-sheen{opacity:.5}
-  .walllamp .l-chain{transform-origin:243px 236px}
-
-  .lamptag{position:absolute; right:calc(100% + .3rem); bottom:9%;
-    white-space:nowrap; font-size:.62rem; letter-spacing:.08em;
-    color:var(--ink-2); opacity:0; line-height:1.4}
-  body.atgate .walllamp:hover .lamptag, body.atgate .walllamp:focus-visible .lamptag{opacity:.72}
-
-  /* THE REVEAL — a veil, not a fade. The line is always on the page; the dark
-     lies over it and retreats as the light arrives. The veil takes the card's
-     own paint via --veil so the unlit patch IS the card. */
   .endlight{position:relative; margin:1.4rem 0 .2rem}
   .endquote{position:relative; margin:0; --lit:0%}
   .endquote blockquote{font-family:var(--display); font-style:italic;
@@ -703,40 +661,23 @@
   .endquote figcaption{margin-top:.6rem; font-family:var(--mono);
     font-size:.66rem; letter-spacing:.05em; color:var(--ink-2); text-align:center}
   .endquote::after{content:""; position:absolute; inset:-1.5rem -2.2rem -1.1rem;
-    background:radial-gradient(ellipse 58% 66% at 50% 50%,
-      var(--veil) 0%, var(--veil) 44%,
-      color-mix(in srgb, var(--veil) 62%, transparent) 72%,
-      color-mix(in srgb, var(--veil) 18%, transparent) 88%,
+    background:radial-gradient(ellipse 60% 68% at 50% 50%,
+      var(--veil) 0%, var(--veil) 46%,
+      color-mix(in srgb, var(--veil) 60%, transparent) 74%,
+      color-mix(in srgb, var(--veil) 16%, transparent) 89%,
       transparent 100%);
     pointer-events:none;
-    -webkit-mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 24%),#000 var(--lit));
-    mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 24%),#000 var(--lit))}
-  body[data-lamp="on"] .endquote{--lit:132%}
-  body[data-lamp="on"] .endquote blockquote{
-    text-shadow:0 0 24px rgba(246,214,168,.22), 0 0 7px rgba(246,214,168,.12)}
-  @media print{ .endquote::after{display:none} .roomlight,.walllamp{display:none} }
+    -webkit-mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 26%),#000 var(--lit));
+    mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 26%),#000 var(--lit))}
+  body[data-dawn="on"] .endquote{--lit:134%}
   .lampnote{display:none}
+  @media print{ .endquote::after{display:none} }
 
   @media (prefers-reduced-motion: no-preference){
-    .roomlight{transition:opacity 1.15s ease .1s}
-    .walllamp{transition:opacity .8s ease, transform .9s cubic-bezier(.22,1,.36,1)}
-    .endquote{transition:--lit 1.5s cubic-bezier(.36,.86,.3,1) .2s}
-    .endquote blockquote{transition:text-shadow 1.1s ease .35s}
-    .walllamp .l-fil, .walllamp .l-glass, .walllamp .l-rim, .walllamp .l-rimback,
-    .walllamp .l-ring, .walllamp .l-bead{transition:stroke .5s ease, opacity .5s ease}
-    .walllamp .l-throat, .walllamp .l-sheen{transition:opacity .6s ease}
-    .lamptag{transition:opacity .35s ease}
-    .pulling .l-chain{animation:pullchain .8s cubic-bezier(.3,1.4,.5,1) both}
-    body[data-lamp="on"] .walllamp .l-throat{animation:filament 1.3s ease-out both}
-  }
-  @keyframes pullchain{
-    0%{transform:translateY(0) scaleY(1)} 20%{transform:translateY(13px) scaleY(1.22)}
-    46%{transform:translateY(-2.4px) scaleY(.97)} 68%{transform:translateY(4px) scaleY(1.07)}
-    85%{transform:translateY(-.8px) scaleY(.99)} 100%{transform:translateY(0) scaleY(1)}
-  }
-  @keyframes filament{
-    0%{opacity:0} 7%{opacity:.36} 13%{opacity:.06}
-    26%{opacity:.4} 36%{opacity:.11} 100%{opacity:.3}
+    /* the words come up with the light, not before it: the delay is the
+       length of the ink flip, so the line surfaces into a page that has
+       already turned back to paper */
+    .endquote{transition:--lit 2.4s cubic-bezier(.4,.8,.3,1) 1.5s}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1786,7 +1727,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div>
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dark. one decision left, and it was never going to be the machine&rsquo;s.</p>
+        <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
         <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
@@ -1860,57 +1801,6 @@ h1[data-np-measuring] .np-ch {
   </section>
 
 </main>
-
-<!-- ————— the room lamp —————
-     Fixed to the right edge of the PAGE, not tucked inside a card: the edge of
-     the screen is the wall it is bolted to. It fades in at the last station,
-     hangs there unlit, and throws its light left across the ending when the
-     switch is pulled. The wash blends with `screen`, which is what light
-     actually does — it ADDS — so the page under it genuinely brightens rather
-     than having a pale shape laid over it. -->
-<div class="roomlight" id="roomlight" aria-hidden="true"></div>
-<button class="walllamp" id="lampbtn" type="button" aria-pressed="false"
-        aria-controls="endquote" aria-label="Turn the reading lamp on to light the closing line">
-  <svg viewBox="0 0 340 330" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="throatgrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="var(--clay)" stop-opacity=".06"/>
-        <stop offset="100%" stop-color="var(--clay)" stop-opacity=".82"/>
-      </linearGradient>
-    </defs>
-    <!-- the wall, and the plate bolted to it -->
-    <line class="l-wall"  x1="331" y1="4"   x2="331" y2="326"/>
-    <path class="l-plate" d="M306 96 Q306 90 312 90 L326 90 L326 178 L312 178 Q306 178 306 172 Z"/>
-    <circle class="l-boltA" cx="316" cy="106" r="2.6"/>
-    <circle class="l-boltB" cx="316" cy="162" r="2.6"/>
-    <!-- the arm, with the brace that keeps it up -->
-    <path class="l-arm"   d="M306 134 L168 134"/>
-    <path class="l-brace" d="M304 168 L182 138"/>
-    <circle class="l-elbow" cx="168" cy="134" r="6"/>
-    <path class="l-drop"  d="M168 134 L168 152"/>
-    <!-- the shade, thrown open at the page -->
-    <path   class="l-throat" d="M78 226 L168 152 L258 226 Z"/>
-    <path   class="l-shade"  d="M78 226 L168 152 L258 226"/>
-    <ellipse class="l-rim"   cx="168" cy="226" rx="90" ry="15"/>
-    <path   class="l-rimback" d="M78 226 A90 15 0 0 1 258 226"/>
-    <line   class="l-sheen"  x1="104" y1="212" x2="140" y2="171"/>
-    <!-- the lamp -->
-    <path class="l-cap"    d="M155 228 L155 244 L181 244 L181 228"/>
-    <line class="l-thread" x1="155" y1="234" x2="181" y2="234"/>
-    <line class="l-thread" x1="155" y1="239" x2="181" y2="239"/>
-    <path class="l-glass"  d="M156 245 C149 254 149 270 158 277 C164 281 172 281 178 277 C187 270 187 254 180 245 Z"/>
-    <path class="l-fil"    d="M161 258 L165 267 L168 256 L171 267 L175 258"/>
-    <!-- the cord, and a ring big enough to actually take a click -->
-    <g class="l-chain">
-      <path class="l-pull" d="M243 236 C245 258 241 274 243 292"/>
-      <circle class="l-bead" cx="243" cy="252" r="2.6"/>
-      <circle class="l-bead" cx="242" cy="268" r="2.6"/>
-      <circle class="l-bead" cx="243" cy="284" r="2.6"/>
-      <circle class="l-ring" cx="243" cy="306" r="13"/>
-    </g>
-  </svg>
-  <span class="lamptag mono" id="lampnote">the lamp is off &middot; pull the cord</span>
-</button>
 
 <script type="module">
 /* ————————————————————————————————————————————————————————————————
@@ -3214,6 +3104,9 @@ const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361
 const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the co-signers", "the gate — held"];
 let lastClock = -1, lastPhase = -1;
 function setMast(beat, p) {
+  /* the clock belongs to the sunrise once it has run: scrolling back into
+     the gate must not put 22:41 back on a page that now reads 06:12 */
+  if (dawned && beat === 11) { dawnClock(dawnP); return; }
   const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
   const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
   if (m !== lastClock) { /* write only on minute change: no idle layout */
@@ -3221,6 +3114,101 @@ function setMast(beat, p) {
     $("mclock").textContent = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
   }
   if (beat !== lastPhase) { lastPhase = beat; $("mphase").textContent = PHASE_NAMES[beat]; }
+}
+
+/* ————— daybreak ————— */
+/* The ending is not a lamp. The page has run one day, dawn 06:12 to nightfall
+   22:41, and approving runs it forward through midnight into the next morning:
+   the light comes back up, the ink flips from cream to dark, the clock rolls
+   past 24:00 to 06:12, and the closing line surfaces into a page that is paper
+   again. "To make an end is to make a beginning" stops being a quotation about
+   the work and becomes a description of what just happened on screen.
+
+   THE STOPS ARE THE DUSK CHOREOGRAPHY, WALKED BACKWARDS. That list was
+   contrast-verified stop by stop, and it contains a deliberate luminance JUMP
+   at its flip — 0.64 to 0.43 — precisely so the ink never renders across the
+   mid band where neither cream nor dark holds contrast. Reversing it inherits
+   that guarantee instead of re-deriving it: the same jump, taken upward. */
+const DAWN_STOPS = [
+  /* night, lifting: DUSK 11 → 7 */
+  [1, 0.3471, 0.0218, 55.56], [1, 0.3679, 0.0244, 56.67],
+  [1, 0.3886, 0.0269, 57.78], [1, 0.4093, 0.0295, 58.89], [1, 0.43, 0.032, 60],
+  /* the flip, upward: day resumes at the luminance dusk jumped down from */
+  [0, 0.64, 0.0388, 62], [0, 0.6872, 0.0405, 65.64], [0, 0.7343, 0.0476, 69.28],
+  [0, 0.7815, 0.0516, 72.91], [0, 0.8287, 0.0511, 76.55], [0, 0.8759, 0.0463, 80.19],
+  [0, 0.923, 0.0388, 83.83],
+  /* and on into the morning: WAY 4 → 0 */
+  [0, 0.9478, 0.0241, 85.79], [0, 0.964, 0.0123, 91.52],
+  [0, 0.9743, 0.0102, 81.8], [0, 0.9671, 0.0181, 78.24],
+];
+const DAWN_MS = 5400;
+let dawned = false, dawnRAF = 0, dawnT0 = 0, dawnP = 0;
+
+function dawnArc(p) {
+  const f = clamp(p, 0, 1) * (DAWN_STOPS.length - 1);
+  const i = Math.min(DAWN_STOPS.length - 2, Math.floor(f));
+  const a = DAWN_STOPS[i], b = DAWN_STOPS[i + 1];
+  /* the same rule the dusk uses: never render between the two sides */
+  const t = a[0] !== b[0] ? 0 : f - i;
+  return {
+    rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
+    night: a[0] === 1,
+    /* the sun is below the horizon through the night stops, then comes up at
+       the dawn position the moment the page turns back to paper */
+    sun: a[0] === 1 ? 7 : lerp(0, 0.62, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
+  };
+}
+
+/* one applier, so the scroll loop and the sunrise cannot drift apart */
+function applyArc(arc, scrollFrac) {
+  const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
+  if (key !== lastArcKey && !FLAGS.has("noarc")) {
+    lastArcKey = key;
+    $("field").style.background = rgbCss(arc.rgb);
+    /* the masthead scrim keeps step with the field, so exiting elements
+       pass BEHIND the chrome instead of printing over its text */
+    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
+    if (arc.night !== window.__world.night) {
+      document.documentElement.toggleAttribute("data-night", arc.night);
+      window.__world.night = arc.night;
+      refreshInk(); repaintPad();
+    }
+  }
+  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0);
+}
+
+/* 22:41 → 24:00 → 06:12. The clock passes midnight rather than rewinding:
+   this is the next day, not the same one played backwards. */
+const DAWN_CLOCK_FROM = 1361, DAWN_CLOCK_TO = 1440 + 372;
+function dawnClock(p) {
+  const m = Math.round(lerp(DAWN_CLOCK_FROM, DAWN_CLOCK_TO, p)) % 1440;
+  $("mclock").textContent =
+    `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+}
+
+/* A one-shot loop, not an idle one: it is started by a click, it terminates,
+   and it cancels itself if the reader scrolls away mid-sunrise. The page's
+   zero-idle-cost property survives because nothing here outlives the gesture. */
+function daybreak() {
+  if (dawned) return;
+  dawned = true;
+  document.body.dataset.dawn = "on";
+  if (RM) { /* no journey for a reader who asked for none — just the morning */
+    dawnP = 1; lastArcKey = ""; applyArc(dawnArc(1), 1); dawnClock(1);
+    $("mphase").textContent = "the next morning"; return;
+  }
+  dawnT0 = performance.now();
+  const step = (now) => {
+    const p = clamp((now - dawnT0) / DAWN_MS, 0, 1);
+    const e = p * p * (3 - 2 * p);
+    dawnP = e;
+    lastArcKey = "";               /* the sunrise owns the field while it runs */
+    applyArc(dawnArc(e), 1);
+    dawnClock(e);
+    if (p >= 0.34) $("mphase").textContent = "the next morning";
+    dawnRAF = p < 1 ? requestAnimationFrame(step) : 0;
+  };
+  dawnRAF = requestAnimationFrame(step);
 }
 
 /* ————— the engine ————— */
@@ -3255,23 +3243,12 @@ function work(y) {
   }
   window.__world.beat = beat; window.__world.beatP = +bp.toFixed(3);
 
-  /* the ground shifts: arc color + night flip + wash */
-  const arc = arcColor(beat, bp);
-  const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
-  if (key !== lastArcKey && !FLAGS.has("noarc")) {
-    lastArcKey = key;
-    $("field").style.background = rgbCss(arc.rgb);
-    /* the masthead scrim keeps step with the field, so exiting elements
-       pass BEHIND the chrome instead of printing over its text */
-    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
-    if (arc.night !== window.__world.night) {
-      document.documentElement.toggleAttribute("data-night", arc.night);
-      window.__world.night = arc.night;
-      refreshInk(); repaintPad();
-    }
-  }
+  /* the ground shifts: arc color + night flip + wash. Once the run has been
+     approved the last station keeps the morning it was given, so scrolling
+     back into it does not put the night back on. */
+  const arc = dawned && beat === 11 ? dawnArc(dawnP) : arcColor(beat, bp);
+  applyArc(arc, y / Math.max(1, docH - vh));
   window.__world.arc = +(beat + bp).toFixed(3);
-  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, y / Math.max(1, docH - vh), arc.sun, arc.night ? 1 : 0);
   if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
   if (document.body.classList.contains("no-gl")) {
     const t = clamp(arc.sun / 5, 0, 1);
@@ -3674,16 +3651,15 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
+  /* and the day comes back. It starts once the ladder has finished reading the
+     run back, so the light lifts on a page that has already settled. */
+  setTimeout(daybreak, RM ? 0 : 1150);
+
   /* The lamp comes on last, once the ladder has finished reading the run
      back — the light is the reward for reaching the end, not a decoration
      that arrives with it. It is a real switch afterwards, so the reader can
      put it out again. RM lights it immediately: a reader who has asked for
      less motion should not have to wait through a beat they cannot see. */
-  /* The lamp is already on the wall, unlit, and has been since the reader
-     arrived — so there is nothing to fly in and nothing to pop. Approving
-     throws the switch: the chain takes the weight, the filament finds its
-     current, and the light falls across the closing line. */
-  setTimeout(() => { pullCord(); setLamp(true); }, RM ? 0 : 900);
 
   /* Approving expands the aftergate, which grows the right column by ~340px.
      `.b8` centres its grid, so the WHOLE composition re-seats and the ladder
@@ -3700,39 +3676,9 @@ $("approve").addEventListener("click", () => {
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
 });
 
-/* ————— the lamp ————— */
-/* One state, three surfaces: the data attribute drives the cone, the bulb and
-   the epigraph's own opacity, so "the lamp lights the quote" is the literal
-   mechanism rather than two things fading in together. */
-function setLamp(on) {
-  const btn = $("lampbtn");
-  document.body.dataset.lamp = on ? "on" : "off";
-  btn.setAttribute("aria-pressed", String(on));
-  btn.setAttribute("aria-label",
-    on ? "Turn the reading lamp off" : "Turn the reading lamp on to light the closing line");
-  $("lampnote").innerHTML = on
-    ? "the lamp is lit &middot; pull the cord to put it out"
-    : "the lamp is off &middot; pull the cord";
-}
-let pullTimer = 0;
-/* the cord answers the hand before the light does. Restart on every pull by
-   removing the class and forcing a reflow, so a second tug never lands on a
-   still-running swing and read as a dead click. */
-function pullCord() {
-  const btn = $("lampbtn");
-  btn.classList.remove("pulling"); void btn.offsetWidth; btn.classList.add("pulling");
-  clearTimeout(pullTimer);
-  pullTimer = setTimeout(() => btn.classList.remove("pulling"), 1000);
-}
-$("lampbtn").addEventListener("click", () => {
-  pullCord();
-  setLamp(document.body.dataset.lamp !== "on");
-});
 
 /* the lamp is mounted and OFF from the start: an absent data-lamp meant the
    first pull computed its next state from undefined. */
-setLamp(false);
-
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */
 addEventListener("error", () => document.body.classList.add("settled"));
