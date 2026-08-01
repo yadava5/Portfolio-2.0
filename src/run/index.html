@@ -20,7 +20,7 @@
 
      ROUND 4 — the run carries the WHOLE home story, not six product
      stations. A pipeline has provenance, a history and an operating
-     discipline, so the line now makes eleven stops: the start; WHO
+     discipline, so the line now makes twelve stops: the start; WHO
      built it (¶02 — the engineer of record signs the line); the YARD
      it left (¶03 — the Miami ITSM job, told with its real freight:
      1.6M+ OAS query logs into a 57.8M-row SQLite field-usage table,
@@ -508,11 +508,14 @@
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
      (round-5 census, desk; mobile's taller document was unaffected).
-     40vh of tail below the gate gives the entrance room to finish and
-     lets the ending BE the ending — the token halts, the page waits.
+     A tail below the gate lets the ending BE the ending — the token halts,
+     the page waits. It was 40vh, which measured 480px of dead screen at
+     1200px tall and read as the page failing to end rather than arriving.
+     15vh: the gate's own entrance is `in .12 .4` and finishes long before
+     the section does, so the tail was never paying for it.
      ::after on main, not padding on .b8: the beat is a centered flex
      seat, and asymmetric padding would re-seat its content mid-frame. */
-  main::after{content:""; display:block; height:40vh}
+  main::after{content:""; display:block; height:15vh}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
     gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
@@ -1049,6 +1052,77 @@ h1[data-np-measuring] .np-ch {
     animation-delay: 120ms;
   }
 }
+
+/* ── ¶11 the co-signers ─────────────────────────────────────────────
+   Set as a pulled quote, not a testimonial card: no avatars, no stars,
+   no rounded panel. The page is a paper record and a reference letter
+   is the most paper thing on it. The clay rule on the left is the same
+   mark the thread uses, so the endorsement reads as part of the line
+   rather than an ornament bolted beside it. */
+.cosign {
+  margin: 1.6rem 0 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 2px solid var(--clay-g);
+}
+.cosign blockquote {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.cosign figcaption {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  align-items: baseline;
+  font: 400 0.74rem/1.5 "Fragment Mono", ui-monospace, monospace;
+  color: var(--ink-2);
+}
+.cosign figcaption b {
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.cosign figcaption .rel {
+  color: var(--clay);
+}
+@media (max-width: 640px) {
+  .cosign figcaption { display: block; }
+  .cosign figcaption span { display: block; }
+}
+
+/* An epigraph's signature, and the one borrowed line on the page. Both are
+   set quieter than the sentence they attach to: the point of a citation is
+   that it can be checked, not that it is loud. */
+  .thesis .attrib{display:block; margin-top:.5rem; font-family:var(--mono); font-size:.68rem;
+    letter-spacing:.05em; color:var(--ink-2); font-style:normal; opacity:.8}
+  .borrowed{margin:1.3rem 0 0; padding:0 0 0 1.1rem; border-left:1px solid var(--hair-strong)}
+  .borrowed blockquote{margin:0; font-family:var(--display); font-style:italic;
+    font-size:clamp(.98rem,1.35vw,1.1rem); line-height:1.5; color:var(--ink-2)}
+  .borrowed figcaption{margin-top:.45rem; font:400 .68rem/1.5 var(--mono);
+    letter-spacing:.04em; color:var(--ink-2); opacity:.85}
+
+/* The hero's poem. Larger than the station quotes because it is the only one
+   the reader meets before any evidence, and the Spanish is set above its
+   translation rather than beside it — a translated poem that hides its
+   original is quoting the translator. */
+  .hero-poem{margin:1.5rem 0 0; max-width:46ch}
+  .hero-poem blockquote{font-family:var(--display); font-style:italic;
+    font-size:clamp(1.02rem,1.5vw,1.22rem); line-height:1.45; color:var(--ink)}
+  .hero-poem .trans{margin:.4rem 0 0; font-family:var(--display);
+    font-size:clamp(.9rem,1.2vw,1rem); line-height:1.45; color:var(--ink-2)}
+  .hero-poem figcaption{margin-top:.5rem}
+
+/* The hour lines. Quieter than the station's own heading and set in the
+   reading face rather than the mono — they are the light in the room, not a
+   label on it. Italic because they are the one voice on the page that is
+   describing rather than claiming. */
+  .hourline{margin:.35rem 0 0; font-family:var(--display); font-style:italic;
+    font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45;
+    color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em}
 </style>
 </head>
 <body>
@@ -1073,14 +1147,14 @@ h1[data-np-measuring] .np-ch {
     <span id="mcount">0 / 6</span>
   </header>
   <ol>
-    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">macro-f1 0.9791 · 96-sample gate</span></li>
+    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">rules macro-f1 0.9791 · 96-sample gate</span></li>
     <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,168 tests</span></li>
     <li data-st="3"><span class="idx">03</span><b>glyph</b><span class="m">97.01% · 10,000-image test set</span></li>
     <li data-st="4"><span class="idx">04</span><b>jetpack-compress</b><span class="m">72 tests, 0 failures · jdk 25</span></li>
     <li data-st="5"><span class="idx">05</span><b>lifequest</b><span class="m">prototype · held marks stay held</span></li>
     <li data-st="6"><span class="idx">06</span><b>agentic automl</b><span class="m">langgraph + 12 mcp tools · gated ×7</span></li>
   </ol>
-  <p class="foot">stamped as the token passes each station</p>
+  <p class="foot">six projects · each ticks off as you reach it</p>
 </aside>
 
 <main id="top">
@@ -1089,6 +1163,7 @@ h1[data-np-measuring] .np-ch {
   <section class="beat b1" data-beat="0">
     <div class="beat-inner">
       <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">first light. nothing has been decided yet.</p>
       <!-- The scroll-fx rides the PLATE, not the h1. On the h1 it
            translated the type while leaving the machine overlay (a
            sibling, absolutely positioned) behind: measured 162.6px of
@@ -1107,16 +1182,18 @@ h1[data-np-measuring] .np-ch {
            838.5x211.7 inside an 838.5x176.4 element, which preserveAspectRatio
            then scaled by 0.833 and centred, shifting every machine 70px right.
            That is the A landing on the y. Nothing may share this box. -->
-      <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
-      <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
-      <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
+      <button type="button" class="np-replay" data-np-replay hidden>watch it again ⟲</button>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
            at or before y 0): a hero that assembles itself costs LCP and
            reads as a loading screen, and the census showed the thesis at
            op 0.8 and the cue at op 0 on arrival — the scroll instruction
            was invisible until you had already scrolled. Round-5 call. -->
-      <p class="thesis" data-fx="in 0 .08 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
-      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
+      <figure class="borrowed hero-poem" data-fx="in .02 .12 y 4 | drift 12">
+        <blockquote lang="es">Caminante, no hay camino,<br>se hace camino al andar.</blockquote>
+        <p class="trans">Traveller, there is no road &mdash; the road is made by walking.</p>
+        <figcaption>Antonio&nbsp;Machado &middot; <i>Proverbios y cantares</i>&nbsp;XXIX, Campos de Castilla, 1912</figcaption>
+      </figure>
+      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — twelve stops, dawn to dark</p>
     </div>
   </section>
 
@@ -1125,24 +1202,19 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun clears the roofline, and the day has to be answered for.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
-        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the whole path — the interface, the services behind it, the data they run on, and the machine learning when the problem calls for it. Every claim on this line carries a receipt.</p>
-        <div class="dict" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
-          <p class="hw"><span aria-hidden="true">ap&#183;prov&#183;al</span><span class="sr" style="position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)">approval</span></p>
-          <p class="pr"><span aria-hidden="true">/ &#601;&#712;pru&#720;&#183;v&#601;l / · </span>noun</p>
-          <p class="sense">1. the moment a human signs for a machine&rsquo;s work. 2. the step I leave to a person.</p>
-        </div>
-        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the interface, the services behind it, the data they run on, and the machine learning when a problem needs it. Every claim on this line carries a receipt.</p>        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="engcard">
-          <header><span>engineer of record</span><span>filed <i>06:58</i></span></header>
+          <header><span>who built this</span><span>filed <i>06:58</i></span></header>
           <div class="sigwell">
             <span class="sig" id="sig">Ayush Yadav</span>
             <span class="signib" id="signib" aria-hidden="true"></span>
-            <p class="sigrole">signs the line before you ride it</p>
+            <p class="sigrole">answers for every claim on this page</p>
           </div>
           <ul class="engrows">
             <li><span>base</span><b>cincinnati, oh</b></li>
@@ -1151,7 +1223,7 @@ h1[data-np-measuring] .np-ch {
             <li><span>handles</span><span><a href="https://github.com/yadava5">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a></span></li>
           </ul>
         </div>
-        <figcaption>fig. 02 — the engineer signs on as the run leaves the depot. <i>the operator seat stays yours.</i></figcaption>
+        <figcaption>fig. 02 — the record card: what I build, and where to find me.</figcaption>
       </figure>
     </div>
   </section>
@@ -1165,18 +1237,23 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">early light — everything has a shape and nothing has a name.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Five years of query logs. Zero structure.</p>
+        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
+          <blockquote>&ldquo;The purpose of computing is insight, not numbers.&rdquo;</blockquote>
+          <figcaption>Richard&nbsp;W.&nbsp;Hamming &middot; <i>Numerical Methods for Scientists and Engineers, 1962</i></figcaption>
+        </figure>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
           <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
           tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
           legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the freight has papers</span> — <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the inventory lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
-        <figcaption>fig. 03 — the yard: three feeders, one line out. <i>the merge is the same thread you are riding.</i></figcaption>
+        <figcaption>fig. 03 — three sources in, one table out. <i>the merge is the thread you are following.</i></figcaption>
       </figure>
     </div>
     <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
@@ -1196,6 +1273,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the morning post, and the first thing anyone does with it is sort.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
@@ -1217,6 +1295,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">noon. nothing casts a shadow, so nothing hides in one.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
@@ -1254,7 +1333,12 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">mid-afternoon, when the light goes hard and shows the edges.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
+        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
+          <blockquote>&ldquo;We should forget about small efficiencies, say about 97% of the time&hellip; yet we should not pass up our opportunities in that critical 3%.&rdquo;</blockquote>
+          <figcaption>Donald&nbsp;E.&nbsp;Knuth &middot; <i>Structured Programming with go to Statements, ACM Computing Surveys, 1974</i></figcaption>
+        </figure>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">No frameworks. Just math, memory, and C++.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
@@ -1299,6 +1383,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun going down, and the work speeding up to beat it.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
@@ -1319,9 +1404,9 @@ h1[data-np-measuring] .np-ch {
           <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
           <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack"><span class="bfill" id="jScalar"></span></span><span class="bval">66&#8202;mb/s</span></div>
           <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">455&#8202;mb/s</span></div>
-          <p class="bfoot">6.5× is the conservative 99% ci bound — the point estimate is 6.89×</p>
+          <p class="bfoot">6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89×</p>
         </div>
-        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch. <i>the member seam takes the clay tick<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
+        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member. <i>the clay tick marks each seam<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -1340,8 +1425,13 @@ h1[data-np-measuring] .np-ch {
   <section class="beat station b6" data-beat="7">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · the honest hour — <i>21:07</i></p>
+        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · fifth station · the honest hour — <i>21:07</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dusk — the hour that shows you what did not get finished.</p>
         <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="dusk" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
+        <figure class="borrowed" data-fx="in .09 .32 y 5 | drift 11" data-fx-sync="dusk">
+          <blockquote>&ldquo;Plan to throw one away; you will, anyhow.&rdquo;</blockquote>
+          <figcaption>Frederick&nbsp;P.&nbsp;Brooks&nbsp;Jr. &middot; <i>The Mythical Man-Month</i>, 1975</figcaption>
+        </figure>
         <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. Born at Social Innovation Weekend, March 2025 — a 7-person team, one weekend, React + NestJS. It would need a partner to scale, and it says so.</p>
         <div class="quests" data-fx="in .12 .38 y 6 | out .48 .58 y 4 | drift 10" data-fx-sync="dusk">
           <div class="q" data-q="0"><span class="qi">01</span><span class="qm">—</span><span class="qn">mission card — playable</span><span class="qs">…</span></div>
@@ -1366,10 +1456,15 @@ h1[data-np-measuring] .np-ch {
   <section class="beat station flip b7" data-beat="8">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · last station — <i>22:05</i></p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · sixth station · the last — <i>22:05</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">lamplight. the machine works on; somebody stays to watch it.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The senior-design flagship: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
+        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
+          <blockquote>&ldquo;The Analytical Engine has no pretensions whatever to originate anything. It can do whatever we know how to order it to perform.&rdquo;</blockquote>
+          <figcaption>Ada&nbsp;Lovelace &middot; <i>Note&nbsp;G, Sketch of the Analytical Engine, Scientific Memoirs, 1843</i></figcaption>
+        </figure>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The senior-design capstone: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
           <b>12 mcp tools</b> — most of them notebook hands: read_cell · write_cell · run_cell …<br>
           the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
@@ -1389,12 +1484,17 @@ h1[data-np-measuring] .np-ch {
        linked receipt, and the ledger beside it shows my own gates'
        honest dispositions — two REFUSED to sign automatically. That is
        the argument for the human gate one stop down the line. -->
-  <section class="beat station bhow" data-beat="9">
+  <section id="review" class="beat station bhow" data-beat="9">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the last of the light, spent checking what the day actually held.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
+        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
+          <blockquote>&ldquo;The first principle is that you must not fool yourself &mdash; and you are the easiest person to fool.&rdquo;</blockquote>
+          <figcaption>Richard&nbsp;P.&nbsp;Feynman &middot; <i>Cargo Cult Science</i>, Caltech commencement address, 1974</figcaption>
+        </figure>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 passed · 10 skipped — Applied's validation ledger ↗</a></p></div>
@@ -1424,11 +1524,37 @@ h1[data-np-measuring] .np-ch {
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:41 — the approval gate -->
-  <section class="beat b8" data-beat="10">
+  <!-- ¶ 11 · 22:32 — the co-signers -->
+  <section id="cosigners" class="beat station bsign" data-beat="10">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the co-signers — <i>22:32</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">past ten, and these are the only words on this page I did not write.</p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people signed before you<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
+
+        <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
+          <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage, giving the team visibility into report adoption, demand patterns, and technical load. That work informed platform decisions and prioritization&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
+          <figcaption><b>Randall Vollen</b><span>&middot;&nbsp;data, AI &amp; analytics executive, miami university</span><span class="rel">&middot;&nbsp;managed the ITSM work at station 03</span></figcaption>
+        </figure>
+
+        <figure class="cosign" data-fx="in .14 .38 y 6 | out .94 1.04 y -5 | drift 11">
+          <blockquote>&ldquo;I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work.&rdquo;</blockquote>
+          <figcaption><b>Shree Chaturvedi</b><span>&middot;&nbsp;computer science + mathematics, miami university</span><span class="rel">&middot;&nbsp;the teammate on stations 06 and 09</span></figcaption>
+        </figure>
+
+        <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/">the recommendations, in full &#8599;</a></p>
+      </div>
+    </div>
+    <figcaption class="figc" data-fx="in .2 .5 y 4 | drift 8">fig. 11 — each signature sits beside the station that person worked on.</figcaption>
+  </section>
+
+  <!-- ¶ 12 · 22:41 — the approval gate -->
+  <section id="gate" class="beat b8" data-beat="11">
     <div class="beat-inner">
       <div>
-        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 11 · the approval gate — <i>22:41</i></p>
+        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dark. one decision left, and it was never going to be the machine's.</p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
         <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
@@ -1442,17 +1568,18 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="7"><span>21:07 · lifequest</span></li>
           <li data-ph="8"><span>22:05 · agentic automl</span></li>
           <li data-ph="9"><span>22:23 · the review</span></li>
+          <li data-ph="10"><span>22:32 · the co-signers</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
-          <li data-ph="10"><span>deploy — yours; no scroll reaches it</span></li>
+          <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
-        <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the run token you have been following halts here. it will wait as long as it takes.</p>
+        <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
       </div>
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
           <h3>run 042 — the manifest, complete.</h3>
-          <p class="mono" style="font-size:.7rem">one day · eleven stops · six stations proof-cited · one signature missing</p>
+          <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing</p>
           <ul class="gl">
-            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">macro-f1 0.9791 · 96-sample gate</span></li>
+            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">rules macro-f1 0.9791 · 96-sample gate</span></li>
             <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,168 passed · 11 skipped — 635 fe + 533 be</span></li>
             <li data-st="3"><span class="gi">03</span><b>glyph</b><span class="gm">97.01% — 9,701/10,000 · macro-f1 0.9698</span></li>
             <li data-st="4"><span class="gi">04</span><b>jetpack-compress</b><span class="gm">72 tests, 0 failures · jdk 25</span></li>
@@ -1798,7 +1925,7 @@ function sizeThread() {
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
-  /* eleven stops: arrival, who(N), the yard(F), applied(N), cadence(F),
+  /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
      glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
      Normal stations keep the thread by the prose margin; flips cross it.
      The last x hugs the ladder column: the line must arrive at the gate

@@ -242,7 +242,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                         capture — titles quoted from the poster.
                       </span>
                       <span className="text-ink-secondary mt-1 block">
-                        description: {artifact.source} ·{" "}
+                        source: {artifact.source} ·{" "}
                         {artifact.date ?? "date not recorded"}
                       </span>
                       <span className="link-draw text-ink mt-3 inline-block">
@@ -284,7 +284,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                         fig. {fig} — {artifact.label}.
                       </span>
                       <span className="text-ink-secondary mt-1 block">
-                        description: {artifact.source} ·{" "}
+                        source: {artifact.source} ·{" "}
                         {artifact.date ?? "date not recorded"} · open to inspect
                         ⟶
                       </span>
@@ -318,7 +318,7 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                     fig. {fig} — {artifact.label}.
                   </span>
                   <span className="text-ink-secondary mt-1 block">
-                    description: {artifact.source} ·{" "}
+                    source: {artifact.source} ·{" "}
                     {artifact.date ?? "date not recorded"} · open to inspect ⟶
                   </span>
                 </span>

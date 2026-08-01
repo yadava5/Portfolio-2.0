@@ -185,3 +185,52 @@ run-to-run JIT variance.
 The site now quotes **one run throughout** — the rigorous one. Previously it
 took 2.8× from the rigorous run and 6.5× from the quick run, which is
 cherry-picking even though both numbers were individually true.
+
+---
+
+## The borrowed voices — research, and one deliberate non-change
+
+Six quotes, and the owner was right that six men is a property of the SET, not
+of any one line. Licklider was swapped for Lovelace because his sentence
+actively excluded ("Men will set the goals…"). Researching the remaining
+candidates produced one clear yes and one clear no.
+
+### Karen Spärck Jones — NO, and the reason matters
+
+Her famous line is *"Computing is too important to be left to men."* It is
+well attested and it is a slogan **about gender**, not about her work. Spärck
+Jones invented IDF term weighting — the direct ancestor of the rules-plus-
+embeddings layering at ¶04 — so the station that should carry her is Applied.
+Putting a gender slogan there would quote a woman for being a woman rather
+than for the idea her work actually gives, on a station about text
+classification. That is tokenism and it reads as such.
+
+If she goes on this page it must be a line about retrieval or language,
+sourced to a paper or an interview. Not found yet; the search returned the
+slogan and biography, not her technical prose.
+
+### Margaret Hamilton — YES thematically, BLOCKED on sourcing
+
+She is the strongest fit on the page for ¶10. Her priority scheduler shed
+low-priority tasks during the Apollo 11 descent so the 1202 alarms did not
+abort the landing — a system built to fail loudly and protect the critical
+path, which is ¶10's own argument ("a refused gate is the system working")
+written in 1969 with a life at stake.
+
+What the research produced was a PARAPHRASE of a Guardian interview — the
+software "was doing exactly what it had been built to do: informing everyone
+that a hardware-related problem existed, and compensating for it by restarting
+and re-establishing the highest-priority tasks." That is reported speech, not
+a verified quotation.
+
+Not added. This branch already contains one commit fixing a misquotation of a
+named living person; adding a second person's words from a secondary
+paraphrase would repeat the error the fix was for. It needs the primary
+source — the Guardian piece itself, or her ACM/IEEE oral history — before it
+goes on a page that demands every other claim name its origin.
+
+### Standing
+
+Five men and one woman. Better than six and zero, and not yet good. The
+correct next step is sourcing, not swapping: find Spärck Jones on retrieval
+and Hamilton on failure, both verbatim and both cited to a primary document.
