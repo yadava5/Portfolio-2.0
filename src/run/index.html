@@ -753,11 +753,25 @@
 </style>
 
 <style id="np-css">
+/* THE PLATE IS THE OVERLAY'S CONTAINING BLOCK.
+   In the React nameplate this element carried `className="np-plate relative"`
+   and the positioning came from Tailwind's `relative`, not from .np-plate.
+   The run has no Tailwind, so the plate was position:static and the
+   machines' absolutely positioned SVG escaped to the page — the fragment
+   floating above the beat. A utility class doing load-bearing work is
+   invisible until the markup moves to a page without the utilities. */
+.np-plate { position: relative; }
+
 .nameplate {
-  font-size: var(--text-nameplate);
-  line-height: var(--text-nameplate--line-height);
-  letter-spacing: var(--text-nameplate--letter-spacing);
-  font-weight: var(--text-nameplate--font-weight);
+  /* These were Tailwind theme tokens (--text-nameplate*) that only exist
+     in globals.css. Here they resolved to nothing while still winning on
+     specificity over the run's own h1 rule, so the name rendered at body
+     size. The run already sizes its display type correctly; the plate
+     takes those values rather than importing a theme it does not have. */
+  font-size: clamp(3.1rem, 7.6vw, 6.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-weight: 365;
   font-optical-sizing: none; /* the axis is DRIVEN, per character */
   white-space: nowrap;
   width: max-content;
