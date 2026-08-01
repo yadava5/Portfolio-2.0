@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/run/build-home.mjs",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
@@ -35,7 +35,8 @@
     "assets:derive": "node scripts/asset-truth/derive-display-variants.mjs",
     "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs",
     "assets:render-og": "node scripts/asset-truth/render-og-cards.mjs",
-    "assets:check-og": "node scripts/asset-truth/render-og-cards.mjs --check"
+    "assets:check-og": "node scripts/asset-truth/render-og-cards.mjs --check",
+    "build:home": "node scripts/run/build-home.mjs"
   },
   "browserslist": [
     "chrome 128",
