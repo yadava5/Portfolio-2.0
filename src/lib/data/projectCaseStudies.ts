@@ -856,7 +856,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/tree/${AUTOML_SHA}`,
     },
     summary:
-      "A public, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
     evidenceDisclosure: {
       label: "Private proof: GitHub evidence",
       detail:
@@ -1104,12 +1104,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07",
         kind: "note",
-        text: "Per-run metrics remain withheld while the repository is private; the eval protocol for the platform’s own model runs is not yet publicly documented. Nothing here has been retracted — this register is waiting on a demo-data run ledger.",
+        text: "Per-run metrics remain withheld because no committed eval artifact earns one; the eval protocol for the platform’s own model runs is not yet publicly documented. Nothing here has been retracted — this register is waiting on a demo-data run ledger.",
       },
       {
         date: "2026-07-30",
         kind: "erratum",
-        text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above still stands: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
+        text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above stands with its reason corrected: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
       },
     ],
     registryFig: {
@@ -1423,7 +1423,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/cadence/tree/${CADENCE_SHA}`,
     },
     summary:
-      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
+      "A calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
     problem:
       "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
     constraints: [
@@ -1885,7 +1885,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "The work is organizational and cannot expose raw institutional records.",
         tradeoff:
-          "Recruiters cannot inspect source data, so this file names the systems, constraints, and validation shape instead.",
+          "No one outside the institution can inspect the source data, so this file names the systems, constraints, and validation shape instead.",
         status: "accepted",
       },
     ],
@@ -2297,7 +2297,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
       "Keep the implementation in C++ with explicit SIMD and OpenMP paths.",
-      "Measure speedup without overstating unverified exact benchmark details.",
+      "Quote no speedup that a committed benchmark run does not produce.",
       "Expose the model through an interactive React and TypeScript frontend.",
       "Keep benchmark and accuracy claims traceable to source data.",
     ],
@@ -2361,8 +2361,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         decision: "Expose a React demo",
-        reason:
-          "Recruiters can inspect the behavior without reading only C++ code.",
+        reason: "A reader can watch the network work without reading C++.",
         tradeoff: "The frontend is secondary to the C++ benchmark proof.",
         status: "accepted",
       },
