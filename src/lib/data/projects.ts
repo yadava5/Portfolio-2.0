@@ -349,12 +349,12 @@ export const projects: Project[] = [
          renders it, the page ships a precise figure the ledger two
          clicks away refuses to make. They now say what the ledger
          says. */
-      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across three instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
     techStack: [
       { name: "C++", color: "#00599c" },
       { name: "AVX-512 / AVX2", color: "#ff6b6b" },
       { name: "NEON", color: "#a5b4fc" },
-      { name: "wasm-simd128", color: "#654ff0" },
+      { name: "wasm (-msimd128)", color: "#654ff0" },
       { name: "OpenMP", color: "#92d050" },
       { name: "React", color: "#61dafb" },
     ],
