@@ -31,7 +31,7 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 | 07 | jetpack | evidence link | `@ af2c4b1` | `af2c4b1` | — | pin predates `benchmarks/` | **re-pinned `2caacd0`** |
 | 04 | Applied | CI floor | "the configured floor" | "no threshold" | **"blocks below 0.95"** | `--min-macro-f1 0.95` ×2 | **résumé right; the guard was wrong** |
 | 09 | AutoML | team size | 2-person | 1 named teammate | **3-person** | — | **3-person** (résumé) |
-| 09 | AutoML | commit count | **2,173 commits** | — | — | GitHub: 4; local clone: 9 | **removed** — did not terminate at its own link |
+| 09 | AutoML | commit count | **2,173 commits** | — | — | GitHub 4 / clone 9 — **wrong repo**; real history is Miami's GitLab | **restored, attributed** — see below |
 
 ### Stations that reconciled clean
 
@@ -66,6 +66,36 @@ source quotes them:
 Neither would trip a gate. The numbers match their sources exactly; it was
 the qualifier that had gone missing, which is the failure mode a numeric
 check cannot see.
+
+### The AutoML commit count — a correction to this ledger
+
+I removed "2,173 commits" on the grounds that it did not terminate at its own
+link: `github.com/yadava5/ai-augmented-auto-ml-toolchain` reports 4 commits and
+the local clone carries 9. **That was the wrong repository.** The owner:
+*"verify by my friend deployed landing page, as the real repo is in gitlab, and
+I know the real numbers!"*
+
+The product's own landing page names the origin —
+`gitlab.csi.miamioh.edu/2026-senior-design-projects/…` — a private university
+GitLab. The GitHub repo is a **published snapshot** with squashed history,
+which is exactly why the counts disagree. The figure is real; what it was
+missing was its provenance.
+
+Restored as "2,173 commits **on the senior-design gitlab**", and the GitHub
+link relabelled from "the repo, public" to "the published snapshot" — calling
+a squashed mirror "the repo" is what made a true number look unsupported.
+
+**Method note.** The landing page carries no commit count (its only hard
+number is "200 configurations"), so it corroborates the *origin*, not the
+figure. The GitLab is behind university auth and cannot be opened by a reader,
+so this claim rests on the owner's own knowledge and now says where it comes
+from rather than implying a public artifact backs it.
+
+**Still contradictory — flagged, not silently resolved.** The landing page says
+*"Built by Shree Chaturvedi and Ayush Yadav"* — two developers. The 2026-07-31
+résumé says **3-person team**, and the run now follows the résumé. Both can be
+true if the third member was not a developer, and "3-person" is the owner's own
+current statement about his own team, so it stands. Worth him confirming.
 
 ### Open, not fixed here
 - **The résumé quotes the quick 1-fork benchmark run** for jetpack (2.9×,
