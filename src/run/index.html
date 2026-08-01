@@ -701,44 +701,40 @@
      own curve instead of sliding flat, and every wing beats on its own clock
      because a real skein is never in step. One crossing, then gone: this is a
      moment the morning brings, and nothing here loops. */
-  .flock{position:absolute; inset:0; overflow:hidden; pointer-events:none;
-    z-index:-1}
-  /* every bird rides the SAME path and banks to it individually; the spread is
-     a translate in its own rotated frame, so it stays across the line of
-     travel however the path bends */
+  /* fixed to the viewport and behind the type: the birds fly in the sky while
+     the page scrolls beneath them, which is what makes them read as carrying
+     the reader from the gate to the morning rather than decorating either */
+  .flock{position:fixed; inset:0; overflow:hidden; pointer-events:none;
+    z-index:1; contain:strict}
   .bird{position:absolute; left:0; top:0; width:0; height:0;
     offset-rotate:auto; offset-distance:0%;
-    transform:translateY(var(--sp)) scale(var(--s));
-    opacity:0}
-  .bird .bd{will-change:transform}
+    transform:scale(var(--s)); opacity:0}
   .bird svg{overflow:visible; max-width:none; display:block;
     margin:-17px 0 0 -30px}
   .bird .b-ink{fill:var(--ink-2)}
-  /* the wing is a blade standing off the shoulder: it beats by pivoting there,
-     mirrored, one each side */
   .bird .b-wing{transform-box:view-box; transform-origin:0px 0px}
 
-  body.atmorning .bird{
-    animation:cross var(--dur) cubic-bezier(.42,0,.62,1) var(--start) both}
-  /* a bird rises on the downstroke — the single cue that separates flying from
-     being carried. Half the wing's period, because it rises AND falls once per
-     beat. */
-  body.atmorning .bird .bd{
+  body.flying .bird{
+    animation:cross var(--dur) cubic-bezier(.28,.02,.5,1) var(--start) both}
+  /* a bird rises on the downstroke — the cue that separates flying from being
+     carried. Half the wing's period: it rises and falls once per beat. */
+  body.flying .bird .bd{
     animation:bob calc(var(--beat) / 2) ease-in-out var(--start) infinite alternate}
-  body.atmorning .bird .b-wl{
-    animation:beatL var(--beat) cubic-bezier(.36,.02,.5,1) var(--start) infinite}
-  body.atmorning .bird .b-wr{
-    animation:beatR var(--beat) cubic-bezier(.36,.02,.5,1) var(--start) infinite}
-  /* nothing beats over an empty sky */
-  body.atmorning .bird.gone .b-wing, body.atmorning .bird.gone .bd{animation:none}
+  body.flying .bird .b-wl{
+    animation:beatL var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
+  body.flying .bird .b-wr{
+    animation:beatR var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
+  body.flying .bird.gone .b-wing, body.flying .bird.gone .bd{animation:none}
 
   @keyframes cross{
     0%{offset-distance:0%; opacity:0}
-    4%{opacity:var(--op)}
-    94%{opacity:var(--op)}
+    /* they climb out of the gate before you can really see them — a bird at
+       full ink the instant it leaves the ground reads as a sprite appearing */
+    7%{opacity:var(--op)}
+    93%{opacity:var(--op)}
     100%{offset-distance:100%; opacity:0}
   }
-  @keyframes bob{ from{transform:translateY(1.6px)} to{transform:translateY(-1.6px)} }
+  @keyframes bob{ from{transform:translateY(1.7px)} to{transform:translateY(-1.7px)} }
   /* the upstroke is quicker than the down, the way a wing actually works */
   @keyframes beatL{
     0%  {transform:rotate(18deg)}
@@ -1871,10 +1867,6 @@ h1[data-np-measuring] .np-ch {
        already made, which is the whole of the Eliot quotation it carries. -->
   <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun>
     <div class="dawnstick">
-      <!-- the morning brings its own scenery: a skein crossing, left to right,
-           behind the words. Same bird that folds down to make the v in the
-           name at 06:12 — flying again, a day later. -->
-      <div class="flock" id="flock" aria-hidden="true"></div>
       <div class="dawnwrap">
         <p class="kicker">¶ 13 &middot; the next morning &mdash; <i>06:12</i></p>
         <p class="hourline">first light again &mdash; and this time something has been decided.</p>
@@ -1897,6 +1889,11 @@ h1[data-np-measuring] .np-ch {
   </section>
 
 </main>
+
+<!-- The birds leave the gate when the run is approved and fly you into the
+     morning. Fixed to the viewport, not to a station: they have to be in the
+     air across BOTH, because the crossing IS the transition. -->
+<div class="flock" id="flock" aria-hidden="true"></div>
 
 <script type="module">
 /* ————————————————————————————————————————————————————————————————
@@ -3726,6 +3723,10 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
+  /* and the gate lets the birds go — before the carry, not after, because they
+     are what makes the reader look up. The page follows them into the morning. */
+  releaseFlock();
+
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
 
   /* and the run carries you into the next morning. THE SCROLL IS THE SUNRISE —
@@ -3779,20 +3780,42 @@ function carryToMorning() {
 
 /* the lamp is mounted and OFF from the start: an absent data-lamp meant the
    first pull computed its next state from undefined. */
-/* ————— the skein · fig. 13 —————
-   The bird is the nameplate's own: the one that folds its wings down to make
-   the v in "Yadav" on the first screen. Same fusiform body, same articulated
-   wing — flying, a day later, across the morning it earned.
+/* ————— the flock · the gate lets go —————
+   The birds take off FROM the gate the moment the run is approved and fly you
+   into the morning. That is the whole reason they exist: the crossing IS the
+   transition between ¶12 and ¶13, so the layer is fixed to the viewport rather
+   than parked in either station — they are in the air while the page travels
+   beneath them.
 
-   Seven of them, trailing in a loose skein: each rides its own bezier with
-   offset-rotate:auto so it BANKS into its turns rather than sliding flat, and
-   every wing beats on its own clock, because a skein in lockstep reads as a
-   screensaver. One crossing, then gone — the wingbeat is stopped at the far
-   side so nothing is left animating an empty sky. */
-const BIRD_N = 7;
+   The bird is the nameplate's own: the one that folds its wings down to make
+   the v in "Yadav" on the first screen. It leaves from where the thread ends.
+
+   NO TWO BIRDS SHARE A PATH. Every earlier version put them on one line —
+   first as a rigid V dragged along it, then as a queue following it — and both
+   read as machinery, because a flock on rails is a conveyor no matter how the
+   slots are arranged. Each bird now has its OWN bezier, its own duration and
+   its own clock; what makes them one flock is that they leave the same place
+   and want the same corner of the sky, not that anything is holding them in
+   position. */
+
+/* a deterministic hand, so the sky is the same on every load and a screenshot
+   can be a test. mulberry32, the same generator the thread's geometry uses. */
+function birdRng(seed) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* where they leave from, as a fraction of the viewport — captured when the
+   gate is approved so a resize mid-flight rebuilds the same departure */
+let flockFrom = null;
+
 function buildFlock() {
   const host = document.getElementById("flock");
-  if (!host) return;
+  if (!host || !flockFrom) return;
   const W = host.clientWidth || innerWidth;
   const H = host.clientHeight || innerHeight;
   if (!W || !H) return;
@@ -3821,91 +3844,120 @@ function buildFlock() {
     `<path class="b-ink" d="${BODY}"/>` +
     `<g class="b-wing b-wr">${wing(1)}</g><g class="b-wing b-wl">${wing(-1)}</g></svg>`;
 
-  /* THE FORMATION IS A V — and that is not decoration. The bird on the first
-     screen folds its wings down to MAKE the v in "Yadav" at 06:12. A day
-     later the whole skein crosses in the shape that letter left behind.
-
-     They fly as ONE BODY: the formation rides a single path and banks with it,
-     and each bird holds a slot inside it. Seven parallel paths, which is what
-     this was, is not a flock — it is seven birds who happen to be going the
-     same way, evenly spaced and never converging, which is exactly how it
-     read. Slots are tight: the whole skein spans about a third of the sky,
-     not all of it. */
-  /* THE FOLLOWING MODEL, which is the whole difference between this and the
-     last three attempts. A skein is not a rigid shape being dragged along a
-     line — that is what a formation on one path with offset-rotate:auto is,
-     and it read exactly like a cardboard cutout being pulled across the sky.
-
-     Every bird flies THE SAME PATH, started a little later than the one ahead.
-     So at any instant a follower is precisely where the leader was a moment
-     ago: the flock shears through turns instead of pivoting, each bird banks
-     at the point the leader banked rather than all at once, and the V leans
-     and recovers on its own. The arm spread is a translate in each bird's own
-     rotated frame, so it stays perpendicular to travel however the path bends.
-
-     The lags and spreads are deliberately UNEVEN. A symmetric V with equal
-     gaps is the thing that reads as drawn rather than flown. */
-  const NEAR = [
-    /* lag (s behind the leader), spread (px across the line), scale, ink */
-    { lag: 0.0, sp: 0, s: 1.0, o: 0.5 },
-    { lag: 0.40, sp: -27, s: 0.94, o: 0.46 },
-    { lag: 0.47, sp: 30, s: 0.96, o: 0.47 },
-    { lag: 0.83, sp: -53, s: 0.87, o: 0.41 },
-    { lag: 0.96, sp: 58, s: 0.89, o: 0.42 },
-    { lag: 1.29, sp: -79, s: 0.79, o: 0.35 },
-    { lag: 1.48, sp: 86, s: 0.81, o: 0.36 },
-    { lag: 1.83, sp: -104, s: 0.71, o: 0.29 },
-    { lag: 2.14, sp: 113, s: 0.73, o: 0.3 },
-    /* one straggler off the back of the long arm — skeins always have one */
-    { lag: 2.72, sp: 138, s: 0.66, o: 0.24 },
-  ];
-  const FAR = [
-    { lag: 0.0, sp: 0, s: 1.0, o: 0.19 },
-    { lag: 0.55, sp: -22, s: 0.93, o: 0.17 },
-    { lag: 0.66, sp: 25, s: 0.95, o: 0.17 },
-    { lag: 1.24, sp: -44, s: 0.85, o: 0.14 },
-  ];
-
-  const flightPath = (yFrac) => {
-    const y0 = H * yFrac;
-    /* two shallow turns rather than one smooth sweep: the followers only show
-       their lag where the line CHANGES, so a path with no turns in it wastes
-       the whole model */
-    return `path("M ${(-W * 0.24).toFixed(0)} ${(y0 + 54).toFixed(0)} ` +
-      `C ${(W * 0.12).toFixed(0)} ${(y0 + 30).toFixed(0)} ${(W * 0.2).toFixed(0)} ${(y0 - 26).toFixed(0)} ${(W * 0.38).toFixed(0)} ${(y0 - 18).toFixed(0)} ` +
-      `C ${(W * 0.56).toFixed(0)} ${(y0 - 10).toFixed(0)} ${(W * 0.6).toFixed(0)} ${(y0 + 34).toFixed(0)} ${(W * 0.78).toFixed(0)} ${(y0 + 14).toFixed(0)} ` +
-      `C ${(W * 0.96).toFixed(0)} ${(y0 - 6).toFixed(0)} ${(W * 1.06).toFixed(0)} ${(y0 - 46).toFixed(0)} ${(W * 1.26).toFixed(0)} ${(y0 - 62).toFixed(0)}")`;
-  };
+  const ox = W * flockFrom.fx;
+  const oy = H * flockFrom.fy;
+  const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
 
   host.innerHTML = "";
-  [
-    { list: NEAR, y: 0.155, dur: 17, start: 1.1, beat: 0.46 },
-    { list: FAR, y: 0.07, dur: 27, start: 4.4, beat: 0.62 },
-  ].forEach((sk) => {
-    const path = flightPath(sk.y);
-    sk.list.forEach((b, i) => {
-      const el = document.createElement("div");
-      el.className = "bird";
-      el.style.offsetPath = path;
-      el.style.setProperty("--sp", b.sp + "px");
-      el.style.setProperty("--s", b.s.toFixed(2));
-      el.style.setProperty("--op", b.o.toFixed(2));
-      el.style.setProperty("--dur", sk.dur + "s");
-      /* the lag IS the formation: a follower is where the leader was */
-      el.style.setProperty("--start", (sk.start + b.lag).toFixed(2) + "s");
-      /* a heavier bird beats slower, and no two share a clock */
-      el.style.setProperty("--beat", (sk.beat / b.s + (i % 3) * 0.03).toFixed(3) + "s");
-      el.innerHTML = `<div class="bd">${svg}</div>`;
-      /* stop the beat when the bird is off the far side */
-      el.addEventListener("animationend", (e) => {
-        if (e.animationName === "cross") el.classList.add("gone");
-      });
-      host.appendChild(el);
+  const frag = document.createDocumentFragment();
+
+  /* ————— the departure —————
+     A flock leaving the ground is not a formation. It is a scatter that sorts
+     itself out: everything goes up at its own angle, then the angles agree,
+     then it is a loose stream leaning off to one corner. All three phases are
+     in each bird's path — a hard climb out of the huddle, a middle where the
+     paths converge without meeting, and a long shallow cruise to the top right.
+
+     The convergence is what makes it a flock rather than confetti, and it is
+     deliberately LOOSE: the gathering point is jittered a fifth of the screen
+     wide, because birds heading the same way is the real thing, and birds
+     arriving at the same coordinate is a funnel. */
+  const NEAR = 15;
+  for (let i = 0; i < NEAR; i++) {
+    const r = birdRng(0x51ee + i * 7919);
+    /* the huddle: they were never in a line to begin with */
+    const x0 = ox + (r() - 0.5) * 120;
+    const y0 = oy + (r() - 0.5) * 70;
+    /* the climb — the widest-varying part of the whole flight, because this is
+       the instant the flock is least organised */
+    const c1x = x0 + 30 + r() * 130;
+    const c1y = y0 - 110 - r() * 210;
+    /* the gathering: loosely the same third of the sky, loosely */
+    const gx = W * (0.33 + (r() - 0.5) * 0.2);
+    const gy = H * (0.27 + (r() - 0.5) * 0.26);
+    const c2x = gx - 60 - r() * 160;
+    const c2y = gy + 40 + (r() - 0.5) * 130;
+    /* and out, over the top right corner */
+    const ey = H * (0.02 + (r() - 0.5) * 0.3);
+    const ex = W * (1.1 + r() * 0.22);
+    const c3x = gx + W * (0.13 + r() * 0.14);
+    const c3y = gy - 30 - r() * 110;
+    const c4x = W * (0.78 + (r() - 0.5) * 0.16);
+    const c4y = ey + 50 + (r() - 0.5) * 150;
+
+    const el = document.createElement("div");
+    el.className = "bird";
+    el.style.offsetPath =
+      `path("M ${P(x0, y0)} C ${P(c1x, c1y)} ${P(c2x, c2y)} ${P(gx, gy)}` +
+      ` C ${P(c3x, c3y)} ${P(c4x, c4y)} ${P(ex, ey)}")`;
+    /* no two share a duration, so whatever order they leave in is not the
+       order they arrive in — they overtake each other, which a queue cannot */
+    el.style.setProperty("--dur", (8.6 + r() * 6.2).toFixed(2) + "s");
+    /* a few go, and the rest decide to follow */
+    el.style.setProperty("--start", (0.3 + i * 0.115 + r() * 0.62).toFixed(2) + "s");
+    const sc = 0.72 + r() * 0.5;
+    el.style.setProperty("--s", sc.toFixed(2));
+    el.style.setProperty("--op", (0.3 + r() * 0.24).toFixed(2));
+    /* a heavier bird beats slower — no two share a clock */
+    el.style.setProperty("--beat", (0.44 / sc + r() * 0.09).toFixed(3) + "s");
+    /* and no two are mid-beat at the same moment */
+    el.style.setProperty("--wphase", (-r() * 0.6).toFixed(3) + "s");
+    el.innerHTML = `<div class="bd">${svg}</div>`;
+    el.addEventListener("animationend", (e) => {
+      if (e.animationName === "cross") el.classList.add("gone");
     });
-  });
+    frag.appendChild(el);
+  }
+
+  /* ————— the far ones —————
+     Already up, and nothing to do with the gate: a distant crossing high over
+     the top, smaller, fainter and much slower. One flock alone gives the sky no
+     depth — it slides across like a decal. These are what make the near ones
+     read as near. */
+  const FAR = 5;
+  for (let i = 0; i < FAR; i++) {
+    const r = birdRng(0x9c41 + i * 6151);
+    const y0 = H * (0.1 + (r() - 0.5) * 0.1);
+    const el = document.createElement("div");
+    el.className = "bird";
+    el.style.offsetPath =
+      `path("M ${P(-W * 0.18, y0 + 40 + r() * 40)}` +
+      ` C ${P(W * 0.22, y0 + (r() - 0.5) * 60)} ${P(W * 0.42, y0 - 30 - r() * 40)} ${P(W * 0.62, y0 - 14)}` +
+      ` C ${P(W * 0.84, y0 - 2 + (r() - 0.5) * 50)} ${P(W * 1.0, y0 - 50 - r() * 40)} ${P(W * 1.24, y0 - 80 - r() * 50)}")`;
+    el.style.setProperty("--dur", (21 + r() * 9).toFixed(2) + "s");
+    el.style.setProperty("--start", (2.6 + i * 0.44 + r() * 0.9).toFixed(2) + "s");
+    const sc = 0.42 + r() * 0.16;
+    el.style.setProperty("--s", sc.toFixed(2));
+    el.style.setProperty("--op", (0.14 + r() * 0.07).toFixed(2));
+    el.style.setProperty("--beat", (0.62 / sc + r() * 0.08).toFixed(3) + "s");
+    el.style.setProperty("--wphase", (-r() * 0.7).toFixed(3) + "s");
+    el.innerHTML = `<div class="bd">${svg}</div>`;
+    el.addEventListener("animationend", (e) => {
+      if (e.animationName === "cross") el.classList.add("gone");
+    });
+    frag.appendChild(el);
+  }
+  host.appendChild(frag);
 }
-buildFlock();
-addEventListener("resize", buildFlock);
+
+/* the gate lets them go. The departure point is the thread's own terminus —
+   the dock the line has been carrying toward for twelve stations — so what
+   leaves is what the run was carrying. Measured at this instant, in viewport
+   coordinates, because the page is about to scroll out from under it. */
+function releaseFlock() {
+  const host = document.getElementById("flock");
+  if (!host || RM) return;
+  const d = document.getElementById("gateDock");
+  const r = d ? d.getBoundingClientRect() : null;
+  const W = host.clientWidth || innerWidth;
+  const H = host.clientHeight || innerHeight;
+  flockFrom = r && r.width
+    ? { fx: clamp((r.left + r.width / 2) / W, 0.06, 0.5), fy: clamp((r.top + r.height / 2) / H, 0.3, 0.86) }
+    : { fx: 0.16, fy: 0.72 };
+  buildFlock();
+  document.body.classList.add("flying");
+}
+addEventListener("resize", () => { if (flockFrom) buildFlock(); });
 
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */
