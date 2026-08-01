@@ -33,10 +33,36 @@ export interface Traveller {
   n: number;
   /** Extra spacing offset for a second item leaving the same station. */
   off?: number;
-  /** The waybill — what is in transit, and to where. Null draws no text. */
-  label: string | null;
+  /**
+   * The waybill — what is in transit, and to where. Null draws no text.
+   *
+   * A FUNCTION when the cargo depends on what the reader has done. Only
+   * one item needs this and it is the best one on the line: the digit
+   * you drew at the Glyph station rides on as freight, so the waybill
+   * has to be able to say `your "7", read locally → manifest`.
+   */
+  label: string | null | (() => string);
   /** Draw in the rail's local frame: origin at the point, +x along it. */
   draw: (c: CanvasRenderingContext2D, ink: RailInk) => void;
+}
+
+/**
+ * What the visitor drew at the Glyph station, if anything.
+ *
+ * Module scope on purpose — the digit is a property of the page, like
+ * the one scroll loop and the one rail, and the canvas painter reads it
+ * without a React round trip. `null` means the pad is still blank, which
+ * the waybill says out loud rather than hiding.
+ */
+let glyphDigit: string | null = null;
+
+/** Called by the Glyph station when its network reads a drawn digit. */
+export function setGlyphDigit(d: string | null): void {
+  glyphDigit = d;
+}
+
+export function getGlyphDigit(): string | null {
+  return glyphDigit;
 }
 
 export interface RailInk {
@@ -173,6 +199,27 @@ const heldMark = (c: CanvasRenderingContext2D, k: RailInk) => {
   c.setLineDash([]);
 };
 
+const drawnDigit = (c: CanvasRenderingContext2D, k: RailInk) => {
+  if (glyphDigit !== null) {
+    /* the sample, boxed as the 28x28 it actually is */
+    c.strokeStyle = k.muted;
+    c.lineWidth = 1;
+    c.strokeRect(-9, -9, 18, 18);
+    c.fillStyle = k.ink;
+    c.font = "14px ui-monospace, SFMono-Regular, Menlo, monospace";
+    c.textAlign = "center";
+    c.textBaseline = "middle";
+    c.fillText(glyphDigit, 0, 1);
+  } else {
+    /* awaiting a sample — dashed, because nothing has been produced yet */
+    c.strokeStyle = k.muted;
+    c.lineWidth = 1;
+    c.setLineDash([3, 3]);
+    c.strokeRect(-8, -8, 16, 16);
+    c.setLineDash([]);
+  }
+};
+
 const report = (c: CanvasRenderingContext2D, k: RailInk) => {
   c.fillStyle = k.plate;
   c.strokeStyle = k.ink;
@@ -195,8 +242,9 @@ const report = (c: CanvasRenderingContext2D, k: RailInk) => {
  * The labels are the story of the run, and every one of them mirrors a
  * claim the page already prints — never a new assertion invented for the
  * rail (D6: the visual states what the page states, or it states nothing).
- * Beat 5 is deliberately absent: the prototype leaves that corridor to
- * the benchmark itself.
+ * Beat 5 carries the digit the reader drew at the Glyph station — the
+ * one cargo whose waybill is a function, because until a hand has drawn
+ * something the honest label is that nothing has been produced yet.
  */
 export const TRAVELLERS: Traveller[] = [
   { beat: 0, n: 1, label: "run dispatched — operator aboard", draw: slip },
@@ -210,6 +258,15 @@ export const TRAVELLERS: Traveller[] = [
   },
   { beat: 3, n: 3, label: "sorted mail → manifest", draw: envelope },
   { beat: 4, n: 1, label: "the committed plan → manifest", draw: card },
+  {
+    beat: 5,
+    n: 1,
+    label: () =>
+      glyphDigit !== null
+        ? `your “${glyphDigit}”, read locally → manifest`
+        : "a blank 28×28 — the run wants your hand",
+    draw: drawnDigit,
+  },
   { beat: 6, n: 2, label: "one valid gzip member → manifest", draw: spool },
   {
     beat: 7,
@@ -292,7 +349,8 @@ export function drawTravellers({
         ctx.font =
           '11px ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace';
         ctx.textBaseline = "middle";
-        ctx.fillText(t.label, pt.x + 18, y);
+        const text = typeof t.label === "function" ? t.label() : t.label;
+        ctx.fillText(text, pt.x + 18, y);
         ctx.restore();
       }
     }
