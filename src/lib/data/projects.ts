@@ -324,7 +324,7 @@ export const projects: Project[] = [
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
-      "1,145 automated tests (634 frontend + 511 backend), all passing",
+      "1,168 passed and 11 skipped (635 frontend + 533 backend), re-run 2026-07-31",
       "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
@@ -338,7 +338,7 @@ export const projects: Project[] = [
     id: "fast-mnist-nn",
     title: "Glyph",
     shortDescription:
-      "A course C++ MLP hand-optimized across four instruction sets (AVX-512, AVX2, NEON, wasm-simd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
+      "A course C++ MLP hand-optimized across three instruction sets (AVX-512, AVX2, NEON; the wasm build compiles -msimd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
     fullDescription:
       /* CRITIC-LEDGER F59: this said "It reaches 97.01% on 10,000 test
          digits". The site's own ledger stamps that number HELD — the
@@ -393,7 +393,7 @@ export const projects: Project[] = [
     startDate: "2025-10",
     endDate: "2026-01",
     highlights: [
-      "Hand-optimized across 4 instruction sets: AVX-512, AVX2, NEON, wasm-simd128",
+      "Hand-written SIMD across 3 instruction sets: AVX-512, AVX2, NEON — wasm builds -msimd128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
       "~97% test accuracy documented in the README — HELD until a committed eval run earns it",
       "Honest attribution: the 3.5× is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
