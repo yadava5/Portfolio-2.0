@@ -771,7 +771,20 @@ html[data-motion-ready]:not([data-motion-off])
     [data-np-machines]
     .np-ch:not(.np-m) {
     animation: np-settype 0.82s cubic-bezier(0.3, 0.75, 0.35, 1) both;
-    animation-delay: calc(0.18s + var(--np-i, 0) * 55ms);
+    /* 210ms, not 55ms, and the gap is the reason.
+       Measured landings on the old step: the six plain letters all
+       arrived between 511 and 902ms, while the five machine letters are
+       withheld until their machines finish, at 3930–4288ms. So the name
+       sat three full seconds reading "yu h Yd" — five characters
+       missing — which is what "it starts wrong by dropping the
+       character" describes. Nothing was mistimed; the stagger simply
+       spent itself in the first half-second and left the machines to
+       carry three seconds alone.
+       Widening the step spreads the plain letters to ~2.3s so the name
+       fills continuously right up to the ensemble's landing, and costs
+       nothing else: every machine letter still completes its settype
+       well before its machine releases it. */
+    animation-delay: calc(0.18s + var(--np-i, 0) * 210ms);
   }
 
 html[data-motion-ready]:not([data-motion-off])
@@ -863,11 +876,26 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
   width: 0.24em;
 }
 
+/* PIN THE OVERLAY TO THE TYPE, NOT TO THE PLATE.
+   This was `inset: 0`, which resolves against .np-plate — the nearest
+   positioned ancestor. Measured: the plate is 673.8px tall and starts
+   162.6px above the h1, which is 176.4px tall. So the overlay's BOX was
+   the plate while its viewBox described the type, and every machine was
+   drawn against a coordinate space nearly four times too tall and
+   starting 162px high. That is the "they are a lot above the remaining
+   text, and doesn't run at the correct position either".
+   It survived in React because the plate there hugged its h1; in the run
+   the plate carries the rule and the replay control too. Rather than
+   depend on that layout accident, take the offsets from the measured
+   type box — set under the same freeze as the geometry, so they describe
+   where the letters come to rest. */
 .np-mech {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: auto;
+  left: var(--np-ox, 0px);
+  top: var(--np-oy, 0px);
+  width: var(--np-ow, 100%);
+  height: var(--np-oh, 100%);
   overflow: visible;
   pointer-events: none;
 }
@@ -1054,9 +1082,15 @@ h1[data-np-measuring] .np-ch {
   <section class="beat b1" data-beat="0">
     <div class="beat-inner">
       <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
-      <div class="np-plate" data-nameplate>
+      <!-- The scroll-fx rides the PLATE, not the h1. On the h1 it
+           translated the type while leaving the machine overlay (a
+           sibling, absolutely positioned) behind: measured 162.6px of
+           divergence, which is why the machines sat well above the
+           letters and never ran where the type was. Moving them together
+           is the only arrangement in which the two cannot drift. -->
+      <div class="np-plate" data-nameplate data-fx="in .0 .22 y 5 | drift 26">
         <div class="np-rule" aria-hidden="true"></div>
-        <h1 aria-label="Ayush Yadav" class="nameplate" data-np-machines data-fx="in .0 .22 y 5 | drift 26"><span aria-hidden="true" class="np-ch np-m" style="--np-i:0">A</span><span aria-hidden="true" class="np-ch" style="--np-i:1">y</span><span aria-hidden="true" class="np-ch" style="--np-i:2">u</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:3">s</span><span aria-hidden="true" class="np-ch" style="--np-i:4">h</span><span aria-hidden="true" class="np-ch np-sp" style="--np-i:5">&nbsp;</span><span aria-hidden="true" class="np-ch" style="--np-i:6">Y</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:7">a</span><span aria-hidden="true" class="np-ch" style="--np-i:8">d</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:9">a</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:10">v</span></h1>
+        <h1 aria-label="Ayush Yadav" class="nameplate" data-np-machines><span aria-hidden="true" class="np-ch np-m" style="--np-i:0">A</span><span aria-hidden="true" class="np-ch" style="--np-i:1">y</span><span aria-hidden="true" class="np-ch" style="--np-i:2">u</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:3">s</span><span aria-hidden="true" class="np-ch" style="--np-i:4">h</span><span aria-hidden="true" class="np-ch np-sp" style="--np-i:5">&nbsp;</span><span aria-hidden="true" class="np-ch" style="--np-i:6">Y</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:7">a</span><span aria-hidden="true" class="np-ch" style="--np-i:8">d</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:9">a</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:10">v</span></h1>
         <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
       </div>
       <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
@@ -3252,6 +3286,13 @@ boot();
           h1.setAttribute("data-np-measuring", "");
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
+          /* Where the type sits inside the plate, in the settled state. */
+          const pb = plate.getBoundingClientRect();
+          const hb = h1.getBoundingClientRect();
+          plate.style.setProperty("--np-ox", `${hb.left - pb.left}px`);
+          plate.style.setProperty("--np-oy", `${hb.top - pb.top}px`);
+          plate.style.setProperty("--np-ow", `${hb.width}px`);
+          plate.style.setProperty("--np-oh", `${hb.height}px`);
           h1.removeAttribute("data-np-measuring");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
           M.mountHoverAnswers?.(plate, h1, letters, g);
