@@ -33,6 +33,7 @@ import {
   pointAtLen,
   type RailSample,
 } from "./railGeometry";
+import { drawTravellers } from "./railTravellers";
 
 /** Read a CSS custom property off <html>, with a fallback. */
 function ink(name: string, fallback: string): string {
@@ -69,6 +70,7 @@ export function RunRail({
     if (!ctx) return;
 
     let samples: RailSample[] = [];
+    let boxes: { top: number; h: number }[] = [];
 
     let vw = 0;
     let vh = 0;
@@ -77,6 +79,12 @@ export function RunRail({
       thread: ink("--thread", "#b4462a"),
       ahead: ink("--thread-ahead", "#c9b8a4"),
       dot: ink("--color-ink", "#26231c"),
+      cargo: {
+        ink: ink("--color-ink", "#26231c"),
+        plate: ink("--plate-solid", "#fbf7ef"),
+        clay: ink("--color-clay", "#b4462a"),
+        muted: ink("--color-ink-secondary", "#6b6558"),
+      },
     };
 
     const measure = () => {
@@ -94,7 +102,7 @@ export function RunRail({
         samples = [];
         return;
       }
-      const boxes = beats.map((el) => {
+      boxes = beats.map((el) => {
         const r = el.getBoundingClientRect();
         return { top: r.top + window.scrollY, h: r.height };
       });
@@ -175,6 +183,21 @@ export function RunRail({
         ctx.arc(tp.x, ty, 4.5, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      /* The cargo. This is what makes the line a RUN and not a drawn
+         rule: every station produces something and it rides the corridor
+         to the next one carrying a label saying what it is. Drawn after
+         the token so a departing item passes in front of it. */
+      drawTravellers({
+        ctx,
+        samples,
+        beats: boxes,
+        tokenY: scroll + vh * READING_LINE,
+        scroll,
+        vh,
+        ink: colors.cargo,
+        showLabels: vw >= 1024,
+      });
     };
 
     const loop = createRunLoop((y) => paint(y));
