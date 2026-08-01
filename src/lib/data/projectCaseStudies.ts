@@ -1361,7 +1361,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-05",
         kind: "erratum",
-        text: "An earlier draft carried the smaller count from the repo’s CI run title. The audited count in the current tree is 71 test functions; the receipt above links the tree so the number can be checked.",
+        text: "An earlier draft took its count from the repo’s CI run title rather than from the test tree; that draft is not in this repository’s history, so the figure it printed cannot be quoted back here. The audited count in the current tree is 71 test functions, and the receipt above links the tree so the number can be checked.",
       },
     ],
     artifacts: [
@@ -1723,9 +1723,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend) — the tree grew from 87 to 105 test files over 249 commits, and nothing was retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
-      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against a real Postgres — but 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
+      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against an ephemeral Postgres in CI — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration, so that evidence is machine-checked rather than hand-run. But 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
       "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
-      "What the 11 isolation tests prove is that the policies work, not that they are switched on in production. They run in CI against an ephemeral Postgres — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration — so the evidence is machine-checked, not hand-run. What no test here can show is which role the deployed database actually connects as; that is database state, and receipt 05 is where the staged-off standing is written down.",
       "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
     corrections: [
@@ -1800,7 +1799,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
+      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -1939,7 +1938,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "1M+ operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
+          "More than one million operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
         method:
           "role scope, jun 2025 – may 2026 — institutional ITSM data integration",
         artifacts: [],
@@ -2037,7 +2036,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "Keep institutional policy content governed and source-cited.",
       "Support DOCX, PDF, and Markdown policy sources.",
       "Validate quoted passages before presenting answers.",
-      "Meet users where they already work: Slack.",
+      "Answer in Slack, where the questions already get asked.",
     ],
     architecture: {
       summary:
@@ -2103,7 +2102,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "The target workflow already happens in team communication channels.",
         tradeoff:
-          "Slack integration adds event handling complexity but lowers adoption friction.",
+          "Slack integration adds event handling to maintain, and puts the answer in the thread where the question was asked.",
         status: "accepted",
       },
     ],
@@ -2163,7 +2162,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "The assistant is designed to cut policy lookup friction while preserving citations and fallback behavior.",
+          "Answers come back in Slack with the source cited, and topics the sources do not cover are declined rather than answered — 4 such fallbacks in the recorded sweep.",
         method: "design intent, described — no usage metric is claimed",
         artifacts: [],
         date: null,
