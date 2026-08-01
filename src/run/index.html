@@ -644,7 +644,18 @@
      would never come up at all. 300vh, because at 200 the whole sunrise
      was over in 800ms of the carry — measured — and a sunrise you can
      miss by blinking is not one. */
-  .bdawn{min-height:300vh; padding:0}
+  /* ¶13 IS NOT THERE UNTIL THE RUN IS APPROVED. Not hidden — absent: the
+     section collapses to zero height, so the document ends at the gate and
+     the gate is the last screen, exactly as it was before this station
+     existed. Left in flow at full height it pushed the document past the
+     gate, and scrolling to the bottom landed below it — which is what was
+     cutting '¶ 12 · the approval gate' off the top.
+     Height rather than display:none on purpose: `beats` is built once at
+     load and measured with offsetTop/offsetHeight, and a display:none
+     section reports 0 for BOTH — poisoning the beat array with a stop at
+     the top of the page. Zero height keeps its position honest. */
+  .bdawn{height:0; min-height:0; padding:0; overflow:hidden}
+  body.approved .bdawn{height:auto; min-height:300vh; overflow:visible}
   .dawnstick{position:sticky; top:0; height:100vh; display:flex;
     align-items:center; justify-content:center; padding:0 var(--pad-x)}
   .dawnwrap{max-width:46rem; margin:0 auto; text-align:center}
@@ -3650,7 +3661,16 @@ $("approve").addEventListener("click", () => {
      the light needs the distance to come up in, and the reader has to see it
      happen. Any real input abandons it; a page that will not let go of the
      scrollbar is worse than one that never moved. */
-  setTimeout(carryToMorning, RM ? 0 : 1250);
+  /* ¶13 comes into existence here. Revealing it grows the document, so the
+     geometry every beat and every fx window is measured against has to be
+     rebuilt BEFORE anything tries to scroll into it — otherwise the carry
+     targets a document that no longer ends where it thought. */
+  setTimeout(() => {
+    cacheGeometry();
+    buildThread();
+    wake(true);
+    setTimeout(carryToMorning, RM ? 0 : 260);
+  }, RM ? 0 : 1000);
 });
 
 function carryToMorning() {
