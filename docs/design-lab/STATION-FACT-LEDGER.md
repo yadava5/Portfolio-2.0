@@ -31,7 +31,7 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 | 07 | jetpack | evidence link | `@ af2c4b1` | `af2c4b1` | — | pin predates `benchmarks/` | **re-pinned `2caacd0`** |
 | 04 | Applied | CI floor | "the configured floor" | "no threshold" | **"blocks below 0.95"** | `--min-macro-f1 0.95` ×2 | **résumé right; the guard was wrong** |
 | 04 | Applied | 0.9791 attribution | "(hybrid v3)" | "deterministic hybrid v3" | "the **rules stage**" | `hybrid_profile: deterministic` **disables SetFit** | **rules stage** — cascade scores 0.958 |
-| 09 | AutoML | team size | 2-person | 1 named teammate | 3-person | landing page: 2 developers | **2-person** — owner's call, résumé overruled |
+| 09 | AutoML | team size | 2-person | 1 named teammate | **2-person** (re-issued) | landing page: 2 developers | **2-person** — all three now agree |
 | 06 | Glyph | SIMD speed-up | "simd kernel 3.5×" | "openmp+simd … not SIMD alone" | — | SIMD alone **1.016×**; openmp **3.504×** | **openmp+simd** — the run had the retracted version back |
 | 06 | Glyph | instruction sets | 4 | four | 4 | dispatch is AVX512→AVX2→NEON→**SCALAR** | **3 hand-written**; wasm is `-msimd128` |
 | 05 | Cadence | test suite | 1,145 (634+511) | 1,145 @ pin `69a59e7` | — | **1,168 passed, 11 skipped** at HEAD | **re-run recorded**; pinned rows kept |
@@ -112,19 +112,22 @@ figure. The GitLab is behind university auth and cannot be opened by a reader,
 so this claim rests on the owner's own knowledge and now says where it comes
 from rather than implying a public artifact backs it.
 
-**Resolved — 2-person.** The landing page says *"Built by Shree Chaturvedi and
-Ayush Yadav"*; the 2026-07-31 résumé says 3-person. The owner settled it
-directly: *"just make it 2 people don't get the resume data on that!"* The run
-says 2-person team, my seat backend, which now agrees with the deployed
-artifact. This is the one place in this ledger where the résumé is **not** the
-authority, by his instruction.
+**Resolved — 2-person, and no longer a conflict.** The landing page says
+*"Built by Shree Chaturvedi and Ayush Yadav"*. The 2026-07-31 résumé first said
+3-person; the owner settled it — *"just make it 2 people don't get the resume
+data on that!"* — and then **re-issued the résumé** (sha1 `c0676cc7`, 22:27)
+saying 2-person. Deployed artifact, résumé and run now agree, so this row no
+longer overrules anything.
 
 ### Open, not fixed here
 - **The résumé quotes the quick 1-fork benchmark run** for jetpack (2.9×,
   4.38 GB/s, 455 MB/s, 6.5×). Those numbers are real measurements, just from
   the less rigorous configuration; `benchmarks/README.md` in that repo states
-  plainly **"The rigorous run is the one to quote."** Worth a résumé edit —
-  the honest spread across both runs is 6.38×–6.89×.
+  plainly **"The rigorous run is the one to quote."** Still true of the
+  re-issued résumé (`c0676cc7`), which retains 2.9x, 4.38, 455 and 6.5x. This
+  is a **deliberate, recorded divergence**: the portfolio quotes the rigorous
+  3-fork run throughout, the résumé quotes the quick 1-fork run. Both are real
+  measurements. The honest spread across both is 6.38×–6.89×.
 
 ---
 
