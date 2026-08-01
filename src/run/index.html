@@ -508,11 +508,14 @@
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
      (round-5 census, desk; mobile's taller document was unaffected).
-     40vh of tail below the gate gives the entrance room to finish and
-     lets the ending BE the ending — the token halts, the page waits.
+     A tail below the gate lets the ending BE the ending — the token halts,
+     the page waits. It was 40vh, which measured 480px of dead screen at
+     1200px tall and read as the page failing to end rather than arriving.
+     15vh: the gate's own entrance is `in .12 .4` and finishes long before
+     the section does, so the tail was never paying for it.
      ::after on main, not padding on .b8: the beat is a centered flex
      seat, and asymmetric padding would re-seat its content mid-frame. */
-  main::after{content:""; display:block; height:40vh}
+  main::after{content:""; display:block; height:15vh}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
     gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
@@ -1509,7 +1512,7 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="9"><span>22:23 · the review</span></li>
           <li data-ph="10"><span>22:32 · the co-signers</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
-          <li data-ph="10"><span>deploy — yours; no scroll reaches it</span></li>
+          <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
         <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the run token you have been following halts here. it will wait as long as it takes.</p>
       </div>
