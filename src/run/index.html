@@ -503,7 +503,11 @@
   .figsvg .deplbl{fill:var(--ink-2)}
 
   /* beat 8 — the gate */
-  .b8{min-height:118vh; display:flex; align-items:center; padding-top:8vh; padding-bottom:8vh}
+  /* 118vh centred the gate inside a box far taller than it, which put a
+     third of a screen of dead paper above AND below it. 100vh still
+     guarantees the gate its own full screen — it is the decision, it
+     should not share — but the seat no longer invents space. */
+  .b8{min-height:100vh; display:flex; align-items:center; padding-top:5vh; padding-bottom:5vh}
   /* the run's last sentence needs scroll the document did not have: at
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
@@ -516,7 +520,7 @@
      the entrance is what lets the tail shrink without stranding it at op 0.
      ::after on main, not padding on .b8: the beat is a centered flex
      seat, and asymmetric padding would re-seat its content mid-frame. */
-  main::after{content:""; display:block; height:8vh}
+  main::after{content:""; display:block; height:4vh}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
     gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
@@ -563,10 +567,19 @@
   @media (prefers-reduced-motion: no-preference){
     #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
   }
-  .aftergate{margin-top:1.4rem; opacity:0; transform:translateY(10px); pointer-events:none}
-  .aftergate.shown{opacity:1; transform:none; pointer-events:auto}
+  /* The aftergate was opacity:0 but still IN FLOW, so the gate card reserved a
+     block of empty height for words nobody had earned yet — and it grew when
+     the closing epigraph moved in. It now collapses to zero height via a 0fr
+     grid row and opens to 1fr, which animates height without ever measuring
+     it in JS. The card is exactly as tall as what it is currently saying. */
+  .aftergate{display:grid; grid-template-rows:0fr; margin-top:0;
+    opacity:0; pointer-events:none}
+  .aftergate > .agin{overflow:hidden; min-height:0}
+  .aftergate.shown{grid-template-rows:1fr; margin-top:1.4rem;
+    opacity:1; pointer-events:auto}
   @media (prefers-reduced-motion: no-preference){
-    .aftergate{transition:opacity .7s ease .25s, transform .7s cubic-bezier(.22,1,.36,1) .25s}
+    .aftergate{transition:grid-template-rows .85s cubic-bezier(.22,1,.36,1),
+      margin-top .85s cubic-bezier(.22,1,.36,1), opacity .7s ease .2s}
   }
   .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
 
@@ -592,21 +605,86 @@
     65% {opacity:.16; transform:scale(4.4)}
     100%{opacity:0;   transform:scale(6.2)}
   }
-  /* the epigraph is the last thing to arrive, after the ladder has finished
-     reading itself back — it closes the run rather than accompanying it */
-  .aftergate .endquote{margin:0 0 1.1rem; opacity:0; transform:translateY(6px)}
-  .aftergate.shown .endquote{opacity:1; transform:none}
-  .aftergate .endquote blockquote{font-family:var(--display); font-style:italic;
-    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.5; color:var(--ink); margin:0}
-  .aftergate .endquote figcaption{margin-top:.5rem; font-family:var(--mono);
-    font-size:.66rem; letter-spacing:.05em; color:var(--ink-2)}
+  /* ————— the lamp ————— */
+  /* The run ends at 22:41, in the dark. The closing epigraph is therefore NOT
+     lit by the page — it is lit by a lamp, and the reader can switch it off.
+     Everything here is one drawn object plus one cone of light:
+
+       · the lamp is ink, in the same weight as the thread
+       · the cone is a clip-path trapezoid carrying a warm, very low-alpha
+         gradient — it is light falling, not a glow around an object, and it
+         is masked to the shape a shade actually throws
+       · the epigraph's colour is driven ONLY by the lamp state, so the claim
+         "the lamp lights the quote" is literally true rather than decorative
+       · the filament warms in three beats before it settles, because a real
+         one does — that flicker is the whole reason it reads as a lamp and
+         not as a fade-in
+
+     No rAF, no library: CSS transitions and one keyframe, fired by a data
+     attribute. Under reduced motion the light is instant, never flickering. */
+  .endlight{position:relative; margin:0 0 1.2rem; padding:2.9rem 0 .2rem;
+    isolation:isolate}
+  /* the cone. Wider at the foot than the head, clipped to the shade's spread,
+     and stacked BEHIND the text so the words sit inside the light. */
+  .endlight::before{content:""; position:absolute; z-index:-1;
+    left:50%; top:2.3rem; width:min(30rem,116%); height:calc(100% - 2rem);
+    transform:translateX(-50%);
+    background:radial-gradient(112% 82% at 50% 0%,
+      rgba(246,239,226,.155) 0%, rgba(246,239,226,.085) 34%,
+      rgba(246,239,226,.03) 62%, rgba(246,239,226,0) 84%);
+    clip-path:polygon(42% 0%, 58% 0%, 96% 100%, 4% 100%);
+    opacity:0; pointer-events:none}
+  .endlight[data-lamp="on"]::before{opacity:1}
+
+  .lampbtn{position:absolute; top:0; left:50%; transform:translateX(-50%);
+    display:block; width:52px; height:62px; padding:0; margin:0;
+    background:none; border:0; cursor:pointer; line-height:0}
+  .lampbtn:focus-visible{outline:1px solid var(--clay); outline-offset:4px}
+  .lampsvg{display:block; width:52px; height:62px; overflow:visible}
+  .lampsvg line, .lampsvg path{fill:none; stroke:var(--ink-2); stroke-width:1.1;
+    stroke-linecap:round; stroke-linejoin:round}
+  .lampsvg .l-shade{stroke:var(--ink); stroke-width:1.3}
+  .lampsvg .l-rim{stroke:var(--ink); stroke-width:1.3}
+  .lampsvg .l-bulb{fill:none; stroke:var(--ink-2); stroke-width:1.1}
+  /* the halo is the light ON the shade's underside, not a glow in the air */
+  .lampsvg .l-halo{fill:var(--clay); stroke:none; opacity:0}
+  .lampbtn:hover .l-knob{fill:var(--clay); stroke:var(--clay)}
+  .endlight[data-lamp="on"] .l-bulb{fill:var(--clay); stroke:var(--clay)}
+  .endlight[data-lamp="on"] .l-halo{opacity:.16}
+  .endlight[data-lamp="on"] .l-rim{stroke:var(--clay)}
+
+  /* the epigraph exists only in the lamp's light */
+  .endquote{margin:0; opacity:0; transform:translateY(5px)}
+  .endlight[data-lamp="on"] .endquote{opacity:1; transform:none}
+  .endquote blockquote{font-family:var(--display); font-style:italic;
+    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.55; color:var(--ink);
+    margin:0; text-align:center; text-wrap:balance}
+  .endquote figcaption{margin-top:.55rem; font-family:var(--mono);
+    font-size:.66rem; letter-spacing:.05em; color:var(--ink-2); text-align:center}
+  .lampnote{margin:.9rem 0 0; text-align:center; font-size:.64rem;
+    letter-spacing:.07em; color:var(--ink-2); opacity:.62}
+
   @media (prefers-reduced-motion: no-preference){
-    .aftergate .endquote{transition:opacity .9s ease 1.05s,
-      transform .9s cubic-bezier(.22,1,.36,1) 1.05s}
+    .endlight::before{transition:opacity 1.15s ease .1s}
+    .endquote{transition:opacity .95s ease .34s,
+      transform .95s cubic-bezier(.22,1,.36,1) .34s}
+    .lampsvg .l-bulb, .lampsvg .l-rim, .lampsvg .l-knob{transition:fill .5s ease, stroke .5s ease}
+    .lampsvg .l-halo{transition:opacity .7s ease}
+    /* three beats of a filament finding its current, then steady */
+    .endlight[data-lamp="on"] .l-halo{animation:filament 1.15s ease-out both}
+    .endlight[data-lamp="on"]::before{animation:conewarm 1.3s ease-out both}
+  }
+  @keyframes filament{
+    0%{opacity:0} 9%{opacity:.20} 17%{opacity:.05}
+    31%{opacity:.24} 42%{opacity:.10} 100%{opacity:.16}
+  }
+  @keyframes conewarm{
+    0%{opacity:0} 10%{opacity:.5} 19%{opacity:.12}
+    33%{opacity:.85} 44%{opacity:.4} 100%{opacity:1}
   }
   @media (prefers-reduced-motion: reduce){
     .approved .ladder .gaterow .gsq2 i::after{animation:none; opacity:0}
-    .aftergate .endquote{opacity:1; transform:none}
+    .endlight::before, .endquote{transition:none}
   }
   /* The colophon rides INSIDE the gate's own screen. It was briefly given its
      own full-height close, which made a thirteenth view the page never asked
@@ -1670,16 +1748,39 @@ h1[data-np-measuring] .np-ch {
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
           <div class="aftergate" id="aftergate">
-            <figure class="endquote">
-              <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
-              <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
-            </figure>
-            <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
-            <div class="row mono">
-              <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
-              <a href="https://github.com/yadava5">github ↗</a>
-              <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
-              <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
+            <div class="agin">
+              <!-- The day ran out at 22:41 and the page is dark. ¶09 already
+                   said it — "lamplight. the machine works on; somebody stays
+                   to watch it." So the closing line is not lit by the page:
+                   it is lit by a lamp somebody switched on, and it can be
+                   switched off again. Nothing else in the aftergate depends
+                   on the lamp — the thanks and the links stay readable. -->
+              <div class="endlight" id="endlight" data-lamp="off">
+                <button class="lampbtn" id="lampbtn" type="button" aria-pressed="false"
+                        aria-controls="endquote" aria-label="Turn the reading lamp on to light the closing line">
+                  <svg class="lampsvg" viewBox="0 0 52 62" aria-hidden="true" focusable="false">
+                    <line class="l-cord"  x1="26" y1="0"  x2="26" y2="13"/>
+                    <path  class="l-shade" d="M9.5 32 L26 13 L42.5 32"/>
+                    <line  class="l-rim"   x1="9.5" y1="32" x2="42.5" y2="32"/>
+                    <circle class="l-halo" cx="26" cy="34.6" r="7.2"/>
+                    <circle class="l-bulb" cx="26" cy="34.6" r="2.9"/>
+                    <line  class="l-pull"  x1="38" y1="33" x2="38" y2="44"/>
+                    <circle class="l-knob" cx="38" cy="45.8" r="1.9"/>
+                  </svg>
+                </button>
+                <figure class="endquote" id="endquote">
+                  <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
+                  <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
+                </figure>
+                <p class="lampnote mono" id="lampnote">the lamp is off &middot; pull the cord</p>
+              </div>
+              <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
+              <div class="row mono">
+                <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
+                <a href="https://github.com/yadava5">github ↗</a>
+                <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
+                <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
+              </div>
             </div>
           </div>
         </div>
@@ -3452,7 +3553,32 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
+  /* The lamp comes on last, once the ladder has finished reading the run
+     back — the light is the reward for reaching the end, not a decoration
+     that arrives with it. It is a real switch afterwards, so the reader can
+     put it out again. RM lights it immediately: a reader who has asked for
+     less motion should not have to wait through a beat they cannot see. */
+  setTimeout(() => setLamp(true), RM ? 0 : 900);
+
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
+});
+
+/* ————— the lamp ————— */
+/* One state, three surfaces: the data attribute drives the cone, the bulb and
+   the epigraph's own opacity, so "the lamp lights the quote" is the literal
+   mechanism rather than two things fading in together. */
+function setLamp(on) {
+  const el = $("endlight"), btn = $("lampbtn");
+  el.dataset.lamp = on ? "on" : "off";
+  btn.setAttribute("aria-pressed", String(on));
+  btn.setAttribute("aria-label",
+    on ? "Turn the reading lamp off" : "Turn the reading lamp on to light the closing line");
+  $("lampnote").innerHTML = on
+    ? "the lamp is lit &middot; pull the cord to put it out"
+    : "the lamp is off &middot; pull the cord";
+}
+$("lampbtn").addEventListener("click", () => {
+  setLamp($("endlight").dataset.lamp !== "on");
 });
 
 /* ————— boot ————— */
