@@ -796,7 +796,23 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
    machines' absolutely positioned SVG escaped to the page — the fragment
    floating above the beat. A utility class doing load-bearing work is
    invisible until the markup moves to a page without the utilities. */
-.np-plate { position: relative; }
+.np-plate {
+  position: relative;
+  /* THE PLATE MUST BE AS WIDE AS THE NAME, not as wide as the column.
+     measureSettled reads the letters' true extent (587.7px here) and the
+     machines are cut to those coordinates, but .nameplate carries
+     max-width:100%, so the box clamped to the 530px beat column while the
+     overlay kept the unclamped geometry — viewBox "0 0 587.7 107.7"
+     stretched across a 530px element. That is the scale mismatch that put
+     an oversized A and av adrift above the name.
+     max-content lets the plate take the name's own width so box and
+     coordinates agree; max-width keeps it honest on a narrow seat, where
+     the font-size clamp brings the name back inside the column anyway. */
+  /* NO width:max-content here. I added it as a guess and it did nothing
+     except make the probe circular: measureSettled clones the h1 with
+     width:100%, and 100% of a max-content parent is defined by the very
+     element being measured. The plate takes the normal block width. */
+}
 
 .nameplate {
   /* These were Tailwind theme tokens (--text-nameplate*) that only exist
@@ -804,10 +820,30 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
      specificity over the run's own h1 rule, so the name rendered at body
      size. The run already sizes its display type correctly; the plate
      takes those values rather than importing a theme it does not have. */
-  font-size: clamp(3.1rem, 7.6vw, 6.6rem);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  font-weight: 365;
+  /* THE REAL TOKEN VALUES, read out of globals.css rather than guessed.
+     I had inferred these from the run's own h1 rule when the Tailwind
+     theme tokens went missing, and every one was wrong — most of all the
+     size: 13.4vw against my 7.6vw is a name rendered at two-thirds scale.
+     The machines are cut to measured letterforms, so guessing the type is
+     guessing the geometry. */
+  /* Production token values, read from globals.css rather than guessed.
+     A scaled-down clamp was tried here on the theory that the name was
+     too wide for the column; it was wrong — the plate tracks the font
+     size and the viewBox/plate ratio stayed 1.108 at both sizes. Reverted
+     rather than left in, because a smaller name for a disproved reason is
+     just a smaller name. */
+  font-size: clamp(2.95rem, 13.4vw, 10.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+  /* 600, NOT the run h1's 365. [data-np-probe] measures the clone at
+     "wght" 600 !important, and the machines are cut to whatever that
+     measurement produced — so a name rendered lighter than it was
+     measured is narrower than its own machines. That was the 587.7 vs
+     530 mismatch: an overlay built for a 600-weight name stretched over
+     a 365-weight one. I guessed 365 from the run's h1 rule when the
+     Tailwind token went missing; the probe rule is the authority. */
+  font-weight: 600;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0, "wght" 600;
   font-optical-sizing: none; /* the axis is DRIVEN, per character */
   white-space: nowrap;
   width: max-content;
@@ -3110,6 +3146,53 @@ boot();
   const replay = plate?.querySelector("[data-np-replay]");
   if (plate && h1 && !RM) {
     try {
+      /* MEASURE AFTER THE TYPE ARRIVES. measureSettled reads the letters'
+         real boxes, and the machines are cut to those boxes — so measuring
+         against the fallback face bakes the wrong geometry in permanently.
+         It showed up as viewBox "0 0 587.7 107.7" on a plate that is 530
+         wide: the machines were built for a name 58px wider than the one
+         Fraunces actually renders, so they drew oversized and adrift above
+         it. The React nameplate raced document.fonts.ready against 900ms
+         for exactly this reason; my mount had skipped it.
+         The race matters as much as the wait: a font that never resolves
+         must not cost the reader the performance. */
+      /* WAIT FOR THE REAL FACE, and do not race it to a deadline.
+         I copied React's Promise.race([fonts.ready, sleep(900)]) without
+         copying what makes that safe there — a re-measure path. Here the
+         900ms escape simply measured in the Georgia fallback and baked
+         the wrong geometry in for good: viewBox 929.2 against a plate of
+         838, a constant 1.109 too wide, which is Georgia's advance widths
+         rather than Fraunces'.
+         Proved rather than assumed: cloning the h1 the way measureSettled
+         does, at 2.5s, gives 838.5 against the h1's 838.5 — identical
+         font, weight, variation settings, tracking and per-letter widths.
+         The measurement was never wrong; it was early.
+         fonts.ready resolves once the set settles either way, so a face
+         that fails to load still releases it. The long stop is insurance
+         against a pathological document, not a measuring deadline. */
+      /* WAIT FOR THE PAGE TO SETTLE, not merely for the fonts.
+         Proved, not guessed: calling measureSettled from the console at
+         3.5s returns W 838.5 against a plate of 839 — the function is
+         correct and always was. The mount was producing 929.2, a constant
+         1.109 too wide, because it measured before the layout it was
+         measuring had finished happening. Waiting on fonts.ready alone
+         did not fix it, so the remaining movement is the run own engine:
+         boot() caches beat geometry and the fx pass writes transforms to
+         this very h1.
+         So: window load, then fonts, then two frames. Cheap, and it makes
+         the measurement depend on the page being done rather than on my
+         model of what moves last — which has been wrong four times on
+         this bug. */
+      if (document.readyState !== "complete") {
+        await new Promise((r) => addEventListener("load", r, { once: true }));
+      }
+      await Promise.race([
+        document.fonts?.ready ?? Promise.resolve(),
+        new Promise((r) => setTimeout(r, 8000)),
+      ]);
+      /* One frame after the fonts settle: fonts.ready can resolve before
+         the reflow it causes has been laid out. */
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
       const M = await import("./run/components/story/nameplateMachines.js");
       const letters = Array.from(h1.querySelectorAll(".np-ch"));
       let running = false;
@@ -3129,6 +3212,35 @@ boot();
           replay && (replay.disabled = false);
         }
       };
+      /* REBUILD WHEN THE PLATE RESIZES.
+         The decisive measurement: measureSettled returns W 929.2 at mount
+         and W 838.5 at 3.5s on the same page, with H identical both times.
+         H is font metrics and is stable; W is layout. So the plate itself
+         is wider early and narrows later — the clone is sized width:100%
+         of it — and the machines end up cut to a width the name never has.
+         Four attempts to find the moment after which the plate stops
+         moving all failed (fonts.ready, a longer wait, window load, two
+         frames). So stop predicting it: watch the box and rebuild when it
+         changes. Correct whatever moves it, and self-correcting if
+         something new does later.
+         Guarded against its own writes — performing changes nothing about
+         the plate box, but a rebuild loop here would be invisible and
+         expensive. */
+      let lastW = 0;
+      const ro = new ResizeObserver((entries) => {
+        const w = Math.round(entries[0].contentRect.width);
+        if (!w || w === lastW || running) return;
+        const first = lastW === 0;
+        lastW = w;
+        if (!first) {
+          plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
+          h1.removeAttribute("data-np-settled");
+          letters.forEach((l) => l.removeAttribute("data-np-done"));
+          perform();
+        }
+      });
+      ro.observe(plate);
+
       replay?.addEventListener("click", perform);
       await perform();
     } catch (e) {
