@@ -37,6 +37,22 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 | 05 | Cadence | test suite | 1,145 (634+511) | 1,145 @ pin `69a59e7` | — | **1,168 passed, 11 skipped** at HEAD | **re-run recorded**; pinned rows kept |
 | 09 | AutoML | commit count | **2,173 commits** | — | — | GitHub 4 / clone 9 — **wrong repo**; real history is Miami's GitLab | **restored, attributed** — see below |
 
+### Verified against running code, not documents
+
+These were checked by executing or importing the project itself, which is the
+standard the owner set: *"check them with the real application data, and don't
+rely on the readme."*
+
+| claim | method | result |
+|---|---|---|
+| Applied · **201 regex rules** | imported `jobtracker.classifier.rules` in the project venv and summed `PATTERNS` | **106 strong + 26 weak + 69 negative = 201** ✓ exact, plus 14 ATS domains |
+| Applied · 0.9791 / 8 classes / 96 samples / 2 wrong | read `mlruns/…/hybrid_eval.json` and recomputed macro-F1 from the confusion matrix | **0.9791** ✓ exact — but see the attribution row |
+| Glyph · 97.01% · 9,701/10,000 · macro-F1 0.9698 | read `benchmarks/mnist_eval.json` | **97.01 / 9701 / 0.969822** ✓ exact |
+| Glyph · 45.9 KB wasm | `ls` on the three built `fast_mnist.wasm` files | **45.9 KB** ✓ all three |
+| Glyph · 3.5× | recomputed from three committed Google Benchmark JSONs | 3.504× ✓ **but belongs to OpenMP** |
+| Cadence · 1,145 tests | **ran both vitest suites** | **1,168 passed, 11 skipped** — tree grew since the pin |
+| jetpack · all figures | recomputed ratios from both `jmh-results*.json` | two runs were being mixed |
+
 ### Stations that reconciled clean
 
 - **02 · who** — Cincinnati OH, Miami University, B.S. CS May 2026. Exact.
