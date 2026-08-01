@@ -511,11 +511,12 @@
      A tail below the gate lets the ending BE the ending — the token halts,
      the page waits. It was 40vh, which measured 480px of dead screen at
      1200px tall and read as the page failing to end rather than arriving.
-     15vh: the gate's own entrance is `in .12 .4` and finishes long before
-     the section does, so the tail was never paying for it.
+     8vh now, paired with a colophon entrance that finishes at .16 instead
+     of .24 — the tail only has to outlast the last entrance, so shortening
+     the entrance is what lets the tail shrink without stranding it at op 0.
      ::after on main, not padding on .b8: the beat is a centered flex
      seat, and asymmetric padding would re-seat its content mid-frame. */
-  main::after{content:""; display:block; height:15vh}
+  main::after{content:""; display:block; height:8vh}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
     gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
@@ -568,25 +569,52 @@
     .aftergate{transition:opacity .7s ease .25s, transform .7s cubic-bezier(.22,1,.36,1) .25s}
   }
   .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
-  /* The close. The page opens on one thing — the name, alone — and ended on a
-     mono block wedged into the right column under the gate card, with the
-     thread's terminus a thousand pixels above it. Scrolled to the bottom that
-     read as the page running out rather than finishing.
 
-     The colophon now spans both columns and centres, so the last screen is a
-     composed mark. It stays QUIET on purpose: the decision at the gate is the
-     ending, and a second loud endpoint would compete with it for that job —
-     this is a colophon closing a working paper, not a second nameplate. */
-  .b8 footer{grid-column:1 / -1; margin:12vh auto 0; padding-top:2.4rem;
-    border-top:1px solid var(--hair); text-align:center; max-width:72ch;
-    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em;
-    color:var(--ink-2); line-height:2}
-  .b8 footer .cspan{display:block; font-size:.66rem; letter-spacing:.17em;
-    text-transform:uppercase; opacity:.72; line-height:1.8}
-  .b8 footer .cname{display:block; font-family:var(--display); font-size:clamp(1.1rem,2.1vw,1.5rem);
-    letter-spacing:.02em; line-height:1.25; color:var(--ink); margin:.5rem 0 1.5rem;
-    font-variation-settings:"opsz" 144, "SOFT" 50, "WONK" 0, "wght" 500}
-  .b8 footer .cmeta{display:block}
+  /* ————— the reward ————— */
+  /* The gate is the only place on the page where the reader ACTS, and the
+     acknowledgement was a stamp and one colour change — thin payment for a
+     scroll that ran twelve stops. Three things now answer the click, in order:
+     the dock presses a seal and lifts it, the ladder reads the run back one
+     stop at a time, and the closing epigraph arrives last.
+
+     All of it CSS keyframes and one-shot transitions fired by a class. No rAF,
+     no timeline, nothing that outlives the gesture — the page keeps its
+     zero-idle-cost property. Under reduced motion every end state still
+     resolves; only the travel is removed. */
+  .ladder .gaterow .gsq2 i{position:relative}
+  .ladder .gaterow .gsq2 i::after{content:""; position:absolute; inset:-2px;
+    border:1px solid var(--pine); opacity:0; transform:scale(.5);
+    pointer-events:none}
+  .approved .ladder .gaterow .gsq2 i::after{
+    animation:seal 1.6s cubic-bezier(.16,.84,.44,1) .1s both}
+  @keyframes seal{
+    0%  {opacity:.85; transform:scale(.5)}
+    65% {opacity:.16; transform:scale(4.4)}
+    100%{opacity:0;   transform:scale(6.2)}
+  }
+  /* the epigraph is the last thing to arrive, after the ladder has finished
+     reading itself back — it closes the run rather than accompanying it */
+  .aftergate .endquote{margin:0 0 1.1rem; opacity:0; transform:translateY(6px)}
+  .aftergate.shown .endquote{opacity:1; transform:none}
+  .aftergate .endquote blockquote{font-family:var(--display); font-style:italic;
+    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.5; color:var(--ink); margin:0}
+  .aftergate .endquote figcaption{margin-top:.5rem; font-family:var(--mono);
+    font-size:.66rem; letter-spacing:.05em; color:var(--ink-2)}
+  @media (prefers-reduced-motion: no-preference){
+    .aftergate .endquote{transition:opacity .9s ease 1.05s,
+      transform .9s cubic-bezier(.22,1,.36,1) 1.05s}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .approved .ladder .gaterow .gsq2 i::after{animation:none; opacity:0}
+    .aftergate .endquote{opacity:1; transform:none}
+  }
+  /* The colophon rides INSIDE the gate's own screen. It was briefly given its
+     own full-height close, which made a thirteenth view the page never asked
+     for — the gate IS the ending, and anything after it competes. Compact,
+     right column, under the card: it belongs to the gate, not after it. */
+  .b8 footer{margin-top:2.2rem; padding-top:1rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
+    color:var(--ink-2); line-height:1.85; max-width:68ch}
 
   /* ————— ¶02 · who — the engineer of record ————— */
   .bwho{min-height:118vh}
@@ -1642,6 +1670,10 @@ h1[data-np-measuring] .np-ch {
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
           <div class="aftergate" id="aftergate">
+            <figure class="endquote">
+              <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
+              <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
+            </figure>
             <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
             <div class="row mono">
               <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
@@ -1651,14 +1683,12 @@ h1[data-np-measuring] .np-ch {
             </div>
           </div>
         </div>
+        <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
+          &copy; 2026 ayush yadav &mdash; cincinnati, oh &middot; miami university, class of 2026<br>
+          set in fraunces, newsreader &amp; fragment mono &middot; zero dependencies &middot; the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
+          the light ran dawn 06:12 &#10230; nightfall 22:41 &mdash; the site&rsquo;s own day arc, ink flip verified at every stop
+        </footer>
       </div>
-      <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
-        <span class="cspan">run 042 &middot; 06:12 &rarr; 22:41 &middot; twelve stops &middot; complete</span>
-        <span class="cname">Ayush Yadav</span>
-        <span class="cmeta">&copy; 2026 ayush yadav &mdash; cincinnati, oh &middot; miami university, class of 2026<br>
-        set in fraunces, newsreader &amp; fragment mono &middot; zero dependencies &middot; the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
-        the light ran dawn 06:12 &#10230; nightfall 22:41 &mdash; the site&rsquo;s own day arc, ink flip verified at every stop &middot; every station&rsquo;s output landed in a case file, source, or live build</span>
-      </footer>
     </div>
   </section>
 
@@ -1962,6 +1992,10 @@ function cacheGeometry() {
 const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 let pathLen = 0, gatePageY = 0;
+/* the final approach: the length over which the thread straightens onto the
+   gate dock and its hand-wobble tapers to zero. Long enough to read as an
+   arrival, short enough that the line still wanders everywhere else. */
+const APPROACH = 96;
 let glyphDigit = null;         /* the visitor's own read digit, once drawn */
 const inkC = {};
 function refreshInk() {
@@ -2005,14 +2039,26 @@ function buildThread() {
     anchors.push([x, b.top + b.h * 0.52]);
     if (i < beats.length - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
   }
-  /* terminate at the gate dock (the clay square in the ladder) */
+  /* Terminate at the gate dock (the clay square in the ladder). The line used
+     to arrive on the diagonal it happened to be travelling, which read as the
+     thread stopping rather than docking. The last stretch is now a straight
+     vertical drop onto the square: one anchor directly above the dock, one on
+     it. Paired with the wobble taper below, the hand steadies as it arrives. */
   const dr = $("gateDock").getBoundingClientRect();
   gatePageY = dr.top + scrollY + dr.height / 2;
-  anchors[anchors.length - 1] = [dr.left + dr.width / 2, gatePageY];
+  const dockX = dr.left + dr.width / 2;
+  anchors[anchors.length - 1] = [dockX, gatePageY - APPROACH];
+  anchors.push([dockX, gatePageY]);
   anchors.sort((a, b) => a[1] - b[1]);
 
-  /* densify with cosine easing + hand wobble (x only; y stays monotonic) */
+  /* densify with cosine easing + hand wobble (x only; y stays monotonic).
+     The wobble is what makes the line read as drawn rather than plotted — but
+     a hand that is still wavering as it reaches the dock reads as imprecise,
+     not human. `steady` tapers the wobble to exactly zero over the final
+     approach, so the last stretch is a clean vertical and the terminus is a
+     deliberate mark. */
   const amp = stacked ? 8 : 16;
+  const steady = (y) => clamp((gatePageY - y) / APPROACH, 0, 1);
   samples = [];
   let L = 0, px = 0, py = 0;
   const put = (x, y) => {
@@ -2023,10 +2069,10 @@ function buildThread() {
     const [x0, y0] = anchors[k], [x1, y1] = anchors[k + 1];
     const steps = Math.max(2, Math.round((y1 - y0) / 22));
     for (let s = 0; s < steps; s++) {
-      const t = s / steps, y = lerp(y0, y1, t);
+      const t = s / steps, y = lerp(y0, y1, t), w = steady(y);
       put(lerp(x0, x1, 0.5 - 0.5 * Math.cos(Math.PI * t))
-        + Math.sin(y * 0.011 + 2.1) * amp * 0.5
-        + Math.sin(y * 0.0037 + 0.7) * amp, y);
+        + Math.sin(y * 0.011 + 2.1) * amp * 0.5 * w
+        + Math.sin(y * 0.0037 + 0.7) * amp * w, y);
     }
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
@@ -3392,6 +3438,20 @@ $("approve").addEventListener("click", () => {
      dock turn pine. Deploy still does not light — approval is yours,
      deployment is work. */
   $("gateDock").querySelector("i").style.background = "var(--pine)";
+
+  /* The run reads itself back. Each stop takes the ink in turn, 60ms apart,
+     so the twelve hours you scrolled through resolve as one gesture rather
+     than snapping on together. The delays are cleared once the cascade is
+     spent, so a later scrub is not slowed by them — and no timer, class or
+     listener survives this beat. Deploy is excluded, as everywhere else. */
+  phases.forEach((li, i) => {
+    if (+li.dataset.ph === DEPLOY_PH) return;
+    li.style.transitionDelay = `${(0.06 * i).toFixed(2)}s`;
+    li.classList.add("lit");
+  });
+  document.body.classList.add("approved");
+  setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
+
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
 });
 
