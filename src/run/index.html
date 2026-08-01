@@ -963,26 +963,35 @@ html[data-np-ready] .np-replay {
    The JS-dead safety in np-safety-release is load-bearing and deliberate:
    if no machine ever lands a letter, it releases itself at 5.6s — past
    the whole performance — so a dead script can never strand the name. */
+/* The axes are HELD, and that is deliberate.
+   This used to animate "opsz" 18 to 144 and "wght" 660 to 600. Fraunces
+   is variable, so both resize the glyphs: measured, the name ran 916.8px
+   wide at 600ms and 838.5px at rest, and every letter right of the A slid
+   left as it narrowed — 78.3px of travel. The machines are drawn against
+   the SETTLED geometry, so for two seconds the type sat right of its own
+   apparatus and crept into place under it. Reported as "they start
+   shifting left", and the same divergence is why a replay could show the
+   A over the y.
+   The flourish and the machines want the same two seconds and cannot both
+   have them. The machines win: they are the idea, the optical-size sweep
+   was decoration on top of it. Letters still fade and rise — they just no
+   longer change width while doing it, so the type never moves under the
+   machine that is drawing it. */
 @keyframes np-settype {
   0% {
     opacity: 0;
     transform: translateY(0.16em);
     font-variation-settings:
-      "opsz" 18,
-      "SOFT" 0,
+      "opsz" 144,
+      "SOFT" 50,
       "WONK" 0,
-      "wght" 660;
+      "wght" 600;
   }
   55% {
     opacity: 1;
   }
   78% {
     transform: none;
-    font-variation-settings:
-      "opsz" 120,
-      "SOFT" 34,
-      "WONK" 0,
-      "wght" 588;
   }
   100% {
     opacity: 1;
