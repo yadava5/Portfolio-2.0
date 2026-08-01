@@ -18,7 +18,7 @@ const docH = await page.evaluate(() => document.body.scrollHeight);
 for (let y = 0; y <= docH; y += 420) { await page.mouse.wheel(0, 420); await page.waitForTimeout(40); }
 await page.waitForTimeout(800);
 await page.click("#approve");
-await page.waitForTimeout(2800);
+await page.waitForTimeout(4200);
 
 const box = async () => page.evaluate(() => {
   const r = document.getElementById("endlight").getBoundingClientRect();
