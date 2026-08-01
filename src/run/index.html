@@ -1115,6 +1115,14 @@ h1[data-np-measuring] .np-ch {
   .hero-poem .trans{margin:.4rem 0 0; font-family:var(--display);
     font-size:clamp(.9rem,1.2vw,1rem); line-height:1.45; color:var(--ink-2)}
   .hero-poem figcaption{margin-top:.5rem}
+
+/* The hour lines. Quieter than the station's own heading and set in the
+   reading face rather than the mono — they are the light in the room, not a
+   label on it. Italic because they are the one voice on the page that is
+   describing rather than claiming. */
+  .hourline{margin:.35rem 0 0; font-family:var(--display); font-style:italic;
+    font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45;
+    color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em}
 </style>
 </head>
 <body>
@@ -1155,6 +1163,7 @@ h1[data-np-measuring] .np-ch {
   <section class="beat b1" data-beat="0">
     <div class="beat-inner">
       <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">first light. nothing has been decided yet.</p>
       <!-- The scroll-fx rides the PLATE, not the h1. On the h1 it
            translated the type while leaving the machine overlay (a
            sibling, absolutely positioned) behind: measured 162.6px of
@@ -1193,6 +1202,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun clears the roofline, and the day has to be answered for.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
@@ -1227,6 +1237,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">early light — everything has a shape and nothing has a name.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Five years of query logs. Zero structure.</p>
         <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
@@ -1262,6 +1273,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the morning post, and the first thing anyone does with it is sort.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
@@ -1283,6 +1295,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">noon. nothing casts a shadow, so nothing hides in one.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
@@ -1320,6 +1333,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">mid-afternoon, when the light goes hard and shows the edges.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
         <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
           <blockquote>&ldquo;We should forget about small efficiencies, say about 97% of the time&hellip; yet we should not pass up our opportunities in that critical 3%.&rdquo;</blockquote>
@@ -1369,6 +1383,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun going down, and the work speeding up to beat it.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
@@ -1411,6 +1426,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · fifth station · the honest hour — <i>21:07</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dusk — the hour that shows you what did not get finished.</p>
         <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="dusk" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
         <figure class="borrowed" data-fx="in .09 .32 y 5 | drift 11" data-fx-sync="dusk">
           <blockquote>&ldquo;Plan to throw one away; you will, anyhow.&rdquo;</blockquote>
@@ -1441,6 +1457,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · sixth station · the last — <i>22:05</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">lamplight. the machine works on; somebody stays to watch it.</p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
         <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
@@ -1471,6 +1488,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the last of the light, spent checking what the day actually held.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
         <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
@@ -1511,6 +1529,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the co-signers — <i>22:32</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">two lamps that are not mine, lit over the same work.</p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people signed before you<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
 
@@ -1535,6 +1554,7 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div>
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dark. one decision left, and it was never going to be the machine's.</p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
         <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
