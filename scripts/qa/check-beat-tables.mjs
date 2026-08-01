@@ -27,8 +27,15 @@ const fail = [];
 const pass = [];
 
 /** the DOM's own count is the single source of truth */
-const beats = [...src.matchAll(/<section[^>]*data-beat="(\d+)"/g)].map((m) => +m[1]);
+const sections = [...src.matchAll(/<section[^>]*data-beat="(\d+)"[^>]*>/g)];
+const beats = sections.map((m) => +m[1]);
 const beatCount = beats.length;
+/* A beat may sit OUTSIDE the run: ¶13 is the morning after run 042 ended, so
+   it takes a beat index (the arc and the clock are indexed by beat) but it is
+   not one of the run's stops. It carries data-nextrun, and the ladder and the
+   cargo — which recap the RUN — are checked against the run's beats only. */
+const runBeats = sections.filter((m) => !/data-nextrun/.test(m[0])).length;
+const nextRun = beatCount - runBeats;
 const expected = [...Array(beatCount).keys()];
 if (String(beats.slice().sort((a, b) => a - b)) !== String(expected)) {
   fail.push(`data-beat is not a dense 0..${beatCount - 1} range: got ${beats.join(",")}`);
@@ -37,11 +44,11 @@ if (String(beats.slice().sort((a, b) => a - b)) !== String(expected)) {
 }
 
 /** every table that is read with a beat index */
-const numeric = (name, re) => {
+const numeric = (name, re, want = beatCount) => {
   const m = src.match(re);
   if (!m) return fail.push(`${name}: not found — did it get renamed?`);
   const n = m[1].split(",").filter((s) => s.trim()).length;
-  if (n !== beatCount) fail.push(`${name}: ${n} entries for ${beatCount} beats — beat ${n} reads undefined → NaN`);
+  if (n !== want) fail.push(`${name}: ${n} entries for ${want} beats — beat ${n} reads undefined → NaN`);
   else pass.push(`${name}: ${n} entries, one per beat`);
 };
 
@@ -68,10 +75,11 @@ if (ck) {
 
 /** the ladder recaps the day; its last rung must never light on scroll */
 const ladder = [...src.matchAll(/<li data-ph="(\d+)"/g)].map((m) => +m[1]);
-if (ladder.length !== beatCount) {
-  fail.push(`ladder has ${ladder.length} rungs for ${beatCount} beats`);
+if (ladder.length !== runBeats) {
+  fail.push(`ladder has ${ladder.length} rungs for ${runBeats} run beats`);
 } else {
-  pass.push(`ladder: ${ladder.length} rungs, one per beat`);
+  pass.push(`ladder: ${ladder.length} rungs, one per stop of the run` +
+    (nextRun ? ` (${nextRun} beat outside the run, not laddered)` : ""));
 }
 if (/if \(i === DEPLOY_PH\) return;/.test(src) && /const DEPLOY_PH = phases\.length - 1;/.test(src)) {
   pass.push("deploy rung derived from phases.length — cannot invert when a stop is inserted");
@@ -84,12 +92,12 @@ if (/if \(i === DEPLOY_PH\) return;/.test(src) && /const DEPLOY_PH = phases\.len
 /** travellers: every corridor except the last should carry something */
 const trav = [...src.matchAll(/\{ beat: (\d+), n: \d+, label:/g)].map((m) => +m[1]);
 const bare = [];
-for (let i = 0; i < beatCount - 1; i++) if (!trav.includes(i)) bare.push(i);
+for (let i = 0; i < runBeats - 1; i++) if (!trav.includes(i)) bare.push(i);
 if (bare.length) pass.push(`corridors without cargo: ${bare.join(", ")} (deliberate: nothing has been produced yet)`);
-if (!trav.includes(beatCount - 2)) {
-  fail.push(`the corridor into the gate (beat ${beatCount - 2}) carries no cargo — the run's last stretch reads as a blind line`);
+if (!trav.includes(runBeats - 2)) {
+  fail.push(`the corridor into the gate (beat ${runBeats - 2}) carries no cargo — the run's last stretch reads as a blind line`);
 } else {
-  pass.push(`the corridor into the gate (beat ${beatCount - 2}) carries cargo`);
+  pass.push(`the corridor into the gate (beat ${runBeats - 2}) carries cargo`);
 }
 
 for (const p of pass) console.log(`  · ${p}`);

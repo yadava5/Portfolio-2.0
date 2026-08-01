@@ -592,24 +592,6 @@
   @media (prefers-reduced-motion: no-preference){
     #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
   }
-  /* The aftergate was opacity:0 but still IN FLOW, so the gate card reserved a
-     block of empty height for words nobody had earned yet — and it grew when
-     the closing epigraph moved in. It now collapses to zero height via a 0fr
-     grid row and opens to 1fr, which animates height without ever measuring
-     it in JS. The card is exactly as tall as what it is currently saying. */
-  /* NOT a collapsing row any more. Expanding it grew the gate by 71px on
-     approval, which grew the document, which moved the last scroll
-     position down — so scrolling to the bottom AFTER approving cut
-     '¶ 12 · the approval gate' off the top. Measured at 1440x700 and
-     1440x800; invisible at 900+ , which is why one probe missed it.
-     It holds its space from the start, so the gate is the same height
-     before the decision and after, at every viewport. */
-  .aftergate{margin-top:1.2rem; opacity:0; pointer-events:none}
-  .aftergate.shown{opacity:1; pointer-events:auto}
-  @media (prefers-reduced-motion: no-preference){
-    .aftergate{transition:opacity .8s ease .15s}
-  }
-  .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
 
   /* ————— the reward ————— */
   /* The gate is the only place on the page where the reader ACTS, and the
@@ -646,38 +628,69 @@
     .dawnline > span{transition:opacity 1.1s ease 2.1s}
   }
 
-  /* ————— the closing epigraph ————— */
-  /* No lamp. The ending is the next morning — see the daybreak block in the
-     engine — so the line is not lit by an object in the room, it comes up with
-     the light. The veil holds the words in the dark and retreats as --lit
-     crosses them, and --lit is driven by the sunrise's own progress. */
-  @property --lit{syntax:"<percentage>"; inherits:true; initial-value:0%}
-
-  .endlight{position:relative; margin:1.4rem 0 .2rem}
-  .endquote{position:relative; margin:0; --lit:0%}
-  .endquote blockquote{font-family:var(--display); font-style:italic;
-    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.5; color:var(--ink);
-    margin:0; text-align:center; text-wrap:balance}
-  .endquote figcaption{margin-top:.6rem; font-family:var(--mono);
-    font-size:.66rem; letter-spacing:.05em; color:var(--ink-2); text-align:center}
-  .endquote::after{content:""; position:absolute; inset:-1.5rem -2.2rem -1.1rem;
-    background:radial-gradient(ellipse 60% 68% at 50% 50%,
-      var(--veil) 0%, var(--veil) 46%,
-      color-mix(in srgb, var(--veil) 60%, transparent) 74%,
-      color-mix(in srgb, var(--veil) 16%, transparent) 89%,
-      transparent 100%);
-    pointer-events:none;
-    -webkit-mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 26%),#000 var(--lit));
-    mask-image:linear-gradient(180deg,transparent calc(var(--lit) - 26%),#000 var(--lit))}
-  body[data-dawn="on"] .endquote{--lit:134%}
-  .lampnote{display:none}
-  @media print{ .endquote::after{display:none} }
-
+  /* ————— ¶13 · the next morning ————— */
+  /* A station, not a recolour. The gate is a ledger — dense, ruled, boxed —
+     so the morning after it is deliberately the opposite: one column, centred,
+     nothing boxed, and more air than any other stop on the line. Coming out of
+     twelve hours of measurements into this much space is the point.
+     Its light is the day arc's own first waypoint, reached by SCROLLING into
+     the section, which is why the sunrise no longer stutters: it is the same
+     per-frame arc every other station uses, not a JS animation racing it. */
+  /* 200vh of section, one viewport of sticky panel. The reader travels a full
+     screen's worth of scroll while the morning's words hold still — which is
+     the only way the sunrise has room to HAPPEN. As the last section it would
+     otherwise be unreachable past its own top: maxScroll lands on a final
+     section's start, so its beat progress would never leave 0 and the light
+     would never come up at all. 300vh, because at 200 the whole sunrise
+     was over in 800ms of the carry — measured — and a sunrise you can
+     miss by blinking is not one. */
+  .bdawn{min-height:300vh; padding:0}
+  .dawnstick{position:sticky; top:0; height:100vh; display:flex;
+    align-items:center; justify-content:center; padding:0 var(--pad-x)}
+  .dawnwrap{max-width:46rem; margin:0 auto; text-align:center}
+  /* The station arrives as ONE thing, staggered, once the light is up. It
+     cannot use data-fx: that engine keys off an element's page position, and
+     inside a sticky panel every child reports the section's static top while
+     being painted a screen below it — p resolved to ~3 at the document's end,
+     past the engine's own skip, so nothing ever entered. */
+  #manifest.filed{opacity:0; pointer-events:none;
+    transition:opacity .8s ease}
+  .dawnwrap > *{opacity:0; transform:translateY(12px)}
+  body.atmorning .dawnwrap > *{opacity:1; transform:none}
   @media (prefers-reduced-motion: no-preference){
-    /* the words come up with the light, not before it: the delay is the
-       length of the ink flip, so the line surfaces into a page that has
-       already turned back to paper */
-    .endquote{transition:--lit 2.4s cubic-bezier(.4,.8,.3,1) 1.5s}
+    .dawnwrap > *{transition:opacity .9s ease, transform 1s cubic-bezier(.22,1,.36,1)}
+    body.atmorning .dawnwrap > :nth-child(1){transition-delay:.05s}
+    body.atmorning .dawnwrap > :nth-child(2){transition-delay:.18s}
+    body.atmorning .dawnwrap > :nth-child(3){transition-delay:.42s}
+    body.atmorning .dawnwrap > :nth-child(4){transition-delay:.72s}
+    body.atmorning .dawnwrap > :nth-child(5){transition-delay:.86s}
+    body.atmorning .dawnwrap > :nth-child(6){transition-delay:1s}
+  }
+  .bdawn .kicker{color:var(--clay)}
+  .bdawn .hourline{max-width:none; margin:.5rem auto 0; font-style:italic}
+
+  /* wide enough that each line of the poem is one line: at 38rem the
+     column broke it mid-clause and the <br> stopped meaning anything */
+  .bdawn .endquote{margin:3.4rem auto 0; max-width:54rem}
+  .bdawn .endquote blockquote{margin:0; font-family:var(--display);
+    font-style:italic; font-weight:400; color:var(--ink);
+    font-size:clamp(1.2rem, 2.5vw, 1.95rem); line-height:1.38;
+    letter-spacing:-.004em; text-wrap:balance;
+    font-variation-settings:"opsz" 144, "SOFT" 40, "WONK" 0, "wght" 420}
+  .bdawn .endquote figcaption{margin-top:1.15rem; font-family:var(--mono);
+    font-size:.68rem; letter-spacing:.055em; color:var(--ink-2)}
+
+  .dawnsay{margin:3.2rem auto 0; font-family:var(--body);
+    font-size:clamp(1rem,1.5vw,1.12rem); color:var(--ink); max-width:34rem}
+  .dawnrow{display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center;
+    margin-top:1.1rem; font-size:.72rem; letter-spacing:.05em}
+  .dawnrun{margin-top:3.4rem; font-size:.64rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-2); opacity:.55}
+
+  @media (max-width: 720px){
+    .bdawn .endquote{margin-top:2.4rem}
+    .dawnsay{margin-top:2.4rem}
+    .dawnrun{margin-top:2.4rem}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1765,37 +1778,42 @@ h1[data-np-measuring] .np-ch {
             <span class="note" id="gateNote">scrolling could not press this button.</span>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
-          <!-- The lamp and the closing line are ALWAYS here, unlit. They are
-               not part of the reward's expansion, because a collapsing block
-               changes the gate's height, and a gate that changes height after
-               approval pushes its own header off the top of the screen. This
-               way the card is exactly as tall before the decision as after,
-               and the epigraph waits in the dark instead of not existing. -->
-          <div class="endlight" id="endlight" data-lamp="off">
-            <figure class="endquote" id="endquote">
-              <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
-              <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
-            </figure>
-            <p class="lampnote mono" id="lampnote">the lamp is off &middot; pull the switch</p>
-          </div>
-
-          <div class="aftergate" id="aftergate">
-            <div class="agin">
-              <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.35rem">Thank you. The interesting part is whatever comes next.</p>
-              <div class="row mono">
-                <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
-                <a href="https://github.com/yadava5">github ↗</a>
-                <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
-                <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
-              </div>
-            </div>
-          </div>
         </div>
         <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
           &copy; 2026 ayush yadav &mdash; cincinnati, oh &middot; miami university, class of 2026<br>
           set in fraunces, newsreader &amp; fragment mono &middot; zero dependencies &middot; the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
           the light ran dawn 06:12 &#10230; nightfall 22:41 &mdash; the site&rsquo;s own day arc, ink flip verified at every stop
         </footer>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ¶ 13 · 06:12 — the next morning.
+       Not a recolour of the gate: a station the reader travels INTO. The run
+       ended at nightfall and this is the morning after it, with its own light,
+       its own clock and its own first line. ¶01 opened on "first light.
+       nothing has been decided yet." — this is that sentence with the decision
+       already made, which is the whole of the Eliot quotation it carries. -->
+  <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun>
+    <div class="dawnstick">
+      <div class="dawnwrap">
+        <p class="kicker">¶ 13 &middot; the next morning &mdash; <i>06:12</i></p>
+        <p class="hourline">first light again &mdash; and this time something has been decided.</p>
+
+        <figure class="endquote">
+          <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
+          <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
+        </figure>
+
+        <p class="dawnsay">Thank you. The interesting part is whatever comes next.</p>
+        <div class="dawnrow mono">
+          <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
+          <a href="https://github.com/yadava5">github &#8599;</a>
+          <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin &#8599;</a>
+          <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper &#8599;</a>
+        </div>
+        <p class="dawnrun mono">run 043 &middot; not yet begun</p>
       </div>
     </div>
   </section>
@@ -1896,8 +1914,13 @@ function arcColor(beat, p) {
     const a = WAY[5], b = WAY[6];
     return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
   }
-  /* beats 9–11 — the review, the co-signers and the gate hold nightfall */
-  return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
+  if (beat < 12) { /* 9–11 — the review, the references and the gate hold night */
+    return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
+  }
+  /* ¶13 — the morning comes back as you travel into it. The window is the
+     first two-thirds of the beat so the light has arrived before the
+     station's own words do, and holds for the rest of it. */
+  return dawnArc(dawnProgress(p));
 }
 
 /* ————— the wash: raw WebGL, warm fbm on the arc's own color.
@@ -2100,6 +2123,13 @@ function cacheGeometry() {
 const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 let pathLen = 0, gatePageY = 0;
+/* run 042 owns beats 0..11; ¶13 is the next run's first light */
+const RUN_BEATS = 12;
+/* how far into ¶13 the morning has fully arrived. The station is 300vh and
+   the document ends 100vh into it, so beat progress tops out near .667;
+   the light completes just before the reader runs out of page. */
+const DAWN_WIN = 0.62;
+const dawnProgress = (p) => clamp(p / DAWN_WIN, 0, 1);
 /* the final approach: the length over which the thread straightens onto the
    gate dock and its hand-wobble tapers to zero. Long enough to read as an
    arrival, short enough that the line still wanders everywhere else. */
@@ -2137,15 +2167,17 @@ function buildThread() {
      tail — the thread simply stops drawing and the travellers lose their
      track. check-beat-tables.mjs asserts the lengths against the DOM. */
   const stx = stacked
-    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20]
-    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24];
+    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20, 20]
+    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24, 24];
+  /* RUN_BEATS, not beats.length: the thread is run 042's line and it stops
+     at the gate. ¶13 is the morning after, and nothing carries into it. */
   const anchors = [];
   anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
-  for (let i = 0; i < beats.length; i++) {
+  for (let i = 0; i < RUN_BEATS; i++) {
     const b = beats[i], x = (stx[i] / 100) * vw;
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
-    if (i < beats.length - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
+    if (i < RUN_BEATS - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
   }
   /* Terminate at the gate dock (the clay square in the ladder). The line used
      to arrive on the diagonal it happened to be travelling, which read as the
@@ -3100,15 +3132,22 @@ $("mtoggle").addEventListener("click", () => {
 /* ————— masthead clock + phase ————— */
 /* the datelines, minutes — station stops are the site's own. One entry per
    beat: 22:32 is the co-signers, 22:41 the gate. */
-const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361];
-const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the co-signers", "the gate — held"];
+const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361, 1812];
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the references", "the gate — held", "the next morning"];
 let lastClock = -1, lastPhase = -1;
 function setMast(beat, p) {
-  /* the clock belongs to the sunrise once it has run: scrolling back into
-     the gate must not put 22:41 back on a page that now reads 06:12 */
-  if (dawned && beat === 11) { dawnClock(dawnP); return; }
-  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
-  const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
+  /* The gate HOLDS 22:41 — it is one moment, not a stretch of evening — and
+     ¶13 rolls the clock from there to 06:12 on exactly the progress the light
+     uses, so the hour and the sky can never disagree. Everything before is the
+     ordinary stop-to-stop lerp. */
+  let m;
+  if (beat === RUN_BEATS - 1) m = CLOCKS[RUN_BEATS - 1];
+  else if (beat >= RUN_BEATS) {
+    m = Math.round(lerp(CLOCKS[RUN_BEATS - 1], CLOCKS[RUN_BEATS], dawnProgress(p))) % 1440;
+  } else {
+    const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
+    m = Math.round(lerp(a, b, clamp(p, 0, 1))) % 1440;
+  }
   if (m !== lastClock) { /* write only on minute change: no idle layout */
     lastClock = m;
     $("mclock").textContent = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
@@ -3116,50 +3155,35 @@ function setMast(beat, p) {
   if (beat !== lastPhase) { lastPhase = beat; $("mphase").textContent = PHASE_NAMES[beat]; }
 }
 
-/* ————— daybreak ————— */
-/* The ending is not a lamp. The page has run one day, dawn 06:12 to nightfall
-   22:41, and approving runs it forward through midnight into the next morning:
-   the light comes back up, the ink flips from cream to dark, the clock rolls
-   past 24:00 to 06:12, and the closing line surfaces into a page that is paper
-   again. "To make an end is to make a beginning" stops being a quotation about
-   the work and becomes a description of what just happened on screen.
-
-   THE STOPS ARE THE DUSK CHOREOGRAPHY, WALKED BACKWARDS. That list was
-   contrast-verified stop by stop, and it contains a deliberate luminance JUMP
-   at its flip — 0.64 to 0.43 — precisely so the ink never renders across the
-   mid band where neither cream nor dark holds contrast. Reversing it inherits
-   that guarantee instead of re-deriving it: the same jump, taken upward. */
+/* ————— the next morning's light —————
+   ¶13's arc, walked by SCROLLING into the station. These are the page's own
+   dusk choreography reversed: that twelve-stop list was contrast-verified stop
+   by stop and contains a deliberate luminance JUMP at its flip — 0.64 to 0.43
+   — precisely so the ink never renders across the mid band where neither cream
+   nor dark holds contrast. Reversing it inherits that guarantee rather than
+   re-deriving it: the same jump, taken upward. */
 const DAWN_STOPS = [
-  /* night, lifting: DUSK 11 → 7 */
   [1, 0.3471, 0.0218, 55.56], [1, 0.3679, 0.0244, 56.67],
   [1, 0.3886, 0.0269, 57.78], [1, 0.4093, 0.0295, 58.89], [1, 0.43, 0.032, 60],
-  /* the flip, upward: day resumes at the luminance dusk jumped down from */
   [0, 0.64, 0.0388, 62], [0, 0.6872, 0.0405, 65.64], [0, 0.7343, 0.0476, 69.28],
   [0, 0.7815, 0.0516, 72.91], [0, 0.8287, 0.0511, 76.55], [0, 0.8759, 0.0463, 80.19],
   [0, 0.923, 0.0388, 83.83],
-  /* and on into the morning: WAY 4 → 0 */
   [0, 0.9478, 0.0241, 85.79], [0, 0.964, 0.0123, 91.52],
   [0, 0.9743, 0.0102, 81.8], [0, 0.9671, 0.0181, 78.24],
 ];
-const DAWN_MS = 5400;
-let dawned = false, dawnRAF = 0, dawnT0 = 0, dawnP = 0;
-
 function dawnArc(p) {
   const f = clamp(p, 0, 1) * (DAWN_STOPS.length - 1);
   const i = Math.min(DAWN_STOPS.length - 2, Math.floor(f));
   const a = DAWN_STOPS[i], b = DAWN_STOPS[i + 1];
-  /* the same rule the dusk uses: never render between the two sides */
-  const t = a[0] !== b[0] ? 0 : f - i;
+  const t = a[0] !== b[0] ? 0 : f - i;   /* never render between the two sides */
   return {
     rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
     night: a[0] === 1,
-    /* the sun is below the horizon through the night stops, then comes up at
-       the dawn position the moment the page turns back to paper */
     sun: a[0] === 1 ? 7 : lerp(0, 0.62, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
   };
 }
 
-/* one applier, so the scroll loop and the sunrise cannot drift apart */
+/* one applier, so nothing can write the field behind the arc's back */
 function applyArc(arc, scrollFrac) {
   const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
   if (key !== lastArcKey && !FLAGS.has("noarc")) {
@@ -3177,42 +3201,8 @@ function applyArc(arc, scrollFrac) {
   if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0);
 }
 
-/* 22:41 → 24:00 → 06:12. The clock passes midnight rather than rewinding:
-   this is the next day, not the same one played backwards. */
-const DAWN_CLOCK_FROM = 1361, DAWN_CLOCK_TO = 1440 + 372;
-function dawnClock(p) {
-  const m = Math.round(lerp(DAWN_CLOCK_FROM, DAWN_CLOCK_TO, p)) % 1440;
-  $("mclock").textContent =
-    `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
-}
-
-/* A one-shot loop, not an idle one: it is started by a click, it terminates,
-   and it cancels itself if the reader scrolls away mid-sunrise. The page's
-   zero-idle-cost property survives because nothing here outlives the gesture. */
-function daybreak() {
-  if (dawned) return;
-  dawned = true;
-  document.body.dataset.dawn = "on";
-  if (RM) { /* no journey for a reader who asked for none — just the morning */
-    dawnP = 1; lastArcKey = ""; applyArc(dawnArc(1), 1); dawnClock(1);
-    $("mphase").textContent = "the next morning"; return;
-  }
-  dawnT0 = performance.now();
-  const step = (now) => {
-    const p = clamp((now - dawnT0) / DAWN_MS, 0, 1);
-    const e = p * p * (3 - 2 * p);
-    dawnP = e;
-    lastArcKey = "";               /* the sunrise owns the field while it runs */
-    applyArc(dawnArc(e), 1);
-    dawnClock(e);
-    if (p >= 0.34) $("mphase").textContent = "the next morning";
-    dawnRAF = p < 1 ? requestAnimationFrame(step) : 0;
-  };
-  dawnRAF = requestAnimationFrame(step);
-}
-
 /* ————— the engine ————— */
-let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false, atGate = false;
+let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false, atMorning = false;
 const PROF = FLAGS.has("prof"); /* ?prof — the harness reads the app's own
    per-frame scripting cost from __prof, separated from raster/composite */
 window.__prof = [];
@@ -3246,7 +3236,7 @@ function work(y) {
   /* the ground shifts: arc color + night flip + wash. Once the run has been
      approved the last station keeps the morning it was given, so scrolling
      back into it does not put the night back on. */
-  const arc = dawned && beat === 11 ? dawnArc(dawnP) : arcColor(beat, bp);
+  const arc = arcColor(beat, bp);
   applyArc(arc, y / Math.max(1, docH - vh));
   window.__world.arc = +(beat + bp).toFixed(3);
   if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
@@ -3291,6 +3281,9 @@ function work(y) {
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
   $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
+  /* filed. ¶13 is the morning after; the run's ledger has nothing left
+     to count and should not follow the reader into it. */
+  $("manifest").classList.toggle("filed", beat >= RUN_BEATS);
   $("manifest").classList.toggle("compact",
     !mobile && beat >= 1 && beat <= 10 && bp > 0.18 && bp < 0.8);
   /* the chrome bows out sooner on stacked seats — the card reaches the
@@ -3298,10 +3291,9 @@ function work(y) {
      leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
      so the fade completes before the card's headline reaches the clock */
   $("mast").classList.toggle("gone", beat === 11 && bp > (stacked ? 0.32 : 0.5));
-  /* the room lamp belongs to the last station only. Written on CHANGE,
-     not every frame: this runs inside the scroll loop. */
-  const at = beat === 11;
-  if (at !== atGate) { atGate = at; document.body.classList.toggle("atgate", at); }
+  /* ¶13 opens once the light is genuinely up, not on first pixel */
+  const morn = beat >= RUN_BEATS && bp > 0.16;
+  if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); }
   setMast(beat, bp);
 
   /* fx: arrive → drift → depart, a pure function of position */
@@ -3627,7 +3619,6 @@ $("gzbtn").addEventListener("click", async () => {
 /* ————— the gate: only a press resolves it ————— */
 $("approve").addEventListener("click", () => {
   $("stamp").classList.add("inked");
-  $("aftergate").classList.add("shown");
   $("approve").disabled = true;
   const now = new Date();
   $("gateNote").textContent =
@@ -3641,8 +3632,8 @@ $("approve").addEventListener("click", () => {
   /* The run reads itself back. Each stop takes the ink in turn, 60ms apart,
      so the twelve hours you scrolled through resolve as one gesture rather
      than snapping on together. The delays are cleared once the cascade is
-     spent, so a later scrub is not slowed by them — and no timer, class or
-     listener survives this beat. Deploy is excluded, as everywhere else. */
+     spent, so no timer, class or listener survives this beat. Deploy is
+     excluded, as everywhere else. */
   phases.forEach((li, i) => {
     if (+li.dataset.ph === DEPLOY_PH) return;
     li.style.transitionDelay = `${(0.06 * i).toFixed(2)}s`;
@@ -3651,30 +3642,46 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
-  /* and the day comes back. It starts once the ladder has finished reading the
-     run back, so the light lifts on a page that has already settled. */
-  setTimeout(daybreak, RM ? 0 : 1150);
-
-  /* The lamp comes on last, once the ladder has finished reading the run
-     back — the light is the reward for reaching the end, not a decoration
-     that arrives with it. It is a real switch afterwards, so the reader can
-     put it out again. RM lights it immediately: a reader who has asked for
-     less motion should not have to wait through a beat they cannot see. */
-
-  /* Approving expands the aftergate, which grows the right column by ~340px.
-     `.b8` centres its grid, so the WHOLE composition re-seats and the ladder
-     rises ~31px — leaving the thread canvas, built once against the old
-     geometry, terminating where the dock used to be. Measured: the token ring
-     landed a full row low, on the deploy line. Re-measure once the expansion
-     has finished, and again on transitionend in case it runs long. */
-  const remeasure = () => { cacheGeometry(); buildThread(); if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true); };
-  $("aftergate").addEventListener("transitionend", (e) => {
-    if (e.propertyName === "grid-template-rows") remeasure();
-  }, { once: true });
-  setTimeout(remeasure, RM ? 0 : 950);
-
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
+
+  /* and the run carries you into the next morning. THE SCROLL IS THE SUNRISE —
+     ¶13's arc is a pure function of how far into that station you are — so
+     this is deliberately slow, and deliberately a scroll rather than a jump:
+     the light needs the distance to come up in, and the reader has to see it
+     happen. Any real input abandons it; a page that will not let go of the
+     scrollbar is worse than one that never moved. */
+  setTimeout(carryToMorning, RM ? 0 : 1250);
 });
+
+function carryToMorning() {
+  const sec = $("nextmorning");
+  if (!sec) return;
+  /* to the END of the run's document: the sunrise lives in the scroll
+     between ¶13's top and there, so stopping at its top would land the
+     reader in the dark with nothing left to travel. */
+  const to = document.body.scrollHeight - innerHeight;
+  const from = scrollY;
+  if (RM || Math.abs(to - from) < 4) { window.scrollTo(0, to); return; }
+  const DUR = 7000;
+  const t0 = performance.now();
+  let abort = false;
+  const give = () => { abort = true; };
+  addEventListener("wheel", give, { once: true, passive: true });
+  addEventListener("touchstart", give, { once: true, passive: true });
+  addEventListener("keydown", give, { once: true });
+  const step = (now) => {
+    if (abort) return;
+    const p = clamp((now - t0) / DUR, 0, 1);
+    /* eased at both ends: it leaves the gate the way the token did — slowly */
+    /* gentler than a cubic in-out: that one hoarded the travel in the
+       middle and ran the whole sunrise past in under a second */
+    const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    window.scrollTo(0, Math.round(lerp(from, to, e)));
+    if (p < 1) requestAnimationFrame(step);
+    else { removeEventListener("wheel", give); removeEventListener("touchstart", give); removeEventListener("keydown", give); }
+  };
+  requestAnimationFrame(step);
+}
 
 
 /* the lamp is mounted and OFF from the start: an absent data-lamp meant the
