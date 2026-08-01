@@ -207,6 +207,69 @@ try {
   } else {
     notes.push("  · no replay control on the page — replay checks skipped");
   }
+  /* ── Narrow widths. Every geometry defect so far was found at 1440 and
+     the machines are sized from a measured box, so a width that changes
+     the type's wrap or scale is where a box mismatch would resurface. ── */
+  for (const w of [320, 768]) {
+    const np = await browser.newPage({ viewport: { width: w, height: 900 } });
+    await np.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
+    await np.waitForTimeout(1600);
+    const g = await np.evaluate(() => {
+      const svg = document.querySelector("svg.np-mech");
+      const h1 = document.querySelector("[data-nameplate] h1");
+      if (!svg || !h1) return null;
+      const sb = svg.getBoundingClientRect();
+      const hb = h1.getBoundingClientRect();
+      const vb = svg.getAttribute("viewBox").split(" ").map(Number);
+      return {
+        scale: +Math.min(sb.width / vb[2], sb.height / vb[3]).toFixed(4),
+        dTop: +(sb.top - hb.top).toFixed(1),
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    if (!g) {
+      notes.push(`  · ${w}px — no overlay at this width, geometry checks skipped`);
+    } else {
+      check(Math.abs(g.scale - 1) < 0.002, `the overlay is unscaled at ${w}px`, `scale ${g.scale}`);
+      check(Math.abs(g.dTop) < 1.5, `the overlay sits on the type at ${w}px`, `${g.dTop}px offset`);
+      check(g.overflow <= 0, `the page does not scroll sideways at ${w}px`, `${g.overflow}px of overflow`);
+    }
+    await np.close();
+  }
+
+  /* ── A7: reduced motion must render a COMPLETE authored name. The
+     letters carrying machines are held at opacity 0 until their machine
+     lands, so a reduced-motion path that skips the performance without
+     also releasing the withholding leaves the name permanently missing
+     five of its eleven characters. ── */
+  const rm = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: "reduce",
+  });
+  await rm.goto(`http://127.0.0.1:${port}/`, { waitUntil: "domcontentloaded" });
+  await rm.waitForTimeout(2500);
+  const still = await rm.evaluate(() => {
+    const h1 = document.querySelector("[data-nameplate] h1");
+    const L = [...h1.querySelectorAll(".np-ch")];
+    const shown = L.filter((l) => +getComputedStyle(l).opacity > 0.5);
+    return {
+      shown: shown.length,
+      all: L.length,
+      text: shown.map((l) => l.textContent.trim() || "_").join(""),
+      overlays: document.querySelectorAll("svg.np-mech").length,
+    };
+  });
+  check(
+    still.shown === still.all,
+    "reduced motion renders the whole name",
+    `${still.shown}/${still.all} letters — "${still.text}"`
+  );
+  check(
+    still.overlays === 0,
+    "reduced motion draws no apparatus",
+    `${still.overlays} overlay(s)`
+  );
+  await rm.close();
 } finally {
   await browser?.close();
   server.close();
