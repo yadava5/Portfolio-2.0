@@ -503,7 +503,18 @@
   .figsvg .deplbl{fill:var(--ink-2)}
 
   /* beat 8 — the gate */
-  .b8{min-height:118vh; display:flex; align-items:center; padding-top:8vh; padding-bottom:8vh}
+  /* 118vh centred the gate inside a box far taller than it, which put a
+     third of a screen of dead paper above AND below it. 100vh still
+     guarantees the gate its own full screen — it is the decision, it
+     should not share — but the seat no longer invents space. */
+  /* align-items:START, and that is the whole fix for the vanishing header.
+     Centred, the gate re-seats every time its content changes height — and
+     lighting the lamp grows the right column ~300px, which lifted the left
+     column ~84px and carried '¶ 12 · the approval gate' off the top of the
+     screen. Anchored to the top, the kicker sits at padding-top from the
+     section's top forever, and the aftergate can only ever grow DOWNWARD —
+     into the room the gate was already holding for it. */
+  .b8{min-height:100vh; display:flex; align-items:flex-start; padding-top:3vh; padding-bottom:2vh}
   /* the run's last sentence needs scroll the document did not have: at
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
@@ -511,22 +522,35 @@
      A tail below the gate lets the ending BE the ending — the token halts,
      the page waits. It was 40vh, which measured 480px of dead screen at
      1200px tall and read as the page failing to end rather than arriving.
-     15vh: the gate's own entrance is `in .12 .4` and finishes long before
-     the section does, so the tail was never paying for it.
+     8vh now, paired with a colophon entrance that finishes at .16 instead
+     of .24 — the tail only has to outlast the last entrance, so shortening
+     the entrance is what lets the tail shrink without stranding it at op 0.
      ::after on main, not padding on .b8: the beat is a centered flex
      seat, and asymmetric padding would re-seat its content mid-frame. */
-  main::after{content:""; display:block; height:15vh}
+  /* ZERO, and the arithmetic is the reason. The gate is min-height:100vh, so
+     the last scroll position is (gateBottom + tail) - vh. With any tail at
+     all that lands PAST the gate's own top, and the first things it cuts
+     are the kicker and the hour line — the two lines that say which
+     station you are standing in. tail 0 makes the final screen land
+     exactly on the gate. The entrance headroom the old tail provided now
+     comes from .b8's own padding-bottom, which is inside the section and
+     therefore cannot push the composition off-screen. */
+  main::after{content:""; display:block; height:0}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
     gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
-    border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2)}
-  .ladder li{margin:.72rem 0}
+    border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2);
+    margin-top:1.6rem}
+  .ladder li{margin:.52rem 0}
   .ladder li span{transition:color .4s ease}
   .ladder li.lit span{color:var(--ink)}
   .ladder .gaterow{display:flex; align-items:center; color:var(--ink)}
   .ladder .gaterow .gsq2{display:inline-flex; width:2.6ch; align-items:center}
   .ladder .gaterow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
   .gatecard{
+    /* --veil is the card's own fill, handed to the epigraph's veil so the
+       unlit patch is the card, not a brown rectangle laid on top of it. */
+    --veil:var(--plate);
     background:var(--plate); border:1px solid var(--plate-line); box-shadow:var(--shadow);
     padding:clamp(1.1rem, 2vw, 1.7rem); position:relative; contain:paint;
   }
@@ -545,7 +569,13 @@
   }
   .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; position:relative}
   #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink)}
-  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2); letter-spacing:.05em; max-width:24ch}
+  /* three lines' worth, reserved. The note goes from "scrolling could not
+     press this button." to "approved by hand — 15:59, your local time."
+     — two lines to three — and that 16px was the last thing still growing
+     the gate on approval, and therefore still moving the document under a
+     reader who was already at the bottom. */
+  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
+    letter-spacing:.05em; max-width:24ch; min-height:3.9em; line-height:1.3}
   #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
              round-3 card-bottom offset drifted when the aftergate grew
              the card, and at 1440 the ink grazed its own note. Anchored
@@ -562,14 +592,192 @@
   @media (prefers-reduced-motion: no-preference){
     #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
   }
-  .aftergate{margin-top:1.4rem; opacity:0; transform:translateY(10px); pointer-events:none}
-  .aftergate.shown{opacity:1; transform:none; pointer-events:auto}
-  @media (prefers-reduced-motion: no-preference){
-    .aftergate{transition:opacity .7s ease .25s, transform .7s cubic-bezier(.22,1,.36,1) .25s}
+
+  /* ————— the reward ————— */
+  /* The gate is the only place on the page where the reader ACTS, and the
+     acknowledgement was a stamp and one colour change — thin payment for a
+     scroll that ran twelve stops. Three things now answer the click, in order:
+     the dock presses a seal and lifts it, the ladder reads the run back one
+     stop at a time, and the closing epigraph arrives last.
+
+     All of it CSS keyframes and one-shot transitions fired by a class. No rAF,
+     no timeline, nothing that outlives the gesture — the page keeps its
+     zero-idle-cost property. Under reduced motion every end state still
+     resolves; only the travel is removed. */
+  .ladder .gaterow .gsq2 i{position:relative}
+  .ladder .gaterow .gsq2 i::after{content:""; position:absolute; inset:-2px;
+    border:1px solid var(--pine); opacity:0; transform:scale(.5);
+    pointer-events:none}
+  .approved .ladder .gaterow .gsq2 i::after{
+    animation:seal 1.6s cubic-bezier(.16,.84,.44,1) .1s both}
+  @keyframes seal{
+    0%  {opacity:.85; transform:scale(.5)}
+    65% {opacity:.16; transform:scale(4.4)}
+    100%{opacity:0;   transform:scale(6.2)}
   }
-  .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
-  .b8 footer{margin-top:12vh; padding-top:1rem; border-top:1px solid var(--hair);
-    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); line-height:2; max-width:72ch}
+  /* The gate's hour line still read "dark." on a page that had turned back
+     to paper. Both lines occupy the same grid cell, so the swap costs no
+     height and cannot move the composition — the one thing the ending is
+     not allowed to do. */
+  .dawnline{display:grid}
+  .dawnline > span{grid-area:1/1}
+  .dawnline .hl-dawn{opacity:0}
+  body[data-dawn="on"] .dawnline .hl-night{opacity:0}
+  body[data-dawn="on"] .dawnline .hl-dawn{opacity:1}
+  @media (prefers-reduced-motion: no-preference){
+    .dawnline > span{transition:opacity 1.1s ease 2.1s}
+  }
+
+  /* ————— ¶13 · the next morning ————— */
+  /* A station, not a recolour. The gate is a ledger — dense, ruled, boxed —
+     so the morning after it is deliberately the opposite: one column, centred,
+     nothing boxed, and more air than any other stop on the line. Coming out of
+     twelve hours of measurements into this much space is the point.
+     Its light is the day arc's own first waypoint, reached by SCROLLING into
+     the section, which is why the sunrise no longer stutters: it is the same
+     per-frame arc every other station uses, not a JS animation racing it. */
+  /* 200vh of section, one viewport of sticky panel. The reader travels a full
+     screen's worth of scroll while the morning's words hold still — which is
+     the only way the sunrise has room to HAPPEN. As the last section it would
+     otherwise be unreachable past its own top: maxScroll lands on a final
+     section's start, so its beat progress would never leave 0 and the light
+     would never come up at all. 300vh, because at 200 the whole sunrise
+     was over in 800ms of the carry — measured — and a sunrise you can
+     miss by blinking is not one. */
+  /* ¶13 IS NOT THERE UNTIL THE RUN IS APPROVED. Not hidden — absent: the
+     section collapses to zero height, so the document ends at the gate and
+     the gate is the last screen, exactly as it was before this station
+     existed. Left in flow at full height it pushed the document past the
+     gate, and scrolling to the bottom landed below it — which is what was
+     cutting '¶ 12 · the approval gate' off the top.
+     Height rather than display:none on purpose: `beats` is built once at
+     load and measured with offsetTop/offsetHeight, and a display:none
+     section reports 0 for BOTH — poisoning the beat array with a stop at
+     the top of the page. Zero height keeps its position honest. */
+  .bdawn{height:0; min-height:0; padding:0; overflow:hidden}
+  body.approved .bdawn{height:auto; min-height:300vh; overflow:visible}
+  .dawnstick{position:sticky; top:0; height:100vh; display:flex;
+    align-items:center; justify-content:center; padding:0 var(--pad-x)}
+  .dawnwrap{max-width:46rem; margin:0 auto; text-align:center}
+  /* The station arrives as ONE thing, staggered, once the light is up. It
+     cannot use data-fx: that engine keys off an element's page position, and
+     inside a sticky panel every child reports the section's static top while
+     being painted a screen below it — p resolved to ~3 at the document's end,
+     past the engine's own skip, so nothing ever entered. */
+  #manifest.filed{opacity:0; pointer-events:none;
+    transition:opacity .8s ease}
+  .dawnwrap > *{opacity:0; transform:translateY(12px)}
+  body.atmorning .dawnwrap > *{opacity:1; transform:none}
+  @media (prefers-reduced-motion: no-preference){
+    .dawnwrap > *{transition:opacity .9s ease, transform 1s cubic-bezier(.22,1,.36,1)}
+    body.atmorning .dawnwrap > :nth-child(1){transition-delay:.05s}
+    body.atmorning .dawnwrap > :nth-child(2){transition-delay:.18s}
+    body.atmorning .dawnwrap > :nth-child(3){transition-delay:.42s}
+    body.atmorning .dawnwrap > :nth-child(4){transition-delay:.86s}
+    body.atmorning .dawnwrap > :nth-child(5){transition-delay:1s}
+    body.atmorning .dawnwrap > :nth-child(6){transition-delay:1.14s}
+  }
+  .bdawn .kicker{color:var(--clay)}
+  .bdawn .hourline{max-width:none; margin:.5rem auto 0; font-style:italic}
+
+  /* wide enough that each line of the poem is one line: at 38rem the
+     column broke it mid-clause and the <br> stopped meaning anything */
+  .bdawn .endquote{position:relative; margin:3.4rem auto 0; max-width:54rem}
+  .bdawn .endquote blockquote{margin:0; font-family:var(--display);
+    font-style:italic; font-weight:400; color:var(--ink);
+    font-size:clamp(1.2rem, 2.5vw, 1.95rem); line-height:1.38;
+    letter-spacing:-.004em; text-wrap:balance;
+    font-variation-settings:"opsz" 144, "SOFT" 40, "WONK" 0, "wght" 420}
+  .bdawn .endquote figcaption{margin-top:1.15rem; font-family:var(--mono);
+    font-size:.68rem; letter-spacing:.055em; color:var(--ink-2)}
+
+  /* ————— the skein —————
+     Scenery, not decoration: the morning arrives and something crosses it.
+     Seven birds, left to right, loosely trailing — the same bird that folds
+     its wings down to make the v in the name on the first screen, flying again
+     a day later.
+
+     Each rides an offset-path with offset-rotate:auto, so it BANKS along its
+     own curve instead of sliding flat, and every wing beats on its own clock
+     because a real skein is never in step. One crossing, then gone: this is a
+     moment the morning brings, and nothing here loops. */
+  /* fixed to the viewport and behind the type: the birds fly in the sky while
+     the page scrolls beneath them, which is what makes them read as carrying
+     the reader from the gate to the morning rather than decorating either */
+  .flock{position:fixed; inset:0; overflow:hidden; pointer-events:none;
+    z-index:1; contain:strict}
+  .bird{position:absolute; left:0; top:0; width:0; height:0;
+    offset-rotate:auto; offset-distance:0%;
+    transform:scale(var(--s)); opacity:0}
+  .bird svg{overflow:visible; max-width:none; display:block;
+    margin:-17px 0 0 -30px}
+  .bird .b-ink{fill:var(--ink-2)}
+  .bird .b-wing{transform-box:view-box; transform-origin:0px 0px}
+
+  body.flying .bird{
+    animation:cross var(--dur) cubic-bezier(.28,.02,.5,1) var(--start) both}
+  /* a bird rises on the downstroke — the cue that separates flying from being
+     carried. Half the wing's period: it rises and falls once per beat. */
+  body.flying .bird .bd{
+    animation:bob calc(var(--beat) / 2) ease-in-out var(--start) infinite alternate}
+  body.flying .bird .b-wl{
+    animation:beatL var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
+  body.flying .bird .b-wr{
+    animation:beatR var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
+  body.flying .bird.gone .b-wing, body.flying .bird.gone .bd{animation:none}
+
+  @keyframes cross{
+    0%{offset-distance:0%; opacity:0}
+    /* short: the carry starts moving the page at 1.26s, and the birds have to
+       be up before it, or they are not what made you look. A bird at full ink
+       the instant it leaves the ground reads as a sprite appearing, so this is
+       a ramp and not a switch — just a fast one. */
+    4%{opacity:var(--op)}
+    93%{opacity:var(--op)}
+    100%{offset-distance:100%; opacity:0}
+  }
+  @keyframes bob{ from{transform:translateY(1.7px)} to{transform:translateY(-1.7px)} }
+  /* the upstroke is quicker than the down, the way a wing actually works */
+  @keyframes beatL{
+    0%  {transform:rotate(18deg)}
+    38% {transform:rotate(-32deg)}
+    100%{transform:rotate(18deg)}
+  }
+  @keyframes beatR{
+    0%  {transform:rotate(-18deg)}
+    38% {transform:rotate(32deg)}
+    100%{transform:rotate(-18deg)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .flock{display:none}
+  }
+
+  .dawnsay{margin:3.2rem auto 0; font-family:var(--body);
+    font-size:clamp(1rem,1.5vw,1.12rem); color:var(--ink); max-width:34rem}
+  .dawnrow{display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center;
+    margin-top:1.1rem; font-size:.72rem; letter-spacing:.05em}
+  .dawnrun{margin-top:3.4rem; font-size:.64rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-2); opacity:.55}
+
+  @media (max-width: 720px){
+    .bdawn .endquote{margin-top:2.4rem}
+    .dawnsay{margin-top:2.4rem}
+    .dawnrun{margin-top:2.4rem}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .approved .ladder .gaterow .gsq2 i::after{animation:none; opacity:0}
+    .endlight::before{transition:none; transform:translateX(-50%) scaleX(1)}
+    .endquote{transition:none}
+  }
+
+  /* The colophon rides INSIDE the gate's own screen. It was briefly given its
+     own full-height close, which made a thirteenth view the page never asked
+     for — the gate IS the ending, and anything after it competes. Compact,
+     right column, under the card: it belongs to the gate, not after it. */
+  .b8 footer{margin-top:.8rem; padding-top:1rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
+    color:var(--ink-2); line-height:1.85; max-width:68ch}
 
   /* ————— ¶02 · who — the engineer of record ————— */
   .bwho{min-height:118vh}
@@ -660,6 +868,22 @@
   @media (prefers-reduced-motion: reduce){
     .gates .gmark{stroke-dashoffset:0 !important}
   }
+  /* ¶11's plate. Same docket grammar as .gates. It carries NO signature
+     mark: nobody signed anything here. Two people wrote recommendations on
+     LinkedIn, in public, under their own names — so the plate is a citation
+     card, and drawing a "signature" for a named real person would be a
+     fabricated artifact attributed to them. It was, briefly, and it is not. */
+  .signs{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  .signs .shead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
+    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
+  .signs .shead i{font-style:normal; color:var(--clay)}
+  .signs .srow{display:grid; grid-template-columns:1fr auto; gap:.35rem .7rem;
+    padding:.85rem 0; border-bottom:1px solid var(--hair)}
+  .signs .srow .sname{color:var(--ink)}
+  .signs .srow .srole{grid-column:1 / -1; font-size:.7rem; color:var(--ink-2)}
+  .signs .srow .swhen{color:var(--ink-2); text-align:right; white-space:nowrap}
+  .signs .sclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
+    font-size:.7rem; line-height:1.9}
   .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
   .gates .gclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
     font-size:.76rem; line-height:1.9; color:var(--ink-2)}
@@ -1123,6 +1347,24 @@ h1[data-np-measuring] .np-ch {
   .hourline{margin:.35rem 0 0; font-family:var(--display); font-style:italic;
     font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45;
     color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em}
+
+  /* Short windows. The gate carries a headline, a thirteen-row ladder, the
+     manifest, the lamp and the closing line, and on a 800px-tall screen that
+     is more than one viewport — so the kicker was already above the fold
+     before anyone approved anything. Nothing here changes the design; it
+     just stops the ending spending height it does not need when there is
+     none to spare. Measured: recovers ~60px, which is what 1440x800 was
+     short by. */
+  @media (max-height: 880px){
+    .b8{padding-top:2vh; padding-bottom:1.4vh}
+    .ladder{margin-top:1.15rem}
+    .ladder li{margin:.33rem 0}
+    .endlight{margin:.7rem 0 .1rem; padding:3.9rem 0 .1rem}
+    .endlight::before{top:3.5rem}
+    .lampnote{margin-top:.5rem}
+    .b8 footer{margin-top:.55rem; line-height:1.62}
+    .gatecard .decide{margin-top:.9rem}
+  }
 </style>
 </head>
 <body>
@@ -1193,7 +1435,7 @@ h1[data-np-measuring] .np-ch {
         <p class="trans">Traveller, there is no road &mdash; the road is made by walking.</p>
         <figcaption>Antonio&nbsp;Machado &middot; <i>Proverbios y cantares</i>&nbsp;XXIX, Campos de Castilla, 1912</figcaption>
       </figure>
-      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — twelve stops, dawn to dark</p>
+      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> twelve stops, dawn to dark</p>
     </div>
   </section>
 
@@ -1206,7 +1448,7 @@ h1[data-np-measuring] .np-ch {
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
-        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the interface, the services behind it, the data they run on, and the machine learning when a problem needs it. Every claim on this line carries a receipt.</p>        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the interface, the services behind it, the data they run on, and the machine learning when a problem needs it. Every claim on this line carries a receipt.</p>        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">every station on this line hands its output to a case file, source, or live build &mdash; the links are in each station&rsquo;s handoff.</p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="engcard">
@@ -1497,11 +1739,11 @@ h1[data-np-measuring] .np-ch {
         </figure>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 passed · 10 skipped — Applied's validation ledger ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 passed · 10 skipped — Applied&rsquo;s validation ledger ↗</a></p></div>
           <div class="mline"><p>Make it fast.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, Glyph's committed benchmarks ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ↗</a></p></div>
           <div class="mline wonk"><p>Make it <em>honest</em>.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot's validation ledger ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot&rsquo;s validation ledger ↗</a></p></div>
         </div>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
@@ -1517,20 +1759,20 @@ h1[data-np-measuring] .np-ch {
             <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
             <span class="gword">refused</span></div>
           <p class="gleg">✓ a human signed for it · — the gate stopped the run</p>
-          <p class="gclose">two of my own gates <b>refused</b> to sign automatically. that discipline is why the next stop on this line is a person.</p>
+          <p class="gclose">two of my own gates <b>refused</b> to sign automatically. which is why the next stop on this line is a person.</p>
         </div>
         <figcaption>fig. 10 — the marks are drawn by the same hand as the thread. <i>a refused gate is the system working.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:32 — the co-signers -->
+  <!-- ¶ 11 · 22:32 — the references -->
   <section id="cosigners" class="beat station bsign" data-beat="10">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the co-signers — <i>22:32</i></p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references — <i>22:32</i></p>
         <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">past ten, and these are the only words on this page I did not write.</p>
-        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people signed before you<span style="color:var(--clay)">.</span></h2>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
         <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
@@ -1545,8 +1787,24 @@ h1[data-np-measuring] .np-ch {
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/">the recommendations, in full &#8599;</a></p>
       </div>
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="signs">
+          <div class="shead"><span>the references</span><span>written on linkedin &middot; <i>in public</i></span></div>
+          <div class="srow">
+            <span class="sname">Randall Vollen</span>
+            <span class="swhen">linkedin &middot; 2026</span>
+            <span class="srole">data, AI &amp; analytics executive &mdash; managed the ITSM work at station 03</span>
+          </div>
+          <div class="srow">
+            <span class="sname">Shree Chaturvedi</span>
+            <span class="swhen">linkedin &middot; 2026</span>
+            <span class="srole">computer science + mathematics &mdash; the teammate on stations 06 and 09</span>
+          </div>
+          <p class="sclose">three of the twelve stops carry a name that is not mine.</p>
+        </div>
+        <figcaption>fig. 11 &mdash; each reference sits beside the station that person actually worked on.</figcaption>
+      </figure>
     </div>
-    <figcaption class="figc" data-fx="in .2 .5 y 4 | drift 8">fig. 11 — each signature sits beside the station that person worked on.</figcaption>
   </section>
 
   <!-- ¶ 12 · 22:41 — the approval gate -->
@@ -1554,10 +1812,14 @@ h1[data-np-measuring] .np-ch {
     <div class="beat-inner">
       <div>
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dark. one decision left, and it was never going to be the machine's.</p>
+        <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
-        <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
+        <!-- `y 0`, and it is load-bearing: this list holds the dock the thread
+             terminates on. A station that moves its own terminus while the line
+             is being drawn to it will always disagree with the line. It fades
+             in; it no longer rises. -->
+        <ul class="ladder" data-fx="in .12 .4 y 0 | out 2 2.5 | drift 0" style="margin-top:2rem">
           <li data-ph="0"><span>06:12 · the start</span></li>
           <li data-ph="1"><span>06:58 · who</span></li>
           <li data-ph="2"><span>07:52 · the yard</span></li>
@@ -1568,11 +1830,11 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="7"><span>21:07 · lifequest</span></li>
           <li data-ph="8"><span>22:05 · agentic automl</span></li>
           <li data-ph="9"><span>22:23 · the review</span></li>
-          <li data-ph="10"><span>22:32 · the co-signers</span></li>
+          <li data-ph="10"><span>22:32 · the references</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
           <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
-        <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
+        <p class="mono" data-fx="in .02 .13 y 4 | out 2 2.5 | drift 0" style="margin-top:1.15rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
       </div>
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
@@ -1592,26 +1854,52 @@ h1[data-np-measuring] .np-ch {
             <span class="note" id="gateNote">scrolling could not press this button.</span>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
-          <div class="aftergate" id="aftergate">
-            <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
-            <div class="row mono">
-              <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
-              <a href="https://github.com/yadava5">github ↗</a>
-              <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
-              <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
-            </div>
-          </div>
         </div>
-        <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
-          end of scroll, not of story · © 2026 ayush yadav — cincinnati, oh · miami university, class of 2026<br>
-          set in fraunces, newsreader &amp; fragment mono · zero dependencies · the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
-          the light ran dawn 06:12 ⟶ nightfall 22:41 — the site&rsquo;s own day arc, ink flip verified at every stop · every station&rsquo;s output landed in a case file, source, or live build
+        <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
+          &copy; 2026 ayush yadav &mdash; cincinnati, oh &middot; miami university, class of 2026<br>
+          set in fraunces, newsreader &amp; fragment mono &middot; zero dependencies &middot; the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
+          the light ran dawn 06:12 &#10230; nightfall 22:41 &mdash; the site&rsquo;s own day arc, ink flip verified at every stop
         </footer>
       </div>
     </div>
   </section>
 
+
+  <!-- ¶ 13 · 06:12 — the next morning.
+       Not a recolour of the gate: a station the reader travels INTO. The run
+       ended at nightfall and this is the morning after it, with its own light,
+       its own clock and its own first line. ¶01 opened on "first light.
+       nothing has been decided yet." — this is that sentence with the decision
+       already made, which is the whole of the Eliot quotation it carries. -->
+  <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun>
+    <div class="dawnstick">
+      <div class="dawnwrap">
+        <p class="kicker">¶ 13 &middot; the next morning &mdash; <i>06:12</i></p>
+        <p class="hourline">first light again &mdash; and this time something has been decided.</p>
+
+        <figure class="endquote">
+          <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
+          <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
+        </figure>
+
+        <p class="dawnsay">Thank you. The interesting part is whatever comes next.</p>
+        <div class="dawnrow mono">
+          <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
+          <a href="https://github.com/yadava5">github &#8599;</a>
+          <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin &#8599;</a>
+          <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper &#8599;</a>
+        </div>
+        <p class="dawnrun mono">run 043 &middot; not yet begun</p>
+      </div>
+    </div>
+  </section>
+
 </main>
+
+<!-- The birds leave the gate when the run is approved and fly you into the
+     morning. Fixed to the viewport, not to a station: they have to be in the
+     air across BOTH, because the crossing IS the transition. -->
+<div class="flock" id="flock" aria-hidden="true"></div>
 
 <script type="module">
 /* ————————————————————————————————————————————————————————————————
@@ -1672,7 +1960,7 @@ const rgbCss = (r) => `rgb(${r.map((x) => Math.round(x * 255)).join(",")})`;
    19:36) and the two new morning chapters — who, the yard — split the
    dawn→08:47 leg in thirds, so the light still tells the clock's
    truth. Beat 7 runs the 12-stop dusk choreography (flip at .72, the
-   mid band never rendered); beat 8 scrubs dusk→night; 9–10 hold night. */
+   mid band never rendered); beat 8 scrubs dusk→night; 9–11 hold night. */
 const DAY_ANCHOR = [0, 1 / 3, 2 / 3, 1, 2, 3, 4, 4]; /* waypoint index per day beat */
 function arcColor(beat, p) {
   if (beat <= 6) {
@@ -1707,8 +1995,13 @@ function arcColor(beat, p) {
     const a = WAY[5], b = WAY[6];
     return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
   }
-  /* beats 9–10 — the review and the gate hold nightfall */
-  return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
+  if (beat < 12) { /* 9–11 — the review, the references and the gate hold night */
+    return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
+  }
+  /* ¶13 — the morning comes back as you travel into it. The window is the
+     first two-thirds of the beat so the light has arrived before the
+     station's own words do, and holds for the rest of it. */
+  return dawnArc(dawnProgress(p));
 }
 
 /* ————— the wash: raw WebGL, warm fbm on the arc's own color.
@@ -1785,6 +2078,11 @@ void main(){
 /* ————— geometry caches ————— */
 const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0, h: 0 }));
 const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
+/* the same walk across. Both of these are LAYOUT positions and neither sees a
+   transform, which is exactly why the thread is measured with them: a rail
+   terminated on getBoundingClientRect() bakes in whatever entrance animation
+   happened to be mid-flight when the geometry was last built. */
+const absLeft = (el) => { let x = 0; while (el) { x += el.offsetLeft; el = el.offsetParent; } return x; };
 let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false;
 
 /* fx elements: arrive → settle-with-drift → depart, except where the
@@ -1911,6 +2209,17 @@ function cacheGeometry() {
 const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 let pathLen = 0, gatePageY = 0;
+/* run 042 owns beats 0..11; ¶13 is the next run's first light */
+const RUN_BEATS = 12;
+/* how far into ¶13 the morning has fully arrived. The station is 300vh and
+   the document ends 100vh into it, so beat progress tops out near .667;
+   the light completes just before the reader runs out of page. */
+const DAWN_WIN = 0.62;
+const dawnProgress = (p) => clamp(p / DAWN_WIN, 0, 1);
+/* the final approach: the length over which the thread straightens onto the
+   gate dock and its hand-wobble tapers to zero. Long enough to read as an
+   arrival, short enough that the line still wanders everywhere else. */
+const APPROACH = 96;
 let glyphDigit = null;         /* the visitor's own read digit, once drawn */
 const inkC = {};
 function refreshInk() {
@@ -1919,36 +2228,76 @@ function refreshInk() {
     inkC[k] = cs.getPropertyValue(k).trim();
 }
 function sizeThread() {
-  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  /* The thread is a 1–2px ink line and the cargo marks are ~18px wide, so
+     this canvas is the one surface where the DPR cap is legible as softness:
+     at 1.5 on a DPR-3 display the line is drawn at half the screen's density
+     and upscaled. 2 is the smallest cap that lands the stroke on whole device
+     pixels there; beyond it the cost grows as the square for no visible gain,
+     since nothing here has detail finer than the stroke itself. */
+  const dpr = Math.min(devicePixelRatio || 1, 2);
   threadCv.width = Math.round(vw * dpr);
   threadCv.height = Math.round(vh * dpr);
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
   /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
-     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
-     Normal stations keep the thread by the prose margin; flips cross it.
-     The last x hugs the ladder column: the line must arrive at the gate
-     along the margin, never slashing across the ledger card */
+     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N),
+     the co-signers(N), gate. Normal stations keep the thread by the prose
+     margin; flips cross it. The last two x's walk IN toward the ladder
+     column — 30 → 27 → 24 — so the line arrives at the gate along the
+     margin, never slashing across the ledger card.
+
+     One entry per beat, and that is load-bearing: this array is indexed by
+     beat, so a short one makes stx[last] undefined, every anchor NaN from
+     there, and Math.hypot poisons the cumulative arc length for the whole
+     tail — the thread simply stops drawing and the travellers lose their
+     track. check-beat-tables.mjs asserts the lengths against the DOM. */
   const stx = stacked
-    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 20]
-    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 24];
+    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20, 20]
+    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24, 24];
+  /* RUN_BEATS, not beats.length: the thread is run 042's line and it stops
+     at the gate. ¶13 is the morning after, and nothing carries into it. */
   const anchors = [];
   anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
-  for (let i = 0; i < beats.length; i++) {
+  for (let i = 0; i < RUN_BEATS; i++) {
     const b = beats[i], x = (stx[i] / 100) * vw;
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
-    if (i < beats.length - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
+    if (i < RUN_BEATS - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
   }
-  /* terminate at the gate dock (the clay square in the ladder) */
-  const dr = $("gateDock").getBoundingClientRect();
-  gatePageY = dr.top + scrollY + dr.height / 2;
-  anchors[anchors.length - 1] = [dr.left + dr.width / 2, gatePageY];
+  /* Terminate at the gate dock (the clay square in the ladder). The line used
+     to arrive on the diagonal it happened to be travelling, which read as the
+     thread stopping rather than docking. The last stretch is now a straight
+     vertical drop onto the square: one anchor directly above the dock, one on
+     it. Paired with the wobble taper below, the hand steadies as it arrives. */
+  /* MEASURED IN LAYOUT SPACE, not from a client rect. The dock sits inside
+     ul.ladder, which enters on `y 6` — a 6vh translate, 54px at 900 — and a
+     client rect includes it. So the terminus was whatever the ladder's
+     entrance happened to be doing at the instant the geometry was last built,
+     and it disagreed with the dock by up to 55px for the rest of the session:
+     the rail visibly stopped short of the square it was docking onto.
+     absTop/absLeft never see a transform, so this is the same number at every
+     scroll position and after every resize.
+
+     And it targets the SQUARE rather than its 2.6ch cell — that mark is what
+     the reader sees as the end of the line, and the cell's centre sits about
+     6px to its right. */
+  const dockEl = $("gateDock");
+  const sq = dockEl.querySelector("i") || dockEl;
+  gatePageY = absTop(sq) + sq.offsetHeight / 2;
+  const dockX = absLeft(sq) + sq.offsetWidth / 2;
+  anchors[anchors.length - 1] = [dockX, gatePageY - APPROACH];
+  anchors.push([dockX, gatePageY]);
   anchors.sort((a, b) => a[1] - b[1]);
 
-  /* densify with cosine easing + hand wobble (x only; y stays monotonic) */
+  /* densify with cosine easing + hand wobble (x only; y stays monotonic).
+     The wobble is what makes the line read as drawn rather than plotted — but
+     a hand that is still wavering as it reaches the dock reads as imprecise,
+     not human. `steady` tapers the wobble to exactly zero over the final
+     approach, so the last stretch is a clean vertical and the terminus is a
+     deliberate mark. */
   const amp = stacked ? 8 : 16;
+  const steady = (y) => clamp((gatePageY - y) / APPROACH, 0, 1);
   samples = [];
   let L = 0, px = 0, py = 0;
   const put = (x, y) => {
@@ -1959,10 +2308,10 @@ function buildThread() {
     const [x0, y0] = anchors[k], [x1, y1] = anchors[k + 1];
     const steps = Math.max(2, Math.round((y1 - y0) / 22));
     for (let s = 0; s < steps; s++) {
-      const t = s / steps, y = lerp(y0, y1, t);
+      const t = s / steps, y = lerp(y0, y1, t), w = steady(y);
       put(lerp(x0, x1, 0.5 - 0.5 * Math.cos(Math.PI * t))
-        + Math.sin(y * 0.011 + 2.1) * amp * 0.5
-        + Math.sin(y * 0.0037 + 0.7) * amp, y);
+        + Math.sin(y * 0.011 + 2.1) * amp * 0.5 * w
+        + Math.sin(y * 0.0037 + 0.7) * amp * w, y);
     }
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
@@ -2055,7 +2404,7 @@ const TRAV = [
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
-  { beat: 7, n: 2, label: "the held marks, carried as they are", draw: (c) => { /* a held dash */
+  { beat: 7, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
       c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
@@ -2064,12 +2413,30 @@ const TRAV = [
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
-  { beat: 9, n: 1, label: "run 042, reviewed → the human gate", draw: (c) => { /* the reviewed report */
+  { beat: 9, n: 1, label: "run 042, reviewed → the references", draw: (c) => { /* the reviewed report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
       c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
+  /* the last corridor. Two copies, because two people wrote — this is the
+     only cargo on the line whose words are somebody else's. Without it the
+     run's final stretch carried nothing, which read as the line dying.
+
+     Drawn as written text, NOT as a signature: nobody signed anything here,
+     and a drawn signature mark for a named real person is a fabricated
+     artifact attributed to them. This carried two invented squiggles once. */
+  { beat: 10, n: 2, label: "two recommendations, carried as written → the human gate", draw: (c) => { /* a written page */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; /* ruled lines: it is writing */
+      c.beginPath();
+      c.moveTo(-6, -2.6); c.lineTo(4, -2.6);
+      c.moveTo(-6, 0); c.lineTo(6, 0);
+      c.moveTo(-6, 2.6); c.lineTo(2, 2.6);
+      c.stroke();
+      c.fillStyle = inkC["--clay-g"]; /* the quote mark: the words are borrowed */
+      c.fillRect(6.2, -4.4, 1.6, 2.4); } },
 ].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
 const setGlyphTraveller = (d) => { glyphDigit = String(d); };
 
@@ -2833,10 +3200,15 @@ function scrubQuests(p) {
    the run's OWN stops). The deploy line NEVER lights: that word belongs
    to a person, not a scroll. */
 const phases = [...document.querySelectorAll(".ladder li[data-ph]")];
+/* deploy is always the LAST rung, derived rather than numbered: when the
+   co-signers stop was added the hard-coded 10 silently began suppressing
+   THEM and lighting deploy — the one line the page promises no scroll can
+   reach. Deriving it means inserting a stop can never invert the rule. */
+const DEPLOY_PH = phases.length - 1;
 function scrubGate(p) {
   phases.forEach((li) => {
     const i = +li.dataset.ph;
-    if (i === 10) return; /* deploy — gated; a scroll never lights it */
+    if (i === DEPLOY_PH) return; /* deploy — gated; a scroll never lights it */
     li.classList.toggle("lit", p > 0.1 + i * 0.03);
   });
 }
@@ -2857,12 +3229,24 @@ $("mtoggle").addEventListener("click", () => {
 });
 
 /* ————— masthead clock + phase ————— */
-const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1361]; /* the datelines, minutes — station stops are the site's own */
-const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the gate — held"];
+/* the datelines, minutes — station stops are the site's own. One entry per
+   beat: 22:32 is the co-signers, 22:41 the gate. */
+const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361, 1812];
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the references", "the gate — held", "the next morning"];
 let lastClock = -1, lastPhase = -1;
 function setMast(beat, p) {
-  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, 10)];
-  const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
+  /* The gate HOLDS 22:41 — it is one moment, not a stretch of evening — and
+     ¶13 rolls the clock from there to 06:12 on exactly the progress the light
+     uses, so the hour and the sky can never disagree. Everything before is the
+     ordinary stop-to-stop lerp. */
+  let m;
+  if (beat === RUN_BEATS - 1) m = CLOCKS[RUN_BEATS - 1];
+  else if (beat >= RUN_BEATS) {
+    m = Math.round(lerp(CLOCKS[RUN_BEATS - 1], CLOCKS[RUN_BEATS], dawnProgress(p))) % 1440;
+  } else {
+    const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
+    m = Math.round(lerp(a, b, clamp(p, 0, 1))) % 1440;
+  }
   if (m !== lastClock) { /* write only on minute change: no idle layout */
     lastClock = m;
     $("mclock").textContent = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
@@ -2870,8 +3254,54 @@ function setMast(beat, p) {
   if (beat !== lastPhase) { lastPhase = beat; $("mphase").textContent = PHASE_NAMES[beat]; }
 }
 
+/* ————— the next morning's light —————
+   ¶13's arc, walked by SCROLLING into the station. These are the page's own
+   dusk choreography reversed: that twelve-stop list was contrast-verified stop
+   by stop and contains a deliberate luminance JUMP at its flip — 0.64 to 0.43
+   — precisely so the ink never renders across the mid band where neither cream
+   nor dark holds contrast. Reversing it inherits that guarantee rather than
+   re-deriving it: the same jump, taken upward. */
+const DAWN_STOPS = [
+  [1, 0.3471, 0.0218, 55.56], [1, 0.3679, 0.0244, 56.67],
+  [1, 0.3886, 0.0269, 57.78], [1, 0.4093, 0.0295, 58.89], [1, 0.43, 0.032, 60],
+  [0, 0.64, 0.0388, 62], [0, 0.6872, 0.0405, 65.64], [0, 0.7343, 0.0476, 69.28],
+  [0, 0.7815, 0.0516, 72.91], [0, 0.8287, 0.0511, 76.55], [0, 0.8759, 0.0463, 80.19],
+  [0, 0.923, 0.0388, 83.83],
+  [0, 0.9478, 0.0241, 85.79], [0, 0.964, 0.0123, 91.52],
+  [0, 0.9743, 0.0102, 81.8], [0, 0.9671, 0.0181, 78.24],
+];
+function dawnArc(p) {
+  const f = clamp(p, 0, 1) * (DAWN_STOPS.length - 1);
+  const i = Math.min(DAWN_STOPS.length - 2, Math.floor(f));
+  const a = DAWN_STOPS[i], b = DAWN_STOPS[i + 1];
+  const t = a[0] !== b[0] ? 0 : f - i;   /* never render between the two sides */
+  return {
+    rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
+    night: a[0] === 1,
+    sun: a[0] === 1 ? 7 : lerp(0, 0.62, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
+  };
+}
+
+/* one applier, so nothing can write the field behind the arc's back */
+function applyArc(arc, scrollFrac) {
+  const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
+  if (key !== lastArcKey && !FLAGS.has("noarc")) {
+    lastArcKey = key;
+    $("field").style.background = rgbCss(arc.rgb);
+    /* the masthead scrim keeps step with the field, so exiting elements
+       pass BEHIND the chrome instead of printing over its text */
+    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
+    if (arc.night !== window.__world.night) {
+      document.documentElement.toggleAttribute("data-night", arc.night);
+      window.__world.night = arc.night;
+      refreshInk(); repaintPad();
+    }
+  }
+  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0);
+}
+
 /* ————— the engine ————— */
-let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false;
+let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false, atMorning = false;
 const PROF = FLAGS.has("prof"); /* ?prof — the harness reads the app's own
    per-frame scripting cost from __prof, separated from raster/composite */
 window.__prof = [];
@@ -2902,23 +3332,12 @@ function work(y) {
   }
   window.__world.beat = beat; window.__world.beatP = +bp.toFixed(3);
 
-  /* the ground shifts: arc color + night flip + wash */
+  /* the ground shifts: arc color + night flip + wash. Once the run has been
+     approved the last station keeps the morning it was given, so scrolling
+     back into it does not put the night back on. */
   const arc = arcColor(beat, bp);
-  const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
-  if (key !== lastArcKey && !FLAGS.has("noarc")) {
-    lastArcKey = key;
-    $("field").style.background = rgbCss(arc.rgb);
-    /* the masthead scrim keeps step with the field, so exiting elements
-       pass BEHIND the chrome instead of printing over its text */
-    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
-    if (arc.night !== window.__world.night) {
-      document.documentElement.toggleAttribute("data-night", arc.night);
-      window.__world.night = arc.night;
-      refreshInk(); repaintPad();
-    }
-  }
+  applyArc(arc, y / Math.max(1, docH - vh));
   window.__world.arc = +(beat + bp).toFixed(3);
-  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, y / Math.max(1, docH - vh), arc.sun, arc.night ? 1 : 0);
   if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
   if (document.body.classList.contains("no-gl")) {
     const t = clamp(arc.sun / 5, 0, 1);
@@ -2932,7 +3351,13 @@ function work(y) {
      viewports (measured at 1440×900: dock 12612, max reach 12501) — so
      over the final half-viewport of scroll the token glides whatever
      shortfall remains. Still a pure function of y: any jump lands right. */
-  let tokenY = clamp(y + vh * 0.55, samples.length ? samples[0].y : 0, gatePageY);
+  /* "nothing moves until you decide" — so once you have, it moves. Until
+     approval the marker is a pure function of scroll; after it, the line
+     completes to the dock instead of resting against whichever ladder row the
+     reading line happens to sit beside. */
+  let tokenY = window.__world.approved
+    ? gatePageY
+    : clamp(y + vh * 0.55, samples.length ? samples[0].y : 0, gatePageY);
   const yEnd = Math.max(1, docH - vh);
   const short = gatePageY - (yEnd + vh * 0.55);
   if (short > 0) tokenY = clamp(tokenY + short * smooth((y - (yEnd - vh * 0.5)) / (vh * 0.5)), 0, gatePageY);
@@ -2951,7 +3376,7 @@ function work(y) {
   if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
-  if (beat >= 9) scrubGate(beat < 10 ? 0 : bp);
+  if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
 
   /* manifest stamps: one line as each station completes (reversible).
      The six stations ride beats 3–8 now. */
@@ -2960,14 +3385,20 @@ function work(y) {
   if (stamped !== window.__world.stamped) setStamps(stamped);
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
-  $("manifest").classList.toggle("landed", beat === 10 && bp > 0.22);
+  $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
+  /* filed. ¶13 is the morning after; the run's ledger has nothing left
+     to count and should not follow the reader into it. */
+  $("manifest").classList.toggle("filed", beat >= RUN_BEATS);
   $("manifest").classList.toggle("compact",
-    !mobile && beat >= 1 && beat <= 9 && bp > 0.18 && bp < 0.8);
+    !mobile && beat >= 1 && beat <= 10 && bp > 0.18 && bp < 0.8);
   /* the chrome bows out sooner on stacked seats — the card reaches the
      masthead earlier when the columns are a single stack. Round-3
      leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
      so the fade completes before the card's headline reaches the clock */
-  $("mast").classList.toggle("gone", beat === 10 && bp > (stacked ? 0.32 : 0.5));
+  $("mast").classList.toggle("gone", beat === 11 && bp > (stacked ? 0.32 : 0.5));
+  /* ¶13 opens once the light is genuinely up, not on first pixel */
+  const morn = beat >= RUN_BEATS && bp > 0.16;
+  if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); }
   setMast(beat, bp);
 
   /* fx: arrive → drift → depart, a pure function of position */
@@ -3024,6 +3455,15 @@ for (const f of fx) io.observe(f.el);
 
 let resizeT = null;
 addEventListener("resize", () => {
+  /* SYNCHRONOUSLY, every event. This used to be debounced by 160ms with
+     nothing else changing, so for the whole of a window drag the thread was
+     drawn from geometry built for a width that no longer existed — measured
+     mid-drag, the line ran 100px beside the dock at 1380 and 265px beside it
+     at 1300, which is a rail arriving next to its own terminus. The rebuild
+     costs 1.2–1.5ms median and 6.3ms worst across 390–1920, against a reflow
+     the resize has already paid for, so there is nothing to save by waiting.
+     The debounced pass below still does the parts that are not the rail. */
+  cacheGeometry(); buildThread(); wake(true);
   clearTimeout(resizeT);
   resizeT = setTimeout(() => {
     chooseEditions(); /* a narrower seat may swap a figure's plate */
@@ -3293,7 +3733,6 @@ $("gzbtn").addEventListener("click", async () => {
 /* ————— the gate: only a press resolves it ————— */
 $("approve").addEventListener("click", () => {
   $("stamp").classList.add("inked");
-  $("aftergate").classList.add("shown");
   $("approve").disabled = true;
   const now = new Date();
   $("gateNote").textContent =
@@ -3303,8 +3742,311 @@ $("approve").addEventListener("click", () => {
      dock turn pine. Deploy still does not light — approval is yours,
      deployment is work. */
   $("gateDock").querySelector("i").style.background = "var(--pine)";
+
+  /* The run reads itself back. Each stop takes the ink in turn, 60ms apart,
+     so the twelve hours you scrolled through resolve as one gesture rather
+     than snapping on together. The delays are cleared once the cascade is
+     spent, so no timer, class or listener survives this beat. Deploy is
+     excluded, as everywhere else. */
+  phases.forEach((li, i) => {
+    if (+li.dataset.ph === DEPLOY_PH) return;
+    li.style.transitionDelay = `${(0.06 * i).toFixed(2)}s`;
+    li.classList.add("lit");
+  });
+  document.body.classList.add("approved");
+  setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
+
+  /* and the gate lets the birds go — before the carry, not after, because they
+     are what makes the reader look up. The page follows them into the morning. */
+  releaseFlock();
+
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
+
+  /* and the run carries you into the next morning. THE SCROLL IS THE SUNRISE —
+     ¶13's arc is a pure function of how far into that station you are — so
+     this is deliberately slow, and deliberately a scroll rather than a jump:
+     the light needs the distance to come up in, and the reader has to see it
+     happen. Any real input abandons it; a page that will not let go of the
+     scrollbar is worse than one that never moved. */
+  /* ¶13 comes into existence here. Revealing it grows the document, so the
+     geometry every beat and every fx window is measured against has to be
+     rebuilt BEFORE anything tries to scroll into it — otherwise the carry
+     targets a document that no longer ends where it thought. */
+  setTimeout(() => {
+    cacheGeometry();
+    buildThread();
+    wake(true);
+    setTimeout(carryToMorning, RM ? 0 : 260);
+  }, RM ? 0 : 1000);
 });
+
+function carryToMorning() {
+  const sec = $("nextmorning");
+  if (!sec) return;
+  /* to the END of the run's document: the sunrise lives in the scroll
+     between ¶13's top and there, so stopping at its top would land the
+     reader in the dark with nothing left to travel. */
+  const to = document.body.scrollHeight - innerHeight;
+  const from = scrollY;
+  if (RM || Math.abs(to - from) < 4) { window.scrollTo(0, to); return; }
+  const DUR = 7000;
+  const t0 = performance.now();
+  let abort = false;
+  const give = () => { abort = true; };
+  addEventListener("wheel", give, { once: true, passive: true });
+  addEventListener("touchstart", give, { once: true, passive: true });
+  addEventListener("keydown", give, { once: true });
+  const step = (now) => {
+    if (abort) return;
+    const p = clamp((now - t0) / DUR, 0, 1);
+    /* eased at both ends: it leaves the gate the way the token did — slowly */
+    /* gentler than a cubic in-out: that one hoarded the travel in the
+       middle and ran the whole sunrise past in under a second */
+    const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    window.scrollTo(0, Math.round(lerp(from, to, e)));
+    if (p < 1) requestAnimationFrame(step);
+    else { removeEventListener("wheel", give); removeEventListener("touchstart", give); removeEventListener("keydown", give); }
+  };
+  requestAnimationFrame(step);
+}
+
+
+/* the lamp is mounted and OFF from the start: an absent data-lamp meant the
+   first pull computed its next state from undefined. */
+/* ————— the flock · the gate lets go —————
+   The birds take off FROM the gate the moment the run is approved and fly you
+   into the morning. That is the whole reason they exist: the crossing IS the
+   transition between ¶12 and ¶13, so the layer is fixed to the viewport rather
+   than parked in either station — they are in the air while the page travels
+   beneath them.
+
+   The bird is the nameplate's own: the one that folds its wings down to make
+   the v in "Yadav" on the first screen. It leaves from where the thread ends.
+
+   NO TWO BIRDS SHARE A PATH. Every earlier version put them on one line —
+   first as a rigid V dragged along it, then as a queue following it — and both
+   read as machinery, because a flock on rails is a conveyor no matter how the
+   slots are arranged. Each bird now has its OWN bezier, its own duration and
+   its own clock; what makes them one flock is that they leave the same place
+   and want the same corner of the sky, not that anything is holding them in
+   position. */
+
+/* a deterministic hand, so the sky is the same on every load and a screenshot
+   can be a test. mulberry32, the same generator the thread's geometry uses. */
+function birdRng(seed) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* where they leave from, as a fraction of the viewport — captured when the
+   gate is approved so a resize mid-flight rebuilds the same departure */
+let flockFrom = null;
+let releasedAt = 0;
+
+function buildFlock() {
+  const host = document.getElementById("flock");
+  if (!host || !flockFrom) return;
+  const W = host.clientWidth || innerWidth;
+  const H = host.clientHeight || innerHeight;
+  if (!W || !H) return;
+
+  /* THE BIRD, drawn here rather than lifted. The nameplate's wing paths are
+     authored to be scaled by a per-frame factor the machine animates; taken at
+     face value they are slabs, and two attempts to reuse them produced a shape
+     that read as furniture. This is a plain gull silhouette in the same ink —
+     a tapered body and two swept wings that pivot at the shoulder — which at
+     the size these actually render is the only thing that reads as a bird. */
+  const BODY =
+    "M -7.4 0.1 C -5 -0.9 -1 -1.5 3.2 -1.3 C 6.4 -1.2 8.8 -0.7 10.4 0" +
+    " C 8.8 0.7 6.4 1.2 3.2 1.3 C -1 1.5 -5 0.9 -7.4 0.1 Z" +
+    " M -7.4 0.1 L -11.6 -1.4 L -9.6 0.1 L -11.6 1.6 Z";
+  const wing = (m) => {
+    const w = (x, y) => `${(m * x).toFixed(2)} ${y.toFixed(2)}`;
+    return (
+      `<path class="b-ink" d="M ${w(0.6, -0.5)}` +
+      ` C ${w(6, -6.4)} ${w(14.5, -10.6)} ${w(23.5, -9.4)}` +
+      ` C ${w(21, -6.6)} ${w(15.5, -3.4)} ${w(8.6, -1.2)}` +
+      ` C ${w(5.4, -0.3)} ${w(2.6, 0.3)} ${w(0.6, 0.7)} Z"/>`
+    );
+  };
+  const svg =
+    `<svg viewBox="-26 -14 52 20" width="88" height="34">` +
+    `<path class="b-ink" d="${BODY}"/>` +
+    `<g class="b-wing b-wr">${wing(1)}</g><g class="b-wing b-wl">${wing(-1)}</g></svg>`;
+
+  const ox = W * flockFrom.fx;
+  const oy = H * flockFrom.fy;
+  const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
+
+  /* THE BIRD IS DRAWN AT A FIXED 88px, so a sky that works on a laptop is an
+     infestation on a phone: fifteen of them at full size across 390px covered
+     the epigraph and the quote both. The flock scales with the sky it crosses
+     — fewer birds, smaller, and flying higher, because a narrow viewport gives
+     them far less horizontal room to get clear of the type in. */
+  const narrow = W < 760;
+  const vs = clamp(W / 1500, 0.44, 1);
+  const N_NEAR = narrow ? 8 : 15;
+  const N_FAR = narrow ? 3 : 5;
+
+  host.innerHTML = "";
+  const frag = document.createDocumentFragment();
+
+  /* A REBUILD MUST NOT REPLAY THE DEPARTURE. buildFlock re-creates every bird,
+     and body.flying is already on, so a naive rebuild restarts `cross` from 0%
+     — the whole flock teleports back to the dock and takes off again over the
+     quote. On iOS the URL bar collapsing during a scroll fires resize, and ¶13
+     is three screens tall, so the likeliest moment for that is exactly the one
+     where it looks worst.
+
+     A NEGATIVE animation-delay starts an animation mid-way through, so each
+     bird resumes where it had got to; anything whose flight already ended is
+     not rebuilt at all. */
+  const elapsed = releasedAt ? (performance.now() - releasedAt) / 1000 : 0;
+  const place = (el, start, dur) => {
+    if (start + dur <= elapsed) return false;
+    el.style.setProperty("--start", (start - elapsed).toFixed(2) + "s");
+    return true;
+  };
+
+  /* ————— the departure —————
+     A flock leaving the ground is not a formation. It is a scatter that sorts
+     itself out: everything goes up at its own angle, then the angles agree,
+     then it is a loose stream leaning off to one corner. All three phases are
+     in each bird's path — a hard climb out of the huddle, a middle where the
+     paths converge without meeting, and a long shallow cruise to the top right.
+
+     The convergence is what makes it a flock rather than confetti, and it is
+     deliberately LOOSE: the gathering point is jittered a fifth of the screen
+     wide, because birds heading the same way is the real thing, and birds
+     arriving at the same coordinate is a funnel. */
+  for (let i = 0; i < N_NEAR; i++) {
+    const r = birdRng(0x51ee + i * 7919);
+    /* the huddle: they were never in a line to begin with */
+    const x0 = ox + (r() - 0.5) * 120 * vs;
+    const y0 = oy + (r() - 0.5) * 70 * vs;
+
+    /* WHERE THE FLOCK GATHERS, and it has to sit well to the right, because
+       the launch angle is the chord from here to there. Put the gathering
+       point up and only slightly across — as an earlier version did — and the
+       chord is 85° from horizontal, offset-rotate turns every bird onto its
+       tail, and an 88x34 silhouette seen end-on is a slash. Three of them read
+       as "K I" on a 390px screen. A narrow sky gets its gathering point much
+       further right and much lower, because it has far less width to do the
+       climbing in; the top band is left to the far flock. */
+    const gx = W * (narrow ? 0.72 : 0.45) + (r() - 0.5) * W * (narrow ? 0.2 : 0.18);
+    const gy = H * (narrow ? 0.42 : 0.27) + (r() - 0.5) * H * (narrow ? 0.16 : 0.24);
+    const runX = Math.max(80, gx - x0);
+    const runY = Math.max(40, y0 - gy);
+
+    /* THE CLIMB, as an angle rather than a distance. Every control point below
+       is a fraction of that run, so the geometry holds at 390px and at 1920
+       without a single absolute constant to get away from us. A touch steeper
+       than the chord — a bird does pitch up leaving the ground — and never
+       more than a touch, which is the whole fix. */
+    const th = Math.atan2(runY, runX) * (0.86 + r() * 0.24);
+    const L = Math.hypot(runX, runY) * (0.4 + r() * 0.22);
+    const c1x = x0 + Math.cos(th) * L;
+    const c1y = y0 - Math.sin(th) * L;
+    /* and it levels off INTO the gathering: the second control comes in almost
+       flat, so the bird is horizontal by the time it is among the others */
+    const c2x = gx - runX * (0.2 + r() * 0.2);
+    const c2y = gy + runY * (0.04 + r() * 0.13);
+
+    /* out over the corner. A narrow sky is left much sooner and much lower:
+       there is no room to cross it AND climb to the top. */
+    const ex = W * (narrow ? 1.45 : 1.12) + r() * W * 0.2;
+    const ey = H * (narrow ? 0.24 : 0.02) + (r() - 0.5) * H * (narrow ? 0.16 : 0.26);
+    const c3x = gx + (ex - gx) * (0.2 + r() * 0.22);
+    const c3y = gy - (gy - ey) * (0.12 + r() * 0.28);
+    const c4x = gx + (ex - gx) * (0.58 + r() * 0.22);
+    const c4y = ey + (gy - ey) * (0.08 + r() * 0.26);
+
+    const el = document.createElement("div");
+    el.className = "bird";
+    el.style.offsetPath =
+      `path("M ${P(x0, y0)} C ${P(c1x, c1y)} ${P(c2x, c2y)} ${P(gx, gy)}` +
+      ` C ${P(c3x, c3y)} ${P(c4x, c4y)} ${P(ex, ey)}")`;
+    /* no two share a duration, so whatever order they leave in is not the
+       order they arrive in — they overtake each other, which a queue cannot */
+    const dur = 8.6 + r() * 6.2;
+    const st = 0.22 + i * 0.115 + r() * 0.62;
+    el.style.setProperty("--dur", dur.toFixed(2) + "s");
+    if (!place(el, st, dur)) continue;
+    /* the bird's OWN size, before the viewport has its say. The wingbeat has
+       to key off this and not off the rendered scale, or the whole flock flies
+       in slow motion on a phone — vs shrinks every bird, and a period divided
+       by the shrunk value is a period three times too long. */
+    const sc0 = 0.72 + r() * 0.5;
+    el.style.setProperty("--s", (sc0 * vs).toFixed(3));
+    el.style.setProperty("--op", (0.3 + r() * 0.24).toFixed(2));
+    /* a bigger bird beats slower, as a bigger wing does — and no two birds
+       share a clock, because a flock in lockstep reads as a screensaver */
+    el.style.setProperty("--beat", (0.42 + 0.36 * (sc0 - 0.72) + r() * 0.07).toFixed(3) + "s");
+    /* and no two are mid-beat at the same moment */
+    el.style.setProperty("--wphase", (-r() * 0.6).toFixed(3) + "s");
+    el.innerHTML = `<div class="bd">${svg}</div>`;
+    el.addEventListener("animationend", (e) => {
+      if (e.animationName === "cross") el.classList.add("gone");
+    });
+    frag.appendChild(el);
+  }
+
+  /* ————— the far ones —————
+     Already up, and nothing to do with the gate: a distant crossing high over
+     the top, smaller, fainter and much slower. One flock alone gives the sky no
+     depth — it slides across like a decal. These are what make the near ones
+     read as near. */
+  for (let i = 0; i < N_FAR; i++) {
+    const r = birdRng(0x9c41 + i * 6151);
+    const y0 = H * ((narrow ? 0.05 : 0.1) + (r() - 0.5) * 0.1);
+    const el = document.createElement("div");
+    el.className = "bird";
+    el.style.offsetPath =
+      `path("M ${P(-W * 0.18, y0 + 40 + r() * 40)}` +
+      ` C ${P(W * 0.22, y0 + (r() - 0.5) * 60)} ${P(W * 0.42, y0 - 30 - r() * 40)} ${P(W * 0.62, y0 - 14)}` +
+      ` C ${P(W * 0.84, y0 - 2 + (r() - 0.5) * 50)} ${P(W * 1.0, y0 - 50 - r() * 40)} ${P(W * 1.24, y0 - 80 - r() * 50)}")`;
+    const dur = 21 + r() * 9;
+    const st = 2.6 + i * 0.44 + r() * 0.9;
+    el.style.setProperty("--dur", dur.toFixed(2) + "s");
+    if (!place(el, st, dur)) continue;
+    const sc0 = 0.42 + r() * 0.16;
+    el.style.setProperty("--s", (sc0 * vs).toFixed(3));
+    el.style.setProperty("--op", (0.14 + r() * 0.07).toFixed(2));
+    /* slower than the near flock: distance flattens a wingbeat */
+    el.style.setProperty("--beat", (0.64 + 0.4 * (sc0 - 0.42) + r() * 0.08).toFixed(3) + "s");
+    el.style.setProperty("--wphase", (-r() * 0.7).toFixed(3) + "s");
+    el.innerHTML = `<div class="bd">${svg}</div>`;
+    el.addEventListener("animationend", (e) => {
+      if (e.animationName === "cross") el.classList.add("gone");
+    });
+    frag.appendChild(el);
+  }
+  host.appendChild(frag);
+}
+
+/* the gate lets them go. The departure point is the thread's own terminus —
+   the dock the line has been carrying toward for twelve stations — so what
+   leaves is what the run was carrying. Measured at this instant, in viewport
+   coordinates, because the page is about to scroll out from under it. */
+function releaseFlock() {
+  const host = document.getElementById("flock");
+  if (!host || RM) return;
+  const d = document.getElementById("gateDock");
+  const r = d ? d.getBoundingClientRect() : null;
+  const W = host.clientWidth || innerWidth;
+  const H = host.clientHeight || innerHeight;
+  flockFrom = r && r.width
+    ? { fx: clamp((r.left + r.width / 2) / W, 0.06, 0.5), fy: clamp((r.top + r.height / 2) / H, 0.3, 0.86) }
+    : { fx: 0.16, fy: 0.72 };
+  releasedAt = performance.now();
+  buildFlock();
+  document.body.classList.add("flying");
+}
+addEventListener("resize", () => { if (flockFrom) buildFlock(); });
 
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */

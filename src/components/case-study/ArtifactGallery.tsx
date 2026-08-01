@@ -239,7 +239,8 @@ export function ArtifactGallery({ artifacts, figStart }: ArtifactGalleryProps) {
                       </span>
                       <span className="text-ink-secondary mt-1 block">
                         panels cropped at column width from the checked-in
-                        capture — titles quoted from the poster.
+                        capture — the titles are the poster&rsquo;s words, not
+                        this file&rsquo;s claims.
                       </span>
                       <span className="text-ink-secondary mt-1 block">
                         source: {artifact.source} ·{" "}

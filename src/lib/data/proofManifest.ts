@@ -155,7 +155,8 @@ export const proofManifest: ProofManifestEntry[] = [
   {
     id: "visual-assist-tests",
     label: "71 iOS tests",
-    claim: "Visual Assist has audited XCTest model and utility coverage.",
+    claim:
+      "The public VisualAssistTests tree holds 71 test functions across the model and utility layers.",
     source:
       "https://github.com/yadava5/VisualAssist/tree/22ebdaa/VisualAssistTests",
     sourceLabel: `VisualAssistTests @ ${VISUAL_ASSIST_SHA}`,
@@ -246,7 +247,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "master-inventory-ledger",
     label: "10,453 deduped rows",
     claim:
-      "Master Inventory private-safe proof records the deduped inventory row count and schema boundary.",
+      "The checked-in ledger records 3,731 Tableau and 6,743 Workday rows deduped to 10,453 master rows across a 35-field schema.",
     source: "public/proof/master-inventory-ledger.json",
     sourceLabel: "master-inventory-ledger.json — checked in 2026-06",
     verification:
@@ -265,7 +266,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "policybot-validation",
     label: "19/20 structured sweep",
     claim:
-      "PolicyBot private-safe proof records a structured validation sweep.",
+      "The checked-in ledger records a 19/20 structured sweep and a 17/25 keyword sweep, both self-graded, with 4 unsupported topics declined rather than answered.",
     source: "public/proof/policybot-validation-ledger.json",
     sourceLabel: "policybot-validation-ledger.json — checked in 2026-06",
     verification:

@@ -856,7 +856,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/tree/${AUTOML_SHA}`,
     },
     summary:
-      "A public, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
     evidenceDisclosure: {
       label: "Private proof: GitHub evidence",
       detail:
@@ -1104,12 +1104,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07",
         kind: "note",
-        text: "Per-run metrics remain withheld while the repository is private; the eval protocol for the platform’s own model runs is not yet publicly documented. Nothing here has been retracted — this register is waiting on a demo-data run ledger.",
+        text: "Per-run metrics remain withheld because no committed eval artifact earns one; the eval protocol for the platform’s own model runs is not yet publicly documented. Nothing here has been retracted — this register is waiting on a demo-data run ledger.",
       },
       {
         date: "2026-07-30",
         kind: "erratum",
-        text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above still stands: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
+        text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above stands with its reason corrected: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
       },
     ],
     registryFig: {
@@ -1361,7 +1361,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-05",
         kind: "erratum",
-        text: "An earlier draft carried the smaller count from the repo’s CI run title. The audited count in the current tree is 71 test functions; the receipt above links the tree so the number can be checked.",
+        text: "An earlier draft took its count from the repo’s CI run title rather than from the test tree; that draft is not in this repository’s history, so the figure it printed cannot be quoted back here. The audited count in the current tree is 71 test functions, and the receipt above links the tree so the number can be checked.",
       },
     ],
     artifacts: [
@@ -1423,7 +1423,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/cadence/tree/${CADENCE_SHA}`,
     },
     summary:
-      "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
+      "A calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
     problem:
       "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
     constraints: [
@@ -1723,9 +1723,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend) — the tree grew from 87 to 105 test files over 249 commits, and nothing was retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
-      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against a real Postgres — but 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
+      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against an ephemeral Postgres in CI — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration, so that evidence is machine-checked rather than hand-run. But 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
       "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
-      "What the 11 isolation tests prove is that the policies work, not that they are switched on in production. They run in CI against an ephemeral Postgres — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration — so the evidence is machine-checked, not hand-run. What no test here can show is which role the deployed database actually connects as; that is database state, and receipt 05 is where the staged-off standing is written down.",
       "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
     corrections: [
@@ -1800,7 +1799,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
+      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -1885,7 +1884,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "The work is organizational and cannot expose raw institutional records.",
         tradeoff:
-          "Recruiters cannot inspect source data, so this file names the systems, constraints, and validation shape instead.",
+          "No one outside the institution can inspect the source data, so this file names the systems, constraints, and validation shape instead.",
         status: "accepted",
       },
     ],
@@ -1939,7 +1938,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "1M+ operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
+          "More than one million operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
         method:
           "role scope, jun 2025 – may 2026 — institutional ITSM data integration",
         artifacts: [],
@@ -2037,7 +2036,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "Keep institutional policy content governed and source-cited.",
       "Support DOCX, PDF, and Markdown policy sources.",
       "Validate quoted passages before presenting answers.",
-      "Meet users where they already work: Slack.",
+      "Answer in Slack, where the questions already get asked.",
     ],
     architecture: {
       summary:
@@ -2103,7 +2102,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "The target workflow already happens in team communication channels.",
         tradeoff:
-          "Slack integration adds event handling complexity but lowers adoption friction.",
+          "Slack integration adds event handling to maintain, and puts the answer in the thread where the question was asked.",
         status: "accepted",
       },
     ],
@@ -2163,7 +2162,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "The assistant is designed to cut policy lookup friction while preserving citations and fallback behavior.",
+          "Answers come back in Slack with the source cited, and topics the sources do not cover are declined rather than answered — 4 such fallbacks in the recorded sweep.",
         method: "design intent, described — no usage metric is claimed",
         artifacts: [],
         date: null,
@@ -2297,7 +2296,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
       "Keep the implementation in C++ with explicit SIMD and OpenMP paths.",
-      "Measure speedup without overstating unverified exact benchmark details.",
+      "Quote no speedup that a committed benchmark run does not produce.",
       "Expose the model through an interactive React and TypeScript frontend.",
       "Keep benchmark and accuracy claims traceable to source data.",
     ],
@@ -2361,8 +2360,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         decision: "Expose a React demo",
-        reason:
-          "Recruiters can inspect the behavior without reading only C++ code.",
+        reason: "A reader can watch the network work without reading C++.",
         tradeoff: "The frontend is secondary to the C++ benchmark proof.",
         status: "accepted",
       },
@@ -2518,7 +2516,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07-30",
         kind: "erratum",
-        text: "Credited the collaborator and stopped claiming the network. This file described a two-person project as though one person had built it, and its summary opened by claiming a neural network that already existed — a course MLP this work optimized rather than authored. Both were omissions on the site's side: the résumé has consistently said 2-person team and named the kernels as written with a teammate. The meta ledger now scopes the role the way the capstone's already does, and the not-claiming list states what is not mine. Under-crediting a collaborator is the one error on this site that costs more than a wrong number, because a number can be re-measured and a person cannot be un-omitted. The collaborator is Shree Chaturvedi, named here and in the meta ledger above, and he is the same teammate as on the capstone.",
+        text: "Credited the collaborator and stopped claiming the network. This file described a two-person project as though one person had built it, and its summary opened by claiming a neural network that already existed — a course MLP this work optimized rather than authored. Both were omissions on the site’s side: the résumé has consistently said 2-person team and named the kernels as written with a teammate. The meta ledger now scopes the role the way the capstone’s already does, and the not-claiming list states what is not mine. Under-crediting a collaborator is the one error on this site that costs more than a wrong number, because a number can be re-measured and a person cannot be un-omitted. The collaborator is Shree Chaturvedi, named here and in the meta ledger above, and he is the same teammate as on the capstone.",
       },
       {
         date: "2026-05-28",
