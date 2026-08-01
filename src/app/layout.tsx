@@ -220,7 +220,7 @@ export default function RootLayout({
                  accessibility and the prototype honours it too (`const RM =
                  matchMedia("(prefers-reduced-motion: reduce)").matches`),
                  the second is the reader's own switch. */
-              'try{var d=document.documentElement,p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
+              'try{var d=document.documentElement,c=null;try{var cap=sessionStorage.getItem("study-tier-cap"),u=sessionStorage.getItem("study-tier-cap-until");if(cap&&(!u||Date.now()<+u))c=cap}catch(e){}var p=c==="print"||matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
           }}
         />
         {/* CRITIC-LEDGER F34: a fourth typeface leaked in here. The
