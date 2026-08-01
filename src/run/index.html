@@ -1815,7 +1815,11 @@ h1[data-np-measuring] .np-ch {
         <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
-        <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
+        <!-- `y 0`, and it is load-bearing: this list holds the dock the thread
+             terminates on. A station that moves its own terminus while the line
+             is being drawn to it will always disagree with the line. It fades
+             in; it no longer rises. -->
+        <ul class="ladder" data-fx="in .12 .4 y 0 | out 2 2.5 | drift 0" style="margin-top:2rem">
           <li data-ph="0"><span>06:12 · the start</span></li>
           <li data-ph="1"><span>06:58 · who</span></li>
           <li data-ph="2"><span>07:52 · the yard</span></li>
@@ -2074,6 +2078,11 @@ void main(){
 /* ————— geometry caches ————— */
 const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0, h: 0 }));
 const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
+/* the same walk across. Both of these are LAYOUT positions and neither sees a
+   transform, which is exactly why the thread is measured with them: a rail
+   terminated on getBoundingClientRect() bakes in whatever entrance animation
+   happened to be mid-flight when the geometry was last built. */
+const absLeft = (el) => { let x = 0; while (el) { x += el.offsetLeft; el = el.offsetParent; } return x; };
 let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false;
 
 /* fx elements: arrive → settle-with-drift → depart, except where the
@@ -2261,9 +2270,22 @@ function buildThread() {
      thread stopping rather than docking. The last stretch is now a straight
      vertical drop onto the square: one anchor directly above the dock, one on
      it. Paired with the wobble taper below, the hand steadies as it arrives. */
-  const dr = $("gateDock").getBoundingClientRect();
-  gatePageY = dr.top + scrollY + dr.height / 2;
-  const dockX = dr.left + dr.width / 2;
+  /* MEASURED IN LAYOUT SPACE, not from a client rect. The dock sits inside
+     ul.ladder, which enters on `y 6` — a 6vh translate, 54px at 900 — and a
+     client rect includes it. So the terminus was whatever the ladder's
+     entrance happened to be doing at the instant the geometry was last built,
+     and it disagreed with the dock by up to 55px for the rest of the session:
+     the rail visibly stopped short of the square it was docking onto.
+     absTop/absLeft never see a transform, so this is the same number at every
+     scroll position and after every resize.
+
+     And it targets the SQUARE rather than its 2.6ch cell — that mark is what
+     the reader sees as the end of the line, and the cell's centre sits about
+     6px to its right. */
+  const dockEl = $("gateDock");
+  const sq = dockEl.querySelector("i") || dockEl;
+  gatePageY = absTop(sq) + sq.offsetHeight / 2;
+  const dockX = absLeft(sq) + sq.offsetWidth / 2;
   anchors[anchors.length - 1] = [dockX, gatePageY - APPROACH];
   anchors.push([dockX, gatePageY]);
   anchors.sort((a, b) => a[1] - b[1]);
@@ -3433,6 +3455,15 @@ for (const f of fx) io.observe(f.el);
 
 let resizeT = null;
 addEventListener("resize", () => {
+  /* SYNCHRONOUSLY, every event. This used to be debounced by 160ms with
+     nothing else changing, so for the whole of a window drag the thread was
+     drawn from geometry built for a width that no longer existed — measured
+     mid-drag, the line ran 100px beside the dock at 1380 and 265px beside it
+     at 1300, which is a rail arriving next to its own terminus. The rebuild
+     costs 1.2–1.5ms median and 6.3ms worst across 390–1920, against a reflow
+     the resize has already paid for, so there is nothing to save by waiting.
+     The debounced pass below still does the parts that are not the rail. */
+  cacheGeometry(); buildThread(); wake(true);
   clearTimeout(resizeT);
   resizeT = setTimeout(() => {
     chooseEditions(); /* a narrower seat may swap a figure's plate */
