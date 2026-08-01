@@ -20,7 +20,7 @@
 
      ROUND 4 — the run carries the WHOLE home story, not six product
      stations. A pipeline has provenance, a history and an operating
-     discipline, so the line now makes eleven stops: the start; WHO
+     discipline, so the line now makes twelve stops: the start; WHO
      built it (¶02 — the engineer of record signs the line); the YARD
      it left (¶03 — the Miami ITSM job, told with its real freight:
      1.6M+ OAS query logs into a 57.8M-row SQLite field-usage table,
@@ -1049,6 +1049,47 @@ h1[data-np-measuring] .np-ch {
     animation-delay: 120ms;
   }
 }
+
+/* ── ¶11 the co-signers ─────────────────────────────────────────────
+   Set as a pulled quote, not a testimonial card: no avatars, no stars,
+   no rounded panel. The page is a paper record and a reference letter
+   is the most paper thing on it. The clay rule on the left is the same
+   mark the thread uses, so the endorsement reads as part of the line
+   rather than an ornament bolted beside it. */
+.cosign {
+  margin: 1.6rem 0 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 2px solid var(--clay-g);
+}
+.cosign blockquote {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.cosign figcaption {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  align-items: baseline;
+  font: 400 0.74rem/1.5 "Fragment Mono", ui-monospace, monospace;
+  color: var(--ink-2);
+}
+.cosign figcaption b {
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.cosign figcaption .rel {
+  color: var(--clay);
+}
+@media (max-width: 640px) {
+  .cosign figcaption { display: block; }
+  .cosign figcaption span { display: block; }
+}
 </style>
 </head>
 <body>
@@ -1116,7 +1157,7 @@ h1[data-np-measuring] .np-ch {
            op 0.8 and the cue at op 0 on arrival — the scroll instruction
            was invisible until you had already scrolled. Round-5 call. -->
       <p class="thesis" data-fx="in 0 .08 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
-      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
+      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — twelve stops, dawn to the gate</p>
     </div>
   </section>
 
@@ -1424,11 +1465,35 @@ h1[data-np-measuring] .np-ch {
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:41 — the approval gate -->
-  <section class="beat b8" data-beat="10">
+  <!-- ¶ 11 · 22:32 — the co-signers -->
+  <section class="beat station bsign" data-beat="10">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the co-signers — <i>22:32</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people signed before you<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
+
+        <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
+          <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyse Oracle Analytics Server usage, giving the team visibility into report adoption, demand patterns, and technical load. That work informed platform decisions and prioritisation&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
+          <figcaption><b>Randall Vollen</b><span>data, AI &amp; analytics executive &middot; miami university</span><span class="rel">managed the ITSM work at station 03</span></figcaption>
+        </figure>
+
+        <figure class="cosign" data-fx="in .14 .38 y 6 | out .94 1.04 y -5 | drift 11">
+          <blockquote>&ldquo;I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work.&rdquo;</blockquote>
+          <figcaption><b>Shree Chaturvedi</b><span>computer science + mathematics &middot; miami university</span><span class="rel">the teammate on stations 06 and 09</span></figcaption>
+        </figure>
+
+        <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/">the recommendations, in full &#8599;</a></p>
+      </div>
+    </div>
+    <figcaption class="figc" data-fx="in .2 .5 y 4 | drift 8">fig. 11 — the only marks on this line drawn by somebody else&rsquo;s hand.</figcaption>
+  </section>
+
+  <!-- ¶ 12 · 22:41 — the approval gate -->
+  <section class="beat b8" data-beat="11">
     <div class="beat-inner">
       <div>
-        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 11 · the approval gate — <i>22:41</i></p>
+        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
         <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
@@ -1442,6 +1507,7 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="7"><span>21:07 · lifequest</span></li>
           <li data-ph="8"><span>22:05 · agentic automl</span></li>
           <li data-ph="9"><span>22:23 · the review</span></li>
+          <li data-ph="10"><span>22:32 · the co-signers</span></li>
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
           <li data-ph="10"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
@@ -1450,7 +1516,7 @@ h1[data-np-measuring] .np-ch {
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
           <h3>run 042 — the manifest, complete.</h3>
-          <p class="mono" style="font-size:.7rem">one day · eleven stops · six stations proof-cited · one signature missing</p>
+          <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing</p>
           <ul class="gl">
             <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">macro-f1 0.9791 · 96-sample gate</span></li>
             <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,168 passed · 11 skipped — 635 fe + 533 be</span></li>
@@ -1798,7 +1864,7 @@ function sizeThread() {
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
-  /* eleven stops: arrival, who(N), the yard(F), applied(N), cadence(F),
+  /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
      glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
      Normal stations keep the thread by the prose margin; flips cross it.
      The last x hugs the ladder column: the line must arrive at the gate
