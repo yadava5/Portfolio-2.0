@@ -119,6 +119,42 @@ data on that!"* — and then **re-issued the résumé** (sha1 `c0676cc7`, 22:27)
 saying 2-person. Deployed artifact, résumé and run now agree, so this row no
 longer overrules anything.
 
+### Cadence RLS — the site is accurate; the cutover is three hand-run steps
+
+Verified against the migrations, not the prose. `0002_enable_rls.sql` enables
+RLS on exactly **7 tables** — `attachments, calendars, events, tags,
+task_lists, task_tags, tasks` — which is what the station claims. And the app
+does **not** connect as `cadence_app` anywhere in the tree, so the policies
+genuinely do not bind: **"staged off" is the correct word**, and no change to
+the site is needed.
+
+What the cutover requires, from `0003_create_cadence_app_role.sql`'s own
+header ("HAND-RUN against the target database; nothing in the app auto-applies
+this file"):
+
+1. Run `0002_enable_rls.sql` against production.
+2. Run `0003_create_cadence_app_role.sql` with a generated password
+   substituted for `<STRONG_PASSWORD>` — it creates `cadence_app` as
+   `NOSUPERUSER NOBYPASSRLS`, which is the whole point: the migration owner
+   and Supabase's default roles can bypass RLS, so policies bind nothing until
+   the app connects as a role that cannot.
+3. Point the app's `DATABASE_URL` at `cadence_app`.
+
+Not done here: steps 1–3 need production database credentials and a secret,
+which is outside what this session should touch. Once done, the station's
+"staged off" and the case file's standing both need flipping in the same
+commit — they are the receipt for a fact that would no longer be true.
+
+**The résumé is the one that reads wrong.** "Built multi-tenant isolation
+across 7 tables with PostgreSQL row-level security … proven by an isolation
+and IDOR test suite in CI" — every clause is true (the policies are written,
+the 11-test suite does run in CI against an ephemeral postgres:16), but the
+sentence reads as though isolation is enforced by the database in production,
+and today it is the application's discipline. A wording that stays true after
+the cutover and before it: *"wrote database-level isolation across 7 tables
+with PostgreSQL row-level security, proven by an isolation and IDOR suite in
+CI, and staged the production cutover."*
+
 ### Open, not fixed here
 - **The résumé quotes the quick 1-fork benchmark run** for jetpack (2.9×,
   4.38 GB/s, 455 MB/s, 6.5×). Those numbers are real measurements, just from
