@@ -967,6 +967,34 @@ html[data-np-ready] .np-replay {
   }
 }
 
+/* MEASURE THE SETTLED GEOMETRY, NOT THE IN-FLIGHT ONE.
+   np-settype animates font-variation-settings — "opsz" 18 → 144 and
+   "wght" 660 → 600. Fraunces is a variable font, so those axes change
+   GLYPH WIDTHS at a constant font-size: the name measures 929.2px at the
+   keyframe's 0% and 838.5px at its 100%, a constant ratio of 1.108.
+
+   measureSettled ran while the animation sat near 0%, so it handed the
+   machines the wide geometry and every one of them was drawn 10.8%
+   wider than the type it annotates — dividers past the A, the dial off
+   its a, the bird landing wide of the v.
+
+   The ratio being CONSTANT across font sizes was the tell, and I read it
+   as a fit problem for six hypotheses before measuring the width per
+   frame and watching it slide smoothly from 944 to 837. Nothing was
+   mis-fitted; the measurement was simply early.
+
+   Freezing the letters at the 100% state costs one style recalc and
+   makes the measurement read the geometry the machines actually get. */
+h1[data-np-measuring] .np-ch {
+  animation: none !important;
+  transform: none !important;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0,
+    "wght" 600 !important;
+}
+
 @keyframes np-safety-release {
   to {
     opacity: 1;
@@ -3186,9 +3214,28 @@ boot();
       if (document.readyState !== "complete") {
         await new Promise((r) => addEventListener("load", r, { once: true }));
       }
+      /* LOAD THE FACE, do not merely await fonts.ready.
+         The instrumented mount printed it plainly: at t=198ms the plate
+         measured 929.2 and later 838.5, at an IDENTICAL font-size of
+         166.4px. Same size, narrower letters — the face had swapped from
+         the Georgia fallback to Fraunces after the measurement.
+         fonts.ready had already resolved, and correctly: it settles when
+         no font is PENDING, and a face nothing has rendered yet was never
+         requested, so it was never pending. Awaiting it is not the same
+         as having the type. document.fonts.load asks for the face and
+         resolves when it is actually usable. */
+      try {
+        await Promise.race([
+          Promise.all([
+            document.fonts.load('600 166px Fraunces'),
+            document.fonts.load('365 166px Fraunces'),
+          ]),
+          new Promise((r) => setTimeout(r, 5000)),
+        ]);
+      } catch {}
       await Promise.race([
         document.fonts?.ready ?? Promise.resolve(),
-        new Promise((r) => setTimeout(r, 8000)),
+        new Promise((r) => setTimeout(r, 5000)),
       ]);
       /* One frame after the fonts settle: fonts.ready can resolve before
          the reflow it causes has been laid out. */
@@ -3201,12 +3248,19 @@ boot();
         running = true;
         replay && (replay.disabled = true);
         try {
+          /* Both calls read geometry, so the freeze has to wrap both. */
+          h1.setAttribute("data-np-measuring", "");
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
+          h1.removeAttribute("data-np-measuring");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
           M.mountHoverAnswers?.(plate, h1, letters, g);
         } finally {
           running = false;
+          if (pending) {
+            pending = false;
+            rebuild();
+          }
           h1.setAttribute("data-np-settled", "");
           document.documentElement.setAttribute("data-np-ready", "");
           replay && (replay.disabled = false);
@@ -3226,18 +3280,29 @@ boot();
          Guarded against its own writes — performing changes nothing about
          the plate box, but a rebuild loop here would be invisible and
          expensive. */
+      const rebuild = () => {
+        plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
+        h1.removeAttribute("data-np-settled");
+        letters.forEach((l) => l.removeAttribute("data-np-done"));
+        perform();
+      };
       let lastW = 0;
+      let pending = false;
       const ro = new ResizeObserver((entries) => {
         const w = Math.round(entries[0].contentRect.width);
-        if (!w || w === lastW || running) return;
+        if (!w || w === lastW) return;
         const first = lastW === 0;
         lastW = w;
-        if (!first) {
-          plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
-          h1.removeAttribute("data-np-settled");
-          letters.forEach((l) => l.removeAttribute("data-np-done"));
-          perform();
+        /* A resize DURING the performance used to be dropped, and dropped
+           for good: the observer bailed on `running`, the width never
+           changed again, so the rebuild never came. That is why the
+           overlay vanished entirely — removed, never replaced. Queue it
+           and drain when the run finishes. */
+        if (running) {
+          pending = true;
+          return;
         }
+        if (!first) rebuild();
       });
       ro.observe(plate);
 
