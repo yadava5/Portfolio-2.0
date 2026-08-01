@@ -534,7 +534,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "judge",
           value:
-            "predicted vs expected label ⟶ macro-F1; the ci gate fails below the configured floor",
+            "predicted vs expected label ⟶ macro-F1; CI blocks the build below 0.95",
         },
         {
           label: "run",
