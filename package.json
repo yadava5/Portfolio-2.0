@@ -38,7 +38,8 @@
     "assets:check-og": "node scripts/asset-truth/render-og-cards.mjs --check",
     "build:home": "node scripts/run/build-home.mjs",
     "test:nameplate": "node scripts/qa/check-nameplate.mjs",
-    "test:nameplate:negative": "node scripts/qa/check-nameplate-negative.mjs"
+    "test:nameplate:negative": "node scripts/qa/check-nameplate-negative.mjs",
+    "test:figures": "node scripts/qa/check-figures.mjs"
   },
   "browserslist": [
     "chrome 128",
