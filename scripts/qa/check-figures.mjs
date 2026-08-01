@@ -109,6 +109,24 @@ for (const f of FIGURES) {
   }
 }
 
+/* Windowed check: an attribution may precede or follow its figure. */
+for (const { figure, needle, within, why } of [
+  {
+    figure: "Applied macro-F1 0.9791",
+    needle: "0.9791",
+    within: /rules/i,
+    why: "0.9791 is the RULES stage — Applied's hybrid_profile 'deterministic' disables SetFit and the full cascade scores 0.958, so a bare figure credits the ML stack with the regex layer's score",
+  },
+]) {
+  let i = -1;
+  let bare = 0;
+  while ((i = runProse.indexOf(needle, i + 1)) > -1) {
+    if (!within.test(runProse.slice(Math.max(0, i - 150), i + 160))) bare++;
+  }
+  if (bare) fails.push(`  ✗ ${figure} stated bare ${bare}×\n      ${why}`);
+  else notes.push(`  · ${figure} — attributed everywhere it appears`);
+}
+
 for (const q of QUALIFIED) {
   if (q.bare.test(runProse)) {
     fails.push(`  ✗ ${q.figure} stated without its qualifier\n      ${q.why}`);
