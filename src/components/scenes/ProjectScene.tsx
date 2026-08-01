@@ -175,9 +175,7 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
       </div>
       <figcaption className="label-mono mt-3">
         <p className="text-ink">fig. 1 — {project.imageAlt.toLowerCase()}.</p>
-        <p className="text-ink-secondary mt-1">
-          {project.imageDisclosure}
-        </p>
+        <p className="text-ink-secondary mt-1">{project.imageDisclosure}</p>
       </figcaption>
     </figure>
   );
