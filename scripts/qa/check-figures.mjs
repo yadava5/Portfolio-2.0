@@ -135,6 +135,53 @@ for (const q of QUALIFIED) {
   }
 }
 
+/* ── QUOTED PEOPLE ────────────────────────────────────────────────────
+   A named person's words must appear on the page exactly as they wrote
+   them. The station says the testimonials are "unedited except where an
+   ellipsis marks a cut", and I shipped a version that had quietly
+   anglicised Randall Vollen's "analyze" and "prioritization" — the page
+   claiming unedited while being edited. Nothing else on this site can be
+   wrong in a way that matters more: a number can be re-measured, a
+   misquotation of a real person cannot be undone.
+
+   Checked as fragments rather than whole quotes because the station
+   legitimately elides with an ellipsis; every run of >=6 words the page
+   presents inside quotation marks must occur verbatim in the source. */
+const testimonials = read("src/lib/data/testimonials.ts");
+/* Scope to the co-signers' blockquotes rather than "any quoted run of
+   text". A greedy quote regex over the whole page ran from the epigraph's
+   closing quote to the next one and swallowed unrelated copy — precision
+   here comes from knowing WHERE testimony lives, not from a cleverer regex. */
+const runHtml = read("src/run/index.html");
+const testimony = [...runHtml.matchAll(
+  /<figure class="cosign"[^>]*>\s*<blockquote>([\s\S]*?)<\/blockquote>/g
+)].map((m) =>
+  m[1]
+    .replace(/&ldquo;|&rdquo;/g, "")
+    .replace(/&rsquo;/g, "'")
+    .replace(/&hellip;/g, "…")
+    .replace(/&mdash;/g, "—")
+    .replace(/&amp;/g, "&")
+    .replace(/&nbsp;|&#8202;/g, " ")
+    .replace(/<[^>]*>/g, "")
+);
+const norm = (x) => x.replace(/[^\w\s'-]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+const hay = norm(read("src/lib/data/testimonials.ts"));
+let drifted = 0;
+for (const q of testimony) {
+  for (const frag of q.split(/\s*…\s*/)) {
+    const n = norm(frag);
+    if (n.split(" ").length < 6) continue;
+    if (!hay.includes(n)) {
+      fails.push(`  ✗ testimony not verbatim in testimonials.ts\n      "${frag.trim().slice(0, 80)}…"`);
+      drifted++;
+    }
+  }
+}
+if (!testimony.length) fails.push("  ✗ no co-signer testimony found to verify");
+else if (!drifted)
+  notes.push(`  · ${testimony.length} co-signer quotes match testimonials.ts word for word`);
+
 for (const n of notes) console.log(n);
 if (fails.length) {
   console.error(`\ncheck-figures FAILED — the run and the data layer disagree:`);
