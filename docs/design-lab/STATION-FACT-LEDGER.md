@@ -30,7 +30,11 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 | 07 | jetpack | Adler-32 absolute | — | — | **4.38 GB/s** | **4.257 GB/s** | **4.26 GB/s** |
 | 07 | jetpack | evidence link | `@ af2c4b1` | `af2c4b1` | — | pin predates `benchmarks/` | **re-pinned `2caacd0`** |
 | 04 | Applied | CI floor | "the configured floor" | "no threshold" | **"blocks below 0.95"** | `--min-macro-f1 0.95` ×2 | **résumé right; the guard was wrong** |
+| 04 | Applied | 0.9791 attribution | "(hybrid v3)" | "deterministic hybrid v3" | "the **rules stage**" | `hybrid_profile: deterministic` **disables SetFit** | **rules stage** — cascade scores 0.958 |
 | 09 | AutoML | team size | 2-person | 1 named teammate | 3-person | landing page: 2 developers | **2-person** — owner's call, résumé overruled |
+| 06 | Glyph | SIMD speed-up | "simd kernel 3.5×" | "openmp+simd … not SIMD alone" | — | SIMD alone **1.016×**; openmp **3.504×** | **openmp+simd** — the run had the retracted version back |
+| 06 | Glyph | instruction sets | 4 | four | 4 | dispatch is AVX512→AVX2→NEON→**SCALAR** | **3 hand-written**; wasm is `-msimd128` |
+| 05 | Cadence | test suite | 1,145 (634+511) | 1,145 @ pin `69a59e7` | — | **1,168 passed, 11 skipped** at HEAD | **re-run recorded**; pinned rows kept |
 | 09 | AutoML | commit count | **2,173 commits** | — | — | GitHub 4 / clone 9 — **wrong repo**; real history is Miami's GitLab | **restored, attributed** — see below |
 
 ### Stations that reconciled clean
@@ -45,8 +49,9 @@ against a README. That rule was added mid-audit and it changed two verdicts.
   "Built multi-tenant isolation … with PostgreSQL row-level security" reads
   as active. Production is explicit that the cutover has not happened, so the
   run's wording stands and is the more careful one.
-- **06 · Glyph** — 97.01%, 9,701/10,000, 4 instruction sets, 2-person team.
-  Matches résumé exactly.
+- **06 · Glyph** — 97.01%, 9,701/10,000 and macro-F1 0.9698 all verified
+  against `benchmarks/mnist_eval.json`; 45.9 KB wasm verified against the
+  built files. **Two claims did NOT survive** — see the Glyph rows below.
 - **08 · LifeQuest** — Social Innovation Weekend Mar 2025, 7-person team,
   React + NestJS. Exact.
 
