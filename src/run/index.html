@@ -660,6 +660,22 @@
   @media (prefers-reduced-motion: reduce){
     .gates .gmark{stroke-dashoffset:0 !important}
   }
+  /* ¶11's plate. Same docket grammar as .gates, but the marks are STATIC:
+     a drawn-on signature would animate a thing that was already done, by
+     someone else, before the reader arrived. They are records, not events. */
+  .signs{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  .signs .shead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
+    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
+  .signs .shead i{font-style:normal; color:var(--clay)}
+  .signs .srow{display:grid; grid-template-columns:1fr auto; gap:.35rem .7rem;
+    padding:.85rem 0; border-bottom:1px solid var(--hair)}
+  .signs .srow .sname{color:var(--ink)}
+  .signs .srow .srole{grid-column:1 / -1; font-size:.7rem; color:var(--ink-2)}
+  .signs .srow svg{display:block; width:74px; height:22px; overflow:visible}
+  .signs .srow .smark{fill:none; stroke:var(--ink); stroke-width:1.2;
+    stroke-linecap:round; stroke-linejoin:round; opacity:.72}
+  .signs .sclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
+    font-size:.7rem; line-height:1.9}
   .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
   .gates .gclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
     font-size:.76rem; line-height:1.9; color:var(--ink-2)}
@@ -1545,8 +1561,24 @@ h1[data-np-measuring] .np-ch {
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/">the recommendations, in full &#8599;</a></p>
       </div>
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="signs">
+          <div class="shead"><span>the counter-signatures</span><span>two hands &middot; <i>neither of them mine</i></span></div>
+          <div class="srow">
+            <span class="sname">Randall Vollen</span>
+            <svg viewBox="0 0 92 22" aria-hidden="true"><path class="smark" d="M3 16.5c3.6-11.2 6.4-12.4 8-3.6 1.2 6.6 4.4-5.2 8.4-6.6 4.6-1.6 3.2 10.4 7.6 8.2 5-2.6 6.4-9.2 10.4-3.4 3 4.4 7-6 11.6-4.6 3.8 1.2 3 8.6 6.8 6.6 4.2-2.2 5.6-8.8 9.6-5.2 3.4 3 7.2-2.2 11 .4 2.6 1.8 4.8 4.2 8.6 2"/></svg>
+            <span class="srole">signed for station 03 &middot; the yard</span>
+          </div>
+          <div class="srow">
+            <span class="sname">Shree Chaturvedi</span>
+            <svg viewBox="0 0 92 22" aria-hidden="true"><path class="smark" d="M4 15.8c2.8-9.6 5.6-11.8 7.4-4.2 1.6 6.8 5.2-4.4 9.2-5.4 4.4-1.1 2.6 9.8 7 8 4.8-2 7-8.6 10.8-3.2 3.2 4.6 6.4-5.6 11-4.4 3.6 1 3.4 8.2 7 6.2 4-2.2 6.2-8.2 10-4.6 3.2 3 6.6-1.8 10.4.8 2.4 1.6 4.4 3.8 8 1.6"/></svg>
+            <span class="srole">signed for stations 06 &amp; 09 &middot; glyph, automl</span>
+          </div>
+          <p class="sclose">the gates on the last station were mine to set, and a machine can only refuse itself. these two marks are the only ones on the line I could not sign.</p>
+        </div>
+        <figcaption>fig. 11 — each signature sits beside the station that person worked on.</figcaption>
+      </figure>
     </div>
-    <figcaption class="figc" data-fx="in .2 .5 y 4 | drift 8">fig. 11 — each signature sits beside the station that person worked on.</figcaption>
   </section>
 
   <!-- ¶ 12 · 22:41 — the approval gate -->
@@ -1672,7 +1704,7 @@ const rgbCss = (r) => `rgb(${r.map((x) => Math.round(x * 255)).join(",")})`;
    19:36) and the two new morning chapters — who, the yard — split the
    dawn→08:47 leg in thirds, so the light still tells the clock's
    truth. Beat 7 runs the 12-stop dusk choreography (flip at .72, the
-   mid band never rendered); beat 8 scrubs dusk→night; 9–10 hold night. */
+   mid band never rendered); beat 8 scrubs dusk→night; 9–11 hold night. */
 const DAY_ANCHOR = [0, 1 / 3, 2 / 3, 1, 2, 3, 4, 4]; /* waypoint index per day beat */
 function arcColor(beat, p) {
   if (beat <= 6) {
@@ -1707,7 +1739,7 @@ function arcColor(beat, p) {
     const a = WAY[5], b = WAY[6];
     return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
   }
-  /* beats 9–10 — the review and the gate hold nightfall */
+  /* beats 9–11 — the review, the co-signers and the gate hold nightfall */
   return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
 }
 
@@ -1919,20 +1951,33 @@ function refreshInk() {
     inkC[k] = cs.getPropertyValue(k).trim();
 }
 function sizeThread() {
-  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  /* The thread is a 1–2px ink line and the cargo marks are ~18px wide, so
+     this canvas is the one surface where the DPR cap is legible as softness:
+     at 1.5 on a DPR-3 display the line is drawn at half the screen's density
+     and upscaled. 2 is the smallest cap that lands the stroke on whole device
+     pixels there; beyond it the cost grows as the square for no visible gain,
+     since nothing here has detail finer than the stroke itself. */
+  const dpr = Math.min(devicePixelRatio || 1, 2);
   threadCv.width = Math.round(vw * dpr);
   threadCv.height = Math.round(vh * dpr);
   tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 function buildThread() {
   /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
-     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
-     Normal stations keep the thread by the prose margin; flips cross it.
-     The last x hugs the ladder column: the line must arrive at the gate
-     along the margin, never slashing across the ledger card */
+     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N),
+     the co-signers(N), gate. Normal stations keep the thread by the prose
+     margin; flips cross it. The last two x's walk IN toward the ladder
+     column — 30 → 27 → 24 — so the line arrives at the gate along the
+     margin, never slashing across the ledger card.
+
+     One entry per beat, and that is load-bearing: this array is indexed by
+     beat, so a short one makes stx[last] undefined, every anchor NaN from
+     there, and Math.hypot poisons the cumulative arc length for the whole
+     tail — the thread simply stops drawing and the travellers lose their
+     track. check-beat-tables.mjs asserts the lengths against the DOM. */
   const stx = stacked
-    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 20]
-    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 24];
+    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20]
+    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24];
   const anchors = [];
   anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
   for (let i = 0; i < beats.length; i++) {
@@ -2064,11 +2109,24 @@ const TRAV = [
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
-  { beat: 9, n: 1, label: "run 042, reviewed → the human gate", draw: (c) => { /* the reviewed report */
+  { beat: 9, n: 1, label: "run 042, reviewed → the co-signers", draw: (c) => { /* the reviewed report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
+      c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
+  /* the last corridor. Two copies, because two people signed — this is the
+     only cargo on the line drawn by somebody else's hand. Without it the
+     run's final stretch carried nothing, which read as the line dying. */
+  { beat: 10, n: 2, label: "run 042, countersigned → the human gate", draw: (c) => { /* the co-signed sheet */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; /* two hands, two marks */
+      c.beginPath();
+      c.moveTo(-6, -2.4); c.bezierCurveTo(-4.2, -4.4, -2.6, -0.4, -0.8, -2.4);
+      c.moveTo(-6, 2.4); c.bezierCurveTo(-4.2, 0.4, -2.6, 4.4, -0.8, 2.4);
+      c.stroke();
+      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5;
       c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
 ].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
 const setGlyphTraveller = (d) => { glyphDigit = String(d); };
@@ -2833,10 +2891,15 @@ function scrubQuests(p) {
    the run's OWN stops). The deploy line NEVER lights: that word belongs
    to a person, not a scroll. */
 const phases = [...document.querySelectorAll(".ladder li[data-ph]")];
+/* deploy is always the LAST rung, derived rather than numbered: when the
+   co-signers stop was added the hard-coded 10 silently began suppressing
+   THEM and lighting deploy — the one line the page promises no scroll can
+   reach. Deriving it means inserting a stop can never invert the rule. */
+const DEPLOY_PH = phases.length - 1;
 function scrubGate(p) {
   phases.forEach((li) => {
     const i = +li.dataset.ph;
-    if (i === 10) return; /* deploy — gated; a scroll never lights it */
+    if (i === DEPLOY_PH) return; /* deploy — gated; a scroll never lights it */
     li.classList.toggle("lit", p > 0.1 + i * 0.03);
   });
 }
@@ -2857,11 +2920,13 @@ $("mtoggle").addEventListener("click", () => {
 });
 
 /* ————— masthead clock + phase ————— */
-const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1361]; /* the datelines, minutes — station stops are the site's own */
-const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the gate — held"];
+/* the datelines, minutes — station stops are the site's own. One entry per
+   beat: 22:32 is the co-signers, 22:41 the gate. */
+const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361];
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the co-signers", "the gate — held"];
 let lastClock = -1, lastPhase = -1;
 function setMast(beat, p) {
-  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, 10)];
+  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
   const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
   if (m !== lastClock) { /* write only on minute change: no idle layout */
     lastClock = m;
@@ -2951,7 +3016,7 @@ function work(y) {
   if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
-  if (beat >= 9) scrubGate(beat < 10 ? 0 : bp);
+  if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
 
   /* manifest stamps: one line as each station completes (reversible).
      The six stations ride beats 3–8 now. */
@@ -2960,14 +3025,14 @@ function work(y) {
   if (stamped !== window.__world.stamped) setStamps(stamped);
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
-  $("manifest").classList.toggle("landed", beat === 10 && bp > 0.22);
+  $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
   $("manifest").classList.toggle("compact",
-    !mobile && beat >= 1 && beat <= 9 && bp > 0.18 && bp < 0.8);
+    !mobile && beat >= 1 && beat <= 10 && bp > 0.18 && bp < 0.8);
   /* the chrome bows out sooner on stacked seats — the card reaches the
      masthead earlier when the columns are a single stack. Round-3
      leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
      so the fade completes before the card's headline reaches the clock */
-  $("mast").classList.toggle("gone", beat === 10 && bp > (stacked ? 0.32 : 0.5));
+  $("mast").classList.toggle("gone", beat === 11 && bp > (stacked ? 0.32 : 0.5));
   setMast(beat, bp);
 
   /* fx: arrive → drift → depart, a pure function of position */

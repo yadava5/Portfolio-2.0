@@ -39,7 +39,8 @@
     "build:home": "node scripts/run/build-home.mjs",
     "test:nameplate": "node scripts/qa/check-nameplate.mjs",
     "test:nameplate:negative": "node scripts/qa/check-nameplate-negative.mjs",
-    "test:figures": "node scripts/qa/check-figures.mjs"
+    "test:figures": "node scripts/qa/check-figures.mjs",
+    "test:beat-tables": "node scripts/qa/check-beat-tables.mjs"
   },
   "browserslist": [
     "chrome 128",
