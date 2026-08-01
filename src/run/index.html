@@ -3257,10 +3257,14 @@ boot();
           M.mountHoverAnswers?.(plate, h1, letters, g);
         } finally {
           running = false;
-          if (pending) {
-            pending = false;
-            rebuild();
-          }
+          /* RE-BASELINE, and this is what stops the loop.
+             The performance itself animates the plate's width (opsz and
+             wght move, so the glyphs move), 944 to 837 on the way. The
+             observer therefore sees a "resize" caused by the run it is
+             watching. Recording the settled width here means the next
+             callback compares against where the name actually came to
+             rest, so a performance can no longer trigger its own encore. */
+          lastW = Math.round(plate.getBoundingClientRect().width);
           h1.setAttribute("data-np-settled", "");
           document.documentElement.setAttribute("data-np-ready", "");
           replay && (replay.disabled = false);
@@ -3287,26 +3291,20 @@ boot();
         perform();
       };
       let lastW = 0;
-      let pending = false;
       const ro = new ResizeObserver((entries) => {
         const w = Math.round(entries[0].contentRect.width);
-        if (!w || w === lastW) return;
+        if (!w || w === lastW || running) return;
         const first = lastW === 0;
         lastW = w;
-        /* A resize DURING the performance used to be dropped, and dropped
-           for good: the observer bailed on `running`, the width never
-           changed again, so the rebuild never came. That is why the
-           overlay vanished entirely — removed, never replaced. Queue it
-           and drain when the run finishes. */
-        if (running) {
-          pending = true;
-          return;
-        }
         if (!first) rebuild();
       });
       ro.observe(plate);
 
-      replay?.addEventListener("click", perform);
+      /* rebuild(), not perform(): perform alone leaves the old overlay
+         and the letters' [data-np-done] in place, so a second run would
+         draw machines across type that is already fully visible — which
+         is exactly the "they are just overlaying on my name" failure. */
+      replay?.addEventListener("click", rebuild);
       await perform();
     } catch (e) {
       /* A machine that cannot mount must not cost the reader the name:
