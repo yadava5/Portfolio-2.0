@@ -1201,7 +1201,7 @@ h1[data-np-measuring] .np-ch {
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
           <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified (hybrid v3)<br>
-          ci gate fails below the configured floor · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
+          ci blocks the build below 0.95 macro-f1 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
           postgres row-level security — a non-bypassrls role</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
       </div>
@@ -1302,8 +1302,8 @@ h1[data-np-measuring] .np-ch {
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.5×</b> single-threaded java.util.zip — 455 vs 66&#8202;mb/s (99% ci bound; point 6.89×)<br>
-          adler-32 vectorised <b>2.8×</b> scalar — bit-identical to java.util.zip.Adler32, and honestly not faster than the jdk intrinsic<br>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.4×</b> single-threaded java.util.zip — 422 vs 66&#8202;mb/s (3-fork jmh · 99.9% ci)<br>
+          adler-32 vectorised <b>2.8×</b> scalar — 4.26&#8202;gb/s — bit-identical to java.util.zip.Adler32, and honestly not faster than the jdk intrinsic (14.06&#8202;gb/s)<br>
           jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
           <b>72 tests, 0 failures</b></p>
         <div class="gzrow" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
@@ -1311,7 +1311,7 @@ h1[data-np-measuring] .np-ch {
           <span class="mono" id="gzout" aria-live="polite"></span>
         </div>
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md">the readme @ af2c4b1 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
@@ -1373,7 +1373,7 @@ h1[data-np-measuring] .np-ch {
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
           <b>12 mcp tools</b> — most of them notebook hands: read_cell · write_cell · run_cell …<br>
           the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
-          langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> · 2-person team — my seat: backend</p>
+          langgraph + mcp · default model gpt-5.4 · 3-person team — my seat: backend</p>
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the repo, public — gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
