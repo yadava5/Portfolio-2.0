@@ -45,3 +45,54 @@ beats carry an explicit `min-height` (the final three are 1224 / 1134 / 1062px)
 which holds each section open past its content: 254px, 329px and 145px of slack
 after the deepest child respectively. The fix belongs in the beat sizing rule,
 not in a trailing spacer.
+
+---
+
+## The half I did not finish, and why PR #39 is a draft
+
+Deleting the old home's components is only half the change. **24 Playwright
+specs `page.goto("/")`**, and with `page.tsx` stubbed that route renders
+nothing in the Next build — so the browser gates fail. A PR that removes the
+page 24 specs point at, without touching those specs, is incomplete by
+construction. Marked draft rather than left red and mergeable.
+
+Triaged by whether a spec asserts markup **only the deleted tree produced**
+(`#arrival`, `data-chapter`, `data-thread`, `data-tm-*`, `ChapterRail`,
+`approved-stamp`, `data-pipeline`, `data-garnish`, `data-nameplate`):
+
+**Delete or rewrite — 12 specs, they test old-home internals**
+
+| spec | old-home markers |
+|---|---:|
+| `red-thread` | 36 |
+| `text-motion` | 22 |
+| `paper-memory` | 21 |
+| `atlas` | 18 |
+| `reduced-motion` | 9 |
+| `day-arc` · `frame-governor` | 8 each |
+| `scroll-engine` | 6 |
+| `dossier` | 3 |
+| `run-chrome` | 2 |
+| `performance-budget` | 1 |
+
+**Re-point at the run — 10 specs, cross-cutting and still wanted**
+
+`a11y-audit` · `comprehensive-qa` · `debug-audit` · `deep-qa` (32 visits) ·
+`full-audit` · `interactions` · `nav-and-images` · `record-walkthroughs` ·
+`themes` · `visual-audit` · `visual-regression`
+
+These assert accessibility, contrast, navigation, images and budgets — all of
+which the run should satisfy. They fail today only because `/` is empty in the
+Next build.
+
+### The order this has to land in
+
+1. Make `test:e2e` build the **deployed artifact** — `next build && node
+   scripts/run/build-home.mjs` — so `/` is the run, not the Next page. Without
+   this the re-pointed specs have nothing correct to assert against.
+2. Re-point the 10 cross-cutting specs; expect real failures where the run
+   genuinely differs from the old home, and fix the run where it is wrong.
+3. Delete the 12 internals specs with the tree they covered.
+4. Only then merge #39.
+
+Doing 3 before 1 would leave a window with no browser coverage at all.
