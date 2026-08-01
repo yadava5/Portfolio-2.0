@@ -30,7 +30,7 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 | 07 | jetpack | Adler-32 absolute | — | — | **4.38 GB/s** | **4.257 GB/s** | **4.26 GB/s** |
 | 07 | jetpack | evidence link | `@ af2c4b1` | `af2c4b1` | — | pin predates `benchmarks/` | **re-pinned `2caacd0`** |
 | 04 | Applied | CI floor | "the configured floor" | "no threshold" | **"blocks below 0.95"** | `--min-macro-f1 0.95` ×2 | **résumé right; the guard was wrong** |
-| 09 | AutoML | team size | 2-person | 1 named teammate | **3-person** | — | **3-person** (résumé) |
+| 09 | AutoML | team size | 2-person | 1 named teammate | 3-person | landing page: 2 developers | **2-person** — owner's call, résumé overruled |
 | 09 | AutoML | commit count | **2,173 commits** | — | — | GitHub 4 / clone 9 — **wrong repo**; real history is Miami's GitLab | **restored, attributed** — see below |
 
 ### Stations that reconciled clean
@@ -91,11 +91,12 @@ figure. The GitLab is behind university auth and cannot be opened by a reader,
 so this claim rests on the owner's own knowledge and now says where it comes
 from rather than implying a public artifact backs it.
 
-**Still contradictory — flagged, not silently resolved.** The landing page says
-*"Built by Shree Chaturvedi and Ayush Yadav"* — two developers. The 2026-07-31
-résumé says **3-person team**, and the run now follows the résumé. Both can be
-true if the third member was not a developer, and "3-person" is the owner's own
-current statement about his own team, so it stands. Worth him confirming.
+**Resolved — 2-person.** The landing page says *"Built by Shree Chaturvedi and
+Ayush Yadav"*; the 2026-07-31 résumé says 3-person. The owner settled it
+directly: *"just make it 2 people don't get the resume data on that!"* The run
+says 2-person team, my seat backend, which now agrees with the deployed
+artifact. This is the one place in this ledger where the résumé is **not** the
+authority, by his instruction.
 
 ### Open, not fixed here
 - **The résumé quotes the quick 1-fork benchmark run** for jetpack (2.9×,
