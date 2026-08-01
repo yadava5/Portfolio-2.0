@@ -67,6 +67,52 @@ for (const found of new Set(mailtos)) {
   }
 }
 
+/* ── The run may not out-claim the case files ───────────────────────
+   The run is hand-authored prose and the data layer is the verified
+   record, so where they disagree the DATA LAYER WINS. Two disagreements
+   were caught the first time this ran, and the second is the instructive
+   one:
+
+     · the run said Adler-32 vectorised "2.9x scalar"; projects.ts says
+       "~2.8x vs scalar" AND carries a caveat the run had dropped
+       entirely — "honestly shown not to beat the JDK intrinsic". A
+       rounded-up number is a small error; silently losing the sentence
+       that calibrates it is the kind this site exists to prevent.
+     · the run said "ci blocks any build under 0.95". The case file
+       deliberately says only "the ci gate fails below the configured
+       floor" — it does not state the threshold, because no committed
+       artifact pins it. The run was MORE specific than the evidence.
+
+   Both are corrected in src/run/index.html. This guard exists so neither
+   can come back: any of these strings appearing in the run fails the
+   build rather than shipping. It checks the rendered prose only — the
+   engine's own numbers (easing constants, path maths) are not claims. */
+const bodyProse = html
+  .replace(/<script[\s\S]*?<\/script>/g, "")
+  .replace(/<style[\s\S]*?<\/style>/g, "")
+  .replace(/<!--[\s\S]*?-->/g, "")
+  /* Strip INLINE tags too. The first cut of this guard did not, and it
+     could not see `vectorised <b>2.9×</b> scalar` — the claim was wrapped
+     in <b>, so a search for the plain sentence matched nothing and the
+     guard reported clean on a page that was out-claiming. The same wrap
+     defeated my first attempt at the fix itself. A checker that reads
+     markup as prose has to remove the markup. */
+  .replace(/<[^>]*>/g, "");
+const FORBIDDEN = [
+  ["2.9× scalar", "projects.ts states ~2.8× — and adds the intrinsic caveat"],
+  ["2.9x scalar", "projects.ts states ~2.8× — and adds the intrinsic caveat"],
+  ["under 0.95", "the case file states no threshold, only a configured floor"],
+  ["blocks any build under", "the case file states no threshold"],
+];
+const claimed = FORBIDDEN.filter(([needle]) => bodyProse.includes(needle));
+if (claimed.length) {
+  for (const [needle, why] of claimed) {
+    console.error(`  ! the run claims "${needle}" — ${why}`);
+  }
+  fail("the run out-claims the data layer; fix src/run/index.html");
+}
+console.log("  · claims check: the run does not out-claim the case files");
+
 /* ── Head: keep what the rest of the site earns ─────────────────────── */
 const nextHome = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";
 const takeTag = (re) => (nextHome.match(re) || [])[0] ?? "";

@@ -884,7 +884,7 @@
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
           <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified (hybrid v3)<br>
-          ci blocks any build under 0.95 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
+          ci gate fails below the configured floor · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
           postgres row-level security — a non-bypassrls role</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
       </div>
@@ -986,7 +986,7 @@
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.5×</b> single-threaded java.util.zip — 455 vs 66&#8202;mb/s (99% ci bound; point 6.89×)<br>
-          adler-32 vectorised <b>2.9×</b> scalar — 4.38&#8202;gb/s, bit-identical to java.util.zip.Adler32<br>
+          adler-32 vectorised <b>2.8×</b> scalar — bit-identical to java.util.zip.Adler32, and honestly not faster than the jdk intrinsic<br>
           jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
           <b>72 tests, 0 failures</b></p>
         <div class="gzrow" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
