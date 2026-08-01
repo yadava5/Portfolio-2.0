@@ -101,8 +101,13 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
         </div>
         <figcaption className="label-mono mt-3">
           <p className="text-ink">fig. 1 — {meta.caption}.</p>
+          {/* Unlabelled, like the provenance line above it. The field is a
+              DISCLOSURE — what the figure does and does not show — and the
+              page called it "description:", which is the one place the site
+              spoke in schema terms instead of English. The smaller secondary
+              ink already separates it from the caption. */}
           <p className="text-ink-secondary mt-1 normal-case">
-            description: {meta.disclosure}
+            {meta.disclosure}
           </p>
         </figcaption>
       </figure>
@@ -171,7 +176,7 @@ export function ProjectPlateVisual({ project }: { project: Project }) {
       <figcaption className="label-mono mt-3">
         <p className="text-ink">fig. 1 — {project.imageAlt.toLowerCase()}.</p>
         <p className="text-ink-secondary mt-1">
-          description: {project.imageDisclosure}
+          {project.imageDisclosure}
         </p>
       </figcaption>
     </figure>
