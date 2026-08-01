@@ -117,11 +117,6 @@ const DECAY_PER_SEC = 1;
 const DOWNSHIFT_AT = 8;
 /** A frame counts as scroll-active within this window of a scroll event. */
 const ACTIVE_WINDOW_MS = 240;
-/** Scroll-while-hidden only forces the print floor after the document has
- *  been hidden this long — a cmd-tab mid-momentum (or mid-flight) can leak
- *  a few trailing scroll events into the first instants of hiddenness, and
- *  a real reader must never come back to a downshifted page for that. */
-const HIDDEN_SCROLL_GRACE_MS = 600;
 /** §F3: accumulated smooth active scrolling required before full. */
 const PROMOTE_AFTER_SMOOTH_MS = 3000;
 /** §F3: garnish is desktop-first — phones never get it, even capable. */
@@ -349,17 +344,6 @@ function sample(): void {
   }
 }
 
-/** When the document last became hidden (engine world only — the
- *  listener lives exactly as long as the watcher). -Infinity means "was
- *  already hidden when watching began", which trips the guard at once. */
-let hiddenSinceTs = -Infinity;
-
-function onVisibilityFlip(): void {
-  if (document.visibilityState === "hidden") {
-    hiddenSinceTs = performance.now();
-  }
-}
-
 function markScrolled(): void {
   const now = performance.now();
   lastScrollTs = now;
@@ -374,13 +358,23 @@ function markScrolled(): void {
      suppression window, and a short grace after hiding, so a cmd-tab
      mid-momentum (trailing scroll events in the first instants of
      hiddenness) never downshifts a real reader's page. */
-  if (
-    document.visibilityState === "hidden" &&
-    now >= suppressUntilTs &&
-    now - hiddenSinceTs > HIDDEN_SCROLL_GRACE_MS
-  ) {
-    forcePrintFloor();
-  }
+  /* THE BLANK-PLATE GUARD IS RETIRED (2026-07-31).
+     Its reasoning was sound and its cost was invisible to everyone who
+     wrote it: a scroll while `document.hidden` forced the print floor
+     permanently for that load, and `hiddenSinceTs` seeds to -Infinity
+     when the document was ALREADY hidden as watching began — so the
+     very first scroll in a background tab tripped it immediately, with
+     no grace at all. A reader who cmd-clicks the link, or restores a
+     session, or opens the page and comes back to it a minute later, got
+     a page with no motion and no explanation, until they reloaded.
+     The approved prototype has no such state: counted across its engine,
+     `visibilityState` 0, `data-tier` 0, `governor` 0, `jank` 0,
+     `downshift` 0 — one gate, `prefers-reduced-motion`, and that is all.
+     It is the design that works, so the capping goes.
+     What is genuinely lost: a screenshot of an occluded webview can now
+     catch engine-held figures mid-reveal instead of the print edition.
+     That is a real trade and it is the right one — a capture surface is
+     not a reader, and this cost readers motion to protect screenshots. */
 }
 
 function onLongTasks(list: PerformanceObserverEntryList): void {
@@ -413,11 +407,6 @@ export function startWatching(): void {
   if (tier === "print") return; /* nothing below the floor to govern */
   watching = true;
   lastFrameTs = Number.NaN;
-  hiddenSinceTs =
-    document.visibilityState === "hidden"
-      ? -Infinity
-      : Number.POSITIVE_INFINITY;
-  document.addEventListener("visibilitychange", onVisibilityFlip);
   window.addEventListener("scroll", markScrolled, { passive: true });
   gsap.ticker.add(sample);
   try {
@@ -432,7 +421,6 @@ export function startWatching(): void {
 export function stopWatching(): void {
   if (!watching) return;
   watching = false;
-  document.removeEventListener("visibilitychange", onVisibilityFlip);
   window.removeEventListener("scroll", markScrolled);
   gsap.ticker.remove(sample);
   longtaskObserver?.disconnect();
