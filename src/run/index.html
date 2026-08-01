@@ -507,7 +507,7 @@
      third of a screen of dead paper above AND below it. 100vh still
      guarantees the gate its own full screen — it is the decision, it
      should not share — but the seat no longer invents space. */
-  .b8{min-height:100vh; display:flex; align-items:center; padding-top:3vh; padding-bottom:3vh}
+  .b8{min-height:100vh; display:flex; align-items:center; padding-top:2vh; padding-bottom:2vh}
   /* the run's last sentence needs scroll the document did not have: at
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
@@ -628,19 +628,38 @@
      rather than watch it appear. */
   @property --lit{syntax:"<percentage>"; inherits:false; initial-value:0%}
 
-  .endlight{position:relative; margin:0 0 1.1rem; padding:6.6rem 0 .2rem;
+  .endlight{position:relative; margin:0 0 .7rem; padding:5.4rem 0 .2rem;
     isolation:isolate}
 
   /* the cone: light falling in the shape a shade throws. It opens from a
      sliver to its full spread, because a filament reaching current widens
      the pool it casts. */
+  /* The cone. Three things make it read as LIGHT rather than as a shape:
+     it is warm (a lamp is amber, not cream — cream on this brown reads grey),
+     its gradient dies well before the silhouette does, and a two-axis mask
+     fades every edge so the clip-path boundary is never actually visible.
+     The first version had a hard-edged grey triangle; at 3x it looked like a
+     paper cut-out taped to the page. */
   .endlight::before{content:""; position:absolute; z-index:-1;
-    left:50%; top:5.1rem; width:min(31rem,118%); height:calc(100% - 4.6rem);
-    transform:translateX(-50%) scaleX(.18); transform-origin:50% 0;
-    background:radial-gradient(116% 86% at 50% 0%,
-      rgba(246,239,226,.17) 0%, rgba(246,239,226,.092) 32%,
-      rgba(246,239,226,.032) 60%, rgba(246,239,226,0) 84%);
-    clip-path:polygon(43% 0%, 57% 0%, 97% 100%, 3% 100%);
+    left:50%; top:3.9rem; width:min(36rem,132%); height:calc(100% - 4rem);
+    transform:translateX(-50%) scaleX(.16); transform-origin:50% 0;
+    /* The silhouette IS the gradient. An earlier version cut a trapezoid with
+       clip-path and tried to hide the seam with a two-layer mask — at 3x the
+       edges were still plainly visible and it read as a paper cut-out taped to
+       the page. A radial pool hung from the shade needs no clipping: light has
+       no outline. One mask layer fades its foot, so nothing here depends on
+       mask-composite being supported. Warm, because a lamp is amber — cream on
+       this brown reads grey, which was half of why it looked like a shape. */
+    background:radial-gradient(41% 90% at 50% 0%,
+      rgba(246,216,172,.195) 0%, rgba(244,210,166,.132) 16%,
+      rgba(240,202,158,.066) 34%, rgba(238,198,152,.024) 54%,
+      rgba(236,196,150,.007) 72%, rgba(236,196,150,0) 88%);
+    /* the mask fades the FOOT and the very top. Without the top stop the
+       gradient still carries alpha across the element's top corners, which
+       draws a hard horizontal band right where the light is supposed to be
+       leaving the shade — the one edge a lamp can never have. */
+    -webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 42%,transparent 95%);
+    mask-image:linear-gradient(180deg,transparent 0%,#000 7%,#000 42%,transparent 95%);
     opacity:0; pointer-events:none}
   .endlight[data-lamp="on"]::before{opacity:1; transform:translateX(-50%) scaleX(1)}
 
@@ -650,10 +669,15 @@
   .lampbtn:focus-visible{outline:1px solid var(--clay); outline-offset:5px}
   .lampsvg{display:block; width:86px; height:104px; overflow:visible;
     transform-origin:50% 0}
-  .lampsvg line, .lampsvg path, .lampsvg ellipse{fill:none; stroke:var(--ink-2);
-    stroke-width:1.15; stroke-linecap:round; stroke-linejoin:round}
+  /* `circle` MUST be in this list: without it the bulb and the chain's knob
+     take the UA's black fill and render as two solid blobs. Only visible
+     once the lamp was screenshotted at 3x — it read as ink at small size. */
+  .lampsvg line, .lampsvg path, .lampsvg ellipse, .lampsvg circle{fill:none;
+    stroke:var(--ink-2); stroke-width:1.15; stroke-linecap:round; stroke-linejoin:round}
   .lampsvg .l-shade, .lampsvg .l-rim{stroke:var(--ink); stroke-width:1.35}
-  .lampsvg .l-throat{fill:var(--clay); stroke:none; opacity:0}
+  /* the shade's lit underside. A flat fill left a hard seam where it met
+     the cone, so it fades downward into it. */
+  .lampsvg .l-throat{fill:url(#throatgrad); stroke:none; opacity:0}
   .lampsvg .l-bulb{stroke:var(--ink-2)}
   .lampsvg .l-fil{stroke:var(--ink-2); stroke-width:1}
   /* stretch the chain from where it meets the shade, and swing the knob
@@ -680,11 +704,11 @@
     mask-image:linear-gradient(180deg,#000 0%,#000 var(--lit),transparent calc(var(--lit) + 30%))}
   .endlight[data-lamp="on"] .endquote{--lit:120%; opacity:1}
   .endquote blockquote{font-family:var(--display); font-style:italic;
-    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.6; color:var(--ink);
+    font-size:clamp(.95rem,1.5vw,1.12rem); line-height:1.5; color:var(--ink);
     margin:0; text-align:center; text-wrap:balance}
   .endquote figcaption{margin-top:.6rem; font-family:var(--mono);
     font-size:.66rem; letter-spacing:.05em; color:var(--ink-2); text-align:center}
-  .lampnote{margin:1rem 0 0; text-align:center; font-size:.64rem;
+  .lampnote{margin:.65rem 0 0; text-align:center; font-size:.64rem;
     letter-spacing:.07em; color:var(--ink-2); opacity:.6}
 
   @media (prefers-reduced-motion: no-preference){
@@ -732,7 +756,7 @@
      own full-height close, which made a thirteenth view the page never asked
      for — the gate IS the ending, and anything after it competes. Compact,
      right column, under the card: it belongs to the gate, not after it. */
-  .b8 footer{margin-top:2.2rem; padding-top:1rem; border-top:1px solid var(--hair);
+  .b8 footer{margin-top:1.3rem; padding-top:1rem; border-top:1px solid var(--hair);
     font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
     color:var(--ink-2); line-height:1.85; max-width:68ch}
 
@@ -1769,7 +1793,7 @@ h1[data-np-measuring] .np-ch {
           <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
           <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
         </ul>
-        <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.15rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
+        <p class="mono" data-fx="in .02 .13 y 4 | out 2 2.5 | drift 0" style="margin-top:1.15rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
       </div>
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
@@ -1801,6 +1825,10 @@ h1[data-np-measuring] .np-ch {
                 <button class="lampbtn" id="lampbtn" type="button" aria-pressed="false"
                         aria-controls="endquote" aria-label="Turn the reading lamp on to light the closing line">
                   <svg class="lampsvg" viewBox="0 0 86 104" aria-hidden="true" focusable="false">
+                    <defs><linearGradient id="throatgrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="var(--clay)" stop-opacity=".85"/>
+                      <stop offset="100%" stop-color="var(--clay)" stop-opacity=".15"/>
+                    </linearGradient></defs>
                     <!-- the flex it hangs from -->
                     <line class="l-cord" x1="43" y1="0" x2="43" y2="30"/>
                     <!-- the throat: the lit underside of the shade. Sits behind
@@ -1824,7 +1852,7 @@ h1[data-np-measuring] .np-ch {
                 </figure>
                 <p class="lampnote mono" id="lampnote">the lamp is off &middot; pull the cord</p>
               </div>
-              <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
+              <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.45rem">Thank you. The interesting part is whatever comes next.</p>
               <div class="row mono">
                 <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
                 <a href="https://github.com/yadava5">github ↗</a>
@@ -3609,6 +3637,18 @@ $("approve").addEventListener("click", () => {
      put it out again. RM lights it immediately: a reader who has asked for
      less motion should not have to wait through a beat they cannot see. */
   setTimeout(() => setLamp(true), RM ? 0 : 900);
+
+  /* Approving expands the aftergate, which grows the right column by ~340px.
+     `.b8` centres its grid, so the WHOLE composition re-seats and the ladder
+     rises ~31px — leaving the thread canvas, built once against the old
+     geometry, terminating where the dock used to be. Measured: the token ring
+     landed a full row low, on the deploy line. Re-measure once the expansion
+     has finished, and again on transitionend in case it runs long. */
+  const remeasure = () => { cacheGeometry(); buildThread(); if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true); };
+  $("aftergate").addEventListener("transitionend", (e) => {
+    if (e.propertyName === "grid-template-rows") remeasure();
+  }, { once: true });
+  setTimeout(remeasure, RM ? 0 : 950);
 
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
 });
