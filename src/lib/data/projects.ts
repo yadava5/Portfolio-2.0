@@ -164,7 +164,7 @@ export const projects: Project[] = [
        scheme name — a code identifier, not prose.) */
     imageAlt: "Applied local email classification architecture diagram",
     imageDisclosure:
-      "Architecture diagram generated from public repository structure; private email content is not shown.",
+      "Generated from the public repository structure; no private email content appears.",
     featured: true,
     category: "ai-ml",
     startDate: "2026-02",
@@ -222,7 +222,7 @@ export const projects: Project[] = [
     imageAlt:
       "Private-safe Agentic AutoML experiment registry screenshot with demo data",
     imageDisclosure:
-      "Private-safe screenshot from the local AutoML repository demo data; source repository remains private.",
+      "Captured locally; no real dataset or institutional record appears.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
@@ -261,7 +261,7 @@ export const projects: Project[] = [
     imageKind: "diagram",
     imageAlt: "Visual Assist on-device accessibility architecture diagram",
     imageDisclosure:
-      "Architecture diagram generated from public repository structure; live camera and location context are not shown.",
+      "Generated from the public repository structure; live camera and location context are not shown.",
     featured: true,
     category: "mobile",
     startDate: "2025-03",
@@ -387,7 +387,7 @@ export const projects: Project[] = [
        severity I stated was wrong. */
     imageAlt: "Real Glyph React workbench screenshot",
     imageDisclosure:
-      "Real local web workbench screenshot; native inference server was offline during capture, so benchmark claims are sourced from committed benchmark data.",
+      "Captured locally. The native inference server was offline at the time, so every benchmark figure here comes from committed data rather than this session.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-10",
@@ -510,7 +510,7 @@ export const projects: Project[] = [
     imageAlt:
       "Master Inventory Tableau and Workday pipeline architecture diagram",
     imageDisclosure:
-      "Private-safe architecture diagram; institutional records, raw exports, and internal UI are not shown.",
+      "Private-safe: institutional records, raw exports and the internal UI are not shown.",
     featured: false,
     category: "data",
     startDate: "2025-06",
@@ -550,7 +550,7 @@ export const projects: Project[] = [
     imageKind: "diagram",
     imageAlt: "PolicyBot retrieval and quote-validation architecture diagram",
     imageDisclosure:
-      "Private-safe architecture diagram; real institutional policy text and Slack messages are not shown.",
+      "Private-safe: real institutional policy text and Slack messages are not shown.",
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
