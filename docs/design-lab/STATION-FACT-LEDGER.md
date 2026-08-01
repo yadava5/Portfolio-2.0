@@ -50,13 +50,24 @@ against a README. That rule was added mid-audit and it changed two verdicts.
 - **08 · LifeQuest** — Social Innovation Weekend Mar 2025, 7-person team,
   React + NestJS. Exact.
 
-### Open, not fixed here
+### Beat 10 — two dropped qualifiers, now restored
 
-- **Beat 10 names three projects that appear nowhere in the résumé** —
-  "jobtracker", "policybot", "fast-mnist". Applied is *formerly* JobTracker,
-  so that one is a rename; the other two are real repos but are not part of
-  the six the run presents. The beat needs re-cutting against the current
-  six, which is task #23 rather than a fact correction.
+The three project names on the review station ("jobtracker", "policybot",
+"fast-mnist") turned out to be legitimate: they are repo names the production
+case files use, and Applied is *formerly* JobTracker. But auditing the numbers
+against those case files found both of them quoted more bluntly than their
+source quotes them:
+
+| claim | run said | case file says | fixed to |
+|---|---|---|---|
+| backend suite | "271 backend tests" | "271 passed **and 10 skipped**" — the skips are "named in the row rather than folded into the total" | "271 passed · 10 skipped" |
+| cited-source sweep | "19/20 cited-source sweep" | "treat 19/20 and 17/25 as **disclosed self-reports**" — grader and pass criteria unpublished | "19/20 cited-source sweep, **self-reported**" |
+
+Neither would trip a gate. The numbers match their sources exactly; it was
+the qualifier that had gone missing, which is the failure mode a numeric
+check cannot see.
+
+### Open, not fixed here
 - **The résumé quotes the quick 1-fork benchmark run** for jetpack (2.9×,
   4.38 GB/s, 455 MB/s, 6.5×). Those numbers are real measurements, just from
   the less rigorous configuration; `benchmarks/README.md` in that repo states
