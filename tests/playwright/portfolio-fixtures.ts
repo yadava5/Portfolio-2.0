@@ -461,7 +461,10 @@ export async function applyThemeState(
   await page.evaluate((themeName) => {
     document.documentElement.setAttribute("data-theme", themeName);
   }, theme.name);
-  await page.locator("#who").waitFor({ state: "attached", timeout: 20000 });
+  await page
+    .locator('#who, [data-beat="1"]')
+    .first()
+    .waitFor({ state: "attached", timeout: 20000 });
   await page.waitForTimeout(200);
 }
 
