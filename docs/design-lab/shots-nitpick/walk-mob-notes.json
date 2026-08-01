@@ -1,0 +1,26 @@
+[
+  {
+    "k": "w390.height",
+    "v": "13699px = 16.23 viewports"
+  },
+  {
+    "k": "w390.chapters",
+    "v": [
+      "arrival: 844px = 1.00vp",
+      "who: 917px = 1.09vp",
+      "path: 1853px = 2.20vp",
+      "automl: 2373px = 2.81vp",
+      "work: 4138px = 4.90vp",
+      "values: 947px = 1.12vp",
+      "gate: 2365px = 2.80vp"
+    ]
+  },
+  {
+    "k": "w390.hOverflow",
+    "v": {
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "offenders": []
+    }
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "home": {
+    "textNodes": 441,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  },
+  "home-static": {
+    "textNodes": 421,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  },
+  "evidence": {
+    "textNodes": 231,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  },
+  "case-automl": {
+    "textNodes": 306,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  },
+  "case-jobtracker": {
+    "textNodes": 313,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  },
+  "notfound": {
+    "textNodes": 27,
+    "lowContrastOnWhite": 0,
+    "worst": [],
+    "fixedBoxes": [],
+    "fadedRevealTargets": 0,
+    "missingStrings": []
+  }
+}

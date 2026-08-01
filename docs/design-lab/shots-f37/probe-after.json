@@ -1,0 +1,561 @@
+{
+  "tag": "after",
+  "base": "http://127.0.0.1:3300",
+  "at": "2026-07-25T09:26:40.574Z",
+  "runs": [
+    {
+      "width": "390",
+      "scene": "glyph",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 280 216",
+          "clientWidth": 280,
+          "scale": 1,
+          "minRendered": 13,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "dot 256 kernel —",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "committed benchmarks",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 210,
+          "scale": 1,
+          "minRendered": 11,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "hidden",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "readout",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "answer · 7",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "forwardPassLabels": [
+        "input",
+        "hidden",
+        "readout",
+        "answer · 7"
+      ],
+      "minRendered": 11
+    },
+    {
+      "width": "390",
+      "scene": "glyph",
+      "surface": "plate",
+      "url": "/projects/fast-mnist-nn/",
+      "root": "#project-visual [data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 280 216",
+          "clientWidth": 281.5,
+          "scale": 1.005,
+          "minRendered": 13.07,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "dot 256 kernel —",
+              "authored": 13,
+              "rendered": 13.07
+            },
+            {
+              "text": "committed benchmarks",
+              "authored": 13,
+              "rendered": 13.07
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 211.3,
+          "scale": 1.006,
+          "minRendered": 11.07,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "hidden",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "readout",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "answer · 7",
+              "authored": 13,
+              "rendered": 13.08
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "forwardPassLabels": [
+        "input",
+        "hidden",
+        "readout",
+        "answer · 7"
+      ],
+      "minRendered": 11.07
+    },
+    {
+      "width": "1440",
+      "scene": "glyph",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 192",
+          "clientWidth": 400,
+          "scale": 1,
+          "minRendered": 13,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 210,
+          "scale": 1,
+          "minRendered": 11,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "hidden",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "readout",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "answer · 7",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "forwardPassLabels": [
+        "input",
+        "hidden",
+        "readout",
+        "answer · 7"
+      ],
+      "minRendered": 11
+    },
+    {
+      "width": "1440",
+      "scene": "glyph",
+      "surface": "plate",
+      "url": "/projects/fast-mnist-nn/",
+      "root": "#project-visual [data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 192",
+          "clientWidth": 399.3,
+          "scale": 0.998,
+          "minRendered": 12.98,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 12.98
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 211.3,
+          "scale": 1.006,
+          "minRendered": 11.07,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "hidden",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "readout",
+              "authored": 13,
+              "rendered": 13.08
+            },
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "answer · 7",
+              "authored": 13,
+              "rendered": 13.08
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "forwardPassLabels": [
+        "input",
+        "hidden",
+        "readout",
+        "answer · 7"
+      ],
+      "minRendered": 11.07
+    }
+  ]
+}

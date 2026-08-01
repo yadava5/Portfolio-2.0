@@ -1,0 +1,26 @@
+[
+  {
+    "k": "w1440.height",
+    "v": "10841px = 12.05 viewports"
+  },
+  {
+    "k": "w1440.chapters",
+    "v": [
+      "arrival: 900px = 1.00vp",
+      "who: 764px = 0.85vp",
+      "path: 1563px = 1.74vp",
+      "automl: 1777px = 1.97vp",
+      "work: 3129px = 3.48vp",
+      "values: 765px = 0.85vp",
+      "gate: 1778px = 1.98vp"
+    ]
+  },
+  {
+    "k": "w1440.hOverflow",
+    "v": {
+      "scrollWidth": 1440,
+      "clientWidth": 1440,
+      "offenders": []
+    }
+  }
+]

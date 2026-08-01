@@ -1,0 +1,1274 @@
+[
+  {
+    "k": "1440.home.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 19.7,
+        "lastWord": "departments.",
+        "text": "Python and SQL teach the records shape. The transforms feed OAS and Tableau, and the dashboards they fill are "
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 22.2,
+        "lastWord": "orchestration.",
+        "text": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 17.8,
+        "lastWord": "execution.",
+        "text": "Keep training workflows reproducible with containerized execution."
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 8.2,
+        "lastWord": "state.",
+        "text": "Require human approval before generated actions alter workflow state."
+      },
+      {
+        "tag": "P",
+        "fontSize": "24px",
+        "lines": 2,
+        "lastLinePct": 10.1,
+        "lastWord": "C++.",
+        "text": "No frameworks. Just math, memory, and C++. No frameworks. Just math, memory, and C++."
+      },
+      {
+        "tag": "P",
+        "fontSize": "24px",
+        "lines": 2,
+        "lastLinePct": 12.5,
+        "lastWord": "faster.",
+        "text": "Then OpenMP and SIMD together made it 3.5× faster."
+      },
+      {
+        "tag": "P",
+        "fontSize": "24px",
+        "lines": 2,
+        "lastLinePct": 16.1,
+        "lastWord": "English.",
+        "text": "A calendar and task app you drive in plain English. A calendar and task app you drive in plain English."
+      }
+    ]
+  },
+  {
+    "k": "1440.home.glyphs",
+    "v": {
+      "straightApos": [
+        "It's"
+      ],
+      "curlyAposCount": 6,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "3.5x",
+        "1x",
+        "6.5x"
+      ],
+      "multiplyX_sign": [
+        "3.5×"
+      ],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 1,
+      "ellipsisDots": 0,
+      "emDash": 89,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 2
+    }
+  },
+  {
+    "k": "home.fontCensus",
+    "v": [
+      {
+        "size": "129.6px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 3
+      },
+      {
+        "size": "129.6px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "115.2px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "64px",
+        "fam": "Fraunces",
+        "w": "420",
+        "count": 18
+      },
+      {
+        "size": "52.48px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 15
+      },
+      {
+        "size": "38.4px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 4
+      },
+      {
+        "size": "34.56px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "28.8px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 4
+      },
+      {
+        "size": "24px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 4
+      },
+      {
+        "size": "24px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 14
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 13
+      },
+      {
+        "size": "18.144px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 34
+      },
+      {
+        "size": "15px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 176
+      }
+    ]
+  },
+  {
+    "k": "1440.evidence.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "17px",
+        "lines": 2,
+        "lastLinePct": 11.2,
+        "lastWord": "sweep.",
+        "text": "PolicyBot private-safe proof records a structured validation sweep."
+      }
+    ]
+  },
+  {
+    "k": "1440.evidence.glyphs",
+    "v": {
+      "straightApos": [
+        "Applied's",
+        "site's",
+        "repo's",
+        "author's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "3.5x"
+      ],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 21,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "evidence.fontCensus",
+    "v": [
+      {
+        "size": "64px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "23.2px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 11
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 11
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 31
+      },
+      {
+        "size": "15px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 167
+      }
+    ]
+  },
+  {
+    "k": "1440.automl.glyphs",
+    "v": {
+      "straightApos": [
+        "lifecycle's",
+        "person's",
+        "card's.",
+        "platform's",
+        "product's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 51,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "automl.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 6
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 8
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 37
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 215
+      }
+    ]
+  },
+  {
+    "k": "1440.jobtracker.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 5,
+        "lastLinePct": 11.3,
+        "lastWord": "package.",
+        "text": "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each "
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 21,
+        "lastWord": "leak.t3",
+        "text": "Application-level `WHERE user_id = …` is one forgotten clause away from a leak.t3"
+      }
+    ]
+  },
+  {
+    "k": "1440.jobtracker.glyphs",
+    "v": {
+      "straightApos": [
+        "repository's",
+        "can't",
+        "database's",
+        "writer's.",
+        "didn't",
+        "set's",
+        "force'd,",
+        "Gmail's",
+        "FORCE'd",
+        "engine's",
+        "product's",
+        "i'm",
+        "claim's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [
+        "\"metadata\"",
+        "\"web beta is a scaffold\""
+      ],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "→",
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 1,
+      "ellipsisDots": 0,
+      "emDash": 54,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "jobtracker.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 7
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 11
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 41
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 240
+      }
+    ]
+  },
+  {
+    "k": "1440.glyph.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 8.5,
+        "lastWord": "proof.",
+        "text": "Input preprocessing feeds C++ matrix kernels and OpenMP parallel paths, then the React demo displays inference"
+      }
+    ]
+  },
+  {
+    "k": "1440.glyph.glyphs",
+    "v": {
+      "straightApos": [
+        "That's",
+        "MLP's",
+        "repo's",
+        "kernel's",
+        "404'd",
+        "BENCHMARKS.md's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "1x",
+        "3.5x",
+        "3.50x"
+      ],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 35,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "glyph.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 5
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 5
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 34
+      },
+      {
+        "size": "15px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 2
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 176
+      }
+    ]
+  },
+  {
+    "k": "1440.cadence.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 10,
+        "lastWord": "checks.",
+        "text": "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL and "
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 14.3,
+        "lastWord": "forms.t1",
+        "text": "Scheduling should accept natural language instead of only rigid forms.t1"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 22.3,
+        "lastWord": "expensive.t2",
+        "text": "Calendar behavior has many edge cases and regressions are expensive.t2"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 5,
+        "lastLinePct": 9.1,
+        "lastWord": "file.t4",
+        "text": "Turning FORCE ROW LEVEL SECURITY on before every request reliably sets the GUC locks the app out of its own da"
+      }
+    ]
+  },
+  {
+    "k": "1440.cadence.glyphs",
+    "v": {
+      "straightApos": [
+        "app's",
+        "application's",
+        "postgres's,",
+        "user's",
+        "set_config('app.user_id',",
+        "B's",
+        "tag's",
+        "middleware's",
+        "repo's",
+        "i'd",
+        "commit's",
+        "404'd"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 1,
+      "emDash": 54,
+      "enDash": 2,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "cadence.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 7
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 12
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 39
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 227
+      }
+    ]
+  },
+  {
+    "k": "1440.policybot.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 14.9,
+        "lastWord": "responses.",
+        "text": "Policy documents are indexed for retrieval, validated locally for quote grounding, and delivered through Slack"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 11.8,
+        "lastWord": "from.t1",
+        "text": "Policy support is only useful when users can see where guidance came from.t1"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 19.5,
+        "lastWord": "channels.t3",
+        "text": "The target workflow already happens in team communication channels.t3"
+      }
+    ]
+  },
+  {
+    "k": "1440.policybot.glyphs",
+    "v": {
+      "straightApos": [
+        "people's",
+        "didn't",
+        "assistant's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 39,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "policybot.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 6
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 6
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 31
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 180
+      }
+    ]
+  },
+  {
+    "k": "1440.master-inventory.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 11.3,
+        "lastWord": "outputs.",
+        "text": "Workday exports and Tableau metadata feed Python/pandas transforms, deterministic IDs, timestamped run artifac"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 16.8,
+        "lastWord": "records.t3",
+        "text": "The work is organizational and cannot expose raw institutional records.t3"
+      }
+    ]
+  },
+  {
+    "k": "1440.master-inventory.glyphs",
+    "v": {
+      "straightApos": [
+        "pipeline's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 41,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "master-inventory.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 6
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 6
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 32
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 182
+      }
+    ]
+  },
+  {
+    "k": "1440.visual-assist.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 23.6,
+        "lastWord": "capabilities.t1",
+        "text": "LiDAR, Vision, haptics, and VoiceOver are first-class platform capabilities.t1"
+      }
+    ]
+  },
+  {
+    "k": "1440.visual-assist.glyphs",
+    "v": {
+      "straightApos": [
+        "else's",
+        "apple's",
+        "repo's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 21,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "visual-assist.fontCensus",
+    "v": [
+      {
+        "size": "72px",
+        "fam": "Fraunces",
+        "w": "400",
+        "count": 1
+      },
+      {
+        "size": "19px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 5
+      },
+      {
+        "size": "17px",
+        "fam": "Newsreader",
+        "w": "400",
+        "count": 5
+      },
+      {
+        "size": "16px",
+        "fam": "ui-sans-serif",
+        "w": "400",
+        "count": 30
+      },
+      {
+        "size": "13px",
+        "fam": "Fragment Mono",
+        "w": "400",
+        "count": 145
+      }
+    ]
+  },
+  {
+    "k": "390.home.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "26.24px",
+        "lines": 2,
+        "lastLinePct": 26.4,
+        "lastWord": "go.",
+        "text": "Nothing runs until a human says go."
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 2,
+        "lastLinePct": 24.5,
+        "lastWord": "opaque.",
+        "text": "Make pipeline decisions auditable instead of opaque."
+      },
+      {
+        "tag": "P",
+        "fontSize": "18.4px",
+        "lines": 2,
+        "lastLinePct": 17.7,
+        "lastWord": "applied.",
+        "text": "Your inbox already knows where you applied. Your inbox already knows where you applied."
+      },
+      {
+        "tag": "P",
+        "fontSize": "18.4px",
+        "lines": 2,
+        "lastLinePct": 10.2,
+        "lastWord": "C++.",
+        "text": "No frameworks. Just math, memory, and C++. No frameworks. Just math, memory, and C++."
+      },
+      {
+        "tag": "P",
+        "fontSize": "18.4px",
+        "lines": 2,
+        "lastLinePct": 26.2,
+        "lastWord": "faster.",
+        "text": "Then OpenMP and SIMD together made it 3.5× faster."
+      },
+      {
+        "tag": "P",
+        "fontSize": "18.4px",
+        "lines": 3,
+        "lastLinePct": 19.2,
+        "lastWord": "member.",
+        "text": "jetpack-compress splits the bytes across virtual threads — and stitches one byte-valid member."
+      },
+      {
+        "tag": "P",
+        "fontSize": "18.4px",
+        "lines": 2,
+        "lastLinePct": 16.1,
+        "lastWord": "English.",
+        "text": "A calendar and task app you drive in plain English. A calendar and task app you drive in plain English."
+      }
+    ]
+  },
+  {
+    "k": "390.home.glyphs",
+    "v": {
+      "straightApos": [
+        "It's"
+      ],
+      "curlyAposCount": 6,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "3.5x",
+        "1x",
+        "6.5x"
+      ],
+      "multiplyX_sign": [
+        "3.5×"
+      ],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 1,
+      "ellipsisDots": 0,
+      "emDash": 87,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 2
+    }
+  },
+  {
+    "k": "390.evidence.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "17px",
+        "lines": 3,
+        "lastLinePct": 18.1,
+        "lastWord": "(vitest).",
+        "text": "Cadence suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest)."
+      },
+      {
+        "tag": "P",
+        "fontSize": "17px",
+        "lines": 3,
+        "lastLinePct": 27.8,
+        "lastWord": "benchmarks.",
+        "text": "The openmp+simd dot kernel runs 3.5x faster than the -O3 baseline (dot 256) in committed benchmarks."
+      },
+      {
+        "tag": "P",
+        "fontSize": "17px",
+        "lines": 3,
+        "lastLinePct": 22.2,
+        "lastWord": "boundary.",
+        "text": "Master Inventory private-safe proof records the deduped inventory row count and schema boundary."
+      }
+    ]
+  },
+  {
+    "k": "390.evidence.glyphs",
+    "v": {
+      "straightApos": [
+        "Applied's",
+        "site's",
+        "repo's",
+        "author's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "3.5x"
+      ],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 21,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.automl.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 7,
+        "lastLinePct": 13.8,
+        "lastWord": "labor.",
+        "text": "Between a raw dataset and a useful model sits a chain of repetitive judgment: ingestion, feature decisions, tr"
+      }
+    ]
+  },
+  {
+    "k": "390.automl.glyphs",
+    "v": {
+      "straightApos": [
+        "lifecycle's",
+        "person's",
+        "card's.",
+        "platform's",
+        "product's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 50,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.jobtracker.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 8,
+        "lastLinePct": 22.5,
+        "lastWord": "machine.",
+        "text": "The status of a job search scatters across Gmail, employer systems, and one-off messages. A spreadsheet can't "
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 8,
+        "lastLinePct": 20.3,
+        "lastWord": "live.",
+        "text": "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself ch"
+      },
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 3,
+        "lastLinePct": 18.1,
+        "lastWord": "leak.t3",
+        "text": "Application-level `WHERE user_id = …` is one forgotten clause away from a leak.t3"
+      }
+    ]
+  },
+  {
+    "k": "390.jobtracker.glyphs",
+    "v": {
+      "straightApos": [
+        "repository's",
+        "can't",
+        "database's",
+        "writer's.",
+        "didn't",
+        "set's",
+        "force'd,",
+        "Gmail's",
+        "FORCE'd",
+        "engine's",
+        "product's",
+        "i'm",
+        "claim's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [
+        "\"metadata\"",
+        "\"web beta is a scaffold\""
+      ],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "→",
+        "⟶"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 1,
+      "ellipsisDots": 0,
+      "emDash": 54,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.glyph.widows",
+    "v": [
+      {
+        "tag": "P",
+        "fontSize": "19px",
+        "lines": 5,
+        "lastLinePct": 12.3,
+        "lastWord": "hide.",
+        "text": "MNIST is small enough to hold in your head. That's the point — at this size, low-level matrix optimization and"
+      }
+    ]
+  },
+  {
+    "k": "390.glyph.glyphs",
+    "v": {
+      "straightApos": [
+        "That's",
+        "MLP's",
+        "repo's",
+        "kernel's",
+        "404'd",
+        "BENCHMARKS.md's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [
+        "1x",
+        "3.5x",
+        "3.50x"
+      ],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 35,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.cadence.glyphs",
+    "v": {
+      "straightApos": [
+        "app's",
+        "application's",
+        "postgres's,",
+        "user's",
+        "set_config('app.user_id',",
+        "B's",
+        "tag's",
+        "middleware's",
+        "repo's",
+        "i'd",
+        "commit's",
+        "404'd"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [
+        "↗"
+      ],
+      "ellipsisChar": 0,
+      "ellipsisDots": 1,
+      "emDash": 54,
+      "enDash": 2,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.policybot.glyphs",
+    "v": {
+      "straightApos": [
+        "people's",
+        "didn't",
+        "assistant's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶",
+        "→"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 39,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.master-inventory.glyphs",
+    "v": {
+      "straightApos": [
+        "pipeline's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 41,
+      "enDash": 1,
+      "hyphenBetweenSpaces": 0
+    }
+  },
+  {
+    "k": "390.visual-assist.glyphs",
+    "v": {
+      "straightApos": [
+        "else's",
+        "apple's",
+        "repo's"
+      ],
+      "curlyAposCount": 1,
+      "straightQuote": [],
+      "multiplyX_letter": [],
+      "multiplyX_sign": [],
+      "arrowsRight": [
+        "⟶"
+      ],
+      "arrowsNE": [],
+      "ellipsisChar": 0,
+      "ellipsisDots": 0,
+      "emDash": 21,
+      "enDash": 0,
+      "hyphenBetweenSpaces": 0
+    }
+  }
+]

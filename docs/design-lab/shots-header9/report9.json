@@ -1,0 +1,41 @@
+[
+  {
+    "candidate": "d9",
+    "seat": "chromium-desk",
+    "lcp": {
+      "t": 576,
+      "size": 23896,
+      "el": "ch"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "d9",
+    "seat": "webkit-desk",
+    "lcp": {
+      "t": 3085,
+      "size": 21585,
+      "el": "ch m"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "d9",
+    "seat": "webkit-mobile",
+    "lcp": {
+      "t": 53,
+      "size": 11463,
+      "el": "labhead mono"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  }
+]

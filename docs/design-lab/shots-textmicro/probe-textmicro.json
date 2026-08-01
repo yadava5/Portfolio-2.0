@@ -1,0 +1,54 @@
+[
+  {
+    "ok": true,
+    "m": "4×-throttle pressAxis: n=174 max=9.3ms p95=9.2ms >32ms=0"
+  },
+  {
+    "ok": true,
+    "m": "4×-throttle wetLine: n=161 max=9.4ms p95=9.2ms >32ms=0"
+  },
+  {
+    "ok": true,
+    "m": "4×-throttle tilt: n=131 max=9.4ms p95=9.1ms >32ms=0"
+  },
+  {
+    "ok": true,
+    "m": "full: the axis press answers the cursor (wght 432, no layer)"
+  },
+  {
+    "ok": true,
+    "m": "full: hover ink is still --color-ink — AA arithmetic unchanged"
+  },
+  {
+    "ok": true,
+    "m": "core: pressAxis hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "core: wetLine hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "core: rowPress hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "core: tilt hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "print: pressAxis hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "print: wetLine hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "print: rowPress hover-inert (styles + pixels identical)"
+  },
+  {
+    "ok": true,
+    "m": "print: tilt hover-inert (styles + pixels identical)"
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "tier": "print",
+  "garnishConsumers": 0,
+  "outlinedFigures": 8,
+  "worst": 3.38,
+  "rows": [
+    {
+      "chapter": "04",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(245, 237, 220)",
+      "composite": "rgb(131, 126, 114)",
+      "ratio": 3.47
+    },
+    {
+      "chapter": "04",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(245, 237, 220)",
+      "composite": "rgb(131, 126, 114)",
+      "ratio": 3.47
+    },
+    {
+      "chapter": "05",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(242, 228, 201)",
+      "composite": "rgb(130, 122, 106)",
+      "ratio": 3.38
+    },
+    {
+      "chapter": "05",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(242, 228, 201)",
+      "composite": "rgb(130, 122, 106)",
+      "ratio": 3.38
+    },
+    {
+      "chapter": "05",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(242, 228, 201)",
+      "composite": "rgb(130, 122, 106)",
+      "ratio": 3.38
+    },
+    {
+      "chapter": "05",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.55)",
+      "paper": "rgb(242, 228, 201)",
+      "composite": "rgb(130, 122, 106)",
+      "ratio": 3.38
+    },
+    {
+      "chapter": "06",
+      "outlineColor": "color(srgb 0.964706 0.937255 0.886275 / 0.55)",
+      "paper": "rgb(67, 55, 47)",
+      "composite": "rgb(165, 156, 145)",
+      "ratio": 4.25
+    },
+    {
+      "chapter": "06",
+      "outlineColor": "color(srgb 0.964706 0.937255 0.886275 / 0.55)",
+      "paper": "rgb(67, 55, 47)",
+      "composite": "rgb(165, 156, 145)",
+      "ratio": 4.25
+    }
+  ]
+}

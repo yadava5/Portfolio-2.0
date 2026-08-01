@@ -1,0 +1,915 @@
+{
+  "scrollTriggers": "ScrollTrigger not on window",
+  "restInvisible": {
+    "arrival": [
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "who": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0.27,
+        "y": 483,
+        "text": "before"
+      },
+      {
+        "op": 0.25,
+        "y": 483,
+        "text": "I"
+      },
+      {
+        "op": 0.25,
+        "y": 483,
+        "text": "called"
+      },
+      {
+        "op": 0.25,
+        "y": 483,
+        "text": "it"
+      },
+      {
+        "op": 0.25,
+        "y": 483,
+        "text": "done."
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "path": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "automl": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0,
+        "y": 792,
+        "text": "approved"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "work": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "values": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 525,
+        "text": "the gate"
+      },
+      {
+        "op": 0,
+        "y": 769,
+        "text": "fig. 6.0 — the litany, with receipts."
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      }
+    ],
+    "gate": [
+      {
+        "op": 0,
+        "y": 356,
+        "text": "arrival"
+      },
+      {
+        "op": 0,
+        "y": 385,
+        "text": "who"
+      },
+      {
+        "op": 0,
+        "y": 413,
+        "text": "the path"
+      },
+      {
+        "op": 0,
+        "y": 441,
+        "text": "automl"
+      },
+      {
+        "op": 0,
+        "y": 469,
+        "text": "the work"
+      },
+      {
+        "op": 0,
+        "y": 497,
+        "text": "how i work"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 0,
+        "text": "run no. 041 ·"
+      },
+      {
+        "op": 0,
+        "y": 693,
+        "text": "availability — Open to new-grad software, data, and ML engineering rol"
+      },
+      {
+        "op": 0,
+        "y": 737,
+        "text": "cincinnati, ohio — 8:36 pm local"
+      },
+      {
+        "op": 0,
+        "y": 738,
+        "text": "8:36 pm"
+      },
+      {
+        "op": 0,
+        "y": 775,
+        "text": "aesh_1055@icloud.com"
+      },
+      {
+        "op": 0,
+        "y": 775,
+        "text": "resume"
+      },
+      {
+        "op": 0,
+        "y": 775,
+        "text": "github"
+      },
+      {
+        "op": 0,
+        "y": 775,
+        "text": "linkedin"
+      },
+      {
+        "op": 0,
+        "y": 833,
+        "text": "run approved — say hello"
+      },
+      {
+        "op": 0,
+        "y": 868,
+        "text": "Email me — I read everything."
+      },
+      {
+        "op": 0,
+        "y": 559,
+        "text": "APPROVED"
+      },
+      {
+        "op": 0,
+        "y": 612,
+        "text": "· human in the loop ·"
+      },
+      {
+        "op": 0,
+        "y": 547,
+        "text": "run no. 041 ·"
+      }
+    ]
+  },
+  "clockTick": {
+    "t0": "cincinnati, ohio — summer 2026",
+    "afterFake5min": "cincinnati, ohio — summer 2026",
+    "afterFake45min": "cincinnati, ohio — summer 2026",
+    "ticks": false
+  },
+  "prerender": {
+    "hasEmDashClock": true,
+    "nameOccurrences": 22,
+    "h1": "",
+    "title": "Ayush Yadav | Software, Data, and ML Engineering",
+    "metaDesc": "Ayush Yadav&#x27;s portfolio: a recent computer-science graduate, with case studies of the projects he has built and the evidence behind every claim.",
+    "ogImage": "https://yadava5.github.io/Portfolio-2.0/og-image.png",
+    "jsonLd": 0,
+    "bytes": 143231
+  },
+  "stamp": {
+    "exists": true,
+    "box": {
+      "w": 297,
+      "h": 206
+    },
+    "afterText": "run no. 041\npress here to sign\nAPPROVED\n· human in the loop ·\nrun no. 041 · jul 24, 2026",
+    "approvedHello": [
+      "approval",
+      "approved",
+      "approved",
+      "approved",
+      "awaiting approval",
+      "approved"
+    ],
+    "persisted": "run no. 041\npress here to sign\nAPPROVED\n· human in the loop ·\nrun no. 041 · jul 24, 2026"
+  },
+  "motionToggle": {
+    "found": true,
+    "htmlAttrs": [
+      "lang=en",
+      "class=fraunces_9c23ab57-module__NLVp-W__variable newsreader_f83ec09c-module__MRWJRq__variable fragment_mono_b865377b-module__5hyRyW__variable",
+      "data-tier=print",
+      "data-motion-off="
+    ],
+    "heightAfter": 9582,
+    "persistsReload": ""
+  },
+  "navTrail": [
+    {
+      "clicked": "the work",
+      "url": "http://localhost:4321/",
+      "scrollY": 5123,
+      "topSectionInView": "work",
+      "headerOverlap": {
+        "headerH": 56,
+        "near": [
+          "work@96"
+        ]
+      }
+    },
+    {
+      "clicked": "experience",
+      "url": "http://localhost:4321/",
+      "scrollY": 1654,
+      "topSectionInView": "path",
+      "headerOverlap": {
+        "headerH": 56,
+        "near": [
+          "path@96"
+        ]
+      }
+    },
+    {
+      "clicked": "contact",
+      "url": "http://localhost:4321/",
+      "scrollY": 8915,
+      "topSectionInView": "gate",
+      "headerOverlap": {
+        "headerH": 56,
+        "near": [
+          "gate@96"
+        ]
+      }
+    },
+    {
+      "clicked": "BACK",
+      "url": "about:blank",
+      "scrollY": 0
+    },
+    {
+      "clicked": "BACK2",
+      "url": "about:blank",
+      "scrollY": 0
+    },
+    {
+      "clicked": "FWD",
+      "url": "http://localhost:4321/",
+      "scrollY": 7025
+    }
+  ],
+  "tapTargets": [
+    {
+      "w": 1,
+      "h": 1,
+      "text": "Skip to main content"
+    },
+    {
+      "w": 28,
+      "h": 28,
+      "text": "Open Ayush Yadav portrait"
+    },
+    {
+      "w": 96,
+      "h": 18,
+      "text": "ayush yadav"
+    },
+    {
+      "w": 69,
+      "h": 15,
+      "text": "the work"
+    },
+    {
+      "w": 8,
+      "h": 15,
+      "text": "1"
+    },
+    {
+      "w": 77,
+      "h": 13,
+      "text": "jobtracker"
+    },
+    {
+      "w": 77,
+      "h": 13,
+      "text": "fast-mnist"
+    },
+    {
+      "w": 100,
+      "h": 13,
+      "text": "visual-assist"
+    },
+    {
+      "w": 156,
+      "h": 18,
+      "text": "skip to the work ↓"
+    },
+    {
+      "w": 61,
+      "h": 13,
+      "text": "the work"
+    },
+    {
+      "w": 92,
+      "h": 13,
+      "text": "the evidence"
+    },
+    {
+      "w": 77,
+      "h": 13,
+      "text": "the resume"
+    },
+    {
+      "w": 8,
+      "h": 15,
+      "text": "↩"
+    },
+    {
+      "w": 148,
+      "h": 18,
+      "text": "awaiting approvalapproved"
+    },
+    {
+      "w": 261,
+      "h": 15,
+      "text": "macro-f1 0.98 — 96-sample gate"
+    },
+    {
+      "w": 136,
+      "h": 15,
+      "text": "the case file ⟶"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "source"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "demo ↗"
+    },
+    {
+      "w": 136,
+      "h": 15,
+      "text": "the case file ⟶"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "source"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "demo ↗"
+    },
+    {
+      "w": 130,
+      "h": 15,
+      "text": "the live demo ↗"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "source"
+    },
+    {
+      "w": 301,
+      "h": 18,
+      "text": "gzip this figure in your browser ⟶"
+    },
+    {
+      "w": 136,
+      "h": 15,
+      "text": "the case file ⟶"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "source"
+    },
+    {
+      "w": 52,
+      "h": 15,
+      "text": "demo ↗"
+    },
+    {
+      "w": 217,
+      "h": 15,
+      "text": "Master Inventory Pipeline"
+    },
+    {
+      "w": 78,
+      "h": 15,
+      "text": "PolicyBot"
+    },
+    {
+      "w": 174,
+      "h": 18,
+      "text": "aesh_1055@icloud.com"
+    },
+    {
+      "w": 52,
+      "h": 18,
+      "text": "resume"
+    },
+    {
+      "w": 52,
+      "h": 18,
+      "text": "github"
+    },
+    {
+      "w": 69,
+      "h": 18,
+      "text": "linkedin"
+    },
+    {
+      "w": 330,
+      "h": 29,
+      "text": "Email me — I read everything."
+    },
+    {
+      "w": 223,
+      "h": 18,
+      "text": "jobtracker — receipt 05 ⟶"
+    },
+    {
+      "w": 249,
+      "h": 18,
+      "text": "fast-mnist-nn — receipt 02 ⟶"
+    },
+    {
+      "w": 249,
+      "h": 18,
+      "text": "visual-assist — receipt 01 ⟶"
+    },
+    {
+      "w": 214,
+      "h": 18,
+      "text": "policybot — receipt 01 ⟶"
+    },
+    {
+      "w": 275,
+      "h": 18,
+      "text": "master-inventory — receipt 05 ⟶"
+    },
+    {
+      "w": 214,
+      "h": 18,
+      "text": "automl — the case file ⟶"
+    },
+    {
+      "w": 52,
+      "h": 18,
+      "text": "github"
+    },
+    {
+      "w": 69,
+      "h": 18,
+      "text": "linkedin"
+    },
+    {
+      "w": 43,
+      "h": 18,
+      "text": "email"
+    }
+  ],
+  "mobileHeroBlock": [
+    {
+      "text": "1",
+      "y": 331,
+      "h": 15
+    },
+    {
+      "text": "the capstone — agentic automl: sev",
+      "y": 506,
+      "h": 33
+    },
+    {
+      "text": "jobtracker",
+      "y": 554,
+      "h": 13
+    },
+    {
+      "text": "fast-mnist",
+      "y": 554,
+      "h": 13
+    },
+    {
+      "text": "visual-assist",
+      "y": 570,
+      "h": 13
+    },
+    {
+      "text": "skip to the work ↓",
+      "y": 619,
+      "h": 18
+    },
+    {
+      "text": "the work",
+      "y": 651,
+      "h": 13
+    },
+    {
+      "text": "the evidence",
+      "y": 651,
+      "h": 13
+    },
+    {
+      "text": "the resume",
+      "y": 666,
+      "h": 13
+    },
+    {
+      "text": "↩",
+      "y": 753,
+      "h": 15
+    }
+  ],
+  "overflow": [
+    {
+      "w": 320,
+      "docW": 320,
+      "scrollW": 320,
+      "overflowing": []
+    },
+    {
+      "w": 360,
+      "docW": 360,
+      "scrollW": 360,
+      "overflowing": [
+        {
+          "tag": "g[object SVGAnimatedString]",
+          "right": 362,
+          "left": 259,
+          "text": "google meet"
+        },
+        {
+          "tag": "rect[object SVGAnimatedString]",
+          "right": 362,
+          "left": 259,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "w": 390,
+      "docW": 390,
+      "scrollW": 390,
+      "overflowing": [
+        {
+          "tag": "g[object SVGAnimatedString]",
+          "right": 394,
+          "left": 281,
+          "text": "google meet"
+        },
+        {
+          "tag": "rect[object SVGAnimatedString]",
+          "right": 394,
+          "left": 281,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "w": 414,
+      "docW": 414,
+      "scrollW": 414,
+      "overflowing": [
+        {
+          "tag": "g[object SVGAnimatedString]",
+          "right": 420,
+          "left": 299,
+          "text": "google meet"
+        },
+        {
+          "tag": "rect[object SVGAnimatedString]",
+          "right": 420,
+          "left": 299,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "w": 768,
+      "docW": 768,
+      "scrollW": 768,
+      "overflowing": []
+    },
+    {
+      "w": 1024,
+      "docW": 1024,
+      "scrollW": 1024,
+      "overflowing": [
+        {
+          "tag": "path[object SVGAnimatedString]",
+          "right": 1060,
+          "left": 180,
+          "text": ""
+        },
+        {
+          "tag": "path[object SVGAnimatedString]",
+          "right": 1060,
+          "left": 179,
+          "text": ""
+        },
+        {
+          "tag": "path[object SVGAnimatedString]",
+          "right": 1060,
+          "left": 180,
+          "text": ""
+        }
+      ]
+    },
+    {
+      "w": 1280,
+      "docW": 1280,
+      "scrollW": 1280,
+      "overflowing": []
+    },
+    {
+      "w": 1440,
+      "docW": 1440,
+      "scrollW": 1440,
+      "overflowing": []
+    },
+    {
+      "w": 1920,
+      "docW": 1920,
+      "scrollW": 1920,
+      "overflowing": []
+    },
+    {
+      "w": 2560,
+      "docW": 2560,
+      "scrollW": 2560,
+      "overflowing": []
+    }
+  ]
+}

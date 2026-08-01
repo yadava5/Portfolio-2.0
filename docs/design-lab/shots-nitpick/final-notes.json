@@ -1,0 +1,157 @@
+[
+  {
+    "k": "reducedMotion=false.paragraphs",
+    "v": [
+      {
+        "t": "auditable instead of opaque",
+        "opacity": "1",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 755
+      },
+      {
+        "t": "retrieval and MCP",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 755
+      },
+      {
+        "t": "containerized execution",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 755
+      },
+      {
+        "t": "browser-level check",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 755
+      },
+      {
+        "t": "alter workflow state",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 755
+      }
+    ]
+  },
+  {
+    "k": "reducedMotion=true.paragraphs",
+    "v": [
+      {
+        "t": "auditable instead of opaque",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 450
+      },
+      {
+        "t": "retrieval and MCP",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 450
+      },
+      {
+        "t": "containerized execution",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 450
+      },
+      {
+        "t": "browser-level check",
+        "opacity": "0",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 450
+      },
+      {
+        "t": "alter workflow state",
+        "opacity": "1",
+        "visibility": "visible",
+        "transform": "none",
+        "kidOpacity": null,
+        "inViewport": true,
+        "top": 450
+      }
+    ]
+  },
+  {
+    "k": "motionToggle.real",
+    "v": {
+      "before": {
+        "label": "motion: on",
+        "aria": "false",
+        "html": null,
+        "cls": "fraunces_9c23ab57-module__NLVp-W__variable newsreader_f83ec0"
+      },
+      "after": {
+        "label": "motion: off",
+        "aria": "true",
+        "html": null,
+        "bodyData": "{}",
+        "ls": "[[\"motion-off\",\"1\"]]"
+      }
+    }
+  },
+  {
+    "k": "motionToggle.persisted",
+    "v": {
+      "label": "motion: off",
+      "html": null
+    }
+  },
+  {
+    "k": "print.jobtracker.detail",
+    "v": {
+      "header": {
+        "display": "block",
+        "position": "static",
+        "h": 36,
+        "visible": true
+      },
+      "footer": {
+        "display": "block",
+        "position": "static",
+        "h": 103,
+        "visible": true
+      },
+      "railNav": null,
+      "bodyBg": "rgb(255, 255, 255)",
+      "htmlBg": "rgb(255, 255, 255)",
+      "printRules": 1
+    }
+  },
+  {
+    "k": "redactionBox",
+    "v": {
+      "top": 3703,
+      "h": 139,
+      "left": 892,
+      "w": 384
+    }
+  }
+]

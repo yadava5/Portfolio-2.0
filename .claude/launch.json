@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "static-export",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tests/playwright/static-server.mjs"],
+      "port": 3000
+    },
+    {
+      "name": "next-dev",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "--webpack",
+        "--port",
+        "3100"
+      ],
+      "port": 3100
+    }
+  ]
+}

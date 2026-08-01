@@ -1,0 +1,1533 @@
+{
+  "tag": "before",
+  "base": "http://127.0.0.1:3300",
+  "at": "2026-07-25T07:11:06.665Z",
+  "runs": [
+    {
+      "width": "390",
+      "scene": "applied",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-applied]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 250",
+          "clientWidth": 330,
+          "scale": 0.645,
+          "minRendered": 8.38,
+          "texts": [
+            {
+              "text": "inbox",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "rules",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "e5 similarity",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "setfit — gated",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "core-positive 65",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "edge-noise 17",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "historical-miss 8",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "core-negative 6",
+              "authored": 13,
+              "rendered": 8.38
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 8.38
+    },
+    {
+      "width": "390",
+      "scene": "glyph",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 190",
+          "clientWidth": 330,
+          "scale": 0.825,
+          "minRendered": 10.73,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 10.73
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 10.73
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 10.73
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 10.73
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 10.73
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 10.73
+            }
+          ],
+          "overflows": [
+            "dot 256 kernel — committed bench"
+          ],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 210,
+          "scale": 1,
+          "minRendered": 11,
+          "texts": [
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11
+            }
+          ],
+          "overflows": [],
+          "collisions": [
+            "0 × 1",
+            "1 × 2",
+            "2 × 3",
+            "3 × 4",
+            "4 × 5",
+            "5 × 6",
+            "6 × 7",
+            "7 × 8",
+            "8 × 9"
+          ]
+        }
+      ],
+      "minRendered": 10.73
+    },
+    {
+      "width": "390",
+      "scene": "jetpack",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-jetpack]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 240",
+          "clientWidth": 330,
+          "scale": 0.645,
+          "minRendered": 8.38,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "virtual threads",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "1f 8b",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "one gzip member",
+              "authored": 13,
+              "rendered": 8.38
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 8.38,
+      "gzipButton": {
+        "w": 301,
+        "h": 18
+      }
+    },
+    {
+      "width": "390",
+      "scene": "cadence",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-cadence]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 216",
+          "clientWidth": 330,
+          "scale": 0.645,
+          "minRendered": 7.09,
+          "texts": [
+            {
+              "text": "typed — an illustrative sentence",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "“",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "lunch",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "with",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "sam",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "and",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "priya",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "next tuesday at noon",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "—",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "add a meet",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "”",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "chrono-node + compromise",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "tue · 12:00 — lunch",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "invite — sam · priya",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "google meet",
+              "authored": 13,
+              "rendered": 8.38
+            },
+            {
+              "text": "m",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "w",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "f",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 7.09
+            },
+            {
+              "text": "12:00",
+              "authored": 11,
+              "rendered": 7.09
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 7.09
+    },
+    {
+      "width": "390",
+      "scene": "applied",
+      "surface": "plate",
+      "url": "/projects/jobtracker/",
+      "root": "#project-visual [data-scene-applied]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 250",
+          "clientWidth": 280.9,
+          "scale": 0.549,
+          "minRendered": 7.13,
+          "texts": [
+            {
+              "text": "inbox",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "rules",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "e5 similarity",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "setfit — gated",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "core-positive 65",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "edge-noise 17",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "historical-miss 8",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "core-negative 6",
+              "authored": 13,
+              "rendered": 7.13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 7.13
+    },
+    {
+      "width": "390",
+      "scene": "glyph",
+      "surface": "plate",
+      "url": "/projects/fast-mnist-nn/",
+      "root": "#project-visual [data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 190",
+          "clientWidth": 280.9,
+          "scale": 0.702,
+          "minRendered": 9.13,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 9.13
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 9.13
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 9.13
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 9.13
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 9.13
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 9.13
+            }
+          ],
+          "overflows": [
+            "dot 256 kernel — committed bench"
+          ],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 211.3,
+          "scale": 1.006,
+          "minRendered": 11.07,
+          "texts": [
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11.07
+            }
+          ],
+          "overflows": [],
+          "collisions": [
+            "0 × 1",
+            "1 × 2",
+            "2 × 3",
+            "3 × 4",
+            "4 × 5",
+            "5 × 6",
+            "6 × 7",
+            "7 × 8",
+            "8 × 9"
+          ]
+        }
+      ],
+      "minRendered": 9.13
+    },
+    {
+      "width": "390",
+      "scene": "cadence",
+      "surface": "plate",
+      "url": "/projects/taskflow-calendar/",
+      "root": "#project-visual [data-scene-cadence]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 216",
+          "clientWidth": 280.8,
+          "scale": 0.548,
+          "minRendered": 6.03,
+          "texts": [
+            {
+              "text": "typed — an illustrative sentence",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "“",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "lunch",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "with",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "sam",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "and",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "priya",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "next tuesday at noon",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "—",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "add a meet",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "”",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "chrono-node + compromise",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "tue · 12:00 — lunch",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "invite — sam · priya",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "google meet",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "m",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "w",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "f",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "12:00",
+              "authored": 11,
+              "rendered": 6.03
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 6.03
+    },
+    {
+      "width": "390",
+      "scene": "automl-echo",
+      "surface": "plate",
+      "url": "/projects/automl/",
+      "root": "#project-visual [data-scene-automl-echo]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 206",
+          "clientWidth": 280.8,
+          "scale": 0.548,
+          "minRendered": 6.03,
+          "texts": [
+            {
+              "text": "7-phase lifecycle · langgraph + ",
+              "authored": 11,
+              "rendered": 6.03
+            },
+            {
+              "text": "1.0 ingest",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "2.0 explore",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "3.0 preprocess",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "4.0 engineer",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "5.0 train",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "6.0 evaluate",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "the human gate — go / no-go",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "7.0 deploy",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "generated actions hold at the ap",
+              "authored": 13,
+              "rendered": 7.13
+            },
+            {
+              "text": "until a human says go",
+              "authored": 13,
+              "rendered": 7.13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 6.03
+    },
+    {
+      "width": "1440",
+      "scene": "applied",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-applied]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 250",
+          "clientWidth": 512,
+          "scale": 1,
+          "minRendered": 13,
+          "texts": [
+            {
+              "text": "inbox",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "rules",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "e5 similarity",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "setfit — gated",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "core-positive 65",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "edge-noise 17",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "historical-miss 8",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "core-negative 6",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 13
+    },
+    {
+      "width": "1440",
+      "scene": "glyph",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 190",
+          "clientWidth": 400,
+          "scale": 1,
+          "minRendered": 13,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [
+            "dot 256 kernel — committed bench"
+          ],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 210,
+          "scale": 1,
+          "minRendered": 11,
+          "texts": [
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11
+            }
+          ],
+          "overflows": [],
+          "collisions": [
+            "0 × 1",
+            "1 × 2",
+            "2 × 3",
+            "3 × 4",
+            "4 × 5",
+            "5 × 6",
+            "6 × 7",
+            "7 × 8",
+            "8 × 9"
+          ]
+        }
+      ],
+      "minRendered": 11
+    },
+    {
+      "width": "1440",
+      "scene": "jetpack",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-jetpack]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 240",
+          "clientWidth": 512,
+          "scale": 1,
+          "minRendered": 13,
+          "texts": [
+            {
+              "text": "input",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "virtual threads",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "1f 8b",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "one gzip member",
+              "authored": 13,
+              "rendered": 13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 13,
+      "gzipButton": {
+        "w": 301,
+        "h": 18
+      }
+    },
+    {
+      "width": "1440",
+      "scene": "cadence",
+      "surface": "row",
+      "url": "/",
+      "root": "[data-scene-cadence]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 216",
+          "clientWidth": 512,
+          "scale": 1,
+          "minRendered": 11,
+          "texts": [
+            {
+              "text": "typed — an illustrative sentence",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "“",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "lunch",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "with",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "sam",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "and",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "priya",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "next tuesday at noon",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "—",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "add a meet",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "”",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "chrono-node + compromise",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "tue · 12:00 — lunch",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "invite — sam · priya",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "google meet",
+              "authored": 13,
+              "rendered": 13
+            },
+            {
+              "text": "m",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "w",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "f",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 11
+            },
+            {
+              "text": "12:00",
+              "authored": 11,
+              "rendered": 11
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 11
+    },
+    {
+      "width": "1440",
+      "scene": "applied",
+      "surface": "plate",
+      "url": "/projects/jobtracker/",
+      "root": "#project-visual [data-scene-applied]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 250",
+          "clientWidth": 399.3,
+          "scale": 0.78,
+          "minRendered": 10.14,
+          "texts": [
+            {
+              "text": "inbox",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "rules",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "e5 similarity",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "setfit — gated",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "core-positive 65",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "edge-noise 17",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "historical-miss 8",
+              "authored": 13,
+              "rendered": 10.14
+            },
+            {
+              "text": "core-negative 6",
+              "authored": 13,
+              "rendered": 10.14
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 10.14
+    },
+    {
+      "width": "1440",
+      "scene": "glyph",
+      "surface": "plate",
+      "url": "/projects/fast-mnist-nn/",
+      "root": "#project-visual [data-scene-glyph]",
+      "plates": [
+        {
+          "viewBox": "0 0 400 190",
+          "clientWidth": 399.3,
+          "scale": 0.998,
+          "minRendered": 12.98,
+          "texts": [
+            {
+              "text": "-O3 scalar",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "openmp + simd",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "0",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "1x",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "3.5x",
+              "authored": 13,
+              "rendered": 12.98
+            },
+            {
+              "text": "dot 256 kernel — committed bench",
+              "authored": 13,
+              "rendered": 12.98
+            }
+          ],
+          "overflows": [
+            "dot 256 kernel — committed bench"
+          ],
+          "collisions": []
+        },
+        {
+          "viewBox": "0 0 210 190",
+          "clientWidth": 211.3,
+          "scale": 1.006,
+          "minRendered": 11.07,
+          "texts": [
+            {
+              "text": "0",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "1",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "2",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "3",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "4",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "5",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "6",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "7",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "8",
+              "authored": 11,
+              "rendered": 11.07
+            },
+            {
+              "text": "9",
+              "authored": 11,
+              "rendered": 11.07
+            }
+          ],
+          "overflows": [],
+          "collisions": [
+            "0 × 1",
+            "1 × 2",
+            "2 × 3",
+            "3 × 4",
+            "4 × 5",
+            "5 × 6",
+            "6 × 7",
+            "7 × 8",
+            "8 × 9"
+          ]
+        }
+      ],
+      "minRendered": 11.07
+    },
+    {
+      "width": "1440",
+      "scene": "cadence",
+      "surface": "plate",
+      "url": "/projects/taskflow-calendar/",
+      "root": "#project-visual [data-scene-cadence]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 216",
+          "clientWidth": 399.2,
+          "scale": 0.78,
+          "minRendered": 8.58,
+          "texts": [
+            {
+              "text": "typed — an illustrative sentence",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "“",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "lunch",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "with",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "sam",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "and",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "priya",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "next tuesday at noon",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "—",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "add a meet",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "”",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "chrono-node + compromise",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "tue · 12:00 — lunch",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "invite — sam · priya",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "google meet",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "m",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "w",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "t",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "f",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "s",
+              "authored": 11,
+              "rendered": 8.58
+            },
+            {
+              "text": "12:00",
+              "authored": 11,
+              "rendered": 8.58
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 8.58
+    },
+    {
+      "width": "1440",
+      "scene": "automl-echo",
+      "surface": "plate",
+      "url": "/projects/automl/",
+      "root": "#project-visual [data-scene-automl-echo]",
+      "plates": [
+        {
+          "viewBox": "0 0 512 206",
+          "clientWidth": 399.1,
+          "scale": 0.78,
+          "minRendered": 8.57,
+          "texts": [
+            {
+              "text": "7-phase lifecycle · langgraph + ",
+              "authored": 11,
+              "rendered": 8.57
+            },
+            {
+              "text": "1.0 ingest",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "2.0 explore",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "3.0 preprocess",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "4.0 engineer",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "5.0 train",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "6.0 evaluate",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "the human gate — go / no-go",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "7.0 deploy",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "generated actions hold at the ap",
+              "authored": 13,
+              "rendered": 10.13
+            },
+            {
+              "text": "until a human says go",
+              "authored": 13,
+              "rendered": 10.13
+            }
+          ],
+          "overflows": [],
+          "collisions": []
+        }
+      ],
+      "minRendered": 8.57
+    }
+  ]
+}

@@ -1,0 +1,288 @@
+{
+  "print": {
+    "home": {
+      "lowContrastOnWhite": [],
+      "lowCount": 0,
+      "fixedBoxes": [],
+      "faded": 0,
+      "pdfBytes": 413860
+    },
+    "evidence": {
+      "lowContrastOnWhite": [],
+      "lowCount": 0,
+      "fixedBoxes": [],
+      "faded": 0,
+      "pdfBytes": 91885
+    },
+    "case-automl": {
+      "lowContrastOnWhite": [],
+      "lowCount": 0,
+      "fixedBoxes": [],
+      "faded": 0,
+      "pdfBytes": 1253442
+    },
+    "case-jobtracker": {
+      "lowContrastOnWhite": [],
+      "lowCount": 0,
+      "fixedBoxes": [],
+      "faded": 0,
+      "pdfBytes": 181071
+    },
+    "notfound": {
+      "lowContrastOnWhite": [],
+      "lowCount": 0,
+      "fixedBoxes": [],
+      "faded": 0,
+      "pdfBytes": 118355
+    }
+  },
+  "evidence": {
+    "entries": 11,
+    "receipt": 11,
+    "arguedIn": 11,
+    "arrowsExternal": 8,
+    "arrowsDeeper": 14,
+    "sameOriginExternalArrow": 0,
+    "noDate": 0,
+    "selfHosted": 3,
+    "selfAuthored": 2,
+    "h1": "The evidence index",
+    "glyphTouching": false
+  },
+  "caseFiles": {
+    "jobtracker": {
+      "legend": true,
+      "badge": true,
+      "h1": "Applied",
+      "title": "Applied Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "automl": {
+      "legend": false,
+      "badge": false,
+      "h1": "Agentic AutoML Platform",
+      "title": "Agentic AutoML Platform Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "visual-assist": {
+      "legend": false,
+      "badge": false,
+      "h1": "Visual Assist",
+      "title": "Visual Assist Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "taskflow-calendar": {
+      "legend": false,
+      "badge": false,
+      "h1": "Cadence",
+      "title": "Cadence Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "master-inventory": {
+      "legend": true,
+      "badge": true,
+      "h1": "Master Inventory Pipeline",
+      "title": "Master Inventory Pipeline Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "policybot": {
+      "legend": false,
+      "badge": false,
+      "h1": "PolicyBot",
+      "title": "PolicyBot Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    },
+    "fast-mnist-nn": {
+      "legend": false,
+      "badge": false,
+      "h1": "Glyph",
+      "title": "Glyph Case Study | Ayush Yadav",
+      "overflow": false,
+      "errors": []
+    }
+  },
+  "notFound": {
+    "title": "Not found | Ayush Yadav",
+    "h1": "Page Not Found",
+    "homeHref": [
+      {
+        "t": "Skip to main content",
+        "href": "#main-content"
+      },
+      {
+        "t": "",
+        "href": null
+      },
+      {
+        "t": "ayush yadav",
+        "href": "/"
+      },
+      {
+        "t": "the work",
+        "href": "/#work"
+      },
+      {
+        "t": "experience",
+        "href": "/#path"
+      },
+      {
+        "t": "contact",
+        "href": "/#gate"
+      },
+      {
+        "t": "github",
+        "href": "https://github.com/yadava5"
+      },
+      {
+        "t": "motion: on",
+        "href": null
+      },
+      {
+        "t": "",
+        "href": "mailto:aesh_1055@icloud.com"
+      },
+      {
+        "t": "resume",
+        "href": "/resume.pdf"
+      },
+      {
+        "t": "Home",
+        "href": "/"
+      },
+      {
+        "t": "About",
+        "href": "/#who"
+      },
+      {
+        "t": "The work",
+        "href": "/#work"
+      },
+      {
+        "t": "Experience",
+        "href": "/#path"
+      },
+      {
+        "t": "Evidence",
+        "href": "/evidence/"
+      },
+      {
+        "t": "Contact",
+        "href": "/#gate"
+      },
+      {
+        "t": "Return to Home",
+        "href": "/"
+      },
+      {
+        "t": "contact me",
+        "href": "/#gate"
+      }
+    ]
+  },
+  "glyph_desk": {
+    "labels": [
+      "-O3 scalar",
+      "openmp + simd",
+      "0",
+      "1x",
+      "3.5x",
+      "dot 256 kernel — committed benchmarks"
+    ],
+    "hasStages": []
+  },
+  "registry_desk": {
+    "text": "01 arrival 02 who 03 the path 04 automl 05 the work 06 how i work 07 the gate ¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12 summer 2026 Scroll. It's all real.1 Ayush Yadav — software engineer · Cincinnati, Ohio the capstone — agentic automl:",
+    "approveAria": "Approve run no. 041",
+    "redaction": true
+  },
+  "stamp_desk": {
+    "min": {
+      "t": "run no. 041",
+      "px": 0
+    },
+    "all": [
+      {
+        "t": "run no. 041",
+        "px": 0
+      },
+      {
+        "t": "press here to sign",
+        "px": 0
+      },
+      {
+        "t": "APPROVED",
+        "px": 0
+      },
+      {
+        "t": "· human in the loop ·",
+        "px": 0
+      },
+      {
+        "t": "run no. 041 ·",
+        "px": 0
+      }
+    ],
+    "dashed": [],
+    "scale": 0
+  },
+  "glyph_mob": {
+    "labels": [
+      "-O3 scalar",
+      "openmp + simd",
+      "0",
+      "1x",
+      "3.5x",
+      "dot 256 kernel — committed benchmarks"
+    ],
+    "hasStages": []
+  },
+  "registry_mob": {
+    "text": "¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12 Scroll. It's all real.1 Ayush Yadav — software engineer · Cincinnati, Ohio the capstone — agentic automl: seven gated phases ⟶ the resume ⟶ scroll — the story starts here 1. every claim on this p",
+    "approveAria": "Approve run no. 041",
+    "redaction": true
+  },
+  "stamp_mob": {
+    "min": {
+      "t": "run no. 041 ·",
+      "px": 11.46
+    },
+    "all": [
+      {
+        "t": "run no. 041 ·",
+        "px": 11.46
+      },
+      {
+        "t": "press here to sign",
+        "px": 12.5
+      },
+      {
+        "t": "· human in the loop ·",
+        "px": 12.5
+      },
+      {
+        "t": "run no. 041",
+        "px": 13.54
+      },
+      {
+        "t": "APPROVED",
+        "px": 41.67
+      }
+    ],
+    "dashed": [],
+    "scale": 1.042
+  },
+  "capExpired": {
+    "tier": "core",
+    "motionOff": false,
+    "capLeft": null
+  },
+  "capNoExpiry": {
+    "tier": "print"
+  }
+}

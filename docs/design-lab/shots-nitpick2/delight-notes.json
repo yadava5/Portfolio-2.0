@@ -1,0 +1,260 @@
+[
+  {
+    "k": "dayArc.samples",
+    "v": [
+      {
+        "y": 0,
+        "sha": "ed75d2bebdf1",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [],
+        "chapter": null
+      },
+      {
+        "y": 1400,
+        "sha": "cb07bda7c0e9",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.968 0.012 88.2)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 2800,
+        "sha": "10c43d645354",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.952 0.021 87.4)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 4200,
+        "sha": "475e98ad358f",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.923 0.039 83.8)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 5600,
+        "sha": "475e98ad358f",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.923 0.039 83.8)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 7000,
+        "sha": "475e98ad358f",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.923 0.039 83.8)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 8400,
+        "sha": "9995e8f07e55",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.322 0.018 55.7)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      },
+      {
+        "y": 9600,
+        "sha": "639f6e0e9f45",
+        "vars": {
+          "--color-canvas": "#faf6ef"
+        },
+        "grounds": [
+          {
+            "tag": "HEADER",
+            "cls": "site-header fixed top-0 right-0 left-0 z-50 ",
+            "bg": "oklch(0.274 0.012 55.9)",
+            "op": "1"
+          }
+        ],
+        "chapter": null
+      }
+    ]
+  },
+  {
+    "k": "dayArc.distinctGrounds",
+    "v": 6
+  },
+  {
+    "k": "back.target",
+    "v": {
+      "target": {
+        "text": "the case file ⟶",
+        "href": "/projects/jobtracker/"
+      },
+      "before": 5200
+    }
+  },
+  {
+    "k": "back.restore",
+    "v": {
+      "before": 5200,
+      "url": "http://localhost:3600/projects/jobtracker/",
+      "midScroll": 0,
+      "after": 5200,
+      "delta": 0
+    }
+  },
+  {
+    "k": "automl.posterCopies",
+    "v": [
+      {
+        "docTop": 4891,
+        "w": 1400,
+        "h": 1050,
+        "opacity": "1",
+        "chain": [
+          "SPAN.relative.block[block/relative/op:1/clip:hidden]",
+          "SPAN.plate-paper.border-ink/40[block/static/op:1/clip:visible]",
+          "SPAN.block[block/static/op:1/clip:visible]",
+          "SPAN.grid.gap-x-10[grid/static/op:1/clip:visible]",
+          "BUTTON.group.block[block/static/op:1/clip:visible]",
+          "DIV.grid.gap-x-10[grid/static/op:1/clip:visible]"
+        ]
+      },
+      {
+        "docTop": 4890,
+        "w": 1413,
+        "h": 1060,
+        "opacity": "1",
+        "chain": [
+          "SPAN.relative.block[block/relative/op:1/clip:hidden]",
+          "SPAN.plate-paper.border-ink/40[block/static/op:1/clip:visible]",
+          "SPAN.block[block/static/op:1/clip:visible]",
+          "SPAN.grid.gap-x-10[grid/static/op:1/clip:visible]",
+          "BUTTON.group.block[block/static/op:1/clip:visible]",
+          "DIV.grid.gap-x-10[grid/static/op:1/clip:visible]"
+        ]
+      },
+      {
+        "docTop": 4974,
+        "w": 1422,
+        "h": 1066,
+        "opacity": "1",
+        "chain": [
+          "SPAN.relative.block[block/relative/op:1/clip:hidden]",
+          "SPAN.plate-paper.border-ink/40[block/static/op:1/clip:visible]",
+          "SPAN.block[block/static/op:1/clip:visible]",
+          "SPAN.grid.gap-x-10[grid/static/op:1/clip:visible]",
+          "BUTTON.group.block[block/static/op:1/clip:visible]",
+          "DIV.grid.gap-x-10[grid/static/op:1/clip:visible]"
+        ]
+      }
+    ]
+  },
+  {
+    "k": "stamp.focusRing",
+    "v": {
+      "ring": "rgb(38, 35, 28)",
+      "w": "2px",
+      "off": "3px"
+    }
+  },
+  {
+    "k": "delight.railDepths",
+    "v": [
+      {
+        "y": 0,
+        "text": "01 arrival 02 who 03 the path 04 automl 05 the work 06 how i work 07 the gate",
+        "marks": 0,
+        "box": [
+          16,
+          356,
+          33,
+          187
+        ],
+        "current": "01arrival"
+      },
+      {
+        "y": 3000,
+        "text": "01 arrival 02 who 03 the path 04 automl 05 the work 06 how i work 07 the gate",
+        "marks": 0,
+        "box": [
+          16,
+          356,
+          33,
+          187
+        ],
+        "current": "04automl"
+      },
+      {
+        "y": 6000,
+        "text": "01 arrival 02 who 03 the path 04 automl 05 the work 06 how i work 07 the gate",
+        "marks": 0,
+        "box": [
+          16,
+          356,
+          33,
+          187
+        ],
+        "current": "05the work"
+      },
+      {
+        "y": 9400,
+        "text": "01 arrival 02 who 03 the path 04 automl 05 the work 06 how i work 07 the gate",
+        "marks": 0,
+        "box": [
+          16,
+          356,
+          33,
+          187
+        ],
+        "current": "07the gate"
+      }
+    ]
+  }
+]

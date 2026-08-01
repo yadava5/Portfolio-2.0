@@ -1,0 +1,48 @@
+{
+  "lightFieldLayers": 3,
+  "folioHairline": [
+    {
+      "chapter": "01",
+      "composedAlpha": 0.7,
+      "ratio": 3.32
+    },
+    {
+      "chapter": "02",
+      "composedAlpha": 0.7,
+      "ratio": 3.36
+    },
+    {
+      "chapter": "03",
+      "composedAlpha": 0.7,
+      "ratio": 3.31
+    },
+    {
+      "chapter": "04",
+      "composedAlpha": 0.7,
+      "ratio": 3.23
+    },
+    {
+      "chapter": "05",
+      "composedAlpha": 0.8,
+      "ratio": 3.79
+    },
+    {
+      "chapter": "06",
+      "composedAlpha": 0.49,
+      "ratio": 3.72
+    },
+    {
+      "chapter": "07",
+      "composedAlpha": 0.49,
+      "ratio": 4.26
+    }
+  ],
+  "worstFolioRatio": 3.23,
+  "editorialRows": 4,
+  "stampPresent": true,
+  "breatheNodes": 5,
+  "cssDurations": {
+    "html:not([data-motion-off]) [data-stamp].is-inking .stamp-plate": "0.75s ease 0s 1 normal both running stamp-press",
+    "html:not([data-motion-off]) [data-stamp].is-inking .stamp-inked": "0.72s cubic-bezier(0.4, 0, 0.4, 1) 0s 1 normal both running stamp-ink-in"
+  }
+}

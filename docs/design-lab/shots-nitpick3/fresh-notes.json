@@ -1,0 +1,339 @@
+[
+ {
+  "k": "copyAudit",
+  "v": [
+   {
+    "route": "/",
+    "title": "Ayush Yadav | Software, Data, and ML Engineering",
+    "desc": "Ayush Yadav’s portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
+    "h1": [
+     "Scroll.It’s all real.1"
+    ],
+    "nHeads": 15,
+    "jumps": [],
+    "ambiguous": [
+     {
+      "text": "the work",
+      "n": 2,
+      "hrefs": [
+       "/#work",
+       "#work"
+      ]
+     },
+     {
+      "text": "the case file ⟶",
+      "n": 3,
+      "hrefs": [
+       "/projects/jobtracker/",
+       "/projects/fast-mnist-nn/",
+       "/projects/taskflow-calendar/"
+      ]
+     },
+     {
+      "text": "system card ↗",
+      "n": 2,
+      "hrefs": [
+       "https://jetpack-compress.vercel.app/system-card",
+       "https://getlifequest.vercel.app/system-card"
+      ]
+     }
+    ],
+    "nLinks": 60,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/evidence/",
+    "title": "The Evidence Index | Ayush Yadav",
+    "desc": "The master ledger behind the portfolio: every claim, its source, how it was verified, its visibility, and its privacy boundary.",
+    "h1": [
+     "The evidence index"
+    ],
+    "nHeads": 12,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 30,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/no-such-page/",
+    "title": "Not on file | Ayush Yadav",
+    "desc": "That page is not on file. The seven chapters, the case files, and the evidence index are.",
+    "h1": [
+     "Not on file"
+    ],
+    "nHeads": 2,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 15,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/projects/automl/",
+    "title": "Agentic AutoML Platform Case Study | Ayush Yadav",
+    "desc": "A private, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+    "h1": [
+     "Agentic AutoML Platform"
+    ],
+    "nHeads": 15,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 26,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34",
+     "agentic-automl-stack-proof.png nat=1376 disp=462"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/projects/fast-mnist-nn/",
+    "title": "Glyph Case Study | Ayush Yadav",
+    "desc": "A neural network for MNIST with nothing under it but C++. SIMD matrix kernels, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
+    "h1": [
+     "Glyph"
+    ],
+    "nHeads": 14,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 29,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34",
+     "mnist.webp nat=1376 disp=462"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": [
+     "yadava5/fast-mnist-nn @ c6e5c0b",
+     "fast-mnist-nn @ c6e5c0b · README.m",
+     "fast-mnist-nn @ c6e5c0b · BENCHMAR",
+     "bench_summary.csv",
+     "fast-mnist-nn @ c6e5c0b · benchmar",
+     "bench-20251226-154121-native.json",
+     "fast-mnist-nn @ c6e5c0b · BENCHMAR",
+     "Source code",
+     "v1.0.0 release",
+     "Benchmark evidence"
+    ]
+   },
+   {
+    "route": "/projects/jobtracker/",
+    "title": "Applied Case Study | Ayush Yadav",
+    "desc": "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It shipped twice: first as a native macOS app, now as a hosted web app — and the two share one backend package.",
+    "h1": [
+     "Applied"
+    ],
+    "nHeads": 16,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 47,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": [
+     "yadava5/applied @ 36a2f54 · integr",
+     "applied @ 36a2f54 · cloud/gmail_oa",
+     "applied @ 36a2f54 · tests/test_gma",
+     "applied @ 36a2f54 · docs/ML_STRATE",
+     "applied @ 36a2f54 · cloud/gmail_cl",
+     "applied @ 36a2f54 · backend/tests",
+     "applied @ 36a2f54 · baseline_hybri",
+     "applied @ 36a2f54 · apps/macos",
+     "applied @ 36a2f54 · apps/web/app/(",
+     "applied @ 36a2f54 · cloud/applicat",
+     "applied @ 36a2f54 · database/conne",
+     "applied @ 36a2f54 · c5_force_user_",
+     "applied @ 36a2f54 · tests/test_rls",
+     "applied @ 36a2f54 · classifier/hyb",
+     "applied @ 36a2f54 · tests/test_mai",
+     "applied @ 36a2f54 · ml/browser/exp",
+     "README — the desktop-era record",
+     "Architecture docs",
+     "ML strategy and evaluation gates",
+     "Backend test suite",
+     "Web app source"
+    ]
+   },
+   {
+    "route": "/projects/master-inventory/",
+    "title": "Master Inventory Pipeline Case Study | Ayush Yadav",
+    "desc": "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
+    "h1": [
+     "Master Inventory Pipeline"
+    ],
+    "nHeads": 15,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 20,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34",
+     "pipeline-architecture.svg nat=1376 disp=464",
+     "pipeline-architecture.svg nat=1376 disp=462",
+     "master-inventory-proof.svg nat=1280 disp=462"
+    ],
+    "imgEager": 1,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/projects/policybot/",
+    "title": "PolicyBot Case Study | Ayush Yadav",
+    "desc": "Private proof from institutional policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
+    "h1": [
+     "PolicyBot"
+    ],
+    "nHeads": 16,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 21,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34",
+     "policybot-architecture.svg nat=1376 disp=464",
+     "policybot-architecture.svg nat=1376 disp=462",
+     "policybot-validation-proof.svg nat=1280 disp=462"
+    ],
+    "imgEager": 1,
+    "newTabNoWarn": []
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "title": "Cadence Case Study | Ayush Yadav",
+    "desc": "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found seven of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
+    "h1": [
+     "Cadence"
+    ],
+    "nHeads": 15,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 44,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34"
+    ],
+    "imgEager": 0,
+    "newTabNoWarn": [
+     "yadava5/cadence @ 54c79e0",
+     "taskflow-calendar @ 69a59e7",
+     "taskflow-calendar @ 69a59e7",
+     "taskflow-calendar @ 69a59e7",
+     "lib/services/TaskService.ts @ 54c7",
+     "lib/services/__tests__ @ 54c79e0",
+     "0002_enable_rls.sql @ 54c79e0",
+     "lib/config/rlsContext.ts @ 54c79e0",
+     "lib/config/database.ts @ 54c79e0",
+     "lib/__tests__/rls.postgres.test.ts",
+     "0001_tags_add_userid.sql @ 54c79e0",
+     "prisma/schema.prisma @ 54c79e0",
+     "lib/middleware/index.ts @ 54c79e0",
+     "middleware/__tests__/index.test.ts",
+     "server-handlers/upload/index.ts @ ",
+     "server-handlers/account/index.ts @",
+     "taskflow-calendar @ 69a59e7",
+     "Source code",
+     "Row-level security migration"
+    ]
+   },
+   {
+    "route": "/projects/visual-assist/",
+    "title": "Visual Assist Case Study | Ayush Yadav",
+    "desc": "An iOS accessibility app that meets the room before its user does. LiDAR finds the obstacles, Vision reads the text, haptics and speech carry the answer — and the processing stays on the device.",
+    "h1": [
+     "Visual Assist"
+    ],
+    "nHeads": 13,
+    "jumps": [],
+    "ambiguous": [],
+    "nLinks": 24,
+    "imgNoAlt": [],
+    "imgOversized": [
+     "ayush-yadav-avatar-96.webp nat=96 disp=34",
+     "visual-assist-architecture.svg nat=1376 disp=464"
+    ],
+    "imgEager": 1,
+    "newTabNoWarn": [
+     "yadava5/VisualAssist @ 22ebdaa",
+     "VisualAssist @ 22ebdaa · VisualAss",
+     "VisualAssist @ 22ebdaa · README.md",
+     "VisualAssist @ 22ebdaa · source",
+     "VisualAssist @ 22ebdaa · README.md",
+     "VisualAssist @ 22ebdaa · README.md",
+     "Source code",
+     "README beta and LiDAR requirements",
+     "XCTest source evidence"
+    ]
+   }
+  ]
+ },
+ {
+  "k": "print/",
+  "v": {
+   "bodyBg": "rgb(255, 255, 255)",
+   "bodyColor": "rgb(38, 35, 28)",
+   "headerDisplay": "block",
+   "hasPrintRule": true,
+   "urlsShown": true
+  }
+ },
+ {
+  "k": "print/projects/automl/",
+  "v": {
+   "bodyBg": "rgb(255, 255, 255)",
+   "bodyColor": "rgb(38, 35, 28)",
+   "headerDisplay": "block",
+   "hasPrintRule": true,
+   "urlsShown": true
+  }
+ },
+ {
+  "k": "mode.forced",
+  "v": {
+   "htmlColorScheme": "light dark",
+   "bodyBg": "rgb(0, 0, 0)",
+   "firstLinkRing": "2px solid rgba(0, 230, 255, 0.8)",
+   "motionAttr": null,
+   "over": 0
+  }
+ },
+ {
+  "k": "mode.reduced",
+  "v": {
+   "htmlColorScheme": "light",
+   "bodyBg": "rgb(250, 246, 239)",
+   "firstLinkRing": "2px solid rgb(38, 35, 28)",
+   "motionAttr": "",
+   "over": 0
+  }
+ },
+ {
+  "k": "mode.landscape",
+  "v": {
+   "htmlColorScheme": "light",
+   "bodyBg": "rgb(250, 246, 239)",
+   "firstLinkRing": "2px solid rgb(38, 35, 28)",
+   "motionAttr": null,
+   "over": 0
+  }
+ },
+ {
+  "k": "mode.landscape.gateOverflow",
+  "v": 0
+ }
+]

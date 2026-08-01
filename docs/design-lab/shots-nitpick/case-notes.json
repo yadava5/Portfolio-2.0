@@ -1,0 +1,354 @@
+[
+  {
+    "k": "tMarkers.cadence",
+    "v": [
+      {
+        "text": "t1",
+        "tag": "SUP",
+        "cls": "label-mono text-ink-secondary ml-1",
+        "fontSize": "13px",
+        "verticalAlign": "baseline",
+        "position": "relative",
+        "top": 2174,
+        "left": 299,
+        "w": 17,
+        "parentTail": "heduling should accept natural language instead of only rigid forms.t1",
+        "isLink": null
+      },
+      {
+        "text": "t2",
+        "tag": "SUP",
+        "cls": "label-mono text-ink-secondary ml-1",
+        "fontSize": "13px",
+        "verticalAlign": "baseline",
+        "position": "relative",
+        "top": 2316,
+        "left": 332,
+        "w": 17,
+        "parentTail": "Calendar behavior has many edge cases and regressions are expensive.t2",
+        "isLink": null
+      },
+      {
+        "text": "t3",
+        "tag": "SUP",
+        "cls": "label-mono text-ink-secondary ml-1",
+        "fontSize": "13px",
+        "verticalAlign": "baseline",
+        "position": "relative",
+        "top": 2602,
+        "left": 586,
+        "w": 17,
+        "parentTail": "e third argument is what makes the setting die with the transaction.t3",
+        "isLink": null
+      },
+      {
+        "text": "t4",
+        "tag": "SUP",
+        "cls": "label-mono text-ink-secondary ml-1",
+        "fontSize": "13px",
+        "verticalAlign": "baseline",
+        "position": "relative",
+        "top": 2837,
+        "left": 277,
+        "w": 17,
+        "parentTail": "es are applied after — and nothing in the app auto-applies the file.t4",
+        "isLink": null
+      }
+    ]
+  },
+  {
+    "k": "duplicatedDecks",
+    "v": [
+      {
+        "tag": "P",
+        "cls": "mt-[0.35em] max-w-[26ch] font-serif text-[length:calc(var(--text-chapt",
+        "text": "And how each piece was checked before I called it done. And how each piece was checked before I called it done.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 773,
+            "h": 126
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "mt-5 max-w-[34ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leadin",
+        "text": "Your inbox already knows where you applied. Your inbox already knows where you applied.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 462,
+            "h": 33
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "mt-5 max-w-[34ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leadin",
+        "text": "No frameworks. Just math, memory, and C++. No frameworks. Just math, memory, and C++.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 462,
+            "h": 66
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "mt-5 max-w-[34ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leadin",
+        "text": "One gzip stream. Every core writing it. One gzip stream. Every core writing it.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 462,
+            "h": 33
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "mt-5 max-w-[34ch] font-serif text-[clamp(1.15rem,1.8vw,1.5rem)] leadin",
+        "text": "A calendar and task app you drive in plain English. A calendar and task app you drive in plain English.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 462,
+            "h": 66
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "font-display text-chapter leading-[1.05] fraunces-display",
+        "text": "Make it learn. Make it learn.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 527,
+            "h": 67
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "font-display text-chapter leading-[1.05] fraunces-display",
+        "text": "Make it fast. Make it fast.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 527,
+            "h": 67
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "font-display text-chapter leading-[1.05] fraunces-wonk",
+        "text": "Make it honest. Make it honest.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 527,
+            "h": 67
+          }
+        ]
+      },
+      {
+        "tag": "P",
+        "cls": "",
+        "text": "Every pipeline I build ends with a human decision. Every pipeline I build ends with a human decision.",
+        "childCount": 2,
+        "childHTML": [
+          {
+            "tag": "SPAN",
+            "cls": "sr-only",
+            "ariaHidden": null,
+            "clip": "inset(50%)",
+            "pos": "absolute",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 1,
+            "h": 1
+          },
+          {
+            "tag": "SPAN",
+            "cls": "block",
+            "ariaHidden": "true",
+            "clip": "none",
+            "pos": "static",
+            "opacity": "1",
+            "visibility": "visible",
+            "w": 457,
+            "h": 79
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "k": "copyPaste.glyphDeck",
+    "v": {
+      "selectionText": "No frameworks. Just math, memory, and C++. No frameworks. Just math, memory, and C++.",
+      "innerText": "No frameworks. Just math, memory, and C++. No frameworks. Just math, memory, and C++.",
+      "textContent": "No frameworks. Just math, memory, and C++.No frameworks. Just math, memory, and C++."
+    }
+  },
+  {
+    "k": "case.jobtracker.height",
+    "v": "7230px = 8.03 viewports"
+  },
+  {
+    "k": "case.automl.height",
+    "v": "6897px = 7.66 viewports"
+  },
+  {
+    "k": "evidence.height",
+    "v": "3796px = 4.22 viewports"
+  }
+]

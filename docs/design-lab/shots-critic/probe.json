@@ -1,0 +1,1763 @@
+{
+  "typeCensus": [
+    {
+      "fontSize": "10px",
+      "family": "Fragment Mono",
+      "tracking": "0.4px",
+      "leading": "15px",
+      "transform": "none",
+      "count": 20,
+      "sample": "0"
+    },
+    {
+      "fontSize": "10px",
+      "family": "Fragment Mono",
+      "tracking": "3px",
+      "leading": "15px",
+      "transform": "none",
+      "count": 2,
+      "sample": "run no. 041 ·"
+    },
+    {
+      "fontSize": "11px",
+      "family": "Fragment Mono",
+      "tracking": "0.88px",
+      "leading": "15.4px",
+      "transform": "lowercase",
+      "count": 12,
+      "sample": "case files: jobtracker · fast-mnist · visual-assist"
+    },
+    {
+      "fontSize": "11px",
+      "family": "Fragment Mono",
+      "tracking": "1.5px",
+      "leading": "16.5px",
+      "transform": "none",
+      "count": 4,
+      "sample": "press here to sign"
+    },
+    {
+      "fontSize": "12px",
+      "family": "Fragment Mono",
+      "tracking": "0.6px",
+      "leading": "24px",
+      "transform": "lowercase",
+      "count": 1,
+      "sample": "n.b. — every project below opens into its own case file, sou"
+    },
+    {
+      "fontSize": "12.5px",
+      "family": "Fragment Mono",
+      "tracking": "0.5px",
+      "leading": "18.75px",
+      "transform": "none",
+      "count": 35,
+      "sample": "inbox"
+    },
+    {
+      "fontSize": "13px",
+      "family": "Fragment Mono",
+      "tracking": "0.65px",
+      "leading": "18.2px",
+      "transform": "lowercase",
+      "count": 132,
+      "sample": "ayush yadav"
+    },
+    {
+      "fontSize": "13px",
+      "family": "Fragment Mono",
+      "tracking": "0.65px",
+      "leading": "18.2px",
+      "transform": "none",
+      "count": 18,
+      "sample": "macro-f1 0.98 — 96-sample gate"
+    },
+    {
+      "fontSize": "13px",
+      "family": "Fragment Mono",
+      "tracking": "2px",
+      "leading": "19.5px",
+      "transform": "none",
+      "count": 2,
+      "sample": "run no. 041"
+    },
+    {
+      "fontSize": "15px",
+      "family": "Newsreader",
+      "tracking": "normal",
+      "leading": "24px",
+      "transform": "none",
+      "count": 1,
+      "sample": "1. the moment a human signs for a machine’s work. 2. the ste"
+    },
+    {
+      "fontSize": "16px",
+      "family": "ui-sans-serif",
+      "tracking": "normal",
+      "leading": "24px",
+      "transform": "none",
+      "count": 4,
+      "sample": "Skip to main content"
+    },
+    {
+      "fontSize": "18.144px",
+      "family": "Fragment Mono",
+      "tracking": "normal",
+      "leading": "18.144px",
+      "transform": "none",
+      "count": 1,
+      "sample": "1"
+    },
+    {
+      "fontSize": "19px",
+      "family": "Newsreader",
+      "tracking": "normal",
+      "leading": "31.35px",
+      "transform": "none",
+      "count": 7,
+      "sample": "I’m a recent computer-science graduate from Miami University"
+    },
+    {
+      "fontSize": "24px",
+      "family": "Fraunces",
+      "tracking": "normal",
+      "leading": "24px",
+      "transform": "none",
+      "count": 2,
+      "sample": "ap·prov·al"
+    },
+    {
+      "fontSize": "24px",
+      "family": "Fraunces",
+      "tracking": "normal",
+      "leading": "32px",
+      "transform": "none",
+      "count": 2,
+      "sample": "ITSM Data Integration Student Associate"
+    },
+    {
+      "fontSize": "24px",
+      "family": "Newsreader",
+      "tracking": "normal",
+      "leading": "33px",
+      "transform": "none",
+      "count": 14,
+      "sample": "Your inbox already knows where you applied."
+    },
+    {
+      "fontSize": "28.8px",
+      "family": "Newsreader",
+      "tracking": "normal",
+      "leading": "39.6px",
+      "transform": "none",
+      "count": 4,
+      "sample": "Every pipeline I build ends with a human decision."
+    },
+    {
+      "fontSize": "34.56px",
+      "family": "Fraunces",
+      "tracking": "normal",
+      "leading": "51.84px",
+      "transform": "none",
+      "count": 1,
+      "sample": "Email me — I read everything."
+    },
+    {
+      "fontSize": "38.4px",
+      "family": "Fraunces",
+      "tracking": "normal",
+      "leading": "48px",
+      "transform": "none",
+      "count": 4,
+      "sample": "Applied"
+    },
+    {
+      "fontSize": "40px",
+      "family": "Fragment Mono",
+      "tracking": "8px",
+      "leading": "60px",
+      "transform": "none",
+      "count": 2,
+      "sample": "APPROVED"
+    },
+    {
+      "fontSize": "64px",
+      "family": "Fraunces",
+      "tracking": "-0.96px",
+      "leading": "70.4px",
+      "transform": "none",
+      "count": 12,
+      "sample": "This"
+    },
+    {
+      "fontSize": "64px",
+      "family": "Newsreader",
+      "tracking": "-0.96px",
+      "leading": "76.8px",
+      "transform": "none",
+      "count": 15,
+      "sample": "And how each piece was checked before I called it done."
+    },
+    {
+      "fontSize": "64px",
+      "family": "Fraunces",
+      "tracking": "-0.96px",
+      "leading": "67.2px",
+      "transform": "none",
+      "count": 6,
+      "sample": "Make it learn."
+    },
+    {
+      "fontSize": "115.2px",
+      "family": "Fraunces",
+      "tracking": "-1.728px",
+      "leading": "109.44px",
+      "transform": "none",
+      "count": 1,
+      "sample": "Ayush Yadav"
+    },
+    {
+      "fontSize": "129.6px",
+      "family": "Fraunces",
+      "tracking": "-1.944px",
+      "leading": "127.008px",
+      "transform": "none",
+      "count": 2,
+      "sample": "Scroll."
+    },
+    {
+      "fontSize": "129.6px",
+      "family": "Newsreader",
+      "tracking": "-1.944px",
+      "leading": "127.008px",
+      "transform": "none",
+      "count": 1,
+      "sample": "real."
+    }
+  ],
+  "contrast": [
+    {
+      "ratio": 1,
+      "need": 3,
+      "px": 24,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "ap·prov·al"
+    },
+    {
+      "ratio": 1,
+      "need": 3,
+      "px": 24,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "approval"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "/ əˈpruː·vəl / · noun"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "/ əˈpruː·vəl / ·"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 15,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "1. the moment a human signs for a machine’s work. 2. the step I leave "
+    },
+    {
+      "ratio": 1,
+      "need": 3,
+      "px": 64,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "mess"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "Jun 2025 - May 2026"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "Miami University · Oxford, Ohio"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "jun 2025 —"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 19,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "The tickets arrive without shape. A million-plus service records, and "
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "1M+ operational records — high-volume python + sql transforms"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "the fix —"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 19,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "Python and SQL teach the records shape. The transforms feed OAS and Ta"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "oas/tableau reporting — dashboards across departments"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "the bot —"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 19,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "A chatbot in Slack takes the routine questions — wired to Workday, Ora"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "governed data access — workday · oracle · tableau apis"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "the assistant —"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 19,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "A second assistant reads policy and answers with its sources cited — a"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "19/20 cited-source sweep — PolicyBot, the policy assistant"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "aug 2022 - may 2026"
+    },
+    {
+      "ratio": 1,
+      "need": 3,
+      "px": 24,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "B.S. Computer Science"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 19,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "B.S. Computer Science, May 2026 — dean’s list, spring & fall 2025 — 3."
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "read the case file — Agentic AutoML Platform ⟶"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "1.0 ingest"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "2.0 explore"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "3.0 preprocess"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "4.0 engineer"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "5.0 train"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "6.0 evaluate"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(38, 35, 28)",
+      "text": "the human gate — go / no-go"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "7.0 deploy"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "fig. 4.0 — the 7-phase gated lifecycle, abridged."
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "run · model"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "status"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "038 · log-reg"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "approved"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "039 · random forest"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "approved"
+    },
+    {
+      "ratio": 1,
+      "need": 4.5,
+      "px": 13,
+      "opacity": 0,
+      "color": "rgb(92, 86, 74)",
+      "text": "040 · gbm"
+    }
+  ],
+  "deadSpace": {
+    "totalHeight": 10560,
+    "gaps": [
+      {
+        "fromY": 4072,
+        "toY": 5088,
+        "px": 1016
+      }
+    ],
+    "sections": [
+      {
+        "id": "arrival",
+        "top": 0,
+        "h": 900
+      },
+      {
+        "id": "who",
+        "top": 900,
+        "h": 850
+      },
+      {
+        "id": "path",
+        "top": 1750,
+        "h": 1594
+      },
+      {
+        "id": "automl",
+        "top": 3344,
+        "h": 1874
+      },
+      {
+        "id": "work",
+        "top": 5219,
+        "h": 3027
+      },
+      {
+        "id": "values",
+        "top": 8246,
+        "h": 765
+      },
+      {
+        "id": "gate",
+        "top": 9011,
+        "h": 1384
+      }
+    ]
+  },
+  "clockProbe": {
+    "t0": "cincinnati, ohio — summer 2026"
+  },
+  "clockLive": [
+    "8:31 pm"
+  ],
+  "pinPayoff": {
+    "sectionHeight": 1874,
+    "pinWide": true,
+    "pinNarrow": true,
+    "leftColumnTextNodes": [
+      "The agent drafts the",
+      "whole pipeline.",
+      "Nothing runs until a human says go.",
+      "Agentic AutoML turns a dataset and a goal into a structured, auditable ML workflow. The ag",
+      "7 phases · every one gated · langgraph + mcp orchestration",
+      "read the case file — Agentic AutoML Platform ⟶"
+    ]
+  },
+  "focusTrail": [
+    {
+      "tag": "A",
+      "text": "aesh_1055@icloud.com",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 174,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "resume",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 52,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "github",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 52,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "linkedin",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 69,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "Email me — I read everything.",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 469,
+      "h": 43,
+      "offscreen": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "run no. 041press here to signAPPROVED· human i",
+      "outline": "2px solid rgb(224, 138, 95)",
+      "boxShadow": "none",
+      "w": 297,
+      "h": 206,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "jobtracker — receipt 05 ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 223,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "fast-mnist-nn — receipt 02 ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 249,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "visual-assist — receipt 01 ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 249,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "policybot — receipt 01 ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 214,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "master-inventory — receipt 05 ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 275,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "automl — the case file ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 214,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "the evidence index — every claim on file ⟶",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 371,
+      "h": 15,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "github",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 52,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "linkedin",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 69,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "email",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 43,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "BODY",
+      "text": "try{var d=document.documentElement,p=matchMedi",
+      "outline": "0px none rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 1440,
+      "h": 10560,
+      "offscreen": true
+    },
+    {
+      "tag": "A",
+      "text": "Skip to main content",
+      "outline": "2px solid rgb(250, 246, 239)",
+      "boxShadow": "none",
+      "w": 168,
+      "h": 36,
+      "offscreen": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Open Ayush Yadav portrait",
+      "outline": "2px solid rgb(160, 154, 144)",
+      "boxShadow": "none",
+      "w": 36,
+      "h": 36,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "ayush yadav",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 96,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "the work",
+      "outline": "2px solid color(srgb 0.964706 0.937255 0.886275 / 0.75)",
+      "boxShadow": "none",
+      "w": 69,
+      "h": 15,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "experience",
+      "outline": "2px solid color(srgb 0.964706 0.937255 0.886275 / 0.75)",
+      "boxShadow": "none",
+      "w": 87,
+      "h": 15,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "contact",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 61,
+      "h": 15,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "github",
+      "outline": "2px solid color(srgb 0.964706 0.937255 0.886275 / 0.75)",
+      "boxShadow": "none",
+      "w": 52,
+      "h": 15,
+      "offscreen": false
+    },
+    {
+      "tag": "BUTTON",
+      "text": "motion: on",
+      "outline": "2px solid oklab(0.744508 0.00179465 0.0171111 / 0.740722)",
+      "boxShadow": "none",
+      "w": 87,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "resume",
+      "outline": "2px solid rgb(124, 114, 106)",
+      "boxShadow": "none",
+      "w": 101,
+      "h": 36,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "01arrival",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "02who",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "03the path",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "04automl",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "05the work",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "06how i work",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "07the gate",
+      "outline": "2px solid rgb(246, 239, 226)",
+      "boxShadow": "none",
+      "w": 33,
+      "h": 18,
+      "offscreen": false
+    },
+    {
+      "tag": "A",
+      "text": "1",
+      "outline": "2px solid rgb(92, 86, 74)",
+      "boxShadow": "none",
+      "w": 11,
+      "h": 22,
+      "offscreen": false
+    }
+  ],
+  "deepLinks": [
+    {
+      "anchor": "#who",
+      "scrollY": 708,
+      "targetTopInViewport": 192,
+      "headerH": 56
+    },
+    {
+      "anchor": "#path",
+      "scrollY": 1558,
+      "targetTopInViewport": 192,
+      "headerH": 56
+    },
+    {
+      "anchor": "#automl",
+      "scrollY": 3152,
+      "targetTopInViewport": 192,
+      "headerH": 56
+    },
+    {
+      "anchor": "#work",
+      "scrollY": 5027,
+      "targetTopInViewport": 192,
+      "headerH": 56
+    },
+    {
+      "anchor": "#values",
+      "scrollY": 7076,
+      "targetTopInViewport": 1170,
+      "headerH": 56
+    },
+    {
+      "anchor": "#gate",
+      "scrollY": 8819,
+      "targetTopInViewport": 192,
+      "headerH": 56
+    },
+    {
+      "anchor": "#footnote-1",
+      "scrollY": 699,
+      "targetTopInViewport": 96,
+      "headerH": 56
+    }
+  ],
+  "routes": [
+    {
+      "route": "/projects/jobtracker/",
+      "status": 200,
+      "title": "Applied Case Study | Ayush Yadav",
+      "h1": [
+        "Applied"
+      ],
+      "desc": "A native macOS tracker that reads the job search out of the inbox. Email syncs in, a local classifier names each message, and the noise becomes an application pipeline you can act on.",
+      "height": 5498,
+      "brokenImgs": [
+        "http://localhost:4321/images/projects/jobtracker-architecture.svg"
+      ],
+      "errs": []
+    },
+    {
+      "route": "/projects/automl/",
+      "status": 200,
+      "title": "Agentic AutoML Platform Case Study | Ayush Yadav",
+      "h1": [
+        "Agentic AutoML Platform"
+      ],
+      "desc": "A private, GitHub-backed agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+      "height": 6909,
+      "brokenImgs": [
+        "http://localhost:4321/images/projects/automl.webp",
+        "http://localhost:4321/images/projects/agentic-automl-stack-proof.png",
+        "http://localhost:4321/images/projects/agentic-automl-poster-proof.webp",
+        "http://localhost:4321/images/projects/agentic-automl-poster-proof.webp",
+        "http://localhost:4321/images/projects/agentic-automl-poster-proof.webp"
+      ],
+      "errs": []
+    },
+    {
+      "route": "/projects/fast-mnist-nn/",
+      "status": 200,
+      "title": "Glyph Case Study | Ayush Yadav",
+      "h1": [
+        "Glyph"
+      ],
+      "desc": "A neural network for MNIST with nothing under it but C++. SIMD matrix kernels, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
+      "height": 5575,
+      "brokenImgs": [
+        "http://localhost:4321/images/projects/mnist.webp",
+        "http://localhost:4321/images/projects/fast-mnist-nn.svg"
+      ],
+      "errs": []
+    },
+    {
+      "route": "/projects/visual-assist/",
+      "status": 200,
+      "title": "Visual Assist Case Study | Ayush Yadav",
+      "h1": [
+        "Visual Assist"
+      ],
+      "desc": "An iOS accessibility app that meets the room before its user does. LiDAR finds the obstacles, Vision reads the text, haptics and speech carry the answer — and the processing stays on the device.",
+      "height": 4460,
+      "brokenImgs": [],
+      "errs": []
+    },
+    {
+      "route": "/projects/policybot/",
+      "status": 200,
+      "title": "PolicyBot Case Study | Ayush Yadav",
+      "h1": [
+        "PolicyBot"
+      ],
+      "desc": "Private proof from institutional policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
+      "height": 5518,
+      "brokenImgs": [
+        "http://localhost:4321/images/projects/policybot-validation-proof.svg"
+      ],
+      "errs": []
+    },
+    {
+      "route": "/projects/master-inventory/",
+      "status": 200,
+      "title": "Master Inventory Pipeline Case Study | Ayush Yadav",
+      "h1": [
+        "Master Inventory Pipeline"
+      ],
+      "desc": "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory the dashboards can trust.",
+      "height": 5417,
+      "brokenImgs": [
+        "http://localhost:4321/images/projects/master-inventory-proof.svg"
+      ],
+      "errs": []
+    },
+    {
+      "route": "/projects/taskflow-calendar/",
+      "status": 200,
+      "title": "Cadence Case Study | Ayush Yadav",
+      "h1": [
+        "Cadence"
+      ],
+      "desc": "A production-style calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite.",
+      "height": 4538,
+      "brokenImgs": [],
+      "errs": []
+    },
+    {
+      "route": "/evidence/",
+      "status": 200,
+      "title": "The Evidence Index | Ayush Yadav",
+      "h1": [
+        "The evidence index"
+      ],
+      "desc": "The master ledger behind the portfolio: every claim, its source, how it was verified, its visibility, and its privacy boundary.",
+      "height": 3417,
+      "brokenImgs": [],
+      "errs": []
+    },
+    {
+      "route": "/world-preview/",
+      "status": 200,
+      "title": "world preview — day-arc bench",
+      "h1": [],
+      "desc": "Ayush Yadav's portfolio: a recent computer-science graduate, with case studies of the projects he has built and the evidence behind every claim.",
+      "height": 6465,
+      "brokenImgs": [],
+      "errs": []
+    }
+  ],
+  "links": [
+    {
+      "href": "#main-content",
+      "text": "Skip to main content",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 1,
+        "h": 1
+      }
+    },
+    {
+      "href": "/",
+      "text": "ayush yadav",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 96,
+        "h": 18
+      }
+    },
+    {
+      "href": "/#work",
+      "text": "the work",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 69,
+        "h": 15
+      }
+    },
+    {
+      "href": "/#path",
+      "text": "experience",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 87,
+        "h": 15
+      }
+    },
+    {
+      "href": "/#gate",
+      "text": "contact",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 61,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5",
+      "text": "github",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "text": "",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 0,
+        "h": 0
+      }
+    },
+    {
+      "href": "/resume.pdf",
+      "text": "resume",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 101,
+        "h": 36
+      }
+    },
+    {
+      "href": "#arrival",
+      "text": "01arrival",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#who",
+      "text": "02who",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#path",
+      "text": "03the path",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#automl",
+      "text": "04automl",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#work",
+      "text": "05the work",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#values",
+      "text": "06how i work",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#gate",
+      "text": "07the gate",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 33,
+        "h": 18
+      }
+    },
+    {
+      "href": "#footnote-1",
+      "text": "1",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 11,
+        "h": 22
+      }
+    },
+    {
+      "href": "#automl",
+      "text": "the capstone — agentic automl: seven gated p",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 449,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "text": "jobtracker",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 77,
+        "h": 13
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "text": "fast-mnist",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 77,
+        "h": 13
+      }
+    },
+    {
+      "href": "/projects/visual-assist/",
+      "text": "visual-assist",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 100,
+        "h": 13
+      }
+    },
+    {
+      "href": "#automl",
+      "text": "skip to the work ↓",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 156,
+        "h": 18
+      }
+    },
+    {
+      "href": "#work",
+      "text": "the work",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 61,
+        "h": 13
+      }
+    },
+    {
+      "href": "/evidence/",
+      "text": "the evidence",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 92,
+        "h": 13
+      }
+    },
+    {
+      "href": "/resume.pdf",
+      "text": "the resume",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 77,
+        "h": 13
+      }
+    },
+    {
+      "href": "#fnref-1",
+      "text": "↩",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 8,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "text": "19/20 cited-source sweep — PolicyBot, the po",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 504,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/automl/",
+      "text": "read the case file — Agentic AutoML Platform",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 405,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "text": "Applied",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 128,
+        "h": 48
+      }
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-5",
+      "text": "macro-f1 0.98 — 96-sample gate",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 261,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "text": "the case file ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 136,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5/jobtracker",
+      "text": "source",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://getapplied.vercel.app",
+      "text": "demo ↗",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "text": "Glyph",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 101,
+        "h": 48
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "text": "openmp+simd dot kernel — 3.5x vs -O3 baselin",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 278,
+        "h": 51
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "text": "the case file ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 136,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5/glyph",
+      "text": "source",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://getglyph.vercel.app",
+      "text": "demo ↗",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://jetpack-compress.vercel.app",
+      "text": "jetpack-compress",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 292,
+        "h": 48
+      }
+    },
+    {
+      "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+      "text": "72 tests, 0 failures — jdk 25 @ af2c4b1",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 269,
+        "h": 33
+      }
+    },
+    {
+      "href": "https://jetpack-compress.vercel.app",
+      "text": "the live demo ↗",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 130,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5/jetpack-compress",
+      "text": "source",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/taskflow-calendar/",
+      "text": "Cadence",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 141,
+        "h": 48
+      }
+    },
+    {
+      "href": "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+      "text": "1,145 automated tests — 634 frontend + 511 b",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 261,
+        "h": 33
+      }
+    },
+    {
+      "href": "/projects/taskflow-calendar/",
+      "text": "the case file ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 136,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5/cadence",
+      "text": "source",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://usecadenceapp.vercel.app",
+      "text": "demo ↗",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/master-inventory/",
+      "text": "Master Inventory Pipeline",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 217,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/policybot/",
+      "text": "PolicyBot",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 78,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-4",
+      "text": "182 backend tests — jobtracker validation le",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 417,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "text": "openmp+simd dot kernel — 3.5x over -O3, comm",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 521,
+        "h": 15
+      }
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "text": "19/20 cited-source sweep — policybot validat",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 469,
+        "h": 15
+      }
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "text": "aesh_1055@icloud.com",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 174,
+        "h": 18
+      }
+    },
+    {
+      "href": "/resume.pdf",
+      "text": "resume",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 52,
+        "h": 18
+      }
+    },
+    {
+      "href": "https://github.com/yadava5",
+      "text": "github",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 18
+      }
+    },
+    {
+      "href": "https://www.linkedin.com/in/ayush-yadav-developer/",
+      "text": "linkedin",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 69,
+        "h": 18
+      }
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "text": "Email me — I read everything.",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 469,
+        "h": 43
+      }
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-5",
+      "text": "jobtracker — receipt 05 ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 223,
+        "h": 18
+      }
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "text": "fast-mnist-nn — receipt 02 ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 249,
+        "h": 18
+      }
+    },
+    {
+      "href": "/projects/visual-assist/#v-visual-assist-1",
+      "text": "visual-assist — receipt 01 ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 249,
+        "h": 18
+      }
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "text": "policybot — receipt 01 ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 214,
+        "h": 18
+      }
+    },
+    {
+      "href": "/projects/master-inventory/#v-master-inventory-5",
+      "text": "master-inventory — receipt 05 ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 275,
+        "h": 18
+      }
+    },
+    {
+      "href": "/projects/automl/",
+      "text": "automl — the case file ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 214,
+        "h": 18
+      }
+    },
+    {
+      "href": "/evidence/",
+      "text": "the evidence index — every claim on file ⟶",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 371,
+        "h": 15
+      }
+    },
+    {
+      "href": "https://github.com/yadava5",
+      "text": "github",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 52,
+        "h": 18
+      }
+    },
+    {
+      "href": "https://www.linkedin.com/in/ayush-yadav-developer/",
+      "text": "linkedin",
+      "newTab": true,
+      "rel": "noopener noreferrer",
+      "box": {
+        "w": 69,
+        "h": 18
+      }
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "text": "email",
+      "newTab": false,
+      "rel": "",
+      "box": {
+        "w": 43,
+        "h": 18
+      }
+    }
+  ]
+}

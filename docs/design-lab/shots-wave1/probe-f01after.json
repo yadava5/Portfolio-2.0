@@ -1,0 +1,851 @@
+{
+  "tag": "f01after",
+  "base": "http://127.0.0.1:3200",
+  "at": "2026-07-25T03:51:08.164Z",
+  "navContact": {
+    "scrollY": 8915,
+    "mailto": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "resume": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "github": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "cta": {
+      "opacity": 1,
+      "top": 756,
+      "onScreen": true
+    },
+    "name": {
+      "opacity": 1,
+      "top": 439,
+      "onScreen": true
+    },
+    "availability": {
+      "opacity": 0.7,
+      "top": 581,
+      "onScreen": true
+    }
+  },
+  "navTrail": {
+    "afterContact": "http://127.0.0.1:3200/",
+    "afterBack": "about:blank",
+    "afterBackScrollY": 0
+  },
+  "deepGate": {
+    "scrollY": 8819,
+    "mailto": {
+      "opacity": 1,
+      "top": 759,
+      "onScreen": true
+    },
+    "resume": {
+      "opacity": 1,
+      "top": 759,
+      "onScreen": true
+    },
+    "github": {
+      "opacity": 1,
+      "top": 759,
+      "onScreen": true
+    },
+    "cta": {
+      "opacity": 1,
+      "top": 852,
+      "onScreen": true
+    },
+    "name": {
+      "opacity": 1,
+      "top": 535,
+      "onScreen": true
+    },
+    "availability": {
+      "opacity": 0.7,
+      "top": 677,
+      "onScreen": true
+    }
+  },
+  "chapterLandings": {
+    "who": {
+      "scrollY": 708,
+      "hidden": []
+    },
+    "path": {
+      "scrollY": 1558,
+      "hidden": []
+    },
+    "automl": {
+      "scrollY": 3152,
+      "hidden": []
+    },
+    "work": {
+      "scrollY": 5027,
+      "hidden": []
+    },
+    "values": {
+      "scrollY": 8054,
+      "hidden": [
+        {
+          "tm": "p",
+          "text": "182 backend tests — jobtracker validation le",
+          "opacity": 0.7,
+          "top": 426
+        },
+        {
+          "tm": "p",
+          "text": "openmp+simd dot kernel — 3.5x over -O3, comm",
+          "opacity": 0.7,
+          "top": 560
+        },
+        {
+          "tm": "p",
+          "text": "19/20 cited-source sweep — policybot validat",
+          "opacity": 0.7,
+          "top": 694
+        },
+        {
+          "tm": "block",
+          "text": "fig. 6.0 — the litany, with receipts.",
+          "opacity": 0,
+          "top": 769
+        }
+      ]
+    },
+    "gate": {
+      "scrollY": 8819,
+      "hidden": [
+        {
+          "tm": "block",
+          "text": "fig. 6.0 — the litany, with receipts.",
+          "opacity": 0.7,
+          "top": -12
+        },
+        {
+          "tm": "muted",
+          "text": "This one ends with yours.",
+          "opacity": 0.7,
+          "top": 464
+        },
+        {
+          "tm": "block",
+          "text": "availability — Open to new-grad software, da",
+          "opacity": 0,
+          "top": 693
+        },
+        {
+          "tm": "block",
+          "text": "aesh_1055@icloud.comresumegithublinkedin",
+          "opacity": 0,
+          "top": 775
+        },
+        {
+          "tm": "block",
+          "text": "run approved — say helloEmail me — I read ev",
+          "opacity": 0,
+          "top": 833
+        }
+      ]
+    }
+  },
+  "hero": {
+    "h1": {
+      "text": "Scroll.It's all real.1",
+      "top": 256,
+      "bottom": 526,
+      "fontSize": "129.6px",
+      "fontFamily": "Fraunces",
+      "color": "rgb(38, 35, 28)",
+      "opacity": 1
+    },
+    "standfirst": null
+  },
+  "manifestoRest": [
+    {
+      "word": "This",
+      "opacity": 1
+    },
+    {
+      "word": "is",
+      "opacity": 1
+    },
+    {
+      "word": "a",
+      "opacity": 1
+    },
+    {
+      "word": "record",
+      "opacity": 1
+    },
+    {
+      "word": "of",
+      "opacity": 1
+    },
+    {
+      "word": "what",
+      "opacity": 1
+    },
+    {
+      "word": "I’ve",
+      "opacity": 1
+    },
+    {
+      "word": "built.",
+      "opacity": 1
+    },
+    {
+      "word": "And",
+      "opacity": 1
+    },
+    {
+      "word": "how",
+      "opacity": 1
+    },
+    {
+      "word": "each",
+      "opacity": 1
+    },
+    {
+      "word": "piece",
+      "opacity": 1
+    },
+    {
+      "word": "was",
+      "opacity": 1
+    },
+    {
+      "word": "checked",
+      "opacity": 1
+    },
+    {
+      "word": "before",
+      "opacity": 1
+    },
+    {
+      "word": "I",
+      "opacity": 0.95
+    },
+    {
+      "word": "called",
+      "opacity": 0.7
+    },
+    {
+      "word": "it",
+      "opacity": 0.45
+    },
+    {
+      "word": "done.",
+      "opacity": 0.25
+    }
+  ],
+  "seams": {
+    "docHeight": 10560,
+    "sections": {
+      "arrival": {
+        "top": 0,
+        "bottom": 900,
+        "height": 900
+      },
+      "who": {
+        "top": 900,
+        "bottom": 1750,
+        "height": 850
+      },
+      "path": {
+        "top": 1750,
+        "bottom": 3344,
+        "height": 1594
+      },
+      "automl": {
+        "top": 3344,
+        "bottom": 5219,
+        "height": 1874
+      },
+      "work": {
+        "top": 5219,
+        "bottom": 8246,
+        "height": 3027
+      },
+      "values": {
+        "top": 8246,
+        "bottom": 9011,
+        "height": 765
+      },
+      "gate": {
+        "top": 9011,
+        "bottom": 10395,
+        "height": 1384
+      }
+    }
+  },
+  "chromeSweep": [
+    {
+      "frac": 0.68,
+      "scrollY": 6569,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.72,
+      "scrollY": 6955,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.745,
+      "scrollY": 7197,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.7775,
+      "scrollY": 7511,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.8,
+      "scrollY": 7728,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.83,
+      "scrollY": 8018,
+      "chrome": null,
+      "phase": "dusk",
+      "arcL": ".9671",
+      "headerBg": "rgb(250, 246, 239)",
+      "bodyBg": "rgb(250, 246, 239)"
+    }
+  ],
+  "pin": {
+    "section": {
+      "top": 3344,
+      "height": 1874
+    },
+    "frames": [
+      {
+        "scrollY": 3344,
+        "lit": 1,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 3578,
+        "lit": 3,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 3813,
+        "lit": 5,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 4047,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 4281,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 4515,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 4750,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 4984,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      },
+      {
+        "scrollY": 5218,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": null
+      }
+    ]
+  },
+  "prerender": {
+    "hasEmDashClock": true,
+    "localTimeSnippet": "at i’ve built<!-- --> · 06:12</p><p class=\"hidden sm:block\">cincinnati, ohio — summer 2026</p></div><div class=\"my-auto py-10\"><h1 aria-label=\"Scroll. It&#x27;s all real.\" class=\"font-display fraunces-hero text-[clamp(3.375rem,9vw,9rem)] leading-[0.98] font-normal tracking-[-"
+  }
+}

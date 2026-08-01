@@ -1,0 +1,68 @@
+{
+  "steps": [
+    {
+      "step": "scroll 2400 @700",
+      "ty": 0,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 2400
+    },
+    {
+      "step": "scroll 2800 @700",
+      "ty": 0,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 2800
+    },
+    {
+      "step": "scroll 3200 @700",
+      "ty": 53,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 3200
+    },
+    {
+      "step": "scroll 3600 @700",
+      "ty": 177,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 3600
+    },
+    {
+      "step": "scroll 4000 @700",
+      "ty": 182,
+      "halted": true,
+      "beadFill": "rgb(184, 79, 45)",
+      "scrollY": 4000
+    },
+    {
+      "step": "after resize 1440x700→900x1100",
+      "ty": 0,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 4000
+    },
+    {
+      "step": "nudge after resize",
+      "ty": 0,
+      "halted": false,
+      "beadFill": "rgb(38, 35, 28)",
+      "scrollY": 3998
+    }
+  ],
+  "pastGate": {
+    "step": "scroll 4000 @700",
+    "ty": 182,
+    "halted": true,
+    "beadFill": "rgb(184, 79, 45)",
+    "scrollY": 4000
+  },
+  "final": {
+    "step": "nudge after resize",
+    "ty": 0,
+    "halted": false,
+    "beadFill": "rgb(38, 35, 28)",
+    "scrollY": 3998
+  },
+  "staleHaltMark": false
+}

@@ -1,0 +1,387 @@
+[
+ {
+  "k": "census",
+  "v": [
+   {
+    "name": "home",
+    "blank": 13,
+    "sameOrigin": 1,
+    "cross": 12,
+    "crossMarked": 12,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 0,
+    "colCite": 0
+   },
+   {
+    "name": "evidence",
+    "blank": 10,
+    "sameOrigin": 1,
+    "cross": 9,
+    "crossMarked": 9,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 0,
+    "colCite": 0
+   },
+   {
+    "name": "404",
+    "blank": 2,
+    "sameOrigin": 1,
+    "cross": 1,
+    "crossMarked": 1,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 0,
+    "colCite": 0
+   },
+   {
+    "name": "case-automl",
+    "blank": 4,
+    "sameOrigin": 1,
+    "cross": 3,
+    "crossMarked": 3,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 2,
+    "colCite": 6
+   },
+   {
+    "name": "case-fast-mnist-nn",
+    "blank": 15,
+    "sameOrigin": 1,
+    "cross": 14,
+    "crossMarked": 7,
+    "crossBare": 7,
+    "bareInArtifactCell": 7,
+    "colExternal": 10,
+    "colCite": 0
+   },
+   {
+    "name": "case-jobtracker",
+    "blank": 28,
+    "sameOrigin": 1,
+    "cross": 27,
+    "crossMarked": 11,
+    "crossBare": 16,
+    "bareInArtifactCell": 16,
+    "colExternal": 21,
+    "colCite": 0
+   },
+   {
+    "name": "case-master-inventory",
+    "blank": 2,
+    "sameOrigin": 1,
+    "cross": 1,
+    "crossMarked": 1,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 0,
+    "colCite": 3
+   },
+   {
+    "name": "case-policybot",
+    "blank": 2,
+    "sameOrigin": 1,
+    "cross": 1,
+    "crossMarked": 1,
+    "crossBare": 0,
+    "bareInArtifactCell": 0,
+    "colExternal": 0,
+    "colCite": 4
+   },
+   {
+    "name": "case-taskflow-calendar",
+    "blank": 24,
+    "sameOrigin": 1,
+    "cross": 23,
+    "crossMarked": 6,
+    "crossBare": 17,
+    "bareInArtifactCell": 17,
+    "colExternal": 20,
+    "colCite": 0
+   },
+   {
+    "name": "case-visual-assist",
+    "blank": 11,
+    "sameOrigin": 1,
+    "cross": 10,
+    "crossMarked": 4,
+    "crossBare": 6,
+    "bareInArtifactCell": 6,
+    "colExternal": 6,
+    "colCite": 0
+   }
+  ]
+ },
+ {
+  "k": "censusTotals",
+  "v": {
+   "blank": 111,
+   "sameOrigin": 10,
+   "cross": 101,
+   "crossMarked": 55,
+   "crossBare": 46,
+   "bareInArtifactCell": 46,
+   "colExternal": 59,
+   "colCite": 13
+  }
+ },
+ {
+  "k": "densityCost",
+  "v": [
+   {
+    "id": "jobtracker",
+    "w": 320,
+    "mutated": 16,
+    "cellH": [
+     1329,
+     1347
+    ],
+    "linkLines": [
+     38,
+     39
+    ],
+    "docH": [
+     14493,
+     14511
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "jobtracker",
+    "w": 390,
+    "mutated": 16,
+    "cellH": [
+     1147,
+     1147
+    ],
+    "linkLines": [
+     35,
+     35
+    ],
+    "docH": [
+     12586,
+     12586
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "jobtracker",
+    "w": 1440,
+    "mutated": 16,
+    "cellH": [
+     1257,
+     1257
+    ],
+    "linkLines": [
+     32,
+     32
+    ],
+    "docH": [
+     7214,
+     7214
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "taskflow-calendar",
+    "w": 320,
+    "mutated": 17,
+    "cellH": [
+     1305,
+     1305
+    ],
+    "linkLines": [
+     41,
+     41
+    ],
+    "docH": [
+     15366,
+     15366
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "taskflow-calendar",
+    "w": 390,
+    "mutated": 17,
+    "cellH": [
+     958,
+     1052
+    ],
+    "linkLines": [
+     27,
+     31
+    ],
+    "docH": [
+     13042,
+     13133
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "taskflow-calendar",
+    "w": 1440,
+    "mutated": 17,
+    "cellH": [
+     1947,
+     1947
+    ],
+    "linkLines": [
+     22,
+     24
+    ],
+    "docH": [
+     7682,
+     7682
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "fast-mnist-nn",
+    "w": 320,
+    "mutated": 7,
+    "cellH": [
+     628,
+     628
+    ],
+    "linkLines": [
+     14,
+     14
+    ],
+    "docH": [
+     10223,
+     10223
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "fast-mnist-nn",
+    "w": 390,
+    "mutated": 7,
+    "cellH": [
+     483,
+     483
+    ],
+    "linkLines": [
+     11,
+     11
+    ],
+    "docH": [
+     9299,
+     9299
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "fast-mnist-nn",
+    "w": 1440,
+    "mutated": 7,
+    "cellH": [
+     684,
+     684
+    ],
+    "linkLines": [
+     10,
+     11
+    ],
+    "docH": [
+     5797,
+     5797
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "visual-assist",
+    "w": 320,
+    "mutated": 6,
+    "cellH": [
+     477,
+     477
+    ],
+    "linkLines": [
+     10,
+     10
+    ],
+    "docH": [
+     7392,
+     7392
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "visual-assist",
+    "w": 390,
+    "mutated": 6,
+    "cellH": [
+     403,
+     403
+    ],
+    "linkLines": [
+     10,
+     10
+    ],
+    "docH": [
+     6801,
+     6801
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   },
+   {
+    "id": "visual-assist",
+    "w": 1440,
+    "mutated": 6,
+    "cellH": [
+     407,
+     407
+    ],
+    "linkLines": [
+     6,
+     9
+    ],
+    "docH": [
+     4500,
+     4500
+    ],
+    "overflow": [
+     0,
+     0
+    ]
+   }
+  ]
+ }
+]

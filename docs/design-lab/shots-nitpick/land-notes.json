@@ -1,0 +1,1483 @@
+[
+  {
+    "k": "domcontentloaded.ms",
+    "v": 430
+  },
+  {
+    "k": "title",
+    "v": "Ayush Yadav | Software, Data, and ML Engineering"
+  },
+  {
+    "k": "url",
+    "v": "https://yadava5.github.io/Portfolio-2.0/"
+  },
+  {
+    "k": "meta",
+    "v": {
+      "description": "Ayush Yadav's portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
+      "ogTitle": "Ayush Yadav | Software, Data, and ML Engineering",
+      "ogDesc": "Ayush Yadav's portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
+      "ogImage": "https://yadava5.github.io/Portfolio-2.0/og/home.png",
+      "twitterCard": "summary_large_image",
+      "lang": "en",
+      "themeColor": null
+    }
+  },
+  {
+    "k": "firstScreen.textNodes",
+    "v": [
+      {
+        "text": "ayush yadav",
+        "tag": "A",
+        "cls": "label-mono link-draw-quiet tap-target-block whitespace-nowra",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 10,
+        "left": 292,
+        "w": 96
+      },
+      {
+        "text": "the work",
+        "tag": "A",
+        "cls": "label-mono link-draw tap-target-block whitespace-nowrap hove",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 13,
+        "left": 576,
+        "w": 69
+      },
+      {
+        "text": "experience",
+        "tag": "A",
+        "cls": "label-mono link-draw tap-target-block whitespace-nowrap hove",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 13,
+        "left": 674,
+        "w": 87
+      },
+      {
+        "text": "contact",
+        "tag": "A",
+        "cls": "label-mono link-draw tap-target-block whitespace-nowrap hove",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 13,
+        "left": 789,
+        "w": 61
+      },
+      {
+        "text": "github",
+        "tag": "A",
+        "cls": "label-mono link-draw tap-target-block text-(--header-ink-mut",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 13,
+        "left": 877,
+        "w": 52
+      },
+      {
+        "text": "motion:",
+        "tag": "BUTTON",
+        "cls": "label-mono hidden text-(--header-ink-muted) transition-color",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 25,
+        "left": 1076,
+        "w": 87
+      },
+      {
+        "text": "on",
+        "tag": "BUTTON",
+        "cls": "label-mono hidden text-(--header-ink-muted) transition-color",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "opacity": "1",
+        "top": 25,
+        "left": 1076,
+        "w": 87
+      },
+      {
+        "text": "resume",
+        "tag": "SPAN",
+        "cls": "max-[359px]:hidden",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(250, 246, 239)",
+        "opacity": "1",
+        "top": 25,
+        "left": 1211,
+        "w": 52
+      },
+      {
+        "text": "now reading — chapter 01, arrival, 06:12",
+        "tag": "SPAN",
+        "cls": "sr-only",
+        "fontSize": "16px",
+        "fontFamily": "ui-sans-serif",
+        "weight": "400",
+        "ls": "normal",
+        "lh": "24px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 34,
+        "left": 414,
+        "w": 1
+      },
+      {
+        "text": "¶",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "01",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "/",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "07",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "·",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "arrival — a working paper on what i’ve built",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "· 06:12",
+        "tag": "P",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 244,
+        "w": 556
+      },
+      {
+        "text": "summer 2026",
+        "tag": "P",
+        "cls": "hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 112,
+        "left": 1180,
+        "w": 96
+      },
+      {
+        "text": "Scroll.",
+        "tag": "SPAN",
+        "cls": "hero-enter hero-enter-headline block",
+        "fontSize": "129.6px",
+        "fontFamily": "Fraunces",
+        "weight": "400",
+        "ls": "-1.944px",
+        "lh": "127.008px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 226,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "It's",
+        "tag": "SPAN",
+        "cls": "garnish-word",
+        "fontSize": "129.6px",
+        "fontFamily": "Fraunces",
+        "weight": "400",
+        "ls": "-1.944px",
+        "lh": "127.008px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 336,
+        "left": 244,
+        "w": 135
+      },
+      {
+        "text": "all",
+        "tag": "SPAN",
+        "cls": "garnish-word",
+        "fontSize": "129.6px",
+        "fontFamily": "Fraunces",
+        "weight": "400",
+        "ls": "-1.944px",
+        "lh": "127.008px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 336,
+        "left": 399,
+        "w": 113
+      },
+      {
+        "text": "01",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 356,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "arrival",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 356,
+        "left": 55,
+        "w": 61
+      },
+      {
+        "text": "real.",
+        "tag": "EM",
+        "cls": "garnish-word font-serif italic",
+        "fontSize": "129.6px",
+        "fontFamily": "Newsreader",
+        "weight": "400",
+        "ls": "-1.944px",
+        "lh": "127.008px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 368,
+        "left": 532,
+        "w": 219
+      },
+      {
+        "text": "1",
+        "tag": "A",
+        "cls": "tap-target text-ink-secondary hover:text-ink font-mono track",
+        "fontSize": "18.144px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "normal",
+        "lh": "18.144px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 378,
+        "left": 730,
+        "w": 31
+      },
+      {
+        "text": "02",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 385,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "who",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 385,
+        "left": 55,
+        "w": 26
+      },
+      {
+        "text": "03",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 413,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "the path",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 413,
+        "left": 55,
+        "w": 69
+      },
+      {
+        "text": "04",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 441,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "automl",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 441,
+        "left": 55,
+        "w": 52
+      },
+      {
+        "text": "05",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 469,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "the work",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 469,
+        "left": 55,
+        "w": 69
+      },
+      {
+        "text": "06",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 497,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "how i work",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 497,
+        "left": 55,
+        "w": 87
+      },
+      {
+        "text": "Ayush Yadav",
+        "tag": "P",
+        "cls": "hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading",
+        "fontSize": "19px",
+        "fontFamily": "Newsreader",
+        "weight": "400",
+        "ls": "normal",
+        "lh": "26.125px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 524,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "— software engineer ·",
+        "tag": "P",
+        "cls": "hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading",
+        "fontSize": "19px",
+        "fontFamily": "Newsreader",
+        "weight": "400",
+        "ls": "normal",
+        "lh": "26.125px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 524,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "Cincinnati, Ohio",
+        "tag": "P",
+        "cls": "hero-enter text-ink mt-7 font-serif text-[1.1875rem] leading",
+        "fontSize": "19px",
+        "fontFamily": "Newsreader",
+        "weight": "400",
+        "ls": "normal",
+        "lh": "26.125px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 524,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "07",
+        "tag": "SPAN",
+        "cls": "",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 525,
+        "left": 16,
+        "w": 17
+      },
+      {
+        "text": "the gate",
+        "tag": "SPAN",
+        "cls": "rail-label",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 525,
+        "left": 55,
+        "w": 69
+      },
+      {
+        "text": "the capstone — agentic automl: seven gated phases ⟶",
+        "tag": "A",
+        "cls": "link-draw inline-flex min-h-11 items-center sm:min-h-0",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(38, 35, 28)",
+        "opacity": "1",
+        "top": 646,
+        "left": 244,
+        "w": 449
+      },
+      {
+        "text": "case files:",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 676,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "·",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 676,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "·",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 676,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "Applied",
+        "tag": "A",
+        "cls": "link-draw normal-case",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 677,
+        "left": 348,
+        "w": 61
+      },
+      {
+        "text": "Glyph",
+        "tag": "A",
+        "cls": "link-draw normal-case",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 677,
+        "left": 435,
+        "w": 43
+      },
+      {
+        "text": "Cadence",
+        "tag": "A",
+        "cls": "link-draw normal-case",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 677,
+        "left": 505,
+        "w": 61
+      },
+      {
+        "text": "scroll — the story starts here",
+        "tag": "P",
+        "cls": "text-ink-secondary",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 706,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "in a hurry —",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 736,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "·",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 736,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "·",
+        "tag": "P",
+        "cls": "text-ink-secondary hidden sm:block",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 736,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "the work",
+        "tag": "A",
+        "cls": "link-draw",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 737,
+        "left": 357,
+        "w": 69
+      },
+      {
+        "text": "the evidence",
+        "tag": "A",
+        "cls": "link-draw",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 737,
+        "left": 452,
+        "w": 104
+      },
+      {
+        "text": "the resume",
+        "tag": "A",
+        "cls": "link-draw",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 737,
+        "left": 583,
+        "w": 87
+      },
+      {
+        "text": "↩",
+        "tag": "A",
+        "cls": "link-draw tap-target",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 794,
+        "left": 677,
+        "w": 28
+      },
+      {
+        "text": "1. every claim on this page links to its evidence.",
+        "tag": "P",
+        "cls": "label-mono text-ink-secondary mt-3",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 808,
+        "left": 244,
+        "w": 1032
+      },
+      {
+        "text": "01",
+        "tag": "SPAN",
+        "cls": "label-mono tracking-[0.22em]",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 850,
+        "left": 730,
+        "w": 61
+      },
+      {
+        "text": "/",
+        "tag": "SPAN",
+        "cls": "label-mono tracking-[0.22em]",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 850,
+        "left": 730,
+        "w": 61
+      },
+      {
+        "text": "07",
+        "tag": "SPAN",
+        "cls": "label-mono tracking-[0.22em]",
+        "fontSize": "13px",
+        "fontFamily": "\"Fragment Mono\"",
+        "weight": "400",
+        "ls": "0.65px",
+        "lh": "18.2px",
+        "color": "rgb(92, 86, 74)",
+        "opacity": "1",
+        "top": 850,
+        "left": 730,
+        "w": 61
+      }
+    ]
+  },
+  {
+    "k": "doc",
+    "v": {
+      "scrollHeight": 10841,
+      "viewports": 12.05,
+      "sections": [
+        {
+          "tag": "clipPath",
+          "id": "daymark-disc",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        },
+        {
+          "tag": "MAIN",
+          "id": "main-content",
+          "ds": null,
+          "top": 0,
+          "h": 10676
+        },
+        {
+          "tag": "SECTION",
+          "id": "arrival",
+          "ds": null,
+          "top": 0,
+          "h": 900
+        },
+        {
+          "tag": "A",
+          "id": "fnref-1",
+          "ds": null,
+          "top": 378,
+          "h": 52
+        },
+        {
+          "tag": "DIV",
+          "id": "footnote-1",
+          "ds": null,
+          "top": 795,
+          "h": 31
+        },
+        {
+          "tag": "SECTION",
+          "id": "who",
+          "ds": null,
+          "top": 900,
+          "h": 764
+        },
+        {
+          "tag": "SECTION",
+          "id": "path",
+          "ds": null,
+          "top": 1664,
+          "h": 1563
+        },
+        {
+          "tag": "SECTION",
+          "id": "automl",
+          "ds": null,
+          "top": 3227,
+          "h": 1777
+        },
+        {
+          "tag": "SECTION",
+          "id": "work",
+          "ds": null,
+          "top": 5004,
+          "h": 3129
+        },
+        {
+          "tag": "SECTION",
+          "id": "values",
+          "ds": null,
+          "top": 8133,
+          "h": 765
+        },
+        {
+          "tag": "SECTION",
+          "id": "gate",
+          "ds": null,
+          "top": 8898,
+          "h": 1778
+        },
+        {
+          "tag": "filter",
+          "id": "stamp-rough-c",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        },
+        {
+          "tag": "filter",
+          "id": "stamp-fine-c",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        },
+        {
+          "tag": "filter",
+          "id": "stamp-rough-d",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        },
+        {
+          "tag": "filter",
+          "id": "stamp-fine-d",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        },
+        {
+          "tag": "SCRIPT",
+          "id": "_R_",
+          "ds": null,
+          "top": 0,
+          "h": 0
+        }
+      ]
+    }
+  },
+  {
+    "k": "links.count",
+    "v": 62
+  },
+  {
+    "k": "links",
+    "v": [
+      {
+        "text": "Skip to main content",
+        "href": "#main-content",
+        "target": null,
+        "rel": null,
+        "top": -1
+      },
+      {
+        "text": "ayush yadav",
+        "href": "/Portfolio-2.0",
+        "target": null,
+        "rel": null,
+        "top": 10
+      },
+      {
+        "text": "the work",
+        "href": "/Portfolio-2.0#work",
+        "target": null,
+        "rel": null,
+        "top": 13
+      },
+      {
+        "text": "experience",
+        "href": "/Portfolio-2.0#path",
+        "target": null,
+        "rel": null,
+        "top": 13
+      },
+      {
+        "text": "contact",
+        "href": "/Portfolio-2.0#gate",
+        "target": null,
+        "rel": null,
+        "top": 13
+      },
+      {
+        "text": "github",
+        "href": "https://github.com/yadava5",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 13
+      },
+      {
+        "text": "Contact",
+        "href": "mailto:aesh_1055@icloud.com",
+        "target": null,
+        "rel": null,
+        "top": 0
+      },
+      {
+        "text": "resume",
+        "href": "/Portfolio-2.0/resume.pdf",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 12
+      },
+      {
+        "text": "01 arrival",
+        "href": "#arrival",
+        "target": null,
+        "rel": null,
+        "top": 356
+      },
+      {
+        "text": "02 who",
+        "href": "#who",
+        "target": null,
+        "rel": null,
+        "top": 385
+      },
+      {
+        "text": "03 the path",
+        "href": "#path",
+        "target": null,
+        "rel": null,
+        "top": 413
+      },
+      {
+        "text": "04 automl",
+        "href": "#automl",
+        "target": null,
+        "rel": null,
+        "top": 441
+      },
+      {
+        "text": "05 the work",
+        "href": "#work",
+        "target": null,
+        "rel": null,
+        "top": 469
+      },
+      {
+        "text": "06 how i work",
+        "href": "#values",
+        "target": null,
+        "rel": null,
+        "top": 497
+      },
+      {
+        "text": "07 the gate",
+        "href": "#gate",
+        "target": null,
+        "rel": null,
+        "top": 525
+      },
+      {
+        "text": "1",
+        "href": "#footnote-1",
+        "target": null,
+        "rel": null,
+        "top": 378
+      },
+      {
+        "text": "the capstone — agentic automl: seven gated phases ⟶",
+        "href": "#automl",
+        "target": null,
+        "rel": null,
+        "top": 646
+      },
+      {
+        "text": "the resume ⟶",
+        "href": "/Portfolio-2.0/resume.pdf",
+        "target": null,
+        "rel": null,
+        "top": 0
+      },
+      {
+        "text": "Applied",
+        "href": "/Portfolio-2.0/projects/jobtracker/",
+        "target": null,
+        "rel": null,
+        "top": 677
+      },
+      {
+        "text": "Glyph",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/",
+        "target": null,
+        "rel": null,
+        "top": 677
+      },
+      {
+        "text": "Cadence",
+        "href": "/Portfolio-2.0/projects/taskflow-calendar/",
+        "target": null,
+        "rel": null,
+        "top": 677
+      },
+      {
+        "text": "the work",
+        "href": "#work",
+        "target": null,
+        "rel": null,
+        "top": 737
+      },
+      {
+        "text": "the evidence",
+        "href": "/Portfolio-2.0/evidence/",
+        "target": null,
+        "rel": null,
+        "top": 737
+      },
+      {
+        "text": "the resume",
+        "href": "/Portfolio-2.0/resume.pdf",
+        "target": null,
+        "rel": null,
+        "top": 737
+      },
+      {
+        "text": "↩",
+        "href": "#fnref-1",
+        "target": null,
+        "rel": null,
+        "top": 794
+      },
+      {
+        "text": "19/20 cited-source sweep — policybot, the policy assistant",
+        "href": "/Portfolio-2.0/projects/policybot/#v-policybot-1",
+        "target": null,
+        "rel": null,
+        "top": 2805
+      },
+      {
+        "text": "read the case file — agentic automl platform ⟶",
+        "href": "/Portfolio-2.0/projects/automl/",
+        "target": null,
+        "rel": null,
+        "top": 4020
+      },
+      {
+        "text": "Applied",
+        "href": "/Portfolio-2.0/projects/jobtracker/",
+        "target": null,
+        "rel": null,
+        "top": 5172
+      },
+      {
+        "text": "macro-f1 0.98 — 96-sample gate",
+        "href": "/Portfolio-2.0/projects/jobtracker/#v-jobtracker-5",
+        "target": null,
+        "rel": null,
+        "top": 5270
+      },
+      {
+        "text": "the case file ⟶",
+        "href": "/Portfolio-2.0/projects/jobtracker/",
+        "target": null,
+        "rel": null,
+        "top": 5300
+      },
+      {
+        "text": "Glyph",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/",
+        "target": null,
+        "rel": null,
+        "top": 5843
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+        "target": null,
+        "rel": null,
+        "top": 5937
+      },
+      {
+        "text": "the case file ⟶",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/",
+        "target": null,
+        "rel": null,
+        "top": 6003
+      },
+      {
+        "text": "jetpack-compress",
+        "href": "https://jetpack-compress.vercel.app",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 6489
+      },
+      {
+        "text": "72 tests, 0 failures — jdk 25 @ af2c4b1",
+        "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 6507
+      },
+      {
+        "text": "the live demo ↗",
+        "href": "https://jetpack-compress.vercel.app",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 6556
+      },
+      {
+        "text": "source",
+        "href": "https://github.com/yadava5/jetpack-compress",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 6586
+      },
+      {
+        "text": "system card ↗",
+        "href": "https://jetpack-compress.vercel.app/system-card",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 6616
+      },
+      {
+        "text": "Cadence",
+        "href": "/Portfolio-2.0/projects/taskflow-calendar/",
+        "target": null,
+        "rel": null,
+        "top": 7215
+      },
+      {
+        "text": "1,145 automated tests — 634 frontend + 511 backend, vitest",
+        "href": "/Portfolio-2.0/projects/taskflow-calendar/#v-taskflow-calendar-1",
+        "target": null,
+        "rel": null,
+        "top": 7361
+      },
+      {
+        "text": "the case file ⟶",
+        "href": "/Portfolio-2.0/projects/taskflow-calendar/",
+        "target": null,
+        "rel": null,
+        "top": 7409
+      },
+      {
+        "text": "master inventory pipeline",
+        "href": "/Portfolio-2.0/projects/master-inventory/",
+        "target": null,
+        "rel": null,
+        "top": 7925
+      },
+      {
+        "text": "policybot",
+        "href": "/Portfolio-2.0/projects/policybot/",
+        "target": null,
+        "rel": null,
+        "top": 7925
+      },
+      {
+        "text": "lifequest ↗",
+        "href": "https://getlifequest.vercel.app",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 8006
+      },
+      {
+        "text": "system card ↗",
+        "href": "https://getlifequest.vercel.app/system-card",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 8006
+      },
+      {
+        "text": "271 backend tests — jobtracker validation ledger",
+        "href": "/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4",
+        "target": null,
+        "rel": null,
+        "top": 8369
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x over -O3, committed benchmarks",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+        "target": null,
+        "rel": null,
+        "top": 8503
+      },
+      {
+        "text": "19/20 cited-source sweep — policybot validation ledger",
+        "href": "/Portfolio-2.0/projects/policybot/#v-policybot-1",
+        "target": null,
+        "rel": null,
+        "top": 8637
+      },
+      {
+        "text": "aesh_1055@icloud.com",
+        "href": "mailto:aesh_1055@icloud.com",
+        "target": null,
+        "rel": null,
+        "top": 9481
+      },
+      {
+        "text": "resume",
+        "href": "/Portfolio-2.0/resume.pdf",
+        "target": null,
+        "rel": null,
+        "top": 9481
+      },
+      {
+        "text": "github",
+        "href": "https://github.com/yadava5",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 9481
+      },
+      {
+        "text": "linkedin",
+        "href": "https://www.linkedin.com/in/ayush-yadav-developer/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 9481
+      },
+      {
+        "text": "Email me — I read everything.",
+        "href": "mailto:aesh_1055@icloud.com",
+        "target": null,
+        "rel": null,
+        "top": 9573
+      },
+      {
+        "text": "jobtracker — receipt 05 ⟶",
+        "href": "/Portfolio-2.0/projects/jobtracker/#v-jobtracker-5",
+        "target": null,
+        "rel": null,
+        "top": 9797
+      },
+      {
+        "text": "fast-mnist-nn — receipt 02 ⟶",
+        "href": "/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+        "target": null,
+        "rel": null,
+        "top": 9858
+      },
+      {
+        "text": "taskflow-calendar — receipt 01 ⟶",
+        "href": "/Portfolio-2.0/projects/taskflow-calendar/#v-taskflow-calendar-1",
+        "target": null,
+        "rel": null,
+        "top": 9919
+      },
+      {
+        "text": "jetpack-compress — readme @ af2c4b1 ↗",
+        "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 9797
+      },
+      {
+        "text": "policybot — receipt 01 ⟶",
+        "href": "/Portfolio-2.0/projects/policybot/#v-policybot-1",
+        "target": null,
+        "rel": null,
+        "top": 9836
+      },
+      {
+        "text": "master-inventory — receipt 05 ⟶",
+        "href": "/Portfolio-2.0/projects/master-inventory/#v-master-inventory-5",
+        "target": null,
+        "rel": null,
+        "top": 9897
+      },
+      {
+        "text": "automl — the case file ⟶",
+        "href": "/Portfolio-2.0/projects/automl/",
+        "target": null,
+        "rel": null,
+        "top": 9959
+      },
+      {
+        "text": "Randall Vollen ↗",
+        "href": "https://www.linkedin.com/in/randall-v-30745a4/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "top": 10283
+      },
+      {
+        "text": "the evidence index — every claim on file ⟶",
+        "href": "/Portfolio-2.0/evidence/",
+        "target": null,
+        "rel": null,
+        "top": 10422
+      }
+    ]
+  },
+  {
+    "k": "consoleErrors",
+    "v": []
+  },
+  {
+    "k": "requestFailed",
+    "v": [
+      "net::ERR_ABORTED https://yadava5.github.io/Portfolio-2.0/evidence/",
+      "net::ERR_ABORTED https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/",
+      "net::ERR_ABORTED https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/",
+      "net::ERR_ABORTED https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/",
+      "net::ERR_ABORTED https://yadava5.github.io/Portfolio-2.0/"
+    ]
+  },
+  {
+    "k": "http4xx5xx",
+    "v": []
+  }
+]

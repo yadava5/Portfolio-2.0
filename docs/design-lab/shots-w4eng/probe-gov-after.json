@@ -1,0 +1,44 @@
+{
+  "atGate": {
+    "ty": 182,
+    "halted": true,
+    "beadFill": "rgb(179, 78, 44)",
+    "edgeDashoffset": "0px",
+    "tier": "core",
+    "motionOff": false
+  },
+  "beforeInject": {
+    "tier": "core",
+    "score": 0,
+    "stableMs": 1043.2999997138977,
+    "watching": true
+  },
+  "afterInject": {
+    "tier": "print",
+    "score": 0,
+    "stableMs": 0,
+    "watching": false
+  },
+  "afterDownshift": {
+    "ty": 182,
+    "halted": true,
+    "beadFill": "rgb(196, 83, 46)",
+    "edgeDashoffset": "0px",
+    "tier": "print",
+    "motionOff": true
+  },
+  "nextPageTier": {
+    "tier": "print",
+    "cap": "print"
+  },
+  "afterSmoothScrolling": {
+    "tier": "print",
+    "cap": "print",
+    "state": {
+      "tier": "print",
+      "score": 0,
+      "stableMs": 0,
+      "watching": false
+    }
+  }
+}

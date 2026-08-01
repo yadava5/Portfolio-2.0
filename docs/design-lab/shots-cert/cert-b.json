@@ -1,0 +1,1054 @@
+{
+  "navContact": {
+    "mail": {
+      "o": 1,
+      "top": 663,
+      "t": "aesh_1055@icloud.com"
+    },
+    "invisibleLinks": [],
+    "totalLinks": 14,
+    "invite": {
+      "o": 1,
+      "top": 222
+    }
+  },
+  "navTrail": {
+    "trail": [
+      {
+        "label": "the work",
+        "url": "http://localhost:4488/#work",
+        "scrollY": 4908,
+        "histLen": 3
+      },
+      {
+        "label": "experience",
+        "url": "http://localhost:4488/#path",
+        "scrollY": 1568,
+        "histLen": 4
+      },
+      {
+        "label": "contact",
+        "url": "http://localhost:4488/#gate",
+        "scrollY": 8722,
+        "histLen": 5
+      }
+    ],
+    "afterBack": {
+      "url": "http://localhost:4488/#path",
+      "scrollY": 1568
+    },
+    "afterFwd": {
+      "url": "http://localhost:4488/#gate",
+      "scrollY": 8722
+    }
+  },
+  "noJs": {
+    "threadSegments": 7,
+    "threadWithD": 0,
+    "pipelineChildren": 0
+  },
+  "headerH": {
+    "h": 68,
+    "scrollPad": "96px"
+  },
+  "deepLinks": {
+    "#who": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "#path": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "#automl": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "#work": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "#values": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "#gate": [
+      96,
+      96,
+      96,
+      96,
+      96
+    ],
+    "nojs:#fig-4": [
+      96
+    ],
+    "nojs:#values": [
+      96
+    ]
+  },
+  "pinFrames": [
+    {
+      "y": 3127,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 1,
+      "tokenTop": 239,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3177,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 1,
+      "tokenTop": 206,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3227,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 1,
+      "tokenTop": 217,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3277,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 1,
+      "tokenTop": 229,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3327,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 1,
+      "tokenTop": 241,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3377,
+      "notes": [
+        "Support domain documents through retrieval and MCP-based orchestration"
+      ],
+      "rows": 2,
+      "tokenTop": 253,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3427,
+      "notes": [],
+      "rows": 2,
+      "tokenTop": 265,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3477,
+      "notes": [
+        "Make pipeline decisions auditable instead of opaque."
+      ],
+      "rows": 2,
+      "tokenTop": 277,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3527,
+      "notes": [
+        "Make pipeline decisions auditable instead of opaque."
+      ],
+      "rows": 2,
+      "tokenTop": 289,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3577,
+      "notes": [
+        "Make pipeline decisions auditable instead of opaque."
+      ],
+      "rows": 3,
+      "tokenTop": 301,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3627,
+      "notes": [
+        "Make pipeline decisions auditable instead of opaque."
+      ],
+      "rows": 3,
+      "tokenTop": 313,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3677,
+      "notes": [],
+      "rows": 3,
+      "tokenTop": 325,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3727,
+      "notes": [
+        "Keep training workflows reproducible with containerized execution."
+      ],
+      "rows": 3,
+      "tokenTop": 337,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3777,
+      "notes": [
+        "Keep training workflows reproducible with containerized execution."
+      ],
+      "rows": 4,
+      "tokenTop": 349,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3827,
+      "notes": [],
+      "rows": 4,
+      "tokenTop": 362,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3877,
+      "notes": [
+        "Validate the product flow with browser-level checks."
+      ],
+      "rows": 4,
+      "tokenTop": 374,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3927,
+      "notes": [],
+      "rows": 4,
+      "tokenTop": 379,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 3977,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 377,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4027,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 363,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4077,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 319,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4127,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 269,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4177,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 219,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4227,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 169,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4277,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 119,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4327,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 69,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4377,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": 19,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4427,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": -31,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4477,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": -81,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4527,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": -131,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4577,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 4,
+      "tokenTop": -181,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4627,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 2,
+      "tokenTop": -231,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4677,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 1,
+      "tokenTop": -281,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4727,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 0,
+      "tokenTop": -331,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4777,
+      "notes": [
+        "Require human approval before generated actions alter workflow state."
+      ],
+      "rows": 0,
+      "tokenTop": -381,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4827,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -431,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4877,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -481,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4927,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -531,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 4977,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -581,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 5027,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -631,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 5077,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -681,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 5127,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -731,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    },
+    {
+      "y": 5177,
+      "notes": [],
+      "rows": 0,
+      "tokenTop": -781,
+      "litPhases": 0,
+      "leftHash": 1364,
+      "leftHead": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23 The agent drafts the whole pipeline. Nothing runs un"
+    }
+  ],
+  "mobLinks": [
+    {
+      "href": "#main-content",
+      "t": "Skip to main content",
+      "visible": true,
+      "w": 1,
+      "h": 1
+    },
+    {
+      "href": "/",
+      "t": "ayush yadav",
+      "visible": true,
+      "w": 96,
+      "h": 18
+    },
+    {
+      "href": "/#work",
+      "t": "the work",
+      "visible": true,
+      "w": 69,
+      "h": 15
+    },
+    {
+      "href": "/#path",
+      "t": "experience",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "/#gate",
+      "t": "contact",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "https://github.com/yadava5",
+      "t": "github",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "t": "Contact",
+      "visible": true,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "href": "/resume.pdf",
+      "t": "resume",
+      "visible": true,
+      "w": 74,
+      "h": 32
+    },
+    {
+      "href": "#arrival",
+      "t": "01arrival",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#who",
+      "t": "02who",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#path",
+      "t": "03the path",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#automl",
+      "t": "04automl",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#work",
+      "t": "05the work",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#values",
+      "t": "06how i work",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#gate",
+      "t": "07the gate",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#footnote-1",
+      "t": "1",
+      "visible": true,
+      "w": 8,
+      "h": 15
+    },
+    {
+      "href": "#automl",
+      "t": "the capstone — agentic automl: sev",
+      "visible": true,
+      "w": 330,
+      "h": 44
+    },
+    {
+      "href": "/resume.pdf",
+      "t": "the resume ⟶",
+      "visible": true,
+      "w": 110,
+      "h": 44
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "t": "Applied",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "t": "Glyph",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "/projects/taskflow-calendar/",
+      "t": "Cadence",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#work",
+      "t": "the work",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "/evidence/",
+      "t": "the evidence",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "/resume.pdf",
+      "t": "the resume",
+      "visible": false,
+      "w": 0,
+      "h": 0
+    },
+    {
+      "href": "#fnref-1",
+      "t": "↩",
+      "visible": true,
+      "w": 8,
+      "h": 15
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "t": "19/20 cited-source sweep — policyb",
+      "visible": true,
+      "w": 321,
+      "h": 33
+    },
+    {
+      "href": "/projects/automl/",
+      "t": "read the case file — agentic autom",
+      "visible": true,
+      "w": 304,
+      "h": 39
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "t": "Applied",
+      "visible": true,
+      "w": 85,
+      "h": 32
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-5",
+      "t": "macro-f1 0.98 — 96-sample gate",
+      "visible": true,
+      "w": 261,
+      "h": 15
+    },
+    {
+      "href": "/projects/jobtracker/",
+      "t": "the case file ⟶",
+      "visible": true,
+      "w": 136,
+      "h": 15
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "t": "Glyph",
+      "visible": true,
+      "w": 67,
+      "h": 32
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "t": "openmp+simd dot kernel — 3.5x vs -",
+      "visible": true,
+      "w": 295,
+      "h": 33
+    },
+    {
+      "href": "/projects/fast-mnist-nn/",
+      "t": "the case file ⟶",
+      "visible": true,
+      "w": 136,
+      "h": 15
+    },
+    {
+      "href": "https://jetpack-compress.vercel.app",
+      "t": "jetpack-compress",
+      "visible": true,
+      "w": 195,
+      "h": 32
+    },
+    {
+      "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+      "t": "72 tests, 0 failures — jdk 25 @ af",
+      "visible": true,
+      "w": 252,
+      "h": 33
+    },
+    {
+      "href": "https://jetpack-compress.vercel.app",
+      "t": "the live demo ↗",
+      "visible": true,
+      "w": 130,
+      "h": 15
+    },
+    {
+      "href": "https://github.com/yadava5/jetpack-compress",
+      "t": "source",
+      "visible": true,
+      "w": 52,
+      "h": 15
+    },
+    {
+      "href": "/projects/taskflow-calendar/",
+      "t": "Cadence",
+      "visible": true,
+      "w": 94,
+      "h": 32
+    },
+    {
+      "href": "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+      "t": "1,145 automated tests — 634 fronte",
+      "visible": true,
+      "w": 261,
+      "h": 33
+    },
+    {
+      "href": "/projects/taskflow-calendar/",
+      "t": "the case file ⟶",
+      "visible": true,
+      "w": 136,
+      "h": 15
+    },
+    {
+      "href": "/projects/master-inventory/",
+      "t": "master inventory pipeline",
+      "visible": true,
+      "w": 217,
+      "h": 15
+    },
+    {
+      "href": "/projects/policybot/",
+      "t": "policybot",
+      "visible": true,
+      "w": 78,
+      "h": 15
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-4",
+      "t": "182 backend tests — jobtracker val",
+      "visible": true,
+      "w": 261,
+      "h": 33
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "t": "openmp+simd dot kernel — 3.5x over",
+      "visible": true,
+      "w": 295,
+      "h": 33
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "t": "19/20 cited-source sweep — policyb",
+      "visible": true,
+      "w": 234,
+      "h": 33
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "t": "aesh_1055@icloud.com",
+      "visible": true,
+      "w": 174,
+      "h": 18
+    },
+    {
+      "href": "/resume.pdf",
+      "t": "resume",
+      "visible": true,
+      "w": 52,
+      "h": 18
+    },
+    {
+      "href": "https://github.com/yadava5",
+      "t": "github",
+      "visible": true,
+      "w": 52,
+      "h": 18
+    },
+    {
+      "href": "https://www.linkedin.com/in/ayush-yadav-developer/",
+      "t": "linkedin",
+      "visible": true,
+      "w": 69,
+      "h": 18
+    },
+    {
+      "href": "mailto:aesh_1055@icloud.com",
+      "t": "Email me — I read everything.",
+      "visible": true,
+      "w": 330,
+      "h": 29
+    },
+    {
+      "href": "/projects/jobtracker/#v-jobtracker-5",
+      "t": "jobtracker — receipt 05 ⟶",
+      "visible": true,
+      "w": 223,
+      "h": 18
+    },
+    {
+      "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+      "t": "fast-mnist-nn — receipt 02 ⟶",
+      "visible": true,
+      "w": 249,
+      "h": 18
+    },
+    {
+      "href": "/projects/taskflow-calendar/#v-taskflow-calendar-1",
+      "t": "taskflow-calendar — receipt 01 ⟶",
+      "visible": true,
+      "w": 284,
+      "h": 18
+    },
+    {
+      "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+      "t": "jetpack-compress — readme @ af2c4b",
+      "visible": true,
+      "w": 321,
+      "h": 18
+    },
+    {
+      "href": "/projects/policybot/#v-policybot-1",
+      "t": "policybot — receipt 01 ⟶",
+      "visible": true,
+      "w": 214,
+      "h": 18
+    },
+    {
+      "href": "/projects/master-inventory/#v-master-inventory-5",
+      "t": "master-inventory — receipt 05 ⟶",
+      "visible": true,
+      "w": 275,
+      "h": 18
+    },
+    {
+      "href": "/projects/automl/",
+      "t": "automl — the case file ⟶",
+      "visible": true,
+      "w": 214,
+      "h": 18
+    },
+    {
+      "href": "https://www.linkedin.com/in/randall-v-30745a4/",
+      "t": "Randall Vollen ↗",
+      "visible": true,
+      "w": 139,
+      "h": 15
+    },
+    {
+      "href": "/evidence/",
+      "t": "the evidence index — every claim o",
+      "visible": true,
+      "w": 304,
+      "h": 33
+    }
+  ],
+  "mobEvidenceReachable": [
+    {
+      "href": "/evidence/",
+      "t": "the evidence index — every claim o",
+      "visible": true,
+      "w": 304,
+      "h": 33
+    }
+  ],
+  "mobHeader": [
+    {
+      "t": "",
+      "aria": "Open Ayush Yadav portrait",
+      "w": 28,
+      "h": 28,
+      "visible": true
+    },
+    {
+      "t": "ayush yadav",
+      "aria": null,
+      "w": 96,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "t": "the work",
+      "aria": null,
+      "w": 69,
+      "h": 15,
+      "visible": true
+    },
+    {
+      "t": "experience",
+      "aria": null,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    {
+      "t": "contact",
+      "aria": null,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    {
+      "t": "github",
+      "aria": null,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    {
+      "t": "motion: on",
+      "aria": null,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    {
+      "t": "",
+      "aria": "Contact",
+      "w": 32,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "t": "resume",
+      "aria": "Resume (opens in a new tab)",
+      "w": 74,
+      "h": 32,
+      "visible": true
+    }
+  ],
+  "mobHeroGap": {
+    "standfirstBottom": 439,
+    "capstoneTop": 538,
+    "gap": 99
+  },
+  "deskHeroGap": {
+    "standfirst": {
+      "top": 524,
+      "bottom": 550,
+      "fs": "19px"
+    },
+    "capstoneTop": 646,
+    "gap": 96
+  },
+  "dipMotion": 0,
+  "governorHarness": "undefined",
+  "tier": "core",
+  "reducedTier": {
+    "tier": "print",
+    "motionOff": true
+  }
+}

@@ -1,0 +1,1175 @@
+[
+ {
+  "k": "N19.refSeating",
+  "v": [
+   {
+    "w": 640,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 680,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 2,
+    "onLine2": 5,
+    "seats": [
+     "line1-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 720,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 3,
+    "onLine2": 4,
+    "seats": [
+     "line1-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 760,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 5,
+    "onLine2": 2,
+    "seats": [
+     "line1-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 800,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 6,
+    "onLine2": 1,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line2-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 840,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 6,
+    "onLine2": 1,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line2-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 880,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 7,
+    "onLine2": 0,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 920,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 7,
+    "onLine2": 0,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 960,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 7,
+    "onLine2": 0,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 1000,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 7,
+    "onLine2": 0,
+    "seats": [
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right",
+     "line1-right"
+    ]
+   },
+   {
+    "w": 1040,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 0,
+    "onLine2": 7,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1080,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 0,
+    "onLine2": 7,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1120,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 0,
+    "onLine2": 7,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1160,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1200,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1240,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1280,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1320,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1360,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1400,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1440,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1480,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1520,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1560,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1600,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1640,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1680,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1720,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1760,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1800,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1840,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1880,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   },
+   {
+    "w": 1920,
+    "rows": 7,
+    "flushRight": 7,
+    "flushLeft": 0,
+    "uniformSeat": true,
+    "onLine1": 1,
+    "onLine2": 6,
+    "seats": [
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line2-right",
+     "line1-right",
+     "line2-right",
+     "line2-right"
+    ]
+   }
+  ]
+ },
+ {
+  "k": "N19.mixedWidths",
+  "v": []
+ },
+ {
+  "k": "N19.uniformAt",
+  "v": "33 / 33"
+ },
+ {
+  "k": "N19b.constructSweep",
+  "v": [
+   {
+    "id": "home :: LI.flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1",
+    "sample": "1. macro-f1 0.9791, 96-sample gatejobtracker",
+    "seats": {
+     "line2-right": 67,
+     "line1-right": 17
+    },
+    "faultAt": []
+   },
+   {
+    "id": "home :: P.label-mono mt-4 flex flex-wrap items-baseline justify-between",
+    "sample": "Randall Vollen ↗ — Hands on Experienced Data",
+    "seats": {
+     "line2-right": 12
+    },
+    "faultAt": []
+   },
+   {
+    "id": "home :: DIV.label-mono flex flex-wrap items-baseline justify-between gap-x-6",
+    "sample": "¶ 01 / 07 · arrival — a working paper on wha",
+    "seats": {
+     "line2-right": 2,
+     "line1-right": 6
+    },
+    "faultAt": []
+   },
+   {
+    "id": "evidence :: DIV.flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1",
+    "sample": "e-01visibility: [public]",
+    "seats": {
+     "line1-right": 132
+    },
+    "faultAt": []
+   },
+   {
+    "id": "evidence :: DIV.label-mono mt-6 flex flex-wrap items-baseline justify-between",
+    "sample": "back to the work ⟵first case file — agentic ",
+    "seats": {
+     "line2-right": 4,
+     "line1-right": 8
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-automl :: DIV.label-mono text-ink-secondary flex flex-wrap items-baseline justify-between",
+    "sample": "¶ case file 1 of 7 · agentic automl platform",
+    "seats": {
+     "line2-right": 12
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-automl :: DIV.[&>:last-child]:folio-seat flex flex-wrap items-baseline justify-between gap-x-8",
+    "sample": "validationwalk the 8 claims ⟶audit walked · ",
+    "seats": {
+     "line2-right": 11,
+     "line1-right": 1
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-automl :: DIV.label-mono mt-6 flex flex-wrap items-baseline justify-between",
+    "sample": "back to the work ⟵the evidence index ⟶",
+    "seats": {
+     "line2-right": 4,
+     "line1-right": 8
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-jobtracker :: DIV.label-mono text-ink-secondary flex flex-wrap items-baseline justify-between",
+    "sample": "¶ case file 4 of 7 · applied — filed 2026-02",
+    "seats": {
+     "line2-right": 12
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-jobtracker :: DIV.[&>:last-child]:folio-seat flex flex-wrap items-baseline justify-between gap-x-8",
+    "sample": "validationwalk the 11 claims ⟶audit walked ·",
+    "seats": {
+     "line2-right": 6,
+     "line1-right": 6
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-jobtracker :: LI.border-ink/15 label-mono flex flex-wrap items-baseline justify-between",
+    "sample": "README — the desktop-era record[repo] · yada",
+    "seats": {
+     "line2-right": 22,
+     "line1-right": 38
+    },
+    "faultAt": []
+   },
+   {
+    "id": "case-jobtracker :: DIV.label-mono mt-6 flex flex-wrap items-baseline justify-between",
+    "sample": "back to the work ⟵the evidence index ⟶",
+    "seats": {
+     "line2-right": 4,
+     "line1-right": 8
+    },
+    "faultAt": []
+   }
+  ]
+ },
+ {
+  "k": "N19b.faulting",
+  "v": []
+ },
+ {
+  "k": "N20.arrowCensus",
+  "v": [
+   {
+    "name": "home",
+    "external": 13,
+    "marked": 12,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "evidence",
+    "external": 10,
+    "marked": 9,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "404",
+    "external": 2,
+    "marked": 1,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "case-automl",
+    "external": 4,
+    "marked": 3,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "case-fast-mnist-nn",
+    "external": 15,
+    "marked": 10,
+    "bare": 5,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume",
+     "yadava5/fast-mnist-nn @ c6e5c0b",
+     "Source code",
+     "v1.0.0 release"
+    ]
+   },
+   {
+    "name": "case-jobtracker",
+    "external": 28,
+    "marked": 21,
+    "bare": 7,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume",
+     "yadava5/applied @ 36a2f54 · integration/web-mi",
+     "README — the desktop-era record",
+     "Architecture docs"
+    ]
+   },
+   {
+    "name": "case-master-inventory",
+    "external": 2,
+    "marked": 1,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "case-policybot",
+    "external": 2,
+    "marked": 1,
+    "bare": 1,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume"
+    ]
+   },
+   {
+    "name": "case-taskflow-calendar",
+    "external": 24,
+    "marked": 20,
+    "bare": 4,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume",
+     "yadava5/cadence @ 54c79e0",
+     "Source code",
+     "Row-level security migration"
+    ]
+   },
+   {
+    "name": "case-visual-assist",
+    "external": 11,
+    "marked": 6,
+    "bare": 5,
+    "bareInEvidenceTable": 0,
+    "bareSample": [
+     "resume",
+     "yadava5/VisualAssist @ 22ebdaa",
+     "Source code",
+     "README beta and LiDAR requirements"
+    ]
+   }
+  ]
+ },
+ {
+  "k": "N20.totals",
+  "v": {
+   "external": 111,
+   "marked": 84,
+   "bare": 27
+  }
+ },
+ {
+  "k": "N20.density@390",
+  "v": {
+   "before": {
+    "cells": 17,
+    "totalH": 1147,
+    "docH": 12586,
+    "overflow": 0,
+    "artifactLines": 35
+   },
+   "after": {
+    "totalH": 1147,
+    "docH": 12586,
+    "overflow": 0,
+    "artifactLines": 35
+   }
+  }
+ },
+ {
+  "k": "N20.density@1440",
+  "v": {
+   "before": {
+    "cells": 17,
+    "totalH": 1257,
+    "docH": 7214,
+    "overflow": 0,
+    "artifactLines": 32
+   },
+   "after": {
+    "totalH": 1257,
+    "docH": 7214,
+    "overflow": 0,
+    "artifactLines": 32
+   }
+  }
+ },
+ {
+  "k": "N21.ambiguousLinks",
+  "v": {
+   "390": {
+    "dupes": [
+     {
+      "text": "Applied",
+      "n": 2,
+      "hrefs": [
+       "/projects/jobtracker/",
+       "/projects/jobtracker/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 0,
+        "h": 0,
+        "lines": 0
+       },
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 85,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Glyph",
+      "n": 2,
+      "hrefs": [
+       "/projects/fast-mnist-nn/",
+       "/projects/fast-mnist-nn/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 0,
+        "h": 0,
+        "lines": 0
+       },
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 67,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Cadence",
+      "n": 2,
+      "hrefs": [
+       "/projects/taskflow-calendar/",
+       "/projects/taskflow-calendar/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 0,
+        "h": 0,
+        "lines": 0
+       },
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 94,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     }
+    ]
+   },
+   "768": {
+    "dupes": [
+     {
+      "text": "Applied",
+      "n": 2,
+      "hrefs": [
+       "/projects/jobtracker/",
+       "/projects/jobtracker/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 61,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 85,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Glyph",
+      "n": 2,
+      "hrefs": [
+       "/projects/fast-mnist-nn/",
+       "/projects/fast-mnist-nn/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 43,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 67,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Cadence",
+      "n": 2,
+      "hrefs": [
+       "/projects/taskflow-calendar/",
+       "/projects/taskflow-calendar/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 61,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 94,
+        "h": 32,
+        "lines": 1
+       }
+      ]
+     }
+    ]
+   },
+   "1440": {
+    "dupes": [
+     {
+      "text": "Applied",
+      "n": 2,
+      "hrefs": [
+       "/projects/jobtracker/",
+       "/projects/jobtracker/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 61,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/jobtracker/",
+        "aria": null,
+        "w": 128,
+        "h": 48,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Glyph",
+      "n": 2,
+      "hrefs": [
+       "/projects/fast-mnist-nn/",
+       "/projects/fast-mnist-nn/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 43,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/fast-mnist-nn/",
+        "aria": null,
+        "w": 101,
+        "h": 48,
+        "lines": 1
+       }
+      ]
+     },
+     {
+      "text": "Cadence",
+      "n": 2,
+      "hrefs": [
+       "/projects/taskflow-calendar/",
+       "/projects/taskflow-calendar/"
+      ],
+      "boxes": [
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 61,
+        "h": 15,
+        "lines": 1
+       },
+       {
+        "href": "/projects/taskflow-calendar/",
+        "aria": null,
+        "w": 141,
+        "h": 48,
+        "lines": 1
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ {
+  "k": "N23.preload/",
+  "v": {
+   "warns": [],
+   "loadedFaces": [
+    "Fraunces/normal",
+    "Fraunces Fallback/normal",
+    "Newsreader/italic",
+    "Newsreader/normal",
+    "Fragment Mono/normal",
+    "Fragment Mono Fallback/normal"
+   ],
+   "preloads": [
+    "283946f895707bec-s.p.woff2",
+    "cb9f64d62d112b41-s.p.woff2",
+    "d8848e31105c7f17-s.p.woff2",
+    "e699fbf9329167c0-s.p.woff2"
+   ]
+  }
+ },
+ {
+  "k": "N23.preload/no-such-page/",
+  "v": {
+   "warns": [],
+   "loadedFaces": [
+    "Fraunces/normal",
+    "Fraunces Fallback/normal",
+    "Newsreader/normal",
+    "Newsreader Fallback/normal",
+    "Fragment Mono/normal",
+    "Fragment Mono Fallback/normal"
+   ],
+   "preloads": [
+    "283946f895707bec-s.p.woff2",
+    "cb9f64d62d112b41-s.p.woff2",
+    "d8848e31105c7f17-s.p.woff2",
+    "e699fbf9329167c0-s.p.woff2"
+   ]
+  }
+ },
+ {
+  "k": "N23.preload/evidence/",
+  "v": {
+   "warns": [],
+   "loadedFaces": [
+    "Fraunces/normal",
+    "Newsreader/italic",
+    "Newsreader/normal",
+    "Fragment Mono/normal",
+    "Fragment Mono Fallback/normal"
+   ],
+   "preloads": [
+    "283946f895707bec-s.p.woff2",
+    "cb9f64d62d112b41-s.p.woff2",
+    "d8848e31105c7f17-s.p.woff2",
+    "e699fbf9329167c0-s.p.woff2"
+   ]
+  }
+ }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "text": "Skip to main content",
+    "href": "http://localhost:3000/projects/jobtracker/#main-content"
+  },
+  {
+    "text": "ayush yadav",
+    "href": "http://localhost:3000/"
+  },
+  {
+    "text": "the work",
+    "href": "http://localhost:3000/#work"
+  },
+  {
+    "text": "experience",
+    "href": "http://localhost:3000/#path"
+  },
+  {
+    "text": "contact",
+    "href": "http://localhost:3000/#gate"
+  },
+  {
+    "text": "github",
+    "href": "https://github.com/yadava5"
+  },
+  {
+    "text": "Contact",
+    "href": "mailto:aesh_1055@icloud.com"
+  },
+  {
+    "text": "resume",
+    "href": "http://localhost:3000/resume.pdf"
+  },
+  {
+    "text": "Back to projects",
+    "href": "http://localhost:3000/#projects"
+  },
+  {
+    "text": "Source code",
+    "href": "https://github.com/yadava5/jobtracker"
+  },
+  {
+    "text": "REPO Source-truth README",
+    "href": "https://github.com/yadava5/jobtracker/blob/integration/web-migration/README.md"
+  },
+  {
+    "text": "REPO Architecture docs",
+    "href": "https://github.com/yadava5/jobtracker/blob/integration/web-migration/docs/ARCHITECTURE.md"
+  },
+  {
+    "text": "BENCHMARK ML strategy and evaluation gates",
+    "href": "https://github.com/yadava5/jobtracker/blob/integration/web-migration/docs/ML_STRATEGY.md"
+  },
+  {
+    "text": "REPO Backend test suite",
+    "href": "https://github.com/yadava5/jobtracker/tree/integration/web-migration/backend/tests"
+  },
+  {
+    "text": "REPO Web beta scaffold",
+    "href": "https://github.com/yadava5/jobtracker/tree/integration/web-migration/apps/web"
+  },
+  {
+    "text": "github",
+    "href": "https://github.com/yadava5"
+  },
+  {
+    "text": "linkedin",
+    "href": "https://www.linkedin.com/in/ayush-yadav-developer/"
+  },
+  {
+    "text": "email",
+    "href": "mailto:aesh_1055@icloud.com"
+  }
+]

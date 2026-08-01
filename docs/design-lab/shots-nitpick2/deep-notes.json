@@ -1,0 +1,1157 @@
+[
+  {
+    "k": "case.automl",
+    "v": {
+      "title": "Agentic AutoML Platform Case Study | Ayush Yadav",
+      "h1": "Agentic AutoML Platform",
+      "headingSkips": [],
+      "headingCount": 15,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 1400,
+          "broken": false,
+          "src": "agentic-automl-poster-proof.webp"
+        },
+        {
+          "alt": "",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 1413,
+          "broken": false,
+          "src": "agentic-automl-poster-proof.webp"
+        },
+        {
+          "alt": "",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 1422,
+          "broken": false,
+          "src": "agentic-automl-poster-proof.webp"
+        },
+        {
+          "alt": "Presenter stack proof plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 462,
+          "broken": false,
+          "src": "agentic-automl-stack-proof.png"
+        },
+        {
+          "alt": "Private-safe experiment registry screenshot plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 698,
+          "broken": false,
+          "src": "automl.webp"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 3,
+      "figures": 4,
+      "figIds": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "docHeight": 7394,
+      "counter": "¶ case file 1 of 7 · agentic automl platform — filed 2025-09 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.fast-mnist-nn",
+    "v": {
+      "title": "Glyph Case Study | Ayush Yadav",
+      "h1": "Glyph",
+      "headingSkips": [],
+      "headingCount": 14,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "Local React workbench screenshot plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 462,
+          "broken": false,
+          "src": "mnist.webp"
+        },
+        {
+          "alt": "Vector project asset plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 462,
+          "broken": false,
+          "src": "fast-mnist-nn.svg"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "docHeight": 5797,
+      "counter": "¶ case file 2 of 7 · glyph — filed 2025-10 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.jobtracker",
+    "v": {
+      "title": "Applied Case Study | Ayush Yadav",
+      "h1": "Applied",
+      "headingSkips": [],
+      "headingCount": 16,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "Local classification architecture plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 698,
+          "broken": false,
+          "src": "jobtracker-architecture.svg"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "docHeight": 7214,
+      "counter": "¶ case file 4 of 7 · applied — filed 2026-02 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.master-inventory",
+    "v": {
+      "title": "Master Inventory Pipeline Case Study | Ayush Yadav",
+      "h1": "Master Inventory Pipeline",
+      "headingSkips": [],
+      "headingCount": 15,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "Master Inventory Tableau and Workday pipeline architecture diagram",
+          "loading": "eager",
+          "w": 1376,
+          "h": 768,
+          "cw": 464,
+          "broken": false,
+          "src": "pipeline-architecture.svg"
+        },
+        {
+          "alt": "Private-safe pipeline architecture plate",
+          "loading": "lazy",
+          "w": 1376,
+          "h": 768,
+          "cw": 462,
+          "broken": false,
+          "src": "pipeline-architecture.svg"
+        },
+        {
+          "alt": "Processed output proof ledger plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 462,
+          "broken": false,
+          "src": "master-inventory-proof.svg"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "docHeight": 5465,
+      "counter": "¶ case file 6 of 7 · master inventory pipeline — filed 2025-06 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.policybot",
+    "v": {
+      "title": "PolicyBot Case Study | Ayush Yadav",
+      "h1": "PolicyBot",
+      "headingSkips": [],
+      "headingCount": 16,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "PolicyBot retrieval and quote-validation architecture diagram",
+          "loading": "eager",
+          "w": 1376,
+          "h": 768,
+          "cw": 464,
+          "broken": false,
+          "src": "policybot-architecture.svg"
+        },
+        {
+          "alt": "Retrieval and validation architecture plate",
+          "loading": "lazy",
+          "w": 1376,
+          "h": 768,
+          "cw": 462,
+          "broken": false,
+          "src": "policybot-architecture.svg"
+        },
+        {
+          "alt": "Validation ledger proof plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 462,
+          "broken": false,
+          "src": "policybot-validation-proof.svg"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "docHeight": 5494,
+      "counter": "¶ case file 7 of 7 · policybot — filed 2025-06 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.taskflow-calendar",
+    "v": {
+      "title": "Cadence Case Study | Ayush Yadav",
+      "h1": "Cadence",
+      "headingSkips": [],
+      "headingCount": 15,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "Local mock-login calendar screenshot plate",
+          "loading": "lazy",
+          "w": 0,
+          "h": 0,
+          "cw": 698,
+          "broken": false,
+          "src": "taskflow.png"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "docHeight": 7682,
+      "counter": "¶ case file 5 of 7 · cadence — filed 2023-09 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "case.visual-assist",
+    "v": {
+      "title": "Visual Assist Case Study | Ayush Yadav",
+      "h1": "Visual Assist",
+      "headingSkips": [],
+      "headingCount": 13,
+      "imgs": [
+        {
+          "alt": "Ayush Yadav professional portrait",
+          "loading": "lazy",
+          "w": 96,
+          "h": 96,
+          "cw": 34,
+          "broken": false,
+          "src": "ayush-yadav-avatar-96.webp"
+        },
+        {
+          "alt": "Visual Assist on-device accessibility architecture diagram",
+          "loading": "eager",
+          "w": 1376,
+          "h": 768,
+          "cw": 464,
+          "broken": false,
+          "src": "visual-assist-architecture.svg"
+        },
+        {
+          "alt": "On-device accessibility architecture plate",
+          "loading": "lazy",
+          "w": 1376,
+          "h": 768,
+          "cw": 698,
+          "broken": false,
+          "src": "visual-assist-architecture.svg"
+        }
+      ],
+      "brokenImgs": 0,
+      "missingAlt": 0,
+      "emptyAlt": 0,
+      "figures": 3,
+      "figIds": [
+        null,
+        null,
+        null
+      ],
+      "citedFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "existFigs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "docHeight": 4500,
+      "counter": "¶ case file 3 of 7 · visual assist — filed 2025-03 · last verified 2026-07",
+      "h1Size": "72px",
+      "consoleErrors": []
+    }
+  },
+  {
+    "k": "evidence@390",
+    "v": {
+      "glance": "11 entries",
+      "sums": {
+        "nums": [
+          11
+        ],
+        "addsUp": null
+      },
+      "rowCount": 15,
+      "heldMentions": 6,
+      "redactionBlocks": 0,
+      "headerH": 64,
+      "headerPos": "fixed",
+      "scrollW": 390,
+      "clientW": 390,
+      "docH": 6307
+    }
+  },
+  {
+    "k": "evidence@768",
+    "v": {
+      "glance": "11 entries",
+      "sums": {
+        "nums": [
+          11
+        ],
+        "addsUp": null
+      },
+      "rowCount": 15,
+      "heldMentions": 6,
+      "redactionBlocks": 0,
+      "headerH": 68,
+      "headerPos": "fixed",
+      "scrollW": 768,
+      "clientW": 768,
+      "docH": 4443
+    }
+  },
+  {
+    "k": "evidence@1024",
+    "v": {
+      "glance": "11 entries",
+      "sums": {
+        "nums": [
+          11
+        ],
+        "addsUp": null
+      },
+      "rowCount": 15,
+      "heldMentions": 6,
+      "redactionBlocks": 0,
+      "headerH": 68,
+      "headerPos": "fixed",
+      "scrollW": 1024,
+      "clientW": 1024,
+      "docH": 3857
+    }
+  },
+  {
+    "k": "evidence@1440",
+    "v": {
+      "glance": "11 entries",
+      "sums": {
+        "nums": [
+          11
+        ],
+        "addsUp": null
+      },
+      "rowCount": 15,
+      "heldMentions": 6,
+      "redactionBlocks": 0,
+      "headerH": 68,
+      "headerPos": "fixed",
+      "scrollW": 1440,
+      "clientW": 1440,
+      "docH": 3796
+    }
+  },
+  {
+    "k": "evidence.firstReceiptId",
+    "v": "jobtracker-local-classifier"
+  },
+  {
+    "k": "evidence.targetWash",
+    "v": {
+      "at300": {
+        "top": 96,
+        "bg": "rgba(0, 0, 0, 0)"
+      },
+      "at3s": {
+        "top": 96,
+        "bg": "rgba(0, 0, 0, 0)"
+      }
+    }
+  },
+  {
+    "k": "evidence@2560",
+    "v": {
+      "glance": "11 entries",
+      "sums": {
+        "nums": [
+          11
+        ],
+        "addsUp": null
+      },
+      "rowCount": 15,
+      "heldMentions": 6,
+      "redactionBlocks": 0,
+      "headerH": 68,
+      "headerPos": "fixed",
+      "scrollW": 2560,
+      "clientW": 2560,
+      "docH": 3796
+    }
+  },
+  {
+    "k": "tablet.768.home",
+    "v": {
+      "gridCount": 11,
+      "gridCols": [
+        "336px 280px",
+        "280px 344px",
+        "280px 344px",
+        "672px",
+        "672px",
+        "344px 280px",
+        "344px 280px",
+        "344px 280px"
+      ],
+      "scrollW": 768,
+      "clientW": 768,
+      "docH": 11995
+    }
+  },
+  {
+    "k": "tablet.768.case",
+    "v": {
+      "gridCount": 13,
+      "gridCols": [
+        "672px",
+        "672px",
+        "324px 324px",
+        "672px",
+        "255.359px 158.078px 194.547px",
+        "255.359px 158.078px 194.547px",
+        "255.359px 158.078px 194.547px",
+        "255.359px 158.078px 194.547px"
+      ],
+      "scrollW": 768,
+      "clientW": 768,
+      "docH": 6418
+    }
+  },
+  {
+    "k": "tablet.768.ev",
+    "v": {
+      "gridCount": 11,
+      "gridCols": [
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px",
+        "280.875px 351.125px"
+      ],
+      "scrollW": 768,
+      "clientW": 768,
+      "docH": 4443
+    }
+  },
+  {
+    "k": "tablet.834.home",
+    "v": {
+      "gridCount": 11,
+      "gridCols": [
+        "402px 280px",
+        "280px 410px",
+        "280px 410px",
+        "738px",
+        "738px",
+        "410px 280px",
+        "410px 280px",
+        "410px 280px"
+      ],
+      "scrollW": 834,
+      "clientW": 834,
+      "docH": 11950
+    }
+  },
+  {
+    "k": "tablet.834.case",
+    "v": {
+      "gridCount": 13,
+      "gridCols": [
+        "738px",
+        "738px",
+        "357px 357px",
+        "738px",
+        "283.078px 175.234px 215.672px",
+        "283.078px 175.234px 215.672px",
+        "283.078px 175.234px 215.672px",
+        "283.078px 175.234px 215.672px"
+      ],
+      "scrollW": 834,
+      "clientW": 834,
+      "docH": 6360
+    }
+  },
+  {
+    "k": "tablet.834.ev",
+    "v": {
+      "gridCount": 11,
+      "gridCols": [
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px",
+        "310.219px 387.781px"
+      ],
+      "scrollW": 834,
+      "clientW": 834,
+      "docH": 4301
+    }
+  },
+  {
+    "k": "tablet.1024.home",
+    "v": {
+      "gridCount": 12,
+      "gridCols": [
+        "544px 280px",
+        "280px 600px",
+        "280px 600px",
+        "928px",
+        "448px 400px",
+        "448px",
+        "600px 280px",
+        "600px 280px"
+      ],
+      "scrollW": 1024,
+      "clientW": 1024,
+      "docH": 11086
+    }
+  },
+  {
+    "k": "tablet.1024.case",
+    "v": {
+      "gridCount": 16,
+      "gridCols": [
+        "544px 320px",
+        "480px 384px",
+        "293.328px 293.328px 293.344px",
+        "600px 280px",
+        "600px 280px",
+        "600px 280px",
+        "738.172px",
+        "362.875px 224.641px 276.484px"
+      ],
+      "scrollW": 1024,
+      "clientW": 1024,
+      "docH": 5411
+    }
+  },
+  {
+    "k": "tablet.1024.ev",
+    "v": {
+      "gridCount": 11,
+      "gridCols": [
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px",
+        "394.656px 493.344px"
+      ],
+      "scrollW": 1024,
+      "clientW": 1024,
+      "docH": 3857
+    }
+  },
+  {
+    "k": "w2560.home",
+    "v": {
+      "mainLeft": 0,
+      "mainWidth": 2560,
+      "proseLeft": 804,
+      "proseWidth": 556,
+      "proseFont": "13px",
+      "approxCPL": 86,
+      "leftGutter": 804,
+      "rightGutter": 1200
+    }
+  },
+  {
+    "k": "w2560.case",
+    "v": {
+      "mainLeft": 0,
+      "mainWidth": 2560,
+      "proseLeft": 804,
+      "proseWidth": 591,
+      "proseFont": "13px",
+      "approxCPL": 91,
+      "leftGutter": 804,
+      "rightGutter": 1165
+    }
+  },
+  {
+    "k": "w2560.ev",
+    "v": {
+      "mainLeft": 0,
+      "mainWidth": 2560,
+      "proseLeft": 804,
+      "proseWidth": 1032,
+      "proseFont": "13px",
+      "approxCPL": 159,
+      "leftGutter": 804,
+      "rightGutter": 724
+    }
+  },
+  {
+    "k": "w2560.404",
+    "v": {
+      "mainLeft": 0,
+      "mainWidth": 2560,
+      "proseLeft": 804,
+      "proseWidth": 1032,
+      "proseFont": "13px",
+      "approxCPL": 159,
+      "leftGutter": 804,
+      "rightGutter": 724
+    }
+  },
+  {
+    "k": "hover.home",
+    "v": [
+      {
+        "text": "",
+        "changed": [],
+        "cursor": "default"
+      },
+      {
+        "text": "ayush yadav",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "the work",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "pointer"
+      },
+      {
+        "text": "experience",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "pointer"
+      },
+      {
+        "text": "contact",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "pointer"
+      },
+      {
+        "text": "github ↗",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "pointer"
+      },
+      {
+        "text": "motion: on",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "default"
+      },
+      {
+        "text": "resume",
+        "changed": [
+          "color",
+          "deco",
+          "bdb"
+        ],
+        "cursor": "pointer"
+      },
+      {
+        "text": "01\narrival",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "02\nwho",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "03\nthe path",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "04\nautoml",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "05\nthe work",
+        "changed": [],
+        "cursor": "pointer"
+      },
+      {
+        "text": "06\nhow i work",
+        "changed": [],
+        "cursor": "pointer"
+      }
+    ]
+  },
+  {
+    "k": "hover.detail",
+    "v": [
+      {
+        "text": "",
+        "changed": [],
+        "cursor": "default",
+        "before": {
+          "color": "rgba(0, 0, 0, 0)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgba(0, 0, 0, 0)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "default",
+          "shadow": "none",
+          "bdb": "0px rgba(0, 0, 0, 0)"
+        },
+        "after": {
+          "color": "rgba(0, 0, 0, 0)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgba(0, 0, 0, 0)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "default",
+          "shadow": "none",
+          "bdb": "0px rgba(0, 0, 0, 0)"
+        }
+      },
+      {
+        "text": "ayush yadav",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "01\narrival",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "02\nwho",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "03\nthe path",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "04\nautoml",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "05\nthe work",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      },
+      {
+        "text": "06\nhow i work",
+        "changed": [],
+        "cursor": "pointer",
+        "before": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        },
+        "after": {
+          "color": "rgb(38, 35, 28)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "deco": "none rgb(38, 35, 28)",
+          "transform": "none",
+          "opacity": "1",
+          "cursor": "pointer",
+          "shadow": "none",
+          "bdb": "0px rgb(38, 35, 28)"
+        }
+      }
+    ]
+  },
+  {
+    "k": "print.home",
+    "v": {
+      "header": true,
+      "headerNav": true,
+      "footer": true,
+      "bodyBg": "rgb(255, 255, 255)",
+      "colophon": true,
+      "motionToggleVisible": false
+    }
+  },
+  {
+    "k": "print.case",
+    "v": {
+      "header": true,
+      "headerNav": true,
+      "footer": true,
+      "bodyBg": "rgb(255, 255, 255)",
+      "colophon": true,
+      "motionToggleVisible": false
+    }
+  },
+  {
+    "k": "print.evidence",
+    "v": {
+      "header": true,
+      "headerNav": true,
+      "footer": true,
+      "bodyBg": "rgb(255, 255, 255)",
+      "colophon": true,
+      "motionToggleVisible": false
+    }
+  },
+  {
+    "k": "print.404",
+    "v": {
+      "header": true,
+      "headerNav": true,
+      "footer": true,
+      "bodyBg": "rgb(255, 255, 255)",
+      "colophon": true,
+      "motionToggleVisible": false
+    }
+  }
+]

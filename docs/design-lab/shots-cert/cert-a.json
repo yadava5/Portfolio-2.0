@@ -1,0 +1,670 @@
+{
+  "consoleDesk": [],
+  "standfirst": {
+    "text": "01arrival02who03the path04automl05the work06how i work07the gate¶ 01 / 07 · arrival — a wo",
+    "top": 0,
+    "fs": "16px",
+    "opacity": "1",
+    "family": "ui-sans-serif"
+  },
+  "h1": {
+    "text": "Scroll. It's all real.1",
+    "aria": "Scroll.It's all real.1"
+  },
+  "deskHeight": 10761,
+  "horizOverflowDesk": {
+    "docW": 1440,
+    "winW": 1440
+  },
+  "whoRest": [],
+  "rail": [
+    {
+      "aria": "chapter 01 — arrival",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 02 — who",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 03 — the path",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 04 — automl",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 05 — the work",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 06 — how i work",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    },
+    {
+      "aria": "chapter 07 — the gate",
+      "labelOpacity": 1,
+      "box": [
+        33,
+        18
+      ]
+    }
+  ],
+  "brightMuted": [
+    {
+      "ch": "02",
+      "bright": {
+        "fs": "64px",
+        "fam": "Fraunces",
+        "t": "This is a record of what I’ve built."
+      },
+      "muted": null
+    },
+    {
+      "ch": "03",
+      "bright": {
+        "fs": "64px",
+        "fam": "Fraunces",
+        "t": "Thousands of service tickets.\nZero struc"
+      },
+      "muted": null
+    },
+    {
+      "ch": "04",
+      "bright": {
+        "fs": "64px",
+        "fam": "Fraunces",
+        "t": "The agent drafts the\nwhole pipeline."
+      },
+      "muted": null
+    },
+    {
+      "ch": "05",
+      "bright": {
+        "fs": "16px",
+        "fam": "ui-sans-serif",
+        "t": "The work"
+      },
+      "muted": null
+    },
+    {
+      "ch": "06",
+      "bright": {
+        "fs": "16px",
+        "fam": "ui-sans-serif",
+        "t": "How I work"
+      },
+      "muted": null
+    },
+    {
+      "ch": "07",
+      "bright": {
+        "fs": "115.2px",
+        "fam": "Fraunces",
+        "t": "Ayush Yadav"
+      },
+      "muted": null
+    }
+  ],
+  "pinSamples": [
+    {
+      "y": 3026.546875,
+      "tokenY": 3366,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3086.546875,
+      "tokenY": 3362,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3146.546875,
+      "tokenY": 3360,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3206.546875,
+      "tokenY": 3419,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3266.546875,
+      "tokenY": 3493,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3326.546875,
+      "tokenY": 3568,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3386.546875,
+      "tokenY": 3642,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3446.546875,
+      "tokenY": 3717,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3506.546875,
+      "tokenY": 3791,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3566.546875,
+      "tokenY": 3866,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3626.546875,
+      "tokenY": 3940,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3686.546875,
+      "tokenY": 4015,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3746.546875,
+      "tokenY": 4089,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3806.546875,
+      "tokenY": 4164,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3866.546875,
+      "tokenY": 4238,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3926.546875,
+      "tokenY": 4307,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 3986.546875,
+      "tokenY": 4364,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4046.546875,
+      "tokenY": 4390,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4106.546875,
+      "tokenY": 4390,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4166.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4226.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4286.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4346.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4406.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4466.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4526.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4586.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4646.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4706.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    },
+    {
+      "y": 4766.546875,
+      "tokenY": 4396,
+      "leftText": "The agent drafts the\nwhole pip",
+      "note": "Support domain documents through retrieval and MCP-based orc",
+      "lit": 0
+    }
+  ],
+  "arrows": {
+    "deeper": 13,
+    "external": 3
+  },
+  "testimonial": "¶ 07 / 07 · the approval gate — closing page · 22:41 Every pipeline I build ends with a human decision. Every pipeline I build ends with a human decision. This one ends with yours. Ayush Yadav availability — open to new-grad software, data, and ml engineering roles cincinnati, ohio · it’s 5:46 am here right now aesh_1055@icloud.com resume github linkedin Email me — I read everything. run no. 041 p",
+  "endnotes": {
+    "cols": "2",
+    "w": 1032,
+    "right": 1276,
+    "winW": 1440
+  },
+  "deskWalk": {
+    "height": 10761,
+    "shots": 12
+  },
+  "tapDesk": {
+    "count": 51,
+    "sample": [
+      {
+        "t": "Skip to main content",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "t": "ayush yadav",
+        "w": 96,
+        "h": 18
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 15
+      },
+      {
+        "t": "experience",
+        "w": 87,
+        "h": 15
+      },
+      {
+        "t": "contact",
+        "w": 61,
+        "h": 15
+      },
+      {
+        "t": "github",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "t": "motion: on",
+        "w": 87,
+        "h": 18
+      },
+      {
+        "t": "01 arrival",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "02 who",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "03 the path",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "04 automl",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "05 the work",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "06 how i work",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "07 the gate",
+        "w": 33,
+        "h": 18
+      },
+      {
+        "t": "1",
+        "w": 11,
+        "h": 22
+      },
+      {
+        "t": "the capstone — agentic automl:",
+        "w": 449,
+        "h": 18
+      },
+      {
+        "t": "Applied",
+        "w": 61,
+        "h": 15
+      },
+      {
+        "t": "Glyph",
+        "w": 43,
+        "h": 15
+      },
+      {
+        "t": "Cadence",
+        "w": 61,
+        "h": 15
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 15
+      }
+    ]
+  },
+  "staticHeight": 9872,
+  "railStaticTop": null,
+  "railMarksAtTop": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ],
+  "figOutlines": {
+    "count": 8,
+    "sample": [
+      {
+        "outline": "color(srgb 0.14902 0.137255 0.109804 / 0.55) solid 1px",
+        "offset": "14px",
+        "tier": "print"
+      },
+      {
+        "outline": "color(srgb 0.14902 0.137255 0.109804 / 0.55) solid 1px",
+        "offset": "14px",
+        "tier": "print"
+      },
+      {
+        "outline": "color(srgb 0.14902 0.137255 0.109804 / 0.55) solid 1px",
+        "offset": "14px",
+        "tier": "print"
+      }
+    ],
+    "tier": "print"
+  },
+  "dipStatic": 1,
+  "consoleMob": [],
+  "mobHeight": 13561,
+  "horizOverflowMob": {
+    "docW": 390,
+    "winW": 390
+  },
+  "mobHeroAffordances": [
+    {
+      "t": "1",
+      "w": 8,
+      "h": 15,
+      "top": 308
+    },
+    {
+      "t": "the capstone — agentic automl: seven gat",
+      "w": 330,
+      "h": 44,
+      "top": 538
+    },
+    {
+      "t": "the resume ⟶",
+      "w": 110,
+      "h": 44,
+      "top": 594
+    },
+    {
+      "t": "↩",
+      "w": 8,
+      "h": 15,
+      "top": 753
+    }
+  ],
+  "mobSmallText": {
+    "min": {
+      "px": 11,
+      "t": "0",
+      "svg": true
+    },
+    "under11": [],
+    "count": 392
+  },
+  "tapMob": {
+    "count": 28,
+    "sample": [
+      {
+        "t": "Skip to main content",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "t": "Open Ayush Yadav portrait",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "t": "ayush yadav",
+        "w": 96,
+        "h": 18
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 15
+      },
+      {
+        "t": "1",
+        "w": 8,
+        "h": 15
+      },
+      {
+        "t": "↩",
+        "w": 8,
+        "h": 15
+      },
+      {
+        "t": "awaiting approval",
+        "w": 148,
+        "h": 18
+      },
+      {
+        "t": "macro-f1 0.98 — 96-sample gate",
+        "w": 261,
+        "h": 15
+      },
+      {
+        "t": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "t": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "t": "the live demo ↗",
+        "w": 130,
+        "h": 15
+      },
+      {
+        "t": "source",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "t": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "t": "master inventory pipeline",
+        "w": 217,
+        "h": 15
+      },
+      {
+        "t": "policybot",
+        "w": 78,
+        "h": 15
+      },
+      {
+        "t": "aesh_1055@icloud.com",
+        "w": 174,
+        "h": 18
+      },
+      {
+        "t": "resume",
+        "w": 52,
+        "h": 18
+      },
+      {
+        "t": "github",
+        "w": 52,
+        "h": 18
+      },
+      {
+        "t": "linkedin",
+        "w": 69,
+        "h": 18
+      },
+      {
+        "t": "Email me — I read everything.",
+        "w": 330,
+        "h": 29
+      },
+      {
+        "t": "jobtracker — receipt 05 ⟶",
+        "w": 223,
+        "h": 18
+      },
+      {
+        "t": "fast-mnist-nn — receipt 02 ⟶",
+        "w": 249,
+        "h": 18
+      },
+      {
+        "t": "taskflow-calendar — receipt 01",
+        "w": 284,
+        "h": 18
+      },
+      {
+        "t": "jetpack-compress — readme @ af",
+        "w": 321,
+        "h": 18
+      },
+      {
+        "t": "policybot — receipt 01 ⟶",
+        "w": 214,
+        "h": 18
+      }
+    ]
+  }
+}

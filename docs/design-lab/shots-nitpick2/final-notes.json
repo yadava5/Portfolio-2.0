@@ -1,0 +1,487 @@
+[
+  {
+    "k": "focusRing.nonDefault",
+    "v": [
+      {
+        "t": "Skip to main content",
+        "ring": "rgb(250, 246, 239)",
+        "ground": "rgb(176, 74, 40)",
+        "own": "rgb(176, 74, 40)"
+      },
+      {
+        "t": "the work",
+        "ring": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "experience",
+        "ring": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "contact",
+        "ring": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "github ↗",
+        "ring": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "motion: on",
+        "ring": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "1",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "Applied",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "Glyph",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "Cadence",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "the work",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "the evidence",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "the resume",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "↩",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "19/20 cited-source sweep — policyb",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "macro-f1 0.98 — 96-sample gate",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "openmp+simd dot kernel — 3.5× vs -",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "72 tests, 0 failures — jdk 25 @ af",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "source ↗",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "system card ↗",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "1,145 automated tests — 634 fronte",
+        "ring": "rgb(92, 86, 74)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      },
+      {
+        "t": "run no. 041\npress here to sign\nAPP",
+        "ring": "rgb(224, 138, 95)",
+        "ground": "rgb(250, 246, 239)",
+        "own": "rgba(0, 0, 0, 0)"
+      }
+    ]
+  },
+  {
+    "k": "honesty/",
+    "v": {
+      "blocks": 11,
+      "held": 0,
+      "refused": 3,
+      "withheld": true,
+      "glance": null,
+      "dispositionKeyAboveRows": "refused — the gate stopped the run"
+    }
+  },
+  {
+    "k": "honesty/evidence/",
+    "v": {
+      "blocks": 0,
+      "held": 1,
+      "refused": 0,
+      "withheld": false,
+      "glance": "11 entries ⏎  ⏎ The evidence index ⏎  ⏎ The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was re",
+      "dispositionKeyAboveRows": null
+    }
+  },
+  {
+    "k": "honesty/projects/automl/",
+    "v": {
+      "blocks": 8,
+      "held": 0,
+      "refused": 0,
+      "withheld": true,
+      "glance": null,
+      "dispositionKeyAboveRows": null
+    }
+  },
+  {
+    "k": "honesty/projects/master-inventory/",
+    "v": {
+      "blocks": 0,
+      "held": 0,
+      "refused": 0,
+      "withheld": false,
+      "glance": null,
+      "dispositionKeyAboveRows": null
+    }
+  },
+  {
+    "k": "honesty/projects/policybot/",
+    "v": {
+      "blocks": 0,
+      "held": 0,
+      "refused": 0,
+      "withheld": false,
+      "glance": null,
+      "dispositionKeyAboveRows": null
+    }
+  },
+  {
+    "k": "mobile.heroAffordances@390",
+    "v": [
+      {
+        "t": "Skip to main content",
+        "w": 1,
+        "h": 1,
+        "top": -1
+      },
+      {
+        "t": "",
+        "w": 44,
+        "h": 44,
+        "top": 10
+      },
+      {
+        "t": "ayush yadav",
+        "w": 96,
+        "h": 48,
+        "top": 8
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 45,
+        "top": 11
+      },
+      {
+        "t": "",
+        "w": 44,
+        "h": 44,
+        "top": 10
+      },
+      {
+        "t": "resume",
+        "w": 74,
+        "h": 44,
+        "top": 10
+      },
+      {
+        "t": "1",
+        "w": 28,
+        "h": 45,
+        "top": 265
+      },
+      {
+        "t": "the capstone — agentic automl: seven gat",
+        "w": 330,
+        "h": 44,
+        "top": 482
+      },
+      {
+        "t": "the evidence index ⟶",
+        "w": 179,
+        "h": 44,
+        "top": 538
+      },
+      {
+        "t": "the resume ⟶",
+        "w": 110,
+        "h": 44,
+        "top": 594
+      },
+      {
+        "t": "↩",
+        "w": 28,
+        "h": 45,
+        "top": 738
+      }
+    ]
+  },
+  {
+    "k": "mobile.workStack@390",
+    "v": {
+      "stack": [
+        {
+          "t": "read the case file — agentic a",
+          "w": 304,
+          "h": 39,
+          "top": 4362
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15,
+          "top": 6371
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15,
+          "top": 7265
+        },
+        {
+          "t": "the live demo ↗",
+          "w": 130,
+          "h": 15,
+          "top": 8253
+        },
+        {
+          "t": "source ↗",
+          "w": 69,
+          "h": 15,
+          "top": 8253
+        },
+        {
+          "t": "system card ↗",
+          "w": 113,
+          "h": 15,
+          "top": 8284
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15,
+          "top": 9161
+        },
+        {
+          "t": "system card ↗",
+          "w": 113,
+          "h": 15,
+          "top": 9988
+        },
+        {
+          "t": "automl — the case file ⟶",
+          "w": 214,
+          "h": 18,
+          "top": 12578
+        }
+      ],
+      "pitches": [
+        {
+          "from": "source ↗",
+          "to": "system card ↗",
+          "pitch": 31
+        }
+      ]
+    }
+  },
+  {
+    "k": "automl.images",
+    "v": [
+      {
+        "src": "ayush-yadav-avatar-96.webp",
+        "alt": "Ayush Yadav professional portrait",
+        "w": 34,
+        "h": 34,
+        "top": 6505,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      },
+      {
+        "src": "agentic-automl-poster-proof.webp",
+        "alt": "",
+        "w": 1400,
+        "h": 1050,
+        "top": 4891,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      },
+      {
+        "src": "agentic-automl-poster-proof.webp",
+        "alt": "",
+        "w": 1413,
+        "h": 1060,
+        "top": 4890,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      },
+      {
+        "src": "agentic-automl-poster-proof.webp",
+        "alt": "",
+        "w": 1422,
+        "h": 1066,
+        "top": 4974,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      },
+      {
+        "src": "agentic-automl-stack-proof.png",
+        "alt": "Presenter stack proof plate",
+        "w": 462,
+        "h": 347,
+        "top": 6066,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      },
+      {
+        "src": "automl.webp",
+        "alt": "Private-safe experiment registry screenshot plate",
+        "w": 698,
+        "h": 393,
+        "top": 6557,
+        "hidden": false,
+        "display": "block",
+        "inDialog": false,
+        "parentTag": "SPAN"
+      }
+    ]
+  },
+  {
+    "k": "delight.dayArc",
+    "v": [
+      {
+        "y": 0,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 1600,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 3200,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 4800,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 6400,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 8000,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      },
+      {
+        "y": 9400,
+        "chapter": null,
+        "bg": "rgb(250, 246, 239)",
+        "canvas": "#faf6ef",
+        "dayVar": ""
+      }
+    ]
+  },
+  {
+    "k": "delight.rail",
+    "v": {
+      "railStart": "ayush yadav | now reading — chapter 01, arrival, 06:12 | the work | experience | contact | github ↗ | motion: on | resume",
+      "railMid": "01 | arrival | 02 | who | 03 | the path | 04 | automl | 05 | the work | 06 | how i work | 07 | the gate"
+    }
+  },
+  {
+    "k": "delight.stamp",
+    "v": {
+      "label": "awaiting approval\napproved",
+      "pressed": "true",
+      "disabled": false,
+      "helloVisible": true
+    }
+  },
+  {
+    "k": "delight.colophon",
+    "v": "© 2026 ayush yadav — set by hand | set in fraunces, newsreader & fragment mono | two inks. one line. seven chapters."
+  },
+  {
+    "k": "delight.backRestore",
+    "v": {
+      "beforeNav": 5200,
+      "onCase": "http://localhost:3600/projects/jobtracker/",
+      "afterBack": 187,
+      "delta": -5013
+    }
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "k": "desk-motion.scrollHeight",
+    "v": "10560px = 11.7 viewports"
+  },
+  {
+    "k": "mob-motion.scrollHeight",
+    "v": "12636px = 15.0 viewports"
+  },
+  {
+    "k": "desk-reduced.scrollHeight",
+    "v": "9582px = 10.6 viewports"
+  },
+  {
+    "k": "mob-reduced.scrollHeight",
+    "v": "11749px = 13.9 viewports"
+  }
+]

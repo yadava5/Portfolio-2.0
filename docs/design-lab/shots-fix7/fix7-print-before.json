@@ -1,0 +1,133 @@
+[
+ {
+  "route": "home",
+  "sheetH": 920,
+  "orphans": [],
+  "marks": [
+   {
+    "kind": "kicker",
+    "text": "¶ 01 / 07 · arrival — a working pa",
+    "top": 149,
+    "sheet": 1,
+    "fromSheetTop": 149,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "01 / 07",
+    "top": 746,
+    "sheet": 1,
+    "fromSheetTop": 746,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 02 / 07 · who — the short versio",
+    "top": 859,
+    "sheet": 1,
+    "fromSheetTop": 859,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "02 / 07",
+    "top": 1461,
+    "sheet": 2,
+    "fromSheetTop": 541,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 03 / 07 · the path — field recor",
+    "top": 1623,
+    "sheet": 2,
+    "fromSheetTop": 703,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "03 / 07",
+    "top": 2996,
+    "sheet": 4,
+    "fromSheetTop": 236,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 04 / 07 · the capstone — senior ",
+    "top": 3195,
+    "sheet": 4,
+    "fromSheetTop": 435,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "04 / 07",
+    "top": 3972,
+    "sheet": 5,
+    "fromSheetTop": 292,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 05 / 07 · the work — four more s",
+    "top": 4089,
+    "sheet": 5,
+    "fromSheetTop": 409,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "05 / 07",
+    "top": 7177,
+    "sheet": 8,
+    "fromSheetTop": 737,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 06 / 07 · how i work — after dar",
+    "top": 7294,
+    "sheet": 8,
+    "fromSheetTop": 854,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "06 / 07",
+    "top": 7812,
+    "sheet": 9,
+    "fromSheetTop": 452,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "kicker",
+    "text": "¶ 07 / 07 · the approval gate — cl",
+    "top": 8046,
+    "sheet": 9,
+    "fromSheetTop": 686,
+    "breakBefore": "auto"
+   },
+   {
+    "kind": "folio",
+    "text": "07 / 07",
+    "top": 9596,
+    "sheet": 11,
+    "fromSheetTop": 396,
+    "breakBefore": "auto"
+   }
+  ]
+ },
+ {
+  "route": "evidence",
+  "sheetH": 920,
+  "orphans": [],
+  "marks": []
+ },
+ {
+  "route": "case-automl",
+  "sheetH": 920,
+  "orphans": [],
+  "marks": []
+ }
+]

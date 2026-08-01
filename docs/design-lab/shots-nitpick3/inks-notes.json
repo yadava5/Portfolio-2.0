@@ -1,0 +1,126 @@
+[
+ {
+  "k": "inks /",
+  "v": {
+   "2px solid rgb(38, 35, 28)": {
+    "n": 62,
+    "sample": [
+     "Skip to main content | chnull | hdr:false | ftr:false | bg rgb(176, 74, 40)",
+     "Open Ayush Yadav portrait | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "ayush yadav | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "the work | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "experience | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "contact | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "github ↗ | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "Resume (opens in a new tab) | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "chapter 01 — arrival | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "chapter 02 — who | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "chapter 03 — the path | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "chapter 04 — automl | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   },
+   "2px solid rgba(38, 35, 28, 0.72)": {
+    "n": 1,
+    "sample": [
+     "motion: on | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   },
+   "2px solid rgb(92, 86, 74)": {
+    "n": 1,
+    "sample": [
+     "Footnote 1 | ch01 | hdr:false | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   },
+   "0px none rgb(224, 138, 95)": {
+    "n": 1,
+    "sample": [
+     "Approve run no. 041 — press to sign this p | ch07 | hdr:false | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   }
+  }
+ },
+ {
+  "k": "inks /evidence/",
+  "v": {
+   "2px solid rgb(38, 35, 28)": {
+    "n": 31,
+    "sample": [
+     "Skip to main content | chnull | hdr:false | ftr:false | bg rgb(176, 74, 40)",
+     "Open Ayush Yadav portrait | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "ayush yadav | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "the work | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "experience | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "contact | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "github ↗ | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "Resume (opens in a new tab) | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "docs/ML_STRATEGY.md @ 36a2f54 ↗ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "jobtracker case file · receipt 02 ⟶ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "baseline_hybrid_v3.json @ 36a2f54 ↗ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "jobtracker case file · receipt 05 ⟶ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)"
+    ]
+   },
+   "2px solid rgba(38, 35, 28, 0.72)": {
+    "n": 1,
+    "sample": [
+     "motion: on | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   }
+  }
+ },
+ {
+  "k": "inks /projects/automl/",
+  "v": {
+   "2px solid rgb(38, 35, 28)": {
+    "n": 32,
+    "sample": [
+     "Skip to main content | chnull | hdr:false | ftr:false | bg rgb(176, 74, 40)",
+     "Open Ayush Yadav portrait | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "ayush yadav | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "the work | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "experience | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "contact | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "github ↗ | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "Resume (opens in a new tab) | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "agentic-automl-platform.vercel.app ↗ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "/system-card ↗ | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "Approve run no. 041 | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)",
+     "walk the 8 claims ⟶audit walked · 0 of 8 t | chnull | hdr:false | ftr:false | bg rgb(243, 237, 225)"
+    ]
+   },
+   "2px solid rgba(38, 35, 28, 0.72)": {
+    "n": 1,
+    "sample": [
+     "motion: on | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   }
+  }
+ },
+ {
+  "k": "inks /no-such-page/",
+  "v": {
+   "2px solid rgb(38, 35, 28)": {
+    "n": 16,
+    "sample": [
+     "Skip to main content | chnull | hdr:false | ftr:false | bg rgb(176, 74, 40)",
+     "Open Ayush Yadav portrait | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "ayush yadav | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "the work | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "experience | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "contact | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "github ↗ | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "Resume (opens in a new tab) | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)",
+     "who ⟶ | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "the path ⟶ | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "automl ⟶ | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)",
+     "the work ⟶ | chnull | hdr:false | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   },
+   "2px solid rgba(38, 35, 28, 0.72)": {
+    "n": 1,
+    "sample": [
+     "motion: on | chnull | hdr:true | ftr:false | bg rgb(250, 246, 239)"
+    ]
+   }
+  }
+ }
+]

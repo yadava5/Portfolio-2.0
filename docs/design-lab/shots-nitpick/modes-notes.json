@@ -1,0 +1,159 @@
+[
+  {
+    "k": "w2560.metrics",
+    "v": {
+      "viewport": 2560,
+      "mainWidth": 2560,
+      "contentLeft": 804,
+      "contentRight": 1836,
+      "h1FontSize": "144px",
+      "bodyWidthPx": 544,
+      "bodyFontSize": "19px",
+      "bodyCharsPerLine": 57,
+      "railLeft": 16,
+      "headerNavRight": 1900,
+      "scrollHeight": 13351,
+      "viewports": 9.27
+    }
+  },
+  {
+    "k": "reducedMotion.home",
+    "v": {
+      "motionPref": true,
+      "scrollHeight": 9953,
+      "invisibleWithText": [
+        {
+          "tag": "P",
+          "opacity": "0",
+          "vis": "visible",
+          "text": "Support domain documents through retrieval and MCP"
+        },
+        {
+          "tag": "P",
+          "opacity": "0",
+          "vis": "visible",
+          "text": "Make pipeline decisions auditable instead of opaqu"
+        },
+        {
+          "tag": "P",
+          "opacity": "0",
+          "vis": "visible",
+          "text": "Keep training workflows reproducible with containe"
+        },
+        {
+          "tag": "P",
+          "opacity": "0",
+          "vis": "visible",
+          "text": "Validate the product flow with browser-level check"
+        }
+      ],
+      "invisibleCount": 4
+    }
+  },
+  {
+    "k": "reducedMotion.stillHiddenAfterFullScroll",
+    "v": 4
+  },
+  {
+    "k": "motionToggle",
+    "v": {
+      "before": "",
+      "after": {
+        "label": "",
+        "root": "fraunces_9c23ab57-module__NLVp-W__variable newsreader_f83ec09c-module__MRWJRq__variable fragment_mono_b865377b-module__5hyRyW__variable",
+        "dataMotion": null
+      }
+    }
+  },
+  {
+    "k": "motionToggle.persistedAfterReload",
+    "v": {
+      "label": "",
+      "dataMotion": null
+    }
+  },
+  {
+    "k": "print.home",
+    "v": {
+      "chrome": [
+        {
+          "sel": "header",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "footer",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "nav",
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "bodyBg": "rgb(255, 255, 255)",
+      "linkAfterContent": "none",
+      "scrollHeight": 9934
+    }
+  },
+  {
+    "k": "print.case",
+    "v": {
+      "chrome": [
+        {
+          "sel": "header",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "footer",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "nav",
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "bodyBg": "rgb(255, 255, 255)",
+      "linkAfterContent": "\" (https://github.com/yadava5/applied/tree/36a2f54)\"",
+      "scrollHeight": 7797
+    }
+  },
+  {
+    "k": "print.evidence",
+    "v": {
+      "chrome": [
+        {
+          "sel": "header",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "footer",
+          "display": "block",
+          "visible": true
+        },
+        {
+          "sel": "nav",
+          "display": "flex",
+          "visible": true
+        }
+      ],
+      "bodyBg": "rgb(255, 255, 255)",
+      "linkAfterContent": "\" (https://github.com/yadava5/applied/blob/36a2f54/docs/ML_STRATEGY.md)\"",
+      "scrollHeight": 3961
+    }
+  },
+  {
+    "k": "forcedDark.home",
+    "v": {
+      "bodyBg": "rgb(250, 246, 239)",
+      "bodyColor": "rgb(38, 35, 28)",
+      "prefersDark": true,
+      "colorScheme": "normal"
+    }
+  }
+]

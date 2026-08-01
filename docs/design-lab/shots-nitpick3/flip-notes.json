@@ -1,0 +1,1282 @@
+[
+ {
+  "k": "targets@390",
+  "v": [
+   {
+    "route": "/",
+    "n": 52,
+    "nSmall": 18,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "awaiting approvalapproved",
+      "h": 18
+     },
+     {
+      "t": "Master Inventory Pipeline",
+      "h": 15
+     },
+     {
+      "t": "PolicyBot",
+      "h": 15
+     },
+     {
+      "t": "LifeQuest ↗",
+      "h": 15
+     },
+     {
+      "t": "system card ↗",
+      "h": 15
+     },
+     {
+      "t": "aesh_1055@icloud.com",
+      "h": 18
+     },
+     {
+      "t": "resume",
+      "h": 18
+     },
+     {
+      "t": "github ↗",
+      "h": 18
+     },
+     {
+      "t": "linkedin ↗",
+      "h": 18
+     },
+     {
+      "t": "jobtracker — receipt 05 ⟶",
+      "h": 18
+     },
+     {
+      "t": "fast-mnist-nn — receipt 02 ⟶",
+      "h": 18
+     },
+     {
+      "t": "taskflow-calendar — receipt 01 ⟶",
+      "h": 18
+     },
+     {
+      "t": "jetpack-compress — readme @ af2c4b1 ↗",
+      "h": 18
+     },
+     {
+      "t": "policybot — receipt 01 ⟶",
+      "h": 18
+     },
+     {
+      "t": "master-inventory — receipt 05 ⟶",
+      "h": 18
+     },
+     {
+      "t": "automl — the case file ⟶",
+      "h": 18
+     },
+     {
+      "t": "Randall Vollen ↗",
+      "h": 15
+     }
+    ],
+    "nOverlap": 6,
+    "overlaps": [
+     {
+      "a": "macro-f1 0.98 — 96-sample gate",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     },
+     {
+      "a": "openmp+simd dot kernel — 3.5× vs -O3 bas",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     },
+     {
+      "a": "72 tests, 0 failures — jdk 25 @ af2c4b1 ",
+      "b": "the live demo ↗",
+      "ox": 130,
+      "oy": 15
+     },
+     {
+      "a": "72 tests, 0 failures — jdk 25 @ af2c4b1 ",
+      "b": "source ↗",
+      "ox": 69,
+      "oy": 15
+     },
+     {
+      "a": "the live demo ↗",
+      "b": "system card ↗",
+      "ox": 113,
+      "oy": 15
+     },
+     {
+      "a": "1,145 automated tests — 634 frontend + 5",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     }
+    ]
+   },
+   {
+    "route": "/evidence/",
+    "n": 30,
+    "nSmall": 9,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "backend/tests @ 36a2f54 ↗",
+      "h": 15
+     },
+     {
+      "t": "VisualAssistTests @ 22ebdaa ↗",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7 ↗",
+      "h": 15
+     },
+     {
+      "t": "BENCHMARKS.md @ c6e5c0b ↗",
+      "h": 15
+     },
+     {
+      "t": "README.md @ c6e5c0b ↗",
+      "h": 15
+     },
+     {
+      "t": "README.md @ af2c4b1 ↗",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "first case file — agentic automl ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/automl/",
+    "n": 31,
+    "nSmall": 7,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "awaiting approvalapproved",
+      "h": 18
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/fast-mnist-nn/",
+    "n": 32,
+    "nSmall": 9,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "bench_summary.csv",
+      "h": 15
+     },
+     {
+      "t": "bench-20251226-154121-native.json",
+      "h": 15
+     },
+     {
+      "t": "getglyph.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "v1.0.0 release",
+      "h": 18
+     },
+     {
+      "t": "Benchmark evidence",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/jobtracker/",
+    "n": 49,
+    "nSmall": 10,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "backend-ci run, 2026-04-20 ↗",
+      "h": 15
+     },
+     {
+      "t": "getapplied.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "README — the desktop-era record",
+      "h": 18
+     },
+     {
+      "t": "Architecture docs",
+      "h": 18
+     },
+     {
+      "t": "ML strategy and evaluation gates",
+      "h": 18
+     },
+     {
+      "t": "Backend test suite",
+      "h": 18
+     },
+     {
+      "t": "Web app source",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/master-inventory/",
+    "n": 23,
+    "nSmall": 4,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "download the raw ledger (json) ⟶",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/policybot/",
+    "n": 24,
+    "nSmall": 4,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "download the raw ledger (json) ⟶",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "n": 46,
+    "nSmall": 13,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "lib/services/__tests__ @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "lib/config/database.ts @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "prisma/schema.prisma @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "usecadenceapp.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "Row-level security migration",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/visual-assist/",
+    "n": 26,
+    "nSmall": 6,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "README beta and LiDAR requirements",
+      "h": 18
+     },
+     {
+      "t": "XCTest source evidence",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/no-such-page/",
+    "n": 15,
+    "nSmall": 8,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "who ⟶",
+      "h": 18
+     },
+     {
+      "t": "the path ⟶",
+      "h": 18
+     },
+     {
+      "t": "automl ⟶",
+      "h": 18
+     },
+     {
+      "t": "the work ⟶",
+      "h": 18
+     },
+     {
+      "t": "how i work ⟶",
+      "h": 18
+     },
+     {
+      "t": "the gate ⟶",
+      "h": 18
+     },
+     {
+      "t": "back to the front page ⟵",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   }
+  ]
+ },
+ {
+  "k": "targets@1440",
+  "v": [
+   {
+    "route": "/",
+    "n": 65,
+    "nSmall": 40,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "01arrival",
+      "h": 18
+     },
+     {
+      "t": "02who",
+      "h": 18
+     },
+     {
+      "t": "03the path",
+      "h": 18
+     },
+     {
+      "t": "04automl",
+      "h": 18
+     },
+     {
+      "t": "05the work",
+      "h": 18
+     },
+     {
+      "t": "06how i work",
+      "h": 18
+     },
+     {
+      "t": "07the gate",
+      "h": 18
+     },
+     {
+      "t": "the capstone — agentic automl: seven gat",
+      "h": 18
+     },
+     {
+      "t": "Applied",
+      "h": 15
+     },
+     {
+      "t": "Glyph",
+      "h": 15
+     },
+     {
+      "t": "Cadence",
+      "h": 15
+     },
+     {
+      "t": "the work",
+      "h": 15
+     },
+     {
+      "t": "the evidence",
+      "h": 15
+     },
+     {
+      "t": "the resume",
+      "h": 15
+     },
+     {
+      "t": "19/20 cited-source sweep — PolicyBot, th",
+      "h": 15
+     },
+     {
+      "t": "read the case file — Agentic AutoML Plat",
+      "h": 15
+     },
+     {
+      "t": "awaiting approvalapproved",
+      "h": 18
+     },
+     {
+      "t": "gzip this figure in your browser ⟶",
+      "h": 18
+     },
+     {
+      "t": "Master Inventory Pipeline",
+      "h": 15
+     },
+     {
+      "t": "PolicyBot",
+      "h": 15
+     },
+     {
+      "t": "LifeQuest ↗",
+      "h": 15
+     },
+     {
+      "t": "system card ↗",
+      "h": 15
+     },
+     {
+      "t": "271 backend tests — jobtracker validatio",
+      "h": 15
+     },
+     {
+      "t": "openmp+simd dot kernel — 3.5× over -O3, ",
+      "h": 15
+     },
+     {
+      "t": "19/20 cited-source sweep — policybot val",
+      "h": 15
+     },
+     {
+      "t": "aesh_1055@icloud.com",
+      "h": 18
+     },
+     {
+      "t": "resume",
+      "h": 18
+     },
+     {
+      "t": "github ↗",
+      "h": 18
+     },
+     {
+      "t": "linkedin ↗",
+      "h": 18
+     },
+     {
+      "t": "jobtracker — receipt 05 ⟶",
+      "h": 18
+     },
+     {
+      "t": "fast-mnist-nn — receipt 02 ⟶",
+      "h": 18
+     },
+     {
+      "t": "taskflow-calendar — receipt 01 ⟶",
+      "h": 18
+     },
+     {
+      "t": "jetpack-compress — readme @ af2c4b1 ↗",
+      "h": 18
+     },
+     {
+      "t": "policybot — receipt 01 ⟶",
+      "h": 18
+     },
+     {
+      "t": "master-inventory — receipt 05 ⟶",
+      "h": 18
+     },
+     {
+      "t": "automl — the case file ⟶",
+      "h": 18
+     },
+     {
+      "t": "Randall Vollen ↗",
+      "h": 15
+     },
+     {
+      "t": "the evidence index — every claim on file",
+      "h": 15
+     }
+    ],
+    "nOverlap": 6,
+    "overlaps": [
+     {
+      "a": "macro-f1 0.98 — 96-sample gate",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     },
+     {
+      "a": "openmp+simd dot kernel — 3.5× vs -O3 bas",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     },
+     {
+      "a": "72 tests, 0 failures — jdk 25 @ af2c4b1 ",
+      "b": "the live demo ↗",
+      "ox": 130,
+      "oy": 15
+     },
+     {
+      "a": "the live demo ↗",
+      "b": "source ↗",
+      "ox": 69,
+      "oy": 15
+     },
+     {
+      "a": "source ↗",
+      "b": "system card ↗",
+      "ox": 69,
+      "oy": 15
+     },
+     {
+      "a": "1,145 automated tests — 634 frontend + 5",
+      "b": "the case file ⟶",
+      "ox": 136,
+      "oy": 15
+     }
+    ]
+   },
+   {
+    "route": "/evidence/",
+    "n": 32,
+    "nSmall": 24,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "docs/ML_STRATEGY.md @ 36a2f54 ↗",
+      "h": 15
+     },
+     {
+      "t": "jobtracker case file · receipt 02 ⟶",
+      "h": 15
+     },
+     {
+      "t": "baseline_hybrid_v3.json @ 36a2f54 ↗",
+      "h": 15
+     },
+     {
+      "t": "jobtracker case file · receipt 05 ⟶",
+      "h": 15
+     },
+     {
+      "t": "backend/tests @ 36a2f54 ↗",
+      "h": 15
+     },
+     {
+      "t": "jobtracker case file · receipt 04 ⟶",
+      "h": 15
+     },
+     {
+      "t": "expo poster capture — private-safe ⟶",
+      "h": 15
+     },
+     {
+      "t": "automl case file · receipt 02 ⟶",
+      "h": 15
+     },
+     {
+      "t": "VisualAssistTests @ 22ebdaa ↗",
+      "h": 15
+     },
+     {
+      "t": "visual assist case file · receipt 01 ⟶",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7 ↗",
+      "h": 15
+     },
+     {
+      "t": "taskflow case file · receipt 01 ⟶",
+      "h": 15
+     },
+     {
+      "t": "BENCHMARKS.md @ c6e5c0b ↗",
+      "h": 15
+     },
+     {
+      "t": "fast-mnist case file · receipt 02 ⟶",
+      "h": 15
+     },
+     {
+      "t": "README.md @ c6e5c0b ↗",
+      "h": 15
+     },
+     {
+      "t": "fast-mnist case file · receipt 01 (held)",
+      "h": 15
+     },
+     {
+      "t": "master-inventory-ledger.json — checked i",
+      "h": 15
+     },
+     {
+      "t": "master inventory case file · receipt 01 ",
+      "h": 15
+     },
+     {
+      "t": "policybot case file · receipt 01 ⟶",
+      "h": 15
+     },
+     {
+      "t": "README.md @ af2c4b1 ↗",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "first case file — agentic automl ⟶",
+      "h": 18
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/automl/",
+    "n": 33,
+    "nSmall": 13,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "awaiting approvalapproved",
+      "h": 18
+     },
+     {
+      "t": "walk the 8 claims ⟶audit walked · 0 of 8",
+      "h": 18
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "see fig. 5 — the presenter deck",
+      "h": 15
+     },
+     {
+      "t": "see fig. 5 — the presenter deck",
+      "h": 15
+     },
+     {
+      "t": "see fig. 5 — the presenter deck",
+      "h": 15
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "see fig. 4 — the expo poster",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 2 of 7 · glyph — filed 2025-10",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/fast-mnist-nn/",
+    "n": 34,
+    "nSmall": 14,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 5 claims ⟶audit walked · 4 of 5",
+      "h": 18
+     },
+     {
+      "t": "see corrections",
+      "h": 15
+     },
+     {
+      "t": "fast-mnist-nn @ c6e5c0b · README.md",
+      "h": 15
+     },
+     {
+      "t": "bench_summary.csv",
+      "h": 15
+     },
+     {
+      "t": "bench-20251226-154121-native.json",
+      "h": 15
+     },
+     {
+      "t": "getglyph.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "v1.0.0 release",
+      "h": 18
+     },
+     {
+      "t": "Benchmark evidence",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 3 of 7 · visual assist — filed",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/jobtracker/",
+    "n": 51,
+    "nSmall": 15,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 11 claims ⟶audit walked · 11 of",
+      "h": 18
+     },
+     {
+      "t": "applied @ 36a2f54 · backend/tests",
+      "h": 15
+     },
+     {
+      "t": "backend-ci run, 2026-04-20 ↗",
+      "h": 15
+     },
+     {
+      "t": "applied @ 36a2f54 · apps/macos",
+      "h": 15
+     },
+     {
+      "t": "getapplied.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "README — the desktop-era record",
+      "h": 18
+     },
+     {
+      "t": "Architecture docs",
+      "h": 18
+     },
+     {
+      "t": "ML strategy and evaluation gates",
+      "h": 18
+     },
+     {
+      "t": "Backend test suite",
+      "h": 18
+     },
+     {
+      "t": "Web app source",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 5 of 7 · cadence — filed 2023-",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/master-inventory/",
+    "n": 25,
+    "nSmall": 10,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 6 claims ⟶audit walked · 3 of 6",
+      "h": 18
+     },
+     {
+      "t": "checked-in proof ledger — below",
+      "h": 15
+     },
+     {
+      "t": "checked-in proof ledger — below",
+      "h": 15
+     },
+     {
+      "t": "checked-in proof ledger — below",
+      "h": 15
+     },
+     {
+      "t": "download the raw ledger (json) ⟶",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 7 of 7 · policybot — filed 202",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/policybot/",
+    "n": 26,
+    "nSmall": 7,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 6 claims ⟶audit walked · 4 of 6",
+      "h": 18
+     },
+     {
+      "t": "download the raw ledger (json) ⟶",
+      "h": 15
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 1 of 7 · agentic automl platfo",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "n": 48,
+    "nSmall": 20,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 12 claims ⟶audit walked · 12 of",
+      "h": 18
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "lib/services/__tests__ @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "0002_enable_rls.sql @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "lib/config/rlsContext.ts @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "lib/config/database.ts @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "0001_tags_add_userid.sql @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "prisma/schema.prisma @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "lib/middleware/index.ts @ 54c79e0",
+      "h": 15
+     },
+     {
+      "t": "usecadenceapp.vercel.app ↗",
+      "h": 15
+     },
+     {
+      "t": "taskflow-calendar @ 69a59e7",
+      "h": 15
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "Row-level security migration",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 6 of 7 · master inventory pipe",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/projects/visual-assist/",
+    "n": 28,
+    "nSmall": 13,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "walk the 5 claims ⟶audit walked · 5 of 5",
+      "h": 18
+     },
+     {
+      "t": "VisualAssist @ 22ebdaa · README.md",
+      "h": 15
+     },
+     {
+      "t": "VisualAssist @ 22ebdaa · source",
+      "h": 15
+     },
+     {
+      "t": "VisualAssist @ 22ebdaa · README.md",
+      "h": 15
+     },
+     {
+      "t": "VisualAssist @ 22ebdaa · README.md",
+      "h": 15
+     },
+     {
+      "t": "Source code",
+      "h": 18
+     },
+     {
+      "t": "README beta and LiDAR requirements",
+      "h": 18
+     },
+     {
+      "t": "XCTest source evidence",
+      "h": 18
+     },
+     {
+      "t": "back to the work ⟵",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "case file 4 of 7 · applied — filed 2026-",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   },
+   {
+    "route": "/no-such-page/",
+    "n": 17,
+    "nSmall": 10,
+    "small": [
+     {
+      "t": "Skip to main content",
+      "h": 1
+     },
+     {
+      "t": "motion: on",
+      "h": 18
+     },
+     {
+      "t": "who ⟶",
+      "h": 18
+     },
+     {
+      "t": "the path ⟶",
+      "h": 18
+     },
+     {
+      "t": "automl ⟶",
+      "h": 18
+     },
+     {
+      "t": "the work ⟶",
+      "h": 18
+     },
+     {
+      "t": "how i work ⟶",
+      "h": 18
+     },
+     {
+      "t": "the gate ⟶",
+      "h": 18
+     },
+     {
+      "t": "the evidence index ⟶",
+      "h": 18
+     },
+     {
+      "t": "back to the front page ⟵",
+      "h": 15
+     }
+    ],
+    "nOverlap": 0,
+    "overlaps": []
+   }
+  ]
+ }
+]

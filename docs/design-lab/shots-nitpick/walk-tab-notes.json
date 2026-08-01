@@ -1,0 +1,26 @@
+[
+  {
+    "k": "w768.height",
+    "v": "11961px = 11.68 viewports"
+  },
+  {
+    "k": "w768.chapters",
+    "v": [
+      "arrival: 1024px = 1.00vp",
+      "who: 706px = 0.69vp",
+      "path: 1777px = 1.74vp",
+      "automl: 2357px = 2.30vp",
+      "work: 3035px = 2.96vp",
+      "values: 873px = 0.85vp",
+      "gate: 2004px = 1.96vp"
+    ]
+  },
+  {
+    "k": "w768.hOverflow",
+    "v": {
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "offenders": []
+    }
+  }
+]

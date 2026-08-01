@@ -1,0 +1,313 @@
+[
+ {
+  "k": "glanceCaption",
+  "v": [
+   {
+    "w": 330,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 36,
+    "lines": 2,
+    "maxW": "none",
+    "stripW": 390
+   },
+   {
+    "w": 672,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 768
+   },
+   {
+    "w": 804,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 900
+   },
+   {
+    "w": 928,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 1024
+   },
+   {
+    "w": 1032,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 1240
+   },
+   {
+    "w": 1032,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 1240
+   },
+   {
+    "w": 1032,
+    "text": "¶ the evidence index — every claim on file · 11 entries",
+    "h": 18,
+    "lines": 1,
+    "maxW": "none",
+    "stripW": 1240
+   }
+  ]
+ },
+ {
+  "k": "clocks",
+  "v": {
+   "clocks": [
+    "22:41",
+    "06:12",
+    "08:47",
+    "12:06",
+    "15:23",
+    "19:36",
+    "12:00",
+    "12:00"
+   ],
+   "gateLine": "cincinnati, ohio · it’s 9:11 pm here right now — the ¶ clocks are the day this paper records",
+   "kicker": "¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12",
+   "ys": [
+    {
+     "t": "now reading — chapter 07, the gate, 22:41",
+     "y": 9987
+    },
+    {
+     "t": "¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12",
+     "y": 112
+    },
+    {
+     "t": "¶ 02 / 07 · who — the short version · 08:47",
+     "y": 963
+    },
+    {
+     "t": "¶ 03 / 07 · the path — field records · 12:06",
+     "y": 1727
+    },
+    {
+     "t": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23",
+     "y": 3299
+    },
+    {
+     "t": "¶ 05 / 07 · the work — four more systems · 19:36",
+     "y": 5049
+    },
+    {
+     "t": "tue · 12:00 — lunch",
+     "y": 7607
+    },
+    {
+     "t": "12:00",
+     "y": 7638
+    },
+    {
+     "t": "tue · 12:00 — lunch",
+     "y": 9959
+    },
+    {
+     "t": "12:00",
+     "y": 9959
+    },
+    {
+     "t": "¶ 06 / 07 · how i work — after dark · 21:07",
+     "y": 8178
+    },
+    {
+     "t": "¶ 07 / 07 · the approval gate — closing page · 22:41",
+     "y": 9024
+    },
+    {
+     "t": "· it’s 9:11 pm here right now — the ¶ clocks are the day this paper records",
+     "y": 9428
+    }
+   ]
+  }
+ },
+ {
+  "k": "figIds",
+  "v": [
+   {
+    "id": "automl",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3",
+     "fig-4",
+     "fig-5",
+     "fig-6"
+    ],
+    "refs": [
+     "#fig-4",
+     "#fig-5"
+    ],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3",
+     "fig. 4",
+     "fig. 5",
+     "fig. 6"
+    ]
+   },
+   {
+    "id": "fast-mnist-nn",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3",
+     "fig-4"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3",
+     "fig. 4"
+    ]
+   },
+   {
+    "id": "jobtracker",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3"
+    ]
+   },
+   {
+    "id": "master-inventory",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3",
+     "fig-4"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3",
+     "fig. 4"
+    ]
+   },
+   {
+    "id": "policybot",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3",
+     "fig-4"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3",
+     "fig. 4"
+    ]
+   },
+   {
+    "id": "taskflow-calendar",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3"
+    ]
+   },
+   {
+    "id": "visual-assist",
+    "figIds": [
+     "fig-1",
+     "fig-2",
+     "fig-3"
+    ],
+    "refs": [],
+    "dead": [],
+    "mentions": [
+     "fig. 1",
+     "fig. 2",
+     "fig. 3"
+    ]
+   }
+  ]
+ },
+ {
+  "k": "hover",
+  "v": [
+   {
+    "name": "wordmark",
+    "before": {
+     "bgSize": "0% 1px",
+     "bgImage": "linear-gradient(rgb(38, 35, 28), rgb(38, 35, 28))",
+     "color": "rgb(38, 35, 28)",
+     "td": "none"
+    },
+    "after": {
+     "bgSize": "100% 1px",
+     "color": "rgb(38, 35, 28)",
+     "td": "none"
+    },
+    "changed": true
+   },
+   {
+    "name": "theWork",
+    "before": {
+     "bgSize": "0% 1px, 100% 1px",
+     "bgImage": "linear-gradient(color(srgb 0.14902 0.137255 0.109804 / 0.72), color(sr",
+     "color": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+     "td": "none"
+    },
+    "after": {
+     "bgSize": "100% 1px, 100% 1px",
+     "color": "rgb(38, 35, 28)",
+     "td": "none"
+    },
+    "changed": true
+   }
+  ]
+ },
+ {
+  "k": "delight.home",
+  "v": {
+   "redThread": 12,
+   "threadSvg": 7,
+   "railMarks": 0,
+   "lightField": true,
+   "arcPhaseAttr": null,
+   "stamps": 2,
+   "colophon": true,
+   "leaders": 0
+  }
+ },
+ {
+  "k": "delight.404",
+  "v": {
+   "dottedLeaders": 7
+  }
+ }
+]

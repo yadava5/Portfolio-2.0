@@ -1,0 +1,129 @@
+[
+  {
+    "k": "codepoints",
+    "v": {
+      "heroText": "Scroll. It's all real.1",
+      "heroCodepoints": [
+        {
+          "c": "'",
+          "u": "U+0027"
+        }
+      ],
+      "heroAria": "Scroll. It's all real.",
+      "heroTag": "H1",
+      "strapText": "¶ 01 / 07 · arrival — a working paper on what i’ve built · 06:12",
+      "strapCodepoints": [
+        {
+          "c": "’",
+          "u": "U+2019"
+        }
+      ]
+    }
+  },
+  {
+    "k": "apostropheCensus.home",
+    "v": {
+      "straightCount": 1,
+      "straight": [
+        "It's"
+      ],
+      "curlyCount": 6,
+      "curly": [
+        "i’ve",
+        "I’ve",
+        "I’m",
+        "machine’s",
+        "dean’s",
+        "it’s"
+      ]
+    }
+  },
+  {
+    "k": "quoteCensus.home",
+    "v": {
+      "straightDouble": 0,
+      "curlyOpen": 1,
+      "curlyClose": 1
+    }
+  },
+  {
+    "k": "headerCircleCandidates",
+    "v": [
+      {
+        "tag": "SPAN",
+        "cls": "hidden items-center gap-2 border-l border-(--header-ink-border) pl-2.5 min-[480px]:flex lg",
+        "aria": null,
+        "title": null,
+        "role": null,
+        "hidden": null,
+        "text": "now reading — chapter 01, arrival, 06:12",
+        "rect": {
+          "x": 400,
+          "y": 27,
+          "w": 30,
+          "h": 15
+        }
+      },
+      {
+        "tag": "SPAN",
+        "cls": "sr-only",
+        "aria": null,
+        "title": null,
+        "role": null,
+        "hidden": null,
+        "text": "now reading — chapter 01, arrival, 06:12",
+        "rect": {
+          "x": 414,
+          "y": 34,
+          "w": 1,
+          "h": 1
+        }
+      },
+      {
+        "tag": "SPAN",
+        "cls": "flex items-center gap-2 lg:gap-2.5",
+        "aria": null,
+        "title": null,
+        "role": null,
+        "hidden": "true",
+        "text": "",
+        "rect": {
+          "x": 415,
+          "y": 27,
+          "w": 15,
+          "h": 15
+        }
+      },
+      {
+        "tag": "SPAN",
+        "cls": "daymark inline-flex text-(--header-ink)",
+        "aria": null,
+        "title": null,
+        "role": null,
+        "hidden": null,
+        "text": "",
+        "rect": {
+          "x": 415,
+          "y": 27,
+          "w": 15,
+          "h": 15
+        }
+      },
+      {
+        "tag": "svg",
+        "cls": "",
+        "aria": null,
+        "title": null,
+        "role": null,
+        "hidden": "true",
+        "text": "",
+        "rect": {
+          "x": 415,
+          "y": 27,
+          "w": 15,
+          "h": 15
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,283 @@
+{
+  "navContact": {
+    "scrollY": 8915,
+    "email": {
+      "op": 1,
+      "y": 0,
+      "text": ""
+    },
+    "availability": {
+      "op": 0.7,
+      "y": 581
+    },
+    "cta": {
+      "op": 0,
+      "y": 772
+    }
+  },
+  "navContactAfterNudge": {
+    "op": 1,
+    "scrollY": 9035
+  },
+  "deepValues": {
+    "scrollY": 8021,
+    "valuesTop": 225,
+    "whatIsAtTop": [
+      {
+        "id": "work",
+        "top": -2802
+      }
+    ]
+  },
+  "focusDay": [
+    {
+      "tag": "A",
+      "text": "Skip to main content",
+      "outlineColor": "rgb(250, 246, 239)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(176, 74, 40)",
+      "y": 16,
+      "h": 36
+    },
+    {
+      "tag": "BUTTON",
+      "text": "Open Ayush Yadav portrait",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 16,
+      "h": 36
+    },
+    {
+      "tag": "A",
+      "text": "ayush yadav",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 25,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "the work",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 28,
+      "h": 15
+    },
+    {
+      "tag": "A",
+      "text": "experience",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 28,
+      "h": 15
+    },
+    {
+      "tag": "A",
+      "text": "contact",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 28,
+      "h": 15
+    },
+    {
+      "tag": "A",
+      "text": "github",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 28,
+      "h": 15
+    },
+    {
+      "tag": "BUTTON",
+      "text": "motion: on",
+      "outlineColor": "color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 25,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "resume",
+      "outlineColor": "rgb(250, 246, 239)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(38, 35, 28)",
+      "y": 16,
+      "h": 36
+    },
+    {
+      "tag": "A",
+      "text": "01arrival",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 356,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "02who",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 385,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "03the path",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 413,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "04automl",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 441,
+      "h": 18
+    },
+    {
+      "tag": "A",
+      "text": "05the work",
+      "outlineColor": "rgb(38, 35, 28)",
+      "outlineW": "2px",
+      "outlineOffset": "3px",
+      "bgBehind": "rgb(250, 246, 239)",
+      "y": 469,
+      "h": 18
+    }
+  ],
+  "clock": {
+    "t0": "cincinnati, ohio — 9:20 am local",
+    "plus2min": "cincinnati, ohio — 9:22 am local",
+    "plus12min": "cincinnati, ohio — 9:32 am local",
+    "plus72min": "cincinnati, ohio — 10:32 am local",
+    "ticks": true
+  },
+  "caseStudyImages": {
+    "/projects/jobtracker/": [],
+    "/projects/automl/": [],
+    "/projects/fast-mnist-nn/": [],
+    "/evidence/": []
+  },
+  "http4xx": [],
+  "reducedAutoml": [
+    {
+      "text": "1.0 ingest",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "2.0 explore",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "3.0 preprocess",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "4.0 engineer",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "5.0 train",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "6.0 evaluate",
+      "color": "rgb(38, 35, 28)",
+      "lit": true
+    },
+    {
+      "text": "7.0 deploy",
+      "color": "rgb(92, 86, 74)",
+      "lit": false
+    }
+  ],
+  "reducedTier": "print",
+  "tierDefault": {
+    "tier": "core",
+    "motionOff": null,
+    "arcChrome": null,
+    "dm": 8,
+    "hc": 10
+  },
+  "printOpacity": [
+    {
+      "text": "¶ 02 / 07 · who — the short version · 08",
+      "op": 1
+    },
+    {
+      "text": "And how each piece was checked before I ",
+      "op": 1
+    },
+    {
+      "text": "I’m a recent computer-science graduate f",
+      "op": 0
+    },
+    {
+      "text": "ap·prov·alapproval",
+      "op": 0
+    },
+    {
+      "text": "/ əˈpruː·vəl / · noun",
+      "op": 0
+    },
+    {
+      "text": "1. the moment a human signs for a machin",
+      "op": 0
+    },
+    {
+      "text": "Applied",
+      "op": 0
+    },
+    {
+      "text": "Glyph",
+      "op": 0
+    },
+    {
+      "text": "jetpack-compress",
+      "op": 0
+    },
+    {
+      "text": "Cadence",
+      "op": 0
+    },
+    {
+      "text": "Ayush Yadav",
+      "op": 0
+    },
+    {
+      "text": "references — footnote 1, kept.",
+      "op": 0
+    }
+  ]
+}

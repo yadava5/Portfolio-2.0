@@ -1,0 +1,275 @@
+[
+  {
+    "k": "hoverTargets.header",
+    "v": [
+      {
+        "name": "header-nav-the-work",
+        "x": 611,
+        "y": 36,
+        "w": 69,
+        "h": 45,
+        "top": 13
+      },
+      {
+        "name": "header-resume-button",
+        "x": 1225,
+        "y": 34,
+        "w": 101,
+        "h": 44,
+        "top": 12
+      },
+      {
+        "name": "rail-04-automl",
+        "x": 33,
+        "y": 450,
+        "w": 33,
+        "h": 18,
+        "top": 441
+      },
+      {
+        "name": "hero-footnote-marker",
+        "x": 746,
+        "y": 404,
+        "w": 31,
+        "h": 52,
+        "top": 378
+      }
+    ]
+  },
+  {
+    "k": "hover.header-nav-the-work",
+    "v": {
+      "at60ms": {
+        "changedPct": 3.67,
+        "maxDelta": 420
+      },
+      "settled": {
+        "changedPct": 3.68,
+        "maxDelta": 447
+      }
+    }
+  },
+  {
+    "k": "hover.header-resume-button",
+    "v": {
+      "at60ms": {
+        "changedPct": 36.21,
+        "maxDelta": 444
+      },
+      "settled": {
+        "changedPct": 36.22,
+        "maxDelta": 636
+      }
+    }
+  },
+  {
+    "k": "hover.rail-04-automl",
+    "v": {
+      "at60ms": {
+        "changedPct": 2.9,
+        "maxDelta": 31
+      },
+      "settled": {
+        "changedPct": 3.64,
+        "maxDelta": 183
+      }
+    }
+  },
+  {
+    "k": "hover.hero-footnote-marker",
+    "v": {
+      "at60ms": {
+        "changedPct": 0.94,
+        "maxDelta": 585
+      },
+      "settled": {
+        "changedPct": 0.94,
+        "maxDelta": 618
+      }
+    }
+  },
+  {
+    "k": "projectLinks",
+    "v": [
+      {
+        "text": "Applied",
+        "top": 677,
+        "h": 15,
+        "w": 61
+      },
+      {
+        "text": "Glyph",
+        "top": 677,
+        "h": 15,
+        "w": 43
+      },
+      {
+        "text": "Cadence",
+        "top": 677,
+        "h": 15,
+        "w": 61
+      },
+      {
+        "text": "19/20 cited-source sweep — policybot, th",
+        "top": 2805,
+        "h": 15,
+        "w": 504
+      },
+      {
+        "text": "read the case file — agentic automl plat",
+        "top": 4020,
+        "h": 15,
+        "w": 405
+      },
+      {
+        "text": "Applied",
+        "top": 5172,
+        "h": 48,
+        "w": 128
+      },
+      {
+        "text": "macro-f1 0.98 — 96-sample gate",
+        "top": 5270,
+        "h": 15,
+        "w": 261
+      },
+      {
+        "text": "the case file ⟶",
+        "top": 5300,
+        "h": 15,
+        "w": 136
+      },
+      {
+        "text": "Glyph",
+        "top": 5843,
+        "h": 48,
+        "w": 101
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x vs -O3 bas",
+        "top": 5937,
+        "h": 51,
+        "w": 278
+      },
+      {
+        "text": "the case file ⟶",
+        "top": 6003,
+        "h": 15,
+        "w": 136
+      },
+      {
+        "text": "Cadence",
+        "top": 7215,
+        "h": 48,
+        "w": 141
+      },
+      {
+        "text": "1,145 automated tests — 634 frontend + 5",
+        "top": 7361,
+        "h": 33,
+        "w": 261
+      },
+      {
+        "text": "the case file ⟶",
+        "top": 7409,
+        "h": 15,
+        "w": 136
+      },
+      {
+        "text": "master inventory pipeline",
+        "top": 7925,
+        "h": 15,
+        "w": 217
+      },
+      {
+        "text": "policybot",
+        "top": 7925,
+        "h": 15,
+        "w": 78
+      },
+      {
+        "text": "271 backend tests — jobtracker validatio",
+        "top": 8369,
+        "h": 15,
+        "w": 417
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x over -O3, ",
+        "top": 8503,
+        "h": 15,
+        "w": 521
+      },
+      {
+        "text": "19/20 cited-source sweep — policybot val",
+        "top": 8637,
+        "h": 15,
+        "w": 469
+      },
+      {
+        "text": "jobtracker — receipt 05 ⟶",
+        "top": 9797,
+        "h": 18,
+        "w": 223
+      },
+      {
+        "text": "fast-mnist-nn — receipt 02 ⟶",
+        "top": 9858,
+        "h": 18,
+        "w": 249
+      },
+      {
+        "text": "taskflow-calendar — receipt 01 ⟶",
+        "top": 9919,
+        "h": 18,
+        "w": 284
+      },
+      {
+        "text": "policybot — receipt 01 ⟶",
+        "top": 9836,
+        "h": 18,
+        "w": 214
+      },
+      {
+        "text": "master-inventory — receipt 05 ⟶",
+        "top": 9897,
+        "h": 18,
+        "w": 275
+      },
+      {
+        "text": "automl — the case file ⟶",
+        "top": 9959,
+        "h": 18,
+        "w": 214
+      }
+    ]
+  },
+  {
+    "k": "transitionSpecs",
+    "v": [
+      {
+        "spec": "background-size, color | 0.25s, 0.25s | cubic-bezier(0.22, 0.61, 0.21, 1), cubic-bezier(0.22, 0.61, 0.21, 1)",
+        "count": 47
+      },
+      {
+        "spec": "all | 0s | ease",
+        "count": 11
+      },
+      {
+        "spec": "opacity | 0.3s | cubic-bezier(0.4, 0, 0.2, 1)",
+        "count": 7
+      },
+      {
+        "spec": "color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to | 0",
+        "count": 2
+      },
+      {
+        "spec": "background-size | 0.25s | cubic-bezier(0.22, 0.61, 0.21, 1)",
+        "count": 1
+      },
+      {
+        "spec": "opacity | 0.15s | cubic-bezier(0.4, 0, 0.2, 1)",
+        "count": 1
+      }
+    ]
+  }
+]

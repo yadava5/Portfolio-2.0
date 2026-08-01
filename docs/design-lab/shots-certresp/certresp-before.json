@@ -1,0 +1,871 @@
+{
+  "census_mob": {
+    "total": 46,
+    "under44": 42,
+    "under30h_or_24w": 27,
+    "header": [
+      {
+        "t": "Open Ayush Yadav portrait",
+        "w": 28,
+        "h": 28,
+        "header": true
+      },
+      {
+        "t": "ayush yadav",
+        "w": 96,
+        "h": 18,
+        "header": true
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 15,
+        "header": true
+      },
+      {
+        "t": "Contact",
+        "w": 32,
+        "h": 32,
+        "header": true
+      },
+      {
+        "t": "resume",
+        "w": 74,
+        "h": 32,
+        "header": true
+      }
+    ]
+  },
+  "census_desk": {
+    "total": 61,
+    "under44": 55,
+    "under30h_or_24w": 50,
+    "header": [
+      {
+        "t": "Open Ayush Yadav portrait",
+        "w": 36,
+        "h": 36,
+        "header": true
+      },
+      {
+        "t": "ayush yadav",
+        "w": 96,
+        "h": 18,
+        "header": true
+      },
+      {
+        "t": "the work",
+        "w": 69,
+        "h": 15,
+        "header": true
+      },
+      {
+        "t": "experience",
+        "w": 87,
+        "h": 15,
+        "header": true
+      },
+      {
+        "t": "contact",
+        "w": 61,
+        "h": 15,
+        "header": true
+      },
+      {
+        "t": "github",
+        "w": 52,
+        "h": 15,
+        "header": true
+      },
+      {
+        "t": "motion: on",
+        "w": 87,
+        "h": 18,
+        "header": true
+      },
+      {
+        "t": "resume",
+        "w": 101,
+        "h": 36,
+        "header": true
+      }
+    ]
+  },
+  "mastheadFit": [
+    {
+      "width": 320,
+      "docW": 323,
+      "winW": 320,
+      "navScrollW": 320,
+      "navClientW": 320,
+      "headerH": 64,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 340,
+      "docW": 341,
+      "winW": 340,
+      "navScrollW": 340,
+      "navClientW": 340,
+      "headerH": 64,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 360,
+      "docW": 360,
+      "winW": 360,
+      "navScrollW": 360,
+      "navClientW": 360,
+      "headerH": 64,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 375,
+      "docW": 375,
+      "winW": 375,
+      "navScrollW": 375,
+      "navClientW": 375,
+      "headerH": 80,
+      "wordmark": {
+        "w": 93,
+        "h": 36
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 390,
+      "docW": 390,
+      "winW": 390,
+      "navScrollW": 390,
+      "navClientW": 390,
+      "headerH": 64,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 414,
+      "docW": 414,
+      "winW": 414,
+      "navScrollW": 414,
+      "navClientW": 414,
+      "headerH": 64,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 430,
+      "docW": 430,
+      "winW": 430,
+      "navScrollW": 430,
+      "navClientW": 430,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 480,
+      "docW": 480,
+      "winW": 480,
+      "navScrollW": 480,
+      "navClientW": 480,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 0,
+        "h": 0
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 640,
+      "docW": 640,
+      "winW": 640,
+      "navScrollW": 640,
+      "navClientW": 640,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 87,
+        "h": 18
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 768,
+      "docW": 768,
+      "winW": 768,
+      "navScrollW": 768,
+      "navClientW": 768,
+      "headerH": 80,
+      "wordmark": {
+        "w": 82,
+        "h": 36
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 72,
+        "h": 36
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 1024,
+      "docW": 1024,
+      "winW": 1024,
+      "navScrollW": 1024,
+      "navClientW": 1024,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 87,
+        "h": 18
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 1280,
+      "docW": 1280,
+      "winW": 1280,
+      "navScrollW": 1240,
+      "navClientW": 1240,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 87,
+        "h": 18
+      },
+      "motionTag": "button"
+    },
+    {
+      "width": 1440,
+      "docW": 1440,
+      "winW": 1440,
+      "navScrollW": 1240,
+      "navClientW": 1240,
+      "headerH": 68,
+      "wordmark": {
+        "w": 96,
+        "h": 18
+      },
+      "wordmarkClipped": false,
+      "wordmarkEllipsis": "clip",
+      "motion": {
+        "w": 87,
+        "h": 18
+      },
+      "motionTag": "button"
+    }
+  ],
+  "threadSweep": [
+    {
+      "width": 1024,
+      "spine": {
+        "01": 424.7,
+        "02": 998,
+        "03": 998,
+        "04": 998,
+        "05": 998,
+        "06": 998,
+        "07": 998
+      }
+    },
+    {
+      "width": 1040,
+      "spine": {
+        "01": 430.3,
+        "02": 1014,
+        "03": 1014,
+        "04": 1014,
+        "05": 1014,
+        "06": 1014,
+        "07": 1014
+      }
+    },
+    {
+      "width": 1056,
+      "spine": {
+        "01": 435.9,
+        "02": 1030,
+        "03": 1030,
+        "04": 1030,
+        "05": 1030,
+        "06": 1030,
+        "07": 1030
+      }
+    },
+    {
+      "width": 1072,
+      "spine": {
+        "01": 441.6,
+        "02": 1046,
+        "03": 1046,
+        "04": 1046,
+        "05": 1046,
+        "06": 1046,
+        "07": 1046
+      }
+    },
+    {
+      "width": 1088,
+      "spine": {
+        "01": 447.2,
+        "02": 1062,
+        "03": 1062,
+        "04": 1062,
+        "05": 1062,
+        "06": 1062,
+        "07": 1062
+      }
+    },
+    {
+      "width": 1104,
+      "spine": {
+        "01": 452.8,
+        "02": 1078,
+        "03": 1078,
+        "04": 1078,
+        "05": 1078,
+        "06": 1078,
+        "07": 1078
+      }
+    },
+    {
+      "width": 1120,
+      "spine": {
+        "01": 458.5,
+        "02": 1094,
+        "03": 1094,
+        "04": 1094,
+        "05": 1094,
+        "06": 1094,
+        "07": 1094
+      }
+    },
+    {
+      "width": 1136,
+      "spine": {
+        "01": 464.1,
+        "02": 1110,
+        "03": 1110,
+        "04": 1110,
+        "05": 1110,
+        "06": 1110,
+        "07": 1110
+      }
+    },
+    {
+      "width": 1152,
+      "spine": {
+        "01": 469.7,
+        "02": 1126,
+        "03": 1126,
+        "04": 1126,
+        "05": 1126,
+        "06": 1126,
+        "07": 1126
+      }
+    },
+    {
+      "width": 1168,
+      "spine": {
+        "01": 475.3,
+        "02": 1142,
+        "03": 1142,
+        "04": 1142,
+        "05": 1142,
+        "06": 1142,
+        "07": 1142
+      }
+    },
+    {
+      "width": 1184,
+      "spine": {
+        "01": 481,
+        "02": 1158,
+        "03": 1158,
+        "04": 1158,
+        "05": 1158,
+        "06": 1158,
+        "07": 1158
+      }
+    },
+    {
+      "width": 1200,
+      "spine": {
+        "01": 486.6,
+        "02": 1174,
+        "03": 1174,
+        "04": 1174,
+        "05": 1174,
+        "06": 1174,
+        "07": 1174
+      }
+    },
+    {
+      "width": 1216,
+      "spine": {
+        "01": 492.3,
+        "02": 1190,
+        "03": 1190,
+        "04": 1190,
+        "05": 1190,
+        "06": 1190,
+        "07": 1190
+      }
+    },
+    {
+      "width": 1232,
+      "spine": {
+        "01": 497.9,
+        "02": 1206,
+        "03": 1206,
+        "04": 1206,
+        "05": 1206,
+        "06": 1206,
+        "07": 1206
+      }
+    },
+    {
+      "width": 1248,
+      "spine": {
+        "01": 507.5,
+        "02": 1222,
+        "03": 1222,
+        "04": 1222,
+        "05": 1222,
+        "06": 1222,
+        "07": 1222
+      }
+    },
+    {
+      "width": 1264,
+      "spine": {
+        "01": 521.2,
+        "02": 1238,
+        "03": 1238,
+        "04": 1238,
+        "05": 1238,
+        "06": 1238,
+        "07": 1238
+      }
+    },
+    {
+      "width": 1280,
+      "spine": {
+        "01": 630.8,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1296,
+      "spine": {
+        "01": 644.4,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1312,
+      "spine": {
+        "01": 658.1,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1328,
+      "spine": {
+        "01": 671.7,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1344,
+      "spine": {
+        "01": 685.3,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1360,
+      "spine": {
+        "01": 699,
+        "02": 152,
+        "03": 152,
+        "04": 152,
+        "05": 152,
+        "06": 152,
+        "07": 152
+      }
+    },
+    {
+      "width": 1376,
+      "spine": {
+        "01": 712.6,
+        "02": 156,
+        "03": 156,
+        "04": 156,
+        "05": 156,
+        "06": 156,
+        "07": 156
+      }
+    },
+    {
+      "width": 1392,
+      "spine": {
+        "01": 726.2,
+        "02": 164,
+        "03": 164,
+        "04": 164,
+        "05": 164,
+        "06": 164,
+        "07": 164
+      }
+    },
+    {
+      "width": 1408,
+      "spine": {
+        "01": 739.9,
+        "02": 172,
+        "03": 172,
+        "04": 172,
+        "05": 172,
+        "06": 172,
+        "07": 172
+      }
+    },
+    {
+      "width": 1424,
+      "spine": {
+        "01": 753.5,
+        "02": 180,
+        "03": 180,
+        "04": 180,
+        "05": 180,
+        "06": 180,
+        "07": 180
+      }
+    },
+    {
+      "width": 1440,
+      "spine": {
+        "01": 767.1,
+        "02": 188,
+        "03": 188,
+        "04": 188,
+        "05": 188,
+        "06": 188,
+        "07": 188
+      }
+    }
+  ],
+  "threadJumps": [
+    {
+      "lastGoodWidth": 1031,
+      "snapWidth": 1032,
+      "from": 1005,
+      "to": 1006,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1047,
+      "snapWidth": 1048,
+      "from": 1021,
+      "to": 1022,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1063,
+      "snapWidth": 1064,
+      "from": 1037,
+      "to": 1038,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1079,
+      "snapWidth": 1080,
+      "from": 1053,
+      "to": 1054,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1095,
+      "snapWidth": 1096,
+      "from": 1069,
+      "to": 1070,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1111,
+      "snapWidth": 1112,
+      "from": 1085,
+      "to": 1086,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1127,
+      "snapWidth": 1128,
+      "from": 1101,
+      "to": 1102,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1143,
+      "snapWidth": 1144,
+      "from": 1117,
+      "to": 1118,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1159,
+      "snapWidth": 1160,
+      "from": 1133,
+      "to": 1134,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1175,
+      "snapWidth": 1176,
+      "from": 1149,
+      "to": 1150,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1191,
+      "snapWidth": 1192,
+      "from": 1165,
+      "to": 1166,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1207,
+      "snapWidth": 1208,
+      "from": 1181,
+      "to": 1182,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1223,
+      "snapWidth": 1224,
+      "from": 1197,
+      "to": 1198,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1239,
+      "snapWidth": 1240,
+      "from": 1213,
+      "to": 1214,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1255,
+      "snapWidth": 1256,
+      "from": 1229,
+      "to": 1230,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1271,
+      "snapWidth": 1272,
+      "from": 1245,
+      "to": 1246,
+      "dx": 1
+    },
+    {
+      "lastGoodWidth": 1391,
+      "snapWidth": 1392,
+      "from": 163.5,
+      "to": 164,
+      "dx": 0.5
+    },
+    {
+      "lastGoodWidth": 1407,
+      "snapWidth": 1408,
+      "from": 171.5,
+      "to": 172,
+      "dx": 0.5
+    },
+    {
+      "lastGoodWidth": 1423,
+      "snapWidth": 1424,
+      "from": 179.5,
+      "to": 180,
+      "dx": 0.5
+    },
+    {
+      "lastGoodWidth": 1439,
+      "snapWidth": 1440,
+      "from": 187.5,
+      "to": 188,
+      "dx": 0.5
+    }
+  ],
+  "emdash": {
+    "paragraphsTotal": 134,
+    "paragraphsWithMultipleDashes": 10,
+    "overByKind": {
+      "prose (serif)": 1,
+      "apparatus (mono)": 9
+    },
+    "overSample": [
+      {
+        "kind": "prose (serif)",
+        "count": 2,
+        "text": "B.S. Computer Science, May 2026 — dean’s list, spring & fall 2025 — 3.65 GPA in major coursework"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 2,
+        "text": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 2,
+        "text": "fig. 4.1 — experiment registry, transcribed private-safe excerpt. ▓▓▓ — not published: the repos"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 3,
+        "text": "fig. 5.0 — the sorting line — the 96-message eval set through rules → e5 similarity → gated setf"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 4,
+        "text": "fig. 5.1 — the race — equal time, measured distance · the forward pass — a drawn 7, answered. 3."
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 2,
+        "text": "fig. 5.2 — split → parallel → stitch — virtual-thread gzip into one byte-valid member. ~6.5x vs "
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 4,
+        "text": "fig. 5.3 — the parse — a plain-english sentence resolves into chips on the week grid + a google "
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 3,
+        "text": "fig. 6.1 — the gates, kept. refused — the gate stopped the run · passed — human signed off"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 2,
+        "text": "2. 3.5x — openmp+simd dot kernel vs -O3 baseline fast-mnist-nn — receipt 02 ⟶"
+      },
+      {
+        "kind": "apparatus (mono)",
+        "count": 2,
+        "text": "3. 1,145 automated tests — 634 frontend + 511 backend taskflow-calendar — receipt 01 ⟶"
+      }
+    ]
+  }
+}

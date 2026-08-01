@@ -1,0 +1,774 @@
+{
+  "tag": "before",
+  "base": "http://127.0.0.1:3251",
+  "at": "2026-07-25T05:21:27.800Z",
+  "desk": {
+    "docHeight": 10386,
+    "heroLinks": [
+      {
+        "text": "1",
+        "href": "#footnote-1",
+        "fontSize": 18.14,
+        "w": 11,
+        "h": 22
+      },
+      {
+        "text": "the capstone — agentic automl: seven gated phases ⟶",
+        "href": "#automl",
+        "fontSize": 13,
+        "w": 449,
+        "h": 15
+      },
+      {
+        "text": "jobtracker",
+        "href": "/projects/jobtracker/",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "fast-mnist",
+        "href": "/projects/fast-mnist-nn/",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "visual-assist",
+        "href": "/projects/visual-assist/",
+        "fontSize": 11,
+        "w": 100,
+        "h": 13
+      },
+      {
+        "text": "skip to the work ↓",
+        "href": "#automl",
+        "fontSize": 13,
+        "w": 156,
+        "h": 18
+      },
+      {
+        "text": "the work",
+        "href": "#work",
+        "fontSize": 11,
+        "w": 61,
+        "h": 13
+      },
+      {
+        "text": "the evidence",
+        "href": "/evidence/",
+        "fontSize": 11,
+        "w": 92,
+        "h": 13
+      },
+      {
+        "text": "the resume",
+        "href": "/resume.pdf",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "↩",
+        "href": "#fnref-1",
+        "fontSize": 13,
+        "w": 8,
+        "h": 15
+      }
+    ],
+    "typeCensus": [
+      {
+        "px": 10,
+        "fam": "Fragment Mono",
+        "n": 22,
+        "sample": "0"
+      },
+      {
+        "px": 11,
+        "fam": "Fragment Mono",
+        "n": 16,
+        "sample": "case files: jobtracker · fast-mnist · visual-ass"
+      },
+      {
+        "px": 12,
+        "fam": "Fragment Mono",
+        "n": 1,
+        "sample": "n.b. — every project below opens into its own ca"
+      },
+      {
+        "px": 12.5,
+        "fam": "Fragment Mono",
+        "n": 35,
+        "sample": "inbox"
+      },
+      {
+        "px": 13,
+        "fam": "Fragment Mono",
+        "n": 153,
+        "sample": "ayush yadav"
+      },
+      {
+        "px": 15,
+        "fam": "Newsreader",
+        "n": 1,
+        "sample": "1. the moment a human signs for a machine’s work"
+      },
+      {
+        "px": 16,
+        "fam": "ui-sans-serif",
+        "n": 4,
+        "sample": "Skip to main content"
+      },
+      {
+        "px": 18.14,
+        "fam": "Fragment Mono",
+        "n": 1,
+        "sample": "1"
+      },
+      {
+        "px": 19,
+        "fam": "Newsreader",
+        "n": 13,
+        "sample": "Ayush Yadav — software engineer · Cincinnati, Oh"
+      },
+      {
+        "px": 24,
+        "fam": "Fraunces",
+        "n": 4,
+        "sample": "ap·prov·al"
+      },
+      {
+        "px": 24,
+        "fam": "Newsreader",
+        "n": 14,
+        "sample": "Your inbox already knows where you applied."
+      },
+      {
+        "px": 28.8,
+        "fam": "Newsreader",
+        "n": 4,
+        "sample": "Every pipeline I build ends with a human decisio"
+      },
+      {
+        "px": 34.56,
+        "fam": "Fraunces",
+        "n": 1,
+        "sample": "Email me — I read everything."
+      },
+      {
+        "px": 38.4,
+        "fam": "Fraunces",
+        "n": 4,
+        "sample": "Applied"
+      },
+      {
+        "px": 40,
+        "fam": "Fragment Mono",
+        "n": 2,
+        "sample": "APPROVED"
+      },
+      {
+        "px": 64,
+        "fam": "Fraunces",
+        "n": 18,
+        "sample": "This"
+      },
+      {
+        "px": 64,
+        "fam": "Newsreader",
+        "n": 15,
+        "sample": "And how each piece was checked before I called i"
+      },
+      {
+        "px": 115.2,
+        "fam": "Fraunces",
+        "n": 1,
+        "sample": "Ayush Yadav"
+      },
+      {
+        "px": 129.6,
+        "fam": "Fraunces",
+        "n": 2,
+        "sample": "Scroll."
+      },
+      {
+        "px": 129.6,
+        "fam": "Newsreader",
+        "n": 1,
+        "sample": "real."
+      }
+    ],
+    "chapters": [
+      {
+        "id": "arrival",
+        "px": 900
+      },
+      {
+        "id": "who",
+        "px": 850
+      },
+      {
+        "id": "path",
+        "px": 1594
+      },
+      {
+        "id": "automl",
+        "px": 1808
+      },
+      {
+        "id": "work",
+        "px": 2919
+      },
+      {
+        "id": "values",
+        "px": 765
+      },
+      {
+        "id": "gate",
+        "px": 1384
+      }
+    ],
+    "rail": [
+      {
+        "name": "chapter 01 — arrival",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 1,
+        "visited": null
+      },
+      {
+        "name": "chapter 02 — who",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 03 — the path",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 04 — automl",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 05 — the work",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 06 — how i work",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 07 — the gate",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      }
+    ],
+    "registry": {
+      "buttonLabel": "Approve run no. 041",
+      "buttonText": "awaiting approvalapproved",
+      "rows": [
+        {
+          "text": "038 · log-regapproved",
+          "cells": [
+            "038 · log-reg",
+            "approved"
+          ]
+        },
+        {
+          "text": "039 · random forestapproved",
+          "cells": [
+            "039 · random forest",
+            "approved"
+          ]
+        },
+        {
+          "text": "040 · gbmapproved",
+          "cells": [
+            "040 · gbm",
+            "approved"
+          ]
+        },
+        {
+          "text": "041 · xgboostawaiting approvalapproved",
+          "cells": [
+            "041 · xgboost",
+            "awaiting approvalapproved"
+          ]
+        }
+      ]
+    },
+    "gaps": [],
+    "copy": {
+      "chars": 7992,
+      "arrowIn": 15,
+      "arrowOut": 4,
+      "emDash": 81,
+      "gateWords": 15,
+      "arrival": 4,
+      "cincinnati": 2,
+      "receipt": 7
+    }
+  },
+  "mob": {
+    "docHeight": 12500,
+    "heroLinks": [
+      {
+        "text": "1",
+        "href": "#footnote-1",
+        "fontSize": 13,
+        "w": 8,
+        "h": 15
+      },
+      {
+        "text": "the capstone — agentic automl: seven gated phases ⟶",
+        "href": "#automl",
+        "fontSize": 13,
+        "w": 313,
+        "h": 33
+      },
+      {
+        "text": "jobtracker",
+        "href": "/projects/jobtracker/",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "fast-mnist",
+        "href": "/projects/fast-mnist-nn/",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "visual-assist",
+        "href": "/projects/visual-assist/",
+        "fontSize": 11,
+        "w": 100,
+        "h": 13
+      },
+      {
+        "text": "skip to the work ↓",
+        "href": "#automl",
+        "fontSize": 13,
+        "w": 156,
+        "h": 18
+      },
+      {
+        "text": "the work",
+        "href": "#work",
+        "fontSize": 11,
+        "w": 61,
+        "h": 13
+      },
+      {
+        "text": "the evidence",
+        "href": "/evidence/",
+        "fontSize": 11,
+        "w": 92,
+        "h": 13
+      },
+      {
+        "text": "the resume",
+        "href": "/resume.pdf",
+        "fontSize": 11,
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "↩",
+        "href": "#fnref-1",
+        "fontSize": 13,
+        "w": 8,
+        "h": 15
+      }
+    ],
+    "smallTargets": [
+      {
+        "text": "Skip to main content",
+        "w": 1,
+        "h": 1
+      },
+      {
+        "text": "",
+        "w": 28,
+        "h": 28
+      },
+      {
+        "text": "ayush yadav",
+        "w": 96,
+        "h": 18
+      },
+      {
+        "text": "the work",
+        "w": 69,
+        "h": 15
+      },
+      {
+        "text": "1",
+        "w": 8,
+        "h": 15
+      },
+      {
+        "text": "jobtracker",
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "fast-mnist",
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "visual-assist",
+        "w": 100,
+        "h": 13
+      },
+      {
+        "text": "skip to the work ↓",
+        "w": 156,
+        "h": 18
+      },
+      {
+        "text": "the work",
+        "w": 61,
+        "h": 13
+      },
+      {
+        "text": "the evidence",
+        "w": 92,
+        "h": 13
+      },
+      {
+        "text": "the resume",
+        "w": 77,
+        "h": 13
+      },
+      {
+        "text": "↩",
+        "w": 8,
+        "h": 15
+      },
+      {
+        "text": "awaiting approvalapproved",
+        "w": 148,
+        "h": 18
+      },
+      {
+        "text": "macro-f1 0.98 — 96-sample gate",
+        "w": 261,
+        "h": 15
+      },
+      {
+        "text": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "text": "source",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "demo ↗",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "text": "source",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "demo ↗",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "the live demo ↗",
+        "w": 130,
+        "h": 15
+      },
+      {
+        "text": "source",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "gzip this figure in your browser ⟶",
+        "w": 301,
+        "h": 18
+      },
+      {
+        "text": "the case file ⟶",
+        "w": 136,
+        "h": 15
+      },
+      {
+        "text": "source",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "demo ↗",
+        "w": 52,
+        "h": 15
+      },
+      {
+        "text": "Master Inventory Pipeline",
+        "w": 217,
+        "h": 15
+      },
+      {
+        "text": "PolicyBot",
+        "w": 78,
+        "h": 15
+      },
+      {
+        "text": "aesh_1055@icloud.com",
+        "w": 174,
+        "h": 18
+      },
+      {
+        "text": "resume",
+        "w": 52,
+        "h": 18
+      },
+      {
+        "text": "github",
+        "w": 52,
+        "h": 18
+      },
+      {
+        "text": "linkedin",
+        "w": 69,
+        "h": 18
+      },
+      {
+        "text": "Email me — I read everything.",
+        "w": 330,
+        "h": 29
+      },
+      {
+        "text": "jobtracker — receipt 05 ⟶",
+        "w": 223,
+        "h": 18
+      },
+      {
+        "text": "fast-mnist-nn — receipt 02 ⟶",
+        "w": 249,
+        "h": 18
+      },
+      {
+        "text": "visual-assist — receipt 01 ⟶",
+        "w": 249,
+        "h": 18
+      },
+      {
+        "text": "policybot — receipt 01 ⟶",
+        "w": 214,
+        "h": 18
+      },
+      {
+        "text": "master-inventory — receipt 05 ⟶",
+        "w": 275,
+        "h": 18
+      },
+      {
+        "text": "automl — the case file ⟶",
+        "w": 214,
+        "h": 18
+      },
+      {
+        "text": "github",
+        "w": 52,
+        "h": 18
+      },
+      {
+        "text": "linkedin",
+        "w": 69,
+        "h": 18
+      },
+      {
+        "text": "email",
+        "w": 43,
+        "h": 18
+      }
+    ],
+    "gateTop": 10503,
+    "sceneType": [
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "typed — an illustrat"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "chrono-node + compro"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "m"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "t"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "w"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "t"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "f"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "s"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "s"
+      },
+      {
+        "authored": 10,
+        "rendered": 6.45,
+        "text": "12:00"
+      },
+      {
+        "authored": 12.5,
+        "rendered": 8.06,
+        "text": "inbox"
+      },
+      {
+        "authored": 12.5,
+        "rendered": 8.06,
+        "text": "rules"
+      }
+    ],
+    "stampType": {
+      "widthPx": 198,
+      "scale": 0.66,
+      "texts": [
+        {
+          "authored": 13,
+          "rendered": 8.58,
+          "text": "run no. 041"
+        },
+        {
+          "authored": 11,
+          "rendered": 7.26,
+          "text": "press here to sign"
+        },
+        {
+          "authored": 40,
+          "rendered": 26.39,
+          "text": "APPROVED"
+        },
+        {
+          "authored": 11,
+          "rendered": 7.26,
+          "text": "· human in the loop ·"
+        },
+        {
+          "authored": 10,
+          "rendered": 6.6,
+          "text": "run no. 041 ·"
+        }
+      ]
+    }
+  },
+  "static": {
+    "rail": [
+      {
+        "name": "chapter 01 — arrival",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 02 — who",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 03 — the path",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 04 — automl",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 1,
+        "visited": null
+      },
+      {
+        "name": "chapter 05 — the work",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 06 — how i work",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      },
+      {
+        "name": "chapter 07 — the gate",
+        "w": 33,
+        "h": 18,
+        "labelOpacity": 0,
+        "visited": null
+      }
+    ],
+    "docHeight": 9499
+  },
+  "thread": {
+    "at1279": 1253,
+    "at1280": 136,
+    "at1320": 136,
+    "snapPx": 1117
+  }
+}

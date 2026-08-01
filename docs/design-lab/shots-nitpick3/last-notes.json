@@ -1,0 +1,107 @@
+[
+ {
+  "k": "runtime@390",
+  "v": [
+   {
+    "route": "/",
+    "cls": 1.2151,
+    "lcp": null,
+    "dcl": 13,
+    "nodes": 1172,
+    "console": [
+     "warning: Deprecated API for given entry type."
+    ],
+    "nMsgs": 1
+   },
+   {
+    "route": "/evidence/",
+    "cls": 0,
+    "lcp": null,
+    "dcl": 14,
+    "nodes": 576,
+    "console": [
+     "warning: Deprecated API for given entry type."
+    ],
+    "nMsgs": 1
+   },
+   {
+    "route": "/projects/automl/",
+    "cls": 0,
+    "lcp": null,
+    "dcl": 16,
+    "nodes": 716,
+    "console": [
+     "warning: Deprecated API for given entry type."
+    ],
+    "nMsgs": 1
+   },
+   {
+    "route": "/no-such-page/",
+    "cls": 0.0016,
+    "lcp": null,
+    "dcl": 24,
+    "nodes": 154,
+    "console": [
+     "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+     "warning: The resource http://localhost:3601/_next/static/media/54fc36028e2bb174-s.p.20jfceqj9zyw9.woff2 was preloaded using link ",
+     "warning: The resource http://localhost:3601/_next/static/media/a9a434ecf764164f-s.p.09kihw1cxxru6.woff2 was preloaded using link ",
+     "warning: The resource http://localhost:3601/_next/static/media/aaeb013c77132fba-s.p.1wh0qzzwls4_i.woff2 was preloaded using link ",
+     "warning: The resource http://localhost:3601/_next/static/media/8feca5bfbcc904f1-s.p.1xt3x57tcdmbv.woff2 was preloaded using link ",
+     "warning: Deprecated API for given entry type."
+    ],
+    "nMsgs": 6
+   }
+  ]
+ },
+ {
+  "k": "overflow@320",
+  "v": [
+   {
+    "route": "/",
+    "over": 0,
+    "bleed": []
+   },
+   {
+    "route": "/evidence/",
+    "over": 0,
+    "bleed": []
+   },
+   {
+    "route": "/projects/automl/",
+    "over": 0,
+    "bleed": [
+     "",
+     ""
+    ]
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "over": 0,
+    "bleed": []
+   },
+   {
+    "route": "/no-such-page/",
+    "over": 0,
+    "bleed": []
+   }
+  ]
+ },
+ {
+  "k": "gate.pressed",
+  "v": {
+   "inked": true,
+   "pressed": "true",
+   "label": "Approved — run no. 041 · jul 26, 2026",
+   "registerOpacityWhenInkedAndFocused": "0"
+  }
+ },
+ {
+  "k": "backRestore",
+  "v": {
+   "leftAt": 6000,
+   "wentTo": "/projects/jobtracker/",
+   "returnedTo": 6000,
+   "delta": 0
+  }
+ }
+]

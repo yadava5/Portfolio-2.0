@@ -1,0 +1,406 @@
+{
+  "pacing_motion": [
+    {
+      "ch": "01",
+      "px": 900,
+      "vp": 1,
+      "share": 8.4
+    },
+    {
+      "ch": "02",
+      "px": 764,
+      "vp": 0.85,
+      "share": 7.1
+    },
+    {
+      "ch": "03",
+      "px": 1563,
+      "vp": 1.74,
+      "share": 14.5
+    },
+    {
+      "ch": "04",
+      "px": 1777,
+      "vp": 1.97,
+      "share": 16.5
+    },
+    {
+      "ch": "05",
+      "px": 3049,
+      "vp": 3.39,
+      "share": 28.3
+    },
+    {
+      "ch": "06",
+      "px": 765,
+      "vp": 0.85,
+      "share": 7.1
+    },
+    {
+      "ch": "07",
+      "px": 1778,
+      "vp": 1.98,
+      "share": 16.5
+    }
+  ],
+  "gaps_motion": [],
+  "seam_motion": {
+    "folioBottom": 7999,
+    "kickerTop": 0,
+    "gap": -7999
+  },
+  "fig53_motion": {
+    "caption": "fig. 5.3 — the parse — a plain-english sentence resolves into chips on the week grid + a google meet link. chrono-node +",
+    "texts": [
+      "typed — an illustrative sentence",
+      "“",
+      "lunch",
+      "with",
+      "sam",
+      "and",
+      "priya",
+      "next tuesday at noon",
+      "—",
+      "add a meet",
+      "”",
+      "chrono-node + compromise",
+      "tue · 12:00 — lunch",
+      "invite — sam · priya",
+      "google meet",
+      "m",
+      "t",
+      "w",
+      "t",
+      "f",
+      "s",
+      "s",
+      "12:00"
+    ],
+    "inkNodes": 37,
+    "totalNodes": 54,
+    "lowOpacity": 0
+  },
+  "pacing_static": [
+    {
+      "ch": "01",
+      "px": 900,
+      "vp": 1,
+      "share": 9.1
+    },
+    {
+      "ch": "02",
+      "px": 764,
+      "vp": 0.85,
+      "share": 7.7
+    },
+    {
+      "ch": "03",
+      "px": 1563,
+      "vp": 1.74,
+      "share": 15.8
+    },
+    {
+      "ch": "04",
+      "px": 922,
+      "vp": 1.02,
+      "share": 9.3
+    },
+    {
+      "ch": "05",
+      "px": 3016,
+      "vp": 3.35,
+      "share": 30.6
+    },
+    {
+      "ch": "06",
+      "px": 765,
+      "vp": 0.85,
+      "share": 7.7
+    },
+    {
+      "ch": "07",
+      "px": 1778,
+      "vp": 1.98,
+      "share": 18
+    }
+  ],
+  "gaps_static": [],
+  "seam_static": {
+    "folioBottom": 7110,
+    "kickerTop": 0,
+    "gap": -7110
+  },
+  "fig53_static": {
+    "caption": "fig. 5.3 — the parse — a plain-english sentence resolves into chips on the week grid + a google meet link. chrono-node +",
+    "texts": [
+      "typed — an illustrative sentence",
+      "“",
+      "lunch",
+      "with",
+      "sam",
+      "and",
+      "priya",
+      "next tuesday at noon",
+      "—",
+      "add a meet",
+      "”",
+      "chrono-node + compromise",
+      "tue · 12:00 — lunch",
+      "invite — sam · priya",
+      "google meet",
+      "m",
+      "t",
+      "w",
+      "t",
+      "f",
+      "s",
+      "s",
+      "12:00"
+    ],
+    "inkNodes": 36,
+    "totalNodes": 54,
+    "lowOpacity": 1
+  },
+  "focusTrail": [
+    {
+      "tag": "A",
+      "name": "Skip to main content",
+      "box": [
+        206,
+        36
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "BUTTON",
+      "name": "Open Ayush Yadav portrait",
+      "box": [
+        36,
+        36
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "ayush yadav",
+      "box": [
+        96,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "the work",
+      "box": [
+        69,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "experience",
+      "box": [
+        87,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "contact",
+      "box": [
+        61,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "github",
+      "box": [
+        52,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "BUTTON",
+      "name": "motion: on",
+      "box": [
+        87,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "Resume (opens in a new tab)",
+      "box": [
+        101,
+        36
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 01 — arrival",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 02 — who",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 03 — the path",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 04 — automl",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 05 — the work",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 06 — how i work",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "chapter 07 — the gate",
+      "box": [
+        33,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "Footnote 1",
+      "box": [
+        11,
+        22
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "the capstone — agentic automl: sev",
+      "box": [
+        449,
+        18
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "Applied",
+      "box": [
+        61,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "Glyph",
+      "box": [
+        43,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "Cadence",
+      "box": [
+        61,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "the work",
+      "box": [
+        69,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "the evidence",
+      "box": [
+        104,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    },
+    {
+      "tag": "A",
+      "name": "the resume",
+      "box": [
+        87,
+        15
+      ],
+      "onScreen": true,
+      "outline": true
+    }
+  ]
+}

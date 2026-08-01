@@ -1,0 +1,50 @@
+{
+  "1280": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  },
+  "1300": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  },
+  "1340": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  },
+  "1360": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  },
+  "1440": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  },
+  "1600": {
+    "railRight": 49,
+    "widestLabelRight": 142,
+    "labels": 7,
+    "hairOpacity": "0.7",
+    "folioOpacity": "1",
+    "folioColor": "rgb(92, 86, 74)"
+  }
+}

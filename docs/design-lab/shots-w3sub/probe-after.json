@@ -1,0 +1,56 @@
+{
+  "gateReferences": {
+    "headings": [
+      "Ayush Yadav",
+      "references — footnote 1, kept.",
+      "on file — references, the other kind."
+    ],
+    "quoteChars": 335,
+    "miamiMentions": 0,
+    "namesRandall": true,
+    "namesShree": false,
+    "discloses": true
+  },
+  "homeMiamiMentions": 2,
+  "evidence": {
+    "entries": 11,
+    "receiptWord": 11,
+    "arguedIn": 11,
+    "selfHosted": 3,
+    "selfAuthored": 2,
+    "arrowsIntoSite": 0,
+    "noCaseFileRows": 1,
+    "notRecordedDates": 0
+  },
+  "localOnlyLegend": {
+    "automl": {
+      "badgeOnPage": false,
+      "legendPrinted": false
+    },
+    "jobtracker": {
+      "badgeOnPage": true,
+      "legendPrinted": true
+    },
+    "fast-mnist-nn": {
+      "badgeOnPage": false,
+      "legendPrinted": false
+    },
+    "master-inventory": {
+      "badgeOnPage": true,
+      "legendPrinted": true
+    },
+    "policybot": {
+      "badgeOnPage": false,
+      "legendPrinted": false
+    },
+    "taskflow-calendar": {
+      "badgeOnPage": false,
+      "legendPrinted": false
+    },
+    "visual-assist": {
+      "badgeOnPage": false,
+      "legendPrinted": false
+    }
+  },
+  "legendLiars": []
+}

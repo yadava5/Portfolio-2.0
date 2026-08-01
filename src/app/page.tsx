@@ -1,28 +1,24 @@
 /**
- * @fileoverview Homepage — the Daylight Study working paper.
+ * @fileoverview Homepage — a head, and nothing else.
  *
- * Mounts the world (LightField + DayArc), the rail (the motion world's
- * continuous Red Thread, round 12 — fixed canvas, between the light
- * field and the text in paint order), and the seven-chapter shell.
+ * The rendered home is `src/run/index.html`. `npm run build` is
+ * `next build && node scripts/run/build-home.mjs`, and that second step
+ * OVERWRITES `out/index.html` with the run. Everything this file used to
+ * render — StoryShell, the rail, the world — was built, shipped as ~1 MB of
+ * `_next` JS, and then thrown away on every deploy. Measured on the live
+ * site: the served home referenced `_next` zero times and carried zero of
+ * this tree's markup.
+ *
+ * What this route still earns is its HEAD. `build-home.mjs` lifts the
+ * `<title>`, canonical, description, JSON-LD, OG and Twitter tags out of the
+ * built page and injects them into the run, and those come from
+ * `layout.tsx`'s `metadata` export — which only runs if the route exists. So
+ * the route stays and the body goes.
+ *
+ * Deleting the file outright would strip the run of its title, structured
+ * data and social cards, and fail `test:seo`. That is why this is a stub
+ * rather than a deletion.
  */
-
-import { DayArc } from "@/components/world/DayArc";
-import { LightField } from "@/components/world/LightField";
-import { RunRail } from "@/components/run/RunRail";
-import { StoryShell } from "@/components/story/StoryShell";
-
 export default function Home() {
-  return (
-    <>
-      <LightField />
-      <DayArc />
-      {/* The ported rail replaces ThreadRail. It reads the chapter
-          sections directly, so it draws the real route today — before the
-          eleven-beat re-cut lands — and the difference is the whole point:
-          ThreadRail was continuous, scroll-coupled and reversible at ONE x
-          in the left gutter. This one crosses the page. */}
-      <RunRail beatSelector="[data-chapter]" />
-      <StoryShell />
-    </>
-  );
+  return null;
 }

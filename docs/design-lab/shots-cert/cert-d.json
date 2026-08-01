@@ -1,0 +1,1078 @@
+{
+  "scenes_desk": [
+    {
+      "i": 17,
+      "scale": 1,
+      "w": 512,
+      "texts": [
+        {
+          "t": "inbox",
+          "px": 13
+        },
+        {
+          "t": "rules",
+          "px": 13
+        },
+        {
+          "t": "e5 similarity",
+          "px": 13
+        },
+        {
+          "t": "setfit — gated",
+          "px": 13
+        },
+        {
+          "t": "core-positive 65",
+          "px": 13
+        },
+        {
+          "t": "edge-noise 17",
+          "px": 13
+        },
+        {
+          "t": "historical-miss 8",
+          "px": 13
+        },
+        {
+          "t": "core-negative 6",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 20,
+      "scale": 1,
+      "w": 400,
+      "texts": [
+        {
+          "t": "-O3 scalar",
+          "px": 13
+        },
+        {
+          "t": "openmp + simd",
+          "px": 13
+        },
+        {
+          "t": "0",
+          "px": 13
+        },
+        {
+          "t": "1x",
+          "px": 13
+        },
+        {
+          "t": "3.5x",
+          "px": 13
+        },
+        {
+          "t": "dot 256 kernel — committed ben",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 22,
+      "scale": 1,
+      "w": 210,
+      "texts": [
+        {
+          "t": "input",
+          "px": 13
+        },
+        {
+          "t": "hidden",
+          "px": 13
+        },
+        {
+          "t": "readout",
+          "px": 13
+        },
+        {
+          "t": "0",
+          "px": 11
+        },
+        {
+          "t": "1",
+          "px": 11
+        },
+        {
+          "t": "2",
+          "px": 11
+        },
+        {
+          "t": "3",
+          "px": 11
+        },
+        {
+          "t": "4",
+          "px": 11
+        },
+        {
+          "t": "5",
+          "px": 11
+        },
+        {
+          "t": "6",
+          "px": 11
+        },
+        {
+          "t": "7",
+          "px": 11
+        },
+        {
+          "t": "8",
+          "px": 11
+        },
+        {
+          "t": "9",
+          "px": 11
+        },
+        {
+          "t": "answer · 7",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 23,
+      "scale": 1,
+      "w": 512,
+      "texts": [
+        {
+          "t": "input",
+          "px": 13
+        },
+        {
+          "t": "virtual threads",
+          "px": 13
+        },
+        {
+          "t": "1f 8b",
+          "px": 13
+        },
+        {
+          "t": "one gzip member",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 26,
+      "scale": 1,
+      "w": 512,
+      "texts": [
+        {
+          "t": "typed — an illustrative senten",
+          "px": 11
+        },
+        {
+          "t": "“",
+          "px": 13
+        },
+        {
+          "t": "lunch",
+          "px": 13
+        },
+        {
+          "t": "with",
+          "px": 13
+        },
+        {
+          "t": "sam",
+          "px": 13
+        },
+        {
+          "t": "and",
+          "px": 13
+        },
+        {
+          "t": "priya",
+          "px": 13
+        },
+        {
+          "t": "next tuesday at noon",
+          "px": 13
+        },
+        {
+          "t": "—",
+          "px": 13
+        },
+        {
+          "t": "add a meet",
+          "px": 13
+        },
+        {
+          "t": "”",
+          "px": 13
+        },
+        {
+          "t": "chrono-node + compromise",
+          "px": 11
+        },
+        {
+          "t": "tue · 12:00 — lunch",
+          "px": 13
+        },
+        {
+          "t": "invite — sam · priya",
+          "px": 13
+        },
+        {
+          "t": "google meet",
+          "px": 13
+        },
+        {
+          "t": "m",
+          "px": 11
+        },
+        {
+          "t": "t",
+          "px": 11
+        },
+        {
+          "t": "w",
+          "px": 11
+        },
+        {
+          "t": "t",
+          "px": 11
+        },
+        {
+          "t": "f",
+          "px": 11
+        },
+        {
+          "t": "s",
+          "px": 11
+        },
+        {
+          "t": "s",
+          "px": 11
+        },
+        {
+          "t": "12:00",
+          "px": 11
+        }
+      ]
+    },
+    {
+      "i": 36,
+      "scale": 1.061,
+      "w": 318,
+      "texts": [
+        {
+          "t": "run no. 041",
+          "px": 13.79
+        },
+        {
+          "t": "press here to sign",
+          "px": 12.73
+        },
+        {
+          "t": "APPROVED",
+          "px": 42.43
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 12.73
+        },
+        {
+          "t": "run no. 041 ·",
+          "px": 11.67
+        }
+      ]
+    }
+  ],
+  "sceneMin_desk": {
+    "min": {
+      "t": "0",
+      "px": 11,
+      "svg": 22,
+      "scale": 1
+    },
+    "under11": []
+  },
+  "glyphStages_desk": [
+    {
+      "i": 22,
+      "labels": [
+        "input",
+        "hidden",
+        "readout",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "answer · 7"
+      ]
+    },
+    {
+      "i": 23,
+      "labels": [
+        "input",
+        "virtual threads",
+        "1f 8b",
+        "one gzip member"
+      ]
+    }
+  ],
+  "type_desk": [
+    {
+      "k": "13|Fragment Mono",
+      "c": 304
+    },
+    {
+      "k": "15|Newsreader",
+      "c": 1
+    },
+    {
+      "k": "17|Newsreader",
+      "c": 2
+    },
+    {
+      "k": "18.144|Fragment Mono",
+      "c": 1
+    },
+    {
+      "k": "19|Newsreader",
+      "c": 15
+    },
+    {
+      "k": "24|Fraunces",
+      "c": 4
+    },
+    {
+      "k": "24|Newsreader",
+      "c": 10
+    },
+    {
+      "k": "28.8|Newsreader",
+      "c": 3
+    },
+    {
+      "k": "34.56|Fraunces",
+      "c": 1
+    },
+    {
+      "k": "38.4|Fraunces",
+      "c": 4
+    },
+    {
+      "k": "52.48|Newsreader",
+      "c": 15
+    },
+    {
+      "k": "64|Fraunces",
+      "c": 15
+    },
+    {
+      "k": "115.2|Fraunces",
+      "c": 1
+    },
+    {
+      "k": "129.6|Fraunces",
+      "c": 2
+    },
+    {
+      "k": "129.6|Newsreader",
+      "c": 1
+    }
+  ],
+  "stamp_desk": [
+    {
+      "w": 0,
+      "scale": 0,
+      "min": {
+        "t": "run no. 041",
+        "px": 0
+      },
+      "texts": [
+        {
+          "t": "run no. 041",
+          "px": 0
+        },
+        {
+          "t": "press here to sign",
+          "px": 0
+        },
+        {
+          "t": "APPROVED",
+          "px": 0
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 0
+        },
+        {
+          "t": "run no. 041 ·",
+          "px": 0
+        }
+      ],
+      "dashedStrokes": 0,
+      "dashedSample": []
+    },
+    {
+      "w": 318,
+      "scale": 1.061,
+      "min": {
+        "t": "run no. 041 ·",
+        "px": 11.67
+      },
+      "texts": [
+        {
+          "t": "run no. 041 ·",
+          "px": 11.67
+        },
+        {
+          "t": "press here to sign",
+          "px": 12.73
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 12.73
+        },
+        {
+          "t": "run no. 041",
+          "px": 13.79
+        },
+        {
+          "t": "APPROVED",
+          "px": 42.43
+        }
+      ],
+      "dashedStrokes": 0,
+      "dashedSample": []
+    }
+  ],
+  "emdash_desk": {
+    "total": 87,
+    "blocks": 138,
+    "over": 10,
+    "offenders": [
+      {
+        "n": 2,
+        "t": "B.S. Computer Science, May 2026 — dean’s list, spring & fall 2025 — 3.",
+        "tag": "P"
+      },
+      {
+        "n": 2,
+        "t": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23",
+        "tag": "P"
+      },
+      {
+        "n": 2,
+        "t": "fig. 4.1 — experiment registry, transcribed private-safe excerpt. ▓▓▓ ",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 3,
+        "t": "fig. 5.0 — the sorting line — the 96-message eval set through rules → ",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 4,
+        "t": "fig. 5.1 — the race — equal time, measured distance · the forward pass",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 2,
+        "t": "fig. 5.2 — split → parallel → stitch — virtual-thread gzip into one by",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 4,
+        "t": "fig. 5.3 — the parse — a plain-english sentence resolves into chips on",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 3,
+        "t": "fig. 6.1 — the gates, kept. refused — the gate stopped the run · passe",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 2,
+        "t": "2. 3.5x — openmp+simd dot kernel vs -O3 baseline fast-mnist-nn — recei",
+        "tag": "LI"
+      },
+      {
+        "n": 2,
+        "t": "3. 1,145 automated tests — 634 frontend + 511 backend taskflow-calenda",
+        "tag": "LI"
+      }
+    ]
+  },
+  "scenes_mob": [
+    {
+      "i": 18,
+      "scale": 1,
+      "w": 280,
+      "texts": [
+        {
+          "t": "inbox",
+          "px": 13
+        },
+        {
+          "t": "rules",
+          "px": 13
+        },
+        {
+          "t": "e5 similarity",
+          "px": 13
+        },
+        {
+          "t": "setfit — gated",
+          "px": 13
+        },
+        {
+          "t": "core-positive 65",
+          "px": 13
+        },
+        {
+          "t": "edge-noise 17",
+          "px": 13
+        },
+        {
+          "t": "historical-miss 8",
+          "px": 13
+        },
+        {
+          "t": "core-negative 6",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 21,
+      "scale": 1,
+      "w": 280,
+      "texts": [
+        {
+          "t": "-O3 scalar",
+          "px": 13
+        },
+        {
+          "t": "openmp + simd",
+          "px": 13
+        },
+        {
+          "t": "0",
+          "px": 13
+        },
+        {
+          "t": "1x",
+          "px": 13
+        },
+        {
+          "t": "3.5x",
+          "px": 13
+        },
+        {
+          "t": "dot 256 kernel —",
+          "px": 13
+        },
+        {
+          "t": "committed benchmarks",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 22,
+      "scale": 1,
+      "w": 210,
+      "texts": [
+        {
+          "t": "input",
+          "px": 13
+        },
+        {
+          "t": "hidden",
+          "px": 13
+        },
+        {
+          "t": "readout",
+          "px": 13
+        },
+        {
+          "t": "0",
+          "px": 11
+        },
+        {
+          "t": "1",
+          "px": 11
+        },
+        {
+          "t": "2",
+          "px": 11
+        },
+        {
+          "t": "3",
+          "px": 11
+        },
+        {
+          "t": "4",
+          "px": 11
+        },
+        {
+          "t": "5",
+          "px": 11
+        },
+        {
+          "t": "6",
+          "px": 11
+        },
+        {
+          "t": "7",
+          "px": 11
+        },
+        {
+          "t": "8",
+          "px": 11
+        },
+        {
+          "t": "9",
+          "px": 11
+        },
+        {
+          "t": "answer · 7",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 24,
+      "scale": 1,
+      "w": 280,
+      "texts": [
+        {
+          "t": "input",
+          "px": 13
+        },
+        {
+          "t": "virtual threads",
+          "px": 13
+        },
+        {
+          "t": "1f 8b",
+          "px": 13
+        },
+        {
+          "t": "one gzip member",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 27,
+      "scale": 1,
+      "w": 280,
+      "texts": [
+        {
+          "t": "typed — an illustrative senten",
+          "px": 13
+        },
+        {
+          "t": "“",
+          "px": 13
+        },
+        {
+          "t": "lunch",
+          "px": 13
+        },
+        {
+          "t": "with",
+          "px": 13
+        },
+        {
+          "t": "sam",
+          "px": 13
+        },
+        {
+          "t": "and",
+          "px": 13
+        },
+        {
+          "t": "priya",
+          "px": 13
+        },
+        {
+          "t": "next tuesday at noon",
+          "px": 13
+        },
+        {
+          "t": "—",
+          "px": 13
+        },
+        {
+          "t": "add a meet",
+          "px": 13
+        },
+        {
+          "t": "”",
+          "px": 13
+        },
+        {
+          "t": "chrono-node + compromise",
+          "px": 13
+        },
+        {
+          "t": "tue · 12:00 — lunch",
+          "px": 13
+        },
+        {
+          "t": "invite — sam · priya",
+          "px": 13
+        },
+        {
+          "t": "google meet",
+          "px": 13
+        },
+        {
+          "t": "m",
+          "px": 13
+        },
+        {
+          "t": "t",
+          "px": 13
+        },
+        {
+          "t": "w",
+          "px": 13
+        },
+        {
+          "t": "t",
+          "px": 13
+        },
+        {
+          "t": "f",
+          "px": 13
+        },
+        {
+          "t": "s",
+          "px": 13
+        },
+        {
+          "t": "s",
+          "px": 13
+        },
+        {
+          "t": "12:00",
+          "px": 13
+        }
+      ]
+    },
+    {
+      "i": 35,
+      "scale": 1.042,
+      "w": 313,
+      "texts": [
+        {
+          "t": "run no. 041",
+          "px": 13.54
+        },
+        {
+          "t": "press here to sign",
+          "px": 12.5
+        },
+        {
+          "t": "APPROVED",
+          "px": 41.67
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 12.5
+        },
+        {
+          "t": "run no. 041 ·",
+          "px": 11.46
+        }
+      ]
+    }
+  ],
+  "sceneMin_mob": {
+    "min": {
+      "t": "0",
+      "px": 11,
+      "svg": 22,
+      "scale": 1
+    },
+    "under11": []
+  },
+  "glyphStages_mob": [
+    {
+      "i": 22,
+      "labels": [
+        "input",
+        "hidden",
+        "readout",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "answer · 7"
+      ]
+    },
+    {
+      "i": 24,
+      "labels": [
+        "input",
+        "virtual threads",
+        "1f 8b",
+        "one gzip member"
+      ]
+    }
+  ],
+  "type_mob": [
+    {
+      "k": "13|Fragment Mono",
+      "c": 269
+    },
+    {
+      "k": "15|Newsreader",
+      "c": 1
+    },
+    {
+      "k": "17|Newsreader",
+      "c": 2
+    },
+    {
+      "k": "18.4|Newsreader",
+      "c": 11
+    },
+    {
+      "k": "19|Newsreader",
+      "c": 15
+    },
+    {
+      "k": "20.8|Newsreader",
+      "c": 3
+    },
+    {
+      "k": "24|Fraunces",
+      "c": 5
+    },
+    {
+      "k": "25.6|Fraunces",
+      "c": 4
+    },
+    {
+      "k": "26.24|Newsreader",
+      "c": 15
+    },
+    {
+      "k": "32|Fraunces",
+      "c": 15
+    },
+    {
+      "k": "48|Fraunces",
+      "c": 1
+    },
+    {
+      "k": "54|Fraunces",
+      "c": 2
+    },
+    {
+      "k": "54|Newsreader",
+      "c": 1
+    }
+  ],
+  "stamp_mob": [
+    {
+      "w": 313,
+      "scale": 1.042,
+      "min": {
+        "t": "run no. 041 ·",
+        "px": 11.46
+      },
+      "texts": [
+        {
+          "t": "run no. 041 ·",
+          "px": 11.46
+        },
+        {
+          "t": "press here to sign",
+          "px": 12.5
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 12.5
+        },
+        {
+          "t": "run no. 041",
+          "px": 13.54
+        },
+        {
+          "t": "APPROVED",
+          "px": 41.67
+        }
+      ],
+      "dashedStrokes": 0,
+      "dashedSample": []
+    },
+    {
+      "w": 0,
+      "scale": 0,
+      "min": {
+        "t": "run no. 041",
+        "px": 0
+      },
+      "texts": [
+        {
+          "t": "run no. 041",
+          "px": 0
+        },
+        {
+          "t": "press here to sign",
+          "px": 0
+        },
+        {
+          "t": "APPROVED",
+          "px": 0
+        },
+        {
+          "t": "· human in the loop ·",
+          "px": 0
+        },
+        {
+          "t": "run no. 041 ·",
+          "px": 0
+        }
+      ],
+      "dashedStrokes": 0,
+      "dashedSample": []
+    }
+  ],
+  "emdash_mob": {
+    "total": 85,
+    "blocks": 138,
+    "over": 10,
+    "offenders": [
+      {
+        "n": 2,
+        "t": "B.S. Computer Science, May 2026 — dean’s list, spring & fall 2025 — 3.",
+        "tag": "P"
+      },
+      {
+        "n": 2,
+        "t": "¶ 04 / 07 · the capstone — senior design expo — spring 2026 · 15:23",
+        "tag": "P"
+      },
+      {
+        "n": 2,
+        "t": "fig. 4.1 — experiment registry, transcribed private-safe excerpt. ▓▓▓ ",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 3,
+        "t": "fig. 5.0 — the sorting line — the 96-message eval set through rules → ",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 4,
+        "t": "fig. 5.1 — the race — equal time, measured distance · the forward pass",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 2,
+        "t": "fig. 5.2 — split → parallel → stitch — virtual-thread gzip into one by",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 4,
+        "t": "fig. 5.3 — the parse — a plain-english sentence resolves into chips on",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 3,
+        "t": "fig. 6.1 — the gates, kept. refused — the gate stopped the run · passe",
+        "tag": "FIGCAPTION"
+      },
+      {
+        "n": 2,
+        "t": "2. 3.5x — openmp+simd dot kernel vs -O3 baseline fast-mnist-nn — recei",
+        "tag": "LI"
+      },
+      {
+        "n": 2,
+        "t": "3. 1,145 automated tests — 634 frontend + 511 backend taskflow-calenda",
+        "tag": "LI"
+      }
+    ]
+  },
+  "spine": {
+    "1180": {
+      "starts": {},
+      "railRight": 0
+    },
+    "1279": {
+      "starts": {},
+      "railRight": 0
+    },
+    "1280": {
+      "starts": {},
+      "railRight": 142
+    },
+    "1300": {
+      "starts": {},
+      "railRight": 142
+    },
+    "1360": {
+      "starts": {},
+      "railRight": 142
+    },
+    "1440": {
+      "starts": {},
+      "railRight": 142
+    },
+    "1600": {
+      "starts": {},
+      "railRight": 142
+    }
+  },
+  "links": [],
+  "linkTotal": 58,
+  "external": [
+    "https://github.com/yadava5",
+    "https://jetpack-compress.vercel.app",
+    "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+    "https://github.com/yadava5/jetpack-compress",
+    "https://www.linkedin.com/in/ayush-yadav-developer/",
+    "https://www.linkedin.com/in/randall-v-30745a4/",
+    "https://github.com/yadava5/jobtracker/blob/3225eb4/docs/ML_STRATEGY.md",
+    "https://github.com/yadava5/jobtracker/blob/3225eb4/backend/data/evaluation/baseline_hybrid_v3.json",
+    "https://github.com/yadava5/jobtracker/tree/3225eb4/backend/tests",
+    "https://github.com/yadava5/VisualAssist/tree/22ebdaa/VisualAssistTests",
+    "https://github.com/yadava5/taskflow-calendar/tree/69a59e7",
+    "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/BENCHMARKS.md",
+    "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/README.md",
+    "https://github.com/yadava5/jobtracker/tree/3225eb4",
+    "https://getapplied.vercel.app",
+    "https://github.com/yadava5/jobtracker/blob/3225eb4/docs/ARCHITECTURE.md",
+    "https://github.com/yadava5/jobtracker/blob/3225eb4/README.md",
+    "https://github.com/yadava5/jobtracker/actions/runs/24665061332",
+    "https://github.com/yadava5/jobtracker/tree/3225eb4/apps/web",
+    "https://huggingface.co/spaces/yadava5/jobtracker-classifier",
+    "https://agentic-automl-platform.vercel.app",
+    "https://github.com/yadava5/fast-mnist-nn/tree/c6e5c0b",
+    "https://getglyph.vercel.app",
+    "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/docs/benchmarks/bench_summary.csv",
+    "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/benchmarks/bench_matrix.cpp",
+    "https://github.com/yadava5/fast-mnist-nn/blob/c6e5c0b/docs/benchmarks/runs/bench-20251226-154121-native.json",
+    "https://fast-mnist.vercel.app",
+    "https://github.com/yadava5/fast-mnist-nn/releases/tag/v1.0.0",
+    "https://usecadenceapp.vercel.app",
+    "https://taskflow-calendar-ashy.vercel.app"
+  ]
+}

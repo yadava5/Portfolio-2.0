@@ -1,0 +1,1455 @@
+[
+  {
+    "k": "keyboard.home",
+    "v": [
+      {
+        "tag": "A",
+        "text": "Skip to main content",
+        "href": "#main-content",
+        "outline": "2px rgb(250, 246, 239)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          206,
+          36
+        ],
+        "top": 16,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "href": null,
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          44,
+          44
+        ],
+        "top": 12,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "ayush yadav",
+        "href": "/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          96,
+          48
+        ],
+        "top": 10,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "the work",
+        "href": "/#work",
+        "outline": "2px color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          69,
+          45
+        ],
+        "top": 13,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "experience",
+        "href": "/#path",
+        "outline": "2px color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          87,
+          45
+        ],
+        "top": 13,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "contact",
+        "href": "/#gate",
+        "outline": "2px color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          61,
+          45
+        ],
+        "top": 13,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "github ↗",
+        "href": "https://github.com/yadava5",
+        "outline": "2px color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          69,
+          45
+        ],
+        "top": 13,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "BUTTON",
+        "text": "motion: on",
+        "href": null,
+        "outline": "2px color(srgb 0.14902 0.137255 0.109804 / 0.72)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          87,
+          18
+        ],
+        "top": 25,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "resume",
+        "href": "/resume.pdf",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          101,
+          44
+        ],
+        "top": 12,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "01\narrival",
+        "href": "#arrival",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 356,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "02\nwho",
+        "href": "#who",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 385,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "03\nthe path",
+        "href": "#path",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 413,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "04\nautoml",
+        "href": "#automl",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 441,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "05\nthe work",
+        "href": "#work",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 469,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "06\nhow i work",
+        "href": "#values",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 497,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "07\nthe gate",
+        "href": "#gate",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          33,
+          18
+        ],
+        "top": 525,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "1",
+        "href": "#footnote-1",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          31,
+          52
+        ],
+        "top": 378,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "the capstone — agentic automl: seven gated p",
+        "href": "#automl",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          449,
+          18
+        ],
+        "top": 646,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "Applied",
+        "href": "/projects/jobtracker/",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          61,
+          15
+        ],
+        "top": 677,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "Glyph",
+        "href": "/projects/fast-mnist-nn/",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          43,
+          15
+        ],
+        "top": 677,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "Cadence",
+        "href": "/projects/taskflow-calendar/",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          61,
+          15
+        ],
+        "top": 677,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "the work",
+        "href": "#work",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          69,
+          15
+        ],
+        "top": 737,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "the evidence",
+        "href": "/evidence/",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          104,
+          15
+        ],
+        "top": 737,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "the resume",
+        "href": "/resume.pdf",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          87,
+          15
+        ],
+        "top": 737,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "↩",
+        "href": "#fnref-1",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          28,
+          45
+        ],
+        "top": 794,
+        "inView": true,
+        "scrollY": 0
+      },
+      {
+        "tag": "A",
+        "text": "19/20 cited-source sweep — policybot, the po",
+        "href": "/projects/policybot/#v-policybot-1",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          504,
+          15
+        ],
+        "top": 490,
+        "inView": true,
+        "scrollY": 2315
+      },
+      {
+        "tag": "A",
+        "text": "read the case file — agentic automl platform",
+        "href": "/projects/automl/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          405,
+          15
+        ],
+        "top": 861,
+        "inView": true,
+        "scrollY": 3530
+      },
+      {
+        "tag": "BUTTON",
+        "text": "awaiting approval",
+        "href": null,
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          148,
+          18
+        ],
+        "top": 687,
+        "inView": true,
+        "scrollY": 3530
+      },
+      {
+        "tag": "A",
+        "text": "Applied",
+        "href": "/projects/jobtracker/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          128,
+          48
+        ],
+        "top": 468,
+        "inView": true,
+        "scrollY": 4698
+      },
+      {
+        "tag": "A",
+        "text": "macro-f1 0.98 — 96-sample gate",
+        "href": "/projects/jobtracker/#v-jobtracker-5",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          261,
+          15
+        ],
+        "top": 572,
+        "inView": true,
+        "scrollY": 4698
+      },
+      {
+        "tag": "A",
+        "text": "the case file ⟶",
+        "href": "/projects/jobtracker/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          136,
+          15
+        ],
+        "top": 597,
+        "inView": true,
+        "scrollY": 4698
+      },
+      {
+        "tag": "A",
+        "text": "Glyph",
+        "href": "/projects/fast-mnist-nn/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          101,
+          48
+        ],
+        "top": 468,
+        "inView": true,
+        "scrollY": 5369
+      },
+      {
+        "tag": "A",
+        "text": "openmp+simd dot kernel — 3.5× vs -O3 baselin",
+        "href": "/projects/fast-mnist-nn/#v-fast-mnist-nn-2",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          278,
+          51
+        ],
+        "top": 568,
+        "inView": true,
+        "scrollY": 5369
+      },
+      {
+        "tag": "A",
+        "text": "the case file ⟶",
+        "href": "/projects/fast-mnist-nn/",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          136,
+          15
+        ],
+        "top": 629,
+        "inView": true,
+        "scrollY": 5369
+      },
+      {
+        "tag": "A",
+        "text": "jetpack-compress ↗",
+        "href": "https://jetpack-compress.vercel.app",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          311,
+          48
+        ],
+        "top": 467,
+        "inView": true,
+        "scrollY": 6015
+      },
+      {
+        "tag": "A",
+        "text": "72 tests, 0 failures — jdk 25 @ af2c4b1 ↗",
+        "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          252,
+          33
+        ],
+        "top": 492,
+        "inView": true,
+        "scrollY": 6015
+      },
+      {
+        "tag": "A",
+        "text": "the live demo ↗",
+        "href": "https://jetpack-compress.vercel.app",
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          130,
+          15
+        ],
+        "top": 536,
+        "inView": true,
+        "scrollY": 6015
+      },
+      {
+        "tag": "A",
+        "text": "source ↗",
+        "href": "https://github.com/yadava5/jetpack-compress",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          69,
+          15
+        ],
+        "top": 561,
+        "inView": true,
+        "scrollY": 6015
+      },
+      {
+        "tag": "A",
+        "text": "system card ↗",
+        "href": "https://jetpack-compress.vercel.app/system-card",
+        "outline": "2px rgb(92, 86, 74)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          113,
+          15
+        ],
+        "top": 588,
+        "inView": true,
+        "scrollY": 6015
+      },
+      {
+        "tag": "BUTTON",
+        "text": "gzip this figure in your browser ⟶",
+        "href": null,
+        "outline": "2px rgb(38, 35, 28)",
+        "outlineOffset": "3px",
+        "boxShadow": null,
+        "box": [
+          301,
+          18
+        ],
+        "top": 489,
+        "inView": true,
+        "scrollY": 6476
+      }
+    ]
+  },
+  {
+    "k": "keyboard.firstAnchor",
+    "v": {
+      "text": "Skip to main content",
+      "href": "#main-content"
+    }
+  },
+  {
+    "k": "keyboard.casefile",
+    "v": [
+      {
+        "tag": "A",
+        "text": "Skip to main content",
+        "outline": "2px",
+        "inView": true,
+        "top": 16,
+        "w": 206,
+        "h": 36
+      },
+      {
+        "tag": "BUTTON",
+        "text": "",
+        "outline": "2px",
+        "inView": true,
+        "top": 12,
+        "w": 44,
+        "h": 44
+      },
+      {
+        "tag": "A",
+        "text": "ayush yadav",
+        "outline": "2px",
+        "inView": true,
+        "top": 10,
+        "w": 96,
+        "h": 48
+      },
+      {
+        "tag": "A",
+        "text": "the work",
+        "outline": "2px",
+        "inView": true,
+        "top": 13,
+        "w": 69,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "experience",
+        "outline": "2px",
+        "inView": true,
+        "top": 13,
+        "w": 87,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "contact",
+        "outline": "2px",
+        "inView": true,
+        "top": 13,
+        "w": 61,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "github ↗",
+        "outline": "2px",
+        "inView": true,
+        "top": 13,
+        "w": 69,
+        "h": 45
+      },
+      {
+        "tag": "BUTTON",
+        "text": "motion: on",
+        "outline": "2px",
+        "inView": true,
+        "top": 25,
+        "w": 87,
+        "h": 18
+      },
+      {
+        "tag": "A",
+        "text": "resume",
+        "outline": "2px",
+        "inView": true,
+        "top": 12,
+        "w": 101,
+        "h": 44
+      },
+      {
+        "tag": "A",
+        "text": "yadava5/applied @ 36a2f54 · integration/",
+        "outline": "2px",
+        "inView": true,
+        "top": 654,
+        "w": 347,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "getapplied.vercel.app ↗",
+        "outline": "2px",
+        "inView": true,
+        "top": 700,
+        "w": 200,
+        "h": 15
+      },
+      {
+        "tag": "A",
+        "text": "/system-card ↗",
+        "outline": "2px",
+        "inView": true,
+        "top": 729,
+        "w": 121,
+        "h": 15
+      },
+      {
+        "tag": "BUTTON",
+        "text": "walk the 11 claims ⟶",
+        "outline": "2px",
+        "inView": true,
+        "top": 489,
+        "w": 591,
+        "h": 18
+      },
+      {
+        "tag": "A",
+        "text": "01",
+        "outline": "2px",
+        "inView": true,
+        "top": 558,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · cloud/gmail_oauth.py",
+        "outline": "2px",
+        "inView": true,
+        "top": 568,
+        "w": 174,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · tests/test_gmail_oau",
+        "outline": "2px",
+        "inView": true,
+        "top": 608,
+        "w": 269,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "02",
+        "outline": "2px",
+        "inView": true,
+        "top": 689,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · docs/ML_STRATEGY.md",
+        "outline": "2px",
+        "inView": true,
+        "top": 699,
+        "w": 165,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "03",
+        "outline": "2px",
+        "inView": true,
+        "top": 803,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · cloud/gmail_client.p",
+        "outline": "2px",
+        "inView": true,
+        "top": 813,
+        "w": 182,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "04",
+        "outline": "2px",
+        "inView": true,
+        "top": 475,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · backend/tests",
+        "outline": "2px",
+        "inView": true,
+        "top": 485,
+        "w": 287,
+        "h": 15
+      },
+      {
+        "tag": "A",
+        "text": "05",
+        "outline": "2px",
+        "inView": true,
+        "top": 603,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · baseline_hybrid_v3.j",
+        "outline": "2px",
+        "inView": true,
+        "top": 613,
+        "w": 200,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "backend-ci run, 2026-04-20 ↗",
+        "outline": "2px",
+        "inView": true,
+        "top": 654,
+        "w": 243,
+        "h": 15
+      },
+      {
+        "tag": "A",
+        "text": "06",
+        "outline": "2px",
+        "inView": true,
+        "top": 717,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · apps/macos",
+        "outline": "2px",
+        "inView": true,
+        "top": 727,
+        "w": 261,
+        "h": 15
+      },
+      {
+        "tag": "A",
+        "text": "07",
+        "outline": "2px",
+        "inView": true,
+        "top": 845,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · apps/web/app/(app)/d",
+        "outline": "2px",
+        "inView": true,
+        "top": 855,
+        "w": 243,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · cloud/applications.p",
+        "outline": "2px",
+        "inView": true,
+        "top": 866,
+        "w": 182,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "08",
+        "outline": "2px",
+        "inView": true,
+        "top": 475,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · database/connection.",
+        "outline": "2px",
+        "inView": true,
+        "top": 485,
+        "w": 191,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · c5_force_user_creden",
+        "outline": "2px",
+        "inView": true,
+        "top": 525,
+        "w": 278,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · tests/test_rls_postg",
+        "outline": "2px",
+        "inView": true,
+        "top": 566,
+        "w": 226,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "09",
+        "outline": "2px",
+        "inView": true,
+        "top": 647,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · classifier/hybrid.py",
+        "outline": "2px",
+        "inView": true,
+        "top": 657,
+        "w": 174,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · tests/test_main_clou",
+        "outline": "2px",
+        "inView": true,
+        "top": 698,
+        "w": 208,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "10",
+        "outline": "2px",
+        "inView": true,
+        "top": 855,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "getapplied.vercel.app ↗",
+        "outline": "2px",
+        "inView": true,
+        "top": 865,
+        "w": 200,
+        "h": 15
+      },
+      {
+        "tag": "A",
+        "text": "11",
+        "outline": "2px",
+        "inView": true,
+        "top": 476,
+        "w": 37,
+        "h": 45
+      },
+      {
+        "tag": "A",
+        "text": "huggingface.co/spaces/yadava5/jobtracker",
+        "outline": "2px",
+        "inView": true,
+        "top": 486,
+        "w": 304,
+        "h": 33
+      },
+      {
+        "tag": "A",
+        "text": "applied @ 36a2f54 · ml/browser/export_on",
+        "outline": "2px",
+        "inView": true,
+        "top": 526,
+        "w": 217,
+        "h": 33
+      },
+      {
+        "tag": "BUTTON",
+        "text": "fig. 3 — local classification architectu",
+        "outline": "2px",
+        "inView": true,
+        "top": 285,
+        "w": 1032,
+        "h": 427
+      },
+      {
+        "tag": "A",
+        "text": "readme — the desktop-era record",
+        "outline": "2px",
+        "inView": true,
+        "top": 792,
+        "w": 290,
+        "h": 18
+      },
+      {
+        "tag": "A",
+        "text": "architecture docs",
+        "outline": "2px",
+        "inView": true,
+        "top": 832,
+        "w": 169,
+        "h": 18
+      }
+    ]
+  },
+  {
+    "k": "dialog.triggerExists",
+    "v": true
+  },
+  {
+    "k": "dialog.opened",
+    "v": {
+      "dialogPresent": true,
+      "focusInside": true,
+      "focusTag": "BUTTON",
+      "labelled": "radix-_R_apbH1_",
+      "bodyOverflow": "hidden"
+    }
+  },
+  {
+    "k": "dialog.closed",
+    "v": {
+      "dialogPresent": false,
+      "focusTag": "BUTTON",
+      "focusText": "",
+      "returnedToTrigger": true
+    }
+  },
+  {
+    "k": "reducedMotion.initial",
+    "v": {
+      "tier": "print",
+      "hiddenCount": 7,
+      "hidden": [
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Support domain documents through retrieval and MCP-based orc",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Make pipeline decisions auditable instead of opaque.",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Keep training workflows reproducible with containerized exec",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Validate the product flow with browser-level checks.",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "label-mono text-clay-night stamp-hello m",
+          "op": "0",
+          "text": "run approved — say hello",
+          "top": 8635
+        },
+        {
+          "tag": "g",
+          "cls": "[object SVGAnimatedString]",
+          "op": "0",
+          "text": "APPROVED· human in the loop ·run no. 041 ·",
+          "top": 0
+        },
+        {
+          "tag": "g",
+          "cls": "[object SVGAnimatedString]",
+          "op": "0",
+          "text": "APPROVED· human in the loop ·run no. 041 ·",
+          "top": 8317
+        }
+      ]
+    }
+  },
+  {
+    "k": "reducedMotion.afterScroll",
+    "v": {
+      "hiddenCount": 7,
+      "hidden": [
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Support domain documents through retrieval and MCP-based orchestration",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Make pipeline decisions auditable instead of opaque.",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Keep training workflows reproducible with containerized execution.",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "text-ink-secondary max-w-[46ch] font-ser",
+          "op": "0",
+          "text": "Validate the product flow with browser-level checks.",
+          "top": 3914
+        },
+        {
+          "tag": "P",
+          "cls": "label-mono text-clay-night stamp-hello m",
+          "op": "0",
+          "text": "run approved — say hello",
+          "top": 8635
+        },
+        {
+          "tag": "g",
+          "cls": "[object SVGAnimatedString]",
+          "op": "0",
+          "text": "APPROVED· human in the loop ·run no. 041 ·",
+          "top": 9053
+        },
+        {
+          "tag": "g",
+          "cls": "[object SVGAnimatedString]",
+          "op": "0",
+          "text": "APPROVED· human in the loop ·run no. 041 ·",
+          "top": 8317
+        }
+      ]
+    }
+  },
+  {
+    "k": "motionToggle",
+    "v": {
+      "before": "motion: on",
+      "after": "motion: off"
+    }
+  },
+  {
+    "k": "motionOff.reload@400ms",
+    "v": {
+      "tier": "print",
+      "motionOff": null,
+      "hidden": 7
+    }
+  },
+  {
+    "k": "nojs.home",
+    "v": {
+      "hidden": 7,
+      "sample": [
+        "Support domain documents through retrieval and MCP-based orc",
+        "Make pipeline decisions auditable instead of opaque.",
+        "Keep training workflows reproducible with containerized exec",
+        "Validate the product flow with browser-level checks.",
+        "run approved — say hello",
+        "APPROVED· human in the loop ·run no. 041 ·",
+        "APPROVED· human in the loop ·run no. 041 ·"
+      ],
+      "bodyH": 9953
+    }
+  },
+  {
+    "k": "forcedDark",
+    "v": {
+      "bodyBg": "rgb(250, 246, 239)",
+      "color": "rgb(38, 35, 28)",
+      "scheme": "normal"
+    }
+  },
+  {
+    "k": "404@390",
+    "v": {
+      "title": "Not on file | Ayush Yadav",
+      "heads": [
+        {
+          "lvl": "H1",
+          "t": "Not on file",
+          "size": "35.2px",
+          "fam": "Fraunces"
+        },
+        {
+          "lvl": "H2",
+          "t": "what is on file",
+          "size": "13px",
+          "fam": "\"Fragment Mono\""
+        }
+      ],
+      "links": [
+        {
+          "t": "Skip to main content",
+          "h": "#main-content"
+        },
+        {
+          "t": "ayush yadav",
+          "h": "/"
+        },
+        {
+          "t": "the work",
+          "h": "/#work"
+        },
+        {
+          "t": "",
+          "h": "mailto:aesh_1055@icloud.com"
+        },
+        {
+          "t": "resume",
+          "h": "/resume.pdf"
+        },
+        {
+          "t": "who ⟶",
+          "h": "/#who"
+        },
+        {
+          "t": "the path ⟶",
+          "h": "/#path"
+        },
+        {
+          "t": "automl ⟶",
+          "h": "/#automl"
+        },
+        {
+          "t": "the work ⟶",
+          "h": "/#work"
+        },
+        {
+          "t": "how i work ⟶",
+          "h": "/#values"
+        },
+        {
+          "t": "the gate ⟶",
+          "h": "/#gate"
+        },
+        {
+          "t": "the evidence index ⟶",
+          "h": "/evidence/"
+        },
+        {
+          "t": "back to the front page ⟵",
+          "h": "/"
+        }
+      ],
+      "homeLinks": 2,
+      "bodyBg": "rgb(250, 246, 239)",
+      "scrollW": 424,
+      "clientW": 390,
+      "h": 1173,
+      "hasFooter": true,
+      "hasHeader": true,
+      "robots": "noindex"
+    }
+  },
+  {
+    "k": "404@768",
+    "v": {
+      "title": "Not on file | Ayush Yadav",
+      "heads": [
+        {
+          "lvl": "H1",
+          "t": "Not on file",
+          "size": "38.4px",
+          "fam": "Fraunces"
+        },
+        {
+          "lvl": "H2",
+          "t": "what is on file",
+          "size": "13px",
+          "fam": "\"Fragment Mono\""
+        }
+      ],
+      "links": [
+        {
+          "t": "Skip to main content",
+          "h": "#main-content"
+        },
+        {
+          "t": "ayush yadav",
+          "h": "/"
+        },
+        {
+          "t": "the work",
+          "h": "/#work"
+        },
+        {
+          "t": "",
+          "h": "mailto:aesh_1055@icloud.com"
+        },
+        {
+          "t": "resume",
+          "h": "/resume.pdf"
+        },
+        {
+          "t": "who ⟶",
+          "h": "/#who"
+        },
+        {
+          "t": "the path ⟶",
+          "h": "/#path"
+        },
+        {
+          "t": "automl ⟶",
+          "h": "/#automl"
+        },
+        {
+          "t": "the work ⟶",
+          "h": "/#work"
+        },
+        {
+          "t": "how i work ⟶",
+          "h": "/#values"
+        },
+        {
+          "t": "the gate ⟶",
+          "h": "/#gate"
+        },
+        {
+          "t": "the evidence index ⟶",
+          "h": "/evidence/"
+        },
+        {
+          "t": "back to the front page ⟵",
+          "h": "/"
+        }
+      ],
+      "homeLinks": 2,
+      "bodyBg": "rgb(250, 246, 239)",
+      "scrollW": 768,
+      "clientW": 768,
+      "h": 1084,
+      "hasFooter": true,
+      "hasHeader": true,
+      "robots": "noindex"
+    }
+  },
+  {
+    "k": "404@1440",
+    "v": {
+      "title": "Not on file | Ayush Yadav",
+      "heads": [
+        {
+          "lvl": "H1",
+          "t": "Not on file",
+          "size": "64px",
+          "fam": "Fraunces"
+        },
+        {
+          "lvl": "H2",
+          "t": "what is on file",
+          "size": "13px",
+          "fam": "\"Fragment Mono\""
+        }
+      ],
+      "links": [
+        {
+          "t": "Skip to main content",
+          "h": "#main-content"
+        },
+        {
+          "t": "ayush yadav",
+          "h": "/"
+        },
+        {
+          "t": "the work",
+          "h": "/#work"
+        },
+        {
+          "t": "experience",
+          "h": "/#path"
+        },
+        {
+          "t": "contact",
+          "h": "/#gate"
+        },
+        {
+          "t": "github ↗",
+          "h": "https://github.com/yadava5"
+        },
+        {
+          "t": "resume",
+          "h": "/resume.pdf"
+        },
+        {
+          "t": "who ⟶",
+          "h": "/#who"
+        },
+        {
+          "t": "the path ⟶",
+          "h": "/#path"
+        },
+        {
+          "t": "automl ⟶",
+          "h": "/#automl"
+        },
+        {
+          "t": "the work ⟶",
+          "h": "/#work"
+        },
+        {
+          "t": "how i work ⟶",
+          "h": "/#values"
+        },
+        {
+          "t": "the gate ⟶",
+          "h": "/#gate"
+        },
+        {
+          "t": "the evidence index ⟶",
+          "h": "/evidence/"
+        },
+        {
+          "t": "back to the front page ⟵",
+          "h": "/"
+        }
+      ],
+      "homeLinks": 2,
+      "bodyBg": "rgb(250, 246, 239)",
+      "scrollW": 1440,
+      "clientW": 1440,
+      "h": 1065,
+      "hasFooter": true,
+      "hasHeader": true,
+      "robots": "noindex"
+    }
+  }
+]

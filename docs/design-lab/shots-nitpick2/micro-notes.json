@@ -1,0 +1,883 @@
+[
+  {
+    "k": "skipLink.shift",
+    "v": {
+      "before": {
+        "wordmarkLeft": 292,
+        "navLeft": 100,
+        "skipBox": [
+          -1,
+          -1,
+          1
+        ],
+        "skipPosition": "absolute",
+        "skipClip": "inset(50%)",
+        "skipW": "1px",
+        "skipBg": "rgba(0, 0, 0, 0)",
+        "skipColor": "rgb(38, 35, 28)"
+      },
+      "focused": {
+        "wordmarkLeft": 292,
+        "navLeft": 100,
+        "skipBox": [
+          16,
+          16,
+          206
+        ],
+        "skipPosition": "fixed",
+        "skipClip": "none",
+        "skipW": "205.688px",
+        "skipBg": "rgb(176, 74, 40)",
+        "skipColor": "rgb(250, 246, 239)"
+      },
+      "after": {
+        "wordmarkLeft": 292,
+        "navLeft": 100,
+        "skipBox": [
+          -1,
+          -1,
+          1
+        ],
+        "skipPosition": "absolute",
+        "skipClip": "inset(50%)",
+        "skipW": "1px",
+        "skipBg": "rgba(0, 0, 0, 0)",
+        "skipColor": "rgb(38, 35, 28)"
+      }
+    }
+  },
+  {
+    "k": "dateline@640",
+    "v": {
+      "lines": [
+        113,
+        131,
+        153
+      ],
+      "lineCount": 3,
+      "h": 59,
+      "seasonLeft": 48,
+      "seasonTop": 152
+    }
+  },
+  {
+    "k": "dateline@700",
+    "v": {
+      "lines": [
+        113,
+        135
+      ],
+      "lineCount": 2,
+      "h": 40,
+      "seasonLeft": 48,
+      "seasonTop": 134
+    }
+  },
+  {
+    "k": "dateline@760",
+    "v": {
+      "lines": [
+        113,
+        135
+      ],
+      "lineCount": 2,
+      "h": 40,
+      "seasonLeft": 48,
+      "seasonTop": 134
+    }
+  },
+  {
+    "k": "dateline@800",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 656,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@820",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 676,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@840",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 696,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@860",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 716,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@880",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 736,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@900",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 756,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "dateline@1024",
+    "v": {
+      "lines": [
+        113
+      ],
+      "lineCount": 1,
+      "h": 18,
+      "seasonLeft": 880,
+      "seasonTop": 112
+    }
+  },
+  {
+    "k": "focusAndScheme",
+    "v": {
+      "metaColorScheme": null,
+      "rootColorScheme": "normal",
+      "bodyColorScheme": "normal",
+      "focusRings": {
+        "2px solid rgb(250, 246, 239) off:3px": 1,
+        "2px solid rgb(38, 35, 28) off:3px": 43,
+        "2px solid color(srgb 0.14902 0.137255 0.109804 / 0.72) off:3px": 5,
+        "2px solid rgb(92, 86, 74) off:3px": 15,
+        "2px solid rgb(224, 138, 95) off:3px": 1
+      }
+    }
+  },
+  {
+    "k": "arrowGlyphs.home",
+    "v": [
+      {
+        "text": "the capstone — agentic automl: seven gated phases ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 646
+      },
+      {
+        "text": "the evidence index ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 0
+      },
+      {
+        "text": "the resume ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 0
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 4020
+      },
+      {
+        "text": "the case file ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 5300
+      },
+      {
+        "text": "the sorting line — the 96-message eval set through rules → e5 similarity → gated setfit",
+        "glyphs": [
+          "→"
+        ],
+        "tag": "SPAN",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 5653
+      },
+      {
+        "text": "the case file ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 6003
+      },
+      {
+        "text": "gzip this figure in your browser ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "BUTTON",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 6965
+      },
+      {
+        "text": "split → parallel → stitch — virtual-thread gzip into one byte-valid member",
+        "glyphs": [
+          "→"
+        ],
+        "tag": "SPAN",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 7026
+      },
+      {
+        "text": "the case file ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 7409
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9797
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9858
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9919
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9836
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9897
+      },
+      {
+        "text": "⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 9959
+      },
+      {
+        "text": "the evidence index — every claim on file ⟶",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "A",
+        "font": "\"Fragment Mono\"",
+        "size": "13px",
+        "top": 10422
+      },
+      {
+        "text": "self.__next_f.push([1,\"8:[\\\"$\\\",\\\"div\\\",null,{\\\"className\\\":\\\"relative mx-auto w-full max-w-[1240px] px-6 pt-2",
+        "glyphs": [
+          "⟶",
+          "⟵"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"a:[\\\"$\\\",\\\"$1\\\",\\\"c\\\",{\\\"children\\\":[[[\\\"$\\\",\\\"$L11\\\",null,{}],[\\\"$\\\",\\\"$L12\\\",null,{}]",
+        "glyphs": [
+          "⟶",
+          "↩"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"1c:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"automl\\\",\\\"data-chapter\\\":\\\"04\\\",\\\"className\\\":\\\"r",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"1d:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"work\\\",\\\"data-chapter\\\":\\\"05\\\",\\\"className\\\":\\\"rel",
+        "glyphs": [
+          "⟶",
+          "→"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"1f:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"gate\\\",\\\"data-chapter\\\":\\\"07\\\",\\\"className\\\":\\\"rel",
+        "glyphs": [
+          "↗",
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"ms-center\\\",\\\"children\\\":[\\\"$\\\",\\\"span\\\",null,{\\\"className\\\":\\\"bg-clay-graphic inline-b",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"3d:[\\\"$\\\",\\\"article\\\",\\\"jetpack-compress\\\",{\\\"data-thread-row\\\":true,\\\"data-tm-scene\\\":",
+        "glyphs": [
+          "↗",
+          "→"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"3e:[\\\"$\\\",\\\"article\\\",\\\"taskflow-calendar\\\",{\\\"data-thread-row\\\":true,\\\"data-tm-scene\\\"",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"40:[\\\"$\\\",\\\"div\\\",null,{\\\"className\\\":\\\"mt-[6vh]\\\",\\\"children\\\":[\\\"$\\\",\\\"div\\\",null,{\\\"",
+        "glyphs": [
+          "⟶",
+          "↗"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"/\\\",\\\"className\\\":\\\"link-draw\\\",\\\"children\\\":[\\\"automl — the case file\\\",\\\" ⟶\\\"]}]]}]\\n",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"50:[\\\"$\\\",\\\"p\\\",null,{\\\"className\\\":\\\"label-mono mt-[8vh] border-t border-current/15 pt",
+        "glyphs": [
+          "⟶"
+        ],
+        "tag": "SCRIPT",
+        "font": "ui-sans-serif",
+        "size": "16px",
+        "top": 0
+      }
+    ]
+  },
+  {
+    "k": "plainArrow.jobtracker",
+    "v": [
+      {
+        "text": "the sorting line — the 96-message eval set through rules → e5 similarity → gated setfit",
+        "tag": "P",
+        "size": "13px"
+      },
+      {
+        "text": "A drawn figure that runs — not a screenshot. Geometry from the repository’s real 3-layer classifier path (rules → e5 sim",
+        "tag": "P",
+        "size": "13px"
+      },
+      {
+        "text": "predicted vs expected label → macro-",
+        "tag": "DD",
+        "size": "13px"
+      },
+      {
+        "text": "The repository was renamed yadava5/jobtracker → yadava5/applied. GitHub still redirects the old links, so nothing this f",
+        "tag": "P",
+        "size": "13px"
+      },
+      {
+        "text": "self.__next_f.push([1,\"22:[\\\"$\\\",\\\"div\\\",null,{\\\"className\\\":\\\"mt-20 grid gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,30rem",
+        "tag": "SCRIPT",
+        "size": "16px"
+      },
+      {
+        "text": "self.__next_f.push([1,\"26:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"corrections\\\",\\\"className\\\":\\\"mt-20 max-w-[44rem]\\\",\\\"childr",
+        "tag": "SCRIPT",
+        "size": "16px"
+      },
+      {
+        "text": "self.__next_f.push([1,\"35:[\\\"$\\\",\\\"aside\\\",null,{\\\"className\\\":\\\"border-clay-graphic/70 mt-6 max-w-[44rem] border-l-2 pl",
+        "tag": "SCRIPT",
+        "size": "16px"
+      }
+    ]
+  },
+  {
+    "k": "plainArrow.policybot",
+    "v": [
+      {
+        "text": "File Search → citation extraction → local quote verifier",
+        "tag": "TD",
+        "size": "13px"
+      },
+      {
+        "text": "self.__next_f.push([1,\"2a:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"ledger\\\",\\\"className\\\":\\\"mt-20 max-w-[44rem]\\\",\\\"children\\\":",
+        "tag": "SCRIPT",
+        "size": "16px"
+      }
+    ]
+  },
+  {
+    "k": "plainArrow.taskflow-calendar",
+    "v": [
+      {
+        "text": "The repository was renamed yadava5/taskflow-calendar → yadava5/cadence, and this file now carries two pins on purpose. T",
+        "tag": "P",
+        "size": "13px"
+      },
+      {
+        "text": "self.__next_f.push([1,\"29:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"corrections\\\",\\\"className\\\":\\\"mt-20 max-w-[44rem]\\\",\\\"childr",
+        "tag": "SCRIPT",
+        "size": "16px"
+      }
+    ]
+  },
+  {
+    "k": "tapTargets@390/",
+    "v": {
+      "under24": 25,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "awaiting approval",
+          "w": 148,
+          "h": 18
+        },
+        {
+          "t": "macro-f1 0.98 — 96-sample gate",
+          "w": 261,
+          "h": 15
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15
+        },
+        {
+          "t": "the live demo ↗",
+          "w": 130,
+          "h": 15
+        },
+        {
+          "t": "source ↗",
+          "w": 69,
+          "h": 15
+        },
+        {
+          "t": "system card ↗",
+          "w": 113,
+          "h": 15
+        },
+        {
+          "t": "the case file ⟶",
+          "w": 136,
+          "h": 15
+        },
+        {
+          "t": "master inventory pipeline",
+          "w": 217,
+          "h": 15
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  },
+  {
+    "k": "tapTargets@390/evidence/",
+    "v": {
+      "under24": 9,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "backend/tests @ 36a2f54 ↗",
+          "w": 217,
+          "h": 15
+        },
+        {
+          "t": "VisualAssistTests @ 22ebdaa ↗",
+          "w": 252,
+          "h": 15
+        },
+        {
+          "t": "taskflow-calendar @ 69a59e7 ↗",
+          "w": 252,
+          "h": 15
+        },
+        {
+          "t": "BENCHMARKS.md @ c6e5c0b ↗",
+          "w": 217,
+          "h": 15
+        },
+        {
+          "t": "README.md @ c6e5c0b ↗",
+          "w": 182,
+          "h": 15
+        },
+        {
+          "t": "README.md @ af2c4b1 ↗",
+          "w": 182,
+          "h": 15
+        },
+        {
+          "t": "back to the work ⟵",
+          "w": 162,
+          "h": 18
+        },
+        {
+          "t": "first case file — agentic automl ⟶",
+          "w": 301,
+          "h": 18
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  },
+  {
+    "k": "tapTargets@390/projects/automl/",
+    "v": {
+      "under24": 8,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "/system-card ↗",
+          "w": 121,
+          "h": 15
+        },
+        {
+          "t": "awaiting approval",
+          "w": 148,
+          "h": 18
+        },
+        {
+          "t": "see fig. 4 — the expo poster",
+          "w": 243,
+          "h": 15
+        },
+        {
+          "t": "see fig. 4 — the expo poster",
+          "w": 243,
+          "h": 15
+        },
+        {
+          "t": "see fig. 4 — the expo poster",
+          "w": 243,
+          "h": 15
+        },
+        {
+          "t": "back to the work ⟵",
+          "w": 162,
+          "h": 18
+        },
+        {
+          "t": "the evidence index ⟶",
+          "w": 179,
+          "h": 18
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  },
+  {
+    "k": "tapTargets@390/projects/jobtracker/",
+    "v": {
+      "under24": 11,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "/system-card ↗",
+          "w": 121,
+          "h": 15
+        },
+        {
+          "t": "backend-ci run, 2026-04-20 ↗",
+          "w": 243,
+          "h": 15
+        },
+        {
+          "t": "getapplied.vercel.app ↗",
+          "w": 200,
+          "h": 15
+        },
+        {
+          "t": "readme — the desktop-era record",
+          "w": 290,
+          "h": 18
+        },
+        {
+          "t": "architecture docs",
+          "w": 169,
+          "h": 18
+        },
+        {
+          "t": "ml strategy and evaluation gates",
+          "w": 299,
+          "h": 18
+        },
+        {
+          "t": "backend test suite",
+          "w": 177,
+          "h": 18
+        },
+        {
+          "t": "web app source",
+          "w": 143,
+          "h": 18
+        },
+        {
+          "t": "back to the work ⟵",
+          "w": 162,
+          "h": 18
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  },
+  {
+    "k": "tapTargets@390/projects/taskflow-calendar/",
+    "v": {
+      "under24": 15,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "yadava5/cadence @ 54c79e0",
+          "w": 217,
+          "h": 15
+        },
+        {
+          "t": "/system-card ↗",
+          "w": 121,
+          "h": 15
+        },
+        {
+          "t": "taskflow-calendar @ 69a59e7",
+          "w": 234,
+          "h": 15
+        },
+        {
+          "t": "taskflow-calendar @ 69a59e7",
+          "w": 234,
+          "h": 15
+        },
+        {
+          "t": "taskflow-calendar @ 69a59e7",
+          "w": 234,
+          "h": 15
+        },
+        {
+          "t": "lib/services/__tests__ @ 54c79e0",
+          "w": 278,
+          "h": 15
+        },
+        {
+          "t": "lib/config/database.ts @ 54c79e0",
+          "w": 278,
+          "h": 15
+        },
+        {
+          "t": "prisma/schema.prisma @ 54c79e0",
+          "w": 261,
+          "h": 15
+        },
+        {
+          "t": "usecadenceapp.vercel.app ↗",
+          "w": 226,
+          "h": 15
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  },
+  {
+    "k": "tapTargets@390/nope/",
+    "v": {
+      "under24": 9,
+      "sample": [
+        {
+          "t": "Skip to main content",
+          "w": 1,
+          "h": 1
+        },
+        {
+          "t": "who ⟶",
+          "w": 49,
+          "h": 18
+        },
+        {
+          "t": "the path ⟶",
+          "w": 93,
+          "h": 18
+        },
+        {
+          "t": "automl ⟶",
+          "w": 75,
+          "h": 18
+        },
+        {
+          "t": "the work ⟶",
+          "w": 93,
+          "h": 18
+        },
+        {
+          "t": "how i work ⟶",
+          "w": 110,
+          "h": 18
+        },
+        {
+          "t": "the gate ⟶",
+          "w": 93,
+          "h": 18
+        },
+        {
+          "t": "the evidence index ⟶",
+          "w": 179,
+          "h": 18
+        },
+        {
+          "t": "back to the front page ⟵",
+          "w": 214,
+          "h": 15
+        }
+      ],
+      "crowdedPairs": 0
+    }
+  }
+]

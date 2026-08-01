@@ -1,0 +1,456 @@
+[
+ {
+  "k": "tapClasses@390",
+  "v": [
+   {
+    "route": "/projects/fast-mnist-nn/",
+    "tight": [
+     {
+      "t": "yadava5/fast-mnist-nn @ c6e5c0b",
+      "h": 45.2,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "getglyph.vercel.app ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "/system-card ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     }
+    ],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 5,
+    "nTight": 3,
+    "nBlock": 5,
+    "nPlain": 5
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "tight": [
+     {
+      "t": "yadava5/cadence @ 54c79e0",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "usecadenceapp.vercel.app ↗",
+      "h": 45.2,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "/system-card ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     }
+    ],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 12,
+    "nTight": 3,
+    "nBlock": 5,
+    "nPlain": 12
+   },
+   {
+    "route": "/",
+    "tight": [],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "macro-f1 0.98 — 96-sample gate",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "the case file ⟶",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "openmp+simd dot kernel — 3.5× vs -",
+      "h": 63.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "the case file ⟶",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 2,
+    "nTight": 0,
+    "nBlock": 15,
+    "nPlain": 2
+   },
+   {
+    "route": "/evidence/",
+    "tight": [],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 0,
+    "nTight": 0,
+    "nBlock": 5,
+    "nPlain": 0
+   }
+  ]
+ },
+ {
+  "k": "tapClasses@1440",
+  "v": [
+   {
+    "route": "/projects/fast-mnist-nn/",
+    "tight": [
+     {
+      "t": "yadava5/fast-mnist-nn @ c6e5c0b",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "getglyph.vercel.app ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "/system-card ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     }
+    ],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "experience",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "contact",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "github ↗",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 5,
+    "nTight": 3,
+    "nBlock": 5,
+    "nPlain": 5
+   },
+   {
+    "route": "/projects/taskflow-calendar/",
+    "tight": [
+     {
+      "t": "yadava5/cadence @ 54c79e0",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "usecadenceapp.vercel.app ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     },
+     {
+      "t": "/system-card ↗",
+      "h": 27,
+      "pt": "6px",
+      "pb": "6px",
+      "mt": "-6px",
+      "display": "inline"
+     }
+    ],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "experience",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "contact",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "github ↗",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 12,
+    "nTight": 3,
+    "nBlock": 5,
+    "nPlain": 12
+   },
+   {
+    "route": "/",
+    "tight": [],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "experience",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "contact",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "github ↗",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "macro-f1 0.98 — 96-sample gate",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 2,
+    "nTight": 0,
+    "nBlock": 15,
+    "nPlain": 2
+   },
+   {
+    "route": "/evidence/",
+    "tight": [],
+    "block": [
+     {
+      "t": "ayush yadav",
+      "h": 48.2,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "block"
+     },
+     {
+      "t": "the work",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "experience",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "contact",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     },
+     {
+      "t": "github ↗",
+      "h": 45,
+      "pt": "15px",
+      "pb": "15px",
+      "mt": "-15px",
+      "display": "inline"
+     }
+    ],
+    "plain": 0,
+    "nTight": 0,
+    "nBlock": 5,
+    "nPlain": 0
+   }
+  ]
+ }
+]

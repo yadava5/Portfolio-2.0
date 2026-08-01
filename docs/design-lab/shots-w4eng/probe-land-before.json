@@ -1,0 +1,22 @@
+{
+  "noJs": {
+    "/#values": 192,
+    "/#gate": 192,
+    "/projects/automl/#fig-4": 208
+  },
+  "engine": {
+    "/#values": 96,
+    "/#gate": 96,
+    "/projects/automl/#fig-4": 208
+  },
+  "css": {
+    "section[id]": {
+      "scrollMarginTop": "96px",
+      "scrollPaddingTop": "96px"
+    },
+    "[id^=\"fig-\"]": {
+      "scrollMarginTop": "112px",
+      "scrollPaddingTop": "96px"
+    }
+  }
+}

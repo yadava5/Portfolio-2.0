@@ -1,0 +1,385 @@
+[
+  {
+    "k": "evidenceAudit",
+    "v": {
+      "glance": "at a glance — 11 entries · 8 public · 3 private-safe · 1 held — not yet earned\n",
+      "uniqueIds": [
+        "e-01",
+        "e-02",
+        "e-03",
+        "e-04",
+        "e-05",
+        "e-06",
+        "e-07",
+        "e-08",
+        "e-09",
+        "e-10",
+        "e-11"
+      ],
+      "idCount": 11,
+      "badgeTally": {
+        "public": 8,
+        "private-safe": 3
+      },
+      "badgeTotal": 11,
+      "dotRow": [],
+      "dotEls": []
+    }
+  },
+  {
+    "k": "evidenceBlocks",
+    "v": [
+      {
+        "id": "e-01 ",
+        "title": "visibility: [public] 3-layer local classifier Applied's",
+        "badge": "public"
+      },
+      {
+        "id": "e-02 ",
+        "title": "visibility: [public] macro-F1 0.9791 Applied's rules an",
+        "badge": "public"
+      },
+      {
+        "id": "e-03 ",
+        "title": "visibility: [public] 271 backend tests The Applied back",
+        "badge": "public"
+      },
+      {
+        "id": "e-04 ",
+        "title": "visibility: [private-safe] 7-phase AutoML lifecycle Age",
+        "badge": "private-safe"
+      },
+      {
+        "id": "e-05 ",
+        "title": "visibility: [public] 71 iOS tests Visual Assist has aud",
+        "badge": "public"
+      },
+      {
+        "id": "e-06 ",
+        "title": "visibility: [public] 1,145 automated tests Cadence suit",
+        "badge": "public"
+      },
+      {
+        "id": "e-07 ",
+        "title": "visibility: [public] 3.5x openmp+simd dot kernel The op",
+        "badge": "public"
+      },
+      {
+        "id": "e-08 ",
+        "title": "visibility: [public] ~97% test accuracy Glyph reaches ~",
+        "badge": "public"
+      },
+      {
+        "id": "e-09 ",
+        "title": "visibility: [private-safe] 10,453 deduped rows Master I",
+        "badge": "private-safe"
+      },
+      {
+        "id": "e-10 ",
+        "title": "visibility: [private-safe] 19/20 structured sweep Polic",
+        "badge": "private-safe"
+      },
+      {
+        "id": "e-11 ",
+        "title": "visibility: [public] 72 tests pass jetpack-compress com",
+        "badge": "public"
+      }
+    ]
+  },
+  {
+    "k": "evidenceBlocks.count",
+    "v": 11
+  },
+  {
+    "k": "evidenceBlocks.byBadge",
+    "v": {
+      "public": 8,
+      "private-safe": 3
+    }
+  },
+  {
+    "k": "speedupGlyphs.home",
+    "v": [
+      {
+        "text": "Then OpenMP and SIMD together made it 3.5× faster.",
+        "form": "3.5×",
+        "tag": "P",
+        "fontSize": "24px",
+        "top": 5969
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x vs -O3 baseline, committed benchmarks",
+        "form": "3.5x",
+        "tag": "A",
+        "fontSize": "13px",
+        "top": 5921
+      },
+      {
+        "text": "1x",
+        "form": "1x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 6251
+      },
+      {
+        "text": "3.5x",
+        "form": "3.5x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 6251
+      },
+      {
+        "text": "1x",
+        "form": "1x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 0
+      },
+      {
+        "text": "3.5x",
+        "form": "3.5x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 0
+      },
+      {
+        "text": "3.5x — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · ",
+        "form": "3.5x",
+        "tag": "SPAN",
+        "fontSize": "13px",
+        "top": 6339
+      },
+      {
+        "text": "~6.5x vs single-threaded java.util.zip (±50%, quick benchmark) · 72 tests, 0 fai",
+        "form": "6.5x",
+        "tag": "SPAN",
+        "fontSize": "13px",
+        "top": 7066
+      },
+      {
+        "text": "openmp+simd dot kernel — 3.5x over -O3, committed benchmarks",
+        "form": "3.5x",
+        "tag": "A",
+        "fontSize": "13px",
+        "top": 8493
+      },
+      {
+        "text": "3.5x — openmp+simd dot kernel vs -O3 baseline",
+        "form": "3.5x",
+        "tag": "SPAN",
+        "fontSize": "13px",
+        "top": 9820
+      },
+      {
+        "text": "self.__next_f.push([1,\"20:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"work\\\",\\\"data-chapte",
+        "form": "12 x,16 x,3.5×",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"21:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"values\\\",\\\"data-chap",
+        "form": "12 x,16 x,3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"22:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"gate\\\",\\\"data-chapte",
+        "form": "12 x,16 x,3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"an\\\",null,{\\\"data-pipeline-phase\\\":4,\\\"data-pipeline-gate",
+        "form": "3.5x,3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"40:[\\\"$\\\",\\\"article\\\",\\\"jetpack-compress\\\",{\\\"data-thread",
+        "form": "6.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      }
+    ]
+  },
+  {
+    "k": "speedupGlyphs.evidence",
+    "v": [
+      {
+        "text": "3.5x openmp+simd dot kernel",
+        "form": "3.5x",
+        "tag": "H2",
+        "fontSize": "23.2px",
+        "top": 2161
+      },
+      {
+        "text": "The openmp+simd dot kernel runs 3.5x faster than the -O3 baseline (dot 256) in c",
+        "form": "3.5x",
+        "tag": "P",
+        "fontSize": "17px",
+        "top": 2201
+      },
+      {
+        "text": "self.__next_f.push([1,\"31:[\\\"$\\\",\\\"li\\\",\\\"fast-mnist-benchmark\\\",{\\\"id\\\":\\\"fast-",
+        "form": "3.5x,3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      }
+    ]
+  },
+  {
+    "k": "speedupGlyphs.glyph",
+    "v": [
+      {
+        "text": "1x",
+        "form": "1x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 939
+      },
+      {
+        "text": "3.5x",
+        "form": "3.5x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 938
+      },
+      {
+        "text": "1x",
+        "form": "1x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 0
+      },
+      {
+        "text": "3.5x",
+        "form": "3.5x",
+        "tag": "text",
+        "fontSize": "13px",
+        "top": 0
+      },
+      {
+        "text": "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for ",
+        "form": "3.5x",
+        "tag": "P",
+        "fontSize": "13px",
+        "top": 1288
+      },
+      {
+        "text": "The openmp+simd dot kernel is 3.50x faster than the -O3 baseline (dot 256) — com",
+        "form": "3.50x",
+        "tag": "SPAN",
+        "fontSize": "17px",
+        "top": 3134
+      },
+      {
+        "text": "SIMD acceleration is implemented across AVX2, AVX-512, and NEON paths; the verif",
+        "form": "3.5x",
+        "tag": "SPAN",
+        "fontSize": "17px",
+        "top": 3525
+      },
+      {
+        "text": "No AVX-512 inference-speedup claim survives here — see the corrections register ",
+        "form": "3.50x",
+        "tag": "LI",
+        "fontSize": "13px",
+        "top": 3859
+      },
+      {
+        "text": "Retracted the earlier AVX-512 inference-speedup claim: the committed classify-th",
+        "form": "3.50x",
+        "tag": "P",
+        "fontSize": "13px",
+        "top": 4147
+      },
+      {
+        "text": "Attribution tightened, number unchanged: the committed 3.50x (dot 256) belongs t",
+        "form": "3.50x",
+        "tag": "P",
+        "fontSize": "13px",
+        "top": 4389
+      },
+      {
+        "text": "self.__next_f.push([1,\"25:[\\\"$\\\",\\\"div\\\",null,{\\\"className\\\":\\\"mt-20 grid gap-x-",
+        "form": "3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"29:[\\\"$\\\",\\\"section\\\",null,{\\\"id\\\":\\\"corrections\\\",\\\"clas",
+        "form": "3.50x,3.50x,3.50x,3.50x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"34:[\\\"$\\\",\\\"p\\\",null,{\\\"className\\\":\\\"label-mono text-ink",
+        "form": "3.50x,3.50x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"39:[\\\"$\\\",\\\"li\\\",\\\"v-fast-mnist-nn-2\\\",{\\\"id\\\":\\\"v-fast-m",
+        "form": "3.50x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      },
+      {
+        "text": "self.__next_f.push([1,\"3b:[\\\"$\\\",\\\"div\\\",null,{\\\"children\\\":[[\\\"$\\\",\\\"h3\\\",null,",
+        "form": "3.5x",
+        "tag": "SCRIPT",
+        "fontSize": "16px",
+        "top": 0
+      }
+    ]
+  },
+  {
+    "k": "projectNaming.home",
+    "v": {
+      "Applied": 3,
+      "applied_lower": 2,
+      "jobtracker": 3,
+      "JobTracker": 0,
+      "Glyph": 2,
+      "fast_mnist": 1,
+      "Cadence": 2,
+      "taskflow": 2
+    }
+  },
+  {
+    "k": "projectNaming.evidence",
+    "v": {
+      "Applied": 3,
+      "applied_lower": 0,
+      "jobtracker": 3,
+      "JobTracker": 0,
+      "Glyph": 1,
+      "fast_mnist": 1,
+      "Cadence": 1,
+      "taskflow": 1
+    }
+  },
+  {
+    "k": "projectNaming.jobtracker",
+    "v": {
+      "Applied": 3,
+      "applied_lower": 24,
+      "jobtracker": 4,
+      "JobTracker": 1,
+      "Glyph": 0,
+      "fast_mnist": 0,
+      "Cadence": 0,
+      "taskflow": 0
+    }
+  }
+]

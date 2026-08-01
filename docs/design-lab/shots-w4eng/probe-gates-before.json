@@ -1,0 +1,54 @@
+{
+  "motion": {
+    ".daymark-fill · transitionDuration": "0.6s",
+    ".link-draw · transitionDuration": "0.25s",
+    ".link-draw-quiet · transitionDuration": "0.25s",
+    ".rail-mark · transitionDuration": "0.3s",
+    ".rail-label · transitionDuration": "0.3s",
+    "[data-pipeline-note] · transitionDuration": "0.22s",
+    "[data-registry-row] · transitionDuration": "0.42s",
+    ".site-footer · backgroundColor": "rgba(0, 0, 0, 0)",
+    "[data-chapter='03'] · backgroundColor": "rgba(0, 0, 0, 0)",
+    ".thread-segment .thread-past · strokeWidth": "1.3px",
+    "html[data-motion-off]": false
+  },
+  "quiet-toggle": {
+    ".daymark-fill · transitionDuration": "0s",
+    ".link-draw · transitionDuration": "0s",
+    ".link-draw-quiet · transitionDuration": "0s",
+    ".rail-mark · transitionDuration": "0s",
+    ".rail-label · transitionDuration": "0s",
+    "[data-pipeline-note] · transitionDuration": "0s",
+    "[data-registry-row] · transitionDuration": "0s",
+    ".site-footer · backgroundColor": "rgb(44, 38, 34)",
+    "[data-chapter='03'] · backgroundColor": "rgb(246, 243, 234)",
+    ".thread-segment .thread-past · strokeWidth": "1.1px",
+    "html[data-motion-off]": true
+  },
+  "reduced": {
+    ".daymark-fill · transitionDuration": "0s",
+    ".link-draw · transitionDuration": "0s",
+    ".link-draw-quiet · transitionDuration": "0s",
+    ".rail-mark · transitionDuration": "0s",
+    ".rail-label · transitionDuration": "0s",
+    "[data-pipeline-note] · transitionDuration": "0s",
+    "[data-registry-row] · transitionDuration": "0s",
+    ".site-footer · backgroundColor": "rgb(44, 38, 34)",
+    "[data-chapter='03'] · backgroundColor": "rgb(246, 243, 234)",
+    ".thread-segment .thread-past · strokeWidth": "1.1px",
+    "html[data-motion-off]": true
+  },
+  "reduced+toggle": {
+    ".daymark-fill · transitionDuration": "0s",
+    ".link-draw · transitionDuration": "0s",
+    ".link-draw-quiet · transitionDuration": "0s",
+    ".rail-mark · transitionDuration": "0s",
+    ".rail-label · transitionDuration": "0s",
+    "[data-pipeline-note] · transitionDuration": "0s",
+    "[data-registry-row] · transitionDuration": "0s",
+    ".site-footer · backgroundColor": "rgb(44, 38, 34)",
+    "[data-chapter='03'] · backgroundColor": "rgb(246, 243, 234)",
+    ".thread-segment .thread-past · strokeWidth": "1.1px",
+    "html[data-motion-off]": true
+  }
+}

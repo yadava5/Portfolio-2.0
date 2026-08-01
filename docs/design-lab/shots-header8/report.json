@@ -1,0 +1,80 @@
+[
+  {
+    "candidate": "d",
+    "seat": "chromium-desk",
+    "lcp": {
+      "t": 672,
+      "size": 23896,
+      "el": "ch"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "d",
+    "seat": "webkit-desk",
+    "lcp": {
+      "t": 1246,
+      "size": 21585,
+      "el": "ch m"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "d",
+    "seat": "webkit-mobile",
+    "lcp": {
+      "t": 60,
+      "size": 11463,
+      "el": "labhead mono"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "e",
+    "seat": "chromium-desk",
+    "lcp": {
+      "t": 908,
+      "size": 22454,
+      "el": "ch"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "e",
+    "seat": "webkit-desk",
+    "lcp": {
+      "t": 415,
+      "size": 21683,
+      "el": "ch"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  },
+  {
+    "candidate": "e",
+    "seat": "webkit-mobile",
+    "lcp": {
+      "t": 61,
+      "size": 11463,
+      "el": "labhead mono"
+    },
+    "raf3s": 0,
+    "diffPx": 0,
+    "diffPct": 0,
+    "errors": []
+  }
+]

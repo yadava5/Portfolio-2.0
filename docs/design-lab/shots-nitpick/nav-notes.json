@@ -1,0 +1,280 @@
+[
+  {
+    "k": "headerHeight",
+    "v": 68
+  },
+  {
+    "k": "anchor.#who",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 217,
+      "headingText": "This is a record of what I’ve built.",
+      "clearsHeader": true,
+      "clippedBy": -149,
+      "scrollY": 804,
+      "urlHash": "#who"
+    }
+  },
+  {
+    "k": "anchor.#path",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 217,
+      "headingText": "Thousands of service tickets. Zero structure.",
+      "clearsHeader": true,
+      "clippedBy": -149,
+      "scrollY": 1568,
+      "urlHash": "#path"
+    }
+  },
+  {
+    "k": "anchor.#automl",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 226,
+      "headingText": "The agent drafts the whole pipeline.",
+      "clearsHeader": true,
+      "clippedBy": -158,
+      "scrollY": 3131,
+      "urlHash": "#automl"
+    }
+  },
+  {
+    "k": "anchor.#work",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 158,
+      "headingText": "The work",
+      "clearsHeader": true,
+      "clippedBy": -90,
+      "scrollY": 4908,
+      "urlHash": "#work"
+    }
+  },
+  {
+    "k": "anchor.#values",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 140,
+      "headingText": "How I work",
+      "clearsHeader": true,
+      "clippedBy": -72,
+      "scrollY": 8037,
+      "urlHash": "#values"
+    }
+  },
+  {
+    "k": "anchor.#gate",
+    "v": {
+      "sectionTop": 96,
+      "headingTop": 439,
+      "headingText": "Ayush Yadav",
+      "clearsHeader": true,
+      "clippedBy": -371,
+      "scrollY": 8802,
+      "urlHash": "#gate"
+    }
+  },
+  {
+    "k": "roundTrip.card-applied",
+    "v": {
+      "beforeY": 0,
+      "arrived": {
+        "ms": 1813,
+        "url": "https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/",
+        "scrollY": 0,
+        "title": "Applied Case Study | Ayush Yadav",
+        "h1": "Applied"
+      },
+      "back": {
+        "url": "https://yadava5.github.io/Portfolio-2.0/",
+        "scrollY": 0,
+        "expectedY": 0,
+        "restoredWithin": 0
+      }
+    }
+  },
+  {
+    "k": "roundTrip.card-glyph",
+    "v": {
+      "beforeY": 0,
+      "arrived": {
+        "ms": 1815,
+        "url": "https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/",
+        "scrollY": 0,
+        "title": "Glyph Case Study | Ayush Yadav",
+        "h1": "Glyph"
+      },
+      "back": {
+        "url": "https://yadava5.github.io/Portfolio-2.0/",
+        "scrollY": 0,
+        "expectedY": 0,
+        "restoredWithin": 0
+      }
+    }
+  },
+  {
+    "k": "roundTrip.evidence",
+    "v": {
+      "beforeY": 0,
+      "arrived": {
+        "ms": 1809,
+        "url": "https://yadava5.github.io/Portfolio-2.0/evidence/",
+        "scrollY": 0,
+        "title": "The Evidence Index | Ayush Yadav",
+        "h1": "The evidence index"
+      },
+      "back": {
+        "url": "https://yadava5.github.io/Portfolio-2.0/",
+        "scrollY": 0,
+        "expectedY": 0,
+        "restoredWithin": 0
+      }
+    }
+  },
+  {
+    "k": "deepLink.receipt",
+    "v": {
+      "top": 96,
+      "inViewport": true,
+      "clearsHeader": true,
+      "text": "05 Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+      "outline": "0px rgb(38, 35, 28)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "scrollMarginTop": "0px"
+    }
+  },
+  {
+    "k": "externalLinks",
+    "v": [
+      {
+        "text": "github",
+        "href": "https://github.com/yadava5",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "jetpack-compress",
+        "href": "https://jetpack-compress.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "72 tests, 0 failures — jdk 25 @ af2c4b1",
+        "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "the live demo ↗",
+        "href": "https://jetpack-compress.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      },
+      {
+        "text": "source",
+        "href": "https://github.com/yadava5/jetpack-compress",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "system card ↗",
+        "href": "https://jetpack-compress.vercel.app/system-card",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      },
+      {
+        "text": "lifequest ↗",
+        "href": "https://getlifequest.vercel.app/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      },
+      {
+        "text": "system card ↗",
+        "href": "https://getlifequest.vercel.app/system-card",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      },
+      {
+        "text": "github",
+        "href": "https://github.com/yadava5",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "linkedin",
+        "href": "https://www.linkedin.com/in/ayush-yadav-developer/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": false
+      },
+      {
+        "text": "jetpack-compress — readme @ af2c4b1 ↗",
+        "href": "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      },
+      {
+        "text": "Randall Vollen ↗",
+        "href": "https://www.linkedin.com/in/randall-v-30745a4/",
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+        "marked": true
+      }
+    ]
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://github.com/yadava5"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://jetpack-compress.vercel.app/"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://github.com/yadava5/jetpack-compress"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://jetpack-compress.vercel.app/system-card"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://getlifequest.vercel.app/"
+  },
+  {
+    "k": "extStatus",
+    "v": "200 https://getlifequest.vercel.app/system-card"
+  },
+  {
+    "k": "extStatus",
+    "v": "999 https://www.linkedin.com/in/ayush-yadav-developer/"
+  },
+  {
+    "k": "extStatus",
+    "v": "999 https://www.linkedin.com/in/randall-v-30745a4/"
+  },
+  {
+    "k": "404",
+    "v": {
+      "url": "https://yadava5.github.io/Portfolio-2.0/does-not-exist-nitpick/",
+      "title": "Not found | Ayush Yadav",
+      "bodyStart": "Skip to main content ayush yadav the work experience contact github motion: on resume 404 Page Not Found The page you're looking for doesn't exist or has been moved. Let me help you find what you need. Home About The wor"
+    }
+  }
+]

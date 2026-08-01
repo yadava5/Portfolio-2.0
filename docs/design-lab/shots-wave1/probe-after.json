@@ -1,0 +1,856 @@
+{
+  "tag": "after",
+  "base": "http://127.0.0.1:3200",
+  "at": "2026-07-25T05:03:18.594Z",
+  "navContact": {
+    "scrollY": 8741,
+    "mailto": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "resume": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "github": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "cta": {
+      "opacity": 1,
+      "top": 756,
+      "onScreen": true
+    },
+    "name": {
+      "opacity": 1,
+      "top": 439,
+      "onScreen": true
+    },
+    "availability": {
+      "opacity": 0.7,
+      "top": 581,
+      "onScreen": true
+    }
+  },
+  "navTrail": {
+    "afterContact": "http://127.0.0.1:3200/#gate",
+    "afterBack": "http://127.0.0.1:3200/",
+    "afterBackScrollY": 0
+  },
+  "deepGate": {
+    "scrollY": 8741,
+    "mailto": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "resume": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "github": {
+      "opacity": 1,
+      "top": 663,
+      "onScreen": true
+    },
+    "cta": {
+      "opacity": 1,
+      "top": 756,
+      "onScreen": true
+    },
+    "name": {
+      "opacity": 1,
+      "top": 439,
+      "onScreen": true
+    },
+    "availability": {
+      "opacity": 0.7,
+      "top": 581,
+      "onScreen": true
+    }
+  },
+  "deepLinkLandings": {
+    "who": {
+      "scrollY": 804,
+      "hidden": []
+    },
+    "path": {
+      "scrollY": 1654,
+      "hidden": []
+    },
+    "automl": {
+      "scrollY": 3248,
+      "hidden": []
+    },
+    "work": {
+      "scrollY": 5057,
+      "hidden": []
+    },
+    "values": {
+      "scrollY": 7976,
+      "hidden": []
+    },
+    "gate": {
+      "scrollY": 8741,
+      "hidden": []
+    }
+  },
+  "hashLandings": {
+    "who": {
+      "scrollY": 804,
+      "hidden": []
+    },
+    "path": {
+      "scrollY": 1654,
+      "hidden": []
+    },
+    "automl": {
+      "scrollY": 3248,
+      "hidden": []
+    },
+    "work": {
+      "scrollY": 5057,
+      "hidden": []
+    },
+    "values": {
+      "scrollY": 7976,
+      "hidden": []
+    },
+    "gate": {
+      "scrollY": 8741,
+      "hidden": []
+    }
+  },
+  "scrollBackUp": [
+    {
+      "anchor": "values",
+      "scrollY": 7976,
+      "hidden": []
+    },
+    {
+      "anchor": "work",
+      "scrollY": 5057,
+      "hidden": []
+    },
+    {
+      "anchor": "automl",
+      "scrollY": 3248,
+      "hidden": []
+    },
+    {
+      "anchor": "path",
+      "scrollY": 1654,
+      "hidden": []
+    },
+    {
+      "anchor": "who",
+      "scrollY": 804,
+      "hidden": []
+    }
+  ],
+  "hero": {
+    "h1": {
+      "text": "Scroll.It's all real.1",
+      "top": 229,
+      "bottom": 499,
+      "fontSize": "129.6px",
+      "fontFamily": "Fraunces",
+      "color": "rgb(38, 35, 28)",
+      "opacity": 1
+    },
+    "standfirst": {
+      "text": "Ayush Yadav — software engineer · Cincinnati, Ohio",
+      "top": 527,
+      "bottom": 553,
+      "fontSize": "19px",
+      "fontFamily": "Newsreader",
+      "color": "rgb(38, 35, 28)",
+      "opacity": 1
+    }
+  },
+  "manifestoRest": [
+    {
+      "word": "This",
+      "opacity": 1
+    },
+    {
+      "word": "is",
+      "opacity": 1
+    },
+    {
+      "word": "a",
+      "opacity": 1
+    },
+    {
+      "word": "record",
+      "opacity": 1
+    },
+    {
+      "word": "of",
+      "opacity": 1
+    },
+    {
+      "word": "what",
+      "opacity": 1
+    },
+    {
+      "word": "I’ve",
+      "opacity": 1
+    },
+    {
+      "word": "built.",
+      "opacity": 1
+    },
+    {
+      "word": "And",
+      "opacity": 1
+    },
+    {
+      "word": "how",
+      "opacity": 1
+    },
+    {
+      "word": "each",
+      "opacity": 1
+    },
+    {
+      "word": "piece",
+      "opacity": 1
+    },
+    {
+      "word": "was",
+      "opacity": 1
+    },
+    {
+      "word": "checked",
+      "opacity": 1
+    },
+    {
+      "word": "before",
+      "opacity": 1
+    },
+    {
+      "word": "I",
+      "opacity": 0.97
+    },
+    {
+      "word": "called",
+      "opacity": 0.84
+    },
+    {
+      "word": "it",
+      "opacity": 0.71
+    },
+    {
+      "word": "done.",
+      "opacity": 0.6
+    }
+  ],
+  "seams": {
+    "docHeight": 10386,
+    "sections": {
+      "arrival": {
+        "top": 0,
+        "bottom": 900,
+        "height": 900
+      },
+      "who": {
+        "top": 900,
+        "bottom": 1750,
+        "height": 850
+      },
+      "path": {
+        "top": 1750,
+        "bottom": 3344,
+        "height": 1594
+      },
+      "automl": {
+        "top": 3344,
+        "bottom": 5153,
+        "height": 1808
+      },
+      "work": {
+        "top": 5153,
+        "bottom": 8072,
+        "height": 2919
+      },
+      "values": {
+        "top": 8072,
+        "bottom": 8837,
+        "height": 765
+      },
+      "gate": {
+        "top": 8837,
+        "bottom": 10221,
+        "height": 1384
+      }
+    }
+  },
+  "chromeSweep": [
+    {
+      "frac": 0.68,
+      "scrollY": 6450,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "oklch(0.923 0.039 83.8)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.72,
+      "scrollY": 6830,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "oklch(0.923 0.039 83.8)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.745,
+      "scrollY": 7067,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "oklch(0.923 0.039 83.8)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.7775,
+      "scrollY": 7375,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "oklch(0.876 0.046 80.2)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.8,
+      "scrollY": 7589,
+      "chrome": null,
+      "phase": null,
+      "arcL": ".9671",
+      "headerBg": "oklch(0.781 0.052 72.9)",
+      "bodyBg": "rgb(250, 246, 239)"
+    },
+    {
+      "frac": 0.83,
+      "scrollY": 7873,
+      "chrome": null,
+      "phase": "dusk",
+      "arcL": ".9671",
+      "headerBg": "oklch(0.43 0.032 60)",
+      "bodyBg": "rgb(250, 246, 239)"
+    }
+  ],
+  "pin": {
+    "section": {
+      "top": 3344,
+      "height": 1808
+    },
+    "frames": [
+      {
+        "scrollY": 3344,
+        "lit": 1,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 0
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 0
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 0
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 3570,
+        "lit": 3,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 0
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 0
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 3796,
+        "lit": 5,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 0
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 4022,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 4248,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 4474,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 4700,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 4926,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      },
+      {
+        "scrollY": 5152,
+        "lit": 6,
+        "registry": [
+          {
+            "text": "1.0 ingest",
+            "opacity": 1
+          },
+          {
+            "text": "2.0 explore",
+            "opacity": 1
+          },
+          {
+            "text": "3.0 preprocess",
+            "opacity": 1
+          },
+          {
+            "text": "4.0 engineer",
+            "opacity": 1
+          },
+          {
+            "text": "5.0 train",
+            "opacity": 1
+          },
+          {
+            "text": "6.0 evaluate",
+            "opacity": 1
+          },
+          {
+            "text": "the human gate — go / no-go7.0 deploy",
+            "opacity": 1
+          },
+          {
+            "text": "run · modelstatus",
+            "opacity": 0.8
+          },
+          {
+            "text": "038 · log-regapproved",
+            "opacity": 1
+          },
+          {
+            "text": "039 · random forestapproved",
+            "opacity": 1
+          },
+          {
+            "text": "040 · gbmapproved",
+            "opacity": 1
+          },
+          {
+            "text": "041 · xgboostawaiting approvalapproved",
+            "opacity": 1
+          }
+        ],
+        "phaseNote": "Support domain documents through retrieval and MCP-based orchestration."
+      }
+    ]
+  },
+  "prerender": {
+    "hasEmDashClock": false,
+    "localTimeSnippet": " to new-grad software, data, and ML engineering roles</p><p>cincinnati, ohio</p></div><div class=\"label-mono mt-5 flex flex-wrap gap-x-8 gap-y-2 opacity-70\" data-tm=\"block\"><a href=\"mailto:aesh_1055@icloud.com\" class=\"link-draw normal-case\">aesh_1055@icloud.com</a><a href=\"/r"
+  }
+}

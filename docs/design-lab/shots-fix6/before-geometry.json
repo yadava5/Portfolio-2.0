@@ -1,0 +1,208 @@
+{
+ "404@320": {
+  "over": 104,
+  "vw": 320,
+  "rows": [
+   {
+    "label": "who ⟶",
+    "leaderW": 111.9,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "the path ⟶",
+    "leaderW": 68.5,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "automl ⟶",
+    "leaderW": 85.9,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "the work ⟶",
+    "leaderW": 68.5,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "how i work ⟶",
+    "leaderW": 51.2,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "the gate ⟶",
+    "leaderW": 68.5,
+    "rowH": 18,
+    "right": 296
+   },
+   {
+    "label": "the evidence index ⟶",
+    "leaderW": 32,
+    "rowH": 18,
+    "right": 296
+   }
+  ]
+ },
+ "404@390": {
+  "over": 34,
+  "vw": 390,
+  "rows": [
+   {
+    "label": "who ⟶",
+    "leaderW": 181.9,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "the path ⟶",
+    "leaderW": 138.5,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "automl ⟶",
+    "leaderW": 155.9,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "the work ⟶",
+    "leaderW": 138.5,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "how i work ⟶",
+    "leaderW": 121.2,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "the gate ⟶",
+    "leaderW": 138.5,
+    "rowH": 18,
+    "right": 366
+   },
+   {
+    "label": "the evidence index ⟶",
+    "leaderW": 32,
+    "rowH": 18,
+    "right": 366
+   }
+  ]
+ },
+ "404@430": {
+  "over": 0,
+  "vw": 430,
+  "rows": [
+   {
+    "label": "who ⟶",
+    "leaderW": 221.9,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "the path ⟶",
+    "leaderW": 178.5,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "automl ⟶",
+    "leaderW": 195.9,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "the work ⟶",
+    "leaderW": 178.5,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "how i work ⟶",
+    "leaderW": 161.2,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "the gate ⟶",
+    "leaderW": 178.5,
+    "rowH": 18,
+    "right": 406
+   },
+   {
+    "label": "the evidence index ⟶",
+    "leaderW": 32,
+    "rowH": 18,
+    "right": 406
+   }
+  ]
+ },
+ "runninghead@640": {
+  "rowLines": 3,
+  "rowRight": 592,
+  "folioRight": 144,
+  "folioFlush": "left"
+ },
+ "runninghead@768": {
+  "rowLines": 2,
+  "rowRight": 720,
+  "folioRight": 144,
+  "folioFlush": "left"
+ },
+ "runninghead@800": {
+  "rowLines": 1,
+  "rowRight": 752,
+  "folioRight": 752,
+  "folioFlush": "right"
+ },
+ "masthead@768": {
+  "items": [
+   "the work"
+  ],
+  "navH": 24,
+  "needs": 523,
+  "content": 672
+ },
+ "ch05rail@390": [
+  {
+   "t": "jetpack-compress ↗",
+   "w": 208,
+   "h": 32
+  },
+  {
+   "t": "72 tests, 0 failures — jdk 25 @ af",
+   "w": 252,
+   "h": 33
+  },
+  {
+   "t": "the live demo ↗",
+   "w": 130,
+   "h": 15
+  },
+  {
+   "t": "source ↗",
+   "w": 69,
+   "h": 15
+  },
+  {
+   "t": "system card ↗",
+   "w": 113,
+   "h": 15
+  }
+ ],
+ "stampFocus@1440": {
+  "focused": true,
+  "outline": "2px solid rgb(224, 138, 95)",
+  "registerOpacity": "(no register)",
+  "ink": "rgb(224, 138, 95)",
+  "transform": "none",
+  "rotate": "-6deg",
+  "seat": "lg"
+ }
+}

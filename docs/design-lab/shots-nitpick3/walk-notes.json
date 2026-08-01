@@ -1,0 +1,244 @@
+[
+ {
+  "k": "walk.home1440",
+  "v": {
+   "h": 10859,
+   "frames": 14,
+   "arc": [
+    {
+     "y": 0,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 800,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 1600,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 2400,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 3200,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 4000,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 4800,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 5600,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 6400,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 7200,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 8000,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 8800,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 9600,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 9959,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    }
+   ]
+  }
+ },
+ {
+  "k": "walk.home390",
+  "v": {
+   "h": 13721,
+   "frames": 18,
+   "arc": [
+    {
+     "y": 0,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 780,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 1560,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 2340,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 3120,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 3900,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 4680,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 5460,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 6240,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 7020,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 7800,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 8580,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 9360,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": null,
+     "chapter": "01"
+    },
+    {
+     "y": 10140,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 10920,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 11700,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 12480,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    },
+    {
+     "y": 12877,
+     "bg": "rgba(0, 0, 0, 0)",
+     "img": "none",
+     "phase": "dusk",
+     "chapter": "01"
+    }
+   ]
+  }
+ }
+]

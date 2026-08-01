@@ -1,0 +1,221 @@
+[
+ {
+  "route": "/",
+  "preloadWarnings": [],
+  "consoleAll": [],
+  "fontResponses": [
+   {
+    "f": "283946f895707bec-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "d8848e31105c7f17-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "e699fbf9329167c0-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "cb9f64d62d112b41-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "c95d0e421d34c90b-s.woff2",
+    "status": 200
+   }
+  ],
+  "failed": [
+   "http://127.0.0.1:3700/evidence/",
+   "http://127.0.0.1:3700/projects/policybot/",
+   "http://127.0.0.1:3700/projects/automl/",
+   "http://127.0.0.1:3700/projects/jobtracker/",
+   "http://127.0.0.1:3700/projects/fast-mnist-nn/",
+   "http://127.0.0.1:3700/projects/taskflow-calendar/",
+   "http://127.0.0.1:3700/projects/master-inventory/"
+  ],
+  "preloads": [
+   "283946f895707bec-s.p.woff2",
+   "cb9f64d62d112b41-s.p.woff2",
+   "d8848e31105c7f17-s.p.woff2",
+   "e699fbf9329167c0-s.p.woff2"
+  ],
+  "faces": [
+   "Fragment Mono Fallback/normal/loaded",
+   "Fragment Mono/normal/loaded",
+   "Fragment Mono/normal/loaded",
+   "Fragment Mono/normal/unloaded",
+   "Fraunces Fallback/normal/loaded",
+   "Fraunces/normal/loaded",
+   "Fraunces/normal/unloaded",
+   "Fraunces/normal/unloaded",
+   "Newsreader Fallback/normal/unloaded",
+   "Newsreader/italic/loaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/normal/loaded",
+   "Newsreader/normal/unloaded",
+   "Newsreader/normal/unloaded"
+  ]
+ },
+ {
+  "route": "/evidence/",
+  "preloadWarnings": [],
+  "consoleAll": [],
+  "fontResponses": [
+   {
+    "f": "e699fbf9329167c0-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "283946f895707bec-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "d8848e31105c7f17-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "cb9f64d62d112b41-s.p.woff2",
+    "status": 200
+   }
+  ],
+  "failed": [
+   "http://127.0.0.1:3700/",
+   "http://127.0.0.1:3700/projects/jobtracker/",
+   "http://127.0.0.1:3700/projects/automl/",
+   "http://127.0.0.1:3700/projects/visual-assist/",
+   "http://127.0.0.1:3700/projects/taskflow-calendar/",
+   "http://127.0.0.1:3700/projects/fast-mnist-nn/",
+   "http://127.0.0.1:3700/projects/master-inventory/",
+   "http://127.0.0.1:3700/projects/policybot/"
+  ],
+  "preloads": [
+   "283946f895707bec-s.p.woff2",
+   "cb9f64d62d112b41-s.p.woff2",
+   "d8848e31105c7f17-s.p.woff2",
+   "e699fbf9329167c0-s.p.woff2"
+  ],
+  "faces": [
+   "Fragment Mono Fallback/normal/loaded",
+   "Fragment Mono/normal/loaded",
+   "Fragment Mono/normal/unloaded",
+   "Fragment Mono/normal/unloaded",
+   "Fraunces Fallback/normal/unloaded",
+   "Fraunces/normal/loaded",
+   "Fraunces/normal/unloaded",
+   "Fraunces/normal/unloaded",
+   "Newsreader Fallback/normal/unloaded",
+   "Newsreader/italic/loaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/normal/loaded",
+   "Newsreader/normal/unloaded",
+   "Newsreader/normal/unloaded"
+  ]
+ },
+ {
+  "route": "/projects/automl/",
+  "preloadWarnings": [],
+  "consoleAll": [],
+  "fontResponses": [
+   {
+    "f": "283946f895707bec-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "d8848e31105c7f17-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "e699fbf9329167c0-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "cb9f64d62d112b41-s.p.woff2",
+    "status": 200
+   }
+  ],
+  "failed": [
+   "http://127.0.0.1:3700/",
+   "http://127.0.0.1:3700/evidence/",
+   "http://127.0.0.1:3700/projects/fast-mnist-nn/"
+  ],
+  "preloads": [
+   "283946f895707bec-s.p.woff2",
+   "cb9f64d62d112b41-s.p.woff2",
+   "d8848e31105c7f17-s.p.woff2",
+   "e699fbf9329167c0-s.p.woff2"
+  ],
+  "faces": [
+   "Fragment Mono Fallback/normal/loaded",
+   "Fragment Mono/normal/loaded",
+   "Fragment Mono/normal/unloaded",
+   "Fragment Mono/normal/unloaded",
+   "Fraunces Fallback/normal/loaded",
+   "Fraunces/normal/loaded",
+   "Fraunces/normal/unloaded",
+   "Fraunces/normal/unloaded",
+   "Newsreader Fallback/normal/loaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/normal/loaded",
+   "Newsreader/normal/unloaded",
+   "Newsreader/normal/unloaded"
+  ]
+ },
+ {
+  "route": "/no-such-page/",
+  "preloadWarnings": [],
+  "consoleAll": [
+   "error: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "fontResponses": [
+   {
+    "f": "283946f895707bec-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "e699fbf9329167c0-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "d8848e31105c7f17-s.p.woff2",
+    "status": 200
+   },
+   {
+    "f": "cb9f64d62d112b41-s.p.woff2",
+    "status": 200
+   }
+  ],
+  "failed": [
+   "404 http://127.0.0.1:3700/no-such-page/",
+   "http://127.0.0.1:3700/evidence/",
+   "http://127.0.0.1:3700/"
+  ],
+  "preloads": [
+   "283946f895707bec-s.p.woff2",
+   "cb9f64d62d112b41-s.p.woff2",
+   "d8848e31105c7f17-s.p.woff2",
+   "e699fbf9329167c0-s.p.woff2"
+  ],
+  "faces": [
+   "Fragment Mono Fallback/normal/loaded",
+   "Fragment Mono/normal/loaded",
+   "Fragment Mono/normal/unloaded",
+   "Fragment Mono/normal/unloaded",
+   "Fraunces Fallback/normal/loaded",
+   "Fraunces/normal/loaded",
+   "Fraunces/normal/unloaded",
+   "Fraunces/normal/unloaded",
+   "Newsreader Fallback/normal/loaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/italic/unloaded",
+   "Newsreader/normal/loaded",
+   "Newsreader/normal/unloaded",
+   "Newsreader/normal/unloaded"
+  ]
+ }
+]

@@ -1,0 +1,86 @@
+[
+ {
+  "k": "stamp.geo@1440",
+  "v": {
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "rotate": "-4deg",
+   "color": "rgb(224, 138, 95)",
+   "registerOpacityResting": "0",
+   "outlineResting": "0px none rgb(224, 138, 95)",
+   "ariaLabel": "Approve run no. 041 — press to sign this page"
+  }
+ },
+ {
+  "k": "stamp.focus@1440",
+  "v": {
+   "reached": {
+    "active": false,
+    "fv": false
+   },
+   "outline": "0px none rgb(224, 138, 95)",
+   "registerOpacity": "0",
+   "registerStroke": "rgb(224, 138, 95)",
+   "registerStrokeWidth": "3px",
+   "registerBox": {
+    "w": 0,
+    "h": 0
+   }
+  }
+ },
+ {
+  "k": "stamp.pixelDiff@1440",
+  "v": {
+   "frame": "52x52",
+   "changedPx": 0,
+   "pctOfFrame": 0,
+   "maxChannelDelta": 0
+  }
+ },
+ {
+  "k": "stamp.geo@390",
+  "v": {
+   "box": {
+    "x": 30,
+    "y": 365,
+    "w": 313,
+    "h": 210
+   },
+   "rotate": "-4deg",
+   "color": "rgb(224, 138, 95)",
+   "registerOpacityResting": "0",
+   "outlineResting": "0px none rgb(224, 138, 95)",
+   "ariaLabel": "Approve run no. 041 — press to sign this page"
+  }
+ },
+ {
+  "k": "stamp.focus@390",
+  "v": {
+   "reached": {
+    "active": true,
+    "fv": true
+   },
+   "outline": "0px none rgb(224, 138, 95)",
+   "registerOpacity": "1",
+   "registerStroke": "rgb(224, 138, 95)",
+   "registerStrokeWidth": "3px",
+   "registerBox": {
+    "w": 300,
+    "h": 198
+   }
+  }
+ },
+ {
+  "k": "stamp.pixelDiff@390",
+  "v": {
+   "frame": "365x262",
+   "changedPx": 5058,
+   "pctOfFrame": 5.29,
+   "maxChannelDelta": 341
+  }
+ }
+]
