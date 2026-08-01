@@ -454,7 +454,7 @@ export const projects: Project[] = [
     shortDescription:
       "A JDK 25 parallel, gzip-compatible compression engine — virtual threads + Vector-API SIMD — with a live visualizing landing.",
     fullDescription:
-      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (~6.5× vs single-threaded java.util.zip, +/-50% on the quick benchmark). It hand-vectorizes Adler-32 via the JDK Vector API (~2.8× vs scalar; honestly shown not to beat the JDK intrinsic), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
+      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (6.4× vs single-threaded java.util.zip — 422 vs 66 MB/s, 3-fork JMH, 99.9% CI). It hand-vectorizes Adler-32 via the JDK Vector API (2.8× vs scalar, 4.26 GB/s; honestly shown not to beat the JDK intrinsic at 14.06 GB/s), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
     techStack: [
       { name: "Java", color: "#f89820" },
       { name: "JDK 25", color: "#5382a1" },
@@ -479,7 +479,7 @@ export const projects: Project[] = [
     startDate: "2026-07",
     endDate: "Present",
     highlights: [
-      "Parallel gzip on virtual threads: ~6.5× vs single-threaded java.util.zip (+/-50%)",
+      "Parallel gzip on virtual threads: 6.4× vs single-threaded java.util.zip (3-fork JMH, 99.9% CI)",
       "Hand-vectorized Adler-32 (~2.8× vs scalar) — honestly does NOT beat the JDK intrinsic",
       "FFM memory-mapped I/O, a CLI, and a JMH harness",
       "72 tests pass; DEFLATE entropy coding delegated to zlib on purpose",
@@ -487,7 +487,7 @@ export const projects: Project[] = [
     isPrivate: false,
     metrics: [
       { label: "Tests", value: "72 passing on JDK 25" },
-      { label: "Throughput", value: "~6.5× vs 1-thread gzip (+/-50%)" },
+      { label: "Throughput", value: "6.4× vs 1-thread gzip (3-fork JMH)" },
     ],
     proofIds: ["jetpack-tests"],
   },

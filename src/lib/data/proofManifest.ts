@@ -75,7 +75,7 @@ const FAST_MNIST_SHA = "c6e5c0b";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
 /* jetpack-compress HEAD verified public via `gh api` on 2026-07-24. */
-const JETPACK_SHA = "af2c4b1";
+const JETPACK_SHA = "2caacd0";
 
 export const proofManifest: ProofManifestEntry[] = [
   {
