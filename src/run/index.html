@@ -728,9 +728,11 @@
 
   @keyframes cross{
     0%{offset-distance:0%; opacity:0}
-    /* they climb out of the gate before you can really see them — a bird at
-       full ink the instant it leaves the ground reads as a sprite appearing */
-    7%{opacity:var(--op)}
+    /* short: the carry starts moving the page at 1.26s, and the birds have to
+       be up before it, or they are not what made you look. A bird at full ink
+       the instant it leaves the ground reads as a sprite appearing, so this is
+       a ramp and not a switch — just a fast one. */
+    4%{opacity:var(--op)}
     93%{opacity:var(--op)}
     100%{offset-distance:100%; opacity:0}
   }
@@ -3812,6 +3814,7 @@ function birdRng(seed) {
 /* where they leave from, as a fraction of the viewport — captured when the
    gate is approved so a resize mid-flight rebuilds the same departure */
 let flockFrom = null;
+let releasedAt = 0;
 
 function buildFlock() {
   const host = document.getElementById("flock");
@@ -3861,6 +3864,23 @@ function buildFlock() {
   host.innerHTML = "";
   const frag = document.createDocumentFragment();
 
+  /* A REBUILD MUST NOT REPLAY THE DEPARTURE. buildFlock re-creates every bird,
+     and body.flying is already on, so a naive rebuild restarts `cross` from 0%
+     — the whole flock teleports back to the dock and takes off again over the
+     quote. On iOS the URL bar collapsing during a scroll fires resize, and ¶13
+     is three screens tall, so the likeliest moment for that is exactly the one
+     where it looks worst.
+
+     A NEGATIVE animation-delay starts an animation mid-way through, so each
+     bird resumes where it had got to; anything whose flight already ended is
+     not rebuilt at all. */
+  const elapsed = releasedAt ? (performance.now() - releasedAt) / 1000 : 0;
+  const place = (el, start, dur) => {
+    if (start + dur <= elapsed) return false;
+    el.style.setProperty("--start", (start - elapsed).toFixed(2) + "s");
+    return true;
+  };
+
   /* ————— the departure —————
      A flock leaving the ground is not a formation. It is a scatter that sorts
      itself out: everything goes up at its own angle, then the angles agree,
@@ -3877,23 +3897,42 @@ function buildFlock() {
     /* the huddle: they were never in a line to begin with */
     const x0 = ox + (r() - 0.5) * 120 * vs;
     const y0 = oy + (r() - 0.5) * 70 * vs;
-    /* the climb — the widest-varying part of the whole flight, because this is
-       the instant the flock is least organised */
-    const c1x = x0 + (30 + r() * 130) * vs;
-    /* the climb is STEEPER on a narrow screen: less width to get clear in */
-    const c1y = y0 - (narrow ? 220 : 110) - r() * 210;
-    /* the gathering: loosely the same third of the sky, loosely */
-    const gx = W * (0.33 + (r() - 0.5) * 0.2);
-    const gy = H * ((narrow ? 0.15 : 0.27) + (r() - 0.5) * (narrow ? 0.14 : 0.26));
-    const c2x = gx - (60 + r() * 160) * vs;
-    const c2y = gy + (40 + (r() - 0.5) * 130) * vs;
-    /* and out, over the top right corner */
-    const ey = H * ((narrow ? -0.06 : 0.02) + (r() - 0.5) * (narrow ? 0.16 : 0.3));
-    const ex = W * (1.1 + r() * 0.22);
-    const c3x = gx + W * (0.13 + r() * 0.14);
-    const c3y = gy - (30 + r() * 110) * vs;
-    const c4x = W * (0.78 + (r() - 0.5) * 0.16);
-    const c4y = ey + (50 + (r() - 0.5) * 150) * vs;
+
+    /* WHERE THE FLOCK GATHERS, and it has to sit well to the right, because
+       the launch angle is the chord from here to there. Put the gathering
+       point up and only slightly across — as an earlier version did — and the
+       chord is 85° from horizontal, offset-rotate turns every bird onto its
+       tail, and an 88x34 silhouette seen end-on is a slash. Three of them read
+       as "K I" on a 390px screen. A narrow sky gets its gathering point much
+       further right and much lower, because it has far less width to do the
+       climbing in; the top band is left to the far flock. */
+    const gx = W * (narrow ? 0.72 : 0.45) + (r() - 0.5) * W * (narrow ? 0.2 : 0.18);
+    const gy = H * (narrow ? 0.42 : 0.27) + (r() - 0.5) * H * (narrow ? 0.16 : 0.24);
+    const runX = Math.max(80, gx - x0);
+    const runY = Math.max(40, y0 - gy);
+
+    /* THE CLIMB, as an angle rather than a distance. Every control point below
+       is a fraction of that run, so the geometry holds at 390px and at 1920
+       without a single absolute constant to get away from us. A touch steeper
+       than the chord — a bird does pitch up leaving the ground — and never
+       more than a touch, which is the whole fix. */
+    const th = Math.atan2(runY, runX) * (0.86 + r() * 0.24);
+    const L = Math.hypot(runX, runY) * (0.4 + r() * 0.22);
+    const c1x = x0 + Math.cos(th) * L;
+    const c1y = y0 - Math.sin(th) * L;
+    /* and it levels off INTO the gathering: the second control comes in almost
+       flat, so the bird is horizontal by the time it is among the others */
+    const c2x = gx - runX * (0.2 + r() * 0.2);
+    const c2y = gy + runY * (0.04 + r() * 0.13);
+
+    /* out over the corner. A narrow sky is left much sooner and much lower:
+       there is no room to cross it AND climb to the top. */
+    const ex = W * (narrow ? 1.45 : 1.12) + r() * W * 0.2;
+    const ey = H * (narrow ? 0.24 : 0.02) + (r() - 0.5) * H * (narrow ? 0.16 : 0.26);
+    const c3x = gx + (ex - gx) * (0.2 + r() * 0.22);
+    const c3y = gy - (gy - ey) * (0.12 + r() * 0.28);
+    const c4x = gx + (ex - gx) * (0.58 + r() * 0.22);
+    const c4y = ey + (gy - ey) * (0.08 + r() * 0.26);
 
     const el = document.createElement("div");
     el.className = "bird";
@@ -3902,9 +3941,10 @@ function buildFlock() {
       ` C ${P(c3x, c3y)} ${P(c4x, c4y)} ${P(ex, ey)}")`;
     /* no two share a duration, so whatever order they leave in is not the
        order they arrive in — they overtake each other, which a queue cannot */
-    el.style.setProperty("--dur", (8.6 + r() * 6.2).toFixed(2) + "s");
-    /* a few go, and the rest decide to follow */
-    el.style.setProperty("--start", (0.3 + i * 0.115 + r() * 0.62).toFixed(2) + "s");
+    const dur = 8.6 + r() * 6.2;
+    const st = 0.22 + i * 0.115 + r() * 0.62;
+    el.style.setProperty("--dur", dur.toFixed(2) + "s");
+    if (!place(el, st, dur)) continue;
     /* the bird's OWN size, before the viewport has its say. The wingbeat has
        to key off this and not off the rendered scale, or the whole flock flies
        in slow motion on a phone — vs shrinks every bird, and a period divided
@@ -3938,8 +3978,10 @@ function buildFlock() {
       `path("M ${P(-W * 0.18, y0 + 40 + r() * 40)}` +
       ` C ${P(W * 0.22, y0 + (r() - 0.5) * 60)} ${P(W * 0.42, y0 - 30 - r() * 40)} ${P(W * 0.62, y0 - 14)}` +
       ` C ${P(W * 0.84, y0 - 2 + (r() - 0.5) * 50)} ${P(W * 1.0, y0 - 50 - r() * 40)} ${P(W * 1.24, y0 - 80 - r() * 50)}")`;
-    el.style.setProperty("--dur", (21 + r() * 9).toFixed(2) + "s");
-    el.style.setProperty("--start", (2.6 + i * 0.44 + r() * 0.9).toFixed(2) + "s");
+    const dur = 21 + r() * 9;
+    const st = 2.6 + i * 0.44 + r() * 0.9;
+    el.style.setProperty("--dur", dur.toFixed(2) + "s");
+    if (!place(el, st, dur)) continue;
     const sc0 = 0.42 + r() * 0.16;
     el.style.setProperty("--s", (sc0 * vs).toFixed(3));
     el.style.setProperty("--op", (0.14 + r() * 0.07).toFixed(2));
@@ -3969,6 +4011,7 @@ function releaseFlock() {
   flockFrom = r && r.width
     ? { fx: clamp((r.left + r.width / 2) / W, 0.06, 0.5), fy: clamp((r.top + r.height / 2) / H, 0.3, 0.86) }
     : { fx: 0.16, fy: 0.72 };
+  releasedAt = performance.now();
   buildFlock();
   document.body.classList.add("flying");
 }
