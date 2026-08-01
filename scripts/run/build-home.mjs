@@ -102,8 +102,12 @@ const bodyProse = html
 const FORBIDDEN = [
   ["2.9× scalar", "projects.ts states ~2.8× — and adds the intrinsic caveat"],
   ["2.9x scalar", "projects.ts states ~2.8× — and adds the intrinsic caveat"],
-  ["under 0.95", "the case file states no threshold, only a configured floor"],
-  ["blocks any build under", "the case file states no threshold"],
+  /* The "under 0.95" entries that used to sit here were WRONG, and they
+     suppressed a true claim for weeks. Applied's .github/workflows/
+     backend-ci.yml passes --min-macro-f1 0.95 at two steps: the floor is
+     real, it is 0.95, and CI does block below it. Checked against the
+     workflow rather than against the case file's prose, which is what the
+     original entry had been derived from. */
 ];
 const claimed = FORBIDDEN.filter(([needle]) => bodyProse.includes(needle));
 if (claimed.length) {
