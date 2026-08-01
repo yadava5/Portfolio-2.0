@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-motion-ready>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -753,6 +753,42 @@
 </style>
 
 <style id="np-css">
+/* ── THE WITHHOLDING — the whole point of the machines ───────────────
+   Without this, the SVG machines draw ON TOP of a name that is already
+   fully rendered: decoration over finished type, which is what the owner
+   saw and called broken. The five machine-carrying letters are held at
+   opacity 0 until their machine stamps [data-np-done] at its dry, so the
+   machine PRODUCES the letter — the v is there because the bird landed.
+
+   Missed twice on the way here. First lift: these are NESTED in an @media
+   block and my selector-at-line-start pattern never saw them. Second:
+   indexOf on the @media text matched an EARLIER identical media query
+   224 bytes long, and I inserted that instead — a lift that reported
+   success while carrying none of the three rules. Extracted by their own
+   selectors this time, and the byte counts are checked (181/226/183). */
+@media (prefers-reduced-motion: no-preference) {
+html[data-motion-ready]:not([data-motion-off])
+    [data-np-machines]
+    .np-ch:not(.np-m) {
+    animation: np-settype 0.82s cubic-bezier(0.3, 0.75, 0.35, 1) both;
+    animation-delay: calc(0.18s + var(--np-i, 0) * 55ms);
+  }
+
+html[data-motion-ready]:not([data-motion-off])
+    [data-np-machines]
+    .np-ch.np-m:not([data-np-done]) {
+    opacity: 0;
+    animation: np-safety-release 0.5s ease 5.6s both;
+  }
+
+html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
+    transform-origin: left center;
+    animation: np-ruledraw 0.65s cubic-bezier(0.25, 0.9, 0.3, 1) both;
+  }
+}
+
+}
+
 /* THE PLATE IS THE OVERLAY'S CONTAINING BLOCK.
    In the React nameplate this element carried `className="np-plate relative"`
    and the positioning came from Tailwind's `relative`, not from .np-plate.
@@ -843,6 +879,75 @@ html[data-np-ready] .np-replay {
 @media print {
   .np-replay {
     display: none !important;
+  }
+}
+
+/* ── THE WITHHOLDING, and it is the whole point of the machines ──────
+   Without these three rules the SVG machines simply draw ON TOP of a
+   name that is already fully rendered — decoration over finished type,
+   which is exactly what the owner saw and called broken.
+
+   The letters carrying machines are held at opacity 0 until their
+   machine stamps [data-np-done] at its dry. So the machine's action
+   PRODUCES the letter rather than annotating it: the bird folds down and
+   the v is there because the bird landed.
+
+   These were missed on the first lift because they are NESTED inside an
+   @media block, and the selector-at-line-start pattern I was matching on
+   never saw them. Six rules came across; the three that mattered did not.
+
+   The JS-dead safety in np-safety-release is load-bearing and deliberate:
+   if no machine ever lands a letter, it releases itself at 5.6s — past
+   the whole performance — so a dead script can never strand the name. */
+@keyframes np-settype {
+  0% {
+    opacity: 0;
+    transform: translateY(0.16em);
+    font-variation-settings:
+      "opsz" 18,
+      "SOFT" 0,
+      "WONK" 0,
+      "wght" 660;
+  }
+  55% {
+    opacity: 1;
+  }
+  78% {
+    transform: none;
+    font-variation-settings:
+      "opsz" 120,
+      "SOFT" 34,
+      "WONK" 0,
+      "wght" 588;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    font-variation-settings:
+      "opsz" 144,
+      "SOFT" 50,
+      "WONK" 0,
+      "wght" 600;
+  }
+}
+
+@keyframes np-safety-release {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes np-ruledraw {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .site-header::after {
+    animation: masthead-rule 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: 120ms;
   }
 }
 </style>
