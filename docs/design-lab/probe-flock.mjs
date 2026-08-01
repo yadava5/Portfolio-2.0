@@ -46,15 +46,20 @@ const read = (ms) => page.evaluate(async (t) => {
   });
   const seen = [];
   let overText = 0;
-  const texts = [...document.querySelectorAll(".bdawn .endquote, .bdawn .kicker, #gate .kicker, #gate h2")]
+  const texts = [...document.querySelectorAll(".bdawn .endquote, .bdawn .kicker, .bdawn .dawnlede, .bdawn p, #gate .kicker, #gate h2")]
     .map((n) => n.getBoundingClientRect())
     .filter((r) => r.width && r.bottom > 0 && r.top < innerHeight);
+  /* the .bird div is 0x0 — it is a point on the offset-path, and the
+     silhouette is the SVG inside it overflowing on a negative margin. Measure
+     THAT: reading the div gives every overlap test a zero-area box, which
+     reports "clear of the type" no matter where the bird actually is. */
   for (const b of document.querySelectorAll(".bird")) {
-    const r = b.getBoundingClientRect();
-    const cs = getComputedStyle(b);
-    if (+cs.opacity < 0.04) continue;
-    if (r.right < -20 || r.left > innerWidth + 20 || r.bottom < -20 || r.top > innerHeight + 20) continue;
-    seen.push({ x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) });
+    if (+getComputedStyle(b).opacity < 0.04) continue;
+    const g = b.querySelector("svg");
+    if (!g) continue;
+    const r = g.getBoundingClientRect();
+    if (r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue;
+    seen.push({ x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), w: Math.round(r.width) });
     if (texts.some((t) => r.left < t.right && r.right > t.left && r.top < t.bottom && r.bottom > t.top)) overText++;
   }
   return { seen, overText, scrollY: Math.round(scrollY), carried: document.body.classList.contains("approved") };
@@ -81,6 +86,7 @@ console.table(frames.map((f) => {
     "spread x": f.seen.length ? `${Math.min(...xs)}–${Math.max(...xs)}` : "—",
     "spread y": f.seen.length ? `${Math.min(...ys)}–${Math.max(...ys)}` : "—",
     "nn gap": sp ? sp.mean : "—", "gap CV": sp ? sp.cv : "—",
+    widest: f.seen.length ? Math.max(...f.seen.map((p) => p.w)) : "—",
     "over text": f.overText,
   };
 }));
@@ -99,10 +105,16 @@ const airborneThroughCarry = frames
 
 const cv = spacing(mid?.seen ?? [])?.cv ?? 0;
 
-const ok = nearDock < 340 && airborneThroughCarry && cv >= 0.3 && errs.length === 0;
+/* mid-flight they may pass BEHIND the type — they are on a layer under it, and
+   a flock that detours around a paragraph is a flock on rails. What must hold
+   is that they are clear of it by the time the page stops and the reader
+   actually starts reading. */
+const settled = frames.filter((f) => f.ms >= 9500).every((f) => f.overText === 0);
+const ok = nearDock < 340 && airborneThroughCarry && cv >= 0.3 && settled && errs.length === 0;
 console.log(`\ndock at ${dock.x},${dock.y} · nearest bird at launch: ${nearDock}px`);
 console.log(`airborne through the whole carry: ${airborneThroughCarry ? "✓" : "✗"}`);
 console.log(`spacing unevenness at mid-flight (CV): ${cv}  ${cv >= 0.3 ? "✓ not a formation" : "✗ too regular"}`);
+console.log(`clear of the type once the page settles: ${settled ? "✓" : "✗"}`);
 console.log(`peak birds on screen: ${Math.max(...frames.map((f) => f.seen.length))}`);
 console.log(`page errors: ${errs.length}`);
 if (errs.length) console.log(errs.slice(0, 3));

@@ -3848,6 +3848,16 @@ function buildFlock() {
   const oy = H * flockFrom.fy;
   const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
 
+  /* THE BIRD IS DRAWN AT A FIXED 88px, so a sky that works on a laptop is an
+     infestation on a phone: fifteen of them at full size across 390px covered
+     the epigraph and the quote both. The flock scales with the sky it crosses
+     — fewer birds, smaller, and flying higher, because a narrow viewport gives
+     them far less horizontal room to get clear of the type in. */
+  const narrow = W < 760;
+  const vs = clamp(W / 1500, 0.44, 1);
+  const N_NEAR = narrow ? 8 : 15;
+  const N_FAR = narrow ? 3 : 5;
+
   host.innerHTML = "";
   const frag = document.createDocumentFragment();
 
@@ -3862,28 +3872,28 @@ function buildFlock() {
      deliberately LOOSE: the gathering point is jittered a fifth of the screen
      wide, because birds heading the same way is the real thing, and birds
      arriving at the same coordinate is a funnel. */
-  const NEAR = 15;
-  for (let i = 0; i < NEAR; i++) {
+  for (let i = 0; i < N_NEAR; i++) {
     const r = birdRng(0x51ee + i * 7919);
     /* the huddle: they were never in a line to begin with */
-    const x0 = ox + (r() - 0.5) * 120;
-    const y0 = oy + (r() - 0.5) * 70;
+    const x0 = ox + (r() - 0.5) * 120 * vs;
+    const y0 = oy + (r() - 0.5) * 70 * vs;
     /* the climb — the widest-varying part of the whole flight, because this is
        the instant the flock is least organised */
-    const c1x = x0 + 30 + r() * 130;
-    const c1y = y0 - 110 - r() * 210;
+    const c1x = x0 + (30 + r() * 130) * vs;
+    /* the climb is STEEPER on a narrow screen: less width to get clear in */
+    const c1y = y0 - (narrow ? 220 : 110) - r() * 210;
     /* the gathering: loosely the same third of the sky, loosely */
     const gx = W * (0.33 + (r() - 0.5) * 0.2);
-    const gy = H * (0.27 + (r() - 0.5) * 0.26);
-    const c2x = gx - 60 - r() * 160;
-    const c2y = gy + 40 + (r() - 0.5) * 130;
+    const gy = H * ((narrow ? 0.15 : 0.27) + (r() - 0.5) * (narrow ? 0.14 : 0.26));
+    const c2x = gx - (60 + r() * 160) * vs;
+    const c2y = gy + (40 + (r() - 0.5) * 130) * vs;
     /* and out, over the top right corner */
-    const ey = H * (0.02 + (r() - 0.5) * 0.3);
+    const ey = H * ((narrow ? -0.06 : 0.02) + (r() - 0.5) * (narrow ? 0.16 : 0.3));
     const ex = W * (1.1 + r() * 0.22);
     const c3x = gx + W * (0.13 + r() * 0.14);
-    const c3y = gy - 30 - r() * 110;
+    const c3y = gy - (30 + r() * 110) * vs;
     const c4x = W * (0.78 + (r() - 0.5) * 0.16);
-    const c4y = ey + 50 + (r() - 0.5) * 150;
+    const c4y = ey + (50 + (r() - 0.5) * 150) * vs;
 
     const el = document.createElement("div");
     el.className = "bird";
@@ -3895,11 +3905,16 @@ function buildFlock() {
     el.style.setProperty("--dur", (8.6 + r() * 6.2).toFixed(2) + "s");
     /* a few go, and the rest decide to follow */
     el.style.setProperty("--start", (0.3 + i * 0.115 + r() * 0.62).toFixed(2) + "s");
-    const sc = 0.72 + r() * 0.5;
-    el.style.setProperty("--s", sc.toFixed(2));
+    /* the bird's OWN size, before the viewport has its say. The wingbeat has
+       to key off this and not off the rendered scale, or the whole flock flies
+       in slow motion on a phone — vs shrinks every bird, and a period divided
+       by the shrunk value is a period three times too long. */
+    const sc0 = 0.72 + r() * 0.5;
+    el.style.setProperty("--s", (sc0 * vs).toFixed(3));
     el.style.setProperty("--op", (0.3 + r() * 0.24).toFixed(2));
-    /* a heavier bird beats slower — no two share a clock */
-    el.style.setProperty("--beat", (0.44 / sc + r() * 0.09).toFixed(3) + "s");
+    /* a bigger bird beats slower, as a bigger wing does — and no two birds
+       share a clock, because a flock in lockstep reads as a screensaver */
+    el.style.setProperty("--beat", (0.42 + 0.36 * (sc0 - 0.72) + r() * 0.07).toFixed(3) + "s");
     /* and no two are mid-beat at the same moment */
     el.style.setProperty("--wphase", (-r() * 0.6).toFixed(3) + "s");
     el.innerHTML = `<div class="bd">${svg}</div>`;
@@ -3914,10 +3929,9 @@ function buildFlock() {
      the top, smaller, fainter and much slower. One flock alone gives the sky no
      depth — it slides across like a decal. These are what make the near ones
      read as near. */
-  const FAR = 5;
-  for (let i = 0; i < FAR; i++) {
+  for (let i = 0; i < N_FAR; i++) {
     const r = birdRng(0x9c41 + i * 6151);
-    const y0 = H * (0.1 + (r() - 0.5) * 0.1);
+    const y0 = H * ((narrow ? 0.05 : 0.1) + (r() - 0.5) * 0.1);
     const el = document.createElement("div");
     el.className = "bird";
     el.style.offsetPath =
@@ -3926,10 +3940,11 @@ function buildFlock() {
       ` C ${P(W * 0.84, y0 - 2 + (r() - 0.5) * 50)} ${P(W * 1.0, y0 - 50 - r() * 40)} ${P(W * 1.24, y0 - 80 - r() * 50)}")`;
     el.style.setProperty("--dur", (21 + r() * 9).toFixed(2) + "s");
     el.style.setProperty("--start", (2.6 + i * 0.44 + r() * 0.9).toFixed(2) + "s");
-    const sc = 0.42 + r() * 0.16;
-    el.style.setProperty("--s", sc.toFixed(2));
+    const sc0 = 0.42 + r() * 0.16;
+    el.style.setProperty("--s", (sc0 * vs).toFixed(3));
     el.style.setProperty("--op", (0.14 + r() * 0.07).toFixed(2));
-    el.style.setProperty("--beat", (0.62 / sc + r() * 0.08).toFixed(3) + "s");
+    /* slower than the near flock: distance flattens a wingbeat */
+    el.style.setProperty("--beat", (0.64 + 0.4 * (sc0 - 0.42) + r() * 0.08).toFixed(3) + "s");
     el.style.setProperty("--wphase", (-r() * 0.7).toFixed(3) + "s");
     el.innerHTML = `<div class="bd">${svg}</div>`;
     el.addEventListener("animationend", (e) => {
