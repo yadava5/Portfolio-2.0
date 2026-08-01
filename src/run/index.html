@@ -891,11 +891,9 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
    where the letters come to rest. */
 .np-mech {
   position: absolute;
-  inset: auto;
-  left: var(--np-ox, 0px);
-  top: var(--np-oy, 0px);
-  width: var(--np-ow, 100%);
-  height: var(--np-oh, 100%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   pointer-events: none;
 }
@@ -1100,8 +1098,16 @@ h1[data-np-measuring] .np-ch {
       <div class="np-plate" data-nameplate data-fx="in .0 .22 y 5 | drift 26">
         <div class="np-rule" aria-hidden="true"></div>
         <h1 aria-label="Ayush Yadav" class="nameplate" data-np-machines><span aria-hidden="true" class="np-ch np-m" style="--np-i:0">A</span><span aria-hidden="true" class="np-ch" style="--np-i:1">y</span><span aria-hidden="true" class="np-ch" style="--np-i:2">u</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:3">s</span><span aria-hidden="true" class="np-ch" style="--np-i:4">h</span><span aria-hidden="true" class="np-ch np-sp" style="--np-i:5">&nbsp;</span><span aria-hidden="true" class="np-ch" style="--np-i:6">Y</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:7">a</span><span aria-hidden="true" class="np-ch" style="--np-i:8">d</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:9">a</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:10">v</span></h1>
-        <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
       </div>
+      <!-- OUTSIDE the plate, deliberately. .np-plate is the machines'
+           coordinate space: measureSettled returns plate-relative geometry
+           and sizes the overlay's viewBox from the plate's own box. Putting
+           this control inside it made the plate 35.3px taller the moment
+           [data-np-ready] revealed it — so on a REPLAY the viewBox was
+           838.5x211.7 inside an 838.5x176.4 element, which preserveAspectRatio
+           then scaled by 0.833 and centred, shifting every machine 70px right.
+           That is the A landing on the y. Nothing may share this box. -->
+      <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
       <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
       <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
@@ -3214,7 +3220,7 @@ boot();
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const plate = document.querySelector("[data-nameplate]");
   const h1 = plate?.querySelector("h1");
-  const replay = plate?.querySelector("[data-np-replay]");
+  const replay = document.querySelector("[data-np-replay]");
   if (plate && h1 && !RM) {
     try {
       /* MEASURE AFTER THE TYPE ARRIVES. measureSettled reads the letters'
@@ -3295,13 +3301,6 @@ boot();
           h1.setAttribute("data-np-measuring", "");
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
-          /* Where the type sits inside the plate, in the settled state. */
-          const pb = plate.getBoundingClientRect();
-          const hb = h1.getBoundingClientRect();
-          plate.style.setProperty("--np-ox", `${hb.left - pb.left}px`);
-          plate.style.setProperty("--np-oy", `${hb.top - pb.top}px`);
-          plate.style.setProperty("--np-ow", `${hb.width}px`);
-          plate.style.setProperty("--np-oh", `${hb.height}px`);
           h1.removeAttribute("data-np-measuring");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
           M.mountHoverAnswers?.(plate, h1, letters, g);
