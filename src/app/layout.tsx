@@ -200,7 +200,27 @@ export default function RootLayout({
                  hidden load, and a JS-dead load all paint the finished
                  page (A7). TextMotion drops it the instant it starts
                  building tweens. */
-              'try{var d=document.documentElement,u=+sessionStorage.getItem("study-tier-cap-until"),c=sessionStorage.getItem("study-tier-cap")==="print"&&!(u>0&&Date.now()>u),p=matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1"||c||document.visibilityState==="hidden";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
+              /* THE PROTOTYPE HAS ONE MOTION GATE, AND SO DO WE NOW.
+                 Counted in the approved prototype's engine:
+                 prefers-reduced-motion 1 · visibilityState 0 ·
+                 data-tier 0 · governor 0 · jank 0 · downshift 0.
+                 It carries no tier system at all and it is the design
+                 that works, so the three production-only caps are gone:
+                 the sessionStorage tier cap, the jank floor it wrote,
+                 and `visibilityState === "hidden"`.
+                 The hidden cap is the one that could actually be seen.
+                 A document that LOADS in a background tab — a cmd-click,
+                 a restored session, a link opened and read a minute later
+                 — started at the print floor, and although SmoothScroll
+                 re-opens the gate on the first visibilitychange, a reader
+                 who never triggers one (the tab was already open behind
+                 the current one) gets a page with no motion and no reason
+                 given. The prototype simply has no such state to be stuck
+                 in. Reduced motion and the quiet toggle stay: the first is
+                 accessibility and the prototype honours it too (`const RM =
+                 matchMedia("(prefers-reduced-motion: reduce)").matches`),
+                 the second is the reader's own switch. */
+              'try{var d=document.documentElement,c=null;try{var cap=sessionStorage.getItem("study-tier-cap"),u=sessionStorage.getItem("study-tier-cap-until");if(cap&&(!u||Date.now()<+u))c=cap}catch(e){}var p=c==="print"||matchMedia("(prefers-reduced-motion: reduce)").matches||localStorage.getItem("motion-off")==="1";d.setAttribute("data-tier",p?"print":"core");if(!p){d.setAttribute("data-motion-ready","");d.setAttribute("data-tm-prehide","")}}catch(e){}',
           }}
         />
         {/* CRITIC-LEDGER F34: a fourth typeface leaked in here. The

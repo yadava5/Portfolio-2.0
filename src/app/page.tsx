@@ -8,7 +8,7 @@
 
 import { DayArc } from "@/components/world/DayArc";
 import { LightField } from "@/components/world/LightField";
-import { ThreadRail } from "@/components/thread/ThreadRail";
+import { RunRail } from "@/components/run/RunRail";
 import { StoryShell } from "@/components/story/StoryShell";
 
 export default function Home() {
@@ -16,7 +16,12 @@ export default function Home() {
     <>
       <LightField />
       <DayArc />
-      <ThreadRail />
+      {/* The ported rail replaces ThreadRail. It reads the chapter
+          sections directly, so it draws the real route today — before the
+          eleven-beat re-cut lands — and the difference is the whole point:
+          ThreadRail was continuous, scroll-coupled and reversible at ONE x
+          in the left gutter. This one crosses the page. */}
+      <RunRail beatSelector="[data-chapter]" />
       <StoryShell />
     </>
   );

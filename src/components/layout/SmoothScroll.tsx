@@ -273,22 +273,6 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
      unmount (a cmd-tab away must resume seamlessly); the governor handles
      the one dangerous case — scrolling while hidden — by forcing the
      print floor (see markScrolled). */
-  const [pageEverVisible, setPageEverVisible] = useState(
-    () =>
-      typeof document === "undefined" || document.visibilityState !== "hidden"
-  );
-  useEffect(() => {
-    if (pageEverVisible) return;
-    const onVisibilityChange = () => {
-      if (document.visibilityState !== "hidden") {
-        setPageEverVisible(true);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-    };
-  }, [pageEverVisible]);
   /* The frame governor's print floor (§F2). Seeded from the head
      script's pre-paint `data-tier` stamp so a sessionStorage-capped
      load never mounts the engine at all. */
@@ -306,13 +290,27 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
      Declared BEFORE the tier subscription and engine effects so a gate
      change resolves the tier first. */
   useEffect(() => {
+    /* `!pageEverVisible` was the third and last hidden-load cap, and it
+       is gone for the same reason as the other two (layout.tsx head
+       script, governor's blank-plate guard): the approved prototype has
+       no visibility gate at all — `visibilityState` appears zero times
+       in its engine against one `prefers-reduced-motion` — and it is the
+       design that works.
+       Its intent was sound: a hidden document gets no rAF, so an
+       engine-held reveal would sit at its start frame. But the engine
+       being ported is a PURE FUNCTION OF SCROLL POSITION, not a set of
+       held timelines — an element's state is recomputed from `scrollY`
+       on the first frame the document does get, so there is no held
+       start frame to be stuck at. The condition this guarded against
+       stops existing as the port lands.
+       What remains is what the prototype has: reduced motion, and the
+       reader's own quiet toggle. */
     applyGate(
       prefersReducedMotion ||
         motionOff ||
-        !pageEverVisible ||
         window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
     );
-  }, [prefersReducedMotion, motionOff, pageEverVisible]);
+  }, [prefersReducedMotion, motionOff]);
 
   /* Follow governor downshifts. On core→print, remember which section
      sits under the viewport top: unmounting the engine unwinds the ch04
@@ -400,7 +398,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
        effect otherwise runs once with the hook's SSR-safe `false` before
        its change subscription delivers `true`, transiently mounting the
        engine under reduced motion. */
-    if (prefersReducedMotion || motionOff || tierPrint || !pageEverVisible) {
+    if (prefersReducedMotion || motionOff || tierPrint) {
       return;
     }
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
@@ -489,7 +487,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       scrollListeners.clear();
       setLenis(null);
     };
-  }, [prefersReducedMotion, motionOff, tierPrint, pageEverVisible]);
+  }, [prefersReducedMotion, motionOff, tierPrint]);
 
   return (
     <MotionPreferenceContext.Provider value={motionPreference}>

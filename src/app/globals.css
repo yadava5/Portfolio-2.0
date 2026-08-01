@@ -103,6 +103,18 @@
 }
 
 :root {
+  /* ── The rail (ported from the prototype's engine.css) ─────────────
+     `--thread` is the ink already laid down behind the token;
+     `--thread-ahead` is the dashed future in front of it. These are the
+     prototype's own values and they are the reason its line reads from
+     across a room: RUST, at 2px, crossing the page — where production's
+     rail was ink-dark, 1px, and straight down the left gutter. Same
+     continuity, same scroll-coupling, same token; invisible anyway.
+     The dusk pair rides the day arc past the 05|06 terminator, where the
+     paper goes dark and a rust line would sink into it. */
+  --thread: #c4532e;
+  --thread-ahead: rgba(38, 35, 28, 0.3);
+
   /* ── Day-arc waypoints (Part 3.4) — consumed by the scroll engine ── */
   --waypoint-01: #fbf3e7; /* dawn */
   --waypoint-02: #faf6ef; /* morning */
@@ -310,6 +322,16 @@ html[data-arc-chrome="dusk"] .light-field-contour {
    ScrollTrigger callbacks at the 05→06 boundary — never scrubbed. */
 html[data-arc-phase="dusk"] body {
   color: var(--color-ink-dusk);
+}
+
+/* The rail flips with the ink, and for the same reason: past the 05|06
+   terminator the paper is #43372f, and the day rail's #c4532e sinks into
+   it. The prototype's own dusk pair — a lighter rust that still reads as
+   the same line, and a cream-tinted future. Set on <html> so the canvas
+   picks it up from the same custom property it already reads. */
+html[data-arc-phase="dusk"] {
+  --thread: #e08a5f;
+  --thread-ahead: rgba(246, 239, 226, 0.34);
 }
 
 /* ── THE GLOAMING (brief B9) — the dusk choreography's voice state ────

@@ -1,0 +1,3372 @@
+<!doctype html>
+<html lang="en" data-motion-ready>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ayush yadav — the long run · story candidate</title>
+<script>document.documentElement.classList.add("js");</script>
+<style>
+  /* ————————————————————————————————————————————————————————————————
+     STORY CANDIDATE — "The Long Run."
+
+     The ask was a QUALITY, not a subject: a world in continuous
+     composition — things arrive from off-frame and join the scene,
+     transform in place, complete and leave, while the ground shifts
+     underneath. The world here is the site's own thesis promoted from
+     one chapter's figure to the whole page: the portfolio IS one
+     pipeline run (run 042, started 06:12), the reader is the human in
+     the loop, and the Red Thread is the rail. An ink run-token rides
+     the thread at mid-viewport, so scrolling IS travelling.
+
+     ROUND 4 — the run carries the WHOLE home story, not six product
+     stations. A pipeline has provenance, a history and an operating
+     discipline, so the line now makes eleven stops: the start; WHO
+     built it (¶02 — the engineer of record signs the line); the YARD
+     it left (¶03 — the Miami ITSM job, told with its real freight:
+     1.6M+ OAS query logs into a 57.8M-row SQLite field-usage table,
+     the 10,453×35 master inventory, compliance 0%→97% across 61
+     projects — plus the school record, filed with the run); the six
+     stations — Applied, Cadence, Glyph, jetpack-compress, LifeQuest,
+     Agentic AutoML — which assemble as you approach, work while you're
+     there (scroll-scrubbed, so a still frame is always mid-
+     composition), and send their OUTPUT down the thread when you
+     leave; the REVIEW (¶10 — how I work: the litany, and three real
+     gates with their honest dispositions, two of which refused to sign
+     automatically); and the gate. Every station's output now lands
+     somewhere real: each hands off to its case file, source, or live
+     build on the working paper. A run manifest rides the corner and
+     stamps a line per station. The light runs the site's real day arc,
+     dawn #fbf3e7 to nightfall #2c2622 — station datelines stay pinned
+     to their waypoints — with the pre-verified 12-stop dusk
+     choreography and the ink flip at 0.72. At 22:41 the token halts at
+     the clay gate. Scrolling cannot approve; only your press can.
+
+     Every number is proof-cited from src/lib/data or the résumé as
+     verified against committed artifacts (2026-07-30): macro-F1 0.9791
+     on the 96-sample gate (8 classes, 2 misclassified); 97.01%
+     (9,701/10,000, macro-F1 0.9698); 3.5× SIMD dot-256 vs -O3; 6.5×
+     gzip throughput (455 vs 66 MB/s, the conservative 99% CI bound);
+     1,145 automated tests (634 FE + 511 BE); 72 tests, 0 failures on
+     JDK 25; 7 phases, every one gated. The Glyph station runs the REAL
+     C++/WASM network (45.9 KB wasm + 310.6 KB weights); jetpack's
+     ratio is computed live with the browser's own CompressionStream
+     and labelled as such.
+
+     Zero dependencies. The wash is ~60 lines of raw WebGL that draws
+     only while the scroll position changes; one rAF loop that stops
+     when the page is still. Native scroll, no snap, no wheel-hijack.
+     ———————————————————————————————————————————————————————————————— */
+  @font-face{
+    font-family:"Fraunces";
+    font-style:normal; font-weight:100 900; font-display:swap;
+    src:url("fonts/fraunces-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Newsreader";
+    font-style:italic; font-weight:400; font-display:swap;
+    src:url("fonts/newsreader-italic-latin-var.woff2") format("woff2");
+  }
+  @font-face{
+    font-family:"Fragment Mono";
+    font-style:normal; font-weight:400; font-display:swap;
+    src:url("fonts/fragment-mono-latin.woff2") format("woff2");
+  }
+
+  :root{
+    /* day inks (Daylight Study tokens) */
+    --ink:#26231c;
+    --ink-2:#5c564a;
+    --clay:#a03f20;          /* clay as text — measured: 4.77:1 / Lc 61.3 on golden worst-case */
+    --clay-g:#c4532e;        /* clay as graphic */
+    --pine:#2f5d50;
+    --ember:#f57a3e;         /* RESERVED: the inked APPROVED stamp only */
+    --hair:rgba(38,35,28,.16);
+    --hair-strong:rgba(38,35,28,.34);
+    --plate:rgba(255,253,246,.55);
+    --plate-line:rgba(38,35,28,.14);
+    --thread:#c4532e;
+    --thread-ahead:rgba(38,35,28,.30);
+    --ink-inverse:#fbf3e7;    /* what text becomes when the ink fills a button */
+    --shadow:0 22px 60px -28px rgba(56,44,32,.35);
+    --pad-x:clamp(20px, 5vw, 80px);
+    --display:"Fraunces", Georgia, serif;
+    --body:"Newsreader", Georgia, serif;
+    --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+    color-scheme:light;
+  }
+  /* the dusk flip — the site's own law: ink steps WITH the field at
+     choreography pos 0.72; the mid-luminance band is never rendered */
+  :root[data-night]{
+    --ink:#f6efe2;
+    --ink-2:#d9d0c3;         /* Lc 63.2 on the flip stop, worst-case wash */
+    --clay:#f4b090;          /* text — Lc 60.3 on dusk worst-case; graphics keep the darker clay */
+    --clay-g:#e08a5f;
+    --pine:#aecfc0;          /* Lc 65.0 on dusk worst-case */
+    --hair:rgba(246,239,226,.18);
+    --hair-strong:rgba(246,239,226,.4);
+    --plate:rgba(24,20,17,.34);
+    --plate-line:rgba(246,239,226,.16);
+    --thread:#e08a5f;
+    --thread-ahead:rgba(246,239,226,.34);
+    --ink-inverse:#26231c;
+    --shadow:0 22px 60px -28px rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+
+  *{margin:0; padding:0; box-sizing:border-box}
+  html{scroll-behavior:auto}
+  body{
+    background:#fbf3e7; /* dawn — the JS field takes over immediately */
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:1.125rem;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:clip;
+  }
+  ::selection{background:var(--clay-g); color:#fbf3e7}
+  a{color:var(--pine); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--clay-g); outline-offset:3px; border-radius:1px}
+  img,canvas,svg{max-width:100%}
+  .mono{font-family:var(--mono); font-size:.78rem; letter-spacing:.055em; color:var(--ink-2)}
+
+  /* ————— layer 0 · the field: wash + sun + contour + grain ————— */
+  #field{position:fixed; inset:0; z-index:0; background:#fbf3e7; contain:strict}
+  #wash{position:absolute; inset:0; width:100%; height:100%; display:block}
+  #sun{ /* CSS fallback sun — hidden when the shader runs */
+    position:absolute; width:120vmax; height:120vmax; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,244,222,.5) 0%, rgba(255,244,222,0) 58%);
+    left:-60vmax; top:-60vmax; display:none;
+  }
+  .no-gl #sun{display:block}
+  .no-gl #wash{display:none}
+  #contour{ /* promoted: the un-promoted layer repainted per frame (measured) */
+    position:absolute; left:0; top:0; width:100%; height:320vh;
+    will-change:transform;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 620 620'%3E%3Cg fill='none' stroke='%2326231c' stroke-width='1'%3E%3Cpath d='M60 310c40-90 150-130 250-110s190 90 250 60' opacity='.5'/%3E%3Cpath d='M20 420c70-60 180-40 280-70s160-120 300-90' opacity='.35'/%3E%3Cpath d='M100 150c90 10 140 80 240 70s170-60 260-30' opacity='.4'/%3E%3C/g%3E%3C/svg%3E");
+    opacity:.05;
+  }
+  :root[data-night] #contour{filter:invert(1)}
+  #grain{
+    position:absolute; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.05;
+  }
+
+  /* ————— layer 1 · the thread (fixed canvas: the doc-tall SVG variant
+     repainted its whole extent per dashoffset write — measured 81ms/frame
+     at 4× CPU; this draws only the visible window, pure math) ————— */
+  #thread{position:fixed; inset:0; z-index:1; pointer-events:none}
+
+  /* ————— chrome: masthead + manifest ————— */
+  :root{--scrim-c:#fbf3e7} /* kept in step with the field by the engine */
+  #mast{
+    position:fixed; top:0; left:0; right:0; z-index:6;
+    display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+    padding:.85rem var(--pad-x);
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.06em; color:var(--ink-2);
+    pointer-events:none;
+  }
+  #mast::before{ /* the field-coloured scrim: exiting elements pass BEHIND
+     the chrome instead of colliding with its text (the round-1 overlap) */
+    content:""; position:absolute; left:0; right:0; top:0; bottom:-1.35rem;
+    z-index:-1; pointer-events:none;
+    background:linear-gradient(to bottom, var(--scrim-c) 0%, var(--scrim-c) 42%, transparent 100%);
+  }
+  @media (prefers-reduced-motion: reduce){
+    #mast::before{display:none} /* nothing exits in the settled world */
+  }
+  #mast a{pointer-events:auto; color:var(--ink); text-decoration:none; font-family:var(--display); font-size:.98rem; letter-spacing:.01em; font-variation-settings:"opsz" 40, "SOFT" 30}
+  #mast a:hover{font-variation-settings:"opsz" 40, "SOFT" 100}
+  @media (prefers-reduced-motion: no-preference){ #mast a{transition:font-variation-settings .5s ease} }
+  #mast .state b{font-weight:400; color:var(--ink)}
+  #mast .state i{font-style:normal; color:var(--clay)}
+  :root[data-night] #mast .state i{color:var(--ink)} /* no clay text on the
+     early-night field — measured Lc 53 at the flip stop; cream holds 84+ */
+  #mast.gone{opacity:0} /* the chrome bows out for the terminal plate */
+  @media (prefers-reduced-motion: no-preference){
+    #mast{transition:opacity .22s ease} /* round-3 leftover: at .45s the
+      gate card and the clock co-printed for near half a second while
+      the chrome faded. .22s + the earlier trigger in the engine keep
+      the co-print under a single beat */
+  }
+
+  :root{--plate-solid:rgba(255,252,244,.86)}
+  :root[data-night]{--plate-solid:rgba(30,25,21,.82)}
+  #manifest{
+    position:fixed; right:clamp(14px, 2.4vw, 34px); bottom:clamp(14px, 3vh, 30px); z-index:6;
+    width:262px; padding:.8rem .95rem .9rem;
+    background:var(--plate-solid); border:1px solid var(--plate-line);
+    box-shadow:var(--shadow); backdrop-filter:none;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
+  }
+  #manifest.landed{opacity:0; transform:translateY(10px); pointer-events:none}
+  /* while AT a station the manifest folds to a pill (attention belongs
+     to the work); in the corridors it opens — the collection breathes */
+  @media (min-width:821px){
+    #manifest.compact{width:auto}
+    #manifest.compact ol, #manifest.compact .foot{display:none}
+    #manifest.compact header{margin-bottom:0; gap:.7rem}
+  }
+  @media (prefers-reduced-motion: no-preference){
+    #manifest{transition:opacity .6s ease, transform .6s ease}
+  }
+  #manifest header{display:flex; justify-content:space-between; margin-bottom:.55rem; color:var(--ink)}
+  #manifest header .n i{font-style:normal; color:var(--clay)}
+  #manifest ol{list-style:none}
+  #manifest li{
+    display:grid; grid-template-columns:1.4rem 1fr; gap:.15rem .4rem;
+    padding:.32rem 0; border-top:1px solid var(--hair);
+  }
+  #manifest li .idx{color:var(--ink-2)}
+  #manifest li b{font-weight:400; color:var(--ink-2)}
+  #manifest li .m{grid-column:2; color:var(--ink-2); opacity:0; height:0; overflow:hidden}
+  #manifest li.stamped .idx{color:var(--clay)}
+  #manifest li.stamped b{color:var(--ink)}
+  #manifest li.stamped .m{opacity:1; height:auto}
+  @media (prefers-reduced-motion: no-preference){
+    #manifest li{transform:translateX(6px); opacity:.55; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease}
+    #manifest li.stamped{transform:none; opacity:1}
+    #manifest li:hover{transform:translateX(-2px)}
+  }
+  #manifest .foot{margin-top:.5rem; padding-top:.4rem; border-top:1px solid var(--hair); color:var(--ink-2)}
+  #mtoggle{background:none; border:none; font:inherit; color:var(--ink); padding:0; letter-spacing:inherit}
+  #mtoggle i{font-style:normal; color:var(--clay)}
+  @media (prefers-reduced-motion: no-preference){
+    #mcount.bump{animation:mbump .5s ease}
+    @keyframes mbump{0%{transform:scale(1.22); color:var(--clay)}100%{transform:scale(1)}}
+  }
+
+  /* ————— the story ————— */
+  main{position:relative; z-index:2}
+  .beat{position:relative; padding:0 var(--pad-x)}
+  .beat-inner{max-width:1180px; margin:0 auto; position:relative}
+  .kicker{font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; color:var(--clay); margin-bottom:1.1rem}
+  .kicker i{font-style:normal; color:var(--ink-2)}
+
+  /* beat 1 — the start */
+  .b1{min-height:118vh; display:flex; align-items:center}
+  .b1 .beat-inner{padding-top:14vh}
+  h1{
+    font-family:var(--display); font-weight:365;
+    font-variation-settings:"opsz" 144, "SOFT" 50;
+    font-size:clamp(3.1rem, 7.6vw, 6.6rem);
+    letter-spacing:-.02em; line-height:1.02; color:var(--ink);
+  }
+  .deck{
+    font-family:var(--display); font-weight:420; font-size:clamp(1.35rem, 2.4vw, 2rem);
+    line-height:1.3; margin-top:1.4rem; max-width:24ch; letter-spacing:-.005em;
+  }
+  .deck em{font-style:normal; color:var(--clay)}
+  .runline{margin-top:1.5rem}
+  .runline b{font-weight:400; color:var(--ink)}
+  .thesis{margin-top:2.2rem; font-style:italic; color:var(--ink-2); font-size:1.15rem; max-width:38ch}
+  .cue{margin-top:7vh; display:inline-flex; gap:.6em; align-items:baseline}
+  @media (prefers-reduced-motion: no-preference){
+    .cue .a{display:inline-block; animation:sink 2.8s ease-in-out infinite}
+    @keyframes sink{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  }
+
+  /* station beats — prose one side, plate the other */
+  .station{min-height:128vh; display:flex; align-items:center; padding-top:6vh; padding-bottom:6vh}
+  .b4{min-height:148vh} /* the interactive station earns its dwell */
+  .station .beat-inner{
+    display:grid; grid-template-columns:minmax(0,30rem) minmax(0,1fr);
+    gap:clamp(2rem, 5vw, 5rem); align-items:center; width:100%;
+  }
+  .station.flip .beat-inner{grid-template-columns:minmax(0,1fr) minmax(0,30rem)}
+  .station.flip .prose{order:2}
+  .station.flip .plate{order:1}
+  .b4 .beat-inner{grid-template-columns:minmax(0,24rem) minmax(0,1fr)} /* the pad+net row needs the width */
+  #netwrap{max-width:520px}
+  .prose h2{
+    font-family:var(--display); font-weight:430; font-variation-settings:"opsz" 100, "SOFT" 40;
+    font-size:clamp(2.1rem, 4.2vw, 3.4rem); letter-spacing:-.015em; line-height:1.06;
+  }
+  .prose .bright{
+    font-family:var(--display); font-weight:430; font-size:clamp(1.25rem, 1.9vw, 1.6rem);
+    line-height:1.3; margin-top:1.1rem; letter-spacing:-.005em;
+  }
+  .prose .mutedln{font-style:italic; color:var(--ink-2); font-size:1.08rem; margin-top:.5rem; max-width:42ch}
+  .prose .prov{margin-top:1.4rem; line-height:1.9; max-width:46ch}
+  .prose .prov b{font-weight:400; color:var(--ink)}
+  .plate{
+    background:var(--plate); border:1px solid var(--plate-line); box-shadow:var(--shadow);
+    padding:clamp(1rem, 2vw, 1.6rem); contain:paint;
+  }
+  .plate figcaption{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ink-2); margin-top:.9rem}
+  .plate figcaption i{font-style:normal; color:var(--clay)}
+
+  /* — station figures (SVG shares the ink vocabulary) —
+     Two authored editions per figure. The wide one assumes a seat of
+     ≥515 CSS px for the 560-unit boxes (12px authoring ⟶ ≥11px
+     rendered); when the measured seat is narrower the engine rebuilds
+     the figure on its tight 240-unit plate, where 11px authoring
+     clears the floor even at a 248px seat (320 viewport). Editions are
+     chosen by MEASURED width, never by viewport guesswork. */
+  .figsvg{width:100%; height:auto; display:block}
+  .figsvg text{font-family:var(--mono); font-size:12px; letter-spacing:.05em; fill:var(--ink-2)}
+  /* tight cap 330, not 430 — the round-3 census passed but the 430–606
+     viewport band rendered tight figures at up to 19.7px (11 authored ×
+     430/240): a poster, not a figure. 330 keeps the whole tight range
+     inside the same 11–15px band the wide editions live in. */
+  .figsvg.tight{max-width:330px; margin-inline:auto}
+  .figsvg.tight text{font-size:11px; letter-spacing:.03em}
+  #amlFig.tight{max-width:330px}
+  .figsvg .lit{fill:var(--ink)}
+  .figsvg .lane{stroke:var(--hair-strong); stroke-width:1; fill:none}
+  .figsvg .gatecol{stroke:var(--hair-strong)}
+  .figsvg .gsq{fill:var(--clay-g)}
+  .figsvg .mk{fill:none; stroke:var(--ink); stroke-width:1.2}
+  .figsvg .mk.sorted-ok{stroke:var(--pine)}
+  .figsvg .mk.sorted-rv{stroke:var(--clay-g)}
+  .figsvg .flow{fill:var(--ink)}
+  .figsvg .edge{stroke:var(--ink); fill:none}
+  .figsvg .stitch{fill:none; stroke:var(--pine); stroke-width:1.4}
+
+  /* pointer tracing: hovering a bucket / lane label follows its cargo.
+     stroke-opacity, not opacity — the scrub owns the opacity attribute
+     and a stylesheet rule would resurrect marks it has hidden */
+  #appliedFig .bklab, #jetFig .jlab{cursor:default}
+  #appliedFig.tracing g.mkg:not(.hot), #jetFig.tracing g.blk:not(.hot){stroke-opacity:.28}
+  #appliedFig .bklab:hover, #jetFig .jlab:hover{fill:var(--ink)}
+  #amlFig text.tname:hover{fill:var(--ink); cursor:default}
+  #amlFig .tdot.hot{stroke:var(--ink)}
+  @media (hover:none){ .hoverinv{display:none} } /* no dead invitations on touch */
+
+  /* cadence — the parse */
+  #cadFig{position:relative; min-height:300px}
+  #cadFig .sent{font-size:clamp(1.05rem, 1.6vw, 1.3rem); line-height:1.7; max-width:34ch}
+  #cadFig .sent .w{padding:.06em .12em; border-radius:2px; transition:opacity .4s ease, background .3s ease}
+  #cadFig .sent .w.dim{opacity:.32}
+  #cadFig[data-hl="who"] .w-who,
+  #cadFig[data-hl="when"] .w-when,
+  #cadFig[data-hl="meet"] .w-meet{background:rgba(196,83,46,.16); opacity:1}
+  #cadWeek{
+    margin-left:auto; margin-top:1.6rem; width:min(340px, 100%);
+    border:1px solid var(--hair-strong); position:relative; background:var(--plate);
+  }
+  #cadWeek .hd{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--hair);
+    font-family:var(--mono); font-size:.7rem; text-align:center; color:var(--ink-2)}
+  #cadWeek .hd span{padding:.3rem 0}
+  #cadWeek .hd span.tu{color:var(--clay)}
+  #cadWeek .grid{display:grid; grid-template-columns:repeat(7,1fr); grid-template-rows:repeat(4, 34px)}
+  #cadWeek .grid i{border-top:1px solid var(--hair); border-left:1px solid var(--hair)}
+  .chip{
+    position:absolute; left:0; top:0; z-index:2; white-space:nowrap;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.04em;
+    padding:.28rem .5rem; background:var(--plate); border:1px solid var(--ink-2);
+    color:var(--ink); border-radius:3px; opacity:0; cursor:default;
+  }
+  .chip.meet{border-color:var(--clay-g); color:var(--clay)}
+  .chip:hover{border-color:var(--ink)}
+
+  /* glyph — the pad + the drawn net */
+  .glyphrow{display:flex; gap:clamp(1rem, 2vw, 1.6rem); align-items:stretch; flex-wrap:wrap}
+  .padcard{width:236px; flex:none}
+  .padwell{position:relative; border:1px solid var(--hair-strong); background:rgba(255,255,255,.4); aspect-ratio:1}
+  :root[data-night] .padwell{background:rgba(0,0,0,.18)}
+  #pad{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
+  .padhint{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+    font-style:italic; color:var(--ink-2); font-size:1.05rem; transition:opacity .4s ease; text-align:center; padding:0 1rem}
+  .padhint.gone{opacity:0}
+  .padbar{display:flex; justify-content:space-between; align-items:baseline; margin-top:.5rem;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2)}
+  .padbar .st i{font-style:normal; color:var(--pine)}
+  .padbar button{font:inherit; letter-spacing:inherit; background:none; border:none; color:var(--ink-2);
+    text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0}
+  .padbar button:hover{color:var(--ink)}
+  #netwrap{flex:1; min-width:min(360px, 100%)}
+  #net{width:100%; height:auto; display:block}
+  #net text{font-family:var(--mono); font-size:14.5px; letter-spacing:.04em; fill:var(--ink-2)}
+  #net.tight text{font-size:11px}
+  #net .hn{fill:var(--ink)}
+  #net .on text{fill:var(--ink-2); font-size:14.5px}
+  #net .on .bar{fill:var(--ink-2)}
+  #net .on.win text{fill:var(--clay); font-size:16.5px}
+  #net .on.win .bar{fill:var(--clay-g)}
+  #net.tight .on text{font-size:11px}
+  #net.tight .on.win text{font-size:12.5px}
+  #net .ed{stroke:var(--ink); fill:none}
+  @media (prefers-reduced-motion: no-preference){
+    #net .hn{transition:opacity .45s ease}
+    #net .ed{transition:opacity .5s ease}
+    #net .on .bar{transition:width .5s cubic-bezier(.22,1,.36,1)}
+    #net.tight .on .bar{transition:height .5s cubic-bezier(.22,1,.36,1), y .5s cubic-bezier(.22,1,.36,1)}
+    #net .l2{transition-delay:.1s}
+    #net .l3{transition-delay:.22s}
+  }
+  #inCanvas{image-rendering:pixelated; border:1px solid var(--hair); background:transparent}
+  .verdictline{display:flex; gap:1.4rem; align-items:baseline; margin-top:.7rem; flex-wrap:wrap;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2)}
+  .verdictline .big{font-family:var(--display); font-size:2.4rem; font-weight:520; color:var(--clay); line-height:1;
+    font-variation-settings:"opsz" 144; min-width:1.1ch}
+  .verdictline .big.idle{color:var(--ink-2); opacity:.4}
+  @media (prefers-reduced-motion: no-preference){
+    .verdictline .big.stamp{animation:stamp .38s cubic-bezier(.2,1.4,.4,1)}
+    @keyframes stamp{0%{transform:scale(1.5); opacity:0}60%{transform:scale(.95); opacity:1}100%{transform:scale(1)}}
+  }
+  .verdictline b{font-weight:400; color:var(--ink)}
+  .bench{margin-top:1.1rem; border-top:1px solid var(--hair); padding-top:.8rem}
+  .bench .brow{display:grid; grid-template-columns:7.6rem 1fr 3rem; gap:.6rem; align-items:center;
+    font-family:var(--mono); font-size:.7rem; color:var(--ink-2); margin-top:.4rem}
+  .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "455 mb/s" + the lane names */
+  @media (min-width:821px){ /* wide seats afford the un-wrapped lane names */
+    .bench.jet .brow{grid-template-columns:10.6rem 1fr 4.6rem}
+  }
+  .bench .bfoot{font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
+    margin-top:.55rem; line-height:1.8}
+  .bench .btrack{height:6px; position:relative; background:transparent}
+  .bench .bfill{position:absolute; left:0; top:0; bottom:0; width:100%; background:var(--ink-2);
+    transform-origin:left center; transform:scaleX(0)}
+  .bench .brow.simd .bfill{background:var(--clay-g)}
+  .bench .bval{color:var(--ink); text-align:right}
+
+  /* lifequest — the honest ledger + the climb (raw field; dusk happens here).
+     The figure carries no plate box: the drawing sits directly on the paper,
+     because the drawing stopping IS the content */
+  /* the honest hour anchors its content to the beat's TOP: cacheGeometry
+     derives this beat's height from the dusk contract (show → curtain →
+     darkening → closing line) and writes it back, and flex-start keeps
+     the content's page position independent of that height — centering
+     would move the content every time the runway is resized */
+  .b6{align-items:flex-start}
+  .b6 .beat-inner{grid-template-columns:minmax(0,30rem) minmax(0,1fr); align-items:start}
+  .plate.bare{background:none; border:none; box-shadow:none; padding:0; contain:layout}
+  .figsvg .tread{fill:none; stroke:var(--ink); stroke-width:2}
+  .figsvg .pencil{fill:none; stroke:var(--ink-2); stroke-width:1.2; stroke-dasharray:5 5}
+  .figsvg .heldtag{fill:var(--clay); font-size:12px}
+  .figsvg .steplbl{fill:var(--ink-2); font-size:11px}
+  .figsvg .steplbl.walked{fill:var(--ink)}
+  .quests{margin-top:2rem; border-top:1px solid var(--hair-strong)}
+  .quests .q{
+    display:grid; grid-template-columns:1.4rem 1.4rem 1fr auto; gap:.7rem; align-items:baseline;
+    font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2);
+    padding:.72rem .1rem; border-bottom:1px solid var(--hair); position:relative;
+  }
+  .quests .q .qi{color:var(--ink-2)} /* the step number the figure walks */
+  .quests .q.done .qi, .quests .q.held .qi{color:var(--clay)}
+  .quests .q .qs{min-width:7ch; text-align:right} /* "…"→"shipped" must
+    never reflow the page: the b6 dusk windows are cached in page space */
+  .quests .q .qm{color:var(--ink-2)}
+  .quests .q.done .qm{color:var(--pine)}
+  .quests .q.done .qn{color:var(--ink)}
+  .quests .q.held .qm{color:var(--clay)}
+  .quests .q .qnote{position:absolute; right:0; top:100%; z-index:2; padding:.3rem .5rem; margin-top:2px;
+    background:var(--plate); border:1px solid var(--plate-line); font-size:.7rem; opacity:0; pointer-events:none;
+    transition:opacity .3s ease}
+  .quests .q.held:hover .qnote{opacity:1}
+
+  /* jetpack live gzip */
+  .gzrow{display:flex; gap:1rem; align-items:baseline; flex-wrap:wrap; margin-top:.9rem}
+  .btn{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em;
+    color:var(--ink); background:none; border:1px solid var(--ink-2);
+    padding:.5rem .9rem; cursor:pointer; position:relative; overflow:hidden;
+    isolation:isolate; /* the ink fill must not sink behind the card */
+  }
+  .btn::before{content:""; position:absolute; inset:0; background:var(--ink); transform:scaleX(0);
+    transform-origin:left center; z-index:-1}
+  .btn:hover, .btn:focus-visible{color:var(--ink-inverse); border-color:var(--ink)}
+  .btn:hover::before, .btn:focus-visible::before{transform:scaleX(1)}
+  .btn:disabled{cursor:default}
+  @media (prefers-reduced-motion: no-preference){
+    .btn::before{transition:transform .35s cubic-bezier(.22,1,.36,1)}
+    .btn:active{transform:scale(.97)}
+  }
+  #gzout b{font-weight:400; color:var(--ink)}
+
+  /* beat 7 — agentic automl: the notebook worked by tools, at night */
+  .b7{min-height:136vh}
+  /* unfired names read at .9 — measured: .55 was Lc 33.8 on the dusk
+     plate, half the dim-text floor. The fired state is carried by pine
+     and the filled dot, not by sinking the resting ink under Lc 60. */
+  .figsvg .tname{fill:var(--ink-2); font-size:12px; letter-spacing:.02em; opacity:.9}
+  .figsvg .tname.on{fill:var(--pine); opacity:1}
+  .figsvg .tdot{fill:none; stroke:var(--ink-2); stroke-width:1; opacity:.55}
+  .figsvg .tdot.on{fill:var(--pine); stroke:var(--pine); opacity:1}
+  .figsvg .fsm{font-size:12px}
+  .figsvg .staged{font-size:12px} /* the caveat, printed where the tools are */
+  .figsvg .cellr{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .cellink{fill:none; stroke:var(--ink); stroke-width:1.4}
+  .figsvg .cellrun{fill:var(--pine); font-size:12px}
+  .figsvg .phgate{fill:none; stroke:var(--clay-g); stroke-width:1.4}
+  .figsvg .phgate.open{fill:none; stroke:var(--pine)}
+  .figsvg .phgate.shut{fill:var(--clay-g)}
+  .figsvg .phlbl{font-size:12px}
+  .figsvg .phlbl.dim{opacity:.9} /* unwalked, not unreadable — Lc ≥60 */
+  .figsvg .deplbl{fill:var(--ink-2)}
+
+  /* beat 8 — the gate */
+  .b8{min-height:118vh; display:flex; align-items:center; padding-top:8vh; padding-bottom:8vh}
+  /* the run's last sentence needs scroll the document did not have: at
+     1440×900 its entrance resolved to y 12,241 on a page whose maxY was
+     12,006 — the story's closing line topped out at op 0.04, permanently
+     (round-5 census, desk; mobile's taller document was unaffected).
+     40vh of tail below the gate gives the entrance room to finish and
+     lets the ending BE the ending — the token halts, the page waits.
+     ::after on main, not padding on .b8: the beat is a centered flex
+     seat, and asymmetric padding would re-seat its content mid-frame. */
+  main::after{content:""; display:block; height:40vh}
+  .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
+    gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
+  .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
+    border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2)}
+  .ladder li{margin:.72rem 0}
+  .ladder li span{transition:color .4s ease}
+  .ladder li.lit span{color:var(--ink)}
+  .ladder .gaterow{display:flex; align-items:center; color:var(--ink)}
+  .ladder .gaterow .gsq2{display:inline-flex; width:2.6ch; align-items:center}
+  .ladder .gaterow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
+  .gatecard{
+    background:var(--plate); border:1px solid var(--plate-line); box-shadow:var(--shadow);
+    padding:clamp(1.1rem, 2vw, 1.7rem); position:relative; contain:paint;
+  }
+  .gatecard h3{font-family:var(--display); font-weight:430; font-size:1.35rem; margin-bottom:.3rem}
+  .gatecard .gl{list-style:none; margin-top:.8rem}
+  .gatecard .gl li[hidden]{display:none} /* display:grid must not defeat [hidden] */
+  .gatecard .gl li{display:grid; grid-template-columns:1.5rem 8.9rem 1fr; gap:.5rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
+    padding:.42rem 0; border-top:1px solid var(--hair)}
+  .gatecard .gl li .gi{color:var(--clay)}
+  .gatecard .gl li b{font-weight:400; color:var(--ink)}
+  .gatecard .gl li.live .gm{color:var(--pine)}
+  @media (prefers-reduced-motion: no-preference){
+    .gatecard .gl li{transition:transform .35s cubic-bezier(.22,1,.36,1)}
+    .gatecard .gl li:hover{transform:translateX(3px)}
+  }
+  .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; position:relative}
+  #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink)}
+  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2); letter-spacing:.05em; max-width:24ch}
+  #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
+             round-3 card-bottom offset drifted when the aftergate grew
+             the card, and at 1440 the ink grazed its own note. Anchored
+             here, the stamp lands where the hand just was and the note
+             keeps a measured clearance at every width. */
+    position:absolute; right:0; top:50%; z-index:3;
+    font-family:var(--mono); font-size:1.05rem; letter-spacing:.34em; color:var(--ember);
+    border:3px double var(--ember); padding:.5rem .9rem .5rem 1.15rem;
+    transform:translateY(-62%) rotate(-7deg) scale(1.5); opacity:0; pointer-events:none;
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.35' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 .12'/%3E%3CfeComposite in='SourceGraphic' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+    mask-size:cover;
+  }
+  #stamp.inked{opacity:1; transform:translateY(-62%) rotate(-7deg) scale(1)}
+  @media (prefers-reduced-motion: no-preference){
+    #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
+  }
+  .aftergate{margin-top:1.4rem; opacity:0; transform:translateY(10px); pointer-events:none}
+  .aftergate.shown{opacity:1; transform:none; pointer-events:auto}
+  @media (prefers-reduced-motion: no-preference){
+    .aftergate{transition:opacity .7s ease .25s, transform .7s cubic-bezier(.22,1,.36,1) .25s}
+  }
+  .aftergate .row{display:flex; gap:1.2rem; flex-wrap:wrap; align-items:baseline}
+  .b8 footer{margin-top:12vh; padding-top:1rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); line-height:2; max-width:72ch}
+
+  /* ————— ¶02 · who — the engineer of record ————— */
+  .bwho{min-height:118vh}
+  .engcard header{display:flex; justify-content:space-between; gap:1rem;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ink-2);
+    padding-bottom:.6rem; border-bottom:1px solid var(--hair-strong)}
+  .engcard header i{font-style:normal; color:var(--clay)}
+  .sigwell{position:relative; padding:1.15rem 0 .9rem; border-bottom:1px solid var(--hair)}
+  .sig{
+    font-family:var(--body); font-style:italic; font-size:clamp(1.9rem, 3vw, 2.5rem);
+    letter-spacing:.01em; color:var(--ink); display:inline-block; line-height:1.1;
+    clip-path:inset(-10% 100% -14% 0); /* the engine writes the name on */
+  }
+  .signib{ /* the pen nib riding the writing edge */
+    position:absolute; top:50%; left:0; width:5px; height:5px; border-radius:50%;
+    background:var(--clay-g); opacity:0; transform:translate(0,-50%);
+  }
+  .sigrole{font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ink-2); margin-top:.4rem}
+  .engrows{list-style:none; margin-top:.35rem}
+  .engrows li{display:grid; grid-template-columns:5.6rem 1fr; gap:.6rem;
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.05em; color:var(--ink-2);
+    padding:.5rem 0; border-bottom:1px solid var(--hair)}
+  .engrows li b{font-weight:400; color:var(--ink)}
+  .engrows li:last-child{border-bottom:none}
+  .dict{margin-top:1.6rem; border-top:1px solid var(--hair-strong); padding-top:1rem; max-width:30ch}
+  .dict .hw{font-family:var(--display); font-weight:430; font-size:1.5rem; line-height:1}
+  .dict .pr{font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2); margin-top:.45rem}
+  .dict .sense{font-style:italic; color:var(--ink-2); font-size:.95rem; line-height:1.55; margin-top:.55rem}
+  .nb{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
+    border-top:1px solid var(--hair); padding-top:.6rem; margin-top:1.3rem; max-width:46ch; line-height:1.9}
+
+  /* ————— ¶03 · the yard — the ITSM freight + the school record ————— */
+  .bpath{min-height:158vh; flex-direction:column; justify-content:center}
+  .bpath .beat-inner{width:100%}
+  .figsvg .feed{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.1}
+  .figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
+  .figsvg .rec.landed{stroke:var(--pine)}
+  .figsvg .meter{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .meterfill{fill:var(--pine)}
+  .figsvg .meterlbl{fill:var(--ink)}
+  .schoolrec{max-width:1180px; margin:clamp(2.2rem,5vh,4rem) auto 0; width:100%;
+    border-top:1px solid var(--hair-strong); padding-top:1rem}
+  .schoolrec .shead{display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ink)}
+  .schoolrec .shead i{font-style:normal; color:var(--clay)}
+  .schoolrec .srows{display:grid; grid-template-columns:1fr 1fr; gap:0 clamp(2rem,4vw,4rem); margin-top:.4rem}
+  .schoolrec .srow{display:grid; grid-template-columns:7.4rem 1fr; gap:.6rem; align-items:baseline;
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.045em; color:var(--ink-2);
+    padding:.6rem 0; border-bottom:1px solid var(--hair); line-height:1.75}
+  .schoolrec .srow .sk{color:var(--clay)}
+  .schoolrec .srow b{font-weight:400; color:var(--ink)}
+  @media (max-width:820px){ .schoolrec .srows{grid-template-columns:1fr} }
+
+  /* ————— station handoffs: the output lands somewhere real ————— */
+  .handoff{margin-top:1.1rem; padding-top:.65rem; border-top:1px solid var(--hair);
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:2}
+  .handoff .dep{color:var(--clay)}
+  .handoff a{color:var(--pine)}
+
+  /* ————— ¶10 · the review — how i work, at night ————— */
+  .bhow{min-height:126vh}
+  .litany{margin-top:1.6rem}
+  .litany .mline{border-top:1px solid var(--hair); padding:.9rem 0 .95rem}
+  .litany .mline p{font-family:var(--display); font-weight:430; font-variation-settings:"opsz" 100, "SOFT" 40;
+    font-size:clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing:-.01em; line-height:1.15}
+  .litany .mline.wonk p{font-variation-settings:"opsz" 100, "SOFT" 100, "WONK" 1}
+  .litany .mline p em{font-style:normal; color:var(--clay)}
+  .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
+  .litany .mline .rct a{color:var(--pine)}
+  .gates{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
+    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
+  .gates .ghead i{font-style:normal; color:var(--clay)}
+  .gates .grow{display:grid; grid-template-columns:1fr 2.2rem 4.6rem; gap:.7rem; align-items:center;
+    padding:.72rem 0; border-bottom:1px solid var(--hair)}
+  .gates .grow .gname{color:var(--ink)}
+  .gates .grow svg{display:block; width:22px; height:16px; overflow:visible}
+  .gates .grow .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
+  .gates .grow.refused .gmark{stroke:var(--clay-g)}
+  /* the disposition words stay printed at full ink — the drawn MARK is
+     the animation. (A dimmed resting word would sit under the Lc 60
+     dim-text floor on the night plate; the quests taught that lesson.) */
+  .gates .grow .gword{text-align:right}
+  .gates .grow.passed .gword{color:var(--pine)}
+  .gates .grow.refused .gword{color:var(--clay)}
+  .settled .gates .gmark{stroke-dashoffset:0 !important}
+  @media (prefers-reduced-motion: reduce){
+    .gates .gmark{stroke-dashoffset:0 !important}
+  }
+  .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
+  .gates .gclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
+    font-size:.76rem; line-height:1.9; color:var(--ink-2)}
+  .gates .gclose b{font-weight:400; color:var(--ink)}
+
+  /* ————— fx: only the JS world hides pre-entrance ————— */
+  .js body:not(.settled) [data-fx]{opacity:0}
+  .settled [data-fx]{opacity:1 !important; transform:none !important}
+  .settled .sig{clip-path:none}
+
+  /* ————— reduced motion: the settled world ————— */
+  @media (prefers-reduced-motion: reduce){
+    [data-fx]{opacity:1 !important; transform:none !important}
+    .cue .a{animation:none}
+    .sig{clip-path:none} /* the settled world: the name is written */
+    #manifest li{transform:none; opacity:1; transition:none}
+    /* dusk beats carry their own resting colors (the thread passes behind) */
+    .b6{background:#43372f}
+    .b7,.bhow,.b8{background:#2c2622}
+    /* clay/pine take the LIVE night-world text inks — the round-3 RM
+       overrides (#e08a5f / #9dbfb0) measured Lc 43–56 as kicker and
+       link text on these grounds, under the 60 floor; #f4b090/#aecfc0
+       measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
+    .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0;
+      --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.4);
+      --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
+      color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
+      ink at body scope — headings went dark-on-dark without this */
+    /* settled chrome: the masthead prints once at the top (dawn ground, so
+       its day ink always reads); the manifest folds to its pill so it
+       never sits over station prose — the gate card carries the ledger */
+    #mast{position:absolute}
+    #manifest{width:auto}
+    #manifest ol, #manifest .foot{display:none}
+    #manifest header{margin-bottom:0; gap:.7rem}
+  }
+
+  /* ————— stacked composition (≤1249) ————— the round-2 census caught
+     the 821–1249 two-column band rendering figure text at 6.4–7.5px:
+     the plate column bottoms out at 218px beside a 30rem prose column.
+     Below 1250 the stations stack instead, and plates keep a measured
+     cap so their figures stay in the 11–15px band, not a poster. */
+  @media (max-width:1249px){
+    .station{min-height:140vh}
+    .station .beat-inner,
+    .station.flip .beat-inner{display:flex; flex-direction:column; align-items:stretch; gap:1.6rem}
+    .station.flip .prose{order:1}
+    .station.flip .plate{order:2}
+    .prose .prov{max-width:100%}
+    .station .plate{max-width:640px}
+    .b4 .plate{max-width:760px}
+    .plate.bare{max-width:600px}
+    .b8 .beat-inner{display:flex; flex-direction:column; gap:2rem}
+    .gatecard{max-width:640px}
+    #thread{opacity:.55} /* the line passes behind stacked plates */
+  }
+  /* ————— mobile composition (390 is designed, not survived) ————— */
+  @media (max-width:820px){
+    :root{--pad-x:20px}
+    body{font-size:1.03rem}
+    #mast{padding:.7rem var(--pad-x)}
+    #mast .state .st-run{display:none}
+    .b1{min-height:118vh}
+    .deck{max-width:20ch}
+    .station{min-height:150vh}
+    .padcard{width:min(300px, 86vw); margin:0 auto}
+    #stamp{font-size:.9rem; letter-spacing:.28em}
+    /* manifest collapses to a pill; tap to open */
+    #manifest{width:auto; right:14px; bottom:14px; padding:.5rem .7rem}
+    #manifest ol, #manifest .foot{display:none}
+    #manifest header{margin-bottom:0; gap:.7rem}
+    #manifest.open{width:min(78vw, 300px); padding:.8rem .95rem .9rem}
+    #manifest.open header{margin-bottom:.55rem}
+    #manifest.open ol, #manifest.open .foot{display:block}
+    #mtoggle{cursor:pointer}
+  }
+  @media (max-width:560px){
+    /* the gate ledger takes the manifest's own two-row shape: the
+       metric drops under the name — "9,701/10,000" must never be the
+       thing that decides the page's width (round 2 overflowed 320 by
+       9px here; the clip hid it) */
+    .gatecard .gl li{grid-template-columns:1.5rem 1fr}
+    .gatecard .gl li .gm{grid-column:2}
+    /* the stamp rides the spent BUTTON's zone, not the note: at 320 the
+       wrapped note filled the row's midline and the ink sat on the
+       timestamp (measured −68px). Ink over the pressed button is the
+       hand's own spot; ink over the receipt text is a defect. */
+    #stamp{top:0; transform:translateY(-30%) rotate(-7deg) scale(1.5)}
+    #stamp.inked{transform:translateY(-30%) rotate(-7deg) scale(1)}
+  }
+  @media (min-width:821px){
+    #mtoggle{pointer-events:none}
+  }
+</style>
+
+<style id="np-css">
+/* ── THE WITHHOLDING — the whole point of the machines ───────────────
+   Without this, the SVG machines draw ON TOP of a name that is already
+   fully rendered: decoration over finished type, which is what the owner
+   saw and called broken. The five machine-carrying letters are held at
+   opacity 0 until their machine stamps [data-np-done] at its dry, so the
+   machine PRODUCES the letter — the v is there because the bird landed.
+
+   Missed twice on the way here. First lift: these are NESTED in an @media
+   block and my selector-at-line-start pattern never saw them. Second:
+   indexOf on the @media text matched an EARLIER identical media query
+   224 bytes long, and I inserted that instead — a lift that reported
+   success while carrying none of the three rules. Extracted by their own
+   selectors this time, and the byte counts are checked (181/226/183). */
+@media (prefers-reduced-motion: no-preference) {
+html[data-motion-ready]:not([data-motion-off])
+    [data-np-machines]
+    .np-ch:not(.np-m) {
+    animation: np-settype 0.82s cubic-bezier(0.3, 0.75, 0.35, 1) both;
+    /* 210ms, not 55ms, and the gap is the reason.
+       Measured landings on the old step: the six plain letters all
+       arrived between 511 and 902ms, while the five machine letters are
+       withheld until their machines finish, at 3930–4288ms. So the name
+       sat three full seconds reading "yu h Yd" — five characters
+       missing — which is what "it starts wrong by dropping the
+       character" describes. Nothing was mistimed; the stagger simply
+       spent itself in the first half-second and left the machines to
+       carry three seconds alone.
+       Widening the step spreads the plain letters to ~2.3s so the name
+       fills continuously right up to the ensemble's landing, and costs
+       nothing else: every machine letter still completes its settype
+       well before its machine releases it. */
+    animation-delay: calc(0.18s + var(--np-i, 0) * 210ms);
+  }
+
+html[data-motion-ready]:not([data-motion-off])
+    [data-np-machines]
+    .np-ch.np-m:not([data-np-done]) {
+    opacity: 0;
+    animation: np-safety-release 0.5s ease 5.6s both;
+  }
+
+html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
+    transform-origin: left center;
+    animation: np-ruledraw 0.65s cubic-bezier(0.25, 0.9, 0.3, 1) both;
+  }
+}
+
+}
+
+/* THE PLATE IS THE OVERLAY'S CONTAINING BLOCK.
+   In the React nameplate this element carried `className="np-plate relative"`
+   and the positioning came from Tailwind's `relative`, not from .np-plate.
+   The run has no Tailwind, so the plate was position:static and the
+   machines' absolutely positioned SVG escaped to the page — the fragment
+   floating above the beat. A utility class doing load-bearing work is
+   invisible until the markup moves to a page without the utilities. */
+.np-plate {
+  position: relative;
+  /* THE PLATE MUST BE AS WIDE AS THE NAME, not as wide as the column.
+     measureSettled reads the letters' true extent (587.7px here) and the
+     machines are cut to those coordinates, but .nameplate carries
+     max-width:100%, so the box clamped to the 530px beat column while the
+     overlay kept the unclamped geometry — viewBox "0 0 587.7 107.7"
+     stretched across a 530px element. That is the scale mismatch that put
+     an oversized A and av adrift above the name.
+     max-content lets the plate take the name's own width so box and
+     coordinates agree; max-width keeps it honest on a narrow seat, where
+     the font-size clamp brings the name back inside the column anyway. */
+  /* NO width:max-content here. I added it as a guess and it did nothing
+     except make the probe circular: measureSettled clones the h1 with
+     width:100%, and 100% of a max-content parent is defined by the very
+     element being measured. The plate takes the normal block width. */
+}
+
+.nameplate {
+  /* These were Tailwind theme tokens (--text-nameplate*) that only exist
+     in globals.css. Here they resolved to nothing while still winning on
+     specificity over the run's own h1 rule, so the name rendered at body
+     size. The run already sizes its display type correctly; the plate
+     takes those values rather than importing a theme it does not have. */
+  /* THE REAL TOKEN VALUES, read out of globals.css rather than guessed.
+     I had inferred these from the run's own h1 rule when the Tailwind
+     theme tokens went missing, and every one was wrong — most of all the
+     size: 13.4vw against my 7.6vw is a name rendered at two-thirds scale.
+     The machines are cut to measured letterforms, so guessing the type is
+     guessing the geometry. */
+  /* Production token values, read from globals.css rather than guessed.
+     A scaled-down clamp was tried here on the theory that the name was
+     too wide for the column; it was wrong — the plate tracks the font
+     size and the viewBox/plate ratio stayed 1.108 at both sizes. Reverted
+     rather than left in, because a smaller name for a disproved reason is
+     just a smaller name. */
+  font-size: clamp(2.95rem, 13.4vw, 10.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+  /* 600, NOT the run h1's 365. [data-np-probe] measures the clone at
+     "wght" 600 !important, and the machines are cut to whatever that
+     measurement produced — so a name rendered lighter than it was
+     measured is narrower than its own machines. That was the 587.7 vs
+     530 mismatch: an overlay built for a 600-weight name stretched over
+     a 365-weight one. I guessed 365 from the run's h1 rule when the
+     Tailwind token went missing; the probe rule is the authority. */
+  font-weight: 600;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0, "wght" 600;
+  font-optical-sizing: none; /* the axis is DRIVEN, per character */
+  white-space: nowrap;
+  width: max-content;
+  max-width: 100%;
+}
+
+.np-ch {
+  display: inline-block;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0,
+    "wght" 600;
+}
+
+.np-sp {
+  width: 0.24em;
+}
+
+/* PIN THE OVERLAY TO THE TYPE, NOT TO THE PLATE.
+   This was `inset: 0`, which resolves against .np-plate — the nearest
+   positioned ancestor. Measured: the plate is 673.8px tall and starts
+   162.6px above the h1, which is 176.4px tall. So the overlay's BOX was
+   the plate while its viewBox described the type, and every machine was
+   drawn against a coordinate space nearly four times too tall and
+   starting 162px high. That is the "they are a lot above the remaining
+   text, and doesn't run at the correct position either".
+   It survived in React because the plate there hugged its h1; in the run
+   the plate carries the rule and the replay control too. Rather than
+   depend on that layout accident, take the offsets from the measured
+   type box — set under the same freeze as the geometry, so they describe
+   where the letters come to rest. */
+.np-mech {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.np-rule {
+  position: absolute;
+  left: -0.6rem;
+  height: 1px;
+  background: var(--color-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.np-rule[data-np-seated] {
+  opacity: 0.09;
+}
+
+/* The replay control. The performance runs once on arrival; a reader who
+   looked away, or who simply wants to watch it again, has had no way back
+   — the machines are the page's best forty seconds and they were
+   single-use. Seated under the plate, revealed only once the run has
+   settled, and never in the static worlds where there is nothing to
+   replay. */
+.np-replay {
+  display: none;
+  margin-top: 0.85rem;
+  font: 400 0.78rem/1 "Fragment Mono", ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  color: var(--ink-2, #6b6558);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0 0 2px;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 180ms ease;
+}
+.np-replay:hover,
+.np-replay:focus-visible {
+  opacity: 1;
+}
+html[data-np-ready] .np-replay {
+  display: inline-block;
+}
+@media print {
+  .np-replay {
+    display: none !important;
+  }
+}
+
+/* ── THE WITHHOLDING, and it is the whole point of the machines ──────
+   Without these three rules the SVG machines simply draw ON TOP of a
+   name that is already fully rendered — decoration over finished type,
+   which is exactly what the owner saw and called broken.
+
+   The letters carrying machines are held at opacity 0 until their
+   machine stamps [data-np-done] at its dry. So the machine's action
+   PRODUCES the letter rather than annotating it: the bird folds down and
+   the v is there because the bird landed.
+
+   These were missed on the first lift because they are NESTED inside an
+   @media block, and the selector-at-line-start pattern I was matching on
+   never saw them. Six rules came across; the three that mattered did not.
+
+   The JS-dead safety in np-safety-release is load-bearing and deliberate:
+   if no machine ever lands a letter, it releases itself at 5.6s — past
+   the whole performance — so a dead script can never strand the name. */
+/* The axes are HELD, and that is deliberate.
+   This used to animate "opsz" 18 to 144 and "wght" 660 to 600. Fraunces
+   is variable, so both resize the glyphs: measured, the name ran 916.8px
+   wide at 600ms and 838.5px at rest, and every letter right of the A slid
+   left as it narrowed — 78.3px of travel. The machines are drawn against
+   the SETTLED geometry, so for two seconds the type sat right of its own
+   apparatus and crept into place under it. Reported as "they start
+   shifting left", and the same divergence is why a replay could show the
+   A over the y.
+   The flourish and the machines want the same two seconds and cannot both
+   have them. The machines win: they are the idea, the optical-size sweep
+   was decoration on top of it. Letters still fade and rise — they just no
+   longer change width while doing it, so the type never moves under the
+   machine that is drawing it. */
+@keyframes np-settype {
+  0% {
+    opacity: 0;
+    transform: translateY(0.16em);
+    font-variation-settings:
+      "opsz" 144,
+      "SOFT" 50,
+      "WONK" 0,
+      "wght" 600;
+  }
+  55% {
+    opacity: 1;
+  }
+  78% {
+    transform: none;
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    font-variation-settings:
+      "opsz" 144,
+      "SOFT" 50,
+      "WONK" 0,
+      "wght" 600;
+  }
+}
+
+/* MEASURE THE SETTLED GEOMETRY, NOT THE IN-FLIGHT ONE.
+   np-settype animates font-variation-settings — "opsz" 18 → 144 and
+   "wght" 660 → 600. Fraunces is a variable font, so those axes change
+   GLYPH WIDTHS at a constant font-size: the name measures 929.2px at the
+   keyframe's 0% and 838.5px at its 100%, a constant ratio of 1.108.
+
+   measureSettled ran while the animation sat near 0%, so it handed the
+   machines the wide geometry and every one of them was drawn 10.8%
+   wider than the type it annotates — dividers past the A, the dial off
+   its a, the bird landing wide of the v.
+
+   The ratio being CONSTANT across font sizes was the tell, and I read it
+   as a fit problem for six hypotheses before measuring the width per
+   frame and watching it slide smoothly from 944 to 837. Nothing was
+   mis-fitted; the measurement was simply early.
+
+   Freezing the letters at the 100% state costs one style recalc and
+   makes the measurement read the geometry the machines actually get. */
+h1[data-np-measuring] .np-ch {
+  animation: none !important;
+  transform: none !important;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0,
+    "wght" 600 !important;
+}
+
+@keyframes np-safety-release {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes np-ruledraw {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-motion-ready]:not([data-motion-off]) .site-header::after {
+    animation: masthead-rule 0.9s cubic-bezier(0.19, 1, 0.22, 1) both;
+    animation-delay: 120ms;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="field" aria-hidden="true">
+  <canvas id="wash"></canvas>
+  <div id="sun"></div>
+  <div id="contour"></div>
+  <div id="grain"></div>
+</div>
+
+<canvas id="thread" aria-hidden="true"></canvas>
+
+<header id="mast">
+  <a href="#top">Ayush&#8202;·&#8202;Yadav</a>
+  <span class="state"><span class="st-run">run <i>042</i> · </span><b id="mclock">06:12</b> · <span id="mphase">the start</span></span>
+</header>
+
+<aside id="manifest" aria-label="run manifest">
+  <header>
+    <span class="n"><button id="mtoggle" type="button" aria-expanded="false">run <i>042</i> — manifest</button></span>
+    <span id="mcount">0 / 6</span>
+  </header>
+  <ol>
+    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">macro-f1 0.9791 · 96-sample gate</span></li>
+    <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,168 tests</span></li>
+    <li data-st="3"><span class="idx">03</span><b>glyph</b><span class="m">97.01% · 10,000-image test set</span></li>
+    <li data-st="4"><span class="idx">04</span><b>jetpack-compress</b><span class="m">72 tests, 0 failures · jdk 25</span></li>
+    <li data-st="5"><span class="idx">05</span><b>lifequest</b><span class="m">prototype · held marks stay held</span></li>
+    <li data-st="6"><span class="idx">06</span><b>agentic automl</b><span class="m">langgraph + 12 mcp tools · gated ×7</span></li>
+  </ol>
+  <p class="foot">stamped as the token passes each station</p>
+</aside>
+
+<main id="top">
+
+  <!-- ¶ 01 · 06:12 — the run starts -->
+  <section class="beat b1" data-beat="0">
+    <div class="beat-inner">
+      <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
+      <!-- The scroll-fx rides the PLATE, not the h1. On the h1 it
+           translated the type while leaving the machine overlay (a
+           sibling, absolutely positioned) behind: measured 162.6px of
+           divergence, which is why the machines sat well above the
+           letters and never ran where the type was. Moving them together
+           is the only arrangement in which the two cannot drift. -->
+      <div class="np-plate" data-nameplate data-fx="in .0 .22 y 5 | drift 26">
+        <div class="np-rule" aria-hidden="true"></div>
+        <h1 aria-label="Ayush Yadav" class="nameplate" data-np-machines><span aria-hidden="true" class="np-ch np-m" style="--np-i:0">A</span><span aria-hidden="true" class="np-ch" style="--np-i:1">y</span><span aria-hidden="true" class="np-ch" style="--np-i:2">u</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:3">s</span><span aria-hidden="true" class="np-ch" style="--np-i:4">h</span><span aria-hidden="true" class="np-ch np-sp" style="--np-i:5">&nbsp;</span><span aria-hidden="true" class="np-ch" style="--np-i:6">Y</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:7">a</span><span aria-hidden="true" class="np-ch" style="--np-i:8">d</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:9">a</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:10">v</span></h1>
+      </div>
+      <!-- OUTSIDE the plate, deliberately. .np-plate is the machines'
+           coordinate space: measureSettled returns plate-relative geometry
+           and sizes the overlay's viewBox from the plate's own box. Putting
+           this control inside it made the plate 35.3px taller the moment
+           [data-np-ready] revealed it — so on a REPLAY the viewBox was
+           838.5x211.7 inside an 838.5x176.4 element, which preserveAspectRatio
+           then scaled by 0.833 and centred, shifting every machine 70px right.
+           That is the A landing on the y. Nothing may share this box. -->
+      <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
+      <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
+      <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
+      <!-- the whole opening frame is complete AT LOAD (in-windows resolve
+           at or before y 0): a hero that assembles itself costs LCP and
+           reads as a loading screen, and the census showed the thesis at
+           op 0.8 and the cue at op 0 on arrival — the scroll instruction
+           was invisible until you had already scrolled. Round-5 call. -->
+      <p class="thesis" data-fx="in 0 .08 y 4 | drift 14">&ldquo;A model is only as good as the human who approves it.&rdquo;</p>
+      <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> follow the line — eleven stops, dawn to the gate</p>
+    </div>
+  </section>
+
+  <!-- ¶ 02 · 06:58 — who: the engineer of record signs the line -->
+  <section class="beat station bwho" data-beat="1">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the whole path — the interface, the services behind it, the data they run on, and the machine learning when the problem calls for it. Every claim on this line carries a receipt.</p>
+        <div class="dict" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
+          <p class="hw"><span aria-hidden="true">ap&#183;prov&#183;al</span><span class="sr" style="position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%)">approval</span></p>
+          <p class="pr"><span aria-hidden="true">/ &#601;&#712;pru&#720;&#183;v&#601;l / · </span>noun</p>
+          <p class="sense">1. the moment a human signs for a machine&rsquo;s work. 2. the step I leave to a person.</p>
+        </div>
+        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">n.b. — every station on this line hands its output to a case file, source, or live build. the links are in each station&rsquo;s handoff.</p>
+      </div>
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="engcard">
+          <header><span>engineer of record</span><span>filed <i>06:58</i></span></header>
+          <div class="sigwell">
+            <span class="sig" id="sig">Ayush Yadav</span>
+            <span class="signib" id="signib" aria-hidden="true"></span>
+            <p class="sigrole">signs the line before you ride it</p>
+          </div>
+          <ul class="engrows">
+            <li><span>base</span><b>cincinnati, oh</b></li>
+            <li><span>builds</span><b>interfaces · services · data · ml</b></li>
+            <li><span>degree</span><b>b.s. computer science — miami university, may 2026</b></li>
+            <li><span>handles</span><span><a href="https://github.com/yadava5">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a></span></li>
+          </ul>
+        </div>
+        <figcaption>fig. 02 — the engineer signs on as the run leaves the depot. <i>the operator seat stays yours.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 03 · 07:52 — the yard: the Miami ITSM job, told with its freight.
+       The strongest untold story on the site gets a real beat: three
+       feeders — five years of OAS query logs, the Tableau/Workday silos,
+       a legacy Laravel reporter — worked into shape and merged onto the
+       main line. The school record files with the run below. -->
+  <section class="beat station flip bpath" data-beat="2">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Five years of query logs. Zero structure.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
+          <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
+          tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
+          legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the freight has papers</span> — <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
+        <figcaption>fig. 03 — the yard: three feeders, one line out. <i>the merge is the same thread you are riding.</i></figcaption>
+      </figure>
+    </div>
+    <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
+      <div class="shead"><span>the school record — filed with the run</span><span>miami university · oxford, oh · <i>may 2026</i></span></div>
+      <div class="srows">
+        <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b>3.65</b> · dean&rsquo;s list — fall 2023 · spring 2025 · fall 2025</span></div>
+        <div class="srow"><span class="sk">coursework</span><span>high-performance computing · data structures &amp; algorithms · machine learning · deep learning · databases</span></div>
+        <div class="srow"><span class="sk">certificates &rsquo;26</span><span>azure ai essentials · snowflake data engineering · data analysis &amp; github (microsoft)</span></div>
+        <div class="srow"><span class="sk">feb 2025</span><span><b>finalist, mucat design innovation</b> — lidar visual-assistance proposal · <b>$2,500</b> prototyping grant</span></div>
+        <div class="srow"><span class="sk">mar 2025</span><span>social innovation weekend — <b>lifequest</b> co-built in a weekend · react + nestjs · 7-person team · held at station 05 tonight</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ¶ 04 · 08:47 — Applied: the sorting line -->
+  <section class="beat station b2" data-beat="3">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
+          <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified — the rules stage, not the cascade<br>
+          ci blocks the build below 0.95 macro-f1 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
+          postgres row-level security — a non-bypassrls role</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
+        <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>the clay gate is where the model defers to review<span class="hoverinv"> — hover a bucket to trace its mail</span>.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 05 · 12:06 — Cadence: the parse -->
+  <section class="beat station flip b3" data-beat="4">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1,168 passed · 11 skipped</b> — 635 frontend + 533 backend<br>
+          4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
+          <b>36 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
+          rls written for <b>7 tables</b>, staged off · owner-scoped checks on 6 services · idor suite in ci</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ↗</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div id="cadFig">
+          <p class="sent">&ldquo;<span class="w">lunch with</span> <span class="w w-who">Sam</span>
+            <span class="w w-when">next Tuesday at noon</span><span class="w">,</span>
+            <span class="w w-meet">add a Meet</span><span class="w">.&rdquo;</span></p>
+          <div id="cadWeek" aria-hidden="true">
+            <div class="hd"><span>mo</span><span class="tu">tu</span><span>we</span><span>th</span><span>fr</span><span>sa</span><span>su</span></div>
+            <div class="grid">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i id="slotWhen"></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </div>
+          <span class="chip" id="chWho" data-w="who">sam</span>
+          <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
+          <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
+        </div>
+        <figcaption>fig. 05 — the parse: the sentence resolves into the schedule as you scroll. <i>hover a chip to see its words.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 06 · 15:23 — Glyph: the run needs a sample -->
+  <section class="beat station b4" data-beat="5">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">No frameworks. Just math, memory, and C++.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
+          openmp+simd dot-256 kernel <b>3.5×</b> vs -O3 — parallelism carries it; simd alone is 1.02× · 784 ⟶ 100 ⟶ 10<br>
+          3 hand-written simd paths — avx-512 · avx2 · neon (wasm: -msimd128, compiler-vectorised) · 2-person team</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
+        <div class="glyphrow">
+          <div class="padcard">
+            <div class="padwell">
+              <canvas id="pad" aria-label="drawing pad — draw a digit 0 to 9"></canvas>
+              <div class="padhint" id="padhint">draw a digit 0–9<br>— the run needs a sample</div>
+            </div>
+            <div class="padbar">
+              <span class="st"><i>●</i> <span id="glyphStatus">waking…</span></span>
+              <button id="clear" type="button">clear</button>
+            </div>
+          </div>
+          <div id="netwrap">
+            <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: your 28 by 28 input, one hidden layer, ten output classes with confidence bars."></svg>
+            <div class="verdictline">
+              <span class="big idle" id="verdict">·</span>
+              <span>conf <b id="conf">—</b></span>
+              <span>forward <b id="fwd">—</b></span>
+              <span>read <b>locally</b> · no server</span>
+            </div>
+          </div>
+        </div>
+        <div class="bench" aria-label="benchmark: simd versus scalar dot kernel">
+          <span class="mono" style="font-size:.7rem">the same math, twice — dot-256 kernel, committed bench:</span>
+          <div class="brow"><span>scalar -O3</span><span class="btrack"><span class="bfill" id="bScalar"></span></span><span class="bval">1×</span></div>
+          <div class="brow simd"><span>openmp + hand-written simd</span><span class="btrack"><span class="bfill" id="bSimd"></span></span><span class="bval">3.5×</span></div>
+        </div>
+        <figcaption>fig. 06 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 07 · 19:36 — jetpack-compress: split, work, stitch -->
+  <section class="beat station flip b5" data-beat="6">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.4×</b> single-threaded java.util.zip — 422 vs 66&#8202;mb/s (3-fork jmh · 99.9% ci)<br>
+          adler-32 vectorised <b>2.8×</b> scalar — 4.26&#8202;gb/s — bit-identical to java.util.zip.Adler32, and honestly not faster than the jdk intrinsic (14.06&#8202;gb/s)<br>
+          jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
+          <b>72 tests, 0 failures</b></p>
+        <div class="gzrow" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
+          <button class="btn" id="gzbtn" type="button">gzip a sample in this tab</button>
+          <span class="mono" id="gzout" aria-live="polite"></span>
+        </div>
+        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
+        <div class="bench jet" aria-label="benchmark: virtual-thread engine versus single-threaded java.util.zip">
+          <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
+          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack"><span class="bfill" id="jScalar"></span></span><span class="bval">66&#8202;mb/s</span></div>
+          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">455&#8202;mb/s</span></div>
+          <p class="bfoot">6.5× is the conservative 99% ci bound — the point estimate is 6.89×</p>
+        </div>
+        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch. <i>the member seam takes the clay tick<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 08 · 21:07 — dusk falls here. LifeQuest, told honestly.
+       Every element that carries text is on the dusk contract
+       (data-fx-sync): cacheGeometry rewrites BOTH its windows in PAGE
+       space — entrances end as each element clears the fold, all six
+       hold a settled corridor together, then one shared curtain takes
+       them to op 0, 40px before the first darkening stop (the round-2
+       census caught per-element windows leaking op-1.0 text onto the
+       sub-AA band at 768–2560; the round-4 curtain then preceded its
+       own content — p.handoff never rendered at 1440×900). The declared
+       in/out fractions below are pre-boot values only; x/y/drift stay
+       live. The beat's height is derived from the same contract. -->
+  <section class="beat station b6" data-beat="7">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · the honest hour — <i>21:07</i></p>
+        <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="dusk" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
+        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. Born at Social Innovation Weekend, March 2025 — a 7-person team, one weekend, React + NestJS. It would need a partner to scale, and it says so.</p>
+        <div class="quests" data-fx="in .12 .38 y 6 | out .48 .58 y 4 | drift 10" data-fx-sync="dusk">
+          <div class="q" data-q="0"><span class="qi">01</span><span class="qm">—</span><span class="qn">mission card — playable</span><span class="qs">…</span></div>
+          <div class="q" data-q="1"><span class="qi">02</span><span class="qm">—</span><span class="qn">tier ladder — working</span><span class="qs">…</span></div>
+          <div class="q" data-q="2"><span class="qi">03</span><span class="qm">—</span><span class="qn">full-stack backend — real</span><span class="qs">…</span></div>
+          <div class="q held-target" data-q="3"><span class="qi">04</span><span class="qm">—</span><span class="qn">scale — needs a partner or funder</span><span class="qs">…</span>
+            <span class="qnote">held on purpose — nothing resolves that didn&rsquo;t happen</span></div>
+          <div class="q held-target" data-q="4"><span class="qi">05</span><span class="qm">—</span><span class="qn">finished product — not claimed</span><span class="qs">…</span>
+            <span class="qnote">held on purpose — nothing resolves that didn&rsquo;t happen</span></div>
+        </div>
+        <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file — a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest">source ↗</a> · <a href="https://getlifequest.vercel.app">live prototype ↗</a></p>
+        <p class="mono" data-fx="in .84 .95 y 4 | out 2 2.5 | drift 0" data-fx-sync="duskin" style="margin-top:1.6rem">dusk. the light is the record: what shipped is lit, what didn&rsquo;t stays dashed.</p>
+      </div>
+      <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
+        <svg id="questFig" class="figsvg" viewBox="0 0 440 380" role="img" aria-label="A staircase of five steps drawn in ink: the three built steps are solid and get climbed, the two unbuilt steps stay pencil-dashed, and the climber pauses on the third with a clay ring — a deliberate hold, not a fall."></svg>
+        <figcaption>fig. 08 — the ladder is the ledger: three steps in ink, two in pencil. <i>the climb pauses the way the run halts — on purpose.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 09 · 22:05 — Agentic AutoML: the notebook, worked by tools -->
+  <section class="beat station flip b7" data-beat="8">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · last station — <i>22:05</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The senior-design flagship: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
+          <b>12 mcp tools</b> — most of them notebook hands: read_cell · write_cell · run_cell …<br>
+          the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
+          langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> on the senior-design gitlab · 2-person team — my seat: backend</p>
+        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the published snapshot, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
+      </div>
+      <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
+        <svg id="amlFig" class="figsvg" viewBox="0 0 560 372" role="img" aria-label="A LangGraph supervisor drives a drawn notebook through seven lifecycle phases; the twelve real MCP tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — six clay gates open, and the run halts at the seventh gate before deploy, which never lights."></svg>
+        <figcaption>fig. 09 — the twelve tools are mcpServer.ts&rsquo;s, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 10 · 22:23 — the review: how i work, told as three real gates.
+       The night shift's discipline beat: the litany each carries a
+       linked receipt, and the ledger beside it shows my own gates'
+       honest dispositions — two REFUSED to sign automatically. That is
+       the argument for the human gate one stop down the line. -->
+  <section class="beat station bhow" data-beat="9">
+    <div class="beat-inner">
+      <div class="prose">
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
+        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it.</p>
+        <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
+          <div class="mline"><p>Make it learn.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 passed · 10 skipped — Applied's validation ledger ↗</a></p></div>
+          <div class="mline"><p>Make it fast.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, Glyph's committed benchmarks ↗</a></p></div>
+          <div class="mline wonk"><p>Make it <em>honest</em>.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot's validation ledger ↗</a></p></div>
+        </div>
+      </div>
+      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="gates" id="gatesFig">
+          <div class="ghead"><span>the reviewer&rsquo;s marks</span><span>three real gates · <i>dispositions honest</i></span></div>
+          <div class="grow passed" data-g="0"><span class="gname">classifier gate — Applied</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2"/></svg>
+            <span class="gword">passed</span></div>
+          <div class="grow refused" data-g="1"><span class="gname">cited-source sweep — PolicyBot</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+            <span class="gword">refused</span></div>
+          <div class="grow refused" data-g="2"><span class="gname">benchmark suite — Glyph</span>
+            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+            <span class="gword">refused</span></div>
+          <p class="gleg">✓ a human signed for it · — the gate stopped the run</p>
+          <p class="gclose">two of my own gates <b>refused</b> to sign automatically. that discipline is why the next stop on this line is a person.</p>
+        </div>
+        <figcaption>fig. 10 — the marks are drawn by the same hand as the thread. <i>a refused gate is the system working.</i></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¶ 11 · 22:41 — the approval gate -->
+  <section class="beat b8" data-beat="10">
+    <div class="beat-inner">
+      <div>
+        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 11 · the approval gate — <i>22:41</i></p>
+        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
+        <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
+        <ul class="ladder" data-fx="in .12 .4 y 6 | out 2 2.5 | drift 0" style="margin-top:2rem">
+          <li data-ph="0"><span>06:12 · the start</span></li>
+          <li data-ph="1"><span>06:58 · who</span></li>
+          <li data-ph="2"><span>07:52 · the yard</span></li>
+          <li data-ph="3"><span>08:47 · applied</span></li>
+          <li data-ph="4"><span>12:06 · cadence</span></li>
+          <li data-ph="5"><span>15:23 · glyph</span></li>
+          <li data-ph="6"><span>19:36 · jetpack-compress</span></li>
+          <li data-ph="7"><span>21:07 · lifequest</span></li>
+          <li data-ph="8"><span>22:05 · agentic automl</span></li>
+          <li data-ph="9"><span>22:23 · the review</span></li>
+          <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
+          <li data-ph="10"><span>deploy — yours; no scroll reaches it</span></li>
+        </ul>
+        <p class="mono" data-fx="in .2 .48 y 4 | out 2 2.5 | drift 0" style="margin-top:1.6rem; max-width:40ch">the run token you have been following halts here. it will wait as long as it takes.</p>
+      </div>
+      <div>
+        <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
+          <h3>run 042 — the manifest, complete.</h3>
+          <p class="mono" style="font-size:.7rem">one day · eleven stops · six stations proof-cited · one signature missing</p>
+          <ul class="gl">
+            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">macro-f1 0.9791 · 96-sample gate</span></li>
+            <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,168 passed · 11 skipped — 635 fe + 533 be</span></li>
+            <li data-st="3"><span class="gi">03</span><b>glyph</b><span class="gm">97.01% — 9,701/10,000 · macro-f1 0.9698</span></li>
+            <li data-st="4"><span class="gi">04</span><b>jetpack-compress</b><span class="gm">72 tests, 0 failures · jdk 25</span></li>
+            <li data-st="5"><span class="gi">05</span><b>lifequest</b><span class="gm">prototype — held marks stayed held</span></li>
+            <li data-st="6"><span class="gi">06</span><b>agentic automl</b><span class="gm">7 phases, every one gated · code public</span></li>
+            <li id="liveSample" hidden><span class="gi">+</span><b>your sample</b><span class="gm" id="liveSampleM"></span></li>
+          </ul>
+          <div class="decide">
+            <button class="btn" id="approve" type="button">approve run 042</button>
+            <span class="note" id="gateNote">scrolling could not press this button.</span>
+            <div id="stamp" aria-hidden="true">APPROVED</div>
+          </div>
+          <div class="aftergate" id="aftergate">
+            <p style="font-family:var(--body); font-size:1.05rem; margin-bottom:.6rem">Thank you. The interesting part is whatever comes next.</p>
+            <div class="row mono">
+              <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
+              <a href="https://github.com/yadava5">github ↗</a>
+              <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a>
+              <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper ↗</a>
+            </div>
+          </div>
+        </div>
+        <footer data-fx="in .06 .24 y 5 | out 2 2.5 | drift 0">
+          end of scroll, not of story · © 2026 ayush yadav — cincinnati, oh · miami university, class of 2026<br>
+          set in fraunces, newsreader &amp; fragment mono · zero dependencies · the classifier is the portfolio&rsquo;s own c++ (wasm 45.9&#8202;kb + weights 310.6&#8202;kb)<br>
+          the light ran dawn 06:12 ⟶ nightfall 22:41 — the site&rsquo;s own day arc, ink flip verified at every stop · every station&rsquo;s output landed in a case file, source, or live build
+        </footer>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+/* ————————————————————————————————————————————————————————————————
+   THE LONG RUN — engine. One rAF loop, started by scroll/resize/
+   pointer, stopped when the page is still. Everything on screen is a
+   pure function of scrollY, so any jump lands on a correct frame.
+   ———————————————————————————————————————————————————————————————— */
+const $ = (id) => document.getElementById(id);
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* perf-lab flags (?nowash&nothread&nofx&noarc) — for the trace harness */
+const FLAGS = new URLSearchParams(location.search);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+
+window.__world = { arc: 0, beat: 0, beatP: 0, stamped: 0, night: false, halted: false, approved: false };
+window.__demo = { last: null, ready: null };
+
+/* ————— the day arc: waypoints + the pre-verified dusk choreography ————— */
+const WAY = [ /* l, c, h — src/components/world/waypoints.generated.ts */
+  [0.9671, 0.0181, 78.24], [0.9743, 0.0102, 81.8], [0.964, 0.0123, 91.52],
+  [0.9478, 0.0241, 85.79], [0.923, 0.0388, 83.83], [0.3471, 0.0218, 55.56],
+  [0.2739, 0.0116, 55.85],
+];
+const DUSK = [ /* side(0 day/1 night), l, c, h, pos — DUSK_CHOREO verbatim */
+  [0, 0.923, 0.0388, 83.83, 0], [0, 0.8759, 0.0463, 80.19, 0.11],
+  [0, 0.8287, 0.0511, 76.55, 0.22], [0, 0.7815, 0.0516, 72.91, 0.33],
+  [0, 0.7343, 0.0476, 69.28, 0.44], [0, 0.6872, 0.0405, 65.64, 0.55],
+  [0, 0.64, 0.0388, 62, 0.66], [1, 0.43, 0.032, 60, 0.72],
+  [1, 0.4093, 0.0295, 58.89, 0.7775], [1, 0.3886, 0.0269, 57.78, 0.835],
+  [1, 0.3679, 0.0244, 56.67, 0.8925], [1, 0.3471, 0.0218, 55.56, 0.95],
+];
+const FLIP_POS = 0.72;
+/* beat 7's darkening window as fractions of the beat — round 4 hard-coded
+   .58/.36 here while the content's geometry varied per viewport, which is
+   how the curtain came to precede its own content (measured: p.handoff
+   op 0.00 everywhere at 1440×900). cacheGeometry now derives the window
+   from the content and writes it here; these are only pre-boot values. */
+const dusk7 = { start: 0.58, span: 0.36 };
+
+function oklchToRgb(l, c, h) {
+  const hr = (h * Math.PI) / 180, A = c * Math.cos(hr), B = c * Math.sin(hr);
+  const l_ = (l + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+  const m_ = (l - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+  const s_ = (l - 0.0894841775 * A - 1.291485548 * B) ** 3;
+  const g = (x) => { x = clamp(x, 0, 1); return x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055; };
+  return [
+    g(+4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_),
+    g(-1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_),
+    g(-0.0041960863 * l_ - 0.7034186147 * m_ + 1.707614701 * s_),
+  ];
+}
+const rgbCss = (r) => `rgb(${r.map((x) => Math.round(x * 255)).join(",")})`;
+
+/* arc position → rgb + night flag. Seven DAY beats now ride the five
+   day waypoints: the STATION datelines stay pinned to their waypoints
+   (applied=W1 08:47, cadence=W2 12:06, glyph=W3 15:23, jetpack=W4
+   19:36) and the two new morning chapters — who, the yard — split the
+   dawn→08:47 leg in thirds, so the light still tells the clock's
+   truth. Beat 7 runs the 12-stop dusk choreography (flip at .72, the
+   mid band never rendered); beat 8 scrubs dusk→night; 9–10 hold night. */
+const DAY_ANCHOR = [0, 1 / 3, 2 / 3, 1, 2, 3, 4, 4]; /* waypoint index per day beat */
+function arcColor(beat, p) {
+  if (beat <= 6) {
+    const t = smooth((p - 0.15) / 0.7);
+    const u = clamp(lerp(DAY_ANCHOR[beat], DAY_ANCHOR[beat + 1], t), 0, 4);
+    const i = Math.min(3, Math.floor(u)), f = u - i;
+    const a = WAY[i], b = WAY[i + 1];
+    return {
+      rgb: oklchToRgb(lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)),
+      night: false, sun: (beat + t) * (5 / 7), /* the sun still crosses one whole day */
+    };
+  }
+  if (beat === 7) {
+    /* the darkening window (dusk7) is derived by cacheGeometry from the
+       ledger's measured geometry: it opens 40px of scroll AFTER the
+       shared curtain has taken every dusk element to op 0, so no text
+       renders on any sub-AA mid-band stop; the closing line arrives
+       post-flip */
+    const pos = clamp((p - dusk7.start) / dusk7.span, 0, 1) * 0.95;
+    let i = 0;
+    while (i < DUSK.length - 1 && DUSK[i + 1][4] <= pos) i++;
+    const a = DUSK[i], b = DUSK[Math.min(i + 1, DUSK.length - 1)];
+    let t = b[4] > a[4] ? (pos - a[4]) / (b[4] - a[4]) : 0;
+    if (a[0] !== b[0]) t = 0; /* never render the mid-luminance band */
+    return {
+      rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
+      night: pos >= FLIP_POS, sun: 5 + clamp(p, 0, 1),
+    };
+  }
+  if (beat === 8) { /* automl works the night shift: dusk deepens to nightfall */
+    const t = smooth(p / 0.6);
+    const a = WAY[5], b = WAY[6];
+    return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
+  }
+  /* beats 9–10 — the review and the gate hold nightfall */
+  return { rgb: oklchToRgb(WAY[6][0], WAY[6][1], WAY[6][2]), night: true, sun: 7 };
+}
+
+/* ————— the wash: raw WebGL, warm fbm on the arc's own color.
+   Draws ONLY when the scroll position (or size) has changed. ————— */
+const washCanvas = $("wash");
+let drawWash = null;
+(function wash() {
+  const gl = washCanvas.getContext("webgl", { antialias: false, alpha: false });
+  if (!gl) { document.body.classList.add("no-gl"); return; }
+  const vs = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+  const fs = `
+precision mediump float;
+uniform vec2 R; uniform vec3 C; uniform float S; uniform vec3 P; uniform float N; /* sun x,y,strength · N night */
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;
+  for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.55;}return v;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/R; vec2 q=uv; q.x*=R.x/R.y;
+  float f=fbm(q*2.3+vec2(0.,-S*.28));
+  float g=fbm(q*4.7+vec2(1.3,S*.14)+f);
+  /* ink diffusing in damp paper: lightness tooth, never a smooth
+     gradient. The tooth halves at night — measured: full tooth pushed
+     dusk secondary text under its Lc 60 floor at the flip stop */
+  vec3 col=C*(1.+((f-.5)*.05+(g-.5)*.025)*mix(1.,.5,N));
+  /* the sun crosses the sky as the day passes (radial, matte, warm) */
+  float d=distance(uv,P.xy);
+  col+=vec3(1.,.93,.8)*P.z*.05*smoothstep(.8,.05,d);
+  /* faint edge settle */
+  col*=1.-.04*smoothstep(.55,1.,distance(uv,vec2(.5)));
+  gl_FragColor=vec4(col,1.);
+}`;
+  const mk = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
+  const pr = gl.createProgram();
+  gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs));
+  gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(pr); gl.useProgram(pr);
+  const b = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, b);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p");
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uR = gl.getUniformLocation(pr, "R"), uC = gl.getUniformLocation(pr, "C"),
+        uS = gl.getUniformLocation(pr, "S"), uP = gl.getUniformLocation(pr, "P"),
+        uN = gl.getUniformLocation(pr, "N");
+  function size() { /* half-res, DPR-capped: a wash, not a picture */
+    const dpr = Math.min(devicePixelRatio || 1, 1.5) * 0.5;
+    washCanvas.width = Math.max(2, Math.round(innerWidth * dpr));
+    washCanvas.height = Math.max(2, Math.round(innerHeight * dpr));
+    gl.viewport(0, 0, washCanvas.width, washCanvas.height);
+  }
+  size();
+  addEventListener("resize", size);
+  window.__hasGL = true;
+  drawWash = (rgb, scrollNorm, sunArc, nightF) => {
+    /* sun: rises east, crests at noon, sets west, gone by dusk */
+    const t = clamp(sunArc / 5, 0, 1);
+    const sx = lerp(0.18, 0.85, t);
+    const sy = 0.9 - Math.sin(t * Math.PI) * 0.75;
+    const str = sunArc < 4.6 ? 0.9 : clamp(1 - (sunArc - 4.6) / 0.75, 0, 1) * 0.9;
+    gl.uniform2f(uR, washCanvas.width, washCanvas.height);
+    gl.uniform3f(uC, rgb[0], rgb[1], rgb[2]);
+    gl.uniform1f(uS, scrollNorm);
+    gl.uniform3f(uP, sx, 1 - sy, str);
+    gl.uniform1f(uN, nightF || 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+  /* paint dawn NOW — an undrawn opaque-context canvas composites black */
+  drawWash(oklchToRgb(WAY[0][0], WAY[0][1], WAY[0][2]), 0, 0, 0);
+})();
+
+/* ————— geometry caches ————— */
+const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0, h: 0 }));
+const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
+let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false;
+
+/* fx elements: arrive → settle-with-drift → depart, except where the
+   contract says park. Parking is declared, not accidental: the gate
+   beat and the dusk closing line declare `out 2 2.5` (a window no
+   scroll reaches — the ending holds its final frame), and cacheGeometry
+   writes the same spec-space declaration onto any dusk element whose
+   shared curtain falls beyond the engine's p≤1.1 apply range at the
+   current viewport (it has scrolled off the top before the curtain;
+   fading it there would freeze mid-value). Parked-at-1 equals the
+   settled world's frame, so the static contract (A7) is preserved.
+   Round 4's version of this comment said "Nothing parks" while eight
+   elements declared otherwise — the census caught the ninth, which
+   parked at op 0 by bug, not by declaration. */
+const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
+  const spec = { in: [0.06, 0.32, 0, 5, 0, 1], out: [0.76, 0.98, 0, -4, 0, 1], drift: 10 };
+  for (const clause of el.dataset.fx.split("|")) {
+    const t = clause.trim().split(/\s+/).filter(Boolean);
+    if (!t.length) continue;
+    if (t[0] === "drift") { spec.drift = parseFloat(t[1]); continue; }
+    const k = t[0]; /* in | out */
+    const o = { a: parseFloat(t[1]), b: parseFloat(t[2]), x: 0, y: 0, r: 0, s: 1 };
+    for (let i = 3; i < t.length; i += 2) o[t[i]] = parseFloat(t[i + 1]);
+    spec[k] = [o.a, o.b, o.x, o.y, o.r, o.s];
+  }
+  return { el, spec, top: 0, h: 0, near: true };
+});
+
+window.__fx = fx; /* probe hook */
+function cacheGeometry() {
+  vw = innerWidth; vh = innerHeight; mobile = vw <= 820; stacked = vw <= 1249;
+  const measure = () => {
+    docH = document.documentElement.scrollHeight;
+    for (const b of beats) { b.top = absTop(b.el); b.h = b.el.offsetHeight; }
+    for (const f of fx) { f.top = absTop(f.el); f.h = f.el.offsetHeight || 1; }
+  };
+  measure();
+  who.w = who.sig.offsetWidth; /* the nib's runway (clip doesn't change layout) */
+
+  /* the dusk contract, in PAGE space — derived, not declared. Round 4
+     rewrote only the EXITS into a shared curtain ending 40px before the
+     first darkening frame (the round-2 census caught op-1.0 ledger text
+     on the sub-AA day stops at 768–2560) but left the entrances on
+     per-element clocks — and because the curtain subtracts f.top, the
+     later an element entered the earlier its curtain arrived. Measured
+     at 1440×900: p.handoff's whole exit lay BEFORE its entrance (op 0.00
+     at every scroll position — the LifeQuest links never rendered) and
+     div.quests peaked at 0.24; at 390×844 the figure collapsed to 0.04
+     instead. The conflict was geometric: the deepest element is only
+     fully above the fold from top+h−vh, and the curtain sat earlier.
+     So round 5 derives the whole chain from the measured content:
+       entrances  each element settles as it clears the fold (or 0.22vh
+                  after its top enters — whichever is later);
+       corridor   every dusk element holds op 1 TOGETHER for 0.35vh;
+       curtain    one shared exit over 0.24vh — all gone 40px before
+                  the first darkening frame (the AA deadline, unchanged);
+       darkening  0.4vh for the twelve stops, flip at FLIP_POS;
+       closing    the duskin line arrives 20px after the flip;
+     and the beat's own height is derived from that chain and written
+     back (flex-start keeps the content's position independent of it),
+     so the contract holds at ANY viewport, not only the measured ones. */
+  const bDusk = beats[7];
+  let yShow = 0;
+  for (const f of fx) {
+    if (f.el.dataset.fxSync !== "dusk") continue;
+    /* enter as the fold reveals it: never before its top is on screen
+       (that reads as a pop), never completing below the fold (round 4's
+       Tier-E1 class), and never slower than 0.22vh of scroll */
+    const enter = f.top - vh + 8;
+    /* +28, not +16: op crosses 0.98 ~11% of the window before its end
+       (smoothstep tail + the 1/50 quantiser), measured 4–5px short */
+    const yDone = Math.max(f.top + f.h - vh + 28, enter + vh * 0.15);
+    const y0 = Math.max(enter, yDone - vh * 0.22);
+    f.spec.in[0] = (y0 + vh - f.top) / (vh + f.h);
+    f.spec.in[1] = (yDone + vh - f.top) / (vh + f.h);
+    yShow = Math.max(yShow, yDone);
+  }
+  const Y1 = yShow + vh * 0.35, Y2 = Y1 + vh * 0.24;   /* corridor, curtain */
+  const yDark = Y2 + 40, darkSpan = vh * 0.4;          /* the sky's show */
+  const yFlip = yDark + (FLIP_POS / 0.95) * darkSpan;
+  const yEnd = Math.max(yDark + darkSpan, yFlip + 20 + vh * 0.16) + vh * 0.1;
+  for (const f of fx) {
+    if (f.el.dataset.fxSync === "dusk") {
+      const o1 = (Y1 + vh - f.top) / (vh + f.h);
+      const o2 = (Y2 + vh - f.top) / (vh + f.h);
+      /* elements high in the beat have scrolled off the top before the
+         curtain: their window lies past the engine's p≤1.1 apply range,
+         where a fade would freeze mid-value. They PARK lit instead
+         (spec-space out 2 2.5, the same declaration beat 10 uses) —
+         off-screen, so the AA deadline is untouched, and parked-at-1
+         is exactly the settled world's frame. Everything the reader can
+         still see at Y1 leaves on the shared curtain. */
+      if (o2 > 1.06) { f.spec.out[0] = 2; f.spec.out[1] = 2.5; }
+      else { f.spec.out[0] = o1; f.spec.out[1] = o2; }
+    } else if (f.el.dataset.fxSync === "duskin") {
+      /* the closing line is PLACED, not just timed: its seat is wherever
+         the flip lands, half a viewport under the reading line, so the
+         sentence arrives centred in the dark it names */
+      const m0 = parseFloat(getComputedStyle(f.el).marginTop) || 0;
+      const d = yFlip + vh * 0.52 - f.top;
+      if (Math.abs(d) > 2) f.el.style.marginTop = (m0 + d) + "px";
+      f.spec.in[0] = (yFlip + 20 + vh - (f.top + d)) / (vh + f.h);
+      f.spec.in[1] = (yFlip + 20 + vh * 0.16 + vh - (f.top + d)) / (vh + f.h);
+    }
+  }
+  /* write the derived height back and re-measure everything below the
+     beat (its own content does not move — flex-start — so the contract
+     anchors computed above stay true) */
+  const need = Math.ceil(yEnd + vh * 0.62 - bDusk.top);
+  if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
+  measure();
+  /* hand the darkening window to arcColor, as fractions of the beat */
+  dusk7.start = (yDark + vh * 0.62 - bDusk.top) / bDusk.h;
+  dusk7.span = darkSpan / bDusk.h;
+  window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h })); /* probe hook */
+}
+
+/* ————— the thread: one wobbled ink line down the whole run.
+   Geometry is dense pure-math samples; rendering is a FIXED viewport
+   canvas redrawn only while the engine runs. (The first cut was a
+   document-tall SVG scrubbed by stroke-dashoffset — measured at 4× CPU
+   it cost 81ms/frame, because every write invalidated the path's whole
+   13,000px extent. The canvas draws ~50 visible segments instead.) ————— */
+const threadCv = $("thread"), tctx = threadCv.getContext("2d");
+let samples = [];              /* {x, y, L} — y and L both ascending */
+let pathLen = 0, gatePageY = 0;
+let glyphDigit = null;         /* the visitor's own read digit, once drawn */
+const inkC = {};
+function refreshInk() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const k of ["--thread", "--thread-ahead", "--ink", "--ink-2", "--pine", "--clay-g", "--plate-solid"])
+    inkC[k] = cs.getPropertyValue(k).trim();
+}
+function sizeThread() {
+  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  threadCv.width = Math.round(vw * dpr);
+  threadCv.height = Math.round(vh * dpr);
+  tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+function buildThread() {
+  /* eleven stops: arrival, who(N), the yard(F), applied(N), cadence(F),
+     glyph(N), jetpack(F), lifequest(N), automl(F), the review(N), gate.
+     Normal stations keep the thread by the prose margin; flips cross it.
+     The last x hugs the ladder column: the line must arrive at the gate
+     along the margin, never slashing across the ledger card */
+  const stx = stacked
+    ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 20]
+    : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 24];
+  const anchors = [];
+  anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
+  for (let i = 0; i < beats.length; i++) {
+    const b = beats[i], x = (stx[i] / 100) * vw;
+    if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
+    anchors.push([x, b.top + b.h * 0.52]);
+    if (i < beats.length - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
+  }
+  /* terminate at the gate dock (the clay square in the ladder) */
+  const dr = $("gateDock").getBoundingClientRect();
+  gatePageY = dr.top + scrollY + dr.height / 2;
+  anchors[anchors.length - 1] = [dr.left + dr.width / 2, gatePageY];
+  anchors.sort((a, b) => a[1] - b[1]);
+
+  /* densify with cosine easing + hand wobble (x only; y stays monotonic) */
+  const amp = stacked ? 8 : 16;
+  samples = [];
+  let L = 0, px = 0, py = 0;
+  const put = (x, y) => {
+    if (samples.length) L += Math.hypot(x - px, y - py);
+    samples.push({ x, y, L }); px = x; py = y;
+  };
+  for (let k = 0; k < anchors.length - 1; k++) {
+    const [x0, y0] = anchors[k], [x1, y1] = anchors[k + 1];
+    const steps = Math.max(2, Math.round((y1 - y0) / 22));
+    for (let s = 0; s < steps; s++) {
+      const t = s / steps, y = lerp(y0, y1, t);
+      put(lerp(x0, x1, 0.5 - 0.5 * Math.cos(Math.PI * t))
+        + Math.sin(y * 0.011 + 2.1) * amp * 0.5
+        + Math.sin(y * 0.0037 + 0.7) * amp, y);
+    }
+  }
+  put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
+  pathLen = L;
+  sizeThread();
+  refreshInk();
+}
+function idxAtY(y) {
+  let lo = 0, hi = samples.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; (samples[m].y <= y ? (lo = m) : (hi = m)); }
+  return lo;
+}
+function lenAtY(y) {
+  if (!samples.length) return 0;
+  if (y <= samples[0].y) return 0;
+  if (y >= samples[samples.length - 1].y) return pathLen;
+  const i = idxAtY(y), a = samples[i], b = samples[i + 1];
+  return lerp(a.L, b.L, b.y > a.y ? (y - a.y) / (b.y - a.y) : 0);
+}
+function pointAtLen(L) {
+  L = clamp(L, 0, pathLen);
+  let lo = 0, hi = samples.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; (samples[m].L <= L ? (lo = m) : (hi = m)); }
+  const a = samples[lo], b = samples[hi];
+  const t = b.L > a.L ? (L - a.L) / (b.L - a.L) : 0;
+  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
+}
+
+/* travellers: each station's output rides the line to the next. Round 1's
+   marks were postage-stamp small and rode glued to the token, so corridor
+   stills read empty; now the convoy is spread across the corridor, drawn
+   at a size the still can read, and the lead item carries a waybill line
+   naming what is in transit. All of it remains a pure function of scroll. */
+const TRAV = [
+  /* the first corridor was the round-2 hole: nothing had been produced
+     yet, so nothing travelled, and the stretch read bare. What IS true
+     there: the run was just dispatched and the reader came aboard. So
+     the dispatch slip rides down first, trailed by the day's first
+     light — dawn is this corridor's only other honest cargo. */
+  { beat: 0, n: 1, label: "run 042 dispatched — operator aboard", draw: (c) => { /* the slip */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-11, -7, 22, 14, 2); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-7, -2.5); c.lineTo(4, -2.5); c.moveTo(-7, 2); c.lineTo(1, 2); c.stroke();
+      c.strokeStyle = inkC["--clay-g"]; c.beginPath(); c.arc(7, 2, 2.4, 0, 7); c.stroke(); } },
+  { beat: 0, n: 1, off: 0.3, label: null, draw: (c) => { /* first light: a low sun */
+      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
+      c.beginPath(); c.arc(0, 1, 5, Math.PI, 2 * Math.PI); c.stroke();
+      c.beginPath(); c.moveTo(-10, 1); c.lineTo(10, 1); c.stroke();
+      for (const a of [-2.2, -1.57, -0.94]) {
+        c.beginPath(); c.moveTo(Math.cos(a) * 7, 1 + Math.sin(a) * 7);
+        c.lineTo(Math.cos(a) * 10, 1 + Math.sin(a) * 10); c.stroke();
+      } } },
+  { beat: 1, n: 1, label: "the engineer’s credentials → manifest", draw: (c) => { /* the signed card */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-11, -7, 22, 14, 2); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.beginPath(); c.rect(-8, -4, 6, 6.5); c.stroke(); /* the portrait well */
+      c.strokeStyle = inkC["--ink"]; c.beginPath();
+      c.moveTo(1, -2.5); c.lineTo(8, -2.5); c.stroke();
+      c.strokeStyle = inkC["--clay-g"]; c.beginPath(); /* the fresh signature */
+      c.moveTo(1, 3); c.quadraticCurveTo(3.5, 0.5, 5, 3); c.quadraticCurveTo(6.5, 5, 8, 2.4); c.stroke(); } },
+  { beat: 2, n: 2, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.rect(-9, -6.5, 18, 13); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.beginPath(); /* rows and fields */
+      c.moveTo(-9, -2); c.lineTo(9, -2); c.moveTo(-9, 2.4); c.lineTo(9, 2.4);
+      c.moveTo(-3, -6.5); c.lineTo(-3, 6.5); c.moveTo(3, -6.5); c.lineTo(3, 6.5); c.stroke();
+      c.fillStyle = inkC["--pine"]; c.fillRect(3.6, -6, 4.9, 3.5); /* the flagged field */ } },
+  { beat: 3, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.3;
+      c.beginPath(); c.rect(-7, -5, 14, 10); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-7, -5); c.lineTo(0, 1.2); c.lineTo(7, -5); c.stroke(); } },
+  { beat: 4, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-11, -7, 22, 14, 3); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink"]; c.beginPath();
+      c.moveTo(-7, -2.5); c.lineTo(2, -2.5); c.moveTo(-7, 2); c.lineTo(5, 2); c.stroke();
+      c.fillStyle = inkC["--clay-g"]; c.beginPath(); c.arc(7, -2.5, 2, 0, 7); c.fill(); } },
+  { beat: 5, n: 1,
+    label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
+    draw: (c) => {
+      if (glyphDigit !== null) {
+        c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.strokeRect(-9, -9, 18, 18);
+        c.fillStyle = inkC["--ink"]; c.font = "14px 'Fragment Mono', monospace";
+        c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(glyphDigit, 0, 1);
+      } else { /* awaiting a sample: a dashed 28×28 placeholder */
+        c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.setLineDash([3, 3]);
+        c.strokeRect(-8, -8, 16, 16); c.setLineDash([]);
+      } } },
+  { beat: 6, n: 2, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
+      c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
+      c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
+      c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
+  { beat: 7, n: 2, label: "the held marks, carried as they are", draw: (c) => { /* a held dash */
+      c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
+      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
+      c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
+  { beat: 8, n: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
+      c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
+  { beat: 9, n: 1, label: "run 042, reviewed → the human gate", draw: (c) => { /* the reviewed report */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
+      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
+      c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
+].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
+const setGlyphTraveller = (d) => { glyphDigit = String(d); };
+
+function strokeRun(i0, i1, scroll, endPt, startPt) {
+  tctx.beginPath();
+  if (startPt) tctx.moveTo(startPt.x, startPt.y - scroll);
+  for (let i = i0; i <= i1; i++) {
+    const s = samples[i];
+    if (!startPt && i === i0) tctx.moveTo(s.x, s.y - scroll);
+    else tctx.lineTo(s.x, s.y - scroll);
+  }
+  if (endPt) tctx.lineTo(endPt.x, endPt.y - scroll);
+  tctx.stroke();
+}
+function drawThread(scroll, tokenY, tokenL, halted) {
+  tctx.clearRect(0, 0, vw, vh);
+  if (!samples.length) return;
+  const i0 = idxAtY(scroll - 40), i1 = Math.min(samples.length - 1, idxAtY(scroll + vh + 40) + 1);
+  if (i1 <= i0) { drawTokenAndTravellers(scroll, tokenY, tokenL, halted); return; }
+  const tp = pointAtLen(tokenL);
+  /* the future: dashed, faint — pattern anchored in path space */
+  let k = i0; while (k < i1 && samples[k].L < tokenL) k++;
+  if (samples[i1].L > tokenL) {
+    tctx.strokeStyle = inkC["--thread-ahead"]; tctx.lineWidth = 1.4;
+    tctx.setLineDash([2, 7]); tctx.lineDashOffset = -samples[k].L % 9;
+    strokeRun(k, i1, scroll, null, k > i0 ? tp : null);
+    tctx.setLineDash([]);
+  }
+  /* the ink filled behind the token */
+  if (samples[i0].L < tokenL) {
+    tctx.strokeStyle = inkC["--thread"]; tctx.lineWidth = 2;
+    tctx.lineCap = "round"; tctx.lineJoin = "round";
+    strokeRun(i0, Math.max(i0, k - 1), scroll, tokenL < samples[i1].L ? tp : null, null);
+  }
+  drawTokenAndTravellers(scroll, tokenY, tokenL, halted);
+}
+function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
+  const tp = pointAtLen(tokenL), ty = tp.y - scroll;
+  if (ty > -30 && ty < vh + 30) {
+    tctx.fillStyle = inkC["--ink"];
+    tctx.beginPath(); tctx.arc(tp.x, ty, 4.5, 0, 7); tctx.fill();
+    if (halted) { /* clay while it waits; pine once your hand has signed */
+      tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
+      tctx.lineWidth = 2;
+      tctx.beginPath(); tctx.arc(tp.x, ty, 9, 0, 7); tctx.stroke();
+    }
+  }
+  for (const t of TRAV) {
+    const b = beats[t.beat];
+    /* cargo leaves WHILE the station plate is still closing overhead, so
+       the corridor still that follows always has the departure in frame */
+    const exitY = b.top + b.h * 0.74;
+    const nb = beats[Math.min(t.beat + 1, beats.length - 1)];
+    const span = nb.top + nb.h * 0.4 - exitY;
+    /* the convoy is strung along the corridor, not glued to the token:
+       the lead departs as the plate closes and is still fading in at the
+       next station, the rest trail at reading distance — so ANY corridor
+       still has cargo in frame instead of a bare line */
+    const tp = (tokenY - exitY) / span;
+    if (tp <= 0) continue;
+    const prog = 0.1 + tp * 0.78 - (t.j + (t.off || 0)) * 0.26;
+    if (prog <= 0 || prog >= 1) continue;
+    const L = lenAtY(exitY + prog * span);
+    const pt = pointAtLen(L), ahead = pointAtLen(L + 8);
+    const y = pt.y - scroll;
+    if (y < -30 || y > vh + 30) continue;
+    const al = prog < 0.12 ? prog / 0.12 : prog > 0.85 ? (1 - prog) / 0.15 : 1;
+    tctx.save();
+    tctx.translate(pt.x, y);
+    tctx.rotate(Math.atan2(ahead.y - pt.y, ahead.x - pt.x));
+    tctx.globalAlpha = al;
+    t.draw(tctx);
+    tctx.restore();
+    /* the waybill: the lead item says what is in transit, and to where.
+       Two-column desktop only — on stacked seats the thread crosses the
+       prose, and canvas text under DOM text would print through it.
+       11.5px: canvas text is on the same ≥11px floor as everything. */
+    if (!stacked && t.j === 0 && t.label && prog > 0.1 && prog < 0.7) {
+      const s = typeof t.label === "function" ? t.label() : t.label;
+      tctx.globalAlpha = Math.min(al, 0.92);
+      tctx.font = "11.5px 'Fragment Mono', ui-monospace, monospace";
+      tctx.fillStyle = inkC["--ink-2"];
+      tctx.textBaseline = "alphabetic";
+      if (pt.x > vw - 260) { tctx.textAlign = "right"; tctx.fillText(s, pt.x - 20, y - 12); }
+      else { tctx.textAlign = "left"; tctx.fillText(s, pt.x + 20, y - 12); }
+      tctx.globalAlpha = 1;
+    }
+  }
+}
+
+/* ————— station figures ————— */
+
+/* Applied — the sorting line. 8 marks, each with its own polyline
+   through the three gates into a bucket; positions scrubbed by beat
+   progress, so a still is always mid-sort. Mix is honest: no per-bucket
+   counts are claimed anywhere (the eval line carries the real 96).
+   Wide: inbox ⟶ three gate columns ⟶ the bucket shelf. Tight (240):
+   the same sort turned vertical — the mail FALLS through three gate
+   rules into a 2×2 shelf. Same plan, same verdicts, larger type. */
+const applied = { marks: [], svg: $("appliedFig") };
+/* marks: [entry offset, gate wobble, bucket index, class after gate] */
+const APPLIED_PLAN = [
+  [58, 0, 0, "sorted-ok"], [86, 1, 1, "sorted-ok"], [114, 0, 0, "sorted-ok"],
+  [142, 2, 2, ""], [170, 1, 0, "sorted-ok"], [198, 0, 2, ""],
+  [226, 2, 3, "sorted-rv"], [240, 1, 1, "sorted-ok"],
+];
+function svgIn(s) {
+  const NS = "http://www.w3.org/2000/svg";
+  return (t, a, parent) => { const e = document.createElementNS(NS, t);
+    for (const k in a) e.setAttribute(k, a[k]); (parent || s).appendChild(e); return e; };
+}
+function traceOn(svg, labels, marks, key) {
+  /* hover a bucket/lane label: its cargo stays inked, the rest recede */
+  for (const [lbl, id] of labels) {
+    lbl.addEventListener("pointerenter", () => {
+      svg.classList.add("tracing");
+      for (const m of marks) m.g.classList.toggle("hot", m[key] === id);
+    });
+    lbl.addEventListener("pointerleave", () => {
+      svg.classList.remove("tracing");
+      for (const m of marks) m.g.classList.remove("hot");
+    });
+  }
+}
+function buildApplied(tight) {
+  const s = applied.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  applied.marks = [];
+  const bklabs = [];
+  if (!tight) {
+    s.setAttribute("viewBox", "0 0 560 330");
+    const gates = [[178, "rules"], [288, "e5 similarity"], [398, "gated setfit"]];
+    for (const [x, label] of gates) {
+      el("line", { x1: x, y1: 44, x2: x, y2: 250, class: "lane gatecol" });
+      el("text", { x, y: 268, "text-anchor": "middle" }).textContent = label;
+    }
+    el("rect", { x: 393, y: 140, width: 10, height: 10, class: "gsq" });
+    const buckets = [["applied", 72], ["interview", 122], ["rejected", 172], ["needs-review", 222]];
+    buckets.forEach(([label, y], bi) => {
+      el("path", { d: `M 476 ${y - 14} h 62 v 30 h -62`, class: "lane" });
+      const t = el("text", { x: 540, y: y + 30, "text-anchor": "end", class: "bklab" });
+      t.textContent = label; bklabs.push([t, bi]);
+    });
+    el("text", { x: 18, y: 268 }).textContent = "inbox";
+    APPLIED_PLAN.forEach(([y0, wob, bi, cls], i) => {
+      const by = buckets[bi][1];
+      const line = [
+        [-26, y0], [140, y0 + wob * 8 - 8], [178, y0 * 0.4 + 70 + wob * 10],
+        [288, y0 * 0.3 + 90 + wob * 12], [398, 145 + (bi - 1.5) * 12],
+        [452, by], [486 + (i % 3) * 14, by],
+      ];
+      const g = el("g", { class: "mkg" });
+      const rect = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "mk" }, g);
+      const flap = el("path", { d: "M -4.5 -3.2 L 0 .6 L 4.5 -3.2", fill: "none", stroke: "var(--ink)", "stroke-width": .9, class: "mkflap" }, g);
+      applied.marks.push({ g, line, cls, bi, delay: i * 0.045, rect, flap });
+    });
+  } else {
+    s.setAttribute("viewBox", "0 0 240 330");
+    el("text", { x: 8, y: 16 }).textContent = "inbox";
+    const gates = [[64, "rules"], [118, "e5 similarity"], [172, "gated setfit"]];
+    for (const [y, label] of gates) {
+      el("line", { x1: 8, y1: y, x2: 232, y2: y, class: "lane gatecol" });
+      el("text", { x: 232, y: y - 6, "text-anchor": "end" }).textContent = label;
+    }
+    el("rect", { x: 115, y: 167, width: 10, height: 10, class: "gsq" });
+    const cells = [[8, 216], [128, 216], [8, 272], [128, 272]];
+    const names = ["applied", "interview", "rejected", "needs-review"];
+    cells.forEach(([x, y], bi) => {
+      el("path", { d: `M ${x} ${y} v 40 h 104 v -40`, class: "lane" });
+      const t = el("text", { x: x + 6, y: y + 34, class: "bklab" });
+      t.textContent = names[bi]; bklabs.push([t, bi]);
+    });
+    APPLIED_PLAN.forEach(([y0, wob, bi, cls], i) => {
+      const x0 = 26 + ((y0 - 58) / 182) * 186; /* spread the entries across */
+      const [cx, cy] = cells[bi];
+      const line = [
+        [x0, -18], [x0 * 0.7 + 36 + wob * 10, 64], [x0 * 0.5 + 58 + wob * 12, 118],
+        [116 + (bi - 1.5) * 10, 172], [cx + 20 + (i % 3) * 26, cy + 22],
+      ];
+      const g = el("g", { class: "mkg" });
+      const rect = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "mk" }, g);
+      const flap = el("path", { d: "M -4.5 -3.2 L 0 .6 L 4.5 -3.2", fill: "none", stroke: "var(--ink)", "stroke-width": .9, class: "mkflap" }, g);
+      applied.marks.push({ g, line, cls, bi, delay: i * 0.045, rect, flap });
+    });
+  }
+  /* the verdict takes hold as a mark clears the setfit gate — a
+     different fraction of each edition's polyline */
+  applied.pastT = tight ? 0.76 : 0.68;
+  traceOn(s, bklabs, applied.marks, "bi");
+}
+function polyAt(line, t) {
+  /* piecewise-linear position along a polyline, t 0..1 by segment count */
+  const n = line.length - 1, ft = clamp(t, 0, 1) * n, i = Math.min(n - 1, Math.floor(ft)), u = ft - i;
+  return [lerp(line[i][0], line[i + 1][0], u), lerp(line[i][1], line[i + 1][1], u)];
+}
+function scrubApplied(p) {
+  for (const m of applied.marks) {
+    const t = smooth((p - 0.22 - m.delay) / 0.42);
+    const [x, y] = polyAt(m.line, t);
+    m.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    m.g.setAttribute("opacity", t <= 0 ? 0 : 1);
+    const past = t > applied.pastT; /* past the setfit gate: the verdict takes */
+    m.rect.setAttribute("class", past ? `mk ${m.cls}` : "mk");
+    m.flap.setAttribute("stroke", past && m.cls === "sorted-ok" ? "var(--pine)" : past && m.cls === "sorted-rv" ? "var(--clay-g)" : "var(--ink)");
+  }
+}
+
+/* Who — the engineer of record signs the line. The name is written on
+   by a clip-path wipe with a nib dot riding the writing edge — no fake
+   stroke data, just the type being revealed at writing speed. */
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "" };
+function scrubWho(p) {
+  const t = smooth((p - 0.28) / 0.34);
+  const v = (100 - t * 100).toFixed(1);
+  if (v === who.last) return;
+  who.last = v;
+  who.sig.style.clipPath = `inset(-10% ${v}% -14% 0)`;
+  who.nib.style.opacity = t > 0 && t < 1 ? 1 : 0;
+  who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
+}
+
+/* The yard — the ITSM job as freight: three feeders (query logs, the
+   Tableau/Workday silos, a legacy Laravel reporter), each through the
+   python·sql works, landing in its product, merging onto the main
+   line. Records travel and LAND (unlike jet's blocks they stay put —
+   the yard's whole point is what the freight became). The compliance
+   meter fills to its real 97%. Wide 560/12px; tight 240/11px. */
+const yard = { svg: $("pathFig"), recs: [], meter: null, meterW: 0, trunk: null };
+function buildPath(tight) {
+  const s = yard.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  yard.recs = []; yard._mw = null; /* fresh meter: the diff cache must not skip it */
+  const src = [
+    ["1.6m+ oas query logs", "5 yrs · 1,153 users"],
+    ["tableau + workday", "hash-dedup · rest api"],
+    ["legacy laravel", "teamdynamix · gitlab"],
+  ];
+  const prod = [
+    ["field-usage table", "sqlite · 57.8m rows"],
+    ["master inventory", "10,453 × 35 fields"],
+    ["etl feed", "37-month dashboard"],
+  ];
+  if (!tight) {
+    /* measured, not estimated: Fragment Mono runs ~7.25 units/char at
+       12 — the first cut's 6.9 guess ran "rest api" under the box, and
+       records landed ON the product text (there is no empty row in a
+       34-unit box). Boxes start at 278 (details end ≤272), stand 44
+       tall, and the records dock on the y+18 row BELOW both text bands. */
+    s.setAttribute("viewBox", "0 0 560 330");
+    const laneY = [78, 158, 238];
+    el("text", { x: 16, y: 30 }).textContent = "the freight";
+    laneY.forEach((y, i) => {
+      el("text", { x: 120, y: y - 24, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 120, y: y - 10 }).textContent = src[i][1];
+      el("path", { d: `M 120 ${y} H 270`, class: "lane" });
+      el("line", { x1: 205, y1: y - 12, x2: 205, y2: y + 12, class: "gatecol lane" });
+      el("path", { d: `M 446 ${y - 20} h -168 v 44 h 168`, class: "prod" });
+      el("text", { x: 286, y: y - 6, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 286, y: y + 8 }).textContent = prod[i][1];
+      el("path", { d: `M 446 ${y} C 468 ${y} 464 158 486 158`, class: "stitch" });
+    });
+    el("text", { x: 205, y: 318, "text-anchor": "middle" }).textContent = "python · sql — the works";
+    yard.trunk = el("path", { d: "M 486 158 H 534", class: "stitch" });
+    el("path", { d: "M 534 152 L 546 158 L 534 164 Z", fill: "var(--pine)", stroke: "none" });
+    /* the destination sign sits UNDER the switch: every stitch curve
+       lives at x ≤ 486, so a label spanning 491–556 crosses nothing */
+    el("text", { x: 556, y: 178, "text-anchor": "end" }).textContent = "main line";
+    el("rect", { x: 278, y: 276, width: 168, height: 6, class: "meter" });
+    yard.meter = el("rect", { x: 278, y: 276, width: 0, height: 6, class: "meterfill" });
+    yard.meterW = 168;
+    el("text", { x: 278, y: 300, class: "meterlbl" }).textContent = "compliance 0% ⟶ 97% · 61 projects";
+    const lanes = [0, 1, 2, 0, 1, 0, 2, 1];
+    lanes.forEach((ln, i) => {
+      const y = laneY[ln];
+      const g = el("g", { class: "recg" });
+      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
+      yard.recs.push({ g, r, delay: i * 0.045,
+        line: [[-24, y], [120, y], [205, y], [270, y], [300 + (i % 3) * 46, y + 18]] });
+    });
+  } else {
+    /* the tight yard: the same freight, stacked. Records dock on the
+       box's LOWER-RIGHT row (Y+102, x 200) — clear of both text bands. */
+    s.setAttribute("viewBox", "0 0 240 430");
+    el("text", { x: 8, y: 16 }).textContent = "the freight";
+    for (let i = 0; i < 3; i++) {
+      const Y = 32 + i * 118;
+      el("text", { x: 8, y: Y + 10, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 8, y: Y + 24 }).textContent = src[i][1];
+      el("path", { d: `M 120 ${Y + 30} V ${Y + 62}`, class: "lane" });
+      el("line", { x1: 112, y1: Y + 46, x2: 128, y2: Y + 46, class: "gatecol lane" });
+      if (i === 0) el("text", { x: 136, y: Y + 50 }).textContent = "python · sql";
+      el("path", { d: `M 8 ${Y + 68} v 40 h 224 v -40`, class: "prod" });
+      el("text", { x: 14, y: Y + 82, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 14, y: Y + 96 }).textContent = prod[i][1];
+      const g = el("g", { class: "recg" });
+      const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
+      yard.recs.push({ g, r, delay: i * 0.07,
+        line: [[120, Y + 14], [120, Y + 46], [120, Y + 60], [200, Y + 100]] });
+    }
+    el("rect", { x: 8, y: 392, width: 224, height: 6, class: "meter" });
+    yard.meter = el("rect", { x: 8, y: 392, width: 0, height: 6, class: "meterfill" });
+    yard.meterW = 224;
+    el("text", { x: 8, y: 416, class: "meterlbl" }).textContent = "0% ⟶ 97% · 61 projects";
+    el("text", { x: 232, y: 428, "text-anchor": "end" }).textContent = "⟶ the main line";
+    yard.trunk = null;
+  }
+  if (yard.trunk) {
+    const L = yard.trunk.getTotalLength();
+    yard.trunk.style.strokeDasharray = L; yard.trunk.style.strokeDashoffset = L; yard.trunk._len = L;
+  }
+}
+function scrubPath(p) {
+  for (const rc of yard.recs) {
+    const t = smooth((p - 0.16 - rc.delay) / 0.36);
+    const [x, y] = polyAt(rc.line, t);
+    rc.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    rc.g.setAttribute("opacity", t <= 0 ? 0 : 1);
+    const landed = t > 0.62; /* past the works: the record is shaped */
+    if (rc._landed !== landed) { rc._landed = landed; rc.r.setAttribute("class", landed ? "rec landed" : "rec"); }
+  }
+  const mw = (smooth((p - 0.42) / 0.3) * 0.97 * yard.meterW).toFixed(1);
+  if (mw !== yard._mw) { yard._mw = mw; yard.meter.setAttribute("width", mw); }
+  if (yard.trunk) { /* the merge inks early enough that a mid-beat still shows it */
+    const t = smooth((p - 0.34) / 0.24);
+    yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
+  }
+}
+
+/* The review — the reviewer's marks draw themselves: a check-stroke for
+   the gate a human signed, a stop-bar for the two that refused. DOM
+   rows carry the words (the census floor is the page's own); only the
+   marks are ink. */
+const how = { rows: [...document.querySelectorAll("#gatesFig .grow")].map((row) => {
+  const mk = row.querySelector(".gmark");
+  return { row, mk, len: 0 };
+}) };
+for (const r of how.rows) {
+  r.len = r.mk.getTotalLength();
+  r.mk.style.strokeDasharray = r.len;
+  r.mk.style.strokeDashoffset = r.len;
+}
+function scrubHow(p) {
+  how.rows.forEach((r, i) => {
+    const t = smooth((p - 0.26 - i * 0.09) / 0.14);
+    const off = (r.len * (1 - t)).toFixed(2);
+    if (off !== r._off) { r._off = off; r.mk.style.strokeDashoffset = off; }
+    const marked = t >= 1;
+    if (r._marked !== marked) { r._marked = marked; r.row.classList.toggle("marked", marked); }
+  });
+}
+
+/* Cadence — the parse. Chips fly measured word → measured slot. */
+const cad = { fig: $("cadFig"), chips: [], ready: false };
+function cacheCadence() {
+  const figR = cad.fig.getBoundingClientRect();
+  const slot = $("slotWhen").getBoundingClientRect();
+  const rel = (r) => [r.left - figR.left, r.top - figR.top];
+  const wordOf = { who: ".w-who", when: ".w-when", meet: ".w-meet" };
+  cad.chips = [
+    { el: $("chWho"), w: "who", end: [rel(slot)[0] - 4, rel(slot)[1] - 26], at: 0.3 },
+    { el: $("chWhen"), w: "when", end: [rel(slot)[0] - 4, rel(slot)[1] + 4], at: 0.38 },
+    { el: $("chMeet"), w: "meet", end: [rel(slot)[0] - 4, rel(slot)[1] + 32], at: 0.5 },
+  ];
+  for (const c of cad.chips) {
+    const wr = cad.fig.querySelector(wordOf[c.w]).getBoundingClientRect();
+    c.start = [wr.left - figR.left, wr.top - figR.top - 4];
+    c.word = cad.fig.querySelector(wordOf[c.w]);
+  }
+  cad.ready = true;
+}
+function scrubCadence(p) {
+  if (!cad.ready) return;
+  for (const c of cad.chips) {
+    const t = smooth((p - c.at) / 0.22);
+    const x = lerp(c.start[0], c.end[0], t), y = lerp(c.start[1], c.end[1], t);
+    c.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    /* the chip fades in AS it lifts; the word hands over early — the two
+       never sit printed on top of each other */
+    c.el.style.opacity = smooth((p - c.at + 0.02) / 0.08).toFixed(2);
+    c.word.classList.toggle("dim", t > 0.18);
+  }
+}
+for (const id of ["chWho", "chWhen", "chMeet"]) {
+  $(id).addEventListener("mouseenter", () => cad.fig.setAttribute("data-hl", $(id).dataset.w));
+  $(id).addEventListener("mouseleave", () => cad.fig.removeAttribute("data-hl"));
+}
+
+/* jetpack — split → parallel → stitch. Blocks scrubbed on polylines;
+   each narrows at the deflate mark; the member assembles at the seam.
+   Wide: the stream runs left to right. Tight (240): it falls — split
+   at the top, four lanes down, stitched into the member at the foot. */
+const jet = { blocks: [], svg: $("jetFig"), member: null, seam: null };
+function buildJet(tight) {
+  const s = jet.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  jet.blocks = [];
+  const jlabs = [];
+  if (!tight) {
+    s.setAttribute("viewBox", "0 0 560 300");
+    const laneY = [64, 118, 172, 226];
+    el("text", { x: 16, y: 34 }).textContent = "byte stream";
+    el("text", { x: 262, y: 34 }).textContent = "deflate";
+    el("text", { x: 544, y: 34, "text-anchor": "end" }).textContent = "one gzip member";
+    laneY.forEach((y, i) => {
+      el("path", { d: `M 120 ${y} H 360`, class: "lane" });
+      const t = el("text", { x: 126, y: y - 8, class: "jlab" });
+      t.textContent = `vt-${i}`; jlabs.push([t, i]);
+      el("line", { x1: 268, y1: y - 12, x2: 268, y2: y + 12, class: "gatecol lane" });
+    });
+    el("path", { d: "M 24 145 H 96", class: "lane" });
+    laneY.forEach((y) => el("path", { d: `M 96 145 C 110 145 106 ${y} 120 ${y}`, class: "lane" }));
+    laneY.forEach((y) => el("path", { d: `M 360 ${y} C 376 ${y} 372 145 388 145`, class: "stitch" }));
+    el("path", { d: "M 388 145 H 452", class: "stitch" });
+    jet.seam = el("rect", { x: 449, y: 139, width: 7, height: 12, class: "gsq", opacity: 0 });
+    jet.member = el("rect", { x: 458, y: 138, width: 0, height: 14, fill: "var(--ink)", opacity: .8 });
+    /* end-anchored: left-anchored at 458 this line ran 300px past the
+       560 box and the svg clipped it mid-word (a round-2 defect) */
+    el("text", { x: 544, y: 268, "text-anchor": "end" }).textContent = "member header ⟶ stitched blocks, byte-valid";
+    for (let i = 0; i < 8; i++) {
+      const lane = i % 4, y = laneY[lane];
+      const g = el("g", { class: "blk" });
+      const r = el("rect", { x: -13, y: -6, width: 26, height: 12, class: "mk" }, g);
+      jet.blocks.push({
+        g, r,
+        line: [[-20, 145], [96, 145], [120, y], [268, y], [360, y], [388, 145], [452, 145]],
+        delay: i * 0.05, lane,
+      });
+    }
+  } else {
+    s.setAttribute("viewBox", "0 0 240 320");
+    const laneX = [56, 105, 154, 203];
+    el("text", { x: 8, y: 16 }).textContent = "byte stream";
+    el("path", { d: "M 120 26 V 46", class: "lane" });
+    laneX.forEach((x, i) => {
+      el("path", { d: `M 120 46 C 120 60 ${x} 54 ${x} 70`, class: "lane" });
+      el("path", { d: `M ${x} 70 V 196`, class: "lane" });
+      const t = el("text", { x: x + 6, y: 86, class: "jlab" });
+      t.textContent = `vt-${i}`; jlabs.push([t, i]);
+      el("line", { x1: x - 8, y1: 130, x2: x + 8, y2: 130, class: "gatecol lane" });
+      el("path", { d: `M ${x} 196 C ${x} 214 120 208 120 226`, class: "stitch" });
+    });
+    el("text", { x: 8, y: 134 }).textContent = "deflate";
+    el("path", { d: "M 120 226 V 240", class: "stitch" });
+    jet.seam = el("rect", { x: 114, y: 240, width: 12, height: 7, class: "gsq", opacity: 0 });
+    jet.member = el("rect", { x: 78, y: 254, width: 0, height: 14, fill: "var(--ink)", opacity: .8 });
+    el("text", { x: 120, y: 292, "text-anchor": "middle" }).textContent = "one gzip member — byte-valid";
+    for (let i = 0; i < 8; i++) {
+      const lane = i % 4, x = laneX[lane];
+      const g = el("g", { class: "blk" });
+      const r = el("rect", { x: -11, y: -6, width: 22, height: 12, class: "mk" }, g);
+      jet.blocks.push({
+        g, r,
+        line: [[120, -16], [120, 46], [x, 70], [x, 130], [x, 196], [120, 226], [120, 246]],
+        delay: i * 0.05, lane, tight: true,
+      });
+    }
+  }
+  traceOn(s, jlabs, jet.blocks, "lane");
+}
+function scrubJet(p) {
+  let arrived = 0;
+  for (const b of jet.blocks) {
+    const t = smooth((p - 0.2 - b.delay) / 0.4);
+    const [x, y] = polyAt(b.line, t);
+    b.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+    b.g.setAttribute("opacity", t <= 0 || t >= 1 ? 0 : 1);
+    const w = t > 0.5 ? 10 : b.tight ? 22 : 26; /* narrows through deflate */
+    b.r.setAttribute("width", w); b.r.setAttribute("x", -w / 2);
+    if (t >= 1) arrived++;
+  }
+  jet.seam.setAttribute("opacity", arrived > 0 ? 1 : 0);
+  jet.member.setAttribute("width", (arrived * 10.5).toFixed(1));
+}
+
+/* LifeQuest — the climb: the ledger drawn as a staircase. Three treads in
+   ink that draw themselves and get walked; two in pencil that never
+   resolve; the climber pauses on the third wearing the same clay ring the
+   run token wears when it halts. The pause is the content.
+   Wide carries the step names; tight (240) numbers the steps 01–05 and
+   lets the DOM ledger beside it carry the words — a truthful subset
+   beats an illegible caption. Labels sit BELOW the treads (risers only
+   rise above them, so nothing is crossed), ticks above-left, held tags
+   above-right where the climber never stands. */
+const climb = { svg: $("questFig"), steps: [], labels: [], ticks: [], held: [], tok: null, ring: null,
+  X0: 26, W: 78, Y0: 330, R: 60 };
+function buildClimb(tight) {
+  const s = climb.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  climb.steps = []; climb.labels = []; climb.ticks = []; climb.held = [];
+  if (!tight) { climb.X0 = 26; climb.W = 78; climb.Y0 = 330; climb.R = 60; s.setAttribute("viewBox", "0 0 440 380"); }
+  else { climb.X0 = 10; climb.W = 44; climb.Y0 = 290; climb.R = 52; s.setAttribute("viewBox", "0 0 240 330"); }
+  const { X0, W, Y0, R } = climb;
+  const names = tight
+    ? ["01", "02", "03", "04", "05"] /* the ledger rows carry the words */
+    : ["mission card", "tier ladder", "backend", "scale", "finished"];
+  el("path", { d: `M ${X0 - 18} ${Y0} h 18`, class: "lane" }); /* the ground */
+  for (let i = 0; i < 5; i++) {
+    const x = X0 + i * W, y = Y0 - i * R;
+    const solid = i < 3;
+    /* built steps: tread then riser; pencil steps: the riser INTO them is
+       pencil too — the way up is exactly as unbuilt as the step */
+    const d = i < 3
+      ? (i < 2 ? `M ${x} ${y} h ${W} v ${-R}` : `M ${x} ${y} h ${W}`)
+      : `M ${x} ${y + R} v ${-R} h ${W}`;
+    const p = el("path", { d, class: solid ? "tread" : "pencil" });
+    if (solid) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p._len = L; }
+    else p.setAttribute("opacity", 0);
+    climb.steps.push(p);
+    const lbl = el("text", { x: x + 2, y: y + 18, class: "steplbl" }); lbl.textContent = names[i];
+    climb.labels.push(lbl);
+    if (solid) {
+      const tk = el("text", { x: x + 4, y: y - 8, fill: "var(--pine)", "font-size": tight ? "12" : "13" });
+      tk.textContent = "✓"; tk.setAttribute("opacity", 0); climb.ticks.push(tk);
+    } else {
+      const h = el("text", { x: x + W - 4, y: y - 8, "text-anchor": "end", class: "heldtag" });
+      h.textContent = "held"; h.setAttribute("opacity", 0); climb.held.push(h);
+    }
+  }
+  climb.ring = el("circle", { r: 10, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
+  climb.tok = el("circle", { r: 5.5, fill: "var(--ink)", opacity: 0 });
+}
+function scrubClimb(p) {
+  /* the climber rests on the right end of each tread, clear of its label */
+  const stepC = (i) => [climb.X0 + i * climb.W + climb.W * 0.74, climb.Y0 - i * climb.R - 8];
+  climb.steps.forEach((st, i) => {
+    if (i < 3) { /* ink draws itself on approach */
+      const t = smooth((p - 0.1 - i * 0.055) / 0.13);
+      st.style.strokeDashoffset = (st._len * (1 - t)).toFixed(1);
+    } else { /* pencil fades up, and stays pencil */
+      const t = smooth((p - 0.3 - (i - 3) * 0.05) / 0.1);
+      st.setAttribute("opacity", (t * 0.9).toFixed(2));
+      climb.held[i - 3].setAttribute("opacity", smooth((p - 0.36 - (i - 3) * 0.04) / 0.06).toFixed(2));
+    }
+  });
+  /* the climber: hops the three built steps, then sits */
+  const tp = clamp((p - 0.24) / 0.16, 0, 1) * 2;
+  const seg = Math.min(1, Math.floor(tp)), u = clamp(tp - seg, 0, 1);
+  const [ax, ay] = stepC(seg), [bx, by] = stepC(seg + 1);
+  const tx = lerp(ax, bx, smooth(u)), ty = lerp(ay, by, smooth(u)) - Math.sin(Math.PI * u) * 24;
+  climb.tok.setAttribute("cx", tx.toFixed(1)); climb.tok.setAttribute("cy", ty.toFixed(1));
+  climb.tok.setAttribute("opacity", smooth((p - 0.18) / 0.06).toFixed(2));
+  climb.ring.setAttribute("cx", tx.toFixed(1)); climb.ring.setAttribute("cy", ty.toFixed(1));
+  climb.ring.setAttribute("opacity", p > 0.42 ? 1 : 0); /* the deliberate halt */
+  climb.ticks.forEach((tk, i) => tk.setAttribute("opacity", tp >= i + (i === 2 ? 1 : 0.5) ? 1 : 0));
+  climb.labels.forEach((l, i) => l.classList.toggle("walked", i < 3 && tp >= i));
+}
+
+/* Agentic AutoML — the notebook, worked by tools. The registry lists the
+   REAL 12 (mcpServer.ts, pinned e506c91, in source order); cells draw and
+   run as the bead walks the seven-phase rail; six gates open, the seventh
+   stays shut, and deploy never lights. No metric appears because none is
+   claimed — the drawing is the architecture, halting. */
+const AML_TOOLS = [
+  "list_project_files", "get_dataset_profile", "get_dataset_sample", "search_documents",
+  "list_cells", "read_cell", "write_cell", "edit_cell",
+  "run_cell", "delete_cell", "reorder_cells", "insert_cell",
+];
+const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], runs: [], gates: [], plabels: [], ticks: [],
+  bead: null, ring: null, deploySeg: null, phx: [], vert: false, from: 20, gateLead: 15 };
+const AML_PHASES = ["1.0 ingest", "2.0 explore", "3.0 preprocess", "4.0 engineer", "5.0 train", "6.0 experiments", "7.0 deploy"];
+function buildAml(tight) {
+  const s = aml.svg, el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  aml.tools = []; aml.dots = []; aml.cells = []; aml.runs = []; aml.gates = []; aml.plabels = [];
+  aml._lit = -1; /* fresh elements: the diff cache must not skip them */
+  aml.vert = !!tight;
+  if (!tight) {
+    s.setAttribute("viewBox", "0 0 560 372");
+    /* the supervisor */
+    el("rect", { x: 24, y: 16, width: 178, height: 46, rx: 3, class: "lane" });
+    el("text", { x: 36, y: 36, class: "lit" }).textContent = "langgraph supervisor";
+    el("text", { x: 36, y: 52, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    /* the registry — the real twelve, source order */
+    el("text", { x: 398, y: 30 }).textContent = "mcp registry ×12";
+    for (let i = 0; i < 12; i++) {
+      const y = 46 + i * 14.6;
+      aml.dots.push(el("rect", { x: 398, y: y - 7, width: 5, height: 5, class: "tdot" }));
+      const t = el("text", { x: 410, y, class: "tname" }); t.textContent = AML_TOOLS[i];
+      aml.tools.push(t);
+    }
+    /* the caveat lives IN the figure, not in a comment */
+    el("text", { x: 556, y: 226, "text-anchor": "end", class: "staged" }).textContent = "timing staged · order real";
+    /* the notebook: six cells, written and run */
+    el("path", { d: "M 109 62 C 109 78 96 82 84 94", class: "edge", opacity: .3 });
+    el("path", { d: "M 202 40 C 300 40 340 44 394 46", class: "edge", opacity: .3 });
+    for (let i = 0; i < 6; i++) {
+      const y = 94 + i * 25;
+      el("rect", { x: 60, y, width: 300, height: 19, class: "cellr" });
+      const len = [204, 246, 168, 262, 224, 186][i];
+      const ln = el("path", { d: `M 70 ${y + 10} h ${len}`, class: "cellink" });
+      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
+      aml.cells.push(ln);
+      const rn = el("text", { x: 346, y: y + 14, class: "cellrun", "text-anchor": "end" });
+      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
+    }
+    el("text", { x: 60, y: 262, class: "fsm" }).textContent = "the notebook — written, run, and re-read by the tools";
+    /* the seven-phase rail; a gate BEFORE every phase; deploy stays dashed */
+    const PHX = Array.from({ length: 7 }, (_, i) => 52 + i * 76);
+    el("path", { d: `M 20 300 H ${PHX[6] - 16}`, class: "lane" });
+    aml.deploySeg = el("path", { d: `M ${PHX[6] - 16} 300 H 540`, class: "lane", "stroke-dasharray": "3 6" });
+    for (let i = 0; i < 7; i++) {
+      el("line", { x1: PHX[i], y1: 294, x2: PHX[i], y2: 306, class: "lane" });
+      aml.gates.push(el("rect", { x: PHX[i] - 20, y: 295, width: 9, height: 10, class: i === 6 ? "phgate shut" : "phgate" }));
+      const lbl = el("text", { x: PHX[i], y: i % 2 ? 344 : 326, "text-anchor": "middle",
+        class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
+      lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
+    }
+    aml.phx = PHX; aml.from = 20; aml.gateLead = 15;
+    aml.ring = el("circle", { cy: 300, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
+    aml.bead = el("circle", { cy: 300, r: 4.5, fill: "var(--ink)", opacity: 0 });
+  } else {
+    /* the tight plate: the same machine, stacked — supervisor over
+       notebook over the full registry over a vertical phase rail. All
+       twelve names stay, at 11 units on the 240 plate: legible at 320. */
+    s.setAttribute("viewBox", "0 0 240 668");
+    el("rect", { x: 8, y: 8, width: 224, height: 46, rx: 3, class: "lane" });
+    el("text", { x: 16, y: 28, class: "lit" }).textContent = "langgraph supervisor";
+    el("text", { x: 16, y: 44, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    el("path", { d: "M 120 54 V 66", class: "edge", opacity: .3 });
+    for (let i = 0; i < 6; i++) {
+      const y = 70 + i * 24;
+      el("rect", { x: 8, y, width: 224, height: 18, class: "cellr" });
+      const len = [150, 180, 120, 190, 165, 135][i];
+      const ln = el("path", { d: `M 16 ${y + 10} h ${len}`, class: "cellink" });
+      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
+      aml.cells.push(ln);
+      const rn = el("text", { x: 224, y: y + 13, class: "cellrun", "text-anchor": "end" });
+      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
+    }
+    el("text", { x: 8, y: 226, class: "fsm" }).textContent = "the notebook, worked by the tools";
+    el("text", { x: 8, y: 252 }).textContent = "mcp registry ×12";
+    for (let i = 0; i < 12; i++) {
+      const y = 268 + i * 15;
+      aml.dots.push(el("rect", { x: 8, y: y - 6, width: 5, height: 5, class: "tdot" }));
+      const t = el("text", { x: 20, y, class: "tname" }); t.textContent = AML_TOOLS[i];
+      aml.tools.push(t);
+    }
+    el("text", { x: 8, y: 452, class: "staged" }).textContent = "timing staged · order real";
+    const PHY = Array.from({ length: 7 }, (_, i) => 478 + i * 27);
+    el("path", { d: `M 16 466 V ${PHY[6] - 20}`, class: "lane" });
+    aml.deploySeg = el("path", { d: `M 16 ${PHY[6] - 20} V 660`, class: "lane", "stroke-dasharray": "3 6" });
+    for (let i = 0; i < 7; i++) {
+      el("line", { x1: 10, y1: PHY[i], x2: 22, y2: PHY[i], class: "lane" });
+      aml.gates.push(el("rect", { x: 11.5, y: PHY[i] - 18, width: 9, height: 10, class: i === 6 ? "phgate shut" : "phgate" }));
+      const lbl = el("text", { x: 32, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
+      lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
+    }
+    aml.phx = PHY; aml.from = 466; aml.gateLead = 12;
+    aml.ring = el("circle", { cx: 16, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
+    aml.bead = el("circle", { cx: 16, r: 4.5, fill: "var(--ink)", opacity: 0 });
+  }
+  /* micro: a tool name answers the pointer with its registry dot */
+  aml.tools.forEach((t, i) => {
+    t.addEventListener("pointerenter", () => aml.dots[i].classList.add("hot"));
+    t.addEventListener("pointerleave", () => aml.dots[i].classList.remove("hot"));
+  });
+}
+function scrubAml(p) {
+  const e = smooth((p - 0.14) / 0.6);       /* the run, start → the seventh gate */
+  const HALT = aml.phx[6] - (aml.vert ? 13 : 15.5); /* the shut gate's centre */
+  const axis = aml.vert ? "cy" : "cx";
+  const xb = lerp(aml.from, HALT, e);
+  aml.bead.setAttribute(axis, xb.toFixed(1));
+  aml.bead.setAttribute("opacity", smooth((p - 0.12) / 0.05).toFixed(2));
+  aml.ring.setAttribute(axis, HALT);
+  aml.ring.setAttribute("opacity", e >= 1 ? 1 : 0); /* halted: the site's own ring */
+  /* class writes are DIFFED — round 3 rewrote ~36 class attributes per
+     frame with unchanged values (6 gates + 6 labels + 12 tools + 12
+     dots); each is a state that flips a handful of times per pass, so
+     the cached-value guard turns almost every frame into zero writes */
+  aml.gates.forEach((g, i) => {
+    if (i === 6) return; /* the human gate does not open for a scroll */
+    const open = xb > aml.phx[i] - aml.gateLead;
+    if (g._open !== open) { g._open = open; g.setAttribute("class", open ? "phgate open" : "phgate"); }
+  });
+  aml.plabels.forEach((l, i) => {
+    if (i === 6) return; /* deploy never lights */
+    const lit = xb > aml.phx[i];
+    if (l._lit !== lit) { l._lit = lit; l.setAttribute("class", lit ? "phlbl lit" : "phlbl dim"); }
+  });
+  /* tools light in source order as the run advances — order is the file's,
+     the firing schedule is an illustration, not a claim */
+  const lit = Math.floor(clamp(e * 1.08, 0, 1) * 12);
+  if (aml._lit !== lit) {
+    aml._lit = lit;
+    aml.tools.forEach((t, i) => t.setAttribute("class", i < lit ? "tname on" : "tname"));
+    aml.dots.forEach((d, i) => d.setAttribute("class", i < lit ? "tdot on" : "tdot"));
+  }
+  /* the notebook fills as the phases pass */
+  aml.cells.forEach((c, i) => {
+    const t = smooth((e - 0.08 - i * 0.13) / 0.12);
+    const off = (c._len * (1 - t)).toFixed(1);
+    if (c._off !== off) { c._off = off; c.style.strokeDashoffset = off; }
+    const ran = t >= 1;
+    if (aml.runs[i]._on !== ran) { aml.runs[i]._on = ran; aml.runs[i].setAttribute("opacity", ran ? 1 : 0); }
+  });
+}
+
+/* ————— editions: measured seats choose the plate ————— The floor is
+   arithmetic, not taste: rendered px = authored px × seat / viewBox.
+   Wide 560-unit boxes author at 12 ⟶ need a ≥515px seat; the 440-unit
+   climb at 11 ⟶ ≥450 (margin over 405); the net authors at 14.5 on 460
+   ⟶ ≥355. Anything narrower rebuilds on its tight 240-unit plate. */
+const editions = { applied: null, jet: null, aml: null, quest: null, net: null, path: null };
+function innerW(el) {
+  const cs = getComputedStyle(el);
+  return el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+}
+function chooseEditions() {
+  const seats = {
+    applied: [innerW(applied.svg.parentElement), 515, buildApplied],
+    jet: [innerW(jet.svg.parentElement), 515, buildJet],
+    aml: [innerW(aml.svg.parentElement), 515, buildAml],
+    quest: [innerW(climb.svg.parentElement), 450, buildClimb],
+    net: [$("netwrap").clientWidth, 355, buildNet],
+    path: [innerW(yard.svg.parentElement), 515, buildPath],
+  };
+  let changed = false;
+  for (const [k, [w, min, build]] of Object.entries(seats)) {
+    const tight = w > 0 && w < min;
+    if (editions[k] === tight) continue;
+    editions[k] = tight; changed = true;
+    build(tight);
+  }
+  return changed;
+}
+
+/* the bench lanes (Glyph) — 1× vs the committed 3.5× */
+function scrubBench(p) {
+  const t = smooth((p - 0.34) / 0.3);
+  $("bScalar").style.transform = `scaleX(${(t * (1 / 3.5)).toFixed(3)})`;
+  $("bSimd").style.transform = `scaleX(${t.toFixed(3)})`;
+}
+/* the bench lanes (jetpack) — 66 vs 455 MB/s, drawn at the point-
+   estimate ratio; the label carries the conservative 6.5× CI bound */
+function scrubJetBench(p) {
+  const t = smooth((p - 0.3) / 0.3);
+  $("jScalar").style.transform = `scaleX(${(t * (66 / 455)).toFixed(3)})`;
+  $("jPar").style.transform = `scaleX(${t.toFixed(3)})`;
+}
+
+/* LifeQuest — the honest ledger: three resolve, two stay held. Rows
+   resolve in step with the climb next to them. */
+const quests = [...document.querySelectorAll(".quests .q")];
+function scrubQuests(p) {
+  quests.forEach((q, i) => {
+    const on = p > 0.26 + i * 0.045;
+    if (q._on === on) return; /* text writes only on a state CHANGE —
+      round 2 rewrote every row every frame, a layout write per scroll */
+    q._on = on;
+    const held = q.classList.contains("held-target");
+    q.classList.toggle("done", on && !held);
+    q.classList.toggle("held", on && held);
+    q.querySelector(".qm").textContent = on ? (held ? "—" : "✓") : "—";
+    q.querySelector(".qs").textContent = on ? (held ? "held" : "shipped") : "…";
+  });
+}
+
+/* the gate ladder — the day you just travelled, recapped at the door
+   (the automl station owns the 7-phase list now; here the rail carries
+   the run's OWN stops). The deploy line NEVER lights: that word belongs
+   to a person, not a scroll. */
+const phases = [...document.querySelectorAll(".ladder li[data-ph]")];
+function scrubGate(p) {
+  phases.forEach((li) => {
+    const i = +li.dataset.ph;
+    if (i === 10) return; /* deploy — gated; a scroll never lights it */
+    li.classList.toggle("lit", p > 0.1 + i * 0.03);
+  });
+}
+
+/* ————— manifest ————— */
+const maniLines = [...document.querySelectorAll("#manifest li")];
+function setStamps(count) {
+  const grew = count > window.__world.stamped;
+  window.__world.stamped = count;
+  maniLines.forEach((li, i) => li.classList.toggle("stamped", i < count));
+  const mc = $("mcount");
+  mc.textContent = `${count} / 6`;
+  if (grew) { mc.classList.remove("bump"); void mc.offsetWidth; mc.classList.add("bump"); }
+}
+$("mtoggle").addEventListener("click", () => {
+  const open = $("manifest").classList.toggle("open");
+  $("mtoggle").setAttribute("aria-expanded", String(open));
+});
+
+/* ————— masthead clock + phase ————— */
+const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1361]; /* the datelines, minutes — station stops are the site's own */
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the gate — held"];
+let lastClock = -1, lastPhase = -1;
+function setMast(beat, p) {
+  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, 10)];
+  const m = Math.round(lerp(a, b, clamp(p, 0, 1)));
+  if (m !== lastClock) { /* write only on minute change: no idle layout */
+    lastClock = m;
+    $("mclock").textContent = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  }
+  if (beat !== lastPhase) { lastPhase = beat; $("mphase").textContent = PHASE_NAMES[beat]; }
+}
+
+/* ————— the engine ————— */
+let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false;
+const PROF = FLAGS.has("prof"); /* ?prof — the harness reads the app's own
+   per-frame scripting cost from __prof, separated from raster/composite */
+window.__prof = [];
+
+function frame() {
+  const y = scrollY;
+  const changed = y !== lastY;
+  if (changed) { lastY = y; stillFrames = 0; } else { stillFrames++; }
+  if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
+  requestAnimationFrame(frame);
+  if (!changed) return;
+  if (PROF) {
+    const t0 = performance.now();
+    work(y);
+    if (window.__prof.length < 30000) window.__prof.push(performance.now() - t0);
+  } else work(y);
+}
+
+function work(y) {
+  if (!booted) return; /* a scroll can arrive before the figures exist —
+    round 2 built them at module eval; editions build in boot() */
+  /* which beat, how far */
+  let beat = 0, bp = 0;
+  for (let i = 0; i < beats.length; i++) {
+    const b = beats[i];
+    const p = (y + vh * 0.62 - b.top) / b.h; /* progress of the reading line through the beat */
+    if (p >= 0) { beat = i; bp = clamp(p, 0, 1); }
+  }
+  window.__world.beat = beat; window.__world.beatP = +bp.toFixed(3);
+
+  /* the ground shifts: arc color + night flip + wash */
+  const arc = arcColor(beat, bp);
+  const key = arc.rgb.map((x) => Math.round(x * 255)).join() + (arc.night ? "n" : "d");
+  if (key !== lastArcKey && !FLAGS.has("noarc")) {
+    lastArcKey = key;
+    $("field").style.background = rgbCss(arc.rgb);
+    /* the masthead scrim keeps step with the field, so exiting elements
+       pass BEHIND the chrome instead of printing over its text */
+    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
+    if (arc.night !== window.__world.night) {
+      document.documentElement.toggleAttribute("data-night", arc.night);
+      window.__world.night = arc.night;
+      refreshInk(); repaintPad();
+    }
+  }
+  window.__world.arc = +(beat + bp).toFixed(3);
+  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, y / Math.max(1, docH - vh), arc.sun, arc.night ? 1 : 0);
+  if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
+  if (document.body.classList.contains("no-gl")) {
+    const t = clamp(arc.sun / 5, 0, 1);
+    $("sun").style.transform =
+      `translate(${(lerp(0.18, 0.85, t) * vw).toFixed(0)}px, ${((0.9 - Math.sin(t * Math.PI) * 0.75) * vh).toFixed(0)}px)`;
+    $("sun").style.opacity = arc.sun < 4.6 ? 1 : clamp(1 - (arc.sun - 4.6) / 0.75, 0, 1);
+  }
+
+  /* the thread + token: scrolling IS travelling. The 12-row ladder can
+     seat the dock BELOW the reading line's deepest reach on short-tall
+     viewports (measured at 1440×900: dock 12612, max reach 12501) — so
+     over the final half-viewport of scroll the token glides whatever
+     shortfall remains. Still a pure function of y: any jump lands right. */
+  let tokenY = clamp(y + vh * 0.55, samples.length ? samples[0].y : 0, gatePageY);
+  const yEnd = Math.max(1, docH - vh);
+  const short = gatePageY - (yEnd + vh * 0.55);
+  if (short > 0) tokenY = clamp(tokenY + short * smooth((y - (yEnd - vh * 0.5)) / (vh * 0.5)), 0, gatePageY);
+  const tokenL = lenAtY(tokenY);
+  const halted = tokenL >= pathLen - 2;
+  window.__world.halted = halted;
+  if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
+
+  /* stations scrub only near their own beat */
+  if (Math.abs(beat - 1) <= 1) scrubWho(beat < 1 ? 0 : beat > 1 ? 1 : bp);
+  if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
+  if (Math.abs(beat - 3) <= 1) scrubApplied(beat < 3 ? 0 : beat > 3 ? 1 : bp);
+  if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
+  if (Math.abs(beat - 5) <= 1) scrubBench(beat < 5 ? 0 : beat > 5 ? 1 : bp);
+  if (Math.abs(beat - 6) <= 1) { const p6 = beat < 6 ? 0 : beat > 6 ? 1 : bp; scrubJet(p6); scrubJetBench(p6); }
+  if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
+  if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
+  if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
+  if (beat >= 9) scrubGate(beat < 10 ? 0 : bp);
+
+  /* manifest stamps: one line as each station completes (reversible).
+     The six stations ride beats 3–8 now. */
+  let stamped = 0;
+  for (let i = 3; i <= 8; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
+  if (stamped !== window.__world.stamped) setStamps(stamped);
+  /* at the gate, the corner manifest LANDS into the page's own ledger;
+     at a stop it folds to a pill so the work owns the corner */
+  $("manifest").classList.toggle("landed", beat === 10 && bp > 0.22);
+  $("manifest").classList.toggle("compact",
+    !mobile && beat >= 1 && beat <= 9 && bp > 0.18 && bp < 0.8);
+  /* the chrome bows out sooner on stacked seats — the card reaches the
+     masthead earlier when the columns are a single stack. Round-3
+     leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
+     so the fade completes before the card's headline reaches the clock */
+  $("mast").classList.toggle("gone", beat === 10 && bp > (stacked ? 0.32 : 0.5));
+  setMast(beat, bp);
+
+  /* fx: arrive → drift → depart, a pure function of position */
+  if (FLAGS.has("nofx")) return;
+  for (const f of fx) {
+    if (!f.near) continue;
+    const p = (y + vh - f.top) / (vh + f.h);
+    if (p < -0.1 || p > 1.1) continue;
+    const [ia, ib, ix, iy, ir, is] = f.spec.in;
+    const [oa, ob, ox, oy, or_, os] = f.spec.out;
+    const ein = smooth((p - ia) / (ib - ia));
+    const eout = smooth((p - oa) / (ob - oa));
+    const tx = lerp(ix, 0, ein) * vw / 100 + lerp(0, ox, eout) * vw / 100;
+    const ty = lerp(iy, 0, ein) * vh / 100 + lerp(0, oy, eout) * vh / 100
+      + (0.5 - p) * f.spec.drift;
+    const r = lerp(ir, 0, ein) + lerp(0, or_, eout);
+    const s = lerp(is, 1, ein) * lerp(1, os, eout);
+    /* quantized (0.5px / 0.1deg / 0.005 / 0.02): settled elements drift
+       ~0.2px per frame, so most frames become skipped writes */
+    const op = (Math.round(ein * (1 - eout) * 50) / 50).toFixed(2);
+    const qx = Math.round(tx * 2) / 2, qy = Math.round(ty * 2) / 2;
+    const qr = Math.round(r * 10) / 10, qs = Math.round(s * 200) / 200;
+    const tf =
+      `translate3d(${qx}px, ${qy}px, 0)` +
+      (qr ? ` rotate(${qr}deg)` : "") +
+      (qs !== 1 ? ` scale(${qs})` : "");
+    if (tf !== f.lastTf) { f.lastTf = tf; f.el.style.transform = tf; }
+    if (op !== f.lastOp) { f.lastOp = op; f.el.style.opacity = op; }
+  }
+}
+
+function wake(force) {
+  if (RM) return;
+  if (force) { lastY = -1; stillFrames = 0; } /* repaint even if y is unchanged */
+  if (running) return;
+  running = true; stillFrames = 0; lastY = -1;
+  requestAnimationFrame(frame);
+}
+addEventListener("scroll", wake, { passive: true });
+addEventListener("pointermove", () => { if (running) stillFrames = 0; }, { passive: true });
+
+/* near-view gating for fx (a cheap census, not a per-frame rect read).
+   The wake must FORCE a recompute: after an instant jump the engine may
+   be in its idle tail, where unchanged-scroll frames skip all work — a
+   member that turned near during the tail would never be drawn. */
+const io = new IntersectionObserver((es) => {
+  for (const e of es) {
+    const f = fx.find((f) => f.el === e.target);
+    if (f) f.near = e.isIntersecting;
+  }
+  lastY = -1; stillFrames = 0; wake();
+}, { rootMargin: "35% 0px" });
+for (const f of fx) io.observe(f.el);
+
+let resizeT = null;
+addEventListener("resize", () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => {
+    chooseEditions(); /* a narrower seat may swap a figure's plate */
+    cacheGeometry(); buildThread(); cacheCadence(); fitPad();
+    if (RM) { settleAll(); drawThread(scrollY, gatePageY, pathLen, true); }
+    wake(true);
+  }, 160);
+});
+
+/* ————— Glyph: the real classifier (fast-mnist-nn, C++/SIMD → WASM) ————— */
+const ready = (async () => {
+  const mod = await import("./wasm/fast_mnist.js");
+  const instance = await mod.default({ locateFile: (p) => `wasm/${p}` });
+  const resp = await fetch("wasm/model.weights.bin");
+  if (!resp.ok) throw new Error(`weights ${resp.status}`);
+  const bytes = new Uint8Array(await resp.arrayBuffer());
+  const c = new instance.WasmClassifier();
+  c.loadWeightsFromBinary(bytes);
+  return c;
+})();
+window.__demo.ready = ready;
+ready.then(
+  () => { $("glyphStatus").textContent = "awake · local"; },
+  () => { $("glyphStatus").textContent = "serve over http to run"; }
+);
+
+/* the drawn net: input canvas + 100 hidden dots + 10 outputs, seeded
+   sparse edges. Lit by REAL activations on classify. Wide reads left to
+   right with horizontal confidence bars; tight (240) stacks input over
+   hidden over ten RISING bars with their digits beneath. */
+const net = { hn: [], on: [], ed: [], inCtx: null, tight: false, vbw: 460, vbh: 300, r0: 3.2 };
+function buildNet(tight) {
+  const s = $("net"), el = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  net.hn = []; net.on = []; net.ed = []; net.tight = !!tight;
+  let seed = 11;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  if (!tight) {
+    net.vbw = 460; net.vbh = 300; net.r0 = 3.2;
+    s.setAttribute("viewBox", "0 0 460 300");
+    const fo = el("foreignObject", { x: 14, y: 88, width: 96, height: 96 });
+    const cv = document.createElement("canvas");
+    cv.id = "inCanvas"; cv.width = 28; cv.height = 28;
+    cv.style.width = "96px"; cv.style.height = "96px";
+    fo.appendChild(cv);
+    net.inCtx = cv.getContext("2d");
+    el("text", { x: 14, y: 208, class: "l1" }).textContent = "input 28×28";
+    for (let i = 0; i < 100; i++) {
+      const r = Math.floor(i / 10), c = i % 10;
+      net.hn.push(el("circle", { cx: 190 + c * 13, cy: 78 + r * 13, r: 3.2, class: "hn l2", opacity: 0.12 }));
+    }
+    el("text", { x: 190, y: 232 }).textContent = "hidden ×100";
+    for (let d = 0; d < 10; d++) {
+      const g = el("g", { class: "on l3" });
+      const y = 42 + d * 24;
+      el("text", { x: 356, y: y + 4, "text-anchor": "end" }, g).textContent = d;
+      el("rect", { x: 364, y: y - 3, width: 0, height: 6, class: "bar" }, g);
+      net.on.push({ g, bar: g.querySelector(".bar") });
+    }
+    el("text", { x: 356, y: 292, "text-anchor": "end" }).textContent = "softmax ×10";
+    for (let k = 0; k < 46; k++) { /* input region → hidden */
+      const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
+      const iy = 92 + rnd() * 88;
+      net.ed.push({ el: el("line", { x1: 112, y1: iy, x2: 190 + hc * 13 - 4, y2: 78 + hr * 13, class: "ed l2", opacity: 0.05, "stroke-width": .6 }), a: h, kind: 0 });
+    }
+    for (let k = 0; k < 70; k++) { /* hidden → output */
+      const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
+      const o = Math.floor(rnd() * 10);
+      net.ed.push({ el: el("line", { x1: 190 + hc * 13 + 4, y1: 78 + hr * 13, x2: 340, y2: 42 + o * 24, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
+    }
+  } else {
+    net.vbw = 240; net.vbh = 310; net.r0 = 2.6;
+    s.setAttribute("viewBox", "0 0 240 310");
+    const fo = el("foreignObject", { x: 8, y: 26, width: 72, height: 72 });
+    const cv = document.createElement("canvas");
+    cv.id = "inCanvas"; cv.width = 28; cv.height = 28;
+    cv.style.width = "72px"; cv.style.height = "72px";
+    fo.appendChild(cv);
+    net.inCtx = cv.getContext("2d");
+    el("text", { x: 8, y: 118 }).textContent = "input 28×28";
+    for (let i = 0; i < 100; i++) {
+      const r = Math.floor(i / 10), c = i % 10;
+      net.hn.push(el("circle", { cx: 128 + c * 10.8, cy: 24 + r * 10.8, r: 2.6, class: "hn l2", opacity: 0.12 }));
+    }
+    el("text", { x: 128, y: 142 }).textContent = "hidden ×100";
+    el("text", { x: 8, y: 180 }).textContent = "softmax ×10";
+    for (let d = 0; d < 10; d++) {
+      const g = el("g", { class: "on l3" });
+      const x = 10 + d * 22.6;
+      el("rect", { x, y: 262, width: 9, height: 0, class: "bar" }, g);
+      el("text", { x: x + 4.5, y: 282, "text-anchor": "middle" }, g).textContent = d;
+      net.on.push({ g, bar: g.querySelector(".bar") });
+    }
+    for (let k = 0; k < 34; k++) { /* input region → hidden */
+      const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
+      const iy = 32 + rnd() * 60;
+      net.ed.push({ el: el("line", { x1: 82, y1: iy, x2: 128 + hc * 10.8 - 3, y2: 24 + hr * 10.8, class: "ed l2", opacity: 0.05, "stroke-width": .6 }), a: h, kind: 0 });
+    }
+    for (let k = 0; k < 54; k++) { /* hidden → output */
+      const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
+      const o = Math.floor(rnd() * 10);
+      net.ed.push({ el: el("line", { x1: 128 + hc * 10.8, y1: 24 + hr * 10.8 + 3, x2: 10 + o * 22.6 + 4.5, y2: 236, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
+    }
+  }
+  /* micro: hidden nodes answer the pointer (event-driven, no idle loop) */
+  s.addEventListener("pointermove", (ev) => {
+    const r = s.getBoundingClientRect();
+    const x = ((ev.clientX - r.left) / r.width) * net.vbw, y = ((ev.clientY - r.top) / r.height) * net.vbh;
+    for (const n of net.hn) {
+      const d = Math.hypot(n.cx.baseVal.value - x, n.cy.baseVal.value - y);
+      n.setAttribute("r", d < 26 ? net.r0 * 1.35 : net.r0);
+    }
+  }, { passive: true });
+  s.addEventListener("pointerleave", () => { for (const n of net.hn) n.setAttribute("r", net.r0); });
+  if (net.lastLight) lightNet(...net.lastLight); /* a rebuild keeps your read */
+}
+
+function lightNet(px, hidden, conf, pred) {
+  net.lastLight = [px, hidden, conf, pred];
+  const ctx = net.inCtx;
+  const img = ctx.createImageData(28, 28);
+  const night = document.documentElement.hasAttribute("data-night");
+  const [ir, ig, ib] = night ? [246, 239, 226] : [38, 35, 28];
+  for (let i = 0; i < 784; i++) {
+    img.data[i * 4] = ir; img.data[i * 4 + 1] = ig; img.data[i * 4 + 2] = ib;
+    img.data[i * 4 + 3] = Math.round(px[i] * 255);
+  }
+  ctx.putImageData(img, 0, 0);
+  const hMax = Math.max(1e-6, ...hidden);
+  net.hn.forEach((n, i) => n.setAttribute("opacity", (0.12 + 0.88 * hidden[i] / hMax).toFixed(2)));
+  net.on.forEach((o, d) => {
+    if (net.tight) { /* rising bars: anchor at the 262 baseline */
+      const h = Math.max(1, conf[d] * 66);
+      o.bar.setAttribute("height", h.toFixed(1));
+      o.bar.setAttribute("y", (262 - h).toFixed(1));
+    } else o.bar.setAttribute("width", Math.max(1, conf[d] * 88).toFixed(1));
+    o.g.classList.toggle("win", d === pred);
+  });
+  for (const e of net.ed) {
+    const act = e.kind === 0 ? hidden[e.a] / hMax : (hidden[e.a] / hMax) * conf[e.b] * 2;
+    e.el.setAttribute("opacity", clamp(0.05 + act * 0.6, 0.05, 0.7).toFixed(2));
+  }
+}
+
+/* the pad (stroke capture identical to the shipped fast-mnist demo) */
+const PAD = 280, BRUSH = 22, GRID = 28;
+const pad = $("pad"), padCtx = pad.getContext("2d");
+let strokes = [], current = null;
+function fitPad() {
+  const r = pad.getBoundingClientRect();
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  pad.width = Math.round(r.width * dpr); pad.height = Math.round(r.height * dpr);
+  repaintPad();
+}
+function tracePath(c, pts, s) {
+  if (pts.length < 2) {
+    c.beginPath(); c.arc(pts[0].x * s, pts[0].y * s, c.lineWidth / 2, 0, Math.PI * 2);
+    c.fillStyle = c.strokeStyle; c.fill(); return;
+  }
+  c.beginPath(); c.moveTo(pts[0].x * s, pts[0].y * s);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2, my = (pts[i].y + pts[i + 1].y) / 2;
+    c.quadraticCurveTo(pts[i].x * s, pts[i].y * s, mx * s, my * s);
+  }
+  c.lineTo(pts[pts.length - 1].x * s, pts[pts.length - 1].y * s);
+  c.stroke();
+}
+function repaintPad() {
+  const s = pad.width / PAD;
+  padCtx.clearRect(0, 0, pad.width, pad.height);
+  padCtx.lineWidth = BRUSH * s; padCtx.lineCap = padCtx.lineJoin = "round";
+  padCtx.strokeStyle = document.documentElement.hasAttribute("data-night") ? "#f6efe2" : "#26231c";
+  for (const st of strokes) tracePath(padCtx, st, s);
+}
+const off = document.createElement("canvas"); off.width = off.height = PAD;
+const small = document.createElement("canvas"); small.width = small.height = GRID;
+function extractPixels() {
+  const oc = off.getContext("2d");
+  oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
+  oc.strokeStyle = oc.fillStyle = "#fff";
+  oc.lineWidth = BRUSH; oc.lineCap = oc.lineJoin = "round";
+  for (const st of strokes) tracePath(oc, st, 1);
+  const sc = small.getContext("2d");
+  sc.drawImage(off, 0, 0, GRID, GRID);
+  const { data } = sc.getImageData(0, 0, GRID, GRID);
+  const px = new Array(GRID * GRID);
+  for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+  return px;
+}
+let timer = null, busy = false, again = false;
+async function classifyNow() {
+  if (busy) { again = true; return; }
+  busy = true;
+  try {
+    const c = await ready;
+    const px = extractPixels();
+    const t0 = performance.now();
+    const r = c.classify(px);
+    const ms = performance.now() - t0;
+    const conf = Array.from(r.confidence);
+    const hidden = Array.from(r.hidden_activations);
+    const p = Number(r.prediction);
+    const v = $("verdict");
+    v.textContent = String(p);
+    v.classList.remove("idle", "stamp"); void v.offsetWidth; v.classList.add("stamp");
+    $("conf").textContent = (conf[p] * 100).toFixed(1) + "%";
+    $("fwd").textContent = ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms";
+    lightNet(px, hidden, conf, p);
+    setGlyphTraveller(p);
+    const lm = $("liveSampleM");
+    lm.textContent = `read “${p}” in this tab · ${(conf[p] * 100).toFixed(1)}% · ${ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms"}`;
+    const ls = $("liveSample");
+    ls.hidden = false; ls.classList.add("live");
+    window.__demo.last = { prediction: p, confidence: conf[p], ms };
+    /* the card grew a line: the cached page geometry (fx windows, the
+       thread's anchors, the b6 dusk contract) must follow the truth */
+    cacheGeometry(); buildThread();
+  } catch { /* status line reports load failure */ }
+  busy = false;
+  if (again) { again = false; classifyNow(); }
+}
+const queueClassify = () => { clearTimeout(timer); timer = setTimeout(classifyNow, 120); };
+function toPadXY(ev) {
+  const r = pad.getBoundingClientRect();
+  return {
+    x: clamp(((ev.clientX - r.left) / r.width) * PAD, 0, PAD),
+    y: clamp(((ev.clientY - r.top) / r.height) * PAD, 0, PAD),
+  };
+}
+pad.addEventListener("pointerdown", (ev) => {
+  pad.setPointerCapture(ev.pointerId);
+  current = [toPadXY(ev)]; strokes.push(current);
+  $("padhint").classList.add("gone");
+  repaintPad();
+});
+pad.addEventListener("pointermove", (ev) => {
+  if (!current) return;
+  current.push(toPadXY(ev)); repaintPad(); queueClassify();
+});
+const lift = () => { if (current) { current = null; classifyNow(); } };
+pad.addEventListener("pointerup", lift);
+pad.addEventListener("pointercancel", lift);
+$("clear").addEventListener("click", () => {
+  strokes = []; current = null; repaintPad();
+  $("padhint").classList.remove("gone");
+  const v = $("verdict"); v.textContent = "·"; v.classList.add("idle");
+  $("conf").textContent = "—"; $("fwd").textContent = "—";
+  window.__demo.last = null;
+});
+
+/* ————— jetpack: a REAL number, computed here (CompressionStream) ————— */
+$("gzbtn").addEventListener("click", async () => {
+  const out = $("gzout");
+  if (typeof CompressionStream === "undefined") { out.textContent = "CompressionStream unavailable in this browser"; return; }
+  out.textContent = "compressing…";
+  const src = new TextEncoder().encode(document.documentElement.outerHTML.slice(0, 8192));
+  const gz = new Response(
+    new Blob([src]).stream().pipeThrough(new CompressionStream("gzip"))
+  );
+  const n = (await gz.arrayBuffer()).byteLength;
+  const pct = (100 * (1 - n / src.byteLength)).toFixed(1);
+  out.innerHTML = `<b>${src.byteLength.toLocaleString()} B</b> → <b>${n.toLocaleString()} B</b> · −${pct}%`;
+  window.__world.gzip = { in: src.byteLength, out: n };
+  cacheGeometry(); buildThread(); /* the result line may have wrapped */
+});
+
+/* ————— the gate: only a press resolves it ————— */
+$("approve").addEventListener("click", () => {
+  $("stamp").classList.add("inked");
+  $("aftergate").classList.add("shown");
+  $("approve").disabled = true;
+  const now = new Date();
+  $("gateNote").textContent =
+    `approved by hand — ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}, your local time.`;
+  window.__world.approved = true;
+  /* the world acknowledges the signature: the halt ring and the gate
+     dock turn pine. Deploy still does not light — approval is yours,
+     deployment is work. */
+  $("gateDock").querySelector("i").style.background = "var(--pine)";
+  if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
+});
+
+/* ————— boot ————— */
+/* if the module ever dies, the story must still read: settle everything */
+addEventListener("error", () => document.body.classList.add("settled"));
+function settleAll() {
+  scrubWho(1); scrubPath(1); scrubApplied(1); scrubCadence(1);
+  scrubBench(1); scrubJet(1); scrubJetBench(1); scrubQuests(1);
+  scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
+  setStamps(6); setMast(10, 1);
+}
+async function boot() {
+  await document.fonts.ready.catch(() => {});
+  chooseEditions(); /* build every figure on the plate its seat earns */
+  cacheGeometry(); buildThread(); cacheCadence(); fitPad();
+  booted = true;
+  if (RM) {
+    /* the settled world: everything at its truthful final frame — the
+       thread fully drawn, the token resting at the gate, held marks
+       held. The only scroll work left is re-viewing static ink. */
+    document.body.classList.add("settled");
+    washCanvas.style.display = "none";
+    const still = () => drawThread(scrollY, gatePageY, pathLen, true);
+    still();
+    addEventListener("scroll", still, { passive: true });
+    settleAll();
+    $("field").style.background = "#fbf3e7";
+    return;
+  }
+  wake();
+  /* first frame even before any scroll */
+  lastY = -1;
+}
+boot();
+</script>
+
+<script type="module">
+  /* The five letter-machines, compiled from the SAME source the React
+     nameplate used (src/components/story/nameplateMachines.ts) rather
+     than copied — see scripts/run/build-nameplate.mjs. */
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const plate = document.querySelector("[data-nameplate]");
+  const h1 = plate?.querySelector("h1");
+  const replay = document.querySelector("[data-np-replay]");
+  if (plate && h1 && !RM) {
+    try {
+      /* MEASURE AFTER THE TYPE ARRIVES. measureSettled reads the letters'
+         real boxes, and the machines are cut to those boxes — so measuring
+         against the fallback face bakes the wrong geometry in permanently.
+         It showed up as viewBox "0 0 587.7 107.7" on a plate that is 530
+         wide: the machines were built for a name 58px wider than the one
+         Fraunces actually renders, so they drew oversized and adrift above
+         it. The React nameplate raced document.fonts.ready against 900ms
+         for exactly this reason; my mount had skipped it.
+         The race matters as much as the wait: a font that never resolves
+         must not cost the reader the performance. */
+      /* WAIT FOR THE REAL FACE, and do not race it to a deadline.
+         I copied React's Promise.race([fonts.ready, sleep(900)]) without
+         copying what makes that safe there — a re-measure path. Here the
+         900ms escape simply measured in the Georgia fallback and baked
+         the wrong geometry in for good: viewBox 929.2 against a plate of
+         838, a constant 1.109 too wide, which is Georgia's advance widths
+         rather than Fraunces'.
+         Proved rather than assumed: cloning the h1 the way measureSettled
+         does, at 2.5s, gives 838.5 against the h1's 838.5 — identical
+         font, weight, variation settings, tracking and per-letter widths.
+         The measurement was never wrong; it was early.
+         fonts.ready resolves once the set settles either way, so a face
+         that fails to load still releases it. The long stop is insurance
+         against a pathological document, not a measuring deadline. */
+      /* WAIT FOR THE PAGE TO SETTLE, not merely for the fonts.
+         Proved, not guessed: calling measureSettled from the console at
+         3.5s returns W 838.5 against a plate of 839 — the function is
+         correct and always was. The mount was producing 929.2, a constant
+         1.109 too wide, because it measured before the layout it was
+         measuring had finished happening. Waiting on fonts.ready alone
+         did not fix it, so the remaining movement is the run own engine:
+         boot() caches beat geometry and the fx pass writes transforms to
+         this very h1.
+         So: window load, then fonts, then two frames. Cheap, and it makes
+         the measurement depend on the page being done rather than on my
+         model of what moves last — which has been wrong four times on
+         this bug. */
+      if (document.readyState !== "complete") {
+        await new Promise((r) => addEventListener("load", r, { once: true }));
+      }
+      /* LOAD THE FACE, do not merely await fonts.ready.
+         The instrumented mount printed it plainly: at t=198ms the plate
+         measured 929.2 and later 838.5, at an IDENTICAL font-size of
+         166.4px. Same size, narrower letters — the face had swapped from
+         the Georgia fallback to Fraunces after the measurement.
+         fonts.ready had already resolved, and correctly: it settles when
+         no font is PENDING, and a face nothing has rendered yet was never
+         requested, so it was never pending. Awaiting it is not the same
+         as having the type. document.fonts.load asks for the face and
+         resolves when it is actually usable. */
+      try {
+        await Promise.race([
+          Promise.all([
+            document.fonts.load('600 166px Fraunces'),
+            document.fonts.load('365 166px Fraunces'),
+          ]),
+          new Promise((r) => setTimeout(r, 5000)),
+        ]);
+      } catch {}
+      await Promise.race([
+        document.fonts?.ready ?? Promise.resolve(),
+        new Promise((r) => setTimeout(r, 5000)),
+      ]);
+      /* One frame after the fonts settle: fonts.ready can resolve before
+         the reflow it causes has been laid out. */
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const M = await import("./run/components/story/nameplateMachines.js");
+      const letters = Array.from(h1.querySelectorAll(".np-ch"));
+      let running = false;
+      const perform = async () => {
+        if (running) return;
+        running = true;
+        replay && (replay.disabled = true);
+        try {
+          /* Both calls read geometry, so the freeze has to wrap both. */
+          h1.setAttribute("data-np-measuring", "");
+          M.applyKern(h1, letters);
+          const g = M.measureSettled(plate, h1, letters);
+          h1.removeAttribute("data-np-measuring");
+          await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
+          M.mountHoverAnswers?.(plate, h1, letters, g);
+        } finally {
+          running = false;
+          /* RE-BASELINE, and this is what stops the loop.
+             The performance itself animates the plate's width (opsz and
+             wght move, so the glyphs move), 944 to 837 on the way. The
+             observer therefore sees a "resize" caused by the run it is
+             watching. Recording the settled width here means the next
+             callback compares against where the name actually came to
+             rest, so a performance can no longer trigger its own encore. */
+          lastW = Math.round(plate.getBoundingClientRect().width);
+          h1.setAttribute("data-np-settled", "");
+          document.documentElement.setAttribute("data-np-ready", "");
+          replay && (replay.disabled = false);
+        }
+      };
+      /* REBUILD WHEN THE PLATE RESIZES.
+         The decisive measurement: measureSettled returns W 929.2 at mount
+         and W 838.5 at 3.5s on the same page, with H identical both times.
+         H is font metrics and is stable; W is layout. So the plate itself
+         is wider early and narrows later — the clone is sized width:100%
+         of it — and the machines end up cut to a width the name never has.
+         Four attempts to find the moment after which the plate stops
+         moving all failed (fonts.ready, a longer wait, window load, two
+         frames). So stop predicting it: watch the box and rebuild when it
+         changes. Correct whatever moves it, and self-correcting if
+         something new does later.
+         Guarded against its own writes — performing changes nothing about
+         the plate box, but a rebuild loop here would be invisible and
+         expensive. */
+      const rebuild = () => {
+        plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
+        h1.removeAttribute("data-np-settled");
+        letters.forEach((l) => l.removeAttribute("data-np-done"));
+        perform();
+      };
+      let lastW = 0;
+      const ro = new ResizeObserver((entries) => {
+        const w = Math.round(entries[0].contentRect.width);
+        if (!w || w === lastW || running) return;
+        const first = lastW === 0;
+        lastW = w;
+        if (!first) rebuild();
+      });
+      ro.observe(plate);
+
+      /* rebuild(), not perform(): perform alone leaves the old overlay
+         and the letters' [data-np-done] in place, so a second run would
+         draw machines across type that is already fully visible — which
+         is exactly the "they are just overlaying on my name" failure. */
+      replay?.addEventListener("click", rebuild);
+      await perform();
+    } catch (e) {
+      /* A machine that cannot mount must not cost the reader the name:
+         the plate already holds the finished letters in markup, so the
+         failure mode is simply no performance. */
+      console.warn("nameplate machines unavailable —", e?.message ?? e);
+      document.documentElement.setAttribute("data-np-ready", "");
+    }
+  } else if (plate) {
+    /* Reduced motion: the name is already complete in markup (A7). The
+       replay control stays hidden because there is nothing to replay. */
+    h1?.setAttribute("data-np-settled", "");
+  }
+</script>
+</body>
+</html>

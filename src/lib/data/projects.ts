@@ -324,7 +324,7 @@ export const projects: Project[] = [
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
-      "1,145 automated tests (634 frontend + 511 backend), all passing",
+      "1,168 passed and 11 skipped (635 frontend + 533 backend), re-run 2026-07-31",
       "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
@@ -338,7 +338,7 @@ export const projects: Project[] = [
     id: "fast-mnist-nn",
     title: "Glyph",
     shortDescription:
-      "A course C++ MLP hand-optimized across four instruction sets (AVX-512, AVX2, NEON, wasm-simd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
+      "A course C++ MLP hand-optimized across three instruction sets (AVX-512, AVX2, NEON; the wasm build compiles -msimd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
     fullDescription:
       /* CRITIC-LEDGER F59: this said "It reaches 97.01% on 10,000 test
          digits". The site's own ledger stamps that number HELD — the
@@ -349,12 +349,12 @@ export const projects: Project[] = [
          renders it, the page ships a precise figure the ledger two
          clicks away refuses to make. They now say what the ledger
          says. */
-      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across three instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
     techStack: [
       { name: "C++", color: "#00599c" },
       { name: "AVX-512 / AVX2", color: "#ff6b6b" },
       { name: "NEON", color: "#a5b4fc" },
-      { name: "wasm-simd128", color: "#654ff0" },
+      { name: "wasm (-msimd128)", color: "#654ff0" },
       { name: "OpenMP", color: "#92d050" },
       { name: "React", color: "#61dafb" },
     ],
@@ -393,7 +393,7 @@ export const projects: Project[] = [
     startDate: "2025-10",
     endDate: "2026-01",
     highlights: [
-      "Hand-optimized across 4 instruction sets: AVX-512, AVX2, NEON, wasm-simd128",
+      "Hand-written SIMD across 3 instruction sets: AVX-512, AVX2, NEON — wasm builds -msimd128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
       "~97% test accuracy documented in the README — HELD until a committed eval run earns it",
       "Honest attribution: the 3.5× is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
@@ -454,7 +454,7 @@ export const projects: Project[] = [
     shortDescription:
       "A JDK 25 parallel, gzip-compatible compression engine — virtual threads + Vector-API SIMD — with a live visualizing landing.",
     fullDescription:
-      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (~6.5× vs single-threaded java.util.zip, +/-50% on the quick benchmark). It hand-vectorizes Adler-32 via the JDK Vector API (~2.8× vs scalar; honestly shown not to beat the JDK intrinsic), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
+      "jetpack-compress is a high-throughput, gzip-compatible parallel compression engine in JDK 25. Input is split into blocks, compressed concurrently on virtual threads, and stitched into one byte-valid gzip member (6.4× vs single-threaded java.util.zip — 422 vs 66 MB/s, 3-fork JMH, 99.9% CI). It hand-vectorizes Adler-32 via the JDK Vector API (2.8× vs scalar, 4.26 GB/s; honestly shown not to beat the JDK intrinsic at 14.06 GB/s), with FFM memory-mapped I/O, a CLI, and a JMH harness. DEFLATE entropy coding is delegated to zlib on purpose; a from-scratch encoder is future work.",
     techStack: [
       { name: "Java", color: "#f89820" },
       { name: "JDK 25", color: "#5382a1" },
@@ -479,7 +479,7 @@ export const projects: Project[] = [
     startDate: "2026-07",
     endDate: "Present",
     highlights: [
-      "Parallel gzip on virtual threads: ~6.5× vs single-threaded java.util.zip (+/-50%)",
+      "Parallel gzip on virtual threads: 6.4× vs single-threaded java.util.zip (3-fork JMH, 99.9% CI)",
       "Hand-vectorized Adler-32 (~2.8× vs scalar) — honestly does NOT beat the JDK intrinsic",
       "FFM memory-mapped I/O, a CLI, and a JMH harness",
       "72 tests pass; DEFLATE entropy coding delegated to zlib on purpose",
@@ -487,7 +487,7 @@ export const projects: Project[] = [
     isPrivate: false,
     metrics: [
       { label: "Tests", value: "72 passing on JDK 25" },
-      { label: "Throughput", value: "~6.5× vs 1-thread gzip (+/-50%)" },
+      { label: "Throughput", value: "6.4× vs 1-thread gzip (3-fork JMH)" },
     ],
     proofIds: ["jetpack-tests"],
   },

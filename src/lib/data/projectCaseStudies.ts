@@ -534,7 +534,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "judge",
           value:
-            "predicted vs expected label ⟶ macro-F1; the ci gate fails below the configured floor",
+            "predicted vs expected label ⟶ macro-F1; CI blocks the build below 0.95",
         },
         {
           label: "run",
@@ -1721,7 +1721,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
+      "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend) — the tree grew from 87 to 105 test files over 249 commits, and nothing was retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
       "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against a real Postgres — but 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
       "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
