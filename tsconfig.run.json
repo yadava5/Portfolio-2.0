@@ -1,0 +1,29 @@
+{
+  /* The run is a hand-authored HTML file and cannot import TypeScript, but
+     it needs the SAME five letter-machines the React nameplate uses. This
+     config compiles that one module (and the two small things it imports)
+     to plain ES modules the run can load with a <script type="module">.
+
+     Compiling rather than copying is the whole point: `nameplateMachines.ts`
+     stays the single source, and the run gets a generated artifact. A second
+     hand-maintained copy of 1,500 lines is how two nameplates drift apart,
+     which is the failure six rounds of porting the scroll engine already
+     demonstrated. */
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": false,
+    "module": "esnext",
+    "target": "es2022",
+    "moduleResolution": "bundler",
+    "outDir": "out/run",
+    "rootDir": "src",
+    "jsx": "preserve",
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/components/story/nameplateMachines.ts",
+    "src/components/thread/geometry.ts",
+    "src/lib/data/personal.ts"
+  ]
+}

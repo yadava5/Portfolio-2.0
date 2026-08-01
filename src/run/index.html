@@ -751,6 +751,87 @@
     #mtoggle{pointer-events:none}
   }
 </style>
+
+<style id="np-css">
+.nameplate {
+  font-size: var(--text-nameplate);
+  line-height: var(--text-nameplate--line-height);
+  letter-spacing: var(--text-nameplate--letter-spacing);
+  font-weight: var(--text-nameplate--font-weight);
+  font-optical-sizing: none; /* the axis is DRIVEN, per character */
+  white-space: nowrap;
+  width: max-content;
+  max-width: 100%;
+}
+
+.np-ch {
+  display: inline-block;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50,
+    "WONK" 0,
+    "wght" 600;
+}
+
+.np-sp {
+  width: 0.24em;
+}
+
+.np-mech {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.np-rule {
+  position: absolute;
+  left: -0.6rem;
+  height: 1px;
+  background: var(--color-ink);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.np-rule[data-np-seated] {
+  opacity: 0.09;
+}
+
+/* The replay control. The performance runs once on arrival; a reader who
+   looked away, or who simply wants to watch it again, has had no way back
+   — the machines are the page's best forty seconds and they were
+   single-use. Seated under the plate, revealed only once the run has
+   settled, and never in the static worlds where there is nothing to
+   replay. */
+.np-replay {
+  display: none;
+  margin-top: 0.85rem;
+  font: 400 0.78rem/1 "Fragment Mono", ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  color: var(--ink-2, #6b6558);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0 0 2px;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 180ms ease;
+}
+.np-replay:hover,
+.np-replay:focus-visible {
+  opacity: 1;
+}
+html[data-np-ready] .np-replay {
+  display: inline-block;
+}
+@media print {
+  .np-replay {
+    display: none !important;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -790,7 +871,11 @@
   <section class="beat b1" data-beat="0">
     <div class="beat-inner">
       <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
-      <h1 data-fx="in .0 .22 y 5 | drift 26">Ayush Yadav</h1>
+      <div class="np-plate" data-nameplate>
+        <div class="np-rule" aria-hidden="true"></div>
+        <h1 aria-label="Ayush Yadav" class="nameplate" data-np-machines data-fx="in .0 .22 y 5 | drift 26"><span aria-hidden="true" class="np-ch np-m" style="--np-i:0">A</span><span aria-hidden="true" class="np-ch" style="--np-i:1">y</span><span aria-hidden="true" class="np-ch" style="--np-i:2">u</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:3">s</span><span aria-hidden="true" class="np-ch" style="--np-i:4">h</span><span aria-hidden="true" class="np-ch np-sp" style="--np-i:5">&nbsp;</span><span aria-hidden="true" class="np-ch" style="--np-i:6">Y</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:7">a</span><span aria-hidden="true" class="np-ch" style="--np-i:8">d</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:9">a</span><span aria-hidden="true" class="np-ch np-m" style="--np-i:10">v</span></h1>
+        <button type="button" class="np-replay" data-np-replay hidden>replay the name ⟲</button>
+      </div>
       <p class="deck" data-fx="in .03 .26 y 6 | drift 20">This portfolio is <em>one pipeline run</em>. You are the human in the loop.</p>
       <p class="runline mono" data-fx="in .06 .3 x -6 | drift 16">run <b>042</b> · started <b>06:12</b> · operator: <b>you, the reader</b></p>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
@@ -2894,6 +2979,51 @@ async function boot() {
   lastY = -1;
 }
 boot();
+</script>
+
+<script type="module">
+  /* The five letter-machines, compiled from the SAME source the React
+     nameplate used (src/components/story/nameplateMachines.ts) rather
+     than copied — see scripts/run/build-nameplate.mjs. */
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const plate = document.querySelector("[data-nameplate]");
+  const h1 = plate?.querySelector("h1");
+  const replay = plate?.querySelector("[data-np-replay]");
+  if (plate && h1 && !RM) {
+    try {
+      const M = await import("./run/components/story/nameplateMachines.js");
+      const letters = Array.from(h1.querySelectorAll(".np-ch"));
+      let running = false;
+      const perform = async () => {
+        if (running) return;
+        running = true;
+        replay && (replay.disabled = true);
+        try {
+          M.applyKern(h1, letters);
+          const g = M.measureSettled(plate, h1, letters);
+          await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
+          M.mountHoverAnswers?.(plate, h1, letters, g);
+        } finally {
+          running = false;
+          h1.setAttribute("data-np-settled", "");
+          document.documentElement.setAttribute("data-np-ready", "");
+          replay && (replay.disabled = false);
+        }
+      };
+      replay?.addEventListener("click", perform);
+      await perform();
+    } catch (e) {
+      /* A machine that cannot mount must not cost the reader the name:
+         the plate already holds the finished letters in markup, so the
+         failure mode is simply no performance. */
+      console.warn("nameplate machines unavailable —", e?.message ?? e);
+      document.documentElement.setAttribute("data-np-ready", "");
+    }
+  } else if (plate) {
+    /* Reduced motion: the name is already complete in markup (A7). The
+       replay control stays hidden because there is nothing to replay. */
+    h1?.setAttribute("data-np-settled", "");
+  }
 </script>
 </body>
 </html>

@@ -29,6 +29,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, cpSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const root = process.cwd();
 const SRC = resolve(root, "src/run/index.html");
@@ -151,6 +152,12 @@ if (inject) {
     "  ! no canonical/og/JSON-LD found in Next's home output — the run ships without them"
   );
 }
+
+/* ── The nameplate machines, compiled from their single source ─────── */
+execFileSync("node", [resolve(root, "scripts/run/build-nameplate.mjs")], {
+  cwd: root,
+  stdio: "inherit",
+});
 
 /* ── The run brings its own type ────────────────────────────────────
    The four faces are subset woff2 the run @font-face's by RELATIVE path
