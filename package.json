@@ -36,7 +36,9 @@
     "assets:render-diagrams": "node scripts/asset-truth/render-architecture-diagrams.mjs",
     "assets:render-og": "node scripts/asset-truth/render-og-cards.mjs",
     "assets:check-og": "node scripts/asset-truth/render-og-cards.mjs --check",
-    "build:home": "node scripts/run/build-home.mjs"
+    "build:home": "node scripts/run/build-home.mjs",
+    "test:nameplate": "node scripts/qa/check-nameplate.mjs",
+    "test:nameplate:negative": "node scripts/qa/check-nameplate-negative.mjs"
   },
   "browserslist": [
     "chrome 128",
