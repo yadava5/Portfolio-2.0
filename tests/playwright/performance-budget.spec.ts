@@ -17,7 +17,11 @@ test("homepage stays within launch performance budgets", async ({ page }) => {
   });
 
   await page.goto("/");
-  await page.locator("#arrival").waitFor({ state: "attached" });
+  /* The home is src/run/index.html, whose first station is [data-beat="0"].
+     `#arrival` was the old React home's hero and appears nowhere in the
+     deployed page — the wait simply timed out once the test build started
+     producing the artifact users actually get. */
+  await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
   await page.waitForLoadState("networkidle");
 
   const totalBytes = responses.reduce(
