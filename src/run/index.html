@@ -1924,15 +1924,28 @@ const WAY = [ /* l, c, h — src/components/world/waypoints.generated.ts */
   [0.9478, 0.0241, 85.79], [0.923, 0.0388, 83.83], [0.3471, 0.0218, 55.56],
   [0.2739, 0.0116, 55.85],
 ];
-const DUSK = [ /* side(0 day/1 night), l, c, h, pos — DUSK_CHOREO verbatim */
-  [0, 0.923, 0.0388, 83.83, 0], [0, 0.8759, 0.0463, 80.19, 0.11],
-  [0, 0.8287, 0.0511, 76.55, 0.22], [0, 0.7815, 0.0516, 72.91, 0.33],
-  [0, 0.7343, 0.0476, 69.28, 0.44], [0, 0.6872, 0.0405, 65.64, 0.55],
-  [0, 0.64, 0.0388, 62, 0.66], [1, 0.43, 0.032, 60, 0.72],
-  [1, 0.4093, 0.0295, 58.89, 0.7775], [1, 0.3886, 0.0269, 57.78, 0.835],
-  [1, 0.3679, 0.0244, 56.67, 0.8925], [1, 0.3471, 0.0218, 55.56, 0.95],
+/* side(0 day/1 night), l, c, h, pos.
+   THE COLOURS ARE DUSK_CHOREO VERBATIM and not one of them has moved — only
+   the POSITIONS have, which is what the field is scrubbed against. The
+   terminator (0.64 → 0.43, the one deliberate luminance jump) used to be given
+   0.06 of the window: about 23px of scroll at 1440x900 for a fifth of the
+   whole day's luminance. Even interpolated that is a cut, and it is the hard
+   colour change the nightfall reads as.
+   The day side is compressed a little and the night side pushed out, so the
+   crossing gets 0.24 — four times the room, roughly 90px of scroll — and the
+   light walks over the terminator instead of stepping across it. Every stop
+   still renders exactly the colour it was verified at, so the contrast gate
+   is asking the same questions of the same values. */
+const DUSK = [
+  [0, 0.923, 0.0388, 83.83, 0], [0, 0.8759, 0.0463, 80.19, 0.09],
+  [0, 0.8287, 0.0511, 76.55, 0.18], [0, 0.7815, 0.0516, 72.91, 0.27],
+  [0, 0.7343, 0.0476, 69.28, 0.36], [0, 0.6872, 0.0405, 65.64, 0.45],
+  [0, 0.64, 0.0388, 62, 0.54], [1, 0.43, 0.032, 60, 0.78],
+  [1, 0.4093, 0.0295, 58.89, 0.8225], [1, 0.3886, 0.0269, 57.78, 0.865],
+  [1, 0.3679, 0.0244, 56.67, 0.9075], [1, 0.3471, 0.0218, 55.56, 0.95],
 ];
-const FLIP_POS = 0.72;
+/* the ink flips once the field is all the way across, not part-way through it */
+const FLIP_POS = 0.78;
 /* beat 7's darkening window as fractions of the beat — round 4 hard-coded
    .58/.36 here while the content's geometry varied per viewport, which is
    how the curtain came to precede its own content (measured: p.handoff
@@ -1984,7 +1997,21 @@ function arcColor(beat, p) {
     while (i < DUSK.length - 1 && DUSK[i + 1][4] <= pos) i++;
     const a = DUSK[i], b = DUSK[Math.min(i + 1, DUSK.length - 1)];
     let t = b[4] > a[4] ? (pos - a[4]) / (b[4] - a[4]) : 0;
-    if (a[0] !== b[0]) t = 0; /* never render the mid-luminance band */
+    /* THE TERMINATOR IS CROSSED, not jumped. This used to force t = 0 across
+       the side boundary, so the field SNAPPED from L 0.43 to L 0.64 in one
+       frame — which is the hard colour change the day reads as a cut rather
+       than a nightfall.
+
+       The ban existed because the mid band is where neither cream nor dark ink
+       holds AA. But that guarantee is already structural here and does not
+       need the snap to enforce it: cacheGeometry opens this darkening window
+       40px of scroll AFTER the shared curtain has taken every dusk element to
+       opacity 0, so there is no text on screen for the whole crossing. Nothing
+       is rendered against the mid band to be unreadable against it.
+
+       Eased rather than linear, so the crossing decelerates into the flip
+       instead of arriving at a constant rate. */
+    if (a[0] !== b[0]) t = smooth(t);
     return {
       rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
       night: pos >= FLIP_POS, sun: 5 + clamp(p, 0, 1),
@@ -3317,7 +3344,10 @@ function dawnArc(p) {
   const f = clamp(p, 0, 1) * (DAWN_STOPS.length - 1);
   const i = Math.min(DAWN_STOPS.length - 2, Math.floor(f));
   const a = DAWN_STOPS[i], b = DAWN_STOPS[i + 1];
-  const t = a[0] !== b[0] ? 0 : f - i;   /* never render between the two sides */
+  /* the same terminator, taken upward — see the dusk's note in arcColor. ¶13's
+     words fade in as the light comes up, so the crossing itself carries no
+     text either, and the snap that made the dawn arrive as a cut is unneeded. */
+  const t = a[0] !== b[0] ? smooth(f - i) : f - i;
   return {
     rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
     night: a[0] === 1,
