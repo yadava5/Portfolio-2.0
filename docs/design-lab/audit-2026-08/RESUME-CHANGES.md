@@ -110,17 +110,33 @@ That is still a strong line, and it survives the repo being read.
 
 ---
 
-## 5 · Job title — three names for one job
+## 5 · Job title — RESOLVED, and the résumé is the one that is short
 
-| where | says |
-|---|---|
-| résumé | ITSM Data Integration **Intern** |
-| `src/run/index.html` | itsm data integration **intern** |
-| `experience.ts` / `personal.ts` | ITSM Data Integration **Student Associate** |
+You confirmed it: **ITSM Data Integration Student Associate**, and it was an
+internship. Both words are true and they are two different facts — the title,
+and the employment type.
 
-Two say Intern, one says Student Associate. Tell me which is on the offer letter
-and I will make the site match — this is the one item on the list where the site
-may be the wrong one.
+`experience.ts` already had both, correctly and separately:
+
+```ts
+title: "ITSM Data Integration Student Associate",
+type:  "internship",
+```
+
+The **run** was flattening them to "intern", which threw away the official
+title. Fixed on 2026-08-02 — it now reads *itsm data integration student
+associate — miami university · internship · jun 2025 – may 2026*.
+
+**The résumé keeps only the other half.** `ITSM Data Integration Intern` is not
+wrong, but it is not the title an employment verification returns, and it is the
+weaker of the two — "Student Associate" reads as a standing role, "Intern" reads
+as a summer.
+
+**Suggested:** *ITSM Data Integration Student Associate (Intern) · Miami
+University · Jun 2025 – May 2026*
+
+This is the only item on this page where the site was wrong rather than the
+résumé, and the site is fixed.
 
 ---
 
