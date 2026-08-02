@@ -88,6 +88,46 @@ JSON-LD nodes and the visible deck on the Glyph route.
 
 ---
 
+## The finding the audit's own test run produced
+
+Correcting the numbers turned the browser smoke red, which is what a suite is
+for. Chasing it produced something bigger than the two fixtures that needed
+updating:
+
+```
+build              next build && node scripts/run/build-home.mjs
+browser-smoke      next build --webpack && playwright test tests/playwright/atlas.spec.ts …
+```
+
+**The browser gate runs bare `next build`.** `build-home.mjs` is what overwrites
+`out/index.html` with the run, and the smoke script never calls it — so for the
+whole of that suite, `/` is **StoryShell**, the page no visitor has seen since
+the run shipped. 245 tests across five browsers, in CI, against a home page that
+does not exist in production.
+
+That is PR #42's premise, confirmed by a different mechanism than the one it
+names: it is not only that the specs assert the old information architecture,
+it is that the **build command in the npm script produces the old page**. Fixing
+the specs without fixing the script would leave the gate green and blind.
+
+It also explains a defect the audit had already found by hand: the five dead
+anchors. `#values` exists on StoryShell and never existed on the run, so the
+suite asserting `#values` is attached passes forever while the shipped page's
+own navigation is broken. A gate pointed at the wrong artifact does not just
+miss defects — it certifies them.
+
+Two smaller things the same run exposed:
+
+- `PROHIBITED_GENERATED_CONTENT` is checked with `.toContain()`, and it forbids
+  the fabricated `"68 tests"`. Cadence's real measured **`1,168 tests`** contains
+  that substring, so telling the truth failed the hallucination guard. Entries
+  beginning with a digit are now matched with a `(?<![\d,])` boundary; phrases
+  keep the plain test.
+- `chapters.ts` cannot be renamed to match the run. `values ⟶ review` broke
+  StoryShell's own `#values`, which that suite asserts. The 404 maps the one
+  divergent name instead — the two home pages disagree on anchor vocabulary,
+  not merely on content, and only one of them ships.
+
 ## Still open — brought to the owner, not silently changed
 
 - **`public/resume.pdf` quotes jetpack's *quick* benchmark** (6.5× · 455 vs 66 ·

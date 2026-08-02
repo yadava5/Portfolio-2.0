@@ -335,7 +335,8 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // says eight across nine endpoints (the erratum carries the story).
   // This fixture was pinning the RETRACTED number in place: the exact
   // failure mode the correction's own prose warns about.
-  cadenceIdorReceipt: "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
+  cadenceIdorReceipt:
+    "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
   cadenceIsolationTests:
     "11 of 11 isolation tests pass against a real Postgres",
   cadenceInertBoundary: "The DB-enforced RLS is not turned on in production",
