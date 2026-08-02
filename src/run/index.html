@@ -2160,8 +2160,25 @@ function cacheGeometry() {
     f.spec.in[1] = (yDone + vh - f.top) / (vh + f.h);
     yShow = Math.max(yShow, yDone);
   }
-  const Y1 = yShow + vh * 0.35, Y2 = Y1 + vh * 0.24;   /* corridor, curtain */
-  const yDark = Y2 + 40, darkSpan = vh * 0.4;          /* the sky's show */
+  /* THE CORRIDOR IS SHORTER ON A PHONE, and only on a phone. The chain below
+     is written in viewport fractions, so it scales — but what covers it does
+     NOT. On a laptop ¶08 is about 1605px against a 900px viewport, so while
+     the curtain crosses there is always a neighbouring station in frame and
+     the dark stretch never reads as empty. On a phone ¶08 is 2418px against
+     664px: the corridor is isolated, nothing borders it, and the reader gets
+     most of a screen of bare rail between the last lit line and the closing
+     one. Measured at iPhone size, four consecutive sample positions with
+     NOTHING on screen at all, clocks 21:39 through 21:51 — which is exactly
+     "blank until 22:04".
+
+     So the phone gets a tighter chain. The COLOURS are untouched — the same
+     stops in the same order, so every contrast pair still holds — it is only
+     the scroll distance they are traversed over that shrinks. Desktop keeps
+     its numbers literally: the expressions below are unchanged when !mobile,
+     and the ink census at 1440 and 1280 is asserted identical. */
+  const Y1 = yShow + vh * (mobile ? 0.18 : 0.35);
+  const Y2 = Y1 + vh * (mobile ? 0.16 : 0.24);         /* corridor, curtain */
+  const yDark = Y2 + 40, darkSpan = vh * (mobile ? 0.3 : 0.4);  /* the sky's show */
   const yFlip = yDark + (FLIP_POS / 0.95) * darkSpan;
   const yEnd = Math.max(yDark + darkSpan, yFlip + 20 + vh * 0.16) + vh * 0.1;
   for (const f of fx) {
@@ -2191,7 +2208,9 @@ function cacheGeometry() {
   /* write the derived height back and re-measure everything below the
      beat (its own content does not move — flex-start — so the contract
      anchors computed above stay true) */
-  const need = Math.ceil(yEnd + vh * 0.62 - bDusk.top);
+  /* and the tail it leaves under the closing line, which on a phone was over
+     four hundred px of nothing on its own */
+  const need = Math.ceil(yEnd + vh * (mobile ? 0.3 : 0.62) - bDusk.top);
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
   /* hand the darkening window to arcColor, as fractions of the beat */
