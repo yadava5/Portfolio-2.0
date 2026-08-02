@@ -282,6 +282,15 @@ jobs:
       - name: Check beat tables (every beat-indexed table agrees)
         run: npm run test:beat-tables
 
+      # Every /#... link into the home page must land on something. Five
+      # were dead on nine indexable routes until 2026-08-02, and nothing
+      # noticed for two reasons: a hash that matches nothing scrolls to
+      # the top and raises no error, and the browser suite builds the
+      # OTHER home page (bare `next build`, no build-home.mjs), where the
+      # missing ids do exist. This reads the run itself.
+      - name: Check home-page anchors resolve
+        run: npm run test:anchors
+
       - name: Check nameplate invariants
         run: npm run test:nameplate
 

@@ -416,7 +416,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Designer and sole engineer — desktop app, web app, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Both clauses trace to receipts: 07 (the dashboard renders real
        applications from the API) + 09 (the hosted slot runs layer 1
@@ -893,7 +893,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     timeframe: "2025-09 to Present",
     filed: "2025-09",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "in progress",
     /* Traces to the corrections note + boundary row: the platform core
        is built; the demo-data run ledger has not shipped yet. */
@@ -1262,7 +1262,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "iOS accessibility engineer",
     timeframe: "2025-03 to Present",
     filed: "2025-03",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "in progress",
     /* The repo's own README labels the build a beta. */
     statusDetail: "beta, per the readme",
@@ -1486,7 +1486,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Full-stack engineer",
     timeframe: "2023-09 to 2025-05",
     filed: "2023-09",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Traces to the boundary row: a demo deployment with mock login. */
     statusDetail: "demo deployment, mock login",
@@ -1549,6 +1549,25 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           detail: "Scheduling and conflict logic",
           kind: "api",
         },
+        /* The isolation layer, drawn at last. THREE of this file's five
+           decisions are about JWT identity, the transaction-local
+           `app.user_id` GUC and row-level security — and the diagram had
+           no element for any of it, so the picture showed a calendar app
+           where the argument is a tenancy boundary. Added 2026-08-02.
+
+           It is deliberately NOT marked `gate: true`, unlike Applied's
+           Postgres node. RLS here is written for seven tables and staged
+           OFF; what actually enforces isolation today is the owner-scoped
+           check on six services. Drawing a gate would promise the
+           database is refusing, and it is not — the handlers are. That
+           distinction is the whole content of receipts 04–10 and it
+           would be a shame to lose it to a nicer-looking diagram. */
+        {
+          id: "auth",
+          label: "Owner-scoped checks",
+          detail: "JWT identity; rls written for 7 tables, staged off",
+          kind: "api",
+        },
         {
           id: "db",
           label: "PostgreSQL",
@@ -1565,7 +1584,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       edges: [
         { from: "ui", to: "nlp", label: "natural language" },
         { from: "nlp", to: "api", label: "parsed intent" },
-        { from: "api", to: "db", label: "calendar records" },
+        { from: "api", to: "auth", label: "every read, scoped to its owner" },
+        { from: "auth", to: "db", label: "calendar records" },
         { from: "tests", to: "api", label: "regression coverage" },
       ],
     },
@@ -1899,13 +1919,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Data integration engineer",
     timeframe: "2025-06 to 2026-05",
     filed: "2025-06",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
+      "Private proof from institutional ITSM data work: a Python and SQL pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -1921,7 +1941,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Workday exports and Tableau metadata feed Python/pandas transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
+        "Workday exports and Tableau metadata feed Python and SQL transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
       nodes: [
         {
           id: "workday",
@@ -1932,12 +1952,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "tableau",
           label: "Tableau metadata",
-          detail: "Cloud REST metadata",
+          detail: "Report and asset metadata",
           kind: "api",
         },
         {
           id: "python",
-          label: "Python/pandas",
+          label: "Python/SQL",
           detail: "Cleaning and transforms",
           kind: "system",
         },
@@ -2124,7 +2144,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "RAG systems engineer",
     timeframe: "2025-06 to 2026-05",
     filed: "2025-06",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
@@ -2377,7 +2397,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     timeframe: "2025-10 to 2026-01",
     filed: "2025-10",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Both clauses are artifacts on this page: the tagged release and
        the committed benchmark run. */
@@ -2463,7 +2483,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         { from: "input", to: "model", label: "normalized digits" },
         { from: "kernels", to: "model", label: "matrix ops" },
         { from: "parallel", to: "model", label: "threaded paths" },
-        { from: "model", to: "demo", label: "prediction output" },
+        /* "prediction output" hid three delivery paths, and which one
+           answers is the interesting part of this project. The web app
+           declares them itself — `web/src/api/predict.ts` types
+           `PredictionSource = 'server' | 'browser-wasm' | 'browser-js'`:
+           the httplib server at :8080 is preferred, the Emscripten build
+           is the offline fallback, and a plain-JS classifier is the last
+           resort. The portfolio's own ¶06 station runs the middle one —
+           the 45.9 KB wasm it ships is this same model. (2026-08-02.) */
+        {
+          from: "model",
+          to: "demo",
+          label: "prediction — server, wasm, or js fallback",
+        },
         { from: "bench", to: "model", label: "performance proof" },
       ],
     },
