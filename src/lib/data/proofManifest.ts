@@ -73,6 +73,8 @@ const APPLIED_SHA = "36a2f54";
    Re-run 2026-08-02: 271 became 278, skips unchanged at 10. */
 const APPLIED_SUITE_SHA = "0f2b63f";
 const VISUAL_ASSIST_SHA = "22ebdaa";
+/* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
+const AUTOML_SHA = "e506c91";
 /* Cadence's suite count is pinned to the commit it was MEASURED at, which
    is the current public head rather than the old `69a59e7`. Re-run on the
    2026-08-02 provenance audit: 1,145 became 1,168. The number and the sha
@@ -155,6 +157,29 @@ export const proofManifest: ProofManifestEntry[] = [
       "Uses demo/source-truth data and excludes private repository source.",
     date: "2026-05",
     sourceKind: "self-hosted",
+    receipt: {
+      label: "automl case file · receipt 02",
+      href: "/projects/automl/#v-automl-2",
+    },
+  },
+  {
+    /* Added 2026-08-02. "12 mcp tools" is stated four times on the home
+       page — the ¶09 prose, its aria-label, and twice inside the figure's
+       own SVG text — and had no evidence row anywhere, which is exactly
+       the thing /evidence prints a rule against. It is also trivially
+       checkable, which made the omission worse rather than better. */
+    id: "automl-mcp-tools",
+    label: "12 MCP tools",
+    claim:
+      "The Agentic AutoML backend registers exactly 12 MCP tools, in one server — the notebook surface the orchestrator drives.",
+    source:
+      "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/backend/src/services/mcp/mcpServer.ts",
+    sourceLabel: `mcpServer.ts @ ${AUTOML_SHA}`,
+    verification:
+      "Counted in the source on 2026-08-02: 12 `server.registerTool(` call sites at the pinned commit, and 12 at the current head — the count has not moved. There is no second MCP server; a search for `registerTool` across backend/src and frontend/src returns nothing outside this file, so the number is the whole registry rather than one file's share of it.",
+    visibility: "public",
+    privacyBoundary: "No private data — the tool registry is public source.",
+    date: "2026-08-02",
     receipt: {
       label: "automl case file · receipt 02",
       href: "/projects/automl/#v-automl-2",

@@ -155,9 +155,14 @@ export default function EvidencePage() {
             The master ledger behind every number on this site: the claim, the
             strongest artifact it terminates at, when it was recorded, and the
             case-file receipt that argues it in full. If a claim is not in this
-            ledger or a case file, the site does not make it — apart from the
-            biographical register (degree, dean’s list, GPA), which the
-            transcript on request backs.
+            ledger or a case file, the site does not make it — apart from two
+            registers that terminate in documents this site cannot publish. The
+            biographical one (degree, dean’s list, GPA, certificates, the MUCAT
+            grant) rests on the transcript and the awards themselves. The
+            institutional one — the OAS and Tableau figures at ¶03 — is read off
+            Miami’s own systems, and only the sanitised inventory ledger made it
+            out. Both are verifiable on request; neither is dressed as if a link
+            would settle it.
           </p>
         </header>
 
