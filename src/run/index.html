@@ -2199,7 +2199,19 @@ function cacheGeometry() {
          the flip lands, half a viewport under the reading line, so the
          sentence arrives centred in the dark it names */
       const m0 = parseFloat(getComputedStyle(f.el).marginTop) || 0;
-      const d = yFlip + vh * 0.52 - f.top;
+      let d = yFlip + vh * 0.52 - f.top;
+      /* AND THIS IS THE VOID. The seat is a margin, and on a phone it came out
+         at 743px: ¶08's prose column ended at 828 and this line was pushed to
+         1571, with the LifeQuest plate shoved below it to 1636. That gap IS
+         the "long scroll with just the rail" — the prose before it, the figure
+         after it, and nothing in between for most of a thousand pixels.
+
+         The seat exists so the closing sentence arrives centred in the dark it
+         names, which is worth a margin but not worth a void. On a phone the
+         dark corridor is short next to the content, so the offset buys little
+         and costs a screen and a half. Capped there, and only there; the
+         desktop expression is unchanged and its census is asserted identical. */
+      if (mobile) d = Math.min(d, vh * 0.26);
       if (Math.abs(d) > 2) f.el.style.marginTop = (m0 + d) + "px";
       f.spec.in[0] = (yFlip + 20 + vh - (f.top + d)) / (vh + f.h);
       f.spec.in[1] = (yFlip + 20 + vh * 0.16 + vh - (f.top + d)) / (vh + f.h);
