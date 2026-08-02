@@ -2211,7 +2211,19 @@ function cacheGeometry() {
          dark corridor is short next to the content, so the offset buys little
          and costs a screen and a half. Capped there, and only there; the
          desktop expression is unchanged and its census is asserted identical. */
-      if (mobile) d = Math.min(d, vh * 0.26);
+      /* ON A PHONE THE SEAT IS ZERO. Capping it at 0.26vh was not enough:
+         the margin sits INSIDE the prose column and the plate is the column's
+         next sibling, so every pixel of seat pushes the figure further past
+         the curtain that is about to erase it. The reader got the copy, then
+         most of a screen of bare rail, then the figure for a moment, then
+         dark. Four screenshots of it, and three of my own probes called it
+         healthy because they were counting the fixed running head and the
+         corner manifest as station content.
+
+         The seat buys one thing — the closing sentence centred in the dark it
+         names — and on a phone it costs the figure its entire read. The figure
+         wins. */
+      if (mobile) d = 0;
       if (Math.abs(d) > 2) f.el.style.marginTop = (m0 + d) + "px";
       f.spec.in[0] = (yFlip + 20 + vh - (f.top + d)) / (vh + f.h);
       f.spec.in[1] = (yFlip + 20 + vh * 0.16 + vh - (f.top + d)) / (vh + f.h);
