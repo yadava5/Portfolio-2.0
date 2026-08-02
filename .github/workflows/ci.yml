@@ -269,6 +269,25 @@ jobs:
       - name: Check og cards (rendered footer URL casing + freshness)
         run: npm run assets:check-og
 
+      # These four existed and had never run on a pull request. The
+      # 2026-08-02 provenance audit is what surfaced it: check-figures.mjs
+      # was written in July specifically to stop the run and the data layer
+      # drifting apart, and while it sat outside CI they drifted anyway —
+      # /evidence shipped 1,145 tests for two days after the receipt beside
+      # it had been corrected to 1,168. A gate that does not run is a
+      # comment. It now binds 18 figures instead of 7.
+      - name: Check headline figures (run prose ⇄ data layer)
+        run: npm run test:figures
+
+      - name: Check beat tables (every beat-indexed table agrees)
+        run: npm run test:beat-tables
+
+      - name: Check nameplate invariants
+        run: npm run test:nameplate
+
+      - name: Check nameplate negative cases
+        run: npm run test:nameplate:negative
+
   # ─────────────────────────────────────────────────────────────
   # Browser Quality: Playwright smoke, reduced motion, performance
   # ─────────────────────────────────────────────────────────────

@@ -137,6 +137,18 @@ const FIGURES = [
       "imported jobtracker.classifier.rules 2026-08-02 — 106 strong + 26 weak + 69 negative = 201",
   },
   {
+    /* The largest blast radius of anything the audit corrected: this
+       string reaches the meta description, og:description,
+       twitter:description, the TechArticle JSON-LD node, the
+       SoftwareSourceCode node and the visible deck — and it said FOUR
+       until 2026-08-02. Bound here because nothing else could see it. */
+    figure: "Glyph · hand-written instruction sets",
+    run: /3 hand-written simd paths/,
+    data: /Three hand-written instruction sets/,
+    source:
+      "glyph src/Matrix.cpp + src/NeuralNet.cpp guard exactly __AVX512F__, __AVX2__, __ARM_NEON over a scalar fallback; the wasm target passes -msimd128 with no hand-written branch",
+  },
+  {
     figure: "jetpack · suite",
     run: /72 tests, 0 failures/,
     data: /72 tests/,
