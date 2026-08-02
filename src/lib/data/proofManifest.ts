@@ -200,10 +200,10 @@ export const proofManifest: ProofManifestEntry[] = [
       "https://github.com/yadava5/VisualAssist/tree/22ebdaa/VisualAssistTests",
     sourceLabel: `VisualAssistTests @ ${VISUAL_ASSIST_SHA}`,
     verification:
-      "Function count audited in the public test tree at the pinned commit.",
+      "Counted against XCTest’s own collection rule on 2026-08-02, not by a bare grep: 8 XCTestCase subclasses and 71 instance methods named test… taking no arguments — with zero argument-taking, private, or static variants, which are the cases XCTest would skip. Per file: 13 · 11 · 10 · 9 · 9 · 8 · 6 · 5. Because every disqualifying case is empty, the static count and the collected count cannot differ. Stated as a count of test FUNCTIONS rather than of passes because the suite could not be executed here — the project ships no shared scheme and xcodebuild resolves a destination requiring an iOS runtime this machine does not have. Its CI does not run it either: the workflow has no `xcodebuild test` step. Note the commit that introduced the suite says “68 tests” in its message; that is the stale document, not this number.",
     visibility: "public",
     privacyBoundary: "No live camera, location, or user sensor data is shown.",
-    date: "2026-05",
+    date: "2026-08-02",
     receipt: {
       label: "visual assist case file · receipt 01",
       href: "/projects/visual-assist/#v-visual-assist-1",

@@ -326,6 +326,35 @@ The two are usually the same number and are not the same claim, and the site
 says "the public VisualAssistTests tree holds 71 test functions" — which is
 exactly what was verified, and no more.
 
+**So it was verified the other way instead — statically, against XCTest's own
+collection rule.** XCTest collects an instance method whose name begins `test`,
+takes no arguments, and is not `private`/`static`. Every one of those conditions
+was checked separately rather than assumed:
+
+```
+XCTestCase subclasses                                    8
+func test…()      — no arguments, instance, collectible  71
+func test…(args)  — XCTest does NOT collect these         0
+private/static/class func test…                           0
+```
+
+Per file: AccessibilityHelper 13 · CommonObjectLabel 11 · ObjectPosition 10 ·
+DetectedObstacle 9 · ObjectCategory 9 · DepthProcessor 8 · RecognizedText 6 ·
+DetectionSummary 5 — **= 71**.
+
+The two decoys a naive grep picks up are `private func testSpeech()` and
+`private func testHaptics()` in `VisualAssist/Views/SettingsView.swift`. They are
+in the **app** target, not the test target, and they are `private` — twice
+disqualified. A whole-tree `grep 'func test'` returns 73 and would be wrong by
+exactly those two.
+
+Because every disqualifying case is empty, the static count and the collected
+count cannot differ: there is no method that XCTest would skip and no method it
+would find that this census missed. **71 is the number `xcodebuild test` would
+report**, short of a test failing to compile — which is the one thing this method
+genuinely cannot rule out, and the reason the claim stays worded as a count of
+functions rather than of passes.
+
 Consequently **no `xcodebuild test` step was added to that repo's CI.** Adding a
 step I have never seen pass would convert a repo with weak CI into one with red
 CI, which is worse than where it started. It needs one local run by someone with
