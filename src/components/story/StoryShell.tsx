@@ -305,9 +305,9 @@ const WORK_ROWS: {
        chip right-aligns in the ¶05 rail, and `@ af2c4b1` used to break
        so the commit sha landed alone on its own line while every other
        chip set as one. The sha and its `@` now travel together. */
-    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+    metric: "72 tests, 0 failures — jdk 25 @ 2caacd0",
     metricHref:
-      "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+      "https://github.com/yadava5/jetpack-compress/tree/2caacd0/src/test/java",
     /* F39: no case file exists yet, so the row's `last verified` token
        comes from the SAME proof-manifest entry its metric chip cites —
        read from the manifest, never typed here. */
@@ -326,7 +326,7 @@ const WORK_ROWS: {
     bright: "A calendar and task app you drive in plain English.",
     muted:
       "Type a sentence and it files the event or task — and now schedules Google Meet meetings with multi-attendee invites.",
-    metric: "1,145 automated tests — 634 frontend + 511 backend, vitest",
+    metric: "1,168 automated tests — 635 frontend + 533 backend, vitest",
     metricHref: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
   },
 ];
@@ -390,7 +390,7 @@ const IN_PROGRESS_ENTRIES: { projectId: string; gloss: string }[] = [
 const VALUES_LINES = [
   {
     mantra: "Make it learn.",
-    receipt: "271 backend tests — jobtracker validation ledger",
+    receipt: "278 backend tests — Applied validation ledger",
     href: "/projects/jobtracker/#v-jobtracker-4",
     wonk: false,
   },
@@ -488,14 +488,14 @@ const GATE_REFERENCES: {
      every metric chip the page prints: Cadence's 1,145 tests and
      jetpack's 72. Both strings are the rows' own. */
   {
-    claim: "1,145 automated tests — 634 frontend + 511 backend",
-    source: "taskflow-calendar — receipt 01",
+    claim: "1,168 automated tests — 635 frontend + 533 backend",
+    source: "cadence — receipt 01",
     href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
   },
   {
     claim: "72 tests, 0 failures on jdk 25",
-    source: "jetpack-compress — readme @ af2c4b1",
-    href: "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
+    source: "jetpack-compress — src/test/java @ 2caacd0",
+    href: "https://github.com/yadava5/jetpack-compress/tree/2caacd0/src/test/java",
   },
   {
     claim: "19/20 cited-source sweep",

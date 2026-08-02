@@ -69,8 +69,16 @@ export interface ProofManifestEntry {
    projectCaseStudies.ts; the case file's corrections register carries the
    erratum. Every `source` below was fetched at this sha and returned 200. */
 const APPLIED_SHA = "36a2f54";
+/* The backend suite count is pinned to the commit it was MEASURED at.
+   Re-run 2026-08-02: 271 became 278, skips unchanged at 10. */
+const APPLIED_SUITE_SHA = "0f2b63f";
 const VISUAL_ASSIST_SHA = "22ebdaa";
-const TASKFLOW_SHA = "69a59e7";
+/* Cadence's suite count is pinned to the commit it was MEASURED at, which
+   is the current public head rather than the old `69a59e7`. Re-run on the
+   2026-08-02 provenance audit: 1,145 became 1,168. The number and the sha
+   move together, because a count without the commit it was taken at is a
+   guess with a decimal point. */
+const CADENCE_SUITE_SHA = "932625e";
 const FAST_MNIST_SHA = "c6e5c0b";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
@@ -92,7 +100,7 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary: "No private email content is shown.",
     date: "2026-07-26",
     receipt: {
-      label: "jobtracker case file · receipt 02",
+      label: "applied case file · receipt 02",
       href: "/projects/jobtracker/#v-jobtracker-2",
     },
   },
@@ -111,25 +119,25 @@ export const proofManifest: ProofManifestEntry[] = [
       "The committed baseline JSON records metrics and label counts, not message content.",
     date: "2026-03-03",
     receipt: {
-      label: "jobtracker case file · receipt 05",
+      label: "applied case file · receipt 05",
       href: "/projects/jobtracker/#v-jobtracker-5",
     },
   },
   {
     id: "jobtracker-backend-tests",
-    label: "271 backend tests",
+    label: "278 backend tests",
     claim:
-      "The Applied backend suite passed 271 tests locally, with 10 skipped, under the test/null-keyring environment.",
-    source: "https://github.com/yadava5/applied/tree/36a2f54/backend/tests",
-    sourceLabel: `backend/tests @ ${APPLIED_SHA}`,
+      "The Applied backend suite passed 278 tests locally, with 10 skipped, under the test/null-keyring environment.",
+    source: "https://github.com/yadava5/applied/tree/0f2b63f/backend/tests",
+    sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
-      "Local run against the pinned public test tree, 2026-07-26. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow.",
+      "`pytest tests -q` run against this head on 2026-08-02 in the project’s own Python 3.11 venv: 278 passed, 10 skipped in 39.90s. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow. The previous entry read 271 at 36a2f54 — true when taken; the tree has grown seven tests since.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-07-26",
+    date: "2026-08-02",
     receipt: {
-      label: "jobtracker case file · receipt 04",
+      label: "applied case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",
     },
   },
@@ -172,15 +180,16 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,145 automated tests",
+    label: "1,168 automated tests",
     claim:
-      "Cadence suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
-    source: "https://github.com/yadava5/cadence/tree/69a59e7",
-    sourceLabel: `taskflow-calendar @ ${TASKFLOW_SHA}`,
-    verification: "Local vitest run against the pinned public source.",
+      "Cadence suite measured 2026-08-02: 635 frontend + 533 backend = 1,168 passing (vitest), with 11 skipped.",
+    source: "https://github.com/yadava5/cadence/tree/932625e",
+    sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
+    verification:
+      "Both vitest configs run locally against this head on 2026-08-02: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 533 passing and 11 skipped across 24. The 11 skips are the Postgres row-level-security suite, which stays skipped without RLS_TEST_PG_ADMIN_URL. The number and its commit moved together — the previous entry read 1,145 at 69a59e7, which was true when it was taken.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07",
+    date: "2026-08-02",
     receipt: {
       /* The product is Cadence. `taskflow-calendar` is the ROUTE SLUG and
          stays — it is a pinned identifier and every receipt anchor is
@@ -197,16 +206,16 @@ export const proofManifest: ProofManifestEntry[] = [
      its truthful source and its own receipt row. */
   {
     id: "fast-mnist-benchmark",
-    label: "3.5× openmp+simd dot kernel",
+    label: "3.5× parallel dot kernel",
     claim:
-      "The openmp+simd dot kernel runs 3.5× faster than the -O3 baseline (dot 256) in committed benchmarks.",
+      "The parallel dot kernel runs 3.5× faster than the single-threaded -O3 baseline at dot 256 — the speed-up is OpenMP’s, not SIMD’s.",
     source: "https://github.com/yadava5/glyph/blob/c6e5c0b/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
     verification:
-      "Committed 2025-12-26 benchmark run data in the public fast-mnist-nn repository.",
+      "Rebuilt and re-measured on 2026-08-02: all three of the repository’s configurations (baseline, native, openmp+native) were compiled from source and run under Google Benchmark. dot 256 went 4,858,722ns → 1,380,288ns = 3.520×, against the committed 3.504×. The attribution matters and was checked rather than assumed: on this arm64 machine the `baseline` and `native` binaries are byte-identical — same md5 — because -march=native is an x86 flag clang does not act on here, so the hand-written NEON path is compiled into both and the entire gain is parallelism. That is also why the “SIMD alone” figure sits at ~1.0 (1.016× committed, 0.993× re-measured): it compares a binary with itself.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2025-12-26",
+    date: "2026-08-02",
     receipt: {
       /* Same slug-into-display-text leak, and this one was provably an
          oversight rather than a decision: the entry 27 lines below already
@@ -233,11 +242,10 @@ export const proofManifest: ProofManifestEntry[] = [
       "https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt",
     sourceLabel: `mnist_eval.txt @ ${GLYPH_EVAL_SHA}`,
     verification:
-      "Committed eval report read at the pinned commit: 9701/10000 = 97.0100%, macro P/R/F1 0.9701/0.9698/0.9698, model.weights pinned by sha256, 784→100→10 sigmoid MLP. The generator (apps/eval_model.cpp) and the 299-row miss list are committed beside it. The public MNIST test set is not vendored in the repo, so the run is reproducible with the standard dataset rather than self-contained.",
+      "Re-run from source on 2026-08-02, not merely read: the generator was compiled and executed against the standard 10,000-image test set, and the regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro P/R/F1 0.970056/0.969845/0.969822, the same model.weights sha256, 784→100→10 sigmoid MLP. Two honest caveats stay: the public MNIST test set is not vendored, so reproduction needs the standard dataset; and apps/eval_model.cpp has no add_executable in CMakeLists.txt, so a third party has to compile the generator by hand rather than through the project’s own build.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07-27",
-    sourceKind: "self-authored",
+    date: "2026-08-02",
     receipt: {
       label: "glyph case file · receipt 01",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-1",
@@ -295,15 +303,14 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jetpack-tests",
     label: "72 tests pass",
     claim:
-      "jetpack-compress compiles clean on JDK 25 and its full suite passes — 72 tests (Tests run: 72, Failures: 0).",
+      "jetpack-compress compiles clean on JDK 25 and its full suite passes — 72 tests, 0 failures, 0 errors, 0 skipped.",
     source:
-      "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
-    sourceLabel: `README.md @ ${JETPACK_SHA}`,
+      "https://github.com/yadava5/jetpack-compress/tree/2caacd0/src/test/java",
+    sourceLabel: `src/test/java @ ${JETPACK_SHA}`,
     verification:
-      "README status line read against the public repo at the pinned commit; `mvn test` runs the 72-test JUnit 5 suite.",
+      "Run, not read: `mvn -DskipTests=false test` on JDK 25.0.3 against this commit on 2026-08-02, and the surefire XML summed across all five test classes gives tests=72 errors=0 skipped=0 failures=0. The repository has no CI, so this local run is the only execution record that exists — which is why the entry names the test tree rather than the README status line it used to cite.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07",
-    sourceKind: "self-authored",
+    date: "2026-08-02",
   },
 ];

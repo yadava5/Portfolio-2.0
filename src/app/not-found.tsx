@@ -57,7 +57,7 @@ import { CHAPTERS } from "@/components/story/chapters";
 export const metadata: Metadata = {
   title: "Not on file | Ayush Yadav",
   description:
-    "That page is not on file. The seven chapters, the case files, and the evidence index are.",
+    "That page is not on file. The stations of the run, the case files, and the evidence index are.",
   robots: null,
 };
 
@@ -148,8 +148,8 @@ export default function NotFound() {
           </h1>
           <p className="text-body text-ink-secondary mt-6 max-w-[58ch] font-serif">
             The address you asked for was never filed here — nothing has been
-            lost or moved. What this paper does hold is listed below: seven
-            chapters of one workday, and the ledger that backs every number in
+            lost or moved. What this paper does hold is listed below: the
+            stations of one workday, and the ledger that backs every number in
             them.
           </p>
         </header>

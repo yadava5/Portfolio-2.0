@@ -33,7 +33,15 @@ export const CHAPTERS: readonly ChapterMeta[] = [
   { id: "03", anchor: "path", name: "the path", clock: "12:06" },
   { id: "04", anchor: "automl", name: "automl", clock: "15:23" },
   { id: "05", anchor: "work", name: "the work", clock: "19:36" },
-  { id: "06", anchor: "values", name: "how i work", clock: "21:07" },
+  /* `review`, not `values`. This anchor is dereferenced by the 404's
+     wayfinding index against the SHIPPED home page, and the shipped home
+     page is the run — whose "how i work" station carries id="review".
+     `#values` matched nothing there, so the link landed silently at the
+     top of the document with no error, which is why nothing caught it
+     for as long as it was wrong. Found by the 2026-08-02 provenance
+     audit, along with four siblings; the run now carries `who`, `path`,
+     `work` and `automl` as real section ids so the rest resolve too. */
+  { id: "06", anchor: "review", name: "how i work", clock: "21:07" },
   { id: "07", anchor: "gate", name: "the gate", clock: "22:41" },
 ];
 

@@ -58,8 +58,15 @@ export default function Footer() {
             measures a full 44px. */}
         <MotionToggle className="-my-3 inline-flex h-11 w-fit items-center opacity-80 transition-opacity hover:opacity-100 sm:hidden" />
 
+        {/* "thirteen stations", not "seven chapters". This colophon renders
+            in the root layout, so it ships on /evidence and all seven case
+            files — eleven indexable pages describing a home page that has
+            had thirteen stations since the run replaced the chapter shell.
+            Corrected by the 2026-08-02 provenance audit. The count is the
+            run's own `data-beat="0".."12"`, which check-beat-tables already
+            asserts is a dense range, so it cannot drift silently again. */}
         <p className="label-mono text-center tracking-[0.24em] opacity-70">
-          two inks. one line. seven chapters.
+          two inks. one line. thirteen stations.
         </p>
       </div>
     </footer>
