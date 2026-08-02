@@ -326,7 +326,7 @@ const WORK_ROWS: {
     bright: "A calendar and task app you drive in plain English.",
     muted:
       "Type a sentence and it files the event or task — and now schedules Google Meet meetings with multi-attendee invites.",
-    metric: "1,168 automated tests — 635 frontend + 533 backend, vitest",
+    metric: "1,159 automated tests — 635 frontend + 524 backend, vitest",
     metricHref: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
   },
 ];
@@ -488,7 +488,7 @@ const GATE_REFERENCES: {
      every metric chip the page prints: Cadence's 1,145 tests and
      jetpack's 72. Both strings are the rows' own. */
   {
-    claim: "1,168 automated tests — 635 frontend + 533 backend",
+    claim: "1,159 automated tests — 635 frontend + 524 backend",
     source: "cadence — receipt 01",
     href: "/projects/taskflow-calendar/#v-taskflow-calendar-1",
   },

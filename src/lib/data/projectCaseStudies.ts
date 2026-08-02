@@ -314,7 +314,7 @@ const APPLIED_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SHA}`;
    at are one fact and move together. 271 at 36a2f54 became 278 here; the
    ten skips did not move. Every other Applied receipt keeps 36a2f54,
    which is still where those source audits were done. */
-const APPLIED_SUITE_SHA = "0f2b63f";
+const APPLIED_SUITE_SHA = "03fc5c4";
 const APPLIED_SUITE_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SUITE_SHA}`;
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
@@ -332,7 +332,7 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
 
    The suite receipt used to say 1,145 at `69a59e7`. That was true when it
    was taken and is no longer the number: re-run on the provenance audit,
-   the tree gives 635 frontend + 533 backend = 1,168 passing, 11 skipped.
+   the tree gives 635 frontend + 524 backend = 1,159 passing, 11 skipped.
 
    It gets its own pin rather than reusing TASKFLOW_SHA because the rule
    this file already states elsewhere cuts both ways — "re-pinning a
@@ -341,7 +341,7 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    number and the sha it was measured at are one fact and they move
    together. The other receipts keep `69a59e7`, which is still where
    those source audits were done. */
-const CADENCE_SUITE_SHA = "932625e";
+const CADENCE_SUITE_SHA = "8eee84e";
 const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SUITE_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
@@ -1576,7 +1576,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "tests",
-          label: "1,168 tests",
+          label: "1,159 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -1626,7 +1626,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I measured the suite on 2026-08-02: 635 frontend + 533 backend = 1,168 tests passing under vitest, with 11 skipped.",
+          "I measured the suite on 2026-08-02: 635 frontend + 524 backend = 1,159 tests passing under vitest, with 11 skipped.",
         method:
           "local run of both vitest configs against the public head — `vitest run --config vitest.config.ts` and `--config vitest.backend.config.ts`",
         artifacts: [
@@ -1877,7 +1877,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-08-02",
         kind: "erratum",
-        text: "The receipt itself now reads 1,168. The 2026-07-31 note above already reported that re-run — 635 frontend + 533 backend at 932625e — but only the note was written: the receipt, the architecture summary, the diagram’s own node label and the /evidence index all went on saying 1,145 for another two days, so the page argued with itself and the reader had to find the erratum to learn which number was current. Re-measured independently on 2026-08-02 and confirmed identical: 1,168 passing, 11 skipped. The number and its commit move together, so the row is re-pinned to 932625e; receipts 02 and 03 keep 69a59e7, which is still where those source audits were done. This is the second erratum in this register about a correction that was recorded without being applied, and the pair is why the audit now ends by widening the drift gate instead of only fixing the values.",
+        text: "The receipt itself now reads 1,159 — see the erratum below, which corrects this entry's own number. The 2026-07-31 note above already reported that re-run — 635 frontend + 533 backend at 932625e — but only the note was written: the receipt, the architecture summary, the diagram’s own node label and the /evidence index all went on saying 1,145 for another two days, so the page argued with itself and the reader had to find the erratum to learn which number was current. Re-measured independently on 2026-08-02 and confirmed identical: 1,168 passing, 11 skipped. The number and its commit move together, so the row is re-pinned to 932625e; receipts 02 and 03 keep 69a59e7, which is still where those source audits were done. This is the second erratum in this register about a correction that was recorded without being applied, and the pair is why the audit now ends by widening the drift gate instead of only fixing the values.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "1,168 became 1,159, and the reason is a mistake in the correction above rather than in the code. That entry re-pinned the count to 932625e — which is an UNPUSHED local commit. The source URL 404’d, and the number, though correctly measured, could not be reproduced by anyone: the tree it was taken at does not exist publicly. Re-measured at the public head 8eee84e instead — 635 frontend + 524 backend = 1,159 passing, 11 skipped. The nine-test difference IS 932625e, the fix for nine endpoints that never authenticated; those tests land here the moment that commit is pushed, and the number goes back up on its own. Recorded rather than quietly repaired because the rule this file states — a count and its commit are one fact — has a second half it did not say out loud: the commit has to be one a reader can open.",
       },
     ],
     artifacts: [

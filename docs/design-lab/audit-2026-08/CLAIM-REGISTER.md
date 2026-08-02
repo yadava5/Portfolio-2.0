@@ -128,6 +128,72 @@ Two smaller things the same run exposed:
   divergent name instead — the two home pages disagree on anchor vocabulary,
   not merely on content, and only one of them ships.
 
+## The adversarial pass, and the defect it found in this audit
+
+Phase 7 sent a fresh reviewer at the corrected site with no audit context and one
+instruction: falsify the claims. It found one **P0, and it was mine.**
+
+**Two pinned links 404'd.** Re-pinning Applied's 278 and Cadence's 1,168 to the
+commits they were measured at put `0f2b63f` and `932625e` into the manifest —
+and both are **unpushed local commits**. The numbers were right; the trees do not
+exist publicly, so nobody could reproduce either. `git branch -r --contains`
+returns empty for both.
+
+It also falsified a blanket line in the manifest's own header: *"Every `source`
+below was fetched at this sha and returned 200."*
+
+**Fixed by re-measuring at the public head, not by re-pointing the link.** That
+distinction is the whole rule — a number and its commit are one fact, so moving
+the link without moving the measurement would have made it a guess.
+
+- **Applied → `03fc5c4`.** `git diff origin/…..HEAD -- backend/` is **empty**, so
+  the tree measured *is* the public tree. **278 stands.**
+- **Cadence → `8eee84e`.** Here the tree genuinely differs, so the suite was
+  re-run in a scratch worktree at the public head: **635 + 524 = 1,159**, 11
+  skipped. The nine-test gap *is* `932625e` — the commit fixing nine endpoints
+  that never authenticated. Those tests arrive the moment it is pushed.
+
+So the site now says **1,159**, and it will say 1,168 again when that commit
+lands. All **60** GitHub links in the built output resolve.
+
+**The rule this exposed, now written down:** a count and its commit are one fact
+— *and the commit has to be one a reader can open.* The second half was implied
+and unstated, which is exactly how it got broken.
+
+**New gate: `check-links.mjs`.** No offline check could have caught this —
+`check-proof-manifest` already asserts the label and the link name the same
+commit, and they did; both named a commit that was not there. Only a request
+finds it. It runs over the built pages when they exist and falls back to the
+data layer otherwise, matches `href` attributes only, and is negative-tested
+against the real `932625e` 404.
+
+That narrowness is deliberate and was itself a finding: the reviewer's first
+sweep used a loose regex that swallowed adjacent link text and reported **42
+dead links out of 103**, against a true **2 of 61** — a 21× overcount. The
+instrument has to be narrower than the temptation.
+
+### What the adversarial pass could not break
+
+Recorded because it is the more useful half. Independently recomputed, by
+execution or from the committed artifact: 278/10 · 1,159 · 72 tests on JDK
+25.0.3 · 71 iOS test functions · 12 MCP tools · 201 rules (106+26+69, with
+`ATS_DOMAINS` = 14 kept separate and not folded in) · 97.01% / 9,701 / 299 /
+macro-F1 0.9698 with the confusion diagonal summing to 9,701 · every jetpack JMH
+ratio including the disclosed 6.38–6.89× span · wasm 45.9 KB and weights
+310.6 KB under the 1024 convention · the Cadence CI erratum, confirmed against
+the actual GitHub job log · the 8th IDOR commit and its 32→36 handler count ·
+AutoML's sandbox flags, all four wired · all 11 `/evidence`→receipt crosslinks
+landing on the correctly-numbered row · and `src/run/index.html` being the
+shipped body, differing from `out/index.html` only in `<title>` and injected SEO
+head.
+
+It also **disagreed with one of my framings**, correctly: I asked it to treat
+hedged disclosures as suspicious. It found the hedges load-bearing rather than
+evasive — each names a specific weakness and the condition that would lift it —
+and recommended leaving them alone. It also filed one P0 against AutoML's phase
+list, checked its own ground truth, found the README's seven `###` sections
+matched exactly, and **withdrew the finding**.
+
 ## Still open — brought to the owner, not silently changed
 
 - **`public/resume.pdf` quotes jetpack's *quick* benchmark** (6.5× · 455 vs 66 ·

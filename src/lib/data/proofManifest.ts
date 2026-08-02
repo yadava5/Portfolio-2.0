@@ -71,16 +71,22 @@ export interface ProofManifestEntry {
 const APPLIED_SHA = "36a2f54";
 /* The backend suite count is pinned to the commit it was MEASURED at.
    Re-run 2026-08-02: 271 became 278, skips unchanged at 10. */
-const APPLIED_SUITE_SHA = "0f2b63f";
+const APPLIED_SUITE_SHA = "03fc5c4";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 /* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
 const AUTOML_SHA = "e506c91";
 /* Cadence's suite count is pinned to the commit it was MEASURED at, which
    is the current public head rather than the old `69a59e7`. Re-run on the
-   2026-08-02 provenance audit: 1,145 became 1,168. The number and the sha
+   2026-08-02 provenance audit: 1,145 became 1,159. The number and the sha
    move together, because a count without the commit it was taken at is a
-   guess with a decimal point. */
-const CADENCE_SUITE_SHA = "932625e";
+   guess with a decimal point.
+
+   AND THE COMMIT HAS TO EXIST. This pin was briefly `932625e`, which is an
+   UNPUSHED local commit — so the source URL 404'd and the number could not
+   be reproduced by anyone. Re-measured at the public head instead: 1,159.
+   The nine-test difference is `932625e` itself, the fix for nine dead
+   endpoints, which lands here the moment it is pushed. */
+const CADENCE_SUITE_SHA = "8eee84e";
 const FAST_MNIST_SHA = "c6e5c0b";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
@@ -130,7 +136,7 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "278 backend tests",
     claim:
       "The Applied backend suite passed 278 tests locally, with 10 skipped, under the test/null-keyring environment.",
-    source: "https://github.com/yadava5/applied/tree/0f2b63f/backend/tests",
+    source: "https://github.com/yadava5/applied/tree/03fc5c4/backend/tests",
     sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
       "`pytest tests -q` run against this head on 2026-08-02 in the project’s own Python 3.11 venv: 278 passed, 10 skipped in 39.90s. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow. The previous entry read 271 at 36a2f54 — true when taken; the tree has grown seven tests since.",
@@ -205,10 +211,10 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,168 automated tests",
+    label: "1,159 automated tests",
     claim:
-      "Cadence suite measured 2026-08-02: 635 frontend + 533 backend = 1,168 passing (vitest), with 11 skipped.",
-    source: "https://github.com/yadava5/cadence/tree/932625e",
+      "Cadence suite measured 2026-08-02: 635 frontend + 524 backend = 1,159 passing (vitest), with 11 skipped.",
+    source: "https://github.com/yadava5/cadence/tree/8eee84e",
     sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
     verification:
       "Both vitest configs run locally against this head on 2026-08-02: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 533 passing and 11 skipped across 24. The 11 skips are the Postgres row-level-security suite, which stays skipped without RLS_TEST_PG_ADMIN_URL. The number and its commit moved together — the previous entry read 1,145 at 69a59e7, which was true when it was taken.",

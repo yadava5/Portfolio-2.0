@@ -324,7 +324,7 @@ export const projects: Project[] = [
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
-      "1,168 passed and 11 skipped (635 frontend + 533 backend), re-run 2026-07-31",
+      "1,159 passed and 11 skipped (635 frontend + 524 backend), re-run 2026-08-02 at the public head",
       "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
