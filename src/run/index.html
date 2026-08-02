@@ -3760,6 +3760,11 @@ $("approve").addEventListener("click", () => {
      are what makes the reader look up. The page follows them into the morning. */
   releaseFlock();
 
+  /* and the reader is a passenger from here to the morning. 1s before the
+     carry starts + 7s of carry + a second of slack, with the hard timer as
+     the backstop; the carry's own completion normally releases it sooner. */
+  holdScroll(RM ? 0 : 9500);
+
   if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
 
   /* and the run carries you into the next morning. THE SCROLL IS THE SUNRISE —
@@ -3791,13 +3796,7 @@ function carryToMorning() {
   if (RM || Math.abs(to - from) < 4) { window.scrollTo(0, to); return; }
   const DUR = 7000;
   const t0 = performance.now();
-  let abort = false;
-  const give = () => { abort = true; };
-  addEventListener("wheel", give, { once: true, passive: true });
-  addEventListener("touchstart", give, { once: true, passive: true });
-  addEventListener("keydown", give, { once: true });
   const step = (now) => {
-    if (abort) return;
     const p = clamp((now - t0) / DUR, 0, 1);
     /* eased at both ends: it leaves the gate the way the token did — slowly */
     /* gentler than a cubic in-out: that one hoarded the travel in the
@@ -3805,10 +3804,60 @@ function carryToMorning() {
     const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
     window.scrollTo(0, Math.round(lerp(from, to, e)));
     if (p < 1) requestAnimationFrame(step);
-    else { removeEventListener("wheel", give); removeEventListener("touchstart", give); removeEventListener("keydown", give); }
+    else releaseScroll();
   };
   requestAnimationFrame(step);
 }
+
+/* ————— the carry holds the scroll —————
+   The carry used to ABANDON itself on the first wheel, touch or key. The
+   intent was good — a page that will not let go of the scrollbar is worse
+   than one that never moved — but the effect was the opposite: one stray
+   notch of a trackpad during those seven seconds stranded the reader in the
+   dark between ¶12 and ¶13, with the gate gone and the morning not yet
+   arrived and nothing to scroll to. That reads as the page being stuck,
+   because it is.
+
+   So the transition holds the scroll instead of surrendering it. It is seven
+   seconds, it is the reward for a decision the reader just made, and it is
+   the one moment on this page where the page is doing the moving. The birds
+   go on flying afterwards — the lock is over the CARRY, not over them, so
+   the reader gets the sky back the instant the morning lands.
+
+   The release is belt and braces. Any of three things ends it: the carry
+   finishing, the pageshow of a restored session, or a hard timer well past
+   the carry's own duration. A lock whose only exit is code that might not
+   run is a trap, and this one is over the whole document. */
+let scrollHeld = false, holdT = null;
+const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End",
+  "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
+const eatScroll = (e) => { if (scrollHeld) e.preventDefault(); };
+const eatKeys = (e) => {
+  if (!scrollHeld) return;
+  /* never swallow a key that could be someone's way out of the page */
+  if (e.metaKey || e.ctrlKey || e.altKey || e.key === "Tab" || e.key === "Escape") return;
+  if (SCROLL_KEYS.has(e.key)) e.preventDefault();
+};
+function holdScroll(ms) {
+  if (scrollHeld || RM) return;
+  scrollHeld = true;
+  document.body.classList.add("carrying");
+  addEventListener("wheel", eatScroll, { passive: false });
+  addEventListener("touchmove", eatScroll, { passive: false });
+  addEventListener("keydown", eatKeys, { passive: false });
+  clearTimeout(holdT);
+  holdT = setTimeout(releaseScroll, ms);
+}
+function releaseScroll() {
+  if (!scrollHeld) return;
+  scrollHeld = false;
+  clearTimeout(holdT); holdT = null;
+  document.body.classList.remove("carrying");
+  removeEventListener("wheel", eatScroll);
+  removeEventListener("touchmove", eatScroll);
+  removeEventListener("keydown", eatKeys);
+}
+addEventListener("pageshow", releaseScroll);
 
 
 /* the lamp is mounted and OFF from the start: an absent data-lamp meant the
