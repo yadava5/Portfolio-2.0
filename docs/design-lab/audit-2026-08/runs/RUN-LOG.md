@@ -264,11 +264,31 @@ against the upstream record (`reports/validation/summary.md`):
 ledger discloses *"sweeps are self-graded"*, and the run's ¶10 prose carries the
 matching *"self-reported"* qualifier, which `check-figures.mjs` already enforces.
 
+**Suite, run 2026-08-02.** A venv built from `pyproject.toml` (`pip install -e
+".[slack]"` plus pytest), then:
+
+```
+python -m pytest tests -q
+3 passed in 0.47s
+```
+
+The shipped ledger's `"local tests": "3 passed"` row is therefore **exact**, and
+is now a run rather than a record of one. Its note — *"Slack adapter/formatting,
+no OpenAI or Slack calls"* — matches what the two test files do.
+
 **The one thing that cannot be re-run:** the policy corpus was deliberately
 removed from the repository (`policies/*` gitignored, only `.gitkeep` tracked),
 and validation works by cross-checking quotes against that corpus. The ledger
 stands as a dated record; **reproduction does not**. That belongs in the boundary
 prose, not hidden.
+
+Worth naming precisely, because it is subtler than "the data is missing":
+`llm.py:178-180` short-circuits to `return True, []` when it cannot locate a
+cited document locally. So with an empty `policies/`, the quote verifier does
+not fail loudly — **it passes everything**. That is deliberate (institutional
+policy text cannot be committed) and it is not a bug, but it means a clean
+checkout runs the guardrail in a permissive mode, and the ledger's
+"guardrail path" row reads as unconditional when it is conditional.
 
 ---
 
@@ -286,13 +306,48 @@ DetectionSummary 5 · ObjectCategory 9 · ObjectPosition 10 · RecognizedText 6 
 `ci.yml` has no `xcodebuild test` step, and three of its four jobs are
 `continue-on-error: true`, so CI asserts only that the app compiles.
 
+**This is the one suite the audit could not execute, and the reason is
+recorded rather than glossed.** Two attempts:
+
+```
+xcodebuild test -project VisualAssist.xcodeproj -scheme VisualAssist \
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro'      → failed
+  -destination 'platform=iOS Simulator,id=B97ECD4D-…'           → failed
+
+xcodebuild: error: Unable to find a destination matching the provided
+destination specifier: { platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-…,
+name:Any iOS Device, error:iOS 26.5 is not installed. }
+```
+
+The project has no shared scheme, so `xcodebuild` autocreates one and resolves a
+destination the machine does not have (installed: iOS 18.3 and 26.2). **So the
+71 is a count of test functions in the tree, not a count of tests that passed.**
+The two are usually the same number and are not the same claim, and the site
+says "the public VisualAssistTests tree holds 71 test functions" — which is
+exactly what was verified, and no more.
+
+Consequently **no `xcodebuild test` step was added to that repo's CI.** Adding a
+step I have never seen pass would convert a repo with weak CI into one with red
+CI, which is worse than where it started. It needs one local run by someone with
+the right runtime installed, and then the step is two lines.
+
 ---
 
 ## LifeQuest — HEAD `514908c`, no pin on file
 
 - `apps/api` `test` script is **`vitest --passWithNoTests`**, and `git ls-files
-  apps/api` matches **zero** test files. The green CI badge cannot fail on test
-  content.
+  apps/api` matches **zero** test files. **Run 2026-08-02 to prove it rather
+  than infer it** — `npm run test:api` exits 0 with:
+
+  ```
+  No test files found, exiting with code 0
+  include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+  ```
+
+  The green CI badge cannot fail on test content. This is the one result in the
+  audit where running the suite told me *less* than reading it would have, and
+  it was still worth running: "the script would pass trivially" is a prediction,
+  and "the script did pass trivially, here is its output" is a finding.
 - **"React + NestJS" is accurate** — `@nestjs/common`, `@nestjs/core`,
   `@nestjs/config`, `@nestjs/platform-fastify` are real dependencies.
 - "7-person team", "one weekend", "Social Innovation Weekend, March 2025" are
