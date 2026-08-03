@@ -8,7 +8,7 @@ Ordered by what changes if it stays unpushed.
 
 ---
 
-## 1. Applied — `integration/web-migration`, 10 commits
+## 1. Applied — `integration/web-migration`, 11 commits
 
 ```sh
 cd ~/Documents/Projects/jobtracker && git push origin integration/web-migration
@@ -62,14 +62,15 @@ verified, not assumed — so a single push takes the whole state: the RLS
 testcontainers setup, the CI assertion that the suite ran, the coverage provider,
 and the security workflows.
 
-## 5. Glyph — `main`, 4 commits
+## 5. Glyph — `main`, 6 commits
 
 ```sh
 cd ~/Documents/Projects/fast-mnist-nn && git push origin main
 ```
 
 Benchmark environment record, the corrected variance claim, security workflows,
-and the three high-severity web-demo advisories now cleared.
+the three high-severity web-demo advisories now cleared, and C++ coverage —
+88.9% of lines, the highest of the five measured.
 
 ## 6. jetpack — `main`, 4 commits
 
@@ -79,14 +80,18 @@ cd ~/Documents/Projects/jetpack-compress && git push origin main
 
 JaCoCo, and CI moved from `mvn test` to `mvn verify` so coverage regenerates.
 
-## 7. LifeQuest — `main`, 2 commits · PolicyBot — `main`, 1 commit
+## 7. LifeQuest — `main`, 3 commits · PolicyBot — `main`, 2 commits
 
 ```sh
 cd ~/Documents/Projects/lifequest && git push origin main
 cd ~/Documents/Projects/policybot-Miami-IT && git push origin main
 ```
 
-## 8. Portfolio — `audit/provenance-2026-08`, 16 commits
+Both had effectively no suite before this. LifeQuest ran `--passWithNoTests` over
+zero files and now has 16 schema-contract tests; PolicyBot went from 3 tests to
+24 and gained the first CI workflow it has ever had.
+
+## 8. Portfolio — `audit/provenance-2026-08`, 18 commits
 
 Last, deliberately. Several of its claims link to commits in the repositories
 above; pushing the portfolio first would publish links that 404 — which is

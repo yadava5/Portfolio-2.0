@@ -19,7 +19,7 @@ beside it.
 | Cadence (frontend) | 635 | 18.0% | 67.1% | `vitest --coverage` (v8) |
 | **jetpack** | 72 | **68.1%** | 55.9% | JaCoCo 0.8.13 |
 | **AutoML** | 1,550 | **67.4%** | — | measured during the provenance audit |
-| Glyph | 72 | not measured | — | see below |
+| **Glyph** | 34 cases / 455 assertions | **88.9%** | 82.0% | clang source-based + `llvm-cov` |
 
 Three of these blend a well-tested core with untested peripheral code, and the
 blend is the least informative way to state them.
@@ -83,13 +83,43 @@ No line-coverage gate was added for that surface. A gate there would push effort
 toward shallow component tests that raise the number and find nothing, which is
 the standard way coverage targets make a codebase worse.
 
-### Glyph — not measured, and why
+### Glyph — 88.9%, the highest of the five
 
-C++ coverage needs a dedicated instrumented build (`-fprofile-instr-generate
--fcoverage-mapping`) and an `llvm-cov` pass, which is a separate build
-configuration from the three the benchmark harness already manages. It is
-tractable and it is not done. Recording that plainly rather than leaving a blank
-row that reads as an oversight.
+```
+tools/coverage.sh              # build instrumented, run ctest, report
+tools/coverage.sh --floor 60   # and fail below a percentage
+```
+
+| file | regions | lines | branches |
+|---|---:|---:|---:|
+| `src/Matrix.cpp` | 89.8% | **92.4%** | 78.8% |
+| `src/NeuralNet.cpp` | 89.8% | **91.9%** | 86.5% |
+| `include/fast_mnist/NeuralNet.h` | 100% | 100% | — |
+| `include/fast_mnist/Matrix.h` | 72.6% | 69.6% | 77.3% |
+| **TOTAL** | **87.5%** | **88.9%** | **82.0%** |
+
+34 Catch2 test cases carrying 455 assertions — which is the number worth
+quoting for a property-based suite, since a single rapidcheck case runs many
+generated inputs. *(An earlier draft of this file put "72" in Glyph's row. That
+is jetpack's surefire count; the two were transposed.)*
+
+Two things about how it is wired, both chosen so the number cannot quietly
+become wrong:
+
+- **A separate build directory from the benchmarks.** Instrumentation forces
+  `-O0` and adds a counter update on every branch, so a coverage build's timings
+  describe a binary nobody ships. Benchmarking one would publish nonsense; the
+  configurations are kept apart so neither can become the other by accident.
+- **`llvm-cov` is located through `xcrun`, not `PATH`.** On macOS a bare
+  `llvm-cov` is usually absent, or a Homebrew build whose version disagrees with
+  the compiler that wrote the profile — which fails with an unhelpful format
+  error rather than an honest one.
+
+The first run of the script reported *nothing* while the suite passed, because
+it looked for test binaries matching `test_*` and the executable is
+`fast_mnist_tests`. It now asks `ctest --show-only=json-v1` which binaries it
+actually runs. Guessing a filename is precisely how a coverage report ends up
+empty behind a green test run.
 
 ---
 
@@ -129,6 +159,66 @@ Both paths were executed rather than reasoned about:
 mvn test                  agent inactive, property empty   → passes
 mvn verify -DskipITs      agent attaches, jacoco.xml written → passes
 ```
+
+---
+
+## The two repositories that had no real suite
+
+Coverage is meaningless where there is nothing to measure. Both of these ran a
+green check over an empty or near-empty suite, which is worse than no check —
+it occupies the slot where evidence would go.
+
+### PolicyBot — 3 tests → 24, and its first CI
+
+The three that existed were all about Slack message formatting. The code that
+decides **which policy text answers a question** — term expansion and stemming,
+paragraph splitting, title derivation, and the snippet normalisation that grounds
+an answer against its source — had none.
+
+The new tests need neither the policy corpus nor an API key, which is the whole
+reason that logic stayed untested: the functions that need the corpus are awkward,
+and nobody had separated them from the ones that don't.
+
+**Two of the new tests were wrong on first run**, and that is the useful part:
+`_expand_terms("Password RESET")` returns more than two terms because both carry
+synonyms, and `"access"` stems to `"acces"` because the `-s` rule fires on any
+token over three characters. Neither is a bug — an extra term widens a match — so
+the tests now assert the real behaviour with the over-stemming recorded in a
+comment.
+
+CI runs pytest on 3.10 **and** 3.12, because `pyproject` declares
+`requires-python >=3.10` and a project that claims 3.10 while only ever running
+on 3.12 breaks for the first person who believes the metadata. It asserts the
+suite *ran* — floor of 20 against 24 collected, negative-tested at 99.
+
+No CodeQL or Scorecard here, unlike the other seven: CodeQL on a private repo
+needs Advanced Security and Scorecard cannot read what is not public. Either
+would be a permanently red check, and those teach people to ignore red checks.
+
+Lint went from 42 findings to zero — but the first fix was to pin the rule set.
+Ruff was running on its **defaults**, which widen between releases, so the gate's
+strictness was decided by whichever version CI happened to install.
+
+### LifeQuest — `--passWithNoTests` over zero files → 16
+
+16 tests against `packages/schemas`, the API/client contract. Chosen because
+schemas break *silently*: a widened enum does not throw, it starts accepting data
+the rest of the system assumed it would never see.
+
+The one that matters pins an asymmetry nothing in the source states.
+`audienceEnum` carries three values while signup accepts two — `SHARED` describes
+a quest visible to everyone and was never a signup choice. The two enums sit fifty
+lines apart with no comment between them, so anyone tidying up the apparent
+duplication would let users register as `SHARED` with no type error.
+
+**Verified by making exactly that mistake:**
+
+```
+audienceSelectionEnum = audienceEnum   →   2 failed | 14 passed
+reverted                               →   16 passed
+```
+
+The two failures were the two tests written for it; nothing else moved.
 
 ---
 
