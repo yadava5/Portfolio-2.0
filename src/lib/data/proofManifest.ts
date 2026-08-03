@@ -383,7 +383,7 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "openssf-scorecard",
     label: "Scorecard, scored by the OpenSSF",
     claim:
-      "Four repositories are analysed weekly by OpenSSF Scorecard against 18 supply-chain checks, with results published by the OpenSSF at scorecard.dev: Glyph 7.0, VisualAssist 4.6, LifeQuest 3.9, jetpack-compress 3.8.",
+      "Seven repositories are analysed weekly by OpenSSF Scorecard against 18 supply-chain checks, with results published by the OpenSSF at scorecard.dev: Glyph 7.0, Applied 4.5, Cadence 4.5, VisualAssist 4.6, LifeQuest 3.9, jetpack-compress 3.8, AutoML 3.6.",
     source: "https://scorecard.dev/viewer/?uri=github.com/yadava5/glyph",
     sourceLabel: "scorecard.dev · yadava5/glyph",
     verification:

@@ -784,7 +784,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     notClaiming: [
       "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit stay on the desktop path and in the Hugging Face Space.",
-      "I’m not claiming CI proves the RLS policies enforce. The Postgres RLS suite skips unless a live database URL is supplied, and no workflow supplies one; what is linked is the migrations, the per-transaction identity wiring, and the tests themselves.",
+      "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly — so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
       "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. Both still describe apps/web as an unwired scaffold with a placeholder dashboard — they are behind the code, and this file cites the code.",
       "No production email-volume or user numbers are claimed. Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
     ],
@@ -2325,7 +2325,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The source repo passed 3 Slack adapter/formatting tests in a temporary audit virtualenv without calling OpenAI or Slack.",
+          "The source repo passes 24 tests in its own .venv-ci on Python 3.12.11, without calling OpenAI or Slack: Slack adapter, Slack formatting, and retrieval helpers. This entry read 3 until 2026-08-03, which was true of a temporary audit virtualenv that could only reach the formatting file. The suite had grown; the claim had not.",
         method: "local pytest run, network-free",
         artifacts: [
           {
@@ -2394,7 +2394,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "local tests",
           value: "3 passed",
-          note: "Slack adapter/formatting, network-free",
+          note: "Slack adapter, formatting and retrieval helpers, network-free",
         },
         {
           label: "guardrail path",
