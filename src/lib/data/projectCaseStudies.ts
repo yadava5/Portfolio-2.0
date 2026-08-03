@@ -1566,7 +1566,31 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            check on six services. Drawing a gate would promise the
            database is refusing, and it is not — the handlers are. That
            distinction is the whole content of receipts 04–10 and it
-           would be a shame to lose it to a nicer-looking diagram. */
+           would be a shame to lose it to a nicer-looking diagram.
+
+           2026-08-03: still staged OFF, and the sentence above still
+           holds — but the REASON it is staged has changed, so the reason
+           is worth recording. The risk was never that the policies were
+           wrong; rls.postgres.test.ts had already proved those against a
+           real Postgres. The risk was that enabling them might break the
+           product, because nothing exercised the SERVICE layer under
+           enforced RLS: the handler integration suites mock the services,
+           and the service tests never see a policy.
+
+           rls.cutover-rehearsal.test.ts closes that. It drives the real
+           CalendarService / TaskListService / TaskService against a
+           database with the real migration applied, as a NOSUPERUSER
+           NOBYPASSRLS role, and they work — CRUD succeeds, cross-tenant
+           reads return nothing, a cross-tenant UPDATE changes nothing.
+
+           It also found why nobody had tried: two columns the app writes
+           on ordinary paths (tasks.status, attachments.thumbnailUrl)
+           exist in no schema source in that repository, so a database
+           built from its own definitions cannot run it. That is fixed in
+           the fixture and is the honest answer to "why was this deferred".
+
+           What remains is a hand-run migration against a live Supabase
+           database — an owner decision, not an engineering unknown. */
         {
           id: "auth",
           label: "Owner-scoped checks",
