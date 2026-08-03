@@ -1,5 +1,39 @@
 # Evidence-presentation model (staff-engineer critique, 2026-07-18 — score 64/100)
 
+> **Status after the 2026-08-02 provenance audit.** Four of the six killer
+> findings below are closed; one is closed differently than proposed; one is
+> **still open and is now measured**.
+>
+> | # | finding | status |
+> |---|---|---|
+> | 1 | proofManifest is dead code | **closed** — `/evidence` renders all 12 entries |
+> | 2 | self-referential evidence | **closed**, and now enforced: `sourceKind: "self-hosted"` prints verbatim wherever a source resolves back to this origin |
+> | 3 | flagship promise→payoff broken | **closed differently** — rather than invent a metric, ¶09 states *"no accuracy figure is quoted here because none is claimed"*. A declared absence satisfies the rule the finding was defending |
+> | 4 | footnote self-falsifies | **closed** |
+> | 5 | no eval protocol | **closed** — and as of this audit the protocols are *executed*, not just documented: the 0.9791 gate was re-run, and Glyph's eval regenerates byte-identically |
+> | 6 | ledgers are pictures of numbers | **closed** — HTML tables from checked-in JSON |
+>
+> **STILL OPEN — "one CI run per number".** The model's own line reads *"Public
+> repos: file-level links pinned to commit + one CI run per number."* Measured
+> on 2026-08-02: the entire data layer contains **one** CI-run link across 54
+> case-file claims. That is the widest remaining gap between this model and the
+> site, and it is not evenly distributed — of eight upstream repos, only
+> **Applied** and **Cadence** have CI that asserts anything. jetpack had none at
+> all until this audit added it; PolicyBot still has none; LifeQuest's is
+> vacuously green (`vitest --passWithNoTests` over zero test files);
+> VisualAssist's runs no tests.
+>
+> So the honest reading is that this line was never a documentation problem. It
+> was blocked upstream, and closing it means fixing CI in the projects — which
+> is where the audit started rather than finished.
+>
+> **One amendment the audit adds.** The model says every number must terminate
+> outside the site. Two registers genuinely cannot: the biographical one
+> (transcript, awards) and the institutional one (the ¶03 ITSM figures, read off
+> Miami's own systems). The rule now names both instead of leaving them as
+> unstated exceptions — a rule with silent carve-outs is weaker than a narrower
+> rule drawn honestly.
+
 ## The killer findings
 1. **proofManifest.ts is DEAD CODE** — the claim/source/verification/visibility
    schema is imported nowhere, rendered never. Highest-leverage fix on the

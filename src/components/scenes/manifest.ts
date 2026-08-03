@@ -55,26 +55,35 @@ export interface ProjectSceneMeta {
  *   96 messages / 12 per label × 8 labels and the eval mix
  *   65 · 17 · 8 · 6 from projectCaseStudies.ts (jobtracker protocol);
  *   macro-F1 0.9791 from proofManifest jobtracker-macro-f1.
- * - fast-mnist-nn: 3.5x openmp+simd dot kernel vs -O3 (dot 256) from
- *   proofManifest fast-mnist-benchmark; the four instruction sets from
- *   projects.ts highlights. The forward-pass panel draws the MLP's
+ * - fast-mnist-nn: 3.5x parallel dot kernel vs -O3 (dot 256) from
+ *   proofManifest fast-mnist-benchmark; the THREE hand-written instruction
+ *   sets (AVX-512, AVX2, NEON over a scalar fallback) from projects.ts
+ *   highlights — the wasm build compiles -msimd128 and has no hand-written
+ *   branch, which is why it is named separately in the provenance line. The forward-pass panel draws the MLP's
  *   mechanism only, as an axonometric figure — input plane, two
  *   receding hidden planes, far readout ribbon, depth drawn in ink —
- *   and claims no accuracy number (the ~97% claim is HELD in the
- *   manifest until a committed eval run earns it). The caption's
+ *   and claims no accuracy number. (The accuracy claim was HELD until
+ *   2026-07-27, when glyph@97de736 committed the eval run that earned it;
+ *   it now reads 97.01% and regenerates byte-identically. The figure still
+ *   claims no accuracy number — that is a choice about what the drawing
+ *   asserts, not a hedge about what is known.) The caption's
  *   "a drawn 7, answered" (F37) restates the figure's own drawn digit
  *   and its labeled readout — the case study's "you draw a digit and
  *   watch the network read it" — not a measured result.
  * - jetpack-compress: split ⟶ virtual threads ⟶ one byte-valid gzip
- *   member, ~6.5x vs single-threaded java.util.zip (±50%, quick
- *   benchmark) from projects.ts; 72 tests / 0 failures / JDK 25 @
- *   af2c4b1 from proofManifest jetpack-tests. "1f 8b" is the gzip
+ *   member, 6.4x vs single-threaded java.util.zip (422 vs 66 MB/s,
+ *   3-fork JMH, 99.9% CI) from projects.ts; 72 tests / 0 failures /
+ *   JDK 25 @ 2caacd0 from proofManifest jetpack-tests. The ~6.5x figure
+ *   this comment used to cite is the QUICK 1-fork run; every surface now
+ *   quotes the rigorous one, which is the slower and tighter number. "1f 8b" is the gzip
  *   member magic (RFC 1952 format notation, not a project metric).
  * - taskflow-calendar (Cadence): chrono-node + compromise and the
  *   Google Meet multi-attendee invite flow from projects.ts
  *   (fullDescription, highlights, metrics) + the case architecture's
- *   nlp node; 1,145 tests (634 frontend + 511 backend, vitest) from
- *   proofManifest taskflow-tests @ 69a59e7. The sentence in the figure
+ *   nlp node; 1,159 tests (635 frontend + 524 backend, vitest) from
+ *   proofManifest taskflow-tests @ 8eee84e — the PUBLIC head, re-measured
+ *   there after a pin to an unpushed local commit made the number
+ *   unreproducible by anyone but its author. The sentence in the figure
  *   ("lunch with sam and priya next tuesday at noon — add a meet") is
  *   an ILLUSTRATIVE example, labeled so in the figure and disclosure —
  *   never user data, and no parser runs in the card (brief B2).
@@ -105,7 +114,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     disclosure:
       "A drawn benchmark figure that runs — not a screenshot. Both race lanes draw for the same instant of time, so distance is measured speed: the 3.5× lane is the committed openmp+simd dot-256 kernel result vs the -O3 baseline (BENCHMARKS.md). The forward-pass panel draws the MLP’s mechanism as an axonometric figure — the drawn seven on a near input plane, two hidden layers receding as planes, a ten-slot readout on the far plane — and claims no accuracy number.",
     provenance:
-      "3.5× — openmp+simd dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm-simd128",
+      "3.5× — parallel dot kernel vs -O3 baseline (dot 256), committed benchmarks · avx-512 · avx2 · neon · wasm compiles -msimd128",
     alt: "The race: two ink lanes drawn for the same instant of time — the -O3 scalar lane reaches 1× while the openmp+simd lane reaches 3.5× on the dot-256 kernel axis. Beside it, the forward pass drawn in axonometric depth: a stippled digit seven rides the near input plane, feeds two receding hidden planes, and on the far plane’s ten-slot readout, slot seven fills.",
   },
   "taskflow-calendar": {
@@ -114,7 +123,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     disclosure:
       "A drawn figure that runs — not a screenshot. The sentence is an illustrative example, never user data. The parse path is the app’s real one — chrono-node and compromise resolve plain English into events and tasks — and the clay Meet chip mirrors the shipped Google Meet flow: multi-attendee Gmail invites with Meet links. No parser runs in this card; the choreography is scripted.",
     provenance:
-      "chrono-node + compromise · google meet — multi-attendee invites · 1,145 tests passing — taskflow-calendar @ 69a59e7",
+      "chrono-node + compromise · google meet — multi-attendee invites · 1,159 tests passing — cadence @ 8eee84e",
     alt: "The parse: an illustrative plain-English sentence — lunch with sam and priya next tuesday at noon, add a meet — has its spans underlined and resolved into chips: tue 12:00 lunch, invites for sam and priya, and a Google Meet link chip. The event rests on a drawn week grid at tuesday noon with a small clay Meet mark. In the real app, chrono-node and compromise do this parse.",
   },
   automl: {
@@ -132,7 +141,7 @@ export const PROJECT_SCENE_MANIFEST: Record<string, ProjectSceneMeta> = {
     disclosure:
       "A drawn figure that runs — not a screenshot. Geometry from the engine’s real path: the input stream splits into blocks, compresses concurrently on virtual threads, and stitches into one byte-valid gzip member. The optional in-card gzip runs your browser’s own CompressionStream and is labeled live — it is not jetpack’s JDK output.",
     provenance:
-      "~6.5× vs single-threaded java.util.zip (±50%, quick benchmark) · 72 tests, 0 failures · jdk 25 @ af2c4b1",
+      "6.4× vs single-threaded java.util.zip (422 vs 66 MB/s, 3-fork JMH, 99.9% CI) · 72 tests, 0 failures · jdk 25 @ 2caacd0",
     alt: "Split, compress in parallel, stitch: an input byte stream splits into blocks across virtual-thread lanes, each block compresses, and the lanes stitch back into one byte-valid gzip member marked with the 1f 8b gzip header.",
   },
 };

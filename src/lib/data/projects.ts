@@ -271,7 +271,7 @@ export const projects: Project[] = [
       "Vision OCR with speech synthesis for text reading",
       "On-device Vision workflows for privacy-first processing",
       "VoiceOver-first accessibility with voice commands",
-      "71 unit tests for models and utilities",
+      "71 unit tests for models and utilities — all passing on iOS 26.5 and 26.2",
     ],
     isPrivate: false,
     // Retired from recruiter-facing lists (not one of the six live
@@ -324,7 +324,7 @@ export const projects: Project[] = [
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
-      "1,168 passed and 11 skipped (635 frontend + 533 backend), re-run 2026-07-31",
+      "1,159 passed and 11 skipped (635 frontend + 524 backend), re-run 2026-08-02 at the public head",
       "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
@@ -349,7 +349,13 @@ export const projects: Project[] = [
          renders it, the page ships a precise figure the ledger two
          clicks away refuses to make. They now say what the ledger
          says. */
-      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across three instruction sets — AVX-512, AVX2, NEON, and a hand-written wasm-simd128 kernel — shipped with a live in-browser benchmark that times SIMD against scalar on the visitor's own machine. Its README records ~97% test accuracy after ~30 epochs; that number is HELD until a committed eval run reproduces it.",
+      /* This sentence said "three instruction sets", then listed four and
+         called the wasm one hand-written. The source guards exactly
+         __AVX512F__, __AVX2__ and __ARM_NEON with a scalar fallback; the
+         wasm target passes -msimd128 and has no hand-written branch. And
+         the HELD clause outlived its condition — glyph@97de736 committed
+         the eval run on 2026-07-27, and it regenerates byte-for-byte. */
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across three instruction sets — AVX-512, AVX2 and NEON, over a scalar fallback, with the wasm build compiled -msimd128 — shipped with a live in-browser benchmark that times the kernels against scalar on the visitor's own machine. A committed eval run scores it 97.01% on the 10,000-image MNIST test set.",
     techStack: [
       { name: "C++", color: "#00599c" },
       { name: "AVX-512 / AVX2", color: "#ff6b6b" },
@@ -395,15 +401,23 @@ export const projects: Project[] = [
     highlights: [
       "Hand-written SIMD across 3 instruction sets: AVX-512, AVX2, NEON — wasm builds -msimd128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
-      "~97% test accuracy documented in the README — HELD until a committed eval run earns it",
-      "Honest attribution: the 3.5× is the openmp+simd config vs the -O3 baseline (BENCHMARKS.md)",
+      "97.01% on the 10,000-image MNIST test set — 9,701 correct, macro-F1 0.9698, from a committed eval run",
+      "Honest attribution: the 3.5× is openmp against the -O3 baseline; the SIMD is compiled into both",
     ],
     isPrivate: false,
     metrics: [
-      { label: "Accuracy", value: "~97% (README) — held, no eval run" },
-      // Attribution per BENCHMARKS.md: the 3.5x is the openmp+simd
-      // parallel configuration vs the -O3 baseline, not SIMD alone.
-      { label: "Kernel Speedup", value: "3.5× openmp+simd dot kernel" },
+      /* Was "~97% (README) — held, no eval run" until 2026-08-02. That
+         stopped being true on 2026-07-27, when glyph@97de736 committed
+         benchmarks/mnist_eval.json and its generator; the case file and
+         the proof manifest both lifted the HELD stamp then and this line
+         did not follow. Re-run on the provenance audit, the artifact
+         regenerates byte-for-byte. */
+      { label: "Accuracy", value: "97.01% — 9,701/10,000, committed eval" },
+      /* Attribution, checked by building all three configurations rather
+         than by reading BENCHMARKS.md: on arm64 the `baseline` and
+         `native` binaries are byte-identical, so the hand-written NEON
+         path is in both and the entire 3.5× is OpenMP's. */
+      { label: "Kernel Speedup", value: "3.5× parallel dot kernel" },
     ],
     /* W5 e-07 split: the kernel claim is earned (BENCHMARKS.md); the
        accuracy claim traces to its own HELD manifest entry (README-

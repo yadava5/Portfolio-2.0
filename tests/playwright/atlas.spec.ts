@@ -20,6 +20,34 @@ import {
   REQUIRED_PRIVATE_CASE_STUDIES,
 } from "./portfolio-fixtures";
 
+/**
+ * Assert no fabricated claim survives on a rendered page.
+ *
+ * ONE implementation, because there were two and only one got fixed.
+ * The 2026-08-02 provenance audit corrected Cadence's suite count to its
+ * measured **1,168 tests** — and the blocklist forbids the fabricated
+ * `"68 tests"`, which `1,168 tests` contains. Checked with `.toContain()`,
+ * telling the truth failed the hallucination guard. Patching the copy in
+ * the home test left the copy in the case-study loop red on five
+ * browsers, which is the argument for a helper rather than a loop written
+ * twice.
+ *
+ * Entries that START WITH A DIGIT are matched with a `(?<![\d,])` guard,
+ * so a digit or a thousands comma in front means it is a different
+ * number. Entries that begin with a letter keep the plain substring test:
+ * they are phrases, and a phrase inside a longer phrase is still there.
+ */
+function expectNoHallucinations(bodyText: string) {
+  for (const forbidden of PROHIBITED_GENERATED_CONTENT) {
+    if (/^\d/.test(forbidden)) {
+      const escaped = forbidden.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      expect(bodyText).not.toMatch(new RegExp(`(?<![\\d,])${escaped}`));
+    } else {
+      expect(bodyText).not.toContain(forbidden);
+    }
+  }
+}
+
 /** The seven working-paper chapters (stable anchors, storyboard order) */
 const REQUIRED_SECTIONS = NAV_SECTIONS;
 
@@ -743,10 +771,7 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/");
     await page.locator("#arrival").waitFor({ state: "attached" });
 
-    const bodyText = await page.locator("body").innerText();
-    for (const forbidden of PROHIBITED_GENERATED_CONTENT) {
-      expect(bodyText).not.toContain(forbidden);
-    }
+    expectNoHallucinations(await page.locator("body").innerText());
   });
 
   for (const id of CASE_STUDY_IDS) {
@@ -769,10 +794,7 @@ test.describe("Daylight Study — working paper", () => {
         ).toBeVisible();
       }
 
-      const bodyText = await page.locator("body").innerText();
-      for (const forbidden of PROHIBITED_GENERATED_CONTENT) {
-        expect(bodyText).not.toContain(forbidden);
-      }
+      expectNoHallucinations(await page.locator("body").innerText());
     });
   }
 

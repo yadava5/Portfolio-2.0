@@ -7,9 +7,19 @@ const outputDir = path.join(root, "public", "images", "projects");
 const diagrams = [
   {
     file: "jobtracker-architecture.svg",
-    title: "JobTracker Local Classification",
+    /* The DESKTOP path, and the title now says so. This diagram draws
+       SQLite and SwiftUI, which is a real tree in the repo and not the
+       hosted product — Applied ships Postgres behind FastAPI behind
+       Next.js, which is what the case file's own architecture block
+       draws beside it. The case-file plate already carried a boundary
+       row saying this; `projects.ts` uses the same file as the project
+       card with NO boundary text, so a reader met SQLite/SwiftUI with
+       nothing telling them which era they were looking at. An image that
+       travels between call sites has to carry its own disclosure.
+       (2026-08-02 provenance audit.) */
+    title: "JobTracker — the desktop path (2026-02 era)",
     subtitle:
-      "Gmail + iCloud mail -> local classifier -> SQLite pipeline -> SwiftUI dashboard",
+      "Gmail + iCloud mail -> local classifier -> SQLite pipeline -> SwiftUI dashboard; the hosted app runs rules only, on Postgres",
     accent: "#10b981",
     nodes: [
       ["Gmail OAuth2", "iCloud IMAP", "Async sync"],

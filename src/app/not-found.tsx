@@ -29,6 +29,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CHAPTERS } from "@/components/story/chapters";
 
+/**
+ * Where each chapter anchor actually lands on the SHIPPED home page.
+ *
+ * `CHAPTERS` is StoryShell's contract, and StoryShell is not what a
+ * visitor gets: `npm run build` overwrites `out/index.html` with the run
+ * (scripts/run/build-home.mjs). The two disagree on one name — the run
+ * calls "how i work" `review`, StoryShell calls it `values` — so this
+ * page, which links against the served artifact, maps that one across.
+ *
+ * The 2026-08-02 provenance audit found all five of these links dead:
+ * the run had none of `who`, `path`, `automl`, `work` or `values`, and a
+ * hash that matches nothing scrolls to the top of the document without
+ * raising anything, so no test and no reader report ever caught it. Four
+ * were fixed at the source by giving the run real section ids. This is
+ * the fifth, and it is a map rather than a rename because renaming it in
+ * `chapters.ts` breaks StoryShell's own `#values` — which the browser
+ * smoke asserts, and which is how this was found.
+ */
+const RUN_ANCHOR: Record<string, string> = { values: "review" };
+
 /* CRITIC-LEDGER F51: `out/404.html` shipped the HOMEPAGE title
    ("Ayush Yadav | Software, Data, and ML Engineering") and inherited
    `robots: {index: true}` from the root layout — while /world-preview,
@@ -57,7 +77,7 @@ import { CHAPTERS } from "@/components/story/chapters";
 export const metadata: Metadata = {
   title: "Not on file | Ayush Yadav",
   description:
-    "That page is not on file. The seven chapters, the case files, and the evidence index are.",
+    "That page is not on file. The stations of the run, the case files, and the evidence index are.",
   robots: null,
 };
 
@@ -148,8 +168,8 @@ export default function NotFound() {
           </h1>
           <p className="text-body text-ink-secondary mt-6 max-w-[58ch] font-serif">
             The address you asked for was never filed here — nothing has been
-            lost or moved. What this paper does hold is listed below: seven
-            chapters of one workday, and the ledger that backs every number in
+            lost or moved. What this paper does hold is listed below: the
+            stations of one workday, and the ledger that backs every number in
             them.
           </p>
         </header>
@@ -162,7 +182,7 @@ export default function NotFound() {
             {chapters.map((chapter) => (
               <IndexRow
                 key={chapter.anchor}
-                href={`/#${chapter.anchor}`}
+                href={`/#${RUN_ANCHOR[chapter.anchor] ?? chapter.anchor}`}
                 label={chapter.name}
                 note={`chapter ${chapter.id}`}
               />

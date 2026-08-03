@@ -44,9 +44,9 @@
      Every number is proof-cited from src/lib/data or the résumé as
      verified against committed artifacts (2026-07-30): macro-F1 0.9791
      on the 96-sample gate (8 classes, 2 misclassified); 97.01%
-     (9,701/10,000, macro-F1 0.9698); 3.5× openmp+simd dot-256 vs -O3 (simd alone 1.02×); 6.4×
+     (9,701/10,000, macro-F1 0.9698); 3.5× parallel dot-256 vs -O3 (openmp, not simd); 6.4×
      gzip throughput (422 vs 66 MB/s, 3-fork JMH, 99.9% CI);
-     1,168 passed / 11 skipped (635 FE + 533 BE); 72 tests, 0 failures on
+     1,159 passed / 11 skipped (635 FE + 524 BE); 72 tests, 0 failures on
      JDK 25; 7 phases, every one gated. The Glyph station runs the REAL
      C++/WASM network (45.9 KB wasm + 310.6 KB weights); jetpack's
      ratio is computed live with the browser's own CompressionStream
@@ -1390,7 +1390,7 @@ h1[data-np-measuring] .np-ch {
   </header>
   <ol>
     <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">rules macro-f1 0.9791 · 96-sample gate</span></li>
-    <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,168 tests</span></li>
+    <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,159 tests</span></li>
     <li data-st="3"><span class="idx">03</span><b>glyph</b><span class="m">97.01% · 10,000-image test set</span></li>
     <li data-st="4"><span class="idx">04</span><b>jetpack-compress</b><span class="m">72 tests, 0 failures · jdk 25</span></li>
     <li data-st="5"><span class="idx">05</span><b>lifequest</b><span class="m">prototype · held marks stay held</span></li>
@@ -1440,7 +1440,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 02 · 06:58 — who: the engineer of record signs the line -->
-  <section class="beat station bwho" data-beat="1">
+  <section id="who" class="beat station bwho" data-beat="1">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
@@ -1475,7 +1475,7 @@ h1[data-np-measuring] .np-ch {
        feeders — five years of OAS query logs, the Tableau/Workday silos,
        a legacy Laravel reporter — worked into shape and merged onto the
        main line. The school record files with the run below. -->
-  <section class="beat station flip bpath" data-beat="2">
+  <section id="path" class="beat station flip bpath" data-beat="2">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
@@ -1487,11 +1487,11 @@ h1[data-np-measuring] .np-ch {
           <figcaption>Richard&nbsp;W.&nbsp;Hamming &middot; <i>Numerical Methods for Scientists and Engineers, 1962</i></figcaption>
         </figure>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration student associate — miami university · internship · jun 2025 – may 2026<br>
           <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
           tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
           legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the inventory lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the inventory is checked in — the rest are read off miami&rsquo;s own systems and cannot be published</span> · <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
@@ -1511,7 +1511,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 04 · 08:47 — Applied: the sorting line -->
-  <section class="beat station b2" data-beat="3">
+  <section id="work" class="beat station b2" data-beat="3">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
@@ -1541,7 +1541,7 @@ h1[data-np-measuring] .np-ch {
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1,168 passed · 11 skipped</b> — 635 frontend + 533 backend<br>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1,159 passed · 11 skipped</b> — 635 frontend + 524 backend<br>
           4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
           <b>36 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
           rls written for <b>7 tables</b>, staged off · owner-scoped checks on 6 services · idor suite in ci</p>
@@ -1584,7 +1584,7 @@ h1[data-np-measuring] .np-ch {
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">No frameworks. Just math, memory, and C++.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly, no server. The run needs a sample: yours.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
-          openmp+simd dot-256 kernel <b>3.5×</b> vs -O3 — parallelism carries it; simd alone is 1.02× · 784 ⟶ 100 ⟶ 10<br>
+          parallel dot-256 kernel <b>3.5×</b> vs -O3 — parallelism carries all of it; the simd is in both builds · 784 ⟶ 100 ⟶ 10<br>
           3 hand-written simd paths — avx-512 · avx2 · neon (wasm: -msimd128, compiler-vectorised) · 2-person team</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
       </div>
@@ -1610,10 +1610,10 @@ h1[data-np-measuring] .np-ch {
             </div>
           </div>
         </div>
-        <div class="bench" aria-label="benchmark: simd versus scalar dot kernel">
+        <div class="bench" aria-label="benchmark: single-threaded versus parallel dot kernel">
           <span class="mono" style="font-size:.7rem">the same math, twice — dot-256 kernel, committed bench:</span>
-          <div class="brow"><span>scalar -O3</span><span class="btrack"><span class="bfill" id="bScalar"></span></span><span class="bval">1×</span></div>
-          <div class="brow simd"><span>openmp + hand-written simd</span><span class="btrack"><span class="bfill" id="bSimd"></span></span><span class="bval">3.5×</span></div>
+          <div class="brow"><span>one thread, -O3</span><span class="btrack"><span class="bfill" id="bScalar"></span></span><span class="bval">1×</span></div>
+          <div class="brow simd"><span>openmp, all cores</span><span class="btrack"><span class="bfill" id="bSimd"></span></span><span class="bval">3.5×</span></div>
         </div>
         <figcaption>fig. 06 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
       </figure>
@@ -1695,7 +1695,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 09 · 22:05 — Agentic AutoML: the notebook, worked by tools -->
-  <section class="beat station flip b7" data-beat="8">
+  <section id="automl" class="beat station flip b7" data-beat="8">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · sixth station · the last — <i>22:05</i></p>
@@ -1739,9 +1739,9 @@ h1[data-np-measuring] .np-ch {
         </figure>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">271 passed · 10 skipped — Applied&rsquo;s validation ledger ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">278 passed · 10 skipped — Applied&rsquo;s validation ledger ↗</a></p></div>
           <div class="mline"><p>Make it fast.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">openmp+simd dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">parallel dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ↗</a></p></div>
           <div class="mline wonk"><p>Make it <em>honest</em>.</p>
             <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot&rsquo;s validation ledger ↗</a></p></div>
         </div>
@@ -1842,7 +1842,7 @@ h1[data-np-measuring] .np-ch {
           <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing</p>
           <ul class="gl">
             <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">rules macro-f1 0.9791 · 96-sample gate</span></li>
-            <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,168 passed · 11 skipped — 635 fe + 533 be</span></li>
+            <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,159 passed · 11 skipped — 635 fe + 524 be</span></li>
             <li data-st="3"><span class="gi">03</span><b>glyph</b><span class="gm">97.01% — 9,701/10,000 · macro-f1 0.9698</span></li>
             <li data-st="4"><span class="gi">04</span><b>jetpack-compress</b><span class="gm">72 tests, 0 failures · jdk 25</span></li>
             <li data-st="5"><span class="gi">05</span><b>lifequest</b><span class="gm">prototype — held marks stayed held</span></li>

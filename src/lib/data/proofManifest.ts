@@ -69,8 +69,31 @@ export interface ProofManifestEntry {
    projectCaseStudies.ts; the case file's corrections register carries the
    erratum. Every `source` below was fetched at this sha and returned 200. */
 const APPLIED_SHA = "36a2f54";
+/* The backend suite count is pinned to the commit it was MEASURED at.
+   Re-run 2026-08-02: 271 became 278, skips unchanged at 10. */
+const APPLIED_SUITE_SHA = "03fc5c4";
 const VISUAL_ASSIST_SHA = "22ebdaa";
-const TASKFLOW_SHA = "69a59e7";
+/* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
+const AUTOML_SHA = "e506c91";
+/* Cadence's suite count is pinned to the commit it was MEASURED at, which
+   is the current public head rather than the old `69a59e7`. Re-run on the
+   2026-08-02 provenance audit: 1,145 became 1,159. The number and the sha
+   move together, because a count without the commit it was taken at is a
+   guess with a decimal point.
+
+   AND THE COMMIT HAS TO EXIST. This pin was briefly `932625e`, which is an
+   UNPUSHED local commit — so the source URL 404'd and the number could not
+   be reproduced by anyone. Re-measured at the public head instead: 1,159.
+   The nine-test difference is `932625e` itself, the fix for nine dead
+   endpoints, which lands here the moment it is pushed.
+
+   2026-08-03: it was pushed, along with the row-level-security work, so the
+   pin moves forward to `2295044` on `fix/method-handler-auth` — verified
+   present on the remote before this line was written, not after. 1,159
+   becomes 1,179 with **zero** skips, which is the more interesting half: the
+   11 that used to skip were the only tests that could demonstrate the
+   isolation Cadence claims, and they had never executed anywhere. */
+const CADENCE_SUITE_SHA = "2295044";
 const FAST_MNIST_SHA = "c6e5c0b";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
@@ -92,7 +115,7 @@ export const proofManifest: ProofManifestEntry[] = [
     privacyBoundary: "No private email content is shown.",
     date: "2026-07-26",
     receipt: {
-      label: "jobtracker case file · receipt 02",
+      label: "applied case file · receipt 02",
       href: "/projects/jobtracker/#v-jobtracker-2",
     },
   },
@@ -111,25 +134,25 @@ export const proofManifest: ProofManifestEntry[] = [
       "The committed baseline JSON records metrics and label counts, not message content.",
     date: "2026-03-03",
     receipt: {
-      label: "jobtracker case file · receipt 05",
+      label: "applied case file · receipt 05",
       href: "/projects/jobtracker/#v-jobtracker-5",
     },
   },
   {
     id: "jobtracker-backend-tests",
-    label: "271 backend tests",
+    label: "278 backend tests",
     claim:
-      "The Applied backend suite passed 271 tests locally, with 10 skipped, under the test/null-keyring environment.",
-    source: "https://github.com/yadava5/applied/tree/36a2f54/backend/tests",
-    sourceLabel: `backend/tests @ ${APPLIED_SHA}`,
+      "The Applied backend suite passed 278 tests locally, with 10 skipped, under the test/null-keyring environment.",
+    source: "https://github.com/yadava5/applied/tree/03fc5c4/backend/tests",
+    sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
-      "Local run against the pinned public test tree, 2026-07-26. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow.",
+      "`pytest tests -q` run against this head on 2026-08-02 in the project’s own Python 3.11 venv: 278 passed, 10 skipped in 39.90s. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow. The previous entry read 271 at 36a2f54 — true when taken; the tree has grown seven tests since.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-07-26",
+    date: "2026-08-02",
     receipt: {
-      label: "jobtracker case file · receipt 04",
+      label: "applied case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",
     },
   },
@@ -153,18 +176,41 @@ export const proofManifest: ProofManifestEntry[] = [
     },
   },
   {
-    id: "visual-assist-tests",
-    label: "71 iOS tests",
+    /* Added 2026-08-02. "12 mcp tools" is stated four times on the home
+       page — the ¶09 prose, its aria-label, and twice inside the figure's
+       own SVG text — and had no evidence row anywhere, which is exactly
+       the thing /evidence prints a rule against. It is also trivially
+       checkable, which made the omission worse rather than better. */
+    id: "automl-mcp-tools",
+    label: "12 MCP tools",
     claim:
-      "The public VisualAssistTests tree holds 71 test functions across the model and utility layers.",
+      "The Agentic AutoML backend registers exactly 12 MCP tools, in one server — the notebook surface the orchestrator drives.",
+    source:
+      "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/backend/src/services/mcp/mcpServer.ts",
+    sourceLabel: `mcpServer.ts @ ${AUTOML_SHA}`,
+    verification:
+      "Counted in the source on 2026-08-02: 12 `server.registerTool(` call sites at the pinned commit, and 12 at the current head — the count has not moved. There is no second MCP server; a search for `registerTool` across backend/src and frontend/src returns nothing outside this file, so the number is the whole registry rather than one file's share of it.",
+    visibility: "public",
+    privacyBoundary: "No private data — the tool registry is public source.",
+    date: "2026-08-02",
+    receipt: {
+      label: "automl case file · receipt 02",
+      href: "/projects/automl/#v-automl-2",
+    },
+  },
+  {
+    id: "visual-assist-tests",
+    label: "71 iOS tests, all passing",
+    claim:
+      "The public VisualAssistTests suite executes 71 tests; all 71 pass, none are skipped.",
     source:
       "https://github.com/yadava5/VisualAssist/tree/22ebdaa/VisualAssistTests",
     sourceLabel: `VisualAssistTests @ ${VISUAL_ASSIST_SHA}`,
     verification:
-      "Function count audited in the public test tree at the pinned commit.",
+      "Executed, having previously only been counted. This entry read “71 test functions” rather than “71 passing” because the suite could not be run: xcodebuild resolved a destination needing an iOS runtime this machine lacked, and CI had no `xcodebuild test` step either, so 71 tests had never executed anywhere. The runtime was installed on 2026-08-03 and `xcodebuild test` was run twice — iPhone 17 Pro on iOS 26.5, then on iOS 26.2 when the simulator resolver picked a different device — giving 71 passed, 0 failed, 0 skipped both times, read from the .xcresult bundle via xcresulttool rather than from console text. Two runtimes rather than one because the second run was accidental, and it is worth more than the first. The static count is unchanged and still corroborates: 8 XCTestCase subclasses, 71 no-argument instance methods named test…, per file 13 · 11 · 10 · 9 · 9 · 8 · 6 · 5, with zero argument-taking, private, or static variants — the cases XCTest would skip — so the collected count could not have differed. The pin still holds: VisualAssistTests/ and VisualAssist/ are byte-identical between this commit and the tree that was executed, which changed only CI, scripts and docs. CI now runs the suite and asserts it ran, since a green xcodebuild proves nothing on its own. The commit that introduced the suite says “68 tests”; that is the stale document, not this number.",
     visibility: "public",
     privacyBoundary: "No live camera, location, or user sensor data is shown.",
-    date: "2026-05",
+    date: "2026-08-03",
     receipt: {
       label: "visual assist case file · receipt 01",
       href: "/projects/visual-assist/#v-visual-assist-1",
@@ -172,15 +218,16 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,145 automated tests",
+    label: "1,179 tests, 0 skipped",
     claim:
-      "Cadence suite measured 2026-07: 634 frontend + 511 backend = 1,145 passing (vitest).",
-    source: "https://github.com/yadava5/cadence/tree/69a59e7",
-    sourceLabel: `taskflow-calendar @ ${TASKFLOW_SHA}`,
-    verification: "Local vitest run against the pinned public source.",
+      "Cadence runs 1,179 tests — 635 frontend + 544 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
+    source: "https://github.com/yadava5/cadence/tree/2295044",
+    sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
+    verification:
+      "Both vitest configs run against this head on 2026-08-03: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 544 passing across 24, and the skip count is now zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, now 1,179 here.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07",
+    date: "2026-08-03",
     receipt: {
       /* The product is Cadence. `taskflow-calendar` is the ROUTE SLUG and
          stays — it is a pinned identifier and every receipt anchor is
@@ -197,16 +244,16 @@ export const proofManifest: ProofManifestEntry[] = [
      its truthful source and its own receipt row. */
   {
     id: "fast-mnist-benchmark",
-    label: "3.5× openmp+simd dot kernel",
+    label: "3.5× parallel dot kernel",
     claim:
-      "The openmp+simd dot kernel runs 3.5× faster than the -O3 baseline (dot 256) in committed benchmarks.",
+      "The parallel dot kernel runs 3.5× faster than the single-threaded -O3 baseline at dot 256 — the speed-up is OpenMP’s, not SIMD’s.",
     source: "https://github.com/yadava5/glyph/blob/c6e5c0b/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
     verification:
-      "Committed 2025-12-26 benchmark run data in the public fast-mnist-nn repository.",
+      "Rebuilt and re-measured on 2026-08-02: all three of the repository’s configurations (baseline, native, openmp+native) were compiled from source and run under Google Benchmark. dot 256 went 4,858,722ns → 1,380,288ns = 3.520×, against the committed 3.504×. The attribution matters and was checked rather than assumed: on this arm64 machine the `baseline` and `native` binaries are byte-identical — same md5 — because -march=native is an x86 flag clang does not act on here, so the hand-written NEON path is compiled into both and the entire gain is parallelism. That is also why the “SIMD alone” figure sits at ~1.0 (1.016× committed, 0.993× re-measured): it compares a binary with itself.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2025-12-26",
+    date: "2026-08-02",
     receipt: {
       /* Same slug-into-display-text leak, and this one was provably an
          oversight rather than a decision: the entry 27 lines below already
@@ -233,11 +280,10 @@ export const proofManifest: ProofManifestEntry[] = [
       "https://github.com/yadava5/glyph/blob/97de736/benchmarks/mnist_eval.txt",
     sourceLabel: `mnist_eval.txt @ ${GLYPH_EVAL_SHA}`,
     verification:
-      "Committed eval report read at the pinned commit: 9701/10000 = 97.0100%, macro P/R/F1 0.9701/0.9698/0.9698, model.weights pinned by sha256, 784→100→10 sigmoid MLP. The generator (apps/eval_model.cpp) and the 299-row miss list are committed beside it. The public MNIST test set is not vendored in the repo, so the run is reproducible with the standard dataset rather than self-contained.",
+      "Re-run from source on 2026-08-02, not merely read: the generator was compiled and executed against the standard 10,000-image test set, and the regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro P/R/F1 0.970056/0.969845/0.969822, the same model.weights sha256, 784→100→10 sigmoid MLP. Two honest caveats stay: the public MNIST test set is not vendored, so reproduction needs the standard dataset; and apps/eval_model.cpp has no add_executable in CMakeLists.txt, so a third party has to compile the generator by hand rather than through the project’s own build.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07-27",
-    sourceKind: "self-authored",
+    date: "2026-08-02",
     receipt: {
       label: "glyph case file · receipt 01",
       href: "/projects/fast-mnist-nn/#v-fast-mnist-nn-1",
@@ -295,15 +341,28 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jetpack-tests",
     label: "72 tests pass",
     claim:
-      "jetpack-compress compiles clean on JDK 25 and its full suite passes — 72 tests (Tests run: 72, Failures: 0).",
+      "jetpack-compress compiles clean on JDK 25 and its full suite passes — 72 tests, 0 failures, 0 errors, 0 skipped.",
     source:
-      "https://github.com/yadava5/jetpack-compress/blob/af2c4b1/README.md",
-    sourceLabel: `README.md @ ${JETPACK_SHA}`,
+      "https://github.com/yadava5/jetpack-compress/tree/2caacd0/src/test/java",
+    sourceLabel: `src/test/java @ ${JETPACK_SHA}`,
     verification:
-      "README status line read against the public repo at the pinned commit; `mvn test` runs the 72-test JUnit 5 suite.",
+      "Run, not read: `mvn -DskipTests=false test` on JDK 25.0.3 against this commit on 2026-08-02, and the surefire XML summed across all five test classes gives tests=72 errors=0 skipped=0 failures=0. This entry names the test tree rather than the README status line it used to cite, because a status line is prose about a run and the tree is the run's subject. Re-verified 2026-08-03 under `mvn verify`, which now also emits a JaCoCo report: still 72/0/0/0. That sentence used to end “the repository has no CI, so this local run is the only execution record that exists” — no longer true, and the correction is the interesting part: CI runs the suite on every push and sums the same surefire XML, so the count is now reproducible by anyone from a run record rather than from this paragraph.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-07",
-    sourceKind: "self-authored",
+    date: "2026-08-03",
+  },
+  {
+    id: "openssf-scorecard",
+    label: "Scorecard, scored by the OpenSSF",
+    claim:
+      "Four repositories are analysed weekly by OpenSSF Scorecard against 18 supply-chain checks, with results published by the OpenSSF at scorecard.dev: Glyph 6.4, VisualAssist 4.5, LifeQuest 3.9, jetpack-compress 3.8.",
+    source:
+      "https://scorecard.dev/viewer/?uri=github.com/yadava5/fast-mnist-nn",
+    sourceLabel: "scorecard.dev · yadava5/fast-mnist-nn",
+    verification:
+      "Read from api.scorecard.dev on 2026-08-03, not from a badge image: Glyph 6.4, VisualAssist 4.5, LifeQuest 3.9, jetpack-compress 3.8 — the last three dated 2026-08-03, their first analysis. This is the only row in this ledger whose number the author does not compute. Scorecard is run by the OpenSSF against a public repository and published at a public URL, so anyone can re-read it and, unlike every other entry here, disagree with it using the same instrument. That is also why it carries no `sourceKind` qualifier: those mark evidence that sits closer to the author, and this sits further away than anything else on the page. The scores are modest and are meant to be read that way. Several of the 18 checks grade repository SETTINGS — branch protection, signed releases, required review — that no committed file can switch on, so a correctly configured repo still opens in the 3–5 band. The figure to watch is the direction over time, not the first reading; it is recorded here precisely so that later movement is checkable against a stated starting point.",
+    visibility: "public",
+    privacyBoundary: "No private data — Scorecard reads public repository metadata only.",
+    date: "2026-08-03",
   },
 ];

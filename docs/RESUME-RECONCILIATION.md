@@ -1,5 +1,29 @@
 # The résumé and the site, reconciled — 2026-07-30
 
+> **SUPERSEDED 2026-08-02 for the project figures.** This pass reconciled the
+> résumé against *what the site said*. The provenance audit reconciled the site
+> against *what the code does*, by running it — so where the two disagree, the
+> newer file wins: **`docs/design-lab/audit-2026-08/RESUME-CHANGES.md`**.
+>
+> Three of this document's verdicts are now out of date, and the reason is the
+> same in each case: they compared two surfaces without asking whether either
+> was right.
+>
+> - **jetpack.** This pass treated the résumé's `6.5× / 455 vs 66 MB/s / 2.9×`
+>   as a rounding difference. It is not — it is the **quick** 1-fork benchmark
+>   where every other surface quotes the **rigorous** 3-fork run, and 455/66 is
+>   6.89, so the résumé's own two numbers do not agree with each other.
+> - **Glyph's instruction sets.** Recorded here as a wording choice. The source
+>   settles it: three hand-written guards, no wasm branch. The site said four in
+>   six places including its meta description; that is fixed.
+> - **The job title.** This pass had the site and résumé disagreeing without a
+>   resolution. The owner confirmed it on 2026-08-02 — *ITSM Data Integration
+>   Student Associate*, an internship — and the **site** was the wrong one: the
+>   run flattened a two-field fact into the weaker word. Fixed.
+>
+> What this document still gets right and the newer one leans on: the method,
+> and §0's finding that a served PDF can silently stop being the real one.
+
 Source of truth for this pass: `~/Documents/Resume (July 2026)/Final Resume (latest)/Ayush Yadav Resume.pdf`,
 sha1 `0d1ec51b…`, 1 page, LibreOffice, dated 2026-07-30.
 

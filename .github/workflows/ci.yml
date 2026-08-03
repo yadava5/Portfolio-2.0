@@ -269,6 +269,42 @@ jobs:
       - name: Check og cards (rendered footer URL casing + freshness)
         run: npm run assets:check-og
 
+      # These four existed and had never run on a pull request. The
+      # 2026-08-02 provenance audit is what surfaced it: check-figures.mjs
+      # was written in July specifically to stop the run and the data layer
+      # drifting apart, and while it sat outside CI they drifted anyway —
+      # /evidence shipped 1,145 tests for two days after the receipt beside
+      # it had been corrected to 1,168. A gate that does not run is a
+      # comment. It now binds 18 figures instead of 7.
+      - name: Check headline figures (run prose ⇄ data layer)
+        run: npm run test:figures
+
+      - name: Check beat tables (every beat-indexed table agrees)
+        run: npm run test:beat-tables
+
+      # Every /#... link into the home page must land on something. Five
+      # were dead on nine indexable routes until 2026-08-02, and nothing
+      # noticed for two reasons: a hash that matches nothing scrolls to
+      # the top and raises no error, and the browser suite builds the
+      # OTHER home page (bare `next build`, no build-home.mjs), where the
+      # missing ids do exist. This reads the run itself.
+      - name: Check home-page anchors resolve
+        run: npm run test:anchors
+
+      # Runs in the job that has already built `out/`. The 2026-08-02 audit
+      # shipped two pinned links to UNPUSHED local commits — correct numbers,
+      # measured on trees that did not exist publicly, so /evidence 404'd.
+      # No offline check can find that: the label and the link agreed, and
+      # both named a commit that was not there. Only a request finds it.
+      - name: Check pinned artifact links resolve
+        run: npm run test:links
+
+      - name: Check nameplate invariants
+        run: npm run test:nameplate
+
+      - name: Check nameplate negative cases
+        run: npm run test:nameplate:negative
+
   # ─────────────────────────────────────────────────────────────
   # Browser Quality: Playwright smoke, reduced motion, performance
   # ─────────────────────────────────────────────────────────────

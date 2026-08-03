@@ -59,6 +59,39 @@ for (const entry of entries) {
     fail(`${id} private-safe entry needs a real privacy boundary`);
   }
 
+  /* THE LABEL AND THE LINK MUST NAME THE SAME COMMIT.
+     Added by the 2026-08-02 provenance audit, which found `jetpack-tests`
+     rendering the label "README.md @ 2caacd0" over an href pointing at
+     /blob/af2c4b1/README.md. A reader who trusts the visible text was
+     told one commit and sent to another, and nothing here noticed —
+     because `source` is a plain literal while `sourceLabel` is a template
+     interpolating a const, so the two were never compared.
+     `sourceLabel` is the ONLY part of the source a reader ever sees
+     (`source` renders as a link, never as text), which is exactly why a
+     mismatch here is worse than a wrong link: it is invisible. */
+  const sourceSha = source?.match(/\/(?:blob|tree|commit)\/([0-9a-f]{7,40})\b/)?.[1];
+  if (sourceSha) {
+    const rawLabel = entry.match(/sourceLabel:\s*[`"]([^`"]+)[`"]/)?.[1] ?? "";
+    /* resolve `${CONST}` against the const table at the top of the file */
+    const label = rawLabel.replace(/\$\{(\w+)\}/g, (whole, name) => {
+      const value = manifestSource.match(
+        new RegExp(`const ${name}\\s*=\\s*"([^"]+)"`)
+      )?.[1];
+      return value ?? whole;
+    });
+    const labelSha = label.match(/\b([0-9a-f]{7,40})\b/)?.[1];
+    if (!labelSha) {
+      fail(
+        `${id} source is pinned to ${sourceSha} but its sourceLabel names no commit — ` +
+          `the reader sees "${label}" and cannot tell what they are being sent to`
+      );
+    } else if (!(labelSha.startsWith(sourceSha) || sourceSha.startsWith(labelSha))) {
+      fail(
+        `${id} label/link disagree: sourceLabel says ${labelSha}, source URL says ${sourceSha}`
+      );
+    }
+  }
+
   // W5: a HELD entry is a claim NOT yet earned. It must say so with a
   // real note (what lifts the stamp) and must crosswalk to the case-file
   // receipt row that argues the held state — never float unanchored.

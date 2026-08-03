@@ -1,5 +1,19 @@
 # Station fact ledger — the run vs production vs the résumé
 
+> **SUPERSEDED 2026-08-02 by `audit-2026-08/CLAIM-REGISTER.md`.** Kept as the
+> record of what was true on 2026-07-31, not edited to match what is true now.
+> Two things date it: it says **eleven stations** (the run has had thirteen
+> since `¶11` was inserted after this was written), and two of its figures have
+> since moved — Applied's suite 271 ⟶ **278** and Cadence's 1,145 ⟶ **1,168**,
+> both re-measured by running the code.
+>
+> Its method is not superseded and the audit below inherited it verbatim: break
+> every tie against the project's own primary artifact, never against a README.
+> What the newer register adds is that it *runs* the project rather than reading
+> its committed output — which is how it found that Glyph's eval report
+> regenerates byte-for-byte, and that the `-march=native` build it calls "SIMD"
+> is byte-identical to the baseline on this machine.
+
 Every factual claim on the eleven stations, checked against two authorities:
 the production data layer (`src/lib/data/*`) and the **2026-07-31 résumé**
 (`~/Documents/Resume (July 2026)/Final Resume (latest)`, sha1 `61f1ff4d`).

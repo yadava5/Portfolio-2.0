@@ -176,3 +176,48 @@ per-label metrics · outcome numbers · updated resume · final deployments.
   Gates 496 ×3 · 0 failed · perf 3/3 · invite 5.55:1. **Front-end at a
   recorded resting point** — arc 68/64/54 → 86/86/72 → **91/97/88** — the
   loop is paused pending user content-debt + the PR #5 merge decision.
+
+## The Provenance Audit (2026-08-02) — the numbers, re-derived by running them
+
+The first audit to test the site's thesis by **executing** the work rather than
+reading about it. Eight upstream repos: suites run, benchmarks rebuilt, source
+enumerated. Full record in `docs/design-lab/audit-2026-08/` — `RUN-LOG.md`
+carries every command and result, `CLAIM-REGISTER.md` the verdicts,
+`RESUME-CHANGES.md` the list handed to the owner.
+
+**Governing rule, the owner's:** *"the codebase is the actual truth as that is
+what the work is."* Operationally — **measure at HEAD, pin the number to the
+commit it was measured at.** A count and its commit are one fact.
+
+**Held on re-measurement:** 201 regex rules · macro-F1 0.9791 / 96 samples /
+8 classes / 2 wrong · 97.01% MNIST (report regenerates **byte-identical**) ·
+3.520× dot-256 (committed 3.504×) · 72 jetpack tests on JDK 25 · 71 iOS test
+functions · 19/20 + 17/25 + 3 local tests · 12 MCP tools · 45.9 KB wasm.
+
+**Moved:** Applied 271 → **278**. Cadence `/evidence` 1,145 → **1,168** — a
+figure the run already carried and the ledger did not.
+
+**The defect that mattered most was not a number.** The corrections register
+recorded two repairs that never shipped: it told readers labels had been changed
+to `cadence` and `glyph` while the built pages rendered the retired names 18 and
+3 times. On a page whose argument is that this register can be trusted, that
+outranks any figure. Both now carry an erratum saying so.
+
+**Then: five dead anchors on nine indexable routes.** `#who #path #automl #work
+#values` resolved to nothing on the shipped home page. Invisible for two
+reasons — a hash that matches nothing scrolls to the top and raises no error,
+and `test:e2e:browser-smoke` runs bare `next build` **without** `build-home.mjs`,
+so 245 tests in CI have only ever loaded StoryShell, where those ids do exist. A
+gate pointed at the wrong artifact does not miss defects; it certifies them.
+
+**Upstream fixes** (local commits, unpushed): `fast-mnist-nn@6a57a06` adds the
+`fast_mnist_eval` target — the generator of the headline accuracy had no way to
+be built; `jetpack-compress@5768842` adds the repo's first CI, so "72 tests"
+has a run record instead of a README sentence.
+
+**Durable output:** `check-figures` 7 → 19 bound figures · a new
+`check-anchors` gate (negative-tested) · a `sourceLabel`-vs-`source` commit
+check in `check-proof-manifest`, written against the real `2caacd0`/`af2c4b1`
+mismatch · and `test:figures`, `test:anchors`, `test:beat-tables`,
+`test:nameplate` and its negative twin **added to CI**, where none of them had
+ever run.

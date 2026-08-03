@@ -33,6 +33,17 @@ export const CHAPTERS: readonly ChapterMeta[] = [
   { id: "03", anchor: "path", name: "the path", clock: "12:06" },
   { id: "04", anchor: "automl", name: "automl", clock: "15:23" },
   { id: "05", anchor: "work", name: "the work", clock: "19:36" },
+  /* `values` stays. It is this array's contract with StoryShell, which
+     renders `id={VALUES.anchor}` — and the browser smoke builds StoryShell
+     (`next build` alone, without build-home.mjs) and asserts `#values` is
+     attached. Renaming it here to match the run broke that, which is how
+     the 2026-08-02 audit learned the two home pages disagree on anchor
+     vocabulary rather than merely on content.
+
+     The 404 links against the SHIPPED page, which is the run, so it maps
+     this one name across in `not-found.tsx` instead. Four of its five
+     siblings needed no map: the run now carries `who`, `path`, `work` and
+     `automl` as real section ids. */
   { id: "06", anchor: "values", name: "how i work", clock: "21:07" },
   { id: "07", anchor: "gate", name: "the gate", clock: "22:41" },
 ];

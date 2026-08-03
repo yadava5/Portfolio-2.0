@@ -230,14 +230,21 @@ export const EXPECTED_WORK_ROWS = [
     // the pinned public commit. External href — no case route exists.
     title: "jetpack-compress",
     href: "https://jetpack-compress.vercel.app",
-    metric: "72 tests, 0 failures — jdk 25 @ af2c4b1",
+    // 2026-08-02: re-pinned af2c4b1 → 2caacd0. The manifest entry's label
+    // said 2caacd0 while its href pointed at af2c4b1; check-proof-manifest
+    // now fails on that class of mismatch.
+    metric: "72 tests, 0 failures — jdk 25 @ 2caacd0",
   },
   {
-    // taskflow-tests manifest entry: 634 frontend + 511 backend = 1,145
+    // taskflow-tests manifest entry: 635 frontend + 524 backend = 1,159
     // passing (vitest); the chip cites the case file's receipt 01.
+    // 2026-08-02: 1,145 → 1,159, re-measured at the PUBLIC head 8eee84e. Both vitest
+    // configs were run; a second, independent static count of it()/test()
+    // call sites agreed, after being calibrated to reproduce 1,145 exactly
+    // at the old pin 69a59e7.
     title: "Cadence",
     href: "/projects/taskflow-calendar/",
-    metric: "1,145 automated tests — 634 frontend + 511 backend, vitest",
+    metric: "1,159 automated tests — 635 frontend + 524 backend, vitest",
   },
 ];
 
@@ -264,8 +271,10 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // Dossier voice rewrite (2026-07-18): first person, same fact/number.
   // 2026-07-26: 182 → 271 (suite re-run at the new pin 36a2f54; the 10
   // skips are named in the row, so the assertion carries them too).
+  // 2026-08-02: 271 → 278, re-run at the public head 03fc5c4 on the audit.
+  // The skips did not move — same Postgres RLS module, same missing URL.
   jobtrackerBackendCoverage:
-    "271 tests passed, 10 skipped, under the test/null-keyring environment",
+    "278 tests passed, 10 skipped, under the test/null-keyring environment",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
@@ -326,7 +335,8 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // says eight across nine endpoints (the erratum carries the story).
   // This fixture was pinning the RETRACTED number in place: the exact
   // failure mode the correction's own prose warns about.
-  cadenceIdorReceipt: "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
+  cadenceIdorReceipt:
+    "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
   cadenceIsolationTests:
     "11 of 11 isolation tests pass against a real Postgres",
   cadenceInertBoundary: "The DB-enforced RLS is not turned on in production",

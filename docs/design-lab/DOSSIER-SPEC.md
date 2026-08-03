@@ -1,5 +1,37 @@
 # The case file as working-paper dossier (visitor journey critique, 2026-07-18)
 
+> **2026-08-02 — one clause of this spec needs strengthening, and the audit
+> found out why the hard way.**
+>
+> The spec makes the **corrections register permanent**: errata are never
+> deleted. That is right and it stays. What it does not say — and now must — is
+> that *an entry in the register is a claim like any other, and has to be true
+> when it is written.*
+>
+> The provenance audit found two entries describing repairs that **had not been
+> made**. One told readers receipts 01–03 now read `cadence` while the built
+> page rendered `taskflow-calendar` eighteen times; the other said every Glyph
+> label had been converted while three still said `fast-mnist-nn`. In both, the
+> *hrefs* had been changed and the *visible labels* had not — so the register
+> described the intention rather than the diff.
+>
+> This is the worst failure available to this design, because the register is
+> the mechanism the whole dossier asks to be trusted on. A wrong figure costs
+> that figure. A wrong erratum costs every figure.
+>
+> **Added to the spec:** a correction that asserts a change SHIPPED must be
+> written from the rendered output, not from the edit. In practice that means
+> grepping the built page for the string you claim to have removed, before you
+> write that you removed it. Both files now carry a further erratum recording
+> that this went wrong, which is the register working as designed — it is
+> supposed to be able to hold a correction about itself.
+>
+> The audit also confirmed the spec's `filed`/`verified` kicker is load-bearing
+> in a way worth stating: `seo.ts` maps them to `datePublished`/`dateModified`
+> and `sitemap.ts` derives `lastModified` from `verified`, so a stale
+> `verified` is not cosmetic — it tells crawlers the file has not moved. All
+> seven read `2026-07` on the day of the audit and were moved to `2026-08`.
+
 Journey score 54/100: home ~85 · case pages ~55 · THE TRANSITION ~20.
 "Two unrelated design systems joined by a shared header… the case page's own
 eyebrow says EVIDENCE LEDGER — the concept is already the home's language,

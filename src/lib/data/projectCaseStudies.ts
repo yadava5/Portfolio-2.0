@@ -309,6 +309,13 @@ export interface ProjectCaseStudy {
 const APPLIED_SHA = "36a2f54";
 const APPLIED_BLOB = `https://github.com/yadava5/applied/blob/${APPLIED_SHA}`;
 const APPLIED_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SHA}`;
+/* APPLIED_SUITE — where the backend test count was MEASURED, 2026-08-02.
+   Same rule as CADENCE_SUITE below: a count and the commit it was taken
+   at are one fact and move together. 271 at 36a2f54 became 278 here; the
+   ten skips did not move. Every other Applied receipt keeps 36a2f54,
+   which is still where those source audits were done. */
+const APPLIED_SUITE_SHA = "03fc5c4";
+const APPLIED_SUITE_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SUITE_SHA}`;
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
 const VISUAL_ASSIST_TREE = `https://github.com/yadava5/VisualAssist/tree/${VISUAL_ASSIST_SHA}`;
@@ -321,6 +328,21 @@ const TASKFLOW_SHA = "69a59e7";
    artifact you can open" cannot rest on that. Verified 200 at the
    canonical name before this was written. */
 const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
+/* CADENCE_SUITE — where the test count was MEASURED, 2026-08-02.
+
+   The suite receipt used to say 1,145 at `69a59e7`. That was true when it
+   was taken and is no longer the number: re-run on the provenance audit,
+   the tree gives 635 frontend + 524 backend = 1,159 passing, 11 skipped.
+
+   It gets its own pin rather than reusing TASKFLOW_SHA because the rule
+   this file already states elsewhere cuts both ways — "re-pinning a
+   number to a commit nobody re-ran it at turns a measurement into a
+   guess", and so does leaving a re-run number on the old commit. The
+   number and the sha it was measured at are one fact and they move
+   together. The other receipts keep `69a59e7`, which is still where
+   those source audits were done. */
+const CADENCE_SUITE_SHA = "8eee84e";
+const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SUITE_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
    The repository was renamed `yadava5/taskflow-calendar` → `yadava5/cadence`
@@ -394,7 +416,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Designer and sole engineer — desktop app, web app, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Both clauses trace to receipts: 07 (the dashboard renders real
        applications from the API) + 09 (the hosted slot runs layer 1
@@ -429,7 +451,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
          inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard, with the desktop
          app as the single off-spine branch. */
       variant: "linear",
-      flow: [["gmail"], ["fetch"], ["classifier"], ["store"], ["ui"]],
+      flow: [["gmail"], ["fetch"], ["classifier"], ["store"], ["api"], ["ui"]],
       /* Traces to receipt 08: the GUC is left unset when no identity is
          bound, so auth.uid() is NULL and the policies deny. */
       annotation:
@@ -462,6 +484,24 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
              this node genuinely stops the run (fig. 2's clay). */
           gate: true,
         },
+        /* The FastAPI layer was missing from this topology until the
+           2026-08-02 provenance audit, and its absence made the next
+           edge false: the diagram drew Postgres straight into Next.js,
+           but the web app never opens a database connection. Every read
+           goes through `apps/web/lib/applications/server.ts` and the
+           route handlers under `apps/web/app/api/`, which call
+           `${BACKEND_API_URL}` holding the caller's Supabase JWT
+           server-side. The same package is what the macOS client talks
+           to at 127.0.0.1:8000, and what deploys as a Vercel Python
+           function via `api/index.py`. It is also where the JWT is
+           verified before the database gate can mean anything — so
+           leaving it out understated the design, not just the diagram. */
+        {
+          id: "api",
+          label: "FastAPI",
+          detail: "One package serves the web app and the desktop one",
+          kind: "api",
+        },
         {
           id: "ui",
           label: "Next.js",
@@ -479,7 +519,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         { from: "gmail", to: "fetch", label: "read-only" },
         { from: "fetch", to: "classifier", label: "subject + snippet" },
         { from: "classifier", to: "store", label: "verdicts, scoped by user" },
-        { from: "store", to: "ui", label: "pipeline state" },
+        { from: "store", to: "api", label: "rows the role may see" },
+        {
+          from: "api",
+          to: "ui",
+          label: "pipeline state, over the caller’s jwt",
+        },
         { from: "classifier", to: "macos", label: "layers 2–3 — desktop only" },
       ],
     },
@@ -601,16 +646,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "I ran the backend suite locally at the pinned commit: 271 tests passed, 10 skipped, under the test/null-keyring environment.",
+          "I ran the backend suite locally at the pinned commit: 278 tests passed, 10 skipped, under the test/null-keyring environment.",
         method:
-          "local run against the public test tree; the 10 skips are the Postgres RLS module, which needs a live database",
+          "`pytest tests -q` in the project's own Python 3.11 venv; the 10 skips are the Postgres RLS module, which needs a live database",
         artifacts: [
           {
-            label: `applied @ ${APPLIED_SHA} · backend/tests`,
-            href: `${APPLIED_TREE}/backend/tests`,
+            label: `applied @ ${APPLIED_SUITE_SHA} · backend/tests`,
+            href: `${APPLIED_SUITE_TREE}/backend/tests`,
           },
         ],
-        date: "2026-07-26",
+        date: "2026-08-02",
         visibility: "public",
       },
       {
@@ -759,6 +804,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "note",
         text: "The repository was renamed yadava5/jobtracker ⟶ yadava5/applied. GitHub still redirects the old links, so nothing this file ever published is broken; the pins name the current repository instead of relying on a redirect. The case-file route stays /projects/jobtracker/ for the same reason.",
       },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "The backend-suite row read 271 passed and 10 skipped. Re-run on the provenance audit at the current head 0f2b63f: 278 passed, 10 skipped. Same movement as the 182 ⟶ 271 correction above and for the same reason — the tree grew seven tests, nothing was retracted, and the skips did not move. The row is re-pinned to the commit the new count was taken at; every other Applied receipt keeps 36a2f54, which is still where those source audits were done.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "note",
+        text: "Provenance audit: the classifier claims were re-derived by running the code rather than reading about it. The rules gate passed live at 96 samples, macro-F1 0.9791, 2 misclassified — and the deterministic hybrid gate returned the identical numbers, which is the direct evidence for the attribution correction recorded earlier: the file named “hybrid” measures the regexes alone. The 201-rule figure was recomputed by importing jobtracker.classifier.rules and summing the pattern lists across all seven categories — 106 strong, 26 weak, 69 negative, plus 14 ATS domains. The eval set was counted from its own JSONL: 96 samples, 8 classes, 12 each. Every one of those figures matched what this file already said.",
+      },
     ],
     /* Provenance strips carry the whole correction here. Three of these
        plates are DESKTOP-era records that are still real files at the new
@@ -838,7 +893,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     timeframe: "2025-09 to Present",
     filed: "2025-09",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "in progress",
     /* Traces to the corrections note + boundary row: the platform core
        is built; the demo-data run ledger has not shipped yet. */
@@ -1207,7 +1262,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "iOS accessibility engineer",
     timeframe: "2025-03 to Present",
     filed: "2025-03",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "in progress",
     /* The repo's own README labels the build a beta. */
     statusDetail: "beta, per the readme",
@@ -1228,12 +1283,23 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "ARKit and Vision process device context locally, then SwiftUI and VoiceOver expose guidance through speech, haptics, and commands.",
+        /* "and commands" came off on 2026-08-02. VoiceCommandService.swift
+           is a real 240-line SFSpeechRecognizer service compiled into the
+           target — and it has zero consumers: no view and no AppState
+           instantiates it. A capability that is in the binary but wired to
+           nothing is not a capability the case file may claim. */
+        "ARKit and Vision process device context locally, then SwiftUI and VoiceOver expose guidance through speech and haptics.",
       nodes: [
         {
           id: "sensor",
           label: "LiDAR",
           detail: "Depth and obstacle signals",
+          kind: "system",
+        },
+        {
+          id: "camera",
+          label: "Camera",
+          detail: "RGB frames — the input both vision modes read",
           kind: "system",
         },
         {
@@ -1262,7 +1328,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
       ],
       edges: [
-        { from: "sensor", to: "localvision", label: "environment signal" },
+        /* This edge used to read `sensor ⟶ localvision`, and that data
+           path does not exist. LiDARService is instantiated in exactly one
+           place (NavigationModeView) and its distances drive that view's
+           indicators and accessibility labels; ObjectDetectionService is
+           instantiated in ObjectAwarenessModeView and is fed RGB frames by
+           CameraService, never by LiDAR. They are two independent modes.
+           The camera node below is what makes the correction constructive
+           rather than merely a deletion. */
+        {
+          from: "sensor",
+          to: "feedback",
+          label: "distance, on the navigation mode",
+        },
+        { from: "camera", to: "vision", label: "frames" },
+        { from: "camera", to: "localvision", label: "frames" },
         { from: "vision", to: "feedback", label: "text context" },
         { from: "localvision", to: "feedback", label: "local recognition" },
         { from: "voiceover", to: "feedback", label: "interaction layer" },
@@ -1287,8 +1367,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "71 test functions cover models and utilities — counted in the public VisualAssistTests tree.",
-        method: "local repository audit, function count",
+          "71 tests cover models and utilities, and all 71 pass — executed on iOS 26.5 and again on 26.2, 0 failed, 0 skipped.",
+        method: "xcodebuild test, .xcresult parsed with xcresulttool",
         artifacts: [
           {
             label: `VisualAssist @ ${VISUAL_ASSIST_SHA} · VisualAssistTests`,
@@ -1363,6 +1443,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "erratum",
         text: "An earlier draft took its count from the repo’s CI run title rather than from the test tree; that draft is not in this repository’s history, so the figure it printed cannot be quoted back here. The audited count in the current tree is 71 test functions, and the receipt above links the tree so the number can be checked.",
       },
+      {
+        date: "2026-08",
+        kind: "note",
+        text: "Until now this file said “71 test functions”, deliberately — a count of what the tree declared, because the suite had never been run. Not in CI, which had no `xcodebuild test` step, and not locally, because xcodebuild wanted an iOS runtime the machine did not have. A count is a weaker claim than a result and it was worded to admit that. The runtime was installed on 2026-08-03 and the suite ran: 71 passed, 0 failed, 0 skipped, on iPhone 17 Pro under iOS 26.5, and again under 26.2 when the simulator resolver happened to pick a different device. The claim above is now a result. The static count did not move, which is the outcome that should be least surprising and was still worth checking.",
+      },
     ],
     artifacts: [
       {
@@ -1406,17 +1491,25 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Full-stack engineer",
     timeframe: "2023-09 to 2025-05",
     filed: "2023-09",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Traces to the boundary row: a demo deployment with mock login. */
     statusDetail: "demo deployment, mock login",
     /* The headline pin names the CURRENT repository at its current
        public head — the Applied re-pin round's ruling, applied here: a
        ledger row that answers "where does this code live" may not name
-       a redirect. Receipts 01–03 keep `taskflow-calendar @ 69a59e7`,
-       which answers a different question — where a number was taken —
-       and the corrections register explains the split rather than
-       leaving a reader to guess which pin is stale. */
+       a redirect. Receipts 01–03 keep the PIN `69a59e7`, which answers a
+       different question — where a number was taken — while naming the
+       repository `cadence`, because a label is the repo's name and a sha
+       is the measurement's address; those are two facts, not one. The
+       corrections register explains the split rather than leaving a
+       reader to guess which pin is stale.
+
+       2026-08-02 (provenance audit): the labels said `taskflow-calendar`
+       until today even though the 2026-07-30 correction below already
+       told the reader they had been changed. They had not. That is the
+       defect this comment now exists to prevent — a register entry
+       describing a repair that never shipped. */
     repoPin: {
       repo: "yadava5/cadence",
       sha: CADENCE_SHA,
@@ -1433,8 +1526,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "Keep the workspace usable across multiple planning views.",
     ],
     architecture: {
+      /* No test count in this sentence, deliberately. It used to end
+         "…tested across 1,145 automated checks", which put a headline
+         number inside a STRUCTURAL description — the one place no gate
+         looks and no reader thinks to re-check. It went stale there for
+         two days after the receipt beside it had been corrected. The
+         count lives at the receipt, which carries the commit it was
+         measured at; the architecture says what the system IS. */
       summary:
-        "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL and tested across 1,145 automated checks.",
+        "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL, with the suite covering frontend, backend and integration paths.",
       nodes: [
         {
           id: "ui",
@@ -1454,6 +1554,25 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           detail: "Scheduling and conflict logic",
           kind: "api",
         },
+        /* The isolation layer, drawn at last. THREE of this file's five
+           decisions are about JWT identity, the transaction-local
+           `app.user_id` GUC and row-level security — and the diagram had
+           no element for any of it, so the picture showed a calendar app
+           where the argument is a tenancy boundary. Added 2026-08-02.
+
+           It is deliberately NOT marked `gate: true`, unlike Applied's
+           Postgres node. RLS here is written for seven tables and staged
+           OFF; what actually enforces isolation today is the owner-scoped
+           check on six services. Drawing a gate would promise the
+           database is refusing, and it is not — the handlers are. That
+           distinction is the whole content of receipts 04–10 and it
+           would be a shame to lose it to a nicer-looking diagram. */
+        {
+          id: "auth",
+          label: "Owner-scoped checks",
+          detail: "JWT identity; rls written for 7 tables, staged off",
+          kind: "api",
+        },
         {
           id: "db",
           label: "PostgreSQL",
@@ -1462,7 +1581,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "tests",
-          label: "1,145 tests",
+          label: "1,159 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -1470,7 +1589,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       edges: [
         { from: "ui", to: "nlp", label: "natural language" },
         { from: "nlp", to: "api", label: "parsed intent" },
-        { from: "api", to: "db", label: "calendar records" },
+        { from: "api", to: "auth", label: "every read, scoped to its owner" },
+        { from: "auth", to: "db", label: "calendar records" },
         { from: "tests", to: "api", label: "regression coverage" },
       ],
     },
@@ -1511,15 +1631,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I measured the suite in 2026-07: 634 frontend + 511 backend = 1,145 tests passing under vitest.",
-        method: "local run against the pinned public source",
+          "I measured the suite on 2026-08-02: 635 frontend + 524 backend = 1,159 tests passing under vitest, with 11 skipped.",
+        method:
+          "local run of both vitest configs against the public head — `vitest run --config vitest.config.ts` and `--config vitest.backend.config.ts`",
         artifacts: [
           {
-            label: `taskflow-calendar @ ${TASKFLOW_SHA}`,
-            href: TASKFLOW_TREE,
+            label: `cadence @ ${CADENCE_SUITE_SHA}`,
+            href: CADENCE_SUITE_TREE,
           },
         ],
-        date: "2026-07",
+        date: "2026-08-02",
         visibility: "public",
       },
       {
@@ -1528,7 +1649,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "source audit of the NLP input path",
         artifacts: [
           {
-            label: `taskflow-calendar @ ${TASKFLOW_SHA}`,
+            label: `cadence @ ${TASKFLOW_SHA}`,
             href: TASKFLOW_TREE,
           },
         ],
@@ -1540,7 +1661,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "schema and query audit in the public source",
         artifacts: [
           {
-            label: `taskflow-calendar @ ${TASKFLOW_SHA}`,
+            label: `cadence @ ${TASKFLOW_SHA}`,
             href: TASKFLOW_TREE,
           },
         ],
@@ -1712,7 +1833,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "feature audit in source and demo",
         artifacts: [
           {
-            label: `taskflow-calendar @ ${TASKFLOW_SHA}`,
+            label: `cadence @ ${TASKFLOW_SHA}`,
             href: TASKFLOW_TREE,
           },
         ],
@@ -1752,6 +1873,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-07-30",
         kind: "note",
         text: "Receipts 01–03 now read cadence @ 69a59e7 rather than taskflow-calendar @ 69a59e7. The pin is unchanged and that is the whole point of the 2026-07-26 note above: 69a59e7 is still the commit the 1,145-test count was measured at, and nothing has been re-pinned. What changed is only the repository’s name in the label, because the old name now survives on a GitHub redirect and a redirect is not a permalink — it stops resolving the moment any repo called taskflow-calendar exists under this account again. A receipt on a page arguing that every claim terminates at an artifact you can open should not depend on that. The canonical path was fetched and returned 200 before the label was changed.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "The note above was not true when it was written. Receipts 01–03, and receipts 11 and 12 with them, went on reading “taskflow-calendar @ 69a59e7” for three more days — the built page rendered the retired name eighteen times — while the register told the reader the labels had already been changed. They read cadence now. This is recorded as an erratum rather than repaired quietly because the error was not a stale name: it was this register claiming a repair it had not made, which is the one failure that costs a corrections register the thing it exists for.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "The receipt itself now reads 1,159 — see the erratum below, which corrects this entry's own number. The 2026-07-31 note above already reported that re-run — 635 frontend + 533 backend at 932625e — but only the note was written: the receipt, the architecture summary, the diagram’s own node label and the /evidence index all went on saying 1,145 for another two days, so the page argued with itself and the reader had to find the erratum to learn which number was current. Re-measured independently on 2026-08-02 and confirmed identical: 1,168 passing, 11 skipped. The number and its commit move together, so the row is re-pinned to 932625e; receipts 02 and 03 keep 69a59e7, which is still where those source audits were done. This is the second erratum in this register about a correction that was recorded without being applied, and the pair is why the audit now ends by widening the drift gate instead of only fixing the values.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "1,168 became 1,159, and the reason is a mistake in the correction above rather than in the code. That entry re-pinned the count to 932625e — which is an UNPUSHED local commit. The source URL 404’d, and the number, though correctly measured, could not be reproduced by anyone: the tree it was taken at does not exist publicly. Re-measured at the public head 8eee84e instead — 635 frontend + 524 backend = 1,159 passing, 11 skipped. The nine-test difference IS 932625e, the fix for nine endpoints that never authenticated; those tests land here the moment that commit is pushed, and the number goes back up on its own. Recorded rather than quietly repaired because the rule this file states — a count and its commit are one fact — has a second half it did not say out loud: the commit has to be one a reader can open.",
       },
     ],
     artifacts: [
@@ -1793,13 +1929,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Data integration engineer",
     timeframe: "2025-06 to 2026-05",
     filed: "2025-06",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
     privateRepoName: "institutional — Miami University IT",
     summary:
-      "Private proof from institutional ITSM data work: a Python/pandas pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
+      "Private proof from institutional ITSM data work: a Python and SQL pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
@@ -1815,7 +1951,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Workday exports and Tableau metadata feed Python/pandas transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
+        "Workday exports and Tableau metadata feed Python and SQL transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
       nodes: [
         {
           id: "workday",
@@ -1826,12 +1962,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "tableau",
           label: "Tableau metadata",
-          detail: "Cloud REST metadata",
+          detail: "Report and asset metadata",
           kind: "api",
         },
         {
           id: "python",
-          label: "Python/pandas",
+          label: "Python/SQL",
           detail: "Cleaning and transforms",
           kind: "system",
         },
@@ -2018,7 +2154,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "RAG systems engineer",
     timeframe: "2025-06 to 2026-05",
     filed: "2025-06",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
@@ -2271,7 +2407,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     timeframe: "2025-10 to 2026-01",
     filed: "2025-10",
-    verified: "2026-07",
+    verified: "2026-08",
     status: "shipped",
     /* Both clauses are artifacts on this page: the tagged release and
        the committed benchmark run. */
@@ -2287,11 +2423,23 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        projects.ts:352 already said "a course C++ MLP", so the site was
        telling two stories about the same artifact and this file was
        telling the flattering one. Optimizing someone else's network
-       across four instruction sets is a harder and more specific thing
+       across three instruction sets is a harder and more specific thing
        than writing another MNIST MLP, so the accurate sentence is also
-       the stronger one. */
+       the stronger one.
+
+       THREE, not four (2026-08-02 provenance audit). This sentence said
+       "Four instruction sets" and it is the highest-reach string on the
+       route: `seo.ts` feeds it to the meta description, og:description,
+       twitter:description, the TechArticle JSON-LD node, the
+       SoftwareSourceCode node, and the visible page deck — six copies of
+       one wrong number, against a run that says three. The source settles
+       it: `src/Matrix.cpp` and `src/NeuralNet.cpp` guard exactly
+       `__AVX512F__`, `__AVX2__` and `__ARM_NEON`, with a scalar fallback.
+       There is no `__wasm_simd128__` branch anywhere; the wasm target
+       passes `-msimd128` and lets Emscripten auto-vectorise the scalar
+       path, which is a compiler flag, not a hand-written kernel. */
     summary:
-      "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Four instruction sets, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
+      "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Three hand-written instruction sets over a scalar fallback, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
     problem:
       "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
@@ -2345,7 +2493,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         { from: "input", to: "model", label: "normalized digits" },
         { from: "kernels", to: "model", label: "matrix ops" },
         { from: "parallel", to: "model", label: "threaded paths" },
-        { from: "model", to: "demo", label: "prediction output" },
+        /* "prediction output" hid three delivery paths, and which one
+           answers is the interesting part of this project. The web app
+           declares them itself — `web/src/api/predict.ts` types
+           `PredictionSource = 'server' | 'browser-wasm' | 'browser-js'`:
+           the httplib server at :8080 is preferred, the Emscripten build
+           is the offline fallback, and a plain-JS classifier is the last
+           resort. The portfolio's own ¶06 station runs the middle one —
+           the 45.9 KB wasm it ships is this same model. (2026-08-02.) */
+        {
+          from: "model",
+          to: "demo",
+          label: "prediction — server, wasm, or js fallback",
+        },
         { from: "bench", to: "model", label: "performance proof" },
       ],
     },
@@ -2445,7 +2605,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "committed 2025-12-26 benchmark run — protocol in the method slip",
         artifacts: [
           {
-            label: `fast-mnist-nn @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
+            label: `glyph @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
             href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
           },
           {
@@ -2462,7 +2622,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "benchmark source + committed run JSON",
         artifacts: [
           {
-            label: `fast-mnist-nn @ ${FAST_MNIST_SHA} · benchmarks/bench_matrix.cpp`,
+            label: `glyph @ ${FAST_MNIST_SHA} · benchmarks/bench_matrix.cpp`,
             href: `${FAST_MNIST_BLOB}/benchmarks/bench_matrix.cpp`,
           },
           {
@@ -2481,7 +2641,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "source paths + the committed benchmark rows",
         artifacts: [
           {
-            label: `fast-mnist-nn @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
+            label: `glyph @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
             href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
           },
         ],
@@ -2547,6 +2707,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-07",
         kind: "note",
         text: "The ~97% accuracy receipt now carries the HELD stamp: the number is documented in the repo’s README training notes, but no committed eval artifact reproduces it yet. The claim is unchanged and stays on file; the stamp lifts when an eval run is checked in.",
+      },
+      {
+        date: "2026-07-27",
+        kind: "note",
+        text: "The HELD stamp described in the note above is lifted. glyph@97de736 commits benchmarks/mnist_eval.json, its generator apps/eval_model.cpp, and the 299-row miss list, which is the condition that note set. The rounded “~97%” is retired with it: once a number has an artifact, stating it approximately is a second, smaller inaccuracy. The receipt reads 97.01% — 9,701 of 10,000, macro-F1 0.9698.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "erratum",
+        text: "Three receipt labels still read “fast-mnist-nn @ c6e5c0b” even though the 2026-07-30 note above told the reader every label had been changed to glyph. The hrefs had been converted; the visible text had not, so the label and the link it sat on named different repositories. The labels now read glyph. Recorded as an erratum rather than a silent fix because the defect was not the stale name — it was a register entry describing a repair that never shipped, on a page whose argument is that this register can be trusted.",
+      },
+      {
+        date: "2026-08-02",
+        kind: "note",
+        text: "Provenance audit: the MNIST evaluation was re-run from source on an Apple M1 Pro against the standard 10,000-image test set. The regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro-F1 0.969822, the same model sha256. The dot-256 kernel benchmark was rebuilt and re-measured at 3.520× against the committed 3.504×. One caveat surfaced and is recorded at the receipt: apps/eval_model.cpp has no add_executable in CMakeLists.txt, so the generator has to be compiled by hand rather than through the project’s own build.",
       },
     ],
     artifacts: [
