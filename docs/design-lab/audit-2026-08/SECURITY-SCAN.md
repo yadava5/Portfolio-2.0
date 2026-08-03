@@ -145,10 +145,44 @@ Unblocking needs a setfit release supporting transformers 5.
 | AutoML | 151 across 6 lockfiles |
 | LifeQuest | 165, incl. 33 in the Tauri `Cargo.lock` |
 
-Not yet triaged by reachability — the counts above are the raw resolution, and
-most sit in build tooling (`webpack-dev-server`, `postcss`, `svgo`) rather than
-in anything served. That triage is the next step, and these numbers should not be
-quoted anywhere until it is done.
+### Triaged by reachability — production vs build tooling
+
+The counts above are the whole resolution, dev tooling included, and quoting them
+would overstate the exposure by roughly a factor of three. `npm audit --omit=dev`
+separates what reaches a browser from what runs on a build machine:
+
+| surface | all | **production only** |
+|---|---:|---:|
+| Cadence (usecadenceapp) | 22 | **3** — all high |
+| Glyph web demo (getglyph) | 7 | **0** ← was 3, now fixed |
+| AutoML frontend | 14 | 5 |
+| AutoML backend | 19 | 13 |
+| AutoML landing | 35 | 20 |
+| LifeQuest (getlifequest) | 10 | 9 |
+| LifeQuest `legacy/` | 57 | 56, incl. 2 critical |
+
+**Glyph is cleared.** axios (ReDoS), form-data (CRLF injection) and postcss
+(arbitrary file read) all resolved inside the ranges `package.json` already
+declared — lockfile-only, no major upgrade — and the build passes afterwards.
+`npm audit --omit=dev` now reports 0.
+
+**Cadence's 3 are real and were deliberately not forced.** `npm audit fix` is a
+no-op on them, and the reason matters:
+
+- `react-router` 7.18.1, vulnerable range 7.12.0–8.2.0 (RSC-mode CSRF bypass).
+  The fix is ≥ 8.2.1, and `package.json` declares `react-router-dom: ^7.7.1`, so
+  reaching it is a **major** upgrade.
+- `undici` 5.28.4, arriving through `@vercel/blob@0.27.3` and `@vercel/node@5.9.3`
+  — fixable only by upgrading those.
+
+Forcing a React Router major on a deployed app, without being able to watch its
+end-to-end suite pass first, trades a CSRF advisory for an outage. Raised with
+the owner instead.
+
+**LifeQuest's 9** are mostly the Fastify ecosystem (`fastify`, `find-my-way`,
+`fast-uri`, `fast-json-stringify`) and 5 of them need semver-major moves too.
+`legacy/` holds 56 including 2 critical; it is legacy by name and its deployment
+status should be confirmed before anyone spends effort there.
 
 ---
 
