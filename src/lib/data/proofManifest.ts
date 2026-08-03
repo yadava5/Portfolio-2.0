@@ -362,7 +362,8 @@ export const proofManifest: ProofManifestEntry[] = [
     verification:
       "Read from api.scorecard.dev on 2026-08-03, not from a badge image: Glyph 6.4, VisualAssist 4.5, LifeQuest 3.9, jetpack-compress 3.8 — the last three dated 2026-08-03, their first analysis. This is the only row in this ledger whose number the author does not compute. Scorecard is run by the OpenSSF against a public repository and published at a public URL, so anyone can re-read it and, unlike every other entry here, disagree with it using the same instrument. That is also why it carries no `sourceKind` qualifier: those mark evidence that sits closer to the author, and this sits further away than anything else on the page. The scores are modest and are meant to be read that way. Several of the 18 checks grade repository SETTINGS — branch protection, signed releases, required review — that no committed file can switch on, so a correctly configured repo still opens in the 3–5 band. The figure to watch is the direction over time, not the first reading; it is recorded here precisely so that later movement is checkable against a stated starting point.",
     visibility: "public",
-    privacyBoundary: "No private data — Scorecard reads public repository metadata only.",
+    privacyBoundary:
+      "No private data — Scorecard reads public repository metadata only.",
     date: "2026-08-03",
   },
 ];
