@@ -271,7 +271,7 @@ export const projects: Project[] = [
       "Vision OCR with speech synthesis for text reading",
       "On-device Vision workflows for privacy-first processing",
       "VoiceOver-first accessibility with voice commands",
-      "71 unit tests for models and utilities",
+      "71 unit tests for models and utilities — all passing on iOS 26.5 and 26.2",
     ],
     isPrivate: false,
     // Retired from recruiter-facing lists (not one of the six live

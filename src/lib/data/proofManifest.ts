@@ -193,17 +193,17 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "visual-assist-tests",
-    label: "71 iOS tests",
+    label: "71 iOS tests, all passing",
     claim:
-      "The public VisualAssistTests tree holds 71 test functions across the model and utility layers.",
+      "The public VisualAssistTests suite executes 71 tests; all 71 pass, none are skipped.",
     source:
       "https://github.com/yadava5/VisualAssist/tree/22ebdaa/VisualAssistTests",
     sourceLabel: `VisualAssistTests @ ${VISUAL_ASSIST_SHA}`,
     verification:
-      "Counted against XCTest’s own collection rule on 2026-08-02, not by a bare grep: 8 XCTestCase subclasses and 71 instance methods named test… taking no arguments — with zero argument-taking, private, or static variants, which are the cases XCTest would skip. Per file: 13 · 11 · 10 · 9 · 9 · 8 · 6 · 5. Because every disqualifying case is empty, the static count and the collected count cannot differ. Stated as a count of test FUNCTIONS rather than of passes because the suite could not be executed here — the project ships no shared scheme and xcodebuild resolves a destination requiring an iOS runtime this machine does not have. Its CI does not run it either: the workflow has no `xcodebuild test` step. Note the commit that introduced the suite says “68 tests” in its message; that is the stale document, not this number.",
+      "Executed, having previously only been counted. This entry read “71 test functions” rather than “71 passing” because the suite could not be run: xcodebuild resolved a destination needing an iOS runtime this machine lacked, and CI had no `xcodebuild test` step either, so 71 tests had never executed anywhere. The runtime was installed on 2026-08-03 and `xcodebuild test` was run twice — iPhone 17 Pro on iOS 26.5, then on iOS 26.2 when the simulator resolver picked a different device — giving 71 passed, 0 failed, 0 skipped both times, read from the .xcresult bundle via xcresulttool rather than from console text. Two runtimes rather than one because the second run was accidental, and it is worth more than the first. The static count is unchanged and still corroborates: 8 XCTestCase subclasses, 71 no-argument instance methods named test…, per file 13 · 11 · 10 · 9 · 9 · 8 · 6 · 5, with zero argument-taking, private, or static variants — the cases XCTest would skip — so the collected count could not have differed. The pin still holds: VisualAssistTests/ and VisualAssist/ are byte-identical between this commit and the tree that was executed, which changed only CI, scripts and docs. CI now runs the suite and asserts it ran, since a green xcodebuild proves nothing on its own. The commit that introduced the suite says “68 tests”; that is the stale document, not this number.",
     visibility: "public",
     privacyBoundary: "No live camera, location, or user sensor data is shown.",
-    date: "2026-08-02",
+    date: "2026-08-03",
     receipt: {
       label: "visual assist case file · receipt 01",
       href: "/projects/visual-assist/#v-visual-assist-1",

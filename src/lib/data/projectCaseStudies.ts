@@ -1367,8 +1367,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "71 test functions cover models and utilities — counted in the public VisualAssistTests tree.",
-        method: "local repository audit, function count",
+          "71 tests cover models and utilities, and all 71 pass — executed on iOS 26.5 and again on 26.2, 0 failed, 0 skipped.",
+        method: "xcodebuild test, .xcresult parsed with xcresulttool",
         artifacts: [
           {
             label: `VisualAssist @ ${VISUAL_ASSIST_SHA} · VisualAssistTests`,
@@ -1442,6 +1442,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-05",
         kind: "erratum",
         text: "An earlier draft took its count from the repo’s CI run title rather than from the test tree; that draft is not in this repository’s history, so the figure it printed cannot be quoted back here. The audited count in the current tree is 71 test functions, and the receipt above links the tree so the number can be checked.",
+      },
+      {
+        date: "2026-08",
+        kind: "note",
+        text: "Until now this file said “71 test functions”, deliberately — a count of what the tree declared, because the suite had never been run. Not in CI, which had no `xcodebuild test` step, and not locally, because xcodebuild wanted an iOS runtime the machine did not have. A count is a weaker claim than a result and it was worded to admit that. The runtime was installed on 2026-08-03 and the suite ran: 71 passed, 0 failed, 0 skipped, on iPhone 17 Pro under iOS 26.5, and again under 26.2 when the simulator resolver happened to pick a different device. The claim above is now a result. The static count did not move, which is the outcome that should be least surprising and was still worth checking.",
       },
     ],
     artifacts: [
