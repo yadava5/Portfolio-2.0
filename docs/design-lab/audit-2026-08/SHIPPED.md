@@ -110,6 +110,36 @@ subcommand exactly as Xcode 15 does.
 - **OpenSSF Scorecard publishes a score for four repositories** — computed by a
   third party, at a public URL, re-readable by anyone.
 
+## A correction: the CORS wildcard was never publicly exposed
+
+`PUSH-LIST.md` says, and I said three times in reports, that **"the CORS wildcard
+is live in production."** That was wrong. It was inferred from reading the code
+and never checked against the deployment, which is the exact mistake this whole
+audit exists to prevent.
+
+Probed 2026-08-03:
+
+| Check | Result |
+|---|---|
+| `getapplied.vercel.app/health` | **404** — the domain serves the Next.js frontend; every API path 404s |
+| `apps/web` config | points at **Supabase**, not at the FastAPI backend |
+| `main_cloud.py` on `origin/main` | **not present** — the cloud backend existed only on `integration/web-migration` |
+| `jobtracker-api` deployment `/health` | **302 → `vercel.com/sso-api`** — behind Vercel deployment protection, not publicly reachable |
+
+So the file containing the wildcard had never been on `main`, and the deployment
+it belongs to sits behind SSO. There was no public exposure and nothing was
+reachable by a hostile origin.
+
+**What remains true:** the wildcard was real in the code, it would have matched
+every preview deployment belonging to every Vercel customer had that service been
+exposed, and replacing it with an explicit allowlist plus 10 policy tests is
+correct defensive work. What was false was the urgency — I reported a live
+production hole and it was a latent one in an unexposed service.
+
+Recording it here rather than quietly deleting the sentence, because the failure
+mode is the interesting part: I measured the code and asserted a fact about the
+deployment. Those are different things, and the second one takes a `curl`.
+
 ## Still requiring the owner
 
 1. **34 faculty `.eml` files** at the tip of a public AutoML branch. A branch
