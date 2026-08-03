@@ -72,10 +72,17 @@ const FIGURES = [
   },
   {
     figure: "Applied · backend suite",
-    run: /278 passed · 10 skipped/,
-    data: /278 tests passed, 10 skipped/,
+    run: /305 passed · 0 skipped/,
+    data: /305 tests passed, 0 skipped/,
+    // This entry read 278 · 10 while proofManifest.ts already said 305 · 0, and
+    // the gate still exited 0 -- because it only compares run/index.html against
+    // projectCaseStudies.ts and never reads the manifest at all. Both stale
+    // surfaces agreed with each other, so "agrees" was printed and the site
+    // shipped 305 on /evidence/ and 278 on / at the same time. A consistency
+    // check that cannot see one of the three surfaces it is meant to reconcile
+    // will certify a contradiction as consistent.
     source:
-      "`pytest tests -q` at head 03fc5c4, 2026-08-02 — 278 passed, 10 skipped",
+      "`pytest tests -q` at head a0d77a1, 2026-08-03 — 305 passed, 0 skipped (+27 on 03fc5c4: 10 CORS, 7 benchmark guard, 10 RLS that no longer skip)",
   },
   {
     figure: "Glyph · MNIST accuracy",
@@ -92,15 +99,15 @@ const FIGURES = [
      reader's discovery. */
   {
     figure: "Cadence · suite",
-    run: /1,159 passed · 11 skipped/,
-    data: /1,159 tests passing under vitest, with 11 skipped/,
+    run: /1,185 passed · 0 skipped/,
+    data: /1,185 tests passing under vitest, with 0 skipped/,
     source:
-      "both vitest configs at the PUBLIC head 8eee84e, 2026-08-02 — 635 frontend + 524 backend",
+      "both vitest configs at head 8a2fbbb, 2026-08-03 — 635 frontend + 550 backend, 0 skipped",
   },
   {
     figure: "Cadence · suite split",
-    run: /635 fe \+ 524 be/,
-    data: /635 frontend \+ 524 backend/,
+    run: /635 fe \+ 550 be/,
+    data: /635 frontend \+ 550 backend/,
     source: "same run; the split must agree with the total it sums to",
   },
   {

@@ -646,7 +646,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "I ran the backend suite locally at the pinned commit: 278 tests passed, 10 skipped, under the test/null-keyring environment.",
+          "I ran the backend suite locally at the pinned commit: 305 tests passed, 0 skipped, under the test/null-keyring environment. It read 278 passed and 10 skipped until 2026-08-03. The +27 is 10 CORS origin-policy tests, 7 benchmark-guard tests, and the 10 Postgres RLS tests that used to be the skips — those now provision their own postgres:16 rather than waiting on a database URL nobody supplied.",
         method:
           "`pytest tests -q` in the project's own Python 3.11 venv; the 10 skips are the Postgres RLS module, which needs a live database",
         artifacts: [
@@ -1673,7 +1673,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I measured the suite on 2026-08-02: 635 frontend + 524 backend = 1,159 tests passing under vitest, with 11 skipped.",
+          "I measured the suite on 2026-08-03: 635 frontend + 550 backend = 1,185 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
         method:
           "local run of both vitest configs against the public head — `vitest run --config vitest.config.ts` and `--config vitest.backend.config.ts`",
         artifacts: [
@@ -1753,16 +1753,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The database-level answer to that bug is written, tested, and NOT live. 0002_enable_rls.sql puts 22 policies and FORCE ROW LEVEL SECURITY on 7 tenant tables, and its own header says: “Nothing in the app auto-applies this file.” It is deployed inert — production cutover is a final staged step that has not been taken. What prevents a cross-user read today is the application-level scoping in receipt 04, not Postgres.",
+          "The database-level answer to that bug is written, tested, and — since 2026-08-03 — LIVE. 0002_enable_rls.sql puts 22 policies and FORCE ROW LEVEL SECURITY on 7 tenant tables. It sat deployed inert for eight days, because nothing in the app auto-applies it and the cutover was a hand-run step nobody had taken. It has now been run. The app connects as cadence_app — NOSUPERUSER NOBYPASSRLS — so Postgres refuses a cross-user read rather than the handlers refusing it. Verified through the production pooler rather than by reading the migration: a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is rejected. The application-level scoping in receipt 04 is still there — it is the second line now, not the only one.",
         method:
-          "read the migration and every path that could apply it at the pin — the only code in the repo that reads lib/config/migrations/ is the test file",
+          "applied the migration to the live database, then verified through the production connection as the non-bypassing app role: role attributes from pg_roles, table and policy state from pg_class and pg_policy, and scoped versus unbound row counts compared against ground truth",
         artifacts: [
           {
             label: `0002_enable_rls.sql @ ${CADENCE_SHA}`,
             href: `${CADENCE_BLOB}/lib/config/migrations/0002_enable_rls.sql`,
           },
         ],
-        date: "2026-07-26",
+        date: "2026-08-03",
         visibility: "public",
       },
       {
