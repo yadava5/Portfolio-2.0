@@ -1,27 +1,39 @@
 import { expect, test } from "@playwright/test";
 
+/**
+ * Reduced motion, against the page that actually ships.
+ *
+ * These assertions used to describe the old React home — [data-chapter]
+ * sections, per-chapter waypoint backgrounds, a folio terminator and a Lenis
+ * flag on the header — and they passed only because the e2e scripts built
+ * WITHOUT scripts/run/build-home.mjs, so Playwright was served a page no
+ * visitor has ever seen. With the test build fixed, all four failed at once.
+ *
+ * The run's reduced-motion contract is a different and simpler thing: there is
+ * no engine to disable, because everything is a pure function of scroll. What
+ * it owes a reader who asks for stillness is that the whole authored world is
+ * present and settled on arrival, and that nothing is left animating.
+ */
 test.describe("reduced motion and keyboard access", () => {
-  test("page remains usable with reduced motion", async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
+  });
+
+  test("the page arrives complete and usable", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#arrival").waitFor({ state: "attached" });
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
     await expect(page.locator("main")).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: /resume/i }).first()
-    ).toBeVisible();
+
+    /* every station is present, not merely the ones scrolled past */
+    await expect(page.locator("[data-beat]")).toHaveCount(13);
 
     /* Keyboard reachability, stated so WebKit can answer it honestly.
        This was `keyboard.press("Tab")` then `expect(:focus).toBeVisible()`,
        which fails in both Safari seats because WebKit's default keyboard
-       model does not move focus to links at all (measured: six Tab
-       presses leave document.activeElement on BODY, while Chromium walks
-       the skip link, the portrait button and the nav in order). That is a
-       browser preference the page cannot influence, so the old assertion
-       was testing Safari, not the site.
-       What the reduced-motion world actually owes a keyboard reader is
-       that focus LANDS somewhere visible when it is moved — so move it
-       the way the platform allows and assert the focused element is
-       visible and carries a focus ring. */
+       model does not move focus to links at all. That is a browser
+       preference the page cannot influence, so the old assertion was
+       testing Safari, not the site. What the page owes a keyboard reader is
+       that focus LANDS somewhere visible when it is moved. */
     const focusLanded = await page.evaluate(() => {
       const first = document.querySelector<HTMLElement>(
         "a[href], button:not([disabled])"
@@ -34,97 +46,44 @@ test.describe("reduced motion and keyboard access", () => {
     await expect(page.locator(":focus")).toBeVisible();
   });
 
+  test("the world settles on arrival — nothing waits to be scrolled into", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await page.waitForTimeout(600);
+
+    /* settleAll() runs under RM: the stations do not hold their entrance
+       state waiting for a scroll that a still reader will not perform */
+    await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+
+    /* and the thread is still drawn — it is the spine of the argument, not
+       an animation, so stillness must not cost the reader the line */
+    await expect(page.locator("canvas#thread")).toHaveCount(1);
+  });
+
+  test("nothing is left animating", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForTimeout(600);
+
+    /* the morning flock is never released under reduced motion — the layer
+       exists but is never populated, so there is no animation to hide */
+    await expect(page.locator(".bird")).toHaveCount(0);
+
+    const running = await page.evaluate(() =>
+      document
+        .getAnimations()
+        .filter((a) => a.playState === "running")
+        .map((a) => (a as CSSAnimation).animationName ?? "unnamed")
+    );
+    expect(running).toEqual([]);
+  });
+
   test("anchor navigation does not depend on scroll animation", async ({
     page,
   }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/#work");
-    await expect(page.locator("#work")).toBeInViewport();
-  });
-
-  test("chapters paint static waypoint colors without the engine", async ({
-    page,
-  }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/");
-    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
-
-    /* A7: the engine never mounts */
-    await expect(page.locator("header")).toHaveAttribute(
-      "data-lenis-connected",
-      "false"
-    );
-
-    /* Chapters carry their own FLAT waypoint backgrounds (globals.css,
-       static final form — one color per chapter, no band steps) */
-    const bg = (id: string) =>
-      page
-        .locator(`[data-chapter='${id}']`)
-        .evaluate((el) => getComputedStyle(el).backgroundColor);
-    expect(await bg("01")).toBe("rgb(251, 243, 231)"); /* dawn */
-    expect(await bg("04")).toBe("rgb(245, 237, 220)"); /* warm afternoon */
-    expect(await bg("06")).toBe("rgb(67, 55, 47)"); /* dusk */
-    expect(await bg("07")).toBe("rgb(44, 38, 34)"); /* nightfall */
-
-    /* Chapters past the dusk flip carry dusk ink, statically */
-    const ink = (id: string) =>
-      page
-        .locator(`[data-chapter='${id}']`)
-        .evaluate((el) => getComputedStyle(el).color);
-    expect(await ink("01")).toBe("rgb(38, 35, 28)");
-    expect(await ink("07")).toBe("rgb(246, 239, 226)");
-  });
-
-  test("color changes land at the folio dividers — no dusk bands", async ({
-    page,
-  }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/");
-    await page.locator("[data-chapter='07']").waitFor({ state: "attached" });
-
-    /* The round-3 stepped duotone band overlay is gone for good */
-    const bandOverlay = await page
-      .locator("[data-chapter='06']")
-      .evaluate((el) => getComputedStyle(el, "::before").content);
-    expect(bandOverlay).toBe("none");
-
-    /* Each chapter's tail (below its folio rule) already wears the NEXT
-       chapter's field via a two-stop hard gradient: chapter 05's
-       background-image carries the dusk waypoint, so the golden→dusk
-       change lands exactly at the 05|06 terminator */
-    const goldenImage = await page
-      .locator("[data-chapter='05']")
-      .evaluate((el) => getComputedStyle(el).backgroundImage);
-    expect(goldenImage).toContain("rgb(67, 55, 47)");
-
-    /* The terminator itself: folio 05 renders the heavier authored rule */
-    await expect(
-      page.locator("[data-chapter='05'] [data-folio-terminator]")
-    ).toHaveCount(1);
-
-    /* And the seam sits AT the divider: the hard stop's distance from
-       the chapter top equals the folio rule's bottom edge (±3px) */
-    const seam = await page.evaluate(() => {
-      const section = document.querySelector("[data-chapter='05']");
-      const folio = section?.querySelector("[data-folio-terminator]");
-      if (!section || !folio) return null;
-      const sectionBox = section.getBoundingClientRect();
-      const folioBox = folio.getBoundingClientRect();
-      const tail = getComputedStyle(section).getPropertyValue("--wp-tail");
-      const probe = document.createElement("div");
-      probe.style.height = tail;
-      probe.style.position = "absolute";
-      probe.style.visibility = "hidden";
-      section.appendChild(probe);
-      const tailPx = probe.getBoundingClientRect().height;
-      probe.remove();
-      return {
-        drift: Math.abs(
-          sectionBox.height - tailPx - (folioBox.bottom - sectionBox.top)
-        ),
-      };
-    });
-    expect(seam).not.toBeNull();
-    expect(seam!.drift).toBeLessThanOrEqual(3);
+    /* the run's own deep links; `#work` was the old home's chapter id */
+    await page.goto("/#gate");
+    await expect(page.locator("#gate")).toBeInViewport();
   });
 });
