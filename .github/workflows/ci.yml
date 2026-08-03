@@ -240,6 +240,17 @@ jobs:
       - name: Browser metadata smoke
         run: NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npx playwright test tests/playwright/static-seo.spec.ts
 
+      # The nameplate gates live here rather than in proof-manifest because they
+      # have two preconditions and this is the only job that meets both: they
+      # serve `out/` — so the static export must already be built — and they
+      # launch chromium. proof-manifest does neither, which is why placing them
+      # there produced a null `[data-nameplate] h1` against an empty directory.
+      - name: Check nameplate invariants
+        run: npm run test:nameplate
+
+      - name: Check nameplate negative cases
+        run: npm run test:nameplate:negative
+
   # ─────────────────────────────────────────────────────────────
   # Proof: Verify public metrics have source-truth coverage
   # ─────────────────────────────────────────────────────────────
@@ -299,19 +310,9 @@ jobs:
       - name: Check pinned artifact links resolve
         run: npm run test:links
 
-      # check-nameplate.mjs launches chromium, and this job installs no browsers
-      # — the two steps below were added here without one, so they failed on the
-      # runner while passing locally, where Playwright is already installed.
-      # Only chromium: the nameplate checks measure rendered geometry in one
-      # engine, unlike browser-quality which needs all three.
-      - name: Install Playwright chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Check nameplate invariants
-        run: npm run test:nameplate
-
-      - name: Check nameplate negative cases
-        run: npm run test:nameplate:negative
+      # The nameplate checks used to sit here and could not work: they serve
+      # `out/` and launch chromium, and this job neither builds nor installs a
+      # browser. They now live in static-seo, which does both.
 
   # ─────────────────────────────────────────────────────────────
   # Browser Quality: Playwright smoke, reduced motion, performance
