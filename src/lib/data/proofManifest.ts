@@ -70,8 +70,16 @@ export interface ProofManifestEntry {
    erratum. Every `source` below was fetched at this sha and returned 200. */
 const APPLIED_SHA = "36a2f54";
 /* The backend suite count is pinned to the commit it was MEASURED at.
-   Re-run 2026-08-02: 271 became 278, skips unchanged at 10. */
-const APPLIED_SUITE_SHA = "03fc5c4";
+   271 at 36a2f54 → 278 at 03fc5c4 → 305 here, each true when taken.
+
+   2026-08-03: the skips went to ZERO, which matters more than the count. The
+   10 that skipped were the Postgres RLS module, and the note here used to
+   record them as "unchanged at 10" — a stable number that was really a
+   stable absence, since those tests had never executed anywhere. They now
+   provision their own postgres:16. The integration branch carrying all of
+   this merged to main, so the pin moves to a public main commit rather than
+   a feature branch; verified 200 before this line was written. */
+const APPLIED_SUITE_SHA = "a0d77a1";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 /* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
 const AUTOML_SHA = "e506c91";
@@ -94,7 +102,13 @@ const AUTOML_SHA = "e506c91";
    11 that used to skip were the only tests that could demonstrate the
    isolation Cadence claims, and they had never executed anywhere. */
 const CADENCE_SUITE_SHA = "2295044";
-const FAST_MNIST_SHA = "c6e5c0b";
+/* Moved off c6e5c0b on 2026-08-03. Not because the old pin was wrong — 3.5×
+   holds at both — but because that commit predates the correction BENCHMARKS.md
+   now carries: the "sub-percent variance" line was never measured, the harness
+   the docs told you to run recorded no repetitions at all, and the reference
+   machine changed from a fanless MacBook Air to the M1 Pro. Pinning to the
+   commit that ADMITS all that is stronger than pinning to one that does not. */
+const FAST_MNIST_SHA = "001e9b4";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
 /* jetpack-compress HEAD verified public via `gh api` on 2026-07-24. */
@@ -140,17 +154,17 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "jobtracker-backend-tests",
-    label: "278 backend tests",
+    label: "305 backend tests, 0 skipped",
     claim:
-      "The Applied backend suite passed 278 tests locally, with 10 skipped, under the test/null-keyring environment.",
-    source: "https://github.com/yadava5/applied/tree/03fc5c4/backend/tests",
+      "The Applied backend suite passes 305 tests with nothing skipped, including the Postgres row-level-security module that used to skip and had never executed anywhere.",
+    source: "https://github.com/yadava5/applied/tree/a0d77a1/backend/tests",
     sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
-      "`pytest tests -q` run against this head on 2026-08-02 in the project’s own Python 3.11 venv: 278 passed, 10 skipped in 39.90s. The 10 skips are the Postgres RLS module, which needs a live database URL and gets one from no workflow. The previous entry read 271 at 36a2f54 — true when taken; the tree has grown seven tests since.",
+      "`pytest tests -q` against this head on 2026-08-03 in the project’s own Python 3.11 venv: 305 passed, 0 skipped. The zero is the part worth reading. This entry previously said “278 passed, 10 skipped”, and named the skips as the Postgres RLS module, which “needs a live database URL and gets one from no workflow” — an accurate description of tests that had therefore never run: not in CI, not locally, not once. They were the only tests capable of demonstrating the isolation this project claims. They now start their own postgres:16 through testcontainers when JOBTRACKER_TEST_PG_ADMIN_URL is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. The remaining 17 of the 27-test increase are the CORS origin-policy suite (10) and the classifier-benchmark layer guard (7). Counts move with their commit: 271 at 36a2f54, 278 at 03fc5c4, 305 here — each true when taken, and each taken at a commit a reader can open.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-08-02",
+    date: "2026-08-03",
     receipt: {
       label: "applied case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",
@@ -247,13 +261,13 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "3.5× parallel dot kernel",
     claim:
       "The parallel dot kernel runs 3.5× faster than the single-threaded -O3 baseline at dot 256 — the speed-up is OpenMP’s, not SIMD’s.",
-    source: "https://github.com/yadava5/glyph/blob/c6e5c0b/BENCHMARKS.md",
+    source: "https://github.com/yadava5/glyph/blob/001e9b4/BENCHMARKS.md",
     sourceLabel: `BENCHMARKS.md @ ${FAST_MNIST_SHA}`,
     verification:
-      "Rebuilt and re-measured on 2026-08-02: all three of the repository’s configurations (baseline, native, openmp+native) were compiled from source and run under Google Benchmark. dot 256 went 4,858,722ns → 1,380,288ns = 3.520×, against the committed 3.504×. The attribution matters and was checked rather than assumed: on this arm64 machine the `baseline` and `native` binaries are byte-identical — same md5 — because -march=native is an x86 flag clang does not act on here, so the hand-written NEON path is compiled into both and the entire gain is parallelism. That is also why the “SIMD alone” figure sits at ~1.0 (1.016× committed, 0.993× re-measured): it compares a binary with itself.",
+      "Three independent measurements now stand behind the 3.5×, taken on different machines with different repetition counts: 3.504× (Dec 2025, 1 repetition), 3.570× (2026-08-02, 10 repetitions) and 3.536× (20 repetitions). The pin moves off c6e5c0b for a reason — that commit predates a correction the document now carries. BENCHMARKS.md used to claim variance was “small enough (sub-percent on a quiet machine) that we don’t publish confidence intervals”, and nothing supported it: the harness the docs told you to run passed no --benchmark_repetitions, so every committed record said `repetitions: 1` with no aggregates and there was no stddev anywhere to check against. Measured, the claim is right about the kernels it matters for and wrong as a blanket statement — the dot family is 0.1–0.4% even at load_avg 4.70, while benchAxpy/256 reaches 4.3%. The reference machine also changed: the December runs carry `Shrees-MacBook.local` and were taken on a fanless MacBook Air with roughly half the performance cores, which for an OpenMP SCALING number measures a different machine's ceiling rather than a noisier version of the same one. The attribution was checked rather than assumed: on arm64 the `baseline` and `native` binaries are byte-identical — same md5 — because -march=native is an x86 flag clang does not act on here, so the NEON path is in both and the entire gain is parallelism. That is why the “SIMD alone” figure sits at ~1.0: it compares a binary with itself.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-08-02",
+    date: "2026-08-03",
     receipt: {
       /* Same slug-into-display-text leak, and this one was provably an
          oversight rather than a decision: the entry 27 lines below already
@@ -349,6 +363,20 @@ export const proofManifest: ProofManifestEntry[] = [
       "Run, not read: `mvn -DskipTests=false test` on JDK 25.0.3 against this commit on 2026-08-02, and the surefire XML summed across all five test classes gives tests=72 errors=0 skipped=0 failures=0. This entry names the test tree rather than the README status line it used to cite, because a status line is prose about a run and the tree is the run's subject. Re-verified 2026-08-03 under `mvn verify`, which now also emits a JaCoCo report: still 72/0/0/0. That sentence used to end “the repository has no CI, so this local run is the only execution record that exists” — no longer true, and the correction is the interesting part: CI runs the suite on every push and sums the same surefire XML, so the count is now reproducible by anyone from a run record rather than from this paragraph.",
     visibility: "public",
     privacyBoundary: "No private data.",
+    date: "2026-08-03",
+  },
+  {
+    id: "coverage-measured",
+    label: "coverage measured, five repos",
+    claim:
+      "Line coverage is measured, not asserted, across five repositories: Glyph 88.9%, jetpack 68.1%, Cadence backend 67.1%, AutoML 67.4%, Applied 54%.",
+    source: "https://github.com/yadava5/glyph/blob/001e9b4/tools/coverage.sh",
+    sourceLabel: "tools/coverage.sh @ 001e9b4",
+    verification:
+      "Every figure produced by running the suite, each with its command recorded beside it: Glyph `tools/coverage.sh` (clang source-based instrumentation + llvm-cov), jetpack `mvn verify` (JaCoCo 0.8.13), Cadence `vitest --coverage` (v8), Applied `pytest --cov`. AutoML's 67.4% was measured during the provenance audit against a documented claim of 97% — that gap is why this row exists at all. The blended totals are the least informative way to read them and are broken out per package for exactly that reason: jetpack's SIMD `vector` package, which is the reason that project exists, is at 98.9% while an untested CLI argument parser drags the average to 68.1%; Applied's deployed `cloud` layer is at 82%, `auth` 81%, `database` 77%, against 2,163 statements of one-off dataset importers at 35%. Cadence's frontend reads 18.0% lines against 67.1% branches — the signature of logic that is unit-tested thoroughly with the components around it covered by Playwright, which a v8 pass over a Vitest run cannot observe; no line-coverage gate is set there, because such a gate pushes work toward shallow component tests that raise the number and find nothing. jetpack gates at 55% in CI, deliberately BELOW its measured 68.1%: a floor pinned at the current value turns every honest refactor red, and what it guards is a collapse — the coverage agent silently detaching and reporting near zero — not a two-point drift. Negative-tested by raising that floor to 95%: fails, exit 1.",
+    visibility: "public",
+    privacyBoundary:
+      "No private data — coverage is computed from the projects' own test suites.",
     date: "2026-08-03",
   },
   {
