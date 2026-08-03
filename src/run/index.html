@@ -415,7 +415,7 @@
   .bench{margin-top:1.1rem; border-top:1px solid var(--hair); padding-top:.8rem}
   .bench .brow{display:grid; grid-template-columns:7.6rem 1fr 3rem; gap:.6rem; align-items:center;
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2); margin-top:.4rem}
-  .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "455 mb/s" + the lane names */
+  .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "422 mb/s" + the lane names */
   @media (min-width:821px){ /* wide seats afford the un-wrapped lane names */
     .bench.jet .brow{grid-template-columns:10.6rem 1fr 4.6rem}
   }
@@ -1645,7 +1645,7 @@ h1[data-np-measuring] .np-ch {
         <div class="bench jet" aria-label="benchmark: virtual-thread engine versus single-threaded java.util.zip">
           <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
           <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack"><span class="bfill" id="jScalar"></span></span><span class="bval">66&#8202;mb/s</span></div>
-          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">455&#8202;mb/s</span></div>
+          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">422&#8202;mb/s</span></div>
           <p class="bfoot">6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89×</p>
         </div>
         <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member. <i>the clay tick marks each seam<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
@@ -3240,11 +3240,15 @@ function scrubBench(p) {
   $("bScalar").style.transform = `scaleX(${(t * (1 / 3.5)).toFixed(3)})`;
   $("bSimd").style.transform = `scaleX(${t.toFixed(3)})`;
 }
-/* the bench lanes (jetpack) — 66 vs 455 MB/s, drawn at the point-
-   estimate ratio; the label carries the conservative 6.5× CI bound */
+/* the bench lanes (jetpack) — 66 vs 422 MB/s from the RIGOROUS 3-fork
+   run (jmh-results-rigorous.json), drawn at the point-estimate ratio.
+   The label carries the 6.4× point estimate, NOT a CI bound — the 6.5×
+   this comment used to name was the QUICK 1-fork run's lo/hi bound
+   (432.7/66.3 = 6.52), and the bars read 455 from that same quick file
+   while the prose above them read 422 from the rigorous one. */
 function scrubJetBench(p) {
   const t = smooth((p - 0.3) / 0.3);
-  $("jScalar").style.transform = `scaleX(${(t * (66 / 455)).toFixed(3)})`;
+  $("jScalar").style.transform = `scaleX(${(t * (66 / 422)).toFixed(3)})`;
   $("jPar").style.transform = `scaleX(${t.toFixed(3)})`;
 }
 

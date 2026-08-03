@@ -129,7 +129,7 @@ const FIGURES = [
     run: /parallel dot-256 kernel 3\.5× vs -O3/,
     data: /3\.5× parallel dot kernel/,
     source:
-      "rebuilt and re-measured 2026-08-02 — 4,858,722ns → 1,380,288ns = 3.520× (committed 3.504×)",
+      "docs/benchmarks/runs/bench-20260802-dot20x-* (20 reps) — median real_time 4,818,901ns → 1,362,717ns = 3.536×; the 3.520× this line used to cite had no committed JSON",
   },
   {
     figure: "Applied · eval set",
@@ -156,6 +156,18 @@ const FIGURES = [
     data: /Three hand-written instruction sets/,
     source:
       "glyph src/Matrix.cpp + src/NeuralNet.cpp guard exactly __AVX512F__, __AVX2__, __ARM_NEON over a scalar fallback; the wasm target passes -msimd128 with no hand-written branch",
+  },
+  {
+    /* The bar LABEL had no pair here, which is why it drifted unnoticed:
+       the bars rendered 455 mb/s from the quick 1-fork run while the prose
+       two kilobytes above them read 422 from the rigorous 3-fork one, and
+       this gate exited 0 the whole time. A figure the run states and the
+       data layer states is exactly what this file exists to bind. */
+    figure: "jetpack · fig. 07 bar label",
+    run: /virtual threads 422 mb\/s/i,
+    data: /422 vs 66 MB\/s/,
+    source:
+      "benchmarks/jmh-results-rigorous.json — 422.0 MB/s, 3 forks; the bars read the quick 1-fork 455 until 2026-08-03",
   },
   {
     figure: "jetpack · suite",
