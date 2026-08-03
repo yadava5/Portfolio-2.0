@@ -292,7 +292,13 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
   // Dossier voice rewrite (2026-07-18): first person, same fact/number.
-  visualAssistCoverage: "71 test functions cover models and utilities",
+  // 2026-08-03: "71 test functions" became "71 tests … and all 71 pass". The
+  // suite was executed for the first time — it had never run in CI or locally —
+  // so the receipt stopped being a count of what the tree declares and became a
+  // result. This fixture is matched on the stable head of that sentence rather
+  // than the whole of it, so the runtimes can be re-stated without breaking a
+  // test that is really asserting "the coverage receipt is on the page".
+  visualAssistCoverage: "71 tests cover models and utilities",
   visualAssistCoreMlBoundary: "no custom Core ML model file was present",
   fastMnistScreenshot: "Local React workbench screenshot",
   fastMnistRelease: "v1.0.0 release",

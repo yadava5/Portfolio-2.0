@@ -299,6 +299,14 @@ jobs:
       - name: Check pinned artifact links resolve
         run: npm run test:links
 
+      # check-nameplate.mjs launches chromium, and this job installs no browsers
+      # — the two steps below were added here without one, so they failed on the
+      # runner while passing locally, where Playwright is already installed.
+      # Only chromium: the nameplate checks measure rendered geometry in one
+      # engine, unlike browser-quality which needs all three.
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Check nameplate invariants
         run: npm run test:nameplate
 
