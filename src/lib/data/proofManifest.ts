@@ -85,8 +85,15 @@ const AUTOML_SHA = "e506c91";
    UNPUSHED local commit — so the source URL 404'd and the number could not
    be reproduced by anyone. Re-measured at the public head instead: 1,159.
    The nine-test difference is `932625e` itself, the fix for nine dead
-   endpoints, which lands here the moment it is pushed. */
-const CADENCE_SUITE_SHA = "8eee84e";
+   endpoints, which lands here the moment it is pushed.
+
+   2026-08-03: it was pushed, along with the row-level-security work, so the
+   pin moves forward to `2295044` on `fix/method-handler-auth` — verified
+   present on the remote before this line was written, not after. 1,159
+   becomes 1,179 with **zero** skips, which is the more interesting half: the
+   11 that used to skip were the only tests that could demonstrate the
+   isolation Cadence claims, and they had never executed anywhere. */
+const CADENCE_SUITE_SHA = "2295044";
 const FAST_MNIST_SHA = "c6e5c0b";
 /* The MNIST eval landed after that pin — its own commit, verified 200. */
 const GLYPH_EVAL_SHA = "97de736";
@@ -211,16 +218,16 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,159 automated tests",
+    label: "1,179 tests, 0 skipped",
     claim:
-      "Cadence suite measured 2026-08-02: 635 frontend + 524 backend = 1,159 passing (vitest), with 11 skipped.",
-    source: "https://github.com/yadava5/cadence/tree/8eee84e",
+      "Cadence runs 1,179 tests — 635 frontend + 544 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
+    source: "https://github.com/yadava5/cadence/tree/2295044",
     sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
     verification:
-      "Both vitest configs run locally against this head on 2026-08-02: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 533 passing and 11 skipped across 24. The 11 skips are the Postgres row-level-security suite, which stays skipped without RLS_TEST_PG_ADMIN_URL. The number and its commit moved together — the previous entry read 1,145 at 69a59e7, which was true when it was taken.",
+      "Both vitest configs run against this head on 2026-08-03: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 544 passing across 24, and the skip count is now zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, now 1,179 here.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-08-02",
+    date: "2026-08-03",
     receipt: {
       /* The product is Cadence. `taskflow-calendar` is the ROUTE SLUG and
          stays — it is a pinned identifier and every receipt anchor is
@@ -339,9 +346,23 @@ export const proofManifest: ProofManifestEntry[] = [
       "https://github.com/yadava5/jetpack-compress/tree/2caacd0/src/test/java",
     sourceLabel: `src/test/java @ ${JETPACK_SHA}`,
     verification:
-      "Run, not read: `mvn -DskipTests=false test` on JDK 25.0.3 against this commit on 2026-08-02, and the surefire XML summed across all five test classes gives tests=72 errors=0 skipped=0 failures=0. The repository has no CI, so this local run is the only execution record that exists — which is why the entry names the test tree rather than the README status line it used to cite.",
+      "Run, not read: `mvn -DskipTests=false test` on JDK 25.0.3 against this commit on 2026-08-02, and the surefire XML summed across all five test classes gives tests=72 errors=0 skipped=0 failures=0. This entry names the test tree rather than the README status line it used to cite, because a status line is prose about a run and the tree is the run's subject. Re-verified 2026-08-03 under `mvn verify`, which now also emits a JaCoCo report: still 72/0/0/0. That sentence used to end “the repository has no CI, so this local run is the only execution record that exists” — no longer true, and the correction is the interesting part: CI runs the suite on every push and sums the same surefire XML, so the count is now reproducible by anyone from a run record rather than from this paragraph.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-08-02",
+    date: "2026-08-03",
+  },
+  {
+    id: "openssf-scorecard",
+    label: "Scorecard, scored by the OpenSSF",
+    claim:
+      "Four repositories are analysed weekly by OpenSSF Scorecard against 18 supply-chain checks, with results published by the OpenSSF at scorecard.dev: Glyph 6.4, VisualAssist 4.5, LifeQuest 3.9, jetpack-compress 3.8.",
+    source:
+      "https://scorecard.dev/viewer/?uri=github.com/yadava5/fast-mnist-nn",
+    sourceLabel: "scorecard.dev · yadava5/fast-mnist-nn",
+    verification:
+      "Read from api.scorecard.dev on 2026-08-03, not from a badge image: Glyph 6.4, VisualAssist 4.5, LifeQuest 3.9, jetpack-compress 3.8 — the last three dated 2026-08-03, their first analysis. This is the only row in this ledger whose number the author does not compute. Scorecard is run by the OpenSSF against a public repository and published at a public URL, so anyone can re-read it and, unlike every other entry here, disagree with it using the same instrument. That is also why it carries no `sourceKind` qualifier: those mark evidence that sits closer to the author, and this sits further away than anything else on the page. The scores are modest and are meant to be read that way. Several of the 18 checks grade repository SETTINGS — branch protection, signed releases, required review — that no committed file can switch on, so a correctly configured repo still opens in the 3–5 band. The figure to watch is the direction over time, not the first reading; it is recorded here precisely so that later movement is checkable against a stated starting point.",
+    visibility: "public",
+    privacyBoundary: "No private data — Scorecard reads public repository metadata only.",
+    date: "2026-08-03",
   },
 ];
