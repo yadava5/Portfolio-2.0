@@ -1589,12 +1589,30 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            built from its own definitions cannot run it. That is fixed in
            the fixture and is the honest answer to "why was this deferred".
 
-           What remains is a hand-run migration against a live Supabase
-           database — an owner decision, not an engineering unknown. */
+           2026-08-03, later the same day: the cutover happened. The
+           migration is applied to the live Supabase database, the app
+           connects as `cadence_app` — NOSUPERUSER NOBYPASSRLS — and the
+           database is now what refuses. Seven tables ENABLE + FORCE, 22
+           policies. Verified through the production pooler rather than
+           against the migration file: a read scoped to the busiest tenant
+           returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound
+           read returns 0 rows, and a cross-tenant INSERT is refused.
+
+           So this node IS a gate now, and the paragraph above is kept
+           rather than rewritten because the sequence is the point — the
+           rehearsal is what made the cutover safe to attempt.
+
+           The cutover also broke production for about an hour, which
+           belongs here more than the success does. Moving tag uniqueness
+           from a global unique-on-name to ("userId", name) stranded an
+           inline `ON CONFLICT (name)` inside TaskService — a private copy
+           of an upsert TagService already did correctly. Every tagged task
+           creation failed while 550 backend tests stayed green, because
+           nothing exercised that copy against a real schema. */
         {
           id: "auth",
           label: "Owner-scoped checks",
-          detail: "JWT identity; rls written for 7 tables, staged off",
+          detail: "JWT identity; rls enforced on 7 tables, FORCE, 22 policies",
           kind: "api",
         },
         {
@@ -1868,7 +1886,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     notClaiming: [
       "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend) — the tree grew from 87 to 105 test files over 249 commits, and nothing was retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
-      "The DB-enforced RLS is not turned on in production. Receipt 05 is the standing: the policies are written, the app sets the GUC on every query, and 11 tests prove the pair binds against an ephemeral Postgres in CI — the suite builds its own NOSUPERUSER NOBYPASSRLS role and applies the real migration, so that evidence is machine-checked rather than hand-run. But 0002 is hand-run, and the cutover is a final staged step nobody has taken. Isolation is the application’s discipline today.",
+      "The DB-enforced RLS is now turned on in production, as of 2026-08-03. The app connects as cadence_app — NOSUPERUSER NOBYPASSRLS — and seven tenant tables carry ENABLE + FORCE with 22 policies. FORCE matters: without it, policies do not apply to the table owner, and the owner is what an application usually connects as. Verified through the production pooler rather than by reading the migration — a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is refused. What used to be the application's discipline is now the database's refusal. The cutover cost an hour of broken production and that belongs in the record: moving tag uniqueness to (\"userId\", name) stranded an inline ON CONFLICT (name) in TaskService — a private copy of an upsert TagService already handled correctly — so every tagged task creation failed while 550 backend tests stayed green, because nothing exercised that copy against a real schema.",
       "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
       "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
