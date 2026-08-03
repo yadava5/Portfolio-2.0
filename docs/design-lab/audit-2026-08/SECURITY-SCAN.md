@@ -50,6 +50,16 @@ key inside `backend/tests/` is still caught while the fixtures are passed.
   `.playwright-mcp/console-*.log` because the directory captures raw browser
   console output and the app logs its access token.
 
+A separate exposure involving **third-party personal data** was found in the same
+repository while triaging the above. It is not a secret-scanner finding — gitleaks
+does not look for this — and it is materially more serious than anything in this
+table. It involves people who are not the repository owner, it is unremediated at
+the time of writing, and the remedy is the owner's to choose. **It has been
+reported to the owner directly and the specifics are deliberately not recorded
+here**, because this repository is public and writing down the location would
+widen the exposure rather than close it. This paragraph exists so the gap in this
+document is visible rather than silent; it will be filled in once remediated.
+
 The JWTs are the only finding that needed real assessment, and it was done by
 reading the tokens and the verifier rather than by assuming:
 
@@ -151,3 +161,21 @@ quoted anywhere until it is done.
 | AutoML | `e936b89e` | ignore `.playwright-mcp/` |
 
 All on feature branches, none pushed. Until they are, none of it is live.
+
+## Environment note, so the green results are readable
+
+Applied's `305 passed` and the `answered by: setfit=20` cascade measurement were
+both taken **after** the venv had drifted from the snapshot recorded before the
+transformers 5 experiment. Three packages came in with transformers 5.14.1 and
+did not come back out when it was reverted:
+
+```
+click        8.3.1  → 8.4.2      (which also fixes PYSEC-2026-2132)
+hf-xet       1.2.0  → 1.5.2
+safetensors  0.7.0  → 0.8.0
+```
+
+`transformers` itself is back at 4.57.6 and setfit imports. None of the three is
+implicated in the results, and click moved in the safe direction — but the runs
+were not made in the environment the snapshot describes, and saying "verified"
+without saying that would overstate it.
