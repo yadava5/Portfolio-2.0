@@ -274,7 +274,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // 2026-08-02: 271 → 278, re-run at the public head 03fc5c4 on the audit.
   // The skips did not move — same Postgres RLS module, same missing URL.
   jobtrackerBackendCoverage:
-    "278 tests passed, 10 skipped, under the test/null-keyring environment",
+    "305 tests passed, 0 skipped, under the test/null-keyring environment",
   jobtrackerClassifierGate:
     "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
@@ -320,8 +320,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks",
   policybotFileSearch:
     "OpenAI Responses API with File Search, cited filenames, and local quote verification",
-  policybotLocalTests:
-    "passed 3 Slack adapter/formatting tests in a temporary audit virtualenv",
+  policybotLocalTests: "passes 24 tests in its own .venv-ci on Python 3.12.11",
   policybotDeploymentBoundary:
     "no production usage, workspace adoption, or always-on service claim is made here.",
   policybotValidationLedger: "Validation ledger proof",
@@ -333,7 +332,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   //
   // Four strings, chosen as the load-bearing ones: the bug, the number,
   // and the two limits without which the number reads as more than it
-  // is. `cadenceInertBoundary` and `cadenceRoleBoundary` follow exactly
+  // is. `cadenceEnforcedBoundary` and `cadenceRoleBoundary` follow exactly
   // the jobtracker* boundary keys added in the re-pin round — a claim
   // and the limits that keep it honest are asserted together, so a
   // future edit cannot keep the claim and drop the limit.
@@ -345,7 +344,10 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "I found and fixed 8 IDOR vulnerabilities across 9 endpoints",
   cadenceIsolationTests:
     "11 of 11 isolation tests pass against a real Postgres",
-  cadenceInertBoundary: "The DB-enforced RLS is not turned on in production",
+  /* Renamed from cadenceInertBoundary on 2026-08-03: the boundary stopped
+     being inert when the cutover ran, and a fixture named for the old state
+     would have kept asserting it. */
+  cadenceEnforcedBoundary: "The DB-enforced RLS is now turned on in production",
   cadenceRoleBoundary: "which role the production DATABASE_URL actually uses",
 };
 

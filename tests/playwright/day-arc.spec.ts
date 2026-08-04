@@ -162,8 +162,7 @@ test.describe("day arc — motion", () => {
        (browser color serialization of oklch() varies by engine). */
     const arcL = () =>
       page.evaluate(() => {
-        const field =
-          document.querySelector<HTMLElement>("[data-light-field]");
+        const field = document.querySelector<HTMLElement>("[data-light-field]");
         return field
           ? parseFloat(field.style.getPropertyValue("--arc-l"))
           : Number.NaN;
@@ -206,9 +205,7 @@ test.describe("day arc — motion", () => {
 
     /* One stop later the chrome follows the world into dusk */
     await scrollDuskTo(page, topFractionAt(0.85));
-    await expect
-      .poll(() => arcChrome(), { timeout: 5_000 })
-      .toBe("dusk");
+    await expect.poll(() => arcChrome(), { timeout: 5_000 }).toBe("dusk");
 
     /* Range end: settled on waypoint-06, the gloaming released */
     await scrollDuskTo(page, 0);

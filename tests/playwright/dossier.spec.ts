@@ -329,7 +329,7 @@ test.describe("dossier — case files", () => {
       .filter({ hasText: "NOT claiming" })
       .last();
     await expect(boundaries).toContainText(
-      "The DB-enforced RLS is not turned on in production"
+      "The DB-enforced RLS is now turned on in production"
     );
     /* The limit that keeps the surrounding numbers honest: what the
        tests prove is scoped, and the deployed role stays unknowable. */

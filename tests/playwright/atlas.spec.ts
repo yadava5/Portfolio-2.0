@@ -320,7 +320,7 @@ test.describe("Daylight Study — working paper", () => {
     ).not.toHaveCount(0);
 
     await expect(
-      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceInertBoundary)
+      validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceEnforcedBoundary)
     ).toBeVisible();
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.cadenceRoleBoundary)
