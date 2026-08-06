@@ -118,7 +118,12 @@
     --clay-g:#e08a5f;
     --pine:#aecfc0;          /* measured: #aecfc0 on #43372f — 6.84:1 / Lc 65.3 */
     --hair:rgba(246,239,226,.18);
-    --hair-strong:rgba(246,239,226,.4);
+    --hair-strong:rgba(246,239,226,.45); /* .40 composited to EXACTLY the 3.0
+                                non-text floor on the settled night field — the
+                                figures' own rule lines (.lane, .cellr) draw in
+                                this, so a plate designed against .40 is a plate
+                                designed against nothing. check-palette prints
+                                the live margin; it is not restated here. */
     --plate:rgba(24,20,17,.34);
     --plate-line:rgba(246,239,226,.16);
     --thread:#e08a5f;
@@ -962,7 +967,7 @@
        link text on these grounds, under the 60 floor; #f4b090/#aecfc0
        measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
     .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0;
-      --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.4);
+      --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.45);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
       ink at body scope — headings went dark-on-dark without this */

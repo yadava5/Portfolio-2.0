@@ -313,6 +313,9 @@ const FLIP_STOP = DUSK[7] ? hexOf(DUSK[7][1], DUSK[7][2], DUSK[7][3]) : null;
    classification cannot quietly become an excuse. */
 const TEXT = { wcag: 4.5, lc: 60, kind: "text" };
 const GRAPHIC = { wcag: 3.0, lc: 0, kind: "graphic" };
+/* Filled by the night-stroke block below and read again by the
+   reduced-motion one, which draws the settled plates in the same tokens. */
+let usedFigureTokens = [];
 const PAIRS = [
   ["--ink", TEXT],
   ["--ink-2", TEXT],
@@ -420,10 +423,12 @@ if (FLIP_STOP && NIGHT["--ink"] && NIGHT["--ink-2"]) {
    the field set cannot drift away from the code that chooses it.
 
    Strokes are held to the WCAG 3.0 non-text floor; a `.figsvg text` label is
-   text and gets 4.5 / Lc 60. `--hair-strong` clears 3.0 by ONE HUNDREDTH on
-   the first night station, which is worth printing rather than passing
-   silently: a redraw that darkens WAY[5] or thins that alpha puts the
-   figure's own rule lines under the floor.
+   text and gets 4.5 / Lc 60. The tightest pair is printed rather than passed
+   silently: a redraw that darkens WAY[5] or thins a hair alpha puts the
+   figure's own rule lines under the floor. Until 2026-08-06 that pair was
+   `--hair-strong` clearing 3.0 by ONE HUNDREDTH; §4b's commit zero raised the
+   night alpha to .45 for exactly that reason, and the printed margin is the
+   live number.
    ══════════════════════════════════════════════════════════════════ */
 if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
   /* The model, asserted from the source that implements it. */
@@ -457,6 +462,7 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
   ]
     .map((t) => `--${t}`)
     .filter((t) => NIGHT[t] || DAY[t]);
+  usedFigureTokens = usedTokens;
   const TEXT_TOKENS = new Set(["--ink-2"]);
   if (usedTokens.length < 6)
     fail(
@@ -492,6 +498,117 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
         `tightest is ${tightest.token} at ${tightest.w.toFixed(2)}:1 on ${tightest.at}, ` +
         `${tightest.margin.toFixed(2)} over its floor`
     );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THE SECOND NIGHT WORLD, WHICH THIS GATE COULD NOT SEE.
+
+   `paletteBlock()` matches `:root[data-night]{…}`, and that is not the only
+   place the run declares a night palette. A reduced-motion reader never gets
+   the arc at all: the run gives them `settleAll()` and four beats carrying
+   their own resting grounds, with the night tokens RE-DECLARED inside
+   `@media (prefers-reduced-motion: reduce)`. Every measurement above is blind
+   to that block — so raising the night `--hair-strong` alpha in `:root` and
+   not in the override would leave reduced-motion readers on the old hairline
+   with this file printing green, which is precisely the drift the token was
+   raised to end. It matters more after §4b than before it: the settle
+   contract makes the settled state THE design of all six redrawn figures, and
+   the settled state is what this audience reads.
+
+   Two assertions, because measurement alone is not enough. The grounds are
+   checked against NIGHT_FIELDS first — measuring the right tokens over the
+   wrong field is the mistake this file's own header records making once — and
+   the HAIR tokens are then asserted EQUAL to `:root[data-night]`'s, because a
+   hair that drifts to a different-but-still-passing alpha is drift the floor
+   cannot report. The hairs are singled out because they are the register the
+   figures' structure is drawn in and nothing else re-derives them.
+
+   ONE DECLARED DIVERGENCE, named rather than skipped (C35): `--ink-2` is
+   `#d4cabb` here against `#d9d0c3` in `:root[data-night]`. Both hold the text
+   floor on both grounds (7.10 / 9.21 against 7.54 / 9.83), and unlike the
+   clay and pine overrides two lines above it, the run records no reason for
+   it. It is permitted here and left visible rather than quietly equalised —
+   equalising it moves the golden hash for a reason unrelated to any figure.
+   ══════════════════════════════════════════════════════════════════ */
+{
+  /* The run carries FIVE `reduce` media queries, and the first cut of this
+     read took the first one and reported a clean parse of the wrong block.
+     Brace-match every one of them and select by the selector that is the
+     subject; more than one carrying it is as much a defect as none. */
+  const reduceBlocks = [];
+  const OPEN = "@media (prefers-reduced-motion: reduce){";
+  for (let i = runHtml.indexOf(OPEN); i > -1; i = runHtml.indexOf(OPEN, i + 1)) {
+    let depth = 0;
+    let j = i + OPEN.length - 1;
+    for (; j < runHtml.length; j++) {
+      if (runHtml[j] === "{") depth++;
+      else if (runHtml[j] === "}" && --depth === 0) break;
+    }
+    reduceBlocks.push(runHtml.slice(i, j + 1));
+  }
+  const SETTLED = ".b6,.b7,.bhow,.b8{";
+  const owning = reduceBlocks.filter((b) => b.includes(SETTLED));
+  const rm = owning.length === 1 ? owning[0] : null;
+  const body = rm?.match(/\.b6,\.b7,\.bhow,\.b8\{([^}]*)\}/)?.[1];
+  const g1 = rm?.match(/\.b6\{background:(#[0-9a-f]{6})\}/)?.[1];
+  const g2 = rm?.match(/\.b7,\.bhow,\.b8\{background:(#[0-9a-f]{6})\}/)?.[1];
+  if (!rm || !body || !g1 || !g2) {
+    fail(
+      `could not read the reduced-motion night world out of ${RUN} — ${reduceBlocks.length} reduce blocks,\n` +
+        `      ${owning.length} declaring "${SETTLED}…" (expected exactly 1), token override: ${body ? "yes" : "NO"},\n` +
+        `      resting grounds: ${g1 && g2 ? "yes" : "NO"}.\n` +
+        `      A broken parse here measures nothing and prints the same green line as a clean file.`
+    );
+  } else {
+    const RM = tokens(body.endsWith(";") ? body : `${body};`);
+    const grounds = [g1, g2];
+    if (JSON.stringify(grounds) !== JSON.stringify(NIGHT_FIELDS))
+      fail(
+        `the reduced-motion beats rest on ${grounds.join(" ")} but the arc's night fields are\n` +
+          `      ${NIGHT_FIELDS.join(" ")}. The override exists to reproduce the night world for a reader\n` +
+          `      who never sees it arrive; on different grounds it reproduces something else, and every\n` +
+          `      ratio below is measured against a field nobody renders.`
+      );
+    else {
+      measureSet("reduced-motion night", RM, grounds);
+      /* The figure strokes again, on the same grounds, through the override's
+         own tokens — this is the set the settled plates are actually drawn
+         in for this reader. */
+      for (const token of usedFigureTokens) {
+        const raw = RM[token];
+        if (!raw) continue;
+        const floor = token === "--ink-2" ? TEXT : GRAPHIC;
+        for (const bg of grounds) {
+          const rgba = rgbaHex(raw);
+          const fg = rgba ? blend(rgba[0], bg, rgba[1]) : raw;
+          if (!/^#[0-9a-f]{6}$/i.test(fg)) continue;
+          const w = contrast(fg, bg);
+          const l = lc(fg, bg);
+          if (w < floor.wcag || l < floor.lc)
+            fail(
+              `a settled figure stroke in ${token} draws at ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)} on the\n` +
+                `      reduced-motion ground ${bg} — below the ${floor.kind} floor of ${floor.wcag}:1 / Lc ${floor.lc}.`
+            );
+        }
+      }
+      const HAIRS = ["--hair", "--hair-strong"];
+      const drifted = HAIRS.filter((t) => RM[t] && NIGHT[t] && RM[t] !== NIGHT[t]);
+      if (drifted.length)
+        fail(
+          `the reduced-motion override and :root[data-night] declare different hairs —\n` +
+            drifted
+              .map((t) => `      ${t}: ${RM[t]} here, ${NIGHT[t]} there`)
+              .join("\n") +
+            `\n      Both may clear the floor and still be two different night worlds. The hairs are the\n` +
+            `      register the figures' structure is drawn in; a reduced-motion reader gets the settled\n` +
+            `      plates and nothing else re-derives these.`
+        );
+      else
+        note(
+          `the reduced-motion night world: same hairs as :root[data-night], measured on its own grounds ${grounds.join(" ")}`
+        );
+    }
+  }
 }
 
 /* The reserved stamp: a graphic, and only because its sentence is written. */
