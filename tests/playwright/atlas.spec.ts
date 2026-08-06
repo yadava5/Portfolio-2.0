@@ -3,8 +3,12 @@ import {
   CASE_STUDY_LOCAL_ARTIFACTS,
   CASE_STUDY_IDS,
   EXPECTED_PROOF_ARTIFACTS,
+  EXPECTED_SYSTEM_CARD_IDS,
   PROHIBITED_GENERATED_CONTENT,
   REQUIRED_PRIVATE_CASE_STUDIES,
+  SYSTEM_CARD_PROJECTS,
+  getProjectById,
+  projects,
 } from "./case-file-fixtures";
 
 /**
@@ -577,4 +581,61 @@ test.describe("Daylight Study — working paper", () => {
       ).toBeVisible();
     });
   }
+
+  /* CARRIED OUT OF dossier.spec.ts, which Phase 4 deletes. That file was 740
+     lines and no workflow ever ran it; its unique subject — the 53 `#v-`
+     anchors — is now gated by check-crosswalk.mjs on every build, which is
+     strictly more coverage than a spec nothing executed. This one assertion
+     is not an anchor and does not belong to any gate: a retraction that is
+     allowed to age out of the register is the failure this whole site argues
+     against, so it moves rather than dies. */
+  test("the AVX-512 retraction stays in the corrections register", async ({
+    page,
+  }) => {
+    await page.goto("/projects/fast-mnist-nn/");
+    await page.waitForLoadState("domcontentloaded");
+
+    const register = page.locator("#corrections");
+    await expect(register).toContainText("erratum · 2026-05-28");
+    await expect(register).toContainText(
+      "classify-throughput rows do not support it"
+    );
+  });
+
+  /* CARRIED OUT OF nav-and-images.spec.ts, same phase, same reason. Every
+     case file's meta ledger renders a system-card row from this data, so the
+     invariant belongs with the case-file suite. No page: it is a statement
+     about `projects.ts`, and a browser would only slow it down. */
+  test("every system card derives from its project's live URL", () => {
+    for (const project of SYSTEM_CARD_PROJECTS) {
+      expect(
+        project.liveUrl,
+        `${project.title} has a system card but no live URL to derive it from`
+      ).toBeTruthy();
+      expect(
+        project.systemCardUrl,
+        `${project.title}: the card must be <liveUrl>/system-card`
+      ).toBe(`${project.liveUrl}/system-card`);
+    }
+  });
+
+  test("the six live apps each carry a system card, and nothing else does", () => {
+    for (const id of EXPECTED_SYSTEM_CARD_IDS) {
+      expect(
+        getProjectById(id)?.systemCardUrl,
+        `${id} should carry a system card`
+      ).toBeTruthy();
+    }
+    expect(SYSTEM_CARD_PROJECTS.map((project) => project.id).sort()).toEqual(
+      [...EXPECTED_SYSTEM_CARD_IDS].sort()
+    );
+    /* The seventh project with a liveUrl serves no card — the field is what
+       keeps the site from linking a 404 into existence. */
+    const liveWithoutCard = projects.filter(
+      (project) => project.liveUrl && !project.systemCardUrl
+    );
+    expect(liveWithoutCard.map((project) => project.id)).toEqual([
+      "paid-internships",
+    ]);
+  });
 });

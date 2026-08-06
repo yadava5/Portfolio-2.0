@@ -18,10 +18,11 @@
  * Reads the SOURCE, not `out/`. It has to run in the CI job that does not
  * build, and the run is copied to `out/index.html` byte for byte anyway.
  *
- * IT FAILS LOUDLY WHEN IT PARSES NOTHING. `check-anchors.mjs` resolves
- * `chapters.ts` the same way and falls back to `?? {}` and `?? null` at three
- * points, so a rename there can silently narrow the gate to nothing while it
- * still prints green. That is the failure this file refuses to inherit: the
+ * IT FAILS LOUDLY WHEN IT PARSES NOTHING. The gate this was written against —
+ * `check-anchors.mjs`, deleted in Phase 4 with the React files it read —
+ * resolved `chapters.ts` the same way and fell back to `?? {}` and `?? null` at
+ * three points, so a rename there could silently narrow it to nothing while it
+ * still printed green. That is the failure this file refuses to inherit: the
  * field regex below is strict about order, and a parse yielding anything other
  * than the run's own beat count is treated as a broken gate, not a clean page.
  */

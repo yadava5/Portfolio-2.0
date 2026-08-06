@@ -15,7 +15,7 @@
  * document and looks like a page that simply opened. That is exactly how the
  * 404's wayfinding index came to hold five dead links at once.
  *
- * FOUR DIRECTIONS, NOT ONE:
+ * FIVE DIRECTIONS, NOT ONE:
  *
  *   1. the run → the archive          — every internal href lands on a file
  *   2. the run → a receipt            — every #fragment exists as an id there
@@ -23,28 +23,34 @@
  *   4. the archive → the run          — the rejoin link lands on a real
  *                                       station, and the arrival slip quotes
  *                                       that station's consignment verbatim
+ *   5. EVERY archive page → the run   — every /#… link on every generated
+ *                                       page, the 404's index included
  *
  * Direction 4 is the one `check-stations.mjs` cannot cover: it asserts every
  * string in `stations.ts` appears in the run, which is the run's side of the
  * seam. Nothing asserted the case file's side.
  *
- * TAKES THE ARCHIVE ROOT AS AN ARGUMENT, and that is not a convenience. In
- * Phase 3 the generator writes to staging while `out/` still holds the
- * Next-rendered case files, whose footers say `back to the work ⟵` → `/#work`
- * and carry no rejoin link at all. Pointed at `out/` today, directions 3 and 4
- * would be red until a later phase — and a validator that cannot go green
- * until later is the one thing the execution protocol forbids.
+ * Direction 5 arrived in Phase 4 and `check-anchors.mjs` was deleted for it —
+ * the reasoning is at the check itself. In short: that gate read the five
+ * React files that wrote links into the run, and Phase 4 deletes all five.
  *
- *   node scripts/qa/check-crosswalk.mjs                      staging
- *   node scripts/qa/check-crosswalk.mjs out                  after the cutover
+ * TAKES THE ARCHIVE ROOT AS AN ARGUMENT, and that is not a convenience — it
+ * is how a negative test is run against a doctored copy of the site instead of
+ * against the directory being served. It was also what let this gate go green
+ * during Phase 3, when the generator wrote to a staging directory and `out/`
+ * still held the Next-rendered case files, whose footers said
+ * `back to the work ⟵` → `/#work` and carried no rejoin link at all.
+ *
+ *   node scripts/qa/check-crosswalk.mjs out                  what ships
+ *   node scripts/qa/check-crosswalk.mjs .build/gate-probe    a doctored copy
  */
-import { readFileSync, existsSync, statSync } from "node:fs";
-import { resolve, join } from "node:path";
+import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
+import { resolve, join, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { compileAndRelink } from "../run/compile-ts-graph.mjs";
 
 const root = process.cwd();
-const ARCHIVE = resolve(root, process.argv[2] ?? ".build/archive-staging");
+const ARCHIVE = resolve(root, process.argv[2] ?? "out");
 const RUN_SRC = resolve(root, "src/run/index.html");
 const SITE = "https://yadava5.github.io/Portfolio-2.0";
 
@@ -266,7 +272,60 @@ for (const study of projectCaseStudies) {
   }
 }
 
-/* ══ 5 · floors, so a broken parse fails loudly ════════════════════════
+/* ══ 5 · EVERY page of the archive → the run, by fragment ══════════════
+   THIS IS check-anchors.mjs's SUBJECT, MOVED HERE AND MADE STRONGER, and the
+   gate it replaces is deleted in the same change.
+
+   That gate answered "does every /#… link into the home page land on
+   something", and it answered it by reading the five REACT FILES that wrote
+   such links, plus `not-found.tsx`'s `STATIONS.slice(a, b)`. Phase 4 deletes
+   all six. Every remaining writer of a fragment into the run — the 404's
+   wayfinding index, each case file's arrival slip and rejoin link, the
+   evidence index's return — derives its id from `stations.ts`, and
+   `check-stations.mjs:143` already asserts each of those ids is a real `id=`
+   on the run's own section. So the old gate's question was answered
+   transitively and its `hard()` path had become unreachable, which for a file
+   whose entire design argument is "nothing here falls back" is worse than
+   deleting it.
+
+   Reading the BUILT PAGES closes the one hole that reasoning leaves: a
+   hand-written fragment in a generator would be derived from nothing, so no
+   amount of binding stations.ts to the run would catch it. There are none
+   today. This is what makes that permanent.
+
+   The 404 is the reason this matters at all — it is the page GitHub Pages
+   serves for every unmatched path on the site, its index is the only
+   wayfinding a lost reader gets, and it once held FIVE dead links at once. */
+const pagesUnder = (dir) => {
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...pagesUnder(p));
+    else if (entry.name.endsWith(".html")) out.push(p);
+  }
+  return out;
+};
+let archiveFragments = 0;
+const fragmentTargets = new Set();
+for (const file of pagesUnder(ARCHIVE)) {
+  /* The root index.html IS the run — it links its own fragments, and
+     directions 1 and 2 already read them from the source a human edits. */
+  if (file === join(ARCHIVE, "index.html")) continue;
+  const html = page(file);
+  for (const href of hrefsIn(html)) {
+    if (!href.startsWith(`${SITE}/#`)) continue;
+    const id = href.slice(`${SITE}/#`.length);
+    archiveFragments++;
+    fragmentTargets.add(id);
+    if (!runIds.has(id)) {
+      fail(
+        `${relative(ARCHIVE, file)}: links /#${id}, which is not an id in the run`
+      );
+    }
+  }
+}
+
+/* ══ 6 · floors, so a broken parse fails loudly ════════════════════════
    check-links learned this the expensive way: a matcher that silently stops
    matching reports a clean run over an empty set. Every count below is a
    measured floor, not a guess. */
@@ -280,6 +339,11 @@ const floors = [
      consign them. That asymmetry is the archive's, not a shortfall — see the
      comment above the check. */
   ["case files quoting their consignment", slips, 5],
+  /* 26 links across 11 distinct stops: the 404's eleven index rows, the
+     evidence index's return, and both the slip link and the rejoin link on
+     each of the seven case files. */
+  ["archive links into the run", archiveFragments, 26],
+  ["distinct stops the archive links to", fragmentTargets.size, 11],
 ];
 for (const [what, got, floor] of floors) {
   if (got < floor) fail(`only ${got} ${what}, expected at least ${floor}`);
@@ -302,5 +366,5 @@ for (const [what, got, floor] of floors) {
   console.log(`  · ${got} ${what} (floor ${floor})`);
 }
 console.log(
-  `check-crosswalk: the seam holds in both directions, against ${process.argv[2] ?? ".build/archive-staging"}/`
+  `check-crosswalk: the seam holds in both directions, against ${process.argv[2] ?? "out"}/`
 );

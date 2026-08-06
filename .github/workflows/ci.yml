@@ -320,8 +320,11 @@ jobs:
       - name: Check proof coverage
         run: npm run test:proof
 
-      - name: Check contrast choreography (every dusk stop AA)
-        run: npm run test:contrast
+      # `test:contrast` stood here and was retired in Phase 4. It mirrored a
+      # palette from src/app/globals.css by hand; measured before deleting, 3
+      # of its 21 colours still appear in src/run/index.html and the clay it
+      # spent most of its assertions on appears nowhere on the site. The run's
+      # own :root tokens deserve the same measurement — that is Phase 5.
 
       - name: Check og cards (rendered footer URL casing + freshness)
         run: npm run assets:check-og
@@ -348,21 +351,20 @@ jobs:
       - name: Check stations agree with the run, verbatim
         run: npm run test:stations
 
-      # Every /#... link into the home page must land on something. Five
-      # were dead on nine indexable routes until 2026-08-02, and nothing
-      # noticed because a hash that matches nothing scrolls to the top and
-      # raises no error.
+      # `test:anchors` stood here: every /#... link into the home page must
+      # land on something, after five were found dead on nine indexable routes
+      # on 2026-08-02 (a hash that matches nothing scrolls to the top and
+      # raises no error). It read the five REACT files that wrote such links,
+      # and Phase 4 deletes all five. check-crosswalk.mjs's fifth direction
+      # asks the same question of the generated pages instead — the 404's
+      # wayfinding index included — and runs inside verify:portfolio.
       #
-      # This comment also used to blame the browser suite for building "the
-      # OTHER home page (bare `next build`, no build-home.mjs)", and that was
-      # FALSE by the time it was written — every test:e2e:* script had run
-      # build-home.mjs for weeks. What actually differs is the configuration:
-      # they build with an empty NEXT_PUBLIC_BASE_PATH, so out/ afterwards is
-      # not the deploy artifact. Corrected here rather than left to mislead a
-      # triage, and moot from Phase 4 onward: there is no second home page to
-      # build. This reads the run itself either way.
-      - name: Check home-page anchors resolve
-        run: npm run test:anchors
+      # The comment here also used to blame the browser suite for building
+      # "the OTHER home page (bare `next build`, no build-home.mjs)", which
+      # was already FALSE when it was written: every test:e2e:* script had run
+      # build-home.mjs for weeks, and what differed was the basePath. Recorded
+      # rather than quietly dropped, because it sent at least one triage to
+      # the wrong file.
 
       # Runs in the job that has already built `out/`. The 2026-08-02 audit
       # shipped two pinned links to UNPUSHED local commits — correct numbers,
@@ -407,6 +409,15 @@ jobs:
 
       - name: Run reduced-motion checks
         run: npm run test:e2e:reduced-motion
+
+      # KEPT THROUGH PHASE 4 AND WIRED INTO CI FOR THE FIRST TIME. axe is the
+      # only automated accessibility coverage this repository has, and Phase 4
+      # replaced every case-file DOM in the site — a rebuild is when you want
+      # the check, not when you want to lose it. It also asserts the archive's
+      # skip link, which exists because scripts/archive/html.mjs writes it and
+      # which no other gate reads.
+      - name: Run accessibility audit
+        run: npm run test:e2e:a11y
 
       - name: Run performance checks
         run: npm run test:e2e:performance

@@ -26,7 +26,9 @@
  * WHAT IT DOES NOT DO. It does not prove the thing was worth doing, and it does
  * not cover the whole site. Where a gate reads something other than what its name
  * suggests, that is printed beside it rather than left for the next reader to
- * discover — see `test:contrast`, which never opens the run at all.
+ * discover. `test:contrast` used to stand here with exactly that caveat printed
+ * against it — REACT ONLY, never opens the run — and Phase 4 retired it rather
+ * than leave a labelled inaccuracy in a list of guarantees.
  *
  *   node scripts/qa/verify-portfolio.mjs              full run
  *   node scripts/qa/verify-portfolio.mjs --no-e2e     skip the browser step
@@ -326,14 +328,15 @@ step("headline figures ⇄ data layer", "test:figures", {
   reads: "src/run/index.html + data layer",
 });
 step("beat tables", "test:beat-tables", { reads: "src/run/index.html" });
-/* Before the anchors, deliberately. check-anchors resolves the 404's index
-   THROUGH stations.ts, so if that file has drifted from the run this one names
-   the drift and the anchors step would only report its symptom. */
+/* Before the crosswalk, deliberately. Every link the archive writes into the
+   run resolves through stations.ts, so if that file has drifted from the run
+   this step names the drift and the crosswalk would only report its symptom.
+   (`home-page anchors` used to sit between them; it read the five React files
+   that wrote those links and was deleted with them — check-crosswalk's fifth
+   direction reads the generated pages instead, which is the same question
+   asked of the artifact.) */
 step("stations ⇄ the run", "test:stations", {
   reads: "src/lib/data/stations.ts + src/run/index.html",
-});
-step("home-page anchors", "test:anchors", {
-  reads: "src/run/index.html + React link sources",
 });
 step("pinned artifact links", "test:links", {
   reads: "out/** if built, else 4 source files",
@@ -363,13 +366,16 @@ step("cargo rides the right corridors", "test:cargo-fixture", {
 });
 step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
 
-/* Printed, not silently included. check-contrast.mjs hand-mirrors the palette
-   from src/app/globals.css (:26-48) and scans src/**\/*.{ts,tsx} for className
-   strings. src/run/index.html is HTML with inline CSS and is NEVER READ. This is
-   not coverage of the live site and must not be counted as such. */
-step("contrast choreography", "test:contrast", {
-  reads: "REACT ONLY — never opens src/run/index.html",
-});
+/* `contrast choreography` stood here with "REACT ONLY — never opens
+   src/run/index.html" printed beside it, which was the honest thing to do
+   about a gate that did not read the shipped page. Phase 4 retired it and
+   measured why first: of the twenty-one colours it hand-mirrored from
+   src/app/globals.css, THREE appear in src/run/index.html, and the clay it
+   spent most of its assertions on (#b04a28) appears nowhere on the site at
+   all. A gate reporting green about colours no reader sees is worse than no
+   gate. THE COVERAGE IS GONE AND NOTHING REPLACES IT YET: the run's own
+   :root tokens deserve the same measurement, read from the run instead of
+   from a table, and that is Phase 5 work rather than a deletion phase's. */
 
 if (NO_E2E || ARTIFACT_ONLY) {
   say(

@@ -19,8 +19,37 @@ import {
   caseStudyIds,
   projectCaseStudies,
 } from "../../src/lib/data/projectCaseStudies";
+import { getProjectById, projects } from "../../src/lib/data/projects";
 
 export const CASE_STUDY_IDS = caseStudyIds;
+
+export { getProjectById, projects };
+
+/**
+ * The six live apps that serve a system card at `<liveUrl>/system-card`.
+ *
+ * CARRIED OUT OF `nav-and-images.spec.ts`, which Phase 4 deletes. Its other
+ * assertions were about the React home page's nav and chapter rows; this one
+ * is about the data every case file's meta ledger renders a row from, so it
+ * belongs with the case-file suite rather than dying with the page that used
+ * to test it.
+ *
+ * The id list is written out rather than derived from the data it checks: a
+ * fixture computed from `projects.systemCardUrl` would agree with the data by
+ * construction and could never catch a project losing its card. This one fails
+ * if any of the six goes quiet.
+ */
+export const EXPECTED_SYSTEM_CARD_IDS = [
+  "jobtracker",
+  "automl",
+  "taskflow-calendar",
+  "fast-mnist-nn",
+  "lifequest",
+  "jetpack-compress",
+];
+export const SYSTEM_CARD_PROJECTS = projects.filter(
+  (project) => project.systemCardUrl
+);
 
 /**
  * The artifacts that ship as PLATES — a figure the reader can enlarge in the

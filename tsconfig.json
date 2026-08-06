@@ -1,4 +1,25 @@
 {
+  /* The base every other project config extends, rewritten in Phase 4 when the
+     tree it described stopped existing.
+
+     WHAT IT USED TO SAY, AND WHY EACH LINE WENT:
+       · `include` began with `next-env.d.ts` and ended with `.next/types/**`
+         and `.next/dev/types/**`. Those are files Next GENERATES, and with
+         src/app/ deleted they name modules that are not there — `npm run
+         typecheck` went red on thirteen errors, none of them in source anyone
+         wrote. It is a verify:portfolio step and a CI job.
+       · `**\/*.ts, **\/*.tsx` swept the whole repository. There are no .tsx
+         files left; the two directories that hold .ts are named instead, so
+         the gate says which tree it is about.
+       · `plugins: [{ name: "next" }]` is the editor's Next language service.
+       · `jsx: "react-jsx"` had no files to apply to. The three emitting
+         configs set their own `jsx` and are unaffected.
+
+     `scripts/**\/*.mjs` IS STILL NOT INCLUDED, and that is a decision rather
+     than an oversight. Those 6,400 lines of gate scripts have never been
+     typechecked; `allowJs` alone would only add them to the program without
+     checking a single expression, and `checkJs` over all of them is a project
+     of its own rather than a line in a migration. Worth doing; not here. */
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -11,24 +32,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", ".next", "out", ".build"]
 }

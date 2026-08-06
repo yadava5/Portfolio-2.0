@@ -1,70 +1,58 @@
-# Portfolio Playwright Suites
+# The browser suites
 
-This directory contains source Playwright specs only. Generated reports, screenshots, and videos should be written to `output/playwright/`, which is ignored by git.
+Five specs, all of them run by something. This directory held twenty-six until
+Phase 4, of which CI executed six and no npm script named twenty-four — a suite
+that large is not coverage, it is a place for a red to hide. What is left is
+listed here with the command that runs it, and nothing is here that nothing
+runs.
 
-## Default Assertion Gate
+Generated reports, screenshots and videos are written to `output/playwright/`,
+which git ignores. Nothing generated belongs in this directory.
 
-```bash
-npm run test:e2e
-```
+| Spec                        | Run by                        | What it asserts |
+| --------------------------- | ----------------------------- | --------------- |
+| `run-home.spec.ts`          | `test:e2e:browser-smoke`      | the home page IS the run — thirteen stations dawn to nightfall, the work rows reach their case files, the wasm classifier instantiates, no horizontal overflow at 320/390/1440 |
+| `atlas.spec.ts`             | `test:e2e:browser-smoke`      | the seven generated case files: artifact-backed proof, the receipts and the boundaries that keep them honest, fig. 1 as a contained labelled plate, the artifact viewer, the private stamp |
+| `reduced-motion.spec.ts`    | `test:e2e:reduced-motion`     | the page arrives complete under `prefers-reduced-motion`, nothing waits to be scrolled into, anchor navigation does not depend on animation |
+| `performance-budget.spec.ts`| `test:e2e:performance`        | the launch budgets |
+| `a11y-audit.spec.ts`        | `test:e2e:a11y`               | axe over the run, a case file and the evidence index; and the archive's skip link, which no other gate reads |
+| `static-seo.spec.ts`        | `test:e2e:static-seo`         | canonical and social metadata on the production export |
 
-The default gate builds the static site and runs the assertion-focused portfolio checks:
+`case-file-fixtures.ts` is not a spec. It holds what `atlas.spec.ts` asserts:
+strings written out by hand, deliberately, so that a fixture cannot agree with
+the data it is checking by construction.
 
-- `atlas.spec.ts`
-- `a11y-audit.spec.ts`
-- `interactions.spec.ts`
-- `nav-and-images.spec.ts`
-- `comprehensive-qa.spec.ts`
+`static-server.mjs` serves `out/` for every one of these. There is no dev
+server in the loop — the static export is what a reader gets, so it is what the
+browser sees here.
 
-This command is intended for CI and branch validation. It should leave no tracked generated files behind.
+## Running one
 
-## Full Browser Gate
-
-```bash
-npm run test:e2e:full
-```
-
-Runs every Playwright spec, including slower deep QA and artifact-producing visual audits. Use this before larger merges or when checking scroll, transitions, and all theme surfaces.
-
-## Opt-In Artifact Suites
-
-```bash
-npm run test:e2e:artifacts
-npm run test:e2e:videos
-npm run test:e2e:score
-```
-
-Artifact suites are manual QA tools for screenshots, reports, videos, visual comparisons, and walkthrough captures. Their outputs belong under:
-
-```text
-output/playwright/
-├── full-audit/
-├── visual-audit/
-├── visual-regression/
-├── critique-screenshots/
-├── walkthroughs/
-├── debug-audit/
-└── test-results/
-```
-
-Do not restore old generated files under `tests/playwright/screenshots/`, `tests/playwright/videos/`, or `tests/playwright/*.json` unless a specific artifact is being promoted as durable documentation.
-
-The artifact, video, and score commands build the static export before opening the browser. This prevents stale `out/` files from making a visual pass look current when the source has changed.
-
-Use `npm run test:e2e:videos` for focused responsive walkthrough recordings, and `npm run test:e2e:score` for the 10-point desktop/mobile quality gate across every theme.
-
-## Debugging
+Every `test:e2e:*` script builds first, because a spec run against a stale
+`out/` reports on a site that no longer exists:
 
 ```bash
-npm run test:e2e:ui
-npx playwright test tests/playwright/atlas.spec.ts --project=chromium-mobile --headed
-npx playwright test tests/playwright/deep-qa.spec.ts --project=chromium-desktop --grep "Semantic HTML"
+npm run test:e2e:browser-smoke     # atlas + run-home, five engines
+npm run test:e2e:a11y              # axe + the skip link, chromium
+npm run test:e2e:ui                # the Playwright UI, against whatever out/ holds
 ```
 
-When changing the app, rebuild before validating against the static export:
+They build with an EMPTY `NEXT_PUBLIC_BASE_PATH`, so `out/` afterwards is not
+the deploy artifact. To put it back:
 
 ```bash
-NEXT_PUBLIC_BASE_PATH= npm run build -- --webpack
+NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build
 ```
 
-The portfolio is deployed under `/Portfolio-2.0`; tests should derive URLs from Playwright `baseURL` or the current page URL instead of hardcoding local ports.
+`npm run verify:portfolio` runs the browser smoke last for exactly this reason,
+and says so in its closing note.
+
+## Before committing
+
+```bash
+npm run verify:portfolio
+```
+
+One command, in a fixed order, first failure stops. Do not run the pieces
+individually and read the last line — a pipe eats the exit code, and that hid a
+red gate here for twelve CI runs.

@@ -38,8 +38,12 @@ const CHECK_ONLY = process.argv.includes("--check");
 const sha256 = (value) =>
   crypto.createHash("sha256").update(value).digest("hex");
 
-/* ── The paper (globals.css @theme — kept in sync by eye, asserted by
-      scripts/qa/check-contrast.mjs for the rendered site itself) ── */
+/* ── The paper. These hexes came from globals.css, which Phase 4 deleted with
+      the React app, and check-contrast.mjs — which mirrored the same table and
+      is cited in older comments here — went with it. So this block is now the
+      OG cards' own palette and nothing keeps it in step with the run's `:root`.
+      The cards are re-rendered under a sha drift gate (`assets:check-og`), so a
+      change here is caught; a divergence from the run's ink is not. ── */
 const CANVAS = "#faf6ef";
 const INK = "#26231c";
 const INK_SECONDARY = "#5c564a";
