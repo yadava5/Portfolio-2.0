@@ -52,6 +52,15 @@ defect measured in the run's own figures.
   per-feeder sublabels to a numbered key under the figure (¹ 5 yrs ·
   1,153 users …). The tight edition is already the better drawing;
   let the wide one learn from it.
+  > **AMENDED 2026-08-06 by the owner's design ruling — see §4b of
+  > `docs/PORTFOLIO-MIGRATION-PLAN-3-6.md`, which outranks this file.**
+  > The numbered key was written under a REPAIR framing. Under the design
+  > mandate the default is to EARN THE LABELS THEIR ROOM — re-staged
+  > feeders, a better narrow edition, more silence bought with
+  > composition — and reach for a key only if the plate is genuinely
+  > richer with one. Rule 3's floor law is unchanged and still stands:
+  > anything that does not fit moves to the figcaption or a key, and it
+  > is **never shrunk**.
 - **fig. 04 (the sorting line)** — same congestion class: gate labels
   collide with mark paths mid-scrub because labels sit inside the
   travel corridor. Move gate labels above the frame line (the archive

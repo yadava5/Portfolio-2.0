@@ -1207,9 +1207,9 @@ made `personal.ts` stop dragging `utils.ts` in (C14).
 > | | figure | what the brief asks |
 > |---|---|---|
 > | 3b | **fig. 09** | three systems share one x-band. **Stack the registry under the notebook** — NOT the "widen to a 620 viewBox" alternative, which the new edition arithmetic measures at 9.97px, three hundredths under the brief's own floor unless the seat minimum rises with it |
-> | 4 | **figs. 03, 04** | congestion — ship a narrow edition, move sublabels to a numbered key |
-> | 5 | **figs. 07, 08** | polish — the `1f 8b` lettering and visibly narrowing blocks; the heavier pencil dash and the climber's ring as the only clay |
-> | 6 | **fig. 10** | three gate squares on a short rail. New drawing at 22:23, so it inherits the night-contrast rule — which is now a gate rather than an instruction |
+> | 4 | **figs. 03, 04** | congestion. ~~move sublabels to a numbered key~~ — **SUPERSEDED BY §4b**: earn the labels their room first; a key is the last option, not the first. Two commits, not one: they do not share a builder |
+> | 5 | **figs. 07, 08** | the `1f 8b` lettering and visibly narrowing blocks; the heavier pencil dash and the climber's ring as the only clay. **§4b marks the fig. 08 spec as prior art the redesign may supersede** — it was written as a floor fix |
+> | 6 | **fig. 10** | three gate squares on a short rail. New drawing at 22:23, so it inherits the night-contrast rule — ~~which is now a gate rather than an instruction~~ **which for THIS figure is still an instruction: `check-palette` scopes its figure scan to `.figsvg` and fig. 10's drawing will be styled under `#gatesFig`. See §4b item 4** |
 
 ## 4b. Phase 5.4 — the six figures, re-planned. **[OWNER RULING, 2026-08-06 evening]**
 
@@ -1237,6 +1237,36 @@ verifies (`Fable designs, main verifies` — the Phase 3 arrangement, unchanged:
 Fable never runs CI, Playwright or the validator; the main thread runs them and
 reports back).
 
+### RULE 5, AMENDED — because "more visual elements" needs a register to grow into
+
+*(Fable's own correction to Fable's own law, on cross-check.)* FIGURES.md rule 5
+says **one clay moment per plate**. Measured, the shipped plates already
+contradict its letter: fig. 09 draws six clay gates plus a clay halt, and
+fig. 04's gate squares are `--clay-g`. It is false as written and true as
+intended, and six figures are about to be designed against it. So it is
+restated:
+
+- **Clay is SEMANTIC, not budgetary.** It marks the gate / halt / deferral
+  register and may repeat wherever gates are the subject.
+- **At most one clay EVENT per plate** — the focal halt. That is what the
+  original law was reaching for.
+- **Pine stays the landed register.**
+- **ENRICHMENT IS DRAWN IN INK AND HAIR, NEVER IN A NEW HUE.** The palette is
+  deliberately closed: `--thread` carries `--clay-g`'s own value in both modes
+  and `--ember` is reserved for the APPROVED stamp. The second register the
+  design mandate needs already exists and it is the **hair-weight axis** —
+  weight, dash, hatch, density. Subject strokes in ink at ~1.2–1.4, structure
+  in `--hair-strong`, absence and pencil in `--hair`. fig. 08's pencil half is
+  that register used correctly, and it is the model for the other five.
+
+### RULE 6 RESTATED, because the standing temptation under "more" is to draw numbers in
+
+The caption carries the claim; the drawing carries geometry. **A number enters
+a plate only when a committed artifact owns it and the label discloses it.**
+fig. 07's `1f 8b` is the worked example of the exception — it is the RFC's own
+notation, grammar rather than a claim. Everything Phase 5 built exists to make
+this checkable; do not spend it back.
+
 ### THE SCROLL STAYS. This is the sharpest constraint and it is not a limit on ambition.
 
 The owner likes how these figures work and how they answer the scroll, and the
@@ -1247,7 +1277,24 @@ But Phase 5 settled a distinction that is now gated and must not be undone:
 - **A FIGURE may scrub.** `scrubPath`, `scrubApplied`, `scrubCadence`,
   `scrubJet`, `scrubClimb`, `scrubAml`, `scrubHow` all survive and all should
   keep answering the scroll. A drawing assembling as you arrive is the page's
-  own voice. **Enrich these freely.**
+  own voice. **Enrich these freely** — with one exception, below.
+- **ONE SURVIVING SCRUB IS ON THE WRONG SIDE OF THIS LINE, and the first draft
+  of §4b blessed it wholesale.** *(Fable's finding, verified by measurement.)*
+  `scrubPath` fills fig. 03's **compliance meter** under the reader's scroll:
+  `smooth((p - 0.42) / 0.3) * 0.97 * yard.meterW`, a `.meterfill` rect
+  animated from width 0, inside a scale labelled `0% ⟶ 97%`. That is a gauge
+  with a scale filling as you watch, over a committed figure — the exact class
+  the bench ruling condemned, and the page's own comment defending `scrubJet`
+  and the marks' ink-in is silent about it. **The honest form:** the yard keeps
+  its scrub — records travelling and the trunk inking IS the figure assembling
+  — and the **meter stands settled at 97%**, its tick and numeral inking in as
+  a signature. A mark being drawn misstates no magnitude; a bar sweeping from
+  zero states a smaller number on the way.
+- **fig. 07's narrowing is clean and must stay clean.** `scrubJet` narrows its
+  blocks 26 → 10 on fixed grammar constants, not on the measured compression
+  ratio — qualitative, so it claims nothing. **If the redraw ever draws that
+  narrowing TO a measured ratio it crosses the same line**, and it would look
+  like an improvement while doing it.
 - **A RECORD MAY NOT.** §5.5 removed `scrubBench`/`scrubJetBench` because a
   gauge that fills as you watch is an instrument, and those bars replay numbers
   measured on another machine in December. Their ratios are now fractions in
@@ -1273,6 +1320,17 @@ them in review:
    *Widening a viewBox without raising the seat minimum is the trap* — it is
    how the gate found that FIGURES.md's own "widen fig. 09 to 620" lands at
    **9.97px**. Raise the seat with the box, or stack instead.
+   **Two things about this gate a designer must know on day one:**
+   - **It reads ONE shared font size** — `.figsvg text{font-size:12px}`. A
+     per-figure override (`#amlFig text{font-size:…}`) is INVISIBLE to it, and
+     the gate would go on certifying 12px arithmetic over a figure rendering
+     something else: green below the floor, or red above it, either way wrong.
+     So label size moves through `.figsvg text` and all six move together —
+     **or the gate learns per-figure fonts in the same commit.**
+   - **It reads WIDTH only.** A stacked composition grows the viewBox's
+     *height* for free and no gate objects. That is not a loophole; it is
+     precisely why "stack, don't widen" is the right call for fig. 09, and why
+     height is the dimension a richer plate should reach for first.
 2. **The tight edition is NOT gated and must be held by hand.** Its viewBox is
    written by JavaScript at run time, so the arithmetic above cannot read it.
    The archive's measured band is the target: 11.4px at a 248px seat, 15.1px at
@@ -1286,13 +1344,22 @@ them in review:
    label — **rewrite the label with the figure, and add the new clause to the
    declared list in the same commit.** A label that keeps the paths and loses
    the narrative is a regression no pixel comparison sees.
-4. **Night contrast is computed, not eyeballed.** `check-palette.mjs` measures
-   every token the `.figsvg` rules draw with, over `#43372f` and `#2c2622`, at
-   the WCAG 3.0 non-text floor. **`--hair-strong` sits at 3.01:1 — one
-   hundredth of margin** — and figs. 09 and 10 draw their rules in it. A new
-   stroke weight, a new translucent fill, or any darkening of WAY[5] moves
-   that. The gate reads the tokens off the CSS, so a token newly used in a
-   figure rule joins the measurement automatically.
+4. **Night contrast is computed, not eyeballed** — with two holes named, because
+   the first draft of this item overstated the coverage. `check-palette.mjs`
+   measures every token the `.figsvg` rules draw with, over `#43372f` and
+   `#2c2622`, at the WCAG 3.0 non-text floor.
+   - ~~a token newly used in a figure rule joins the measurement
+     automatically~~ — **FALSE FOR fig. 10.** *(Fable's finding.)* The gate
+     scopes its scan to selectors containing `.figsvg`, and fig. 10's new
+     drawing will be styled under `#gatesFig` / `.grow`, which it never reads.
+     So for that one figure the night-contrast rule is **still an
+     instruction**. Either the miniature draws only in tokens the `.figsvg`
+     set already measures — hair-strong, ink, ink-2, clay-g, pine, clay — **or
+     the gate's selector gains `#gatesFig` in the same commit.**
+   - **Element-level opacity is invisible to it.** The gate composites *token*
+     alpha; `opacity` and `stroke-opacity` on an element are not read, and the
+     page already uses `stroke-opacity:.28` for hover-dimming. Any per-element
+     translucency in a night figure re-opens that pair **by hand.**
 5. **The text plates stay text.** figs. 02, 05, 10 and 11 must not acquire
    `role="img"` — it makes descendants presentational and fig. 02 carries two
    working links. **fig. 10 gets a drawing INSIDE a text plate**, which is the
@@ -1300,9 +1367,34 @@ them in review:
    (`gname`/`gword`/`gleg`/`gclose`) are the plate's argument and the drawing
    joins them rather than replacing them.
 
+### COMMIT ZERO — change the token before any figure is drawn
+
+*(Fable's finding on cross-check; the numbers below were re-measured
+independently by the main thread and agree to three decimals.)*
+
+`--hair-strong` at night is `rgba(246,239,226,.4)`, and composited it measures
+**3.014:1** on `#43372f` and **3.334:1** on `#2c2622` — fourteen thousandths
+over the non-text floor. Six figures are about to be designed against that, and
+the figures' own rule lines (`.lane`, `.cellr`) draw in it. **Designing around a
+0.014 margin means any later tuning of WAY[5] breaks all six at once.**
+
+**Raise the NIGHT alpha to `.45`.** Measured: **3.398:1** and **3.829:1** — a
+hair is still a hair, night hairlines gain presence they arguably want, and the
+margin becomes 0.40.
+
+What moves with it, and nothing else does: the golden hash (once), §4b item 4's
+prose, §5.17's note, and `check-palette`'s informational margin line. **No
+`measured:` claim cites a hair pair** — the grammar binds hex-on-hex claims and
+the run's are ink / ink-2 / clay / clay-g / pine — so no comment goes stale.
+The day token is untouched.
+
+Land it as its own commit **before fig. 09**, so every figure in the queue is
+designed against the settled token rather than one that moves under it.
+
 ### The queue, in FIGURES.md's order
 
-**fig. 09 — automl. The one live defect left.** Three systems share one x-band:
+**fig. 09 — automl. The one live defect left, AND THE VOCABULARY-SETTING PLATE.**
+*(Fable: it forces the full constraint set — night pairs, stacking, the label-clause rewrite — so how labels seat against rules, how gates draw, and how registers stack THERE is the norm 03/04/07/08/10 inherit. Design it as the reference, not as the first repair.)* Three systems share one x-band:
 the registry column starts at x 398, cell rows run to x 360, and the caveat
 line crosses at y 226. **Stack the registry under the notebook** — the archive
 plate solved it by going fully vertical (supervisor → notebook → registry →
@@ -1329,7 +1421,7 @@ head — the RFC's own notation, so it is grammar and not a claim — and let
 blocks visibly NARROW through deflate in **both** editions, not just the wide
 one. fig. 08's pencil half reads as faint clutter rather than absence: heavier
 dash (5 7 at 1.4), `held` tags seated on the risers rather than floating, and
-the climber's ring as the **only** clay. fig. 08 is a dusk station but its
+the climber's ring as the **only** clay. **These three are PRIOR ART, not the deliverable** — they were measured as floor fixes under a repair framing, and the design mandate may supersede any of them with something better. fig. 08 is a dusk station but its
 plate is on the dusk curtain (`data-fx-sync="dusk"`), so it exits before the
 darkening — item 4 does not bind it, and **that is a fact to preserve rather
 than a licence: take the plate off the curtain and it does.**
@@ -1337,19 +1429,75 @@ than a licence: take the plate off the curtain and it does.**
 **fig. 10 — the reviewer's marks, given a subject.** Three miniature gate
 squares on a short rail, each mark drawn AT its gate, so the plate shows gates
 being judged rather than three floating glyphs. It is the page's third gate
-drawing, so the miniature stays genuinely miniature — a short rail, no travel,
-no scrub. **The existing draw-in (`stroke-dashoffset`, `how` at the marks) is
-legitimate under the bench ruling and must not be stripped**: a mark being
-inked is a signature, not a gauge. New drawing at 22:23, so item 4 binds it,
-and item 5 binds its container.
+drawing, so the miniature stays genuinely miniature.
+
+**THE ONE COMMISSION IN THIS QUEUE THAT COLLIDES WITH THE GATES AS BUILT, and
+§4b must say which side moves.** *(Fable's finding.)* `check-figures.mjs`
+hard-asserts exactly **six** drawings (`svg.figsvg` plus `#net`), so a new rail
+wearing `class="figsvg"` reds it. And it fails fig. 10 on **any** `role="img"`
+anywhere in its `<figure>` block — so the instinct after six labelled drawings,
+to give the new rail a role and a narrative label, reds it too. **The
+resolution, and it is the honest one rather than the convenient one:**
+
+> The miniature follows **the marks' own precedent** — the three existing gate
+> glyphs are `aria-hidden="true"` — wears **its own class, not `figsvg`**, and
+> the docket's words (`gname` / `gword` / `gleg` / `gclose`) remain the
+> accessible content. The drawing is apparatus that joins the argument; it does
+> not replace it. That is what fig. 10 has always been and it is why item 5
+> protects it.
+>
+> **If instead the drawing is made content** — a labelled figure in its own
+> right — then the two gate amendments (the count becomes 7, and the `role`
+> negative is scoped) **land in the same commit**, and the scoping must not
+> weaken fig. 02's link protection, which is the whole reason that negative
+> exists.
+
+**Motion, stated precisely, because the first draft of this paragraph
+contradicted itself four lines apart:** the rail is **static geometry** — no
+travel. The **marks keep their `scrubHow` ink-in**, which is legitimate under
+the bench ruling: a mark being inked is a signature, not a gauge. Nothing else
+in the plate answers the scroll. *(The earlier wording said "no scrub" above a
+sentence forbidding the removal of a scrub-driven draw-in; a literal reader
+would have stripped it.)*
+
+New drawing at 22:23, so item 4 binds it — **and note item 4's own hole: the
+night-contrast gate will not see `#gatesFig` selectors.** Draw in the six
+already-measured tokens, or extend the gate in the same commit.
+
+### THE SETTLE CONTRACT — the thing a fresh session most needs on day one
+
+*(Fable's addition. §4b's first draft never mentioned it, and Phase 6 item 3
+makes it load-bearing.)* `settleAll()` is what reduced-motion readers get, and
+what a **hash arrival** gets — and the per-station rejoin links multiply hash
+arrivals sevenfold, two of them straight into the night stations being redrawn
+(`/#automl`, `/#review`). So:
+
+> **Every element a redraw animates must be registered in the settle path, and
+> must read complete and composed at scrub = 1 with zero frames of motion. THE
+> SETTLED STATE IS THE DESIGN; THE SCRUB IS THE ENTRANCE.**
+
+A plate that only looks right while it is moving is a plate that is wrong for
+every reader who arrives at it directly.
+
+### THE VIEWING LOOP — fig. 05 was accepted at four widths; name the equivalent
+
+Before each figure's commit, **look at it** at: **320 · 390 · the width just
+under its seat minimum (514px for the 515-seat figures — the widest tight
+edition ships there) · 768 · 1440**, and the tight plate at its **330px cap**,
+held by hand to the archive's measured 11.4–15.1px band. The width just under
+the seat minimum is the one nobody thinks to check and the one where the tight
+edition is doing the most work. **This is the only check the tight edition
+gets** — its viewBox is written at run time and no gate can read it.
 
 ### How it lands
 
-One commit per figure, or one per pair where they share a builder. After each:
-`npm run verify:portfolio`, the `out/index.html` diff read by hand, one
-re-baseline, and the `commit` field corrected in **its own** commit (C32 — it
-has now been the same correction six times). Prefer one re-baseline per figure
-over one per edit.
+**Commit zero is the `--hair-strong` token.** Then one commit per figure —
+**note figs. 03 and 04 do NOT share a builder** (`buildPath` / `buildApplied`),
+so that pair is two commits, not one; the queue table's "pair" is about order,
+not about squashing. After each: `npm run verify:portfolio`, the
+`out/index.html` diff read by hand, one re-baseline, and the `commit` field
+corrected in **its own** commit (C32 — it has now been the same correction six
+times). Prefer one re-baseline per figure over one per edit.
 
 ---
 
@@ -1559,8 +1707,12 @@ no fig. 01 — beat 0 holds the nameplate and the epigraph, neither a `<figure>`
 > geometry. fig. 09's three systems are measured sharing one x-band (registry
 > column starts at x 398, cell rows run to x 360, the caveat crosses at y 226).
 >
-> **Where this section and FIGURES.md disagree, FIGURES.md wins** — it was
-> written against measured plates.
+> ~~**Where this section and FIGURES.md disagree, FIGURES.md wins**~~ —
+> **SUPERSEDED 2026-08-06 evening.** §4b's owner ruling overrides FIGURES.md in
+> three named places, so this line now states the wrong precedence. THE
+> STANDING ORDER IS: **the owner ruling → §4b → FIGURES.md → this section.**
+> FIGURES.md is still the brief for everything the ruling does not touch, and
+> it was still written against measured plates.
 
 **The order inside 5.4 is defects first, and the coupling the first draft
 assumed does not exist.** *(Fable's correction.)* fig. 06's only figure-level
@@ -1801,7 +1953,10 @@ The validator proves nothing broke. It does not prove the thing was worth doing.
 >   beside it or the gate reds. That is the intended cost. **It belongs in the
 >   ledger (item 11) so the next person meets it as a rule rather than as a
 >   red build.**
-> - **§5.17 — `--hair-strong` has one hundredth of margin at night.** 3.01:1
+> - **§5.17 — `--hair-strong` has one hundredth of margin at night.**
+>   **SUPERSEDED IF §4b's COMMIT ZERO HAS LANDED**, which raises the night
+>   alpha to `.45` and takes the margin to 0.40 — check `check-palette`'s own
+>   printed margin line before treating this as live. As written: 3.01:1
 >   against a 3.0 floor, and the figures' own rule lines draw in it. Not an
 >   acceptance item so much as a standing note: it is the palette's tightest
 >   pair and the next person to touch WAY[5] needs to know before, not after.
