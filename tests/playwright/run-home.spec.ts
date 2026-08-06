@@ -241,6 +241,88 @@ test.describe("the home page is the run", () => {
     });
   });
 
+  /**
+   * fig. 05's chip stops covering wednesday, and the check is geometric.
+   *
+   * Until 2026-08-06 the three chips flew to `rel(slotWhen) ± {-26, +4, +32}`
+   * — measured pixel offsets over the week grid — and a chip is wider than a
+   * 1/7 column at every width this page ships at. So the settled stack
+   * printed across wednesday and thursday, which FIGURES.md diagnoses as the
+   * archetype of its rule 4: anchor annotations to cells, not coordinates.
+   *
+   * The tuesday cell now IS the event and lights in place, and the chips are
+   * filed into a dock below the grid — a box the layout owns. This asserts
+   * the property rather than the mechanism: NO SETTLED CHIP MAY OVERLAP ANY
+   * DAY COLUMN. A chip in FLIGHT crosses the grid on its way down and that is
+   * the figure's argument, not a defect; what was wrong was where it landed.
+   *
+   * Reduced motion because settleAll() puts the scrub at p = 1 without
+   * scrolling, so this measures the final geometry at every width instead of
+   * whatever frame a scroll happened to stop on.
+   */
+  test.describe("fig. 05 settled", () => {
+    for (const w of [320, 390, 768, 1440]) {
+      test(`the parse files beside the week, not over it, at ${w}`, async ({
+        page,
+      }) => {
+        /* `page.emulateMedia` before the navigation, not `test.use`: the
+           context-level option did not reach the page here and `body` arrived
+           carrying only `no-gl`, so the settled class never appeared and this
+           test failed on its own harness rather than on the figure.
+           reduced-motion.spec.ts does it this way for the same reason. */
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page.setViewportSize({ width: w, height: 900 });
+        await page.goto("/");
+        await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+        await page.waitForTimeout(300);
+
+        const r = await page.evaluate(() => {
+          const cols = [...document.querySelectorAll("#cadWeek .hd span")].map(
+            (e) => ({
+              day: (e.textContent ?? "").trim(),
+              box: e.getBoundingClientRect(),
+            })
+          );
+          const grid = document
+            .querySelector("#cadWeek .grid")!
+            .getBoundingClientRect();
+          const covered: string[] = [];
+          let visible = 0;
+          for (const id of ["chWho", "chWhen", "chMeet"]) {
+            const el = document.getElementById(id)!;
+            const b = el.getBoundingClientRect();
+            if (Number(getComputedStyle(el).opacity) < 0.05) continue;
+            visible++;
+            if (b.top > grid.bottom - 1 || b.bottom < grid.top + 1) continue;
+            for (const c of cols)
+              if (b.left < c.box.right - 1 && b.right > c.box.left + 1)
+                covered.push(c.day);
+          }
+          const slot = document.getElementById("slotWhen")!;
+          return {
+            covered: [...new Set(covered)],
+            visible,
+            days: cols.length,
+            slotLit: slot.classList.contains("on"),
+            slotText: (slot.textContent ?? "").trim(),
+          };
+        });
+
+        expect(r.days, "the week grid still has seven day columns").toBe(7);
+        expect(r.visible, "all three chips are settled and visible").toBe(3);
+        expect(
+          r.covered,
+          `settled chips overlap ${r.covered.join(", ")} — a chip is wider than a 1/7 column, ` +
+            `so anything anchored to a coordinate over this grid covers a neighbour`
+        ).toEqual([]);
+        /* The event is IN tuesday, which is the half a coordinate could never
+           give: the cell cannot leave its own column. */
+        expect(r.slotLit, "the tuesday cell is lit").toBe(true);
+        expect(r.slotText).toBe("12:00");
+      });
+    }
+  });
+
   test("the gate is the last screen until it is approved", async ({ page }) => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });

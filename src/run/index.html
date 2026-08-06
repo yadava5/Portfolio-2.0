@@ -372,6 +372,26 @@
   #cadWeek .hd span.tu{color:var(--clay)}
   #cadWeek .grid{display:grid; grid-template-columns:repeat(7,1fr); grid-template-rows:repeat(4, 34px)}
   #cadWeek .grid i{border-top:1px solid var(--hair); border-left:1px solid var(--hair)}
+  /* THE EVENT IS A GRID CHILD, NOT A COORDINATE. FIGURES.md rule 4: anchor
+     annotations to cells. Until 2026-08-06 the three chips flew to
+     `rel(slotWhen) ± {-26, +4, +32}` — measured pixel offsets over the grid —
+     and each chip is wider than a 1/7 column. Measured against the pre-fix
+     geometry, the settled stack printed across FOUR day columns at 768 and
+     1440 (mo·tu·we·th) and three at 320 and 390 — the brief reported it as
+     "the chip covers wednesday", which understates it. Nothing tied the
+     stack to a cell, so nothing could hold it to one. The tuesday cell now IS the event: it lights in place and
+     cannot leave its own column by construction. The archive's Cadence plate
+     is the settled frame of exactly this and says so in its own source. */
+  #cadWeek .grid i#slotWhen{display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:.6rem; letter-spacing:.02em; font-style:normal;
+    color:transparent; transition:color .35s ease, background .35s ease}
+  #cadWeek .grid i#slotWhen.on{color:var(--clay); background:rgba(196,83,46,.14)}
+  /* The dock the chips are filed into — three real rows below the grid, so
+     the landing place is a box the layout owns rather than an offset from a
+     cell. Reserve the height whether or not the chips have flown, so the
+     figure does not resize under the reader mid-scrub. */
+  #cadDock{margin-left:auto; margin-top:.55rem; width:min(340px, 100%);
+    display:grid; grid-auto-rows:1.6rem; row-gap:.16rem}
   .chip{
     position:absolute; left:0; top:0; z-index:2; white-space:nowrap;
     font-family:var(--mono); font-size:.72rem; letter-spacing:.04em;
@@ -1605,11 +1625,12 @@ h1[data-np-measuring] .np-ch {
             <div class="hd"><span>mo</span><span class="tu">tu</span><span>we</span><span>th</span><span>fr</span><span>sa</span><span>su</span></div>
             <div class="grid">
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-              <i></i><i id="slotWhen"></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i id="slotWhen">12:00</i><i></i><i></i><i></i><i></i><i></i>
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
             </div>
           </div>
+          <div id="cadDock" aria-hidden="true"><i></i><i></i><i></i></div>
           <span class="chip" id="chWho" data-w="who">sam</span>
           <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
           <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
@@ -2994,13 +3015,19 @@ function scrubHow(p) {
 const cad = { fig: $("cadFig"), chips: [], ready: false };
 function cacheCadence() {
   const figR = cad.fig.getBoundingClientRect();
-  const slot = $("slotWhen").getBoundingClientRect();
   const rel = (r) => [r.left - figR.left, r.top - figR.top];
   const wordOf = { who: ".w-who", when: ".w-when", meet: ".w-meet" };
+  /* Each chip's landing place is A ROW'S OWN BOX, read from the dock the
+     layout laid out — not `rel(slotWhen) ± {-26, +4, +32}`, which is how the
+     stack came to print across up to four day columns. A chip is wider than
+     a 1/7 column at every width this page ships at, so anchoring it to a
+     cell's COORDINATE could only ever have been a near miss; anchoring it to
+     a box the grid owns cannot miss at all. FIGURES.md rule 4. */
+  const dockRows = [...$("cadDock").children];
   cad.chips = [
-    { el: $("chWho"), w: "who", end: [rel(slot)[0] - 4, rel(slot)[1] - 26], at: 0.3 },
-    { el: $("chWhen"), w: "when", end: [rel(slot)[0] - 4, rel(slot)[1] + 4], at: 0.38 },
-    { el: $("chMeet"), w: "meet", end: [rel(slot)[0] - 4, rel(slot)[1] + 32], at: 0.5 },
+    { el: $("chWho"), w: "who", end: rel(dockRows[0].getBoundingClientRect()), at: 0.3 },
+    { el: $("chWhen"), w: "when", end: rel(dockRows[1].getBoundingClientRect()), at: 0.38 },
+    { el: $("chMeet"), w: "meet", end: rel(dockRows[2].getBoundingClientRect()), at: 0.5 },
   ];
   for (const c of cad.chips) {
     const wr = cad.fig.querySelector(wordOf[c.w]).getBoundingClientRect();
@@ -3019,6 +3046,10 @@ function scrubCadence(p) {
        never sit printed on top of each other */
     c.el.style.opacity = smooth((p - c.at + 0.02) / 0.08).toFixed(2);
     c.word.classList.toggle("dim", t > 0.18);
+    /* The tuesday cell lights with the `when` chip — the parse filing its
+       event into the schedule, in the cell that IS tuesday noon. It does not
+       move, so it cannot cover a neighbour. */
+    if (c.w === "when") $("slotWhen").classList.toggle("on", t > 0.5);
   }
 }
 for (const id of ["chWho", "chWhen", "chMeet"]) {
