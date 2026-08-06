@@ -20,18 +20,28 @@
 >
 > **§4, §5 AND §6 WERE RE-PLANNED ON 2026-08-06**, at the Phase 4 checkpoint,
 > for the same reason §3 was re-planned at the Phase 2 one: they were written
-> before the thing they describe was built, and execution moved three of their
-> premises. §4 gains a new first item (5.0 — one number attributed two different
-> ways on two shipping surfaces, measured and live) and a gate the retired
-> contrast check leaves owing. §5 loses an item that cannot be done before
-> anything is deployed and gains four that Phase 4 surfaced. **§6 is entirely
-> new: nineteen commits, four branches, nothing pushed, and no section of any
-> plan ever said how this lands.**
+> before the thing they describe was built, and execution moved their premises.
+> §4 gains a new first item (5.0 — one number attributed two different ways on
+> two shipping surfaces, measured and live) and a gate the retired contrast
+> check leaves owing. §5 loses an item that cannot be done before anything is
+> deployed and gains five that Phase 4 surfaced. **§6 is entirely new: nineteen
+> commits, four branches, nothing pushed, and no section of any plan ever said
+> how this lands.**
+>
+> **§4 WAS THEN CROSS-CHECKED BY FABLE**, who designed the archive's seven
+> plates and wrote `scripts/archive/FIGURES.md`, and who found three
+> instructions in the first draft that would have shipped a defect: a figure
+> gate that would have stripped two working links from assistive technology, a
+> step order in which one item builds a gate and the next deletes the surface it
+> reads, and a "bordered slip" that misquoted the grammar it cited onto an
+> element that already wears it. All three are corrected, each marked where it
+> applies. §4's own order table now overrides its numbering — **read it before
+> starting.**
 >
 > **Phase 5 is next.** Read `scripts/archive/FIGURES.md` before touching a
 > figure — it is §5.4's brief, written with the archive's seven shipped plates
-> as its proof — and read §1's C41 before starting, because the palette gate
-> Phase 4 retired is Phase 5's to replace.
+> as its proof, and where it and §5.4 disagree it wins. Read §1's C41 before
+> starting, because the palette gate Phase 4 retired is Phase 5's to replace.
 
 ---
 
@@ -1161,72 +1171,109 @@ deliberately: fig. 06's bars are both a design problem and an artifact problem,
 and two phases touching one figure means the second overwrites the first's
 reviewed design.
 
-**What changed in this section since it was written at the Phase 2 checkpoint.**
-Phases 3 and 4 ran, and three things moved under it. `scripts/archive/FIGURES.md`
-now exists and is the working brief for §5.4 — seven rules and one judgement per
-run figure, written with the archive's seven plates as the proof. The contrast
-gate was retired with the React tree and its replacement is now Phase 5's
-(§5.3). And a new first item goes in front of everything, because it is an
-honesty defect rather than a design one, and this site's whole argument is that
-those come first.
+**Re-planned at the Phase 4 checkpoint, then cross-checked by Fable** — who
+designed the archive's seven plates and wrote `scripts/archive/FIGURES.md`, and
+who found three instructions in the first draft that would have shipped a
+defect. Each is marked below where it applies. The pattern is worth naming
+because it is the same one every phase has hit: **the first draft was written
+by grep, and grep cannot see which of ten figures is a drawing.**
 
-| item | what it is |
-|---|---|
-| **5.0** | the 3.5× is attributed two different ways on two shipping surfaces — measured, live |
-| 5.1 | vendor exactly two benchmark artifacts |
-| 5.2 | bind the bar ratios, which no gate can see |
-| 5.3 | give the run's palette a gate again — Phase 4 retired the old one |
-| 5.4 | redraw, per `scripts/archive/FIGURES.md` |
-| 5.5 | fig. 06's three questions |
+### The order, and it is not the numbering
+
+Two of these steps collide if run in numerical order. §5.2 binds the bar ratios
+by parsing literals out of a script block; §5.5 **deletes that script**. Run
+5.2 first and the phase builds a gate, proves it fires, and then removes the
+surface it reads — inside the same phase.
+
+**Execute in this order:**
+
+| | step | why here |
+|---|---|---|
+| 1 | **5.0** the attribution contradiction | an honesty defect, and independent of everything |
+| 2 | **5.3** the palette gate | independent; owed from Phase 4 |
+| 3 | **5.1** vendor the two artifacts | highest external risk (cross-repo fetch); start it early, and nothing in the redraw waits on it |
+| 4 | **5.5** the bench, settled and re-clothed | removes the scrub script |
+| 5 | **5.2** bind the bars | binds the *final* form, once |
+| 6 | **5.4** the redraw | its own track; see its internal order |
 
 ### 5.0 — One number, two attributions, both shipping. **Do this first.**
 
-Measured 2026-08-06, on the current tree:
+Measured 2026-08-06 on the current tree. Three surfaces, and they do not agree:
 
 | surface | what it says the 3.5× belongs to |
 |---|---|
 | `src/run/index.html:1602` | *"parallel dot-256 kernel 3.5× vs -O3 — **parallelism carries all of it; the simd is in both builds**"* |
 | `src/lib/data/projects.ts:405,420` | *"the 3.5× is openmp against the -O3 baseline; the SIMD is compiled into both"* · `"3.5× parallel dot kernel"` |
-| `src/lib/data/projectCaseStudies.ts` | *"the **openmp+simd** dot kernel is 3.5× faster than the -O3 baseline"* — at `:2623`, `:2684`, `:2721`, `:2752`, and in the correction entry at `:2775` that says the attribution was tightened **to** openmp+simd |
+| `src/lib/data/projectCaseStudies.ts` | *"the **openmp+simd** dot kernel is 3.5× faster than the -O3 baseline"* — at `:2623`, `:2684`, `:2721`, `:2752` |
 
-The run and `projects.ts` say the SIMD is in both builds and contributes
-nothing to the ratio. The case file says the ratio belongs to openmp **+**
-simd. Those are different claims about what was measured, on a page whose
-corrections register three sections down retracts an earlier AVX-512 claim for
-exactly this class of error.
+Both strings ship. Confirmed in the built export: `out/index.html` carries
+*"parallelism carries all of it; the simd is in both builds"* and
+`out/projects/fast-mnist-nn/index.html` carries *"openmp+simd dot kernel is
+3.5× faster"*, on the same site, about the same measurement.
 
-**`check-figures.mjs` cannot see it, and its own source already explains why.**
+**The question is not open. It was settled by building the binaries**, and the
+method is recorded at `projects.ts:417-421`:
+
+> *"Attribution, checked by building all three configurations rather than by
+> reading BENCHMARKS.md: on arm64 the `baseline` and `native` binaries are
+> byte-identical, so the hand-written NEON path is in both and the entire 3.5×
+> is OpenMP's."*
+
+Byte-identical binaries is about as settled as an attribution gets. This is not
+a research task — the run and `projects.ts` carry the measured answer, and
+`projectCaseStudies.ts` never got it.
+
+**And the case file's own CORRECTION ENTRY is the stale thing.** `:2775` reads:
+*"Attribution tightened, number unchanged: the committed 3.5× (dot 256) belongs
+to the openmp+simd configuration… earlier site copy credited the speedup to
+SIMD alone."* That erratum was right to reject "SIMD alone" and wrong about
+what to replace it with. **A corrections register carrying a stale correction is
+the worst object on this site**: it is the page's own promise that someone
+checked.
+
+**Three stale surfaces, each propping up the next.** The case file's prose keeps
+`EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup` green — the fixture asserts the
+literal *"openmp+simd dot kernel is 3.5× faster than the -O3 baseline"* on
+`#validation`, and `atlas.spec.ts:151` checks it on every CI run. **So fixing
+the case file will turn atlas red**, and that is the gate working, not a
+regression. This is C36 exactly: *the wrong prose kept the wrong test passing
+and the passing test kept the prose unexamined.* Second occurrence, same shape,
+four days apart.
+
+**`check-figures.mjs` cannot see any of it, and its own source explains why.**
 The "Glyph · kernel speed-up" pair matches the run against
 `dataLayer = projects + cases` — one concatenated haystack — so
-`projects.ts:420`'s `"3.5× parallel dot kernel"` satisfies it and
-`projectCaseStudies.ts` is never asked. That is the identical hole recorded at
-`check-figures.mjs:77-83` for the Applied suite count: *"a consistency check
-that cannot see one of the three surfaces it is meant to reconcile will certify
-a contradiction as consistent."* It was fixed there by naming the third
-surface; it was not fixed as a rule.
+`projects.ts:420` satisfies it and `projectCaseStudies.ts` is never asked. That
+is the identical hole recorded at `check-figures.mjs:77-83` for the Applied
+suite count: *"a consistency check that cannot see one of the three surfaces it
+is meant to reconcile will certify a contradiction as consistent."* Fixed there
+for one figure; never fixed as a rule.
 
-**Two jobs, and the second is the durable one:**
+**Three jobs, and the third is the durable one:**
 
-1. **Rule on the attribution against BENCHMARKS.md**, not against either
-   surface's prose — the repo's own analysis is the only thing that can settle
-   whether the SIMD path is in the baseline build. Then make all three surfaces
-   say the same thing. Do not assume the run is right because it is newer.
-2. **Make the gate read surfaces separately.** `dataLayer` as one string is the
-   defect: a pair should name which file it expects the number in, and a figure
-   claimed on two files should be asserted on both. This is a change to how
-   `FIGURES` entries are declared, not to the numbers — and it is what stops the
-   next three-surface contradiction from certifying itself.
-
-Prove it by re-running the injection C28 already records, plus a new one:
-change the attribution on one surface only and confirm the gate goes red.
+1. **Correct `projectCaseStudies.ts`'s four claim sites** to the measured
+   attribution, and **correct the erratum at `:2775`** — a correction that is
+   itself wrong gets a correction, not a silent edit. State what was checked
+   (three configurations built; `baseline` and `native` byte-identical on
+   arm64) so the next reader does not re-derive it.
+2. **Update `EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup`** in
+   `tests/playwright/case-file-fixtures.ts` in the same commit, and say in the
+   message that it went red first. A fixture updated silently alongside the
+   prose it checks is how this drifted.
+3. **Make the gate read surfaces separately.** `dataLayer` as one string is the
+   defect: a `FIGURES` entry should name **which file** it expects the number
+   in, and a figure claimed on two files should be asserted on both. A change
+   to how entries are declared, not to any number — and it is what stops the
+   next three-surface contradiction from certifying itself. Prove it by
+   changing the attribution on one surface only and confirming the gate reds.
 
 ### 5.1 — Vendor two artifacts. Not five.
 
 `public/proof/` holds two hand-authored ledgers (`master-inventory-ledger.json`,
-`policybot-validation-ledger.json`, ~1 KB each) and no machine output — measured
-again at the Phase 4 checkpoint, unchanged. **Vendor exactly the two the bars
-actually draw from**: the jetpack JMH JSON at the sha ¶07 already pins, and
-Glyph's dot-kernel run at its own pin. Name the sha in the filename —
+`policybot-validation-ledger.json`, ~1 KB each) and no machine output —
+re-measured at the Phase 4 checkpoint, unchanged. **Vendor exactly the two the
+bars draw from**: the jetpack JMH JSON at the sha ¶07 already pins, and Glyph's
+dot-kernel run at its own pin. Name the sha in the filename —
 `public/proof/jetpack-jmh-2caacd0.json`. A number drawn from a file nobody can
 open is testimony, not a record.
 
@@ -1240,32 +1287,50 @@ establishes. The surefire XML and `mnist_eval.json` are bound by
 Do **not** transcribe from `docs/design-lab/STATION-FACT-LEDGER.md` — it is
 marked SUPERSEDED and its own header warns two of its numbers are stale.
 
-**One thing Phase 4 changed here:** `public/` is now copied into the output root
-by `scripts/archive/build-archive.mjs`, which asserts a file count and four
-named files. Adding two JSONs to `public/proof/` moves that count. The assertion
-is by-count-and-name and will not break, but the count in the build's log line
-changes from 37 — worth knowing before reading it as a regression.
+**Three consequences, each cheap and each red if missed:**
 
-### 5.2 — Bind the bars. Still the highest-value gate in the phase.
+- `public/` is copied into the output root by `build-archive.mjs`, which logs a
+  file count (37 today) and asserts four named files. Two more JSONs moves the
+  count. The assertion is by-name and will not break; the log line changes.
+- **Glyph has no sha on the page today.** The bench slip's `@ <sha>` comes into
+  existence with this step. **The slip and the vendored filename must pin the
+  same sha, in the same commit** — that pairing is the whole point of putting
+  the sha in the filename.
+- **The slips add same-origin links (`/proof/*.json`)**, which enter the glyph
+  contract (`⟶`, not `↗`) and move `check-links`' and `check-crosswalk`'s
+  floors. Bump the floors in the same commit or the gates go red for
+  bookkeeping. Note ¶07 will then cite two records of one bench — the vendored
+  JSON and the GitHub ledger `@ 2caacd0`. **The slip cites the vendored one:**
+  it is the copy that cannot 404.
+
+### 5.2 — Bind the bars. Still the highest-value gate in the phase. **Runs after 5.5.**
 
 C28 proved the four bar ratios are invisible to every gate, and re-measured at
-the Phase 4 checkpoint they still are. **The line numbers in C28 have moved** —
-they are now `src/run/index.html:3321` (`bScalar`, `1 / 3.5`) and `:3332`
+the Phase 4 checkpoint they still are. **C28's line numbers have moved** — the
+literals are at `src/run/index.html:3321` (`bScalar`, `1 / 3.5`) and `:3332`
 (`jScalar`, `66 / 422`), inside `scrubBench` at `:3319` and `scrubJetBench` at
 `:3330`. `check-figures.mjs:28` still strips `<script>…</script>` before
 matching, which is what makes them invisible.
 
-Extend `check-figures.mjs` (or add `check-benchmarks.mjs`) to read the **script
-block** it currently strips, parse the ratio literals, and assert them against
-the committed JSON from 5.1. Prove it fires by re-running the injection already
-recorded in C28 — inflating `1 / 3.5 → 1 / 1.8` and `66 / 422 → 66 / 900`,
-which produced two green gates.
+**This binds the form 5.5 leaves behind, not the one it deletes.** Running it
+first would gate a script that the next step removes.
+
+One choice makes the gate almost free: when 5.5 settles the bars, **keep the
+fraction literal in the markup** — `style="transform:scaleX(calc(66 / 422))"`.
+The browser does the division; the gate string-matches numerator and
+denominator against the vendored JSON's own fields with no float tolerance and
+no script parsing at all. If the bars end up as computed percentages instead,
+the gate has to parse and compare floats, which is a worse gate for no gain.
+
+Prove it fires by re-running the injection C28 already records — inflating the
+two ratios (`1 / 3.5 → 1 / 1.8`, `66 / 422 → 66 / 900`), which produced two
+green gates and a ~1.9× and ~2.1× overclaim.
 
 Bind the two `3.5×` occurrences the current gate misses as well: the fig. 06 bar
 label (`:1631`) and the ¶10 litany receipt (`:1773`). Only the prov prose at
 `:1602` is bound today.
 
-### 5.3 — Give the run's palette a gate again. **Owed by Phase 4.**
+### 5.3 — Give the run's palette a gate again. **Owed by Phase 4. Independent — start it any time.**
 
 `check-contrast.mjs` is retired (C41) and nothing replaced it, so the run's own
 ink, clay, pine and its seven-waypoint day arc are measured by nobody. That
@@ -1282,51 +1347,148 @@ nothing binds.
 
 **The archive's own surfaces need it too.** §3.7 measured them by hand in Phase 3
 — ink 14.24:1 / Lc 96.0 on paper, clay 5.91 / 74.9, clay-g 4.13 / 64.2
-(graphics-only) — and no gate has read them since. `scripts/archive/assets/
-archive.css` is one file with its own `:root`; the same reader serves both.
+(graphics-only) — and no gate has read them since.
+`scripts/archive/assets/archive.css` is one file with its own `:root`; the same
+reader serves both.
+
+**What this gate does NOT cover, and §5.4 must:** the `:root` pairs are tokens
+against tokens. A figure stroke drawn in `--hair` over the *darkened field* of a
+dusk station is a different pair, and it is the pair a redraw changes. See
+§5.4's night-contrast rule.
 
 ### 5.4 — Redraw. `scripts/archive/FIGURES.md` is the brief.
 
 Ten numbered figures, `fig. 02` … `fig. 11` (C30, re-measured: still ten, still
 no fig. 01 — beat 0 holds the nameplate and the epigraph, neither a `<figure>`).
 
-> **Read `scripts/archive/FIGURES.md` before touching a figure.** It carries
-> seven rules — each from a settled ruling or a defect measured in the run's own
-> figures — and **one judgement per run figure**, written with the archive's
-> seven shipped `fig. 1` plates as the working proof. fig. 02 and fig. 11 are
-> ruled sound and should be left alone. fig. 05's chip is diagnosed as absolute
-> positioning over a week grid, with the fix stated (make the event a child of
-> the tuesday cell and fly the chip to the cell's own box) and the archive's
-> Cadence plate named as the target geometry. fig. 09's three systems are
-> measured sharing one x-band (registry column starts at x 398, cell rows run to
-> x 360, the caveat crosses at y 226). fig. 10 is named as *a docket wearing a
-> figure number*, with two honest options.
+> **Read `scripts/archive/FIGURES.md` before touching a figure.** Seven rules —
+> each from a settled ruling or a defect measured in the run's own figures — and
+> **one judgement per run figure**, written with the archive's seven shipped
+> `fig. 1` plates as the working proof. fig. 02 and fig. 11 are ruled sound and
+> left alone. fig. 05's chip is diagnosed as absolute positioning over a week
+> grid, with the fix stated and the archive's Cadence plate named as the target
+> geometry. fig. 09's three systems are measured sharing one x-band (registry
+> column starts at x 398, cell rows run to x 360, the caveat crosses at y 226).
 >
-> The rules below are its summary, not a replacement, and where the two
-> disagree FIGURES.md is the one written against measured plates.
+> **Where this section and FIGURES.md disagree, FIGURES.md wins** — it was
+> written against measured plates.
 
-**Fix the grammar before touching any single figure.**
+**The order inside 5.4 is defects first, and the coupling the first draft
+assumed does not exist.** *(Fable's correction.)* fig. 06's only figure-level
+work IS the bench, which is §5.5's — FIGURES.md rules it "instrument; stays an
+instrument". fig. 07's changes (the seam's clay moment, the `1f 8b` lettering,
+the narrowing blocks) touch **no number** and wait on nothing. So the redraw
+queue must not idle behind 5.1's cross-repo fetch:
+
+1. **the grammar**, below
+2. **the figure gate**, below — it protects every redraw after it
+3. **figs. 05 and 09** — live reader-facing defects, pure geometry, zero
+   external dependency. The chip covers wednesday; three systems share one
+   x-band. Bugs before enhancements.
+4. **figs. 03 and 04** — congestion
+5. **figs. 07 and 08** — polish
+6. **fig. 10** — resolution, below
+
+**The grammar, before any single figure.**
 
 - The congestion reports are mostly a **scale** problem: labels authored at
   desktop viewBox scale collapse when the plate renders at 320px. Compute the
-  minimum rendered label size (viewBox units × min-plate-px ÷ viewBox width),
-  set a floor around 9–10 rendered px, and move anything below it into the
-  figcaption or a numbered key.
+  minimum rendered label size (viewBox units × min-plate-px ÷ viewBox width) and
+  hold it to **FIGURES.md rule 2's floor of ~10–11 rendered px** — the shipped
+  archive band is 11.4–15.1. *(The first draft said "9–10" here, which is the
+  two-surface number split §5.0 exists to condemn, in the section that defers to
+  the other surface. Corrected to the brief's figure.)* Anything below the floor
+  moves to the figcaption or a numbered key. **It is never shrunk.**
 - The run already owns the right mechanism — the tight/wide edition rebuild at
   `:3289-3312` (`buildPath`, `buildNet`, `buildClimb` under per-figure minimum
   widths, six figures registered in `editions`). **Fix congestion by shipping a
   narrow edition, not by squeezing one drawing across 320–2560.**
-- More than about seven labels means a numbered-key legend, which suits the
-  paper conceit anyway.
-- **Keep the full-sentence `aria-label`s.** They are a contract, and a redraw
-  that loses the narrative is a regression no gate sees. The archive now holds
-  this as an enforced rule — `atlas.spec.ts` requires a `[role="img"]` with an
-  accessible name over 60 characters on every case file. **The run has no
-  equivalent gate. Add one in this phase**: ten figures, ten narrative labels,
-  a floor on each. That is the cheapest durable thing in §5.4 and it protects
-  every redraw that follows it.
-- Order the work: grammar → the aria-label gate → figs. 06 and 07 (coupled to
-  5.1's data) → the congested ones.
+- More than about seven labels means a numbered-key legend. *(A heuristic of
+  this plan's, not the brief's — it suits the paper conceit, but it is not
+  measured.)*
+- **NIGHT CONTRAST IS COMPUTED, NOT EYEBALLED.** *(Fable's addition.)* figs. 08
+  (dusk) and 09 (night) — and fig. 10's new rail — draw in hair-weight strokes
+  (`--hair`, `--hair-strong`, `--ink-2`, `--clay-g`) over a darkened field. The
+  dusk choreography's contrast was verified stop-by-stop **for text**; figure
+  strokes are a different pair and §5.3's gate does not reach them. **Every
+  stroke or label a redraw touches in a dusk or night station is measured (WCAG
+  and APCA) at the darkest stop it renders under, before the hash moves.**
+
+**The figure gate — reshaped, because the first draft would have shipped an
+accessibility regression.** *(Fable's finding, verified.)*
+
+The first draft said "ten figures, ten narrative labels, a floor on each",
+reasoning from the archive's rule that every case file carries a `[role="img"]`
+with a name over 60 characters. Measured, **only six of the ten run figures are
+drawings**:
+
+| | figures | what they are |
+|---|---|---|
+| SVG, `role="img"`, narrative label | **03, 04, 06, 07, 08, 09** | drawings. All six labels already clear 60 chars |
+| HTML text plates, no role | **02, 05, 10, 11** | the record card, the parse, the reviewer's marks, the references |
+
+The four text plates' accessible experience **is their text**. `role="img"`
+makes descendants presentational — and **fig. 02 contains two real links**
+(`github ↗`, `linkedin ↗` at `:1480`). Applying the rule uniformly would remove
+two working links from assistive technology in the name of accessibility.
+The archive's Cadence plate took `role="img"` because it is a settled still, an
+image made of HTML; the run's fig. 05 is interactive and figs. 02/10/11 are
+dockets whose text is the content.
+
+Also measured: the two bench `aria-label`s (`:1628`, `:1660`) sit on plain
+`<div class="bench">` elements with **no role**, so they are not reliably
+exposed to any assistive technology. A gate that counts them counts a no-op.
+
+And on the floor itself: **a length floor measures that a label exists, not that
+it narrates.** FIGURES.md rule 7 says the label states what is drawn *and what
+is deliberately not* — fig. 09's "deploy, which never lights", fig. 08's "a
+deliberate hold, not a fall". No character count can see either clause vanish.
+
+**Build it in `check-figures.mjs`** — source-level, so it runs under `--no-e2e`
+and in the gates job, unlike the archive's Playwright rule. Three parts:
+
+1. **Structural.** Every `svg.figsvg` (and `#net`) must carry `role="img"` and
+   an `aria-label` of at least 60 characters. This catches a *new* drawing added
+   unlabelled, which an enumerated list cannot.
+2. **Declared tokens, per figure** — the same reform §5.0's job 3 makes for
+   numbers. fig. 03's label must contain `97 percent` (a number that today lives
+   in a label no gate reads); fig. 09's its staging disclosure; fig. 08's its
+   "not a fall" clause.
+3. **Text plates asserted as text** — their claim strings verbatim, plus a
+   negative assertion that they carry **no** `role="img"` and their rows are not
+   `aria-hidden`, so nobody "fixes" them into images later.
+
+Prove all three fire in a temp copy: delete a label, remove a declared token,
+and add `role="img"` to fig. 02. **All three must go red.**
+
+**fig. 10 — take the second option: three gate squares on a short rail.**
+*(FIGURES.md offers two and picks neither; this is the pick, and the argument
+is Fable's.)*
+
+Demotion does not strictly break `fig. NN = data-beat + 1` — the rule is
+positional and already tolerates the hole at 01 (C30). What it creates is a
+**second gap, mid-sequence**. The gap at 01 is legible: nothing is drawn before
+the run begins. A gap at 10, between figs. 09 and 11, reads as an error, and the
+honest answer to a reader who counts would be *"we deleted it."*
+
+The decisive argument is what **Phase 3 changed underneath this figure**: ¶10 is
+no longer a passage. Two case files (`policybot`, `visual-assist`) file arrival
+slips reading *"filed at the review — ¶ 10 · 22:23"*, and their rejoin links
+target `/#review` directly. Demotion was defensible when the review was
+apparatus between stations; Phase 3 made it **a destination two archive files
+rejoin into**. A station readers are routed *into* holds a numbered figure like
+every other station.
+
+Costs, owned plainly: it is the page's third gate drawing, so the miniature must
+stay genuinely miniature — a short rail, no travel, no scrub; the docket's text
+(`gname`/`gword`/`gleg`/`gclose`) is the plate's argument and the drawing joins
+it rather than replacing it; and it is new drawing at 22:23, so it inherits the
+night-contrast rule above.
+
+**One guard against over-correction:** the marks' existing draw-in
+(stroke-dashoffset, `how` at `:2923`) is **legitimate under the bench ruling**.
+A mark being inked is a signature, not a gauge — no magnitude is misstated by
+its motion. §5.5 must not strip it.
 
 **Error intervals are mandatory where the artifact has them.** JMH reports score
 ± 99.9% CI and a bare `6.4×` bar overclaims precision. Where there is no
@@ -1345,30 +1507,55 @@ Caption pins provenance: `drawn from public/proof/jetpack-jmh-2caacd0.json ·
   **The bars lie through motion grammar, not through labels.** `scrubBench`
   (`:3319-3323`) fills them under the reader's scroll, directly beneath a
   genuinely live classifier, on the same plate. A gauge that fills as you watch
-  is an instrument; a record does not move. Four concrete changes:
+  is an instrument; a record does not move.
+
+  **The strongest argument for this change is that the page already agrees.**
+  *(Fable's finding.)* `settleAll()` at `:4261` calls `scrubBench(1)` and
+  `scrubJetBench(1)`, so **reduced-motion readers are already served the settled
+  bars today**. This step is not inventing a form — it is promoting the form the
+  page already treats as truthful to every reader.
+
+  **NO NEW BORDER.** *(Fable's correction, and the first draft got its own
+  citation wrong.)* The draft said to give the bench "its own bordered slip"
+  following `.schoolrec`. Measured, `.schoolrec` (`:822-823`) is **not a boxed
+  slip** — it is `border-top:1px solid var(--hair-strong); padding-top:1rem`, a
+  *ruled filing*. The archive's arrival slip uses the same grammar. And **the
+  bench already wears it**: `.bench` at `:415` is
+  `border-top:1px solid var(--hair); padding-top:.8rem`. Meanwhile `.plate`
+  (`:298`) is a boxed card. Adding a border inside it would build the exact
+  "frame inside a frame" the draft was trying to avoid, by misquoting its own
+  citation.
+
+  So: **keep the bench in the plate, and let the hair rule it already has become
+  the seam between two registers.** Above the rule, the live instrument (*"read
+  locally · no server"*). Below it, the filed record. Four changes:
 
   1. **Remove the scroll-scrub fill** from both bench pairs (`scrubBench`,
-     `scrubJetBench`, and their call sites at `:3532` and nearby). Draw the bars
-     settled at final width. Any surviving motion is the page's generic
-     `data-fx` prose entrance, reduced-motion-gated — never a gauge fill.
-  2. **Re-clothe the bench as a filing.** The run already owns the grammar: the
-     `.schoolrec` slip at `:1516-1525`. Give the bench its own bordered slip with
-     a filed-record header carrying date and sha — `dot-256 kernel · bench
-     committed @ <sha>` — which becomes a live link to `public/proof/…` once 5.1
-     vendors the JSON. A record cites its file; an instrument shows a needle.
-  3. **Add the counterpart honesty line.** The live half says *"read locally · no
-     server"*; ¶07 already has the pattern. The bench slip carries:
-     *"measured then, committed — not run in this tab."*
+     `scrubJetBench` and their call sites at `:3532` and nearby). Draw the bars
+     settled at final width — keeping the ratio literal in the markup, per §5.2.
+     Any surviving motion is the page's generic `data-fx` prose entrance,
+     reduced-motion-gated — never a gauge fill.
+  2. **Promote the bench's first line to a `shead` pair**, the filing grammar's
+     own header: left *"the committed bench — dot-256 kernel"*, right
+     *"filed <date> · @ <sha> ⟶"*, linking the JSON 5.1 vendors. A record cites
+     its file; an instrument shows a needle.
+  3. **Add the counterpart honesty line.** The live half says *"read locally ·
+     no server"*; the bench carries *"measured then, committed — not run in this
+     tab."*
   4. **Give Glyph the `.bfoot` spread note it lacks** — jetpack has one.
+
+  One plate, two registers, each labelled in its own voice. **The contrast is
+  the argument** — it is the human-gate distinction the page keeps making,
+  drawn once in its own type.
 
 - **"Confidently wrong on mouse-drawn input" is diagnosed. Do not build an
   instrument to re-confirm it.** `extractPixels` fills a 280×280 canvas,
   re-traces strokes at `lineWidth 22`, does **one** `drawImage` downscale to
   28×28, and reads the red channel. There is **no centre-of-mass centring, no
   bounding-box crop, no 20×20-into-28×28 padding, no deskew** — none of the
-  preprocessing MNIST's own test set received. That was read from the source,
-  not theorised, and capturing the 784-value tensor to compare statistics would
-  confirm what the code already proves without changing the decision.
+  preprocessing MNIST's own test set received. Read from the source, not
+  theorised; capturing the 784-value tensor would confirm what the code already
+  proves without changing the decision.
 
   **Decide instead.** Either one disclosure line beside the pad, in the page's
   own voice — the cheap, honest option, and the 97.01% claim sits three lines
@@ -1379,8 +1566,8 @@ Caption pins provenance: `drawn from public/proof/jetpack-jmh-2caacd0.json ·
 ### 5.6 — What moves the golden hash, and what that costs
 
 Every item in 5.0, 5.2, 5.4 and 5.5 edits `src/run/index.html`. **The hash moves
-in this phase, repeatedly**, which is the first time that has been routine since
-Phase 1. The discipline, unchanged and now with two phases of evidence behind it:
+in this phase, repeatedly** — the first time that has been routine since Phase 1.
+The discipline, unchanged and now with two phases of evidence behind it:
 
 - Read the `out/index.html` diff **by hand** before re-baselining. Never
   re-baseline to make a red check green.
@@ -1389,6 +1576,9 @@ Phase 1. The discipline, unchanged and now with two phases of evidence behind it
   `git commit --amend` cannot do it, and looks like it can (C32).
 - Prefer **one re-baseline at the end of a sub-step** over one per edit. Each is
   a hand-read diff, and a diff read five times is read carelessly four of them.
+  Keeping the ratio literal in the markup (§5.2) also removes a whole class of
+  re-baseline: computed percentages change bytes every time a number is
+  re-measured; a fraction does not.
 
 ---
 
@@ -1422,19 +1612,34 @@ thing you wanted.
    was measured overflowing at every width below 430 before `wrap-anywhere`
    fixed it; the archive rebuild inherits that grammar. `run-home.spec.ts` gates
    no-horizontal-overflow at 390/768/1440 on the run only.
+   **And read every Phase-5-redrawn plate at its tight edition** — labels
+   legible at the 10–11px floor, numbered keys matching their marks, and fig. 06
+   reading as one instrument above the hair rule and one filed record below it.
+   That last clause is the acceptance test for §5.5's judgement call, and it
+   cannot be gated: it is whether a reader sees two registers or one muddle.
 5. **Reduced motion and print.** `reduced-motion.spec.ts` covers the first on
    the run. **Print is gated nowhere and never has been** — and the paper
    conceit makes it the one site where a reader might actually try it.
-6. **Read the archive as a reader for the first time.** The 4.1 flip shipped the
+6. **Cross the seam by keyboard, both ways.** *(Fable's addition, and it is the
+   sharpest gap in this list.)* The archive has a skip link — Phase 4 made
+   `a11y-audit.spec.ts` assert it is the first stop for a Tab and lands on
+   `#main-content`. **The run famously has none**; §3.4 says so in its own
+   words, and the rebuilt pages were told not to inherit that absence. So the
+   two halves of one site now disagree about the first thing a keyboard reader
+   touches. Tab from a case file's rejoin link into the run, and back out from
+   a run station's waybill. Nothing gates this crossing and no other walk item
+   makes it. **It also forces the deferred ruling: does the run now take the
+   skip link the archive has?**
+7. **Read the archive as a reader for the first time.** The 4.1 flip shipped the
    generated case files; until then they had only ever been read by gates and
    screenshots. Seven files and `/evidence/`, start to finish, as a reader.
-7. **Rule on `localStorage["motion-off"]` for the archive.** The rebuilt pages do
+8. **Rule on `localStorage["motion-off"]` for the archive.** The rebuilt pages do
    not honour it — `layout.tsx`'s motion-tier script was not reproduced, because
    a static archive has no engine to tier and its only motion is a
    reduced-motion-gated view transition and audit cadence. Defensible, but it is
    a reader-facing switch that used to work on these URLs. One media-query
    addition if the answer is yes. (§2.9)
-8. **Wire or retire the nameplate's "machines withheld" guard (C46).**
+9. **Wire or retire the nameplate's "machines withheld" guard (C46).**
    `nameplateMachines.ts` promises that a renamed author gets the plate without
    the machines, imports `personalInfo` for it, and never checks. `MACHINE`, the
    character-index map, is dead beside it. Both are ESLint warnings today.
@@ -1442,16 +1647,16 @@ thing you wanted.
    `out/run/lib/data/personal.js` and `basePath.js` — 10.4 KB no browser ever
    fetches — are still published, and using or removing the binding is the only
    thing that stops it.
-9. **Rewrite the repository's own README.** Measured at the Phase 4 checkpoint:
+10. **Rewrite the repository's own README.** Measured at the Phase 4 checkpoint:
    it opens with Next.js 16 / React 19 / Tailwind 4 / GSAP / Framer Motion /
    Lenis badges and a tech-stack table, and tells a reader to run `npm run dev`
    — a script that no longer exists, describing a framework that is no longer
    installed, for a page that is no longer rendered. **It is the front door of a
    repository whose entire argument is that claims terminate in things you can
    check.** Higher-value than the ledger below it, and cheaper.
-10. **Update `docs/PROJECT-LEDGER.md`.** A migration this size that leaves the
+11. **Update `docs/PROJECT-LEDGER.md`.** A migration this size that leaves the
     ledger stale guarantees the next person re-derives all of it.
-11. **Rule on `docs/design-lab/`.** Phase 4 added it to ESLint's ignore list
+12. **Rule on `docs/design-lab/`.** Phase 4 added it to ESLint's ignore list
     because sixty one-off measurement probes and a second vendored copy of the
     wasm glue contributed 1,621 `no-undef` errors and nothing true. That is the
     right call for a lint gate and a deferral for the directory itself: ~2 MB of
@@ -1494,31 +1699,35 @@ The middle option's cost is the one to weigh: this repository deploys from
 `main` on push, with no approval gate. A phase boundary is a green tree, not
 necessarily a *finished* reader experience.
 
-### 6.2 — What CI has never run
+### 6.2 — What CI has never run. **Mostly answered, 2026-08-06.**
 
-Everything in Phases 3–5 has been verified **locally**. The first push runs, for
-the first time on a clean clone with no `node_modules` and no `out/`:
+Everything in Phases 3–5 was verified on the working tree, where `node_modules`
+is whatever `npm install` last left and `out/` always already exists. §6.2 was
+written as a list of worries about the first push. Four of the five were then
+measured, by cloning the branch into a temp directory and running what CI runs:
 
-- `npm ci` against the pruned `package-lock.json` — 147 packages where CI last
-  installed 473.
-- `npm run build` with **no `out/` to start from** and no `.next/` cache. This
-  one is already answered: a build into a destination that did not exist, with
-  no scratch directory either, exits 0, writes 64 files and reproduces the
-  golden hash — the swap's `rmSync(DEST, { force: true })` is a no-op against a
-  missing path. Measured 2026-08-06 rather than reasoned about, because
-  "expected to be fine" is what C38 also looked like.
-- `eslint.config.mjs` under `npm ci`'s dependency tree rather than the local
-  one, with `@eslint/js`, `typescript-eslint` and `globals` now direct rather
-  than transitive.
-- The five-engine browser smoke against the generated archive, on Linux
-  webkit — atlas has run on macOS webkit only.
-- `pinnedCommitAgrees()` on a **depth-1 checkout**, which is why it skips rather
-  than fails there (C32). Expect *"not in this clone — pairing not checked"* and
-  read it as correct, not as a hole.
+| what CI does that the desk never did | result |
+|---|---|
+| `npm ci` against the pruned lockfile — 92 top-level packages where CI last installed 473 | **exit 0, 0 vulnerabilities** |
+| `node scripts/qa/verify-portfolio.mjs --no-e2e` — **the deploy's exact command** — on a clone with no `out/`, no `node_modules`, no `.next/` | **green, 17 steps**, `out/index.html` reproduces `cfb9c467…` |
+| the five-engine browser smoke on a tree built by `npm ci` | **245 passed** |
+| the a11y suite on the same tree | **4 passed** |
+| `pinnedCommitAgrees()` on a **depth-1** checkout, which is what `actions/checkout@v4` does | prints *"pinned commit 3fa434e1 is not in this clone — pairing not checked"* and **skips**, exactly as C32 says it should. On the full clone it prints *"does produce the pinned source"*. Read the skip as correct, not as a hole |
 
-**Run `verify:portfolio` on a fresh clone before pushing**, in a temp directory,
-from a `git clone` of the local repo. It is the only way to test `npm ci` and a
-cold `out/` without spending a CI run to find out.
+**What is still untested and cannot be tested from here:**
+
+- **Linux WebKit.** The smoke ran webkit on macOS. `atlas.spec.ts` and
+  `run-home.spec.ts` have never met the GitHub runner's WebKit build.
+- **`npx playwright install --with-deps chromium firefox webkit`** on the runner,
+  against `@playwright/test` as a direct dependency where `playwright` used to
+  resolve transitively.
+- **`test:links`' real network requests** from a GitHub IP rather than a home
+  one. It has always made them; it is the step most likely to fail for a reason
+  unrelated to this migration.
+
+**Re-run the clone test before pushing** if anything changes between now and
+then — it costs one clone and ten minutes, and it is the only way to test
+`npm ci` and a cold `out/` without spending a CI run to find out.
 
 ### 6.3 — The deploy path, re-read
 
