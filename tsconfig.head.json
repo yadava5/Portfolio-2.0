@@ -1,0 +1,32 @@
+{
+  /* The <head> the run ships is computed, not authored: title, description,
+     canonical, the og and twitter cards and the JSON-LD graph all come from
+     `src/lib/seo.ts` over `src/lib/data/personal.ts`. `scripts/run/build-home.mjs`
+     is plain node and cannot read TypeScript, so it compiles that one module
+     (and what it imports) here and imports the result.
+
+     COMPILED RATHER THAN RESTATED, for the same reason `tsconfig.run.json`
+     compiles the nameplate: a second hand-maintained copy of the site's
+     metadata is how the home page's search result comes to disagree with every
+     other page's. The head is the site's first sentence in a search result and
+     in every shared link.
+
+     outDir is OUTSIDE out/. `tsconfig.run.json` emits into `out/run` because
+     the browser fetches those modules at runtime; nothing fetches these, and
+     `out/` already carries ~263 KB no reader can reach. A build byproduct that
+     ships is the thing this migration is removing, not adding to. */
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": false,
+    "module": "esnext",
+    "target": "es2022",
+    "moduleResolution": "bundler",
+    "outDir": ".build/head",
+    "rootDir": "src",
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "incremental": false
+  },
+  "include": ["src/lib/seo.ts"]
+}

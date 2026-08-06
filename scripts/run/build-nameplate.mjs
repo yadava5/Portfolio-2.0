@@ -13,15 +13,15 @@
  * failure six rounds of porting the scroll engine already demonstrated at
  * length.
  *
- * The one thing tsc leaves undone is module specifiers: it emits the `@/…`
- * aliases verbatim, and a browser cannot resolve them. They are rewritten
- * to relative paths here rather than by adding a bundler — the graph is
- * five files and a bundler is a dependency this page does not otherwise
- * need. The run's whole argument is that it weighs 166KB with none.
+ * The compile-and-relink itself moved to `compile-ts-graph.mjs` when
+ * `build-home.mjs` needed the identical thing for `src/lib/seo.ts`. Its second
+ * half is the non-obvious part — tsc emits `@/…` specifiers verbatim and no
+ * loader can resolve them — and two hand-maintained copies of a specifier
+ * rewrite is the same mistake as two hand-maintained copies of a nameplate.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { resolve, relative, dirname, join } from "node:path";
-import { execFileSync } from "node:child_process";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { compileAndRelink } from "./compile-ts-graph.mjs";
 
 const root = process.cwd();
 const OUT = resolve(root, "out/run");
@@ -31,62 +31,20 @@ function fail(msg) {
   process.exit(1);
 }
 
-/* ── Compile ────────────────────────────────────────────────────────── */
-try {
-  execFileSync("npx", ["tsc", "-p", "tsconfig.run.json"], {
-    cwd: root,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-} catch (e) {
-  fail(`tsc: ${e.stdout?.toString().slice(0, 400) ?? e.message}`);
-}
-if (!existsSync(OUT)) fail("tsc emitted nothing to out/run");
-
-/* ── Rewrite `@/…` to relative, so a browser can resolve it ─────────── */
-function walk(dir) {
-  const out = [];
-  for (const name of readdirSync(dir)) {
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) out.push(...walk(p));
-    else if (p.endsWith(".js")) out.push(p);
-  }
-  return out;
-}
-
 let rewritten = 0;
-for (const file of walk(OUT)) {
-  let src = readFileSync(file, "utf8");
-  const before = src;
-  src = src.replace(/from\s+"@\/([^"]+)"/g, (_m, spec) => {
-    /* `@/x/y` means `src/x/y`, which under out/run is `out/run/x/y`. */
-    let rel = relative(dirname(file), join(OUT, spec)).replace(/\\/g, "/");
-    if (!rel.startsWith(".")) rel = `./${rel}`;
-    return `from "${rel}.js"`;
-  });
-  /* tsc emits extensionless relative specifiers; browsers need the .js */
-  src = src.replace(/from\s+"(\.\.?\/[^"]+?)"/g, (m, spec) =>
-    spec.endsWith(".js") ? m : `from "${spec}.js"`
-  );
-  if (src !== before) {
-    writeFileSync(file, src);
-    rewritten++;
-  }
+try {
+  ({ rewritten } = compileAndRelink({
+    root,
+    project: "tsconfig.run.json",
+    outDir: "out/run",
+  }));
+} catch (e) {
+  fail(e.message);
 }
 
 const entry = resolve(OUT, "components/story/nameplateMachines.js");
 if (!existsSync(entry)) fail("no nameplateMachines.js after compile");
 const bytes = readFileSync(entry).length;
-
-/* A specifier the browser cannot resolve fails silently at runtime — the
-   module simply never loads and the name sits there unanimated, which is
-   exactly the class of failure that is easy to ship and hard to notice.
-   So check rather than assume. */
-const leftovers = walk(OUT).filter((f) =>
-  /from\s+"@\//.test(readFileSync(f, "utf8"))
-);
-if (leftovers.length) {
-  fail(`unresolved @/ specifiers in: ${leftovers.map((f) => relative(root, f)).join(", ")}`);
-}
 
 console.log(
   `  · nameplate machines compiled — ${(bytes / 1024).toFixed(1)} KB, ${rewritten} files re-specified, 0 unresolved`

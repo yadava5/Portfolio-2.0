@@ -35,6 +35,12 @@
 /.next/
 /out/
 
+# Build byproducts that are NOT the artifact. tsconfig.head.json compiles
+# src/lib/seo.ts to .build/head so build-home.mjs can import the site's
+# metadata; nothing fetches those modules at runtime, so they have no business
+# in out/ — which already ships ~263 KB no reader can reach.
+/.build/
+
 # production
 /build
 
