@@ -1164,7 +1164,40 @@ made `personal.ts` stop dragging `utils.ts` in (C14).
 
 ---
 
-## 4. Phase 5 — Figures and benchmark artifacts, in one pass. **[RE-PLANNED 2026-08-06]**
+## 4. Phase 5 — Figures and benchmark artifacts, in one pass. **[EXECUTED — GREEN, except §5.4's redraw queue]**
+
+> **Branch `feat/figures-and-benchmarks`, eleven commits, nothing pushed.**
+> `verify:portfolio` is **green at 20 steps** (was 18), 270 browser tests
+> (was 245). The golden hash moved three times, each after a hand-read diff,
+> each `commit` field corrected in its own commit (C32, three more times).
+>
+> | step | outcome |
+> |---|---|
+> | 5.0 the attribution contradiction | done — and it was **five** claim sites on **two** files, not four on one. The archive's own fig. 1 plate said `openmp+simd` in its drawn label AND in the sentence a screen reader is handed; the plan did not know that surface existed. atlas went red first, as predicted. `check-figures` now names the file(s) each figure is claimed on, across **four** surfaces |
+> | 5.3 the palette gate | done — `check-palette.mjs`, over the run's own OKLCH arc through the page's own converter. **Three of the run's palette comments were stale**, one of them describing `#b04a28`, retired in Phase 3 |
+> | 5.1 vendor the artifacts | done — four files, byte-identical to the remote blobs. One deviation from "exactly two", stated in the commit. Every bench figure is now **derived** from machine output rather than compared to another sentence |
+> | 5.5 the bench, re-clothed | done — the scrub is gone, the bars are settled fractions in the markup, both benches wear the filing grammar. **No new border**: `.bench` already wore the ruled filing |
+> | 5.2 bind the bars | done — **C28's injection, verbatim, now goes red**. Three statements of 3.5× bound where one was |
+> | 5.4 the redraw | **items 1–2 done, item 3 half done.** See below |
+>
+> **§5.4, precisely.** The grammar-as-arithmetic and the figure gate are
+> built and proven (nine injections), the night-contrast rule is built and
+> proven (four), and **fig. 05 is fixed** — the tuesday cell is the event and
+> the chips file into a dock, measured at four widths in a real engine.
+> Measured, the pre-fix stack covered **four** day columns, not the one the
+> brief reports.
+>
+> **STILL OWED, in FIGURES.md's own queue order, and every one of them is now
+> protected by a gate that did not exist this morning:**
+>
+> | | figure | what the brief asks |
+> |---|---|---|
+> | 3b | **fig. 09** | three systems share one x-band. **Stack the registry under the notebook** — NOT the "widen to a 620 viewBox" alternative, which the new edition arithmetic measures at 9.97px, three hundredths under the brief's own floor unless the seat minimum rises with it |
+> | 4 | **figs. 03, 04** | congestion — ship a narrow edition, move sublabels to a numbered key |
+> | 5 | **figs. 07, 08** | polish — the `1f 8b` lettering and visibly narrowing blocks; the heavier pencil dash and the climber's ring as the only clay |
+> | 6 | **fig. 10** | three gate squares on a short rail. New drawing at 22:23, so it inherits the night-contrast rule — which is now a gate rather than an instruction |
+
+## 4a. Phase 5, as planned. **[RE-PLANNED 2026-08-06]**
 
 Branch `feat/figures-and-benchmarks`, off `refactor/retire-next`. Merged
 deliberately: fig. 06's bars are both a design problem and an artifact problem,
