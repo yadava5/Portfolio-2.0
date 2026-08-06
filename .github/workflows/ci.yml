@@ -339,6 +339,15 @@ jobs:
       - name: Check beat tables (every beat-indexed table agrees)
         run: npm run test:beat-tables
 
+      # src/lib/data/stations.ts restates thirteen stops of a hand-authored
+      # page, so something has to bind it or it is a second head. It replaced
+      # the arrangement that put those five dead anchors on nine routes: a
+      # seven-chapter React contract, bridged to the run by a rename map. Runs
+      # BEFORE the anchors step, which resolves the 404's index through it —
+      # this one names drift, that one would only report its symptom.
+      - name: Check stations agree with the run, verbatim
+        run: npm run test:stations
+
       # Every /#... link into the home page must land on something. Five
       # were dead on nine indexable routes until 2026-08-02, and nothing
       # noticed for two reasons: a hash that matches nothing scrolls to

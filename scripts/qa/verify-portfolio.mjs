@@ -256,6 +256,12 @@ step("headline figures ⇄ data layer", "test:figures", {
   reads: "src/run/index.html + data layer",
 });
 step("beat tables", "test:beat-tables", { reads: "src/run/index.html" });
+/* Before the anchors, deliberately. check-anchors resolves the 404's index
+   THROUGH stations.ts, so if that file has drifted from the run this one names
+   the drift and the anchors step would only report its symptom. */
+step("stations ⇄ the run", "test:stations", {
+  reads: "src/lib/data/stations.ts + src/run/index.html",
+});
 step("home-page anchors", "test:anchors", {
   reads: "src/run/index.html + React link sources",
 });

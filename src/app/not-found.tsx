@@ -12,12 +12,30 @@
  * It is now a NOTICE printed on the house stock: the ¶ kicker, a
  * Fraunces head, a serif deck, and the site's own vocabulary listed as a
  * mono dot-leader index — the same print furniture the case files' meta
- * ledger uses (DOSSIER-SPEC pt 3). Chapter names and numbers are read
- * from `CHAPTERS`, the seven-chapter contract, so this page can never
- * name a chapter the story does not have. Links carry the house glyph
- * roles (F41): `⟶` goes deeper into this site, `⟵` returns — and every
- * one of them is a `next/link`, so the basePath a GitHub Pages deploy
- * needs is applied for us (F27's lesson, kept).
+ * ledger uses (DOSSIER-SPEC pt 3). Links carry the house glyph roles
+ * (F41): `⟶` goes deeper into this site, `⟵` returns — and every one of
+ * them is a `next/link`, so the basePath a GitHub Pages deploy needs is
+ * applied for us (F27's lesson, kept).
+ *
+ * THE INDEX NOW READS `STATIONS`, NOT `CHAPTERS`. It used to list the
+ * seven chapters of StoryShell — the React home page nobody is served —
+ * and bridge them to the run with a one-entry rename map, because the two
+ * files disagreed on what the tenth stop is called. That map is deleted
+ * here: `src/lib/data/stations.ts` describes the page this site actually
+ * ships, `scripts/qa/check-stations.mjs` asserts every string in it
+ * appears verbatim in `src/run/index.html`, and `check-anchors` resolves
+ * this page's hrefs through it. One file, checked against the artifact,
+ * beats two files and a translation table — which is how five links here
+ * came to be dead in the first place.
+ *
+ * Twelve rows for thirteen stops, and both omissions are deliberate. The
+ * first stop is the front page, which the folio footer below already
+ * offers — listing it would restore the duplicate exit this page was
+ * rebuilt to remove. The last is the morning AFTER run 042, which the run
+ * holds behind the approval gate; its id exists and resolves, but nothing
+ * brings it into view until a reader signs, so a link to it would be a
+ * link that appears to do nothing — the exact failure this index exists
+ * to have stopped making.
  *
  * ONE return affordance: the folio footer's "back to the front page ⟵".
  * The masthead wordmark above it is the site's identity, not a second
@@ -27,27 +45,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CHAPTERS } from "@/components/story/chapters";
-
-/**
- * Where each chapter anchor actually lands on the SHIPPED home page.
- *
- * `CHAPTERS` is StoryShell's contract, and StoryShell is not what a
- * visitor gets: `npm run build` overwrites `out/index.html` with the run
- * (scripts/run/build-home.mjs). The two disagree on one name — the run
- * calls "how i work" `review`, StoryShell calls it `values` — so this
- * page, which links against the served artifact, maps that one across.
- *
- * The 2026-08-02 provenance audit found all five of these links dead:
- * the run had none of `who`, `path`, `automl`, `work` or `values`, and a
- * hash that matches nothing scrolls to the top of the document without
- * raising anything, so no test and no reader report ever caught it. Four
- * were fixed at the source by giving the run real section ids. This is
- * the fifth, and it is a map rather than a rename because renaming it in
- * `chapters.ts` breaks StoryShell's own `#values` — which the browser
- * smoke asserts, and which is how this was found.
- */
-const RUN_ANCHOR: Record<string, string> = { values: "review" };
+import { STATIONS } from "@/lib/data/stations";
 
 /* CRITIC-LEDGER F51: `out/404.html` shipped the HOMEPAGE title
    ("Ayush Yadav | Software, Data, and ML Engineering") and inherited
@@ -108,15 +106,18 @@ export const metadata: Metadata = {
  * table. Both text halves get it and neither is frozen, so the line
  * shrinks the way a flex line is supposed to.
  *
- * `breakable()` — the other half of FIX5's ledger grammar — is
- * deliberately NOT applied, on the same measurement FIX5 used to back it
- * out of the receipts table: every string this row can print is prose
- * with spaces in it (`the evidence index`, `every claim on file`,
- * `chapter 04`) and NONE of them contains a `.` `/` `_` `-` or `=`. The
- * helper would emit zero `<wbr>` here. An inert helper on a hot path is
- * ceremony, not a fix; the seven chapter names come from the CHAPTERS
- * contract, so if one ever arrives with a separator in it this row wraps
- * at the separator the moment `breakable()` is added.
+ * `breakable()` — the other half of FIX5's ledger grammar — is still not
+ * applied, but the reason has changed and the old one is worth recording
+ * because it EXPIRED. It used to be that no string this row can print
+ * contains a `.` `/` `_` `-` or `=`, so the helper would emit zero
+ * `<wbr>`. Reading `STATIONS` instead of `CHAPTERS` brought in
+ * `jetpack-compress`, which contains one — the case that comment
+ * explicitly anticipated. It is still not needed: `wrap-anywhere` reduces
+ * this item's min-content contribution AND lets the text break at any
+ * point, so the hyphen needs no hint; `breakable()` would only bias WHERE
+ * a break lands, on a 16-character token that fits at 320 anyway
+ * (measured). The distinction FIX5 drew is the one that matters — `anywhere`
+ * does the min-content half, `break-word` does not.
  *
  * `.dot-leader` is `flex: 1 1 2rem` with a 2rem floor, so the leader
  * keeps drawing at every width — the row folds, the print furniture
@@ -150,10 +151,10 @@ function IndexRow({
 }
 
 export default function NotFound() {
-  /* Chapter 01 is `arrival` — the top of the front page, which is where
-     the return affordance below already goes. Listing it would be the
-     duplicate exit this page was rebuilt to remove. */
-  const chapters = CHAPTERS.filter((chapter) => chapter.anchor !== "arrival");
+  /* Derived from the ends of the line, not from a list of two names: add a
+     stop to the run and this index picks it up; move the gate and the
+     omissions move with it. See the file header for why these two. */
+  const stops = STATIONS.slice(1, -1);
 
   return (
     <section id="not-found" className="notice-surface text-ink min-h-screen">
@@ -179,12 +180,12 @@ export default function NotFound() {
             what is on file
           </h2>
           <ul className="mt-5 space-y-3.5">
-            {chapters.map((chapter) => (
+            {stops.map((station) => (
               <IndexRow
-                key={chapter.anchor}
-                href={`/#${RUN_ANCHOR[chapter.anchor] ?? chapter.anchor}`}
-                label={chapter.name}
-                note={`chapter ${chapter.id}`}
+                key={station.id}
+                href={`/#${station.id}`}
+                label={station.name}
+                note={`¶ ${String(station.beat + 1).padStart(2, "0")} · ${station.clock}`}
               />
             ))}
             <IndexRow

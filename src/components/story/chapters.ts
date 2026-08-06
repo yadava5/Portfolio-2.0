@@ -1,11 +1,29 @@
 /**
  * @fileoverview Chapter metadata — the seven-chapter contract.
  *
+ * ⚠ THIS IS NOT THE SHIPPED HOME PAGE, AND IT DESCRIBES SEVEN CHAPTERS THAT
+ * NOBODY IS SERVED. `npm run build` overwrites `out/index.html` with
+ * `src/run/index.html` — thirteen `data-beat` stations — via
+ * scripts/run/build-home.mjs. The run's truth is `src/lib/data/stations.ts`,
+ * and `scripts/qa/check-stations.mjs` binds every string in it to the run.
+ * Anything that needs to name a stop of the shipped page reads THAT file.
+ *
+ * This one survives only because it is StoryShell's contract and StoryShell
+ * still compiles: fourteen files import it, twelve of them React components
+ * that Phase 4 of the portfolio migration deletes wholesale
+ * (docs/PORTFOLIO-MIGRATION-PLAN.md). Rewiring a tree that is being deleted
+ * would risk moving a shipped page for no reader benefit. It goes with them.
+ *
+ * Do not add a consumer. Do not translate between this and `stations.ts`:
+ * `src/app/not-found.tsx` did exactly that, through a one-entry rename map,
+ * and shipped five dead anchors for months because a hash that matches
+ * nothing scrolls to the top and raises nothing. That map is gone.
+ *
  * Single source of truth for chapter ids, anchors, and rail names, shared
  * by StoryShell (sections), ChapterRail (wayfinding), and the folio
  * apparatus. The two-digit `id` is the DayArc waypoint contract
  * (`data-chapter="01"`–`"07"`); `anchor` is the stable in-page id used by
- * the header nav, the rail, and deep links.
+ * the rail and by StoryShell's own deep links.
  */
 
 /** One chapter of the working paper */

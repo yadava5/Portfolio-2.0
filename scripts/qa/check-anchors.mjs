@@ -60,30 +60,48 @@ for (const file of LINK_SOURCES) {
   }
 }
 
-/* The 404 builds its hrefs from CHAPTERS, through a deliberate rename
-   map — StoryShell calls one station `values` and the run calls it
-   `review`, so the literal never appears in the source and a regex over
-   the file alone would miss the whole index. Resolve it the way the page
-   does. */
-const chapters = read("src/components/story/chapters.ts");
-const notFound = read("src/app/not-found.tsx");
-const renames = Object.fromEntries(
-  Array.from(
-    (notFound.match(/const RUN_ANCHOR[^=]*=\s*\{([^}]*)\}/s)?.[1] ?? "").matchAll(
-      /(\w+)\s*:\s*"([^"]+)"/g
-    ),
-    (m) => [m[1], m[2]]
-  )
-);
-const skipped =
-  notFound.match(/chapter\.anchor !== "([A-Za-z0-9_-]+)"/)?.[1] ?? null;
+/* The 404's wayfinding index composes its hrefs at render time — `/#${
+   station.id}` over a slice of STATIONS — so the literals never appear in
+   the file and a regex over it alone would miss the whole index. Resolve
+   it the way the page does.
 
-for (const m of chapters.matchAll(/anchor:\s*"([A-Za-z0-9_-]+)"/g)) {
-  const raw = m[1];
-  if (raw === skipped) continue; // the 404 deliberately omits this one
-  const effective = renames[raw] ?? raw;
-  if (!wanted.has(effective)) wanted.set(effective, []);
-  wanted.get(effective).push(`src/app/not-found.tsx (via CHAPTERS "${raw}")`);
+   NOTHING HERE FALLS BACK. The version this replaces read CHAPTERS through
+   a rename map and defaulted to `?? {}` and `?? null` at three points, so
+   a renamed constant would have quietly narrowed this gate to nothing
+   while it kept printing green — on the one gate whose entire subject is
+   links that fail silently. Every step below either resolves or exits. */
+const stations = read("src/lib/data/stations.ts");
+const notFound = read("src/app/not-found.tsx");
+
+const hard = (why) => {
+  console.error(
+    `check-anchors FAILED — could not resolve the 404's index: ${why}.\n\n` +
+      "  This gate exists because a hash that matches nothing is silent. A gate\n" +
+      "  that cannot read its own inputs must be just as loud as a dead link, or\n" +
+      "  it certifies the defect instead of catching it."
+  );
+  process.exit(1);
+};
+
+const stationIds = Array.from(
+  stations.matchAll(/^\s{4}id: "([A-Za-z0-9_-]+)",$/gm),
+  (m) => m[1]
+);
+if (stationIds.length < 2) {
+  hard(`src/lib/data/stations.ts yielded ${stationIds.length} station ids`);
+}
+
+const slice = notFound.match(/STATIONS\.slice\((-?\d+),\s*(-?\d+)\)/);
+if (!slice) hard("src/app/not-found.tsx no longer slices STATIONS");
+
+const listed = stationIds.slice(Number(slice[1]), Number(slice[2]));
+if (listed.length === 0) {
+  hard(`STATIONS.slice(${slice[1]}, ${slice[2]}) selects no stops`);
+}
+
+for (const id of listed) {
+  if (!wanted.has(id)) wanted.set(id, []);
+  wanted.get(id).push("src/app/not-found.tsx (via STATIONS)");
 }
 
 const dead = [];
