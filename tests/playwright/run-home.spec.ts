@@ -176,6 +176,71 @@ test.describe("the home page is the run", () => {
     expect(failed, "no wasm asset may 404 or fail to load").toEqual([]);
   });
 
+  /**
+   * The four bench bars, MEASURED — the one assertion in this phase that no
+   * source-level gate can make.
+   *
+   * Phase 5 settled the bars and put their ratios in the markup as fractions:
+   * `transform:scaleX(calc(1 / 3.5))` and `calc(66 / 422)`, so the browser
+   * does the division and `check-bench-artifacts.mjs` can match numerator
+   * against denominator against the vendored records with no float parsing.
+   * The failure mode that buys is exactly why this test exists: AN INVALID
+   * TRANSFORM IS DROPPED AND THE ELEMENT RENDERS AT scaleX(1). A 1× lane
+   * drawn at the full width of a 3.5× one is the overclaim this whole phase
+   * is about, and every string-matching gate in the repository would call it
+   * correct. So the ratio is read off `getBoundingClientRect`, in a real
+   * engine, across all five browser projects.
+   *
+   * It also pins the settling: C28's injection inflated these ratios by ~1.9×
+   * and ~2.1× with two gates green. The bars used to be filled by a scroll
+   * scrub, so a measurement like this would have been reading whatever frame
+   * the scrub happened to be on.
+   */
+  test("the bench bars are drawn at the ratio their records report", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await page.waitForTimeout(600);
+
+    const bars = await page.$$eval(".bench .btrack", (tracks) =>
+      tracks.map((t) => {
+        const fill = t.querySelector(".bfill") as HTMLElement;
+        const row = t.closest(".brow") as HTMLElement;
+        return {
+          lane: (row.firstElementChild as HTMLElement).textContent!.trim(),
+          track: t.getBoundingClientRect().width,
+          fill: fill.getBoundingClientRect().width,
+        };
+      })
+    );
+    expect(bars, "four bars: two benches, two lanes each").toHaveLength(4);
+    for (const b of bars)
+      expect(
+        b.track,
+        `${b.lane}: the track has no width to measure`
+      ).toBeGreaterThan(20);
+
+    /* Order is DOM order: Glyph's 1× then 3.5×, jetpack's 66 then 422. The
+       expected values are the fractions the markup states, which
+       check-bench-artifacts holds to the vendored JMH and Google Benchmark
+       records — so this test measures the drawing and that one measures the
+       claim. */
+    const expected = [1 / 3.5, 1, 66 / 422, 1];
+    const labels = [
+      "Glyph one thread, -O3",
+      "Glyph openmp, all cores",
+      "jetpack java.util.zip, 1 thread",
+      "jetpack virtual threads",
+    ];
+    bars.forEach((b, i) => {
+      expect(
+        b.fill / b.track,
+        `${labels[i]} is drawn at the wrong fraction of its track`
+      ).toBeCloseTo(expected[i], 3);
+    });
+  });
+
   test("the gate is the last screen until it is approved", async ({ page }) => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });

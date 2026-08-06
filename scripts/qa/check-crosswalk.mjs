@@ -58,7 +58,11 @@ const failures = [];
 const fail = (msg) => failures.push(msg);
 
 /* ── The data layer, for the ledger's hrefs and the station table ────── */
-compileAndRelink({ root, project: "tsconfig.archive.json", outDir: ".build/archive" });
+compileAndRelink({
+  root,
+  project: "tsconfig.archive.json",
+  outDir: ".build/archive",
+});
 const load = (rel) =>
   import(pathToFileURL(join(resolve(root, ".build/archive"), rel)).href);
 const { proofManifest } = await load("lib/data/proofManifest.js");
@@ -193,29 +197,41 @@ for (const study of projectCaseStudies) {
   const emittedSet = new Set(emitted);
   if (emitted.length !== emittedSet.size) {
     const seen = new Set();
-    const dupes = emitted.filter((id) => (seen.has(id) ? true : (seen.add(id), false)));
-    fail(`${study.projectId}: duplicate receipt ids in one document — ${[...new Set(dupes)].join(", ")}`);
+    const dupes = emitted.filter((id) =>
+      seen.has(id) ? true : (seen.add(id), false)
+    );
+    fail(
+      `${study.projectId}: duplicate receipt ids in one document — ${[...new Set(dupes)].join(", ")}`
+    );
   }
   for (const want of expected) {
-    if (!emittedSet.has(want)) fail(`${study.projectId}: missing receipt anchor #${want}`);
+    if (!emittedSet.has(want))
+      fail(`${study.projectId}: missing receipt anchor #${want}`);
   }
   for (const got of emittedSet) {
-    if (!expected.has(got)) fail(`${study.projectId}: unexpected receipt anchor #${got}`);
+    if (!expected.has(got))
+      fail(`${study.projectId}: unexpected receipt anchor #${got}`);
   }
   receiptIds += expected.size;
 
   /* Every station-shaped link out of this file must name a real stop. */
-  const stationLinks = hrefsIn(html).filter((h) => /^https?:/.test(h) && h.includes("/#"));
+  const stationLinks = hrefsIn(html).filter(
+    (h) => /^https?:/.test(h) && h.includes("/#")
+  );
   const targets = new Set();
   for (const href of stationLinks) {
     if (!href.startsWith(`${SITE}/#`)) continue;
     const id = href.slice(`${SITE}/#`.length);
     targets.add(id);
     if (!runIds.has(id)) {
-      fail(`${study.projectId}: rejoins at /#${id}, which is not an id in the run`);
+      fail(
+        `${study.projectId}: rejoins at /#${id}, which is not an id in the run`
+      );
     }
     if (!STATIONS.some((s) => s.id === id)) {
-      fail(`${study.projectId}: rejoins at /#${id}, which is not a station in stations.ts`);
+      fail(
+        `${study.projectId}: rejoins at /#${id}, which is not a station in stations.ts`
+      );
     }
   }
 
@@ -330,7 +346,10 @@ for (const file of pagesUnder(ARCHIVE)) {
    matching reports a clean run over an empty set. Every count below is a
    measured floor, not a guess. */
 const floors = [
-  ["internal links in the run", runInternal.length, 11],
+  /* 13 since Phase 5: the eleven that were here plus the two bench sheads,
+     which cite the vendored records rather than the GitHub ledger — the copy
+     that cannot 404. */
+  ["internal links in the run", runInternal.length, 13],
   ["receipt fragments checked from the run", runFragments, 4],
   ["ledger receipt links", ledgerHrefs.length, 11],
   ["receipt anchors emitted, id by id", receiptIds, 53],

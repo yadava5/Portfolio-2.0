@@ -427,7 +427,21 @@
     @keyframes stamp{0%{transform:scale(1.5); opacity:0}60%{transform:scale(.95); opacity:1}100%{transform:scale(1)}}
   }
   .verdictline b{font-weight:400; color:var(--ink)}
+  /* THE BENCH IS A RECORD, AND THE HAIR RULE IS THE SEAM. No new border:
+     `.bench` already wears `border-top:1px solid var(--hair); padding-top`,
+     which is the ruled-filing grammar `.schoolrec` uses — and `.plate` around
+     it is the boxed card. Adding a box in here would build a frame inside a
+     frame. Above the rule, the live instrument (read locally · no server);
+     below it, the filed record. */
   .bench{margin-top:1.1rem; border-top:1px solid var(--hair); padding-top:.8rem}
+  /* The filing header. `.schoolrec .shead` and `.signs .shead` put clay on
+     their <i>; this one must not. FIGURES.md rule 5 is one clay moment per
+     plate, and on this plate the clay is the parallel bar
+     (`.brow.simd .bfill`). A second accent here and neither reads as the
+     mark. The <a> keeps the run's pine link register, which is not an accent
+     — every handoff on the page uses it. */
+  .bench .shead{display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2)}
   .bench .brow{display:grid; grid-template-columns:7.6rem 1fr 3rem; gap:.6rem; align-items:center;
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2); margin-top:.4rem}
   .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "422 mb/s" + the lane names */
@@ -437,6 +451,11 @@
   .bench .bfoot{font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
     margin-top:.55rem; line-height:1.8}
   .bench .btrack{height:6px; position:relative; background:transparent}
+  /* scaleX(0) stays as the FALLBACK, not as a starting frame — every bar now
+     carries its own inline `scaleX(calc(a / b))` and nothing scrubs them. If
+     an inline transform is ever lost the bar renders empty, which reads as
+     broken; the alternative default, scaleX(1), would render a 1× lane at the
+     full width of a 3.5× one. A failure that overclaims is the worse failure. */
   .bench .bfill{position:absolute; left:0; top:0; bottom:0; width:100%; background:var(--ink-2);
     transform-origin:left center; transform:scaleX(0)}
   .bench .brow.simd .bfill{background:var(--clay-g)}
@@ -1640,10 +1659,23 @@ h1[data-np-measuring] .np-ch {
             </div>
           </div>
         </div>
-        <div class="bench" aria-label="benchmark: single-threaded versus parallel dot kernel">
-          <span class="mono" style="font-size:.7rem">the same math, twice — dot-256 kernel, committed bench:</span>
-          <div class="brow"><span>one thread, -O3</span><span class="btrack"><span class="bfill" id="bScalar"></span></span><span class="bval">1×</span></div>
-          <div class="brow simd"><span>openmp, all cores</span><span class="btrack"><span class="bfill" id="bSimd"></span></span><span class="bval">3.5×</span></div>
+        <!-- A RECORD DOES NOT MOVE. Until 2026-08-06 scrubBench() filled these
+             bars under the reader's scroll, directly beneath a genuinely live
+             classifier on the same plate — a gauge that fills as you watch is
+             an instrument, and this one was replaying committed numbers. The
+             page already agreed: settleAll() called scrubBench(1), so
+             reduced-motion readers were served the settled bars. This promotes
+             the form the page already treated as truthful to every reader.
+             `role="group"` because the aria-label here used to sit on a plain
+             div, where no assistive technology reliably exposes it. The ratio
+             stays a FRACTION in the markup — the browser does the division and
+             check-bench-artifacts matches numerator against denominator with no
+             float parsing at all. -->
+        <div class="bench" role="group" aria-label="the committed dot-256 benchmark, filed">
+          <div class="shead"><span>the committed bench — dot-256 kernel</span><span>filed 2026-08-02 · <a href="https://yadava5.github.io/Portfolio-2.0/proof/glyph-dot256-openmp-native-001e9b4.json">@ 001e9b4 ⟶</a></span></div>
+          <div class="brow"><span>one thread, -O3</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(1 / 3.5))"></span></span><span class="bval">1×</span></div>
+          <div class="brow simd"><span>openmp, all cores</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">3.5×</span></div>
+          <p class="bfoot">measured then, committed — not run in this tab. 3.536× at the median of 20 reps a side · cv 0.16% / 0.28% · one committed run, so no spread to quote</p>
         </div>
         <figcaption>fig. 06 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
       </figure>
@@ -1672,11 +1704,15 @@ h1[data-np-measuring] .np-ch {
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
-        <div class="bench jet" aria-label="benchmark: virtual-thread engine versus single-threaded java.util.zip">
-          <span class="mono" style="font-size:.7rem">the same stream, twice — 1&#8202;gib, committed bench:</span>
-          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack"><span class="bfill" id="jScalar"></span></span><span class="bval">66&#8202;mb/s</span></div>
-          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack"><span class="bfill" id="jPar"></span></span><span class="bval">422&#8202;mb/s</span></div>
-          <p class="bfoot">6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89×</p>
+        <!-- Same ruling as ¶06's bench: scrubJetBench() is gone and the bars
+             are drawn settled. The date is the commit's, not the run's — JMH
+             writes no date into its JSON, and inventing one would be the class
+             of thing this plate exists to refuse. -->
+        <div class="bench jet" role="group" aria-label="the committed one-gibibyte gzip benchmark, filed">
+          <div class="shead"><span>the committed bench — 1&#8202;gib, gzip</span><span>filed 2026-07-27 · <a href="https://yadava5.github.io/Portfolio-2.0/proof/jetpack-jmh-rigorous-2caacd0.json">@ 2caacd0 ⟶</a></span></div>
+          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(66 / 422))"></span></span><span class="bval">66&#8202;mb/s</span></div>
+          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;mb/s</span></div>
+          <p class="bfoot">measured then, committed — not run in this tab. 6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89×</p>
         </div>
         <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member. <i>the clay tick marks each seam<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
       </figure>
@@ -3330,23 +3366,20 @@ function chooseEditions() {
   return changed;
 }
 
-/* the bench lanes (Glyph) — 1× vs the committed 3.5× */
-function scrubBench(p) {
-  const t = smooth((p - 0.34) / 0.3);
-  $("bScalar").style.transform = `scaleX(${(t * (1 / 3.5)).toFixed(3)})`;
-  $("bSimd").style.transform = `scaleX(${t.toFixed(3)})`;
-}
-/* the bench lanes (jetpack) — 66 vs 422 MB/s from the RIGOROUS 3-fork
-   run (jmh-results-rigorous.json), drawn at the point-estimate ratio.
-   The label carries the 6.4× point estimate, NOT a CI bound — the 6.5×
-   this comment used to name was the QUICK 1-fork run's lo/hi bound
-   (432.7/66.3 = 6.52), and the bars read 455 from that same quick file
-   while the prose above them read 422 from the rigorous one. */
-function scrubJetBench(p) {
-  const t = smooth((p - 0.3) / 0.3);
-  $("jScalar").style.transform = `scaleX(${(t * (66 / 422)).toFixed(3)})`;
-  $("jPar").style.transform = `scaleX(${t.toFixed(3)})`;
-}
+/* scrubBench() and scrubJetBench() STOOD HERE and are deliberately gone.
+   They filled the two bench pairs under the reader's scroll from four
+   hard-coded literals — 1 / 3.5 and 66 / 422 — which C28 proved invisible to
+   every gate: check-figures strips <script> before matching, so inflating
+   them to 1 / 1.8 and 66 / 900 produced a ~1.9× and ~2.1× overclaim with two
+   green gates. The ratios now live in the markup as fractions the browser
+   divides, where check-bench-artifacts reads them against the vendored JMH
+   and Google Benchmark records. The literals were never the defect on their
+   own; a gauge filling as you watch, over numbers measured on another machine
+   in December, was.
+
+   `scrubJet` (:3101) is NOT one of these and stays: it draws fig. 07's lanes
+   and blocks, which is a figure, not a gauge. Same for the reviewer's marks
+   inking in at `how` — a mark being signed misstates no magnitude. */
 
 /* LifeQuest — the honest ledger: three resolve, two stay held. Rows
    resolve in step with the climb next to them. */
@@ -3544,8 +3577,10 @@ function work(y) {
   if (Math.abs(beat - 2) <= 1) scrubPath(beat < 2 ? 0 : beat > 2 ? 1 : bp);
   if (Math.abs(beat - 3) <= 1) scrubApplied(beat < 3 ? 0 : beat > 3 ? 1 : bp);
   if (Math.abs(beat - 4) <= 1) scrubCadence(beat < 4 ? 0 : beat > 4 ? 1 : bp);
-  if (Math.abs(beat - 5) <= 1) scrubBench(beat < 5 ? 0 : beat > 5 ? 1 : bp);
-  if (Math.abs(beat - 6) <= 1) { const p6 = beat < 6 ? 0 : beat > 6 ? 1 : bp; scrubJet(p6); scrubJetBench(p6); }
+  /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
+     its bench is a settled record. Beat 6 keeps scrubJet, which is the
+     drawing; only its bench pair left. */
+  if (Math.abs(beat - 6) <= 1) scrubJet(beat < 6 ? 0 : beat > 6 ? 1 : bp);
   if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
@@ -4275,7 +4310,11 @@ addEventListener("resize", () => { if (flockFrom) buildFlock(); });
 addEventListener("error", () => document.body.classList.add("settled"));
 function settleAll() {
   scrubWho(1); scrubPath(1); scrubApplied(1); scrubCadence(1);
-  scrubBench(1); scrubJet(1); scrubJetBench(1); scrubQuests(1);
+  /* scrubBench(1) and scrubJetBench(1) stood here, and settling them for
+     reduced-motion readers was the page already conceding the argument: the
+     truthful form of a record is the settled one. Every reader gets it now,
+     so there is nothing left here to settle. */
+  scrubJet(1); scrubQuests(1);
   scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
   setStamps(6); setMast(10, 1);
 }

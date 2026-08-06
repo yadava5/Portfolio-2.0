@@ -64,7 +64,9 @@ for (const file of GLYPH_SOURCES) {
   const src = raw.replace(/<script[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, (m) =>
     m.replace(/[^\n]/g, " ")
   );
-  for (const m of src.matchAll(/<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
+  for (const m of src.matchAll(
+    /<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
+  )) {
     const [, href, inner] = m;
     /* `mailto:` and in-page fragments are neither leaving nor descending,
        and the file carries one of each (#top on the masthead wordmark). */
@@ -85,7 +87,9 @@ for (const file of GLYPH_SOURCES) {
       href,
       text,
       want,
-      why: internal ? "same origin — it stays on this site" : "leaves this site",
+      why: internal
+        ? "same origin — it stays on this site"
+        : "leaves this site",
     });
   }
 }
@@ -109,7 +113,11 @@ if (glyphFails.length) {
    parsed everything, and the run is hand-authored HTML — one malformed
    anchor upstream and this regex could quietly match none of them. The
    count is the difference between "holds" and "was never asked". */
-if (glyphSeen.internal + glyphSeen.external < 12) {
+/* 14 since Phase 5 — the two bench sheads each cite a vendored record, which
+   is same-origin and therefore ⟶. Raised with them rather than left at 12,
+   because a floor that stops tracking what it counts is a floor that has
+   stopped meaning anything. */
+if (glyphSeen.internal + glyphSeen.external < 14) {
   console.error(
     `check-links FAILED — the glyph contract matched only ${glyphSeen.internal + glyphSeen.external} anchors ` +
       `in ${GLYPH_SOURCES.join(", ")}, which is fewer than the run has ever carried.\n` +
