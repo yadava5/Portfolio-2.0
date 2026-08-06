@@ -176,13 +176,25 @@ const FIGURES = [
     source:
       "`mvn test` on JDK 25.0.3, 2026-08-02 — surefire XML sums to tests=72 errors=0 skipped=0 failures=0",
   },
-  /* No VisualAssist pair, deliberately. Its 71-test figure was verified
-     on the audit (a `func test` census across VisualAssistTests/ gives
-     exactly 71, against the introducing commit message's stale "68"),
-     but this file only checks figures the run and the data layer BOTH
-     state, and VisualAssist is not one of the run's stations. Adding a
-     pair whose run side can never match makes the gate fail forever,
-     which is how a gate gets deleted. */
+  {
+    /* This pair was declined until 2026-08-05, and the reason was written
+       down here rather than left implicit: "VisualAssist is not one of the
+       run's stations", so its run side could never match and the gate would
+       have failed forever. That reason has now expired — ¶10's fourth
+       receipt states the figure — and a documented gap that can be closed
+       and is not becomes a standing excuse. It is closed with the same
+       commit that made it closable.
+
+       Still not a station, and deliberately so: the argument for a 14th
+       stop was that a project with a receipt deserves one, and the answer
+       was that ¶10 is where receipts live. The figure is on the page; the
+       day is still twelve stops long. */
+    figure: "VisualAssist · iOS suite",
+    run: /71 passed · 0 skipped/,
+    data: /71 unit tests for models and utilities/,
+    source:
+      "xcodebuild test at VisualAssistTests @ 22ebdaa, run twice — iOS 26.5 and 26.2 — 71 passed, 0 failed, 0 skipped, read from the .xcresult via xcresulttool rather than console text",
+  },
 ];
 
 /* Claims the run must NOT make bare, because their source qualifies them. */

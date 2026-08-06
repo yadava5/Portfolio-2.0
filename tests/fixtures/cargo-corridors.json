@@ -4,7 +4,7 @@
     "Desktop only (1440px): the run paints no canvas text on a stacked layout.",
     "Re-record ONLY when the cargo was changed deliberately, and read the diff."
   ],
-  "recordedAt": "2026-08-06T02:23:51Z",
+  "recordedAt": "2026-08-06T03:11:20Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -41,6 +41,10 @@
     {
       "label": "lifequest’s unfinished rows, carried unchanged",
       "corridor": 7
+    },
+    {
+      "label": "automl’s halted run → manifest",
+      "corridor": 8
     },
     {
       "label": "run 042’s report → the review",

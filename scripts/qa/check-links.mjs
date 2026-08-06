@@ -28,6 +28,100 @@ import { join } from "node:path";
 const OUT = "out";
 const CONCURRENCY = 8;
 
+/* ── THE GLYPH CONTRACT (F41) ─────────────────────────────────────────
+ * `↗` means the link LEAVES this site. `⟶` means it goes deeper into it.
+ * A reader learns that distinction from about the third link and then
+ * trusts it, which is exactly why a wrong one costs more than no glyph
+ * at all: it promises a new tab and delivers a scroll, or the reverse.
+ *
+ * Checked as a RULE over the link's origin, never as a fix-list. On
+ * 2026-08-05 the run had nine same-origin links printing `↗`; a list
+ * written by reading the station handoffs would have caught eight. The
+ * ninth is `the working paper` in ¶13's dawn row, which sits among three
+ * genuine exits (mail, github, linkedin) and reads as a fourth. /evidence
+ * had the identical defect in wave 3 — a `public/…` source on this origin
+ * printing `↗` — and it was fixed there by hand, with nothing left behind
+ * to stop it coming back. This is that missing thing.
+ *
+ * Runs against the SOURCE, not `out/`: this gate lives in the CI job that
+ * does not build (the comment at ci.yml:315 claiming otherwise is wrong),
+ * and the run is hand-authored, so the source IS the artifact for it.
+ *
+ * Scope is the run alone. The Next app's pages are retired by this
+ * migration's Phase 4; a guard over surfaces that are being deleted would
+ * be work that has to be deleted with them.
+ */
+const SITE = "https://yadava5.github.io/Portfolio-2.0";
+const GLYPH_SOURCES = ["src/run/index.html"];
+const glyphFails = [];
+const glyphSeen = { internal: 0, external: 0 };
+
+for (const file of GLYPH_SOURCES) {
+  const raw = readFileSync(file, "utf8");
+  /* Scripts and comments carry `<a href=` in strings and in prose about
+     this very rule. Blank them rather than dropping them, so the byte
+     offsets a line number is counted from stay true. */
+  const src = raw.replace(/<script[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, (m) =>
+    m.replace(/[^\n]/g, " ")
+  );
+  for (const m of src.matchAll(/<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)) {
+    const [, href, inner] = m;
+    /* `mailto:` and in-page fragments are neither leaving nor descending,
+       and the file carries one of each (#top on the masthead wordmark). */
+    if (!/^https?:/i.test(href)) continue;
+    const text = inner
+      .replace(/&#8599;/g, "↗")
+      .replace(/&#10230;/g, "⟶")
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const internal = href === SITE || href.startsWith(`${SITE}/`);
+    glyphSeen[internal ? "internal" : "external"] += 1;
+    const want = internal ? "⟶" : "↗";
+    if (text.endsWith(want)) continue;
+    glyphFails.push({
+      file,
+      line: src.slice(0, m.index).split("\n").length,
+      href,
+      text,
+      want,
+      why: internal ? "same origin — it stays on this site" : "leaves this site",
+    });
+  }
+}
+
+if (glyphFails.length) {
+  console.error(
+    `check-links FAILED — ${glyphFails.length === 1 ? "1 link breaks" : `${glyphFails.length} links break`} the glyph contract:\n`
+  );
+  for (const g of glyphFails) {
+    console.error(`  ✗ ${g.file}:${g.line}  wants "${g.want}" — ${g.why}`);
+    console.error(`        ${g.href}`);
+    console.error(`        reads: ${g.text}`);
+  }
+  console.error(
+    "\n  ↗ leaves the site · ⟶ goes deeper into it. Fix the glyph, not this gate:\n" +
+      "  the rule is about the link's origin, so there is always a right answer."
+  );
+  process.exit(1);
+}
+/* A gate that parses nothing prints the same green line as a gate that
+   parsed everything, and the run is hand-authored HTML — one malformed
+   anchor upstream and this regex could quietly match none of them. The
+   count is the difference between "holds" and "was never asked". */
+if (glyphSeen.internal + glyphSeen.external < 12) {
+  console.error(
+    `check-links FAILED — the glyph contract matched only ${glyphSeen.internal + glyphSeen.external} anchors ` +
+      `in ${GLYPH_SOURCES.join(", ")}, which is fewer than the run has ever carried.\n` +
+      "  That is a broken parse, not a clean page. Check the <a> markup before trusting this."
+  );
+  process.exit(1);
+}
+console.log(
+  `check-links: the glyph contract holds — ${glyphSeen.internal} deeper (⟶), ` +
+    `${glyphSeen.external} leaving (↗), across ${GLYPH_SOURCES.join(", ")}`
+);
+
 /* Prefer the BUILT pages — that is what a reader clicks, and it catches a
    link composed at render time from parts that are each individually fine.
    But the gates job in CI does not build, and a check that only runs after

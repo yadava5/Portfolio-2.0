@@ -1399,10 +1399,25 @@ h1[data-np-measuring] .np-ch {
   <p class="foot">six projects · each ticks off as you reach it</p>
 </aside>
 
+<!-- STATION IDS. Every stop is addressable, and the id is the run's OWN
+     name for it — the same word the manifest above prints (applied,
+     cadence, glyph, jetpack-compress, lifequest, agentic automl). Five
+     stops had no id at all until 2026-08-05, so a third of the line could
+     not be linked to: a fragment that matches nothing scrolls silently to
+     the top, which is how five dead 404-page links survived every gate.
+
+     NOT the archive's project ids, deliberately. The case files are keyed
+     `jobtracker`, `taskflow-calendar`, `fast-mnist-nn` — names this page
+     does not use for stations it heads "Applied", "Cadence", "Glyph". The
+     argument for borrowing them was that it would spare the run→archive
+     map one entry; it would not, because beat 03 already ships `#work` for
+     `jobtracker` and renaming a live fragment to save a map entry is the
+     wrong trade. The map belongs in the data, as a field beside the id.
+     `#top` stays on <main>: the masthead has pointed at it since round 1. -->
 <main id="top">
 
   <!-- ¶ 01 · 06:12 — the run starts -->
-  <section class="beat b1" data-beat="0">
+  <section id="start" class="beat b1" data-beat="0">
     <div class="beat-inner">
       <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
         <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">first light. nothing has been decided yet.</p>
@@ -1491,7 +1506,7 @@ h1[data-np-measuring] .np-ch {
           <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
           tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
           legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the inventory is checked in — the rest are read off miami&rsquo;s own systems and cannot be published</span> · <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the inventory is checked in — the rest are read off miami&rsquo;s own systems and cannot be published</span> · <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
@@ -1523,7 +1538,7 @@ h1[data-np-measuring] .np-ch {
           <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified — the rules stage, not the cascade<br>
           ci blocks the build below 0.95 macro-f1 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
           postgres row-level security — a non-bypassrls role</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ⟶</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
@@ -1533,7 +1548,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 05 · 12:06 — Cadence: the parse -->
-  <section class="beat station flip b3" data-beat="4">
+  <section id="cadence" class="beat station flip b3" data-beat="4">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
@@ -1545,7 +1560,7 @@ h1[data-np-measuring] .np-ch {
           4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
           <b>36 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
           rls enforced on <b>7 tables</b> — force, 22 policies · owner-scoped checks on 6 services · idor suite in ci</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ↗</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/taskflow-calendar/">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
@@ -1571,7 +1586,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 06 · 15:23 — Glyph: the run needs a sample -->
-  <section class="beat station b4" data-beat="5">
+  <section id="glyph" class="beat station b4" data-beat="5">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
@@ -1586,7 +1601,7 @@ h1[data-np-measuring] .np-ch {
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
           parallel dot-256 kernel <b>3.5×</b> vs -O3 — parallelism carries all of it; the simd is in both builds · 784 ⟶ 100 ⟶ 10<br>
           3 hand-written simd paths — avx-512 · avx2 · neon (wasm: -msimd128, compiler-vectorised) · 2-person team</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ↗</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
@@ -1621,7 +1636,7 @@ h1[data-np-measuring] .np-ch {
   </section>
 
   <!-- ¶ 07 · 19:36 — jetpack-compress: split, work, stitch -->
-  <section class="beat station flip b5" data-beat="6">
+  <section id="jetpack-compress" class="beat station flip b5" data-beat="6">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
@@ -1664,7 +1679,7 @@ h1[data-np-measuring] .np-ch {
        own content — p.handoff never rendered at 1440×900). The declared
        in/out fractions below are pre-boot values only; x/y/drift stay
        live. The beat's height is derived from the same contract. -->
-  <section class="beat station b6" data-beat="7">
+  <section id="lifequest" class="beat station b6" data-beat="7">
     <div class="beat-inner">
       <div class="prose">
         <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · fifth station · the honest hour — <i>21:07</i></p>
@@ -1712,7 +1727,7 @@ h1[data-np-measuring] .np-ch {
           the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory<br>
           langgraph + mcp · default model gpt-5.4 · <b>2,173 commits</b> on the senior-design gitlab · 2-person team — my seat: backend</p>
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ↗</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the published snapshot, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the published snapshot, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
         <svg id="amlFig" class="figsvg" viewBox="0 0 560 372" role="img" aria-label="A LangGraph supervisor drives a drawn notebook through seven lifecycle phases; the twelve real MCP tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — six clay gates open, and the run halts at the seventh gate before deploy, which never lights."></svg>
@@ -1739,11 +1754,21 @@ h1[data-np-measuring] .np-ch {
         </figure>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">305 passed · 0 skipped — Applied&rsquo;s validation ledger ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/#v-jobtracker-4">305 passed · 0 skipped — Applied&rsquo;s validation ledger ⟶</a></p></div>
           <div class="mline"><p>Make it fast.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">parallel dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/fast-mnist-nn/#v-fast-mnist-nn-2">parallel dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ⟶</a></p></div>
+          <!-- Third, not fourth. "honest" carries the wonk axis and hands
+               straight to the ledger beside it, where two of my own gates
+               refused — that is the paragraph's close and nothing goes after
+               it. This line is here because Visual Assist is the one project
+               whose suite had been COUNTED and never run: 71 test functions
+               existed, no CI step executed them, and no machine here had the
+               iOS runtime. Installing it and running xcodebuild twice is what
+               turned a census into a receipt, which is the discipline. -->
+          <div class="mline"><p>Make it hold up.</p>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/visual-assist/#v-visual-assist-1">71 passed · 0 skipped — Visual Assist&rsquo;s validation ledger ⟶</a></p></div>
           <div class="mline wonk"><p>Make it <em>honest</em>.</p>
-            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot&rsquo;s validation ledger ↗</a></p></div>
+            <p class="rct"><a href="https://yadava5.github.io/Portfolio-2.0/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot&rsquo;s validation ledger ⟶</a></p></div>
         </div>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
@@ -1887,7 +1912,9 @@ h1[data-np-measuring] .np-ch {
           <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
           <a href="https://github.com/yadava5">github &#8599;</a>
           <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin &#8599;</a>
-          <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper &#8599;</a>
+          <!-- same origin, so &#10230; and not &#8599; — this row is three
+               exits and one way back in, and the glyphs have to say which. -->
+          <a href="https://yadava5.github.io/Portfolio-2.0/">the working paper &#10230;</a>
         </div>
         <p class="dawnrun mono">run 043 &middot; not yet begun</p>
       </div>
@@ -2442,13 +2469,28 @@ const TRAV = [
       c.moveTo(1, -2.5); c.lineTo(8, -2.5); c.stroke();
       c.strokeStyle = inkC["--clay-g"]; c.beginPath(); /* the fresh signature */
       c.moveTo(1, 3); c.quadraticCurveTo(3.5, 0.5, 5, 3); c.quadraticCurveTo(6.5, 5, 8, 2.4); c.stroke(); } },
-  { beat: 2, n: 2, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
+  /* the yard sent TWO of the same shaped table — `n: 2` with one draw is a
+     duplicate for spacing, and a duplicate is not a second consignment. The
+     station names three feeders and exactly one thing that leaves the site's
+     own boundary: "only the inventory is checked in". So the table leads and
+     the inventory follows, and the corridor now carries two different facts
+     instead of one fact twice. Grounded in the ¶03 prov line — "one master
+     inventory — 10,453 rows × 35 fields · hash-dedup" — and its handoff. */
+  { beat: 2, n: 1, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.rect(-9, -6.5, 18, 13); c.fill(); c.stroke();
       c.strokeStyle = inkC["--ink-2"]; c.beginPath(); /* rows and fields */
       c.moveTo(-9, -2); c.lineTo(9, -2); c.moveTo(-9, 2.4); c.lineTo(9, 2.4);
       c.moveTo(-3, -6.5); c.lineTo(-3, 6.5); c.moveTo(3, -6.5); c.lineTo(3, 6.5); c.stroke();
       c.fillStyle = inkC["--pine"]; c.fillRect(3.6, -6, 4.9, 3.5); /* the flagged field */ } },
+  { beat: 2, n: 1, off: 0.55, label: null, draw: (c) => { /* the inventory: the one part checked in */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath(); c.rect(-8.5, -7.5, 13, 10); c.fill(); c.stroke();   /* the silos it came from */
+      c.beginPath(); c.rect(-6.5, -5, 13, 10); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;                  /* the one table on top */
+      c.beginPath(); c.rect(-4.5, -2.5, 13, 10); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5;                 /* checked in */
+      c.beginPath(); c.moveTo(-1.5, 2.6); c.lineTo(0.5, 4.8); c.lineTo(5.5, -0.2); c.stroke(); } },
   { beat: 3, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.3;
       c.beginPath(); c.rect(-7, -5, 14, 10); c.fill(); c.stroke();
@@ -2470,15 +2512,40 @@ const TRAV = [
         c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.setLineDash([3, 3]);
         c.strokeRect(-8, -8, 16, 16); c.setLineDash([]);
       } } },
-  { beat: 6, n: 2, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
+  /* same duplicate as beat 2: two identical stitched members. jetpack hands
+     on two distinct things and its own handoff names the second — "the
+     member lands in the benchmark ledger @ 2caacd0". The bench rides behind
+     the member. Drawn as bars and NOT lettered with a throughput: the two
+     numbers are stated once each, in the prov line and the fig-07 bars, and
+     a third copy on the canvas is a third place for them to drift. */
+  { beat: 6, n: 1, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
+  { beat: 6, n: 1, off: 0.55, label: null, draw: (c) => { /* the committed bench: the same stream, twice */
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(-10, -6); c.lineTo(-10, 6); c.lineTo(9, 6); c.stroke(); /* the axis */
+      c.fillStyle = inkC["--ink-2"]; c.fillRect(-9, -4.4, 4, 3.2);        /* one thread */
+      c.fillStyle = inkC["--clay-g"]; c.fillRect(-9, 0.4, 17, 3.2); } },  /* all of them */
   { beat: 7, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
       c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
-  { beat: 8, n: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
+  /* every other project station hands on something IT made. This one used to
+     hand on run 042's report — the day's own paperwork, which would have
+     ridden this corridor whether AutoML existed or not — so the last station
+     of the line was the only one whose freight was not its own. Its output is
+     stated twice on the station and is the same both times: "the run halts at
+     the seventh gate" (fig. 09) and "↳ the halted run lands in" (the handoff).
+     That leads now; the day's report follows a full offset behind it, still
+     bound for the review, because the review is of the RUN and not of AutoML. */
+  { beat: 8, n: 1, label: "automl’s halted run → manifest", draw: (c) => { /* six gates opened, the seventh never */
+      c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.4;
+      for (let i = 0; i < 6; i++) { const x = -10.5 + i * 3;
+        c.beginPath(); c.moveTo(x, -4.5); c.lineTo(x, 4.5); c.stroke(); }
+      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.6; /* the gate that stopped it */
+      c.beginPath(); c.arc(8.5, 0, 3.4, 0, 7); c.stroke(); } },
+  { beat: 8, n: 1, off: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
