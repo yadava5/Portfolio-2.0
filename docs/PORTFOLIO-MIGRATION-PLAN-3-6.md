@@ -38,10 +38,24 @@
 > applies. §4's own order table now overrides its numbering — **read it before
 > starting.**
 >
-> **Phase 5 is next.** Read `scripts/archive/FIGURES.md` before touching a
-> figure — it is §5.4's brief, written with the archive's seven shipped plates
-> as its proof, and where it and §5.4 disagree it wins. Read §1's C41 before
-> starting, because the palette gate Phase 4 retired is Phase 5's to replace.
+> **PHASE 5 IS EXECUTED AND GREEN except its redraw queue** — twelve commits
+> on `feat/figures-and-benchmarks`, `verify:portfolio` at **20 steps**, 270
+> browser tests, nothing pushed. §5.0, §5.3, §5.1, §5.5 and §5.2 are complete;
+> §5.4's grammar, figure gate and night-contrast rule are built and proven, and
+> **fig. 05 is fixed**. §4 is the record of what it turned into.
+>
+> **SIX FIGURES REMAIN — 09, 03, 04, 07, 08, 10 — and §4b is their brief.**
+> It carries an owner ruling that overrides three softer readings in §5.4 and
+> in FIGURES.md: these are to be designed **better than what ships**, not
+> repaired and not reduced, and **they keep answering the scroll**. Read §4b
+> before `scripts/archive/FIGURES.md`, and read both before touching a figure.
+>
+> **The one distinction Phase 5 made load-bearing:** a FIGURE may scrub, a
+> RECORD may not. The bench bars stopped filling under the reader's scroll
+> because they replay numbers measured in December on another machine; their
+> ratios are now fractions bound to four vendored JSON records, and five
+> browser engines measure the rendered widths. Nothing in the redraw may return
+> a committed number to a fill, a sweep or a count-up.
 
 ---
 
@@ -1197,6 +1211,148 @@ made `personal.ts` stop dragging `utils.ts` in (C14).
 > | 5 | **figs. 07, 08** | polish — the `1f 8b` lettering and visibly narrowing blocks; the heavier pencil dash and the climber's ring as the only clay |
 > | 6 | **fig. 10** | three gate squares on a short rail. New drawing at 22:23, so it inherits the night-contrast rule — which is now a gate rather than an instruction |
 
+## 4b. Phase 5.4 — the six figures, re-planned. **[OWNER RULING, 2026-08-06 evening]**
+
+### The ruling, in the owner's own words
+
+> *"i don't want that, like i want the fable to design them even better than
+> what they currently are in the 13 stations! we should make them even more
+> nicer than what we have, not make them down-scaled! the fable agent will
+> have full rights, to look into them! like i already like how they work, and
+> how they interact with the scroll! and it should be like they are with the
+> scroll! just more better design and visual element in there!"*
+
+**This overrides three things in §5.4 and in FIGURES.md, and they are named
+here so nobody re-derives the softer reading:**
+
+| what the earlier text implies | what the ruling says |
+|---|---|
+| fig. 03: *"drop the per-feeder sublabels to a numbered key"* | a key is allowed **only if the plate ends up richer for it**. If the honest fix is more room — a wider edition, a re-staged composition — take the room. Removing information to fix congestion is the last option, not the first |
+| FIGURES.md fig. 10 option 1: *"demote it — let the caption number go to the litany's ledger"* | **already rejected**, and the ruling doubles it. fig. 10 gets a real drawing |
+| "the redraw queue" read as *repair* | it is **design work**. Every one of the six should be visibly better than what ships, not merely un-broken |
+
+**Fable has full rights over the six figures' visual design** — composition,
+staging, added visual elements, the drawing's own vocabulary. The main thread
+verifies (`Fable designs, main verifies` — the Phase 3 arrangement, unchanged:
+Fable never runs CI, Playwright or the validator; the main thread runs them and
+reports back).
+
+### THE SCROLL STAYS. This is the sharpest constraint and it is not a limit on ambition.
+
+The owner likes how these figures work and how they answer the scroll, and the
+redraw keeps that. **The scrub grammar is the run's, and it stays the run's.**
+
+But Phase 5 settled a distinction that is now gated and must not be undone:
+
+- **A FIGURE may scrub.** `scrubPath`, `scrubApplied`, `scrubCadence`,
+  `scrubJet`, `scrubClimb`, `scrubAml`, `scrubHow` all survive and all should
+  keep answering the scroll. A drawing assembling as you arrive is the page's
+  own voice. **Enrich these freely.**
+- **A RECORD MAY NOT.** §5.5 removed `scrubBench`/`scrubJetBench` because a
+  gauge that fills as you watch is an instrument, and those bars replay numbers
+  measured on another machine in December. Their ratios are now fractions in
+  the markup bound to the vendored JSON, and `run-home.spec.ts` measures the
+  rendered width in five engines. **Nothing in the redraw may return a
+  committed number to a fill, a sweep or a count-up.** If a record wants
+  motion, it gets the page's generic reduced-motion-gated prose entrance, or
+  the ink-in the reviewer's marks already have — a mark being signed misstates
+  no magnitude.
+- **fig. 06 stays an instrument** (FIGURES.md rule 1). Its classifier is live;
+  its bench beneath the hair rule is filed. That plate is the page's one
+  worked example of the whole distinction and should read as two registers.
+
+### The five gates the redraw now runs inside, and none of them cap ambition
+
+Every one was built in this phase and every one has been made to fail. They are
+listed so Fable designs against the real constraints rather than discovering
+them in review:
+
+1. **Label size is arithmetic, not taste.** `rendered px = authored px × seat ÷
+   viewBox width`, floor 10. `check-figures.mjs` computes it for all six wide
+   editions from three declared numbers. Measured today: **11.0–12.3px**.
+   *Widening a viewBox without raising the seat minimum is the trap* — it is
+   how the gate found that FIGURES.md's own "widen fig. 09 to 620" lands at
+   **9.97px**. Raise the seat with the box, or stack instead.
+2. **The tight edition is NOT gated and must be held by hand.** Its viewBox is
+   written by JavaScript at run time, so the arithmetic above cannot read it.
+   The archive's measured band is the target: 11.4px at a 248px seat, 15.1px at
+   the 330px cap. **Every enrichment has to survive the tight plate**, which is
+   what a phone gets.
+3. **The aria-label is the figure, spoken, and its clauses are declared.**
+   `check-figures.mjs` holds fig. 03 to `97 percent`, fig. 04 to `defers at the
+   clay gate`, fig. 06 to `784-100-10`, fig. 07 to `one gzip member`, fig. 08
+   to `a deliberate hold, not a fall`, fig. 09 to `their timing staged for the
+   drawing` **and** `which never lights`. A richer drawing needs a richer
+   label — **rewrite the label with the figure, and add the new clause to the
+   declared list in the same commit.** A label that keeps the paths and loses
+   the narrative is a regression no pixel comparison sees.
+4. **Night contrast is computed, not eyeballed.** `check-palette.mjs` measures
+   every token the `.figsvg` rules draw with, over `#43372f` and `#2c2622`, at
+   the WCAG 3.0 non-text floor. **`--hair-strong` sits at 3.01:1 — one
+   hundredth of margin** — and figs. 09 and 10 draw their rules in it. A new
+   stroke weight, a new translucent fill, or any darkening of WAY[5] moves
+   that. The gate reads the tokens off the CSS, so a token newly used in a
+   figure rule joins the measurement automatically.
+5. **The text plates stay text.** figs. 02, 05, 10 and 11 must not acquire
+   `role="img"` — it makes descendants presentational and fig. 02 carries two
+   working links. **fig. 10 gets a drawing INSIDE a text plate**, which is the
+   interesting constraint in the whole queue: the docket's words
+   (`gname`/`gword`/`gleg`/`gclose`) are the plate's argument and the drawing
+   joins them rather than replacing them.
+
+### The queue, in FIGURES.md's order
+
+**fig. 09 — automl. The one live defect left.** Three systems share one x-band:
+the registry column starts at x 398, cell rows run to x 360, and the caveat
+line crosses at y 226. **Stack the registry under the notebook** — the archive
+plate solved it by going fully vertical (supervisor → notebook → registry →
+rail). *The "widen to 620" alternative is closed by measurement (item 1
+above).* It is a night station, so item 4 governs every stroke. Keep
+`scrubAml`: the tools lighting as the run advances is the figure's argument,
+and its label already discloses that the timing is staged.
+
+**figs. 03 and 04 — congestion, and the room to fix it properly.** fig. 03: three
+feeder label pairs, three product boxes and the meter share one 330-unit
+height while the stitch curves cross the label zone. fig. 04: gate labels
+collide with mark paths mid-scrub because the labels sit inside the travel
+corridor — move them above the frame line (the archive plate proves they read
+right-anchored on the rule itself) and keep bucket labels out of the landing
+rows. **The run already owns the right mechanism** — the tight/wide edition
+rebuild at `buildPath`/`buildApplied` under per-figure minimum widths. Fix
+congestion by shipping a better narrow edition, not by squeezing one drawing
+across 320–2560. Both keep their scrub.
+
+**figs. 07 and 08 — the two that "deserve better".** fig. 07 under-tells its
+best part, that the stitched member is byte-valid: give the seam its clay
+moment (it has one) plus a drawn member with the `1f 8b` magic lettered at the
+head — the RFC's own notation, so it is grammar and not a claim — and let
+blocks visibly NARROW through deflate in **both** editions, not just the wide
+one. fig. 08's pencil half reads as faint clutter rather than absence: heavier
+dash (5 7 at 1.4), `held` tags seated on the risers rather than floating, and
+the climber's ring as the **only** clay. fig. 08 is a dusk station but its
+plate is on the dusk curtain (`data-fx-sync="dusk"`), so it exits before the
+darkening — item 4 does not bind it, and **that is a fact to preserve rather
+than a licence: take the plate off the curtain and it does.**
+
+**fig. 10 — the reviewer's marks, given a subject.** Three miniature gate
+squares on a short rail, each mark drawn AT its gate, so the plate shows gates
+being judged rather than three floating glyphs. It is the page's third gate
+drawing, so the miniature stays genuinely miniature — a short rail, no travel,
+no scrub. **The existing draw-in (`stroke-dashoffset`, `how` at the marks) is
+legitimate under the bench ruling and must not be stripped**: a mark being
+inked is a signature, not a gauge. New drawing at 22:23, so item 4 binds it,
+and item 5 binds its container.
+
+### How it lands
+
+One commit per figure, or one per pair where they share a builder. After each:
+`npm run verify:portfolio`, the `out/index.html` diff read by hand, one
+re-baseline, and the `commit` field corrected in **its own** commit (C32 — it
+has now been the same correction six times). Prefer one re-baseline per figure
+over one per edit.
+
+---
+
 ## 4a. Phase 5, as planned. **[RE-PLANNED 2026-08-06]**
 
 Branch `feat/figures-and-benchmarks`, off `refactor/retire-next`. Merged
@@ -1615,9 +1771,44 @@ The discipline, unchanged and now with two phases of evidence behind it:
 
 ---
 
-## 5. Phase 6 — Acceptance, as a reader. **[RE-PLANNED 2026-08-06]**
+## 5. Phase 6 — Acceptance, as a reader. **[RE-PLANNED TWICE — 2026-08-06, again after Phase 5]**
 
 The validator proves nothing broke. It does not prove the thing was worth doing.
+
+> **What Phase 5 added to this walk, and why each is new rather than a
+> restatement.** The list below was written before the bench was re-clothed,
+> before four machine records started shipping at public URLs, and before the
+> palette had a gate. Five items are added and one is sharpened:
+>
+> - **§5.13 — the two registers on fig. 06.** §5.5's judgement call cannot be
+>   gated: whether a reader sees one live instrument above the hair rule and
+>   one filed record below it, or one muddle. **This is the acceptance test for
+>   the whole instrument/record distinction**, which by then will have shaped
+>   six other figures.
+> - **§5.14 — the four `/proof/*.json` links, as a reader clicks them.** The
+>   bench sheads now send a reader to raw Google Benchmark and JMH JSON. It is
+>   the copy that cannot 404, which is why it is cited — but a 42 KB unstyled
+>   JSON blob is a destination, and nobody has read the arrival. Decide whether
+>   that is honest-and-fine (it is a record room; records are raw) or wants a
+>   line of chrome. **Do not gate this; read it.**
+> - **§5.15 — the settled bars, as motion.** Every reader now gets what only
+>   reduced-motion readers used to. Confirm the plate does not read as *dead*
+>   where it used to read as *alive* — the honesty is not in question, the
+>   liveliness is.
+> - **§5.16 — the palette `measured:` grammar is now a standing obligation.**
+>   Any future colour change to `src/run/index.html` or
+>   `scripts/archive/assets/archive.css` must update the recomputed claims
+>   beside it or the gate reds. That is the intended cost. **It belongs in the
+>   ledger (item 11) so the next person meets it as a rule rather than as a
+>   red build.**
+> - **§5.17 — `--hair-strong` has one hundredth of margin at night.** 3.01:1
+>   against a 3.0 floor, and the figures' own rule lines draw in it. Not an
+>   acceptance item so much as a standing note: it is the palette's tightest
+>   pair and the next person to touch WAY[5] needs to know before, not after.
+> - **Item 4 is sharpened:** "read every Phase-5-redrawn plate at its tight
+>   edition" now means all seven — fig. 05 shipped in Phase 5, the other six
+>   with §4b — and the tight edition is the half **no gate reads** (its viewBox
+>   is written at run time). This walk is its only check.
 
 **This is a reading, not a test run.** Everything below is done by a person with
 the deployed site open, in order, once. Where an item already has a gate, the
@@ -1707,9 +1898,34 @@ prints the original first-read date rather than today, the audit walk restores,
 
 ---
 
-## 6. Phase 7 — Ship it. **[NEW — nobody planned this]**
+## 6. Phase 7 — Ship it. **[NEW — nobody planned this. Re-checked after Phase 5.]**
 
-**Nineteen commits, four branches, nothing pushed, `main` fifteen behind.** The
+> **What Phase 5 changed under this section.** §6.2's clone test was run against
+> a tree that no longer exists: **the branch has moved 12 commits, `public/` has
+> grown 4 files and ~104 KB, `verify:portfolio` is 20 steps rather than 17
+> under `--no-e2e`, and the browser suite is 270 tests rather than 245.** Three
+> consequences:
+>
+> - **The clone test must be re-run before the first push**, not treated as
+>   answered. §6.2 already says so conditionally; it is now unconditional. It
+>   costs one clone and ten minutes and it is the only way to test `npm ci` and
+>   a cold `out/` without spending a CI run.
+> - **Two new gates run in the `gates` CI job** — `test:palette` and
+>   `test:bench-artifacts` — and neither has ever run on a Linux runner. Both
+>   are pure Node with no network and no browser, so the risk is low and named
+>   rather than assumed.
+> - **§6.4 gains an item: the four vendored records must answer 200 in
+>   production**, at `/proof/*.json`, served by GitHub Pages with a content type
+>   a browser will render rather than download. The run cites them from two
+>   stations; a 404 there is a citation to nothing, which is the one failure
+>   this whole phase was built to make impossible. `check-crosswalk` proves the
+>   files land in `out/`; only the real host proves they are served.
+>
+> **Nothing else in this section moved.** The three untested things stay
+> untested from here: Linux WebKit, `playwright install --with-deps` on the
+> runner, and `test:links`' real network requests from a GitHub IP.
+
+**Thirty-two commits, five branches, nothing pushed, `main` far behind.** The
 plan has carried "no push, no PR without being asked" since Phase 0 as a
 standing ruling, and it never said what happens at the end. This is that
 section. **Every item needs the owner's decision before it is executed** — this
@@ -1719,13 +1935,13 @@ is the one phase where the plan proposes rather than instructs.
 
 The branches stack, they do not diverge:
 `refactor/stations-truth` → `feat/archive-rebuild` → `refactor/retire-next` →
-(Phase 5) → (Phase 6). Three shapes, and the trade is review granularity
+`feat/figures-and-benchmarks` → (Phase 6). Three shapes, and the trade is review granularity
 against the number of times a half-migrated tree is the tip of `main`:
 
 | | what lands on `main` | cost |
 |---|---|---|
-| **One PR** | the whole migration, once | one review of ~19 commits; `main` is never half-migrated; the deploy fires once |
-| **A PR per phase, in order** | five merges | each is reviewable and each is green on its own; **but `main` sits mid-migration between merges, and `deploy.yml` fires on every push to `main`** — so a reader gets the Phase-3 site (React archive, new `/evidence/` link) for however long Phase 4's review takes |
+| **One PR** | the whole migration, once | one review of ~32 commits; `main` is never half-migrated; the deploy fires once |
+| **A PR per phase, in order** | six merges | each is reviewable and each is green on its own; **but `main` sits mid-migration between merges, and `deploy.yml` fires on every push to `main`** — so a reader gets the Phase-3 site (React archive, new `/evidence/` link) for however long Phase 4's review takes |
 | **One PR, squashed** | one commit | loses the commit messages, which on this branch carry most of the reasoning |
 
 The middle option's cost is the one to weigh: this repository deploys from
