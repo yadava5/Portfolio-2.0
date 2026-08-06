@@ -45,10 +45,20 @@
  * clay's cited Lc 61.3 is `#b04a28` on the golden waypoint, a colour that
  * stopped shipping in Phase 3 — and nothing could have said so.
  *
+ * §5.4'S NIGHT-CONTRAST RULE IS HERE TOO, and this header used to disclaim
+ * it. Figure strokes over a darkened field are a different pair from any
+ * token pair — the dusk choreography was verified stop by stop FOR TEXT — and
+ * figs. 09 and 10 are night stations that §5.4 redraws. The fields are read
+ * from `arcColor`'s own model rather than from the arc's full range, and that
+ * distinction is not pedantry: the first cut measured against the night-side
+ * DUSK stops and reported `--hair-strong` under the floor at 2.53:1, on
+ * grounds no figure ever renders over.
+ *
  * WHAT THIS DOES NOT COVER, said out loud rather than left to be discovered:
- * a figure stroke drawn in `--hair` over the DARKENED field of a dusk station
- * is a different pair from any token pair here, and §5.4's night-contrast
- * rule owns it. And `--clay-g`'s "graphics only, never text" law is NOT
+ * the TIGHT figure editions are built in JavaScript and their viewBox is
+ * written at run time, so the label-size arithmetic for them lives with the
+ * redraw rather than here (`check-figures.mjs` covers the wide editions).
+ * And `--clay-g`'s "graphics only, never text" law is NOT
  * checked statically: `color:` on an `aria-hidden` SVG wrapper is how the
  * archive hands `currentColor` to a drawn mark, so a rule forbidding
  * `color:var(--clay-g)` would red on correct CSS at `archive.css:363`. A
@@ -391,6 +401,99 @@ if (FLIP_STOP && NIGHT["--ink"] && NIGHT["--ink-2"]) {
     );
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   §5.4's NIGHT-CONTRAST RULE. Figure strokes are a different pair from any
+   token pair above, and this file used to disclaim them.
+
+   The dusk choreography's contrast was verified stop by stop FOR TEXT. A
+   hair-weight rule drawn over a darkened field is not text and was measured
+   by nobody, which matters because figs. 09 and 10 are night stations and
+   §5.4 redraws both.
+
+   THE FIELDS ARE arcColor's, NOT "every colour the arc passes through", and
+   getting that wrong produces a false finding — the first cut of this
+   measurement included the night-side DUSK stops and reported --hair-strong
+   at 2.53:1, under the floor. Read from the source instead: beat 8 lerps
+   WAY[5] → WAY[6], beats 9–11 hold WAY[6], and beat 7's plate is on the dusk
+   curtain (`data-fx-sync="dusk"`) so it exits before the darkening opens.
+   No figure ever renders over the crossing. The model is asserted below so
+   the field set cannot drift away from the code that chooses it.
+
+   Strokes are held to the WCAG 3.0 non-text floor; a `.figsvg text` label is
+   text and gets 4.5 / Lc 60. `--hair-strong` clears 3.0 by ONE HUNDREDTH on
+   the first night station, which is worth printing rather than passing
+   silently: a redraw that darkens WAY[5] or thins that alpha puts the
+   figure's own rule lines under the floor.
+   ══════════════════════════════════════════════════════════════════ */
+if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
+  /* The model, asserted from the source that implements it. */
+  const beat8 =
+    /if \(beat === 8\)[\s\S]{0,320}?WAY\[5\][\s\S]{0,40}?WAY\[6\]/.test(
+      runHtml
+    );
+  const held =
+    /if \(beat < 12\)[\s\S]{0,200}?WAY\[6\]\[0\], WAY\[6\]\[1\], WAY\[6\]\[2\]/.test(
+      runHtml
+    );
+  const curtained = /<figure class="plate bare"[^>]*data-fx-sync="dusk"/.test(
+    runHtml
+  );
+  if (!beat8 || !held || !curtained)
+    fail(
+      `the night fields below are read from arcColor's own model and it has changed:\n` +
+        `      beat 8 lerps WAY[5]→WAY[6]: ${beat8 ? "yes" : "NO"} · beats 9–11 hold WAY[6]: ${held ? "yes" : "NO"} ·\n` +
+        `      ¶08's plate is on the dusk curtain: ${curtained ? "yes" : "NO"}.\n` +
+        `      If a figure now renders over the crossing, these strokes are measured against\n` +
+        `      the wrong grounds and the numbers below mean nothing.`
+    );
+
+  /* What .figsvg rules actually draw with, read off the run's own CSS rather
+     than listed by eye — a token added to a figure rule joins this set. */
+  const figureCss = [...runHtml.matchAll(/\.figsvg[^{]*\{([^}]*)\}/g)]
+    .map((m) => m[1])
+    .join(";");
+  const usedTokens = [
+    ...new Set([...figureCss.matchAll(/var\(--([\w-]+)\)/g)].map((m) => m[1])),
+  ]
+    .map((t) => `--${t}`)
+    .filter((t) => NIGHT[t] || DAY[t]);
+  const TEXT_TOKENS = new Set(["--ink-2"]);
+  if (usedTokens.length < 6)
+    fail(
+      `read ${usedTokens.length} colour tokens out of the .figsvg rules, expected at least 6.\n` +
+        `      Measured 2026-08-06: hair-strong, ink, ink-2, clay-g, pine, clay.`
+    );
+  let tightest = { margin: Infinity, token: "", w: 0, at: "" };
+  for (const token of usedTokens) {
+    const raw = NIGHT[token] ?? DAY[token];
+    const floor = TEXT_TOKENS.has(token) ? TEXT : GRAPHIC;
+    for (const bg of NIGHT_FIELDS) {
+      /* A translucent stroke is what the eye receives after compositing, not
+         the token. --hair-strong is rgba(…,.4) and reading it as opaque
+         would overstate it by a factor. */
+      const rgba = rgbaHex(raw);
+      const fg = rgba ? blend(rgba[0], bg, rgba[1]) : raw;
+      if (!/^#[0-9a-f]{6}$/i.test(fg)) continue;
+      const w = contrast(fg, bg);
+      const l = lc(fg, bg);
+      if (w < floor.wcag || l < floor.lc)
+        fail(
+          `a figure stroke in ${token} draws at ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)} on the night\n` +
+            `      field ${bg} — below the ${floor.kind} floor of ${floor.wcag}:1 / Lc ${floor.lc}.\n` +
+            `      figs. 09 and 10 are night stations; this is the pair a redraw changes.`
+        );
+      const margin = w - floor.wcag;
+      if (margin < tightest.margin) tightest = { margin, token, w, at: bg };
+    }
+  }
+  if (tightest.token)
+    note(
+      `night figure strokes: ${usedTokens.length} tokens hold over ${NIGHT_FIELDS.join(" ")} — ` +
+        `tightest is ${tightest.token} at ${tightest.w.toFixed(2)}:1 on ${tightest.at}, ` +
+        `${tightest.margin.toFixed(2)} over its floor`
+    );
+}
+
 /* The reserved stamp: a graphic, and only because its sentence is written. */
 if (DAY["--ember"] && NIGHT_FIELDS.length) {
   const terminal = NIGHT_FIELDS[NIGHT_FIELDS.length - 1];
@@ -418,7 +521,10 @@ if (DAY["--ember"] && NIGHT_FIELDS.length) {
 /* ══════════════════════════════════════════════════════════════════
    The archive: one lit room, three grounds, no arc.
    ══════════════════════════════════════════════════════════════════ */
-const rgbaHex = (v) => {
+/* A `function` and not a `const` arrow: the night-stroke check above also
+   composites translucent tokens and would sit in this one's temporal dead
+   zone otherwise. */
+function rgbaHex(v) {
   const m = v.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
   if (!m) return null;
   return [
@@ -428,7 +534,7 @@ const rgbaHex = (v) => {
         .join(""),
     m[4] === undefined ? 1 : Number(m[4]),
   ];
-};
+}
 let ARCHIVE_GROUNDS = {};
 if (ARCH["--paper"] && ARCH["--plate"] && ARCH["--plate-solid"]) {
   const paper = ARCH["--paper"];
