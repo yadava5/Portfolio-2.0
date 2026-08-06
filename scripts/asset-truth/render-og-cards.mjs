@@ -257,7 +257,12 @@ for (const study of studies) {
     throw new Error(`could not read case study ${study.projectId ?? "?"}`);
   }
 }
-const total = String(studies.length).padStart(2, "0");
+/* Unpadded, `of` not `/` — the page's own counter grammar. The padded
+   `¶ case file 05 / 07` form was REMOVED from the case files (fix round
+   3, N17: indistinguishable from the home story's chapter counter), and
+   the card is the first thing a shared link shows — it must not open a
+   page that contradicts it. */
+const total = String(studies.length);
 
 /* ── The card set ─────────────────────────────────────────────────── */
 
@@ -278,7 +283,7 @@ const cards = [
   },
   ...studies.map((study) => ({
     file: `case-${study.projectId}.png`,
-    kicker: `¶ case file ${String(study.fileNo).padStart(2, "0")} / ${total}`,
+    kicker: `¶ case file ${study.fileNo} of ${total}`,
     title: projectTitles.get(study.projectId) ?? study.projectId,
     deck: study.summary,
     folio: `${FOLIO_ROOT}/projects/${study.projectId}`,

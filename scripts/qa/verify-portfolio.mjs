@@ -338,6 +338,21 @@ step("home-page anchors", "test:anchors", {
 step("pinned artifact links", "test:links", {
   reads: "out/** if built, else 4 source files",
 });
+/* The archive is generated to STAGING and checked there, not in out/.
+   out/ still holds the Next-rendered case files, whose footers say
+   `back to the work ⟵` → /#work and carry no rejoin link at all, so pointed
+   at out/ the crosswalk's fourth direction would be red until a later phase —
+   and a validator that cannot go green until later is the one thing the
+   execution protocol forbids. The argument moves to out/ at the cutover.
+
+   Neither step touches out/, so both are safe anywhere before the browser
+   step; they sit here because they are the other half of the link gates. */
+step("archive → staging", "build:archive", {
+  reads: "src/lib/data + public/",
+});
+step("run ⇄ archive crosswalk", "test:crosswalk", {
+  reads: ".build/archive-staging + src/run/index.html",
+});
 step("nameplate", "test:nameplate", { reads: "out/ served over http" });
 step("nameplate (negative)", "test:nameplate:negative", {
   reads: "a temp copy of out/",

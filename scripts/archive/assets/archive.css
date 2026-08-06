@@ -1,0 +1,558 @@
+/* ————————————————————————————————————————————————————————————————
+   THE RECORD ROOM — one stylesheet for the archive's three pages.
+
+   The palette is the run's, wholesale — not just the clay. Measured
+   2026-08-06 (WCAG 2.x / APCA 0.0.98G-4g) on the archive's own
+   surfaces before anything below was written:
+
+     on paper #fbf3e7          on plate #fdf8ef      on plate-solid
+     ink    #26231c 14.24 / 96.0   14.82 / 98.7      15.15 / 100.2
+     ink-2  #5c564a  6.61 / 78.7    6.88 / 81.4       7.03 /  82.9
+     clay   #a03f20  5.91 / 74.9    6.15 / 77.6       6.29 /  79.1
+     clay-g #c4532e  4.13 / 64.2    4.29 / 66.9       4.39 /  68.4
+     pine   #2f5d50  6.81 / 79.3    7.08 / 82.0       7.24 /  83.5
+
+   Every text ink clears AA and the Lc 60 dim floor everywhere it can
+   sit; body ink clears Lc 90. clay-g at 4.13:1 is UNDER the 4.5 text
+   floor, so it keeps the run's own law — graphics only, never text.
+   The #b04a28 family (clay-night, ember, invite) does not appear in
+   this file at all: the old archive's clay measured 5.06 / 71.3 on its
+   own canvas and lost to the run's on every surface.
+
+   THE ARCHIVE STAYS LIT. No day arc — readers arrive at arbitrary #v-
+   depths and a scroll-keyed arc would assign a time of day to a jump
+   target — and no dark scheme either: the conceit the pages say out
+   loud is that pulling a file turns on the archive lamp, which is why
+   this paper is bright at ten at night. color-scheme:light makes the
+   UA's own furniture agree.
+   ———————————————————————————————————————————————————————————————— */
+
+@font-face{
+  font-family:"Fraunces";
+  font-style:normal; font-weight:100 900; font-display:swap;
+  src:url("../fonts/fraunces-latin-var.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Newsreader";
+  font-style:normal; font-weight:400; font-display:swap;
+  src:url("../fonts/newsreader-latin-var.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Newsreader";
+  font-style:italic; font-weight:400; font-display:swap;
+  src:url("../fonts/newsreader-italic-latin-var.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Fragment Mono";
+  font-style:normal; font-weight:400; font-display:swap;
+  src:url("../fonts/fragment-mono-latin.woff2") format("woff2");
+}
+
+:root{
+  --paper:#fbf3e7;
+  --ink:#26231c;
+  --ink-2:#5c564a;
+  --clay:#a03f20;          /* clay as text — 5.91:1 / Lc 74.9 on paper */
+  --clay-g:#c4532e;        /* clay as graphic — 4.13:1: NEVER text */
+  --pine:#2f5d50;
+  --hair:rgba(38,35,28,.16);
+  --hair-strong:rgba(38,35,28,.34);
+  --plate:rgba(255,253,246,.55);
+  --plate-solid:rgba(255,252,244,.86);
+  --plate-line:rgba(38,35,28,.14);
+  --shadow:0 22px 60px -28px rgba(56,44,32,.35);
+  --pad-x:clamp(20px, 5vw, 80px);
+  --display:"Fraunces", Georgia, serif;
+  --body:"Newsreader", Georgia, serif;
+  --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+  color-scheme:light;
+}
+
+/* ————— the cut from the run, softened —————
+   MPA view transitions: zero-JS, progressive, never load-bearing. The
+   run's night ground is #2c2622 and the archive's paper is cream; a
+   ~200ms cross-fade is what stops that cut reading as a flashbang. The
+   run's document needs the same at-rule for the run→archive direction;
+   archive→archive gets it from here alone. */
+@media (prefers-reduced-motion: no-preference){
+  @view-transition{ navigation: auto; }
+  ::view-transition-old(root), ::view-transition-new(root){
+    animation-duration:.2s;
+  }
+}
+
+*{margin:0; padding:0; box-sizing:border-box}
+html{scroll-behavior:auto}
+body.archive{
+  background:
+    radial-gradient(120% 60% at 50% -12%, rgba(255,248,231,.9), rgba(251,243,231,0) 60%),
+    var(--paper); /* the lamp pools at the top of the sheet */
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:1.125rem;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:clip;
+}
+/* the run's field texture, held still: contour + grain at the same
+   whisper opacity — the same paper, one stop older */
+body.archive::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 620 620'%3E%3Cg fill='none' stroke='%2326231c' stroke-width='1'%3E%3Cpath d='M60 310c40-90 150-130 250-110s190 90 250 60' opacity='.5'/%3E%3Cpath d='M20 420c70-60 180-40 280-70s160-120 300-90' opacity='.35'/%3E%3Cpath d='M100 150c90 10 140 80 240 70s170-60 260-30' opacity='.4'/%3E%3C/g%3E%3C/svg%3E");
+  opacity:.05;
+}
+body.archive::after{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.05;
+}
+main, .mast, .colophon{position:relative; z-index:1}
+
+::selection{background:var(--clay-g); color:#fbf3e7}
+a{color:var(--pine); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px}
+a:focus-visible, button:focus-visible{outline:2px solid var(--clay-g); outline-offset:3px; border-radius:1px}
+img, svg{max-width:100%}
+button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+
+.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+.skip-link{position:absolute; left:-9999px; top:0; z-index:200;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.skip-link:focus{left:1rem; top:1rem; background:var(--clay-g); color:#fbf3e7; padding:.5rem .9rem; text-decoration:none}
+.nowrap{white-space:nowrap}
+.wrap-any{overflow-wrap:anywhere}
+/* THE ORPHANED FOLIO, kept: in a flex-wrap + justify-between row the
+   second half wraps to flex-START the moment it cannot share the line —
+   an onward arrow printed on the left, under a return arrow. The auto
+   inline-start margin seats it flush right on its own line and resolves
+   to the identical position where both halves share one. */
+.folio-seat{margin-inline-start:auto; text-align:right}
+
+/* ————— chrome ————— */
+.mast{
+  display:flex; justify-content:space-between; align-items:baseline; gap:1rem;
+  padding:.85rem var(--pad-x);
+  border-bottom:1px solid var(--hair);
+}
+.mast .wm{color:var(--ink); text-decoration:none; font-family:var(--display);
+  font-size:.98rem; letter-spacing:.01em; font-variation-settings:"opsz" 40, "SOFT" 30}
+.mast .wm:hover{font-variation-settings:"opsz" 40, "SOFT" 100}
+@media (prefers-reduced-motion: no-preference){ .mast .wm{transition:font-variation-settings .5s ease} }
+.mast .state{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2); text-align:right}
+
+.colophon{
+  margin-top:4rem; padding:2.2rem var(--pad-x) 2.6rem; border-top:1px solid var(--hair);
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em; color:var(--ink-2);
+  display:flex; flex-direction:column; gap:.7rem; align-items:center; text-align:center;
+}
+.colophon .strap{letter-spacing:.24em; opacity:.7}
+
+/* ————— the sheet ————— */
+.wrap{max-width:1180px; margin:0 auto; padding:2.6rem var(--pad-x) 0}
+.dossier{position:relative; min-height:100vh}
+/* the thread, already inked: the run's rail is drawn per-frame because
+   its day moves; a record's thread is finished, so it is a tiled
+   hand-wobbled stroke down the binding margin — same clay-g ink, no
+   script, any page height. Endpoints of the tile meet at x=2 so the
+   seam never shows. */
+.dossier::before{
+  content:""; position:absolute; top:0; bottom:0; left:max(10px, calc(50% - 620px));
+  width:5px; pointer-events:none; opacity:.8;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='620' viewBox='0 0 5 620'%3E%3Cpath d='M2 0 C3.4 60 .8 130 2.2 200 C3.3 260 .6 320 2 380 C3.2 440 .9 520 2 620' fill='none' stroke='%23c4532e' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat:repeat-y;
+}
+@media (max-width:1279px){ .dossier::before{opacity:.45} }
+
+.kickline, .kickrow p{font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; color:var(--ink-2)}
+.kickrow{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 1.5rem}
+.kickrow [data-dossier-kicker]{color:var(--clay)}
+
+/* the arrival slip — the run's handoff grammar, receiving side */
+.slip{margin-top:1rem; padding-top:.65rem; border-top:1px solid var(--hair);
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:2}
+.slip .dep{color:var(--clay)}
+.hourline{margin:.4rem 0 0; font-family:var(--display); font-style:italic;
+  font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45; color:var(--ink-2); opacity:.9; max-width:52ch}
+
+/* the file's margin note — paper-memory fills it; the box is reserved
+   even while hidden so its arrival can never move the title (the
+   zero-shift contract, held with visibility instead of display) */
+.file-note{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
+  margin-top:.7rem; min-height:1.2em}
+.file-note[hidden]{display:block; visibility:hidden}
+
+.filehead{margin-top:2rem}
+.filehead h1{font-family:var(--display); font-weight:430;
+  font-variation-settings:"opsz" 100, "SOFT" 40;
+  font-size:clamp(2.1rem, 4.2vw, 3.4rem); letter-spacing:-.015em; line-height:1.06; max-width:16ch}
+.filehead .deck{margin-top:1.3rem; color:var(--ink-2); max-width:58ch}
+
+/* ————— the meta ledger ————— */
+.metagrid{margin-top:2.6rem; display:grid; gap:2rem 4rem}
+@media (min-width:1024px){ .metagrid{grid-template-columns:minmax(0,34rem) minmax(0,1fr)} }
+.meta{border-top:1px solid var(--hair-strong); padding-top:1rem;
+  display:flex; flex-direction:column; gap:.6rem}
+.meta .mrow{display:flex; align-items:baseline; gap:.75rem;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.meta dt{color:var(--ink-2); flex-shrink:0}
+.lead{flex:1 1 2rem; min-width:2rem; border-bottom:1px dotted var(--hair-strong); align-self:center; height:1px}
+.meta dd{color:var(--ink); max-width:70%; text-align:right; overflow-wrap:anywhere}
+.metaside{display:flex; flex-direction:column; gap:1.4rem; align-items:flex-start}
+@media (min-width:1024px){ .metaside{align-items:flex-end} }
+.stamp-private{color:var(--clay); transform:rotate(-3deg); width:min(210px,60vw)}
+.stamp-private text{font-family:var(--mono)}
+.disclosure{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.9;
+  color:var(--ink-2); border-top:1px solid var(--hair); padding-top:.7rem; max-width:44ch}
+
+/* ————— problem + fig. 1 ————— */
+.probgrid{margin-top:4rem; display:grid; gap:2.6rem 4rem}
+@media (min-width:1024px){ .probgrid{grid-template-columns:minmax(0,30rem) minmax(0,1fr)} }
+@media (min-width:1280px){ .probgrid{grid-template-columns:minmax(0,22.5rem) minmax(0,1fr)} }
+.seckick{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.08em; color:var(--ink-2)}
+.sublabel{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink-2); margin-top:1.8rem}
+.prose{margin-top:1rem; max-width:52ch}
+.constraints{margin-top:.7rem; list-style:none}
+.constraints li{border-top:1px solid var(--hair); padding:.6rem 0;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.04em; line-height:1.8; color:var(--ink)}
+
+/* the plate — a tipped-in monograph plate on warm stock */
+.plate-fig{transform:rotate(-.4deg)}
+.plate-paper{display:block; background:var(--plate-solid); border:1px solid var(--hair-strong);
+  box-shadow:var(--shadow); padding:.7rem}
+.plate-inner{border:1px solid var(--hair); padding:clamp(.9rem, 2.4vw, 1.6rem)}
+.plate-fig figcaption{margin-top:.9rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.fc-main{color:var(--ink)}
+.fc-main i{font-style:normal; color:var(--clay)}
+.fc-note{color:var(--ink-2); margin-top:.2rem; display:block}
+
+/* the figure ink — the run's .figsvg vocabulary, held still.
+   Authored at 11 units on 240-unit plates, capped at the run's own
+   330px tight cap: rendered type stays in the 11–15px band from a
+   320px viewport up (the edition arithmetic is in case-figures.mjs). */
+.figsvg{width:100%; height:auto; display:block; max-width:330px; margin-inline:auto}
+.figsvg text{font-family:var(--mono); font-size:11px; letter-spacing:.03em; fill:var(--ink-2)}
+.figsvg .lit{fill:var(--ink)}
+.figsvg .lane{stroke:var(--hair-strong); stroke-width:1; fill:none}
+.figsvg .gatecol{stroke:var(--hair-strong)}
+.figsvg .route{stroke:var(--hair); stroke-width:1.2; fill:none; stroke-dasharray:2 5}
+.figsvg .gsq{fill:var(--clay-g)}
+.figsvg .gsqp{fill:var(--clay-g)}
+.figsvg .mk{fill:none; stroke:var(--ink); stroke-width:1.2}
+.figsvg .mk.ok{stroke:var(--pine)}
+.figsvg .mk.rv{stroke:var(--clay-g)}
+.figsvg .hn{fill:var(--ink); opacity:.35}
+.figsvg .lit-dot{opacity:1}
+.figsvg .pencil{fill:none; stroke:var(--ink-2); stroke-width:1.2; stroke-dasharray:5 5}
+.figsvg .penciltx{fill:var(--ink-2); opacity:.9}
+.figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.1}
+.figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
+.figsvg .rec.landed{stroke:var(--pine)}
+.figsvg .tickp{fill:none; stroke:var(--pine); stroke-width:1.5}
+.figsvg .pinet{fill:var(--pine)}
+.figsvg .cellr{fill:none; stroke:var(--hair-strong); stroke-width:1}
+.figsvg .cellink{fill:none; stroke:var(--ink); stroke-width:1.4}
+.figsvg .tname{fill:var(--ink-2); opacity:.9}
+.figsvg .tdot{fill:var(--pine)}
+.figsvg .phgate{fill:none; stroke:var(--clay-g); stroke-width:1.4}
+.figsvg .phgate.open{stroke:var(--pine)}
+.figsvg .phgate.shut{fill:var(--clay-g)}
+.figsvg .deplbl{fill:var(--ink-2); opacity:.9}
+.figsvg .bark{fill:var(--ink-2)}
+.figsvg .bark.clay{fill:var(--clay-g)}
+
+/* the cadence plate — type, grid, and the filed event */
+.cadfig{max-width:360px; margin-inline:auto}
+.cadfig .sent{font-size:1.05rem; line-height:1.7; max-width:34ch}
+.cadfig .w{padding:.06em .12em; border-radius:2px; background:rgba(196,83,46,.14)}
+.cadfig sup{font-family:var(--mono); font-size:.62em; color:var(--ink-2)}
+.cadfig .week{margin-top:1.1rem; border:1px solid var(--hair-strong); background:var(--plate)}
+.cadfig .hd{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:.66rem; text-align:center; color:var(--ink-2)}
+.cadfig .hd span{padding:.28rem 0}
+.cadfig .hd .tu{color:var(--clay)}
+.cadfig .wgrid{display:grid; grid-template-columns:repeat(7,1fr); grid-auto-rows:32px}
+.cadfig .wgrid i{border-top:1px solid var(--hair); border-left:1px solid var(--hair); font-style:normal}
+.cadfig .wgrid i:nth-child(7n+1){border-left:none}
+.cadfig .ev{display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.02em;
+  color:var(--clay); border:1px solid var(--clay-g) !important; border-radius:2px; margin:2px}
+.cadfig .evcard{margin-top:1.1rem; border-top:1px solid var(--hair-strong)}
+.cadfig .evcard div{display:flex; align-items:baseline; gap:.75rem; padding:.45rem 0; border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em}
+.cadfig .evcard dt{color:var(--ink-2); min-width:5.4rem}
+.cadfig .evcard dd{color:var(--ink)}
+
+/* ————— fig. 2 — the architecture ————— */
+#architecture{margin-top:4.5rem}
+.diagram{margin-top:1.4rem}
+.diagram .dsummary{max-width:55ch}
+.diagram .cards{margin-top:1.8rem; display:grid; gap:1rem 1.4rem}
+@media (min-width:640px){ .diagram .cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:1024px){ .diagram .cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.ncard{border:1px solid var(--hair-strong); padding:.85rem 1rem; background:var(--plate)}
+.ncard.gate{border-color:var(--clay-g)}
+.ncard .nlabel{font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink);
+  display:flex; align-items:center; justify-content:space-between; gap:.7rem}
+.ncard.gate .nlabel{color:var(--clay)}
+.ncard .ndetail{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2); margin-top:.35rem; line-height:1.7; overflow-wrap:anywhere}
+.gsq2{display:inline-block; width:8px; height:8px; background:var(--clay-g); flex-shrink:0; margin-right:.45rem}
+.ncard .gsq2{margin-right:0}
+.diagram .rail{margin-top:1.8rem; display:flex; flex-direction:column; gap:.7rem}
+/* 1280, not 1024, and it is measured: jobtracker's six stages plus five
+   joints have a ~1069px min-content run, and a 1024 viewport hands the
+   rail 922px — probed at +147px of horizontal overflow before this
+   stop moved. At 1280 the sheet affords it, and the details wrap. */
+@media (min-width:1280px){ .diagram .rail{flex-direction:row; align-items:center} }
+.diagram .stage{display:flex; flex-direction:column; gap:.7rem; flex:1; min-width:0}
+.diagram .joint{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
+  display:flex; align-items:center; gap:.5rem; padding-left:1rem}
+.diagram .joint span{overflow-wrap:anywhere}
+@media (min-width:1280px){ .diagram .joint{flex-direction:column; gap:.25rem; padding:0 .7rem; text-align:center; flex-shrink:0; max-width:9rem} }
+.offspine{margin-top:1.6rem; border-top:1px solid var(--hair); padding-top:1rem}
+.oshead{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2)}
+.offspine ul, .offspine ol{margin-top:.6rem; list-style:none}
+.offspine li{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; padding:.3rem 0; line-height:1.9}
+.offspine .n1{color:var(--ink)}
+.offspine .elabel{color:var(--ink-2); margin-left:.5rem}
+.offspine .gatelbl{color:var(--clay)}
+.annot{margin-top:1.4rem; display:flex; gap:.7rem; align-items:flex-start; max-width:46ch; color:var(--clay)}
+.annot svg{width:31px; height:22px; flex-shrink:0; margin-top:.15rem}
+.annot p{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.diagram figcaption{margin-top:1.4rem; border-top:1px solid var(--hair); padding-top:.7rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+
+/* ————— fig. 3 — the registry (automl) ————— */
+.registry{margin-top:3.4rem; max-width:26rem}
+.registry ul{list-style:none; border-left:1px solid var(--hair-strong); padding-left:1.4rem;
+  display:flex; flex-direction:column; gap:.7rem}
+.registry li{display:flex; justify-content:space-between; align-items:baseline; gap:.5rem;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink-2)}
+.registry li.awaiting{color:var(--ink)}
+.registry .rgrun{min-width:0; flex:1}
+.registry .rgm{width:2.2em; flex-shrink:0; text-align:right}
+.registry .rgnote{justify-content:flex-end; font-size:.72rem}
+.registry .rgstatus, .registry .registry-approve{text-align:right; white-space:nowrap}
+@media (min-width:640px){ .registry .rgstatus, .registry .registry-approve{width:11.4em; flex-shrink:0} }
+@media (max-width:639px){ .registry .rgm, .registry .rghead .rgm, .registry .rgnote{display:none} }
+.registry-approve{position:relative; padding:0}
+.registry-approve .registry-mark{display:none; align-items:center; justify-content:flex-end; color:var(--ink)}
+.registry-approve[aria-pressed="true"]{cursor:default}
+.registry-approve[aria-pressed="true"] .registry-strike{text-decoration:line-through; color:var(--ink-2)}
+.registry-approve[aria-pressed="true"] .registry-mark{display:flex}
+.registry figcaption{margin-top:1.1rem; padding-left:1.4rem; font-family:var(--mono);
+  font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:1.9}
+.registry figcaption span{display:block}
+
+/* ————— decisions ————— */
+#decisions{margin-top:4.5rem}
+.drows{margin-top:.4rem}
+.drow{border-top:1px solid var(--hair); padding:1.4rem 0}
+.drow h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink)}
+.drow .dreason{margin-top:.7rem; max-width:52ch}
+.drow sup{font-family:var(--mono); font-size:.72em; color:var(--ink-2)}
+.drow .dslip{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.8;
+  color:var(--ink-2); border-left:1px solid var(--hair-strong); padding-left:1rem; margin:.8rem 0 0 1.2rem}
+@media (min-width:1024px){
+  .drow{display:grid; grid-template-columns:minmax(0,44rem) minmax(200px,280px); column-gap:3rem}
+  .drow h3, .drow .dreason{grid-column:1}
+  .drow .dslip{grid-column:2; grid-row:1 / span 2; margin:0; align-self:start}
+}
+
+/* ————— validation ————— */
+#validation{margin-top:4.5rem}
+.glance{margin-top:1.4rem; max-width:44rem; border-top:1px solid var(--hair); padding-top:1rem}
+.glance .gmarks{display:flex; flex-wrap:wrap; gap:.5rem .55rem; align-items:center; color:var(--clay-g)}
+.glance .ag.lg{width:14px; height:11px}
+.glance figcaption{margin-top:.6rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+.ledger-glance{border-top:none; color:var(--ink)}
+.ledger-glance .gmarks{color:var(--ink)}
+.ledger-glance .heldmark{color:var(--clay-g); margin-left:3px}
+.vg{width:10px; height:10px}
+.ag{width:11px; height:9px}
+
+.methodslip{margin-top:1.6rem; max-width:44rem; border-left:2px solid var(--clay-g); padding-left:1.2rem}
+.methodslip h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink)}
+.methodslip dl{margin-top:.7rem; display:flex; flex-direction:column; gap:.35rem}
+.methodslip div{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; line-height:1.8}
+.methodslip dt{display:inline; color:var(--ink-2)}
+.methodslip dd{display:inline; color:var(--ink); overflow-wrap:anywhere}
+.methodslip .notdoc{margin-top:.7rem; font-family:var(--mono); font-size:.75rem; color:var(--ink-2)}
+
+.rtable{margin-top:2.4rem}
+.rtable + .rtable{margin-top:3rem}
+.rtable h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.06em; color:var(--ink)}
+.thead{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.5rem 2rem}
+.thead > :last-child{margin-inline-start:auto; text-align:right}
+.collegend{display:none}
+@media (min-width:768px){
+  .collegend{display:grid; grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.6fr);
+    gap:0 2rem; margin-top:1rem; padding-bottom:.5rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+}
+.rtable ol{list-style:none; margin-top:.5rem}
+.rtable li[data-receipt-row]{border-top:1px solid var(--hair); padding:1.1rem 0;
+  display:grid; gap:.5rem 2rem}
+@media (min-width:768px){
+  .rtable li[data-receipt-row]{grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.6fr)}
+}
+/* a deep-linked receipt shows its ask: the row you arrived at is ruled */
+.rtable li[data-receipt-row]:target{border-top:2px solid var(--clay-g); scroll-margin-top:4rem}
+.rnum{position:relative; font-family:var(--mono); font-size:.78rem; letter-spacing:.05em;
+  color:var(--ink-2); text-decoration:none; margin-right:.5rem; padding:.35rem .3rem; margin-block:-.35rem}
+.rnum:hover{color:var(--ink); text-decoration:underline; text-underline-offset:4px}
+.audit-mark{position:absolute; left:-16px; top:50%; transform:translateY(-50%);
+  color:var(--clay-g); opacity:0}
+@media (prefers-reduced-motion: no-preference){ .audit-mark{transition:opacity .3s ease} }
+[data-audit-ticked] .audit-mark{opacity:1}
+[data-audit-dried] .audit-mark{transition:none}
+.klabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+@media (min-width:768px){ .klabel{display:none} }
+.claim .ctext{font-size:1.0625rem; line-height:1.5}
+.rmeta{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; color:var(--ink-2); line-height:1.9}
+.rmeta .rdate{display:block; margin-top:.25rem}
+.rart{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; overflow-wrap:anywhere; line-height:1.9}
+.rart ul{list-style:none; display:flex; flex-direction:column; gap:.25rem}
+.rart .none{color:var(--ink-2)}
+.rart .vis{color:var(--ink-2); margin-top:.4rem; display:flex; align-items:center; gap:.4rem}
+
+/* run the audit — two faces, one cell, zero shift */
+.audit-seat{display:inline-flex; max-width:100%; align-items:baseline}
+.audit-run{font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink);
+  text-align:left; max-width:100%; padding:0}
+.audit-run .faces{display:grid; max-width:100%}
+.audit-run .face{grid-area:1/1}
+.audit-run .rest{text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; text-decoration-color:var(--hair-strong)}
+.audit-run:hover .rest{text-decoration-color:currentColor}
+.audit-run .settled{visibility:hidden; color:var(--ink-2)}
+.audit-run[data-walked]{cursor:default}
+.audit-run[data-walked] .rest{visibility:hidden}
+.audit-run[data-walked] .settled{visibility:visible}
+@media (min-width:768px){ .audit-run{text-align:right} }
+
+.provline{margin-top:2rem; border-top:1px solid var(--hair); padding-top:.7rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:1.9}
+.notclaim{margin-top:2.4rem; max-width:44rem}
+.notclaim ul{margin-top:.5rem; list-style:none}
+.notclaim li{border-top:1px solid var(--hair); padding:.75rem 0;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.9; color:var(--ink-2)}
+
+/* ————— the checked-in ledger ————— */
+#ledger{margin-top:4.5rem; max-width:44rem}
+#ledger table{margin-top:1rem; width:100%; border-collapse:collapse;
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
+#ledger th{text-align:left; font-weight:400; color:var(--ink-2); padding:.5rem 1rem .5rem 0;
+  border-bottom:1px solid var(--hair-strong)}
+#ledger td{padding:.6rem 1rem .6rem 0; border-bottom:1px solid var(--hair); color:var(--ink-2); vertical-align:top; line-height:1.7}
+#ledger td.val{color:var(--ink)}
+@media (max-width:639px){ #ledger .notecol{display:none} }
+#ledger .dl{margin-top:1rem; font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
+#ledger .boundary{margin-top:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2); line-height:1.9}
+
+/* ————— corrections ————— */
+#corrections{margin-top:4.5rem; max-width:44rem}
+#corrections ul{margin-top:.5rem; list-style:none}
+#corrections li{border-top:1px solid var(--hair); padding:1rem 0}
+#corrections .ckind{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--clay)}
+#corrections .cbody{margin-top:.4rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.9; color:var(--ink)}
+#corrections .noc{margin-top:.5rem; border-top:1px solid var(--hair); padding-top:1rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+
+/* ————— the appendix ————— */
+#artifacts{margin-top:4.5rem}
+.plates{margin-top:1.6rem; display:grid; gap:2.4rem 2.4rem}
+@media (min-width:768px){ .plates{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.plateb{display:block; text-decoration:none; color:inherit}
+.plateb .plate-paper{padding:.7rem; transition:border-color .2s ease}
+.plateb:hover .plate-paper{border-color:var(--ink)}
+.plateb .pframe{display:block; position:relative; aspect-ratio:4/3}
+.plateb .pframe img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain}
+.plateb .pcap{display:block; margin-top:.8rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.plateb.wide{grid-column:1 / -1}
+@media (min-width:768px){
+  .plateb.wide{display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:.8rem 2.4rem}
+  .plateb.wide .pframe{aspect-ratio:16/9}
+  .plateb.wide .pcap{align-self:end; margin-top:0}
+}
+.plateb.poster{grid-column:1 / -1; display:grid; gap:2rem 2.4rem}
+@media (min-width:768px){ .plateb.poster{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.plateb .panel{display:block}
+.plateb .crop{display:block; position:relative; overflow:hidden; width:100%}
+.plateb .crop img{position:absolute; max-width:none; height:auto}
+.plateb .plabel{display:block; margin-top:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+.aindex{margin-top:2.4rem}
+.aindex ul{margin-top:.7rem; list-style:none}
+.aindex li{border-top:1px solid var(--hair); padding:.6rem 0;
+  display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 2rem;
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
+.aindex .aprov{color:var(--ink-2); margin-inline-start:auto; text-align:right}
+
+/* the artifact viewer — native dialog; the plate itself is a link, so a
+   JS-dead world opens the original artifact instead of nothing */
+.viewer{border:1px solid var(--hair-strong); background:var(--paper); color:var(--ink);
+  max-width:min(72rem, calc(100vw - 2rem)); width:100%; padding:0; margin:auto}
+.viewer::backdrop{background:rgba(38,35,28,.7)}
+.viewer .vhead{display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  border-bottom:1px solid var(--hair); padding:.8rem 1rem}
+.viewer .vtitle{min-width:0}
+.viewer .vtype{font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; color:var(--ink-2)}
+.viewer h2{font-family:var(--display); font-weight:430; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.viewer .vhead a{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; flex-shrink:0}
+.viewer [data-viewer-close]{border:1px solid var(--hair-strong); width:2.2rem; height:2.2rem; flex-shrink:0}
+.viewer [data-viewer-close]:hover{border-color:var(--ink)}
+.viewer .vprov{border-bottom:1px solid var(--hair); padding:.5rem 1rem;
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; color:var(--ink-2); overflow-wrap:anywhere}
+.viewer img{display:block; width:100%; max-height:68vh; object-fit:contain; padding:1rem; box-sizing:border-box}
+
+/* ————— folio + footer ————— */
+.folio{margin-top:5rem; padding-bottom:1rem}
+.folio .rule{display:flex; align-items:center; gap:1rem; opacity:.7}
+.folio .rule > span:not(.rlabel){height:1px; flex:1; background:currentColor}
+.folio .rlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.22em}
+.folio-links{margin-top:1.4rem; display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.75rem 2rem;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.folio-links .rejoin{color:var(--ink)}
+.folio-links .onward{color:var(--ink-2)}
+.nextfile{margin-top:1.4rem; font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; color:var(--ink-2)}
+.nextfile a{color:var(--ink)}
+
+/* the visited ✓ — reserved width, so its arrival moves no letterform */
+.visited-mark{display:inline-flex; width:12px; color:var(--pine); vertical-align:baseline}
+.visited-mark svg{width:10px; height:8px}
+.visited-mark[hidden]{display:inline-flex; visibility:hidden}
+
+/* ————— /evidence ————— */
+.eledger{margin-top:2.6rem; list-style:none}
+.eledger > li{border-top:1px solid var(--hair-strong); padding:1.8rem 0}
+.eledger li:target{border-top:2px solid var(--clay-g); scroll-margin-top:4rem}
+.ehead{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 1.5rem;
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2)}
+.evis{display:inline-flex; align-items:center; gap:.4rem}
+.ebody{margin-top:.8rem; display:grid; gap:1rem 2.6rem}
+@media (min-width:768px){ .ebody{grid-template-columns:minmax(0,1.6fr) minmax(0,2fr)} }
+.eclaim h2{font-family:var(--display); font-weight:430; font-size:1.45rem; line-height:1.2; letter-spacing:-.01em; max-width:24ch}
+.eclaim p{margin-top:.7rem; font-size:1.0625rem; line-height:1.5; max-width:46ch}
+.ebody dl{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; line-height:1.9;
+  display:flex; flex-direction:column; gap:.35rem}
+.ebody dt{display:inline; color:var(--ink-2)}
+.ebody dd{display:inline; overflow-wrap:anywhere}
+.ebody .skind{display:block; color:var(--ink-2)}
+
+/* ————— 404 ————— */
+.notice .onfile{margin-top:3.4rem; max-width:34rem}
+.onfile ul{margin-top:1.2rem; list-style:none; display:flex; flex-direction:column; gap:.85rem}
+.irow{display:flex; align-items:baseline; gap:.75rem;
+  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.irow a{color:var(--ink)}
+.irow .inote{color:var(--ink-2); text-align:right}
+.notice .backhome{margin-top:1.4rem; font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.notice .backhome a{color:var(--ink)}
+
+/* ————— reduced motion: the settled world ————— */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{transition:none !important; animation:none !important}
+}
+
+@media print{
+  body.archive::before, body.archive::after, .dossier::before{display:none}
+  .mast, .colophon{border-color:#999}
+  .audit-run, .viewer{display:none}
+}

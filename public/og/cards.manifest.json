@@ -2,32 +2,32 @@
   "note": "Written by scripts/asset-truth/render-og-cards.mjs. `npm run assets:check-og` fails when a card's content hash no longer matches the data layer.",
   "cards": {
     "case-automl.png": {
-      "svg": "cf2f915554d04314ef69bf34f294c26dfd2a6b4274947b792c3a9080d9885378",
-      "png": "e8952af69ecfe80c81d49fa22fed7ec7b1505dab1dff0cdd7c7ac4bd586535f9"
+      "svg": "2d9f349222a9044f799db1566d7fb03fcb4f515e3e0a9c315c6be411c3d8ac74",
+      "png": "ca99a002350e0bedfa38d9c3cd00c07d2aece1fdd72d10a60d9c1bd049b6f185"
     },
     "case-fast-mnist-nn.png": {
-      "svg": "891bf4a3393d4cd62e49f8fb204a90067e38903c4f3dec6b5c6eb6ef0a14bef1",
-      "png": "08076971543cd260fe07b3b50197871dd8707a436b58fcc3c9a8a13f5826d32a"
+      "svg": "162a843868b4a18edd3292f7b35e77f2033d4458132956e63f628ac3be016456",
+      "png": "f2b8ffbc249c410572c00668c35c049f7c0ac2521635d28de8a25c3506dfcf51"
     },
     "case-jobtracker.png": {
-      "svg": "400fa4cf72c9a5f03225a8745c9f474f58cb3a13f5af4d4fd43debf21095b521",
-      "png": "23fb748084b326837212216be1f8c48038b5bff754fe8c4bb7c26eb66be4f4f1"
+      "svg": "1e01ee16c3cda9016ddd1cbb3b465b853b43b79ca5898b4034489813684f4a20",
+      "png": "a130e88e1454febfb05331fd08d51025459d89330a31c173d9a8fa608ff95d08"
     },
     "case-master-inventory.png": {
-      "svg": "5780d0212946a4e9aa6c27fc3ccd9aec8b74201d0e4867783f18738a65565bbc",
-      "png": "d6b5bc58239786f0f8d106e0d1013bb2294d78f47e729154c96249c1e0e9aa10"
+      "svg": "632647c66f138b6d030108387a54d34aa477ed1d4cbc46d73b49d740fb8f07b2",
+      "png": "b44a35ff67d1b3942ac6f8903ec3cf385b5bc71b7a8f0215118c74fe6c80b693"
     },
     "case-policybot.png": {
-      "svg": "6ed226d7bfa55ad16acbbb9f245a755c613b3e3118be5211efed66d1580e5d02",
-      "png": "1c6ed74c641cb940388cce1a8f3cdf9a7128d4f420a89b54d23236a6d8b2651b"
+      "svg": "39dd22f925cd7161f8b18bf0151c01491df746927b1f7b5da695d4f4e5e19226",
+      "png": "0141ab5a2ca34054c7d11081428810d70d7043f0bbdab10e98fefd70d91f8dae"
     },
     "case-taskflow-calendar.png": {
-      "svg": "fecf3dbb678efa7132077c30864c344b9ab650a659970d12eda054f5866d4d6e",
-      "png": "f50f506f70aacf6037fb02e421355139ed0b2981e5dc95facaf3850e6e40a5cd"
+      "svg": "0791f7a9916a63795605f7c9b61fccd17f7ac85396c811e5dd47d72d518cc3a1",
+      "png": "e81e895e0b1a8a286938771d1396040d155c7abb2f2cdaeeb732edbdf8bc6f02"
     },
     "case-visual-assist.png": {
-      "svg": "e90b98a1965c82a5174b83363deb8e458d25b43eeb9a845f6363ffa825c40586",
-      "png": "7e5e4d33764b07518556138960d376a2df77d21b3c6dbd0d57e80257f55e5c53"
+      "svg": "59b13abad1477f70a2c2e396c55b4267644a740ddd57461156c2527d52dc2d16",
+      "png": "f4fe91aa73ad40bcc61158becbfba2186f8cac5448814f152d2b09c6e39ac123"
     },
     "evidence.png": {
       "svg": "bdebd53e59936b4433231bfe8262d37ed3dcfb578cea683b1c89ede5e4076c81",
