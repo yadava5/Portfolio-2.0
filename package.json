@@ -3,13 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "build": "node scripts/archive/build-archive.mjs",
-    "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"{src,tests}/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"{src,tests}/**/*.{ts,json}\"",
     "typecheck": "tsc --noEmit",
     "test:e2e:browser-smoke": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/atlas.spec.ts tests/playwright/run-home.spec.ts --project=chromium-desktop --project=chromium-mobile --project=firefox-desktop --project=webkit-desktop --project=webkit-mobile",
     "test:e2e:performance": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/performance-budget.spec.ts",
@@ -39,38 +37,18 @@
     "test:cargo-fixture:record": "node scripts/qa/check-cargo-fixture.mjs --record",
     "verify:portfolio": "node scripts/qa/verify-portfolio.mjs"
   },
-  "browserslist": [
-    "chrome 128",
-    "edge 128",
-    "firefox 128",
-    "safari 17.4"
-  ],
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.22",
-    "clsx": "^2.1.1",
-    "gsap": "^3.15.0",
-    "lucide-react": "^0.563.0",
-    "next": "16.2.11",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "sharp": "^0.35.3",
-    "tailwind-merge": "^3.6.0"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
+    "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.2",
-    "@tailwindcss/postcss": "^4",
-    "@types/gsap": "^1.20.2",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "culori": "^4.0.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.11",
-    "lighthouse": "^13.0.3",
+    "globals": "^17.9.0",
     "prettier": "^3.8.1",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "typescript-eslint": "^8.54.0"
   }
 }

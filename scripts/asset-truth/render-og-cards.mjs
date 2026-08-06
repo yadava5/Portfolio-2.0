@@ -241,18 +241,18 @@ const FOLIO_ROOT = siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "");
 /** projects.ts → { id: title } */
 const projectTitles = new Map(
   Array.from(
-    projectsSource.matchAll(/\n    id:\s*"([^"]+)",\n    title:\s*"([^"]+)"/g),
+    projectsSource.matchAll(/\n {4}id:\s*"([^"]+)",\n {4}title:\s*"([^"]+)"/g),
     (m) => [m[1], m[2]]
   )
 );
 
 /** projectCaseStudies.ts → one record per case file */
-const studyBlocks = studiesSource.split(/\n  \{\n    projectId:/).slice(1);
+const studyBlocks = studiesSource.split(/\n {2}\{\n {4}projectId:/).slice(1);
 const studies = studyBlocks.map((block) => {
   const projectId = block.match(/^\s*"([^"]+)"/)?.[1];
   const fileNo = Number(block.match(/fileNo:\s*(\d+)/)?.[1]);
   const summary = block
-    .match(/\n    summary:\s*\n?\s*"((?:[^"\\]|\\.)*)"/)?.[1]
+    .match(/\n {4}summary:\s*\n?\s*"((?:[^"\\]|\\.)*)"/)?.[1]
     ?.replace(/\\"/g, '"');
   return { projectId, fileNo, summary };
 });

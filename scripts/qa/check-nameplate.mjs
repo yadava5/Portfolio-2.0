@@ -87,7 +87,7 @@ const check = (ok, label, detail) => {
 const { server, port } = await serve();
 let browser;
 try {
-  const { chromium } = await import("playwright");
+  const { chromium } = await import("@playwright/test");
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 

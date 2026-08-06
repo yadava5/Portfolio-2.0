@@ -15,8 +15,8 @@
 #   ┌──────────────────────────────────────────────────────────────────┐
 #   │  Stage 2: Build & Analyze                                        │
 #   │  ┌─────────────────────────┐ ┌─────────────────────────────────┐ │
-#   │  │     Production Build    │ │      Bundle Size Analysis       │ │
-#   │  │      (Next.js build)    │ │   (Track JS/CSS bundle sizes)   │ │
+#   │  │     Production Build    │ │         Shipped Weight          │ │
+#   │  │     (static export)     │ │  (what a reader downloads, out/)│ │
 #   │  └─────────────────────────┘ └─────────────────────────────────┘ │
 #   └──────────────────────────────────────────────────────────────────┘
 
@@ -151,7 +151,7 @@ jobs:
   # Build: Production build verification
   # ─────────────────────────────────────────────────────────────
   build:
-    name: 🏗️ Build (Next.js)
+    name: 🏗️ Build (static export)
     runs-on: ubuntu-latest
     needs: [format, eslint, typecheck]
     steps:
@@ -169,7 +169,7 @@ jobs:
 
       - name: Build application
         run: |
-          echo "🏗️ Building Next.js application..."
+          echo "🏗️ Building the static export..."
           npm run build
           echo "✅ Production build successful!"
 
@@ -436,7 +436,7 @@ jobs:
   # Bundle Analysis: Track bundle sizes
   # ─────────────────────────────────────────────────────────────
   bundle-analysis:
-    name: 📦 Bundle Size Analysis
+    name: 📦 Shipped Weight
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -452,26 +452,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build with bundle analyzer
+      # REPOINTED AT WHAT SHIPS, 2026-08-06. Every line of this used to read
+      # `.next/static` — the bundler's output directory, which no longer
+      # exists. With `|| echo "(not available)"` on each one it would have
+      # printed three shrugs and gone green forever, which is the shape of a
+      # report that has stopped reporting. The subject is better now anyway:
+      # there is no bundle, so the question is what a reader downloads.
+      - name: Build the site
         run: npm run build
-        env:
-          ANALYZE: true
 
-      - name: Report bundle sizes
+      - name: Report what ships
         run: |
-          echo "📦 Bundle Size Report"
-          echo "====================="
+          echo "📦 What a reader downloads"
+          echo "=========================="
           echo ""
-          echo "📁 .next/static directory:"
-          du -sh .next/static 2>/dev/null || echo "  (not available)"
+          echo "the run (out/index.html) — one hand-authored page, no dependencies:"
+          du -h out/index.html
           echo ""
-          echo "📁 JavaScript chunks:"
-          find .next -name "*.js" -type f -exec du -h {} \; 2>/dev/null | sort -rh | head -10 || echo "  (not available)"
+          echo "the whole export:"
+          du -sh out
           echo ""
-          echo "📁 CSS files:"
-          find .next -name "*.css" -type f -exec du -h {} \; 2>/dev/null | sort -rh | head -5 || echo "  (not available)"
+          echo "the ten largest files:"
+          find out -type f -exec du -h {} \; | sort -rh | head -10
           echo ""
-          echo "✅ Bundle analysis complete!"
+          echo "javascript, all of it:"
+          find out -name "*.js" -type f -exec du -h {} \; | sort -rh
 
   # ═══════════════════════════════════════════════════════════════════
   # Final Status Check

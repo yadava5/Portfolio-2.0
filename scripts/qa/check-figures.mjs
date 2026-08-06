@@ -306,6 +306,64 @@ else if (!drifted)
     `  · ${testimony.length} co-signer quotes match testimonials.ts word for word`
   );
 
+/* ── F58 RULE 1, RE-HOMED ─────────────────────────────────────────────
+   `testimonials.ts` carries a module-scope `assertVerbatimExcerpts()`: an
+   excerpt that is not a contiguous verbatim substring of its quote is a
+   paraphrase wearing quotation marks, a third party made to say something
+   they did not write. Its own comment said "module scope, so it runs during
+   `next build`: the export fails rather than publishing it".
+
+   THAT STOPPED BEING TRUE IN PHASE 4 AND NOTHING SAID SO. Module-scope code
+   runs when the module is IMPORTED, and the file that imported it was deleted
+   with the React tree — `testimonials.ts` is now read only as text, by this
+   gate. So the strongest honesty rule on the site quietly stopped executing.
+   Found while pruning, by reading a comment that named a build step which no
+   longer exists.
+
+   Re-implemented here rather than left to an import nobody would add, and
+   over the SOURCE, because that is what this gate already holds the run to.
+   Quotes and excerpts are read as literals; a template or a computed string
+   would be a different kind of file and this would fail loudly rather than
+   skip it. */
+const entryBlocks = testimonials.match(/\n {2}\{[\s\S]*?\n {2}\},/g) ?? [];
+const field = (block, name) => {
+  const m = block.match(
+    new RegExp(`\\n\\s*${name}:\\s*\\n?\\s*("(?:[^"\\\\]|\\\\.)*")`)
+  );
+  return m ? JSON.parse(m[1]) : null;
+};
+let excerpts = 0;
+for (const block of entryBlocks) {
+  const quote = field(block, "quote");
+  const excerpt = field(block, "excerpt");
+  if (!quote) {
+    fails.push("  ✗ a testimonial block carries no readable quote literal");
+    continue;
+  }
+  if (!excerpt) continue;
+  excerpts++;
+  if (!quote.includes(excerpt)) {
+    fails.push(
+      `  ✗ an excerpt is not a verbatim substring of its quote — a paraphrase in quotation marks\n` +
+        `      excerpt: "${excerpt.slice(0, 70)}…"`
+    );
+  }
+}
+/* Floors, because a broken parse over an empty set prints the same green line
+   as a clean file. Measured 2026-08-06: two testimonials, one excerpt. (The
+   file's third `quote:` is the interface's field declaration, not an entry —
+   which is why the floor is measured off the parse rather than off a grep.) */
+if (entryBlocks.length < 2 || excerpts < 1) {
+  fails.push(
+    `  ✗ read ${entryBlocks.length} testimonials and ${excerpts} excerpts out of testimonials.ts — ` +
+      `expected at least 2 and 1. That is a broken parse, not a clean file.`
+  );
+} else {
+  notes.push(
+    `  · ${entryBlocks.length} testimonials read, ${excerpts} excerpt${excerpts === 1 ? "" : "s"} verbatim inside ${excerpts === 1 ? "its quote" : "their quotes"}`
+  );
+}
+
 for (const n of notes) console.log(n);
 if (fails.length) {
   console.error(

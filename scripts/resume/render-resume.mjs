@@ -24,7 +24,7 @@
  */
 import { mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { chromium } from "playwright";
+import { chromium } from "@playwright/test";
 
 if (process.env.RESUME_RENDER_OK !== "1") {
   console.error(

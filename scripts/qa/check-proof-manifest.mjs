@@ -32,7 +32,7 @@ for (const id of requiredIds) {
   if (!manifestIds.has(id)) fail(`missing proof id ${id}`);
 }
 
-const entries = manifestSource.match(/\n  \{[\s\S]*?\n  \}/g) ?? [];
+const entries = manifestSource.match(/\n {2}\{[\s\S]*?\n {2}\}/g) ?? [];
 for (const entry of entries) {
   const id = entry.match(/id:\s*"([^"]+)"/)?.[1] ?? "unknown";
   for (const field of ["claim", "source", "verification", "privacyBoundary"]) {
@@ -147,7 +147,7 @@ if (accuracyEntry) {
   }
 }
 
-const projectBlocks = projectsSource.match(/\n  \{[\s\S]*?\n  \},/g) ?? [];
+const projectBlocks = projectsSource.match(/\n {2}\{[\s\S]*?\n {2}\},/g) ?? [];
 for (const block of projectBlocks) {
   const title = block.match(/title:\s*"([^"]+)"/)?.[1] ?? "unknown project";
   const visible = !block.match(/portfolioVisible:\s*false/);

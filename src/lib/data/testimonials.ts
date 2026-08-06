@@ -116,8 +116,18 @@ export const testimonials: Testimonial[] = [
 /* ── Build-time honesty gate (F58 rule 1) ───────────────────────────
    An excerpt that is not a contiguous verbatim substring of the quote
    is a paraphrase wearing quotation marks — a third party made to say
-   something they did not write. Module scope, so it runs during
-   `next build`: the export fails rather than publishing it. */
+   something they did not write. Module scope, so it ran during
+   `next build`: the export failed rather than publishing it.
+
+   THAT SENTENCE STOPPED BEING TRUE IN PHASE 4. Module-scope code runs
+   when the module is IMPORTED, and the component that imported this one
+   was deleted with the React tree — nothing on the build path imports
+   it now, so this function has not executed since. The rule itself is
+   re-implemented over this file's source in
+   `scripts/qa/check-figures.mjs`, which already holds the run's ¶12
+   testimony to these quotes word for word and runs on every build.
+   Kept here rather than deleted: if this file is ever imported again,
+   the guard should still be in it. */
 function assertVerbatimExcerpts(entries: Testimonial[]): void {
   for (const entry of entries) {
     if (entry.excerpt && !entry.quote.includes(entry.excerpt)) {

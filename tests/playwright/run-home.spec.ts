@@ -3,20 +3,22 @@ import { expect, test } from "@playwright/test";
 /**
  * The home page, as it actually ships.
  *
- * `npm run build` is `next build && node scripts/run/build-home.mjs`, and that
- * second step overwrites out/index.html with src/run/index.html. So the home a
- * visitor gets is the run — thirteen stations on one hand-authored page — and
- * not anything src/app/page.tsx renders.
+ * `npm run build` is `node scripts/archive/build-archive.mjs`, whose last step
+ * is build-home.mjs writing src/run/index.html over the output root's
+ * index.html. So the home a visitor gets is the run — thirteen stations on one
+ * hand-authored page. Until Phase 4 there was a second home page, rendered by
+ * src/app/page.tsx, and this header used to have to say which one shipped.
  *
- * Until now the e2e scripts ran `next build` WITHOUT build-home.mjs, so
- * Playwright was served the old React home while users got the run. That is why
- * thirteen assertions in atlas.spec.ts, four in reduced-motion.spec.ts and one
- * in performance-budget.spec.ts passed for months while addressing markers
- * — [data-chapter], [data-thread], [data-hero-standfirst], #arrival — that
- * appear ZERO times in the deployed page. Those thirteen are removed from atlas
- * (its remaining coverage is the case-study routes, which are real Next routes
- * and still pass); this file is their replacement, written against the run's
- * own information architecture.
+ * THIS FILE EXISTS BECAUSE THE SUITE ONCE TESTED THE OTHER ONE. Thirteen
+ * assertions in atlas.spec.ts, four in reduced-motion.spec.ts and one in
+ * performance-budget.spec.ts passed for months while addressing markers —
+ * [data-chapter], [data-thread], [data-hero-standfirst], #arrival — that
+ * appeared ZERO times in the deployed page. (The reason was misdiagnosed for a
+ * while as "the e2e scripts skip build-home.mjs", and that was already false
+ * when it was written; what actually differed was the basePath. Both stopped
+ * mattering when the second home page was deleted.) Those thirteen came out of
+ * atlas, and this file is their replacement, written against the run's own
+ * information architecture.
  *
  * The run's IA, for anyone re-pointing another spec:
  *
