@@ -29,7 +29,7 @@
   "outIndexSha256": "d04f6fc5e077cc38b73bd5ed9d6bb8818aa83bf028de713f818e59d27dda7cd2",
   "outIndexBytes": 266157,
   "runSourceSha256": "efb45ec0a0adb80fa4f576177708dd266e9603724265e1c617fcb371ca994083",
-  "commit": "da5a73d3055a8060c83bf3ec4b447a6e18b6f7f1",
+  "commit": "20df6892e7f77556624b02d40c6030eae6436442",
   "recordedAt": "2026-08-06T22:41:46Z",
   "buildEnv": {
     "NODE_ENV": "production",
