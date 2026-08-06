@@ -1,0 +1,58 @@
+{
+  "_why": [
+    "Recorded behaviour, not source. See scripts/qa/check-cargo-fixture.mjs.",
+    "Desktop only (1440px): the run paints no canvas text on a stacked layout.",
+    "Re-record ONLY when the cargo was changed deliberately, and read the diff."
+  ],
+  "recordedAt": "2026-08-06T02:23:51Z",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "waybills": [
+    {
+      "label": "run 042 dispatched — operator aboard",
+      "corridor": 0
+    },
+    {
+      "label": "the engineer’s credentials → manifest",
+      "corridor": 1
+    },
+    {
+      "label": "five years of logs, given shape → the line",
+      "corridor": 2
+    },
+    {
+      "label": "sorted mail → manifest",
+      "corridor": 3
+    },
+    {
+      "label": "the committed plan → manifest",
+      "corridor": 4
+    },
+    {
+      "label": "a blank 28×28 — the run wants your hand",
+      "corridor": 5
+    },
+    {
+      "label": "one valid gzip member → manifest",
+      "corridor": 6
+    },
+    {
+      "label": "lifequest’s unfinished rows, carried unchanged",
+      "corridor": 7
+    },
+    {
+      "label": "run 042’s report → the review",
+      "corridor": 8
+    },
+    {
+      "label": "run 042, reviewed → the references",
+      "corridor": 9
+    },
+    {
+      "label": "two recommendations, carried as written → the human gate",
+      "corridor": 10
+    }
+  ]
+}

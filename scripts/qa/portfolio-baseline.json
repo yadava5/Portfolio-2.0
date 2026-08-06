@@ -1,0 +1,50 @@
+{
+  "_why": [
+    "The golden hash of the SHIPPED home page. Any phase not intended to change the",
+    "run must reproduce `outIndexSha256` exactly. Re-record it only after reading the",
+    "out/index.html diff by hand, and NEVER to make a red check go green.",
+    "",
+    "Pinned at the tree it was measured on, per the standing rule that the number and",
+    "the sha move together. `runSourceSha256` is here so a mismatch tells you WHICH",
+    "side moved: if the source sha still matches but the output sha does not, the",
+    "build changed, not the page.",
+    "",
+    "The env matters. Every test:e2e:* script rebuilds with NEXT_PUBLIC_BASE_PATH=",
+    "(empty) and re-runs build-home.mjs, overwriting out/index.html. A hash taken",
+    "after one of those certifies an artifact nobody deploys. This one is taken under",
+    "the deploy configuration and verify:portfolio reproduces it in the same env,",
+    "before any e2e step runs.",
+    "",
+    "Determinism was proven, not assumed: two consecutive builds at this tree produced",
+    "byte-identical output, and the result also matched an out/ built in an earlier",
+    "session. build-home.mjs and build-nameplate.mjs carry no new Date(), Date.now(),",
+    "toISOString, randomUUID or Math.random, and out/index.html carries no chunk hashes."
+  ],
+  "outIndexSha256": "7c673c58bffaef9586aabdde80500fcb00adbce0ba416da7807ca8c701e1bb04",
+  "outIndexBytes": 251789,
+  "runSourceSha256": "34f353e6cc8b83a33b38c5b12410e57cec9e9bb31fa4004b3b8421cd52143a5c",
+  "commit": "4ec94216352ee1b3aa78c3c6c84d05f1c65eeb92",
+  "recordedAt": "2026-08-06T02:16:33Z",
+  "buildEnv": {
+    "NODE_ENV": "production",
+    "NEXT_PUBLIC_BASE_PATH": "/Portfolio-2.0"
+  },
+  "_closure": [
+    "The hash certifies ONE file; the run's dependency closure is much larger, and",
+    "deleting a piece of it reproduces the hash byte-for-byte while breaking the live",
+    "page. These are the floors verify-portfolio.mjs asserts separately.",
+    "",
+    "Sizes are floors, not equalities: a re-subset font or a retrained model should",
+    "not fail the gate, but an empty or truncated file must."
+  ],
+  "closureFloorsBytes": {
+    "out/wasm/model.weights.bin": 300000,
+    "out/wasm/fast_mnist.js": 40000,
+    "out/wasm/fast_mnist.wasm": 40000,
+    "out/fonts/fraunces-latin-var.woff2": 100000,
+    "out/fonts/newsreader-latin-var.woff2": 20000,
+    "out/fonts/newsreader-italic-latin-var.woff2": 20000,
+    "out/fonts/fragment-mono-latin.woff2": 12000,
+    "out/resume.pdf": 50000
+  }
+}

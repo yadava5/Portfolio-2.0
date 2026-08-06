@@ -42,7 +42,10 @@
     "test:figures": "node scripts/qa/check-figures.mjs",
     "test:anchors": "node scripts/qa/check-anchors.mjs",
     "test:links": "node scripts/qa/check-links.mjs",
-    "test:beat-tables": "node scripts/qa/check-beat-tables.mjs"
+    "test:beat-tables": "node scripts/qa/check-beat-tables.mjs",
+    "test:cargo-fixture": "node scripts/qa/check-cargo-fixture.mjs",
+    "test:cargo-fixture:record": "node scripts/qa/check-cargo-fixture.mjs --record",
+    "verify:portfolio": "node scripts/qa/verify-portfolio.mjs"
   },
   "browserslist": [
     "chrome 128",

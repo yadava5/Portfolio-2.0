@@ -134,6 +134,46 @@ test.describe("the home page is the run", () => {
     });
   }
 
+  /**
+   * fig 06's classifier is REAL — and nothing checked that it arrives.
+   *
+   * The Glyph station imports ./wasm/fast_mnist.js, instantiates it, and
+   * fetches wasm/model.weights.bin (src/run/index.html:3555-3557). None of
+   * those three files is named in any way the golden hash of out/index.html
+   * can see, because the run fetches them at runtime by relative path. So
+   * deleting src/run/wasm/ used to reproduce the hash byte-for-byte, pass
+   * every gate green, and 404 the classifier in production — and `grep -rl
+   * wasm tests/` returned nothing, so no browser check would have caught it
+   * either. build-home.mjs now fails when the sources are missing and
+   * verify:portfolio asserts they landed in out/; this is the third leg, and
+   * the only one that proves the bytes actually INSTANTIATE rather than
+   * merely being present at the right size.
+   *
+   * The status line is the run's own report, not a probe added for the test:
+   * "awake · local" on success, "serve over http to run" when the module or
+   * the weights fail to load (:3565-3568). Asserting the failure string is
+   * absent as well as the success string present is deliberate — a stuck
+   * "waking…" and a loud failure are different defects.
+   */
+  test("the Glyph station's classifier instantiates from its own wasm", async ({
+    page,
+  }) => {
+    const failed: string[] = [];
+    page.on("requestfailed", (r) => {
+      if (/wasm/.test(r.url())) failed.push(r.url());
+    });
+    page.on("response", (r) => {
+      if (/wasm/.test(r.url()) && !r.ok())
+        failed.push(`${r.status()} ${r.url()}`);
+    });
+
+    await page.goto("/");
+    await expect(page.locator("#glyphStatus")).toHaveText("awake · local", {
+      timeout: 15_000,
+    });
+    expect(failed, "no wasm asset may 404 or fail to load").toEqual([]);
+  });
+
   test("the gate is the last screen until it is approved", async ({ page }) => {
     await page.goto("/");
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });

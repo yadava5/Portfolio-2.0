@@ -181,6 +181,52 @@ jobs:
           retention-days: 7
 
   # ─────────────────────────────────────────────────────────────
+  # Portfolio: the run IS the home page, and it still is
+  #
+  # The gates in this repo were good individually and never assembled. Two
+  # things this job exists to fix, both measured rather than supposed:
+  #
+  #   · NOTHING asserted that out/index.html is the run. It is the whole
+  #     portfolio. check-static-export-seo reads the file but only for
+  #     canonical/og/JSON-LD — which build-home.mjs LIFTS from Next's own
+  #     render — so it passed identically whether the 13-station run or the
+  #     abandoned 7-chapter React port shipped.
+  #   · The run's closure is invisible to every gate. Delete src/run/wasm/
+  #     and out/index.html is byte-identical, all of CI is green, and fig
+  #     06's classifier 404s in production. The run fetches those files at
+  #     runtime by relative path, so its own bytes never change.
+  #
+  # Runs the deploy configuration (NODE_ENV=production, the real basePath),
+  # because a hash of any other build certifies an artifact nobody deploys.
+  # deploy.yml gates on build + test:seo + test:proof only; this is the job
+  # that gates on the portfolio actually being there.
+  # ─────────────────────────────────────────────────────────────
+  verify-portfolio:
+    name: 🚂 Portfolio Validator
+    runs-on: ubuntu-latest
+    needs: [format, eslint, typecheck]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      # Not piped into anything. A pipe eats the exit code, and that hid a
+      # red Prettier gate here for twelve CI runs.
+      - name: Verify the portfolio
+        run: npm run verify:portfolio
+
+  # ─────────────────────────────────────────────────────────────
   # Resume: Verify public resume remains parseable and one page
   # ─────────────────────────────────────────────────────────────
   resume-check:
@@ -428,6 +474,7 @@ jobs:
         typecheck,
         security,
         build,
+        verify-portfolio,
         resume-check,
         static-seo,
         proof-manifest,
@@ -446,6 +493,7 @@ jobs:
           echo "TypeCheck: ${{ needs.typecheck.result }}"
           echo "Security:  ${{ needs.security.result }}"
           echo "Build:     ${{ needs.build.result }}"
+          echo "Portfolio: ${{ needs.verify-portfolio.result }}"
           echo "Resume:    ${{ needs.resume-check.result }}"
           echo "StaticSEO: ${{ needs.static-seo.result }}"
           echo "Proof:     ${{ needs.proof-manifest.result }}"
@@ -458,6 +506,7 @@ jobs:
              [[ "${{ needs.typecheck.result }}" != "success" ]] || \
              [[ "${{ needs.security.result }}" != "success" ]] || \
              [[ "${{ needs.build.result }}" != "success" ]] || \
+             [[ "${{ needs.verify-portfolio.result }}" != "success" ]] || \
              [[ "${{ needs.resume-check.result }}" != "success" ]] || \
              [[ "${{ needs.static-seo.result }}" != "success" ]] || \
              [[ "${{ needs.proof-manifest.result }}" != "success" ]] || \

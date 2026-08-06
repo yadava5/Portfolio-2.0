@@ -89,8 +89,17 @@ if (/if \(i === DEPLOY_PH\) return;/.test(src) && /const DEPLOY_PH = phases\.len
   fail.push("scrubGate's never-light rule not found");
 }
 
-/** travellers: every corridor except the last should carry something */
-const trav = [...src.matchAll(/\{ beat: (\d+), n: \d+, label:/g)].map((m) => +m[1]);
+/** travellers: every corridor except the last should carry something.
+ *
+ * The pattern stops at `n:` rather than reading on to `, label:`. It used
+ * to require both on ONE line, and beat 5's entry — the drawn digit, whose
+ * label is a function and so wraps — did not match. The guard therefore
+ * reported "corridors without cargo: 5 (deliberate)" for a corridor that
+ * has carried cargo the whole time. A guard that names a phantom is worse
+ * than one that stays quiet: it gets believed. */
+const trav = [...src.matchAll(/\{\s*beat:\s*(\d+)\s*,\s*n:\s*\d+\s*,/g)].map(
+  (m) => +m[1]
+);
 const bare = [];
 for (let i = 0; i < runBeats - 1; i++) if (!trav.includes(i)) bare.push(i);
 if (bare.length) pass.push(`corridors without cargo: ${bare.join(", ")} (deliberate: nothing has been produced yet)`);
