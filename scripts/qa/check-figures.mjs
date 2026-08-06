@@ -23,6 +23,14 @@ import { resolve } from "node:path";
 const root = process.cwd();
 const read = (p) => readFileSync(resolve(root, p), "utf8");
 
+/* The run, twice: the markup for anything that is an attribute (figure
+   roles, aria-labels, plate structure) and the prose for anything a reader
+   reads. */
+const runHtml = read("src/run/index.html");
+/* Declared here rather than beside the loop that fills them: the figure
+   gate below runs before it and pushes into both. */
+const fails = [];
+const notes = [];
 /* The run's prose only — scripts and styles carry unrelated numbers. */
 const runProse = read("src/run/index.html")
   .replace(/<script[\s\S]*?<\/script>/g, "")
@@ -294,6 +302,290 @@ const FIGURES = [
   },
 ];
 
+/* ══════════════════════════════════════════════════════════════════
+   THE FIGURES, AS FIGURES — and the first draft of this rule would have
+   shipped an accessibility regression.
+
+   That draft said "ten figures, ten narrative labels, a floor on each",
+   reasoning from the archive's rule that every case-file plate carries a
+   `[role="img"]` with a name over 60 characters. MEASURED, ONLY SIX OF THE
+   TEN RUN FIGURES ARE DRAWINGS:
+
+     drawings, role="img", narrative label   03 04 06 07 08 09
+     HTML text plates, no role               02 05 10 11
+
+   The four text plates' accessible experience IS their text. `role="img"`
+   makes descendants presentational — and fig. 02 contains TWO REAL LINKS
+   (github, linkedin). Applying the rule uniformly would have removed two
+   working links from assistive technology in the name of accessibility. The
+   archive's Cadence plate took `role="img"` because it is a settled still, an
+   image made of HTML; the run's fig. 05 is interactive and 02/10/11 are
+   dockets whose text is the content.
+
+   AND A LENGTH FLOOR MEASURES THAT A LABEL EXISTS, NOT THAT IT NARRATES.
+   FIGURES.md rule 7: the label states what is drawn AND what is deliberately
+   not — fig. 09's deploy "which never lights", fig. 08's "a deliberate hold,
+   not a fall". No character count can see either clause vanish, so each
+   drawing declares the tokens its label must keep.
+
+   Source-level, so it runs under --no-e2e and in the gates job. The one thing
+   it cannot see is whether a drawing RENDERS; atlas covers that for the
+   archive's plates and run-home measures the bench bars.
+   ══════════════════════════════════════════════════════════════════ */
+{
+  /* Every figure's own markup, opening tag through </figure>. The caption is
+     INSIDE the slice on purpose — fig. 05's "hover a chip to see its words"
+     and fig. 10's "a refused gate is the system working" are claims that live
+     there, and a slice that stopped at the figcaption reported both as
+     missing on the first run of this gate. */
+  const figureBlock = (n) => {
+    const cap = runHtml.indexOf(`<figcaption>fig. ${n}`);
+    if (cap < 0) return null;
+    const open = runHtml.lastIndexOf("<figure", cap);
+    const close = runHtml.indexOf("</figure>", cap);
+    return open < 0 || close < 0 ? null : runHtml.slice(open, close);
+  };
+  const NUMBERS = ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11"];
+  const missing = NUMBERS.filter((n) => figureBlock(n) === null);
+  if (missing.length)
+    fails.push(`  ✗ the run is missing fig. ${missing.join(", fig. ")}`);
+  /* C30: there is no fig. 01 and that is structural, not lost — beat 0 holds
+     the nameplate and the Machado epigraph, neither a <figure>. Asserted so a
+     later renumbering has to argue with something. */
+  if (runHtml.includes("<figcaption>fig. 01"))
+    fails.push(
+      `  ✗ the run has grown a fig. 01. The rule is fig. NN = data-beat + 1 and beat 0\n` +
+        `      holds the nameplate and the epigraph, neither of which is a figure. If that\n` +
+        `      changed, it changed deliberately and this line is where it is argued.`
+    );
+
+  /* ── 1 · STRUCTURAL. Catches a NEW drawing added unlabelled, which an
+     enumerated list cannot. `#net` is included by id because it is a drawing
+     that does not wear the figsvg class. */
+  const drawings = [
+    ...runHtml.matchAll(
+      /<svg\b([^>]*\bclass="figsvg"[^>]*|[^>]*\bid="net"[^>]*)>/g
+    ),
+  ].map((m) => m[0]);
+  if (drawings.length !== 6)
+    fails.push(
+      `  ✗ found ${drawings.length} drawings (svg.figsvg plus #net), expected 6.\n` +
+        `      Measured 2026-08-06: pathFig, appliedFig, net, jetFig, questFig, amlFig.`
+    );
+  for (const tag of drawings) {
+    const id = tag.match(/id="([^"]+)"/)?.[1] ?? "(unnamed)";
+    const label = tag.match(/aria-label="([^"]*)"/)?.[1] ?? "";
+    if (!/role="img"/.test(tag))
+      fails.push(`  ✗ the ${id} drawing carries no role="img"`);
+    if (label.length < 60)
+      fails.push(
+        `  ✗ the ${id} drawing's aria-label is ${label.length} characters, floor 60.\n` +
+          `      It is what a screen reader gets INSTEAD of the drawing. Shortest shipping is 116.`
+      );
+  }
+
+  /* ── 1b · THE GRAMMAR, AS ARITHMETIC. FIGURES.md rule 2: the seat chooses
+     the edition, and the floor is arithmetic rather than taste —
+     rendered px = authored px × seat ÷ viewBox width, floor ~10–11.
+
+     The run already owns the mechanism: `chooseEditions()` declares a minimum
+     seat per figure and rebuilds on the tight 240-unit plate below it. So the
+     wide editions are checkable from three declared numbers, and the check is
+     what makes a redraw safe: widen a viewBox without raising the seat
+     minimum and the labels cross the floor at the narrowest width that still
+     gets the wide plate — which is exactly the congestion FIGURES.md
+     diagnoses in figs. 03 and 04, arriving silently.
+
+     The TIGHT editions are built in JavaScript and their viewBox is written
+     at run time, so they are not readable here; the archive's own note
+     records the measured band (11.4px at a 248px seat, 15.1px at the 330px
+     cap) and §5.4's redraw is what has to hold it. Saying which half is
+     covered beats implying both are. */
+  const FLOOR_PX = 10;
+  const fontOf = (sel) =>
+    Number(
+      runHtml.match(new RegExp(`${sel}\\{[^}]*font-size:([\\d.]+)px`))?.[1] ?? 0
+    );
+  const wideFont = fontOf("\\.figsvg text");
+  const netFont = fontOf("#net text");
+  /* ` {2}` rather than two literal spaces: ESLint's no-regex-spaces is right
+     that they are hard to count, and this one closes on the run's own
+     two-space indentation. */
+  const seatsBlock =
+    runHtml.match(/const seats = \{([\s\S]*?)\n {2}\};/)?.[1] ?? "";
+  const seats = Object.fromEntries(
+    [...seatsBlock.matchAll(/(\w+): \[[^,]+, (\d+),/g)].map((m) => [
+      m[1],
+      Number(m[2]),
+    ])
+  );
+  const EDITIONS = [
+    ["path", "pathFig", "fig. 03"],
+    ["applied", "appliedFig", "fig. 04"],
+    ["net", "net", "fig. 06"],
+    ["jet", "jetFig", "fig. 07"],
+    ["quest", "questFig", "fig. 08"],
+    ["aml", "amlFig", "fig. 09"],
+  ];
+  if (!wideFont || !netFont || Object.keys(seats).length !== 6) {
+    fails.push(
+      `  ✗ could not read the edition arithmetic — figsvg font ${wideFont || "?"}px, ` +
+        `#net font ${netFont || "?"}px, ${Object.keys(seats).length} seats (expected 6).\n` +
+        `      A broken parse here would pass every figure silently.`
+    );
+  } else {
+    const band = [];
+    for (const [seatKey, id, fig] of EDITIONS) {
+      const tag = drawings.find((t) => t.includes(`id="${id}"`));
+      const vb = Number(tag?.match(/viewBox="0 0 (\d+)/)?.[1] ?? 0);
+      const font = id === "net" ? netFont : wideFont;
+      const seat = seats[seatKey];
+      if (!vb || !seat) {
+        fails.push(
+          `  ✗ ${fig} (${id}): no viewBox or no declared minimum seat`
+        );
+        continue;
+      }
+      const rendered = (font * seat) / vb;
+      band.push(rendered);
+      if (rendered < FLOOR_PX)
+        fails.push(
+          `  ✗ ${fig} (${id}) renders its labels at ${rendered.toFixed(1)}px at its own minimum\n` +
+            `      seat — ${font}px authored × ${seat}px seat ÷ ${vb} viewBox units, floor ${FLOOR_PX}.\n` +
+            `      Anything below the floor moves to the figcaption or a numbered key. It is never shrunk.`
+        );
+    }
+    if (band.length === 6)
+      notes.push(
+        `  · the wide editions label at ${Math.min(...band).toFixed(1)}–${Math.max(...band).toFixed(1)}px ` +
+          `at their own minimum seats (floor ${FLOOR_PX}px, by arithmetic)`
+      );
+  }
+
+  /* ── 2 · DECLARED TOKENS. The clause a redraw would quietly drop. */
+  const DRAWING_TOKENS = [
+    [
+      "pathFig",
+      "fig. 03",
+      ["97 percent"],
+      "the compliance meter's own figure, stated in a label no gate read before",
+    ],
+    [
+      "appliedFig",
+      "fig. 04",
+      ["defers at the clay gate"],
+      "the deferral IS the clay moment — rule 5",
+    ],
+    ["net", "fig. 06", ["784-100-10"], "the structure the drawing is of"],
+    [
+      "jetFig",
+      "fig. 07",
+      ["one gzip member"],
+      "the best part of the drawing: the stitched member is byte-valid",
+    ],
+    [
+      "questFig",
+      "fig. 08",
+      ["a deliberate hold, not a fall"],
+      "what is deliberately NOT drawn — rule 7",
+    ],
+    [
+      "amlFig",
+      "fig. 09",
+      ["their timing staged for the drawing", "which never lights"],
+      "the staging disclosure, and the gate that never opens",
+    ],
+  ];
+  for (const [id, fig, tokens, why] of DRAWING_TOKENS) {
+    const tag = drawings.find((t) => t.includes(`id="${id}"`));
+    if (!tag) {
+      fails.push(`  ✗ ${fig}'s ${id} is not among the run's drawings`);
+      continue;
+    }
+    const label = tag.match(/aria-label="([^"]*)"/)?.[1] ?? "";
+    for (const t of tokens)
+      if (!label.includes(t))
+        fails.push(`  ✗ ${fig}'s label no longer says "${t}"\n      ${why}`);
+  }
+
+  /* ── 3 · THE TEXT PLATES, ASSERTED AS TEXT. Their claims verbatim, and a
+     NEGATIVE assertion that nobody "fixes" them into images later. */
+  const TEXT_PLATES = [
+    {
+      fig: "02",
+      what: "the record card",
+      claims: [
+        "answers for every claim on this page",
+        "b.s. computer science — miami university, may 2026",
+      ],
+      /* THE REASON THE NEGATIVE EXISTS. role="img" makes descendants
+         presentational, and these two links work. */
+      exposed: [/>github ↗<\/a>/, /linkedin ↗<\/a>/],
+    },
+    {
+      fig: "05",
+      what: "the parse",
+      claims: ["hover a chip to see its words", "next Tuesday at noon"],
+      /* The week grid IS legitimately aria-hidden — it is an empty grid and
+         the chips carry the reading. The chips are not, and must not become
+         so; that is the difference between decoration and content. */
+      exposed: [/<span class="chip" id="chWho"[^>]*>sam<\/span>/],
+      hiddenOk: ["cadWeek"],
+    },
+    {
+      fig: "10",
+      what: "the reviewer's marks",
+      claims: [
+        "a refused gate is the system working",
+        "the gate stopped the run",
+      ],
+      exposed: [/>passed<\/span>/, />refused<\/span>/],
+    },
+    {
+      fig: "11",
+      what: "the references",
+      claims: ["three of the twelve stops carry a name that is not mine"],
+      exposed: [/>Randall Vollen</, />Shree Chaturvedi</],
+    },
+  ];
+  for (const p of TEXT_PLATES) {
+    const block = figureBlock(p.fig);
+    if (block === null) continue;
+    if (/role="img"/.test(block))
+      fails.push(
+        `  ✗ fig. ${p.fig} (${p.what}) has been given role="img".\n` +
+          `      That makes every descendant presentational. This plate's accessible\n` +
+          `      experience IS its text, and fig. 02's two links would stop existing.`
+      );
+    for (const c of p.claims)
+      if (!block.includes(c))
+        fails.push(`  ✗ fig. ${p.fig} (${p.what}) no longer states "${c}"`);
+    for (const re of p.exposed) {
+      const m = block.match(re);
+      if (!m) {
+        fails.push(`  ✗ fig. ${p.fig} (${p.what}) no longer carries ${re}`);
+        continue;
+      }
+      /* The row itself must not be hidden. Walk out to the enclosing element
+         and check the tag it sits in, rather than trusting the plate as a
+         whole — fig. 05 legitimately hides its week grid. */
+      const before = block.slice(0, m.index);
+      const openTag = before.lastIndexOf("<");
+      if (
+        /aria-hidden="true"/.test(block.slice(openTag, m.index + m[0].length))
+      )
+        fails.push(
+          `  ✗ fig. ${p.fig} (${p.what}) has hidden a row that carries its content`
+        );
+    }
+  }
+  if (!fails.length)
+    notes.push(
+      `  · 10 figures: 6 drawings labelled and holding their declared clauses, ` +
+        `4 text plates still text (and fig. 02's two links still reachable)`
+    );
+}
+
 /* Claims the run must NOT make bare, because their source qualifies them. */
 const QUALIFIED = [
   {
@@ -302,9 +594,6 @@ const QUALIFIED = [
     why: "the case file calls 19/20 and 17/25 disclosed self-reports — the grader and per-case pass criteria are not published",
   },
 ];
-
-const fails = [];
-const notes = [];
 
 for (const f of FIGURES) {
   const declared = Object.keys(f.data);
@@ -497,7 +786,6 @@ const testimonials = read("src/lib/data/testimonials.ts");
    text". A greedy quote regex over the whole page ran from the epigraph's
    closing quote to the next one and swallowed unrelated copy — precision
    here comes from knowing WHERE testimony lives, not from a cleverer regex. */
-const runHtml = read("src/run/index.html");
 const testimony = [
   ...runHtml.matchAll(
     /<figure class="cosign"[^>]*>\s*<blockquote>([\s\S]*?)<\/blockquote>/g
