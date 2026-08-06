@@ -344,6 +344,15 @@ jobs:
       - name: Check headline figures (run prose ⇄ data layer)
         run: npm run test:figures
 
+      # And then the harder question. Every bench figure on this site used to
+      # terminate in a provenance STRING naming a file in another repository;
+      # two surfaces agreeing about a number is evidence they were typed by
+      # the same hand, not that the number is right. Phase 5 vendored the four
+      # records into public/proof/ at the shas the data layer pins, and this
+      # divides their own fields and checks what the page says the quotient is.
+      - name: Check bench figures against the records they came from
+        run: npm run test:bench-artifacts
+
       - name: Check beat tables (every beat-indexed table agrees)
         run: npm run test:beat-tables
 

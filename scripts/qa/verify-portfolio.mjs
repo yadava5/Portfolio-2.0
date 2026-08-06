@@ -327,6 +327,15 @@ step("proof manifest", "test:proof", {
 step("headline figures ⇄ data layer", "test:figures", {
   reads: "src/run/index.html + data layer",
 });
+/* AFTER the figures step, deliberately. That one asks whether the surfaces
+   agree with each other; this one asks whether they agree with the machine
+   output, which is the harder question and the one that was unanswerable
+   until Phase 5 vendored the records. Agreement first, then truth: if the
+   surfaces have drifted apart, that is the finding, and this step would only
+   report which of them the artifact disagrees with. */
+step("bench figures ⇄ the records they came from", "test:bench-artifacts", {
+  reads: "public/proof/*.json + src/run/index.html + data layer",
+});
 step("beat tables", "test:beat-tables", { reads: "src/run/index.html" });
 /* Before the crosswalk, deliberately. Every link the archive writes into the
    run resolves through stations.ts, so if that file has drifted from the run

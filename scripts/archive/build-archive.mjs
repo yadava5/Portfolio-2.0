@@ -6,8 +6,11 @@
  * `npm run build` was `next build && node scripts/run/build-home.mjs`, and
  * `next build` was doing three jobs at once that nobody had separated: it
  * rendered the seven case files and /evidence/, it CREATED out/, and it copied
- * all 37 files under public/ into it — resume.pdf, the OG rasters, both
- * favicons, the proof ledgers. build-home.mjs then overwrote out/index.html
+ * every file under public/ into it — resume.pdf, the OG rasters, both
+ * favicons, the proof ledgers. (37 at the cutover; 41 since Phase 5 vendored
+ * the four benchmark records the bars draw from. The count is logged, not
+ * asserted — the four named files below are what must land.)
+ * build-home.mjs then overwrote out/index.html
  * and failed outright if out/ did not already exist.
  *
  * So "retire Next" was never one deletion. Take it away without replacing
