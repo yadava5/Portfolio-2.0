@@ -146,7 +146,23 @@ if (!fs.existsSync(evidenceHtmlPath)) {
 // and `not-found.tsx` exported `robots: {index:false, follow:true}` on
 // top of it, so all three 404 outputs shipped two robots tags. They
 // agreed — this time. A page gets ONE robots directive.
-for (const notFound of ["404.html", "404/index.html", "_not-found/index.html"]) {
+//
+// AND A MISSING 404 USED TO PASS. Every one of the three was guarded by
+// `if (!existsSync) continue`, so a build that shipped NO not-found page at
+// all satisfied this loop vacuously — a check that quietly does nothing.
+// `out/404.html` is the file GitHub Pages actually serves for every unmatched
+// path on this site, so it is required, and the failure is named as an absence
+// rather than as a metadata defect. The other two are Next's own duplicates of
+// it (the App Router emits `404/index.html` and `_not-found/index.html`
+// alongside); they are checked when present and will simply stop existing when
+// the app retires, which is why only the first is mandatory. All three are
+// byte-identical today — 41,977 B each, measured 2026-08-06.
+const notFoundRequired = "404.html";
+const notFoundOutputs = [notFoundRequired, "404/index.html", "_not-found/index.html"];
+if (!fs.existsSync(path.join(outDir, notFoundRequired))) {
+  fail(`missing out/${notFoundRequired} — Pages serves it for every unmatched path`);
+}
+for (const notFound of notFoundOutputs) {
   const notFoundPath = path.join(outDir, notFound);
   if (!fs.existsSync(notFoundPath)) continue;
   const html = fs.readFileSync(notFoundPath, "utf8");

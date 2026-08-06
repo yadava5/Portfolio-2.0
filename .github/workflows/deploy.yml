@@ -35,17 +35,40 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build static export
-        run: npm run build
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_BASE_PATH: /Portfolio-2.0
+      # check-nameplate.mjs and check-cargo-fixture.mjs drive a real browser
+      # against out/. Chromium only — the five-browser smoke is the one step
+      # --no-e2e skips, and it is skipped for the reason below.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
-      - name: Verify static SEO export
-        run: npm run test:seo
-
-      - name: Verify proof manifest
-        run: npm run test:proof
+      # THE DEPLOY USED TO SHIP PAST THE ONLY GATE THAT MATTERS.
+      #
+      # This job built, ran `test:seo` and `test:proof`, and uploaded. It does
+      # not `needs:` anything in ci.yml — `needs:` does not reach across
+      # workflow files — and it triggers independently on push to main. So a
+      # red CI never blocked a deploy, and `assertRunShipped`, the one check
+      # that asserts out/index.html IS the 13-station run rather than the
+      # abandoned React port, ran nowhere on the path to production. That is
+      # the migration's first invariant, unprotected at the one moment it
+      # matters.
+      #
+      # verify:portfolio already IS the build: it runs `npm run build` itself
+      # under exactly the configuration this job used to set inline
+      # (NODE_ENV=production, NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 — see
+      # DEPLOY_ENV in the script), and `test:seo` and `test:proof` are two of
+      # its nineteen steps. Replacing the three steps with the validator adds
+      # sixteen gates and removes a second, divergent copy of the deploy env.
+      #
+      # --no-e2e IS LOAD-BEARING, NOT A SHORTCUT. The browser-smoke step
+      # rebuilds with NEXT_PUBLIC_BASE_PATH= (empty) and re-runs
+      # build-home.mjs, so out/ AFTERWARDS is not the artifact that was
+      # hashed — the script says so in its own closing note. Running the full
+      # validator here would upload the empty-basePath build to production.
+      # Every other step reads out/ without rewriting it, so out/ at upload
+      # time is the deploy build. The five-browser smoke stays in CI, where
+      # nothing is shipped from the tree it leaves behind.
+      - name: Build and verify the portfolio (deploy configuration)
+        run: node scripts/qa/verify-portfolio.mjs --no-e2e
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
