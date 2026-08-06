@@ -1,4 +1,14 @@
 <!--
+  ══════════════════════════════════════════════════════════════════════════
+  ITS PHASE 3–6 SECTIONS ARE SUPERSEDED. Read
+  docs/PORTFOLIO-MIGRATION-PLAN-3-6.md instead: it was written at the Phase 2
+  checkpoint from what execution actually found, corrects this document in
+  thirty measured places, and is annotated with Phase 3's outcome.
+
+  Phases 0–2 below shipped and are accurate. Everything from Phase 3 onward in
+  this file is the version written before any of it had been run.
+  ══════════════════════════════════════════════════════════════════════════
+
   VERSION-CONTROLLED COPY of the migration plan, so it travels with the checkout.
   Verbatim below this header. Written from a cleared context; read it completely
   before acting on it.

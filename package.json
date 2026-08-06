@@ -27,6 +27,7 @@
     "assets:budget": "node scripts/qa/check-asset-budgets.mjs",
     "test:contrast": "node scripts/qa/check-contrast.mjs",
     "test:seo": "node scripts/qa/check-static-export-seo.mjs",
+    "test:seo:archive": "node scripts/qa/check-static-export-seo.mjs .build/archive-staging --no-home",
     "test:proof": "node scripts/qa/check-proof-manifest.mjs",
     "test:probe-routes": "node scripts/qa/check-probe-routes.mjs",
     "resume:build": "node scripts/resume/render-resume.mjs",

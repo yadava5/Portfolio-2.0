@@ -584,11 +584,15 @@ test.describe("Daylight Study — working paper", () => {
       await page.waitForLoadState("domcontentloaded");
 
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      /* THE STAMP, NOT THE PROSE. This matched the strings "Private proof" or
+         "work-related" anywhere on the page, which is a test of wording rather
+         than of state — and it is how `automl` stayed on this list for a week
+         after its repository went public, its `repoPin` was set and its stamp
+         stopped rendering. The stamp is drawn from `repoPin === null`, the same
+         condition that decides whether the file IS private, so asserting it
+         means the list and the data cannot drift apart again in silence. */
       await expect(
-        page
-          .getByText("Private proof")
-          .or(page.getByText("work-related"))
-          .first()
+        page.getByRole("img", { name: /private repository/i })
       ).toBeVisible();
     });
   }

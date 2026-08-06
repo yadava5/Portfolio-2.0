@@ -408,11 +408,23 @@ export const METRIC_HOME_CHAPTER: Record<string, string> = {
   "0.9791": "#work",
 };
 
-export const REQUIRED_PRIVATE_CASE_STUDIES = [
-  "automl",
-  "master-inventory",
-  "policybot",
-];
+/**
+ * The case files whose repository is private — `repoPin === null`, which is the
+ * exact condition `CaseStudyPage` uses to render the PRIVATE REPOSITORY stamp.
+ *
+ * `automl` was on this list and had been wrong since 2026-07-30, when the
+ * repository went public: `repoPin` was set, the stamp stopped rendering, and
+ * the file stopped being a private one. Measured in the shipped export on
+ * 2026-08-06 — `automl` carries ZERO stamps, the two below carry one each.
+ *
+ * It survived because the test matched the LABEL TEXT "Private proof", and
+ * `automl`'s `evidenceDisclosure` still carried its sentence from the private
+ * era. Two stale things propping each other up: the prose kept the test green
+ * and the test kept the prose unexamined. Both are corrected now, and the
+ * assertion moved onto the stamp itself so a rewording cannot hide a wrong
+ * list again.
+ */
+export const REQUIRED_PRIVATE_CASE_STUDIES = ["master-inventory", "policybot"];
 
 export const PLAYWRIGHT_ARTIFACT_ROOT = path.join("output", "playwright");
 

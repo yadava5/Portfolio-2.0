@@ -912,10 +912,22 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     },
     summary:
       "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+    /* This aside was the last sentence of the private era, and it outlived
+       it by a week. The repo went public on 2026-07-30: `repoPin` was set
+       (which is what removed the PRIVATE REPOSITORY stamp), receipt 01 was
+       rewritten, and the corrections register below says so in as many
+       words — while this paragraph, three sections up the same page, went on
+       asserting the opposite. A disclosure that describes a posture the file
+       no longer holds is worse than no disclosure: it is the one paragraph a
+       reader trusts to tell them what they are NOT being shown.
+
+       It now names what is actually withheld. The sha stays in the ledger
+       above rather than being repeated here — AUTOML_SHA moves, and prose
+       carrying a copy of a constant is how the two come to disagree. */
     evidenceDisclosure: {
-      label: "Private proof: GitHub evidence",
+      label: "Public source, results not claimed",
       detail:
-        "The current GitHub repository is yadava5/ai-augmented-auto-ml-toolchain and its README identifies the product as Agentic AutoML Platform. The repository is private, so this case file shows private-safe evidence instead of a public source link.",
+        "The repository is yadava5/ai-augmented-auto-ml-toolchain — public, and pinned to a commit in the ledger above — so every architectural claim on this file terminates in source a reader can open. What is not here is performance: no accuracy, latency or throughput figure appears anywhere below, because no committed eval artifact earns one. Going public made the architecture inspectable, not the results.",
     },
     problem:
       "Between a raw dataset and a useful model sits a chain of repetitive judgment: ingestion, feature decisions, training, evaluation, deployment packaging. Automate the chain carelessly and the judgment disappears with the labor.",
@@ -1165,6 +1177,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-07-30",
         kind: "erratum",
         text: "The repository is no longer private, and until today this file said it was. Receipt 01 read “The platform lives in the private repo …” and carried no artifact at all — true when written, false the moment the visibility changed, and it was the one incorrect sentence on the page. yadava5/ai-augmented-auto-ml-toolchain now answers anonymously; both paths cited here were fetched without a token and returned 200 before the rows were rewritten. Two claims moved from a photograph of a poster to the source that decides them: the seven-phase lifecycle and the human gate now cite the README at e506c91, and the MCP claim cites the server file, which registers exactly twelve tools — named here in source order because this project’s booklets once shipped fabricated tool names and an audit had to replace them. The note above stands with its reason corrected: going public makes the ARCHITECTURE inspectable, not the results. No accuracy or throughput figure appears on this file, because no committed eval artifact earns one.",
+      },
+      {
+        date: "2026-08-06",
+        kind: "erratum",
+        text: "The evidence aside above still said the repository was private, and it had said so for a week after it stopped being true. The 2026-07-30 round pinned the repo, removed the private stamp and rewrote receipt 01, but missed the one paragraph whose entire job is to tell a reader what they are not being shown \u2014 so the file contradicted itself three sections apart, and the erratum directly below it. Rewritten to name what is actually withheld: the source is public and pinned, and no accuracy, latency or throughput figure appears anywhere on this file because no committed eval artifact earns one. Found while rebuilding the archive as static HTML, by reading the generated page rather than the component that used to render it.",
       },
     ],
     registryFig: {

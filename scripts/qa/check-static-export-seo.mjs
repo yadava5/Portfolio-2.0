@@ -1,9 +1,37 @@
+/**
+ * @fileoverview Every exported route carries the metadata the deploy is
+ * gated on.
+ *
+ * TAKES THE EXPORT ROOT AS AN ARGUMENT, and `--no-home` DECLARES A SCOPE
+ * RATHER THAN SKIPPING A CHECK. The archive is generated to a staging
+ * directory during the migration, and that directory deliberately has no
+ * `index.html`: `build-home.mjs` owns the home page and only runs at the
+ * cutover. Without a way to say so, the archive's heads would have been
+ * verified once by hand and gated never — `html.mjs` could drift for a whole
+ * phase and nothing would read it.
+ *
+ * The distinction matters and is the reason this is a flag rather than an
+ * `if (!existsSync) continue`. A skip is silent and permanent; a declared
+ * scope is loud, is checked in full within its scope, and DISAPPEARS at the
+ * cutover, when one root holds the whole site again. Everything else — the
+ * seven case files, /evidence/, resume.pdf, the sitemap, robots.txt, the 404
+ * and the case-sensitivity sweep — is asserted identically in both modes.
+ *
+ *   node scripts/qa/check-static-export-seo.mjs
+ *   node scripts/qa/check-static-export-seo.mjs .build/archive-staging --no-home
+ */
 import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const outDir = path.join(root, "out");
+const argv = process.argv.slice(2);
+const NO_HOME = argv.includes("--no-home");
+const outDir = path.resolve(root, argv.find((a) => !a.startsWith("--")) ?? "out");
 const siteUrl = "https://yadava5.github.io/Portfolio-2.0";
+if (!fs.existsSync(outDir)) {
+  console.error(`Static SEO check failed: no export at ${outDir}`);
+  process.exit(1);
+}
 const siteTitle = "Ayush Yadav | Software, Data, and ML Engineering";
 const projectDir = path.join(outDir, "projects");
 const projectRoutes = fs.existsSync(projectDir)
@@ -13,7 +41,15 @@ const projectRoutes = fs.existsSync(projectDir)
       .map((entry) => `/projects/${entry.name}/`)
       .sort()
   : [];
-const requiredRoutes = ["/", "/resume.pdf", ...projectRoutes];
+/* `/` is the run, and the run is written by build-home.mjs. Under --no-home
+   this root is the archive alone; every other route is still required, and
+   `/resume.pdf` stays on the list because the generator copies public/ and a
+   missing résumé is a missing résumé in either mode. */
+const requiredRoutes = [
+  ...(NO_HOME ? [] : ["/"]),
+  "/resume.pdf",
+  ...projectRoutes,
+];
 
 function fail(message) {
   console.error(`Static SEO check failed: ${message}`);
@@ -160,7 +196,9 @@ if (!fs.existsSync(evidenceHtmlPath)) {
 const notFoundRequired = "404.html";
 const notFoundOutputs = [notFoundRequired, "404/index.html", "_not-found/index.html"];
 if (!fs.existsSync(path.join(outDir, notFoundRequired))) {
-  fail(`missing out/${notFoundRequired} — Pages serves it for every unmatched path`);
+  fail(
+    `missing ${path.relative(root, outDir)}/${notFoundRequired} — Pages serves it for every unmatched path`
+  );
 }
 for (const notFound of notFoundOutputs) {
   const notFoundPath = path.join(outDir, notFound);

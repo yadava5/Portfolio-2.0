@@ -353,6 +353,19 @@ step("archive → staging", "build:archive", {
 step("run ⇄ archive crosswalk", "test:crosswalk", {
   reads: ".build/archive-staging + src/run/index.html",
 });
+/* The generated archive's heads get the same gate the deploy is held to,
+   pointed at staging with the home page DECLARED absent rather than silently
+   skipped — build-home.mjs owns index.html and only runs at the cutover.
+
+   TEMPORARY, and it says so: at the cutover one root holds the whole site
+   again and the "static export SEO" step above covers the archive too, at
+   which point this line is deleted rather than left to run twice. Without it
+   the archive's heads would be verified once by hand and gated never, and
+   scripts/archive/html.mjs could drift for a whole phase with nothing
+   reading it. */
+step("archive SEO (staging)", "test:seo:archive", {
+  reads: ".build/archive-staging",
+});
 step("nameplate", "test:nameplate", { reads: "out/ served over http" });
 step("nameplate (negative)", "test:nameplate:negative", {
   reads: "a temp copy of out/",
