@@ -161,6 +161,30 @@ test.describe("Daylight Study — working paper", () => {
       "not a screenshot"
     );
 
+    /* THE NEGATIVE HALF, and it is the half a reword cannot defeat. The
+       positive string above is a sentence; the fact underneath it is that the
+       3.5× is OpenMP's and the vector path is in both binaries, which was
+       settled by building all three configurations. Assert the retired
+       attribution is gone from every surface that makes a claim — the
+       receipts, the outcomes, the not-claiming list and the drawn plate — in
+       both the visible text and the sentence a screen reader is handed, which
+       is where it survived a whole phase of gates.
+
+       #corrections is deliberately exempt: the 2026-08-06 erratum names
+       "openmp+simd" as the wording it retires, and a register that cannot
+       quote what it corrected is not a register. Same reason the positive
+       assertion above is scoped to #validation. */
+    const retired = EXPECTED_PROOF_ARTIFACTS.fastMnistRetiredAttribution;
+    await expect(page.locator("#validation")).not.toContainText(retired);
+    await expect(page.locator("#project-visual")).not.toContainText(retired);
+    const plateLabel = await page
+      .locator("#project-visual [role='img']")
+      .first()
+      .getAttribute("aria-label");
+    expect(plateLabel ?? "").not.toContain(retired);
+    expect(plateLabel ?? "").not.toContain("openmp-plus-simd");
+    expect(plateLabel ?? "").toContain("OpenMP");
+
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("5x faster inference");
     expect(bodyText).not.toContain("5x with AVX-512 SIMD");

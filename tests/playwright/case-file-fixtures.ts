@@ -160,8 +160,19 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
   // SIMD-attribution reword (2026-07-18): honest form per BENCHMARKS.md.
+  // 2026-08-06: BENCHMARKS.md was the wrong authority and this string was the
+  // reason nobody noticed. The run and the proof manifest had said since
+  // 2026-08-03 that the 3.5× is OpenMP's — measured by building all three
+  // configurations and finding the arm64 `baseline` and `native` binaries
+  // byte-identical — while the case file still credited an "openmp+simd"
+  // kernel, and this fixture asserted the case file's wording, so the suite
+  // certified the contradiction. It went red the moment the prose was fixed,
+  // which is C36 for the second time: the wrong prose kept the wrong test
+  // passing and the passing test kept the prose unexamined. Paired below with
+  // a NEGATIVE assertion on the retired wording, which a reword cannot defeat.
   fastMnistSpeedup:
-    "openmp+simd dot kernel is 3.5× faster than the -O3 baseline",
+    "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline",
+  fastMnistRetiredAttribution: "openmp+simd",
   masterInventoryRows:
     "3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
   masterInventorySchema: "35-field unified schema",

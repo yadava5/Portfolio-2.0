@@ -2620,7 +2620,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           label: "metric",
-          value: "openmp+simd dot kernel vs the -O3 baseline ⟶ 3.5× at dot 256",
+          value:
+            "openmp+native dot kernel vs the -O3 baseline ⟶ 3.5× at dot 256",
         },
         {
           label: "run",
@@ -2678,10 +2679,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         visibility: "public",
       },
       {
-        /* Attribution per BENCHMARKS.md itself: the 3.5x (dot 256) is the
-           openmp+native parallel configuration, not SIMD alone. */
+        /* Attribution checked by BUILDING all three configurations rather
+           than by reading BENCHMARKS.md, which is what this row used to
+           cite. On arm64 the `baseline` and `native` binaries come out
+           byte-identical — -march=native is an x86 flag clang does not act
+           on here — so the hand-written NEON path is compiled into both
+           sides of the comparison and none of the 3.5× is SIMD's. Until
+           2026-08-06 this row credited an "openmp+simd" kernel, which reads
+           as though the vectorisation earns part of the number. */
         claim:
-          "The openmp+simd dot kernel is 3.5× faster than the -O3 baseline (dot 256) — committed benchmark data, not a live run; the repo’s own analysis notes -march=native alone barely moves the needle.",
+          "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline — and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
         method:
           "committed 2025-12-26 benchmark run — protocol in the method slip",
         artifacts: [
@@ -2718,7 +2725,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "SIMD acceleration is implemented across AVX2, AVX-512, and NEON paths; the verified 3.5× belongs to the openmp+simd dot kernel vs the -O3 baseline, not to SIMD alone.",
+          "SIMD acceleration is implemented across AVX2, AVX-512, and NEON paths; the verified 3.5× belongs to OpenMP parallelism, not to SIMD — the vectorised path is compiled into both sides of that comparison, so it earns none of the number.",
         method: "source paths + the committed benchmark rows",
         artifacts: [
           {
@@ -2749,7 +2756,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is the openmp+simd dot kernel’s 3.5× over the baseline build, and parallelism carries it.",
+      "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline at dot 256; the SIMD is in both builds and earns none of it.",
       "The workbench screenshot was captured with the native inference server offline, so benchmark claims come from committed benchmark data, not the live page.",
       "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
@@ -2772,7 +2779,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07",
         kind: "note",
-        text: "Attribution tightened, number unchanged: the committed 3.5× (dot 256) belongs to the openmp+simd configuration measured against the -O3 baseline. BENCHMARKS.md’s own analysis records that -march=native alone barely moves the needle; earlier site copy credited the speedup to SIMD alone.",
+        text: "Attribution tightened, number unchanged: the committed 3.5× (dot 256) is the openmp+native configuration measured against the -O3 baseline, and the earlier site copy that credited the speedup to SIMD alone is retired. BENCHMARKS.md’s own analysis records that -march=native alone barely moves the needle. This note then named the winning side “openmp+simd”, which reads as though the vectorisation earns part of the number — a second wrong attribution, corrected by the 2026-08-06 erratum at the end of this register.",
       },
       {
         date: "2026-07-30",
@@ -2803,6 +2810,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-02",
         kind: "note",
         text: "Provenance audit: the MNIST evaluation was re-run from source on an Apple M1 Pro against the standard 10,000-image test set. The regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro-F1 0.969822, the same model sha256. The dot-256 kernel benchmark was rebuilt and re-measured at 3.536× — the median of 20 repetitions, committed as docs/benchmarks/runs/bench-20260802-dot20x-{baseline,openmp-native}.json — against the 3.504× December record, which was taken on a different machine (a 4-performance-core M2 Air) and is history rather than the reference. The 3.520× this line used to cite had no committed JSON, and Glyph's own two records disagreed about how it was taken: ENVIRONMENT.md called it a single-repetition re-run, the audit log called it three repetitions. One caveat surfaced and is recorded at the receipt: apps/eval_model.cpp has no add_executable in CMakeLists.txt, so the generator has to be compiled by hand rather than through the project’s own build.",
+      },
+      {
+        date: "2026-08-06",
+        kind: "erratum",
+        text: "This file credited the 3.5× to an “openmp+simd” kernel in five places — the method slip, the benchmark receipt, the SIMD outcome row, the not-claiming list, and the 2026-07 note above that was itself the correction. The fig. 1 plate said it too, in its drawn label and in the sentence a screen reader is given. The number never moved; the attribution did, and it was wrong: the speed-up is OpenMP’s alone. Settled by building rather than by reading BENCHMARKS.md — all three configurations were compiled, and on arm64 the baseline and native binaries come out byte-identical, because -march=native is an x86 flag clang does not act on here. So the hand-written NEON path is in both sides of the comparison and earns none of the ratio; it is also why a SIMD-alone measurement sits at about 1.0, comparing a binary with itself. The run’s ¶ 06 and the proof manifest have carried this attribution since 2026-08-03 while this file carried the other one, on the same site, about the same measurement. Recorded as an erratum rather than a silent edit because a corrections register that carries a stale correction is worse than one that carries none: it is this page’s own promise that somebody checked.",
       },
     ],
     artifacts: [

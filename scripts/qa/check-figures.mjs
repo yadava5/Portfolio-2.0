@@ -32,48 +32,79 @@ const runProse = read("src/run/index.html")
   .replace(/&#8202;|&nbsp;/g, " ")
   .replace(/\s+/g, " ");
 
-const projects = read("src/lib/data/projects.ts");
-const cases = read("src/lib/data/projectCaseStudies.ts");
-const dataLayer = projects + cases;
+/* ── THE SURFACES, NAMED ───────────────────────────────────────────────
+   This used to be `const dataLayer = projects + cases` — one concatenated
+   haystack — and that is how a contradiction certified itself as consistent
+   for four days. The "Glyph · kernel speed-up" pair was satisfied by
+   projects.ts and projectCaseStudies.ts was therefore never asked, so the
+   site shipped "parallelism carries all of it" on / and "the openmp+simd dot
+   kernel is 3.5× faster" on /projects/fast-mnist-nn/ at the same time, about
+   the same measurement, with this gate printing "agrees".
+
+   It is the same hole recorded below for the Applied suite count and fixed
+   there for one figure only: A CONSISTENCY CHECK THAT CANNOT SEE ONE OF THE
+   SURFACES IT IS MEANT TO RECONCILE WILL CERTIFY A CONTRADICTION AS
+   CONSISTENT. Fixed as a rule here — every entry NAMES the file(s) it
+   expects its figure in, and a figure claimed on two files is asserted on
+   both.
+
+   Four surfaces, because four files state numbers a reader sees: the two
+   data-layer files, the proof manifest (which /evidence/ renders — the
+   third surface the Applied note names), and the archive's fig. 1 plates,
+   whose drawn labels and aria-labels are prose no other gate reads. */
+const SURFACES = {
+  projects: "src/lib/data/projects.ts",
+  cases: "src/lib/data/projectCaseStudies.ts",
+  manifest: "src/lib/data/proofManifest.ts",
+  plates: "scripts/archive/case-figures.mjs",
+};
+const surfaceText = Object.fromEntries(
+  Object.entries(SURFACES).map(([name, path]) => [name, read(path)])
+);
 
 /**
- * @type {{figure: string, run: RegExp, data: RegExp, source: string}[]}
+ * `data` is a map from surface name to the pattern that surface must carry.
+ * Naming a surface is an assertion; omitting one is a declaration that the
+ * figure is not claimed there. An unknown key is a hard failure rather than
+ * a silent no-op — a typo'd surface name would otherwise disable an
+ * assertion while the line still reads like one.
+ *
+ * @type {{figure: string, run: RegExp, data: Record<string, RegExp>, source: string}[]}
  */
 const FIGURES = [
   {
     figure: "jetpack · parallel speed-up",
     run: /6\.4× single-threaded java\.util\.zip/,
-    data: /6\.4× vs single-threaded java\.util\.zip/,
+    data: { projects: /6\.4× vs single-threaded java\.util\.zip/ },
     source: "benchmarks/jmh-results-rigorous.json — 422.0 / 66.2 = 6.378",
   },
   {
     figure: "jetpack · parallel throughput",
     run: /422 vs 66 mb\/s/i,
-    data: /422 vs 66 MB\/s/,
+    data: { projects: /422 vs 66 MB\/s/ },
     source: "benchmarks/jmh-results-rigorous.json, 3 forks",
   },
   {
     figure: "jetpack · Adler-32 vs scalar",
     run: /adler-32 vectorised 2\.8× scalar/i,
-    data: /2\.8× vs scalar/,
+    data: { projects: /2\.8× vs scalar/ },
     source: "benchmarks/jmh-results-rigorous.json — 4256.6 / 1518.2 = 2.804",
   },
   {
     figure: "jetpack · Adler-32 absolute",
     run: /4\.26 gb\/s/i,
-    data: /4\.26 GB\/s/,
+    data: { projects: /4\.26 GB\/s/ },
     source: "benchmarks/jmh-results-rigorous.json — 4256.6 MB/s",
   },
   {
     figure: "Applied · CI macro-F1 floor",
     run: /below 0\.95 macro-f1/i,
-    data: /0\.95/,
+    data: { cases: /0\.95/ },
     source: "jobtracker .github/workflows/backend-ci.yml — --min-macro-f1 0.95",
   },
   {
     figure: "Applied · backend suite",
     run: /305 passed · 0 skipped/,
-    data: /305 tests passed, 0 skipped/,
     // This entry read 278 · 10 while proofManifest.ts already said 305 · 0, and
     // the gate still exited 0 -- because it only compares run/index.html against
     // projectCaseStudies.ts and never reads the manifest at all. Both stale
@@ -81,13 +112,27 @@ const FIGURES = [
     // shipped 305 on /evidence/ and 278 on / at the same time. A consistency
     // check that cannot see one of the three surfaces it is meant to reconcile
     // will certify a contradiction as consistent.
+    //
+    // The manifest is now DECLARED here rather than described in a comment, so
+    // the third surface this note names is read on every run. It phrases the
+    // count its own way, which is exactly why one regex over one concatenated
+    // haystack could never have covered both.
+    data: {
+      cases: /305 tests passed, 0 skipped/,
+      manifest: /305 passed, 0 skipped/,
+    },
     source:
       "`pytest tests -q` at head a0d77a1, 2026-08-03 — 305 passed, 0 skipped (+27 on 03fc5c4: 10 CORS, 7 benchmark guard, 10 RLS that no longer skip)",
   },
   {
     figure: "Glyph · MNIST accuracy",
     run: /97\.01%/,
-    data: /97\.01/,
+    data: {
+      projects: /97\.01/,
+      cases: /97\.01/,
+      manifest: /97\.01/,
+      plates: /97\.01/,
+    },
     source:
       "committed eval at GLYPH_EVAL_SHA; regenerated byte-identical 2026-08-02",
   },
@@ -100,26 +145,38 @@ const FIGURES = [
   {
     figure: "Cadence · suite",
     run: /1,185 passed · 0 skipped/,
-    data: /1,185 tests passing under vitest, with 0 skipped/,
+    data: { cases: /1,185 tests passing under vitest, with 0 skipped/ },
     source:
       "both vitest configs at head 8a2fbbb, 2026-08-03 — 635 frontend + 550 backend, 0 skipped",
   },
   {
     figure: "Cadence · suite split",
     run: /635 fe \+ 550 be/,
-    data: /635 frontend \+ 550 backend/,
+    data: { cases: /635 frontend \+ 550 backend/ },
     source: "same run; the split must agree with the total it sums to",
   },
   {
     figure: "Glyph · MNIST correct count",
     run: /9,701\/10,000/,
-    data: /9,701 correct/,
+    data: {
+      projects: /9,701 correct/,
+      cases: /9,701 correct/,
+      manifest: /9,701 correct/,
+      /* The plate has a 232-unit line to spend, so it draws the fraction. */
+      plates: /9,701\/10,000/,
+    },
     source: "regenerated mnist_eval.json, byte-identical to the committed one",
   },
   {
     figure: "Glyph · macro-F1",
     run: /macro-f1 0\.9698/i,
-    data: /macro-F1 0\.9698/,
+    data: {
+      projects: /macro-F1 0\.9698/,
+      cases: /macro-F1 0\.9698/,
+      manifest: /macro-F1 0\.9698/,
+      /* The plate is in the lowercase mono apparatus voice, not prose. */
+      plates: /macro-f1 0\.9698/,
+    },
     source: "regenerated mnist_eval.json — 0.969822",
   },
   {
@@ -127,21 +184,61 @@ const FIGURES = [
     /* Tags are stripped before matching, so the <b> around 3.5× is gone
        by the time this runs — match the prose, not the markup. */
     run: /parallel dot-256 kernel 3\.5× vs -O3/,
-    data: /3\.5× parallel dot kernel/,
+    /* FOUR SURFACES, because the number is stated on four. Until 2026-08-06
+       this entry named one regex, projects.ts satisfied it, and the case
+       file and its plate were never asked — which is how they went four days
+       crediting a different cause for the same measurement. */
+    data: {
+      projects: /3\.5× parallel dot kernel/,
+      cases: /3\.5× faster under OpenMP than the -O3 baseline/,
+      manifest: /3\.5× parallel dot kernel/,
+      plates: /3\.5 times the single-thread -O3 baseline/,
+    },
     source:
       "docs/benchmarks/runs/bench-20260802-dot20x-* (20 reps) — median real_time 4,818,901ns → 1,362,717ns = 3.536×; the 3.520× this line used to cite had no committed JSON",
   },
   {
+    /* THE ATTRIBUTION, WHICH IS THE THING THE DATA DECIDES. The entry above
+       binds the number; this one binds what earns it, because the number was
+       never in dispute and the attribution was — the run said "parallelism
+       carries all of it" while the case file said "openmp+simd", on the same
+       site, about the same measurement, with every gate green.
+
+       Bound on all five surfaces a reader can reach it from. The negative
+       half is below, in FORBIDDEN: this pair proves the right sentence is
+       present, and that one proves the retired one is gone, which is the
+       assertion a reword cannot walk around. */
+    figure: "Glyph · what earns the 3.5×",
+    run: /parallelism carries all of it; the simd is in both builds/,
+    data: {
+      projects:
+        /the 3\.5× is openmp against the -O3 baseline; the SIMD is compiled into both/,
+      cases: /the parallelism carries all of it/,
+      manifest: /the speed-up is OpenMP’s, not SIMD’s/,
+      plates: /the hand-written vector path being compiled into both/,
+    },
+    source:
+      "all three configurations BUILT rather than read out of BENCHMARKS.md: on arm64 the `baseline` and `native` binaries are byte-identical (-march=native is an x86 flag clang does not act on here), so the NEON path is in both sides of the comparison and the whole ratio is OpenMP's — which is also why a SIMD-alone measurement sits at ~1.0, comparing a binary with itself",
+  },
+  {
     figure: "Applied · eval set",
     run: /96-sample eval — 8 classes · 2 misclassified/,
-    data: /96/,
+    /* Was a bare /96/ over the concatenation, which matched `#2496ed` in
+       projects.ts's tech-stack colours. Scoping it to the file that states
+       the claim is the reform; naming the noun is what makes the scoping
+       worth anything. Both forms are in the file, at the eval-set row and
+       the provenance note. */
+    data: { cases: /96 (messages|samples)/ },
     source:
       "classifier_eval_v3.jsonl counted 2026-08-02 — 96 samples, 8 classes, 12 each; gate reported 2 misclassified",
   },
   {
     figure: "Applied · rule count",
     run: /201 regex rules/,
-    data: /201/,
+    /* Same defect, worse: a bare /201/ matched `U+201C/201D` in this file's
+       own typographic-law header, so the entry would have stayed green with
+       the rule count deleted. Bound to the phrase the file actually uses. */
+    data: { cases: /201-rule/ },
     source:
       "imported jobtracker.classifier.rules 2026-08-02 — 106 strong + 26 weak + 69 negative = 201",
   },
@@ -153,7 +250,7 @@ const FIGURES = [
        until 2026-08-02. Bound here because nothing else could see it. */
     figure: "Glyph · hand-written instruction sets",
     run: /3 hand-written simd paths/,
-    data: /Three hand-written instruction sets/,
+    data: { cases: /Three hand-written instruction sets/ },
     source:
       "glyph src/Matrix.cpp + src/NeuralNet.cpp guard exactly __AVX512F__, __AVX2__, __ARM_NEON over a scalar fallback; the wasm target passes -msimd128 with no hand-written branch",
   },
@@ -165,14 +262,14 @@ const FIGURES = [
        data layer states is exactly what this file exists to bind. */
     figure: "jetpack · fig. 07 bar label",
     run: /virtual threads 422 mb\/s/i,
-    data: /422 vs 66 MB\/s/,
+    data: { projects: /422 vs 66 MB\/s/ },
     source:
       "benchmarks/jmh-results-rigorous.json — 422.0 MB/s, 3 forks; the bars read the quick 1-fork 455 until 2026-08-03",
   },
   {
     figure: "jetpack · suite",
     run: /72 tests, 0 failures/,
-    data: /72 tests/,
+    data: { projects: /72 tests/, manifest: /72 tests, 0 failures/ },
     source:
       "`mvn test` on JDK 25.0.3, 2026-08-02 — surefire XML sums to tests=72 errors=0 skipped=0 failures=0",
   },
@@ -191,7 +288,7 @@ const FIGURES = [
        day is still twelve stops long. */
     figure: "VisualAssist · iOS suite",
     run: /71 passed · 0 skipped/,
-    data: /71 unit tests for models and utilities/,
+    data: { projects: /71 unit tests for models and utilities/ },
     source:
       "xcodebuild test at VisualAssistTests @ 22ebdaa, run twice — iOS 26.5 and 26.2 — 71 passed, 0 failed, 0 skipped, read from the .xcresult via xcresulttool rather than console text",
   },
@@ -210,14 +307,149 @@ const fails = [];
 const notes = [];
 
 for (const f of FIGURES) {
+  const declared = Object.keys(f.data);
+  const unknown = declared.filter((s) => !(s in surfaceText));
+  if (unknown.length || !declared.length) {
+    /* Not a drift report — a broken entry. An unknown surface name asserts
+       nothing while reading like an assertion, which is the failure mode the
+       whole reform is about, one level up. */
+    fails.push(
+      `  ✗ ${f.figure} declares ${declared.length ? `unknown surface(s): ${unknown.join(", ")}` : "no surface at all"}\n` +
+        `      known surfaces: ${Object.keys(surfaceText).join(", ")}`
+    );
+    continue;
+  }
   const inRun = f.run.test(runProse);
-  const inData = f.data.test(dataLayer);
-  if (inRun && inData) {
-    notes.push(`  · ${f.figure} — agrees  (${f.source})`);
+  const missing = declared.filter((s) => !f.data[s].test(surfaceText[s]));
+  if (inRun && !missing.length) {
+    notes.push(
+      `  · ${f.figure} — agrees on ${declared.join(" + ")}  (${f.source})`
+    );
   } else {
     fails.push(
       `  ✗ ${f.figure}\n      run: ${inRun ? "states it" : "MISSING"}` +
-        `   data layer: ${inData ? "states it" : "MISSING"}\n      truth: ${f.source}`
+        `   ${declared
+          .map((s) => `${s}: ${missing.includes(s) ? "MISSING" : "states it"}`)
+          .join("   ")}\n      truth: ${f.source}`
+    );
+  }
+}
+
+/* A floor under the declaration itself, NAMED and counted. The reform is
+   only worth anything while more than one surface is being read; an edit
+   that quietly collapsed every entry back to a single file would restore the
+   exact hole this replaced and would print the same green lines doing it.
+
+   The count alone is not enough — C33: counting is not checking. So the two
+   entries the reform exists for are named, and each must still be declared
+   on all four surfaces. A figure stated in four places and cross-checked in
+   one is the defect, and it does not announce itself in a total. */
+const multiSurface = FIGURES.filter((f) => Object.keys(f.data).length > 1);
+const ALL_FOUR = ["Glyph · kernel speed-up", "Glyph · what earns the 3.5×"];
+const undercovered = ALL_FOUR.map((name) => {
+  const f = FIGURES.find((x) => x.figure === name);
+  const on = f ? Object.keys(f.data) : [];
+  return { name, on, ok: on.length === Object.keys(surfaceText).length };
+}).filter((x) => !x.ok);
+if (FIGURES.length < 19 || multiSurface.length < 7 || undercovered.length) {
+  fails.push(
+    `  ✗ read ${FIGURES.length} figures, ${multiSurface.length} of them declared on more than one ` +
+      `surface — expected at least 19 and 7, measured 2026-08-06.` +
+      undercovered
+        .map(
+          (u) =>
+            `\n      "${u.name}" is declared on ${u.on.length ? u.on.join(" + ") : "nothing"}; ` +
+            `it is stated on all ${Object.keys(surfaceText).length} and must be checked on all ${Object.keys(surfaceText).length}.`
+        )
+        .join("")
+  );
+} else {
+  notes.push(
+    `  · ${FIGURES.length} figures declared across ${Object.keys(surfaceText).length} named surfaces, ` +
+      `${multiSurface.length} of them cross-checked on two or more, and the 3.5× pair on all four`
+  );
+}
+
+/* ── THE NEGATIVE HALF ─────────────────────────────────────────────────
+   A retired wording, asserted absent everywhere a claim is made. The
+   positive pairs above prove the right sentence is present; only this
+   proves the wrong one is gone, and only this survives a reword — which is
+   the lesson C36 taught twice: assert the thing the data decides, not the
+   sentence it produced.
+
+   `openmp+simd` is not a configuration Glyph has. Its build names are
+   `baseline`, `native` and `openmp+native`; the site invented the third
+   name and then reasoned from it. */
+/* TWO DECLARED EXEMPTIONS, not two skips — the C35 distinction. A skip is
+   silent and permanent; a declared scope says what it does not cover, is
+   checked in full inside what it does, and carries a floor so a broken parse
+   cannot masquerade as a clean file.
+
+   1. SOURCE COMMENTS. This scan is about what a reader is told, and these
+      files document their own history in comments that quote the wordings
+      they retired — including, three sections up, the one being retired
+      here. Only block comments and whole-line `//` are stripped: a naive
+      `//` sweep eats everything after `https://` in an artifact href, which
+      would make the scan quietly MORE permissive, and a negative assertion
+      that has been made permissive is a negative assertion that has stopped
+      existing.
+   2. THE CORRECTIONS REGISTERS. An erratum has to be able to name what it
+      corrected — a register that cannot quote the wording it retired is not
+      a register. This is the source-level twin of atlas's scoping of the
+      same assertion to #validation, so the two gates agree about where the
+      exemption is. */
+const REGISTER = /^ {4}corrections: \[[\s\S]*?^ {4}\],$/gm;
+const uncommented = (s) =>
+  s.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t]*\/\/.*$/gm, " ");
+const registers = surfaceText.cases.match(REGISTER) ?? [];
+if (registers.length !== 7) {
+  fails.push(
+    `  ✗ read ${registers.length} corrections registers out of projectCaseStudies.ts — expected 7,\n` +
+      `      one per case file. That is a broken parse, and it would exempt the wrong text.`
+  );
+}
+const CLAIM_TEXT = {
+  "src/run/index.html": runProse,
+  ...Object.fromEntries(
+    Object.entries(SURFACES).map(([name, path]) => [
+      path,
+      uncommented(
+        name === "cases"
+          ? surfaceText[name].replace(REGISTER, " ")
+          : surfaceText[name]
+      ),
+    ])
+  ),
+};
+
+const RETIRED = [
+  {
+    what: "openmp+simd (and openmp-plus-simd) as the owner of Glyph's 3.5×",
+    pattern: /openmp[+-]?(plus-)?simd/i,
+    why: "the 3.5× is OpenMP's alone — the arm64 `baseline` and `native` binaries build byte-identical, so the NEON path is in both sides of the comparison. Glyph's own configuration is named openmp+native; openmp+simd was the site's coinage, and it credited the vectorisation with a share of a number it does not earn",
+    /* The erratum that retired it has to stay quotable, or the register
+       stops being the record it claims to be. */
+    keptInRegister: true,
+  },
+];
+for (const r of RETIRED) {
+  const seen = Object.entries(CLAIM_TEXT)
+    .filter(([, text]) => r.pattern.test(text))
+    .map(([path]) => path);
+  if (seen.length) {
+    fails.push(
+      `  ✗ retired wording is back — ${r.what}\n      found in: ${seen.join(", ")}\n      ${r.why}`
+    );
+  } else if (r.keptInRegister && !r.pattern.test(registers.join(""))) {
+    fails.push(
+      `  ✗ retired wording is gone from the corrections registers too — ${r.what}\n` +
+        `      The claim surfaces are clean, which is right, but nothing on the site now\n` +
+        `      records that the wording was ever there. A correction deleted is not a\n` +
+        `      correction; this register's whole argument is that it is never deleted.`
+    );
+  } else {
+    notes.push(
+      `  · retired wording stays retired, and its erratum stays on file — ${r.what}`
     );
   }
 }

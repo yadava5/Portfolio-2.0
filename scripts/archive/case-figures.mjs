@@ -140,7 +140,7 @@ function figGlyph() {
   }
   return {
     viewBox: "0 0 240 346",
-    alt: "The 784–100–10 network at rest — a dashed, empty 28-by-28 input square, the hidden layer’s hundred dots, ten readout slots — and beneath it the committed record: 97.01 percent on the 10,000-image MNIST test set, and the openmp-plus-simd dot-256 kernel measured at 3.5 times the single-thread -O3 baseline.",
+    alt: "The 784–100–10 network at rest — a dashed, empty 28-by-28 input square, the hidden layer’s hundred dots, ten readout slots — and beneath it the committed record: 97.01 percent on the 10,000-image MNIST test set, and the dot-256 kernel measured under OpenMP at 3.5 times the single-thread -O3 baseline, the hand-written vector path being compiled into both.",
     caption: "fig. 1 — the network at rest, over its committed record.",
     captionNote:
       "the input square stays blank — the live read belongs to the line, at ¶ 06.",
@@ -161,7 +161,11 @@ function figGlyph() {
       /* Static at full extent, deliberately: a record does not move. */
       t(8, 294, "one thread, -O3 · 1×") +
       `<rect x="8" y="300" width="64" height="5" class="bark"/>` +
-      t(8, 322, "openmp+simd · 3.5×") +
+      /* "openmp, all cores" is the run's own bench label and the honest
+         one: the ratio is OpenMP's, the vector path is in both binaries.
+         Budgeted per rule 3 — 24 glyphs, `·` and `×` counting two each,
+         26 × 6.6 = 172 units from x 8, inside the 232-unit line. */
+      t(8, 322, "openmp, all cores · 3.5×") +
       `<rect x="8" y="328" width="224" height="5" class="bark clay"/>` +
       t(8, 344, "dot-256 · committed 2025-12-26"),
   };
