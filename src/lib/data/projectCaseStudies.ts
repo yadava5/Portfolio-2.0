@@ -2132,6 +2132,28 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         visibility: "private-safe",
       },
       {
+        /* #v-master-inventory-5 IS DELIBERATELY UNREACHED, and this is where
+           that ruling lives because this is the row it is about.
+
+           Until Phase 4 it had exactly one way in: `StoryShell.tsx`, the React
+           home page, which linked it as the "1M+" metric. Measured as a set
+           difference at the Phase 2 checkpoint, it was the ONLY one of the
+           archive's 53 receipt anchors whose sole inbound link died with that
+           page — the run links four and /evidence links ten, and between them
+           they cover every other anchor StoryShell reached.
+
+           It is not restored, for the reason the row itself states: `artifacts`
+           is empty, `date` is null and `visibility` is local-only. It is the
+           one receipt on this site that terminates in nothing a reader can
+           open. A deep link into it would promise a receipt and deliver a
+           description — the exact move the honesty engine exists to prevent.
+           The run instead links the case FILE from ¶03, in the same sentence
+           that says out loud "only the inventory is checked in — the rest are
+           read off miami's own systems and cannot be published". That sentence
+           is the honest way in, and it is already there.
+
+           If this row ever gains a publishable artifact, it gains a way in too.
+           Until then the absence is the argument. */
         claim:
           "More than one million operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
         method:
