@@ -18,13 +18,25 @@
  * half is the non-obvious part — tsc emits `@/…` specifiers verbatim and no
  * loader can resolve them — and two hand-maintained copies of a specifier
  * rewrite is the same mistake as two hand-maintained copies of a nameplate.
+ *
+ *   node scripts/run/build-nameplate.mjs [--out <root>]   default: out
+ *
+ * `--out` names the SITE root, not the module directory: the run loads these
+ * by the relative path `./run/components/…`, so they always sit at `<root>/run`
+ * and that relationship is not a caller's to choose. The flag exists because
+ * `scripts/archive/build-archive.mjs` assembles the whole site in a scratch
+ * directory and swaps it into place at the end, so that a build which fails
+ * halfway leaves the directory a reader is served untouched.
  */
 import { readFileSync, existsSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, join } from "node:path";
 import { compileAndRelink } from "./compile-ts-graph.mjs";
 
 const root = process.cwd();
-const OUT = resolve(root, "out/run");
+const argv = process.argv.slice(2);
+const outArg = argv.includes("--out") ? argv[argv.indexOf("--out") + 1] : null;
+const SITE_ROOT = resolve(root, outArg ?? "out");
+const OUT = join(SITE_ROOT, "run");
 
 function fail(msg) {
   console.error(`build-nameplate failed: ${msg}`);
@@ -36,7 +48,7 @@ try {
   ({ rewritten } = compileAndRelink({
     root,
     project: "tsconfig.run.json",
-    outDir: "out/run",
+    outDir: OUT,
   }));
 } catch (e) {
   fail(e.message);

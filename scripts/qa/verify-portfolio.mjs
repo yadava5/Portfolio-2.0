@@ -338,33 +338,17 @@ step("home-page anchors", "test:anchors", {
 step("pinned artifact links", "test:links", {
   reads: "out/** if built, else 4 source files",
 });
-/* The archive is generated to STAGING and checked there, not in out/.
-   out/ still holds the Next-rendered case files, whose footers say
-   `back to the work ⟵` → /#work and carry no rejoin link at all, so pointed
-   at out/ the crosswalk's fourth direction would be red until a later phase —
-   and a validator that cannot go green until later is the one thing the
-   execution protocol forbids. The argument moves to out/ at the cutover.
-
-   Neither step touches out/, so both are safe anywhere before the browser
-   step; they sit here because they are the other half of the link gates. */
-step("archive → staging", "build:archive", {
-  reads: "src/lib/data + public/",
-});
+/* THE SEAM, IN BOTH DIRECTIONS, and it now reads out/ — which is the whole
+   flip. Through Phase 3 the generated archive lived in a staging directory and
+   this gate was pointed there, because out/ still held the Next-rendered case
+   files: their footers said `back to the work ⟵` → /#work and carried no
+   rejoin link at all, so the crosswalk's fourth direction could not have gone
+   green. `npm run build` emits the archive now, so the artifact this reads is
+   the artifact a reader gets, and the two staging-only steps that stood here —
+   `archive → staging` and `archive SEO (staging)` — are gone: the build above
+   does the first and `static export SEO` already covers the second. */
 step("run ⇄ archive crosswalk", "test:crosswalk", {
-  reads: ".build/archive-staging + src/run/index.html",
-});
-/* The generated archive's heads get the same gate the deploy is held to,
-   pointed at staging with the home page DECLARED absent rather than silently
-   skipped — build-home.mjs owns index.html and only runs at the cutover.
-
-   TEMPORARY, and it says so: at the cutover one root holds the whole site
-   again and the "static export SEO" step above covers the archive too, at
-   which point this line is deleted rather than left to run twice. Without it
-   the archive's heads would be verified once by hand and gated never, and
-   scripts/archive/html.mjs could drift for a whole phase with nothing
-   reading it. */
-step("archive SEO (staging)", "test:seo:archive", {
-  reads: ".build/archive-staging",
+  reads: "out/ + src/run/index.html",
 });
 step("nameplate", "test:nameplate", { reads: "out/ served over http" });
 step("nameplate (negative)", "test:nameplate:negative", {

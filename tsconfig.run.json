@@ -17,6 +17,23 @@
     "target": "es2022",
     "moduleResolution": "bundler",
     "outDir": "out/run",
+    /* NOT INCREMENTAL, for the same reason tsconfig.head.json and
+       tsconfig.archive.json are not — and here it is a correctness matter,
+       not a preference.
+
+       Two things were wrong with the cache this turns off. It shipped: tsc
+       derives the cache path from `outDir`, so every build dropped a 36 KB
+       `tsconfig.run.tsbuildinfo` into the published directory, beside a page
+       whose whole argument is that nothing unreachable rides along. And it
+       lied: `scripts/archive/build-archive.mjs` assembles the site in a
+       scratch root and renames it into place, so the emitted modules are at a
+       path that no longer exists by the time the next build runs. tsc read
+       its own cache, concluded the outputs were up to date, emitted nothing,
+       and build-nameplate.mjs failed with "tsc emitted nothing" on the second
+       consecutive build. Caught by running the build twice; the first run
+       after any outDir change had always re-emitted, which is why the flip's
+       own smoke test passed. */
+    "incremental": false,
     "rootDir": "src",
     "jsx": "preserve",
     "skipLibCheck": true

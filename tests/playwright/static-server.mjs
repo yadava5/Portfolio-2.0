@@ -50,7 +50,7 @@ function resolveRequestPath(urlPath) {
 
 if (!existsSync(join(root, "index.html"))) {
   console.error(
-    "Static export not found. Run `NEXT_PUBLIC_BASE_PATH= next build --webpack` first."
+    "Static export not found. Run `NEXT_PUBLIC_BASE_PATH= npm run build` first."
   );
   process.exit(1);
 }

@@ -35,17 +35,24 @@ export function emittedModules(dir) {
  * Throws rather than exiting, with no prefix of its own — each caller has its
  * own `fail()` and its own name to put in front of the message.
  *
+ * `outDir` is PASSED TO tsc, not merely believed. It used to be a parameter
+ * this function only used to find the emitted files, on the understanding that
+ * the named project's config said the same thing — a promise nothing checked,
+ * and one that stopped being keepable when the run's modules had to be emitted
+ * into a build root that is not yet `out/`. Overriding it on the command line
+ * makes the argument the single truth for both halves.
+ *
  * @param {object} opts
  * @param {string} opts.root      repository root
  * @param {string} opts.project   tsconfig path, relative to root
- * @param {string} opts.outDir    the project's outDir, relative to root
+ * @param {string} opts.outDir    where tsc emits, relative to root or absolute
  * @returns {{ files: string[], rewritten: number }}
  */
 export function compileAndRelink({ root, project, outDir }) {
   const out = resolve(root, outDir);
 
   try {
-    execFileSync("npx", ["tsc", "-p", project], {
+    execFileSync("npx", ["tsc", "-p", project, "--outDir", out], {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
     });

@@ -9,10 +9,10 @@
  * and it is the right one: use the prototype itself.
  *
  * So the prototype is now a PRODUCT FILE at `src/run/index.html`, and this
- * script makes it `out/index.html` after the Next build. Everything else
- * the site owns — `/projects/<id>/`, `/evidence`, `/resume.pdf`, the
- * sitemap, the OG cards — is still Next's and is untouched. Only the home
- * route changes hands.
+ * script makes it the output root's `index.html`. Everything else the site
+ * owns — `/projects/<id>/`, `/evidence/`, `404.html`, `/resume.pdf`, the
+ * sitemap, the OG cards — is emitted by `scripts/archive/build-archive.mjs`,
+ * which calls this script last. Until Phase 4 that half was Next's.
  *
  * WHAT IT INJECTS. The engine and the CSS are copied BYTE-IDENTICAL: they
  * are the approved design and every hand-edit is a chance to reintroduce
@@ -34,6 +34,20 @@
  * retirement of the Next app from this comment would have concluded the head
  * was already independent of it. It was the single thing most tightly coupled
  * to it: delete `src/app/` and this script died before writing a byte.
+ *
+ * Through Phase 3 the emitted head was checked against Next's render on every
+ * build — the reference existed, so it was used rather than trusted. Phase 4
+ * removed `next build` from the build path, which removed the reference: what
+ * this script would have been comparing against is its own previous output.
+ * The assertion went out in the same change that made it meaningless, which
+ * is the only honest moment to remove a check.
+ *
+ *   node scripts/run/build-home.mjs [--out <root>]   default: out
+ *
+ * `--out` exists because `scripts/archive/build-archive.mjs` assembles the
+ * whole site in a scratch directory and swaps it into place only once every
+ * step has succeeded. A build that dies halfway must leave the directory a
+ * reader is served exactly as it was.
  */
 import {
   readFileSync,
@@ -43,16 +57,19 @@ import {
   mkdirSync,
   statSync,
 } from "node:fs";
-import { resolve, dirname, join } from "node:path";
+import { resolve, dirname, join, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { execFileSync } from "node:child_process";
 import { compileAndRelink } from "./compile-ts-graph.mjs";
 
 const root = process.cwd();
+const argv = process.argv.slice(2);
+const outArg = argv.includes("--out") ? argv[argv.indexOf("--out") + 1] : null;
+const SITE_ROOT = resolve(root, outArg ?? "out");
 const SRC = resolve(root, "src/run/index.html");
-const OUT = resolve(root, "out/index.html");
+const OUT = join(SITE_ROOT, "index.html");
 const WASM_SRC = resolve(root, "src/run/wasm");
-const WASM_OUT = resolve(root, "out/wasm");
+const WASM_OUT = join(SITE_ROOT, "wasm");
 
 function fail(msg) {
   console.error(`build-home failed: ${msg}`);
@@ -91,7 +108,7 @@ const WASM_PARTS = {
 function landed(what, dir, manifest) {
   for (const [name, floor] of Object.entries(manifest)) {
     const path = join(dir, name);
-    if (!existsSync(path)) fail(`${what}${name} did not land in out/`);
+    if (!existsSync(path)) fail(`${what}${name} did not land in the output root`);
     const { size } = statSync(path);
     if (size < floor) {
       fail(`${what}${name} is ${size} B, below its ${floor} B floor — truncated or empty`);
@@ -100,7 +117,20 @@ function landed(what, dir, manifest) {
 }
 
 if (!existsSync(SRC)) fail(`no run at ${SRC}`);
-if (!existsSync(resolve(root, "out"))) fail("no out/ — run the Next build first");
+/* This used to read "run the Next build first", and it was true: `next build`
+   created the output directory and copied all 37 files under public/ into it.
+   Nothing does that any more. `scripts/archive/build-archive.mjs` creates the
+   root, copies public/, emits the archive and then calls this script — so the
+   precondition is unchanged in substance and only its owner moved. Rewritten
+   in the same change that moved it, because an error message that names the
+   wrong cause sends the next reader to the wrong file. */
+if (!existsSync(SITE_ROOT)) {
+  fail(
+    `no ${relative(root, SITE_ROOT) || "."}/ — this script writes the run over an output root that already exists.\n` +
+      "        Run `npm run build`, which is scripts/archive/build-archive.mjs: it creates the root,\n" +
+      "        copies public/, emits the archive, and calls this last."
+  );
+}
 
 let html = readFileSync(SRC, "utf8");
 
@@ -182,18 +212,21 @@ console.log("  · claims check: the run does not out-claim the case files");
    because it was authored as one. Every part of a real head is added here, on
    a portfolio whose entire search surface is a name query.
 
-   Until now they were REGEXED OUT OF NEXT'S OWN RENDER of out/index.html,
+   Until Phase 3 they were REGEXED OUT OF NEXT'S OWN RENDER of out/index.html,
    which made `next build` a hard dependency of the home page's head and made
    this the file that blocked deleting src/app/. They are constructed from
    src/lib/seo.ts now, which is where the rest of the site's metadata has
    always come from.
 
-   THE REFERENCE IS KEPT WHILE THERE STILL IS ONE. src/app/ is deleted in the
-   next phase and Next's render goes with it, so this is the only phase in
-   which "does the emitter produce what Next produced" is answerable at all.
-   It is answered on every build below rather than by a diff someone reads
-   once — and the golden hash of out/index.html must not move, which is the
-   proof that it worked. */
+   THE REFERENCE WAS USED WHILE IT EXISTED. Through Phase 3 every build
+   compared this block byte-for-byte against Next's render and failed on any
+   disagreement; it never disagreed, and the golden hash of out/index.html did
+   not move when the emitter took over. Phase 4 took `next build` off the build
+   path, so there is no longer a second renderer to compare against — the only
+   thing left to read at that path is this script's own previous output, which
+   would pass trivially and check nothing. The comparison went out with the
+   thing it compared to. What still holds the head is the golden hash, which
+   certifies the whole file, and the emptiness guard immediately below. */
 const HEAD_BUILD = resolve(root, ".build/head");
 try {
   compileAndRelink({ root, project: "tsconfig.head.json", outDir: ".build/head" });
@@ -264,47 +297,6 @@ for (const [name, tag] of Object.entries(emitted)) {
   }
 }
 
-/* ── Next's render, as the reference, for exactly one more phase ───────
-   WHAT IS BEING READ IS ONLY NEXT'S ON THE FIRST RUN AFTER `next build`. This
-   script overwrites out/index.html with its own output, head included, so a
-   SECOND run in the same out/ compares the emitter against itself and passes
-   trivially. `npm run build` is `next build && build-home`, so the build path
-   always gets the real comparison; a bare `npm run build:home` does not. Worth
-   knowing before trusting a green from one. */
-const NEXT_REFERENCE = resolve(root, "src/app/page.tsx");
-if (existsSync(NEXT_REFERENCE)) {
-  const nextHome = existsSync(OUT) ? readFileSync(OUT, "utf8") : "";
-  if (!nextHome) {
-    fail("src/app/page.tsx exists but out/index.html does not — the reference head cannot be checked");
-  }
-  const takeTag = (re) => (nextHome.match(re) || [])[0] ?? "";
-  const takeAll = (re) => [...nextHome.matchAll(re)].map((m) => m[0]).join("\n    ");
-  const scraped = {
-    title: takeTag(/<title>[\s\S]*?<\/title>/),
-    description: takeTag(/<meta name="description"[^>]*>/),
-    canonical: takeTag(/<link rel="canonical"[^>]*>/),
-    "og:*": takeAll(/<meta property="og:[^>]*>/g),
-    "twitter:*": takeAll(/<meta name="twitter:[^>]*>/g),
-    "JSON-LD": takeTag(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/),
-  };
-  const drifted = Object.keys(emitted).filter((k) => emitted[k] !== scraped[k]);
-  if (drifted.length) {
-    for (const k of drifted) {
-      console.error(`  ! ${k} — emitted and rendered disagree`);
-      console.error(`    next:    ${scraped[k] || "(absent)"}`);
-      console.error(`    emitted: ${emitted[k]}`);
-    }
-    fail("the head computed from seo.ts is not the head Next rendered");
-  }
-  console.log("  · head: computed from seo.ts, byte-identical to Next's render");
-} else {
-  /* Announced, not silent. A gate that quietly stops checking is the exact
-     failure this repository has already shipped — see the 404 that `continue`d
-     past its own absence in check-static-export-seo.mjs. When src/app/ goes,
-     this branch and the block above it go with it, in that same change. */
-  console.log("  · head: computed from seo.ts — Next's reference render is gone");
-}
-
 {
   const had = (html.match(/<title>[\s\S]*?<\/title>/) || [])[0];
   html = html.replace(/<title>[\s\S]*?<\/title>/, emitted.title);
@@ -325,10 +317,11 @@ html = html.replace("</head>", `    ${inject}\n  </head>`);
 console.log("  · head: canonical + og + twitter + JSON-LD written");
 
 /* ── The nameplate machines, compiled from their single source ─────── */
-execFileSync("node", [resolve(root, "scripts/run/build-nameplate.mjs")], {
-  cwd: root,
-  stdio: "inherit",
-});
+execFileSync(
+  "node",
+  [resolve(root, "scripts/run/build-nameplate.mjs"), "--out", SITE_ROOT],
+  { cwd: root, stdio: "inherit" }
+);
 
 /* ── The run brings its own type ────────────────────────────────────
    The four faces are subset woff2 the run @font-face's by RELATIVE path
@@ -338,7 +331,7 @@ execFileSync("node", [resolve(root, "scripts/run/build-nameplate.mjs")], {
    site uses; the duplication is four files, and the alternative is
    teaching a hand-authored HTML file to read a build manifest. */
 const FONTS_SRC = resolve(root, "src/run/fonts");
-const FONTS_OUT = resolve(root, "out/fonts");
+const FONTS_OUT = join(SITE_ROOT, "fonts");
 if (!existsSync(FONTS_SRC)) {
   fail("no src/run/fonts — the run @font-face's these by relative path and would ship in system type");
 }
@@ -365,5 +358,5 @@ console.log("  · wasm/ copied (the Glyph station's own network)");
 
 writeFileSync(OUT, html);
 console.log(
-  `build-home: the run is the home page — ${(html.length / 1024).toFixed(1)} KB at out/index.html`
+  `build-home: the run is the home page — ${(html.length / 1024).toFixed(1)} KB at ${relative(root, OUT)}`
 );

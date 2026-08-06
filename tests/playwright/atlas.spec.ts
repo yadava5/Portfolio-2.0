@@ -1,24 +1,49 @@
-import { test, expect, Locator, Page } from "@playwright/test";
-import { CHAPTERS } from "../../src/components/story/chapters";
-import { PROJECT_SCENE_MANIFEST } from "../../src/components/scenes/manifest";
+import { test, expect, Page } from "@playwright/test";
 import {
-  ATLAS_ALLOWED_METRICS,
   CASE_STUDY_LOCAL_ARTIFACTS,
   CASE_STUDY_IDS,
-  EXPECTED_CONTENT,
-  EXPECTED_GRADUATE_IDENTITY,
-  EXPECTED_LINKS,
-  EXPECTED_MASTHEAD,
   EXPECTED_PROOF_ARTIFACTS,
-  EXPECTED_WORK_ROWS,
-  METRIC_HOME_CHAPTER,
-  NAV_SECTIONS,
   PROHIBITED_GENERATED_CONTENT,
-  RECRUITER_HERO_LINKS,
-  RECRUITER_HERO_LINKS_MOBILE,
-  RECRUITER_HERO_METRICS,
   REQUIRED_PRIVATE_CASE_STUDIES,
-} from "./portfolio-fixtures";
+} from "./case-file-fixtures";
+
+/**
+ * THIS SUITE READS THE GENERATED ARCHIVE, 2026-08-06.
+ *
+ * Until Phase 4 these seven routes were rendered by `CaseStudyPage.tsx` and
+ * twelve React components; they are now emitted by `scripts/archive/`, from
+ * the same data layer, as static HTML. Twenty-five of these assertions went
+ * red at the flip and every one of them was the test describing a mechanism
+ * rather than the fact underneath it. What changed, and what each rewrite
+ * asserts instead:
+ *
+ *   · THE ARTIFACT PLATE IS A LINK, NOT A BUTTON. The old plate was a
+ *     `<button>` that opened a Radix dialog and did nothing at all without
+ *     JavaScript. The new one is an `<a href>` to the artifact with a native
+ *     `<dialog>` layered over it, so the click still opens the original when
+ *     the script never arrives — an improvement the suite now asserts on
+ *     purpose, in its own test, instead of going red about a role.
+ *   · EVERY LOCAL ARTIFACT IS NAMED TWICE, by design: once in the plate's
+ *     caption, once as the heading of the dialog that enlarges it. A bare
+ *     `getByText(label)` therefore resolves to two elements and fails strict
+ *     mode on a page that is correct. Asking for the plate asks the question
+ *     the assertion always meant.
+ *   · FIG. 1 IS A SETTLED PLATE ON ALL SEVEN FILES. It used to be a living
+ *     React scene on four and a screenshot on three, and the tests named the
+ *     scene manifest's own alt text. There is no manifest now, and no scene:
+ *     a record does not move. So the assertion became a RULE that holds for
+ *     every file — a drawn `svg[role="img"]` with a real accessible name, and
+ *     a note that says it is not a screenshot — which is stronger than the
+ *     per-file string it replaces and cannot go stale one file at a time.
+ */
+
+/** The plate in the appendix that carries this artifact — never free text. */
+function artifactPlate(page: Page, label: string) {
+  return page
+    .locator("#artifacts a[data-viewer]")
+    .filter({ hasText: label })
+    .first();
+}
 
 /**
  * Assert no fabricated claim survives on a rendered page.
@@ -48,27 +73,6 @@ function expectNoHallucinations(bodyText: string) {
   }
 }
 
-/** The seven working-paper chapters (stable anchors, storyboard order) */
-const REQUIRED_SECTIONS = NAV_SECTIONS;
-
-const STALE_IDENTITY_COPY = [
-  "Senior CS student",
-  "Senior Computer Science student",
-  "Expected May 2026",
-  "Open to internships",
-  "Current role",
-  "Current work",
-  "I work as an ITSM Data Integration Student Associate",
-  /* Fix round 3, S13: date ranges now set with an en dash, so the guard
-     names BOTH spellings of the stale range. Dropping the hyphen forms
-     would have quietly retired a guard rather than kept it — a stale
-     phrase pasted back in the old grammar must still fail. */
-  "Jun 2025 - Present",
-  "Jun 2025 – Present",
-  "2025-06 - Present",
-  "2025-06 – Present",
-];
-
 const CASE_STUDY_SECTIONS = [
   "Problem",
   "Role",
@@ -79,39 +83,6 @@ const CASE_STUDY_SECTIONS = [
   "Artifacts",
 ];
 
-async function expectInFirstViewport(page: Page, locator: Locator) {
-  await expect(locator).toBeVisible();
-
-  const box = await locator.boundingBox();
-  expect(box).not.toBeNull();
-
-  const viewport = page.viewportSize();
-  expect(viewport).not.toBeNull();
-
-  expect(box!.y).toBeGreaterThanOrEqual(0);
-  expect(box!.y + box!.height).toBeLessThanOrEqual(viewport!.height);
-}
-
-/** Recruiter CTA in the fixed header (compact icon links carry aria-labels) */
-/** Literal text as an exact-match regex — labels carry parentheses
- *  ("Resume (opens in a new tab)"), which are regex GROUPS unescaped. */
-function exactly(label: string): RegExp {
-  return new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
-}
-
-function headerLink(page: Page, label: string) {
-  return page
-    .locator("header")
-    .getByRole("link", { name: exactly(label) })
-    .first();
-}
-
-/** A proof metric inside the chapter where its story now lives */
-function chapterMetric(page: Page, metric: string) {
-  const chapter = METRIC_HOME_CHAPTER[metric];
-  return page.locator(chapter).getByText(metric).first();
-}
-
 test.describe("Daylight Study — working paper", () => {
   /* jetpack-compress has no case route yet — its row's links go to the
      live engine (external), asserted via the same fixture href. */
@@ -121,10 +92,10 @@ test.describe("Daylight Study — working paper", () => {
   }) => {
     await page.goto("/projects/automl/");
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPoster)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.automlPoster)
     ).toBeVisible();
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
     ).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterEvidence)
@@ -136,7 +107,7 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/projects/automl/#artifacts");
     await expect(page.locator("section#artifacts")).toBeInViewport();
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.automlPresenterProof)
     ).toBeVisible();
 
     await page.goto("/projects/fast-mnist-nn/");
@@ -166,7 +137,7 @@ test.describe("Daylight Study — working paper", () => {
     await page.waitForLoadState("domcontentloaded");
 
     await expect(
-      page.getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistScreenshot)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.fastMnistScreenshot)
     ).toBeVisible();
     /* Scoped to #validation: the corrections register intentionally
        repeats the number when it names what the erratum resolves to. */
@@ -175,13 +146,16 @@ test.describe("Daylight Study — working paper", () => {
         .locator("#validation")
         .getByText(EXPECTED_PROOF_ARTIFACTS.fastMnistSpeedup)
     ).toBeVisible();
-    /* Living scene (2026-07-24): fig. 1 is now the drawn race/forward-
-       pass figure — its honest manifest disclosure replaces the old
-       image disclosure; the real workbench screenshot still ships in
-       #artifacts (asserted above). */
-    await expect(
-      page.getByText(PROJECT_SCENE_MANIFEST["fast-mnist-nn"].disclosure)
-    ).toBeVisible();
+    /* The plate's own disclosure. This named the scene manifest's
+       `disclosure` field while fig. 1 was a running React figure; the
+       manifest is deleted and the figure is settled, so the note is drawn
+       from the file's own data and asserted as a rule below, per route. The
+       real workbench screenshot still ships in #artifacts (asserted above),
+       which is what this pair of assertions was always about: the drawing is
+       labelled a drawing, and the photograph is still there. */
+    await expect(page.locator("#project-visual .fc-note")).toContainText(
+      "not a screenshot"
+    );
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("5x faster inference");
@@ -194,12 +168,8 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/projects/visual-assist/");
     await page.waitForLoadState("domcontentloaded");
 
-    /* Scoped to #artifacts: fig. 1's caption (the image alt, lowercased)
-       legitimately contains the same words as the plate label. */
     await expect(
-      page
-        .locator("#artifacts")
-        .getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
     ).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistReadme)
@@ -228,17 +198,8 @@ test.describe("Daylight Study — working paper", () => {
     const validation = page.locator("#validation");
     const artifacts = page.locator("#artifacts");
 
-    /* Living scene (2026-07-24): fig. 1 is now the sorting-line figure
-       (role="img" with its honest manifest name); the architecture
-       diagram itself still ships as the #artifacts plate asserted just
-       below. */
     await expect(
-      page.getByRole("img", {
-        name: PROJECT_SCENE_MANIFEST.jobtracker.alt,
-      })
-    ).toBeVisible();
-    await expect(
-      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerArchitecture)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.jobtrackerArchitecture)
     ).toBeVisible();
     await expect(
       artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerReadme)
@@ -360,14 +321,14 @@ test.describe("Daylight Study — working paper", () => {
       )
     ).toBeVisible();
     await expect(
-      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger)
     ).toBeVisible();
+    /* ONE plate, not two. The count is the assertion: this ledger is the
+       file's private-safe terminal, and a duplicated plate would mean the
+       appendix had grown a second, unpinned copy of it. */
     await expect(
-      artifacts.getByRole("button", {
-        name: new RegExp(
-          EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger,
-          "i"
-        ),
+      artifacts.locator("a[data-viewer]").filter({
+        hasText: EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger,
       })
     ).toHaveCount(1);
 
@@ -402,15 +363,12 @@ test.describe("Daylight Study — working paper", () => {
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotDeploymentBoundary)
     ).toBeVisible();
     await expect(
-      artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger)
+      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger)
     ).toBeVisible();
     await expect(
-      artifacts.getByRole("button", {
-        name: new RegExp(
-          EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger,
-          "i"
-        ),
-      })
+      artifacts
+        .locator("a[data-viewer]")
+        .filter({ hasText: EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger })
     ).toHaveCount(1);
 
     const bodyText = await page.locator("body").innerText();
@@ -446,88 +404,68 @@ test.describe("Daylight Study — working paper", () => {
   }
 
   for (const id of CASE_STUDY_IDS) {
-    test(`case study route ${id} keeps project visual contained`, async ({
+    test(`case study route ${id} draws fig. 1 as a contained, labelled plate`, async ({
       page,
     }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(`/projects/${id}/`);
       await page.waitForLoadState("domcontentloaded");
 
-      const visualFrame = page.locator(
-        "#project-visual [data-project-visual-frame]"
+      /* `.plate-inner` is the drawn plate's own rule, not a hook added for
+         this test. Every behaviour hook on these pages is a data-attribute
+         because something reads it at runtime; nothing reads a frame, so
+         inventing `data-project-visual-frame` would be markup that exists
+         only to be selected. */
+      const plate = page.locator("#project-visual .plate-inner");
+      await expect(plate).toBeVisible();
+
+      /* ONE RULE FOR ALL SEVEN, which is the point. fig. 1 used to be a
+         running React scene on four routes and a screenshot on three, and
+         this loop branched on a manifest to say so. It is now a settled
+         figure everywhere — a record does not move — so the assertion is the
+         property every plate must have rather than a per-file string that can
+         go stale one file at a time.
+
+         `[role="img"]`, NOT `svg[role="img"]`. The first cut of this rule
+         named the element and went red on Cadence, whose plate is a week grid
+         set in HTML and type rather than drawn in SVG — which is the correct
+         medium for it, and exactly the mechanism-instead-of-fact mistake the
+         rest of this rewrite is undoing. What every plate owes a reader is a
+         labelled figure, not a particular tag. */
+      const figure = plate.locator("[role='img']").first();
+      await expect(figure).toBeVisible();
+      /* The narrative aria-label is a contract: it is what a screen reader
+         gets INSTEAD of the figure, so a redraw that reduces it to a title is
+         a regression no pixel comparison sees. The floor is 60; the shortest
+         one shipping is jobtracker's at 264. */
+      const label = await figure.getAttribute("aria-label");
+      expect((label ?? "").length).toBeGreaterThan(60);
+
+      /* The plate is a drawing and says so. Seven files, one sentence. */
+      await expect(page.locator("#project-visual .fc-note")).toContainText(
+        "not a screenshot"
       );
-      await expect(visualFrame).toBeVisible();
 
-      /* Living scenes (src/components/scenes): routes with a registered
-         scene replace the static fig. 1 image with an inked SVG figure —
-         assert the scene's containment instead of the image's. */
-      if (PROJECT_SCENE_MANIFEST[id]) {
-        const sceneSvg = visualFrame.locator("svg[role='img']").first();
-        await expect(visualFrame).toHaveAttribute("data-scene", "");
-        await expect(sceneSvg).toBeVisible();
-
-        const sceneFit = await visualFrame.evaluate((frame) => {
-          const svg = frame.querySelector("svg");
-          const frameRect = frame.getBoundingClientRect();
-          const svgRect = svg?.getBoundingClientRect();
-          return {
-            hasSvg: Boolean(svg),
-            pageOverflow:
-              document.documentElement.scrollWidth >
-              document.documentElement.clientWidth,
-            frameHeight: Math.round(frameRect.height),
-            svgEscapes:
-              svgRect == null ||
-              svgRect.left < frameRect.left - 1 ||
-              svgRect.right > frameRect.right + 1 ||
-              svgRect.top < frameRect.top - 1 ||
-              svgRect.bottom > frameRect.bottom + 1,
-          };
-        });
-        expect(sceneFit.hasSvg).toBe(true);
-        expect(sceneFit.pageOverflow).toBe(false);
-        expect(sceneFit.svgEscapes).toBe(false);
-        expect(sceneFit.frameHeight).toBeGreaterThanOrEqual(260);
-        return;
-      }
-
-      const image = visualFrame.locator("img");
-      await expect(image).toBeVisible();
-
-      const fit = await visualFrame.evaluate((frame) => {
-        const image = frame.querySelector("img");
+      const fit = await plate.evaluate((frame) => {
+        const drawing = frame.querySelector("[role='img']");
         const frameRect = frame.getBoundingClientRect();
-        const imageRect = image?.getBoundingClientRect();
-
+        const rect = drawing?.getBoundingClientRect();
         return {
-          hasImage: Boolean(image),
-          imageObjectFit: image ? window.getComputedStyle(image).objectFit : "",
           pageOverflow:
             document.documentElement.scrollWidth >
             document.documentElement.clientWidth,
           frameHeight: Math.round(frameRect.height),
-          imageHeight: imageRect ? Math.round(imageRect.height) : 0,
-          imageTop: imageRect ? Math.round(imageRect.top - frameRect.top) : 0,
-          imageBottom: imageRect
-            ? Math.round(frameRect.bottom - imageRect.bottom)
-            : 0,
-          imageEscapes:
-            imageRect == null ||
-            imageRect.left < frameRect.left - 1 ||
-            imageRect.right > frameRect.right + 1 ||
-            imageRect.top < frameRect.top - 1 ||
-            imageRect.bottom > frameRect.bottom + 1,
+          escapes:
+            rect == null ||
+            rect.left < frameRect.left - 1 ||
+            rect.right > frameRect.right + 1 ||
+            rect.top < frameRect.top - 1 ||
+            rect.bottom > frameRect.bottom + 1,
         };
       });
-
-      expect(fit.hasImage).toBe(true);
-      expect(fit.imageObjectFit).toBe("contain");
       expect(fit.pageOverflow).toBe(false);
-      expect(fit.imageEscapes).toBe(false);
+      expect(fit.escapes).toBe(false);
       expect(fit.frameHeight).toBeGreaterThanOrEqual(260);
-      expect(fit.imageHeight).toBe(fit.frameHeight);
-      expect(fit.imageTop).toBe(0);
-      expect(fit.imageBottom).toBe(0);
     });
   }
 
@@ -539,12 +477,19 @@ test.describe("Daylight Study — working paper", () => {
       await page.waitForLoadState("domcontentloaded");
 
       const startingUrl = page.url();
-      const artifactControl = page
-        .locator("#artifacts")
-        .getByRole("button", { name: new RegExp(artifact.label, "i") });
+      const plate = artifactPlate(page, artifact.label);
+      await expect(plate).toBeVisible();
 
-      await expect(artifactControl).toBeVisible();
-      await artifactControl.click();
+      /* The plate is a real link to the artifact and the viewer is layered
+         over it, so the href is asserted BEFORE the click: it is what a
+         reader gets when the script never arrives. Resolved rather than
+         compared literally — the page cites the artifact by relative path
+         (`../../images/…`) because every archive page does, and the data
+         layer holds the site-absolute form. */
+      const expectedHref = new URL(artifact.href, startingUrl).toString();
+      await expect(plate).toHaveJSProperty("href", expectedHref);
+
+      await plate.click();
 
       const viewer = page.getByRole("dialog", {
         name: new RegExp(artifact.label, "i"),
@@ -555,28 +500,64 @@ test.describe("Daylight Study — working paper", () => {
       ).toBeVisible();
       await expect(
         viewer.getByRole("link", { name: /open original/i })
-      ).toHaveAttribute("href", artifact.href);
+      ).toHaveJSProperty("href", expectedHref);
+      /* The plate's own navigation is prevented while the viewer is up —
+         opening a figure must not cost the reader their place in the file. */
       expect(page.url()).toBe(startingUrl);
 
       await viewer.getByRole("button", { name: /close/i }).click();
       await expect(viewer).toBeHidden();
       expect(page.url()).toBe(startingUrl);
 
-      await artifactControl.click();
+      /* Backdrop. A native <dialog>'s ::backdrop reports the DIALOG as the
+         click target, which is what archive.js keys the dismissal off — so
+         the click has to land OUTSIDE the dialog's own box, not inside it.
+         `.viewer` sets padding:0, so every pixel of the element itself
+         belongs to a child; clicking at its corner hits the header and
+         dismisses nothing. Measured and aimed above the box instead. No test
+         id, unlike the React viewer: there is no separate backdrop element to
+         give one to. */
+      await plate.click();
       await expect(viewer).toBeVisible();
-      await page.getByTestId("artifact-viewer-backdrop").click({
-        position: { x: 8, y: 8 },
-      });
+      const box = await viewer.boundingBox();
+      expect(box).not.toBeNull();
+      await page.mouse.click(
+        Math.max(2, Math.round(box!.x / 2)),
+        Math.max(2, Math.round(box!.y / 2))
+      );
       await expect(viewer).toBeHidden();
       expect(page.url()).toBe(startingUrl);
 
-      await artifactControl.click();
+      await plate.click();
       await expect(viewer).toBeVisible();
       await page.keyboard.press("Escape");
       await expect(viewer).toBeHidden();
       expect(page.url()).toBe(startingUrl);
     });
   }
+
+  /* THE APPENDIX WORKS WITHOUT JAVASCRIPT, and it did not before.
+     The React plate was a <button> that opened a Radix dialog: with the
+     script blocked it was an inert control, and the artifact behind it had no
+     way in at all. The rebuilt plate is an <a href> to the file with the
+     viewer layered on top, so the enlargement is an enhancement over a
+     working link rather than a replacement for one. Asserted once, on the
+     file with the most plates, because it is a property of the generator. */
+  test("artifact plates open the original with scripting disabled", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto("/projects/automl/#artifacts");
+
+    const plates = page.locator("#artifacts a[data-viewer]");
+    await expect(plates).toHaveCount(3);
+    for (let i = 0; i < 3; i++) {
+      const href = await plates.nth(i).getAttribute("href");
+      expect(href ?? "").toMatch(/^\.\.\/\.\.\/images\/projects\/.+/);
+    }
+    await context.close();
+  });
 
   for (const id of REQUIRED_PRIVATE_CASE_STUDIES) {
     test(`private proof case study ${id} is available`, async ({ page }) => {

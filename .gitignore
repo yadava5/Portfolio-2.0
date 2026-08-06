@@ -35,6 +35,13 @@
 /.next/
 /out/
 
+# The build assembles the whole site in `<dest>.building` beside its
+# destination and renames it into place once every step has succeeded, so a
+# build that dies halfway leaves the directory a reader is served untouched.
+# A sibling rather than a fixed path under .build/, because rename(2) cannot
+# cross filesystems and `--out` may point anywhere.
+*.building/
+
 # Build byproducts that are NOT the artifact. tsconfig.head.json compiles
 # src/lib/seo.ts to .build/head so build-home.mjs can import the site's
 # metadata; nothing fetches those modules at runtime, so they have no business

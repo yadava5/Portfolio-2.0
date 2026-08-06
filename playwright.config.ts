@@ -1,30 +1,21 @@
 import { defineConfig, devices } from "@playwright/test";
 
-/* CRITIC-LEDGER F74: `window.__frameGovernor` — a remote control that
-   can force any reader to the print tier — used to be installed
-   unconditionally, production builds included. It is now gated on
-   NEXT_PUBLIC_TEST_PROBES, which the test:e2e:* scripts set and nothing
-   else does. The specs that drive the probe live here, so this is where
-   the requirement is stated: a probe spec run against a probe-less
-   build should fail with an instruction, not a null dereference. */
-const PROBE_SPECS = ["frame-governor", "text-garnish"];
-if (
-  process.env.NEXT_PUBLIC_TEST_PROBES !== "1" &&
-  process.argv.some((arg) => PROBE_SPECS.some((spec) => arg.includes(spec)))
-) {
-  throw new Error(
-    "frame-governor.spec.ts and text-garnish.spec.ts drive " +
-      "window.__frameGovernor, which only exists in a build made with " +
-      "NEXT_PUBLIC_TEST_PROBES=1. Run `npm run test:e2e:probes`, or export " +
-      "NEXT_PUBLIC_TEST_PROBES=1 for both the build and the test run."
-  );
-}
+/* THE PROBE GUARD RETIRED WITH `next build`, 2026-08-06. It stood here
+   because `window.__frameGovernor` — a remote control that could force any
+   reader to the print tier — shipped unconditionally until CRITIC-LEDGER F74
+   gated it behind NEXT_PUBLIC_TEST_PROBES, and a probe spec run against a
+   probe-less build had to fail with an instruction rather than a null
+   dereference. The specs it protected are deleted with the apparatus: the
+   probe route existed only because next.config.ts's `pageExtensions` could
+   admit a route file by extension, and the static generator has no such
+   mechanism.
 
+   PLAYWRIGHT_USE_NEXT_DEV went with it. It started `next dev` in place of the
+   static server so a spec could run against the React app's dev render — a
+   surface that no longer exists, and one no gate should ever have been
+   pointed at, since what ships is the static export. */
 const port = process.env.PORT ?? "3000";
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`;
-const nextDevCommand = `${JSON.stringify(
-  process.execPath
-)} node_modules/next/dist/bin/next dev --webpack --hostname 0.0.0.0 --port ${port}`;
 const staticServerCommand = `${JSON.stringify(
   process.execPath
 )} tests/playwright/static-server.mjs`;
@@ -97,10 +88,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      process.env.PLAYWRIGHT_USE_NEXT_DEV === "1"
-        ? nextDevCommand
-        : staticServerCommand,
+    command: staticServerCommand,
     url: baseURL,
     reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === "1",
     timeout: 120000,

@@ -2,30 +2,28 @@
  * @fileoverview Every exported route carries the metadata the deploy is
  * gated on.
  *
- * TAKES THE EXPORT ROOT AS AN ARGUMENT, and `--no-home` DECLARES A SCOPE
- * RATHER THAN SKIPPING A CHECK. The archive is generated to a staging
- * directory during the migration, and that directory deliberately has no
- * `index.html`: `build-home.mjs` owns the home page and only runs at the
- * cutover. Without a way to say so, the archive's heads would have been
- * verified once by hand and gated never — `html.mjs` could drift for a whole
- * phase and nothing would read it.
+ * TAKES THE EXPORT ROOT AS AN ARGUMENT so a negative test can be run against a
+ * doctored copy of the site rather than against the directory being served.
+ * That is the argument's only remaining job.
  *
- * The distinction matters and is the reason this is a flag rather than an
- * `if (!existsSync) continue`. A skip is silent and permanent; a declared
- * scope is loud, is checked in full within its scope, and DISAPPEARS at the
- * cutover, when one root holds the whole site again. Everything else — the
- * seven case files, /evidence/, resume.pdf, the sitemap, robots.txt, the 404
- * and the case-sensitivity sweep — is asserted identically in both modes.
+ * IT ALSO CARRIED `--no-home` FOR ONE PHASE, AND THAT FLAG IS GONE. During the
+ * rebuild the archive was generated to a staging directory that deliberately
+ * had no `index.html` — `build-home.mjs` owned the home page and did not run
+ * until the cutover — so the flag DECLARED that scope rather than silently
+ * skipping the check, which is why it was a flag and not an
+ * `if (!existsSync) continue`. It was removed in the same change that made it
+ * unnecessary: one root holds the whole site again, and every root this gate
+ * is ever pointed at now has a home page. A flag that excuses the site's most
+ * important route, kept past the day it had a caller, is a loaded gun.
  *
  *   node scripts/qa/check-static-export-seo.mjs
- *   node scripts/qa/check-static-export-seo.mjs .build/archive-staging --no-home
+ *   node scripts/qa/check-static-export-seo.mjs <export-root>
  */
 import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
 const argv = process.argv.slice(2);
-const NO_HOME = argv.includes("--no-home");
 const outDir = path.resolve(root, argv.find((a) => !a.startsWith("--")) ?? "out");
 const siteUrl = "https://yadava5.github.io/Portfolio-2.0";
 if (!fs.existsSync(outDir)) {
@@ -41,15 +39,9 @@ const projectRoutes = fs.existsSync(projectDir)
       .map((entry) => `/projects/${entry.name}/`)
       .sort()
   : [];
-/* `/` is the run, and the run is written by build-home.mjs. Under --no-home
-   this root is the archive alone; every other route is still required, and
-   `/resume.pdf` stays on the list because the generator copies public/ and a
-   missing résumé is a missing résumé in either mode. */
-const requiredRoutes = [
-  ...(NO_HOME ? [] : ["/"]),
-  "/resume.pdf",
-  ...projectRoutes,
-];
+/* `/` is the run, written by build-home.mjs; `/resume.pdf` is copied out of
+   public/ by the generator. Both are required of every export root. */
+const requiredRoutes = ["/", "/resume.pdf", ...projectRoutes];
 
 function fail(message) {
   console.error(`Static SEO check failed: ${message}`);

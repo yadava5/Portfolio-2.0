@@ -350,10 +350,17 @@ jobs:
 
       # Every /#... link into the home page must land on something. Five
       # were dead on nine indexable routes until 2026-08-02, and nothing
-      # noticed for two reasons: a hash that matches nothing scrolls to
-      # the top and raises no error, and the browser suite builds the
-      # OTHER home page (bare `next build`, no build-home.mjs), where the
-      # missing ids do exist. This reads the run itself.
+      # noticed because a hash that matches nothing scrolls to the top and
+      # raises no error.
+      #
+      # This comment also used to blame the browser suite for building "the
+      # OTHER home page (bare `next build`, no build-home.mjs)", and that was
+      # FALSE by the time it was written — every test:e2e:* script had run
+      # build-home.mjs for weeks. What actually differs is the configuration:
+      # they build with an empty NEXT_PUBLIC_BASE_PATH, so out/ afterwards is
+      # not the deploy artifact. Corrected here rather than left to mislead a
+      # triage, and moot from Phase 4 onward: there is no second home page to
+      # build. This reads the run itself either way.
       - name: Check home-page anchors resolve
         run: npm run test:anchors
 
@@ -398,36 +405,21 @@ jobs:
       - name: Run browser smoke
         run: npm run test:e2e:browser-smoke
 
-      # Reads the NORMAL build that browser-smoke just produced, and asserts
-      # no probe route reached it. Order is load-bearing: this must follow a
-      # build made WITHOUT the probe flag, and must precede the probe suite
-      # below, which deliberately builds one that does contain it.
-      - name: Probe routes must not ship
-        run: npm run test:probe-routes
-
       - name: Run reduced-motion checks
         run: npm run test:e2e:reduced-motion
 
       - name: Run performance checks
         run: npm run test:e2e:performance
 
-      # Last, because it is the only step that builds with
-      # NEXT_PUBLIC_TEST_PROBES=1 — a probe build left in out/ would make the
-      # leak check above read the wrong artifact.
-      #
-      # `:ci` runs the frame governor and the HELD apparatus (both green on
-      # all five engines) and deliberately OMITS text-garnish.spec.ts, which
-      # fails one assertion on webkit-desktop. That failure is pre-existing
-      # and unrelated: reproduced at HEAD in a clean worktree with none of
-      # the probe-route changes applied, so adding it to CI would import a
-      # red that predates this step. The local `test:e2e:probes` still runs
-      # all three, so the gap is visible rather than quietly dropped. Tracked
-      # separately — the spec asserts "zero layout shift" using integer
-      # `offsetWidth`/`offsetTop`, and WebKit rounds this element's 128.17px
-      # box to 129 where Chromium rounds to 128, so the assertion cannot
-      # distinguish a real shift from a rounding boundary.
-      - name: Run probe-gated checks
-        run: npm run test:e2e:probes:ci
+      # THE PROBE APPARATUS RETIRED WITH `next build`, 2026-08-06. Two steps
+      # stood here: a leak check asserting no probe route reached out/, and a
+      # probe-gated suite that deliberately built one that did. Both existed
+      # only because `pageExtensions` in next.config.ts could admit a route
+      # file by extension — that is a Next mechanism, and nothing in the
+      # static generator can create a route nobody asked for. The owner's
+      # ruling was "retire the probe, keep the render": the HELD stamp still
+      # renders on any receipt that needs holding, and there are zero live
+      # rows to hold today, which is why the fixture existed at all.
 
   # ─────────────────────────────────────────────────────────────
   # Bundle Analysis: Track bundle sizes
