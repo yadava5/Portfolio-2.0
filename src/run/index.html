@@ -79,10 +79,15 @@
 
   :root{
     /* day inks (Daylight Study tokens) */
-    --ink:#26231c;
-    --ink-2:#5c564a;
-    --clay:#a03f20;          /* clay as text — measured: 4.77:1 / Lc 61.3 on golden worst-case */
-    --clay-g:#c4532e;        /* clay as graphic */
+    --ink:#26231c;           /* measured: #26231c on #f2e4c9 — 12.48:1 / Lc 87.5 */
+    --ink-2:#5c564a;         /* measured: #5c564a on #f2e4c9 — 5.79:1 / Lc 70.1 */
+    --clay:#a03f20;          /* clay as text — measured: #a03f20 on #f2e4c9 — 5.18:1 / Lc 66.4
+                                (the golden waypoint, this ink's worst day field). Until
+                                2026-08-06 this line read "4.77:1 / Lc 61.3 on golden
+                                worst-case" — Lc 61.3 is #b04a28 on that same field, the
+                                archive clay §3.7 retired, and 4.77:1 matched neither clay on
+                                any waypoint. Nothing could have said so; check-palette can. */
+    --clay-g:#c4532e;        /* clay as graphic — measured: #c4532e on #f2e4c9 — 3.62:1 / Lc 55.7 */
     --pine:#2f5d50;
     --ember:#f57a3e;         /* RESERVED: the inked APPROVED stamp only */
     --hair:rgba(38,35,28,.16);
@@ -102,11 +107,16 @@
   /* the dusk flip — the site's own law: ink steps WITH the field at
      choreography pos 0.72; the mid-luminance band is never rendered */
   :root[data-night]{
-    --ink:#f6efe2;
-    --ink-2:#d9d0c3;         /* Lc 63.2 on the flip stop, worst-case wash */
-    --clay:#f4b090;          /* text — Lc 60.3 on dusk worst-case; graphics keep the darker clay */
+    --ink:#f6efe2;           /* measured: #f6efe2 on #5d4c3e — 7.15:1 / Lc 82.8 */
+    --ink-2:#d9d0c3;         /* the flip stop, the lightest night field and this ink's
+                                worst case — measured: #d9d0c3 on #5d4c3e — 5.36:1 / Lc 63.7 */
+    --clay:#f4b090;          /* text on the settled night field —
+                                measured: #f4b090 on #43372f — 6.28:1 / Lc 60.7 — and kept OFF
+                                the flip stop, where it is
+                                measured: #f4b090 on #5d4c3e — 4.46:1 / Lc 53.4.
+                                graphics keep the darker clay */
     --clay-g:#e08a5f;
-    --pine:#aecfc0;          /* Lc 65.0 on dusk worst-case */
+    --pine:#aecfc0;          /* measured: #aecfc0 on #43372f — 6.84:1 / Lc 65.3 */
     --hair:rgba(246,239,226,.18);
     --hair-strong:rgba(246,239,226,.4);
     --plate:rgba(24,20,17,.34);
@@ -187,7 +197,12 @@
   #mast .state b{font-weight:400; color:var(--ink)}
   #mast .state i{font-style:normal; color:var(--clay)}
   :root[data-night] #mast .state i{color:var(--ink)} /* no clay text on the
-     early-night field — measured Lc 53 at the flip stop; cream holds 84+ */
+     early-night field. The masthead is fixed chrome, so unlike everything
+     else it IS on screen at the flip stop, where night clay is
+     measured: #f4b090 on #5d4c3e — 4.46:1 / Lc 53.4 — under both floors.
+     Cream holds it: measured: #f6efe2 on #5d4c3e — 7.15:1 / Lc 82.8.
+     check-palette binds this override to that measurement, so the rule
+     cannot be deleted while the number that forced it stays true. */
   #mast.gone{opacity:0} /* the chrome bows out for the terminal plate */
   @media (prefers-reduced-motion: no-preference){
     #mast{transition:opacity .22s ease} /* round-3 leftover: at .45s the

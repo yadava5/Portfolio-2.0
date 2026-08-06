@@ -323,8 +323,13 @@ jobs:
       # `test:contrast` stood here and was retired in Phase 4. It mirrored a
       # palette from src/app/globals.css by hand; measured before deleting, 3
       # of its 21 colours still appear in src/run/index.html and the clay it
-      # spent most of its assertions on appears nowhere on the site. The run's
-      # own :root tokens deserve the same measurement — that is Phase 5.
+      # spent most of its assertions on appears nowhere on the site. Its
+      # replacement reads the two stylesheets that actually ship, over the
+      # run's own OKLCH arc, through the page's own converter — and enforces
+      # the rule that killed it: a contrast number written in a comment is
+      # recomputed, so a palette table nothing binds cannot come back.
+      - name: Check the palette against the light it is read under
+        run: npm run test:palette
 
       - name: Check og cards (rendered footer URL casing + freshness)
         run: npm run assets:check-og

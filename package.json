@@ -29,6 +29,7 @@
     "test:nameplate": "node scripts/qa/check-nameplate.mjs",
     "test:nameplate:negative": "node scripts/qa/check-nameplate-negative.mjs",
     "test:figures": "node scripts/qa/check-figures.mjs",
+    "test:palette": "node scripts/qa/check-palette.mjs",
     "test:stations": "node scripts/qa/check-stations.mjs",
     "test:links": "node scripts/qa/check-links.mjs",
     "test:crosswalk": "node scripts/qa/check-crosswalk.mjs out",

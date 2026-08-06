@@ -2,19 +2,43 @@
    THE RECORD ROOM — one stylesheet for the archive's three pages.
 
    The palette is the run's, wholesale — not just the clay. Measured
-   2026-08-06 (WCAG 2.x / APCA 0.0.98G-4g) on the archive's own
-   surfaces before anything below was written:
+   2026-08-06 (WCAG 2.x / APCA-W3 0.98G-4g) on the archive's own
+   surfaces before anything below was written, and RECOMPUTED ON EVERY
+   RUN since Phase 5: `scripts/qa/check-palette.mjs` parses every line
+   below that starts `measured:` and fails if the numbers have moved.
+   The grammar is load-bearing — a palette number in a comment that
+   nothing reads is what retired the last contrast gate.
 
-     on paper #fbf3e7          on plate #fdf8ef      on plate-solid
-     ink    #26231c 14.24 / 96.0   14.82 / 98.7      15.15 / 100.2
-     ink-2  #5c564a  6.61 / 78.7    6.88 / 81.4       7.03 /  82.9
-     clay   #a03f20  5.91 / 74.9    6.15 / 77.6       6.29 /  79.1
-     clay-g #c4532e  4.13 / 64.2    4.29 / 66.9       4.39 /  68.4
-     pine   #2f5d50  6.81 / 79.3    7.08 / 82.0       7.24 /  83.5
+     measured: #26231c on #fbf3e7 — 14.24:1 / Lc 96.0    ink on paper
+     measured: #26231c on #fdf9ef — 14.91:1 / Lc 99.1    ink on plate
+     measured: #26231c on #fefbf2 — 15.15:1 / Lc 100.2   ink on plate-solid
+     measured: #5c564a on #fbf3e7 — 6.61:1 / Lc 78.7     ink-2 on paper
+     measured: #5c564a on #fdf9ef — 6.92:1 / Lc 81.8     ink-2 on plate
+     measured: #5c564a on #fefbf2 — 7.03:1 / Lc 82.9     ink-2 on plate-solid
+     measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9     clay on paper
+     measured: #a03f20 on #fdf9ef — 6.19:1 / Lc 78.0     clay on plate
+     measured: #a03f20 on #fefbf2 — 6.29:1 / Lc 79.1     clay on plate-solid
+     measured: #c4532e on #fbf3e7 — 4.13:1 / Lc 64.2     clay-g on paper
+     measured: #c4532e on #fdf9ef — 4.32:1 / Lc 67.3     clay-g on plate
+     measured: #c4532e on #fefbf2 — 4.39:1 / Lc 68.4     clay-g on plate-solid
+     measured: #2f5d50 on #fbf3e7 — 6.81:1 / Lc 79.3     pine on paper
+     measured: #2f5d50 on #fdf9ef — 7.13:1 / Lc 82.4     pine on plate
+     measured: #2f5d50 on #fefbf2 — 7.24:1 / Lc 83.5     pine on plate-solid
+
+   The plate column moved when the gate recomputed it: this table read
+   `#fdf8ef` and the 55%-alpha composite of --plate over --paper is
+   `#fdf9ef` — the green channel lands on 248.5 and the hand-taken
+   reading rounded it down. Four tenths of an Lc, and it is corrected
+   here because a table that is bound has to be bound to the right
+   colour.
 
    Every text ink clears AA and the Lc 60 dim floor everywhere it can
    sit; body ink clears Lc 90. clay-g at 4.13:1 is UNDER the 4.5 text
    floor, so it keeps the run's own law — graphics only, never text.
+   That law is deliberately NOT gated statically: `color:` on an
+   aria-hidden SVG wrapper is how a drawn mark is handed currentColor
+   (see `.glance .gmarks` below), so a rule forbidding
+   `color:var(--clay-g)` would fail on correct CSS.
    The #b04a28 family (clay-night, ember, invite) does not appear in
    this file at all: the old archive's clay measured 5.06 / 71.3 on its
    own canvas and lost to the run's on every surface.

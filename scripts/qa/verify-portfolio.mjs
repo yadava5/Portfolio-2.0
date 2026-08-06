@@ -365,6 +365,9 @@ step("cargo rides the right corridors", "test:cargo-fixture", {
   reads: "out/ in a real browser at 1440px",
 });
 step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
+step("palette ⇄ the light it is read under", "test:palette", {
+  reads: "src/run/index.html + scripts/archive/assets/archive.css",
+});
 
 /* `contrast choreography` stood here with "REACT ONLY — never opens
    src/run/index.html" printed beside it, which was the honest thing to do
@@ -373,9 +376,17 @@ step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
    src/app/globals.css, THREE appear in src/run/index.html, and the clay it
    spent most of its assertions on (#b04a28) appears nowhere on the site at
    all. A gate reporting green about colours no reader sees is worse than no
-   gate. THE COVERAGE IS GONE AND NOTHING REPLACES IT YET: the run's own
-   :root tokens deserve the same measurement, read from the run instead of
-   from a table, and that is Phase 5 work rather than a deletion phase's. */
+   gate.
+
+   THE COVERAGE IS BACK, and read from the artifacts this time: the run's own
+   :root blocks and the archive's own stylesheet, over the run's own OKLCH
+   arc, using the page's own oklchToRgb rather than a second implementation
+   of it. The retired file's WCAG maths is lifted from its history unchanged;
+   the APCA is new and was validated against archive.css's hand-measured
+   table before anything was built on it. It also enforces the rule that
+   killed its predecessor: every contrast number written in a comment in
+   either stylesheet is recomputed here, so a palette table nothing binds
+   cannot come back. Three of the run's own were stale when it was written. */
 
 if (NO_E2E || ARTIFACT_ONLY) {
   say(
