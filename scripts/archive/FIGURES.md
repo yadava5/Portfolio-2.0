@@ -99,6 +99,11 @@ defect measured in the run's own figures.
   widen to a 620 viewBox. Note the archive also dropped "timing staged"
   because nothing is timed in a still — the run keeps it; the two
   wordings are both correct for their surface.
+  > **AMENDED 2026-08-06 — see §4b.** The "widen to a 620 viewBox"
+  > alternative is CLOSED at the current 515 seat: the edition
+  > arithmetic built in Phase 5 measures it at 9.97px against this
+  > brief's own ~10px floor. Stacking is the default; widening only
+  > works if the seat minimum rises with the box.
 - **fig. 10 (the reviewer's marks)** — "unresolved" because it is a
   docket wearing a figure number: the marks draw, but the plate has no
   geometry of its own. Two honest options: demote it (it is apparatus,
@@ -107,6 +112,16 @@ defect measured in the run's own figures.
   short rail, each mark drawn AT its gate, so the plate shows gates
   being judged rather than three floating glyphs. The second keeps the
   page's figure count stable.
+  > **AMENDED 2026-08-06 — see §4b. THE FIRST OPTION IS CLOSED.**
+  > Demotion was rejected at the Phase 4 checkpoint (¶10 is a destination
+  > two archive files rejoin into, not apparatus between stations) and the
+  > owner's design ruling rejects it again. fig. 10 gets the drawing. §4b
+  > carries the two constraints it has to satisfy: `check-figures` asserts
+  > exactly six drawings and forbids `role="img"` on this plate, and
+  > `check-palette` does not read `#gatesFig` selectors.
+  > **Rule 5 also bites wrong here unless read with its amendment**: the
+  > two refusal marks are ALREADY clay (`.grow.refused .gmark`), and
+  > refused-twice is the recorded fact. See §4b's RULE 5, AMENDED.
 - **fig. 11 (the references)** — a citation card, correctly so. Leave
   it; its restraint is the design.
 

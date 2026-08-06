@@ -1250,6 +1250,17 @@ restated:
   register and may repeat wherever gates are the subject.
 - **At most one clay EVENT per plate** — the focal halt. That is what the
   original law was reaching for.
+- **A DISPOSITION OF RECORD MAY REPEAT IN CLAY.** Like the gates themselves it
+  is register, not staging. **The one-event cap binds emphasis a composition
+  ADDS, not facts it records.** *(Fable's own correction to the sentence above,
+  on the second pass, and fig. 10 is why: `.grow.refused .gmark` is already
+  `--clay-g` and TWO gates refused. A literal reader of the cap would demote
+  one of them out of clay to comply — and misstate the docket, because refused
+  twice is the recorded fact and the `gword` text says so out loud.)* The cap
+  then does its real work on that plate in the other direction: three new gate
+  squares plus two refusal bars would read as five clay elements, so the design
+  answer is **squares in `--hair-strong` as structure, marks carrying the
+  clay**. Steering composition is what the cap is for.
 - **Pine stays the landed register.**
 - **ENRICHMENT IS DRAWN IN INK AND HAIR, NEVER IN A NEW HUE.** The palette is
   deliberately closed: `--thread` carries `--clay-g`'s own value in both modes
@@ -1396,10 +1407,17 @@ designed against the settled token rather than one that moves under it.
 **fig. 09 — automl. The one live defect left, AND THE VOCABULARY-SETTING PLATE.**
 *(Fable: it forces the full constraint set — night pairs, stacking, the label-clause rewrite — so how labels seat against rules, how gates draw, and how registers stack THERE is the norm 03/04/07/08/10 inherit. Design it as the reference, not as the first repair.)* Three systems share one x-band:
 the registry column starts at x 398, cell rows run to x 360, and the caveat
-line crosses at y 226. **Stack the registry under the notebook** — the archive
-plate solved it by going fully vertical (supervisor → notebook → registry →
-rail). *The "widen to 620" alternative is closed by measurement (item 1
-above).* It is a night station, so item 4 governs every stroke. Keep
+line crosses at y 226. **Stacking is the proven solution and the default** —
+the archive plate is its measured precedent, going fully vertical (supervisor →
+notebook → registry → rail). But this is the vocabulary-setting plate, so the
+plan states the constraint rather than the answer: **the binding constraints
+are item 1's arithmetic and item 4's night pairs, and any composition that
+clears both is in bounds.** *(Measurement closed exactly one alternative —
+widen-to-620 AT THE CURRENT 515 SEAT, which lands at 9.97px. Widen-and-raise-
+the-seat is arithmetically open. Fable's correction on the second pass: the
+first draft's flat imperative bound where it should inform, and it did it on
+the one plate whose whole job is to set the vocabulary.)*
+It is a night station, so item 4 governs every stroke. Keep
 `scrubAml`: the tools lighting as the run advances is the figure's argument,
 and its label already discloses that the timing is staged.
 
