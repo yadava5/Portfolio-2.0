@@ -157,6 +157,7 @@ const byDossier = new Map(
 );
 const REVIEW = STATIONS.find((s) => s.id === "review");
 let rejoins = 0;
+let receiptIds = 0;
 let slips = 0;
 
 for (const study of projectCaseStudies) {
@@ -166,6 +167,36 @@ for (const study of projectCaseStudies) {
     fail(`no case file generated for ${study.projectId}`);
     continue;
   }
+
+  /* ── the 53, as a SET rather than a tally ──────────────────────────
+     A count cannot see the defect that matters here. Restart `outcomes` at 1
+     instead of at receipts.length + 1 and jobtracker emits v-jobtracker-1…9
+     and then 1 and 2 AGAIN: eleven ids, nine distinct, two duplicated in one
+     document — and a total of 53 across the archive, and every link the run
+     and the ledger cite still resolving, because `#v-jobtracker-4` finds the
+     first of a duplicate pair. Every check in this file would have stayed
+     green. So the expected ids are computed from the data and compared as a
+     set, which also catches a gap, a stray, and a padded id (`v-x-04`). */
+  const expected = new Set(
+    Array.from(
+      { length: study.receipts.length + study.outcomes.length },
+      (_, i) => `v-${study.projectId}-${i + 1}`
+    )
+  );
+  const emitted = [...html.matchAll(/\sid="(v-[^"]+)"/g)].map((m) => m[1]);
+  const emittedSet = new Set(emitted);
+  if (emitted.length !== emittedSet.size) {
+    const seen = new Set();
+    const dupes = emitted.filter((id) => (seen.has(id) ? true : (seen.add(id), false)));
+    fail(`${study.projectId}: duplicate receipt ids in one document — ${[...new Set(dupes)].join(", ")}`);
+  }
+  for (const want of expected) {
+    if (!emittedSet.has(want)) fail(`${study.projectId}: missing receipt anchor #${want}`);
+  }
+  for (const got of emittedSet) {
+    if (!expected.has(got)) fail(`${study.projectId}: unexpected receipt anchor #${got}`);
+  }
+  receiptIds += expected.size;
 
   /* Every station-shaped link out of this file must name a real stop. */
   const stationLinks = hrefsIn(html).filter((h) => /^https?:/.test(h) && h.includes("/#"));
@@ -243,6 +274,7 @@ const floors = [
   ["internal links in the run", runInternal.length, 11],
   ["receipt fragments checked from the run", runFragments, 4],
   ["ledger receipt links", ledgerHrefs.length, 11],
+  ["receipt anchors emitted, id by id", receiptIds, 53],
   ["case files rejoining the line", rejoins, 7],
   /* Five, not seven: `policybot` and `visual-assist` have no station to
      consign them. That asymmetry is the archive's, not a shortfall — see the
