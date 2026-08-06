@@ -54,7 +54,9 @@ const notes = [];
 const fail = (m) => fails.push(`  ✗ ${m}`);
 const note = (m) => notes.push(`  · ${m}`);
 
-/* The run's prose only, exactly as check-figures reads it. */
+/* The markup, for the bars — they are attributes, not prose — and the prose,
+   read exactly as check-figures reads it. */
+const runHtml = read("src/run/index.html");
 const runProse = read("src/run/index.html")
   .replace(/<script[\s\S]*?<\/script>/g, "")
   .replace(/<style[\s\S]*?<\/style>/g, "")
@@ -309,6 +311,150 @@ else
   note(
     `Glyph's record: 10 cores, scaling off, load_avg ${ctx.load_avg?.[0]?.toFixed(2)}`
   );
+
+/* ══════════════════════════════════════════════════════════════════
+   THE BARS. C28 proved these were invisible to every gate on this site.
+
+   The four ratios were hard-coded literals inside a module script —
+   `(t * (1 / 3.5))` and `(t * (66 / 422))` — and `check-figures.mjs:28`
+   strips <script> before matching, so they were unreachable by construction.
+   Injecting 1 / 1.8 and 66 / 900 in a temp copy inflated the two claims by
+   ~1.9× and ~2.1×, and check-figures exited 0 and check-beat-tables exited 0.
+   The most persuasive object on two stations, guarded by nothing.
+
+   §5.5 settled them and moved the ratio into the markup as a FRACTION, which
+   is what makes this gate almost free: the numerator and the denominator are
+   matched against the records' own derived values as strings, with no float
+   tolerance and no script parsing at all. If they had been settled as
+   computed percentages this would have to compare floats, which is a worse
+   gate for no gain.
+
+   What this CANNOT see is a fraction that is well-formed and invalid —
+   `scaleX(calc(1 / 3.5px))` parses here and is dropped by the browser. That
+   is measured in a real engine by run-home.spec.ts, which reads the rendered
+   fill/track ratio off getBoundingClientRect. The two halves are deliberate:
+   this one holds the claim, that one holds the drawing.
+   ══════════════════════════════════════════════════════════════════ */
+const benchOrder = [...runHtml.matchAll(/<div class="bench( jet)?"/g)].map(
+  (m) => (m[1] ? "jetpack" : "glyph")
+);
+const fills = [
+  ...runHtml.matchAll(/<span class="bfill" style="([^"]*)">/g),
+].map((m) => m[1]);
+const vals = [...runHtml.matchAll(/<span class="bval">([^<]*)<\/span>/g)].map(
+  (m) => m[1].replace(/&#8202;/g, " ").trim()
+);
+if (
+  benchOrder.length !== 2 ||
+  benchOrder[0] !== "glyph" ||
+  benchOrder[1] !== "jetpack" ||
+  fills.length !== 4 ||
+  vals.length !== 4
+) {
+  /* A floor, and it is the one that matters most here: a regex that stops
+     matching reports a clean run over an empty set, and every assertion below
+     would pass vacuously. Measured 2026-08-06: two benches in document order
+     (¶06 Glyph, ¶07 jetpack), four bars, four values. */
+  fail(
+    `read ${benchOrder.length} benches (${benchOrder.join(", ") || "none"}), ${fills.length} bars and ` +
+      `${vals.length} values out of the run — expected glyph then jetpack, 4 and 4.\n` +
+      `      That is a broken parse, and every bar assertion below would pass on it.`
+  );
+} else {
+  const glyphX = (dotBase / dotOmp).toFixed(1);
+  /* [bar style, expected, what it is] in document order. The parallel lane of
+     each pair is the full track by definition — it IS the denominator — so it
+     is asserted literally rather than as a fraction. */
+  const BARS = [
+    [
+      fills[0],
+      `transform:scaleX(calc(1 / ${glyphX}))`,
+      "Glyph, one thread at -O3",
+    ],
+    [fills[1], `transform:scaleX(1)`, "Glyph, openmp on all cores"],
+    [
+      fills[2],
+      `transform:scaleX(calc(${MB(R.one)} / ${MB(R.par)}))`,
+      "jetpack, java.util.zip on one thread",
+    ],
+    [fills[3], `transform:scaleX(1)`, "jetpack, virtual threads"],
+  ];
+  for (const [got, want, what] of BARS)
+    if (got !== want)
+      fail(
+        `the bar for ${what} is drawn at "${got}"\n` +
+          `      and the records make it "${want}". The bars are the most persuasive\n` +
+          `      object on these two stations; until 2026-08-06 nothing read them at all.`
+      );
+  /* The values beside them, from the same records. */
+  const VALS = [
+    [vals[0], "1×", "Glyph baseline"],
+    [vals[1], `${glyphX}×`, "Glyph parallel"],
+    [vals[2], `${MB(R.one)} mb/s`, "jetpack single-threaded"],
+    [vals[3], `${MB(R.par)} mb/s`, "jetpack parallel"],
+  ];
+  for (const [got, want, what] of VALS)
+    if (got !== want)
+      fail(
+        `the ${what} bar is labelled "${got}" and the record says "${want}"`
+      );
+  if (!fails.length)
+    note(
+      `4 bars bound to their records as fractions — 1/${glyphX} and ${MB(R.one)}/${MB(R.par)}, numerator and denominator`
+    );
+
+  /* ── The 3.5× the old gate could not see ─────────────────────────────
+     check-figures binds exactly one of the run's three statements of this
+     number: the ¶06 provenance line. The fig. 06 bar label and ¶10's litany
+     receipt were both unbound, which is how a figure comes to be stated three
+     times and checked once. All three are held to the record here. */
+  const glyphSites = [
+    [
+      new RegExp(`parallel dot-256 kernel ${glyphX}× vs -O3`),
+      "¶06's provenance line",
+    ],
+    [
+      new RegExp(`parallel dot kernel — ${glyphX}× over -O3`),
+      "¶10's litany receipt",
+    ],
+  ];
+  for (const [re, where] of glyphSites)
+    if (!re.test(runProse))
+      fail(`${where} does not state the record's ${glyphX}× — ${re}`);
+  if (vals[1] !== `${glyphX}×`)
+    fail(`fig. 06's bar label does not state the record's ${glyphX}×`);
+  note(
+    `all three of the run's statements of ${glyphX}× are bound — provenance, bar label, ¶10 receipt (one was, before)`
+  );
+
+  /* ── The slip's sha, paired with the file it cites ────────────────────
+     §5.1 asks for this and could not have it until §5.5 wrote the slip: the
+     bench shead prints "@ <sha>" and links a vendored record whose FILENAME
+     carries a sha. If those two ever disagree the page cites one commit and
+     serves another, and both halves look right on their own. */
+  const slips = [
+    ...runHtml.matchAll(
+      /<a href="[^"]*\/proof\/([a-z0-9-]+-([0-9a-f]{7})\.json)">@ ([0-9a-f]{7}) ⟶<\/a>/g
+    ),
+  ];
+  if (slips.length !== 2)
+    fail(
+      `read ${slips.length} bench slips citing a vendored record, expected 2 — ¶06 and ¶07`
+    );
+  else {
+    for (const [, file, fileSha, citedSha] of slips) {
+      if (fileSha !== citedSha)
+        fail(
+          `a bench slip prints "@ ${citedSha}" and links ${file}, which is vendored at ${fileSha}.\n` +
+            `      The page would cite one commit and serve another, and each half reads correctly alone.`
+        );
+      if (!existsSync(resolve(root, `public/proof/${file}`)))
+        fail(`a bench slip links public/proof/${file}, which is not vendored`);
+    }
+    if (!fails.length)
+      note(`2 bench slips cite the sha their vendored record is filed under`);
+  }
+}
 
 /* ── The retired figure, asserted absent ──────────────────────────────
    The quick 1-fork run is where 455 mb/s and 6.89× come from. The bars read
