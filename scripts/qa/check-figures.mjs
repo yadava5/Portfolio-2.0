@@ -492,8 +492,19 @@ const FIGURES = [
     [
       "amlFig",
       "fig. 09",
-      ["their timing staged for the drawing", "which never lights"],
-      "the staging disclosure, and the gate that never opens",
+      [
+        "their timing staged for the drawing",
+        "which never lights",
+        /* Added with §4b's redraw. The plate now DRAWS the sandbox the
+           station's prose has always claimed (":1816 — the llm's python runs
+           in a locked-down docker sandbox — non-root · read-only fs") as a
+           frame the tools' stem is the only thing to cross. It is the one new
+           fact in the drawing and therefore the one a later edit drops
+           silently: a redraw that keeps the paths and loses the containment
+           says the model reaches into the runtime. */
+        "inside a docker sandbox",
+      ],
+      "the staging disclosure, the gate that never opens, and the containment the run claims in prose",
     ],
   ];
   for (const [id, fig, tokens, why] of DRAWING_TOKENS) {

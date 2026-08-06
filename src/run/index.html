@@ -554,9 +554,21 @@
   .figsvg .cellr{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .figsvg .cellink{fill:none; stroke:var(--ink); stroke-width:1.4}
   .figsvg .cellrun{fill:var(--pine); font-size:12px}
-  .figsvg .phgate{fill:none; stroke:var(--clay-g); stroke-width:1.4}
-  .figsvg .phgate.open{fill:none; stroke:var(--pine)}
-  .figsvg .phgate.shut{fill:var(--clay-g)}
+  /* a gate a thing PASSES THROUGH is a boom, and it swings; the square is
+     reserved for a gate a thing is JUDGED BY. FORM carries the state and
+     colour reinforces it, because the pair is a weak luminance separation
+     even though it is a strong chromatic one. Measured, #e08a5f vs #aecfc0:
+     dE00 36.7 and 1.57:1 in normal vision; simulated deuteranope (Machado
+     2009, severity 1.0) dE00 20.8 and 1.41:1, protanope dE00 20.8 and
+     1.85:1. Discriminable, but a shut boom and a lifted one must not be
+     asked to differ by hue alone at 1.6 units of stroke. */
+  .figsvg .boom{fill:none; stroke:var(--clay-g); stroke-width:1.6; stroke-linecap:round}
+  .figsvg .boom.open{stroke:var(--pine)}
+  .figsvg .boom.held{stroke-width:2.4} /* the one that never lifts, drawn heavier */
+  /* the run's own record, inked in behind the bead — no number is claimed
+     on this plate, so nothing here is a gauge filling under the scroll */
+  .figsvg .trail{fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round}
+  .figsvg .wiretip{fill:var(--ink-2)} /* the loop's arrowheads */
   .figsvg .phlbl{font-size:12px}
   .figsvg .phlbl.dim{opacity:.9} /* unwalked, not unreadable — Lc ≥60 */
   .figsvg .deplbl{fill:var(--ink-2)}
@@ -1807,7 +1819,7 @@ h1[data-np-measuring] .np-ch {
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/automl/">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/README.md">the published snapshot, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
-        <svg id="amlFig" class="figsvg" viewBox="0 0 560 372" role="img" aria-label="A LangGraph supervisor drives a drawn notebook through seven lifecycle phases; the twelve real MCP tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — six clay gates open, and the run halts at the seventh gate before deploy, which never lights."></svg>
+        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve real MCP tools, the tools work a drawn notebook inside a docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail with a human gate before each, drawn as a boom that swings: six have lifted behind the travelling bead, and the run stands halted in front of the seventh, still down across the rail, before deploy — which never lights."></svg>
         <figcaption>fig. 09 — the twelve tools are mcpServer.ts&rsquo;s, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
       </figure>
     </div>
@@ -3232,99 +3244,200 @@ const AML_TOOLS = [
   "list_cells", "read_cell", "write_cell", "edit_cell",
   "run_cell", "delete_cell", "reorder_cells", "insert_cell",
 ];
-const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], runs: [], gates: [], plabels: [], ticks: [],
-  bead: null, ring: null, deploySeg: null, phx: [], vert: false, from: 20, gateLead: 15 };
+const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], runs: [], prompts: [], booms: [], plabels: [],
+  bead: null, ring: null, trail: null, state: null, deploySeg: null,
+  phx: [], vert: false, from: 24, railY: 466, railX: 34, swing: -104, halt: 0 };
 const AML_PHASES = ["1.0 ingest", "2.0 explore", "3.0 preprocess", "4.0 engineer", "5.0 train", "6.0 experiments", "7.0 deploy"];
+/* ————— fig. 09 · the vocabulary the other night plates inherit —————
+   Three devices, each used the same way in both editions:
+
+   1 A LABEL SEATS ON ITS RULE AND THE RULE BREAKS FOR IT — and for
+     anything that crosses it. Nothing is ever set over a line, which is
+     what the shipping plate did (the caveat crossed the sixth cell row at
+     y 226 while the registry column started at x 398: three systems in one
+     x-band, and the defect this redraw exists to answer).
+   2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, plus dash for
+     containment. Subject ink is 1.4–1.6. There is no third hue and no
+     element-level opacity added here — the three `edge` paths this
+     function used to draw at opacity:.3 measured 2.32:1 on #43372f and
+     2.49:1 on #2c2622, under the 3.0 non-text floor, and check-palette
+     cannot see them because it composites TOKEN alpha only.
+   3 A GATE A THING PASSES THROUGH IS A BOOM AND IT SWINGS. It is a form,
+     not a colour, so the six that lifted and the one that did not read
+     apart in a still, in greyscale, and to a dichromat.
+
+   Height is the dimension this plate reaches for: check-figures' floor is
+   `authored × seat ÷ viewBox WIDTH`, so the 560 stays 560 (12 × 515 ÷ 560
+   = 11.04px, unchanged) and the stack grows downward for free. */
 function buildAml(tight) {
   const s = aml.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  aml.tools = []; aml.dots = []; aml.cells = []; aml.runs = []; aml.gates = []; aml.plabels = [];
-  aml._lit = -1; /* fresh elements: the diff cache must not skip them */
+  aml.tools = []; aml.dots = []; aml.cells = []; aml.runs = []; aml.prompts = [];
+  aml.booms = []; aml.plabels = [];
+  aml._lit = -1; aml._st = ""; /* fresh elements: the diff cache must not skip them */
   aml.vert = !!tight;
+  /* a rule, with a gap wherever a legend seats on it or a wire crosses it */
+  const hrule = (y, x0, x1, gaps) => {
+    let d = "", cur = x0;
+    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${cur} ${y} H ${a} `; cur = b; }
+    if (x1 > cur) d += `M ${cur} ${y} H ${x1}`;
+    el("path", { d: d.trim(), class: "lane" });
+  };
+  const tipDown = (x, y) => el("path", { d: `M ${x} ${y} l -4 -8 h 8 z`, class: "wiretip" });
   if (!tight) {
-    s.setAttribute("viewBox", "0 0 560 372");
-    /* the supervisor */
-    el("rect", { x: 24, y: 16, width: 178, height: 46, rx: 3, class: "lane" });
-    el("text", { x: 36, y: 36, class: "lit" }).textContent = "langgraph supervisor";
-    el("text", { x: 36, y: 52, class: "fsm" }).textContent = "agentic core · gpt-5.4";
-    /* the registry — the real twelve, source order */
-    el("text", { x: 398, y: 30 }).textContent = "mcp registry ×12";
+    s.setAttribute("viewBox", "0 0 560 532");
+    const R = 466; /* the rail */
+    aml.railY = R; aml.from = 24; aml.swing = -104;
+    /* ——— the loop, laid down first so every block sits over it ———
+       the supervisor calls its hands, the hands work the notebook, and the
+       notebook comes back: the figcaption used to say "written, run, and
+       re-read by the tools" in words. It is drawn now. */
+    el("path", { d: "M 500 322 H 524 V 172 M 524 152 V 34 H 478", class: "lane" });
+    el("path", { d: "M 472 34 l 8 -4 v 8 z", class: "wiretip" });
+    el("text", { x: 524, y: 162, "text-anchor": "middle", class: "fsm" }).textContent = "returns";
+    /* ——— the supervisor, and the phase it is in ——— */
+    el("rect", { x: 24, y: 16, width: 448, height: 52, rx: 3, class: "lane" });
+    el("text", { x: 38, y: 40, class: "lit" }).textContent = "langgraph supervisor";
+    el("text", { x: 38, y: 58, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    /* built with the content scrubAml(0) would write, never empty: a
+       resize across the 515 seat rebuilds the plate (chooseEditions) and
+       the next scrub frame may be a scroll away */
+    aml.state = el("text", { x: 458, y: 58, "text-anchor": "end", class: "lit" });
+    aml.state.textContent = `state · ${AML_PHASES[0]}`;
+    el("path", { d: "M 300 68 V 92", class: "lane" });
+    tipDown(300, 100);
+    el("text", { x: 310, y: 86, class: "fsm" }).textContent = "calls";
+    /* ——— the registry — the real twelve, source order down the columns ———
+       the columns fall on the split a reader can see in the names: four
+       that read the data, then eight whose names all end in _cell(s) */
+    el("text", { x: 24, y: 104, class: "lit" }).textContent = "mcp registry ×12";
+    hrule(100, 162, 500, [[293, 307]]);
+    const COL = [24, 200, 330];
     for (let i = 0; i < 12; i++) {
-      const y = 46 + i * 14.6;
-      aml.dots.push(el("rect", { x: 398, y: y - 7, width: 5, height: 5, class: "tdot" }));
-      const t = el("text", { x: 410, y, class: "tname" }); t.textContent = AML_TOOLS[i];
+      const cx = COL[(i / 4) | 0], y = 130 + (i % 4) * 20;
+      aml.dots.push(el("rect", { x: cx, y: y - 7, width: 5, height: 5, class: "tdot" }));
+      const t = el("text", { x: cx + 13, y, class: "tname" }); t.textContent = AML_TOOLS[i];
       aml.tools.push(t);
     }
-    /* the caveat lives IN the figure, not in a comment */
-    el("text", { x: 556, y: 226, "text-anchor": "end", class: "staged" }).textContent = "timing staged · order real";
-    /* the notebook: six cells, written and run */
-    el("path", { d: "M 109 62 C 109 78 96 82 84 94", class: "edge", opacity: .3 });
-    el("path", { d: "M 202 40 C 300 40 340 44 394 46", class: "edge", opacity: .3 });
+    /* the caveat lives IN the figure, not in a comment — and now it closes
+       the registry on its own rule instead of crossing the notebook */
+    el("text", { x: 24, y: 218, class: "staged" }).textContent = "timing staged · order real";
+    hrule(214, 243, 500, [[329, 343]]);
+    el("path", { d: "M 336 214 V 234", class: "lane" });
+    tipDown(336, 242);
+    el("text", { x: 328, y: 234, "text-anchor": "end", class: "fsm" }).textContent = "works the cells";
+    /* ——— the notebook, inside the sandbox that runs its python ———
+       dashed because a boundary is a boundary and not a wall, and the only
+       thing that crosses it is the tools' stem: the model never reaches in */
+    el("path", { class: "lane", "stroke-dasharray": "5 6",
+      d: "M 24 242 H 31 M 143 242 H 329 M 343 242 H 500 M 500 242 V 402 M 24 242 V 402 M 24 402 H 163 M 493 402 H 500" });
+    el("text", { x: 38, y: 246, class: "lit" }).textContent = "the notebook";
+    el("text", { x: 486, y: 406, "text-anchor": "end", class: "fsm" })
+      .textContent = "docker sandbox · non-root · read-only fs";
     for (let i = 0; i < 6; i++) {
-      const y = 94 + i * 25;
-      el("rect", { x: 60, y, width: 300, height: 19, class: "cellr" });
-      const len = [204, 246, 168, 262, 224, 186][i];
-      const ln = el("path", { d: `M 70 ${y + 10} h ${len}`, class: "cellink" });
+      const y = 252 + i * 24;
+      el("rect", { x: 72, y, width: 396, height: 18, class: "cellr" });
+      /* the gutter prompt: [ ] until the cell has run, then its own index.
+         An ordinal of a drawn cell, in the grammar the plate already prints
+         (×12, 1.0 ingest) — rule 6 binds metrics, and this is not one. */
+      const pr = el("text", { x: 38, y: y + 13, class: "prompt" });
+      pr.textContent = "[ ]"; aml.prompts.push(pr);
+      const len = [236, 292, 198, 310, 262, 216][i];
+      const ln = el("path", { d: `M 82 ${y + 9} h ${len}`, class: "cellink" });
       ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
       aml.cells.push(ln);
-      const rn = el("text", { x: 346, y: y + 14, class: "cellrun", "text-anchor": "end" });
+      const rn = el("text", { x: 460, y: y + 13.5, class: "cellrun", "text-anchor": "end" });
       rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
     }
-    el("text", { x: 60, y: 262, class: "fsm" }).textContent = "the notebook — written, run, and re-read by the tools";
-    /* the seven-phase rail; a gate BEFORE every phase; deploy stays dashed */
-    const PHX = Array.from({ length: 7 }, (_, i) => 52 + i * 76);
-    el("path", { d: `M 20 300 H ${PHX[6] - 16}`, class: "lane" });
-    aml.deploySeg = el("path", { d: `M ${PHX[6] - 16} 300 H 540`, class: "lane", "stroke-dasharray": "3 6" });
+    /* ——— the seven-phase rail; a boom BEFORE every phase; deploy dashed ——— */
+    el("text", { x: 24, y: 428, class: "lit" }).textContent = "seven phases · a human gate before each";
+    const PHX = Array.from({ length: 7 }, (_, i) => 56 + i * 73);
+    el("path", { d: `M 24 ${R} H ${PHX[6]}`, class: "lane" });
+    aml.deploySeg = el("path", { d: `M ${PHX[6]} ${R} H 536`, class: "lane", "stroke-dasharray": "3 6" });
+    aml.trail = el("path", { d: `M 24 ${R}`, class: "trail" });
     for (let i = 0; i < 7; i++) {
-      el("line", { x1: PHX[i], y1: 294, x2: PHX[i], y2: 306, class: "lane" });
-      aml.gates.push(el("rect", { x: PHX[i] - 20, y: 295, width: 9, height: 10, class: i === 6 ? "phgate shut" : "phgate" }));
-      const lbl = el("text", { x: PHX[i], y: i % 2 ? 344 : 326, "text-anchor": "middle",
+      /* ONE stroke per phase does three jobs: it is the boom's post above
+         the rail, the phase mark on it, and the leader down to the label —
+         so a staggered label is never ambiguous about which mark owns it,
+         and a lifted boom is still visibly hinged to its own rail. */
+      el("path", { d: `M ${PHX[i]} ${R - 20} V ${i % 2 ? R + 37 : R + 17}`, class: "lane" });
+      aml.booms.push(el("line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
+        class: i === 6 ? "boom held" : "boom" }));
+      const lbl = el("text", { x: PHX[i], y: i % 2 ? R + 48 : R + 28, "text-anchor": "middle",
         class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
     }
-    aml.phx = PHX; aml.from = 20; aml.gateLead = 15;
-    aml.ring = el("circle", { cy: 300, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
-    aml.bead = el("circle", { cy: 300, r: 4.5, fill: "var(--ink)", opacity: 0 });
+    aml.phx = PHX; aml.halt = PHX[6] - 16;
+    aml.ring = el("circle", { cy: R, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
+    aml.bead = el("circle", { cy: R, r: 4.5, fill: "var(--ink)", opacity: 0 });
   } else {
-    /* the tight plate: the same machine, stacked — supervisor over
-       notebook over the full registry over a vertical phase rail. All
-       twelve names stay, at 11 units on the 240 plate: legible at 320. */
-    s.setAttribute("viewBox", "0 0 240 668");
-    el("rect", { x: 8, y: 8, width: 224, height: 46, rx: 3, class: "lane" });
-    el("text", { x: 16, y: 28, class: "lit" }).textContent = "langgraph supervisor";
-    el("text", { x: 16, y: 44, class: "fsm" }).textContent = "agentic core · gpt-5.4";
-    el("path", { d: "M 120 54 V 66", class: "edge", opacity: .3 });
-    for (let i = 0; i < 6; i++) {
-      const y = 70 + i * 24;
-      el("rect", { x: 8, y, width: 224, height: 18, class: "cellr" });
-      const len = [150, 180, 120, 190, 165, 135][i];
-      const ln = el("path", { d: `M 16 ${y + 10} h ${len}`, class: "cellink" });
-      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
-      aml.cells.push(ln);
-      const rn = el("text", { x: 224, y: y + 13, class: "cellrun", "text-anchor": "end" });
-      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
-    }
-    el("text", { x: 8, y: 226, class: "fsm" }).textContent = "the notebook, worked by the tools";
-    el("text", { x: 8, y: 252 }).textContent = "mcp registry ×12";
+    /* the tight plate: the same machine and the same vocabulary, turned
+       vertical — supervisor over registry over the notebook-in-its-sandbox
+       over a vertical rail of booms. All twelve names stay, at 11 units on
+       the 240 plate: 11.4px at a 248px seat, 15.1px at the 330 cap. */
+    s.setAttribute("viewBox", "0 0 240 716");
+    const X = 34; /* the rail */
+    aml.railX = X; aml.from = 494; aml.swing = 60;
+    el("path", { d: "M 220 380 H 230 V 206 M 230 186 V 26 H 224", class: "lane" });
+    el("path", { d: "M 218 26 l 8 -4 v 8 z", class: "wiretip" });
+    el("text", { x: 236, y: 196, "text-anchor": "end", class: "fsm" }).textContent = "returns";
+    el("rect", { x: 8, y: 8, width: 210, height: 56, rx: 3, class: "lane" });
+    el("text", { x: 18, y: 26, class: "lit" }).textContent = "langgraph supervisor";
+    el("text", { x: 18, y: 42, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    aml.state = el("text", { x: 18, y: 58, class: "lit" });
+    aml.state.textContent = `state · ${AML_PHASES[0]}`;
+    el("path", { d: "M 178 64 V 82", class: "lane" });
+    tipDown(178, 90);
+    el("text", { x: 186, y: 78, class: "fsm" }).textContent = "calls";
+    el("text", { x: 8, y: 88, class: "lit" }).textContent = "mcp registry ×12";
+    hrule(84, 131, 220, [[171, 185]]);
     for (let i = 0; i < 12; i++) {
-      const y = 268 + i * 15;
+      const y = 106 + i * 14;
       aml.dots.push(el("rect", { x: 8, y: y - 6, width: 5, height: 5, class: "tdot" }));
-      const t = el("text", { x: 20, y, class: "tname" }); t.textContent = AML_TOOLS[i];
+      const t = el("text", { x: 21, y, class: "tname" }); t.textContent = AML_TOOLS[i];
       aml.tools.push(t);
     }
-    el("text", { x: 8, y: 452, class: "staged" }).textContent = "timing staged · order real";
-    const PHY = Array.from({ length: 7 }, (_, i) => 478 + i * 27);
-    el("path", { d: `M 16 466 V ${PHY[6] - 20}`, class: "lane" });
-    aml.deploySeg = el("path", { d: `M 16 ${PHY[6] - 20} V 660`, class: "lane", "stroke-dasharray": "3 6" });
+    el("text", { x: 8, y: 278, class: "staged" }).textContent = "timing staged · order real";
+    el("path", { d: "M 160 286 V 294", class: "lane" });
+    tipDown(160, 302);
+    el("text", { x: 168, y: 294, class: "fsm" }).textContent = "works";
+    /* the sandbox legend loses `read-only fs` here and nothing else: at 240
+       units the full disclosure is 281 wide. The prose and the case file
+       carry the rest; what the plate must not lose is that there IS a box. */
+    el("path", { class: "lane", "stroke-dasharray": "5 6",
+      d: "M 8 302 H 13 M 113 302 H 153 M 167 302 H 220 M 220 302 V 454 M 8 302 V 454 M 8 454 H 13 M 207 454 H 220" });
+    el("text", { x: 20, y: 306, class: "lit" }).textContent = "the notebook";
+    el("text", { x: 200, y: 458, "text-anchor": "end", class: "fsm" })
+      .textContent = "docker sandbox · non-root";
+    for (let i = 0; i < 6; i++) {
+      const y = 310 + i * 23;
+      el("rect", { x: 46, y, width: 150, height: 17, class: "cellr" });
+      const pr = el("text", { x: 18, y: y + 12, class: "prompt" });
+      pr.textContent = "[ ]"; aml.prompts.push(pr);
+      const len = [96, 118, 80, 124, 106, 88][i];
+      const ln = el("path", { d: `M 54 ${y + 8} h ${len}`, class: "cellink" });
+      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len; ln._len = len;
+      aml.cells.push(ln);
+      const rn = el("text", { x: 190, y: y + 12.5, class: "cellrun", "text-anchor": "end" });
+      rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
+    }
+    el("text", { x: 8, y: 480, class: "lit" }).textContent = "seven phases · a human gate";
+    const PHY = Array.from({ length: 7 }, (_, i) => 512 + i * 27);
+    el("path", { d: `M ${X} 494 V ${PHY[6]}`, class: "lane" });
+    aml.deploySeg = el("path", { d: `M ${X} ${PHY[6]} V 706`, class: "lane", "stroke-dasharray": "3 6" });
+    aml.trail = el("path", { d: `M ${X} 494`, class: "trail" });
     for (let i = 0; i < 7; i++) {
-      el("line", { x1: 10, y1: PHY[i], x2: 22, y2: PHY[i], class: "lane" });
-      aml.gates.push(el("rect", { x: 11.5, y: PHY[i] - 18, width: 9, height: 10, class: i === 6 ? "phgate shut" : "phgate" }));
-      const lbl = el("text", { x: 32, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
+      el("path", { d: `M 14 ${PHY[i]} H 46`, class: "lane" });
+      aml.booms.push(el("line", { x1: 14, y1: PHY[i], x2: 36, y2: PHY[i],
+        class: i === 6 ? "boom held" : "boom" }));
+      const lbl = el("text", { x: 50, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
     }
-    aml.phx = PHY; aml.from = 466; aml.gateLead = 12;
-    aml.ring = el("circle", { cx: 16, r: 9, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
-    aml.bead = el("circle", { cx: 16, r: 4.5, fill: "var(--ink)", opacity: 0 });
+    aml.phx = PHY; aml.halt = PHY[6] - 15;
+    /* the ring scales with the plate: r 9 on 240 units would be r 21 on
+       the 560, and it would swallow the sixth phase mark */
+    aml.ring = el("circle", { cx: X, r: 6, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
+    aml.bead = el("circle", { cx: X, r: 3, fill: "var(--ink)", opacity: 0 });
   }
   /* micro: a tool name answers the pointer with its registry dot */
   aml.tools.forEach((t, i) => {
@@ -3334,22 +3447,50 @@ function buildAml(tight) {
 }
 function scrubAml(p) {
   const e = smooth((p - 0.14) / 0.6);       /* the run, start → the seventh gate */
-  const HALT = aml.phx[6] - (aml.vert ? 13 : 15.5); /* the shut gate's centre */
-  const axis = aml.vert ? "cy" : "cx";
+  const vert = aml.vert;
+  const HALT = aml.halt; /* the bead stops SHORT of the boom that never lifts —
+     the shipping plate put the ring on top of it and hid the plate's subject */
+  const axis = vert ? "cy" : "cx";
   const xb = lerp(aml.from, HALT, e);
-  aml.bead.setAttribute(axis, xb.toFixed(1));
+  const bs = xb.toFixed(1);
+  aml.bead.setAttribute(axis, bs);
   aml.bead.setAttribute("opacity", smooth((p - 0.12) / 0.05).toFixed(2));
   aml.ring.setAttribute(axis, HALT);
   aml.ring.setAttribute("opacity", e >= 1 ? 1 : 0); /* halted: the site's own ring */
+  /* the travelled rail inks in behind the bead. It is a record being
+     WRITTEN, not a magnitude being filled: no number is claimed here, and
+     the dashed run past the seventh boom stays unlit at every scroll. */
+  const td = xb > aml.from + 0.6
+    ? (vert ? `M ${aml.railX} ${aml.from} V ${bs}` : `M ${aml.from} ${aml.railY} H ${bs}`)
+    : (vert ? `M ${aml.railX} ${aml.from}` : `M ${aml.from} ${aml.railY}`);
+  if (aml.trail._d !== td) { aml.trail._d = td; aml.trail.setAttribute("d", td); }
   /* class writes are DIFFED — round 3 rewrote ~36 class attributes per
      frame with unchanged values (6 gates + 6 labels + 12 tools + 12
      dots); each is a state that flips a handful of times per pass, so
-     the cached-value guard turns almost every frame into zero writes */
-  aml.gates.forEach((g, i) => {
+     the cached-value guard turns almost every frame into zero writes.
+     The booms' angle is continuous rather than a flip, so it is diffed on
+     its rounded string: a boom lifts AHEAD of the bead and the bead passes
+     under it, and at scrub 1 all six stand lifted with no frame of motion. */
+  aml.booms.forEach((b, i) => {
     if (i === 6) return; /* the human gate does not open for a scroll */
-    const open = xb > aml.phx[i] - aml.gateLead;
-    if (g._open !== open) { g._open = open; g.setAttribute("class", open ? "phgate open" : "phgate"); }
+    const t = clamp((xb - (aml.phx[i] - 34)) / 28, 0, 1);
+    const a = (aml.swing * t).toFixed(1);
+    if (b._a !== a) {
+      b._a = a;
+      b.setAttribute("transform", vert
+        ? `rotate(${a} 14 ${aml.phx[i]})`
+        : `rotate(${a} ${aml.phx[i]} ${aml.railY - 20})`);
+    }
+    const open = t > 0.5;
+    if (b._open !== open) { b._open = open; b.setAttribute("class", open ? "boom open" : "boom"); }
   });
+  /* the supervisor's readout: the phase it is in, and then the halt. It is
+     staged by the same scrub the caveat already discloses, and it carries
+     no number the run has not drawn. */
+  let si = 0;
+  for (let i = 0; i < 6; i++) if (xb > aml.phx[i]) si = i;
+  const st = e >= 1 ? "state · held for a person" : `state · ${AML_PHASES[si]}`;
+  if (aml._st !== st) { aml._st = st; aml.state.textContent = st; }
   aml.plabels.forEach((l, i) => {
     if (i === 6) return; /* deploy never lights */
     const lit = xb > aml.phx[i];
@@ -3369,7 +3510,12 @@ function scrubAml(p) {
     const off = (c._len * (1 - t)).toFixed(1);
     if (c._off !== off) { c._off = off; c.style.strokeDashoffset = off; }
     const ran = t >= 1;
-    if (aml.runs[i]._on !== ran) { aml.runs[i]._on = ran; aml.runs[i].setAttribute("opacity", ran ? 1 : 0); }
+    if (aml.runs[i]._on !== ran) {
+      aml.runs[i]._on = ran; aml.runs[i].setAttribute("opacity", ran ? 1 : 0);
+      /* the gutter takes its number the way a notebook's does */
+      aml.prompts[i].textContent = ran ? `[${i + 1}]` : "[ ]";
+      aml.prompts[i].setAttribute("class", ran ? "prompt lit" : "prompt");
+    }
   });
 }
 
