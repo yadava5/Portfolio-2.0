@@ -6,7 +6,7 @@ import {
 } from "@/lib/data/personal";
 import type { Project } from "@/lib/data/projects";
 import type { ProjectCaseStudy } from "@/lib/data/projectCaseStudies";
-import { basePath } from "@/lib/utils";
+import { basePath } from "@/lib/basePath";
 
 export function absoluteSiteUrl(pathOrUrl: string): string {
   if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {

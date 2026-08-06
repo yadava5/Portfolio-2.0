@@ -8,16 +8,22 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-const configuredBasePath =
-  process.env.NEXT_PUBLIC_BASE_PATH ??
-  (process.env.NODE_ENV === "production" ? "/Portfolio-2.0" : "");
-
-export const basePath = configuredBasePath.replace(/\/$/, "");
-
-export function withBasePath(path: string): string {
-  if (!path.startsWith("/") || path.startsWith("//")) return path;
-  return `${basePath}${path}`;
-}
+/**
+ * `basePath` and `withBasePath` now live in `@/lib/basePath`, which imports
+ * nothing.
+ *
+ * They were declared here, above `cn()`, and that put the two lines above this
+ * comment into the dependency graph of everything that needed a URL prefix —
+ * including `personal.ts`, and therefore the run's own nameplate build, which
+ * `tsc -p tsconfig.run.json` could not compile once those packages were gone.
+ *
+ * Re-exported rather than moved-and-repointed everywhere: the React tree still
+ * imports them from here, and it is being deleted in the next phase. Rewiring
+ * a doomed tree is churn with a nonzero chance of moving a shipped page. The
+ * surviving data layer imports `@/lib/basePath` directly, which is what takes
+ * the Tailwind packages out of the run's closure.
+ */
+export { basePath, withBasePath } from "@/lib/basePath";
 
 /**
  * Merges class names using clsx and tailwind-merge

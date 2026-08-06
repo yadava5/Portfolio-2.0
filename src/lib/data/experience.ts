@@ -5,7 +5,7 @@
  * with detailed responsibilities and achievements.
  */
 
-import { withBasePath } from "@/lib/utils";
+import { withBasePath } from "@/lib/basePath";
 
 /** Work experience entry */
 export interface Experience {

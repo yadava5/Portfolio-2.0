@@ -5,7 +5,7 @@
  * descriptions, and links. Projects are categorized as featured or standard.
  */
 
-import { withBasePath } from "@/lib/utils";
+import { withBasePath } from "@/lib/basePath";
 
 /** Technology/skill tag */
 export interface TechTag {

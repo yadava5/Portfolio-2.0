@@ -47,7 +47,7 @@
  */
 
 import { Project, projects } from "@/lib/data/projects";
-import { withBasePath } from "@/lib/utils";
+import { withBasePath } from "@/lib/basePath";
 
 export type CaseStudyNodeKind =
   | "client"

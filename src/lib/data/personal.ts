@@ -5,7 +5,7 @@
  * This is the single source of truth for personal information across the site.
  */
 
-import { withBasePath } from "@/lib/utils";
+import { withBasePath } from "@/lib/basePath";
 
 /** Social link entry */
 export interface SocialLink {
