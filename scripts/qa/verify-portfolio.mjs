@@ -181,6 +181,59 @@ function assertRunShipped() {
    artifact-level regression detector into a rubber stamp. So --rebaseline
    prints what changed and refuses to be silent about it.
    ══════════════════════════════════════════════════════════════════ */
+/**
+ * The pinned commit must be a tree that actually produces the pinned numbers.
+ *
+ * `commit` is documentation until something reads it, and documentation that
+ * nothing reads goes stale in exactly the way this field did: `--rebaseline`
+ * writes HEAD while the change is still uncommitted, so Phase 1's numbers were
+ * recorded beside Phase 0's commit — a tree whose src/run/index.html hashes to
+ * something else. Nothing went red, because nothing looked.
+ *
+ * Checked against `runSourceSha256` rather than the output hash, because the
+ * output cannot be recovered from a commit without building it, and the source
+ * can be read straight out of the object database.
+ *
+ * SKIPS RATHER THAN FAILS when the commit is not in the object database. CI
+ * checks out at depth 1 and this file is meant to be true about history, not to
+ * fail on a shallow clone. It says which happened either way — a check that
+ * quietly does nothing is the thing this whole file exists to prevent.
+ */
+function pinnedCommitAgrees(baseline) {
+  if (!baseline.commit || !baseline.runSourceSha256) return;
+  const ls = spawnSync(
+    "git",
+    ["ls-tree", baseline.commit, "--", "src/run/index.html"],
+    { cwd: root, encoding: "utf8" }
+  );
+  const blob = ls.stdout?.trim().split(/\s+/)[2];
+  if (ls.status !== 0 || !blob) {
+    say(
+      `  · pinned commit ${baseline.commit.slice(0, 8)} is not in this clone — pairing not checked`
+    );
+    return;
+  }
+  const at = spawnSync("git", ["cat-file", "blob", blob], {
+    cwd: root,
+    encoding: "buffer",
+  });
+  const there = createHash("sha256").update(at.stdout).digest("hex");
+  if (there !== baseline.runSourceSha256) {
+    throw new Error(
+      `the baseline pins commit ${baseline.commit.slice(0, 8)}, but that tree's\n` +
+        `      src/run/index.html hashes to ${there.slice(0, 16)}…\n` +
+        `      while the baseline records  ${baseline.runSourceSha256.slice(0, 16)}…\n\n` +
+        `      The numbers and the sha have to move together, or the record names a\n` +
+        `      tree that does not produce the page it claims to certify. --rebaseline\n` +
+        `      writes HEAD, which is the PARENT of the commit the baseline lands in;\n` +
+        `      correct the field to the new sha after committing.`
+    );
+  }
+  say(
+    `  · pinned commit ${baseline.commit.slice(0, 8)} does produce the pinned source`
+  );
+}
+
 function goldenHash() {
   const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex");
 
@@ -207,6 +260,22 @@ function goldenHash() {
     baseline.commit = commit;
     baseline.recordedAt = new Date().toISOString().replace(/\.\d+Z$/, "Z");
     writeFileSync(BASELINE, JSON.stringify(baseline, null, 2) + "\n");
+    /* `commit` is HEAD, which is the PARENT of the commit this baseline will
+       land in — the change is still uncommitted while this runs. That was
+       harmless for as long as the run source never moved, and it stopped being
+       harmless the first time it did: Phase 1 pinned its own output hash beside
+       Phase 0's commit, whose tree produces a different page entirely. The
+       standing rule is that the number and the sha move together, so say so
+       here and check it below on every ordinary run. */
+    console.warn(
+      `  ! commit recorded as ${commit.slice(0, 8)} — that is HEAD, the PARENT of`
+    );
+    console.warn(
+      "  ! the commit this baseline lands in. Correct it to the new sha after"
+    );
+    console.warn(
+      "  ! committing; the next run checks the pairing and will say so."
+    );
     say(
       "  · baseline rewritten — commit it in the same change that moved the page"
     );
@@ -215,6 +284,7 @@ function goldenHash() {
 
   if (actual === baseline.outIndexSha256) {
     say(`  · out/index.html reproduces the baseline (${actual.slice(0, 12)}…)`);
+    pinnedCommitAgrees(baseline);
     return;
   }
 

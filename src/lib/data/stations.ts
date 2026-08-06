@@ -206,10 +206,9 @@ export const STATIONS: readonly Station[] = [
   },
 ];
 
-/** The run's stops, by fragment. */
-export const STATION_BY_ID = new Map(STATIONS.map((s) => [s.id, s]));
-
-/** The stops a case file can send a reader back to, in run order. */
-export const STATIONS_WITH_DOSSIERS = STATIONS.filter(
-  (s) => s.dossier !== null
-);
+/* No lookup helpers here yet, deliberately. A `STATION_BY_ID` map and a
+   `STATIONS_WITH_DOSSIERS` filter were written and taken back out before this
+   file was committed: nothing consumed either one, and this file's own 404
+   argues that an inert helper is ceremony rather than a fix. Phase 3 builds the
+   case files' `⟵ rejoin the line at ¶ NN` and will want the second of those —
+   it can add it then, shaped by a caller that exists. */
