@@ -64,8 +64,10 @@
 > **PHASE 5 IS COMPLETE. All six remaining figures are redrawn, committed and
 > green** — commit zero plus figs. 09, 03, 04, 07, 08, 10; **fourteen commits of
 > code** on `feat/figures-and-benchmarks`. `verify:portfolio` green at 20 steps,
-> 270 browser tests, reduced-motion 20 passed. **52 commits on the stack at the
-> time of writing, nothing pushed.** §4b's head note carries the six outcomes, the nine defects the
+> 270 browser tests, reduced-motion 20 passed. **Nothing pushed. Do not trust a
+> commit count written in this document — it is falsified by the act of
+> committing the document that states it. Count it:
+> `git rev-list --count main..HEAD` (54 at `6ba0c9f`).** §4b's head note carries the six outcomes, the nine defects the
 > redraw found that no gate could see, and three things this plan believed that
 > were measured wrong.
 >
@@ -2065,6 +2067,7 @@ The discipline, unchanged and now with two phases of evidence behind it:
 | **B** | *"did you fix the live source or benchmark or view case studies file… As I don't see anything yet"* — **answered honestly in §6.2, and the answer is no.** §4b's redraw touched `src/run/index.html` and two QA scripts and nothing else. Nothing on a case file, in `/evidence/`, or in a benchmark moved |
 | **C** | *"show me a preview or a local host where I can see what all things have done"* — **§6.0, and it goes first.** Every other item in this phase is judged through it |
 | **D** | *"we can run two Fable agents for front end work… so we can speed the work"* — **the working method below.** It is real, it has one hard constraint, and the constraint decides the lanes |
+| **E** | *"i did cleaned a lot of repo and sanitized them, so the work might be gone or misplaced or pushed to main"* — **§6.6, and it is the one item that can FALSIFY the site rather than leave it stale.** It is also a hard Phase 7 blocker: `test:links` is a plain `step()` with no soft-fail and `deploy.yml` runs it, so one dead pin turns the deploy red and Pages ships nothing |
 
 ### THE WORKING METHOD — two Fable agents, and the one rule that makes it safe
 
@@ -2084,7 +2087,7 @@ works now and would not have worked in §4b:
 |---|---|---|
 | **Fable-RUN** | `src/run/index.html` | `scripts/archive/**`, everything in the shared row |
 | **Fable-ARCHIVE** | `scripts/archive/**` (`case-figures.mjs`, `render-case-file.mjs`, `assets/archive.css`) | `src/run/index.html`, everything in the shared row |
-| **SHARED — main thread only, never an agent** | **everything not named above** — including `src/lib/data/**`, `scripts/qa/**`, `tests/fixtures/**`, `tests/playwright/**`, `package.json`, `README.md`, `docs/**` | — |
+| **SHARED — never two agents at once** | **everything not named above.** Of these, **prose and design files** (`README.md`, `docs/**`) may go to a SINGLE agent when no second agent is running; **gate, config and data files** (`scripts/qa/**`, `src/lib/data/**`, `tests/**`, `package.json`) stay main-thread regardless, because Fable designs and main verifies | — |
 
 **The shared row DEFAULTS rather than enumerates, and that is deliberate.**
 *(Fable's finding, twice.)* Measured, §4b's redraw touched four files —
@@ -2096,6 +2099,16 @@ Phase 6's own file set: `tests/playwright/static-server.mjs` (§6.0 step 1),
 `docs/PROJECT-LEDGER.md` (§6.5). **An allow-list under a "second write wins,
 silently" failure mode is worse than none**, so the third row is now a default
 and the two lanes are the only enumerated sets.
+
+> **PHASE 6 AS SCOPED HAS NO TWO-LANE TASK, and you should know that before you
+> try to use the method.** *(Fable's finding.)* Walk it: §6.0 is
+> `static-server.mjs` + `package.json` (shared); §6.1 is `stations.ts` +
+> fixtures (shared); §6.3 item 1 is two-lane and therefore one-agent by the rule
+> below; item 3 is one-agent by its own note; §6.2 and §6.4 are a person
+> reading; §6.5 is `README.md` + `PROJECT-LEDGER.md` (shared). **The method is
+> a standing rule for when a two-lane task appears — probably §6.3 item 3's
+> archive redraw, if the ruling goes that way. DO NOT MANUFACTURE A SECOND LANE
+> TO COMPLY WITH IT**; two agents queued on one file is slower than one.
 
 **AND ONE RULE THE TABLE CANNOT EXPRESS: if a task's acceptance criterion lives
 in the other lane's file, it is a ONE-AGENT task.** The lanes are disjoint in
@@ -2133,9 +2146,10 @@ away.
 hard-coded to the production origin **in both directions**, and **the rewrite is
 BY ORIGIN, NOT BY A LIST** — a list is how the first draft of this item got the
 count wrong twice. Measured on the built run's index alone: **13 distinct
-clickable absolute `https://yadava5.github.io/Portfolio-2.0…` links** — 7 case
-files, 4 receipt anchors, `/evidence/`, and **2 `/proof/*.json`** — plus every
-generated archive page's `…/#work` rejoin.
+clickable absolute `https://yadava5.github.io/Portfolio-2.0…` links** — **do
+not enumerate them, rewrite the origin**; this item has carried three different
+breakdowns and the by-origin instruction is why the count stopped mattering —
+plus every generated archive page's `…/#work` rejoin.
 
 > **AND THE TWO PROOF LINKS 404 ON THAT ORIGIN TODAY. Measured, just now:**
 > `/proof/glyph-dot256-openmp-native-001e9b4.json` → **404**,
@@ -2173,8 +2187,24 @@ cannot reach them.
    preview logs a red `wasm streaming compile failed` (the emscripten glue does
    recover via `instantiateArrayBuffer`, so the classifier still works, but do
    not hand the owner a console error). `check-cargo-fixture.mjs:57-58` already
-   lists both; somebody hit this once. Then run it and **send the owner the URL
-   plus the seven `/projects/<id>/` and `/evidence/` paths.**
+   lists both; somebody hit this once.
+   **While in the file:** the `out/` missing message at `:53` names
+   `NEXT_PUBLIC_BASE_PATH`, which is **still live** — `src/lib/basePath.ts`
+   reads it and both workflows set it. The command works; only the *name* is
+   stale. Rename it in the message; do not rename the variable, which is a
+   four-file change with a gate on each.
+   Then run it and **send the owner the URL plus the seven `/projects/<id>/`
+   and `/evidence/` paths — WITH THIS SENTENCE, or do not send it:**
+
+   > *"these paths open the rebuilt pages locally; any link that LEAVES a page
+   > still goes to the deployed pre-migration site, and the two `/proof/`
+   > citations 404 there — step 2 fixes both."*
+
+   **Step 1 IS safe to hand over** — under a root mount `/projects/automl/`
+   resolves locally and shows the rebuilt case file, which is the fastest
+   answer to item B and should go out today. **Step 1 handed over *silently* is
+   what the box above forbids.** And §6.6 gates the message, not the phase:
+   run `npm run test:links` first and put its result in the same envelope.
 2. **Then `npm run preview`, whose one real job is the seam.** Serve `out/` and
    **rewrite `https://yadava5.github.io/Portfolio-2.0` → the preview origin in
    the HTML it serves**, with a banner saying so. Nothing that ships changes.
@@ -2330,6 +2360,16 @@ screenshots. Specifically:
    **price of compliance is the alpha going `.34` → about `0.495` on `#fbf3e7`
    and `0.510` on `#f2e4c9`, roughly 50% more ink on every structural line on
    the site.** That number is what makes "restyles every plate" concrete.
+   **And the ruling transfers to the archive exactly**: `archive.css`'s
+   `--paper` is also `#fbf3e7`, so both `.34` declarations render over an
+   identical ground — which is the two-lane warning above, measured. The worst
+   case is `#f2e4c9` at **2.001:1 / Lc +34.2**, and it sits **outside**
+   `check-palette`'s `DAY_FIELDS` (`WAY.slice(0,5)`).
+   **`--hair` IS SCOPED OUT OF THIS RULING ON PURPOSE, not by silence:** it
+   measures 1.356–1.367:1 / Lc +15.3–17.0, and the principle that exempts it is
+   already in this plan — fig. 10's note that the docket's row separators *"are
+   a text plate's rules and not graphical objects"*. The non-text floor does not
+   reach a decorative separator. Rule on the structural hairline only.
 2. **A live hash arrival at `/#review` leaves the third reviewer's mark
    part-inked** until the reader moves a few pixels — 12.18px now, **8.12px at
    HEAD before the redraw, so pre-existing and unchanged in character.** §4b's
@@ -2421,9 +2461,112 @@ prints the original first-read date rather than today, the audit walk restores,
 
 ---
 
+### 6.6 — THE PINS. The subject repos were cleaned; the site cites 66 links into them.
+
+**Owner, 2026-08-07: *"i did cleaned a lot of repo and sanitized them, so the
+work might be gone or misplaced or pushed to main."*** Three different failure
+modes — **gone** (history rewritten, the sha is unrecoverable), **misplaced**
+(the sha survives, the file moved), **sanitized** (the work exists, the cited
+artifact was stripped, or visibility changed).
+
+**This is the one item that can falsify the site rather than leave it stale**,
+and the validator already enforces it: `test:links` is a plain `step()` in
+`verify-portfolio.mjs` with **no soft-fail and no network tolerance**, and
+`deploy.yml` runs the validator. **One dead pin turns the deploy red and Pages
+ships nothing.** It cannot be forgotten, only deferred. It also sits *before*
+the crosswalk, so a red here masks every gate after it.
+
+**ORDERING: this does not delay the preview — it gates the MESSAGE.** Run
+`npm run build && npm run test:links` before §6.0's handover goes out, and put
+the result in the same envelope. Otherwise you hand the owner rebuilt case files
+whose evidence rows 404, which is §6.0's own failure one level up. That envelope
+also carries **three questions**: which six repos, what was in the address bar
+when the cargo looked wrong (§6.1 deliverable 1), and what class of change —
+history rewritten, files deleted, visibility flipped.
+
+**ESTABLISH FIRST — one command, and it is ALREADY A CENSUS.** *(Correcting this
+plan's own earlier assumption.)* `check-links` does **not** stop at the first
+failure: it fetches every URL with a worker pool, collects `dead[]`, prints
+**every** dead URL with the pages carrying it, and only then exits 1. No new
+inventory script is needed. Two operating notes: it must run **with `out/`
+present** or it falls back to four source files and skips every `${}` template;
+and read the status column — `network: …` is the transport flake this session
+hit twice, `404` is a real dead pin. **Its own failure text is the ruling**:
+*"Pushing is the fix; re-pointing the link at a different commit is not, because
+the number beside it was measured on the tree that is missing."*
+
+**WHAT THE GATE CANNOT SEE, measured.** `out/` carries **66 distinct
+`github.com` URLs**; the filter matches 57 and **skips 9** — six repo ROOTS
+(`applied`, `cadence`, `glyph`, `jetpack-compress`, `lifequest`,
+`VisualAssist`), `github.com/yadava5`, `applied/actions/runs/24665061332`, and
+`glyph/releases/tag/v1.0.0`. **Those are exactly what dies on a rename, a
+visibility flip, or deleted CI logs** — the three things the owner described.
+**Open the 9 by hand, once.** Do not widen the filter; the comment above it
+explains why (LinkedIn answers 999 to anything that is not a browser, and a gate
+that reds on someone else's bot policy gets switched off). `out/resume.pdf`
+also ships links no gate has ever read. And `check-figures`'s ~19 `source:`
+fields name paths **inside** the subject repos as prose — nothing fetches them,
+they can rot silently, and reading them is the one part that must be a person.
+
+**WHAT IS ALREADY SAFE, and it changes how big this feels.** §5.1's vendoring
+was the insurance policy for exactly this event and it has already paid out:
+the four bench records live in `out/proof/` **inside this repo**. Nothing done
+to `glyph` or `jetpack-compress` can take them away. **The exposure is the
+links, not the numbers.**
+
+**DELIVERABLE — one table, one row per dead reference:** url · which `*_SHA`
+const built it · the claim beside it · disposition. Three dispositions, **and
+the default is the first**:
+
+1. **LEAVE IT PINNED.** A sha-qualified claim about an older tree still
+   terminates in something openable. The site's thesis survives ageing; it does
+   not survive a 404. §4b's fig. 04 letters `applied @ 36a2f54` onto the plate
+   — a drawing that names its sha does not rot. **Do not redraw it.**
+2. **RE-PIN AND RE-MEASURE, TOGETHER, IN ONE COMMIT.** Never a sha edit alone.
+3. **THE ARTIFACT IS GONE — and reach for the FINE instrument first.**
+   `visibility: "local-only"` on the affected **row** is the honest minimum;
+   the type already carries `public` / `private-safe` / `local-only`, rendered
+   with its own glyph. **`repoPin: null` is the whole-project hammer**, correct
+   only when the repository itself is gone or private.
+
+> **THE TRAP INSIDE DISPOSITION 3, and a fresh session will hit it first.**
+> `repoPin: null` *feels* like the designed answer — it is the designed answer,
+> it has been debugged twice (C34, C36), and it is one line. So it gets set, the
+> PRIVATE stamp renders, `atlas.spec.ts` goes green, and it looks done.
+> **IT DOES NOT REMOVE ONE LINK.** Measured: `repoPin` has exactly two
+> functional readers (`render-case-file.mjs:124` and `:425`); the 57 artifact
+> links are built from **22 `*_SHA` / `_BLOB` / `_TREE` constants** at
+> `projectCaseStudies.ts:309-398`. Null it alone and the page shows a PRIVATE
+> stamp **above live links to a dead blob**, with `test:links` still red. The
+> full edit is `repoPin` + the rows' hrefs + `evidenceDisclosure` + the fixture
+> list in `case-file-fixtures.ts` (`atlas.spec.ts` derives
+> `REQUIRED_PRIVATE_CASE_STUDIES` from it), then an erratum in the corrections
+> register. **C34 was a disclosure that outlived the private era; this is the
+> same defect pointed the other way.**
+
+**THE OTHER TRAP: re-pin to whatever HEAD now exists so the gate goes green,
+without re-running anything** — pinning shas whose numbers were never measured
+on them. That is C32 and §5.0 arriving disguised as maintenance, and under
+"sanitized" it is *more* tempting, because a green gate will feel like recovery.
+
+**COST, and the asymmetry is why "leave it pinned" is the default rather than a
+shrug.** A **sha-only** edit regenerates seven case files and does **NOT** move
+the golden hash — that lives on `out/index.html`, which is hand-authored and
+carries no case-file bytes. A **number** edit is four surfaces (`check-figures`)
+plus the run's own prose (§5.0) and **does** move it: its own commit, a
+hand-read diff, one re-baseline, then the `commit` field corrected in its own
+commit (C32).
+
+**SCOPE FENCE.** This is a reachability census and a present-tense audit. It is
+**not** a re-audit of eight projects and **not** a second migration. If a row
+needs a project re-run to settle, its disposition is **3**, not 2.
+
 ## 6. Phase 7 — Ship it. **[UNCHANGED IN SUBSTANCE, TIGHTENED]**
 
-**Fifty-two commits, five branches, nothing pushed, `main` 53 behind.** The
+**Nothing pushed, and `main` is far behind — count both rather than trusting a
+number here: `git rev-list --count main..HEAD` (54 at `6ba0c9f`). Note the repo
+also carries 27 local branches and 4 worktrees, so "five branches" describes the
+migration stack, not what `git branch` prints.** The
 plan has carried *"no push, no PR without being asked"* since Phase 0. **Every
 item here needs the owner's decision before it is executed** — this is the one
 phase where the plan proposes rather than instructs.
@@ -2435,7 +2578,7 @@ phase where the plan proposes rather than instructs.
 
 | | what lands on `main` | cost |
 |---|---|---|
-| **One PR** | the whole migration, once | one review of ~52 commits; `main` is never half-migrated; the deploy fires once |
+| **One PR** | the whole migration, once | one review of the whole stack; `main` is never half-migrated; the deploy fires once |
 | **A PR per phase** | six merges | each reviewable and green alone — **but `main` sits mid-migration between merges and `deploy.yml` fires on every push**, so a reader gets the Phase-3 site for however long the next review takes |
 | **One PR, squashed** | one commit | loses the commit messages, which carry most of the reasoning on this branch — **and it orphans the golden baseline's `commit` field.** `pinnedCommitAgrees()` returns SILENTLY when the pinned sha is unreachable (§7.2 reads that skip as correct on a depth-1 CI checkout, which also means the pairing only ever runs locally). A squash or rebase merge removes that sha from `main`'s history, so the assertion C32 was fixed **seven** times to protect stops running everywhere without ever going red. A merge commit preserves it |
 
@@ -2443,6 +2586,10 @@ The middle option's cost is the one to weigh: this repository deploys from
 `main` on push with no approval gate.
 
 ### 7.2 — Re-run the clone test before the first push. Unconditional.
+
+> **§6.6 MUST BE CLOSED BEFORE THIS SECTION RUNS.** `test:links` is a plain
+> `step()` with no soft-fail and `deploy.yml` runs the validator, so one dead
+> pin blocks the deploy outright and Pages ships nothing.
 
 It was run once, against a tree that no longer exists — **the branch has since
 moved 33 commits and `verify:portfolio` is 20 steps.** It costs one clone and
@@ -2478,7 +2625,11 @@ Only after the first deploy; this is the Phase 0 closure hole finally closable.
 3. **Every `/projects/<id>/` and `/evidence/` answers 200.** Pages is
    case-sensitive and cannot redirect, which is why the URLs were preserved by
    design.
-4. **The four `/proof/*.json` records answer 200** with a content type a browser
+4. **All SIX `/proof/*.json` records answer 200** — `out/proof/` ships six, not
+   four: the two bench-head citations are absolute, and
+   `master-inventory-ledger.json` and `policybot-validation-ledger.json` are
+   linked relatively from case files and are equally citations-to-nothing if
+   unserved — with a content type a browser
    renders rather than downloads. The run cites them from two stations; a 404
    there is a citation to nothing — the one failure this phase exists to make
    impossible. `check-crosswalk` proves they land in `out/`; only the host
