@@ -2236,6 +2236,89 @@ green and has been green all phase.** Both cannot be right, and the gate is the
 one to doubt: the owner is reading the rendered rail, the gate is reading a
 recorded fixture.
 
+> **SETTLED 2026-08-07, AND BOTH WERE RIGHT. Deliverable 1's answer was
+> LOCALHOST — it reproduces, so this is NOT an artifact problem** and the
+> "likeliest answer" this section predicted was wrong. Do not re-run that
+> question.
+>
+> **THE MEASUREMENT.** `fillText` hooked on the built page at 1440×900, the
+> document scrolled in 60px steps, and for each waybill: which `¶` kickers are
+> inside the 900px viewport while it paints. **For ELEVEN of twelve, the only
+> station heading on screen is the one the cargo is NOT from** — it is the next
+> one. `the engineer's credentials` reads at ¶03 the yard; `sorted mail`
+> — Applied's — reads at ¶05 Cadence; Glyph's `blank 28×28` reads at ¶07
+> jetpack-compress; `automl's halted run` reads at ¶10 the review. Only
+> corridor 0's escapes, because two kickers are in frame at the top of the
+> document.
+>
+> **WHY THE GATE COULD NOT SEE IT, and this is the transferable part.** Cargo
+> departs at `b.top + b.h * 0.74` and the waybill paints for `0.1 < prog < 0.7`
+> of a span ending 40% into the NEXT section — a band that opens after its own
+> heading has scrolled away and closes inside the next station's.
+> `check-cargo-fixture` attributed a label to a corridor **by scroll offset,
+> which is the author's frame**; a reader has only the heading in front of
+> them. The data, the render and the gate all agreed with each other and all
+> disagreed with the reader. **A recording cannot falsify a thing that was
+> always wrong** — it records the defect and calls it the baseline.
+>
+> **THE OWNER'S RULING, and it is not either of the two fixes this plan would
+> have reached for:** *"the cargo should travel to the station, not out from
+> the station… the mails should go in applied, and the calender like thing
+> should go in cadence"*. So: **freight arrives at the station it is about.**
+> Corridor `c` is read at station `c + 1`, therefore corridor `c` carries
+> `STATIONS[c + 1].consignment`. Naming the consignor in the label was offered
+> and rejected; so was moving the departure earlier.
+>
+> **DELIVERABLE 3 IS BUILT AND IT IS THE ARRIVAL BINDING**, added to
+> `check-cargo-fixture.mjs` rather than made a new gate, so it shares the one
+> browser launch. It fails **22 times** against the pre-fix artifact — every
+> corridor, named — while the fixture comparison stays green, which is the
+> whole point stated in one run. Proven by `--root` against a preserved copy of
+> the pre-fix `out/`, the affordance the gate already documented.
+>
+> **DELIVERABLE 4 DISSOLVED RATHER THAN BEING RULED ON.** Under arrival
+> semantics `run 042's report → the review` — the twelfth waybill
+> `stations.ts` never declared — is the ONE traveller already addressed to the
+> station it reaches. The owner was asked and said he did not know what it was;
+> he did not need to.
+>
+> **TWO ENDS ARE FORCED, not optional, and two gates prove it.** Shifting every
+> traveller back one corridor empties corridor 10 — and
+> `check-beat-tables.mjs:106` **fails** on an empty corridor into the gate
+> ("the run's last stretch reads as a blind line"). So ¶12 must declare
+> freight, where `stations.ts` says `consignment: null` with the note *"nothing
+> departs a stop the reader has to sign for"* — a note that inverts under
+> arrival semantics. At the head, ¶01's `run 042 dispatched — operator aboard`
+> has no corridor arriving at it at all.
+>
+> **AND THE COST OF THE OBVIOUS ESCAPE, measured before anyone reaches for
+> it:** letting a corridor carry two declared waybills means `consignment`
+> becomes a list, and `check-stations.mjs:78` parses `stations.ts` with a regex
+> requiring `consignment: (null|"…")` in a fixed field order. An array breaks
+> that parse. `:153` separately requires every declared consignment string to
+> appear **verbatim** in the run. **That cost decided both ends**: Fable's first
+> pass kept a waybill on the dispatch slip and moved the recommendations back a
+> corridor, and each would have forced a station to declare two. Neither does
+> now.
+>
+> **RESOLVED — `095fd88`, and re-measured rather than assumed.** Every labelled
+> traveller moved back one corridor. The same instrumentation re-run against the
+> rebuilt artifact: **11 of 11 waybills paint with their own station's kicker as
+> the only one on screen.** Mail at ¶04 applied, the committed plan at ¶05
+> cadence — the owner's two examples, verbatim. **Not one label string changed**:
+> the fixture diff is corridor numbers and the removed slip waybill, nothing
+> else, so `check-crosswalk`'s five verbatim quotes never moved. Golden hash
+> 333,637 → 335,946 bytes, artifact diff read by hand against an artifact built
+> from the previous tree at the deploy config — 134 lines, every hunk inside the
+> TRAV table. `commit` field corrected in `9676ea2`, its own commit, C32's
+> eighth.
+>
+> **ONE THING THE RE-STAGE FIXED THAT NOBODY HAD REPORTED** *(Fable's finding)*:
+> glyph's `a blank 28×28 — the run wants your hand` is an instruction for the
+> pad, and under departure staging it rode AWAY from the station that contains
+> the pad, arriving at ¶07 jetpack-compress. It now arrives at ¶06, before the
+> pad it is asking you to use.
+
 > **THE FIRST DRAFT OF THIS ITEM GAVE FOUR HYPOTHESES AND THREE WERE
 > FALSIFIABLY WRONG ABOUT THIS GATE.** *(Fable's cross-check, source-read.)*
 > `check-cargo-fixture.mjs:197` keys on
