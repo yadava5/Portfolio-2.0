@@ -54,12 +54,32 @@ export interface Project {
    * The invariant `systemCardUrl === liveUrl + "/system-card"` holds for
    * every entry and is ASSERTED, not merely intended: see the
    * "system-card URLs derive from their live URL" contract in
-   * tests/playwright/nav-and-images.spec.ts. Typing a host here that the
-   * live demo row does not print fails the suite.
+   * tests/playwright/atlas.spec.ts (the `.toBe(\`${liveUrl}/system-card\`)`
+   * assertion). Typing a host here that the live demo row does not print
+   * fails the suite.
    *
-   * Placement (the portfolio is the hub): the case-file link rail
-   * (CaseStudyPage meta ledger) for the four with case files, and ¶05's
-   * index lines for the two without — jetpack-compress and LifeQuest.
+   * Placement (the portfolio is the hub): the case-file meta ledger row
+   * that `metaLedger()` renders with `data-system-card`, in
+   * scripts/archive/render-case-file.mjs, for the four with case files —
+   * and the run's ¶07 and ¶08 HANDOFF RAILS for the two without,
+   * jetpack-compress and LifeQuest.
+   *
+   * This paragraph named three addresses that do not exist, and every one
+   * of them was checked and replaced on 2026-08-07: there is no
+   * `nav-and-images.spec.ts` in this repository, no `CaseStudyPage`
+   * component anywhere in `src/`, and ¶05 is Cadence's station — nothing
+   * numbered in the run has ever carried "index lines". The two links the
+   * last clause promised had never been written at all; `src/run/index.html`
+   * contained no occurrence of the string `system-card` until today. A
+   * comment that records a placement is a claim like any other on this
+   * site, and this one was three-for-three wrong while reading as settled.
+   *
+   * WHY THE RAIL AND NOT THE MANIFEST. The manifest is an instrument — it
+   * ticks stations off as the reader reaches them and duplicates into the
+   * gatecard at ¶12 — so a citation placed inside it would have to be six
+   * or none. The rail is where every other station already cites outward
+   * (`source ↗ · live build ↗`), which is where a reader who has just read
+   * about jetpack actually is.
    */
   systemCardUrl?: string;
   /** Project image path */
