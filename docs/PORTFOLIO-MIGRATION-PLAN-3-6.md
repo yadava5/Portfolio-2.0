@@ -2551,7 +2551,7 @@ prints the original first-read date rather than today, the audit walk restores,
 
 ### 6.5 — Housekeeping. Cheap, and one of them is the front door.
 
-- **Rewrite the README.** It opens with Next.js 16 / React 19 / TypeScript 5 /
+- **[EXECUTED 2026-08-07 — `81595c7`.] Rewrite the README.** It opens with Next.js 16 / React 19 / TypeScript 5 /
   Tailwind 4 / Playwright badges, carries a stack table naming GSAP, Framer
   Motion and Lenis, and tells a reader to run `npm run dev` — a script
   that does not exist, describing a framework that is not installed, for a page
@@ -2560,16 +2560,35 @@ prints the original first-read date rather than today, the audit walk restores,
   minute in this phase.
 - **Wire or retire the nameplate's "machines withheld" guard (C46).** It
   promises that a renamed author gets the plate without the machines, imports
-  `personalInfo` for it, and never checks; `MACHINE` is dead beside it. **Closes
-  C44 for free** — that unused import is why `personal.js` and `basePath.js`
-  (10.4 KB nobody fetches) still ship.
-- **Update `docs/PROJECT-LEDGER.md`**, and carry into it the two standing
+  `personalInfo` for it, and never checks; `MACHINE` is dead beside it.
+  > **[EXECUTED 2026-08-07 — `b543772`.] WIRED, AT BUILD TIME, BECAUSE IT
+  > CANNOT BE WIRED AT RUNTIME — and this bullet's C44 mechanism was wrong.**
+  > The one-line comparison in `performEnsemble` typechecks, compiles, and
+  > takes the nameplate off the page: TS had been ELIDING the unused import, so
+  > nothing loaded `personal.js`; using the value retains it, `personal.ts`
+  > imports `withBasePath`, `basePath.ts` reads `process.env`, and the browser
+  > throws `ReferenceError: process is not defined`. Four `check-nameplate`
+  > invariants red at once. The check now lives in `build-nameplate.mjs`, where
+  > Node has `process`, reads both names as text and fails the build with an
+  > instruction. Proven by renaming the author and building at a throwaway
+  > `--out`.
+  > **C44 IS CLOSED, but "that unused import is why they ship" is false.**
+  > Measured: removing the import changed nothing. `tsconfig.run.json` named
+  > `src/lib/data/personal.ts` as a compile **ROOT**. Both are gone now and
+  > `out/run/` holds three files instead of five. The "nobody fetches" half was
+  > correct — precisely *because* the import was elided.
+  > **Left deliberately:** `MACHINE` is still unread and still warns; deleting
+  > it is a separate judgement about whether that mapping is worth keeping as
+  > prose.
+- **[EXECUTED 2026-08-07 — `3fb662b`.] Update `docs/PROJECT-LEDGER.md`**, and carry into it the two standing
   obligations this migration created: the palette `measured:` grammar (any
   colour change must update its recomputed claim or the gate reds) and the
   figure-label rule (measure with `getComputedTextLength()`; **the old ~7.25/6.6
   per-char constant was ~10% short** and is amended in `FIGURES.md`).
 - **Rule on `docs/design-lab/`** — ~2 MB of committed telemetry and sixty
   one-off probes, already ESLint-ignored. One ruling now that the tree is small.
+  **[OPEN — OWNER. The only §6.5 item not executed, because it is a ruling and
+  not a task.]**
 
 ---
 
