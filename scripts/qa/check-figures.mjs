@@ -491,8 +491,34 @@ const FIGURES = [
     [
       "appliedFig",
       "fig. 04",
-      ["defers at the clay gate"],
-      "the deferral IS the clay moment — rule 5",
+      [
+        /* `defers at the clay gate` STOOD HERE and is deliberately retired.
+           It described a fourth bucket the machine does not have: measured at
+           the pinned sha, `needs_review` is a bool on a ClassificationResult
+           that STILL CARRIES ITS CATEGORY (hybrid.py:115, `CONFIDENCE_AUTO =
+           0.85`), so filing it as a destination drew a flag as a place. The
+           clay moment did not go away — it moved to the hold, below. */
+        "leaves at the first desk that clears it",
+        /* The architecture the old plate stated backwards. hybrid.py:248
+           returns the moment the rules layer is at 0.90 or better;
+           embeddings and SetFit are never imported. Marching every mark
+           through all three columns in series says the opposite of the
+           station's whole argument. */
+        "which desk takes which verdict is drawn, not measured",
+        /* THE DISCLOSURE, and the most important string in this list. The
+           plate assigns a verdict to a desk — offer to the regexes,
+           pending_application to SetFit — and NOTHING owns that mapping: the
+           one committed evaluation runs `hybrid_profile: deterministic`,
+           which disables SetFit, so in the only record that exists the third
+           desk settled nothing at all. A redraw that keeps the routing and
+           drops this sentence turns a drawing into a measurement. */
+        "held below in a clay ring for a person to settle",
+        "still filed under its category and only flagged",
+        /* Receipt 09's fact: on the serverless path it returns after layer 1
+           even when the rules were unsure. */
+        "only the rules desk runs",
+      ],
+      "the cascade, the hold that is not a bucket, and the routing the plate says out loud it did not measure",
     ],
     ["net", "fig. 06", ["784-100-10"], "the structure the drawing is of"],
     [

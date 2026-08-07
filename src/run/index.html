@@ -343,18 +343,49 @@
   .figsvg .gatecol{stroke:var(--hair-strong)}
   .figsvg .gsq{fill:var(--clay-g)}
   .figsvg .mk{fill:none; stroke:var(--ink); stroke-width:1.2}
-  .figsvg .mk.sorted-ok{stroke:var(--pine)}
-  .figsvg .mk.sorted-rv{stroke:var(--clay-g)}
+  /* fig. 04's piece of mail: ink while it is still in the machine, pine the
+     moment the desk that settled it lets it go. The flap follows the body, so
+     the state sits on the GROUP and the scrub never writes a stroke by hand —
+     the old code set .mk's class and the flap's stroke attribute separately,
+     which is two places for one fact and unreachable from a stylesheet. */
+  .figsvg .mkflap{fill:none; stroke:var(--ink); stroke-width:.9}
+  /* a reading desk is the SUBJECT of fig. 04, not its plumbing, so it takes
+     ink at 1.4 against the belt's hair at 1 — fig. 03's weight pair. Drawn as
+     two walls the belt runs between, because a desk is something a piece
+     passes THROUGH; the clay square is reserved for a thing being judged. */
+  .figsvg .desk{fill:none; stroke:var(--ink); stroke-width:1.4}
+  .figsvg .mkg.settled .mk, .figsvg .mkg.settled .mkflap{stroke:var(--pine)}
+  /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
+     fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
+     nothing here is a partial alpha the palette gate cannot see. */
+  .figsvg .holdring{fill:none; stroke:var(--clay-g); stroke-width:1.4; opacity:0}
+  .figsvg .mkg.held .holdring{opacity:1}
   .figsvg .flow{fill:var(--ink)}
   .figsvg .edge{stroke:var(--ink); fill:none}
   .figsvg .stitch{fill:none; stroke:var(--pine); stroke-width:1.4}
 
-  /* pointer tracing: hovering a bucket / lane label follows its cargo.
+  /* pointer tracing: hovering a desk / lane label follows its cargo.
      stroke-opacity, not opacity — the scrub owns the opacity attribute
      and a stylesheet rule would resurrect marks it has hidden */
-  #appliedFig .bklab, #jetFig .jlab{cursor:default}
-  #appliedFig.tracing g.mkg:not(.hot), #jetFig.tracing g.blk:not(.hot){stroke-opacity:.28}
-  #appliedFig .bklab:hover, #jetFig .jlab:hover{fill:var(--ink)}
+  #appliedFig .desklab, #jetFig .jlab{cursor:default}
+  #jetFig.tracing g.blk:not(.hot){stroke-opacity:.28}
+  /* fig. 04 receded on that same .28 until this redraw, and it was the fig. 09
+     defect again: MEASURED on the day field #f2e4c9, stroke-opacity .28
+     composites --ink to #b9ae99 — 1.75:1 — and a pine-settled piece to
+     1.51:1, both far under the 3:1 non-text floor, and both invisible to
+     check-palette, which composites TOKEN alpha only. The recede is a token
+     and a weight now: --ink-2 is 5.79:1 on that field and the drop from 1.2
+     to .8 carries the rest. fig. 07 keeps .28 for now — it is not this
+     figure's to change, but it is the same 1.75:1. */
+  #appliedFig.tracing g.mkg:not(.hot) .mk,
+  #appliedFig.tracing g.mkg:not(.hot) .mkflap{stroke:var(--ink-2); stroke-width:.8}
+  #appliedFig.tracing g.mkg:not(.hot) .holdring{stroke:var(--ink-2); stroke-width:.9}
+  /* the headings recede too, and the inverse of jet's rule: fig. 04's desk
+     names are already .lit, so `:hover{fill:var(--ink)}` was inert on them —
+     the state has to be carried by what is NOT hovered. --ink-2 is 5.79:1 /
+     Lc 70.1 on the day field, over the Lc 60 dim floor. */
+  #appliedFig.tracing text.desklab:not(:hover){fill:var(--ink-2)}
+  #jetFig .jlab:hover{fill:var(--ink)}
   #amlFig text.tname:hover{fill:var(--ink); cursor:default}
   #amlFig .tdot.hot{stroke:var(--ink)}
   @media (hover:none){ .hoverinv{display:none} } /* no dead invitations on touch */
@@ -1623,8 +1654,8 @@ h1[data-np-measuring] .np-ch {
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://yadava5.github.io/Portfolio-2.0/projects/jobtracker/">the case file ⟶</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://getapplied.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Eight message marks travel from an inbox through three classifier gates into four labelled buckets; one defers at the clay gate to needs-review."></svg>
-        <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>the clay gate is where the model defers to review<span class="hoverinv"> — hover a bucket to trace its mail</span>.</i></figcaption>
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="img" aria-label="Eight pieces of the morning post ride one belt past three reading desks — 201 regex rules, which settles anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all — it rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring for a person to settle, still filed under its category and only flagged. On the hosted build only the rules desk runs."></svg>
+        <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>a piece leaves at the first desk that clears it; the eighth clears nothing<span class="hoverinv"> — hover a desk to see what it settled</span>.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -2787,13 +2818,90 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
    Wide: inbox ⟶ three gate columns ⟶ the bucket shelf. Tight (240):
    the same sort turned vertical — the mail FALLS through three gate
    rules into a 2×2 shelf. Same plan, same verdicts, larger type. */
-const applied = { marks: [], svg: $("appliedFig") };
-/* marks: [entry offset, gate wobble, bucket index, class after gate] */
-const APPLIED_PLAN = [
-  [58, 0, 0, "sorted-ok"], [86, 1, 1, "sorted-ok"], [114, 0, 0, "sorted-ok"],
-  [142, 2, 2, ""], [170, 1, 0, "sorted-ok"], [198, 0, 2, ""],
-  [226, 2, 3, "sorted-rv"], [240, 1, 1, "sorted-ok"],
+/* ————— fig. 04 · the sorting line — a cascade, and what it hands back —————
+   The shipping plate marched all eight marks through three gate columns in
+   series and dropped them into four buckets. Both halves misstated the
+   machine, and the station's own prose says so if you read them together.
+
+   1 IT IS A CASCADE, NOT A PIPELINE. `classifier/hybrid.py` returns the
+     moment the rules layer is at 0.90 or better — the embeddings and SetFit
+     are not merely skipped, they are never imported — so a piece that
+     crosses all three gates is the exception the plate should be able to
+     point at, not the default it drew eight times.
+   2 `needs-review` IS NOT A CLASS. It is a boolean on a result that still
+     carries a category (`ClassificationResult.needs_review`, true under
+     CONFIDENCE_AUTO = 0.85). Drawing it as a fourth bucket filed a flag as
+     a destination. And the eval's own confusion matrix has EIGHT verdict
+     keys — applied · assessment · follow_up · interview · offer · other ·
+     pending_application · rejection — against the four the plate drew,
+     while the prose beside it has always said eight classes.
+
+   So: one belt, three reading desks, and a piece leaves at the first desk
+   whose bar it clears — which is the whole architecture in one sentence and
+   was the one thing the old drawing could not say.
+
+   ONE PIECE PER VERDICT IS THE HONEST NUMBER, and the disclaimer under it is
+   about the MAPPING, not the rate. An uneven fan would state a routing rate
+   nothing on this machine has measured; a uniform one cannot, and the eval's
+   support genuinely is twelve apiece — so the rate was never the exposure.
+   What IS unmeasured is which desk takes which verdict: nothing found says
+   `offer` is settled by a regex and `pending_application` by SetFit. The one
+   committed evaluation is sharper than merely silent on it — hybrid_eval's
+   `hybrid_profile: deterministic` DISABLES SetFit, so in the only record
+   that exists the third desk settled nothing at all. The footer and the
+   aria-label both disclaim the mapping, in those words, because a mapping
+   disclaimer subsumes a rate one and the reverse is not true. The first cut
+   of this plate disclaimed only the rate, which left its one real assertion
+   uncovered.
+
+   THE CLAY MOMENT IS THE HOLD, and it is no longer a gate. The eighth piece
+   rides the whole belt, clears nothing, keeps the rules' own first guess —
+   which is literally what the fall-through at the end of `classify()`
+   returns — and comes to rest under "held for you" wearing fig. 08's clay
+   ring, this run's mark for a deliberate hold rather than a fall. One ring
+   is the plate's only clay: rule 5, kept.
+
+   NOTHING HERE IS A GAUGE. Two things move: a piece along its own polyline,
+   and a verdict being written when its piece lands — opacity 0 or 1, never a
+   fade. Both are marks being made, which misstate no magnitude. The three
+   bars are authored at their committed values and are never approached from
+   below, and no count on this plate changes with the scroll.
+
+   EVERY PIECE MOVES AT ONE SPEED. Each mark's window is its own path length
+   over the longest, and its polyline is walked by ARC length, not by segment
+   count. A belt has one speed, and the ratio is the subject: the four the
+   rules settle snap off inside the first tenth of the figure's window, the
+   SetFit piece takes four times as long, the held one takes the whole belt.
+   The old scheme gave every mark the same 0.42 window over a different path,
+   which on a cascade would have had the near pieces crawling while the far
+   one sprinted — and would have let them overtake on a shared road.
+
+   Labels budgeted at 8.012 units/char wide and 7.125 tight, measured with
+   getComputedTextLength() rather than the ~7.25/6.6 this file used to carry.
+   `pending_application` is the constraint in both editions — 152.2 units
+   wide, 135.4 of 240 tight — and both plates are laid out around it rather
+   than discovering it. Wide 560×392 at 12px; the width and the 515 seat are
+   untouched, so 12 × 515 ÷ 560 = 11.04px exactly as it ships. Tight
+   240×578 at 11px. */
+const applied = { marks: [], svg: $("appliedFig"), maxLen: 1 };
+/* the three desks and the bar each one settles at, read off hybrid.py:
+   `rules_result.confidence >= 0.90`, then `emb_confidence >= 0.85 and not
+   has_negative_signals`, then CONFIDENCE_MIN_CLASSIFICATION = 0.70 */
+const APPLIED_DESKS = [
+  ["201 regex rules", "settles 0.90 and up", ""],
+  ["e5 similarity", "settles 0.85 and up", "unless a rule says no"],
+  ["gated setfit", "settles 0.70 and up", ""],
 ];
+/* [the desk that settles it, the verdict key it lands under]. Desk 3 is no
+   desk at all — it is the hold. Order is ENTRY order, so the piece that goes
+   furthest also enters last and lands last, which is the plate's last beat. */
+const APPLIED_PLAN = [
+  [0, "applied"], [0, "rejection"], [0, "interview"], [0, "offer"],
+  [1, "assessment"], [1, "other"],
+  [2, "pending_application"],
+  [3, "follow_up"],
+];
+const APPLIED_START = 0.2, APPLIED_SPAN = 0.46;
 function svgIn(s) {
   const NS = "http://www.w3.org/2000/svg";
   return (t, a, parent) => { const e = document.createElementNS(NS, t);
@@ -2816,82 +2924,187 @@ function buildApplied(tight) {
   const s = applied.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
   applied.marks = [];
-  const bklabs = [];
+  const desklabs = [];
+  /* a rule that breaks wherever a label seats on it — fig. 03's device, and
+     the reason no word on this plate is set over a line */
+  const hrule = (y, x0, x1, gaps) => {
+    let d = "", cur = x0;
+    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${cur} ${y} H ${a} `; cur = b; }
+    if (x1 > cur) d += `M ${cur} ${y} H ${x1}`;
+    el("path", { d: d.trim(), class: "lane" });
+  };
+  /* one piece of the morning post: the envelope, the verdict it will be
+     filed under, and — for the one nothing settles — the clay ring. Every
+     part is authored at its final place; the scroll moves the group and
+     turns two things on, and `clearAt` is the vertex where this piece's own
+     desk let it go, so the verdict takes at a fraction that is its own. */
+  const piece = (i, k, verdict, line, clearAt, vx, vy) => {
+    const g = el("g", { class: "mkg" });
+    el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "mk" }, g);
+    el("path", { d: "M -4.5 -3.2 L 0 .6 L 4.5 -3.2", class: "mkflap" }, g);
+    if (k === 3) el("circle", { r: 8, class: "holdring" }, g);
+    const vlab = el("text", { x: vx, y: vy, class: "lit", opacity: 0 });
+    vlab.textContent = verdict;
+    const cum = [0];
+    for (let j = 1; j < line.length; j++)
+      cum.push(cum[j - 1] + Math.hypot(line[j][0] - line[j - 1][0], line[j][1] - line[j - 1][1]));
+    const len = cum[cum.length - 1];
+    applied.marks.push({ g, vlab, line, cum, len, k, delay: i * 0.035,
+      settledT: cum[clearAt] / len, dur: 1 });
+  };
   if (!tight) {
-    s.setAttribute("viewBox", "0 0 560 330");
-    const gates = [[178, "rules"], [288, "e5 similarity"], [398, "gated setfit"]];
-    for (const [x, label] of gates) {
-      el("line", { x1: x, y1: 44, x2: x, y2: 250, class: "lane gatecol" });
-      el("text", { x, y: 268, "text-anchor": "middle" }).textContent = label;
-    }
-    el("rect", { x: 393, y: 140, width: 10, height: 10, class: "gsq" });
-    const buckets = [["applied", 72], ["interview", 122], ["rejected", 172], ["needs-review", 222]];
-    buckets.forEach(([label, y], bi) => {
-      el("path", { d: `M 476 ${y - 14} h 62 v 30 h -62`, class: "lane" });
-      const t = el("text", { x: 540, y: y + 30, "text-anchor": "end", class: "bklab" });
-      t.textContent = label; bklabs.push([t, bi]);
+    s.setAttribute("viewBox", "0 0 560 392");
+    /* the columns are sized off the longest label each one has to hold:
+       `settles 0.90 and up` is 152.2 from x 8, `unless a rule says no` 168.3
+       from x 190, and `pending_application` 152.2 from x 388 — which ends at
+       540.2, clear of the line the held piece rides down at 552.
+
+       The first cut of this plate ran that overflow line as DRAWN structure
+       from the belt's end down the right margin and back along the held
+       band's rule. Rendered, the belt and those two legs closed into a
+       rectangle around all three columns: a frame containing a list, which is
+       the opposite of a machine. Nothing else on this plate draws a path, so
+       neither does the overflow. What the belt gets instead is a chute per
+       desk — the short elbow the settled pieces visibly fall through — and
+       the room that frame was wasting goes to the chutes. */
+    const CX = [8, 190, 372], RX = [42, 224, 406], BY = 130, END = 552, RY = 284;
+    el("text", { x: 8, y: 26, class: "lit" }).textContent = "the morning post";
+    el("text", { x: 552, y: 26, "text-anchor": "end" }).textContent = "the local cascade";
+    hrule(36, 8, 552);
+    /* the belt, ending in the same 38-unit turn its three chutes take — the
+       overflow leaves the machine by it, and it stops there rather than
+       running on to the band, which is what closed the plate into a frame */
+    el("path", { d: `M 12 ${BY} H ${END} V 168`, class: "lane" });
+    el("path", { d: `M 12 ${BY - 8} V ${BY + 8}`, class: "lane" }); /* the feed stop */
+    APPLIED_DESKS.forEach(([name, bar, note], k) => {
+      /* the break is the width of the belt and no wider: at eight units the
+         two walls rendered as four loose ticks instead of one doorway */
+      for (const w of [RX[k] - 11, RX[k] + 11])
+        el("path", { d: `M ${w} 112 V 128 M ${w} 132 V 148`, class: "desk" });
+      el("path", { d: `M ${RX[k]} 148 V 158 H ${CX[k] + 4} V 168`, class: "lane" }); /* its chute */
+      const t = el("text", { x: CX[k], y: 70, class: "lit desklab" });
+      t.textContent = name; desklabs.push([t, k]);
+      el("text", { x: CX[k], y: 86 }).textContent = bar;
+      if (note) el("text", { x: CX[k], y: 102 }).textContent = note;
     });
-    el("text", { x: 18, y: 268 }).textContent = "inbox";
-    APPLIED_PLAN.forEach(([y0, wob, bi, cls], i) => {
-      const by = buckets[bi][1];
-      const line = [
-        [-26, y0], [140, y0 + wob * 8 - 8], [178, y0 * 0.4 + 70 + wob * 10],
-        [288, y0 * 0.3 + 90 + wob * 12], [398, 145 + (bi - 1.5) * 12],
-        [452, by], [486 + (i % 3) * 14, by],
-      ];
-      const g = el("g", { class: "mkg" });
-      const rect = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "mk" }, g);
-      const flap = el("path", { d: "M -4.5 -3.2 L 0 .6 L 4.5 -3.2", fill: "none", stroke: "var(--ink)", "stroke-width": .9, class: "mkflap" }, g);
-      applied.marks.push({ g, line, cls, bi, delay: i * 0.045, rect, flap });
+    const hl = el("text", { x: 8, y: 288, class: "lit desklab" });
+    hl.textContent = "held for you"; desklabs.push([hl, 3]);
+    hrule(RY, 112, END);
+    el("text", { x: 8, y: 316 }).textContent =
+      "nothing reached 0.85 — it keeps the rules’ own guess";
+    /* the case file's claim 09, kept on the plate: the serverless path
+       returns after layer 1 even when the rules were unsure */
+    el("text", { x: 8, y: 344 }).textContent = "the hosted build runs the rules alone";
+    el("text", { x: 8, y: 362 }).textContent =
+      "which desk takes which verdict is drawn, not measured";
+    el("text", { x: 8, y: 380 }).textContent =
+      "the three bars read off applied’s classifier/hybrid.py";
+    const slot = [0, 0, 0];
+    APPLIED_PLAN.forEach(([k, verdict], i) => {
+      if (k === 3) {
+        /* past every desk, off the end, and back along the band to rest */
+        piece(i, k, verdict,
+          [[-40, BY], [RX[2], BY], [END, BY], [END, RY], [462, RY], [462, 312]],
+          1, 478, 316);
+        return;
+      }
+      const y = 176 + slot[k]++ * 26;
+      piece(i, k, verdict,
+        [[-40, BY], [RX[k], BY], [RX[k], 158], [CX[k] + 4, 158], [CX[k] + 4, y - 4]],
+        1, CX[k] + 16, y);
     });
   } else {
-    s.setAttribute("viewBox", "0 0 240 330");
-    el("text", { x: 8, y: 16 }).textContent = "inbox";
-    const gates = [[64, "rules"], [118, "e5 similarity"], [172, "gated setfit"]];
-    for (const [y, label] of gates) {
-      el("line", { x1: 8, y1: y, x2: 232, y2: y, class: "lane gatecol" });
-      el("text", { x: 232, y: y - 6, "text-anchor": "end" }).textContent = label;
-    }
-    el("rect", { x: 115, y: 167, width: 10, height: 10, class: "gsq" });
-    const cells = [[8, 216], [128, 216], [8, 272], [128, 272]];
-    const names = ["applied", "interview", "rejected", "needs-review"];
-    cells.forEach(([x, y], bi) => {
-      el("path", { d: `M ${x} ${y} v 40 h 104 v -40`, class: "lane" });
-      const t = el("text", { x: x + 6, y: y + 34, class: "bklab" });
-      t.textContent = names[bi]; bklabs.push([t, bi]);
+    /* the tight line: the same machine stood on end, with the belt down the
+       left the way fig. 03's tight road runs, so every label has the full
+       240 to itself. Measured at 11 + .03em, the constraint is
+       `pending_application` — 135.4 units from x 72, ending at 207.4. */
+    s.setAttribute("viewBox", "0 0 240 612");
+    /* CH is each chute's turn, and it is set BELOW the descender box of the
+       last thing its desk had to say — measured by walking the scrub in a
+       browser, not eyeballed. At the first pair of values the pieces crossed
+       "settles 0.90 and up" and "settles 0.70 and up" on their way out of the
+       chute, which is precisely the collision §4b reported on this plate. */
+    const BX = 26, DY = [78, 226, 348], CH = [128, 292, 398], HY = 476;
+    const ROWS = [[140, 160, 180, 200], [308, 328], [412]];
+    el("text", { x: 8, y: 14, class: "lit" }).textContent = "the morning post";
+    hrule(22, 8, 232);
+    el("text", { x: 8, y: 38 }).textContent = "the local cascade";
+    el("path", { d: `M 12 56 H ${BX} V ${HY}`, class: "lane" });
+    APPLIED_DESKS.forEach(([name, bar, note], k) => {
+      for (const wy of [DY[k], DY[k] + 22])
+        el("path", { d: `M 12 ${wy} H 23 M 29 ${wy} H 40`, class: "desk" });
+      /* the chute clears whatever the desk had to say first — the one desk
+         with a third line gets a longer one rather than a crossed label */
+      el("path", { d: `M ${BX} ${DY[k] + 22} V ${CH[k]} H 58 V ${CH[k] + 6}`, class: "lane" });
+      const t = el("text", { x: 46, y: DY[k] + 15, class: "lit desklab" });
+      t.textContent = name; desklabs.push([t, k]);
+      el("text", { x: 46, y: DY[k] + 36 }).textContent = bar;
+      if (note) el("text", { x: 46, y: DY[k] + 50 }).textContent = note;
     });
-    APPLIED_PLAN.forEach(([y0, wob, bi, cls], i) => {
-      const x0 = 26 + ((y0 - 58) / 182) * 186; /* spread the entries across */
-      const [cx, cy] = cells[bi];
-      const line = [
-        [x0, -18], [x0 * 0.7 + 36 + wob * 10, 64], [x0 * 0.5 + 58 + wob * 12, 118],
-        [116 + (bi - 1.5) * 10, 172], [cx + 20 + (i % 3) * 26, cy + 22],
-      ];
-      const g = el("g", { class: "mkg" });
-      const rect = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "mk" }, g);
-      const flap = el("path", { d: "M -4.5 -3.2 L 0 .6 L 4.5 -3.2", fill: "none", stroke: "var(--ink)", "stroke-width": .9, class: "mkflap" }, g);
-      applied.marks.push({ g, line, cls, bi, delay: i * 0.045, rect, flap });
+    const hl = el("text", { x: 46, y: 448, class: "lit desklab" });
+    hl.textContent = "held for you"; desklabs.push([hl, 3]);
+    hrule(444, 8, 232, [[42, 138]]);
+    el("text", { x: 8, y: 508 }).textContent = "nothing reached 0.85 — it";
+    el("text", { x: 8, y: 524 }).textContent = "keeps the rules’ own guess";
+    el("text", { x: 8, y: 552 }).textContent = "hosted build — the rules alone";
+    el("text", { x: 8, y: 570 }).textContent = "which desk takes which";
+    el("text", { x: 8, y: 584 }).textContent = "verdict is drawn, not measured";
+    el("text", { x: 8, y: 602 }).textContent = "read off classifier/hybrid.py";
+    const slot = [0, 0, 0];
+    APPLIED_PLAN.forEach(([k, verdict], i) => {
+      if (k === 3) {
+        piece(i, k, verdict,
+          [[-20, 56], [BX, 56], [BX, DY[2] + 22], [BX, HY], [58, HY]], 2, 72, HY + 4);
+        return;
+      }
+      const y = ROWS[k][slot[k]++];
+      piece(i, k, verdict,
+        [[-20, 56], [BX, 56], [BX, DY[k] + 22], [BX, CH[k]], [58, CH[k]], [58, y - 4]],
+        2, 72, y);
     });
   }
-  /* the verdict takes hold as a mark clears the setfit gate — a
-     different fraction of each edition's polyline */
-  applied.pastT = tight ? 0.76 : 0.68;
-  traceOn(s, bklabs, applied.marks, "bi");
+  /* one speed for the whole belt: the longest path gets the full window and
+     every other piece gets the fraction of it that its own path is */
+  applied.maxLen = Math.max(...applied.marks.map((m) => m.len));
+  for (const m of applied.marks) m.dur = APPLIED_SPAN * (m.len / applied.maxLen);
+  traceOn(s, desklabs, applied.marks, "k");
 }
 function polyAt(line, t) {
   /* piecewise-linear position along a polyline, t 0..1 by segment count */
   const n = line.length - 1, ft = clamp(t, 0, 1) * n, i = Math.min(n - 1, Math.floor(ft)), u = ft - i;
   return [lerp(line[i][0], line[i + 1][0], u), lerp(line[i][1], line[i + 1][1], u)];
 }
+/* fig. 04 walks its polylines by ARC length, not by `polyAt`'s segment count.
+   `polyAt` divides t evenly across segments, which is right for figs. 03 and
+   07 — their records run one road at a whole-path pace — but on this plate a
+   held piece's four legs are 446, 146, 162 and 90 units long, and an even
+   share would have it crawl the short ones and bolt the long one. */
+function polyAtLen(line, cum, t) {
+  const total = cum[cum.length - 1], d = clamp(t, 0, 1) * total;
+  let i = 1;
+  while (i < cum.length - 1 && cum[i] < d) i++;
+  const seg = cum[i] - cum[i - 1] || 1, u = (d - cum[i - 1]) / seg;
+  return [lerp(line[i - 1][0], line[i][0], u), lerp(line[i - 1][1], line[i][1], u)];
+}
 function scrubApplied(p) {
   for (const m of applied.marks) {
-    const t = smooth((p - 0.22 - m.delay) / 0.42);
-    const [x, y] = polyAt(m.line, t);
+    const t = smooth((p - APPLIED_START - m.delay) / m.dur);
+    const [x, y] = polyAtLen(m.line, m.cum, t);
     m.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
     m.g.setAttribute("opacity", t <= 0 ? 0 : 1);
-    const past = t > applied.pastT; /* past the setfit gate: the verdict takes */
-    m.rect.setAttribute("class", past ? `mk ${m.cls}` : "mk");
-    m.flap.setAttribute("stroke", past && m.cls === "sorted-ok" ? "var(--pine)" : past && m.cls === "sorted-rv" ? "var(--clay-g)" : "var(--ink)");
+    /* the verdict takes as the piece clears the desk that judged it — its own
+       fraction of its own path, because in a cascade no two pieces leave at
+       the same place. classList, never className: `.hot` belongs to the
+       pointer and a whole-attribute write would erase it mid-hover. */
+    const cleared = t >= m.settledT;
+    if (m._cleared !== cleared) {
+      m._cleared = cleared;
+      m.g.classList.toggle(m.k === 3 ? "held" : "settled", cleared);
+    }
+    /* the name is written when the piece lands — 0 or 1, never a fade. A mark
+       being made claims no magnitude; a name arriving over time would. */
+    const landed = t >= 1 ? 1 : 0;
+    if (m._landed !== landed) { m._landed = landed; m.vlab.setAttribute("opacity", landed); }
   }
 }
 
