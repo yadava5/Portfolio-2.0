@@ -1211,7 +1211,68 @@ made `personal.ts` stop dragging `utils.ts` in (C14).
 > | 5 | **figs. 07, 08** | the `1f 8b` lettering and visibly narrowing blocks; the heavier pencil dash and the climber's ring as the only clay. **§4b marks the fig. 08 spec as prior art the redesign may supersede** — it was written as a floor fix |
 > | 6 | **fig. 10** | three gate squares on a short rail. New drawing at 22:23, so it inherits the night-contrast rule — ~~which is now a gate rather than an instruction~~ **which for THIS figure is still an instruction: `check-palette` scopes its figure scan to `.figsvg` and fig. 10's drawing will be styled under `#gatesFig`. See §4b item 4** |
 
-## 4b. Phase 5.4 — the six figures, re-planned. **[OWNER RULING, 2026-08-06 evening]**
+## 4b. Phase 5.4 — the six figures, re-planned. **[EXECUTED — GREEN, 2026-08-07]**
+
+> **THE REDRAW QUEUE IS DISCHARGED.** Commit zero plus six figures, thirteen
+> commits (each figure's `commit`-field correction in its own commit — C32,
+> six more times). `verify:portfolio` green at 20 steps, 270 browser tests,
+> reduced-motion 20 passed. Nothing pushed.
+>
+> | | outcome |
+> |---|---|
+> | commit zero | `--hair-strong` NIGHT `.4` → `.45`. **The run declares a night palette TWICE** — `:root[data-night]` and again inside `@media (prefers-reduced-motion: reduce)` — and `check-palette` read only the first, so raising one and not the other would have left reduced-motion readers on the old hairline with the gate green. The gate now reads both and asserts the hairs are equal |
+> | fig. 09 | the supervisor→tools→notebook loop drawn instead of asserted in a caption; the docker sandbox drawn as a frame the tools' stem alone crosses; the bead stands SHORT of a boom still down, where the clay ring used to cover its own subject |
+> | fig. 03 | the compliance meter **stands settled at 97%** — it filled 0→97% under scroll inside a scale reading `0% ⟶ 97%`, the class §5.5 condemned. Labels earned their room; no key. The three products carry their dispositions |
+> | fig. 04 | it drew a pipeline; the machine is a **cascade** (`hybrid.py:248` returns at 0.90 and never imports the rest). `needs_review` was drawn as a fourth bucket and is a **boolean on a result that still carries its category** |
+> | fig. 07 | the member becomes one object; clay went from seven seam ticks to **one**, on the trailer, as a state change the last landing block triggers |
+> | fig. 08 | the built half gets a body, so the unbuilt half can be an **absence** rather than a fainter line. A heavier dash makes absence louder, not legible |
+> | fig. 10 | resolved. The marks are inked AT their gates on a line that runs on dashed and unsigned past the last one |
+>
+> **Nine defects were found in shipping code that no gate could see**, and they
+> are the argument for the redraw having been design work rather than repair:
+> four sub-floor element alphas invisible to `check-palette` (it composites
+> *token* alpha only) — fig. 09's three `.edge` paths at 2.32:1, fig. 04's and
+> fig. 07's `.tracing` at 1.75:1, fig. 07's member at `.8`; `scrubJet` setting
+> `opacity 0` at `t >= 1`, so **the settled frame had no blocks and a hover the
+> caption advertised did nothing**; fig. 08's third tick, which never drew at
+> any scroll position; fig. 03's record docks colliding on one coordinate so a
+> lane appeared to deliver one record; two tight-edition labels clipped at every
+> phone width shipping; and `const how` calling `.getTotalLength()` at module
+> scope, where one missing mark would have thrown at top level and **every
+> function defined below it — `settleAll` included — would never have existed.**
+>
+> **Three things this phase learned that outlive it**, recorded here because
+> each was believed and wrong:
+> 1. **FIGURES.md rule 3's label constant was ~10% short** — measured 8.012
+>    units/char wide and 7.125 tight, not 7.25/6.6 — and its per-glyph half was
+>    wrong the other way: `×`, `—`, `’`, `·` are one advance, only `⟶` is wide
+>    (1.67). Amended in FIGURES.md; the method is now `getComputedTextLength()`.
+> 2. **§4b's viewing width of 514px is the wrong width.** The seat is the SVG
+>    parent's inner width, not the viewport: the 515-seat figures are still on
+>    the TIGHT plate at a 560px viewport (seat 486) and go wide at 768 (seat
+>    606). **The dangerous width is 1250**, where the two-column band drops the
+>    seat to 531 — the narrowest wide seat on the site, 11.4px.
+> 3. **§4b's RULE 5 amendment says the pencil register is `--hair`. It must not
+>    be**: `--hair` composites to **1.66:1** on the night grounds and **1.36:1**
+>    on the day fields. fig. 08's pencil half, which §4b names as the model, is
+>    actually `--ink-2` at 1.2 with a dash — which is why it measures fine.
+>
+> **TWO THINGS LEFT OPEN, both needing an owner ruling and neither touched:**
+> - **`--hair-strong` measures 2.005–2.051:1 on the five DAY fields**, under the
+>   3.0 non-text floor, and every figure draws its structure in it. The night
+>   side was tuned to exactly 3.0 and commit zero took it to 3.40; the day side
+>   has **never been measured by anything**, because `check-palette` scopes the
+>   figure-stroke scan to the two night grounds. If the floor applies to figure
+>   hairlines at night it applies by day. Raising the day alpha restyles every
+>   plate on the site, so it is a ruling, not a fix.
+> - **A live (non-reduced-motion) hash arrival at `/#review` leaves the third
+>   reviewer's mark part-inked** until the reader scrolls a few pixels —
+>   measured at 12.18px now and **8.12px at HEAD before the redraw, so it is
+>   pre-existing and unchanged in character**, not a regression. §4b says
+>   `settleAll()` is what a hash arrival gets; on the live path the scroll-driven
+>   scrub evidently has the last word. Reduced motion is clean (`0,0,0`).
+
+## 4b (as planned). Phase 5.4 — the six figures. **[OWNER RULING, 2026-08-06 evening]**
 
 ### The ruling, in the owner's own words
 

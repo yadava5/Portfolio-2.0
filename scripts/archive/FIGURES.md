@@ -20,12 +20,31 @@ defect measured in the run's own figures.
    the tight 240-unit plate, so the archive authors ONE edition and
    caps it at the run's 330px tight cap — 11.4–15.1px rendered at every
    viewport. This was checked before drawing, not after.
-3. **Budget every label against its line before drawing it.** Fragment
-   Mono runs ~6.6 units/char at 11 units; `⟶` and `×` budget as two.
+3. **Budget every label against its line before drawing it.** ~~Fragment
+   Mono runs ~6.6 units/char at 11 units; `⟶` and `×` budget as two.~~
    Two labels in the first cut of the visual-assist plate clipped at
    the frame because this was estimated instead of counted. Anything
    that does not fit moves to the figcaption or a numbered key — it is
    never shrunk.
+   > **AMENDED 2026-08-06 — THE CONSTANT WAS WRONG AND FOUR FIGURES WERE
+   > DRAWN AGAINST IT.** Measured with `getComputedTextLength()` on real
+   > nodes in both editions, not estimated: **8.012 units/char** in the
+   > wide edition (12px + `letter-spacing:.05em`) and **7.125** tight
+   > (11px + `.03em`). The old figures are the bare glyph advance with
+   > letter-spacing omitted, so **every label budget on this site was
+   > running ~10% short** — that is how `sqlite · 57.8m rows` was authored
+   > to end 4 units inside its box and ended 4 units outside it.
+   >
+   > The per-glyph half was wrong in the other direction: `×`, `—`, `’`
+   > and `·` are **one** advance each in this mono face, not two. Only
+   > `⟶` is wide — **13.355 units wide / 12.018 tight, about 1.67**.
+   >
+   > **The method is now the rule: measure with `getComputedTextLength()`,
+   > do not budget per character.** The §4b redraw checks it directly —
+   > `getBBox()` over every `<text>` in every drawing at twelve widths —
+   > which is the only reading that covers the tight editions at all,
+   > since their viewBox is written at run time and no gate can read it.
+   > The floor law above is unchanged and still stands.
 4. **Anchor annotations to cells, not coordinates.** The Cadence plate
    seats its event chip IN the tuesday grid cell; nothing can cover
    wednesday. Absolute-positioned chips over a grid are how the run's
@@ -122,6 +141,26 @@ defect measured in the run's own figures.
   > **Rule 5 also bites wrong here unless read with its amendment**: the
   > two refusal marks are ALREADY clay (`.grow.refused .gmark`), and
   > refused-twice is the recorded fact. See §4b's RULE 5, AMENDED.
+  >
+  > **RESOLVED 2026-08-06. It is no longer unresolved and this entry's
+  > diagnosis above is now history rather than a description.** The plate
+  > has geometry: one line runs down the register, each gate stands ON it
+  > as a small frame inside its own row, the row's mark is inked INSIDE
+  > that frame, and below the third gate the line runs on dashed under a
+  > label reading `unsigned`. At scrub 0 the three gates stand unstamped —
+  > a resting state three floating glyphs could not have.
+  >
+  > Both §4b constraints held rather than being traded away: the drawing
+  > wears its own class (`gbench`), never `figsvg`, so the six-drawing
+  > assertion is untouched; it is `aria-hidden` on the marks' own
+  > precedent, so no `role="img"` enters the block and the docket's words
+  > stay the accessible content. The frames are `--hair-strong` STRUCTURE
+  > and the marks carry the clay, which is §4b's own answer to "five clay
+  > elements". **`check-palette` now scans `.gbench` alongside `.figsvg`,
+  > so the night-contrast rule is a measurement here and not an
+  > instruction** — narrowly, because scanning all of `#gatesFig` reds at
+  > HEAD on the `--hair` row separators, which are a text plate's rules
+  > and not graphical objects.
 - **fig. 11 (the references)** — a citation card, correctly so. Leave
   it; its restraint is the design.
 
