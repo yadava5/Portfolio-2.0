@@ -59,18 +59,21 @@
 >
 > ---
 >
-> ## STATE AS OF 2026-08-07 — read this paragraph and §5 first
+> ## STATE AS OF 2026-08-07 — read this paragraph, then the section headed `## 5. Phase 6`
 >
 > **PHASE 5 IS COMPLETE. All six remaining figures are redrawn, committed and
-> green** — commit zero plus figs. 09, 03, 04, 07, 08, 10, fifteen commits on
-> `feat/figures-and-benchmarks`. `verify:portfolio` green at 20 steps, 270
-> browser tests, reduced-motion 20 passed. **51 commits on the stack, nothing
-> pushed.** §4b's head note carries the six outcomes, the nine defects the
+> green** — commit zero plus figs. 09, 03, 04, 07, 08, 10; **fourteen commits of
+> code** on `feat/figures-and-benchmarks`. `verify:portfolio` green at 20 steps,
+> 270 browser tests, reduced-motion 20 passed. **52 commits on the stack at the
+> time of writing, nothing pushed.** §4b's head note carries the six outcomes, the nine defects the
 > redraw found that no gate could see, and three things this plan believed that
 > were measured wrong.
 >
-> **THE REMAINING WORK IS TWO PHASES, NOT FOUR** — §5 (fix what is wrong, then
-> make it visible) and §6 (ship it). §5 was re-planned and consolidated on
+> **THE REMAINING WORK IS TWO PHASES, NOT FOUR** — the section headed
+> `## 5. Phase 6` (fix what is wrong, then make it visible) and the one headed
+> `## 6. Phase 7` (ship it). **Mind the numbering trap: `§5.x` throughout this
+> document means PHASE 5's items, which live under `## 4.`** — search the
+> heading text, not the number. §5 was re-planned and consolidated on
 > 2026-08-07 around four owner items: **the rail is carrying the wrong cargo
 > while its gate is green; nothing the owner can see has changed on the case
 > files or the benchmarks, and §6.2 says so plainly; there is no way to preview
@@ -1238,9 +1241,9 @@ made `personal.ts` stop dragging `utils.ts` in (C14).
 
 ## 4b. Phase 5.4 — the six figures, re-planned. **[EXECUTED — GREEN, 2026-08-07]**
 
-> **THE REDRAW QUEUE IS DISCHARGED.** Commit zero plus six figures, thirteen
-> commits (each figure's `commit`-field correction in its own commit — C32,
-> six more times). `verify:portfolio` green at 20 steps, 270 browser tests,
+> **THE REDRAW QUEUE IS DISCHARGED.** Commit zero plus six figures, **fourteen
+> commits** (each figure's `commit`-field correction in its own commit — C32,
+> **seven** times, commit zero included). `verify:portfolio` green at 20 steps, 270 browser tests,
 > reduced-motion 20 passed. Nothing pushed.
 >
 > | | outcome |
@@ -2064,8 +2067,24 @@ works now and would not have worked in §4b:
 
 | lane | owns | never touches |
 |---|---|---|
-| **Fable-RUN** | `src/run/index.html` | `scripts/archive/**` |
-| **Fable-ARCHIVE** | `scripts/archive/**` (`case-figures.mjs`, `render-case-file.mjs`, `assets/archive.css`) | `src/run/index.html` |
+| **Fable-RUN** | `src/run/index.html` | `scripts/archive/**`, everything in the shared row |
+| **Fable-ARCHIVE** | `scripts/archive/**` (`case-figures.mjs`, `render-case-file.mjs`, `assets/archive.css`) | `src/run/index.html`, everything in the shared row |
+| **SHARED — main thread only, never an agent** | `src/lib/data/**` · `scripts/qa/**` · `tests/fixtures/**` · `scripts/qa/portfolio-baseline.json` | — |
+
+**The shared row is not bureaucracy — the two-lane table without it does not
+cover the work.** *(Fable's finding.)* Measured, §4b's redraw touched four
+files: `src/run/index.html`, `check-figures.mjs`, `check-palette.mjs` and
+`portfolio-baseline.json`. **Three of the four are unallocated by a two-column
+table**, so a rule saying "edit sets must be disjoint" would not have covered
+the work that was actually done.
+
+**AND ONE RULE THE TABLE CANNOT EXPRESS: if a task's acceptance criterion lives
+in the other lane's file, it is a ONE-AGENT task.** The lanes are disjoint in
+*edit* set and coupled in *assertion* set — `check-figures.mjs` declares
+`SURFACES.plates = scripts/archive/case-figures.mjs` and also reads
+`src/run/index.html`, and a figure claimed on two surfaces is asserted on both.
+Either agent can red a gate whose other half is the other agent's file. The
+palette is duplicated across the lanes too (§6.3 item 1).
 
 Standing rules, unchanged: **Fable designs, main verifies.** Neither agent runs
 `verify:portfolio`, Playwright, CI or `npm run build` — the main thread runs
@@ -2079,32 +2098,59 @@ pinned sha before it could enter a label.
 on the same file is slower than one, because the second one's work is thrown
 away.
 
-### 6.0 — THE PREVIEW. Do this first; everything else is read through it.
+### 6.0 — THE PREVIEW, and the reason the owner has seen nothing. **Do this first.**
 
-There is no way to look at this site. `npm run build` writes `out/` at the
-deploy `basePath` (`/Portfolio-2.0`), and `tests/playwright/static-server.mjs`
-serves `out/` at the **root** — so opening it locally 404s every asset, and the
-e2e path only works because it rebuilds with an empty basePath first. **The
-owner has been reading a directory, not a site.**
+> **THE FIRST DRAFT OF THIS ITEM WAS WRONG ABOUT THE MECHANISM AND WOULD HAVE
+> FIXED THE WRONG THING.** *(Fable's cross-check, verified by measurement.)* It
+> said the build writes basePath-prefixed local paths that 404 outside
+> production. Measured in the shipped artifact: **`out/index.html` contains 24
+> occurrences of `/Portfolio-2.0` and ALL 24 are inside absolute
+> `https://yadava5.github.io/…` URLs.** Every local asset is relative —
+> `url("fonts/…woff2")`, `fetch("wasm/model.weights.bin")`,
+> `../../assets/archive.css`. **Nothing 404s at a root mount, and
+> `node tests/playwright/static-server.mjs` serves the whole site today.**
 
-Build `npm run preview`:
+**THE REAL DEFECT, AND IT IS ALSO THE ANSWER TO OWNER ITEM B.** The seam is
+hard-coded to the production origin **in both directions**: the run links to
+case files as `https://yadava5.github.io/Portfolio-2.0/projects/<id>/` (9
+occurrences), and every generated archive page rejoins as
+`https://yadava5.github.io/Portfolio-2.0/#work`.
 
-- Serves the **deploy-configured** `out/` — the same bytes the golden hash pins
-  — mounted at `/Portfolio-2.0/` so every absolute path resolves as it will in
-  production. Do not "fix" this by building with an empty basePath: that is a
-  different artifact from the one that ships, and preferring it is how a link
-  that only works locally reaches production.
-- Prints the URL of the run **and** of all seven case files and `/evidence/`, so
-  the archive is reachable without guessing paths.
-- Does **not** rebuild by default (a flag may). The point is to look at what the
-  last build produced, not to trigger one.
-- Reuses `static-server.mjs`'s resolver rather than adding a second one; it
-  already handles directory indexes and the 404 fallback.
+So in **any** local preview — root mount, `/Portfolio-2.0` mount, either
+basePath — **the first click from the run into a case study leaves for the
+deployed site, which is `main` at `4ec9421`: 52 commits behind and entirely
+pre-migration.** That is a complete mechanical explanation of *"did you fix the
+… view case studies file… As I don't see anything yet"*. The owner clicked
+through and got the old archive. §6.2's "no, §4b touched four files" is true and
+beside the point — Phases 3 and 4 rebuilt those pages completely and he still
+cannot reach them.
 
-**Then send the owner the URL and a short list of what to look at**, and do that
-again at every checkpoint in this phase. The standing complaint behind item C is
-that five phases of work have never been visible; a preview that exists but is
-never handed over does not fix it.
+**Do it in this order:**
+
+1. **Today, before building anything.** Add `.woff2` and `.wasm` to
+   `static-server.mjs`'s `contentTypes` map — two lines; without them wasm falls
+   to `application/octet-stream`, `instantiateStreaming` rejects, and the
+   preview logs a red `wasm streaming compile failed` (the emscripten glue does
+   recover via `instantiateArrayBuffer`, so the classifier still works, but do
+   not hand the owner a console error). `check-cargo-fixture.mjs:57-58` already
+   lists both; somebody hit this once. Then run it and **send the owner the URL
+   plus the seven `/projects/<id>/` and `/evidence/` paths.**
+2. **Then `npm run preview`, whose one real job is the seam.** Serve `out/` and
+   **rewrite `https://yadava5.github.io/Portfolio-2.0` → the preview origin in
+   the HTML it serves**, with a banner saying so. Nothing that ships changes.
+3. **DO NOT relativise those hrefs in source.** `check-links.mjs:54` defines
+   `SITE` as that origin and enforces the `↗`/`⟶` glyph contract as a rule over
+   the link's origin; `check-crosswalk.mjs:114` resolves the same absolute URLs
+   to local files. Relativising reopens the glyph contract and two gates.
+4. **Do not "reuse `static-server.mjs`'s resolver"** without pricing it: that
+   file hardcodes `resolve(process.cwd(), "out")` at module scope and calls
+   `server.listen` at import — it is a script, not a module, and
+   `playwright.config`'s `webServer` depends on it. Copy the resolver or accept
+   the refactor deliberately.
+
+**Then hand the URL over at every checkpoint in this phase.** The complaint
+behind item C is that five phases have never been visible; a preview that exists
+and is never handed over does not fix it.
 
 ### 6.1 — THE RAIL'S CARGO IS WRONG, and a green gate says otherwise
 
@@ -2113,37 +2159,63 @@ green and has been green all phase.** Both cannot be right, and the gate is the
 one to doubt: the owner is reading the rendered rail, the gate is reading a
 recorded fixture.
 
-This is the C-series pattern the migration has hit six times (C33 counting
-without checking, C40's unreachable `hard()` path, C42's gate that stopped
-executing, C45's report that printed shrugs). **Do not start by adjusting the
-cargo. Start by finding out what the gate actually asserts**, and expect one of:
+> **THE FIRST DRAFT OF THIS ITEM GAVE FOUR HYPOTHESES AND THREE WERE
+> FALSIFIABLY WRONG ABOUT THIS GATE.** *(Fable's cross-check, source-read.)*
+> `check-cargo-fixture.mjs:197` keys on
+> `JSON.stringify([w.corridor, w.label])` — **the pairing IS the assertion**, so
+> "checks that cargo rides without checking which" is false. It reads every
+> `[data-beat]` and samples eight fractions of each corridor (`:118-132`), so
+> "scoped to beats 2/6/8" is false. And the fixture agrees with `stations.ts`,
+> so "recorded from the same wrong render" is structurally possible but
+> falsified by content. **Sending the next session to read a gate that
+> demonstrably does the opposite of the bullet is how a day gets spent.**
 
-- it compares the render against a fixture that was **recorded from the same
-  wrong render** (`--record` exists — a fixture re-recorded after a regression
-  pins the regression);
-- it checks that cargo *rides* corridors without checking *which* cargo rides
-  *which*;
-- it is scoped to beats 2/6/8 — the three the Phase-1 content pass fixed — and
-  says nothing about the other ten;
-- the truth it should be checking is `stations.ts`, and it is checking something
-  else.
+**START WITH THE ARTIFACT, NOT THE GATE — because §6.0 changes which artifact
+was read.** The deployed site is `main` at `4ec9421`, pre-migration, with cargo
+that predates the Phase-1 content pass at beats 2/6/8. If the owner saw the
+wrong cargo by clicking through the seam, he was reading that.
 
-**Deliverables, in order:** (1) reproduce the wrong cargo in the preview and
-write down what is wrong, in the owner's terms, per beat; (2) state what
-`check-cargo-fixture` asserts and why that was compatible with the defect —
-**that sentence is the finding**; (3) fix the cargo against the run's declared
-truth; (4) fix or replace the gate so the defect would have been caught, and
-**prove it fires by reproducing the original wrong cargo in a temp copy**. A
-re-recorded fixture is not a fix.
+**Deliverables, in order:**
+
+1. **Establish WHERE the wrong cargo was seen** — the local `out/`, or the
+   deployed site reached through the seam. If it is the deployed site, **close
+   item A as an artifact problem and say so to the owner.** That is the likeliest
+   answer and it costs one question.
+2. If it reproduces locally, **write down what is wrong per beat in the owner's
+   terms** before touching anything.
+3. **The one real gap, worth the budget either way:** nothing asserts
+   `observed ≡ STATIONS[].consignment`. The gate compares the render to a
+   recorded fixture; `stations.ts` is the declared truth and no gate binds them.
+   **Bind the fixture to `stations.ts`.**
+4. **Rule on the beat-8 second waybill.** `TRAV` emits a twelfth waybill —
+   `"run 042's report → the review"` at `beat: 8, off: 1` — that `stations.ts`
+   does not declare, and whose `consignment` field is documented singular
+   (*"the waybill this stop sends down its corridor"*). Corridor 8 carries two;
+   the declared truth carries one; **no gate can say so in either direction.**
+   Either declare it (make `consignment` a `readonly string[]`) or drop it.
+5. Whatever changes, **prove the gate fires by reproducing the original wrong
+   state in a temp copy.** A re-recorded fixture is not a fix.
+
+This is still the C-series pattern (C33 counting without checking, C40's
+unreachable `hard()` path, C42's gate that stopped executing) — but the specific
+shape here is a gate checking a render against a *recording* rather than against
+the *declaration*.
 
 ### 6.2 — What Phase 5 and §4b did NOT touch, stated plainly
 
-**The honest answer to owner item B.** §4b's thirteen commits touched exactly
-three files: `src/run/index.html`, `scripts/qa/check-figures.mjs`,
-`scripts/qa/check-palette.mjs`. **No case file, no `/evidence/` page, no
-benchmark artifact and no data-layer file changed.** If the owner is looking at
-`/projects/<id>/` for something new, there is nothing there, and that is a fact
-about scope rather than a defect.
+**The honest answer to owner item B, and §6.0 supplies the other half of it.**
+§4b's fourteen commits touched exactly four files: `src/run/index.html`,
+`scripts/qa/check-figures.mjs`, `scripts/qa/check-palette.mjs` and
+`scripts/qa/portfolio-baseline.json`. **No case file, no `/evidence/` page, no
+benchmark artifact and no data-layer file changed**, so there is nothing new on
+`/projects/<id>/` from this phase — that is scope, not a defect.
+
+**But that is only half the answer and on its own it is misleading.** Phases 3
+and 4 rebuilt those pages completely — seven generated case files, `/evidence/`,
+53 receipt anchors — and **§6.0 shows the owner cannot reach any of it**: the
+seam is hard-coded to the production origin, so clicking through lands on the
+deployed pre-migration site. He has not been looking at a stale surface; he has
+been looking at a *different site*.
 
 What *did* ship earlier in Phase 5, so the walk does not re-derive it: the
 attribution fix across five claim sites on two files (§5.0), four vendored
@@ -2169,11 +2241,9 @@ screenshots. Specifically:
 - **fig. 06's two registers** — one live instrument above the hair rule, one
   filed record below it, or one muddle. This cannot be gated and it is the
   acceptance test for the instrument/record distinction that shaped six figures.
-- **Whether the archive's plates now disagree with the run's.** §4b rewrote the
-  run's gate vocabulary (booms, frames, dispositions) and the archive still
-  draws `phgate` squares from `case-figures.mjs`. Nothing breaks; the two halves
-  of one site simply speak differently about gates now. **This is Fable-ARCHIVE's
-  lane and the first candidate for parallel work.**
+- **Whether the archive's plates now disagree with the run's** — read it, and
+  then see §6.3 item 3, because it is a ruling and possibly a redraw rather than
+  a reading.
 
 ### 6.3 — The two rulings §4b left open. Both need a decision, neither is a bug.
 
@@ -2187,6 +2257,16 @@ screenshots. Specifically:
    token change plus a re-baseline, or a declared scope in `check-palette`
    saying the day half is deliberately unmeasured and why.** What must not
    happen is that it stays silently unmeasured.
+   **AND IT IS A TWO-FILE, TWO-LANE EDIT** *(Fable's finding)*: the day
+   `--hair-strong` is declared **twice** — `src/run/index.html:94` and
+   `scripts/archive/assets/archive.css:83`, the same `.34`, with **nothing
+   binding them**. If Fable-RUN executes the ruling alone under the partition,
+   the archive's seven plates keep the old hairline, the two halves of one site
+   diverge visibly, and every gate stays green. This is commit zero's own
+   finding one level up — *the run declares a night palette twice* becomes *the
+   site declares a day palette twice*. **Whichever way the ruling goes,
+   `check-palette` should gain the assertion that the two `:root` blocks agree,
+   or this recurs.**
 2. **A live hash arrival at `/#review` leaves the third reviewer's mark
    part-inked** until the reader moves a few pixels — 12.18px now, **8.12px at
    HEAD before the redraw, so pre-existing and unchanged in character.** §4b's
@@ -2196,6 +2276,17 @@ screenshots. Specifically:
    sevenfold, so this is worth one look at the machinery — but it is shared
    scroll code, not any figure's, and it must not be "fixed" by stripping the
    ink-in, which §4b explicitly protects.
+3. **THE ARCHIVE'S GATE VOCABULARY IS NOW THE RUN'S OLD ONE.** *(Fable's
+   finding — this was buried in §6.2 as a reading bullet and it is neither a
+   reading nor small.)* §4b rewrote how the run draws gates — booms that swing,
+   frames on a line, marks carrying the clay — and the archive still draws
+   `phgate` squares: 1 occurrence in `case-figures.mjs`, 3 in `archive.css`, **0
+   in `src/run/index.html`.** Nothing breaks and no gate reds. But the two
+   halves of one site now speak differently about the same subject, and the fix
+   is potentially a redraw of the archive's seven plates. **Needs a ruling on
+   which vocabulary wins before any work starts** — and note its correctness is
+   defined by a file the archive lane may not edit, so **it is a one-agent task
+   and must not be the parallel-work opener.**
 
 ### 6.4 — The reading. One pass, in the preview, by a person.
 
@@ -2228,12 +2319,19 @@ not prove the thing was worth doing.
 6. **The seam, as reading rather than as correctness.** `check-crosswalk` holds
    every rejoin to `stations.ts` verbatim in five directions. A gate can prove
    the hour is right; it cannot tell you whether arriving there feels like
-   coming back.
+   coming back. **Requires §6.0's origin rewrite** — without it every crossing
+   leaves for the deployed site.
+
+**Already verified in Phase 3 — do NOT re-derive it in this walk:** paper memory
+written by the **React** app survives into the vanilla port. The margin note
+prints the original first-read date rather than today, the audit walk restores,
+`/evidence/` inks the right visited marks, and the run approval is honoured.
 
 ### 6.5 — Housekeeping. Cheap, and one of them is the front door.
 
-- **Rewrite the README.** It opens with Next.js 16 / React 19 / Tailwind 4 /
-  GSAP / Framer Motion badges and tells a reader to run `npm run dev` — a script
+- **Rewrite the README.** It opens with Next.js 16 / React 19 / TypeScript 5 /
+  Tailwind 4 / Playwright badges, carries a stack table naming GSAP, Framer
+  Motion and Lenis, and tells a reader to run `npm run dev` — a script
   that does not exist, describing a framework that is not installed, for a page
   that is not rendered. **It is the front door of a repository whose entire
   argument is that claims terminate in things you can check.** Highest value per
@@ -2269,7 +2367,7 @@ phase where the plan proposes rather than instructs.
 |---|---|---|
 | **One PR** | the whole migration, once | one review of ~51 commits; `main` is never half-migrated; the deploy fires once |
 | **A PR per phase** | six merges | each reviewable and green alone — **but `main` sits mid-migration between merges and `deploy.yml` fires on every push**, so a reader gets the Phase-3 site for however long the next review takes |
-| **One PR, squashed** | one commit | loses the commit messages, which carry most of the reasoning on this branch |
+| **One PR, squashed** | one commit | loses the commit messages, which carry most of the reasoning on this branch — **and it orphans the golden baseline's `commit` field.** `pinnedCommitAgrees()` returns SILENTLY when the pinned sha is unreachable (§7.2 reads that skip as correct on a depth-1 CI checkout, which also means the pairing only ever runs locally). A squash or rebase merge removes that sha from `main`'s history, so the assertion C32 was fixed **seven** times to protect stops running everywhere without ever going red. A merge commit preserves it |
 
 The middle option's cost is the one to weigh: this repository deploys from
 `main` on push with no approval gate.

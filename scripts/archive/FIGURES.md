@@ -40,11 +40,12 @@ defect measured in the run's own figures.
    > `⟶` is wide — **13.355 units wide / 12.018 tight, about 1.67**.
    >
    > **The method is now the rule: measure with `getComputedTextLength()`,
-   > do not budget per character.** The §4b redraw checks it directly —
-   > `getBBox()` over every `<text>` in every drawing at twelve widths —
-   > which is the only reading that covers the tight editions at all,
-   > since their viewBox is written at run time and no gate can read it.
-   > The floor law above is unchanged and still stands.
+   > do not budget per character.** It was measured ONCE, BY HAND, during the
+   > §4b redraw — `getBBox()` over every `<text>` in every drawing at twelve
+   > widths, 1,526 boxes, zero overflows. **That was a one-off measurement and
+   > is NOT a standing gate**: the tight editions are read by nothing, because
+   > their viewBox is written at run time. Do not cite it as coverage. The
+   > floor law above is unchanged and still stands.
 4. **Anchor annotations to cells, not coordinates.** The Cadence plate
    seats its event chip IN the tuesday grid cell; nothing can cover
    wednesday. Absolute-positioned chips over a grid are how the run's
@@ -80,11 +81,21 @@ defect measured in the run's own figures.
   > richer with one. Rule 3's floor law is unchanged and still stands:
   > anything that does not fit moves to the figcaption or a key, and it
   > is **never shrunk**.
+  > **RESOLVED 2026-08-07 (§4b).** The labels got their room: four named
+  > columns on one header rule that breaks for each name, feeders moved into
+  > their band beside the product they become. No key, nothing shrunk. The
+  > compliance meter now STANDS SETTLED at 97% — it used to fill from zero
+  > under the scroll, which the bench ruling condemns.
 - **fig. 04 (the sorting line)** — same congestion class: gate labels
   collide with mark paths mid-scrub because labels sit inside the
   travel corridor. Move gate labels above the frame line (the archive
   plate proves they read fine right-anchored on the rule itself), and
   keep the buckets' labels out of the landing rows.
+  > **RESOLVED 2026-08-07 (§4b), and the congestion was the smaller half.**
+  > The plate drew a pipeline; the machine is a CASCADE — `hybrid.py:248`
+  > returns at 0.90 and never imports the rest. And `needs-review` was drawn as
+  > a fourth bucket when it is a boolean on a result that still carries its
+  > category. One belt, three desks, a held band.
 - **fig. 05 (the parse)** — the chip covers wednesday because chips are
   absolutely positioned over the week grid at measured pixel offsets
   (`cacheCadence` + transforms). Rule 4 is the fix: give the tuesday
@@ -92,11 +103,16 @@ defect measured in the run's own figures.
   instead of to a coordinate. The archive's Cadence plate is the
   settled frame of exactly this layout and can be lifted as the target
   geometry.
+  > **RESOLVED in Phase 5.** The event is a cell and the chips file into a
+  > dock; measured at four widths in a real engine.
 - **fig. 06 (glyph pad + net)** — instrument; stays an instrument. The
   one improvement worth making is the bench bars beneath it: they are
   scroll-scrubbed fills over committed numbers, which the bench ruling
   already condemns — draw them at full extent, ink the VALUE in on
   approach if motion is wanted.
+  > **DONE in Phase 5 (§5.5/§5.2).** `scrubBench`/`scrubJetBench` are gone; the
+  > ratios are fractions in the markup bound to four vendored JSON records, and
+  > five browser engines measure the rendered widths. This bullet is history.
 - **fig. 07 (jetpack split/stitch)** — "deserves better": the drawing
   under-tells the best part, that the stitched member is byte-valid.
   Give the seam the clay moment (it has it) plus a drawn member with
@@ -104,11 +120,22 @@ defect measured in the run's own figures.
   it is grammar, not a claim. The lanes read as plumbing; let blocks
   visibly NARROW through deflate in both editions (the wide one does;
   the tight one barely registers it).
+  > **RESOLVED 2026-08-07 (§4b), and it went further than this asked.** The
+  > member is drawn as one object — `1f 8b 08`, eight blocks abutting so each
+  > join draws once, `crc32 · isize` — and the ONE clay moment is the trailer,
+  > sealed by the last block to land. Blocks narrow on eight hand-authored
+  > widths that no measured ratio may ever replace.
 - **fig. 08 (the climb)** — unpolished mostly in the pencil half: the
   two unbuilt steps read as faint clutter rather than absence. Heavier
   dash (5 7 at 1.4) and the `held` tags seated on the risers, not
   floating; and the climber's ring should be the ONLY clay (the held
   tags currently compete — rule 5).
+  > **SUPERSEDED 2026-08-07 (§4b).** A heavier dash makes absence louder, not
+  > legible — absence is a relation, and there was nothing for it to relate to.
+  > The stair is drawn in section: three built steps close into a hatched mass
+  > on the ground, and the two unbuilt steps have NOTHING beneath them. The
+  > `held` tags STAY clay: a disposition of record may repeat in clay, and the
+  > ledger rows beside the plate are already clay.
 - **fig. 09 (automl)** — text overlapping the fields: the registry
   column starts at x 398 while cell rows run to x 360 and the caveat
   line crosses at y 226 — three systems sharing one x-band. The archive
@@ -123,6 +150,11 @@ defect measured in the run's own figures.
   > arithmetic built in Phase 5 measures it at 9.97px against this
   > brief's own ~10px floor. Stacking is the default; widening only
   > works if the seat minimum rises with the box.
+  > **RESOLVED 2026-08-07 (§4b) — this was the vocabulary-setting plate.**
+  > Stacked, paid for entirely in height (372 → 532; the gate reads WIDTH only).
+  > The supervisor→tools→notebook loop is drawn, the docker sandbox is a frame
+  > only the tools' stem crosses, and the bead stands SHORT of a boom still down
+  > — the ring used to cover the shut gate it was about.
 - **fig. 10 (the reviewer's marks)** — "unresolved" because it is a
   docket wearing a figure number: the marks draw, but the plate has no
   geometry of its own. Two honest options: demote it (it is apparatus,
