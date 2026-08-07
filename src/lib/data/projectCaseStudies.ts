@@ -815,21 +815,25 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         text: "Provenance audit: the classifier claims were re-derived by running the code rather than reading about it. The rules gate passed live at 96 samples, macro-F1 0.9791, 2 misclassified — and the deterministic hybrid gate returned the identical numbers, which is the direct evidence for the attribution correction recorded earlier: the file named “hybrid” measures the regexes alone. The 201-rule figure was recomputed by importing jobtracker.classifier.rules and summing the pattern lists across all seven categories — 106 strong, 26 weak, 69 negative, plus 14 ATS domains. The eval set was counted from its own JSONL: 96 samples, 8 classes, 12 each. Every one of those figures matched what this file already said.",
       },
     ],
-    /* Provenance strips carry the whole correction here. Three of these
-       plates are DESKTOP-era records that are still real files at the new
-       pin — the honest edit was to say which era each one speaks for, not
-       to unlink them. The README in particular is no longer offered as
-       "source-truth": it still calls apps/web a scaffold. */
+    /* Provenance strips carry the whole correction here. These rows are
+       DESKTOP-era records that are still real files at the new pin — the
+       honest edit was to say which era each one speaks for, not to unlink
+       them. The README in particular is no longer offered as
+       "source-truth": it still calls apps/web a scaffold.
+
+       THE DRAWN PLATE THAT STOOD FIRST IS GONE, 2026-08-07. It was
+       `jobtracker-architecture.svg`, and it failed on both axes at once.
+       Off-brand: `font-family="Inter"` — a face this site never loads, so
+       it fell back to Arial — over Tailwind slate on a near-black ground,
+       printed as a dark rectangle on cream paper. And redundant: it said
+       what `fig. 2` says natively from `architecture` below, one section
+       up the page. Its own `<title>`, which is the accessible name, read
+       "JobTracker — the desktop path (2026-02 era)" — the retired brand in
+       the one string only a screen-reader user hears, which
+       `projects.ts:309-316` calls a wrong label rather than history. That
+       contest is moot now the file is gone. What remains here is what a
+       reader opens BECAUSE the page cannot draw it. */
     artifacts: [
-      {
-        type: "diagram",
-        label: "Local classification architecture",
-        href: withBasePath("/images/projects/jobtracker-architecture.svg"),
-        source: "rendered from the public repository structure",
-        boundary:
-          "draws the desktop path — the hosted app is rules-only; no private email content is shown",
-        date: "2026-06",
-      },
       {
         type: "repo",
         label: "README — the desktop-era record",
@@ -1466,15 +1470,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         text: "Until now this file said “71 test functions”, deliberately — a count of what the tree declared, because the suite had never been run. Not in CI, which had no `xcodebuild test` step, and not locally, because xcodebuild wanted an iOS runtime the machine did not have. A count is a weaker claim than a result and it was worded to admit that. The runtime was installed on 2026-08-03 and the suite ran: 71 passed, 0 failed, 0 skipped, on iPhone 17 Pro under iOS 26.5, and again under 26.2 when the simulator resolver happened to pick a different device. The claim above is now a result. The static count did not move, which is the outcome that should be least surprising and was still worth checking.",
       },
     ],
+    /* The drawn plate retired 2026-08-07 with its six siblings: it restated
+       `fig. 2` in Inter over Tailwind slate, and `fig. 2` draws the same
+       flow natively from `architecture`. See the note on Applied's
+       artifacts for the full reasoning. */
     artifacts: [
-      {
-        type: "diagram",
-        label: "On-device accessibility architecture",
-        href: withBasePath("/images/projects/visual-assist-architecture.svg"),
-        source: "rendered from the public repository structure",
-        boundary: "no live camera or location context is shown",
-        date: "2026-06",
-      },
       {
         type: "repo",
         label: "Source code",
@@ -2209,24 +2209,20 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       boundary:
         "sanitized local audit summary — no raw institutional rows, owners, report names, or PAT values",
     },
-    artifacts: [
-      {
-        type: "diagram",
-        label: "Private-safe pipeline architecture",
-        href: withBasePath("/images/projects/pipeline-architecture.svg"),
-        source: "drawn from the pipeline’s real structure",
-        boundary: "no institutional records or internal UI",
-        date: "2026-06",
-      },
-      {
-        type: "benchmark",
-        label: "Processed output proof ledger",
-        href: withBasePath("/images/projects/master-inventory-proof.svg"),
-        source: "sanitized local audit, checked in 2026-06",
-        boundary: "counts and schema only",
-        date: "2026-06",
-      },
-    ],
+    /* NOTHING HANGS IN THIS APPENDIX, AND THAT IS THE RULING — 2026-08-07.
+       Two plates stood here and both were the page saying itself twice in a
+       borrowed hand. `pipeline-architecture.svg` restated `fig. 2`;
+       `master-inventory-proof.svg` restated the ledger table two sections
+       up — and restated it with LESS, having no notes column and no JSON to
+       download. Both drew in `font-family="Inter"`, which this site never
+       loads, over Tailwind slate on near-black, on a cream page.
+       Redrawing them natively was considered and rejected: it would have
+       rebuilt the duplication in the house's own inks, and for the ledger it
+       would have created exactly the "second, unpinned copy" of a record
+       that `atlas.spec.ts` was written to forbid. A case file argues in its
+       own hand and attaches only what it cannot draw. This one can draw all
+       of it. */
+    artifacts: [],
   },
   {
     projectId: "policybot",
@@ -2444,24 +2440,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       boundary:
         "sanitized RAG validation summary — no policy text, Slack messages, or raw validation transcripts",
     },
-    artifacts: [
-      {
-        type: "diagram",
-        label: "Retrieval and validation architecture",
-        href: withBasePath("/images/projects/policybot-architecture.svg"),
-        source: "drawn from the assistant’s real structure",
-        boundary: "no institutional policy text or Slack messages",
-        date: "2026-06",
-      },
-      {
-        type: "benchmark",
-        label: "Validation ledger proof",
-        href: withBasePath("/images/projects/policybot-validation-proof.svg"),
-        source: "sanitized validation summary, checked in 2026-06",
-        boundary: "counts, tests, and guardrails only",
-        date: "2026-06",
-      },
-    ],
+    /* Empty for the same reason master-inventory's is — see the note there.
+       `policybot-architecture.svg` restated `fig. 2`;
+       `policybot-validation-proof.svg` restated the validation ledger with
+       its notes column removed. Both in Inter over Tailwind slate. The
+       ledger above is the record; a thumbnail of it is not a second
+       source. */
+    artifacts: [],
   },
   {
     projectId: "fast-mnist-nn",
@@ -2826,14 +2811,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         boundary: "native inference server offline during capture",
         date: "2026-06",
       },
-      {
-        type: "diagram",
-        label: "Vector project asset",
-        href: withBasePath("/images/projects/fast-mnist-nn.svg"),
-        source: "portfolio vector asset",
-        boundary: "illustration — carries no claims",
-        date: "2026-06",
-      },
+      /* "Vector project asset" stood here and was the clearest case of the
+         lot — 2.5 KB of stock social-card template, one corner-to-corner
+         gradient with an emoji and three pill badges, drawing nothing that
+         is true of anything. Its own boundary field said so:
+         "illustration — carries no claims". A page whose thesis is that
+         every figure earns its number was numbering a drawing of nothing as
+         fig. 4. It also carried no `<title>` and no `<desc>`, alone among
+         the seven, so its whole accessible name was the renderer's
+         "Vector project asset plate". Deleted 2026-08-07. */
       {
         type: "repo",
         label: "Source code",

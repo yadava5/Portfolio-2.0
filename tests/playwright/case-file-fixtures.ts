@@ -110,7 +110,10 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   automlPresenterEvidence:
     "Presenter slide 8 records the stack and validation posture",
   automlContribution: "Monaco/Jupyter runtime",
-  jobtrackerArchitecture: "Local classification architecture",
+  /* `jobtrackerArchitecture: "Local classification architecture"` retired
+     2026-08-07 with its plate — its `<title>` named the retired brand and a
+     superseded desktop architecture, and fig. 2 draws the current one.
+     `atlas.spec.ts` now asserts zero plates plus a live index here. */
   // Re-pin round (2026-07-26). Two artifact labels changed because the
   // old ones asserted something false:
   //   · "Source-truth README" — the README still calls apps/web an
@@ -144,7 +147,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot.",
   jobtrackerStaleDocsBoundary:
     "Both still describe apps/web as an unwired scaffold with a placeholder dashboard",
-  visualAssistArchitecture: "On-device accessibility architecture",
+  /* `visualAssistArchitecture` retired 2026-08-07, same reason. */
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
   // Dossier voice rewrite (2026-07-18): first person, same fact/number.
@@ -180,7 +183,11 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "passed 3 extractor tests and critical ruff syntax/import checks",
   masterInventoryPrivateBoundary:
     "raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
-  masterInventoryProofLedger: "Processed output proof ledger",
+  /* `masterInventoryProofLedger: "Processed output proof ledger"` stood here
+     and was retired 2026-08-07 with the plate it named. The appendix plate
+     was a thumbnail of the ledger table two sections above it, drawn in a
+     face this site does not load; `atlas.spec.ts` now asserts the empty
+     state instead, so the guard moved rather than went away. */
   policybotValidation:
     "19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks",
   policybotFileSearch:
@@ -188,7 +195,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   policybotLocalTests: "passes 24 tests in its own .venv-ci on Python 3.12.11",
   policybotDeploymentBoundary:
     "no production usage, workspace adoption, or always-on service claim is made here.",
-  policybotValidationLedger: "Validation ledger proof",
+  /* `policybotValidationLedger` retired 2026-08-07, same reason. */
   // Cadence's isolation section (2026-07-26). The file went from three
   // receipts to ten, and the seven new ones argue the portfolio's
   // strongest systems claim — which makes them the ones most worth

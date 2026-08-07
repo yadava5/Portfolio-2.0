@@ -205,3 +205,30 @@ description, and it is the instrument/record confusion again. Their
 settled frames, their honest captions and their manifest disclosures
 survive in the static plates; their motion belongs to the line, which
 still has it.
+
+## The appendix, ruled 2026-08-07
+
+The appendix exists for artifacts a reader can OPEN — captures and
+documents that are evidence in themselves (the expo poster, the presenter
+deck, the outbound repo index). It is not a third place to say what
+fig. 1, fig. 2 and the ledger already say.
+
+- The React era's seven appendix SVGs (four Tailwind-dark architecture
+  diagrams, two dark ledger thumbnails, one stock placeholder) restated
+  fig. 2 and the ledger table in a foreign hand — Inter-falling-to-Arial
+  over slate/emerald/violet on this site's cream paper. **Retired, and
+  deliberately NOT redrawn**: a native redraw would duplicate fig. 2
+  in-house, which is the same defect in the site's own inks. The redraw
+  set for this purge is empty, and that is the judgement, not an omission.
+- A file with nothing a reader could open states the absence
+  (`§ artifacts — none beyond the page` + `.noplates`) instead of padding
+  the shelf. For the two institutional files that is a boundary kept, and
+  the page says so.
+- **Static vs animated, settled by the standing law**: a FIGURE may
+  scrub, a RECORD may not — and everything in a case file is a record.
+  The only motion the archive permits is the reader's own act (opening a
+  viewer, pressing approve, walking the audit); nothing replays, fills,
+  or scrubs. This holds for any future appendix content too.
+- The three raster product captures (taskflow.png, mnist.webp,
+  automl.webp) are the owner's to re-shoot or drop; the renderer now
+  handles every count from zero up, so no shelf state blocks his call.

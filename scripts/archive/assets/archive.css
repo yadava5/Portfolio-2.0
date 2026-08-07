@@ -482,6 +482,11 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 
 /* ————— the appendix ————— */
 #artifacts{margin-top:4.5rem}
+/* the stated absence — same furniture as #corrections .noc: a file with
+   nothing a reader could open says so in the register's own voice */
+#artifacts .noplates{margin-top:.5rem; border-top:1px solid var(--hair); padding-top:1rem;
+  max-width:44rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em;
+  color:var(--ink-2); line-height:1.9}
 .plates{margin-top:1.6rem; display:grid; gap:2.4rem 2.4rem}
 @media (min-width:768px){ .plates{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .plateb{display:block; text-decoration:none; color:inherit}

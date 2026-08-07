@@ -1,5 +1,40 @@
+/**
+ * RETIRED 2026-08-07. All four of this generator's outputs were deleted, and
+ * running it would put them back.
+ *
+ * `jobtracker-architecture.svg`, `visual-assist-architecture.svg`,
+ * `pipeline-architecture.svg` and `policybot-architecture.svg` were the
+ * case files' appendix plates. They were retired for saying the same thing
+ * twice: each restated its case file's `fig. 2`, which
+ * `render-case-file.mjs` draws natively from the data layer's
+ * `architecture` field, one section up the same page. They also drew in
+ * `font-family="Inter"` — a face this site never loads, so they fell back
+ * to Arial — over Tailwind slate on a near-black ground, on a page whose
+ * paper is `#fbf3e7`.
+ *
+ * The body below is kept rather than deleted because it is the only record
+ * of what those diagrams asserted, and two of its comments carry real
+ * rulings — notably the desktop-era disclosure at the Applied entry, which
+ * was correct and is the reason that plate said "the desktop path" at all.
+ *
+ * IF YOU ARE HERE TO RE-RENDER THEM, DO NOT. The archive's rule, written in
+ * `scripts/archive/FIGURES.md`, is that a case file argues in its own hand
+ * and attaches only what it cannot draw. It can draw these.
+ */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+
+if (!process.argv.includes("--i-know-these-are-retired")) {
+  console.error(
+    "render-architecture-diagrams: RETIRED 2026-08-07 — refusing to run.\n" +
+      "  Its four outputs were deleted deliberately: each restated its case file's\n" +
+      "  fig. 2, which the archive draws natively, and all four drew in Inter over\n" +
+      "  Tailwind slate on a cream page. Re-rendering them undoes a ruling.\n" +
+      "  The reasoning is in scripts/archive/FIGURES.md and in the artifacts\n" +
+      "  comments in src/lib/data/projectCaseStudies.ts."
+  );
+  process.exit(1);
+}
 
 const root = process.cwd();
 const outputDir = path.join(root, "public", "images", "projects");

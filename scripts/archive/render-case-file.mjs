@@ -335,7 +335,22 @@ function auditControl({ projectId, counts, sentence }) {
           </button><span id="${descId}" class="sr-only">walks the receipts below, top to bottom, and marks each row this page can verify: a check where a pinned artifact resolves, a ring where the trail ends in an on-page capture, a dash where a claim is described only. walked once, the result settles here and stays.</span><span role="status" class="sr-only" data-walk-status></span></span>`;
 }
 
-/* ── the appendix ────────────────────────────────────────────────────── */
+/* ── the appendix ──────────────────────────────────────────────────────
+   RULED 2026-08-07: the appendix holds only artifacts a reader can OPEN —
+   captures and documents that are evidence in themselves. Anything the
+   page can say natively already says it as fig. 1, fig. 2 or the ledger;
+   the React era's dark-palette architecture/ledger SVGs restated those
+   surfaces in a foreign hand and are retired, not redrawn — a native
+   redraw would just duplicate fig. 2 in-house. */
+
+/** The split the appendix is built on, named once: a local artifact ships
+ *  as a plate the reader can enlarge; an external or mailto one is a row
+ *  in the outbound index. tests/playwright/case-file-fixtures.ts restates
+ *  this predicate — a drift here sends the suite looking for plates the
+ *  page never draws. */
+const isPlateArtifact = (a) =>
+  !external(a.href) && !a.href.startsWith("mailto:");
+
 function viewerDialog({ artifact, fig }) {
   const href = external(artifact.href)
     ? artifact.href
@@ -350,12 +365,21 @@ function viewerDialog({ artifact, fig }) {
 }
 
 function artifactGallery({ artifacts, figStart }) {
-  const plates = artifacts.filter(
-    (a) => !external(a.href) && !a.href.startsWith("mailto:")
-  );
-  const indexRows = artifacts.filter(
-    (a) => external(a.href) || a.href.startsWith("mailto:")
-  );
+  const plates = artifacts.filter(isPlateArtifact);
+  const indexRows = artifacts.filter((a) => !isPlateArtifact(a));
+  /* The poster spans the full grid width on its own class, so the pairing
+     arithmetic counts only the half-width gallery plates. The old
+     `plates.length` parity counted the poster too and handed `.wide` to
+     automl's third plate while its second sat alone beside an empty cell —
+     the exact ragged row the data layer's plate-order note says this grid
+     was arranged to avoid. And `.wide` asks for MORE than one: it is the
+     odd-remainder patch for a multi-plate grid (16:9 frame, caption
+     sidebar), so a file with a single plate files it at standard plate
+     scale instead of dressing it as the leftover of a pair that does not
+     exist — Cadence shipped exactly that costume until 2026-08-07. */
+  const galleryCount = plates.filter(
+    (a) => !(a.panels && a.sourceSize)
+  ).length;
   const parts = [];
   const dialogs = [];
 
@@ -383,7 +407,8 @@ function artifactGallery({ artifacts, figStart }) {
       );
       return;
     }
-    const wide = plates.length % 2 === 1 && i === plates.length - 1;
+    const wide =
+      galleryCount > 1 && galleryCount % 2 === 1 && i === plates.length - 1;
     parts.push(
       `<a class="plateb${wide ? " wide" : ""}" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}"><span class="plate-paper"><span class="pframe"><img src="${esc(src)}" alt="${esc(artifact.label)} plate" loading="lazy"></span></span><span class="pcap"><span class="fc-main">fig. ${fig} — ${esc(artifact.label)}.</span>${capTail}</span></a>`
     );
@@ -430,6 +455,26 @@ export function renderCaseFile({
   const hasLocalOnlyRow = allRows.some((r) => r.visibility === "local-only");
   const anchorCount = allRows.length;
 
+  /* The appendix heading is a claim, and it must match the shelf: plates
+     when there are plates, the outbound index when that is all there is,
+     and a stated absence when a file has nothing a reader could open —
+     which is a boundary being kept, not a gap. Every variant keeps the
+     word "artifacts": atlas asserts a visible occurrence of each section
+     word on every route. */
+  const plateCount = study.artifacts.filter(isPlateArtifact).length;
+  const appendixKick = plateCount
+    ? "plates &amp; artifacts"
+    : study.artifacts.length
+      ? "artifacts, indexed"
+      : "artifacts — none beyond the page";
+  const appendixBody = study.artifacts.length
+    ? artifactGallery({ artifacts: study.artifacts, figStart })
+    : `<p class="noplates">nothing to open here, deliberately — ${
+        study.ledger
+          ? "the ledger above is this file’s publishable artifact, shown in full,"
+          : "everything this file can publish is already on the page,"
+      } and the records behind it stay private.</p>`;
+
   const title = `${project.title} Case Study | Ayush Yadav`;
   const route = `/projects/${study.projectId}/`;
 
@@ -456,6 +501,11 @@ export function renderCaseFile({
       }</aside>`
     : "";
 
+  /* The boundary ends the section. The clause that used to follow it —
+     "the svg plate in the appendix is this same ledger, demoted to
+     thumbnail" — described the React era's dark-palette SVG twin,
+     retired 2026-08-07. The table above IS the record; the json
+     download is its portable copy, and nothing stands in for either. */
   const ledger = study.ledger
     ? `<section id="ledger">
           <h2 class="seckick">[ ledger ] · § ${esc(study.ledger.title)} — checked in ${esc(study.ledger.checkedIn)}</h2>
@@ -467,7 +517,7 @@ export function renderCaseFile({
             )
             .join("")}</tbody></table>
           <p class="dl"><a href="${esc(sitePath(PREFIX, study.ledger.jsonPath))}" download>download the raw ledger (json) ⟶</a></p>
-          <p class="boundary">${esc(study.ledger.boundary)}. the svg plate in the appendix is this same ledger, demoted to thumbnail.</p>
+          <p class="boundary">${esc(study.ledger.boundary)}.</p>
         </section>`
     : "";
 
@@ -584,8 +634,8 @@ export function renderCaseFile({
         </section>
 
         <section id="artifacts">
-          <h2 class="seckick">[ appendix ] · § plates &amp; artifacts</h2>
-          ${artifactGallery({ artifacts: study.artifacts, figStart })}
+          <h2 class="seckick">[ appendix ] · § ${appendixKick}</h2>
+          ${appendixBody}
         </section>
 
         <footer class="folio">

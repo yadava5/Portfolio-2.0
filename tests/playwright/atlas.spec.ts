@@ -196,9 +196,14 @@ test.describe("Daylight Study — working paper", () => {
     await page.goto("/projects/visual-assist/");
     await page.waitForLoadState("domcontentloaded");
 
-    await expect(
-      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.visualAssistArchitecture)
-    ).toBeVisible();
+    /* The architecture PLATE was retired 2026-08-07 — it restated fig. 2 in
+       Inter over Tailwind slate — so this asserts the state that replaced
+       it: no plates hang here, and the shelf is the indexed one rather than
+       the empty one, because this file still has outbound records worth
+       opening. Both halves matter: a page that lost its index rows too
+       would pass a bare zero-plate check. */
+    await expect(page.locator("#artifacts a[data-viewer]")).toHaveCount(0);
+    await expect(page.locator("#artifacts .aindex")).toBeVisible();
     await expect(
       page.getByText(EXPECTED_PROOF_ARTIFACTS.visualAssistReadme)
     ).toBeVisible();
@@ -226,9 +231,14 @@ test.describe("Daylight Study — working paper", () => {
     const validation = page.locator("#validation");
     const artifacts = page.locator("#artifacts");
 
-    await expect(
-      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.jobtrackerArchitecture)
-    ).toBeVisible();
+    /* Same retirement as Visual Assist's, and this one had the sharper
+       reason: the plate's own `<title>` — its accessible name — read
+       "JobTracker — the desktop path (2026-02 era)", the retired brand in
+       the one string only a screen-reader user hears, describing an
+       architecture the hosted product no longer has. fig. 2 draws the
+       current one. */
+    await expect(artifacts.locator("a[data-viewer]")).toHaveCount(0);
+    await expect(artifacts.locator(".aindex")).toBeVisible();
     await expect(
       artifacts.getByText(EXPECTED_PROOF_ARTIFACTS.jobtrackerReadme)
     ).toBeVisible();
@@ -348,17 +358,23 @@ test.describe("Daylight Study — working paper", () => {
         EXPECTED_PROOF_ARTIFACTS.masterInventoryPrivateBoundary
       )
     ).toBeVisible();
-    await expect(
-      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger)
-    ).toBeVisible();
-    /* ONE plate, not two. The count is the assertion: this ledger is the
-       file's private-safe terminal, and a duplicated plate would mean the
-       appendix had grown a second, unpinned copy of it. */
-    await expect(
-      artifacts.locator("a[data-viewer]").filter({
-        hasText: EXPECTED_PROOF_ARTIFACTS.masterInventoryProofLedger,
-      })
-    ).toHaveCount(1);
+    /* ZERO plates, and the count is STILL the assertion — it has only
+       changed sign. This read "ONE plate, not two" because a duplicated
+       plate would have meant the appendix had grown a second, unpinned copy
+       of the ledger. On 2026-08-07 both plates were retired for saying that
+       once too often: the architecture SVG restated fig. 2, and the proof
+       SVG restated this very ledger with its notes column dropped — both in
+       `font-family="Inter"`, a face this site never loads, over Tailwind
+       slate on a cream page.
+       DELETING the old assertion would have been the wrong repair. An
+       appendix that has quietly regrown a plate would then pass in silence,
+       which is the exact failure this file's own comment was written
+       against. So it is inverted rather than removed, and it gained a
+       second clause: nothing may hang here, AND the file must SAY that
+       nothing hangs here. An empty shelf and a shelf that explains itself
+       look identical to a locator that only counts. */
+    await expect(artifacts.locator("a[data-viewer]")).toHaveCount(0);
+    await expect(artifacts.locator(".noplates")).toBeVisible();
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("16,685");
@@ -390,14 +406,12 @@ test.describe("Daylight Study — working paper", () => {
     await expect(
       validation.getByText(EXPECTED_PROOF_ARTIFACTS.policybotDeploymentBoundary)
     ).toBeVisible();
-    await expect(
-      artifactPlate(page, EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger)
-    ).toBeVisible();
-    await expect(
-      artifacts
-        .locator("a[data-viewer]")
-        .filter({ hasText: EXPECTED_PROOF_ARTIFACTS.policybotValidationLedger })
-    ).toHaveCount(1);
+    /* Zero, for the reason spelled out in the master-inventory case above:
+       the validation ledger's thumbnail restated the ledger itself, and the
+       architecture plate restated fig. 2. Inverted rather than deleted, so
+       a regrown plate still reds. */
+    await expect(artifacts.locator("a[data-viewer]")).toHaveCount(0);
+    await expect(artifacts.locator(".noplates")).toBeVisible();
 
     const bodyText = await page.locator("body").innerText();
     expect(bodyText).not.toContain("50+ institutional documents");
