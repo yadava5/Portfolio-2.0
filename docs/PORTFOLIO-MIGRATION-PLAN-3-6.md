@@ -2482,9 +2482,22 @@ artifact was stripped, or visibility changed).
 > **9 the filter skips were opened by hand, unauthenticated** — plain `curl`,
 > never `gh api`, because a token answers 200 on a repo that has just gone
 > private and would hide the exact defect this item exists to find. All 9 answer
-> **200 direct with no redirect**: no rename (a rename would 301), no visibility
-> flip, and `applied/actions/runs/24665061332` still has its logs. `out/` carries
-> 66 distinct `github.com` URLs, 57 + 9, and **all 66 are reachable today.**
+> **200 direct with no redirect**: no rename (a rename would 301) and no
+> visibility flip. `out/` carries 66 distinct `github.com` URLs, 57 + 9, and
+> **all 66 are reachable today.**
+>
+> **THE CI RUN NEEDED A SECOND MEASUREMENT, and the first sentence written here
+> was wrong.** A 200 on `applied/actions/runs/24665061332` does **not** mean the
+> logs survived — GitHub serves the run page long after log retention expires.
+> What the row actually claims (`projectCaseStudies.ts:401-407`) is the STEP
+> LIST, not the log text, and that is still publicly verifiable: the jobs
+> endpoint answers **200 unauthenticated** and both named steps — *"Run
+> classifier non-regression gate (rules v3)"* and *"Run hybrid benchmark gate
+> (v3 deterministic)"* — are still listed `success`. **The logs themselves were
+> not measured and are probably gone**: the run is dated **2026-04-20**, past
+> GitHub's 90-day default retention. That is ageing rather than sanitizing, and
+> the claim does not rest on it. **A 200 is not evidence for whatever the link
+> was cited for; check the claim, not the status code.**
 >
 > **Two surfaces this section named as unread were read as well.**
 > `out/resume.pdf` ships six outbound links — five Vercel deploys and the
@@ -2501,6 +2514,11 @@ artifact was stripped, or visibility changed).
 > `benchmarks/jmh-results-rigorous.json`, `.github/workflows/backend-ci.yml`,
 > `docs/benchmarks/runs/bench-20260802-dot20x-*`, `src/Matrix.cpp`. A 200 on the
 > tree says nothing about whether the file still says what the field claims.
+> **Read the green result at its true width:** reachability answers *gone* and
+> *misplaced*, and answers *sanitized* only in its visibility sense. It does
+> **not** answer the owner's third phrase — the trees may now hold different
+> work than the site's claims describe, and every sha-pinned link would keep
+> answering 200 while that was true.
 >
 > **ONE DISAGREEMENT THE CENSUS SURFACED WITHOUT JUDGING IT.** The Cadence suite
 > claim is LINKED at `CADENCE_SUITE_SHA = 8eee84e` (`projectCaseStudies.ts:344`,
