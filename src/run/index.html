@@ -884,12 +884,23 @@
   .bpath{min-height:158vh; flex-direction:column; justify-content:center}
   .bpath .beat-inner{width:100%}
   .figsvg .feed{fill:none; stroke:var(--hair-strong); stroke-width:1}
-  .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.1}
+  /* the product frame is SUBJECT, not plumbing — 1.4 is the weight fig. 09
+     settled for subject ink against structure's 1. Its dash is written per
+     element (stroke-dasharray on the path) because it is a fact about that
+     one box, not a class of box: solid is checked in, dashed is not. */
+  .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.4}
   .figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
   .figsvg .rec.landed{stroke:var(--pine)}
   .figsvg .meter{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .figsvg .meterfill{fill:var(--pine)}
   .figsvg .meterlbl{fill:var(--ink)}
+  /* the three products' dispositions, and the meter's signature riser.
+     Same strokes as the reviewer's own marks at ¶10 (.gates .gmark, 1.5
+     round): a check for what was filed, a strike for what was not, and
+     clay for that pair because a disposition of record is the gate
+     register — §4b's amended rule 5. */
+  .figsvg .tickp{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
+  .figsvg .tickp.withheld{stroke:var(--clay-g)}
   .schoolrec{max-width:1180px; margin:clamp(2.2rem,5vh,4rem) auto 0; width:100%;
     border-top:1px solid var(--hair-strong); padding-top:1rem}
   .schoolrec .shead{display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
@@ -1580,7 +1591,7 @@ h1[data-np-measuring] .np-ch {
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the inventory is checked in — the rest are read off miami&rsquo;s own systems and cannot be published</span> · <a href="https://yadava5.github.io/Portfolio-2.0/projects/master-inventory/">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="pathFig" class="figsvg" viewBox="0 0 560 330" role="img" aria-label="Three feeder lines — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — each pass a python-and-sql works gate, land in their products, and merge onto one main line; a compliance meter under the third feeder fills from zero to 97 percent."></svg>
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 388" role="img" aria-label="Three feeder roads — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — run through one python-and-SQL works and park inside their products, where they stay; the three products merge onto one main line. Each product carries its disposition, in the reviewer's own marks: the master inventory is drawn solid and checked in, and the other two are drawn dashed and not checked in, because they are read off Miami's own systems. Beneath the third, a compliance meter stands settled at 97 percent across 61 projects — it does not fill as you scroll, and only its riser and numeral ink in."></svg>
         <figcaption>fig. 03 — three sources in, one table out. <i>the merge is the thread you are following.</i></figcaption>
       </figure>
     </div>
@@ -2898,17 +2909,87 @@ function scrubWho(p) {
   who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
 }
 
-/* The yard — the ITSM job as freight: three feeders (query logs, the
-   Tableau/Workday silos, a legacy Laravel reporter), each through the
-   python·sql works, landing in its product, merging onto the main
-   line. Records travel and LAND (unlike jet's blocks they stay put —
-   the yard's whole point is what the freight became). The compliance
-   meter fills to its real 97%. Wide 560/12px; tight 240/11px. */
-const yard = { svg: $("pathFig"), recs: [], meter: null, meterW: 0, trunk: null };
+/* ————— fig. 03 · the yard — the ITSM job as freight —————
+   Three feeders (1.6m query logs, the Tableau/Workday silos, a legacy
+   Laravel reporter) run through one python·sql works and land in their
+   products; the products merge onto the main line. Records travel and
+   LAND — unlike jet's blocks they stay put, because the yard's whole
+   point is what the freight became.
+
+   fig. 09's three devices, inherited, and what each answers here:
+
+   1 A LABEL SEATS ON ITS RULE AND THE RULE BREAKS FOR IT. The plate is
+     four named columns on one header rule — freight · works · products
+     · main line — and the works' walls and every box's left edge break
+     for the road that crosses them. Nothing is set over a line.
+   2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, dash as the
+     sub-register. Dash carries the disposition the station's own handoff
+     line states out loud: only the inventory is checked in, so its box
+     is solid and the other two are drawn dashed. No element-level
+     opacity is used anywhere on this plate — the only opacity written
+     is 0/1, on a record before it enters and on the meter's numeral
+     before it is signed.
+   3 A GATE A THING PASSES THROUGH GETS A FORM THAT SWINGS — and this
+     plate is the one where that device does not apply, which was worth
+     finding out by drawing it. A boom was built here and removed. On a
+     HORIZONTAL road the bar is vertical when it blocks and horizontal
+     when it is out of the way, so an opened boom is a stick lying
+     parallel to the road it no longer crosses. fig. 09 can afford that
+     because six lifted booms are read against a seventh still down, and
+     because its lifted bars take pine. Here all three works gates truly
+     opened — there is no contrast to read against — and pine is barred,
+     because pine is THIS plate's landed register (records, stitches,
+     the meter, the filed mark) and three pine sticks would say "these
+     landed" about a gate. The settled state is the design, and that
+     settled state said nothing. So the works keeps the form it has —
+     two walls with a doorway at each road, which IS a threshold you
+     pass through — and the clay register goes where this plate's real
+     gate is: the three products' DISPOSITIONS. One was filed and two
+     were withheld, drawn in the reviewer's own marks from ¶10, a check
+     and a strike. §4b's amended rule 5 permits exactly this: a
+     disposition of record may repeat in clay, because the cap binds
+     emphasis a composition adds, not facts it records.
+
+   THE CONGESTION, and how the room was bought. §4b: three feeder label
+   pairs, three product boxes and the meter shared one 330-unit height
+   while the stitch curves crossed the label zone. Nothing was dropped
+   to fix it. The feeder labels moved INTO their band, onto the same two
+   rows as the product they become, so the source name and the product
+   name read across; the road IS the siding the records park on, so no
+   box needs a third row; the meter hangs off the product it is about
+   instead of floating in the gutter; and the rest is height (330 ⟶
+   388), which the label-size gate does not read. The width is
+   untouched: 12 × 515 ÷ 560 = 11.04px, exactly as it ships.
+
+   THE METER DOES NOT FILL — §4b, and a correctness fix rather than
+   polish. It stood animated from width 0 to 97% of its own scale under
+   a label reading `0% ⟶ 97%`: a gauge filling as you watch over a
+   committed figure, the class the bench ruling removed twice. It stands
+   drawn at its 97% now — the 3 it does not reach is visible at the
+   track's end — and what answers the scroll is the signature: the riser
+   drawing and the numeral being written. A mark being drawn misstates
+   no magnitude. Wide 560×388/12px; tight 240×550/11px.
+
+   EVERY LABEL BELOW IS BUDGETED AT 8.01 UNITS/CHAR WIDE AND 7.13 TIGHT,
+   read off getComputedTextLength() in the browser rather than estimated.
+   The figure this file used to carry — "~7.25 units/char at 12" — is the
+   glyph advance WITHOUT `.figsvg text{letter-spacing:.05em}`, so it runs
+   every budget on this plate about 10% short: "sqlite · 57.8m rows" was
+   authored to end 4 units inside its box and ends 4 units outside it.
+   That is the arithmetic behind the congestion, not just its symptom. */
+/* the reviewer's own two marks, from the docket at ¶10, at their own
+   14×10 scale: a check for the gate a human signed, a strike for the
+   one that refused. The same hand files and withholds here. */
+const D_FILED = "M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2";
+const D_HELD = "M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6";
+const yard = { svg: $("pathFig"), recs: [], marks: [], trunk: null,
+  sig: null, signum: null, shapedT: 0.68 };
 function buildPath(tight) {
   const s = yard.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  yard.recs = []; yard._mw = null; /* fresh meter: the diff cache must not skip it */
+  yard.recs = []; yard.marks = [];
+  /* fresh elements: the diff cache must not skip them after a rebuild */
+  yard._sig = null; yard._mk = null;
   const src = [
     ["1.6m+ oas query logs", "5 yrs · 1,153 users"],
     ["tableau + workday", "hash-dedup · rest api"],
@@ -2919,73 +3000,162 @@ function buildPath(tight) {
     ["master inventory", "10,453 × 35 fields"],
     ["etl feed", "37-month dashboard"],
   ];
+  const FILED = 1; /* the master inventory — the one product checked in */
+  /* a rule with a gap wherever a label seats on it or a road crosses it */
+  const hrule = (y, x0, x1, gaps) => {
+    let d = "", cur = x0;
+    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${cur} ${y} H ${a} `; cur = b; }
+    if (x1 > cur) d += `M ${cur} ${y} H ${x1}`;
+    el("path", { d: d.trim(), class: "lane" });
+  };
+  const vrule = (x, y0, y1, gaps) => {
+    let d = "", cur = y0;
+    for (const [a, b] of gaps || []) { if (a > cur) d += `M ${x} ${cur} V ${a} `; cur = b; }
+    if (y1 > cur) d += `M ${x} ${cur} V ${y1}`;
+    el("path", { d: d.trim(), class: "lane" });
+  };
   if (!tight) {
-    /* measured, not estimated: Fragment Mono runs ~7.25 units/char at
-       12 — the first cut's 6.9 guess ran "rest api" under the box, and
-       records landed ON the product text (there is no empty row in a
-       34-unit box). Boxes start at 278 (details end ≤272), stand 44
-       tall, and the records dock on the y+18 row BELOW both text bands. */
-    s.setAttribute("viewBox", "0 0 560 330");
-    const laneY = [78, 158, 238];
-    el("text", { x: 16, y: 30 }).textContent = "the freight";
-    laneY.forEach((y, i) => {
-      el("text", { x: 120, y: y - 24, class: "lit" }).textContent = src[i][0];
-      el("text", { x: 120, y: y - 10 }).textContent = src[i][1];
-      el("path", { d: `M 120 ${y} H 270`, class: "lane" });
-      el("line", { x1: 205, y1: y - 12, x2: 205, y2: y + 12, class: "gatecol lane" });
-      el("path", { d: `M 446 ${y - 20} h -168 v 44 h 168`, class: "prod" });
-      el("text", { x: 286, y: y - 6, class: "lit" }).textContent = prod[i][0];
-      el("text", { x: 286, y: y + 8 }).textContent = prod[i][1];
-      el("path", { d: `M 446 ${y} C 468 ${y} 464 158 486 158`, class: "stitch" });
+    /* the columns are sized off the LONGEST measured label in each:
+       freight 8..184 ("hash-dedup · rest api" = 168.3 from x 8), works
+       192..300 (its own nameplate, 96.1), products 308..476 ("sqlite ·
+       57.8m rows" = 152.2 from x 316, ending 468.2), and the merge
+       corridor 484..552, which every stitch stays inside so no label is
+       ever set over a curve. Two names carry the header; the works is
+       the one column that is a machine rather than a state, so it wears
+       its nameplate inside itself, in the silence between two roads. */
+    s.setAttribute("viewBox", "0 0 560 388");
+    /* the works exit is 93% of the record's third segment, so that is
+       where a record stops being raw freight and starts being a product */
+    yard.shapedT = 0.73;
+    const ROAD = [92, 184, 276], WKS = 192, BX0 = 308, BX1 = 476, SW = 508, BUF = 448;
+    el("text", { x: 8, y: 38 }).textContent = "the freight";
+    el("text", { x: 308, y: 38 }).textContent = "the products";
+    el("text", { x: 552, y: 38, "text-anchor": "end" }).textContent = "main line";
+    hrule(34, 102, 552, [[302, 410], [474, 558]]);
+    /* ——— the works: two walls, with a doorway at every road ——— */
+    const doors = ROAD.map((y) => [y - 12, y + 12]);
+    vrule(192, 46, 328, doors);
+    vrule(300, 46, 328, doors);
+    el("text", { x: 196, y: 134, class: "lit" }).textContent = "the works";
+    el("text", { x: 196, y: 148 }).textContent = "python · sql";
+    ROAD.forEach((y, i) => {
+      /* the source's two rows and the product's two rows are THE SAME two
+         rows: the reader gets `1.6m+ oas query logs ⟶ field-usage table`
+         across the plate without the plate having to draw the arrow. */
+      el("text", { x: 8, y: y - 26, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 8, y: y - 12 }).textContent = src[i][1];
+      el("path", { d: `M 8 ${y} H ${BUF}`, class: "lane" });
+      el("path", { d: `M ${BUF} ${y - 6} V ${y + 6}`, class: "lane" }); /* the buffer stop */
+      /* the box is open toward the merge and open at the corner its own
+         road comes in by — a product is what leaves, not a container.
+         Its bottom edge breaks for the disposition it carries. */
+      const filed = i === FILED;
+      const box = { class: "prod",
+        d: `M ${BX1} ${y - 40} H ${BX0} V ${y - 10} M ${BX0} ${y + 12} H ${filed ? 371 : 339}` };
+      if (!filed) box["stroke-dasharray"] = "5 6";
+      el("path", box);
+      el("text", { x: 316, y: y - 26, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 316, y: y - 12 }).textContent = prod[i][1];
+      /* the station's own words, not a coinage: the handoff line says only
+         the inventory is checked in. A shorter tag would leave the box a
+         longer bottom edge and would be saying something the run does not. */
+      yard.marks.push(el("path", { d: filed ? D_FILED : D_HELD,
+        class: filed ? "tickp" : "tickp withheld",
+        transform: `translate(${filed ? 377 : 345} ${y + 4}) scale(1.2)` }));
+      el("text", { x: BX1, y: y + 16, "text-anchor": "end", class: filed ? "lit" : "" })
+        .textContent = filed ? "checked in" : "not checked in";
+      el("path", { class: "stitch",
+        d: i === 1 ? `M ${BX1} ${y} H ${SW}` : `M ${BX1} ${y} C 494 ${y} 492 ${ROAD[1]} ${SW} ${ROAD[1]}` });
     });
-    el("text", { x: 205, y: 318, "text-anchor": "middle" }).textContent = "python · sql — the works";
-    yard.trunk = el("path", { d: "M 486 158 H 534", class: "stitch" });
-    el("path", { d: "M 534 152 L 546 158 L 534 164 Z", fill: "var(--pine)", stroke: "none" });
-    /* the destination sign sits UNDER the switch: every stitch curve
-       lives at x ≤ 486, so a label spanning 491–556 crosses nothing */
-    el("text", { x: 556, y: 178, "text-anchor": "end" }).textContent = "main line";
-    el("rect", { x: 278, y: 276, width: 168, height: 6, class: "meter" });
-    yard.meter = el("rect", { x: 278, y: 276, width: 0, height: 6, class: "meterfill" });
-    yard.meterW = 168;
-    el("text", { x: 278, y: 300, class: "meterlbl" }).textContent = "compliance 0% ⟶ 97% · 61 projects";
-    const lanes = [0, 1, 2, 0, 1, 0, 2, 1];
+    el("path", { d: `M ${SW} ${ROAD[1] - 14} V ${ROAD[1] + 14}`, class: "lane" }); /* the switch stand */
+    yard.trunk = el("path", { d: `M ${SW} ${ROAD[1]} H 540`, class: "stitch" });
+    el("path", { d: `M 540 ${ROAD[1] - 6} L 552 ${ROAD[1]} L 540 ${ROAD[1] + 6} Z`,
+      fill: "var(--pine)", stroke: "none" });
+    /* ——— the meter, hung off the product it is about ——— */
+    el("path", { d: `M 316 ${ROAD[2] + 12} V 312`, class: "lane" });
+    el("rect", { x: BX0, y: 312, width: 168, height: 6, class: "meter" });
+    el("rect", { x: BX0, y: 312, width: 162.9, height: 6, class: "meterfill" }); /* 97%, authored */
+    yard.sig = el("path", { d: "M 470.9 304 V 326", class: "tickp" });
+    yard.signum = el("text", { x: 466, y: 304, "text-anchor": "end", class: "meterlbl", opacity: 0 });
+    yard.signum.textContent = "97%";
+    el("text", { x: BX0, y: 344, class: "meterlbl" }).textContent = "compliance across 61 projects";
+    el("text", { x: 8, y: 370 }).textContent = "not checked in — read off miami’s own systems";
+    hrule(366, 376, 552, []);
+    const lanes = [0, 1, 2, 0, 1, 0, 2, 1], slot = [0, 0, 0];
     lanes.forEach((ln, i) => {
-      const y = laneY[ln];
+      const y = ROAD[ln];
+      /* a siding fills from its far end, so the first arrival parks
+         deepest. It also fixes a defect: the shipping plate spaced docks
+         by `i % 3` over the GLOBAL index, which put ALL THREE of lane 1's
+         records on x 346 and two of lane 0's on x 300 — outlined rects at
+         one coordinate render as one, so the middle lane, which is the
+         checked-in inventory, appeared to deliver a single record. */
+      const dx = 432 - slot[ln]++ * 46;
       const g = el("g", { class: "recg" });
       const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
       yard.recs.push({ g, r, delay: i * 0.045,
-        line: [[-24, y], [120, y], [205, y], [270, y], [300 + (i % 3) * 46, y + 18]] });
+        line: [[-24, y], [8, y], [WKS, y], [BX0, y], [dx, y]] });
     });
   } else {
-    /* the tight yard: the same freight, stacked. Records dock on the
-       box's LOWER-RIGHT row (Y+102, x 200) — clear of both text bands. */
-    s.setAttribute("viewBox", "0 0 240 430");
-    el("text", { x: 8, y: 16 }).textContent = "the freight";
-    for (let i = 0; i < 3; i++) {
-      const Y = 32 + i * 118;
-      el("text", { x: 8, y: Y + 10, class: "lit" }).textContent = src[i][0];
-      el("text", { x: 8, y: Y + 24 }).textContent = src[i][1];
-      el("path", { d: `M 120 ${Y + 30} V ${Y + 62}`, class: "lane" });
-      el("line", { x1: 112, y1: Y + 46, x2: 128, y2: Y + 46, class: "gatecol lane" });
-      if (i === 0) el("text", { x: 136, y: Y + 50 }).textContent = "python · sql";
-      el("path", { d: `M 8 ${Y + 68} v 40 h 224 v -40`, class: "prod" });
-      el("text", { x: 14, y: Y + 82, class: "lit" }).textContent = prod[i][0];
-      el("text", { x: 14, y: Y + 96 }).textContent = prod[i][1];
+    /* the tight yard: the same machine, stacked, with the road down the
+       left the way fig. 09's tight rail runs — so the boom is the same
+       bar on the same hinge, and every label has the full 240 to itself.
+       Measured at 11 + .03em: the longest feeder label is 21 chars =
+       149.7 units, the longest product label 19 = 135.5 from x 54. */
+    s.setAttribute("viewBox", "0 0 240 550");
+    yard.shapedT = 0.48; /* the works' far wall, as a fraction of this polyline */
+    const BAND = [26, 168, 310], RX = 34, BX1 = 212, CX = 224;
+    el("text", { x: 8, y: 14 }).textContent = "the freight";
+    hrule(10, 94, 232, []);
+    BAND.forEach((Y, i) => {
+      el("text", { x: 8, y: Y + 12, class: "lit" }).textContent = src[i][0];
+      el("text", { x: 8, y: Y + 26 }).textContent = src[i][1];
+      el("path", { d: `M ${RX} ${Y + 34} V ${Y + 118}`, class: "lane" });
+      el("path", { d: `M 28 ${Y + 118} H 40`, class: "lane" }); /* the buffer stop */
+      /* the works, turned: two walls ACROSS the road with the doorway the
+         road runs through, which is the wide plate's corridor rotated */
+      el("path", { d: `M 12 ${Y + 44} H 26 M 42 ${Y + 44} H 56`, class: "lane" });
+      el("path", { d: `M 12 ${Y + 68} H 26 M 42 ${Y + 68} H 56`, class: "lane" });
+      if (i === 0) el("text", { x: 64, y: Y + 60 }).textContent = "python · sql";
+      const filed = i === FILED;
+      const box = { class: "prod",
+        d: `M ${BX1} ${Y + 84} H 42 M 26 ${Y + 84} H 8 V ${Y + 128} M ${filed ? 108 : 136} ${Y + 128} H ${BX1}` };
+      if (!filed) box["stroke-dasharray"] = "5 6";
+      el("path", box);
+      el("text", { x: 54, y: Y + 100, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 54, y: Y + 114 }).textContent = prod[i][1];
+      /* seated at the left here: the box's right end is the dock */
+      yard.marks.push(el("path", { d: filed ? D_FILED : D_HELD,
+        class: filed ? "tickp" : "tickp withheld",
+        transform: `translate(12 ${Y + (filed ? 121 : 123)}) scale(1.05)` }));
+      el("text", { x: 30, y: Y + 132, class: filed ? "lit" : "" })
+        .textContent = filed ? "checked in" : "not checked in";
+      el("path", { d: `M ${BX1} ${Y + 106} H ${CX}`, class: "stitch" });
       const g = el("g", { class: "recg" });
       const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
       yard.recs.push({ g, r, delay: i * 0.07,
-        line: [[120, Y + 14], [120, Y + 46], [120, Y + 60], [200, Y + 100]] });
-    }
-    el("rect", { x: 8, y: 392, width: 224, height: 6, class: "meter" });
-    yard.meter = el("rect", { x: 8, y: 392, width: 0, height: 6, class: "meterfill" });
-    yard.meterW = 224;
-    el("text", { x: 8, y: 416, class: "meterlbl" }).textContent = "0% ⟶ 97% · 61 projects";
-    el("text", { x: 232, y: 428, "text-anchor": "end" }).textContent = "⟶ the main line";
-    yard.trunk = null;
+        line: [[RX, Y + 34], [RX, Y + 56], [RX, Y + 84], [RX, Y + 110]] });
+    });
+    /* the merge, drawn: the tight plate used to state it in a text arrow */
+    yard.trunk = el("path", { d: `M ${CX} ${BAND[0] + 106} V 508`, class: "stitch" });
+    el("path", { d: `M ${CX - 6} 508 L ${CX} 520 L ${CX + 6} 508 Z`, fill: "var(--pine)", stroke: "none" });
+    el("path", { d: `M 16 ${BAND[2] + 128} V 460`, class: "lane" });
+    el("rect", { x: 8, y: 460, width: 192, height: 6, class: "meter" });
+    el("rect", { x: 8, y: 460, width: 186.2, height: 6, class: "meterfill" }); /* 97%, authored */
+    yard.sig = el("path", { d: "M 194.2 452 V 474", class: "tickp" });
+    yard.signum = el("text", { x: 190, y: 452, "text-anchor": "end", class: "meterlbl", opacity: 0 });
+    yard.signum.textContent = "97%";
+    el("text", { x: 8, y: 486, class: "meterlbl" }).textContent = "compliance across 61 projects";
+    el("text", { x: 8, y: 508 }).textContent = "not checked in — read off";
+    el("text", { x: 8, y: 522 }).textContent = "miami’s own systems";
+    el("text", { x: 232, y: 542, "text-anchor": "end" }).textContent = "the main line";
   }
-  if (yard.trunk) {
-    const L = yard.trunk.getTotalLength();
-    yard.trunk.style.strokeDasharray = L; yard.trunk.style.strokeDashoffset = L; yard.trunk._len = L;
+  /* everything that inks in, measured once at build. getTotalLength on a
+     transformed path returns USER-space length, which is what the dash
+     array wants — the scale rides along with it. */
+  for (const q of [yard.trunk, yard.sig, ...yard.marks]) {
+    const L = q.getTotalLength();
+    q.style.strokeDasharray = L; q.style.strokeDashoffset = L; q._len = L;
   }
 }
 function scrubPath(p) {
@@ -2994,14 +3164,38 @@ function scrubPath(p) {
     const [x, y] = polyAt(rc.line, t);
     rc.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
     rc.g.setAttribute("opacity", t <= 0 ? 0 : 1);
-    const landed = t > 0.62; /* past the works: the record is shaped */
+    const landed = t > yard.shapedT; /* out of the works: the record is shaped */
     if (rc._landed !== landed) { rc._landed = landed; rc.r.setAttribute("class", landed ? "rec landed" : "rec"); }
   }
-  const mw = (smooth((p - 0.42) / 0.3) * 0.97 * yard.meterW).toFixed(1);
-  if (mw !== yard._mw) { yard._mw = mw; yard.meter.setAttribute("width", mw); }
   if (yard.trunk) { /* the merge inks early enough that a mid-beat still shows it */
     const t = smooth((p - 0.34) / 0.24);
     yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
+  }
+  /* THE SIGNATURE, which is all the meter does. The bar is drawn at its
+     committed 97% before the reader arrives; the riser and the numeral
+     are what the scroll writes, and a mark being written states nothing
+     on the way. The numeral is 0 or 1 — never a partial opacity, which
+     no palette gate can see. */
+  const sg = smooth((p - 0.52) / 0.14);
+  const soff = (yard.sig._len * (1 - sg)).toFixed(1);
+  if (yard._sig !== soff) {
+    yard._sig = soff;
+    yard.sig.style.strokeDashoffset = soff;
+    yard.signum.setAttribute("opacity", sg >= 1 ? 1 : 0);
+  }
+  /* the dispositions are signed in band order, as the last records
+     arrive — mark 0 completes at .76 and the eighth record lands at .835,
+     so the docket is written across the end of the run rather than after
+     it. A mark being signed is the one motion the bench ruling allows
+     over a record, and all three stand complete at scrub 1. */
+  const mk = yard.marks.map((m, i) => {
+    const t = smooth((p - 0.64 - i * 0.05) / 0.12);
+    return (m._len * (1 - t)).toFixed(1);
+  }).join(" ");
+  if (yard._mk !== mk) {
+    yard._mk = mk;
+    const offs = mk.split(" ");
+    yard.marks.forEach((m, i) => { m.style.strokeDashoffset = offs[i]; });
   }
 }
 

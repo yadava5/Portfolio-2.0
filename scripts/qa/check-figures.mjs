@@ -467,8 +467,26 @@ const FIGURES = [
     [
       "pathFig",
       "fig. 03",
-      ["97 percent"],
-      "the compliance meter's own figure, stated in a label no gate read before",
+      [
+        "97 percent",
+        /* §4b's meter ruling, made gate-enforceable. `scrubPath` used to fill
+           .meterfill from width 0 to 97% under the reader's scroll, inside a
+           scale reading "compliance 0% ⟶ 97%" — a gauge with a scale filling
+           as you watch, over a committed figure, which is the class §5.5's
+           bench ruling condemned. The bar is now authored at 97% of its track
+           and only its riser and numeral ink in. "97 percent" alone could not
+           see that: it survives BOTH wordings, which is exactly why the old
+           label could say "fills from zero to 97 percent" with every gate
+           green. This clause is the one that cannot. */
+        "stands settled at 97 percent",
+        /* The plate's new fact. ¶03's own handoff line has always said "only
+           the inventory is checked in — the rest are read off miami's own
+           systems and cannot be published" (:1591); the drawing was silent
+           about it until now, and a redraw that keeps the boxes and loses the
+           dispositions turns three products into three equals. */
+        "read off Miami's own systems",
+      ],
+      "the meter that no longer fills, and the dispositions the run states in prose",
     ],
     [
       "appliedFig",
