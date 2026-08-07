@@ -563,11 +563,45 @@
   .b6{align-items:flex-start}
   .b6 .beat-inner{grid-template-columns:minmax(0,30rem) minmax(0,1fr); align-items:start}
   .plate.bare{background:none; border:none; box-shadow:none; padding:0; contain:layout}
+  /* ————— fig. 08 · the stair, drawn in section —————
+     §4b's note on this plate was that the pencil half "reads as faint clutter
+     rather than absence", and its floor fix was a heavier dash. A heavier dash
+     makes absence LOUDER, not clearer. Absence is a relation, so the redraw
+     gives the BUILT half a body instead: three treads closed into a hatched
+     mass standing on the ground, cut off by a section face where the work
+     stopped, and past that face nothing at all under the two pencil steps.
+     The empty region is the drawing's largest single element.
+
+     CLOSURE CARRIES THE MEANING; THE HATCH IS TEXTURE. Measured 2026-08-06,
+     the two grounds this plate ever renders over — #f2e4c9 (DUSK[0], which is
+     what beat 7 holds until the darkening opens at dusk7.start, and the plate
+     is off the curtain before then) and #43372f (the reduced-motion .b6
+     ground): --hair-strong is 2.01:1 / Lc 34.3 and 3.40:1 / Lc 32.7. That is a
+     texture, not a line anyone reads, and it is deliberately not load-bearing:
+     the mass is legible from its closed ink outline alone, in greyscale, to a
+     dichromat, and on a day field where the hatch is quiet.
+
+     Weights are the enrichment register §4b names. Ink runs 1.4 for the mass's
+     faces, 2 for a tread you can stand on, and 2.4 for the CUT — the section
+     cut is the heaviest line in a sectional drawing, and here it is also the
+     subject. No font-size override survives on this plate: `.steplbl` and
+     `.heldtag` used to set 11/12px, which check-figures cannot see (it reads
+     `.figsvg text` and nothing else), so every glyph here is now the one size
+     the gate's arithmetic is actually about. */
   .figsvg .tread{fill:none; stroke:var(--ink); stroke-width:2}
-  .figsvg .pencil{fill:none; stroke:var(--ink-2); stroke-width:1.2; stroke-dasharray:5 5}
-  .figsvg .heldtag{fill:var(--clay); font-size:12px}
-  .figsvg .steplbl{fill:var(--ink-2); font-size:11px}
-  .figsvg .steplbl.walked{fill:var(--ink)}
+  .figsvg .pencil{fill:none; stroke:var(--ink-2); stroke-width:1.4; stroke-dasharray:6 7}
+  .figsvg .face{fill:none; stroke:var(--ink); stroke-width:1.4}
+  .figsvg .hatch{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .figsvg .heldtag{fill:var(--clay)}
+  .figsvg .ok{fill:var(--pine)}
+  /* the run token's halt ring. NOT `.holdring` — that rule carries opacity:0
+     and is switched by fig. 04's `.mkg.held` class, and a stylesheet opacity
+     would beat the presentation attribute this figure's scrub writes. Same
+     mark, same token, its own switch. */
+  .figsvg .holdmark{fill:none; stroke:var(--clay-g); stroke-width:1.4}
+  #questFig .face.cut{stroke-width:2.4}
+  #questFig.tight .face.cut{stroke-width:2}
+  #questFig.tight .pencil{stroke-dasharray:5 6}
   .quests{margin-top:2rem; border-top:1px solid var(--hair-strong)}
   .quests .q{
     display:grid; grid-template-columns:1.4rem 1.4rem 1fr auto; gap:.7rem; align-items:baseline;
@@ -1869,8 +1903,8 @@ h1[data-np-measuring] .np-ch {
         <p class="mono" data-fx="in .84 .95 y 4 | out 2 2.5 | drift 0" data-fx-sync="duskin" style="margin-top:1.6rem">dusk. the light is the record: what shipped is lit, what didn&rsquo;t stays dashed.</p>
       </div>
       <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
-        <svg id="questFig" class="figsvg" viewBox="0 0 440 380" role="img" aria-label="A staircase of five steps drawn in ink: the three built steps are solid and get climbed, the two unbuilt steps stay pencil-dashed, and the climber pauses on the third with a clay ring — a deliberate hold, not a fall."></svg>
-        <figcaption>fig. 08 — the ladder is the ledger: three steps in ink, two in pencil. <i>the climb pauses the way the run halts — on purpose.</i></figcaption>
+        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A staircase drawn in section. All five steps are sketched in pencil first; the lower three are then inked over the sketch and hatched solid beneath, so the built work has a body standing on the ground line. The climber walks those three and stops on the third, a landing, wearing the clay ring this run uses for a deliberate hold, not a fall. A heavy cut face closes the built mass where the work ended, and nothing is drawn beneath the two unbuilt steps: the space between them and the ground is empty and they stay pencil. Each states its own reason — scale is held for a partner or funder, and a finished product is held because it is not claimed, so its tread stops in mid-air rather than ending anywhere. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
+        <figcaption>fig. 08 — the stair is the ledger, drawn in section: three steps with a body under them, two with nothing at all. <i>the cut is where the record stops; the climb pauses the way the run halts — on purpose.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -3729,77 +3763,268 @@ function scrubJet(p) {
   }
 }
 
-/* LifeQuest — the climb: the ledger drawn as a staircase. Three treads in
-   ink that draw themselves and get walked; two in pencil that never
-   resolve; the climber pauses on the third wearing the same clay ring the
-   run token wears when it halts. The pause is the content.
-   Wide carries the step names; tight (240) numbers the steps 01–05 and
-   lets the DOM ledger beside it carry the words — a truthful subset
-   beats an illegible caption. Labels sit BELOW the treads (risers only
-   rise above them, so nothing is crossed), ticks above-left, held tags
-   above-right where the climber never stands. */
-const climb = { svg: $("questFig"), steps: [], labels: [], ticks: [], held: [], tok: null, ring: null,
-  X0: 26, W: 78, Y0: 330, R: 60 };
+/* LifeQuest — the climb, drawn in section. The stair is the ledger beside it:
+   five steps sketched in pencil, three of them built. What makes the drawing
+   honest is not the pencil, it is the MASS — the built three close into a
+   hatched body standing on the ground, and past the cut face where the work
+   ended there is nothing under the last two at all.
+
+   §4b's note for this plate ("the pencil half reads as faint clutter rather
+   than absence; heavier dash, 5 7 at 1.4") is prior art the design ruling
+   lets a redraw supersede, and this supersedes it: a heavier dash makes
+   absence LOUDER, not legible. Absence is a relation, so the fix is to give
+   the built half a body and let the unbuilt half be read against it.
+
+   FOUR THINGS THE OLD PLATE DID NOT SAY, and one it got wrong:
+
+   1 BUILT MEANS THERE IS SOMETHING UNDER IT. The shipping plate drew five
+     bare profiles over nothing, three solid and two dashed, so the only
+     difference between shipped and unshipped was a dash pattern. A stair in
+     section has a body; the two unbuilt steps do not; and the empty region
+     bounded by the cut, the ground and the pencil is now the largest single
+     element on the plate. Hatching is the draughtsman's own notation for
+     material, which is the same licence fig. 07's `1f 8b` lettering has —
+     grammar, not a claim.
+   2 THE STOP HAS A FORM, AND IT IS A LANDING. The last built step is wider
+     than the others because a landing is the architectural element for a
+     deliberate pause. The climber stands ON something instead of at a brink,
+     which is the aria-label's claim drawn rather than asserted.
+   3 THE TWO HOLDS ARE NOT THE SAME HOLD, and the ledger beside the plate has
+     always said so — :1863 "needs a partner or funder" against :1865 "not
+     claimed". The drawing flattened them into two identical `held` tags.
+     Scale is blocked by something outside the work, so it is drawn whole and
+     labelled with what is missing; a finished product is not claimed at all,
+     so ITS tread is the one line on this plate that stops in mid-air instead
+     of ending at something. No terminus, for no claim — and that reads in
+     both editions, in greyscale, and to a dichromat.
+   4 THE WORK HAS AN ORIGIN, and the footer keeps :1858's verb. The project
+     was BORN at Social Innovation Weekend, March 2025; nothing owns a claim
+     that three shipped features were finished inside the weekend, so the
+     plate does not make one.
+   5 AND THE ONE IT GOT WRONG, which no gate could see: the third tick never
+     drew. `tp` topped out at 2 and the threshold for i === 2 was `i + 1`, so
+     `backend — real` sat unchecked at every scroll position AND at the
+     settled frame, next to a ledger row printing "✓ shipped". The ticks now
+     key off the hop that lands on their own step, so the arithmetic cannot
+     drift apart from the walk again.
+
+   THE CLAY, and the question §4b left open. `held` stays clay: it is a
+   disposition of RECORD, not emphasis this composition adds, in the same
+   family as fig. 03's `not checked in`. The decisive fact is next door —
+   `.quests .q.held .qi` and `.qm` are already --clay (:578, :584) and beat 7
+   resolves the plate and the ledger off the same `p`, side by side in one
+   field of view. Demoting the plate's `held` would make the two halves of one
+   beat disagree about the colour of a hold. The cap then does its real work
+   in the other direction, on what is WITHHELD: the cut face, the pencil, the
+   reason lines and the ground are ink, ink-2 and hair, so the whole plate
+   carries two clay words and one clay-g ring and nothing else.
+
+   NO PARTIAL OPACITY SURVIVES HERE. The shipping scrub settled the pencil at
+   `opacity 0.9` — check-palette composites TOKEN alpha only and cannot see an
+   element one. Everything now arrives by stroke-dashoffset, by a clip sweep,
+   or at 0/1, and every element reads complete at scrub 1 with no frames of
+   motion left in it.
+
+   Wide is 490 (12 × 450 ÷ 490 = 11.02px at this figure's declared seat, the
+   same band as the other five wide plates); tight is 240, where the words go
+   back to the ledger and the numbers stay, because 7.125 units a character
+   does not buy five names. Height is free on both — the gate reads WIDTH. */
+const climb = { svg: $("questFig"), g: null, ground: null, ghost: null,
+  clip: null, fill: null, steps: [], labels: [], ticks: [], faces: [],
+  blocks: [], foot: [], tok: null, ring: null };
+/* the three ink windows, hoisted: this array is read every frame */
+const CLIMB_INK = [[0.1, 0.18], [0.16, 0.24], [0.22, 0.32]];
 function buildClimb(tight) {
   const s = climb.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  climb.steps = []; climb.labels = []; climb.ticks = []; climb.held = [];
-  if (!tight) { climb.X0 = 26; climb.W = 78; climb.Y0 = 330; climb.R = 60; s.setAttribute("viewBox", "0 0 440 380"); }
-  else { climb.X0 = 10; climb.W = 44; climb.Y0 = 290; climb.R = 52; s.setAttribute("viewBox", "0 0 240 330"); }
-  const { X0, W, Y0, R } = climb;
-  const names = tight
-    ? ["01", "02", "03", "04", "05"] /* the ledger rows carry the words */
-    : ["mission card", "tier ladder", "backend", "scale", "finished"];
-  el("path", { d: `M ${X0 - 18} ${Y0} h 18`, class: "lane" }); /* the ground */
-  for (let i = 0; i < 5; i++) {
-    const x = X0 + i * W, y = Y0 - i * R;
-    const solid = i < 3;
-    /* built steps: tread then riser; pencil steps: the riser INTO them is
-       pencil too — the way up is exactly as unbuilt as the step */
-    const d = i < 3
-      ? (i < 2 ? `M ${x} ${y} h ${W} v ${-R}` : `M ${x} ${y} h ${W}`)
-      : `M ${x} ${y + R} v ${-R} h ${W}`;
-    const p = el("path", { d, class: solid ? "tread" : "pencil" });
-    if (solid) { const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; p._len = L; }
-    else p.setAttribute("opacity", 0);
-    climb.steps.push(p);
-    const lbl = el("text", { x: x + 2, y: y + 18, class: "steplbl" }); lbl.textContent = names[i];
-    climb.labels.push(lbl);
-    if (solid) {
-      const tk = el("text", { x: x + 4, y: y - 8, fill: "var(--pine)", "font-size": tight ? "12" : "13" });
-      tk.textContent = "✓"; tk.setAttribute("opacity", 0); climb.ticks.push(tk);
-    } else {
-      const h = el("text", { x: x + W - 4, y: y - 8, "text-anchor": "end", class: "heldtag" });
-      h.textContent = "held"; h.setAttribute("opacity", 0); climb.held.push(h);
-    }
-  }
-  climb.ring = el("circle", { r: 10, fill: "none", stroke: "var(--clay-g)", "stroke-width": 2, opacity: 0 });
-  climb.tok = el("circle", { r: 5.5, fill: "var(--ink)", opacity: 0 });
+  climb.steps = []; climb.labels = []; climb.ticks = []; climb.faces = [];
+  climb.blocks = []; climb.foot = [];
+  climb._sw = climb._fw = climb._cx = climb._cy = null; /* no stale diff */
+  /* xs runs the five step edges plus the far end; ys their tread levels. The
+     third run is the landing. `tip` is where the top pencil tread stops —
+     short of its own full run, which is the drawing of "not claimed". */
+  const g = tight
+    ? { vb: "0 0 240 318", vw: 240, vh: 318,
+        xs: [16, 54, 92, 150, 188, 226], ys: [200, 156, 112, 68, 24],
+        Yg: 246, tip: 215, gx: [8, 232], hk: [222, -30, 14], hx: [4, 170],
+        tokR: 4.5, ringR: 8, lead: 5, mark: 12, dy: 16, up: 12, dn: 4, ldy: 14,
+        names: ["01", "02", "03"], /* the ledger rows carry the words */
+        holds: [["04"], ["05"]],
+        pts: [[10, 238], [43, 190], [81, 146], [130, 102]],
+        foot: [[270, "solid: built · pencil: not"],
+               [288, "born march 2025, at the"],
+               [304, "social innovation weekend"]] }
+    : { vb: "0 0 490 410", vw: 490, vh: 410,
+        xs: [32, 108, 184, 302, 378, 454], ys: [286, 222, 158, 94, 30],
+        Yg: 354, tip: 432, gx: [14, 476], hk: [312, -136, 18], hx: [10, 330],
+        tokR: 5.5, ringR: 10, lead: 8, mark: 18, dy: 22, up: 14, dn: 5, ldy: 16,
+        names: ["mission card", "tier ladder", "backend"],
+        holds: [["scale", "partner or funder"], ["finished", "not claimed"]],
+        pts: [[18, 344], [87, 274], [163, 210], [274, 146]],
+        foot: [[376, "solid where it was built · pencil where it was not"],
+               [396, "born at social innovation weekend, march 2025"]] };
+  climb.g = g;
+  s.setAttribute("viewBox", g.vb);
+  const { xs, ys, Yg } = g, cut = xs[3];
+  /* every solid stroke draws itself; the pencil cannot, because its dasharray
+     IS the drawing, so the sketch arrives under a clip that sweeps instead */
+  const drawn = (e) => {
+    const L = e.getTotalLength();
+    e.style.strokeDasharray = L; e.style.strokeDashoffset = L;
+    e._len = L; e._d = null; return e;
+  };
+  const text = (x, y, words, cls) => {
+    const t = el("text", cls ? { x, y, class: cls } : { x, y });
+    t.textContent = words; t.setAttribute("opacity", 0); t._on = 0; return t;
+  };
+
+  /* 1 · THE GROUND, and it runs the full plate. Everything here is measured
+     off it: the mass stands on it, and the empty region is bounded BY it —
+     which is what makes the emptiness a shape rather than blank paper. */
+  climb.ground = drawn(el("path", { d: `M ${g.gx[0]} ${Yg} H ${g.gx[1]}`, class: "lane" }));
+
+  /* 2 · THE MASS, and the hatch inside it. One clip path: the stepped polygon
+     plus a rect per built label, punched out with evenodd — fig. 09's first
+     rule is that nothing on these plates is ever set over a line. The boxes
+     are budgeted at the measured advance (8.012 units a character at 12px +
+     .05em, 7.125 at 11px + .03em) rather than measured per build: a hole four
+     units wider than its glyphs is invisible, a measurement that returns 0 at
+     boot is not. Each box sits wholly inside the polygon, because evenodd
+     punches a notch rather than a hole if one crosses the boundary. */
+  const ADV = tight ? 7.125 : 8.012;
+  const mass = `M ${xs[0]} ${Yg} V ${ys[0]} H ${xs[1]} V ${ys[1]} H ${xs[2]} V ${ys[2]} H ${cut} V ${Yg} Z`;
+  const holes = g.names.map((w, i) => {
+    const x0 = xs[i] + g.lead - 4, y = ys[i] + g.dy;
+    const x1 = (xs[i] + g.lead + g.mark + w.length * ADV + 6).toFixed(1);
+    return `M ${x0} ${y - g.up} H ${x1} V ${y + g.dn} H ${x0} Z`;
+  });
+  const cp = el("clipPath", { id: "climbMass" });
+  el("path", { d: [mass, ...holes].join(" "), "clip-rule": "evenodd" }, cp);
+  /* A SECOND CLIP, NESTED, and it is not decoration. A single hatch line runs
+     the whole diagonal of the mass, so revealing lines one at a time filled
+     the top of the stair while only the bottom step had been inked — material
+     arriving ahead of the structure that encloses it. The fill rect sweeps
+     with the profile instead, so the hatch reaches exactly as far as the ink
+     has been drawn, and not one hatch line carries an opacity of its own. */
+  const fp = el("clipPath", { id: "climbFill" });
+  climb.fill = el("rect", { x: 0, y: 0, width: 0, height: g.vh }, fp);
+  const hg = el("g", { "clip-path": "url(#climbFill)" },
+    el("g", { "clip-path": "url(#climbMass)" }));
+  /* y = x + k, so the hatch crosses the treads steeply rather than running
+     parallel to the flight it is meant to fill */
+  for (let k = g.hk[0]; k >= g.hk[1]; k -= g.hk[2])
+    el("path", { d: `M ${g.hx[0]} ${g.hx[0] + k} L ${g.hx[1]} ${g.hx[1] + k}`, class: "hatch" }, hg);
+
+  /* 3 · THE TWO FACES. The left one founds the mass and carries the base back
+     under it; the CUT is where the building stopped, and in a section the cut
+     is the heaviest line on the sheet. The pencil riser to the next step
+     rises out of that same point: the way up is exactly as unbuilt as the
+     step, so one vertical changes material at the landing and says so. */
+  climb.faces = [
+    drawn(el("path", { d: `M ${xs[0]} ${ys[0]} V ${Yg} H ${cut}`, class: "face" })),
+    drawn(el("path", { d: `M ${cut} ${ys[2]} V ${Yg}`, class: "face cut" })),
+  ];
+
+  /* 4 · THE SKETCH — all five steps in pencil, under one clip that sweeps,
+     which is how a stair is actually drawn: the whole flight planned, then
+     the built part inked over it. The lower three are their own path so they
+     can be retired the moment their ink closes; 1.4 of dashed ink-2 left
+     under 2 of ink fringes at every dash edge and reads as a defect. */
+  const sc = el("clipPath", { id: "climbSketch" });
+  climb.clip = el("rect", { x: 0, y: 0, width: 0, height: g.vh }, sc);
+  const sg = el("g", { "clip-path": "url(#climbSketch)" });
+  climb.ghost = el("path", { class: "pencil",
+    d: `M ${xs[0]} ${ys[0]} H ${xs[1]} V ${ys[1]} H ${xs[2]} V ${ys[2]} H ${cut}` }, sg);
+  el("path", { class: "pencil",
+    d: `M ${cut} ${ys[2]} V ${ys[3]} H ${xs[4]} V ${ys[4]} H ${g.tip}` }, sg);
+
+  /* 5 · THE BUILT TREADS. Tread then riser for the first two; the third is
+     the landing and has no riser of its own, because the step above it was
+     never built. */
+  for (let i = 0; i < 3; i++)
+    climb.steps.push(drawn(el("path", { class: "tread",
+      d: i < 2 ? `M ${xs[i]} ${ys[i]} H ${xs[i + 1]} V ${ys[i + 1]}` : `M ${xs[2]} ${ys[2]} H ${cut}` })));
+
+  /* 6 · the built names, lettered INTO the mass under their own tread, in ink
+     because what shipped is lit (¶08's own closing line), with the landed
+     mark beside them in pine */
+  g.names.forEach((w, i) => {
+    climb.ticks.push(text(xs[i] + g.lead, ys[i] + g.dy, "✓", "ok"));
+    climb.labels.push(text(xs[i] + g.lead + g.mark, ys[i] + g.dy, w, "lit"));
+  });
+
+  /* 7 · the two holds, in the empty region. The SAME rule as the built names
+     — a block under its own tread — but here there is no mass to letter into,
+     so the words hang in the space where the material is not. `held` is the
+     ledger's own status word and carries the ledger's own clay; the name and
+     the reason are ink-2 under it. The lower two thirds of the region stay
+     clear, and that clearance beside the cut is the drawing. */
+  g.holds.forEach((lines, i) => {
+    const x = xs[3 + i] + g.lead + 2, y = ys[3 + i] + g.ldy;
+    const b = [text(x, y, "held", "heldtag")];
+    lines.forEach((w, j) => b.push(text(x, y + (j + 1) * g.ldy, w)));
+    climb.blocks.push(b);
+  });
+
+  /* 8 · the notation, then the origin */
+  climb.foot = g.foot.map(([y, w]) => text(8, y, w));
+
+  /* 9 · the run token and the ring it wears when it halts — fig. 04's mark
+     for the same fact, so a reader who has met one has met this */
+  climb.ring = el("circle", { r: g.ringR, class: "holdmark", opacity: 0 });
+  climb.tok = el("circle", { r: g.tokR, class: "lit", opacity: 0 });
 }
 function scrubClimb(p) {
-  /* the climber rests on the right end of each tread, clear of its label */
-  const stepC = (i) => [climb.X0 + i * climb.W + climb.W * 0.74, climb.Y0 - i * climb.R - 8];
-  climb.steps.forEach((st, i) => {
-    if (i < 3) { /* ink draws itself on approach */
-      const t = smooth((p - 0.1 - i * 0.055) / 0.13);
-      st.style.strokeDashoffset = (st._len * (1 - t)).toFixed(1);
-    } else { /* pencil fades up, and stays pencil */
-      const t = smooth((p - 0.3 - (i - 3) * 0.05) / 0.1);
-      st.setAttribute("opacity", (t * 0.9).toFixed(2));
-      climb.held[i - 3].setAttribute("opacity", smooth((p - 0.36 - (i - 3) * 0.04) / 0.06).toFixed(2));
-    }
-  });
-  /* the climber: hops the three built steps, then sits */
-  const tp = clamp((p - 0.24) / 0.16, 0, 1) * 2;
-  const seg = Math.min(1, Math.floor(tp)), u = clamp(tp - seg, 0, 1);
-  const [ax, ay] = stepC(seg), [bx, by] = stepC(seg + 1);
-  const tx = lerp(ax, bx, smooth(u)), ty = lerp(ay, by, smooth(u)) - Math.sin(Math.PI * u) * 24;
-  climb.tok.setAttribute("cx", tx.toFixed(1)); climb.tok.setAttribute("cy", ty.toFixed(1));
-  climb.tok.setAttribute("opacity", smooth((p - 0.18) / 0.06).toFixed(2));
-  climb.ring.setAttribute("cx", tx.toFixed(1)); climb.ring.setAttribute("cy", ty.toFixed(1));
-  climb.ring.setAttribute("opacity", p > 0.42 ? 1 : 0); /* the deliberate halt */
-  climb.ticks.forEach((tk, i) => tk.setAttribute("opacity", tp >= i + (i === 2 ? 1 : 0.5) ? 1 : 0));
-  climb.labels.forEach((l, i) => l.classList.toggle("walked", i < 3 && tp >= i));
+  const g = climb.g;
+  if (!g) return; /* a settle before the first build cannot draw anything */
+  const on = (e, want) => {
+    const v = want ? 1 : 0;
+    if (e._on !== v) { e._on = v; e.setAttribute("opacity", v); }
+  };
+  const ink = (e, a, b) => {
+    const v = (e._len * (1 - smooth((p - a) / (b - a)))).toFixed(1);
+    if (e._d !== v) { e._d = v; e.style.strokeDashoffset = v; }
+  };
+  /* the datum first: nothing on this plate means anything without one */
+  ink(climb.ground, 0.02, 0.09);
+  climb.foot.forEach((t, i) => on(t, p >= 0.04 + i * 0.02));
+  /* the flight, sketched — one clip rect, so the gesture is a single stroke
+     across the plate and no element carries a partial alpha to get there */
+  const sw = (smooth((p - 0.04) / 0.13) * g.vw).toFixed(1);
+  if (climb._sw !== sw) { climb._sw = sw; climb.clip.setAttribute("width", sw); }
+  /* then the ink over it, and the mass filling in behind the climb */
+  climb.steps.forEach((st, i) => ink(st, CLIMB_INK[i][0], CLIMB_INK[i][1]));
+  ink(climb.faces[0], 0.1, 0.3);
+  ink(climb.faces[1], 0.32, 0.38); /* the cut, dropping as the climb stops */
+  climb.labels.forEach((l, i) => on(l, p >= CLIMB_INK[i][1]));
+  /* the material, trailing the profile it belongs to */
+  const fw = (g.xs[3] * smooth((p - 0.12) / 0.24)).toFixed(1);
+  if (climb._fw !== fw) { climb._fw = fw; climb.fill.setAttribute("width", fw); }
+  /* the ghost has done its work once the ink closes over it. It is the one
+     element deliberately invisible at the settled frame, and it is invisible
+     because the ink it was a plan for is standing on top of it. */
+  on(climb.ghost, p < 0.33);
+  /* the climber: three hops, and then it stays. `tp` reaches exactly 3 at
+     p 0.32 and holds there, which is what the third tick keys off. */
+  const tp = clamp((p - 0.1) / 0.22, 0, 1) * 3;
+  const seg = Math.min(2, Math.floor(tp)), u = clamp(tp - seg, 0, 1);
+  const [ax, ay] = g.pts[seg], [bx, by] = g.pts[seg + 1];
+  const cx = lerp(ax, bx, smooth(u)).toFixed(1);
+  const cy = (lerp(ay, by, smooth(u)) - Math.sin(Math.PI * u) * g.ringR * 2).toFixed(1);
+  if (climb._cx !== cx || climb._cy !== cy) {
+    climb._cx = cx; climb._cy = cy;
+    climb.tok.setAttribute("cx", cx); climb.tok.setAttribute("cy", cy);
+    climb.ring.setAttribute("cx", cx); climb.ring.setAttribute("cy", cy);
+  }
+  on(climb.tok, p >= 0.08);
+  on(climb.ring, p >= 0.355); /* the deliberate halt, after the walk ends */
+  climb.ticks.forEach((t, i) => on(t, tp >= i + 1));
+  /* the holds, a hair AHEAD of their ledger rows (scrubQuests resolves 04 at
+     .395 and 05 at .44): the drawing shows it, then the ledger records it.
+     Everything on this plate is landed by .415, and the shared dusk curtain
+     takes the figure to opacity 0 from .48 — the shipping plate's own last
+     event was the ring at .42, and that envelope is kept. */
+  climb.blocks.forEach((b, i) => { for (const t of b) on(t, p >= 0.38 + i * 0.035); });
 }
 
 /* Agentic AutoML — the notebook, worked by tools. The registry lists the

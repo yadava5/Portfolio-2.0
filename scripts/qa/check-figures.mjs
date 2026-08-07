@@ -552,8 +552,31 @@ const FIGURES = [
     [
       "questFig",
       "fig. 08",
-      ["a deliberate hold, not a fall"],
-      "what is deliberately NOT drawn — rule 7",
+      [
+        "a deliberate hold, not a fall",
+        /* The redraw's central fact, and the one a later hand undoes without
+           noticing. The built half now has a BODY — three treads closed into
+           a hatched mass standing on the ground — and the two unbuilt steps
+           have nothing beneath them at all. That void is the largest element
+           on the plate. A redraw that keeps the five profiles and loses the
+           mass/void distinction is back to five bare lines, and the plate
+           stops saying what "built" means. */
+        "nothing is drawn beneath the two unbuilt steps",
+        /* Two holds, and they are NOT the same hold: scale is blocked from
+           outside, and a finished product is simply not claimed — which is why
+           its tread is the one line on the plate that stops in mid-air rather
+           than ending at anything. Flattening them back into one "held" is the
+           easy edit, from either side, so both are declared. */
+        "held for a partner or funder",
+        "held because it is not claimed",
+        /* THE VERB, and it is the honesty clause. ¶08's own prose says the
+           project was BORN at Social Innovation Weekend, March 2025 — "a
+           7-person team, one weekend". Turning "born at" into "built in" would
+           claim three shipped features were finished inside 48 hours, which
+           nothing owns. This locks the honest word. */
+        "born at Social Innovation Weekend",
+      ],
+      "what is deliberately NOT drawn (rule 7), the two holds that are not one hold, and the verb the station actually uses",
     ],
     [
       "amlFig",
