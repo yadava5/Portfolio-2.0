@@ -2181,13 +2181,20 @@ cannot reach them.
 
 **Do it in this order:**
 
-1. **Today, before building anything.** Add `.woff2` and `.wasm` to
+1. **[EXECUTED 2026-08-07 — `6a4232f`.] Today, before building anything.** Add `.woff2` and `.wasm` to
    `static-server.mjs`'s `contentTypes` map — two lines; without them wasm falls
    to `application/octet-stream`, `instantiateStreaming` rejects, and the
    preview logs a red `wasm streaming compile failed` (the emscripten glue does
    recover via `instantiateArrayBuffer`, so the classifier still works, but do
    not hand the owner a console error). `check-cargo-fixture.mjs:57-58` already
    lists both; somebody hit this once.
+   **MEASURED ON EXECUTION, and the console line is the smaller half:** pre-fix,
+   `/wasm/fast_mnist.wasm` appears **TWICE** in the resource timeline — the
+   streaming compile rejects and `instantiateArrayBuffer` refetches the whole
+   module. Post-fix it is fetched once. **The double fetch is the durable proof;
+   it does not depend on a console capture that starts after page load.** Proven
+   against a pre-fix copy of the file on a second port, never against the `out/`
+   the owner is viewing.
    **While in the file:** the `out/` missing message at `:53` names
    `NEXT_PUBLIC_BASE_PATH`, which is **still live** — `src/lib/basePath.ts`
    reads it and both workflows set it. The command works; only the *name* is
@@ -2468,6 +2475,41 @@ work might be gone or misplaced or pushed to main."*** Three different failure
 modes — **gone** (history rewritten, the sha is unrecoverable), **misplaced**
 (the sha survives, the file moved), **sanitized** (the work exists, the cited
 artifact was stripped, or visibility changed).
+
+> **CENSUS RUN 2026-08-07 — THE SITE IS NOT FALSIFIED, AND THE DELIVERABLE TABLE
+> IS EMPTY.** `npm run build` at the deploy config, then `npm run test:links`:
+> **57 pinned artifact links across 10 built pages, all resolve, exit 0.** The
+> **9 the filter skips were opened by hand, unauthenticated** — plain `curl`,
+> never `gh api`, because a token answers 200 on a repo that has just gone
+> private and would hide the exact defect this item exists to find. All 9 answer
+> **200 direct with no redirect**: no rename (a rename would 301), no visibility
+> flip, and `applied/actions/runs/24665061332` still has its logs. `out/` carries
+> 66 distinct `github.com` URLs, 57 + 9, and **all 66 are reachable today.**
+>
+> **Two surfaces this section named as unread were read as well.**
+> `out/resume.pdf` ships six outbound links — five Vercel deploys and the
+> LinkedIn profile — and **all six answer 200** (LinkedIn answered a plain
+> `curl` this time; do not build a gate on that). And the shas that appear ONLY
+> as prose in `check-figures`' `source:` fields, which no constant builds a link
+> from — `a0d77a1` and `03fc5c4` (applied), `8a2fbbb` (cadence), `22ebdaa`
+> (VisualAssist) — **all resolve.** `ai-augmented-auto-ml-toolchain`, the repo
+> behind `AUTOML_BLOB`, has no root link in `out/` and so falls in neither census
+> set; checked by hand, 200.
+>
+> **WHAT REMAINS UNREAD IS A PERSON'S JOB AND NOT A FETCH.** The 19 `source:`
+> fields are prose about paths *inside* the subject repos —
+> `benchmarks/jmh-results-rigorous.json`, `.github/workflows/backend-ci.yml`,
+> `docs/benchmarks/runs/bench-20260802-dot20x-*`, `src/Matrix.cpp`. A 200 on the
+> tree says nothing about whether the file still says what the field claims.
+>
+> **ONE DISAGREEMENT THE CENSUS SURFACED WITHOUT JUDGING IT.** The Cadence suite
+> claim is LINKED at `CADENCE_SUITE_SHA = 8eee84e` (`projectCaseStudies.ts:344`,
+> lettered `cadence @ 8eee84e` beside the 1,185 tests) while `check-figures`'
+> `source:` for the same figure cites *"both vitest configs at head 8a2fbbb"*.
+> **Both shas resolve; they are different trees.** This is not a dead pin and not
+> a §6.6 disposition — it is the C32/§5.0 question (measure at HEAD, pin what you
+> measured) pointed at a citation, and it needs the owner or one reading, not a
+> re-pin. **Do not "fix" it by moving the link to the prose sha.**
 
 **This is the one item that can falsify the site rather than leave it stale**,
 and the validator already enforces it: `test:links` is a plain `step()` in
