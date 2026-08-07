@@ -380,13 +380,29 @@ jobs:
       # rather than quietly dropped, because it sent at least one triage to
       # the wrong file.
 
-      # Runs in the job that has already built `out/`. The 2026-08-02 audit
-      # shipped two pinned links to UNPUSHED local commits — correct numbers,
-      # measured on trees that did not exist publicly, so /evidence 404'd.
-      # No offline check can find that: the label and the link agreed, and
-      # both named a commit that was not there. Only a request finds it.
+      # The 2026-08-02 audit shipped two pinned links to UNPUSHED local
+      # commits — correct numbers, measured on trees that did not exist
+      # publicly, so /evidence 404'd. No offline check can find that: the
+      # label and the link agreed, and both named a commit that was not
+      # there. Only a request finds it.
+      #
+      # This job does NOT build `out/`, and the sentence that used to stand
+      # here said it did. `check-links.mjs` therefore takes its source
+      # fallback in CI and fetches 12 URLs from four files, where a built
+      # tree would give it 57 from ten pages. That is a real coverage gap,
+      # not a formality: it is recorded in `scripts/qa/check-links.mjs`,
+      # which had this same disagreement pointed at the wrong line number.
       - name: Check pinned artifact links resolve
         run: npm run test:links
+
+      # Nothing in this repository had ever made a request to a `liveUrl` or a
+      # `systemCardUrl`. `atlas.spec.ts` asserts only that the strings agree in
+      # shape, and a string can be perfectly shaped and serve a build from
+      # three weeks ago — which three of the six were doing on 2026-08-07,
+      # each answering 200 the whole time. Reachability was never the missing
+      # check; nobody was checking at all.
+      - name: Check every live app and System Card answers
+        run: npm run test:live-surfaces
 
       # The nameplate checks used to sit here and could not work: they serve
       # `out/` and launch chromium, and this job neither builds nor installs a

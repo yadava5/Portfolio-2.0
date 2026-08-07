@@ -34,6 +34,7 @@
     "test:bench-artifacts": "node scripts/qa/check-bench-artifacts.mjs",
     "test:stations": "node scripts/qa/check-stations.mjs",
     "test:links": "node scripts/qa/check-links.mjs",
+    "test:live-surfaces": "node scripts/qa/check-live-surfaces.mjs",
     "test:crosswalk": "node scripts/qa/check-crosswalk.mjs out",
     "test:beat-tables": "node scripts/qa/check-beat-tables.mjs",
     "test:cargo-fixture": "node scripts/qa/check-cargo-fixture.mjs",

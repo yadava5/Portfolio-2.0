@@ -44,8 +44,11 @@ const CONCURRENCY = 8;
  * to stop it coming back. This is that missing thing.
  *
  * Runs against the SOURCE, not `out/`: this gate lives in the CI job that
- * does not build (the comment at ci.yml:315 claiming otherwise is wrong),
- * and the run is hand-authored, so the source IS the artifact for it.
+ * does not build, and the run is hand-authored, so the source IS the
+ * artifact for it. The `proof-manifest` job's own comment used to claim the
+ * opposite; both halves of that disagreement were corrected on 2026-08-07,
+ * and this note no longer cites a line number, because the one it cited had
+ * already drifted onto an unrelated line.
  *
  * Scope is the run alone. The Next app's pages are retired by this
  * migration's Phase 4; a guard over surfaces that are being deleted would
