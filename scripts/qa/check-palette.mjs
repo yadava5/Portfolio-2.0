@@ -521,6 +521,126 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   THE DAY SIDE OF THE SAME STROKES — and the hairline, DECLARED rather
+   than raised (ruled 2026-08-07).
+
+   The block above walks the figure tokens over the two NIGHT fields. It has
+   never walked them over the five DAY ones, and eleven of the thirteen beats
+   are day. That asymmetry is the hole: a redraw that darkened a day waypoint
+   or thinned a day alpha changed the ground under every day figure with this
+   file printing green, because nothing here read that pair.
+
+   THE HAIRLINE IS THE REASON THIS BLOCK IS NOT SIMPLY `measureSet` AGAIN.
+   Measured at HEAD by this file's own maths, over the five day waypoints:
+
+       day   --hair-strong rgba(38,35,28,.34)   2.01–2.05:1   Lc 34.3–38.4
+       night --hair-strong rgba(246,239,226,.45) 3.40–3.83:1   Lc 31.9–32.7
+
+   The day hairline FAILS the WCAG 3.0 non-text floor the night one clears,
+   and carries MORE perceptual weight than it — by 2.4 Lc at the worst of
+   each. Both cannot be true of the same eye, and the one that is wrong is
+   WCAG 2: its ratio is a luminance quotient, and a quotient flatters a light
+   stroke on a dark ground. APCA-W3 models the polarity, which is why this
+   file computes it at all. Raising the day alpha to satisfy the failing
+   instrument was priced and refused: ≈.51 is what 3.0:1 costs on the
+   tightest day field (.50 measures 3.07:1 on #fbf3e7 but only 2.95:1 on
+   #f2e4c9, so .50 does not even buy it), and .51 is a 50% heavier hairline
+   drawn to make a number move, on a register the day figures are already
+   read by.
+
+   SO THE HAIRS GET A NAMED EXEMPTION, AND THE EXEMPTION IS BOUND TO THE
+   FACT THAT EARNS IT. Two things are asserted rather than written down:
+
+     · a REGRESSION floor of 2.0:1 — the hairs may not get thinner than the
+       day they were measured. This is the only number here that is a choice
+       rather than a law, and it is a choice not to lose ground, not a claim
+       that 2.0 is enough by any standard;
+     · the ORDERING — day |Lc| ≥ night |Lc|, at the worst field of each. That
+       is the whole argument for the exemption. If a future edit raises the
+       night alpha, darkens the day paper, or lightens the day ink until the
+       day hairline is the perceptually weaker of the two, the reason for
+       the exemption is gone and this fails — rather than quietly protecting
+       a stroke whose justification expired.
+
+   Everything that is NOT a hair holds its ordinary floor here, the same one
+   it holds at night.
+   ══════════════════════════════════════════════════════════════════ */
+if (usedFigureTokens.length && DAY_FIELDS.length === 5) {
+  const HAIRS = new Set(["--hair", "--hair-strong"]);
+  const HAIR_FLOOR = { wcag: 2.0, lc: 0, kind: "day hairline regression" };
+  const TEXT_TOKENS = new Set(["--ink-2"]);
+
+  /* worst (lowest |Lc|) composite of one token over one set of grounds */
+  const worstOver = (raw, fields) => {
+    let out = null;
+    for (const bg of fields) {
+      const rgba = rgbaHex(raw);
+      const fg = rgba ? blend(rgba[0], bg, rgba[1]) : raw;
+      if (!/^#[0-9a-f]{6}$/i.test(fg)) continue;
+      const l = Math.abs(lc(fg, bg));
+      if (!out || l < out.lc) out = { lc: l, w: contrast(fg, bg), at: bg };
+    }
+    return out;
+  };
+
+  let tightestDay = { margin: Infinity, token: "", w: 0, at: "" };
+  for (const token of usedFigureTokens) {
+    const raw = DAY[token];
+    if (!raw) continue;
+    const floor = HAIRS.has(token)
+      ? HAIR_FLOOR
+      : TEXT_TOKENS.has(token)
+        ? TEXT
+        : GRAPHIC;
+    for (const bg of DAY_FIELDS) {
+      const rgba = rgbaHex(raw);
+      const fg = rgba ? blend(rgba[0], bg, rgba[1]) : raw;
+      if (!/^#[0-9a-f]{6}$/i.test(fg)) continue;
+      const w = contrast(fg, bg);
+      const l = lc(fg, bg);
+      if (w < floor.wcag || l < floor.lc)
+        fail(
+          `a figure stroke in ${token} draws at ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)} on the day\n` +
+            `      field ${bg} — below the ${floor.kind} floor of ${floor.wcag}:1 / Lc ${floor.lc}.\n` +
+            `      Eleven of the thirteen beats are day; this is the pair a redraw changes.`
+        );
+      const margin = w - floor.wcag;
+      if (margin < tightestDay.margin)
+        tightestDay = { margin, token, w, at: bg };
+    }
+  }
+
+  /* The ordering that earns the hairline its exemption. */
+  const dayHair = worstOver(DAY["--hair-strong"], DAY_FIELDS);
+  const nightHair = worstOver(NIGHT["--hair-strong"], NIGHT_FIELDS);
+  if (!dayHair || !nightHair)
+    fail(
+      `--hair-strong could not be composited on one side or the other — day ${DAY["--hair-strong"] || "absent"},\n` +
+        `      night ${NIGHT["--hair-strong"] || "absent"}. The day hairline's exemption is unproven.`
+    );
+  else if (dayHair.lc < nightHair.lc)
+    fail(
+      `the day hairline is now the WEAKER of the two: Lc ${dayHair.lc.toFixed(1)} on ${dayHair.at}\n` +
+        `      against night's Lc ${nightHair.lc.toFixed(1)} on ${nightHair.at}. The day alpha is exempted from the\n` +
+        `      ${GRAPHIC.wcag}:1 non-text floor ONLY because it out-measures a night hairline that clears it.\n` +
+        `      That is no longer true, so either raise the day alpha or delete the exemption.`
+    );
+  else
+    note(
+      `the day hairline is declared, not raised: --hair-strong is ${dayHair.w.toFixed(2)}:1 / Lc ${dayHair.lc.toFixed(1)} ` +
+        `on ${dayHair.at} — under WCAG's ${GRAPHIC.wcag}:1, and ${(dayHair.lc - nightHair.lc).toFixed(1)} Lc ABOVE the night ` +
+        `hairline (${nightHair.w.toFixed(2)}:1 / Lc ${nightHair.lc.toFixed(1)} on ${nightHair.at}) that clears it`
+    );
+
+  if (tightestDay.token)
+    note(
+      `day figure strokes: ${usedFigureTokens.length} tokens hold over ${DAY_FIELDS.join(" ")} — ` +
+        `tightest is ${tightestDay.token} at ${tightestDay.w.toFixed(2)}:1 on ${tightestDay.at}, ` +
+        `${tightestDay.margin.toFixed(2)} over its floor`
+    );
+}
+
+/* ══════════════════════════════════════════════════════════════════
    THE SECOND NIGHT WORLD, WHICH THIS GATE COULD NOT SEE.
 
    `paletteBlock()` matches `:root[data-night]{…}`, and that is not the only
