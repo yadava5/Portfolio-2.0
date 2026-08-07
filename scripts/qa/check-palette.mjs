@@ -557,7 +557,11 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      subject; more than one carrying it is as much a defect as none. */
   const reduceBlocks = [];
   const OPEN = "@media (prefers-reduced-motion: reduce){";
-  for (let i = runHtml.indexOf(OPEN); i > -1; i = runHtml.indexOf(OPEN, i + 1)) {
+  for (
+    let i = runHtml.indexOf(OPEN);
+    i > -1;
+    i = runHtml.indexOf(OPEN, i + 1)
+  ) {
     let depth = 0;
     let j = i + OPEN.length - 1;
     for (; j < runHtml.length; j++) {
@@ -612,7 +616,9 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
         }
       }
       const HAIRS = ["--hair", "--hair-strong"];
-      const drifted = HAIRS.filter((t) => RM[t] && NIGHT[t] && RM[t] !== NIGHT[t]);
+      const drifted = HAIRS.filter(
+        (t) => RM[t] && NIGHT[t] && RM[t] !== NIGHT[t]
+      );
       if (drifted.length)
         fail(
           `the reduced-motion override and :root[data-night] declare different hairs —\n` +
@@ -704,6 +710,93 @@ if (ARCH["--paper"] && ARCH["--plate"] && ARCH["--plate-solid"]) {
   note(
     `archive: 5 inks hold their floors on paper ${ARCHIVE_GROUNDS.paper}, plate ${ARCHIVE_GROUNDS.plate}, plate-solid ${ARCHIVE_GROUNDS["plate-solid"]}`
   );
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THE TWO DAY PALETTES ARE ONE PALETTE, AND NOTHING SAID SO.
+
+   The day `--hair-strong` is declared TWICE — `src/run/index.html` and
+   `scripts/archive/assets/archive.css`, the same `.34` — and until now with
+   nothing between them. Every measurement above reads each stylesheet
+   against its own grounds, so a change made in one file and not the other
+   prints green here while the two halves of one site visibly diverge. That
+   is commit zero's finding one level up: the run declared a night palette
+   twice, and the SITE declares a day palette twice.
+
+   THIS ASSERTS EQUALITY, NOT A FLOOR, AND THAT IS THE WHOLE DESIGN. Whether
+   `.34` is enough ink on a light field is an open question with a real price
+   attached, and it belongs to whoever is paying it. A threshold written here
+   would answer it by the back door and restyle every plate on the site as a
+   side effect of a gate. What is not open, under either answer, is that the
+   two declarations have to say the same thing — so this is the assertion
+   that is owed whichever way the ruling lands, and it is owed now.
+
+   THE INTERSECTION IS COMPUTED, NOT LISTED. A token added to both blocks
+   joins the assertion with no edit here; a token in only one is out of scope
+   by construction, which is correct — the archive's `--plate-solid` and the
+   run's `--ember` are each one room's business. A divergence that is
+   DELIBERATE has to be named here to pass, the way `--ink-2`'s is named in
+   the reduced-motion block above (C35).
+   ══════════════════════════════════════════════════════════════════ */
+{
+  const shared = Object.keys(DAY).filter((t) => t in ARCH);
+  /* Counted AND named, the C33 way: a count that stays right while the
+     contents rot prints the same green line as a clean file. 14 read on
+     2026-08-07; the two named tokens are the ones this assertion exists for
+     and the one every ink measurement above starts from. */
+  const anchors = ["--hair-strong", "--ink"].filter((t) => !shared.includes(t));
+  if (shared.length < 12 || anchors.length)
+    fail(
+      `the run's day :root and the archive's :root share ${shared.length} tokens` +
+        (anchors.length
+          ? `, and ${anchors.join(" and ")} ${anchors.length === 1 ? "is" : "are"} not declared in both`
+          : "") +
+        ` — expected at least 12 shared, including --hair-strong and --ink.\n` +
+        `      That is a broken parse of one of the two blocks, and a broken parse here\n` +
+        `      compares nothing and reports agreement.`
+    );
+  else {
+    const diverged = shared.filter((t) => DAY[t] !== ARCH[t]);
+    if (diverged.length)
+      fail(
+        `the two day palettes have drifted apart on ${diverged.length} token${diverged.length === 1 ? "" : "s"}:\n` +
+          diverged
+            .map(
+              (t) =>
+                `      ${t}: ${DAY[t]} in ${RUN}, ${ARCH[t]} in ${ARCHIVE_CSS}`
+            )
+            .join("\n") +
+          `\n      One site, one day palette. Both files render over the same paper, so a change\n` +
+          `      made in one of them and not the other is visible to a reader crossing the seam\n` +
+          `      and invisible to every measurement above, which reads each file on its own\n` +
+          `      grounds. If the divergence is deliberate, name it here the way --ink-2's is.`
+      );
+    else
+      note(
+        `the run's day :root and the archive's agree on all ${shared.length} shared tokens — one site, one day palette`
+      );
+  }
+  /* AND THE GROUND THEY BOTH RENDER OVER. The archive names its paper as a
+     literal; the run computes its first field from WAY[0] through its own
+     converter (pinned above to #fbf3e7, so this is not garbage against
+     garbage). Nothing has ever bound the literal to the arc. If the dawn
+     waypoint moves, every ratio the archive states about `--paper` is
+     measured against a colour the run no longer starts on — including the
+     hairline pair, which is why this sits with the block above. */
+  if (ARCH["--paper"] && DAY_FIELDS.length) {
+    const dawn = DAY_FIELDS[0];
+    if (ARCH["--paper"].toLowerCase() !== dawn)
+      fail(
+        `the archive's --paper is ${ARCH["--paper"]} but the run's first day field is ${dawn}.\n` +
+          `      The archive's paper is a literal and the run's is WAY[0] through its own converter;\n` +
+          `      when they part, the two halves of the site are lit differently and every archive\n` +
+          `      contrast claim is measured over a ground the run does not have.`
+      );
+    else
+      note(
+        `the archive's --paper IS the run's dawn waypoint ${dawn} — both day palettes render over one ground`
+      );
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════
