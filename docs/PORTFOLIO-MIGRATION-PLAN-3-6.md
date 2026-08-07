@@ -82,10 +82,15 @@
 > this site at all, which is why §6.0 comes first; and frontend work may now run
 > TWO Fable agents in parallel, partitioned by FILE and never by task.**
 >
-> **Two rulings are open and both need the owner, not a fix:** `--hair-strong`
-> measures 2.0:1 on the day fields where nothing has ever measured it, and a
-> live hash arrival at `/#review` leaves one mark part-inked (pre-existing,
-> measured at HEAD before the redraw).
+> **THREE rulings are open and all three need the owner, not a fix** — this
+> line said "two" for a day while §6.3 carried three numbered items, and the
+> section heading still says two; count the items, not the sentence.
+> **(1)** `--hair-strong` measures 2.0:1 on the day fields where nothing has
+> ever measured it. **(2)** A live hash arrival leaves one mark part-inked —
+> pre-existing, measured at HEAD before the redraw, and **since re-measured as
+> something much larger than a part-inked mark**, see §6.3 item 2. **(3)** The
+> archive's gate vocabulary is the run's old one, priced at one figure on one
+> page.
 >
 > ---
 >
@@ -107,14 +112,21 @@
 > consequence of the arrival semantics the owner ruled for (¶01 has no corridor
 > arriving at it), not a regression.
 >
-> **THREE THINGS §6.4's WALK FOUND THAT NO SECTION OF THIS PLAN PREDICTED,
-> all measured, none fixed, each one landing inside an open ruling:** the run
-> **prints as 1 page of content and 17 blank ones**, 20 MB, while the archive
-> prints properly; the fixed manifest dock **occludes text at the deterministic
-> arrival offset of six of thirteen rejoin targets**, hiding one link entirely
-> and 38% of a station headline; and the cold-arrival defect is a **cream→night
-> flash of the wrong station**, presented for 55ms at 1× and **449ms at 4× CPU**,
-> not the 12.18px of dashoffset this plan had it as.
+> **THREE THINGS §6.4's WALK FOUND THAT NO SECTION OF THIS PLAN PREDICTED, all
+> measured, none fixed — and they do NOT all land inside an existing ruling:**
+>
+> · **The run does not print.** 1 page of content and 17 blank ones, 20 MB;
+> pages 2–18 carry 40 characters each and the 40 is the masthead and the dock.
+> The archive prints properly. §6.4 item 4 named print as ungated; it did not
+> know it was broken. **No ruling covers this yet.**
+> · **The fixed manifest dock occludes the arrival** of six of thirteen rejoin
+> targets, hiding one outbound link **entirely** and 38% of a station headline.
+> **This is a NEW item — nothing in §6.3 or §6.5 covers the dock's geometry,
+> and it should not be read as already-pending.**
+> · **The cold-arrival defect is a cream→night flash of the wrong station**,
+> presented for ~55ms at 1× and **449ms at 4× CPU**, not the 12.18px of
+> dashoffset this plan had it as. **This one IS §6.3 item 2**, two orders of
+> magnitude larger than its own record.
 
 ---
 
@@ -2508,7 +2520,11 @@ screenshots. Specifically:
 > above them. **This is the surface owner item B said had never been seen, and
 > it holds up.**
 
-### 6.3 — The two rulings §4b left open. Both need a decision, neither is a bug.
+### 6.3 — The THREE rulings §4b left open. Each needs a decision, none is a bug.
+
+> **This heading said "two" while the list carried three** — item 3 was added
+> later and the heading was not. Corrected 2026-08-07; the count elsewhere in
+> this document was corrected with it.
 
 1. **`--hair-strong` is 2.005–2.051:1 on the five DAY fields**, under the 3.0
    non-text floor, and every figure draws its structure in it. The night side
@@ -2667,19 +2683,33 @@ not prove the thing was worth doing.
 > and the deferred ruling it forces is still open. The crossing itself works
 > only because §6.0 step 2 landed — the rejoin resolved to
 > `http://127.0.0.1:4300/#automl`, not to production.
+> **AND THE RETURN LEG WAS TABBED AND ACTIVATED, not inferred from the link
+> list** — the first version of this record enumerated the run's outbound
+> links in script and claimed the round trip, which is not the same thing.
+> Walked properly: on the run at `#automl`, `the case file ⟶` is tab stop **1**,
+> its href stays on the preview, Enter lands on `/projects/automl/`, focus
+> resets to `(body)` as a fragment-less arrival should, and the archive's
+> **skip link is the first stop again**. The round trip holds in both
+> directions. **The asymmetry is exactly and only the skip link**, which is
+> what the deferred ruling is about.
 >
 > **4 · THE DARK STATIONS READ; PRINT DOES NOT, AND THE RUN IS THE HALF THAT
 > BREAKS.** Leaving ¶08/¶09 does not read as a different site — the night
 > stations carry the same type, rules and marks over a dark ground, and fig. 10
 > reads correctly in the new gate vocabulary. **Print is the finding.** Both
 > stylesheets DO carry an `@media print` block, so "gated nowhere" understated
-> it — the run's hides exactly one thing, the replay button. Printed to A4:
-> **the archive prints properly** (a case file is 9 pages of real content out
-> of 10; `/evidence/` is 10 of 11), and **the run prints as ONE page of content
-> followed by SEVENTEEN blank ones** — 18 pages, 20 MB, every blank page still
-> carrying the fixed masthead and a `0 / 6` manifest dock. Measured by text per
-> page: page 1 has 410 characters, pages 2–18 have 90 each, and those 90 are
-> the chrome. All 13 beats report opacity 1 at print time, so this is not the
+> it — the run's hides exactly one thing, the replay button. Printed to A4
+> **through a plain server with no preview banner in the page, so what is left
+> on a blank page is the SITE's own** — the first cut of this measurement was
+> taken through the preview and its per-page residue included my banner:
+> **the archive prints properly** (a case file is 9 pages of content and a 10th
+> carrying its colophon; `/evidence/` is 10 and a colophon), and **the run
+> prints as ONE page of content followed by SEVENTEEN blank ones** — 18 pages,
+> 20 MB. Measured by text per page: page 1 carries **360 characters**; pages
+> 2–18 carry **exactly 40 each, and the 40 is
+> `Ayush · Yadav  06:36 · the start  0 / 6`** — the fixed masthead and the
+> manifest dock, reprinted seventeen times, still reading `the start` on
+> page 18. All 13 beats report opacity 1 at print time, so this is not the
 > curtain — the run's stations do not paginate. **One thing that is NOT the
 > defect:** a print taken 1.2s after load catches the nameplate mid-performance
 > and prints `Ayu ·h`. That is the machines' own withholding and its 5.6s
