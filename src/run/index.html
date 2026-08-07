@@ -995,8 +995,9 @@
   .figsvg .meterfill{fill:var(--pine)}
   .figsvg .meterlbl{fill:var(--ink)}
   /* the three products' dispositions, and the meter's signature riser.
-     Same strokes as the reviewer's own marks at ¶10 (.gates .gmark, 1.5
-     round): a check for what was filed, a strike for what was not, and
+     Same strokes as the reviewer's own marks at ¶10 (.gates .gbench
+     .gmark, 1.5 round): a check for what was filed, a strike for what was
+     not, and
      clay for that pair because a disposition of record is the gate
      register — §4b's amended rule 5. */
   .figsvg .tickp{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
@@ -1030,16 +1031,60 @@
   .litany .mline p em{font-style:normal; color:var(--clay)}
   .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
   .litany .mline .rct a{color:var(--pine)}
-  .gates{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  .gates{--gcol:34px; --gword:4.6rem; --ggap:.7rem;
+    font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
   .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
     padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
   .gates .ghead i{font-style:normal; color:var(--clay)}
-  .gates .grow{display:grid; grid-template-columns:1fr 2.2rem 4.6rem; gap:.7rem; align-items:center;
+  .gates .grow{position:relative; display:grid;
+    grid-template-columns:1fr var(--gcol) var(--gword); gap:var(--ggap); align-items:center;
     padding:.72rem 0; border-bottom:1px solid var(--hair)}
   .gates .grow .gname{color:var(--ink)}
-  .gates .grow svg{display:block; width:22px; height:16px; overflow:visible}
-  .gates .grow .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
-  .gates .grow.refused .gmark{stroke:var(--clay-g)}
+
+  /* ————— fig. 10's drawing: .gbench — the marks get their subject —————
+     The docket IS the drawing. One line runs down the register; each gate
+     stands ON it as a small frame in its own row, and the row's mark is
+     inked INSIDE that frame — so a mark is made at a gate instead of
+     floating beside a name. Below the third the line runs on DASHED, which
+     on this site means one thing in three places: ¶07's product not checked
+     in, ¶08's steps not built, and here a stretch of line nobody has signed.
+     It points down the page because that is where the person is (¶11).
+
+     NOT a seventh figure, on purpose: no .figsvg, no role="img", no
+     aria-label. check-figures asserts exactly six drawings and asserts that
+     THIS plate's words stay its accessible content, so the apparatus joins
+     the argument and the docket keeps making it. Every rule below is written
+     with `.gbench` in the selector because check-palette scopes its night
+     scan to figure classes — extend that scan to .gbench, not to #gatesFig,
+     whose --hair row separators are text furniture and correct as they are.
+
+     Colour, under §4b rule 5 as amended: frames and line are STRUCTURE and
+     take --hair-strong (3.83:1 on the 22:23 ground, measured); the only
+     colour in the drawing is the three dispositions, which were already
+     pine and clay-g before it existed. Refused twice is the record, so both
+     bars stay clay. No element opacity anywhere in here — the gate cannot
+     see it and it is what has hidden four sub-floor strokes before.
+     The frames are markup, not JS: at scrub 0 the gates stand there
+     unstamped, which is the honest resting state of a register. */
+  .gates .gbench{--gx:calc(var(--gword) + var(--ggap) + var(--gcol) / 2 - .5px)}
+  .gates .grow.gbench::before,
+  .gates .grow.gbench::after{content:""; position:absolute; right:var(--gx); width:1px;
+    background:var(--hair-strong)}
+  /* 14px = half the frame. The frame is centred in the row at any name
+     length, so the two stubs meet it exactly however the row reflows. */
+  .gates .grow.gbench::before{top:0; height:calc(50% - 14px)}
+  .gates .grow.gbench::after{bottom:0; height:calc(50% - 14px)}
+  .gates .gbench .gsig{display:block}
+  .gates .gbench .gframe{fill:none; stroke:var(--hair-strong); stroke-width:1}
+  .gates .gbench .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
+  .gates .gbench .gmark.refused{stroke:var(--clay-g)}
+  .gates .gbench.gtail{position:relative; height:2.5rem}
+  .gates .gbench.gtail::before{content:""; position:absolute; right:var(--gx); top:0; bottom:.55rem;
+    width:1px; background-image:linear-gradient(var(--hair-strong) 0 3.5px, transparent 3.5px 7.5px);
+    background-size:1px 7.5px}
+  .gates .gbench.gtail span{position:absolute; right:calc(var(--gx) + 10px); top:.15rem;
+    font-size:.68rem; color:var(--ink-2)}
+
   /* the disposition words stay printed at full ink — the drawn MARK is
      the animation. (A dimmed resting word would sit under the Lc 60
      dim-text floor on the night plate; the quests taught that lesson.) */
@@ -1066,7 +1111,9 @@
   .signs .srow .swhen{color:var(--ink-2); text-align:right; white-space:nowrap}
   .signs .sclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
     font-size:.7rem; line-height:1.9}
-  .gates .gleg{margin-top:.7rem; font-size:.7rem; line-height:1.9}
+  /* .35rem, not .7 — the unsigned tail now stands between the last row and
+     this key, and carries the air the old margin was providing. */
+  .gates .gleg{margin-top:.35rem; font-size:.7rem; line-height:1.9}
   .gates .gclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
     font-size:.76rem; line-height:1.9; color:var(--ink-2)}
   .gates .gclose b{font-weight:400; color:var(--ink)}
@@ -1988,19 +2035,29 @@ h1[data-np-measuring] .np-ch {
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="gates" id="gatesFig">
           <div class="ghead"><span>the reviewer&rsquo;s marks</span><span>three real gates · <i>dispositions honest</i></span></div>
-          <div class="grow passed" data-g="0"><span class="gname">classifier gate — Applied</span>
-            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2"/></svg>
+          <!-- The mark paths are the SAME HAND as before, at 1.5× — the check
+               and the stop-bar authored in the 14×10 box, multiplied through so
+               the ink still renders at the 22×16 it always did while the frame
+               around it is drawn 1:1 in CSS pixels. The scale is baked into the
+               coordinates rather than carried on a transform, because a
+               transform would drag stroke-width with it and thin the hand. -->
+          <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate — Applied</span>
+            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark" d="M8.75 14.9 C11.3 17.6 12.8 18.8 14 18.5 C16.4 15.2 20.6 10.4 25.7 8.3"/></svg>
             <span class="gword">passed</span></div>
-          <div class="grow refused" data-g="1"><span class="gname">cited-source sweep — PolicyBot</span>
-            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+          <div class="grow gbench refused" data-g="1"><span class="gname">cited-source sweep — PolicyBot</span>
+            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark refused" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
             <span class="gword">refused</span></div>
-          <div class="grow refused" data-g="2"><span class="gname">benchmark suite — Glyph</span>
-            <svg viewBox="0 0 14 10" aria-hidden="true"><path class="gmark" d="M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6"/></svg>
+          <div class="grow gbench refused" data-g="2"><span class="gname">benchmark suite — Glyph</span>
+            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark refused" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
             <span class="gword">refused</span></div>
-          <p class="gleg">✓ a human signed for it · — the gate stopped the run</p>
+          <!-- Where the line leaves the docket. Hidden from assistive tech
+               because the legend below says it in words — the drawing may not
+               be the only place a reader can learn this. -->
+          <div class="gbench gtail" aria-hidden="true"><span>unsigned</span></div>
+          <p class="gleg">✓ a human signed for it · — the gate stopped the run · below them the line runs on dashed and unsigned, to a person</p>
           <p class="gclose">two of my own gates <b>refused</b> to sign automatically. which is why the next stop on this line is a person.</p>
         </div>
-        <figcaption>fig. 10 — the marks are drawn by the same hand as the thread. <i>a refused gate is the system working.</i></figcaption>
+        <figcaption>fig. 10 — three real gates set on the line, each stamped in the same hand as the thread; below the third the line runs on dashed, unsigned. <i>a refused gate is the system working.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -3481,26 +3538,28 @@ function scrubPath(p) {
   }
 }
 
-/* The review — the reviewer's marks draw themselves: a check-stroke for
-   the gate a human signed, a stop-bar for the two that refused. DOM
-   rows carry the words (the census floor is the page's own); only the
-   marks are ink. */
-const how = { rows: [...document.querySelectorAll("#gatesFig .grow")].map((row) => {
-  const mk = row.querySelector(".gmark");
-  return { row, mk, len: 0 };
+/* The review — the reviewer's marks draw themselves, each inside the gate
+   it judged: a check-stroke for the gate a human signed, a stop-bar for
+   the two that refused. The rows carry the words (the census floor is the
+   page's own) and the line, the frames and the unsigned tail are markup;
+   only the three marks are ink, so there is no settled frame for this to
+   fail to build. A mark being signed is the one motion the bench ruling
+   allows over a record — nothing here is a gauge and no magnitude moves.
+
+   Driven off the MARKS, not the rows: a row that lost its mark used to
+   throw at getTotalLength, and this runs at parse time in the middle of
+   the file — the throw would take every function below it with it. */
+const how = { marks: [...document.querySelectorAll("#gatesFig .gmark")].map((mk) => {
+  const len = mk.getTotalLength();
+  mk.style.strokeDasharray = len;
+  mk.style.strokeDashoffset = len;
+  return { mk, len };
 }) };
-for (const r of how.rows) {
-  r.len = r.mk.getTotalLength();
-  r.mk.style.strokeDasharray = r.len;
-  r.mk.style.strokeDashoffset = r.len;
-}
 function scrubHow(p) {
-  how.rows.forEach((r, i) => {
+  how.marks.forEach((m, i) => {
     const t = smooth((p - 0.26 - i * 0.09) / 0.14);
-    const off = (r.len * (1 - t)).toFixed(2);
-    if (off !== r._off) { r._off = off; r.mk.style.strokeDashoffset = off; }
-    const marked = t >= 1;
-    if (r._marked !== marked) { r._marked = marked; r.row.classList.toggle("marked", marked); }
+    const off = (m.len * (1 - t)).toFixed(2);
+    if (off !== m._off) { m._off = off; m.mk.style.strokeDashoffset = off; }
   });
 }
 

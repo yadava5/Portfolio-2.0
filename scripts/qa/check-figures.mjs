@@ -638,6 +638,16 @@ const FIGURES = [
       claims: [
         "a refused gate is the system working",
         "the gate stopped the run",
+        /* §4b's commission, made checkable. The marks used to float beside
+           the gate names; they are now inked INSIDE a frame standing on a
+           line that runs down the register, and below the third gate that
+           line runs on dashed with nothing signing it. The tail is the
+           plate's new claim and it is the one a later edit drops while the
+           rows still look right — at which point the drawing goes back to
+           three glyphs with no subject, which is what FIGURES.md called
+           unresolved in the first place. Kept in the LEG rather than only in
+           the figcaption because the leg is inside the plate. */
+        "the line runs on dashed and unsigned, to a person",
       ],
       exposed: [/>passed<\/span>/, />refused<\/span>/],
     },

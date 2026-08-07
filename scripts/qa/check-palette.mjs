@@ -452,9 +452,29 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
         `      the wrong grounds and the numbers below mean nothing.`
     );
 
-  /* What .figsvg rules actually draw with, read off the run's own CSS rather
-     than listed by eye — a token added to a figure rule joins this set. */
-  const figureCss = [...runHtml.matchAll(/\.figsvg[^{]*\{([^}]*)\}/g)]
+  /* What the figures actually draw with, read off the run's own CSS rather
+     than listed by eye — a token added to a figure rule joins this set.
+
+     `.gbench` IS SCANNED ALONGSIDE `.figsvg`, and the narrowness is the whole
+     point. §4b named this hole: fig. 10 is a night station whose drawing is
+     styled under `#gatesFig`, which a `.figsvg`-only scan never reads, so the
+     night-contrast rule was an INSTRUCTION for that one figure rather than a
+     measurement. `.gbench` is the class fig. 10's miniature wears, and every
+     colour-bearing rule of that drawing carries it.
+
+     WHY NOT SCAN ALL OF `#gatesFig`, which is the obvious fix: measured, it
+     goes red at HEAD on a correct answer. `.gates .grow` and `.gates .gclose`
+     draw `--hair` — 1.66:1 on #43372f — as the hairline SEPARATOR between
+     docket rows. That is a text plate's row rule, not a graphical object
+     conveying information, and the non-text floor does not reach it. A gate
+     that fires on the right answer is worse than the honest gap; this file
+     already declines a `--clay-g` rule for the same reason. So the scan
+     follows the DRAWING, not the plate that contains it — and the next
+     miniature drawn outside `.figsvg` has to add its own class here, which is
+     a visible cost rather than a silent exemption. */
+  const figureCss = [
+    ...runHtml.matchAll(/(?:\.figsvg|\.gbench)[^{]*\{([^}]*)\}/g),
+  ]
     .map((m) => m[1])
     .join(";");
   const usedTokens = [
