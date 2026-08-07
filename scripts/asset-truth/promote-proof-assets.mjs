@@ -36,11 +36,13 @@ const assets = [
     ),
     target: path.join(outputDir, "taskflow.png"),
   },
-  {
-    source:
-      "/Users/ayush/Documents/Projects/ai-augmented-auto-ml-toolchain/docs/screenshots/experiments.png",
-    target: path.join(outputDir, "automl.png"),
-  },
+  /* The automl entry was removed on 2026-08-07 with the plate it fed:
+     `experiments.png` from the AutoML repo became `automl.png` became
+     `automl.webp`, and the case file no longer hangs it — the deployed
+     product says "Coming soon", so a product screenshot there argues
+     something the work has not yet earned. Left as a comment rather than
+     deleted because this is the only record of where that capture came
+     from, and its source path points outside this repository. */
 ];
 
 await mkdir(outputDir, { recursive: true });

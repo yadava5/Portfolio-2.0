@@ -584,17 +584,44 @@ test.describe("Daylight Study — working paper", () => {
      way in at all. The rebuilt plate is an <a href> to the file with the
      viewer layered on top, so the enlargement is an enhancement over a
      working link rather than a replacement for one. Asserted once, on the
-     file with the most plates, because it is a property of the generator. */
+     file with the most plates, because it is a property of the generator.
+
+     THE ROUTE AND THE COUNT ARE DERIVED, NOT TYPED — changed 2026-08-07.
+     This test read `/projects/automl/` and `toHaveCount(3)` as literals,
+     and retiring automl's product screenshot turned it red for a reason
+     that had nothing to do with the property it exists to protect: the
+     generator still emitted perfect no-JS plates, there were simply two of
+     them. A gate that fails when a plate is deliberately retired teaches
+     the next person to edit the gate, which is how a gate stops meaning
+     anything. Both facts now come from the data layer the generator reads,
+     so the subject moves with the evidence and only a real regression —
+     the plate ceasing to be a working `<a href>` — can fail this. */
   test("artifact plates open the original with scripting disabled", async ({
     browser,
   }) => {
+    const byProject = new Map<string, number>();
+    for (const a of CASE_STUDY_LOCAL_ARTIFACTS)
+      byProject.set(a.projectId, (byProject.get(a.projectId) ?? 0) + 1);
+    const [projectId, expected] = [...byProject.entries()].sort(
+      (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+    )[0];
+
+    /* A derived expectation can go vacuous where a literal cannot: if the
+       data layer stopped parsing, `expected` would be 0 and every assertion
+       below would pass over an empty page. The floor is what makes the
+       derivation safe to prefer. */
+    expect(
+      expected,
+      "no case file has a local artifact — the data layer did not parse"
+    ).toBeGreaterThan(0);
+
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
-    await page.goto("/projects/automl/#artifacts");
+    await page.goto(`/projects/${projectId}/#artifacts`);
 
     const plates = page.locator("#artifacts a[data-viewer]");
-    await expect(plates).toHaveCount(3);
-    for (let i = 0; i < 3; i++) {
+    await expect(plates).toHaveCount(expected);
+    for (let i = 0; i < expected; i++) {
       const href = await plates.nth(i).getAttribute("href");
       expect(href ?? "").toMatch(/^\.\.\/\.\.\/images\/projects\/.+/);
     }

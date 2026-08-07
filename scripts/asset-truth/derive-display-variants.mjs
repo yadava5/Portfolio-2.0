@@ -31,8 +31,14 @@ await sharp(path.join(profileDir, "ayush-yadav-professional-portrait.webp"))
   .toFile(avatarTarget);
 console.log(`derived ${avatarTarget}`);
 
-/* 2) Case heroes: PNG → WebP, intrinsic size preserved (1376×768). */
-for (const name of ["automl", "mnist", "advocacy"]) {
+/* 2) Case heroes: PNG → WebP, intrinsic size preserved (1376×768).
+
+   `automl` left this list on 2026-08-07 with its plate: the deployed
+   product says "Coming soon", so no product screenshot of it belongs on a
+   shelf that argues finished work, and a generator that keeps deriving a
+   variant nobody renders is how a deleted plate quietly comes back. The
+   reasoning is in the artifacts comment in projectCaseStudies.ts. */
+for (const name of ["mnist", "advocacy"]) {
   const target = path.join(projectsDir, `${name}.webp`);
   await sharp(path.join(projectsDir, `${name}.png`))
     .webp({ quality: 82 })

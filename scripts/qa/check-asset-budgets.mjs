@@ -11,7 +11,9 @@ const budgets = [
   ["public/images/profile/ayush-yadav-professional-portrait.webp", 300_000],
   ["public/images/profile/ayush-yadav-avatar-96.webp", 5_000],
   ["public/images/projects/agentic-automl-poster-proof.webp", 300_000],
-  ["public/images/projects/automl.webp", 300_000],
+  /* `automl.webp` left this list on 2026-08-07 when its plate was retired.
+     A budget on a file that no longer exists fails the gate for the wrong
+     reason; the poster proof above is a different asset and stays. */
   ["public/images/projects/mnist.webp", 300_000],
   ["public/images/projects/advocacy.webp", 300_000],
   ["public/resume.pdf", 300_000],

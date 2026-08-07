@@ -1266,14 +1266,30 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         boundary: "private-safe capture — source repo not shown",
         date: "2026-05",
       },
-      {
-        type: "real-screenshot",
-        label: "Private-safe experiment registry screenshot",
-        href: withBasePath("/images/projects/automl.webp"),
-        source: "local AutoML repository, demo data",
-        boundary: "demo dataset — no client or institutional data",
-        date: "2026-06",
-      },
+      /* THE PRODUCT SCREENSHOT IS GONE, AND THE LIVE SITE IS WHY — ruled
+         2026-08-07. `automl.webp` was a 2026-06 local capture of the
+         experiment registry reading "First Test Pr…" over seeded demo
+         metrics. Two replacements were considered and both are worse than
+         nothing.
+
+         A shot of the live landing page: the deployed surface at
+         agentic-automl-platform.vercel.app states, in its own nav, "Coming
+         soon". A marketing page carrying a not-yet-shipped flag, entered
+         into a shelf that argues completed and gated work, is rhetoric
+         filed as evidence. The case file already links the live surface;
+         a still of a page one click away is a low-fidelity mirror of a
+         living record that goes stale on the next redeploy — the same
+         error the seven appendix plates died for.
+
+         A fresh staged interior: the numbers on it would be seeded demo
+         metrics no committed artifact owns, which FIGURES.md rule 6
+         forbids. That is the old plate's weakness re-shot at higher
+         resolution, not a fix.
+
+         What argues for this project is unaffected and is all still here:
+         the public repository, the seven gated phases, fig. 09, and the
+         presenter-deck plate directly above. The shelf does not go empty,
+         so this file keeps its `§ plates & artifacts` heading. */
     ],
   },
   {
