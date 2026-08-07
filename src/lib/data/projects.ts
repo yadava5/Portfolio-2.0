@@ -5,7 +5,63 @@
  * descriptions, and links. Projects are categorized as featured or standard.
  */
 
-import { withBasePath } from "@/lib/basePath";
+/* THE IMAGE FIELDS ARE GONE, AND SIX OF THEM WERE LYING — removed
+   2026-08-07.
+
+   `image`, `imageWidth`, `imageHeight`, `imageKind`, `imageAlt` and
+   `imageDisclosure` were removed from `Project` and from all ten entries,
+   along with the `ProjectImageKind` union and the `withBasePath` import
+   that only they needed. Not a tidy-up: SIX of the ten `image` values
+   pointed at files that no longer exist — `jobtracker-architecture.svg`,
+   `visual-assist-architecture.svg`, `pipeline-architecture.svg` (three
+   entries) and `policybot-architecture.svg`, all deleted in 7a40293 when
+   the appendix stopped restating figures the archive draws natively.
+
+   They did not 404, and that is the actual finding. Nothing reads any of
+   these fields. The archive's renderers take four things off a project —
+   `title`, `techStack`, `liveUrl`, `systemCardUrl` — and `grep -rl
+   "architecture.svg" out/` returns nothing, so no built page ever asked
+   for one. Six false claims sat here in a data file for a day, with every
+   gate green, because no gate and no renderer looked. `check-links` walks
+   `href="https?://"` and bare github literals; a local asset path is
+   invisible to it.
+
+   This repository has been burned by exactly this shape before, and said
+   so in its own words: the golden baseline's `commit` field "named Phase 0
+   while the numbers beside it were Phase 1's until 2026-08-06, and nothing
+   went red because nothing looked." A field nothing reads does not stay
+   correct; it stays unchecked.
+
+   WHAT WAS NOT LOST. The four entries whose image existed — automl,
+   taskflow, mnist, advocacy — carry their real plate, alt text, source,
+   boundary and date in `projectCaseStudies.ts` under `artifacts[]`, which
+   is what `render-case-file.mjs` actually renders. That layer is live and
+   untouched. The layer removed here was the second, unread copy, and a
+   second copy of a caption is the thing that drifts.
+
+   TWO ERRATA WERE ATTACHED TO THE REMOVED `imageAlt` FIELDS, and their
+   substance is kept here because deleting the field should not delete the
+   correction that was learned on it.
+
+   The first: fix round 3 / S14 replaced retired brands in three alt
+   strings, on the reasoning that an alt is the one string only a
+   screen-reader user hears, so a brand in a caption is history but a brand
+   in an alt is a wrong label. That reasoning still governs — it is why
+   `atlas.spec.ts` exempts `#corrections` from the negative brand
+   assertions while asserting them everywhere else.
+
+   The second is an erratum against that commit's own message, and it is
+   the strongest single argument for this removal, so it must not be lost:
+   the claim that those strings "was what screen-reader users heard" was
+   MEASURED AND FOUND FALSE. They were consumed only by the fallback arm of
+   `ProjectScene.tsx`, which rendered solely for a project with no drawn
+   scene; grepping `out/` returned 0 files for Applied's, Cadence's and
+   Glyph's, and 4 only for Visual Assist's, which had no drawn scene. The
+   strings were dormant, not spoken. `ProjectScene.tsx` has since been
+   retired with the rest of the React app, so the last consumer of any of
+   them is gone — the fields have been unread by everything, not merely by
+   the archive. That erratum priced this deletion a phase before anyone
+   proposed it. */
 
 /** Technology/skill tag */
 export interface TechTag {
@@ -18,11 +74,6 @@ export interface ProjectMetric {
   label: string;
   value: string;
 }
-
-export type ProjectImageKind =
-  | "real-screenshot"
-  | "representative-visual"
-  | "diagram";
 
 /** Project data structure */
 export interface Project {
@@ -82,20 +133,6 @@ export interface Project {
    * about jetpack actually is.
    */
   systemCardUrl?: string;
-  /** Project image path */
-  image: string;
-  /** Intrinsic pixel width of the image, when known (raster captures —
-   *  lets the case-file hero render with explicit dimensions instead
-   *  of `fill`; CLS regression hardening per PERF-AUDIT fix 4) */
-  imageWidth?: number;
-  /** Intrinsic pixel height of the image, when known */
-  imageHeight?: number;
-  /** What kind of visual the image represents */
-  imageKind: ProjectImageKind;
-  /** Accessible alt text for the project image */
-  imageAlt: string;
-  /** Public disclosure for representative/private-safe visuals */
-  imageDisclosure: string;
   /** Whether this is a featured project (shows larger in bento grid) */
   featured: boolean;
   /** Project category */
@@ -171,20 +208,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/applied",
     liveUrl: "https://getapplied.vercel.app",
     systemCardUrl: "https://getapplied.vercel.app/system-card",
-    image: withBasePath("/images/projects/jobtracker-architecture.svg"),
-    imageKind: "diagram",
-    /* Fix round 3, S14 — the product is Applied. `JobTracker` here was
-       the retired name, still describing the CURRENT diagram, in the one
-       string on this record that only a screen-reader user ever hears:
-       the alt text said one product name while every heading, deck and
-       case-file title on the route said another. (The two other
-       `JobTracker`s in this tree are correct and stay: `Applied
-       (formerly JobTracker)` is history stated as history, and
-       "the JobTracker scheme" in the Cadence-era receipt is an Xcode
-       scheme name — a code identifier, not prose.) */
-    imageAlt: "Applied local email classification architecture diagram",
-    imageDisclosure:
-      "Generated from the public repository structure; no private email content appears.",
     featured: true,
     category: "ai-ml",
     startDate: "2026-02",
@@ -235,14 +258,6 @@ export const projects: Project[] = [
     systemCardUrl: "https://agentic-automl-platform.vercel.app/system-card",
     // WebP derivative of the promoted capture (assets:derive) — the PNG
     // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
-    image: withBasePath("/images/projects/automl.webp"),
-    imageWidth: 1376,
-    imageHeight: 768,
-    imageKind: "real-screenshot",
-    imageAlt:
-      "Private-safe Agentic AutoML experiment registry screenshot with demo data",
-    imageDisclosure:
-      "Captured locally; no real dataset or institutional record appears.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
@@ -277,11 +292,6 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/yadava5/VisualAssist",
     liveUrl: null,
-    image: withBasePath("/images/projects/visual-assist-architecture.svg"),
-    imageKind: "diagram",
-    imageAlt: "Visual Assist on-device accessibility architecture diagram",
-    imageDisclosure:
-      "Generated from the public repository structure; live camera and location context are not shown.",
     featured: true,
     category: "mobile",
     startDate: "2025-03",
@@ -322,21 +332,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/cadence",
     liveUrl: "https://usecadenceapp.vercel.app",
     systemCardUrl: "https://usecadenceapp.vercel.app/system-card",
-    image: withBasePath("/images/projects/taskflow.png"),
-    imageWidth: 1376,
-    imageHeight: 768,
-    imageKind: "real-screenshot",
-    /* The product is Cadence. This alt text still said "Taskflow" — the
-       pre-rename brand — and alt text is read aloud, so it was the one
-       place a visitor could still be told the old name. The prose
-       occurrences of "TaskFlow"/"JobTracker" elsewhere in this file are
-       DELIBERATE and stay: "Cadence (formerly TaskFlow)" is history
-       stated as history, and "the JobTracker scheme" is a literal Xcode
-       scheme name (Fix round 3, S14). A brand in a caption is history;
-       a brand in an alt is a wrong label. */
-    imageAlt: "Real Cadence local demo calendar screenshot",
-    imageDisclosure:
-      "Real local frontend screenshot captured with the repository mock-login flow and demo user state.",
     featured: true,
     category: "full-stack",
     startDate: "2023-09",
@@ -389,31 +384,6 @@ export const projects: Project[] = [
     systemCardUrl: "https://getglyph.vercel.app/system-card",
     // WebP derivative of the promoted capture (assets:derive, was a
     // 264KB PNG — PERF-AUDIT fix 4).
-    image: withBasePath("/images/projects/mnist.webp"),
-    imageWidth: 1376,
-    imageHeight: 768,
-    imageKind: "real-screenshot",
-    /* The de-staling pass recorded above for jobtracker and taskflow
-       missed this one. Corrected here.
-
-       ERRATUM (same day, against my own commit message): I claimed this
-       string "was what screen-reader users heard". It was not, and I
-       should have checked the build before saying so. `imageAlt` is read
-       by ProjectScene.tsx:145,155,165, which is the FALLBACK arm — it
-       renders only for a project with no drawn scene in
-       PROJECT_SCENE_MANIFEST. Glyph has one (`fast-mnist-nn`), and that
-       scene supplies its own alt ("The race: two ink lanes drawn for the
-       same instant of time…"), which is what assistive tech actually
-       gets. Measured: grepping out/ for this string returns 0 files,
-       likewise for Applied's and Cadence's, while Visual Assist's —
-       which has no drawn scene — appears in 4.
-
-       So the name was dormant, not spoken. Still worth fixing, because a
-       latent falsehood surfaces the moment a scene is removed, but the
-       severity I stated was wrong. */
-    imageAlt: "Real Glyph React workbench screenshot",
-    imageDisclosure:
-      "Captured locally. The native inference server was offline at the time, so every benchmark figure here comes from committed data rather than this session.",
     featured: true,
     category: "ai-ml",
     startDate: "2025-10",
@@ -464,11 +434,6 @@ export const projects: Project[] = [
     // Static fallback only: a project-specific animated scene replaces
     // this in the front-end pass. Reuses an existing diagram asset — the
     // disclosure is explicit that it does not depict LifeQuest.
-    image: withBasePath("/images/projects/pipeline-architecture.svg"),
-    imageKind: "representative-visual",
-    imageAlt: "LifeQuest — placeholder visual, project scene pending",
-    imageDisclosure:
-      "Placeholder static visual reused from an existing diagram — not a depiction of LifeQuest. A project-specific scene is pending; the real prototype is at the live URL. LifeQuest is an early concept, not a finished product.",
     featured: true,
     category: "full-stack",
     startDate: "2025-03",
@@ -503,11 +468,6 @@ export const projects: Project[] = [
     // Static fallback only: a project-specific animated scene replaces
     // this in the front-end pass. Reuses an existing diagram asset — the
     // disclosure is explicit that it does not depict jetpack-compress.
-    image: withBasePath("/images/projects/pipeline-architecture.svg"),
-    imageKind: "representative-visual",
-    imageAlt: "jetpack-compress — placeholder visual, project scene pending",
-    imageDisclosure:
-      "Placeholder static visual reused from an existing diagram — not a depiction of jetpack-compress. A project-specific scene is pending; the real engine is at the live URL and public repo.",
     featured: true,
     category: "other",
     startDate: "2026-07",
@@ -539,12 +499,6 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: withBasePath("/images/projects/pipeline-architecture.svg"),
-    imageKind: "diagram",
-    imageAlt:
-      "Master Inventory Tableau and Workday pipeline architecture diagram",
-    imageDisclosure:
-      "Private-safe: institutional records, raw exports and the internal UI are not shown.",
     featured: false,
     category: "data",
     startDate: "2025-06",
@@ -580,11 +534,6 @@ export const projects: Project[] = [
     ],
     githubUrl: null,
     liveUrl: null,
-    image: withBasePath("/images/projects/policybot-architecture.svg"),
-    imageKind: "diagram",
-    imageAlt: "PolicyBot retrieval and quote-validation architecture diagram",
-    imageDisclosure:
-      "Private-safe: real institutional policy text and Slack messages are not shown.",
     featured: false,
     category: "ai-ml",
     startDate: "2025-06",
@@ -625,14 +574,6 @@ export const projects: Project[] = [
     // file in the export. This project is hidden (portfolioVisible:
     // false, no case study), so nothing fetches it today — converted
     // anyway per PERF-AUDIT fix 4 so no future surfacing re-ships it.
-    image: withBasePath("/images/projects/advocacy.webp"),
-    imageWidth: 1376,
-    imageHeight: 768,
-    imageKind: "real-screenshot",
-    imageAlt:
-      "Real Paid Internships Advocacy data visualization page screenshot",
-    imageDisclosure:
-      "Real screenshot from the public advocacy site data page with cited research charts.",
     featured: false,
     // Freshman ENG109 course project — kept in the repo but hidden from
     // recruiter-facing lists so it does not dilute the engineering ladder.
