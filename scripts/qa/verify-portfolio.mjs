@@ -196,10 +196,19 @@ function assertRunShipped() {
  * output cannot be recovered from a commit without building it, and the source
  * can be read straight out of the object database.
  *
- * SKIPS RATHER THAN FAILS when the commit is not in the object database. CI
- * checks out at depth 1 and this file is meant to be true about history, not to
- * fail on a shallow clone. It says which happened either way — a check that
- * quietly does nothing is the thing this whole file exists to prevent.
+ * SKIPS RATHER THAN FAILS when git cannot read the commit. CI checks out at
+ * depth 1 and this file is meant to be true about history, not to fail on a
+ * shallow clone. It says which happened either way — a check that quietly does
+ * nothing is the thing this whole file exists to prevent.
+ *
+ * AND THE SKIP LINE USED TO ASSERT A CAUSE IT HAD NOT CHECKED. It read "is not
+ * in this clone" for ANY non-zero git, and Phase 7's Linux dry run hit it on a
+ * FULL clone with all history present: git refused the repository outright with
+ * `detected dubious ownership`, the gate printed "not in this clone", and the
+ * pairing silently stopped. Same defect as C44's mis-blamed dead import and the
+ * §6.6 status code that was read as evidence for whatever the link was cited
+ * for. Git's own reason is now printed instead of a guess at it — which also
+ * makes the §7.1 squash cost visible in the log rather than only in the plan.
  */
 function pinnedCommitAgrees(baseline) {
   if (!baseline.commit || !baseline.runSourceSha256) return;
@@ -210,8 +219,13 @@ function pinnedCommitAgrees(baseline) {
   );
   const blob = ls.stdout?.trim().split(/\s+/)[2];
   if (ls.status !== 0 || !blob) {
+    const why = (ls.stderr || "")
+      .trim()
+      .split("\n")[0]
+      .replace(/^fatal:\s*/, "");
     say(
-      `  · pinned commit ${baseline.commit.slice(0, 8)} is not in this clone — pairing not checked`
+      `  · pinned commit ${baseline.commit.slice(0, 8)} could not be read here — pairing not checked` +
+        (why ? `\n    git says: ${why}` : "")
     );
     return;
   }
