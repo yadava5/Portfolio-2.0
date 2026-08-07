@@ -127,6 +127,30 @@
 > presented for ~55ms at 1× and **449ms at 4× CPU**, not the 12.18px of
 > dashoffset this plan had it as. **This one IS §6.3 item 2**, two orders of
 > magnitude larger than its own record.
+>
+> ---
+>
+> ## PHASE 7 — §7.2 IS DONE AND EXTENDED ONTO LINUX; THE REST IS DECISIONS
+>
+> §7.2 is the one Phase 7 item marked **Unconditional**, and its precondition
+> was §6.6, which is closed. Run at HEAD and then extended into an
+> `ubuntu:24.04` **x86_64** container on **Node 20** — the version both
+> workflows pin and this machine has never used:
+> **`deploy.yml`'s exact command passes there and `out/index.html` reproduces
+> the golden hash byte for byte**, and the full validator is green at 20 steps
+> and 270 tests, **including WebKit on Linux for the first time in this
+> repository**. Three of the four risks §7.2 calls untestable from here are
+> closed; the fourth — `test:links` from a GitHub IP — is not, and is marked so.
+> Two things came out of it and are committed: the golden pairing's skip line
+> was asserting a cause it had never checked, and one HIGH advisory had appeared
+> since §7.2's last record.
+>
+> **§7.1, §7.4 and §7.5 cannot be done from here.** §7.1 is a ruling; §7.4 needs
+> a deploy; §7.5 needs §7.4. **Nothing pushed, no PR opened, `main` and
+> `origin/main` both still `4ec9421`.** One thing worth knowing before ruling on
+> §7.1: `ci.yml` runs on `pull_request` while `deploy.yml` runs only on `push`
+> to `main` — so **a PR runs the whole matrix and ships nothing**, which is how
+> the fourth risk gets retired without a deploy.
 
 ---
 
@@ -2993,7 +3017,20 @@ commit (C32).
 **not** a re-audit of eight projects and **not** a second migration. If a row
 needs a project re-run to settle, its disposition is **3**, not 2.
 
-## 6. Phase 7 — Ship it. **[UNCHANGED IN SUBSTANCE, TIGHTENED]**
+## 6. Phase 7 — Ship it. **[§7.2 EXECUTED AND EXTENDED ONTO LINUX, 2026-08-07. THE REST IS THE OWNER'S.]**
+
+> **PHASE 7 CANNOT BE COMPLETED BY AN AGENT, AND THIS SECTION'S OWN HEADER
+> ALREADY SAID SO** — *"every item here needs the owner's decision before it is
+> executed"*. What was executable was §7.2, which this section marks
+> **Unconditional**, and whose precondition (§6.6 closed) was met. That is done,
+> and extended onto Linux and Node 20, where it closes three of the four risks
+> §7.2 lists as untestable from here. **§7.1 is a ruling. §7.3 is a description,
+> now verified against the workflow file and the build's own source. §7.4
+> requires a deploy that has not happened. §7.5 requires §7.4.**
+>
+> **NOTHING HAS BEEN PUSHED AND NO PR HAS BEEN OPENED.** `main` and
+> `origin/main` are both still `4ec9421`. The plan has carried *"no push, no PR
+> without being asked"* since Phase 0, and this session did not spend it.
 
 **Nothing pushed, and `main` is far behind — count both rather than trusting a
 number here: `git rev-list --count main..HEAD` (54 at `6ba0c9f`). Note the repo
@@ -3007,6 +3044,34 @@ phase where the plan proposes rather than instructs.
 
 `refactor/stations-truth` → `feat/archive-rebuild` → `refactor/retire-next` →
 `feat/figures-and-benchmarks` → (Phase 6). They stack; they do not diverge.
+
+> **THE STACK, MEASURED 2026-08-07 — the ruling is unchanged, its inputs are
+> now checked rather than described.** Linearity verified with
+> `git merge-base --is-ancestor` on all three joins: each branch **contains**
+> the one before it, so this is a stack and not three merges waiting to
+> conflict. Ahead of `main`: **5 → 14 → 21 → 70**, i.e. segments of
+> **5 · 9 · 7 · 49**. `main` is still `4ec9421` and `origin/main` agrees with
+> it, so nothing has been pushed and no one is racing this.
+>
+> **THE SQUASH COST IS NOW A CHECKED FACT, NOT A PLAN SENTENCE.** The golden
+> baseline pins `095fd88`, and that commit is reachable **only from
+> `feat/figures-and-benchmarks`** — not from `refactor/retire-next`, not from
+> `main`. `pinnedCommitAgrees()` (`verify-portfolio.mjs:212-217`) prints
+> *"…is not in this clone — pairing not checked"* and **`return`s**; it does
+> not throw. So a squash or rebase merge removes that sha from `main`'s history
+> and the assertion C32 was fixed seven times to protect stops running
+> **everywhere, forever, in green ink**. A merge commit preserves it. That is
+> the whole of the third row's cost, and it is real.
+>
+> **ONE THING NEITHER THIS TABLE NOR §7.2 SAYS, AND IT CHANGES THE ORDER OF
+> OPERATIONS: `ci.yml` runs on `pull_request: [main]`, `deploy.yml` runs only
+> on `push: [main]`.** So **opening a PR runs the whole matrix and ships
+> nothing** — Linux WebKit, `playwright install --with-deps`, `test:links`
+> from a GitHub IP, and the four gates §7.2 lists as never having run on a
+> Linux runner. Those are exactly the residual risks, and a PR retires them
+> **before** anything reaches production, with no deploy and no approval gate
+> crossed. **This is a proposal, not an instruction — no PR has been opened
+> and none will be without the owner asking.**
 
 | | what lands on `main` | cost |
 |---|---|---|
@@ -3037,6 +3102,75 @@ ever run WebKit on macOS); `playwright install --with-deps` on the runner; and
 fail for a reason unrelated to this migration. **Four gates have never run on a
 Linux runner** — `test:palette`, `test:bench-artifacts`, and the two the §4b
 redraw extended.
+
+> **RE-RUN 2026-08-07 AT HEAD `7f8dc5c`, AND THEN EXTENDED ONTO LINUX. THREE OF
+> THOSE FOUR ARE NOW CLOSED.** Two separate exercises, and the distinction
+> matters: the first is the literal §7.2 item, the second is an extension of it.
+>
+> **THE CLONE TEST ITSELF — macOS, Node 24, one fresh clone with no `out/` and
+> no `node_modules`.** `npm ci` exit **0**. `verify-portfolio --no-e2e` exit
+> **0**, golden hash reproduced (`859e9027f455…`). One difference from the last
+> run: because a local clone carries full history, **`pinnedCommitAgrees()`
+> actually ran here and passed** — *"pinned commit 095fd88c does produce the
+> pinned source"* — rather than skipping the way it does on CI's depth-1
+> checkout. The pairing is verified, not assumed.
+> **AND ONE REGRESSION AGAINST THIS SECTION'S OWN RECORDED RESULT.** *"npm ci
+> exit 0 / 0 vulnerabilities"* is no longer true: one HIGH,
+> **GHSA-5p4m-2wfm-xmqj**, quadratic CPU in js-yaml's `!!omap` resolution.
+> Transitive under eslint, devDependency only, nothing reaches `out/`, and
+> `ci.yml`'s security job is `npm audit || echo` so it would never have gone
+> red. Measured in a throwaway clone before being applied: the fix moves
+> **exactly one** lockfile entry, 4.3.0 → 4.3.1, nothing added or removed.
+> Applied and reinstalled in `5cbf4e2`; `npm audit --audit-level=high` exits 0.
+>
+> **THE LINUX EXTENSION — `ubuntu:24.04`, x86_64, Node 20.19.5.** The
+> architecture is the point and was checked rather than assumed: Docker here is
+> arm64, so the container is `--platform linux/amd64` and `uname -m` inside
+> reports `x86_64`. A WebKit result on arm64 Debian would have been evidence
+> about nothing, which is this document's own recurring lesson about
+> instruments. Node 20 because **both** workflows pin it (`deploy.yml`
+> `node-version: "20"`, `ci.yml` `NODE_VERSION: 20`) while this machine runs 24
+> — a divergence nothing in this migration had ever exercised.
+>
+> · `npm ci` — exit **0**.
+> · `npx playwright install --with-deps chromium firefox webkit` — exit **0**,
+>   359 apt packages and the `webkit-ubuntu-24.04` build (99.2 MiB) fetched.
+>   **That closes the `--with-deps` item.**
+> · **`node scripts/qa/verify-portfolio.mjs --no-e2e`, which is `deploy.yml`'s
+>   command verbatim — exit 0, and `out/index.html` REPRODUCES THE BASELINE
+>   `859e9027f455…` byte for byte on Linux and Node 20.** This is the
+>   deploy-blocking risk nobody had tested: the hash had only ever been computed
+>   on macOS/Node 24, and if the generator touched anything ICU- or
+>   platform-dependent the deploy would red at step 6 of 20 and Pages would ship
+>   nothing. It does not. Checked statically first and the two agree: no Node
+>   21+ API appears anywhere in `scripts/`, `src/` or `tests/`, and the only
+>   `toLocaleDateString` in the tree is in `scripts/archive/assets/paper-memory.js`,
+>   which `build-archive.mjs:134` **copies verbatim** and the page loads
+>   `defer` — so the date is formatted in the reader's browser and no formatted
+>   date is ever baked into the served HTML.
+> · **`npm run verify:portfolio` — exit 0, 20 steps, 270 tests in 12.6 min,
+>   54 per engine across all five.** WebKit desktop and WebKit mobile **have now
+>   run on Linux**, for the first time in this repository. The four gates this
+>   section names as never having run on a Linux runner — `test:palette`,
+>   `test:bench-artifacts` and the two the §4b redraw extended — all ran and all
+>   passed. With `safe.directory` set, the pinned-commit pairing passed on Linux
+>   too.
+>
+> **THE FOURTH ITEM IS NOT CLOSED AND MUST NOT BE READ AS CLOSED.**
+> `test:links` passed in the container, but those requests left **this
+> machine's** IP, not a GitHub runner's. Its exposure is rate limiting and
+> egress from GitHub's own network to `github.com`, and nothing local can
+> exercise that. It remains the step most likely to fail for a reason unrelated
+> to this migration.
+>
+> **AND FOUR CI JOBS THAT `verify:portfolio` DOES NOT COVER WERE RUN TOO**, so
+> "green" is not being claimed for a subset: `resume:check`, `assets:budget`,
+> `test:e2e:a11y` and `test:e2e:performance` — all exit 0 locally.
+>
+> **§7.3'S ATOMIC-SWAP CLAIM IS TRUE, checked in source rather than believed:**
+> `build-archive.mjs` builds into a **sibling** of the destination and lands it
+> with a single `renameSync(BUILD_ROOT, DEST)` at `:204`, so a failure leaves
+> the previous `out/` intact and the upload step has nothing partial to ship.
 
 ### 7.3 — The deploy path
 
