@@ -58,6 +58,53 @@ const entry = resolve(OUT, "components/story/nameplateMachines.js");
 if (!existsSync(entry)) fail("no nameplateMachines.js after compile");
 const bytes = readFileSync(entry).length;
 
+/* MACHINES WITHHELD, CHECKED HERE BECAUSE IT CANNOT BE CHECKED AT RUNTIME.
+   `nameplateMachines.ts` promised that renaming the author in the data layer
+   would yield the plate without the machines — five letterforms are authored
+   to pixel scans of exactly ten characters in exactly one face, so a rename
+   folds a bird into somebody else's v. It imported `personalInfo` to make
+   that comparison and never made it (C46).
+
+   The obvious fix is one line in that file and it is measurably wrong: TS was
+   ELIDING the unused import, so nothing loaded `personal.js`. Use the value
+   and the import is retained; `personal.ts` imports `withBasePath` and
+   `basePath.ts` reads `process.env`, so the browser throws
+   `ReferenceError: process is not defined`, the dynamic import of the whole
+   module fails, and the nameplate stops performing with four check-nameplate
+   invariants red. Measured, reverted, and recorded here so it is not tried
+   twice. Node has `process`, and this is Node.
+
+   Read as text rather than imported, the same way check-stations reads its
+   own data file: this job compiles the type graph, and importing the data
+   layer to validate the thing being compiled inverts that order. */
+const nameIn = (file, re, what) => {
+  const src = readFileSync(resolve(root, file), "utf8");
+  const m = src.match(re);
+  if (!m)
+    fail(`could not read ${what} from ${file} — the guard cannot run blind`);
+  return m[1];
+};
+const machineName = nameIn(
+  "src/components/story/nameplateMachines.ts",
+  /export const MACHINE_NAME = "([^"]*)"/,
+  "MACHINE_NAME"
+);
+const authorName = nameIn(
+  "src/lib/data/personal.ts",
+  /export const personalInfo = \{[\s\S]*?\bname: "([^"]*)"/,
+  "personalInfo.name"
+);
+if (machineName !== authorName) {
+  fail(
+    `the machines are authored to ${JSON.stringify(machineName)} but the data ` +
+      `layer now says ${JSON.stringify(authorName)}.\n` +
+      `  Five machines cite pixel scans of the first string; they would draw ` +
+      `the right shapes onto the wrong letters.\n` +
+      `  Re-author the machines to the new name, or withhold them deliberately ` +
+      `— do not just update MACHINE_NAME.`
+  );
+}
+
 console.log(
   `  · nameplate machines compiled — ${(bytes / 1024).toFixed(1)} KB, ${rewritten} files re-specified, 0 unresolved`
 );

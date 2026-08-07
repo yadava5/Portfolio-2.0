@@ -38,9 +38,21 @@
     "jsx": "preserve",
     "skipLibCheck": true
   },
+  /* Roots, not the whole graph — tsc follows the imports from here, which is
+     why `thread/constants.ts` is emitted without being listed.
+
+     `src/lib/data/personal.ts` WAS listed and is not any more (C44, closed
+     2026-08-07). It was here because `nameplateMachines.ts` imported
+     `personalInfo` for a check it never performed; TypeScript elided that
+     unused import, so the run never loaded the module, but this list kept
+     emitting it anyway — `personal.js` and `basePath.js` shipped into `out/`
+     as 12 KB that nothing on the page could reach. The import is gone and so
+     is the root. The guard it was imported for now runs in
+     `scripts/run/build-nameplate.mjs`, where `process` exists — `basePath.ts`
+     reads `process.env`, which is exactly why that check can never live in a
+     module the browser loads. */
   "include": [
     "src/components/story/nameplateMachines.ts",
-    "src/components/thread/geometry.ts",
-    "src/lib/data/personal.ts"
+    "src/components/thread/geometry.ts"
   ]
 }

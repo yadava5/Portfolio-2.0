@@ -82,13 +82,29 @@
  */
 
 import { mulberry32 } from "@/components/thread/geometry";
-import { personalInfo } from "@/lib/data/personal";
 
 /* The machines are authored to these ten characters (their clip
    polygons, hinge points and skeletons cite pixel scans of exactly
-   this string in this face). If the data layer ever renames the
-   author, the plate renders the new name still — machines withheld —
-   rather than fold a bird into somebody else's v. */
+   this string in this face). Rename the author in the data layer and
+   every machine draws the right shape onto the wrong letter — a bird
+   folded into somebody else's v.
+
+   THE CHECK IS AT BUILD TIME, IN `scripts/run/build-nameplate.mjs`, AND
+   IT CANNOT BE HERE (C46/C44, measured 2026-08-07). This file imported
+   `personalInfo` for nineteen commits to make that comparison and never
+   made it. Wiring it at runtime was tried and reverted: `personal.ts`
+   imports `withBasePath`, and `basePath.ts` reads `process.env`, which
+   does not exist in a browser. TypeScript had been ELIDING the unused
+   import, so the module graph never loaded it and nothing broke; using
+   the value retains the import, and the whole dynamic import of this
+   module then fails with `ReferenceError: process is not defined` — the
+   nameplate silently stops performing, and check-nameplate goes red on
+   four invariants at once.
+
+   `personal.js` and `basePath.js` shipped into `out/run/` and were fetched
+   by nothing — not because of this import, which TypeScript elided, but
+   because `tsconfig.run.json` named `personal.ts` as a compile ROOT. Both
+   are gone now: the import here, and the root there (C44). */
 export const MACHINE_NAME = "Ayush Yadav";
 /** character index → machine (see file header). */
 const MACHINE: Record<number, string> = {
