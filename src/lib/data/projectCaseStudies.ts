@@ -1968,11 +1968,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     artifacts: [
       {
         type: "real-screenshot",
-        label: "Local mock-login calendar screenshot",
+        label: "Production calendar, demo account session",
         href: withBasePath("/images/projects/taskflow.png"),
-        source: "local frontend, repository mock-login flow",
-        boundary: "demo user state — no real user data",
-        date: "2026-06",
+        source:
+          "production interior — usecadenceapp.vercel.app, demo account · 2026-08",
+        boundary: "demo account state — no real user data",
+        date: "2026-08",
       },
       {
         type: "repo",

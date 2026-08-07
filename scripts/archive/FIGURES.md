@@ -229,6 +229,12 @@ fig. 1, fig. 2 and the ledger already say.
   The only motion the archive permits is the reader's own act (opening a
   viewer, pressing approve, walking the audit); nothing replays, fills,
   or scrubs. This holds for any future appendix content too.
-- The three raster product captures (taskflow.png, mnist.webp,
-  automl.webp) are the owner's to re-shoot or drop; the renderer now
-  handles every count from zero up, so no shelf state blocks his call.
+- The raster product captures are the owner's to re-shoot or drop; the
+  renderer handles every count from zero up, so no shelf state blocks his
+  call. There are two left, and the sentence used to say three:
+  `automl.webp` was retired on 2026-08-07 with its case-file plate, and
+  `taskflow.png` stopped being a local mock-login capture the same day —
+  it is now the production interior, signed in as the demo account. That
+  leaves `mnist.webp`, whose boundary field still says the native
+  inference server was offline during capture, and which is the one plate
+  here that is still a local workbench shot.
