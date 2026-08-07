@@ -56,6 +56,31 @@
 > ratios are now fractions bound to four vendored JSON records, and five
 > browser engines measure the rendered widths. Nothing in the redraw may return
 > a committed number to a fill, a sweep or a count-up.
+>
+> ---
+>
+> ## STATE AS OF 2026-08-07 — read this paragraph and §5 first
+>
+> **PHASE 5 IS COMPLETE. All six remaining figures are redrawn, committed and
+> green** — commit zero plus figs. 09, 03, 04, 07, 08, 10, fifteen commits on
+> `feat/figures-and-benchmarks`. `verify:portfolio` green at 20 steps, 270
+> browser tests, reduced-motion 20 passed. **51 commits on the stack, nothing
+> pushed.** §4b's head note carries the six outcomes, the nine defects the
+> redraw found that no gate could see, and three things this plan believed that
+> were measured wrong.
+>
+> **THE REMAINING WORK IS TWO PHASES, NOT FOUR** — §5 (fix what is wrong, then
+> make it visible) and §6 (ship it). §5 was re-planned and consolidated on
+> 2026-08-07 around four owner items: **the rail is carrying the wrong cargo
+> while its gate is green; nothing the owner can see has changed on the case
+> files or the benchmarks, and §6.2 says so plainly; there is no way to preview
+> this site at all, which is why §6.0 comes first; and frontend work may now run
+> TWO Fable agents in parallel, partitioned by FILE and never by task.**
+>
+> **Two rulings are open and both need the owner, not a fix:** `--hair-strong`
+> measures 2.0:1 on the day fields where nothing has ever measured it, and a
+> live hash arrival at `/#review` leaves one mark part-inked (pre-existing,
+> measured at HEAD before the redraw).
 
 ---
 
@@ -2002,258 +2027,305 @@ The discipline, unchanged and now with two phases of evidence behind it:
 
 ---
 
-## 5. Phase 6 — Acceptance, as a reader. **[RE-PLANNED TWICE — 2026-08-06, again after Phase 5]**
+## 5. Phase 6 — Fix what is wrong, then make it visible. **[RE-PLANNED 2026-08-07, CONSOLIDATED]**
 
-The validator proves nothing broke. It does not prove the thing was worth doing.
-
-> **What Phase 5 added to this walk, and why each is new rather than a
-> restatement.** The list below was written before the bench was re-clothed,
-> before four machine records started shipping at public URLs, and before the
-> palette had a gate. Five items are added and one is sharpened:
+> **This section replaces the old Phase 6 (a 12-item acceptance walk) and folds
+> in four owner items raised on 2026-08-07. It is deliberately SHORTER than what
+> it replaces.** The old walk was written when nobody had ever read the rebuilt
+> site; since then five phases have shipped and the owner has been reading
+> `out/` throughout. What is left is not a survey. It is: **three things that
+> are wrong, one thing nobody can see, and a short list of housekeeping.**
 >
-> - **§5.13 — the two registers on fig. 06.** §5.5's judgement call cannot be
->   gated: whether a reader sees one live instrument above the hair rule and
->   one filed record below it, or one muddle. **This is the acceptance test for
->   the whole instrument/record distinction**, which by then will have shaped
->   six other figures.
-> - **§5.14 — the four `/proof/*.json` links, as a reader clicks them.** The
->   bench sheads now send a reader to raw Google Benchmark and JMH JSON. It is
->   the copy that cannot 404, which is why it is cited — but a 42 KB unstyled
->   JSON blob is a destination, and nobody has read the arrival. Decide whether
->   that is honest-and-fine (it is a record room; records are raw) or wants a
->   line of chrome. **Do not gate this; read it.**
-> - **§5.15 — the settled bars, as motion.** Every reader now gets what only
->   reduced-motion readers used to. Confirm the plate does not read as *dead*
->   where it used to read as *alive* — the honesty is not in question, the
->   liveliness is.
-> - **§5.16 — the palette `measured:` grammar is now a standing obligation.**
->   Any future colour change to `src/run/index.html` or
->   `scripts/archive/assets/archive.css` must update the recomputed claims
->   beside it or the gate reds. That is the intended cost. **It belongs in the
->   ledger (item 11) so the next person meets it as a rule rather than as a
->   red build.**
-> - **§5.17 — `--hair-strong` has one hundredth of margin at night.**
->   **SUPERSEDED IF §4b's COMMIT ZERO HAS LANDED**, which raises the night
->   alpha to `.45` and takes the margin to 0.40 — check `check-palette`'s own
->   printed margin line before treating this as live. As written: 3.01:1
->   against a 3.0 floor, and the figures' own rule lines draw in it. Not an
->   acceptance item so much as a standing note: it is the palette's tightest
->   pair and the next person to touch WAY[5] needs to know before, not after.
-> - **Item 4 is sharpened:** "read every Phase-5-redrawn plate at its tight
->   edition" now means all seven — fig. 05 shipped in Phase 5, the other six
->   with §4b — and the tight edition is the half **no gate reads** (its viewBox
->   is written at run time). This walk is its only check.
+> **The migration is now TWO phases, not four.** Phase 6 is everything that must
+> be true before a push. Phase 7 is the push. Nothing else is planned.
 
-**This is a reading, not a test run.** Everything below is done by a person with
-the deployed site open, in order, once. Where an item already has a gate, the
-gate is named — the walk is asking whether the thing the gate permits is the
-thing you wanted.
+### THE OWNER'S ITEMS, 2026-08-07 — these outrank the walk below
 
-1. **The seam, both directions, from every station with a handoff.** The defect
-   this was written about is fixed: `back to the work ⟵` → `/#work` (¶04, 08:47)
-   on every file became `⟵ rejoin the line at ¶ NN · <station> — HH:MM`, and
-   `check-crosswalk`'s fourth direction holds each one to `stations.ts`
-   verbatim. What the walk is for now is whether it **reads** right — a gate can
-   prove the hour is correct and cannot tell you whether arriving at it feels
-   like coming back.
-2. **The dark stations** — leaving from ¶08/¶09 must not read as a different
-   site. The archive stays lit by ruling (§3.8); the lamp is in prose and the
-   cut is softened by a 200ms view transition. This is the walk that says
-   whether that was enough.
-3. **Hash arrival lands with the ink already seated.** The per-station rejoin
-   links multiply hash arrivals sevenfold, two of them into night stations
-   (`/#automl`, `/#review`). Load each rejoin target directly, cold, and confirm
-   the ink field is correct in the **first painted frame** — not corrected after
-   the first scroll event. This was not load-bearing when every return went to
-   `/#work`; it is now, and nothing gates it.
-4. **320px and 390px**, both, on the run and on a case file. The 404's index row
-   was measured overflowing at every width below 430 before `wrap-anywhere`
-   fixed it; the archive rebuild inherits that grammar. `run-home.spec.ts` gates
-   no-horizontal-overflow at 390/768/1440 on the run only.
-   **And read every Phase-5-redrawn plate at its tight edition** — labels
-   legible at the 10–11px floor, numbered keys matching their marks, and fig. 06
-   reading as one instrument above the hair rule and one filed record below it.
-   That last clause is the acceptance test for §5.5's judgement call, and it
-   cannot be gated: it is whether a reader sees two registers or one muddle.
-5. **Reduced motion and print.** `reduced-motion.spec.ts` covers the first on
-   the run. **Print is gated nowhere and never has been** — and the paper
-   conceit makes it the one site where a reader might actually try it.
-6. **Cross the seam by keyboard, both ways.** *(Fable's addition, and it is the
-   sharpest gap in this list.)* The archive has a skip link — Phase 4 made
-   `a11y-audit.spec.ts` assert it is the first stop for a Tab and lands on
-   `#main-content`. **The run famously has none**; §3.4 says so in its own
-   words, and the rebuilt pages were told not to inherit that absence. So the
-   two halves of one site now disagree about the first thing a keyboard reader
-   touches. Tab from a case file's rejoin link into the run, and back out from
-   a run station's waybill. Nothing gates this crossing and no other walk item
-   makes it. **It also forces the deferred ruling: does the run now take the
-   skip link the archive has?**
-7. **Read the archive as a reader for the first time.** The 4.1 flip shipped the
-   generated case files; until then they had only ever been read by gates and
-   screenshots. Seven files and `/evidence/`, start to finish, as a reader.
-8. **Rule on `localStorage["motion-off"]` for the archive.** The rebuilt pages do
-   not honour it — `layout.tsx`'s motion-tier script was not reproduced, because
-   a static archive has no engine to tier and its only motion is a
-   reduced-motion-gated view transition and audit cadence. Defensible, but it is
-   a reader-facing switch that used to work on these URLs. One media-query
-   addition if the answer is yes. (§2.9)
-9. **Wire or retire the nameplate's "machines withheld" guard (C46).**
-   `nameplateMachines.ts` promises that a renamed author gets the plate without
-   the machines, imports `personalInfo` for it, and never checks. `MACHINE`, the
-   character-index map, is dead beside it. Both are ESLint warnings today.
-   **It closes C44 for free:** that unused import is why
-   `out/run/lib/data/personal.js` and `basePath.js` — 10.4 KB no browser ever
-   fetches — are still published, and using or removing the binding is the only
-   thing that stops it.
-10. **Rewrite the repository's own README.** Measured at the Phase 4 checkpoint:
-   it opens with Next.js 16 / React 19 / Tailwind 4 / GSAP / Framer Motion /
-   Lenis badges and a tech-stack table, and tells a reader to run `npm run dev`
-   — a script that no longer exists, describing a framework that is no longer
-   installed, for a page that is no longer rendered. **It is the front door of a
-   repository whose entire argument is that claims terminate in things you can
-   check.** Higher-value than the ledger below it, and cheaper.
-11. **Update `docs/PROJECT-LEDGER.md`.** A migration this size that leaves the
-    ledger stale guarantees the next person re-derives all of it.
-12. **Rule on `docs/design-lab/`.** Phase 4 added it to ESLint's ignore list
-    because sixty one-off measurement probes and a second vendored copy of the
-    wasm glue contributed 1,621 `no-undef` errors and nothing true. That is the
-    right call for a lint gate and a deferral for the directory itself: ~2 MB of
-    committed telemetry (§7) plus the probes that produced it. Worth one ruling
-    now that the tree around it is small.
+| | item |
+|---|---|
+| **A** | *"the rail is still carrying Wrong cargo"* — reported by the owner reading the deployed-shape site. **`check-cargo-fixture` is GREEN.** See §6.1: a green gate over a wrong result means the gate's premise is wrong, not that the owner is |
+| **B** | *"did you fix the live source or benchmark or view case studies file… As I don't see anything yet"* — **answered honestly in §6.2, and the answer is no.** §4b's redraw touched `src/run/index.html` and two QA scripts and nothing else. Nothing on a case file, in `/evidence/`, or in a benchmark moved |
+| **C** | *"show me a preview or a local host where I can see what all things have done"* — **§6.0, and it goes first.** Every other item in this phase is judged through it |
+| **D** | *"we can run two Fable agents for front end work… so we can speed the work"* — **the working method below.** It is real, it has one hard constraint, and the constraint decides the lanes |
 
-**Item moved out of this phase:** *"the classifier loads on the deployed
-artifact, not locally — the Phase 0 closure hole, confirmed in production"*
-cannot be done here. Nothing has been deployed. It is §6.4.
+### THE WORKING METHOD — two Fable agents, and the one rule that makes it safe
 
-Already verified in Phase 3, so this walk need not re-derive it: paper memory
-written by the **React** app survives into the vanilla port — the margin note
-prints the original first-read date rather than today, the audit walk restores,
-`/evidence/` inks the right visited marks, and the run approval is honoured.
+§4b took six figures at roughly forty minutes each, sequentially, because **all
+six live in one file.** That is the whole reason it was slow, and it is also why
+"two agents" is not automatically twice as fast.
+
+> **PARALLELISE BY FILE, NEVER BY TASK.** Two Fable agents may run concurrently
+> **only when their edit sets are disjoint files.** Two agents editing
+> `src/run/index.html` will clobber each other — there is no merge here, the
+> second write wins, and the loss is silent because both report success.
+
+The remaining work splits cleanly along that line, which is why the method
+works now and would not have worked in §4b:
+
+| lane | owns | never touches |
+|---|---|---|
+| **Fable-RUN** | `src/run/index.html` | `scripts/archive/**` |
+| **Fable-ARCHIVE** | `scripts/archive/**` (`case-figures.mjs`, `render-case-file.mjs`, `assets/archive.css`) | `src/run/index.html` |
+
+Standing rules, unchanged: **Fable designs, main verifies.** Neither agent runs
+`verify:portfolio`, Playwright, CI or `npm run build` — the main thread runs
+them and reports back. Neither commits. Both scan what they author for control
+bytes. **The main thread must verify each agent's claims rather than relaying
+them**: §4b found a report that mis-stated its own opacity audit, one that got a
+glyph advance backwards, and one that needed a factual claim checked against a
+pinned sha before it could enter a label.
+
+**If both lanes are idle-blocked on one file, run one agent.** Two agents queued
+on the same file is slower than one, because the second one's work is thrown
+away.
+
+### 6.0 — THE PREVIEW. Do this first; everything else is read through it.
+
+There is no way to look at this site. `npm run build` writes `out/` at the
+deploy `basePath` (`/Portfolio-2.0`), and `tests/playwright/static-server.mjs`
+serves `out/` at the **root** — so opening it locally 404s every asset, and the
+e2e path only works because it rebuilds with an empty basePath first. **The
+owner has been reading a directory, not a site.**
+
+Build `npm run preview`:
+
+- Serves the **deploy-configured** `out/` — the same bytes the golden hash pins
+  — mounted at `/Portfolio-2.0/` so every absolute path resolves as it will in
+  production. Do not "fix" this by building with an empty basePath: that is a
+  different artifact from the one that ships, and preferring it is how a link
+  that only works locally reaches production.
+- Prints the URL of the run **and** of all seven case files and `/evidence/`, so
+  the archive is reachable without guessing paths.
+- Does **not** rebuild by default (a flag may). The point is to look at what the
+  last build produced, not to trigger one.
+- Reuses `static-server.mjs`'s resolver rather than adding a second one; it
+  already handles directory indexes and the 404 fallback.
+
+**Then send the owner the URL and a short list of what to look at**, and do that
+again at every checkpoint in this phase. The standing complaint behind item C is
+that five phases of work have never been visible; a preview that exists but is
+never handed over does not fix it.
+
+### 6.1 — THE RAIL'S CARGO IS WRONG, and a green gate says otherwise
+
+**The owner reports the rail carrying the wrong cargo. `check-cargo-fixture` is
+green and has been green all phase.** Both cannot be right, and the gate is the
+one to doubt: the owner is reading the rendered rail, the gate is reading a
+recorded fixture.
+
+This is the C-series pattern the migration has hit six times (C33 counting
+without checking, C40's unreachable `hard()` path, C42's gate that stopped
+executing, C45's report that printed shrugs). **Do not start by adjusting the
+cargo. Start by finding out what the gate actually asserts**, and expect one of:
+
+- it compares the render against a fixture that was **recorded from the same
+  wrong render** (`--record` exists — a fixture re-recorded after a regression
+  pins the regression);
+- it checks that cargo *rides* corridors without checking *which* cargo rides
+  *which*;
+- it is scoped to beats 2/6/8 — the three the Phase-1 content pass fixed — and
+  says nothing about the other ten;
+- the truth it should be checking is `stations.ts`, and it is checking something
+  else.
+
+**Deliverables, in order:** (1) reproduce the wrong cargo in the preview and
+write down what is wrong, in the owner's terms, per beat; (2) state what
+`check-cargo-fixture` asserts and why that was compatible with the defect —
+**that sentence is the finding**; (3) fix the cargo against the run's declared
+truth; (4) fix or replace the gate so the defect would have been caught, and
+**prove it fires by reproducing the original wrong cargo in a temp copy**. A
+re-recorded fixture is not a fix.
+
+### 6.2 — What Phase 5 and §4b did NOT touch, stated plainly
+
+**The honest answer to owner item B.** §4b's thirteen commits touched exactly
+three files: `src/run/index.html`, `scripts/qa/check-figures.mjs`,
+`scripts/qa/check-palette.mjs`. **No case file, no `/evidence/` page, no
+benchmark artifact and no data-layer file changed.** If the owner is looking at
+`/projects/<id>/` for something new, there is nothing there, and that is a fact
+about scope rather than a defect.
+
+What *did* ship earlier in Phase 5, so the walk does not re-derive it: the
+attribution fix across five claim sites on two files (§5.0), four vendored
+machine records at `/proof/*.json` (§5.1), the bench bars bound to those records
+as markup fractions (§5.2), and the bench re-clothed so nothing fills under
+scroll (§5.5).
+
+**So the item is: read the archive as a reader, for the first time.** Seven case
+files and `/evidence/`, start to finish, in the preview. The 4.1 flip shipped
+generated pages that until then had only ever been read by gates and
+screenshots. Specifically:
+
+- **The four `/proof/*.json` links, as a reader clicks them.** The bench heads
+  now send a reader to raw JMH and Google Benchmark JSON. It is the copy that
+  cannot 404, which is why it is cited — but a 42 KB unstyled blob is a
+  destination and nobody has read the arrival. Decide whether that is
+  honest-and-fine (it is a record room; records are raw) or wants one line of
+  chrome. **Do not gate this; read it.**
+- **The settled bench bars, as motion.** Every reader now gets what only
+  reduced-motion readers used to. The honesty is not in question; the liveliness
+  is. Confirm the plate does not read as *dead* where it used to read as
+  *alive*.
+- **fig. 06's two registers** — one live instrument above the hair rule, one
+  filed record below it, or one muddle. This cannot be gated and it is the
+  acceptance test for the instrument/record distinction that shaped six figures.
+- **Whether the archive's plates now disagree with the run's.** §4b rewrote the
+  run's gate vocabulary (booms, frames, dispositions) and the archive still
+  draws `phgate` squares from `case-figures.mjs`. Nothing breaks; the two halves
+  of one site simply speak differently about gates now. **This is Fable-ARCHIVE's
+  lane and the first candidate for parallel work.**
+
+### 6.3 — The two rulings §4b left open. Both need a decision, neither is a bug.
+
+1. **`--hair-strong` is 2.005–2.051:1 on the five DAY fields**, under the 3.0
+   non-text floor, and every figure draws its structure in it. The night side
+   was tuned to exactly 3.0 and raised to 3.40 by §4b's commit zero; **the day
+   side has never been measured by anything**, because `check-palette` scopes
+   the figure-stroke scan to the two night grounds. If the floor applies to
+   figure hairlines at night it applies by day. Raising the day alpha restyles
+   every plate on the site and moves the hash. **Owner ruling, then either a
+   token change plus a re-baseline, or a declared scope in `check-palette`
+   saying the day half is deliberately unmeasured and why.** What must not
+   happen is that it stays silently unmeasured.
+2. **A live hash arrival at `/#review` leaves the third reviewer's mark
+   part-inked** until the reader moves a few pixels — 12.18px now, **8.12px at
+   HEAD before the redraw, so pre-existing and unchanged in character.** §4b's
+   settle contract says `settleAll()` is what a hash arrival gets; on the live
+   path the scroll-driven scrub evidently has the last word. Reduced motion is
+   clean (`0,0,0`). The per-station rejoin links multiply hash arrivals
+   sevenfold, so this is worth one look at the machinery — but it is shared
+   scroll code, not any figure's, and it must not be "fixed" by stripping the
+   ink-in, which §4b explicitly protects.
+
+### 6.4 — The reading. One pass, in the preview, by a person.
+
+Compressed from twelve items to six. The validator proves nothing broke; it does
+not prove the thing was worth doing.
+
+1. **Hash arrival, cold, into each rejoin target** — including `/#automl` and
+   `/#review`, the two night stations. The ink field must be right in the
+   **first painted frame**, not corrected after the first scroll event. Nothing
+   gates this and §6.3 item 2 already found one crack in it.
+2. **320px and 390px on the run and on a case file**, and **every redrawn plate
+   at its tight edition** — all seven now. The tight edition is the half **no
+   gate reads**, because its viewBox is written at run time. §4b's own walk
+   found two labels clipped there at every phone width that was shipping.
+   **The width to check is 1250px, not 514** — the seat is the SVG parent's
+   inner width, not the viewport, and 1250 is where the two-column band drops
+   the seat to its narrowest.
+3. **Cross the seam by keyboard, both ways.** The archive has a skip link that
+   `a11y-audit.spec.ts` asserts; **the run has none.** The two halves of one site
+   disagree about the first thing a keyboard reader touches. Tab from a case
+   file's rejoin link into the run and back out from a waybill. **This forces the
+   deferred ruling: does the run take the skip link the archive has?**
+4. **The dark stations, and print.** Leaving ¶08/¶09 must not read as a
+   different site. And print is gated nowhere and never has been — on the one
+   site whose whole conceit is paper.
+5. **`localStorage["motion-off"]` on the archive.** The rebuilt pages do not
+   honour it; `layout.tsx`'s motion-tier script was not reproduced. Defensible
+   for a static archive, but it is a reader-facing switch that used to work on
+   these URLs. One media query if the answer is yes.
+6. **The seam, as reading rather than as correctness.** `check-crosswalk` holds
+   every rejoin to `stations.ts` verbatim in five directions. A gate can prove
+   the hour is right; it cannot tell you whether arriving there feels like
+   coming back.
+
+### 6.5 — Housekeeping. Cheap, and one of them is the front door.
+
+- **Rewrite the README.** It opens with Next.js 16 / React 19 / Tailwind 4 /
+  GSAP / Framer Motion badges and tells a reader to run `npm run dev` — a script
+  that does not exist, describing a framework that is not installed, for a page
+  that is not rendered. **It is the front door of a repository whose entire
+  argument is that claims terminate in things you can check.** Highest value per
+  minute in this phase.
+- **Wire or retire the nameplate's "machines withheld" guard (C46).** It
+  promises that a renamed author gets the plate without the machines, imports
+  `personalInfo` for it, and never checks; `MACHINE` is dead beside it. **Closes
+  C44 for free** — that unused import is why `personal.js` and `basePath.js`
+  (10.4 KB nobody fetches) still ship.
+- **Update `docs/PROJECT-LEDGER.md`**, and carry into it the two standing
+  obligations this migration created: the palette `measured:` grammar (any
+  colour change must update its recomputed claim or the gate reds) and the
+  figure-label rule (measure with `getComputedTextLength()`; **the old ~7.25/6.6
+  per-char constant was ~10% short** and is amended in `FIGURES.md`).
+- **Rule on `docs/design-lab/`** — ~2 MB of committed telemetry and sixty
+  one-off probes, already ESLint-ignored. One ruling now that the tree is small.
 
 ---
 
-## 6. Phase 7 — Ship it. **[NEW — nobody planned this. Re-checked after Phase 5.]**
+## 6. Phase 7 — Ship it. **[UNCHANGED IN SUBSTANCE, TIGHTENED]**
 
-> **What Phase 5 changed under this section.** §6.2's clone test was run against
-> a tree that no longer exists: **the branch has moved 12 commits, `public/` has
-> grown 4 files and ~104 KB, `verify:portfolio` is 20 steps rather than 17
-> under `--no-e2e`, and the browser suite is 270 tests rather than 245.** Three
-> consequences:
->
-> - **The clone test must be re-run before the first push**, not treated as
->   answered. §6.2 already says so conditionally; it is now unconditional. It
->   costs one clone and ten minutes and it is the only way to test `npm ci` and
->   a cold `out/` without spending a CI run.
-> - **Two new gates run in the `gates` CI job** — `test:palette` and
->   `test:bench-artifacts` — and neither has ever run on a Linux runner. Both
->   are pure Node with no network and no browser, so the risk is low and named
->   rather than assumed.
-> - **§6.4 gains an item: the four vendored records must answer 200 in
->   production**, at `/proof/*.json`, served by GitHub Pages with a content type
->   a browser will render rather than download. The run cites them from two
->   stations; a 404 there is a citation to nothing, which is the one failure
->   this whole phase was built to make impossible. `check-crosswalk` proves the
->   files land in `out/`; only the real host proves they are served.
->
-> **Nothing else in this section moved.** The three untested things stay
-> untested from here: Linux WebKit, `playwright install --with-deps` on the
-> runner, and `test:links`' real network requests from a GitHub IP.
+**Fifty-one commits, five branches, nothing pushed, `main` far behind.** The
+plan has carried *"no push, no PR without being asked"* since Phase 0. **Every
+item here needs the owner's decision before it is executed** — this is the one
+phase where the plan proposes rather than instructs.
 
-**Thirty-two commits, five branches, nothing pushed, `main` far behind.** The
-plan has carried "no push, no PR without being asked" since Phase 0 as a
-standing ruling, and it never said what happens at the end. This is that
-section. **Every item needs the owner's decision before it is executed** — this
-is the one phase where the plan proposes rather than instructs.
+### 7.1 — How the stack lands. **Owner ruling required.**
 
-### 6.1 — How the stack lands. **Owner ruling required.**
-
-The branches stack, they do not diverge:
 `refactor/stations-truth` → `feat/archive-rebuild` → `refactor/retire-next` →
-`feat/figures-and-benchmarks` → (Phase 6). Three shapes, and the trade is review granularity
-against the number of times a half-migrated tree is the tip of `main`:
+`feat/figures-and-benchmarks` → (Phase 6). They stack; they do not diverge.
 
 | | what lands on `main` | cost |
 |---|---|---|
-| **One PR** | the whole migration, once | one review of ~32 commits; `main` is never half-migrated; the deploy fires once |
-| **A PR per phase, in order** | six merges | each is reviewable and each is green on its own; **but `main` sits mid-migration between merges, and `deploy.yml` fires on every push to `main`** — so a reader gets the Phase-3 site (React archive, new `/evidence/` link) for however long Phase 4's review takes |
-| **One PR, squashed** | one commit | loses the commit messages, which on this branch carry most of the reasoning |
+| **One PR** | the whole migration, once | one review of ~51 commits; `main` is never half-migrated; the deploy fires once |
+| **A PR per phase** | six merges | each reviewable and green alone — **but `main` sits mid-migration between merges and `deploy.yml` fires on every push**, so a reader gets the Phase-3 site for however long the next review takes |
+| **One PR, squashed** | one commit | loses the commit messages, which carry most of the reasoning on this branch |
 
 The middle option's cost is the one to weigh: this repository deploys from
-`main` on push, with no approval gate. A phase boundary is a green tree, not
-necessarily a *finished* reader experience.
+`main` on push with no approval gate.
 
-### 6.2 — What CI has never run. **Mostly answered, 2026-08-06.**
+### 7.2 — Re-run the clone test before the first push. Unconditional.
 
-Everything in Phases 3–5 was verified on the working tree, where `node_modules`
-is whatever `npm install` last left and `out/` always already exists. §6.2 was
-written as a list of worries about the first push. Four of the five were then
-measured, by cloning the branch into a temp directory and running what CI runs:
+It was run once, against a tree that no longer exists — **the branch has since
+moved 32 commits and `verify:portfolio` is 20 steps.** It costs one clone and
+ten minutes and is the only way to test `npm ci` and a cold `out/` without
+spending a CI run. When it was last run: `npm ci` exit 0 / 0 vulnerabilities;
+`verify-portfolio --no-e2e` green on a clone with no `out/`, no `node_modules`;
+the browser smoke passed; `pinnedCommitAgrees()` correctly **skips** on a
+depth-1 checkout, which is C32 working and not a hole.
 
-| what CI does that the desk never did | result |
-|---|---|
-| `npm ci` against the pruned lockfile — 92 top-level packages where CI last installed 473 | **exit 0, 0 vulnerabilities** |
-| `node scripts/qa/verify-portfolio.mjs --no-e2e` — **the deploy's exact command** — on a clone with no `out/`, no `node_modules`, no `.next/` | **green, 17 steps**, `out/index.html` reproduces `cfb9c467…` |
-| the five-engine browser smoke on a tree built by `npm ci` | **245 passed** |
-| the a11y suite on the same tree | **4 passed** |
-| `pinnedCommitAgrees()` on a **depth-1** checkout, which is what `actions/checkout@v4` does | prints *"pinned commit 3fa434e1 is not in this clone — pairing not checked"* and **skips**, exactly as C32 says it should. On the full clone it prints *"does produce the pinned source"*. Read the skip as correct, not as a hole |
+**Still untested and untestable from here:** Linux WebKit (the smoke has only
+ever run WebKit on macOS); `playwright install --with-deps` on the runner; and
+`test:links`' real network requests from a GitHub IP — the step most likely to
+fail for a reason unrelated to this migration. **Four gates have never run on a
+Linux runner** — `test:palette`, `test:bench-artifacts`, and the two the §4b
+redraw extended.
 
-**What is still untested and cannot be tested from here:**
+### 7.3 — The deploy path
 
-- **Linux WebKit.** The smoke ran webkit on macOS. `atlas.spec.ts` and
-  `run-home.spec.ts` have never met the GitHub runner's WebKit build.
-- **`npx playwright install --with-deps chromium firefox webkit`** on the runner,
-  against `@playwright/test` as a direct dependency where `playwright` used to
-  resolve transitively.
-- **`test:links`' real network requests** from a GitHub IP rather than a home
-  one. It has always made them; it is the step most likely to fail for a reason
-  unrelated to this migration.
+`deploy.yml` runs `verify-portfolio.mjs --no-e2e`, then uploads `./out`.
+`--no-e2e` is load-bearing: the browser step rebuilds with an empty
+`NEXT_PUBLIC_BASE_PATH` and would upload the wrong artifact. The build is now
+the archive generator, so `out/` is assembled and swapped in one step — a
+failure leaves no `out/` and the upload fails loudly rather than shipping a
+partial site.
 
-**Re-run the clone test before pushing** if anything changes between now and
-then — it costs one clone and ten minutes, and it is the only way to test
-`npm ci` and a cold `out/` without spending a CI run to find out.
+### 7.4 — Confirm in production, not locally
 
-### 6.3 — The deploy path, re-read
+Only after the first deploy; this is the Phase 0 closure hole finally closable.
 
-`deploy.yml` runs `node scripts/qa/verify-portfolio.mjs --no-e2e`, then uploads
-`./out`. Three things to confirm before the first production run:
+1. **The classifier loads on the deployed artifact** — `out/wasm/` ships by
+   relative path and the run's own bytes never mention it. Draw a digit.
+2. **The four faces load.** Same exposure.
+3. **Every `/projects/<id>/` and `/evidence/` answers 200.** Pages is
+   case-sensitive and cannot redirect, which is why the URLs were preserved by
+   design.
+4. **The four `/proof/*.json` records answer 200** with a content type a browser
+   renders rather than downloads. The run cites them from two stations; a 404
+   there is a citation to nothing — the one failure this phase exists to make
+   impossible. `check-crosswalk` proves they land in `out/`; only the host
+   proves they are served.
+5. **`/404.html` is served for an unmatched path** and its wayfinding index works
+   from a wrong URL.
+6. **The OG card renders on a real unfurl.** No gate can check whether the
+   crawler fetches it.
 
-- `--no-e2e` is still load-bearing: the browser step rebuilds with an empty
-  `NEXT_PUBLIC_BASE_PATH` and would upload the wrong artifact. Unchanged by
-  Phase 4, still true.
-- The build is now the archive generator, so **the deploy's `out/` is assembled
-  and swapped in one step**. If it fails, `out/` does not exist and the upload
-  step fails loudly rather than shipping a partial site. That is an improvement
-  over the previous behaviour and worth confirming once.
-- `test:links` makes real requests to github.com from the runner. It has always
-  done so; it is the step most likely to fail for a reason unrelated to the
-  change.
+### 7.5 — Then, and only then
 
-### 6.4 — Confirm in production, not locally
-
-Only after the first deploy, and this is the Phase 0 closure hole finally
-closable:
-
-1. **The classifier loads on the deployed artifact.** `out/wasm/` ships by
-   relative path and the run's own bytes never mention it — the whole reason
-   `assertRunShipped` asserts files rather than a digest. Draw a digit on the
-   deployed page.
-2. **The four faces load.** Same exposure, same reason.
-3. **Every `/projects/<id>/` and `/evidence/` answers 200** on the real host —
-   GitHub Pages is case-sensitive and cannot redirect, which is why the URLs
-   were preserved by design rather than by luck.
-4. **`/404.html` is served for an unmatched path**, and its wayfinding index
-   works from a wrong URL — the page cannot know where it is, which is why every
-   link on it is absolute.
-5. **The OG card renders** on a real unfurl (paste the URL into LinkedIn or
-   Slack). The card is a rendered image with a sha drift gate; what no gate can
-   check is whether the crawler fetches it.
-
-### 6.5 — Then, and only then
-
-`docs/PORTFOLIO-MIGRATION-PLAN.md` and this document both become history.
-Fold what survives into `docs/PROJECT-LEDGER.md` (§5 item 10) and say plainly
-in both headers that they describe a migration that is finished. A plan left
-open reads as work in progress for as long as it sits there.
+Both plan documents become history. Fold what survives into
+`docs/PROJECT-LEDGER.md` and say plainly in both headers that they describe a
+migration that is finished. A plan left open reads as work in progress for as
+long as it sits there.
 
 ---
 
