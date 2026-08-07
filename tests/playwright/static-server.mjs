@@ -16,7 +16,9 @@ const contentTypes = new Map([
   [".pdf", "application/pdf"],
   [".svg", "image/svg+xml"],
   [".txt", "text/plain; charset=utf-8"],
+  [".wasm", "application/wasm"],
   [".webp", "image/webp"],
+  [".woff2", "font/woff2"],
 ]);
 
 function resolveRequestPath(urlPath) {
@@ -50,7 +52,9 @@ function resolveRequestPath(urlPath) {
 
 if (!existsSync(join(root, "index.html"))) {
   console.error(
-    "Static export not found. Run `NEXT_PUBLIC_BASE_PATH= npm run build` first."
+    "out/ not found. Run `NEXT_PUBLIC_BASE_PATH= npm run build` first. " +
+      "The variable keeps its Next-era name and is still live — " +
+      "src/lib/basePath.ts reads it; the framework is gone, the name is not."
   );
   process.exit(1);
 }
