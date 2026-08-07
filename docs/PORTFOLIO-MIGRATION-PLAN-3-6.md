@@ -3082,6 +3082,47 @@ phase where the plan proposes rather than instructs.
 The middle option's cost is the one to weigh: this repository deploys from
 `main` on push with no approval gate.
 
+> **THE MIDDLE ROW'S TWO CLAIMS WERE NEVER CHECKED. BOTH WERE MEASURED
+> 2026-08-07, in three detached worktrees, each with its OWN `npm ci` and its
+> OWN validator — the one CI would run on that PR, not HEAD's.**
+>
+> | merge point | validator | steps | `out/` | js files | Next chunks | `npm audit` |
+> |---|---|---|---|---|---|---|
+> | `refactor/stations-truth` `0155857` (+5) | **green** | 19 | 9.1 MB | 31 | **25** | **6 high** |
+> | `feat/archive-rebuild` `3df97d6` (+14) | **green** | 22 | 9.1 MB | 31 | **25** | **6 high** |
+> | `refactor/retire-next` `46ac884` (+21) | **green** | 18 | 3.6 MB | 8 | 0 | 1 high |
+> | `feat/figures-and-benchmarks` `1543fd1` (+73) | **green** | 20 | 3.7 MB | 6 | 0 | **0** |
+>
+> **CLAIM 1 — "each reviewable and green alone" — IS TRUE.** All three
+> intermediate branches pass their own `verify:portfolio` end to end, including
+> the browser smoke, on their own dependency tree. The step counts differ
+> because the validator itself grew and shed gates across the stack
+> (`archive-rebuild` carries *archive → staging* and *archive SEO (staging)*;
+> `contrast choreography` lived on the two Next-era branches and Phase 4
+> retired it; `palette` and `bench-artifacts` arrive in Phase 5). Each is
+> internally consistent. **No branch needs anything from a later one to be
+> green**, so the middle option is mechanically available.
+>
+> **CLAIM 2 — "a reader gets the Phase-3 site" — IS WRONG IN THE DIRECTION THAT
+> MATTERS, AND THE REAL COST IS ELSEWHERE.** Measured at every merge point:
+> **`data-beat: 13, data-chapter: 0`.** The 13-station run is the home page from
+> the **first** merge onward — at no point would the public site fall back to the
+> abandoned React port, and all four points ship 7 case files and `/evidence/`.
+> That is the reassuring half.
+> **The cost the row does not name:** merging either of the first two puts a
+> **9.1 MB export carrying 25 React chunks** on the public site, against
+> **3.7 MB and none** on the branch as it stands — **2.5× the shipped weight**,
+> on a site whose own argument is that it has no framework — and it does so with
+> a toolchain carrying **six high-severity advisories** where HEAD now carries
+> none. It would sit there for however long the next review takes, and
+> `deploy.yml` fires on every push with no approval gate. **`retire-next` is the
+> first merge point that ships the vanilla export.**
+>
+> **Nothing here was repaired and nothing was rebased.** A mid-stack branch is
+> decision material for this ruling, not a defect — repairing one would rewrite
+> history the owner has not ruled on. The worktrees were removed and
+> `git worktree list` returned to exactly the four that existed before.
+
 ### 7.2 — Re-run the clone test before the first push. Unconditional.
 
 > **§6.6 MUST BE CLOSED BEFORE THIS SECTION RUNS.** `test:links` is a plain
