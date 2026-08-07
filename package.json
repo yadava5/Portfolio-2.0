@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/archive/build-archive.mjs",
+    "preview": "node scripts/dev/preview.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"{src,tests}/**/*.{ts,json}\"",
