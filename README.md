@@ -1,96 +1,98 @@
-# Ayush Yadav - Technical Operations Atlas
+# Ayush Yadav — the long run
 
-Recruiter-facing portfolio for software, data, and ML engineering work. The primary surface is the Technical Operations Atlas: a compact proof ledger that connects resume claims to source-truth data, public repositories, private-safe case studies, and browser-verified UI behavior.
+A portfolio built as a working paper: one workday drawn as a railway run, thirteen
+stations from dawn to nightfall, with a record room behind it. Every number on the
+page terminates in something you can open — a commit, a benchmark JSON, a CI run —
+and the build refuses to ship if one of those links has died.
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
-![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss)
-![Playwright](https://img.shields.io/badge/Playwright-validated-2edb73?style=flat-square&logo=playwright)
+**Live:** <https://yadava5.github.io/Portfolio-2.0/>
 
-## What This Portfolio Optimizes For
+## What this repository actually is
 
-- **Recruiter scan speed** - first viewport exposes role target, resume, GitHub, LinkedIn, contact, and proof metrics.
-- **Evidence quality** - public work links to source where available; private work uses explicit private-safe disclosures instead of pretending generated visuals are screenshots.
-- **Case-study depth** - project routes describe problem, constraints, architecture, decisions, validation, outcomes, and artifacts.
-- **Mobile access** - the header and hero both expose Resume, GitHub, LinkedIn, and Contact on small screens.
-- **Validation discipline** - default Playwright checks are assertion-only; screenshot/video artifact suites are opt-in and write to ignored output paths.
+One hand-authored HTML page and a static-site generator written in plain Node.
 
-## Tech Stack
+`src/run/index.html` is the site. It is 5,570 lines of hand-written HTML, CSS and
+vanilla JavaScript — thirteen `<section data-beat>` stations, a canvas rail with
+freight riding each corridor under a waybill, and a WebAssembly digit classifier
+that runs in your browser. `npm run build` runs `scripts/archive/build-archive.mjs`,
+which copies that page over `out/index.html` and generates the archive around it:
+seven case files at `/projects/<id>/`, an `/evidence/` ledger, `404.html`,
+`sitemap.xml`, `robots.txt`, and six vendored machine records at `/proof/*.json`.
 
-| Category          | Technologies                    |
-| ----------------- | ------------------------------- |
-| Framework         | Next.js 16 App Router           |
-| UI                | React 19, TypeScript            |
-| Styling           | Tailwind CSS 4                  |
-| Motion            | GSAP, Framer Motion, Lenis      |
-| Testing           | Playwright, axe-core/playwright |
-| Deployment target | GitHub Pages static export      |
+**There is no framework.** No Next.js, no React, no Tailwind, no animation library.
+An earlier version of this repository was a Next.js App Router app; it was retired,
+and this README described it for longer than it was true. The runtime dependency
+list is one package (`sharp`, for image derivation at build time). Everything else
+is a dev dependency: Playwright, ESLint, Prettier and TypeScript.
 
-## Getting Started
+## Run it
 
 ```bash
-npm install
-npm run dev
+npm ci
+NEXT_PUBLIC_BASE_PATH= npm run build   # writes out/
+npm run preview                        # serves out/ at http://127.0.0.1:4300
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+`npm run preview` also rewrites the deployed origin to the preview's own in the
+HTML it serves, so links between the run and the case files stay local instead of
+leaving for the published site. Nothing on disk changes.
 
-## Validation
+`NEXT_PUBLIC_BASE_PATH` keeps a name from the framework that is gone. The variable
+is still live — `src/lib/basePath.ts` reads it and both workflows set it — and
+renaming it is a four-file change with a gate on each, so it kept the name and lost
+the framework. Build the deploy artifact with
+`NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build`.
+
+## Verify it
 
 ```bash
-npm run typecheck
-npm run lint
-npm run format:check
-npm run test:e2e
+npm run verify:portfolio
 ```
 
-`npm run test:e2e` builds the static site and runs the cleaned assertion suite. It should not leave tracked generated files behind.
+Twenty steps and 270 browser tests across five engines. It is the same command CI
+runs before a deploy, and it is the point of the repository more than the page is.
+Beyond types, lint and format, it asserts:
 
-Additional browser tools:
+| gate | what it refuses to let past |
+|---|---|
+| golden hash | the shipped page reproduces byte-for-byte, pinned to the commit that produced it |
+| pinned artifact links | all 57 sha-pinned links into the subject repositories still resolve |
+| run ⇄ archive crosswalk | every rejoin, receipt anchor and quoted consignment agrees in five directions |
+| stations ⇄ the run | the station table and the page cannot drift apart |
+| cargo rides the right corridors | each waybill arrives at the station it is about, checked against the declaration and against a recording |
+| headline figures ⇄ data layer | no number appears in a figure that the data layer does not own |
+| bench figures ⇄ their records | the benchmark bars are fractions bound to committed JSON, not replayed numbers |
+| palette ⇄ the light it is read under | contrast is measured, and a colour change must update its recomputed claim |
+| nameplate (negative) | the guard is proven by making it fail in a throwaway copy |
 
-```bash
-npm run test:e2e:full
-npm run test:e2e:artifacts
-npm run test:e2e:ui
-npm run test:visual
-```
+Individual gates live in `scripts/qa/` and each carries a header explaining the
+defect that caused it to exist.
 
-Artifact-producing suites write reports, screenshots, and videos under `output/playwright/`, which is ignored by git.
-
-## Project Structure
+## Layout
 
 ```text
 src/
-├── app/                         # Next.js routes and metadata
-├── components/
-│   ├── atlas/                   # Technical Operations Atlas surface
-│   ├── case-study/              # Evidence-led case-study pages
-│   ├── layout/                  # Header, footer, providers
-│   └── sections/                # Legacy theme sections
-├── config/                      # Theme registry
-└── lib/
-    ├── data/                    # Resume, project, experience, skill data
-    └── utils.ts                 # Base-path helpers
+├── run/index.html        the site — hand-authored, one page
+├── run/{fonts,wasm}/     four self-hosted faces, the classifier's own module
+├── lib/data/             the declared truth: stations, case studies, proof manifest
+└── components/           three modules the generator imports (geometry, constants)
 
-tests/playwright/                # Assertion and visual-audit suites
-output/playwright/               # Generated local artifacts, ignored
-docs/superpowers/plans/          # Execution plans and validation notes
+scripts/
+├── archive/              the build — plain node, no framework
+├── qa/                   the gates, and verify-portfolio.mjs which sequences them
+├── run/                  the home-page and nameplate emitters
+├── dev/preview.mjs       the local preview server
+├── resume/ asset-truth/  résumé rendering, image derivation, OG cards
+
+tests/playwright/         browser specs — assertion-only by default
+docs/                     the migration plan and the project ledger
+out/                      the built site (generated, not committed)
 ```
-
-## Artifact Policy
-
-Source specs live in `tests/playwright/`. Generated Playwright reports, screenshots, videos, and ad hoc visual-audit output belong in `output/playwright/` and should not be committed unless they are intentionally promoted as durable documentation.
 
 ## Contact
 
-**Ayush Yadav**  
-Computer Science, Miami University - May 2026
+**Ayush Yadav** — Computer Science, Miami University, May 2026
 
 - [GitHub](https://github.com/yadava5)
 - [LinkedIn](https://www.linkedin.com/in/ayush-yadav-developer/)
-- [Email](mailto:aesh_1055@icloud.com)
-
-## License
-
-MIT © 2026 Ayush Yadav
+- <mailto:aesh.03.23@gmail.com>
