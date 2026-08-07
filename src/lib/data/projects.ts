@@ -61,7 +61,35 @@
    retired with the rest of the React app, so the last consumer of any of
    them is gone — the fields have been unread by everything, not merely by
    the archive. That erratum priced this deletion a phase before anyone
-   proposed it. */
+   proposed it.
+
+   WHAT THIS FILE ACTUALLY REACHES A READER WITH — measured 2026-08-07, and
+   worth knowing before anyone writes prose here or corrects prose here.
+   The archive's renderers take exactly four fields off a project: `title`,
+   `techStack`, `liveUrl` and `systemCardUrl`. `shortDescription`,
+   `fullDescription` and `highlights` render NOWHERE — grepped for their
+   exact strings across the shipped `out/`, zero files, with a control
+   string from the same records found where expected, so that is the grep
+   working rather than a broken pattern. The file is not inert, though:
+   check-links, check-figures, check-bench-artifacts and check-proof-manifest
+   all read its TEXT, so a URL typed here is still walked even though the
+   sentence around it is not shown.
+
+   That distinction was load-bearing the same day it was measured. Glyph's
+   hosted demo was found serving a JS stub instead of its wasm classifier,
+   and three strings here assert "a live in-browser benchmark ... on the
+   visitor's machine". The archive's standing rule is that a claim the page
+   has made and can no longer support earns an ERRATUM in the corrections
+   register, never a silent edit. These three earn nothing, because the page
+   never made them: the register is this site's promise that somebody
+   checked what it SAID, and an erratum for a sentence no reader has been
+   shown would be the register inventing a debt in order to look diligent.
+
+   Nor are they false in the way that would require one. The in-browser
+   bench is real in the repository and demonstrably real on this site's own
+   ¶06 station — measured there: build simd128, 98.6% on a drawn digit,
+   0.176 ms against 0.578 ms scalar, 3.29x. One deployment's response header
+   is what degraded, and headers get fixed. So they stay, unedited. */
 
 /** Technology/skill tag */
 export interface TechTag {
