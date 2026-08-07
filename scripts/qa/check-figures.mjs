@@ -153,9 +153,45 @@ const FIGURES = [
   {
     figure: "Cadence · suite",
     run: /1,185 passed · 0 skipped/,
-    data: { cases: /1,185 tests passing under vitest, with 0 skipped/ },
+    // THIS ENTRY IS THE ONE THE APPLIED TWIN ABOVE WARNED ABOUT, and it went on
+    // to fail in exactly the way that comment describes -- one number shipping
+    // as THREE values with the gate green:
+    //
+    //   architecture node label  1,159   (x2 on the built case file)
+    //   receipt 01               1,185
+    //   /evidence index          1,179
+    //
+    // Two holes, both of them the Applied entry's own documented holes:
+    //
+    //   1. No `manifest:` key, so proofManifest.ts -- the third surface -- was
+    //      never read. It phrased the count its own way ("1,179 tests, 0
+    //      skipped") and disagreed with both others in silence.
+    //   2. No binding for the architecture node label. `cases` matched the
+    //      receipt's sentence, the node label is a different string in the same
+    //      file, and a regex that finds one says nothing about the other. That
+    //      is why the node could sit two revisions behind the receipt beside it.
+    //
+    // Both are closed here. The node label is bound as its own figure below
+    // rather than folded in, because a single regex satisfied by the receipt
+    // would certify the label unread -- which is the whole defect.
+    data: {
+      cases: /1,185 tests passing under vitest, with 0 skipped/,
+      manifest: /1,185 tests, 0 skipped/,
+    },
     source:
-      "both vitest configs at head 8a2fbbb, 2026-08-03 — 635 frontend + 550 backend, 0 skipped",
+      "CI run 31222343049 at head dbabc74, 2026-08-07 — 635 frontend + 550 backend, 0 skipped",
+  },
+  {
+    /* The architecture figure's own node label, which is a separate string in
+       projectCaseStudies.ts from the receipt sentence above and drifted 26 days
+       behind it. It carries no "tests passing"/"skipped" prose, so it needs its
+       own binding -- see the comment on `Cadence · suite`. There is no `run:`
+       key because the run does not draw this figure; the entry exists to hold
+       the case file's diagram to the same number as the case file's receipt. */
+    figure: "Cadence · architecture node label",
+    run: null,
+    data: { cases: /label: "1,185 tests"/ },
+    source: "same CI run; the diagram must agree with the receipt beside it",
   },
   {
     figure: "Cadence · suite split",
@@ -718,15 +754,34 @@ for (const f of FIGURES) {
     );
     continue;
   }
-  const inRun = f.run.test(runProse);
+  /* `run` is REQUIRED as a key and may be null, which is not the same as
+     absent. Some figures are stated only in the data layer -- the Cadence
+     architecture node label is drawn on the case file and nowhere on the run
+     -- and forcing those to name a run regex would mean pointing at some
+     neighbouring sentence, so the entry would go green on a string it is not
+     about. But a MISSING key must stay a hard failure: `f.run` undefined would
+     otherwise throw, or, if the throw were softened, a deleted binding would
+     read as "not claimed on the run" and disable the assertion silently. That
+     is the exact failure mode this file exists to prevent, so the declaration
+     is explicit and its absence is broken-entry, not a no-op. */
+  if (!("run" in f)) {
+    fails.push(
+      `  ✗ ${f.figure} declares no \`run\` key\n` +
+        `      use \`run: /…/\` if the run states this figure, or \`run: null\`` +
+        ` if it does not. Omitting the key is not a declaration.`
+    );
+    continue;
+  }
+  const onRun = f.run !== null;
+  const inRun = onRun ? f.run.test(runProse) : null;
   const missing = declared.filter((s) => !f.data[s].test(surfaceText[s]));
-  if (inRun && !missing.length) {
+  if (inRun !== false && !missing.length) {
     notes.push(
-      `  · ${f.figure} — agrees on ${declared.join(" + ")}  (${f.source})`
+      `  · ${f.figure} — agrees on ${declared.join(" + ")}${onRun ? "" : " (data layer only — not stated on the run)"}  (${f.source})`
     );
   } else {
     fails.push(
-      `  ✗ ${f.figure}\n      run: ${inRun ? "states it" : "MISSING"}` +
+      `  ✗ ${f.figure}\n      run: ${onRun ? (inRun ? "states it" : "MISSING") : "not claimed"}` +
         `   ${declared
           .map((s) => `${s}: ${missing.includes(s) ? "MISSING" : "states it"}`)
           .join("   ")}\n      truth: ${f.source}`

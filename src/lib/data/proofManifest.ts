@@ -78,8 +78,15 @@ const APPLIED_SHA = "36a2f54";
    stable absence, since those tests had never executed anywhere. They now
    provision their own postgres:16. The integration branch carrying all of
    this merged to main, so the pin moves to a public main commit rather than
-   a feature branch; verified 200 before this line was written. */
-const APPLIED_SUITE_SHA = "a0d77a1";
+   a feature branch; verified 200 before this line was written.
+
+   2026-08-07: this file said 305 @ `a0d77a1` while projectCaseStudies.ts
+   said 305 @ `03fc5c4` — and `03fc5c4` is, by its own comment there, the
+   278 tree with ten skips. One number, three commits, no gate reading
+   both files. Re-measured off CI instead of a venv and both pins moved
+   here together: backend-ci run 31152038153, `305 passed`, `0 skipped`.
+   `71b74f8` resolves publicly and main is 4 ahead of it, 0 behind. */
+const APPLIED_SUITE_SHA = "71b74f8";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 /* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
 const AUTOML_SHA = "e506c91";
@@ -100,8 +107,17 @@ const AUTOML_SHA = "e506c91";
    present on the remote before this line was written, not after. 1,159
    becomes 1,179 with **zero** skips, which is the more interesting half: the
    11 that used to skip were the only tests that could demonstrate the
-   isolation Cadence claims, and they had never executed anywhere. */
-const CADENCE_SUITE_SHA = "2295044";
+   isolation Cadence claims, and they had never executed anywhere.
+
+   2026-08-07: this pin held 1,179 @ `2295044` while the case file's receipt
+   read 1,185 and the case file's own architecture figure read 1,159 — one
+   number, three values, every gate green, because `check-figures.mjs`'s
+   `Cadence · suite` entry had no `manifest:` key and could not see this
+   file. That hole is now closed the same way Applied's was. Re-measured and
+   re-pinned at `dbabc74` — cadence main, CI run 31222343049: 635 frontend
+   across 58 files + 550 backend across 25, 0 skipped. The six-test
+   difference from 544 is the backend work that landed since `2295044`. */
+const CADENCE_SUITE_SHA = "dbabc74";
 /* Moved off c6e5c0b on 2026-08-03. Not because the old pin was wrong — 3.5×
    holds at both — but because that commit predates the correction BENCHMARKS.md
    now carries: the "sub-percent variance" line was never measured, the harness
@@ -157,14 +173,19 @@ export const proofManifest: ProofManifestEntry[] = [
     label: "305 backend tests, 0 skipped",
     claim:
       "The Applied backend suite passes 305 tests with nothing skipped, including the Postgres row-level-security module that used to skip and had never executed anywhere.",
-    source: "https://github.com/yadava5/applied/tree/a0d77a1/backend/tests",
+    /* Spelled out rather than interpolated from APPLIED_SUITE_SHA on purpose:
+       check-proof-manifest.mjs reads `source` as a plain literal (:44) so it
+       can compare the sha in the URL against the sha in `sourceLabel`, which
+       IS a template. Interpolating both would make the two agree by
+       construction and retire the check. */
+    source: "https://github.com/yadava5/applied/tree/71b74f8/backend/tests",
     sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
-      "`pytest tests -q` against this head on 2026-08-03 in the project’s own Python 3.11 venv: 305 passed, 0 skipped. The zero is the part worth reading. This entry previously said “278 passed, 10 skipped”, and named the skips as the Postgres RLS module, which “needs a live database URL and gets one from no workflow” — an accurate description of tests that had therefore never run: not in CI, not locally, not once. They were the only tests capable of demonstrating the isolation this project claims. They now start their own postgres:16 through testcontainers when JOBTRACKER_TEST_PG_ADMIN_URL is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. The remaining 17 of the 27-test increase are the CORS origin-policy suite (10) and the classifier-benchmark layer guard (7). Counts move with their commit: 271 at 36a2f54, 278 at 03fc5c4, 305 here — each true when taken, and each taken at a commit a reader can open.",
+      "`pytest tests -q` against this head on 2026-08-07, read off backend-ci run 31152038153 rather than a local venv: 305 passed, 0 skipped. The zero is the part worth reading. This entry previously said “278 passed, 10 skipped”, and named the skips as the Postgres RLS module, which “needs a live database URL and gets one from no workflow” — an accurate description of tests that had therefore never run: not in CI, not locally, not once. They were the only tests capable of demonstrating the isolation this project claims. They now start their own postgres:16 through testcontainers when JOBTRACKER_TEST_PG_ADMIN_URL is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. The remaining 17 of the 27-test increase are the CORS origin-policy suite (10) and the classifier-benchmark layer guard (7). Counts move with their commit: 271 at 36a2f54, 278 at 03fc5c4, 305 at a0d77a1 and 305 still here — each true when taken, and each taken at a commit a reader can open. The pin moved to 71b74f8 on 2026-08-07 without the count moving, because the case file was pinning the same 305 to 03fc5c4 — the 278 tree — and one number standing on three commits is the drift this project keeps re-learning.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-08-03",
+    date: "2026-08-07",
     receipt: {
       label: "applied case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",
@@ -232,16 +253,18 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,179 tests, 0 skipped",
+    label: "1,185 tests, 0 skipped",
     claim:
-      "Cadence runs 1,179 tests — 635 frontend + 544 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
-    source: "https://github.com/yadava5/cadence/tree/2295044",
+      "Cadence runs 1,185 tests — 635 frontend + 550 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
+    /* Plain literal, not interpolated — see the note on jobtracker-backend-tests
+       above: the gate cross-checks this URL's sha against sourceLabel's. */
+    source: "https://github.com/yadava5/cadence/tree/dbabc74",
     sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
     verification:
-      "Both vitest configs run against this head on 2026-08-03: `vitest run --config vitest.config.ts` gives 635 passing across 58 files, `--config vitest.backend.config.ts` gives 544 passing across 24, and the skip count is now zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, now 1,179 here.",
+      "Read off CI at this head on 2026-08-07 — GitHub Actions run 31222343049 on `main`, all five jobs green: the Frontend Tests job reports 635 passing across 58 files, the Backend Tests job 550 across 25, and the skip count is zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, then 1,179 at 2295044, now 1,185 here. CI is deliberately the instrument rather than a local run: it is the only place the zero is *proved* rather than asserted, because the workflow fails on any skip, and each of the two earlier drifts of this number began with a local backend run that skipped and still went green.",
     visibility: "public",
     privacyBoundary: "No private data.",
-    date: "2026-08-03",
+    date: "2026-08-07",
     receipt: {
       /* The product is Cadence. `taskflow-calendar` is the ROUTE SLUG and
          stays — it is a pinned identifier and every receipt anchor is

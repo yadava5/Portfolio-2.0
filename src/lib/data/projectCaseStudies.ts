@@ -20,7 +20,7 @@
  *     repos carry no sha and no link — only their verified name.
  *   - Dates are real and recorded: committed-artifact dates come from the
  *     artifacts themselves (e.g. baseline_hybrid_v3.json `generated_at`
- *     2026-03-03; bench-20251226-154121 run files); audit dates come from
+ *     2026-03-03; bench-20260802-dot20x run files); audit dates come from
  *     this repo's own public history (proof ledgers checked in 2026-06-05,
  *     jobtracker suite audit 2026-06 then re-run 2026-07-26 at the new
  *     pin, VisualAssist test-count audit 2026-05, AVX-512 retraction
@@ -309,12 +309,22 @@ export interface ProjectCaseStudy {
 const APPLIED_SHA = "36a2f54";
 const APPLIED_BLOB = `https://github.com/yadava5/applied/blob/${APPLIED_SHA}`;
 const APPLIED_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SHA}`;
-/* APPLIED_SUITE — where the backend test count was MEASURED, 2026-08-02.
+/* APPLIED_SUITE — where the backend test count was MEASURED, 2026-08-07.
    Same rule as CADENCE_SUITE below: a count and the commit it was taken
-   at are one fact and move together. 271 at 36a2f54 became 278 here; the
-   ten skips did not move. Every other Applied receipt keeps 36a2f54,
-   which is still where those source audits were done. */
-const APPLIED_SUITE_SHA = "03fc5c4";
+   at are one fact and move together. 271 at 36a2f54 became 278 at 03fc5c4;
+   the ten skips did not move. Every other Applied receipt keeps 36a2f54,
+   which is still where those source audits were done.
+
+   2026-08-07: the pin sat at `03fc5c4` — which this comment itself called
+   the 278 tree, with ten skips — under a receipt claiming 305 and 0
+   skipped, while proofManifest.ts pinned the same 305 to a THIRD sha,
+   `a0d77a1`. One number, three commits. Re-measured and re-pinned at
+   `71b74f8`, and both files now name it: backend-ci run 31152038153,
+   `305 passed`, `0 skipped`. CI rather than a local venv for the reason
+   Cadence's twin gives — the workflow is where the zero is proved instead
+   of asserted. Confirmed on the remote before this line was written:
+   71b74f8 resolves, and main is 4 ahead of it, 0 behind. */
+const APPLIED_SUITE_SHA = "71b74f8";
 const APPLIED_SUITE_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SUITE_SHA}`;
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
@@ -328,7 +338,7 @@ const TASKFLOW_SHA = "69a59e7";
    artifact you can open" cannot rest on that. Verified 200 at the
    canonical name before this was written. */
 const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
-/* CADENCE_SUITE — where the test count was MEASURED, 2026-08-02.
+/* CADENCE_SUITE — where the test count was MEASURED, 2026-08-07.
 
    The suite receipt used to say 1,145 at `69a59e7`. That was true when it
    was taken and is no longer the number: re-run on the provenance audit,
@@ -340,8 +350,20 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    guess", and so does leaving a re-run number on the old commit. The
    number and the sha it was measured at are one fact and they move
    together. The other receipts keep `69a59e7`, which is still where
-   those source audits were done. */
-const CADENCE_SUITE_SHA = "8eee84e";
+   those source audits were done.
+
+   2026-08-07: the pin was `8eee84e` while the receipt beside it read
+   1,185 — and this very comment said `8eee84e` measured 1,159 with 11
+   skipped. The number was right and the sha under it was not, which is
+   the failure this block was written to prevent, committed in the block
+   itself. Re-measured and re-pinned together at `dbabc74`, which is
+   `yadava5/cadence` main and the local HEAD: CI run 31222343049,
+   Backend Tests 550 passed across 25 files, Frontend Tests 635 passed
+   across 58, all five jobs green, 0 skipped. CI is the instrument
+   because it fails on any skip, so a green run is itself the proof of
+   the zero — a locally skipped-but-green backend run is exactly how
+   this number drifted the first two times. */
+const CADENCE_SUITE_SHA = "dbabc74";
 const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SUITE_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
@@ -386,15 +408,46 @@ const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
  */
 const CADENCE_IDOR8_SHA = "75180a3";
 const CADENCE_IDOR8_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_IDOR8_SHA}`;
-const FAST_MNIST_SHA = "c6e5c0b";
+/* Moved off `c6e5c0b` on 2026-08-07, four days after proofManifest.ts made
+   the same move and for the same stated reason. Not because the old pin was
+   wrong — 3.5× holds at both — but because `001e9b4` is the commit whose
+   BENCHMARKS.md ADMITS what the December one did not: the "sub-percent
+   variance" line was never measured, the harness the docs told you to run
+   recorded no repetitions at all, and the reference machine changed from a
+   fanless MacBook Air to the M1 Pro. Pinning to the commit that owns the
+   correction is stronger than pinning to one that does not.
+
+   Every use of this pin in this file is benchmark provenance — BENCHMARKS.md,
+   bench_summary.csv, bench_matrix.cpp, the run JSON and the repo row — so
+   unlike CADENCE_SUITE_SHA or GLYPH_EVAL_SHA it needs no second pin beside it:
+   moving it swallows no other finding. That was checked by enumerating all
+   fifteen uses before the move, because this file's own rule is that a receipt
+   names the commit its finding was made at.
+
+   This file was the last surface still citing the December run: the vendored
+   records, proofManifest.ts and src/run/index.html had all moved to
+   2026-08-02, and this file's OWN corrections register already called the
+   December run "history rather than the reference" while the receipts above it
+   went on citing it. All four paths re-fetched at the new pin before this line
+   was written — BENCHMARKS.md, bench_summary.csv, bench_matrix.cpp and
+   bench-20260802-dot20x-openmp-native.json, each 200. */
+const FAST_MNIST_SHA = "001e9b4";
 /* `yadava5/glyph` for the same reason as Cadence above — the rename is
    real, the old path is only a redirect. Verified 200 at the canonical
    name for both pins used here. */
 const FAST_MNIST_BLOB = `https://github.com/yadava5/glyph/blob/${FAST_MNIST_SHA}`;
-/* The MNIST evaluation landed AFTER the c6e5c0b pin, so it needs its
-   own: commit 97de736, "docs(backend): commit the measured MNIST
-   evaluation (#137)", 2026-07-27, on origin/main. This is the artifact
-   that earns a claim the site had been holding since W2. */
+/* The MNIST evaluation needs its own pin: commit 97de736,
+   "docs(backend): commit the measured MNIST evaluation (#137)", 2026-07-27,
+   on origin/main. This is the artifact that earns a claim the site had been
+   holding since W2.
+
+   This comment used to say the eval "landed AFTER the c6e5c0b pin", which
+   was its whole justification and stopped being true on 2026-08-07 when the
+   benchmark pin moved forward to 001e9b4 (2026-08-03). The eval now predates
+   the benchmark pin rather than following it, and the pin is still separate
+   for the reason that outlives the ordering: an eval and a benchmark are two
+   measurements, and one pin covering both would restate whichever did not
+   move as though it had been re-taken. */
 const GLYPH_EVAL_SHA = "97de736";
 const GLYPH_EVAL_BLOB = `https://github.com/yadava5/glyph/blob/${GLYPH_EVAL_SHA}`;
 
@@ -646,16 +699,19 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "I ran the backend suite locally at the pinned commit: 305 tests passed, 0 skipped, under the test/null-keyring environment. It read 278 passed and 10 skipped until 2026-08-03. The +27 is 10 CORS origin-policy tests, 7 benchmark-guard tests, and the 10 Postgres RLS tests that used to be the skips — those now provision their own postgres:16 rather than waiting on a database URL nobody supplied.",
+          "The backend suite runs at the pinned commit: 305 tests passed, 0 skipped, under the test/null-keyring environment. It read 278 passed and 10 skipped until 2026-08-03. The +27 is 10 CORS origin-policy tests, 7 benchmark-guard tests, and the 10 Postgres RLS tests that used to be the skips — those now provision their own postgres:16 rather than waiting on a database URL nobody supplied.",
         method:
-          "`pytest tests -q` in the project's own Python 3.11 venv; the 10 skips are the Postgres RLS module, which needs a live database",
+          "`pytest tests -q` in backend-ci run 31152038153 at the pinned head. The Postgres RLS module is included in that count and no longer skips: it starts its own postgres:16 through testcontainers instead of waiting on a database URL nobody supplied.",
         artifacts: [
           {
             label: `applied @ ${APPLIED_SUITE_SHA} · backend/tests`,
             href: `${APPLIED_SUITE_TREE}/backend/tests`,
           },
         ],
-        date: "2026-08-02",
+        /* Was "2026-08-02" — one day BEFORE the 2026-08-03 measurement the
+           claim above describes, so the receipt dated itself earlier than
+           the thing it reports. Now the date of the run it actually cites. */
+        date: "2026-08-07",
         visibility: "public",
       },
       {
@@ -1656,7 +1712,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "tests",
-          label: "1,159 tests",
+          /* Bound by check-figures.mjs `Cadence · suite` since 2026-08-07.
+             It was unbound until then, which is how this node spent four
+             days rendering 1,159 — twice — on a page whose own receipt
+             said 1,185 and whose /evidence entry said 1,179. */
+          label: "1,185 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -1699,16 +1759,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "Turning FORCE ROW LEVEL SECURITY on before every request reliably sets the GUC locks the app out of its own data. The migration states the order in its own header — the GUC wiring deploys first, the policies are applied after — and nothing in the app auto-applies the file.",
         tradeoff:
-          "The database is enforcing nothing yet. Until someone runs 0002 against production, the isolation is the application’s discipline and not Postgres’s, which is what the boundary rows say out loud.",
+          "For eleven days the database enforced nothing: shipping the migration inert meant the isolation was the application’s discipline and not Postgres’s, and the boundary rows said so out loud. That window closed on 2026-08-03, when 0002 was run against production by hand — the cutover this decision deliberately deferred. The cost that remains is the one the choice actually bought: there is a hand step between “written” and “enforcing”, it is invisible to CI, and nothing but this file records that it was taken.",
         status: "accepted",
       },
     ],
     receipts: [
       {
         claim:
-          "I measured the suite on 2026-08-03: 635 frontend + 550 backend = 1,185 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
+          "I measured the suite on 2026-08-07: 635 frontend + 550 backend = 1,185 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
         method:
-          "local run of both vitest configs against the public head — `vitest run --config vitest.config.ts` and `--config vitest.backend.config.ts`",
+          "CI at the pinned head, not a local run — GitHub Actions run 31222343049 on `main`, whose Backend Tests job reports 550 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
         artifacts: [
           {
             label: `cadence @ ${CADENCE_SUITE_SHA}`,
@@ -1964,6 +2024,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "erratum",
         text: "1,168 became 1,159, and the reason is a mistake in the correction above rather than in the code. That entry re-pinned the count to 932625e — which is an UNPUSHED local commit. The source URL 404’d, and the number, though correctly measured, could not be reproduced by anyone: the tree it was taken at does not exist publicly. Re-measured at the public head 8eee84e instead — 635 frontend + 524 backend = 1,159 passing, 11 skipped. The nine-test difference IS 932625e, the fix for nine endpoints that never authenticated; those tests land here the moment that commit is pushed, and the number goes back up on its own. Recorded rather than quietly repaired because the rule this file states — a count and its commit are one fact — has a second half it did not say out loud: the commit has to be one a reader can open.",
       },
+      {
+        date: "2026-08-07",
+        kind: "erratum",
+        text: "This is the third drift of the same number, and this time it shipped as three different values at once. The architecture figure’s node label read 1,159 — twice on the built page — the receipt beside it read 1,185, and the /evidence index read 1,179. Every gate was green, and the erratum above was itself stale: it says “the receipt itself now reads 1,159” while the receipt had moved to 1,185 and left the figure behind. Re-measured at cadence main dbabc74, CI run 31222343049, all five jobs green: 635 frontend across 58 files + 550 backend across 25 = 1,185 passing, 0 skipped. All three surfaces now read that, and the two pins — this file’s CADENCE_SUITE_SHA and proofManifest’s — moved to dbabc74 with it. The register predicted this: the 2026-08-02 pair ends by saying the audit “widens the drift gate instead of only fixing the values”, and the widening was only half done. check-figures.mjs’s Cadence · suite entry had no manifest: key, so it could not see /evidence at all, and it never bound the node label — the same two holes that entry’s Applied twin had already documented and closed for itself. Both are closed for Cadence now, so the next drift is a red gate rather than a reader’s discovery.",
+      },
     ],
     artifacts: [
       {
@@ -1989,11 +2054,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         href: `${CADENCE_BLOB}/lib/config/migrations/0002_enable_rls.sql`,
         source: `yadava5/cadence @ ${CADENCE_SHA}`,
         /* The provenance strip is where a plate states what it is NOT.
-           This one is a migration that has never been applied to the
-           production database, and the strip says so wherever the
-           artifact is opened — including from the viewer dialog, where
-           receipt 05's wording is not on screen. */
-        boundary: "public repository — hand-run, and not applied in production",
+           It said "not applied in production" until 2026-08-07, four days
+           after the cutover made that false. It does not RENDER — external
+           artifacts take the outbound-index path (render-case-file.mjs:352)
+           — which is exactly why it went stale: a string no page draws is a
+           string no reader corrects. Fixed anyway; a boundary is a claim
+           about a real system whether or not anyone is currently reading it. */
+        boundary:
+          "public repository — hand-run, and applied in production 2026-08-03",
         date: "2026-07",
       },
     ],
@@ -2628,7 +2696,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "run",
           value:
-            "2025-12-26 — committed as bench-20251226-154121-native.json + bench_summary.csv",
+            "2026-08-02 — committed as bench-20260802-dot20x-{baseline,openmp-native}.json (20 reps) + bench_summary.csv; the 2025-12-26 run files are still in the repo as history",
         },
         {
           label: "repro",
@@ -2692,7 +2760,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         claim:
           "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline — and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
         method:
-          "committed 2025-12-26 benchmark run — protocol in the method slip",
+          "committed 2026-08-02 benchmark run, 20 repetitions — protocol in the method slip",
         artifacts: [
           {
             label: `glyph @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
@@ -2703,7 +2771,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             href: `${FAST_MNIST_BLOB}/docs/benchmarks/bench_summary.csv`,
           },
         ],
-        date: "2025-12-26",
+        date: "2026-08-02",
         visibility: "public",
       },
       {
@@ -2716,11 +2784,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             href: `${FAST_MNIST_BLOB}/benchmarks/bench_matrix.cpp`,
           },
           {
-            label: "bench-20251226-154121-native.json",
-            href: `${FAST_MNIST_BLOB}/docs/benchmarks/runs/bench-20251226-154121-native.json`,
+            label: "bench-20260802-dot20x-openmp-native.json",
+            href: `${FAST_MNIST_BLOB}/docs/benchmarks/runs/bench-20260802-dot20x-openmp-native.json`,
           },
         ],
-        date: "2025-12-26",
+        date: "2026-08-02",
         visibility: "public",
       },
     ],
@@ -2735,7 +2803,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
           },
         ],
-        date: "2025-12-26",
+        date: "2026-08-02",
         visibility: "public",
       },
       {
@@ -2858,8 +2926,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Benchmark evidence",
         href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
         source: `yadava5/glyph @ ${FAST_MNIST_SHA}`,
-        boundary: "committed 2025-12-26 run data",
-        date: "2025-12-26",
+        boundary: "committed 2026-08-02 run data, 20 repetitions",
+        date: "2026-08-02",
       },
     ],
   },
