@@ -174,7 +174,7 @@ defect measured in the run's own figures.
   > two refusal marks are ALREADY clay (`.grow.refused .gmark`), and
   > refused-twice is the recorded fact. See §4b's RULE 5, AMENDED.
   >
-  > **RESOLVED 2026-08-06. It is no longer unresolved and this entry's
+  > **RESOLVED 2026-08-07 (§4b) — the LAST of the six drawn. It is no longer unresolved and this entry's
   > diagnosis above is now history rather than a description.** The plate
   > has geometry: one line runs down the register, each gate stands ON it
   > as a small frame inside its own row, the row's mark is inked INSIDE

@@ -101,8 +101,18 @@ export). **Pages cannot redirect, so every URL is load-bearing.**
 
 ### Branch state — a stack, not siblings
 
+> **THIS DIAGRAM IS TWO PHASES STALE AND ITS `main` COUNT IS WRONG.** Measured
+> 2026-08-07: **HEAD is `feat/figures-and-benchmarks`**, which does not appear
+> below at all and carries **32 commits** (Phase 5 plus §4b's redraw);
+> `refactor/retire-next`'s real tip is **`46ac884`**, three past the
+> `build(deps)` commit shown here as tip; and `main` is **53 behind**, not
+> fifteen. Left as written because it is the record of the Phase 4 checkpoint —
+> **but §7.1's merge ruling is the one decision made off this diagram, so
+> redraw it before executing that section.**
+
 ```
-refactor/retire-next      ← HEAD, contains Phase 4
+feat/figures-and-benchmarks  ← HEAD, contains Phase 5 + §4b's six figures (32 commits)
+refactor/retire-next      46ac884 — contains Phase 4
   <tip>    build(deps): nine packages for a site that is one HTML file and a static archive ← 4.3
            — the tip carries no sha here on purpose: a commit cannot name itself, and amending one in is C32 all over again
   0a03b87  refactor(next): the app that stopped rendering the site stops being in it  ← 4.2 + 4.4
@@ -122,7 +132,7 @@ refactor/stations-truth   0155857 — Phases 0–2, plus this plan
   db6b01c  refactor(stations): one file describes the shipped page, and a gate holds it to it   ← Phase 2
   0428850  feat(run): every corridor carries its own station's freight, and every stop has a name ← Phase 1
   23c5874  ci(portfolio): assemble the gates into one validator                                 ← Phase 0
-main / origin/main        4ec9421 — fifteen commits behind, nothing pushed
+main / origin/main        4ec9421 — 53 commits behind, nothing pushed
 ```
 
 Work in progress that predates Phase 0 is preserved on `wip/cargo-manifest-snapshot`
@@ -146,9 +156,14 @@ Work in progress that predates Phase 0 is preserved on `wip/cargo-manifest-snaps
 
 ### What shipped in Phase 3
 
-`verify:portfolio` is **green at 26 steps** (was 19 at the Phase 0 checkpoint,
-23 at the start of Phase 3). New since: `archive → staging`,
+`verify:portfolio` is **green at 22 steps** (19 at the Phase 0 checkpoint and
+still 19 at the start of Phase 3). New since: `archive → staging`,
 `run ⇄ archive crosswalk`, `archive SEO (staging)`.
+**CORRECTED 2026-08-07 — this block used to say "26 steps… 23 at the start of
+Phase 3".** The arithmetic was self-consistent and the base was wrong. Counted
+the way Phase 4's number is counted (`step()` + `check()`), git says: Phase 2
+tip `0155857` = **19**, Phase 3 tip `11e2ce2` = **22**, Phase 4 tip = **18**,
+HEAD = **20**. 19 + the three steps this line names = 22.
 
 - **The deploy runs the validator.** `deploy.yml`'s three inline steps became
   `verify-portfolio.mjs --no-e2e`, which already *is* the build.
@@ -168,8 +183,8 @@ Work in progress that predates Phase 0 is preserved on `wip/cargo-manifest-snaps
 
 ### What shipped in Phase 4
 
-`verify:portfolio` is **green at 18 steps** — fewer than Phase 3's 20, and that
-is the phase working: two steps existed only to check a staging directory that
+`verify:portfolio` is **green at 18 steps** — fewer than Phase 3's **22**, and
+that is the phase working: two steps existed only to check a staging directory that
 no longer exists, and one gate was retired for measuring a palette that no
 longer ships. 245 browser tests across chromium, firefox and webkit on desktop
 and mobile.
@@ -2069,14 +2084,18 @@ works now and would not have worked in §4b:
 |---|---|---|
 | **Fable-RUN** | `src/run/index.html` | `scripts/archive/**`, everything in the shared row |
 | **Fable-ARCHIVE** | `scripts/archive/**` (`case-figures.mjs`, `render-case-file.mjs`, `assets/archive.css`) | `src/run/index.html`, everything in the shared row |
-| **SHARED — main thread only, never an agent** | `src/lib/data/**` · `scripts/qa/**` · `tests/fixtures/**` · `scripts/qa/portfolio-baseline.json` | — |
+| **SHARED — main thread only, never an agent** | **everything not named above** — including `src/lib/data/**`, `scripts/qa/**`, `tests/fixtures/**`, `tests/playwright/**`, `package.json`, `README.md`, `docs/**` | — |
 
-**The shared row is not bureaucracy — the two-lane table without it does not
-cover the work.** *(Fable's finding.)* Measured, §4b's redraw touched four
-files: `src/run/index.html`, `check-figures.mjs`, `check-palette.mjs` and
-`portfolio-baseline.json`. **Three of the four are unallocated by a two-column
-table**, so a rule saying "edit sets must be disjoint" would not have covered
-the work that was actually done.
+**The shared row DEFAULTS rather than enumerates, and that is deliberate.**
+*(Fable's finding, twice.)* Measured, §4b's redraw touched four files —
+`src/run/index.html`, `check-figures.mjs`, `check-palette.mjs`,
+`portfolio-baseline.json` — and **three of the four are unallocated by a
+two-column table.** The first fix enumerated a shared row and still missed
+Phase 6's own file set: `tests/playwright/static-server.mjs` (§6.0 step 1),
+`package.json` (the new `preview` script), `README.md` and
+`docs/PROJECT-LEDGER.md` (§6.5). **An allow-list under a "second write wins,
+silently" failure mode is worse than none**, so the third row is now a default
+and the two lanes are the only enumerated sets.
 
 **AND ONE RULE THE TABLE CANNOT EXPRESS: if a task's acceptance criterion lives
 in the other lane's file, it is a ONE-AGENT task.** The lanes are disjoint in
@@ -2111,14 +2130,35 @@ away.
 > `node tests/playwright/static-server.mjs` serves the whole site today.**
 
 **THE REAL DEFECT, AND IT IS ALSO THE ANSWER TO OWNER ITEM B.** The seam is
-hard-coded to the production origin **in both directions**: the run links to
-case files as `https://yadava5.github.io/Portfolio-2.0/projects/<id>/` (9
-occurrences), and every generated archive page rejoins as
-`https://yadava5.github.io/Portfolio-2.0/#work`.
+hard-coded to the production origin **in both directions**, and **the rewrite is
+BY ORIGIN, NOT BY A LIST** — a list is how the first draft of this item got the
+count wrong twice. Measured on the built run's index alone: **13 distinct
+clickable absolute `https://yadava5.github.io/Portfolio-2.0…` links** — 7 case
+files, 4 receipt anchors, `/evidence/`, and **2 `/proof/*.json`** — plus every
+generated archive page's `…/#work` rejoin.
+
+> **AND THE TWO PROOF LINKS 404 ON THAT ORIGIN TODAY. Measured, just now:**
+> `/proof/glyph-dot256-openmp-native-001e9b4.json` → **404**,
+> `/proof/jetpack-jmh-rigorous-2caacd0.json` → **404**, while
+> `/projects/automl/` and `/evidence/` → 200. `/proof/` arrived in `6b23a36` on
+> THIS stack and has never been deployed, so the two bench citations — §5.1 and
+> §5.2's flagship, the whole point of vendoring machine records — degrade to a
+> GitHub 404 rather than to an old page. **They will resolve after the first
+> deploy; before it they cannot.** Nothing catches this:
+> `check-links.mjs:181` filters its fetch set to
+> `github.com/<o>/<r>/(tree|blob|commit)/…` and `continue`s past everything
+> else, and `SITE` at `:54` is used only for the `↗`/`⟶` glyph contract, never
+> for reachability. §7.4 item 4 is the only net under these URLs and it runs
+> **after** the first deploy — i.e. after the owner has been handed the preview.
+>
+> **This is why step 1 below must not be handed over without step 2, or with a
+> warning attached.** A fresh session that hands over a root-mounted preview
+> and then walks §6.2's first reading bullet puts the owner on a 404 page and
+> sends the next day to "fix the broken proof links".
 
 So in **any** local preview — root mount, `/Portfolio-2.0` mount, either
 basePath — **the first click from the run into a case study leaves for the
-deployed site, which is `main` at `4ec9421`: 52 commits behind and entirely
+deployed site, which is `main` at `4ec9421`: 53 commits behind and entirely
 pre-migration.** That is a complete mechanical explanation of *"did you fix the
 … view case studies file… As I don't see anything yet"*. The owner clicked
 through and got the old archive. §6.2's "no, §4b touched four files" is true and
@@ -2177,8 +2217,12 @@ wrong cargo by clicking through the seam, he was reading that.
 
 **Deliverables, in order:**
 
-1. **Establish WHERE the wrong cargo was seen** — the local `out/`, or the
-   deployed site reached through the seam. If it is the deployed site, **close
+1. **Establish WHERE the wrong cargo was seen — ask what was in the address
+   bar.** Three candidates, and they give three different diagnoses: the local
+   `out/` over a server; the deployed site reached through the seam; or
+   **`file:///…/out/index.html`**, which is the likeliest for someone with no
+   preview and which degrades the rail in other visible ways because the run's
+   eight runtime fetches all fail under `file://`. If it is the deployed site, **close
    item A as an artifact problem and say so to the owner.** That is the likeliest
    answer and it costs one question.
 2. If it reproduces locally, **write down what is wrong per beat in the owner's
@@ -2193,8 +2237,10 @@ wrong cargo by clicking through the seam, he was reading that.
    (*"the waybill this stop sends down its corridor"*). Corridor 8 carries two;
    the declared truth carries one; **no gate can say so in either direction.**
    Either declare it (make `consignment` a `readonly string[]`) or drop it.
-5. Whatever changes, **prove the gate fires by reproducing the original wrong
-   state in a temp copy.** A re-recorded fixture is not a fix.
+5. Whatever changes, **prove the gate fires in a temp copy.** If deliverable 1
+   closed item A as an artifact problem there is no original wrong state to
+   reproduce — in that case the negative test for deliverable 3 is *make
+   `stations.ts` and the fixture disagree*. A re-recorded fixture is not a fix.
 
 This is still the C-series pattern (C33 counting without checking, C40's
 unreachable `hard()` path, C42's gate that stopped executing) — but the specific
@@ -2223,13 +2269,23 @@ machine records at `/proof/*.json` (§5.1), the bench bars bound to those record
 as markup fractions (§5.2), and the bench re-clothed so nothing fills under
 scroll (§5.5).
 
+> **EVERY BULLET BELOW THAT FOLLOWS A LINK IS VOID UNTIL §6.0 STEP 2 LANDS.**
+> Until the origin is rewritten, each one leaves for the deployed pre-migration
+> site — and the proof bullet lands on a 404. The same tag binds §6.4 items 3
+> and 6.
+
 **So the item is: read the archive as a reader, for the first time.** Seven case
 files and `/evidence/`, start to finish, in the preview. The 4.1 flip shipped
 generated pages that until then had only ever been read by gates and
 screenshots. Specifically:
 
-- **The four `/proof/*.json` links, as a reader clicks them.** The bench heads
-  now send a reader to raw JMH and Google Benchmark JSON. It is the copy that
+- **The bench heads' two `/proof/*.json` links, as a reader clicks them** —
+  not four: `out/proof/` holds six files, the two bench-head citations are
+  absolute, two more are linked relatively from case files
+  (`../proof/master-inventory-ledger.json`,
+  `../../proof/policybot-validation-ledger.json`), and
+  `glyph-dot256-baseline` and `jetpack-jmh-quick` are linked from nothing.
+  The bench heads send a reader to raw JMH and Google Benchmark JSON. It is the copy that
   cannot 404, which is why it is cited — but a 42 KB unstyled blob is a
   destination and nobody has read the arrival. Decide whether that is
   honest-and-fine (it is a record room; records are raw) or wants one line of
@@ -2267,6 +2323,13 @@ screenshots. Specifically:
    site declares a day palette twice*. **Whichever way the ruling goes,
    `check-palette` should gain the assertion that the two `:root` blocks agree,
    or this recurs.**
+   **Two numbers to rule with, because WCAG 2 is the wrong instrument for a 1px
+   hairline on a light field** *(Fable's addition)*: APCA puts the day hairline
+   at **Lc 34.3–38.4** — low-emphasis but nowhere near invisible (there is no
+   ratified APCA non-text threshold, so this is magnitude, not a pass) — and the
+   **price of compliance is the alpha going `.34` → about `0.495` on `#fbf3e7`
+   and `0.510` on `#f2e4c9`, roughly 50% more ink on every structural line on
+   the site.** That number is what makes "restyles every plate" concrete.
 2. **A live hash arrival at `/#review` leaves the third reviewer's mark
    part-inked** until the reader moves a few pixels — 12.18px now, **8.12px at
    HEAD before the redraw, so pre-existing and unchanged in character.** §4b's
@@ -2298,13 +2361,20 @@ not prove the thing was worth doing.
    **first painted frame**, not corrected after the first scroll event. Nothing
    gates this and §6.3 item 2 already found one crack in it.
 2. **320px and 390px on the run and on a case file**, and **every redrawn plate
-   at its tight edition** — all seven now. The tight edition is the half **no
-   gate reads**, because its viewBox is written at run time. §4b's own walk
+   at its tight edition** — **five of them**, not seven: only the `.figsvg`
+   plates rebuild on a 240-unit viewBox at run time. fig. 05 is a grid and
+   fig. 10's drawing is markup; they have narrow layouts, not tight editions.
+   The tight edition is the half **no gate reads**, because its viewBox is
+   written at run time. **This is a reading, not a re-run of the overflow
+   sweep** — that sweep was a one-off hand measurement (FIGURES.md rule 3). §4b's own walk
    found two labels clipped there at every phone width that was shipping.
    **The width to check is 1250px, not 514** — the seat is the SVG parent's
    inner width, not the viewport, and 1250 is where the two-column band drops
    the seat to its narrowest.
-3. **Cross the seam by keyboard, both ways.** The archive has a skip link that
+3. **Cross the seam by keyboard, both ways. REQUIRES §6.0 STEP 2** — the
+   crossing goes through `…/#work`, so without the origin rewrite the tab
+   leaves for production mid-test and the item cannot be performed at all.
+   The archive has a skip link that
    `a11y-audit.spec.ts` asserts; **the run has none.** The two halves of one site
    disagree about the first thing a keyboard reader touches. Tab from a case
    file's rejoin link into the run and back out from a waybill. **This forces the
@@ -2353,7 +2423,7 @@ prints the original first-read date rather than today, the audit walk restores,
 
 ## 6. Phase 7 — Ship it. **[UNCHANGED IN SUBSTANCE, TIGHTENED]**
 
-**Fifty-one commits, five branches, nothing pushed, `main` far behind.** The
+**Fifty-two commits, five branches, nothing pushed, `main` 53 behind.** The
 plan has carried *"no push, no PR without being asked"* since Phase 0. **Every
 item here needs the owner's decision before it is executed** — this is the one
 phase where the plan proposes rather than instructs.
@@ -2365,7 +2435,7 @@ phase where the plan proposes rather than instructs.
 
 | | what lands on `main` | cost |
 |---|---|---|
-| **One PR** | the whole migration, once | one review of ~51 commits; `main` is never half-migrated; the deploy fires once |
+| **One PR** | the whole migration, once | one review of ~52 commits; `main` is never half-migrated; the deploy fires once |
 | **A PR per phase** | six merges | each reviewable and green alone — **but `main` sits mid-migration between merges and `deploy.yml` fires on every push**, so a reader gets the Phase-3 site for however long the next review takes |
 | **One PR, squashed** | one commit | loses the commit messages, which carry most of the reasoning on this branch — **and it orphans the golden baseline's `commit` field.** `pinnedCommitAgrees()` returns SILENTLY when the pinned sha is unreachable (§7.2 reads that skip as correct on a depth-1 CI checkout, which also means the pairing only ever runs locally). A squash or rebase merge removes that sha from `main`'s history, so the assertion C32 was fixed **seven** times to protect stops running everywhere without ever going red. A merge commit preserves it |
 
@@ -2375,7 +2445,7 @@ The middle option's cost is the one to weigh: this repository deploys from
 ### 7.2 — Re-run the clone test before the first push. Unconditional.
 
 It was run once, against a tree that no longer exists — **the branch has since
-moved 32 commits and `verify:portfolio` is 20 steps.** It costs one clone and
+moved 33 commits and `verify:portfolio` is 20 steps.** It costs one clone and
 ten minutes and is the only way to test `npm ci` and a cold `out/` without
 spending a CI run. When it was last run: `npm ci` exit 0 / 0 vulnerabilities;
 `verify-portfolio --no-e2e` green on a clone with no `out/`, no `node_modules`;
