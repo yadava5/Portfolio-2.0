@@ -2271,10 +2271,21 @@ recorded fixture.
 >
 > **DELIVERABLE 3 IS BUILT AND IT IS THE ARRIVAL BINDING**, added to
 > `check-cargo-fixture.mjs` rather than made a new gate, so it shares the one
-> browser launch. It fails **22 times** against the pre-fix artifact — every
-> corridor, named — while the fixture comparison stays green, which is the
-> whole point stated in one run. Proven by `--root` against a preserved copy of
-> the pre-fix `out/`, the affordance the gate already documented.
+> browser launch. It fails against the pre-fix artifact — every corridor, named
+> — while the fixture comparison stays green, which is the whole point stated in
+> one run. Proven by `--root` against a preserved copy of the pre-fix `out/`,
+> the affordance the gate already documented.
+>
+> > **THE COUNT DEPENDS ON WHICH `stations.ts` THE GATE READS, and this record
+> > got it wrong twice before saying so.** The binding compares a preserved
+> > artifact against the CURRENT declaration, so the number moves as
+> > `stations.ts` does: 22 against the pre-fix declaration, 23 once the beat-0
+> > assertion was added, and **17 at HEAD** — which is the only one that
+> > reproduces, because the re-tensed declaration ships in the same commit as
+> > the binding. Re-measured at HEAD rather than left as written. This is
+> > "measure at HEAD, pin what you measured" applied to the evidence instead of
+> > to the artifact, and the earlier numbers are kept here only so a reader who
+> > finds them in `095fd88`'s message knows why they differ.
 >
 > **DELIVERABLE 4 DISSOLVED RATHER THAN BEING RULED ON.** Under arrival
 > semantics `run 042's report → the review` — the twelfth waybill
@@ -2312,6 +2323,17 @@ recorded fixture.
 > from the previous tree at the deploy config — 134 lines, every hunk inside the
 > TRAV table. `commit` field corrected in `9676ea2`, its own commit, C32's
 > eighth.
+>
+> **THE LABEL WIDTHS ARE MEASURED, not reasoned.** Fable handed its width work
+> back explicitly as "~0.6 em/char, not `measureText`", and §6.4 item 2 names
+> 1250px as the width to check. Both were done: `ctx.measureText` at
+> `11.5px 'Fragment Mono'` against the real anchor (`pt.x + 20`, right-aligned
+> past `vw - 260`), every waybill, at 1440 and at 1250. **Zero overflow at
+> either.** The widest is the recommendations at 398px, sitting `[332..730]` of
+> 1250. The two new geometries were the ones at risk — the credentials at
+> `off: 1`, where no label had ridden corridor 0 before, and the unsigned
+> manifest at `off: 2` — and the manifest carries no label at all, so it has no
+> text to overflow.
 >
 > **ONE THING THE RE-STAGE FIXED THAT NOBODY HAD REPORTED** *(Fable's finding)*:
 > glyph's `a blank 28×28 — the run wants your hand` is an instruction for the
