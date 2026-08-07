@@ -2708,18 +2708,28 @@ function pointAtLen(L) {
   return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
 }
 
-/* travellers: each station's output rides the line to the next. Round 1's
-   marks were postage-stamp small and rode glued to the token, so corridor
-   stills read empty; now the convoy is spread across the corridor, drawn
-   at a size the still can read, and the lead item carries a waybill line
-   naming what is in transit. All of it remains a pure function of scroll. */
+/* travellers: freight ABOUT a station ARRIVES AT that station. A corridor
+   is read at the station it runs into — cargo departs while the previous
+   plate is still closing, and its paint band ends inside the next heading —
+   so the freight about station N rides corridor N-1 and lands as the reader
+   does. The table used to be staged one corridor late, in the author's
+   frame ("a station's output departs it"); instrumented at 1440×900, eleven
+   of twelve waybills painted under the wrong kicker. A waybill names the
+   artifact in transit, never its numbers — results are the station's to
+   reveal, not the freight's to front-run. Round 1's marks were postage-stamp
+   small and rode glued to the token; the convoy stays spread across the
+   corridor, a waybill line names what is in transit, and all of it remains
+   a pure function of scroll. */
 const TRAV = [
-  /* the first corridor was the round-2 hole: nothing had been produced
-     yet, so nothing travelled, and the stretch read bare. What IS true
-     there: the run was just dispatched and the reader came aboard. So
-     the dispatch slip rides down first, trailed by the day's first
-     light — dawn is this corridor's only other honest cargo. */
-  { beat: 0, n: 1, label: "run 042 dispatched — operator aboard", draw: (c) => { /* the slip */
+  /* the first corridor: nothing arrives at the start — the run begins
+     there — so the corridor's one waybill is the credentials, riding a
+     full offset back and arriving at ¶02. The dispatch slip still leads
+     (the round-2 hole taught this stretch not to run bare) and the day's
+     first light follows, but both ride unnamed: the slip is the run's own
+     paper, not a consignment, and a station declares exactly one — the
+     one exception a slip waybill would take is the first rule the reader
+     would learn, at the first thing they see. */
+  { beat: 0, n: 1, label: null, draw: (c) => { /* the dispatch slip — the run's own paper */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-11, -7, 22, 14, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-7, -2.5); c.lineTo(4, -2.5); c.moveTo(-7, 2); c.lineTo(1, 2); c.stroke();
@@ -2732,7 +2742,7 @@ const TRAV = [
         c.beginPath(); c.moveTo(Math.cos(a) * 7, 1 + Math.sin(a) * 7);
         c.lineTo(Math.cos(a) * 10, 1 + Math.sin(a) * 10); c.stroke();
       } } },
-  { beat: 1, n: 1, label: "the engineer’s credentials → manifest", draw: (c) => { /* the signed card */
+  { beat: 0, n: 1, off: 1, label: "the engineer’s credentials → manifest", draw: (c) => { /* the signed card */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-11, -7, 22, 14, 2); c.fill(); c.stroke();
       c.strokeStyle = inkC["--ink-2"]; c.beginPath(); c.rect(-8, -4, 6, 6.5); c.stroke(); /* the portrait well */
@@ -2747,14 +2757,14 @@ const TRAV = [
      the inventory follows, and the corridor now carries two different facts
      instead of one fact twice. Grounded in the ¶03 prov line — "one master
      inventory — 10,453 rows × 35 fields · hash-dedup" — and its handoff. */
-  { beat: 2, n: 1, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
+  { beat: 1, n: 1, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.rect(-9, -6.5, 18, 13); c.fill(); c.stroke();
       c.strokeStyle = inkC["--ink-2"]; c.beginPath(); /* rows and fields */
       c.moveTo(-9, -2); c.lineTo(9, -2); c.moveTo(-9, 2.4); c.lineTo(9, 2.4);
       c.moveTo(-3, -6.5); c.lineTo(-3, 6.5); c.moveTo(3, -6.5); c.lineTo(3, 6.5); c.stroke();
       c.fillStyle = inkC["--pine"]; c.fillRect(3.6, -6, 4.9, 3.5); /* the flagged field */ } },
-  { beat: 2, n: 1, off: 0.55, label: null, draw: (c) => { /* the inventory: the one part checked in */
+  { beat: 1, n: 1, off: 0.55, label: null, draw: (c) => { /* the inventory: the one part checked in */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
       c.beginPath(); c.rect(-8.5, -7.5, 13, 10); c.fill(); c.stroke();   /* the silos it came from */
       c.beginPath(); c.rect(-6.5, -5, 13, 10); c.fill(); c.stroke();
@@ -2762,17 +2772,17 @@ const TRAV = [
       c.beginPath(); c.rect(-4.5, -2.5, 13, 10); c.fill(); c.stroke();
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5;                 /* checked in */
       c.beginPath(); c.moveTo(-1.5, 2.6); c.lineTo(0.5, 4.8); c.lineTo(5.5, -0.2); c.stroke(); } },
-  { beat: 3, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
+  { beat: 2, n: 3, label: "sorted mail → manifest", draw: (c) => { /* envelope, sorted */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.3;
       c.beginPath(); c.rect(-7, -5, 14, 10); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-7, -5); c.lineTo(0, 1.2); c.lineTo(7, -5); c.stroke(); } },
-  { beat: 4, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
+  { beat: 3, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-11, -7, 22, 14, 3); c.fill(); c.stroke();
       c.strokeStyle = inkC["--ink"]; c.beginPath();
       c.moveTo(-7, -2.5); c.lineTo(2, -2.5); c.moveTo(-7, 2); c.lineTo(5, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.beginPath(); c.arc(7, -2.5, 2, 0, 7); c.fill(); } },
-  { beat: 5, n: 1,
+  { beat: 4, n: 1,
     label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
     draw: (c) => {
       if (glyphDigit !== null) {
@@ -2783,53 +2793,56 @@ const TRAV = [
         c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.setLineDash([3, 3]);
         c.strokeRect(-8, -8, 16, 16); c.setLineDash([]);
       } } },
-  /* same duplicate as beat 2: two identical stitched members. jetpack hands
+  /* same duplicate as the yard's pair: two identical stitched members. jetpack hands
      on two distinct things and its own handoff names the second — "the
      member lands in the benchmark ledger @ 2caacd0". The bench rides behind
      the member. Drawn as bars and NOT lettered with a throughput: the two
      numbers are stated once each, in the prov line and the fig-07 bars, and
      a third copy on the canvas is a third place for them to drift. */
-  { beat: 6, n: 1, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
+  { beat: 5, n: 1, label: "one valid gzip member → manifest", draw: (c) => { /* stitched blocks */
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
-  { beat: 6, n: 1, off: 0.55, label: null, draw: (c) => { /* the committed bench: the same stream, twice */
+  { beat: 5, n: 1, off: 0.55, label: null, draw: (c) => { /* the committed bench: the same stream, twice */
       c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
       c.beginPath(); c.moveTo(-10, -6); c.lineTo(-10, 6); c.lineTo(9, 6); c.stroke(); /* the axis */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-9, -4.4, 4, 3.2);        /* one thread */
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-9, 0.4, 17, 3.2); } },  /* all of them */
-  { beat: 7, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
+  { beat: 6, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
       c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
-  /* every other project station hands on something IT made. This one used to
-     hand on run 042's report — the day's own paperwork, which would have
-     ridden this corridor whether AutoML existed or not — so the last station
-     of the line was the only one whose freight was not its own. Its output is
-     stated twice on the station and is the same both times: "the run halts at
-     the seventh gate" (fig. 09) and "↳ the halted run lands in" (the handoff).
-     That leads now; the day's report follows a full offset behind it, still
-     bound for the review, because the review is of the RUN and not of AutoML. */
-  { beat: 8, n: 1, label: "automl’s halted run → manifest", draw: (c) => { /* six gates opened, the seventh never */
+  /* automl's freight is its own: the output is stated twice on the station
+     and is the same both times — "the run halts at the seventh gate"
+     (fig. 09) and "↳ the halted run lands in" (the handoff). It rides
+     into ¶09, where that story is told. */
+  { beat: 7, n: 1, label: "automl’s halted run → manifest", draw: (c) => { /* six gates opened, the seventh never */
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.4;
       for (let i = 0; i < 6; i++) { const x = -10.5 + i * 3;
         c.beginPath(); c.moveTo(x, -4.5); c.lineTo(x, 4.5); c.stroke(); }
       c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.6; /* the gate that stopped it */
       c.beginPath(); c.arc(8.5, 0, 3.4, 0, 7); c.stroke(); } },
-  { beat: 8, n: 1, off: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
+  /* the day's own paperwork, and the one waybill the old table already had
+     in the reader's frame: addressed to ¶10, read arriving at ¶10. It leads
+     its corridor alone now — the review is of the RUN, not of AutoML, so
+     nothing of AutoML's rides in with it. */
+  { beat: 8, n: 1, label: "run 042’s report → the review", draw: (c) => { /* the sealed run report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(3, 2); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(4, -2, 4, 4); } },
+  /* the reviewed run rides the corridor into ¶11 alone, arriving exactly
+     where its waybill is addressed. */
   { beat: 9, n: 1, label: "run 042, reviewed → the references", draw: (c) => { /* the reviewed report */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-9, -6, 18, 12, 2); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-5, -2); c.lineTo(1, -2); c.moveTo(-5, 2); c.lineTo(0, 2); c.stroke();
       c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.5; /* the reviewer's check */
       c.beginPath(); c.moveTo(3, 1); c.lineTo(5, 3.2); c.lineTo(8.4, -2.4); c.stroke(); } },
-  /* the last corridor. Two copies, because two people wrote — this is the
-     only cargo on the line whose words are somebody else's. Without it the
-     run's final stretch carried nothing, which read as the line dying.
+  /* the last corridor. Two copies, because two people wrote — the only
+     cargo on the line whose words are somebody else's, and it arrives at
+     the gate its own address names: the reader it was written for is the
+     next stop.
 
      Drawn as written text, NOT as a signature: nobody signed anything here,
      and a drawn signature mark for a named real person is a fabricated
@@ -2845,6 +2858,27 @@ const TRAV = [
       c.stroke();
       c.fillStyle = inkC["--clay-g"]; /* the quote mark: the words are borrowed */
       c.fillRect(6.2, -4.4, 1.6, 2.4); } },
+  /* behind them, unnamed, the day itself: the gate card is titled
+     "run 042 — the manifest, complete." and this is that document in
+     transit — a taller page than the letters ahead of it, every ledger
+     row ruled in behind its tick, and the signature line blank, in clay:
+     the colour the halted token waits in until a hand signs. It docks
+     last, at the square the thread ends on, beside the card that gives
+     it its words — a station declares one waybill, so the manifest rides
+     unlabelled and lets the DOM name it. Bookends the slip: the run's
+     own paper opened the line unnamed, and closes it the same way. */
+  { beat: 10, n: 1, off: 2, label: null, draw: (c) => { /* the manifest, unsigned */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-9, -8, 18, 16, 2); c.fill(); c.stroke();
+      c.beginPath(); c.moveTo(-6, -5.2); c.lineTo(6, -5.2); c.stroke(); /* the title rule */
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; /* the rows, every one filled */
+      c.beginPath();
+      c.moveTo(-6, -2.6); c.lineTo(-4.9, -2.6); c.moveTo(-3.9, -2.6); c.lineTo(6, -2.6);
+      c.moveTo(-6, -0.2); c.lineTo(-4.9, -0.2); c.moveTo(-3.9, -0.2); c.lineTo(4, -0.2);
+      c.moveTo(-6, 2.2); c.lineTo(-4.9, 2.2); c.moveTo(-3.9, 2.2); c.lineTo(5, 2.2);
+      c.stroke();
+      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.4; /* the signature line, still blank */
+      c.beginPath(); c.moveTo(-6, 5.2); c.lineTo(6, 5.2); c.stroke(); } },
 ].flatMap((t) => Array.from({ length: t.n }, (_, j) => ({ ...t, j })));
 const setGlyphTraveller = (d) => { glyphDigit = String(d); };
 

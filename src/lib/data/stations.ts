@@ -61,7 +61,26 @@ export type Station = {
   readonly kicker: string;
   /** hh:mm, as the kicker prints it and as `CLOCKS` derives it */
   readonly clock: string;
-  /** the waybill this stop sends down its corridor; null where nothing departs */
+  /**
+   * The waybill that ARRIVES at this stop, on the corridor that reaches it;
+   * null where nothing arrives.
+   *
+   * It used to read "the waybill this stop sends down its corridor", and the
+   * inversion is the whole of §6.1. Freight was staged by where it departed,
+   * so the waybill painted on a corridor was always the PREVIOUS station's —
+   * and a reader has only the heading in front of them, never the one that
+   * scrolled away. Measured 2026-08-07: for eleven of twelve waybills the only
+   * `¶` kicker on screen while it painted was the station the cargo was not
+   * from. Applied's sorted mail was read at ¶05 Cadence.
+   *
+   * So a station now declares what lands at it, corridor `beat - 1` carries
+   * it, and `check-cargo-fixture`'s arrival binding holds the render to this
+   * field. Exactly one string per station: `check-stations` parses this file
+   * as text and its pattern admits `null` or one quoted string, so a corridor
+   * carrying two DECLARED waybills is not expressible without changing that
+   * parser. Unlabelled freight may ride with it freely — that is drawing, not
+   * declaration.
+   */
   readonly consignment: string | null;
   /** the case file this stop files with — a `caseStudyIds` member, or null */
   readonly dossier: string | null;
@@ -74,8 +93,14 @@ export const STATIONS: readonly Station[] = [
     name: "the start",
     kicker: "¶ 01 · the start",
     clock: "06:12",
-    /* nothing has been produced yet; what travels is the dispatch itself */
-    consignment: "run 042 dispatched — operator aboard",
+    /* Nothing ARRIVES at the first station — the run begins here, and there is
+       no corridor reaching it to carry anything in. The dispatch slip still
+       rides the first corridor and still draws; it simply carries no waybill,
+       because a waybill names what is being delivered and the slip is the run's
+       own paper. `check-cargo-fixture` asserts this null directly: a
+       consignment declared on beat 0 is a claim no corridor could satisfy, and
+       the corridor-indexed half of that gate would never have looked at it. */
+    consignment: null,
     dossier: null,
   },
   {
@@ -167,7 +192,13 @@ export const STATIONS: readonly Station[] = [
     name: "the review",
     kicker: "¶ 10 · the review",
     clock: "22:23",
-    consignment: "run 042, reviewed → the references",
+    /* Re-declared 2026-08-07. This field carried "run 042, reviewed → the
+       references" — written in the departure tense, and the one place the
+       uniform re-stage could not simply be ported: a post-review artifact
+       cannot ARRIVE at the review, because the review has not happened yet.
+       What lands here is the day's report, which the run has always carried on
+       this corridor and no station ever declared. Declaring it closes that. */
+    consignment: "run 042’s report → the review",
     /* four case files are linked FROM this stop, as ¶10's receipts. None of
        them is this stop's own, which is why this is null and not a list. */
     dossier: null,
@@ -178,7 +209,7 @@ export const STATIONS: readonly Station[] = [
     name: "the references",
     kicker: "¶ 11 · the references",
     clock: "22:32",
-    consignment: "two recommendations, carried as written → the human gate",
+    consignment: "run 042, reviewed → the references",
     dossier: null,
   },
   {
@@ -187,9 +218,15 @@ export const STATIONS: readonly Station[] = [
     name: "the gate — held",
     kicker: "¶ 12 · the approval gate",
     clock: "22:41",
-    /* the line terminates here. Nothing departs a stop the reader has to
-       sign for, which is the whole argument of the page. */
-    consignment: null,
+    /* The line terminates here, and under arrival semantics that note inverts:
+       nothing DEPARTS a stop the reader has to sign for — but everything the
+       day made arrives at it. What carries in is the recommendations, whose
+       address has always named this station: "→ the human gate" is the reader,
+       and they are the last words the run hands over before it asks for a
+       signature. The unsigned manifest rides in behind them, unnamed, because
+       the gate card beside it already says "run 042 — the manifest, complete."
+       and a waybill repeating its own destination's title is ceremony. */
+    consignment: "two recommendations, carried as written → the human gate",
     dossier: null,
   },
   {

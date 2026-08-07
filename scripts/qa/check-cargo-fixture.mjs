@@ -15,7 +15,16 @@
  * scroll position it was painted at against the stations' own offsets. If a
  * consignment changes station, this notices; the source gate cannot.
  *
- * TWO CONSTRAINTS, both measured in the run's painter (:2587):
+ * IT NOW DOES TWO THINGS, AND THE SECOND ONE IS WHY THE FIRST WAS NOT ENOUGH.
+ * A recording agrees with whatever was rendered on the day it was taken, so a
+ * rail that had ALWAYS carried the wrong freight recorded as green and stayed
+ * green for five phases while the owner reported it wrong. The second half —
+ * see THE ARRIVAL BINDING below — checks the render against
+ * `stations.ts` rather than against a recording, and it is the half that can
+ * fail on day one. Read that block before changing either.
+ *
+ * TWO CONSTRAINTS, both in the run's painter — search `the waybill: the lead
+ * item says what is in transit`, because a line number here rots silently:
  *
  *   if (!stacked && t.j === 0 && t.label && prog > 0.1 && prog < 0.7)
  *
@@ -40,7 +49,9 @@ import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, extname, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
+import { compileAndRelink } from "../run/compile-ts-graph.mjs";
 
 const argv = process.argv.slice(2);
 const RECORD = argv.includes("--record");
@@ -166,6 +177,126 @@ function corridorAt(y) {
 const observed = [...byLabel.entries()]
   .map(([label, s]) => ({ label, corridor: corridorAt((s.min + s.max) / 2) }))
   .sort((a, b) => a.corridor - b.corridor || a.label.localeCompare(b.label));
+
+/* ————— THE ARRIVAL BINDING: the render against the DECLARATION —————
+ *
+ * IT RUNS BEFORE `--record`, AND THAT ORDER IS THE POINT. Written after the
+ * record branch it was decorative: `--record` writes the fixture and exits, so
+ * re-recording a wrong rail would have rewritten the baseline and never once
+ * consulted the declaration — the exact move this repo has a standing rule
+ * against, automated. Here, a re-record of freight that disagrees with
+ * `stations.ts` fails instead of being blessed. Keep it above.
+ *
+ * Everything above compares the render to a RECORDING. That is worth having
+ * and it is not enough: a recording agrees with whatever was rendered on the
+ * day it was taken, so a rail that has always been wrong records as green and
+ * stays green. It did. Measured 2026-08-07 by hooking `fillText` and asking
+ * which `¶` kicker was inside the 900px viewport while each waybill painted:
+ * for ELEVEN of twelve, the only station heading on screen was the one the
+ * cargo was NOT from. `sorted mail` — Applied's — was read at ¶05 Cadence;
+ * Glyph's blank 28×28 was read at ¶07 jetpack-compress. The owner reported
+ * the rail carrying the wrong cargo while this gate was green, and both were
+ * true: it attributed a waybill to a corridor by SCROLL OFFSET, which is the
+ * author's frame, and a reader has only the heading in front of them.
+ *
+ * So the rule the run now builds to, and the one asserted here: FREIGHT
+ * ARRIVES AT THE STATION IT IS ABOUT. Corridor `c` runs from station `c` to
+ * station `c + 1` and is read at `c + 1`, therefore corridor `c` carries
+ * `STATIONS[c + 1].consignment` — not `STATIONS[c]`'s. Re-index the run back
+ * to departure semantics and this goes red on every corridor at once.
+ *
+ * `consignment` is normalised to a list so that a corridor carrying two
+ * declared waybills is expressible. It is NOT a licence to paint an
+ * undeclared one: a label with no station behind it fails here, which is what
+ * makes the run's twelfth waybill a decision somebody has to take rather than
+ * a thing that quietly ships.
+ */
+compileAndRelink({
+  root: process.cwd(),
+  project: "tsconfig.archive.json",
+  outDir: ".build/archive",
+});
+const { STATIONS } = await import(
+  pathToFileURL(
+    join(resolve(process.cwd(), ".build/archive"), "lib/data/stations.js")
+  ).href
+);
+
+const declaredAt = (corridor) => {
+  const station = STATIONS.find((s) => s.beat === corridor + 1);
+  if (!station || station.consignment == null) return [];
+  return Array.isArray(station.consignment)
+    ? [...station.consignment]
+    : [station.consignment];
+};
+const nameAt = (corridor) =>
+  STATIONS.find((s) => s.beat === corridor + 1)?.kicker ??
+  `beat ${corridor + 1}`;
+
+const arrivalFails = [];
+
+/* EVERY corridor, not just the ones something was seen on. Iterating the
+   observed set would mean a corridor that paints NOTHING is never compared to
+   what its arriving station declares — a consignment carried by no freight at
+   all would pass in silence, which is the one failure this binding exists to
+   make loud. `beats` is the run's own sections; corridor c runs from beat c to
+   beat c + 1, so the last corridor is beats.length - 2. */
+const corridors = [...Array(Math.max(0, beats.length - 1)).keys()];
+for (const c of corridors) {
+  const painted = observed.filter((w) => w.corridor === c).map((w) => w.label);
+  const declared = declaredAt(c);
+  for (const label of painted) {
+    if (!declared.includes(label)) {
+      arrivalFails.push(
+        `corridor ${c} carries "${label}", which ${nameAt(c)} — the station it ` +
+          `arrives at — does not declare` +
+          (declared.length
+            ? `\n      ${nameAt(c)} declares: ${declared.map((d) => `"${d}"`).join(", ")}`
+            : `\n      ${nameAt(c)} declares no consignment at all`)
+      );
+    }
+  }
+  for (const label of declared) {
+    if (!painted.includes(label)) {
+      arrivalFails.push(
+        `${nameAt(c)} declares "${label}" but nothing carries it into the station ` +
+          `— corridor ${c} is the one that arrives there`
+      );
+    }
+  }
+}
+
+/* The first station is the one place arrival semantics has nothing to say: the
+   run BEGINS at ¶01, so no corridor arrives there and no freight can be carried
+   in. A consignment declared on beat 0 is therefore a claim no corridor can
+   ever satisfy — invisible to the loop above, because that loop is indexed by
+   corridor and beat 0 is not the far end of one. Assert it directly or it
+   becomes the next thing that is quietly true of nothing. */
+const first = STATIONS.find((s) => s.beat === 0);
+if (first && first.consignment != null) {
+  arrivalFails.push(
+    `${first.kicker} declares "${first.consignment}", but nothing arrives at the ` +
+      `first station — the run starts there. Under arrival semantics beat 0's ` +
+      `consignment can only be null; freight that departs ¶01 belongs to whichever ` +
+      `station it is ABOUT.`
+  );
+}
+
+if (arrivalFails.length) {
+  console.error("");
+  for (const f of arrivalFails) console.error(`  ✗ ${f}`);
+  console.error(
+    `\ncheck-cargo-fixture FAILED the arrival binding: ${arrivalFails.length} ` +
+      `disagreement(s) between what the rail carries and what stations.ts declares.` +
+      `\nA re-recorded fixture does not fix this — the fixture is the render, and ` +
+      `the render is what is being doubted.`
+  );
+  process.exit(1);
+}
+
+console.log(
+  `check-cargo-fixture: and each one is the consignment of the station it arrives at`
+);
 
 if (RECORD) {
   writeFileSync(

@@ -4,47 +4,43 @@
     "Desktop only (1440px): the run paints no canvas text on a stacked layout.",
     "Re-record ONLY when the cargo was changed deliberately, and read the diff."
   ],
-  "recordedAt": "2026-08-06T03:11:20Z",
+  "recordedAt": "2026-08-07T07:29:30Z",
   "viewport": {
     "width": 1440,
     "height": 900
   },
   "waybills": [
     {
-      "label": "run 042 dispatched — operator aboard",
+      "label": "the engineer’s credentials → manifest",
       "corridor": 0
     },
     {
-      "label": "the engineer’s credentials → manifest",
+      "label": "five years of logs, given shape → the line",
       "corridor": 1
     },
     {
-      "label": "five years of logs, given shape → the line",
+      "label": "sorted mail → manifest",
       "corridor": 2
     },
     {
-      "label": "sorted mail → manifest",
+      "label": "the committed plan → manifest",
       "corridor": 3
     },
     {
-      "label": "the committed plan → manifest",
+      "label": "a blank 28×28 — the run wants your hand",
       "corridor": 4
     },
     {
-      "label": "a blank 28×28 — the run wants your hand",
+      "label": "one valid gzip member → manifest",
       "corridor": 5
     },
     {
-      "label": "one valid gzip member → manifest",
+      "label": "lifequest’s unfinished rows, carried unchanged",
       "corridor": 6
     },
     {
-      "label": "lifequest’s unfinished rows, carried unchanged",
-      "corridor": 7
-    },
-    {
       "label": "automl’s halted run → manifest",
-      "corridor": 8
+      "corridor": 7
     },
     {
       "label": "run 042’s report → the review",
