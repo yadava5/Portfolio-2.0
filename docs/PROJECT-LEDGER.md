@@ -221,3 +221,43 @@ check in `check-proof-manifest`, written against the real `2caacd0`/`af2c4b1`
 mismatch · and `test:figures`, `test:anchors`, `test:beat-tables`,
 `test:nameplate` and its negative twin **added to CI**, where none of them had
 ever run.
+
+## Two standing obligations this migration created (2026-08-07)
+
+These outlive the migration. Both are enforced, and both have already been the
+reason a change was wrong rather than the reason a change was slow.
+
+**The palette carries its own arithmetic.** `check-palette` reads a `measured:`
+claim beside each colour and recomputes it. Change a colour token and the claim
+beside it must be recomputed in the same commit, or the gate reds — which is
+correct, because the alternative is a contrast figure that was true of a colour
+this file no longer uses. The night hairline was tuned to exactly 3.0 and then
+raised to 3.40; the DAY hairline is measured at 2.005–2.051:1 and is
+**deliberately unmeasured by the gate**, pending an owner ruling. That gap is
+recorded here so it is a known hole and not a forgotten one.
+
+**Figure labels are measured, never budgeted per character.** Use
+`getComputedTextLength()` on a real node, or `ctx.measureText()` for canvas
+type. The old ~7.25/6.6 units-per-character constant omitted letter-spacing and
+ran **~10% short across the whole site** — that is how a label authored to end
+four units inside its box ended four units outside it. `FIGURES.md` rule 3
+carries the amendment and the measured figures (8.012 wide / 7.125 tight, and
+`⟶` at ~1.67 advances; `×`, `—`, `’` and `·` are one each, not two). The
+one-off sweep of 1,526 boxes at twelve widths was a hand measurement and is
+**not** a standing gate: the tight editions are read by nothing, because their
+viewBox is written at run time. Do not cite it as coverage.
+
+## What Phase 6 settled about gates themselves (2026-08-07)
+
+**A recording cannot falsify a defect that was always present.**
+`check-cargo-fixture` compared the rendered rail to a fixture recorded from that
+same rail, and was green for five phases while every corridor carried the wrong
+freight. The fix was not a better recording: it was binding the render to
+`stations.ts`, the declared truth, and asserting the property in the READER's
+frame rather than the author's. Any gate whose expectation is derived from the
+thing it checks has this shape.
+
+**The obvious one-line fix deserves the same measurement as the hard one.**
+C46's guard looked like a one-line comparison and it takes the nameplate off the
+page, because using an import TypeScript had been eliding pulls `process.env`
+into a browser. It was caught by running the validator, not by reading the diff.
