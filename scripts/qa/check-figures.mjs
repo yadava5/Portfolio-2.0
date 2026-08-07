@@ -524,8 +524,30 @@ const FIGURES = [
     [
       "jetFig",
       "fig. 07",
-      ["one gzip member"],
-      "the best part of the drawing: the stitched member is byte-valid",
+      [
+        "one gzip member",
+        /* The reassembly, which is the trick. Blocks return to stream
+           position i whatever lane wrote them, and the lane→slot deltas run
+           both directions so it reads as reassembly rather than drift. At the
+           settled frame all eight blocks are identical pine and lane identity
+           is recoverable only by hover — which is display:none on touch — so
+           this clause and the plate's own footer are what carry it for
+           everyone else. */
+        "in stream order and not in lane order",
+        /* THE DISCLOSURE. The lane assignment and the eight block widths are
+           hand-authored constants (JET_OUT_WIDE / JET_OUT_TIGHT), and §4b
+           names the trap for this figure by name: narrowing the blocks TO
+           jetpack's measured compression ratio would animate a committed
+           number under the reader's scroll and would arrive looking like
+           precision. The widths deliberately vary per block so no single
+           ratio can be read out of them. */
+        "are drawn and not measured",
+        /* `1f 8b 08` and `crc32 · isize` are RFC 1952's own field names, not
+           measurements — rule 6's `1f 8b` exception, and the label has to keep
+           saying so or the lettering becomes a claim about this build. */
+        "come from the gzip format itself",
+      ],
+      "the reassembly, the widths that are drawn rather than measured, and the format's own notation",
     ],
     [
       "questFig",

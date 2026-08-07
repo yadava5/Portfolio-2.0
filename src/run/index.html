@@ -340,8 +340,16 @@
   #amlFig.tight{max-width:330px}
   .figsvg .lit{fill:var(--ink)}
   .figsvg .lane{stroke:var(--hair-strong); stroke-width:1; fill:none}
-  .figsvg .gatecol{stroke:var(--hair-strong)}
-  .figsvg .gsq{fill:var(--clay-g)}
+  /* `.figsvg .gsq{fill:var(--clay-g)}` STOOD HERE and is deliberately gone.
+     A clay-filled square, and fig. 07's seam rects were its last consumer in
+     the run — this commit is what orphaned it, so this commit removes it
+     rather than leaving a loaded class for the next hand to find. That is not
+     hypothetical: fig. 10 is the next figure in the queue and it is about
+     gate squares, and §4b's answer for it is squares in --hair-strong as
+     STRUCTURE with the marks carrying the clay. A dead `.gsq` is exactly the
+     shortcut that would quietly overturn that ruling and read as five clay
+     elements on one plate. The archive keeps its own .gsq in archive.css,
+     where case-figures.mjs still draws with it. */
   .figsvg .mk{fill:none; stroke:var(--ink); stroke-width:1.2}
   /* fig. 04's piece of mail: ink while it is still in the machine, pine the
      moment the desk that settled it lets it go. The flap follows the body, so
@@ -354,7 +362,35 @@
      two walls the belt runs between, because a desk is something a piece
      passes THROUGH; the clay square is reserved for a thing being judged. */
   .figsvg .desk{fill:none; stroke:var(--ink); stroke-width:1.4}
+  /* fig. 07's deflate die — two walls that step inward. §4b's note on that
+     plate is that the tight edition "barely registers" the narrowing, and the
+     answer is a FORM rather than a frame of motion: the die says "things leave
+     here narrower" in the still, in greyscale and to a dichromat, in both
+     editions. Same ink 1.4 as the desk above, because both are apparatus a
+     mark passes THROUGH; heavier in tight, where the whole step is 7 units. */
+  .figsvg .die{fill:none; stroke:var(--ink); stroke-width:1.4}
+  #jetFig.tight .die{stroke-width:1.6}
   .figsvg .mkg.settled .mk, .figsvg .mkg.settled .mkflap{stroke:var(--pine)}
+  /* the same landed register, on fig. 07's blocks: ink while the block is
+     still in the machine, pine once it is parked in the member */
+  .figsvg .blk.landed .mk{stroke:var(--pine)}
+  /* fig. 07's ONE clay event, and it is the trailer rather than the seams.
+     Seven clay ticks between eight blocks argued the opposite of the plate:
+     they said "this is eight things" over a drawing whose whole claim is that
+     the eight are one valid member. A seam is a join, not a judgement, and the
+     joins are still drawn — by the blocks' own abutting 1.2 edges, at the
+     weight every other edge here gets. What IS a judgement is the trailer:
+     RFC 1952's check is taken over the WHOLE input, so it is the only element
+     on the plate that is about the whole, and rule 5 as amended names a
+     disposition of record as clay's own register. It arrives as a stroke swap
+     on a cell that was already drawn, so nothing pops in and no alpha is used.
+     Measured 2026-08-06, --clay-g on the composited plate ground: 4.07:1 /
+     Lc 63.2 at the worst day field, 4.23:1 / |Lc| 42.5 at the worst night one,
+     against the 3.0 non-text floor. It parts from the pine beside it by HUE
+     and not by luminance (1.65:1 but dE00 45.3; still 15.3 under protanopia),
+     which is why the trailer also keeps its lettering and its place at the end
+     of the member — the colour is the third cue here and never the only one. */
+  #jetFig .crc.sealed{stroke:var(--clay-g); stroke-width:1.4}
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
      nothing here is a partial alpha the palette gate cannot see. */
@@ -365,18 +401,17 @@
   .figsvg .stitch{fill:none; stroke:var(--pine); stroke-width:1.4}
 
   /* pointer tracing: hovering a desk / lane label follows its cargo.
-     stroke-opacity, not opacity — the scrub owns the opacity attribute
-     and a stylesheet rule would resurrect marks it has hidden */
+     The recede is a TOKEN and a WEIGHT, never an alpha — the scrub owns the
+     opacity attribute, and stroke-opacity is the defect check-palette cannot
+     see, because it composites TOKEN alpha only. MEASURED on the day field
+     #f2e4c9 (¶04 and ¶07 are both day stations): stroke-opacity .28
+     composites --ink to #b9ae99 — 1.75:1 — and a pine-landed mark to
+     #bbbea7 — 1.51:1 — both far under the 3:1 non-text floor. --ink-2 is
+     5.79:1 / Lc 70.1 on that same field and the drop from 1.2 to .8 carries
+     the rest of the distinction. fig. 04 was fixed this way first; fig. 07
+     carried the last live instance of the .28 until this redraw. */
   #appliedFig .desklab, #jetFig .jlab{cursor:default}
-  #jetFig.tracing g.blk:not(.hot){stroke-opacity:.28}
-  /* fig. 04 receded on that same .28 until this redraw, and it was the fig. 09
-     defect again: MEASURED on the day field #f2e4c9, stroke-opacity .28
-     composites --ink to #b9ae99 — 1.75:1 — and a pine-settled piece to
-     1.51:1, both far under the 3:1 non-text floor, and both invisible to
-     check-palette, which composites TOKEN alpha only. The recede is a token
-     and a weight now: --ink-2 is 5.79:1 on that field and the drop from 1.2
-     to .8 carries the rest. fig. 07 keeps .28 for now — it is not this
-     figure's to change, but it is the same 1.75:1. */
+  #jetFig.tracing g.blk:not(.hot) .mk{stroke:var(--ink-2); stroke-width:.8}
   #appliedFig.tracing g.mkg:not(.hot) .mk,
   #appliedFig.tracing g.mkg:not(.hot) .mkflap{stroke:var(--ink-2); stroke-width:.8}
   #appliedFig.tracing g.mkg:not(.hot) .holdring{stroke:var(--ink-2); stroke-width:.9}
@@ -1783,7 +1818,7 @@ h1[data-np-measuring] .np-ch {
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="jetFig" class="figsvg" viewBox="0 0 560 300" role="img" aria-label="A ribbon of byte blocks splits into four virtual-thread lanes, each block narrows through a deflate mark, and the lanes stitch into one gzip member."></svg>
+        <svg id="jetFig" class="figsvg" viewBox="0 0 560 324" role="img" aria-label="Eight byte blocks arrive from off the plate along one rail and fan down into four virtual-thread lanes. Each lane carries a deflate die, drawn as two walls that step inward, and every block leaves it at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
         <!-- Same ruling as ¶06's bench: scrubJetBench() is gone and the bars
              are drawn settled. The date is the commit's, not the run's — JMH
              writes no date into its JSON, and inventing one would be the class
@@ -1794,7 +1829,7 @@ h1[data-np-measuring] .np-ch {
           <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;mb/s</span></div>
           <p class="bfoot">measured then, committed — not run in this tab. 6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89×</p>
         </div>
-        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member. <i>the clay tick marks each seam<span class="hoverinv"> — hover a lane to follow its blocks</span>.</i></figcaption>
+        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member; the lettered bytes are the format&rsquo;s own notation. <i>clay marks the trailer, the one part of the member that answers for the whole of it<span class="hoverinv"> — hover a lane to see which blocks it wrote</span>.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -3481,91 +3516,217 @@ for (const id of ["chWho", "chWhen", "chMeet"]) {
   $(id).addEventListener("mouseleave", () => cad.fig.removeAttribute("data-hl"));
 }
 
-/* jetpack — split → parallel → stitch. Blocks scrubbed on polylines;
-   each narrows at the deflate mark; the member assembles at the seam.
-   Wide: the stream runs left to right. Tight (240): it falls — split
-   at the top, four lanes down, stitched into the member at the foot. */
-const jet = { blocks: [], svg: $("jetFig"), member: null, seam: null };
+/* ————— fig. 07 · jetpack-compress — one stream, many threads, one member —————
+   The plate falls in BOTH editions now. The wide one used to run left to
+   right while the tight one fell, which made them two drawings of one
+   subject; a delivery rail across the top, four virtual-thread lanes hanging
+   off it, and a gathering rail above the member is the same machine at two
+   widths, and it is the only arrangement in which the member gets the full
+   frame without the flow doubling back on itself.
+
+   THREE THINGS THE OLD PLATE DID NOT SAY, and one it said wrong:
+
+   1 THE MEMBER IS AN OBJECT WITH PARTS. It was a featureless bar that grew
+     10.5 units per arrival. It is drawn the way RFC 1952 lays a member out —
+     a lettered header, the stitched deflate blocks, a trailer — which is
+     §4b's "the drawing under-tells the best part, that the stitched member
+     is byte-valid". The lettering is the format's own notation, so it is
+     grammar rather than a claim, and the caption says so out loud.
+   2 THE BLOCKS LAND, AND THEY LAND IN STREAM ORDER. They used to be hidden
+     at t >= 1. Each now parks in ITS OWN slot, which lets the plate show the
+     thing that actually makes this hard: block i returns to place i whatever
+     lane wrote it, so the eight land interleaved and the member is a whole
+     object only once the last one is in. It also repairs the hover trace,
+     which was DEAD at the settled frame — every block was invisible at
+     scrub 1, so a reduced-motion reader hovering a lane label got nothing.
+   3 THE NARROWING IS IN THE STILL. §4b: the tight edition "barely registers"
+     it. The answer is the drawn die, not a frame of motion — see the .die
+     rule. The block then narrows through it POSITIONALLY, so the squeeze is
+     a fact of where the block is rather than of how long anyone has scrolled.
+   4 AND THE ONE IT SAID WRONG, which is the clay. The shipping figcaption
+     read "the clay tick marks each seam" over a drawing that carried exactly
+     ONE clay square, so the prose described a thing that was never there. The
+     first pass of this redraw settled that in the wrong direction — it drew
+     seven ticks to make the plural true. The owner's ruling is that the
+     PLURAL was the error: seven clay dividers across the member say "this is
+     eight things" over a plate whose entire argument is that they are one.
+     The clay is now a single event, on the trailer, and the joins draw
+     themselves at the blocks' own abutting edges. FIGURES.md's "give the seam
+     its clay moment" is prior art and supersedable by name — the migration
+     plan says so at §4b, "These three are PRIOR ART, not the deliverable".
+
+   THE OUT WIDTHS ARE AUTHORED AND ARBITRARY, AND MUST STAY THAT WAY. §4b's
+   trap for this figure, verbatim: "if the redraw ever draws that narrowing TO
+   a measured ratio it crosses the same line, and it would look like an
+   improvement while doing it." These two tables are hand-picked. They VARY
+   per block on purpose — a single ratio would invite being read as jetpack's
+   compression ratio, and eight different ones cannot be — and both editions
+   print "the lane assignment and the block sizes are drawn, not measured"
+   under the drawing, with that clause declared on the aria-label. Nothing
+   here is derived from a benchmark, and an edit that derives it would break
+   both the sentence and the gate.
+
+   No element-level partial opacity survives on this plate. The two it carried
+   — the .28 hover recede (1.75:1 on the day field) and the member bar's
+   opacity:.8 — are both gone; opacity here is only ever 0 or 1. */
+const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0 };
+/* Authored, arbitrary — and every one of them must FIT ITS OWN DIE, which is
+   the arithmetic the first draft of this redraw got wrong: the tables were
+   picked against a throat of 22 and survived a later tightening to 17, so
+   blocks 1, 3 and 6 came out of the die WIDER than the hole they came out of,
+   at every viewport, on a plate whose whole argument is that the die sized
+   them. Stroke centres, so the die's own 1.4 (1.6 tight) and the block's 1.2
+   both count: max(out)/2 + 0.6 must clear throat − stroke/2. Wide clears by
+   1.7 at the widest block, tight by 1.6. Change one number here and the other
+   two move with it. */
+const JET_OUT_WIDE = [25, 32, 20, 28, 23, 18, 30, 24];
+const JET_OUT_TIGHT = [14, 18, 11, 16, 13, 10, 17, 14];
 function buildJet(tight) {
   const s = jet.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
-  jet.blocks = [];
+  jet.blocks = []; jet.crc = null;
   const jlabs = [];
-  if (!tight) {
-    s.setAttribute("viewBox", "0 0 560 300");
-    const laneY = [64, 118, 172, 226];
-    el("text", { x: 16, y: 34 }).textContent = "byte stream";
-    el("text", { x: 262, y: 34 }).textContent = "deflate";
-    el("text", { x: 544, y: 34, "text-anchor": "end" }).textContent = "one gzip member";
-    laneY.forEach((y, i) => {
-      el("path", { d: `M 120 ${y} H 360`, class: "lane" });
-      const t = el("text", { x: 126, y: y - 8, class: "jlab" });
-      t.textContent = `vt-${i}`; jlabs.push([t, i]);
-      el("line", { x1: 268, y1: y - 12, x2: 268, y2: y + 12, class: "gatecol lane" });
-    });
-    el("path", { d: "M 24 145 H 96", class: "lane" });
-    laneY.forEach((y) => el("path", { d: `M 96 145 C 110 145 106 ${y} 120 ${y}`, class: "lane" }));
-    laneY.forEach((y) => el("path", { d: `M 360 ${y} C 376 ${y} 372 145 388 145`, class: "stitch" }));
-    el("path", { d: "M 388 145 H 452", class: "stitch" });
-    jet.seam = el("rect", { x: 449, y: 139, width: 7, height: 12, class: "gsq", opacity: 0 });
-    jet.member = el("rect", { x: 458, y: 138, width: 0, height: 14, fill: "var(--ink)", opacity: .8 });
-    /* end-anchored: left-anchored at 458 this line ran 300px past the
-       560 box and the svg clipped it mid-word (a round-2 defect) */
-    el("text", { x: 544, y: 268, "text-anchor": "end" }).textContent = "member header ⟶ stitched blocks, byte-valid";
-    for (let i = 0; i < 8; i++) {
-      const lane = i % 4, y = laneY[lane];
-      const g = el("g", { class: "blk" });
-      const r = el("rect", { x: -13, y: -6, width: 26, height: 12, class: "mk" }, g);
-      jet.blocks.push({
-        g, r,
-        line: [[-20, 145], [96, 145], [120, y], [268, y], [360, y], [388, 145], [452, 145]],
-        delay: i * 0.05, lane,
-      });
-    }
-  } else {
-    s.setAttribute("viewBox", "0 0 240 320");
-    const laneX = [56, 105, 154, 203];
-    el("text", { x: 8, y: 16 }).textContent = "byte stream";
-    el("path", { d: "M 120 26 V 46", class: "lane" });
-    laneX.forEach((x, i) => {
-      el("path", { d: `M 120 46 C 120 60 ${x} 54 ${x} 70`, class: "lane" });
-      el("path", { d: `M ${x} 70 V 196`, class: "lane" });
-      const t = el("text", { x: x + 6, y: 86, class: "jlab" });
-      t.textContent = `vt-${i}`; jlabs.push([t, i]);
-      el("line", { x1: x - 8, y1: 130, x2: x + 8, y2: 130, class: "gatecol lane" });
-      el("path", { d: `M ${x} 196 C ${x} 214 120 208 120 226`, class: "stitch" });
-    });
-    el("text", { x: 8, y: 134 }).textContent = "deflate";
-    el("path", { d: "M 120 226 V 240", class: "stitch" });
-    jet.seam = el("rect", { x: 114, y: 240, width: 12, height: 7, class: "gsq", opacity: 0 });
-    jet.member = el("rect", { x: 78, y: 254, width: 0, height: 14, fill: "var(--ink)", opacity: .8 });
-    el("text", { x: 120, y: 292, "text-anchor": "middle" }).textContent = "one gzip member — byte-valid";
-    for (let i = 0; i < 8; i++) {
-      const lane = i % 4, x = laneX[lane];
-      const g = el("g", { class: "blk" });
-      const r = el("rect", { x: -11, y: -6, width: 22, height: 12, class: "mk" }, g);
-      jet.blocks.push({
-        g, r,
-        line: [[120, -16], [120, 46], [x, 70], [x, 130], [x, 196], [120, 226], [120, 246]],
-        delay: i * 0.05, lane, tight: true,
-      });
-    }
+  /* One geometry per edition and one drawing below it. Nothing here is set
+     over a line, so no label needs a rule to break for it. Every label is
+     budgeted at 8.012 units/char wide (12px + .05em) and 7.125 tight
+     (11px + .03em), read off getComputedTextLength() rather than estimated.
+
+     THE WIDE EDITION LEARNED FROM THE TIGHT ONE, which is the note FIGURES.md
+     made about fig. 03 and which was true here too. Drawn first with the lanes
+     116 apart and a broken --hair-strong register rule through the die
+     throats, the wide plate rendered four isolated pairs of hooks with that
+     rule running out from between each pair — the dies stopped reading as
+     apertures at all. The tight edition, lanes 44 apart with no rule and the
+     word seated at the left, read as a row of funnels at once. So the wide
+     bank closed to 86 and the rule became a 62-unit leader off the word.
+
+     The tight bank starts at 81 so "deflate" — 49.9 units from x 8 — clears
+     the first die by 4: the shipping tight plate set that word at x 8 y 134
+     with lane 0 at x 56 carrying 22-unit blocks, and every block in that lane
+     ran straight over it. Height is the free dimension (the gate reads viewBox
+     WIDTH only), so both boxes grew downward and neither grew across. */
+  const g = tight
+    ? { vb: "0 0 240 330", raw: 32, out: JET_OUT_TIGHT, bh: 18,
+        laneX: [81, 125, 169, 213], mouth: 19, throat: 12,
+        railY: 60, railX0: -40, railX1: 226, dieY: [108, 118, 140, 150],
+        stitchY: 186, memX: 8, memY: 206, head: 65, trail: 44,
+        tail: "crc32", lead: 0, deflateY: 144,
+        heads: [[8, 14, "the stream", 0], [8, 30, "one virtual thread per block", 0]],
+        foot: [[256, "one member: a header, the eight"],
+               [270, "blocks in stream order, and a"],
+               [284, "trailer over the whole input"],
+               [302, "lanes and block sizes here"],
+               [316, "are drawn, not measured"]] }
+    : { vb: "0 0 560 324", raw: 56, out: JET_OUT_WIDE, bh: 22,
+        laneX: [176, 262, 348, 434], mouth: 32, throat: 19,
+        railY: 58, railX0: -56, railX1: 446, dieY: [106, 118, 142, 154],
+        stitchY: 190, memX: 108, memY: 210, head: 84, trail: 124,
+        tail: "crc32 · isize", lead: 134, deflateY: 146,
+        heads: [[8, 22, "the stream", 0], [446, 22, "one virtual thread per block", 1]],
+        foot: [[266, "one gzip member — a header, the blocks in stream order, a trailer"],
+               [282, "the trailer’s check covers the whole input, not any one block"],
+               [302, "the lane assignment and the block sizes are drawn, not measured"]] };
+  s.setAttribute("viewBox", g.vb);
+  const [dTop, dSh, dThr, dBot] = g.dieY;
+  jet.dieTop = dTop; jet.dieThroat = dThr;
+  for (const [x, y, words, end] of g.heads) {
+    const t = el("text", end ? { x, y, "text-anchor": "end" } : { x, y });
+    t.textContent = words;
   }
+  /* the delivery rail, closed at its far end — nothing leaves the manifold
+     past the last lane, and the stop is what says so */
+  el("path", { d: `M ${g.railX0} ${g.railY} H ${g.railX1}`, class: "lane" });
+  el("path", { d: `M ${g.railX1} ${g.railY - 8} V ${g.railY + 8}`, class: "lane" });
+  g.laneX.forEach((lx, i) => {
+    el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane" });
+    el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die" });
+    el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die" });
+    /* centred ABOVE the rail, where no block ever travels — beside the lane it
+       sat inside the raw block's own footprint at every width. The 18 is the
+       block's half-height plus clearance, checked by walking the scrub in a
+       browser rather than at the settled frame, where the rail is empty. */
+    const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" });
+    t.textContent = `vt-${i}`; jlabs.push([t, i]);
+  });
+  /* the deflate register: the word at the left, and the four throats sharing
+     one y. Wide runs a leader from the word to the first die because its
+     gutter is 136 units; tight's is 54 and needs none. NOT a rule across the
+     plate — that was the version that made the dies unreadable, and it is
+     also --hair-strong, which measures 2.01–2.05:1 on the five day fields. */
+  el("text", { x: 8, y: g.deflateY }).textContent = "deflate";
+  if (g.lead) el("path", { d: `M 72 ${dThr} H ${g.lead}`, class: "lane" });
+  /* THE MEMBER. Header and trailer are closed cells; the data region between
+     them has no top or bottom edge of its own, because the blocks that land
+     supply it. So the member is literally open until the last block is in,
+     and closed the moment it is — which is the honest drawing of a stitch,
+     and it settles complete with no frames of motion. */
+  const dataX = g.memX + g.head, dataW = g.out.reduce((a, b) => a + b, 0);
+  const memEnd = dataX + dataW + g.trail, ty = g.memY + g.bh - (tight ? 5 : 6);
+  /* the gathering rail spans EXACTLY the member it writes, and is closed at
+     both ends: the four lanes are the only way in, the member the only way out */
+  el("path", { d: `M ${g.memX} ${g.stitchY} H ${memEnd}`, class: "lane" });
+  for (const x of [g.memX, memEnd])
+    el("path", { d: `M ${x} ${g.stitchY - 8} V ${g.stitchY + 8}`, class: "lane" });
+  el("rect", { x: g.memX, y: g.memY, width: g.head, height: g.bh, class: "mk" });
+  /* the trailer carries this plate's clay, and it is held here because it is
+     the element the seal is written on — see the #jetFig .crc rule */
+  jet.crc = el("rect", { x: dataX + dataW, y: g.memY, width: g.trail, height: g.bh, class: "mk crc" });
+  el("text", { x: g.memX + g.head / 2, y: ty, "text-anchor": "middle" }).textContent = "1f 8b 08";
+  el("text", { x: memEnd - g.trail / 2, y: ty, "text-anchor": "middle" }).textContent = g.tail;
+  /* THE SEAMS ARE THESE SLOTS, and they need no mark of their own. Block i is
+     drawn at x = -w/2 about slot[i] = left + w/2, so its right edge and block
+     i+1's left edge fall on the SAME x: the join draws itself once, in the
+     landed register, at the 1.2 every other edge on this plate gets. That is
+     what a join is. The seven clay ticks that stood here are gone with the
+     ruling that put the clay on the trailer instead. */
+  const slot = []; let cx = dataX;
+  for (const w of g.out) { slot.push(cx + w / 2); cx += w; }
+  for (let i = 0; i < g.out.length; i++) {
+    const lane = i % 4, lx = g.laneX[lane], sx = slot[i];
+    /* opacity 0 at BUILD, not only at scrub: a rebuild that is not followed by
+       a scrub — a resize into the other edition — otherwise paints eight
+       blocks stacked at the origin */
+    const bg = el("g", { class: "blk", opacity: 0 });
+    const r = el("rect", { x: -g.raw / 2, y: -g.bh / 2, width: g.raw, height: g.bh, class: "mk" }, bg);
+    jet.blocks.push({
+      g: bg, r, i, lane, raw: g.raw, out: g.out[i], delay: i * 0.05,
+      /* rail ⟶ lane ⟶ die ⟶ lane ⟶ gathering rail ⟶ its own slot. Six
+         segments at one sixth of the window each, so the die passage — the
+         shortest leg — is the slowest, and the squeeze is the part you see. */
+      line: [[g.railX0 - 16, g.railY], [lx, g.railY], [lx, dTop], [lx, dBot],
+        [lx, g.stitchY], [sx, g.stitchY], [sx, g.memY + g.bh / 2]],
+    });
+  }
+  for (const [y, words] of g.foot) el("text", { x: 8, y }).textContent = words;
   traceOn(s, jlabs, jet.blocks, "lane");
 }
 function scrubJet(p) {
-  let arrived = 0;
+  const span = jet.dieThroat - jet.dieTop;
   for (const b of jet.blocks) {
     const t = smooth((p - 0.2 - b.delay) / 0.4);
     const [x, y] = polyAt(b.line, t);
     b.g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-    b.g.setAttribute("opacity", t <= 0 || t >= 1 ? 0 : 1);
-    const w = t > 0.5 ? 10 : b.tight ? 22 : 26; /* narrows through deflate */
-    b.r.setAttribute("width", w); b.r.setAttribute("x", -w / 2);
-    if (t >= 1) arrived++;
+    /* the width is a function of WHERE the block is, never of how far the
+       reader has scrolled: the die does it. b.raw and b.out are authored
+       constants (see the table above) — no measured quantity is animated. */
+    const w = lerp(b.raw, b.out, clamp((y - jet.dieTop) / span, 0, 1)).toFixed(1);
+    if (b._w !== w) { b._w = w; b.r.setAttribute("width", w); b.r.setAttribute("x", (-w / 2).toFixed(1)); }
+    const on = t > 0 ? 1 : 0;
+    if (b._on !== on) { b._on = on; b.g.setAttribute("opacity", on); }
+    /* landed: the block is in its slot and the seam behind it closes.
+       classList, never className — `.hot` belongs to the pointer and a
+       whole-attribute write would erase it mid-hover (fig. 04's note). */
+    const done = t >= 1;
+    if (b._done !== done) {
+      b._done = done;
+      b.g.classList.toggle("landed", done);
+      /* the LAST block seals the member, and that is this plate's clay moment.
+         The trailer's check is a statement about the whole input, so it cannot
+         be true until the whole input is in. A class, so the mark is a stroke
+         and never an alpha; symmetric, so scrubbing back unseals it. */
+      if (b.i === jet.blocks.length - 1) jet.crc.classList.toggle("sealed", done);
+    }
   }
-  jet.seam.setAttribute("opacity", arrived > 0 ? 1 : 0);
-  jet.member.setAttribute("width", (arrived * 10.5).toFixed(1));
 }
 
 /* LifeQuest — the climb: the ledger drawn as a staircase. Three treads in
