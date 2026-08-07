@@ -261,3 +261,38 @@ thing it checks has this shape.
 C46's guard looked like a one-line comparison and it takes the nameplate off the
 page, because using an import TypeScript had been eliding pulls `process.env`
 into a browser. It was caught by running the validator, not by reading the diff.
+
+## The cold-arrival correction that was not needed (2026-08-07)
+
+A plan for this batch promoted a "cold hash arrival lands ~23,000px short at
+7680×4320" defect to a workstream, on the strength of `scrollY` 11,492 against a
+target of 34,474 and an engine reporting beat 2 rather than 6. It specified a
+guarded post-settle re-resolve: `fonts.ready` plus two rAFs, then one instant
+`scrollTo` if the reader had not acted.
+
+**Measured at HEAD before writing any of it, and it does not reproduce.** Nine
+cold arrivals — `#glyph`, `#cadence`, `#jetpack-compress` at 1280×800,
+1512×949 and 7680×4320, each a fresh load through Playwright against the plain
+static server on `out/`:
+
+- `scrollY` equals the target's document top in **all nine**. Delta 0, not 23,000.
+- The engine's beat is right every time: 5, 4, 6 respectively.
+- The manifest reads 2 / 6, 1 / 6, 3 / 6 — correct for those stations.
+- The masthead phase reads `glyph`, `cadence`, `jetpack-compress`.
+- `data-arrive` is still set and `#manifest` is at opacity 0, which is the
+  rejoin guard working, not a fault.
+
+At 7680×4320, `#jetpack-compress` lands at **34,474** — the exact number the
+plan recorded as the unreached target. So no code shipped: a re-resolve would
+have added a scroll path, a golden-hash rebaseline and a new interaction with
+`data-arrive` to correct an error of zero.
+
+**Two things worth keeping.** First, the instrument nearly wrote the fix. Read
+through the Chrome extension, the same arrivals reported `beat 0`, `0 / 6`,
+`the start`, and screenshots of blank paper — all artifacts of a saturated
+renderer on a heavy rAF page, and the CDP `Runtime.evaluate` timeouts were the
+tell. Two independent capture paths disagreed and the cheaper one was wrong;
+Playwright settled it. Second, this is the branch the plan itself named — *if
+the delta is zero the mechanism is something else and the record must name the
+true cause*. The true cause of the original reading is not established here.
+What is established is that the tree at this HEAD does not have the defect.
