@@ -4,7 +4,40 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ayush yadav — the long run · story candidate</title>
-<script>document.documentElement.classList.add("js");</script>
+<script>
+document.documentElement.classList.add("js");
+/* THE REJOIN GUARD. A cold hash arrival is the one scroll offset this page
+   is deterministic about, and the manifest dock was measured sitting on the
+   very glyphs the citation names — 6 of 13 rejoin ids, worst case ¶04's
+   `source ↗` 100% hidden with `.compact` ALREADY engaged. Folding harder
+   was the first answer and it was wrong: a 216×48 pill shares the corner
+   with the handoff rail just as the full dock does. The premise was wrong,
+   not the size — the manifest's meaning is scroll-earned ("each ticks off
+   as you reach it") and a hash arrival teleports, so on arrival it has
+   nothing true to say yet and yields.
+
+   Set here, parser-synchronously, BEFORE <body> exists, so no frame can
+   paint the dock over the citation. It comes off on the reader's first own
+   act — never on a timer, because a timer is not the reader's act, and
+   never on `scroll`, because the browser's own anchor jump and late font
+   reflows both fire that one. Intent events don't lie. The engine toggles
+   classes only and never reads this attribute, so the two states compose.
+   Accepted cost, stated rather than discovered: a reader who arrives by
+   citation and never scrolls, taps or types never sees the manifest. */
+if (location.hash.length > 1) {
+  const de = document.documentElement;
+  /* touchstart is kept alongside pointerdown because WebKit has been
+     unreliable firing pointerdown for scroll-intent touches; removal
+     matching ignores the `passive` option, so this teardown is sound. */
+  const acts = ["wheel", "touchstart", "pointerdown", "keydown"];
+  const free = () => {
+    de.removeAttribute("data-arrive");
+    for (const a of acts) removeEventListener(a, free);
+  };
+  de.setAttribute("data-arrive", "");
+  for (const a of acts) addEventListener(a, free, { passive: true });
+}
+</script>
 <style>
   /* ————————————————————————————————————————————————————————————————
      STORY CANDIDATE — "The Long Run."
@@ -226,6 +259,15 @@
     font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
   }
   #manifest.landed{opacity:0; transform:translateY(10px); pointer-events:none}
+  /* the arrival state — see the rejoin guard in the head. Same property
+     grammar as .landed above, deliberately: the dock has exactly ONE way to
+     yield. opacity:0 keeps it in the accessibility tree (the instrument is
+     withdrawn, not ruled away), and pointer-events:none is the load-bearing
+     half — it is what lets a hit test, and a reader's finger, reach the
+     cited glyphs underneath. Specificity 1,2,0 outranks the base #manifest
+     and both #manifest.compact and .landed at 1,1,0, and it sets the same
+     values .landed sets, so arriving at /#gate composes without a flash. */
+  :root[data-arrive] #manifest{opacity:0; transform:translateY(10px); pointer-events:none}
   /* while AT a station the manifest folds to a pill (attention belongs
      to the work); in the corridors it opens — the collection breathes */
   @media (min-width:821px){
