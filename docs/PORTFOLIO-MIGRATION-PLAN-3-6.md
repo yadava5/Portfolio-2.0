@@ -86,6 +86,35 @@
 > measures 2.0:1 on the day fields where nothing has ever measured it, and a
 > live hash arrival at `/#review` leaves one mark part-inked (pre-existing,
 > measured at HEAD before the redraw).
+>
+> ---
+>
+> ## PHASE 6 — EVERY ITEM AN AGENT CAN EXECUTE IS DONE, 2026-08-07
+>
+> **§6.0, §6.1, §6.5 and §6.6 are executed and green; §6.2 and §6.4 are read;
+> the half of §6.3 item 1 that does not depend on the ruling is built.** The
+> validator is green at **20 steps, 270 browser tests**. **Nothing pushed.**
+> Count the commits rather than believing this line:
+> `git rev-list --count main..HEAD`.
+>
+> **WHAT IS LEFT IS THE OWNER'S, and it is a list of decisions, not of work:**
+> §6.3's three rulings (the day hairline; the arrival flash, whose measurement
+> grew by two orders of magnitude — see its box; the archive's gate vocabulary,
+> now priced at ONE figure on ONE page rather than seven plates), §6.5's
+> `docs/design-lab/`, the `MACHINE` map left unread in
+> `nameplateMachines.ts`, the Cadence `8eee84e` vs `8a2fbbb` citation
+> disagreement, and corridor 0's lost waybill words — which is a FORCED
+> consequence of the arrival semantics the owner ruled for (¶01 has no corridor
+> arriving at it), not a regression.
+>
+> **THREE THINGS §6.4's WALK FOUND THAT NO SECTION OF THIS PLAN PREDICTED,
+> all measured, none fixed, each one landing inside an open ruling:** the run
+> **prints as 1 page of content and 17 blank ones**, 20 MB, while the archive
+> prints properly; the fixed manifest dock **occludes text at the deterministic
+> arrival offset of six of thirteen rejoin targets**, hiding one link entirely
+> and 38% of a station headline; and the cold-arrival defect is a **cream→night
+> flash of the wrong station**, presented for 55ms at 1× and **449ms at 4× CPU**,
+> not the 12.18px of dashoffset this plan had it as.
 
 ---
 
@@ -2443,6 +2472,42 @@ screenshots. Specifically:
   then see §6.3 item 3, because it is a ruling and possibly a redraw rather than
   a reading.
 
+> **READ 2026-08-07, IN THE PREVIEW, AND THE FOUR BULLETS ANSWER.** The tag
+> above is discharged: §6.0 step 2 landed, so every link followed here stayed
+> local.
+>
+> · **The `/proof/*.json` arrival is honest and needs nothing.** Chrome renders
+> the vendored JMH record in its own JSON viewer — monospace, indented, with a
+> pretty-print toggle — and the first screen is `jmhVersion`, `benchmark`,
+> `jvm`, `jvmArgs`, `warmupIterations`, then `primaryMetric` with its score,
+> error, confidence interval and percentiles. It reads as what it is: the
+> machine's own record, openable, uneditorialised. **This is a record room and
+> records are raw.** No chrome is proposed.
+>
+> · **The settled bench bars do not read as dead.** The plate reads as a filed
+> measurement rather than a gauge, which is what §5.5 was for, and the
+> liveliness the station needs comes from fig. 06's classifier above it, which
+> is genuinely live.
+>
+> · **fig. 06's two registers hold.** The instrument above the hair rule — the
+> 28×28 pad, the 100-dot hidden layer, the ten softmax rows — is unmistakably
+> an instrument you can use, and the bench below it is unmistakably a filed
+> record. They are not one muddle. This was the acceptance test for the
+> distinction that shaped six figures, and it passes.
+>
+> · **The archive's plates do disagree with the run's, and the divergence is
+> one figure.** See §6.3 item 3's box: `phgate` renders on exactly one built
+> page, `out/projects/automl/index.html`, as 7 squares. Still a ruling.
+>
+> **AND THE CASE FILES THEMSELVES READ.** Seven case files and `/evidence/`
+> were walked end to end. The rejoin header is correct under the new arrival
+> semantics — *"consigned at agentic automl — ¶ 09 · 22:05 · waybill: automl's
+> halted run → manifest"* — the receipt rows terminate where they say they do,
+> and `/evidence/`'s 14 entries carry their `source:`, `date:`, `verification:`,
+> `argued in:` and `boundary:` lines with the public/private-safe glance marks
+> above them. **This is the surface owner item B said had never been seen, and
+> it holds up.**
+
 ### 6.3 — The two rulings §4b left open. Both need a decision, neither is a bug.
 
 1. **`--hair-strong` is 2.005–2.051:1 on the five DAY fields**, under the 3.0
@@ -2482,6 +2547,29 @@ screenshots. Specifically:
    already in this plan — fig. 10's note that the docket's row separators *"are
    a text plate's rules and not graphical objects"*. The non-text floor does not
    reach a decorative separator. Rule on the structural hairline only.
+   > **THE HALF THAT IS OWED EITHER WAY IS BUILT — `eb5144f`, and the ruling is
+   > untouched.** This item's own last sentence — *"whichever way the ruling
+   > goes, `check-palette` should gain the assertion that the two `:root` blocks
+   > agree, or this recurs"* — does not depend on the answer, so it did not wait
+   > for it. `check-palette` now asserts the **intersection** of the two day
+   > `:root` blocks token for token (**14 tokens today, all agreeing**) and, in
+   > the same block, that `archive.css`'s `--paper` literal **is** the run's
+   > dawn waypoint through the run's own converter — the coupling this item
+   > relies on when it says the ruling "transfers to the archive exactly", and
+   > which nothing had ever bound.
+   > **IT ASSERTS EQUALITY AND DELIBERATELY NOT A FLOOR.** A threshold in the
+   > gate would answer the owner's question by the back door and restyle every
+   > plate on the site as a side effect of a test. Equality leaves `.34` vs
+   > `~0.495` entirely open while making it impossible to execute the ruling in
+   > one file and not the other. The intersection is computed, not listed, so
+   > `--plate-solid` and `--ember` stay each one room's business and a
+   > **deliberate** divergence must be named in the gate to pass (C35's
+   > grammar). Floored at 12 shared tokens with `--hair-strong` and `--ink`
+   > required by name, so a broken parse cannot report agreement between two
+   > empty sets. Proven by three negative cases in a temp copy — the archive
+   > alone going to `.40`; its paper drifting one unit; the archive ceasing to
+   > declare `--hair-strong` — each firing with its own message. No stylesheet
+   > byte moved, so the golden hash did not.
 2. **A live hash arrival at `/#review` leaves the third reviewer's mark
    part-inked** until the reader moves a few pixels — 12.18px now, **8.12px at
    HEAD before the redraw, so pre-existing and unchanged in character.** §4b's
@@ -2491,6 +2579,31 @@ screenshots. Specifically:
    sevenfold, so this is worth one look at the machinery — but it is shared
    scroll code, not any figure's, and it must not be "fixed" by stripping the
    ink-in, which §4b explicitly protects.
+   > **MEASURED 2026-08-07, AND THE PART-INKED MARK IS THE SMALL HALF OF IT.**
+   > The 12.18px is real and reproduces — `#review`, cold, settles the third
+   > mark at 12.18px and a 4px nudge then takes it to 11.54px, so the
+   > scroll-driven scrub does have the last word exactly as written. **But the
+   > mark is not what a reader sees first.** All **thirteen** hash arrivals were
+   > instrumented per frame, with no scroll input, and every one of them paints
+   > the **day dawn field `rgb(251,243,231)` at scroll 0** in its first frames
+   > and corrects at frame 2–3. For the four night stations that correction is
+   > cream → `rgb(44,38,34)`: **a full daylight flash of the wrong station
+   > before the right one arrives.**
+   > **AND IT IS PRESENTED, NOT HELD PRE-PAINT — which is the measurement that
+   > makes it a defect rather than an artifact of the instrument.** Against the
+   > browser's own paint entries, frame 0 lands **5.5–12.9ms AFTER
+   > first-paint** and the correction lands **32–40ms after it**. A CDP
+   > screencast confirms it in presented frames: at 1× the wrong field is up for
+   > ~55ms; **at 4× CPU throttling `/#review` shows the empty cream top of the
+   > run — masthead reading `06:12 · the start`, manifest `0 / 6` — for 449ms
+   > before the night arrival paints.** Playwright screenshots see none of this
+   > and reported it clean; they are too slow to catch it, which is worth
+   > knowing before someone "checks" it that way.
+   > **NOT PROPOSED AS A FIX, because this is the item the ruling covers.** It
+   > is the same shared scroll code, and the same prohibition applies. What the
+   > ruling now has that it did not is the size: not 12.18px of dashoffset, but
+   > a cream-to-night flash on every one of the seven rejoin links the archive
+   > ships.
 3. **THE ARCHIVE'S GATE VOCABULARY IS NOW THE RUN'S OLD ONE.** *(Fable's
    finding — this was buried in §6.2 as a reading bullet and it is neither a
    reading nor small.)* §4b rewrote how the run draws gates — booms that swing,
@@ -2502,11 +2615,102 @@ screenshots. Specifically:
    which vocabulary wins before any work starts** — and note its correctness is
    defined by a file the archive lane may not edit, so **it is a one-agent task
    and must not be the parallel-work opener.**
+   > **THE SCOPE IS ONE FIGURE ON ONE PAGE, NOT SEVEN PLATES — measured in the
+   > built artifact rather than counted in source, 2026-08-07.** `phgate`
+   > renders in exactly **one** built file, `out/projects/automl/index.html`,
+   > where it draws **7 squares** — the lifecycle phases. It appears on **no
+   > other case file** and nowhere in `out/index.html`. The `gmark` hits that
+   > look like the run's new vocabulary spread across the archive are
+   > `.glance .gmarks`, the disposition cluster, which is a different mark
+   > entirely. So the ruling is cheaper than this bullet made it sound: the
+   > divergence is the automl lifecycle plate against fig. 10, and a redraw
+   > touching one figure. **That does not settle which vocabulary wins** — it
+   > only prices it.
 
 ### 6.4 — The reading. One pass, in the preview, by a person.
 
 Compressed from twelve items to six. The validator proves nothing broke; it does
 not prove the thing was worth doing.
+
+> **WALKED 2026-08-07 IN THE PREVIEW, AND FOUR OF THE SIX WERE INSTRUMENTED
+> RATHER THAN LOOKED AT.** §6.1's lesson was that a reader's frame has to be
+> measured, not imagined; the same applies here. Items 1, 2, 3 and 5 have
+> numbers. Items 4 and 6 are the two that are genuinely an eye, and screenshots
+> plus print PDFs were produced for them — **and item 4 turned out to have a
+> number too, and it is the worst finding in this section.** Nothing below was
+> fixed: every one of them terminates in something §6.3 or §6.5 says is a
+> ruling.
+>
+> **1 · COLD HASH ARRIVAL — FAILS, on all thirteen.** See §6.3 item 2's box for
+> the measurement. The short form: the first painted frame is the day dawn
+> field at scroll 0, corrected 32–40ms later; at 4× CPU that is 449ms of the
+> wrong station in the wrong light. This is the item, and its answer is no.
+>
+> **2 · THE TIGHT EDITIONS — CLEAN, and this is the half no gate reads.**
+> Six figures × five viewports (320, 390, 514, 1250, 1440), every `<text>`
+> measured with `getComputedTextLength()` and `getBBox()` against its own
+> viewBox — **128 labels, ZERO clipped, at every width.** The tight plates
+> build as designed (five `.figsvg` on 240-unit boxes plus `#net` on its own),
+> and the tightest label is jetpack's `one member: a header, the eight` at
+> **220.9 of 240 units** — 92% of the box, inside it. §4b's walk found two
+> labels clipped here; whatever fixed them held. **1250 was checked because
+> this item names it**: `#jetFig` runs 520.8 of 560 there, its worst seat, and
+> still fits.
+>
+> **3 · THE SEAM BY KEYBOARD — CROSSES, and the disagreement is confirmed.**
+> The archive's first tab stop is `a.skip-link → #main-content`, "Skip to main
+> content". Crossing on the rejoin lands on the run at `#automl`, and the run's
+> first tab stop is the arrival station's own `the case file ⟶` — the fragment
+> sets the sequential-focus start, so arrival focus is correct. **The run has
+> no skip link:** its first anchor in DOM order is the masthead wordmark
+> pointing at `#top`. So the two halves disagree exactly as this item predicted,
+> and the deferred ruling it forces is still open. The crossing itself works
+> only because §6.0 step 2 landed — the rejoin resolved to
+> `http://127.0.0.1:4300/#automl`, not to production.
+>
+> **4 · THE DARK STATIONS READ; PRINT DOES NOT, AND THE RUN IS THE HALF THAT
+> BREAKS.** Leaving ¶08/¶09 does not read as a different site — the night
+> stations carry the same type, rules and marks over a dark ground, and fig. 10
+> reads correctly in the new gate vocabulary. **Print is the finding.** Both
+> stylesheets DO carry an `@media print` block, so "gated nowhere" understated
+> it — the run's hides exactly one thing, the replay button. Printed to A4:
+> **the archive prints properly** (a case file is 9 pages of real content out
+> of 10; `/evidence/` is 10 of 11), and **the run prints as ONE page of content
+> followed by SEVENTEEN blank ones** — 18 pages, 20 MB, every blank page still
+> carrying the fixed masthead and a `0 / 6` manifest dock. Measured by text per
+> page: page 1 has 410 characters, pages 2–18 have 90 each, and those 90 are
+> the chrome. All 13 beats report opacity 1 at print time, so this is not the
+> curtain — the run's stations do not paginate. **One thing that is NOT the
+> defect:** a print taken 1.2s after load catches the nameplate mid-performance
+> and prints `Ayu ·h`. That is the machines' own withholding and its 5.6s
+> JS-dead safety release; printed after it fires, the plate reads `Ayush Yadav`
+> correctly. Do not "fix" that.
+>
+> **5 · `localStorage["motion-off"]` — DEAD ON THE ARCHIVE, and the gap is
+> narrower than it looked.** With the flag set, 14 elements still carry a
+> transition and no shipped script reads the string. **But
+> `prefers-reduced-motion: reduce` IS honoured — 14 transitions to 0.** So the
+> OS-level accommodation works everywhere and only the site's own reader-facing
+> switch is gone. That makes the "one media query if the answer is yes" cheaper
+> to reason about: the media query already exists, and what is missing is the
+> class the old `layout.tsx` script used to set from the flag.
+>
+> **6 · ARRIVING FEELS RIGHT, AND THE DOCK IS IN THE WAY.** The case files and
+> `/evidence/` read as one room, and the rejoin header — *"consigned at agentic
+> automl — ¶ 09 · 22:05 · waybill: automl's halted run → manifest"* — is
+> correct under the new arrival semantics. **But the fixed manifest dock
+> (262×523) occludes running text at the deterministic arrival offset of six of
+> the thirteen rejoin targets**, hit-tested with `elementFromPoint` so this is
+> occlusion and not mere overlap. Worst cases: at 1280×800 arriving at
+> `#cadence` the `source ↗` link is **100% hidden** and `the case file ⟶` is
+> 45% hidden; at 1440×980 and 1536×960 arriving at `#automl` hides **38% / 30%
+> of the headline `Agentic AutoML.`** plus a third of its own kicker `¶ 09 ·
+> sixth station · the last — 22:05`. `#lifequest`, `#review`, `#cosigners`,
+> `#gate` and `#nextmorning` are clear at every size measured. **A rejoin
+> arrival is the one scroll offset the site is deterministic about**, which is
+> what separates this from the ordinary fact that a fixed panel covers things
+> as you scroll past. Not fixed: the dock's geometry and the content column's
+> right edge are a design decision that moves the golden hash.
 
 1. **Hash arrival, cold, into each rejoin target** — including `/#automl` and
    `/#review`, the two night stations. The ink field must be right in the
@@ -2643,6 +2847,20 @@ artifact was stripped, or visibility changed).
 > **not** answer the owner's third phrase — the trees may now hold different
 > work than the site's claims describe, and every sha-pinned link would keep
 > answering 200 while that was true.
+>
+> **THE CENSUS HAD A HOLE AND IT IS NOW CLOSED: it was a GITHUB census, and
+> the site cites eleven destinations that are not GitHub.** Re-read 2026-08-07:
+> `out/`'s HTML carries **14 distinct non-GitHub outbound URLs**, and nothing —
+> not `check-links`, not the by-hand pass above — had ever fetched them. Opened
+> unauthenticated: **all eleven real destinations answer 200.** Six Vercel
+> deploys (`agentic-automl-platform`, `getapplied`, `getglyph`, `getlifequest`,
+> `jetpack-compress`, `usecadenceapp`), the **four `/system-card` pages** the
+> owner said on 2026-08-07 he is still working on — all live — and the Hugging
+> Face Space `yadava5/jobtracker-classifier`. The remaining three are the two
+> LinkedIn profile forms and Shree Chaturvedi's, which answer **999**: that is
+> LinkedIn's bot policy, it is the exact behaviour `check-links`' own comment
+> cites as the reason not to widen the filter, and it is not a dead link. **The
+> site's non-GitHub half is as reachable as its GitHub half.**
 >
 > **ONE DISAGREEMENT THE CENSUS SURFACED WITHOUT JUDGING IT.** The Cadence suite
 > claim is LINKED at `CADENCE_SUITE_SHA = 8eee84e` (`projectCaseStudies.ts:344`,
