@@ -266,14 +266,16 @@ export interface ProjectCaseStudy {
     summary: string;
     nodes: CaseStudyNode[];
     edges: CaseStudyEdge[];
-    /**
-     * Topology-driven fig. 2 layout: "linear" draws the pipeline rail
-     * (requires `flow`), "loop" leans into the gated circuit; omitted =
-     * the default card grid.
-     */
+    /** Names the figure: "linear" → the pipeline, "loop" → the gated
+     *  loop; omitted → the system. Layout is the spine for all three. */
     variant?: "linear" | "loop";
-    /** Linear only: node-id stages in true pipeline order */
-    flow?: string[][];
+    /**
+     * The spine, authored: fig. 2's trunk in order, one node id per
+     * stage. Every edge must be a trunk stroke between neighbours, a
+     * siding off a spine node, or a loop back up it — the renderer
+     * refuses anything else rather than guess a topology.
+     */
+    flow: string[][];
     /** One bespoke inked margin note; the text must trace to a receipt */
     annotation?: string;
   };
@@ -1009,6 +1011,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       /* The true topology is a gated circuit: requests go down through
          the approval edge, browser proof comes back to the ui. */
       variant: "loop",
+      /* The trunk is the request path; the approval edge hangs off it
+         in clay, and evals returns to the ui as the closing stroke. */
+      flow: [["ui"], ["api"], ["runtime"], ["store"]],
       /* Traces to decision d2 + the approval-gate constraint. */
       annotation:
         "generated actions hold at the approval edge until a human says go",
@@ -1387,6 +1392,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            instantiates it. A capability that is in the binary but wired to
            nothing is not a capability the case file may claim. */
         "ARKit and Vision process device context locally, then SwiftUI and VoiceOver expose guidance through speech and haptics.",
+      /* The spine follows the camera into OCR; LiDAR, the local model
+         and VoiceOver all join at feedback, where every mode lands. */
+      flow: [["camera"], ["vision"], ["feedback"]],
       nodes: [
         {
           id: "sensor",
@@ -1629,6 +1637,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
          measured at; the architecture says what the system IS. */
       summary:
         "A React and TypeScript interface sends scheduling workflows through a full-stack app backed by PostgreSQL, with the suite covering frontend, backend and integration paths.",
+      /* A request's path to its row; the suite hangs off the services
+         it covers, clay because it is where a run can stop. */
+      flow: [["ui"], ["nlp"], ["api"], ["auth"], ["db"]],
       nodes: [
         {
           id: "ui",
@@ -2107,6 +2118,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     architecture: {
       summary:
         "Workday exports and Tableau metadata feed Python and SQL transforms, deterministic IDs, timestamped run artifacts, and dashboard-ready outputs.",
+      /* Two sources, one trunk: Workday rides it, Tableau joins at the
+         transform; the audit artifacts side off the unified records. */
+      flow: [["workday"], ["python"], ["records"], ["dashboard"]],
       nodes: [
         {
           id: "workday",
@@ -2350,6 +2364,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     architecture: {
       summary:
         "Policy documents are indexed for retrieval, validated locally for quote grounding, and delivered through Slack Socket Mode with cited responses.",
+      /* Docs to answer down the trunk, Slack at the end of the line;
+         the question arrives as the loop back up to the cited answer. */
+      flow: [["docs"], ["filesearch"], ["validator"], ["response"], ["slack"]],
       nodes: [
         {
           id: "docs",
@@ -2613,6 +2630,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     architecture: {
       summary:
         "Input preprocessing feeds C++ matrix kernels and OpenMP parallel paths, then the React demo displays inference behavior and benchmark proof.",
+      /* One trunk, digits to demo; kernels, OpenMP and the benchmark
+         suite all join at the network — proof included. */
+      flow: [["input"], ["model"], ["demo"]],
       nodes: [
         {
           id: "input",

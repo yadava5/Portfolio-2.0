@@ -214,10 +214,28 @@ const PRIVATE_STAMP = `<div role="img" aria-label="Stamp: private repository —
           </g></svg></div>`;
 
 /* ── fig. 2 — the architecture, data-driven ────────────────────────────
-   A faithful port of SystemDiagram.tsx: linear draws the true pipeline
-   as a stage rail with off-spine branches; loop keeps the card grid and
-   marks the approval edge; default is cards + flow list. Clay marks the
-   gates, and the caption's clay clause renders only when a gate does. */
+   THE SPINE. One vertical line at every width, drawn the way the run
+   itself runs: node, stroke, node. Each trunk stroke IS a declared
+   edge — its label rides beside the ink — and every edge not on the
+   trunk hooks off the line as a siding, elbow first, at its spine-side
+   node; backward and closing edges return as ↺ loopbacks. Clay marks
+   the gates on the line itself, which is what makes the caption's clay
+   clause a drawn fact instead of an 8px square in a grid of lookalikes.
+
+   The card grid and the horizontal rail are retired with their defects
+   on record: the grid drew no edges at all under a caption that said
+   "inked", and the rail at ≥1280px left every .ndetail a 6–9px column,
+   one character per line, 27–45 rows, last card clipped — while its
+   breakpoint comment claimed "the details wrap".
+
+   The spine is DECLARED, never inferred: `flow` names the trunk in
+   order, one node per stage, and a declaration that does not match the
+   edges aborts the build — guessing a topology is how a figure ends up
+   approximately right (waybillFor's rule, applied to ink).
+
+   No hover, deliberately: the archive retired hover pen-strokes once
+   already (see the header), and an affordance that changes nothing is
+   a defect. The ink is the interaction. */
 function isGateNode(n) {
   return n.kind === "validation" || n.gate === true;
 }
@@ -225,7 +243,14 @@ function nodeCard(n) {
   const gate = isGateNode(n);
   return `<div class="ncard${gate ? " gate" : ""}"><p class="nlabel">${esc(n.label)}${gate ? '<span class="gsq2" aria-hidden="true"></span>' : ""}</p><p class="ndetail">${esc(n.detail)}</p></div>`;
 }
-function systemDiagram(arch) {
+function systemDiagram(arch, projectId) {
+  const fail = (msg) => {
+    throw new Error(
+      `render-case-file: fig. 2 for ${projectId} — ${msg}\n` +
+        `  The spine is authored in \`flow\`, one node per stage, and the edges must agree with it.\n` +
+        `  Do not guess a topology — a figure that is approximately right is wrong on the record.`
+    );
+  };
   const byId = new Map(arch.nodes.map((n) => [n.id, n]));
   const gateCount =
     arch.nodes.filter(isGateNode).length +
@@ -244,49 +269,95 @@ function systemDiagram(arch) {
     ? `<div class="annot"><svg aria-hidden="true" viewBox="0 0 34 24"><path d="M2 22 C 9 19, 16 11, 29 4 M29 4 l-6.5 0.8 M29 4 l-1.2 6.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><p>${esc(arch.annotation)}</p></div>`
     : "";
 
-  if (arch.variant === "linear" && arch.flow) {
-    const stageEdgeLabels = (from, to) => [
-      ...new Set(
-        arch.edges
-          .filter((e) => from.includes(e.from) && to.includes(e.to))
-          .map((e) => e.label)
-      ),
-    ];
-    const offSpine = arch.edges.filter((e) => {
-      for (let i = 0; i < arch.flow.length - 1; i++) {
-        if (arch.flow[i].includes(e.from) && arch.flow[i + 1].includes(e.to))
-          return false;
-      }
-      return true;
-    });
-    const rail = arch.flow
-      .map((stage, i) => {
-        const joint =
-          i > 0
-            ? `<div class="joint"><span aria-hidden="true">⟶</span><span>${esc(stageEdgeLabels(arch.flow[i - 1], stage).join(" · "))}</span></div>`
-            : "";
-        return `${joint}<div class="stage">${stage.map((id) => (byId.has(id) ? nodeCard(byId.get(id)) : "")).join("")}</div>`;
-      })
-      .join("");
-    const branches = offSpine.length
-      ? `<div class="offspine"><p class="oshead">off the spine —</p><ul>${offSpine
-          .map(
-            (e) =>
-              `<li><span class="n1">${esc(byId.get(e.from)?.label ?? e.from)}</span><span aria-hidden="true"> ⟶ </span><wbr><span class="n1">${esc(byId.get(e.to)?.label ?? e.to)}</span><wbr> <span class="elabel">${esc(e.label)}</span></li>`
-          )
-          .join("")}</ul></div>`
-      : "";
-    return `<figure id="fig-2" class="diagram"><p class="dsummary">${esc(arch.summary)}</p><div class="rail">${rail}</div>${branches}${annotation}<figcaption>${esc(caption)}</figcaption></figure>`;
+  if (!arch.flow) fail("no `flow` declared");
+  const spine = arch.flow.map((stage) => {
+    if (stage.length !== 1)
+      fail(
+        `stage [${stage.join(", ")}] holds ${stage.length} nodes — the spine takes one per stage; side the rest`
+      );
+    if (!byId.has(stage[0])) fail(`spine node "${stage[0]}" is not in nodes[]`);
+    return stage[0];
+  });
+  const pos = new Map(spine.map((id, i) => [id, i]));
+
+  /* classify every edge exactly once; a leftover is a broken declaration */
+  const trunk = spine.slice(1).map(() => []);
+  const outs = spine.map(() => []);
+  const ins = spine.map(() => []);
+  const loops = [];
+  for (const e of arch.edges) {
+    const f = pos.get(e.from);
+    const t = pos.get(e.to);
+    if (f !== undefined && t === f + 1) trunk[f].push(e);
+    else if (f !== undefined && t === undefined) outs[f].push(e);
+    else if (f === undefined && t !== undefined && t > 0) ins[t].push(e);
+    else if (t !== undefined && (f === undefined || t <= f)) loops.push(e);
+    else fail(`edge ${e.from} ⟶ ${e.to} never touches the spine`);
+  }
+  trunk.forEach((edges, i) => {
+    if (!edges.length)
+      fail(
+        `no edge joins ${spine[i]} ⟶ ${spine[i + 1]} — the trunk cannot skip a stroke`
+      );
+  });
+
+  const drawn = new Set(spine);
+  const gsq = '<span class="gsq2" aria-hidden="true"></span>';
+  const siding = (e, dir) => {
+    const offId = dir === "out" ? e.to : e.from;
+    const off = byId.get(offId);
+    if (!off)
+      fail(`edge ${e.from} ⟶ ${e.to} names an undeclared node "${offId}"`);
+    const cls = `siding ${dir}${e.gate ? " gate" : ""}`;
+    const glyph = dir === "out" ? "⟶" : "⟵";
+    if (drawn.has(offId))
+      return `<div class="${cls}"><p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">${glyph}</span> ${esc(e.label)} — <span class="n1">${esc(off.label)}</span></p></div>`;
+    drawn.add(offId);
+    return `<div class="${cls}"><p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">${glyph}</span> ${esc(e.label)}</p>${nodeCard(off)}</div>`;
+  };
+
+  const blocks = [nodeCard(byId.get(spine[0]))];
+  for (let i = 0; i < spine.length - 1; i++) {
+    const gate = trunk[i].some((e) => e.gate === true);
+    const label = [...new Set(trunk[i].map((e) => e.label))].join(" · ");
+    blocks.push(
+      `<div class="trunk${gate ? " gate" : ""}">${outs[i]
+        .map((e) => siding(e, "out"))
+        .join("")}${ins[i + 1]
+        .map((e) => siding(e, "in"))
+        .join("")}<p class="tlabel">${gate ? gsq : ""}${esc(label)}</p></div>`,
+      nodeCard(byId.get(spine[i + 1]))
+    );
+  }
+  if (outs[spine.length - 1].length)
+    blocks.push(
+      `<div class="trunk tail">${outs[spine.length - 1]
+        .map((e) => siding(e, "out"))
+        .join("")}</div>`
+    );
+  for (const e of loops) {
+    const from = byId.get(e.from);
+    const closes = arch.variant === "loop" && pos.get(e.to) === 0;
+    const line = `<p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">↺</span> ${esc(e.label)} — back to <span class="n1">${esc(byId.get(e.to)?.label ?? e.to)}</span>${closes ? ", closing the loop" : ""}</p>`;
+    if (from && !drawn.has(e.from)) {
+      drawn.add(e.from);
+      blocks.push(`<div class="siding back">${nodeCard(from)}${line}</div>`);
+    } else {
+      blocks.push(`<div class="siding back">${line}</div>`);
+    }
   }
 
-  const firstNodeId = arch.nodes[0]?.id;
-  const circuit = arch.edges
-    .map((e) => {
-      const closes = arch.variant === "loop" && e.to === firstNodeId;
-      return `<li>${e.gate ? '<span class="gsq2" aria-hidden="true"></span>' : ""}<span class="n1">${esc(byId.get(e.from)?.label ?? e.from)}</span><span aria-hidden="true"> ⟶ </span><wbr><span class="n1">${esc(byId.get(e.to)?.label ?? e.to)}</span><wbr> <span class="elabel${e.gate ? " gatelbl" : ""}">${esc(e.label)}</span>${closes ? '<span class="elabel"> <span aria-hidden="true">↺ </span>closes the loop</span>' : ""}</li>`;
-    })
-    .join("");
-  return `<figure id="fig-2" class="diagram"><p class="dsummary">${esc(arch.summary)}</p><div class="cards">${arch.nodes.map(nodeCard).join("")}</div><div class="offspine"><p class="oshead">${arch.variant === "loop" ? "the circuit —" : "flow —"}</p><ol>${circuit}</ol></div>${annotation}<figcaption>${esc(caption)}</figcaption></figure>`;
+  /* A node reaches the sheet only by being on the spine or on one end of
+     a classified edge, so an unreferenced node would be dropped in
+     silence — the figure would look finished and be short a box. Every
+     other mismatch here aborts; this one must too. */
+  const missed = arch.nodes.filter((n) => !drawn.has(n.id));
+  if (missed.length)
+    fail(
+      `${missed.map((n) => `"${n.id}"`).join(", ")} declared in nodes[] but no edge or stage draws ${missed.length === 1 ? "it" : "them"}`
+    );
+
+  return `<figure id="fig-2" class="diagram"><p class="dsummary">${esc(arch.summary)}</p><div class="spine">${blocks.join("")}</div>${annotation}<figcaption>${esc(caption)}</figcaption></figure>`;
 }
 
 /* ── fig. 3 — the registry excerpt (automl only) ───────────────────────
@@ -621,7 +692,7 @@ export function renderCaseFile({
 
         <section id="architecture">
           <h2 class="seckick">[ architecture ] · § fig. 2, inked</h2>
-          ${systemDiagram(study.architecture)}
+          ${systemDiagram(study.architecture, study.projectId)}
         </section>
 
         ${study.registryFig ? registryFig(study.registryFig) : ""}

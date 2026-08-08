@@ -309,9 +309,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 #architecture{margin-top:4.5rem}
 .diagram{margin-top:1.4rem}
 .diagram .dsummary{max-width:55ch}
-.diagram .cards{margin-top:1.8rem; display:grid; gap:1rem 1.4rem}
-@media (min-width:640px){ .diagram .cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@media (min-width:1024px){ .diagram .cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.diagram .spine{margin-top:1.8rem; max-width:34rem}
 .ncard{border:1px solid var(--hair-strong); padding:.85rem 1rem; background:var(--plate)}
 .ncard.gate{border-color:var(--clay-g)}
 .ncard .nlabel{font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink);
@@ -320,24 +318,39 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .ncard .ndetail{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2); margin-top:.35rem; line-height:1.7; overflow-wrap:anywhere}
 .gsq2{display:inline-block; width:8px; height:8px; background:var(--clay-g); flex-shrink:0; margin-right:.45rem}
 .ncard .gsq2{margin-right:0}
-.diagram .rail{margin-top:1.8rem; display:flex; flex-direction:column; gap:.7rem}
-/* 1280, not 1024, and it is measured: jobtracker's six stages plus five
-   joints have a ~1069px min-content run, and a 1024 viewport hands the
-   rail 922px — probed at +147px of horizontal overflow before this
-   stop moved. At 1280 the sheet affords it, and the details wrap. */
-@media (min-width:1280px){ .diagram .rail{flex-direction:row; align-items:center} }
-.diagram .stage{display:flex; flex-direction:column; gap:.7rem; flex:1; min-width:0}
-.diagram .joint{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
-  display:flex; align-items:center; gap:.5rem; padding-left:1rem}
-.diagram .joint span{overflow-wrap:anywhere}
-@media (min-width:1280px){ .diagram .joint{flex-direction:column; gap:.25rem; padding:0 .7rem; text-align:center; flex-shrink:0; max-width:9rem} }
-.offspine{margin-top:1.6rem; border-top:1px solid var(--hair); padding-top:1rem}
+/* THE SPINE'S INK. The row rail this replaces is retired with its
+   defect on record: its own comment said "at 1280 the sheet affords
+   it, and the details wrap" — measured 2026-08-08, six flex:1 stages
+   beside five 9rem joints left every .ndetail a 6–9px column, one
+   character per line, 27–45 rows, the last card clipped, at every
+   width ≥1280. The claim lived in the author's frame and was never
+   re-measured. One orientation has no second frame to be wrong in.
+   No new colour pairs: every ink below is already in the measured
+   table at the head of this file — ink-2 6.61:1 / Lc 78.7 as text and
+   stroke, clay 5.91:1 / Lc 74.9 as gate-label text, clay-g 4.13:1 as
+   graphic only, never text. */
+.spine .trunk{margin-left:1.4rem; border-left:2px solid var(--ink-2); position:relative; padding:.3rem 0 .2rem}
+.spine .trunk::after{content:""; position:absolute; left:-4px; bottom:0;
+  border-left:3px solid transparent; border-right:3px solid transparent; border-top:6px solid var(--ink-2)}
+.spine .trunk.gate{border-left-color:var(--clay-g)}
+.spine .trunk.gate::after{border-top-color:var(--clay-g)}
+.spine .trunk.tail::after{content:none}
+.spine .tlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
+  padding:.35rem 0 .55rem 1rem; line-height:1.7; overflow-wrap:anywhere; max-width:26rem}
+.spine .trunk.gate .tlabel{color:var(--clay)}
+.spine .siding{margin:.35rem 0 .55rem 1.6rem; position:relative; max-width:28rem}
+.spine .siding::before{content:""; position:absolute; left:-1.6rem; top:.62em; width:1.2rem;
+  border-top:2px solid var(--ink-2)}
+.spine .siding.gate::before{border-top-color:var(--clay-g)}
+.spine .sedge{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
+  line-height:1.7; overflow-wrap:anywhere}
+.spine .siding.gate .sedge{color:var(--clay)}
+.spine .sedge .n1{color:var(--ink)}
+.spine .siding .ncard{margin-top:.35rem}
+.spine .siding.back{margin-top:1rem}
+.spine .siding.back::before{content:none}
+.spine .siding.back .sedge{margin-top:.35rem}
 .oshead{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2)}
-.offspine ul, .offspine ol{margin-top:.6rem; list-style:none}
-.offspine li{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; padding:.3rem 0; line-height:1.9}
-.offspine .n1{color:var(--ink)}
-.offspine .elabel{color:var(--ink-2); margin-left:.5rem}
-.offspine .gatelbl{color:var(--clay)}
 .annot{margin-top:1.4rem; display:flex; gap:.7rem; align-items:flex-start; max-width:46ch; color:var(--clay)}
 .annot svg{width:31px; height:22px; flex-shrink:0; margin-top:.15rem}
 .annot p{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
