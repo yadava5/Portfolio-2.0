@@ -16,7 +16,7 @@ version: 2
 #              under .build/, which is generated staging, not source)
 #   actions    .github/workflows/{ci,deploy}.yml
 #
-# Weekly rather than daily, matching the siblings: one maintainer, and a queue
+# Monthly rather than weekly, matching the siblings: one maintainer, and a queue
 # of PRs nobody can review is worse than a slightly older lockfile. The limits
 # are deliberately small for the same reason — the estate was carrying 83 open
 # Dependabot PRs when this was written, which is what an unbounded config buys.
@@ -25,9 +25,11 @@ updates:
   # ---- The portfolio build ------------------------------------------------
   - package-ecosystem: npm
     directory: "/"
+    # Monthly, not weekly: this cadence governs VERSION updates only. Dependabot
+    # SECURITY updates are a separate mechanism unaffected by `schedule`, so
+    # vulnerability patches still arrive immediately.
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     open-pull-requests-limit: 5
     commit-message:
       prefix: build
@@ -36,6 +38,14 @@ updates:
     groups:
       # Playwright's runner and its browser bindings have to move together;
       # split across PRs they produce a red suite that is nobody's fault.
+      #
+      # NO update-types filter, and that is the whole point. Every other group
+      # here is minor/patch so majors stay individually reviewable — this one
+      # is the documented exception, for the same reason github/codeql-action
+      # is one below: a MAJOR is precisely when the runner and the bindings
+      # must not be allowed to separate. Adding `update-types: [minor, patch]`
+      # here reads like consistency and reintroduces the exact failure the two
+      # lines above warn about. It was added and reverted on 2026-08-08.
       playwright:
         patterns:
           - "@playwright/*"
@@ -49,11 +59,17 @@ updates:
           - "@eslint/*"
           - "typescript-eslint"
           - prettier
+        update-types:
+          - minor
+          - patch
       # The type system and the compiler move as one.
       typescript:
         patterns:
           - typescript
           - "@types/*"
+        update-types:
+          - minor
+          - patch
 
   # ---- The workflows themselves -------------------------------------------
   # ci.yml and deploy.yml pin actions by tag (checkout@v4, setup-node@v4,
@@ -63,11 +79,30 @@ updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     open-pull-requests-limit: 5
     commit-message:
       prefix: ci
     labels:
       - dependencies
       - github-actions
+    groups:
+      # If github/codeql-action is ever pinned here, its sub-actions (init,
+      # analyze, autobuild, upload-sarif) are one action and MUST move in
+      # lockstep. Bumping one alone hard-fails CodeQL:
+      #   ##[error]Loaded a configuration file for version '4.36.2', but running version '4.37.6'
+      # Dedicated group, NO update-types filter (every type, majors included),
+      # listed BEFORE the catch-all because Dependabot assigns each dependency
+      # to the FIRST matching group in order. No codeql action is pinned in
+      # ci.yml/deploy.yml today, so this is a forward-looking safeguard.
+      codeql-action:
+        patterns:
+          - "github/codeql-action*"
+      # Everything else: one PR per monthly batch of minor/patch action bumps.
+      # Majors stay individual because they need a human.
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
