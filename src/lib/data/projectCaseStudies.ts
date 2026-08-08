@@ -362,8 +362,13 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    across 58, all five jobs green, 0 skipped. CI is the instrument
    because it fails on any skip, so a green run is itself the proof of
    the zero — a locally skipped-but-green backend run is exactly how
-   this number drifted the first two times. */
-const CADENCE_SUITE_SHA = "dbabc74";
+   this number drifted the first two times.
+
+   2026-08-08: re-pinned again to `abaaea8`, 1,185 -> 1,186. Not drift — the
+   suite grew by exactly one test, and that test is the one that would have
+   caught GET /api/tags returning 500 in production for every user since the
+   service was written. Number and sha moved together, as always. */
+const CADENCE_SUITE_SHA = "abaaea8";
 const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SUITE_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
@@ -1715,8 +1720,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           /* Bound by check-figures.mjs `Cadence · suite` since 2026-08-07.
              It was unbound until then, which is how this node spent four
              days rendering 1,159 — twice — on a page whose own receipt
-             said 1,185 and whose /evidence entry said 1,179. */
-          label: "1,185 tests",
+             said 1,185 and whose /evidence entry said 1,179. Now 1,186: the tags
+             fix added the regression test that would have caught it. */
+          label: "1,186 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -1766,9 +1772,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I measured the suite on 2026-08-07: 635 frontend + 550 backend = 1,185 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
+          "I measured the suite on 2026-08-08: 635 frontend + 551 backend = 1,186 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
         method:
-          "CI at the pinned head, not a local run — GitHub Actions run 31222343049 on `main`, whose Backend Tests job reports 550 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
+          "CI at the pinned head, not a local run — GitHub Actions run 31233308044 on `main`, whose Backend Tests job reports 551 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
         artifacts: [
           {
             label: `cadence @ ${CADENCE_SUITE_SHA}`,
@@ -2028,6 +2034,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-07",
         kind: "erratum",
         text: "This is the third drift of the same number, and this time it shipped as three different values at once. The architecture figure’s node label read 1,159 — twice on the built page — the receipt beside it read 1,185, and the /evidence index read 1,179. Every gate was green, and the erratum above was itself stale: it says “the receipt itself now reads 1,159” while the receipt had moved to 1,185 and left the figure behind. Re-measured at cadence main dbabc74, CI run 31222343049, all five jobs green: 635 frontend across 58 files + 550 backend across 25 = 1,185 passing, 0 skipped. All three surfaces now read that, and the two pins — this file’s CADENCE_SUITE_SHA and proofManifest’s — moved to dbabc74 with it. The register predicted this: the 2026-08-02 pair ends by saying the audit “widens the drift gate instead of only fixing the values”, and the widening was only half done. check-figures.mjs’s Cadence · suite entry had no manifest: key, so it could not see /evidence at all, and it never bound the node label — the same two holes that entry’s Applied twin had already documented and closed for itself. Both are closed for Cadence now, so the next drift is a red gate rather than a reader’s discovery.",
+      },
+      {
+        date: "2026-08-08",
+        kind: "erratum",
+        text: "1,185 became 1,186 within a day of the entry above, and the one extra test is worth more than the four surfaces it moved. Exercising the deployed app — signed in as the demo account, against the real API — found GET /api/tags answering 500 for every user: TagService selected t.\u0022createdAt\u0022 and t.\u0022updatedAt\u0022 from a table that has five columns and never had those two. git log dates the over-select to the commit that added the service, so tags have been unreachable through the API for the life of the feature. Its 28 unit tests passed throughout, and still pass with the bug deliberately reinstated, because their fixtures are hand-written objects that never reach Postgres — the same shape as the tagged-task failure this register already carries. The fix ships with a regression test that calls the service against the real schema in a real Postgres, which is the +1. Recorded here rather than folded into the entry above because the number the page published yesterday is not the number it publishes today, and a register that quietly restates itself is the failure it exists to prevent.",
       },
     ],
     artifacts: [

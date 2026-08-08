@@ -116,8 +116,15 @@ const AUTOML_SHA = "e506c91";
    file. That hole is now closed the same way Applied's was. Re-measured and
    re-pinned at `dbabc74` — cadence main, CI run 31222343049: 635 frontend
    across 58 files + 550 backend across 25, 0 skipped. The six-test
-   difference from 544 is the backend work that landed since `2295044`. */
-const CADENCE_SUITE_SHA = "dbabc74";
+   difference from 544 is the backend work that landed since `2295044`.
+
+   2026-08-08: 1,185 became 1,186 the same day, and the extra test is the
+   point. Exercising the live app found GET /api/tags returning 500 for every
+   user — TagService selected two columns `tags` has never had — so the fix
+   ships with a regression test that runs the service against the REAL schema
+   in a real Postgres. The count moves because the suite genuinely grew, and
+   the pin moves with it to `abaaea8`. */
+const CADENCE_SUITE_SHA = "abaaea8";
 /* Moved off c6e5c0b on 2026-08-03. Not because the old pin was wrong — 3.5×
    holds at both — but because that commit predates the correction BENCHMARKS.md
    now carries: the "sub-percent variance" line was never measured, the harness
@@ -253,15 +260,15 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "taskflow-tests",
-    label: "1,185 tests, 0 skipped",
+    label: "1,186 tests, 0 skipped",
     claim:
-      "Cadence runs 1,185 tests — 635 frontend + 550 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
+      "Cadence runs 1,186 tests — 635 frontend + 551 backend — with nothing skipped, including the row-level-security suite that had never executed anywhere.",
     /* Plain literal, not interpolated — see the note on jobtracker-backend-tests
        above: the gate cross-checks this URL's sha against sourceLabel's. */
-    source: "https://github.com/yadava5/cadence/tree/dbabc74",
+    source: "https://github.com/yadava5/cadence/tree/abaaea8",
     sourceLabel: `cadence @ ${CADENCE_SUITE_SHA}`,
     verification:
-      "Read off CI at this head on 2026-08-07 — GitHub Actions run 31222343049 on `main`, all five jobs green: the Frontend Tests job reports 635 passing across 58 files, the Backend Tests job 550 across 25, and the skip count is zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, then 1,179 at 2295044, now 1,185 here. CI is deliberately the instrument rather than a local run: it is the only place the zero is *proved* rather than asserted, because the workflow fails on any skip, and each of the two earlier drifts of this number began with a local backend run that skipped and still went green.",
+      "Read off CI at this head on 2026-08-08 — GitHub Actions run 31233308044 on `main`, all five jobs green: the Frontend Tests job reports 635 passing across 58 files, the Backend Tests job 551 across 25, and the skip count is zero. The change worth reading is that zero. The 11 skips this entry previously reported were the Postgres row-level-security module — the only tests capable of demonstrating the isolation Cadence claims — and they had never run: not in CI, not locally, not once, because they wait on an RLS_TEST_PG_ADMIN_URL that no workflow set. They now start their own postgres:16 through testcontainers when the variable is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. CI additionally fails if the suite reports any skip, because a skipped security test and a passing one render as the same green tick. Both the count and the commit moved together, and the commit was confirmed present on the remote before this pin was written: 1,145 at 69a59e7, then 1,159 at 8eee84e, then 1,179 at 2295044, now 1,185 here. CI is deliberately the instrument rather than a local run: it is the only place the zero is *proved* rather than asserted, because the workflow fails on any skip, and each of the two earlier drifts of this number began with a local backend run that skipped and still went green.",
     visibility: "public",
     privacyBoundary: "No private data.",
     date: "2026-08-07",

@@ -152,7 +152,7 @@ const FIGURES = [
      reader's discovery. */
   {
     figure: "Cadence · suite",
-    run: /1,185 passed · 0 skipped/,
+    run: /1,186 passed · 0 skipped/,
     // THIS ENTRY IS THE ONE THE APPLIED TWIN ABOVE WARNED ABOUT, and it went on
     // to fail in exactly the way that comment describes -- one number shipping
     // as THREE values with the gate green:
@@ -175,11 +175,11 @@ const FIGURES = [
     // rather than folded in, because a single regex satisfied by the receipt
     // would certify the label unread -- which is the whole defect.
     data: {
-      cases: /1,185 tests passing under vitest, with 0 skipped/,
-      manifest: /1,185 tests, 0 skipped/,
+      cases: /1,186 tests passing under vitest, with 0 skipped/,
+      manifest: /1,186 tests, 0 skipped/,
     },
     source:
-      "CI run 31222343049 at head dbabc74, 2026-08-07 — 635 frontend + 550 backend, 0 skipped",
+      "CI run 31233308044 at head abaaea8, 2026-08-08 — 635 frontend + 551 backend, 0 skipped",
   },
   {
     /* The architecture figure's own node label, which is a separate string in
@@ -190,13 +190,31 @@ const FIGURES = [
        the case file's diagram to the same number as the case file's receipt. */
     figure: "Cadence · architecture node label",
     run: null,
-    data: { cases: /label: "1,185 tests"/ },
+    data: { cases: /label: "1,186 tests"/ },
     source: "same CI run; the diagram must agree with the receipt beside it",
   },
   {
     figure: "Cadence · suite split",
-    run: /635 fe \+ 550 be/,
-    data: { cases: /635 frontend \+ 550 backend/ },
+    /* THE RUN STATES THIS SPLIT TWICE, IN TWO PHRASINGS, and until 2026-08-08
+       only one of them was bound:
+
+         ¶03 prov strip  "635 frontend + 551 backend"   (long form)
+         the ¶03 index   "635 fe + 551 be"              (short form)
+
+       When the count moved 1,185 -> 1,186 the short form was updated and the
+       long form was not, so the run shipped "1,186 passed" beside
+       "635 frontend + 550 backend" — a total that does not equal its own
+       parts — and THIS GATE PASSED, because its one `run` regex matched the
+       short form and never looked at the other. Caught by hand-reading the
+       out/index.html diff before re-baselining the golden hash, which is the
+       only reason the rule exists.
+
+       Both phrasings are asserted now. A number stated twice on one page is
+       two claims, and a regex that finds one says nothing about the other —
+       the same lesson the node label taught this file a day earlier. */
+    run: /635 fe \+ 551 be/,
+    runLong: /635 frontend \+ 551 backend/,
+    data: { cases: /635 frontend \+ 551 backend/ },
     source: "same run; the split must agree with the total it sums to",
   },
   {
@@ -773,7 +791,13 @@ for (const f of FIGURES) {
     continue;
   }
   const onRun = f.run !== null;
-  const inRun = onRun ? f.run.test(runProse) : null;
+  /* `runLong` is an OPTIONAL second phrasing of the same figure on the run.
+     A figure the run states twice is two claims; binding one and calling the
+     entry done is how "1,186 passed" shipped beside "635 frontend + 550
+     backend" with this gate green. */
+  const inRun = onRun
+    ? f.run.test(runProse) && (!f.runLong || f.runLong.test(runProse))
+    : null;
   const missing = declared.filter((s) => !f.data[s].test(surfaceText[s]));
   if (inRun !== false && !missing.length) {
     notes.push(
