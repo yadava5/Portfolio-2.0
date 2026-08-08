@@ -2771,7 +2771,66 @@ function pointAtLen(L) {
    reveal, not the freight's to front-run. Round 1's marks were postage-stamp
    small and rode glued to the token; the convoy stays spread across the
    corridor, a waybill line names what is in transit, and all of it remains
-   a pure function of scroll. */
+   a pure function of scroll.
+
+   WHAT A MARK DRAWS, settled 2026-08-08 after the owner read the shipped rail:
+   "the fig such as the calender flow itself". A corridor's mark quotes the
+   IDENTIFYING DEVICE of the figure at the station it arrives at — not a
+   shrunken plate (18px cannot carry one) and not a generic object of the right
+   category. Three were re-cut: beat 1 (a grid that read as a calendar two
+   corridors before the calendar), beat 3 (a card at the one station whose idea
+   is a shape), beat 6 (a bar and a ring quoting only fig. 08's hold).
+
+   THE OTHER EIGHT ARE DELIBERATELY UNTOUCHED, and the reason is not inertia:
+     beat 0  the credentials card IS fig. 02, portrait well and signature
+     beat 2  the envelope IS fig. 04's mail
+     beat 4  the 28×28 pad IS fig. 06
+     beat 5  stitched blocks + trailer bar IS fig. 07's subject
+     beat 7  six gates open and a seventh ringed IS fig. 09, verbatim
+     beat 8/9 the SAME document before and after review — the clay seal
+             becoming a pine check is the meaning; drawing two different
+             objects would destroy it
+     beat 10 letters and a manifest are correctly generic paper
+   Four entries still share a rounded-rect-with-two-rules body. That is now
+   vocabulary rather than vagueness: every one of them genuinely IS a document,
+   and the one member of that family that was NOT a document has left it. Do
+   not "fix" the resemblance back out.
+
+   THE AXIS RULE, and it is a MEASUREMENT — docs/design-lab/probe-cargo-rotation.mjs
+   hooks translate/rotate/fillText, pairs each waybill with the transform that
+   preceded it, and sweeps the document at 40px steps. What it found, at 1440,
+   identical in day and night and at DPR 1 and 2 because it is pure geometry:
+
+     corridor 1   max tilt  98.0°    mid-band  35.1°
+     corridor 3   max tilt  83.6°    mid-band  39.7°
+     corridor 6   max tilt 134.6°    mid-band 129.4°
+
+   The rail is mostly vertical, so LOCAL +x RUNS DOWN-RAIL. The authored
+   orientation is only ever seen where the rail is near-horizontal, which is
+   almost nowhere. Three consequences, all paid for in rejected drawings:
+
+     · the down-rail strip (|y| under about 2) is CONTESTED — the 2px rail
+       stroke and the 4.5px token dot own it. A first cut of beat 1 put its
+       three feeders along local -x and the token ate them whole; the mark
+       read as the lone grid it was supposed to stop being.
+     · LOCAL Y IS THE LEGIBLE AXIS. Strokes that CROSS the strip survive at
+       any tangent; strokes that PARALLEL it do not. Beat 3 passed first time
+       because its content stacks along y — sentence above, week below.
+     · a `--plate-solid` fill OCCLUDES the rail beneath it, which is why the
+       filled documents read at every angle.
+
+   And the one that is not about geometry: COMPOSE ARTIFACTS, NOT SCENES. Beat
+   6's first cut was fig. 08's stair drawn in section — gravity-bound, a scene,
+   and a scene cannot ride a rail at 129°. It read as a stray capital F. The
+   consignment names the artifact outright ("unfinished ROWS"), so the mark is
+   the ledger now. Fidelity is owed to the thing in transit, not to the plate.
+
+   An `upright: true` escape hatch was considered and REFUSED: the rail has two
+   registers — freight rotates with the line, writing stays level (waybills are
+   painted after restore(), which is why they read as labels) — and an upright
+   mark defects to the writing register, becoming an annotation gliding beside
+   the rail rather than cargo on it. That is round 1's postage stamps, returning
+   behind a flag. Re-cut the mark instead. */
 const TRAV = [
   /* the first corridor: nothing arrives at the start — the run begins
      there — so the corridor's one waybill is the credentials, riding a
@@ -2809,13 +2868,36 @@ const TRAV = [
      the inventory follows, and the corridor now carries two different facts
      instead of one fact twice. Grounded in the ¶03 prov line — "one master
      inventory — 10,453 rows × 35 fields · hash-dedup" — and its handoff. */
-  { beat: 1, n: 1, label: "five years of logs, given shape → the line", draw: (c) => { /* the shaped table */
+  /* IT DREW HALF ITS OWN STATION, AND THE HALF IT DREW BELONGED TO ANOTHER ONE.
+     This was a lone ruled grid — 18 wide, two row rules, two column rules —
+     which is to say the most CALENDAR-shaped object on the whole rail, riding
+     into the yard two corridors ahead of Cadence. A reader can honestly
+     conclude the calendar is arriving at the wrong station, and one did.
+     fig. 03's own caption is "three sources in, one table out"; the grid drew
+     only the second half of that. The sidings are drawn now, so the mark says
+     merge rather than schedule, and Cadence's own week (beat 3) is the only
+     grid on the line. They join from BESIDE the line — along local +y, across
+     the rail — not from up-rail: the first cut ran them along -x and the token
+     erased them (see THE AXIS RULE above). Draw order is load-bearing, feeders
+     first, so the table's fill closes over their landing points. They are NOT
+     dashed on purpose: fig. 03 spends its dash on product dispositions, and
+     three dashed feeders at 18px would say "not checked in" about the merge. */
+  { beat: 1, n: 1, label: "five years of logs, given shape → the line", draw: (c) => { /* the merge: three sidings join from beside the line */
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath();
+      c.moveTo(-9, 9); c.quadraticCurveTo(-7, 5, -3.5, 2);
+      c.moveTo(0, 9); c.lineTo(0, 2);
+      c.moveTo(9, 9); c.quadraticCurveTo(7, 5, 3.5, 2);
+      c.stroke();
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
-      c.beginPath(); c.rect(-9, -6.5, 18, 13); c.fill(); c.stroke();
-      c.strokeStyle = inkC["--ink-2"]; c.beginPath(); /* rows and fields */
-      c.moveTo(-9, -2); c.lineTo(9, -2); c.moveTo(-9, 2.4); c.lineTo(9, 2.4);
-      c.moveTo(-3, -6.5); c.lineTo(-3, 6.5); c.moveTo(3, -6.5); c.lineTo(3, 6.5); c.stroke();
-      c.fillStyle = inkC["--pine"]; c.fillRect(3.6, -6, 4.9, 3.5); /* the flagged field */ } },
+      c.beginPath(); c.rect(-5.5, -6, 11, 8); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath(); /* rows and fields; the crossings are safe, the strip is not */
+      c.moveTo(-5.5, -3.4); c.lineTo(5.5, -3.4);
+      c.moveTo(-1.8, -6); c.lineTo(-1.8, 2);
+      c.moveTo(1.8, -6); c.lineTo(1.8, 2);
+      c.stroke();
+      c.fillStyle = inkC["--pine"]; c.fillRect(2.2, -5.6, 2.9, 1.8); /* the flagged field */ } },
   { beat: 1, n: 1, off: 0.55, label: null, draw: (c) => { /* the inventory: the one part checked in */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
       c.beginPath(); c.rect(-8.5, -7.5, 13, 10); c.fill(); c.stroke();   /* the silos it came from */
@@ -2828,12 +2910,41 @@ const TRAV = [
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--pine"]; c.lineWidth = 1.3;
       c.beginPath(); c.rect(-7, -5, 14, 10); c.fill(); c.stroke();
       c.beginPath(); c.moveTo(-7, -5); c.lineTo(0, 1.2); c.lineTo(7, -5); c.stroke(); } },
-  { beat: 3, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the event card */
-      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1.2;
-      c.beginPath(); c.roundRect(-11, -7, 22, 14, 3); c.fill(); c.stroke();
-      c.strokeStyle = inkC["--ink"]; c.beginPath();
-      c.moveTo(-7, -2.5); c.lineTo(2, -2.5); c.moveTo(-7, 2); c.lineTo(5, 2); c.stroke();
-      c.fillStyle = inkC["--clay-g"]; c.beginPath(); c.arc(7, -2.5, 2, 0, 7); c.fill(); } },
+  /* THE STATION IS "a sentence becomes an event on the week" AND THE CARGO WAS
+     A CARD. This drew a rounded rect with two rules and a dot — the fourth
+     entry in this table with that body, indistinguishable at 18px from the
+     dispatch slip, the credentials and the two report cards. It arrived at
+     the one station whose entire idea is a SHAPE (fig. 05: the parse resolves
+     into the schedule) carrying the one shape that says nothing.
+     Now it draws fig. 05's identifying device: the sentence said out loud, one
+     word lifted as a clay chip, and the week beneath with that event landed in
+     it. Sharp `rect`, not `roundRect` — a schedule is not a card. Six verticals
+     at 18/7 pitch: the column RHYTHM is the calendar signifier and individual
+     cells need not resolve at this size, the same read automl's 3px gates rely
+     on. Clay appears exactly twice, as the departure/arrival pair the halted
+     run already uses. */
+  { beat: 3, n: 1, label: "the committed plan → manifest", draw: (c) => { /* the parse, landed: the word becomes the cell on the week */
+      c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); /* the sentence, said out loud */
+      c.moveTo(-9, -7); c.lineTo(-4.6, -7);
+      c.moveTo(-1.6, -7); c.lineTo(2, -7);
+      c.moveTo(3, -7); c.lineTo(6.5, -7); c.stroke();
+      /* the chip: the word being lifted. r 1.7, not 1.3 — the parse is a
+         departure AND an arrival, and a sub-pixel departure at DPR 1 makes
+         the clay pair silently half-true. 3.4px matches the old card's dot. */
+      c.fillStyle = inkC["--clay-g"];
+      c.beginPath(); c.arc(-3.1, -7, 1.7, 0, 7); c.fill();
+      c.fillStyle = inkC["--plate-solid"]; /* the week */
+      c.beginPath(); c.rect(-9, -3.5, 18, 11); c.fill(); c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(-9, -1); c.lineTo(9, -1); /* the header band */
+      for (let k = 1; k < 7; k++) { /* seven day columns */
+        const x = -9 + k * (18 / 7);
+        c.moveTo(x, -1); c.lineTo(x, 7.5);
+      }
+      c.stroke();
+      c.fillStyle = inkC["--clay-g"]; /* the event, landed */
+      c.fillRect(-6.2, 1.2, 2.2, 3); } },
   { beat: 4, n: 1,
     label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
     draw: (c) => {
@@ -2860,10 +2971,36 @@ const TRAV = [
       c.beginPath(); c.moveTo(-10, -6); c.lineTo(-10, 6); c.lineTo(9, 6); c.stroke(); /* the axis */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-9, -4.4, 4, 3.2);        /* one thread */
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-9, 0.4, 17, 3.2); } },  /* all of them */
-  { beat: 6, n: 2, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* a held dash */
-      c.fillStyle = inkC["--ink-2"]; c.fillRect(-7, -1.5, 10, 3);
-      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3;
-      c.beginPath(); c.arc(8, 0, 3, 0, 7); c.stroke(); } },
+  /* A BAR AND A RING WAS THE VAGUEST MARK ON THE RAIL, and it quoted only
+     fig. 08's ring — the hold — never fig. 08's subject. The waybill names
+     "unfinished ROWS", so the mark is the ledger: three rows inked full
+     length, two dashed and stopping mid-air, and the clay hold sitting in the
+     space those two never reached. Rows run along local y, so at 129° they
+     still read as parallel rules crossing the line.
+     THE STAIR WAS TRIED FIRST AND REJECTED BY MEASUREMENT. fig. 08 draws this
+     in section, and a sectional drawing is a SCENE — it needs a ground and a
+     gravity direction, neither of which survives a rail that presents it at
+     134.6°. It read as a stray capital F. Fidelity is owed to the artifact the
+     waybill names, not to the plate that argues it.
+     `n: 2` became `n: 1` with it. Two copies were spacing, and a ledger is one
+     object; it also halves the travellers on the corridor the overlap probe
+     measured as this page's worst (11 of 48 stops, docs/design-lab/
+     probe-waybill-overlap.mjs). */
+  { beat: 6, n: 1, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* the ledger: three rows resolved, two held short */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
+      c.beginPath(); c.roundRect(-8, -7.5, 16, 15, 2); c.fill(); c.stroke();
+      c.beginPath(); /* the built three, full length */
+      c.moveTo(-5.2, -5); c.lineTo(-5.2, 4.2);
+      c.moveTo(-2.6, -5); c.lineTo(-2.6, 4.2);
+      c.moveTo(0, -5); c.lineTo(0, 4.2);
+      c.stroke();
+      c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.setLineDash([2, 2.2]);
+      c.beginPath(); /* the unfinished two, stopping mid-air */
+      c.moveTo(2.6, -5); c.lineTo(2.6, -0.3);
+      c.moveTo(5.2, -5); c.lineTo(5.2, -0.3);
+      c.stroke(); c.setLineDash([]);
+      c.strokeStyle = inkC["--clay-g"]; c.lineWidth = 1.3; /* the hold, in the space the rows never reached */
+      c.beginPath(); c.arc(3.9, 2.2, 2, 0, 7); c.stroke(); } },
   /* automl's freight is its own: the output is stated twice on the station
      and is the same both times — "the run halts at the seventh gate"
      (fig. 09) and "↳ the halted run lands in" (the handoff). It rides
