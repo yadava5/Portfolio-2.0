@@ -591,6 +591,15 @@ if (
         );
         continue;
       }
+      /* WHAT THIS STILL CANNOT SEE. The shead's sha is checked against the
+         record the block offers, not against the page the shead now LINKS.
+         Before the split those were the same string, so the claim guarded
+         itself; now "@ 001e9b4" is an assertion about a third surface. Both
+         were read by hand on 2026-08-08: /evidence e-08 sources
+         "BENCHMARKS.md @ 001e9b4" and the jetpack README is fetched at
+         2caacd0 — so all three agree today. A gate for it would have to
+         fetch the network, which nothing else here does; re-read the two
+         destinations by hand whenever either sha moves. */
       const [, file, fileSha] = record;
       if (fileSha !== cited[1])
         fail(
