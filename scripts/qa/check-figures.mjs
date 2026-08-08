@@ -174,9 +174,21 @@ const FIGURES = [
     // Both are closed here. The node label is bound as its own figure below
     // rather than folded in, because a single regex satisfied by the receipt
     // would certify the label unread -- which is the whole defect.
+    // A THIRD HOLE, found 2026-08-08 by grepping the SHIPPED out/ for the old
+    // number rather than by re-reading the source. The /evidence entry states
+    // the count twice: once as its headline, and once at the end of a
+    // provenance chain naming every value this number has had --
+    // "1,145 at 69a59e7, then 1,159 at 8eee84e, …, now N here". Only the
+    // headline was bound, so the entry shipped saying 1,186 three times and
+    // then "now 1,185 here" in its own closing sentence. Both phrasings are
+    // bound now, via an array (see the loop below): a surface that states a
+    // figure twice is two claims.
     data: {
       cases: /1,186 tests passing under vitest, with 0 skipped/,
-      manifest: /1,186 tests, 0 skipped/,
+      manifest: [
+        /1,186 tests, 0 skipped/,
+        /then 1,185 at dbabc74, now 1,186 here/,
+      ],
     },
     source:
       "CI run 31233308044 at head abaaea8, 2026-08-08 — 635 frontend + 551 backend, 0 skipped",
@@ -798,7 +810,17 @@ for (const f of FIGURES) {
   const inRun = onRun
     ? f.run.test(runProse) && (!f.runLong || f.runLong.test(runProse))
     : null;
-  const missing = declared.filter((s) => !f.data[s].test(surfaceText[s]));
+  /* A surface may declare an ARRAY of regexes, and then every one of them must
+     match — the `runLong` idea generalised to the data-layer surfaces, for the
+     same reason. A figure a surface states twice is two claims, and the second
+     one is where this file keeps getting caught: `manifest` bound
+     "1,186 tests, 0 skipped" while the same /evidence entry ended
+     "…then 1,179 at 2295044, now 1,185 here", so the page published 1,186
+     three times and 1,185 once, in one paragraph, with this gate green. One
+     regex per surface certifies the rest of the surface unread. */
+  const missing = declared.filter((s) =>
+    [f.data[s]].flat().some((re) => !re.test(surfaceText[s]))
+  );
   if (inRun !== false && !missing.length) {
     notes.push(
       `  · ${f.figure} — agrees on ${declared.join(" + ")}${onRun ? "" : " (data layer only — not stated on the run)"}  (${f.source})`
