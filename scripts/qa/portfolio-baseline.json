@@ -26,11 +26,11 @@
     "session. build-home.mjs and build-nameplate.mjs carry no new Date(), Date.now(),",
     "toISOString, randomUUID or Math.random, and out/index.html carries no chunk hashes."
   ],
-  "outIndexSha256": "b26423624374290f5ed6d811e5a6521d8128ad9322ac0f19fa79d7a1a87c34df",
-  "outIndexBytes": 338627,
-  "runSourceSha256": "6848e1ea4b07fb346e54982d52ba642002a000c8fd5870c4e6ffcbaff80a995b",
-  "commit": "cb99c6a1756c041f48252e9c5019d9a2ea4ce5a5",
-  "recordedAt": "2026-08-07T18:36:17Z",
+  "outIndexSha256": "290f4fdbf47667027f635b6488f505a45234bb80d131d82b83a84e9b7d594a50",
+  "outIndexBytes": 339354,
+  "runSourceSha256": "075aa8b12f1c00672a6f230db3105b5b72b7b60e6a85317982f382e150d34caa",
+  "commit": "36f50e1619a404370d131d194abac7da40263f46",
+  "recordedAt": "2026-08-08T00:01:15Z",
   "buildEnv": {
     "NODE_ENV": "production",
     "NEXT_PUBLIC_BASE_PATH": "/Portfolio-2.0"
