@@ -275,7 +275,7 @@ jobs:
         run: npm ci
 
       - name: Build production static export
-        run: NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build
+        run: NODE_ENV=production NEXT_PUBLIC_BASE_PATH= npm run build
 
       - name: Check static SEO metadata
         run: npm run test:seo
@@ -284,7 +284,7 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Browser metadata smoke
-        run: NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npx playwright test tests/playwright/static-seo.spec.ts
+        run: NEXT_PUBLIC_BASE_PATH= npx playwright test tests/playwright/static-seo.spec.ts
 
       # The nameplate gates live here rather than in proof-manifest because they
       # have two preconditions and this is the only job that meets both: they

@@ -6,7 +6,7 @@
  * is not the problem this file exists for. The problem is that the seam between
  * the run and the archive is hard-coded to the PRODUCTION origin in both
  * directions: `out/index.html` alone carries 13 distinct clickable
- * `https://yadava5.github.io/Portfolio-2.0…` links, and every generated archive
+ * `https://ayush-yadav.com…` links, and every generated archive
  * page rejoins the line through the same origin. So under any local mount, the
  * first click out of a page LEAVES for the deployed site — which is `main`,
  * pre-migration, tens of commits behind whatever is being previewed. A reviewer
@@ -42,7 +42,7 @@ const host = process.env.HOST ?? "127.0.0.1";
 const port = Number(process.env.PORT ?? 4300);
 
 /** the origin the built site is hard-coded to, and the only string rewritten */
-const PROD_ORIGIN = "https://yadava5.github.io/Portfolio-2.0";
+const PROD_ORIGIN = "https://ayush-yadav.com";
 
 const contentTypes = new Map([
   [".css", "text/css; charset=utf-8"],

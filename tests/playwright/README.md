@@ -37,12 +37,19 @@ npm run test:e2e:a11y              # axe + the skip link, chromium
 npm run test:e2e:ui                # the Playwright UI, against whatever out/ holds
 ```
 
-They build with an EMPTY `NEXT_PUBLIC_BASE_PATH`, so `out/` afterwards is not
-the deploy artifact. To put it back:
+They build with an EMPTY `NEXT_PUBLIC_BASE_PATH` and re-run `build-home.mjs`,
+so `out/` afterwards is a rebuild rather than the artifact that was hashed. To
+put it back:
 
 ```bash
-NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build
+NODE_ENV=production NEXT_PUBLIC_BASE_PATH= npm run build
 ```
+
+Since the site moved to `ayush-yadav.com` the deploy base path is *also* empty,
+so the two builds currently agree — `out/index.html` after the browser smoke was
+measured byte-identical to the pinned deploy hash. Do not lean on that: it is two
+settings coinciding, it was checked for one file, and it ends the moment anyone
+builds a subpath preview.
 
 `npm run verify:portfolio` runs the browser smoke last for exactly this reason,
 and says so in its closing note.

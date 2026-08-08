@@ -52,7 +52,7 @@ import { compileAndRelink } from "../run/compile-ts-graph.mjs";
 const root = process.cwd();
 const ARCHIVE = resolve(root, process.argv[2] ?? "out");
 const RUN_SRC = resolve(root, "src/run/index.html");
-const SITE = "https://yadava5.github.io/Portfolio-2.0";
+const SITE = "https://ayush-yadav.com";
 
 const failures = [];
 const fail = (msg) => failures.push(msg);

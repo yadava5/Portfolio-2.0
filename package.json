@@ -14,7 +14,7 @@
     "test:e2e:performance": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/performance-budget.spec.ts",
     "test:e2e:a11y": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/a11y-audit.spec.ts --project=chromium-desktop",
     "test:e2e:reduced-motion": "NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/reduced-motion.spec.ts",
-    "test:e2e:static-seo": "NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build && NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 playwright test tests/playwright/static-seo.spec.ts",
+    "test:e2e:static-seo": "NODE_ENV=production NEXT_PUBLIC_BASE_PATH= npm run build && NEXT_PUBLIC_BASE_PATH= playwright test tests/playwright/static-seo.spec.ts",
     "test:e2e:ui": "playwright test --ui",
     "assets:budget": "node scripts/qa/check-asset-budgets.mjs",
     "test:seo": "node scripts/qa/check-static-export-seo.mjs",

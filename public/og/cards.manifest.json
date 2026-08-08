@@ -2,40 +2,40 @@
   "note": "Written by scripts/asset-truth/render-og-cards.mjs. `npm run assets:check-og` fails when a card's content hash no longer matches the data layer.",
   "cards": {
     "case-automl.png": {
-      "svg": "2d9f349222a9044f799db1566d7fb03fcb4f515e3e0a9c315c6be411c3d8ac74",
-      "png": "ca99a002350e0bedfa38d9c3cd00c07d2aece1fdd72d10a60d9c1bd049b6f185"
+      "svg": "c392d0d7fb671f599b27996d0ec6a5131a9646b9b6f19af7383c47bbc13cfe68",
+      "png": "83606875b279af733cdefa57cc251514442cc6f9960a39f89354cd6d4f6bcace"
     },
     "case-fast-mnist-nn.png": {
-      "svg": "162a843868b4a18edd3292f7b35e77f2033d4458132956e63f628ac3be016456",
-      "png": "f2b8ffbc249c410572c00668c35c049f7c0ac2521635d28de8a25c3506dfcf51"
+      "svg": "b949b2b02017452a2f1d62c2c38b9fae1be6c62f12db816a6aa8e89768074ed5",
+      "png": "940ebbeff25f64a20ab26ce7be997df13716e5155f57675b9a2920011391759b"
     },
     "case-jobtracker.png": {
-      "svg": "1e01ee16c3cda9016ddd1cbb3b465b853b43b79ca5898b4034489813684f4a20",
-      "png": "a130e88e1454febfb05331fd08d51025459d89330a31c173d9a8fa608ff95d08"
+      "svg": "ae010e50919c89fbf266b32b58484a1b1d5fd6e27232765c827acb46420dcc18",
+      "png": "2703da213ce9f46967f291094a3b77ac81399547c01873c4557af0b533f59701"
     },
     "case-master-inventory.png": {
-      "svg": "632647c66f138b6d030108387a54d34aa477ed1d4cbc46d73b49d740fb8f07b2",
-      "png": "b44a35ff67d1b3942ac6f8903ec3cf385b5bc71b7a8f0215118c74fe6c80b693"
+      "svg": "6c328ffb69057aba162338dcb5e73295d6b756de66e5ad0945136fd154590c79",
+      "png": "734bede180afa73f827375111d8c6ec1c9dd87d2296537686952e36f3bd16ba7"
     },
     "case-policybot.png": {
-      "svg": "39dd22f925cd7161f8b18bf0151c01491df746927b1f7b5da695d4f4e5e19226",
-      "png": "0141ab5a2ca34054c7d11081428810d70d7043f0bbdab10e98fefd70d91f8dae"
+      "svg": "d4fb36e589a3a498810af0d309af5102f65169ace92cb659c52f3b632b64c1c3",
+      "png": "4d014808d49b9e01c5fcd8816d9ed254c733e9b70a41d81d39b61fa902b98b38"
     },
     "case-taskflow-calendar.png": {
-      "svg": "0791f7a9916a63795605f7c9b61fccd17f7ac85396c811e5dd47d72d518cc3a1",
-      "png": "e81e895e0b1a8a286938771d1396040d155c7abb2f2cdaeeb732edbdf8bc6f02"
+      "svg": "704518546344bbfa86894d50923ef38a15e53ceac605a666cc4c9f17a9d51915",
+      "png": "f1d7db7c0ccd253f7296bdbcd15a613aafb125c939e7658e6e4072401f97c7cf"
     },
     "case-visual-assist.png": {
-      "svg": "59b13abad1477f70a2c2e396c55b4267644a740ddd57461156c2527d52dc2d16",
-      "png": "f4fe91aa73ad40bcc61158becbfba2186f8cac5448814f152d2b09c6e39ac123"
+      "svg": "e108862ceffa7760c820ab8a3f5eb9f507a91765e01146530c924d407c51428c",
+      "png": "635a0a7e3222ff4bd42996cee556f123b6e1d76a78996785c599cecf10c8c3d1"
     },
     "evidence.png": {
-      "svg": "bdebd53e59936b4433231bfe8262d37ed3dcfb578cea683b1c89ede5e4076c81",
-      "png": "c39c2fa5ca7745a7356a2785f3643cb0539adc6ce2dc73e3709929c845b10624"
+      "svg": "d505650eba2ef8602351e805f9d547a64fe7acad6bde7485d6698ceb021ec620",
+      "png": "471ce5054cc7ec9c0910698b3d3a5c2f1248503e0e706c0f7f9be5add75239c2"
     },
     "home.png": {
-      "svg": "f280394294e55debb874abadf528951b72af9687225987c17d4251e6fdecfa92",
-      "png": "44eaafb9c143f85888661ea1c8c1c66bb25df4feb59bc9659788952308c27d3b"
+      "svg": "acac2e396078e8d4706e7bfe1eb98bbc52c35d22b3f56521f4ed09b41b4bc74c",
+      "png": "9667ce1ecda5022da2147f38c2ad15c2b9fbb2f63af21aea8f88cfcfcb1de812"
     }
   }
 }

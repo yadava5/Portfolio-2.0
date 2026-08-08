@@ -69,7 +69,7 @@ const read = (p) => readFileSync(resolve(root, p), "utf8");
    check-links.mjs:57 spell it. Used here only to tell an anchor that stays
    on the site from one that leaves it, which the arrow glyph must agree
    with — see the bench-slip block below. */
-const SITE = "https://yadava5.github.io/Portfolio-2.0";
+const SITE = "https://ayush-yadav.com";
 
 /* Git's blob sha for each vendored record: sha1("blob <len>\0" + bytes).
    Computed here rather than shelled out to `git hash-object` so the gate holds

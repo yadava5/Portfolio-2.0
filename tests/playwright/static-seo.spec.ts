@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const siteUrl = "https://yadava5.github.io/Portfolio-2.0";
+const siteUrl = "https://ayush-yadav.com";
 const routes = [
   "/",
   "/projects/automl/",

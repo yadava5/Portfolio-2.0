@@ -28,14 +28,22 @@
 /**
  * The deploy prefix, resolved the way Next resolves it at build time.
  *
- * `??`, not `||`: the e2e scripts set `NEXT_PUBLIC_BASE_PATH=` (an EMPTY
- * string) deliberately, and that is a real configuration — the site served
- * from a domain root. `||` would silently promote it to `/Portfolio-2.0` and
- * every asset URL in the e2e artifact would diverge from the one deployed.
+ * EMPTY IS THE PRODUCTION DEFAULT, and has been since the site moved to
+ * `ayush-yadav.com`. It used to be `/Portfolio-2.0`, because the site was a
+ * GitHub Pages *project* page served under its repository name. An apex
+ * domain serves at the root, so the prefix and the origin had to move in the
+ * same commit: either one alone produces `https://ayush-yadav.com/Portfolio-2.0/…`,
+ * which 404s across the whole archive.
+ *
+ * `??`, not `||`, and it still matters after the move. The two now agree for
+ * the empty string, so the operator no longer changes *this* line's result —
+ * it encodes that an explicitly empty `NEXT_PUBLIC_BASE_PATH` is a real
+ * configuration rather than an absent one. Keep it: the day someone restores
+ * a non-empty default for a subpath preview, `||` would silently promote the
+ * e2e scripts' deliberate `NEXT_PUBLIC_BASE_PATH=` back to it, and every
+ * asset URL in that artifact would diverge from the one deployed.
  */
-const configuredBasePath =
-  process.env.NEXT_PUBLIC_BASE_PATH ??
-  (process.env.NODE_ENV === "production" ? "/Portfolio-2.0" : "");
+const configuredBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export const basePath = configuredBasePath.replace(/\/$/, "");
 

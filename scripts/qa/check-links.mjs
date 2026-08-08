@@ -54,7 +54,7 @@ const CONCURRENCY = 8;
  * migration's Phase 4; a guard over surfaces that are being deleted would
  * be work that has to be deleted with them.
  */
-const SITE = "https://yadava5.github.io/Portfolio-2.0";
+const SITE = "https://ayush-yadav.com";
 const GLYPH_SOURCES = ["src/run/index.html"];
 const glyphFails = [];
 const glyphSeen = { internal: 0, external: 0 };

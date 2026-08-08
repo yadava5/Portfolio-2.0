@@ -4,31 +4,38 @@
  * WHY LINKS COME IN TWO GRAMMARS, AND THE RULE THAT DECIDES. A link that
  * stays inside the record room is RELATIVE ("../../evidence/"), so the
  * staging tree previews byte-identically under any prefix — file://, a
- * bare localhost, or the /Portfolio-2.0 deploy. A link that crosses the
- * seam to the run is the full published URL, for two reasons that are the
- * same reason: the run itself cites the archive by its published address
+ * bare localhost, or the deployed root. A link that crosses the seam to
+ * the run is the full published URL, for two reasons that are the same
+ * reason: the run itself cites the archive by its published address
  * (every ¶ handoff does), and `check-crosswalk.mjs` asserts the rejoin
- * href is EXACTLY `https://…/Portfolio-2.0/#<station.id>` — the seam is a
+ * href is EXACTLY `https://ayush-yadav.com/#<station.id>` — the seam is a
  * citation between two publications, not a path inside one.
+ *
+ * The relative grammar is what made the move to `ayush-yadav.com` cheap:
+ * it is prefix-independent by construction, so dropping the base path
+ * changed nothing here except the two sentences above and the dead strip
+ * in `sitePath()` below.
  */
 import { esc } from "./html.mjs";
 
 /**
  * A site-absolute path from the data layer, re-addressed for one page.
  *
- * The data layer bakes `withBasePath()` in at compile time, and under
- * plain node that base is "" — so artifact hrefs arrive as "/images/…".
- * Served at the GitHub Pages subpath those would 404. Rather than depend
- * on the environment the data was compiled in, strip any base that is
- * present and go relative from the page's own depth, which is correct
- * under every prefix including none.
+ * The data layer bakes `withBasePath()` in at compile time, so artifact
+ * hrefs arrive as "/images/…". Going relative from the page's own depth
+ * is correct under every prefix including none, which is why this
+ * function survives the move to a domain root unchanged in behaviour.
+ *
+ * It used to also strip a leading "/Portfolio-2.0" — the subpath the site
+ * was served under as a GitHub Pages project page — because the base the
+ * data was compiled with depended on the environment. That base is now
+ * empty in every configuration (`src/lib/basePath.ts`), so the strip could
+ * never fire again; it is deleted rather than left as a literal that
+ * quietly asserts an address the site no longer has.
  */
 export function sitePath(prefix, href) {
   if (!href.startsWith("/") || href.startsWith("//")) return href;
-  const bare = href.startsWith("/Portfolio-2.0/")
-    ? href.slice("/Portfolio-2.0".length)
-    : href;
-  return `${prefix}${bare.slice(1)}`;
+  return `${prefix}${href.slice(1)}`;
 }
 
 /**

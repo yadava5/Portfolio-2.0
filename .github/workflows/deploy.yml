@@ -54,19 +54,27 @@ jobs:
       #
       # verify:portfolio already IS the build: it runs `npm run build` itself
       # under exactly the configuration this job used to set inline
-      # (NODE_ENV=production, NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 — see
+      # (NODE_ENV=production, NEXT_PUBLIC_BASE_PATH= — see
       # DEPLOY_ENV in the script), and `test:seo` and `test:proof` are two of
       # its nineteen steps. Replacing the three steps with the validator adds
       # sixteen gates and removes a second, divergent copy of the deploy env.
       #
       # --no-e2e IS LOAD-BEARING, NOT A SHORTCUT. The browser-smoke step
-      # rebuilds with NEXT_PUBLIC_BASE_PATH= (empty) and re-runs
-      # build-home.mjs, so out/ AFTERWARDS is not the artifact that was
-      # hashed — the script says so in its own closing note. Running the full
-      # validator here would upload the empty-basePath build to production.
-      # Every other step reads out/ without rewriting it, so out/ at upload
-      # time is the deploy build. The five-browser smoke stays in CI, where
-      # nothing is shipped from the tree it leaves behind.
+      # rebuilds and re-runs build-home.mjs, so out/ AFTERWARDS is a rebuild
+      # rather than the artifact that was hashed — the script says so in its
+      # own closing note. Every other step reads out/ without rewriting it,
+      # so out/ at upload time is the deploy build. The five-browser smoke
+      # stays in CI, where nothing is shipped from the tree it leaves behind.
+      #
+      # The gap this used to close is currently zero and the flag stays. When
+      # the site was a project page the smoke rebuilt with an EMPTY base path
+      # against a deploy that used /Portfolio-2.0, so running the full
+      # validator here would have uploaded a build whose every asset URL was
+      # wrong. On ayush-yadav.com the deploy base path is empty too, and the
+      # two builds were measured byte-identical for index.html. That is two
+      # settings coinciding, not an invariant — what is uploaded must not
+      # depend on it, so the deploy still refuses to run the step that
+      # rewrites what it is about to ship.
       - name: Build and verify the portfolio (deploy configuration)
         run: node scripts/qa/verify-portfolio.mjs --no-e2e
 

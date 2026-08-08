@@ -188,7 +188,7 @@ export const siteMetadata = {
   description:
     "Ayush Yadav’s portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
   /** Site URL */
-  url: "https://yadava5.github.io/Portfolio-2.0",
+  url: "https://ayush-yadav.com",
   /**
    * Default Open Graph image — the home card (CRITIC-LEDGER F25). Real
    * raster, rendered from the data layer by

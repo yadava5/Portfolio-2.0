@@ -5,7 +5,7 @@ stations from dawn to nightfall, with a record room behind it. Every number on t
 page terminates in something you can open — a commit, a benchmark JSON, a CI run —
 and the build refuses to ship if one of those links has died.
 
-**Live:** <https://yadava5.github.io/Portfolio-2.0/>
+**Live:** <https://ayush-yadav.com/>
 
 ## What this repository actually is
 
@@ -41,7 +41,14 @@ leaving for the published site. Nothing on disk changes.
 is still live — `src/lib/basePath.ts` reads it and both workflows set it — and
 renaming it is a four-file change with a gate on each, so it kept the name and lost
 the framework. Build the deploy artifact with
-`NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build`.
+`NODE_ENV=production NEXT_PUBLIC_BASE_PATH= npm run build`.
+
+It is **empty** in every configuration now. The site used to be a GitHub Pages
+project page served under `/Portfolio-2.0`; on `ayush-yadav.com` it is served at
+the root, so the prefix and the origin moved in the same commit. Setting the
+variable to a non-empty value still works and still prefixes every asset URL —
+that is how a subpath preview would be built — but nothing in this repository
+does it.
 
 ## Verify it
 

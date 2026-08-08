@@ -23,6 +23,18 @@
  *     is inspecting an artifact nobody deploys. So every such check runs here
  *     BEFORE the browser step, and the browser step is always last.
  *
+ *     THE DIVERGENCE THAT MOTIVATED THAT ORDER IS CURRENTLY ZERO, and the order
+ *     stays anyway. The deploy base path became "" when the site moved to
+ *     ayush-yadav.com, so the e2e rebuild and the deploy build now agree: at
+ *     f1a194d the out/index.html left behind by the browser smoke hashed to
+ *     336c00ef…, byte-identical to the pinned deploy hash. Measured, not assumed.
+ *     But that equality is a coincidence of two configurations happening to
+ *     match, it was proven for index.html and not for every file in out/, and it
+ *     evaporates the moment anyone sets a non-empty base path for a preview. An
+ *     ordering invariant that holds only while two independent settings agree is
+ *     not an invariant, so the order is kept and the reason is restated: out/ at
+ *     any point must be the artifact the step reading it means to read.
+ *
  * WHAT IT DOES NOT DO. It does not prove the thing was worth doing, and it does
  * not cover the whole site. Where a gate reads something other than what its name
  * suggests, that is printed beside it rather than left for the next reader to
@@ -59,7 +71,7 @@ const ARTIFACT_ONLY = argv.includes("--artifact-only");
 const DEPLOY_ENV = {
   ...process.env,
   NODE_ENV: "production",
-  NEXT_PUBLIC_BASE_PATH: "/Portfolio-2.0",
+  NEXT_PUBLIC_BASE_PATH: "",
 };
 
 const results = [];
@@ -275,6 +287,18 @@ function goldenHash() {
     baseline.runSourceSha256 = runSource;
     baseline.commit = commit;
     baseline.recordedAt = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+    /* buildEnv is DERIVED from the env the hash was actually taken under, not
+       hand-maintained beside it. It used to be a literal that --rebaseline did
+       not touch, and on the move to ayush-yadav.com it kept asserting
+       NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 while the numbers next to it were
+       measured at the root — the same shape of stale-companion-field the
+       `commit` pairing above already exists to catch, in the one field nothing
+       reads. Recording it from DEPLOY_ENV costs one line and removes the
+       possibility. */
+    baseline.buildEnv = {
+      NODE_ENV: DEPLOY_ENV.NODE_ENV,
+      NEXT_PUBLIC_BASE_PATH: DEPLOY_ENV.NEXT_PUBLIC_BASE_PATH,
+    };
     writeFileSync(BASELINE, JSON.stringify(baseline, null, 2) + "\n");
     /* `commit` is HEAD, which is the PARENT of the commit this baseline will
        land in — the change is still uncommitted while this runs. That was
@@ -457,8 +481,10 @@ if (ARTIFACT_ONLY) {
 }
 if (!NO_E2E && !ARTIFACT_ONLY) {
   say(
-    "\nNote: out/ now holds the empty-basePath e2e rebuild, not the deploy build\n" +
-      "that was hashed. Anything inspecting out/ from here must rebuild first:\n" +
-      "  NODE_ENV=production NEXT_PUBLIC_BASE_PATH=/Portfolio-2.0 npm run build"
+    "\nNote: out/ now holds the e2e rebuild, not the deploy build that was hashed.\n" +
+      "Since the deploy base path became empty these two agree — index.html was\n" +
+      "measured byte-identical — but that is two settings coinciding, not a\n" +
+      "guarantee. Anything inspecting out/ from here should rebuild first:\n" +
+      "  NODE_ENV=production NEXT_PUBLIC_BASE_PATH= npm run build"
   );
 }

@@ -25,7 +25,7 @@ import path from "node:path";
 const root = process.cwd();
 const argv = process.argv.slice(2);
 const outDir = path.resolve(root, argv.find((a) => !a.startsWith("--")) ?? "out");
-const siteUrl = "https://yadava5.github.io/Portfolio-2.0";
+const siteUrl = "https://ayush-yadav.com";
 if (!fs.existsSync(outDir)) {
   console.error(`Static SEO check failed: no export at ${outDir}`);
   process.exit(1);
