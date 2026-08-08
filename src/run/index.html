@@ -2209,7 +2209,25 @@ h1[data-np-measuring] .np-ch {
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
           <h3>run 042 — the manifest, complete.</h3>
-          <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing</p>
+          <!-- 042 IS A SERIAL AND THE PAGE NOW SAYS SO. The owner asked whether
+               the number should be static "so someone who is approving it and
+               comes back after a couple of days" does not see it move — and it
+               already is: a hard-coded literal, no storage, no cookie, no date
+               maths, identical for every visitor on every visit including
+               incognito. Nothing needed to change about the number.
+               What his question actually surfaced is an AFFORDANCE mismatch: a
+               zero-padded three-digit serial sitting beside a clock that DOES
+               advance as you scroll reads as a counter, and every explanation
+               of it lived in code comments no reader sees. He is the second
+               person that adjacency will fool, not the last. One line retires
+               the misread, and it sits here rather than at the masthead because
+               the reader in his scenario is the approver — between "the
+               manifest, complete." and the button they came to press.
+               A date token was considered and rejected: "run 042 · 2026-08"
+               reads as "last touched in August" by October, which manufactures
+               the staleness it was meant to prevent. -->
+          <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing<br>
+            042 is the day&rsquo;s serial, not a visit counter &mdash; the number holds; only the light moves.</p>
           <ul class="gl">
             <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">rules macro-f1 0.9791 · 96-sample gate</span></li>
             <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,186 passed · 0 skipped — 635 fe + 551 be</span></li>
