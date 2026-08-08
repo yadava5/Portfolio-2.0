@@ -303,7 +303,10 @@ jobs:
   proof-manifest:
     name: 🧾 Proof Manifest
     runs-on: ubuntu-latest
-    needs: [format, eslint, typecheck]
+    # `build` was added to `needs` on 2026-08-07 so this job can download the
+    # static export it already produces. See the note on the links step below:
+    # without a built `out/`, check-links reads 12 URLs instead of 57.
+    needs: [format, eslint, typecheck, build]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -316,6 +319,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # The built tree, taken from the `build` job rather than rebuilt here.
+      # Rebuilding would also work and was the obvious move; downloading is
+      # chosen because two builds in one workflow can disagree, and then the
+      # link gate would be asserting against a tree no other job checked.
+      - name: Download the static export
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export
+          path: out
 
       - name: Check proof coverage
         run: npm run test:proof
@@ -386,14 +399,37 @@ jobs:
       # label and the link agreed, and both named a commit that was not
       # there. Only a request finds it.
       #
-      # This job does NOT build `out/`, and the sentence that used to stand
-      # here said it did. `check-links.mjs` therefore takes its source
-      # fallback in CI and fetches 12 URLs from four files, where a built
-      # tree would give it 57 from ten pages. That is a real coverage gap,
-      # not a formality: it is recorded in `scripts/qa/check-links.mjs`,
-      # which had this same disagreement pointed at the wrong line number.
+      # CLOSED 2026-08-07. This job used to NOT build `out/`, so
+      # `check-links.mjs` took its source fallback. Both halves measured on
+      # the day, by running it with and without a built tree:
+      #
+      #   no out/   ->  12 pinned links across 4 SOURCE files
+      #   with out/ ->  54 pinned links across 10 BUILT pages
+      #
+      # so four fifths of the links a reader can click were never requested
+      # by anything. The comment that stood here documented that gap as known
+      # and accepted.
+      #
+      # OVERRIDING A RECORDED DECISION, deliberately and in writing rather
+      # than by silently deleting the note: the owner's ask is that all the
+      # URLs work. The step above downloads the static export, so the
+      # fallback no longer fires.
+      #
+      # The guard asserts the CONDITION (a built tree is present), not the
+      # count. A hard-coded 54 would go red on any honest change to the link
+      # set — the pin consolidation in this same commit already moved it from
+      # 57 to 54 by collapsing duplicate URLs — and a gate that fails on a
+      # deliberate edit gets deleted. What must never happen silently is the
+      # fallback firing, and that is exactly what this catches.
       - name: Check pinned artifact links resolve
-        run: npm run test:links
+        run: |
+          if [ ! -f out/index.html ]; then
+            echo "::error::out/index.html is missing — the static export did not download."
+            echo "check-links would silently fall back to reading source files:"
+            echo "12 links across 4 files instead of the full built set."
+            exit 1
+          fi
+          npm run test:links
 
       # Nothing in this repository had ever made a request to a `liveUrl` or a
       # `systemCardUrl`. `atlas.spec.ts` asserts only that the strings agree in
