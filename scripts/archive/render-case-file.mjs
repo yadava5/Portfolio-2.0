@@ -82,11 +82,48 @@ const REVIEW_RECEIPT = {
   "visual-assist": "71 passed · 0 skipped",
 };
 
+/* THE SLIP QUOTES THE WAYBILL ADDRESSED TO THIS FILE, and once a station could
+   declare two that stopped being the same thing as "the station's consignment".
+   `stations.ts` widened to an array on 2026-08-08 and ¶03 now declares both the
+   shaped table (→ the line) and the master inventory (→ the case file). Reading
+   the field as a scalar coerced it to "A,B" and printed a bare-comma join.
+
+   The array EXPOSED this; it did not create it. Arrival semantics — "freight
+   arrives at the station it is about", §6.1 — apply one level down: a document's
+   slip records what was consigned TO THAT DOCUMENT. The slip has been quoting
+   "→ the line" since it was written, and that was only approximately right while
+   a station declared one string.
+
+   And the complete-both-of-them reading would be worse than coarse, it would be
+   FALSE. The yard's own handoff: "only the inventory is checked in — the rest
+   are read off miami's own systems and cannot be published." A slip listing the
+   shaped table would be the record room printing a receipt for freight it does
+   not hold and is not permitted to hold.
+
+   So: select by address, never by index, and never coerce. Zero or two matches
+   is a broken declaration and aborts the build — guessing is how a slip ends up
+   approximately right again. */
+const CASE_FILE_ADDRESS = "→ the case file";
+function waybillFor(station) {
+  const c = station.consignment;
+  if (!Array.isArray(c)) return c;
+  const addressed = c.filter((w) => w.endsWith(CASE_FILE_ADDRESS));
+  if (addressed.length !== 1) {
+    throw new Error(
+      `render-case-file: ${station.id} declares ${c.length} waybills and ${addressed.length} of them end "${CASE_FILE_ADDRESS}".\n` +
+        `  The arrival slip quotes the one addressed to this file, so exactly one must be.\n` +
+        `  declared: ${JSON.stringify(c, null, 2)}\n` +
+        `  Do not fall back to [0] — a slip quoting freight addressed elsewhere is a false receipt.`
+    );
+  }
+  return addressed[0];
+}
+
 function arrivalSlip({ station, study, runUrl }) {
   const at = `<a href="${esc(runUrl)}/#${esc(station.id)}">${esc(station.name)} — ¶ ${stationNo(station)} · ${esc(station.clock)}</a>`;
   const line =
     station.dossier === study.projectId
-      ? `↳ <span class="dep">consigned at</span> ${at} · <span class="dep">waybill:</span> ${esc(station.consignment)}`
+      ? `↳ <span class="dep">consigned at</span> ${at} · <span class="dep">waybill:</span> ${esc(waybillFor(station))}`
       : `↳ <span class="dep">filed at</span> ${at} · <span class="dep">receipt:</span> ${esc(REVIEW_RECEIPT[study.projectId])}`;
   /* The lamp. The archive holds one light on purpose — a scroll-keyed
      arc would assign a time of day to a jump target — but the conceit

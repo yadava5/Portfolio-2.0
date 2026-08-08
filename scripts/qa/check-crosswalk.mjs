@@ -279,13 +279,53 @@ for (const study of projectCaseStudies) {
     }
   }
 
+  /* THE SLIP QUOTES THE WAYBILL ADDRESSED TO THIS FILE — one element, not the
+     station's whole declaration.
+
+     This read `html.includes(station.consignment)` against a field that became
+     an array on 2026-08-08, so BOTH sides coerced it to "A,B": the renderer
+     printed a bare-comma join and the gate looked for a bare-comma join and
+     found one. Two instruments agreeing with each other and disagreeing with
+     the reader — the failure shape this file's own header is about. It passed.
+
+     Three assertions now, none of them on a joined string, and the third is a
+     tripwire rather than a check: it exists so that particular agreement cannot
+     be reconstructed silently by anyone who reaches for `${...}` on this field
+     again. */
   if (byDossier.has(study.projectId) && station.consignment) {
-    if (html.includes(station.consignment)) slips++;
-    else
+    const declared = Array.isArray(station.consignment)
+      ? station.consignment
+      : [station.consignment];
+    const addressed = declared.filter((w) => w.endsWith("→ the case file"));
+    /* which one the slip is owed: the addressed one when the station declares
+       several, the only one when it declares one */
+    const owed = declared.length === 1 ? declared[0] : addressed[0];
+
+    if (declared.length > 1 && addressed.length !== 1) {
       fail(
-        `${study.projectId}: arrival slip does not quote ${station.id}'s consignment verbatim\n` +
-          `      wanted: ${station.consignment}`
+        `${station.id} declares ${declared.length} waybills but ${addressed.length} end "→ the case file" — the slip cannot know which one it is owed`
       );
+    } else if (!html.includes(owed)) {
+      fail(
+        `${study.projectId}: arrival slip does not quote ${station.id}'s waybill verbatim\n` +
+          `      wanted: ${owed}`
+      );
+    } else {
+      slips++;
+      for (const other of declared.filter((w) => w !== owed)) {
+        if (html.includes(other))
+          fail(
+            `${study.projectId}: arrival slip also quotes "${other}", which is addressed elsewhere — the yard's own handoff says only the inventory is checked in, so a slip listing the rest is a receipt for freight this file does not hold`
+          );
+      }
+      if (declared.length > 1) {
+        const joined = declared.join(",");
+        if (html.includes(joined))
+          fail(
+            `${study.projectId}: arrival slip contains the COERCED join "${joined.slice(0, 60)}…" — an array was interpolated into a template somewhere. Select the addressed waybill; never join.`
+          );
+      }
+    }
   }
 }
 
