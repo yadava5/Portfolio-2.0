@@ -2670,7 +2670,7 @@ function cacheGeometry() {
   /* hand the darkening window to arcColor, as fractions of the beat */
   dusk7.start = (yDark + vh * 0.62 - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
-  window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h })); /* probe hook */
+  window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h, kick: b.kick })); /* probe hook — kick is the masthead clock's anchor */
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
@@ -4810,11 +4810,20 @@ let lastClock = -1, lastPhase = -1;
    check-stations already binds those two together. */
 function clockSegment(lineY) {
   const anchor = (i) => (i === 0 ? vh * READ_LINE : beats[i].kick);
-  /* never past the gate: ¶13 keeps its own driver, below */
-  const last = Math.min(RUN_BEATS - 1, beats.length - 1);
+  const last = beats.length - 1; /* ¶13's kicker — the day's third fixed point */
+  /* ¶13 IS NOT REACHABLE UNTIL THE GATE IS SIGNED. Its section is height 0
+     until then, the document ends at the gate, and a reader who has not
+     approved has not been given a next morning — so the last corridor is a
+     hold at 22:41 rather than a roll toward an hour they cannot get to. The
+     kicker still has a position while the box is collapsed, so the guard is
+     on the BOX HEIGHT: without it the masthead reads about 02:13 at the
+     bottom of an unapproved page, rolling toward a station that is not there. */
+  const morningOpen = beats[last].h > 0;
   let seg = 0;
   for (let i = 0; i <= last; i++) if (lineY >= anchor(i)) seg = i;
-  const a = anchor(seg), b = anchor(Math.min(seg + 1, last));
+  if (seg >= last) return { seg: last, t: 0 };
+  if (seg === last - 1 && !morningOpen) return { seg, t: 0 };
+  const a = anchor(seg), b = anchor(seg + 1);
   return { seg, t: b > a ? clamp((lineY - a) / (b - a), 0, 1) : 0 };
 }
 
@@ -4829,14 +4838,8 @@ function setMast(beat, p) {
      a reader can check the masthead against to the minute. The promise is now
      the hour and the KICKER can never disagree — see clockSegment() for the
      measurement that forced the re-scope. */
-  let m;
-  if (beat === RUN_BEATS - 1) m = CLOCKS[RUN_BEATS - 1];
-  else if (beat >= RUN_BEATS) {
-    m = Math.round(lerp(CLOCKS[RUN_BEATS - 1], CLOCKS[RUN_BEATS], dawnProgress(p))) % 1440;
-  } else {
-    const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
-    m = Math.round(lerp(a, b, clamp(p, 0, 1))) % 1440;
-  }
+  const a = CLOCKS[beat], b = CLOCKS[Math.min(beat + 1, CLOCKS.length - 1)];
+  const m = Math.round(lerp(a, b, clamp(p, 0, 1))) % 1440;
   if (m !== lastClock) { /* write only on minute change: no idle layout */
     lastClock = m;
     $("mclock").textContent = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
@@ -4997,11 +5000,11 @@ function work(y) {
   /* The masthead is the ONLY thing the kicker anchoring feeds — `beat`/`bp`
      stay the beat-box reading that the light, the dusk contract, the manifest
      and every fx window are derived from, all of which are separately measured
-     and gated. ¶13 keeps the box too: its roll is tied to the dawn light.
-     The phase name rides the same index as the hour, so the masthead is one
-     instrument rather than two that disagree in the corridors. */
-  if (beat >= RUN_BEATS) setMast(beat, bp);
-  else { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
+     and gated. ¶13 is anchored here too now; why its clock left the light is
+     at clockSegment(). The phase name rides the same index as the hour, so the
+     masthead is one instrument rather than two that disagree in the
+     corridors. */
+  { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
 
   /* fx: arrive → drift → depart, a pure function of position */
   if (FLAGS.has("nofx")) return;
@@ -5710,7 +5713,14 @@ function settleAll() {
      so there is nothing left here to settle. */
   scrubJet(1); scrubQuests(1);
   scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
-  setStamps(6); setMast(10, 1);
+  /* The still frame shows the run COMPLETE, held at the gate for a signature —
+     which is what an RM reader is offered, the approve button needing no
+     scroll. It reached 22:41 as the far endpoint of setMast(10, 1), so the hour
+     was the gate's while the phase name was "the references", whose own hour is
+     22:32: one instrument reading two stops, which is the defect this day was
+     spent removing everywhere else. setMast(11, 0) is the same minute, named by
+     the stop that owns it. */
+  setStamps(6); setMast(11, 0);
 }
 async function boot() {
   await document.fonts.ready.catch(() => {});
