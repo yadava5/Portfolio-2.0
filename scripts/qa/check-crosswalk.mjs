@@ -318,13 +318,6 @@ for (const study of projectCaseStudies) {
             `${study.projectId}: arrival slip also quotes "${other}", which is addressed elsewhere — the yard's own handoff says only the inventory is checked in, so a slip listing the rest is a receipt for freight this file does not hold`
           );
       }
-      if (declared.length > 1) {
-        const joined = declared.join(",");
-        if (html.includes(joined))
-          fail(
-            `${study.projectId}: arrival slip contains the COERCED join "${joined.slice(0, 60)}…" — an array was interpolated into a template somewhere. Select the addressed waybill; never join.`
-          );
-      }
     }
   }
 }
@@ -379,6 +372,42 @@ for (const file of pagesUnder(ARCHIVE)) {
         `${relative(ARCHIVE, file)}: links /#${id}, which is not an id in the run`
       );
     }
+  }
+}
+
+/* ══ no array reaches a page as its own coerced join ════════════════════
+   DERIVED FROM stations.ts, so a station that gains an array tomorrow is
+   covered without anyone remembering to add it here.
+
+   This started life as one tripwire on the arrival slip, where the coercion
+   was found. That was the instance; this is the class. The defect shape --
+   an instrument validated against another instrument instead of against the
+   reader -- has now happened three times in this repo: a cargo fixture
+   recorded from the rail it was checking, one regex per surface in
+   check-figures, and a renderer and its gate coercing an array the same way
+   and agreeing on the result. A syntactic lint over template literals would
+   fire on dozens of safe interpolations and teach people to edit the gate,
+   which this repo has already learned the hard way. So the guard is in the
+   READER'S FRAME instead: sweep the built artifact for the one string that
+   only the coercion can produce.
+
+   `["a","b"].join(",")` is meaningless English -- a comma with no space,
+   between two waybills that each end in an address. Nothing legitimate emits
+   it, so this has no false positives and needs no allow-list. */
+let joinSwept = 0;
+for (const station of STATIONS) {
+  if (!Array.isArray(station.consignment) || station.consignment.length < 2)
+    continue;
+  const joined = station.consignment.join(",");
+  joinSwept++;
+  for (const file of pagesUnder(ARCHIVE)) {
+    const html = page(file);
+    if (html && html.includes(joined))
+      fail(
+        `${relative(ARCHIVE, file)} contains the COERCED join of ${station.id}'s consignment:\n` +
+          `      "${joined.slice(0, 72)}…"\n` +
+          `      An array reached a template as \${...}. Select the element you mean — never join, never [0].`
+      );
   }
 }
 
@@ -496,6 +525,11 @@ const floors = [
      report "0 of 0, all good". Five is every project station except the one
      exempt, and the number only moves when automl's card is refreshed. */
   ["station rails citing their system card", railCitations, 5],
+  /* Two arrays declared today (¶03 the yard, ¶07 jetpack). Floored so the
+     sweep cannot report a clean run over an empty set — if `consignment`
+     ever stops being an array everywhere, this says so out loud rather than
+     printing "0 of 0, all good", which is how a guard retires itself. */
+  ["array consignments swept for a coerced join", joinSwept, 2],
 ];
 for (const [what, got, floor] of floors) {
   if (got < floor) fail(`only ${got} ${what}, expected at least ${floor}`);

@@ -98,6 +98,24 @@ export type Station = {
    * mid-parse. Labelling them would declare one thing twice. Unlabelled freight
    * may still ride freely; that remains drawing, not declaration.
    *
+   * NEVER INTERPOLATE THIS FIELD, and this warning is here rather than at the
+   * consumers because here is where the next union type gets declared. Within
+   * hours of the array landing, `render-case-file.mjs` put it in a template
+   * literal and shipped a bare-comma join to a live case file —
+   * `…→ the line,the master inventory →…` — and `check-crosswalk` did not
+   * catch it, because it asserted `html.includes(station.consignment)` and
+   * coerced the array exactly the same way. The gate looked for the join the
+   * renderer had just written, found it, and passed. Two instruments agreeing
+   * with each other and disagreeing with the reader.
+   *
+   * SELECT THE ELEMENT YOU MEAN, by a stable property, and fail loudly if the
+   * selection is not unique. Never `[0]`, never a join. The arrival slip
+   * selects the waybill ending "→ the case file" and aborts the build on zero
+   * or two matches; `check-crosswalk` now sweeps every built page for the
+   * coerced join of every array declared here, derived from this table, so a
+   * station that gains an array tomorrow is guarded without anyone
+   * remembering to add it.
+   *
    * THE CEILING. A declared waybill's traveller must sit at `off <= ~1.5`.
    * `check-cargo-fixture` attributes a label to a corridor by the midpoint of
    * its paint band, and past roughly 1.5 that midpoint crosses into the next

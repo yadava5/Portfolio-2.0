@@ -27,6 +27,24 @@
  * is recorded so the next person to open the painter finds a measurement
  * rather than an impression.
  *
+ * CLOSED 2026-08-08: 11/48 ON CORRIDOR 6 IS THE ACCEPTED CEILING.
+ * Re-measured after the three marks were re-cut and two waybills added, and
+ * against the shipped build for comparison — every corridor byte-identical,
+ * corridor 6 still 11, the two new labels at 4/48 (corridor 1) and zero
+ * (corridor 5). Reopen on exactly two triggers: any corridor measuring ABOVE
+ * 11/48 after a future change, or a human reporting the collision. Neither
+ * has happened; the number has been stable since round 2, and spending a
+ * drawing-model change on a probe figure no reader has complained about is
+ * optimisation ahead of the complaint.
+ *
+ * AND AN ERRATUM, because a wrong prediction recorded is worth more than a
+ * quiet correction. The acceptance criterion for the re-cut said corridor 6
+ * "must come in under its current 11/48" — and stated the mechanism that
+ * makes that impossible in the same sentence: labels drive this number, not
+ * mark geometry. Only `j === 0` paints a waybill, so dropping beat 6 from
+ * `n: 2` to `n: 1` removed a `j === 1` that had never printed text. The
+ * measurement was right and the criterion was wrong.
+ *
  *   node docs/design-lab/probe-waybill-overlap.mjs [outDir]
  */
 import { createServer } from "node:http";
