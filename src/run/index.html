@@ -2898,7 +2898,14 @@ const TRAV = [
       c.moveTo(1.8, -6); c.lineTo(1.8, 2);
       c.stroke();
       c.fillStyle = inkC["--pine"]; c.fillRect(2.2, -5.6, 2.9, 1.8); /* the flagged field */ } },
-  { beat: 1, n: 1, off: 0.55, label: null, draw: (c) => { /* the inventory: the one part checked in */
+  /* DECLARED SINCE 2026-08-08, having ridden anonymously since it was drawn.
+     The inventory is a second ARTIFACT, not a second state of the table — ¶03's
+     own handoff names it — so under the array rule in stations.ts it is owed a
+     waybill. "the case file" and not "checked in": the pine check below and the
+     handoff both already say checked-in, and a waybill names the artifact and
+     its address, nothing more. `off: 0.55` keeps it under the ~1.5 ceiling the
+     arrival binding imposes. */
+  { beat: 1, n: 1, off: 0.55, label: "the master inventory → the case file", draw: (c) => { /* the inventory: the one part checked in */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
       c.beginPath(); c.rect(-8.5, -7.5, 13, 10); c.fill(); c.stroke();   /* the silos it came from */
       c.beginPath(); c.rect(-6.5, -5, 13, 10); c.fill(); c.stroke();
@@ -2945,6 +2952,20 @@ const TRAV = [
       c.stroke();
       c.fillStyle = inkC["--clay-g"]; /* the event, landed */
       c.fillRect(-6.2, 1.2, 2.2, 3); } },
+  /* the parsed pieces, riding behind the plan — so the corridor itself performs
+     the parse: raw chips astern, the committed plan ahead of them. UNLABELLED
+     BY DESIGN, and this is the case the array rule in stations.ts exists to
+     distinguish: a second waybill is owed to a second ARTIFACT, and these are
+     the same consignment mid-parse. Declaring them would declare one thing
+     twice, which is the drift this file keeps re-learning in other forms. The
+     when-chip is clay, the two it sits between are plate — the same
+     one-of-three colouring the sentence rule above uses. */
+  { beat: 3, n: 1, off: 0.5, label: null, draw: (c) => { /* the three parsed chips */
+      c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
+      c.beginPath(); c.roundRect(-8, -2, 5, 4, 1.5); c.fill(); c.stroke();
+      c.beginPath(); c.roundRect(3, -2, 5, 4, 1.5); c.fill(); c.stroke();
+      c.fillStyle = inkC["--clay-g"];
+      c.beginPath(); c.roundRect(-2.5, -2, 5, 4, 1.5); c.fill(); } },
   { beat: 4, n: 1,
     label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
     draw: (c) => {
@@ -2966,7 +2987,13 @@ const TRAV = [
       c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.3; c.strokeRect(-9, -5.5, 18, 11);
       c.beginPath(); c.moveTo(-3, -5.5); c.lineTo(-3, 5.5); c.moveTo(3, -5.5); c.lineTo(3, 5.5); c.stroke();
       c.fillStyle = inkC["--clay-g"]; c.fillRect(-10.5, -2, 3, 4); } },
-  { beat: 5, n: 1, off: 0.55, label: null, draw: (c) => { /* the committed bench: the same stream, twice */
+  /* DECLARED SINCE 2026-08-08. jetpack's handoff names this one outright —
+     "the member lands in the benchmark ledger @ 2caacd0" — so the corridor was
+     carrying two artifacts and admitting to one. The waybill carries no sha and
+     no throughput, for the reason already stated below: those numbers live in
+     the prov line and in fig. 07's bars, and a third copy is a third place for
+     them to drift. */
+  { beat: 5, n: 1, off: 0.55, label: "the committed bench → the benchmark ledger", draw: (c) => { /* the committed bench: the same stream, twice */
       c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1;
       c.beginPath(); c.moveTo(-10, -6); c.lineTo(-10, 6); c.lineTo(9, 6); c.stroke(); /* the axis */
       c.fillStyle = inkC["--ink-2"]; c.fillRect(-9, -4.4, 4, 3.2);        /* one thread */

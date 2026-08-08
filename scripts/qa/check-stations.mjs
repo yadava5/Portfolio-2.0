@@ -70,22 +70,41 @@ const runText = run
    build step, and `stations.ts` is TypeScript. Field order is part of the
    pattern on purpose — a reordered or missing field drops the entry, the count
    check below fires, and the gate reports a broken parse instead of passing on
-   a subset it silently stopped seeing. */
+   a subset it silently stopped seeing.
+
+   `consignment` admits three shapes since 2026-08-08: `null`, one quoted
+   string, or an ARRAY of them — a corridor may declare two artifacts. The
+   array branch is deliberately narrow: `\[[^\]]*\]` cannot span a nested
+   bracket, so anything cleverer than a flat list of literals fails the parse
+   and trips the count check rather than being half-read. Do NOT loosen this
+   into a fallback; a gate that quietly checks a subset is worse than no gate,
+   and that warning is older than the array. */
 const parsed = [
   ...stationsSrc
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .matchAll(
-      /beat:\s*(\d+),\s*id:\s*"([^"]*)",\s*name:\s*"([^"]*)",\s*kicker:\s*"([^"]*)",\s*clock:\s*"([^"]*)",\s*consignment:\s*(null|"[^"]*"),\s*dossier:\s*(null|"[^"]*"),/g
+      /beat:\s*(\d+),\s*id:\s*"([^"]*)",\s*name:\s*"([^"]*)",\s*kicker:\s*"([^"]*)",\s*clock:\s*"([^"]*)",\s*consignment:\s*(null|"[^"]*"|\[[^\]]*\]),\s*dossier:\s*(null|"[^"]*"),/g
     ),
-].map((m) => ({
-  beat: Number(m[1]),
-  id: m[2],
-  name: m[3],
-  kicker: m[4],
-  clock: m[5],
-  consignment: m[6] === "null" ? null : m[6].slice(1, -1),
-  dossier: m[7] === "null" ? null : m[7].slice(1, -1),
-}));
+].map((m) => {
+  const raw = m[6];
+  let consignment;
+  if (raw === "null") consignment = null;
+  else if (raw.startsWith("[")) {
+    consignment = [...raw.matchAll(/"([^"]*)"/g)].map((q) => q[1]);
+    /* an array that parsed to nothing is a broken entry, not an empty
+       declaration — say so here rather than reporting "no waybill" later */
+    if (!consignment.length) consignment = ["<unparsed array>"];
+  } else consignment = raw.slice(1, -1);
+  return {
+    beat: Number(m[1]),
+    id: m[2],
+    name: m[3],
+    kicker: m[4],
+    clock: m[5],
+    consignment,
+    dossier: m[7] === "null" ? null : m[7].slice(1, -1),
+  };
+});
 
 if (parsed.length !== sections.length) {
   console.error(
@@ -147,10 +166,23 @@ for (const s of parsed) {
     );
   }
 
+  /* `consignment` may be an array, so every entry is checked individually.
+     Flattening it into one string would let `runText.includes("a,b")` fail for
+     a reason that has nothing to do with either waybill, and — worse — a single
+     `.includes` on a joined string can PASS on a substring that no declaration
+     matches. One assertion per declared string, named by its index. */
+  const consignments = Array.isArray(s.consignment)
+    ? s.consignment
+    : s.consignment === null
+      ? []
+      : [s.consignment];
   for (const [field, value] of [
     ["kicker", s.kicker],
     ["clock", s.clock],
-    ["consignment", s.consignment],
+    ...consignments.map((c, i) => [
+      consignments.length > 1 ? `consignment[${i}]` : "consignment",
+      c,
+    ]),
   ]) {
     if (value === null) continue;
     if (!runText.includes(value)) {

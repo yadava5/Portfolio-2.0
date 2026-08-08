@@ -62,8 +62,8 @@ export type Station = {
   /** hh:mm, as the kicker prints it and as `CLOCKS` derives it */
   readonly clock: string;
   /**
-   * The waybill that ARRIVES at this stop, on the corridor that reaches it;
-   * null where nothing arrives.
+   * The waybill(s) that ARRIVE at this stop, on the corridor that reaches it;
+   * null where nothing arrives, one string for one artifact, an array for two.
    *
    * It used to read "the waybill this stop sends down its corridor", and the
    * inversion is the whole of §6.1. Freight was staged by where it departed,
@@ -73,15 +73,40 @@ export type Station = {
    * `¶` kicker on screen while it painted was the station the cargo was not
    * from. Applied's sorted mail was read at ¶05 Cadence.
    *
-   * So a station now declares what lands at it, corridor `beat - 1` carries
-   * it, and `check-cargo-fixture`'s arrival binding holds the render to this
-   * field. Exactly one string per station: `check-stations` parses this file
-   * as text and its pattern admits `null` or one quoted string, so a corridor
-   * carrying two DECLARED waybills is not expressible without changing that
-   * parser. Unlabelled freight may ride with it freely — that is drawing, not
-   * declaration.
+   * So a station declares what lands at it, corridor `beat - 1` carries it,
+   * and `check-cargo-fixture`'s arrival binding holds the render to this field.
+   *
+   * THE ARRAY, added 2026-08-08. This field read `string | null` and said so as
+   * law: "exactly one string per station… a corridor carrying two DECLARED
+   * waybills is not expressible without changing that parser." That was tooling
+   * describing its own shape and calling it doctrine, and two corridors were
+   * paying for it — the yard's master inventory and jetpack's committed bench
+   * are both real, distinct artifacts named in their stations' own handoff
+   * lines, and both rode anonymously because the regex in `check-stations`
+   * admitted one quoted string. The owner asked for the thing the tooling
+   * forbade ("multiple fig travelling along the rail, with the text"), so the
+   * parser was rewritten rather than the request refused.
+   *
+   * THE RULE THAT DECIDES WHETHER A SECOND WAYBILL IS OWED, because "two
+   * travellers" and "two consignments" are not the same claim:
+   *
+   *   a second waybill is for a second ARTIFACT.
+   *   a second STATE of the same artifact rides unlabelled.
+   *
+   * Cadence's corridor carries two travellers — the landed plan, and the parsed
+   * chips behind it — and declares one, because the chips are that same plan
+   * mid-parse. Labelling them would declare one thing twice. Unlabelled freight
+   * may still ride freely; that remains drawing, not declaration.
+   *
+   * THE CEILING. A declared waybill's traveller must sit at `off <= ~1.5`.
+   * `check-cargo-fixture` attributes a label to a corridor by the midpoint of
+   * its paint band, and past roughly 1.5 that midpoint crosses into the next
+   * `data-beat` — the label would be read as the next corridor's and the
+   * arrival binding would go red. `off: 1` with a label is proven in production
+   * (beat 0's credentials). The manifest at `off: 2` is above the ceiling and
+   * is one of the reasons it rides unnamed.
    */
-  readonly consignment: string | null;
+  readonly consignment: string | readonly string[] | null;
   /** the case file this stop files with — a `caseStudyIds` member, or null */
   readonly dossier: string | null;
 };
@@ -118,7 +143,14 @@ export const STATIONS: readonly Station[] = [
     name: "the yard",
     kicker: "¶ 03 · the yard",
     clock: "07:52",
-    consignment: "five years of logs, given shape → the line",
+    /* Two artifacts, and the station names both: the shaped table is what five
+       years of logs became, and the master inventory is "only the inventory is
+       checked in" — the one thing that leaves the site's own boundary. It rode
+       unlabelled until the array existed. */
+    consignment: [
+      "five years of logs, given shape → the line",
+      "the master inventory → the case file",
+    ],
     /* a job, not a project — but one artifact of it is checked in */
     dossier: "master-inventory",
   },
@@ -161,7 +193,16 @@ export const STATIONS: readonly Station[] = [
     name: "jetpack-compress",
     kicker: "¶ 07 · fourth station",
     clock: "19:36",
-    consignment: "one valid gzip member → manifest",
+    /* Two artifacts, and this station's handoff names the second outright —
+       "the member lands in the benchmark ledger @ 2caacd0". The member and the
+       bench are different things; the bench rode unlabelled until the array
+       existed. No sha and no throughput in either waybill: both numbers are
+       already stated in the prov line and in fig. 07's bars, and a third copy
+       is a third place for them to drift. */
+    consignment: [
+      "one valid gzip member → manifest",
+      "the committed bench → the benchmark ledger",
+    ],
     /* no dossier in the archive at all — the station hands its member to the
        committed benchmark ledger instead. Not the same as LifeQuest below. */
     dossier: null,
