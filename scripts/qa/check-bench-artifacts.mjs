@@ -65,6 +65,12 @@ import { resolve } from "node:path";
 const root = process.cwd();
 const read = (p) => readFileSync(resolve(root, p), "utf8");
 
+/* The canonical origin, spelled the same way check-crosswalk.mjs:55 and
+   check-links.mjs:57 spell it. Used here only to tell an anchor that stays
+   on the site from one that leaves it, which the arrow glyph must agree
+   with — see the bench-slip block below. */
+const SITE = "https://yadava5.github.io/Portfolio-2.0";
+
 /* Git's blob sha for each vendored record: sha1("blob <len>\0" + bytes).
    Computed here rather than shelled out to `git hash-object` so the gate holds
    in a tree with no git available, and so it cannot be fooled by a .gitattributes
@@ -537,7 +543,15 @@ if (
   const blocks = runHtml
     .split(/<div class="bench\b/)
     .slice(1)
-    .map((b) => b.slice(0, b.indexOf("</figcaption>")));
+    .map((b) => {
+      const end = b.indexOf("</figcaption>");
+      /* -1 would make slice(0,-1) swallow the rest of the page and let this
+         gate satisfy itself from an unrelated section — a check that quietly
+         widens its own window is worse than one that fails. */
+      if (end === -1)
+        fail("a bench block has no </figcaption> to bound it — cannot read it");
+      return b.slice(0, end);
+    });
   if (blocks.length !== 2)
     fail(
       `read ${blocks.length} bench blocks in the run, expected 2 — ¶06 and ¶07`
@@ -545,17 +559,29 @@ if (
   else {
     for (const [i, block] of blocks.entries()) {
       const where = `the ${i === 0 ? "¶06" : "¶07"} bench block`;
-      /* either arrow: ⟶ stays on the site (¶06 → /evidence), ↗ leaves it
-         (¶07 → the benchmarks README, there being no ledger row for the
-         gzip throughput). The sha is what this is reading; the glyph only
-         says where the argument lives. */
-      const cited = block.match(/@ ([0-9a-f]{7}) [⟶↗]<\/a>/);
+      const cited = block.match(/@ ([0-9a-f]{7}) ([⟶↗])<\/a>/);
       const record = block.match(
         /href="(?:[^"]*\/)?proof\/([a-z0-9-]+-([0-9a-f]{7})\.json)"[^>]*\bdownload\b/
       );
       if (!cited) {
         fail(`${where} prints no "@ <sha>" slip`);
         continue;
+      }
+      /* The arrow is this page's only "you are leaving" signal — measured
+         2026-08-08, none of the run's 36 external anchors carries
+         target="_blank", so ⟶ and ↗ are the whole contract. ¶06 cites
+         /evidence and stays; ¶07 cites the benchmarks README and goes.
+         Repointing one without turning its arrow would tell the reader the
+         wrong thing about where the click lands, which is the defect this
+         whole change was made to remove. */
+      const sheadHref = block.match(/<div class="shead"[\s\S]*?<a href="([^"]+)"/);
+      if (sheadHref) {
+        const leaves = !sheadHref[1].startsWith(SITE);
+        if (leaves !== (cited[2] === "↗"))
+          fail(
+            `${where} points at ${sheadHref[1]} and marks it "${cited[2]}".\n` +
+              `      ⟶ is for a destination on this site, ↗ for one that leaves it.`
+          );
       }
       if (!record) {
         fail(

@@ -292,6 +292,14 @@ function systemDiagram(arch, projectId) {
     else if (f !== undefined && t === undefined) outs[f].push(e);
     else if (f === undefined && t !== undefined && t > 0) ins[t].push(e);
     else if (t !== undefined && (f === undefined || t <= f)) loops.push(e);
+    /* A forward skip has BOTH ends on the spine, so "never touches the
+       spine" would send the author looking in exactly the wrong place. */
+    else if (f !== undefined && t !== undefined && t > f + 1)
+      fail(
+        `edge ${e.from} ⟶ ${e.to} skips ${t - f - 1} stage(s) of the spine — ` +
+          `the trunk draws neighbours only. Put the skipped stage(s) on a siding, ` +
+          `or reorder \`flow\` so this edge joins adjacent stops.`
+      );
     else fail(`edge ${e.from} ⟶ ${e.to} never touches the spine`);
   }
   trunk.forEach((edges, i) => {
