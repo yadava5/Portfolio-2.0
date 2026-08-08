@@ -4,7 +4,7 @@
     "Desktop only (1440px): the run paints no canvas text on a stacked layout.",
     "Re-record ONLY when the cargo was changed deliberately, and read the diff."
   ],
-  "recordedAt": "2026-08-07T07:29:30Z",
+  "recordedAt": "2026-08-08T04:37:28Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -16,6 +16,10 @@
     },
     {
       "label": "five years of logs, given shape → the line",
+      "corridor": 1
+    },
+    {
+      "label": "the master inventory → the case file",
       "corridor": 1
     },
     {
@@ -32,6 +36,10 @@
     },
     {
       "label": "one valid gzip member → manifest",
+      "corridor": 5
+    },
+    {
+      "label": "the committed bench → the benchmark ledger",
       "corridor": 5
     },
     {
