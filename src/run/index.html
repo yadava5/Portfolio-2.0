@@ -2493,7 +2493,16 @@ void main(){
 })();
 
 /* ————— geometry caches ————— */
-const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0, h: 0 }));
+/* Where the reader's eye is taken to be, as a fraction of the viewport. It was
+   a bare 0.62 inside work(); the masthead clock now anchors on the same line,
+   and two copies of a number that must agree is how this page has drifted
+   before. */
+const READ_LINE = 0.62;
+/* `kick` is the page-space CENTRE of the beat's ¶ kicker, and it is what the
+   masthead hour lerps between — see clockSegment(). Measured in cacheGeometry
+   with absTop for the same reason gatePageY is: a client rect taken mid-
+   entrance is poisoned by the ladder transform. */
+const beats = [...document.querySelectorAll(".beat")].map((el) => ({ el, top: 0, h: 0, kick: 0 }));
 const absTop = (el) => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
 /* the same walk across. Both of these are LAYOUT positions and neither sees a
    transform, which is exactly why the thread is measured with them: a rail
@@ -2533,7 +2542,11 @@ function cacheGeometry() {
   vw = innerWidth; vh = innerHeight; mobile = vw <= 820; stacked = vw <= 1249;
   const measure = () => {
     docH = document.documentElement.scrollHeight;
-    for (const b of beats) { b.top = absTop(b.el); b.h = b.el.offsetHeight; }
+    for (const b of beats) {
+      b.top = absTop(b.el); b.h = b.el.offsetHeight;
+      const k = b.el.querySelector(".kicker");
+      b.kick = k ? absTop(k) + k.offsetHeight / 2 : b.top;
+    }
     for (const f of fx) { f.top = absTop(f.el); f.h = f.el.offsetHeight || 1; }
   };
   measure();
@@ -4761,11 +4774,61 @@ $("mtoggle").addEventListener("click", () => {
 const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361, 1812];
 const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the references", "the gate — held", "the next morning"];
 let lastClock = -1, lastPhase = -1;
+/* THE HOUR ANCHORS ON KICKER CROSSINGS, NOT ON BEAT BOXES.
+   Reported 2026-08-08: at scrollY 0, with nothing scrolled, the masthead read
+   06:36 while ¶01's kicker two inches below read 06:12. Both on screen, both
+   in one glance, at the first thing anyone sees.
+
+   It was not a beat-0 bug. The old lerp ran on the beat BOX — `(y + vh*0.62 -
+   b.top) / b.h` — and a station's kicker sits some way down its own box, so by
+   the time you are reading the kicker the clock is already into the next
+   stretch. Measured, kicker parked on the reading line, 1440x900:
+
+     ¶01 06:12 vs 06:36  +24     ¶07 19:36 vs 19:56  +20
+     ¶02 06:58 vs 07:13  +15     ¶08 21:07 vs 21:09   +2
+     ¶03 07:52 vs 08:00   +8     ¶09 22:05 vs 22:08   +3
+     ¶04 08:47 vs 09:35  +48     ¶10 22:23 vs 22:25   +2
+     ¶05 12:06 vs 12:58  +52     ¶11 22:32 vs 22:33   +1
+     ¶06 15:23 vs 16:21  +58     ¶12 22:41 vs 22:41    0
+
+   The minutes vary because they scale with the stretch: beat 5 spans 253
+   minutes so a fifth of it is +58; beat 10 spans 9, so the same fraction is +1.
+   Beat 0 is merely the loudest instance, and it is the one that cannot be
+   scrolled away from — the reading line starts BELOW ¶01's kicker, so no
+   mapping from a box top can reach 06:12 at rest.
+
+   So the clock lerps between KICKER CENTRES, and segment zero's origin is the
+   reading line's own rest position rather than ¶01's kicker (which sits above
+   it and is unreachable). At scroll 0 that reads 06:12 exactly — the run starts
+   when the reader does, which is what ¶01 says out loud. Parked on any kicker
+   the skew is 0 by construction. Between kickers it still scrubs continuously,
+   so the gate card's "only the light moves" stays true.
+
+   CLOCKS IS STILL THE ONLY TABLE OF HOURS. What moved is where the lerp
+   anchors — geometry, measured in cacheGeometry — not a declaration.
+   stations.ts says what the page prints, CLOCKS holds the minutes, and
+   check-stations already binds those two together. */
+function clockSegment(lineY) {
+  const anchor = (i) => (i === 0 ? vh * READ_LINE : beats[i].kick);
+  /* never past the gate: ¶13 keeps its own driver, below */
+  const last = Math.min(RUN_BEATS - 1, beats.length - 1);
+  let seg = 0;
+  for (let i = 0; i <= last; i++) if (lineY >= anchor(i)) seg = i;
+  const a = anchor(seg), b = anchor(Math.min(seg + 1, last));
+  return { seg, t: b > a ? clamp((lineY - a) / (b - a), 0, 1) : 0 };
+}
+
 function setMast(beat, p) {
-  /* The gate HOLDS 22:41 — it is one moment, not a stretch of evening — and
-     ¶13 rolls the clock from there to 06:12 on exactly the progress the light
-     uses, so the hour and the sky can never disagree. Everything before is the
-     ordinary stop-to-stop lerp. */
+  /* The gate HOLDS 22:41 — it is one moment, not a stretch of evening, and the
+     mirror of the rest origin at the other end of the day — and ¶13 rolls the
+     clock from there to 06:12 on exactly the progress the LIGHT uses, which is
+     why that one branch still reads the beat box.
+
+     The old comment here promised "the hour and the sky can never disagree".
+     The sky has no minute hand; the kicker does, and it is the only instrument
+     a reader can check the masthead against to the minute. The promise is now
+     the hour and the KICKER can never disagree — see clockSegment() for the
+     measurement that forced the re-scope. */
   let m;
   if (beat === RUN_BEATS - 1) m = CLOCKS[RUN_BEATS - 1];
   else if (beat >= RUN_BEATS) {
@@ -4857,7 +4920,7 @@ function work(y) {
   let beat = 0, bp = 0;
   for (let i = 0; i < beats.length; i++) {
     const b = beats[i];
-    const p = (y + vh * 0.62 - b.top) / b.h; /* progress of the reading line through the beat */
+    const p = (y + vh * READ_LINE - b.top) / b.h; /* progress of the reading line through the beat */
     if (p >= 0) { beat = i; bp = clamp(p, 0, 1); }
   }
   window.__world.beat = beat; window.__world.beatP = +bp.toFixed(3);
@@ -4931,7 +4994,14 @@ function work(y) {
   /* ¶13 opens once the light is genuinely up, not on first pixel */
   const morn = beat >= RUN_BEATS && bp > 0.16;
   if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); }
-  setMast(beat, bp);
+  /* The masthead is the ONLY thing the kicker anchoring feeds — `beat`/`bp`
+     stay the beat-box reading that the light, the dusk contract, the manifest
+     and every fx window are derived from, all of which are separately measured
+     and gated. ¶13 keeps the box too: its roll is tied to the dawn light.
+     The phase name rides the same index as the hour, so the masthead is one
+     instrument rather than two that disagree in the corridors. */
+  if (beat >= RUN_BEATS) setMast(beat, bp);
+  else { const c = clockSegment(y + vh * READ_LINE); setMast(c.seg, c.t); }
 
   /* fx: arrive → drift → depart, a pure function of position */
   if (FLAGS.has("nofx")) return;
