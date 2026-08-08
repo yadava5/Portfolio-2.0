@@ -42,12 +42,65 @@
  * ran it. It is left in, because it is already public in `yadava5/glyph` and
  * because editing a machine's output to look tidier is the exact move this
  * gate exists to make unnecessary.
+ *
+ * UNTIL 2026-08-07 THAT PARAGRAPH WAS PROSE AND NOTHING ELSE. No code computed
+ * a blob sha; the only assertion below was that the filename's 7-char sha
+ * appears somewhere in the data layer — that the record is PINNED, which is a
+ * much weaker claim than that it is UNEDITED. A comment claiming an assertion
+ * the file does not make is the exact sin this whole gate exists to prevent,
+ * so it is now made real rather than softened: BLOB_SHA below pins what
+ * `git hash-object` must produce for each vendored record, and the four public
+ * ones were confirmed against their remote trees on the day.
+ *
+ * Offline on purpose. Fetching GitHub to compare would put a third-party host
+ * in the deploy path, which is precisely why check-live-surfaces refuses to run
+ * inside verify:portfolio. A blob sha is content-addressed: pinning the value
+ * and recomputing it locally proves the bytes have not moved without needing
+ * the network to say so.
  */
 import { readFileSync, existsSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 
 const root = process.cwd();
 const read = (p) => readFileSync(resolve(root, p), "utf8");
+
+/* Git's blob sha for each vendored record: sha1("blob <len>\0" + bytes).
+   Computed here rather than shelled out to `git hash-object` so the gate holds
+   in a tree with no git available, and so it cannot be fooled by a .gitattributes
+   filter rewriting the content on the way past. */
+const gitBlobSha = (abs) => {
+  const buf = readFileSync(abs);
+  return createHash("sha1")
+    .update(Buffer.concat([Buffer.from(`blob ${buf.length}\0`), buf]))
+    .digest("hex");
+};
+
+/* The blob sha each vendored record must reproduce. The four public ones were
+   confirmed against their source repositories' own trees on 2026-08-07 — the
+   sha on the left IS the object id git stores in the source repo, at:
+
+     glyph @ 001e9b4  docs/benchmarks/runs/bench-20260802-dot20x-baseline.json
+     glyph @ 001e9b4  docs/benchmarks/runs/bench-20260802-dot20x-openmp-native.json
+     jetpack @ 2caacd0  benchmarks/jmh-results.json
+     jetpack @ 2caacd0  benchmarks/jmh-results-rigorous.json
+
+   It covers the four records in RECORDS below and nothing else. The two
+   sanitized ledgers in public/proof/ are NOT vendored machine output from
+   another repo — no bar is recomputed from them here — so pinning them in this
+   table would have been dead config: the loop never visits them, and a pin
+   nothing checks is the same overclaim in a new place. The key set is asserted
+   against RECORDS immediately below so that stays true. */
+const BLOB_SHA = {
+  "public/proof/glyph-dot256-baseline-001e9b4.json":
+    "2132bfdfa819ed0b28d6b073ee59b322ae61b4df",
+  "public/proof/glyph-dot256-openmp-native-001e9b4.json":
+    "72b6b0e87b9051bd9d6dbc3aed13c70ab504ef58",
+  "public/proof/jetpack-jmh-quick-2caacd0.json":
+    "e56abd97d1b5948b6a6c1408b30bde84d617143c",
+  "public/proof/jetpack-jmh-rigorous-2caacd0.json":
+    "4fe143cdfb03b7f641081412db260b45604d2a30",
+};
 
 const fails = [];
 const notes = [];
@@ -85,6 +138,24 @@ const RECORDS = [
     40_000,
   ],
 ];
+/* BLOB_SHA and RECORDS must name the same files. A pin for a path the loop
+   never visits asserts nothing while reading like coverage; a record with no
+   pin is unguarded while the header says otherwise. Both are the failure this
+   whole change exists to remove, so neither is allowed to appear quietly. */
+{
+  const pinned = Object.keys(BLOB_SHA).sort();
+  const guarded = RECORDS.map(([, p]) => p).sort();
+  const missing = guarded.filter((p) => !pinned.includes(p));
+  const dead = pinned.filter((p) => !guarded.includes(p));
+  if (missing.length || dead.length)
+    fail(
+      `BLOB_SHA and RECORDS disagree.\n` +
+        (missing.length ? `      vendored but unpinned: ${missing.join(", ")}\n` : "") +
+        (dead.length ? `      pinned but never checked: ${dead.join(", ")}\n` : "") +
+        `      A pin nothing reads is not a guard.`
+    );
+}
+
 const A = {};
 for (const [key, path, floorBytes] of RECORDS) {
   if (!existsSync(resolve(root, path))) {
@@ -110,6 +181,26 @@ for (const [key, path, floorBytes] of RECORDS) {
       `${path} is vendored at ${sha}, which the data layer does not pin anywhere.\n` +
         `      A record filed under a commit the page never cites is a file, not a receipt.`
     );
+
+  /* The byte-identity claim, asserted rather than described. */
+  const expected = BLOB_SHA[path];
+  if (!expected) {
+    fail(
+      `${path} has no pinned blob sha in BLOB_SHA.\n` +
+        `      Every vendored record must pin one — an unpinned file is an unguarded file,\n` +
+        `      and the header comment claims all of them are unedited.`
+    );
+  } else {
+    const actual = gitBlobSha(resolve(root, path));
+    if (actual !== expected)
+      fail(
+        `${path} is not the record any more.\n` +
+          `      git hash-object: ${actual}\n` +
+          `      pinned:          ${expected}\n` +
+          `      The vendored file has been edited. Re-vendor it from the source repo\n` +
+          `      rather than re-pinning: the point of the pin is that the bytes are theirs.`
+      );
+  }
 }
 if (fails.length) {
   console.error("check-bench-artifacts FAILED before measuring anything:");
