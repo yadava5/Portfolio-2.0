@@ -502,10 +502,25 @@ for (const [stationId, why] of RAIL_EXEMPT) {
    matching reports a clean run over an empty set. Every count below is a
    measured floor, not a guess. */
 const floors = [
-  /* 13 since Phase 5: the eleven that were here plus the two bench sheads,
-     which cite the vendored records rather than the GitHub ledger — the copy
-     that cannot 404. */
-  ["internal links in the run", runInternal.length, 13],
+  /* 12 since 2026-08-08, and the composition matters more than the number.
+     It was 13: eleven plus BOTH bench sheads, which linked the vendored
+     records. Those two anchors stopped landing readers on a raw-JSON dump —
+     ¶06's now cites /evidence#fast-mnist-benchmark, which argues its 3.5×
+     and is still internal; ¶07's had nowhere internal to go, because no
+     ledger row argues the gzip throughput, so it cites the benchmarks
+     README at the pinned sha and leaves the site. That is one internal link
+     genuinely gone, not a matcher that quietly stopped matching.
+
+     This floor is deliberately NOT the thing protecting the records: the
+     raw files are still offered from each .bfoot as relative downloads,
+     which this filter does not count, and check-bench-artifacts binds the
+     sha to the file per bench block. Lowering a floor is only honest when
+     something else still holds what it was holding.
+
+     It goes back to 13 the day the gzip throughput gets a ledger row —
+     the follow-up named in that ruling — and this comment is how the next
+     reader knows 12 was a decision rather than a decay. */
+  ["internal links in the run", runInternal.length, 12],
   ["receipt fragments checked from the run", runFragments, 4],
   ["ledger receipt links", ledgerHrefs.length, 11],
   ["receipt anchors emitted, id by id", receiptIds, 53],

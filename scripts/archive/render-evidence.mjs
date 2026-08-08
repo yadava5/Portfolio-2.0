@@ -85,8 +85,13 @@ function ledgerGlance(entries) {
 
 function entryRow(entry, index) {
   const link = sourceLink(entry.source);
+  /* A self-hosted .json is offered as a DOWNLOAD, never as a landing.
+     Without this the click navigated to the browser's raw-JSON viewer —
+     an unstyled dump of Google Benchmark output, which is proof but is
+     not a page. The case files already got this right ("download the
+     raw ledger (json)"); /evidence was the surface that did not. */
   const source = link
-    ? `<a href="${esc(link.href)}"${link.external ? ' target="_blank" rel="noopener noreferrer"' : ""}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
+    ? `<a href="${esc(link.href)}"${link.external ? ' target="_blank" rel="noopener noreferrer"' : ""}${!link.external && link.href.endsWith(".json") ? " download" : ""}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
     : esc(entry.sourceLabel);
   const kind = entry.sourceKind
     ? `<span class="skind">${esc(SOURCE_KIND_NOTE[entry.sourceKind])}</span>`

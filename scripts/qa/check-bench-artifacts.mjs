@@ -520,30 +520,64 @@ if (
 
   /* ── The slip's sha, paired with the file it cites ────────────────────
      §5.1 asks for this and could not have it until §5.5 wrote the slip: the
-     bench shead prints "@ <sha>" and links a vendored record whose FILENAME
-     carries a sha. If those two ever disagree the page cites one commit and
-     serves another, and both halves look right on their own. */
-  const slips = [
-    ...runHtml.matchAll(
-      /<a href="[^"]*\/proof\/([a-z0-9-]+-([0-9a-f]{7})\.json)">@ ([0-9a-f]{7}) ⟶<\/a>/g
-    ),
-  ];
-  if (slips.length !== 2)
+     bench shead prints "@ <sha>" and the block offers a vendored record
+     whose FILENAME carries a sha. If those two ever disagree the page cites
+     one commit and serves another, and both halves look right on their own.
+
+     The two used to be ONE anchor, and this gate matched it as one. They
+     were split on 2026-08-08: a shead that linked the raw .json landed the
+     reader on the browser's JSON viewer — proof, but not a page — so the
+     shead now points at the argument (/evidence for ¶06, the benchmarks
+     README for ¶07) and the raw record is offered from the .bfoot as an
+     explicit download. The PAIRING is the invariant, not the markup that
+     carried it, so it is re-bound here per BLOCK rather than per anchor:
+     each .bench must print a sha and offer the record vendored under it.
+     Splitting them is exactly the move that could have let the two drift
+     apart unnoticed, which is why the check follows them across. */
+  const blocks = runHtml
+    .split(/<div class="bench\b/)
+    .slice(1)
+    .map((b) => b.slice(0, b.indexOf("</figcaption>")));
+  if (blocks.length !== 2)
     fail(
-      `read ${slips.length} bench slips citing a vendored record, expected 2 — ¶06 and ¶07`
+      `read ${blocks.length} bench blocks in the run, expected 2 — ¶06 and ¶07`
     );
   else {
-    for (const [, file, fileSha, citedSha] of slips) {
-      if (fileSha !== citedSha)
+    for (const [i, block] of blocks.entries()) {
+      const where = `the ${i === 0 ? "¶06" : "¶07"} bench block`;
+      /* either arrow: ⟶ stays on the site (¶06 → /evidence), ↗ leaves it
+         (¶07 → the benchmarks README, there being no ledger row for the
+         gzip throughput). The sha is what this is reading; the glyph only
+         says where the argument lives. */
+      const cited = block.match(/@ ([0-9a-f]{7}) [⟶↗]<\/a>/);
+      const record = block.match(
+        /href="(?:[^"]*\/)?proof\/([a-z0-9-]+-([0-9a-f]{7})\.json)"[^>]*\bdownload\b/
+      );
+      if (!cited) {
+        fail(`${where} prints no "@ <sha>" slip`);
+        continue;
+      }
+      if (!record) {
         fail(
-          `a bench slip prints "@ ${citedSha}" and links ${file}, which is vendored at ${fileSha}.\n` +
+          `${where} offers no vendored record as a download.\n` +
+            `      The raw run record must stay reachable from the block that quotes it —\n` +
+            `      repointing the shead at an argument does not excuse orphaning the proof.`
+        );
+        continue;
+      }
+      const [, file, fileSha] = record;
+      if (fileSha !== cited[1])
+        fail(
+          `${where} prints "@ ${cited[1]}" and offers ${file}, which is vendored at ${fileSha}.\n` +
             `      The page would cite one commit and serve another, and each half reads correctly alone.`
         );
       if (!existsSync(resolve(root, `public/proof/${file}`)))
-        fail(`a bench slip links public/proof/${file}, which is not vendored`);
+        fail(`${where} offers public/proof/${file}, which is not vendored`);
     }
     if (!fails.length)
-      note(`2 bench slips cite the sha their vendored record is filed under`);
+      note(
+        `2 bench blocks print a sha and offer the record vendored under it, download not landing`
+      );
   }
 }
 
