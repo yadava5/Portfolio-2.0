@@ -68,6 +68,7 @@ const load = (rel) =>
 const { proofManifest } = await load("lib/data/proofManifest.js");
 const { STATIONS } = await load("lib/data/stations.js");
 const { projectCaseStudies } = await load("lib/data/projectCaseStudies.js");
+const { projects } = await load("lib/data/projects.js");
 
 if (!existsSync(ARCHIVE) || !statSync(ARCHIVE).isDirectory()) {
   console.error(`check-crosswalk FAILED — no archive at ${ARCHIVE}`);
@@ -341,6 +342,92 @@ for (const file of pagesUnder(ARCHIVE)) {
   }
 }
 
+/* ══ the rail cites what the live build serves ═════════════════════════
+   Added 2026-08-08, after the owner went looking for the System Card links on
+   the run home and could not find them: five of the six products serve one and
+   only two stations cited it. The comment that produced that asymmetry argued
+   "one document of record per station" and is overturned in the same change —
+   the rail's family is what the PROJECT serves, and `source ↗` and
+   `live build ↗` already appear there whether or not the archive holds a
+   dossier.
+
+   The station→project map is spelled out rather than derived from an id match,
+   because the run's ids and the archive's ids are deliberately NOT one-to-one
+   (`#work` is Applied's station; `stations.ts` calls that out as the
+   crosswalk). Deriving it would either silently skip a station or need the
+   same table written as a rename map somewhere less visible.
+
+   THE EXEMPTION IS STRICT IN BOTH DIRECTIONS, which is the whole point. A
+   station on the list must NOT carry the anchor: automl's card is the frozen
+   "Agentic AutoML — Expo Booklet · Miami CSE 449" and the run does not cite an
+   edition it cannot pin — but the day that card is refreshed and the sixth rail
+   is added, a permissive exemption would sit there as a false claim forever.
+   Strict, it fails and asks to be removed. */
+const RAIL_CITES = [
+  ["work", "jobtracker"],
+  ["cadence", "taskflow-calendar"],
+  ["glyph", "fast-mnist-nn"],
+  ["jetpack-compress", "jetpack-compress"],
+  ["lifequest", "lifequest"],
+];
+/* station id → why the run declines to cite its card. Adding an entry here is
+   a claim that has to stay true; the strict check below is what keeps it so. */
+const RAIL_EXEMPT = new Map([
+  [
+    "automl",
+    'its card still serves the frozen expo edition ("Agentic AutoML — Expo Booklet · Miami CSE 449"), and the run does not cite an edition it cannot pin',
+  ],
+]);
+
+const sectionOf = (id) => {
+  const m = runHtml.match(
+    new RegExp(`<section id="${id}"[\\s\\S]*?(?=\\n  <section |\\n  </main>)`)
+  );
+  return m ? m[0] : null;
+};
+let railCitations = 0;
+for (const [stationId, projectId] of RAIL_CITES) {
+  const project = projects.find((p) => p.id === projectId);
+  const html = sectionOf(stationId);
+  if (!project) {
+    fail(`no project "${projectId}" in the data layer — the rail map is stale`);
+    continue;
+  }
+  if (!html) {
+    fail(`no <section id="${stationId}"> in the run — the rail map is stale`);
+    continue;
+  }
+  if (!project.systemCardUrl) {
+    fail(
+      `${projectId} has no systemCardUrl, so ¶${stationId} cannot cite one — either the field was dropped or this station belongs on the exempt list with a reason`
+    );
+    continue;
+  }
+  if (!html.includes(project.liveUrl)) {
+    fail(`the ¶${stationId} station does not cite ${projectId}'s liveUrl`);
+  }
+  if (html.includes(project.systemCardUrl)) railCitations++;
+  else
+    fail(
+      `the ¶${stationId} station cites ${projectId}'s live build but not its system card (${project.systemCardUrl}) — the rail cites what the live build serves`
+    );
+}
+for (const [stationId, why] of RAIL_EXEMPT) {
+  const html = sectionOf(stationId);
+  if (!html) {
+    fail(`no <section id="${stationId}"> in the run — the exempt list is stale`);
+    continue;
+  }
+  const project = projects.find(
+    (p) => p.systemCardUrl && html.includes(p.systemCardUrl)
+  );
+  if (project) {
+    fail(
+      `¶${stationId} is on the system-card exempt list — "${why}" — but the run cites ${project.systemCardUrl} there anyway. EXEMPTION IS STALE: remove it from RAIL_EXEMPT and add the station to RAIL_CITES.`
+    );
+  }
+}
+
 /* ══ 6 · floors, so a broken parse fails loudly ════════════════════════
    check-links learned this the expensive way: a matcher that silently stops
    matching reports a clean run over an empty set. Every count below is a
@@ -363,6 +450,12 @@ const floors = [
      each of the seven case files. */
   ["archive links into the run", archiveFragments, 26],
   ["distinct stops the archive links to", fragmentTargets.size, 11],
+  /* Derived by counting citations actually found, with a floor — the rule the
+     retirement incident produced. A hard-coded 5 would pass on an empty sweep
+     if the section matcher ever stopped matching; a bare derived count would
+     report "0 of 0, all good". Five is every project station except the one
+     exempt, and the number only moves when automl's card is refreshed. */
+  ["station rails citing their system card", railCitations, 5],
 ];
 for (const [what, got, floor] of floors) {
   if (got < floor) fail(`only ${got} ${what}, expected at least ${floor}`);

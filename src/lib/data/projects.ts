@@ -137,11 +137,24 @@ export interface Project {
    * assertion). Typing a host here that the live demo row does not print
    * fails the suite.
    *
-   * Placement (the portfolio is the hub): the case-file meta ledger row
-   * that `metaLedger()` renders with `data-system-card`, in
-   * scripts/archive/render-case-file.mjs, for the four with case files —
-   * and the run's ¶07 and ¶08 HANDOFF RAILS for the two without,
-   * jetpack-compress and LifeQuest.
+   * Placement (the portfolio is the hub), as of 2026-08-08 — FIVE rails and
+   * four ledger rows, not two and four:
+   *
+   *   the run's HANDOFF RAILS, `src/run/index.html`
+   *     ¶04 applied · ¶05 cadence · ¶06 glyph · ¶07 jetpack · ¶08 lifequest
+   *   the case-file META LEDGER row, rendered with `data-system-card` by
+   *   `metaLedger()` in scripts/archive/render-case-file.mjs
+   *     applied · cadence · glyph · automl
+   *
+   * The four with case files are cited in BOTH, and that is deliberate: the
+   * rail is the project citing what it serves, the ledger is the archive
+   * citing the same document, and `live build ↗` has always appeared in both
+   * places under exactly that logic. ¶09 automl is the one station with no
+   * rail citation — its card still serves the frozen expo edition, re-verified
+   * by fetch on 2026-08-08 ("Agentic AutoML — Expo Booklet · Miami CSE 449") —
+   * and `check-crosswalk` enforces both halves of that: the five rails must
+   * carry the anchor, and the exempted one must NOT, so the exemption retires
+   * itself the day the card is refreshed.
    *
    * This paragraph named three addresses that do not exist, and every one
    * of them was checked and replaced on 2026-08-07: there is no
@@ -161,6 +174,22 @@ export interface Project {
    * about jetpack actually is.
    */
   systemCardUrl?: string;
+  /**
+   * How the System Card describes its own edition, when that is not simply
+   * "the current one". Rendered into the case-file meta ledger so the archive
+   * says which document it is sending a reader to.
+   *
+   * Exactly one entry carries it. `agentic-automl-platform.vercel.app/system-card`
+   * self-titles "Agentic AutoML — Expo Booklet · Miami CSE 449" — a booklet
+   * frozen at the expo, deliberately not refreshed, and the proof that project
+   * was left untouched. The run refuses to cite it at all (see the handoff
+   * comment at ¶09); the archive DOES cite it, and until now said "/system-card
+   * ↗" flat, which presented a frozen booklet as the current edition. A field
+   * rather than a rendered guess, for the same reason `systemCardUrl` is a
+   * field: the value is a claim about a document, and this site does not
+   * compose claims.
+   */
+  systemCardEdition?: string;
   /** Whether this is a featured project (shows larger in bento grid) */
   featured: boolean;
   /** Project category */
@@ -284,6 +313,12 @@ export const projects: Project[] = [
        `agentic-automl-platform` (handoff 2026-07-26), and the dead host
        still resolves. This is the owner's. */
     systemCardUrl: "https://agentic-automl-platform.vercel.app/system-card",
+    /* The card self-titles "Agentic AutoML — Expo Booklet · Miami CSE 449"
+       (fetched 2026-08-08). It is frozen at the expo on purpose — that
+       staleness is the evidence this project was left untouched — so the
+       ledger names the edition instead of implying a current one, and the
+       run's ¶09 rail declines to cite it at all. */
+    systemCardEdition: "expo edition",
     // WebP derivative of the promoted capture (assets:derive) — the PNG
     // was 157KB eager+preloaded on the case page (PERF-AUDIT fix 4).
     featured: true,

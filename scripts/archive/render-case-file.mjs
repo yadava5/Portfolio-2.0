@@ -148,10 +148,19 @@ function metaLedger({ study, project }) {
     );
   }
   if (project.liveUrl && project.systemCardUrl) {
+    /* `systemCardEdition` is named when the card is NOT the current edition —
+       exactly one entry carries it, automl's frozen expo booklet. Without it
+       this row read "/system-card ↗" flat and the archive presented a document
+       frozen at a 2025 expo as the live one. The run refuses to cite that card
+       at all; the archive does cite it, so the archive has to say which it is.
+       Still gated on both fields, never composed from liveUrl. */
+    const edition = project.systemCardEdition
+      ? ` — ${esc(project.systemCardEdition)}`
+      : "";
     rows.push(
       ledgerRow(
         "system card",
-        `<a href="${esc(project.systemCardUrl)}" target="_blank" rel="noopener noreferrer" data-system-card>/system-card ↗</a>`
+        `<a href="${esc(project.systemCardUrl)}" target="_blank" rel="noopener noreferrer" data-system-card>/system-card${edition} ↗</a>`
       )
     );
   }
