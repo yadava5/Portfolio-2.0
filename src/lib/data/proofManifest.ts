@@ -88,8 +88,30 @@ const APPLIED_SHA = "36a2f54";
    `71b74f8` resolves publicly and main is 4 ahead of it, 0 behind. */
 const APPLIED_SUITE_SHA = "71b74f8";
 const VISUAL_ASSIST_SHA = "22ebdaa";
-/* AutoML pin — mirrors projectCaseStudies.ts AUTOML_SHA. */
-const AUTOML_SHA = "e506c91";
+/* AutoML pin. This file used to hold `AUTOML_SHA = "e506c91"` mirroring
+   projectCaseStudies.ts; it is gone because nothing here interpolates it any
+   more, and a pin no row stands on is decoration that later reads as evidence.
+   e506c91 still appears — in the verification prose below, as the commit the
+   TWELVE were counted at — which is the honest place for it: it vouches for a
+   count this row no longer leads with. The case file keeps its own copy.
+
+   The 44-tool SURFACE needs its own pin, because e506c91 vouches for the
+   MCP subset only: it is where the 12 `registerTool(` sites were counted,
+   and a sha is a promise about one file. `5c5b762` is main's public head
+   (2026-08-03), and the 44 was counted AT it: preprocessing 14, cell 8,
+   feature 6, training 6, data 4, package 3, UI 3 — zero name collisions.
+
+   AN EARLIER DRAFT PINNED `5f8b7da`, AND IT RESOLVED. It still does: the
+   commit exists, the seven tool-group files are present at it, and every
+   count reproduces there — `tools/index.ts` is the same blob at both refs,
+   83f05ee. It is also the head of `gitlab/main-history`, a 2026-04-23 merge
+   in the imported GitLab tree, and `compare/main...5f8b7da` returns 404 for
+   NO COMMON ANCESTOR. So the pin named a commit that is not on this
+   project's history at all, and nothing about fetching it could have said
+   so — the blob being identical is exactly what made it convincing.
+   Resolving is not the same fact as being main's head. The branch was
+   checked this time, not just the blob. */
+const AUTOML_TOOLS_SHA = "5c5b762";
 /* Cadence's suite count is pinned to the commit it was MEASURED at, which
    is the current public head rather than the old `69a59e7`. Re-run on the
    2026-08-02 provenance audit: 1,145 became 1,159. The number and the sha
@@ -222,19 +244,28 @@ export const proofManifest: ProofManifestEntry[] = [
        page — the ¶09 prose, its aria-label, and twice inside the figure's
        own SVG text — and had no evidence row anywhere, which is exactly
        the thing /evidence prints a rule against. It is also trivially
-       checkable, which made the omission worse rather than better. */
+       checkable, which made the omission worse rather than better.
+
+       2026-08-08: the label stops reading "12 MCP tools" flat. The 12
+       was a right count of the wrong noun — the MCP-registered subset,
+       presented as the platform's whole tool surface, which is 44. See
+       the verification; the row pins the tools tree at main's head for
+       the 44, and e506c91 keeps vouching for the twelve. */
     id: "automl-mcp-tools",
-    label: "12 MCP tools",
+    label: "44 agent tools — 12 over MCP",
     claim:
-      "The Agentic AutoML backend registers exactly 12 MCP tools, in one server — the notebook surface the orchestrator drives.",
+      "The Agentic AutoML backend defines 44 LLM tools across seven groups — preprocessing (14), cell (8), feature (6), training (6), data (4), package (3), UI (3). Twelve of them — the data and cell groups — are registered over MCP in one server: the notebook surface the orchestrator drives. The other 32 are function-calling definitions the LangGraph phases consume directly.",
+    /* Plain literal, not interpolated — check-proof-manifest.mjs compares the
+       sha in this URL against the one in `sourceLabel`, which IS a template;
+       interpolating both would make them agree by construction. */
     source:
-      "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/e506c91/backend/src/services/mcp/mcpServer.ts",
-    sourceLabel: `mcpServer.ts @ ${AUTOML_SHA}`,
+      "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5c5b762/backend/src/services/llm/tools/index.ts",
+    sourceLabel: `tools/index.ts @ ${AUTOML_TOOLS_SHA}`,
     verification:
-      "Counted in the source on 2026-08-02: 12 `server.registerTool(` call sites at the pinned commit, and 12 at the current head — the count has not moved. There is no second MCP server; a search for `registerTool` across backend/src and frontend/src returns nothing outside this file, so the number is the whole registry rather than one file's share of it.",
+      "Two counts, two nouns, both taken in source. The MCP subset, counted 2026-08-02: 12 `server.registerTool(` call sites at the pinned commit and 12 at the head; there is no second MCP server — `registerTool` appears nowhere else in backend/src or frontend/src — so 12 is the whole MCP registry. The tool surface, counted 2026-08-08 at main's public head `5c5b762`: backend/src/services/llm/tools/ defines 44 tools across seven files — preprocessingTools 14, cellTools 8, featureTools 6, trainingTools 6, dataTools 4, packageTools 3, uiTools 3 — listed by name and de-duplicated globally with zero collisions. The plumbing explains both numbers: tools/index.ts assembles only DATA + CELL + PACKAGE into LLM_TOOL_DEFINITIONS, mcpServer.ts registers DATA (4) + CELL (8) = 12 of those, and the remaining 32 are passed as toolDefinitions by the LangGraph phases themselves — training.ts:149, featureEngineering.ts:208, phaseRequestBuilder.ts:1095, line numbers true at the pinned head. From 2026-08-02 to 2026-08-08 this entry presented the subset as the total: a reproducible count, reproduced at six refs, of the wrong noun. Each number now stands on the commit it was read at — the 44 at `5c5b762`, which this row pins and links; the 12 at `e506c91`, which is where the case file still cites them.",
     visibility: "public",
     privacyBoundary: "No private data — the tool registry is public source.",
-    date: "2026-08-02",
+    date: "2026-08-08",
     receipt: {
       label: "automl case file · receipt 02",
       href: "/projects/automl/#v-automl-2",

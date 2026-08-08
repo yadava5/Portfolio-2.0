@@ -1213,15 +1213,37 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            They are also a better story than a count: the agent is not
            holding twelve abstract "tools", it is operating a notebook
            the way a person would — read a cell, write a cell, run it,
-           reorder them, profile a dataset, search the docs. */
+           reorder them, profile a dataset, search the docs.
+
+           TWELVE IS THE SUBSET, NOT THE SURFACE (2026-08-08). The count
+           above was reproducible and answered the wrong question:
+           backend/src/services/llm/tools/ defines 44 tools across seven
+           groups — preprocessing 14, cell 8, feature 6, training 6,
+           data 4, package 3, UI 3 — and mcpServer.ts registers only the
+           data and cell groups, the twelve. The other 32 are LLM
+           function-calling definitions the LangGraph phases pass
+           directly (training.ts:149, featureEngineering.ts:208,
+           phaseRequestBuilder.ts:1095), and they are the preprocessing/
+           feature/training lifecycle — the more substantial half, which
+           this file was omitting. The notebook argument above stays,
+           because it is true of the twelve; it just stops standing for
+           the whole platform. The 44 is counted at main's public
+           head 5c5b762; the older pin e506c91 vouches for the twelve. */
         claim:
-          "Pipeline decisions run through LangGraph and MCP tool calls rather than free-form output: the server registers exactly twelve tools, and they are notebook and dataset operations — list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell.",
+          "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups — preprocessing (14), cells (8), features (6), training (6), data (4), packages (3), UI (3) — and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly.",
         method:
-          "counted and read in the MCP server source at the pinned public commit",
+          "the twelve counted and read in the MCP server source at the pinned public commit; the 44-tool surface counted by name in backend/src/services/llm/tools/ at main's public head 5c5b762",
         artifacts: [
           {
             label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/mcp/mcpServer.ts`,
+            /* the twelve. The 44 is a different noun read at a different
+               commit, so it gets its own row rather than borrowing this one. */
             href: `${AUTOML_BLOB}/backend/src/services/mcp/mcpServer.ts`,
+          },
+          {
+            label:
+              "ai-augmented-auto-ml-toolchain @ 5c5b762 · backend/src/services/llm/tools/index.ts",
+            href: "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5c5b762/backend/src/services/llm/tools/index.ts",
           },
           {
             label: "see fig. 4 — the expo poster",
@@ -1229,7 +1251,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             capture: true,
           },
         ],
-        date: "2026-07-30",
+        date: "2026-08-08",
         visibility: "public",
       },
     ],
@@ -1252,6 +1274,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-06",
         kind: "erratum",
         text: "The evidence aside above still said the repository was private, and it had said so for a week after it stopped being true. The 2026-07-30 round pinned the repo, removed the private stamp and rewrote receipt 01, but missed the one paragraph whose entire job is to tell a reader what they are not being shown \u2014 so the file contradicted itself three sections apart, and the erratum directly below it. Rewritten to name what is actually withheld: the source is public and pinned, and no accuracy, latency or throughput figure appears anywhere on this file because no committed eval artifact earns one. Found while rebuilding the archive as static HTML, by reading the generated page rather than the component that used to render it.",
+      },
+      {
+        date: "2026-08-08",
+        kind: "erratum",
+        text: "The tool count named the wrong noun, and this file has been under-claiming since 2026-07-30. “The server registers exactly twelve tools” was, and remains, true of mcpServer.ts: twelve registerTool call sites, one server, none anywhere else in the tree. What was wrong was presenting that as the platform’s tool surface. backend/src/services/llm/tools/ defines 44 tools across seven groups — preprocessing 14, cell 8, feature 6, training 6, data 4, package 3, UI 3, listed by name and de-duplicated with zero collisions — of which the MCP server registers the data and cell groups, the twelve; the other 32 are LLM function-calling definitions the LangGraph phases pass directly, and they are the preprocessing, feature-engineering and training lifecycle — the more substantial half of the surface, and the half the site omitted. The twelve reproduced at six refs, which is what made it convincing: a reproducible count of the wrong noun is still wrong. No document this site served ever said 44 before today — the résumé said “an MCP tool registry”, uncounted — so the site alone put a number on the surface, and the number it chose was the subset. Recorded as an erratum rather than a note because the fact never moved: the tool files at main’s head are byte-identical to trees months older, so all 44 were there when the twelve was counted, and the audit counted the subset and called it the registry. The pins now split by noun: e506c91 vouches for the twelve alone, and the 44 is counted at 5c5b762, main’s public head, which the evidence row pins and links. A first attempt at that pin named 5f8b7da instead — it resolves, its tool files are the same blobs, and it is the head of an imported gitlab/main-history branch with no common ancestor with main. Fetching a sha proves it exists, not that it is yours.",
       },
     ],
     registryFig: {
@@ -2616,9 +2643,27 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        `__AVX512F__`, `__AVX2__` and `__ARM_NEON`, with a scalar fallback.
        There is no `__wasm_simd128__` branch anywhere; the wasm target
        passes `-msimd128` and lets Emscripten auto-vectorise the scalar
-       path, which is a compiler flag, not a hand-written kernel. */
+       path, which is a compiler flag, not a hand-written kernel.
+
+       FOUR AGAIN, in the dot kernels (2026-08-08). The audit above was
+       right when it ran and stopped being right four days later:
+       glyph@68f1362 (2026-08-06, "feat(simd): hand-written wasm128
+       kernel, and the server API") adds an `#elif
+       defined(__wasm_simd128__)` branch to `src/NeuralNet.cpp` —
+       `dot_wasm128_rowvec`, real intrinsics (wasm_f64x2_splat, load,
+       mul, add, extract_lane) with two independent accumulators, a
+       shape the kernel's own comment notes LLVM's autovectorizer
+       declines to produce for this loop. So "there is no
+       __wasm_simd128__ branch anywhere", the fact the three stood on,
+       is retired, and the résumé's four, wrong for the four days the
+       audit's finding held, became true when the source moved — the
+       page did not lag it. The boundary travels with the number:
+       `NeuralNet.cpp` guards four, `Matrix.cpp` still guards three,
+       and this file's repo pin (001e9b4) predates the commit — the pin
+       stays, because every use of it here is benchmark provenance, and
+       the fourth kernel is cited at its own commit instead. */
     summary:
-      "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Three hand-written instruction sets over a scalar fallback, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
+      "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Four hand-written instruction sets in the dot kernels over a scalar fallback, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
     problem:
       "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
@@ -2643,7 +2688,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "kernels",
           label: "SIMD kernels",
-          detail: "AVX2, AVX-512, NEON",
+          detail: "AVX2, AVX-512, NEON — wasm128 in the dot kernels",
           kind: "system",
         },
         {
@@ -2825,16 +2870,23 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     outcomes: [
       {
+        /* The fourth path is cited at its own commit (68f1362) rather
+           than at this file's pin, because the pin (001e9b4) predates
+           it — see the 2026-08-08 note in the corrections register. */
         claim:
-          "SIMD acceleration is implemented across AVX2, AVX-512, and NEON paths; the verified 3.5× belongs to OpenMP parallelism, not to SIMD — the vectorised path is compiled into both sides of that comparison, so it earns none of the number.",
+          "SIMD acceleration is implemented across AVX2, AVX-512, NEON and — in the dot kernels, since glyph@68f1362 — a hand-written wasm128 path; the verified 3.5× belongs to OpenMP parallelism, not to SIMD — the vectorised path is compiled into both sides of that comparison, so it earns none of the number.",
         method: "source paths + the committed benchmark rows",
         artifacts: [
           {
             label: `glyph @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
             href: `${FAST_MNIST_BLOB}/BENCHMARKS.md`,
           },
+          {
+            label: "glyph @ 68f1362 · src/NeuralNet.cpp",
+            href: "https://github.com/yadava5/glyph/blob/68f1362/src/NeuralNet.cpp",
+          },
         ],
-        date: "2026-08-02",
+        date: "2026-08-08",
         visibility: "public",
       },
       {
@@ -2916,6 +2968,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-06",
         kind: "erratum",
         text: "This file credited the 3.5× to an “openmp+simd” kernel in five places — the method slip, the benchmark receipt, the SIMD outcome row, the not-claiming list, and the 2026-07 note above that was itself the correction. The fig. 1 plate said it too, in its drawn label and in the sentence a screen reader is given. The number never moved; the attribution did, and it was wrong: the speed-up is OpenMP’s alone. Settled by building rather than by reading BENCHMARKS.md — all three configurations were compiled, and on arm64 the baseline and native binaries come out byte-identical, because -march=native is an x86 flag clang does not act on here. So the hand-written NEON path is in both sides of the comparison and earns none of the ratio; it is also why a SIMD-alone measurement sits at about 1.0, comparing a binary with itself. The run’s ¶ 06 and the proof manifest have carried this attribution since 2026-08-03 while this file carried the other one, on the same site, about the same measurement. Recorded as an erratum rather than a silent edit because a corrections register that carries a stale correction is worse than one that carries none: it is this page’s own promise that somebody checked.",
+      },
+      {
+        date: "2026-08-08",
+        kind: "note",
+        text: "The instruction-set count moves from three back to four — in the dot kernels, which is where the fourth one lives. The 2026-08-02 provenance audit cut this file’s “four” to three, and it was right: at that point the source guarded exactly __AVX512F__, __AVX2__ and __ARM_NEON over a scalar fallback, and the wasm build was -msimd128 auto-vectorisation — a compiler flag, not a kernel. Four days later, glyph@68f1362 (2026-08-06) retired the condition that finding rested on: src/NeuralNet.cpp now carries a hand-written __wasm_simd128__ branch — dot_wasm128_rowvec, wasm_f64x2 intrinsics with two independent accumulators, a shape the kernel’s own comment notes LLVM’s autovectorizer declines to produce for this loop — and the build’s -msimd128 flag means that branch is genuinely compiled into the wasm target. The qualifier travels with the number: four in the NeuralNet dot kernels, while Matrix.cpp still guards three; and the résumé, which said four throughout, is right again — though not vindicated: for the four days between the audit and the commit its four was the wrong number, and it is the source that moved, not the page that failed to keep up. This file’s repo pin (001e9b4) predates the commit and stays where it is — every use of it here is benchmark provenance — so the fourth kernel is cited at its own commit in the outcome row above. Recorded as a note rather than an erratum because the 2026-08-02 entry was correct when written; a register that rewrites a right call to look prescient is worse than one that shows the fact moving.",
       },
     ],
     artifacts: [

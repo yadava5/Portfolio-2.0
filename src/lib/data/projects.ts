@@ -294,9 +294,18 @@ export const projects: Project[] = [
     id: "automl",
     title: "Agentic AutoML Platform",
     shortDescription:
-      "Private GitHub-backed capstone platform for turning datasets and domain documents into LLM-orchestrated, auditable ML workflows.",
+      "GitHub-backed capstone platform for turning datasets and domain documents into LLM-orchestrated, auditable ML workflows.",
+    /* Said "Private … (private repo …)" until 2026-08-08. The repo went
+       public on 2026-07-30 and these two fields did not follow — the exact
+       defect the case file's own erratum names, still open a week later,
+       because the flip was recorded where the corrections register could
+       see it and not where the copy lives. "Private" was also the worst
+       possible stale word here: it tells a reader not to bother clicking
+       the thing the page most wants clicked. Tool count added at the same
+       time; it read "MCP tools", uncounted, while /evidence carried a
+       number — see the automl-mcp-tools row for the 44/12 split. */
     fullDescription:
-      "A senior-design platform (private repo ai-augmented-auto-ml-toolchain) that turns datasets and domain documents into production ML via LLM-orchestrated pipelines. It uses LangGraph and MCP tools for agentic orchestration with human-in-the-loop approval gates across a 7-phase ML lifecycle; its default model is GPT-5.4.",
+      "A senior-design platform (ai-augmented-auto-ml-toolchain, public since 2026-07-30) that turns datasets and domain documents into production ML via LLM-orchestrated pipelines. It uses LangGraph and a 44-tool surface — 12 of them registered over MCP — for agentic orchestration with human-in-the-loop approval gates across a 7-phase ML lifecycle; its default model is GPT-5.4.",
     techStack: [
       { name: "TypeScript", color: "#3178c6" },
       { name: "React 19", color: "#61dafb" },
@@ -416,7 +425,7 @@ export const projects: Project[] = [
     id: "fast-mnist-nn",
     title: "Glyph",
     shortDescription:
-      "A course C++ MLP hand-optimized across three instruction sets (AVX-512, AVX2, NEON; the wasm build compiles -msimd128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
+      "A course C++ MLP hand-optimized across four instruction sets in its dot kernels (AVX-512, AVX2, NEON, wasm128), with a live in-browser benchmark timing SIMD vs scalar on your machine.",
     fullDescription:
       /* CRITIC-LEDGER F59: this said "It reaches 97.01% on 10,000 test
          digits". The site's own ledger stamps that number HELD — the
@@ -432,13 +441,25 @@ export const projects: Project[] = [
          __AVX512F__, __AVX2__ and __ARM_NEON with a scalar fallback; the
          wasm target passes -msimd128 and has no hand-written branch. And
          the HELD clause outlived its condition — glyph@97de736 committed
-         the eval run on 2026-07-27, and it regenerates byte-for-byte. */
-      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across three instruction sets — AVX-512, AVX2 and NEON, over a scalar fallback, with the wasm build compiled -msimd128 — shipped with a live in-browser benchmark that times the kernels against scalar on the visitor's own machine. A committed eval run scores it 97.01% on the 10,000-image MNIST test set.",
+         the eval run on 2026-07-27, and it regenerates byte-for-byte.
+
+         2026-08-08: four again, and not because the audit above was
+         wrong — it was right for exactly four days. glyph@68f1362
+         (2026-08-06, "feat(simd): hand-written wasm128 kernel, and the
+         server API") retires the condition the three rested on:
+         NeuralNet.cpp now guards __wasm_simd128__ alongside the other
+         three, and dot_wasm128_rowvec is real intrinsics with two
+         independent accumulators — a shape the kernel's own comment
+         notes LLVM's autovectorizer declines to produce for this loop,
+         so it is precisely not the compiler flag the note above
+         described. The qualifier travels with the number: four in the
+         NeuralNet dot kernels; Matrix.cpp still guards three. */
+      "Glyph (formerly Fast MNIST) is a course C++ MLP hand-optimized across four instruction sets in its dot kernels — AVX-512, AVX2, NEON and a hand-written wasm128 path, over a scalar fallback — shipped with a live in-browser benchmark that times the kernels against scalar on the visitor's own machine. A committed eval run scores it 97.01% on the 10,000-image MNIST test set.",
     techStack: [
       { name: "C++", color: "#00599c" },
       { name: "AVX-512 / AVX2", color: "#ff6b6b" },
       { name: "NEON", color: "#a5b4fc" },
-      { name: "wasm (-msimd128)", color: "#654ff0" },
+      { name: "wasm128", color: "#654ff0" },
       { name: "OpenMP", color: "#92d050" },
       { name: "React", color: "#61dafb" },
     ],
@@ -450,7 +471,7 @@ export const projects: Project[] = [
     startDate: "2025-10",
     endDate: "2026-01",
     highlights: [
-      "Hand-written SIMD across 3 instruction sets: AVX-512, AVX2, NEON — wasm builds -msimd128",
+      "Hand-written SIMD across 4 instruction sets in the dot kernels: AVX-512, AVX2, NEON, wasm128",
       "Live in-browser benchmark: SIMD vs scalar on the visitor's machine",
       "97.01% on the 10,000-image MNIST test set — 9,701 correct, macro-F1 0.9698, from a committed eval run",
       "Honest attribution: the 3.5× is openmp against the -O3 baseline; the SIMD is compiled into both",

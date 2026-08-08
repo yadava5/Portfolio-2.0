@@ -321,12 +321,26 @@ const FIGURES = [
        string reaches the meta description, og:description,
        twitter:description, the TechArticle JSON-LD node, the
        SoftwareSourceCode node and the visible deck — and it said FOUR
-       until 2026-08-02. Bound here because nothing else could see it. */
+       until 2026-08-02. Bound here because nothing else could see it.
+
+       AND IT IS FOUR AGAIN (2026-08-08). Not a reversal of the audit —
+       the audit was right when it ran, and this entry is the proof it
+       was: it pinned the claim to a source reading, so when the source
+       changed the gate went red instead of the page going quietly
+       stale. glyph@68f1362 (2026-08-06) added `dot_wasm128_rowvec` to
+       src/NeuralNet.cpp — real wasm_f64x2_* intrinsics with two
+       accumulators, whose own comment says the shape is "exactly what
+       LLVM's autovectorizer declines to do for this loop", so it is a
+       hand-written kernel and not the compiler flag the old reading
+       described. The qualifier is load-bearing and travels with the
+       number: FOUR is true of the NeuralNet dot kernels, THREE is
+       still true of src/Matrix.cpp, which grew no wasm branch. A bare
+       "four" here would trade one stale number for one imprecise one. */
     figure: "Glyph · hand-written instruction sets",
-    run: /3 hand-written simd paths/,
-    data: { cases: /Three hand-written instruction sets/ },
+    run: /4 hand-written simd paths in the dot kernels/,
+    data: { cases: /Four hand-written instruction sets in the dot kernels/ },
     source:
-      "glyph src/Matrix.cpp + src/NeuralNet.cpp guard exactly __AVX512F__, __AVX2__, __ARM_NEON over a scalar fallback; the wasm target passes -msimd128 with no hand-written branch",
+      "glyph@68f1362 src/NeuralNet.cpp guards __AVX512F__, __AVX2__, __ARM_NEON and __wasm_simd128__ over a scalar fallback — four hand-written dot kernels, the wasm one being dot_wasm128_rowvec; src/Matrix.cpp still guards only the first three",
   },
   {
     /* The bar LABEL had no pair here, which is why it drifted unnoticed:
