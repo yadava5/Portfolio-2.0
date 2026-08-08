@@ -410,8 +410,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/glyph",
     liveUrl: "https://getglyph.vercel.app",
     systemCardUrl: "https://getglyph.vercel.app/system-card",
-    // WebP derivative of the promoted capture (assets:derive, was a
-    // 264KB PNG — PERF-AUDIT fix 4).
     featured: true,
     category: "ai-ml",
     startDate: "2025-10",
@@ -459,9 +457,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/lifequest",
     liveUrl: "https://getlifequest.vercel.app",
     systemCardUrl: "https://getlifequest.vercel.app/system-card",
-    // Static fallback only: a project-specific animated scene replaces
-    // this in the front-end pass. Reuses an existing diagram asset — the
-    // disclosure is explicit that it does not depict LifeQuest.
     featured: true,
     category: "full-stack",
     startDate: "2025-03",
@@ -493,9 +488,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/yadava5/jetpack-compress",
     liveUrl: "https://jetpack-compress.vercel.app",
     systemCardUrl: "https://jetpack-compress.vercel.app/system-card",
-    // Static fallback only: a project-specific animated scene replaces
-    // this in the front-end pass. Reuses an existing diagram asset — the
-    // disclosure is explicit that it does not depict jetpack-compress.
     featured: true,
     category: "other",
     startDate: "2026-07",
