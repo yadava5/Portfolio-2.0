@@ -68,8 +68,27 @@ export const testimonials: Testimonial[] = [
   {
     id: "randall-vollen",
     name: "Randall Vollen",
-    title: "Hands on Experienced Data, AI & Analytics Executive",
-    company: "Miami University",
+    /* CURRENT position, not the one held when the recommendation was written.
+       Verified on LinkedIn 2026-08-10: Applied AI & Data Principal at CBTS
+       since Jul 2026; the Miami University entry (Institutional Director of
+       BI, Data Management & Analytics, 2025–2026) now carries an end date.
+
+       The tense split here is deliberate and it is the whole point of having
+       both fields. `title`/`company` answer "who is this person, and will the
+       reader find them where I said" — so they must track the live profile,
+       because a title that disagrees with the LinkedIn page it links to reads
+       as a fabricated reference rather than a stale one. `standing` answers
+       "how would they know?", which is a fact about the past and does not
+       move when he changes jobs.
+
+       This file previously carried his LinkedIn HEADLINE ("Hands on
+       Experienced Data, AI & Analytics Executive") in the `title` field. A
+       headline is self-written positioning copy, not a position; it named no
+       employer, which is why the stale `company: "Miami University"` beside
+       it went unnoticed for months. Read the Experience section, not the
+       headline. */
+    title: "Applied AI & Data Principal",
+    company: "CBTS",
     relationship: "manager",
     quote:
       "I managed Ayush as part of Miami University's inaugural Data and Business Intelligence intern cohort. From the start, he operated above intern level. Ayush contributed to core delivery. He built data pipelines used to analyze Oracle Analytics Server usage, giving the team visibility into report adoption, demand patterns, and technical load. That work informed platform decisions and prioritization. He also built a policy support chatbot that helped users interpret and apply Miami's data policies in day to day work. It translated policy language into practical guidance and reduced ambiguity without adding process overhead. Ayush showed strong judgment, independence, and follow through. He understood intent, not just requirements. He took feedback, iterated quickly, and delivered usable outcomes. He is disciplined, thoughtful, and reliable. Ayush would add value to any data, analytics, or platform team that expects real contribution and accountability.",
@@ -91,7 +110,23 @@ export const testimonials: Testimonial[] = [
   {
     id: "shree-chaturvedi",
     name: "Shree Chaturvedi",
-    title: "Computer Science + Mathematics @ Miami University",
+    /* Verified on LinkedIn and shreechaturvedi.com, 2026-08-10. Two changes,
+       and the second is the one that mattered.
+
+       First, tense: he graduated in May 2026, stated in his own words on his
+       site ("graduated may 2026") and in a LinkedIn post ("now that I've
+       graduated"), so this describes a finished degree. His Experience
+       section has zero current entries — he is job-searching, not employed —
+       so there is no employer to name and inventing a plausible one would be
+       the worst available error.
+
+       Second, and this was wrong rather than merely stale: "Computer Science
+       + Mathematics" reads as a double major. It is one major and one minor —
+       "B.S. Computer Science, Minor in Mathematics" on both his LinkedIn
+       Education entry and his own résumé. Overstating a real person's
+       credentials on a page that exists to argue for careful claims is the
+       specific failure this site cannot afford. */
+    title: "B.S. Computer Science, Minor in Mathematics",
     company: "Miami University",
     relationship: "colleague",
     quote:
