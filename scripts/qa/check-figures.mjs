@@ -317,6 +317,26 @@ const FIGURES = [
       "imported jobtracker.classifier.rules 2026-08-02 — 106 strong + 26 weak + 69 negative = 201",
   },
   {
+    /* Bound on 2026-08-14, the day the number stopped being unverifiable.
+       The station-fact audit restored "2,173 commits" with an explicit
+       caveat that it rested on the owner's knowledge — the GitHub repo was
+       a four-to-nine-commit squashed snapshot and the real history sat
+       behind Miami's GitLab auth, so no reader could check it and no gate
+       could either. The 12 August consolidation put the whole lineage on
+       a public `main`, which is what makes this bindable at all.
+
+       PINNED, not floating. `main`'s head is 2,187 as this is written and
+       will keep moving; 2,186 is the count reachable from 5e42233, the
+       commit this site already pins for the tool counts. A figure that
+       tracks a branch tip is a figure that goes red on someone else's
+       push. */
+    figure: "AutoML · commit count",
+    run: /2,186 commits/,
+    data: { cases: /2,186 commits reachable from the pinned commit 5e42233/ },
+    source:
+      'git rev-list --count 5e42233 = 2,186 in a clone of yadava5/ai-augmented-auto-ml-toolchain, and GitHub\'s own paginator agrees for main at per_page=1 (rel="last" page 2,187 after one further commit); contributors ShreeChaturvedi 1,237 + yadava5 937 + 8 + 1',
+  },
+  {
     /* The largest blast radius of anything the audit corrected: this
        string reaches the meta description, og:description,
        twitter:description, the TechArticle JSON-LD node, the
