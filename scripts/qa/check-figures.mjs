@@ -330,6 +330,23 @@ const FIGURES = [
        commit this site already pins for the tool counts. A figure that
        tracks a branch tip is a figure that goes red on someone else's
        push. */
+    /* AutoML's first measured number, and deliberately not a result — no
+       committed eval artifact earns an accuracy figure here and none is
+       quoted. Bound the day the total became true: the landing suite had
+       never executed on any CI run in that repository (it was in the
+       workflow's cache paths and nowhere else), so any earlier total would
+       have included 93 tests nothing had run. 31778517442 is the first run
+       where all three suites actually executed. */
+    figure: "AutoML · suite",
+    run: /2,490 tests green on ci — 1,412 backend · 985 frontend · 93 landing/,
+    data: {
+      cases:
+        /2,490 tests green on CI, 1,412 backend \+ 985 frontend \+ 93 landing/,
+    },
+    source:
+      "CI run 31778517442 at main head 14cbf5f, 2026-08-14 — backend 127 files/1,412 tests, frontend 122/985, landing 16/93 with 2 skipped, 0 failures",
+  },
+  {
     figure: "AutoML · commit count",
     run: /2,186 commits/,
     data: { cases: /2,186 commits reachable from the pinned commit 5e42233/ },
