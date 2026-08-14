@@ -335,16 +335,26 @@ const FIGURES = [
        quoted. Bound the day the total became true: the landing suite had
        never executed on any CI run in that repository (it was in the
        workflow's cache paths and nowhere else), so any earlier total would
-       have included 93 tests nothing had run. 31778517442 is the first run
-       where all three suites actually executed. */
+       have included 93 tests nothing had run. 31778517442 was the first run
+       where all three suites actually executed.
+
+       RE-TAKEN at 44fbe4f9. The security PR that quotes SQL identifiers,
+       bounds the tuning timeout and de-fangs the markup regexes added 33
+       backend tests, so the figure this file bound hours earlier (2,490 at
+       14cbf5f) described a superseded head the moment that merged. Frontend
+       and landing are untouched; the whole delta is backend, 1,412 -> 1,445
+       and 127 -> 130 files. Note what did NOT catch this: `run` and `cases`
+       agreed with each other perfectly while both were stale, because this
+       check compares the page to the case file, not either to CI. When you
+       merge into a repo this page quotes, re-read the number from the run. */
     figure: "AutoML · suite",
-    run: /2,490 tests green on ci — 1,412 backend · 985 frontend · 93 landing/,
+    run: /2,523 tests green on ci — 1,445 backend · 985 frontend · 93 landing/,
     data: {
       cases:
-        /2,490 tests green on CI, 1,412 backend \+ 985 frontend \+ 93 landing/,
+        /2,523 tests green on CI, 1,445 backend \+ 985 frontend \+ 93 landing/,
     },
     source:
-      "CI run 31778517442 at main head 14cbf5f, 2026-08-14 — backend 127 files/1,412 tests, frontend 122/985, landing 16/93 with 2 skipped, 0 failures",
+      "CI run 31804338459 at main head 44fbe4f9, 2026-08-14 — backend 130 files/1,445 tests, frontend 122/985, landing 16/93 with 2 skipped, 0 failures",
   },
   {
     figure: "AutoML · commit count",
