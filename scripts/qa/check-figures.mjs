@@ -338,6 +338,14 @@ const FIGURES = [
        have included 93 tests nothing had run. 31778517442 was the first run
        where all three suites actually executed.
 
+       CITE THE COMMIT, NOT "MAIN HEAD". This source line said "at main head
+       44fbe4f9" and was false within hours -- five more merges landed the
+       same day and a head is a pointer that moves under you. A commit sha is
+       permanent and still checkable, so the citation names the sha and
+       records where the figure was re-verified. Same trap as the pins in
+       check-links: a sha that is ON the branch is durable, a sha that IS the
+       branch tip is a claim with an expiry date.
+
        RE-TAKEN at 44fbe4f9. The security PR that quotes SQL identifiers,
        bounds the tuning timeout and de-fangs the markup regexes added 33
        backend tests, so the figure this file bound hours earlier (2,490 at
@@ -354,7 +362,7 @@ const FIGURES = [
         /2,523 tests green on CI, 1,445 backend \+ 985 frontend \+ 93 landing/,
     },
     source:
-      "CI run 31804338459 at main head 44fbe4f9, 2026-08-14 — backend 130 files/1,445 tests, frontend 122/985, landing 16/93 with 2 skipped, 0 failures",
+      "CI run 31804338459 on commit 44fbe4f9, 2026-08-14 — backend 130 files/1,445 tests, frontend 122/985, landing 16/93 with 2 skipped, 0 failures. Re-verified unchanged at 09b144f9 (run 31821550028) after five further merges: the licence/booklet fix, two dependency bumps, the audit-fix sweep and the README gate.",
   },
   {
     figure: "AutoML · commit count",
