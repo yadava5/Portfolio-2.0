@@ -233,7 +233,7 @@ function figAutoml() {
     caption: "fig. 1 — the halt, on file: six gates opened, the seventh held.",
     captionNote: "deploy never lights itself — that word belongs to a person.",
     disclosure:
-      "a drawn plate, at rest — not a screenshot. the twelve tools are mcpServer.ts’s at e506c91, in source order; no metric is drawn because none is claimed — the receipts say why.",
+      "a drawn plate, at rest — not a screenshot. the twelve tools are mcpServer.ts’s at 5e42233, in source order; no metric is drawn because none is claimed — the receipts say why.",
     body:
       `<rect x="8" y="8" width="224" height="46" rx="3" class="lane"/>` +
       t(16, 28, "langgraph supervisor", "lit") +

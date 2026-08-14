@@ -399,8 +399,37 @@ const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SU
    before anything here was written.
    What did NOT change: this project still claims no accuracy or
    performance number, because no eval artifact exists to earn one. The
-   work is the architecture and the gates. */
-const AUTOML_SHA = "e506c91";
+   work is the architecture and the gates.
+
+   RE-PINNED 2026-08-14, because the branch moved out from under both
+   pins. On 12 August the repository consolidated: `main` was replaced by
+   the 2,186-commit GitLab lineage and the old GitHub main was parked as
+   `archive/github-main`. `e506c91` did not move — the branch did. Asked
+   today, GitHub answers `compare/main...e506c91` with 404, "No common
+   ancestor between main and e506c91"; the same is true of `5c5b762`,
+   which the 2026-08-08 pass adopted as "main's public head" and which is
+   now `archive/github-main`'s head, exactly. Both still RESOLVE, so
+   every link kept working and nothing on the page went red — which is
+   the whole failure mode this file keeps re-learning: a sha that answers
+   is not a sha that is on your history.
+
+   The pin is now `5e42233`, main's head (2026-08-12, "ci: core
+   lint/test/build validation on main"), and it is on main by
+   construction rather than by assertion. Both counts were re-taken there
+   rather than carried: twelve `server.registerTool(` sites in
+   mcpServer.ts, in the same source order this file names, and 44 tool
+   definitions across the seven files in backend/src/services/llm/tools/.
+   README.md, LICENSE (GPL-3.0), mcpServer.ts and tools/index.ts all
+   resolve at it.
+
+   And the correction that got REVERSED: the 2026-08-08 note rejected
+   `5f8b7da` for having "no common ancestor with main". That was true
+   when it was written and is false now — after the consolidation GitHub
+   reports `compare/main...5f8b7da` as *behind by 61*, so the one sha
+   this file threw out for being off main's history is the only one of
+   the three that is on it. All three carry byte-identical
+   tools/index.ts (blob 83f05ee), which is why no count ever moved. */
+const AUTOML_SHA = "5e42233";
 const AUTOML_BLOB = `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/${AUTOML_SHA}`;
 const CADENCE_SHA = "54c79e0";
 const CADENCE_BLOB = `https://github.com/yadava5/cadence/blob/${CADENCE_SHA}`;
@@ -1227,23 +1256,39 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            feature/training lifecycle — the more substantial half, which
            this file was omitting. The notebook argument above stays,
            because it is true of the twelve; it just stops standing for
-           the whole platform. The 44 is counted at main's public
-           head 5c5b762; the older pin e506c91 vouches for the twelve. */
+           the whole platform.
+
+           BOTH COUNTS RE-TAKEN AT `5e42233` (2026-08-14). They used to
+           stand on two different commits — the twelve at e506c91, the 44
+           at 5c5b762 — and the 12 August branch consolidation took both
+           off main's history; see the pin comment at the top of this
+           file. Nothing about either number changed when they were
+           re-counted on main: twelve registerTool sites, in the order
+           named below, and 44 definitions across the seven files. The
+           split-by-noun bookkeeping is retired with the split pins,
+           because one commit now vouches for both. The three plumbing
+           anchors were re-read there too, and they live under
+           backend/src/services/workflows/: phases/training.ts:148
+           returns LLM_TRAINING_LIFECYCLE_TOOLS,
+           phases/featureEngineering.ts:208 returns
+           LLM_FEATURE_LIFECYCLE_TOOLS, and phaseRequestBuilder.ts:1095
+           passes the former as toolDefinitions. The old note cited
+           training.ts:149, one line past the return. */
         claim:
           "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups — preprocessing (14), cells (8), features (6), training (6), data (4), packages (3), UI (3) — and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly.",
         method:
-          "the twelve counted and read in the MCP server source at the pinned public commit; the 44-tool surface counted by name in backend/src/services/llm/tools/ at main's public head 5c5b762",
+          "both counts taken in source at the pinned commit, which is main's head: the twelve read out of the MCP server, the 44-tool surface counted by name across the seven files in backend/src/services/llm/tools/",
         artifacts: [
           {
             label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/mcp/mcpServer.ts`,
-            /* the twelve. The 44 is a different noun read at a different
-               commit, so it gets its own row rather than borrowing this one. */
             href: `${AUTOML_BLOB}/backend/src/services/mcp/mcpServer.ts`,
           },
           {
-            label:
-              "ai-augmented-auto-ml-toolchain @ 5c5b762 · backend/src/services/llm/tools/index.ts",
-            href: "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5c5b762/backend/src/services/llm/tools/index.ts",
+            /* One pin for both rows now. It used to be two, because the
+               nouns were read at two commits; the consolidation put both
+               of those off main and the re-count put both on it. */
+            label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/llm/tools/index.ts`,
+            href: `${AUTOML_BLOB}/backend/src/services/llm/tools/index.ts`,
           },
           {
             label: "see fig. 4 — the expo poster",
@@ -1251,7 +1296,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             capture: true,
           },
         ],
-        date: "2026-08-08",
+        date: "2026-08-14",
         visibility: "public",
       },
     ],
@@ -1274,6 +1319,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-06",
         kind: "erratum",
         text: "The evidence aside above still said the repository was private, and it had said so for a week after it stopped being true. The 2026-07-30 round pinned the repo, removed the private stamp and rewrote receipt 01, but missed the one paragraph whose entire job is to tell a reader what they are not being shown \u2014 so the file contradicted itself three sections apart, and the erratum directly below it. Rewritten to name what is actually withheld: the source is public and pinned, and no accuracy, latency or throughput figure appears anywhere on this file because no committed eval artifact earns one. Found while rebuilding the archive as static HTML, by reading the generated page rather than the component that used to render it.",
+      },
+      {
+        date: "2026-08-14",
+        kind: "erratum",
+        text: "Both AutoML pins had come off the branch they claimed to be on, and every link kept working the whole time. On 12 August the repository consolidated: main was replaced by the 2,186-commit GitLab lineage and the old GitHub main was parked as archive/github-main. Neither commit moved — the branch did. Asked today, GitHub answers compare/main…e506c91 and compare/main…5c5b762 with 404, “No common ancestor”, and 5c5b762 is now archive/github-main’s head exactly. So this file was citing “the pinned public commit” and “main’s public head” for two commits that are on neither. Nothing went red, because both shas still resolve and both blobs still render — which is precisely the failure this register described six days ago and then walked into from the other side. Worse, the finding it recorded then has since REVERSED: the entry below rejects 5f8b7da for having no common ancestor with main, and after the consolidation GitHub reports it as behind by 61 — on main. The one sha thrown out for being off the history is the only one of the three that is on it. That entry stays as written, because it was right on the day and a register that edits itself to look prescient is worth less than one that shows the fact moving. The repair is a single pin, 5e42233, main’s head — “ci: core lint/test/build validation on main”, 12 August — with both counts re-taken there rather than carried across: twelve registerTool sites in mcpServer.ts in the order named above, and 44 tool definitions across the seven files in backend/src/services/llm/tools/. No number changed; tools/index.ts is the same blob (83f05ee) at all three refs, which is exactly why nothing could detect this by reading the file. The check that would have caught it is not “does the sha resolve” but “is the sha on the branch you named”, and it is one API call.",
       },
       {
         date: "2026-08-08",
