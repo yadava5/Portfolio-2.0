@@ -413,9 +413,14 @@ const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SU
    the whole failure mode this file keeps re-learning: a sha that answers
    is not a sha that is on your history.
 
-   The pin is now `5e42233`, main's head (2026-08-12, "ci: core
-   lint/test/build validation on main"), and it is on main by
-   construction rather than by assertion. Both counts were re-taken there
+   The pin is now `5e42233` (2026-08-12, "ci: core lint/test/build
+   validation on main"), and the claim made for it is that it is ON
+   main — not that it is main's head, which it stopped being within
+   hours and which is the kind of fact that expires. `check-links.mjs`
+   asks `compare/{default_branch}...{sha}` for every pinned commit this
+   site carries and fails unless the answer is `identical` or `behind`,
+   so this is now enforced rather than remembered. Both counts were
+   re-taken there
    rather than carried: twelve `server.registerTool(` sites in
    mcpServer.ts, in the same source order this file names, and 44 tool
    definitions across the seven files in backend/src/services/llm/tools/.

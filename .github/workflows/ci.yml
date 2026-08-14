@@ -421,7 +421,17 @@ jobs:
       # 57 to 54 by collapsing duplicate URLs — and a gate that fails on a
       # deliberate edit gets deleted. What must never happen silently is the
       # fallback firing, and that is exactly what this catches.
+      #
+      # The token is passed for the SECOND pass this step now runs: every
+      # pinned commit must be ON its repository's default branch, not merely
+      # resolvable. Unauthenticated GitHub allows 60 requests an hour and the
+      # pass needs about twenty, so it would usually run without one — but
+      # "usually" is how a check becomes a coin flip, and GITHUB_TOKEN lifts
+      # the ceiling to 1,000 for free. Without it the pass warns and names the
+      # shas it skipped rather than reporting a pass it did not perform.
       - name: Check pinned artifact links resolve
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ ! -f out/index.html ]; then
             echo "::error::out/index.html is missing — the static export did not download."

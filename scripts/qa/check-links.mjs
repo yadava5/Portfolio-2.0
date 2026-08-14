@@ -206,9 +206,20 @@ async function worker() {
     let status = 0;
     try {
       /* HEAD first; GitHub answers it for blob/tree. Fall back to GET,
-         because a 405 is about the method, not the artifact. */
+         because a 405 is about the method, not the artifact.
+
+         AND A 5xx IS ALSO ABOUT THE METHOD. Measured 2026-08-14: HEAD on
+         applied@36a2f54 backend/tests/test_gmail_oauth_cloud.py returned 504
+         three times in a row while GET on the same URL returned 200, and the
+         Contents API served the blob (48,544 bytes) without complaint. HEAD
+         on the sibling README at the same sha was 200, so it is that one
+         file's blob view timing out, not the repo, the sha or a rate limit.
+         A reader issues GET, so GET is both the stricter probe and the
+         truthful one — falling back on 5xx removes a red that no visitor
+         would ever have experienced. It cannot mask a real 404: a missing
+         artifact answers 404 to GET too. */
       let res = await fetch(url, { method: "HEAD", redirect: "follow" });
-      if (res.status === 405 || res.status === 403) {
+      if (res.status === 405 || res.status === 403 || res.status >= 500) {
         res = await fetch(url, { method: "GET", redirect: "follow" });
       }
       status = res.status;
@@ -237,6 +248,146 @@ if (dead.length) {
   );
   process.exit(1);
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   PASS 2 — the sha has to be ON the branch this site names, not merely
+   resolvable.
+
+   WHY THIS EXISTS. Pass 1 asks "does the link answer 200", and on
+   2026-08-14 every AutoML link on this site answered 200 while pointing at
+   commits that had come off `main` entirely. On 12 August that repository
+   consolidated: `main` was replaced by its 2,186-commit GitLab lineage and
+   the GitHub main these pins were read on was parked as
+   `archive/github-main`. Neither commit moved — the branch did. This site
+   went on saying "the pinned public commit" and "main's public head" for
+   two commits that were on neither, for six days, with every gate green,
+   because a git object does not stop existing when a ref stops pointing at
+   it. `tools/index.ts` was byte-identical at all three candidate refs, so
+   even opening the file proved nothing.
+
+   The failing case is the entire point: the correction that created those
+   pins had itself REJECTED a third sha for having "no common ancestor with
+   main" — and after the consolidation that was the only one of the three
+   that was on main. A one-off manual check is a snapshot of a branch
+   pointer. This is the check that keeps.
+
+   Semantics: `compare/{default_branch}...{sha}` answers `identical` when
+   the sha IS the head, `behind` when it is an ancestor of the head — those
+   two are "on the branch". `ahead` and `diverged` mean the commit sits on
+   some other branch, and a 404 "No common ancestor" means it is not this
+   project's history at all.
+
+   SKIPS LOUDLY, NEVER SILENTLY, and only when the API cannot be reached —
+   unauthenticated GitHub allows 60 requests an hour and this needs about
+   ten, so it normally runs everywhere; in Actions GITHUB_TOKEN lifts that
+   to 1,000. A skip prints the reason and the shas it did not check, so the
+   log never reads like a pass.
+   ══════════════════════════════════════════════════════════════════════ */
+const PIN =
+  /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/(?:tree|blob|commit)\/([0-9a-f]{7,40})(?:\/|$)/;
+const pins = new Map(); // "owner/repo@sha" -> { owner, repo, sha, urls: Set }
+for (const url of urls) {
+  const m = url.match(PIN);
+  if (!m) continue; // tree/<branch-name> and the like — not a pinned commit
+  const [, owner, repo, sha] = m;
+  const key = `${owner}/${repo}@${sha}`;
+  if (!pins.has(key)) pins.set(key, { owner, repo, sha, urls: new Set() });
+  pins.get(key).urls.add(url);
+}
+
+const token =
+  process.env.GITHUB_TOKEN ||
+  process.env.GH_TOKEN ||
+  process.env.PORTFOLIO_GH_TOKEN;
+const apiHeaders = {
+  Accept: "application/vnd.github+json",
+  "User-Agent": "portfolio-check-links",
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+};
+
+const defaultBranches = new Map(); // "owner/repo" -> branch name
+const offBranch = [];
+const unchecked = [];
+
+for (const pin of pins.values()) {
+  const repoKey = `${pin.owner}/${pin.repo}`;
+  try {
+    if (!defaultBranches.has(repoKey)) {
+      const r = await fetch(`https://api.github.com/repos/${repoKey}`, {
+        headers: apiHeaders,
+      });
+      if (!r.ok) {
+        unchecked.push({ pin, why: `GET /repos/${repoKey} → ${r.status}` });
+        continue;
+      }
+      defaultBranches.set(repoKey, (await r.json()).default_branch);
+    }
+    const branch = defaultBranches.get(repoKey);
+    const r = await fetch(
+      `https://api.github.com/repos/${repoKey}/compare/${branch}...${pin.sha}`,
+      { headers: apiHeaders }
+    );
+    if (r.status === 404) {
+      /* GitHub says "No common ancestor between X and Y" here, which is the
+         loudest possible version of the finding. Pass 1 already proved the
+         sha resolves, so a 404 from compare is about ancestry, not existence. */
+      const body = await r.json().catch(() => ({}));
+      offBranch.push({
+        pin,
+        branch,
+        status: "no common ancestor",
+        note: body.message,
+      });
+      continue;
+    }
+    if (!r.ok) {
+      unchecked.push({ pin, why: `compare → ${r.status}` });
+      continue;
+    }
+    const { status } = await r.json();
+    if (status !== "identical" && status !== "behind") {
+      offBranch.push({ pin, branch, status });
+    }
+  } catch (err) {
+    unchecked.push({ pin, why: `network: ${err.message}` });
+  }
+}
+
+if (offBranch.length) {
+  console.error(
+    `\ncheck-links FAILED — ${offBranch.length} pinned commit(s) resolve but are NOT on the branch this site names:\n`
+  );
+  for (const d of offBranch) {
+    console.error(
+      `  ✗ ${d.pin.owner}/${d.pin.repo}@${d.pin.sha} — compare/${d.branch}...${d.pin.sha} says "${d.status}"` +
+        (d.note ? `\n      ${d.note}` : "")
+    );
+    for (const u of [...d.pin.urls].slice(0, 3)) console.error(`      ${u}`);
+  }
+  console.error(
+    "\n  The commit exists and every link to it answers 200 — that is what makes\n" +
+      "  this silent. Either the branch was renamed, replaced or archived under the\n" +
+      "  pin, or the pin named a commit from a fork or an unmerged branch. RE-TAKE\n" +
+      "  the measurement on the branch and re-pin; do not repoint the link at a\n" +
+      "  commit nobody read the number at."
+  );
+  process.exit(1);
+}
+
+if (unchecked.length) {
+  console.warn(
+    `  ! ancestry not checked for ${unchecked.length} of ${pins.size} pinned commit(s) — the API did not answer:`
+  );
+  for (const u of unchecked) {
+    console.warn(`  !   ${u.pin.owner}/${u.pin.repo}@${u.pin.sha} — ${u.why}`);
+  }
+  console.warn(
+    `  ! ${token ? "A token was present, so this is not a rate limit." : "No GITHUB_TOKEN in the environment; unauthenticated GitHub allows 60/hour."}`
+  );
+}
+console.log(
+  `check-links: ${pins.size - unchecked.length} of ${pins.size} pinned commits confirmed ON their repo's default branch`
+);
 
 console.log(
   `check-links: ${urls.length} pinned artifact links across ${pages.length} ${usingBuild ? "built pages" : "source files"}, all resolve`

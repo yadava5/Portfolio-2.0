@@ -129,12 +129,23 @@ const VISUAL_ASSIST_SHA = "22ebdaa";
    ("is it main's head") is a snapshot, and a snapshot of a branch pointer is
    not a durable fact about a commit.
 
-   `5e42233` is main's head — "ci: core lint/test/build validation on main",
-   2026-08-12 — and BOTH counts were re-taken there rather than carried:
-   twelve `server.registerTool(` sites in mcpServer.ts, 44 tool definitions
-   across the seven files (preprocessing 14, cell 8, feature 6, training 6,
-   data 4, package 3, UI 3), zero name collisions. One commit vouches for
-   both nouns now, so the split pin below collapses into AUTOML_SHA's. */
+   `5e42233` — "ci: core lint/test/build validation on main", 2026-08-12 —
+   is ON main, and that is deliberately the claim rather than "is main's
+   head". A head is a branch pointer, and the whole failure above is what
+   happens when a snapshot of a branch pointer is written down as a property
+   of a commit; `5e42233` stopped being the head within hours of being
+   pinned here and lost nothing by it. BOTH counts were re-taken there rather
+   than carried: twelve `server.registerTool(` sites in mcpServer.ts, 44 tool
+   definitions across the seven files (preprocessing 14, cell 8, feature 6,
+   training 6, data 4, package 3, UI 3), zero name collisions. One commit
+   vouches for both nouns now, so the split pin below collapses into
+   AUTOML_SHA's.
+
+   AND IT IS NO LONGER CHECKED BY HAND. check-links.mjs now asks
+   `compare/{default_branch}...{sha}` for every pinned commit on this site
+   and fails unless the answer is `identical` or `behind`; the mutation that
+   proves it works is this very sha's predecessor, e506c91, which resolves
+   and answers "no common ancestor". */
 const AUTOML_TOOLS_SHA = "5e42233";
 /* Cadence's suite count is pinned to the commit it was MEASURED at, which
    is the current public head rather than the old `69a59e7`. Re-run on the
@@ -290,7 +301,7 @@ export const proofManifest: ProofManifestEntry[] = [
       "https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/backend/src/services/llm/tools/index.ts",
     sourceLabel: `tools/index.ts @ ${AUTOML_TOOLS_SHA}`,
     verification:
-      "Both counts taken in source at `5e42233`, which is main's head — “ci: core lint/test/build validation on main”, 2026-08-12 — and which is on main rather than merely resolving, checked with `compare/main...5e42233` before this line was written. The MCP subset: 12 `server.registerTool(` call sites in backend/src/services/mcp/mcpServer.ts, in source order list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell; there is no second MCP server — `registerTool` appears nowhere else in backend/src or frontend/src — so 12 is the whole MCP registry. The tool surface: backend/src/services/llm/tools/ defines 44 tools across seven files — preprocessingTools 14, cellTools 8, featureTools 6, trainingTools 6, dataTools 4, packageTools 3, uiTools 3 — listed by name and de-duplicated globally with zero collisions. The plumbing explains both numbers: tools/index.ts assembles only DATA + CELL + PACKAGE into LLM_TOOL_DEFINITIONS, mcpServer.ts registers DATA (4) + CELL (8) = 12 of those, and the remaining 32 are passed as toolDefinitions by the LangGraph phases themselves — backend/src/services/workflows/phases/training.ts:148 and phases/featureEngineering.ts:208 return the lifecycle sets, and phaseRequestBuilder.ts:1095 passes LLM_TRAINING_LIFECYCLE_TOOLS. Two prior errors are recorded rather than quietly repaired. From 2026-08-02 to 2026-08-08 this entry presented the subset as the total: a reproducible count, reproduced at six refs, of the wrong noun. And from 2026-08-08 to today it pinned `5c5b762` and `e506c91`, both of which the 12 August branch consolidation left off main — GitHub now answers `compare/main...` for each with 404, “No common ancestor” — while every link went on resolving. No count changed at any point: tools/index.ts is blob 83f05ee at all three refs.",
+      "Both counts taken in source at `5e42233` — “ci: core lint/test/build validation on main”, 2026-08-12 — which is ON main rather than merely resolving: `compare/main...5e42233` answers `behind`, and this site's link gate now asserts exactly that for every pinned commit it carries, on every run. The MCP subset: 12 `server.registerTool(` call sites in backend/src/services/mcp/mcpServer.ts, in source order list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell; there is no second MCP server — `registerTool` appears nowhere else in backend/src or frontend/src — so 12 is the whole MCP registry. The tool surface: backend/src/services/llm/tools/ defines 44 tools across seven files — preprocessingTools 14, cellTools 8, featureTools 6, trainingTools 6, dataTools 4, packageTools 3, uiTools 3 — listed by name and de-duplicated globally with zero collisions. The plumbing explains both numbers: tools/index.ts assembles only DATA + CELL + PACKAGE into LLM_TOOL_DEFINITIONS, mcpServer.ts registers DATA (4) + CELL (8) = 12 of those, and the remaining 32 are passed as toolDefinitions by the LangGraph phases themselves — backend/src/services/workflows/phases/training.ts:148 and phases/featureEngineering.ts:208 return the lifecycle sets, and phaseRequestBuilder.ts:1095 passes LLM_TRAINING_LIFECYCLE_TOOLS. Two prior errors are recorded rather than quietly repaired. From 2026-08-02 to 2026-08-08 this entry presented the subset as the total: a reproducible count, reproduced at six refs, of the wrong noun. And from 2026-08-08 to today it pinned `5c5b762` and `e506c91`, both of which the 12 August branch consolidation left off main — GitHub now answers `compare/main...` for each with 404, “No common ancestor” — while every link went on resolving. No count changed at any point: tools/index.ts is blob 83f05ee at all three refs.",
     visibility: "public",
     privacyBoundary: "No private data — the tool registry is public source.",
     date: "2026-08-14",
