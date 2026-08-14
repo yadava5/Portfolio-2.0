@@ -16,16 +16,21 @@ const assets = [
     ),
     target: path.join(outputDir, "advocacy.png"),
   },
-  {
-    source: path.join(
-      root,
-      "output",
-      "playwright",
-      "asset-truth-audit",
-      "fast-mnist-workbench.png"
-    ),
-    target: path.join(outputDir, "mnist.png"),
-  },
+  /* The mnist entry was removed on 2026-08-14, and like the taskflow one
+     below it is a PROMOTION rather than a retirement. `mnist.png` was
+     `output/playwright/asset-truth-audit/fast-mnist-workbench.png`, a local
+     Playwright capture of the ClassifierWorkbench — a component deleted when
+     glyph's landing page was rebuilt, under a masthead reading "FAST MNIST",
+     a name retired in the 2026 rename. It is now a capture of the deployed
+     page at getglyph.vercel.app, taken after a real classification.
+
+     It has to come out of this list rather than be re-pointed, for the same
+     reason taskflow did: the source is a browser screenshot of a deployed
+     site, not a Playwright artifact in this repository. Left as a comment
+     because this is the only record of where the previous plate came from —
+     re-running `assets:promote-proof` with the old entry in place would
+     silently overwrite the production plate with the retired-brand
+     workbench. */
   /* The taskflow entry was removed on 2026-08-07, and unlike the automl one
      below it is a PROMOTION, not a retirement: `taskflow.png` was
      `output/playwright/asset-truth-audit/taskflow-after-mock-login.png`, a

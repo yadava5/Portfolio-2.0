@@ -234,7 +234,12 @@ fig. 1, fig. 2 and the ledger already say.
   call. There are two left, and the sentence used to say three:
   `automl.webp` was retired on 2026-08-07 with its case-file plate, and
   `taskflow.png` stopped being a local mock-login capture the same day —
-  it is now the production interior, signed in as the demo account. That
-  leaves `mnist.webp`, whose boundary field still says the native
-  inference server was offline during capture, and which is the one plate
-  here that is still a local workbench shot.
+  it is now the production interior, signed in as the demo account.
+  `mnist.webp` followed on 2026-08-14: it was the last local capture here,
+  a Playwright shot of a ClassifierWorkbench that no longer exists under a
+  "FAST MNIST" masthead retired in the rename, and it is now the deployed
+  page at getglyph.vercel.app after a real classification. Its boundary
+  field changed rather than disappeared — the old one disclosed a server
+  that was off, the new one separates the ledger's committed figures from
+  the two numbers actually measured in the capturing browser. No plate on
+  this shelf is a local capture any more.

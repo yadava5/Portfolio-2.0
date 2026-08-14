@@ -2674,7 +2674,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Input preprocessing feeds C++ matrix kernels and OpenMP parallel paths, then the React demo displays inference behavior and benchmark proof.",
+        "Input preprocessing feeds C++ matrix kernels and OpenMP parallel paths, then the browser bench runs the same kernels on the visitor’s own ink and times them against a lanes-off scalar build.",
       /* One trunk, digits to demo; kernels, OpenMP and the benchmark
          suite all join at the network — proof included. */
       flow: [["input"], ["model"], ["demo"]],
@@ -2704,9 +2704,15 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           kind: "ml",
         },
         {
+          /* "Interactive visualization" pointed at ClassifierWorkbench, which
+             was deleted with the rest of the unreachable features/experience
+             tree when the landing page was rebuilt (glyph, 2026-08-13). The
+             live bench is the fold now, not a component below it, and it
+             times the simd128 kernel against a lanes-off scalar build on the
+             visitor's own machine rather than only displaying a result. */
           id: "demo",
-          label: "React demo",
-          detail: "Interactive visualization",
+          label: "Live bench",
+          detail: "In-browser classify + timing",
           kind: "client",
         },
         {
@@ -2723,11 +2729,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         /* "prediction output" hid three delivery paths, and which one
            answers is the interesting part of this project. The web app
            declares them itself — `web/src/api/predict.ts` types
-           `PredictionSource = 'server' | 'browser-wasm' | 'browser-js'`:
+           `PredictionSource = 'server' | 'browser-wasm' | 'browser-js-demo'`:
            the httplib server at :8080 is preferred, the Emscripten build
            is the offline fallback, and a plain-JS classifier is the last
            resort. The portfolio's own ¶06 station runs the middle one —
-           the 45.9 KB wasm it ships is this same model. (2026-08-02.) */
+           the 45.9 KB wasm it ships is this same model. (2026-08-02.)
+
+           Two corrections, 2026-08-14. The third literal is
+           `'browser-js-demo'`, not `'browser-js'` — it was transcribed a
+           character short here, and glyph labels that path in its own UI as
+           "js demo fallback" precisely so a visitor can tell. And the
+           45.9 KB is THIS repository's vendored copy (46,960 B, built
+           31 July); glyph's current module is 43,751 B. The station's own
+           caveat at src/run/index.html already discloses that the wasm in
+           that tab predates the fourth kernel, so the figure is right about
+           what ¶06 serves and should not be "corrected" to glyph's. */
         {
           from: "model",
           to: "demo",
@@ -2910,7 +2926,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     notClaiming: [
       "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline at dot 256; the SIMD is in both builds and earns none of it.",
-      "The workbench screenshot was captured with the native inference server offline, so benchmark claims come from committed benchmark data, not the live page.",
+      "The landing screenshot is the deployed page, but its ledger figures are the committed 2 August 2026 benchmark run rather than anything measured in that capture; only the scalar-vs-simd128 timing and the verdict were live in the capturing browser.",
       "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
     corrections: [
@@ -2976,13 +2992,34 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     artifacts: [
+      /* Re-shot 2026-08-14, and the reason is the strongest label on this
+         page. Stamped `real-screenshot`, this plate was a LOCAL capture of a
+         three-panel workbench whose masthead read "FAST MNIST" — a name
+         retired in the 2026 rename — and whose UI (ClassifierWorkbench,
+         PredictionResult) was deleted when the landing page was rebuilt. So
+         the site's strongest evidence class was carrying a picture of a
+         product that no longer existed under a brand that no longer existed.
+         It is now a capture of the deployed page at getglyph.vercel.app,
+         taken after a real classification through the wasm simd128 kernel,
+         which is why the boundary line changed rather than disappeared: the
+         old one disclosed a server that was off, this one names what the
+         figures in the frame are and are not.
+
+         Like the taskflow and automl plates before it, this one has also
+         LEFT scripts/asset-truth/promote-proof-assets.mjs — its source is a
+         browser screenshot of a deployed site, not a Playwright artifact in
+         this repository, and re-running `assets:promote-proof` with the old
+         entry in place would silently overwrite it with the retired-brand
+         workbench again. */
       {
         type: "real-screenshot",
-        label: "Local React workbench screenshot",
+        label: "Deployed landing screenshot",
         href: withBasePath("/images/projects/mnist.webp"),
-        source: "local web workbench capture",
-        boundary: "native inference server offline during capture",
-        date: "2026-06",
+        source:
+          "getglyph.vercel.app, captured at 1376×768 after a live classification",
+        boundary:
+          "the ledger figures are the committed 2 August 2026 run; only the scalar-vs-simd128 timing and the verdict in the frame were measured live in the capturing browser",
+        date: "2026-08",
       },
       /* "Vector project asset" stood here and was the clearest case of the
          lot — 2.5 KB of stock social-card template, one corner-to-corner

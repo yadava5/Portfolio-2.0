@@ -159,7 +159,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // test that is really asserting "the coverage receipt is on the page".
   visualAssistCoverage: "71 tests cover models and utilities",
   visualAssistCoreMlBoundary: "no custom Core ML model file was present",
-  fastMnistScreenshot: "Local React workbench screenshot",
+  fastMnistScreenshot: "Deployed landing screenshot",
   fastMnistRelease: "v1.0.0 release",
   fastMnistBenchmark: "Benchmark evidence",
   // SIMD-attribution reword (2026-07-18): honest form per BENCHMARKS.md.
