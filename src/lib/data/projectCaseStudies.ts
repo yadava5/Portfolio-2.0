@@ -507,27 +507,45 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "jobtracker",
     treatment: "native-intelligence",
     fileNo: 4,
-    role: "Designer and sole engineer — desktop app, web app, and classifier",
+    /* Was "desktop app, web app, and classifier" until 2026-08-15. The
+       desktop client was de-scoped on 2026-08-12 and DELETED — `apps/macos`
+       is not on `main` any more — so a role line still claiming it named a
+       surface no reader can open. What it built is the hosted product. */
+    role: "Designer and sole engineer — web app, backend, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
     verified: "2026-08",
     status: "shipped",
-    /* Both clauses trace to receipts: 07 (the dashboard renders real
-       applications from the API) + 09 (the hosted slot runs layer 1
-       only, by design, and the boundary rows say so). */
-    statusDetail: "web app live; the hosted classifier runs layer 1 only",
+    /* Every clause traces: the beta cap to the access boundary row (which
+       cites Google's restricted-scope rule and the two surfaces that need
+       no invite), the layer-1 clause to receipt 09 (the hosted slot runs
+       layer 1 only, by design). */
+    /* No leading dash clause: the renderer already joins this to the
+       status word with an em dash, and "shipped — live in beta — a
+       restricted…" printed two of them in a row. */
+    statusDetail:
+      "live in invite-only beta; a restricted gmail scope caps the app at 100 test users, and the hosted classifier runs layer 1 only",
     repoPin: {
       repo: "yadava5/applied",
       sha: APPLIED_SHA,
       branch: "integration/web-migration",
       href: APPLIED_TREE,
     },
+    /* The last sentence used to read "It shipped twice: first as a native
+       macOS app, now as a hosted web app — and the two share one backend
+       package." Both halves of that present tense died on 2026-08-12: the
+       desktop client was de-scoped and deleted, so there is no "two" left
+       to share anything. The history is not erased — it is in the
+       corrections register and in receipt 06, which is pinned to a commit
+       where the macOS tree still stands. What replaces it is what a reader
+       can actually do today. This string is also the OG card's deck, so it
+       moves with `npm run assets:render-og`. */
     summary:
-      "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It shipped twice: first as a native macOS app, now as a hosted web app — and the two share one backend package.",
+      "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It runs as a hosted web app, live in invite-only beta — and the demo and the on-device import need no invite and no account.",
     evidenceDisclosure: {
       label: "Private-safe proof: no email content",
       detail:
-        "Applied reads a real inbox, so this case file shows none of it. Every receipt below terminates in source, a migration, a committed eval artifact, or a test run — never in a screenshot of mail. The repository’s own README and docs/WEB_ARCHITECTURE.md still describe apps/web as an unwired scaffold and are deliberately NOT cited here: they are behind the code, and a stale doc is not evidence.",
+        "Applied reads a real inbox, so this case file shows none of it. Every receipt below terminates in source, a migration, a committed eval artifact, or a test run — never in a screenshot of mail. At the commit these receipts pin, the repository’s own README and docs/WEB_ARCHITECTURE.md described apps/web as an unwired scaffold, and they are deliberately NOT cited: they were behind the code, and a stale doc is not evidence.",
     },
     problem:
       "The status of a job search scatters across Gmail, employer systems, and one-off messages. A spreadsheet can’t keep up: updates get missed, rows get retyped, and the record drifts from the truth. The first answer was a desktop app, which meant the record only existed on one machine.",
@@ -540,10 +558,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves this and the desktop app; the desktop branch is where the two heavier classifier layers still live.",
+        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it — in the Hugging Face Space and the browser export — because they do not fit the serverless slot.",
       /* The true topology is a straight pipeline, so fig. 2 draws one:
-         inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard, with the desktop
-         app as the single off-spine branch. */
+         inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard. It had one
+         off-spine branch — the SwiftUI desktop app — until 2026-08-15.
+         That node and its edge were removed because the client they drew
+         was de-scoped on 2026-08-12 and deleted from the repository, and a
+         box on a diagram is a claim like any other. The spine now runs
+         unbranched; `systemDiagram` requires no siding, and it aborts on a
+         node no edge or stage draws, which is why the node and the edge
+         had to go together. */
       variant: "linear",
       flow: [["gmail"], ["fetch"], ["classifier"], ["store"], ["api"], ["ui"]],
       /* Traces to receipt 08: the GUC is left unset when no identity is
@@ -566,7 +590,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "classifier",
           label: "Classifier",
-          detail: "Rules on the hosted path; e5 + SetFit on the desktop one",
+          detail: "Rules on the hosted path; e5 + SetFit in the export",
           kind: "ml",
         },
         {
@@ -585,15 +609,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            goes through `apps/web/lib/applications/server.ts` and the
            route handlers under `apps/web/app/api/`, which call
            `${BACKEND_API_URL}` holding the caller's Supabase JWT
-           server-side. The same package is what the macOS client talks
-           to at 127.0.0.1:8000, and what deploys as a Vercel Python
-           function via `api/index.py`. It is also where the JWT is
+           server-side. The same package is what the macOS client USED to
+           talk to at 127.0.0.1:8000 — that client is gone since
+           2026-08-12 — and what deploys as a Vercel Python function via
+           `api/index.py`. It is also where the JWT is
            verified before the database gate can mean anything — so
            leaving it out understated the design, not just the diagram. */
         {
           id: "api",
           label: "FastAPI",
-          detail: "One package serves the web app and the desktop one",
+          detail: "One package, deployed as a serverless function",
           kind: "api",
         },
         {
@@ -601,12 +626,6 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           label: "Next.js",
           detail: "Pipeline board, review queue, stat tiles",
           kind: "client",
-        },
-        {
-          id: "macos",
-          label: "SwiftUI",
-          detail: "The desktop app, still in the repo",
-          kind: "system",
         },
       ],
       edges: [
@@ -619,7 +638,6 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           to: "ui",
           label: "pipeline state, over the caller’s jwt",
         },
-        { from: "classifier", to: "macos", label: "layers 2–3 — desktop only" },
       ],
     },
     decisions: [
@@ -636,7 +654,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         reason:
           "torch, sentence-transformers, and SetFit do not fit a serverless function slot — not the size limit, and not the cold start.",
         tradeoff:
-          "The hosted verdict is weaker than the desktop one. The alternative was pretending otherwise, so the limit is written into the code, the tests, and the boundary rows below.",
+          "The hosted verdict is weaker than the full cascade. The alternative was pretending otherwise, so the limit is written into the code, the tests, and the boundary rows below.",
         status: "accepted",
       },
       {
@@ -775,9 +793,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The macOS Debug target built locally with xcodebuild against the JobTracker scheme, and the desktop app is still in the repository.",
+          "The macOS Debug target built locally with xcodebuild against the JobTracker scheme, and the desktop app was in the repository at the pinned commit. It was de-scoped on 2026-08-12 and deleted; this pinned tree is the record of it, not a description of the repository today.",
         method:
-          "local build — no build artifact is published; the source tree is public and linked",
+          "local build — no build artifact is published; the pinned source tree is public and linked",
         artifacts: [
           {
             label: `applied @ ${APPLIED_SHA} · apps/macos`,
@@ -880,9 +898,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit stay on the desktop path and in the Hugging Face Space.",
+      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the Hugging Face Space and the int8 browser export; they used to run on the desktop client too, and that client was de-scoped and deleted on 2026-08-12.",
+      "I’m not claiming Applied is generally available. Connecting your own Gmail is invite-only, and the reason is not positioning: gmail.readonly is a Google restricted scope, so until the app clears Google’s OAuth verification and an independent security assessment it may authorise at most 100 test users, each added by address on the consent screen. What needs no invite and no account is the demo — the whole interface over synthetic mail — and the import path, which classifies a Google Takeout export on the reader’s own device.",
       "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly — so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
-      "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. Both still describe apps/web as an unwired scaffold with a placeholder dashboard — they are behind the code, and this file cites the code.",
+      "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. At the commit this file pins, both described apps/web as an unwired scaffold with a placeholder dashboard — they were behind the code, and this file cites the code. The README has since been rewritten as the product’s own record; it is not back-cited here, because these receipts are pinned and a pin is not re-read to suit a later document.",
       "No production email-volume or user numbers are claimed. Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
     ],
     corrections: [
@@ -911,12 +930,25 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "note",
         text: "Provenance audit: the classifier claims were re-derived by running the code rather than reading about it. The rules gate passed live at 96 samples, macro-F1 0.9791, 2 misclassified — and the deterministic hybrid gate returned the identical numbers, which is the direct evidence for the attribution correction recorded earlier: the file named “hybrid” measures the regexes alone. The 201-rule figure was recomputed by importing jobtracker.classifier.rules and summing the pattern lists across all seven categories — 106 strong, 26 weak, 69 negative, plus 14 ATS domains. The eval set was counted from its own JSONL: 96 samples, 8 classes, 12 each. Every one of those figures matched what this file already said.",
       },
+      {
+        date: "2026-08-15",
+        kind: "erratum",
+        text: "This file described a desktop app that no longer exists. The macOS client was de-scoped on 2026-08-12 and deleted from the repository — apps/macos went, and with it a second, unmounted set of FastAPI routers — so five present-tense claims here were false: the role line, fig. 2’s SwiftUI branch and the edge feeding it, the architecture summary’s “the desktop branch is where the two heavier classifier layers still live”, the rules-layer trade-off, and the boundary row that sent embeddings and SetFit “to the desktop path”. All five are corrected: layers 2 and 3 run in the Hugging Face Space and the int8 browser export, and nowhere else. Nothing is retracted and nothing is re-pinned — receipt 06 still cites the macOS build, because it was true at 36a2f54 and that tree still resolves. What changed is the tense: a pinned receipt speaks for its commit, and prose speaks for today.",
+      },
+      {
+        date: "2026-08-15",
+        kind: "note",
+        text: "Applied is a product now, not a study, and this file leads with it: the run’s rail sends a reader to the live app and the System Card before the case file. Two disclosures come with that. It is licensed proprietary, all rights reserved — the repository stays public so the privacy and isolation claims above can be read against the code, not so the code can be reused. And access is an invite-only beta, for the reason the access boundary row gives rather than a reason anyone chose.",
+      },
     ],
     /* Provenance strips carry the whole correction here. These rows are
        DESKTOP-era records that are still real files at the new pin — the
        honest edit was to say which era each one speaks for, not to unlink
        them. The README in particular is no longer offered as
-       "source-truth": it still calls apps/web a scaffold.
+       "source-truth": at this pin it called apps/web a scaffold. It has
+       since been rewritten as the product's own record, which does not
+       change what the PINNED blob below serves — that link is a record of
+       2026-07, and it is labelled as one.
 
        THE DRAWN PLATE THAT STOOD FIRST IS GONE, 2026-08-07. It was
        `jobtracker-architecture.svg`, and it failed on both axes at once.
@@ -937,7 +969,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         href: `${APPLIED_BLOB}/README.md`,
         source: `yadava5/applied @ ${APPLIED_SHA}`,
         boundary:
-          "lags the shipped web app — still calls apps/web a scaffold; linked as a record, not as evidence",
+          "the readme as it stood at this pin — it called apps/web a scaffold; linked as a record of that moment, not as evidence",
         date: "2026-07",
       },
       {

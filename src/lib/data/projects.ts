@@ -244,12 +244,25 @@ export const projects: Project[] = [
        dashboard. It does not. `classifier/hybrid.py` short-circuits after
        the rules layer whenever `deployment == "cloud"` — the torch /
        sentence-transformers / setfit stack does not fit the serverless
-       slot. All three layers are real; they run on the desktop app and in
-       the browser Space. Case-file receipt 09 argues the limit. */
+       slot. All three layers are real; they run in the public Hugging
+       Face Space and in the int8 browser export. Case-file receipt 09
+       argues the limit.
+
+       DESKTOP DE-SCOPE (2026-08-15). These strings also said the heavier
+       layers "run on the desktop app". The macOS client was de-scoped on
+       2026-08-12 and DELETED — `apps/macos` is not on `main` — so that
+       clause named a surface no reader could open. Corrected here for the
+       same reason it was corrected in the case file, even though NO
+       BUILT SURFACE READS THESE FIELDS: `shortDescription`,
+       `fullDescription`, `highlights`, `metrics` and `techStack` have had
+       zero consumers since Phase 4 retired the React pages (the archive
+       reads `title`, `liveUrl`, `systemCardUrl`, `githubUrl` and `id`
+       only). Stale data-layer prose is how a lie gets copied back onto a
+       live surface by the next pass, so it is fixed rather than left. */
     shortDescription:
-      "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications.",
+      "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) runs on the desktop app and as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) runs in a public Hugging Face Space and as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
@@ -274,7 +287,8 @@ export const projects: Project[] = [
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
-      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) runs on the desktop app and as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
+      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) runs in a public Hugging Face Space and as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
+      "Live in invite-only beta: gmail.readonly is a Google restricted scope, so an unverified app may authorise at most 100 test users — the demo and the on-device import need no invite and no account",
     ],
     isPrivate: false,
     metrics: [
@@ -282,6 +296,7 @@ export const projects: Project[] = [
         label: "Classifier",
         value: "3-layer hybrid — rules -> e5 -> SetFit (hosted: rules only)",
       },
+      { label: "Access", value: "invite-only beta; demo + import need none" },
       { label: "Runs in-browser", value: "int8 ONNX, output-identical" },
     ],
     proofIds: [

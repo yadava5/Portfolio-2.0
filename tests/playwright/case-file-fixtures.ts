@@ -145,8 +145,17 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // point. If either disappears the page is overclaiming again.
   jobtrackerRulesOnlyBoundary:
     "On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot.",
+  // 2026-08-15: RE-RECORDED, not relaxed. The boundary row is still there
+  // and still says the same thing about the same two documents; what moved
+  // is its TENSE. "Both still describe …" asserted something about the
+  // repository today, and the README was rewritten as the product's own
+  // record — so the row was corrected to speak for the commit these
+  // receipts pin, which is all it was ever entitled to claim. The fixture
+  // keeps the whole distinguishing clause (scaffold + placeholder
+  // dashboard); shortening it to "apps/web" would have made this
+  // assertion pass on a row that no longer names the limit.
   jobtrackerStaleDocsBoundary:
-    "Both still describe apps/web as an unwired scaffold with a placeholder dashboard",
+    "both described apps/web as an unwired scaffold with a placeholder dashboard",
   /* `visualAssistArchitecture` retired 2026-08-07, same reason. */
   visualAssistReadme: "README beta and LiDAR requirements",
   visualAssistTests: "XCTest source evidence",
