@@ -258,7 +258,16 @@ export const projects: Project[] = [
        zero consumers since Phase 4 retired the React pages (the archive
        reads `title`, `liveUrl`, `systemCardUrl`, `githubUrl` and `id`
        only). Stale data-layer prose is how a lie gets copied back onto a
-       live surface by the next pass, so it is fixed rather than left. */
+       live surface by the next pass, so it is fixed rather than left.
+
+       The beta status was ADDED to those same unread fields for the other
+       half of that reason. `statusLabel` — the field that sounds like the
+       natural home for it — is declared on the Project type and read by
+       nothing at all, so filling it would be inventing a surface; the
+       status is stated where the site actually renders one, in the case
+       file's `statusDetail`. But if anything ever reads these fields
+       again, it must not be able to present Applied as generally
+       available, which is what they said by omission. */
     shortDescription:
       "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
