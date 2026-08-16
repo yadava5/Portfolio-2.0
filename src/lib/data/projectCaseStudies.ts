@@ -648,18 +648,24 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
     },
     decisions: [
-      /* d1 is left exactly as it was filed on 2026-07-26, wording and
-         all, and marked superseded rather than rewritten — this section
-         is headed "§ as filed", and a decision that was made and then
-         overturned is a different fact from a decision nobody took. What
-         replaced it is d5, appended below on 2026-08-15; the corrections
-         register carries the reversal and the evidence for it. These
-         articles carry no ids or anchors, so appending renumbers
-         nothing. */
+      /* d1 keeps its argument exactly as filed and is marked superseded
+         rather than rewritten — this section is headed "§ as filed", and
+         a decision that was made and then overturned is a different fact
+         from a decision nobody took. What replaced it is d5, appended
+         below on 2026-08-15; the corrections register carries the
+         reversal and the evidence for it. These articles carry no ids or
+         anchors, so appending renumbers nothing.
+
+         The one thing added to the row is its own date, at the head of
+         the reason. Nothing else here is dated, so "are enough" read as
+         a present-tense claim with only the status word marking it as
+         past — the same defect this file keeps correcting, and receipt
+         06 already answers it inline rather than leaving a register
+         entry to do the work. A date is a disclosure, not a revision. */
       {
         decision: "Fetch Gmail metadata, never message bodies",
         reason:
-          "The subject line, the sender, and Gmail’s own snippet are enough to name an application email.",
+          "Filed 2026-07-26: the subject line, the sender, and Gmail’s own snippet are enough to name an application email.",
         tradeoff:
           "A body-blind classifier gives up signal on ambiguous mail, and buys a privacy boundary that holds without being trusted.",
         status: "superseded",
@@ -966,7 +972,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-08-15",
         kind: "erratum",
-        text: "Four sentences here said Applied fetches Gmail metadata and never message bodies: the access constraint, the architecture summary, fig. 2’s fetch node, and decision d1. They stopped being true on 2026-08-15, and so did the edge feeding the classifier, which said the classifier is handed a subject and a snippet. The decision was real and it was reversed on evidence rather than on preference. Gmail’s own snippet averages 186 characters, an ATS rejection spends them on its polite preamble, and of four real rejections three could not be decided from the snippet at all; one has no snippet whatsoever, and the classifier had never once filed a rejection without a human correcting it. Applied now fetches the body, classifies it in flight, and drops it. What is stored did not change: Gmail’s own snippet, the sender, the subject, the date, and the verdict. Bodies stay out by the shape of the code rather than by a promise, and tests/test_body_is_never_persisted.py drives a real scan with a sentinel in every body, then asserts the sentinel reaches no column of any table, no log record, and no response of any endpoint the scan touches; it also asserts the stored snippet equals Gmail’s, because a sentinel search alone passes for a body prefix that stops short of it. On the day of the change two real rejections were filed automatically in production, at 0.90 and 0.95 confidence, which this classifier had never managed before. d1 keeps its wording and is marked superseded, because this section is filed as filed; d5 states what runs today. Nothing is retracted and nothing is re-pinned: receipt 03 still says the hosted fetch reads metadata only, because that was true at 36a2f54 and that tree still resolves. What changed is the tense, and a pinned receipt speaks for its commit while prose speaks for today.",
+        text: "Four sentences here said Applied fetches Gmail metadata and never message bodies: the access constraint, the architecture summary, fig. 2’s fetch node, and decision d1. They stopped being true on 2026-08-15, and so did the edge feeding the classifier, which said the classifier is handed a subject and a snippet. The decision was real and it was reversed on evidence rather than on preference. Gmail’s own snippet averages 186 characters, an ATS rejection spends them on its polite preamble, and of four real rejections three could not be decided from the snippet at all; one has no snippet whatsoever, and the classifier had never once filed a rejection without a human correcting it. Applied now fetches the body, classifies it in flight, and drops it. What is stored did not change: Gmail’s own snippet, the sender, the subject, the date, and the verdict. Bodies stay out by the shape of the code rather than by a promise, and tests/test_body_is_never_persisted.py drives a real scan with a sentinel in every body, then asserts the sentinel reaches no column of any table, no log record, and no response of any endpoint the scan touches; it also asserts the stored snippet equals Gmail’s, because a sentinel search alone passes for a body prefix that stops short of it. On the day of the change the classifier filed two real rejections by itself, reading its own confidence at 0.90 and 0.95, which it had never once managed before. Those two figures are the model’s own outputs on 2026-08-15 and not a count of anybody’s mail: the boundary row that refuses production email volumes and user numbers stands, and neither message is shown. d1 keeps its argument and is marked superseded, because that section is filed as filed; the date it was taken is added at the head of it, so the row cannot be read as a claim about today, and d5 states what runs instead. Nothing is retracted and nothing is re-pinned: receipt 03 still says the hosted fetch reads metadata only, because that was true at 36a2f54 and that tree still resolves. What changed is the tense, and a pinned receipt speaks for its commit while prose speaks for today.",
       },
       {
         date: "2026-08-15",
