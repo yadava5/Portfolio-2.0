@@ -82,8 +82,15 @@ export interface CaseStudyDecision {
   decision: string;
   reason: string;
   tradeoff: string;
-  /** ADR status word from a closed set ("accepted" — no revisits on file) */
-  status: "accepted";
+  /**
+   * ADR status word from a closed set. It read `"accepted"` alone, with
+   * the comment "no revisits on file", until 2026-08-15 — when the first
+   * revisit landed: Applied's metadata-only fetch was reversed on
+   * evidence. A decisions section headed "§ as filed" has to be able to
+   * say a row was overturned; the alternative is rewriting the row,
+   * which erases the decision instead of recording what happened to it.
+   */
+  status: "accepted" | "superseded";
 }
 
 export type CaseStudyArtifactType =
@@ -550,7 +557,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     problem:
       "The status of a job search scatters across Gmail, employer systems, and one-off messages. A spreadsheet can’t keep up: updates get missed, rows get retyped, and the record drifts from the truth. The first answer was a desktop app, which meant the record only existed on one machine.",
     constraints: [
-      "Ask for the least Gmail access that can work — read-only, and metadata rather than message bodies.",
+      "Ask for the least Gmail access that can work: read-only, and keep the message body out of the database.",
       "Classify noisy inbox messages into useful application states.",
       "Make row isolation the database’s job, not the query writer’s.",
       "Fit the whole classifier into a serverless slot, or be honest about which layers didn’t fit.",
@@ -558,7 +565,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it, in the browser export, because they do not fit the serverless slot.",
+        "Gmail hands over the message, the classifier names it and the body goes no further, Postgres files the verdict under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it, in the browser export, because they do not fit the serverless slot.",
       /* The true topology is a straight pipeline, so fig. 2 draws one:
          inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard. It had one
          off-spine branch — the SwiftUI desktop app — until 2026-08-15.
@@ -583,8 +590,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           id: "fetch",
-          label: "Metadata fetch",
-          detail: "Subject, From, Date, snippet — no bodies",
+          label: "Message fetch",
+          detail: "Subject, From, Date, snippet, and a body it never stores",
           kind: "system",
         },
         {
@@ -630,7 +637,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
       edges: [
         { from: "gmail", to: "fetch", label: "read-only" },
-        { from: "fetch", to: "classifier", label: "subject + snippet" },
+        { from: "fetch", to: "classifier", label: "subject, snippet, body" },
         { from: "classifier", to: "store", label: "verdicts, scoped by user" },
         { from: "store", to: "api", label: "rows the role may see" },
         {
@@ -641,13 +648,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       ],
     },
     decisions: [
+      /* d1 is left exactly as it was filed on 2026-07-26, wording and
+         all, and marked superseded rather than rewritten — this section
+         is headed "§ as filed", and a decision that was made and then
+         overturned is a different fact from a decision nobody took. What
+         replaced it is d5, appended below on 2026-08-15; the corrections
+         register carries the reversal and the evidence for it. These
+         articles carry no ids or anchors, so appending renumbers
+         nothing. */
       {
         decision: "Fetch Gmail metadata, never message bodies",
         reason:
           "The subject line, the sender, and Gmail’s own snippet are enough to name an application email.",
         tradeoff:
           "A body-blind classifier gives up signal on ambiguous mail, and buys a privacy boundary that holds without being trusted.",
-        status: "accepted",
+        status: "superseded",
       },
       {
         decision: "Run the hosted classifier on the rules layer alone",
@@ -672,6 +687,14 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
           "A bounded scan of a large inbox will miss applications it already found, and re-syncing wiped them.",
         tradeoff:
           "Stale rows survive until an explicit rebuild, which is the cheaper failure.",
+        status: "accepted",
+      },
+      {
+        decision: "Read the message body in flight, and store none of it",
+        reason:
+          "Gmail’s own snippet averages 186 characters and an ATS rejection spends them on its preamble, so the sentence carrying the decision falls off the end. Of four real rejections, three could not be decided from the snippet at all, and one of those has no snippet whatsoever. The classifier had never once filed a rejection without a human.",
+        tradeoff:
+          "The privacy boundary stops being a property of what is requested and becomes a property of the code: the object every persist path receives has no body field, bodies travel beside it and fall out of scope when the request ends, and a test drives a real scan with a sentinel in every body and asserts it reaches no column of any table, no log record, and no response of any endpoint the scan touches. What is stored is unchanged, which is the claim that had to survive: Gmail’s own snippet, the sender, the subject, the date, and the verdict.",
         status: "accepted",
       },
     ],
@@ -939,6 +962,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-15",
         kind: "note",
         text: "Applied is a product now, not a study, and this file leads with it: the run’s rail sends a reader to the live app and the System Card before the case file. Two disclosures come with that. It is licensed proprietary, all rights reserved — the repository stays public so the privacy and isolation claims above can be read against the code, not so the code can be reused. And access is an invite-only beta, for the reason the access boundary row gives rather than a reason anyone chose.",
+      },
+      {
+        date: "2026-08-15",
+        kind: "erratum",
+        text: "Four sentences here said Applied fetches Gmail metadata and never message bodies: the access constraint, the architecture summary, fig. 2’s fetch node, and decision d1. They stopped being true on 2026-08-15, and so did the edge feeding the classifier, which said the classifier is handed a subject and a snippet. The decision was real and it was reversed on evidence rather than on preference. Gmail’s own snippet averages 186 characters, an ATS rejection spends them on its polite preamble, and of four real rejections three could not be decided from the snippet at all; one has no snippet whatsoever, and the classifier had never once filed a rejection without a human correcting it. Applied now fetches the body, classifies it in flight, and drops it. What is stored did not change: Gmail’s own snippet, the sender, the subject, the date, and the verdict. Bodies stay out by the shape of the code rather than by a promise, and tests/test_body_is_never_persisted.py drives a real scan with a sentinel in every body, then asserts the sentinel reaches no column of any table, no log record, and no response of any endpoint the scan touches; it also asserts the stored snippet equals Gmail’s, because a sentinel search alone passes for a body prefix that stops short of it. On the day of the change two real rejections were filed automatically in production, at 0.90 and 0.95 confidence, which this classifier had never managed before. d1 keeps its wording and is marked superseded, because this section is filed as filed; d5 states what runs today. Nothing is retracted and nothing is re-pinned: receipt 03 still says the hosted fetch reads metadata only, because that was true at 36a2f54 and that tree still resolves. What changed is the tense, and a pinned receipt speaks for its commit while prose speaks for today.",
       },
       {
         date: "2026-08-15",

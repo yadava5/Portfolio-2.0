@@ -267,11 +267,18 @@ export const projects: Project[] = [
        status is stated where the site actually renders one, in the case
        file's `statusDetail`. But if anything ever reads these fields
        again, it must not be able to present Applied as generally
-       available, which is what they said by omission. */
+       available, which is what they said by omission.
+
+       2026-08-15, same rule again: both fields said "metadata" — the
+       fetch reads the message body now, classifies it in flight and
+       discards it, and the case file's corrections register carries the
+       reversal and its evidence. The word is dropped rather than
+       replaced with a longer claim, because these fields have no surface
+       to qualify one on. */
     shortDescription:
       "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) is exported as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) is exported as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
@@ -292,7 +299,7 @@ export const projects: Project[] = [
     startDate: "2026-02",
     endDate: "Present",
     highlights: [
-      "Real Gmail connect -> metadata fetch -> classify, end to end on the hosted app",
+      "Real Gmail connect -> fetch -> classify, end to end on the hosted app",
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
