@@ -271,7 +271,7 @@ export const projects: Project[] = [
     shortDescription:
       "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) runs in a public Hugging Face Space and as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox metadata, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) is exported as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
@@ -296,7 +296,7 @@ export const projects: Project[] = [
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
-      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) runs in a public Hugging Face Space and as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
+      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) ships as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
       "Live in invite-only beta: gmail.readonly is a Google restricted scope, so an unverified app may authorise at most 100 test users — the demo and the on-device import need no invite and no account",
     ],
     isPrivate: false,

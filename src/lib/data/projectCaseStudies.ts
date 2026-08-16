@@ -558,7 +558,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it — in the Hugging Face Space and the browser export — because they do not fit the serverless slot.",
+        "Gmail hands over metadata, the classifier names it, Postgres files it under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it, in the browser export, because they do not fit the serverless slot.",
       /* The true topology is a straight pipeline, so fig. 2 draws one:
          inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard. It had one
          off-spine branch — the SwiftUI desktop app — until 2026-08-15.
@@ -880,13 +880,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "All three classifier layers do run in a browser — as a public Hugging Face Space, on an int8 ONNX export of the same model. That is a separate deployment from the web app, not the verdict getapplied.vercel.app returns.",
+          "All three classifier layers are built to run in a browser, as an int8 ONNX export of the same model. That build is separate from the hosted web app, and its verdict is not the one getapplied.vercel.app returns.",
         method:
-          "ported the local classifier and exported it quantized; both the space and the export script are inspectable",
+          "ported the local classifier and exported it quantized; the export script and the browser build it produces are both inspectable",
         artifacts: [
           {
-            label: "huggingface.co/spaces/yadava5/jobtracker-classifier",
-            href: "https://huggingface.co/spaces/yadava5/jobtracker-classifier",
+            label: `applied @ ${APPLIED_SHA} · ml/browser/site/`,
+            href: `${APPLIED_TREE}/ml/browser/site`,
           },
           {
             label: `applied @ ${APPLIED_SHA} · ml/browser/export_onnx.py`,
@@ -898,7 +898,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the Hugging Face Space and the int8 browser export; they used to run on the desktop client too, and that client was de-scoped and deleted on 2026-08-12.",
+      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the int8 browser export; they used to run on the desktop client too, and that client was de-scoped and deleted on 2026-08-12.",
       "I’m not claiming Applied is generally available. Connecting your own Gmail is invite-only, and the reason is not positioning: gmail.readonly is a Google restricted scope, so until the app clears Google’s OAuth verification and an independent security assessment it may authorise at most 100 test users, each added by address on the consent screen. What needs no invite and no account is the demo — the whole interface over synthetic mail — and the import path, which classifies a Google Takeout export on the reader’s own device.",
       "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly — so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
       "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. At the commit this file pins, both described apps/web as an unwired scaffold with a placeholder dashboard — they were behind the code, and this file cites the code. The README has since been rewritten as the product’s own record; it is not back-cited here, because these receipts are pinned and a pin is not re-read to suit a later document.",
@@ -933,12 +933,17 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-08-15",
         kind: "erratum",
-        text: "This file described a desktop app that no longer exists. The macOS client was de-scoped on 2026-08-12 and deleted from the repository — apps/macos went, and with it a second, unmounted set of FastAPI routers — so five present-tense claims here were false: the role line, fig. 2’s SwiftUI branch and the edge feeding it, the architecture summary’s “the desktop branch is where the two heavier classifier layers still live”, the rules-layer trade-off, and the boundary row that sent embeddings and SetFit “to the desktop path”. All five are corrected: layers 2 and 3 run in the Hugging Face Space and the int8 browser export, and nowhere else. Nothing is retracted and nothing is re-pinned — receipt 06 still cites the macOS build, because it was true at 36a2f54 and that tree still resolves. What changed is the tense: a pinned receipt speaks for its commit, and prose speaks for today.",
+        text: "This file described a desktop app that no longer exists. The macOS client was de-scoped on 2026-08-12 and deleted from the repository — apps/macos went, and with it a second, unmounted set of FastAPI routers — so five present-tense claims here were false: the role line, fig. 2’s SwiftUI branch and the edge feeding it, the architecture summary’s “the desktop branch is where the two heavier classifier layers still live”, the rules-layer trade-off, and the boundary row that sent embeddings and SetFit “to the desktop path”. All five are corrected: layers 2 and 3 run in the int8 browser export, and nowhere else. Nothing is retracted and nothing is re-pinned — receipt 06 still cites the macOS build, because it was true at 36a2f54 and that tree still resolves. What changed is the tense: a pinned receipt speaks for its commit, and prose speaks for today.",
       },
       {
         date: "2026-08-15",
         kind: "note",
         text: "Applied is a product now, not a study, and this file leads with it: the run’s rail sends a reader to the live app and the System Card before the case file. Two disclosures come with that. It is licensed proprietary, all rights reserved — the repository stays public so the privacy and isolation claims above can be read against the code, not so the code can be reused. And access is an invite-only beta, for the reason the access boundary row gives rather than a reason anyone chose.",
+      },
+      {
+        date: "2026-08-15",
+        kind: "note",
+        text: "The Hugging Face Space that hosted the full three-layer classifier went private today, so every link to it returns 401. The references are gone from this file rather than left to fail in a reader’s browser, and the prose no longer offers a hosted demo it cannot deliver. What stands in its place is the receipt the claim always rested on: the browser build itself, ml/browser/site at the pinned commit, where index.html, app.js and the 22.8 MB int8 weights sit together and can be read. Nothing about the export is retracted; the place it was hosted stopped being public, and that is a smaller fact than the one the row asserts.",
       },
     ],
     /* Provenance strips carry the whole correction here. These rows are
