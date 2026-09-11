@@ -262,15 +262,15 @@ const bottomWhitespacePercent = bottomWhitespacePx / imageInfo.height;
    limit was set when the résumé ran 0.35in margins; it left 2pt of room
    over a 0.50in bottom margin, which is the mode of 48 professionally
    written résumés measured that week, so a full page over a standard
-   margin could not pass. The 2026-09-11 build sits at 6.0% with 0.50in
-   on all four sides by design: the owner chose a 0.5in top over parking
-   the page's spare 7pt there, so the spare sits at the foot. The guard
-   still guards: one body line at 10pt is 1.54% of the page, so the same
-   build missing a single line reads about 7.6% and fails, and that was
-   checked by rendering it, not assumed. What this asserts is "the page
-   is used", not "the margin is small". */
+   margin could not pass. The 2026-09-11 build is vertically justified:
+   ink sits 0.50in from every edge and the spare height is spread evenly
+   over every paragraph gap, so it reads about 4.8% here. The guard still
+   guards: one body line at 10pt is 1.54% of the page, so the same build
+   missing a single line reads about 6.2% and fails, and that was checked
+   by rendering it, not assumed. What this asserts is "the page is used",
+   not "the margin is small". */
 assert(
-  bottomWhitespacePercent <= 0.065,
+  bottomWhitespacePercent <= 0.055,
   `Resume bottom whitespace is too large: ${bottomWhitespacePx}px (${(
     bottomWhitespacePercent * 100
   ).toFixed(2)}%)`
