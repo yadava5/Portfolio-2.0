@@ -2044,21 +2044,14 @@ body{font-synthesis:none}
   text-underline-offset:3px}
 #manifest li .mrow:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
 
-/* the identity line: the largest type on the first screen after the name,
-   and set above the 18px epigraph so the first fixation after the nameplate
-   lands on what he does, not on a poem. */
-/* 26ch, AND THE RAIL IS THE REASON. The line the thread descends on is
-   the name's own middle dot, so it comes down the word gap at 50% of the
-   viewport — which is where a 30ch measure was ending: the stroke ran
-   through this sentence at 1512, 1440 and 1280. The rail does not move for
-   the text here, because that mark IS the nameplate's punctuation; the
-   text takes a measure that ends left of it instead, and the descent gets
-   a clean gutter. Measured right edges at 26ch — 742 / 706 / 607 against a
-   thread at 771 / 736 / 655. It reads as the better setting anyway: 26ch
-   at 27.5px is inside the 45–75 character band for a lead sentence, and
-   the old 30ch was the widest thing on the first screen after the name. */
-.identity{font-family:var(--body); font-size:clamp(1.24rem, 2.05vw, 1.72rem);
-  line-height:1.34; max-width:26ch; margin-top:1.5rem; color:var(--ink)}
+/* the role line: two words under the name, the size of a caption. The
+   owner read the 27.5px sentence that stood here as "too big and cheesy",
+   and he was right: on the first screen the name is the statement and the
+   role is its subtitle, so it sets at 1rem in the text face, ink-2, and
+   ends well left of the rail's descent (the stroke comes down the name's
+   own word gap at 50% of the viewport; this line is under 12ch). */
+.roleline{font-family:var(--body); font-size:1rem; letter-spacing:.04em;
+  line-height:1.4; margin-top:.8rem; color:var(--ink-2)}
 .engrows li b, .engrows li b a{font-size:var(--fs-note); font-family:var(--body)}
 .engrows a[href^="mailto"]{font-family:var(--mono); font-size:var(--fs-small);
   letter-spacing:.02em; word-spacing:normal}
@@ -2148,8 +2141,23 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
      came to rest a hundred pixels below the name it belongs to.
      THE SECTION IS EXACTLY AS TALL AS IT WAS. 7 + 30 + content + 9 is the
      same as 7 + 14 + content + 25; the void is re-seated, not re-added, so
-     this costs the corridor budget nothing and Gate H is unmoved. */
-  .b1{padding-bottom:9vh}
+     this costs the corridor budget nothing and Gate H is unmoved.
+
+     THE 8.5rem IS THE ROLE LINE'S CORRIDOR, GIVEN BACK. ¶01 has min-height 0
+     above, so the section is exactly its content — and cutting the identity
+     sentence from four lines to two words took 137px out of it. That is not
+     free: the thread's first descent runs from the name's middle dot to ¶02,
+     so a shorter ¶01 is the same horizontal travel over less vertical run,
+     and the rail gets steeper. Measured at 900px tall, before and after the
+     role line, with scratchpad/rail/curv.mjs:
+       1512  maxSlope 1.57 → 1.64   bend24max 18.6 → 20.6
+       1440  maxSlope 1.50 → 1.57   bend24max 17.8 → 20.0
+       1280  maxSlope 1.36 → 1.41   bend24max 16.8 → 17.9
+     1.64 is over G10's 1.58 ceiling, which is the owner's own reading of
+     the rail turned into a number. The corridor comes back as padding
+     rather than as a min-height because what was lost is a fixed count of
+     text lines, not a fraction of the viewport: 8.5rem is those lines. */
+  .b1{padding-bottom:calc(9vh + 8.5rem)}
   .b1 .beat-inner{padding-top:30vh}
   /* ¶08 keeps a long approach: dusk falls across this corridor (FLIP_POS
      0.78) and it is the one stretch that should feel like distance. */
@@ -2300,7 +2308,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
            838.5x211.7 inside an 838.5x176.4 element, which preserveAspectRatio
            then scaled by 0.833 and centred, shifting every machine 70px right.
            That is the A landing on the y. Nothing may share this box. -->
-      <p class="identity" data-fx="in .0 .24 y 4 | out .94 1.04 y -3 | drift 14">Software engineer. I build products end to end, from the interface down to the data and models under it.</p>
+      <p class="roleline" data-fx="in .0 .24 y 4 | out .94 1.04 y -3 | drift 14">Software engineer</p>
       <button type="button" class="np-replay" data-np-replay hidden>watch it again ⟲</button>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
            at or before y 0): a hero that assembles itself costs LCP and
