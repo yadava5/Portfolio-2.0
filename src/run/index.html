@@ -1090,15 +1090,23 @@ if (location.hash.length > 1) {
   .litany .mline p em{font-style:normal; color:var(--clay)}
   .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
   .litany .mline .rct a{color:var(--pine)}
-  .gates{--gcol:34px; --gword:4.6rem; --ggap:.7rem;
+  .gates{--gcol:34px; --gword:4.6rem; --ggap:.8rem; --gx:calc(var(--gcol) / 2);
     font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
   .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
     padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
   .gates .ghead i{font-style:normal; color:var(--clay)}
+  /* THE REGISTER READS DOWN ITS OWN LINE. The stamps used to sit between the
+     gate's name and its verdict, so the eye went left, right, left, right and
+     the line they stand on was somewhere in the middle of the row — which is
+     also how the line came to run through the text (see below). The frames
+     are a gutter now, the line runs down it, and the three verdicts fall into
+     a column at the right where the pattern of them can be read at a glance.
+     That pattern is the figure's whole argument. */
   .gates .grow{position:relative; display:grid;
-    grid-template-columns:1fr var(--gcol) var(--gword); gap:var(--ggap); align-items:center;
+    grid-template-columns:var(--gcol) minmax(0,1fr) var(--gword);
+    gap:.1rem var(--ggap); align-items:start;
     padding:.72rem 0; border-bottom:1px solid var(--hair)}
-  .gates .grow .gname{color:var(--ink)}
+  .gates .grow .gname{grid-column:2; grid-row:1; color:var(--ink)}
 
   /* ————— fig. 10's drawing: .gbench — the marks get their subject —————
      The docket IS the drawing. One line runs down the register; each gate
@@ -1125,29 +1133,41 @@ if (location.hash.length > 1) {
      see it and it is what has hidden four sub-floor strokes before.
      The frames are markup, not JS: at scrub 0 the gates stand there
      unstamped, which is the honest resting state of a register. */
-  .gates .gbench{--gx:calc(var(--gword) + var(--ggap) + var(--gcol) / 2 - .5px)}
+  /* THE LINE'S COLUMN HOLDS NOTHING BUT THE STAMPS, and that — not the
+     arithmetic — is what was wrong before. The two stubs are unchanged:
+     `calc(50% - 14px)` from each edge, meeting a frame centred in the row.
+     What broke was that .gwhy spanned `2 / -1`, which under the old column
+     order put the sentence in the SAME column the line ran down, so the
+     moment it wrapped the line was drawn straight through it. The register
+     was striking through its own notes.
+     Column 1 now contains the stamp and nothing else, at any row height and
+     any number of wrapped lines, so the stubs cannot reach text. They meet
+     the frame exactly because an absolutely positioned box resolves top,
+     bottom and 50% against the PADDING box, the row's padding is symmetric,
+     and the svg is centred in that same box — no measurement, no fill of the
+     ground colour standing in for a mask, nothing for a redraw to get wrong.
+     Verified at 1512, 1440, 1280 and 390: zero intersections between the
+     line's x and any text rect in the plate. */
   .gates .grow.gbench::before,
-  .gates .grow.gbench::after{content:""; position:absolute; right:var(--gx); width:1px;
+  .gates .grow.gbench::after{content:""; position:absolute; left:var(--gx); width:1px;
     background:var(--hair-strong)}
-  /* 14px = half the frame. The frame is centred in the row at any name
-     length, so the two stubs meet it exactly however the row reflows. */
   .gates .grow.gbench::before{top:0; height:calc(50% - 14px)}
   .gates .grow.gbench::after{bottom:0; height:calc(50% - 14px)}
-  .gates .gbench .gsig{display:block}
+  .gates .gbench .gsig{grid-column:1; grid-row:1 / -1; display:block; align-self:center}
   .gates .gbench .gframe{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .gates .gbench .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
   .gates .gbench .gmark.declined{stroke:var(--clay-g)}
   .gates .gbench.gtail{position:relative; height:2.5rem}
-  .gates .gbench.gtail::before{content:""; position:absolute; right:var(--gx); top:0; bottom:.55rem;
+  .gates .gbench.gtail::before{content:""; position:absolute; left:var(--gx); top:0; bottom:.55rem;
     width:1px; background-image:linear-gradient(var(--hair-strong) 0 3.5px, transparent 3.5px 7.5px);
     background-size:1px 7.5px}
-  .gates .gbench.gtail span{position:absolute; right:calc(var(--gx) + 10px); top:.15rem;
+  .gates .gbench.gtail span{position:absolute; left:calc(var(--gx) + 12px); top:.15rem;
     font-size:.68rem; color:var(--ink-2)}
 
   /* the disposition words stay printed at full ink — the drawn MARK is
      the animation. (A dimmed resting word would sit under the Lc 60
      dim-text floor on the night plate; the quests taught that lesson.) */
-  .gates .grow .gword{text-align:right}
+  .gates .grow .gword{grid-column:3; grid-row:1; text-align:right}
   .gates .grow.passed .gword{color:var(--pine)}
   .gates .grow.declined .gword{color:var(--clay)}
   .settled .gates .gmark{stroke-dashoffset:0 !important}
@@ -2274,10 +2294,17 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 
 /* ── ¶10's gate reasons ─────────────────────────────────────────────────
    .gwhy says WHY each gate decided what it did. It is the sentence the row
-   above only asserts, so it sits under the name, indented to the row's own
-   metric column, in the text face. */
+   above only asserts, so it sits directly under its own gate's name, in the
+   text face, sharing that column's whole measure.
+   IT USED TO SPAN `2 / -1`, which under the old column order was the stamp
+   plus the verdict — about 110px — so all three of these sentences wrapped
+   at 1512, 1440 AND 1280, and the register's line ran through the wrap. The
+   column it belongs to is the one its name is in. Measured at 1512: 474px of
+   measure against a longest sentence of about 225px, so one line at every
+   desktop width, and on the phone it wraps inside its own column, well clear
+   of the gutter the line runs down. */
 .gates .grow .gwhy{
-  grid-column:2 / -1; font-family:var(--body); font-style:italic;
+  grid-column:2; grid-row:2; font-family:var(--body); font-style:italic;
   font-size:var(--fs-small); line-height:1.45; color:var(--ink-2);
   letter-spacing:0; word-spacing:.12em; margin-top:.1rem;
 }
