@@ -1310,7 +1310,18 @@ if (location.hash.length > 1) {
     .plate.bare{max-width:600px}
     .b8 .beat-inner{display:flex; flex-direction:column; gap:2rem}
     .gatecard{max-width:640px}
-    #thread{opacity:.55} /* the line passes behind stacked plates */
+    /* THE RAIL'S OPACITY IS CONSTANT EVERYWHERE. This block used to set
+       `#thread{opacity:.55}` with the note "the line passes behind stacked
+       plates", and the note describes something the z-order already does:
+       #thread is z-index 1 and `main` is z-index 2, so the canvas has been
+       under every plate all along. What the rule actually did was dim the
+       whole line — including the long open corridors between stations,
+       where nothing is in front of it — which is the thing the owner ruled
+       against ("consistent and normal across so it shows it is connected").
+       Where the line does cross a plate it still reads faint, because
+       --plate is rgba(…, .55) and lets 55% through. That softening belongs
+       to the plate and is the plate's own design; it is not the rail
+       changing weight, and it is the same on every seat. */
   }
   /* ————— mobile composition (390 is designed, not survived) ————— */
   @media (max-width:820px){
