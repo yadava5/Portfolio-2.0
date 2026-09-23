@@ -222,9 +222,25 @@ if (location.hash.length > 1) {
   }
   #mast::before{ /* the field-coloured scrim: exiting elements pass BEHIND
      the chrome instead of colliding with its text (the round-1 overlap) */
-    content:""; position:absolute; left:0; right:0; top:0; bottom:-1.35rem;
+    content:""; position:absolute; left:0; right:0; top:0; bottom:-2.4rem;
     z-index:-1; pointer-events:none;
-    background:linear-gradient(to bottom, var(--scrim-c) 0%, var(--scrim-c) 42%, transparent 100%);
+    /* THE OPAQUE PART NOW COVERS THE WHOLE MAST BOX, and it is measured from
+       the bottom rather than as a percentage of a box whose height depends on
+       its own content. It used to be `to bottom, opaque 0%, opaque 42%,
+       transparent 100%` over a box running 1.35rem past the masthead — 42% of
+       81px is 34px, and the chip's border box ends at 46px, so the last 12px
+       of the masthead's own ink had a translucent scrim over it. Station text
+       scrolling through that band printed across the wordmark. Counted as
+       changed pixels inside the mast's ink box: 13.5% at 1375x800 from ¶02's
+       address row, 10.7% at 1210x700 from "The path.", 16.9% at 1008x590,
+       3.8% at 1512x982. The worst case put "dark. one decision left…"
+       straight through "Ayush·Yadav".
+       `to top` with lengths from the bottom edge: transparent at the very
+       bottom, fully opaque 2.4rem up, which is exactly the masthead's own
+       lower edge, and opaque from there to the top. The fade is longer than
+       it was (2.4rem against 1.35), so it is softer as well as complete, and
+       it cannot drift when the chip or the wordmark changes size. */
+    background:linear-gradient(to top, transparent 0, var(--scrim-c) 2.4rem, var(--scrim-c) 100%);
   }
   @media (prefers-reduced-motion: reduce){
     #mast::before{display:none} /* nothing exits in the settled world */
