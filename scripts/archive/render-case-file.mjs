@@ -482,13 +482,18 @@ function auditControl({ projectId, counts, sentence }) {
 const isPlateArtifact = (a) =>
   !external(a.href) && !a.href.startsWith("mailto:");
 
+/* `open original` opened a new tab for every artifact, including the local
+   ones — and a plate's artifact is a file on this origin, reached from a
+   dialog the reader opened without leaving the page. A tab for it is the
+   defect the glyph law names in reverse: it printed `↗`, promising a
+   departure, for a file that is part of this record room. Off-origin
+   artifacts still leave, and say so. (check-links' new-tab rule, G8.) */
 function viewerDialog({ artifact, fig }) {
-  const href = external(artifact.href)
-    ? artifact.href
-    : sitePath(PREFIX, artifact.href);
+  const away = external(artifact.href);
+  const href = away ? artifact.href : sitePath(PREFIX, artifact.href);
   return `<dialog class="viewer" id="viewer-fig-${fig}" aria-label="${esc(artifact.label)} artifact viewer">
           <div class="vhead"><div class="vtitle"><p class="vtype">${esc(artifact.type)}</p><h2>${esc(artifact.label)}</h2></div>
-          <a href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open original artifact">open original&#xA0;↗</a>
+          <a href="${esc(href)}"${away ? ' target="_blank" rel="noopener noreferrer"' : ""} aria-label="Open original artifact">open original&#xA0;${away ? "↗" : "⟶"}</a>
           <button type="button" data-viewer-close aria-label="Close artifact viewer">✕</button></div>
           <p class="vprov">source: ${esc(artifact.source)} · date: ${artifact.date ? esc(artifact.date) : "not recorded"} · boundary: ${esc(artifact.boundary)}</p>
           <img src="${esc(href)}" alt="${esc(artifact.label)} artifact">
@@ -545,11 +550,16 @@ function artifactGallery({ artifacts, figStart }) {
     );
   });
 
+  /* The index rows are the artifacts that are not plates: external ones,
+     and `mailto:` ones. Only the external half opens away — a `mailto:`
+     hands the reader to a mail client and the tab it opened is left blank
+     behind it. No mailto artifact is in the data today; the conditional is
+     here so adding one cannot quietly ship that blank tab. */
   const index = indexRows.length
     ? `<div class="aindex"><p class="oshead">artifact index</p><ul>${indexRows
         .map(
           (a) =>
-            `<li><a href="${esc(a.href)}" target="_blank" rel="noopener noreferrer">${esc(a.label)}&#xA0;↗</a><span class="aprov">[${esc(a.type)}] · ${esc(a.source)}</span></li>`
+            `<li><a href="${esc(a.href)}"${external(a.href) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${esc(a.label)}&#xA0;↗</a><span class="aprov">[${esc(a.type)}] · ${esc(a.source)}</span></li>`
         )
         .join("\n            ")}</ul></div>`
     : "";

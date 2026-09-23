@@ -25,7 +25,19 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const OUT = "out";
+/* The built site. `--out <dir>` (or CHECK_LINKS_OUT) points the built-page
+   passes at a COPY: a doctored one for a negative proof, or a second build
+   made while the real one is being served. The default is unchanged.
+
+   An explicit root that is not there is a HARD failure, never a fall-through
+   to the source fallback below — that path skips the built-page rules
+   entirely, and a proof that never ran is worse than a red one. */
+const outArg = process.argv.indexOf("--out");
+const OUT =
+  outArg > -1
+    ? process.argv[outArg + 1]
+    : (process.env.CHECK_LINKS_OUT ?? "out");
+const OUT_EXPLICIT = outArg > -1 || Boolean(process.env.CHECK_LINKS_OUT);
 const CONCURRENCY = 8;
 
 /* ── THE GLYPH CONTRACT (F41) ─────────────────────────────────────────
@@ -178,6 +190,14 @@ console.log(
    a five-minute build is a check that runs rarely. So fall back to the data
    layer, where every pinned artifact URL is authored. */
 const pages = [];
+if (OUT_EXPLICIT && !existsSync(OUT)) {
+  console.error(
+    `check-links FAILED — a built root was named (${OUT}) and it is not there.\n` +
+      "  Naming one and getting the source fallback would skip every built-page\n" +
+      "  rule and still print green, which is the one outcome a proof cannot have."
+  );
+  process.exit(1);
+}
 if (existsSync(OUT)) {
   (function walk(dir) {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -194,6 +214,202 @@ if (!usingBuild) {
     "src/lib/data/projectCaseStudies.ts",
     "src/lib/data/projects.ts",
     "src/run/index.html"
+  );
+}
+
+/* ── G8 · AND WHERE THE LINK OPENS ────────────────────────────────────
+ * The glyph promises; `target` delivers. Until 2026-09-23 nothing on this
+ * site carried a `target` at all, while the comment 150 lines above said a
+ * wrong `↗` "promises a new tab and delivers a scroll" — so every ↗ on the
+ * run was that broken promise, all 14 of them, and the gate that named the
+ * defect could not see it.
+ *
+ * The owner's ruling widened it past the glyph: "opening systems card and
+ * resume in the same tab makes it hard to go back". Nothing replaces the
+ * run. That is about the BACK BUTTON, not about the origin, which is why
+ * this rule and the glyph contract disagree on purpose about
+ * `ayush-yadav.com/projects/glyph/` — it prints `⟶` because it stays on
+ * this site, and it opens away because it is a different document.
+ *
+ * THE RULE on the run page, `<out>/index.html`:
+ *   · anything matching `https?:`, `/projects…`, `/evidence…` or
+ *     `resume.pdf` carries `target="_blank"` and a `rel` with `noopener`;
+ *   · `#` fragments and `mailto:` carry NEITHER. A fragment that opens a
+ *     second tab of the page you are already on is the defect in reverse,
+ *     and `mailto:` hands off to a mail client — a blank tab is what is
+ *     left behind when it does.
+ *   · everything else — `proof/*.json`, which ship with `download` — is
+ *     not judged. A rule has to be about a class a reader can name.
+ *
+ * THE RULE on the archive pages, everything else under `<out>/`: off-origin
+ * links open away; archive-internal ones do not. The record room is a place
+ * a reader walks around inside — case file ⟶ evidence ⟶ back to the working
+ * paper — and a tab per step is how a reading turns into a taskbar.
+ *
+ * Runs against the BUILT output, because `target` is an attribute a browser
+ * acts on and the archive pages have no source to read: they are rendered
+ * by `scripts/archive/*`. With no build it SKIPS LOUDLY — the gates job in
+ * CI does not build, and a rule that prints nothing there reads like a pass.
+ */
+const NO_TARGET_SCHEME = /^(mailto:|tel:|#|javascript:|data:)/i;
+/* The three shapes a link that leaves the run can take, exactly as the
+   ruling names them: an absolute URL, a document route on this site, and
+   the one-pager. */
+const LEAVES_THE_RUN = [/^https?:/i, /^\/?(projects|evidence)/, /resume\.pdf/];
+const opensAway = (tag) => /\starget="_blank"/i.test(tag);
+const guarded = (tag) => /\srel="[^"]*\bnoopener\b[^"]*"/i.test(tag);
+const carriesTarget = (tag) => /\starget="/i.test(tag);
+
+/** the OPEN tag of every `<a href=…>` on a page, with the line it sits on */
+function openTags(file) {
+  const raw = readFileSync(file, "utf8");
+  /* Same blanking as the glyph pass, and for the same reason: the run
+     carries `<a href=` inside inline scripts. Blank rather than drop, so
+     the line numbers below stay true. */
+  const html = raw.replace(/<script[\s\S]*?<\/script>|<!--[\s\S]*?-->/g, (m) =>
+    m.replace(/[^\n]/g, " ")
+  );
+  return [...html.matchAll(/<a\s[^>]*href="([^"]*)"[^>]*>/g)].map((m) => ({
+    href: m[1],
+    tag: m[0],
+    line: html.slice(0, m.index).split("\n").length,
+  }));
+}
+
+const RUN_PAGE = join(OUT, "index.html");
+const targetFails = [];
+const targetSeen = {
+  pages: 0,
+  leaving: 0,
+  inert: 0,
+  offOrigin: 0,
+  archiveInternal: 0,
+};
+
+if (usingBuild) {
+  for (const page of pages) {
+    targetSeen.pages += 1;
+    const isRun = page === RUN_PAGE;
+    for (const { href, tag, line } of openTags(page)) {
+      const inert = NO_TARGET_SCHEME.test(href);
+      const absolute = /^[a-z][a-z0-9+.-]*:|^\/\//i.test(href);
+      const offOrigin =
+        absolute && !inert && !(href === SITE || href.startsWith(`${SITE}/`));
+      const where = isRun ? "the run" : "the archive";
+
+      if (isRun && !inert && LEAVES_THE_RUN.some((re) => re.test(href))) {
+        targetSeen.leaving += 1;
+        if (opensAway(tag) && guarded(tag)) continue;
+        targetFails.push({
+          page,
+          line,
+          href,
+          where,
+          want: 'target="_blank" rel="noopener"',
+          why: "it leaves the run — nothing may replace the page being read",
+        });
+        continue;
+      }
+      if (!isRun && offOrigin) {
+        targetSeen.offOrigin += 1;
+        if (opensAway(tag) && guarded(tag)) continue;
+        targetFails.push({
+          page,
+          line,
+          href,
+          where,
+          want: 'target="_blank" rel="noopener"',
+          why: "it leaves this site",
+        });
+        continue;
+      }
+      if (inert) {
+        targetSeen.inert += 1;
+        if (!carriesTarget(tag) && !guarded(tag)) continue;
+        targetFails.push({
+          page,
+          line,
+          href,
+          where,
+          want: "no target and no rel",
+          why: href.startsWith("#")
+            ? "a fragment scrolls — a second tab of this page is not a place"
+            : "a mail client is the destination; the tab it leaves is empty",
+        });
+        continue;
+      }
+      if (!isRun) {
+        targetSeen.archiveInternal += 1;
+        if (!carriesTarget(tag)) continue;
+        targetFails.push({
+          page,
+          line,
+          href,
+          where,
+          want: "no target",
+          why: "it stays inside the record room — a tab per step is a taskbar",
+        });
+      }
+    }
+  }
+
+  if (targetFails.length) {
+    const run = targetFails.filter((f) => f.where === "the run");
+    const archive = targetFails.filter((f) => f.where === "the archive");
+    console.error(
+      `check-links FAILED — ${targetFails.length} link(s) open in the wrong place ` +
+        `(${run.length} on the run, ${archive.length} in the archive):\n`
+    );
+    /* Printed as two sections, counted separately. One list would let the
+       run's number bury the archive's, and "the archive half is green" is a
+       finding that has to survive the run half being red. */
+    for (const [label, group] of [
+      ["the run", run],
+      ["the archive", archive],
+    ]) {
+      if (!group.length) {
+        console.error(`  · ${label}: clean\n`);
+        continue;
+      }
+      console.error(`  · ${label}: ${group.length}`);
+      for (const f of group) {
+        console.error(`  ✗ ${f.page}:${f.line}  wants ${f.want} — ${f.why}`);
+        console.error(`        ${f.href}`);
+      }
+      console.error("");
+    }
+    console.error(
+      "  A link that leaves opens a new tab; one that stays does not. The\n" +
+        "  ruling is about the back button: opening the system card or the\n" +
+        "  résumé over the run makes a reader fight their way back to it."
+    );
+    process.exit(1);
+  }
+
+  /* The floor the glyph contract taught: a gate that parsed nothing prints
+     the same green line as a gate that parsed everything. */
+  if (
+    targetSeen.pages < 8 ||
+    targetSeen.leaving < 14 ||
+    targetSeen.offOrigin < 40
+  ) {
+    console.error(
+      `check-links FAILED — the new-tab rule judged only ${targetSeen.leaving} leaving links ` +
+        `on the run and ${targetSeen.offOrigin} off-origin links across ${targetSeen.pages} built pages,\n` +
+        "  which is fewer than this site has ever carried. That is a broken parse, not a clean build."
+    );
+    process.exit(1);
+  }
+  console.log(
+    `check-links: the new-tab rule holds — ${targetSeen.leaving} links leave the run in a new tab, ` +
+      `${targetSeen.offOrigin} leave the archive, ${targetSeen.archiveInternal} stay inside it, ` +
+      `${targetSeen.inert} fragments and mailto links carry no target`
+  );
+} else {
+  console.warn(
+    `  ! check-links: the new-tab rule did NOT run — no ${OUT}/ to read.\n` +
+      "  ! `target` is an attribute of the built page and the archive has no source;\n" +
+      "  ! run this after a build, or point it at one with --out <dir>."
   );
 }
 
