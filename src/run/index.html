@@ -532,7 +532,11 @@ if (location.hash.length > 1) {
   :root[data-night] .padwell{background:rgba(0,0,0,.18)}
   #pad{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
   .padhint{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
-    font-style:italic; color:var(--ink-2); font-size:1.05rem; transition:opacity .4s ease; text-align:center; padding:0 1rem}
+    font-style:italic; color:var(--ink-2); font-size:1.05rem; transition:opacity .4s ease; text-align:center; padding:0 1rem;
+    /* centred in a square, this is always going to take two lines; balance
+       makes them two even ones instead of "draw one digit, large and" over
+       a lone "centred". Where it is unsupported the wrap is what it was. */
+    text-wrap:balance}
   .padhint.gone{opacity:0}
   .padbar{display:flex; justify-content:space-between; align-items:baseline; margin-top:.5rem;
     font-family:var(--mono); font-size:.7rem; letter-spacing:.06em; color:var(--ink-2)}
@@ -589,11 +593,27 @@ if (location.hash.length > 1) {
   .bench .brow{display:grid; grid-template-columns:7.6rem 1fr 3rem; gap:.6rem; align-items:center;
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2); margin-top:.4rem}
   .bench.jet .brow{grid-template-columns:9.4rem 1fr 4.6rem} /* "422 mb/s" + the lane names */
-  @media (min-width:821px){ /* wide seats afford the un-wrapped lane names */
-    .bench.jet .brow{grid-template-columns:10.6rem 1fr 4.6rem}
+  /* THE LABEL COLUMN MEASURES ITSELF. It was 7.6rem here and 10.6rem on the
+     jet bench, both recorded when these labels were set in Fragment Mono at
+     a smaller size. The clarity pass moved a lot of this plate to Newsreader
+     and the numbers did not move with it, so at 1512, 1440 AND 1280 — width
+     had nothing to do with it, the columns are fixed — "one thread, -O3"
+     broke after the hyphen into "-" and "O3", and both jet lane names broke
+     mid-phrase. max-content plus nowrap cannot go stale the next time a face
+     or a size changes: the column is whatever the label needs, and the bar
+     track takes what is left, with a 4rem floor so it stays a bar. */
+  @media (min-width:821px){
+    .bench .brow{grid-template-columns:max-content minmax(4rem,1fr) 3rem}
+    .bench.jet .brow{grid-template-columns:max-content minmax(4rem,1fr) 4.6rem}
+    .bench .brow>span:first-child{white-space:nowrap}
   }
   .bench .bfoot{font-family:var(--mono); font-size:.7rem; letter-spacing:.05em; color:var(--ink-2);
     margin-top:.55rem; line-height:1.8}
+  /* "the raw run record (json) ⟶" is one label and one target; it was
+     breaking after "run" and leaving "record (json) ⟶" alone on the next
+     line, on both benches, at every desktop width. Kept whole, it moves to
+     the next line as a unit and the sentence breaks at its own separator. */
+  .bench .bfoot a{white-space:nowrap}
   .bench .btrack{height:6px; position:relative; background:transparent}
   /* scaleX(0) stays as the FALLBACK, not as a starting frame — every bar now
      carries its own inline `scaleX(calc(a / b))` and nothing scrubs them. If
