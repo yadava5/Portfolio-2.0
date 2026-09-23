@@ -172,6 +172,29 @@ const deg = (r: number) => (r * 180) / Math.PI;
  * @param h1 - The nameplate
  * @param letters - The character spans
  */
+/**
+ * One em of `el`'s font, measured in the SAME space as
+ * getBoundingClientRect. Under a CSS-zoom-like page zoom the computed
+ * `font-size` stays in unzoomed px while rects come back zoomed, so a
+ * ratio of the two is inflated by exactly the zoom: at 1.5x every kern
+ * margin came out 1.5x too large and the name compressed by 7.5px, and
+ * the inline margins kept that error after zooming back to 100%.
+ * Measured, not assumed: a 1em-wide inline-block reports its own width
+ * in whatever space the rects are in.
+ *
+ * @param el - An element carrying the font whose em is wanted
+ * @returns The em in client-rect px
+ */
+function rectEm(el: HTMLElement): number {
+  const probe = document.createElement("span");
+  probe.style.cssText =
+    "position:absolute;visibility:hidden;display:inline-block;width:1em;height:0;font:inherit";
+  el.appendChild(probe);
+  const em = probe.getBoundingClientRect().width;
+  probe.remove();
+  return em || parseFloat(getComputedStyle(el).fontSize);
+}
+
 export function applyKern(h1: HTMLElement, letters: HTMLElement[]): void {
   const meter = document.createElement("span");
   meter.style.cssText =
@@ -182,7 +205,7 @@ export function applyKern(h1: HTMLElement, letters: HTMLElement[]): void {
     meter.textContent = s;
     return meter.getBoundingClientRect().width;
   };
-  const fs = parseFloat(getComputedStyle(h1).fontSize);
+  const fs = rectEm(h1); /* rect space, like w(): see rectEm */
   const text = letters.map((s) => s.textContent ?? "");
   for (let k = 1; k < text.length; k++) {
     const kern = w(text[k - 1] + text[k]) - (w(text[k - 1]) + w(text[k]));
@@ -220,7 +243,10 @@ export function measureSettled(
   cLetters.forEach((s) => {
     s.style.opacity = "1";
   });
-  const fs = parseFloat(getComputedStyle(h1).fontSize);
+  /* rect space, like every other length here; `zoom` carries the CSS px
+     the SVG's inline font-size is written in over to that space */
+  const fs = rectEm(h1);
+  const zoom = fs / parseFloat(getComputedStyle(h1).fontSize) || 1;
 
   /* type metrics: x-height/cap from unit probes; baseline from a 0×0
      inline marker (its bottom is the true ink baseline — a 1em-tall
@@ -262,8 +288,12 @@ export function measureSettled(
      the opsz arrival, so their computed axes are the final values. */
   const cs = getComputedStyle(letters[0]);
   const txtStyle =
-    `font-family:${cs.fontFamily};font-size:${cs.fontSize};` +
-    `font-weight:${cs.fontWeight};letter-spacing:${cs.letterSpacing};` +
+    `font-family:${cs.fontFamily};font-size:${parseFloat(cs.fontSize) * zoom}px;` +
+    `font-weight:${cs.fontWeight};letter-spacing:${
+      cs.letterSpacing.endsWith("px")
+        ? `${parseFloat(cs.letterSpacing) * zoom}px`
+        : cs.letterSpacing
+    };` +
     `font-variation-settings:${cs.fontVariationSettings};font-optical-sizing:none`;
 
   clone.remove();

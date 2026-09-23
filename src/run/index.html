@@ -7230,6 +7230,9 @@ boot();
          expensive. */
       const rebuild = () => {
         plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
+        /* the attribute means "the name reads whole"; a replay is a name
+           that does not, until perform()'s finally sets it again */
+        document.documentElement.removeAttribute("data-np-ready");
         h1.removeAttribute("data-np-settled");
         letters.forEach((l) => l.removeAttribute("data-np-done"));
         perform();
@@ -7238,6 +7241,15 @@ boot();
       const ro = new ResizeObserver((entries) => {
         const w = Math.round(entries[0].contentRect.width);
         if (!w || w === lastW || running) return;
+        /* A SETTLED NAME IS NOT REBUILT BY A RESIZE. The observer exists
+           for the mount-time width drift, before the first performance
+           settles. After that there is no overlay left to correct, and the
+           HTML letters re-lay out on their own (measured drift ≤0.03px).
+           What a rebuild did instead: every browser zoom step that crossed
+           the h1's clamp cap (~1242px) tore the finished name down and
+           replayed it, five letters missing for 3.2s. Only the replay
+           button replays. */
+        if (h1.hasAttribute("data-np-settled")) { lastW = w; return; }
         const first = lastW === 0;
         lastW = w;
         if (!first) rebuild();
