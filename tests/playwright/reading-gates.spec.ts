@@ -417,48 +417,62 @@ test.describe("G2b · the tight SVG editions clear the same floor", () => {
    THE ALLOWLIST IS DERIVED FROM THE PAGE, not invented: every selector below
    was read off the shipped build and then judged one at a time.
 
-   Three entries are here because the page uses them, and I do not think they
-   are machine values. They are marked, not hidden, because a silent allowance
-   is how an allowlist becomes a description of whatever the page does:
+   EVERY ENTRY IS A LEAF, NOT A CONTAINER, and that is the difference between
+   an allowlist and a description. `#gatesFig` as a whole would have admitted
+   `.gwhy` ("1 wrong in 96, above the 0.95 floor" — a sentence). `.prov` would
+   have admitted the bare prose authored beside its values ("query logs, five
+   years of dashboard use…"). `.bench` would have admitted `.bfoot` and
+   `.shead`, `.engrows` the degree and languages rows, `.padbar` the clear
+   button's label, and `#mast .state` would have admitted `#mphase` — which is
+   in the QUESTIONED list below and would then have been flagged for nothing.
+   None of those leaves is mono on the page today. The allowlist is written so
+   that if one becomes mono, this goes red.
 
-     · `.signs`   — "Randall Vollen", "Shree Chaturvedi". Two people's names.
-                    A reference register is a register, but a name is not a
-                    machine value and mono is doing nothing for it.
-     · `#mphase`  — the masthead phase readout: "the start", "the yard",
-                    "the references". A station's title in the machine's
-                    register. It reads as a label, not a value.
-     · `.cue .a`  — the "↓" under the nameplate. A glyph, not a value; it is
-                    allowed because it is one arrow, not prose.
+   Five entries are here because the page uses them and I do not think they
+   are machine values. They are marked, not hidden, because a silent
+   allowance is how an allowlist becomes a description of whatever the page
+   happens to do:
 
-   The owner decides whether those three move to the text face. This gate's
+     · `.signs`              "Randall Vollen", "Shree Chaturvedi". Two
+                             people's names. A reference register is a
+                             register, but a name is not a machine value.
+     · `#mphase`             the masthead phase readout: "the start", "the
+                             yard", "the references". A station's title. It
+                             reads as a label, not a value.
+     · `.cue .a`             the "↓" under the nameplate. A glyph, not a
+                             value; allowed because it is one arrow, not prose.
+     · `.endquote figcaption` the Eliot attribution. A caption, and captions
+                             get a text face chosen on purpose.
+     · `#approve`            "approve run 042". A control's label.
+
+   The owner decides whether those five move to the text face. This gate's
    job is to make sure nothing NEW joins them.
    ══════════════════════════════════════════════════════════════════════ */
 const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: ".uv", why: "the unit that belongs to the value beside it" },
   { sel: ".mv", why: "a machine value set inline in prose" },
-  {
-    sel: ".prov",
-    why: "the provenance line: values, counts and their sources",
-  },
+  { sel: ".prov b", why: "the provenance line's values, not its prose" },
   { sel: ".kicker i", why: "the station clock" },
-  { sel: "#mast .state", why: "the masthead readout: run serial and clock" },
+  { sel: "#mclock", why: "the run clock" },
+  { sel: "#mast .st-run", why: "the run's serial" },
+  { sel: "#mast .mdot", why: "the masthead's own separator" },
   { sel: "#mcount", why: "stations seen, as a count" },
   { sel: ".ladder", why: "the gate ladder: each station's time and verdict" },
   { sel: ".figsvg text", why: "figure labels — annotation on a drawing" },
   { sel: "#net text", why: "the network figure's layer and class labels" },
   { sel: "#netwrap .verdictline", why: "the classifier's live readout" },
-  { sel: ".bench", why: "benchmark lanes: lane, value, unit" },
-  { sel: "#gatesFig", why: "the gate register: rule, verdict" },
-  { sel: "#cadWeek", why: "the week grid's day columns and slot time" },
+  { sel: ".bench .brow span", why: "a benchmark lane, its value and unit" },
+  { sel: "#gatesFig .gname", why: "the gate register: which rule ran" },
+  { sel: "#gatesFig .gword", why: "the gate register: its verdict" },
+  { sel: "#gatesFig .gtail span", why: "the register's unsigned row" },
+  { sel: "#cadWeek .hd span", why: "the week grid's day columns" },
+  { sel: "#slotWhen", why: "the slot the parse found, as a time" },
   { sel: ".chip", why: "the fields a parse produced" },
-  { sel: ".schoolrec", why: "the school record: gpa, award amounts" },
-  { sel: ".engrows", why: "the identity card's values, incl. the address" },
+  { sel: ".engrows a", why: "the address on the identity card" },
   { sel: "#mail", why: "an email address" },
-  { sel: ".padbar", why: "the pad's status readout and its controls" },
-  { sel: "#approve", why: "the gate's stamp control" },
-  { sel: "#stamp", why: "the stamp it prints" },
+  { sel: ".padbar .st i", why: "the pad's status lamp" },
+  { sel: "#stamp", why: "the stamp the gate prints" },
   { sel: "#glyphStatus", why: "the classifier's status" },
-  { sel: ".endquote figcaption", why: "a citation" },
   { sel: "code", why: "code" },
   { sel: "pre", why: "code" },
   { sel: "kbd", why: "a key" },
@@ -468,6 +482,8 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: ".signs", why: "QUESTIONED: two people's names" },
   { sel: "#mphase", why: "QUESTIONED: the station's title, not a value" },
   { sel: ".cue .a", why: "QUESTIONED: a single arrow glyph" },
+  { sel: ".endquote figcaption", why: "QUESTIONED: a caption" },
+  { sel: "#approve", why: "QUESTIONED: a control's label" },
 ];
 
 test.describe("G3 · mono only on machine values", () => {

@@ -31,15 +31,15 @@ name: Clarity harness (desktop non-regression)
 
 on:
   workflow_dispatch:
-    inputs:
-      run_name:
-        description: "name for the sweep directory under docs/clarity/harness/"
-        required: false
-        default: "ci"
 
 env:
   NODE_VERSION: 20
-  RUN_NAME: ${{ github.event.inputs.run_name || 'ci' }}
+  # FIXED, not a dispatch input. runall.sh and emptiness.mjs write into
+  # docs/clarity/harness/<name>/, so a dispatch that named `baseline` would
+  # overwrite the pre-redesign scorecard with this run's and then compare it
+  # against itself — a gate that is green by construction, and one that also
+  # destroys the only copy of what it was measuring against.
+  RUN_NAME: ci
 
 jobs:
   harness:
