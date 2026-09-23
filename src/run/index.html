@@ -1278,24 +1278,44 @@ if (location.hash.length > 1) {
    success while carrying none of the three rules. Extracted by their own
    selectors this time, and the byte counts are checked (181/226/183). */
 @media (prefers-reduced-motion: no-preference) {
+/* THE SWEEP IS KEYED TO THE PERFORMANCE — DELIBERATELY, THIS TIME.
+     It already was, by accident, and the brief's "a sweep counted from page
+     load" is not what the page did. [data-np-measuring] carries
+     `animation: none !important`, and perform() puts that attribute on and
+     takes it off around its measurement, which restarts the sweep at that
+     moment. Measured on three cold runs of each build, the first free
+     letter crosses legibility 66ms after its own delay expires, counted
+     from the overlay's insertion: 587−130−390, 578−115−390, 574−115−390 on
+     the old phase, and 1209−123−1020, 1201−119−1020, 1203−115−1020 on this
+     one. Two models fit the old build alone; only P explains both.
+     Naming the trigger makes it a contract instead of a side effect of a
+     freeze that exists for a different reason. Until it is set the letters
+     are held at opacity 0 with the same dead-script release the machine
+     letters carry, so a module that never mounts cannot strand the name.
+
+     WHAT THIS DOES NOT FIX, and the number is worth writing down. The five
+     machine-carrying letters are withheld until their own machine's dry
+     stamps [data-np-done], and that wave is fixed in performEnsemble: the
+     bird — the keystone — lands at +3.20s, the drying wave starts 120ms
+     after it and sweeps 90ms per letter, so the first machine letter cannot
+     arrive before +3.75s and the last before +4.10s. Measured cold: 3.87s
+     and 4.23s. No phase written in this file can reach across that, so the
+     plate still holds "·yu·h Y·d··" for 1.83s. That hold is a choreography
+     question and it is open; this rule cannot settle it.
+     Base and step are custom properties because the phase IS that ruling:
+     moving it is one line, in one place. */
 html[data-motion-ready]:not([data-motion-off])
     [data-np-machines]
     .np-ch:not(.np-m) {
+    opacity: 0;
+    animation: np-safety-release 0.5s ease 5.6s both;
+  }
+
+html[data-motion-ready]:not([data-motion-off])
+    [data-nameplate][data-np-go]
+    .np-ch:not(.np-m) {
     animation: np-settype 0.82s cubic-bezier(0.3, 0.75, 0.35, 1) both;
-    /* 210ms, not 55ms, and the gap is the reason.
-       Measured landings on the old step: the six plain letters all
-       arrived between 511 and 902ms, while the five machine letters are
-       withheld until their machines finish, at 3930–4288ms. So the name
-       sat three full seconds reading "yu h Yd" — five characters
-       missing — which is what "it starts wrong by dropping the
-       character" describes. Nothing was mistimed; the stagger simply
-       spent itself in the first half-second and left the machines to
-       carry three seconds alone.
-       Widening the step spreads the plain letters to ~2.3s so the name
-       fills continuously right up to the ensemble's landing, and costs
-       nothing else: every machine letter still completes its settype
-       well before its machine releases it. */
-    animation-delay: calc(0.18s + var(--np-i, 0) * 210ms);
+    animation-delay: calc(var(--np-sweep, 0.9s) + var(--np-i, 0) * var(--np-sweep-step, 120ms));
   }
 
 html[data-motion-ready]:not([data-motion-off])
@@ -2744,7 +2764,19 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
        its own clock and its own first line. ¶01 opened on "first light.
        nothing has been decided yet." — this is that sentence with the decision
        already made, which is the whole of the Eliot quotation it carries. -->
-  <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun>
+  <!-- `inert` and `aria-hidden` until the run is approved, and they are not
+       belt and braces for the same thing. ¶13 is collapsed to zero height
+       with overflow:hidden, which hides it from the eye and from nothing
+       else: a Tab walk to the end of the unapproved page used to land on
+       five links at effective opacity 0, 584px BELOW the document's end,
+       where the browser cannot even scroll them into view. `inert` takes
+       them out of the sequential focus order; `aria-hidden` takes the
+       station out of the accessibility tree, so a screen reader is not
+       read a morning the reader has not reached. The approve handler
+       removes both — the two lines that make ¶13 exist at all. Contact is
+       reachable without any of this now: ¶02 and the ¶12 colophon both
+       carry the address, and neither is inside this section. -->
+  <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun inert aria-hidden="true">
     <div class="dawnstick">
       <div class="dawnwrap">
         <p class="kicker">¶ 13 · the next morning · <i>06:12</i></p>
@@ -5917,16 +5949,70 @@ function repaintPad() {
 }
 const off = document.createElement("canvas"); off.width = off.height = PAD;
 const small = document.createElement("canvas"); small.width = small.height = GRID;
+/* ————— the pad normalises the way MNIST does —————
+   It used to rasterise the strokes at their RAW pad coordinates and scale
+   the whole 280² buffer to 28², which is none of the three things the
+   MNIST preparation specifies. Measured: the same 72-unit vertical stroke
+   read "1" at 98.2% drawn in the middle of the pad and "7" at 99.8% drawn
+   at (62,38) — a confidently wrong answer printed on #liveSampleM, produced
+   by a reader doing exactly what the hint asks. The network was never
+   wrong; it was being handed an image from a distribution it has never
+   seen, because position and size carry no meaning to it and the training
+   set has both removed.
+
+   So, MNIST's own three steps: crop to the ink's bounding box, scale the
+   long side to 20px keeping the aspect ratio, and paste it into 28×28 so
+   the CENTRE OF MASS — not the box centre — lands at (14,14). The brush
+   and the antialias are unchanged: the strokes are still drawn at BRUSH on
+   the 280² buffer and the downscale is still the canvas's own, so a digit
+   drawn large and centred rasterises exactly as it did before. */
+const PAD_INK = 16; /* 6% of white: past the antialiased skirt, under any stroke */
 function extractPixels() {
   const oc = off.getContext("2d");
   oc.fillStyle = "#000"; oc.fillRect(0, 0, PAD, PAD);
   oc.strokeStyle = oc.fillStyle = "#fff";
   oc.lineWidth = BRUSH; oc.lineCap = oc.lineJoin = "round";
   for (const st of strokes) tracePath(oc, st, 1);
+
+  const px = new Array(GRID * GRID).fill(0);
+  const full = oc.getImageData(0, 0, PAD, PAD).data;
+  let x0 = PAD, y0 = PAD, x1 = -1, y1 = -1;
+  for (let y = 0; y < PAD; y++) {
+    for (let x = 0; x < PAD; x++) {
+      if (full[(y * PAD + x) * 4] <= PAD_INK) continue;
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+    }
+  }
+  /* an empty pad is all background, not a digit */
+  if (x1 < 0) return px;
+
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+  const s = 20 / Math.max(bw, bh);
+  const dw = Math.max(1, Math.round(bw * s)), dh = Math.max(1, Math.round(bh * s));
   const sc = small.getContext("2d");
-  sc.drawImage(off, 0, 0, GRID, GRID);
+  /* pass 1 places the scaled box at the origin only so its centre of mass
+     can be read at the resolution the network sees; nothing is kept from it
+     except cx/cy. Measuring the centroid on the 280² buffer instead would
+     answer a different question — the resample moves ink. */
+  sc.fillStyle = "#000"; sc.fillRect(0, 0, GRID, GRID);
+  sc.drawImage(off, x0, y0, bw, bh, 0, 0, dw, dh);
+  const first = sc.getImageData(0, 0, GRID, GRID).data;
+  let m = 0, mx = 0, my = 0;
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const v = first[(y * GRID + x) * 4];
+      if (!v) continue;
+      m += v; mx += v * (x + 0.5); my += v * (y + 0.5);
+    }
+  }
+  const cx = m ? mx / m : dw / 2, cy = m ? my / m : dh / 2;
+  sc.fillStyle = "#000"; sc.fillRect(0, 0, GRID, GRID);
+  sc.drawImage(off, x0, y0, bw, bh,
+    Math.round(GRID / 2 - cx), Math.round(GRID / 2 - cy), dw, dh);
   const { data } = sc.getImageData(0, 0, GRID, GRID);
-  const px = new Array(GRID * GRID);
   for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
   return px;
 }
@@ -5999,6 +6085,13 @@ $("approve").addEventListener("click", () => {
   $("gateNote").textContent =
     `approved by hand at ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}, your local time.`;
   window.__world.approved = true;
+  /* ¶13 joins the page here: it was inert and aria-hidden while it was a
+     zero-height station nobody could reach, and the press is what makes it
+     real. Both come off together — a section in the focus order but out of
+     the accessibility tree is the worse of the two failures, not a
+     halfway house. */
+  const morning = $("nextmorning");
+  if (morning) { morning.removeAttribute("inert"); morning.removeAttribute("aria-hidden"); }
   /* the world acknowledges the signature: the halt ring and the gate
      dock turn pine. Deploy still does not light — approval is yours,
      deployment is work. */
@@ -6026,7 +6119,22 @@ $("approve").addEventListener("click", () => {
      the backstop; the carry's own completion normally releases it sooner. */
   holdScroll(RM ? 0 : 9500);
 
-  if (RM) drawThread(scrollY, gatePageY, pathLen, true); else wake(true);
+  /* REDUCED MOTION HAS TO BE GIVEN THE MORNING, not left to find it.
+     `wake()` returns immediately under RM, so the rAF loop never starts and
+     frame() — the only writer of body.atmorning — never runs. Measured: after
+     approving in a reduced-motion context, ¶13 was 2700px tall and every
+     .dawnwrap child still sat at opacity 0 through six real wheel events and
+     an End press, because atmorning is what reveals them. So there was no way
+     to see the contact row on this page at all. The reveal is not an
+     animation and it does not need one: set here what frame() would have set
+     on reaching ¶13 — the class, its bookkeeping variable, and the manifest
+     filing that goes with the run being over. */
+  if (RM) {
+    atMorning = true;
+    document.body.classList.add("atmorning");
+    $("manifest").classList.add("filed");
+    drawThread(scrollY, gatePageY, pathLen, true);
+  } else wake(true);
 
   /* and the run carries you into the next morning. THE SCROLL IS THE SUNRISE —
      ¶13's arc is a pure function of how far into that station you are — so
@@ -6492,6 +6600,17 @@ boot();
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
           h1.removeAttribute("data-np-measuring");
+          /* THE SWEEP STARTS WHEN THE PERFORMANCE DOES, and says so.
+             It started here before this line existed, because the measuring
+             freeze above carries `animation:none !important` and removing it
+             restarts the sweep — measured, not assumed (see the np-css
+             block). That made the trigger a side effect of a freeze that
+             exists to stop the geometry being measured mid-flight, which is
+             a thing that could be moved without anyone noticing what else
+             moved with it. Setting it AFTER the freeze rather than before
+             is the same mechanism: an attribute set before it would have
+             its animation cancelled and restarted anyway. */
+          plate.setAttribute("data-np-go", "");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
           M.mountHoverAnswers?.(plate, h1, letters, g);
         } finally {
@@ -6506,7 +6625,15 @@ boot();
           lastW = Math.round(plate.getBoundingClientRect().width);
           h1.setAttribute("data-np-settled", "");
           document.documentElement.setAttribute("data-np-ready", "");
-          replay && (replay.disabled = false);
+          /* THE ATTRIBUTE COMES OFF, not just the disabled flag. The control
+             ships `hidden` and nothing ever removed it: it was visible only
+             because `html[data-np-ready] .np-replay{display:inline-block}`
+             out-specifies the UA's `[hidden]{display:none}`, so `el.hidden`
+             stayed true on the live page forever — a state that says "not
+             relevant" about a control the reader can see and click. The
+             display rule still gates the reveal on data-np-ready, which is
+             set on the line above, so this shows it no sooner. */
+          if (replay) { replay.hidden = false; replay.disabled = false; }
         }
       };
       /* REBUILD WHEN THE PLATE RESIZES.
@@ -6550,6 +6677,10 @@ boot();
          the plate already holds the finished letters in markup, so the
          failure mode is simply no performance. */
       console.warn("nameplate machines unavailable —", e?.message ?? e);
+      /* the sweep is keyed to the performance, so a performance that never
+         happens has to release it by hand or the free letters wait out the
+         5.6s safety for no reason */
+      plate.setAttribute("data-np-go", "");
       document.documentElement.setAttribute("data-np-ready", "");
     }
   } else if (plate) {
