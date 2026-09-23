@@ -3645,11 +3645,32 @@ const dawnProgress = (p) => clamp(p / DAWN_WIN, 0, 1);
 const APPROACH = 96;
 let glyphDigit = null;         /* the visitor's own read digit, once drawn */
 const inkC = {};
+/* THE CANVAS HAS TO KNOW WHAT THE SKY IS DOING. Everything else on the page
+   sits on the field and inherits its colour through the cascade; the thread
+   is a transparent canvas laid over it, so anything drawn there needs the
+   ground handed to it explicitly. The engine publishes it once a frame, next
+   to --scrim-c, which is the same value for the same reason. */
+let groundRgb = [0.984, 0.953, 0.906]; /* dawn, until the first frame */
+let plateRaw = "";                     /* --plate-solid, before compositing */
 function refreshInk() {
   const cs = getComputedStyle(document.documentElement);
   for (const k of ["--thread", "--thread-ahead", "--ink", "--ink-2", "--pine", "--clay-g", "--plate-solid"])
     inkC[k] = cs.getPropertyValue(k).trim();
+  plateRaw = inkC["--plate-solid"];
 }
+const groundCss = () => rgbCss(groundRgb);
+/* the cargo's own paper, made opaque against whatever the sky is doing.
+   --plate-solid is rgba(…, .82–.86), so a filled waybill mark lets station
+   prose through from behind it. Composited over the live ground it is the
+   same colour to the eye and occludes like paper. */
+const overGround = (css) => {
+  const m = (css || "").match(/[\d.]+/g);
+  if (!m || m.length < 4) return css;
+  const a = +m[3];
+  return `rgb(${[0, 1, 2]
+    .map((i) => Math.round(+m[i] * a + groundRgb[i] * 255 * (1 - a)))
+    .join(",")})`;
+};
 function sizeThread() {
   /* The thread is a 1–2px ink line and the cargo marks are ~18px wide, so
      this canvas is the one surface where the DPR cap is legible as softness:
@@ -4210,6 +4231,8 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
       tctx.beginPath(); tctx.arc(tp.x, ty, 9, 0, 7); tctx.stroke();
     }
   }
+  /* Once per frame, not per mark: every filled waybill body reads this. */
+  inkC["--plate-solid"] = overGround(plateRaw);
   for (const t of TRAV) {
     const b = beats[t.beat];
     /* cargo leaves WHILE the station plate is still closing overhead, so
@@ -4244,10 +4267,32 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
       const s = typeof t.label === "function" ? t.label() : t.label;
       tctx.globalAlpha = Math.min(al, 0.92);
       tctx.font = "11.5px 'Fragment Mono', ui-monospace, monospace";
-      tctx.fillStyle = inkC["--ink-2"];
       tctx.textBaseline = "alphabetic";
-      if (pt.x > vw - 260) { tctx.textAlign = "right"; tctx.fillText(s, pt.x - 20, y - 12); }
-      else { tctx.textAlign = "left"; tctx.fillText(s, pt.x + 20, y - 12); }
+      const right = pt.x > vw - 260;
+      tctx.textAlign = right ? "right" : "left";
+      const tx = right ? pt.x - 20 : pt.x + 20, ty2 = y - 12;
+      /* THE HALO, and it is what a map does. The rail runs down the middle
+         of the reading column at several stations — at ¶08 it passes through
+         the prose measure itself — so a waybill sooner or later prints over
+         a sentence. The B1 answer to that was to dim the line under text,
+         and the owner reversed it: the rail is one ink at one weight from
+         the name to the gate. A label cannot be dimmed either, for the same
+         reason it cannot be moved to the far side (there is no far side when
+         the line is inside the column).
+         So the label carries its own paper instead: the ground colour
+         stroked under the glyphs at 4px with round joins, the standard
+         cartographic halo for a name crossing a contour. The rail's opacity
+         and path are untouched; the only thing that changed is that the
+         label now sits ON the page rather than in it. */
+      tctx.save();
+      tctx.lineWidth = 4;
+      tctx.lineJoin = "round";
+      tctx.lineCap = "round";
+      tctx.strokeStyle = groundCss();
+      tctx.strokeText(s, tx, ty2);
+      tctx.restore();
+      tctx.fillStyle = inkC["--ink-2"];
+      tctx.fillText(s, tx, ty2);
       tctx.globalAlpha = 1;
     }
   }
@@ -6077,6 +6122,8 @@ function applyArc(arc, scrollFrac) {
     /* the masthead scrim keeps step with the field, so exiting elements
        pass BEHIND the chrome instead of printing over its text */
     document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
+    /* and the thread canvas, which cannot read the cascade — see groundRgb */
+    groundRgb = arc.rgb;
     if (arc.night !== window.__world.night) {
       document.documentElement.toggleAttribute("data-night", arc.night);
       window.__world.night = arc.night;
