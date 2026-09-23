@@ -411,6 +411,16 @@ step("nameplate (negative)", "test:nameplate:negative", {
 step("cargo rides the right corridors", "test:cargo-fixture", {
   reads: "out/ in a real browser at 1440px",
 });
+/* G1. Here, and not in the source-reading block above, because half of what
+   this asserts does not exist in any file: the five scroll-built figures, the
+   masthead phase readout and the network labels are composed by the run's own
+   script at render time, and a grep over out/index.html sees the array
+   literals rather than the strings a reader gets. It runs before the browser
+   smoke for the same reason everything else here does — the smoke rebuilds
+   out/ under a different env. */
+step("no dashes in visible text", "test:dashes", {
+  reads: "every out/**/*.html, rendered at 1440 and 390",
+});
 step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
 step("palette ⇄ the light it is read under", "test:palette", {
   reads: "src/run/index.html + scripts/archive/assets/archive.css",
@@ -441,7 +451,13 @@ if (NO_E2E || ARTIFACT_ONLY) {
   );
 } else {
   /* LAST, always. This rebuilds with NEXT_PUBLIC_BASE_PATH= and re-runs
-     build-home.mjs, so out/ afterwards is NOT the artifact hashed above. */
+     build-home.mjs, so out/ afterwards is NOT the artifact hashed above.
+
+     It now carries the clarity reading gates (G2/G2b/G3/G4/G9,
+     reading-gates.spec.ts) and clarity-fixes.spec.ts alongside atlas and
+     run-home. The reading gates skip themselves on every project but
+     chromium-desktop — they measure the page's declared geometry, and the
+     same measurement on five engines is one measurement. */
   step("browser smoke", "test:e2e:browser-smoke", {
     reads: "out/, rebuilt with an empty basePath",
   });

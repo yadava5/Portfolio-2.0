@@ -1,0 +1,128 @@
+# ═══════════════════════════════════════════════════════════════════════
+# Gate H · the desktop non-regression harness
+#
+# MANUAL ONLY, and that is the design. The sweep is a five-minute scripted
+# read of the whole page at three desktop seats, screenshots included, and it
+# answers a question nobody asks on every push: "is the rail emptier than it
+# was before the clarity redesign?" It belongs to the per-batch release
+# checklist in docs/clarity/PLAN.md, and to any pixel change made outside
+# those batches.
+#
+# WHAT IT ASSERTS. Two numbers, at 1512/1440/1280, against
+# docs/clarity/harness/baseline/ — the pre-redesign live site at b6ea15df
+# (HEAD 035ab9b):
+#
+#     starved  ≤ 3 / 4 / 4     near-empty screens INSIDE a station's own
+#                              content box: the reader is mid-station and
+#                              there is nothing there
+#     blank    ≤ 1 / 1 / 1     frames with zero visible words
+#
+# Corridor emptiness — the rail BETWEEN stations — is deliberately not
+# asserted. That is the day arc, not a defect, and emptiness.mjs exists
+# precisely to keep the two apart.
+#
+# WHY IT SERVES out/ RATHER THAN THE LIVE SITE. The baseline was taken
+# against https://ayush-yadav.com, but a gate pointed at production measures
+# whatever deploy happens to be aliased — and this repo has been burned by
+# exactly that (a pretty domain answering 200 while serving a build two
+# deploys old). The artifact under test is the one this workflow just built.
+# ═══════════════════════════════════════════════════════════════════════
+name: Clarity harness (desktop non-regression)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_name:
+        description: "name for the sweep directory under docs/clarity/harness/"
+        required: false
+        default: "ci"
+
+env:
+  NODE_VERSION: 20
+  RUN_NAME: ${{ github.event.inputs.run_name || 'ci' }}
+
+jobs:
+  harness:
+    name: 📏 Sweep 1512 / 1440 / 1280
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # sweep.mjs launches its own chromium rather than going through the
+      # Playwright runner, so the browser still has to be installed.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      # The deploy configuration, not the developer one — the same env
+      # verify-portfolio.mjs calls DEPLOY_ENV. An artifact built any other way
+      # is not the one a reader gets.
+      - name: Build the site
+        run: npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_BASE_PATH: ""
+
+      - name: Serve out/
+        run: |
+          nohup node tests/playwright/static-server.mjs > server.log 2>&1 &
+          echo "$!" > server.pid
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3000/; then
+              echo "server up after ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "static server never answered on :3000"; exit 1
+
+      # The page must actually be the run before five minutes are spent
+      # sweeping it. 13 data-beat is the whole invariant of the migration.
+      - name: The served page is the run
+        run: |
+          beats=$(curl -fsS http://127.0.0.1:3000/ | grep -o 'data-beat=' | wc -l | tr -d ' ')
+          echo "data-beat: $beats"
+          test "$beats" = "13"
+
+      - name: Sweep
+        run: |
+          chmod +x docs/clarity/harness/runall.sh
+          docs/clarity/harness/runall.sh "$RUN_NAME" http://127.0.0.1:3000/ \
+            "w1512 1512 982 0" "w1440 1440 900 0" "w1280 1280 800 0"
+
+      - name: Emptiness (corridor vs starved)
+        run: |
+          OUT="docs/clarity/harness/$RUN_NAME" \
+          LABELS=w1512,w1440,w1280 \
+          node docs/clarity/harness/emptiness.mjs
+
+      - name: Non-regression against baseline
+        run: node scripts/qa/check-harness-baseline.mjs "docs/clarity/harness/$RUN_NAME"
+
+      # Uploaded whether or not the comparison passed: when starved rises, the
+      # frames it rose on are the only thing that says why.
+      - name: Upload the sweep
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clarity-harness-${{ env.RUN_NAME }}
+          path: |
+            docs/clarity/harness/${{ env.RUN_NAME }}/*.json
+            docs/clarity/harness/${{ env.RUN_NAME }}/sweep.log
+            docs/clarity/harness/${{ env.RUN_NAME }}/shots
+          retention-days: 14
+
+      - name: Stop the server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then kill "$(cat server.pid)" 2>/dev/null || true; fi

@@ -54,10 +54,28 @@ const CONCURRENCY = 8;
  * migration's Phase 4; a guard over surfaces that are being deleted would
  * be work that has to be deleted with them.
  */
+/* ── G8 · AND THE RELATIVE ONES ───────────────────────────────────────
+ * Until 2026-09-23 the loop below began `if (!/^https?:/i.test(href)) continue;`
+ * and the comment beside it said mailto and in-page fragments are neither
+ * leaving nor descending. True of those two, and it quietly took `/resume.pdf`,
+ * `/evidence/` and `../projects/glyph/` with them — every relative href on the
+ * site was unchecked. The rule the reader learns is about the DESTINATION, not
+ * about how the author happened to spell it: a relative href can only resolve
+ * on this origin, so it can only ever be `⟶`.
+ *
+ * Asymmetric on purpose. An absolute URL must CARRY its glyph (that half is
+ * unchanged, and the run has printed one on all 14 since Phase 5). A relative
+ * href is only judged when its text already ends in an arrow, because plenty
+ * of relative links here are inline words inside a sentence and a rule that
+ * demanded an arrow on those would be a copy edict, not a link contract.
+ */
 const SITE = "https://ayush-yadav.com";
-const GLYPH_SOURCES = ["src/run/index.html"];
+const ARROWS = /[↗⟶⟵→]$/u;
+const srcArg = process.argv.indexOf("--src");
+const GLYPH_SOURCES =
+  srcArg > -1 ? [process.argv[srcArg + 1]] : ["src/run/index.html"];
 const glyphFails = [];
-const glyphSeen = { internal: 0, external: 0 };
+const glyphSeen = { internal: 0, external: 0, relative: 0 };
 
 for (const file of GLYPH_SOURCES) {
   const raw = readFileSync(file, "utf8");
@@ -71,18 +89,38 @@ for (const file of GLYPH_SOURCES) {
     /<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
   )) {
     const [, href, inner] = m;
-    /* `mailto:` and in-page fragments are neither leaving nor descending,
-       and the file carries one of each (#top on the masthead wordmark). */
-    if (!/^https?:/i.test(href)) continue;
+    /* `mailto:`, `tel:` and in-page fragments are neither leaving nor
+       descending, and the file carries one of each (#top on the masthead
+       wordmark). Everything else has an origin and therefore an answer. */
+    if (/^(mailto:|tel:|#|javascript:|data:)/i.test(href)) continue;
     const text = inner
       .replace(/&#8599;/g, "↗")
       .replace(/&#10230;/g, "⟶")
       .replace(/<[^>]*>/g, "")
       .replace(/\s+/g, " ")
       .trim();
+    const absolute = /^[a-z][a-z0-9+.-]*:|^\/\//i.test(href);
     const internal = href === SITE || href.startsWith(`${SITE}/`);
+    const sameOrigin = internal || !absolute;
+
+    if (!absolute) {
+      glyphSeen.relative += 1;
+      /* only judged when it already claims to be a link with a direction */
+      if (!ARROWS.test(text)) continue;
+      if (text.endsWith("⟶")) continue;
+      glyphFails.push({
+        file,
+        line: src.slice(0, m.index).split("\n").length,
+        href,
+        text,
+        want: "⟶",
+        why: "a relative href resolves on this origin — it cannot leave the site",
+      });
+      continue;
+    }
+
     glyphSeen[internal ? "internal" : "external"] += 1;
-    const want = internal ? "⟶" : "↗";
+    const want = sameOrigin ? "⟶" : "↗";
     if (text.endsWith(want)) continue;
     glyphFails.push({
       file,
@@ -130,7 +168,8 @@ if (glyphSeen.internal + glyphSeen.external < 14) {
 }
 console.log(
   `check-links: the glyph contract holds — ${glyphSeen.internal} deeper (⟶), ` +
-    `${glyphSeen.external} leaving (↗), across ${GLYPH_SOURCES.join(", ")}`
+    `${glyphSeen.external} leaving (↗), ${glyphSeen.relative} relative (⟶ when ` +
+    `they carry an arrow), across ${GLYPH_SOURCES.join(", ")}`
 );
 
 /* Prefer the BUILT pages — that is what a reader clicks, and it catches a

@@ -28,7 +28,77 @@ import { expect, test } from "@playwright/test";
  *   the line     canvas#thread                        (was [data-thread])
  */
 
-const HOME_WIDTHS = [390, 768, 1440] as const;
+/**
+ * G7 · 320, 1280 and 1512 joined the list on 2026-09-23.
+ *
+ * 320 is the narrowest width the run claims to support and was never checked
+ * here; 1280 and 1512 are the two desktop seats the clarity harness measures
+ * at, and a gate that watches 1440 alone cannot see a rule that breaks either
+ * side of it. See also `measure-above-the-breakpoint`: a media query only ever
+ * proves the width it moved away from.
+ */
+const HOME_WIDTHS = [320, 390, 768, 1280, 1440, 1512] as const;
+
+/**
+ * G7's probe, run in the page: every visible box whose right edge is past the
+ * viewport's. Shared by the six width tests and their injection control, so
+ * the control cannot pass against a different implementation than the gate.
+ */
+const RIGHT_EDGE_PROBE = () => {
+  const effOpacity = (el: Element): number => {
+    let o = 1;
+    let n: Element | null = el;
+    while (n && n.nodeType === 1) {
+      const cs = getComputedStyle(n);
+      if (cs.display === "none" || cs.visibility === "hidden") return 0;
+      const v = parseFloat(cs.opacity);
+      if (!Number.isNaN(v)) o *= v;
+      n = n.parentElement;
+    }
+    return o;
+  };
+  const sel = (el: Element): string => {
+    const parts: string[] = [];
+    let n: Element | null = el;
+    while (n && n.nodeType === 1 && parts.length < 4) {
+      let p = n.tagName.toLowerCase();
+      if (n.id) {
+        parts.unshift("#" + n.id);
+        break;
+      }
+      if (n.classList.length) p += "." + [...n.classList].join(".");
+      parts.unshift(p);
+      n = n.parentElement;
+    }
+    return parts.join(">");
+  };
+  const vw = document.documentElement.clientWidth;
+  const out: string[] = [];
+  let seen = 0;
+  for (const el of document.querySelectorAll("body *")) {
+    const tag = el.tagName.toLowerCase();
+    if (tag === "script" || tag === "style" || tag === "template") continue;
+    /* the page's own declaration that a box is scenery: inside aria-hidden,
+       carrying no text, and not something a reader can operate */
+    if (
+      el.closest('[aria-hidden="true"]') &&
+      !(el.textContent ?? "").trim() &&
+      !el.matches("a,button,input,select,textarea,[role=button],[tabindex]")
+    )
+      continue;
+    if (effOpacity(el) <= 0.05) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    seen++;
+    /* 0.5px: sub-pixel layout rounds, and half a pixel is not a clipped
+       control. */
+    if (r.right <= vw + 0.5) continue;
+    out.push(
+      `${sel(el)} — right edge ${Math.round(r.right)} of ${vw} (+${Math.round(r.right - vw)})`
+    );
+  }
+  return { over: [...new Set(out)], seen };
+};
 
 /** "¶ 08 · fifth station · the honest hour — 21:07" → 21 * 60 + 7 */
 function minutesOf(kicker: string): number | null {
@@ -134,7 +204,93 @@ test.describe("the home page is the run", () => {
         `${w}px viewport must not scroll sideways`
       ).toBeLessThanOrEqual(0);
     });
+
+    /**
+     * G7 · and nothing may run off the right edge, scrollbar or no scrollbar.
+     *
+     * `scrollWidth - clientWidth` is a document-level question with a blind
+     * spot the size of the defect it is meant to catch: a box that overhangs
+     * the viewport INSIDE an `overflow:hidden` ancestor adds nothing to
+     * scrollWidth, because the ancestor clips it. The document measures clean
+     * and the reader loses the right-hand part of a control. So this asks the
+     * reader's question instead — is any visible box's right edge past the
+     * viewport's? — and clipped counts.
+     *
+     * REDUCED MOTION, and that is what makes one pass enough. The run fades
+     * and drifts each station in on scroll, so at any given scroll stop only
+     * ~90 of its ~1,030 boxes are lit, and the ones mid-transition carry a
+     * horizontal drift that is not their settled geometry: measured at 1280,
+     * nine boxes sat past the right edge at effective opacity 0.00–0.04, all
+     * of them simply part-way through their entrance. `settleAll()` puts the
+     * scrub at p = 1 without scrolling, which lights ~899 boxes at the
+     * geometry they actually come to rest at. `body.settled` is asserted so
+     * the test cannot pass by measuring a frame the page never settled into.
+     *
+     * The `#field` decorations are out of scope BY THE PAGE'S OWN
+     * DECLARATION, not by name: `#sun` crosses the sky and leaves the frame
+     * by 150–220px at phone widths, on purpose. The rule that excludes it is
+     * "inside aria-hidden, carrying no text, and not interactive" — so a
+     * clipped LABEL inside an aria-hidden figure, or a clipped BUTTON
+     * anywhere, is still caught.
+     *
+     * NOTE ON PROVENANCE. This was written to catch `#clear` at 320, which
+     * the phase inventory records as clipped. It does not reproduce: on the
+     * pre-redesign build (out-original-index.html, b6ea15df) `#clear` sits at
+     * 274..312 in a 320 viewport at both settled and scrolled, and nothing on
+     * that page except `#sun` crosses the right edge at any of these six
+     * widths. So this check is proven by the injection below rather than by
+     * the old build, and `#clear`'s real defect at 320 is its 38×18 hit box,
+     * which is G9's.
+     */
+    test(`no element runs past the right edge at ${w}`, async ({ page }) => {
+      /* before the navigation: the context-level option does not reach the
+         page here — see the fig. 05 note below, same reason. */
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.setViewportSize({ width: w, height: 900 });
+      await page.goto("/");
+      await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+      /* past the nameplate's performance: it is the one thing on the page
+         whose width is measured and re-drawn after load */
+      await page.waitForTimeout(4200);
+
+      const { over, seen } = await page.evaluate(RIGHT_EDGE_PROBE);
+
+      /* A sweep that saw nothing prints the same green as a clean page. */
+      expect(seen, `boxes were measured at ${w}`).toBeGreaterThan(400);
+      expect(
+        over,
+        `${w}px: these boxes extend past the right edge. An ancestor with ` +
+          `overflow:hidden makes this invisible to the scrollWidth check above, ` +
+          `and the reader still loses the right-hand part of the control.`
+      ).toEqual([]);
+    });
   }
+
+  /**
+   * THE CONTROL for the check above. Empty is the right answer at all six
+   * widths on this build and on the pre-redesign one, which means "clean" and
+   * "the probe read nothing" print the same green. Widening one real control
+   * past the frame is the only thing that tells them apart.
+   */
+  test("positive control: a control pushed past the right edge is caught", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 320, height: 900 });
+    await page.goto("/");
+    await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+    await page.waitForTimeout(1200);
+    await page.addStyleTag({
+      content:
+        "#mast{position:relative !important; left:0 !important; width:600px !important; max-width:none !important}",
+    });
+    await page.waitForTimeout(300);
+    const { over } = await page.evaluate(RIGHT_EDGE_PROBE);
+    expect(
+      over.join(" | "),
+      "a 600px masthead in a 320px viewport was not seen — the probe is broken, not the page"
+    ).toContain("#mast");
+  });
 
   /**
    * fig 06's classifier is REAL — and nothing checked that it arrives.

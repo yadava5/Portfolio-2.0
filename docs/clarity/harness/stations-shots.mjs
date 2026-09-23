@@ -1,7 +1,7 @@
 /* stations-shots.mjs <url> <label> <w> <h> <mobile> <outdir>
    One screenshot per station: scroll so the station's kicker sits ~22% down, settle, shoot.
    Waits for the nameplate to finish (html[data-np-ready]) before anything. */
-import { chromium } from '/Users/ayush/Documents/Projects/Portfolio-2.0/node_modules/@playwright/test/index.mjs';
+import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
 import { mkdirSync } from 'node:fs';
 const [url, label, W, H, MOB, dir] = process.argv.slice(2);
 const mobile = MOB === '1';

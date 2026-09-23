@@ -1,5 +1,5 @@
 /* shoot-at.mjs <url> <w> <h> <outfile> <y>  — settle nameplate, scroll to y, shoot */
-import { chromium } from '/Users/ayush/Documents/Projects/Portfolio-2.0/node_modules/@playwright/test/index.mjs';
+import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
 const [url, W, H, out, Y] = process.argv.slice(2);
 const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: +W, height: +H }, deviceScaleFactor: 1 })).newPage();
 await p.goto(url, { waitUntil: 'load' }); await p.waitForSelector('html[data-np-ready]', { timeout: 15000 }).catch(() => {});

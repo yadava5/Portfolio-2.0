@@ -80,6 +80,7 @@ export default defineConfig([
       "scripts/qa/check-nameplate.mjs",
       "scripts/qa/check-nameplate-negative.mjs",
       "scripts/qa/check-cargo-fixture.mjs",
+      "scripts/qa/check-dashes.mjs",
       "scripts/resume/render-resume.mjs",
       "scripts/asset-truth/*.mjs",
     ],

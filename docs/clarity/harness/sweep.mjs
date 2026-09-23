@@ -2,7 +2,7 @@
    One fresh context per viewport. Steps the page with scrollTo, waits 700ms,
    dumps every text node in the viewport with effective opacity, font bucket,
    effective px, page rect, plus the manifest rect and the #thread canvas ink. */
-import { chromium } from '/Users/ayush/Documents/Projects/Portfolio-2.0/node_modules/@playwright/test/index.mjs';
+import { chromium } from '../../../node_modules/@playwright/test/index.mjs';
 import { writeFileSync, mkdirSync } from 'node:fs';
 
 const [label, W, H, MOB] = process.argv.slice(2);
