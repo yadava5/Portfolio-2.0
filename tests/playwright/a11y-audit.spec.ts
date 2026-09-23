@@ -47,8 +47,18 @@ test.describe("accessibility", () => {
       await page.goto(route.path);
       await page.waitForLoadState("networkidle");
 
+      /* THE A TAGS ARE HERE BECAUSE THEIR ABSENCE HID A REAL DEFECT.
+         This filter was `["wcag2aa", "wcag21aa"]` until 2026-09-23, and AA
+         is not a superset of A in axe's tag vocabulary — a rule carries the
+         level it was introduced at and nothing else. `nested-interactive`
+         is tagged `wcag2a`, so when fig. 04 and fig. 07 grew focusable
+         `g[role="button"]` marks inside an `svg[role="img"]` — whose
+         descendants are presentational, which makes those controls invalid
+         — this spec reported green on all three routes while a bare axe run
+         over the same page reported a SERIOUS violation. A conformance gate
+         that cannot see Level A is not a conformance gate. */
       const results = await new AxeBuilder({ page })
-        .withTags(["wcag2aa", "wcag21aa"])
+        .withTags(["wcag2a", "wcag21a", "wcag2aa", "wcag21aa"])
         .disableRules(["color-contrast"])
         .analyze();
 

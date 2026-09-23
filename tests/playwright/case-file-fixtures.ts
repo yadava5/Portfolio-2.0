@@ -122,7 +122,10 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   //   · "Web beta scaffold" — apps/web IS the shipped product now.
   // Both keys still assert a visible artifact label; neither assertion
   // was dropped.
-  jobtrackerReadme: "README — the desktop-era record",
+  // 2026-09-23: the em dash became a comma in the dash sweep. Same label,
+  // same limit — the README is named as the DESKTOP-ERA record, not as the
+  // current one, which is the whole reason this key is asserted.
+  jobtrackerReadme: "README, the desktop-era record",
   jobtrackerArchitectureDocs: "Architecture docs",
   jobtrackerBackendTests: "Backend test suite",
   jobtrackerBenchmark: "ML strategy and evaluation gates",
@@ -132,10 +135,24 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // skips are named in the row, so the assertion carries them too).
   // 2026-08-02: 271 → 278, re-run at the public head 03fc5c4 on the audit.
   // The skips did not move — same Postgres RLS module, same missing URL.
+  // 2026-09-23: 305 → 3,747, re-run at 0285675, and the receipt now names
+  // that head in its own sentence. RE-RECORDED, NOT RELAXED: the assertion
+  // still carries the count, the 0 skips and the environment the count was
+  // taken under, and it now carries two things it could not before — the
+  // sha the figure belongs to, and the 13 expected failures, which are the
+  // limit that stops "3,747 passed" reading as "nothing fails".
   jobtrackerBackendCoverage:
-    "305 tests passed, 0 skipped, under the test/null-keyring environment",
+    "runs at 0285675, the head this receipt is pinned to: 3,747 tests passed, " +
+    "0 skipped, and 13 expected failures, under the test/null-keyring environment",
+  // 2026-09-23: the sentence was rewritten and the figure moved, 0.9791 →
+  // 0.9896. Same two gates, same 96-message set, and the reword ADDS the
+  // denominator — "1 message misclassified out of 96" — so a macro-F1 near 1
+  // can no longer be read as a perfect run. Asserted whole, because the old
+  // string's value was that both gates are named in one sentence.
   jobtrackerClassifierGate:
-    "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+    "The rules v3 gate and the deterministic hybrid v3 gate both pass at the " +
+    "pinned commit on the v3 set of 96 messages: macro-F1 0.9896, 1 message " +
+    "misclassified out of 96.",
   jobtrackerNativeBuild: "The macOS Debug target built locally with xcodebuild",
   // 2026-07-26: the boundary row was rewritten when the receipts moved
   // from docs to source. Same promise, named against what is now linked.
@@ -143,8 +160,11 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
   // 2026-07-26: the two boundary rows that carry the re-pin's whole
   // point. If either disappears the page is overclaiming again.
+  // 2026-09-23: the em dash became a comma in the dash sweep. The boundary is
+  // untouched — rules only, on purpose, and the reason — so the assertion is
+  // the same one in the new punctuation.
   jobtrackerRulesOnlyBoundary:
-    "On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot.",
+    "On Vercel it runs the rules layer only, deliberately, because the model stack does not fit the function slot.",
   // 2026-08-15: RE-RECORDED, not relaxed. The boundary row is still there
   // and still says the same thing about the same two documents; what moved
   // is its TENSE. "Both still describe …" asserted something about the

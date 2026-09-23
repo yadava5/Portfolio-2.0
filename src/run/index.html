@@ -2382,7 +2382,17 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://getapplied.vercel.app">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card">system card ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://ayush-yadav.com/projects/jobtracker/">the case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="img" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
+        <!-- role="group", NOT role="img", and fig. 07 is the same case. A
+             labelled image's descendants are presentational, so the focusable
+             `g[role="button"]` desk controls traceOn() injects here were
+             invalid inside one — axe reports it as `nested-interactive`,
+             serious, and a screen reader is entitled to drop the controls or
+             lose focus on them. `group` is the role for a labelled drawing
+             that HAS interactive parts: the aria-label below is unchanged and
+             is still what a reader gets for the plate, but the four desk
+             controls inside it now exist. Each carries its own name.
+             `check-figures.mjs` §1 encodes the pair of rules. -->
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
         <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i>tap or hover a desk for its verdicts.</i></figcaption>
       </figure>
     </div>
@@ -2538,7 +2548,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="jetFig" class="figsvg" viewBox="0 0 560 324" role="img" aria-label="Eight byte blocks arrive from off the plate along one rail and fan down into four virtual-thread lanes. Each lane carries a deflate die, drawn as two walls that step inward, and every block leaves it at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
+        <!-- role="group" for the reason fig. 04 states: the four lane
+             controls traceOn() injects are focusable, and a labelled image's
+             descendants are presentational. -->
+        <svg id="jetFig" class="figsvg" viewBox="0 0 560 324" role="group" aria-label="Eight byte blocks arrive from off the plate along one rail and fan down into four virtual-thread lanes. Each lane carries a deflate die, drawn as two walls that step inward, and every block leaves it at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
         <!-- Same ruling as ¶06's bench: scrubJetBench() is gone and the bars
              are drawn settled. The date is the commit's, not the run's — JMH
              writes no date into its JSON, and inventing one would be the class
@@ -4001,7 +4014,7 @@ function svgIn(s) {
   return (t, a, parent) => { const e = document.createElementNS(NS, t);
     for (const k in a) e.setAttribute(k, a[k]); (parent || s).appendChild(e); return e; };
 }
-function traceOn(svg, labels, marks, key) {
+function traceOn(svg, labels, marks, key, name) {
   /* hover a bucket/lane label: its cargo stays inked, the rest recede */
   /* Three reveals hid their information behind :hover with no tabindex and
      no pointerleave a finger can produce. The same trace now answers a
@@ -4023,7 +4036,17 @@ function traceOn(svg, labels, marks, key) {
      wrapped in a <g> carrying the role, the tabindex and every listener,
      with a transparent rect behind it grown to the floor. The text does not
      move — a <g> lays nothing out — and the rect is aria-hidden because the
-     <g> is already the control and the text is already its name. */
+     <g> is already the control.
+
+     EACH CONTROL NAMES ITSELF. The drawn label alone read as a caption —
+     "220 regex rules" says what the desk IS, not what pressing it does — and
+     name-from-content over SVG text is not something to rely on either. So
+     `name(lbl, id)` states the action, and states it AROUND the visible words
+     rather than instead of them: WCAG 2.5.3 wants the visible label inside
+     the accessible name, so every caller builds the string from
+     `lbl.textContent`. Set before the getBBox branch below, which can
+     `continue` — a control that misses its drawn hit rect must not also miss
+     its name. */
   const NS = "http://www.w3.org/2000/svg";
   /* user units per CSS px, so the floor is met on the RENDERED size rather
      than in the viewBox's own coordinates, which the tight editions scale
@@ -4053,6 +4076,7 @@ function traceOn(svg, labels, marks, key) {
     g.setAttribute("tabindex", "0");
     g.setAttribute("role", "button");
     g.setAttribute("class", "tracebtn");
+    g.setAttribute("aria-label", name(lbl, id));
     lbl.parentNode.insertBefore(g, lbl);
     /* getBBox throws on an element with no layout box. If the plate is not
        rendered yet the control still works — it just does not get the drawn
@@ -4227,7 +4251,11 @@ function buildApplied(tight) {
      every other piece gets the fraction of it that its own path is */
   applied.maxLen = Math.max(...applied.marks.map((m) => m.len));
   for (const m of applied.marks) m.dur = APPLIED_SPAN * (m.len / applied.maxLen);
-  traceOn(s, desklabs, applied.marks, "k");
+  /* desk 3 is the hold, not a desk, so it does not "settle" anything */
+  traceOn(s, desklabs, applied.marks, "k", (lbl, k) =>
+    k === 3
+      ? `show the piece ${lbl.textContent}`
+      : `show what ${lbl.textContent} settled`);
 }
 function polyAt(line, t) {
   /* piecewise-linear position along a polyline, t 0..1 by segment count */
@@ -4825,7 +4853,8 @@ function buildJet(tight) {
     });
   }
   for (const [y, words] of g.foot) el("text", { x: 8, y }).textContent = words;
-  traceOn(s, jlabs, jet.blocks, "lane");
+  traceOn(s, jlabs, jet.blocks, "lane", (lbl) =>
+    `show which blocks lane ${lbl.textContent} carried`);
 }
 function scrubJet(p) {
   const span = jet.dieThroat - jet.dieTop;

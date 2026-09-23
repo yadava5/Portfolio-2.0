@@ -818,7 +818,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The backend suite runs at the pinned commit: 3,747 tests passed, 0 skipped, and 13 expected failures, under the test/null-keyring environment. It read 305 passed and 0 skipped at 71b74f8 until 2026-09-23. The Postgres RLS module of 26 tests sits inside that total, and the rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and are never added together.",
+          "The backend suite runs at 0285675, the head this receipt is pinned to: 3,747 tests passed, 0 skipped, and 13 expected failures, under the test/null-keyring environment. It read 305 passed and 0 skipped at 71b74f8 until 2026-09-23. The Postgres RLS module of 26 tests sits inside that total, and the rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and are never added together.",
         method:
           "`pytest tests -q --cov=jobtracker` in backend-ci run 34429395505 at the pinned head, read off the public run log rather than a local venv. The Postgres RLS module is included in that count and does not skip: it starts its own postgres:16 through testcontainers instead of waiting on a database URL nobody supplied. The 13 expected failures are named as xfail rather than folded into the pass count, because an expected failure is not a pass.",
         artifacts: [

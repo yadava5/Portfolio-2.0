@@ -489,7 +489,9 @@ const FIGURES = [
    `[role="img"]` with a name over 60 characters. MEASURED, ONLY SIX OF THE
    TEN RUN FIGURES ARE DRAWINGS:
 
-     drawings, role="img", narrative label   03 04 06 07 08 09
+     drawings, narrative label               03 04 06 07 08 09
+       of those, role="img" (still)          03    06    08 09
+       of those, role="group" (2026-09-23)      04    07
      HTML text plates, no role               02 05 10 11
 
    The four text plates' accessible experience IS their text. `role="img"`
@@ -550,15 +552,63 @@ const FIGURES = [
       `  ✗ found ${drawings.length} drawings (svg.figsvg plus #net), expected 6.\n` +
         `      Measured 2026-08-06: pathFig, appliedFig, net, jetFig, questFig, amlFig.`
     );
+  /* ── 1a · THE ROLE, AND WHY IT IS NOT ONE ROLE.
+     This said `role="img"` for all six until 2026-09-23, and that rule shipped
+     an accessibility defect of its own. A labelled image's descendants are
+     PRESENTATIONAL — that is the whole point of the role, and §3 below leans
+     on it — but figs. 04 and 07 inject focusable `g[role="button"]` marks, so
+     their controls sat inside an element that says "I have no children". axe
+     calls that `nested-interactive`, impact serious, and it went unseen for
+     as long as it did because the a11y spec's tag filter had no Level A in
+     it. `group` is the role for a labelled drawing WITH interactive parts:
+     the narrative label still names the plate, and the marks inside it exist.
+
+     WHICH FIGURES THOSE ARE IS DERIVED, NOT LISTED. A hand-written pair here
+     would let a THIRD figure grow a trace and keep `role="img"`, which is the
+     defect arriving again with this gate green over it. The run wires every
+     interactive plate through one function, `traceOn(svg, labels, marks, …)`,
+     whose third argument names the figure's own state object — and that
+     object declares the svg id it drives. So the set is read off the call
+     sites. If that derivation ever breaks it empties, and an empty set
+     demands `role="img"` from figures that carry `group`: it fails toward
+     red, which is the right way round. */
+  const traced = [
+    ...runHtml.matchAll(/traceOn\(\s*\w+\s*,\s*\w+\s*,\s*(\w+)\./g),
+  ].map((m) => m[1]);
+  const INTERACTIVE = new Set(
+    traced
+      .map(
+        (name) =>
+          runHtml.match(
+            new RegExp(`const ${name} = \\{[^}]*svg: \\$\\("([^"]+)"\\)`)
+          )?.[1]
+      )
+      .filter(Boolean)
+  );
+  if (INTERACTIVE.size !== 2)
+    fails.push(
+      `  ✗ read ${INTERACTIVE.size} interactive drawings off the traceOn() call sites, expected 2.\n` +
+        `      Measured 2026-09-23: appliedFig (fig. 04) and jetFig (fig. 07). Either a plate\n` +
+        `      gained or lost its trace — in which case its role moves with it — or the\n` +
+        `      derivation above stopped reading the run, which is the same fix either way.`
+    );
   for (const tag of drawings) {
     const id = tag.match(/id="([^"]+)"/)?.[1] ?? "(unnamed)";
     const label = tag.match(/aria-label="([^"]*)"/)?.[1] ?? "";
-    if (!/role="img"/.test(tag))
-      fails.push(`  ✗ the ${id} drawing carries no role="img"`);
+    const want = INTERACTIVE.has(id) ? "group" : "img";
+    if (!new RegExp(`role="${want}"`).test(tag))
+      fails.push(
+        `  ✗ the ${id} drawing must carry role="${want}"\n` +
+          (want === "group"
+            ? `      It has focusable marks inside it, and role="img" makes them presentational —\n` +
+              `      axe's nested-interactive, serious. role="group" keeps the label and the marks.`
+            : `      It is a still drawing. role="img" is what makes its label stand in for the\n` +
+              `      picture; anything looser exposes strokes and glyphs with no reading order.`)
+      );
     if (label.length < 60)
       fails.push(
         `  ✗ the ${id} drawing's aria-label is ${label.length} characters, floor 60.\n` +
-          `      It is what a screen reader gets INSTEAD of the drawing. Shortest shipping is 116.`
+          `      It is what a screen reader gets for the drawing. Shortest shipping is 116.`
       );
   }
 
