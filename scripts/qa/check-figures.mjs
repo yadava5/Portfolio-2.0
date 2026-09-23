@@ -790,13 +790,17 @@ const FIGURES = [
       [
         "a deliberate hold, not a fall",
         /* The redraw's central fact, and the one a later hand undoes without
-           noticing. The built half now has a BODY — three treads closed into
-           a hatched mass standing on the ground — and the two unbuilt steps
-           have nothing beneath them at all. That void is the largest element
-           on the plate. A redraw that keeps the five profiles and loses the
-           mass/void distinction is back to five bare lines, and the plate
-           stops saying what "built" means. */
-        "nothing is drawn beneath the two unbuilt steps",
+           noticing: the built work has a BODY and the unbuilt work is a void,
+           and a redraw that keeps five profiles and loses that distinction is
+           back to five bare lines with the plate no longer saying what
+           "built" means.
+           The WORDING moved once, with the drawing, and only the wording. The
+           stair in section said the void was "beneath the two unbuilt steps",
+           because its unbuilt treads had nothing under them. The elevation
+           that replaced it says the void is INSIDE the two unbuilt floors,
+           which is the same fact about the same two things — what was not
+           built is drawn as absence, at the largest scale on the plate. */
+        "nothing is drawn inside the two unbuilt floors",
         /* Two holds, and they are NOT the same hold: scale is blocked from
            outside, and a finished product is simply not claimed — which is why
            its tread is the one line on the plate that stops in mid-air rather
