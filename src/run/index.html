@@ -7206,18 +7206,29 @@ boot();
      wheel tick 16ms later and taken the line away before it was read. The
      300px rule already covers the reader who keeps going. */
   var ACTS = ["pointerdown", "keydown"];
+  function teardown() {
+    clearTimeout(timer);
+    removeEventListener("scroll", watch);
+    for (var i = 0; i < ACTS.length; i++) removeEventListener(ACTS[i], hide);
+  }
   function hide() {
     if (!shown) return;
     shown = false;
     peek.classList.remove("on");
-    clearTimeout(timer);
-    removeEventListener("scroll", watch);
-    for (var i = 0; i < ACTS.length; i++) removeEventListener(ACTS[i], hide);
+    teardown();
   }
   function watch() {
     if (de.hasAttribute("data-arrive")) { base = scrollY; return; }
     if (shown) { if (Math.abs(scrollY - base) > 300) hide(); return; }
     if (Math.abs(scrollY - base) < 60) return;
+    /* IT ONLY BELONGS AT THE START. The line says how long the paper is,
+       which is a question a reader has before they commit, not one they have
+       at dusk — and the field down there is a mid-band brown that day ink
+       does not hold against, so a peek that fired at ¶08 would be both
+       unwanted and unreadable. A restored scroll position or a long jump
+       lands the first scroll event well down the page; when it does, the
+       moment has passed and the peek retires without ever showing. */
+    if (scrollY > innerHeight) { teardown(); return; }
     shown = true; base = scrollY;
     peek.classList.add("on");
     timer = setTimeout(hide, 4000);
