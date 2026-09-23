@@ -751,7 +751,25 @@ if (location.hash.length > 1) {
      therefore cannot push the composition off-screen. */
   main::after{content:""; display:block; height:0}
   .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
-    gap:clamp(2rem, 5vw, 5rem); align-items:start; width:100%}
+    gap:clamp(2rem, 5vw, 5rem); align-items:stretch; width:100%}
+  /* THE COLOPHON FALLS TO THE FLOOR. The right column used to be a card and
+     a colophon stacked at the top, with the ladder running past both of them
+     to the bottom of the screen — about 500px of empty paper in the lower
+     right of the page's last composition, which is the one view a reader is
+     most likely to sit and look at. The column stretches to the row now and
+     the colophon is pushed to its foot, so the two columns close level and
+     the dead area is gone. The card does not move. */
+  .b8 .beat-inner>div:last-child{display:flex; flex-direction:column}
+  .b8 footer{margin-top:auto}
+  /* AND THE CARD STRETCHES INTO WHAT IS LEFT. Bottom-aligning the colophon
+     on its own only MOVED the empty paper — out of the lower right corner
+     and into a 400px hole between the card and the colophon, which is worse,
+     because a hole in the middle of a composition reads as a mistake and a
+     margin at the bottom reads as a margin. The card takes the column's full
+     height and pushes its signature block to its own foot, so the emptiness
+     lands where a form puts it: above the line you sign on. That space is
+     not filler now, it is the field. */
+  .gatecard{flex:1 1 auto; display:flex; flex-direction:column}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
     border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2);
     margin-top:1.6rem}
@@ -761,12 +779,24 @@ if (location.hash.length > 1) {
   .ladder .gaterow{display:flex; align-items:center; color:var(--ink)}
   .ladder .gaterow .gsq2{display:inline-flex; width:2.6ch; align-items:center}
   .ladder .gaterow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
+  /* THE CARD STOPS BEING A CARD. It was a filled, bordered, shadowed plate
+     floating on the night paper while the ladder opposite it was nothing but
+     a hairline and a column of type — two different materials on the one
+     screen that is supposed to be the document's own last page. It sits on
+     the paper now, opened by a 2px ink rule, in the same grammar as the
+     ladder and as ¶11's signature plate.
+     `--veil` went with the fill. It was declared here as "the card's own
+     fill, handed to the epigraph's veil", and a grep for var(--veil) finds
+     no consumer anywhere in the run: it had been handed to nobody for some
+     time, and a transparent card has no fill to hand on.
+     `contain:paint` went too, and not for tidiness — the stamp is absolutely
+     positioned at the decide row's right end, rotated and scaled to 1.5 on
+     arrival, and paint containment clips it to this box. It had padding to
+     spill into before; on a card with no horizontal padding it would have
+     been cropped at exactly the moment it is the point. */
   .gatecard{
-    /* --veil is the card's own fill, handed to the epigraph's veil so the
-       unlit patch is the card, not a brown rectangle laid on top of it. */
-    --veil:var(--plate);
-    background:var(--plate); border:1px solid var(--plate-line); box-shadow:var(--shadow);
-    padding:clamp(1.1rem, 2vw, 1.7rem); position:relative; contain:paint;
+    background:none; border:none; border-top:2px solid var(--ink); box-shadow:none;
+    padding:clamp(1rem, 1.6vw, 1.35rem) 0 0; position:relative;
   }
   .gatecard h3{font-family:var(--display); font-weight:430; font-size:1.35rem; margin-bottom:.3rem}
   .gatecard .gl{list-style:none; margin-top:.8rem}
@@ -781,21 +811,51 @@ if (location.hash.length > 1) {
     .gatecard .gl li{transition:transform .35s cubic-bezier(.22,1,.36,1)}
     .gatecard .gl li:hover{transform:translateX(3px)}
   }
-  .gatecard .decide{margin-top:1.2rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; position:relative}
-  #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink)}
+  .gatecard .decide{margin-top:auto; padding-top:1.7rem; display:flex; gap:1.3rem;
+    align-items:flex-end; flex-wrap:wrap; position:relative}
+  .gatecard .sigline{flex:1 1 13rem; min-width:0; display:block; padding-bottom:.55rem}
+  .gatecard .sigrule{display:block; height:1px; background:var(--ink-2);
+    transform-origin:bottom}
+  .gatecard .sigcap{display:block; margin-top:.45rem; font-family:var(--body);
+    font-size:var(--fs-small); letter-spacing:.01em; color:var(--ink-2)}
+  /* The invitation, and it answers a person rather than announcing itself.
+     There is no timer on this and nothing moves until someone comes near:
+     reach for the signature block with a pointer or a Tab key and the rule
+     darkens from ink-2 to ink and thickens by half a pixel, the way a line
+     you are about to write on would. Under reduced motion the state still
+     changes; only the easing is dropped, which is the correct reading of
+     the preference — it asks for less movement, not less feedback. */
+  .gatecard .decide:hover .sigrule,
+  .gatecard .decide:focus-within .sigrule{background:var(--ink); transform:scaleY(1.6)}
+  @media (prefers-reduced-motion: no-preference){
+    .gatecard .sigrule{transition:background .35s ease, transform .35s cubic-bezier(.22,1,.36,1)}
+  }
+  #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink); flex:0 0 auto}
   /* three lines' worth, reserved. The note goes from "scrolling could not
      press this button." to "approved by hand — 15:59, your local time."
      — two lines to three — and that 16px was the last thing still growing
      the gate on approval, and therefore still moving the document under a
      reader who was already at the bottom. */
-  .gatecard .note{font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
-    letter-spacing:.05em; max-width:24ch; min-height:3.9em; line-height:1.3}
+  /* The note is a full-width line under the signature, not a column beside
+     the button, because that is where a note about a signature goes. The
+     height reserve stays and is still doing the same job: the copy swaps to
+     "approved by hand at HH:MM, your local time." on the press, and the
+     card must not change height under a reader who is already at the end of
+     the document. Two lines' worth at this measure covers both strings. */
+  .gatecard .note{display:block; margin-top:1.05rem;
+    font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
+    letter-spacing:.05em; min-height:2.7em; line-height:1.3}
   #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
              round-3 card-bottom offset drifted when the aftergate grew
              the card, and at 1440 the ink grazed its own note. Anchored
              here, the stamp lands where the hand just was and the note
              keeps a measured clearance at every width. */
-    position:absolute; right:0; top:50%; z-index:3;
+    /* AND IT LANDS ON THE LINE, not on the button. The stamp used to sit at
+       the decide row's right end, which is where the button is — so the
+       acknowledgement covered the control that produced it and left the
+       blank rule blank. The rule is the thing that was waiting; a signature
+       belongs on it. Left of centre, the way a hand signs. */
+    position:absolute; left:6%; top:50%; z-index:3;
     font-family:var(--mono); font-size:1.05rem; letter-spacing:.34em; color:var(--ember);
     border:3px double var(--ember); padding:.5rem .9rem .5rem 1.15rem;
     transform:translateY(-62%) rotate(-7deg) scale(1.5); opacity:0; pointer-events:none;
@@ -989,7 +1049,7 @@ if (location.hash.length > 1) {
      own full-height close, which made a thirteenth view the page never asked
      for — the gate IS the ending, and anything after it competes. Compact,
      right column, under the card: it belongs to the gate, not after it. */
-  .b8 footer{margin-top:.8rem; padding-top:1rem; border-top:1px solid var(--hair);
+  .b8 footer{margin-top:auto; padding-top:1rem; border-top:1px solid var(--hair);
     font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
     color:var(--ink-2); line-height:1.85; max-width:68ch}
 
@@ -1674,8 +1734,11 @@ h1[data-np-measuring] .np-ch {
     .endlight{margin:.7rem 0 .1rem; padding:3.9rem 0 .1rem}
     .endlight::before{top:3.5rem}
     .lampnote{margin-top:.5rem}
-    .b8 footer{margin-top:.55rem; line-height:1.62}
-    .gatecard .decide{margin-top:.9rem}
+    /* margin-top stays auto — the colophon is bottom-aligned to the ladder
+       now, and a fixed margin here would pull it back up off the floor. */
+    .b8 footer{padding-top:.7rem; line-height:1.62}
+    .gatecard .decide{padding-top:1.1rem}
+    .gatecard .note{margin-top:.8rem}
   }
 </style>
 <style id="clarity-css">
@@ -2939,11 +3002,29 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <ul class="gl">
             <li id="liveSample" hidden><span class="gi">+</span><b>your sample</b><span class="gm" id="liveSampleM"></span></li>
           </ul>
+          <!-- THE BLANK RULE IS THE ASK. ¶11 is a plate of signatures that
+               were given; ¶10's register ends on a dashed line marked
+               unsigned, pointing down the page at a person. This is where
+               that line arrives, so the last thing on the paper is the one
+               shape a working document uses to ask: a ruled line with
+               nothing on it and a name for who belongs there.
+               The button is seated at its right end because that is where a
+               hand comes to rest, and the stamp lands on the same spot. -->
           <div class="decide">
+            <span class="sigline">
+              <span class="sigrule" aria-hidden="true"></span>
+              <span class="sigcap">the approver</span>
+            </span>
             <button class="btn" id="approve" type="button">approve run 042</button>
-            <span class="note" id="gateNote">scrolling could not press this button · pressing it only turns the page to morning.</span>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
+          <!-- THE SECOND CLAUSE GAVE THE MORNING AWAY. It read "pressing it
+               only turns the page to morning", which told a reader exactly
+               what was behind the one button on the page. The sentence's
+               real job is the first clause — that nothing you did by
+               scrolling could have pressed this — and the rest of it says
+               the run ends by hand without saying where the hand leads. -->
+          <span class="note" id="gateNote">scrolling could not press this button &middot; the run ends only by hand.</span>
         </div>
         <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three
              cold critics: a reader who scrolls to the end of this page finds
