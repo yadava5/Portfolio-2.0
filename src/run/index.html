@@ -285,15 +285,19 @@ if (location.hash.length > 1) {
     display:grid; grid-template-columns:1.4rem 1fr; gap:.15rem .4rem;
     padding:.32rem 0; border-top:1px solid var(--hair);
   }
-  #manifest li .idx{color:var(--ink-2)}
   #manifest li b{font-weight:400; color:var(--ink-2)}
-  #manifest li .m{grid-column:2; color:var(--ink-2); opacity:0; height:0; overflow:hidden}
-  #manifest li.stamped .idx{color:var(--clay)}
+  #manifest li .m{color:var(--ink-2); opacity:0; height:0; overflow:hidden}
+  #manifest li.stamped .mt{color:var(--clay)}
   #manifest li.stamped b{color:var(--ink)}
   #manifest li.stamped .m{opacity:1; height:auto}
+  /* The unreached rows used to sit at opacity .55 and slide in when they
+     stamped. That was right for a six-row score and wrong for a timetable:
+     eight of the twelve stops never stamp at all, so eight rows would have
+     stood permanently at .55 of ink-2 — under the Lc 60 dim-text floor, on
+     the one surface whose job is to be read. The whole table is printed at
+     full ink; what is withheld is the metric, not the stop. */
   @media (prefers-reduced-motion: no-preference){
-    #manifest li{transform:translateX(6px); opacity:.55; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease}
-    #manifest li.stamped{transform:none; opacity:1}
+    #manifest li{transition:transform .45s cubic-bezier(.22,1,.36,1)}
     #manifest li:hover{transform:translateX(-2px)}
   }
   #manifest .foot{margin-top:.5rem; padding-top:.4rem; border-top:1px solid var(--hair); color:var(--ink-2)}
@@ -1809,7 +1813,7 @@ body{font-synthesis:none}
 #mscrim[hidden]{display:none}
 #manifest{
   position:fixed; top:calc(2.6rem + 10px); right:clamp(14px,2.4vw,34px);
-  bottom:auto; width:300px; max-height:76vh; overflow:auto; z-index:7;
+  bottom:auto; width:300px; max-height:76vh; overflow:hidden; z-index:7;
   opacity:0; transform:translateY(-6px); pointer-events:none; visibility:hidden}
 #manifest.open{opacity:1; transform:none; pointer-events:auto; visibility:visible}
 /* A ledger you asked for is a solid object, not a veil. --ink-inverse is an
@@ -1879,13 +1883,12 @@ body{font-synthesis:none}
   #mast{padding:.5rem var(--pad-x); gap:.5rem}
   #mast>a{font-size:1rem}
   #mast .state{font-size:var(--fs-micro); white-space:nowrap}
-  /* THE WORD STAYS ON THE PHONE. A first cut dropped it here — 'stops 0 / 6'
-     measured 96px against 60px bare — and a cold critic read the result and
-     asked "zero out of six WHAT?", which is the whole job of the word. The
-     room comes from the label instead: 'seen' is shorter than 'stops', and
-     the count is a progress figure rather than an inventory, so it is also
-     the truer word. Re-measured at 390 and 320 against the name and the
-     clock, and it fits at both. */
+  /* THE WORD STAYS ON THE PHONE. A first cut dropped it and a cold critic
+     read the bare figure and asked "zero out of six WHAT?", which is the
+     whole job of the word. The label is now "stop", which is both shorter
+     than the "projects" it replaced and the truer word for what the chip
+     reports: a position in the run, not an inventory. Re-measured at 390
+     and 320 against the name and the clock, and it fits at both. */
   #mtoggle{padding:.5rem .55rem; min-height:44px; white-space:nowrap}
   #mtoggle #mcount{margin-left:.35em}
   #mscrim{background:rgba(38,35,28,.28)}
@@ -1897,8 +1900,8 @@ body{font-synthesis:none}
   #manifest.open{width:auto; left:0; right:0; padding:.5rem var(--pad-x) calc(1rem + env(safe-area-inset-bottom))}
   #manifest::before{content:""; display:block; width:40px; height:3px;
     border-radius:2px; background:var(--hair-strong); margin:.25rem auto .7rem}
-  #manifest li{padding:.62rem 0}
-  #manifest li b a{display:inline-block; padding:.2rem 0}
+  /* the phone's row height is set with the rest of the timetable further
+     down, after the desktop .mrow rule that would otherwise outrank it */
   /* the label/value grid wrapped values to 3–4 lines at 390; on a phone
      the label goes above the value and the value gets the whole width. */
   .schoolrec .srow{grid-template-columns:1fr; gap:.1rem}
@@ -2025,24 +2028,98 @@ body{font-synthesis:none}
    serif keeps mono's generous rhythm; only the record card, which is where
    the two new contact rows landed, is compressed. */
 
-/* ── the ledger row: codename · what it is · the number ─────────────────
-   A first cut showed bare codenames, which is a content regression against
-   the live page: it prints a metric subline in the corridors. The subline
-   is unconditional here, and the whole row is the link. */
-#manifest li{grid-template-columns:1.7rem 1fr; gap:.05rem .45rem; padding:.42rem 0}
-#manifest li .mrow{display:contents; text-decoration:none; color:inherit}
-#manifest li b{grid-column:2; font-family:var(--body); font-size:var(--fs-note); color:var(--ink)}
-#manifest li .mnoun{grid-column:2; font-family:var(--body); font-style:italic;
-  font-size:var(--fs-small); color:var(--ink-2); line-height:1.28}
-#manifest li .m{grid-column:2; opacity:1; height:auto; overflow:visible;
-  font-size:var(--fs-micro); color:var(--ink-2); margin-top:.1rem; line-height:1.34}
+/* ── the timetable row: a marker gutter · the time · the stop ───────────
+   Three columns. Column 1 is empty on every row but the one the reader is
+   standing in, which is the whole reason it exists: a 6px clay square is
+   drawn there by CSS, so the current stop is marked without a glyph that
+   could fall back to another face. Column 2 is the departure time in mono,
+   because it is a value read off the run. Column 3 is the stop's name in
+   the text face, with a project's noun and its metric stacked under it.
+   The whole row is the link. */
+/* THE ROW IS THE TARGET, and `display:contents` is why it was not. A
+   contents box has no rect at all — getBoundingClientRect returns 0×0 — so
+   the twelve links were only clickable on the glyphs themselves, and on the
+   phone a stop with no subline was a 20px target. The anchor is the grid
+   now and the li only frames it, so the whole row is the hit area and G9
+   can see it. */
+#manifest li{display:block; padding:0; position:relative}
+#manifest li .mrow{display:grid; grid-template-columns:3.1rem 1fr; gap:.05rem .35rem;
+  padding:.42rem 0 .42rem .8rem; text-decoration:none; color:inherit}
+/* 44px per row on the phone, and it is the ANCHOR that carries it. The old
+   rule was `#manifest li b a` up in the phone block, which describes a shape
+   the markup has not had for some time and so matched nothing; it also sat
+   BEFORE the rule above at equal specificity, which is the other half of why
+   nothing happened. It lives here now, next to what it overrides. */
+@media (max-width:820px){
+  #manifest li .mrow{padding:.8rem 0 .8rem .8rem}
+  #manifest li.here::before{top:1.35rem}
+}
+#manifest li .mt{grid-column:1; grid-row:1; font-family:var(--mono); font-style:normal;
+  font-size:var(--fs-micro); font-variant-numeric:tabular-nums; color:var(--ink-2);
+  letter-spacing:.02em}
+#manifest li b{grid-column:2; grid-row:1; font-family:var(--body); font-size:var(--fs-note); color:var(--ink)}
+#manifest li .mnoun{grid-column:2; grid-row:2; font-family:var(--body); font-style:italic;
+  font-size:var(--fs-small); color:var(--ink-2); line-height:1.24}
+/* THE METRIC IS EARNED AND THE OVERRIDE THAT GAVE IT AWAY IS GONE. This rule
+   used to carry `opacity:1; height:auto`, which outranked the base rule's
+   `opacity:0; height:0` and printed all six numbers to anyone who opened the
+   panel at the top of the page — the ledger's one promise is that it fills in
+   as you travel, and that override broke it silently. Only .stamped opens it
+   now, and .stamped comes from the reader passing the station. */
+#manifest li .m{grid-column:2; grid-row:3;
+  font-size:var(--fs-micro); color:var(--ink-2); margin-top:.05rem; line-height:1.3}
+/* the stop the reader is standing in: a 6px clay square in the gutter. Drawn,
+   not lettered — a glyph here would be at the mercy of whichever face the
+   browser found for it, and this mark has to mean the same thing every time. */
+#manifest li.here::before{content:""; position:absolute; left:0; top:.95rem;
+  width:6px; height:6px; background:var(--clay-g)}
+#manifest li.here b{color:var(--ink)}
+#manifest li.here .mt{color:var(--clay)}
 /* desktop only: the phone sheet is full-bleed and must not inherit this */
 @media (min-width:821px){ #manifest, #manifest.compact{width:344px} }
+/* THE TABLE SCROLLS, THE FRAME DOES NOT. Twelve stops with sublines run to
+   about 824px, and the panel gets 76vh — 608px at a 1280×800 seat. When the
+   whole panel was the scroller, the one line that answers "when does this
+   end" was the first thing below the fold. The header and the foot are the
+   frame and stay put; only the timetable moves. */
+#manifest{display:flex; flex-direction:column}
+#manifest>ol{overflow:auto; min-height:0; flex:1 1 auto; overscroll-behavior:contain}
+#manifest>header, #manifest>.foot{flex:0 0 auto}
 #manifest .foot{font-size:var(--fs-small); margin-top:.35rem; padding-top:.35rem}
+#manifest .foot i{font-family:var(--mono); font-style:normal;
+  font-variant-numeric:tabular-nums; color:var(--ink-2)}
 #manifest li.stamped .m, #manifest li.stamped .mnoun{color:var(--ink-2)}
 #manifest li:hover b, #manifest li:focus-within b{text-decoration:underline;
   text-underline-offset:3px}
 #manifest li .mrow:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
+
+/* ── the one-time peek ──────────────────────────────────────────────────
+   Desktop only, once per page load, on the first organic scroll of 60px.
+   It hangs off the chip on a short rule and says the two things a reader of
+   a long page wants before committing: how many stops, and when it ends.
+   No scrim, no pointer events, aria-hidden — the chip beside it already
+   states the position to assistive tech, and the panel is one press away.
+   It is a separate element from #manifest on purpose: the panel is a
+   disclosure that MAY cover prose once asked for (G4's own positive control
+   depends on that), and this one is uninvited, so it must never cover
+   anything. Measured clear of every text box at 1512, 1440 and 1280. */
+/* right:var(--pad-x), not the panel's own inset: the rule under this line
+   points at the chip, so it has to hang from the chip's right edge. The
+   panel sits 42px further out at 1512 and aligning to that read as float. */
+#mpeek{position:fixed; z-index:6; top:calc(2.6rem + 16px); right:var(--pad-x);
+  font-family:var(--body); font-size:var(--fs-small); color:var(--ink-2);
+  text-align:right; white-space:nowrap; pointer-events:none;
+  opacity:0; transform:translateY(-4px)}
+#mpeek::before{content:""; display:block; width:26px; height:1px;
+  background:var(--hair-strong); margin:0 0 .45rem auto}
+#mpeek i{font-family:var(--mono); font-style:normal; color:var(--clay);
+  font-variant-numeric:tabular-nums}
+#mpeek.on{opacity:1; transform:none}
+@media (prefers-reduced-motion: no-preference){
+  #mpeek{transition:opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)}
+}
+/* no auto-peek on the phone: the sheet is full-bleed and the band is busy */
+@media (max-width:820px){ #mpeek{display:none} }
 
 /* the role line: two words under the name, the size of a caption. The
    owner read the 27.5px sentence that stood here as "too big and cheesy",
@@ -2248,8 +2325,24 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 <header id="mast">
   <a href="#top">Ayush&#8202;·&#8202;Yadav</a>
   <span class="state"><span class="st-run">run <i>042</i> · </span><b id="mclock">06:12</b><span class="mdot"> · </span><span id="mphase">the start</span></span>
-  <button id="mtoggle" type="button" aria-expanded="false" aria-controls="manifest"><span class="mlabel">projects &middot; </span><span id="mcount">0 / 6</span></button>
+  <!-- THE CHIP IS A CURSOR, NOT A SCORE. It read "projects · N / 6" and kept
+       a high-water mark, so a reader who scrolled to the bottom and came back
+       to the top was still told 6 — the owner watched it do exactly that and
+       said so. "stop · 04 / 12" answers the question a reader of a long page
+       actually has, which is where am I and how much is left, and it answers
+       it in both directions. The six stamps keep their high-water behaviour
+       in the ledger below, where "reached" is the right idea; here it is not.
+       "stop" is body face because it is a word; the numerals are mono because
+       they are a position read off the run. -->
+  <button id="mtoggle" type="button" aria-expanded="false" aria-controls="manifest"><span class="mlabel">stop &middot; </span><span id="mcount">01 / 12</span></button>
 </header>
+
+<!-- The one-time peek. It appears on the reader's first real scroll, says how
+     long the paper is and when it ends, and withdraws. It is NOT the panel:
+     the panel is 12 rows and would land on the nameplate at 1512, and a thing
+     that covers the name uninvited is a popup. One line, right-aligned under
+     the chip it explains, pointer-events:none, and it never returns. -->
+<p id="mpeek" aria-hidden="true">twelve stops &middot; the last at <i>22:41</i></p>
 
 <div id="mscrim" hidden></div>
 <aside id="manifest" aria-label="run manifest" aria-hidden="true">
@@ -2257,15 +2350,30 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     <span class="n">run <i>042</i> · manifest</span>
     <button id="mclose" type="button" aria-label="close the manifest">close ×</button>
   </header>
+  <!-- THE WHOLE PAPER, NOT THE SIX PROJECTS. The owner asked for a navigator
+       for the entire working paper with a hint of when it ends. A six-row
+       project list could not give him that: it said nothing about the eight
+       stops that are not projects, and nothing about the end.
+       WHAT IS WITHHELD IS THE POINT. Every stop and its time are shown, so
+       the reader can see the shape of the whole run — but a project's metric
+       stays hidden until the reader has actually reached that station (.m is
+       opacity:0/height:0 until .stamped). ¶13 is not listed at all. The foot
+       says one page follows the gate and does not say what is on it. -->
   <ol>
-    <li data-st="1"><span class="idx">01</span><a class="mrow" href="#work"><b>applied</b><span class="mnoun">gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></a></li>
-    <li data-st="2"><span class="idx">02</span><a class="mrow" href="#cadence"><b>cadence</b><span class="mnoun">calendar in plain english</span><span class="m"><b class="mv">1,186</b> tests pass</span></a></li>
-    <li data-st="3"><span class="idx">03</span><a class="mrow" href="#glyph"><b>glyph</b><span class="mnoun">digit reader in c++</span><span class="m"><b class="mv">3.5×</b> faster kernel</span></a></li>
-    <li data-st="4"><span class="idx">04</span><a class="mrow" href="#jetpack-compress"><b>jetpack-compress</b><span class="mnoun">parallel java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></a></li>
-    <li data-st="5"><span class="idx">05</span><a class="mrow" href="#lifequest"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></a></li>
-    <li data-st="6"><span class="idx">06</span><a class="mrow" href="#automl"><b>agentic automl</b><span class="mnoun">capstone ml agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></a></li>
+    <li><a class="mrow" href="#start"><i class="mt">06:12</i><b>the start</b></a></li>
+    <li><a class="mrow" href="#who"><i class="mt">06:58</i><b>who</b></a></li>
+    <li><a class="mrow" href="#path"><i class="mt">07:52</i><b>the yard</b></a></li>
+    <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><b>applied</b><span class="mnoun">gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></a></li>
+    <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><b>cadence</b><span class="mnoun">calendar in plain english</span><span class="m"><b class="mv">1,186</b> tests pass</span></a></li>
+    <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><b>glyph</b><span class="mnoun">digit reader in c++</span><span class="m"><b class="mv">3.5×</b> faster kernel</span></a></li>
+    <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><b>jetpack-compress</b><span class="mnoun">parallel java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></a></li>
+    <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></a></li>
+    <li data-proj="6"><a class="mrow" href="#automl"><i class="mt">22:05</i><b>agentic automl</b><span class="mnoun">capstone ml agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></a></li>
+    <li><a class="mrow" href="#review"><i class="mt">22:23</i><b>the review</b></a></li>
+    <li><a class="mrow" href="#cosigners"><i class="mt">22:32</i><b>the references</b></a></li>
+    <li><a class="mrow" href="#gate"><i class="mt">22:41</i><b>the gate</b></a></li>
   </ol>
-  <p class="foot">six software projects</p>
+  <p class="foot">six of twelve stops carry projects<br>ends <i>22:41</i> &middot; then one page more</p>
 </aside>
 
 <!-- STATION IDS. Every stop is addressable, and the id is the run's OWN
@@ -5575,22 +5683,42 @@ function scrubGate(p) {
 }
 
 /* ————— manifest ————— */
-const maniLines = [...document.querySelectorAll("#manifest li")];
-/* THE COUNT IS A HIGH-WATER MARK, NOT A CURSOR. It used to read the station
-   the reading line happened to be beside, so scrolling back up counted DOWN
-   — a reader who returned to the top was told they had seen nothing, and a
-   cold critic read exactly that and stopped trusting the number. What it
-   means is how much of the run you have reached this visit, and that cannot
-   decrease. The rows still stamp from the same figure, so the ledger and the
-   chip never disagree. */
+const maniRows = [...document.querySelectorAll("#manifest li")];
+const maniProj = maniRows.filter((li) => li.dataset.proj);
+/* THE STAMPS ARE A HIGH-WATER MARK AND THE CHIP IS NOT, and the two facts
+   used to be one function. "How much of the run have I reached this visit"
+   cannot decrease — a cold critic watched the old cursor count DOWN on the
+   way back up and stopped trusting it — so the six project rows keep their
+   ratchet, and a metric that has been earned stays earned.
+   "Which stop am I standing in" is the opposite kind of fact, and the owner
+   caught the ratchet lying about it: the chip stayed at 6 at the bottom and
+   stayed at 6 all the way back to the top. It is written by setStop() from
+   `beat` instead, every frame, in both directions. */
 function setStamps(count) {
   const reached = Math.max(count, window.__world.stamped || 0);
-  const grew = reached > window.__world.stamped;
   window.__world.stamped = reached;
-  maniLines.forEach((li, i) => li.classList.toggle("stamped", i < reached));
+  maniProj.forEach((li, i) => li.classList.toggle("stamped", i < reached));
+}
+/* the chip, and the square in the ledger's gutter: one cursor, two surfaces.
+   `beat` is 0..12 (¶13 is the thirteenth and is not a stop of this run), so
+   it is clamped into the twelve and printed 1-based and zero-padded. The
+   bump only fires going forward — an animation that plays on the way back up
+   would read as progress being made by scrolling backwards. */
+let lastStop = -1;
+function setStop(beat) {
+  const n = clamp(beat, 0, RUN_BEATS - 1) + 1;
+  if (n === lastStop) return;
+  const grew = n > lastStop;
+  lastStop = n;
   const mc = $("mcount");
-  mc.textContent = `${reached} / 6`;
+  mc.textContent = `${String(n).padStart(2, "0")} / ${RUN_BEATS}`;
   if (grew) { mc.classList.remove("bump"); void mc.offsetWidth; mc.classList.add("bump"); }
+  maniRows.forEach((li, i) => {
+    const here = i === n - 1;
+    li.classList.toggle("here", here);
+    if (here) li.firstElementChild.setAttribute("aria-current", "location");
+    else li.firstElementChild.removeAttribute("aria-current");
+  });
 }
 /* the manifest's open/close now lives in one place · see #manifest-js,
    which also owns Escape, the scrim and the return of focus. */
@@ -5808,6 +5936,7 @@ function work(y) {
   let stamped = 0;
   for (let i = 3; i <= 8; i++) stamped += (beat > i || (beat === i && bp > 0.78)) ? 1 : 0;
   if (stamped !== window.__world.stamped) setStamps(stamped);
+  setStop(beat); /* the cursor, both ways — its own writer, not the ratchet's */
   /* at the gate, the corner manifest LANDS into the page's own ledger;
      at a stop it folds to a pill so the work owns the corner */
   $("manifest").classList.toggle("landed", beat === 11 && bp > 0.22);
@@ -6625,7 +6754,7 @@ function settleAll() {
      22:32: one instrument reading two stops, which is the defect this day was
      spent removing everywhere else. setMast(11, 0) is the same minute, named by
      the stop that owns it. */
-  setStamps(6); setMast(11, 0);
+  setStamps(6); setStop(11); setMast(11, 0);
 }
 async function boot() {
   await document.fonts.ready.catch(() => {});
@@ -6859,6 +6988,51 @@ boot();
   });
   man.addEventListener("click", function (e) {
     if (e.target.closest("a")) set(false);       /* it is navigation now */
+  });
+
+  /* ── the one-time peek ────────────────────────────────────────────────
+     The chip says "stop · 01 / 12" from the first frame, and a reader who
+     has not pressed it has no reason to read it as a control or to know
+     the run ends. So once, on their first real scroll, the paper says how
+     long it is. Once means once: a plain closure variable, no storage, so
+     a reload is a fresh reader and a return visit is never nagged.
+
+     "Real scroll" excludes the two events that are not the reader: a hash
+     arrival's anchor jump and a late font reflow both fire `scroll`, and
+     the rejoin guard in <head> already tracks the difference — while
+     data-arrive is set, the baseline is re-taken rather than fired on.
+
+     It leaves on whichever comes first of four seconds, 300 more px of
+     scroll, or any intent event. Under reduced motion it still appears;
+     only the transition is dropped, by the media query on #mpeek. */
+  var peek = document.getElementById("mpeek");
+  if (!peek || matchMedia("(max-width:820px)").matches) return;
+  var de = document.documentElement, base = scrollY, shown = false, timer = 0;
+  /* pointerdown and keydown ONLY. wheel and touchstart belong to the very
+     gesture that raised it — a continuous scroll would have fired the next
+     wheel tick 16ms later and taken the line away before it was read. The
+     300px rule already covers the reader who keeps going. */
+  var ACTS = ["pointerdown", "keydown"];
+  function hide() {
+    if (!shown) return;
+    shown = false;
+    peek.classList.remove("on");
+    clearTimeout(timer);
+    removeEventListener("scroll", watch);
+    for (var i = 0; i < ACTS.length; i++) removeEventListener(ACTS[i], hide);
+  }
+  function watch() {
+    if (de.hasAttribute("data-arrive")) { base = scrollY; return; }
+    if (shown) { if (Math.abs(scrollY - base) > 300) hide(); return; }
+    if (Math.abs(scrollY - base) < 60) return;
+    shown = true; base = scrollY;
+    peek.classList.add("on");
+    timer = setTimeout(hide, 4000);
+    for (var i = 0; i < ACTS.length; i++) addEventListener(ACTS[i], hide, { passive: true });
+  }
+  addEventListener("scroll", watch, { passive: true });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") hide();
   });
 })();
 </script>

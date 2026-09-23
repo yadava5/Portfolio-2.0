@@ -455,7 +455,10 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: "#mclock", why: "the run clock" },
   { sel: "#mast .st-run", why: "the run's serial" },
   { sel: "#mast .mdot", why: "the masthead's own separator" },
-  { sel: "#mcount", why: "stations seen, as a count" },
+  { sel: "#mcount", why: "which stop of twelve, as a position" },
+  { sel: "#mpeek i", why: "the run's closing time, in the first-scroll hint" },
+  { sel: "#manifest .mt", why: "each stop's departure time in the timetable" },
+  { sel: "#manifest .foot i", why: "the run's closing time" },
   { sel: ".ladder", why: "the gate ladder: each station's time and verdict" },
   { sel: ".figsvg text", why: "figure labels — annotation on a drawing" },
   { sel: "#net text", why: "the network figure's layer and class labels" },
@@ -628,17 +631,29 @@ test.describe("G3 · mono only on machine values", () => {
    ══════════════════════════════════════════════════════════════════════ */
 const MANIFEST_WIDTHS = [1512, 1440, 1280, 1024, 768, 390, 320];
 
-/** the manifest's rect vs every line box of main content, at this scroll stop */
+/** the manifest's rect vs every line box of main content, at this scroll stop.
+ *
+ *  `#mpeek` is measured as part of the manifest, deliberately. It is the
+ *  one-time hint that appears on the reader's first scroll, it is the only
+ *  piece of the manifest that shows itself UNINVITED, and so it is the piece
+ *  this gate is most about. The open panel may cover prose — the positive
+ *  control below depends on it — because the reader asked for it. Nothing
+ *  that arrives on its own may. The two rects are tested SEPARATELY and the
+ *  hits concatenated — their union would be a bounding box enclosing the gap
+ *  between them, and a line of prose sitting in that gap touches neither. */
 const MANIFEST_PROBE = () => {
-  const mf = document.getElementById("manifest");
-  if (!mf) return { visible: false, hits: [] as string[] };
-  const cs = getComputedStyle(mf);
-  const o = window.__gate.effOpacity(mf);
-  if (o <= 0.05 || cs.visibility === "hidden")
-    return { visible: false, hits: [] as string[] };
-  const m = mf.getBoundingClientRect();
-  if (m.width < 1 || m.height < 1)
-    return { visible: false, hits: [] as string[] };
+  const panels: { el: Element; r: DOMRect }[] = [];
+  for (const id of ["manifest", "mpeek"]) {
+    const e = document.getElementById(id);
+    if (!e) continue;
+    const cs = getComputedStyle(e);
+    if (window.__gate.effOpacity(e) <= 0.05) continue;
+    if (cs.visibility === "hidden" || cs.display === "none") continue;
+    const r = e.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    panels.push({ el: e, r });
+  }
+  if (!panels.length) return { visible: false, hits: [] as string[] };
   const main = document.querySelector("main");
   if (!main) return { visible: true, hits: [] as string[] };
   const hits: string[] = [];
@@ -651,24 +666,29 @@ const MANIFEST_PROBE = () => {
     if (!el) continue;
     const tag = el.tagName.toLowerCase();
     if (tag === "script" || tag === "style") continue;
-    if (mf.contains(el)) continue;
+    if (panels.some((p) => p.el.contains(el))) continue;
     if (window.__gate.effOpacity(el) <= 0.05) continue;
     const range = document.createRange();
     range.selectNodeContents(node);
+    let hit = "";
     for (const r of range.getClientRects()) {
       if (r.width < 1 || r.height < 1) continue;
       /* 1px of tolerance: a line box that merely abuts the panel is not
          covered by it. */
-      if (
-        r.left < m.right - 1 &&
-        r.right > m.left + 1 &&
-        r.top < m.bottom - 1 &&
-        r.bottom > m.top + 1
-      ) {
-        hits.push(`${window.__gate.sel(el)}  "${text.slice(0, 60)}"`);
-        break;
+      for (const { el: pe, r: m } of panels) {
+        if (
+          r.left < m.right - 1 &&
+          r.right > m.left + 1 &&
+          r.top < m.bottom - 1 &&
+          r.bottom > m.top + 1
+        ) {
+          hit = `#${pe.id} over ${window.__gate.sel(el)}  "${text.slice(0, 60)}"`;
+          break;
+        }
       }
+      if (hit) break;
     }
+    if (hit) hits.push(hit);
   }
   return { visible: true, hits };
 };
