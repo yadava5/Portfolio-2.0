@@ -3178,16 +3178,24 @@ const WAY = [ /* l, c, h — src/components/world/waypoints.generated.ts */
    0.06 of the window: about 23px of scroll at 1440x900 for a fifth of the
    whole day's luminance. Even interpolated that is a cut, and it is the hard
    colour change the nightfall reads as.
-   The day side is compressed a little and the night side pushed out, so the
-   crossing gets 0.24 — four times the room, roughly 90px of scroll — and the
-   light walks over the terminator instead of stepping across it. Every stop
-   still renders exactly the colour it was verified at, so the contrast gate
-   is asking the same questions of the same values. */
+   The day side is compressed and the night side left where it is, so the
+   crossing gets 0.36 of the window — and since the window itself is now
+   0.65vh rather than 0.4, that is about 242px of scroll at a 1512x982 seat
+   against roughly 90px before. The light walks over the terminator instead
+   of stepping across it. Every stop still renders exactly the colour it was
+   verified at, so the contrast gate is asking the same questions of the same
+   values — only the pos column below has ever moved.
+   FLIP_POS stays 0.78 and the night stops stay verbatim: the first night pos
+   IS the flip, and moving one without the other would flip the ink somewhere
+   that is not a colour stop. The day side takes the whole compression, six
+   even intervals of 0.07 ending at 0.42, which still leaves each of its own
+   stops about 47px — measured at 0.0060 L per 4px of scroll, inside the
+   0.0138 the pre-redesign build managed anywhere. */
 const DUSK = [
-  [0, 0.923, 0.0388, 83.83, 0], [0, 0.8759, 0.0463, 80.19, 0.09],
-  [0, 0.8287, 0.0511, 76.55, 0.18], [0, 0.7815, 0.0516, 72.91, 0.27],
-  [0, 0.7343, 0.0476, 69.28, 0.36], [0, 0.6872, 0.0405, 65.64, 0.45],
-  [0, 0.64, 0.0388, 62, 0.54], [1, 0.43, 0.032, 60, 0.78],
+  [0, 0.923, 0.0388, 83.83, 0], [0, 0.8759, 0.0463, 80.19, 0.07],
+  [0, 0.8287, 0.0511, 76.55, 0.14], [0, 0.7815, 0.0516, 72.91, 0.21],
+  [0, 0.7343, 0.0476, 69.28, 0.28], [0, 0.6872, 0.0405, 65.64, 0.35],
+  [0, 0.64, 0.0388, 62, 0.42], [1, 0.43, 0.032, 60, 0.78],
   [1, 0.4093, 0.0295, 58.89, 0.8225], [1, 0.3886, 0.0269, 57.78, 0.865],
   [1, 0.3679, 0.0244, 56.67, 0.9075], [1, 0.3471, 0.0218, 55.56, 0.95],
 ];
@@ -3265,7 +3273,11 @@ function arcColor(beat, p) {
     };
   }
   if (beat === 8) { /* automl works the night shift: dusk deepens to nightfall */
-    const t = smooth(p / 0.6);
+    /* p/0.75, not p/0.6: the deepen from WAY[5] to WAY[6] is the last leg of
+       the fall and it was being spent in the first 60% of the beat. Over 75%
+       it arrives at the same colour with a shallower slope, and nothing else
+       in beat 8 keys off it. */
+    const t = smooth(p / 0.75);
     const a = WAY[5], b = WAY[6];
     return { rgb: oklchToRgb(lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)), night: true, sun: 6 + t };
   }
@@ -3465,7 +3477,12 @@ function cacheGeometry() {
      and the ink census at 1440 and 1280 is asserted identical. */
   const Y1 = yShow + vh * (mobile ? 0.18 : 0.35);
   const Y2 = Y1 + vh * (mobile ? 0.16 : 0.24);         /* corridor, curtain */
-  const yDark = Y2 + 40, darkSpan = vh * (mobile ? 0.3 : 0.4);  /* the sky's show */
+  /* the sky's show. 0.4/0.3 bought about 360px of scroll for a twelve-stop
+     choreography that includes the day's one deliberate luminance jump; at
+     0.65/0.45 the same twelve stops get half as much scroll again, which is
+     what "add frames wherever it needs" asks for. The colours are untouched
+     — this is distance, not palette. */
+  const yDark = Y2 + 40, darkSpan = vh * (mobile ? 0.45 : 0.65);
   const yFlip = yDark + (FLIP_POS / 0.95) * darkSpan;
   const yEnd = Math.max(yDark + darkSpan, yFlip + 20 + vh * 0.16) + vh * 0.1;
   for (const f of fx) {
@@ -3533,11 +3550,37 @@ function cacheGeometry() {
      rushed by shrinking it:
      dusk7.span is darkSpan/bDusk.h, so the darkening still falls over the
      same darkSpan PIXELS. Verified by the ΔE-per-100px probe. */
-  const need = Math.ceil(yEnd + vh * (mobile ? 0.14 : 0.34) - bDusk.top);
+  /* AND THE BEAT MUST OUTLAST ITS OWN WINDOW BY A READING LINE. p is
+     `(y + vh*READ_LINE - top) / h`, so p reaches 1 at
+     `y = top + h - vh*READ_LINE` — READ_LINE of a viewport EARLIER than the
+     beat's own bottom edge. Sizing the beat to yEnd plus a tail therefore
+     closes it while the darkening still has vh*(READ_LINE - tail) of scroll
+     left to run, and arcColor clamps: the sky stops part-way through the
+     choreography and the next beat starts at the colour the choreography was
+     supposed to have ARRIVED at. Measured at 9253066 by labrat:
+
+       1512x982  y 6992 L 0.4299 (beat 7, p 1.000)
+                 y 6993 L 0.3471 (beat 8, p 0.001)   ΔL -0.083 in one pixel
+        390x844  y 9101 L 0.8399 -> y 9102 L 0.3471  ΔL -0.490 in one pixel
+
+     The phone number is 86% of the day's whole luminance range in one pixel
+     of scroll, and it is what the owner was looking at when he asked for the
+     light-to-dark transitions to be smoothed. DUSK stops 8 through 12 never
+     rendered at all on either seat.
+
+     The desktop tail used to be 0.62vh, which is READ_LINE, and it was
+     paying for this offset by coincidence — its stated job was centring a
+     closing line that the copy cut removed. Cutting it to 0.34 took the
+     compensation out with the void. The requirement is stated here instead
+     of being a side effect of a tail: the beat is at least tall enough that
+     p reaches 1 after the last darkening pixel, whatever the tail is. */
+  const need = Math.ceil(
+    Math.max(yEnd + vh * (mobile ? 0.14 : 0.34),
+             yDark + darkSpan + vh * READ_LINE) - bDusk.top);
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
   /* hand the darkening window to arcColor, as fractions of the beat */
-  dusk7.start = (yDark + vh * 0.62 - bDusk.top) / bDusk.h;
+  dusk7.start = (yDark + vh * READ_LINE - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
   window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h, kick: b.kick })); /* probe hook — kick is the masthead clock's anchor */
 }
