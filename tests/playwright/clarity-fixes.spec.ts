@@ -307,11 +307,19 @@ test.describe("7.4 · the replay control stops lying about being hidden", () => 
     page,
   }) => {
     await page.goto("/");
-    /* data-np-ready lands at ~4.7s cold; the control must not appear before
-       it, and the attribute must be gone once it does. */
-    await page.waitForSelector("html[data-np-ready]", { timeout: 20_000 });
     const replay = page.locator("[data-np-replay]");
     await expect(replay).toHaveCount(1);
+    /* EXECUTED, not reasoned: there is nothing to replay until the run has
+       performed, and removing the attribute must not be what reveals the
+       control. data-np-ready lands at ~4.7s cold, so this reads the page
+       well before it. */
+    await expect(replay).toBeHidden();
+    expect(
+      await page.locator("html").getAttribute("data-np-ready"),
+      "data-np-ready must not be set this early, or the check above is vacuous"
+    ).toBeNull();
+
+    await page.waitForSelector("html[data-np-ready]", { timeout: 20_000 });
     expect(
       await replay.evaluate((el: HTMLElement) => el.hidden),
       "the control a reader can see and click must not be marked hidden"
