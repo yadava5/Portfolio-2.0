@@ -64,6 +64,10 @@ export function personNode(): JsonLdNode {
     url: `${siteMetadata.url}/`,
     image: absoluteSiteUrl(personalInfo.portrait.image),
     description: personalInfo.bio[0],
+    /* Claimed by the owner 2026-09-23: the home page's first screen
+       prints "Software engineer.", so this restates the page rather
+       than inventing a title (the rule above still holds). */
+    jobTitle: "Software Engineer",
     homeLocation: {
       "@type": "Place",
       address: {

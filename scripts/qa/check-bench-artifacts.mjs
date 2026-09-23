@@ -156,8 +156,12 @@ const RECORDS = [
   if (missing.length || dead.length)
     fail(
       `BLOB_SHA and RECORDS disagree.\n` +
-        (missing.length ? `      vendored but unpinned: ${missing.join(", ")}\n` : "") +
-        (dead.length ? `      pinned but never checked: ${dead.join(", ")}\n` : "") +
+        (missing.length
+          ? `      vendored but unpinned: ${missing.join(", ")}\n`
+          : "") +
+        (dead.length
+          ? `      pinned but never checked: ${dead.join(", ")}\n`
+          : "") +
         `      A pin nothing reads is not a guard.`
     );
 }
@@ -256,7 +260,7 @@ const DERIVED = [
     what: "jetpack parallel speed-up",
     value: (score(R.par) / score(R.one)).toFixed(1),
     expect: "6.4",
-    run: /6\.4× single-threaded java\.util\.zip/,
+    run: /6\.4× faster than single-threaded java\.util\.zip/,
     data: /6\.4× vs single-threaded java\.util\.zip/,
     how: "parallelVirtualThreads ÷ singleThreadedJdk, 1 dp",
   },
@@ -347,7 +351,12 @@ if (!forks.every((f) => f === 3))
   fail(
     `the run says "3-fork jmh" and the record reports forks ${forks.join(", ")}`
   );
-else if (!/3-fork jmh/.test(runProse))
+/* "3-fork jmh" became "jmh, 3 forks" in the 2026-09-23 compound-hyphen
+   sweep. The assertion is that the run DISCLOSES the fork count the record
+   reports — three, above — so it binds the number and the tool rather than
+   the word order the copy happens to use this month. */ else if (
+  !/(?:3-fork jmh|jmh, 3 forks)/.test(runProse)
+)
   fail(`the record is 3 forks and the run no longer says so`);
 else
   note(
@@ -438,8 +447,23 @@ const benchOrder = [...runHtml.matchAll(/<div class="bench( jet)?"/g)].map(
 const fills = [
   ...runHtml.matchAll(/<span class="bfill" style="([^"]*)">/g),
 ].map((m) => m[1]);
-const vals = [...runHtml.matchAll(/<span class="bval">([^<]*)<\/span>/g)].map(
-  (m) => m[1].replace(/&#8202;/g, " ").trim()
+/* A `.bval` MAY NOW CONTAIN MARKUP, and `[^<]*` silently stopped seeing the
+   one that does. jetpack's 66 mb/s wraps its value and unit in a `.uv` atom
+   so the pair cannot break across a line, which made the cell
+   `<span class="bval"><span class="uv">66&#8202;mb/s</span></span>` — and a
+   character class that excludes `<` matches nothing there. The count fell
+   from 4 to 3 and the shape check below caught it, which is the only reason
+   this is a fixed bug rather than a value nobody was reading. The lazy body
+   runs to the `</span>` that is NOT immediately followed by another, so one
+   level of nesting resolves to the outer cell; the inner tags are then
+   stripped, because what is asserted is the VALUE, never its markup. */
+const vals = [
+  ...runHtml.matchAll(/<span class="bval">([\s\S]*?)<\/span>(?!\s*<\/span>)/g),
+].map((m) =>
+  m[1]
+    .replace(/<[^>]*>/g, "")
+    .replace(/&#8202;/g, " ")
+    .trim()
 );
 if (
   benchOrder.length !== 2 ||
@@ -511,7 +535,10 @@ if (
       "¶06's provenance line",
     ],
     [
-      new RegExp(`parallel dot kernel — ${glyphX}× over -O3`),
+      /* the em dash went in the 2026-09-23 dash sweep; the figure, its
+         subject and its baseline are what this binds, so the separator is
+         optional rather than required */
+      new RegExp(`parallel dot kernel (?:— )?${glyphX}× over -O3`),
       "¶10's litany receipt",
     ],
   ];
@@ -574,7 +601,9 @@ if (
          Repointing one without turning its arrow would tell the reader the
          wrong thing about where the click lands, which is the defect this
          whole change was made to remove. */
-      const sheadHref = block.match(/<div class="shead"[\s\S]*?<a href="([^"]+)"/);
+      const sheadHref = block.match(
+        /<div class="shead"[\s\S]*?<a href="([^"]+)"/
+      );
       if (sheadHref) {
         const leaves = !sheadHref[1].startsWith(SITE);
         if (leaves !== (cited[2] === "↗"))
@@ -628,13 +657,26 @@ const Q = {
 };
 const quickRatio = (score(Q.par) / score(Q.one)).toFixed(2);
 const rigorousRatio = (score(R.par) / score(R.one)).toFixed(2);
-const span = `${rigorousRatio}–${quickRatio}×`;
-if (!runProse.includes(span))
+/* THE TWO ENDS ARE THE CLAIM; THE THING BETWEEN THEM IS PUNCTUATION. This
+   asserted the literal `6.38–6.89×` and went red on 2026-09-23 because the
+   dash sweep spelled the range "6.38 to 6.89×" — a copy decision that
+   changed no number and no meaning. A gate that fails on its own house
+   style teaches people to edit the gate, which is how a real drift gets
+   waved through next to a punctuation one. Both ends are still recomputed
+   from the two committed JMH files and both must still appear, adjacent
+   and in order; the connector may be a dash, a hyphen or the word. */
+const spanRe = new RegExp(
+  `${rigorousRatio.replace(".", "\\.")}\\s*(?:–|—|-|to)\\s*${quickRatio.replace(".", "\\.")}×`
+);
+if (!spanRe.test(runProse))
   fail(
-    `the two committed runs span ${span} and fig. 07's .bfoot does not say so.\n` +
+    `the two committed runs span ${rigorousRatio} to ${quickRatio}× and fig. 07's .bfoot does not say so.\n` +
       `      That line is the only place the site admits the spread; if it moves, it moves here.`
   );
-else note(`fig. 07's spread note states ${span}, both ends recomputed`);
+else
+  note(
+    `fig. 07's spread note states ${rigorousRatio} to ${quickRatio}×, both ends recomputed`
+  );
 
 const quickMB = MB(Q.par);
 if (new RegExp(`${quickMB} mb/s`, "i").test(runProse))

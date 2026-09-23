@@ -82,7 +82,7 @@ const surfaceText = Object.fromEntries(
 const FIGURES = [
   {
     figure: "jetpack · parallel speed-up",
-    run: /6\.4× single-threaded java\.util\.zip/,
+    run: /6\.4× faster than single-threaded java\.util\.zip/,
     data: { projects: /6\.4× vs single-threaded java\.util\.zip/ },
     source: "benchmarks/jmh-results-rigorous.json — 422.0 / 66.2 = 6.378",
   },
@@ -112,7 +112,7 @@ const FIGURES = [
   },
   {
     figure: "Applied · backend suite",
-    run: /305 passed · 0 skipped/,
+    run: /3,747 passed · 0 skipped · 13 expected failures/,
     // This entry read 278 · 10 while proofManifest.ts already said 305 · 0, and
     // the gate still exited 0 -- because it only compares run/index.html against
     // projectCaseStudies.ts and never reads the manifest at all. Both stale
@@ -126,8 +126,8 @@ const FIGURES = [
     // count its own way, which is exactly why one regex over one concatenated
     // haystack could never have covered both.
     data: {
-      cases: /305 tests passed, 0 skipped/,
-      manifest: /305 passed, 0 skipped/,
+      cases: /3,747 tests passed, 0 skipped/,
+      manifest: /3,747 passed and 0 skipped/,
     },
     source:
       "`pytest tests -q` at head a0d77a1, 2026-08-03 — 305 passed, 0 skipped (+27 on 03fc5c4: 10 CORS, 7 benchmark guard, 10 RLS that no longer skip)",
@@ -221,17 +221,19 @@ const FIGURES = [
        out/index.html diff before re-baselining the golden hash, which is the
        only reason the rule exists.
 
-       Both phrasings are asserted now. A number stated twice on one page is
-       two claims, and a regex that finds one says nothing about the other —
-       the same lesson the node label taught this file a day earlier. */
-    run: /635 fe \+ 551 be/,
-    runLong: /635 frontend \+ 551 backend/,
+       Both phrasings were asserted from then until 2026-09-23, when the
+       clarity pass cut the gate card's per-station rows and took the short
+       form off the page with them. ONE phrasing now, so one binding — and
+       the rule the two-form era taught is kept as a rule rather than as a
+       dead regex: if the split is ever stated twice again, both get bound,
+       because a regex that finds one says nothing about the other. */
+    run: /635 frontend \+ 551 backend/,
     data: { cases: /635 frontend \+ 551 backend/ },
     source: "same run; the split must agree with the total it sums to",
   },
   {
     figure: "Glyph · MNIST correct count",
-    run: /9,701\/10,000/,
+    run: /9,701 of 10,000/,
     data: {
       projects: /9,701 correct/,
       cases: /9,701 correct/,
@@ -296,7 +298,7 @@ const FIGURES = [
   },
   {
     figure: "Applied · eval set",
-    run: /96-sample eval — 8 classes · 2 misclassified/,
+    run: /1 wrong out of 96 labelled emails \(0\.990 macro-f1\)/,
     /* Was a bare /96/ over the concatenation, which matched `#2496ed` in
        projects.ts's tech-stack colours. Scoping it to the file that states
        the claim is the reform; naming the noun is what makes the scoping
@@ -308,13 +310,45 @@ const FIGURES = [
   },
   {
     figure: "Applied · rule count",
-    run: /201 regex rules/,
+    run: /220 regex rules/,
     /* Same defect, worse: a bare /201/ matched `U+201C/201D` in this file's
        own typographic-law header, so the entry would have stayed green with
-       the rule count deleted. Bound to the phrase the file actually uses. */
-    data: { cases: /201-rule/ },
+       the rule count deleted. Bound to the phrase the file actually uses.
+
+       201 ⟶ 220 ON 2026-09-23, and the `cases` regex moves with it for a
+       reason worth stating. It read /201-rule/, which matched the case
+       file's 2026-08-02 CORRECTIONS NOTE — a history entry, not a live
+       claim. So the entry would have gone on printing "cases: states it"
+       with the case file's live text saying anything at all, because a
+       corrections register never stops containing the number it corrected.
+       A gate must bind what the page ASSERTS, not what it remembers. This
+       is now bound to the live phrasing, and it goes red until the case
+       file's own text moves to 220 — which is the true state of the site
+       today and exactly what a reader would find. */
+    /* Bound to receipt 05's own sentence, which no corrections entry uses,
+       so the register can never satisfy it. */
+    data: { cases: /the 220-rule stage at this pin/ },
     source:
-      "imported jobtracker.classifier.rules 2026-08-02 — 106 strong + 26 weak + 69 negative = 201",
+      "backend/jobtracker/classifier/rules.py PATTERNS, AST-counted at 0285675c (rules.py last touched 2690de02, 2026-09-09) — 129 strong + 31 weak + 60 negative = 220, the 48 vetoes excluded; the demo space and both rules.json copies count 220 too. Was 106 + 26 + 69 = 201, true at 36a2f54",
+  },
+  {
+    /* The pair is a MEASUREMENT THAT CAN NEVER BE RE-TAKEN, which is the
+       only reason it is bound here rather than left as prose. The weights
+       were withdrawn on 2026-08-15 (1efb0b38) because they were fitted
+       partly on a real mailbox, so nobody can reproduce the export — and
+       Applied's own README:460-465 says the figure "is now an attested
+       number rather than a reproducible one, and it should be described
+       that way wherever it is cited". An attested number with no way back
+       to its source is precisely the kind that drifts unnoticed, so all
+       three surfaces are pinned to the byte literals instead. */
+    figure: "Applied · int8 ONNX export size",
+    run: /90 ⟶ 23 mb/,
+    data: {
+      projects: /int8 ONNX export, 90 to 23 MB/,
+      cases: /int8 ONNX export of the same model, 90 to 23 MB/,
+    },
+    source:
+      "scripts/readme_facts.py:2481-2507 pins 90,362,391 B fp32 and 22,843,695 B int8, measured 2026-08-03 and marked withdrawn; 90,362,391 / 1e6 = 90.4 and 22,843,695 / 1e6 = 22.8",
   },
   {
     /* Bound on 2026-08-14, the day the number stopped being unverifiable.
@@ -356,7 +390,7 @@ const FIGURES = [
        check compares the page to the case file, not either to CI. When you
        merge into a repo this page quotes, re-read the number from the run. */
     figure: "AutoML · suite",
-    run: /2,523 tests green on ci — 1,445 backend · 985 frontend · 93 landing/,
+    run: /2,523 automated tests, all passing: 1,445 backend · 985 frontend · 93 landing/,
     data: {
       cases:
         /2,523 tests green on CI, 1,445 backend \+ 985 frontend \+ 93 landing/,
@@ -366,7 +400,12 @@ const FIGURES = [
   },
   {
     figure: "AutoML · commit count",
-    run: /2,186 commits/,
+    /* OFF HOME 2026-09-23, still bound on the case file. The clarity pass
+       capped ¶09 at two provenance rows and a commit count is not one of
+       the two things a reader needs from that station. `run: null` is a
+       declaration that the run does not claim it — not a retirement: the
+       number is still asserted where it is still stated. */
+    run: null,
     data: { cases: /2,186 commits reachable from the pinned commit 5e42233/ },
     source:
       'git rev-list --count 5e42233 = 2,186 in a clone of yadava5/ai-augmented-auto-ml-toolchain, and GitHub\'s own paginator agrees for main at per_page=1 (rel="last" page 2,187 after one further commit); contributors ShreeChaturvedi 1,237 + yadava5 937 + 8 + 1',
@@ -392,7 +431,11 @@ const FIGURES = [
        still true of src/Matrix.cpp, which grew no wasm branch. A bare
        "four" here would trade one stale number for one imprecise one. */
     figure: "Glyph · hand-written instruction sets",
-    run: /4 hand-written simd paths in the dot kernels/,
+    /* OFF HOME 2026-09-23, same cap, same reason — and note what this entry
+       has now done twice: it caught the number going stale in 2026-08, and
+       it is the reason the qualifier above survives the line leaving the
+       page. The case file still states it and is still bound. */
+    run: null,
     data: { cases: /Four hand-written instruction sets in the dot kernels/ },
     source:
       "glyph@68f1362 src/NeuralNet.cpp guards __AVX512F__, __AVX2__, __ARM_NEON and __wasm_simd128__ over a scalar fallback — four hand-written dot kernels, the wasm one being dot_wasm128_rowvec; src/Matrix.cpp still guards only the first three",
@@ -646,8 +689,15 @@ const FIGURES = [
            one committed evaluation runs `hybrid_profile: deterministic`,
            which disables SetFit, so in the only record that exists the third
            desk settled nothing at all. A redraw that keeps the routing and
-           drops this sentence turns a drawing into a measurement. */
-        "held below in a clay ring for a person to settle",
+           drops this sentence turns a drawing into a measurement.
+
+           "for a person to settle" STOOD HERE until 2026-09-23 and is
+           replaced rather than retired: the clarity pass rewrote the label
+           to state the THRESHOLD the old phrase only gestured at, and the
+           new sentence is the stronger binding of the same fact. The hold
+           is a person's, and now the label says when it reaches one. */
+        "held below in a clay ring",
+        "A person reviews it if its confidence is 0.70 or more",
         "still filed under its category and only flagged",
         /* Receipt 09's fact: on the serverless path it returns after layer 1
            even when the rules were unsure. */
@@ -751,7 +801,10 @@ const FIGURES = [
       what: "the record card",
       claims: [
         "answers for every claim on this page",
-        "b.s. computer science — miami university, may 2026",
+        /* the em dash became a middle dot in the 2026-09-23 dash sweep; the
+           claim is the degree, the school and the date, not the punctuation
+           between them */
+        "b.s. computer science · miami university, may 2026",
       ],
       /* THE REASON THE NEGATIVE EXISTS. role="img" makes descendants
          presentational, and these two links work. */
@@ -771,7 +824,12 @@ const FIGURES = [
       fig: "10",
       what: "the reviewer's marks",
       claims: [
-        "a refused gate is the system working",
+        /* "a refused gate…" until 2026-09-23. The three stamps below it now
+           read passed / declined / caught, and "refused" was the word a
+           skimmer read as failure — which inverted the whole claim of the
+           plate. The sentence keeps its job and loses the word that was
+           fighting it. */
+        "a stopped gate is the system working",
         "the gate stopped the run",
         /* §4b's commission, made checkable. The marks used to float beside
            the gate names; they are now inked INSIDE a frame standing on a
@@ -784,7 +842,11 @@ const FIGURES = [
            the figcaption because the leg is inside the plate. */
         "the line runs on dashed and unsigned, to a person",
       ],
-      exposed: [/>passed<\/span>/, />refused<\/span>/],
+      /* one stamp per disposition, and all three are asserted: two rows
+         saying the same word is the state this plate had before, when both
+         non-passing gates read "refused" and the difference between a gate
+         that declined and a check that caught something was lost. */
+      exposed: [/>passed<\/span>/, />declined<\/span>/, />caught<\/span>/],
     },
     {
       fig: "11",

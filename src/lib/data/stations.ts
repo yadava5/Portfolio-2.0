@@ -31,7 +31,7 @@
  *   · Two stations have NO case file, for different reasons. `jetpack-compress`
  *     has no dossier in the archive at all, so the run hands its member to the
  *     committed benchmark ledger instead. LifeQuest has a dossier's worth of
- *     nothing — the run says so out loud: "no case file — a prototype has
+ *     nothing — the run says so out loud: "no case file: a prototype has
  *     nothing to argue yet."
  *   · Six stops are not projects (the start, who, the yard's school record
  *     aside, the review, the references, the gate, the next morning), and the
@@ -159,7 +159,7 @@ export const STATIONS: readonly Station[] = [
     beat: 2,
     id: "path",
     name: "the yard",
-    kicker: "¶ 03 · the yard",
+    kicker: "¶ 03 · the internship",
     clock: "07:52",
     /* Two artifacts, and the station names both: the shaped table is what five
        years of logs became, and the master inventory is "only the inventory is
@@ -176,7 +176,7 @@ export const STATIONS: readonly Station[] = [
     beat: 3,
     id: "work",
     name: "applied",
-    kicker: "¶ 04 · first station",
+    kicker: "¶ 04 · project 1 of 6",
     clock: "08:47",
     consignment: "sorted mail → manifest",
     /* `work`, not `jobtracker`: the fragment has shipped since round 1 and a
@@ -187,7 +187,7 @@ export const STATIONS: readonly Station[] = [
     beat: 4,
     id: "cadence",
     name: "cadence",
-    kicker: "¶ 05 · second station",
+    kicker: "¶ 05 · project 2 of 6",
     clock: "12:06",
     consignment: "the committed plan → manifest",
     dossier: "taskflow-calendar",
@@ -196,20 +196,20 @@ export const STATIONS: readonly Station[] = [
     beat: 5,
     id: "glyph",
     name: "glyph",
-    kicker: "¶ 06 · third station",
+    kicker: "¶ 06 · project 3 of 6",
     clock: "15:23",
     /* the run's only consignment that is a function of state: it reads
        `your "<digit>", read locally → manifest` once the classifier has
        returned one. This is the branch a page with no sample prints, which
        is the one a still, a fixture and an arrival slip can all rely on. */
-    consignment: "a blank 28×28 — the run wants your hand",
+    consignment: "a blank 28×28, waiting for your hand",
     dossier: "fast-mnist-nn",
   },
   {
     beat: 6,
     id: "jetpack-compress",
     name: "jetpack-compress",
-    kicker: "¶ 07 · fourth station",
+    kicker: "¶ 07 · project 4 of 6",
     clock: "19:36",
     /* Two artifacts, and this station's handoff names the second outright —
        "the member lands in the benchmark ledger @ 2caacd0". The member and the
@@ -228,11 +228,11 @@ export const STATIONS: readonly Station[] = [
   {
     beat: 7,
     id: "lifequest",
-    name: "lifequest — dusk",
-    kicker: "¶ 08 · fifth station · the honest hour",
+    name: "lifequest · dusk",
+    kicker: "¶ 08 · project 5 of 6",
     clock: "21:07",
     consignment: "lifequest’s unfinished rows, carried unchanged",
-    /* "no case file — a prototype has nothing to argue yet", in the run's own
+    /* "no case file: a prototype has nothing to argue yet", in the run's own
        words. The absence is the argument; do not fill it in. */
     dossier: null,
   },
@@ -240,7 +240,7 @@ export const STATIONS: readonly Station[] = [
     beat: 8,
     id: "automl",
     name: "agentic automl",
-    kicker: "¶ 09 · sixth station · the last",
+    kicker: "¶ 09 · project 6 of 6",
     clock: "22:05",
     consignment: "automl’s halted run → manifest",
     dossier: "automl",
@@ -274,7 +274,7 @@ export const STATIONS: readonly Station[] = [
   {
     beat: 11,
     id: "gate",
-    name: "the gate — held",
+    name: "the gate · held",
     kicker: "¶ 12 · the approval gate",
     clock: "22:41",
     /* The line terminates here, and under arrival semantics that note inverts:
@@ -283,7 +283,7 @@ export const STATIONS: readonly Station[] = [
        address has always named this station: "→ the human gate" is the reader,
        and they are the last words the run hands over before it asks for a
        signature. The unsigned manifest rides in behind them, unnamed, because
-       the gate card beside it already says "run 042 — the manifest, complete."
+       the gate card beside it already says "run 042 · the manifest, complete."
        and a waybill repeating its own destination's title is ceremony. */
     consignment: "two recommendations, carried as written → the human gate",
     dossier: null,

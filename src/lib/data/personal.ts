@@ -184,9 +184,16 @@ export const siteMetadata = {
    * typographic rule should lapse. Re-render the card after editing
    * this line (`npm run assets:render-og`) — the deck is read from
    * here, and the drawn card and the meta tag must say the same thing.
+   *
+   * 2026-09-23 (clarity plan): the owner claimed the noun. Cold critics
+   * found no role string anywhere a reader looks, and this sentence is
+   * the first one a search result or a shared link shows. It names the
+   * noun the page's first screen now prints, the languages the six
+   * projects are written in, and the page's one argument, in 131
+   * characters and without a dash (the portfolio's prose rule).
    */
   description:
-    "Ayush Yadav’s portfolio: software, data, and ML engineering case files, where every claim terminates at an artifact you can open — and an evidence index that lists them all.",
+    "Ayush Yadav, software engineer. Six projects in TypeScript, Python, Java and C++, each claim linked to the artifact that proves it.",
   /** Site URL */
   url: "https://ayush-yadav.com",
   /**

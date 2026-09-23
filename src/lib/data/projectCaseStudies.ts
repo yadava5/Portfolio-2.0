@@ -837,7 +837,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The rules v3 gate and the deterministic hybrid v3 gate both pass at the pinned commit on the 96-message v3 set: macro-F1 0.9896, 1 message misclassified out of 96. The deterministic profile disables the learned layers, so both files are measuring the rules stage. Printed to three decimals the figure is 0.990.",
+          "The rules v3 gate and the deterministic hybrid v3 gate both pass at the pinned commit on the 96-message v3 set: macro-F1 0.9896, 1 message misclassified out of 96. The deterministic profile disables the learned layers, so both files are measuring the rules stage: the 220-rule stage at this pin (129 strong, 31 weak and 60 negative patterns; the 48 vetoes are not counted). Printed to three decimals the figure is 0.990.",
         method:
           "committed baseline, re-recorded 2026-09-07 under the rules profile, re-run at the pinned head on 2026-09-22 (exit 0 against its own 0.001 tolerance) and read again off backend-ci run 34429395505, whose two gate steps print the same line — protocol in the method slip",
         artifacts: [

@@ -196,7 +196,7 @@ export interface Project {
   category: "ai-ml" | "full-stack" | "mobile" | "data" | "other";
   /** Start date (YYYY-MM) */
   startDate: string;
-  /** End date (YYYY-MM or "Present") */
+  /** End date (YYYY-MM, YYYY, or "Present") */
   endDate: string;
   /** Key highlights/achievements */
   highlights: string[];
@@ -376,7 +376,10 @@ export const projects: Project[] = [
     featured: true,
     category: "ai-ml",
     startDate: "2025-09",
-    endDate: "Present",
+    /* 2026, the résumé's year and only its year: no month is attested
+       anywhere the owner wrote, and inventing one would be a date derived
+       rather than given. No renderer reads this field today. */
+    endDate: "2026",
     highlights: [
       "LangGraph and MCP orchestration for agentic ML workflow phases",
       "Human-in-the-loop approval gates for generated actions",

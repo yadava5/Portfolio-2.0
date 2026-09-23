@@ -23,7 +23,7 @@ import { expect, test } from "@playwright/test";
  * The run's IA, for anyone re-pointing another spec:
  *
  *   station      section.beat[data-beat="0".."12"]   (was [data-chapter])
- *   its dateline .kicker, "¶ 01 · the start — 06:12"
+ *   its dateline .kicker, "¶ 01 · the start · 06:12"
  *   deep links   #review #cosigners #gate #nextmorning
  *   the line     canvas#thread                        (was [data-thread])
  */
@@ -70,8 +70,8 @@ test.describe("the home page is the run", () => {
       );
 
     expect(kickers).toHaveLength(13);
-    expect(kickers[0]).toMatch(/^¶ 01 · the start — 06:12$/);
-    expect(kickers[11]).toMatch(/^¶ 12 · the approval gate — 22:41$/);
+    expect(kickers[0]).toMatch(/^¶ 01 · the start · 06:12$/);
+    expect(kickers[11]).toMatch(/^¶ 12 · the approval gate · 22:41$/);
 
     /* run 042 is ONE day: every dateline is later than the one before it, from
        first light to the gate. ¶13 is the next morning and deliberately wraps —

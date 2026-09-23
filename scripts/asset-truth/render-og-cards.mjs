@@ -184,7 +184,7 @@ function cardSvg({ kicker, title, deck, folio }) {
     )
     .join("\n  ")}
   <line x1="100" y1="${H - 118}" x2="${W - 100}" y2="${H - 118}" stroke="${INK}" stroke-opacity="0.2"/>
-  <text x="100" y="${H - 84}" font-family="${MONO}" font-size="20" letter-spacing="0.9" fill="${INK}">ayush yadav — software · data · ml engineering</text>
+  <text x="100" y="${H - 84}" font-family="${MONO}" font-size="20" letter-spacing="0.9" fill="${INK}">ayush yadav · software · data · ml engineering</text>
   <text x="100" y="${H - 56}" font-family="${MONO}" font-size="18" letter-spacing="0.6" fill="${CLAY}">${escapeXml(folio)}</text>
 </svg>`;
 }
@@ -273,14 +273,14 @@ const total = String(studies.length);
 const cards = [
   {
     file: "home.png",
-    kicker: "¶ the portfolio — a working paper",
+    kicker: "¶ the portfolio · a working paper",
     title: "Ayush Yadav",
     deck: siteDescription,
     folio: FOLIO_ROOT,
   },
   {
     file: "evidence.png",
-    kicker: `¶ the evidence index — every claim on file`,
+    kicker: `¶ the evidence index · every claim on file`,
     title: "The evidence index",
     deck: "The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was recorded, and the case-file receipt that argues it in full.",
     folio: `${FOLIO_ROOT}/evidence`,

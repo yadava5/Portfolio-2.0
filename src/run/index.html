@@ -64,7 +64,7 @@ if (location.hash.length > 1) {
      there (scroll-scrubbed, so a still frame is always mid-
      composition), and send their OUTPUT down the thread when you
      leave; the REVIEW (¶10 — how I work: the litany, and three real
-     gates with their honest dispositions, two of which refused to sign
+     gates with their honest dispositions, two of which declined to sign
      automatically); and the gate. Every station's output now lands
      somewhere real: each hands off to its case file, source, or live
      build on the working paper. A run manifest rides the corner and
@@ -76,14 +76,14 @@ if (location.hash.length > 1) {
 
      Every number is proof-cited from src/lib/data or the résumé as
      verified against committed artifacts (2026-07-30): macro-F1 0.9791
-     on the 96-sample gate (8 classes, 2 misclassified); 97.01%
+     on the <span class="uv">96-sample gate</span> (8 classes, 2 misclassified); 97.01%
      (9,701/10,000, macro-F1 0.9698); 3.5× parallel dot-256 vs -O3 (openmp, not simd); 6.4×
      gzip throughput (422 vs 66 MB/s, 3-fork JMH, 99.9% CI);
      1,186 passed / 0 skipped (635 FE + 551 BE); 72 tests, 0 failures on
-     JDK 25; 7 phases, every one gated. The Glyph station runs the REAL
-     C++/WASM network (45.9 KB wasm + 310.6 KB weights); jetpack's
-     ratio is computed live with the browser's own CompressionStream
-     and labelled as such.
+     JDK 25; three gates across seven phases. The Glyph station runs the
+     REAL C++/WASM network (45.9 KB wasm + 310.6 KB weights). Nothing here
+     is computed live to stand in for a benchmark: every throughput and
+     accuracy figure on this page is a committed run, filed and linked.
 
      Zero dependencies. The wash is ~60 lines of raw WebGL that draws
      only while the scroll position changes; one rAF loop that stops
@@ -183,7 +183,7 @@ if (location.hash.length > 1) {
   img,canvas,svg{max-width:100%}
   .mono{font-family:var(--mono); font-size:.78rem; letter-spacing:.055em; color:var(--ink-2)}
 
-  /* ————— layer 0 · the field: wash + sun + contour + grain ————— */
+  /* ····· layer 0 · the field: wash + sun + contour + grain ····· */
   #field{position:fixed; inset:0; z-index:0; background:#fbf3e7; contain:strict}
   #wash{position:absolute; inset:0; width:100%; height:100%; display:block}
   #sun{ /* CSS fallback sun — hidden when the shader runs */
@@ -206,7 +206,7 @@ if (location.hash.length > 1) {
     opacity:.05;
   }
 
-  /* ————— layer 1 · the thread (fixed canvas: the doc-tall SVG variant
+  /* ····· layer 1 · the thread (fixed canvas: the doc-tall SVG variant
      repainted its whole extent per dashoffset write — measured 81ms/frame
      at 4× CPU; this draws only the visible window, pure math) ————— */
   #thread{position:fixed; inset:0; z-index:1; pointer-events:none}
@@ -452,7 +452,15 @@ if (location.hash.length > 1) {
      5.79:1 / Lc 70.1 on that same field and the drop from 1.2 to .8 carries
      the rest of the distinction. fig. 04 was fixed this way first; fig. 07
      carried the last live instance of the .28 until this redraw. */
-  #appliedFig .desklab, #jetFig .jlab{cursor:default}
+  /* THE HOVER STATE FOLLOWS THE HIT AREA. These labels are wrapped in a
+     `g.tracebtn` carrying a transparent rect, because SVG text takes no
+     padding and 12–15px was under the 24px tap floor. That moves the
+     boundary: a `:hover` written against the TEXT fires on the glyphs and
+     not on the padding around them, so a pointer inside the target would
+     start the trace and fail to light the label that started it. Both
+     rules are hung on the group instead. */
+  #appliedFig .desklab, #jetFig .jlab{cursor:pointer}
+  .figsvg .tracebtn, .figsvg .tracebtn *{cursor:pointer}
   #jetFig.tracing g.blk:not(.hot) .mk{stroke:var(--ink-2); stroke-width:.8}
   #appliedFig.tracing g.mkg:not(.hot) .mk,
   #appliedFig.tracing g.mkg:not(.hot) .mkflap{stroke:var(--ink-2); stroke-width:.8}
@@ -461,11 +469,10 @@ if (location.hash.length > 1) {
      names are already .lit, so `:hover{fill:var(--ink)}` was inert on them —
      the state has to be carried by what is NOT hovered. --ink-2 is 5.79:1 /
      Lc 70.1 on the day field, over the Lc 60 dim floor. */
-  #appliedFig.tracing text.desklab:not(:hover){fill:var(--ink-2)}
-  #jetFig .jlab:hover{fill:var(--ink)}
+  #appliedFig.tracing .tracebtn:not(:hover) text.desklab{fill:var(--ink-2)}
+  #jetFig .tracebtn:hover .jlab{fill:var(--ink)}
   #amlFig text.tname:hover{fill:var(--ink); cursor:default}
   #amlFig .tdot.hot{stroke:var(--ink)}
-  @media (hover:none){ .hoverinv{display:none} } /* no dead invitations on touch */
 
   /* cadence — the parse */
   #cadFig{position:relative; min-height:300px}
@@ -490,7 +497,7 @@ if (location.hash.length > 1) {
      `rel(slotWhen) ± {-26, +4, +32}` — measured pixel offsets over the grid —
      and each chip is wider than a 1/7 column. Measured against the pre-fix
      geometry, the settled stack printed across FOUR day columns at 768 and
-     1440 (mo·tu·we·th) and three at 320 and 390 — the brief reported it as
+     1440 (mo·tu·we·th) and three at 320 and 390 · the brief reported it as
      "the chip covers wednesday", which understates it. Nothing tied the
      stack to a cell, so nothing could hold it to one. The tuesday cell now IS the event: it lights in place and
      cannot leave its own column by construction. The archive's Cadence plate
@@ -605,7 +612,7 @@ if (location.hash.length > 1) {
   .b6{align-items:flex-start}
   .b6 .beat-inner{grid-template-columns:minmax(0,30rem) minmax(0,1fr); align-items:start}
   .plate.bare{background:none; border:none; box-shadow:none; padding:0; contain:layout}
-  /* ————— fig. 08 · the stair, drawn in section —————
+  /* ····· fig. 08 · the stair, drawn in section ·····
      §4b's note on this plate was that the pencil half "reads as faint clutter
      rather than absence", and its floor fix was a heavier dash. A heavier dash
      makes absence LOUDER, not clearer. Absence is a relation, so the redraw
@@ -663,8 +670,7 @@ if (location.hash.length > 1) {
     transition:opacity .3s ease}
   .quests .q.held:hover .qnote{opacity:1}
 
-  /* jetpack live gzip */
-  .gzrow{display:flex; gap:1rem; align-items:baseline; flex-wrap:wrap; margin-top:.9rem}
+  /* the page's two presses: the gate's approve, and the pad's clear */
   .btn{
     font-family:var(--mono); font-size:.72rem; letter-spacing:.08em;
     color:var(--ink); background:none; border:1px solid var(--ink-2);
@@ -680,7 +686,6 @@ if (location.hash.length > 1) {
     .btn::before{transition:transform .35s cubic-bezier(.22,1,.36,1)}
     .btn:active{transform:scale(.97)}
   }
-  #gzout b{font-weight:400; color:var(--ink)}
 
   /* beat 7 — agentic automl: the notebook worked by tools, at night */
   .b7{min-height:136vh}
@@ -707,6 +712,14 @@ if (location.hash.length > 1) {
   .figsvg .boom{fill:none; stroke:var(--clay-g); stroke-width:1.6; stroke-linecap:round}
   .figsvg .boom.open{stroke:var(--pine)}
   .figsvg .boom.held{stroke-width:2.4} /* the one that never lifts, drawn heavier */
+  /* THE THREE GATES HAVE TO READ APART IN A STILL, not only in the scrub.
+     A screenshot, a print and a reduced-motion reader all see one frame, so
+     "this one lifts and that one doesn't" is not a distinction the drawing
+     may rely on. Weight and dash carry it instead: the conditional gate is
+     dashed because it is only sometimes set, the always-gate is the plain
+     solid boom, and the human gate is the heavy one standing across a lane
+     that runs on dashed behind it. */
+  .figsvg .boom.maybe{stroke-dasharray:3 3.5}
   /* the run's own record, inked in behind the bead — no number is claimed
      on this plate, so nothing here is a gauge filling under the scroll */
   .figsvg .trail{fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round}
@@ -841,7 +854,7 @@ if (location.hash.length > 1) {
     .dawnline > span{transition:opacity 1.1s ease 2.1s}
   }
 
-  /* ————— ¶13 · the next morning ————— */
+  /* ····· ¶13 · the next morning ····· */
   /* A station, not a recolour. The gate is a ledger — dense, ruled, boxed —
      so the morning after it is deliberately the opposite: one column, centred,
      nothing boxed, and more air than any other stop on the line. Coming out of
@@ -992,7 +1005,7 @@ if (location.hash.length > 1) {
     font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
     color:var(--ink-2); line-height:1.85; max-width:68ch}
 
-  /* ————— ¶02 · who — the engineer of record ————— */
+  /* ····· ¶02 · who · the engineer of record ····· */
   .bwho{min-height:118vh}
   .engcard header{display:flex; justify-content:space-between; gap:1rem;
     font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ink-2);
@@ -1022,7 +1035,7 @@ if (location.hash.length > 1) {
   .nb{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
     border-top:1px solid var(--hair); padding-top:.6rem; margin-top:1.3rem; max-width:46ch; line-height:1.9}
 
-  /* ————— ¶03 · the yard — the ITSM freight + the school record ————— */
+  /* ····· ¶03 · the yard · the ITSM freight + the school record ····· */
   .bpath{min-height:158vh; flex-direction:column; justify-content:center}
   .bpath .beat-inner{width:100%}
   .figsvg .feed{fill:none; stroke:var(--hair-strong); stroke-width:1}
@@ -1063,7 +1076,7 @@ if (location.hash.length > 1) {
   .handoff .dep{color:var(--clay)}
   .handoff a{color:var(--pine)}
 
-  /* ————— ¶10 · the review — how i work, at night ————— */
+  /* ····· ¶10 · the review · how i work, at night ····· */
   .bhow{min-height:126vh}
   .litany{margin-top:1.6rem}
   .litany .mline{border-top:1px solid var(--hair); padding:.9rem 0 .95rem}
@@ -1119,7 +1132,7 @@ if (location.hash.length > 1) {
   .gates .gbench .gsig{display:block}
   .gates .gbench .gframe{fill:none; stroke:var(--hair-strong); stroke-width:1}
   .gates .gbench .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
-  .gates .gbench .gmark.refused{stroke:var(--clay-g)}
+  .gates .gbench .gmark.declined{stroke:var(--clay-g)}
   .gates .gbench.gtail{position:relative; height:2.5rem}
   .gates .gbench.gtail::before{content:""; position:absolute; right:var(--gx); top:0; bottom:.55rem;
     width:1px; background-image:linear-gradient(var(--hair-strong) 0 3.5px, transparent 3.5px 7.5px);
@@ -1132,7 +1145,7 @@ if (location.hash.length > 1) {
      dim-text floor on the night plate; the quests taught that lesson.) */
   .gates .grow .gword{text-align:right}
   .gates .grow.passed .gword{color:var(--pine)}
-  .gates .grow.refused .gword{color:var(--clay)}
+  .gates .grow.declined .gword{color:var(--clay)}
   .settled .gates .gmark{stroke-dashoffset:0 !important}
   @media (prefers-reduced-motion: reduce){
     .gates .gmark{stroke-dashoffset:0 !important}
@@ -1637,6 +1650,490 @@ h1[data-np-measuring] .np-ch {
     .gatecard .decide{margin-top:.9rem}
   }
 </style>
+<style id="clarity-css">
+/* ═══ THE CLARITY PASS ═══════════════════════════════════════════════════
+   Four things, in the order a reader meets them: the type moves off the
+   mono, the stations stop carrying more void than content, the ledger
+   becomes something you ask for, and the phone gets a reading design.
+
+   WHY THIS IS A SECOND SHEET AND NOT A SURGERY ON THE FIRST. Every rule
+   below out-specifies an original that was winning — that is the whole
+   mechanism, and it is stated in the comments where it matters. Folding
+   each value back to its declaration above would relocate ~90 rules across
+   1,600 lines of a sheet whose cascade nothing else binds, to change no
+   rendered pixel. The seam is cheaper to read than that edit is to trust.
+   `np-css` above sets the same precedent for the same reason. */
+
+/* ── the scale ───────────────────────────────────────────────────────────
+   Fragment Mono's x-height is 0.524em; Newsreader's is 0.426em. A line
+   moved off mono must grow by 1.230× to keep the same apparent size, which
+   is also what carries it over the 12px floor. Every value below is that
+   ratio applied to the measured rendered px, rounded to the scale. */
+:root{
+  --fs-micro:.8rem;    /* 12.8px · the floor. NOT 12: the harness reads
+                          EFFECTIVE px, and the gate card, #cadWeek and
+                          .verdictline ride containers the fx engine
+                          settles at ~0.985, where 12 renders as 11.82. */
+  --fs-small:.8125rem; /* 13px */
+  --fs-label:.875rem;  /* 14px */
+  --fs-note:.9375rem;  /* 15px */
+}
+/* Newsreader in this subset is static 400 roman + static 400 italic: no
+   weight axis, no optical size. Faux bold is the only "bold" available, so
+   it is switched off and weight contrast comes from Fraunces or from ink. */
+body{font-synthesis:none}
+
+/* machine values keep the mono and gain tabular figures where they sit in
+   running text; everything a person reads moves to the text face. */
+.mono, .prose .prov, .kicker, .plate figcaption, .borrowed figcaption,
+.b8 footer, .signs .srole, .signs .sclose, .cosign figcaption, .sigrole,
+.nb, #manifest .foot, .handoff, .litany .mline .rct, .schoolrec .srow,
+.schoolrec .shead, .engcard header, .engrows li, .gates, .quests .q,
+.bench .bfoot, .bench .shead, .dawnrow, .dawnrun{
+  font-family:var(--body); letter-spacing:0;
+  /* the middle dot is 0.618em in Fragment Mono and 0.247em in Newsreader:
+     word-spacing restores the ledger's airy separator without touching
+     markup that check-stations matches verbatim. */
+  word-spacing:.12em;
+  font-variant-numeric:tabular-nums;
+}
+/* …and the values inside them stay machine values. */
+.prose .prov b, .bench .brow span, .bench .bval, .gl li .gm, #manifest li .m,
+#manifest li .idx, .kicker i,
+.ladder li span, .gates .gbench span, #mclock, #conf, #fwd, #verdict,
+.engcard header i, .dawnrow a[href^="mailto"]{
+  font-family:var(--mono); letter-spacing:.04em; word-spacing:normal;
+  font-variant-numeric:normal;
+}
+/* A value never parts from its unit, and a compound identifier never breaks
+   at its hyphen (defect 6). This is deliberately an ATOM class, not a rule on
+   the row: a first draft put white-space:nowrap on .schoolrec .srow b and the
+   school record's right edge measured 460px inside a 390px band. */
+.uv{white-space:nowrap}
+/* a station name is a station name: "jetpack-" / "compress" was the last
+   measured break. CSS, not a span · check-stations matches this string
+   verbatim with tags intact, so a wrapper here would go red. */
+.gatecard .gl li b, #manifest li b{white-space:nowrap}
+
+/* ── the ≥12px floor for text a person reads ─────────────────────────────
+   Every rendered size below 12px in the census, converted at 1.230×. */
+.kicker{font-size:var(--fs-label); font-style:italic; letter-spacing:.01em; color:var(--ink-2)}
+.kicker i{font-style:normal; font-size:var(--fs-micro); color:var(--clay)}
+.plate figcaption{font-size:var(--fs-label); line-height:1.5; margin-top:1rem}
+.borrowed figcaption, .borrowed figcaption i{font-size:var(--fs-small); line-height:1.5}
+.b8 footer{font-size:var(--fs-small)}
+/* the colophon's contact row: the brightest line in the quietest block,
+   because it is the only part of a colophon anyone is looking for. --ink,
+   an existing token already bound at its worst case on the night field
+   (#f6efe2 on #5d4c3e · 7.15:1 / Lc 82.8), so no new colour is claimed. */
+.b8 footer .reach{display:block; margin-bottom:.5rem;
+  font-size:var(--fs-label); line-height:1.8; color:var(--ink)}
+.b8 footer .reach a{color:inherit; text-decoration:underline;
+  text-underline-offset:3px; text-decoration-thickness:from-font}
+.signs .srole, .signs .sclose, .cosign figcaption, .cosign figcaption .rel,
+.sigrole, .nb, #manifest .foot, .gates, .quests .q,
+.litany .mline .rct, .handoff, .schoolrec .srow, .schoolrec .shead,
+.engcard header{font-size:var(--fs-label); line-height:1.6}
+.mono, .bench .bfoot, .bench .shead, .prose .prov{font-size:var(--fs-note); line-height:1.7}
+.prose .prov b, .bench .brow span, .bench .bval, .gl li .gm,
+#manifest li .m{font-size:var(--fs-small)}
+/* A <b> in this page marks the VALUE of a labelled row, and a value is a
+   degree, a title or a place at least as often as it is a figure. Newsreader
+   has no bold and faux is off, so the emphasis is ink, not weight; .mv is
+   the opt-in for the ones that really are machine values. */
+.schoolrec .srow b, .prose .prov b{font-family:var(--body); font-size:var(--fs-label);
+  color:var(--ink); letter-spacing:0; word-spacing:.12em}
+.mv, b.mv, .prose .prov b.mv, .schoolrec .srow b.mv{
+  font-family:var(--mono); font-size:var(--fs-small); letter-spacing:.02em;
+  word-spacing:normal; white-space:nowrap}
+#slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
+.gbench.gtail>span{font-size:var(--fs-micro)}
+/* SVG figure labels keep Fragment Mono and their authored px: check-figures'
+   arithmetic floor was fitted to this face's advances. */
+.figsvg text, #net text{font-family:var(--mono); letter-spacing:.05em; word-spacing:normal}
+
+/* The two marks whose rendering follows the stack, measured with
+   CSS.getPlatformFontsForNode: ✓ is Menlo in the mono stack and Lucida
+   Grande in the serif ones; ↓ is Fragment Mono in mono and Apple Symbols in
+   serif. Both are pinned to mono where they sit. (⟶ ↗ ↳ ⟲ need no rule:
+   all four resolve to Apple Symbols in every stack, same advance.) */
+.gates .gleg .gtick, .cue .a, .gbench .gmark{
+  font-family:var(--mono); letter-spacing:normal; word-spacing:normal}
+
+/* ── controls are text a finger has to find ──────────────────────────────*/
+.padbar{flex-wrap:wrap; gap:.5rem; align-items:center}
+.padbar button, .np-replay{
+  font-family:var(--body); font-size:var(--fs-note); letter-spacing:0;
+  min-height:44px; padding:.35rem .7rem; margin:-.35rem -.7rem}
+#glyphStatus{font-size:var(--fs-small)}
+
+/* the reveal figures get a focus path and a touch verb (defect 7) */
+.figsvg [tabindex]{cursor:pointer}
+.figsvg [tabindex]:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
+
+/* ── the manifest: chrome in the reserved band, ledger on request ────────
+   Measured: at 1440 no corner of the viewport is free · an always-on
+   262×301 plate covers text on 16/31 steps bottom-right, 19/31 top-right
+   and 20/31 bottom-left. So the persistent part shrinks to the one band
+   that is already scrimmed, and the ledger becomes a disclosure. */
+#mast{align-items:center}
+#mtoggle{
+  pointer-events:auto; cursor:pointer; font-family:var(--body);
+  font-size:var(--fs-label); letter-spacing:.01em; color:var(--ink);
+  background:none; border:1px solid var(--hair-strong); border-radius:2px;
+  padding:.3rem .6rem; min-height:32px; line-height:1}
+#mtoggle #mcount{font-family:var(--mono); font-size:var(--fs-micro);
+  font-variant-numeric:tabular-nums; color:var(--clay); margin-left:.45em}
+#mtoggle[aria-expanded="true"]{background:var(--plate-solid)}
+#mscrim{position:fixed; inset:0; z-index:5; background:transparent}
+#mscrim[hidden]{display:none}
+#manifest{
+  position:fixed; top:calc(2.6rem + 10px); right:clamp(14px,2.4vw,34px);
+  bottom:auto; width:300px; max-height:76vh; overflow:auto; z-index:7;
+  opacity:0; transform:translateY(-6px); pointer-events:none; visibility:hidden}
+#manifest.open{opacity:1; transform:none; pointer-events:auto; visibility:visible}
+/* A ledger you asked for is a solid object, not a veil. --ink-inverse is an
+   existing token and it reads better than the .86 plate it replaces. Day
+   field first, then the same three inks on the night field:
+   measured: #26231c on #fbf3e7 — 14.24:1 / Lc 96.0
+   measured: #5c564a on #fbf3e7 — 6.61:1 / Lc 78.7
+   measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
+   measured: #f6efe2 on #26231c — 13.71:1 / Lc 95.2
+   measured: #d9d0c3 on #26231c — 10.27:1 / Lc 76.1
+   measured: #f4b090 on #26231c — 8.55:1 / Lc 65.7
+   Lc IS UNSIGNED HERE, and the three night rows are why it is worth saying.
+   A first draft wrote them -95.2 / -76.1 / -65.7, which is APCA's own
+   polarity notation and correct English — and check-palette's CLAIM regex
+   reads `Lc (\d+(?:\.\d+)?)`, so a leading minus does not fail the claim,
+   it makes the gate skip the line entirely. Three measured numbers would
+   have shipped unbound, printing green. The gate's own `lc()` is documented
+   "Absolute Lc. Polarity is carried by which argument is the text", and
+   every one of the eleven claims above follows that. So do these.
+   All six clear 4.5:1 and Lc 60, and all six are better than the same ink
+   on the binding day field w05 (#5c564a on #f2e4c9 · 5.79:1 / Lc 70.1). */
+#manifest{background:var(--ink-inverse); border:1px solid var(--hair-strong)}
+/* the engine still writes .compact/.landed every frame; with the ledger on
+   request they are inert, and .open is the single source of truth · which
+   is what lets aria-expanded finally be true. */
+#manifest.compact ol, #manifest.compact .foot{display:block}
+#manifest.compact{width:300px}
+#manifest header{align-items:center}
+#manifest header .n{font-family:var(--body); font-size:var(--fs-label)}
+#manifest li b, #manifest li b a{font-family:var(--body); font-size:var(--fs-note);
+  color:var(--ink); text-decoration:none}
+#manifest li b a:hover{text-decoration:underline; text-underline-offset:3px}
+#manifest li .m{font-size:var(--fs-small)}
+#mclose{background:none; border:none; cursor:pointer; color:var(--ink-2);
+  font-family:var(--body); font-size:var(--fs-label);
+  padding:.35rem .35rem .35rem .6rem; margin:-.35rem 0 -.35rem -.6rem;
+  min-height:32px}
+
+/* ── the phone: a reading design, not a squeezed desktop ─────────────────*/
+@media (max-width:820px){
+  :root{--pad-x:18px; --rail:38px}
+  body{font-size:1.0625rem; line-height:1.62}
+  /* the rail gets its own lane down the left margin, and the prose never
+     enters it. The thread's x is pinned to the lane in JS (RAIL_X_MOBILE),
+     so the line stops crossing the column twice per station. */
+  .beat{padding-left:calc(var(--pad-x) + var(--rail)); padding-right:var(--pad-x)}
+  /* the phone corridor is 14vh, not a 150vh box with the content floated
+     in the middle of it: a station is its content and one short corridor. */
+  .station{min-height:0; padding-top:7vh; padding-bottom:7vh; align-items:flex-start}
+  .b1{min-height:74vh; padding-top:5vh}
+  .b4, .b7, .b8, .bwho, .bpath, .bhow{min-height:0}
+  .station .beat-inner{gap:1.25rem}
+  .prose h2{font-size:clamp(1.85rem,8vw,2.35rem); line-height:1.08}
+  .codename{font-size:var(--fs-label)}
+  .prose .bright{font-size:1.2rem; margin-top:.8rem}
+  .prose .mutedln, .thesis{max-width:34ch}
+  .deck{max-width:18ch}
+  /* each station starts with a tick off the rail · a stop on a route map */
+  .station>.beat-inner::before{content:""; position:absolute;
+    left:calc(-1 * var(--rail)); top:.55em; width:calc(var(--rail) - 9px); height:1px;
+    background:var(--clay-g); opacity:.85}
+
+  /* the manifest is a sheet, not a pill that lands on the reading column */
+  /* three items in a 390px band: the name, the clock, the stops control.
+     The phase word is dropped · the station heading under it says the same
+     thing in more words, and keeping it overflowed the band by 67px. */
+  #mast{padding:.5rem var(--pad-x); gap:.5rem}
+  #mast>a{font-size:1rem}
+  #mast .state{font-size:var(--fs-micro); white-space:nowrap}
+  /* THE WORD STAYS ON THE PHONE. A first cut dropped it here — 'stops 0 / 6'
+     measured 96px against 60px bare — and a cold critic read the result and
+     asked "zero out of six WHAT?", which is the whole job of the word. The
+     room comes from the label instead: 'seen' is shorter than 'stops', and
+     the count is a progress figure rather than an inventory, so it is also
+     the truer word. Re-measured at 390 and 320 against the name and the
+     clock, and it fits at both. */
+  #mtoggle{padding:.5rem .55rem; min-height:44px; white-space:nowrap}
+  #mtoggle #mcount{margin-left:.35em}
+  #mscrim{background:rgba(38,35,28,.28)}
+  #manifest{
+    top:auto; bottom:0; right:0; left:0; width:auto; max-height:72vh;
+    border-left:none; border-right:none; border-bottom:none;
+    padding:.5rem var(--pad-x) calc(1rem + env(safe-area-inset-bottom));
+    transform:translateY(12px)}
+  #manifest.open{width:auto; left:0; right:0; padding:.5rem var(--pad-x) calc(1rem + env(safe-area-inset-bottom))}
+  #manifest::before{content:""; display:block; width:40px; height:3px;
+    border-radius:2px; background:var(--hair-strong); margin:.25rem auto .7rem}
+  #manifest li{padding:.62rem 0}
+  #manifest li b a{display:inline-block; padding:.2rem 0}
+  /* the label/value grid wrapped values to 3–4 lines at 390; on a phone
+     the label goes above the value and the value gets the whole width. */
+  .schoolrec .srow{grid-template-columns:1fr; gap:.1rem}
+  .schoolrec .srow .sk{font-size:var(--fs-small)}
+  .schoolrec .shead{flex-direction:column; gap:.15rem}
+  .engrows li{grid-template-columns:1fr; gap:.1rem}
+  /* PERCENT, NOT VW. The prose column on a phone is the viewport MINUS
+     the rail lane and two gutters, so a card sized against vw overhangs
+     its own column: measured at 320, min(292px,92vw) drew 292px into a
+     246px column and hung 40px past the plate that holds it. 100% is the
+     column. (It was NOT the source of the page's 10px sideways scroll —
+     that was ¶02's plate, fixed at the fx engine. Two defects in the same
+     screenful, and fixing this one first is what let the other be seen.) */
+  .padcard{width:min(320px,100%)}
+
+  /* ── a finger is 44px, and 29 of 41 targets here were not ─────────────
+     Measured at 390 on the proto: 29 of 41 tap targets under 44px, the
+     worst of them the email link at 166×15. Wide enough, far too short —
+     so the defect is height, and the fix is VERTICAL PADDING ON THE INLINE
+     LINK.
+
+     Why padding and not a bigger type, a bigger line-height or a block
+     display, all of which were tried first:
+       · type is what P7 just spent 7 screens buying back. Growing the link
+         text regrows every station that contains one.
+       · vertical padding on a non-replaced INLINE box does not enter line
+         layout at all — the line box, the leading and the wrap points are
+         untouched — but it does enlarge the box that gets hit-tested. So
+         the target grows and the page does not move. No negative margin is
+         needed either: vertical margins are inert on inline boxes too.
+       · `display:inline-block` was the first draft and it is wrong here.
+         It makes a link an unbreakable atom, and "the benchmark ledger @
+         2caacd0 ↗" is 33 characters — at 320 it stops wrapping and pushes
+         the body into a horizontal scroll. Links inside prose stay inline.
+     Targets that are already boxes (the buttons) take a min-height instead;
+     nothing interactive on this page is left under 24×24. */
+  .handoff a, .dawnrow a, .engrows a, .b8 footer .reach a,
+  .litany .mline .rct a, .prose .mutedln a, .prose .prov a,
+  .bench .shead a, .bench .bfoot a, .cosign figcaption a{
+    /* .97rem, measured, not chosen: these lines set a 13.7–14.0px box, so
+       the pair of paddings has to carry the other ~30px. .92rem landed the
+       whole set at 43.1–43.4 — short by half a pixel, which is the kind of
+       near-miss that passes a reading and fails a ruler. */
+    padding-block:.97rem}
+  #approve{min-height:44px; padding-block:.75rem}
+  #clear, .padbar button{min-height:44px}
+  #mclose{min-height:44px; padding:.62rem .5rem .62rem .7rem;
+    margin:-.62rem 0 -.62rem -.7rem}
+}
+@media (max-width:560px){
+  .padbar{justify-content:flex-start}
+}
+/* ── the masthead sheds the phase, not the count ─────────────────────────
+   Three items want this band and below about 430px they do not fit. What
+   was happening instead is worth recording, because it looked like a
+   design: flex picked the victim, and it picked the NAME. Measured at 390,
+   "Ayush·Yadav" needs 98.5px and flex handed it 97.2 — a 1.3px shortfall
+   that wrapped the site's own nameplate onto two lines in the corner.
+
+   AND THE BAND'S WIDTH IS NOT CONSTANT, which is the part a single
+   measurement misses. `.state` carries the phase word, so it is 146px at
+   "the start" and about 165px at "jetpack-compress": the masthead fits at
+   the top of the page and overflows in the middle of it. Any threshold
+   read off ¶01 alone is read off the narrowest frame of a variable.
+
+   So the shed is explicit, and the ORDER is a judgement rather than a flex
+   accident. The NAME is the masthead's reason to exist and never wraps.
+   The COUNT is its only control. The phase word is the one item a reader
+   already has, in the station heading directly beneath it and now in the
+   ledger the count opens — so it is the one that goes. The clock stays: it
+   is the run's spine and it costs 42px.
+
+   460, and every term measured rather than guessed — at 500px, inside the
+   phone band so `.state` is at its 12.8px, with `#mphase` set to each of
+   the thirteen PHASE_NAMES in turn:
+
+     name 98.5 + widest state 207.0 ("jetpack-compress") + button 94.6
+     + padding 36 + gaps 16 = 452px
+
+   A first cut of this rule said 430, off an ESTIMATED 165px state. That
+   number was 42px light, and the error had a direction: between 430 and
+   452 the rule would have kept the phase in a band too narrow to hold it,
+   and with the name now pinned `nowrap` there is no longer a flex victim
+   to absorb it — it would have been real horizontal overflow, on exactly
+   the widths a large phone reports. Measure the variable at its maximum,
+   not the frame you happen to be looking at. */
+#mast>a{white-space:nowrap}
+@media (max-width:460px){
+  #mast .mdot, #mast #mphase{display:none}
+}
+@media (prefers-reduced-motion: no-preference){
+  #manifest{transition:opacity .22s ease, transform .22s ease, visibility .22s}
+}
+/* ── the floor, closed ───────────────────────────────────────────────────
+   A first pass declared the floor and left 17 runs under it: every rule
+   here out-specifies an original that was winning. Measured after: 47 sub-12px
+   HTML selector/size pairs at 1440 fall to 3 · a decorative bullet, one
+   p.mono still carrying an inline font-size, and ¶13's Eliot
+   figcaption, which sits outside .borrowed. All three are one-liners. */
+#cadWeek .grid i#slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
+.gatecard .note, .gates .gleg, .gates .gclose, .signs .srow .srole,
+.signs .sclose, .quests .q .qnote, .cosign figcaption .rel,
+.bench .bfoot, .bench .shead span, .bench .shead a{
+  font-family:var(--body); font-size:var(--fs-label); letter-spacing:0;
+  word-spacing:.12em; line-height:1.6}
+.engrows li, .litany .mline .rct{font-size:var(--fs-label)}
+.engrows li{padding:.34rem 0}
+/* Leading was tightened here in an earlier pass and then reverted, measured:
+   with FIXED station heights a shorter text block leaves MORE void, so the
+   near-empty count moved the wrong way (1440 y6750: 69 -> 40 words). The
+   serif keeps mono's generous rhythm; only the record card, which is where
+   the two new contact rows landed, is compressed. */
+
+/* ── the ledger row: codename · what it is · the number ─────────────────
+   A first cut showed bare codenames, which is a content regression against
+   the live page: it prints a metric subline in the corridors. The subline
+   is unconditional here, and the whole row is the link. */
+#manifest li{grid-template-columns:1.7rem 1fr; gap:.05rem .45rem; padding:.42rem 0}
+#manifest li .mrow{display:contents; text-decoration:none; color:inherit}
+#manifest li b{grid-column:2; font-family:var(--body); font-size:var(--fs-note); color:var(--ink)}
+#manifest li .mnoun{grid-column:2; font-family:var(--body); font-style:italic;
+  font-size:var(--fs-small); color:var(--ink-2); line-height:1.28}
+#manifest li .m{grid-column:2; opacity:1; height:auto; overflow:visible;
+  font-size:var(--fs-micro); color:var(--ink-2); margin-top:.1rem; line-height:1.34}
+/* desktop only: the phone sheet is full-bleed and must not inherit this */
+@media (min-width:821px){ #manifest, #manifest.compact{width:344px} }
+#manifest .foot{font-size:var(--fs-small); margin-top:.35rem; padding-top:.35rem}
+#manifest li.stamped .m, #manifest li.stamped .mnoun{color:var(--ink-2)}
+#manifest li:hover b, #manifest li:focus-within b{text-decoration:underline;
+  text-underline-offset:3px}
+#manifest li .mrow:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
+
+/* the identity line: the largest type on the first screen after the name,
+   and set above the 18px epigraph so the first fixation after the nameplate
+   lands on what he does, not on a poem. */
+.identity{font-family:var(--body); font-size:clamp(1.24rem, 2.05vw, 1.72rem);
+  line-height:1.34; max-width:30ch; margin-top:1.5rem; color:var(--ink)}
+.engrows li b, .engrows li b a{font-size:var(--fs-note); font-family:var(--body)}
+.engrows a[href^="mailto"]{font-family:var(--mono); font-size:var(--fs-small);
+  letter-spacing:.02em; word-spacing:normal}
+#manifest li .idx, #manifest li .m, .gates .grow .gi, .gl li .gm,
+.gbench.gtail>span, .verdictline span, .verdictline b, #conf, #fwd,
+#mast, #mast .state, .chip, .ladder li span{font-size:var(--fs-micro)}
+#mclock{font-size:var(--fs-micro)}
+/* ¶13's epigraph and the gate's note are sentences, not machine values */
+.dawnwrap figcaption, .dawnwrap figcaption i, #gateNote{
+  font-family:var(--body); font-size:var(--fs-small); letter-spacing:0}
+.gl li b{font-size:var(--fs-label)}
+/* missed by the sweep above, found by the harness's effective-px pass */
+.padbar .st, .padbar .st i, .padbar .st span,
+.signs .shead span, .signs .shead span i, .signs .srow .sname,
+.signs .srow .swhen, #chWho, #chWhen, #chMeet,
+#gatesFig .gbench.gtail span, .gatecard p.mono, #automl .prose p.mono{
+  font-size:var(--fs-micro)}
+.gatecard p.mono, #automl .prose p.mono{font-family:var(--body); font-size:var(--fs-small)}
+.gates .gbench.gtail span{font-size:var(--fs-micro)}
+.gatecard .gl li .gi, .gl li .gi{font-size:var(--fs-micro)}
+.borrowed figcaption, .borrowed figcaption i,
+figure.borrowed>figcaption, figure.borrowed>figcaption i,
+.dawnwrap figure figcaption, .dawnwrap figure figcaption i{
+  font-family:var(--body); font-size:var(--fs-small); letter-spacing:0; line-height:1.5}
+
+/* ── the corridor ────────────────────────────────────────────────────────
+   The corridor stops being the remainder of a vh multiple and becomes a
+   declared constant. Measured at 1440, section height − content height:
+   who 598, path 782, work 612, cadence 616, start 469, glyph 565, jetpack
+   472, lifequest 347, automl 279, cosigners 321, gate 124 · four stations
+   carry more void than content and the corridor swings 124→782px.
+   Chosen by eye over the metric, which was ambiguous: the first cut cost a
+   screen at 1280 (16.12→16.37) while saving one at 1512 (15.91→14.73). The
+   tuned figures below pass at every width. */
+@media (min-width:821px){
+  /* The corridor is asymmetric. A reader ARRIVES at a stop — the
+     heading belongs near the top of the screen — and then TRAVELS, so the
+     empty run trails the station instead of being split either side of it.
+     A symmetric 23/23 put half the corridor above the heading, which is
+     where every measured near-empty frame was (bp 0.03–0.31). */
+  .station, .b1, .bwho, .bpath, .bhow, .b2, .b3, .b4, .b5, .b6, .b7, .bsign{
+    min-height:0; align-items:flex-start;
+    padding-top:7vh; padding-bottom:25vh}
+  .bpath{justify-content:flex-start}
+  /* ¶08 keeps a long approach: dusk falls across this corridor (FLIP_POS
+     0.78) and it is the one stretch that should feel like distance. */
+  .b6{padding-bottom:36vh}
+  .b8{min-height:100vh; padding-top:3vh; padding-bottom:6vh}
+}
+
+/* ── the head of a station, not its corridor ─────────────────────────────
+   The copy cut landed and moved the problem: near-empty frames are almost
+   all at LOW beat-progress (bp 0.03–0.31), i.e. the empty head of a station
+   before its content arrives, not the corridor after it. `.station` used to
+   centre its content in a fixed 128–158vh box, so a third of every stop was
+   always blank and the cut made that third bigger. What follows answers the
+   head; the rules above answer the corridor. */
+
+/* ── the station head reads at a glance ─────────────────────────────────
+   The copy doc puts a plain-language line under each h2 and it was set in
+   the smallest, faintest type at the stop — the exact inversion of what a
+   non-technical reader needs. It becomes the deck: the largest *sentence*
+   at the head, under the codename and above the hook line, so the scale
+   descends name -> what it is -> why it matters. */
+.codename{
+  font-family:var(--body); font-style:normal;
+  font-size:clamp(1.22rem, 1.72vw, 1.46rem); line-height:1.32;
+  color:var(--ink); margin-top:.5rem; max-width:34ch; letter-spacing:0;
+}
+.prose .bright{               /* steps down so the deck is not out-shouted */
+  font-size:clamp(1.1rem, 1.5vw, 1.3rem); margin-top:.85rem; color:var(--ink-2);
+}
+/* ¶03 carries two: the stop's name and the job title. Only the first is the
+   deck; a second one is a credential and sets one step down, or the head
+   reads as two competing headlines. */
+.codename + .codename{
+  font-size:var(--fs-note); line-height:1.4; color:var(--ink-2);
+  margin-top:.2rem; max-width:40ch;
+}
+
+/* ── ¶10's gate reasons ─────────────────────────────────────────────────
+   .gwhy says WHY each gate decided what it did. It is the sentence the row
+   above only asserts, so it sits under the name, indented to the row's own
+   metric column, in the text face. */
+.gates .grow .gwhy{
+  grid-column:2 / -1; font-family:var(--body); font-style:italic;
+  font-size:var(--fs-small); line-height:1.45; color:var(--ink-2);
+  letter-spacing:0; word-spacing:.12em; margin-top:.1rem;
+}
+
+/* ── the phone, tightened to its content ─────────────────────────────────
+   The phone design above got 23.22 screens down to 17.27 against a target
+   of 16, and what was left was almost all content: measured at 390, every
+   station's lead and trail gap is exactly the padding it declares. So the
+   last two levers are that padding, and the tight figure editions — sized
+   for a 330px seat, they render their 11px authoring at 15.1px, above the
+   11–15px band their own comment asks for. */
+@media (max-width:820px){
+  .station{padding-top:3vh; padding-bottom:3vh}
+  .b1{min-height:58vh; padding-top:4vh}
+  .station .beat-inner{gap:1rem}
+  /* 276px: the tight editions author 11px in a 240 viewBox, so the seat sets
+     the rendered size. 276 -> 12.65px authored, 12.46px effective at the fx
+     engine's ~0.985 — the last width that still clears the 12px floor.
+     check-figures' FLOOR_PX covers the WIDE editions only. */
+  .figsvg.tight{max-width:276px}
+  .padcard{width:min(292px,100%)}
+  .plate{padding:.7rem}
+  .codename{font-size:1.16rem; margin-top:.4rem}
+  .prose .bright{font-size:1.06rem; margin-top:.7rem}
+  .schoolrec{margin-top:1.4rem; padding-top:.8rem}
+  .handoff{margin-top:.8rem; line-height:1.75}
+  .prose .prov{margin-top:1rem; line-height:1.56}
+  .borrowed{margin-top:.85rem}
+  .litany .mline{padding:.6rem 0 .65rem}
+  .engcard header{padding-bottom:.45rem}
+}
+</style>
 </head>
 <body>
 
@@ -1651,23 +2148,25 @@ h1[data-np-measuring] .np-ch {
 
 <header id="mast">
   <a href="#top">Ayush&#8202;·&#8202;Yadav</a>
-  <span class="state"><span class="st-run">run <i>042</i> · </span><b id="mclock">06:12</b> · <span id="mphase">the start</span></span>
+  <span class="state"><span class="st-run">run <i>042</i> · </span><b id="mclock">06:12</b><span class="mdot"> · </span><span id="mphase">the start</span></span>
+  <button id="mtoggle" type="button" aria-expanded="false" aria-controls="manifest"><span class="mlabel">seen </span><span id="mcount">0 / 6</span></button>
 </header>
 
-<aside id="manifest" aria-label="run manifest">
+<div id="mscrim" hidden></div>
+<aside id="manifest" aria-label="run manifest" aria-hidden="true">
   <header>
-    <span class="n"><button id="mtoggle" type="button" aria-expanded="false">run <i>042</i> — manifest</button></span>
-    <span id="mcount">0 / 6</span>
+    <span class="n">run <i>042</i> · manifest</span>
+    <button id="mclose" type="button" aria-label="close the manifest">close ×</button>
   </header>
   <ol>
-    <li data-st="1"><span class="idx">01</span><b>applied</b><span class="m">rules macro-f1 0.9791 · 96-sample gate</span></li>
-    <li data-st="2"><span class="idx">02</span><b>cadence</b><span class="m">sentence → committed plan · 1,186 tests</span></li>
-    <li data-st="3"><span class="idx">03</span><b>glyph</b><span class="m">97.01% · 10,000-image test set</span></li>
-    <li data-st="4"><span class="idx">04</span><b>jetpack-compress</b><span class="m">72 tests, 0 failures · jdk 25</span></li>
-    <li data-st="5"><span class="idx">05</span><b>lifequest</b><span class="m">prototype · held marks stay held</span></li>
-    <li data-st="6"><span class="idx">06</span><b>agentic automl</b><span class="m">langgraph + 44 tools · 12 over mcp · gated ×7</span></li>
+    <li data-st="1"><span class="idx">01</span><a class="mrow" href="#work"><b>applied</b><span class="mnoun">gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></a></li>
+    <li data-st="2"><span class="idx">02</span><a class="mrow" href="#cadence"><b>cadence</b><span class="mnoun">calendar in plain english</span><span class="m"><b class="mv">1,186</b> tests pass</span></a></li>
+    <li data-st="3"><span class="idx">03</span><a class="mrow" href="#glyph"><b>glyph</b><span class="mnoun">digit reader in c++</span><span class="m"><b class="mv">3.5×</b> faster kernel</span></a></li>
+    <li data-st="4"><span class="idx">04</span><a class="mrow" href="#jetpack-compress"><b>jetpack-compress</b><span class="mnoun">parallel java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></a></li>
+    <li data-st="5"><span class="idx">05</span><a class="mrow" href="#lifequest"><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></a></li>
+    <li data-st="6"><span class="idx">06</span><a class="mrow" href="#automl"><b>agentic automl</b><span class="mnoun">capstone ml agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></a></li>
   </ol>
-  <p class="foot">six projects · each ticks off as you reach it</p>
+  <p class="foot">six software projects</p>
 </aside>
 
 <!-- STATION IDS. Every stop is addressable, and the id is the run's OWN
@@ -1687,10 +2186,10 @@ h1[data-np-measuring] .np-ch {
      `#top` stays on <main>: the masthead has pointed at it since round 1. -->
 <main id="top">
 
-  <!-- ¶ 01 · 06:12 — the run starts -->
+  <!-- ¶ 01 · 06:12 · the run starts -->
   <section id="start" class="beat b1" data-beat="0">
     <div class="beat-inner">
-      <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start — <i>06:12</i></p>
+      <p class="kicker" data-fx="in .0 .18 y 3">¶ 01 · the start · <i>06:12</i></p>
         <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">first light. nothing has been decided yet.</p>
       <!-- The scroll-fx rides the PLATE, not the h1. On the h1 it
            translated the type while leaving the machine overlay (a
@@ -1710,6 +2209,7 @@ h1[data-np-measuring] .np-ch {
            838.5x211.7 inside an 838.5x176.4 element, which preserveAspectRatio
            then scaled by 0.833 and centred, shifting every machine 70px right.
            That is the A landing on the y. Nothing may share this box. -->
+      <p class="identity" data-fx="in .0 .24 y 4 | out .94 1.04 y -3 | drift 14">Software engineer. I build products end to end, from the interface down to the data and models under it.</p>
       <button type="button" class="np-replay" data-np-replay hidden>watch it again ⟲</button>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
            at or before y 0): a hero that assembles itself costs LCP and
@@ -1718,27 +2218,25 @@ h1[data-np-measuring] .np-ch {
            was invisible until you had already scrolled. Round-5 call. -->
       <figure class="borrowed hero-poem" data-fx="in .02 .12 y 4 | drift 12">
         <blockquote lang="es">Caminante, no hay camino,<br>se hace camino al andar.</blockquote>
-        <p class="trans">Traveller, there is no road &mdash; the road is made by walking.</p>
-        <figcaption>Antonio&nbsp;Machado &middot; <i>Proverbios y cantares</i>&nbsp;XXIX, Campos de Castilla, 1912</figcaption>
+        <p class="trans">Traveller, there is no road; the road is made by walking.</p>
+        <figcaption>Antonio&nbsp;Machado, 1912</figcaption>
       </figure>
       <p class="cue mono" data-fx="in 0 .05 y 3 | out .96 1.06 y -4"><span class="a">↓</span> twelve stops, dawn to dark</p>
     </div>
   </section>
 
-  <!-- ¶ 02 · 06:58 — who: the engineer of record signs the line -->
+  <!-- ¶ 02 · 06:58 · who: the engineer of record signs the line -->
   <section id="who" class="beat station bwho" data-beat="1">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who — <i>06:58</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun clears the roofline, and the day has to be answered for.</p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who · <i>06:58</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">This is a record of what I&rsquo;ve built.</p>
-        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">And how each piece was checked before I called it done.</p>
-        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I&rsquo;m a computer-science graduate from Miami University, based in Cincinnati, Ohio. I build the interface, the services behind it, the data they run on, and the machine learning when a problem needs it. Every claim on this line carries a receipt.</p>        <p class="nb" data-fx="in .0 .13 y 3 | out .92 1.03 y -4 | drift 10">every station on this line hands its output to a case file, source, or live build &mdash; the links are in each station&rsquo;s handoff.</p>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">A record of what I&rsquo;ve built, and how I checked it.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I finished a B.S. in Computer Science at Miami University in May 2026, after a year as its ITSM data integration intern. Three of the six projects below had teammates. Every project number links to its proof, or says why it can&rsquo;t.</p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="engcard">
-          <header><span>who built this</span><span>filed <i>06:58</i></span></header>
+          <header><span>who built this</span></header>
           <div class="sigwell">
             <span class="sig" id="sig">Ayush Yadav</span>
             <span class="signib" id="signib" aria-hidden="true"></span>
@@ -1746,17 +2244,20 @@ h1[data-np-measuring] .np-ch {
           </div>
           <ul class="engrows">
             <li><span>base</span><b>cincinnati, oh</b></li>
-            <li><span>builds</span><b>interfaces · services · data · ml</b></li>
-            <li><span>degree</span><b>b.s. computer science — miami university, may 2026</b></li>
+            <li><span>builds</span><b>web apps · apis · data pipelines · ml</b></li>
+            <li><span>languages</span><b>typescript · python · java · c++ · sql</b></li>
+            <li><span>degree</span><b>b.s. computer science · miami university, may 2026</b></li>
+            <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
+            <li><span>résumé</span><b><a href="resume.pdf">pdf · one page &#10230;</a></b></li>
             <li><span>handles</span><span><a href="https://github.com/yadava5">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin ↗</a></span></li>
           </ul>
         </div>
-        <figcaption>fig. 02 — the record card: what I build, and where to find me.</figcaption>
+        <figcaption>fig. 02 · the record card.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 03 · 07:52 — the yard: the Miami ITSM job, told with its freight.
+  <!-- ¶ 03 · 07:52 · the yard: the Miami ITSM job, told with its freight.
        The strongest untold story on the site gets a real beat: three
        feeders — five years of OAS query logs, the Tableau/Workday silos,
        a legacy Laravel reporter — worked into shape and merged onto the
@@ -1764,74 +2265,64 @@ h1[data-np-measuring] .np-ch {
   <section id="path" class="beat station flip bpath" data-beat="2">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the yard — <i>07:52</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">early light — everything has a shape and nothing has a name.</p>
-        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Five years of query logs. Zero structure.</p>
-        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
-          <blockquote>&ldquo;The purpose of computing is insight, not numbers.&rdquo;</blockquote>
-          <figcaption>Richard&nbsp;W.&nbsp;Hamming &middot; <i>Numerical Methods for Scientists and Engineers, 1962</i></figcaption>
-        </figure>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The job before this run: teach the records shape. It&rsquo;s where I learned that the work starts in the mess.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">itsm data integration intern — miami university · jun 2025 – may 2026<br>
-          <b>1.6m+</b> oas query logs — 5 yrs · 1,153 users · 66 dashboards ⟶ a <b>57.8m-row</b> field-usage table, sqlite<br>
-          tableau + workday silos ⟶ one master inventory — <b>10,453 rows × 35 fields</b> · hash-dedup · ruff + pytest ci<br>
-          legacy laravel reporter ⟶ etl ⟶ <b>37-month</b> tableau dashboard — compliance <b>0% ⟶ 97%</b> across 61 projects</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the inventory is checked in — the rest are read off miami&rsquo;s own systems and cannot be published</span> · <a href="https://ayush-yadav.com/projects/master-inventory/">the inventory&rsquo;s case file ⟶</a></p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the internship · <i>07:52</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2><p class="codename">the yard</p>
+        <p class="codename">ITSM Data Integration Intern, Miami University, Jun 2025 to May 2026</p>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Miami was moving its dashboards to Tableau and needed to know which fields were still in use.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I built a Python pipeline that flags every dashboard field still in use.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1.6m+</b> query logs, five years of dashboard use ⟶ one usage table of <b>57.8m rows</b> (sqlite)<br>
+          code compliance across 61 projects: <b class="mv">0%</b> in 2023, <b class="mv">97%</b> now</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the master inventory is published; the rest stays on miami&rsquo;s own systems</span> · <a href="https://ayush-yadav.com/projects/master-inventory/">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="pathFig" class="figsvg" viewBox="0 0 560 388" role="img" aria-label="Three feeder roads — 1.6 million OAS query logs, the Tableau and Workday silos, and a legacy Laravel reporter — run through one python-and-SQL works and park inside their products, where they stay; the three products merge onto one main line. Each product carries its disposition, in the reviewer's own marks: the master inventory is drawn solid and checked in, and the other two are drawn dashed and not checked in, because they are read off Miami's own systems. Beneath the third, a compliance meter stands settled at 97 percent across 61 projects — it does not fill as you scroll, and only its riser and numeral ink in."></svg>
-        <figcaption>fig. 03 — three sources in, one table out. <i>the merge is the thread you are following.</i></figcaption>
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 388" role="img" aria-label="Three feeder roads, carrying 1.6 million OAS query logs, the Tableau and Workday records, and a legacy Laravel reporter, run through one Python and SQL works and park inside their products, where they stay; the three products merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid and checked in, and the other two are drawn dashed and not checked in, because they are read off Miami's own systems. Beneath the third, a compliance meter stands settled at 97 percent across 61 projects. It does not fill as you scroll; only its riser and numeral ink in."></svg>
+        <figcaption>fig. 03 · three messy sources in, three products out.</figcaption>
       </figure>
     </div>
     <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
-      <div class="shead"><span>the school record — filed with the run</span><span>miami university · oxford, oh · <i>may 2026</i></span></div>
+      <div class="shead"><span>the school record</span></div>
       <div class="srows">
-        <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b>3.65</b> · dean&rsquo;s list — fall 2023 · spring 2025 · fall 2025</span></div>
-        <div class="srow"><span class="sk">coursework</span><span>high-performance computing · data structures &amp; algorithms · machine learning · deep learning · databases</span></div>
-        <div class="srow"><span class="sk">certificates &rsquo;26</span><span>azure ai essentials · snowflake data engineering · data analysis &amp; github (microsoft)</span></div>
-        <div class="srow"><span class="sk">feb 2025</span><span><b>finalist, mucat design innovation</b> — lidar visual-assistance proposal · <b>$2,500</b> prototyping grant</span></div>
-        <div class="srow"><span class="sk">mar 2025</span><span>social innovation weekend — <b>lifequest</b> co-built in a weekend · react + nestjs · 7-person team · held at station 05 tonight</span></div>
+        <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b class="mv">3.65</b> · dean&rsquo;s list: fall 2023, spring 2025, fall 2025</span></div>
+        <div class="srow"><span class="sk">feb 2025</span><span><b>finalist, mucat design innovation</b> · lidar visual assistance proposal · <b class="mv">$2,500</b> prototyping grant</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ¶ 04 · 08:47 — Applied: the sorting line -->
+  <!-- ¶ 04 · 08:47 · Applied: the sorting line -->
   <section id="work" class="beat station b2" data-beat="3">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · first station — <i>08:47</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the morning post, and the first thing anyone does with it is sort.</p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 04 · project 1 of 6 · <i>08:47</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
+        <p class="codename">A job application tracker that reads your Gmail</p>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
-        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied reads it — on a device you control, and defers to you when it isn&rsquo;t sure.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>201 regex rules</b> ⟶ e5 embeddings ⟶ fine-tuned setfit<br>
-          <b>macro-f1 0.9791</b> · 96-sample eval — 8 classes · 2 misclassified — the rules stage, not the cascade<br>
-          ci blocks the build below 0.95 macro-f1 · int8 onnx via transformers.js — <b>90&#8202;mb ⟶ 23&#8202;mb</b><br>
-          postgres row-level security — a non-bypassrls role</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the sorted mail lands in</span> <a href="https://getapplied.vercel.app">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card">system card ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://ayush-yadav.com/projects/jobtracker/">the case file ⟶</a></p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied sorts each message into one of 8 categories, files what it&rsquo;s sure of, and asks you about the borderline ones.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">1 wrong out of 96</b> labelled emails (0.990 macro-f1) · the rules stage, not the cascade<br>
+          220 regex rules ⟶ e5 embeddings ⟶ <span class="uv">setfit, fine tuned</span> · ci blocks the build below 0.95 macro-f1<br>
+          built an int8 onnx export for inference in the browser: <span class="uv">90 ⟶ 23 mb</span>, measured 2026-08-03</p>
+        <p class="prov mono">next.js · python · postgresql</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://getapplied.vercel.app">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card">system card ↗</a> · <a href="https://github.com/yadava5/applied">source ↗</a> · <a href="https://ayush-yadav.com/projects/jobtracker/">the case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="img" aria-label="Eight pieces of the morning post ride one belt past three reading desks — 201 regex rules, which settles anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all — it rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring for a person to settle, still filed under its category and only flagged. On the hosted build only the rules desk runs."></svg>
-        <figcaption>fig. 04 — the sorting line, scrubbed by your scroll. <i>a piece leaves at the first desk that clears it; the eighth clears nothing<span class="hoverinv"> — hover a desk to see what it settled</span>.</i></figcaption>
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="img" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
+        <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i>tap or hover a desk for its verdicts.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 05 · 12:06 — Cadence: the parse -->
+  <!-- ¶ 05 · 12:06 · Cadence: the parse -->
   <section id="cadence" class="beat station flip b3" data-beat="4">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · second station — <i>12:06</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">noon. nothing casts a shadow, so nothing hides in one.</p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 05 · project 2 of 6 · <i>12:06</i></p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Cadence<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Plans, the way you&rsquo;d say them out loud.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Type a sentence; it becomes the event — attendees, Meet link and all.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1,186 passed · 0 skipped</b> — 635 frontend + 551 backend<br>
-          4-stage parse — chrono · hashtag · priority · compromise (this sample is scripted, not a live call)<br>
-          <b>37 routes</b> in one serverless function — vercel&rsquo;s 12-function cap<br>
-          rls enforced on <b>7 tables</b> — force, 22 policies · owner-scoped checks on 6 services · idor suite in ci</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the committed plan lands in</span> <a href="https://ayush-yadav.com/projects/taskflow-calendar/">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card">system card ↗</a></p>
+        <p class="codename">A calendar you can type to in plain English</p>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Adding a plan to a calendar usually means a form.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">In Cadence you type the plan as you’d say it, and it becomes the event, attendees and Meet link included.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">1,186 passed · 0 skipped</b>, every automated test green · 635 frontend + 551 backend<br>
+          <b class="mv">36 routes</b> packed into one serverless function to stay under vercel&rsquo;s limit of 12 functions</p>
+        <p class="prov mono">react · typescript · postgresql · google calendar api</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/taskflow-calendar/">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence">source ↗</a> · <a href="https://usecadenceapp.vercel.app">live build ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
@@ -1852,35 +2343,31 @@ h1[data-np-measuring] .np-ch {
           <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
           <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
         </div>
-        <figcaption>fig. 05 — the parse: the sentence resolves into the schedule as you scroll. <i>hover a chip to see its words.</i></figcaption>
+        <figcaption>fig. 05 · a scripted parse, not a live call. <i>tap or hover a chip to see its words.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 06 · 15:23 — Glyph: the run needs a sample -->
+  <!-- ¶ 06 · 15:23 · Glyph: the run needs a sample -->
   <section id="glyph" class="beat station b4" data-beat="5">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · third station — <i>15:23</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">mid-afternoon, when the light goes hard and shows the edges.</p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · project 3 of 6 · <i>15:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
-        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
-          <blockquote>&ldquo;We should forget about small efficiencies, say about 97% of the time&hellip; yet we should not pass up our opportunities in that critical 3%.&rdquo;</blockquote>
-          <figcaption>Donald&nbsp;E.&nbsp;Knuth &middot; <i>Structured Programming with go to Statements, ACM Computing Surveys, 1974</i></figcaption>
-        </figure>
-        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">No frameworks. Just math, memory, and C++.</p>
-        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">The network below is awake in this tab — 45.9&#8202;KB of WebAssembly and 310.6&#8202;KB of weights, no server. The run needs a sample: yours.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>97.01%</b> on the 10,000-image mnist test set — 9,701/10,000 · macro-f1 0.9698<br>
-          parallel dot-256 kernel <b>3.5×</b> vs -O3 — parallelism carries all of it; the simd is in both builds · 784 ⟶ 100 ⟶ 10<br>
-          4 hand-written simd paths in the dot kernels — avx-512 · avx2 · neon · wasm128 (the wasm in this tab predates the fourth: -msimd128, compiler-vectorised) · 2-person team</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ your sample&rsquo;s reader lands in</span> <a href="https://ayush-yadav.com/projects/fast-mnist-nn/">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a> · <a href="https://getglyph.vercel.app/system-card">system card ↗</a></p>
+        <p class="codename">A handwritten digit reader, running in this tab</p>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Glyph began as an existing C++ network with 2 layers that did all its math on one core.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">I made its core matrix kernel 3.5× faster with OpenMP on a laptop with 10 cores. It scores 97.01% on the standard handwriting test, about what a network this size should score; the work was the speed. Try it below.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">9,701 of 10,000</b> mnist test digits right (macro-f1 0.9698)<br>
+          parallel dot-256 kernel <b class="mv">3.5×</b> vs -O3 · parallelism carries all of it; the simd is in both builds</p>
+        <p class="prov mono">c++ · openmp · webassembly · react</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph">source ↗</a> · <a href="https://getglyph.vercel.app">live build ↗</a> · <a href="https://getglyph.vercel.app/system-card">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
           <div class="padcard">
             <div class="padwell">
-              <canvas id="pad" aria-label="drawing pad — draw a digit 0 to 9"></canvas>
-              <div class="padhint" id="padhint">draw a digit 0–9<br>— the run needs a sample</div>
+              <canvas id="pad" aria-label="drawing pad: draw a digit from 0 to 9"></canvas>
+              <div class="padhint" id="padhint">draw one digit, large and centred</div>
             </div>
             <div class="padbar">
               <span class="st"><i>●</i> <span id="glyphStatus">waking…</span></span>
@@ -1891,8 +2378,8 @@ h1[data-np-measuring] .np-ch {
             <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: your 28 by 28 input, one hidden layer, ten output classes with confidence bars."></svg>
             <div class="verdictline">
               <span class="big idle" id="verdict">·</span>
-              <span>conf <b id="conf">—</b></span>
-              <span>forward <b id="fwd">—</b></span>
+              <span>conf <b id="conf">·</b></span>
+              <span>forward <b id="fwd">·</b></span>
               <span>read <b>locally</b> · no server</span>
             </div>
           </div>
@@ -1910,34 +2397,36 @@ h1[data-np-measuring] .np-ch {
              check-bench-artifacts matches numerator against denominator with no
              float parsing at all. -->
         <div class="bench" role="group" aria-label="the committed dot-256 benchmark, filed">
-          <div class="shead"><span>the committed bench — dot-256 kernel</span><span>filed 2026-08-02 · <a href="https://ayush-yadav.com/evidence/#fast-mnist-benchmark">on file @ 001e9b4 ⟶</a></span></div>
+          <div class="shead"><span>the committed bench · dot-256 kernel</span><span>filed 2026-08-02 · <a href="https://ayush-yadav.com/evidence/#fast-mnist-benchmark">on file @ 001e9b4 ⟶</a></span></div>
           <div class="brow"><span>one thread, -O3</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(1 / 3.5))"></span></span><span class="bval">1×</span></div>
-          <div class="brow simd"><span>openmp, all cores</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">3.5×</span></div>
-          <p class="bfoot">measured then, committed — not run in this tab. 3.536× at the median of 20 reps a side · cv 0.16% / 0.28% · one committed run, so no spread to quote · <a href="proof/glyph-dot256-openmp-native-001e9b4.json" download>the raw run record (json) ⟶</a></p>
+          <div class="brow simd"><span>openmp threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">3.5×</span></div>
+          <p class="bfoot">committed, not run in this tab · <a href="proof/glyph-dot256-openmp-native-001e9b4.json" download>the raw run record (json) ⟶</a></p>
         </div>
-        <figcaption>fig. 06 — the classifier is the portfolio&rsquo;s own C++. <i>what you draw departs down the line.</i></figcaption>
+        <figcaption>fig. 06 · Glyph&rsquo;s C++ network, compiled to WebAssembly.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 07 · 19:36 — jetpack-compress: split, work, stitch -->
+  <!-- ¶ 07 · 19:36 · jetpack-compress: split, work, stitch -->
   <section id="jetpack-compress" class="beat station flip b5" data-beat="6">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · fourth station — <i>19:36</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the sun going down, and the work speeding up to beat it.</p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 07 · project 4 of 6 · <i>19:36</i></p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">One gzip stream, many virtual threads.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The stream splits, the threads compress in parallel, and the lanes stitch back into one valid member.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>6.4×</b> single-threaded java.util.zip — 422 vs 66&#8202;mb/s (3-fork jmh · 99.9% ci)<br>
-          adler-32 vectorised <b>2.8×</b> scalar — 4.26&#8202;gb/s — bit-identical to java.util.zip.Adler32, and honestly not faster than the jdk intrinsic (14.06&#8202;gb/s)<br>
-          jdk <b>25</b> · one virtual thread per block, bounded in-flight window · memory-mapped i/o via ffm<br>
-          <b>72 tests, 0 failures</b></p>
-        <div class="gzrow" data-fx="in .05 .19 y 4 | out .88 1.02 y -4 | drift 12">
-          <button class="btn" id="gzbtn" type="button">gzip a sample in this tab</button>
-          <span class="mono" id="gzout" aria-live="polite"></span>
-        </div>
-        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem">browser gzip on this page&rsquo;s own html — an illustration, not jetpack&rsquo;s engine</p>
+        <p class="codename">A parallel gzip engine for Java</p>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">The gzip that ships with Java compresses on one core, however many the machine has.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I built an engine compatible with gzip on JDK 25 that compresses blocks in parallel and stitches them into one valid file. DEFLATE’s entropy coding stays with zlib, by design.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">422 vs <span class="uv">66&#8202;mb/s</span> on 1 gib: <b class="mv">6.4×</b> faster than single-threaded java.util.zip (jmh, 3 forks · 99.9% ci)<br>
+          <b class="mv">72 tests, 0 failures</b> · adler-32 vectorised <b class="mv">2.8×</b> scalar (<span class="uv">4.26&#8202;gb/s</span>), and honestly not faster than the jdk intrinsic (<span class="uv">14.06&#8202;gb/s</span>)</p>
+        <!-- THE GZIP DEMO IS GONE, and its absence is the point. A button here
+             ran the BROWSER's CompressionStream over 8 KB of this page and
+             printed a ratio. It demonstrated the browser, not jetpack: single
+             stream, single thread, none of the block splitting or the stitch
+             this station is about, and no relation at all to the 6.4× above.
+             A reader who pressed it learned something true about Chrome and
+             nothing about the work. The bench beside the figure is the real
+             number and it is filed. Cut, with its note, its handler, its
+             `.gzrow` and `#gzout` rules and its `window.__world.gzip`. -->
         <!-- THE RAIL CITES WHAT THE LIVE BUILD SERVES. Overturned 2026-08-08;
              what stood here said the opposite and was measured wrong.
 
@@ -1960,7 +2449,7 @@ h1[data-np-measuring] .np-ch {
 
              AUTOML STILL ABSTAINS, and that half of the old comment is upheld
              rather than inherited: re-verified 2026-08-08 by fetching the page,
-             which self-titles "Agentic AutoML — Expo Booklet · Miami CSE 449".
+             which self-titles "Agentic AutoML · Expo Booklet · Miami CSE 449".
              It is the frozen expo edition, and the run does not cite an edition
              it cannot pin — linking it would enter a CSE 449 booklet as
              evidence for a product this page argues as shipped. The exemption
@@ -1968,7 +2457,7 @@ h1[data-np-measuring] .np-ch {
              station ever DOES carry the anchor, so the day the card is
              refreshed the exemption retires itself instead of rotting into a
              permanent false claim. -->
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the member lands in</span> <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress">source ↗</a> · <a href="https://jetpack-compress.vercel.app">live build ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="jetFig" class="figsvg" viewBox="0 0 560 324" role="img" aria-label="Eight byte blocks arrive from off the plate along one rail and fan down into four virtual-thread lanes. Each lane carries a deflate die, drawn as two walls that step inward, and every block leaves it at a width of its own. A second rail gathers the four lanes and returns each block to the place it came from, so the eight land in stream order and not in lane order, and the member is a whole object only once the last one is in. It is drawn as one gzip member: a header lettered 1f 8b 08, the eight stitched blocks abutting so that each join is drawn once, and a trailer, marked in clay, whose check covers the whole input rather than any one block. Which lane takes which block, and how far each block narrows, are drawn and not measured; the lettered bytes come from the gzip format itself, not from this run."></svg>
@@ -1977,17 +2466,25 @@ h1[data-np-measuring] .np-ch {
              writes no date into its JSON, and inventing one would be the class
              of thing this plate exists to refuse. -->
         <div class="bench jet" role="group" aria-label="the committed one-gibibyte gzip benchmark, filed">
-          <div class="shead"><span>the committed bench — 1&#8202;gib, gzip</span><span>filed 2026-07-27 · <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">on file @ 2caacd0 ↗</a></span></div>
-          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(66 / 422))"></span></span><span class="bval">66&#8202;mb/s</span></div>
+          <!-- THE SLIP IS NOT DECORATION AND IT COMES BACK. The copy cut took
+               this shead's second span for length, which left the one bench
+               block on the page that states a 6.4× and does not say where the
+               record is — while Glyph's block two stations up still does. A
+               page whose argument is "every number terminates at an artifact"
+               cannot drop the terminator from the biggest number on it. Six
+               words, and check-bench-artifacts pairs the sha here against the
+               sha in the vendored filename below, so the two cannot drift. -->
+          <div class="shead"><span>the committed bench · 1&#8202;gib, gzip</span><span>filed 2026-07-27 · <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md">on file @ 2caacd0 ↗</a></span></div>
+          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(66 / 422))"></span></span><span class="bval"><span class="uv">66&#8202;mb/s</span></span></div>
           <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;mb/s</span></div>
-          <p class="bfoot">measured then, committed — not run in this tab. 6.4× is the 3-fork jmh result; across both committed runs the ratio spans 6.38–6.89× · <a href="proof/jetpack-jmh-rigorous-2caacd0.json" download>the raw run record (json) ⟶</a></p>
+          <p class="bfoot">committed, not run in this tab · both committed runs span 6.38 to 6.89× · <a href="proof/jetpack-jmh-rigorous-2caacd0.json" download>the raw run record (json) ⟶</a></p>
         </div>
-        <figcaption>fig. 07 — split ⟶ compress in parallel ⟶ stitch, into one valid gzip member; the lettered bytes are the format&rsquo;s own notation. <i>clay marks the trailer, the one part of the member that answers for the whole of it<span class="hoverinv"> — hover a lane to see which blocks it wrote</span>.</i></figcaption>
+        <figcaption>fig. 07 · split, compress in parallel, stitch into one gzip file. <i>tap or hover a lane for its blocks.</i></figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 08 · 21:07 — dusk falls here. LifeQuest, told honestly.
+  <!-- ¶ 08 · 21:07 · dusk falls here. LifeQuest, told honestly.
        Every element that carries text is on the dusk contract
        (data-fx-sync): cacheGeometry rewrites BOTH its windows in PAGE
        space — entrances end as each element clears the fold, all six
@@ -2001,64 +2498,48 @@ h1[data-np-measuring] .np-ch {
   <section id="lifequest" class="beat station b6" data-beat="7">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · fifth station · the honest hour — <i>21:07</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dusk — the hour that shows you what did not get finished.</p>
+        <p class="kicker" data-fx="in .05 .28 y 4 | out .48 .58 y 4" data-fx-sync="dusk">¶ 08 · project 5 of 6 · <i>21:07</i></p>
+        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">dusk. the hour that shows what didn&rsquo;t get finished.</p>
         <h2 class="prose-h" data-fx="in .07 .32 y 5 | out .48 .58 y 4 | drift 14" data-fx-sync="dusk" style="font-family:var(--display); font-weight:430; font-size:clamp(2rem,4vw,3.1rem); letter-spacing:-.015em">LifeQuest<span style="color:var(--clay)">.</span> A prototype, told honestly.</h2>
         <figure class="borrowed" data-fx="in .09 .32 y 5 | drift 11" data-fx-sync="dusk">
           <blockquote>&ldquo;Plan to throw one away; you will, anyhow.&rdquo;</blockquote>
-          <figcaption>Frederick&nbsp;P.&nbsp;Brooks&nbsp;Jr. &middot; <i>The Mythical Man-Month</i>, 1975</figcaption>
+          <figcaption>Frederick&nbsp;P.&nbsp;Brooks&nbsp;Jr., 1975</figcaption>
         </figure>
-        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">Job-seeking turned into missions so momentum survives the grind — a playable mission card and a tier ladder on a real backend. Born at Social Innovation Weekend, March 2025 — a 7-person team, one weekend, React + NestJS. It would need a partner to scale, and it says so.</p>
-        <div class="quests" data-fx="in .12 .38 y 6 | out .48 .58 y 4 | drift 10" data-fx-sync="dusk">
-          <div class="q" data-q="0"><span class="qi">01</span><span class="qm">—</span><span class="qn">mission card — playable</span><span class="qs">…</span></div>
-          <div class="q" data-q="1"><span class="qi">02</span><span class="qm">—</span><span class="qn">tier ladder — working</span><span class="qs">…</span></div>
-          <div class="q" data-q="2"><span class="qi">03</span><span class="qm">—</span><span class="qn">full-stack backend — real</span><span class="qs">…</span></div>
-          <div class="q held-target" data-q="3"><span class="qi">04</span><span class="qm">—</span><span class="qn">scale — needs a partner or funder</span><span class="qs">…</span>
-            <span class="qnote">held on purpose — nothing resolves that didn&rsquo;t happen</span></div>
-          <div class="q held-target" data-q="4"><span class="qi">05</span><span class="qm">—</span><span class="qn">finished product — not claimed</span><span class="qs">…</span>
-            <span class="qnote">held on purpose — nothing resolves that didn&rsquo;t happen</span></div>
-        </div>
+        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">LifeQuest turns the grind of job hunting into missions, on a real backend. It was born at Social Innovation Weekend in March 2025 with a team of seven, in React and NestJS. Scaling it would need a partner.</p>
         <!-- Same ruling as ¶07's handoff: no case file, so the card is the
              document of record. -->
-        <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file — a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest">source ↗</a> · <a href="https://getlifequest.vercel.app">live prototype ↗</a> · <a href="https://getlifequest.vercel.app/system-card">system card ↗</a></p>
-        <p class="mono" data-fx="in .84 .95 y 4 | out 2 2.5 | drift 0" data-fx-sync="duskin" style="margin-top:1.6rem">dusk. the light is the record: what shipped is lit, what didn&rsquo;t stays dashed.</p>
+        <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file: a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest">source ↗</a> · <a href="https://getlifequest.vercel.app">live prototype ↗</a> · <a href="https://getlifequest.vercel.app/system-card">system card ↗</a></p>
       </div>
       <figure class="plate bare" data-fx="in .08 .34 y 8 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk">
-        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A staircase drawn in section. All five steps are sketched in pencil first; the lower three are then inked over the sketch and hatched solid beneath, so the built work has a body standing on the ground line. The climber walks those three and stops on the third, a landing, wearing the clay ring this run uses for a deliberate hold, not a fall. A heavy cut face closes the built mass where the work ended, and nothing is drawn beneath the two unbuilt steps: the space between them and the ground is empty and they stay pencil. Each states its own reason — scale is held for a partner or funder, and a finished product is held because it is not claimed, so its tread stops in mid-air rather than ending anywhere. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
-        <figcaption>fig. 08 — the stair is the ledger, drawn in section: three steps with a body under them, two with nothing at all. <i>the cut is where the record stops; the climb pauses the way the run halts — on purpose.</i></figcaption>
+        <svg id="questFig" class="figsvg" viewBox="0 0 490 410" role="img" aria-label="A staircase drawn in section. All five steps are sketched in pencil first; the lower three are then inked over the sketch and hatched solid beneath, so the built work has a body standing on the ground line. The climber walks those three and stops on the third, a landing, wearing the clay ring this run uses for a deliberate hold, not a fall. A heavy cut face closes the built mass where the work ended, and nothing is drawn beneath the two unbuilt steps: the space between them and the ground is empty and they stay pencil. Each states its own reason. Scale is held for a partner or funder, and a finished product is held because it is not claimed, so its tread stops in mid-air rather than ending anywhere. The work was born at Social Innovation Weekend, March 2025, and the drawing puts no date on anything above the cut."></svg>
+        <figcaption>fig. 08 · three steps built, two held on purpose.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 09 · 22:05 — Agentic AutoML: the notebook, worked by tools -->
+  <!-- ¶ 09 · 22:05 · Agentic AutoML: the notebook, worked by tools -->
   <section id="automl" class="beat station flip b7" data-beat="8">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · sixth station · the last — <i>22:05</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">lamplight. the machine works on; somebody stays to watch it.</p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · project 6 of 6 · <i>22:05</i></p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
-        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">It runs the whole lifecycle — and refuses to finish alone.</p>
-        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
-          <blockquote>&ldquo;The Analytical Engine has no pretensions whatever to originate anything. It can do whatever we know how to order it to perform.&rdquo;</blockquote>
-          <figcaption>Ada&nbsp;Lovelace &middot; <i>Note&nbsp;G, Sketch of the Analytical Engine, Scientific Memoirs, 1843</i></figcaption>
-        </figure>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">The senior-design capstone: a LangGraph agent that works a notebook the way a person would — profiles the data, writes the cells, runs them — and waits at a human gate before every phase.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">seven phases mirror the ml lifecycle · a human gate at every step<br>
-          <b>44 agent tools</b> — preprocessing · features · training among them; 12 registered over mcp, the notebook hands: read_cell · write_cell · run_cell …<br>
-          the llm&rsquo;s python runs in a locked-down docker sandbox — non-root · read-only fs · capped cpu + memory · network-isolated by default<br>
-          <b>2,523 tests</b> green on ci — 1,445 backend · 985 frontend · 93 landing · 0 failures<br>
-          langgraph + mcp · default model gpt-5.4 · <b>2,186 commits</b> — the gitlab history, public on github since the 12 aug consolidation · 2-person team — my seat: backend</p>
-        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="font-size:.7rem; margin-top:.5rem; max-width:44ch">no accuracy figure is quoted here because none is claimed — the work is the architecture and the gates, and the code is open to read.</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the halted run lands in</span> <a href="https://ayush-yadav.com/projects/automl/">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
+        <p class="codename">A capstone platform where an AI agent trains models, with human sign-off</p>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">An AI agent can run a notebook from raw data to a trained model. Unchecked, it can go wrong quietly.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Two of us built it. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a person to approve the training plan and any risky data cleaning step. Nothing deploys unless a person starts it. My seat was the backend, including the model scoring service.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">2,523</b> automated tests, all passing: 1,445 backend · 985 frontend · 93 landing<br>
+          <b class="mv">44 agent tools</b>, 12 over mcp · the llm&rsquo;s python runs in a docker sandbox, locked down</p>
+        <p class="prov mono">typescript · express · react · postgresql · docker</p>
+        <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="margin-top:.5rem; max-width:44ch">no accuracy figure is quoted: no committed evaluation earns one.</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/automl/">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
-        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools — the notebook subset of the platform's 44 — the tools work a drawn notebook inside a docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances — their order is the source file's, their timing staged for the drawing — and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail with a human gate before each, drawn as a boom that swings: six have lifted behind the travelling bead, and the run stands halted in front of the seventh, still down across the rail, before deploy — which never lights."></svg>
-        <figcaption>fig. 09 — the twelve tools drawn are mcpServer.ts&rsquo;s, the mcp-registered subset of the platform&rsquo;s 44, in source order; their firing schedule here is staged, not logged. <i>the run halts at the seventh gate — deploy never lights itself.</i></figcaption>
+        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom standing across the rail. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Deploy carries a heavy boom that never lifts, over a phase label which never lights, because nothing in the graph can start a deployment; the rail runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the rail and the run passes straight through them."></svg>
+        <figcaption>fig. 09 · the 12 mcp tools in source order, timing staged. the run halts before deploy.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 10 · 22:23 — the review: how i work, told as three real gates.
+  <!-- ¶ 10 · 22:23 · the review: how i work, told as three real gates.
        The night shift's discipline beat: the litany each carries a
        linked receipt, and the ledger beside it shows my own gates'
        honest dispositions — two REFUSED to sign automatically. That is
@@ -2066,8 +2547,7 @@ h1[data-np-measuring] .np-ch {
   <section id="review" class="beat station bhow" data-beat="9">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review — <i>22:23</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">the last of the light, spent checking what the day actually held.</p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review · <i>22:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
         <!-- THE WAY INTO THE LEDGER GOES HERE, NOT IN THE LITANY. Measured
              2026-08-06: this page links /evidence/ exactly ZERO times, while
@@ -2083,106 +2563,103 @@ h1[data-np-measuring] .np-ch {
              goes after it — a decision, not an accident. This sentence
              already described the seam, so it keeps its words and the ledger
              gets its door. -->
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The run is nearly in. Before the gate, the discipline that drove it — each line ends at the ledger row that proves it. Every row is on file in one place: <a href="https://ayush-yadav.com/evidence/">the evidence index ⟶</a></p>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">Every record is in one place: <a href="https://ayush-yadav.com/evidence/">the evidence index ⟶</a> Numbers last checked September 2026.</p>
         <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
           <blockquote>&ldquo;The first principle is that you must not fool yourself &mdash; and you are the easiest person to fool.&rdquo;</blockquote>
-          <figcaption>Richard&nbsp;P.&nbsp;Feynman &middot; <i>Cargo Cult Science</i>, Caltech commencement address, 1974</figcaption>
+          <figcaption>Richard&nbsp;P.&nbsp;Feynman, 1974</figcaption>
         </figure>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/jobtracker/#v-jobtracker-4">305 passed · 0 skipped — Applied&rsquo;s validation ledger ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/jobtracker/#v-jobtracker-4">3,747 passed · 0 skipped · 13 expected failures, Applied&rsquo;s backend suite ⟶</a></p></div>
           <div class="mline"><p>Make it fast.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/#v-fast-mnist-nn-2">parallel dot kernel — 3.5× over -O3, Glyph&rsquo;s committed benchmarks ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/#v-fast-mnist-nn-2">parallel dot kernel 3.5× over -O3, Glyph&rsquo;s committed benchmark ⟶</a></p></div>
           <!-- Third, not fourth. "honest" carries the wonk axis and hands
-               straight to the ledger beside it, where two of my own gates
-               refused — that is the paragraph's close and nothing goes after
+               straight to the ledger beside it, where two of my own checks
+               declined · that is the paragraph's close and nothing goes after
                it. This line is here because Visual Assist is the one project
                whose suite had been COUNTED and never run: 71 test functions
                existed, no CI step executed them, and no machine here had the
                iOS runtime. Installing it and running xcodebuild twice is what
                turned a census into a receipt, which is the discipline. -->
           <div class="mline"><p>Make it hold up.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/visual-assist/#v-visual-assist-1">71 passed · 0 skipped — Visual Assist&rsquo;s validation ledger ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/visual-assist/#v-visual-assist-1">71 passed · 0 skipped · Visual Assist, an iOS accessibility app ⟶</a></p></div>
           <div class="mline wonk"><p>Make it <em>honest</em>.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported — PolicyBot&rsquo;s validation ledger ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/policybot/#v-policybot-1">19/20 cited-source sweep, self-reported · PolicyBot, a policy assistant that cites its sources ⟶</a></p></div>
         </div>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="gates" id="gatesFig">
-          <div class="ghead"><span>the reviewer&rsquo;s marks</span><span>three real gates · <i>dispositions honest</i></span></div>
+          <div class="ghead"><span>a stopped gate is the system working.</span></div>
           <!-- The mark paths are the SAME HAND as before, at 1.5× — the check
                and the stop-bar authored in the 14×10 box, multiplied through so
                the ink still renders at the 22×16 it always did while the frame
                around it is drawn 1:1 in CSS pixels. The scale is baked into the
                coordinates rather than carried on a transform, because a
                transform would drag stroke-width with it and thin the hand. -->
-          <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate — Applied</span>
+          <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate · Applied</span>
             <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark" d="M8.75 14.9 C11.3 17.6 12.8 18.8 14 18.5 C16.4 15.2 20.6 10.4 25.7 8.3"/></svg>
-            <span class="gword">passed</span></div>
-          <div class="grow gbench refused" data-g="1"><span class="gname">cited-source sweep — PolicyBot</span>
-            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark refused" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
-            <span class="gword">refused</span></div>
-          <div class="grow gbench refused" data-g="2"><span class="gname">benchmark suite — Glyph</span>
-            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark refused" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
-            <span class="gword">refused</span></div>
+            <span class="gword">passed</span><span class="gwhy">1 wrong in 96, above the 0.95 floor</span></div>
+          <div class="grow gbench declined" data-g="1"><span class="gname">cited-source sweep · PolicyBot</span>
+            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark declined" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
+            <span class="gword">declined</span><span class="gwhy">4 answers it couldn&rsquo;t cite</span></div>
+          <div class="grow gbench declined" data-g="2"><span class="gname">benchmark suite · Glyph</span>
+            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark declined" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
+            <span class="gword">caught</span><span class="gwhy">a variance claim nobody had measured</span></div>
           <!-- Where the line leaves the docket. Hidden from assistive tech
                because the legend below says it in words — the drawing may not
                be the only place a reader can learn this. -->
           <div class="gbench gtail" aria-hidden="true"><span>unsigned</span></div>
-          <p class="gleg">✓ a human signed for it · — the gate stopped the run · below them the line runs on dashed and unsigned, to a person</p>
-          <p class="gclose">two of my own gates <b>refused</b> to sign automatically. which is why the next stop on this line is a person.</p>
+          <p class="gleg">a flat bar: the gate stopped the run · the line runs on dashed and unsigned, to a person</p>
+          <p class="gclose">two of my own checks stopped my own work. the next stop is a person.</p>
         </div>
-        <figcaption>fig. 10 — three real gates set on the line, each stamped in the same hand as the thread; below the third the line runs on dashed, unsigned. <i>a refused gate is the system working.</i></figcaption>
+        <figcaption>fig. 10 · three real gates and what each decided.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:32 — the references -->
+  <!-- ¶ 11 · 22:32 · the references -->
   <section id="cosigners" class="beat station bsign" data-beat="10">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references — <i>22:32</i></p>
-        <p class="hourline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8">past ten, and these are the only words on this page I did not write.</p>
+        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">The gates on the last station were mine, and a machine can only refuse itself. These are the humans who worked the line beside me.</p>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">My manager at Miami and my teammate on Glyph and the capstone.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
-          <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage, giving the team visibility into report adoption, demand patterns, and technical load. That work informed platform decisions and prioritization&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
-          <figcaption><b>Randall Vollen</b><span>&middot;&nbsp;applied AI &amp; data principal, cbts</span><span class="rel">&middot;&nbsp;managed the ITSM work at station 03, as miami&rsquo;s director of BI</span></figcaption>
+          <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
+          <figcaption><b>Randall Vollen</b><span>&middot;&nbsp;applied AI &amp; data principal, cbts</span></figcaption>
         </figure>
 
         <figure class="cosign" data-fx="in .14 .38 y 6 | out .94 1.04 y -5 | drift 11">
           <blockquote>&ldquo;I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work.&rdquo;</blockquote>
-          <figcaption><b>Shree Chaturvedi</b><span>&middot;&nbsp;b.s. computer science, minor in mathematics &middot; miami university, 2026</span><span class="rel">&middot;&nbsp;the teammate on stations 06 and 09</span></figcaption>
+          <figcaption><b>Shree Chaturvedi</b><span>&middot;&nbsp;b.s. computer science, miami university, 2026</span></figcaption>
         </figure>
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/">the recommendations, in full &#8599;</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="signs">
-          <div class="shead"><span>the references</span><span>written on linkedin &middot; <i>in public</i></span></div>
+          <div class="shead"><span>the references</span></div>
           <div class="srow">
             <span class="sname">Randall Vollen</span>
-            <span class="swhen">linkedin &middot; 2026</span>
-            <span class="srole">applied AI &amp; data principal, cbts &mdash; managed the ITSM work at station 03</span>
+            <span class="srole">his manager, station 03</span>
           </div>
           <div class="srow">
             <span class="sname">Shree Chaturvedi</span>
-            <span class="swhen">linkedin &middot; 2026</span>
-            <span class="srole">b.s. computer science &mdash; the teammate on stations 06 and 09</span>
+            <span class="srole">teammate, stations 06 and 09</span>
           </div>
           <p class="sclose">three of the twelve stops carry a name that is not mine.</p>
         </div>
-        <figcaption>fig. 11 &mdash; each reference sits beside the station that person actually worked on.</figcaption>
+        <figcaption>fig. 11 · each reference sits beside the station that person worked on.</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ¶ 12 · 22:41 — the approval gate -->
+  <!-- ¶ 12 · 22:41 · the approval gate -->
   <section id="gate" class="beat b8" data-beat="11">
     <div class="beat-inner">
       <div>
-        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate — <i>22:41</i></p>
+        <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate · <i>22:41</i></p>
         <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
         <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
@@ -2202,14 +2679,13 @@ h1[data-np-measuring] .np-ch {
           <li data-ph="8"><span>22:05 · agentic automl</span></li>
           <li data-ph="9"><span>22:23 · the review</span></li>
           <li data-ph="10"><span>22:32 · the references</span></li>
-          <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate — go / no-go</li>
-          <li data-ph="11"><span>deploy — yours; no scroll reaches it</span></li>
+          <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate</li>
+          <li data-ph="11"><span>deploy · yours</span></li>
         </ul>
-        <p class="mono" data-fx="in .02 .13 y 4 | out 2 2.5 | drift 0" style="margin-top:1.15rem; max-width:40ch">the marker you have been following stops here. nothing moves until you decide.</p>
       </div>
       <div>
         <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
-          <h3>run 042 — the manifest, complete.</h3>
+          <h3>run 042 · the manifest, complete.</h3>
           <!-- 042 IS A SERIAL AND THE PAGE NOW SAYS SO. The owner asked whether
                the number should be static "so someone who is approving it and
                comes back after a couple of days" does not see it move — and it
@@ -2227,33 +2703,42 @@ h1[data-np-measuring] .np-ch {
                A date token was considered and rejected: "run 042 · 2026-08"
                reads as "last touched in August" by October, which manufactures
                the staleness it was meant to prevent. -->
-          <p class="mono" style="font-size:.7rem">one day · twelve stops · six stations proof-cited · one signature missing<br>
-            042 is the day&rsquo;s serial, not a visit counter &mdash; the number holds; only the light moves.</p>
+          <p class="mono">five proofs and one honest prototype · one signature missing<br>
+            042 is the day&rsquo;s serial, not a visit counter.</p>
           <ul class="gl">
-            <li data-st="1"><span class="gi">01</span><b>applied</b><span class="gm">rules macro-f1 0.9791 · 96-sample gate</span></li>
-            <li data-st="2"><span class="gi">02</span><b>cadence</b><span class="gm">1,186 passed · 0 skipped — 635 fe + 551 be</span></li>
-            <li data-st="3"><span class="gi">03</span><b>glyph</b><span class="gm">97.01% — 9,701/10,000 · macro-f1 0.9698</span></li>
-            <li data-st="4"><span class="gi">04</span><b>jetpack-compress</b><span class="gm">72 tests, 0 failures · jdk 25</span></li>
-            <li data-st="5"><span class="gi">05</span><b>lifequest</b><span class="gm">prototype — held marks stayed held</span></li>
-            <li data-st="6"><span class="gi">06</span><b>agentic automl</b><span class="gm">7 phases, every one gated · code public</span></li>
             <li id="liveSample" hidden><span class="gi">+</span><b>your sample</b><span class="gm" id="liveSampleM"></span></li>
           </ul>
           <div class="decide">
             <button class="btn" id="approve" type="button">approve run 042</button>
-            <span class="note" id="gateNote">scrolling could not press this button.</span>
+            <span class="note" id="gateNote">scrolling could not press this button · pressing it only turns the page to morning.</span>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
         </div>
+        <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three
+             cold critics: a reader who scrolls to the end of this page finds
+             a copyright line, because the only contact row is in ¶13 and ¶13
+             is on the far side of a button. Nobody who is deciding whether to
+             write to someone presses "approve run 042" first. So the colophon
+             carries the four ways in, and the gate keeps the last screen —
+             the ask is still the run's closing beat, it is just no longer the
+             toll gate on his email address. ¶13's row stays: it is the
+             morning's own offer, and this one is the end of the day's. -->
         <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
-          &copy; 2026 ayush yadav &mdash; cincinnati, oh<br>
-          set by hand &mdash; fraunces, newsreader &amp; fragment mono &middot; zero dependencies
+          <span class="reach">
+            <a href="mailto:aesh.03.23@gmail.com">email</a> ·
+            <a href="resume.pdf">résumé (pdf) &#10230;</a> ·
+            <a href="https://github.com/yadava5">github &#8599;</a> ·
+            <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin &#8599;</a>
+          </span>
+          &copy; 2026 ayush yadav · cincinnati, oh<br>
+          set by hand &middot; zero dependencies
         </footer>
       </div>
     </div>
   </section>
 
 
-  <!-- ¶ 13 · 06:12 — the next morning.
+  <!-- ¶ 13 · 06:12 · the next morning.
        Not a recolour of the gate: a station the reader travels INTO. The run
        ended at nightfall and this is the morning after it, with its own light,
        its own clock and its own first line. ¶01 opened on "first light.
@@ -2262,22 +2747,23 @@ h1[data-np-measuring] .np-ch {
   <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun>
     <div class="dawnstick">
       <div class="dawnwrap">
-        <p class="kicker">¶ 13 &middot; the next morning &mdash; <i>06:12</i></p>
-        <p class="hourline">first light again &mdash; and this time something has been decided.</p>
+        <p class="kicker">¶ 13 · the next morning · <i>06:12</i></p>
+        <p class="hourline">first light again, and this time something has been decided.</p>
 
         <figure class="endquote">
           <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
           <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
         </figure>
 
-        <p class="dawnsay">Thank you. The interesting part is whatever comes next.</p>
+        <p class="dawnsay">Thank you for reading. If this is the kind of work your team needs, write to me.</p>
         <div class="dawnrow mono">
           <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
           <a href="https://github.com/yadava5">github &#8599;</a>
           <a href="https://www.linkedin.com/in/ayush-yadav-developer">linkedin &#8599;</a>
           <!-- same origin, so &#10230; and not &#8599; — this row is three
                exits and one way back in, and the glyphs have to say which. -->
-          <a href="https://ayush-yadav.com/">the working paper &#10230;</a>
+          <a href="resume.pdf">résumé · pdf · one page &#10230;</a>
+          <a href="https://ayush-yadav.com/evidence/">the working paper &#10230;</a>
         </div>
         <p class="dawnrun mono">run 043 &middot; not yet begun</p>
       </div>
@@ -2653,6 +3139,10 @@ function cacheGeometry() {
          The seat buys one thing — the closing sentence centred in the dark it
          names — and on a phone it costs the figure its entire read. The figure
          wins. */
+      /* A desktop clamp on this seat was drafted and dropped: measured, it
+         MOVES the empty screen rather than removing it, because the dusk
+         corridor itself is what is empty. The corridor rule below is what
+         answers that, and this line stays as it was. */
       if (mobile) d = 0;
       if (Math.abs(d) > 2) f.el.style.marginTop = (m0 + d) + "px";
       f.spec.in[0] = (yFlip + 20 + vh - (f.top + d)) / (vh + f.h);
@@ -2664,7 +3154,15 @@ function cacheGeometry() {
      anchors computed above stay true) */
   /* and the tail it leaves under the closing line, which on a phone was over
      four hundred px of nothing on its own */
-  const need = Math.ceil(yEnd + vh * (mobile ? 0.3 : 0.62) - bDusk.top);
+  /* The desktop tail was 0.62 vh. Its stated job was to centre ¶08's
+     closing line in the dark it names — and the copy cut took that line, so
+     the tail now buys nothing but void: measured at 1440, ¶08 was 1432px
+     tall for 562px of content, and this inline min-height silently
+     out-ranked every corridor rule the stylesheet writes. Dusk is NOT
+     rushed by shrinking it:
+     dusk7.span is darkSpan/bDusk.h, so the darkening still falls over the
+     same darkSpan PIXELS. Verified by the ΔE-per-100px probe. */
+  const need = Math.ceil(yEnd + vh * (mobile ? 0.14 : 0.34) - bDusk.top);
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
   /* hand the darkening window to arcColor, as fractions of the beat */
@@ -2725,18 +3223,51 @@ function buildThread() {
      there, and Math.hypot poisons the cumulative arc length for the whole
      tail — the thread simply stops drawing and the travellers lose their
      track. check-beat-tables.mjs asserts the lengths against the DOM. */
+  measureTextBoxes();
+  const RAIL_X_MOBILE = 26; /* px · the phone lane, left of the column */
   const stx = stacked
     ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20, 20]
     : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24, 24];
   /* RUN_BEATS, not beats.length: the thread is run 042's line and it stops
      at the gate. ¶13 is the morning after, and nothing carries into it. */
+  /* THE OPENING ANCHOR CLEARS THE ROLE LINE, and this is a clearance rather
+     than a table entry on purpose. stx[0] puts the thread at 50% of the
+     viewport, which used to be empty on the first screen and is not any
+     more: the role line landed under the nameplate and the corridor cut
+     raised the whole block, so the stroke ran straight down through it.
+     Measured at 1512/1440/1280 with the dip already on, the thread left
+     183/137/74 canvas pixels of ink on `.identity` at alpha 41 — and a
+     ghost through the one sentence that says what he does is still through
+     it. Both of beat 0's anchors sat inside that band (0.42h and 0.52h),
+     so both move.
+
+     DERIVED FROM THE BLOCK, NOT RE-TABLED. stx is the rail's SHAPE and it
+     stays what it was — check-beat-tables reads its length, and a magic
+     57 here would be a number nobody could re-derive when the copy grows a
+     line. This asks the opening block how wide it actually is and takes the
+     gutter to its right, never closer than 46px to the edge and never left
+     of where stx[0] already put it. The line converges onto the rail at the
+     first corridor, which is a whole screen of travel to do it in. */
+  const openX = mobile
+    ? RAIL_X_MOBILE
+    : Math.min(
+        vw - 46,
+        Math.max(
+          (stx[0] / 100) * vw,
+          Math.max(
+            0,
+            ...[...document.querySelectorAll(".b1 .identity, .b1 [data-nameplate], .b1 .borrowed, .b1 .cue")]
+              .map((el) => el.getBoundingClientRect().right)
+          ) + 34
+        )
+      );
   const anchors = [];
-  anchors.push([(stx[0] / 100) * vw, beats[0].top + beats[0].h * 0.42]); /* under the name */
+  anchors.push([openX, beats[0].top + beats[0].h * 0.42]); /* under the name */
   for (let i = 0; i < RUN_BEATS; i++) {
-    const b = beats[i], x = (stx[i] / 100) * vw;
+    const b = beats[i], x = mobile ? RAIL_X_MOBILE : i === 0 ? openX : (stx[i] / 100) * vw;
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
-    if (i < RUN_BEATS - 1) anchors.push([lerp(x, (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
+    if (i < RUN_BEATS - 1) anchors.push([lerp(x, mobile ? RAIL_X_MOBILE : (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
   }
   /* Terminate at the gate dock (the clay square in the ladder). The line used
      to arrive on the diagonal it happened to be travelling, which read as the
@@ -2769,7 +3300,7 @@ function buildThread() {
      not human. `steady` tapers the wobble to exactly zero over the final
      approach, so the last stretch is a clean vertical and the terminus is a
      deliberate mark. */
-  const amp = stacked ? 8 : 16;
+  const amp = mobile ? 3 : stacked ? 8 : 16;
   const steady = (y) => clamp((gatePageY - y) / APPROACH, 0, 1);
   samples = [];
   let L = 0, px = 0, py = 0;
@@ -2862,7 +3393,7 @@ function pointAtLen(L) {
    orientation is only ever seen where the rail is near-horizontal, which is
    almost nowhere. Three consequences, all paid for in rejected drawings:
 
-     · the down-rail strip (|y| under about 2) is CONTESTED — the 2px rail
+     · the down-rail strip (|y| under about 2) is CONTESTED · the 2px rail
        stroke and the 4.5px token dot own it. A first cut of beat 1 put its
        three feeders along local -x and the token ate them whole; the mark
        read as the lone grid it was supposed to stop being.
@@ -2920,7 +3451,7 @@ const TRAV = [
      own boundary: "only the inventory is checked in". So the table leads and
      the inventory follows, and the corridor now carries two different facts
      instead of one fact twice. Grounded in the ¶03 prov line — "one master
-     inventory — 10,453 rows × 35 fields · hash-dedup" — and its handoff. */
+     inventory · 10,453 rows × 35 fields · hash-dedup" · and its handoff. */
   /* IT DREW HALF ITS OWN STATION, AND THE HALF IT DREW BELONGED TO ANOTHER ONE.
      This was a lone ruled grid — 18 wide, two row rules, two column rules —
      which is to say the most CALENDAR-shaped object on the whole rail, riding
@@ -3020,7 +3551,7 @@ const TRAV = [
       c.fillStyle = inkC["--clay-g"];
       c.beginPath(); c.roundRect(-2.5, -2, 5, 4, 1.5); c.fill(); } },
   { beat: 4, n: 1,
-    label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28 — the run wants your hand",
+    label: () => glyphDigit !== null ? `your “${glyphDigit}”, read locally → manifest` : "a blank 28×28, waiting for your hand",
     draw: (c) => {
       if (glyphDigit !== null) {
         c.strokeStyle = inkC["--ink-2"]; c.lineWidth = 1; c.strokeRect(-9, -9, 18, 18);
@@ -3183,6 +3714,49 @@ function drawThread(scroll, tokenY, tokenL, halted) {
     strokeRun(i0, Math.max(i0, k - 1), scroll, tokenL < samples[i1].L ? tp : null, null);
   }
   drawTokenAndTravellers(scroll, tokenY, tokenL, halted);
+  dipUnderText(scroll);
+}
+/* WHERE THE LINE PASSES UNDER A COLUMN OF TEXT IT IS ERASED TO A GHOST, the
+   way a wiring diagram breaks the conductor that runs beneath a component.
+   destination-out on the thread's own canvas, so stx, the anchors, the
+   wobble and every cargo corridor are byte-identical: this changes what
+   reaches the eye, never where anything is.
+
+   IT RUNS LAST, AFTER THE TOKEN AND THE TRAVELLERS, and that ordering is
+   the whole of the fix rather than an accident of where the call sits. A
+   first cut dipped the stroke alone and left the bead, the waybill icons
+   and their labels at full ink — so the shots still showed a cargo icon
+   over "Miami University, Jun" and the run's own bead sitting on the role
+   line, which is the exact defect the dip exists to remove. Everything
+   that rides the line dips with the line. */
+let textBoxes = [];
+function measureTextBoxes() {
+  const sy = scrollY;
+  /* `.b8 h2` IS ON THIS LIST AND THE LADDER BESIDE IT IS NOT, deliberately.
+     ¶12 has no `.prose` wrapper, so the whole gate screen was outside the
+     dip and the thread ran at full clay through "Every pipeline I build ends
+     with a human decision." — the page's thesis, on the screen it is making
+     it. But the ladder below it holds the gate dock, and the dock is where
+     this line has been travelling for twelve stops: ghosting THAT would cut
+     the arrival the whole run is for. So the headline is protected and the
+     terminus is left alone, and the stroke returns to full ink in the gap
+     between them, on its way to the mark. */
+  textBoxes = [...document.querySelectorAll('.prose, .schoolrec, .gatecard, .litany, .signs, .engcard, .identity, .b1 .borrowed, .b8 h2')]
+    .map((el) => { const r = el.getBoundingClientRect();
+      return { x: r.left - 6, w: r.width + 12, top: r.top + sy - 4, h: r.height + 8 }; })
+    .filter((r) => r.w > 40 && r.h > 40);
+}
+function dipUnderText(scroll) {
+  if (!textBoxes.length) return;
+  tctx.save();
+  tctx.globalCompositeOperation = 'destination-out';
+  tctx.fillStyle = 'rgba(0,0,0,.84)';
+  for (const r of textBoxes) {
+    const y = r.top - scroll;
+    if (y > vh || y + r.h < 0) continue;
+    tctx.fillRect(r.x, y, r.w, r.h);
+  }
+  tctx.restore();
 }
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
   const tp = pointAtLen(tokenL), ty = tp.y - scroll;
@@ -3247,7 +3821,7 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
    Wide: inbox ⟶ three gate columns ⟶ the bucket shelf. Tight (240):
    the same sort turned vertical — the mail FALLS through three gate
    rules into a 2×2 shelf. Same plan, same verdicts, larger type. */
-/* ————— fig. 04 · the sorting line — a cascade, and what it hands back —————
+/* ····· fig. 04 · the sorting line · a cascade, and what it hands back ·····
    The shipping plate marched all eight marks through three gate columns in
    series and dropped them into four buckets. Both halves misstated the
    machine, and the station's own prose says so if you read them together.
@@ -3261,8 +3835,8 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
      carries a category (`ClassificationResult.needs_review`, true under
      CONFIDENCE_AUTO = 0.85). Drawing it as a fourth bucket filed a flag as
      a destination. And the eval's own confusion matrix has EIGHT verdict
-     keys — applied · assessment · follow_up · interview · offer · other ·
-     pending_application · rejection — against the four the plate drew,
+     keys · applied · assessment · follow_up · interview · offer · other ·
+     pending_application · rejection · against the four the plate drew,
      while the prose beside it has always said eight classes.
 
    So: one belt, three reading desks, and a piece leaves at the first desk
@@ -3286,7 +3860,7 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
    THE CLAY MOMENT IS THE HOLD, and it is no longer a gate. The eighth piece
    rides the whole belt, clears nothing, keeps the rules' own first guess —
    which is literally what the fall-through at the end of `classify()`
-   returns — and comes to rest under "held for you" wearing fig. 08's clay
+   returns · and comes to rest under "held for review" wearing fig. 08's clay
    ring, this run's mark for a deliberate hold rather than a fall. One ring
    is the plate's only clay: rule 5, kept.
 
@@ -3317,7 +3891,7 @@ const applied = { marks: [], svg: $("appliedFig"), maxLen: 1 };
    `rules_result.confidence >= 0.90`, then `emb_confidence >= 0.85 and not
    has_negative_signals`, then CONFIDENCE_MIN_CLASSIFICATION = 0.70 */
 const APPLIED_DESKS = [
-  ["201 regex rules", "settles 0.90 and up", ""],
+  ["220 regex rules", "settles 0.90 and up", ""],
   ["e5 similarity", "settles 0.85 and up", "unless a rule says no"],
   ["gated setfit", "settles 0.70 and up", ""],
 ];
@@ -3338,16 +3912,76 @@ function svgIn(s) {
 }
 function traceOn(svg, labels, marks, key) {
   /* hover a bucket/lane label: its cargo stays inked, the rest recede */
+  /* Three reveals hid their information behind :hover with no tabindex and
+     no pointerleave a finger can produce. The same trace now answers a
+     pointer, a tap and a keyboard, and one outside tap clears it · without
+     which a touch reveal has no way back. */
+  const on = (id) => {
+    svg.classList.add("tracing");
+    for (const m of marks) m.g.classList.toggle("hot", m[key] === id);
+  };
+  const off = () => {
+    svg.classList.remove("tracing");
+    for (const m of marks) m.g.classList.remove("hot");
+  };
+  /* A LINE OF SVG TEXT IS NOT A TAP TARGET. Making these labels focusable
+     fixed the keyboard and left the finger: measured at 390 the four fig-04
+     desk labels stood 15px tall, and at 320 they were 12 — half of WCAG
+     2.5.8's 24px floor, on the one control a phone reader is invited to
+     use. SVG text takes no padding, so the target is drawn: each label is
+     wrapped in a <g> carrying the role, the tabindex and every listener,
+     with a transparent rect behind it grown to the floor. The text does not
+     move — a <g> lays nothing out — and the rect is aria-hidden because the
+     <g> is already the control and the text is already its name. */
+  const NS = "http://www.w3.org/2000/svg";
+  /* user units per CSS px, so the floor is met on the RENDERED size rather
+     than in the viewBox's own coordinates, which the tight editions scale
+     by more than 2× */
+  const perPx = (() => {
+    const vb = (svg.getAttribute("viewBox") || "0 0 1 1").split(/\s+/).map(Number);
+    const w = svg.getBoundingClientRect().width;
+    return w > 0 && vb[2] > 0 ? vb[2] / w : 1;
+  })();
+  const FLOOR = 26 * perPx; /* 26, not 24: one clear unit over the line */
+  const wire = (g, id) => {
+    g.addEventListener("pointerenter", () => on(id));
+    g.addEventListener("pointerleave", off);
+    g.addEventListener("focus", () => on(id));
+    g.addEventListener("blur", off);
+    g.addEventListener("click", (e) => {
+      e.stopPropagation();
+      svg.classList.contains("tracing") && marks.some((m) => m[key] === id && m.g.classList.contains("hot")) ? off() : on(id);
+    });
+    g.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); on(id); }
+      if (e.key === "Escape") off();
+    });
+  };
   for (const [lbl, id] of labels) {
-    lbl.addEventListener("pointerenter", () => {
-      svg.classList.add("tracing");
-      for (const m of marks) m.g.classList.toggle("hot", m[key] === id);
-    });
-    lbl.addEventListener("pointerleave", () => {
-      svg.classList.remove("tracing");
-      for (const m of marks) m.g.classList.remove("hot");
-    });
+    const g = document.createElementNS(NS, "g");
+    g.setAttribute("tabindex", "0");
+    g.setAttribute("role", "button");
+    g.setAttribute("class", "tracebtn");
+    lbl.parentNode.insertBefore(g, lbl);
+    /* getBBox throws on an element with no layout box. If the plate is not
+       rendered yet the control still works — it just does not get the drawn
+       target, which is the right way round to fail. */
+    let box = null;
+    try { box = lbl.getBBox(); } catch { box = null; }
+    if (!box || !box.width) { g.appendChild(lbl); wire(g, id); continue; }
+    const h = Math.max(box.height, FLOOR);
+    const hit = document.createElementNS(NS, "rect");
+    hit.setAttribute("x", (box.x - 2 * perPx).toFixed(2));
+    hit.setAttribute("y", (box.y - (h - box.height) / 2).toFixed(2));
+    hit.setAttribute("width", Math.max(box.width + 4 * perPx, FLOOR).toFixed(2));
+    hit.setAttribute("height", h.toFixed(2));
+    hit.setAttribute("fill", "transparent");
+    hit.setAttribute("aria-hidden", "true");
+    g.appendChild(hit);
+    g.appendChild(lbl);
+    wire(g, id);
   }
+  document.addEventListener("click", (e) => { if (!svg.contains(e.target)) off(); });
 }
 function buildApplied(tight) {
   const s = applied.svg, el = svgIn(s);
@@ -3398,7 +4032,7 @@ function buildApplied(tight) {
        the room that frame was wasting goes to the chutes. */
     const CX = [8, 190, 372], RX = [42, 224, 406], BY = 130, END = 552, RY = 284;
     el("text", { x: 8, y: 26, class: "lit" }).textContent = "the morning post";
-    el("text", { x: 552, y: 26, "text-anchor": "end" }).textContent = "the local cascade";
+    el("text", { x: 552, y: 26, "text-anchor": "end" }).textContent = "the cascade, three layers";
     hrule(36, 8, 552);
     /* the belt, ending in the same 38-unit turn its three chutes take — the
        overflow leaves the machine by it, and it stops there rather than
@@ -3417,17 +4051,21 @@ function buildApplied(tight) {
       if (note) el("text", { x: CX[k], y: 102 }).textContent = note;
     });
     const hl = el("text", { x: 8, y: 288, class: "lit desklab" });
-    hl.textContent = "held for you"; desklabs.push([hl, 3]);
-    hrule(RY, 112, END);
+    hl.textContent = "held for review"; desklabs.push([hl, 3]);
+    /* 136, not 112: the hold label grew from "held for you" (88.1) to
+       "held for review" (120.2 from x 8), and the rule that used to start
+       clear of it ran under its last 16 units. This plate's first rule is
+       that a label seats ON its rule and the rule breaks FOR it. */
+    hrule(RY, 136, END);
     el("text", { x: 8, y: 316 }).textContent =
-      "nothing reached 0.85 — it keeps the rules’ own guess";
+      "nothing cleared its desk, so it keeps the rules’ own guess";
     /* the case file's claim 09, kept on the plate: the serverless path
        returns after layer 1 even when the rules were unsure */
     el("text", { x: 8, y: 344 }).textContent = "the hosted build runs the rules alone";
     el("text", { x: 8, y: 362 }).textContent =
       "which desk takes which verdict is drawn, not measured";
     el("text", { x: 8, y: 380 }).textContent =
-      "the three bars read off applied’s classifier/hybrid.py";
+      "";
     const slot = [0, 0, 0];
     APPLIED_PLAN.forEach(([k, verdict], i) => {
       if (k === 3) {
@@ -3457,7 +4095,7 @@ function buildApplied(tight) {
     const ROWS = [[140, 160, 180, 200], [308, 328], [412]];
     el("text", { x: 8, y: 14, class: "lit" }).textContent = "the morning post";
     hrule(22, 8, 232);
-    el("text", { x: 8, y: 38 }).textContent = "the local cascade";
+    el("text", { x: 8, y: 38 }).textContent = "the cascade, three layers";
     el("path", { d: `M 12 56 H ${BX} V ${HY}`, class: "lane" });
     APPLIED_DESKS.forEach(([name, bar, note], k) => {
       for (const wy of [DY[k], DY[k] + 22])
@@ -3471,14 +4109,16 @@ function buildApplied(tight) {
       if (note) el("text", { x: 46, y: DY[k] + 50 }).textContent = note;
     });
     const hl = el("text", { x: 46, y: 448, class: "lit desklab" });
-    hl.textContent = "held for you"; desklabs.push([hl, 3]);
-    hrule(444, 8, 232, [[42, 138]]);
-    el("text", { x: 8, y: 508 }).textContent = "nothing reached 0.85 — it";
+    hl.textContent = "held for review"; desklabs.push([hl, 3]);
+    /* the same growth in the tight edition: the label runs 46..152.8, so
+       the break widens from 138 to 160 to clear it. */
+    hrule(444, 8, 232, [[42, 160]]);
+    el("text", { x: 8, y: 508 }).textContent = "nothing cleared its desk, so it";
     el("text", { x: 8, y: 524 }).textContent = "keeps the rules’ own guess";
-    el("text", { x: 8, y: 552 }).textContent = "hosted build — the rules alone";
+    el("text", { x: 8, y: 552 }).textContent = "hosted build: the rules alone";
     el("text", { x: 8, y: 570 }).textContent = "which desk takes which";
     el("text", { x: 8, y: 584 }).textContent = "verdict is drawn, not measured";
-    el("text", { x: 8, y: 602 }).textContent = "read off classifier/hybrid.py";
+    el("text", { x: 8, y: 602 }).textContent = "";
     const slot = [0, 0, 0];
     APPLIED_PLAN.forEach(([k, verdict], i) => {
       if (k === 3) {
@@ -3551,7 +4191,7 @@ function scrubWho(p) {
   who.nib.style.transform = `translate(${(t * who.w).toFixed(1)}px, -50%)`;
 }
 
-/* ————— fig. 03 · the yard — the ITSM job as freight —————
+/* ····· fig. 03 · the yard · the ITSM job as freight ·····
    Three feeders (1.6m query logs, the Tableau/Workday silos, a legacy
    Laravel reporter) run through one python·sql works and land in their
    products; the products merge onto the main line. Records travel and
@@ -3561,8 +4201,8 @@ function scrubWho(p) {
    fig. 09's three devices, inherited, and what each answers here:
 
    1 A LABEL SEATS ON ITS RULE AND THE RULE BREAKS FOR IT. The plate is
-     four named columns on one header rule — freight · works · products
-     · main line — and the works' walls and every box's left edge break
+     four named columns on one header rule · freight · works · products
+     · main line · and the works' walls and every box's left edge break
      for the road that crosses them. Nothing is set over a line.
    2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, dash as the
      sub-register. Dash carries the disposition the station's own handoff
@@ -3621,7 +4261,7 @@ function scrubWho(p) {
    That is the arithmetic behind the congestion, not just its symptom. */
 /* the reviewer's own two marks, from the docket at ¶10, at their own
    14×10 scale: a check for the gate a human signed, a strike for the
-   one that refused. The same hand files and withholds here. */
+   one that declined. The same hand files and withholds here. */
 const D_FILED = "M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2";
 const D_HELD = "M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6";
 const yard = { svg: $("pathFig"), recs: [], marks: [], trunk: null,
@@ -3634,13 +4274,13 @@ function buildPath(tight) {
   yard._sig = null; yard._mk = null;
   const src = [
     ["1.6m+ oas query logs", "5 yrs · 1,153 users"],
-    ["tableau + workday", "hash-dedup · rest api"],
+    ["tableau + workday", "hash dedup · rest api"],
     ["legacy laravel", "teamdynamix · gitlab"],
   ];
   const prod = [
-    ["field-usage table", "sqlite · 57.8m rows"],
+    ["field usage table", "sqlite · 57.8m rows"],
     ["master inventory", "10,453 × 35 fields"],
-    ["etl feed", "37-month dashboard"],
+    ["etl feed", "37 month dashboard"],
   ];
   const FILED = 1; /* the master inventory — the one product checked in */
   /* a rule with a gap wherever a label seats on it or a road crosses it */
@@ -3658,7 +4298,7 @@ function buildPath(tight) {
   };
   if (!tight) {
     /* the columns are sized off the LONGEST measured label in each:
-       freight 8..184 ("hash-dedup · rest api" = 168.3 from x 8), works
+       freight 8..184 ("hash dedup · rest api" = 168.3 from x 8), works
        192..300 (its own nameplate, 96.1), products 308..476 ("sqlite ·
        57.8m rows" = 152.2 from x 316, ending 468.2), and the merge
        corridor 484..552, which every stitch stays inside so no label is
@@ -3670,19 +4310,19 @@ function buildPath(tight) {
        where a record stops being raw freight and starts being a product */
     yard.shapedT = 0.73;
     const ROAD = [92, 184, 276], WKS = 192, BX0 = 308, BX1 = 476, SW = 508, BUF = 448;
-    el("text", { x: 8, y: 38 }).textContent = "the freight";
-    el("text", { x: 308, y: 38 }).textContent = "the products";
+    el("text", { x: 8, y: 38 }).textContent = "";
+    el("text", { x: 308, y: 38 }).textContent = "";
     el("text", { x: 552, y: 38, "text-anchor": "end" }).textContent = "main line";
     hrule(34, 102, 552, [[302, 410], [474, 558]]);
     /* ——— the works: two walls, with a doorway at every road ——— */
     const doors = ROAD.map((y) => [y - 12, y + 12]);
     vrule(192, 46, 328, doors);
     vrule(300, 46, 328, doors);
-    el("text", { x: 196, y: 134, class: "lit" }).textContent = "the works";
+    el("text", { x: 196, y: 134, class: "lit" }).textContent = "";
     el("text", { x: 196, y: 148 }).textContent = "python · sql";
     ROAD.forEach((y, i) => {
       /* the source's two rows and the product's two rows are THE SAME two
-         rows: the reader gets `1.6m+ oas query logs ⟶ field-usage table`
+         rows: the reader gets `1.6m+ oas query logs ⟶ field usage table`
          across the plate without the plate having to draw the arrow. */
       el("text", { x: 8, y: y - 26, class: "lit" }).textContent = src[i][0];
       el("text", { x: 8, y: y - 12 }).textContent = src[i][1];
@@ -3721,7 +4361,7 @@ function buildPath(tight) {
     yard.signum = el("text", { x: 466, y: 304, "text-anchor": "end", class: "meterlbl", opacity: 0 });
     yard.signum.textContent = "97%";
     el("text", { x: BX0, y: 344, class: "meterlbl" }).textContent = "compliance across 61 projects";
-    el("text", { x: 8, y: 370 }).textContent = "not checked in — read off miami’s own systems";
+    el("text", { x: 8, y: 370 }).textContent = "";
     hrule(366, 376, 552, []);
     const lanes = [0, 1, 2, 0, 1, 0, 2, 1], slot = [0, 0, 0];
     lanes.forEach((ln, i) => {
@@ -3747,7 +4387,7 @@ function buildPath(tight) {
     s.setAttribute("viewBox", "0 0 240 550");
     yard.shapedT = 0.48; /* the works' far wall, as a fraction of this polyline */
     const BAND = [26, 168, 310], RX = 34, BX1 = 212, CX = 224;
-    el("text", { x: 8, y: 14 }).textContent = "the freight";
+    el("text", { x: 8, y: 14 }).textContent = "";
     hrule(10, 94, 232, []);
     BAND.forEach((Y, i) => {
       el("text", { x: 8, y: Y + 12, class: "lit" }).textContent = src[i][0];
@@ -3788,8 +4428,8 @@ function buildPath(tight) {
     yard.signum = el("text", { x: 190, y: 452, "text-anchor": "end", class: "meterlbl", opacity: 0 });
     yard.signum.textContent = "97%";
     el("text", { x: 8, y: 486, class: "meterlbl" }).textContent = "compliance across 61 projects";
-    el("text", { x: 8, y: 508 }).textContent = "not checked in — read off";
-    el("text", { x: 8, y: 522 }).textContent = "miami’s own systems";
+    el("text", { x: 8, y: 508 }).textContent = "";
+    el("text", { x: 8, y: 522 }).textContent = "";
     el("text", { x: 232, y: 542, "text-anchor": "end" }).textContent = "the main line";
   }
   /* everything that inks in, measured once at build. getTotalLength on a
@@ -3843,7 +4483,7 @@ function scrubPath(p) {
 
 /* The review — the reviewer's marks draw themselves, each inside the gate
    it judged: a check-stroke for the gate a human signed, a stop-bar for
-   the two that refused. The rows carry the words (the census floor is the
+   the two that declined. The rows carry the words (the census floor is the
    page's own) and the line, the frames and the unsigned tail are markup;
    only the three marks are ink, so there is no settled frame for this to
    fail to build. A mark being signed is the one motion the bench ruling
@@ -3912,7 +4552,7 @@ for (const id of ["chWho", "chWhen", "chMeet"]) {
   $(id).addEventListener("mouseleave", () => cad.fig.removeAttribute("data-hl"));
 }
 
-/* ————— fig. 07 · jetpack-compress — one stream, many threads, one member —————
+/* ····· fig. 07 · jetpack-compress · one stream, many threads, one member ·····
    The plate falls in BOTH editions now. The wide one used to run left to
    right while the tight one fell, which made them two drawings of one
    subject; a delivery rail across the top, four virtual-thread lanes hanging
@@ -4008,9 +4648,9 @@ function buildJet(tight) {
         stitchY: 186, memX: 8, memY: 206, head: 65, trail: 44,
         tail: "crc32", lead: 0, deflateY: 144,
         heads: [[8, 14, "the stream", 0], [8, 30, "one virtual thread per block", 0]],
-        foot: [[256, "one member: a header, the eight"],
-               [270, "blocks in stream order, and a"],
-               [284, "trailer over the whole input"],
+        foot: [[256, ""],
+               [270, ""],
+               [284, ""],
                [302, "lanes and block sizes here"],
                [316, "are drawn, not measured"]] }
     : { vb: "0 0 560 324", raw: 56, out: JET_OUT_WIDE, bh: 22,
@@ -4019,8 +4659,8 @@ function buildJet(tight) {
         stitchY: 190, memX: 108, memY: 210, head: 84, trail: 124,
         tail: "crc32 · isize", lead: 134, deflateY: 146,
         heads: [[8, 22, "the stream", 0], [446, 22, "one virtual thread per block", 1]],
-        foot: [[266, "one gzip member — a header, the blocks in stream order, a trailer"],
-               [282, "the trailer’s check covers the whole input, not any one block"],
+        foot: [[266, ""],
+               [282, ""],
                [302, "the lane assignment and the block sizes are drawn, not measured"]] };
   s.setAttribute("viewBox", g.vb);
   const [dTop, dSh, dThr, dBot] = g.dieY;
@@ -4223,7 +4863,7 @@ function buildClimb(tight) {
         names: ["mission card", "tier ladder", "backend"],
         holds: [["scale", "partner or funder"], ["finished", "not claimed"]],
         pts: [[18, 344], [87, 274], [163, 210], [274, 146]],
-        foot: [[376, "solid where it was built · pencil where it was not"],
+        foot: [[376, "solid: built · pencil: not"],
                [396, "born at social innovation weekend, march 2025"]] };
   climb.g = g;
   s.setAttribute("viewBox", g.vb);
@@ -4287,7 +4927,7 @@ function buildClimb(tight) {
     drawn(el("path", { d: `M ${cut} ${ys[2]} V ${Yg}`, class: "face cut" })),
   ];
 
-  /* 4 · THE SKETCH — all five steps in pencil, under one clip that sweeps,
+  /* 4 · THE SKETCH · all five steps in pencil, under one clip that sweeps,
      which is how a stair is actually drawn: the whole flight planned, then
      the built part inked over it. The lower three are their own path so they
      can be retired the moment their ink closes; 1.4 of dashed ink-2 left
@@ -4331,7 +4971,7 @@ function buildClimb(tight) {
   /* 8 · the notation, then the origin */
   climb.foot = g.foot.map(([y, w]) => text(8, y, w));
 
-  /* 9 · the run token and the ring it wears when it halts — fig. 04's mark
+  /* 9 · the run token and the ring it wears when it halts · fig. 04's mark
      for the same fact, so a reader who has met one has met this */
   climb.ring = el("circle", { r: g.ringR, class: "holdmark", opacity: 0 });
   climb.tok = el("circle", { r: g.tokR, class: "lit", opacity: 0 });
@@ -4403,7 +5043,18 @@ const aml = { svg: $("amlFig"), tools: [], dots: [], cells: [], runs: [], prompt
   bead: null, ring: null, trail: null, state: null, deploySeg: null,
   phx: [], vert: false, from: 24, railY: 466, railX: 34, swing: -104, halt: 0 };
 const AML_PHASES = ["1.0 ingest", "2.0 explore", "3.0 preprocess", "4.0 engineer", "5.0 train", "6.0 experiments", "7.0 deploy"];
-/* ————— fig. 09 · the vocabulary the other night plates inherit —————
+/* WHICH PHASES ACTUALLY GATE — read off the platform at 5e42233, not assumed.
+   This plate used to draw a boom before all seven and caption it "a human
+   gate before each", which claimed six approvals the code never asks for.
+   The graph stops for a person three times:
+     preprocess · CONDITIONAL — only when the profile flags a risky clean
+     train      · ALWAYS      — the plan is approved before a model is fit
+     deploy     · HUMAN ONLY  — nothing in the graph can start it at all
+   The other four run straight through, and the rail now says so by having
+   nothing across it there. A phase mark and a label are not a gate. */
+const AML_GATES = [null, null, "maybe", null, "always", null, "human"];
+const AML_BOOM_CLASS = { maybe: "boom maybe", always: "boom", human: "boom held" };
+/* ····· fig. 09 · the vocabulary the other night plates inherit ·····
    Three devices, each used the same way in both editions:
 
    1 A LABEL SEATS ON ITS RULE AND THE RULE BREAKS FOR IT — and for
@@ -4488,7 +5139,7 @@ function buildAml(tight) {
       d: "M 24 242 H 31 M 143 242 H 329 M 343 242 H 500 M 500 242 V 402 M 24 242 V 402 M 24 402 H 163 M 493 402 H 500" });
     el("text", { x: 38, y: 246, class: "lit" }).textContent = "the notebook";
     el("text", { x: 486, y: 406, "text-anchor": "end", class: "fsm" })
-      .textContent = "docker sandbox · non-root · read-only fs";
+      .textContent = "docker sandbox · no root · fs read only";
     for (let i = 0; i < 6; i++) {
       const y = 252 + i * 24;
       el("rect", { x: 72, y, width: 396, height: 18, class: "cellr" });
@@ -4504,8 +5155,8 @@ function buildAml(tight) {
       const rn = el("text", { x: 460, y: y + 13.5, class: "cellrun", "text-anchor": "end" });
       rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
     }
-    /* ——— the seven-phase rail; a boom BEFORE every phase; deploy dashed ——— */
-    el("text", { x: 24, y: 428, class: "lit" }).textContent = "seven phases · a human gate before each";
+    /* ——— the seven-phase rail; booms only where the code gates ——— */
+    el("text", { x: 24, y: 428, class: "lit" }).textContent = "seven phases · three gates";
     const PHX = Array.from({ length: 7 }, (_, i) => 56 + i * 73);
     el("path", { d: `M 24 ${R} H ${PHX[6]}`, class: "lane" });
     aml.deploySeg = el("path", { d: `M ${PHX[6]} ${R} H 536`, class: "lane", "stroke-dasharray": "3 6" });
@@ -4516,8 +5167,13 @@ function buildAml(tight) {
          so a staggered label is never ambiguous about which mark owns it,
          and a lifted boom is still visibly hinged to its own rail. */
       el("path", { d: `M ${PHX[i]} ${R - 20} V ${i % 2 ? R + 37 : R + 17}`, class: "lane" });
-      aml.booms.push(el("line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
-        class: i === 6 ? "boom held" : "boom" }));
+      /* a boom only where AML_GATES says the code stops. `null` keeps the
+         array dense so every index still means its own phase — the scrub
+         below reads aml.phx[i] off the same i. */
+      aml.booms.push(AML_GATES[i]
+        ? el("line", { x1: PHX[i], y1: R - 20, x2: PHX[i], y2: R + 6,
+            class: AML_BOOM_CLASS[AML_GATES[i]] })
+        : null);
       const lbl = el("text", { x: PHX[i], y: i % 2 ? R + 48 : R + 28, "text-anchor": "middle",
         class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
@@ -4563,7 +5219,7 @@ function buildAml(tight) {
       d: "M 8 302 H 13 M 113 302 H 153 M 167 302 H 220 M 220 302 V 454 M 8 302 V 454 M 8 454 H 13 M 207 454 H 220" });
     el("text", { x: 20, y: 306, class: "lit" }).textContent = "the notebook";
     el("text", { x: 200, y: 458, "text-anchor": "end", class: "fsm" })
-      .textContent = "docker sandbox · non-root";
+      .textContent = "docker sandbox · no root";
     for (let i = 0; i < 6; i++) {
       const y = 310 + i * 23;
       el("rect", { x: 46, y, width: 150, height: 17, class: "cellr" });
@@ -4576,15 +5232,17 @@ function buildAml(tight) {
       const rn = el("text", { x: 190, y: y + 12.5, class: "cellrun", "text-anchor": "end" });
       rn.textContent = "✓"; rn.setAttribute("opacity", 0); aml.runs.push(rn);
     }
-    el("text", { x: 8, y: 480, class: "lit" }).textContent = "seven phases · a human gate";
+    el("text", { x: 8, y: 480, class: "lit" }).textContent = "seven phases · three gates";
     const PHY = Array.from({ length: 7 }, (_, i) => 512 + i * 27);
     el("path", { d: `M ${X} 494 V ${PHY[6]}`, class: "lane" });
     aml.deploySeg = el("path", { d: `M ${X} ${PHY[6]} V 706`, class: "lane", "stroke-dasharray": "3 6" });
     aml.trail = el("path", { d: `M ${X} 494`, class: "trail" });
     for (let i = 0; i < 7; i++) {
       el("path", { d: `M 14 ${PHY[i]} H 46`, class: "lane" });
-      aml.booms.push(el("line", { x1: 14, y1: PHY[i], x2: 36, y2: PHY[i],
-        class: i === 6 ? "boom held" : "boom" }));
+      aml.booms.push(AML_GATES[i]
+        ? el("line", { x1: 14, y1: PHY[i], x2: 36, y2: PHY[i],
+            class: AML_BOOM_CLASS[AML_GATES[i]] })
+        : null);
       const lbl = el("text", { x: 50, y: PHY[i] + 4, class: i === 6 ? "phlbl deplbl" : "phlbl dim" });
       lbl.textContent = AML_PHASES[i]; aml.plabels.push(lbl);
     }
@@ -4627,7 +5285,8 @@ function scrubAml(p) {
      its rounded string: a boom lifts AHEAD of the bead and the bead passes
      under it, and at scrub 1 all six stand lifted with no frame of motion. */
   aml.booms.forEach((b, i) => {
-    if (i === 6) return; /* the human gate does not open for a scroll */
+    if (!b) return;                        /* this phase has no gate to lift */
+    if (AML_GATES[i] === "human") return;  /* and this one does not open for a scroll */
     const t = clamp((xb - (aml.phx[i] - 34)) / 28, 0, 1);
     const a = (aml.swing * t).toFixed(1);
     if (b._a !== a) {
@@ -4636,8 +5295,11 @@ function scrubAml(p) {
         ? `rotate(${a} 14 ${aml.phx[i]})`
         : `rotate(${a} ${aml.phx[i]} ${aml.railY - 20})`);
     }
+    /* the dash survives the lift: a conditional gate is conditional whether
+       it is standing or swung, so the class it returns to is its own. */
+    const rest = AML_BOOM_CLASS[AML_GATES[i]];
     const open = t > 0.5;
-    if (b._open !== open) { b._open = open; b.setAttribute("class", open ? "boom open" : "boom"); }
+    if (b._open !== open) { b._open = open; b.setAttribute("class", open ? `${rest} open` : rest); }
   });
   /* the supervisor's readout: the phase it is in, and then the halt. It is
      staged by the same scrub the caveat already discloses, and it carries
@@ -4763,16 +5425,14 @@ function setStamps(count) {
   mc.textContent = `${count} / 6`;
   if (grew) { mc.classList.remove("bump"); void mc.offsetWidth; mc.classList.add("bump"); }
 }
-$("mtoggle").addEventListener("click", () => {
-  const open = $("manifest").classList.toggle("open");
-  $("mtoggle").setAttribute("aria-expanded", String(open));
-});
+/* the manifest's open/close now lives in one place · see #manifest-js,
+   which also owns Escape, the scrim and the return of focus. */
 
 /* ————— masthead clock + phase ————— */
 /* the datelines, minutes — station stops are the site's own. One entry per
    beat: 22:32 is the co-signers, 22:41 the gate. */
 const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361, 1812];
-const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest — dusk", "agentic automl", "the review", "the references", "the gate — held", "the next morning"];
+const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest · dusk", "agentic automl", "the review", "the references", "the gate · held", "the next morning"];
 let lastClock = -1, lastPhase = -1;
 /* THE HOUR ANCHORS ON KICKER CROSSINGS, NOT ON BEAT BOXES.
    Reported 2026-08-08: at scrollY 0, with nothing scrolled, the masthead read
@@ -5016,7 +5676,19 @@ function work(y) {
     const [oa, ob, ox, oy, or_, os] = f.spec.out;
     const ein = smooth((p - ia) / (ib - ia));
     const eout = smooth((p - oa) / (ob - oa));
-    const tx = lerp(ix, 0, ein) * vw / 100 + lerp(0, ox, eout) * vw / 100;
+    /* NO HORIZONTAL FX ON A PHONE, and this is a layout rule, not a taste
+       one. `x` is a percentage of the VIEWPORT: a desktop's polite "x 10"
+       is 151px at 1512, where the prose column has room to receive it, and
+       39px at 390, where the column is 316px wide and the slide goes off
+       the page. It was invisible until the corridor cut, because every
+       element carrying an x window used to sit far below the fold at scroll
+       0 and was never drawn in its entry state. Now ¶02 starts on the first
+       screen: measured at 390 the record card sat at translateX(39px) and
+       pushed the body 16px sideways, and 10px at 320. The vertical drift
+       and the fade say the same thing and cost the reader nothing. */
+    const tx = mobile
+      ? 0
+      : lerp(ix, 0, ein) * vw / 100 + lerp(0, ox, eout) * vw / 100;
     const ty = lerp(iy, 0, ein) * vh / 100 + lerp(0, oy, eout) * vh / 100
       + (0.5 - p) * f.spec.drift;
     const r = lerp(ir, 0, ein) + lerp(0, or_, eout);
@@ -5315,24 +5987,8 @@ $("clear").addEventListener("click", () => {
   strokes = []; current = null; repaintPad();
   $("padhint").classList.remove("gone");
   const v = $("verdict"); v.textContent = "·"; v.classList.add("idle");
-  $("conf").textContent = "—"; $("fwd").textContent = "—";
+  $("conf").textContent = "·"; $("fwd").textContent = "·";
   window.__demo.last = null;
-});
-
-/* ————— jetpack: a REAL number, computed here (CompressionStream) ————— */
-$("gzbtn").addEventListener("click", async () => {
-  const out = $("gzout");
-  if (typeof CompressionStream === "undefined") { out.textContent = "CompressionStream unavailable in this browser"; return; }
-  out.textContent = "compressing…";
-  const src = new TextEncoder().encode(document.documentElement.outerHTML.slice(0, 8192));
-  const gz = new Response(
-    new Blob([src]).stream().pipeThrough(new CompressionStream("gzip"))
-  );
-  const n = (await gz.arrayBuffer()).byteLength;
-  const pct = (100 * (1 - n / src.byteLength)).toFixed(1);
-  out.innerHTML = `<b>${src.byteLength.toLocaleString()} B</b> → <b>${n.toLocaleString()} B</b> · −${pct}%`;
-  window.__world.gzip = { in: src.byteLength, out: n };
-  cacheGeometry(); buildThread(); /* the result line may have wrapped */
 });
 
 /* ————— the gate: only a press resolves it ————— */
@@ -5341,7 +5997,7 @@ $("approve").addEventListener("click", () => {
   $("approve").disabled = true;
   const now = new Date();
   $("gateNote").textContent =
-    `approved by hand — ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}, your local time.`;
+    `approved by hand at ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}, your local time.`;
   window.__world.approved = true;
   /* the world acknowledges the signature: the halt ring and the gate
      dock turn pine. Deploy still does not light — approval is yours,
@@ -5467,7 +6123,7 @@ addEventListener("pageshow", releaseScroll);
 
 /* the lamp is mounted and OFF from the start: an absent data-lamp meant the
    first pull computed its next state from undefined. */
-/* ————— the flock · the gate lets go —————
+/* ····· the flock · the gate lets go ·····
    The birds take off FROM the gate the moment the run is approved and fly you
    into the morning. That is the whole reason they exist: the crossing IS the
    transition between ¶12 and ¶13, so the layer is fixed to the viewport rather
@@ -5901,6 +6557,38 @@ boot();
        replay control stays hidden because there is nothing to replay. */
     h1?.setAttribute("data-np-settled", "");
   }
+</script>
+
+<script id="manifest-js">
+/* The ledger is a disclosure: it opens because someone asked, and it closes
+   on the second press, on Escape, and on a tap outside. aria-expanded now
+   tracks the only class that decides the visible state. */
+(function () {
+  var man = document.getElementById("manifest"),
+      tog = document.getElementById("mtoggle"),
+      scr = document.getElementById("mscrim"),
+      cls = document.getElementById("mclose");
+  if (!man || !tog) return;
+  function set(open) {
+    man.classList.toggle("open", open);
+    man.setAttribute("aria-hidden", String(!open));
+    tog.setAttribute("aria-expanded", String(open));
+    if (scr) scr.hidden = !open;
+    if (!open) tog.focus({ preventScroll: true });
+  }
+  tog.addEventListener("click", function (e) {
+    e.stopPropagation();
+    set(!man.classList.contains("open"));
+  });
+  if (cls) cls.addEventListener("click", function () { set(false); });
+  if (scr) scr.addEventListener("click", function () { set(false); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && man.classList.contains("open")) set(false);
+  });
+  man.addEventListener("click", function (e) {
+    if (e.target.closest("a")) set(false);       /* it is navigation now */
+  });
+})();
 </script>
 </body>
 </html>
