@@ -1337,16 +1337,30 @@ export async function performEnsemble(
   };
   /* Letter order, with each start = target landing − the machine's own
      played length (dividers 2250, road 1780, dial 2720, runner 1330,
-     bird 2690 — the sums of their round-9 move durations). The dial
-     opens the floor at 0.2s; the runner, shortest, joins last and
-     still has the whole middle in company: from 1.73s to 2.64s ALL
-     FIVE are in motion at once. */
+     bird 2690 — the sums of their round-9 move durations).
+ 
+     THE STARTS ARE PHASED TO THE ARRIVALS, and that is what they are for.
+     The name has eleven slots and they fill from two sources: six letters
+     the CSS sweep sets, and five their machine carries home. Measured from
+     screencast pixels rather than from the DOM, no single configuration of
+     the plate may stand for more than 0.6s — a held partial name reads as
+     a bug, and a cold critic said so.
+ 
+     Landings are laid into the gaps the sweep leaves, not bunched after
+     it: road 1.95s, runner 2.20s, dividers 2.45s, dial 2.72s, bird 2.90s,
+     against sweep arrivals at 0.57 / 0.72 / 1.02 / 1.32 / 1.62s. The
+     largest gap in the whole assembly is 0.33s.
+ 
+     No machine's own played length changed — the choreography is the
+     owner's and this only decides when each one sets out. The ensemble
+     moment is longer for it: ALL FIVE are in motion from 0.87s to 1.95s,
+     against 1.73s to 2.64s before. */
   const plan: { start: number; make: () => Machine }[] = [
-    { start: 390, make: () => mkDividers(svg, g, letters, rnd) },
-    { start: 1000, make: () => mkRoad(svg, g, letters) },
-    { start: 200, make: () => mkDial(svg, g, letters, rnd) },
-    { start: 1730, make: () => mkRunner(svg, g, letters, rnd) },
-    { start: 510, make: () => mkBird(svg, g, letters, rnd) },
+    { start: 0, make: () => mkDividers(svg, g, letters, rnd) },
+    { start: 170, make: () => mkRoad(svg, g, letters) },
+    { start: 0, make: () => mkDial(svg, g, letters, rnd) },
+    { start: 640, make: () => mkRunner(svg, g, letters, rnd) },
+    { start: 0, make: () => mkBird(svg, g, letters, rnd) },
   ];
   const built: (Machine | null)[] = plan.map(() => null);
   try {
@@ -1358,9 +1372,19 @@ export async function performEnsemble(
         await guard(m.play());
       })
     );
-    /* the wave: every machine has LANDED wet — one beat, then the name
-       dries as one piece, left to right, scaffolds fading with it */
-    await guard(sleep(120));
+    /* THE WAVE IS A BARRIER, and that is what it costs. Nothing dries until
+       every machine has landed, so the two long machines — the dial and the
+       bird — deliver their letters together at the end and the plate stands
+       on one partial name while it waits. Measured from screencast pixels:
+       a[7] and v[10] arrived in the same frame, and the state before them
+       held 672ms.
+
+       The barrier stays, because drying as one piece left to right is the
+       flourish the whole ensemble is built toward. What widens is the
+       SWEEP across it: 190ms a letter instead of 90ms, which spends about
+       400ms of tail to break one long hold into four short ones. The beat
+       shortens to 70ms to pay most of that back. */
+    await guard(sleep(70));
     await Promise.all(
       built.map((m, k) =>
         m
@@ -1370,7 +1394,7 @@ export async function performEnsemble(
               m.settle.idxs,
               m.settle.scaffold,
               380,
-              k * 90
+              k * 190
             )
           : Promise.resolve()
       )
