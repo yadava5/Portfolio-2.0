@@ -2071,6 +2071,40 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 .dawnwrap figure figcaption, .dawnwrap figure figcaption i{
   font-family:var(--body); font-size:var(--fs-small); letter-spacing:0; line-height:1.5}
 
+/* ── the last four mono hooks a person reads ─────────────────────────────
+   G3 allowlisted these as "QUESTIONED" rather than machine values, which is
+   the right reading: a person's name, a station's title, a button's verb
+   and a poet's citation are none of them figures, hashes, paths or flags.
+   They come across on the same ×1.230 x-height conversion as everything
+   else, with letter-spacing off and the ledger's word-spacing on.
+
+   AND THE SERIF IS NARROWER, which is the opposite of what a size increase
+   sounds like. Measured at the masthead's worst case, "jetpack-compress"
+   is 138.9px in Fragment Mono at 12.8 and 109.7px in Newsreader at 15 —
+   the mono is monospaced and the text face is not, so the page gains 29px
+   of band while the letters read a touch larger. */
+.signs{font-family:var(--body); font-size:var(--fs-note);
+  letter-spacing:0; word-spacing:.12em}
+.signs .shead span, .signs .shead span i, .signs .srow .sname{
+  font-family:var(--body); font-size:var(--fs-note);
+  letter-spacing:0; word-spacing:.12em}
+/* 12.8 × 1.230 = 15.7, and 15 is the top of the scale */
+#mphase{font-family:var(--body); font-size:var(--fs-note);
+  letter-spacing:0; word-spacing:.12em}
+/* THE GATE'S CEREMONY IS NOT IN ITS TYPEFACE. This is the one button on the
+   page that asks for a decision, and the brief is right that it has to keep
+   its presence — but what was carrying that presence was never the mono: it
+   is the 1.4rem of padding, the full-ink border, the fill that runs under
+   the label on hover, and the stamp waiting beside it. All four are
+   untouched. The label itself is a verb a person reads, so it is set like
+   one. 12.48 × 1.230 = 15.35. */
+#approve{font-family:var(--body); font-size:var(--fs-note);
+  letter-spacing:0; word-spacing:.12em}
+/* 10.88 × 1.230 = 13.38, which also lifts this caption off the floor it was
+   under: it was the last run of sub-12px type on the page. */
+.bdawn .endquote figcaption{font-family:var(--body); font-size:var(--fs-small);
+  letter-spacing:0; word-spacing:.12em}
+
 /* ── the corridor ────────────────────────────────────────────────────────
    The corridor stops being the remainder of a vh multiple and becomes a
    declared constant. Measured at 1440, section height − content height:

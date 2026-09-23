@@ -423,30 +423,29 @@ test.describe("G2b · the tight SVG editions clear the same floor", () => {
    have admitted the bare prose authored beside its values ("query logs, five
    years of dashboard use…"). `.bench` would have admitted `.bfoot` and
    `.shead`, `.engrows` the degree and languages rows, `.padbar` the clear
-   button's label, and `#mast .state` would have admitted `#mphase` — which is
-   in the QUESTIONED list below and would then have been flagged for nothing.
+   button's label, and `#mast .state` would have admitted `#mphase`, which is
+   now in the text face and would have been covered for nothing.
    None of those leaves is mono on the page today. The allowlist is written so
    that if one becomes mono, this goes red.
 
-   Five entries are here because the page uses them and I do not think they
-   are machine values. They are marked, not hidden, because a silent
-   allowance is how an allowlist becomes a description of whatever the page
-   happens to do:
+   Five entries were listed here as QUESTIONED rather than allowed, because
+   marking a doubt is the only thing that stops an allowlist from becoming a
+   description of whatever the page happens to do. Four of them have since
+   moved to the text face and are gone from the list:
 
-     · `.signs`              "Randall Vollen", "Shree Chaturvedi". Two
-                             people's names. A reference register is a
-                             register, but a name is not a machine value.
-     · `#mphase`             the masthead phase readout: "the start", "the
-                             yard", "the references". A station's title. It
-                             reads as a label, not a value.
-     · `.cue .a`             the "↓" under the nameplate. A glyph, not a
-                             value; allowed because it is one arrow, not prose.
-     · `.endquote figcaption` the Eliot attribution. A caption, and captions
-                             get a text face chosen on purpose.
-     · `#approve`            "approve run 042". A control's label.
+     · `.signs`              two people's names
+     · `#mphase`             a station's title
+     · `.endquote figcaption` the Eliot attribution
+     · `#approve`            a control's verb
 
-   The owner decides whether those five move to the text face. This gate's
-   job is to make sure nothing NEW joins them.
+   One stays, and it is not a doubt. `.cue .a` is the "↓" under the
+   nameplate: a GLYPH PIN, kept in Fragment Mono because that is the only
+   one of the page's four faces that draws the arrow at all. Newsreader,
+   Fraunces and the system stacks fall back to Apple Symbols for it, at a
+   different advance, which is the drift the pin exists to prevent. It is
+   one character and it is never prose.
+
+   This gate's job is to make sure nothing NEW joins it.
    ══════════════════════════════════════════════════════════════════════ */
 const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: ".uv", why: "the unit that belongs to the value beside it" },
@@ -478,12 +477,8 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: "kbd", why: "a key" },
   { sel: "samp", why: "machine output" },
   { sel: "[data-machine]", why: "an explicit opt-in for a machine value" },
-  /* ── judged NOT machine values; see the note above ────────────────── */
-  { sel: ".signs", why: "QUESTIONED: two people's names" },
-  { sel: "#mphase", why: "QUESTIONED: the station's title, not a value" },
-  { sel: ".cue .a", why: "QUESTIONED: a single arrow glyph" },
-  { sel: ".endquote figcaption", why: "QUESTIONED: a caption" },
-  { sel: "#approve", why: "QUESTIONED: a control's label" },
+  /* ── the one glyph pin; see the note above ─────────────────────────── */
+  { sel: ".cue .a", why: "glyph pin: ↓ exists only in Fragment Mono" },
 ];
 
 test.describe("G3 · mono only on machine values", () => {
