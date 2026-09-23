@@ -47,10 +47,10 @@ export function renderNotFound({ stations, seo, siteMetadata }) {
     <main id="main-content">
     <section class="dossier notice" id="not-found">
       <div class="wrap">
-        <p class="kickline">¶ not on file — nothing at this address</p>
+        <p class="kickline">¶ not on file · nothing at this address</p>
         <header class="filehead">
           <h1>Not on file</h1>
-          <p class="deck">The address you asked for was never filed here — nothing has been lost or moved. What this paper does hold is listed below: the stations of one workday, and the ledger that backs every number in them.</p>
+          <p class="deck">The address you asked for was never filed here, and nothing has been lost or moved. What this paper does hold is listed below: the stations of one workday, and the ledger that backs every number in them.</p>
         </header>
         <nav aria-labelledby="on-file" class="onfile">
           <h2 id="on-file" class="seckick">what is on file</h2>

@@ -23,6 +23,7 @@ import {
   visitedMark,
   masthead,
   colophon,
+  prose,
   assetHead,
 } from "./partials.mjs";
 
@@ -34,8 +35,8 @@ const EVIDENCE_DESCRIPTION =
 
 /** The honest qualifier on a source's independence (F55) — verbatim. */
 const SOURCE_KIND_NOTE = {
-  "self-hosted": "[self-hosted — checked into this site’s repository]",
-  "self-authored": "[self-authored — the author’s own documentation]",
+  "self-hosted": "[self-hosted, checked into this site’s repository]",
+  "self-authored": "[self-authored, the author’s own documentation]",
 };
 
 /** URLs link out with ↗; checked-in `public/…` paths never left this
@@ -65,9 +66,9 @@ function ledgerCaption(entries) {
   if (count("private-safe"))
     parts.push(`${count("private-safe")} private-safe`);
   if (count("local-only"))
-    parts.push(`${count("local-only")} local — verified on request`);
+    parts.push(`${count("local-only")} local, verified on request`);
   const sum = parts.join(" · ");
-  return held === 0 ? sum : `${sum} — ${held} of them held, not yet earned`;
+  return held === 0 ? sum : `${sum} · ${held} of them held, not yet earned`;
 }
 
 function ledgerGlance(entries) {
@@ -79,7 +80,7 @@ function ledgerGlance(entries) {
     .join("");
   return `<figure class="glance ledger-glance" data-proof-glance>
           <div class="gmarks" aria-hidden="true">${marks}</div>
-          <figcaption>at a glance — ${esc(ledgerCaption(entries))}</figcaption>
+          <figcaption>at a glance: ${esc(ledgerCaption(entries))}</figcaption>
         </figure>`;
 }
 
@@ -91,7 +92,7 @@ function entryRow(entry, index) {
      not a page. The case files already got this right ("download the
      raw ledger (json)"); /evidence was the surface that did not. */
   const source = link
-    ? `<a href="${esc(link.href)}"${link.external ? ' target="_blank" rel="noopener noreferrer"' : ""}${!link.external && link.href.endsWith(".json") ? " download" : ""}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
+    ? `<a class="mv" href="${esc(link.href)}"${link.external ? ' target="_blank" rel="noopener noreferrer"' : ""}${!link.external && link.href.endsWith(".json") ? " download" : ""}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
     : esc(entry.sourceLabel);
   const kind = entry.sourceKind
     ? `<span class="skind">${esc(SOURCE_KIND_NOTE[entry.sourceKind])}</span>`
@@ -102,22 +103,22 @@ function entryRow(entry, index) {
         fileId
           ? visitedMark(
               fileId,
-              "you opened this case file — your reading history"
+              "you opened this case file, your reading history"
             )
           : ""
       }`
-    : "no case file — the repository is the record";
+    : "no case file: the repository is the record";
   return `<li id="${esc(entry.id)}" data-receipt-row>
             <div class="ehead"><p class="eno">e-${String(index + 1).padStart(2, "0")}</p>
               <p class="evis"><span class="sr-only">visibility: </span>${visibilityGlyph(entry.visibility)} ${esc(VISIBILITY_LABEL[entry.visibility])}</p></div>
             <div class="ebody">
-              <div class="eclaim"><h2>${esc(entry.label)}</h2><p>${esc(entry.claim)}</p></div>
+              <div class="eclaim"><h2>${esc(entry.label)}</h2><p>${prose(entry.claim)}</p></div>
               <dl>
                 <div><dt>source: </dt><dd>${source}${kind}</dd></div>
                 <div><dt>date: </dt><dd>${entry.date ? esc(entry.date) : "not recorded"}</dd></div>
-                <div><dt>verification: </dt><dd>${esc(entry.verification)}</dd></div>
+                <div><dt>verification: </dt><dd>${prose(entry.verification)}</dd></div>
                 <div><dt>argued in: </dt><dd>${argued}</dd></div>
-                <div><dt>boundary: </dt><dd>${esc(entry.privacyBoundary)}</dd></div>
+                <div><dt>boundary: </dt><dd>${prose(entry.privacyBoundary)}</dd></div>
               </dl>
             </div>
           </li>`;
@@ -140,10 +141,10 @@ export function renderEvidence({ entries, stations, seo, siteMetadata }) {
     <main id="main-content">
     <article class="dossier evidence" data-dossier>
       <div class="wrap">
-        <p class="kickline">¶ the evidence index — every claim on file · ${entries.length} entries</p>
+        <p class="kickline">¶ the evidence index · every claim on file · ${entries.length} entries</p>
         <header class="filehead">
           <h1 data-thread-title>The evidence index</h1>
-          <p class="deck">The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was recorded, and the case-file receipt that argues it in full. If a claim is not in this ledger or a case file, the site does not make it — apart from two registers that terminate in documents this site cannot publish. The biographical one (degree, dean’s list, GPA, certificates, the MUCAT grant) rests on the transcript and the awards themselves. The institutional one — the OAS and Tableau figures at ¶03 — is read off Miami’s own systems, and only the sanitised inventory ledger made it out. Both are verifiable on request; neither is dressed as if a link would settle it.</p>
+          <p class="deck">The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was recorded, and the case-file receipt that argues it in full. If a claim is not in this ledger or a case file, the site does not make it, apart from two registers that terminate in documents this site cannot publish. The biographical one (degree, dean’s list, GPA, certificates, the MUCAT grant) rests on the transcript and the awards themselves. The institutional one, covering the OAS and Tableau figures at ¶03, is read off Miami’s own systems, and only the sanitised inventory ledger made it out. Both are verifiable on request; neither is dressed as if a link would settle it.</p>
         </header>
         ${ledgerGlance(entries)}
         <ol class="eledger">
@@ -152,8 +153,8 @@ export function renderEvidence({ entries, stations, seo, siteMetadata }) {
         <footer class="folio">
           <div class="rule" aria-hidden="true"><span></span><span class="rlabel">the evidence index</span><span></span></div>
           <div class="folio-links">
-            <a class="rejoin" href="${esc(RUN)}/#${esc(review.id)}">⟵ rejoin the line at ¶ ${reviewPara} · ${esc(review.name)} — ${esc(review.clock)}</a>
-            <a class="onward folio-seat" href="${PREFIX}projects/automl/">first case file — agentic automl ⟶</a>
+            <a class="rejoin" href="${esc(RUN)}/#${esc(review.id)}">⟵ rejoin the line at ¶ ${reviewPara} · ${esc(review.name)} · ${esc(review.clock)}</a>
+            <a class="onward folio-seat" href="${PREFIX}projects/automl/">first case file: agentic automl ⟶</a>
           </div>
         </footer>
       </div>
@@ -169,7 +170,7 @@ export function renderEvidence({ entries, stations, seo, siteMetadata }) {
       title: EVIDENCE_TITLE,
       description: EVIDENCE_DESCRIPTION,
       image: "/og/evidence.png",
-      imageAlt: "The evidence index — Ayush Yadav’s proof ledger",
+      imageAlt: "The evidence index · Ayush Yadav’s proof ledger",
       ogType: "website",
       jsonLd: seo.evidenceGraph(entries.length),
       extraHead: assetHead(PREFIX),

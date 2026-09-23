@@ -53,6 +53,21 @@ export function breakable(value) {
     .join("<wbr>");
 }
 
+/**
+ * Data prose, escaped, with the author's own backticks rendered as code.
+ *
+ * The data layer writes commands, shas and symbols in backticks the way a
+ * README does — `pytest tests -q --cov=jobtracker`, `set_config`, `main`.
+ * While every hook on the sheet was Fragment Mono those marks were
+ * redundant punctuation; now that the prose is Newsreader, an unstyled
+ * backtick reads as a typo, and the command it fences reads as words.
+ * This changes no text: `textContent` is byte-identical either way, which
+ * is what keeps the fixtures that assert these sentences passing.
+ */
+export function prose(value) {
+  return esc(value).replace(/`([^`\n]+)`/g, '<code class="mv">$1</code>');
+}
+
 /* ── The drawn verdict + visibility glyphs ─────────────────────────────
    Paths verbatim from src/components/paper/proofGlyphs.tsx — the walk's
    gutter, the glance strips and the /evidence ledger all draw from one
@@ -96,7 +111,7 @@ export function visibilityGlyph(visibility) {
 export const VISIBILITY_LABEL = {
   public: "[public]",
   "private-safe": "[private-safe]",
-  "local-only": "[local — verified on request]",
+  "local-only": "[local, verified on request]",
 };
 
 /** The visited ✓ — reserved-width slot paper-memory.js unhides. */
@@ -126,13 +141,20 @@ export function masthead(runUrl, state) {
  * thirteen stations."), and the year is the year the edition was set —
  * baked at generation time, exactly as the React footer baked it at
  * build (CRITIC-LEDGER F48's ruling carries over unchanged).
+ *
+ * The résumé sits beside the working paper because the archive is the
+ * one surface a reader reaches without passing the run's contact row,
+ * and a case file is where someone decides they want the one-pager. It
+ * is addressed absolutely for the same reason the wordmark is: the 404
+ * is served at addresses it cannot predict, and `/resume.pdf` stays on
+ * this origin, so `check-links`'s glyph law gives it ⟶ rather than ↗.
  */
 export function colophon(runUrl) {
   const year = new Date().getFullYear();
   return `<footer class="colophon">
-      <p>© ${year} ayush yadav — set by hand · set in fraunces, newsreader &amp; fragment mono</p>
+      <p>© ${year} ayush yadav · set by hand · set in fraunces, newsreader &amp; fragment mono</p>
       <p class="strap">two inks. one line. thirteen stations.</p>
-      <p><a href="${esc(runUrl)}/">the working paper ⟶</a></p>
+      <p class="reach"><a href="${esc(runUrl)}/">the working paper ⟶</a> · <a href="${esc(runUrl)}/resume.pdf">résumé (pdf) ⟶</a></p>
     </footer>`;
 }
 

@@ -31,6 +31,7 @@ import {
   VISIBILITY_LABEL,
   masthead,
   colophon,
+  prose,
   stationFor,
   stationNo,
   assetHead,
@@ -120,7 +121,7 @@ function waybillFor(station) {
 }
 
 function arrivalSlip({ station, study, runUrl }) {
-  const at = `<a href="${esc(runUrl)}/#${esc(station.id)}">${esc(station.name)} — ¶ ${stationNo(station)} · ${esc(station.clock)}</a>`;
+  const at = `<a href="${esc(runUrl)}/#${esc(station.id)}">${esc(station.name)}, ¶ ${stationNo(station)} · ${esc(station.clock)}</a>`;
   const line =
     station.dossier === study.projectId
       ? `↳ <span class="dep">consigned at</span> ${at} · <span class="dep">waybill:</span> ${esc(waybillFor(station))}`
@@ -132,7 +133,7 @@ function arrivalSlip({ station, study, runUrl }) {
      paper is bright at ten at night. */
   const lamp =
     station.beat >= 7
-      ? `\n        <p class="hourline lamp">the line stands dark at ${esc(station.clock)} — the archive lamp is lit; a record is read in the light it needs.</p>`
+      ? `\n        <p class="hourline lamp">the line stands dark at ${esc(station.clock)}. the archive lamp is lit; a record is read in the light it needs.</p>`
       : "";
   return `<p class="slip">${line}</p>${lamp}`;
 }
@@ -151,7 +152,7 @@ function metaLedger({ study, project }) {
       ? `<a href="${esc(c.href)}" target="_blank" rel="noopener noreferrer">${esc(c.name)}</a>`
       : esc(c.name);
     rows.push(
-      ledgerRow("with", `${name}${c.scope ? ` — ${esc(c.scope)}` : ""}`)
+      ledgerRow("with", `${name}${c.scope ? ` (${esc(c.scope)})` : ""}`)
     );
   }
   rows.push(ledgerRow("timeframe", esc(study.timeframe.toLowerCase())));
@@ -168,19 +169,24 @@ function metaLedger({ study, project }) {
     rows.push(
       ledgerRow(
         "repo",
-        `<a href="${esc(study.repoPin.href)}" target="_blank" rel="noopener noreferrer">${breakable(pin)}&#xA0;↗</a>`
+        `<a class="mv" href="${esc(study.repoPin.href)}" target="_blank" rel="noopener noreferrer">${breakable(pin)}&#xA0;↗</a>`
       )
     );
   } else {
     rows.push(
-      ledgerRow("repo", `private — ${breakable(study.privateRepoName ?? "")}`)
+      ledgerRow(
+        "repo",
+        /* the field is named for a repo, but the two files that carry it name
+           an institution rather than a path, so it stays in the text face. */
+        `private: ${breakable(study.privateRepoName ?? "")}`
+      )
     );
   }
   if (project.liveUrl) {
     rows.push(
       ledgerRow(
         "live demo",
-        `<a href="${esc(project.liveUrl)}" target="_blank" rel="noopener noreferrer" data-live-demo>${breakable(liveHost)}&#xA0;↗</a>`
+        `<a class="mv" href="${esc(project.liveUrl)}" target="_blank" rel="noopener noreferrer" data-live-demo>${breakable(liveHost)}&#xA0;↗</a>`
       )
     );
   }
@@ -192,7 +198,7 @@ function metaLedger({ study, project }) {
        at all; the archive does cite it, so the archive has to say which it is.
        Still gated on both fields, never composed from liveUrl. */
     const edition = project.systemCardEdition
-      ? ` — ${esc(project.systemCardEdition)}`
+      ? ` · ${esc(project.systemCardEdition)}`
       : "";
     rows.push(
       ledgerRow(
@@ -206,11 +212,11 @@ function metaLedger({ study, project }) {
 
 /** The page's single stamp — private files only. Aria-label verbatim
  *  from the contract. */
-const PRIVATE_STAMP = `<div role="img" aria-label="Stamp: private repository — evidence on file" class="stamp-private">
+const PRIVATE_STAMP = `<div role="img" aria-label="Stamp: private repository, evidence on file" class="stamp-private">
           <svg viewBox="0 0 250 110" aria-hidden="true"><g fill="none" stroke="currentColor" opacity="0.9">
           <path stroke-width="2" stroke-dasharray="6 6" stroke-linecap="round" d="M10 12 C 78 8, 172 10, 240 9 C 242 42, 241 74, 240 100 C 170 103, 80 101, 10 101 C 8 70, 9 40, 10 12 Z"/>
           <text x="125" y="48" text-anchor="middle" font-size="14" letter-spacing="2" fill="currentColor" stroke="none">private repository</text>
-          <text x="125" y="72" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="currentColor" stroke="none">evidence on file — private-safe</text>
+          <text x="125" y="72" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="currentColor" stroke="none">evidence on file · private-safe</text>
           </g></svg></div>`;
 
 /* ── fig. 2 — the architecture, data-driven ────────────────────────────
@@ -263,8 +269,8 @@ function systemDiagram(arch, projectId) {
         : "the system";
   const caption =
     gateCount > 0
-      ? `fig. 2 — ${figureName}, inked. clay marks ${gateCount === 1 ? "the gate" : "the gates"}: where a check can stop the run.`
-      : `fig. 2 — ${figureName}, inked.`;
+      ? `fig. 2: ${figureName}, inked. clay marks ${gateCount === 1 ? "the gate" : "the gates"}: where a check can stop the run.`
+      : `fig. 2: ${figureName}, inked.`;
   const annotation = arch.annotation
     ? `<div class="annot"><svg aria-hidden="true" viewBox="0 0 34 24"><path d="M2 22 C 9 19, 16 11, 29 4 M29 4 l-6.5 0.8 M29 4 l-1.2 6.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><p>${esc(arch.annotation)}</p></div>`
     : "";
@@ -319,7 +325,7 @@ function systemDiagram(arch, projectId) {
     const cls = `siding ${dir}${e.gate ? " gate" : ""}`;
     const glyph = dir === "out" ? "⟶" : "⟵";
     if (drawn.has(offId))
-      return `<div class="${cls}"><p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">${glyph}</span> ${esc(e.label)} — <span class="n1">${esc(off.label)}</span></p></div>`;
+      return `<div class="${cls}"><p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">${glyph}</span> ${esc(e.label)}: <span class="n1">${esc(off.label)}</span></p></div>`;
     drawn.add(offId);
     return `<div class="${cls}"><p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">${glyph}</span> ${esc(e.label)}</p>${nodeCard(off)}</div>`;
   };
@@ -346,7 +352,7 @@ function systemDiagram(arch, projectId) {
   for (const e of loops) {
     const from = byId.get(e.from);
     const closes = arch.variant === "loop" && pos.get(e.to) === 0;
-    const line = `<p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">↺</span> ${esc(e.label)} — back to <span class="n1">${esc(byId.get(e.to)?.label ?? e.to)}</span>${closes ? ", closing the loop" : ""}</p>`;
+    const line = `<p class="sedge">${e.gate ? gsq : ""}<span aria-hidden="true">↺</span> ${esc(e.label)}, back to <span class="n1">${esc(byId.get(e.to)?.label ?? e.to)}</span>${closes ? ", closing the loop" : ""}</p>`;
     if (from && !drawn.has(e.from)) {
       drawn.add(e.from);
       blocks.push(`<div class="siding back">${nodeCard(from)}${line}</div>`);
@@ -387,7 +393,7 @@ function registryFig(reg) {
   return `<section class="registry"><figure id="fig-3">
           <ul>
             <li class="rghead" aria-hidden="true"><span>run · model</span><span class="rgm">metrics</span><span class="rgstatus">status</span></li>
-            <li class="rgnote" aria-hidden="true">metrics withheld — the caption says why</li>
+            <li class="rgnote" aria-hidden="true">metrics withheld: the caption says why</li>
               ${rows}
           </ul>
           <figcaption>${reg.caption.map((l) => `<span>${esc(l)}</span>`).join("")}</figcaption>
@@ -411,10 +417,10 @@ function receiptRow({ row, n, projectId, receiptAnchor, receiptAuditState }) {
             : `<li>${key}<a href="${esc(citationHref(a))}" class="cite-link">${esc(a.label)}</a></li>`;
         })
         .join("")}</ul>`
-    : `<p class="none"><span class="klabel">artifact: </span>no linkable artifact — described only</p>`;
+    : `<p class="none"><span class="klabel">artifact: </span>no linkable artifact, described only</p>`;
   return `<li id="${anchor}" data-receipt-row${cites ? ` data-cites="${cites}"` : ""} data-audit="${state}">
-              <p class="claim"><a class="rnum" href="#${anchor}" aria-label="${padded} — permalink to receipt ${n}">${padded}<span class="audit-mark am-${glyph}">${auditGlyph(state)}</span></a><span class="klabel">claim: </span><span class="ctext">${esc(row.claim)}</span></p>
-              <p class="rmeta"><span class="klabel">method: </span>${esc(row.method)}<span class="rdate"><span class="klabel">date: </span>${row.date ? esc(row.date) : "date not recorded"}</span></p>
+              <p class="claim"><a class="rnum" href="#${anchor}" aria-label="${padded}, permalink to receipt ${n}">${padded}<span class="audit-mark am-${glyph}">${auditGlyph(state)}</span></a><span class="klabel">claim: </span><span class="ctext">${prose(row.claim)}</span></p>
+              <p class="rmeta"><span class="klabel">method: </span>${prose(row.method)}<span class="rdate"><span class="klabel">date: </span>${row.date ? esc(row.date) : "date not recorded"}</span></p>
               <div class="rart">${artifacts}<p class="vis">${visibilityGlyph(row.visibility)} ${esc(VISIBILITY_LABEL[row.visibility])}</p></div>
             </li>`;
 }
@@ -528,19 +534,19 @@ function artifactGallery({ artifacts, figStart }) {
         })
         .join("");
       parts.push(
-        `<a class="plateb poster" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}">${panels}<span class="pcap"><span class="fc-main">fig. ${fig} — ${esc(artifact.label)}.</span><span class="fc-note">panels cropped at column width from the checked-in capture — the titles are the poster’s words, not this file’s claims.</span>${capTail}</span></a>`
+        `<a class="plateb poster" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}">${panels}<span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span><span class="fc-note">panels cropped at column width from the checked-in capture. the titles are the poster’s words, not this file’s claims.</span>${capTail}</span></a>`
       );
       return;
     }
     const wide =
       galleryCount > 1 && galleryCount % 2 === 1 && i === plates.length - 1;
     parts.push(
-      `<a class="plateb${wide ? " wide" : ""}" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}"><span class="plate-paper"><span class="pframe"><img src="${esc(src)}" alt="${esc(artifact.label)} plate" loading="lazy"></span></span><span class="pcap"><span class="fc-main">fig. ${fig} — ${esc(artifact.label)}.</span>${capTail}</span></a>`
+      `<a class="plateb${wide ? " wide" : ""}" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}"><span class="plate-paper"><span class="pframe"><img src="${esc(src)}" alt="${esc(artifact.label)} plate" loading="lazy"></span></span><span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span>${capTail}</span></a>`
     );
   });
 
   const index = indexRows.length
-    ? `<div class="aindex"><p class="oshead">artifact index —</p><ul>${indexRows
+    ? `<div class="aindex"><p class="oshead">artifact index</p><ul>${indexRows
         .map(
           (a) =>
             `<li><a href="${esc(a.href)}" target="_blank" rel="noopener noreferrer">${esc(a.label)}&#xA0;↗</a><span class="aprov">[${esc(a.type)}] · ${esc(a.source)}</span></li>`
@@ -591,10 +597,10 @@ export function renderCaseFile({
     ? "plates &amp; artifacts"
     : study.artifacts.length
       ? "artifacts, indexed"
-      : "artifacts — none beyond the page";
+      : "artifacts, none beyond the page";
   const appendixBody = study.artifacts.length
     ? artifactGallery({ artifacts: study.artifacts, figStart })
-    : `<p class="noplates">nothing to open here, deliberately — ${
+    : `<p class="noplates">nothing to open here, deliberately: ${
         study.ledger
           ? "the ledger above is this file’s publishable artifact, shown in full,"
           : "everything this file can publish is already on the page,"
@@ -610,11 +616,11 @@ export function renderCaseFile({
               return `<span data-glance-state="${s}">${auditGlyph(s, "ag lg")}</span>`;
             })
             .join("")}</div>
-          <figcaption>at a glance — ${esc(auditTallyClauses(counts).join(" · "))}</figcaption>
+          <figcaption>at a glance: ${esc(auditTallyClauses(counts).join(" · "))}</figcaption>
         </figure>`;
 
   const methodSlip = study.protocol
-    ? `<aside class="methodslip"><h3>method slip — eval protocol</h3>${
+    ? `<aside class="methodslip"><h3>method slip: eval protocol</h3>${
         study.protocol.documented
           ? `<dl>${study.protocol.lines
               .map(
@@ -622,7 +628,7 @@ export function renderCaseFile({
                   `<div><dt>${esc(l.label)}: </dt><dd>${breakable(l.value)}</dd></div>`
               )
               .join("")}</dl>`
-          : `<p class="notdoc">protocol: not yet documented — see corrections.</p>`
+          : `<p class="notdoc">protocol: not yet documented. see corrections.</p>`
       }</aside>`
     : "";
 
@@ -633,7 +639,7 @@ export function renderCaseFile({
      download is its portable copy, and nothing stands in for either. */
   const ledger = study.ledger
     ? `<section id="ledger">
-          <h2 class="seckick">[ ledger ] · § ${esc(study.ledger.title)} — checked in ${esc(study.ledger.checkedIn)}</h2>
+          <h2 class="seckick">[ ledger ] · § ${esc(study.ledger.title)} · checked in ${esc(study.ledger.checkedIn)}</h2>
           <table><thead><tr><th scope="col">entry</th><th scope="col">value</th><th scope="col" class="notecol">note</th></tr></thead>
           <tbody>${study.ledger.rows
             .map(
@@ -642,7 +648,7 @@ export function renderCaseFile({
             )
             .join("")}</tbody></table>
           <p class="dl"><a href="${esc(sitePath(PREFIX, study.ledger.jsonPath))}" download>download the raw ledger (json) ⟶</a></p>
-          <p class="boundary">${esc(study.ledger.boundary)}.</p>
+          <p class="boundary">${prose(study.ledger.boundary)}.</p>
         </section>`
     : "";
 
@@ -650,13 +656,13 @@ export function renderCaseFile({
     ? `<ul>${study.corrections
         .map(
           (c) =>
-            `<li><p class="ckind">${esc(c.kind)} · ${esc(c.date)}</p><p class="cbody">${esc(c.text)}</p></li>`
+            `<li><p class="ckind">${esc(c.kind)} · ${esc(c.date)}</p><p class="cbody">${prose(c.text)}</p></li>`
         )
         .join("\n            ")}</ul>`
-    : `<p class="noc">no corrections on file. when a number changes, it is amended here in public — never deleted.</p>`;
+    : `<p class="noc">no corrections on file. when a number changes, it is amended here in public, never deleted.</p>`;
 
   const nextTeaser = next
-    ? `<p class="nextfile">next file — <a href="../${esc(next.projectId)}/">case file ${next.fileNo} of ${TOTAL} · ${esc((caseStudies.getCaseStudyProject(next)?.title ?? next.projectId).toLowerCase())} — filed ${esc(next.filed)} ⟶</a></p>`
+    ? `<p class="nextfile">next file: <a href="../${esc(next.projectId)}/">case file ${next.fileNo} of ${TOTAL} · ${esc((caseStudies.getCaseStudyProject(next)?.title ?? next.projectId).toLowerCase())} · filed ${esc(next.filed)} ⟶</a></p>`
     : "";
 
   const body = `${masthead(RUN, `the record room · case file ${fileNo} of ${TOTAL}`)}
@@ -664,8 +670,8 @@ export function renderCaseFile({
     <article class="dossier" data-dossier data-case-file="${esc(study.projectId)}">
       <div class="wrap">
         <div class="kickrow">
-          <p data-dossier-kicker>¶ case file ${fileNo} of ${TOTAL} · ${esc(project.title.toLowerCase())} — <span class="nowrap">filed ${esc(study.filed)}</span> · <span class="nowrap">last verified ${esc(study.verified)}</span></p>
-          <p data-dossier-status class="folio-seat">status: ${esc(study.status)}${study.statusDetail ? ` — ${esc(study.statusDetail)}` : ""}</p>
+          <p data-dossier-kicker>¶ case file ${fileNo} of ${TOTAL} · ${esc(project.title.toLowerCase())} · <span class="nowrap">filed ${esc(study.filed)}</span> · <span class="nowrap">last verified ${esc(study.verified)}</span></p>
+          <p data-dossier-status class="folio-seat">status: ${esc(study.status)}${study.statusDetail ? ` · ${esc(study.statusDetail)}` : ""}</p>
         </div>
 
         ${arrivalSlip({ station, study, runUrl: RUN })}
@@ -681,7 +687,7 @@ export function renderCaseFile({
           ${metaLedger({ study, project })}
           <div class="metaside">${isPrivate ? PRIVATE_STAMP : ""}${
             study.evidenceDisclosure
-              ? `<aside class="disclosure">${esc(study.evidenceDisclosure.label)} — ${esc(study.evidenceDisclosure.detail)}</aside>`
+              ? `<aside class="disclosure">${esc(study.evidenceDisclosure.label)}: ${esc(study.evidenceDisclosure.detail)}</aside>`
               : ""
           }</div>
         </div>
@@ -689,9 +695,9 @@ export function renderCaseFile({
         <div class="probgrid">
           <section id="problem">
             <h2 class="seckick">[ problem ] · § as found</h2>
-            <p class="prose">${esc(study.problem)}</p>
-            <h3 class="sublabel">constraints —</h3>
-            <ul class="constraints">${study.constraints.map((c) => `<li>${esc(c)}</li>`).join("\n              ")}</ul>
+            <p class="prose">${prose(study.problem)}</p>
+            <h3 class="sublabel">constraints</h3>
+            <ul class="constraints">${study.constraints.map((c) => `<li>${prose(c)}</li>`).join("\n              ")}</ul>
           </section>
           <section id="project-visual">
             ${caseFigure(study.projectId)}
@@ -711,7 +717,7 @@ export function renderCaseFile({
             ${study.decisions
               .map(
                 (d, i) =>
-                  `<article class="drow"><h3>d${i + 1} — ${esc(d.decision.toLowerCase())} · ${esc(d.status)}</h3><p class="dreason">${esc(d.reason)}<sup>${i + 1}</sup></p><p data-tradeoff-slip class="dslip"><sup>${i + 1}</sup> tradeoff — ${esc(d.tradeoff)}</p></article>`
+                  `<article class="drow"><h3>d${i + 1}: ${esc(d.decision.toLowerCase())} · ${esc(d.status)}</h3><p class="dreason">${prose(d.reason)}<sup>${i + 1}</sup></p><p data-tradeoff-slip class="dslip"><sup>${i + 1}</sup> tradeoff: ${prose(d.tradeoff)}</p></article>`
               )
               .join("\n            ")}
           </div>
@@ -742,12 +748,12 @@ export function renderCaseFile({
           })}
           <p class="provline">${
             hasLocalOnlyRow
-              ? "rows marked [local — verified on request] were run by me on personal or demo data · "
+              ? "rows marked [local, verified on request] were run by me on personal or demo data · "
               : ""
           }ci rows link the public run · repo pins are the exact commits verified ${esc(study.verified)}.</p>
           <div class="notclaim">
-            <h3 class="sublabel">what i’m NOT claiming —</h3>
-            <ul>${study.notClaiming.map((l) => `<li>${esc(l)}</li>`).join("\n            ")}</ul>
+            <h3 class="sublabel">what i’m NOT claiming</h3>
+            <ul>${study.notClaiming.map((l) => `<li>${prose(l)}</li>`).join("\n            ")}</ul>
           </div>
         </section>
 
@@ -766,7 +772,7 @@ export function renderCaseFile({
         <footer class="folio">
           <div class="rule" aria-hidden="true"><span></span><span class="rlabel">case file ${fileNo} of ${TOTAL}</span><span></span></div>
           <div class="folio-links">
-            <a class="rejoin" href="${esc(RUN)}/#${esc(station.id)}">⟵ rejoin the line at ¶ ${stationNo(station)} · ${esc(station.name)} — ${esc(station.clock)}</a>
+            <a class="rejoin" href="${esc(RUN)}/#${esc(station.id)}">⟵ rejoin the line at ¶ ${stationNo(station)} · ${esc(station.name)} · ${esc(station.clock)}</a>
             <a class="onward folio-seat" href="${PREFIX}evidence/">the evidence index ⟶</a>
           </div>
           ${nextTeaser}
@@ -784,7 +790,7 @@ export function renderCaseFile({
       title,
       description: study.summary,
       image: `/og/case-${study.projectId}.png`,
-      imageAlt: `Case file card — ${project.title}, from Ayush Yadav’s portfolio`,
+      imageAlt: `Case file card: ${project.title}, from Ayush Yadav’s portfolio`,
       ogType: "article",
       article: { published: study.filed, modified: study.verified },
       jsonLd: seo.caseStudyGraph(project, study),

@@ -186,8 +186,8 @@ export const EXPECTED_PROOF_ARTIFACTS = {
     "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline",
   fastMnistRetiredAttribution: "openmp+simd",
   masterInventoryRows:
-    "3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
-  masterInventorySchema: "35-field unified schema",
+    "3,731 Tableau rows and 6,743 Workday rows consolidated into a deduplicated master_inventory.csv of 10,453 rows.",
+  masterInventorySchema: "unified schema of 35 fields",
   masterInventoryTests:
     "passed 3 extractor tests and critical ruff syntax/import checks",
   masterInventoryPrivateBoundary:

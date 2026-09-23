@@ -89,8 +89,72 @@
   --display:"Fraunces", Georgia, serif;
   --body:"Newsreader", Georgia, serif;
   --mono:"Fragment Mono", ui-monospace, "SF Mono", monospace;
+  /* Fragment Mono's x-height is .524em and Newsreader's is .426em, so a
+     line moved off mono grows by 1.230× to keep its apparent size — which
+     is also what carries it over the 12px floor. Every size below is that
+     ratio applied to the size the hook rendered at before. The archive has
+     no scaled container (its only transforms are rotations, so effective
+     px == declared px), so 12.48 is a real floor, not a hopeful one. */
+  --fs-micro:.78rem;    /* 12.48px · the machine-value floor, unchanged */
+  --fs-small:.8125rem;  /* 13px */
+  --fs-label:.875rem;   /* 14px */
+  --fs-note:.9375rem;   /* 15px */
   color-scheme:light;
 }
+
+/* ————— the type system —————
+   THE RECORD ROOM WAS 86.5% FRAGMENT MONO. Mono read as the archive's
+   voice, but a voice is not what mono says: it says "this is a machine
+   value". Everything a person reads — the corrections register, the
+   evidence `dd`s, every caption, label and tradeoff — is Newsreader
+   below. Mono keeps what it is for: shas, pins, paths, file names, the
+   receipt and entry numbers, the figures in the ledger table, the drawn
+   SVG labels (fitted against this face's advances in case-figures.mjs),
+   and the rubber stamp.
+
+   Fraunces was four words on a whole case file. It takes the section
+   heads back, which is the one place the sheet needed a hierarchy the
+   flat mono could not give it. That is the only display type added.
+
+   Newsreader in this subset is a static 400 roman plus a static 400
+   italic: no weight axis, no optical size. Faux bold is the only "bold"
+   available, so it is switched off and emphasis is ink or the display
+   face, never weight. */
+body.archive{font-synthesis:none}
+/* the middle dot measures .618em in Fragment Mono and .247em in
+   Newsreader: word-spacing restores the ledger's airy separator without
+   touching markup, which matters because several of these strings are
+   matched verbatim by check-crosswalk. */
+.kickline, .kickrow p, .slip, .file-note, .mast .state, .colophon,
+.meta .mrow, .disclosure, .sublabel, .constraints li, .plate-fig figcaption,
+.cadfig .evcard div, .ncard .nlabel, .ncard .ndetail, .spine .tlabel,
+.spine .sedge, .oshead, .annot p, .diagram figcaption, .registry li,
+.registry figcaption, .drow h3, .drow .dslip, .glance figcaption,
+.methodslip h3, .methodslip div, .methodslip .notdoc, .collegend, .klabel,
+.rmeta, .audit-run, .provline, .notclaim li, #ledger table, #ledger .dl,
+#ledger .boundary, #corrections .ckind, #corrections .cbody,
+#corrections .noc, #artifacts .noplates, .plateb .pcap, .plateb .plabel,
+.aindex li, .viewer .vtype, .viewer .vhead a, .viewer .vprov, .folio .rlabel,
+.folio-links, .nextfile, .ehead, .ebody dl, .irow, .notice .backhome,
+.skip-link{
+  font-family:var(--body); letter-spacing:0; word-spacing:.12em;
+  font-variant-numeric:tabular-nums;
+}
+/* …and the machine values inside them stay machine values. */
+.rart, .rnum, .registry .rgrun, .eno, #ledger td.val, .drow sup, .cadfig sup,
+.cadfig .hd, .cadfig .ev, .figsvg text, a.mv, span.mv, code.mv{
+  font-family:var(--mono); letter-spacing:.04em; word-spacing:normal;
+  font-variant-numeric:normal;
+}
+/* the opt-in for a machine value the renderer composes itself: a repo
+   pin, a host, a checked-in path, or a command the author backticked. It sizes down to the mono floor so a
+   pin sits level with the serif beside it rather than looming over it,
+   and it never sets white-space, because these are the longest strings
+   on the sheet and breakable() has already placed their wbr points. */
+.mv{font-size:var(--fs-micro)}
+/* an inline command or identifier inside a sentence: the backtick is the
+   author's own markup in the data layer, so it renders as one. */
+code.mv{background:none; padding:0}
 
 /* ————— the cut from the run, softened —————
    MPA view transitions: zero-JS, progressive, never load-bearing. The
@@ -140,7 +204,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 
 .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
 .skip-link{position:absolute; left:-9999px; top:0; z-index:200;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+  font-size:var(--fs-note)}
 .skip-link:focus{left:1rem; top:1rem; background:var(--clay-g); color:#fbf3e7; padding:.5rem .9rem; text-decoration:none}
 .nowrap{white-space:nowrap}
 .wrap-any{overflow-wrap:anywhere}
@@ -161,14 +225,17 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
   font-size:.98rem; letter-spacing:.01em; font-variation-settings:"opsz" 40, "SOFT" 30}
 .mast .wm:hover{font-variation-settings:"opsz" 40, "SOFT" 100}
 @media (prefers-reduced-motion: no-preference){ .mast .wm{transition:font-variation-settings .5s ease} }
-.mast .state{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2); text-align:right}
+.mast .state{font-size:var(--fs-label); color:var(--ink-2); text-align:right}
 
 .colophon{
   margin-top:4rem; padding:2.2rem var(--pad-x) 2.6rem; border-top:1px solid var(--hair);
-  font-family:var(--mono); font-size:.68rem; letter-spacing:.05em; color:var(--ink-2);
+  font-size:var(--fs-label); color:var(--ink-2);
   display:flex; flex-direction:column; gap:.7rem; align-items:center; text-align:center;
 }
-.colophon .strap{letter-spacing:.24em; opacity:.7}
+/* the strap is a printed device, not a sentence: it keeps its tracking,
+   opened only as far as a serif takes before the words come apart. */
+.colophon .strap{font-size:var(--fs-small); letter-spacing:.16em; word-spacing:normal; opacity:.7}
+.colophon .reach{color:var(--ink)}
 
 /* ————— the sheet ————— */
 .wrap{max-width:1180px; margin:0 auto; padding:2.6rem var(--pad-x) 0}
@@ -186,13 +253,18 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 }
 @media (max-width:1279px){ .dossier::before{opacity:.45} }
 
-.kickline, .kickrow p{font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; color:var(--ink-2)}
+.kickline, .kickrow p{font-size:var(--fs-label); color:var(--ink-2)}
 .kickrow{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 1.5rem}
 .kickrow [data-dossier-kicker]{color:var(--clay)}
+/* the status is a sentence, and the auto margin that seats it flush right
+   beside the kicker only earns its keep while the two share a line. Below
+   768 they never do, and a ragged-left paragraph is the worst way to read
+   one. */
+@media (max-width:767px){ .kickrow .folio-seat{margin-inline-start:0; text-align:left} }
 
 /* the arrival slip — the run's handoff grammar, receiving side */
 .slip{margin-top:1rem; padding-top:.65rem; border-top:1px solid var(--hair);
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:2}
+  font-size:var(--fs-label); color:var(--ink-2); line-height:1.9}
 .slip .dep{color:var(--clay)}
 .hourline{margin:.4rem 0 0; font-family:var(--display); font-style:italic;
   font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45; color:var(--ink-2); opacity:.9; max-width:52ch}
@@ -200,7 +272,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 /* the file's margin note — paper-memory fills it; the box is reserved
    even while hidden so its arrival can never move the title (the
    zero-shift contract, held with visibility instead of display) */
-.file-note{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
+.file-note{font-size:var(--fs-label); color:var(--ink-2);
   margin-top:.7rem; min-height:1.2em}
 .file-note[hidden]{display:block; visibility:hidden}
 
@@ -216,34 +288,49 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .meta{border-top:1px solid var(--hair-strong); padding-top:1rem;
   display:flex; flex-direction:column; gap:.6rem}
 .meta .mrow{display:flex; align-items:baseline; gap:.75rem;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+  font-size:var(--fs-note)}
 .meta dt{color:var(--ink-2); flex-shrink:0}
 .lead{flex:1 1 2rem; min-width:2rem; border-bottom:1px dotted var(--hair-strong); align-self:center; height:1px}
-.meta dd{color:var(--ink); max-width:70%; text-align:right; overflow-wrap:anywhere}
+/* 70% orphaned the last word of the wider rows once the serif widened
+   them; the lead rule still has more than its 2rem minimum at 80%. */
+.meta dd{color:var(--ink); max-width:80%; text-align:right; overflow-wrap:anywhere}
 .metaside{display:flex; flex-direction:column; gap:1.4rem; align-items:flex-start}
 @media (min-width:1024px){ .metaside{align-items:flex-end} }
 .stamp-private{color:var(--clay); transform:rotate(-3deg); width:min(210px,60vw)}
+/* the stamp's own tracking is an SVG presentation attribute, so it is
+   deliberately OUT of the machine-value rule above: an author
+   letter-spacing there beats the attribute and flattens the stamp. */
 .stamp-private text{font-family:var(--mono)}
-.disclosure{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.9;
-  color:var(--ink-2); border-top:1px solid var(--hair); padding-top:.7rem; max-width:44ch}
+.disclosure{font-size:var(--fs-label); line-height:1.7;
+  color:var(--ink-2); border-top:1px solid var(--hair); padding-top:.7rem; max-width:46ch}
 
 /* ————— problem + fig. 1 ————— */
 .probgrid{margin-top:4rem; display:grid; gap:2.6rem 4rem}
 @media (min-width:1024px){ .probgrid{grid-template-columns:minmax(0,30rem) minmax(0,1fr)} }
 @media (min-width:1280px){ .probgrid{grid-template-columns:minmax(0,22.5rem) minmax(0,1fr)} }
-.seckick{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.08em; color:var(--ink-2)}
-.sublabel{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink-2); margin-top:1.8rem}
+/* the section head is the sheet's one display line: Fraunces at text
+   size, low optical size so it keeps a printed weight at 17px. */
+.seckick{font-family:var(--display); font-weight:400; font-size:1.0625rem;
+  font-variation-settings:"opsz" 20, "SOFT" 40; letter-spacing:.01em; color:var(--ink-2)}
+/* one rule for the whole sheet: Fraunces owns the headings, Newsreader
+   owns the prose, Fragment Mono owns the machine values. An h3 set in the
+   body face at 15 read SMALLER than the 18px paragraph under it, which is
+   the hierarchy upside down. */
+.sublabel, .drow h3, .methodslip h3, .rtable h3{
+  font-family:var(--display); font-weight:400; font-size:1rem;
+  font-variation-settings:"opsz" 20, "SOFT" 40; letter-spacing:.01em}
+.sublabel{color:var(--ink-2); margin-top:1.8rem}
 .prose{margin-top:1rem; max-width:52ch}
 .constraints{margin-top:.7rem; list-style:none}
 .constraints li{border-top:1px solid var(--hair); padding:.6rem 0;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.04em; line-height:1.8; color:var(--ink)}
+  font-size:var(--fs-note); line-height:1.65; color:var(--ink)}
 
 /* the plate — a tipped-in monograph plate on warm stock */
 .plate-fig{transform:rotate(-.4deg)}
 .plate-paper{display:block; background:var(--plate-solid); border:1px solid var(--hair-strong);
   box-shadow:var(--shadow); padding:.7rem}
 .plate-inner{border:1px solid var(--hair); padding:clamp(.9rem, 2.4vw, 1.6rem)}
-.plate-fig figcaption{margin-top:.9rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.plate-fig figcaption{margin-top:.9rem; font-size:var(--fs-label); line-height:1.6}
 .fc-main{color:var(--ink)}
 .fc-main i{font-style:normal; color:var(--clay)}
 .fc-note{color:var(--ink-2); margin-top:.2rem; display:block}
@@ -287,21 +374,21 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .cadfig{max-width:360px; margin-inline:auto}
 .cadfig .sent{font-size:1.05rem; line-height:1.7; max-width:34ch}
 .cadfig .w{padding:.06em .12em; border-radius:2px; background:rgba(196,83,46,.14)}
-.cadfig sup{font-family:var(--mono); font-size:.62em; color:var(--ink-2)}
+.cadfig sup{font-size:var(--fs-micro); color:var(--ink-2)}
 .cadfig .week{margin-top:1.1rem; border:1px solid var(--hair-strong); background:var(--plate)}
 .cadfig .hd{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--hair);
-  font-family:var(--mono); font-size:.66rem; text-align:center; color:var(--ink-2)}
+  font-size:var(--fs-micro); text-align:center; color:var(--ink-2)}
 .cadfig .hd span{padding:.28rem 0}
 .cadfig .hd .tu{color:var(--clay)}
 .cadfig .wgrid{display:grid; grid-template-columns:repeat(7,1fr); grid-auto-rows:32px}
 .cadfig .wgrid i{border-top:1px solid var(--hair); border-left:1px solid var(--hair); font-style:normal}
 .cadfig .wgrid i:nth-child(7n+1){border-left:none}
 .cadfig .ev{display:flex; align-items:center; justify-content:center;
-  font-family:var(--mono); font-size:.62rem; letter-spacing:.02em;
+  font-size:var(--fs-micro); letter-spacing:.02em;
   color:var(--clay); border:1px solid var(--clay-g) !important; border-radius:2px; margin:2px}
 .cadfig .evcard{margin-top:1.1rem; border-top:1px solid var(--hair-strong)}
 .cadfig .evcard div{display:flex; align-items:baseline; gap:.75rem; padding:.45rem 0; border-bottom:1px solid var(--hair);
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em}
+  font-size:var(--fs-label)}
 .cadfig .evcard dt{color:var(--ink-2); min-width:5.4rem}
 .cadfig .evcard dd{color:var(--ink)}
 
@@ -312,10 +399,10 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .diagram .spine{margin-top:1.8rem; max-width:34rem}
 .ncard{border:1px solid var(--hair-strong); padding:.85rem 1rem; background:var(--plate)}
 .ncard.gate{border-color:var(--clay-g)}
-.ncard .nlabel{font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink);
+.ncard .nlabel{font-size:var(--fs-note); color:var(--ink);
   display:flex; align-items:center; justify-content:space-between; gap:.7rem}
 .ncard.gate .nlabel{color:var(--clay)}
-.ncard .ndetail{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2); margin-top:.35rem; line-height:1.7; overflow-wrap:anywhere}
+.ncard .ndetail{font-size:var(--fs-label); color:var(--ink-2); margin-top:.35rem; line-height:1.6; overflow-wrap:anywhere}
 .gsq2{display:inline-block; width:8px; height:8px; background:var(--clay-g); flex-shrink:0; margin-right:.45rem}
 .ncard .gsq2{margin-right:0}
 /* THE SPINE'S INK. The row rail this replaces is retired with its
@@ -335,38 +422,40 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .spine .trunk.gate{border-left-color:var(--clay-g)}
 .spine .trunk.gate::after{border-top-color:var(--clay-g)}
 .spine .trunk.tail::after{content:none}
-.spine .tlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
-  padding:.35rem 0 .55rem 1rem; line-height:1.7; overflow-wrap:anywhere; max-width:26rem}
+.spine .tlabel{font-size:var(--fs-label); color:var(--ink-2);
+  padding:.35rem 0 .55rem 1rem; line-height:1.6; overflow-wrap:anywhere; max-width:28rem}
 .spine .trunk.gate .tlabel{color:var(--clay)}
 .spine .siding{margin:.35rem 0 .55rem 1.6rem; position:relative; max-width:28rem}
 .spine .siding::before{content:""; position:absolute; left:-1.6rem; top:.62em; width:1.2rem;
   border-top:2px solid var(--ink-2)}
 .spine .siding.gate::before{border-top-color:var(--clay-g)}
-.spine .sedge{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2);
-  line-height:1.7; overflow-wrap:anywhere}
+.spine .sedge{font-size:var(--fs-label); color:var(--ink-2);
+  line-height:1.6; overflow-wrap:anywhere}
 .spine .siding.gate .sedge{color:var(--clay)}
 .spine .sedge .n1{color:var(--ink)}
 .spine .siding .ncard{margin-top:.35rem}
 .spine .siding.back{margin-top:1rem}
 .spine .siding.back::before{content:none}
 .spine .siding.back .sedge{margin-top:.35rem}
-.oshead{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2)}
+.oshead{font-size:var(--fs-label); color:var(--ink-2)}
 .annot{margin-top:1.4rem; display:flex; gap:.7rem; align-items:flex-start; max-width:46ch; color:var(--clay)}
 .annot svg{width:31px; height:22px; flex-shrink:0; margin-top:.15rem}
-.annot p{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.annot p{font-size:var(--fs-label); line-height:1.6}
 .diagram figcaption{margin-top:1.4rem; border-top:1px solid var(--hair); padding-top:.7rem;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+  font-size:var(--fs-label); color:var(--ink-2)}
 
 /* ————— fig. 3 — the registry (automl) ————— */
 .registry{margin-top:3.4rem; max-width:26rem}
 .registry ul{list-style:none; border-left:1px solid var(--hair-strong); padding-left:1.4rem;
   display:flex; flex-direction:column; gap:.7rem}
 .registry li{display:flex; justify-content:space-between; align-items:baseline; gap:.5rem;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink-2)}
+  font-size:var(--fs-label); color:var(--ink-2)}
 .registry li.awaiting{color:var(--ink)}
-.registry .rgrun{min-width:0; flex:1}
+/* run no. and model id are identifiers, so the row's left column holds
+   its machine face while the status beside it reads as words. */
+.registry .rgrun{min-width:0; flex:1; font-size:var(--fs-micro)}
 .registry .rgm{width:2.2em; flex-shrink:0; text-align:right}
-.registry .rgnote{justify-content:flex-end; font-size:.72rem}
+.registry .rgnote{justify-content:flex-end; font-size:var(--fs-small)}
 .registry .rgstatus, .registry .registry-approve{text-align:right; white-space:nowrap}
 @media (min-width:640px){ .registry .rgstatus, .registry .registry-approve{width:11.4em; flex-shrink:0} }
 @media (max-width:639px){ .registry .rgm, .registry .rghead .rgm, .registry .rgnote{display:none} }
@@ -375,18 +464,21 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .registry-approve[aria-pressed="true"]{cursor:default}
 .registry-approve[aria-pressed="true"] .registry-strike{text-decoration:line-through; color:var(--ink-2)}
 .registry-approve[aria-pressed="true"] .registry-mark{display:flex}
-.registry figcaption{margin-top:1.1rem; padding-left:1.4rem; font-family:var(--mono);
-  font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:1.9}
+.registry figcaption{margin-top:1.1rem; padding-left:1.4rem;
+  font-size:var(--fs-label); color:var(--ink-2); line-height:1.7}
 .registry figcaption span{display:block}
 
 /* ————— decisions ————— */
 #decisions{margin-top:4.5rem}
 .drows{margin-top:.4rem}
 .drow{border-top:1px solid var(--hair); padding:1.4rem 0}
-.drow h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink)}
+.drow h3{color:var(--ink)}
 .drow .dreason{margin-top:.7rem; max-width:52ch}
-.drow sup{font-family:var(--mono); font-size:.72em; color:var(--ink-2)}
-.drow .dslip{font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.8;
+.drow sup{font-size:var(--fs-micro); color:var(--ink-2)}
+/* the tradeoff is the margin note beside the decision, and it reads like
+   one: the italic is the only thing separating the two voices now that
+   both are set in the same face. */
+.drow .dslip{font-style:italic; font-size:var(--fs-label); line-height:1.6;
   color:var(--ink-2); border-left:1px solid var(--hair-strong); padding-left:1rem; margin:.8rem 0 0 1.2rem}
 @media (min-width:1024px){
   .drow{display:grid; grid-template-columns:minmax(0,44rem) minmax(200px,280px); column-gap:3rem}
@@ -399,7 +491,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .glance{margin-top:1.4rem; max-width:44rem; border-top:1px solid var(--hair); padding-top:1rem}
 .glance .gmarks{display:flex; flex-wrap:wrap; gap:.5rem .55rem; align-items:center; color:var(--clay-g)}
 .glance .ag.lg{width:14px; height:11px}
-.glance figcaption{margin-top:.6rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+.glance figcaption{margin-top:.6rem; font-size:var(--fs-label); color:var(--ink-2)}
 .ledger-glance{border-top:none; color:var(--ink)}
 .ledger-glance .gmarks{color:var(--ink)}
 .ledger-glance .heldmark{color:var(--clay-g); margin-left:3px}
@@ -407,23 +499,23 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .ag{width:11px; height:9px}
 
 .methodslip{margin-top:1.6rem; max-width:44rem; border-left:2px solid var(--clay-g); padding-left:1.2rem}
-.methodslip h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.05em; color:var(--ink)}
+.methodslip h3{color:var(--ink)}
 .methodslip dl{margin-top:.7rem; display:flex; flex-direction:column; gap:.35rem}
-.methodslip div{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; line-height:1.8}
+.methodslip div{font-size:var(--fs-label); line-height:1.7}
 .methodslip dt{display:inline; color:var(--ink-2)}
 .methodslip dd{display:inline; color:var(--ink); overflow-wrap:anywhere}
-.methodslip .notdoc{margin-top:.7rem; font-family:var(--mono); font-size:.75rem; color:var(--ink-2)}
+.methodslip .notdoc{margin-top:.7rem; font-size:var(--fs-label); color:var(--ink-2)}
 
 .rtable{margin-top:2.4rem}
 .rtable + .rtable{margin-top:3rem}
-.rtable h3{font-family:var(--mono); font-weight:400; font-size:.78rem; letter-spacing:.06em; color:var(--ink)}
+.rtable h3{color:var(--ink)}
 .thead{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.5rem 2rem}
 .thead > :last-child{margin-inline-start:auto; text-align:right}
 .collegend{display:none}
 @media (min-width:768px){
   .collegend{display:grid; grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr) minmax(0,1.6fr);
     gap:0 2rem; margin-top:1rem; padding-bottom:.5rem;
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+    font-size:var(--fs-label); color:var(--ink-2)}
 }
 .rtable ol{list-style:none; margin-top:.5rem}
 .rtable li[data-receipt-row]{border-top:1px solid var(--hair); padding:1.1rem 0;
@@ -433,7 +525,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 }
 /* a deep-linked receipt shows its ask: the row you arrived at is ruled */
 .rtable li[data-receipt-row]:target{border-top:2px solid var(--clay-g); scroll-margin-top:4rem}
-.rnum{position:relative; font-family:var(--mono); font-size:.78rem; letter-spacing:.05em;
+.rnum{position:relative; font-size:var(--fs-micro);
   color:var(--ink-2); text-decoration:none; margin-right:.5rem; padding:.35rem .3rem; margin-block:-.35rem}
 .rnum:hover{color:var(--ink); text-decoration:underline; text-underline-offset:4px}
 .audit-mark{position:absolute; left:-16px; top:50%; transform:translateY(-50%);
@@ -441,20 +533,26 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 @media (prefers-reduced-motion: no-preference){ .audit-mark{transition:opacity .3s ease} }
 [data-audit-ticked] .audit-mark{opacity:1}
 [data-audit-dried] .audit-mark{transition:none}
-.klabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+.klabel{font-size:var(--fs-label); color:var(--ink-2)}
 @media (min-width:768px){ .klabel{display:none} }
 .claim .ctext{font-size:1.0625rem; line-height:1.5}
-.rmeta{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; color:var(--ink-2); line-height:1.9}
+.rmeta{font-size:var(--fs-label); color:var(--ink-2); line-height:1.7}
 .rmeta .rdate{display:block; margin-top:.25rem}
-.rart{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; overflow-wrap:anywhere; line-height:1.9}
+/* the artifact column is shas, blob paths and file names end to end —
+   the one column of a receipt that IS machine values, so it keeps mono. */
+.rart{font-size:var(--fs-micro); overflow-wrap:anywhere; line-height:1.9}
 .rart ul{list-style:none; display:flex; flex-direction:column; gap:.25rem}
 .rart .none{color:var(--ink-2)}
-.rart .vis{color:var(--ink-2); margin-top:.4rem; display:flex; align-items:center; gap:.4rem}
+/* the visibility grade and the stated absence are the two lines in this
+   column that are words rather than a path */
+.rart .vis, .rart .none{font-family:var(--body); font-size:var(--fs-label); letter-spacing:0;
+  color:var(--ink-2)}
+.rart .vis{margin-top:.4rem; display:flex; align-items:center; gap:.4rem}
 
 /* run the audit — two faces, one cell, zero shift */
 .audit-seat{display:inline-flex; max-width:100%; align-items:baseline}
-.audit-run{font-family:var(--mono); font-size:.78rem; letter-spacing:.05em; color:var(--ink);
-  text-align:left; max-width:100%; padding:0}
+.audit-run{font-size:var(--fs-note); color:var(--ink);
+  text-align:left; max-width:100%; padding:0; min-height:44px}
 .audit-run .faces{display:grid; max-width:100%}
 .audit-run .face{grid-area:1/1}
 .audit-run .rest{text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; text-decoration-color:var(--hair-strong)}
@@ -466,40 +564,44 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 @media (min-width:768px){ .audit-run{text-align:right} }
 
 .provline{margin-top:2rem; border-top:1px solid var(--hair); padding-top:.7rem;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); line-height:1.9}
+  font-size:var(--fs-label); color:var(--ink-2); line-height:1.7}
 .notclaim{margin-top:2.4rem; max-width:44rem}
 .notclaim ul{margin-top:.5rem; list-style:none}
 .notclaim li{border-top:1px solid var(--hair); padding:.75rem 0;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.9; color:var(--ink-2)}
+  font-size:var(--fs-note); line-height:1.6; color:var(--ink-2)}
 
 /* ————— the checked-in ledger ————— */
 #ledger{margin-top:4.5rem; max-width:44rem}
 #ledger table{margin-top:1rem; width:100%; border-collapse:collapse;
-  font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
+  font-size:var(--fs-label)}
 #ledger th{text-align:left; font-weight:400; color:var(--ink-2); padding:.5rem 1rem .5rem 0;
   border-bottom:1px solid var(--hair-strong)}
 #ledger td{padding:.6rem 1rem .6rem 0; border-bottom:1px solid var(--hair); color:var(--ink-2); vertical-align:top; line-height:1.7}
-#ledger td.val{color:var(--ink)}
+/* the value column is the figure column, so it keeps the machine face
+   and its tabular figures line up down the rule. */
+#ledger td.val{color:var(--ink); font-size:var(--fs-micro)}
 @media (max-width:639px){ #ledger .notecol{display:none} }
-#ledger .dl{margin-top:1rem; font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
-#ledger .boundary{margin-top:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--ink-2); line-height:1.9}
+#ledger .dl{margin-top:1rem; font-size:var(--fs-note)}
+#ledger .boundary{margin-top:.5rem; font-size:var(--fs-label); color:var(--ink-2); line-height:1.7}
 
 /* ————— corrections ————— */
 #corrections{margin-top:4.5rem; max-width:44rem}
 #corrections ul{margin-top:.5rem; list-style:none}
 #corrections li{border-top:1px solid var(--hair); padding:1rem 0}
-#corrections .ckind{font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--clay)}
-#corrections .cbody{margin-top:.4rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; line-height:1.9; color:var(--ink)}
+#corrections .ckind{font-size:var(--fs-small); letter-spacing:.04em; color:var(--clay)}
+/* 1,393 words on one case file, the largest section on the sheet and
+   every word of it a sentence. This is the hook the whole pass is for. */
+#corrections .cbody{margin-top:.4rem; font-size:var(--fs-note); line-height:1.6; color:var(--ink); max-width:60ch}
 #corrections .noc{margin-top:.5rem; border-top:1px solid var(--hair); padding-top:1rem;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+  font-size:var(--fs-note); color:var(--ink-2)}
 
 /* ————— the appendix ————— */
 #artifacts{margin-top:4.5rem}
 /* the stated absence — same furniture as #corrections .noc: a file with
    nothing a reader could open says so in the register's own voice */
 #artifacts .noplates{margin-top:.5rem; border-top:1px solid var(--hair); padding-top:1rem;
-  max-width:44rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em;
-  color:var(--ink-2); line-height:1.9}
+  max-width:44rem; font-size:var(--fs-note);
+  color:var(--ink-2); line-height:1.6}
 .plates{margin-top:1.6rem; display:grid; gap:2.4rem 2.4rem}
 @media (min-width:768px){ .plates{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .plateb{display:block; text-decoration:none; color:inherit}
@@ -507,7 +609,7 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .plateb:hover .plate-paper{border-color:var(--ink)}
 .plateb .pframe{display:block; position:relative; aspect-ratio:4/3}
 .plateb .pframe img{position:absolute; inset:0; width:100%; height:100%; object-fit:contain}
-.plateb .pcap{display:block; margin-top:.8rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; line-height:1.8}
+.plateb .pcap{display:block; margin-top:.8rem; font-size:var(--fs-label); line-height:1.6}
 .plateb.wide{grid-column:1 / -1}
 @media (min-width:768px){
   .plateb.wide{display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:.8rem 2.4rem}
@@ -519,13 +621,13 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .plateb .panel{display:block}
 .plateb .crop{display:block; position:relative; overflow:hidden; width:100%}
 .plateb .crop img{position:absolute; max-width:none; height:auto}
-.plateb .plabel{display:block; margin-top:.5rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2)}
+.plateb .plabel{display:block; margin-top:.5rem; font-size:var(--fs-small); color:var(--ink-2)}
 .aindex{margin-top:2.4rem}
 .aindex ul{margin-top:.7rem; list-style:none}
 .aindex li{border-top:1px solid var(--hair); padding:.6rem 0;
   display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 2rem;
-  font-family:var(--mono); font-size:.75rem; letter-spacing:.04em}
-.aindex .aprov{color:var(--ink-2); margin-inline-start:auto; text-align:right}
+  font-size:var(--fs-label)}
+.aindex .aprov{color:var(--ink-2); margin-inline-start:auto; text-align:right; font-size:var(--fs-small)}
 
 /* the artifact viewer — native dialog; the plate itself is a link, so a
    JS-dead world opens the original artifact instead of nothing */
@@ -535,25 +637,25 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .viewer .vhead{display:flex; align-items:center; justify-content:space-between; gap:1rem;
   border-bottom:1px solid var(--hair); padding:.8rem 1rem}
 .viewer .vtitle{min-width:0}
-.viewer .vtype{font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; color:var(--ink-2)}
+.viewer .vtype{font-size:var(--fs-small); color:var(--ink-2)}
 .viewer h2{font-family:var(--display); font-weight:430; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.viewer .vhead a{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; flex-shrink:0}
+.viewer .vhead a{font-size:var(--fs-label); flex-shrink:0}
 .viewer [data-viewer-close]{border:1px solid var(--hair-strong); width:2.2rem; height:2.2rem; flex-shrink:0}
 .viewer [data-viewer-close]:hover{border-color:var(--ink)}
 .viewer .vprov{border-bottom:1px solid var(--hair); padding:.5rem 1rem;
-  font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; color:var(--ink-2); overflow-wrap:anywhere}
+  font-size:var(--fs-small); color:var(--ink-2); overflow-wrap:anywhere}
 .viewer img{display:block; width:100%; max-height:68vh; object-fit:contain; padding:1rem; box-sizing:border-box}
 
 /* ————— folio + footer ————— */
 .folio{margin-top:5rem; padding-bottom:1rem}
 .folio .rule{display:flex; align-items:center; gap:1rem; opacity:.7}
 .folio .rule > span:not(.rlabel){height:1px; flex:1; background:currentColor}
-.folio .rlabel{font-family:var(--mono); font-size:.72rem; letter-spacing:.22em}
+.folio .rlabel{font-size:var(--fs-small); letter-spacing:.16em; word-spacing:normal}
 .folio-links{margin-top:1.4rem; display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.75rem 2rem;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+  font-size:var(--fs-note)}
 .folio-links .rejoin{color:var(--ink)}
 .folio-links .onward{color:var(--ink-2)}
-.nextfile{margin-top:1.4rem; font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; color:var(--ink-2)}
+.nextfile{margin-top:1.4rem; font-size:var(--fs-label); color:var(--ink-2)}
 .nextfile a{color:var(--ink)}
 
 /* the visited ✓ — reserved width, so its arrival moves no letterform */
@@ -566,14 +668,18 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .eledger > li{border-top:1px solid var(--hair-strong); padding:1.8rem 0}
 .eledger li:target{border-top:2px solid var(--clay-g); scroll-margin-top:4rem}
 .ehead{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.25rem 1.5rem;
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; color:var(--ink-2)}
+  font-size:var(--fs-label); color:var(--ink-2)}
+/* the entry number is the deep-link target's own name */
+.ehead .eno{font-size:var(--fs-micro)}
 .evis{display:inline-flex; align-items:center; gap:.4rem}
 .ebody{margin-top:.8rem; display:grid; gap:1rem 2.6rem}
 @media (min-width:768px){ .ebody{grid-template-columns:minmax(0,1.6fr) minmax(0,2fr)} }
 .eclaim h2{font-family:var(--display); font-weight:430; font-size:1.45rem; line-height:1.2; letter-spacing:-.01em; max-width:24ch}
 .eclaim p{margin-top:.7rem; font-size:1.0625rem; line-height:1.5; max-width:46ch}
-.ebody dl{font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; line-height:1.9;
-  display:flex; flex-direction:column; gap:.35rem}
+/* 2,576 words of source, verification and boundary prose: the reason
+   /evidence measured 84.6% mono with nothing machine-valued about it. */
+.ebody dl{font-size:var(--fs-label); line-height:1.7;
+  display:flex; flex-direction:column; gap:.45rem}
 .ebody dt{display:inline; color:var(--ink-2)}
 .ebody dd{display:inline; overflow-wrap:anywhere}
 .ebody .skind{display:block; color:var(--ink-2)}
@@ -582,10 +688,10 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
 .notice .onfile{margin-top:3.4rem; max-width:34rem}
 .onfile ul{margin-top:1.2rem; list-style:none; display:flex; flex-direction:column; gap:.85rem}
 .irow{display:flex; align-items:baseline; gap:.75rem;
-  font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+  font-size:var(--fs-note)}
 .irow a{color:var(--ink)}
 .irow .inote{color:var(--ink-2); text-align:right}
-.notice .backhome{margin-top:1.4rem; font-family:var(--mono); font-size:.78rem; letter-spacing:.05em}
+.notice .backhome{margin-top:1.4rem; font-size:var(--fs-note)}
 .notice .backhome a{color:var(--ink)}
 
 /* ————— reduced motion: the settled world ————— */

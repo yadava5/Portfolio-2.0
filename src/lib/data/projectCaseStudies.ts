@@ -550,7 +550,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        desktop client was de-scoped on 2026-08-12 and DELETED — `apps/macos`
        is not on `main` any more — so a role line still claiming it named a
        surface no reader can open. What it built is the hosted product. */
-    role: "Designer and sole engineer — web app, backend, and classifier",
+    role: "Designer and sole engineer: web app, backend, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
     verified: "2026-09",
@@ -580,11 +580,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        can actually do today. This string is also the OG card's deck, so it
        moves with `npm run assets:render-og`. */
     summary:
-      "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It runs as a hosted web app, live in invite-only beta — and the demo and the on-device import need no invite and no account.",
+      "A job tracker that reads the search out of the inbox. Connect Gmail and Applied fetches your mail, names each message, and turns the noise into a pipeline of real applications you can act on. It runs as a hosted web app, live in invite-only beta. The demo and the on-device import need no invite and no account.",
     evidenceDisclosure: {
       label: "Private-safe proof: no email content",
       detail:
-        "Applied reads a real inbox, so this case file shows none of it. Every receipt below terminates in source, a migration, a committed eval artifact, or a test run — never in a screenshot of mail. At the commit these receipts pin, the repository’s own README and docs/WEB_ARCHITECTURE.md described apps/web as an unwired scaffold, and they are deliberately NOT cited: they were behind the code, and a stale doc is not evidence.",
+        "Applied reads a real inbox, so this case file shows none of it. Every receipt below terminates in source, a migration, a committed eval artifact, or a test run, never in a screenshot of mail. At the commit these receipts pin, the repository’s own README and docs/WEB_ARCHITECTURE.md described apps/web as an unwired scaffold, and they are deliberately NOT cited: they were behind the code, and a stale doc is not evidence.",
     },
     problem:
       "The status of a job search scatters across Gmail, employer systems, and one-off messages. A spreadsheet can’t keep up: updates get missed, rows get retyped, and the record drifts from the truth. The first answer was a desktop app, which meant the record only existed on one machine.",
@@ -611,13 +611,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       flow: [["gmail"], ["fetch"], ["classifier"], ["store"], ["api"], ["ui"]],
       /* Traces to receipt 08: the GUC is left unset when no identity is
          bound, so auth.uid() is NULL and the policies deny. */
-      annotation:
-        "no identity bound, no rows — the guc is unset and rls denies",
+      annotation: "no identity bound, no rows: the guc is unset and rls denies",
       nodes: [
         {
           id: "gmail",
           label: "Gmail",
-          detail: "gmail.readonly — nothing wider",
+          detail: "gmail.readonly, nothing wider",
           kind: "api",
         },
         {
@@ -705,7 +704,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         decision: "Run the hosted classifier on the rules layer alone",
         reason:
-          "torch, sentence-transformers, and SetFit do not fit a serverless function slot — not the size limit, and not the cold start.",
+          "torch, sentence-transformers, and SetFit do not fit a serverless function slot: not the size limit, and not the cold start.",
         tradeoff:
           "The hosted verdict is weaker than the full cascade. The alternative was pretending otherwise, so the limit is written into the code, the tests, and the boundary rows below.",
         status: "accepted",
@@ -742,7 +741,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "sample",
           value:
-            "96 messages — classifier_eval_v3.jsonl, 12 per label × 8 labels, balanced by design",
+            "96 messages in classifier_eval_v3.jsonl, 12 per label × 8 labels, balanced by design",
         },
         {
           label: "mix",
@@ -757,7 +756,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "run",
           value:
-            "2026-09-07 — rules profile, re-recorded as baseline_rules_v3.json; the deterministic hybrid file repeats it",
+            "2026-09-07, rules profile, re-recorded as baseline_rules_v3.json; the deterministic hybrid file repeats it",
         },
         {
           label: "repro",
@@ -774,7 +773,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "Connecting Gmail asks for gmail.readonly and nothing wider — and the consent step deliberately does not merge previously granted scopes.",
+          "Connecting Gmail asks for gmail.readonly and nothing wider, and the consent step deliberately does not merge previously granted scopes.",
         method:
           "read the OAuth router and the settings field it draws its scope list from, at the pinned commit",
         artifacts: [
@@ -792,7 +791,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The classifier is three layers — rules, e5 embeddings, SetFit — and SetFit stays off until its training gates are met.",
+          "The classifier is three layers (rules, e5 embeddings, SetFit), and SetFit stays off until its training gates are met.",
         method: "ML strategy doc, read against the backend source",
         artifacts: [
           {
@@ -805,7 +804,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The hosted fetch reads metadata only — Subject, From, Date, and Gmail’s own snippet. Full message bodies are never downloaded on the web path.",
+          "The hosted fetch reads metadata only: Subject, From, Date, and Gmail’s own snippet. Full message bodies are never downloaded on the web path.",
         method:
           'read the cloud Gmail client: messages.list plus batched messages.get(format="metadata"), read-only, no mutation',
         artifacts: [
@@ -819,7 +818,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The backend suite runs at the pinned commit: 3,747 tests passed, 0 skipped, and 13 expected failures, under the test/null-keyring environment. It read 305 passed and 0 skipped at 71b74f8 until 2026-09-23. The 26-test Postgres RLS module sits inside that total, and the rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and are never added together.",
+          "The backend suite runs at the pinned commit: 3,747 tests passed, 0 skipped, and 13 expected failures, under the test/null-keyring environment. It read 305 passed and 0 skipped at 71b74f8 until 2026-09-23. The Postgres RLS module of 26 tests sits inside that total, and the rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and are never added together.",
         method:
           "`pytest tests -q --cov=jobtracker` in backend-ci run 34429395505 at the pinned head, read off the public run log rather than a local venv. The Postgres RLS module is included in that count and does not skip: it starts its own postgres:16 through testcontainers instead of waiting on a database URL nobody supplied. The 13 expected failures are named as xfail rather than folded into the pass count, because an expected failure is not a pass.",
         artifacts: [
@@ -837,9 +836,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The rules v3 gate and the deterministic hybrid v3 gate both pass at the pinned commit on the 96-message v3 set: macro-F1 0.9896, 1 message misclassified out of 96. The deterministic profile disables the learned layers, so both files are measuring the rules stage: the 220-rule stage at this pin (129 strong, 31 weak and 60 negative patterns; the 48 vetoes are not counted). Printed to three decimals the figure is 0.990.",
+          "The rules v3 gate and the deterministic hybrid v3 gate both pass at the pinned commit on the v3 set of 96 messages: macro-F1 0.9896, 1 message misclassified out of 96. The deterministic profile disables the learned layers, so both files are measuring the rules stage: the stage of 220 rules at this pin (129 strong, 31 weak and 60 negative patterns; the 48 vetoes are not counted). Printed to three decimals the figure is 0.990.",
         method:
-          "committed baseline, re-recorded 2026-09-07 under the rules profile, re-run at the pinned head on 2026-09-22 (exit 0 against its own 0.001 tolerance) and read again off backend-ci run 34429395505, whose two gate steps print the same line — protocol in the method slip",
+          "committed baseline, re-recorded 2026-09-07 under the rules profile, re-run at the pinned head on 2026-09-22 (exit 0 against its own 0.001 tolerance) and read again off backend-ci run 34429395505, whose two gate steps print the same line; protocol in the method slip",
         artifacts: [
           {
             label: `applied @ ${APPLIED_EVAL_SHA} · baseline_rules_v3.json`,
@@ -857,7 +856,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         claim:
           "The macOS Debug target built locally with xcodebuild against the JobTracker scheme, and the desktop app was in the repository at the pinned commit. It was de-scoped on 2026-08-12 and deleted; this pinned tree is the record of it, not a description of the repository today.",
         method:
-          "local build — no build artifact is published; the pinned source tree is public and linked",
+          "local build; no build artifact is published, and the pinned source tree is public and linked",
         artifacts: [
           {
             label: `applied @ ${APPLIED_SHA} · apps/macos`,
@@ -909,7 +908,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The hosted classifier runs the rules layer alone. On the serverless path it returns after layer 1 even when the rules were unsure — embeddings and SetFit are never imported there.",
+          "The hosted classifier runs the rules layer alone. On the serverless path it returns after layer 1 even when the rules were unsure, and embeddings and SetFit are never imported there.",
         method:
           "read the cloud short-circuit in the hybrid classifier and the import-hygiene test that holds it",
         artifacts: [
@@ -929,8 +928,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "Job updates land in a trackable pipeline instead of a spreadsheet — and now in a browser instead of on one Mac.",
-        method: "the product’s own workflow, described — not a usage metric",
+          "Job updates land in a trackable pipeline instead of a spreadsheet, and now in a browser instead of on one Mac.",
+        method: "the product’s own workflow as described, not a usage metric",
         artifacts: [
           {
             label: "getapplied.vercel.app",
@@ -956,10 +955,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the evaluation harness only. They ran in the int8 browser export until its weights were withdrawn on 2026-08-15, and on the desktop client until that client was de-scoped and deleted on 2026-08-12.",
-      "I’m not claiming Applied is generally available. Connecting your own Gmail is invite-only, and the reason is not positioning: gmail.readonly is a Google restricted scope, so until the app clears Google’s OAuth verification and an independent security assessment it may authorise at most 100 test users, each added by address on the consent screen. What needs no invite and no account is the demo — the whole interface over synthetic mail — and the import path, which classifies a Google Takeout export on the reader’s own device.",
-      "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly — so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
-      "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. At the commit this file pins, both described apps/web as an unwired scaffold with a placeholder dashboard — they were behind the code, and this file cites the code. The README has since been rewritten as the product’s own record; it is not back-cited here, because these receipts are pinned and a pin is not re-read to suit a later document.",
+      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only, deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the evaluation harness only. They ran in the int8 browser export until its weights were withdrawn on 2026-08-15, and on the desktop client until that client was de-scoped and deleted on 2026-08-12.",
+      "I’m not claiming Applied is generally available. Connecting your own Gmail is invite-only, and the reason is not positioning: gmail.readonly is a Google restricted scope, so until the app clears Google’s OAuth verification and an independent security assessment it may authorise at most 100 test users, each added by address on the consent screen. What needs no invite and no account is the demo, which is the whole interface over synthetic mail, and the import path, which classifies a Google Takeout export on the reader’s own device.",
+      "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly, so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
+      "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. At the commit this file pins, both described apps/web as an unwired scaffold with a placeholder dashboard. They were behind the code, and this file cites the code. The README has since been rewritten as the product’s own record; it is not back-cited here, because these receipts are pinned and a pin is not re-read to suit a later document.",
       "No production email-volume or user numbers are claimed. Source, migrations, and test runs are shown publicly; private email and application records are not shown.",
     ],
     corrections: [
@@ -1073,11 +1072,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     artifacts: [
       {
         type: "repo",
-        label: "README — the desktop-era record",
+        label: "README, the desktop-era record",
         href: `${APPLIED_BLOB}/README.md`,
         source: `yadava5/applied @ ${APPLIED_SHA}`,
         boundary:
-          "the readme as it stood at this pin — it called apps/web a scaffold; linked as a record of that moment, not as evidence",
+          "the readme as it stood at this pin: it called apps/web a scaffold, linked as a record of that moment, not as evidence",
         date: "2026-07",
       },
       {
@@ -1085,7 +1084,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Architecture docs",
         href: `${APPLIED_BLOB}/docs/ARCHITECTURE.md`,
         source: `yadava5/applied @ ${APPLIED_SHA}`,
-        boundary: "the desktop path — written before the web app",
+        boundary: "the desktop path, written before the web app",
         date: "2026-07",
       },
       {
@@ -1109,8 +1108,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Web app source",
         href: `${APPLIED_TREE}/apps/web`,
         source: `yadava5/applied @ ${APPLIED_SHA}`,
-        boundary:
-          "public repository tree — the shipped app, live at getapplied",
+        boundary: "public repository tree: the shipped app, live at getapplied",
         date: "2026-07",
       },
     ],
@@ -1119,7 +1117,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     projectId: "automl",
     treatment: "evidence-ledger",
     fileNo: 1,
-    role: "Capstone engineer — my slice below",
+    role: "Capstone engineer, my slice below",
     /* The same collaborator as glyph. This file has disclosed a team
        since it was written ("my slice below") but never named him, which
        is a thinner kind of credit than it looks — a reader learns there
@@ -1168,7 +1166,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     evidenceDisclosure: {
       label: "Public source, results not claimed",
       detail:
-        "The repository is yadava5/ai-augmented-auto-ml-toolchain — public, and pinned to a commit in the ledger above — so every architectural claim on this file terminates in source a reader can open. What is not here is performance: no accuracy, latency or throughput figure appears anywhere below, because no committed eval artifact earns one. Going public made the architecture inspectable, not the results.",
+        "The repository is yadava5/ai-augmented-auto-ml-toolchain, public and pinned to a commit in the ledger above, so every architectural claim on this file terminates in source a reader can open. What is not here is performance: no accuracy, latency or throughput figure appears anywhere below, because no committed eval artifact earns one. Going public made the architecture inspectable, not the results.",
     },
     problem:
       "Between a raw dataset and a useful model sits a chain of repetitive judgment: ingestion, feature decisions, training, evaluation, deployment packaging. Automate the chain carelessly and the judgment disappears with the labor.",
@@ -1302,7 +1300,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "read from the senior design poster and the local repo",
         artifacts: [
           {
-            label: "see fig. 4 — the expo poster",
+            label: "see fig. 4, the expo poster",
             href: "#artifacts",
             capture: true,
           },
@@ -1316,7 +1314,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "poster + presenter deck, checked against the local repo",
         artifacts: [
           {
-            label: "see fig. 5 — the presenter deck",
+            label: "see fig. 5, the presenter deck",
             href: "#artifacts",
             capture: true,
           },
@@ -1330,7 +1328,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "transcribed from the presenter artifact",
         artifacts: [
           {
-            label: "see fig. 5 — the presenter deck",
+            label: "see fig. 5, the presenter deck",
             href: "#artifacts",
             capture: true,
           },
@@ -1341,10 +1339,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         claim:
           "My slice of the build: the Monaco/Jupyter runtime with live WebSocket sync, Docker sandbox constraints, the eval runner, and the Optuna study streaming UI.",
-        method: "as presented — the presenter artifact names this work",
+        method: "as presented: the presenter artifact names this work",
         artifacts: [
           {
-            label: "see fig. 5 — the presenter deck",
+            label: "see fig. 5, the presenter deck",
             href: "#artifacts",
             capture: true,
           },
@@ -1358,7 +1356,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "poster architecture panel + local repo audit",
         artifacts: [
           {
-            label: "see fig. 4 — the expo poster",
+            label: "see fig. 4, the expo poster",
             href: "#artifacts",
             capture: true,
           },
@@ -1370,8 +1368,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "A dataset and a goal become a structured, auditable workflow — planned and argued for by agents that still cannot press go.",
-        method: "the product’s design, described — not an outcome metric",
+          "A dataset and a goal become a structured, auditable workflow, planned and argued for by agents that still cannot press go.",
+        method: "the product’s design as described, not an outcome metric",
         artifacts: [],
         date: null,
         visibility: "private-safe",
@@ -1420,9 +1418,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            passes the former as toolDefinitions. The old note cited
            training.ts:149, one line past the return. */
         claim:
-          "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups — preprocessing (14), cells (8), features (6), training (6), data (4), packages (3), UI (3) — and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly.",
+          "Pipeline decisions run through LangGraph tool calls rather than free-form output: the platform defines 44 tools across seven groups (preprocessing 14, cells 8, features 6, training 6, data 4, packages 3, UI 3) and registers twelve of them, the data and cell groups, over MCP: list_project_files, get_dataset_profile, get_dataset_sample, search_documents, list_cells, read_cell, write_cell, edit_cell, run_cell, delete_cell, reorder_cells, insert_cell. The other 32 are function-calling definitions the LangGraph phases consume directly.",
         method:
-          "both counts taken in source at the pinned commit, which is main's head: the twelve read out of the MCP server, the 44-tool surface counted by name across the seven files in backend/src/services/llm/tools/",
+          "both counts taken in source at the pinned commit, which is main's head: the twelve read out of the MCP server, the surface of 44 tools counted by name across the seven files in backend/src/services/llm/tools/",
         artifacts: [
           {
             label: `ai-augmented-auto-ml-toolchain @ ${AUTOML_SHA} · backend/src/services/mcp/mcpServer.ts`,
@@ -1436,7 +1434,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
             href: `${AUTOML_BLOB}/backend/src/services/llm/tools/index.ts`,
           },
           {
-            label: "see fig. 4 — the expo poster",
+            label: "see fig. 4, the expo poster",
             href: "#artifacts",
             capture: true,
           },
@@ -1446,7 +1444,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "No per-run metrics are published here. The registry excerpt shows run, model, and status only — a demo-data run ledger with a complete metric trail has not shipped yet.",
+      "No per-run metrics are published here. The registry excerpt shows run, model, and status only: a demo-data run ledger with a complete metric trail has not shipped yet.",
       "The source is now public and pinned above, so the architecture claims are inspectable. What is still NOT claimed is a result: no accuracy, throughput, or benchmark figure appears on this file, because no committed eval artifact earns one. The work this file argues is the architecture and the human gate.",
     ],
     corrections: [
@@ -1499,7 +1497,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         { run: "041", model: "xgboost", status: "awaiting approval" },
       ],
       caption: [
-        "fig. 3 — experiment registry, transcribed private-safe excerpt.",
+        "fig. 3: experiment registry, transcribed private-safe excerpt.",
         /* The REASON changed, not the withholding. This read "metrics
            withheld — private repository", which was the true reason
            until 2026-07-30 and is now the wrong one: the source is
@@ -1508,7 +1506,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            earn them — which is a stronger, more honest sentence than
            the old one, since it no longer lets a reader assume the
            numbers are sitting behind a lock. */
-        "metrics withheld — no committed eval run earns them yet; the source itself is public, pinned above.",
+        "metrics withheld: no committed eval run earns them yet, and the source itself is public, pinned above.",
       ],
     },
     /* PLATE ORDER IS CITATION ORDER (fix round 3, N1).
@@ -1532,28 +1530,28 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Expo poster proof",
         href: withBasePath("/images/projects/agentic-automl-poster-proof.webp"),
         source: "senior design expo poster, spring 2026",
-        boundary: "private-safe capture — demo data only",
+        boundary: "private-safe capture, demo data only",
         date: "2026-05",
         /* Column-width CSS crops of the checked-in capture (no derivative
            assets); panel titles are quoted from the poster itself. */
         sourceSize: { width: 1600, height: 1200 },
         panels: [
           {
-            label: "§2 — an agent you can approve",
+            label: "§2: an agent you can approve",
             x: 536,
             y: 102,
             width: 528,
             height: 498,
           },
           {
-            label: "§3 — one langgraph, every step auditable",
+            label: "§3: one langgraph, every step auditable",
             x: 1069,
             y: 102,
             width: 523,
             height: 498,
           },
           {
-            label: "§4 — measured on the public leaderboard",
+            label: "§4: measured on the public leaderboard",
             x: 8,
             y: 606,
             width: 520,
@@ -1566,7 +1564,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Presenter stack proof",
         href: withBasePath("/images/projects/agentic-automl-stack-proof.png"),
         source: "senior design presenter deck, slide 8",
-        boundary: "private-safe capture — source repo not shown",
+        boundary: "private-safe capture, source repo not shown",
         date: "2026-05",
       },
       /* THE PRODUCT SCREENSHOT IS GONE, AND THE LIVE SITE IS WHY — ruled
@@ -1612,9 +1610,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: VISUAL_ASSIST_TREE,
     },
     summary:
-      "An iOS accessibility app that meets the room before its user does. LiDAR finds the obstacles, Vision reads the text, haptics and speech carry the answer — and the processing stays on the device.",
+      "An iOS accessibility app that meets the room before its user does. LiDAR finds the obstacles, Vision reads the text, haptics and speech carry the answer, and the processing stays on the device.",
     problem:
-      "A visually impaired user needs the room described now, not after a round trip — and never at the price of shipping camera or location context to somebody else’s server.",
+      "A visually impaired user needs the room described now, not after a round trip, and never at the price of shipping camera or location context to somebody else’s server.",
     constraints: [
       "Prioritize on-device processing for privacy.",
       "Support LiDAR obstacle detection and haptic feedback.",
@@ -1642,7 +1640,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "camera",
           label: "Camera",
-          detail: "RGB frames — the input both vision modes read",
+          detail: "RGB frames, the input both vision modes read",
           kind: "system",
         },
         {
@@ -1710,7 +1708,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "71 tests cover models and utilities, and all 71 pass — executed on iOS 26.5 and again on 26.2, 0 failed, 0 skipped.",
+          "71 tests cover models and utilities, and all 71 pass, executed on iOS 26.5 and again on 26.2, 0 failed, 0 skipped.",
         method: "xcodebuild test, .xcresult parsed with xcresulttool",
         artifacts: [
           {
@@ -1777,7 +1775,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "No custom-trained Core ML model is claimed — the vision paths use Apple’s frameworks, and no model file was present in the audited repo.",
+      "No custom-trained Core ML model is claimed: the vision paths use Apple’s frameworks, and no model file was present in the audited repo.",
       "No live camera, location, or user sensor data is shown anywhere in this file.",
     ],
     corrections: [
@@ -1855,9 +1853,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/cadence/tree/${CADENCE_SHA}`,
     },
     summary:
-      "A calendar and task manager that takes its scheduling in plain English — parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible — and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
+      "A calendar and task manager that takes its scheduling in plain English, parsed into structured intent, checked for conflicts, stored in PostgreSQL, covered by a broad automated suite. It is also the file where I found eight of my own IDOR bugs, fixed them, and then wrote the database-level isolation that would make them structurally impossible, and left that half deliberately switched off until a staged cutover. Receipt 05 is where that standing is written down.",
     problem:
-      "Planning splinters across tools — notes here, reminders there, scheduling language nowhere — and nobody notices two meetings colliding until they collide.",
+      "Planning splinters across tools: notes here, reminders there, scheduling language nowhere, and nobody notices two meetings colliding until they collide.",
     constraints: [
       "Support natural language input for scheduling.",
       "Keep full-stack behavior tested across frontend, backend, and integration layers.",
@@ -2003,17 +2001,17 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         decision:
           "Carry the user id to Postgres in a transaction-local GUC, not a per-user connection",
         reason:
-          "Cadence shares a Supabase pooler, so a session-level SET can be handed to whichever tenant borrows that connection next. An AsyncLocalStorage store carries the id the auth middleware already verified, and every statement runs inside a transaction that first sets app.user_id with set_config(..., true) — the third argument is what makes the setting die with the transaction.",
+          "Cadence shares a Supabase pooler, so a session-level SET can be handed to whichever tenant borrows that connection next. An AsyncLocalStorage store carries the id the auth middleware already verified, and every statement runs inside a transaction that first sets app.user_id with set_config(..., true), and the third argument is what makes the setting die with the transaction.",
         tradeoff:
-          "Every read costs a transaction, and any query path that goes around the wrapper silently loses its scope — which is why the isolation suite drives the real query() and withTransaction() instead of raw SQL, and why one of its tests exists only to prove the GUC does not survive on a reused pool.",
+          "Every read costs a transaction, and any query path that goes around the wrapper silently loses its scope, which is why the isolation suite drives the real query() and withTransaction() instead of raw SQL, and why one of its tests exists only to prove the GUC does not survive on a reused pool.",
         status: "accepted",
       },
       {
         decision: "Ship the RLS migration inert and cut over by hand",
         reason:
-          "Turning FORCE ROW LEVEL SECURITY on before every request reliably sets the GUC locks the app out of its own data. The migration states the order in its own header — the GUC wiring deploys first, the policies are applied after — and nothing in the app auto-applies the file.",
+          "Turning FORCE ROW LEVEL SECURITY on before every request reliably sets the GUC locks the app out of its own data. The migration states the order in its own header (the GUC wiring deploys first, the policies are applied after), and nothing in the app auto-applies the file.",
         tradeoff:
-          "For eleven days the database enforced nothing: shipping the migration inert meant the isolation was the application’s discipline and not Postgres’s, and the boundary rows said so out loud. That window closed on 2026-08-03, when 0002 was run against production by hand — the cutover this decision deliberately deferred. The cost that remains is the one the choice actually bought: there is a hand step between “written” and “enforcing”, it is invisible to CI, and nothing but this file records that it was taken.",
+          "For eleven days the database enforced nothing: shipping the migration inert meant the isolation was the application’s discipline and not Postgres’s, and the boundary rows said so out loud. That window closed on 2026-08-03, when 0002 was run against production by hand, the cutover this decision deliberately deferred. The cost that remains is the one the choice actually bought: there is a hand step between “written” and “enforcing”, it is invisible to CI, and nothing but this file records that it was taken.",
         status: "accepted",
       },
     ],
@@ -2022,7 +2020,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         claim:
           "I measured the suite on 2026-08-08: 635 frontend + 551 backend = 1,186 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
         method:
-          "CI at the pinned head, not a local run — GitHub Actions run 31233308044 on `main`, whose Backend Tests job reports 551 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
+          "CI at the pinned head, not a local run: GitHub Actions run 31233308044 on `main`, whose Backend Tests job reports 551 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
         artifacts: [
           {
             label: `cadence @ ${CADENCE_SUITE_SHA}`,
@@ -2034,7 +2032,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "Scheduling accepts natural language — chrono-node and compromise parse it into structured intent.",
+          "Scheduling accepts natural language, and chrono-node and compromise parse it into structured intent.",
         method: "source audit of the NLP input path",
         artifacts: [
           {
@@ -2070,7 +2068,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
          to carry the caveat for the group. */
       {
         claim:
-          "I found and fixed 8 IDOR vulnerabilities across 9 endpoints. GET and DELETE on tasks, events and tags, and GET on calendars, task-lists and attachments, all looked a record up by id alone — so any signed-in user could read or delete another user’s records by guessing one. Every lookup is now scoped to the caller and a miss returns 404, not 403: an id that is not yours should not be confirmed to exist. The eighth was found three days after the other seven were filed, on tags, and it carried the sharpest finding of the set — the regression test that was supposed to cover it asserted `WHERE id = $1` with the id as its only parameter. It was pinning the vulnerable query in place and reporting green.",
+          "I found and fixed 8 IDOR vulnerabilities across 9 endpoints. GET and DELETE on tasks, events and tags, and GET on calendars, task-lists and attachments, all looked a record up by id alone, so any signed-in user could read or delete another user’s records by guessing one. Every lookup is now scoped to the caller and a miss returns 404, not 403: an id that is not yours should not be confirmed to exist. The eighth was found three days after the other seven were filed, on tags, and it carried the sharpest finding of the set: the regression test that was supposed to cover it asserted `WHERE id = $1` with the id as its only parameter. It was pinning the vulnerable query in place and reporting green.",
         method:
           "read the six fix(security) commits and the service methods at their pins; 7 of the 9 routes carry a named cross-tenant regression test, and the eighth finding also corrected the test that had been certifying the bug",
         artifacts: [
@@ -2100,7 +2098,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The database-level answer to that bug is written, tested, and — since 2026-08-03 — LIVE. 0002_enable_rls.sql puts 22 policies and FORCE ROW LEVEL SECURITY on 7 tenant tables. It sat deployed inert for eight days, because nothing in the app auto-applies it and the cutover was a hand-run step nobody had taken. It has now been run. The app connects as cadence_app — NOSUPERUSER NOBYPASSRLS — so Postgres refuses a cross-user read rather than the handlers refusing it. Verified through the production pooler rather than by reading the migration: a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is rejected. The application-level scoping in receipt 04 is still there — it is the second line now, not the only one.",
+          "The database-level answer to that bug is written, tested, and, since 2026-08-03, LIVE. 0002_enable_rls.sql puts 22 policies and FORCE ROW LEVEL SECURITY on 7 tenant tables. It sat deployed inert for eight days, because nothing in the app auto-applies it and the cutover was a hand-run step nobody had taken. It has now been run. The app connects as cadence_app (NOSUPERUSER NOBYPASSRLS), so Postgres refuses a cross-user read rather than the handlers refusing it. Verified through the production pooler rather than by reading the migration: a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is rejected. The application-level scoping in receipt 04 is still there; it is the second line now, not the only one.",
         method:
           "applied the migration to the live database, then verified through the production connection as the non-bypassing app role: role attributes from pg_roles, table and policy state from pg_class and pg_policy, and scoped versus unbound row counts compared against ground truth",
         artifacts: [
@@ -2114,7 +2112,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The per-request identity reaches Postgres without a connection per user: authenticateJWT enters an AsyncLocalStorage store with the id it just verified, and every query runs in a transaction that first executes SELECT set_config('app.user_id', $1, true). The third argument is the whole point — it makes the setting transaction-local, so it cannot ride a pooled connection to the next tenant.",
+          "The per-request identity reaches Postgres without a connection per user: authenticateJWT enters an AsyncLocalStorage store with the id it just verified, and every query runs in a transaction that first executes SELECT set_config('app.user_id', $1, true). The third argument is the whole point: it makes the setting transaction-local, so it cannot ride a pooled connection to the next tenant.",
         method:
           "source audit of rlsContext.ts, database.ts, and middleware/auth.ts at the pin",
         artifacts: [
@@ -2132,7 +2130,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They run in CI: the workflow provisions a postgres:16 service and hands the suite RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there — 11 of 11 executed at this pin on 2026-07-24.",
+          "11 of 11 isolation tests pass against a real Postgres: a raw unfiltered SELECT as user B returns only B’s rows, an INSERT for someone else fails the WITH CHECK, attachments and task_tags scope through their owning task, and one test exists solely to prove the GUC does not leak across users on a reused pool. They run in CI: the workflow provisions a postgres:16 service and hands the suite RLS_TEST_PG_ADMIN_URL, so the skip guard never fires there, and 11 of 11 executed at this pin on 2026-07-24.",
         method:
           "re-run 2026-07-26 against a throwaway postgres:16 container, applying the real 0002 migration and a NOSUPERUSER NOBYPASSRLS role, driving the production query() and withTransaction()",
         artifacts: [
@@ -2163,9 +2161,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "A thrown auth error was orphaned in the middleware pipeline. composeMiddleware awaited only each middleware’s own return value, so when a middleware called next() without awaiting it and the downstream authenticateJWT rejected, nothing caught the rejection and no response was ever sent — a request with an expired token hung until the platform timed it out instead of getting its 401. The composer now holds the promise next() starts and awaits it.",
+          "A thrown auth error was orphaned in the middleware pipeline. composeMiddleware awaited only each middleware’s own return value, so when a middleware called next() without awaiting it and the downstream authenticateJWT rejected, nothing caught the rejection and no response was ever sent, so a request with an expired token hung until the platform timed it out instead of getting its 401. The composer now holds the promise next() starts and awaits it.",
         method:
-          "read the fix and its named regression test at the pin — “propagates a downstream throw even when an upstream middleware calls next() without awaiting it”",
+          "read the fix and its named regression test at the pin: “propagates a downstream throw even when an upstream middleware calls next() without awaiting it”",
         artifacts: [
           {
             label: `lib/middleware/index.ts @ ${CADENCE_SHA}`,
@@ -2181,7 +2179,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "Two more holes closed in the same pass: POST and PUT /api/upload accepted uploads with no authentication at all and wrote public-read blobs, and now sit behind the auth middleware chain; and DELETE /api/account cascades one user’s own rows through a single transaction — task tags, attachments, tasks, events, task lists, calendars, profile, then the user.",
+          "Two more holes closed in the same pass: POST and PUT /api/upload accepted uploads with no authentication at all and wrote public-read blobs, and now sit behind the auth middleware chain; and DELETE /api/account cascades one user’s own rows through a single transaction: task tags, attachments, tasks, events, task lists, calendars, profile, then the user.",
         method:
           "source audit of both handlers at the pin; the deletion flow also carries an end-to-end spec",
         artifacts: [
@@ -2201,7 +2199,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "The workspace runs multi-pane planning with a Kanban board and multi-calendar views — inspectable in the live demo.",
+          "The workspace runs multi-pane planning with a Kanban board and multi-calendar views, inspectable in the live demo.",
         method: "the deployed demo, mock-login flow",
         artifacts: [
           {
@@ -2231,11 +2229,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend) — the tree grew from 87 to 105 test files over 249 commits, and nothing was retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit — not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
+      "Re-run 2026-07-31 against HEAD 932625e it is 1,168 passed and 11 skipped (635 frontend + 533 backend), and the tree grew from 87 to 105 test files over 249 commits with nothing retracted. 1,145 is my local vitest count from 2026-07 against the pinned commit, not a CI badge, and that commit’s own CI run failed. Main has been green since 2026-07-23, so the caveat is that this number predates the green rather than that the repo is broken.",
       "No production users or uptime are claimed; the deployment is a demo with a mock-login flow.",
-      "The DB-enforced RLS is now turned on in production, as of 2026-08-03. The app connects as cadence_app — NOSUPERUSER NOBYPASSRLS — and seven tenant tables carry ENABLE + FORCE with 22 policies. FORCE matters: without it, policies do not apply to the table owner, and the owner is what an application usually connects as. Verified through the production pooler rather than by reading the migration — a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is refused. What used to be the application's discipline is now the database's refusal. The cutover cost an hour of broken production and that belongs in the record: moving tag uniqueness to (\"userId\", name) stranded an inline ON CONFLICT (name) in TaskService — a private copy of an upsert TagService already handled correctly — so every tagged task creation failed while 550 backend tests stayed green, because nothing exercised that copy against a real schema.",
-      "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses — that is database state, not repository state, and no file here can settle it.",
-      "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else — no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
+      "The DB-enforced RLS is now turned on in production, as of 2026-08-03. The app connects as cadence_app (NOSUPERUSER NOBYPASSRLS), and seven tenant tables carry ENABLE + FORCE with 22 policies. FORCE matters: without it, policies do not apply to the table owner, and the owner is what an application usually connects as. Verified through the production pooler rather than by reading the migration: a read scoped to the busiest tenant returns exactly its 5 tasks / 2 calendars / 7 tags, an unbound read returns 0 rows, and a cross-tenant INSERT is refused. What used to be the application's discipline is now the database's refusal. The cutover cost an hour of broken production and that belongs in the record: moving tag uniqueness to (\"userId\", name) stranded an inline ON CONFLICT (name) in TaskService, a private copy of an upsert TagService already handled correctly, so every tagged task creation failed while 550 backend tests stayed green, because nothing exercised that copy against a real schema.",
+      "The repo ships the SQL that creates a NOSUPERUSER NOBYPASSRLS role for the app to connect as. It cannot show you which role the production DATABASE_URL actually uses. That is database state, not repository state, and no file here can settle it.",
+      "The hang in receipt 09 was timed once, by hand, against the deployed app, and that number lives in the fix commit’s message and nowhere else: no log, no test, and no timeout setting reproduces it. So this file describes the failure and not its seconds.",
     ],
     corrections: [
       {
@@ -2300,8 +2298,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         label: "Production calendar, demo account session",
         href: withBasePath("/images/projects/taskflow.png"),
         source:
-          "production interior — usecadenceapp.vercel.app, demo account · 2026-08",
-        boundary: "demo account state — no real user data",
+          "production interior at usecadenceapp.vercel.app, demo account · 2026-08",
+        boundary: "demo account state, no real user data",
         date: "2026-08",
       },
       {
@@ -2325,7 +2323,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            string no reader corrects. Fixed anyway; a boundary is a claim
            about a real system whether or not anyone is currently reading it. */
         boundary:
-          "public repository — hand-run, and applied in production 2026-08-03",
+          "public repository, hand-run and applied in production 2026-08-03",
         date: "2026-07",
       },
     ],
@@ -2341,16 +2339,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
-    privateRepoName: "institutional — Miami University IT",
+    privateRepoName: "institutional, Miami University IT",
     summary:
-      "Private proof from institutional ITSM data work: a Python and SQL pipeline that takes Workday exports and Tableau metadata — systems that disagree — and files them into one 35-field master inventory keyed by a deterministic id.",
+      "Private proof from institutional ITSM data work: a Python and SQL pipeline that takes Workday exports and Tableau metadata, two systems that disagree, and files them into one master inventory of 35 fields keyed by a deterministic id.",
     evidenceDisclosure: {
       label: "Private-safe evidence",
       detail:
         "This case file describes the engineering shape, systems, and validation model without exposing institutional records, internal UI, or raw data.",
     },
     problem:
-      "Asset identifiers, ownership fields, Tableau metadata, Workday exports — each system keeps its own version of the truth. Reporting built on records that disagree inherits the disagreement.",
+      "Asset identifiers, ownership fields, Tableau metadata, Workday exports: each system keeps its own version of the truth. Reporting built on records that disagree inherits the disagreement.",
     constraints: [
       "Keep institutional details private while explaining the engineering shape.",
       "Normalize large operational datasets without losing auditability.",
@@ -2438,11 +2436,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "3,731 Tableau rows and 6,743 Workday rows consolidated into a 10,453-row deduplicated master_inventory.csv.",
+          "3,731 Tableau rows and 6,743 Workday rows consolidated into a deduplicated master_inventory.csv of 10,453 rows.",
         method: "local processed-output audit, counts only",
         artifacts: [
           {
-            label: "checked-in proof ledger — below",
+            label: "checked-in proof ledger, below",
             href: "#ledger",
           },
         ],
@@ -2451,11 +2449,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The 35-field unified schema generates deterministic inventory_id values from row fields.",
+          "The unified schema of 35 fields generates deterministic inventory_id values from row fields.",
         method: "source docs and configs, read in the private repo",
         artifacts: [
           {
-            label: "checked-in proof ledger — below",
+            label: "checked-in proof ledger, below",
             href: "#ledger",
           },
         ],
@@ -2465,7 +2463,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         claim:
           "Runs write timestamped folders plus cumulative processed outputs, while raw institutional exports stay out of version control.",
-        method: "repo layout audit — audited by count only",
+        method: "repo layout audit, by count only",
         artifacts: [],
         date: "2026-06",
         visibility: "private-safe",
@@ -2476,7 +2474,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "local pytest + ruff run",
         artifacts: [
           {
-            label: "checked-in proof ledger — below",
+            label: "checked-in proof ledger, below",
             href: "#ledger",
           },
         ],
@@ -2509,7 +2507,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         claim:
           "More than one million operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
         method:
-          "role scope, jun 2025 – may 2026 — institutional ITSM data integration",
+          "role scope, jun 2025 to may 2026, institutional ITSM data integration",
         artifacts: [],
         date: null,
         visibility: "local-only",
@@ -2527,7 +2525,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     notClaiming: [
       "This file shows counts, schema shape, and architecture only; raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
-      "The 1M+ record transforms are role-scope work with no public artifact — verifiable in interview, not on this page.",
+      "The 1M+ record transforms are role-scope work with no public artifact, verifiable in interview, not on this page.",
     ],
     corrections: [
       {
@@ -2537,7 +2535,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     ledger: {
-      title: "master inventory — processed-output ledger",
+      title: "master inventory, processed-output ledger",
       jsonPath: "/proof/master-inventory-ledger.json",
       checkedIn: "2026-06",
       rows: [
@@ -2565,7 +2563,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
       ],
       boundary:
-        "sanitized local audit summary — no raw institutional rows, owners, report names, or PAT values",
+        "sanitized local audit summary: no raw institutional rows, owners, report names, or PAT values",
     },
     /* NOTHING HANGS IN THIS APPENDIX, AND THAT IS THE RULING — 2026-08-07.
        Two plates stood here and both were the page saying itself twice in a
@@ -2593,7 +2591,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     status: "concluded",
     statusDetail: "role ended 2026-05",
     repoPin: null,
-    privateRepoName: "institutional — Miami University IT",
+    privateRepoName: "institutional, Miami University IT",
     summary:
       "Private proof from institutional policy-support work: a Python RAG assistant that takes questions from the CLI and Slack, routes them through OpenAI File Search, and validates quoted passages before an answer ships.",
     evidenceDisclosure: {
@@ -2602,7 +2600,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         "This case file uses a private-safe architecture diagram plus sanitized source-truth summaries. Real institutional policy content, raw validation transcripts, Slack messages, and private records are not shown.",
     },
     problem:
-      "Policy lived in three places — documents, pages, and people’s heads. An answer meant knowing which of the three to ask, and the answers didn’t always agree.",
+      "Policy lived in three places: documents, pages, and people’s heads. An answer meant knowing which of the three to ask, and the answers didn’t always agree.",
     constraints: [
       "Keep institutional policy content governed and source-cited.",
       "Support DOCX, PDF, and Markdown policy sources.",
@@ -2688,10 +2686,10 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         claim:
           "My committed validation summary reports a 19/20 latest structured sweep, a 17/25 keyword sweep, 4 honest fallbacks, and locally rejected answers when quotes could not be verified.",
-        method: "committed sweep summary — grading protocol not yet documented",
+        method: "committed sweep summary, grading protocol not yet documented",
         artifacts: [
           {
-            label: "checked-in validation ledger — below",
+            label: "checked-in validation ledger, below",
             href: "#ledger",
           },
         ],
@@ -2704,7 +2702,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "source and docs audit of the guardrail path",
         artifacts: [
           {
-            label: "checked-in validation ledger — below",
+            label: "checked-in validation ledger, below",
             href: "#ledger",
           },
         ],
@@ -2714,7 +2712,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         claim:
           "The repo ships CLI entry points and a Slack Socket Mode bridge; no production usage, workspace adoption, or always-on service claim is made here.",
-        method: "source audit — the boundary is part of the claim",
+        method: "source audit: the boundary is part of the claim",
         artifacts: [],
         date: "2026-06",
         visibility: "private-safe",
@@ -2725,7 +2723,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "local pytest run, network-free",
         artifacts: [
           {
-            label: "checked-in validation ledger — below",
+            label: "checked-in validation ledger, below",
             href: "#ledger",
           },
         ],
@@ -2736,8 +2734,8 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     outcomes: [
       {
         claim:
-          "Answers come back in Slack with the source cited, and topics the sources do not cover are declined rather than answered — 4 such fallbacks in the recorded sweep.",
-        method: "design intent, described — no usage metric is claimed",
+          "Answers come back in Slack with the source cited, and topics the sources do not cover are declined rather than answered, with 4 such fallbacks in the recorded sweep.",
+        method: "design intent as described, no usage metric is claimed",
         artifacts: [],
         date: null,
         visibility: "private-safe",
@@ -2748,7 +2746,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         method: "guardrail path audit",
         artifacts: [
           {
-            label: "checked-in validation ledger — below",
+            label: "checked-in validation ledger, below",
             href: "#ledger",
           },
         ],
@@ -2758,7 +2756,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     notClaiming: [
       "The sweeps are self-graded counts from my committed validation summary; the grader and per-case pass criteria are not yet documented publicly, so treat 19/20 and 17/25 as disclosed self-reports.",
-      "This file claims design and validation shape only — never adoption or uptime. Raw policy text and Slack messages are excluded everywhere.",
+      "This file claims design and validation shape only, never adoption or uptime. Raw policy text and Slack messages are excluded everywhere.",
     ],
     corrections: [
       {
@@ -2768,7 +2766,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     ledger: {
-      title: "policybot — validation ledger",
+      title: "policybot validation ledger",
       jsonPath: "/proof/policybot-validation-ledger.json",
       checkedIn: "2026-06",
       rows: [
@@ -2799,7 +2797,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
       ],
       boundary:
-        "sanitized RAG validation summary — no policy text, Slack messages, or raw validation transcripts",
+        "sanitized RAG validation summary: no policy text, Slack messages, or raw validation transcripts",
     },
     /* Empty for the same reason master-inventory's is — see the note there.
        `policybot-architecture.svg` restated `fig. 2`;
@@ -2826,7 +2824,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
        them either, and guessing a real person's name onto a public page
        would be a worse error than the one being fixed. Naming them is a
        one-line change the owner can make. */
-    role: "C++ performance engineer — two-person project, my slice below",
+    role: "C++ performance engineer, two-person project, my slice below",
     collaborator: {
       name: "Shree Chaturvedi",
       href: "https://www.linkedin.com/in/chaturs/",
@@ -2886,7 +2884,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     summary:
       "A course C++ MLP for MNIST, hand-optimized until there was nothing under it but SIMD. Four hand-written instruction sets in the dot kernels over a scalar fallback, OpenMP parallelism, a committed benchmark suite, and a React workbench where you draw a digit and watch the network read it.",
     problem:
-      "MNIST is small enough to hold in your head. That’s the point — at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
+      "MNIST is small enough to hold in your head. That’s the point: at this size, low-level matrix optimization and benchmark discipline have nowhere to hide.",
     constraints: [
       "Keep the implementation in C++ with explicit SIMD and OpenMP paths.",
       "Quote no speedup that a committed benchmark run does not produce.",
@@ -2909,7 +2907,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "kernels",
           label: "SIMD kernels",
-          detail: "AVX2, AVX-512, NEON — wasm128 in the dot kernels",
+          detail: "AVX2, AVX-512, NEON, and wasm128 in the dot kernels",
           kind: "system",
         },
         {
@@ -2968,7 +2966,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           from: "model",
           to: "demo",
-          label: "prediction — server, wasm, or js fallback",
+          label: "prediction: server, wasm, or js fallback",
         },
         { from: "bench", to: "model", label: "performance proof" },
       ],
@@ -2977,7 +2975,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         decision: "Use hand-tuned SIMD paths",
         reason:
-          "The point is performance engineering you can read — kernels on the page, not framework calls.",
+          "The point is performance engineering you can read: kernels on the page, not framework calls.",
         tradeoff:
           "Hardware-specific paths need careful fallbacks and benchmarking.",
         status: "accepted",
@@ -2999,7 +2997,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         },
         {
           label: "env",
-          value: "Apple clang 17.0.0 — recorded in BENCHMARKS.md",
+          value: "Apple clang 17.0.0, recorded in BENCHMARKS.md",
         },
         {
           label: "metric",
@@ -3009,7 +3007,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "run",
           value:
-            "2026-08-02 — committed as bench-20260802-dot20x-{baseline,openmp-native}.json (20 reps) + bench_summary.csv; the 2025-12-26 run files are still in the repo as history",
+            "2026-08-02, committed as bench-20260802-dot20x-{baseline,openmp-native}.json (20 reps) + bench_summary.csv; the 2025-12-26 run files are still in the repo as history",
         },
         {
           label: "repro",
@@ -3045,7 +3043,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            reproducible by anyone who fetches MNIST, not a self-contained
            replay. The method line says exactly that. */
         claim:
-          "The network scores 97.01% on the 10,000-image MNIST test set — 9,701 correct, 299 wrong, macro-F1 0.9698 — measured by a committed eval run, not README prose.",
+          "The network scores 97.01% on the MNIST test set of 10,000 images, 9,701 correct, 299 wrong, macro-F1 0.9698, measured by a committed eval run, not README prose.",
         method:
           "committed eval report: generator apps/eval_model.cpp, model.weights pinned by sha256, 784→100→10 sigmoid MLP; the public MNIST test set is not vendored in the repo",
         artifacts: [
@@ -3071,9 +3069,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            2026-08-06 this row credited an "openmp+simd" kernel, which reads
            as though the vectorisation earns part of the number. */
         claim:
-          "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline — and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
+          "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline, and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
         method:
-          "committed 2026-08-02 benchmark run, 20 repetitions — protocol in the method slip",
+          "committed 2026-08-02 benchmark run, 20 repetitions; protocol in the method slip",
         artifacts: [
           {
             label: `glyph @ ${FAST_MNIST_SHA} · BENCHMARKS.md`,
@@ -3089,7 +3087,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "A benchmark suite is committed — matrix kernels measured across the repo’s three configurations (baseline, native, openmp+native), with dated run files in the repo.",
+          "A benchmark suite is committed: matrix kernels measured across the repo’s three configurations (baseline, native, openmp+native), with dated run files in the repo.",
         method: "benchmark source + committed run JSON",
         artifacts: [
           {
@@ -3111,7 +3109,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            than at this file's pin, because the pin (001e9b4) predates
            it — see the 2026-08-08 note in the corrections register. */
         claim:
-          "SIMD acceleration is implemented across AVX2, AVX-512, NEON and — in the dot kernels, since glyph@68f1362 — a hand-written wasm128 path; the verified 3.5× belongs to OpenMP parallelism, not to SIMD — the vectorised path is compiled into both sides of that comparison, so it earns none of the number.",
+          "SIMD acceleration is implemented across AVX2, AVX-512, NEON and, in the dot kernels since glyph@68f1362, a hand-written wasm128 path. The verified 3.5× belongs to OpenMP parallelism, not to SIMD: the vectorised path is compiled into both sides of that comparison, so it earns none of the number.",
         method: "source paths + the committed benchmark rows",
         artifacts: [
           {
@@ -3128,7 +3126,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The interactive React workbench is deployed — draw a digit and watch the network read it.",
+          "The interactive React workbench is deployed: draw a digit and watch the network read it.",
         method: "the live demo itself",
         artifacts: [
           {
@@ -3146,9 +3144,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "No AVX-512 inference-speedup claim survives here — see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline at dot 256; the SIMD is in both builds and earns none of it.",
+      "No AVX-512 inference-speedup claim survives here; see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline at dot 256; the SIMD is in both builds and earns none of it.",
       "The landing screenshot is the deployed page, but its ledger figures are the committed 2 August 2026 benchmark run rather than anything measured in that capture; only the scalar-vs-simd128 timing and the verdict were live in the capturing browser.",
-      "The two-layer MLP itself is not claimed here — it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
+      "The two-layer MLP itself is not claimed here: it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
     corrections: [
       {

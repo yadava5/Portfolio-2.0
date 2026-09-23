@@ -327,7 +327,7 @@ const FIGURES = [
        today and exactly what a reader would find. */
     /* Bound to receipt 05's own sentence, which no corrections entry uses,
        so the register can never satisfy it. */
-    data: { cases: /the 220-rule stage at this pin/ },
+    data: { cases: /the stage of 220 rules at this pin/ },
     source:
       "backend/jobtracker/classifier/rules.py PATTERNS, AST-counted at 0285675c (rules.py last touched 2690de02, 2026-09-09) — 129 strong + 31 weak + 60 negative = 220, the 48 vetoes excluded; the demo space and both rules.json copies count 220 too. Was 106 + 26 + 69 = 201, true at 36a2f54",
   },
