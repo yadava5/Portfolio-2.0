@@ -884,3 +884,178 @@ test.describe("G9 · no tap target under 24×24 on the phone", () => {
     ).toContain("#mtoggle");
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════════
+   G10 · the Mac rail is never less smooth than the one the owner signed off
+
+   2026-09-23. The clarity build shortened every station and the rail's
+   swings got steeper and visibly segmented ("has segments that feel
+   connected instead of smooth curve"), and a dip ghosted it under text
+   ("don't mess with the opacity for the rail"). Gate H stayed green through
+   both, because it measured screens and words, not the line. So the line
+   itself is measured here, against CEILINGS TAKEN FROM THE PRE-REDESIGN
+   BUILD (sha b6ea15df, main 035ab9b) at 1512×982, read the same way:
+     max |dx/dy|                        1.58
+     max heading change over 24px arc   24.1°
+     max heading change, 2px chords     16.2°   (a corner, not a curve)
+   and the thread canvas composites only source-over: nothing erases the
+   line where it passes text.
+   ══════════════════════════════════════════════════════════════════════ */
+const RAIL_WIDTHS: [number, number][] = [
+  [1512, 982],
+  [1440, 900],
+  [1280, 800],
+];
+const RAIL_CEIL = { maxSlope: 1.58, bend24: 24.1, kink2: 16.2 };
+
+async function railShape(page: Page) {
+  return page.evaluate(() => {
+    const s = (
+      window as unknown as {
+        __rail: () => { x: number; y: number; L: number }[];
+      }
+    ).__rail();
+    let maxSlope = 0;
+    for (let i = 1; i < s.length; i++) {
+      const dy = s[i].y - s[i - 1].y;
+      if (dy > 0)
+        maxSlope = Math.max(maxSlope, Math.abs((s[i].x - s[i - 1].x) / dy));
+    }
+    const pts: [number, number][] = [];
+    let j = 0;
+    for (let L = 0; L <= s[s.length - 1].L; L += 2) {
+      while (j < s.length - 2 && s[j + 1].L < L) j++;
+      const a = s[j],
+        c = s[j + 1],
+        t = c.L > a.L ? (L - a.L) / (c.L - a.L) : 0;
+      pts.push([a.x + (c.x - a.x) * t, a.y + (c.y - a.y) * t]);
+    }
+    const hd = (i: number) =>
+      Math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0]);
+    const turn = (a: number, b: number) => {
+      const d = (Math.abs(a - b) * 180) / Math.PI;
+      return d > 180 ? 360 - d : d;
+    };
+    let bend24 = 0,
+      kink2 = 0;
+    for (let i = 0; i + 13 < pts.length; i += 2)
+      bend24 = Math.max(bend24, turn(hd(i + 12), hd(i)));
+    for (let i = 0; i + 2 < pts.length; i++)
+      kink2 = Math.max(kink2, turn(hd(i + 1), hd(i)));
+    return { n: s.length, maxSlope, bend24, kink2 };
+  });
+}
+
+/* every composite op ever set on the thread canvas's context */
+async function watchComposite(page: Page) {
+  await page.addInitScript(() => {
+    const seen = new Set<string>();
+    (window as unknown as { __compositeOps: Set<string> }).__compositeOps =
+      seen;
+    const d = Object.getOwnPropertyDescriptor(
+      CanvasRenderingContext2D.prototype,
+      "globalCompositeOperation"
+    )!;
+    Object.defineProperty(
+      CanvasRenderingContext2D.prototype,
+      "globalCompositeOperation",
+      {
+        get() {
+          return d.get!.call(this);
+        },
+        set(v: string) {
+          if ((this as CanvasRenderingContext2D).canvas?.id === "thread")
+            seen.add(v);
+          d.set!.call(this, v);
+        },
+      }
+    );
+  });
+}
+
+async function railRun(page: Page) {
+  const doc = await page.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < doc; y += 600) {
+    await page.evaluate(
+      (yy) => window.scrollTo({ top: yy, behavior: "instant" }),
+      y
+    );
+    await page.waitForTimeout(60);
+  }
+  return page.evaluate(() => [
+    ...(window as unknown as { __compositeOps: Set<string> }).__compositeOps,
+  ]);
+}
+
+test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () => {
+  for (const [w, h] of RAIL_WIDTHS) {
+    test(`at ${w}`, async ({ page }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await watchComposite(page);
+      await arrive(page);
+      const r = await railShape(page);
+      expect(r.n, "the rail was sampled").toBeGreaterThan(200);
+      expect(r.maxSlope, `steepest swing at ${w}`).toBeLessThanOrEqual(
+        RAIL_CEIL.maxSlope
+      );
+      expect(r.bend24, `tightest bend at ${w}`).toBeLessThanOrEqual(
+        RAIL_CEIL.bend24
+      );
+      expect(r.kink2, `sharpest corner at ${w}`).toBeLessThanOrEqual(
+        RAIL_CEIL.kink2
+      );
+      const ops = await railRun(page);
+      expect(
+        ops.filter((o) => o !== "source-over"),
+        "the thread canvas erased part of the line"
+      ).toEqual([]);
+    });
+  }
+
+  /* THE CONTROLS. A ceiling nothing can reach and an op watcher that sees
+     nothing both read green; these break the page on purpose. Coarse 40px
+     chords are the segmented rail; a destination-out in drawThread is the dip. */
+  test("positive control: a segmented rail is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1512, height: 982 });
+    await page.route(
+      (u) => new URL(u).pathname === "/",
+      async (route) => {
+        const res = await route.fetch();
+        const body = (await res.text()).replace(
+          "const STEP = 4;",
+          "const STEP = 60;"
+        );
+        await route.fulfill({ response: res, body });
+      }
+    );
+    await arrive(page);
+    const r = await railShape(page);
+    expect(r.kink2, "60px chords must read as corners").toBeGreaterThan(
+      RAIL_CEIL.kink2
+    );
+  });
+  test("positive control: a line erased under text is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1512, height: 982 });
+    await watchComposite(page);
+    await page.route(
+      (u) => new URL(u).pathname === "/",
+      async (route) => {
+        const res = await route.fetch();
+        const body = (await res.text()).replace(
+          "  drawTokenAndTravellers(scroll, tokenY, tokenL, halted);\n}",
+          "  drawTokenAndTravellers(scroll, tokenY, tokenL, halted);\n  tctx.save(); tctx.globalCompositeOperation = 'destination-out'; tctx.fillRect(0, 0, 40, 40); tctx.restore();\n}"
+        );
+        await route.fulfill({ response: res, body });
+      }
+    );
+    await arrive(page);
+    expect(await railRun(page)).toContain("destination-out");
+  });
+});

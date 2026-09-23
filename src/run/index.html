@@ -3295,6 +3295,7 @@ function cacheGeometry() {
    13,000px extent. The canvas draws ~50 visible segments instead.) ————— */
 const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
+window.__rail = () => samples; /* probe hook: G10 reads the rail's shape off the real path */
 let pathLen = 0, gatePageY = 0;
 /* run 042 owns beats 0..11; ¶13 is the next run's first light */
 const RUN_BEATS = 12;
@@ -3339,7 +3340,6 @@ function buildThread() {
      there, and Math.hypot poisons the cumulative arc length for the whole
      tail — the thread simply stops drawing and the travellers lose their
      track. check-beat-tables.mjs asserts the lengths against the DOM. */
-  measureTextBoxes();
   const RAIL_X_MOBILE = 26; /* px · the phone lane, left of the column */
   const stx = stacked
     ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20, 20]
@@ -3384,7 +3384,11 @@ function buildThread() {
     const b = beats[i], x = mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw;
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
-    if (i < RUN_BEATS - 1) anchors.push([lerp(x, mobile ? RAIL_X_MOBILE : (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
+    if (i < RUN_BEATS - 1) {
+      const nb = beats[i + 1];
+      anchors.push([lerp(x, mobile ? RAIL_X_MOBILE : (stx[i + 1] / 100) * vw, 0.5),
+        lerp(b.top + b.h * 0.52, nb.top + nb.h * 0.18, 0.5)]);
+    }
   }
   /* Terminate at the gate dock (the clay square in the ladder). The line used
      to arrive on the diagonal it happened to be travelling, which read as the
@@ -3411,28 +3415,51 @@ function buildThread() {
   anchors.push([dockX, gatePageY]);
   anchors.sort((a, b) => a[1] - b[1]);
 
-  /* densify with cosine easing + hand wobble (x only; y stays monotonic).
-     The wobble is what makes the line read as drawn rather than plotted — but
-     a hand that is still wavering as it reaches the dock reads as imprecise,
-     not human. `steady` tapers the wobble to exactly zero over the final
-     approach, so the last stretch is a clean vertical and the terminus is a
-     deliberate mark. */
+  /* densify: a monotone cubic through the anchors, plus hand wobble (x only;
+     y stays monotonic). The wobble is what makes the line read as drawn
+     rather than plotted, but a hand still wavering as it reaches the dock
+     reads as imprecise, not human, so `steady` tapers it to zero over the
+     final approach and the last stretch is a clean vertical.
+
+     WHY A SPLINE AND NOT A COSINE PER PAIR. The cosine eased every pair of
+     anchors on its own, which forced a vertical tangent at EVERY anchor,
+     including the corridor midpoint the swing passes through. With tall
+     stations that hid; with content-sized stations the same swing ran
+     over half the height and read as straight pieces joined at corners.
+     Fritsch-Carlson tangents keep a vertical tangent where the line holds
+     a column (two anchors at one x, where a secant is zero) and let it
+     pass THROUGH the corridor midpoint on the diagonal it is already on.
+
+     WHY SAMPLED BY LENGTH. 22px steps in y were fine while the line was
+     near vertical; on a swing they became 50px chords, visible as a
+     polyline. Each step is now at most STEP px of path. */
   const amp = mobile ? 3 : stacked ? 8 : 16;
   const steady = (y) => clamp((gatePageY - y) / APPROACH, 0, 1);
+  const n = anchors.length, sec = [], m = new Array(n).fill(0);
+  for (let k = 0; k < n - 1; k++) {
+    const dy = anchors[k + 1][1] - anchors[k][1];
+    sec.push(dy > 0 ? (anchors[k + 1][0] - anchors[k][0]) / dy : 0);
+  }
+  for (let k = 1; k < n - 1; k++) {
+    const a = sec[k - 1], b = sec[k];
+    m[k] = a * b > 0 ? (2 * a * b) / (a + b) : 0; /* harmonic mean: never overshoots */
+  }
+  const STEP = 4;
   samples = [];
   let L = 0, px = 0, py = 0;
   const put = (x, y) => {
     if (samples.length) L += Math.hypot(x - px, y - py);
     samples.push({ x, y, L }); px = x; py = y;
   };
-  for (let k = 0; k < anchors.length - 1; k++) {
-    const [x0, y0] = anchors[k], [x1, y1] = anchors[k + 1];
-    const steps = Math.max(2, Math.round((y1 - y0) / 22));
+  for (let k = 0; k < n - 1; k++) {
+    const [x0, y0] = anchors[k], [x1, y1] = anchors[k + 1], h = y1 - y0;
+    const steps = Math.max(2, Math.ceil(Math.hypot(h, (x1 - x0) * 1.6) / STEP));
     for (let s = 0; s < steps; s++) {
-      const t = s / steps, y = lerp(y0, y1, t), w = steady(y);
-      put(lerp(x0, x1, 0.5 - 0.5 * Math.cos(Math.PI * t))
-        + Math.sin(y * 0.011 + 2.1) * amp * 0.5 * w
-        + Math.sin(y * 0.0037 + 0.7) * amp * w, y);
+      const t = s / steps, t2 = t * t, t3 = t2 * t, y = y0 + h * t, w = steady(y);
+      const x = (2 * t3 - 3 * t2 + 1) * x0 + (t3 - 2 * t2 + t) * h * m[k]
+              + (-2 * t3 + 3 * t2) * x1 + (t3 - t2) * h * m[k + 1];
+      put(x + Math.sin(y * 0.011 + 2.1) * amp * 0.5 * w
+            + Math.sin(y * 0.0037 + 0.7) * amp * w, y);
     }
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
@@ -3831,60 +3858,6 @@ function drawThread(scroll, tokenY, tokenL, halted) {
     strokeRun(i0, Math.max(i0, k - 1), scroll, tokenL < samples[i1].L ? tp : null, null);
   }
   drawTokenAndTravellers(scroll, tokenY, tokenL, halted);
-  dipUnderText(scroll);
-}
-/* WHERE THE LINE PASSES UNDER A COLUMN OF TEXT IT IS ERASED TO A GHOST, the
-   way a wiring diagram breaks the conductor that runs beneath a component.
-   destination-out on the thread's own canvas, so stx, the anchors, the
-   wobble and every cargo corridor are byte-identical: this changes what
-   reaches the eye, never where anything is.
-
-   IT RUNS LAST, AFTER THE TOKEN AND THE TRAVELLERS, and that ordering is
-   the whole of the fix rather than an accident of where the call sits. A
-   first cut dipped the stroke alone and left the bead, the waybill icons
-   and their labels at full ink — so the shots still showed a cargo icon
-   over "Miami University, Jun" and the run's own bead sitting on the role
-   line, which is the exact defect the dip exists to remove. Everything
-   that rides the line dips with the line. */
-let textBoxes = [];
-function measureTextBoxes() {
-  const sy = scrollY;
-  /* `.b8 h2` IS ON THIS LIST AND THE LADDER BESIDE IT IS NOT, deliberately.
-     ¶12 has no `.prose` wrapper, so the whole gate screen was outside the
-     dip and the thread ran at full clay through "Every pipeline I build ends
-     with a human decision." — the page's thesis, on the screen it is making
-     it. But the ladder below it holds the gate dock, and the dock is where
-     this line has been travelling for twelve stops: ghosting THAT would cut
-     the arrival the whole run is for. So the headline is protected and the
-     terminus is left alone, and the stroke returns to full ink in the gap
-     between them, on its way to the mark. */
-  /* D-3 · `.b8 .ladder li:not(.gaterow)` joins the list and `.gaterow` stays
-     out of it. The ladder is twelve rows of clock and station and the line
-     ran through five of their timestamps at 1512 on its way down; ghosting
-     them costs nothing, because the line is not going to any of them. It is
-     going to the dock in the thirteenth row, and THAT row keeps full ink so
-     the arrival the whole run is for still lands as a mark. */
-  textBoxes = [...document.querySelectorAll('.prose, .schoolrec, .gatecard, .litany, .signs, .engcard, .identity, .b1 .borrowed, .b8 h2, .b8 .ladder li:not(.gaterow)')]
-    .map((el) => { const r = el.getBoundingClientRect();
-      return { x: r.left - 6, w: r.width + 12, top: r.top + sy - 4, h: r.height + 8 }; })
-    /* h > 10, not h > 40. The floor was written when every box on this list
-       was a column; the ¶12 ladder rows are 22px tall, so the selector that
-       named them was silently dropping all twelve and the line went on
-       running at full ink through five timestamps. Width still guards the
-       trivial case. */
-    .filter((r) => r.w > 40 && r.h > 10);
-}
-function dipUnderText(scroll) {
-  if (!textBoxes.length) return;
-  tctx.save();
-  tctx.globalCompositeOperation = 'destination-out';
-  tctx.fillStyle = 'rgba(0,0,0,.84)';
-  for (const r of textBoxes) {
-    const y = r.top - scroll;
-    if (y > vh || y + r.h < 0) continue;
-    tctx.fillRect(r.x, y, r.w, r.h);
-  }
-  tctx.restore();
 }
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
   const tp = pointAtLen(tokenL), ty = tp.y - scroll;
