@@ -1,0 +1,32 @@
+{
+ "w1512": {
+  "nearEmpty": 9,
+  "corridor": 8,
+  "starved": 1,
+  "starvedAt": [
+   "491:50w/49%"
+  ]
+ },
+ "w1440": {
+  "nearEmpty": 9,
+  "corridor": 5,
+  "starved": 4,
+  "starvedAt": [
+   "450:50w/52%",
+   "4500:51w/40%",
+   "8550:0w/44%",
+   "10350:49w/44%"
+  ]
+ },
+ "w1280": {
+  "nearEmpty": 9,
+  "corridor": 5,
+  "starved": 4,
+  "starvedAt": [
+   "400:50w/54%",
+   "4000:51w/43%",
+   "9200:43w/51%",
+   "10400:27w/53%"
+  ]
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "w1440": {
+  "screens": 15.46,
+  "steps": 30,
+  "manifestOverlapSteps": 0,
+  "threadSerifSteps": 28,
+  "threadAnyTextSteps": 28,
+  "threadCrossedLines": 194,
+  "nearEmpty60": 9,
+  "proseFree25": 5,
+  "blank": 2,
+  "meanWords": 111,
+  "sub12HtmlPairs": 0,
+  "visibleWords": 2045,
+  "monoPct": 24.1
+ },
+ "w1512": {
+  "screens": 15.4,
+  "steps": 30,
+  "manifestOverlapSteps": 0,
+  "threadSerifSteps": 29,
+  "threadAnyTextSteps": 29,
+  "threadCrossedLines": 186,
+  "nearEmpty60": 9,
+  "proseFree25": 6,
+  "blank": 1,
+  "meanWords": 113,
+  "sub12HtmlPairs": 0,
+  "visibleWords": 2049,
+  "monoPct": 24.3
+ },
+ "w1280": {
+  "screens": 15.53,
+  "steps": 31,
+  "manifestOverlapSteps": 0,
+  "threadSerifSteps": 30,
+  "threadAnyTextSteps": 30,
+  "threadCrossedLines": 198,
+  "nearEmpty60": 9,
+  "proseFree25": 4,
+  "blank": 1,
+  "meanWords": 113,
+  "sub12HtmlPairs": 0,
+  "visibleWords": 2053,
+  "monoPct": 24.4
+ }
+}

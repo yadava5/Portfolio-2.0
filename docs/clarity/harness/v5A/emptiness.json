@@ -1,0 +1,50 @@
+{
+ "w1512": {
+  "nearEmpty": 10,
+  "corridor": 9,
+  "starved": 1,
+  "starvedAt": [
+   "491:50w/49%"
+  ]
+ },
+ "w1440": {
+  "nearEmpty": 10,
+  "corridor": 6,
+  "starved": 4,
+  "starvedAt": [
+   "450:50w/52%",
+   "4500:51w/40%",
+   "8550:0w/44%",
+   "11700:50w/43%"
+  ]
+ },
+ "w1280": {
+  "nearEmpty": 8,
+  "corridor": 6,
+  "starved": 2,
+  "starvedAt": [
+   "400:50w/54%",
+   "4000:51w/43%"
+  ]
+ },
+ "w390": {
+  "nearEmpty": 1,
+  "corridor": 0,
+  "starved": 1,
+  "starvedAt": [
+   "6160:36w/100%"
+  ]
+ },
+ "w320": {
+  "nearEmpty": 5,
+  "corridor": 0,
+  "starved": 5,
+  "starvedAt": [
+   "5120:56w/91%",
+   "6080:35w/100%",
+   "6400:45w/100%",
+   "9280:24w/85%",
+   "14080:60w/100%"
+  ]
+ }
+}
