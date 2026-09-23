@@ -2034,8 +2034,18 @@ body{font-synthesis:none}
 /* the identity line: the largest type on the first screen after the name,
    and set above the 18px epigraph so the first fixation after the nameplate
    lands on what he does, not on a poem. */
+/* 26ch, AND THE RAIL IS THE REASON. The line the thread descends on is
+   the name's own middle dot, so it comes down the word gap at 50% of the
+   viewport — which is where a 30ch measure was ending: the stroke ran
+   through this sentence at 1512, 1440 and 1280. The rail does not move for
+   the text here, because that mark IS the nameplate's punctuation; the
+   text takes a measure that ends left of it instead, and the descent gets
+   a clean gutter. Measured right edges at 26ch — 742 / 706 / 607 against a
+   thread at 771 / 736 / 655. It reads as the better setting anyway: 26ch
+   at 27.5px is inside the 45–75 character band for a lead sentence, and
+   the old 30ch was the widest thing on the first screen after the name. */
 .identity{font-family:var(--body); font-size:clamp(1.24rem, 2.05vw, 1.72rem);
-  line-height:1.34; max-width:30ch; margin-top:1.5rem; color:var(--ink)}
+  line-height:1.34; max-width:26ch; margin-top:1.5rem; color:var(--ink)}
 .engrows li b, .engrows li b a{font-size:var(--fs-note); font-family:var(--body)}
 .engrows a[href^="mailto"]{font-family:var(--mono); font-size:var(--fs-small);
   letter-spacing:.02em; word-spacing:normal}
@@ -2080,6 +2090,20 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     min-height:0; align-items:flex-start;
     padding-top:7vh; padding-bottom:25vh}
   .bpath{justify-content:flex-start}
+  /* ¶01 IS THE ONE STOP NOBODY ARRIVES AT, so the rule above is inverted
+     for it and its void moves from the trail to the lead. The reason is
+     the rail, not the rhythm: the run's marker is seated at the reading
+     line, `y + vh*0.55`, and at scroll 0 that is a fixed point on the
+     screen. The nameplate has to meet it there, because the tick and the
+     bead ARE the middle dot in "Ayush · Yadav" — the rail's first mark is
+     a piece of the typography. Holding ¶01 to a 7vh lead put the name at
+     267..443 against a marker at 540, and the signature broke: the bead
+     came to rest a hundred pixels below the name it belongs to.
+     THE SECTION IS EXACTLY AS TALL AS IT WAS. 7 + 30 + content + 9 is the
+     same as 7 + 14 + content + 25; the void is re-seated, not re-added, so
+     this costs the corridor budget nothing and Gate H is unmoved. */
+  .b1{padding-bottom:9vh}
+  .b1 .beat-inner{padding-top:30vh}
   /* ¶08 keeps a long approach: dusk falls across this corridor (FLIP_POS
      0.78) and it is the one stretch that should feel like distance. */
   .b6{padding-bottom:36vh}
@@ -3262,41 +3286,42 @@ function buildThread() {
     : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24, 24];
   /* RUN_BEATS, not beats.length: the thread is run 042's line and it stops
      at the gate. ¶13 is the morning after, and nothing carries into it. */
-  /* THE OPENING ANCHOR CLEARS THE ROLE LINE, and this is a clearance rather
-     than a table entry on purpose. stx[0] puts the thread at 50% of the
-     viewport, which used to be empty on the first screen and is not any
-     more: the role line landed under the nameplate and the corridor cut
-     raised the whole block, so the stroke ran straight down through it.
-     Measured at 1512/1440/1280 with the dip already on, the thread left
-     183/137/74 canvas pixels of ink on `.identity` at alpha 41 — and a
-     ghost through the one sentence that says what he does is still through
-     it. Both of beat 0's anchors sat inside that band (0.42h and 0.52h),
-     so both move.
+  /* THE LINE STARTS INSIDE THE NAME, and it is the name's own middle dot.
+     stx[0] = 50 puts x at the word gap; this is the y that puts the tick
+     and the bead in the gap rather than under it.
 
-     DERIVED FROM THE BLOCK, NOT RE-TABLED. stx is the rail's SHAPE and it
-     stays what it was — check-beat-tables reads its length, and a magic
-     57 here would be a number nobody could re-derive when the copy grows a
-     line. This asks the opening block how wide it actually is and takes the
-     gutter to its right, never closer than 46px to the edge and never left
-     of where stx[0] already put it. The line converges onto the rail at the
-     first corridor, which is a whole screen of travel to do it in. */
-  const openX = mobile
-    ? RAIL_X_MOBILE
-    : Math.min(
-        vw - 46,
-        Math.max(
-          (stx[0] / 100) * vw,
-          Math.max(
-            0,
-            ...[...document.querySelectorAll(".b1 .identity, .b1 [data-nameplate], .b1 .borrowed, .b1 .cue")]
-              .map((el) => el.getBoundingClientRect().right)
-          ) + 34
-        )
-      );
+     IT IS READ OFF THE NAMEPLATE, NOT OFF A FRACTION OF THE BEAT. The old
+     `beats[0].h * 0.42` landed on the name only because ¶01 was 118vh
+     tall: at 1512×982 that put the anchor at y 487 inside a name spanning
+     467..600. The corridor cut took ¶01 to `min-height:0` with declared
+     padding, ¶01 became 1048px, and the same 0.42 resolved to y 440 —
+     below a name now spanning 267..443. Nothing about the anchor changed;
+     the thing it was a fraction OF did. So it is bound to the object it
+     has always been a mark on, and a later height change cannot move it
+     off the name again. absTop, never a client rect: the plate carries an
+     entrance transform and a rail terminated on a rect bakes in whichever
+     frame of it was mid-flight when the geometry was last built.
+
+     THE TICK IS A CONSTANT, NOT A REMAINDER. Its length is
+     `seat - anchors[0].y`, where the seat is where the bead comes to rest
+     at scroll 0 — `y + vh*0.55`, the reading line. Deriving the anchor from
+     the name's own height instead made the tick a leftover of two unrelated
+     numbers, and it measured 36 / 21 / 7px at 1512 / 1440 / 1280: at 1280
+     the run's first mark had all but vanished. So the start is seated a
+     fixed 54px above the bead — today's measured tick — and the clamp is
+     what keeps it honest, holding the mark inside the name at any viewport
+     where the two could otherwise drift apart. */
+  const npEl = document.querySelector(".b1 [data-nameplate] h1, .b1 h1");
+  const TICK = 54; /* px · the length of the mark in the name gap */
+  const firstY = npEl
+    ? clamp(vh * 0.55 - TICK,
+            absTop(npEl) + npEl.offsetHeight * 0.12,
+            absTop(npEl) + npEl.offsetHeight * 0.75)
+    : beats[0].top + beats[0].h * 0.42;
   const anchors = [];
-  anchors.push([openX, beats[0].top + beats[0].h * 0.42]); /* under the name */
+  anchors.push([mobile ? RAIL_X_MOBILE : (stx[0] / 100) * vw, mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
   for (let i = 0; i < RUN_BEATS; i++) {
-    const b = beats[i], x = mobile ? RAIL_X_MOBILE : i === 0 ? openX : (stx[i] / 100) * vw;
+    const b = beats[i], x = mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw;
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
     if (i < RUN_BEATS - 1) anchors.push([lerp(x, mobile ? RAIL_X_MOBILE : (stx[i + 1] / 100) * vw, 0.5), b.top + b.h * 0.95]);
