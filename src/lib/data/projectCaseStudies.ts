@@ -332,9 +332,37 @@ const APPLIED_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SHA}`;
    `305 passed`, `0 skipped`. CI rather than a local venv for the reason
    Cadence's twin gives — the workflow is where the zero is proved instead
    of asserted. Confirmed on the remote before this line was written:
-   71b74f8 resolves, and main is 4 ahead of it, 0 behind. */
-const APPLIED_SUITE_SHA = "71b74f8";
+   71b74f8 resolves, and main is 4 ahead of it, 0 behind.
+
+   2026-09-23: re-measured at `0285675`, Applied's public main head, off
+   backend-ci run 34429395505 (2026-09-10): 3,747 passed, 0 skipped, 13
+   xfailed. 305 was true at 71b74f8 and is now history, so the count and
+   its commit move together again. Ancestry asserted, not assumed:
+   `git merge-base --is-ancestor 0285675c origin/main` exits 0, and
+   `git cat-file -e 0285675c:backend/tests` resolves. */
+const APPLIED_SUITE_SHA = "0285675";
 const APPLIED_SUITE_TREE = `https://github.com/yadava5/applied/tree/${APPLIED_SUITE_SHA}`;
+/* APPLIED_EVAL — where the classifier gate was MEASURED, 2026-09-22.
+   It gets its own const rather than borrowing APPLIED_SHA, which still
+   stands under receipts 01-03 and 06-09: those are SOURCE audits done at
+   `36a2f54` and nobody re-read them here, so moving one pin would restate
+   eight findings as if they had been re-taken. Same reason the suite pin
+   is separate from this one: an eval and a suite are two measurements.
+   Measured by re-running the rules v3 gate at this commit (exit 0,
+   macro-F1 0.9896, 1 misclassified) and read again off backend-ci run
+   34429395505, which prints the same line twice. */
+const APPLIED_EVAL_SHA = "0285675";
+const APPLIED_EVAL_BLOB = `https://github.com/yadava5/applied/blob/${APPLIED_EVAL_SHA}`;
+/* APPLIED_EXPORT — where the browser export SCRIPT is read, 2026-09-23.
+   Separate again, and for a reason that is not bookkeeping: the outcome
+   row below used to link `ml/browser/site` at `36a2f54`, and the 22.8 MB
+   `model.onnx` in that tree still downloads. Applied withdrew those
+   weights on 2026-08-15 because they were fitted partly on a real
+   mailbox, so this file stopped serving the pin that re-publishes them.
+   `git cat-file -e 0285675c:ml/browser/site/model/onnx/model.onnx` fails
+   at this commit, and `ml/browser/export_onnx.py` resolves. */
+const APPLIED_EXPORT_SHA = "0285675";
+const APPLIED_EXPORT_BLOB = `https://github.com/yadava5/applied/blob/${APPLIED_EXPORT_SHA}`;
 const VISUAL_ASSIST_SHA = "22ebdaa";
 const VISUAL_ASSIST_BLOB = `https://github.com/yadava5/VisualAssist/blob/${VISUAL_ASSIST_SHA}`;
 const VISUAL_ASSIST_TREE = `https://github.com/yadava5/VisualAssist/tree/${VISUAL_ASSIST_SHA}`;
@@ -500,14 +528,18 @@ const GLYPH_EVAL_SHA = "97de736";
 const GLYPH_EVAL_BLOB = `https://github.com/yadava5/glyph/blob/${GLYPH_EVAL_SHA}`;
 
 /** Backend CI run that executes the blocking v3 classifier gates (public).
- *  Re-read 2026-07-26 via `gh api .../actions/runs/24665061332/jobs`: the
- *  run is Backend CI on 6a7c230 (2026-04-20) and its step list carries
- *  BOTH gates — "Run classifier non-regression gate (rules v3)" and
- *  "Run hybrid benchmark gate (v3 deterministic)" — each `success`. It is
- *  an older commit than the pin above, so the row's label says its date
- *  out loud rather than letting the link imply it ran at `36a2f54`. */
+ *  Was run 24665061332, Backend CI on 6a7c230 (2026-04-20), re-read
+ *  2026-07-26 via `gh api`: its step list carried BOTH gates — "Run
+ *  classifier non-regression gate (rules v3)" and "Run hybrid benchmark
+ *  gate (v3 deterministic)" — each `success`, at macro-F1 0.9791.
+ *
+ *  2026-09-23: moved to run 34429395505, Backend CI on `0285675`
+ *  (2026-09-10), which runs the same two gate steps and prints macro-F1
+ *  0.9896 with 1 misclassified in each. The gate figure moved, so the run
+ *  that proves it moved with it; the old run is named here rather than
+ *  linked, because nothing on the page claims its number any more. */
 const APPLIED_CI_RUN =
-  "https://github.com/yadava5/applied/actions/runs/24665061332";
+  "https://github.com/yadava5/applied/actions/runs/34429395505";
 
 export const projectCaseStudies: ProjectCaseStudy[] = [
   {
@@ -521,7 +553,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     role: "Designer and sole engineer — web app, backend, and classifier",
     timeframe: "2026-02 to Present",
     filed: "2026-02",
-    verified: "2026-08",
+    verified: "2026-09",
     status: "shipped",
     /* Every clause traces: the beta cap to the access boundary row (which
        cites Google's restricted-scope rule and the two surfaces that need
@@ -565,7 +597,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     architecture: {
       summary:
-        "Gmail hands over the message, the classifier names it and the body goes no further, Postgres files the verdict under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers run outside it, in the browser export, because they do not fit the serverless slot.",
+        "Gmail hands over the message, the classifier names it and the body goes no further, Postgres files the verdict under an identity the database itself checks, and a Next.js dashboard reads it back. One backend package serves the whole path; the two heavier classifier layers are not deployed anywhere a reader can open, because they do not fit the serverless slot. They ran in the int8 browser export until its weights were withdrawn on 2026-08-15, and they run in the evaluation harness today.",
       /* The true topology is a straight pipeline, so fig. 2 draws one:
          inbox ⟶ fetch ⟶ classify ⟶ store ⟶ dashboard. It had one
          off-spine branch — the SwiftUI desktop app — until 2026-08-15.
@@ -597,7 +629,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           id: "classifier",
           label: "Classifier",
-          detail: "Rules on the hosted path; e5 + SetFit in the export",
+          detail: "Rules on the hosted path; e5 + SetFit in evaluation only",
           kind: "ml",
         },
         {
@@ -725,12 +757,12 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "run",
           value:
-            "2026-03-03 — deterministic hybrid profile, committed as baseline_hybrid_v3.json",
+            "2026-09-07 — rules profile, re-recorded as baseline_rules_v3.json; the deterministic hybrid file repeats it",
         },
         {
           label: "repro",
           value:
-            "python -m jobtracker.scripts.evaluate_classifier --mode hybrid --dataset data/evaluation/classifier_eval_v3.jsonl --hybrid-profile deterministic",
+            "python -m jobtracker.scripts.evaluate_classifier --mode rules --dataset data/evaluation/classifier_eval_v3.jsonl --baseline data/evaluation/baseline_rules_v3.json --tolerance 0.001 --min-macro-f1 0.95",
         },
       ],
     },
@@ -787,9 +819,9 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "The backend suite runs at the pinned commit: 305 tests passed, 0 skipped, under the test/null-keyring environment. It read 278 passed and 10 skipped until 2026-08-03. The +27 is 10 CORS origin-policy tests, 7 benchmark-guard tests, and the 10 Postgres RLS tests that used to be the skips — those now provision their own postgres:16 rather than waiting on a database URL nobody supplied.",
+          "The backend suite runs at the pinned commit: 3,747 tests passed, 0 skipped, and 13 expected failures, under the test/null-keyring environment. It read 305 passed and 0 skipped at 71b74f8 until 2026-09-23. The 26-test Postgres RLS module sits inside that total, and the rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and are never added together.",
         method:
-          "`pytest tests -q` in backend-ci run 31152038153 at the pinned head. The Postgres RLS module is included in that count and no longer skips: it starts its own postgres:16 through testcontainers instead of waiting on a database URL nobody supplied.",
+          "`pytest tests -q --cov=jobtracker` in backend-ci run 34429395505 at the pinned head, read off the public run log rather than a local venv. The Postgres RLS module is included in that count and does not skip: it starts its own postgres:16 through testcontainers instead of waiting on a database URL nobody supplied. The 13 expected failures are named as xfail rather than folded into the pass count, because an expected failure is not a pass.",
         artifacts: [
           {
             label: `applied @ ${APPLIED_SUITE_SHA} · backend/tests`,
@@ -798,26 +830,27 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         ],
         /* Was "2026-08-02" — one day BEFORE the 2026-08-03 measurement the
            claim above describes, so the receipt dated itself earlier than
-           the thing it reports. Now the date of the run it actually cites. */
-        date: "2026-08-07",
+           the thing it reports. Now the date of the run it actually cites,
+           which on 2026-09-23 became run 34429395505 of 2026-09-10. */
+        date: "2026-09-10",
         visibility: "public",
       },
       {
         claim:
-          "Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791.",
+          "The rules v3 gate and the deterministic hybrid v3 gate both pass at the pinned commit on the 96-message v3 set: macro-F1 0.9896, 1 message misclassified out of 96. The deterministic profile disables the learned layers, so both files are measuring the rules stage. Printed to three decimals the figure is 0.990.",
         method:
-          "committed baseline, deterministic profile — protocol in the method slip",
+          "committed baseline, re-recorded 2026-09-07 under the rules profile, re-run at the pinned head on 2026-09-22 (exit 0 against its own 0.001 tolerance) and read again off backend-ci run 34429395505, whose two gate steps print the same line — protocol in the method slip",
         artifacts: [
           {
-            label: `applied @ ${APPLIED_SHA} · baseline_hybrid_v3.json`,
-            href: `${APPLIED_BLOB}/backend/data/evaluation/baseline_hybrid_v3.json`,
+            label: `applied @ ${APPLIED_EVAL_SHA} · baseline_rules_v3.json`,
+            href: `${APPLIED_EVAL_BLOB}/backend/data/evaluation/baseline_rules_v3.json`,
           },
           {
-            label: "backend-ci run, 2026-04-20",
+            label: "backend-ci run, 2026-09-10",
             href: APPLIED_CI_RUN,
           },
         ],
-        date: "2026-03-03",
+        date: "2026-09-10",
         visibility: "public",
       },
       {
@@ -909,25 +942,21 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
       {
         claim:
-          "All three classifier layers are built to run in a browser, as an int8 ONNX export of the same model. That build is separate from the hosted web app, and its verdict is not the one getapplied.vercel.app returns.",
+          "In-browser inference was built for all three classifier layers: an int8 ONNX export of the same model, 90 to 23 MB, served by transformers.js. That build was separate from the hosted web app, and its verdict was never the one getapplied.vercel.app returns. Its weights were withdrawn on 2026-08-15 because they were fitted partly on a real mailbox, so the size is an attested figure rather than a reproducible one. The export script still ships.",
         method:
-          "ported the local classifier and exported it quantized; the export script and the browser build it produces are both inspectable",
+          "ported the local classifier and exported it quantized; the sizes are the ones Applied pins as literals in scripts/readme_facts.py, 90,362,391 bytes fp32 and 22,843,695 bytes int8, measured 2026-08-03. The export script is linked at a commit AFTER the weights were removed, so following this row cannot re-publish them",
         artifacts: [
           {
-            label: `applied @ ${APPLIED_SHA} · ml/browser/site/`,
-            href: `${APPLIED_TREE}/ml/browser/site`,
-          },
-          {
-            label: `applied @ ${APPLIED_SHA} · ml/browser/export_onnx.py`,
-            href: `${APPLIED_BLOB}/ml/browser/export_onnx.py`,
+            label: `applied @ ${APPLIED_EXPORT_SHA} · ml/browser/export_onnx.py`,
+            href: `${APPLIED_EXPORT_BLOB}/ml/browser/export_onnx.py`,
           },
         ],
-        date: "2026-07-26",
+        date: "2026-09-23",
         visibility: "public",
       },
     ],
     notClaiming: [
-      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the int8 browser export; they used to run on the desktop client too, and that client was de-scoped and deleted on 2026-08-12.",
+      "I’m not claiming the hosted app runs the full three-layer classifier. On Vercel it runs the rules layer only — deliberately, because the model stack does not fit the function slot. Embeddings and SetFit run in the evaluation harness only. They ran in the int8 browser export until its weights were withdrawn on 2026-08-15, and on the desktop client until that client was de-scoped and deleted on 2026-08-12.",
       "I’m not claiming Applied is generally available. Connecting your own Gmail is invite-only, and the reason is not positioning: gmail.readonly is a Google restricted scope, so until the app clears Google’s OAuth verification and an independent security assessment it may authorise at most 100 test users, each added by address on the consent screen. What needs no invite and no account is the demo — the whole interface over synthetic mail — and the import path, which classifies a Google Takeout export on the reader’s own device.",
       "This bullet used to say CI could not prove the RLS policies enforce, because the Postgres suite skipped unless a live database URL was supplied and no workflow supplied one. That stopped being true on 2026-07-31 and the disclaimer outlived it. backend-ci.yml now runs an rls-postgres job against a postgres:16 service, sets JOBTRACKER_TEST_PG_ADMIN_URL, and fails if that URL is missing rather than letting the module skip quietly — so all ten tests execute on every push. A stale disclaimer is the same broken receipt as a stale boast, and the harder one to catch, because nobody audits a claim that costs its author something.",
       "I’m not citing the repository’s README or docs/WEB_ARCHITECTURE.md as evidence for the web app. At the commit this file pins, both described apps/web as an unwired scaffold with a placeholder dashboard — they were behind the code, and this file cites the code. The README has since been rewritten as the product’s own record; it is not back-cited here, because these receipts are pinned and a pin is not re-read to suit a later document.",
@@ -978,6 +1007,46 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-15",
         kind: "note",
         text: "The Hugging Face Space that hosted the full three-layer classifier went private today, so every link to it returns 401. The references are gone from this file rather than left to fail in a reader’s browser, and the prose no longer offers a hosted demo it cannot deliver. What stands in its place is the receipt the claim always rested on: the browser build itself, ml/browser/site at the pinned commit, where index.html, app.js and the 22.8 MB int8 weights sit together and can be read. Nothing about the export is retracted; the place it was hosted stopped being public, and that is a smaller fact than the one the row asserts.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The rule count read 201. Recounted at Applied’s public main head 0285675 by walking the AST of PATTERNS in backend/jobtracker/classifier/rules.py, the same way Applied’s own scripts/readme_facts.py counts it: 129 strong, 31 weak, 60 negative, 220 scored patterns across seven categories. The 48 veto patterns are excluded, because a veto scores nothing and instead caps a category at zero, and folding them in would stop the breakdown summing to the total. 201 was true at 36a2f54, where the same walk gives 106 strong, 26 weak and 69 negative; the 2026-08-02 note below recorded it correctly and stays exactly as written. Rules were added through #523 on 2026-09-09. Nothing is retracted: the tree grew, and the number moves with the commit it was counted at.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "Receipt 05 read “Rules and deterministic hybrid v3 gates both passed on 96 samples with macro-F1 0.9791”, with 2 of 96 misclassified, pinned at 36a2f54. It was true there. The baseline was re-recorded on 2026-09-07 and the gate now reads macro-F1 0.9896 with 1 misclassified out of 96, which prints as 0.990 at three decimals. Re-run at 0285675 on 2026-09-22 it exits 0 against its own 0.001 tolerance, and public backend-ci run 34429395505 prints the same line twice, once for the rules gate and once for the deterministic hybrid gate. The receipt is re-pinned IN PLACE rather than appended, so the anchor #v-jobtracker-5 that the home page and the evidence manifest point at does not move; the old value is quoted here instead of being deleted there. Its pin is a new one, APPLIED_EVAL_SHA, because the receipts audited at 36a2f54 were not re-read and must not be restated as if they had been. The artifact also changes from baseline_hybrid_v3.json to baseline_rules_v3.json, which is the file that decides the figure; the deterministic hybrid file repeats it, because that profile disables the learned layers.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "Receipt 04 read 305 passed with 0 skipped, measured at 71b74f8 in backend-ci run 31152038153. True there. Re-read at 0285675 off backend-ci run 34429395505 of 2026-09-10: 3,747 passed, 0 skipped, 13 expected failures. The zero holds, which is still the part worth reading, and the 13 xfails are named beside the total rather than folded into it, because an expected failure is not a pass. The Postgres row-level-security module is 26 tests now and is inside that total; the separate rls-postgres job runs the same module again, so the two counts are one set of tests seen twice and are not summed. The receipt is re-pinned IN PLACE, keeping #v-jobtracker-4, and APPLIED_SUITE_SHA moves with the number, as it has at every earlier step: 182 ⟶ 271 ⟶ 278 ⟶ 305 ⟶ 3,747, each true at the commit beside it. The row also drops its breakdown of the old +27, which described a move between two commits neither of which is the pin any more.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The evidence page put Applied’s line coverage at 53 percent, from 8,210 statements with 3,865 missed at 71b74f8. At 0285675, in backend-ci run 34429395505, the same `pytest tests -q --cov=jobtracker` reports 9,786 statements, 3,054 missed, 69 percent. Every per package sub figure moved with it and every one of them is restated rather than left standing beside the new total: cloud 93.0, auth 89.6, database 80.8, classifier 78.0, credentials 67.4, email_clients 42.7, scripts 40.0 over 2,434 statements, tracking 28.9, and the package root 92.2. The old row named cloud at 82.2, auth at 80.5, database at 76.6 and jobtracker/scripts at 2,240 statements and 33.7 percent; those were true of the 53 percent run and are kept here as its record. The under claim is the interesting part: this file had been publishing a figure 16 points BELOW the work, which no gate could catch, because nothing goes red when a number is too modest.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The evidence manifest’s 3-layer classifier row said all three layers “run on the desktop app and in the browser Space”. Both halves were false when read today. The desktop client was de-scoped on 2026-08-12 and deleted, which this register recorded at the time without the evidence row moving with it, and the Hugging Face Space went private on 2026-08-15, which the note below records. The row now says what is true: the hosted web app runs the rules layer alone, and the learned layers are not deployed on any surface a reader can open. This is the second time a desktop claim outlived the desktop; the first was caught on this file, and the copy of it on /evidence/ was missed for five weeks because no gate reads across the two.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "Four places described the int8 browser export in the present tense: the architecture summary, fig. 2’s classifier node, the boundary row about embeddings and SetFit, and outcome 02. Nothing public has run that export since its weights were withdrawn on 2026-08-15, so the present tense was claiming a live surface. All four move to the past tense the résumé uses: in-browser inference was built, an int8 ONNX export of 90 to 23 MB served by transformers.js, measured on 2026-08-03. The sizes are unchanged and not retracted; Applied pins them as literals in scripts/readme_facts.py at 90,362,391 bytes fp32 and 22,843,695 bytes int8, and its own README says the figure is attested rather than reproducible and should be described that way wherever it is cited. That is what this file now does. Today the two heavier layers run in the evaluation harness and nowhere else.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The home page’s Applied lede said the app reads your mail “on a device you control”. That is false for the product this file documents. The Gmail connected app classifies on Vercel, by design: classifier/hybrid.py short circuits to the rules layer whenever deployment is cloud, which receipt 09 argues. In your own browser is the /import and /demo path, which runs the layer 1 rules port and nothing else, and the desktop client that made the phrase true was deleted on 2026-08-12. The same sentence said Applied “defers to you when it isn’t sure”, which is only part of the behaviour: the hosted pipeline queues a verdict between 0.70 and 0.85 for a person and sets aside anything below 0.70, except an ATS relayed verdict and a message retracting an offer already on the board. Both clauses are corrected on the page.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "Outcome 02 linked ml/browser/site at 36a2f54, and the 22.8 MB model.onnx in that tree still downloads today. Applied withdrew those weights on 2026-08-15 because they were fitted partly on a real mailbox, and removing them at its own head stops redistribution going forward. This file was undoing that: a pinned link is a permalink, so the row was re publishing the exact artifact the upstream project had pulled, and the 2026-08-15 note below sends a reader to it in as many words. The row’s artifact is now ml/browser/export_onnx.py at 0285675, a commit after the deletion, where `git cat-file -e 0285675c:ml/browser/site/model/onnx/model.onnx` fails and the export script resolves. The note below is NOT edited, because this register does not rewrite its own history; what it describes was true, and this entry is where the consequence is recorded. Scrubbing the weights from Applied’s git history is the upstream project’s decision and is not claimed here.",
       },
     ],
     /* Provenance strips carry the whole correction here. These rows are
@@ -1083,7 +1152,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/tree/${AUTOML_SHA}`,
     },
     summary:
-      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions — and a human approval gate holds every generated action before it alters the workflow.",
+      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions, and the generated training plan waits for a person’s approval every time before a run begins.",
     /* This aside was the last sentence of the private era, and it outlived
        it by a week. The repo went public on 2026-07-30: `repoPin` was set
        (which is what removed the PRIVATE REPOSITORY stamp), receipt 01 was
@@ -1216,7 +1285,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            its own words, so the claim now terminates at that file
            rather than at a metadata check nobody else can run. */
         claim:
-          "The platform is the public repo yadava5/ai-augmented-auto-ml-toolchain; its README titles it Agentic AutoML Platform and states the seven-phase lifecycle, the LangGraph and MCP core, and a human approval gate at every step.",
+          "The platform is the public repo yadava5/ai-augmented-auto-ml-toolchain; its README titles it Agentic AutoML Platform and states the seven-phase lifecycle, the LangGraph and MCP core, and a human approval gate at every step. At the pinned commit the code holds the training plan for a person’s approval every time, holds preprocessing steps it flags as risky, and has no agent path to deployment; a trained model registers without review, so “every step” overstates it.",
         method: "read at the pinned commit on the public repo",
         artifacts: [
           {
@@ -1415,6 +1484,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-08-08",
         kind: "erratum",
         text: "The tool count named the wrong noun, and this file has been under-claiming since 2026-07-30. “The server registers exactly twelve tools” was, and remains, true of mcpServer.ts: twelve registerTool call sites, one server, none anywhere else in the tree. What was wrong was presenting that as the platform’s tool surface. backend/src/services/llm/tools/ defines 44 tools across seven groups — preprocessing 14, cell 8, feature 6, training 6, data 4, package 3, UI 3, listed by name and de-duplicated with zero collisions — of which the MCP server registers the data and cell groups, the twelve; the other 32 are LLM function-calling definitions the LangGraph phases pass directly, and they are the preprocessing, feature-engineering and training lifecycle — the more substantial half of the surface, and the half the site omitted. The twelve reproduced at six refs, which is what made it convincing: a reproducible count of the wrong noun is still wrong. No document this site served ever said 44 before today — the résumé said “an MCP tool registry”, uncounted — so the site alone put a number on the surface, and the number it chose was the subset. Recorded as an erratum rather than a note because the fact never moved: the tool files at main’s head are byte-identical to trees months older, so all 44 were there when the twelve was counted, and the audit counted the subset and called it the registry. The pins now split by noun: e506c91 vouches for the twelve alone, and the 44 is counted at 5c5b762, main’s public head, which the evidence row pins and links. A first attempt at that pin named 5f8b7da instead — it resolves, its tool files are the same blobs, and it is the head of an imported gitlab/main-history branch with no common ancestor with main. Fetching a sha proves it exists, not that it is yours.",
+      },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "This site said a human gate stood at every step: the deck above said an approval gate holds “every generated action”, and the run’s station said seven phases with a gate on each. Re-derived from the code at 5e42233 rather than from the README that says it, the shape is narrower and more interesting. The training plan holds for a person every time, at propose_model, waiting on an approval prompt before any run begins. Preprocessing holds only on steps the agent itself flags as risky: drops, outlier handling and custom intents. Feature engineering is a selection turn, where a person picks among proposals, which is not the same act as approving one. Deployment has no agent tool at all and starts only from an authenticated route, so nothing deploys unless a person starts it. And one step runs with no review: a trained model registers on its own. Receipt 01 keeps the README’s sentence as a quotation, because quoting a source accurately is not the same as adopting its claim, and carries the code’s answer beside it. The résumé says “behind human-review gates”, which the code supports; “every step” did not.",
       },
     ],
     registryFig: {
@@ -2214,6 +2288,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "erratum",
         text: "1,185 became 1,186 within a day of the entry above, and the one extra test is worth more than the four surfaces it moved. Exercising the deployed app — signed in as the demo account, against the real API — found GET /api/tags answering 500 for every user: TagService selected t.\u0022createdAt\u0022 and t.\u0022updatedAt\u0022 from a table that has five columns and never had those two. git log dates the over-select to the commit that added the service, so tags have been unreachable through the API for the life of the feature. Its 28 unit tests passed throughout, and still pass with the bug deliberately reinstated, because their fixtures are hand-written objects that never reach Postgres — the same shape as the tagged-task failure this register already carries. The fix ships with a regression test that calls the service against the real schema in a real Postgres, which is the +1. Recorded here rather than folded into the entry above because the number the page published yesterday is not the number it publishes today, and a register that quietly restates itself is the failure it exists to prevent.",
       },
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The home page said Cadence packs 37 routes into one serverless function. It packs 36. Counted at the definition site rather than from memory: `git show 6d09ee4:api/index.ts`, the ROUTES array at :55-98, 36 entries, at a commit that `git merge-base --is-ancestor` puts on main. The claim about the Vercel function cap is untouched and still the point of the row; only the count was wrong. This is the second time the figure has drifted, and it drifted because nothing bound it: no check-figures entry names it, so there was no gate to go red, and a number with no gate is a number waiting to be stale. One is being added with the corrected value so it cannot drift a third time.",
+      },
     ],
     artifacts: [
       {
@@ -2450,7 +2529,13 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       "This file shows counts, schema shape, and architecture only; raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
       "The 1M+ record transforms are role-scope work with no public artifact — verifiable in interview, not on this page.",
     ],
-    corrections: [],
+    corrections: [
+      {
+        date: "2026-09-23",
+        kind: "erratum",
+        text: "The home page drew this work as one arrow chain: a legacy Laravel reporter into an ETL feed into a 37-month Tableau dashboard, and compliance 0% into 97%. Each figure is real and read off Miami\u2019s own systems, but the chain reads as a causal claim, and the rise is not mine to claim. Compliance was already near 90% by May 2025, before the June 2025 start, so the honest statement is the one the r\u00e9sum\u00e9 makes: a 37-month Tableau dashboard tracking code compliance across 61 projects, 0% in 2023 to 97% now. The arrows are broken and the numbers stay. Recorded here rather than quietly reworded because the defect was in the punctuation doing argumentative work, which is the kind a claim audit is least likely to catch: every figure in the sentence was true.",
+      },
+    ],
     ledger: {
       title: "master inventory — processed-output ledger",
       jsonPath: "/proof/master-inventory-ledger.json",

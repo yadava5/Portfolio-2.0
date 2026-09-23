@@ -85,8 +85,20 @@ const APPLIED_SHA = "36a2f54";
    278 tree with ten skips. One number, three commits, no gate reading
    both files. Re-measured off CI instead of a venv and both pins moved
    here together: backend-ci run 31152038153, `305 passed`, `0 skipped`.
-   `71b74f8` resolves publicly and main is 4 ahead of it, 0 behind. */
-const APPLIED_SUITE_SHA = "71b74f8";
+   `71b74f8` resolves publicly and main is 4 ahead of it, 0 behind.
+
+   2026-09-23: 305 @ `71b74f8` → 3,747 @ `0285675`, re-read off backend-ci
+   run 34429395505 (2026-09-10). 0 skipped holds; 13 expected failures are
+   named beside the total rather than folded into it. `0285675` is an
+   ancestor of origin/main, asserted with `git merge-base --is-ancestor`
+   rather than inferred from the sha resolving. */
+const APPLIED_SUITE_SHA = "0285675";
+/* The classifier-gate figure is pinned SEPARATELY from both of the above.
+   `APPLIED_SHA` still stands under the source audits done at `36a2f54`,
+   which nobody re-read, and the suite pin answers for a different
+   measurement. Same split as projectCaseStudies.ts, for the same reason a
+   count and its commit are one fact. */
+const APPLIED_EVAL_SHA = "0285675";
 const VISUAL_ASSIST_SHA = "22ebdaa";
 /* AutoML pin. This file used to hold `AUTOML_SHA = "e506c91"` mirroring
    projectCaseStudies.ts; it is gone because nothing here interpolates it any
@@ -199,12 +211,12 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "jobtracker-local-classifier",
     label: "3-layer local classifier",
     claim:
-      "Applied’s classifier is a 3-layer rules, embeddings, and SetFit path — all three run on the desktop app and in the browser Space; the hosted web app runs the rules layer alone.",
+      "Applied’s classifier is a 3-layer rules, embeddings, and SetFit path. The hosted web app runs the rules layer alone, and the two learned layers are not deployed on any surface a reader can open: the desktop client was removed on 2026-08-12 and the browser export’s weights were withdrawn on 2026-08-15.",
     source:
       "https://github.com/yadava5/applied/blob/36a2f54/docs/ML_STRATEGY.md",
     sourceLabel: `docs/ML_STRATEGY.md @ ${APPLIED_SHA}`,
     verification:
-      "ML strategy doc read against the backend source at the pinned commit; the hosted limit is the cloud short-circuit in classifier/hybrid.py, argued at case-file receipt 09.",
+      "ML strategy doc read against the backend source at the pinned commit; the hosted limit is the cloud short-circuit in classifier/hybrid.py, argued at case-file receipt 09. The deployment sentence is dated 2026-09-23 and was re-checked then, not read out of the pinned doc: this row said all three layers “run on the desktop app and in the browser Space” for five weeks after both stopped being true. apps/macos is not on main, and ml/browser carries no weights at 0285675.",
     visibility: "public",
     privacyBoundary: "No private email content is shown.",
     date: "2026-07-26",
@@ -215,18 +227,18 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "jobtracker-macro-f1",
-    label: "macro-F1 0.9791",
+    label: "rules macro-F1 0.9896",
     claim:
-      "Applied’s rules and deterministic hybrid v3 gates both passed on the 96-sample eval set with macro-F1 0.9791.",
+      "Applied’s rules v3 gate and its deterministic hybrid v3 gate both pass on the 96-sample v3 eval set with macro-F1 0.9896, 1 message misclassified out of 96. Both measure the rules stage, because the deterministic profile disables the learned layers.",
     source:
-      "https://github.com/yadava5/applied/blob/36a2f54/backend/data/evaluation/baseline_hybrid_v3.json",
-    sourceLabel: `baseline_hybrid_v3.json @ ${APPLIED_SHA}`,
+      "https://github.com/yadava5/applied/blob/0285675/backend/data/evaluation/baseline_rules_v3.json",
+    sourceLabel: `baseline_rules_v3.json @ ${APPLIED_EVAL_SHA}`,
     verification:
-      "Committed 2026-03-03 baseline (deterministic profile) plus the public backend-ci gate run of 2026-04-20. The artifact is byte-identical at the new pin — re-read 2026-07-26, same 96 samples, same 0.9791.",
+      "Baseline re-recorded 2026-09-07 under the rules profile, re-run at 0285675 on 2026-09-22 where it exits 0 against its own 0.001 tolerance, and printed twice by public backend-ci run 34429395505 on 2026-09-10 — once for the rules gate, once for the deterministic hybrid gate. This row read 0.9791 with 2 of 96 misclassified until 2026-09-23, measured at 36a2f54 and true there; the artifact also moves from baseline_hybrid_v3.json to baseline_rules_v3.json, which is the file that decides the figure. At three decimals it is 0.990.",
     visibility: "public",
     privacyBoundary:
       "The committed baseline JSON records metrics and label counts, not message content.",
-    date: "2026-03-03",
+    date: "2026-09-10",
     receipt: {
       label: "applied case file · receipt 05",
       href: "/projects/jobtracker/#v-jobtracker-5",
@@ -234,22 +246,22 @@ export const proofManifest: ProofManifestEntry[] = [
   },
   {
     id: "jobtracker-backend-tests",
-    label: "305 backend tests, 0 skipped",
+    label: "3,747 backend tests, 0 skipped",
     claim:
-      "The Applied backend suite passes 305 tests with nothing skipped, including the Postgres row-level-security module that used to skip and had never executed anywhere.",
+      "The Applied backend suite passes 3,747 tests with nothing skipped and 13 expected failures, including the 26-test Postgres row-level-security module that used to skip and had never executed anywhere.",
     /* Spelled out rather than interpolated from APPLIED_SUITE_SHA on purpose:
        check-proof-manifest.mjs reads `source` as a plain literal (:44) so it
        can compare the sha in the URL against the sha in `sourceLabel`, which
        IS a template. Interpolating both would make the two agree by
        construction and retire the check. */
-    source: "https://github.com/yadava5/applied/tree/71b74f8/backend/tests",
+    source: "https://github.com/yadava5/applied/tree/0285675/backend/tests",
     sourceLabel: `backend/tests @ ${APPLIED_SUITE_SHA}`,
     verification:
-      "`pytest tests -q` against this head on 2026-08-07, read off backend-ci run 31152038153 rather than a local venv: 305 passed, 0 skipped. The zero is the part worth reading. This entry previously said “278 passed, 10 skipped”, and named the skips as the Postgres RLS module, which “needs a live database URL and gets one from no workflow” — an accurate description of tests that had therefore never run: not in CI, not locally, not once. They were the only tests capable of demonstrating the isolation this project claims. They now start their own postgres:16 through testcontainers when JOBTRACKER_TEST_PG_ADMIN_URL is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. The remaining 17 of the 27-test increase are the CORS origin-policy suite (10) and the classifier-benchmark layer guard (7). Counts move with their commit: 271 at 36a2f54, 278 at 03fc5c4, 305 at a0d77a1 and 305 still here — each true when taken, and each taken at a commit a reader can open. The pin moved to 71b74f8 on 2026-08-07 without the count moving, because the case file was pinning the same 305 to 03fc5c4 — the 278 tree — and one number standing on three commits is the drift this project keeps re-learning.",
+      "`pytest tests -q --cov=jobtracker` against this head, read off backend-ci run 34429395505 of 2026-09-10 rather than a local venv: 3,747 passed and 0 skipped, with 13 expected failures named beside the total instead of folded into it, because an xfail is not a pass. The zero is still the part worth reading. The Postgres RLS module is 26 tests now and sits inside that total; the dedicated rls-postgres job runs the same module again on its own, so the two figures are one set of tests counted twice and must not be summed. This entry read “305 passed and 0 skipped” at 71b74f8 until 2026-09-23, and before that said “278 passed, 10 skipped”, and named the skips as the Postgres RLS module, which “needs a live database URL and gets one from no workflow” — an accurate description of tests that had therefore never run: not in CI, not locally, not once. They were the only tests capable of demonstrating the isolation this project claims. They now start their own postgres:16 through testcontainers when JOBTRACKER_TEST_PG_ADMIN_URL is absent, creating a non-superuser app role, which is the part that makes RLS mean anything since policies do nothing against a superuser. The remaining 17 of the 27-test increase are the CORS origin-policy suite (10) and the classifier-benchmark layer guard (7). Counts move with their commit: 271 at 36a2f54, 278 at 03fc5c4, 305 at a0d77a1, 305 again at 71b74f8 and 3,747 here at 0285675 — each true when taken, and each taken at a commit a reader can open. The pin moved to 71b74f8 on 2026-08-07 without the count moving, because the case file was pinning the same 305 to 03fc5c4 — the 278 tree — and one number standing on three commits is the drift this project keeps re-learning. The chain is completed rather than truncated, for the reason the 1,185 to 1,186 move taught: a trailing “now N here” beside a history that stops short is the stale claim a reader is least likely to check.",
     visibility: "public",
     privacyBoundary:
       "The suite runs with a null keyring; no private email or account data is involved.",
-    date: "2026-08-07",
+    date: "2026-09-10",
     receipt: {
       label: "applied case file · receipt 04",
       href: "/projects/jobtracker/#v-jobtracker-4",
@@ -469,16 +481,16 @@ export const proofManifest: ProofManifestEntry[] = [
     id: "coverage-measured",
     label: "coverage measured, five repos",
     claim:
-      "Line coverage is measured, not asserted, across five repositories: Glyph 88.9%, jetpack 68.1%, Cadence backend 67.1%, AutoML 67.4%, Applied 53%.",
+      "Line coverage is measured, not asserted, across five repositories: Glyph 88.9%, jetpack 68.1%, Cadence backend 67.1%, AutoML 67.4%, Applied 69%.",
     source:
       "https://github.com/yadava5/applied/blob/37dd805/.github/workflows/backend-ci.yml",
     sourceLabel: "applied .github/workflows/backend-ci.yml @ 37dd805",
     verification:
-      "Every figure produced by running the suite, each with its command recorded beside it: Glyph `tools/coverage.sh` (clang source-based instrumentation + llvm-cov), jetpack `mvn verify` (JaCoCo 0.8.13), Cadence `vitest --coverage` (v8), Applied `pytest --cov`. AutoML's 67.4% was measured during the provenance audit against a documented claim of 97% — that gap is why this row exists at all. The blended totals are the least informative way to read them and are broken out per package for exactly that reason: jetpack's SIMD `vector` package, which is the reason that project exists, is at 98.9% while an untested CLI argument parser drags the average to 68.1%; Applied's deployed `cloud` layer is at 82.2%, `auth` 80.5%, `database` 76.6%, while `jobtracker/scripts` is 2,240 statements at 33.7%. Applied's figure is read from its own CI, which runs `pytest tests -q --cov=jobtracker` on every push: 8,210 statements, 3,865 missed, 53%, from 305 tests with 0 skipped including all ten database-level RLS tests against a real postgres:16. The same command in the project's Python 3.11.14 venv on this machine gives 3,844 missed — 21 lines, 0.26pp — and the difference is the platform, not the test selection, since CI's run collects the identical 305. The CI number is the one quoted here because it is the one a reader can open. Three earlier readings disagreed (52.6%, 53.2%, 55.1%) and only one was right: the spread is the Python version, not the tests. Under PEP 649, 3.14 stops emitting line events for annotation-only class attributes, so the same tree measures 8,018 statements there against 8,210 on 3.11 — a 192-statement gap across 13 Pydantic models. This row previously said 54% and cited a README, which its own rule forbids, and its source field pointed at Glyph's coverage.sh — a different repository. An earlier claim of 61% excluding one-off scripts is dropped rather than restated: the loose exclusion reaches 60.50% only by removing 1,234 statements of code that CI invokes directly as gates, which is not a one-off script by any reading. Cadence's frontend reads 18.0% lines against 67.1% branches — the signature of logic that is unit-tested thoroughly with the components around it covered by Playwright, which a v8 pass over a Vitest run cannot observe; no line-coverage gate is set there, because such a gate pushes work toward shallow component tests that raise the number and find nothing. jetpack gates at 55% in CI, deliberately BELOW its measured 68.1%: a floor pinned at the current value turns every honest refactor red, and what it guards is a collapse — the coverage agent silently detaching and reporting near zero — not a two-point drift. Negative-tested by raising that floor to 95%: fails, exit 1.",
+      "Every figure produced by running the suite, each with its command recorded beside it: Glyph `tools/coverage.sh` (clang source-based instrumentation + llvm-cov), jetpack `mvn verify` (JaCoCo 0.8.13), Cadence `vitest --coverage` (v8), Applied `pytest --cov`. AutoML's 67.4% was measured during the provenance audit against a documented claim of 97% — that gap is why this row exists at all. The blended totals are the least informative way to read them and are broken out per package for exactly that reason: jetpack's SIMD `vector` package, which is the reason that project exists, is at 98.9% while an untested CLI argument parser drags the average to 68.1%; Applied's figure is read from its own CI, which runs `pytest tests -q --cov=jobtracker` on every push: at 0285675, in backend-ci run 34429395505 of 2026-09-10, 9,786 statements, 3,054 missed, 69%, from 3,747 tests with 0 skipped and 13 expected failures, including the 26-test Postgres row-level-security module against a real postgres:16. Broken out per package at that run, all of them, because a 53%-era sub-figure standing beside a 69% total is the more convincing lie: `cloud` 93.0%, `auth` 89.6%, `database` 80.8%, `classifier` 78.0%, `credentials` 67.4%, `email_clients` 42.7%, `scripts` 40.0% over 2,434 statements, `tracking` 28.9%, and the package root 92.2%. This row said 53% until 2026-09-23: 8,210 statements, 3,865 missed, from 305 tests at 71b74f8, with `cloud` at 82.2%, `auth` 80.5%, `database` 76.6% and `jobtracker/scripts` 2,240 statements at 33.7%. Every one of those was true at that commit and every one of them moved, and the direction is worth stating: the site had been publishing a figure sixteen points BELOW the work, which no gate can catch, because nothing goes red when a number is too modest. The 53% reading is kept in full rather than deleted. Measured at 71b74f8, the same command in the project's Python 3.11.14 venv on this machine gave 3,844 missed against CI's 3,865, 21 lines or 0.26pp, and the difference was the platform rather than the test selection, since that CI run collected the identical 305. The CI number is the one quoted here because it is the one a reader can open. Three earlier readings of that 53% disagreed (52.6%, 53.2%, 55.1%) and only one was right: the spread is the Python version, not the tests. Under PEP 649, 3.14 stops emitting line events for annotation-only class attributes, so at 71b74f8 the same tree measured 8,018 statements there against 8,210 on 3.11, a 192-statement gap across 13 Pydantic models. This row previously said 54% and cited a README, which its own rule forbids, and its source field pointed at Glyph's coverage.sh — a different repository. An earlier claim of 61% excluding one-off scripts is dropped rather than restated: at that commit the loose exclusion reached 60.50% only by removing 1,234 statements of code that CI invokes directly as gates, which is not a one-off script by any reading. Cadence's frontend reads 18.0% lines against 67.1% branches — the signature of logic that is unit-tested thoroughly with the components around it covered by Playwright, which a v8 pass over a Vitest run cannot observe; no line-coverage gate is set there, because such a gate pushes work toward shallow component tests that raise the number and find nothing. jetpack gates at 55% in CI, deliberately BELOW its measured 68.1%: a floor pinned at the current value turns every honest refactor red, and what it guards is a collapse — the coverage agent silently detaching and reporting near zero — not a two-point drift. Negative-tested by raising that floor to 95%: fails, exit 1.",
     visibility: "public",
     privacyBoundary:
       "No private data — coverage is computed from the projects' own test suites.",
-    date: "2026-08-03",
+    date: "2026-09-23",
   },
   {
     id: "openssf-scorecard",

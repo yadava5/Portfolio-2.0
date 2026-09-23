@@ -244,9 +244,18 @@ export const projects: Project[] = [
        dashboard. It does not. `classifier/hybrid.py` short-circuits after
        the rules layer whenever `deployment == "cloud"` — the torch /
        sentence-transformers / setfit stack does not fit the serverless
-       slot. All three layers are real; they run in the public Hugging
+       slot. All three layers are real; they ran in the public Hugging
        Face Space and in the int8 browser export. Case-file receipt 09
        argues the limit.
+
+       BROWSER EXPORT WITHDRAWN (2026-09-23, recording 2026-08-15). The
+       Space went private and the export's weights were withdrawn on the
+       same day, so the present tense above named two more surfaces no
+       reader can open. Today the two heavier layers run in the
+       evaluation harness and nowhere else. The MB pair is not retracted:
+       Applied pins it as a literal and calls it attested rather than
+       reproducible, and these fields now say it in the past tense the
+       résumé uses.
 
        DESKTOP DE-SCOPE (2026-08-15). These strings also said the heavier
        layers "run on the desktop app". The macOS client was de-scoped on
@@ -278,7 +287,7 @@ export const projects: Project[] = [
     shortDescription:
       "A Next.js job-search tool: connect Gmail, fetch your inbox, and a classifier turns it into a live dashboard of your real applications. Live in invite-only beta.",
     fullDescription:
-      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. The full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) is exported as an in-browser int8 ONNX model (22.8 MB, output-identical, zero servers); the hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
+      "Applied (formerly JobTracker) connects Gmail, fetches your inbox, and classifies it into a dashboard of your actual applications — with a pipeline snapshot, needs-review and ghosting flags, and a classify-and-train review queue, over Postgres row-level security the database itself enforces. In-browser inference was built for the full 3-layer hybrid classifier (rules -> e5 similarity -> a gated SetFit model) and measured on 2026-08-03: an int8 ONNX export, 90 to 23 MB, served by transformers.js, whose weights were withdrawn on 2026-08-15. The hosted web app runs the rules layer alone, because the model stack does not fit a serverless function.",
     techStack: [
       { name: "Next.js 16", color: "#000000" },
       { name: "TypeScript", color: "#3178c6" },
@@ -303,7 +312,7 @@ export const projects: Project[] = [
       "Dashboard of your real applications: pipeline snapshot, needs-review and ghosting flags, review queue",
       "DB-enforced Postgres RLS: non-BYPASSRLS role + per-request JWT-claims GUC; user_credentials FORCE'd",
       "Least-privilege gmail.readonly scope with encrypted, revocable refresh tokens",
-      "The full 3-layer hybrid (rules -> e5 -> gated SetFit) ships as an in-browser int8 ONNX classifier (22.8 MB, output-identical); the hosted app runs rules only",
+      "Built in-browser inference for the full 3-layer hybrid (rules -> e5 -> gated SetFit): an int8 ONNX export, 90 to 23 MB, served by transformers.js, measured 2026-08-03 and its weights withdrawn 2026-08-15; the hosted app runs rules only",
       "Live in invite-only beta: gmail.readonly is a Google restricted scope, so an unverified app may authorise at most 100 test users — the demo and the on-device import need no invite and no account",
     ],
     isPrivate: false,
@@ -313,7 +322,10 @@ export const projects: Project[] = [
         value: "3-layer hybrid — rules -> e5 -> SetFit (hosted: rules only)",
       },
       { label: "Access", value: "invite-only beta; demo + import need none" },
-      { label: "Runs in-browser", value: "int8 ONNX, output-identical" },
+      {
+        label: "Browser export",
+        value: "int8 ONNX, 90 to 23 MB, weights withdrawn 2026-08-15",
+      },
     ],
     proofIds: [
       "jobtracker-local-classifier",

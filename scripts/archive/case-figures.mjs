@@ -71,7 +71,7 @@ function figJobtracker() {
     [8, 216, "applied"],
     [128, 216, "interview"],
     [8, 276, "rejected"],
-    [128, 276, "needs-review"],
+    [128, 276, "held"],
   ];
   /* Eight marks, the run's own honest mix — no per-bucket count is
      claimed anywhere, so none is drawn. 3 applied · 2 interview ·
@@ -95,10 +95,11 @@ function figJobtracker() {
   }
   return {
     viewBox: "0 0 240 330",
-    alt: "The sorting line, settled: eight mail marks have fallen through the classifier’s three gates — rules, e5 similarity, gated SetFit — and rest in their four shelves: three filed applied, two interview, two rejected, and one deferred to needs-review at the clay gate.",
+    alt: "The sorting line, settled: eight mail marks have fallen through the classifier’s three gates — rules, e5 similarity, gated SetFit — and rest in their shelves: three filed applied, two interview, two rejected, and one held at the clay gate because no desk settled it.",
     caption:
       "fig. 1 — the sorting line, settled: rules ⟶ e5 similarity ⟶ gated setfit.",
-    captionNote: "the clay gate is where the model defers to review.",
+    captionNote:
+      "a held mark keeps its category and is only flagged; a person reviews it at 0.70 and up, and below that the hosted pipeline sets it aside.",
     disclosure:
       "a drawn plate, at rest — not a screenshot. the gates are the repository’s real three-layer path; the marks are illustrative and carry no counts. the measured numbers live in the receipts below.",
     body:
