@@ -114,8 +114,14 @@ function entryRow(entry, index) {
      an unstyled dump of Google Benchmark output, which is proof but is
      not a page. The case files already got this right ("download the
      raw ledger (json)"); /evidence was the surface that did not. */
+  /* Everything a source link can point at is a file or another site, and
+     neither is a page of this record room — so unless the click is a
+     download, which never navigates at all, it opens in its own tab and
+     leaves /evidence where the reader left it (check-links, G8). The arrow
+     is the separate, origin question and is unchanged. */
+  const held = link && !link.external && link.href.endsWith(".json");
   const source = link
-    ? `<a class="mv" href="${esc(link.href)}"${link.external ? ' target="_blank" rel="noopener noreferrer"' : ""}${!link.external && link.href.endsWith(".json") ? " download" : ""}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
+    ? `<a class="mv" href="${esc(link.href)}"${held ? " download" : ` target="_blank" rel="noopener${link.external ? " noreferrer" : ""}"`}>${esc(entry.sourceLabel)} ${link.external ? "↗" : "⟶"}</a>`
     : esc(entry.sourceLabel);
   const kind = entry.sourceKind
     ? `<span class="skind">${esc(SOURCE_KIND_NOTE[entry.sourceKind])}</span>`

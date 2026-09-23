@@ -218,33 +218,52 @@ if (!usingBuild) {
 }
 
 /* ── G8 · AND WHERE THE LINK OPENS ────────────────────────────────────
- * The glyph promises; `target` delivers. Until 2026-09-23 nothing on this
- * site carried a `target` at all, while the comment 150 lines above said a
- * wrong `↗` "promises a new tab and delivers a scroll" — so every ↗ on the
- * run was that broken promise, all 14 of them, and the gate that named the
- * defect could not see it.
+ * The glyph promises; `target` delivers. Until 2026-09-23 not one link on
+ * the RUN carried a `target` — the archive's off-origin links had carried
+ * one since it was generated — while THE GLYPH CONTRACT above said a wrong
+ * `↗` "promises a new tab and delivers a scroll". So all 26 of the run's
+ * `↗` were that broken promise, and the gate that named the defect could
+ * not see it.
  *
  * The owner's ruling widened it past the glyph: "opening systems card and
  * resume in the same tab makes it hard to go back". Nothing replaces the
- * run. That is about the BACK BUTTON, not about the origin, which is why
- * this rule and the glyph contract disagree on purpose about
- * `ayush-yadav.com/projects/glyph/` — it prints `⟶` because it stays on
- * this site, and it opens away because it is a different document.
+ * page a reader is reading.
  *
- * THE RULE on the run page, `<out>/index.html`:
- *   · anything matching `https?:`, `/projects…`, `/evidence…` or
- *     `resume.pdf` carries `target="_blank"` and a `rel` with `noopener`;
- *   · `#` fragments and `mailto:` carry NEITHER. A fragment that opens a
- *     second tab of the page you are already on is the defect in reverse,
- *     and `mailto:` hands off to a mail client — a blank tab is what is
- *     left behind when it does.
- *   · everything else — `proof/*.json`, which ship with `download` — is
- *     not judged. A rule has to be about a class a reader can name.
+ * AND A DOCUMENT THAT LEAVES INCLUDES A FILE. The first cut of this rule
+ * asked only about origin, and it sent the archive's own `résumé (pdf) ⟶`
+ * into the same tab, over the case file, with nothing but the browser's
+ * back button to undo it — which is the complaint the ruling started from,
+ * arriving by a second road. So the split is PAGES against FILES:
+ *
+ *   · a PAGE is an HTML route — `/`, `/projects/glyph/`, `/evidence/`,
+ *     anything resolving to a directory or to `.html`. It stays.
+ *   · a FILE is any other extension — `.pdf`, `.webp`, `.png`, `.json`.
+ *     It opens away, on this origin or any other.
+ *
+ * THE RULE on the run page, `<out>/index.html`: anything matching
+ * `https?:`, `/projects…`, `/evidence…` or `resume.pdf`, AND every
+ * same-origin file, carries `target="_blank"` and a `rel` with `noopener`.
+ * The run is the one page the whole site is a footnote to.
  *
  * THE RULE on the archive pages, everything else under `<out>/`: off-origin
- * links open away; archive-internal ones do not. The record room is a place
- * a reader walks around inside — case file ⟶ evidence ⟶ back to the working
- * paper — and a tab per step is how a reading turns into a taskbar.
+ * links and files open away; a page of this site does not. The record room
+ * is a place a reader walks around inside — case file ⟶ evidence ⟶ back to
+ * the working paper — and a tab per step is how a reading turns into a
+ * taskbar.
+ *
+ * BOTH, everywhere: `#` fragments and `mailto:` carry NEITHER. A fragment
+ * that opens a second tab of the page you are already on is the defect in
+ * reverse, and `mailto:` hands off to a mail client — a blank tab is what
+ * is left behind when it does.
+ *
+ * EXEMPT: anything carrying `download`. It does not navigate, so there is
+ * no page for a tab to replace. Today that is the run's two `proof/*.json`
+ * receipts and the case files' raw ledgers.
+ *
+ * THIS RULE AND THE GLYPH CONTRACT DISAGREE ON PURPOSE, about
+ * `ayush-yadav.com/projects/glyph/` and about every local plate. The arrow
+ * is about ORIGIN and says `⟶`; the target is about the BACK BUTTON and
+ * opens away. Neither is wrong, and the arrow contract is unchanged.
  *
  * Runs against the BUILT output, because `target` is an attribute a browser
  * acts on and the archive pages have no source to read: they are rendered
@@ -254,11 +273,37 @@ if (!usingBuild) {
 const NO_TARGET_SCHEME = /^(mailto:|tel:|#|javascript:|data:)/i;
 /* The three shapes a link that leaves the run can take, exactly as the
    ruling names them: an absolute URL, a document route on this site, and
-   the one-pager. */
+   the one-pager. Files are the fourth, and they are asked by extension
+   rather than by pattern — see isFile(). */
 const LEAVES_THE_RUN = [/^https?:/i, /^\/?(projects|evidence)/, /resume\.pdf/];
 const opensAway = (tag) => /\starget="_blank"/i.test(tag);
 const guarded = (tag) => /\srel="[^"]*\bnoopener\b[^"]*"/i.test(tag);
 const carriesTarget = (tag) => /\starget="/i.test(tag);
+/* `download` is the one attribute that makes the question moot: the link
+   never navigates, so no page is replaced and no tab is needed. */
+const downloads = (tag) => /\sdownload(?=[\s=>/])/i.test(tag);
+
+/**
+ * Is this href a FILE rather than a page of the site?
+ *
+ * Asked of the PATH, never of the raw href: `https://github.com/yadava5`
+ * ends in `.com/yadava5` and `https://getapplied.vercel.app` ends in
+ * `.app`, and a naive "does it end in a dot-something" calls both of them
+ * files. Resolving against the site first throws the host away, which is
+ * the only reading of "ends in an extension" that survives a bare domain.
+ */
+function isFile(href) {
+  let path;
+  try {
+    path = new URL(href, `${SITE}/`).pathname;
+  } catch {
+    return false; // unparseable: judged as a page, i.e. the stricter answer
+  }
+  const last = path.slice(path.lastIndexOf("/") + 1);
+  const dot = last.lastIndexOf(".");
+  if (dot <= 0) return false; // a directory, a bare route, or a dotfile
+  return last.slice(dot + 1).toLowerCase() !== "html";
+}
 
 /** the OPEN tag of every `<a href=…>` on a page, with the line it sits on */
 function openTags(file) {
@@ -282,8 +327,9 @@ const targetSeen = {
   pages: 0,
   leaving: 0,
   inert: 0,
-  offOrigin: 0,
+  away: 0,
   archiveInternal: 0,
+  exempt: 0,
 };
 
 if (usingBuild) {
@@ -297,21 +343,22 @@ if (usingBuild) {
         absolute && !inert && !(href === SITE || href.startsWith(`${SITE}/`));
       const where = isRun ? "the run" : "the archive";
 
-      if (isRun && !inert && LEAVES_THE_RUN.some((re) => re.test(href))) {
-        targetSeen.leaving += 1;
-        if (opensAway(tag) && guarded(tag)) continue;
-        targetFails.push({
-          page,
-          line,
-          href,
-          where,
-          want: 'target="_blank" rel="noopener"',
-          why: "it leaves the run — nothing may replace the page being read",
-        });
+      if (!inert && downloads(tag)) {
+        targetSeen.exempt += 1;
         continue;
       }
-      if (!isRun && offOrigin) {
-        targetSeen.offOrigin += 1;
+
+      /* The two clauses differ in one word. The run's set is "everything
+         that leaves the run", which includes this site's own pages; the
+         archive's is "everything that is not a page of this site". Files
+         are in both. */
+      const opensElsewhere =
+        !inert &&
+        (isFile(href) ||
+          (isRun ? LEAVES_THE_RUN.some((re) => re.test(href)) : offOrigin));
+
+      if (opensElsewhere) {
+        targetSeen[isRun ? "leaving" : "away"] += 1;
         if (opensAway(tag) && guarded(tag)) continue;
         targetFails.push({
           page,
@@ -319,7 +366,11 @@ if (usingBuild) {
           href,
           where,
           want: 'target="_blank" rel="noopener"',
-          why: "it leaves this site",
+          why: isFile(href)
+            ? "it is a file, not a page — it must not replace one"
+            : isRun
+              ? "it leaves the run — nothing may replace the page being read"
+              : "it leaves this site",
         });
         continue;
       }
@@ -388,22 +439,19 @@ if (usingBuild) {
 
   /* The floor the glyph contract taught: a gate that parsed nothing prints
      the same green line as a gate that parsed everything. */
-  if (
-    targetSeen.pages < 8 ||
-    targetSeen.leaving < 14 ||
-    targetSeen.offOrigin < 40
-  ) {
+  if (targetSeen.pages < 8 || targetSeen.leaving < 14 || targetSeen.away < 40) {
     console.error(
       `check-links FAILED — the new-tab rule judged only ${targetSeen.leaving} leaving links ` +
-        `on the run and ${targetSeen.offOrigin} off-origin links across ${targetSeen.pages} built pages,\n` +
+        `on the run and ${targetSeen.away} on the archive pages, across ${targetSeen.pages} built pages,\n` +
         "  which is fewer than this site has ever carried. That is a broken parse, not a clean build."
     );
     process.exit(1);
   }
   console.log(
     `check-links: the new-tab rule holds — ${targetSeen.leaving} links leave the run in a new tab, ` +
-      `${targetSeen.offOrigin} leave the archive, ${targetSeen.archiveInternal} stay inside it, ` +
-      `${targetSeen.inert} fragments and mailto links carry no target`
+      `${targetSeen.away} leave the archive, ${targetSeen.archiveInternal} stay inside it, ` +
+      `${targetSeen.inert} fragments and mailto links carry no target, ` +
+      `${targetSeen.exempt} download and never navigate`
   );
 } else {
   console.warn(

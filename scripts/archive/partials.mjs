@@ -148,13 +148,20 @@ export function masthead(runUrl, state) {
  * is addressed absolutely for the same reason the wordmark is: the 404
  * is served at addresses it cannot predict, and `/resume.pdf` stays on
  * this origin, so `check-links`'s glyph law gives it ⟶ rather than ↗.
+ *
+ * IT STILL OPENS IN A NEW TAB, and that is not a contradiction. The
+ * arrow answers "does this leave the site"; the target answers "does
+ * this replace the page you are reading". A PDF is a file, not a page of
+ * this record room, and the owner named the résumé when he said opening
+ * it in the same tab makes it hard to get back. The working paper beside
+ * it is a page, so it stays in the tab. (check-links, G8.)
  */
 export function colophon(runUrl) {
   const year = new Date().getFullYear();
   return `<footer class="colophon">
       <p>© ${year} ayush yadav · set by hand · set in fraunces, newsreader &amp; fragment mono</p>
       <p class="strap">two inks. one line. thirteen stations.</p>
-      <p class="reach"><a href="${esc(runUrl)}/">the working paper ⟶</a> · <a href="${esc(runUrl)}/resume.pdf">résumé (pdf) ⟶</a></p>
+      <p class="reach"><a href="${esc(runUrl)}/">the working paper ⟶</a> · <a href="${esc(runUrl)}/resume.pdf" target="_blank" rel="noopener">résumé (pdf) ⟶</a></p>
     </footer>`;
 }
 

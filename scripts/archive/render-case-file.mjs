@@ -482,18 +482,18 @@ function auditControl({ projectId, counts, sentence }) {
 const isPlateArtifact = (a) =>
   !external(a.href) && !a.href.startsWith("mailto:");
 
-/* `open original` opened a new tab for every artifact, including the local
-   ones — and a plate's artifact is a file on this origin, reached from a
-   dialog the reader opened without leaving the page. A tab for it is the
-   defect the glyph law names in reverse: it printed `↗`, promising a
-   departure, for a file that is part of this record room. Off-origin
-   artifacts still leave, and say so. (check-links' new-tab rule, G8.) */
+/* `open original` opens a new tab whatever the artifact is: a PNG on this
+   origin is still a file, and a file that replaces the case file behind it
+   leaves the reader nothing but the back button — main's ruling, 2026-09-23.
+   The ARROW is a different question and answers it differently: it is about
+   origin, so a local artifact keeps `⟶` while the link still opens away.
+   The two contracts disagree here on purpose (check-links, G8). */
 function viewerDialog({ artifact, fig }) {
   const away = external(artifact.href);
   const href = away ? artifact.href : sitePath(PREFIX, artifact.href);
   return `<dialog class="viewer" id="viewer-fig-${fig}" aria-label="${esc(artifact.label)} artifact viewer">
           <div class="vhead"><div class="vtitle"><p class="vtype">${esc(artifact.type)}</p><h2>${esc(artifact.label)}</h2></div>
-          <a href="${esc(href)}"${away ? ' target="_blank" rel="noopener noreferrer"' : ""} aria-label="Open original artifact">open original&#xA0;${away ? "↗" : "⟶"}</a>
+          <a href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open original artifact">open original&#xA0;${away ? "↗" : "⟶"}</a>
           <button type="button" data-viewer-close aria-label="Close artifact viewer">✕</button></div>
           <p class="vprov">source: ${esc(artifact.source)} · date: ${artifact.date ? esc(artifact.date) : "not recorded"} · boundary: ${esc(artifact.boundary)}</p>
           <img src="${esc(href)}" alt="${esc(artifact.label)} artifact">
@@ -539,14 +539,18 @@ function artifactGallery({ artifacts, figStart }) {
         })
         .join("");
       parts.push(
-        `<a class="plateb poster" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}">${panels}<span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span><span class="fc-note">panels cropped at column width from the checked-in capture. the titles are the poster’s words, not this file’s claims.</span>${capTail}</span></a>`
+        `<a class="plateb poster" id="fig-${fig}" href="${esc(src)}" target="_blank" rel="noopener" data-viewer="viewer-fig-${fig}">${panels}<span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span><span class="fc-note">panels cropped at column width from the checked-in capture. the titles are the poster’s words, not this file’s claims.</span>${capTail}</span></a>`
       );
       return;
     }
     const wide =
       galleryCount > 1 && galleryCount % 2 === 1 && i === plates.length - 1;
+    /* The plate is a real link to the artifact and archive.js calls
+       preventDefault on it, so this target is the NO-SCRIPT path only: the
+       reader who gets the bare link gets the file in its own tab and keeps
+       the case file behind it. With script, nothing navigates at all. */
     parts.push(
-      `<a class="plateb${wide ? " wide" : ""}" id="fig-${fig}" href="${esc(src)}" data-viewer="viewer-fig-${fig}"><span class="plate-paper"><span class="pframe"><img src="${esc(src)}" alt="${esc(artifact.label)} plate" loading="lazy"></span></span><span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span>${capTail}</span></a>`
+      `<a class="plateb${wide ? " wide" : ""}" id="fig-${fig}" href="${esc(src)}" target="_blank" rel="noopener" data-viewer="viewer-fig-${fig}"><span class="plate-paper"><span class="pframe"><img src="${esc(src)}" alt="${esc(artifact.label)} plate" loading="lazy"></span></span><span class="pcap"><span class="fc-main">fig. ${fig}: ${esc(artifact.label)}.</span>${capTail}</span></a>`
     );
   });
 
