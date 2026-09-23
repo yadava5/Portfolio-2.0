@@ -745,6 +745,84 @@ test.describe("G4 · the manifest never covers text", () => {
     });
   }
 
+  /* THE PEEK, WHICH IS THE PART OF THE MANIFEST THAT ARRIVES UNINVITED.
+     stepPage teleports, and the peek retires without showing if its first
+     qualifying scroll lands past one viewport — so the sweep above never
+     raises it and could not see it if it were wrong. This drives it the way
+     a reader does: one short wheel from the top. */
+  for (const w of [1512, 1440, 1280]) {
+    test(`the first-scroll peek covers no text at ${w}`, async ({
+      browser,
+      baseURL,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      const h = w >= 1512 ? 982 : w >= 1440 ? 900 : 800;
+      const ctx = await browser.newContext({
+        viewport: { width: w, height: h },
+        deviceScaleFactor: 1,
+        baseURL,
+      });
+      const p = await ctx.newPage();
+      await installProbes(p);
+      await arrive(p);
+      await p.mouse.wheel(0, 130);
+      await p.waitForTimeout(600);
+
+      const shown = await p.evaluate(() =>
+        document.getElementById("mpeek")?.classList.contains("on")
+      );
+      const { visible, hits } = await p.evaluate(MANIFEST_PROBE);
+      await ctx.close();
+
+      expect(shown, "the peek never appeared — this test proves nothing").toBe(
+        true
+      );
+      expect(visible, "the probe saw no chrome at all").toBe(true);
+      expect(
+        hits,
+        `the first-scroll peek covers main-content text at ${w}`
+      ).toEqual([]);
+    });
+  }
+
+  /* ITS CONTROL. The three tests above assert an empty array, which is also
+     what a probe that cannot see #mpeek returns. Moving the peek onto the
+     reading column is the only thing that tells those two apart, and it is
+     the specific failure the union-versus-separate change above was about:
+     a bounding box of #manifest and #mpeek would enclose the gap between
+     them and could report a hit for either one. */
+  test("positive control: the peek moved over prose is detected", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1512, height: 982 });
+    await installProbes(page);
+    await arrive(page);
+    await page.mouse.wheel(0, 130);
+    await page.waitForTimeout(600);
+    await page.evaluate(() => {
+      const e = document.getElementById("mpeek")!;
+      e.style.setProperty("left", "40%", "important");
+      e.style.setProperty("right", "auto", "important");
+      e.style.setProperty("top", "50%", "important");
+    });
+    await page.waitForTimeout(300);
+
+    const { visible, hits } = await page.evaluate(MANIFEST_PROBE);
+    expect(visible, "the peek was not on screen — the control never ran").toBe(
+      true
+    );
+    expect(
+      hits.length,
+      "the peek was moved onto the nameplate and the probe reported " +
+        "nothing — the probe is broken, not the page"
+    ).toBeGreaterThan(0);
+    expect(
+      hits.join(" "),
+      "the hit was not attributed to #mpeek"
+    ).toContain("#mpeek");
+  });
+
   /* THE CONTROL. Zero overlaps is the right answer and also what a detector
      that reads nothing returns. Forcing the panel open over prose is the only
      thing that tells those two apart. */

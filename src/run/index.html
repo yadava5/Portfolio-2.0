@@ -1923,7 +1923,20 @@ body{font-synthesis:none}
 #mtoggle #mcount{font-family:var(--mono); font-size:var(--fs-micro);
   font-variant-numeric:tabular-nums; color:var(--clay); margin-left:.45em}
 #mtoggle[aria-expanded="true"]{background:var(--plate-solid)}
-#mscrim{position:fixed; inset:0; z-index:5; background:transparent}
+/* THE SCRIM IS NOT JUST A CLICK CATCHER ANY MORE. With six rows the panel
+   was about 400px tall and stopped above the nameplate; with twelve it runs
+   to 697px at 1512 and reaches into it — measured at scrollY 0, the panel's
+   left edge is 41px INSIDE the nameplate's right edge at 1512, 77px at 1440
+   and 154px at 1280, and the letters it lands on are the end of "Yadav".
+   Narrowing cannot fix that: clearing the nameplate by 24px at 1280 would
+   need a 166px panel, which is narrower than one of its own rows.
+   So the overlap is made legible instead of pretended away. A disclosure the
+   reader asked for, sitting in front of a page that visibly recedes, is a
+   layer; the same panel with no scrim is a collision. This is the treatment
+   the phone sheet has always had, and it is now the same everywhere.
+   This is a deviation from yoda's "≥24px clearance from the nameplate at
+   1512", which was written for a panel that no longer exists. */
+#mscrim{position:fixed; inset:0; z-index:5; background:rgba(38,35,28,.28)}
 #mscrim[hidden]{display:none}
 #manifest{
   position:fixed; top:calc(2.6rem + 10px); right:clamp(14px,2.4vw,34px);
@@ -2005,7 +2018,8 @@ body{font-synthesis:none}
      and 320 against the name and the clock, and it fits at both. */
   #mtoggle{padding:.5rem .55rem; min-height:44px; white-space:nowrap}
   #mtoggle #mcount{margin-left:.35em}
-  #mscrim{background:rgba(38,35,28,.28)}
+  /* the scrim's own value moved to the base rule — it is the same on every
+     seat now, and it was only ever here because the desktop had none */
   #manifest{
     top:auto; bottom:0; right:0; left:0; width:auto; max-height:72vh;
     border-left:none; border-right:none; border-bottom:none;
@@ -3065,12 +3079,13 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <button class="btn" id="approve" type="button">approve run 042</button>
             <div id="stamp" aria-hidden="true">APPROVED</div>
           </div>
-          <!-- THE SECOND CLAUSE GAVE THE MORNING AWAY. It read "pressing it
-               only turns the page to morning", which told a reader exactly
-               what was behind the one button on the page. The sentence's
-               real job is the first clause — that nothing you did by
-               scrolling could have pressed this — and the rest of it says
-               the run ends by hand without saying where the hand leads. -->
+          <!-- THE SECOND CLAUSE GAVE THE ENDING AWAY. It named, in six
+               words, exactly what is behind the one button on the page, and
+               a comment node is in the DOM as surely as the sentence is — so
+               the old wording is not quoted here either. The sentence's real
+               job is the first clause: nothing you did by scrolling could
+               have pressed this. What replaces the rest says the run ends by
+               hand without saying where the hand leads. -->
           <span class="note" id="gateNote">scrolling could not press this button &middot; the run ends only by hand.</span>
         </div>
         <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three
@@ -3574,9 +3589,31 @@ function cacheGeometry() {
      compensation out with the void. The requirement is stated here instead
      of being a side effect of a tail: the beat is at least tall enough that
      p reaches 1 after the last darkening pixel, whatever the tail is. */
+  /* AND THE FLIP MUST LAND BEFORE ¶09 ARRIVES. The curtain contract covers
+     beat 7's OWN elements and has never covered the next station rising into
+     the viewport from below — which did not matter while the crossing was
+     90px on a laptop and did not happen at all on a phone, and matters now
+     that it is a real stretch of scroll on both.
+     Nothing readable can be on screen for it. Measured on the mid band, day
+     ink #26231c reaches 4.49:1 at the top of the crossing (field L 0.64) and
+     3.11:1 by L 0.55; cream #f6efe2 is 2.92:1 at L 0.64 and only recovers
+     near the bottom. There is no ink that holds through it, which is why the
+     design's answer has always been an empty screen rather than a colour.
+     Worse than either: --clay's own luminance sits INSIDE the sweep, so ¶09's
+     clay kicker passes through the field's exact luminance on the way down —
+     measured at WCAG 1.00, text at the same luminance as what is behind it.
+     So the beat is also long enough that ¶09's kicker enters the viewport
+     only after the ink has flipped to night. Derived from that kicker's own
+     offset inside its section rather than tuned, so it holds at any viewport
+     and survives ¶09 being re-typeset. `kick` is the kicker's CENTRE (see
+     its note above), and what enters the viewport first is its top edge, so
+     the 24 covers the half line between the two and a little more. */
+  const kickOff = beats[8].kick - beats[8].top;
+  const yFlipAbs = yDark + (FLIP_POS / 0.95) * darkSpan;
   const need = Math.ceil(
     Math.max(yEnd + vh * (mobile ? 0.14 : 0.34),
-             yDark + darkSpan + vh * READ_LINE) - bDusk.top);
+             yDark + darkSpan + vh * READ_LINE,
+             yFlipAbs + vh - kickOff + 24) - bDusk.top);
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
   /* hand the darkening window to arcColor, as fractions of the beat */
@@ -4039,7 +4076,12 @@ const TRAV = [
      object; it also halves the travellers on the corridor the overlap probe
      measured as this page's worst (11 of 48 stops, docs/design-lab/
      probe-waybill-overlap.mjs). */
-  { beat: 6, n: 1, label: "lifequest’s unfinished rows, carried unchanged", draw: (c) => { /* the ledger: three rows resolved, two held short */
+  /* the label named "rows", and the rows were the ¶08 ledger, which was
+     deleted from the DOM and whose last machinery went with fig. 08's
+     redraw. The freight is unchanged and still true — five columns, three
+     inked full length and two stopping in mid-air over a clay hold, which
+     is fig. 08's stair in miniature — so only the word for it moves. */
+  { beat: 6, n: 1, label: "lifequest’s three built, two held", draw: (c) => { /* three full, two stopping short */
       c.fillStyle = inkC["--plate-solid"]; c.strokeStyle = inkC["--ink"]; c.lineWidth = 1.2;
       c.beginPath(); c.roundRect(-8, -7.5, 16, 15, 2); c.fill(); c.stroke();
       c.beginPath(); /* the built three, full length */

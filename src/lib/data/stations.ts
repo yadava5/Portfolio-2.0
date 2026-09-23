@@ -231,7 +231,13 @@ export const STATIONS: readonly Station[] = [
     name: "lifequest · dusk",
     kicker: "¶ 08 · project 5 of 6",
     clock: "21:07",
-    consignment: "lifequest’s unfinished rows, carried unchanged",
+    /* "rows" were the ¶08 ledger's, and the ledger was deleted from the DOM;
+       its last machinery went with fig. 08's redraw. The freight the rail
+       actually draws never changed — five columns, three inked full length
+       and two stopping in mid-air over a clay hold, which is fig. 08's stair
+       in miniature — so this is the same consignment under the name the
+       drawing has always had for it. */
+    consignment: "lifequest’s three built, two held",
     /* "no case file: a prototype has nothing to argue yet", in the run's own
        words. The absence is the argument; do not fill it in. */
     dossier: null,

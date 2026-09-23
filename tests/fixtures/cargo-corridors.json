@@ -4,7 +4,7 @@
     "Desktop only (1440px): the run paints no canvas text on a stacked layout.",
     "Re-record ONLY when the cargo was changed deliberately, and read the diff."
   ],
-  "recordedAt": "2026-09-23T16:09:02Z",
+  "recordedAt": "2026-09-23T22:49:35Z",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -43,7 +43,7 @@
       "corridor": 5
     },
     {
-      "label": "lifequest’s unfinished rows, carried unchanged",
+      "label": "lifequest’s three built, two held",
       "corridor": 6
     },
     {
