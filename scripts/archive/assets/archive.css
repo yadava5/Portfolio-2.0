@@ -704,3 +704,27 @@ button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
   .mast, .colophon{border-color:#999}
   .audit-run, .viewer{display:none}
 }
+
+/* ── the evidence index's own contents ───────────────────────────────────
+   Fourteen entries over 9,274px with no table: a reader who came for one
+   claim had to scroll every other one to find it. Two columns where there
+   is room, one where there is not; the serial keeps the mono because it IS
+   an index, and the claim beside it takes the text face like every other
+   sentence on this page. */
+.econtents{margin-top:2.2rem; border-top:1px solid var(--hair-strong); padding-top:1.1rem}
+.econtents h2{font-family:var(--body); font-size:var(--fs-label); letter-spacing:0;
+  word-spacing:.12em; color:var(--ink-2); margin-bottom:.5rem}
+.econtents ol{list-style:none; margin:0; padding:0;
+  display:grid; grid-template-columns:1fr; gap:0 2rem}
+@media (min-width:46rem){ .econtents ol{grid-template-columns:1fr 1fr} }
+.econtents li{border-top:1px solid var(--hair)}
+.econtents li:first-child{border-top:none}
+@media (min-width:46rem){ .econtents li:nth-child(2){border-top:none} }
+.econtents a{display:flex; gap:.7rem; align-items:baseline;
+  padding:.5rem 0; color:var(--ink); text-decoration:none}
+.econtents a:hover .clabel, .econtents a:focus-visible .clabel{
+  text-decoration:underline; text-underline-offset:3px}
+.econtents .cno{font-family:var(--mono); font-size:var(--fs-micro);
+  letter-spacing:.04em; word-spacing:normal; color:var(--clay); flex:none}
+.econtents .clabel{font-family:var(--body); font-size:var(--fs-note);
+  letter-spacing:0; word-spacing:.12em; line-height:1.35}

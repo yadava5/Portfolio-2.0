@@ -84,6 +84,29 @@ function ledgerGlance(entries) {
         </figure>`;
 }
 
+/* THE LEDGER IS 9,274px OF FOURTEEN ENTRIES AND HAD NO WAY IN. A reader who
+   arrives from ¶10's "the evidence index ⟶" lands on a deck and then falls
+   through every row in filed order, with no sight of what is on the page and
+   no way to reach the one entry they came for — which is the whole job of an
+   index. The contents list is the page's own table, built from the same
+   array the rows are: the serial, the claim, and the anchor the row already
+   carries, so it cannot list an entry that is not there or miss one that
+   is. */
+function ledgerContents(entries) {
+  const rows = entries
+    .map(
+      (e, i) =>
+        `<li><a href="#${esc(e.id)}"><span class="cno">e-${String(i + 1).padStart(2, "0")}</span><span class="clabel">${esc(e.label)}</span></a></li>`
+    )
+    .join("\n            ");
+  return `<nav class="econtents" aria-labelledby="econtents-h">
+          <h2 id="econtents-h">Contents</h2>
+          <ol>
+            ${rows}
+          </ol>
+        </nav>`;
+}
+
 function entryRow(entry, index) {
   const link = sourceLink(entry.source);
   /* A self-hosted .json is offered as a DOWNLOAD, never as a landing.
@@ -147,6 +170,7 @@ export function renderEvidence({ entries, stations, seo, siteMetadata }) {
           <p class="deck">The master ledger behind every number on this site: the claim, the strongest artifact it terminates at, when it was recorded, and the case-file receipt that argues it in full. If a claim is not in this ledger or a case file, the site does not make it, apart from two registers that terminate in documents this site cannot publish. The biographical one (degree, dean’s list, GPA, certificates, the MUCAT grant) rests on the transcript and the awards themselves. The institutional one, covering the OAS and Tableau figures at ¶03, is read off Miami’s own systems, and only the sanitised inventory ledger made it out. Both are verifiable on request; neither is dressed as if a link would settle it.</p>
         </header>
         ${ledgerGlance(entries)}
+        ${ledgerContents(entries)}
         <ol class="eledger">
           ${entries.map(entryRow).join("\n          ")}
         </ol>

@@ -1369,7 +1369,38 @@ export async function performEnsemble(
         await guard(sleep(start));
         const m = make();
         built[k] = m;
+        /* THE APPARATUS LEAVES WHEN ITS WORK IS DONE, OR BY 2.2s, WHICHEVER
+           COMES FIRST. Scaffolding used to be retired by the shared wave,
+           which does not start until every machine has landed — so the
+           dividers' pivot, a ring and a pin, stood over a finished "A" for
+           more than a second and all three of one critic's personas read the
+           first word as "Åyush". A machine that has set its letter down has
+           nothing left to hold it with.
+
+           The deadline is here because `play()` is not the letter landing:
+           measured, the dividers place the "A" well before their play
+           resolves, so awaiting it alone still left the ring on a legible
+           name until 3.0s. It is PAGE time, not ensemble time — the first
+           draft subtracted the ensemble's own start and so fired 2.2s after
+           a clock that itself began near 0.8s, which is the 3.0s it was
+           meant to fix. 2400 is read against the same origin as the rest of
+           this file's measurements, and the floor keeps 600ms of apparatus
+           on screen however late a cold load starts the run. Only the
+           hardware goes early; the ink still dries as one piece. */
+        let retired = false;
+        const retire = () => {
+          if (retired) return;
+          retired = true;
+          for (const sc of m.settle.scaffold ?? [])
+            sc.animate([{ opacity: 1 }, { opacity: 0 }], {
+              duration: 260,
+              fill: "both",
+              easing: "ease",
+            });
+        };
+        void sleep(Math.max(600, 2400 - performance.now())).then(retire);
         await guard(m.play());
+        retire();
       })
     );
     /* THE WAVE IS A BARRIER, and that is what it costs. Nothing dries until
@@ -1392,7 +1423,9 @@ export async function performEnsemble(
               letters,
               m.settle.parts,
               m.settle.idxs,
-              m.settle.scaffold,
+              /* the scaffold has already gone, above; handing it to the wave
+                 again would animate it from opacity 1 and flash it back */
+              [],
               380,
               k * 190
             )

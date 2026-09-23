@@ -1903,7 +1903,20 @@ body{font-synthesis:none}
      the label goes above the value and the value gets the whole width. */
   .schoolrec .srow{grid-template-columns:1fr; gap:.1rem}
   .schoolrec .srow .sk{font-size:var(--fs-small)}
+  /* ¶13 IS 300vh WITH A 100vh STICKY PANEL, which is 200vh of travel the
+     morning is read through. That reads on a desktop and costs two entire
+     screens on a phone: measured at 390 after approval, the last ink is
+     "run 043 · not yet begun" at 15591 in a 17326px document — 1735px, 2.06
+     screens, of nothing under it, and at 320 it is 1.88. The panel is one
+     screen either way; only the run-out shortens, to about a third of a
+     screen, which is enough for the arrival to land and not enough to read
+     as the page having ended twice. */
+  body.approved .bdawn{min-height:135vh}
   .schoolrec .shead{flex-direction:column; gap:.15rem}
+  /* D-4 · the same two-column head, the same 390px band: "the committed
+     bench · dot-256 kernel" and its filed-at slip were sharing one flex row
+     and breaking into four ragged fragments. One column, two lines. */
+  .bench .shead{flex-direction:column; align-items:flex-start; gap:.15rem}
   .engrows li{grid-template-columns:1fr; gap:.1rem}
   /* PERCENT, NOT VW. The prose column on a phone is the viewport MINUS
      the rail lane and two gutters, so a card sized against vw overhangs
@@ -2227,7 +2240,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 <header id="mast">
   <a href="#top">Ayush&#8202;·&#8202;Yadav</a>
   <span class="state"><span class="st-run">run <i>042</i> · </span><b id="mclock">06:12</b><span class="mdot"> · </span><span id="mphase">the start</span></span>
-  <button id="mtoggle" type="button" aria-expanded="false" aria-controls="manifest"><span class="mlabel">seen </span><span id="mcount">0 / 6</span></button>
+  <button id="mtoggle" type="button" aria-expanded="false" aria-controls="manifest"><span class="mlabel">projects &middot; </span><span id="mcount">0 / 6</span></button>
 </header>
 
 <div id="mscrim" hidden></div>
@@ -3845,10 +3858,21 @@ function measureTextBoxes() {
      the arrival the whole run is for. So the headline is protected and the
      terminus is left alone, and the stroke returns to full ink in the gap
      between them, on its way to the mark. */
-  textBoxes = [...document.querySelectorAll('.prose, .schoolrec, .gatecard, .litany, .signs, .engcard, .identity, .b1 .borrowed, .b8 h2')]
+  /* D-3 · `.b8 .ladder li:not(.gaterow)` joins the list and `.gaterow` stays
+     out of it. The ladder is twelve rows of clock and station and the line
+     ran through five of their timestamps at 1512 on its way down; ghosting
+     them costs nothing, because the line is not going to any of them. It is
+     going to the dock in the thirteenth row, and THAT row keeps full ink so
+     the arrival the whole run is for still lands as a mark. */
+  textBoxes = [...document.querySelectorAll('.prose, .schoolrec, .gatecard, .litany, .signs, .engcard, .identity, .b1 .borrowed, .b8 h2, .b8 .ladder li:not(.gaterow)')]
     .map((el) => { const r = el.getBoundingClientRect();
       return { x: r.left - 6, w: r.width + 12, top: r.top + sy - 4, h: r.height + 8 }; })
-    .filter((r) => r.w > 40 && r.h > 40);
+    /* h > 10, not h > 40. The floor was written when every box on this list
+       was a column; the ¶12 ladder rows are 22px tall, so the selector that
+       named them was silently dropping all twelve and the line went on
+       running at full ink through five timestamps. Width still guards the
+       trivial case. */
+    .filter((r) => r.w > 40 && r.h > 10);
 }
 function dipUnderText(scroll) {
   if (!textBoxes.length) return;
@@ -4013,6 +4037,27 @@ function svgIn(s) {
   const NS = "http://www.w3.org/2000/svg";
   return (t, a, parent) => { const e = document.createElementNS(NS, t);
     for (const k in a) e.setAttribute(k, a[k]); (parent || s).appendChild(e); return e; };
+}
+/* EVERYTHING DRAWN INSIDE A role="group" FIGURE ENTERS THE A11Y TREE, which
+   is the bill for the a11y fix that stopped calling these plates images.
+   role="img" made the subtree presentational; role="group" does not. So a
+   screen reader landing on fig. 04 heard the 900-character narrative that IS
+   the description, and then read the whole plate again as loose annotation —
+   every desk name, every verdict, every caveat line, including the labels
+   the drawing keeps at opacity 0 for a state it is not in.
+
+   The contract this restores: the group's aria-label is the description, the
+   `g.tracebtn` controls carry their own accessible names, and the ink between
+   them is decoration. Called after traceOn so the controls already exist;
+   idempotent, because both figures rebuild on every edition change. */
+function hideDrawnFromAT(svg) {
+  for (const n of svg.children) {
+    const holdsControl =
+      (n.classList && n.classList.contains("tracebtn")) ||
+      (n.querySelector && n.querySelector(".tracebtn"));
+    if (holdsControl) n.removeAttribute("aria-hidden");
+    else n.setAttribute("aria-hidden", "true");
+  }
 }
 function traceOn(svg, labels, marks, key, name) {
   /* hover a bucket/lane label: its cargo stays inked, the rest recede */
@@ -4184,9 +4229,14 @@ function buildApplied(tight) {
     const slot = [0, 0, 0];
     APPLIED_PLAN.forEach(([k, verdict], i) => {
       if (k === 3) {
-        /* past every desk, off the end, and back along the band to rest */
+        /* D-2 · past every desk, off the end, and back along the band to
+           rest — but it used to come back as far as x 462 and set down at
+           454..470, on top of a note running to 473. The clay ring, the
+           plate's only clay, landed on the word "guess". It now stops short
+           at 516, which is still on the band it returned along and is 35
+           units clear of the note's last letter. */
         piece(i, k, verdict,
-          [[-40, BY], [RX[2], BY], [END, BY], [END, RY], [462, RY], [462, 312]],
+          [[-40, BY], [RX[2], BY], [END, BY], [END, RY], [516, RY], [516, 312]],
           1, 478, 316);
         return;
       }
@@ -4256,6 +4306,7 @@ function buildApplied(tight) {
     k === 3
       ? `show the piece ${lbl.textContent}`
       : `show what ${lbl.textContent} settled`);
+  hideDrawnFromAT(s);
 }
 function polyAt(line, t) {
   /* piecewise-linear position along a polyline, t 0..1 by segment count */
@@ -4299,9 +4350,15 @@ function scrubApplied(p) {
 /* Who — the engineer of record signs the line. The name is written on
    by a clip-path wipe with a nib dot riding the writing edge — no fake
    stroke data, just the type being revealed at writing speed. */
-const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "" };
+const who = { sig: $("sig"), nib: $("signib"), w: 0, last: "", t: 0 };
+/* D-1 · THE SIGNATURE DOES NOT UN-SIGN. This wipe is a pure function of
+   beat progress, so scrolling back up ran the nib backwards and took the
+   name off the card — a signature that withdraws when you look at it twice
+   is the one thing a reference card may not do. The wipe keeps its high-
+   water mark: it writes at writing speed once and then it is written. */
 function scrubWho(p) {
-  const t = smooth((p - 0.28) / 0.34);
+  const t = Math.max(smooth((p - 0.28) / 0.34), who.t || 0);
+  who.t = t;
   const v = (100 - t * 100).toFixed(1);
   if (v === who.last) return;
   who.last = v;
@@ -4855,6 +4912,7 @@ function buildJet(tight) {
   for (const [y, words] of g.foot) el("text", { x: 8, y }).textContent = words;
   traceOn(s, jlabs, jet.blocks, "lane", (lbl) =>
     `show which blocks lane ${lbl.textContent} carried`);
+  hideDrawnFromAT(s);
 }
 function scrubJet(p) {
   const span = jet.dieThroat - jet.dieTop;
@@ -5537,12 +5595,20 @@ function scrubGate(p) {
 
 /* ————— manifest ————— */
 const maniLines = [...document.querySelectorAll("#manifest li")];
+/* THE COUNT IS A HIGH-WATER MARK, NOT A CURSOR. It used to read the station
+   the reading line happened to be beside, so scrolling back up counted DOWN
+   — a reader who returned to the top was told they had seen nothing, and a
+   cold critic read exactly that and stopped trusting the number. What it
+   means is how much of the run you have reached this visit, and that cannot
+   decrease. The rows still stamp from the same figure, so the ledger and the
+   chip never disagree. */
 function setStamps(count) {
-  const grew = count > window.__world.stamped;
-  window.__world.stamped = count;
-  maniLines.forEach((li, i) => li.classList.toggle("stamped", i < count));
+  const reached = Math.max(count, window.__world.stamped || 0);
+  const grew = reached > window.__world.stamped;
+  window.__world.stamped = reached;
+  maniLines.forEach((li, i) => li.classList.toggle("stamped", i < reached));
   const mc = $("mcount");
-  mc.textContent = `${count} / 6`;
+  mc.textContent = `${reached} / 6`;
   if (grew) { mc.classList.remove("bump"); void mc.offsetWidth; mc.classList.add("bump"); }
 }
 /* the manifest's open/close now lives in one place · see #manifest-js,
@@ -5946,7 +6012,6 @@ function buildNet(tight) {
       net.hn.push(el("circle", { cx: 128 + c * 10.8, cy: 24 + r * 10.8, r: 2.6, class: "hn l2", opacity: 0.12 }));
     }
     el("text", { x: 128, y: 142 }).textContent = "hidden ×100";
-    el("text", { x: 8, y: 180 }).textContent = "softmax ×10";
     for (let d = 0; d < 10; d++) {
       const g = el("g", { class: "on l3" });
       const x = 10 + d * 22.6;
@@ -5954,6 +6019,13 @@ function buildNet(tight) {
       el("text", { x: x + 4.5, y: 282, "text-anchor": "middle" }, g).textContent = d;
       net.on.push({ g, bar: g.querySelector(".bar") });
     }
+    /* D-4 · BESIDE ITS OWN LAYER, like the other two. This label was
+       authored at y 180 while the row it names is at 262–282, so it stood a
+       hundred units clear of its own bars with nothing between them — at 390
+       a reader met "softmax ×10" most of a screen above any softmax. The
+       input and hidden labels both sit under their layer; this one now does
+       too, below the digit row rather than adrift above it. */
+    el("text", { x: 8, y: 300 }).textContent = "softmax ×10";
     for (let k = 0; k < 34; k++) { /* input region → hidden */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const iy = 32 + rnd() * 60;
