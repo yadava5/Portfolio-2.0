@@ -652,27 +652,11 @@ if (location.hash.length > 1) {
      would beat the presentation attribute this figure's scrub writes. Same
      mark, same token, its own switch. */
   .figsvg .holdmark{fill:none; stroke:var(--clay-g); stroke-width:1.4}
+  .figsvg .oktick{fill:none; stroke:var(--pine); stroke-width:1.6;
+    stroke-linecap:round; stroke-linejoin:round}
   #questFig .face.cut{stroke-width:2.4}
   #questFig.tight .face.cut{stroke-width:2}
   #questFig.tight .pencil{stroke-dasharray:5 6}
-  .quests{margin-top:2rem; border-top:1px solid var(--hair-strong)}
-  .quests .q{
-    display:grid; grid-template-columns:1.4rem 1.4rem 1fr auto; gap:.7rem; align-items:baseline;
-    font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2);
-    padding:.72rem .1rem; border-bottom:1px solid var(--hair); position:relative;
-  }
-  .quests .q .qi{color:var(--ink-2)} /* the step number the figure walks */
-  .quests .q.done .qi, .quests .q.held .qi{color:var(--clay)}
-  .quests .q .qs{min-width:7ch; text-align:right} /* "…"→"shipped" must
-    never reflow the page: the b6 dusk windows are cached in page space */
-  .quests .q .qm{color:var(--ink-2)}
-  .quests .q.done .qm{color:var(--pine)}
-  .quests .q.done .qn{color:var(--ink)}
-  .quests .q.held .qm{color:var(--clay)}
-  .quests .q .qnote{position:absolute; right:0; top:100%; z-index:2; padding:.3rem .5rem; margin-top:2px;
-    background:var(--plate); border:1px solid var(--plate-line); font-size:.7rem; opacity:0; pointer-events:none;
-    transition:opacity .3s ease}
-  .quests .q.held:hover .qnote{opacity:1}
 
   /* the page's two presses: the gate's approve, and the pad's clear */
   .btn{
@@ -1732,7 +1716,7 @@ body{font-synthesis:none}
 .mono, .prose .prov, .kicker, .plate figcaption, .borrowed figcaption,
 .b8 footer, .signs .srole, .signs .sclose, .cosign figcaption, .sigrole,
 .nb, #manifest .foot, .handoff, .litany .mline .rct, .schoolrec .srow,
-.schoolrec .shead, .engcard header, .engrows li, .gates, .quests .q,
+.schoolrec .shead, .engcard header, .engrows li, .gates,
 .bench .bfoot, .bench .shead, .dawnrow, .dawnrun{
   font-family:var(--body); letter-spacing:0;
   /* the middle dot is 0.618em in Fragment Mono and 0.247em in Newsreader:
@@ -1775,7 +1759,7 @@ body{font-synthesis:none}
 .b8 footer .reach a{color:inherit; text-decoration:underline;
   text-underline-offset:3px; text-decoration-thickness:from-font}
 .signs .srole, .signs .sclose, .cosign figcaption, .cosign figcaption .rel,
-.sigrole, .nb, #manifest .foot, .gates, .quests .q,
+.sigrole, .nb, #manifest .foot, .gates,
 .litany .mline .rct, .handoff, .schoolrec .srow, .schoolrec .shead,
 .engcard header{font-size:var(--fs-label); line-height:1.6}
 .mono, .bench .bfoot, .bench .shead, .prose .prov{font-size:var(--fs-note); line-height:1.7}
@@ -2036,7 +2020,7 @@ body{font-synthesis:none}
    figcaption, which sits outside .borrowed. All three are one-liners. */
 #cadWeek .grid i#slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
 .gatecard .note, .gates .gleg, .gates .gclose, .signs .srow .srole,
-.signs .sclose, .quests .q .qnote, .cosign figcaption .rel,
+.signs .sclose, .cosign figcaption .rel,
 .bench .bfoot, .bench .shead span, .bench .shead a{
   font-family:var(--body); font-size:var(--fs-label); letter-spacing:0;
   word-spacing:.12em; line-height:1.6}
@@ -5107,7 +5091,7 @@ function scrubJet(p) {
    THE CLAY, and the question §4b left open. `held` stays clay: it is a
    disposition of RECORD, not emphasis this composition adds, in the same
    family as fig. 03's `not checked in`. The decisive fact is next door —
-   `.quests .q.held .qi` and `.qm` are already --clay (:578, :584) and beat 7
+   the retired ¶08 ledger's own held rows were already --clay, and beat 7
    resolves the plate and the ledger off the same `p`, side by side in one
    field of view. Demoting the plate's `held` would make the two halves of one
    beat disagree about the colour of a hold. The cap then does its real work
@@ -5140,19 +5124,32 @@ function buildClimb(tight) {
      third run is the landing. `tip` is where the top pencil tread stops —
      short of its own full run, which is the drawing of "not claimed". */
   const g = tight
-    ? { vb: "0 0 240 318", vw: 240, vh: 318,
+    ? { vb: "0 0 240 362", vw: 240, vh: 362,
         xs: [16, 54, 92, 150, 188, 226], ys: [200, 156, 112, 68, 24],
-        Yg: 246, tip: 215, gx: [8, 232], hk: [222, -30, 14], hx: [4, 170],
+        Yg: 246, tip: 215, gx: [8, 232], hk: [222, -30, 19], hx: [4, 170],
         tokR: 4.5, ringR: 8, lead: 5, mark: 12, dy: 16, up: 12, dn: 4, ldy: 14,
-        names: ["01", "02", "03"], /* the ledger rows carry the words */
+        /* THE KEY IS BACK, because the ledger that carried these words was
+           deleted from the DOM and the numerals were left pointing at
+           nothing: at 390 this plate said 01 02 03 04 05 and no surface
+           anywhere told a reader what they were. The words cannot go on the
+           drawing — measured, "backend" set at the third tread's own x runs
+           to 158.9 against a cut at 150, so it would letter straight out
+           through the cut face — so they go under it as a key, which is what
+           a key is for. Broken to the measured advance, 7.123 units a
+           character at 11px + .03em: 32 characters is 228 of the 232 a line
+           can hold from x 8, and yoda's two-line break wanted 44 on line one. */
+        names: ["01", "02", "03"],
         holds: [["04"], ["05"]],
         pts: [[10, 238], [43, 190], [81, 146], [130, 102]],
-        foot: [[270, "solid: built · pencil: not"],
-               [288, "born march 2025, at the"],
-               [304, "social innovation weekend"]] }
+        foot: [[262, "01 mission card · 02 tier ladder"],
+               [278, "03 backend · 04 scale"],
+               [294, "05 finished product"],
+               [316, "solid: built · pencil: not"],
+               [332, "born march 2025, at the"],
+               [348, "social innovation weekend"]] }
     : { vb: "0 0 490 410", vw: 490, vh: 410,
         xs: [32, 108, 184, 302, 378, 454], ys: [286, 222, 158, 94, 30],
-        Yg: 354, tip: 432, gx: [14, 476], hk: [312, -136, 18], hx: [10, 330],
+        Yg: 354, tip: 432, gx: [14, 476], hk: [312, -136, 25], hx: [10, 330],
         tokR: 5.5, ringR: 10, lead: 8, mark: 18, dy: 22, up: 14, dn: 5, ldy: 16,
         names: ["mission card", "tier ladder", "backend"],
         holds: [["scale", "partner or funder"], ["finished", "not claimed"]],
@@ -5244,8 +5241,21 @@ function buildClimb(tight) {
   /* 6 · the built names, lettered INTO the mass under their own tread, in ink
      because what shipped is lit (¶08's own closing line), with the landed
      mark beside them in pine */
+  /* THE TICK IS A DRAWN MARK NOW, and the reason is a measurement. Set as
+     the character "✓" it reported an advance of 7.8 units where every other
+     glyph on this plate reports 8.012 — so it was not Fragment Mono at all,
+     it was whatever face the browser substituted, at whatever weight that
+     face happens to draw a check at. document.fonts.check() would have said
+     the character was available and been wrong. Drawn, it is the same hand
+     as fig. 10's passed mark, in the same pine, at a weight this file sets. */
+  const tick = (x, y) => {
+    const k = tight ? 0.74 : 1;
+    const e = el("path", { class: "oktick",
+      d: `M ${x} ${y - 3.4 * k} l ${2.9 * k} ${2.8 * k} L ${x + 8.4 * k} ${y - 8.6 * k}` });
+    e.setAttribute("opacity", 0); e._on = 0; return e;
+  };
   g.names.forEach((w, i) => {
-    climb.ticks.push(text(xs[i] + g.lead, ys[i] + g.dy, "✓", "ok"));
+    climb.ticks.push(tick(xs[i] + g.lead, ys[i] + g.dy));
     climb.labels.push(text(xs[i] + g.lead + g.mark, ys[i] + g.dy, w, "lit"));
   });
 
@@ -5315,8 +5325,9 @@ function scrubClimb(p) {
   on(climb.tok, p >= 0.08);
   on(climb.ring, p >= 0.355); /* the deliberate halt, after the walk ends */
   climb.ticks.forEach((t, i) => on(t, tp >= i + 1));
-  /* the holds, a hair AHEAD of their ledger rows (scrubQuests resolves 04 at
-     .395 and 05 at .44): the drawing shows it, then the ledger records it.
+  /* the holds, last. The ledger they used to run a hair ahead of was
+     deleted from the DOM; its scrubber is gone now too, and these keep the
+     timing, which was always the drawing's own.
      Everything on this plate is landed by .415, and the shared dusk curtain
      takes the figure to opacity 0 from .48 — the shipping plate's own last
      event was the ring at .42, and that envelope is kept. */
@@ -5674,22 +5685,6 @@ function chooseEditions() {
    and blocks, which is a figure, not a gauge. Same for the reviewer's marks
    inking in at `how` — a mark being signed misstates no magnitude. */
 
-/* LifeQuest — the honest ledger: three resolve, two stay held. Rows
-   resolve in step with the climb next to them. */
-const quests = [...document.querySelectorAll(".quests .q")];
-function scrubQuests(p) {
-  quests.forEach((q, i) => {
-    const on = p > 0.26 + i * 0.045;
-    if (q._on === on) return; /* text writes only on a state CHANGE —
-      round 2 rewrote every row every frame, a layout write per scroll */
-    q._on = on;
-    const held = q.classList.contains("held-target");
-    q.classList.toggle("done", on && !held);
-    q.classList.toggle("held", on && held);
-    q.querySelector(".qm").textContent = on ? (held ? "—" : "✓") : "—";
-    q.querySelector(".qs").textContent = on ? (held ? "held" : "shipped") : "…";
-  });
-}
 
 /* the gate ladder — the day you just travelled, recapped at the door
    (the automl station owns the 7-phase list now; here the rail carries
@@ -5953,7 +5948,7 @@ function work(y) {
      its bench is a settled record. Beat 6 keeps scrubJet, which is the
      drawing; only its bench pair left. */
   if (Math.abs(beat - 6) <= 1) scrubJet(beat < 6 ? 0 : beat > 6 ? 1 : bp);
-  if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubQuests(p7); scrubClimb(p7); }
+  if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubClimb(p7); }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
@@ -6772,7 +6767,7 @@ function settleAll() {
      reduced-motion readers was the page already conceding the argument: the
      truthful form of a record is the settled one. Every reader gets it now,
      so there is nothing left here to settle. */
-  scrubJet(1); scrubQuests(1);
+  scrubJet(1);
   scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
   /* The still frame shows the run COMPLETE, held at the gate for a signature —
      which is what an RM reader is offered, the approve button needing no
