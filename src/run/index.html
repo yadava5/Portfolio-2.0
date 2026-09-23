@@ -797,15 +797,16 @@ if (location.hash.length > 1) {
      the dead area is gone. The card does not move. */
   .b8 .beat-inner>div:last-child{display:flex; flex-direction:column}
   .b8 footer{margin-top:auto}
-  /* AND THE CARD STRETCHES INTO WHAT IS LEFT. Bottom-aligning the colophon
-     on its own only MOVED the empty paper — out of the lower right corner
-     and into a 400px hole between the card and the colophon, which is worse,
-     because a hole in the middle of a composition reads as a mistake and a
-     margin at the bottom reads as a margin. The card takes the column's full
-     height and pushes its signature block to its own foot, so the emptiness
-     lands where a form puts it: above the line you sign on. That space is
-     not filler now, it is the field. */
-  .gatecard{flex:1 1 auto; display:flex; flex-direction:column}
+  /* AND THE COLUMN IS FILLED BY CONTENT, NOT BY STRETCHING. Two earlier
+     attempts moved the empty paper around instead of removing it: first into
+     a hole between the card and the colophon, then — by stretching the card
+     and pushing its signature to the foot — into a 440px gap between "the
+     manifest, complete." and the rule you sign. I argued that second gap was
+     the signing field. It is not: the owner flagged exactly this screen for
+     "a large empty area", and a reader meets a void, not an argument.
+     What fills it is the manifest itself, itemised in .gl above. The card is
+     its own content again. */
+  .gatecard{display:flex; flex-direction:column}
   .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
     border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2);
     margin-top:1.6rem}
@@ -837,7 +838,7 @@ if (location.hash.length > 1) {
   .gatecard h3{font-family:var(--display); font-weight:430; font-size:1.35rem; margin-bottom:.3rem}
   .gatecard .gl{list-style:none; margin-top:.8rem}
   .gatecard .gl li[hidden]{display:none} /* display:grid must not defeat [hidden] */
-  .gatecard .gl li{display:grid; grid-template-columns:1.5rem 8.9rem 1fr; gap:.5rem;
+  .gatecard .gl li{display:grid; grid-template-columns:3.5rem 9.6rem 1fr; gap:.5rem;
     font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
     padding:.42rem 0; border-top:1px solid var(--hair)}
   .gatecard .gl li .gi{color:var(--clay)}
@@ -847,9 +848,18 @@ if (location.hash.length > 1) {
     .gatecard .gl li{transition:transform .35s cubic-bezier(.22,1,.36,1)}
     .gatecard .gl li:hover{transform:translateX(3px)}
   }
-  .gatecard .decide{margin-top:auto; padding-top:1.7rem; display:flex; gap:1.3rem;
+  /* THE SIGNATURE SITS UNDER THE MANIFEST, NOT AT THE FOOT OF THE COLUMN.
+     It was `margin-top:auto` inside a stretched card, which put the blank
+     rule at the bottom of the ladder's height and left the gap in the middle
+     of the composition. The card is its own content again; what fills the
+     column is the docket above, and what closes it is the colophon. */
+  .gatecard .decide{margin-top:1.6rem; display:flex; gap:1.3rem;
     align-items:flex-end; flex-wrap:wrap; position:relative}
-  .gatecard .sigline{flex:1 1 13rem; min-width:0; display:block; padding-bottom:.55rem}
+  .gatecard .sigline{flex:1 1 13rem; min-width:0; display:block;
+    padding-bottom:.55rem; position:relative}
+  .gatecard .sigpen{position:absolute; left:1px; top:-15px; overflow:visible;
+    fill:none; stroke:var(--clay-g); stroke-width:1.2;
+    stroke-linejoin:round; stroke-linecap:round}
   .gatecard .sigrule{display:block; height:1px; background:var(--ink-2);
     transform-origin:bottom}
   .gatecard .sigcap{display:block; margin-top:.45rem; font-family:var(--body);
@@ -866,7 +876,21 @@ if (location.hash.length > 1) {
   @media (prefers-reduced-motion: no-preference){
     .gatecard .sigrule{transition:background .35s ease, transform .35s cubic-bezier(.22,1,.36,1)}
   }
-  #approve{font-size:.78rem; padding:.7rem 1.4rem; border-color:var(--ink); flex:0 0 auto}
+  /* THE ONE FILLED CONTROL ON THE PAGE. Every other button here is an
+     outline, which is right for "clear the pad" and wrong for the one act
+     the whole run is asking for — the owner called it click bait and the
+     outline box was the quietest thing on the screen.
+     --clay, not --clay-g, and it is measured. The pair background:var(--clay)
+     with color:var(--ink-inverse) works out on both grounds because those two
+     tokens flip together:
+       day    #fbf3e7 on #a03f20 — 5.63:1 / Lc 79.3
+       night  #26231c on #f4b090 — 8.48:1 / Lc 66.3
+     clay-g was the suggestion and it does not hold: #26231c on #e08a5f is
+     5.95:1 but only Lc 49.5, under the Lc 60 text floor this file gates on.
+     The press keeps .btn's own sweep, so it goes clay to full ink under the
+     hand: inviting, then committed. */
+  #approve{font-size:.78rem; padding:.7rem 1.4rem; flex:0 0 auto;
+    background:var(--clay); border-color:var(--clay); color:var(--ink-inverse)}
   /* three lines' worth, reserved. The note goes from "scrolling could not
      press this button." to "approved by hand — 15:59, your local time."
      — two lines to three — and that 16px was the last thing still growing
@@ -1784,7 +1808,8 @@ h1[data-np-measuring] .np-ch {
     /* margin-top stays auto — the colophon is bottom-aligned to the ladder
        now, and a fixed margin here would pull it back up off the floor. */
     .b8 footer{padding-top:.7rem; line-height:1.62}
-    .gatecard .decide{padding-top:1.1rem}
+    .gatecard .decide{margin-top:1.1rem}
+    .gatecard .gl li{padding:.3rem 0}
     .gatecard .note{margin-top:.8rem}
   }
 </style>
@@ -3060,7 +3085,27 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                the staleness it was meant to prevent. -->
           <p class="mono">five proofs and one honest prototype · one signature missing<br>
             042 is the day&rsquo;s serial, not a visit counter.</p>
+          <!-- THE MANIFEST, ITEMISED. The headline says "the manifest,
+               complete" and then showed nothing, which left about 440px of
+               bare paper between that claim and the signature line. The
+               owner reads empty area on this screen as broken, and he is
+               right to: a document that says it is complete and then shows
+               you a void has not made its case.
+               So the card carries the six stops that carry projects, each
+               with the one number it proved. Every figure here is already on
+               this page — the six are the manifest panel's own rows, and the
+               times are the ladder's — so nothing new is claimed at the one
+               moment the page asks to be believed. The times are in the
+               .gi column because that is where the ladder opposite and the
+               timetable both put them, and because a time read off the run
+               is a machine value; the names and the facts are text. -->
           <ul class="gl">
+            <li><span class="gi">08:47</span><b>applied</b><span class="gm">1 wrong in <b class="mv">96</b></span></li>
+            <li><span class="gi">12:06</span><b>cadence</b><span class="gm"><b class="mv">1,186</b> tests pass</span></li>
+            <li><span class="gi">15:23</span><b>glyph</b><span class="gm"><b class="mv">3.5×</b> faster kernel</span></li>
+            <li><span class="gi">19:36</span><b>jetpack-compress</b><span class="gm"><b class="mv">6.4×</b> faster</span></li>
+            <li><span class="gi">21:07</span><b>lifequest</b><span class="gm"><b class="mv">3 of 5</b> built</span></li>
+            <li><span class="gi">22:05</span><b>agentic automl</b><span class="gm"><b class="mv">2,523</b> tests pass</span></li>
             <li id="liveSample" hidden><span class="gi">+</span><b>your sample</b><span class="gm" id="liveSampleM"></span></li>
           </ul>
           <!-- THE BLANK RULE IS THE ASK. ¶11 is a plate of signatures that
@@ -3073,6 +3118,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                hand comes to rest, and the stamp lands on the same spot. -->
           <div class="decide">
             <span class="sigline">
+              <!-- a nib resting at the head of the line, drawn rather than
+                   lettered, and static. A blinking caret was offered and
+                   declined: it is the one shape on this page that would read
+                   as a typewriter effect, which the no-list rules out, and a
+                   mark that never moves still says "sign here". -->
+              <svg class="sigpen" width="13" height="16" viewBox="0 0 13 16" aria-hidden="true"><path d="M2.6 1.2 H10.4 V8.4 L6.5 14.6 L2.6 8.4 Z"/><path d="M6.5 8.6 V12.2"/></svg>
               <span class="sigrule" aria-hidden="true"></span>
               <span class="sigcap">the approver</span>
             </span>
