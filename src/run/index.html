@@ -1142,6 +1142,72 @@ if (location.hash.length > 1) {
   @media (prefers-reduced-motion: no-preference){
     .dawnscape{transition:opacity 2.2s ease .1s}
   }
+  /* ————— the wind —————
+     ONE WIND, and everything on the ground answers to it. A gust every 7.3s,
+     travelling west to east: each tuft's phase is set from its own x by the
+     builder, so the lean crosses the page the way the birds do, and a blade
+     leans in fast and comes back slowly with a small overshoot, which is what
+     grass does and a sine does not. The canopies ride the same wind at twice
+     the period and a fraction of the angle, with no overshoot, because a
+     bough is heavy. Three amplitude classes for the grass so no two tufts
+     move alike, and the periods share no common multiple with the deer's
+     17s graze or the gulls' 5.2 and 6.1s pecks: a sitter cannot count a
+     cycle. Ten groups animate continuously, transforms only, nothing per
+     frame in JS, and all of it lives behind body.morninglive, which the
+     release of the carry sets, so the ground is still while the page is
+     carrying the reader and nothing moves during the station's stagger.
+     Reduced motion: the whole block is inside the no-preference query; the
+     drawing is there, and still. */
+  .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-head,
+  .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull{transform-box:view-box}
+  .dawnscape .sway-s{--amp:2.2deg}
+  .dawnscape .sway-m{--amp:3.2deg}
+  .dawnscape .sway-l{--amp:4.4deg}
+  .dawnscape .sway-c1{--amp:.7deg}
+  .dawnscape .sway-c2{--amp:1.1deg}
+  @media (prefers-reduced-motion: no-preference){
+    body.morninglive .dawnscape .sway-s, body.morninglive .dawnscape .sway-m,
+    body.morninglive .dawnscape .sway-l{
+      animation:gust 7.3s cubic-bezier(.45,.05,.55,.95) var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .sway-c1, body.morninglive .dawnscape .sway-c2{
+      animation:bough 14.6s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .ds-head{animation:graze 17s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
+  }
+  @keyframes gust{
+    0%{transform:rotate(0)}
+    30%{transform:rotate(var(--amp))}
+    56%{transform:rotate(calc(var(--amp) * -.22))}
+    100%{transform:rotate(0)}
+  }
+  @keyframes bough{
+    0%{transform:rotate(0)}
+    38%{transform:rotate(var(--amp))}
+    100%{transform:rotate(0)}
+  }
+  /* the doe lowers her head to the grass, holds there with two small
+     nibbles, lifts and looks. Negative, because the head is west of the
+     pivot and a counter-clockwise turn is what takes it down. */
+  @keyframes graze{
+    0%{transform:rotate(0)}
+    12%{transform:rotate(-38deg)}
+    30%{transform:rotate(-35deg)}
+    44%{transform:rotate(-38deg)}
+    58%{transform:rotate(-36deg)}
+    70%{transform:rotate(0)}
+    100%{transform:rotate(0)}
+  }
+  /* two pecks, then still for four fifths of the period: stillness is the
+     default state of a bird on the ground, and the flurry is the event */
+  @keyframes peck{
+    0%{transform:rotate(0)}
+    6%{transform:rotate(var(--pk))}
+    10%{transform:rotate(0)}
+    15%{transform:rotate(var(--pk))}
+    19%{transform:rotate(0)}
+    100%{transform:rotate(0)}
+  }
   /* The station arrives as ONE thing, staggered, once the light is up. It
      cannot use data-fx: that engine keys off an element's page position, and
      inside a sticky panel every child reports the section's static top while
@@ -7393,6 +7459,10 @@ function releaseScroll() {
   scrollHeld = false;
   clearTimeout(holdT); holdT = null;
   document.body.classList.remove("carrying");
+  /* and the morning comes alive here, not at the press: the wind on the
+     ground waits until the page has stopped carrying the reader, so nothing
+     composites during the carry and nothing moves during the stagger */
+  if (atMorning) { document.body.classList.add("morninglive"); mark("wind"); }
   removeEventListener("wheel", eatScroll);
   removeEventListener("touchmove", eatScroll);
   removeEventListener("keydown", eatKeys);
@@ -7540,6 +7610,11 @@ function buildDawnscape() {
   };
   const P = (d, cls) => `<path class="${cls}" d="${d}"/>`;
   const seg = (pts, x0, x1) => pts.filter(([x]) => x >= x0 && x <= x1);
+  /* THE GUST TRAVELS. A negative delay starts an animation part-way through
+     its cycle, so the further west a thing stands the further along it is:
+     the lean arrives at the right edge 1.9s after the left, plus a little
+     jitter so no two tufts are ever in step. */
+  const phase = (x, period) => `${(-(period - (x / W) * 1.9 - r() * 0.35)).toFixed(2)}s`;
 
   /* ————— where the ground is —————
      Desktop: 0.845 H, under a column whose last line ends near 0.79 H. A
@@ -7671,7 +7746,7 @@ function buildDawnscape() {
     }
     if (cls) groups++;
     return `<g class="ds-tree" transform="rotate(${lean} ${F(x)} ${F(hz)})">${P(tl, "ds-ink w14")}${P(tr, "ds-ink w14")}` +
-      `<g class="ds-canopy ${cls}" style="transform-origin:${F(x)}px ${F(hz)}px">${crown}</g></g>`;
+      `<g class="ds-canopy ${cls}" style="transform-origin:${F(x)}px ${F(hz)}px;--ph:${phase(x, 14.6)}">${crown}</g></g>`;
   };
 
   /* ————— the doe: contour only, ears up, standing on the line ————— */
@@ -7695,7 +7770,7 @@ function buildDawnscape() {
     groups++;
     return `<g class="ds-deer" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px">` +
       `${P(back, "ds-ink w12")}${P(belly, "ds-ink w12")}${P(rump, "ds-ink w12")}${P(chest, "ds-ink w12")}${legs}${tail}` +
-      `<g class="ds-head" style="transform-origin:${F(ox)}px ${F(oy)}px">${P(neck, "ds-ink w12")}${P(throat, "ds-ink w12")}` +
+      `<g class="ds-head" style="transform-origin:${F(ox)}px ${F(oy)}px;--ph:${(-9 - r() * 6).toFixed(2)}s">${P(neck, "ds-ink w12")}${P(throat, "ds-ink w12")}` +
       `${P(head, "ds-ink w12")}${P(earL, "ds-ink w1")}${P(earR, "ds-ink w1")}</g></g>`;
   };
 
@@ -7710,8 +7785,11 @@ function buildDawnscape() {
     const legs = `M${T(-1, -2.4)} L${T(-1.6, 0)} M${T(2.4, -2.4)} L${T(3, 0)}`;
     const ox = x - 4.5 * k * dir, oy = y - 7.5 * k;
     groups++;
+    /* the peck turns the head down toward the beak's side, so its sign is
+       the bird's facing; its phase is random so the two never peck together */
+    const ph = `--ph:${(-r() * 5).toFixed(2)}s;--pk:${dir > 0 ? -52 : 52}deg`;
     return `<g class="ds-gull" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
-      `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px"><path class="ds-fill" d="${head}"/></g></g>`;
+      `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
   /* ————— a tuft: four to six blades, one path, most leaning a little east ————— */
@@ -7724,7 +7802,7 @@ function buildDawnscape() {
       d += stroke(curve([[bx, hz + 1.5], [bx + bh * lean * 0.35, hz + 1 - bh * 0.55], [bx + bh * lean, hz + 1 - bh]]), 0.35);
     }
     groups++;
-    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-ink w1" d="${d}"/></g>`;
+    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px;--ph:${phase(x, 7.3)}"><path class="ds-ink w1" d="${d}"/></g>`;
   };
 
   /* ————— the composition ————— */
