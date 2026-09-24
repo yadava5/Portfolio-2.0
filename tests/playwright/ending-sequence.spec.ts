@@ -73,6 +73,14 @@ const SEATS: [number, number][] = [
   [1280, 800],
 ];
 
+/** the two seats a phone reader actually has, plus the Pixel 5 the
+    chromium-mobile project emulates — 393×851, which is neither of them */
+const PHONES: [number, number][] = [
+  [390, 844],
+  [393, 851],
+  [320, 720],
+];
+
 /** geometry is a claim about the design, not about an engine */
 const geometryOnly = (testInfo: TestInfo): void => {
   testInfo.skip(
@@ -273,6 +281,83 @@ for (const [w, h] of SEATS) {
         fit.morning,
         `¶13 has no height until the run is approved, at ${w}`
       ).toBe(0);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   the same object on a phone, where the socket changes sides
+   ══════════════════════════════════════════════════════════════════════ */
+for (const [w, h] of PHONES) {
+  test.describe(`¶12 · one aligned object on a phone · ${w}×${h}`, () => {
+    test.use({ viewport: { width: w, height: h } });
+    // eslint-disable-next-line no-empty-pattern
+    test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+    test(`ring, socket and button are one line at ${w}×${h}`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await toTheGate(page);
+      const a = await alignment(page);
+      const extra = await page.evaluate(() => {
+        const base = (sel: string): number => {
+          const el = document.querySelector(sel)!;
+          const probe = document.createElement("span");
+          probe.style.cssText =
+            "display:inline-block;width:0;height:0;overflow:hidden";
+          el.appendChild(probe);
+          const y = probe.getBoundingClientRect().bottom;
+          probe.remove();
+          return y;
+        };
+        const sq = document
+          .querySelector("#gateDock i")!
+          .getBoundingClientRect();
+        const btn = document.querySelector("#approve")!.getBoundingClientRect();
+        return {
+          gutter: btn.left - sq.right,
+          time: base(".approvebar .lt"),
+          btn: base("#approve"),
+          overflow:
+            document.documentElement.scrollWidth -
+            document.documentElement.clientWidth,
+        };
+      });
+
+      expect(a.ringY, `the halt ring is drawn at ${w}`).not.toBeNull();
+      expect(
+        Math.abs(a.ringY! - a.sqMid),
+        `ring on the socket at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringY! - a.btnMid),
+        `ring on the button's centre at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringX! - a.sqX),
+        `ring on the socket's own x at ${w}`
+      ).toBeLessThanOrEqual(1);
+      /* THE SOCKET CHANGES SIDES HERE. On a desktop it hangs 20px off the
+         button's right edge; on a phone it steps back into the rail's own
+         26px gutter, left of the whole content column, so the line arrives
+         straight instead of swinging across to meet it. The desktop's
+         `sqLeft - btnRight` is negative here by construction, and the claim
+         that means anything is the clearance on the other side: measured
+         82px at 390, 393 and 320 alike. */
+      expect(
+        extra.gutter,
+        `the socket is clear of the button, in the gutter, at ${w}`
+      ).toBeGreaterThanOrEqual(18);
+      expect(a.btnW, `the button is 150 wide at ${w}`).toBeCloseTo(150, 0);
+      expect(a.btnH, `the button is 60 tall at ${w}`).toBeCloseTo(60, 0);
+      /* the hour's nudge is in em, so it holds where the faces scale
+         together: measured −0.5px at 390 and −0.4px at 393 and 320 */
+      expect(
+        Math.abs(extra.time - extra.btn),
+        `22:41 on the button's line at ${w}`
+      ).toBeLessThanOrEqual(1.5);
+      expect(extra.overflow, `no horizontal overflow at ${w}`).toBe(0);
     });
   });
 }
@@ -652,7 +737,7 @@ test.describe("¶12 · the birds stay in the sky the reader can see", () => {
     }
   };
 
-  for (const [w, h] of SEATS) {
+  for (const [w, h] of [...SEATS, ...PHONES]) {
     test.describe(`at ${w}×${h}`, () => {
       test.use({ viewport: { width: w, height: h } });
       // eslint-disable-next-line no-empty-pattern
