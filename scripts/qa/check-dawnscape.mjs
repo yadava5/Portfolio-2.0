@@ -82,6 +82,7 @@ const CLEAR_PX = 24;
 const RANGE_PX = 30;
 const GRASS_CAP = 10;
 const PHONE_MAX = 8;
+const PATHS_FLOOR = 6;
 
 const fails = [];
 const notes = [];
@@ -409,7 +410,9 @@ try {
           `${seat}: ${m.scape.free}px under the column, nothing drawn (room ${m.scape.room})`
         );
     } else {
-      if (m.paths < 5)
+      /* the floor the phone's lowest rung draws above (room 0: two bands, 12 paths);
+         the ¶13 spec holds the same number */
+      if (m.paths < PATHS_FLOOR)
         fail(`${seat}: only ${m.paths} paths — the ground is not drawn`);
       if (m.worst.margin < 0)
         fail(
@@ -506,7 +509,7 @@ try {
     }));
     const seat = `${W}×${H} reduced`;
     if (!rm.atmorning) fail(`${seat}: the page is not at the morning`);
-    if (m.scape && m.scape.room >= 0 && m.paths < 5)
+    if (m.scape && m.scape.room >= 0 && m.paths < PATHS_FLOOR)
       fail(`${seat}: the ground is not drawn (${m.paths} paths)`);
     if (m.op !== "1")
       fail(

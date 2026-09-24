@@ -8223,6 +8223,26 @@ function buildDawnscape() {
     [cx + rr * 0.9, cy + rr * 0.55], [cx + rr * 0.5, cy + rr * 0.45], [cx, cy + rr * 0.55], [cx - rr * 0.45, cy + rr * 0.4],
   ], 55, 3.4, cls, 0.3, [8, 22]);
 
+  /* a sky line laid in pieces: every span less every keep box it crosses,
+     each end its own distance off; shared by the desktop band and the phone */
+  const skyPiece = (x0, x1, y) => {
+    let out = "";
+    const boxes = keep.filter(([l, t, rt, bt]) => y >= t - 6 && y <= bt + 6 && x1 > l && x0 < rt);
+    /* every span less every box it crosses, each end its own distance off */
+    let spans = [[x0, x1]];
+    for (const [l, , rt] of boxes) {
+      const next = [];
+      for (const [a, b] of spans) {
+        if (b <= l || a >= rt) { next.push([a, b]); continue; }
+        if (a < l - 14) next.push([a, l - 14 - r() * 50]);
+        if (b > rt + 14) next.push([rt + 14 + r() * 50, b]);
+      }
+      spans = next;
+    }
+    for (const [a, b] of spans) if (b - a > 36) out += P(stroke(curve([[a, y], [(a + b) / 2, y + (r() - 0.5) * 1.6], [b, y]], 6), 1.0), "ds-far w1");
+    return out;
+  };
+
   if (tall) {
     /* ————— far: the range, two ridges behind the trunk —————
        The near ridge's crest stands on the cream LEFT of the trunk at
@@ -8265,23 +8285,6 @@ function buildDawnscape() {
        the sun's column and never stacked into a block. A line that would
        cross the run state ends short of it and picks up past it, each end its
        own distance from the text so the halo is never a ruled margin. */
-    const skyPiece = (x0, x1, y) => {
-      let out = "";
-      const boxes = keep.filter(([l, t, rt, bt]) => y >= t && y <= bt && x1 > l && x0 < rt);
-      /* every span less every box it crosses, each end its own distance off */
-      let spans = [[x0, x1]];
-      for (const [l, , rt] of boxes) {
-        const next = [];
-        for (const [a, b] of spans) {
-          if (b <= l || a >= rt) { next.push([a, b]); continue; }
-          if (a < l - 14) next.push([a, l - 14 - r() * 50]);
-          if (b > rt + 14) next.push([rt + 14 + r() * 50, b]);
-        }
-        spans = next;
-      }
-      for (const [a, b] of spans) if (b - a > 36) out += P(stroke(curve([[a, y], [(a + b) / 2, y + (r() - 0.5) * 1.6], [b, y]], 6), 1.0), "ds-far w1");
-      return out;
-    };
     let prevA = -1, prevB = -1;
     for (let i = 0; i < 8; i++) {
       const t = i / 7;
@@ -8944,8 +8947,31 @@ function buildDawnscape() {
     };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
-    /* the phone's strip: no flank, so what survives is what fits under the
-       last line, out of the column's x-range where it can be taller */
+    /* THE PHONE HAS TWO BANDS AND BARE GUTTERS. No flank to draw on, so the
+       sheet is a top band under the chrome and a bottom band under the last
+       line, by measured room. The top band: a small bough in from the
+       top-right corner with two leaf masses, swaying, and four etched sky
+       lines that break around the chrome and the kicker (the keep-out is
+       the same measured set). The bottom band is the strip as before. */
+    {
+      /* under the chrome band (the stop chip owns the top-right corner on a
+         phone), above the kicker */
+      const bmain = curve([[W + 4, Y(0.125)], [X(0.92), Y(0.135)], [X(0.84), Y(0.15)], [X(0.76), Y(0.165)], [X(0.70), Y(0.178)]]);
+      cutPad = 10;
+      let bd = contour(bmain, 0.7, "ds-ink", ["w12", "w1", "w12"]);
+      for (const [fx, fy, rr] of [[0.94, 0.185, 17], [0.81, 0.19, 15], [0.985, 0.115, 12]]) { const m = mass(X(fx), Y(fy), rr); bd += m + (m ? leaves(X(fx), Y(fy), rr * 0.8, 2) : ""); }
+      cutPad = 4;
+      groups++;
+      mid += `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.125))}px;--ph:${phase(W, 14.6)}">${bd}</g>`;
+      for (let i = 0; i < 4; i++) {
+        const y = Y(0.075 + i * 0.022) + (r() - 0.5) * 4;
+        const a = X(0.04 + r() * 0.08), bnd = Math.min(a + 60 + r() * 120, X(0.62));
+        far += skyPiece(a, bnd, y);
+        if (r() < 0.5 && bnd + 50 < X(0.66)) { const c2 = bnd + 18 + r() * 30; far += skyPiece(c2, Math.min(c2 + 40 + r() * 70, X(0.66)), y + (r() - 0.5) * 2); }
+      }
+    }
+    /* the bottom band: what fits under the last line, out of the column's
+       x-range where it can be taller */
     if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
     near += ticks(X(0.08), hz + 22, X(0.07), 14, 18, "ds-ink w1", 4, 9);
     near += ticks(X(0.90), hz + 22, X(0.08), 14, 18, "ds-ink w1", 4, 9);

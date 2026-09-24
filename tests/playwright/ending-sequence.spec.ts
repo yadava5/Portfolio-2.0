@@ -932,6 +932,9 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
   const RANGE_PX = 30;
 
   const GRASS_CAP = 10;
+  /* the floor the phone's lowest rung draws above; check-dawnscape holds the
+     same number, so the two never disagree by one */
+  const PATHS_FLOOR = 6;
 
   /** the words' own ink, the quote with a 64px halo and the rest with 24,
       against every point of every path the drawing makes, sampled along its
@@ -1094,7 +1097,9 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
           expect(c.paths, "nothing drawn where there is no ground").toBe(0);
           return;
         }
-        expect(c.paths, "the ground is drawn").toBeGreaterThan(5);
+        expect(c.paths, "the ground is drawn").toBeGreaterThanOrEqual(
+          PATHS_FLOOR
+        );
         expect(
           c.margin,
           `"${c.at}" is ${c.gap}px from ${c.sub} and needs ${c.need}px at ${w}×${h}`
@@ -1247,7 +1252,9 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
           flock: getComputedStyle(document.getElementById("flock")!).display,
         };
       });
-      expect(rm.paths, "the ground is drawn").toBeGreaterThan(5);
+      expect(rm.paths, "the ground is drawn").toBeGreaterThanOrEqual(
+        PATHS_FLOOR
+      );
       expect(rm.op, "and simply there").toBe("1");
       expect(rm.anims, "nothing inside it animates").toBe(0);
       expect(rm.live, "the wind is never switched on").toBe(false);
