@@ -421,6 +421,15 @@ step("cargo rides the right corridors", "test:cargo-fixture", {
 step("no dashes in visible text", "test:dashes", {
   reads: "every out/**/*.html, rendered at 1440 and 390",
 });
+/* ¶13's ground and sky, round 8. Seven seats in a real browser: the words
+   keep 24px of clear air from the drawing (roamers over their whole home
+   range), the wind is ten groups from the table and none under reduced
+   motion, and over a pace-compressed sit the sky stays alive and in frame
+   and no roamer leaves its range. Behaviour, so it runs here with the other
+   browser reads and not in the source block. */
+step("¶13 · the dawnscape", "test:dawnscape", {
+  reads: "out/ in a real browser at seven seats, plus a 30s sit at 1456",
+});
 step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
 step("palette ⇄ the light it is read under", "test:palette", {
   reads: "src/run/index.html + scripts/archive/assets/archive.css",

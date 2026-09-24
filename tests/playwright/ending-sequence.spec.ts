@@ -1,8 +1,8 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
 /**
- * ¶12's ending, measured in a browser: the composition, the press, and the
- * journey the press starts.
+ * ¶12's ending, measured in a browser: one aligned object, one filled
+ * control, and what a hand starts by pressing it.
  *
  * WHY A FILE OF ITS OWN. Everything here is about ONE station and about a
  * sequence that only exists after a click, which is a different kind of
@@ -11,42 +11,104 @@ import { expect, test, type Page } from "@playwright/test";
  * button, and a spec that approves the run cannot share a page with one that
  * measures the unapproved page.
  *
- * WHAT IT IS ACCOUNTABLE TO. The owner rejected round 4's first ending on
- * four counts, and each is an assertion below:
- *   · "check the alignment" — the socket, the ring, the button and the card's
- *     note are one line. `alignment` measures the four baselines.
- *   · "the straight rail looks weird" — the way on is a drawn curve, not a
- *     bar. `the way on is a curve` measures its own sagitta against the
- *     straight line between its ends.
- *   · the journey must be visible before the press, and unexplained.
- *   · the fit: ¶12 at max scroll, with the kicker on screen and 96px or less
- *     of empty paper under the last ink, at every desktop size that ships.
+ * WHAT IT IS ACCOUNTABLE TO. The owner has rejected this ending five times,
+ * and each rejection is an assertion below:
+ *   · "drop the entire concept of extra rail as it not coming good" — the way
+ *     on, the wall, the boom, the doorway, the far side's label and the whole
+ *     travel sequence are gone, and this file proves they cannot come back by
+ *     accident: no element, no probe hook, no world field.
+ *   · "just organize the page good" — one grid, nothing floating, no band of
+ *     empty paper under the last ink, and the station fits its viewport at
+ *     every seat down to 1375×800.
+ *   · "the approve run to be click bait" — one filled control, 150×60 at
+ *     every width, never hollow and never disabled before it is spent.
+ *   · "align the birds well, as what we have currently the birds are flying
+ *     out the page" — every bird's own path is sampled analytically AND its
+ *     rendered box is read every 300ms of the flight; both stay inside the
+ *     frame, nose east, and inside the pitch cap.
+ *   · "check the alignment" — the ring the canvas draws, the socket the rail
+ *     docks in and the button's centre are ONE line, and they stay one line
+ *     after a late layout change, which is the defect round 6 shipped.
  *
- * RUNS ON ONE PROJECT, for the same reason reading-gates does: these are
- * geometric claims about the design, not about engine differences.
+ * WHICH PROJECTS. The geometry is a claim about the design and runs on
+ * chromium-desktop, for the same reason reading-gates does. The ORDER of the
+ * chain, the removals and the guard are claims about behaviour and run on
+ * every engine — and scroll positions are compared with a tolerance there,
+ * because WebKit and Firefox report a fractional maximum scroll on this
+ * document.
+ *
+ * WHY NO setViewportSize IN THE GEOMETRY BLOCKS. A resize rebuilds the rail's
+ * geometry, and rebuilding it is exactly what the round-6 defect was missing:
+ * measurements taken after a setViewportSize could not see a stale terminus
+ * and reported the ending aligned at four widths while a real browser showed
+ * the ring 33px above the button. Every seat below is a `test.use` viewport,
+ * set before the page is ever loaded.
  */
 
 declare global {
   interface Window {
     __world: {
       approved: boolean;
+      halted: boolean;
+      ring: { x: number; y: number } | null;
+      released?: boolean;
+      marks: Record<string, number>;
       flockFrom: { fx: number; fy: number } | null;
-      departure: { t0: number; tHead: number; tTail: number; done: boolean };
+      departure: { t0: number; pace: number; tTail: number };
+      /* the round-6 fields, declared so their ABSENCE can be asserted */
+      boom?: number;
+      armed?: boolean;
+      /* round 8: the morning's ground and sky, published by the code that
+         draws them */
+      scape?: {
+        W: number;
+        H: number;
+        hz: number;
+        free: number;
+        room: number;
+        groups: number;
+      };
+      sky?: {
+        spawned: number;
+        live: number;
+        entries: { entry: string; n: number; t: number }[];
+      };
+      ground?: { id: string; dx: number; x_off: number }[];
     };
     __onwardPath?: () => { x: number; y: number; L: number }[];
+    __rail?: () => { x: number; y: number }[];
   }
 }
 
-const DESKTOP: [number, number][] = [
+/** every seat the owner reads this page at, his own 1456×949 included */
+const SEATS: [number, number][] = [
   [1512, 982],
+  [1456, 949],
   [1440, 900],
   [1375, 800],
   [1280, 800],
 ];
 
-/** to the gate, with every builder run on the way down */
-async function toTheGate(page: Page): Promise<void> {
-  await page.goto("/");
+/** the two seats a phone reader actually has, plus the Pixel 5 the
+    chromium-mobile project emulates — 393×851, which is neither of them */
+const PHONES: [number, number][] = [
+  [390, 844],
+  [393, 851],
+  [320, 720],
+];
+
+/** geometry is a claim about the design, not about an engine */
+const geometryOnly = (testInfo: TestInfo): void => {
+  testInfo.skip(
+    testInfo.project.name !== "chromium-desktop",
+    "the ending's geometry is measured, not engine-dependent — chromium-desktop only"
+  );
+};
+
+/** to the gate, with every builder run on the way down, and never a resize.
+    `path` carries the run's own perf-lab flags, `?pace=0.25` for a sit. */
+async function toTheGate(page: Page, path = "/"): Promise<void> {
+  await page.goto(path);
   await page.evaluate(() => document.fonts.ready);
   await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
   const doc = await page.evaluate(() => document.documentElement.scrollHeight);
@@ -57,36 +119,40 @@ async function toTheGate(page: Page): Promise<void> {
     );
     await page.waitForTimeout(40);
   }
+  /* THE NAMEPLATE'S OWN PERFORMANCE IS PART OF THE LOAD. It ends by revealing
+     its replay control, which adds ~33px to ¶01 about 4.1s in and moves every
+     later station down with it. Waiting for data-np-ready is waiting for the
+     page to have finished changing height, which is the state a reader is
+     actually looking at when they reach the gate. */
+  await page
+    .waitForSelector("html[data-np-ready]", { timeout: 20_000 })
+    .catch(() => {});
   await page.evaluate(() =>
-    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" })
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "instant",
+    })
   );
   await page.waitForTimeout(600);
 }
 
-/** the bottom edge of an element's LAST line box, which is its baseline */
-async function baselines(page: Page) {
+/** the ring the canvas DREW, the socket, and the button, in one read */
+async function alignment(page: Page) {
   return page.evaluate(() => {
-    const base = (sel: string): number => {
-      const el = document.querySelector(sel);
-      if (!el) return NaN;
-      const probe = document.createElement("span");
-      probe.style.cssText =
-        "display:inline-block;width:0;height:0;overflow:hidden";
-      el.appendChild(probe);
-      const y = probe.getBoundingClientRect().bottom;
-      probe.remove();
-      return y;
-    };
-    const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect();
+    const box = (sel: string) =>
+      document.querySelector(sel)!.getBoundingClientRect();
     const btn = box("#approve");
     const sq = box("#gateDock i");
+    const ring = window.__world.ring;
     return {
-      btnBase: base("#approve"),
-      noteBase: base("#gateNote"),
-      timeBase: base(".approvebar .lt"),
-      btnMid: btn.top + btn.height / 2,
+      /* the ring is published in PAGE space by the code that strokes it, so
+         this is the ink and not the number the ink was meant to come from */
+      ringX: ring ? ring.x : null,
+      ringY: ring ? ring.y - window.scrollY : null,
       sqMid: sq.top + sq.height / 2,
+      sqX: sq.left + sq.width / 2,
       sqLeft: sq.left,
+      btnMid: btn.top + btn.height / 2,
       btnRight: btn.right,
       btnW: btn.width,
       btnH: btn.height,
@@ -94,335 +160,1008 @@ async function baselines(page: Page) {
   });
 }
 
-test.describe("¶12 · the last stop is one aligned object", () => {
-  for (const [w, h] of DESKTOP) {
-    test(`alignment at ${w}`, async ({ page }, testInfo) => {
+/* ══════════════════════════════════════════════════════════════════════
+   the still · what a reader meets before anything is pressed
+   ══════════════════════════════════════════════════════════════════════ */
+for (const [w, h] of SEATS) {
+  test.describe(`¶12 · the last stop is one aligned object · ${w}×${h}`, () => {
+    test.use({ viewport: { width: w, height: h } });
+    // eslint-disable-next-line no-empty-pattern
+    test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+    test(`ring, socket and button are one line at ${w}×${h}`, async ({
+      page,
+    }, testInfo) => {
       testInfo.setTimeout(120_000);
-      await page.setViewportSize({ width: w, height: h });
       await toTheGate(page);
-      const b = await baselines(page);
+      const a = await alignment(page);
 
-      /* THE SOCKET IS ON THE BUTTON'S CENTRE LINE. It is positioned against
-         the button's own box, so this cannot drift with a font fallback —
-         and it is positioned WITHOUT a transform, because buildThread
-         measures the square with absTop, which walks offsetTop and cannot
-         see one. A translateY(-50%) here put the square 4px below the ring
-         the canvas drew, which is what the owner saw first. */
-      expect(Math.abs(b.sqMid - b.btnMid), `socket on the button's centre at ${w}`)
-        .toBeLessThanOrEqual(1);
-      /* and 8px clear of the button, with 11px of ring inside that */
-      expect(b.sqLeft - b.btnRight, `socket clear of the button at ${w}`)
-        .toBeGreaterThanOrEqual(18);
-      expect(b.btnW, `the button is 150 wide at ${w}`).toBeCloseTo(150, 0);
-      expect(b.btnH, `the button is 44 tall at ${w}`).toBeCloseTo(44, 0);
+      expect(a.ringY, `the halt ring is drawn at ${w}`).not.toBeNull();
+      /* offsetTop is an integer and a client rect is not, so the rail and the
+         socket can sit half a pixel apart in honest agreement. 1px is the
+         smallest tolerance that is not chasing that rounding. */
+      expect(
+        Math.abs(a.ringY! - a.sqMid),
+        `ring on the socket at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringY! - a.btnMid),
+        `ring on the button's centre at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringX! - a.sqX),
+        `ring on the socket's own x at ${w}`
+      ).toBeLessThanOrEqual(1);
+      /* 20px of clear paper, with 16px of outer ring inside it */
+      expect(
+        a.sqLeft - a.btnRight,
+        `socket clear of the button at ${w}`
+      ).toBeGreaterThanOrEqual(18);
+      expect(a.btnW, `the button is 150 wide at ${w}`).toBeCloseTo(150, 0);
+      expect(a.btnH, `the button is 60 tall at ${w}`).toBeCloseTo(60, 0);
 
-      /* ONE BASELINE ACROSS THE PAGE. The button's label, the hour beside it
-         and the card's note opposite it sit on one line — the alignment the
-         whole composition is built around, and the one a reader's eye
-         actually checks. The hour is nudged by a measured em because a flex
-         control's baseline is synthesised and align-items:baseline does not
-         reach it. */
-      expect(Math.abs(b.noteBase - b.btnBase), `note on the button's line at ${w}`)
-        .toBeLessThanOrEqual(1.5);
-      expect(Math.abs(b.timeBase - b.btnBase), `22:41 on the button's line at ${w}`)
-        .toBeLessThanOrEqual(1.5);
+      /* 22:41 SITS ON THE BUTTON'S OWN LINE, and the nudge that puts it
+         there — .27em, on the hour rather than on the row — was tuned for a
+         44px button with a .78rem label. The button is 60px with .84rem
+         now, so this is re-measured rather than inherited: 1.0px at every
+         desktop seat and −0.5px on the phone. The owner reads a sagging
+         hour as the row coming apart, which is why it has its own claim. */
+      const lines = await page.evaluate(() => {
+        const base = (sel: string): number => {
+          const el = document.querySelector(sel)!;
+          const probe = document.createElement("span");
+          probe.style.cssText =
+            "display:inline-block;width:0;height:0;overflow:hidden";
+          el.appendChild(probe);
+          const y = probe.getBoundingClientRect().bottom;
+          probe.remove();
+          return y;
+        };
+        return {
+          btn: base("#approve"),
+          time: base(".approvebar .lt"),
+          btnBottom: document.querySelector("#approve")!.getBoundingClientRect()
+            .bottom,
+          footBottom: document
+            .querySelector(".b8 footer")!
+            .getBoundingClientRect().bottom,
+        };
+      });
+      expect(
+        Math.abs(lines.time - lines.btn),
+        `22:41 on the button's line at ${w}`
+      ).toBeLessThanOrEqual(1.5);
+      /* AND THE TWO COLUMNS CLOSE ON ONE PIXEL. The grid pulls the approve
+         bar to the foot of the timetable and the colophon to the foot of the
+         right column, so the screen ends on a single horizontal across its
+         whole width. Measured identical to the tenth of a pixel at all five
+         desktop seats — it is the composition's own claim, not a tolerance. */
+      expect(
+        Math.abs(lines.btnBottom - lines.footBottom),
+        `both columns close on one line at ${w}`
+      ).toBeLessThanOrEqual(1);
     });
 
-    test(`fits 100vh at ${w}`, async ({ page }, testInfo) => {
+    test(`the station is organised and fits at ${w}×${h}`, async ({
+      page,
+    }, testInfo) => {
       testInfo.setTimeout(120_000);
-      await page.setViewportSize({ width: w, height: h });
       await toTheGate(page);
       const fit = await page.evaluate(() => {
         const sec = document.querySelector("#gate")!.getBoundingClientRect();
-        const kicker = document.querySelector("#gate .kicker")!.getBoundingClientRect();
+        const kicker = document
+          .querySelector("#gate .kicker")!
+          .getBoundingClientRect();
         /* the last ink in the station, whatever it happens to be */
         let last = -Infinity;
+        let below = 0;
         for (const el of document.querySelectorAll("#gate *")) {
           if (!el.children.length && (el.textContent || "").trim()) {
             const r = el.getBoundingClientRect();
-            if (r.width) last = Math.max(last, r.bottom);
+            if (!r.width) continue;
+            last = Math.max(last, r.bottom);
+            if (r.bottom > window.innerHeight + 1 || r.top < -1) below++;
           }
         }
-        const door = document.querySelector("#gateDoor")!.getBoundingClientRect();
-        last = Math.max(last, door.bottom);
         return {
           kickerTop: kicker.top,
           kickerBottom: kicker.bottom,
           band: sec.bottom - last,
+          below,
+          overflow:
+            document.documentElement.scrollWidth -
+            document.documentElement.clientWidth,
+          morning: document
+            .querySelector("#nextmorning")!
+            .getBoundingClientRect().height,
+        };
+      });
+      expect(fit.kickerTop, `the kicker is on screen at ${w}`).toBeGreaterThan(
+        0
+      );
+      expect(fit.kickerBottom, `the kicker is on screen at ${w}`).toBeLessThan(
+        h
+      );
+      /* no dead band under the composition — measured 60–73px across these
+         five seats, against a ceiling that was set when the station still
+         had a wall hanging off the bottom of it */
+      expect(
+        fit.band,
+        `empty paper under the last ink at ${w}`
+      ).toBeLessThanOrEqual(96);
+      expect(
+        fit.below,
+        `every line of the station is inside the viewport at ${w}`
+      ).toBe(0);
+      expect(fit.overflow, `no horizontal overflow at ${w}`).toBe(0);
+      expect(
+        fit.morning,
+        `¶13 has no height until the run is approved, at ${w}`
+      ).toBe(0);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   the same object on a phone, where the socket changes sides
+   ══════════════════════════════════════════════════════════════════════ */
+for (const [w, h] of PHONES) {
+  test.describe(`¶12 · one aligned object on a phone · ${w}×${h}`, () => {
+    test.use({ viewport: { width: w, height: h } });
+    // eslint-disable-next-line no-empty-pattern
+    test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+    test(`ring, socket and button are one line at ${w}×${h}`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await toTheGate(page);
+      const a = await alignment(page);
+      const extra = await page.evaluate(() => {
+        const base = (sel: string): number => {
+          const el = document.querySelector(sel)!;
+          const probe = document.createElement("span");
+          probe.style.cssText =
+            "display:inline-block;width:0;height:0;overflow:hidden";
+          el.appendChild(probe);
+          const y = probe.getBoundingClientRect().bottom;
+          probe.remove();
+          return y;
+        };
+        const sq = document
+          .querySelector("#gateDock i")!
+          .getBoundingClientRect();
+        const btn = document.querySelector("#approve")!.getBoundingClientRect();
+        return {
+          gutter: btn.left - sq.right,
+          time: base(".approvebar .lt"),
+          btn: base("#approve"),
           overflow:
             document.documentElement.scrollWidth -
             document.documentElement.clientWidth,
         };
       });
-      expect(fit.kickerTop, `the kicker is on screen at ${w}`).toBeGreaterThan(0);
-      expect(fit.kickerBottom, `the kicker is on screen at ${w}`).toBeLessThan(h);
-      expect(fit.band, `empty paper under the last ink at ${w}`).toBeLessThanOrEqual(96);
-      expect(fit.overflow, `no horizontal overflow at ${w}`).toBe(0);
-    });
-  }
 
-  /* THE WAY ON IS A CURVE, AND IT HAS NO CORNER IN IT. The owner's words:
-     "the straight rail looks weird … it should follow a flowing path … not a
-     straight bar going from end to end", and then, of the first curve, that
-     it had a visible corner 12px under the socket.
-     A bar and a sweep are not distinguishable by "is there a line", so two
-     numbers are measured instead:
-       · the SAGITTA — how far the path departs from the straight line
-         between its own two ends, as a fraction of that line. A bar is 0.
-       · KINK2 — the greatest heading change across a 2px chord, resampled by
-         arc length. It is G10's own corner metric, pointed at this path, and
-         it is the number that caught the elbow: the hand-placed anchors it
-         replaced measured 9° to 14° and read as a bend on the page. */
-  const ONWARD_KINK = 16;
-  for (const [w, h] of [[1512, 982], [390, 844]] as [number, number][]) {
-    test(`the way on is a drawn curve, not a bar, at ${w}`, async ({
-      page,
-    }, testInfo) => {
-      testInfo.setTimeout(120_000);
-      await page.setViewportSize({ width: w, height: h });
-      await toTheGate(page);
-      const curve = await page.evaluate(() => {
-        const pts = window.__onwardPath!();
-        const a = pts[0], b = pts[pts.length - 1];
-        const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
-        let sag = 0;
-        for (const p of pts)
-          sag = Math.max(sag, Math.abs((p.x - a.x) * dy - (p.y - a.y) * dx) / len);
-        /* resampled every 2px of arc, exactly as railShape does */
-        const re: [number, number][] = [];
-        let j = 0;
-        for (let L = 0; L <= pts[pts.length - 1].L; L += 2) {
-          while (j < pts.length - 2 && pts[j + 1].L < L) j++;
-          const p = pts[j], q = pts[j + 1];
-          const t = q.L > p.L ? (L - p.L) / (q.L - p.L) : 0;
-          re.push([p.x + (q.x - p.x) * t, p.y + (q.y - p.y) * t]);
-        }
-        const hd = (i: number) =>
-          Math.atan2(re[i + 1][1] - re[i][1], re[i + 1][0] - re[i][0]);
-        let kink2 = 0;
-        for (let i = 0; i + 2 < re.length; i++) {
-          let d = (Math.abs(hd(i + 1) - hd(i)) * 180) / Math.PI;
-          if (d > 180) d = 360 - d;
-          kink2 = Math.max(kink2, d);
-        }
-        /* and it leaves the socket going down, on the day rail's own tangent,
-           so there is no corner where one line becomes the other */
-        const leaveDeg =
-          (Math.atan2(re[1][1] - re[0][1], Math.abs(re[1][0] - re[0][0])) * 180) /
-          Math.PI;
-        return { n: pts.length, ratio: sag / len, kink2, leaveDeg };
-      });
-      expect(curve.n, `the way on was built at ${w}`).toBeGreaterThan(40);
-      expect(curve.ratio, `it bows away from its own chord at ${w}`).toBeGreaterThan(0.08);
-      expect(curve.kink2, `sharpest corner on the way on at ${w}`).toBeLessThanOrEqual(
-        ONWARD_KINK
-      );
-      expect(curve.leaveDeg, `it leaves the socket going down at ${w}`).toBeGreaterThan(50);
+      expect(a.ringY, `the halt ring is drawn at ${w}`).not.toBeNull();
+      expect(
+        Math.abs(a.ringY! - a.sqMid),
+        `ring on the socket at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringY! - a.btnMid),
+        `ring on the button's centre at ${w}`
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(a.ringX! - a.sqX),
+        `ring on the socket's own x at ${w}`
+      ).toBeLessThanOrEqual(1);
+      /* THE SOCKET CHANGES SIDES HERE. On a desktop it hangs 20px off the
+         button's right edge; on a phone it steps back into the rail's own
+         26px gutter, left of the whole content column, so the line arrives
+         straight instead of swinging across to meet it. The desktop's
+         `sqLeft - btnRight` is negative here by construction, and the claim
+         that means anything is the clearance on the other side: measured
+         82px at 390, 393 and 320 alike. */
+      expect(
+        extra.gutter,
+        `the socket is clear of the button, in the gutter, at ${w}`
+      ).toBeGreaterThanOrEqual(18);
+      expect(a.btnW, `the button is 150 wide at ${w}`).toBeCloseTo(150, 0);
+      expect(a.btnH, `the button is 60 tall at ${w}`).toBeCloseTo(60, 0);
+      /* the hour's nudge is in em, so it holds where the faces scale
+         together: measured −0.5px at 390 and −0.4px at 393 and 320 */
+      expect(
+        Math.abs(extra.time - extra.btn),
+        `22:41 on the button's line at ${w}`
+      ).toBeLessThanOrEqual(1.5);
+      expect(extra.overflow, `no horizontal overflow at ${w}`).toBe(0);
     });
-  }
+  });
+}
 
-  /* and it is on the page BEFORE anything is pressed: the hook is that a
-     reader can see the run has somewhere else to go. */
-  test("the way on is drawn before the press, and the day's rail is not", async ({
+/* ══════════════════════════════════════════════════════════════════════
+   the alignment is DERIVED · the defect round 6 shipped
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶12 · the terminus follows the socket", () => {
+  test.use({ viewport: { width: 1456, height: 949 } });
+  // eslint-disable-next-line no-empty-pattern
+  test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+  test("a late layout change does not separate the ring from the button", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
-    await page.setViewportSize({ width: 1512, height: 982 });
     await toTheGate(page);
-    const state = await page.evaluate(() => ({
-      approved: window.__world.approved,
-      onward: window.__onwardPath!().length,
-      /* the day's rail is untouched by it: __rail() still ends at the socket */
-      railEndsAtSocket: (() => {
-        const s = (window as unknown as { __rail: () => { x: number; y: number }[] }).__rail();
-        const sq = document.querySelector("#gateDock i")!.getBoundingClientRect();
-        const last = s[s.length - 1];
-        return (
-          Math.abs(last.x - (sq.left + sq.width / 2)) < 1 &&
-          Math.abs(last.y - (sq.top + window.scrollY + sq.height / 2)) < 2
-        );
-      })(),
-      doorClosed: !document.getElementById("gateDoor")!.classList.contains("open"),
-    }));
-    expect(state.approved).toBe(false);
-    expect(state.onward, "the way on is drawn before the press").toBeGreaterThan(40);
-    expect(state.railEndsAtSocket, "the day's rail still ends at the socket").toBe(true);
-    expect(state.doorClosed, "the door is shut before the press").toBe(true);
-  });
-});
+    const before = await alignment(page);
+    expect(
+      Math.abs(before.ringY! - before.btnMid),
+      "aligned before anything moves"
+    ).toBeLessThanOrEqual(1);
 
-test.describe("¶12 · the press starts the journey", () => {
-  for (const [w, h] of [[1512, 982], [390, 844]] as [number, number][]) {
-    test(`the sequence at ${w}`, async ({ page }, testInfo) => {
-      testInfo.setTimeout(180_000);
-      await page.setViewportSize({ width: w, height: h });
-      await toTheGate(page);
+    /* THE REAL DEFECT, REPRODUCED DELIBERATELY. The page goes on growing
+       after the rail is built — the nameplate's replay control alone adds
+       ~33px to ¶01 about 4.1s in — and a terminus cached at boot stays where
+       the socket used to be. A 37px block prepended to ¶01's own inner box
+       is the same event with a number this test owns.
 
-      const before = await page.evaluate(() => window.scrollY);
-      await page.click("#approve");
-      const dep = await page.evaluate(() => ({ ...window.__world.departure }));
-      expect(dep.tHead, `the run takes a moment to get there at ${w}`).toBeGreaterThan(400);
-      expect(dep.tHead, `and not longer than a beat at ${w}`).toBeLessThan(2200);
-
-      /* THE PAGE DOES NOT MOVE UNDER THE READER while the run is travelling.
-         The carry is the reward for the press and it starts at t_head + 1360;
-         a scroll before that means the two are racing. Sampled every frame
-         rather than at the end, because the carry's own easing would hide a
-         jump at the start. */
-      const held = await page.evaluate(async (tHead: number) => {
-        const y0 = window.scrollY;
-        const t0 = performance.now();
-        let moved: [number, number] | null = null;
-        await new Promise<void>((done) => {
-          const tick = () => {
-            const t = performance.now() - t0;
-            if (window.scrollY !== y0 && !moved) moved = [Math.round(t), window.scrollY];
-            if (t < tHead + 1000) requestAnimationFrame(tick);
-            else done();
-          };
-          tick();
-        });
-        return { y0, moved };
-      }, dep.tHead);
-      expect(held.moved, `nothing scrolled before t_head + 1000 at ${w}`).toBeNull();
-      expect(held.y0).toBe(before);
-
-      /* the door is opened by the run arriving, and the birds leave AFTER it
-         is open — a flock coming out of a shut door is the defect this
-         ordering exists to prevent */
-      const doorFirst = await page.evaluate(
-        () =>
-          document.getElementById("gateDoor")!.classList.contains("open") &&
-          document.body.classList.contains("flying")
-      );
-      expect(doorFirst, `the door is open and the flock is away at ${w}`).toBe(true);
-
-      /* and they leave FROM the doorway, not from the dock a screen away */
-      const from = await page.evaluate(() => {
-        const d = document.getElementById("gateDoor")!.getBoundingClientRect();
-        const f = window.__world.flockFrom!;
-        return {
-          dx: Math.abs(f.fx * window.innerWidth - (d.left + d.width / 2)),
-          dy: Math.abs(f.fy * window.innerHeight - (d.top + d.height / 2)),
-          fx: f.fx,
-          west: document.getElementById("flock")!.classList.contains("west"),
-        };
-      });
-      expect(from.dx, `the flock leaves the doorway at ${w}`).toBeLessThanOrEqual(4);
-      /* fy is clamped into the band the sky has room in, so it is allowed to
-         differ; fx is not, and it is what decides the direction */
-      expect(from.fx, `the door sits west-bound at ${w}`).toBeGreaterThan(0.5);
-      expect(from.west, `the flock flies west at ${w}`).toBe(true);
+       IT HAS TO GO IN ¶01, and the first draft of this test put it in ¶02,
+       where it proved nothing: `.bwho` is `min-height:118vh` and ¶02's
+       content is 793px of a 1120px box, so the block was absorbed and
+       NOTHING below it moved — a gate that passed on a page that had not
+       changed. ¶01 is content-sized on every desktop seat, which is why the
+       replay control moves the document from there in the first place.
+       And it is NOT a resize: a resize rebuilds the geometry and would hide
+       exactly what is being measured. */
+    const grown = await page.evaluate(() => {
+      const sock = () => {
+        const r = document
+          .querySelector("#gateDock i")!
+          .getBoundingClientRect();
+        return r.top + window.scrollY + r.height / 2;
+      };
+      const was = sock();
+      const pad = document.createElement("div");
+      pad.style.height = "37px";
+      document.querySelector(".b1 .beat-inner")!.prepend(pad);
+      return { moved: sock() - was };
     });
-  }
+    /* the injection is only a reproduction if it actually moved the socket */
+    expect(
+      grown.moved,
+      "the socket moved down the page"
+    ).toBeGreaterThanOrEqual(30);
+    await page.evaluate(
+      () =>
+        new Promise<void>((r) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => r()))
+        )
+    );
+    await page.evaluate(() =>
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "instant",
+      })
+    );
+    await page.waitForTimeout(400);
 
-  test.describe("reduced motion", () => {
-    test("the door is open at once and no bird is ever built", async ({
-      page,
-    }, testInfo) => {
-      testInfo.setTimeout(120_000);
-      await page.setViewportSize({ width: 1512, height: 982 });
-      /* emulateMedia rather than test.use: the project fixtures this file
-         runs under are typed without a reducedMotion option, and the media
-         emulation is what the page actually reads. */
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await page.goto("/");
-      await page.evaluate(() => document.fonts.ready);
-      await page.locator("#approve").scrollIntoViewIfNeeded();
-      await page.waitForTimeout(300);
-      await page.click("#approve");
-      await page.waitForTimeout(400);
-      const rm = await page.evaluate(() => ({
-        birds: document.querySelectorAll(".bird").length,
-        open: document.getElementById("gateDoor")!.classList.contains("open"),
-        done: window.__world.departure.done,
-        morningReachable: !document
-          .getElementById("nextmorning")!
-          .hasAttribute("inert"),
-        note: document.getElementById("gateNote")!.textContent || "",
-        role: document.getElementById("gateNote")!.getAttribute("role"),
-      }));
-      expect(rm.birds, "no flock under reduced motion").toBe(0);
-      expect(rm.open, "the door is open at once").toBe(true);
-      expect(rm.done, "the way on is drawn at its finished frame").toBe(true);
-      expect(rm.morningReachable, "¶13 is reachable").toBe(true);
-      expect(rm.note).toMatch(/approved by hand at \d\d:\d\d/);
-      expect(rm.role, "the press is announced, not only seen").toBe("status");
+    const after = await alignment(page);
+    /* in PAGE space, because the terminus is a page coordinate and the
+       viewport-space comparison at max scroll reads the same number whether
+       the page moved or not */
+    const pageSpace = await page.evaluate(() => {
+      const r = document.querySelector("#gateDock i")!.getBoundingClientRect();
+      return {
+        sock: r.top + window.scrollY + r.height / 2,
+        ring: window.__world.ring ? window.__world.ring.y : null,
+      };
     });
+    expect(pageSpace.ring, "the ring is still drawn").not.toBeNull();
+    expect(
+      Math.abs(pageSpace.ring! - pageSpace.sock),
+      "the terminus followed the socket down the page"
+    ).toBeLessThanOrEqual(1);
+    expect(
+      Math.abs(after.ringY! - after.btnMid),
+      "and the ring is still on the button's centre"
+    ).toBeLessThanOrEqual(1);
   });
 });
 
 /* ══════════════════════════════════════════════════════════════════════
-   fig. 10 · three presses on one level
-
-   The owner rejected the round-3 drawing because the passed slip DROPPED out
-   of its press: a fall is the shape of a failure and it was drawn on the one
-   gate that succeeded. The claim this file makes is the correction itself —
-   at the settled frame nothing has moved downward, and the one slip that
-   travels travels sideways.
+   the removals · every engine, because markup is not a matter of taste
    ══════════════════════════════════════════════════════════════════════ */
-test.describe("fig. 10 · nothing falls", () => {
-  test("the passed slip travels sideways, and the plate is level", async ({
+test.describe("¶12 · the extra rail is gone", () => {
+  test("no wall, no boom, no doorway, no second path", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
-    await page.setViewportSize({ width: 1512, height: 982 });
-    await page.goto("/");
-    await page.evaluate(() => document.fonts.ready);
-    /* settle the plate: the scrub reads the plate's own position, so put it
-       where a reader who has stopped on it would have it */
-    const top = await page.evaluate(() => {
-      const el = document.querySelector("#gatesFig")!;
-      const r = el.getBoundingClientRect();
-      return r.top + window.scrollY + r.height / 2;
-    });
-    for (let y = Math.max(0, top - 2600); y < top; y += 400) {
-      await page.evaluate((yy) => window.scrollTo({ top: yy, behavior: "instant" }), y);
-      await page.waitForTimeout(40);
-    }
-    await page.evaluate(
-      (yy) => window.scrollTo({ top: yy, behavior: "instant" }),
-      top - 982 * 0.46
+    await toTheGate(page);
+    const state = await page.evaluate(() => ({
+      wall: document.querySelectorAll("#gateWall").length,
+      gateway: document.querySelectorAll(".gateway").length,
+      trip: document.querySelectorAll(".trip").length,
+      dep: document.querySelectorAll(".ladder.dep").length,
+      onward: typeof window.__onwardPath,
+      boom: window.__world.boom,
+      armed: window.__world.armed,
+      text: document.getElementById("gate")!.innerText,
+      dock: document.querySelectorAll("#gateDock").length,
+      aria: document.getElementById("approve")!.getAttribute("aria-disabled"),
+    }));
+    expect(state.wall, "the wall's opening is gone").toBe(0);
+    expect(state.gateway, "the gateway is gone").toBe(0);
+    expect(state.trip, "the band the way on crossed is gone").toBe(0);
+    expect(state.dep, "the far side's own ladder is gone").toBe(0);
+    expect(state.onward, "the way on's probe hook is gone").toBe("undefined");
+    expect(state.boom, "the boom is not a thing the world knows about").toBe(
+      undefined
     );
-    await page.waitForTimeout(500);
+    /* the arming went with the departure it was protecting: a hollow button
+       is the opposite of what this control is for */
+    expect(state.armed, "there is no arming left to be in").toBe(undefined);
+    expect(state.aria, "the control is never aria-disabled").toBeNull();
+    expect(state.text, "the far side is not named at the gate").not.toContain(
+      "run 043"
+    );
+    expect(state.dock, "there is exactly one socket").toBe(1);
+  });
 
-    const rows = await page.evaluate(() => {
-      return [...document.querySelectorAll("#gatesFig .grow.gbench")].map((row) => {
-        const slip = row.querySelector(".gslip") as HTMLElement;
-        const word = row.querySelector(".gword") as HTMLElement;
-        const bed = row.querySelector(".gbed")!.getBoundingClientRect();
-        const m = new DOMMatrixReadOnly(getComputedStyle(slip).transform);
-        return {
-          g: row.getAttribute("data-g"),
-          passed: row.classList.contains("passed"),
-          dx: m.e,
-          dy: m.f,
-          wordOpacity: +getComputedStyle(word).opacity,
-          slipBottom: slip.getBoundingClientRect().bottom,
-          bedTop: bed.top,
-        };
+  test("the ladder's last rung is 22:41, and a scroll never lights it", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await toTheGate(page);
+    const l = await page.evaluate(() => {
+      const rungs = [...document.querySelectorAll(".ladder li[data-ph]")];
+      return {
+        ph: rungs.map((li) => +(li as HTMLElement).dataset.ph!),
+        lastIsBar: rungs[rungs.length - 1].classList.contains("approvebar"),
+        lastHasButton: !!rungs[rungs.length - 1].querySelector("#approve"),
+        lit: rungs
+          .filter((li) => li.classList.contains("lit"))
+          .map((li) => +(li as HTMLElement).dataset.ph!),
+      };
+    });
+    /* check-beat-tables asserts this against the DOM at build time; this is
+       the same claim in a browser, where DEPLOY_PH is actually derived */
+    expect(l.ph, "one rung per stop of the run, in order").toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+    ]);
+    expect(l.lastIsBar, "and the last one is the approve bar").toBe(true);
+    expect(l.lastHasButton, "which is the row the button is in").toBe(true);
+    expect(
+      l.lit,
+      "22:41 is the one rung a scroll can never light"
+    ).not.toContain(11);
+  });
+
+  test("contact is reachable without approving anything", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await toTheGate(page);
+    const reach = await page.evaluate(() => {
+      const a = document.querySelector<HTMLAnchorElement>(
+        "#gate footer a[href^='mailto:']"
+      );
+      if (!a) return null;
+      const r = a.getBoundingClientRect();
+      return {
+        href: a.href,
+        inView: r.width > 0 && r.top >= 0 && r.bottom <= window.innerHeight,
+      };
+    });
+    expect(reach, "the colophon carries an address").not.toBeNull();
+    expect(reach!.href).toContain("mailto:");
+    expect(
+      reach!.inView,
+      "and it is on the screen the reader is already looking at"
+    ).toBe(true);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   the press · the only path into the morning
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶12 · a hand ends the run", () => {
+  test("the press stamps, lights the day and opens the morning, in that order", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(150_000);
+    await toTheGate(page);
+    const before = await page.evaluate(() => ({
+      morning: document.getElementById("nextmorning")!.getBoundingClientRect()
+        .height,
+      inert: document.getElementById("nextmorning")!.hasAttribute("inert"),
+      atgate: document.body.classList.contains("atgate"),
+    }));
+    expect(before.morning, "¶13 has no height before the press").toBe(0);
+    expect(before.inert, "and is out of the focus order").toBe(true);
+    /* the waiting mark on the button runs only while the gate is on screen */
+    expect(before.atgate, "the button is waiting").toBe(true);
+
+    await page.locator("#approve").click();
+    await page.waitForTimeout(400);
+    const mid = await page.evaluate(() => ({
+      approved: window.__world.approved,
+      stamped: document.getElementById("stamp")!.classList.contains("inked"),
+      note: document.getElementById("gateNote")!.textContent ?? "",
+      lit: [...document.querySelectorAll(".ladder li[data-ph].lit")].map(
+        (li) => +(li as HTMLElement).dataset.ph!
+      ),
+      atgate: document.body.classList.contains("atgate"),
+      spent: (document.getElementById("approve") as HTMLButtonElement).disabled,
+    }));
+    expect(mid.approved, "the world knows").toBe(true);
+    expect(mid.stamped, "the ink lands").toBe(true);
+    expect(mid.note, "and the note becomes the record of the press").toMatch(
+      /^approved by hand at \d\d:\d\d, your local time\.$/
+    );
+    expect(mid.lit, "the day reads itself back, all of it but 22:41").toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    ]);
+    expect(mid.atgate, "the waiting mark stops the moment it is answered").toBe(
+      false
+    );
+    expect(mid.spent, "and the control is spent").toBe(true);
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => document.body.classList.contains("atmorning")),
+        { timeout: 20_000, message: "the page lands on the morning" }
+      )
+      .toBe(true);
+
+    const end = await page.evaluate(() => ({
+      marks: window.__world.marks,
+      morning: document.getElementById("nextmorning")!.getBoundingClientRect()
+        .height,
+      inert: document.getElementById("nextmorning")!.hasAttribute("inert"),
+      hidden: document
+        .getElementById("nextmorning")!
+        .hasAttribute("aria-hidden"),
+      mail: (() => {
+        const el = document.getElementById("mail");
+        if (!el) return 0;
+        let o = 1;
+        let n: HTMLElement | null = el;
+        while (n && n.nodeType === 1) {
+          const v = parseFloat(getComputedStyle(n).opacity);
+          if (!Number.isNaN(v)) o *= v;
+          n = n.parentElement;
+        }
+        return o;
+      })(),
+    }));
+    /* the run's own stamps, written by the code that DRAWS each beat rather
+       than by the timers that scheduled it — a test that reads the schedule
+       back passes by construction and proves nothing about what happened */
+    expect(end.marks.bird, "the birds leave first").toBeLessThan(
+      end.marks.open
+    );
+    expect(
+      end.marks.open,
+      "then the morning comes into existence"
+    ).toBeLessThanOrEqual(end.marks.carry);
+    expect(end.morning, "¶13 has height now").toBeGreaterThan(0);
+    expect(end.inert, "and is in the focus order").toBe(false);
+    expect(end.hidden, "and in the accessibility tree").toBe(false);
+    expect(end.mail, "and its address is readable").toBeGreaterThan(0.9);
+  });
+
+  test("a second press changes nothing", async ({ page }, testInfo) => {
+    testInfo.setTimeout(150_000);
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForTimeout(600);
+    const once = await page.evaluate(() => ({
+      t0: window.__world.departure.t0,
+      note: document.getElementById("gateNote")!.textContent,
+    }));
+    /* the control is disabled by the first press, so this reaches the
+       handler only if something has gone wrong — which is the point */
+    await page.evaluate(() => document.getElementById("approve")!.click());
+    await page.waitForTimeout(300);
+    const twice = await page.evaluate(() => ({
+      t0: window.__world.departure.t0,
+      note: document.getElementById("gateNote")!.textContent,
+    }));
+    expect(twice.t0, "the clock did not restart").toBe(once.t0);
+    expect(twice.note, "and the record was not rewritten").toBe(once.note);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   the flock · in frame, nose east, never a blade
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶12 · the birds stay in the sky the reader can see", () => {
+  /* the paths themselves, sampled off each bird's real SVGPathElement rather
+     than re-derived from the numbers that built them */
+  const measurePaths = (page: Page) =>
+    page.evaluate(() => {
+      const out: { pitch: number; minDx: number; outside: number }[] = [];
+      for (const el of document.querySelectorAll<HTMLElement>(".bird")) {
+        const d = (el.style.offsetPath || "").replace(/^path\("|"\)$/g, "");
+        const svg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        const pe = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        pe.setAttribute("d", d);
+        svg.appendChild(pe);
+        document.body.appendChild(svg);
+        const len = pe.getTotalLength();
+        const s = parseFloat(el.style.getPropertyValue("--s"));
+        /* the silhouette is 88×34 about an anchor 30/17 into it: 46 to the
+           right of the anchor, 20 above it. A centre inside the frame with a
+           wing outside it is still a bird flying off the page. */
+        const padX = 46 * s;
+        const padY = 20 * s;
+        let pitch = 0;
+        let minDx = Infinity;
+        let outside = 0;
+        let prev = pe.getPointAtLength(0);
+        for (let i = 1; i <= 120; i++) {
+          const q = pe.getPointAtLength((len * i) / 120);
+          const dx = q.x - prev.x;
+          const dy = q.y - prev.y;
+          minDx = Math.min(minDx, dx);
+          pitch = Math.max(
+            pitch,
+            Math.abs((Math.atan2(-dy, Math.abs(dx)) * 180) / Math.PI)
+          );
+          if (
+            q.x - padX < 0 ||
+            q.x + padX > window.innerWidth ||
+            q.y - padY < 0 ||
+            q.y + padY > window.innerHeight
+          )
+            outside++;
+          prev = q;
+        }
+        svg.remove();
+        out.push({ pitch, minDx, outside });
+      }
+      return out;
+    });
+
+  const checkPaths = (
+    paths: { pitch: number; minDx: number; outside: number }[],
+    where: string
+  ): void => {
+    expect(paths.length, `the flock left at ${where}`).toBeGreaterThanOrEqual(
+      6
+    );
+    for (const [i, q] of paths.entries()) {
+      expect(q.outside, `bird ${i} never leaves the frame at ${where}`).toBe(0);
+      /* a leftward leg under offset-rotate:auto flies the bird upside down */
+      expect(q.minDx, `bird ${i} always goes east at ${where}`).toBeGreaterThan(
+        0
+      );
+      /* measured across every seat: 38.1–38.4° from 1280×800 to 1512×982,
+         46.7° at 390×844 and 47.2° at 320×720. The phone is steeper because
+         a narrow sky gives a climb far less room to lean out in, and the bow
+         is scaled back to pay for it. 50 is the ceiling; past it an 88×34
+         silhouette reads as a blade. */
+      expect(
+        q.pitch,
+        `bird ${i} is never stood on end at ${where}`
+      ).toBeLessThanOrEqual(50);
+    }
+  };
+
+  for (const [w, h] of [...SEATS, ...PHONES]) {
+    test.describe(`at ${w}×${h}`, () => {
+      test.use({ viewport: { width: w, height: h } });
+      // eslint-disable-next-line no-empty-pattern
+      test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+      test(`every path stays in the frame at ${w}×${h}`, async ({
+        page,
+      }, testInfo) => {
+        testInfo.setTimeout(150_000);
+        await toTheGate(page);
+        await page.locator("#approve").click();
+        await page.waitForTimeout(900);
+        checkPaths(await measurePaths(page), `${w}×${h}`);
       });
     });
-    expect(rows.length).toBe(3);
-    for (const r of rows) {
-      /* THE CORRECTION, ASSERTED: no slip ever moves down. */
-      expect(r.dy, `row ${r.g} has no vertical travel`).toBe(0);
-      /* every verdict is stamped at the settled frame, and it is 0 or 1 */
-      expect(r.wordOpacity, `row ${r.g} is stamped`).toBe(1);
-      /* and every slip still stands on its own bed */
-      expect(Math.abs(r.slipBottom - r.bedTop), `row ${r.g} stands on its bed`)
-        .toBeLessThanOrEqual(1.5);
-      if (r.passed) expect(r.dx, "the passed slip is out of its press").toBeGreaterThan(60);
-      else expect(r.dx, `row ${r.g} stayed in its press`).toBe(0);
-    }
-    /* and the plate does not outgrow the prose beside it */
-    const heights = await page.evaluate(() => {
-      const plate = document.querySelector("#gatesFig")!.getBoundingClientRect();
-      const prose = document.querySelector(".bhow .prose")!.getBoundingClientRect();
-      return { plate: plate.height, prose: prose.height };
-    });
-    expect(heights.plate, "fig. 10 is shorter than the prose column").toBeLessThan(
-      heights.prose
+  }
+
+  test("every path stays in the frame on the phone", async ({
+    page,
+  }, testInfo) => {
+    testInfo.skip(
+      testInfo.project.name !== "chromium-mobile",
+      "the phone's own sky, at the project's own device"
     );
+    testInfo.setTimeout(150_000);
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForTimeout(900);
+    const vp = page.viewportSize()!;
+    checkPaths(await measurePaths(page), `${vp.width}×${vp.height}`);
+  });
+
+  test("every bird is in frame at every 300ms of the flight", async ({
+    page,
+  }, testInfo) => {
+    testInfo.skip(
+      !/^(chromium-desktop|chromium-mobile)$/.test(testInfo.project.name),
+      "one desktop seat and one phone seat is the whole claim"
+    );
+    testInfo.setTimeout(180_000);
+    await toTheGate(page);
+    await page.locator("#approve").click();
+
+    const READ = () => {
+      const out: number[][] = [];
+      for (const el of document.querySelectorAll(".bird")) {
+        const svg = el.querySelector("svg");
+        if (!svg) continue;
+        const r = svg.getBoundingClientRect();
+        let o = 1;
+        let n: HTMLElement | null = el as HTMLElement;
+        while (n && n.nodeType === 1) {
+          const v = parseFloat(getComputedStyle(n).opacity);
+          if (!Number.isNaN(v)) o *= v;
+          n = n.parentElement;
+        }
+        /* a bird at no ink is not on the screen and is not measured */
+        if (o < 0.02 || r.width < 1) continue;
+        out.push([r.left, r.top, r.right, r.bottom]);
+      }
+      return out;
+    };
+
+    let seen = 0;
+    const escapes: string[] = [];
+    for (let i = 0; i < 32; i++) {
+      const rects = await page.evaluate(READ);
+      seen = Math.max(seen, rects.length);
+      const vp = page.viewportSize()!;
+      for (const [l, t, r, b] of rects) {
+        /* 2px of slack for subpixel layout and the engine's own rounding */
+        if (l < -2 || t < -2 || r > vp.width + 2 || b > vp.height + 2)
+          escapes.push(
+            `frame ${i}: [${Math.round(l)},${Math.round(t)},${Math.round(
+              r
+            )},${Math.round(b)}] outside ${vp.width}×${vp.height}`
+          );
+      }
+      await page.waitForTimeout(300);
+    }
+    expect(seen, "there were birds to measure").toBeGreaterThanOrEqual(6);
+    expect(escapes, "no bird leaves the viewport").toEqual([]);
+  });
+
+  test("they leave from the ring", async ({ page }, testInfo) => {
+    testInfo.setTimeout(150_000);
+    await toTheGate(page);
+    const ring = await page.evaluate(() => {
+      const r = document.querySelector("#gateDock i")!.getBoundingClientRect();
+      return {
+        fx: (r.left + r.width / 2) / window.innerWidth,
+        fy: (r.top + r.height / 2) / window.innerHeight,
+      };
+    });
+    await page.locator("#approve").click();
+    await expect
+      .poll(() => page.evaluate(() => window.__world.flockFrom !== null), {
+        timeout: 15_000,
+        message: "the flock was released",
+      })
+      .toBe(true);
+    const from = (await page.evaluate(() => window.__world.flockFrom))!;
+    /* the launch point is the socket's own box, clamped only by the sky's
+       edges — so on every seat it should BE the socket */
+    expect(
+      Math.abs(from.fx - ring.fx),
+      "they leave at the ring's x"
+    ).toBeLessThan(0.02);
+    expect(Math.abs(from.fy - ring.fy), "and at the ring's y").toBeLessThan(
+      0.02
+    );
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   the guard · a reader who asked for less motion is not given less page
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶12 · reduced motion goes straight to the morning", () => {
+  test("the press resolves everything at once, with nothing left moving", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    /* emulateMedia before the navigation, not test.use — run-home.spec.ts
+       records that the context-level option did not reach the page. */
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+    await page.locator("#approve").scrollIntoViewIfNeeded();
+    await page.locator("#approve").click();
+    await page.waitForTimeout(500);
+
+    const rm = await page.evaluate(() => ({
+      atmorning: document.body.classList.contains("atmorning"),
+      gateopen: document.body.classList.contains("gateopen"),
+      released: window.__world.released,
+      birds: document.querySelectorAll(".bird").length,
+      running: document.getAnimations().filter((a) => a.playState === "running")
+        .length,
+      inert: document.getElementById("nextmorning")!.hasAttribute("inert"),
+      mail: !!document.getElementById("mail"),
+    }));
+    expect(rm.gateopen, "the morning exists").toBe(true);
+    expect(rm.atmorning, "and the page is at it").toBe(true);
+    expect(rm.released, "the run was released, without a journey").toBe(true);
+    expect(rm.inert, "¶13 is in the focus order").toBe(false);
+    expect(rm.mail, "and the address is in the document").toBe(true);
+    /* the flock layer exists and is never populated under reduced motion,
+       and the waiting mark on the button is behind a no-preference query */
+    expect(rm.birds, "no birds are ever built").toBe(0);
+    expect(rm.running, "nothing is left animating").toBe(0);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the morning has a ground and a sky (round 8)
+   The owner asked for a sketch landscape under the last page's words and for
+   the birds to fly again once the morning lands. What that may not do is
+   also an assertion: the words keep their air from the drawing, nothing
+   under reduced motion moves, every bird stays inside the frame the reader
+   can see, and every roamer stays within a hand's width of where it was
+   drawn. check-dawnscape holds the same claims at seven seats in
+   verify:portfolio; these are the long sit and the per-seat air, on the
+   engine the geometry is measured on.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the morning has a ground and a sky", () => {
+  const CLEAR_PX = 24;
+  const RANGE_PX = 30;
+
+  /** the words' own ink against every subject's box, roamers over their
+      whole range: the number the owner's eye would object to first */
+  const clearance = (page: Page) =>
+    page.evaluate((RANGE) => {
+      const svg = document.querySelector(".dawnscape")!;
+      const walker = document.createTreeWalker(
+        document.querySelector(".dawnwrap")!,
+        NodeFilter.SHOW_TEXT
+      );
+      const texts: [number, number, number, number, string][] = [];
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent!.trim()) continue;
+        const rg = document.createRange();
+        rg.selectNodeContents(n);
+        for (const r of rg.getClientRects())
+          if (r.width && r.height)
+            texts.push([
+              r.left,
+              r.top,
+              r.right,
+              r.bottom,
+              n.textContent!.trim().slice(0, 20),
+            ]);
+      }
+      const box = (el: Element, pad: number) => {
+        const r = el.getBoundingClientRect();
+        return [r.left - pad, r.top, r.right + pad, r.bottom] as const;
+      };
+      const subs = [
+        ...[...svg.querySelectorAll(".ds-tree, .ds-tuft, .ds-back path")].map(
+          (el) => box(el, 0)
+        ),
+        ...[...svg.querySelectorAll(".ds-deer, .ds-gull")].map((el) =>
+          box(el, RANGE)
+        ),
+      ];
+      let gap = Infinity;
+      let at = "";
+      for (const t of texts)
+        for (const s of subs) {
+          const g = Math.max(
+            Math.max(s[0] - t[2], t[0] - s[2]),
+            Math.max(s[1] - t[3], t[1] - s[3])
+          );
+          if (g < gap) {
+            gap = g;
+            at = t[4];
+          }
+        }
+      return {
+        gap,
+        at,
+        paths: svg.querySelectorAll("path").length,
+        scape: window.__world.scape,
+      };
+    }, RANGE_PX);
+
+  for (const [w, h] of [...SEATS, ...PHONES]) {
+    test.describe(`the words keep their air at ${w}×${h}`, () => {
+      test.use({ viewport: { width: w, height: h } });
+      // eslint-disable-next-line no-empty-pattern
+      test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+      test(`no drawn subject comes within ${CLEAR_PX}px of the words`, async ({
+        page,
+      }, testInfo) => {
+        testInfo.setTimeout(150_000);
+        await toTheGate(page, "/?pace=0.25");
+        await page.locator("#approve").click();
+        await page.waitForFunction(
+          () =>
+            document.body.classList.contains("atmorning") &&
+            !document.body.classList.contains("carrying"),
+          null,
+          { timeout: 30_000 }
+        );
+        await page.waitForTimeout(300);
+        const c = await clearance(page);
+        expect(c.scape, "the ground was built").toBeTruthy();
+        if (c.scape!.room < 0) {
+          /* no room under the column at this seat: nothing may be drawn */
+          expect(c.paths, "nothing drawn where there is no ground").toBe(0);
+          return;
+        }
+        expect(c.paths, "the ground is drawn").toBeGreaterThan(5);
+        expect(
+          c.gap,
+          `"${c.at}" keeps ${CLEAR_PX}px from the drawing at ${w}×${h}`
+        ).toBeGreaterThanOrEqual(CLEAR_PX);
+      });
+    });
+  }
+
+  test.describe("at his seat", () => {
+    test.use({ viewport: { width: 1456, height: 949 } });
+    // eslint-disable-next-line no-empty-pattern
+    test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+    test("the sky stays alive and in frame through a sit, and the ground keeps its range", async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(240_000);
+      const PACE = 0.25;
+      await toTheGate(page, `/?pace=${PACE}`);
+      await page.locator("#approve").click();
+      await page.waitForFunction(
+        () => document.body.classList.contains("morninglive"),
+        null,
+        { timeout: 30_000 }
+      );
+      const W = 1456;
+      const H = 949;
+      const READ = () => {
+        const out: [number, number, number, number, number][] = [];
+        for (const el of document.querySelectorAll<HTMLElement>(".bird")) {
+          const svg = el.querySelector("svg");
+          if (!svg) continue;
+          const r = svg.getBoundingClientRect();
+          let o = 1;
+          let n: HTMLElement | null = el;
+          while (n && n.nodeType === 1) {
+            const v = parseFloat(getComputedStyle(n).opacity);
+            if (!Number.isNaN(v)) o *= v;
+            n = n.parentElement;
+          }
+          if (
+            o < 0.05 ||
+            r.width < 1 ||
+            getComputedStyle(el).visibility === "hidden"
+          )
+            continue;
+          out.push([
+            el.classList.contains("far") ? 1 : 0,
+            r.left,
+            r.top,
+            r.right,
+            r.bottom,
+          ]);
+        }
+        return {
+          birds: out,
+          t: performance.now() - window.__world.departure.t0,
+        };
+      };
+      /* 90s of wall clock is six minutes of the page's own morning */
+      const tLand = await page.evaluate(
+        () => performance.now() - window.__world.departure.t0
+      );
+      let first: number | null = null;
+      let gapFrom: number | null = null;
+      let worstGap = 0;
+      const escapes: string[] = [];
+      let maxFar = 0;
+      for (let t = 0; t < 90_000; t += 2000) {
+        const { birds, t: now } = await page.evaluate(READ);
+        if (birds.length && first === null) first = now - tLand;
+        maxFar = Math.max(maxFar, birds.filter((b) => b[0]).length);
+        for (const [, l, tp, r, b] of birds)
+          if (l < 8 || tp < 8 || r > W - 8 || b > H - 8)
+            escapes.push(
+              `t=${Math.round(now)}: [${Math.round(l)},${Math.round(tp)},${Math.round(r)},${Math.round(b)}]`
+            );
+        if (!birds.length) {
+          if (gapFrom === null) gapFrom = now;
+          worstGap = Math.max(worstGap, now - gapFrom + 2000);
+        } else gapFrom = null;
+        await page.waitForTimeout(2000);
+      }
+      const fin = await page.evaluate(() => ({
+        sky: window.__world.sky,
+        ground: window.__world.ground || [],
+        tf: [
+          ...document.querySelectorAll<SVGGElement>(
+            ".dawnscape .ds-gull, .dawnscape .ds-deer"
+          ),
+        ].map((el) => [el.dataset.id || "deer", el.style.transform] as const),
+      }));
+      /* the morning lands with birds in it: 2s of the page's clock */
+      expect(first, "a bird was visible during the sit").not.toBeNull();
+      expect(first!, "a bird within 2s of landing").toBeLessThanOrEqual(
+        2000 * PACE + 500
+      );
+      expect(
+        worstGap / PACE,
+        "no empty-sky gap over 40s of the page's clock"
+      ).toBeLessThanOrEqual(40_000);
+      expect(escapes, "no visible bird within 8px of an edge").toEqual([]);
+      expect(maxFar, "never more than three far birds").toBeLessThanOrEqual(3);
+      expect(fin.sky!.spawned, "the sky kept spawning").toBeGreaterThanOrEqual(
+        4
+      );
+      /* the home range, in the author's frame: the log's worst offset, and
+         one roamer's drawn transform against what the log says of it */
+      const maxOff: Record<string, number> = {};
+      for (const g of fin.ground)
+        maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
+      for (const [id, off] of Object.entries(maxOff))
+        expect(off, `${id} stays within ±${RANGE_PX}px`).toBeLessThanOrEqual(
+          RANGE_PX
+        );
+      expect(fin.ground.length, "the ground had events").toBeGreaterThan(0);
+      for (const [id, tf] of fin.tf) {
+        const last = [...fin.ground].reverse().find((g) => g.id === id);
+        if (!last) continue;
+        const shown = parseFloat(tf.replace(/^translate\(/, "")) || 0;
+        expect(
+          Math.abs(shown - last.x_off),
+          `${id} is drawn where the log says (${shown} vs ${last.x_off})`
+        ).toBeLessThanOrEqual(0.6);
+      }
+    });
+
+    test("reduced motion: the ground is there, and still", async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto("/");
+      await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+      await page.locator("#approve").scrollIntoViewIfNeeded();
+      await page.locator("#approve").click();
+      await page.waitForTimeout(600);
+      const rm = await page.evaluate(() => {
+        const svg = document.querySelector(".dawnscape")!;
+        return {
+          paths: svg.querySelectorAll("path").length,
+          op: getComputedStyle(svg).opacity,
+          anims: document
+            .getAnimations()
+            .filter((a) => svg.contains((a.effect as KeyframeEffect).target!))
+            .length,
+          live: document.body.classList.contains("morninglive"),
+          scape: window.__world.marks.scape,
+          flock: getComputedStyle(document.getElementById("flock")!).display,
+        };
+      });
+      expect(rm.paths, "the ground is drawn").toBeGreaterThan(5);
+      expect(rm.op, "and simply there").toBe("1");
+      expect(rm.anims, "nothing inside it animates").toBe(0);
+      expect(rm.live, "the wind is never switched on").toBe(false);
+      expect(rm.scape, "the ground still reports settled").toBeDefined();
+      expect(rm.flock, "the flock layer is hidden").toBe("none");
+    });
   });
 });
