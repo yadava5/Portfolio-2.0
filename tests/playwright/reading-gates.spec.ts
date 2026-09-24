@@ -823,12 +823,16 @@ test.describe("G4 · the manifest never covers text", () => {
     await page.waitForTimeout(600);
     /* DERIVED FROM A MEASURED RECT, NOT FROM 40%/50%. Those two literals
        were a description of where the reading column happened to be when
-       this control was written; at HEAD they land in the gap between the
-       nameplate and the epigraph, so the control proved only that the
-       probe can return an empty array. Place the peek on the first
-       nameplate character that is actually on screen instead, 4px inside
-       its left edge and centred on its height — the target moves with the
-       page and the control moves with it. */
+       this control was written. At HEAD they land in the gap between the
+       nameplate and the epigraph — measured, the old placement puts the
+       peek at [605,491,777,522] and the probe returns zero hits — so the
+       control went RED, and it went red for a reason that has nothing to
+       do with the thing it exists to prove. A control that fails because
+       its own coordinates drifted is worse than no control: the next
+       person reads a red G4 as a page defect and goes looking in the page.
+       Place the peek on the first nameplate character that is actually on
+       screen instead, 4px inside its left edge and centred on its height —
+       the target moves with the page, so the control moves with it. */
     const target = await page.evaluate(() => {
       const e = document.getElementById("mpeek")!;
       const ch = [...document.querySelectorAll("h1.nameplate span.np-ch")].find(
