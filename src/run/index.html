@@ -813,7 +813,7 @@ if (location.hash.length > 1) {
        The colophon takes the row above it whole and keeps its own measure,
        so nothing under the timetable moved; what changed is that the
        screen now closes on one line instead of trailing off. */
-    grid-template-rows:auto auto minmax(110px, 1fr) auto auto;
+    grid-template-rows:auto auto minmax(44px, 1fr) auto auto;
     grid-template-areas:"tt head" "tt card" "trip trip" "foot foot" "gate gate";
     column-gap:clamp(2rem, 5vw, 5rem); width:100%; align-items:start;
     /* the station claims 88% of the screen and the trip row is the only one
@@ -998,7 +998,17 @@ if (location.hash.length > 1) {
 
      What is markup here is only what a person reads or acts on: the doorway's
      own box and its label. The trip band holds the room the line needs. */
-  .trip{min-height:clamp(96px, 13vh, 150px)}
+  /* THE SLACK ROW PAYS FOR THE WALL, AND THAT IS WHAT IT IS FOR. #gate is a
+     flex box with align-items:center, so anything that makes .beat-inner
+     taller than 88vh moves its top up by half the growth — and the socket
+     with it. The gate row is 62px of new height, and at 800px tall that took
+     the station 52px over 88vh and carried the rail's terminus 12px up the
+     page, which G10b and the cargo fixture both read. The trip's floor comes
+     down by the same order, so the content still fits inside 88vh at every
+     desktop seat and the 1fr absorbs the difference: the socket lands on
+     round 4's pixel. The way on loses nothing by it — it gains 62px of drop
+     below the colophon for every pixel the band above it gives up. */
+  .trip{min-height:clamp(44px, 5.8vh, 150px)}
   /* ————— the wall, and the doorway in it —————
      THE RUN NO LONGER STOPS IN OPEN PAPER. The owner's verdict on round 4
      was that the way on ended nowhere: "why are we ending on an empty
@@ -1583,6 +1593,9 @@ if (location.hash.length > 1) {
     .b8 footer, .b8 .gateway{align-self:stretch}
     .gatecard{max-width:640px}
     .b8 .ghead, .b8 .gatecard, .b8 .ladder.tt{max-width:640px}
+    /* the stacked column has no 88vh to fit inside and no flex centring to
+       be moved by, so the band the way on crosses keeps its own measure */
+    .trip{min-height:clamp(96px, 12vh, 150px)}
     /* THE RAIL'S OPACITY IS CONSTANT EVERYWHERE. This block used to set
        `#thread{opacity:.55}` with the note "the line passes behind stacked
        plates", and the note describes something the z-order already does:

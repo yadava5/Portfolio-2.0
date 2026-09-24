@@ -463,16 +463,23 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      colour-bearing rule of that drawing carries it.
 
      `.approvebar` AND `.gateway` JOINED THE SCAN with round 4's ending. ¶12
-     draws in two places now — the way on, which is a line on the thread's own
-     canvas taking its ink from the `inkC` tokens the engine reads off :root,
-     and the socket, the time and the door, which are markup. The markup half
-     is the half a redraw can quietly re-colour, so it is measured here
-     against the same floors as a figure's. The door leaf's stroke is
-     deliberately NOT in one of those selectors (`#gateDoor .leaf`) and the
-     reason is written beside it: a closed door's panel is the page's own
-     paper, not a stroke on the field, and the graphics floor does not reach
-     it. Shown red before it was shown green, on a temp copy with the door's
-     jamb set to --hair.
+     draws in two places — the wall, its jambs, the boom and the way on, which
+     are strokes on the thread's own canvas taking their ink from the `inkC`
+     tokens the engine reads off :root, and the socket, the time, the button's
+     two states and the far side's label, which are markup. The markup half is
+     the half a redraw can quietly re-colour, so it is measured here against
+     the same floors as a figure's.
+     ROUND 6 RETIRED THE DOOR and with it the `#gateDoor .leaf` exemption this
+     note used to carry: there is no filled leaf any more, so there is no
+     paper-on-paper stroke to hold out of the scan. What the canvas draws in
+     its place — --ink for the wall, --ink-2 for the poché and the label,
+     --clay-g for the held boom and --pine for the lifted one — is the same
+     four tokens `.figsvg` already declares for figs. 09 and 10, so every one
+     of them is held at a floor here whether the canvas is scanned or not.
+     Shown red before it was shown green, on a temp copy with the far side's
+     label set to --hair: the scan reads the token out of `.gateway` and the
+     file prints twelve failures, the tightest of them 1.71:1 / Lc 9.0 on the
+     night field #2c2622, against a 3:1 graphic floor.
 
      WHY NOT SCAN ALL OF `#gatesFig`, which is the obvious fix: measured, it
      goes red at HEAD on a correct answer. `.gates .grow` and `.gates .gclose`
