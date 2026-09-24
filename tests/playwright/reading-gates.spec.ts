@@ -752,10 +752,25 @@ test.describe("G4 · the manifest never covers text", () => {
   }
 
   /* THE PEEK, WHICH IS THE PART OF THE MANIFEST THAT ARRIVES UNINVITED.
-     stepPage teleports, and the peek retires without showing if its first
-     qualifying scroll lands past one viewport — so the sweep above never
-     raises it and could not see it if it were wrong. This drives it the way
-     a reader does: one short wheel from the top. */
+
+     This used to say the sweep above never raises the peek, so these three
+     tests were the only ones that could see it. That was wrong, and the
+     round-6 regression is what proved it: stepPage's FIRST teleport is
+     h/2 — 491, 450, 400, 384 at 1512, 1440, 1280, 1024 — which is a
+     qualifying scroll inside one viewport, and the peek came up on it and
+     landed on the nameplate at 1280 and 1024. The sweep caught it; the
+     wheel tests below did not, because 130px never reaches the band where
+     the name passes through the corner.
+
+     Both still run, and they no longer see the same thing. Measured at
+     HEAD, the sweep now raises the peek at y=491 (1512), y=450 (1440),
+     y=800 (1280) and y=768 (1024): at the two narrow widths the first
+     teleport is covered and refused, and the second lands on exactly
+     `scrollY === innerHeight`, which the retire rule admits by one pixel.
+     So at 1280 and 1024 the sweep's sight of the peek hangs on a boundary,
+     and the wheel tests below are the ones that raise it reliably. Keep
+     both. They drive it the way a reader does: one short wheel from the
+     top. */
   for (const w of [1512, 1440, 1280]) {
     test(`the first-scroll peek covers no text at ${w}`, async ({
       browser,
@@ -806,12 +821,34 @@ test.describe("G4 · the manifest never covers text", () => {
     await arrive(page);
     await page.mouse.wheel(0, 130);
     await page.waitForTimeout(600);
-    await page.evaluate(() => {
+    /* DERIVED FROM A MEASURED RECT, NOT FROM 40%/50%. Those two literals
+       were a description of where the reading column happened to be when
+       this control was written; at HEAD they land in the gap between the
+       nameplate and the epigraph, so the control proved only that the
+       probe can return an empty array. Place the peek on the first
+       nameplate character that is actually on screen instead, 4px inside
+       its left edge and centred on its height — the target moves with the
+       page and the control moves with it. */
+    const target = await page.evaluate(() => {
       const e = document.getElementById("mpeek")!;
-      e.style.setProperty("left", "40%", "important");
+      const ch = [...document.querySelectorAll("h1.nameplate span.np-ch")].find(
+        (s) => window.__gate.effOpacity(s) > 0.05
+      );
+      if (!ch) return null;
+      const q = ch.getBoundingClientRect();
+      e.style.setProperty("left", `${Math.round(q.left + 4)}px`, "important");
       e.style.setProperty("right", "auto", "important");
-      e.style.setProperty("top", "50%", "important");
+      e.style.setProperty(
+        "top",
+        `${Math.round(q.top + q.height / 2)}px`,
+        "important"
+      );
+      return { text: ch.textContent, box: [q.left, q.top, q.right, q.bottom] };
     });
+    expect(
+      target,
+      "no nameplate character was legible — the control had nothing to sit on"
+    ).not.toBeNull();
     await page.waitForTimeout(300);
 
     const { visible, hits } = await page.evaluate(MANIFEST_PROBE);
@@ -823,10 +860,9 @@ test.describe("G4 · the manifest never covers text", () => {
       "the peek was moved onto the nameplate and the probe reported " +
         "nothing — the probe is broken, not the page"
     ).toBeGreaterThan(0);
-    expect(
-      hits.join(" "),
-      "the hit was not attributed to #mpeek"
-    ).toContain("#mpeek");
+    expect(hits.join(" "), "the hit was not attributed to #mpeek").toContain(
+      "#mpeek"
+    );
   });
 
   /* THE CONTROL. Zero overlaps is the right answer and also what a detector
@@ -1205,9 +1241,7 @@ async function railTerminus(page: Page) {
         __rail: () => { x: number; y: number; L: number }[];
       }
     ).__rail();
-    const sq = document
-      .querySelector("#gateDock i")!
-      .getBoundingClientRect();
+    const sq = document.querySelector("#gateDock i")!.getBoundingClientRect();
     const cx = sq.left + sq.width / 2;
     const cy = sq.top + window.scrollY + sq.height / 2;
     let lock = 0,
@@ -1264,7 +1298,10 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
       await arrive(page);
       const r = await railTerminus(page);
       expect(r.n, "the rail was sampled").toBeGreaterThan(200);
-      expect(r.lock, `the last 40px hold the socket's x at ${w}`).toBeLessThanOrEqual(0.5);
+      expect(
+        r.lock,
+        `the last 40px hold the socket's x at ${w}`
+      ).toBeLessThanOrEqual(0.5);
       expect(
         Math.abs(r.lastX - r.cx),
         `the last sample's x is the socket's at ${w}`
