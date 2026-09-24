@@ -621,18 +621,6 @@ test.describe("¶12 · a hand ends the run", () => {
       hidden: document
         .getElementById("nextmorning")!
         .hasAttribute("aria-hidden"),
-      mail: (() => {
-        const el = document.getElementById("mail");
-        if (!el) return 0;
-        let o = 1;
-        let n: HTMLElement | null = el;
-        while (n && n.nodeType === 1) {
-          const v = parseFloat(getComputedStyle(n).opacity);
-          if (!Number.isNaN(v)) o *= v;
-          n = n.parentElement;
-        }
-        return o;
-      })(),
     }));
     /* the run's own stamps, written by the code that DRAWS each beat rather
        than by the timers that scheduled it — a test that reads the schedule
@@ -647,7 +635,27 @@ test.describe("¶12 · a hand ends the run", () => {
     expect(end.morning, "¶13 has height now").toBeGreaterThan(0);
     expect(end.inert, "and is in the focus order").toBe(false);
     expect(end.hidden, "and in the accessibility tree").toBe(false);
-    expect(end.mail, "and its address is readable").toBeGreaterThan(0.9);
+    /* measured: body.atmorning lands and .dawnrow is at opacity 0 until
+       1s later, 1 by 1.9s (the arrival stagger's own delay and fade), so a
+       sample at 0ms reads 0 while nobody is ever left without the address */
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => {
+            const el = document.getElementById("mail");
+            if (!el) return 0;
+            let o = 1;
+            let n: HTMLElement | null = el;
+            while (n && n.nodeType === 1) {
+              const v = parseFloat(getComputedStyle(n).opacity);
+              if (!Number.isNaN(v)) o *= v;
+              n = n.parentElement;
+            }
+            return o;
+          }),
+        { timeout: 6_000, message: "and its address is readable" }
+      )
+      .toBeGreaterThan(0.9);
   });
 
   test("a second press changes nothing", async ({ page }, testInfo) => {
@@ -851,7 +859,7 @@ test.describe("¶12 · the birds stay in the sky the reader can see", () => {
     });
     await page.locator("#approve").click();
     await expect
-      .poll(() => page.evaluate(() => window.__world.flockFrom !== null), {
+      .poll(() => page.evaluate(() => window.__world.flockFrom != null), {
         timeout: 15_000,
         message: "the flock was released",
       })
@@ -923,62 +931,129 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
   const CLEAR_PX = 24;
   const RANGE_PX = 30;
 
-  /** the words' own ink against every subject's box, roamers over their
-      whole range: the number the owner's eye would object to first */
+  const GRASS_CAP = 10;
+
+  /** the words' own ink, the quote with a 64px halo and the rest with 24,
+      against every point of every path the drawing makes, sampled along its
+      length through its screen matrix, plus what could move the point: a
+      roamer's home range, a swaying group's amplitude at that radius. Round
+      9 drew the whole page, and a subject's bounding box stopped meaning
+      anything (the tree's box wraps a corner and contains the quote). Also
+      the tallest grass under the signature's own line. */
   const clearance = (page: Page) =>
-    page.evaluate((RANGE) => {
-      const svg = document.querySelector(".dawnscape")!;
-      const walker = document.createTreeWalker(
-        document.querySelector(".dawnwrap")!,
-        NodeFilter.SHOW_TEXT
-      );
-      const texts: [number, number, number, number, string][] = [];
-      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-        if (!n.textContent!.trim()) continue;
-        const rg = document.createRange();
-        rg.selectNodeContents(n);
-        for (const r of rg.getClientRects())
-          if (r.width && r.height)
-            texts.push([
-              r.left,
-              r.top,
-              r.right,
-              r.bottom,
-              n.textContent!.trim().slice(0, 20),
-            ]);
-      }
-      const box = (el: Element, pad: number) => {
-        const r = el.getBoundingClientRect();
-        return [r.left - pad, r.top, r.right + pad, r.bottom] as const;
-      };
-      const subs = [
-        ...[...svg.querySelectorAll(".ds-tree, .ds-tuft, .ds-back path")].map(
-          (el) => box(el, 0)
-        ),
-        ...[...svg.querySelectorAll(".ds-deer, .ds-gull")].map((el) =>
-          box(el, RANGE)
-        ),
-      ];
-      let gap = Infinity;
-      let at = "";
-      for (const t of texts)
-        for (const s of subs) {
-          const g = Math.max(
-            Math.max(s[0] - t[2], t[0] - s[2]),
-            Math.max(s[1] - t[3], t[1] - s[3])
-          );
-          if (g < gap) {
-            gap = g;
-            at = t[4];
+    page.evaluate(
+      ({ RANGE, CLEAR, CAP }) => {
+        const svg = document.querySelector(".dawnscape") as SVGSVGElement;
+        const walker = document.createTreeWalker(
+          document.querySelector(".dawnwrap")!,
+          NodeFilter.SHOW_TEXT
+        );
+        const texts: [number, number, number, number, number, string][] = [];
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          if (!n.textContent!.trim()) continue;
+          const rg = document.createRange();
+          rg.selectNodeContents(n);
+          const halo = n.parentElement!.closest(".endquote") ? 64 : CLEAR;
+          for (const r of rg.getClientRects())
+            if (r.width && r.height)
+              texts.push([
+                r.left,
+                r.top,
+                r.right,
+                r.bottom,
+                halo,
+                n.textContent!.trim().slice(0, 20),
+              ]);
+        }
+        for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
+          const el = document.querySelector(sel);
+          if (!el) continue;
+          const r = el.getBoundingClientRect();
+          if (
+            r.width &&
+            r.height &&
+            getComputedStyle(el).visibility !== "hidden"
+          )
+            texts.push([r.left, r.top, r.right, r.bottom, CLEAR, sel]);
+        }
+        const pt = svg.createSVGPoint();
+        let worst = { margin: Infinity, gap: 0, need: 0, at: "", sub: "" };
+        for (const p of svg.querySelectorAll("path")) {
+          const L = p.getTotalLength();
+          if (!L) continue;
+          const m = p.getScreenCTM()!;
+          const range = p.closest(".ds-deer, .ds-gull, .ds-hare") ? RANGE : 0;
+          const sw = p.closest("[class*=sway-]") as SVGGElement | null;
+          let ox = 0,
+            oy = 0,
+            tanA = 0;
+          if (sw) {
+            const o = (sw.style.transformOrigin || "0px 0px")
+              .split(" ")
+              .map(parseFloat);
+            ox = o[0];
+            oy = o[1];
+            const amp =
+              parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0;
+            tanA = Math.tan((amp * Math.PI) / 180);
+          }
+          const g = p.parentElement as SVGElement | null;
+          const sub = (
+            (g && g !== svg && g.className.baseVal) ||
+            p.className.baseVal ||
+            "path"
+          ).trim();
+          const step = L > 3000 ? 10 : 6;
+          for (let s = 0; s <= L; s += step) {
+            const q = p.getPointAtLength(s);
+            pt.x = q.x;
+            pt.y = q.y;
+            const v = pt.matrixTransform(m);
+            const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
+            for (const t of texts) {
+              /* the range is a roam, and a roam is along x only */
+              const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - range;
+              const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+              const gap = Math.max(dx, dy, 0);
+              const need = t[4] + sway;
+              if (gap - need < worst.margin)
+                worst = {
+                  margin: +(gap - need).toFixed(1),
+                  gap: +gap.toFixed(1),
+                  need: +need.toFixed(1),
+                  at: t[5],
+                  sub,
+                };
+            }
           }
         }
-      return {
-        gap,
-        at,
-        paths: svg.querySelectorAll("path").length,
-        scape: window.__world.scape,
-      };
-    }, RANGE_PX);
+        const runRects: DOMRect[] = [];
+        const rw = document.createTreeWalker(
+          document.querySelector(".dawnrun")!,
+          NodeFilter.SHOW_TEXT
+        );
+        for (let n = rw.nextNode(); n; n = rw.nextNode()) {
+          const rg = document.createRange();
+          rg.selectNodeContents(n);
+          for (const r of rg.getClientRects()) if (r.width) runRects.push(r);
+        }
+        const colL = Math.min(...runRects.map((r) => r.left)) - CLEAR,
+          colR = Math.max(...runRects.map((r) => r.right)) + CLEAR;
+        const tallUnder = [...svg.querySelectorAll(".ds-tuft")]
+          .map((el) => ({
+            x: +(el as SVGGElement).dataset.x!,
+            h: el.getBoundingClientRect().height,
+          }))
+          .filter((t) => t.x >= colL && t.x <= colR && t.h > CAP + 1.5);
+        return {
+          ...worst,
+          tallUnder,
+          paths: svg.querySelectorAll("path").length,
+          scape: window.__world.scape,
+        };
+      },
+      { RANGE: RANGE_PX, CLEAR: CLEAR_PX, CAP: GRASS_CAP }
+    );
 
   for (const [w, h] of [...SEATS, ...PHONES]) {
     test.describe(`the words keep their air at ${w}×${h}`, () => {
@@ -1009,9 +1084,13 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
         }
         expect(c.paths, "the ground is drawn").toBeGreaterThan(5);
         expect(
-          c.gap,
-          `"${c.at}" keeps ${CLEAR_PX}px from the drawing at ${w}×${h}`
-        ).toBeGreaterThanOrEqual(CLEAR_PX);
+          c.margin,
+          `"${c.at}" is ${c.gap}px from ${c.sub} and needs ${c.need}px at ${w}×${h}`
+        ).toBeGreaterThanOrEqual(0);
+        expect(
+          c.tallUnder,
+          `grass under the signature is capped at ${GRASS_CAP}px at ${w}×${h}`
+        ).toEqual([]);
       });
     });
   }

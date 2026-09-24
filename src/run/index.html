@@ -1110,11 +1110,28 @@ if (location.hash.length > 1) {
   body.gateopen .bdawn{height:auto; min-height:300vh; overflow:visible}
   .dawnstick{position:sticky; top:0; height:100vh; display:flex;
     align-items:center; justify-content:center; padding:0 var(--pad-x)}
-  /* the words sit OVER the drawing: the dawnscape is absolute in the same
-     panel, and z-index on the wrap is what keeps a canopy stroke from ever
-     crossing a letter */
-  .dawnwrap{max-width:46rem; margin:0 auto; text-align:center;
-    position:relative; z-index:1}
+  /* ————— the words in the clearing —————
+     The wrap is the whole panel now, a two-row grid over the drawing (z-index
+     on the wrap is what keeps a canopy stroke from ever crossing a letter):
+     the station's head and its quote centred in the sky the drawing leaves,
+     biased up a little by margin (never transform: the arrival owns that),
+     and the foot, "Thank you…" and the contact row, low, clear of the
+     meadow by the 20vh the horizon needs. "run 043 · not yet begun" leaves
+     the flow and signs the plate, bottom right in the meadow's bay, where
+     the ticks thin to nothing round it. The kicker and the hourline stay
+     with the quote: they are its station label, and 60px under the chrome's
+     own "run 042 · 06:12 · the next morning" they would read as a duplicate.
+     .measuring is the builder's: it neutralises the arrival transform for
+     the instant the words' rects are read, so the clearing is derived from
+     where they will land. */
+  .dawnwrap{width:100%; height:100%; max-width:none; margin:0; text-align:center;
+    position:relative; z-index:1; display:grid; grid-template-rows:1fr max-content;
+    padding:calc(4vh + 48px) 0 20vh; box-sizing:border-box}
+  .dawnhead{place-self:center; width:100%; max-width:54rem; margin:0 auto 5vh}
+  .dawnfoot{width:100%; max-width:46rem; margin:0 auto}
+  .dawnfoot .dawnsay{margin-top:0}
+  .bdawn .dawnrun{position:absolute; right:6vw; bottom:9vh; margin:0; text-align:right}
+  .dawnwrap.measuring *{transform:none !important}
 
   /* ————— the dawnscape —————
      ¶13's own ground, drawn in the page's own ink: a horizon, one far hill
@@ -1236,16 +1253,16 @@ if (location.hash.length > 1) {
      past the engine's own skip, so nothing ever entered. */
   #manifest.filed{opacity:0; pointer-events:none;
     transition:opacity .8s ease}
-  .dawnwrap > *{opacity:0; transform:translateY(12px)}
-  body.atmorning .dawnwrap > *{opacity:1; transform:none}
+  .dawnhead > *, .dawnfoot > *, .dawnrun{opacity:0; transform:translateY(12px)}
+  body.atmorning :is(.dawnhead > *, .dawnfoot > *, .dawnrun){opacity:1; transform:none}
   @media (prefers-reduced-motion: no-preference){
-    .dawnwrap > *{transition:opacity .9s ease, transform 1s cubic-bezier(.22,1,.36,1)}
-    body.atmorning .dawnwrap > :nth-child(1){transition-delay:.05s}
-    body.atmorning .dawnwrap > :nth-child(2){transition-delay:.18s}
-    body.atmorning .dawnwrap > :nth-child(3){transition-delay:.42s}
-    body.atmorning .dawnwrap > :nth-child(4){transition-delay:.86s}
-    body.atmorning .dawnwrap > :nth-child(5){transition-delay:1s}
-    body.atmorning .dawnwrap > :nth-child(6){transition-delay:1.14s}
+    .dawnhead > *, .dawnfoot > *, .dawnrun{transition:opacity .9s ease, transform 1s cubic-bezier(.22,1,.36,1)}
+    body.atmorning .dawnwrap .kicker{transition-delay:.05s}
+    body.atmorning .dawnwrap .hourline{transition-delay:.18s}
+    body.atmorning .dawnwrap .endquote{transition-delay:.42s}
+    body.atmorning .dawnwrap .dawnsay{transition-delay:.86s}
+    body.atmorning .dawnwrap .dawnrow{transition-delay:1s}
+    body.atmorning .dawnwrap .dawnrun{transition-delay:1.14s}
   }
   .bdawn .kicker{color:var(--clay)}
   .bdawn .hourline{max-width:none; margin:.5rem auto 0; font-style:italic}
@@ -1391,8 +1408,8 @@ if (location.hash.length > 1) {
   /* a gull that has taken off is not on the ground; it comes back later */
   .dawnscape .ds-gull{transition:opacity .3s ease}
   .dawnscape .ds-gull.flown{opacity:0}
-  /* the doe's head holds where it is, up, for the length of a step */
   .dawnscape .ds-deer.stepping .ds-head{animation-play-state:paused}
+  /* the doe's head holds where it is, up, for the length of a step */
   @media (prefers-reduced-motion: reduce){
     .flock{display:none}
   }
@@ -1417,6 +1434,11 @@ if (location.hash.length > 1) {
     .bdawn .endquote{margin-top:2.4rem}
     .dawnsay{margin-top:2.4rem}
     .dawnrun{margin-top:2.4rem}
+    /* one column on a phone: no grid, no bay, the signature back in the flow */
+    .dawnwrap{display:block; height:auto; padding:0}
+    .dawnhead{margin:0 auto}
+    .dawnfoot .dawnsay{margin-top:2.4rem}
+    .bdawn .dawnrun{position:static; text-align:center; margin-top:2.4rem}
     /* MEASURED at 390×844: the column ran 722.1px inside an 844 panel and was
        centred in it, so its top edge landed at 60.9 — under the masthead's
        scrim, which is opaque to the mast's own lower edge (60) and only fades
@@ -3700,6 +3722,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
            and a rebuild on resize refills it without replaying the entrance. -->
       <svg class="dawnscape" aria-hidden="true" focusable="false"></svg>
       <div class="dawnwrap">
+        <div class="dawnhead">
         <p class="kicker">¶ 13 · the next morning · <i>06:12</i></p>
         <p class="hourline">first light again, and this time something has been decided.</p>
 
@@ -3707,7 +3730,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <blockquote>&ldquo;What we call the beginning is often the end<br>And to make an end is to make a beginning.&rdquo;</blockquote>
           <figcaption>T.&nbsp;S.&nbsp;Eliot &middot; <i>Little Gidding</i> V, Four Quartets, 1942</figcaption>
         </figure>
+        </div>
 
+        <div class="dawnfoot">
         <p class="dawnsay">Thank you for reading. If this is the kind of work your team needs, write to me.</p>
         <div class="dawnrow mono">
           <a href="mailto:aesh.03.23@gmail.com" id="mail">aesh.03.23@gmail.com</a>
@@ -3717,6 +3742,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                exits and one way back in, and the glyphs have to say which. -->
           <a href="resume.pdf" target="_blank" rel="noopener">résumé · pdf · one page &#10230;</a>
           <a href="https://ayush-yadav.com/evidence/" target="_blank" rel="noopener">the working paper &#10230;</a>
+        </div>
         </div>
         <p class="dawnrun">run <b class="mv">043</b> &middot; not yet begun</p>
       </div>
@@ -7779,7 +7805,34 @@ function buildDawnscape() {
     const b = el && el.getBoundingClientRect();
     if (b && b.width && b.height) keep.push([b.left - 24, b.top - 24, b.right + 24, b.bottom + 24]);
   }
-  const inKeep = (x, y) => keep.some(([l, t, rt, bt]) => x >= l && x <= rt && y >= t && y <= bt);
+  /* THE CLEARING IS DERIVED FROM THE WORDS. Every text node of the station,
+     its own client rects, the quote and its attribution with a 64px halo and
+     everything else with 24, read here in the panel's frame with the arrival
+     transform neutralised (the words sit 12px low before they land). A mark
+     that would enter a halo breaks around it, a mass shrinks, and the tick
+     density ramps to nothing across it, so the words are always on bare
+     paper wherever the seat puts them. */
+  const wrap = stick.querySelector(".dawnwrap");
+  const words = [];
+  wrap.classList.add("measuring");
+  const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (!n.textContent.trim()) continue;
+    const rg = document.createRange();
+    rg.selectNodeContents(n);
+    const halo = n.parentElement.closest(".endquote") ? 64 : 24;
+    for (const b of rg.getClientRects()) if (b.width && b.height) {
+      words.push([b.left - halo, b.top - sr.top - halo, b.right + halo, b.bottom - sr.top + halo, halo]);
+      keep.push([b.left - halo, b.top - sr.top - halo, b.right + halo, b.bottom - sr.top + halo]);
+    }
+  }
+  wrap.classList.remove("measuring");
+  /* `pad` is what the mark itself can add to a point's position: the hand's
+     wobble, a leaf edge's tooth, and for the crown and the bough the wind's
+     amplitude at that radius (the gate adds the same bound), so what is drawn
+     clear STAYS clear when it moves. cutPad is raised by the swaying builders. */
+  let cutPad = 4;
+  const inKeep = (x, y, pad = cutPad) => keep.some(([l, t, rt, bt]) => x >= l - pad && x <= rt + pad && y >= t - pad && y <= bt + pad);
   const cut = (pts) => {
     const runs = [];
     let cur = [];
@@ -7876,7 +7929,14 @@ function buildDawnscape() {
     const fs = ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
     if (x > clear[0] && x < clear[2] && y > clear[1] && y < clear[3]) return 0;
     const dx = Math.max(clear[0] - x, x - clear[2], 0), dy = Math.max(clear[1] - y, y - clear[3], 0);
-    return fs * clamp((Math.hypot(dx, dy) - 24) / 136, 0, 1);
+    let f = fs * clamp((Math.hypot(dx, dy) - 24) / 136, 0, 1);
+    /* and the words themselves, wherever this seat put them: zero inside a
+       halo, full again 70px past it */
+    for (const [l, t, rt, bt] of words) {
+      const wx = Math.max(l - x, x - rt, 0), wy = Math.max(t - y, y - bt, 0);
+      f = Math.min(f, clamp(Math.hypot(wx, wy) / 70, 0, 1));
+    }
+    return f;
   };
 
   /* what the sky and the ground's events will need to find, in viewport px;
@@ -7899,8 +7959,10 @@ function buildDawnscape() {
     for (let i = 0; i < n; i++) {
       const t = r() * 6.2832, q = Math.sqrt(r());
       const bx = cx + Math.cos(t) * rx * q, by = cy + Math.sin(t) * ry * q;
-      if (r() > dens(bx, by) || inKeep(bx, by)) continue;
       const h = h0 + r() * (h1 - h0), ln = lean + (r() - 0.5) * 0.7;
+      /* judged at the blade's tip as well as its foot, and a pen-length wide
+         of the words: a tick leans, and its curve bows past its own points */
+      if (r() > dens(bx, by - h * 0.6) || inKeep(bx, by, 12) || inKeep(bx + h * ln, by - h, 12)) continue;
       d += stroke(curve([[bx, by], [bx + h * ln * 0.3, by - h * 0.55], [bx + h * ln, by - h]], 3), 0.25);
       k++;
     }
@@ -7961,7 +8023,7 @@ function buildDawnscape() {
   const mass = (cx, cy, rr) => {
     for (let tries = 0; tries < 6 && rr > 10; tries++) {
       let hit = false;
-      for (let a = 0; a < 6.28 && !hit; a += 0.4) hit = inKeep(cx + Math.cos(a) * (rr + 4), cy + Math.sin(a) * (rr + 4) * 0.85);
+      for (let a = 0; a < 6.28 && !hit; a += 0.3) hit = inKeep(cx + Math.cos(a) * (rr + 4), cy + Math.sin(a) * (rr + 4) * 0.85);
       if (!hit && !inKeep(cx, cy)) break;
       rr *= 0.8;
     }
@@ -8074,11 +8136,14 @@ function buildDawnscape() {
     /* its face, in shadow toward the reader: a strip inside the lip, then the
        broader tone further in, then the one cross-hatch pocket under the lip */
     const lip = bankLow(0.62);
-    const inner = (w) => offset(lip, -w).reverse();
+    /* the face is inside the lip and ABOVE the horizon: an offset of a
+       diagonal contour runs on below the line, and the meadow is not the bank */
+    const above = (pts) => pts.map(([x, y]) => [x, Math.min(y, hz - 3)]);
+    const inner = (w) => above(offset(lip, -w)).reverse();
     mid += hatch([...lip, ...inner(34)], -18, 3.8, "ds-ink w08", 0.3);
-    mid += hatch([...inner(30), ...offset(lip, -78)], -18, 5.2, "ds-far w1", 0.3);
+    mid += hatch([...inner(30), ...above(offset(lip, -78))], -18, 5.2, "ds-far w1", 0.3);
     const lipS = lip.filter(([, y]) => y >= Y(0.63) && y <= Y(0.78));
-    const pocket3 = [...lipS, ...offset(lipS, -24).reverse()];
+    const pocket3 = [...lipS, ...above(offset(lipS, -24)).reverse()];
     mid += hatch(pocket3, 38, 3.4, "ds-ink w06", 0.25, [8, 18], (x, y) => 1.4 - Math.abs(y - Y(0.705)) / Y(0.06));
     far += ticks(X(0.89), hz - 22, X(0.05), 16, 26, "ds-far w1", 4, 9, 0.2);
   }
@@ -8127,6 +8192,7 @@ function buildDawnscape() {
      two layers so the wind can move the outer boughs more than the inner. */
   const bigTree = () => {
     const cr = [X(0.088), Y(0.30)];
+    cutPad = 14; /* the crown sways ±1.1° about the crotch: up to 9px at its reach */
     const left = curve([[X(0.036), hz + 3], [X(0.054), hz - Y(0.04)], [X(0.060), Y(0.66)], [X(0.062), Y(0.50)], [X(0.068), Y(0.38)], [X(0.068), Y(0.31)]]);
     const right = curve([[X(0.128), hz + 3], [X(0.110), hz - Y(0.04)], [X(0.103), Y(0.64)], [X(0.100), Y(0.50)], [X(0.104), Y(0.38)], [X(0.108), Y(0.32)]]);
     let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
@@ -8235,6 +8301,7 @@ function buildDawnscape() {
     inner.fills = build(inMasses);
     outer.fills = build(outMasses);
     groups += 2;
+    cutPad = 4;
     SCAPE.trees.push({ x: X(0.20), h: Y(0.30), top: 0 });
     return `<g class="ds-tree">${d}` +
       `<g class="ds-canopy sway-c2" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
@@ -8246,6 +8313,7 @@ function buildDawnscape() {
      masses hanging under it, a bare twig rising near its tip where a bird
      can land (the socket the sky's perch outcome fills). */
   const bough = () => {
+    cutPad = 16; /* ±1.3° about the right edge: up to 10px at the tip */
     const main = curve([[W + 6, Y(0.062)], [X(0.965), Y(0.078)], [X(0.925), Y(0.10)], [X(0.885), Y(0.108)], [X(0.85), Y(0.118)], [X(0.81), Y(0.135)], [X(0.775), Y(0.155)], [X(0.745), Y(0.165)]]);
     const fork = curve([[X(0.885), Y(0.108)], [X(0.86), Y(0.086)], [X(0.838), Y(0.062)], [X(0.822), Y(0.042)]]);
     let d = contour(main, 0.9, "ds-ink", ["w12", "w1", "w12"]) + contour(fork, 0.7, "ds-ink", ["w12", "w1", "w12"]);
@@ -8271,6 +8339,7 @@ function buildDawnscape() {
     const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
     SCAPE.perch = { x: pz[0], y: pz[1] };
     groups++;
+    cutPad = 4;
     return `<g class="ds-bough sway-b" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
       `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
   };
@@ -8392,15 +8461,17 @@ function buildDawnscape() {
     for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
     /* and the reed pen's flow lines: a few long low curves through the corner
        fields, the lie of the grass, hair-strong */
+    cutPad = 12;
     for (const [fx, fy, L] of [[0.02, 0.93, 90], [0.06, 0.97, 120], [0.11, 0.905, 70], [0.86, 0.94, 80], [0.90, 0.975, 110], [0.94, 0.90, 60]])
-      near += P(stroke(curve([[X(fx), Y(fy)], [X(fx) + L * 0.5, Y(fy) - 4 - r() * 5], [X(fx) + L, Y(fy) + 2]]), 1.3), "ds-far w1");
+      near += strokes(curve([[X(fx), Y(fy)], [X(fx) + L * 0.5, Y(fy) - 4 - r() * 5], [X(fx) + L, Y(fy) + 2]]), 1.3, "ds-far w1");
+    cutPad = 4;
     near += doe(X(0.17));
     near += tuft(X(0.035), 24 * vs, "sway-m", 5);
     near += tuft(X(0.147), 26 * vs, "sway-l", 6);
     near += tuft(X(0.34), 13, "sway-s", 4);
     near += tuft(X(0.63), 10, "sway-s", 4);
-    near += tuft(X(0.80), 22 * vs, "sway-l", 5);
-    near += tuft(X(0.935), 27 * vs, "sway-m", 6);
+    near += tuft(X(0.745), 16 * vs, "sway-l", 5);
+    near += tuft(X(0.975), 27 * vs, "sway-m", 6);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
   } else {

@@ -6,11 +6,17 @@
  * is a measurement here rather than a sentence in a comment:
  *
  *   1. INK CLEARANCE. Every text node in .dawnwrap, taken as its own client
- *      rects (the ink, not the box), keeps 24px of clear air from every
- *      subject the ground draws — trees, the doe, the gulls, the tufts, the
- *      far lines and the sun — and the roamers are measured over their WHOLE
- *      home range, ±30px, not where they happen to be standing. Under the
- *      column the grass is capped at 10px. At every one of the seven seats.
+ *      rects (the ink, not the box), and the chrome's text (the nameplate,
+ *      the run state, the stop chip), keeps clear air from every mark the
+ *      drawing makes: the quote and its attribution 64px, everything else
+ *      24. Round 9 drew the whole page, so a subject's bounding box is no
+ *      longer a measure of anything (the tree's box wraps a corner and
+ *      contains the quote): every <path> is SAMPLED along its length, every
+ *      6px, through its screen matrix, and it is those points that keep
+ *      their distance — plus what could move them: a roamer's ±30px home
+ *      range, and for a swaying group the amplitude at that radius, so the
+ *      wind cannot carry a leaf into a halo. Under the signature the grass
+ *      is capped at 10px. At every one of the seven seats.
  *   2. THE WIND'S CENSUS. Once body.morninglive is on, the continuously
  *      animated groups inside .dawnscape are CSS animations (transitions are
  *      transients and are not counted), at most 12, exactly 10 at a desktop
@@ -210,12 +216,14 @@ try {
     const svg = document.querySelector(".dawnscape");
     const wrap = document.querySelector(".dawnwrap");
     const scape = window.__world.scape;
-    const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+    /* the words: each text node's own rects with its halo, and the chrome */
     const texts = [];
+    const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
     for (let n = walker.nextNode(); n; n = walker.nextNode()) {
       if (!n.textContent.trim()) continue;
       const rg = document.createRange();
       rg.selectNodeContents(n);
+      const halo = n.parentElement.closest(".endquote") ? 64 : CLEAR_PX;
       for (const r of rg.getClientRects())
         if (r.width && r.height)
           texts.push([
@@ -223,40 +231,76 @@ try {
             r.top,
             r.right,
             r.bottom,
+            halo,
             n.textContent.trim().slice(0, 20),
           ]);
     }
-    const box = (el, pad) => {
+    for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
+      const el = document.querySelector(sel);
+      if (!el) continue;
       const r = el.getBoundingClientRect();
-      return [
-        r.left - pad,
-        r.top,
-        r.right + pad,
-        r.bottom,
-        (el.className.baseVal || el.tagName).trim(),
-      ];
-    };
-    const subs = [
-      ...[...svg.querySelectorAll(".ds-tree, .ds-tuft, .ds-back path")].map(
-        (el) => box(el, 0)
-      ),
-      ...[...svg.querySelectorAll(".ds-deer, .ds-gull")].map((el) =>
-        box(el, RANGE_PX)
-      ),
-    ];
-    let worst = { gap: Infinity, text: "", sub: "" };
-    for (const t of texts)
-      for (const s of subs) {
-        const dx = Math.max(s[0] - t[2], t[0] - s[2]);
-        const dy = Math.max(s[1] - t[3], t[1] - s[3]);
-        const gap = Math.max(dx, dy);
-        if (gap < worst.gap)
-          worst = { gap: +gap.toFixed(1), text: t[4], sub: s[4] };
+      if (r.width && r.height && getComputedStyle(el).visibility !== "hidden")
+        texts.push([r.left, r.top, r.right, r.bottom, CLEAR_PX, sel]);
+    }
+    /* the ink: every path sampled along its length through its screen
+       matrix, plus what could move the point: a roamer's range, a sway's
+       amplitude at that radius */
+    const pt = svg.createSVGPoint();
+    let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
+    let samples = 0;
+    for (const p of svg.querySelectorAll("path")) {
+      const L = p.getTotalLength();
+      if (!L) continue;
+      const m = p.getScreenCTM();
+      const range = p.closest(".ds-deer, .ds-gull, .ds-hare") ? RANGE_PX : 0;
+      const sw = p.closest("[class*=sway-]");
+      let ox = 0,
+        oy = 0,
+        tanA = 0;
+      if (sw) {
+        const o = (sw.style.transformOrigin || "0px 0px")
+          .split(" ")
+          .map(parseFloat);
+        ox = o[0];
+        oy = o[1];
+        const amp =
+          parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0;
+        tanA = Math.tan((amp * Math.PI) / 180);
       }
-    /* the grass under the column: the rule exists so the tallest ink stays
+      const g = p.parentElement;
+      const sub = (
+        (g && g !== svg && g.className.baseVal) ||
+        p.className.baseVal ||
+        "path"
+      ).trim();
+      const step = L > 3000 ? 10 : 6;
+      for (let s = 0; s <= L; s += step) {
+        const q = p.getPointAtLength(s);
+        pt.x = q.x;
+        pt.y = q.y;
+        const v = pt.matrixTransform(m);
+        const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
+        samples++;
+        for (const t of texts) {
+          /* the range is a roam, and a roam is along x only */
+          const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - range;
+          const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+          const gap = Math.max(dx, dy, 0);
+          const need = t[4] + sway;
+          if (gap - need < worst.margin)
+            worst = {
+              margin: +(gap - need).toFixed(1),
+              gap: +gap.toFixed(1),
+              need: +need.toFixed(1),
+              text: t[5],
+              sub,
+            };
+        }
+      }
+    }
+    /* the grass under the signature: the rule exists so the tallest ink stays
        clear of the LAST line, so the column here is that line's own ink
-       extent, "run 043 · not yet begun", not the widest line of the station
-       (on a phone the widest line is the whole screen) */
+       extent, "run 043 · not yet begun", wherever this seat puts it */
     const runRects = [];
     const rw = document.createTreeWalker(
       document.querySelector(".dawnrun"),
@@ -282,7 +326,7 @@ try {
       paths: svg.querySelectorAll("path").length,
       worst,
       texts: texts.length,
-      subs: subs.length,
+      samples,
       tallUnder,
       census: anims.map((a) => [
         a.animationName,
@@ -323,13 +367,13 @@ try {
     } else {
       if (m.paths < 5)
         fail(`${seat}: only ${m.paths} paths — the ground is not drawn`);
-      if (m.worst.gap < CLEAR_PX)
+      if (m.worst.margin < 0)
         fail(
-          `${seat}: "${m.worst.text}" is ${m.worst.gap}px from ${m.worst.sub} — the words keep ${CLEAR_PX}px of clear air from the drawing`
+          `${seat}: "${m.worst.text}" is ${m.worst.gap}px from ${m.worst.sub} and needs ${m.worst.need}px (halo plus sway, the roam already taken off) — the words keep their air from every mark of the drawing`
         );
       else
         note(
-          `${seat}: clearance ${m.worst.gap}px ("${m.worst.text}" vs ${m.worst.sub}), ${m.texts} text rects vs ${m.subs} subjects`
+          `${seat}: clearance margin ${m.worst.margin}px ("${m.worst.text}" vs ${m.worst.sub}, ${m.worst.gap}px of ${m.worst.need}px), ${m.texts} text rects vs ${m.samples} sampled points`
         );
       if (m.tallUnder.length)
         fail(
