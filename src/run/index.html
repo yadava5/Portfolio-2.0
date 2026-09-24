@@ -1167,9 +1167,17 @@ if (location.hash.length > 1) {
     z-index:1; contain:strict}
   .bird{position:absolute; left:0; top:0; width:0; height:0;
     offset-rotate:auto; offset-distance:0%;
-    transform:scale(var(--s)); scale:1; opacity:0}
+    transform:scale(var(--s)); opacity:0}
+  /* THE SIZE RAMP IS ON THE SVG, NOT ON THE BIRD, and the reason is a
+     measured defect rather than taste. The individual `scale` property is
+     PRE-multiplied against the motion-path translation, so animating it on
+     .bird scaled the path itself: at scale .52 a bird whose path starts at
+     (762, 906) rendered at (396, 471), and nine birds meant to be coming up
+     through a doorway on the centre line came out over the timetable
+     instead. The svg carries it, about the bird's own anchor — the point
+     the -30/-17 margin puts under the path — so only the drawing grows. */
   .bird svg{overflow:visible; max-width:none; display:block;
-    margin:-17px 0 0 -30px}
+    margin:-17px 0 0 -30px; transform-origin:30px 17px}
   .bird .b-ink{fill:var(--ink-2)}
   .bird .b-wing{transform-box:view-box; transform-origin:0px 0px}
   /* WEST IS GONE WITH THE DOOR IN THE CORNER. The birds left from a door at
@@ -1179,8 +1187,17 @@ if (location.hash.length > 1) {
      78% across). Two rules that mirrored them went with the reason for
      them — a mirror nothing sets is a mirror nobody is watching. */
 
+  /* A BIRD LEAVES THE GROUND FAST. The old curve held 98% of its ink for
+     the middle of a 9 to 15 second crossing, and measured against the frame
+     at t=3500 — 1.7s after the first one comes up — the whole flock was
+     still a cluster sitting on the wall it was supposed to be leaving. The
+     carry starts at 2700, so what a reader sees of this is the first two
+     seconds of it: 26% of the path in the first 850ms now, which is a
+     departure, against 3% before. The tail is unchanged and still long. */
   body.flying .bird{
-    animation:cross var(--dur) cubic-bezier(.28,.02,.5,1) var(--start) both}
+    animation:cross var(--dur) cubic-bezier(.22,.62,.42,1) var(--start) both}
+  body.flying .bird svg{
+    animation:hatch var(--dur) cubic-bezier(.22,.62,.42,1) var(--start) both}
   /* a bird rises on the downstroke — the cue that separates flying from being
      carried. Half the wing's period: it rises and falls once per beat. */
   body.flying .bird .bd{
@@ -1189,24 +1206,28 @@ if (location.hash.length > 1) {
     animation:beatL var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
   body.flying .bird .b-wr{
     animation:beatR var(--beat) cubic-bezier(.36,.02,.5,1) var(--wphase) infinite}
-  body.flying .bird.gone .b-wing, body.flying .bird.gone .bd{animation:none}
+  body.flying .bird.gone .b-wing, body.flying .bird.gone .bd,
+  body.flying .bird.gone svg{animation:none}
 
   @keyframes cross{
-    /* THEY COME UP THROUGH A 96px GAP, so they come up small. The scale ramp
-       is what makes the doorway read as a doorway and not as a mark the
-       birds happen to start near: at full size the first frame is an 88px
-       silhouette wider than the opening it is supposedly coming out of.
-       `scale` rather than `transform`, because .bird already carries the
-       flock's own size on transform and the two compose. */
-    0%{offset-distance:0%; opacity:0; scale:.45}
-    /* short: the birds have to be up before the carry starts moving the
-       page, or they are not what made you look. A bird at full ink the
-       instant it leaves the ground reads as a sprite appearing, so this is
-       a ramp and not a switch — just a fast one. */
-    4%{opacity:var(--op)}
-    15%{scale:1}
+    0%{offset-distance:0%; opacity:0}
+    /* 1.2%, not 4%. The flight is 8.6 to 14.8 seconds long, so a 4% ramp is
+       344 to 592ms of fade — measured against the frame at t=1900, which is
+       the frame where the birds are the whole point, and they were under
+       17% ink in every one of them. A bird at full ink the instant it
+       leaves the ground reads as a sprite appearing, so this stays a ramp;
+       it is just a ramp you can see the end of. */
+    1.2%{opacity:var(--op)}
     93%{opacity:var(--op)}
-    100%{offset-distance:100%; opacity:0; scale:1}
+    100%{offset-distance:100%; opacity:0}
+  }
+  /* THEY COME UP THROUGH A 128px GAP, so they come up small: at full size
+     the first frame is an 88px silhouette wider than the opening it is
+     supposedly coming out of. Same duration, same delay and same easing as
+     `cross`, so the two stay in step without a second clock. */
+  @keyframes hatch{
+    0%{transform:scale(.45)}
+    15%, 100%{transform:scale(1)}
   }
   @keyframes bob{ from{transform:translateY(1.7px)} to{transform:translateY(-1.7px)} }
   /* the upstroke is quicker than the down, the way a wing actually works */
@@ -4388,6 +4409,11 @@ const travelEase = (q) => (q < 0.6 ? (q * q) / 0.6 : 1 - 2.5 * (1 - q) * (1 - q)
    Eighteen halvings is 4e-6 of the unit interval, well under a tenth of a
    pixel on a 104px boom, and it costs nothing at one call a frame. */
 const bez = (x1, y1, x2, y2) => (t) => {
+  /* the ends are exact, and that is not tidiness: eighteen bisections of a
+     zero returns 9.2e-6 rather than 0, and the boom's own "has it moved
+     yet" stamp fired on the press instead of on the lift. */
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
   let lo = 0, hi = 1, u = t;
   for (let i = 0; i < 18; i++) {
     u = (lo + hi) / 2;
@@ -7007,9 +7033,11 @@ function work(y) {
      socket, and the socket sits at the document's own end, so on engines
      that report a fractional maximum scroll — WebKit and Firefox both do,
      measured at 6.5px on this page — a reader who is genuinely at the
-     bottom would never arm it and could never approve. 24px is the
-     measured slack at which the ring, the button, the boom and the label
-     are all still fully in view at 1512, 1440, 1375, 1280 and 390. */
+     bottom would never arm it and could never approve. 18px is over that
+     gap with room, and it is inside the slack at which the ring, the
+     button, the boom and the label are all still fully in view: measured
+     by walking the last 700px in 10px steps, the tightest margin at any
+     armed step is 17px, on the phone. */
   if (!armed && (halted || yEnd - y <= ARM_EPS)) armGate();
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
@@ -7457,7 +7485,7 @@ $("clear").addEventListener("click", () => {
    gets it; these two are the states only the engine can know about. */
 const NOTE_EARLY = "the run is still arriving. this button arms when it gets here.";
 const NOTE_ARMED = "scrolling could not press this button \u00b7 the run ends only by hand.";
-const ARM_EPS = 24; /* px of scroll slack — see the note in work() */
+const ARM_EPS = 18; /* px of scroll slack — see the note in work() */
 let armed = false;
 function armGate() {
   if (armed) return;
@@ -7528,6 +7556,7 @@ $("approve").addEventListener("click", () => {
 function schedule() {
   if (RM || !onward.ready) {
     release.done = true;
+    window.__world.released = true;
     setLabelOpen();
     openGate();
     atMorning = true;
@@ -7593,6 +7622,11 @@ function startDeparture() {
      land, and tTail reaches to the carry because the boom is canvas and is
      still moving long after the travel ends. */
   release.tTail = at(T_CARRY);
+  /* the guard's own probe. `__world.boom` is what the CANVAS drew and is
+     honest about being nothing when the wall is off screen; this is the
+     state, which a reduced-motion reader has before they ever scroll to
+     look at it. */
+  window.__world.released = release.done || RM || !onward.ready;
   /* probe hook: the harness reads the run's own timetable rather than
      re-deriving it from a viewport width and a speed it cannot see */
   window.__world.departure = { t0: release.t0, pace: PACE, tHead: release.tHead,
@@ -7869,7 +7903,7 @@ function buildFlock() {
       ` C ${P(pts[4][0], pts[4][1])} ${P(pts[5][0], pts[5][1])} ${P(pts[6][0], pts[6][1])}")`;
     /* no two share a duration, so whatever order they leave in is not the
        order they arrive in — they overtake each other, which a queue cannot */
-    const dur = 8.6 + r() * 6.2;
+    const dur = 7.2 + r() * 5;
     /* out of a doorway they leave in a stream, close behind each other:
        about 110ms apart, and the jitter is small enough that the order
        still reads as an order */
@@ -7882,7 +7916,7 @@ function buildFlock() {
        by the shrunk value is a period three times too long. */
     const sc0 = 0.72 + r() * 0.5;
     el.style.setProperty("--s", (sc0 * vs).toFixed(3));
-    el.style.setProperty("--op", (0.3 + r() * 0.24).toFixed(2));
+    el.style.setProperty("--op", (0.34 + r() * 0.26).toFixed(2));
     /* a bigger bird beats slower, as a bigger wing does — and no two birds
        share a clock, because a flock in lockstep reads as a screensaver */
     el.style.setProperty("--beat", (0.42 + 0.36 * (sc0 - 0.72) + r() * 0.07).toFixed(3) + "s");
