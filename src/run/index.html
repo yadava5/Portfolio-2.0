@@ -756,14 +756,14 @@ if (location.hash.length > 1) {
      third of a screen of dead paper above AND below it. 100vh still
      guarantees the gate its own full screen — it is the decision, it
      should not share — but the seat no longer invents space. */
-  /* align-items:START, and that is the whole fix for the vanishing header.
-     Centred, the gate re-seats every time its content changes height — and
-     lighting the lamp grows the right column ~300px, which lifted the left
-     column ~84px and carried '¶ 12 · the approval gate' off the top of the
-     screen. Anchored to the top, the kicker sits at padding-top from the
-     section's top forever, and the aftergate can only ever grow DOWNWARD —
-     into the room the gate was already holding for it. */
-  .b8{min-height:100vh; display:flex; align-items:flex-start; padding-top:3vh; padding-bottom:2vh}
+  /* ALIGN-ITEMS:CENTER, and the top-anchoring it replaces was holding a door
+     open for a room that is gone. It was added when lighting a lamp grew the
+     right column by ~300px and pushed the kicker off the top; that lamp has
+     had no markup for two rounds, and nothing in ¶12 changes height any more
+     except the note, which is height-reserved. Centred, the last composition
+     sits in the middle of its own screen instead of hanging from the top with
+     the floor empty under it. */
+  .b8{min-height:100vh; display:flex; align-items:center; padding-top:3vh; padding-bottom:2vh}
   /* the run's last sentence needs scroll the document did not have: at
      1440×900 its entrance resolved to y 12,241 on a page whose maxY was
      12,006 — the story's closing line topped out at op 0.04, permanently
@@ -785,17 +785,39 @@ if (location.hash.length > 1) {
      comes from .b8's own padding-bottom, which is inside the section and
      therefore cannot push the composition off-screen. */
   main::after{content:""; display:block; height:0}
-  .b8 .beat-inner{display:grid; grid-template-columns:minmax(0,26rem) minmax(0,1fr);
-    gap:clamp(2rem, 5vw, 5rem); align-items:stretch; width:100%}
-  /* THE COLOPHON FALLS TO THE FLOOR. The right column used to be a card and
-     a colophon stacked at the top, with the ladder running past both of them
-     to the bottom of the screen — about 500px of empty paper in the lower
-     right of the page's last composition, which is the one view a reader is
-     most likely to sit and look at. The column stretches to the row now and
-     the colophon is pushed to its foot, so the two columns close level and
-     the dead area is gone. The card does not move. */
-  .b8 .beat-inner>div:last-child{display:flex; flex-direction:column}
-  .b8 footer{margin-top:auto}
+  /* ————— ¶12 · the last stop, as a timetable and a yard —————
+     THE STATION FLIPS. The headline used to stand over the ladder in the left
+     column with the manifest opposite; the ladder was a list of times nobody
+     could do anything with, and the card carried a second copy of the six
+     proofs. They are one object now: the day's timetable, where each stop
+     carries the number it proved, with a clear lane down the middle of it for
+     the rail. The headline and the manifest take the right column, and the
+     yard runs the full width underneath both.
+     Areas, not source order: the DOM reads head, card, timetable, yard,
+     legend, colophon — which is the stacked and phone reading order, and the
+     focus order, and the order a screen reader gets. */
+  /* THE TIMETABLE SETS THE COMPOSITION'S HEIGHT, and that is what closes the
+     hole. Built centred with auto rows it measured 700px of ink in a 933px
+     screen and left 135px of empty paper under the colophon; built with the
+     slack inside it, the hole moved to the lower right, between the manifest
+     and the yard, which is worse — the round-2 gate's own defect, relocated.
+     So the left column takes the height instead: the rows are pitched off the
+     viewport (5vh), the timetable runs the full height of the screen's middle,
+     and the manifest is pulled DOWN to close level with the last rung. What is
+     left is air under the headline, which is where air belongs.
+     Measured after: 70px of band at 982, 41px at 800. */
+  .b8 .beat-inner{display:grid;
+    grid-template-columns:27.5rem minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr) auto auto;
+    grid-template-areas:"tt head" "tt card" "yard yard" "tail foot";
+    column-gap:clamp(2rem, 5vw, 5rem); width:100%; align-items:start}
+  .b8 .gatecard{align-self:end}
+  .b8 .ghead{grid-area:head}
+  .b8 .gatecard{grid-area:card}
+  .b8 .ttwrap{grid-area:tt}
+  .b8 .yardrow{grid-area:yard}
+  .b8 .yardnote{grid-area:tail}
+  .b8 footer{grid-area:foot; align-self:end}
   /* AND THE COLUMN IS FILLED BY CONTENT, NOT BY STRETCHING. Two earlier
      attempts moved the empty paper around instead of removing it: first into
      a hole between the card and the colophon, then — by stretching the card
@@ -805,16 +827,37 @@ if (location.hash.length > 1) {
      "a large empty area", and a reader meets a void, not an argument.
      What fills it is the manifest itself, itemised in .gl above. The card is
      its own content again. */
-  .gatecard{display:flex; flex-direction:column}
-  .ladder{list-style:none; font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
-    border-left:1px solid var(--hair-strong); padding-left:1.4rem; color:var(--ink-2);
-    margin-top:1.6rem}
-  .ladder li{margin:.52rem 0}
+  /* The hairline down the ladder's left is gone with it: a timetable is
+     ruled by its own rows, and the one vertical line on this screen should be
+     the rail. Columns, from the column's left edge: the time at 0, the stop
+     at 56, an empty lane 186 to 274 that belongs to the rail, the car at 274,
+     and the proof at 300. The lane is 88px wide against a rail envelope of
+     about ±24px, so the line never comes within 16px of a letter. */
+  .ladder{--row:clamp(30px, 5vh, 52px); list-style:none;
+    font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
+    color:var(--ink-2); margin:0}
+  .ladder li{display:grid; grid-template-columns:56px 130px 88px 18px 1fr;
+    align-items:center; height:var(--row); margin:0}
   .ladder li span{transition:color .4s ease}
   .ladder li.lit span{color:var(--ink)}
-  .ladder .gaterow{display:flex; align-items:center; color:var(--ink)}
-  .ladder .gaterow .gsq2{display:inline-flex; width:2.6ch; align-items:center}
-  .ladder .gaterow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
+  /* the stop's name is a name, in the text face; the time beside it is a
+     machine value and keeps the mono */
+  .ladder .st{font-family:var(--body); letter-spacing:0; word-spacing:.12em;
+    font-size:var(--fs-label); white-space:nowrap}
+  .ladder .pr{grid-column:5; font-family:var(--body); letter-spacing:0;
+    word-spacing:.12em; font-size:var(--fs-small); padding-left:8px;
+    white-space:nowrap}
+  /* the car glyph: 18×10, the same object the yard draws six of, so a row
+     that carries a proof reads as a loaded car before it is read at all */
+  .ladder .cg{grid-column:4; display:block; width:18px; height:10px;
+    border:1px solid var(--ink-2)}
+  /* deploy is the one stop the run cannot light, and it is a second list so
+     the six project rows above it stay one uninterrupted table */
+  .ladder.dep{margin-top:.2rem; padding-top:.5rem; border-top:1px solid var(--hair)}
+  /* deploy has no time, because it has not happened: the rung sits in the
+     stop column with the hour column left empty, which is the timetable's own
+     way of saying a service is not scheduled. */
+  .ladder.dep .st{grid-column:2}
   /* THE CARD STOPS BEING A CARD. It was a filled, bordered, shadowed plate
      floating on the night paper while the ladder opposite it was nothing but
      a hairline and a column of type — two different materials on the one
@@ -834,47 +877,18 @@ if (location.hash.length > 1) {
     background:none; border:none; border-top:2px solid var(--ink); box-shadow:none;
     padding:clamp(1rem, 1.6vw, 1.35rem) 0 0; position:relative;
   }
-  .gatecard h3{font-family:var(--display); font-weight:430; font-size:1.35rem; margin-bottom:.3rem}
-  .gatecard .gl{list-style:none; margin-top:.8rem}
-  .gatecard .gl li[hidden]{display:none} /* display:grid must not defeat [hidden] */
-  .gatecard .gl li{display:grid; grid-template-columns:3.5rem 9.6rem 1fr; gap:.5rem;
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2);
-    padding:.42rem 0; border-top:1px solid var(--hair)}
-  .gatecard .gl li .gi{color:var(--clay)}
-  .gatecard .gl li b{font-weight:400; color:var(--ink)}
-  .gatecard .gl li.live .gm{color:var(--pine)}
-  @media (prefers-reduced-motion: no-preference){
-    .gatecard .gl li{transition:transform .35s cubic-bezier(.22,1,.36,1)}
-    .gatecard .gl li:hover{transform:translateX(3px)}
-  }
-  /* THE SIGNATURE SITS UNDER THE MANIFEST, NOT AT THE FOOT OF THE COLUMN.
-     It was `margin-top:auto` inside a stretched card, which put the blank
-     rule at the bottom of the ladder's height and left the gap in the middle
-     of the composition. The card is its own content again; what fills the
-     column is the docket above, and what closes it is the colophon. */
-  .gatecard .decide{margin-top:1.6rem; display:flex; gap:1.3rem;
-    align-items:flex-end; flex-wrap:wrap; position:relative}
-  .gatecard .sigline{flex:1 1 13rem; min-width:0; display:block;
-    padding-bottom:.55rem; position:relative}
-  .gatecard .sigpen{position:absolute; left:1px; top:-15px; overflow:visible;
-    fill:none; stroke:var(--clay-g); stroke-width:1.2;
-    stroke-linejoin:round; stroke-linecap:round}
-  .gatecard .sigrule{display:block; height:1px; background:var(--ink-2);
-    transform-origin:bottom}
-  .gatecard .sigcap{display:block; margin-top:.45rem; font-family:var(--body);
-    font-size:var(--fs-small); letter-spacing:.01em; color:var(--ink-2)}
-  /* The invitation, and it answers a person rather than announcing itself.
-     There is no timer on this and nothing moves until someone comes near:
-     reach for the signature block with a pointer or a Tab key and the rule
-     darkens from ink-2 to ink and thickens by half a pixel, the way a line
-     you are about to write on would. Under reduced motion the state still
-     changes; only the easing is dropped, which is the correct reading of
-     the preference — it asks for less movement, not less feedback. */
-  .gatecard .decide:hover .sigrule,
-  .gatecard .decide:focus-within .sigrule{background:var(--ink); transform:scaleY(1.6)}
-  @media (prefers-reduced-motion: no-preference){
-    .gatecard .sigrule{transition:background .35s ease, transform .35s cubic-bezier(.22,1,.36,1)}
-  }
+  /* the title row carries the stamp: the ink lands beside the sentence it
+     answers, 8px clear of it at every width, and nothing else shares the line */
+  .gatecard h3{font-family:var(--display); font-weight:430; font-size:1.35rem;
+    margin-bottom:.3rem; padding-right:10.75rem}
+  /* THE MANIFEST IS THE TIMETABLE NOW. The card used to itemise the same six
+     proofs the ladder opposite it was already timing, so the screen carried
+     the run twice. What is left here is the thing only the card can say: what
+     the run adds up to, and what is still missing from it. */
+  .gatecard .lsline{min-height:1.6rem; margin-top:.7rem}
+  .gatecard .lsam{font-family:var(--mono); font-size:var(--fs-micro);
+    letter-spacing:.04em; color:var(--ink-2)}
+  .gatecard .lsam #liveSampleM{color:var(--pine)}
   /* THE ONE FILLED CONTROL ON THE PAGE. Every other button here is an
      outline, which is right for "clear the pad" and wrong for the one act
      the whole run is asking for — the owner called it click bait and the
@@ -888,8 +902,19 @@ if (location.hash.length > 1) {
      5.95:1 but only Lc 49.5, under the Lc 60 text floor this file gates on.
      The press keeps .btn's own sweep, so it goes clay to full ink under the
      hand: inviting, then committed. */
-  #approve{font-size:.78rem; padding:.7rem 1.4rem; flex:0 0 auto;
+  /* 150×44 at every width: it is the one control the whole run is asking
+     for, it is seated ON the yard's track, and a control that changes size
+     between seats reads as a different control. */
+  #approve{width:150px; height:44px; padding:0; font-size:.78rem;
+    display:inline-flex; align-items:center; justify-content:center;
     background:var(--clay); border-color:var(--clay); color:var(--ink-inverse)}
+  /* THE SPENT BUTTON STAYS OPAQUE. On the phone the pine line runs behind it,
+     and a control you can see a track through is not a control any more. It
+     keeps the page's paper, takes the pine it just earned, and its hover
+     sweep is retracted so the fill cannot come back under a stray pointer. */
+  #approve:disabled{background:var(--ink-inverse); border-color:var(--pine);
+    color:var(--pine)}
+  #approve:disabled::before{transform:scaleX(0)}
   /* three lines' worth, reserved. The note goes from "scrolling could not
      press this button." to "approved by hand — 15:59, your local time."
      — two lines to three — and that 16px was the last thing still growing
@@ -904,24 +929,62 @@ if (location.hash.length > 1) {
   .gatecard .note{display:block; margin-top:1.05rem;
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
     letter-spacing:.05em; min-height:2.7em; line-height:1.3}
-  #stamp{ /* anchored to the DECIDE ROW itself, not the card box — the
-             round-3 card-bottom offset drifted when the aftergate grew
-             the card, and at 1440 the ink grazed its own note. Anchored
-             here, the stamp lands where the hand just was and the note
-             keeps a measured clearance at every width. */
-    /* AND IT LANDS ON THE LINE, not on the button. The stamp used to sit at
-       the decide row's right end, which is where the button is — so the
-       acknowledgement covered the control that produced it and left the
-       blank rule blank. The rule is the thing that was waiting; a signature
-       belongs on it. Left of centre, the way a hand signs. */
-    position:absolute; left:6%; top:50%; z-index:3;
-    font-family:var(--mono); font-size:1.05rem; letter-spacing:.34em; color:var(--ember);
-    border:3px double var(--ember); padding:.5rem .9rem .5rem 1.15rem;
-    transform:translateY(-62%) rotate(-7deg) scale(1.5); opacity:0; pointer-events:none;
+
+  /* ————— the yard · 22:41, the last stop on the line —————
+     The rail has run twelve stations to get here and it stops at a socket
+     beside the button: the ring IS the destination, and the button is that
+     stop's name. To the right of it the day's six cars stand coupled on a
+     siding, and a ruled route runs from the lead car's nose to a door at the
+     far end. None of that is markup — the cars, the siding, the route and
+     the rings are drawn on the thread's own canvas by drawYard, because they
+     belong to the line, not to the page.
+     What IS markup is everything a person can act on or must be able to read:
+     the time, the button, the socket the rail docks on, and the door.
+     The track is at y 38 of 60 and every one of them is seated on it. */
+  .yardrow{position:relative; height:60px; margin-top:clamp(22px, 3.6vh, 38px)}
+  .yardrow .lt{position:absolute; left:0; top:28px;
+    font-family:var(--mono); font-size:var(--fs-micro); line-height:1;
+    letter-spacing:.055em; color:var(--clay)}
+  .yardrow #approve{position:absolute; left:56px; top:16px}
+  /* the socket: the 8×8 square the rail's last sample lands on, dead centre
+     of the double ring the canvas draws around it */
+  .yardrow .gsq2{position:absolute; left:226px; top:34px; width:8px; height:8px}
+  .yardrow .gsq2 i{display:block; width:8px; height:8px; background:var(--clay-g)}
+  /* the door stands ON the track at the far end of the siding, at about
+     fx .9 of the viewport at every width — which is what puts the flock's
+     launch point out past the middle of the screen, so the birds fly west */
+  .yardrow .ydoor{position:absolute; right:0; top:0; width:34px; height:38px;
+    display:block}
+  .yardrow .ydoor svg{display:block; width:34px; height:38px; overflow:visible}
+  .yardrow .jamb{fill:none; stroke:var(--ink); stroke-width:1.4}
+  /* THE LIGHT IS OFF UNTIL THE DOOR IS OPEN. A doorway filled clay behind a
+     leaf needs the leaf to be opaque to hide it, and at night the page's own
+     paper token is DARK — a filled leaf read as a hole cut in the wall. So
+     the doorway carries no light while it is shut: the leaf is a drawn panel
+     with a rail and a handle, and the clay arrives with the opening. 0 or 1,
+     never between — the palette gate cannot see a partial one. */
+  .yardrow .sill{fill:var(--clay); opacity:0}
+  .yardrow .ydoor.open .sill{opacity:1}
+  #yardDoor .leaf{fill:none; stroke:var(--ink-2); stroke-width:1;
+    transform-box:fill-box; transform-origin:100% 50%}
+  .yardnote{margin-top:1.1rem; max-width:34rem;
+    font-family:var(--body); font-size:var(--fs-small); line-height:1.6;
+    color:var(--ink-2)}
+  #stamp{ /* IT LANDS ON THE MANIFEST, beside the sentence it answers. The
+             blank signature rule it used to sit on is gone with the decide
+             row — the yard is where the hand acts now — and "run 042 · the
+             manifest, complete." is the line a stamp belongs across. h3
+             reserves the width, so the ink is never nearer than 8px to a
+             letter at any seat, and the card is the positioned ancestor. */
+    position:absolute; right:8px; top:calc(clamp(1rem, 1.6vw, 1.35rem) + .1rem); z-index:3;
+    font-family:var(--mono); font-size:.95rem; letter-spacing:.3em; color:var(--ember);
+    border:3px double var(--ember); padding:.42rem .7rem .42rem .95rem;
+    transform:rotate(-7deg) scale(1.3); transform-origin:100% 50%;
+    opacity:0; pointer-events:none;
     mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='70'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.35' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 .12'/%3E%3CfeComposite in='SourceGraphic' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
     mask-size:cover;
   }
-  #stamp.inked{opacity:1; transform:translateY(-62%) rotate(-7deg) scale(1)}
+  #stamp.inked{opacity:1; transform:rotate(-7deg) scale(1)}
   @media (prefers-reduced-motion: no-preference){
     #stamp{transition:opacity .12s ease, transform .3s cubic-bezier(.2,1.5,.4,1)}
   }
@@ -937,11 +1000,11 @@ if (location.hash.length > 1) {
      no timeline, nothing that outlives the gesture — the page keeps its
      zero-idle-cost property. Under reduced motion every end state still
      resolves; only the travel is removed. */
-  .ladder .gaterow .gsq2 i{position:relative}
-  .ladder .gaterow .gsq2 i::after{content:""; position:absolute; inset:-2px;
+  .yardrow .gsq2 i{position:relative}
+  .yardrow .gsq2 i::after{content:""; position:absolute; inset:-2px;
     border:1px solid var(--pine); opacity:0; transform:scale(.5);
     pointer-events:none}
-  .approved .ladder .gaterow .gsq2 i::after{
+  .approved .yardrow .gsq2 i::after{
     animation:seal 1.6s cubic-bezier(.16,.84,.44,1) .1s both}
   @keyframes seal{
     0%  {opacity:.85; transform:scale(.5)}
@@ -1099,7 +1162,7 @@ if (location.hash.length > 1) {
   }
 
   @media (prefers-reduced-motion: reduce){
-    .approved .ladder .gaterow .gsq2 i::after{animation:none; opacity:0}
+    .approved .yardrow .gsq2 i::after{animation:none; opacity:0}
     .endlight::before{transition:none; transform:translateX(-50%) scaleX(1)}
     .endquote{transition:none}
   }
@@ -1108,7 +1171,7 @@ if (location.hash.length > 1) {
      own full-height close, which made a thirteenth view the page never asked
      for — the gate IS the ending, and anything after it competes. Compact,
      right column, under the card: it belongs to the gate, not after it. */
-  .b8 footer{margin-top:auto; padding-top:1rem; border-top:1px solid var(--hair);
+  .b8 footer{padding-top:1rem; border-top:1px solid var(--hair);
     font-family:var(--mono); font-size:.66rem; letter-spacing:.05em;
     color:var(--ink-2); line-height:1.85; max-width:68ch}
 
@@ -1404,8 +1467,13 @@ if (location.hash.length > 1) {
     .station .plate{max-width:640px}
     .b4 .plate{max-width:760px}
     .plate.bare{max-width:600px}
-    .b8 .beat-inner{display:flex; flex-direction:column; gap:2rem}
+    /* stacked: one column in DOM order — head, card, timetable, yard, legend,
+       colophon — and the yard keeps its own seats, because the column is still
+       wider than the 440px the timetable needs. */
+    .b8 .beat-inner{display:flex; flex-direction:column; align-items:stretch;
+      gap:1.6rem; min-height:0}
     .gatecard{max-width:640px}
+    .b8 .ghead, .b8 .gatecard, .b8 .ttwrap, .b8 .yardnote{max-width:640px}
     /* THE RAIL'S OPACITY IS CONSTANT EVERYWHERE. This block used to set
        `#thread{opacity:.55}` with the note "the line passes behind stacked
        plates", and the note describes something the z-order already does:
@@ -1429,7 +1497,17 @@ if (location.hash.length > 1) {
     .deck{max-width:20ch}
     .station{min-height:150vh}
     .padcard{width:min(300px, 86vw); margin:0 auto}
-    #stamp{font-size:.9rem; letter-spacing:.28em}
+    /* THE CARD OPENS A BAND FOR THE STAMP on the phone. Beside the headline
+       it would need 112px of a 316px card and drive "run 042 · the manifest,
+       complete." to four lines at 390 and five at 320; under the note it
+       lands on the second line of a timestamp that wraps at 320. So the card
+       gives it a band of its own at the top, under the rule and above the
+       headline, and nothing has to move out of its way. */
+    .gatecard{padding-top:3.75rem}
+    .gatecard h3{padding-right:0}
+    #stamp{top:4px; right:0; font-size:.72rem; letter-spacing:.24em;
+      padding:.32rem .5rem .32rem .74rem; transform:rotate(-7deg) scale(1.25)}
+    #stamp.inked{transform:rotate(-7deg) scale(1)}
     /* manifest collapses to a pill; tap to open */
     #manifest{width:auto; right:14px; bottom:14px; padding:.5rem .7rem}
     #manifest ol, #manifest .foot{display:none}
@@ -1438,6 +1516,28 @@ if (location.hash.length > 1) {
     #manifest.open header{margin-bottom:.55rem}
     #manifest.open ol, #manifest.open .foot{display:block}
     #mtoggle{cursor:pointer}
+    /* ¶12 on the phone. The timetable loses its lane — the rail runs in its
+       own 26px gutter left of the content at every station — so the row is a
+       time and a stop, and the proof drops under the name where there is a
+       measure for it. The car glyph goes: at 390 it would be the only thing
+       competing with the number it belongs to. */
+    .b8 .ghead, .b8 .gatecard, .b8 .ttwrap, .b8 .yardnote{max-width:none}
+    .ladder li{grid-template-columns:56px minmax(0,1fr); height:auto;
+      align-items:baseline; padding:.3rem 0}
+    .ladder .cg{display:none}
+    .ladder .pr{grid-column:2; padding-left:0; white-space:normal}
+    .ladder.dep .st{grid-column:2}
+    /* THE YARD STAYS IN THE RAIL'S LANE. The socket is pulled 34px left of the
+       row's own edge so its centre lands on x 26, the gutter the phone rail
+       has run down since ¶01 — the line arrives straight instead of swinging
+       across the column to meet it. The button is the row's first seat, the
+       cars wait behind it, and 22:41 is dropped: the kicker two screens up
+       already carries the hour and 390px has no room to say it twice. */
+    .yardrow{height:56px; margin-top:clamp(18px, 2.6vh, 28px)}
+    .yardrow .lt{display:none}
+    .yardrow #approve{left:0; top:12px}
+    .yardrow .gsq2{left:-34px; top:30px}
+    .yardrow .ydoor{top:2px}
     /* fig. 10 on the phone: the press moves under its own row rather than
        beside it, and the row goes back to normal flow so a reason that wraps
        pushes the drawing down instead of printing into it. Only --gpx moves;
@@ -1460,20 +1560,7 @@ if (location.hash.length > 1) {
     .gates .gbench{--gph:50px; --grw:68px; --gpk:104px}
     .gates .gbench .gtail{display:none}
   }
-  @media (max-width:560px){
-    /* the gate ledger takes the manifest's own two-row shape: the
-       metric drops under the name — "9,701/10,000" must never be the
-       thing that decides the page's width (round 2 overflowed 320 by
-       9px here; the clip hid it) */
-    .gatecard .gl li{grid-template-columns:1.5rem 1fr}
-    .gatecard .gl li .gm{grid-column:2}
-    /* the stamp rides the spent BUTTON's zone, not the note: at 320 the
-       wrapped note filled the row's midline and the ink sat on the
-       timestamp (measured −68px). Ink over the pressed button is the
-       hand's own spot; ink over the receipt text is a defect. */
-    #stamp{top:0; transform:translateY(-30%) rotate(-7deg) scale(1.5)}
-    #stamp.inked{transform:translateY(-30%) rotate(-7deg) scale(1)}
-  }
+
   @media (min-width:821px){
     #mtoggle{pointer-events:none}
   }
@@ -1880,16 +1967,10 @@ h1[data-np-measuring] .np-ch {
        own 68px, so only the air under the bed is spent. */
     .gates{--grh:76px}
     .b8{padding-top:2vh; padding-bottom:1.4vh}
-    .ladder{margin-top:1.15rem}
-    .ladder li{margin:.33rem 0}
     .endlight{margin:.7rem 0 .1rem; padding:3.9rem 0 .1rem}
     .endlight::before{top:3.5rem}
     .lampnote{margin-top:.5rem}
-    /* margin-top stays auto — the colophon is bottom-aligned to the ladder
-       now, and a fixed margin here would pull it back up off the floor. */
     .b8 footer{padding-top:.7rem; line-height:1.62}
-    .gatecard .decide{margin-top:1.1rem}
-    .gatecard .gl li{padding:.3rem 0}
     .gatecard .note{margin-top:.8rem}
   }
 </style>
@@ -3108,129 +3189,133 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
   </section>
 
   <!-- ¶ 12 · 22:41 · the approval gate -->
+  <!-- THE STATION FLIPS, and the reason is that the old one said everything
+       twice. The left column was a headline over a ladder of twelve times; the
+       right column was a card that itemised the same six projects with the same
+       six numbers. A reader at the end of a long paper met two lists of the day
+       and an empty lower right.
+       One object now: the day's timetable, each project stop carrying the one
+       number it proved, with a clear lane down the middle for the rail to run
+       in. The headline and what the run adds up to take the right column, and
+       the yard runs the full width under both of them, because the yard is
+       where the line ends and the only thing on this page a person can do.
+       DOM order is head, card, timetable, yard, legend, colophon. That is the
+       phone's reading order, the stacked order and the focus order. -->
   <section id="gate" class="beat b8" data-beat="11">
     <div class="beat-inner">
-      <div>
+      <div class="ghead">
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate · <i>22:41</i></p>
         <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
-        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.4vw,3.5rem); letter-spacing:-.015em; line-height:1.08">Every pipeline I build ends with a human decision.</h2>
+        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.6vw,4.2rem); letter-spacing:-.017em; line-height:1.06; text-wrap:balance">Every pipeline I build ends with a human decision.</h2>
         <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
-        <!-- `y 0`, and it is load-bearing: this list holds the dock the thread
-             terminates on. A station that moves its own terminus while the line
-             is being drawn to it will always disagree with the line. It fades
-             in; it no longer rises. -->
-        <ul class="ladder" data-fx="in .12 .4 y 0 | out 2 2.5 | drift 0" style="margin-top:2rem">
-          <li data-ph="0"><span>06:12 · the start</span></li>
-          <li data-ph="1"><span>06:58 · who</span></li>
-          <li data-ph="2"><span>07:52 · the yard</span></li>
-          <li data-ph="3"><span>08:47 · applied</span></li>
-          <li data-ph="4"><span>12:06 · cadence</span></li>
-          <li data-ph="5"><span>15:23 · glyph</span></li>
-          <li data-ph="6"><span>19:36 · jetpack-compress</span></li>
-          <li data-ph="7"><span>21:07 · lifequest</span></li>
-          <li data-ph="8"><span>22:05 · agentic automl</span></li>
-          <li data-ph="9"><span>22:23 · the review</span></li>
-          <li data-ph="10"><span>22:32 · the references</span></li>
-          <li class="gaterow"><span class="gsq2" id="gateDock"><i></i></span>22:41 · the human gate</li>
-          <li data-ph="11"><span>deploy · yours</span></li>
+      </div>
+      <!-- `y 0` / `s 1`, and it is load-bearing in a new way: the card no
+           longer holds the dock, but it does hold the stamp, and a card that
+           arrives on a scale transform lands its stamp somewhere the measured
+           8px clearance was never taken. It fades in; it does not move. -->
+      <div class="gatecard" data-fx="in .1 .4 y 0 s 1 | out 2 2.5 | drift 0">
+        <h3>run 042 · the manifest, complete.</h3>
+        <!-- 042 IS A SERIAL AND THE PAGE SAYS SO. The owner asked whether the
+             number should be static "so someone who is approving it and comes
+             back after a couple of days" does not see it move — and it already
+             is: a hard-coded literal, no storage, no cookie, no date maths,
+             identical for every visitor on every visit including incognito.
+             What his question surfaced is an AFFORDANCE mismatch: a zero-padded
+             three-digit serial beside a clock that DOES advance as you scroll
+             reads as a counter, and every explanation of it lived in code
+             comments no reader sees. One line retires the misread, and it sits
+             here rather than at the masthead because the reader in his scenario
+             is the approver. "one approval missing", not "one signature": the
+             thing that is missing is the press, and the page should name the
+             act it is asking for. -->
+        <p class="mono">five proofs and one honest prototype · one approval missing<br>
+          042 is the day&rsquo;s serial, not a visit counter.</p>
+        <!-- reserved, so a reader who draws a digit on ¶07's pad and comes back
+             here does not watch the card grow a line under them. The sample is
+             the one number on this page that is the READER'S, so it is the one
+             line the manifest keeps room for. -->
+        <div class="lsline"><p class="lsam" id="liveSample" hidden>your sample · <span id="liveSampleM"></span></p></div>
+        <!-- THE SECOND CLAUSE GAVE THE ENDING AWAY. It named, in six words,
+             exactly what is behind the one button on the page, and a comment
+             node is in the DOM as surely as the sentence is — so the old wording
+             is not quoted here either. The sentence's real job is the first
+             clause: nothing you did by scrolling could have pressed this.
+             role="status" so the press is announced rather than only seen. -->
+        <span class="note" id="gateNote" role="status">scrolling could not press this button &middot; the run ends only by hand.</span>
+        <div id="stamp" aria-hidden="true">APPROVED</div>
+      </div>
+      <!-- THE LADDER BECOMES THE TIMETABLE. Twelve times with nothing beside
+           them was a list of when, and the run's argument is what. Each project
+           stop carries the one number it proved, read off the manifest panel
+           that has carried it since ¶03, so nothing new is claimed at the one
+           moment the page asks to be believed. The empty column between the
+           name and the car is the rail's lane, and it is 88px wide. -->
+      <div class="ttwrap" data-fx="in .12 .4 y 0 | out 2 2.5 | drift 0">
+        <ul class="ladder tt">
+          <li data-ph="0"><span class="lt">06:12</span><span class="st">the start</span></li>
+          <li data-ph="1"><span class="lt">06:58</span><span class="st">who</span></li>
+          <li data-ph="2"><span class="lt">07:52</span><span class="st">the yard</span></li>
+          <li data-ph="3"><span class="lt">08:47</span><span class="st">applied</span><i class="cg" aria-hidden="true"></i><span class="pr">1 wrong in <b class="mv">96</b></span></li>
+          <li data-ph="4"><span class="lt">12:06</span><span class="st">cadence</span><i class="cg" aria-hidden="true"></i><span class="pr"><b class="mv">1,186</b> tests pass</span></li>
+          <li data-ph="5"><span class="lt">15:23</span><span class="st">glyph</span><i class="cg" aria-hidden="true"></i><span class="pr"><b class="mv">3.5×</b> faster kernel</span></li>
+          <li data-ph="6"><span class="lt">19:36</span><span class="st">jetpack-compress</span><i class="cg" aria-hidden="true"></i><span class="pr"><b class="mv">6.4×</b> faster</span></li>
+          <li data-ph="7"><span class="lt">21:07</span><span class="st">lifequest</span><i class="cg" aria-hidden="true"></i><span class="pr"><b class="mv">3 of 5</b> built</span></li>
+          <li data-ph="8"><span class="lt">22:05</span><span class="st">agentic automl</span><i class="cg" aria-hidden="true"></i><span class="pr"><b class="mv">2,523</b> tests pass</span></li>
+          <li data-ph="9"><span class="lt">22:23</span><span class="st">the review</span></li>
+          <li data-ph="10"><span class="lt">22:32</span><span class="st">the references</span></li>
+        </ul>
+        <!-- deploy is its own list and it is LAST in the document, because
+             DEPLOY_PH is derived as phases.length - 1 from document order:
+             the rung a scroll must never light has to be the last one found. -->
+        <ul class="ladder dep">
+          <li data-ph="11"><span class="st">deploy &middot; yours</span></li>
         </ul>
       </div>
-      <div>
-        <div class="gatecard" data-fx="in .1 .4 y 10 s .975 | out 2 2.5 | drift 0">
-          <h3>run 042 · the manifest, complete.</h3>
-          <!-- 042 IS A SERIAL AND THE PAGE NOW SAYS SO. The owner asked whether
-               the number should be static "so someone who is approving it and
-               comes back after a couple of days" does not see it move — and it
-               already is: a hard-coded literal, no storage, no cookie, no date
-               maths, identical for every visitor on every visit including
-               incognito. Nothing needed to change about the number.
-               What his question actually surfaced is an AFFORDANCE mismatch: a
-               zero-padded three-digit serial sitting beside a clock that DOES
-               advance as you scroll reads as a counter, and every explanation
-               of it lived in code comments no reader sees. He is the second
-               person that adjacency will fool, not the last. One line retires
-               the misread, and it sits here rather than at the masthead because
-               the reader in his scenario is the approver — between "the
-               manifest, complete." and the button they came to press.
-               A date token was considered and rejected: "run 042 · 2026-08"
-               reads as "last touched in August" by October, which manufactures
-               the staleness it was meant to prevent. -->
-          <p class="mono">five proofs and one honest prototype · one signature missing<br>
-            042 is the day&rsquo;s serial, not a visit counter.</p>
-          <!-- THE MANIFEST, ITEMISED. The headline says "the manifest,
-               complete" and then showed nothing, which left about 440px of
-               bare paper between that claim and the signature line. The
-               owner reads empty area on this screen as broken, and he is
-               right to: a document that says it is complete and then shows
-               you a void has not made its case.
-               So the card carries the six stops that carry projects, each
-               with the one number it proved. Every figure here is already on
-               this page — the six are the manifest panel's own rows, and the
-               times are the ladder's — so nothing new is claimed at the one
-               moment the page asks to be believed. The times are in the
-               .gi column because that is where the ladder opposite and the
-               timetable both put them, and because a time read off the run
-               is a machine value; the names and the facts are text. -->
-          <ul class="gl">
-            <li><span class="gi">08:47</span><b>applied</b><span class="gm">1 wrong in <b class="mv">96</b></span></li>
-            <li><span class="gi">12:06</span><b>cadence</b><span class="gm"><b class="mv">1,186</b> tests pass</span></li>
-            <li><span class="gi">15:23</span><b>glyph</b><span class="gm"><b class="mv">3.5×</b> faster kernel</span></li>
-            <li><span class="gi">19:36</span><b>jetpack-compress</b><span class="gm"><b class="mv">6.4×</b> faster</span></li>
-            <li><span class="gi">21:07</span><b>lifequest</b><span class="gm"><b class="mv">3 of 5</b> built</span></li>
-            <li><span class="gi">22:05</span><b>agentic automl</b><span class="gm"><b class="mv">2,523</b> tests pass</span></li>
-            <li id="liveSample" hidden><span class="gi">+</span><b>your sample</b><span class="gm" id="liveSampleM"></span></li>
-          </ul>
-          <!-- THE BLANK RULE IS THE ASK. ¶11 is a plate of signatures that
-               were given; ¶10's register ends on a dashed line marked
-               unsigned, pointing down the page at a person. This is where
-               that line arrives, so the last thing on the paper is the one
-               shape a working document uses to ask: a ruled line with
-               nothing on it and a name for who belongs there.
-               The button is seated at its right end because that is where a
-               hand comes to rest, and the stamp lands on the same spot. -->
-          <div class="decide">
-            <span class="sigline">
-              <!-- a nib resting at the head of the line, drawn rather than
-                   lettered, and static. A blinking caret was offered and
-                   declined: it is the one shape on this page that would read
-                   as a typewriter effect, which the no-list rules out, and a
-                   mark that never moves still says "sign here". -->
-              <svg class="sigpen" width="13" height="16" viewBox="0 0 13 16" aria-hidden="true"><path d="M2.6 1.2 H10.4 V8.4 L6.5 14.6 L2.6 8.4 Z"/><path d="M6.5 8.6 V12.2"/></svg>
-              <span class="sigrule" aria-hidden="true"></span>
-              <span class="sigcap">the approver</span>
-            </span>
-            <button class="btn" id="approve" type="button">approve run 042</button>
-            <div id="stamp" aria-hidden="true">APPROVED</div>
-          </div>
-          <!-- THE SECOND CLAUSE GAVE THE ENDING AWAY. It named, in six
-               words, exactly what is behind the one button on the page, and
-               a comment node is in the DOM as surely as the sentence is — so
-               the old wording is not quoted here either. The sentence's real
-               job is the first clause: nothing you did by scrolling could
-               have pressed this. What replaces the rest says the run ends by
-               hand without saying where the hand leads. -->
-          <span class="note" id="gateNote">scrolling could not press this button &middot; the run ends only by hand.</span>
-        </div>
-        <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three
-             cold critics: a reader who scrolls to the end of this page finds
-             a copyright line, because the only contact row is in ¶13 and ¶13
-             is on the far side of a button. Nobody who is deciding whether to
-             write to someone presses "approve run 042" first. So the colophon
-             carries the four ways in, and the gate keeps the last screen —
-             the ask is still the run's closing beat, it is just no longer the
-             toll gate on his email address. ¶13's row stays: it is the
-             morning's own offer, and this one is the end of the day's. -->
-        <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
-          <span class="reach">
-            <a href="mailto:aesh.03.23@gmail.com">email</a> ·
-            <a href="resume.pdf" target="_blank" rel="noopener">résumé (pdf) &#10230;</a> ·
-            <a href="https://github.com/yadava5" target="_blank" rel="noopener">github &#8599;</a> ·
-            <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin &#8599;</a>
-          </span>
-          &copy; 2026 ayush yadav · cincinnati, oh<br>
-          set by hand &middot; zero dependencies
-        </footer>
+      <!-- THE YARD. No data-fx: the cars beside this row are drawn on the
+           thread's canvas and cannot fade in with a DOM entrance, so a fading
+           row would arrive half a second after its own freight. -->
+      <div class="yardrow">
+        <span class="lt">22:41</span>
+        <button class="btn" id="approve" type="button">approve run 042</button>
+        <!-- the socket the rail docks on. The canvas draws two rings around
+             it; the square is what the line's last sample actually lands on,
+             and buildThread measures this element to find out where that is. -->
+        <span class="gsq2" id="gateDock"><i></i></span>
+        <!-- the door is wrapped in a span because absLeft() walks offsetLeft
+             and an SVG element has none: measured through the svg the route
+             ran to NaN and drew nothing at all. -->
+        <span class="ydoor" id="yardDoor" aria-hidden="true">
+          <svg viewBox="0 0 34 38" aria-hidden="true">
+            <rect class="sill" x="3" y="3" width="28" height="35"/>
+            <g class="leaf">
+              <rect x="3.5" y="3.5" width="27" height="34.5"/>
+              <path d="M3.5 16 H30.5"/>
+              <circle cx="7.6" cy="23" r="1.3"/>
+            </g>
+            <path class="jamb" d="M1 38 V1 H33 V38"/>
+          </svg>
+        </span>
       </div>
+      <!-- the yard is drawn on a canvas and canvases say nothing, so the row
+           is described here in the page's own voice. It is also the legend the
+           six cars need: one car is one project, in the order of the day. -->
+      <p class="yardnote" data-fx="in .06 .3 y 0 | out 2 2.5 | drift 0">in the yard: six cars, one for each project of the day, and a closed door at the end of the siding.</p>
+      <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three cold
+           critics: a reader who scrolls to the end of this page finds a
+           copyright line, because the only contact row is in ¶13 and ¶13 is on
+           the far side of a button. Nobody who is deciding whether to write to
+           someone presses "approve run 042" first. So the colophon carries the
+           four ways in, and the gate keeps the last screen. -->
+      <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
+        <span class="reach">
+          <a href="mailto:aesh.03.23@gmail.com">email</a> ·
+          <a href="resume.pdf" target="_blank" rel="noopener">résumé (pdf) &#10230;</a> ·
+          <a href="https://github.com/yadava5" target="_blank" rel="noopener">github &#8599;</a> ·
+          <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin &#8599;</a>
+        </span>
+        &copy; 2026 ayush yadav · cincinnati, oh<br>
+        set by hand &middot; zero dependencies
+      </footer>
     </div>
   </section>
 
@@ -3799,7 +3884,7 @@ function cacheGeometry() {
 const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 window.__rail = () => samples; /* probe hook: G10 reads the rail's shape off the real path */
-let pathLen = 0, gatePageY = 0;
+let pathLen = 0, gatePageY = 0, dockX = 0;
 /* run 042 owns beats 0..11; ¶13 is the next run's first light */
 const RUN_BEATS = 12;
 /* how far into ¶13 the morning has fully arrived. The station is 300vh and
@@ -3809,8 +3894,11 @@ const DAWN_WIN = 0.62;
 const dawnProgress = (p) => clamp(p / DAWN_WIN, 0, 1);
 /* the final approach: the length over which the thread straightens onto the
    gate dock and its hand-wobble tapers to zero. Long enough to read as an
-   arrival, short enough that the line still wanders everywhere else. */
-const APPROACH = 96;
+   arrival, short enough that the line still wanders everywhere else.
+   LOCK is the last stretch, where the wobble is not tapering but GONE: the
+   line is exactly dockX for 40px, which is what makes the arrival read as a
+   dock rather than as a line that happened to stop. G10b measures it. */
+const APPROACH = 96, LOCK = 40;
 let glyphDigit = null;         /* the visitor's own read digit, once drawn */
 const inkC = {};
 /* THE CANVAS HAS TO KNOW WHAT THE SKY IS DOING. Everything else on the page
@@ -3865,6 +3953,21 @@ function buildThread() {
      tail — the thread simply stops drawing and the travellers lose their
      track. check-beat-tables.mjs asserts the lengths against the DOM. */
   const RAIL_X_MOBILE = 26; /* px · the phone lane, left of the column */
+  /* THE LAST STOP'S X IS THE SOCKET'S, NOT A PERCENTAGE. It is measured first
+     and used for beat 11 everywhere below, because the anchor and the terminus
+     disagreeing is the whole class of defect this station kept producing: the
+     line would swing to stx[11] inside ¶12 and then cut back to the dock.
+     Measured in LAYOUT space (absTop/absLeft, never a client rect) so an
+     entrance transform mid-flight cannot bake itself into the geometry, and it
+     targets the 8×8 SQUARE rather than its box — that mark is what a reader
+     sees as the end of the line. */
+  const dockEl = $("gateDock");
+  const sq = dockEl.querySelector("i") || dockEl;
+  gatePageY = absTop(sq) + sq.offsetHeight / 2;
+  dockX = absLeft(sq) + sq.offsetWidth / 2;
+  /* stx keeps all 13 entries (check-beat-tables counts them against the DOM)
+     and stx[11] is overridden by dockX at every width: the gate's x is a
+     measurement now, not a declaration. */
   const stx = stacked
     ? [50, 26, 74, 26, 74, 26, 74, 26, 74, 26, 23, 20, 20]
     : [50, 30, 70, 31, 69, 33, 67, 33, 67, 30, 27, 24, 24];
@@ -3902,15 +4005,17 @@ function buildThread() {
             absTop(npEl) + npEl.offsetHeight * 0.12,
             absTop(npEl) + npEl.offsetHeight * 0.75)
     : beats[0].top + beats[0].h * 0.42;
+  const beatX = (i) =>
+    mobile ? RAIL_X_MOBILE : i === RUN_BEATS - 1 ? dockX : (stx[i] / 100) * vw;
   const anchors = [];
-  anchors.push([mobile ? RAIL_X_MOBILE : (stx[0] / 100) * vw, mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
+  anchors.push([beatX(0), mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
   for (let i = 0; i < RUN_BEATS; i++) {
-    const b = beats[i], x = mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw;
+    const b = beats[i], x = beatX(i);
     if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
     anchors.push([x, b.top + b.h * 0.52]);
     if (i < RUN_BEATS - 1) {
       const nb = beats[i + 1];
-      anchors.push([lerp(x, mobile ? RAIL_X_MOBILE : (stx[i + 1] / 100) * vw, 0.5),
+      anchors.push([lerp(x, beatX(i + 1), 0.5),
         lerp(b.top + b.h * 0.52, nb.top + nb.h * 0.18, 0.5)]);
     }
   }
@@ -3919,22 +4024,6 @@ function buildThread() {
      thread stopping rather than docking. The last stretch is now a straight
      vertical drop onto the square: one anchor directly above the dock, one on
      it. Paired with the wobble taper below, the hand steadies as it arrives. */
-  /* MEASURED IN LAYOUT SPACE, not from a client rect. The dock sits inside
-     ul.ladder, which enters on `y 6` — a 6vh translate, 54px at 900 — and a
-     client rect includes it. So the terminus was whatever the ladder's
-     entrance happened to be doing at the instant the geometry was last built,
-     and it disagreed with the dock by up to 55px for the rest of the session:
-     the rail visibly stopped short of the square it was docking onto.
-     absTop/absLeft never see a transform, so this is the same number at every
-     scroll position and after every resize.
-
-     And it targets the SQUARE rather than its 2.6ch cell — that mark is what
-     the reader sees as the end of the line, and the cell's centre sits about
-     6px to its right. */
-  const dockEl = $("gateDock");
-  const sq = dockEl.querySelector("i") || dockEl;
-  gatePageY = absTop(sq) + sq.offsetHeight / 2;
-  const dockX = absLeft(sq) + sq.offsetWidth / 2;
   anchors[anchors.length - 1] = [dockX, gatePageY - APPROACH];
   anchors.push([dockX, gatePageY]);
   anchors.sort((a, b) => a[1] - b[1]);
@@ -3958,7 +4047,11 @@ function buildThread() {
      near vertical; on a swing they became 50px chords, visible as a
      polyline. Each step is now at most STEP px of path. */
   const amp = mobile ? 3 : stacked ? 8 : 16;
-  const steady = (y) => clamp((gatePageY - y) / APPROACH, 0, 1);
+  /* SMOOTHSTEP, and the linear ramp it replaces is why the old arrival had a
+     corner in it: the wobble's amplitude changed slope discontinuously at
+     exactly gatePageY - APPROACH, which the rail reads as a kink because the
+     wobble is what carries dx/dy there. Zero for the last LOCK px. */
+  const steady = (y) => smooth((gatePageY - LOCK - y) / (APPROACH - LOCK));
   const n = anchors.length, sec = [], m = new Array(n).fill(0);
   for (let k = 0; k < n - 1; k++) {
     const dy = anchors[k + 1][1] - anchors[k][1];
@@ -3988,8 +4081,31 @@ function buildThread() {
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
   pathLen = L;
+  cacheYard();
   sizeThread();
   refreshInk();
+}
+
+/* ————— the yard, measured —————
+   Where the six cars stand, where the route runs and where the door is. Read
+   off the DOM in layout space in the same pass as the dock, so the drawing and
+   the controls can never disagree about where the track is: the track's y IS
+   the socket's y, and the button is centred on it by the stylesheet. */
+const siding = { ready: false, x0: 0, doorX: 0, doorW: 0, w: 26, h: 14, gap: 4 };
+function cacheYard() {
+  const door = $("yardDoor"), btn = $("approve");
+  if (!door || !btn) { siding.ready = false; return; }
+  siding.doorX = absLeft(door);
+  siding.doorW = door.offsetWidth || 30;
+  siding.w = mobile ? 18 : 26;
+  siding.h = mobile ? 10 : 14;
+  siding.gap = mobile ? 3 : 4;
+  /* On the desktop the cars stand 24px clear of the outer ring. On the phone
+     they wait BEHIND the button — 123px of cars under 150px of control — so
+     the row reads as a button and a door until the run is approved, which is
+     the only thing a 390px screen has room to say. */
+  siding.x0 = mobile ? absLeft(btn) : dockX + 24;
+  siding.ready = true;
 }
 function idxAtY(y) {
   let lo = 0, hi = samples.length - 1;
@@ -4388,16 +4504,94 @@ function drawThread(scroll, tokenY, tokenL, halted) {
   }
   drawTokenAndTravellers(scroll, tokenY, tokenL, halted);
 }
+/* ————— the yard, drawn —————
+   Six cars on a siding, a ruled route to a closed door, and the socket the
+   day's rail docks on. It is drawn INSIDE drawTokenAndTravellers rather than
+   in drawThread on purpose: drawThread's tail is the literal G10's control
+   injects a destination-out against, and the yard composites source-over
+   only, like everything else on this canvas.
+
+   None of it is ever added to `samples`. The rail is the run's line and it
+   ends at the ring; what stands beyond the ring is freight, and freight is
+   not track. */
+function drawYard(scroll, halted) {
+  if (!siding.ready) return;
+  const y = Math.round(gatePageY - scroll) + 0.5; /* the track, on a pixel */
+  if (y < -80 || y > vh + 80) return;
+  const w = siding.w, h = siding.h, pitch = w + siding.gap;
+  const tail = siding.x0, nose = tail + 6 * pitch - siding.gap;
+  const doorMouth = siding.doorX + 2;
+  inkC["--plate-solid"] = overGround(plateRaw);
+
+  /* the siding the cars stand on, and then the route they have not taken:
+     [6,6], which on this page means a stretch nobody has committed to. The
+     day's own rail owns [2,7] and nothing else is allowed to use it. */
+  tctx.strokeStyle = inkC["--ink-2"]; tctx.lineWidth = 1.4;
+  tctx.beginPath(); tctx.moveTo(dockX + 16, y); tctx.lineTo(nose, y); tctx.stroke();
+  if (doorMouth > nose + 6) {
+    tctx.setLineDash([6, 6]);
+    tctx.beginPath(); tctx.moveTo(nose, y); tctx.lineTo(doorMouth, y); tctx.stroke();
+    tctx.setLineDash([]);
+  }
+
+  /* the cars. Bodies ride above the track on wheels that touch it, and the
+     fifth carries LifeQuest's own record: three fifths of it is built and
+     drawn, and the other two fifths are dashed, which is the same sentence
+     the timetable row beside it prints as "3 of 5 built". */
+  const bodyB = y - 5, bodyT = bodyB - h;
+  for (let i = 0; i < 6; i++) {
+    const x = tail + i * pitch, div = x + w * 0.6;
+    tctx.fillStyle = inkC["--plate-solid"];
+    tctx.fillRect(x, bodyT, w, h);
+    tctx.lineWidth = 1.2; tctx.strokeStyle = inkC["--ink"];
+    tctx.beginPath();
+    if (i === 4) {
+      tctx.moveTo(div, bodyT); tctx.lineTo(x, bodyT);
+      tctx.lineTo(x, bodyB); tctx.lineTo(div, bodyB);
+      tctx.stroke();
+      tctx.strokeStyle = inkC["--ink-2"]; tctx.lineWidth = 1;
+      tctx.setLineDash([2, 2]);
+      tctx.beginPath();
+      tctx.moveTo(div, bodyT); tctx.lineTo(x + w, bodyT);
+      tctx.lineTo(x + w, bodyB); tctx.lineTo(div, bodyB); tctx.lineTo(div, bodyT);
+      tctx.stroke();
+      tctx.setLineDash([]);
+    } else {
+      tctx.rect(x, bodyT, w, h); tctx.stroke();
+    }
+    /* wheels on the rail, and a coupler to the car in front */
+    tctx.fillStyle = inkC["--ink-2"];
+    for (const wx of [x + w * 0.24, x + w * 0.76]) {
+      tctx.beginPath(); tctx.arc(wx, y - 2.6, 2.4, 0, 7); tctx.fill();
+    }
+    if (i < 5) {
+      tctx.strokeStyle = inkC["--ink-2"]; tctx.lineWidth = 1;
+      tctx.beginPath();
+      tctx.moveTo(x + w, bodyB - h / 2); tctx.lineTo(x + w + siding.gap, bodyB - h / 2);
+      tctx.stroke();
+    }
+  }
+
+  /* THE SOCKET, RINGED TWICE. One ring is the page's mark for a deliberate
+     hold and it is used at three stations; two rings is this one — the end of
+     the line, the only place the reader is asked to do something. Clay while
+     it waits, pine once a hand has signed. No partial opacity anywhere: a
+     ring is on or it is not. */
+  if (halted) {
+    tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
+    tctx.lineWidth = 2.2;
+    tctx.beginPath(); tctx.arc(dockX, gatePageY - scroll, 11, 0, 7); tctx.stroke();
+    tctx.lineWidth = 1;
+    tctx.beginPath(); tctx.arc(dockX, gatePageY - scroll, 16, 0, 7); tctx.stroke();
+  }
+}
+
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
+  drawYard(scroll, halted);
   const tp = pointAtLen(tokenL), ty = tp.y - scroll;
   if (ty > -30 && ty < vh + 30) {
     tctx.fillStyle = inkC["--ink"];
     tctx.beginPath(); tctx.arc(tp.x, ty, 4.5, 0, 7); tctx.fill();
-    if (halted) { /* clay while it waits; pine once your hand has signed */
-      tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
-      tctx.lineWidth = 2;
-      tctx.beginPath(); tctx.arc(tp.x, ty, 9, 0, 7); tctx.stroke();
-    }
   }
   /* Once per frame, not per mark: every filled waybill body reads this. */
   inkC["--plate-solid"] = overGround(plateRaw);
