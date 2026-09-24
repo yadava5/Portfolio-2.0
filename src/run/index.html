@@ -7754,7 +7754,10 @@ function buildDawnscape() {
   };
 
   /* ————— mark 2 and 3: hatch, clipped to a polygon, in pen-length pieces ————— */
-  const hatch = (poly, deg, gap, cls, amp = 0.35, len = [12, 40]) => {
+  /* `fade(x, y)` is the chance a piece is laid at all: a pocket dissolves into
+     the plane around it instead of stopping at a polygon's edge, because no
+     shadow on the page may have a straight edge that is not a contour */
+  const hatch = (poly, deg, gap, cls, amp = 0.35, len = [12, 40], fade = null) => {
     const a = (deg * Math.PI) / 180, ux = Math.cos(a), uy = Math.sin(a), vx = -uy, vy = ux;
     const pu = poly.map(([x, y]) => x * ux + y * uy), pv = poly.map(([x, y]) => x * vx + y * vy);
     const v0 = Math.min(...pv), v1 = Math.max(...pv);
@@ -7773,7 +7776,8 @@ function buildDawnscape() {
           const L = Math.min(end - u, len[0] + r() * (len[1] - len[0]));
           const m = Math.max(2, Math.ceil(L / 5)), pts = [];
           for (let s = 0; s <= m; s++) { const uu = u + (L * s) / m; pts.push([uu * ux + v * vx, uu * uy + v * vy]); }
-          if (!pts.some(([x, y]) => inKeep(x, y))) { d += stroke(pts, amp); n++; }
+          const mid = pts[Math.floor(pts.length / 2)];
+          if (!pts.some(([x, y]) => inKeep(x, y)) && (!fade || r() < fade(mid[0], mid[1]))) { d += stroke(pts, amp); n++; }
           u += L + 1.5 + r() * 3;
         }
       }
@@ -7953,17 +7957,36 @@ function buildDawnscape() {
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
        lower ones starting further east where the crown reaches; they break
        around the run state and die west of the sun's column. */
-    for (let y = Y(0.035), i = 0; y < Y(0.17); y += 7 + r() * 8, i++) {
-      let x = X(0.31) + (y > Y(0.09) ? X(0.04) : 0) + r() * X(0.05);
-      /* the upper lines run on east under the bough's reach, so the top edge
-         is never bare for long between the crown and the bough */
-      const x1 = X(y < Y(0.07) ? 0.70 : 0.60) + r() * X(0.11);
-      const pieces = r() < 0.4 ? 1 : 2 + Math.floor(r() * 2);
-      for (let p = 0; p < pieces && x1 - x > 50; p++) {
-        const L = Math.min(x1 - x, 60 + r() * 200);
-        far += strokes(curve([[x, y], [x + L * 0.5, y + (r() - 0.5) * 1.5], [x + L, y]], 6), 1.0, "ds-far w1");
-        x += L + 16 + r() * 40;
+    /* SKY IS NOT A PARAGRAPH. Eight lines, none the same length, none sharing
+       a start or an end with its neighbour, drifting east and a little up
+       from the crown's reach toward the bough, sparse where they begin over
+       the sun's column and never stacked into a block. A line that would
+       cross the run state ends short of it and picks up past it, each end its
+       own distance from the text so the halo is never a ruled margin. */
+    const skyPiece = (x0, x1, y) => {
+      let out = "";
+      const boxes = keep.filter(([l, t, rt, bt]) => y >= t && y <= bt && x1 > l && x0 < rt);
+      const spans = [[x0, x1]];
+      for (const [l, , rt] of boxes) {
+        const s = spans.pop();
+        if (s[0] < l - 14) spans.push([s[0], l - 14 - r() * 50]);
+        if (s[1] > rt + 14) spans.push([rt + 14 + r() * 50, s[1]]);
       }
+      for (const [a, b] of spans) if (b - a > 36) out += P(stroke(curve([[a, y], [(a + b) / 2, y + (r() - 0.5) * 1.6], [b, y]], 6), 1.0), "ds-far w1");
+      return out;
+    };
+    let prevA = -1, prevB = -1;
+    for (let i = 0; i < 8; i++) {
+      const t = i / 7;
+      const y = Y(0.155 - t * 0.115) + (r() - 0.5) * Y(0.05);
+      let a = X(0.31 + t * 0.22) + r() * X(0.08);
+      if (Math.abs(a - prevA) < 40) a += 60 + r() * 40;
+      let b = Math.min(a + 60 + r() * 240, X(0.75));
+      if (Math.abs(b - prevB) < 40) b -= 50 + r() * 40;
+      /* a second short piece after a lift, one time in two */
+      far += skyPiece(a, b, y);
+      if (r() < 0.5 && b + 80 < X(0.75)) { const c = b + 24 + r() * 50; far += skyPiece(c, Math.min(c + 60 + r() * 120, X(0.75)), y + (r() - 0.5) * 3); }
+      prevA = a; prevB = b;
     }
     /* …and it turns the corner down the right edge in pairs, short, hugging
        the edge so the birds' room inboard stays open */
@@ -7995,8 +8018,9 @@ function buildDawnscape() {
     const inner = (w) => offset(lip, -w).reverse();
     mid += hatch([...lip, ...inner(34)], -18, 3.8, "ds-ink w08", 0.3);
     mid += hatch([...inner(30), ...offset(lip, -78)], -18, 5.2, "ds-far w1", 0.3);
-    const pocket3 = [...lip.filter(([, y]) => y >= Y(0.65) && y <= Y(0.75)), ...offset(lip.filter(([, y]) => y >= Y(0.65) && y <= Y(0.75)), -22).reverse()];
-    mid += hatch(pocket3, 38, 3.4, "ds-ink w06", 0.25, [8, 18]);
+    const lipS = lip.filter(([, y]) => y >= Y(0.63) && y <= Y(0.78));
+    const pocket3 = [...lipS, ...offset(lipS, -24).reverse()];
+    mid += hatch(pocket3, 38, 3.4, "ds-ink w06", 0.25, [8, 18], (x, y) => 1.4 - Math.abs(y - Y(0.705)) / Y(0.06));
     far += ticks(X(0.89), hz - 22, X(0.05), 16, 26, "ds-far w1", 4, 9, 0.2);
   }
 
@@ -8058,8 +8082,9 @@ function buildDawnscape() {
        toward the middle; the light is east of the trunk */
     const across = (f) => left.map(([x, y], i) => [x + (right[Math.min(i, right.length - 1)][0] - x) * f, y]);
     const low = (pts) => pts.filter(([, y]) => y > Y(0.34));
-    d += hatch([...low(left), ...low(across(0.2)).reverse()], 84, 2.8, "ds-ink w08", 0.35, [18, 60]);
-    d += hatch([...low(across(0.17)), ...low(across(0.46)).reverse()], 84, 4.6, "ds-ink w06", 0.35, [14, 40]);
+    const lit = (x, y) => { const i = Math.min(left.length - 1, Math.max(0, Math.round(((y - left[0][1]) / (left[left.length - 1][1] - left[0][1])) * (left.length - 1)))); const lx = left[i][0], rx = right[Math.min(i, right.length - 1)][0]; return (x - lx) / (rx - lx); };
+    d += hatch([...low(left), ...low(across(0.24)).reverse()], 84, 2.8, "ds-ink w08", 0.35, [18, 60], (x, y) => 1.3 - lit(x, y) * 3.5);
+    d += hatch([...low(across(0.15)), ...low(across(0.52)).reverse()], 84, 4.6, "ds-ink w06", 0.35, [14, 40], (x, y) => 1.25 - lit(x, y) * 2.2);
     /* bark: short ticks bowed across the cylinder, most on the shadow side */
     let bd = "", bk = 0;
     for (let i = 0; i < 26; i++) {
@@ -8072,12 +8097,16 @@ function buildDawnscape() {
     }
     d += P(bd, "ds-ink w1", bk);
     /* pocket 2: the root flare's shadow, ground family crossed */
-    const p2 = [[X(0.030), hz + 1], [X(0.046), hz - Y(0.035)], [X(0.062), hz - Y(0.055)], [X(0.066), hz - Y(0.02)], [X(0.060), hz + 1]];
-    d += hatch(p2, -18, 3.2, "ds-ink w08", 0.3, [8, 22]) + hatch(p2, 40, 3.4, "ds-ink w06", 0.25, [8, 18]);
-    /* pocket 1: the crotch, where the limbs leave and no light reaches: it
-       starts inside the trunk's top and rises between L1 and L3 */
-    const p1 = [[X(0.068), Y(0.35)], [X(0.070), Y(0.30)], [X(0.080), Y(0.255)], [X(0.088), Y(0.235)], [X(0.097), Y(0.255)], [X(0.107), Y(0.30)], [X(0.104), Y(0.35)]];
-    d += hatch(p1, 84, 2.8, "ds-ink w08", 0.3, [10, 30]) + hatch(p1, 30, 4.4, "ds-ink w06", 0.25, [8, 18]);
+    const p2 = [[X(0.026), hz + 1], [X(0.042), hz - Y(0.035)], [X(0.058), hz - Y(0.06)], [X(0.066), hz - Y(0.02)], [X(0.062), hz + 1]];
+    const p2f = (x) => 1.2 - ((x - X(0.026)) / (X(0.066) - X(0.026))) * 1.0;
+    d += hatch(p2, -18, 3.2, "ds-ink w08", 0.3, [8, 22], p2f) + hatch(p2, 40, 3.4, "ds-ink w06", 0.25, [8, 18], p2f);
+    /* pocket 1: the crotch, where the limbs leave and no light reaches. Its
+       sides are the trunk's own contour, its top a point between L1 and L3,
+       and its foot has no edge: the pieces thin out downward into the bark's
+       grain and rightward into the lit side. */
+    const p1 = [[X(0.066), Y(0.40)], [X(0.068), Y(0.31)], [X(0.080), Y(0.255)], [X(0.088), Y(0.235)], [X(0.097), Y(0.255)], [X(0.107), Y(0.31)], [X(0.106), Y(0.40)]];
+    const p1f = (x, y) => { const v = clamp((Y(0.40) - y) / Y(0.07), 0, 1), h = 1.25 - lit(x, y) * 1.1; return Math.min(1, v * h + 0.05); };
+    d += hatch(p1, 84, 2.8, "ds-ink w08", 0.3, [10, 30], p1f) + hatch(p1, 30, 4.2, "ds-ink w06", 0.25, [8, 18], (x, y) => p1f(x, y) * (1.1 - lit(x, y)));
 
     /* THE LIMBS ARE CROOKED AND THEY FORK, the way an oak's do, and every
        one of them ends INSIDE a mass: a limb that ends in the air is a stick
@@ -8119,7 +8148,7 @@ function buildDawnscape() {
        rim. Six clumps here: the edge column (on L1), the corner tip, the
        top run right of the nameplate's window (on L2 and L3b), the middle
        (where L2 and L3 cross), the reach (L3's end) and the low bough (L4). */
-    const K = 0.82 * Math.max(vs, 0.8);
+    const K = 0.78 * Math.max(vs, 0.8);
     /* a clump: a centre in viewport fractions, members as pixel offsets from
        it, close enough that their masses overlap into one silhouette */
     const clump = (fx, fy, members) => members.map(([dx, dy, rr]) => [X(fx) + dx * K, Y(fy) + dy * K, rr * K]);
