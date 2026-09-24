@@ -796,38 +796,32 @@ if (location.hash.length > 1) {
      Areas, not source order: the DOM reads head, card, timetable, yard,
      legend, colophon — which is the stacked and phone reading order, and the
      focus order, and the order a screen reader gets. */
-  /* THE TIMETABLE SETS THE COMPOSITION'S HEIGHT, and that is what closes the
-     hole. Built centred with auto rows it measured 700px of ink in a 933px
-     screen and left 135px of empty paper under the colophon; built with the
-     slack inside it, the hole moved to the lower right, between the manifest
-     and the yard, which is worse — the round-2 gate's own defect, relocated.
-     So the left column takes the height instead: the rows are pitched off the
-     viewport (5vh), the timetable runs the full height of the screen's middle,
-     and the manifest is pulled DOWN to close level with the last rung. What is
-     left is air under the headline, which is where air belongs.
-     Measured after: 70px of band at 982, 41px at 800. */
+  /* TWO COLUMNS, FOUR ROWS, AND BOTH COLUMNS CLOSE ON ONE LINE. Rounds 5 and
+     6 hung a journey off the bottom of this screen — a band for a second line
+     to cross, then a wall with a gate in it under that — and the owner's
+     verdict on the whole idea was to drop it. What is left is the thing the
+     station always was: the day, timed, ending in the one act the page asks
+     for.
+     The slack is declared rather than left over. Row 2 is the only row that
+     grows, it is EMPTY, and it sits directly under the headline, so every
+     pixel the viewport gives this station opens the air below the biggest
+     type on the page instead of under the last line of the colophon. The
+     manifest and the colophon are pulled to the foot of the right column by
+     rows 3 and 4; the approve bar is pulled to the foot of the left column by
+     margin-top:auto. So the screen ends on one line across both columns: the
+     button and the ring on the left, the last line of the colophon opposite.
+     Measured at max scroll: the empty band below the last ink is 73px at
+     1512×982, 71px at 1456×949 and 60px at 1375×800, and the air under the
+     headline is 119 / 105 / 51 over the same three seats. */
   .b8 .beat-inner{display:grid;
     grid-template-columns:27.5rem minmax(0,1fr);
-    /* THE WALL IS THE LAST ROW AND IT SPANS BOTH COLUMNS, because a
-       threshold that stops at a column edge is a rule under a paragraph.
-       The colophon takes the row above it whole and keeps its own measure,
-       so nothing under the timetable moved; what changed is that the
-       screen now closes on one line instead of trailing off. */
-    grid-template-rows:auto auto minmax(44px, 1fr) auto auto;
-    grid-template-areas:"tt head" "tt card" "trip trip" "foot foot" "gate gate";
+    grid-template-rows:auto minmax(1.5rem, 1fr) auto minmax(1.5rem, 1fr) auto;
+    grid-template-areas:"tt head" "tt ." "tt card" "tt ." "tt foot";
     column-gap:clamp(2rem, 5vw, 5rem); width:100%; align-items:start;
-    /* the station claims 88% of the screen and the trip row is the only one
-       that can grow, so every pixel the viewport gives this page goes into
-       the journey rather than under the colophon. Measured: the empty band
-       below the last ink is 96px or less at 982, 900, 800 and 700. */
     min-height:88vh}
   .b8 .ghead{grid-area:head}
-  /* the manifest closes level with the approve bar opposite it: both are the
-     bottom of row 2, so the two columns end on one line at every width */
-  .b8 .gatecard{grid-area:card; align-self:end}
+  .b8 .gatecard{grid-area:card}
   .b8 .ladder.tt{grid-area:tt; align-self:stretch}
-  .b8 .trip{grid-area:trip}
-  .b8 .gateway{grid-area:gate; align-self:end}
   .b8 footer{grid-area:foot; align-self:end}
   /* AND THE COLUMN IS FILLED BY CONTENT, NOT BY STRETCHING. Two earlier
      attempts moved the empty paper around instead of removing it: first into
@@ -844,7 +838,17 @@ if (location.hash.length > 1) {
      at 56, an empty lane 186 to 274 that belongs to the rail, the car at 274,
      and the proof at 300. The lane is 88px wide against a rail envelope of
      about ±24px, so the line never comes within 16px of a letter. */
-  .ladder{--row:clamp(30px, 4.4vh, 46px); list-style:none;
+  /* THE ROWS ARE PITCHED OFF THE VIEWPORT, and the number is what closes the
+     hole this station kept opening. At 4.4vh the twelve stops measured 532px
+     of an 835px column and the 300px left over collected in one band between
+     "the references" and the approve bar — a doughnut, with ink in all four
+     corners of the screen and nothing in the middle of it. At 7vh the table
+     IS the column and 22:41 is simply its last row, which is what that row
+     was always claimed to be. Measured at max scroll, the gap above it is
+     60px at 1512×982, 31px at 1456×949, 21px at 1440×900 and 10px at both
+     1375×800 and 1280×800: a breath before the last act on the tall seats,
+     and one continuous board on the short ones. */
+  .ladder{--row:clamp(30px, 7vh, 66px); list-style:none;
     font-family:var(--mono); font-size:.78rem; letter-spacing:.055em;
     color:var(--ink-2); margin:0;
     display:flex; flex-direction:column}
@@ -860,11 +864,17 @@ if (location.hash.length > 1) {
     word-spacing:.12em; font-size:var(--fs-small); padding-left:8px;
     white-space:nowrap}
   .ladder .pr{grid-column:4}
-  /* ————— 22:41 · the last row of the timetable —————
+  /* ————— 22:41 · the last row of the timetable, and the last rung —————
      margin-top:auto inside the flex column: the bar falls to the foot of the
-     table, level with the manifest opposite, and every pixel of slack the
+     table, level with the colophon opposite, and every pixel of slack the
      viewport gives this station collects ABOVE it — which is the stretch the
-     rail runs its last clean vertical down. */
+     rail runs its last clean vertical down.
+     IT CARRIES data-ph="11" NOW, which retires the separate rung the far side
+     used to hold. The ladder has to have one rung per stop of the run and the
+     highest has to be last in the document — check-beat-tables asserts both,
+     because DEPLOY_PH is `phases.length - 1` in document order — and the rung
+     that can never be lit by scrolling is no longer a label about run 043. It
+     is this one: 22:41, the stop a reader reaches only by pressing. */
   .ladder li.approvebar{height:auto; margin-top:auto; padding-top:18px}
   /* 22:41 SITS ON THE BUTTON'S OWN LINE. Centred in the row the two faces
      disagree by a measured 3.5px — Fragment Mono's centred baseline against
@@ -888,11 +898,36 @@ if (location.hash.length > 1) {
     top:calc(50% - 4px); width:8px; height:8px}
   .ladder li.approvebar .gsq2 i{display:block; width:8px; height:8px;
     background:var(--clay-g)}
-  /* deploy is the one rung a scroll can never light, and it is the door's
-     own label: where the run goes next, and whose it is */
-  .ladder.dep{display:block}
-  .ladder.dep li{display:block; height:auto}
-  .ladder.dep .st{white-space:nowrap}
+  /* ————— the waiting mark —————
+     ONE PING EVERY 5.4s. The control's own edge leaves it, in the clay the
+     socket beside it is drawn in, and is gone: 1.1s of movement in a 5.4s
+     cycle, and four seconds of nothing. The dead time is the whole design —
+     a ring that pulses continuously is a Material button asking to be
+     tapped, and a ring that goes once every five seconds is a paper that is
+     waiting. It is the button's shape and not the socket's double-ring hold
+     mark, which is circular and belongs to the canvas; what the two share is
+     the ink and the idea, not the geometry.
+     It is on .dockwrap and not on the control, because .btn carries
+     overflow:hidden to clip its own ink sweep and would crop the ring at the
+     button's edge; the wrapper is the button's exact box (the socket in it
+     is absolutely positioned).
+     It runs ONLY while the gate is the station on screen and only before the
+     press — body.atgate is written by the same frame loop that writes every
+     other body class, so there is nothing animating anywhere else on the
+     page — and it stops under the pointer, where the button's own sweep
+     takes over and says the same thing better. */
+  .dockwrap::after{content:""; position:absolute; inset:0; z-index:-1;
+    border:1px solid var(--clay); opacity:0; pointer-events:none}
+  @media (prefers-reduced-motion: no-preference){
+    body.atgate .dockwrap::after{animation:hold 5.4s cubic-bezier(.2,.7,.3,1) infinite}
+    body.approved .dockwrap::after,
+    .dockwrap:hover::after, .dockwrap:focus-within::after{animation:none}
+  }
+  @keyframes hold{
+    0%{transform:scale(1); opacity:.55}
+    20%{transform:scale(1.11); opacity:0}
+    100%{transform:scale(1.11); opacity:0}
+  }
   /* THE CARD STOPS BEING A CARD. It was a filled, bordered, shadowed plate
      floating on the night paper while the ladder opposite it was nothing but
      a hairline and a column of type — two different materials on the one
@@ -928,50 +963,50 @@ if (location.hash.length > 1) {
      outline, which is right for "clear the pad" and wrong for the one act
      the whole run is asking for — the owner called it click bait and the
      outline box was the quietest thing on the screen.
-     --clay, not --clay-g, and it is measured. The pair background:var(--clay)
-     with color:var(--ink-inverse) works out on both grounds because those two
-     tokens flip together:
-       day    #fbf3e7 on #a03f20 — 5.63:1 / Lc 79.3
-       night  #26231c on #f4b090 — 8.48:1 / Lc 66.3
+     --clay, not --clay-g, and it is measured — by check-palette now, which
+     reads the fill and the label out of this rule and recomputes the pair on
+     its own ground rather than taking the numbers below on trust. The pair
+     works out on both grounds because those two tokens flip together:
+       day    #fbf3e7 on #a03f20 — 5.91:1 / Lc 79.3
+       night  #26231c on #f4b090 — 8.55:1 / Lc 66.2
+     (round 6 recorded 5.63 and 8.48 here by hand; the gate's arithmetic is
+     what these say now.)
      clay-g was the suggestion and it does not hold: #26231c on #e08a5f is
      5.95:1 but only Lc 49.5, under the Lc 60 text floor this file gates on.
      The press keeps .btn's own sweep, so it goes clay to full ink under the
      hand: inviting, then committed. */
-  /* 150×44 at every width: it is the one control the whole run is asking
-     for, it is seated ON the yard's track, and a control that changes size
-     between seats reads as a different control. */
-  #approve{width:150px; height:44px; padding:0; font-size:.78rem;
+  /* 150×60 at every width. 150 is not free: the socket hangs 20px off the
+     button's right edge and its centre has to land on 230, the middle of the
+     rail's own lane, so width plus gap is fixed at 170. A wider button walks
+     the ring towards the lane's east edge, and the rail's own ±24px wobble
+     two rows higher with it — at 158 the line would pass 14px from the
+     proofs, against the 16 the lane promises. So the presence this control
+     needed came out of its height and its label instead: 44 to 60, .78 to
+     .84rem. A control that changes size between seats reads as a different
+     control, so both hold at every width: measured 150×60 at all seven
+     seats from 1512 down to 320, with the label 99px of the 150.
+     THE ARMED/UNARMED PAIR IS GONE. It existed because an early press used
+     to play a 2.4s departure below the fold; with that departure removed
+     there is nothing an early press can spoil, and a hollow outline is the
+     opposite of what this button is for. It is filled from the first frame
+     a reader can see it. */
+  .approvebar #approve{width:150px; height:60px; padding:0; font-size:.84rem;
     display:inline-flex; align-items:center; justify-content:center;
     background:var(--clay); border-color:var(--clay); color:var(--ink-inverse)}
-  /* THE SPENT BUTTON STAYS OPAQUE. On the phone the pine line runs behind it,
-     and a control you can see a track through is not a control any more. It
+  /* THE SPENT BUTTON STAYS OPAQUE. On the phone the rail runs behind it, and
+     a control you can see a track through is not a control any more. It
      keeps the page's paper, takes the pine it just earned, and its hover
      sweep is retracted so the fill cannot come back under a stray pointer. */
-  #approve:disabled{background:var(--ink-inverse); border-color:var(--pine);
-    color:var(--pine)}
-  #approve:disabled::before{transform:scaleX(0)}
-  /* ————— UNARMED · the run has not docked yet —————
-     The press is the one act this page asks for, and it must not be
-     available before the thing it approves has arrived: an early press would
-     have played the whole departure hundreds of pixels below the fold. So
-     the button ARMS when the token rests in the socket beside it, and until
-     then it is the same box at the same size, emptied — an outline the fill
-     arrives in. `aria-disabled`, never `disabled`: the control keeps its
-     seat in the focus order so it can be reached and can say why nothing
-     happened, which a removed control cannot.
-     --clay for both, measured on ¶12's own field #2c2622: #f4b090 is
-     8.14:1 and APCA Lc 65.1 as text, over the Lc 60 floor this page gates
-     on, and 8.14:1 as the outline. --clay-g was the obvious pick for the
-     border and it drags the text with it at Lc 47.5, which is the same
-     miss this file already records one rule above. */
-  .approvebar #approve[aria-disabled="true"]{
-    background:none; border-color:var(--clay); color:var(--clay)}
-  .approvebar #approve[aria-disabled="true"]::before{transform:scaleX(0)}
-  /* three lines' worth, reserved. The note goes from "scrolling could not
-     press this button." to "approved by hand — 15:59, your local time."
-     — two lines to three — and that 16px was the last thing still growing
-     the gate on approval, and therefore still moving the document under a
-     reader who was already at the bottom. */
+  .approvebar #approve:disabled{background:var(--ink-inverse);
+    border-color:var(--pine); color:var(--pine)}
+  .approvebar #approve:disabled::before{transform:scaleX(0)}
+  /* two lines' worth, reserved, and it is the socket this protects. The note
+     swaps to "approved by hand at HH:MM, your local time." on the press, and
+     on the stacked and phone seats the card sits ABOVE the timetable — so a
+     note that grew by a line would move the socket, and the rail, under a
+     reader who is already at the end of the document. Measured at 320, the
+     narrowest seat: both strings set to two lines, box height identical
+     before and after the press. */
   /* The note is a full-width line under the signature, not a column beside
      the button, because that is where a note about a signature goes. The
      height reserve stays and is still doing the same job: the copy swaps to
@@ -982,69 +1017,6 @@ if (location.hash.length > 1) {
     font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
     letter-spacing:.05em; min-height:2.7em; line-height:1.3}
 
-  /* ————— the way on —————
-     THE RUN DOES NOT END AT THE BUTTON; IT IS ONLY HELD THERE. All day the
-     page has drawn the road ahead in one grammar — faint, [2,7] dashed, the
-     same hand's wobble — and inked it in behind the token as the reader
-     travels it. The stretch past 22:41 is drawn in exactly that grammar, on
-     the same canvas, by the same smoothing: a line that leaves the socket,
-     sweeps down across the page and arrives at a door. It is visible before
-     anything is pressed, and it is unexplained on purpose. That is the hook.
-     On approval it inks pine behind the token, which travels it.
-
-     None of it is in `samples` and none of it is in `__rail()`. The day's
-     rail is run 042's line and it stops at the socket; G10 measures that line
-     and must go on measuring exactly that line. See buildOnward().
-
-     What is markup here is only what a person reads or acts on: the doorway's
-     own box and its label. The trip band holds the room the line needs. */
-  /* THE SLACK ROW PAYS FOR THE WALL, AND THAT IS WHAT IT IS FOR. #gate is a
-     flex box with align-items:center, so anything that makes .beat-inner
-     taller than 88vh moves its top up by half the growth — and the socket
-     with it. The gate row is 62px of new height, and at 800px tall that took
-     the station 52px over 88vh and carried the rail's terminus 12px up the
-     page, which G10b and the cargo fixture both read. The trip's floor comes
-     down by the same order, so the content still fits inside 88vh at every
-     desktop seat and the 1fr absorbs the difference: the socket lands on
-     round 4's pixel. The way on loses nothing by it — it gains 62px of drop
-     below the colophon for every pixel the band above it gives up. */
-  .trip{min-height:clamp(44px, 5.8vh, 150px)}
-  /* ————— the wall, and the doorway in it —————
-     THE RUN NO LONGER STOPS IN OPEN PAPER. The owner's verdict on round 4
-     was that the way on ended nowhere: "why are we ending on an empty
-     space? it should be there to connect it to that place that can be a
-     gate to something! that is being blocked". So the line now ends AT
-     something — a threshold across the full width of the viewport, drawn in
-     section with its own thickness poché'd between two rules, broken once
-     for a doorway on the page's centre line. That centre line is the column
-     ¶13 is set in, so the opening the boom is holding shut is literally the
-     way into the next morning.
-     Nothing here is ink. `.wallgap` IS the opening, laid out rather than
-     declared, and the canvas reads its box: the wall's y is its middle, the
-     jambs are its sides, the boom stands across it and the way on comes
-     down through it. That is what makes 1024, 1280 and the phone need no
-     coordinates of their own.
-     The tokens the drawing uses — --ink for the wall, --ink-2 for the
-     poché, --clay-g for the held boom and --pine for the lifted one — are
-     the same four the night figures already declare, so check-palette holds
-     them at the graphics floor through `.figsvg`. */
-  .gateway{position:relative; height:var(--gate-h, 44px);
-    /* 18px of it is clearance: the colophon's last line must not sit on the
-       wall, and the row above is auto-sized, so the gap is taken here and
-       the trip band pays for it */
-    margin-top:18px}
-  .gateway .wallgap{position:absolute; left:calc(50% - 64px); top:0;
-    width:128px; height:22px}
-  /* THE LABEL IS THE ONLY THING A READER IS TOLD ABOUT THE FAR SIDE, and it
-     is what makes the boom read as holding something back rather than as a
-     stick. It sits past the doorway, below the wall, on the far side: a
-     name in the text face, with the serial in mono because a serial is a
-     machine value. `.ladder li span` is mono; `.st` takes it back. */
-  .gateway .ladder.dep{position:absolute; left:calc(50% + 82px); top:20px;
-    margin:0}
-  .gateway .ladder.dep .st{font-size:var(--fs-label); color:var(--ink-2);
-    line-height:1.2}
-  .gateway .ladder.dep .mv{color:var(--ink-2)}
   #stamp{ /* IT LANDS ON THE MANIFEST, beside the sentence it answers. The
              blank signature rule it used to sit on is gone with the decide
              row — the yard is where the hand acts now — and "run 042 · the
@@ -1117,13 +1089,13 @@ if (location.hash.length > 1) {
      section reports 0 for BOTH — poisoning the beat array with a stop at
      the top of the page. Zero height keeps its position honest. */
   .bdawn{height:0; min-height:0; padding:0; overflow:hidden}
-  /* ¶13 COMES INTO EXISTENCE AT THE GATE, NOT AT THE PRESS. `body.approved`
-     lands the moment the button is pressed, and for the 2.45s the run takes
-     to reach the wall there is nothing below the wall to reach: growing the
-     document then would put three screens of morning under a reader who is
-     still watching the boom. `body.gateopen` is set when the boom is up and
-     the line is through, so the page grows exactly when the way through
-     opens. */
+  /* ¶13 COMES INTO EXISTENCE JUST AFTER THE PRESS, NOT ON IT. `body.approved`
+     lands the instant the button goes down, and for the first second the
+     reward is all at the gate — the stamp, the day lighting up, the birds
+     leaving the ring. Growing the document there would put three screens of
+     morning under a reader who is still looking at the ink. `body.gateopen`
+     is set at 950ms, as the flock clears the type, and the carry follows it.
+     It is also what the reduced-motion path sets at once. */
   body.gateopen .bdawn{height:auto; min-height:300vh; overflow:visible}
   .dawnstick{position:sticky; top:0; height:100vh; display:flex;
     align-items:center; justify-content:center; padding:0 var(--pad-x)}
@@ -1182,32 +1154,32 @@ if (location.hash.length > 1) {
      measured defect rather than taste. The individual `scale` property is
      PRE-multiplied against the motion-path translation, so animating it on
      .bird scaled the path itself: at scale .52 a bird whose path starts at
-     (762, 906) rendered at (396, 471), and nine birds meant to be coming up
-     through a doorway on the centre line came out over the timetable
-     instead. The svg carries it, about the bird's own anchor — the point
-     the -30/-17 margin puts under the path — so only the drawing grows. */
+     (762, 906) rendered at (396, 471), and nine birds meant to be leaving
+     the socket came out over the timetable instead. The svg carries it,
+     about the bird's own anchor — the point the -30/-17 margin puts under
+     the path — so only the drawing changes size. */
   .bird svg{overflow:visible; max-width:none; display:block;
     margin:-17px 0 0 -30px; transform-origin:30px 17px}
   .bird .b-ink{fill:var(--ink-2)}
   .bird .b-wing{transform-box:view-box; transform-origin:0px 0px}
-  /* WEST IS GONE WITH THE DOOR IN THE CORNER. The birds left from a door at
-     fx .9 and so had to fly the long way back across the page; they come up
-     through a doorway on the page's centre line now and go east, into the
-     side the dawn sun is on at the end of the carry (DAWN_STOPS ends at
-     78% across). Two rules that mirrored them went with the reason for
-     them — a mirror nothing sets is a mirror nobody is watching. */
+  /* THEY ALL GO EAST. The birds used to leave from a door at fx .9 and fly
+     the long way back across the page; they leave the socket now — which is
+     in the left column at every desktop seat and in the phone's own gutter —
+     and go towards the side the dawn sun is on at the end of the carry
+     (DAWN_STOPS ends at 78% across). Two rules that mirrored them went with
+     the reason for them: a mirror nothing sets is a mirror nobody watches. */
 
   /* A BIRD LEAVES THE GROUND FAST. The old curve held 98% of its ink for
      the middle of a 9 to 15 second crossing, and measured against the frame
-     at t=3500 — 1.7s after the first one comes up — the whole flock was
-     still a cluster sitting on the wall it was supposed to be leaving. The
-     carry starts at 2700, so what a reader sees of this is the first two
-     seconds of it: 26% of the path in the first 850ms now, which is a
-     departure, against 3% before. The tail is unchanged and still long. */
+     1.7s after the first one left, the whole flock was still a cluster
+     sitting on the mark it was supposed to be leaving. The carry starts at
+     1400 now, so what a reader sees of this is its first second and a half:
+     the easing spends a quarter of the path in the first 850ms, which is a
+     departure. The tail is long and quiet. */
   body.flying .bird{
     animation:cross var(--dur) cubic-bezier(.22,.62,.42,1) var(--start) both}
   body.flying .bird svg{
-    animation:hatch var(--dur) cubic-bezier(.22,.62,.42,1) var(--start) both}
+    animation:away var(--dur) cubic-bezier(.22,.62,.42,1) var(--start) both}
   /* a bird rises on the downstroke — the cue that separates flying from being
      carried. Half the wing's period: it rises and falls once per beat. */
   body.flying .bird .bd{
@@ -1219,25 +1191,34 @@ if (location.hash.length > 1) {
   body.flying .bird.gone .b-wing, body.flying .bird.gone .bd,
   body.flying .bird.gone svg{animation:none}
 
+  /* THEY DO NOT LEAVE THE FRAME; THEY GET FURTHER AWAY. Round 6 ended every
+     path at 1.35 of the viewport's width and the owner saw the result: birds
+     flying out of the page. The path ends inside the sky now (see
+     buildFlock), so the disappearing is done here instead — the last fifth
+     of the flight fades, and `away` shrinks the drawing to 56% over the
+     whole of it. Distance, which is how a bird actually goes. */
   @keyframes cross{
     0%{offset-distance:0%; opacity:0}
-    /* 1.2%, not 4%. The flight is 8.6 to 14.8 seconds long, so a 4% ramp is
-       344 to 592ms of fade — measured against the frame at t=1900, which is
-       the frame where the birds are the whole point, and they were under
-       17% ink in every one of them. A bird at full ink the instant it
-       leaves the ground reads as a sprite appearing, so this stays a ramp;
-       it is just a ramp you can see the end of. */
+    /* 1.2%, not 4%. A 4% ramp on a 5.4s flight is 216ms of fade at the one
+       moment the birds are the whole point. A bird at full ink the instant
+       it leaves reads as a sprite appearing, so this stays a ramp; it is
+       just a ramp you can see the end of. */
     1.2%{opacity:var(--op)}
-    93%{opacity:var(--op)}
+    /* they are already small and already high when they start to go, and
+       the going takes the whole back half of the flight: measured at 1456,
+       every bird is inside x 1290–1440 from 5.4s on, and a flock that stays
+       at full ink while it stops moving reads as a stall rather than as
+       distance. */
+    52%{opacity:var(--op)}
     100%{offset-distance:100%; opacity:0}
   }
-  /* THEY COME UP THROUGH A 128px GAP, so they come up small: at full size
-     the first frame is an 88px silhouette wider than the opening it is
-     supposedly coming out of. Same duration, same delay and same easing as
-     `cross`, so the two stay in step without a second clock. */
-  @keyframes hatch{
-    0%{transform:scale(.45)}
-    15%, 100%{transform:scale(1)}
+  /* it leaves the ring small, because the ring is 32px across and an 88px
+     silhouette coming off it is a bird standing on a coin; it is up to size
+     by the time it is clear, and then it recedes */
+  @keyframes away{
+    0%{transform:scale(.5)}
+    14%{transform:scale(1)}
+    100%{transform:scale(.46)}
   }
   @keyframes bob{ from{transform:translateY(1.7px)} to{transform:translateY(-1.7px)} }
   /* the upstroke is quicker than the down, the way a wing actually works */
@@ -1582,28 +1563,21 @@ if (location.hash.length > 1) {
     .station .plate{max-width:640px}
     .b4 .plate{max-width:760px}
     .plate.bare{max-width:600px}
-    /* stacked: one column in DOM order — head, card, timetable, yard, legend,
-       colophon — and the yard keeps its own seats, because the column is still
-       wider than the 440px the timetable needs. */
+    /* stacked: one column in DOM order — head, card, timetable, colophon —
+       and the timetable keeps its own seats, because the column is still
+       wider than the 440px it needs. */
     .b8 .beat-inner{display:flex; flex-direction:column; align-items:stretch;
       gap:1.6rem; min-height:0}
     /* `align-self:end` is the grid row's block end on a desktop and the flex
        column's CROSS end here, which is the right-hand edge: the colophon
-       was right-aligned at 1024 and the wall's own box collapsed to nothing
-       against the same edge, putting the doorway 460px off its centre line.
-       Both take the column whole in the stack. */
-    .b8 footer, .b8 .gateway{align-self:stretch}
+       was right-aligned at 1024 until this line took the column whole. */
+    .b8 footer{align-self:stretch}
     .gatecard{max-width:640px}
     .b8 .ghead, .b8 .gatecard, .b8 .ladder.tt{max-width:640px}
-    /* the stacked column has no 88vh to fit inside and no flex centring to
-       be moved by, so the band the way on crosses keeps its own measure */
-    .trip{min-height:clamp(96px, 12vh, 150px)}
     /* AND THE COLOPHON'S RULE STOPS WHERE ITS TEXT DOES. At 27.5rem the rule
-       is about 155px wider than the longest line under it, and in the stack
-       the way on comes down past its right end: measured at 1024, the line
-       passes 5px clear of the rule and inside the colophon's own box. A rule
-       that underlines nothing is not the thing to hold a journey off, so it
-       is sized to what it underlines. NOT min(100%, max-content): an
+       is about 155px wider than the longest line under it, and a rule that
+       underlines nothing is a rule with no job, so it is sized to what it
+       underlines. NOT min(100%, max-content): an
        intrinsic keyword inside a math function is invalid in every engine
        that ships today, so the declaration was dropped and the rule stayed
        at 27.5rem — measured, not assumed. The phone takes its column back
@@ -1641,6 +1615,14 @@ if (location.hash.length > 1) {
        headline, and nothing has to move out of its way. */
     .gatecard{padding-top:3.75rem}
     .gatecard h3{padding-right:0}
+    /* THREE LINES, NOT TWO, AND THE PRESS IS WHY. At 390 the standing
+       sentence sets to three lines and "approved by hand at 15:59, your
+       local time." to two, and on this seat the card is ABOVE the timetable
+       — so the swap measured the socket, and the rail with it, 6.5px up the
+       page at the exact moment the reader is looking at the ring. Measured
+       both states at 320 and 390 with the reserve in: 51px, and the
+       socket's page position identical to the tenth of a pixel. */
+    .gatecard .note{min-height:3.9em}
     #stamp{top:4px; right:0; font-size:.72rem; letter-spacing:.24em;
       padding:.32rem .5rem .32rem .74rem; transform:rotate(-7deg) scale(1.25)}
     #stamp.inked{transform:rotate(-7deg) scale(1)}
@@ -1669,31 +1651,13 @@ if (location.hash.length > 1) {
     /* THE SOCKET STAYS IN THE RAIL'S LANE. It is pulled 34px left of the
        column's own edge so its centre lands on x 26 — the gutter the phone
        rail has run down since ¶01 — and the line arrives straight instead of
-       swinging across the column to meet it. The button takes the row's full
-       measure, and 22:41 keeps its column, because on the phone the table has
-       only two. */
+       swinging across the column to meet it. The button keeps its 150×52 and
+       22:41 keeps its column, because on the phone the table has only two. */
     .ladder li.approvebar{padding-top:14px}
     /* the socket steps back out of the stop column and into the rail's own
        26px gutter: one column width, plus the 34 that centres the 8px square
        on x 26. The line arrives straight instead of swinging to meet it. */
     .ladder li.approvebar .gsq2{left:calc(-56px - 34px)}
-    /* the way on runs DOWN the page here, so the band it crosses is the
-       page's own scroll rather than a width. It was 20vh, and measured at
-       390 that left 220px of nothing between the button and the colophon
-       with one dashed line through it — the largest empty area on the
-       phone's version of a screen whose whole defect was empty area. The
-       line needs room to read as a journey; it does not need a screenful. */
-    .trip{min-height:clamp(96px, 13vh, 140px)}
-    /* THE WALL ON THE PHONE. The doorway steps out of the content column and
-       into the rail's own 26px gutter — the lane the line has run down since
-       ¶01 — so the way on comes at it dead straight instead of swinging
-       across the column to meet it. 44px of opening, centred on x 26, and
-       the label takes the column's own left edge, 14px clear of the far
-       jamb. The strip below the wall keeps the ink in its top 30px, because
-       the iOS toolbar eats the rest of it. */
-    .gateway{--gate-h:66px}
-    .gateway .wallgap{left:-52px; width:44px; height:18px}
-    .gateway .ladder.dep{left:6px; top:14px}
     /* fig. 10 on the phone: the press moves under its own row rather than
        beside it, and the row goes back to normal flow so a reason that wraps
        pushes the drawing down instead of printing into it. Only --gpx moves;
@@ -2109,7 +2073,11 @@ h1[data-np-measuring] .np-ch {
    describing rather than claiming. */
   .hourline{margin:.35rem 0 0; font-family:var(--display); font-style:italic;
     font-size:clamp(.82rem,1.05vw,.95rem); line-height:1.45;
-    color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em}
+    color:var(--ink-2); opacity:.9; max-width:44ch; letter-spacing:.002em;
+    /* the gate's hour line broke as "…going to be the / machine's." — one
+       word alone under fifty. balance spreads the two lines evenly, which
+       every engine in the matrix supports on a block this short. */
+    text-wrap:balance}
 
   /* Short windows. The gate carries a headline, a thirteen-row ladder, the
      manifest, the lamp and the closing line, and on a 800px-tall screen that
@@ -3352,11 +3320,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
        and an empty lower right.
        One object now: the day's timetable, each project stop carrying the one
        number it proved, with a clear lane down the middle for the rail to run
-       in. The headline and what the run adds up to take the right column, and
-       the yard runs the full width under both of them, because the yard is
-       where the line ends and the only thing on this page a person can do.
-       DOM order is head, card, timetable, yard, legend, colophon. That is the
-       phone's reading order, the stacked order and the focus order. -->
+       in. Its last row is 22:41, and 22:41 is the button — so the line a
+       reader has followed for twelve stops ends in the socket beside the one
+       thing on this page a person can do. The headline, what the run adds up
+       to and the ways to reach me take the right column.
+       DOM order is head, card, timetable, colophon. That is the phone's
+       reading order, the stacked order and the focus order. -->
   <section id="gate" class="beat b8" data-beat="11">
     <div class="beat-inner">
       <div class="ghead">
@@ -3397,11 +3366,11 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              is not quoted here either. The sentence's real job is the first
              clause: nothing you did by scrolling could have pressed this.
              role="status" so the press is announced rather than only seen. -->
-        <!-- THE NOTE STARTS UNARMED. The button cannot approve until the run
-             has actually docked in the socket beside it, so the note names
-             that state first and swaps to the standing sentence the moment
-             it arms. Both strings fit the reserved height. -->
-        <span class="note" id="gateNote" role="status">the run is still arriving.</span>
+        <!-- AND IT IS IN THE MARKUP, which is the point: the standing sentence
+             is the one a reader with no JS gets, and the engine only ever
+             replaces it with the timestamp of their own press. The arming
+             string that used to open this line went with the arming. -->
+        <span class="note" id="gateNote" role="status">scrolling could not press this button &middot; the run ends only by hand.</span>
         <div id="stamp" aria-hidden="true">APPROVED</div>
       </div>
       <!-- THE LADDER BECOMES THE TIMETABLE, AND ITS LAST ROW IS THE BUTTON.
@@ -3430,7 +3399,14 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <li data-ph="8"><span class="lt">22:05</span><span class="st">agentic automl</span><span class="pr"><b class="mv">2,523</b> tests pass</span></li>
         <li data-ph="9"><span class="lt">22:23</span><span class="st">the review</span></li>
         <li data-ph="10"><span class="lt">22:32</span><span class="st">the references</span></li>
-        <li class="approvebar">
+        <!-- 22:41 IS THE LAST RUNG OF THE LADDER, and that is what retires the
+             separate `run 043` line the far side used to carry. `data-ph` is
+             the first attribute because check-beat-tables reads the rungs with
+             `<li data-ph="…"`, and 11 is the highest and the last in the
+             document because DEPLOY_PH is `phases.length - 1` in document
+             order. The rule it stands for is unchanged and now says something
+             truer: this is the one rung no amount of scrolling can light. -->
+        <li data-ph="11" class="approvebar">
           <span class="lt">22:41</span>
           <!-- THE SOCKET HANGS OFF THE BUTTON. Positioned against the button's
                own box rather than against the row, so the ring the canvas
@@ -3439,19 +3415,11 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                reader looks straight at. 20px clear of the button's right edge
                puts its centre at the lane's 230, where the rail comes down. -->
           <span class="dockwrap">
-            <!-- aria-disabled, never disabled: an unarmed press has to reach
-                 the handler so it can say why nothing happened, and a
-                 `disabled` control is out of the focus order entirely. The
-                 run arms it when it docks. -->
-            <button class="btn" id="approve" type="button" aria-disabled="true">approve run 042</button>
+            <button class="btn" id="approve" type="button">approve run 042</button>
             <span class="gsq2" id="gateDock"><i></i></span>
           </span>
         </li>
       </ul>
-      <!-- the band the way on crosses. It holds nothing: the line drawn
-           through it is on the thread’s own canvas, and what this element
-           does is keep the room for it at every viewport height. -->
-      <div class="trip" aria-hidden="true"></div>
       <!-- CONTACT SITS BEFORE THE GATE, NOT BEHIND IT. Measured on three cold
            critics: a reader who scrolls to the end of this page finds a
            copyright line, because the only contact row is in ¶13 and ¶13 is on
@@ -3468,23 +3436,6 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         &copy; 2026 ayush yadav · cincinnati, oh<br>
         set by hand &middot; zero dependencies
       </footer>
-      <!-- THE WALL, AND WHAT IT HOLDS BACK. The run's last line is a
-           threshold across the whole viewport with one opening in it, and a
-           boom standing in that opening. This element is the OPENING: it
-           carries no ink, and every stroke the canvas lays down here — the
-           wall, its two jambs, the boom, the way on's last inches — is
-           positioned off its measured box, so the stacked seats and the
-           phone need no coordinates of their own.
-           The label is the one thing a reader is given about the far side,
-           and it is the one rung a scroll can never light. It stays a
-           `.ladder li[data-ph]` and it stays LAST in the document, because
-           DEPLOY_PH is derived as phases.length - 1 from document order. -->
-      <div class="gateway">
-        <span class="wallgap" id="gateWall" aria-hidden="true"></span>
-        <ul class="ladder dep">
-          <li data-ph="11"><span class="st">run <b class="mv">043</b> &middot; held for a person</span></li>
-        </ul>
-      </div>
     </div>
   </section>
 
@@ -3555,7 +3506,7 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 
 window.__world = { arc: 0, beat: 0, beatP: 0, stamped: 0, night: false,
-  halted: false, approved: false, armed: false, boom: 0, marks: {} };
+  halted: false, approved: false, ring: null, marks: {} };
 window.__demo = { last: null, ready: null };
 
 /* ————— the day arc: waypoints + the pre-verified dusk choreography ————— */
@@ -4253,209 +4204,54 @@ function buildThread() {
   pathLen = L;
   sizeThread();
   refreshInk();
-  buildOnward();
 }
 
-/* ————— the way on, measured and smoothed —————
-   THE SAME HAND, THE SAME MATHS, A DIFFERENT AXIS. buildThread lays the day's
-   rail as a monotone cubic through anchors with a hand wobble on x, sampled by
-   arc length; this is that function with the axes swapped, because the stretch
-   past 22:41 travels mostly ACROSS the page rather than down it. Same spline,
-   same wobble frequencies, same 4px sampling, so the two lines are visibly one
-   hand and the eye reads the second as the continuation of the first.
+/* ————— the halt ring —————
+   THE RAIL ENDS HERE, AND NOTHING IS DRAWN PAST IT. Rounds 5 and 6 laid a
+   second line out of this socket — across the page, into a wall with a boom
+   in it — and the owner's verdict was to drop the whole idea. So the day's
+   rail is the only line on the page again: it comes down the timetable's lane
+   for twelve stops and stops in the socket beside the button, ringed twice,
+   which is this page's own mark for a deliberate hold.
 
-   IT IS NOT PART OF `samples`. The day's rail is run 042's line, it ends at the
-   socket, and G10 measures it; a second path spliced into that array would move
-   every length, every traveller and every gate that reads it. `onward.pts` is
-   its own array with its own arc length. */
-const onward = { pts: [], len: 0, ready: false, byY: false, minY: 0, maxY: 0 };
-/* monotone cubic (Fritsch-Carlson) through anchors ordered by u, wobbled on v,
-   sampled every ~4px of arc. `taper` is 0 at both ends so the line leaves the
-   socket and arrives at the door dead straight, and wanders in between. */
-function smoothWobble(anchors, amp) {
-  const n = anchors.length, sec = [], m = new Array(n).fill(0);
-  for (let k = 0; k < n - 1; k++) {
-    const du = anchors[k + 1][0] - anchors[k][0];
-    sec.push(du !== 0 ? (anchors[k + 1][1] - anchors[k][1]) / du : 0);
-  }
-  for (let k = 1; k < n - 1; k++) {
-    const a = sec[k - 1], b = sec[k];
-    m[k] = a * b > 0 ? (2 * a * b) / (a + b) : 0; /* never overshoots */
-  }
-  m[0] = sec[0]; m[n - 1] = sec[n - 2];
-  const u0 = anchors[0][0], u1 = anchors[n - 1][0], span = u1 - u0 || 1;
-  const out = [];
-  for (let k = 0; k < n - 1; k++) {
-    const [ua, va] = anchors[k], [ub, vb] = anchors[k + 1], h = ub - ua;
-    const steps = Math.max(2, Math.ceil(Math.hypot(h, vb - va) / 4));
-    for (let i = 0; i < steps; i++) {
-      const t = i / steps, t2 = t * t, t3 = t2 * t, u = ua + h * t;
-      const v = (2 * t3 - 3 * t2 + 1) * va + (t3 - 2 * t2 + t) * h * m[k]
-              + (-2 * t3 + 3 * t2) * vb + (t3 - t2) * h * m[k + 1];
-      /* the hand steadies at both ends: a line that wobbles where it docks
-         reads as imprecise, and this one docks twice */
-      const e = (u - u0) / span, w = smooth(e / 0.2) * smooth((1 - e) / 0.2);
-      out.push([u, v + (Math.sin(u * 0.011 + 2.1) * 0.5 + Math.sin(u * 0.0037 + 0.7)) * amp * w]);
-    }
-  }
-  out.push([anchors[n - 1][0], anchors[n - 1][1]]);
-  return out;
-}
-/* ————— the wall, measured —————
-   #gateWall is the OPENING: a laid-out box with no ink in it. Everything
-   drawn here — the threshold across the whole viewport, its two jambs, the
-   boom standing in the gap and the last inches of the way on — comes out of
-   that one box, which is why the 1024, 1280 and 390 seats need no
-   coordinates of their own. Round 4 had the door's coordinates written into
-   the drawing and a `deploy` label beside it; at 1024 that arrangement put
-   the door through the colophon. */
-const wall = { ok: false, y: 0, x0: 0, x1: 0, cx: 0, half: 11, boomEnd: 0 };
-const BOOM_REST = 8; /* px the shut boom oversails the far jamb, resting on it */
-const RING_R = 16;   /* the outer halt ring: the way on starts at its edge */
-const REST_GAP = 11; /* the boom's 5px lift + its half-weight + the bead's
-                        radius: the run comes to rest TOUCHING the boom */
-const THROUGH = 20;  /* px the line runs past the wall once the boom is up */
-function measureWall() {
-  const g = $("gateWall");
-  wall.ok = false;
-  if (!g || !g.offsetWidth) return;
-  const w = g.offsetWidth, h = g.offsetHeight;
-  wall.x0 = absLeft(g);
-  wall.x1 = wall.x0 + w;
-  wall.cx = wall.x0 + w / 2;
-  wall.y = absTop(g) + h / 2;
-  wall.half = h / 2;
-  wall.boomEnd = wall.x1 + BOOM_REST;
-  wall.ok = true;
-}
-function buildOnward() {
-  measureWall();
-  onward.ready = false;
-  if (!wall.ok) return;
-  /* THE LINE ENDS AT SOMETHING SHUT. It stops one bead's radius above the
-     boom, in the middle of the doorway — not at the wall, and not past it.
-     The last 26px, through the opening and 20px out the far side, are drawn
-     only after the boom is up, so before the press the page genuinely stops
-     here and the reader can see what is stopping it. */
-  const dx = wall.cx, dy = wall.y - REST_GAP;
-  const sx = dockX + (mobile ? 0 : RING_R), sy = gatePageY;
-  const run = dx - sx, drop = dy - sy;
-  if (!(Math.abs(run) > 40 || Math.abs(drop) > 40)) return;
-  /* THE SHAPE IS A JOURNEY AND NOT A BAR, AND IT HAS NO CORNER IN IT.
-     Hand-placed anchors could not do both; a turn spread evenly is not a
-     thing to place by eye, it is a curve. So the anchors are SAMPLED FROM
-     ONE, sixteen of them, and the spline below interpolates a shape it
-     cannot bend:
-       · desktop, a quarter ellipse, and it is the round-4 sweep TURNED
-         ROUND. u = run·sin θ, v = drop(1 − cos θ) leaves the halt ring
-         sideways (dv/du = 0 at θ=0) and arrives at the doorway going
-         straight down (dv/du infinite at θ=π/2). Both ends now say what
-         they mean: the day's rail comes down the page and DEAD-ENDS in the
-         ring, and the new line leaves the ring's side the way a branch
-         leaves a turntable, then comes down through the opening the way
-         everything else on this page has arrived at everything — from
-         above. Round 4 had it the other way about and laid the line into
-         the door level, which read as a pipe rather than a road.
-         Its tightest radius is at the doorway, drop/run² — 2.7px of bend
-         over a 2px chord at 1512 — and the sweep clears the manifest note
-         by more than 100px at every desktop seat, measured.
-       · phone, the rail's own gutter. The socket is on x 26 and so is the
-         doorway, so run is nothing and the line simply goes down the lane
-         the rail has run down since ¶01, with the same hand on it. 316px
-         of column has no room for a sweep and never did. */
-  const N = 16, a = [];
-  for (let k = 0; k <= N; k++) {
-    const t = k / N;
-    if (mobile) {
-      a.push([sy + drop * t, sx + run * smooth(t)]);
-    } else {
-      const th = (t * Math.PI) / 2;
-      a.push([sx + run * Math.sin(th), sy + drop * (1 - Math.cos(th))]);
-    }
-  }
-  onward.byY = mobile;
-  const pts = smoothWobble(a, mobile ? 5 : 10);
-  onward.pts = [];
-  let L = 0, px = 0, py = 0;
-  onward.minY = Infinity; onward.maxY = -Infinity;
-  for (let i = 0; i < pts.length; i++) {
-    const x = mobile ? pts[i][1] : pts[i][0];
-    const y = mobile ? pts[i][0] : pts[i][1];
-    if (i) L += Math.hypot(x - px, y - py);
-    onward.pts.push({ x, y, L }); px = x; py = y;
-    if (y < onward.minY) onward.minY = y;
-    if (y > onward.maxY) onward.maxY = y;
-  }
-  onward.len = L;
-  onward.ready = onward.pts.length > 8;
-  window.__onwardPath = () => onward.pts; /* probe hook: the harness measures
-    the way on's own shape, and never confuses it with __rail() */
-}
-/* a point at an arc length along it, the same binary search the rail uses */
-function onwardAt(L) {
-  const p = onward.pts;
-  L = clamp(L, 0, onward.len);
-  let lo = 0, hi = p.length - 1;
-  while (hi - lo > 1) { const m = (lo + hi) >> 1; (p[m].L <= L ? (lo = m) : (hi = m)); }
-  const a = p[lo], b = p[hi], t = b.L > a.L ? (L - a.L) / (b.L - a.L) : 0;
-  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
+   The ring is drawn where the socket IS, not where it was when the geometry
+   was last built — see the watchdog under cacheGeometry. It publishes what it
+   drew, in page coordinates, so a test measures the ink rather than the
+   number the ink was meant to come from. */
+const RING_IN = 11, RING_OUT = 16;
+function drawHalt(scroll, halted) {
+  if (!halted) { window.__world.ring = null; return; }
+  const y = gatePageY - scroll;
+  if (y < -RING_OUT || y > vh + RING_OUT) { window.__world.ring = null; return; }
+  /* clay while it waits, pine once a hand has signed. No partial opacity
+     anywhere: a ring is on or it is not. */
+  tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
+  tctx.lineWidth = 2.2;
+  tctx.beginPath(); tctx.arc(dockX, y, RING_IN, 0, 7); tctx.stroke();
+  tctx.lineWidth = 1;
+  tctx.beginPath(); tctx.arc(dockX, y, RING_OUT, 0, 7); tctx.stroke();
+  window.__world.ring = { x: +dockX.toFixed(1), y: +gatePageY.toFixed(1) };
 }
 
-/* ————— the departure · ONE TIMETABLE, THE SAME AT EVERY WIDTH —————
-   Everything after the press is one clock. `release.t0` is the press and the
-   canvas reads its own position off performance.now(), so a dropped frame
-   costs a frame and not a whole choreography.
+/* ————— what a press starts · ONE TIMETABLE, THE SAME AT EVERY WIDTH —————
+   `release.t0` is the press and every step reads its own position off
+   performance.now(), so a dropped frame costs a frame and not a whole
+   choreography. `?pace=` multiplies every offset except the carry, which is
+   the existing 7s and is not this beat's to change.
 
-   ROUND 4 DROVE THIS OFF A SPEED — 0.75vw a second — and the owner's verdict
-   was "too fast". A speed makes the LENGTH of the journey the thing the
-   viewport sets and the DURATION the thing that falls out of it, which is
-   backwards: what a reader has is the duration. So the chain below is a
-   timetable in milliseconds, identical at 390 and at 1512, and `?pace=`
-   multiplies every offset in it except the carry, which is the existing 7s
-   and is not this beat's to change.
+     0     the stamp lands, the twelve stops take the ink in turn, and the
+           ring and the socket go pine
+     500   the birds leave the ring
+     950   body.gateopen — ¶13 comes into existence
+     1400  the carry, unchanged
 
-     350   the bead leaves the halt ring's right side
-     1600  it comes to rest against the boom, having braked
-     1650  the boom lifts, 400ms, taking the pine as it goes
-     1800  the first bird comes up through the doorway
-     1900  the line goes through the opening, 20px past the wall
-     2050  the label changes to "run 043 · open"
-     2450  body.gateopen — ¶13 comes into existence
-     2700  the carry, unchanged
-
-   The travel eases in over the first 60% and BRAKES over the last 40%,
-   reaching the boom at zero speed: s(p) = p²/0.6 below 0.6 and
-   1 − 2.5(1−p)² above it. Speed is continuous at the join — both sides give
-   2 — and zero at p = 1, which is what makes the arrival read as an arrival
-   rather than as a line that stopped being drawn. */
+   Round 6 spent 2.7s here driving a bead along a second rail before any of
+   this could happen. With that rail gone the reward starts on the press: the
+   cascade down the timetable is still running when the birds go up. */
 const PACE = clamp(parseFloat(FLAGS.get("pace")) || 1, 0.25, 8);
-const T_LEAVE = 350, T_TRAVEL = 1250;
-const T_BOOM = 1650, T_BOOM_DUR = 400;
-const T_BIRDS = 1800;
-const T_THROUGH = 1900, T_THROUGH_DUR = 150;
-const T_LABEL = 2050, T_OPEN = 2450, T_CARRY = 2700;
+const T_BIRDS = 500, T_OPEN = 950, T_CARRY = 1400;
 const at = (ms) => ms * PACE;
-const release = { t0: 0, tHead: 0, tTail: 0, done: false };
-const travelEase = (q) => (q < 0.6 ? (q * q) / 0.6 : 1 - 2.5 * (1 - q) * (1 - q));
-/* cubic-bezier(.2,.8,.3,1) — out fast, settling — solved by bisection.
-   Eighteen halvings is 4e-6 of the unit interval, well under a tenth of a
-   pixel on a 104px boom, and it costs nothing at one call a frame. */
-const bez = (x1, y1, x2, y2) => (t) => {
-  /* the ends are exact, and that is not tidiness: eighteen bisections of a
-     zero returns 9.2e-6 rather than 0, and the boom's own "has it moved
-     yet" stamp fired on the press instead of on the lift. */
-  if (t <= 0) return 0;
-  if (t >= 1) return 1;
-  let lo = 0, hi = 1, u = t;
-  for (let i = 0; i < 18; i++) {
-    u = (lo + hi) / 2;
-    const v = 1 - u;
-    if (3 * v * v * u * x1 + 3 * v * u * u * x2 + u * u * u < t) lo = u; else hi = u;
-  }
-  const v = 1 - u;
-  return 3 * v * v * u * y1 + 3 * v * u * u * y2 + u * u * u;
-};
-const boomEase = bez(0.2, 0.8, 0.3, 1);
+const release = { t0: 0, tTail: 0, done: false };
 /* the run's own stamps, written by the code that DRAWS each beat rather
    than by the timers that schedule it — a test that reads the schedule back
    passes by construction and proves nothing about what was on screen. */
@@ -4861,212 +4657,13 @@ function drawThread(scroll, tokenY, tokenL, halted) {
   }
   drawTokenAndTravellers(scroll, tokenY, tokenL, halted);
 }
-/* ————— the wall, drawn —————
-   fig. 03's device at the scale of the whole page: a threshold you pass
-   through. It is drawn IN SECTION, which is what makes it a wall and not a
-   rule under a paragraph — a near face, a far face 7px behind it, and the
-   material hatched between the two — and it is broken exactly twice: once
-   for the doorway, and once for the label, because a hatch that runs under
-   an annotation is a hatch nobody reads the annotation through. That break
-   for a note is the drawing convention it comes from, not a concession.
-   FULL BLEED, 0 to vw. Nothing else on this page touches both edges, so a
-   reader does not have to be told that this is where the document stops.
-   Nothing here is in `samples` and nothing here is in `__rail()`: the day's
-   rail is run 042's line and G10 goes on measuring exactly that. */
-const WALL_D = 7;      /* the wall's own thickness, in section */
-const HATCH = 10;      /* px of pitch between the poché strokes */
-const HATCH_SPAN = 170; /* px either side of the opening that the cut is shown over */
-const BOOM_LIFT = 5;   /* px the boom stands above the threshold, on its jamb */
-function drawWall(scroll) {
-  if (!wall.ok) return;
-  const y = wall.y - scroll;
-  if (y < -60 || y > vh + 60) return;
-  const t = release.t0 ? performance.now() - release.t0 : 0;
-  const gone = release.t0 > 0;
-  const segs = [[0, wall.x0], [wall.x1, vw]];
-  tctx.setLineDash([]);
-  /* the near face: the line the boom stands on, and the run's last line */
-  tctx.strokeStyle = inkC["--ink"]; tctx.lineWidth = 1.6;
-  tctx.beginPath();
-  for (const [a, b] of segs) { tctx.moveTo(a, y); tctx.lineTo(b, y); }
-  tctx.stroke();
-  /* the far face, one weight down — the wall has a back to it */
-  tctx.strokeStyle = inkC["--ink-2"]; tctx.lineWidth = 1;
-  tctx.beginPath();
-  for (const [a, b] of segs) { tctx.moveTo(a, y + WALL_D); tctx.lineTo(b, y + WALL_D); }
-  /* AND THE CUT IS SHOWN ONLY AT THE OPENING. A hatch carried the full
-     1512px was measured against the first shot and it was the loudest thing
-     on the screen — louder than the headline — a 168-stroke saw running
-     edge to edge that read as braid, not as masonry. A drawing hatches
-     where it cuts and rules the rest, which is both quieter and more
-     correct: 170px either side of the doorway says what the threshold is
-     made of exactly where the reader is looking at it, and the rest of the
-     wall is one line. The label needs no break in it: the cut is 7px deep
-     and the label's cap height starts below the far face, so the two never
-     meet — a break measured to be unnecessary ate the whole right-hand run
-     of hatch and made the wall look damaged on one side only. */
-  for (let x = wall.x0 - HATCH_SPAN; x < wall.x1 + HATCH_SPAN; x += HATCH) {
-    const xb = x - WALL_D;
-    if (xb <= wall.x1 + 1 && x >= wall.x0 - 1) continue;  /* the doorway */
-    if (x < 0 || xb > vw) continue;
-    tctx.moveTo(x, y); tctx.lineTo(xb, y + WALL_D);
-  }
-  tctx.stroke();
-  /* THE JAMBS. The opening's own reveal, standing well proud of the
-     threshold on the near side — they are posts, and the boom rests on one
-     of them — so the doorway reads as cut THROUGH something rather than as
-     a gap where the line ran out. */
-  tctx.strokeStyle = inkC["--ink"]; tctx.lineWidth = 1.6;
-  tctx.beginPath();
-  for (const x of [wall.x0, wall.x1]) {
-    tctx.moveTo(x, y - wall.half - 3); tctx.lineTo(x, y + WALL_D + 1);
-  }
-  tctx.stroke();
-  drawBoom(y, t, gone);
-}
-
-/* ————— the boom —————
-   fig. 09's device, and the ONE boom on this page a person ever lifts. That
-   figure draws six the code lifts and a seventh, heavier, that nothing in
-   the graph can: this is that seventh, standing at the end of the paper,
-   and the reader is what lifts it. Same form — round caps, --clay-g while
-   it is held, --pine the moment it moves — and drawn at twice the wall's
-   weight, because a boom at the wall's weight is part of the wall.
-   IT LIFTS, WHICH IS UP, and that is a deviation from the spec's "forward
-   into the far side" for two reasons that both hold. A downward sweep
-   passes through (x0…boomEnd, y…y+len) between 1650 and 2050, which is
-   exactly where and when the birds are coming up out of the doorway. And at
-   1512 it needs 104px of document below the wall, where the design leaves
-   96. Hinged on the near jamb and swung up over the road it was blocking,
-   it finishes parallel to that road — which is the form fig. 09 already
-   uses for a boom that is out of the way. */
-function drawBoom(y, t, gone) {
-  const p = release.done ? 1
-    : gone ? boomEase(clamp((t - at(T_BOOM)) / at(T_BOOM_DUR), 0, 1)) : 0;
-  const len = wall.boomEnd - wall.x0;
-  const a = (-p * Math.PI) / 2;
-  /* IT STANDS ON ITS JAMBS, 5px PROUD OF THE THRESHOLD, and that one
-     offset is most of what makes it read as a gate rather than as the wall
-     getting thicker. Drawn on the line, a clay stroke at twice the wall's
-     weight is a clay stroke at twice the wall's weight; drawn above it,
-     resting against the far post, it is a bar somebody has to lift. */
-  const by = y - BOOM_LIFT;
-  /* no lerped ink anywhere: it is the held colour or the lifted one, and it
-     changes on the first degree of movement a reader can see */
-  tctx.strokeStyle = inkC[p > 0.08 ? "--pine" : "--clay-g"];
-  tctx.lineWidth = mobile ? 3 : 3.6;
-  tctx.lineCap = "round";
-  tctx.beginPath();
-  tctx.moveTo(wall.x0, by);
-  tctx.lineTo(wall.x0 + len * Math.cos(a), by + len * Math.sin(a));
-  tctx.stroke();
-  tctx.lineCap = "butt";
-  window.__world.boom = +p.toFixed(3);
-  if (p > 0) mark("boom");
-}
-
-/* ————— the way on, drawn —————
-   The page's own grammar, past the last stop: the road ahead is [2,7] dashed
-   in --thread-ahead, the road behind the token is inked solid, and the token
-   is a filled bead. That is how every one of the twelve stations before this
-   one was drawn; the only difference here is that the ink is pine, because a
-   hand signed for it, and that the travel is driven by a clock instead of by
-   the reader's scroll.
-
-   Drawn INSIDE drawTokenAndTravellers on purpose: drawThread's tail is the
-   literal G10's control injects a destination-out against, and this
-   composites source-over like everything else on the canvas. */
-function drawOnward(scroll, halted) {
-  if (!onward.ready) return;
-  drawWall(scroll);
-  if (onward.maxY - scroll < -80 || onward.minY - scroll > vh + 80) return;
-
-  const t = release.t0 ? performance.now() - release.t0 : 0;
-  const gone = release.t0 > 0;
-  const q = release.done ? 1
-    : gone ? clamp((t - at(T_LEAVE)) / at(T_TRAVEL), 0, 1) : 0;
-  const head = onward.len * travelEase(q);
-  const arrived = q >= 1;
-  if (arrived && gone) mark("contact");
-
-  const run = (from, to, close) => {
-    const p = onward.pts;
-    tctx.beginPath();
-    let started = false;
-    for (let i = 0; i < p.length; i++) {
-      if (p[i].L < from) continue;
-      if (p[i].L > to) break;
-      if (!started) { tctx.moveTo(p[i].x, p[i].y - scroll); started = true; }
-      else tctx.lineTo(p[i].x, p[i].y - scroll);
-    }
-    if (started && close) tctx.lineTo(close.x, close.y - scroll);
-    if (started) tctx.stroke();
-  };
-
-  /* the road ahead, and it is the same dash the rail draws ahead of the token
-     at every station on the page: [2,7], one weight down, faint */
-  if (!arrived) {
-    tctx.strokeStyle = inkC["--thread-ahead"]; tctx.lineWidth = 1.4;
-    tctx.setLineDash([2, 7]); tctx.lineDashOffset = -head % 9;
-    run(head, onward.len, null);
-    tctx.setLineDash([]);
-  }
-  /* and the road behind it, inked. 2px, the day's own weight, in the colour
-     the gate turned when a hand signed for it. */
-  if (head > 0) {
-    tctx.strokeStyle = inkC["--pine"]; tctx.lineWidth = 2;
-    tctx.lineCap = "round"; tctx.lineJoin = "round";
-    run(0, head, onwardAt(head));
-    tctx.lineCap = "butt";
-  }
-  /* the bead: the run itself, carrying on. It is the same 4.5px mark that has
-     been descending the page since the nameplate — drawn here only while it is
-     actually travelling, so the socket keeps its own mark before and the door
-     keeps it after. */
-  if (gone && !arrived && t > at(T_LEAVE)) {
-    const h = onwardAt(head);
-    tctx.fillStyle = inkC["--ink"];
-    tctx.beginPath(); tctx.arc(h.x, h.y - scroll, 4.5, 0, 7); tctx.fill();
-  }
-  /* AND THE LINE GOES THROUGH — but not before. The last 26px, through the
-     opening and 20px out the far side, exist only once the boom is up. That
-     is the whole argument of this ending: the run does not end in paper, it
-     ends against something shut, and what opens it is a person. */
-  if (wall.ok && (release.done || (gone && t >= at(T_THROUGH)))) {
-    const th = release.done ? 1
-      : clamp((t - at(T_THROUGH)) / at(T_THROUGH_DUR), 0, 1);
-    tctx.strokeStyle = inkC["--pine"]; tctx.lineWidth = 2;
-    tctx.lineCap = "round";
-    tctx.beginPath();
-    tctx.moveTo(wall.cx, wall.y - REST_GAP - scroll);
-    tctx.lineTo(wall.cx, lerp(wall.y - REST_GAP, wall.y + THROUGH, th) - scroll);
-    tctx.stroke();
-    tctx.lineCap = "butt";
-    if (th > 0) mark("through");
-  }
-
-  /* THE SOCKET, RINGED TWICE. One ring is the page's mark for a deliberate
-     hold and it is used at three stations; two rings is this one — the end of
-     the day's line, the only place the reader is asked to do something. Clay
-     while it waits, pine once a hand has signed. No partial opacity anywhere:
-     a ring is on or it is not. */
-  if (halted) {
-    const y = gatePageY - scroll;
-    tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
-    tctx.lineWidth = 2.2;
-    tctx.beginPath(); tctx.arc(dockX, y, 11, 0, 7); tctx.stroke();
-    tctx.lineWidth = 1;
-    tctx.beginPath(); tctx.arc(dockX, y, 16, 0, 7); tctx.stroke();
-  }
-}
-
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
-  drawOnward(scroll, halted);
+  drawHalt(scroll, halted);
   const tp = pointAtLen(tokenL), ty = tp.y - scroll;
-  /* the bead is on the day's rail until the run leaves the socket; after that
-     it is on the way on, and drawing it twice would be two runs */
-  const left = release.t0 > 0 && performance.now() - release.t0 > at(T_LEAVE);
-  if (!left && ty > -30 && ty < vh + 30) {
+  /* the bead is the run itself and it comes to rest in the socket. Nothing
+     takes it away again: the page's last mark is the one the reader pressed
+     beside. */
+  if (ty > -30 && ty < vh + 30) {
     tctx.fillStyle = inkC["--ink"];
     tctx.beginPath(); tctx.arc(tp.x, ty, 4.5, 0, 7); tctx.fill();
   }
@@ -7055,23 +6652,6 @@ function work(y) {
   const tokenL = lenAtY(tokenY);
   const halted = tokenL >= pathLen - 2;
   window.__world.halted = halted;
-  /* ————— the button arms when the run docks —————
-     An early press would have played the whole departure — 2.4s of it, and
-     a wall the reader cannot see — hundreds of pixels below the fold. So
-     the control does not act until the thing it approves has arrived.
-     IT IS A RATCHET. Once armed it stays armed, because a button that
-     disarms itself when the reader scrolls up two lines to re-read the
-     manifest is a button that is broken.
-     THE 24px. `halted` is exact: it wants the token within 2px of the
-     socket, and the socket sits at the document's own end, so on engines
-     that report a fractional maximum scroll — WebKit and Firefox both do,
-     measured at 6.5px on this page — a reader who is genuinely at the
-     bottom would never arm it and could never approve. 18px is over that
-     gap with room, and it is inside the slack at which the ring, the
-     button, the boom and the label are all still fully in view: measured
-     by walking the last 700px in 10px steps, the tightest margin at any
-     armed step is 17px, on the phone. */
-  if (!armed && (halted || yEnd - y <= ARM_EPS)) armGate();
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
   /* stations scrub only near their own beat */
@@ -7113,6 +6693,10 @@ function work(y) {
      leftover: the trigger also fires EARLIER now (.5/.32, was .6/.4),
      so the fade completes before the card's headline reaches the clock */
   $("mast").classList.toggle("gone", beat === 11 && bp > (stacked ? 0.32 : 0.5));
+  /* the waiting mark on the button runs only while the gate is the station
+     on screen, so nothing on this page is animating anywhere else. Written
+     here with the rest of the body classes, off the same beat reading. */
+  document.body.classList.toggle("atgate", beat === 11 && bp > 0.3 && !window.__world.approved);
   /* ¶13 opens once the light is genuinely up, not on first pixel */
   const morn = beat >= RUN_BEATS && bp > 0.16;
   if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); }
@@ -7208,6 +6792,56 @@ addEventListener("resize", () => {
     wake(true);
   }, 160);
 });
+
+/* ————— the terminus is a measurement, and it stays one —————
+   THE DEFECT THIS EXISTS FOR, measured on the served page at five seats:
+   `buildThread` reads the socket's layout position once, at boot, and the
+   page goes on growing after that. The nameplate's own performance ends at
+   about 4.1s by revealing its "watch it again" control, which adds 32.8px to
+   ¶01 at 1512, 1456 and 1280 and 33.4px at 390 — and everything below it,
+   including the socket, moves down by that much while `gatePageY` does not.
+   The halt ring is drawn at `gatePageY`, the socket is drawn where layout
+   puts it, so the two separate by exactly that 33px: the ring sits a third of
+   an inch above the button with the clay square floating level with it, which
+   is what the owner photographed.
+   It escaped every earlier measurement because the ones taken in a harness
+   either sampled before 4.1s or called setViewportSize, and a resize rebuilds
+   the geometry — the bug is in the load, not in any particular width.
+   So the terminus is watched rather than assumed. A ResizeObserver on `main`
+   sees any change to the document's own height (fonts, the nameplate, an
+   image, a station that reflows), and the rebuild is conditional on the
+   socket having ACTUALLY moved, so a resize that changes nothing below ¶01
+   costs one offsetTop walk. The work is deferred to a frame: doing it in the
+   callback is what raises "ResizeObserver loop completed with undelivered
+   notifications" in every engine. */
+let geomRaf = 0;
+function watchTerminus() {
+  if (geomRaf || !booted) return;
+  geomRaf = requestAnimationFrame(() => {
+    geomRaf = 0;
+    const sq = $("gateDock").querySelector("i");
+    const now = absTop(sq) + sq.offsetHeight / 2;
+    /* offsetTop is an integer, so the socket and the rail can sit half a
+       pixel apart in honest agreement; 0.5 is the smallest threshold that is
+       not chasing that rounding. scrollHeight is checked too because growth
+       BELOW the socket moves nothing here but does move the document's end,
+       which the token's last glide and the carry both read. */
+    if (Math.abs(now - gatePageY) < 0.5 &&
+        document.documentElement.scrollHeight === docH) return;
+    cacheGeometry();
+    buildThread();
+    /* wake() is a no-op under reduced motion, where the still frame is drawn
+       by hand — so redraw it by hand, or an RM reader keeps the stale ring. */
+    if (RM) drawThread(scrollY, gatePageY, pathLen, true);
+    else wake(true);
+  });
+}
+new ResizeObserver(watchTerminus).observe(document.querySelector("main"));
+/* the two moments the page is known to move after boot, in case a browser
+   ever coalesces the observation away: the face arriving, and the last
+   subresource landing. Both are cheap and both are idempotent. */
+document.fonts?.ready.then(watchTerminus).catch(() => {});
+addEventListener("load", watchTerminus);
 
 /* ————— Glyph: the real classifier (fast-mnist-nn, C++/SIMD → WASM) ————— */
 const ready = (async () => {
@@ -7511,28 +7145,17 @@ $("clear").addEventListener("click", () => {
 });
 
 /* ————— the gate: only a press resolves it —————
-   THE ARMING, THE THREE NOTES AND THE ONE PATH. The note is a role="status"
-   line, so each string below is read out as it lands; they are written as
-   sentences for that reason and not as labels. */
-/* the unarmed string is in the markup, where a reader with no JS still
-   gets it; these two are the states only the engine can know about. */
-const NOTE_EARLY = "the run is still arriving. this button arms when it gets here.";
-const NOTE_ARMED = "scrolling could not press this button \u00b7 the run ends only by hand.";
-const ARM_EPS = 18; /* px of scroll slack — see the note in work() */
-let armed = false;
-function armGate() {
-  if (armed) return;
-  armed = true;
-  window.__world.armed = true;
-  $("approve").removeAttribute("aria-disabled");
-  if (!window.__world.approved) $("gateNote").textContent = NOTE_ARMED;
-}
+   ONE PATH, AND NO ARMING. The button used to sit hollow and refuse the press
+   until the run had docked in the socket beside it, because an early press
+   played a 2.4s departure hundreds of pixels below the fold. That departure
+   went with round 6's second rail, so there is nothing an early press can
+   spoil — and the state the arming advertised cost this control the one
+   quality it has to have: filled, and obviously pressable, from the first
+   frame a reader can see it.
+   The note is a role="status" line and its standing sentence is in the
+   markup, where a reader with no JS gets it too. The engine writes that line
+   exactly once, with the time of the reader's own press. */
 $("approve").addEventListener("click", () => {
-  /* AN UNARMED PRESS NEVER APPROVES. The control keeps its seat in the focus
-     order while the run is still on its way — aria-disabled, not disabled —
-     so the press reaches here to be answered, and nothing below this line
-     runs. */
-  if (!armed) { $("gateNote").textContent = NOTE_EARLY; return; }
   if (window.__world.approved) return;
   $("stamp").classList.add("inked");
   $("approve").disabled = true;
@@ -7542,19 +7165,18 @@ $("approve").addEventListener("click", () => {
   window.__world.approved = true;
   /* ¶13 DOES NOT JOIN THE PAGE HERE. It used to: `inert` and `aria-hidden`
      came off at the press, and the document grew three screens of morning
-     while the reader was still watching a boom that had not moved yet. The
-     station comes into existence when the way through opens — openGate(),
-     at 2450 — which is the same two lines, moved to the moment they are
-     true. */
-  /* the world acknowledges the signature: the halt ring and the gate
-     dock turn pine. Deploy still does not light — approval is yours,
-     deployment is work. */
+     under a reader who had not been given any reason for it yet. The station
+     comes into existence at openGate(), as the birds are clearing the frame,
+     which is the same two lines moved to the moment they are earned. */
+  /* the world acknowledges the signature: the halt ring and the socket in it
+     turn pine. 22:41 still does not light — it is the rung a scroll can never
+     reach, and the press is not a scroll. */
   $("gateDock").querySelector("i").style.background = "var(--pine)";
 
   /* The run reads itself back. Each stop takes the ink in turn, 60ms apart,
      so the twelve hours you scrolled through resolve as one gesture rather
      than snapping on together. The delays are cleared once the cascade is
-     spent, so no timer, class or listener survives this beat. Deploy is
+     spent, so no timer, class or listener survives this beat. 22:41 is
      excluded, as everywhere else. */
   phases.forEach((li, i) => {
     if (+li.dataset.ph === DEPLOY_PH) return;
@@ -7564,12 +7186,11 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
-  /* ————— and the run goes on to the gate —————
-     The line is laid out of the ring, it brakes into the shut boom, a hand's
-     press lifts the boom, the morning's birds come up through the opening,
-     and only then does the page grow the morning and carry the reader into
-     it. One chain, scheduled here, from the only path that reaches it. */
-  startDeparture();
+  /* ————— and the morning comes —————
+     The ink lands, the day lights up behind it, the birds leave the ring and
+     the page carries the reader into ¶13. One chain, scheduled here, from the
+     only path that reaches it. */
+  startRelease();
   schedule();
 });
 
@@ -7577,20 +7198,18 @@ $("approve").addEventListener("click", () => {
    Every step is idempotent, so a second press, a resize mid-flight or a
    restored session cannot replay the ending.
 
-   THE GUARD. If there is no path to run — no wall laid out, a viewport that
-   never built the gateway — or the reader has asked for reduced motion,
-   there is nothing to watch and nothing to wait for. Everything happens at
-   this instant: the boom is up, the line is through, the label is open, the
-   gate is open, the manifest is filed and the page lands on the morning.
+   THE GUARD. A reader who asked for reduced motion is given the end state
+   and not the journey to it: the gate is open, the manifest is filed, the
+   masthead says so and the page lands on the morning, all at this instant.
    `wake()` returns immediately under RM, so frame() — the only writer of
    body.atmorning — never runs, and a reduced-motion reader who approved was
    measured sitting in a 2700px station with every child at opacity 0. The
    reveal is not an animation and does not need one. */
 function schedule() {
-  if (RM || !onward.ready) {
+  if (RM) {
     release.done = true;
     window.__world.released = true;
-    setLabelOpen();
+    nameTheGateOpen();
     openGate();
     atMorning = true;
     document.body.classList.add("atmorning");
@@ -7600,28 +7219,23 @@ function schedule() {
     return;
   }
   setTimeout(releaseFlock, at(T_BIRDS));
-  setTimeout(setLabelOpen, at(T_LABEL));
+  setTimeout(nameTheGateOpen, at(T_OPEN));
   setTimeout(openGate, at(T_OPEN));
   setTimeout(carryToMorning, at(T_CARRY));
   wake(true);
 }
 
-/* the far side gets its name. "held for a person" was the whole of what the
-   boom meant; with the boom up it is simply open, and the masthead — which
-   has read "the gate · held" since the reader arrived — says so too. */
-function setLabelOpen() {
-  const st = document.querySelector(".gateway .ladder.dep .st");
-  if (st) st.innerHTML = 'run <b class="mv">043</b> &middot; open';
-  /* 11 is the GATE'S beat, which settleAll already names as setMast(11, 0).
-     DEPLOY_PH is the last rung of the ladder and happens to be 11 too; they
-     are two different numbers that agree today. */
-  PHASE_NAMES[GATE_BEAT] = "the gate \u00b7 open";
+/* the masthead has read "the gate · held" since the reader arrived, and the
+   hold is over. It takes the word the button and the stamp both use, because
+   an act that is called approve has to resolve as approved. */
+function nameTheGateOpen() {
+  PHASE_NAMES[GATE_BEAT] = "the gate \u00b7 approved";
   lastPhase = -1;
   $("mphase").textContent = PHASE_NAMES[GATE_BEAT];
-  mark("label");
+  mark("named");
 }
 
-/* ¶13 COMES INTO EXISTENCE WHEN THE WAY THROUGH OPENS. `inert` and
+/* ¶13 COMES INTO EXISTENCE WHEN THE RUN HAS BEEN SIGNED FOR. `inert` and
    `aria-hidden` are not belt and braces for the same thing: a station in the
    focus order but out of the accessibility tree is the worse of the two
    failures. Both come off together, here, and growing the document is why
@@ -7631,13 +7245,11 @@ function openGate() {
   if (document.body.classList.contains("gateopen")) return;
   document.body.classList.add("gateopen");
   /* AND THE HOLD STARTS HERE, NOT AT THE PRESS. Round 4 took the scrollbar
-     the moment the button went down and kept it for 9.4s. For the first
-     2.45s of that there is nothing below the wall to scroll to — ¶13 has no
-     height until the line above runs — so the hold was over a document that
-     could not move anyway, and it was two and a half seconds of a reader's
-     wheel doing nothing for no reason. It runs from here, and it still
-     releases 8s after the carry starts, which is round 4's own relation and
-     the behaviour the owner is being asked about. */
+     the moment the button went down and kept it for 9.4s, most of it over a
+     document that had nothing below the gate to scroll to. It runs from the
+     moment there is somewhere to go, and it still releases 8s after the
+     carry starts, which is round 4's own relation and the behaviour the
+     owner is being asked about. */
   holdScroll(at(T_CARRY) - at(T_OPEN) + 8000);
   const morning = $("nextmorning");
   if (morning) { morning.removeAttribute("inert"); morning.removeAttribute("aria-hidden"); }
@@ -7647,30 +7259,16 @@ function openGate() {
   mark("open");
 }
 
-/* The gate's clock starts here, and it is the same clock at every width.
-   Under reduced motion there is no departure to watch: the boom is already
-   up, the line is already pine and through, and the bead — the only thing
-   on this canvas that ever moves without a scroll — is never drawn at all.
-   That is the same information, held still. */
-function startDeparture() {
-  buildOnward();
+/* The gate's clock starts here, and it is the same clock at every width. */
+function startRelease() {
   release.t0 = performance.now();
-  release.tHead = at(T_LEAVE + T_TRAVEL);
-  /* nothing trails the bead, so the drawing is complete once the gate is
-     open; the 150ms the frame loop holds after tTail lets the last frame
-     land, and tTail reaches to the carry because the boom is canvas and is
-     still moving long after the travel ends. */
+  /* the 150ms the frame loop holds after tTail lets the last frame land */
   release.tTail = at(T_CARRY);
-  /* the guard's own probe. `__world.boom` is what the CANVAS drew and is
-     honest about being nothing when the wall is off screen; this is the
-     state, which a reduced-motion reader has before they ever scroll to
-     look at it. */
-  window.__world.released = release.done || RM || !onward.ready;
+  window.__world.released = release.done || RM;
   /* probe hook: the harness reads the run's own timetable rather than
-     re-deriving it from a viewport width and a speed it cannot see */
-  window.__world.departure = { t0: release.t0, pace: PACE, tHead: release.tHead,
-    tTail: release.tTail, len: onward.len, ready: onward.ready };
-  if (RM || !onward.ready) release.done = true;
+     re-deriving it from a viewport width and a clock it cannot see */
+  window.__world.departure = { t0: release.t0, pace: PACE, tTail: release.tTail };
+  if (RM) release.done = true;
 }
 
 function carryToMorning() {
@@ -7818,48 +7416,21 @@ function buildFlock() {
 
   /* THEY GO EAST, into the side the morning is on: DAWN_STOPS puts the sun
      at 78% across the sky at the end of the carry, so east is towards the
-     light rather than away from it. Round 4 flew them west because the door
-     was in the bottom-right corner and west was the only direction with any
-     page left in it; the doorway is on the centre line now, and the mirror
-     that made west possible is gone with it. */
+     light rather than away from it — and the launch is the socket, which is
+     in the left-hand column at every desktop seat and in the phone's own
+     26px gutter, so east is also where the room is. */
   const ox = W * flockFrom.fx;
   const oy = H * flockFrom.fy;
   const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
-  /* ————— NO BIRD IS EVER SEEN END ON —————
-     An 88x34 silhouette at 60° of pitch is a slash, and three of them read
-     as letters: that is the "vertical blades" defect, and it came from a
-     launch point directly under the gathering point. It is ENFORCED here
-     rather than tuned, because the launch point is now a doorway on the
-     page's centre line and the geometry that is safe at 1512 is not safe at
-     390. Each leg of the path is opened out along x until its angle is
-     inside the cap, and the rest of the path moves with it — so the climb
-     is kept exactly and the flight simply gets longer, which is what a bird
-     leaving the ground actually does. */
-  const CAP_FIRST = 46, CAP = 38;
-  const openOut = (pts) => {
-    for (let k = 1; k < pts.length; k++) {
-      const dx = pts[k][0] - pts[k - 1][0], dy = pts[k][1] - pts[k - 1][1];
-      const tan = Math.tan(((k === 1 ? CAP_FIRST : CAP) * Math.PI) / 180);
-      const need = Math.abs(dy) / tan;
-      if (Math.abs(dx) < need) {
-        const push = (need - Math.abs(dx)) * (dx < 0 ? -1 : 1);
-        for (let j = k; j < pts.length; j++) pts[j][0] += push;
-      }
-    }
-    return pts;
-  };
 
   /* THE BIRD IS DRAWN AT A FIXED 88px, so a sky that works on a laptop is an
      infestation on a phone: fifteen of them at full size across 390px covered
      the epigraph and the quote both. The flock scales with the sky it crosses
-     — fewer birds, smaller, and flying higher, because a narrow viewport gives
-     them far less horizontal room to get clear of the type in. */
+     — fewer birds and smaller. */
   const narrow = W < 760;
   const vs = clamp(W / 1500, 0.44, 1);
-  /* FEWER, BECAUSE THEY COME OUT OF A 96px GAP. Fifteen birds through one
-     doorway is a vent, not a flock; nine leave in a readable stream at
-     about 110ms apart and the last of them is clear of the wall before the
-     carry starts. */
+  /* nine leave in a readable stream about 100ms apart; six on a phone, where
+     the sky is a third of the width and the same nine read as a swarm */
   const N_NEAR = narrow ? 6 : 9;
 
   host.innerHTML = "";
@@ -7867,7 +7438,7 @@ function buildFlock() {
 
   /* A REBUILD MUST NOT REPLAY THE DEPARTURE. buildFlock re-creates every bird,
      and body.flying is already on, so a naive rebuild restarts `cross` from 0%
-     — the whole flock teleports back to the dock and takes off again over the
+     — the whole flock teleports back to the ring and takes off again over the
      quote. On iOS the URL bar collapsing during a scroll fires resize, and ¶13
      is three screens tall, so the likeliest moment for that is exactly the one
      where it looks worst.
@@ -7882,59 +7453,87 @@ function buildFlock() {
     return true;
   };
 
-  /* ————— the departure —————
-     A flock leaving the ground is not a formation. It is a scatter that sorts
-     itself out: everything goes up at its own angle, then the angles agree,
-     then it is a loose stream leaning off to one corner. All three phases are
-     in each bird's path — a hard climb out of the huddle, a middle where the
-     paths converge without meeting, and a long shallow cruise to the top right.
+  /* ————— the departure, and it stays in the frame —————
+     ROUND 6 FLEW THEM OFF THE PAGE. Every path ended at x = 1.35·W and the
+     owner saw what that is: birds that leave the reader rather than leading
+     them. A bird that is gone is gone at the EDGE of what a person can see,
+     and it goes by getting further away — smaller, fainter — not by crossing
+     an invisible boundary at speed. So every path now ends inside the sky,
+     high and east, where the morning's own sun comes up at the end of the
+     carry, and `cross` fades the last fifth of it while `away` shrinks the
+     drawing to just over half.
 
-     The convergence is what makes it a flock rather than confetti, and it is
-     deliberately LOOSE: the gathering point is jittered a fifth of the screen
-     wide, because birds heading the same way is the real thing, and birds
-     arriving at the same coordinate is a funnel. */
+     NO BIRD IS EVER SEEN END ON, and it is true by construction now rather
+     than by correction. An 88×34 silhouette at 60° of pitch is a slash, and
+     three of them read as letters: that was the "vertical blades" defect,
+     and round 6 answered it by stretching each leg of a hand-placed polyline
+     eastward until its angle came inside a cap — which fixed the angle and
+     pushed the far end further off the page.
+     The chord is the thing chosen now. Each bird picks its own climb angle
+     between 20° and 30°, and everything else is derived from it: the climb
+     is whatever that angle can buy inside the room the sky actually has, the
+     run follows from the climb, and the four control points are fractions of
+     the two. The steepest leg any of them can produce is the first, at
+     1.4·tan(30°) — 39° — and the rest are flatter, so the tangent of the
+     curve, which lies inside the cone of its own legs, can never stand the
+     bird up. The frame is not clamped after the fact; it is what the room is
+     measured from. */
   for (let i = 0; i < N_NEAR; i++) {
     const r = birdRng(0x51ee + i * 7919);
-    /* the huddle, and it is tight now: they are coming OUT OF A DOORWAY, not
-       off an open dock, so a 120px scatter put half of them through the wall */
-    const x0 = ox + (r() - 0.5) * 18 * vs;
-    const y0 = oy + (r() - 0.5) * 12 * vs;
-
-    /* WHERE THE FLOCK GATHERS, and it sits well to the east and only
-       halfway up, because the launch is now at the BOTTOM of the page and
-       the chord from here to there is the climb angle. The convergence is
-       what makes it a flock rather than confetti, and it is deliberately
-       loose: the point is jittered a sixth of the screen wide, because
-       birds heading the same way is the real thing and birds arriving at
-       one coordinate is a funnel. */
-    const gx = W * (narrow ? 0.74 : 0.78) + (r() - 0.5) * W * 0.16;
-    const gy = H * (narrow ? 0.7 : 0.62) + (r() - 0.5) * H * (narrow ? 0.14 : 0.18);
-    const runX = Math.max(80, gx - x0);
-    const runY = Math.max(40, y0 - gy);
-
-    /* THE CLIMB, as an angle rather than a distance. Every control point below
-       is a fraction of that run, so the geometry holds at 390px and at 1920
-       without a single absolute constant to get away from us. A touch steeper
-       than the chord — a bird does pitch up leaving the ground — and never
-       more than a touch, which is the whole fix. */
-    const th = Math.atan2(runY, runX) * (0.86 + r() * 0.24);
-    const L = Math.hypot(runX, runY) * (0.4 + r() * 0.22);
-    /* out over the corner. A narrow sky is left much sooner and much lower:
-       there is no room to cross it AND climb to the top. */
-    const ex = W * (narrow ? 1.45 : 1.35) + r() * W * 0.18;
-    const ey = H * (narrow ? 0.46 : 0.22) + (r() - 0.5) * H * (narrow ? 0.14 : 0.2);
-    /* the whole path as one polyline, then opened out until no leg of it is
-       steeper than the cap. The second control comes in almost flat so the
-       bird is level by the time it is among the others. */
-    const pts = openOut([
-      [x0, y0],
-      [x0 + Math.cos(th) * L, y0 - Math.sin(th) * L],
-      [gx - runX * (0.2 + r() * 0.2), gy + runY * (0.04 + r() * 0.13)],
-      [gx, gy],
-      [gx + (ex - gx) * (0.2 + r() * 0.22), gy - (gy - ey) * (0.12 + r() * 0.28)],
-      [gx + (ex - gx) * (0.58 + r() * 0.22), ey + (gy - ey) * (0.08 + r() * 0.26)],
-      [ex, ey],
-    ]);
+    /* the huddle is tight: they come off a 32px ring, not an open dock */
+    const x0 = ox + (r() - 0.5) * 16 * vs;
+    const y0 = oy + (r() - 0.5) * 14 * vs;
+    /* the bird's OWN size, before the viewport has its say. The wingbeat has
+       to key off this and not off the rendered scale, or the whole flock flies
+       in slow motion on a phone — vs shrinks every bird, and a period divided
+       by the shrunk value is a period three times too long. */
+    const sc0 = 0.72 + r() * 0.5;
+    const sc = sc0 * vs;
+    /* the room, measured to the drawn silhouette's own half-extent at this
+       bird's scale: 88×34 about an anchor 30/17 into it, so 46 to the right
+       of the anchor and 20 above it. A centre inside the frame with a wing
+       out of it is still a bird flying off the page. */
+    const padX = 46 * sc, padY = 20 * sc;
+    const east = Math.max(60, W - padX - x0);
+    const up = Math.max(40, y0 - padY);
+    /* the climb angle is the one thing chosen, and everything else follows
+       from it. A phone gives a bird a third of the horizontal room a laptop
+       does out of a launch point four fifths of the way down the screen, so
+       a 25° chord there would be a bird crossing the type rather than
+       leaving: the narrow seats climb steeper, and the bow below flattens
+       to pay for it. */
+    const ang = ((narrow ? 30 + r() * 12 : 20 + r() * 11) * Math.PI) / 180;
+    /* they do not all run to the same edge. Taking the whole of `east` is
+       what put nine birds in one 150px column at the right-hand margin with
+       three seconds of flight left, which reads as a stall; 74–100% of the
+       room spreads the vanishing points over a diagonal band instead. */
+    let run = east * (0.74 + r() * 0.26);
+    let climb = Math.min(run * Math.tan(ang), up * 0.9);
+    run = climb / Math.tan(ang);
+    const vx = x0 + run, vy = y0 - climb;
+    /* ————— the bow, and why it is a variable —————
+       The shape is a profile in chord space: `fx` along the run, `A` up the
+       climb, so a leg's pitch is atan((ΔA/Δfx)·tan(ang)) and the steepest
+       leg is the first, at 1.40·tan(ang). That is 38° on a 25° chord and 55°
+       on a 42° one — and 55° is the vertical blade this page has been
+       fighting since round 4. So the bow is scaled back until the steepest
+       leg lands on 46°, which is a climbing bird and not a knife: a gentle
+       chord keeps the whole arc, a steep one flies almost straight, which is
+       also what a bird leaving hard actually does. B is 1 up to a 31° chord
+       and 0.18 at 42°. The cubic's tangent lies inside the cone of its own
+       legs, so capping the legs caps the bird. */
+    const FX = [0, 0.2, 0.52, 0.64, 0.78, 0.9, 1];
+    const A = [0, 0.28, 0.72, 0.84, 0.94, 0.98, 1];
+    const B = clamp((Math.tan((46 * Math.PI) / 180) / Math.tan(ang) - 1) / 0.4, 0, 1);
+    const pts = FX.map((fx, k) => {
+      /* no two of them fly the same curve — and the jitter is scaled by the
+         bow, because on a steep chord there is no room left to wander in:
+         unscaled it pushed the sampled tangent to 47.2° on the phone, past
+         the cap the bow had just been solved for. */
+      const j = k > 0 && k < 6 ? (r() - 0.5) * 0.04 * B : 0;
+      const a = fx + B * (A[k] - fx) + j;
+      return [x0 + run * fx, y0 - climb * a];
+    });
 
     const el = document.createElement("div");
     el.className = "bird";
@@ -7942,20 +7541,14 @@ function buildFlock() {
       `path("M ${P(pts[0][0], pts[0][1])} C ${P(pts[1][0], pts[1][1])} ${P(pts[2][0], pts[2][1])} ${P(pts[3][0], pts[3][1])}` +
       ` C ${P(pts[4][0], pts[4][1])} ${P(pts[5][0], pts[5][1])} ${P(pts[6][0], pts[6][1])}")`;
     /* no two share a duration, so whatever order they leave in is not the
-       order they arrive in — they overtake each other, which a queue cannot */
-    const dur = 7.2 + r() * 5;
-    /* out of a doorway they leave in a stream, close behind each other:
-       about 110ms apart, and the jitter is small enough that the order
-       still reads as an order */
-    const st = 0.04 + i * 0.11 + r() * 0.24;
+       order they arrive in — they overtake each other, which a queue cannot.
+       The longest flight is spent by 9.3s, which is a second after the carry
+       lands: the last of them is still in the sky over the morning. */
+    const dur = 5.4 + r() * 2.8;
+    const st = 0.04 + i * 0.1 + r() * 0.2;
     el.style.setProperty("--dur", dur.toFixed(2) + "s");
     if (!place(el, st, dur)) continue;
-    /* the bird's OWN size, before the viewport has its say. The wingbeat has
-       to key off this and not off the rendered scale, or the whole flock flies
-       in slow motion on a phone — vs shrinks every bird, and a period divided
-       by the shrunk value is a period three times too long. */
-    const sc0 = 0.72 + r() * 0.5;
-    el.style.setProperty("--s", (sc0 * vs).toFixed(3));
+    el.style.setProperty("--s", sc.toFixed(3));
     el.style.setProperty("--op", (0.34 + r() * 0.26).toFixed(2));
     /* a bigger bird beats slower, as a bigger wing does — and no two birds
        share a clock, because a flock in lockstep reads as a screensaver */
@@ -7971,41 +7564,39 @@ function buildFlock() {
 
   /* ————— THE FAR ONES ARE GONE —————
      A distant crossing high over the top used to give the sky depth, and
-     that was right when fifteen birds came off an open dock. Nine coming up
-     through one opening is a single event with a cause the reader just
-     supplied, and five unrelated birds already in the air at the top of the
-     same frame say the sky was always busy — which takes the cause away.
-     N_FAR is 0, and the loop is deleted rather than zeroed: a loop that
-     never runs is a loop nobody is watching. */
+     that was right when fifteen birds came off an open dock. Nine leaving
+     one ring is a single event with a cause the reader just supplied, and
+     five unrelated birds already in the air at the top of the same frame say
+     the sky was always busy — which takes the cause away. N_FAR is 0, and
+     the loop is deleted rather than zeroed: a loop that never runs is a loop
+     nobody is watching. */
   host.appendChild(frag);
 }
 
-/* the gate lets them go. The departure point is the thread's own terminus —
-   the dock the line has been carrying toward for twelve stations — so what
-   leaves is what the run was carrying. Measured at this instant, in viewport
-   coordinates, because the page is about to scroll out from under it. */
+/* the gate lets them go, FROM THE RING. The socket is the thread's own
+   terminus — the mark the line has been carrying toward for twelve stations,
+   and the thing the reader just pressed beside — so what leaves the page is
+   what the run was carrying. Rounds 5 and 6 launched them from a doorway in
+   a wall 30px further down, which is gone; this is the same measurement
+   against the object that is still there.
+   Measured at this instant, in viewport fractions, because the page is about
+   to scroll out from under them and a rebuild mid-flight has to be able to
+   find the same departure. */
 function releaseFlock() {
   const host = document.getElementById("flock");
   if (!host || RM) return;
-  /* THEY COME UP THROUGH THE DOORWAY, FROM THE FAR SIDE. The dock was the
-     departure point while the dock was the end of everything; the line runs
-     past it to a wall now, and the opening in that wall is the only way
-     through. The launch sits 30px BELOW the wall, on the far side, so the
-     first thing every bird does is come up through the gap the boom was
-     holding shut — which is the whole reason they are in this page.
-     Measured here rather than at the press, because the boom is not up
-     until the run has reached it.
-     The fy clamp goes to .98: the wall is AT the document's end, so a
-     launch point clamped to .9 of the viewport put them 60px above the
-     opening they were supposed to be coming out of. */
-  const d = document.getElementById("gateWall") || document.getElementById("gateDock");
+  const d = document.getElementById("gateDock");
   const r = d ? d.getBoundingClientRect() : null;
   const W = host.clientWidth || innerWidth;
   const H = host.clientHeight || innerHeight;
+  /* the clamps are the sky's own edges, not a taste: a launch point outside
+     the frame is a flock that starts off the page, which is the defect this
+     round exists to remove. .08/.92 keeps the huddle and its first wingbeat
+     inside the viewport even at the phone's 26px gutter. */
   flockFrom = r && r.width
-    ? { fx: clamp((r.left + r.width / 2) / W, 0.04, 0.96),
-        fy: clamp((r.top + r.height / 2 + 30) / H, 0.3, 0.98) }
-    : { fx: 0.5, fy: 0.9 };
+    ? { fx: clamp((r.left + r.width / 2) / W, 0.03, 0.92),
+        fy: clamp((r.top + r.height / 2) / H, 0.28, 0.92) }
+    : { fx: 0.25, fy: 0.6 };
   window.__world.flockFrom = flockFrom; /* probe hook: where the sky was entered */
   releasedAt = performance.now();
   buildFlock();
@@ -8048,11 +7639,6 @@ async function boot() {
     const still = () => drawThread(scrollY, gatePageY, pathLen, true);
     still();
     addEventListener("scroll", still, { passive: true });
-    /* ARMED AT BOOT under reduced motion. The settled world has no travelling
-       token to dock, so `halted` is the wrong instrument here: the run IS at
-       the gate, held for a signature, which is exactly what settleAll draws.
-       A reader who asked for less motion must not also be given less page. */
-    armGate();
     settleAll();
     $("field").style.background = "#fbf3e7";
     return;

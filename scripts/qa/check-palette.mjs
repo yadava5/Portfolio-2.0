@@ -462,24 +462,33 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      measurement. `.gbench` is the class fig. 10's miniature wears, and every
      colour-bearing rule of that drawing carries it.
 
-     `.approvebar` AND `.gateway` JOINED THE SCAN with round 4's ending. ¶12
-     draws in two places — the wall, its jambs, the boom and the way on, which
-     are strokes on the thread's own canvas taking their ink from the `inkC`
-     tokens the engine reads off :root, and the socket, the time, the button's
-     two states and the far side's label, which are markup. The markup half is
-     the half a redraw can quietly re-colour, so it is measured here against
-     the same floors as a figure's.
-     ROUND 6 RETIRED THE DOOR and with it the `#gateDoor .leaf` exemption this
-     note used to carry: there is no filled leaf any more, so there is no
-     paper-on-paper stroke to hold out of the scan. What the canvas draws in
-     its place — --ink for the wall, --ink-2 for the poché and the label,
-     --clay-g for the held boom and --pine for the lifted one — is the same
-     four tokens `.figsvg` already declares for figs. 09 and 10, so every one
-     of them is held at a floor here whether the canvas is scanned or not.
-     Shown red before it was shown green, on a temp copy with the far side's
-     label set to --hair: the scan reads the token out of `.gateway` and the
-     file prints twelve failures, the tightest of them 1.71:1 / Lc 9.0 on the
-     night field #2c2622, against a 3:1 graphic floor.
+     `.approvebar` JOINED THE SCAN with round 4's ending and stayed through
+     round 7's. ¶12's own ink is markup — the socket, the hour, and the one
+     filled control on the site — and markup is the half a redraw can quietly
+     re-colour, so it is measured here against the same floors as a figure's.
+     ROUND 7 RETIRED `.gateway` with the wall, the boom and the far side's
+     label that used to hang off it; nothing on this page is styled under that
+     class any more, and a scan selector that matches nothing is a gate that
+     cannot fail. What the canvas still draws at the gate — the halt ring in
+     --clay-g, and in --pine once a hand has signed — are two tokens `.figsvg`
+     declares for figs. 09 and 10 anyway, so both are held at a floor here
+     whether the canvas is scanned or not.
+     Shown red before it was shown green, on a temp copy with the socket's
+     own `.gsq2 i` background set to --hair: the scan reads the token out of
+     `.approvebar`, the file prints nine failures and exits 1, the first of
+     them 1.66:1 / Lc 10.3 on the night field #43372f against a 3:1 graphic
+     floor. The worktree exits 0 on the same script.
+
+     A RULE THAT BRINGS ITS OWN GROUND IS MEASURED ON IT. The approve button
+     declares `background:var(--clay)` and `color:var(--ink-inverse)` in one
+     rule, and --ink-inverse IS the page's paper: read as a stroke on the
+     field it is 1.00:1 on #fbf3e7, which is true and means nothing, because
+     that colour is never drawn on the field. It is drawn on the fill the same
+     rule declares. So a rule carrying both is lifted out of the stroke scan
+     and measured as the PAIR it is, on its own ground, at the text floor —
+     which recomputes by hand what the stylesheet claims in a comment beside
+     it. The lift is self-policing: a --ink-inverse used without a background
+     in the same rule stays in the stroke scan and goes red there.
 
      WHY NOT SCAN ALL OF `#gatesFig`, which is the obvious fix: measured, it
      goes red at HEAD on a correct answer. `.gates .grow` and `.gates .gclose`
@@ -491,16 +500,53 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      follows the DRAWING, not the plate that contains it — and the next
      miniature drawn outside `.figsvg` has to add its own class here, which is
      a visible cost rather than a silent exemption. */
-  const figureCss = [
-    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar|\.gateway)[^{]*\{([^}]*)\}/g),
-  ]
-    .map((m) => m[1])
-    .join(";");
+  const figureRules = [
+    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar)[^{]*\{([^}]*)\}/g),
+  ].map((m) => m[1]);
+  /* the pairs first, so their two tokens do not also enter the stroke set */
+  const groundPairs = [];
+  const strokeBodies = [];
+  for (const body of figureRules) {
+    /* `[;\s]` before the property name, or `border-color:var(--clay)` is
+       read as the label's own colour and the pair measures clay on clay */
+    const bg = body.match(/(?:^|[;\s])background(?:-color)?:\s*var\(--([\w-]+)\)/);
+    const fg = body.match(/(?:^|[;\s])color:\s*var\(--([\w-]+)\)/);
+    if (bg && fg) {
+      groundPairs.push([`--${fg[1]}`, `--${bg[1]}`]);
+      strokeBodies.push(
+        body
+          .replace(/(?:^|[;\s])color:\s*var\(--[\w-]+\)/g, ";")
+          .replace(/(?:^|[;\s])background(?:-color)?:\s*var\(--[\w-]+\)/g, ";")
+      );
+    } else {
+      strokeBodies.push(body);
+    }
+  }
+  const figureCss = strokeBodies.join(";");
   const usedTokens = [
     ...new Set([...figureCss.matchAll(/var\(--([\w-]+)\)/g)].map((m) => m[1])),
   ]
     .map((t) => `--${t}`)
     .filter((t) => NIGHT[t] || DAY[t]);
+  for (const [fgT, bgT] of groundPairs) {
+    for (const [world, map] of [["day", DAY], ["night", NIGHT]]) {
+      const fg = map[fgT] ?? DAY[fgT];
+      const bg = map[bgT] ?? DAY[bgT];
+      if (!/^#[0-9a-f]{6}$/i.test(fg) || !/^#[0-9a-f]{6}$/i.test(bg)) continue;
+      const w = contrast(fg, bg), l = lc(fg, bg);
+      if (w < TEXT.wcag || l < TEXT.lc)
+        fail(
+          `${fgT} on its own ${bgT} ground draws at ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)}\n` +
+            `      in the ${world} world (${fg} on ${bg}) — below the text floor of ` +
+            `${TEXT.wcag}:1 / Lc ${TEXT.lc}.\n` +
+            `      This is the label of the one filled control on the site.`
+        );
+      else
+        note(
+          `${fgT} on ${bgT}, ${world} — ${fg} on ${bg} is ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)}`
+        );
+    }
+  }
   usedFigureTokens = usedTokens;
   const TEXT_TOKENS = new Set(["--ink-2"]);
   if (usedTokens.length < 6)
