@@ -967,6 +967,12 @@ if (location.hash.length > 1) {
   .yardrow .ydoor.open .sill{opacity:1}
   #yardDoor .leaf{fill:none; stroke:var(--ink-2); stroke-width:1;
     transform-box:fill-box; transform-origin:100% 50%}
+  /* the leaf swings back on the far jamb, 260ms, out fast and settling —
+     a door opened by something arriving, not a panel fading out */
+  .yardrow .ydoor.open .leaf{transform:scaleX(.08)}
+  @media (prefers-reduced-motion: no-preference){
+    .yardrow .ydoor .leaf{transition:transform .26s cubic-bezier(.3,0,.2,1)}
+  }
   .yardnote{margin-top:1.1rem; max-width:34rem;
     font-family:var(--body); font-size:var(--fs-small); line-height:1.6;
     color:var(--ink-2)}
@@ -1109,6 +1115,13 @@ if (location.hash.length > 1) {
     margin:-17px 0 0 -30px}
   .bird .b-ink{fill:var(--ink-2)}
   .bird .b-wing{transform-box:view-box; transform-origin:0px 0px}
+  /* WEST. The paths are mirrored in JS about the viewport's middle, which
+     reverses the direction of travel but not the shape of any curve; these
+     two rules turn the birds round to face the way they are going.
+     offset-rotate:reverse alone would fly them backwards down their own
+     path, so the silhouette is flipped with it. */
+  .flock.west .bird{offset-rotate:reverse}
+  .flock.west .bird .bd svg{transform:scaleX(-1)}
 
   body.flying .bird{
     animation:cross var(--dur) cubic-bezier(.28,.02,.5,1) var(--start) both}
@@ -4105,8 +4118,35 @@ function cacheYard() {
      the row reads as a button and a door until the run is approved, which is
      the only thing a 390px screen has room to say. */
   siding.x0 = mobile ? absLeft(btn) : dockX + 24;
+  siding.pitch = siding.w + siding.gap;
+  siding.len = 6 * siding.pitch - siding.gap;
+  siding.nose = siding.x0 + siding.len;
+  siding.mouth = siding.doorX + 2;
   siding.ready = true;
 }
+
+/* ————— the departure —————
+   Everything after the press is one clock. `release.t0` is the press, and the
+   canvas reads its own position off performance.now() rather than off a
+   tween, so a dropped frame costs a frame and not a whole choreography.
+
+   Speed is the viewport's: 0.75vw per second, floored at 480 and capped at
+   1150, so the run out of the yard reads the same at 390 as at 1512 — about
+   a second either way — instead of crawling on a phone and flicking past on a
+   laptop. The 280ms ramp is what makes it a train: a standing start, not a
+   cut to line speed. */
+const release = { t0: 0, v: 0, tHead: 0, tTail: 0, done: false };
+const RAMP = 280; /* ms of acceleration out of the yard */
+const railDist = (t) => {
+  if (t <= 0) return 0;
+  const v = release.v / 1000; /* px per ms */
+  return t < RAMP ? (v * t * t) / (2 * RAMP) : (v * RAMP) / 2 + v * (t - RAMP);
+};
+const railTime = (d) => {
+  const v = release.v / 1000, ramped = (v * RAMP) / 2;
+  return d <= ramped ? Math.sqrt((2 * RAMP * d) / v) : RAMP + (d - ramped) / v;
+};
+const DEPART = 240; /* ms · the route is set, then the couplers drop */
 function idxAtY(y) {
   let lo = 0, hi = samples.length - 1;
   while (hi - lo > 1) { const m = (lo + hi) >> 1; (samples[m].y <= y ? (lo = m) : (hi = m)); }
@@ -4518,26 +4558,79 @@ function drawYard(scroll, halted) {
   if (!siding.ready) return;
   const y = Math.round(gatePageY - scroll) + 0.5; /* the track, on a pixel */
   if (y < -80 || y > vh + 80) return;
-  const w = siding.w, h = siding.h, pitch = w + siding.gap;
-  const tail = siding.x0, nose = tail + 6 * pitch - siding.gap;
-  const doorMouth = siding.doorX + 2;
+  const w = siding.w, h = siding.h, pitch = siding.pitch;
+  const nose = siding.nose, doorMouth = siding.mouth;
   inkC["--plate-solid"] = overGround(plateRaw);
 
-  /* the siding the cars stand on, and then the route they have not taken:
-     [6,6], which on this page means a stretch nobody has committed to. The
-     day's own rail owns [2,7] and nothing else is allowed to use it. */
-  tctx.strokeStyle = inkC["--ink-2"]; tctx.lineWidth = 1.4;
-  tctx.beginPath(); tctx.moveTo(dockX + 16, y); tctx.lineTo(nose, y); tctx.stroke();
-  if (doorMouth > nose + 6) {
-    tctx.setLineDash([6, 6]);
-    tctx.beginPath(); tctx.moveTo(nose, y); tctx.lineTo(doorMouth, y); tctx.stroke();
-    tctx.setLineDash([]);
+  /* WHERE THE DEPARTURE HAS GOT TO, read off the clock and not off a counter,
+     so this is the same frame whenever it is drawn. `over` is the arrived
+     state and it is also what a reduced-motion reader is given at once. */
+  const t = release.t0 ? performance.now() - release.t0 : 0;
+  const gone = release.t0 > 0;
+  const over = release.done || (gone && t >= release.tTail);
+  const moved = gone && !over ? railDist(t - DEPART) : 0;
+  const tail = siding.x0 + moved;
+
+  /* THE ROUTE IS SET FIRST. Before the press it is [6,6] in --ink-2 — on this
+     page a dashed stretch is one nobody has committed to — and the first
+     240ms after it recolour those dashes to pine, left to right, which is the
+     one thing a yard does before anything moves. */
+  if (!over) {
+    tctx.lineWidth = 1.4;
+    if (doorMouth > nose + 6) {
+      tctx.setLineDash([6, 6]);
+      tctx.strokeStyle = inkC["--ink-2"];
+      tctx.beginPath(); tctx.moveTo(nose, y); tctx.lineTo(doorMouth, y); tctx.stroke();
+      if (gone) {
+        const sweep = clamp(t / DEPART, 0, 1);
+        tctx.strokeStyle = inkC["--pine"];
+        tctx.beginPath(); tctx.moveTo(nose, y);
+        tctx.lineTo(nose + (doorMouth - nose) * sweep, y); tctx.stroke();
+      }
+      tctx.setLineDash([]);
+    }
+    /* the siding the cars stand on, behind the rear car */
+    if (!gone) {
+      tctx.strokeStyle = inkC["--ink-2"];
+      tctx.beginPath(); tctx.moveTo(dockX + 16, y); tctx.lineTo(nose, y); tctx.stroke();
+    }
   }
 
-  /* the cars. Bodies ride above the track on wheels that touch it, and the
-     fifth carries LifeQuest's own record: three fifths of it is built and
-     drawn, and the other two fifths are dashed, which is the same sentence
-     the timetable row beside it prints as "3 of 5 built". */
+  /* THE LINE THE RUN LEAVES BEHIND. It grows out of the outer ring's edge and
+     follows the rear car: 2px, solid, pine — the day's rail is 2px clay and
+     this is the same weight in the colour the gate just turned. */
+  if (gone || release.done) {
+    tctx.strokeStyle = inkC["--pine"]; tctx.lineWidth = 2;
+    tctx.lineCap = "round";
+    tctx.beginPath(); tctx.moveTo(dockX + 16, y);
+    tctx.lineTo(over ? doorMouth : Math.max(dockX + 16, tail), y); tctx.stroke();
+    tctx.lineCap = "butt";
+  }
+  /* THE SOCKET, RINGED TWICE. One ring is the page's mark for a deliberate
+     hold and it is used at three stations; two rings is this one — the end of
+     the line, the only place the reader is asked to do something. Clay while
+     it waits, pine once a hand has signed. No partial opacity anywhere: a
+     ring is on or it is not. */
+  if (halted) {
+    tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
+    tctx.lineWidth = 2.2;
+    tctx.beginPath(); tctx.arc(dockX, y, 11, 0, 7); tctx.stroke();
+    tctx.lineWidth = 1;
+    tctx.beginPath(); tctx.arc(dockX, y, 16, 0, 7); tctx.stroke();
+  }
+  if (over) return; /* the train is in; the door and the line are the record */
+
+  /* the cars, clipped at the doorway: a car that has gone through the door is
+     through it, and the 12px inside the jamb is where each one is taken */
+  tctx.save();
+  tctx.beginPath();
+  tctx.rect(0, y - 60, Math.max(0, doorMouth + 12), 120);
+  tctx.clip();
+
+  /* Bodies ride above the track on wheels that touch it, and the fifth
+     carries LifeQuest's own record: three fifths of it is built and drawn,
+     and the other two fifths are dashed, which is the same sentence the
+     timetable row beside it prints as "3 of 5 built". */
   const bodyB = y - 5, bodyT = bodyB - h;
   for (let i = 0; i < 6; i++) {
     const x = tail + i * pitch, div = x + w * 0.6;
@@ -4571,19 +4664,8 @@ function drawYard(scroll, halted) {
       tctx.stroke();
     }
   }
+  tctx.restore();
 
-  /* THE SOCKET, RINGED TWICE. One ring is the page's mark for a deliberate
-     hold and it is used at three stations; two rings is this one — the end of
-     the line, the only place the reader is asked to do something. Clay while
-     it waits, pine once a hand has signed. No partial opacity anywhere: a
-     ring is on or it is not. */
-  if (halted) {
-    tctx.strokeStyle = inkC[window.__world.approved ? "--pine" : "--clay-g"];
-    tctx.lineWidth = 2.2;
-    tctx.beginPath(); tctx.arc(dockX, gatePageY - scroll, 11, 0, 7); tctx.stroke();
-    tctx.lineWidth = 1;
-    tctx.beginPath(); tctx.arc(dockX, gatePageY - scroll, 16, 0, 7); tctx.stroke();
-  }
 }
 
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
@@ -6516,10 +6598,16 @@ window.__prof = [];
 function frame() {
   const y = scrollY;
   const changed = y !== lastY;
-  if (changed) { lastY = y; stillFrames = 0; } else { stillFrames++; }
+  /* THE ONE THING THAT MOVES WITHOUT A SCROLL. The engine stops when the page
+     is still, which is the property that makes this page cost nothing to
+     leave open — so the departure has to hold the loop open for exactly as
+     long as it runs, and not one frame longer. */
+  const departing =
+    release.t0 > 0 && performance.now() < release.t0 + release.tTail + 150;
+  if (changed || departing) { lastY = y; stillFrames = 0; } else { stillFrames++; }
   if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
   requestAnimationFrame(frame);
-  if (!changed) return;
+  if (!changed && !departing) return;
   if (PROF) {
     const t0 = performance.now();
     work(y);
@@ -7042,14 +7130,25 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
-  /* and the gate lets the birds go — before the carry, not after, because they
-     are what makes the reader look up. The page follows them into the morning. */
-  releaseFlock();
+  /* ————— and the run leaves the yard —————
+     The route is set, the couplers drop, the train runs to the door, the door
+     opens, and the birds go from the doorway. Only then does the page carry
+     the reader into the morning. Every time below is derived from the boxes
+     this build measured, not declared: the distance the train has to cover is
+     whatever the viewport made it. */
+  startDeparture();
+  const T = release.tHead;
+  if (!RM) {
+    /* the leaf swings before the lead car reaches it, or the train would be
+       drawn going through a shut door for a frame */
+    setTimeout(() => $("yardDoor").classList.add("open"), Math.max(0, T - 90));
+    setTimeout(releaseFlock, T);
+  }
 
-  /* and the reader is a passenger from here to the morning. 1s before the
-     carry starts + 7s of carry + a second of slack, with the hard timer as
-     the backstop; the carry's own completion normally releases it sooner. */
-  holdScroll(RM ? 0 : 9500);
+  /* and the reader is a passenger from here to the morning: the departure,
+     then 7s of carry, then a second of slack, with the hard timer as the
+     backstop; the carry's own completion normally releases it sooner. */
+  holdScroll(RM ? 0 : T + 9360);
 
   /* REDUCED MOTION HAS TO BE GIVEN THE MORNING, not left to find it.
      `wake()` returns immediately under RM, so the rAF loop never starts and
@@ -7083,8 +7182,30 @@ $("approve").addEventListener("click", () => {
     buildThread();
     wake(true);
     setTimeout(carryToMorning, RM ? 0 : 260);
-  }, RM ? 0 : 1000);
+  }, RM ? 0 : T + 1100);
 });
+
+/* The yard's clock starts here. Under reduced motion there is no departure to
+   watch: the door is already open, the track is already pine, and the cars —
+   which are the only thing that ever moves on this canvas without a scroll —
+   are never drawn at all. That is the same information, held still. */
+function startDeparture() {
+  cacheYard();
+  if (!siding.ready) return;
+  release.v = clamp(0.75 * vw, 480, 1150);
+  const dHead = Math.max(0, siding.mouth - siding.nose);
+  release.tHead = DEPART + railTime(dHead);
+  release.tTail = DEPART + railTime(dHead + siding.len);
+  /* probe hook: the harness reads the run's own timetable rather than
+     re-deriving it from a viewport width and a speed it cannot see */
+  window.__world.departure = release;
+  if (RM) {
+    release.done = true;
+    $("yardDoor").classList.add("open");
+    return;
+  }
+  release.t0 = performance.now();
+}
 
 function carryToMorning() {
   const sec = $("nextmorning");
@@ -7228,9 +7349,19 @@ function buildFlock() {
     `<path class="b-ink" d="${BODY}"/>` +
     `<g class="b-wing b-wr">${wing(1)}</g><g class="b-wing b-wl">${wing(-1)}</g></svg>`;
 
-  const ox = W * flockFrom.fx;
+  /* THE FLOCK LEAVES WESTWARD NOW, and the geometry below is not rewritten
+     for it. Every path is still computed in the same left-to-right space it
+     was tuned in — the climb angle, the gathering point, the long cruise out
+     over the corner — and P() mirrors each point about the viewport's middle
+     as it is written. The launch point is mirrored with them, so what changes
+     is the direction of the whole sky and nothing else. The birds leave from
+     the DOORWAY, which sits at about fx .9, so the flight is always the long
+     way across the page rather than a hop off the right edge. */
+  const west = flockFrom.fx > 0.5;
+  host.classList.toggle("west", west);
+  const ox = W * (west ? 1 - flockFrom.fx : flockFrom.fx);
   const oy = H * flockFrom.fy;
-  const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
+  const P = (x, y) => `${Math.round(west ? W - x : x)} ${Math.round(y)}`;
 
   /* THE BIRD IS DRAWN AT A FIXED 88px, so a sky that works on a laptop is an
      infestation on a phone: fifteen of them at full size across 390px covered
@@ -7275,9 +7406,10 @@ function buildFlock() {
      arriving at the same coordinate is a funnel. */
   for (let i = 0; i < N_NEAR; i++) {
     const r = birdRng(0x51ee + i * 7919);
-    /* the huddle: they were never in a line to begin with */
-    const x0 = ox + (r() - 0.5) * 120 * vs;
-    const y0 = oy + (r() - 0.5) * 70 * vs;
+    /* the huddle, and it is tight now: they are coming OUT OF A DOORWAY, not
+       off an open dock, so a 120px scatter put half of them through the wall */
+    const x0 = ox + (r() - 0.5) * 20 * vs;
+    const y0 = oy + (r() - 0.5) * 28 * vs;
 
     /* WHERE THE FLOCK GATHERS, and it has to sit well to the right, because
        the launch angle is the chord from here to there. Put the gathering
@@ -7323,7 +7455,8 @@ function buildFlock() {
     /* no two share a duration, so whatever order they leave in is not the
        order they arrive in — they overtake each other, which a queue cannot */
     const dur = 8.6 + r() * 6.2;
-    const st = 0.22 + i * 0.115 + r() * 0.62;
+    /* out of a door they leave in a stream, close behind each other */
+    const st = 0.06 + i * 0.1 + r() * 0.5;
     el.style.setProperty("--dur", dur.toFixed(2) + "s");
     if (!place(el, st, dur)) continue;
     /* the bird's OWN size, before the viewport has its say. The wingbeat has
@@ -7385,13 +7518,19 @@ function buildFlock() {
 function releaseFlock() {
   const host = document.getElementById("flock");
   if (!host || RM) return;
-  const d = document.getElementById("gateDock");
+  /* THEY LEAVE FROM THE DOORWAY. The gate dock was the departure point while
+     the dock was the end of everything; now the line runs past it to a door,
+     and what opens the door is the whole reason the birds are in the page.
+     Measured here rather than at the press, because the door is what they
+     come out of and it is not open until the train reaches it. */
+  const d = document.getElementById("yardDoor") || document.getElementById("gateDock");
   const r = d ? d.getBoundingClientRect() : null;
   const W = host.clientWidth || innerWidth;
   const H = host.clientHeight || innerHeight;
   flockFrom = r && r.width
-    ? { fx: clamp((r.left + r.width / 2) / W, 0.06, 0.5), fy: clamp((r.top + r.height / 2) / H, 0.3, 0.86) }
-    : { fx: 0.16, fy: 0.72 };
+    ? { fx: clamp((r.left + r.width / 2) / W, 0.06, 0.94), fy: clamp((r.top + r.height / 2) / H, 0.3, 0.9) }
+    : { fx: 0.9, fy: 0.72 };
+  window.__world.flockFrom = flockFrom; /* probe hook: where the sky was entered */
   releasedAt = performance.now();
   buildFlock();
   document.body.classList.add("flying");
