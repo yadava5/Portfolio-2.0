@@ -1188,10 +1188,14 @@ if (location.hash.length > 1) {
      grass does and a sine does not. The canopies ride the same wind at twice
      the period and a fraction of the angle, with no overshoot, because a
      bough is heavy. Three amplitude classes for the grass so no two tufts
-     move alike, and the periods share no common multiple with the deer's
-     17s graze or the gulls' 5.2 and 6.1s pecks: a sitter cannot count a
-     cycle. Ten groups animate continuously, transforms only, nothing per
-     frame in JS, and all of it lives behind body.morninglive, which the
+     move alike, and the periods share no common multiple with the gulls'
+     5.2 and 6.1s pecks: a sitter cannot count a cycle. The wind travels the
+     whole sheet now: the crown's two layers ride it at the bough's period,
+     the perch bough in from the right edge too, the two live saplings on
+     the bank take the gust at a fraction of a tuft's lean (a stem is
+     stiffer than a blade), and with six tufts and the two gulls' heads that
+     is thirteen groups, exactly, transforms only, nothing per frame in JS,
+     and all of it lives behind body.morninglive, which the
      release of the carry sets, so the ground is still while the page is
      carrying the reader and nothing moves during the station's stagger.
      Reduced motion: the whole block is inside the no-preference query; the
@@ -1203,13 +1207,17 @@ if (location.hash.length > 1) {
   .dawnscape .sway-l{--amp:4.4deg}
   .dawnscape .sway-c1{--amp:.7deg}
   .dawnscape .sway-c2{--amp:1.1deg}
+  .dawnscape .sway-b{--amp:1.3deg}
+  .dawnscape .sway-sap{--amp:1.6deg}
   @media (prefers-reduced-motion: no-preference){
     body.morninglive .dawnscape .sway-s, body.morninglive .dawnscape .sway-m,
     body.morninglive .dawnscape .sway-l{
       animation:gust 7.3s cubic-bezier(.45,.05,.55,.95) var(--ph, 0s) infinite}
-    body.morninglive .dawnscape .sway-c1, body.morninglive .dawnscape .sway-c2{
+    body.morninglive .dawnscape .sway-c1, body.morninglive .dawnscape .sway-c2,
+    body.morninglive .dawnscape .sway-b{
       animation:bough 14.6s ease-in-out var(--ph, 0s) infinite}
-    body.morninglive .dawnscape .ds-head{animation:graze 17s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .sway-sap{
+      animation:gust 7.3s cubic-bezier(.45,.05,.55,.95) var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
   }
@@ -1222,18 +1230,6 @@ if (location.hash.length > 1) {
   @keyframes bough{
     0%{transform:rotate(0)}
     38%{transform:rotate(var(--amp))}
-    100%{transform:rotate(0)}
-  }
-  /* the doe lowers her head to the grass, holds there with two small
-     nibbles, lifts and looks. Negative, because the head is west of the
-     pivot and a counter-clockwise turn is what takes it down. */
-  @keyframes graze{
-    0%{transform:rotate(0)}
-    12%{transform:rotate(-38deg)}
-    30%{transform:rotate(-35deg)}
-    44%{transform:rotate(-38deg)}
-    58%{transform:rotate(-36deg)}
-    70%{transform:rotate(0)}
     100%{transform:rotate(0)}
   }
   /* two pecks, then still for four fifths of the period: stillness is the
@@ -1408,7 +1404,6 @@ if (location.hash.length > 1) {
   /* a gull that has taken off is not on the ground; it comes back later */
   .dawnscape .ds-gull{transition:opacity .3s ease}
   .dawnscape .ds-gull.flown{opacity:0}
-  .dawnscape .ds-deer.stepping .ds-head{animation-play-state:paused}
   /* the doe's head holds where it is, up, for the length of a step */
   @media (prefers-reduced-motion: reduce){
     .flock{display:none}

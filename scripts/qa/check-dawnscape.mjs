@@ -19,10 +19,12 @@
  *      is capped at 10px. At every one of the seven seats.
  *   2. THE WIND'S CENSUS. Once body.morninglive is on, the continuously
  *      animated groups inside .dawnscape are CSS animations (transitions are
- *      transients and are not counted), at most 12, exactly 10 at a desktop
- *      seat, and every duration is from the wind table: 7.3s grass, 14.6s
- *      canopy, 17s graze, 5.2 and 6.1s peck. Any other number is a new
- *      animation nobody agreed to.
+ *      transients and are not counted), at most 14, exactly 13 at a desktop
+ *      seat (the crown's two layers, the perch bough, two saplings, six
+ *      tufts, two gull heads), and every duration is from the wind table:
+ *      7.3s grass and saplings, 14.6s canopy and bough, 5.2 and 6.1s peck.
+ *      Any other number is a new animation nobody agreed to. The doe's
+ *      17s graze is gone: a solid doe changes pose by a swap, not a turn.
  *   3. REDUCED MOTION. The drawing is there, at opacity 1, with its paths;
  *      nothing inside it animates; the flock layer is display:none.
  *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
@@ -78,9 +80,9 @@ const SEATS = [
 const CLEAR_PX = 24;
 const RANGE_PX = 30;
 const GRASS_CAP = 10;
-const WIND_TABLE = new Set([7300, 14600, 17000, 5200, 6100]);
-const MAX_GROUPS = 12;
-const DESKTOP_GROUPS = 10;
+const WIND_TABLE = new Set([7300, 14600, 5200, 6100]);
+const MAX_GROUPS = 14;
+const DESKTOP_GROUPS = 13;
 
 const fails = [];
 const notes = [];
@@ -595,5 +597,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  `\ncheck-dawnscape: the morning's ground keeps its air at ${SEATS.length} seat(s), the wind is ten groups from the table, reduced motion is still, and the sky stays alive and in frame.`
+  `\ncheck-dawnscape: the morning's ground keeps its air at ${SEATS.length} seat(s), the wind is thirteen groups from the table, reduced motion is still, and the sky stays alive and in frame.`
 );
