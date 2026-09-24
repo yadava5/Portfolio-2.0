@@ -174,6 +174,47 @@ for (const [w, h] of SEATS) {
       ).toBeGreaterThanOrEqual(18);
       expect(a.btnW, `the button is 150 wide at ${w}`).toBeCloseTo(150, 0);
       expect(a.btnH, `the button is 60 tall at ${w}`).toBeCloseTo(60, 0);
+
+      /* 22:41 SITS ON THE BUTTON'S OWN LINE, and the nudge that puts it
+         there — .27em, on the hour rather than on the row — was tuned for a
+         44px button with a .78rem label. The button is 60px with .84rem
+         now, so this is re-measured rather than inherited: 1.0px at every
+         desktop seat and −0.5px on the phone. The owner reads a sagging
+         hour as the row coming apart, which is why it has its own claim. */
+      const lines = await page.evaluate(() => {
+        const base = (sel: string): number => {
+          const el = document.querySelector(sel)!;
+          const probe = document.createElement("span");
+          probe.style.cssText =
+            "display:inline-block;width:0;height:0;overflow:hidden";
+          el.appendChild(probe);
+          const y = probe.getBoundingClientRect().bottom;
+          probe.remove();
+          return y;
+        };
+        return {
+          btn: base("#approve"),
+          time: base(".approvebar .lt"),
+          btnBottom: document.querySelector("#approve")!.getBoundingClientRect()
+            .bottom,
+          footBottom: document
+            .querySelector(".b8 footer")!
+            .getBoundingClientRect().bottom,
+        };
+      });
+      expect(
+        Math.abs(lines.time - lines.btn),
+        `22:41 on the button's line at ${w}`
+      ).toBeLessThanOrEqual(1.5);
+      /* AND THE TWO COLUMNS CLOSE ON ONE PIXEL. The grid pulls the approve
+         bar to the foot of the timetable and the colophon to the foot of the
+         right column, so the screen ends on a single horizontal across its
+         whole width. Measured identical to the tenth of a pixel at all five
+         desktop seats — it is the composition's own claim, not a tolerance. */
+      expect(
+        Math.abs(lines.btnBottom - lines.footBottom),
+        `both columns close on one line at ${w}`
+      ).toBeLessThanOrEqual(1);
     });
 
     test(`the station is organised and fits at ${w}×${h}`, async ({
@@ -258,17 +299,35 @@ test.describe("¶12 · the terminus follows the socket", () => {
     /* THE REAL DEFECT, REPRODUCED DELIBERATELY. The page goes on growing
        after the rail is built — the nameplate's replay control alone adds
        ~33px to ¶01 about 4.1s in — and a terminus cached at boot stays where
-       the socket used to be. A 37px block prepended to ¶02 is the same event
-       with a number this test owns, and it is NOT a resize, because a resize
-       rebuilds the geometry and would hide exactly what is being measured. */
+       the socket used to be. A 37px block prepended to ¶01's own inner box
+       is the same event with a number this test owns.
+
+       IT HAS TO GO IN ¶01, and the first draft of this test put it in ¶02,
+       where it proved nothing: `.bwho` is `min-height:118vh` and ¶02's
+       content is 793px of a 1120px box, so the block was absorbed and
+       NOTHING below it moved — a gate that passed on a page that had not
+       changed. ¶01 is content-sized on every desktop seat, which is why the
+       replay control moves the document from there in the first place.
+       And it is NOT a resize: a resize rebuilds the geometry and would hide
+       exactly what is being measured. */
     const grown = await page.evaluate(() => {
-      const before = document.documentElement.scrollHeight;
+      const sock = () => {
+        const r = document
+          .querySelector("#gateDock i")!
+          .getBoundingClientRect();
+        return r.top + window.scrollY + r.height / 2;
+      };
+      const was = sock();
       const pad = document.createElement("div");
       pad.style.height = "37px";
-      document.getElementById("who")!.prepend(pad);
-      return document.documentElement.scrollHeight - before;
+      document.querySelector(".b1 .beat-inner")!.prepend(pad);
+      return { moved: sock() - was };
     });
-    expect(grown, "the document actually grew").toBeGreaterThanOrEqual(30);
+    /* the injection is only a reproduction if it actually moved the socket */
+    expect(
+      grown.moved,
+      "the socket moved down the page"
+    ).toBeGreaterThanOrEqual(30);
     await page.evaluate(
       () =>
         new Promise<void>((r) =>
@@ -284,13 +343,24 @@ test.describe("¶12 · the terminus follows the socket", () => {
     await page.waitForTimeout(400);
 
     const after = await alignment(page);
+    /* in PAGE space, because the terminus is a page coordinate and the
+       viewport-space comparison at max scroll reads the same number whether
+       the page moved or not */
+    const pageSpace = await page.evaluate(() => {
+      const r = document.querySelector("#gateDock i")!.getBoundingClientRect();
+      return {
+        sock: r.top + window.scrollY + r.height / 2,
+        ring: window.__world.ring ? window.__world.ring.y : null,
+      };
+    });
+    expect(pageSpace.ring, "the ring is still drawn").not.toBeNull();
     expect(
-      Math.abs(after.ringY! - after.sqMid),
-      "the ring followed the socket"
+      Math.abs(pageSpace.ring! - pageSpace.sock),
+      "the terminus followed the socket down the page"
     ).toBeLessThanOrEqual(1);
     expect(
       Math.abs(after.ringY! - after.btnMid),
-      "the ring followed the button"
+      "and the ring is still on the button's centre"
     ).toBeLessThanOrEqual(1);
   });
 });
@@ -504,26 +574,11 @@ test.describe("¶12 · a hand ends the run", () => {
    the flock · in frame, nose east, never a blade
    ══════════════════════════════════════════════════════════════════════ */
 test.describe("¶12 · the birds stay in the sky the reader can see", () => {
-  test("every path is inside the frame, climbing east, inside the pitch cap", async ({
-    page,
-  }, testInfo) => {
-    testInfo.skip(
-      !/^(chromium-desktop|chromium-mobile)$/.test(testInfo.project.name),
-      "one desktop seat and one phone seat is the whole claim"
-    );
-    testInfo.setTimeout(150_000);
-    await toTheGate(page);
-    await page.locator("#approve").click();
-    await page.waitForTimeout(900);
-
-    /* the paths themselves, sampled off the real SVGPathElement rather than
-       re-derived from the numbers that built them */
-    const paths = await page.evaluate(() => {
-      const out: {
-        pitch: number;
-        minDx: number;
-        outside: number;
-      }[] = [];
+  /* the paths themselves, sampled off each bird's real SVGPathElement rather
+     than re-derived from the numbers that built them */
+  const measurePaths = (page: Page) =>
+    page.evaluate(() => {
+      const out: { pitch: number; minDx: number; outside: number }[] = [];
       for (const el of document.querySelectorAll<HTMLElement>(".bird")) {
         const d = (el.style.offsetPath || "").replace(/^path\("|"\)$/g, "");
         const svg = document.createElementNS(
@@ -572,18 +627,62 @@ test.describe("¶12 · the birds stay in the sky the reader can see", () => {
       return out;
     });
 
-    expect(paths.length, "the flock left").toBeGreaterThanOrEqual(6);
+  const checkPaths = (
+    paths: { pitch: number; minDx: number; outside: number }[],
+    where: string
+  ): void => {
+    expect(paths.length, `the flock left at ${where}`).toBeGreaterThanOrEqual(
+      6
+    );
     for (const [i, q] of paths.entries()) {
-      expect(q.outside, `bird ${i} never leaves the frame`).toBe(0);
+      expect(q.outside, `bird ${i} never leaves the frame at ${where}`).toBe(0);
       /* a leftward leg under offset-rotate:auto flies the bird upside down */
-      expect(q.minDx, `bird ${i} always goes east`).toBeGreaterThan(0);
-      /* measured: 38.1° at 1456×949 and 46.7° at 390×844, the phone being
-         steeper because a narrow sky gives a climb far less room to lean in.
-         50 is the ceiling; past it the silhouette reads as a blade. */
-      expect(q.pitch, `bird ${i} is never stood on end`).toBeLessThanOrEqual(
-        50
+      expect(q.minDx, `bird ${i} always goes east at ${where}`).toBeGreaterThan(
+        0
       );
+      /* measured across every seat: 38.1–38.4° from 1280×800 to 1512×982,
+         46.7° at 390×844 and 47.2° at 320×720. The phone is steeper because
+         a narrow sky gives a climb far less room to lean out in, and the bow
+         is scaled back to pay for it. 50 is the ceiling; past it an 88×34
+         silhouette reads as a blade. */
+      expect(
+        q.pitch,
+        `bird ${i} is never stood on end at ${where}`
+      ).toBeLessThanOrEqual(50);
     }
+  };
+
+  for (const [w, h] of SEATS) {
+    test.describe(`at ${w}×${h}`, () => {
+      test.use({ viewport: { width: w, height: h } });
+      // eslint-disable-next-line no-empty-pattern
+      test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+      test(`every path stays in the frame at ${w}×${h}`, async ({
+        page,
+      }, testInfo) => {
+        testInfo.setTimeout(150_000);
+        await toTheGate(page);
+        await page.locator("#approve").click();
+        await page.waitForTimeout(900);
+        checkPaths(await measurePaths(page), `${w}×${h}`);
+      });
+    });
+  }
+
+  test("every path stays in the frame on the phone", async ({
+    page,
+  }, testInfo) => {
+    testInfo.skip(
+      testInfo.project.name !== "chromium-mobile",
+      "the phone's own sky, at the project's own device"
+    );
+    testInfo.setTimeout(150_000);
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForTimeout(900);
+    const vp = page.viewportSize()!;
+    checkPaths(await measurePaths(page), `${vp.width}×${vp.height}`);
   });
 
   test("every bird is in frame at every 300ms of the flight", async ({

@@ -808,8 +808,13 @@ if (location.hash.length > 1) {
      type on the page instead of under the last line of the colophon. The
      manifest and the colophon are pulled to the foot of the right column by
      rows 3 and 4; the approve bar is pulled to the foot of the left column by
-     margin-top:auto. So the screen ends on one line across both columns: the
-     button and the ring on the left, the last line of the colophon opposite.
+     margin-top:auto. So the screen ends on ONE horizontal across its whole
+     width: the approve bar's box and the colophon's box close on the same
+     pixel — measured identical to the tenth of a pixel at 1512×982,
+     1456×949, 1440×900, 1375×800 and 1280×800. (Their BASELINES do not
+     coincide and are not meant to: the colophon's last line sits 21–23px
+     below the button's label, which is the difference between a 60px
+     control and a 1.85 line-height caption.)
      Measured at max scroll: the empty band below the last ink is 73px at
      1512×982, 71px at 1456×949 and 60px at 1375×800, and the air under the
      headline is 119 / 105 / 51 over the same three seats. */
