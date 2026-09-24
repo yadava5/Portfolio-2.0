@@ -499,11 +499,48 @@ test.describe("¶12 · a hand lifts the boom", () => {
   test("the order of events", async ({ page }, testInfo) => {
     testInfo.setTimeout(180_000);
     await toTheGate(page);
+    /* ¶13 SAMPLED AT THE MOMENT OF CONTACT, not only before the press. The
+       claim is that the page genuinely stops at the wall for the whole of
+       the run's journey to it, and "it was inert before I clicked" does not
+       say that. */
+    const atContact = page.evaluate(
+      () =>
+        new Promise<{ height: number; inert: boolean; gateopen: boolean }>(
+          (done) => {
+            const tick = () => {
+              if (window.__world.marks.contact === undefined)
+                return requestAnimationFrame(tick);
+              const m = document.getElementById("nextmorning")!;
+              done({
+                height: m.getBoundingClientRect().height,
+                inert: m.hasAttribute("inert"),
+                gateopen: document.body.classList.contains("gateopen"),
+              });
+            };
+            tick();
+          }
+        )
+    );
     await page.click("#approve");
-    await page.waitForTimeout(3000);
+    const held = await atContact;
+    expect(held.height, "¶13 has no height when the run reaches the boom").toBe(
+      0
+    );
+    expect(held.inert, "and it is still out of the focus order").toBe(true);
+    expect(held.gateopen).toBe(false);
+
+    await page.waitForTimeout(3400);
     const m = await page.evaluate(() => window.__world.marks);
 
-    for (const k of ["contact", "boom", "bird", "through", "label", "open"])
+    for (const k of [
+      "contact",
+      "boom",
+      "bird",
+      "through",
+      "label",
+      "open",
+      "carry",
+    ])
       expect(m[k], `${k} happened`).toBeGreaterThan(0);
     expect(m.boom, "the boom lifts after the run touches it").toBeGreaterThan(
       m.contact
@@ -523,7 +560,13 @@ test.describe("¶12 · a hand lifts the boom", () => {
       m.label,
       "the label changes after the line is through"
     ).toBeGreaterThan(m.through);
-    expect(m.open, "and ¶13 comes last").toBeGreaterThan(m.label);
+    expect(m.open, "¶13 comes into existence after the label").toBeGreaterThan(
+      m.label
+    );
+    expect(
+      m.carry,
+      "and the page only moves the reader once there is somewhere to go"
+    ).toBeGreaterThan(m.open);
   });
 
   /* THE PAGE DOES NOT MOVE UNDER THE READER while the boom is still down.
@@ -641,21 +684,54 @@ test.describe("¶12 · a hand lifts the boom", () => {
     await page.goto("/");
     await page.evaluate(() => document.fonts.ready);
     await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
-    await page.evaluate(() =>
-      window.scrollTo({
-        top: document.documentElement.scrollHeight - window.innerHeight - 400,
-        behavior: "instant",
-      })
-    );
+    /* THE BUTTON HAS TO BE IN VIEW AND THE RUN HAS TO BE STILL ARRIVING, and
+       a fixed offset gives neither reliably. At 1440 the button is off the
+       bottom 400px above the end, so the click scrolls it into view first —
+       measured on webkit-desktop, it scrolls the whole 400, arms the ratchet
+       on the way and then approves the run, which is the page behaving
+       correctly and the test asserting nothing. The seat is computed from the
+       button's own layout box instead: its bottom 24px above the fold, and
+       never inside the arming window. */
+    const seat = await page.evaluate(() => {
+      const absTop = (el: HTMLElement | null): number => {
+        let y = 0;
+        while (el) {
+          y += el.offsetTop;
+          el = el.offsetParent as HTMLElement | null;
+        }
+        return y;
+      };
+      const btn = document.getElementById("approve")!;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const wanted = absTop(btn) + btn.offsetHeight + 24 - window.innerHeight;
+      const top = Math.min(max - 30, Math.max(0, wanted));
+      window.scrollTo({ top, behavior: "instant" });
+      return { gap: max - top };
+    });
     await page.waitForTimeout(500);
     const before = await page.evaluate(() => ({
       armed: window.__world.armed,
       aria: document.getElementById("approve")!.getAttribute("aria-disabled"),
+      inView: (() => {
+        const r = document.getElementById("approve")!.getBoundingClientRect();
+        return r.top >= 0 && r.bottom <= window.innerHeight;
+      })(),
     }));
-    expect(before.armed, "not armed 400px above the end").toBe(false);
-    expect(before.aria, "and it says so").toBe("true");
+    expect(seat.gap, "the seat is clear of the arming window").toBeGreaterThan(
+      24
+    );
+    expect(before.inView, "and the button is in view at it").toBe(true);
+    expect(before.armed, "the run has not docked").toBe(false);
+    expect(before.aria, "and the button says so").toBe("true");
 
-    await page.click("#approve");
+    /* FORCE, and it is not a shortcut. The runner reads aria-disabled as "not
+       enabled" and will never dispatch: measured, an unforced click here waits
+       out its full 30s timeout on every project. A real pointer has no such
+       policy — the control is not `disabled`, so a real press reaches the
+       handler, which is the whole reason it is aria-disabled and not disabled.
+       `force` dispatches the real input events at the real position; it skips
+       the actionability poll, not the click. */
+    await page.click("#approve", { force: true });
     await page.waitForTimeout(500);
     const after = await page.evaluate(() => ({
       approved: window.__world.approved,
@@ -747,6 +823,60 @@ test.describe("¶12 · a hand lifts the boom", () => {
         ).toBeGreaterThan(0);
       });
     }
+  });
+
+  /* THE OTHER HALF OF THE GUARD, and the half nobody would find by reading.
+     Reduced motion is one way in; the other is a gateway that never laid out,
+     which is what a display:none, a failed font or a zero-width column would
+     produce. buildOnward returns with onward.ready false, and the reader must
+     still be given the morning at once with nothing left half drawn. */
+  test("with no path to run, the press still opens the gate", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await toTheGate(page);
+    await page.evaluate(() => {
+      document.getElementById("gateWall")!.style.display = "none";
+    });
+    /* a resize is what rebuilds the thread, and it is synchronous */
+    const vp = page.viewportSize()!;
+    await page.setViewportSize({ width: vp.width - 1, height: vp.height });
+    await page.waitForTimeout(400);
+    await page.evaluate(() =>
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "instant",
+      })
+    );
+    await page.waitForTimeout(400);
+    await page.click("#approve", { force: true });
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              document.getElementById("nextmorning")!.getBoundingClientRect()
+                .height
+          ),
+        { message: "¶13 grows within 1s with no path to run", timeout: 1000 }
+      )
+      .toBeGreaterThan(0);
+    const g = await page.evaluate(() => ({
+      ready: window.__world.departure.ready,
+      birds: document.querySelectorAll(".bird").length,
+      gateopen: document.body.classList.contains("gateopen"),
+      released: window.__world.released,
+      label: (
+        document.querySelector(".gateway .ladder.dep .st")!.textContent || ""
+      ).trim(),
+    }));
+    expect(g.ready, "the path could not be built").toBe(false);
+    expect(g.gateopen, "and the gate opened anyway").toBe(true);
+    expect(g.released, "drawn at its finished frame").toBe(true);
+    expect(g.birds, "no half flight out of a doorway that was not built").toBe(
+      0
+    );
+    expect(g.label).toBe("run 043 · open");
   });
 
   /* THE GUARD. Reduced motion has nothing to watch, so it is given

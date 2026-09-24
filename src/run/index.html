@@ -1262,8 +1262,10 @@ if (location.hash.length > 1) {
   /* THE LAST LINE OF THE PAPER WAS THE LEAST READABLE THING ON IT. It was
      set uppercase and tracked out at .14em, and then held at opacity .55 —
      a partial opacity no contrast gate can see, over --ink-2 that already
-     is the page's secondary ink. On the morning ground that lands the
-     closing line under every floor this page holds its own figures to.
+     is the page's secondary ink. MEASURED on the ground ¶13 actually lands
+     on, #fbf3e7: .55 of --ink-2 composites to #a49c90, which is 2.47:1 and
+     APCA Lc 46.0 — under the 4.5:1 this page holds its own text to and
+     under the Lc 60 floor as well. At full strength it is 6.61:1 / Lc 78.7.
      It is a sentence, so it is set as one: the text face at --fs-small,
      --ink-2 at full strength, sentence case, and the serial in mono
      because that is the one machine value in it. */
@@ -1596,6 +1598,18 @@ if (location.hash.length > 1) {
     /* the stacked column has no 88vh to fit inside and no flex centring to
        be moved by, so the band the way on crosses keeps its own measure */
     .trip{min-height:clamp(96px, 12vh, 150px)}
+    /* AND THE COLOPHON'S RULE STOPS WHERE ITS TEXT DOES. At 27.5rem the rule
+       is about 155px wider than the longest line under it, and in the stack
+       the way on comes down past its right end: measured at 1024, the line
+       passes 5px clear of the rule and inside the colophon's own box. A rule
+       that underlines nothing is not the thing to hold a journey off, so it
+       is sized to what it underlines. NOT min(100%, max-content): an
+       intrinsic keyword inside a math function is invalid in every engine
+       that ships today, so the declaration was dropped and the rule stayed
+       at 27.5rem — measured, not assumed. The phone takes its column back
+       below, where 316px is narrower than the reach row's own max-content
+       and an unwrapped line would overhang it. */
+    .b8 footer{max-width:max-content}
     /* THE RAIL'S OPACITY IS CONSTANT EVERYWHERE. This block used to set
        `#thread{opacity:.55}` with the note "the line passes behind stacked
        plates", and the note describes something the z-order already does:
@@ -1644,6 +1658,11 @@ if (location.hash.length > 1) {
        measure for it. The car glyph goes: at 390 it would be the only thing
        competing with the number it belongs to. */
     .b8 .ghead, .b8 .gatecard, .b8 .ladder.tt{max-width:none}
+    /* the column, not the content: 316px is narrower than the reach row
+       unwrapped, and a colophon that overhangs its column is the page's
+       own sideways scroll. The 27.5rem is still the measure a line of this
+       colophon is set to; 100% is only the floor under it at 390 and 320. */
+    .b8 footer{max-width:min(100%, 27.5rem)}
     .ladder li{grid-template-columns:56px minmax(0,1fr); height:auto;
       align-items:baseline; padding:.3rem 0}
     .ladder .pr{grid-column:2; padding-left:0; white-space:normal}
@@ -6839,6 +6858,7 @@ function setStop(beat) {
 /* the datelines, minutes — station stops are the site's own. One entry per
    beat: 22:32 is the co-signers, 22:41 the gate. */
 const CLOCKS = [372, 418, 472, 527, 726, 923, 1176, 1267, 1325, 1343, 1352, 1361, 1812];
+const GATE_BEAT = 11; /* ¶12, the gate: the beat whose name changes when it opens */
 const PHASE_NAMES = ["the start", "who", "the yard", "applied", "cadence", "glyph", "jetpack-compress", "lifequest · dusk", "agentic automl", "the review", "the references", "the gate · held", "the next morning"];
 let lastClock = -1, lastPhase = -1;
 /* THE HOUR ANCHORS ON KICKER CROSSINGS, NOT ON BEAT BOXES.
@@ -7583,12 +7603,6 @@ function schedule() {
   setTimeout(setLabelOpen, at(T_LABEL));
   setTimeout(openGate, at(T_OPEN));
   setTimeout(carryToMorning, at(T_CARRY));
-  /* the reader is a passenger from the press to the morning: the chain, then
-     the 7s carry, then a second of slack, with the hard timer as the
-     backstop. The carry's own completion normally releases it sooner, and
-     the relation between the two is what it was in round 4 — the carry now
-     starts later, so the timer does too. */
-  holdScroll(at(T_CARRY) + 8000);
   wake(true);
 }
 
@@ -7598,9 +7612,12 @@ function schedule() {
 function setLabelOpen() {
   const st = document.querySelector(".gateway .ladder.dep .st");
   if (st) st.innerHTML = 'run <b class="mv">043</b> &middot; open';
-  PHASE_NAMES[DEPLOY_PH] = "the gate \u00b7 open";
+  /* 11 is the GATE'S beat, which settleAll already names as setMast(11, 0).
+     DEPLOY_PH is the last rung of the ladder and happens to be 11 too; they
+     are two different numbers that agree today. */
+  PHASE_NAMES[GATE_BEAT] = "the gate \u00b7 open";
   lastPhase = -1;
-  $("mphase").textContent = PHASE_NAMES[DEPLOY_PH];
+  $("mphase").textContent = PHASE_NAMES[GATE_BEAT];
   mark("label");
 }
 
@@ -7613,6 +7630,15 @@ function setLabelOpen() {
 function openGate() {
   if (document.body.classList.contains("gateopen")) return;
   document.body.classList.add("gateopen");
+  /* AND THE HOLD STARTS HERE, NOT AT THE PRESS. Round 4 took the scrollbar
+     the moment the button went down and kept it for 9.4s. For the first
+     2.45s of that there is nothing below the wall to scroll to — ¶13 has no
+     height until the line above runs — so the hold was over a document that
+     could not move anyway, and it was two and a half seconds of a reader's
+     wheel doing nothing for no reason. It runs from here, and it still
+     releases 8s after the carry starts, which is round 4's own relation and
+     the behaviour the owner is being asked about. */
+  holdScroll(at(T_CARRY) - at(T_OPEN) + 8000);
   const morning = $("nextmorning");
   if (morning) { morning.removeAttribute("inert"); morning.removeAttribute("aria-hidden"); }
   cacheGeometry();
@@ -7655,10 +7681,11 @@ function carryToMorning() {
      reader in the dark with nothing left to travel. */
   const to = document.body.scrollHeight - innerHeight;
   const from = scrollY;
-  if (RM || Math.abs(to - from) < 4) { window.scrollTo(0, to); return; }
+  if (RM || Math.abs(to - from) < 4) { mark("carry"); window.scrollTo(0, to); return; }
   const DUR = 7000;
   const t0 = performance.now();
   const step = (now) => {
+    mark("carry"); /* the first frame the page actually moves the reader */
     const p = clamp((now - t0) / DUR, 0, 1);
     /* eased at both ends: it leaves the gate the way the token did — slowly */
     /* gentler than a cubic in-out: that one hoarded the travel in the
