@@ -1208,14 +1208,35 @@ if (location.hash.length > 1) {
      Reduced motion: the whole block is inside the no-preference query; the
      drawing is there, and still. */
   .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-bough, .dawnscape .ds-sap,
-  .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull{transform-box:view-box}
-  .dawnscape .sway-s{--amp:2.2deg}
-  .dawnscape .sway-m{--amp:3.2deg}
-  .dawnscape .sway-l{--amp:4.4deg}
+  .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
+  .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
+  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
+  .dawnscape [class*="shim-"]{transform-box:view-box}
+  /* THE AMPLITUDES. Grass leans hard (its blades are the part that moves;
+     the fill holds), the boughs a little, the leaf masses flutter by a skew
+     about their branch, the sprays turn, the seed heads shimmer. Every
+     creature's idle travels 2px or more at 1456 or it reads as still: the
+     doe's whole head group dips 38° at the neck for the graze, the ears
+     twitch at their bases, the tail flicks at the rump; the fawn the same
+     on faster clocks; the hare's head nods and its ears turn. */
+  .dawnscape .sway-s{--amp:5deg}
+  .dawnscape .sway-m{--amp:7deg}
+  .dawnscape .sway-l{--amp:9deg}
   .dawnscape .sway-c1{--amp:.7deg}
   .dawnscape .sway-c2{--amp:1.1deg}
   .dawnscape .sway-b{--amp:1.3deg}
-  .dawnscape .sway-sap{--amp:1.6deg}
+  .dawnscape .sway-sap{--amp:2deg}
+  .dawnscape .flut-1, .dawnscape .flut-2{--amp:3deg}
+  .dawnscape .flut-3, .dawnscape .flut-4, .dawnscape .flut-5{--amp:2deg}
+  .dawnscape .spray-a, .dawnscape .spray-b{--amp:4deg}
+  .dawnscape .shim-a, .dawnscape .shim-b{--amp:3deg}
+  .dawnscape .doe-head{--amp:-38deg}
+  .dawnscape .fawn-head{--amp:-34deg}
+  .dawnscape .hare-head{--amp:14deg}
+  .dawnscape .doe-ear, .dawnscape .fawn-ear{--amp:12deg}
+  .dawnscape .hare-ear{--amp:22deg}
+  .dawnscape .doe-tail{--amp:40deg}
+  .dawnscape .fawn-tail{--amp:45deg}
   @media (prefers-reduced-motion: no-preference){
     body.morninglive .dawnscape .sway-s, body.morninglive .dawnscape .sway-m,
     body.morninglive .dawnscape .sway-l{
@@ -1225,6 +1246,24 @@ if (location.hash.length > 1) {
       animation:bough 14.6s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .sway-sap{
       animation:gust 7.3s cubic-bezier(.45,.05,.55,.95) var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .flut-1{animation:flutter 2.3s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .flut-2{animation:flutter 2.6s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .flut-3{animation:flutter 2.9s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .flut-4{animation:flutter 3.7s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .flut-5{animation:flutter 4.1s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .spray-a{animation:spray 3.3s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .spray-b{animation:spray 4.4s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .shim-a{animation:shimmer 1.9s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .shim-b{animation:shimmer 2.2s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .doe-head{animation:graze 9.7s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .fawn-head{animation:graze 5.3s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .hare-head{animation:nod 5.9s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .doe-ear{animation:twitch 4.7s ease-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .fawn-ear{animation:twitch 3.9s ease-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .hare-ear{animation:twitch 7.9s ease-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .doe-tail{animation:flick 3.5s ease-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .fawn-tail{animation:flick 2.8s ease-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .peck-c{animation:peck 4.3s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
   }
@@ -1237,6 +1276,58 @@ if (location.hash.length > 1) {
   @keyframes bough{
     0%{transform:rotate(0)}
     38%{transform:rotate(var(--amp))}
+    100%{transform:rotate(0)}
+  }
+  /* a leaf mass in the wind: a skew about its branch, gust-shaped */
+  @keyframes flutter{
+    0%{transform:skewX(0)}
+    30%{transform:skewX(var(--amp))}
+    60%{transform:skewX(calc(var(--amp) * -.3))}
+    100%{transform:skewX(0)}
+  }
+  @keyframes spray{
+    0%{transform:rotate(0)}
+    40%{transform:rotate(var(--amp))}
+    100%{transform:rotate(0)}
+  }
+  @keyframes shimmer{
+    0%{transform:rotate(0)}
+    25%{transform:rotate(var(--amp))}
+    75%{transform:rotate(calc(var(--amp) * -1))}
+    100%{transform:rotate(0)}
+  }
+  /* the graze: the head group dips at the neck, holds with two nibbles,
+     lifts and looks; negative, because the head is west of the joint */
+  @keyframes graze{
+    0%{transform:rotate(0)}
+    28%{transform:rotate(var(--amp))}
+    40%{transform:rotate(calc(var(--amp) * .9))}
+    52%{transform:rotate(var(--amp))}
+    68%{transform:rotate(0)}
+    100%{transform:rotate(0)}
+  }
+  @keyframes nod{
+    0%{transform:rotate(0)}
+    30%{transform:rotate(var(--amp))}
+    55%{transform:rotate(calc(var(--amp) * -.5))}
+    100%{transform:rotate(0)}
+  }
+  /* an ear: a quick twitch, a settle, a second smaller one late */
+  @keyframes twitch{
+    0%{transform:rotate(0)}
+    3%{transform:rotate(var(--amp))}
+    6%{transform:rotate(0)}
+    9%{transform:rotate(calc(var(--amp) * -.6))}
+    12%{transform:rotate(0)}
+    58%{transform:rotate(calc(var(--amp) * .7))}
+    62%{transform:rotate(0)}
+    100%{transform:rotate(0)}
+  }
+  @keyframes flick{
+    0%{transform:rotate(0)}
+    4%{transform:rotate(var(--amp))}
+    8%{transform:rotate(calc(var(--amp) * -.4))}
+    12%{transform:rotate(0)}
     100%{transform:rotate(0)}
   }
   /* two pecks, then still for four fifths of the period: stillness is the
@@ -1423,9 +1514,6 @@ if (location.hash.length > 1) {
   /* a gull that has taken off is not on the ground; it comes back later */
   .dawnscape .ds-gull{transition:opacity .3s ease}
   .dawnscape .ds-gull.flown{opacity:0}
-  /* the doe's two heads: one shown, never both, never a blend */
-  .dawnscape .ds-deer[data-pose="down"] .head-up{display:none}
-  .dawnscape .ds-deer:not([data-pose="down"]) .head-down{display:none}
   /* the perch: the bird comes up on the twig as the flyer's ink goes, and
      the twig takes its weight; a leaf that has landed and is the sixth on
      the ground fades while the next one falls. All transients. */
@@ -7822,6 +7910,23 @@ function buildDawnscape() {
      the lean arrives at the right edge 1.9s after the left, plus a little
      jitter so no two tufts are ever in step. */
   const phase = (x, period) => `${(-(period - (x / W) * 1.9 - r() * 0.35)).toFixed(2)}s`;
+  /* THE PERIOD REGISTRY. Every continuous animation on the canvas is
+     declared here by the code that emits the group carrying it: the class,
+     its period in ms, and the tally of groups. The gate's census and wind
+     table are DERIVED from this declaration (window.__world.scape.census),
+     never hand-synced twice, so a class emitted without a declaration, or a
+     duration off the table, is a finding. The periods are unique per kind;
+     the one deliberate ratio is gust 7.3 / bough 14.6. */
+  const PERIOD = {
+    "sway-c1": 14600, "sway-c2": 14600, "sway-b": 14600, "sway-sap": 7300,
+    "sway-s": 7300, "sway-m": 7300, "sway-l": 7300, "shim-a": 1900, "shim-b": 2200,
+    "flut-1": 2300, "flut-2": 2600, "flut-3": 2900, "flut-4": 3700, "flut-5": 4100, "spray-a": 3300, "spray-b": 4400,
+    "doe-head": 9700, "doe-ear": 4700, "doe-tail": 3500, "fawn-head": 5300, "fawn-ear": 3900, "fawn-tail": 2800,
+    "hare-head": 5900, "hare-ear": 7900, "peck-a": 5200, "peck-b": 6100, "peck-c": 4300,
+    "squirrel-tail": 3100, "owl-head": 11300, "perch-head": 8300,
+  };
+  const tally = {};
+  const live = (cls) => { if (!cls) return ""; if (!(cls in PERIOD)) throw new Error(`undeclared period for ${cls}`); tally[cls] = (tally[cls] || 0) + 1; return cls; };
 
   /* ————— the chrome's keep-out —————
      The nameplate, the run state and the stop chip are fixed to the viewport,
@@ -8345,7 +8450,23 @@ function buildDawnscape() {
       ...clump(0.285, 0.14, [[-18, -10, 36], [20, 20, 30], [4, -38, 20]]),
       ...clump(0.235, 0.25, [[0, 0, 26], [-30, 14, 18]]),
     ];
-    const build = (ms) => ms.map((a) => mass(...a)).join("") + ms.map((a) => leaves(a[0], a[1], a[2], 2 + Math.floor(r() * 2))).join("");
+    /* THE WIND IS IN THE LEAVES, not only in the bough: the windward masses
+       flutter, a skew about each mass's branch attachment on its own short
+       period, 2–3px of edge travel, and the loose-leaf sprays of the two
+       big clumps rotate a little about their clump. The layer's slow
+       rotation stays the carrier. */
+    const flutterOf = {};
+    const build = (ms, flut = [], spray = "") => {
+      let out = "";
+      ms.forEach((a, i) => {
+        const m = mass(...a);
+        const f = flut.find(([idx]) => idx === i);
+        out += f && m ? `<g class="${live(f[1])}" style="transform-origin:${F(a[0])}px ${F(a[1] + a[2] * 0.8)}px;--ph:${phase(a[0], PERIOD[f[1]] / 1000)}">${m}</g>` : m;
+      });
+      const lv = ms.map((a) => leaves(a[0], a[1], a[2], 2 + Math.floor(r() * 2))).join("");
+      const cx = ms.reduce((s, a) => s + a[0], 0) / ms.length, cy = ms.reduce((s, a) => s + a[1], 0) / ms.length;
+      return out + (spray ? `<g class="${live(spray)}" style="transform-origin:${F(cx)}px ${F(cy)}px;--ph:${phase(cx, PERIOD[spray] / 1000)}">${lv}</g>` : lv);
+    };
     /* tone first, then the masses over it: the shade under the lowest mass of
        a clump, and pocket 4, the crown's own depth: the shadow the middle
        clump throws down between the limbs, drawn from inside its mass so it
@@ -8356,13 +8477,18 @@ function buildDawnscape() {
     const p4 = [[mx - mr * 0.9, my + mr * 0.4], [mx - mr * 0.5, my + mr * 1.1], [mx + mr * 0.3, my + mr * 1.45], [mx + mr * 1.0, my + mr * 1.0], [mx + mr * 0.9, my + mr * 0.5], [mx, my + mr * 0.6]];
     outer.tone += hatch(p4, 55, 3.0, "ds-ink w08", 0.3, [8, 22]) + hatch(p4, 5, 3.4, "ds-ink w06", 0.25, [8, 18]);
     inner.fills = build(inMasses);
-    outer.fills = build(outMasses);
+    /* the four windward masses flutter: the two big ones of the top run,
+       the middle clump's centre, the reach's largest; the sprays of the top
+       run and the middle clump turn */
+    outer.fills = build(outMasses.slice(0, 8), [[1, "flut-1"], [3, "flut-2"]], "spray-a") +
+      build(outMasses.slice(8, 15), [[1, "flut-3"]], "spray-b") +
+      build(outMasses.slice(15, 18), [[0, "flut-4"]]) + build(outMasses.slice(18));
     groups += 2;
     cutPad = 4;
     SCAPE.trees.push({ x: X(0.20), h: Y(0.30), top: 0 });
     return `<g class="ds-tree">${d}` +
-      `<g class="ds-canopy sway-c2" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
-      `<g class="ds-canopy sway-c1" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
+      `<g class="ds-canopy ${live("sway-c2")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
+      `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
   };
 
   /* ————— the perch bough: in from the top-right, lighter than the crown —————
@@ -8390,7 +8516,11 @@ function buildDawnscape() {
     }
     d += shade(...M[1]) + shade(...M[6]);
     let f = "";
-    for (const mm of M) f += mass(...mm) + leaves(mm[0], mm[1], mm[2], 3);
+    M.forEach((mm, i) => {
+      const m = mass(...mm);
+      f += i === 0 && m ? `<g class="${live("flut-5")}" style="transform-origin:${F(mm[0])}px ${F(mm[1] + mm[2] * 0.8)}px;--ph:${phase(mm[0], 4.1)}">${m}</g>` : m;
+      f += leaves(mm[0], mm[1], mm[2], 3);
+    });
     const pz = [X(0.752), Y(0.098)];
     const twig = curve([[X(0.782), Y(0.147)], [X(0.77), Y(0.125)], [X(0.758), Y(0.108)], pz]);
     const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
@@ -8408,7 +8538,7 @@ function buildDawnscape() {
     }
     groups++;
     cutPad = 4;
-    return `<g class="ds-bough sway-b" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
+    return `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
       `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
   };
 
@@ -8444,7 +8574,7 @@ function buildDawnscape() {
     }
     d += mass(top[0] + (r() - 0.5) * 6, top[1] - 4, 12 + r() * 3);
     if (cls) groups++;
-    return `<g class="ds-sap ${cls}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
+    return `<g class="ds-sap ${live(cls)}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
   };
 
   /* ————— the doe: a solid silhouette, the bird's own language —————
@@ -8452,47 +8582,60 @@ function buildDawnscape() {
      her as two white lines, haunch from belly and shoulder from neck, gaps of
      1.8px so they survive a device pixel. Her legs are the read: long, thin,
      the hind pair set back, the far pair a gap apart from the near. */
-  const doe = (x) => {
-    const k = 0.95 * vs;
+  /* ————— the ungulates: a body, and a head group that turns at the neck —————
+     Every fill is the same solid, so a head group whose neck overlaps the
+     body inside the shoulder turns at the joint with NO seam: the graze is
+     a slow dip and lift of the whole head group, the ears twitch on their
+     own short clock at their bases, the tail flicks at the rump. Every part
+     travels 2px or more at 1456, or it is not alive. `k` is the scale, and
+     the doe and the fawn share the grammar. */
+  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots) => {
     const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
-    /* the body ends at the neck's base; the head is drawn twice, up and
-       looking west, and down at the grass, and only one is shown: a solid
-       cannot turn a head without a seam, so her life is a swap */
-    const body = [
-      ...c([[-6, -41], [2, -43], [10, -43.5], [17, -42], [22, -38.5]]),
-      ...l([[23.5, -37], [26, -34.5], [23, -33.5]]),
-      ...c([[22.5, -31], [21.5, -26], [21, -21]]),
-      ...l([[21, -16], [19.5, -9], [18.5, -1], [18.5, 0], [15.5, 0], [15.5, -1], [16, -9], [16.5, -14], [15, -19]]),
-      ...l([[13.5, -18], [12, -10], [11.5, -1], [11.5, 0], [8.5, 0], [8.5, -1], [9, -10], [9.5, -17]]),
-      ...c([[8, -20], [2, -23.5], [-5, -24]]),
-      ...l([[-6, -23], [-6.5, -12], [-7, -1], [-7, 0], [-10, 0], [-10, -1], [-9.5, -12], [-9.5, -21]]),
-      ...l([[-11.5, -21], [-12.5, -12], [-13, -1], [-13, 0], [-16, 0], [-16, -1], [-15.5, -12], [-15.5, -22]]),
-      ...c([[-16.5, -27], [-17.5, -33], [-18.5, -37], [-12, -45], [-8, -44.5], [-6, -41]]),
-    ];
-    const headUp = [
-      ...c([[-16, -34], [-19, -39], [-22, -44], [-25.5, -48], [-29.5, -50.5], [-34, -52], [-38.5, -53.5], [-40.5, -55], [-38, -57], [-32, -58.5], [-27.5, -59]]),
-      ...l([[-27, -59.5], [-29, -68], [-25, -61.5]]),
-      ...l([[-23.5, -61.5], [-21, -68.5], [-19.5, -61]]),
-      ...c([[-18, -59.5], [-15, -55.5], [-12, -50.5], [-8.5, -45], [-7, -41]]),
-    ];
-    const headDown = [
-      ...c([[-16, -34], [-22, -29], [-27.5, -22], [-31.5, -15], [-35, -9], [-38, -4], [-41, -1], [-42.5, -3.5], [-41, -8], [-38.5, -13]]),
-      ...l([[-38, -14], [-43, -19.5], [-36.5, -17]]),
-      ...l([[-35, -17.5], [-38.5, -24], [-33, -19.5]]),
-      ...c([[-30.5, -21], [-25, -27], [-19, -33.5], [-13, -40], [-9, -44], [-7, -41]]),
-    ];
-    let d = path(wob(body, 0.22)) + "Z";
-    d += ribbon(wob(curve(T([[14, -24.5], [17, -29.5], [19.5, -35]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
-    d += ribbon(wob(curve(T([[-8, -27], [-10, -32], [-11, -37]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
-    const up = path(wob(headUp, 0.22)) + "Z", down = path(wob(headDown, 0.22)) + "Z";
+    const outline = (segs) => segs.flatMap(([kind, pts]) => (kind === "c" ? c(pts) : l(pts)));
+    let d = path(wob(outline(body), 0.22)) + "Z";
+    for (const cut of spots.cuts) d += ribbon(wob(curve(T(cut), 2), 0.2), 1.9 * Math.max(k, 0.95));
+    for (const [sx, sy] of spots.dots) d += path(arc(...T([[sx, sy]])[0], 1.7, 1.7, 0, 6.3, 1)) + "Z";
+    const hd = path(wob(outline(head), 0.22)) + "Z";
+    const earD = ears.map((e) => path(wob(l(e.pts), 0.15)) + "Z");
+    const tl = path(wob(l(tail.pts), 0.15)) + "Z";
     fills.push([x, hz - 30 * k, 30 * k]);
-    nS += 3;
+    nS += 3 + ears.length;
+    const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
+    groups += 3 + ears.length;
+    const earG = ears.map((e, i) => `<g class="ds-ear ${live(cls + "-ear")}" style="transform-origin:${J(e.joint)};--ph:${(-r() * 4 - i * 1.3).toFixed(2)}s">` +
+      `<path class="ds-fill" d="${earD[i]}"/></g>`).join("");
+    return `<path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-tail ${live(cls + "-tail")}" style="transform-origin:${J(tailJoint)};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" d="${tl}"/></g>` +
+      `<g class="ds-head ${live(cls + "-head")}" style="transform-origin:${J(joint)};--ph:${(-r() * 9).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>`;
+  };
+  const doe = (x) => {
+    const k = 0.95 * vs;
+    /* the body ends at the neck's base and the tail is its own piece */
+    const body = [
+      ["c", [[-6, -41], [2, -43], [10, -43.5], [17, -42], [21, -39]]],
+      ["c", [[22.5, -34], [21.5, -26], [21, -21]]],
+      ["l", [[21, -16], [19.5, -9], [18.5, -1], [18.5, 0], [15.5, 0], [15.5, -1], [16, -9], [16.5, -14], [15, -19]]],
+      ["l", [[13.5, -18], [12, -10], [11.5, -1], [11.5, 0], [8.5, 0], [8.5, -1], [9, -10], [9.5, -17]]],
+      ["c", [[8, -20], [2, -23.5], [-5, -24]]],
+      ["l", [[-6, -23], [-6.5, -12], [-7, -1], [-7, 0], [-10, 0], [-10, -1], [-9.5, -12], [-9.5, -21]]],
+      ["l", [[-11.5, -21], [-12.5, -12], [-13, -1], [-13, 0], [-16, 0], [-16, -1], [-15.5, -12], [-15.5, -22]]],
+      ["c", [[-16.5, -27], [-17.5, -33], [-18.5, -37], [-12, -45], [-8, -44.5], [-6, -41]]],
+    ];
+    /* the head group: neck from inside the shoulder up to the ears' bases */
+    const head = [
+      ["c", [[-14, -33], [-19, -39], [-22, -44], [-25.5, -48], [-29.5, -50.5], [-34, -52], [-38.5, -53.5], [-40.5, -55], [-38, -57], [-32, -58.5], [-27, -59.5], [-19.5, -61], [-18, -59.5], [-15, -55.5], [-12, -50.5], [-8.5, -45], [-6, -40]]],
+    ];
+    const ears = [
+      { pts: [[-28.5, -58], [-27, -59.5], [-29, -68], [-25, -61.5], [-24.5, -59]], joint: [-26.5, -59.5] },
+      { pts: [[-24.5, -60], [-23.5, -61.5], [-21, -68.5], [-19.5, -61], [-19, -59]], joint: [-21.5, -60.5] },
+    ];
+    const tail = { pts: [[20.5, -40], [24, -36.5], [28, -33], [24.5, -31.5], [21, -35.5]] };
+    const parts = ungulate(x, k, "doe", body, head, ears, tail, [-13, -40], [21, -37], {
+      cuts: [[[14, -24.5], [17, -29.5], [19.5, -35]], [[-8, -27], [-10, -32], [-11, -37]]], dots: [] });
     /* her shadow, three raked strokes at her feet */
     const sh = hatch([[x - 22 * k, hz + 2], [x + 24 * k, hz + 2], [x + 20 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
-    groups++;
-    return `<g class="ds-deer" data-x="${F(x)}" data-pose="up" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<path class="ds-fill head-up" d="${up}"/><path class="ds-fill head-down" d="${down}"/>${sh}</g>`;
+    return `<g class="ds-deer" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
   };
 
   /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
@@ -8500,23 +8643,31 @@ function buildDawnscape() {
     const k = Math.max(vs, 0.77);
     const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
-    const outline = [
-      ...c([[-9, 0], [-10, -5], [-9.5, -10], [-11, -13], [-13, -15.5], [-12, -18], [-9, -19.5]]),
-      ...l([[-8.5, -20], [-9.5, -26], [-7, -21]]),
-      ...l([[-6, -21], [-5, -26.5], [-3.5, -20]]),
-      ...c([[-2, -18], [2, -17], [6, -15.5], [9, -12], [10, -7], [9, -2], [7, 0]]),
+    /* the body is the haunch and back; the head group, from inside the
+       chest up through the head, turns at the neck; the ears at their bases */
+    const body = [
+      ...c([[-9, 0], [-10, -5], [-9.5, -10], [-8, -13], [-4, -15], [-2, -18], [2, -17], [6, -15.5], [9, -12], [10, -7], [9, -2], [7, 0]]),
       ...l([[3, 0], [-2, 0.5], [-9, 0]]),
     ];
-    let d = path(wob(outline, 0.18)) + "Z";
-    /* the one cut: the haunch from the back */
+    const head = [...c([[-6, -8], [-9.5, -10], [-11, -13], [-13, -15.5], [-12, -18], [-9, -19.5], [-7, -20.5], [-3.5, -20], [-2, -18], [-3, -14], [-4, -11]])];
+    const ears = [
+      { pts: [[-9.5, -19.5], [-8.5, -20], [-9.5, -26], [-7, -21], [-6.5, -19.5]], joint: [-8, -20] },
+      { pts: [[-6.5, -20.5], [-6, -21], [-5, -26.5], [-3.5, -20], [-3, -19]], joint: [-5, -20.5] },
+    ];
+    let d = path(wob(body, 0.18)) + "Z";
     d += ribbon(wob(curve(T([[1, -3], [3.5, -8], [5, -13]]), 2), 0.15), 1.9 * Math.max(k, 0.95));
+    const hd = path(wob(head, 0.15)) + "Z";
+    const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
+    const earG = ears.map((e, i) => `<g class="ds-ear ${live("hare-ear")}" style="transform-origin:${J(e.joint)};--ph:${(-r() * 6 - i * 0.9).toFixed(2)}s"><path class="ds-fill" d="${path(wob(l(e.pts), 0.12))}Z"/></g>`).join("");
     fills.push([x, y - 13 * k, 13 * k]);
-    nS++;
+    nS += 4;
+    groups += 3;
     const sh = hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
     let td = "";
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
-    return `<g class="ds-hare" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}${P(td, "ds-ink w1", 2)}</g>`;
+    return `<g class="ds-hare" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${sh}${P(td, "ds-ink w1", 2)}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -8536,8 +8687,8 @@ function buildDawnscape() {
     /* the peck turns the head down toward the beak's side, so its sign is
        the bird's facing; its phase is random so the two never peck together */
     const ph = `--ph:${(-r() * 5).toFixed(2)}s;--pk:${dir > 0 ? -52 : 52}deg`;
-    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
-      `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
+    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
+      `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${live(cls)}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
   /* ————— the grass, in the engraving's language —————
@@ -8562,7 +8713,7 @@ function buildDawnscape() {
     nS += 2;
     return `<path class="ds-ink w1" d="${stroke(sp, 0.3)}"/><path class="ds-fill" d="${path(head)}Z"/>`;
   };
-  const solidTuft = (x, y, h, n, cls = "", seeds = 0) => {
+  const solidTuft = (x, y, h, n, cls = "", seeds = 0, shim = "") => {
     const blades = [];
     for (let i = 0; i < n; i++) {
       const t = n > 1 ? (i - (n - 1) / 2) / (n - 1) : 0;
@@ -8601,11 +8752,14 @@ function buildDawnscape() {
       base += stroke(sp.slice(0, Math.ceil(sp.length * 0.7)), 0.3);
       tip += stroke(sp.slice(Math.floor(sp.length * 0.45)), 0.3);
     }
+    /* seed heads: in the blade group, or, at the corners, their own fast
+       shimmer on top of the gust */
     let sd = "";
     for (let s = 0; s < seeds; s++) sd += seedHead(x + (r() - 0.5) * n * 2, y, h * (1.05 + r() * 0.3));
+    if (shim && sd) sd = `<g class="${live(shim)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${(-r() * 2).toFixed(2)}s">${sd}</g>`;
     if (cls) groups++;
     return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-blades ${cls}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
+      `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
   };
   /* an outline tuft: the drawn blades alone, hair-strong, behind the solids */
   const tuft = (x, y, h, n) => {
@@ -8623,29 +8777,27 @@ function buildDawnscape() {
      the head a little too big, and three cream spots on the haunch ————— */
   const fawn = (x) => {
     const k = 0.66 * vs;
-    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
-    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
-    const outline = [
-      ...c([[-4, -40], [2, -42], [8, -42], [13, -40], [16, -36]]),
-      ...l([[17, -35], [19, -32.5], [16.5, -31.5]]),
-      ...c([[16, -29], [15.5, -24], [15, -20]]),
-      ...l([[15, -14], [14.5, -7], [14, 0], [11.5, 0], [11.5, -7], [12, -14], [11, -19]]),
-      ...l([[9.5, -18], [9, -8], [9, 0], [6.5, 0], [6.5, -8], [7, -17]]),
-      ...c([[6, -20], [1, -23], [-4, -23.5]]),
-      ...l([[-4.5, -22], [-5, -10], [-5.5, 0], [-8, 0], [-8, -10], [-8, -20]]),
-      ...l([[-9.5, -20], [-10.5, -10], [-11, 0], [-13.5, 0], [-13.5, -10], [-13, -21]]),
-      ...c([[-13.5, -26], [-14, -31], [-15, -36], [-17.5, -41], [-20.5, -44.5], [-24.5, -46.5], [-28.5, -48], [-30.5, -49.5], [-29, -51.5], [-24.5, -52.5], [-21, -53]]),
-      ...l([[-20.5, -53.5], [-22, -62], [-18, -55]]),
-      ...l([[-16.5, -55], [-14, -62.5], [-12.5, -54]]),
-      ...c([[-11, -52.5], [-8.5, -48.5], [-6, -43.5], [-4, -40]]),
+    const body = [
+      ["c", [[-4, -40], [2, -42], [8, -42], [13, -40], [15.5, -37]]],
+      ["c", [[16, -32], [15.5, -24], [15, -20]]],
+      ["l", [[15, -14], [14.5, -7], [14, 0], [11.5, 0], [11.5, -7], [12, -14], [11, -19]]],
+      ["l", [[9.5, -18], [9, -8], [9, 0], [6.5, 0], [6.5, -8], [7, -17]]],
+      ["c", [[6, -20], [1, -23], [-4, -23.5]]],
+      ["l", [[-4.5, -22], [-5, -10], [-5.5, 0], [-8, 0], [-8, -10], [-8, -20]]],
+      ["l", [[-9.5, -20], [-10.5, -10], [-11, 0], [-13.5, 0], [-13.5, -10], [-13, -21]]],
+      ["c", [[-13.5, -26], [-14, -31], [-14.5, -35], [-9, -42.5], [-6, -42], [-4, -40]]],
     ];
-    let d = path(wob(outline, 0.2)) + "Z";
-    for (const [sx, sy] of [[11, -28], [7.5, -33], [13, -35]]) d += path(arc(...T([[sx, sy]])[0], 1.7, 1.7, 0, 6.3, 1)) + "Z";
-    fills.push([x, hz - 20 * k, 20 * k]);
-    nS++;
+    const head = [
+      ["c", [[-12, -32], [-15, -36], [-17.5, -41], [-20.5, -44.5], [-24.5, -46.5], [-28.5, -48], [-30.5, -49.5], [-29, -51.5], [-24.5, -52.5], [-20.5, -53.5], [-12.5, -54], [-11, -52.5], [-8.5, -48.5], [-6, -43.5], [-4, -39]]],
+    ];
+    const ears = [
+      { pts: [[-22, -52], [-20.5, -53.5], [-22, -62], [-18, -55], [-17.5, -52.5]], joint: [-20, -53] },
+      { pts: [[-17.5, -53], [-16.5, -55], [-14, -62.5], [-12.5, -54], [-12, -52]], joint: [-14.5, -54] },
+    ];
+    const tail = { pts: [[14.5, -38], [17.5, -34.5], [20.5, -31.5], [17.5, -30.5], [15, -33.5]] };
+    const parts = ungulate(x, k, "fawn", body, head, ears, tail, [-11, -38], [15.5, -35], { cuts: [], dots: [[11, -28], [7.5, -33], [13, -35]] });
     const sh = hatch([[x - 14 * k, hz + 2], [x + 16 * k, hz + 2], [x + 13 * k, hz + 7], [x - 10 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
-    groups++;
-    return `<g class="ds-fawn" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}</g>`;
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
   };
 
   /* ————— the composition ————— */
@@ -8684,20 +8836,23 @@ function buildDawnscape() {
        the doe, the swale of taller grass across the mid-ground in an S, and
        grass round the hare in the near foreground below the signature */
     const S3 = Math.max(vs, 0.8);
-    near += solidTuft(X(0.02), hz, 48 * S3, 8, "sway-m", 1) + solidTuft(X(0.045), hz, 54 * S3, 9, "", 2) + solidTuft(X(0.07), hz, 42 * S3, 7, "sway-l", 0);
+    /* ten blade groups take the gust in three amplitude classes, phased by x
+       so it combs through a stand blade-group by blade-group; the two corner
+       stands' seed heads shimmer on their own fast clocks */
+    near += solidTuft(X(0.02), hz, 48 * S3, 8, "sway-m", 1, "shim-a") + solidTuft(X(0.045), hz, 54 * S3, 9, "sway-s", 2) + solidTuft(X(0.07), hz, 42 * S3, 7, "sway-l", 0);
     near += solidTuft(X(0.105), hz, 26 * S3, 6, "", 0) + solidTuft(X(0.147), hz, 34 * S3, 7, "sway-l", 1);
     /* the swale: pairs and singles of unequal size along an S, with outline
        tufts between, so it reads as a swathe of grass and not a row of stamps */
-    for (const [fx, fy, h, n, sd] of [[0.35, 0.876, 26, 8, 1], [0.372, 0.886, 15, 5, 0], [0.405, 0.897, 22, 7, 0], [0.44, 0.906, 13, 5, 0], [0.458, 0.90, 24, 8, 1],
-      [0.52, 0.902, 17, 6, 0], [0.575, 0.89, 28, 9, 1], [0.60, 0.895, 14, 5, 0], [0.655, 0.878, 21, 7, 0], [0.685, 0.87, 16, 6, 1]])
-      near += solidTuft(X(fx), Y(fy), h * S3, n, "", sd);
+    for (const [fx, fy, h, n, sd, cls] of [[0.35, 0.876, 26, 8, 1, "sway-m"], [0.372, 0.886, 15, 5, 0, ""], [0.405, 0.897, 22, 7, 0, "sway-s"], [0.44, 0.906, 13, 5, 0, ""], [0.458, 0.90, 24, 8, 1, "sway-l"],
+      [0.52, 0.902, 17, 6, 0, ""], [0.575, 0.89, 28, 9, 1, "sway-m"], [0.60, 0.895, 14, 5, 0, ""], [0.655, 0.878, 21, 7, 0, "sway-s"], [0.685, 0.87, 16, 6, 1, ""]])
+      near += solidTuft(X(fx), Y(fy), h * S3, n, cls, sd);
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
     near += hare(X(0.86), Y(0.97));
-    near += solidTuft(X(0.83), Y(0.985), 18 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 20 * S3, 6, "sway-s", 0);
-    near += solidTuft(X(0.962), hz, 44 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 52 * S3, 9, "", 2) + solidTuft(X(0.993), hz, 40 * S3, 7, "sway-m", 0);
+    near += solidTuft(X(0.83), Y(0.985), 18 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 20 * S3, 6, "", 0);
+    near += solidTuft(X(0.962), hz, 44 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 52 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 40 * S3, 7, "", 0);
     /* where a leaf may fall from and where it may land: the crown's left
        half down the trunk's side, short of the sun's halo, and the bough
        down the right edge, short of the signature's air. The clearance gate
@@ -8734,7 +8889,12 @@ function buildDawnscape() {
     g.parentElement.classList.add("laden");
   }
   SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups; SCAPE.strokes = nS;
-  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length,
+  /* the declaration the gate binds to: every continuous class emitted, its
+     period, its tally; and every roamer's axis and range */
+  SCAPE.census = Object.entries(tally).map(([cls, n]) => ({ cls, ms: PERIOD[cls], n }));
+  SCAPE.roamers = {};
+  for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
+  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers,
     paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])) }; /* probe hook */
 }
@@ -8960,7 +9120,7 @@ const BIRD_SVG = (() => {
    is logged so a resize mid-flight rebuilds it where it had got to. */
 const farLog = [];
 const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), lastGround: -Infinity, lastDeer: -Infinity, lastStep: -Infinity, lastHare: -Infinity,
-  perched: false, perch: { lands: 0, leaves: 0 } };
+  lastFawn: -Infinity, perched: false, perch: { lands: 0, leaves: 0 } };
 let farTimer = null, groundTimer = null;
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
@@ -9211,10 +9371,10 @@ function shedLeaf() {
    Stillness is the state; life is a rare, bounded thing. A gull hop-walks a
    few steps every twenty to fifty seconds, a couple of hops of 4–8px with a
    2px lift, and drifts home once it is past half its range. The hare hops
-   the same way, smaller: 3–5px, two to four of them. The doe lowers her head
-   to the grass for a few seconds every half minute or so (a swap of two
-   drawn heads, never a turn, never a blend) and, rarer, takes a step or two
-   of 10–14px, only while she is looking up. Every roamer stays within 30px
+   the same way, smaller: 3–5px, two to four of them; the fawn skitters two
+   hops, never within 6s of a doe step. The doe grazes continuously (her
+   head group dips at the neck on its own clock, see the wind) and, rarer,
+   takes a step or two of 10–14px, only while she is looking up. Every roamer stays within 30px
    of where it was drawn, and every move is logged to window.__world.ground
    so a gate can hold the range in the author's own frame. Nothing here is a
    continuous animation: it is event JS setting a translate the CSS
@@ -9246,19 +9406,20 @@ function hopWalk(el, id, r, hops, size, lift, ms0) {
   };
   hop();
 }
-function doePose(r) {
-  const el = document.querySelector(".dawnscape .ds-deer");
-  if (!el || el.dataset.pose === "down") return;
-  el.dataset.pose = "down";
-  (window.__world.poses = window.__world.poses || []).push({ id: "deer", pose: "down" });
-  setTimeout(() => {
-    el.dataset.pose = "up";
-    window.__world.poses.push({ id: "deer", pose: "up" });
-  }, at(4000 + r() * 5000));
-}
+/* the doe steps ONLY WHILE SHE IS LOOKING UP: the scheduler reads the graze
+   cycle's own clock (the head group's CSS animation) and waits for the
+   window where her head is raised, so her head and her feet never disagree */
 function deerStep(r) {
   const el = document.querySelector(".dawnscape .ds-deer");
-  if (!el || el.dataset.pose === "down") return;
+  const head = el && el.querySelector(".ds-head");
+  if (!el) return 0;
+  const a = head && head.getAnimations()[0];
+  const T = 9700, ph = a ? a.currentTime % T : 0;
+  const wait = ph > 0.2 * T && ph < 0.7 * T ? 0.7 * T - ph : 0;
+  setTimeout(() => doeSteps(el, r), wait);
+  return wait;
+}
+function doeSteps(el, r) {
   const steps = r() < 0.6 ? 1 : 2;
   const off0 = roam.deer || 0;
   let dir = r() < 0.5 ? -1 : 1;
@@ -9287,10 +9448,10 @@ function groundLife() {
   if (atMorning && now - sky.lastGround > at(12000)) {
     const pick = r();
     const stepDue = SCAPE.deer && now - sky.lastStep > at(55000);
-    const poseDue = SCAPE.deer && now - sky.lastDeer > at(25000);
+    const fawnDue = SCAPE.deer && now - sky.lastFawn > at(40000) && now - sky.lastStep > at(6000);
     const hareDue = SCAPE.hare && now - sky.lastHare > at(30000);
-    if (stepDue && pick < 0.3) { deerStep(r); sky.lastStep = now; sky.lastGround = now; }
-    else if (poseDue && pick < 0.6) { doePose(r); sky.lastDeer = now; sky.lastGround = now; }
+    if (stepDue && pick < 0.3) { sky.lastStep = now + deerStep(r); sky.lastGround = sky.lastStep; }
+    else if (fawnDue && pick < 0.6) { hopWalk(document.querySelector(".dawnscape .ds-fawn"), "fawn", r, 2, [4, 7], 3, 240); sky.lastFawn = now; sky.lastGround = now; }
     else if (hareDue && pick < 0.85) { hopWalk(document.querySelector(".dawnscape .ds-hare"), "hare", r, 2 + Math.floor(r() * 3), [3, 5], 2.5, 260); sky.lastHare = now; sky.lastGround = now; }
     else if (gulls.length) {
       const g = gulls[Math.floor(r() * gulls.length)];

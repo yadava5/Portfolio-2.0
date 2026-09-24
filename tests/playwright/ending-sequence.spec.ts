@@ -982,7 +982,9 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
           const L = p.getTotalLength();
           if (!L) continue;
           const m = p.getScreenCTM()!;
-          const range = p.closest(".ds-deer, .ds-gull, .ds-hare") ? RANGE : 0;
+          const roamer = p.closest("[data-range]") as SVGGElement | null;
+          const range = roamer ? +roamer.dataset.range! : 0;
+          const axisY = !!roamer && roamer.dataset.axis === "y";
           const sw = p.closest("[class*=sway-]") as SVGGElement | null;
           let ox = 0,
             oy = 0,
@@ -1012,8 +1014,10 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
             const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
             for (const t of texts) {
               /* the range is a roam, and a roam is along x only */
-              const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - range;
-              const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+              const dx =
+                Math.max(t[0] - v.x, v.x - t[2], 0) - (axisY ? 0 : range);
+              const dy =
+                Math.max(t[1] - v.y, v.y - t[3], 0) - (axisY ? range : 0);
               const gap = Math.max(dx, dy, 0);
               const need = t[4] + sway;
               if (gap - need < worst.margin)

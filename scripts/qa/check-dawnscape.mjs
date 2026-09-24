@@ -18,13 +18,14 @@
  *      wind cannot carry a leaf into a halo. Under the signature the grass
  *      is capped at 10px. At every one of the seven seats.
  *   2. THE WIND'S CENSUS. Once body.morninglive is on, the continuously
- *      animated groups inside .dawnscape are CSS animations (transitions are
- *      transients and are not counted), at most 14, exactly 13 at a desktop
- *      seat (the crown's two layers, the perch bough, two saplings, six
- *      tufts, two gull heads), and every duration is from the wind table:
- *      7.3s grass and saplings, 14.6s canopy and bough, 5.2 and 6.1s peck.
- *      Any other number is a new animation nobody agreed to. The doe's
- *      17s graze is gone: a solid doe changes pose by a swap, not a turn.
+ *      animated groups inside .dawnscape are CSS animations (transitions
+ *      and Web Animations are transients and are not counted), and they
+ *      match the BUILDER'S DECLARATION exactly: buildDawnscape tallies every
+ *      continuous class it emits with its period (window.__world.scape
+ *      .census), and this check holds the live count per class and every
+ *      duration to that table. Nothing is hand-synced twice: a class emitted
+ *      without a declaration, or a duration off the table, is a finding.
+ *      The phone is capped at 8 on top of its own declaration.
  *   3. REDUCED MOTION. The drawing is there, at opacity 1, with its paths;
  *      nothing inside it animates; the flock layer is display:none.
  *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
@@ -80,9 +81,7 @@ const SEATS = [
 const CLEAR_PX = 24;
 const RANGE_PX = 30;
 const GRASS_CAP = 10;
-const WIND_TABLE = new Set([7300, 14600, 5200, 6100]);
-const MAX_GROUPS = 14;
-const DESKTOP_GROUPS = 13;
+const PHONE_MAX = 8;
 
 const fails = [];
 const notes = [];
@@ -259,7 +258,10 @@ try {
       if (!L) continue;
       const m = p.getScreenCTM();
       const onLine = !!p.closest(".ds-line");
-      const range = p.closest(".ds-deer, .ds-gull, .ds-hare") ? RANGE_PX : 0;
+      /* a roamer declares its own axis and range on its group */
+      const roamer = p.closest("[data-range]");
+      const range = roamer ? +roamer.dataset.range : 0;
+      const axisY = roamer && roamer.dataset.axis === "y";
       const sw = p.closest("[class*=sway-]");
       let ox = 0,
         oy = 0,
@@ -294,8 +296,8 @@ try {
         }
         for (const t of texts) {
           /* the range is a roam, and a roam is along x only */
-          const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - range;
-          const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+          const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - (axisY ? 0 : range);
+          const dy = Math.max(t[1] - v.y, v.y - t[3], 0) - (axisY ? range : 0);
           const gap = Math.max(dx, dy, 0);
           const need = t[4] + sway;
           if (gap - need < worst.margin)
@@ -336,11 +338,16 @@ try {
         (t) =>
           t.x >= colL && t.x <= colR && t.top < colB && t.h > GRASS_CAP + 1.5
       );
+    const decl = (scape && scape.census) || [];
     const anims = document
       .getAnimations()
       .filter(
         (a) => a instanceof CSSAnimation && svg.contains(a.effect.target)
       );
+    const cls = (el) => {
+      const d = decl.find((c) => el.classList.contains(c.cls));
+      return d ? d.cls : "?";
+    };
     /* where a leaf may fall: both envelopes keep every word's halo */
     let leafWorst = { margin: Infinity, env: "", text: "" };
     if (scape && scape.leaf)
@@ -367,7 +374,9 @@ try {
         a.animationName,
         a.effect.getTiming().duration,
         a.playState,
+        cls(a.effect.target),
       ]),
+      decl,
       flock: getComputedStyle(document.getElementById("flock")).display,
       op: getComputedStyle(svg).opacity,
       CLEAR_PX,
@@ -423,29 +432,40 @@ try {
           `${seat}: grass under the column at ${m.tallUnder.map((t) => `${t.h.toFixed(1)}px @x${t.x}`).join(", ")} — capped at ${GRASS_CAP}px`
         );
       const n = m.census.length;
-      const bad = m.census.filter(([, d]) => !WIND_TABLE.has(Math.round(d)));
-      if (n > MAX_GROUPS)
+      const table = new Set(m.decl.map((d) => d.ms));
+      const expected = m.decl.reduce((s, d) => s + d.n, 0);
+      const bad = m.census.filter(([, d]) => !table.has(Math.round(d)));
+      /* per class: what the builder declared against what animates */
+      const liveBy = {};
+      for (const [, , , c] of m.census) liveBy[c] = (liveBy[c] || 0) + 1;
+      const off = m.decl
+        .filter((d) => (liveBy[d.cls] || 0) !== d.n)
+        .map((d) => `${d.cls} declared ${d.n}, live ${liveBy[d.cls] || 0}`);
+      if (liveBy["?"]) off.push(`${liveBy["?"]} undeclared`);
+      if (!m.decl.length)
+        fail(`${seat}: the builder declared no census — the registry is gone`);
+      if (n !== expected || off.length)
         fail(
-          `${seat}: ${n} groups animate continuously — the cap is ${MAX_GROUPS}`
+          `${seat}: ${n} groups animate but the builder declared ${expected} — ${off.join("; ") || "same total, different classes"}`
         );
-      if (W >= 760 && n !== DESKTOP_GROUPS)
+      if (W < 760 && n > PHONE_MAX)
         fail(
-          `${seat}: ${n} groups animate — a desktop seat animates exactly ${DESKTOP_GROUPS}`
+          `${seat}: ${n} groups animate on the phone — the cap is ${PHONE_MAX}`
         );
       if (W < 760 && n < 1)
         fail(`${seat}: nothing animates on the phone's strip`);
       if (bad.length)
         fail(
-          `${seat}: durations off the wind table — ${bad.map(([k, d]) => `${k} ${d}ms`).join(", ")}`
+          `${seat}: durations off the declared table — ${bad.map(([k, d]) => `${k} ${d}ms`).join(", ")}`
         );
       const idle = m.census.filter(([, , s]) => s !== "running");
       if (idle.length)
         fail(
           `${seat}: ${idle.length} animations not running (${idle.map(([k]) => k).join(", ")})`
         );
-      if (!bad.length && n <= MAX_GROUPS)
+      if (!bad.length && !off.length && n === expected)
         note(
-          `${seat}: ${n} groups animate, all from the wind table, all running`
+          `${seat}: ${n} groups animate, exactly as declared (${m.decl.length} classes), all running`
         );
     }
     await ctx.close();
@@ -587,11 +607,15 @@ try {
       leaves: window.__world.leaves || { shed: 0, landed: 0, airborne: 0 },
       poses: (window.__world.poses || []).length,
       ground: window.__world.ground || [],
-      tf: [
-        ...document.querySelectorAll(
-          ".dawnscape .ds-gull, .dawnscape .ds-deer"
-        ),
-      ].map((el) => [el.dataset.id || "deer", el.style.transform]),
+      roamers: window.__world.scape.roamers,
+      tf: [...document.querySelectorAll(".dawnscape [data-range]")].map(
+        (el) => [
+          el.dataset.id ||
+            el.className.baseVal.split(" ")[0].replace("ds-", ""),
+          el.style.transform,
+          el.dataset.axis || "x",
+        ]
+      ),
     }));
     const seat = `sky 1456×949`;
     /* clocks: the sit is wall time; the page's own is PACE times shorter */
@@ -642,16 +666,25 @@ try {
     const maxOff = {};
     for (const g of fin.ground)
       maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
-    for (const [id, off] of Object.entries(maxOff))
-      if (off > RANGE_PX)
+    const roamers = fin.roamers || {};
+    for (const [id, off] of Object.entries(maxOff)) {
+      const lim = roamers[id] ? roamers[id].range : RANGE_PX;
+      if (off > lim)
         fail(
-          `${seat}: ${id} strayed ${off}px from where it was drawn — the home range is ±${RANGE_PX}px`
+          `${seat}: ${id} strayed ${off}px from where it was drawn — its declared home range is ±${lim}px`
         );
+    }
     /* the log against the ink: one roamer's computed translate must be what
        the log says its offset is */
-    for (const [id, tf] of fin.tf) {
+    for (const [id, tf, axis] of fin.tf) {
       const last = [...fin.ground].reverse().find((g) => g.id === id);
-      const shown = tf ? parseFloat(tf.replace(/^translate\(/, "")) : 0;
+      const nums = tf
+        ? tf
+            .replace(/^translate\(/, "")
+            .split(",")
+            .map(parseFloat)
+        : [0, 0];
+      const shown = axis === "y" ? nums[1] || 0 : nums[0] || 0;
       /* a move is logged whole as it starts and drawn in two halves, so a
          sample mid-hop sits at the previous offset plus half the step */
       const mid = last ? last.x_off - last.dx / 2 : 0;
@@ -685,5 +718,5 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(
-  `\ncheck-dawnscape: the morning's ground keeps its air at ${SEATS.length} seat(s), the wind is thirteen groups from the table, reduced motion is still, and the sky stays alive and in frame.`
+  `\ncheck-dawnscape: the morning's ground keeps its air at ${SEATS.length} seat(s), the wind is exactly what the builder declared, reduced motion is still, and the sky stays alive and in frame.`
 );
