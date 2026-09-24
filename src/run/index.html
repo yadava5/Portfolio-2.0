@@ -1104,7 +1104,44 @@ if (location.hash.length > 1) {
   body.gateopen .bdawn{height:auto; min-height:300vh; overflow:visible}
   .dawnstick{position:sticky; top:0; height:100vh; display:flex;
     align-items:center; justify-content:center; padding:0 var(--pad-x)}
-  .dawnwrap{max-width:46rem; margin:0 auto; text-align:center}
+  /* the words sit OVER the drawing: the dawnscape is absolute in the same
+     panel, and z-index on the wrap is what keeps a canopy stroke from ever
+     crossing a letter */
+  .dawnwrap{max-width:46rem; margin:0 auto; text-align:center;
+    position:relative; z-index:1}
+
+  /* ————— the dawnscape —————
+     ¶13's own ground, drawn in the page's own ink: a horizon, one far hill
+     and one far mountain on the left, a copse of three open-line trees, a
+     doe, five tufts of grass, two gulls on the ground, and the sun where the
+     wash puts its light. Sketched, not filled, because the figures on this
+     page are hairline drawings with a hand's wobble and the morning has to
+     be in the same hand. It lives in the sticky panel, behind the words and
+     in front of the flock (main is z 2, .flock is z 1), so a bird that
+     leaves a tree leaves it from BEHIND the canopy's strokes.
+     Built by buildDawnscape() at openGate, seeded, so every load draws the
+     same morning. It shows with the station: opacity follows body.atmorning
+     and the fade is a shade slower than the text stagger, so the ground is
+     there before the last line lands on it. */
+  /* max-width:none, because the page's media rule caps an svg at its
+     container and the phone's panel is narrower than the screen: capped,
+     the viewBox scaled to 81% and floated 80px up the page (measured). */
+  .dawnscape{position:absolute; inset:0; width:100%; height:100%; max-width:none;
+    pointer-events:none; opacity:0; contain:strict; overflow:hidden}
+  body.atmorning .dawnscape{opacity:1}
+  .dawnscape path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+  /* three inks, and only three: the subjects in --ink-2, the far structure in
+     --hair-strong. Faintness is a token, never an element opacity, because
+     check-palette reads tokens and cannot see an opacity. */
+  .dawnscape .ds-ink{stroke:var(--ink-2)}
+  .dawnscape .ds-far{stroke:var(--hair-strong)}
+  .dawnscape .ds-fill{fill:var(--ink-2); stroke:none}
+  .dawnscape .w1{stroke-width:1}
+  .dawnscape .w12{stroke-width:1.2}
+  .dawnscape .w14{stroke-width:1.4}
+  @media (prefers-reduced-motion: no-preference){
+    .dawnscape{transition:opacity 2.2s ease .1s}
+  }
   /* The station arrives as ONE thing, staggered, once the light is up. It
      cannot use data-fx: that engine keys off an element's page position, and
      inside a sticky panel every child reports the section's static top while
@@ -1170,9 +1207,13 @@ if (location.hash.length > 1) {
   /* THEY ALL GO EAST. The birds used to leave from a door at fx .9 and fly
      the long way back across the page; they leave the socket now — which is
      in the left column at every desktop seat and in the phone's own gutter —
-     and go towards the side the dawn sun is on at the end of the carry
-     (DAWN_STOPS ends at 78% across). Two rules that mirrored them went with
-     the reason for them: a mirror nothing sets is a mirror nobody watches. */
+     and east is where the room is. (An earlier note here had the sun on the
+     right, reading FLIP_POS, a scroll position, as a screen x. Measured at
+     drawWash: the dawn hold pins sun=0.62, so the glow sits at 0.26 W, 0.62 H,
+     low and LEFT of centre, for the whole of the morning. The birds fly out
+     of the sunrise into the open half of the sky.) Two rules that mirrored
+     them went with the reason for them: a mirror nothing sets is a mirror
+     nobody watches. */
 
   /* A BIRD LEAVES THE GROUND FAST. The old curve held 98% of its ink for
      the middle of a 9 to 15 second crossing, and measured against the frame
@@ -3465,6 +3506,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
        carry the address, and neither is inside this section. -->
   <section id="nextmorning" class="beat bdawn" data-beat="12" data-nextrun inert aria-hidden="true">
     <div class="dawnstick">
+      <!-- the ground, drawn by buildDawnscape() once the gate is open. The
+           element is here so the fade is a state of one thing that persists,
+           and a rebuild on resize refills it without replaying the entrance. -->
+      <svg class="dawnscape" aria-hidden="true" focusable="false"></svg>
       <div class="dawnwrap">
         <p class="kicker">¶ 13 · the next morning · <i>06:12</i></p>
         <p class="hourline">first light again, and this time something has been decided.</p>
@@ -7260,6 +7305,9 @@ function openGate() {
   if (morning) { morning.removeAttribute("inert"); morning.removeAttribute("aria-hidden"); }
   cacheGeometry();
   buildThread();
+  /* the ground is drawn now, while it is still dark, so the morning lands on
+     a landscape rather than the landscape landing on the morning */
+  buildDawnscape();
   wake(true);
   mark("open");
 }
@@ -7383,6 +7431,332 @@ function birdRng(seed) {
   };
 }
 
+/* ····· the dawnscape · the morning's own ground ·····
+   The owner asked for the last page to have "trees, small animals at the
+   bottom, land, grass, mountains, maybe a sun", doodle-like, no colour, and
+   alive. What is drawn is less than that list on purpose: ¶13 is the one
+   station with more air than any other, and the drawing has to lose to the
+   air. So it is a low fringe weighted to the left, where the wash puts the
+   sunrise, and the right half of the sky is left open for the birds.
+
+   EVERYTHING IS BUILT, NOT PLACED. Geometry is viewport fractions and pixels
+   the way buildFlock's is, seeded with the same generator, so the same
+   morning is drawn on every load and a screenshot can be a test. Every line
+   goes through one hand: two slow sines pushed perpendicular to the stroke,
+   the thread's own wobble idiom at L4157, so the horizon, the hill and a
+   blade of grass all wobble the way the rail does.
+
+   THE SUN IS A SLIVER, NOT A DISC. It is 06:12 and the light is the wash's;
+   a drawn disc with rays argues with the glow and reads as a greeting card.
+   The centre sits a fifth of a radius below the horizon, so what shows is
+   the top four fifths of a circle breaking the line, drawn twice at the crown
+   the way a hand goes over a curve, directly under the glow at 0.26 W.
+
+   ONE HILL AND ONE MOUNTAIN, both far left and both in --hair-strong: two
+   ridges crossed the mountain's shoulder and one of them crested beside the
+   sun, which draws the sun in front of a hill. The mountain is asymmetric,
+   steep side outboard, and its shoulder dies into the horizon before the
+   deer. Nothing ridge-like right of centre; nothing above 0.60 H but birds.
+
+   THE DEER IS A CONTOUR, a doe with her ears up, facing west, back toward the
+   trees — the one thing on the page that looks back, and the only counter to
+   the wind, the birds and the light, which all run east. Her legs stand
+   behind a tuft, because four sticks at 44px are where a deer becomes a dog.
+   No faces, no eyes, no fills on any mammal. The gulls on the ground are
+   filled, because the flock's bird is filled and they are the same bird.
+
+   NOTHING UNDER THE COLUMN. Grass under the words is capped at 10px, so the
+   tallest ink there stays clear of "run 043 · not yet begun" by more than the
+   24px the clearance gate holds, and there is no road, no path and no rail:
+   the run ended at the button by ruling, and a drawn way east would reopen
+   the ending that was dropped. */
+const SCAPE = { built: false, hz: 0, groups: 0 };
+function buildDawnscape() {
+  const svg = document.querySelector(".dawnscape");
+  const stick = svg && svg.parentElement;
+  if (!svg || !document.body.classList.contains("gateopen")) return;
+  /* THE FRAME IS THE VIEWPORT, NOT THE PANEL. On a phone the panel sits
+     inside the rail lane and the gutters (316px of a 390 screen), and a
+     horizon that stops 38px short of the left edge is a rug, not a ground.
+     The svg is pulled out to the viewport's own width, measured, so every
+     coordinate below is a fraction of the screen a reader is holding. */
+  const sr = stick.getBoundingClientRect();
+  const W = innerWidth, H = stick.clientHeight || innerHeight;
+  if (!W || !H) return;
+  svg.style.left = `${(-sr.left).toFixed(1)}px`;
+  svg.style.width = `${W}px`;
+  const r = birdRng(0xda11);
+  const vs = clamp(W / 1500, 0.44, 1);
+  const narrow = W < 760;
+  const F = (v) => (Math.round(v * 10) / 10).toString();
+
+  /* the hand: two slow sines along the stroke, seeded per stroke, plus an
+     optional quick one for foliage, where a smooth arc is a balloon */
+  const hand = (amp, quick = 0) => {
+    const p1 = r() * 6.28, p2 = r() * 6.28, p3 = r() * 6.28;
+    const f1 = 0.09 + r() * 0.05, f2 = 0.022 + r() * 0.012;
+    return (s) => (Math.sin(s * f1 + p1) * 0.45 + Math.sin(s * f2 + p2)) * amp
+      + Math.sin(s * 0.62 + p3) * quick;
+  };
+  /* a Catmull-Rom through anchors, sampled every ~5px of chord */
+  const curve = (a, step = 5) => {
+    const out = [];
+    for (let k = 0; k < a.length - 1; k++) {
+      const p0 = a[Math.max(0, k - 1)], p1 = a[k], p2 = a[k + 1], p3 = a[Math.min(a.length - 1, k + 2)];
+      const n = Math.max(2, Math.ceil(Math.hypot(p2[0] - p1[0], p2[1] - p1[1]) / step));
+      for (let s = 0; s < n; s++) {
+        const t = s / n, t2 = t * t, t3 = t2 * t;
+        out.push([
+          0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+          0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3),
+        ]);
+      }
+    }
+    out.push(a[a.length - 1]);
+    return out;
+  };
+  const arc = (cx, cy, rx, ry, a0, a1, step = 5) => {
+    const n = Math.max(3, Math.ceil((Math.abs(a1 - a0) * (rx + ry)) / 2 / step));
+    const pts = [];
+    for (let i = 0; i <= n; i++) {
+      const a = a0 + ((a1 - a0) * i) / n;
+      pts.push([cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]);
+    }
+    return pts;
+  };
+  /* the stroke: each sample pushed off the line, perpendicular, by the hand */
+  const stroke = (pts, amp, quick = 0) => {
+    const w = hand(amp, quick);
+    let s = 0, d = "";
+    for (let i = 0; i < pts.length; i++) {
+      const [x, y] = pts[i];
+      const [px, py] = pts[Math.max(0, i - 1)], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
+      const dx = nx - px, dy = ny - py, L = Math.hypot(dx, dy) || 1;
+      if (i) s += Math.hypot(x - px, y - py);
+      const o = w(s);
+      d += `${i ? "L" : "M"}${F(x - (dy / L) * o)} ${F(y + (dx / L) * o)}`;
+    }
+    return d;
+  };
+  const P = (d, cls) => `<path class="${cls}" d="${d}"/>`;
+  const seg = (pts, x0, x1) => pts.filter(([x]) => x >= x0 && x <= x1);
+
+  /* ————— where the ground is —————
+     Desktop: 0.845 H, under a column whose last line ends near 0.79 H. A
+     phone has no flank, so the horizon is placed from MEASURED room: the
+     wrap's bottom edge at this size, read now, with the drawing degrading by
+     how much of the screen is left under it. */
+  let hz = H * 0.845;
+  let free = H - hz;
+  let room = 3;
+  if (narrow) {
+    const wrapB = stick.querySelector(".dawnwrap").getBoundingClientRect().bottom - sr.top;
+    free = H - wrapB;
+    /* the ladder, by measured room under the last line. 34px is what the
+       sun needs: its cap rises 0.8 r above the line and the text keeps 24px
+       of clear air, measured at 390×844 where the sun sits under "run 043".
+       Under 20px there is no ground to draw on (320×720 measures -24: the
+       column already overflows the panel there) and nothing is drawn. */
+    room = free >= 90 ? 2 : free >= 40 ? 1 : free >= 20 ? 0 : -1;
+    hz = wrapB + (room >= 1 ? 34 : 16);
+  }
+  const tall = !narrow;
+  if (room < 0) {
+    svg.innerHTML = "";
+    SCAPE.built = true; SCAPE.hz = 0; SCAPE.groups = 0;
+    window.__world.scape = { W, H, hz: 0, free: Math.round(free), room, groups: 0 };
+    return;
+  }
+
+  let far = "", ground = "", near = "";
+  let groups = 0;
+
+  /* ————— far: the mountain and the hill ————— */
+  if (tall) {
+    const mtn = curve([[-3, H * 0.745], [W * 0.02, H * 0.705], [W * 0.048, H * 0.655], [W * 0.075, H * 0.695],
+      [W * 0.11, H * 0.755], [W * 0.15, H * 0.81], [W * 0.183, hz - 1.5]]);
+    far += P(stroke(mtn, 1.4), "ds-far w1");
+    /* the crest drawn twice, a shade above, the way a hand goes back over it */
+    far += P(stroke(seg(mtn, W * 0.034, W * 0.066).map(([x, y]) => [x, y - 1.8]), 0.8), "ds-far w1");
+    const hill = curve([[-3, H * 0.81], [W * 0.035, H * 0.785], [W * 0.085, H * 0.766], [W * 0.125, H * 0.795], [W * 0.16, hz - 1]]);
+    far += P(stroke(hill, 1.3), "ds-far w1");
+  }
+
+  /* ————— the sun, under the wash's glow ————— */
+  if (room >= 1) {
+    const sR = (narrow ? 15 : 26) * (narrow ? 1 : vs);
+    const sx = W * (narrow ? 0.26 : 0.27), sy = hz + sR * 0.2;
+    const a0 = Math.PI + 0.2014, a1 = 2 * Math.PI - 0.2014;
+    far += P(stroke(arc(sx, sy, sR, sR, a0, a1), 0.9), "ds-ink w12");
+    far += P(stroke(arc(sx, sy, sR + 1.6, sR + 1.6, a0 + 0.9, a0 + 1.9), 0.6), "ds-ink w1");
+    SCAPE.sun = { x: sx, y: sy, r: sR };
+  }
+
+  /* ————— the horizon, with its pen lifts, trailing off before the corner ————— */
+  const hzEnd = W * (narrow ? 0.95 : 0.88);
+  const line = curve([[-4, hz], [W * 0.25, hz + 1], [W * 0.5, hz - 1], [W * 0.75, hz + 0.5], [hzEnd, hz]]);
+  if (tall) {
+    const cuts = [0.30, 0.57, 0.78].map((f) => f * hzEnd + (r() - 0.5) * 40);
+    ground += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
+    ground += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.5), "ds-ink w12");
+    ground += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
+    /* the tail is lighter and broken: the line lets go rather than stopping */
+    ground += P(stroke(seg(line, cuts[2] + 9, hzEnd - W * 0.035), 1.3), "ds-ink w1");
+    ground += P(stroke(seg(line, hzEnd - W * 0.022, hzEnd), 1.1), "ds-far w1");
+  } else {
+    /* one lift on a phone: four on a 390px line read as a dashed rule */
+    const cut = hzEnd * 0.6 + (r() - 0.5) * 30;
+    ground += P(stroke(seg(line, -4, cut - 3), 1.3), "ds-ink w12");
+    ground += P(stroke(seg(line, cut + 5, hzEnd - W * 0.06), 1.3), "ds-ink w12");
+    ground += P(stroke(seg(line, hzEnd - W * 0.04, hzEnd), 1), "ds-far w1");
+  }
+  if (tall) {
+    const echo = line.map(([x, y]) => [x, y + 5 + Math.sin(x * 0.004) * 1.2]);
+    ground += P(stroke(seg(echo, W * 0.07, W * 0.31), 1.2), "ds-far w1");
+    ground += P(stroke(seg(echo, W * 0.41, W * 0.59), 1.2), "ds-far w1");
+  }
+
+  /* ————— a tree: an open trunk, three branch strokes, a broken crown ————— */
+  const tree = (x, h, lean, cls) => {
+    const tl = stroke(curve([[x - 2.4, hz + 1], [x - 2.0, hz - h * 0.28], [x - 1.2, hz - h * 0.56]]), 0.9);
+    const tr = stroke(curve([[x + 2.6, hz + 1], [x + 2.1, hz - h * 0.30], [x + 1.4, hz - h * 0.54]]), 0.9);
+    let crown = "";
+    /* limbs: two that fork, one that runs up the middle; the secondaries thinner */
+    const fy = hz - h * 0.52;
+    const limbs = [
+      [[[x - 1, fy], [x - h * 0.07, hz - h * 0.60], [x - h * 0.13, hz - h * 0.66]], "w12"],
+      [[[x - h * 0.13, hz - h * 0.66], [x - h * 0.19, hz - h * 0.73], [x - h * 0.23, hz - h * 0.80]], "w1"],
+      [[[x - h * 0.13, hz - h * 0.66], [x - h * 0.10, hz - h * 0.75], [x - h * 0.08, hz - h * 0.84]], "w1"],
+      [[[x + 1, fy], [x + h * 0.06, hz - h * 0.59], [x + h * 0.11, hz - h * 0.65]], "w12"],
+      [[[x + h * 0.11, hz - h * 0.65], [x + h * 0.17, hz - h * 0.71], [x + h * 0.21, hz - h * 0.78]], "w1"],
+      [[[x + h * 0.11, hz - h * 0.65], [x + h * 0.08, hz - h * 0.76], [x + h * 0.06, hz - h * 0.85]], "w1"],
+      [[[x, hz - h * 0.55], [x + h * 0.01, hz - h * 0.72], [x + h * 0.02, hz - h * 0.90]], "w1"],
+    ];
+    for (const [b, w] of limbs) crown += P(stroke(curve(b), 0.6), "ds-ink " + w);
+    /* THE CROWN IS LOBES, NOT A CIRCLE. Five circles of unequal size, off
+       centre, and the outline is the union of them sampled round the crown's
+       centre — so the silhouette has the concavities a real crown has where
+       one mass of leaves meets the next. A single ellipse of arcs, however
+       broken, was a balloon on a stick. */
+    const cy = hz - h * 0.70;
+    const lobes = [[-0.15, 0.02, 0.17], [0.13, 0.0, 0.16], [-0.02, -0.15, 0.17], [0.04, 0.12, 0.13], [-0.10, -0.10, 0.13]]
+      .map(([lx, ly, lr]) => [lx * h + (r() - 0.5) * 0.04 * h, ly * h + (r() - 0.5) * 0.04 * h, lr * h * (0.92 + r() * 0.16)]);
+    const R = (a) => {
+      const ux = Math.cos(a), uy = Math.sin(a);
+      let best = 0;
+      for (const [lx, ly, lr] of lobes) {
+        const uc = ux * lx + uy * ly, disc = uc * uc - (lx * lx + ly * ly) + lr * lr;
+        if (disc >= 0) best = Math.max(best, uc + Math.sqrt(disc));
+      }
+      return best;
+    };
+    const n = Math.ceil((2 * Math.PI * h * 0.3) / 5);
+    const ring = [];
+    for (let i = 0; i <= n; i++) { const a = (2 * Math.PI * i) / n; const d = R(a); ring.push([x + Math.cos(a) * d, cy + Math.sin(a) * d]); }
+    /* five pen lifts round the outline, so it is drawn and not traced */
+    const lifts = [0.05, 0.25, 0.45, 0.62, 0.82].map((f) => f + (r() - 0.5) * 0.08);
+    let from = 0;
+    for (const f of lifts) {
+      const to = Math.floor(f * n) - 1;
+      if (to - from > 2) crown += P(stroke(ring.slice(from, to), 1.1, 0.55), "ds-ink w12");
+      from = to + 2;
+    }
+    crown += P(stroke(ring.slice(from), 1.1, 0.55), "ds-ink w12");
+    /* two short scribbles inside the crown, in the far ink: a mass of
+       leaves, not a hollow outline */
+    for (let i = 0; i < 2; i++) {
+      const [lx, ly, lr] = lobes[i * 2];
+      const a0 = r() * 6.28;
+      crown += P(stroke(arc(x + lx, cy + ly, lr * 0.55, lr * 0.5, a0, a0 + 2 + r()), 0.9, 0.5), "ds-far w1");
+    }
+    if (cls) groups++;
+    return `<g class="ds-tree" transform="rotate(${lean} ${F(x)} ${F(hz)})">${P(tl, "ds-ink w14")}${P(tr, "ds-ink w14")}` +
+      `<g class="ds-canopy ${cls}" style="transform-origin:${F(x)}px ${F(hz)}px">${crown}</g></g>`;
+  };
+
+  /* ————— the doe: contour only, ears up, standing on the line ————— */
+  const deer = (x) => {
+    const k = 0.9 * vs;
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
+    const back = stroke(curve(T([[18, -27], [12, -29.5], [4, -30], [-4, -29]])), 0.5);
+    const belly = stroke(curve(T([[-7, -21], [-2, -18.5], [6, -18.5], [11, -20]])), 0.4);
+    const rump = stroke(curve(T([[18, -27], [19, -23], [16, -19.5]])), 0.4);
+    const chest = stroke(curve(T([[-9, -27], [-9.5, -23], [-7, -21]])), 0.4);
+    const legs = [
+      [[-6.5, -21], [-7, -12], [-7.5, 0]], [[-3, -21], [-3.5, -12], [-4, 0]],
+      [[13, -20], [15, -11], [14, 0]], [[9.5, -19], [11, -10], [10.5, 0]],
+    ].map((l) => P(stroke(curve(T(l)), 0.3), "ds-ink w1")).join("");
+    const tail = P(stroke(T([[18, -28], [21, -25]]), 0.2), "ds-ink w1");
+    const neck = stroke(curve(T([[-4, -29], [-8, -33], [-13, -41], [-14, -44]])), 0.4);
+    const throat = stroke(curve(T([[-9, -27], [-10, -32], [-13, -37]])), 0.4);
+    const head = stroke(curve(T([[-14, -44], [-18, -45], [-23, -43], [-24, -40.5], [-19, -39], [-15, -37.5]])), 0.4);
+    const earL = stroke(T([[-15, -45], [-13, -52]]), 0.2), earR = stroke(T([[-18.5, -45.5], [-20, -52]]), 0.2);
+    const [ox, oy] = T([[-4, -29]])[0];
+    groups++;
+    return `<g class="ds-deer" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px">` +
+      `${P(back, "ds-ink w12")}${P(belly, "ds-ink w12")}${P(rump, "ds-ink w12")}${P(chest, "ds-ink w12")}${legs}${tail}` +
+      `<g class="ds-head" style="transform-origin:${F(ox)}px ${F(oy)}px">${P(neck, "ds-ink w12")}${P(throat, "ds-ink w12")}` +
+      `${P(head, "ds-ink w12")}${P(earL, "ds-ink w1")}${P(earR, "ds-ink w1")}</g></g>`;
+  };
+
+  /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
+  const gull = (x, y, dir, cls) => {
+    const k = 1.15 * Math.max(vs, 0.7);
+    const T = (px, py) => `${F(x + px * k * dir)} ${F(y + py * k)}`;
+    const body = `M${T(-6, -6)} C${T(-6, -9)} ${T(-1, -11)} ${T(3, -10)} C${T(7, -9.5)} ${T(9, -8)} ${T(12, -5)}` +
+      ` C${T(9, -4)} ${T(6, -2.4)} ${T(2, -2.2)} C${T(-2, -2.2)} ${T(-6, -3.4)} ${T(-6, -6)} Z`;
+    const head = `M${T(-4, -8)} C${T(-6, -10)} ${T(-8, -12.5)} ${T(-9.5, -13)} C${T(-11, -13.4)} ${T(-12, -12.4)} ${T(-12, -11.4)}` +
+      ` L${T(-15, -10.8)} L${T(-11.6, -10)} C${T(-11, -9)} ${T(-9, -8)} ${T(-7, -7)} Z`;
+    const legs = `M${T(-1, -2.4)} L${T(-1.6, 0)} M${T(2.4, -2.4)} L${T(3, 0)}`;
+    const ox = x - 4.5 * k * dir, oy = y - 7.5 * k;
+    groups++;
+    return `<g class="ds-gull" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
+      `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px"><path class="ds-fill" d="${head}"/></g></g>`;
+  };
+
+  /* ————— a tuft: four to six blades, one path, most leaning a little east ————— */
+  const tuft = (x, h, cls, n) => {
+    let d = "";
+    for (let i = 0; i < n; i++) {
+      const bx = x + (i - (n - 1) / 2) * (2.2 + r() * 1.4);
+      const bh = h * (0.55 + r() * 0.45);
+      const lean = (r() - 0.5) * 0.9 + 0.15;
+      d += stroke(curve([[bx, hz + 1.5], [bx + bh * lean * 0.35, hz + 1 - bh * 0.55], [bx + bh * lean, hz + 1 - bh]]), 0.35);
+    }
+    groups++;
+    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-ink w1" d="${d}"/></g>`;
+  };
+
+  /* ————— the composition ————— */
+  if (tall) {
+    near += tree(W * 0.075, H * 0.24, 0, "sway-c1");
+    near += tree(W * 0.125, H * 0.185, 3, "sway-c2");
+    near += tree(W * 0.165, H * 0.09, -2, "");
+    near += tuft(W * 0.045, 22 * vs, "sway-m", 5);
+    near += tuft(W * 0.145, 26 * vs, "sway-l", 6);
+    near += deer(W * 0.20);
+    near += tuft(W * 0.20 + 3 * vs, 27 * vs, "sway-m", 7);
+    near += tuft(W * 0.62, 10, "sway-s", 4);
+    near += tuft(W * 0.80, 20 * vs, "sway-l", 5);
+    near += gull(W * 0.55, H * 0.875, -1, "peck-a");
+    near += gull(W * 0.72, H * 0.885, 1, "peck-b");
+  } else {
+    /* the phone's strip: no flank, so what survives is what fits under the
+       last line, out of the column's x-range where it can be taller */
+    if (room >= 2) near += tree(W * 0.09, Math.min(64, hz - (H - free) - 30), 2, "sway-c1");
+    near += tuft(W * 0.06, room >= 1 ? 16 : 9, "sway-m", 4);
+    if (room >= 1) near += tuft(W * 0.44, 8, "sway-s", 4);
+    near += tuft(W * 0.87, room >= 1 ? 14 : 9, "sway-l", 4);
+    if (room >= 1 && hz + 18 <= H - 4) near += gull(W * 0.63, hz + 14, 1, "peck-a");
+  }
+
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = `<g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-front">${near}</g>`;
+  SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups;
+  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups }; /* probe hook */
+}
+addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
+
 /* where they leave from, as a fraction of the viewport — captured when the
    gate is approved so a resize mid-flight rebuilds the same departure */
 let flockFrom = null;
@@ -7419,11 +7793,11 @@ function buildFlock() {
     `<path class="b-ink" d="${BODY}"/>` +
     `<g class="b-wing b-wr">${wing(1)}</g><g class="b-wing b-wl">${wing(-1)}</g></svg>`;
 
-  /* THEY GO EAST, into the side the morning is on: DAWN_STOPS puts the sun
-     at 78% across the sky at the end of the carry, so east is towards the
-     light rather than away from it — and the launch is the socket, which is
-     in the left-hand column at every desktop seat and in the phone's own
-     26px gutter, so east is also where the room is. */
+  /* THEY GO EAST, out of the light rather than into it: the wash sun holds
+     at (0.26 W, 0.62 H) after the carry, low on the left, and the launch is
+     the socket, which is in the left-hand column at every desktop seat and
+     in the phone's own 26px gutter — so east is where the room is, and the
+     right half of the sky is kept open for them by the dawnscape too. */
   const ox = W * flockFrom.fx;
   const oy = H * flockFrom.fy;
   const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
