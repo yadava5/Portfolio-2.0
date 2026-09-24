@@ -1157,11 +1157,10 @@ if (location.hash.length > 1) {
   .figsvg .meterfill{fill:var(--pine)}
   .figsvg .meterlbl{fill:var(--ink)}
   /* the three products' dispositions, and the meter's signature riser.
-     Same strokes as the reviewer's own marks at ¶10 (.gates .gbench
-     .gmark, 1.5 round): a check for what was filed, a strike for what was
-     not, and
-     clay for that pair because a disposition of record is the gate
-     register — §4b's amended rule 5. */
+     A check for what was filed, a strike for what was not, and clay for that
+     pair because a disposition of record is the gate register — §4b's amended
+     rule 5. (¶10 used to carry the same 1.5 round stroke as a drawn mark; its
+     verdicts are stamps on slips now, so this is the only place it is left.) */
   .figsvg .tickp{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
   .figsvg .tickp.withheld{stroke:var(--clay-g)}
   .schoolrec{max-width:1180px; margin:clamp(2.2rem,5vh,4rem) auto 0; width:100%;
@@ -1193,32 +1192,47 @@ if (location.hash.length > 1) {
   .litany .mline p em{font-style:normal; color:var(--clay)}
   .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
   .litany .mline .rct a{color:var(--pine)}
-  .gates{--gcol:34px; --gword:4.6rem; --ggap:.8rem; --gx:calc(var(--gcol) / 2);
+  /* --gtc  the text column · --gpx the press's centre · --grh the row's height.
+     All three are read by calc() in the rules below, so the phone re-seats the
+     whole drawing by writing two numbers instead of re-authoring it. */
+  .gates{--gtc:230px; --gpx:72px; --grh:84px;
     font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
+  /* 1px --ink, not a hairline: the head is the plate's own top rule and the
+     three beds below it are the same weight of statement. */
   .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
-    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
+    padding-bottom:.6rem; border-bottom:1px solid var(--ink)}
   .gates .ghead i{font-style:normal; color:var(--clay)}
-  /* THE REGISTER READS DOWN ITS OWN LINE. The stamps used to sit between the
-     gate's name and its verdict, so the eye went left, right, left, right and
-     the line they stand on was somewhere in the middle of the row — which is
-     also how the line came to run through the text (see below). The frames
-     are a gutter now, the line runs down it, and the three verdicts fall into
-     a column at the right where the pattern of them can be read at a glance.
-     That pattern is the figure's whole argument. */
-  .gates .grow{position:relative; display:grid;
-    grid-template-columns:var(--gcol) minmax(0,1fr) var(--gword);
-    gap:.1rem var(--ggap); align-items:start;
-    padding:.72rem 0; border-bottom:1px solid var(--hair)}
-  .gates .grow .gname{grid-column:2; grid-row:1; color:var(--ink)}
+  /* THE REGISTER IS THREE PRESSES ON ONE LEVEL. The stamps used to sit in a
+     gutter with the line running down it, and the round-3 redraw stood the
+     three presses side by side and dropped the passed slip DOWN out of its
+     press — which the owner read as misaligned, and it was: a fall is what a
+     failed gate looks like, and this one passed.
+     Each gate is a row now, on its own bed, and the three beds are the only
+     horizontals on the plate. Nothing travels downward but the ram's strike.
+     The row separator keeps --hair and keeps it out of the drawing's own
+     selectors: check-palette scans those against the graphics floor, and a
+     text plate's row rule is furniture, not a drawn object. Its scan is a
+     regex over selector text, so naming the drawing's class in a comment
+     ABOVE this rule would hand it --hair to measure; see the note on the
+     scan's scope below, which is written where the next rule is safe. */
+  .gates .grow{position:relative; padding:0;
+    border-bottom:1px solid var(--hair)}
 
-  /* ————— fig. 10's drawing: .gbench — the marks get their subject —————
-     The docket IS the drawing. One line runs down the register; each gate
-     stands ON it as a small frame in its own row, and the row's mark is
-     inked INSIDE that frame — so a mark is made at a gate instead of
-     floating beside a name. Below the third the line runs on DASHED, which
-     on this site means one thing in three places: ¶07's product not checked
-     in, ¶08's steps not built, and here a stretch of line nobody has signed.
-     It points down the page because that is where the person is (¶11).
+  /* ————— fig. 10's drawing: .gbench — three presses on one level —————
+     A gate is a press and a verdict is a stamp, so the drawing is the press:
+     a frame standing on a bed, a ram hanging from its beam, and a slip of
+     paper under the ram. The ram comes down 17px, the verdict is on the slip,
+     the ram lifts. Two of the three slips stay under their rams against a
+     buffer stop — that is what a stopped gate looks like — and the one that
+     passed slides OUT of its press to the right and parks on the same bed,
+     where the line runs on dashed and unsigned, to a person.
+
+     ONE LEVEL, and it is the whole correction. The round-3 drawing stood the
+     three presses side by side and dropped the passed slip downward; the
+     owner read that as misaligned. A drop is the shape of a failure, and it
+     was drawn on the one gate that succeeded. Everything is horizontal now:
+     three beds at one y inside their rows, one direction of travel, and the
+     only vertical movement on the plate is the strike itself.
 
      NOT a seventh figure, on purpose: no .figsvg, no role="img", no
      aria-label. check-figures asserts exactly six drawings and asserts that
@@ -1228,55 +1242,94 @@ if (location.hash.length > 1) {
      scan to figure classes — extend that scan to .gbench, not to #gatesFig,
      whose --hair row separators are text furniture and correct as they are.
 
-     Colour, under §4b rule 5 as amended: frames and line are STRUCTURE and
-     take --hair-strong (3.83:1 on the 22:23 ground, measured); the only
-     colour in the drawing is the three dispositions, which were already
-     pine and clay-g before it existed. Refused twice is the record, so both
-     bars stay clay. No element opacity anywhere in here — the gate cannot
-     see it and it is what has hidden four sub-floor strokes before.
-     The frames are markup, not JS: at scrub 0 the gates stand there
-     unstamped, which is the honest resting state of a register. */
-  /* THE LINE'S COLUMN HOLDS NOTHING BUT THE STAMPS, and that — not the
-     arithmetic — is what was wrong before. The two stubs are unchanged:
-     `calc(50% - 14px)` from each edge, meeting a frame centred in the row.
-     What broke was that .gwhy spanned `2 / -1`, which under the old column
-     order put the sentence in the SAME column the line ran down, so the
-     moment it wrapped the line was drawn straight through it. The register
-     was striking through its own notes.
-     Column 1 now contains the stamp and nothing else, at any row height and
-     any number of wrapped lines, so the stubs cannot reach text. They meet
-     the frame exactly because an absolutely positioned box resolves top,
-     bottom and 50% against the PADDING box, the row's padding is symmetric,
-     and the svg is centred in that same box — no measurement, no fill of the
-     ground colour standing in for a mask, nothing for a redraw to get wrong.
-     Verified at 1512, 1440, 1280 and 390: zero intersections between the
-     line's x and any text rect in the plate. */
-  .gates .grow.gbench::before,
-  .gates .grow.gbench::after{content:""; position:absolute; left:var(--gx); width:1px;
-    background:var(--hair-strong)}
-  .gates .grow.gbench::before{top:0; height:calc(50% - 14px)}
-  .gates .grow.gbench::after{bottom:0; height:calc(50% - 14px)}
-  .gates .gbench .gsig{grid-column:1; grid-row:1 / -1; display:block; align-self:center}
-  .gates .gbench .gframe{fill:none; stroke:var(--hair-strong); stroke-width:1}
-  .gates .gbench .gmark{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
-  .gates .gbench .gmark.declined{stroke:var(--clay-g)}
-  .gates .gbench.gtail{position:relative; height:2.5rem}
-  .gates .gbench.gtail::before{content:""; position:absolute; left:var(--gx); top:0; bottom:.55rem;
-    width:1px; background-image:linear-gradient(var(--hair-strong) 0 3.5px, transparent 3.5px 7.5px);
-    background-size:1px 7.5px}
-  .gates .gbench.gtail span{position:absolute; left:calc(var(--gx) + 12px); top:.15rem;
-    font-size:.68rem; color:var(--ink-2)}
+     Colour, under §4b rule 5 as amended: the bed, the frame and the ram are
+     STRUCTURE at --ink; the slip and the dashed tail are secondary at
+     --ink-2; the only colour is the three dispositions, pine and clay as
+     they already were. No element opacity anywhere except the stamps, which
+     switch between 0 and 1 — the gate cannot see a partial one, and that is
+     what has hidden four sub-floor strokes before.
 
-  /* the disposition words stay printed at full ink — the drawn MARK is
-     the animation. (A dimmed resting word would sit under the Lc 60
-     dim-text floor on the night plate; the quests taught that lesson.) */
-  .gates .grow .gword{grid-column:3; grid-row:1; text-align:right}
-  .gates .grow.passed .gword{color:var(--pine)}
-  .gates .grow.declined .gword{color:var(--clay)}
-  .settled .gates .gmark{stroke-dashoffset:0 !important}
-  @media (prefers-reduced-motion: reduce){
-    .gates .gmark{stroke-dashoffset:0 !important}
-  }
+     DRAWN IN BOXES, NOT IN SVG. Every part of the press is an axis-aligned
+     rectangle, so a div lands each one on whole device pixels at any zoom,
+     and the press re-seats itself from `--gpx` with calc() instead of a
+     second set of authored coordinates for the phone. The <i> elements are
+     empty and carry no accessible content; the slip is not hidden, because
+     the verdict inside it is the row's own reading. */
+  .gates .grow.gbench{display:block; height:var(--grh)}
+  /* Baselines, measured in the browser at the shipped sizes (Newsreader 14
+     and 13): the name's sits at 34 and the reason's at 56, which is also the
+     bed. One row, one baseline — E1. */
+  .gates .gbench .gname{position:absolute; left:0; top:20px; width:var(--gtc);
+    font-family:var(--body); letter-spacing:0; word-spacing:.12em; color:var(--ink)}
+  .gates .gbench .gwhy{position:absolute; left:0; top:44px; width:var(--gtc)}
+  .gates .gbench .gpress{position:absolute; left:calc(var(--gtc) + 20px); right:0;
+    top:0; height:68px; overflow-x:clip}
+  /* ONE SET OF NUMBERS, WRITTEN ONCE. --gph is the frame's half width, --grw
+     the ram, --gpk how far the freed slip travels. Everything below is a
+     calc() off those and --gpx, so a narrower seat re-proportions the press
+     instead of overlapping its own parts — which is what a second hand-drawn
+     phone edition would eventually do. The slip is 10px inside the frame and
+     parks 8px clear of the right post: no two strokes ever share an x. */
+  .gates .gbench{--gph:58px; --grw:76px; --gpk:114px}
+  .gates .gbench .gbed,
+  .gates .gbench .gdash{position:absolute; top:55.3px; height:1.4px}
+  .gates .gbench .gbed{left:0; background:var(--ink);
+    width:calc(var(--gpx) + var(--gph) + 15.4px)}
+  /* [6,6], the run's dash for "not signed" — the day's rail owns [2,7] and
+     nothing else uses it. It starts at the parked slip's right edge. */
+  .gates .gbench .gdash{left:calc(var(--gpx) + 48px + var(--gpk)); right:0;
+    background-image:repeating-linear-gradient(to right,
+      var(--ink-2) 0 6px, transparent 6px 12px)}
+  .gates .gbench.passed .gbed{width:calc(var(--gpx) + 48px + var(--gpk))}
+  .gates .gbench .gpost,
+  .gates .gbench .gbeam,
+  .gates .gbench .grod,
+  .gates .gbench .gram,
+  .gates .gbench .gbuf{position:absolute; background:var(--ink)}
+  .gates .gbench .gpost{top:0; height:56px; width:1.4px}
+  .gates .gbench .gpost.pa{left:calc(var(--gpx) - var(--gph))}
+  .gates .gbench .gpost.pb{left:calc(var(--gpx) + var(--gph) - 1.4px)}
+  .gates .gbench .gbeam{top:0; left:calc(var(--gpx) - var(--gph));
+    width:calc(var(--gph) * 2); height:1.4px}
+  /* the rod hangs the ram off the beam and is the part that says the ram is a
+     moving thing: it stretches on the strike, so the ram never reads as
+     drifting free of its frame. --gs is the strike, 0 to 1, and it is the
+     only number scrubHow writes — the geometry stays here. */
+  .gates .gbench .grod{top:1.4px; left:calc(var(--gpx) - .7px); width:1.4px;
+    height:calc(4.6px + 17px * var(--gs, 0))}
+  .gates .gbench .gram{top:0; height:9px; width:var(--grw);
+    left:calc(var(--gpx) - var(--grw) / 2);
+    transform:translateY(calc(6px + 17px * var(--gs, 0)))}
+  /* the buffer stop the bed ends against, just outside the press: the way out
+     is barred, which is why the two halted slips are still under their rams */
+  .gates .gbench .gbuf{top:42px; width:1.4px; height:14px;
+    left:calc(var(--gpx) + var(--gph) + 14px)}
+  .gates .gbench .gslip{position:absolute; top:32px; left:calc(var(--gpx) - 48px);
+    width:96px; height:24px; border:1px solid var(--ink-2);
+    display:flex; align-items:center; justify-content:center;
+    transform:translateX(calc(var(--gpk) * var(--gt, 0)))}
+  /* THE SLIP IS THE ONLY BOX. A ruled stamp inside a ruled slip was two
+     rectangles of almost the same size, one crossing the other's edge at
+     every rotation — the muddiest thing on the plate. The slip is the paper,
+     the word is the ink on it, and the crooked angle is what says a hand put
+     it there. */
+  .gates .gbench .gword{display:block; font-size:var(--fs-micro);
+    line-height:1.2; opacity:var(--gw, 0)}
+  .gates .gbench.passed .gword{color:var(--pine)}
+  .gates .gbench.declined .gword{color:var(--clay)}
+  /* a hand stamps crooked, and no two the same way */
+  .gates .gbench[data-g="0"] .gword{transform:rotate(-4deg)}
+  .gates .gbench[data-g="1"] .gword{transform:rotate(3deg)}
+  .gates .gbench[data-g="2"] .gword{transform:rotate(-2.5deg)}
+  /* where the line leaves the docket: 8px clear of the parked slip, and its
+     baseline sits 8px above the bed so the dashes never cross the word */
+  .gates .gbench .gtail{position:absolute; top:35px;
+    left:calc(var(--gpx) + 56px + var(--gpk));
+    font-family:var(--body); font-style:italic;
+    font-size:var(--fs-small); letter-spacing:0; color:var(--ink-2)}
+  /* no transition on the ram or the slip: the scrub IS the motion, and its
+     easing is in the curves scrubHow() runs, not in a duration that would
+     arrive a frame late behind the reader's own scroll. */
   /* ¶11's plate. Same docket grammar as .gates. It carries NO signature
      mark: nobody signed anything here. Two people wrote recommendations on
      LinkedIn, in public, under their own names — so the plate is a citation
@@ -1337,6 +1390,10 @@ if (location.hash.length > 1) {
      the plate column bottoms out at 218px beside a 30rem prose column.
      Below 1250 the stations stack instead, and plates keep a measured
      cap so their figures stay in the 11–15px band, not a poster. */
+  /* fig. 10's press moves 14px left below 1320: at 1250 — the narrowest seat
+     that is still two columns — the plate is 530px and "unsigned" was landing
+     7px past its clip. The drawing is unchanged; only where it sits is. */
+  @media (max-width:1319px){ .gates{--gpx:58px} }
   @media (max-width:1249px){
     .station{min-height:140vh}
     .station .beat-inner,
@@ -1381,6 +1438,27 @@ if (location.hash.length > 1) {
     #manifest.open header{margin-bottom:.55rem}
     #manifest.open ol, #manifest.open .foot{display:block}
     #mtoggle{cursor:pointer}
+    /* fig. 10 on the phone: the press moves under its own row rather than
+       beside it, and the row goes back to normal flow so a reason that wraps
+       pushes the drawing down instead of printing into it. Only --gpx moves;
+       the press itself is the same machine at the same size. */
+    .gates{--gpx:66px}
+    .gates .grow.gbench{height:auto; padding:.7rem 0 .6rem}
+    .gates .gbench .gname,
+    .gates .grow .gwhy{position:static; display:block; width:auto}
+    .gates .grow .gwhy{margin-top:.1rem}
+    .gates .gbench .gpress{position:relative; left:auto; right:auto; top:auto;
+      display:block; margin-top:.55rem}
+
+  }
+  /* 320. The press, the parked slip and the word "unsigned" do not all fit
+     inside a 222px plate, so the label goes and the dashed run stays: the
+     legend under the rows says "the line runs on dashed and unsigned, to a
+     person" in words, which is where a screen reader has always read it. */
+  @media (max-width:360px){
+    .gates{--gpx:50px}
+    .gates .gbench{--gph:50px; --grw:68px; --gpk:104px}
+    .gates .gbench .gtail{display:none}
   }
   @media (max-width:560px){
     /* the gate ledger takes the manifest's own two-row shape: the
@@ -1798,6 +1876,9 @@ h1[data-np-measuring] .np-ch {
      none to spare. Measured: recovers ~60px, which is what 1440x800 was
      short by. */
   @media (max-height: 880px){
+    /* fig. 10 gives back 8px a row on a short window; the press keeps its
+       own 68px, so only the air under the bed is spent. */
+    .gates{--grh:76px}
     .b8{padding-top:2vh; padding-bottom:1.4vh}
     .ladder{margin-top:1.15rem}
     .ladder li{margin:.33rem 0}
@@ -1909,7 +1990,6 @@ body{font-synthesis:none}
   font-family:var(--mono); font-size:var(--fs-small); letter-spacing:.02em;
   word-spacing:normal; white-space:nowrap}
 #slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
-.gbench.gtail>span{font-size:var(--fs-micro)}
 /* SVG figure labels keep Fragment Mono and their authored px: check-figures'
    arithmetic floor was fitted to this face's advances. */
 .figsvg text, #net text{font-family:var(--mono); letter-spacing:.05em; word-spacing:normal}
@@ -1919,7 +1999,7 @@ body{font-synthesis:none}
    Grande in the serif ones; ↓ is Fragment Mono in mono and Apple Symbols in
    serif. Both are pinned to mono where they sit. (⟶ ↗ ↳ ⟲ need no rule:
    all four resolve to Apple Symbols in every stack, same advance.) */
-.gates .gleg .gtick, .cue .a, .gbench .gmark{
+.gates .gleg .gtick, .cue .a{
   font-family:var(--mono); letter-spacing:normal; word-spacing:normal}
 
 /* ── controls are text a finger has to find ──────────────────────────────*/
@@ -2284,8 +2364,8 @@ body{font-synthesis:none}
 .engrows li b, .engrows li b a{font-size:var(--fs-note); font-family:var(--body)}
 .engrows a[href^="mailto"]{font-family:var(--mono); font-size:var(--fs-small);
   letter-spacing:.02em; word-spacing:normal}
-#manifest li .idx, #manifest li .m, .gates .grow .gi, .gl li .gm,
-.gbench.gtail>span, .verdictline span, .verdictline b, #conf, #fwd,
+#manifest li .idx, #manifest li .m, .gl li .gm,
+.verdictline span, .verdictline b, #conf, #fwd,
 #mast, #mast .state, .chip, .ladder li span{font-size:var(--fs-micro)}
 #mclock{font-size:var(--fs-micro)}
 /* ¶13's epigraph and the gate's note are sentences, not machine values */
@@ -2296,10 +2376,9 @@ body{font-synthesis:none}
 .padbar .st, .padbar .st i, .padbar .st span,
 .signs .shead span, .signs .shead span i, .signs .srow .sname,
 .signs .srow .swhen, #chWho, #chWhen, #chMeet,
-#gatesFig .gbench.gtail span, .gatecard p.mono, #automl .prose p.mono{
+.gatecard p.mono, #automl .prose p.mono{
   font-size:var(--fs-micro)}
 .gatecard p.mono, #automl .prose p.mono{font-family:var(--body); font-size:var(--fs-small)}
-.gates .gbench.gtail span{font-size:var(--fs-micro)}
 .gatecard .gl li .gi, .gl li .gi{font-size:var(--fs-micro)}
 .borrowed figcaption, .borrowed figcaption i,
 figure.borrowed>figcaption, figure.borrowed>figcaption i,
@@ -2427,18 +2506,15 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 /* ── ¶10's gate reasons ─────────────────────────────────────────────────
    .gwhy says WHY each gate decided what it did. It is the sentence the row
    above only asserts, so it sits directly under its own gate's name, in the
-   text face, sharing that column's whole measure.
-   IT USED TO SPAN `2 / -1`, which under the old column order was the stamp
-   plus the verdict — about 110px — so all three of these sentences wrapped
-   at 1512, 1440 AND 1280, and the register's line ran through the wrap. The
-   column it belongs to is the one its name is in. Measured at 1512: 474px of
-   measure against a longest sentence of about 225px, so one line at every
-   desktop width, and on the phone it wraps inside its own column, well clear
-   of the gutter the line runs down. */
+   text face, and its baseline IS the bed the press stands on: one row, one
+   baseline. Measured at 1512: 200px of column against a longest sentence of
+   about 178px, so one line at every desktop width; on the phone the row
+   falls back to normal flow and it wraps under its own name, with the press
+   below both of them. */
 .gates .grow .gwhy{
-  grid-column:2; grid-row:2; font-family:var(--body); font-style:italic;
+  font-family:var(--body); font-style:italic;
   font-size:var(--fs-small); line-height:1.45; color:var(--ink-2);
-  letter-spacing:0; word-spacing:.12em; margin-top:.1rem;
+  letter-spacing:0; word-spacing:.12em;
 }
 
 /* ── the phone, tightened to its content ─────────────────────────────────
@@ -2969,26 +3045,23 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="gates" id="gatesFig">
           <div class="ghead"><span>a stopped gate is the system working.</span></div>
-          <!-- The mark paths are the SAME HAND as before, at 1.5× — the check
-               and the stop-bar authored in the 14×10 box, multiplied through so
-               the ink still renders at the 22×16 it always did while the frame
-               around it is drawn 1:1 in CSS pixels. The scale is baked into the
-               coordinates rather than carried on a transform, because a
-               transform would drag stroke-width with it and thin the hand. -->
+          <!-- THE PRESS IS DRAWN IN EMPTY BOXES. Each <i> is one rectangle of
+               the machine — bed, post, beam, rod, ram, buffer stop — seated by
+               calc() off the row's own --gpx, so the phone moves the whole
+               press by changing that one number. They carry no text and no
+               role, and nothing in here is aria-hidden: the slip holds the
+               verdict, and the verdict is the row's reading. The order is the
+               order they stack in, back to front. -->
           <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate · Applied</span>
-            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark" d="M8.75 14.9 C11.3 17.6 12.8 18.8 14 18.5 C16.4 15.2 20.6 10.4 25.7 8.3"/></svg>
-            <span class="gword">passed</span><span class="gwhy">1 wrong in 96, above the 0.95 floor</span></div>
+            <span class="gwhy">1 wrong in 96, above the 0.95 floor</span>
+            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span><!-- Hidden from assistive tech because the legend below says it in words: the drawing may not be the only place a reader can learn where the line goes. --><span class="gtail" aria-hidden="true">unsigned</span></span></div>
           <div class="grow gbench declined" data-g="1"><span class="gname">cited-source sweep · PolicyBot</span>
-            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark declined" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
-            <span class="gword">declined</span><span class="gwhy">4 answers it couldn&rsquo;t cite</span></div>
+            <span class="gwhy">4 answers it couldn&rsquo;t cite</span>
+            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">declined</span></span></span></div>
           <div class="grow gbench declined" data-g="2"><span class="gname">benchmark suite · Glyph</span>
-            <svg class="gsig" width="34" height="28" viewBox="0 0 34 28" aria-hidden="true"><rect class="gframe" x=".5" y=".5" width="33" height="27"/><path class="gmark declined" d="M8.3 15.2 C13.4 13.4 20.3 14.6 25.85 13.4"/></svg>
-            <span class="gword">caught</span><span class="gwhy">a variance claim nobody had measured</span></div>
-          <!-- Where the line leaves the docket. Hidden from assistive tech
-               because the legend below says it in words — the drawing may not
-               be the only place a reader can learn this. -->
-          <div class="gbench gtail" aria-hidden="true"><span>unsigned</span></div>
-          <p class="gleg">a flat bar: the gate stopped the run · the line runs on dashed and unsigned, to a person</p>
+            <span class="gwhy">a variance claim nobody had measured</span>
+            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">caught</span></span></span></div>
+          <p class="gleg">a slip left in its press: the gate stopped the run · the line runs on dashed and unsigned, to a person</p>
           <p class="gclose">two of my own checks stopped my own work. the next stop is a person.</p>
         </div>
         <figcaption>fig. 10 · three real gates and what each decided.</figcaption>
@@ -5110,28 +5183,52 @@ function scrubPath(p) {
   }
 }
 
-/* The review — the reviewer's marks draw themselves, each inside the gate
-   it judged: a check-stroke for the gate a human signed, a stop-bar for
-   the two that declined. The rows carry the words (the census floor is the
-   page's own) and the line, the frames and the unsigned tail are markup;
-   only the three marks are ink, so there is no settled frame for this to
-   fail to build. A mark being signed is the one motion the bench ruling
-   allows over a record — nothing here is a gauge and no magnitude moves.
+/* The review — three presses on one level. Each row's ram comes down on its
+   slip, the verdict is on the slip, the ram lifts; the one gate that passed
+   then slides its slip out of the press to the right, onto the same bed. The
+   rows carry the words, the machine is markup, and the only thing this writes
+   is one transform per moving part — so there is no settled frame for it to
+   fail to build, and nothing here is a gauge.
 
-   Driven off the MARKS, not the rows: a row that lost its mark used to
-   throw at getTotalLength, and this runs at parse time in the middle of
-   the file — the throw would take every function below it with it. */
-const how = { marks: [...document.querySelectorAll("#gatesFig .gmark")].map((mk) => {
-  const len = mk.getTotalLength();
-  mk.style.strokeDasharray = len;
-  mk.style.strokeDashoffset = len;
-  return { mk, len };
-}) };
+   SCRUBBED BY THE PLATE'S OWN POSITION, not by the beat. ¶10 is a tall
+   station and its beat progress spends most of its range with the plate off
+   screen: the presses used to finish striking before the drawing was in view.
+   `s` runs as the plate's centre travels from 0.82vh to 0.5vh, which is the
+   window a reader actually watches it in — the same correction fig. 08 took.
+   p >= 1 is the settled and reduced-motion frame, and it is the truthful one:
+   every gate decided, and the passed slip is out. */
+const how = {
+  plate: document.getElementById("gatesFig"),
+  rows: [...document.querySelectorAll("#gatesFig .grow.gbench")].map((row) => ({
+    el: row,
+    /* only one slip ever travels, and it is the one that was let out; how FAR
+       it travels is --gpk, in the stylesheet, so the phone re-seats it */
+    slide: row.classList.contains("passed") ? 1 : 0,
+  })),
+};
+function howWindow() {
+  if (!how.plate) return 1;
+  const r = how.plate.getBoundingClientRect();
+  return clamp((vh * 0.82 - (r.top + r.height / 2)) / (vh * 0.32), 0, 1);
+}
 function scrubHow(p) {
-  how.marks.forEach((m, i) => {
-    const t = smooth((p - 0.26 - i * 0.09) / 0.14);
-    const off = (m.len * (1 - t)).toFixed(2);
-    if (off !== m._off) { m._off = off; m.mk.style.strokeDashoffset = off; }
+  const s = p >= 1 ? 1 : howWindow();
+  how.rows.forEach((row, i) => {
+    const u = clamp((s - 0.22 * i) / 0.56, 0, 1);
+    /* the strike accelerates into the slip and the lift eases off it: a ram
+       falls and is drawn back up, and the two are not the same curve */
+    const down = clamp((u - 0.3) / 0.12, 0, 1);
+    const up = clamp((u - 0.42) / 0.16, 0, 1);
+    const gs = clamp(down * down - (1 - Math.pow(1 - up, 3)), 0, 1);
+    const gt = row.slide * smooth((u - 0.66) / 0.26);
+    const key = gs.toFixed(3) + "|" + gt.toFixed(3) + "|" + (u >= 0.42 ? 1 : 0);
+    if (key === row._k) return;
+    row._k = key;
+    row.el.style.setProperty("--gs", gs.toFixed(3));
+    row.el.style.setProperty("--gt", gt.toFixed(3));
+    /* 0 or 1, never between: a partial opacity is a stroke the palette gate
+       cannot see, and this page has lost four strokes to one before. */
+    row.el.style.setProperty("--gw", u >= 0.42 ? "1" : "0");
   });
 }
 
