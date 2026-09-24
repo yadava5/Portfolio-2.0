@@ -1131,7 +1131,10 @@ if (location.hash.length > 1) {
   .dawnfoot{width:100%; max-width:46rem; margin:0 auto}
   .dawnfoot .dawnsay{margin-top:0}
   .bdawn .dawnrun{position:absolute; right:6vw; bottom:9vh; margin:0; text-align:right}
-  .dawnwrap.measuring *{transform:none !important}
+  /* …and no transition either: the arrival rule transitions transform over
+     1s, and a rect read the instant the class lands would still see the
+     12px start value (measured: every word 12px low at every seat) */
+  .dawnwrap.measuring *{transform:none !important; transition:none !important}
 
   /* ————— the dawnscape —————
      ¶13's own ground, drawn in the page's own ink: a horizon, one far hill
@@ -1390,6 +1393,18 @@ if (location.hash.length > 1) {
   body.flying .bird.far svg{
     animation:faraway var(--dur) linear var(--start) both}
   body:not(.atmorning) .bird.far{visibility:hidden}
+  /* a landing keeps its ink to the twig and goes in the last second, as the
+     perched bird comes up; a bird leaving the perch flies WEST, and the
+     motion path's auto-rotate would turn it over, so it is mirrored on its
+     own axis: right side up, facing where it goes */
+  body.flying .bird.far.landing{animation-name:farland}
+  .bird.west svg{scale:1 -1}
+  @keyframes farland{
+    0%{offset-distance:0%; opacity:0}
+    4%{opacity:var(--op)}
+    96%{opacity:var(--op)}
+    100%{offset-distance:100%; opacity:0}
+  }
   @keyframes farcross{
     0%{offset-distance:0%; opacity:0}
     4%{opacity:var(--op)}
@@ -1404,7 +1419,21 @@ if (location.hash.length > 1) {
   /* a gull that has taken off is not on the ground; it comes back later */
   .dawnscape .ds-gull{transition:opacity .3s ease}
   .dawnscape .ds-gull.flown{opacity:0}
-  /* the doe's head holds where it is, up, for the length of a step */
+  /* the doe's two heads: one shown, never both, never a blend */
+  .dawnscape .ds-deer[data-pose="down"] .head-up{display:none}
+  .dawnscape .ds-deer:not([data-pose="down"]) .head-down{display:none}
+  /* the perch: the bird comes up on the twig as the flyer's ink goes, and
+     the twig takes its weight; a leaf that has landed and is the sixth on
+     the ground fades while the next one falls. All transients. */
+  .dawnscape .ds-perch{opacity:0}
+  .dawnscape .ds-perch.on{opacity:1}
+  .dawnscape .ds-twig.laden{transform:translateY(2.5px)}
+  .dawnscape .ds-leaf.gone{opacity:0}
+  @media (prefers-reduced-motion: no-preference){
+    .dawnscape .ds-perch{transition:opacity .4s ease}
+    .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+    .dawnscape .ds-leaf{transition:opacity 2s ease}
+  }
   @media (prefers-reduced-motion: reduce){
     .flock{display:none}
   }
@@ -8333,6 +8362,17 @@ function buildDawnscape() {
     const twig = curve([[X(0.782), Y(0.147)], [X(0.77), Y(0.125)], [X(0.758), Y(0.108)], pz]);
     const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
     SCAPE.perch = { x: pz[0], y: pz[1] };
+    /* the bird that lands here: the ground gull's own body and head, wings
+       folded, facing west into the sky it crossed, its feet on the twig's
+       tip. Built now so a landing and a rebuild both draw the same bird. */
+    {
+      const k = 0.9 * Math.max(vs, 0.8), Tp = (px, py) => `${F(pz[0] + px * k)} ${F(pz[1] + py * k)}`;
+      SCAPE.perchMarkup = `<path class="ds-fill" d="M${Tp(-6, -6)} C${Tp(-6, -9)} ${Tp(-1, -11)} ${Tp(3, -10)} C${Tp(7, -9.5)} ${Tp(9, -8)} ${Tp(12, -5)}` +
+        ` C${Tp(9, -4)} ${Tp(6, -2.4)} ${Tp(2, -2.2)} C${Tp(-2, -2.2)} ${Tp(-6, -3.4)} ${Tp(-6, -6)} Z` +
+        ` M${Tp(-4, -8)} C${Tp(-6, -10)} ${Tp(-8, -12.5)} ${Tp(-9.5, -13)} C${Tp(-11, -13.4)} ${Tp(-12, -12.4)} ${Tp(-12, -11.4)}` +
+        ` L${Tp(-15, -10.8)} L${Tp(-11.6, -10)} C${Tp(-11, -9)} ${Tp(-9, -8)} ${Tp(-7, -7)} Z"/>` +
+        `<path class="ds-ink w1" d="M${Tp(-1, -2.4)} L${Tp(-1.6, 0)} M${Tp(2.4, -2.4)} L${Tp(3, 0)}"/>`;
+    }
     groups++;
     cutPad = 4;
     return `<g class="ds-bough sway-b" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
@@ -8375,7 +8415,10 @@ function buildDawnscape() {
     const k = 0.95 * vs;
     const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
-    const outline = [
+    /* the body ends at the neck's base; the head is drawn twice, up and
+       looking west, and down at the grass, and only one is shown: a solid
+       cannot turn a head without a seam, so her life is a swap */
+    const body = [
       ...c([[-6, -41], [2, -43], [10, -43.5], [17, -42], [22, -38.5]]),
       ...l([[23.5, -37], [26, -34.5], [23, -33.5]]),
       ...c([[22.5, -31], [21.5, -26], [21, -21]]),
@@ -8384,20 +8427,55 @@ function buildDawnscape() {
       ...c([[8, -20], [2, -23.5], [-5, -24]]),
       ...l([[-6, -23], [-6.5, -12], [-7, -1], [-7, 0], [-10, 0], [-10, -1], [-9.5, -12], [-9.5, -21]]),
       ...l([[-11.5, -21], [-12.5, -12], [-13, -1], [-13, 0], [-16, 0], [-16, -1], [-15.5, -12], [-15.5, -22]]),
-      ...c([[-16.5, -27], [-17.5, -33], [-19, -39], [-22, -44], [-25.5, -48], [-29.5, -50.5], [-34, -52], [-38.5, -53.5], [-40.5, -55], [-38, -57], [-32, -58.5], [-27.5, -59]]),
+      ...c([[-16.5, -27], [-17.5, -33], [-18.5, -37], [-12, -45], [-8, -44.5], [-6, -41]]),
+    ];
+    const headUp = [
+      ...c([[-16, -34], [-19, -39], [-22, -44], [-25.5, -48], [-29.5, -50.5], [-34, -52], [-38.5, -53.5], [-40.5, -55], [-38, -57], [-32, -58.5], [-27.5, -59]]),
       ...l([[-27, -59.5], [-29, -68], [-25, -61.5]]),
       ...l([[-23.5, -61.5], [-21, -68.5], [-19.5, -61]]),
-      ...c([[-18, -59.5], [-15, -55.5], [-12, -50.5], [-8.5, -45], [-6, -41]]),
+      ...c([[-18, -59.5], [-15, -55.5], [-12, -50.5], [-8.5, -45], [-7, -41]]),
     ];
-    let d = path(wob(outline, 0.22)) + "Z";
+    const headDown = [
+      ...c([[-16, -34], [-22, -29], [-27.5, -22], [-31.5, -15], [-35, -9], [-38, -4], [-41, -1], [-42.5, -3.5], [-41, -8], [-38.5, -13]]),
+      ...l([[-38, -14], [-43, -19.5], [-36.5, -17]]),
+      ...l([[-35, -17.5], [-38.5, -24], [-33, -19.5]]),
+      ...c([[-30.5, -21], [-25, -27], [-19, -33.5], [-13, -40], [-9, -44], [-7, -41]]),
+    ];
+    let d = path(wob(body, 0.22)) + "Z";
     d += ribbon(wob(curve(T([[14, -24.5], [17, -29.5], [19.5, -35]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
     d += ribbon(wob(curve(T([[-8, -27], [-10, -32], [-11, -37]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
+    const up = path(wob(headUp, 0.22)) + "Z", down = path(wob(headDown, 0.22)) + "Z";
     fills.push([x, hz - 30 * k, 30 * k]);
-    nS++;
-    /* her shadow, three raked strokes, and two ticks at her feet */
+    nS += 3;
+    /* her shadow, three raked strokes at her feet */
     const sh = hatch([[x - 22 * k, hz + 2], [x + 24 * k, hz + 2], [x + 20 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
     groups++;
-    return `<g class="ds-deer" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}</g>`;
+    return `<g class="ds-deer" data-x="${F(x)}" data-pose="up" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<path class="ds-fill head-up" d="${up}"/><path class="ds-fill head-down" d="${down}"/>${sh}</g>`;
+  };
+
+  /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
+  const hare = (x, y) => {
+    const k = Math.max(vs, 0.77);
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
+    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
+    const outline = [
+      ...c([[-9, 0], [-10, -5], [-9.5, -10], [-11, -13], [-13, -15.5], [-12, -18], [-9, -19.5]]),
+      ...l([[-8.5, -20], [-9.5, -26], [-7, -21]]),
+      ...l([[-6, -21], [-5, -26.5], [-3.5, -20]]),
+      ...c([[-2, -18], [2, -17], [6, -15.5], [9, -12], [10, -7], [9, -2], [7, 0]]),
+      ...l([[3, 0], [-2, 0.5], [-9, 0]]),
+    ];
+    let d = path(wob(outline, 0.18)) + "Z";
+    /* the one cut: the haunch from the back */
+    d += ribbon(wob(curve(T([[1, -3], [3.5, -8], [5, -13]]), 2), 0.15), 1.9 * Math.max(k, 0.95));
+    fills.push([x, y - 13 * k, 13 * k]);
+    nS++;
+    const sh = hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    let td = "";
+    for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
+    SCAPE.hare = { x, y };
+    return `<g class="ds-hare" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}${P(td, "ds-ink w1", 2)}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -8469,7 +8547,22 @@ function buildDawnscape() {
     near += tuft(X(0.975), 27 * vs, "sway-m", 6);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
+    near += hare(X(0.86), Y(0.97));
+    /* where a leaf may fall from and where it may land: the crown's left
+       half down the trunk's side, short of the sun's halo, and the bough
+       down the right edge, short of the signature's air. The clearance gate
+       holds both envelopes clear of every word. */
+    const floorUnder = (x0, x1, want) => {
+      let f = want;
+      for (const [l, t, rt] of words) if (rt > x0 && l < x1 && t - 2 < f) f = t - 2;
+      return Math.max(hz + 8, f);
+    };
+    SCAPE.leaf = {
+      crownSrc: [X(0.05), Y(0.10), X(0.16), Y(0.30)], crownEnv: [X(0.02), Y(0.10), X(0.19), floorUnder(X(0.02), X(0.19), hz + 42)],
+      boughSrc: [X(0.76), Y(0.10), X(0.86), Y(0.17)], boughEnv: [X(0.76), Y(0.10), X(0.97), floorUnder(X(0.76), X(0.97), hz + 22)],
+    };
   } else {
+    SCAPE.leaf = null; SCAPE.hare = null;
     /* the phone's strip: no flank, so what survives is what fits under the
        last line, out of the column's x-range where it can be taller */
     if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
@@ -8483,9 +8576,17 @@ function buildDawnscape() {
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = `<g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`;
+  /* a rebuild mid-dwell puts the perched bird back on the new twig */
+  if (sky.perched && SCAPE.perchMarkup) {
+    const g = svg.querySelector(".ds-perch");
+    g.innerHTML = SCAPE.perchMarkup;
+    g.classList.add("on");
+    g.parentElement.classList.add("laden");
+  }
   SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups; SCAPE.strokes = nS;
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch }; /* probe hook */
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch,
+    leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])) }; /* probe hook */
 }
 addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
 
@@ -8708,34 +8809,39 @@ const BIRD_SVG = (() => {
    minute is a whole minute of morning and not a busier one. Each crossing
    is logged so a resize mid-flight rebuilds it where it had got to. */
 const farLog = [];
-const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), lastGround: -Infinity, lastDeer: -Infinity };
+const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), lastGround: -Infinity, lastDeer: -Infinity, lastStep: -Infinity, lastHare: -Infinity,
+  perched: false, perch: { lands: 0, leaves: 0 } };
 let farTimer = null, groundTimer = null;
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
    angle is what a phone and a laptop have in common, so the climb is
    whatever that angle buys inside the room the sky has, as with the near
-   flock, and the bow follows the same profile at a fraction of its lift */
+   flock, and the bow follows the same profile at a fraction of its lift.
+   A crossing that LANDS ends exactly on the perch, and one that leaves the
+   perch runs west, back over the sky it came across. */
 function farPath(f, W, H) {
   const x0 = f.ox * W, y0 = f.oy * H;
   const padX = 46 * f.sc, padY = 20 * f.sc;
-  const x1 = Math.min(f.ex * W, W - padX - 2);
-  const run = Math.max(80, x1 - x0);
+  const dir = f.ex < f.ox ? -1 : 1;
+  const x1 = f.land ? f.ex * W : dir > 0 ? Math.min(f.ex * W, W - padX - 2) : Math.max(f.ex * W, padX + 2);
+  const run = Math.max(80, Math.abs(x1 - x0));
   const climb = clamp(run * Math.tan(f.ang), 0, Math.max(0, y0 - f.ey * H));
-  const y1 = Math.max(padY + 2, y0 - climb);
+  const y1 = f.land ? f.ey * H : Math.max(padY + 2, y0 - climb);
   const bow = f.bow;
   const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
-  const pt = (fx, a) => [x0 + run * fx, y0 - (y0 - y1) * (fx + bow * (a - fx))];
+  const pt = (fx, a) => [x0 + dir * run * fx, y0 - (y0 - y1) * (fx + bow * (a - fx))];
   /* the near flock's own profile: 72% of the climb by half the run */
   const [c1, c2, c3, c4, c5] = [pt(0.2, 0.28), pt(0.52, 0.72), pt(0.64, 0.84), pt(0.78, 0.94), pt(0.9, 0.98)];
   return `path("M ${P(x0, y0)} C ${P(...c1)} ${P(...c2)} ${P(...c3)} C ${P(...c4)} ${P(...c5)} ${P(x1, y1)}")`;
 }
 
 function placeFar(f, parent, elapsed) {
-  if (f.start + f.dur <= elapsed) return false;
+  /* a landing that finished while the sheet was being rebuilt has landed */
+  if (f.start + f.dur <= elapsed) { if (f.land && !f.done) { f.done = true; perchArrive(); } return false; }
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
   const el = document.createElement("div");
-  el.className = "bird far";
+  el.className = "bird far" + (f.land ? " landing" : "") + (f.ex < f.ox ? " west" : "");
   el.dataset.entry = f.entry;
   el.style.offsetPath = farPath(f, W, H);
   el.style.setProperty("--dur", f.dur.toFixed(2) + "s");
@@ -8746,7 +8852,10 @@ function placeFar(f, parent, elapsed) {
   el.style.setProperty("--wphase", f.wphase.toFixed(3) + "s");
   el.innerHTML = `<div class="bd">${BIRD_SVG}</div>`;
   el.addEventListener("animationend", (e) => {
-    if (e.animationName === "farcross") { el.classList.add("gone"); el.remove(); }
+    if (e.animationName !== "farcross" && e.animationName !== "farland") return;
+    el.classList.add("gone");
+    el.remove();
+    if (f.land && !f.done) { f.done = true; perchArrive(); }
   });
   parent.appendChild(el);
   return true;
@@ -8782,7 +8891,13 @@ function spawnFar() {
     else if (sky.last === "fade" && trees.length) entry = "canopy";
     else if (sky.last === "fade" && groundOk) entry = "takeoff";
   }
-  const count = entry === "canopy" && r() < 0.45 ? 2 : 1;
+  /* one canopy crossing in five ends on the bough's bare twig, the first one
+     always (a sitter sees a landing inside the first minute), only from a
+     canopy (a bird off the ground cannot climb to it inside the frame) and
+     only while the twig is free; the twig is taken from this moment */
+  const land = entry === "canopy" && !!SCAPE.perch && !sky.perched && (sky.spawned === 0 || r() < 0.2);
+  if (land) sky.perched = true;
+  const count = entry === "canopy" && !land && r() < 0.45 ? 2 : 1;
   const elapsed = (now - releasedAt) / 1000;
   for (let i = 0; i < count; i++) {
     const f = { entry, start: elapsed + i * (0.4 + r() * 0.5), sc: 0, op: 0 };
@@ -8812,6 +8927,7 @@ function spawnFar() {
     }
     f.ex = 0.86 + r() * 0.05;
     f.ey = narrow ? 0.10 : 0.08 + r() * 0.05;
+    if (land) { f.land = true; f.ex = SCAPE.perch.x / W; f.ey = (SCAPE.perch.y - 7 * vs) / H; }
     f.bow = entry === "fade" ? 0.3 : entry === "takeoff" ? 0.9 : 1;
     f.sc = (narrow ? 0.5 : 0.4 + r() * 0.15) * vs;
     f.op = entry === "fade" ? 0.13 + r() * 0.02 : 0.14 + r() * 0.05;
@@ -8829,16 +8945,128 @@ function spawnFar() {
   farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
 }
 
+/* ····· the perch ·····
+   Capacity one. The flyer's last second fades on the twig and the perched
+   bird, the ground gull's own silhouette at 20px, comes up in its place as
+   the twig dips under it. It stays 20 to 70 seconds and leaves as a new
+   crossing, west, back over the sky; the socket is emptied once the flyer
+   has its ink, so there is never a moment with two birds and never one
+   with an orphan. Both ends are logged for the gate. */
+let perchTimer = null;
+function perchArrive() {
+  const g = document.querySelector(".dawnscape .ds-perch");
+  if (!g || !SCAPE.perchMarkup) { sky.perched = false; return; }
+  g.innerHTML = SCAPE.perchMarkup;
+  requestAnimationFrame(() => g.classList.add("on"));
+  g.parentElement.classList.add("laden");
+  sky.perched = true;
+  sky.perch.lands++;
+  mark("perch");
+  const r = birdRng(0x7e5c + sky.perch.lands * 977);
+  clearTimeout(perchTimer);
+  perchTimer = setTimeout(leavePerch, at(20000 + r() * 50000));
+  window.__world.perch = { lands: sky.perch.lands, leaves: sky.perch.leaves, perched: 1 };
+}
+function leavePerch() {
+  perchTimer = null;
+  const g = document.querySelector(".dawnscape .ds-perch");
+  if (!g || !sky.perched || RM) return;
+  if (!atMorning) { perchTimer = setTimeout(leavePerch, at(6000)); return; }
+  const host = document.getElementById("flock");
+  const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
+  const now = performance.now();
+  const r = birdRng(0x9e2c + sky.spawned * 6007);
+  const vs = clamp(W / 1500, 0.44, 1);
+  g.classList.remove("on");
+  g.parentElement.classList.remove("laden");
+  sky.perched = false;
+  sky.perch.leaves++;
+  setTimeout(() => { if (!sky.perched) g.innerHTML = ""; }, at(450));
+  const f = {
+    entry: "perch", start: (now - releasedAt) / 1000, ox: SCAPE.perch.x / W, oy: (SCAPE.perch.y - 7 * vs) / H,
+    ex: 0.33 + r() * 0.05, ey: 0.035 + r() * 0.02, ang: ((8 + r() * 4) * Math.PI) / 180, bow: 0.8,
+    sc: (0.4 + r() * 0.15) * vs, op: 0.14 + r() * 0.05, dur: (21 + r() * 9) * PACE, beat: 0.64 + r() * 0.16, wphase: -r() * 0.6,
+  };
+  farLog.push(f);
+  placeFar(f, host, f.start);
+  sky.spawned++;
+  sky.last = "perch";
+  sky.entries.push({ entry: "perch", n: 1, t: +(now - release.t0).toFixed(0) });
+  mark("perchleave");
+  window.__world.sky = { spawned: sky.spawned, live: host.querySelectorAll(".bird.far:not(.gone)").length, entries: sky.entries };
+  window.__world.perch = { lands: sky.perch.lands, leaves: sky.perch.leaves, perched: 0 };
+}
+
+/* ····· the falling leaf ·····
+   A transient, not census: one leaf every 30 to 80 seconds, never two in
+   the air, from the crown's left half seven times in ten and the bough
+   otherwise, falling three to five seconds with two or three swings and a
+   little drift east (the one wind), tumbling. Web Animations, not a CSS
+   animation, so the census stays exactly thirteen by construction. A leaf
+   that lands stays; the sixth on the ground fades while the next falls. */
+let leafTimer = null, leafLive = null;
+const leaves = { shed: 0, landed: [] };
+function shedLeaf() {
+  leafTimer = null;
+  if (RM || !SCAPE.built) return;
+  if (!atMorning || !SCAPE.leaf || leafLive) { leafTimer = setTimeout(shedLeaf, at(8000)); return; }
+  const front = document.querySelector(".dawnscape .ds-front");
+  if (!front) return;
+  const r = birdRng(0x1eaf + leaves.shed * 4099);
+  const L = SCAPE.leaf, crown = r() < 0.7;
+  const src = crown ? L.crownSrc : L.boughSrc, env = crown ? L.crownEnv : L.boughEnv;
+  const x0 = src[0] + r() * (src[2] - src[0]), y0 = src[1] + r() * (src[3] - src[1]);
+  const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
+  const swings = 2 + Math.floor(r() * 2), amp = 20 + r() * 20, drift = 10 + r() * 20;
+  const turns = (1.5 + r()) * 360 * (r() < 0.5 ? -1 : 1);
+  const s = 7 + r() * 3;
+  const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  el.setAttribute("class", "ds-fill ds-leaf airborne");
+  /* a pointed oval with one notch, drawn about its own centre */
+  el.setAttribute("d", `M0 ${(-s / 2).toFixed(1)} C${(s * 0.45).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(s * 0.45).toFixed(1)} ${(s * 0.3).toFixed(1)} 0 ${(s / 2).toFixed(1)}` +
+    ` C${(-s * 0.2).toFixed(1)} ${(s * 0.3).toFixed(1)} ${(-s * 0.45).toFixed(1)} ${(s * 0.12).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.04).toFixed(1)}` +
+    ` L${(-s * 0.12).toFixed(1)} 0 C${(-s * 0.4).toFixed(1)} ${(-s * 0.18).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.4).toFixed(1)} 0 ${(-s / 2).toFixed(1)}Z`);
+  const frames = [];
+  const N = 14;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    const y = y0 + (yEnd - y0) * Math.pow(t, 1.15);
+    const x = clamp(x0 + drift * t + amp * Math.sin(t * swings * 2 * Math.PI) * (1 - 0.3 * t), env[0] + 6, env[2] - 6);
+    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(turns * t).toFixed(1)}deg)` });
+  }
+  front.appendChild(el);
+  leafLive = el;
+  leaves.shed++;
+  mark("leaf");
+  /* the sixth on the ground goes as this one falls */
+  if (leaves.landed.length >= 5) {
+    const old = leaves.landed.shift();
+    old.classList.add("gone");
+    setTimeout(() => old.remove(), at(2200));
+  }
+  const anim = el.animate(frames, { duration: at(3000 + r() * 2000), easing: "ease-in-out", fill: "forwards" });
+  anim.onfinish = () => {
+    anim.commitStyles();
+    anim.cancel();
+    el.classList.remove("airborne");
+    leaves.landed.push(el);
+    leafLive = null;
+    window.__world.leaves = { shed: leaves.shed, landed: leaves.landed.length, airborne: 0 };
+  };
+  window.__world.leaves = { shed: leaves.shed, landed: leaves.landed.length, airborne: 1 };
+  leafTimer = setTimeout(shedLeaf, at(30000 + r() * 50000));
+}
+
 /* ····· the ground's own events ·····
    Stillness is the state; life is a rare, bounded thing. A gull hop-walks a
    few steps every twenty to fifty seconds, a couple of hops of 4–8px with a
-   2px lift, and drifts home once it is past half its range. The doe takes a
-   step or two of 10–14px over 1.6s, rarer still, and ONLY WHILE SHE IS
-   LOOKING UP: the scheduler reads the graze cycle's own clock and waits for
-   the window where her head is raised, and pauses it there for the step, so
-   her head and her feet never disagree. Every roamer stays within 30px of
-   where it was drawn, and every move is logged to window.__world.ground so
-   a gate can hold the range in the author's own frame. Nothing here is a
+   2px lift, and drifts home once it is past half its range. The hare hops
+   the same way, smaller: 3–5px, two to four of them. The doe lowers her head
+   to the grass for a few seconds every half minute or so (a swap of two
+   drawn heads, never a turn, never a blend) and, rarer, takes a step or two
+   of 10–14px, only while she is looking up. Every roamer stays within 30px
+   of where it was drawn, and every move is logged to window.__world.ground
+   so a gate can hold the range in the author's own frame. Nothing here is a
    continuous animation: it is event JS setting a translate the CSS
    transitions. No two ground events within 12s of each other. */
 const roam = {};
@@ -8846,22 +9074,20 @@ function logGround(id, dx) {
   roam[id] = (roam[id] || 0) + dx;
   (window.__world.ground = window.__world.ground || []).push({ id, dx: +dx.toFixed(1), x_off: +roam[id].toFixed(1) });
 }
-function hopWalk(g, r) {
-  const el = document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`);
+/* a hop-walk: `el` translates, `size` is the hop, `lift` the height */
+function hopWalk(el, id, r, hops, size, lift, ms0) {
   if (!el) return;
-  const hops = 2 + Math.floor(r() * 4);
   let k = 0;
   const hop = () => {
     if (k++ >= hops) return;
-    const off = roam[g.id] || 0;
-    /* random, biased home past half range, and never past the range */
+    const off = roam[id] || 0;
     let dir = r() < 0.5 ? -1 : 1;
     if (Math.abs(off) > 15) dir = off > 0 ? -1 : 1;
-    const dx = clamp(dir * (4 + r() * 4), -30 - off, 30 - off);
-    logGround(g.id, dx);
-    const ms = 280 + r() * 80;
+    const dx = clamp(dir * (size[0] + r() * (size[1] - size[0])), -30 - off, 30 - off);
+    logGround(id, dx);
+    const ms = ms0 + r() * 80;
     el.style.transition = `transform ${(ms / 2).toFixed(0)}ms ease-out`;
-    el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, -2px)`;
+    el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, ${-lift}px)`;
     setTimeout(() => {
       el.style.transition = `transform ${(ms / 2).toFixed(0)}ms ease-in`;
       el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
@@ -8870,36 +9096,37 @@ function hopWalk(g, r) {
   };
   hop();
 }
+function doePose(r) {
+  const el = document.querySelector(".dawnscape .ds-deer");
+  if (!el || el.dataset.pose === "down") return;
+  el.dataset.pose = "down";
+  (window.__world.poses = window.__world.poses || []).push({ id: "deer", pose: "down" });
+  setTimeout(() => {
+    el.dataset.pose = "up";
+    window.__world.poses.push({ id: "deer", pose: "up" });
+  }, at(4000 + r() * 5000));
+}
 function deerStep(r) {
   const el = document.querySelector(".dawnscape .ds-deer");
-  const head = el && el.querySelector(".ds-head");
-  if (!el || !head) return 0;
-  /* wait for the head to be up: 70% to 100% of the 17s graze */
-  const a = head.getAnimations()[0];
-  const ph = a ? a.currentTime % 17000 : 13000;
-  const wait = ph < 12200 ? 12200 - ph : ph > 15400 ? 17000 - ph + 12200 : 0;
-  setTimeout(() => {
-    const steps = r() < 0.6 ? 1 : 2;
-    const off0 = roam.deer || 0;
-    let dir = r() < 0.5 ? -1 : 1;
-    if (Math.abs(off0) > 15) dir = off0 > 0 ? -1 : 1;
-    el.classList.add("stepping");
-    let k = 0;
-    const step = () => {
-      if (k++ >= steps) { el.classList.remove("stepping"); return; }
-      const off = roam.deer || 0;
-      const dx = clamp(dir * (10 + r() * 4), -30 - off, 30 - off);
-      logGround("deer", dx);
-      el.style.transition = "transform 800ms ease-in-out";
-      el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, -1px)`;
-      setTimeout(() => {
-        el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
-        setTimeout(step, 900);
-      }, 800);
-    };
-    step();
-  }, wait);
-  return wait;
+  if (!el || el.dataset.pose === "down") return;
+  const steps = r() < 0.6 ? 1 : 2;
+  const off0 = roam.deer || 0;
+  let dir = r() < 0.5 ? -1 : 1;
+  if (Math.abs(off0) > 15) dir = off0 > 0 ? -1 : 1;
+  let k = 0;
+  const step = () => {
+    if (k++ >= steps) return;
+    const off = roam.deer || 0;
+    const dx = clamp(dir * (10 + r() * 4), -30 - off, 30 - off);
+    logGround("deer", dx);
+    el.style.transition = "transform 800ms ease-in-out";
+    el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, -1px)`;
+    setTimeout(() => {
+      el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
+      setTimeout(step, 900);
+    }, 800);
+  };
+  step();
 }
 function groundLife() {
   groundTimer = null;
@@ -8908,11 +9135,20 @@ function groundLife() {
   const r = birdRng(0x9a0d + (window.__world.ground || []).length * 811 + sky.spawned);
   const gulls = (SCAPE.gulls || []).filter((g) => !sky.flown.has(g.id));
   if (atMorning && now - sky.lastGround > at(12000)) {
-    const wantDeer = SCAPE.deer && now - sky.lastDeer > at(55000) && r() < 0.35;
-    if (wantDeer) { sky.lastDeer = now + deerStep(r); sky.lastGround = sky.lastDeer; }
-    else if (gulls.length) { hopWalk(gulls[Math.floor(r() * gulls.length)], r); sky.lastGround = now; }
+    const pick = r();
+    const stepDue = SCAPE.deer && now - sky.lastStep > at(55000);
+    const poseDue = SCAPE.deer && now - sky.lastDeer > at(25000);
+    const hareDue = SCAPE.hare && now - sky.lastHare > at(30000);
+    if (stepDue && pick < 0.3) { deerStep(r); sky.lastStep = now; sky.lastGround = now; }
+    else if (poseDue && pick < 0.6) { doePose(r); sky.lastDeer = now; sky.lastGround = now; }
+    else if (hareDue && pick < 0.85) { hopWalk(document.querySelector(".dawnscape .ds-hare"), "hare", r, 2 + Math.floor(r() * 3), [3, 5], 2.5, 260); sky.lastHare = now; sky.lastGround = now; }
+    else if (gulls.length) {
+      const g = gulls[Math.floor(r() * gulls.length)];
+      hopWalk(document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`), g.id, r, 2 + Math.floor(r() * 4), [4, 8], 2, 280);
+      sky.lastGround = now;
+    }
   }
-  groundTimer = setTimeout(groundLife, at(20000 + r() * 30000));
+  groundTimer = setTimeout(groundLife, at(14000 + r() * 22000));
 }
 
 /* the ground settles, and the sky and the ground come to life off it */
@@ -8924,6 +9160,7 @@ function settleScape() {
   if (RM) return;
   farTimer = setTimeout(spawnFar, at(1500));
   groundTimer = setTimeout(groundLife, at(24000));
+  leafTimer = setTimeout(shedLeaf, at(20000 + 10000 * birdRng(0x1eaf)()));
 }
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
   if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();

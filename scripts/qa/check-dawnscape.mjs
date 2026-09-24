@@ -250,10 +250,15 @@ try {
     const pt = svg.createSVGPoint();
     let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
     let samples = 0;
+    /* the sun's halo: nothing but the horizon and the sun's own arcs (the
+       .ds-line plane) within 90px of its centre */
+    const sun = scape && scape.sun;
+    let halo = { d: Infinity, sub: "" };
     for (const p of svg.querySelectorAll("path")) {
       const L = p.getTotalLength();
       if (!L) continue;
       const m = p.getScreenCTM();
+      const onLine = !!p.closest(".ds-line");
       const range = p.closest(".ds-deer, .ds-gull, .ds-hare") ? RANGE_PX : 0;
       const sw = p.closest("[class*=sway-]");
       let ox = 0,
@@ -283,6 +288,10 @@ try {
         const v = pt.matrixTransform(m);
         const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
         samples++;
+        if (sun && !onLine) {
+          const d = Math.hypot(q.x - sun.x, q.y - sun.y);
+          if (d < halo.d) halo = { d: +d.toFixed(1), sub };
+        }
         for (const t of texts) {
           /* the range is a roam, and a roam is along x only */
           const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - range;
@@ -323,10 +332,25 @@ try {
       .filter(
         (a) => a instanceof CSSAnimation && svg.contains(a.effect.target)
       );
+    /* where a leaf may fall: both envelopes keep every word's halo */
+    let leafWorst = { margin: Infinity, env: "", text: "" };
+    if (scape && scape.leaf)
+      for (const k of ["crownEnv", "boughEnv"]) {
+        const e = scape.leaf[k];
+        for (const t of texts) {
+          const dx = Math.max(t[0] - e[2], e[0] - t[2], 0);
+          const dy = Math.max(t[1] - e[3], e[1] - t[3], 0);
+          const margin = Math.max(dx, dy) - t[4];
+          if (margin < leafWorst.margin)
+            leafWorst = { margin: +margin.toFixed(1), env: k, text: t[5] };
+        }
+      }
     return {
       scape,
       paths: svg.querySelectorAll("path").length,
       worst,
+      halo,
+      leafWorst,
       texts: texts.length,
       samples,
       tallUnder,
@@ -376,6 +400,14 @@ try {
       else
         note(
           `${seat}: clearance margin ${m.worst.margin}px ("${m.worst.text}" vs ${m.worst.sub}, ${m.worst.gap}px of ${m.worst.need}px), ${m.texts} text rects vs ${m.samples} sampled points`
+        );
+      if (m.scape.sun && m.halo.d < m.scape.sun.r * 3.5)
+        fail(
+          `${seat}: ${m.halo.sub} is ${m.halo.d}px from the sun — nothing but the horizon and the sun's arcs within 3.5 radii (${(m.scape.sun.r * 3.5).toFixed(0)}px) of it`
+        );
+      if (m.scape.leaf && m.leafWorst.margin < 0)
+        fail(
+          `${seat}: the leaf's ${m.leafWorst.env} is ${-m.leafWorst.margin}px inside "${m.leafWorst.text}"'s halo — a falling leaf never crosses the clearing`
         );
       if (m.tallUnder.length)
         fail(
@@ -501,7 +533,14 @@ try {
           r.bottom,
         ]);
       }
-      return { birds: out, t: performance.now() - window.__world.departure.t0 };
+      return {
+        birds: out,
+        t: performance.now() - window.__world.departure.t0,
+        perched: document.querySelectorAll(".dawnscape .ds-perch path.ds-fill")
+          .length,
+        airborne: document.querySelectorAll(".dawnscape .ds-leaf.airborne")
+          .length,
+      };
     };
     const SIT_MS = 30000; /* 30s of wall clock is two minutes of the page's own */
     let first = null,
@@ -509,13 +548,17 @@ try {
       worstGap = 0,
       escapes = 0,
       maxFar = 0,
-      samples = 0;
+      samples = 0,
+      twoPerched = 0,
+      twoLeaves = 0;
     const tLand = await page.evaluate(
       () => performance.now() - window.__world.departure.t0
     );
     for (let t = 0; t < SIT_MS; t += 1000) {
-      const { birds, t: now } = await page.evaluate(READ);
+      const { birds, t: now, perched, airborne } = await page.evaluate(READ);
       samples++;
+      if (perched > 1) twoPerched++;
+      if (airborne > 1) twoLeaves++;
       if (birds.length && first === null) first = now - tLand;
       const far = birds.filter((b) => b[0]).length;
       maxFar = Math.max(maxFar, far);
@@ -529,6 +572,11 @@ try {
     }
     const fin = await page.evaluate(() => ({
       sky: window.__world.sky,
+      perch: window.__world.perch || { lands: 0, leaves: 0, perched: 0 },
+      perchedNow: document.querySelectorAll(".dawnscape .ds-perch path.ds-fill")
+        .length,
+      leaves: window.__world.leaves || { shed: 0, landed: 0, airborne: 0 },
+      poses: (window.__world.poses || []).length,
       ground: window.__world.ground || [],
       tf: [
         ...document.querySelectorAll(
@@ -555,6 +603,29 @@ try {
       );
     if (maxFar > 3)
       fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
+    /* the perch: capacity one, and the socket agrees with the log: a bird
+       that landed and has not left is on the twig, and no other */
+    if (twoPerched)
+      fail(
+        `${seat}: two birds on the perch in ${twoPerched} sample(s) — capacity one`
+      );
+    if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
+      fail(
+        `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
+      );
+    if (fin.perch.lands < 1)
+      fail(
+        `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
+      );
+    if (
+      fin.perch.leaves >= 1 &&
+      !fin.sky.entries.some((e) => e.entry === "perch")
+    )
+      fail(`${seat}: a bird left the perch but no "perch" entry was logged`);
+    if (twoLeaves)
+      fail(
+        `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
+      );
     if (!fin.sky || fin.sky.spawned < 2)
       fail(
         `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
@@ -572,7 +643,14 @@ try {
     for (const [id, tf] of fin.tf) {
       const last = [...fin.ground].reverse().find((g) => g.id === id);
       const shown = tf ? parseFloat(tf.replace(/^translate\(/, "")) : 0;
-      if (last && Math.abs(shown - last.x_off) > 0.6)
+      /* a move is logged whole as it starts and drawn in two halves, so a
+         sample mid-hop sits at the previous offset plus half the step */
+      const mid = last ? last.x_off - last.dx / 2 : 0;
+      if (
+        last &&
+        Math.abs(shown - last.x_off) > 0.6 &&
+        Math.abs(shown - mid) > 0.6
+      )
         fail(
           `${seat}: ${id} is drawn at ${shown}px but the log says ${last.x_off}px`
         );
@@ -581,7 +659,8 @@ try {
       note(
         `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
           `max ${maxFar} far at once, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
-          `max |x_off| ${JSON.stringify(maxOff)}`
+          `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
+          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, ${fin.poses} pose swaps`
       );
     await ctx.close();
   }
