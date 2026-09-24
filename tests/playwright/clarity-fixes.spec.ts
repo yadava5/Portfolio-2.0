@@ -263,17 +263,14 @@ test.describe("2.7 · reduced motion is given the morning", () => {
     await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
 
     await page.locator("#approve").scrollIntoViewIfNeeded();
-    /* the button ARMS when the run docks, and a reduced-motion reader has no
-       travelling token to dock — so it is armed at boot instead. This press
-       is only a press if that held; assert it here rather than discover it
-       three expectations further down as a silently unapproved page. */
-    expect(
-      await page.evaluate(
-        () =>
-          (window as unknown as { __world: { armed: boolean } }).__world.armed
-      ),
-      "reduced motion arms the gate at boot"
-    ).toBe(true);
+    /* THE ARMING IS GONE, and this used to assert it. The button refused the
+       press until the run had docked in the socket, because an early press
+       played a departure below the fold; round 7 removed that departure, and
+       with it both the wait and the hollow state it advertised. What is left
+       to assert is that the control is live and not `disabled` — a press
+       that never reaches the handler would show up three expectations down
+       as a silently unapproved page. */
+    await expect(page.locator("#approve")).toBeEnabled();
     await page.click("#approve");
 
     await expect(page.locator("body")).toHaveClass(/\batmorning\b/, {
