@@ -501,6 +501,8 @@ try {
       live: document.body.classList.contains("morninglive"),
       settled: document.querySelector(".dawnscape").dataset.settled,
       scape: window.__world.marks.scape,
+      owlDrawn: document.querySelectorAll(".dawnscape .ds-owl path.ds-fill")
+        .length,
     }));
     const seat = `${W}×${H} reduced`;
     if (!rm.atmorning) fail(`${seat}: the page is not at the morning`);
@@ -516,6 +518,10 @@ try {
       );
     if (m.flock !== "none")
       fail(`${seat}: .flock is display:${m.flock} under reduced motion`);
+    if (m.scape && m.scape.owl && !rm.owlDrawn)
+      fail(
+        `${seat}: the owl is not in the notch — reduced motion draws it home from the start`
+      );
     if (rm.scape === undefined)
       fail(
         `${seat}: mark("scape") never recorded — settleScape did not run on the reduced-motion path`
@@ -569,6 +575,7 @@ try {
           .length,
         airborne: document.querySelectorAll(".dawnscape .ds-leaf.airborne")
           .length,
+        flies: document.querySelectorAll(".dawnscape .ds-fly").length,
       };
     };
     const SIT_MS = 30000; /* 30s of wall clock is two minutes of the page's own */
@@ -579,15 +586,23 @@ try {
       maxFar = 0,
       samples = 0,
       twoPerched = 0,
-      twoLeaves = 0;
+      twoLeaves = 0,
+      twoFlies = 0;
     const tLand = await page.evaluate(
       () => performance.now() - window.__world.departure.t0
     );
     for (let t = 0; t < SIT_MS; t += 1000) {
-      const { birds, t: now, perched, airborne } = await page.evaluate(READ);
+      const {
+        birds,
+        t: now,
+        perched,
+        airborne,
+        flies,
+      } = await page.evaluate(READ);
       samples++;
       if (perched > 1) twoPerched++;
       if (airborne > 1) twoLeaves++;
+      if (flies > 1) twoFlies++;
       if (birds.length && first === null) first = now - tLand;
       const far = birds.filter((b) => b[0]).length;
       maxFar = Math.max(maxFar, far);
@@ -606,6 +621,10 @@ try {
         .length,
       leaves: window.__world.leaves || { shed: 0, landed: 0, airborne: 0 },
       poses: (window.__world.poses || []).length,
+      owl: window.__world.owl || { state: "away" },
+      owlDrawn: document.querySelectorAll(".dawnscape .ds-owl path.ds-fill")
+        .length,
+      flies: window.__world.flies || 0,
       ground: window.__world.ground || [],
       roamers: window.__world.scape.roamers,
       tf: [...document.querySelectorAll(".dawnscape [data-range]")].map(
@@ -659,6 +678,19 @@ try {
       fail(
         `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
       );
+    if (twoFlies)
+      fail(`${seat}: two butterflies in ${twoFlies} sample(s) — one at a time`);
+    /* the owl: drawn if and only if it has come home; an "owl" entry logged
+       when it set out */
+    if ((fin.owl.state === "home") !== fin.owlDrawn > 0)
+      fail(
+        `${seat}: the owl is ${fin.owl.state} but ${fin.owlDrawn} owl fill(s) are drawn in the notch`
+      );
+    if (
+      fin.owl.state !== "away" &&
+      !fin.sky.entries.some((e) => e.entry === "owl")
+    )
+      fail(`${seat}: the owl set out but no "owl" entry was logged`);
     if (!fin.sky || fin.sky.spawned < 2)
       fail(
         `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
@@ -702,7 +734,7 @@ try {
         `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
           `max ${maxFar} far at once, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
           `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
-          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, ${fin.poses} pose swaps`
+          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies`
       );
     await ctx.close();
   }

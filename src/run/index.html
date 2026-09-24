@@ -1211,7 +1211,12 @@ if (location.hash.length > 1) {
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
   .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
-  .dawnscape [class*="shim-"]{transform-box:view-box}
+  .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl{transform-box:view-box}
+  .dawnscape .squirrel-tail{--amp:10deg}
+  .dawnscape .owl-head{--amp:20deg}
+  /* the owl's socket: empty until it comes home, then simply there */
+  .dawnscape .ds-owl{opacity:0}
+  .dawnscape .ds-owl.on{opacity:1}
   /* THE AMPLITUDES. Grass leans hard (its blades are the part that moves;
      the fill holds), the boughs a little, the leaf masses flutter by a skew
      about their branch, the sprays turn, the seed heads shimmer. Every
@@ -1264,6 +1269,8 @@ if (location.hash.length > 1) {
     body.morninglive .dawnscape .doe-tail{animation:flick 3.5s ease-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .fawn-tail{animation:flick 2.8s ease-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-c{animation:peck 4.3s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .squirrel-tail{animation:curl 3.1s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .owl-head{animation:turn 11.3s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
   }
@@ -1304,6 +1311,22 @@ if (location.hash.length > 1) {
     40%{transform:rotate(calc(var(--amp) * .9))}
     52%{transform:rotate(var(--amp))}
     68%{transform:rotate(0)}
+    100%{transform:rotate(0)}
+  }
+  /* a squirrel's tail: a slow curl and a quicker uncurl */
+  @keyframes curl{
+    0%{transform:rotate(0)}
+    45%{transform:rotate(var(--amp))}
+    70%{transform:rotate(calc(var(--amp) * -.4))}
+    100%{transform:rotate(0)}
+  }
+  /* an owl's head: looks one way, holds, looks the other, holds */
+  @keyframes turn{
+    0%{transform:rotate(0)}
+    12%{transform:rotate(var(--amp))}
+    40%{transform:rotate(var(--amp))}
+    52%{transform:rotate(calc(var(--amp) * -1))}
+    84%{transform:rotate(calc(var(--amp) * -1))}
     100%{transform:rotate(0)}
   }
   @keyframes nod{
@@ -1523,6 +1546,7 @@ if (location.hash.length > 1) {
   .dawnscape .ds-leaf.gone{opacity:0}
   @media (prefers-reduced-motion: no-preference){
     .dawnscape .ds-perch{transition:opacity .4s ease}
+    .dawnscape .ds-owl{transition:opacity .5s ease}
     .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-leaf{transition:opacity 2s ease}
   }
@@ -8773,6 +8797,48 @@ function buildDawnscape() {
     return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px">${P(d, "ds-far w1", n)}</g>`;
   };
 
+  /* ————— the squirrel: on the trunk's lit edge, head up, the tail proud —————
+     It reads only if the tail sits on the cream side of the trunk's profile:
+     the body clings over the bark, the tail curls out and up beyond it, its
+     own group curling at the rump. Its roam is the trunk's axis, up and
+     down, ±44px, declared on the group. */
+  const squirrel = (x, y) => {
+    const k = 0.82 * Math.max(vs, 0.8);
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
+    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
+    const body = [
+      ...c([[-1, -26], [2, -24], [2.5, -20], [3.5, -15], [4, -10], [3, -6], [5, -4], [2.5, -3.5], [1.5, 0]]),
+      ...l([[-1.5, 0], [-1.5, -3]]),
+      ...c([[-3, -6], [-3.5, -12], [-4, -18], [-3.5, -22], [-2.5, -24]]),
+      ...l([[-3.5, -27.5], [-1, -26]]),
+    ];
+    const tail = [...c([[2, -5], [7, -2], [12, -4], [15, -9], [14.5, -15], [12, -20], [8, -22], [6, -19], [9, -16], [11, -12], [9, -8], [5, -7], [2, -8]])];
+    const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
+    fills.push([x + 6 * k, y - 12 * k, 12 * k]);
+    nS += 2;
+    groups += 2;
+    return `<g class="ds-squirrel" data-x="${F(x)}" data-axis="y" data-range="44" style="transform-origin:${F(x)}px ${F(y)}px">` +
+      `<g class="ds-tail ${live("squirrel-tail")}" style="transform-origin:${J([3, -6])};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" d="${path(wob(tail, 0.18))}Z"/></g>` +
+      `<path class="ds-fill" d="${path(wob(body, 0.15))}Z"/></g>`;
+  };
+
+  /* ————— the owl: an ear-tuft silhouette in the crown's notch —————
+     Built as markup for the socket on L3, rendered at build under reduced
+     motion and otherwise the moment it comes home; the head is its own
+     group turning at the neck. No eyes: the one cut is the wing's edge. */
+  const owlMarkup = (x, y) => {
+    const k = 0.95 * Math.max(vs, 0.8);
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
+    const c = (pts) => curve(T(pts), 2);
+    const body = [...c([[-7, -1], [-5, 1.5], [0, 2.5], [5, 1.5], [7, -1], [8, -8], [7.5, -14], [6, -18], [0, -19], [-6, -18], [-7.5, -14], [-8, -8], [-7, -1]])];
+    const head = [...c([[-7, -14], [-6, -18], [-6.5, -21], [-8, -27], [-4, -23], [0, -24], [4, -23], [8, -27], [6.5, -21], [6, -18], [7, -14], [0, -12], [-7, -14]])];
+    let d = path(wob(body, 0.15)) + "Z";
+    d += ribbon(wob(curve(T([[4, -5], [5.5, -10], [5, -15]]), 2), 0.15), 1.9 * Math.max(k, 0.95));
+    const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
+    return `<path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-head owl-head" style="transform-origin:${J([0, -15])};--ph:${(-r() * 8).toFixed(2)}s"><path class="ds-fill" d="${path(wob(head, 0.15))}Z"/></g>`;
+  };
+
   /* ————— the fawn: the doe's silhouette at two thirds, legs a little too long,
      the head a little too big, and three cream spots on the haunch ————— */
   const fawn = (x) => {
@@ -8850,7 +8916,17 @@ function buildDawnscape() {
       near += tuft(X(fx), Y(fy), h * vs, n);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
+    near += gull(X(0.63), Y(0.887), 1, "peck-c", "c");
     near += hare(X(0.86), Y(0.97));
+    /* the squirrel on the trunk's lit edge; the owl's notch on L3, empty
+       until it comes home (reduced motion: home from the start) */
+    near += squirrel(X(0.101), Y(0.60));
+    const owlAt = [X(0.232), Y(0.168)];
+    SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
+    SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
+    const owlHome = RM || (typeof sky !== "undefined" && sky.owl);
+    if (owlHome) { live("owl-head"); groups++; }
+    near += `<g class="ds-owl${owlHome ? " on" : ""}" data-x="${F(owlAt[0])}">${owlHome ? SCAPE.owlMarkup : ""}</g>`;
     near += solidTuft(X(0.83), Y(0.985), 18 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 20 * S3, 6, "", 0);
     near += solidTuft(X(0.962), hz, 44 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 52 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 40 * S3, 7, "", 0);
     /* where a leaf may fall from and where it may land: the crown's left
@@ -8895,7 +8971,7 @@ function buildDawnscape() {
   SCAPE.roamers = {};
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])) }; /* probe hook */
 }
 addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
@@ -9120,7 +9196,7 @@ const BIRD_SVG = (() => {
    is logged so a resize mid-flight rebuilds it where it had got to. */
 const farLog = [];
 const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), lastGround: -Infinity, lastDeer: -Infinity, lastStep: -Infinity, lastHare: -Infinity,
-  lastFawn: -Infinity, perched: false, perch: { lands: 0, leaves: 0 } };
+  lastFawn: -Infinity, lastDart: -Infinity, lastWalk: -Infinity, perched: false, perch: { lands: 0, leaves: 0 }, owl: false };
 let farTimer = null, groundTimer = null;
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
@@ -9147,7 +9223,7 @@ function farPath(f, W, H) {
 
 function placeFar(f, parent, elapsed) {
   /* a landing that finished while the sheet was being rebuilt has landed */
-  if (f.start + f.dur <= elapsed) { if (f.land && !f.done) { f.done = true; perchArrive(); } return false; }
+  if (f.start + f.dur <= elapsed) { if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else perchArrive(); } return false; }
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
   const el = document.createElement("div");
@@ -9165,7 +9241,7 @@ function placeFar(f, parent, elapsed) {
     if (e.animationName !== "farcross" && e.animationName !== "farland") return;
     el.classList.add("gone");
     el.remove();
-    if (f.land && !f.done) { f.done = true; perchArrive(); }
+    if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else perchArrive(); }
   });
   parent.appendChild(el);
   return true;
@@ -9225,6 +9301,7 @@ function spawnFar() {
       sky.lastGround = now;
       const el = document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`);
       if (el) el.classList.add("flown");
+      gullLooks(g.id);
       /* and the ground gets its bird back a minute or so later, after the
          crossing has been forgotten */
       setTimeout(() => { sky.flown.delete(g.id); const e2 = document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`); if (e2) e2.classList.remove("flown"); }, at(60000 + r() * 30000));
@@ -9307,6 +9384,146 @@ function leavePerch() {
   window.__world.perch = { lands: sky.perch.lands, leaves: sky.perch.leaves, perched: 0 };
 }
 
+/* ····· the owl comes home ·····
+   Not drawn at first. Once per sit, at settle + 60–180s, a crossing from
+   high on the east runs WEST and ends in the crown's notch on L3, and the
+   owl is there from then on, its head turning on its own slow clock. Dawn
+   becomes an event. Reduced motion draws it home from the start. */
+let owlTimer = null;
+function owlHome() {
+  owlTimer = null;
+  if (RM || sky.owl || !SCAPE.owl) return;
+  if (!atMorning) { owlTimer = setTimeout(owlHome, at(6000)); return; }
+  const host = document.getElementById("flock");
+  const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
+  const now = performance.now();
+  const r = birdRng(0x0071 + sky.spawned * 6007);
+  const vs = clamp(W / 1500, 0.44, 1);
+  sky.owl = "coming";
+  const f = {
+    entry: "owl", start: (now - releasedAt) / 1000, ox: 0.90 + r() * 0.04, oy: 0.06 + r() * 0.03,
+    ex: SCAPE.owl.x / W, ey: (SCAPE.owl.y - 10 * vs) / H, ang: ((6 + r() * 4) * Math.PI) / 180, bow: 0.6, land: true, owl: true,
+    sc: (0.45 + r() * 0.1) * vs, op: 0.16 + r() * 0.04, dur: (17 + r() * 6) * PACE, beat: 0.7 + r() * 0.1, wphase: -r() * 0.6,
+  };
+  farLog.push(f);
+  placeFar(f, host, f.start);
+  sky.spawned++;
+  sky.last = "owl";
+  sky.entries.push({ entry: "owl", n: 1, t: +(now - release.t0).toFixed(0) });
+  window.__world.sky = { spawned: sky.spawned, live: host.querySelectorAll(".bird.far:not(.gone)").length, entries: sky.entries };
+  window.__world.owl = { state: "coming" };
+}
+function owlArrive() {
+  const g = document.querySelector(".dawnscape .ds-owl");
+  if (!g || !SCAPE.owlMarkup) return;
+  g.innerHTML = SCAPE.owlMarkup;
+  requestAnimationFrame(() => g.classList.add("on"));
+  sky.owl = true;
+  /* the owl's head joins the declared census now that it is home */
+  const c = SCAPE.census.find((d) => d.cls === "owl-head");
+  if (c) c.n = 1; else SCAPE.census.push({ cls: "owl-head", ms: 11300, n: 1 });
+  window.__world.scape.census = SCAPE.census;
+  mark("owl");
+  window.__world.owl = { state: "home" };
+}
+
+/* ····· the squirrel's darts ·····
+   Stop-start along the trunk's axis: 30–60px in 400–700ms, then frozen,
+   every 15–40s, within ±44px of where it was drawn, logged like every
+   roamer (its offset is along y). */
+function dart(r) {
+  const el = document.querySelector(".dawnscape .ds-squirrel");
+  if (!el) return;
+  const off = roam.squirrel || 0;
+  let dir = r() < 0.5 ? -1 : 1;
+  if (Math.abs(off) > 20) dir = off > 0 ? -1 : 1;
+  const dy = clamp(dir * (30 + r() * 30), -44 - off, 44 - off);
+  logGround("squirrel", dy);
+  el.style.transition = `transform ${(400 + r() * 300).toFixed(0)}ms cubic-bezier(.2,.8,.3,1)`;
+  el.style.transform = `translate(0px, ${(off + dy).toFixed(1)}px)`;
+}
+
+/* ····· the butterfly ·····
+   A rare transient: a 9px twin-triangle meandering low over the swale for
+   3–6s every 40–90s, wings beating on their own Web Animation, never over
+   the clearing (its box is below the foot's air and west of the bay). */
+let flyTimer = null, flyLive = null;
+function butterfly() {
+  flyTimer = null;
+  if (RM || !SCAPE.built) return;
+  if (!atMorning || flyLive || !SCAPE.hz) { flyTimer = setTimeout(butterfly, at(8000)); return; }
+  const front = document.querySelector(".dawnscape .ds-front");
+  const svg = document.querySelector(".dawnscape");
+  if (!front) return;
+  const W = +svg.getAttribute("viewBox").split(" ")[2], H = +svg.getAttribute("viewBox").split(" ")[3];
+  const r = birdRng(0xb0f1 + (window.__world.flies || 0) * 733);
+  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  g.setAttribute("class", "ds-fly");
+  const wing = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  wing.setAttribute("class", "ds-fill");
+  wing.setAttribute("d", "M0 0 L-4.5 -3.5 L-3.5 1.5 Z M0 0 L4.5 -3.5 L3.5 1.5 Z M-0.6 -1.2 L0.6 -1.2 L0.4 1.6 L-0.4 1.6 Z");
+  g.appendChild(wing);
+  front.appendChild(g);
+  flyLive = g;
+  window.__world.flies = (window.__world.flies || 0) + 1;
+  mark("butterfly");
+  const x0 = W * (0.32 + r() * 0.3), y0 = SCAPE.hz + 20 + r() * 40;
+  const frames = [];
+  const N = 16, dur = at(3000 + r() * 3000);
+  let x = x0, y = y0;
+  for (let i = 0; i <= N; i++) {
+    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)` });
+    x = clamp(x + (r() - 0.35) * 40, W * 0.32, W * 0.70);
+    y = clamp(y + (r() - 0.5) * 22, SCAPE.hz + 14, H * 0.93);
+  }
+  const a = g.animate(frames, { duration: dur, easing: "ease-in-out" });
+  wing.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(.15)" }, { transform: "scaleX(1)" }], { duration: 140, iterations: Infinity });
+  a.onfinish = () => { g.remove(); flyLive = null; };
+  flyTimer = setTimeout(butterfly, at(40000 + r() * 50000));
+}
+
+/* ····· reactions, by clock arithmetic ·····
+   Things notice each other, and nothing runs per frame. A takeoff turns
+   the nearest other gull's head up for 1.2s; a leaf falling on the hare's
+   side sits her up for 3s; and the gust's arrival at a creature's x (the
+   same phase function the grass uses) flicks an ear or a tail three times
+   in ten, 0.4s after. All one-shot Web Animations, added on top of the
+   idles, none of them census. */
+const oneShot = (el, deg, ms, hold = 0) => {
+  if (!el) return;
+  el.animate([{ transform: "rotate(0)" }, { transform: `rotate(${deg}deg)`, offset: 0.2 }, { transform: `rotate(${deg}deg)`, offset: 0.2 + hold }, { transform: "rotate(0)" }],
+    { duration: ms, easing: "ease-in-out", composite: "add" });
+};
+function gullLooks(fromId) {
+  const others = [...document.querySelectorAll(".dawnscape .ds-gull")].filter((g) => g.dataset.id !== fromId);
+  const from = document.querySelector(`.dawnscape .ds-gull[data-id="${fromId}"]`);
+  if (!others.length || !from) return;
+  const fx = +from.dataset.x;
+  const near = others.reduce((b, g) => (Math.abs(+g.dataset.x - fx) < Math.abs(+b.dataset.x - fx) ? g : b));
+  const head = near.querySelector(".ds-gullhead");
+  oneShot(head, +near.querySelector(".ds-gullhead").style.getPropertyValue("--pk").replace("deg", "") * -0.6, 1200, 0.5);
+}
+function hareSitsUp() {
+  oneShot(document.querySelector(".dawnscape .ds-hare .ds-head"), -18, 3000, 0.6);
+}
+let gustTimer = null;
+function gustReactions() {
+  gustTimer = null;
+  if (RM || !SCAPE.built || !atMorning) { gustTimer = setTimeout(gustReactions, at(7300)); return; }
+  const svg = document.querySelector(".dawnscape");
+  const W = +svg.getAttribute("viewBox").split(" ")[2];
+  const r = birdRng(0x9a57 + Math.floor(performance.now() / 7300));
+  for (const g of svg.querySelectorAll(".ds-deer, .ds-fawn, .ds-hare")) {
+    if (r() > 0.3) continue;
+    const x = +g.dataset.x;
+    const parts = [...g.querySelectorAll(".ds-ear, .ds-tail")];
+    const part = parts[Math.floor(r() * parts.length)];
+    /* the gust reaches x (x/W)·1.9s after the left edge; the flick 0.4s later */
+    setTimeout(() => oneShot(part, (r() < 0.5 ? -1 : 1) * 16, 420), (x / W) * 1900 + 400);
+  }
+  gustTimer = setTimeout(gustReactions, 7300);
+}
+
 /* ····· the falling leaf ·····
    A transient, not census: one leaf every 30 to 80 seconds, never two in
    the air, from the crown's left half seven times in ten and the bough
@@ -9358,6 +9575,7 @@ function shedLeaf() {
   anim.onfinish = () => {
     anim.commitStyles();
     anim.cancel();
+    if (!crown) hareSitsUp();
     el.classList.remove("airborne");
     leaves.landed.push(el);
     leafLive = null;
@@ -9450,9 +9668,13 @@ function groundLife() {
     const stepDue = SCAPE.deer && now - sky.lastStep > at(55000);
     const fawnDue = SCAPE.deer && now - sky.lastFawn > at(40000) && now - sky.lastStep > at(6000);
     const hareDue = SCAPE.hare && now - sky.lastHare > at(30000);
+    const dartDue = document.querySelector(".dawnscape .ds-squirrel") && now - sky.lastDart > at(15000);
+    const walkDue = gulls.some((g) => g.id === "c") && now - sky.lastWalk > at(12000);
     if (stepDue && pick < 0.3) { sky.lastStep = now + deerStep(r); sky.lastGround = sky.lastStep; }
     else if (fawnDue && pick < 0.6) { hopWalk(document.querySelector(".dawnscape .ds-fawn"), "fawn", r, 2, [4, 7], 3, 240); sky.lastFawn = now; sky.lastGround = now; }
-    else if (hareDue && pick < 0.85) { hopWalk(document.querySelector(".dawnscape .ds-hare"), "hare", r, 2 + Math.floor(r() * 3), [3, 5], 2.5, 260); sky.lastHare = now; sky.lastGround = now; }
+    else if (hareDue && pick < 0.72) { hopWalk(document.querySelector(".dawnscape .ds-hare"), "hare", r, 2 + Math.floor(r() * 3), [3, 5], 2.5, 260); sky.lastHare = now; sky.lastGround = now; }
+    else if (dartDue && pick < 0.84) { dart(r); sky.lastDart = now; sky.lastGround = now; }
+    else if (walkDue && pick < 0.93) { hopWalk(document.querySelector('.dawnscape .ds-gull[data-id="c"]'), "c", r, 4 + Math.floor(r() * 5), [3, 3], 1, 340); sky.lastWalk = now; sky.lastGround = now; }
     else if (gulls.length) {
       const g = gulls[Math.floor(r() * gulls.length)];
       hopWalk(document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`), g.id, r, 2 + Math.floor(r() * 4), [4, 8], 2, 280);
@@ -9472,6 +9694,9 @@ function settleScape() {
   farTimer = setTimeout(spawnFar, at(1500));
   groundTimer = setTimeout(groundLife, at(24000));
   leafTimer = setTimeout(shedLeaf, at(20000 + 10000 * birdRng(0x1eaf)()));
+  owlTimer = setTimeout(owlHome, at(60000 + 120000 * birdRng(0x0071)()));
+  flyTimer = setTimeout(butterfly, at(30000 + 30000 * birdRng(0xb0f1)()));
+  gustTimer = setTimeout(gustReactions, 7300);
 }
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
   if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();
