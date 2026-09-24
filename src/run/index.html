@@ -242,6 +242,12 @@ if (location.hash.length > 1) {
        it cannot drift when the chip or the wordmark changes size. */
     background:linear-gradient(to top, transparent 0, var(--scrim-c) 2.4rem, var(--scrim-c) 100%);
   }
+  /* …and nothing exits at the morning either: ¶13 draws to the top edge of
+     the viewport, the crown of the tree runs under the chrome, and the scrim
+     was hiding the top 60px of it outright. The chrome text keeps its 24px
+     halo by construction (buildDawnscape measures it and breaks every mark
+     around it), so the veil has nothing left to do there. */
+  body.atmorning #mast::before{opacity:0}
   @media (prefers-reduced-motion: reduce){
     #mast::before{display:none} /* nothing exits in the settled world */
   }
@@ -1136,11 +1142,26 @@ if (location.hash.length > 1) {
   .dawnscape .ds-ink{stroke:var(--ink-2)}
   .dawnscape .ds-far{stroke:var(--hair-strong)}
   .dawnscape .ds-fill{fill:var(--ink-2); stroke:none}
+  /* the weights: subjects never under w1; w06 and w08 are tone only, and a
+     0.6px line at DPR 1 is allowed to dilute because it is a hatch */
+  .dawnscape .w06{stroke-width:.6}
+  .dawnscape .w08{stroke-width:.8}
   .dawnscape .w1{stroke-width:1}
   .dawnscape .w12{stroke-width:1.2}
   .dawnscape .w14{stroke-width:1.4}
+  /* THE DRAWING DEVELOPS IN PLANES, far to near, once the carry sets the
+     morning down: the sky and the far hills first, then the line and the
+     bank, then the tree and the meadow, three one-time fades a few tenths
+     apart, so a sitter sees the sheet come up the way a print comes up in
+     the bath rather than a picture switching on. settleScape() waits for
+     the front plane. Reduced motion: all four at once. */
+  .dawnscape .ds-back, .dawnscape .ds-line, .dawnscape .ds-mid, .dawnscape .ds-front{opacity:0}
+  body.atmorning .dawnscape .ds-back, body.atmorning .dawnscape .ds-line,
+  body.atmorning .dawnscape .ds-mid, body.atmorning .dawnscape .ds-front{opacity:1}
   @media (prefers-reduced-motion: no-preference){
-    .dawnscape{transition:opacity 2.2s ease .1s}
+    .dawnscape .ds-back{transition:opacity 1.6s ease .1s}
+    .dawnscape .ds-line, .dawnscape .ds-mid{transition:opacity 1.9s ease .5s}
+    .dawnscape .ds-front{transition:opacity 2.2s ease .9s}
   }
   /* ————— the wind —————
      ONE WIND, and everything on the ground answers to it. A gust every 7.3s,
@@ -1158,8 +1179,8 @@ if (location.hash.length > 1) {
      carrying the reader and nothing moves during the station's stagger.
      Reduced motion: the whole block is inside the no-preference query; the
      drawing is there, and still. */
-  .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-head,
-  .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull{transform-box:view-box}
+  .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-bough, .dawnscape .ds-sap,
+  .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull{transform-box:view-box}
   .dawnscape .sway-s{--amp:2.2deg}
   .dawnscape .sway-m{--amp:3.2deg}
   .dawnscape .sway-l{--amp:4.4deg}
@@ -7545,45 +7566,62 @@ function birdRng(seed) {
   };
 }
 
-/* ····· the dawnscape · the morning's own ground ·····
-   The owner asked for the last page to have "trees, small animals at the
-   bottom, land, grass, mountains, maybe a sun", doodle-like, no colour, and
-   alive. What is drawn is less than that list on purpose: ¶13 is the one
-   station with more air than any other, and the drawing has to lose to the
-   air. So it is a low fringe weighted to the left, where the wash puts the
-   sunrise, and the right half of the sky is left open for the birds.
+/* ····· the dawnscape · the whole morning is the canvas ·····
+   Round 8 drew a strip under the words, and the owner rejected it twice over:
+   "doodle" meant the way the BIRDS are made, solid silhouettes, or "more
+   refined overstacked sketches", built up from many strokes with weight and
+   tone; and it had to cover the entire page, "the borders and corners", so
+   the whole viewport feels like a drawn sheet and the words sit in the
+   clearing the drawing leaves.
 
-   EVERYTHING IS BUILT, NOT PLACED. Geometry is viewport fractions and pixels
-   the way buildFlock's is, seeded with the same generator, so the same
-   morning is drawn on every load and a screenshot can be a test. Every line
-   goes through one hand: two slow sines pushed perpendicular to the stroke,
-   the thread's own wobble idiom at L4157, so the horizon, the hill and a
-   blade of grass all wobble the way the rail does.
+   THE COMPOSITION IS AN ETCHED TITLE PAGE. One great tree owns the west: its
+   trunk runs the left flank from a root flare in the bottom-left corner to a
+   crotch at 0.30 H, and its crown fills the top-left corner along both edges,
+   the nameplate sitting in a window of its foliage. A perch bough reaches in
+   from the top-right corner; the etched sky runs between them. Down the right
+   edge the sky turns the corner in short breaking horizontals, then a hatched
+   bank rises off the edge carrying three slender saplings, and the meadow
+   runs the bottom edge corner to corner. The sun breaks the horizon under the
+   wash's glow, and the doe stands backlit between the trunk and the light,
+   facing west, the one thing on the page that looks back. Density is highest
+   at the four corners, each a different weight, and falls to nothing at the
+   words and at the sun: the clearing and the halo are drawn by everything
+   else stopping.
 
-   THE SUN IS A SLIVER, NOT A DISC. It is 06:12 and the light is the wash's;
-   a drawn disc with rays argues with the glow and reads as a greeting card.
-   The centre sits a fifth of a radius below the horizon, so what shows is
-   the top four fifths of a circle breaking the line, drawn twice at the crown
-   the way a hand goes over a curve, directly under the glow at 0.26 W.
+   SIX MARKS, ONE HAND. Every line goes through the page's seeded hand (two
+   slow sines pushed perpendicular to the stroke, the rail's own wobble), so
+   the canvas and the rail share one wrist:
+     1. overstroked contour — every structural line drawn two or three
+        times: a full pass, a 60–80% second pass a pen-lift off it, a short
+        third where the line turns most; never under 1px on a subject
+     2. parallel hatch for tone — angle fixed per plane (ground −18°,
+        foliage +55°, bark 84°), spacing 2.5–5px, laid in pen-length pieces;
+        hair-strong on the far planes, ink-2 in near shadow. Tone is
+        DENSITY, never opacity: the palette gate reads tokens and cannot see
+        an opacity
+     3. cross-hatch — a second family over the first in exactly four
+        pockets: the crotch, the root flare, under the bank's lip, the
+        crown's depth. Never a third
+     4. solid silhouette — the flock bird's own fill token for every leaf
+        mass and every animal, and the light inside a mass is CUT OUT of it
+        as a gap of 1.8px or more (evenodd), the wood-engraver's white line.
+        Not a pale stroke over it: that would need a colour, and the field
+        under the drawing is the wash, not a flat
+     5. reed-pen tick-fields — some 240 short curved ticks in seeded clumps,
+        graded dense at the bottom corners to a floor under the words
+     6. bare paper as light — nothing but the horizon and its own arcs
+        within 90px of the sun, hatch thinning to nothing by 260px; no ink
+        inside the clearing the words derive; no rays
 
-   ONE HILL AND ONE MOUNTAIN, both far left and both in --hair-strong: two
-   ridges crossed the mountain's shoulder and one of them crested beside the
-   sun, which draws the sun in front of a hill. The mountain is asymmetric,
-   steep side outboard, and its shoulder dies into the horizon before the
-   deer. Nothing ridge-like right of centre; nothing above 0.60 H but birds.
-
-   THE DEER IS A CONTOUR, a doe with her ears up, facing west, back toward the
-   trees — the one thing on the page that looks back, and the only counter to
-   the wind, the birds and the light, which all run east. Her legs stand
-   behind a tuft, because four sticks at 44px are where a deer becomes a dog.
-   No faces, no eyes, no fills on any mammal. The gulls on the ground are
-   filled, because the flock's bird is filled and they are the same bird.
-
-   NOTHING UNDER THE COLUMN. Grass under the words is capped at 10px, so the
-   tallest ink there stays clear of "run 043 · not yet begun" by more than the
-   24px the clearance gate holds, and there is no road, no path and no rail:
-   the run ended at the button by ruling, and a drawn way east would reopen
-   the ending that was dropped. */
+   EVERYTHING IS BUILT, NOT PLACED, from viewport fractions and pixels,
+   seeded, so every load draws the same morning and a screenshot can be a
+   test. Strokes are batched — one <path> per hatch patch, tick clump, tuft,
+   contour pass — so ~700 strokes are ~150 elements. The chrome's text (the
+   nameplate, the run state, the stop chip) is measured first and every
+   stroke breaks around it with a 24px halo. Four planes, back to front, each
+   its own fade at the morning; the alive groups (the crown's two layers, the
+   bough, the saplings, the tufts, the gulls' heads) are transform-only and
+   nothing runs per frame. */
 const SCAPE = { built: false, hz: 0, groups: 0 };
 function buildDawnscape() {
   const svg = document.querySelector(".dawnscape");
@@ -7603,6 +7641,7 @@ function buildDawnscape() {
   const vs = clamp(W / 1500, 0.44, 1);
   const narrow = W < 760;
   const F = (v) => (Math.round(v * 10) / 10).toString();
+  const X = (f) => W * f, Y = (f) => H * f;
 
   /* the hand: two slow sines along the stroke, seeded per stroke, plus an
      optional quick one for foliage, where a smooth arc is a balloon */
@@ -7638,21 +7677,30 @@ function buildDawnscape() {
     }
     return pts;
   };
-  /* the stroke: each sample pushed off the line, perpendicular, by the hand */
-  const stroke = (pts, amp, quick = 0) => {
-    const w = hand(amp, quick);
-    let s = 0, d = "";
-    for (let i = 0; i < pts.length; i++) {
-      const [x, y] = pts[i];
-      const [px, py] = pts[Math.max(0, i - 1)], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
-      const dx = nx - px, dy = ny - py, L = Math.hypot(dx, dy) || 1;
-      if (i) s += Math.hypot(x - px, y - py);
+  /* the normal at each sample, and the two things built on it: a polyline
+     pushed off itself by the hand (the stroke), and one shifted a pen-lift
+     sideways (the second pass of a contour) */
+  const normals = (pts) => pts.map(([x, y], i) => {
+    const [px, py] = pts[Math.max(0, i - 1)], [nx, ny] = pts[Math.min(pts.length - 1, i + 1)];
+    const dx = nx - px, dy = ny - py, L = Math.hypot(dx, dy) || 1;
+    return [-dy / L, dx / L];
+  });
+  const wob = (pts, amp, quick = 0) => {
+    const w = hand(amp, quick), nm = normals(pts);
+    let s = 0;
+    return pts.map(([x, y], i) => {
+      if (i) s += Math.hypot(x - pts[i - 1][0], y - pts[i - 1][1]);
       const o = w(s);
-      d += `${i ? "L" : "M"}${F(x - (dy / L) * o)} ${F(y + (dx / L) * o)}`;
-    }
-    return d;
+      return [x + nm[i][0] * o, y + nm[i][1] * o];
+    });
   };
-  const P = (d, cls) => `<path class="${cls}" d="${d}"/>`;
+  const offset = (pts, o) => { const nm = normals(pts); return pts.map(([x, y], i) => [x + nm[i][0] * o, y + nm[i][1] * o]); };
+  const path = (pts) => pts.map(([x, y], i) => `${i ? "L" : "M"}${F(x)} ${F(y)}`).join("");
+  const stroke = (pts, amp, quick = 0) => path(wob(pts, amp, quick));
+  /* every element goes through P, which keeps the stroke census: a batched
+     path says how many strokes it carries */
+  let nS = 0;
+  const P = (d, cls, k = 1) => { if (!d) return ""; nS += k; return `<path class="${cls}" d="${d}"/>`; };
   const seg = (pts, x0, x1) => pts.filter(([x]) => x >= x0 && x <= x1);
   /* THE GUST TRAVELS. A negative delay starts an animation part-way through
      its cycle, so the further west a thing stands the further along it is:
@@ -7660,12 +7708,84 @@ function buildDawnscape() {
      jitter so no two tufts are ever in step. */
   const phase = (x, period) => `${(-(period - (x / W) * 1.9 - r() * 0.35)).toFixed(2)}s`;
 
-  /* ————— where the ground is —————
-     Desktop: 0.845 H, under a column whose last line ends near 0.79 H. A
-     phone has no flank, so the horizon is placed from MEASURED room: the
-     wrap's bottom edge at this size, read now, with the drawing degrading by
-     how much of the screen is left under it. */
-  let hz = H * 0.845;
+  /* ————— the chrome's keep-out —————
+     The nameplate, the run state and the stop chip are fixed to the viewport,
+     and the panel is the viewport once the morning lands, so their rects are
+     read as they are, with the 24px halo the clearance gate holds. Any stroke
+     that would enter one of these boxes breaks around it; a mass that would
+     overlap one is shrunk until it clears, or dropped. */
+  const keep = [];
+  for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
+    const el = document.querySelector(sel);
+    const b = el && el.getBoundingClientRect();
+    if (b && b.width && b.height) keep.push([b.left - 24, b.top - 24, b.right + 24, b.bottom + 24]);
+  }
+  const inKeep = (x, y) => keep.some(([l, t, rt, bt]) => x >= l && x <= rt && y >= t && y <= bt);
+  const cut = (pts) => {
+    const runs = [];
+    let cur = [];
+    for (const p of pts) {
+      if (inKeep(p[0], p[1])) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(p);
+    }
+    if (cur.length > 1) runs.push(cur);
+    return runs;
+  };
+  const strokes = (pts, amp, cls, quick = 0) => cut(pts).map((run) => P(stroke(run, amp, quick), cls)).join("");
+
+  /* ————— mark 1: the overstroked contour ————— */
+  const contour = (pts, amp, cls = "ds-ink", w = ["w12", "w1", "w14"]) => {
+    const n = pts.length;
+    let d = strokes(pts, amp, `${cls} ${w[0]}`);
+    const len2 = 0.6 + r() * 0.2, s2 = Math.floor(r() * (1 - len2) * n);
+    d += strokes(offset(pts.slice(s2, s2 + Math.floor(len2 * n)), (r() < 0.5 ? -1 : 1) * (1 + r())), amp * 0.8, `${cls} ${w[1]}`);
+    /* the emphasis: a short third pass where the line turns most */
+    let best = 0, bi = Math.floor(n / 2);
+    for (let i = 2; i < n - 2; i++) {
+      const a1 = Math.atan2(pts[i][1] - pts[i - 2][1], pts[i][0] - pts[i - 2][0]);
+      const a2 = Math.atan2(pts[i + 2][1] - pts[i][1], pts[i + 2][0] - pts[i][0]);
+      let da = Math.abs(a2 - a1);
+      if (da > Math.PI) da = 2 * Math.PI - da;
+      if (da > best) { best = da; bi = i; }
+    }
+    const len3 = Math.floor((0.2 + r() * 0.1) * n);
+    const s3 = clamp(bi - Math.floor(len3 / 2), 0, Math.max(0, n - len3));
+    if (len3 > 2) d += strokes(offset(pts.slice(s3, s3 + len3), (r() - 0.5) * 1.2), amp * 0.6, `${cls} ${w[2]}`);
+    return d;
+  };
+
+  /* ————— mark 2 and 3: hatch, clipped to a polygon, in pen-length pieces ————— */
+  const hatch = (poly, deg, gap, cls, amp = 0.35, len = [12, 40]) => {
+    const a = (deg * Math.PI) / 180, ux = Math.cos(a), uy = Math.sin(a), vx = -uy, vy = ux;
+    const pu = poly.map(([x, y]) => x * ux + y * uy), pv = poly.map(([x, y]) => x * vx + y * vy);
+    const v0 = Math.min(...pv), v1 = Math.max(...pv);
+    let d = "", n = 0;
+    for (let v = v0 + gap * (0.4 + r() * 0.6); v < v1; v += gap * (0.8 + r() * 0.4)) {
+      const xs = [];
+      for (let i = 0; i < poly.length; i++) {
+        const j = (i + 1) % poly.length, a0 = pv[i] - v, a1 = pv[j] - v;
+        if ((a0 <= 0 && a1 > 0) || (a1 <= 0 && a0 > 0)) xs.push(pu[i] + ((pu[j] - pu[i]) * a0) / (a0 - a1));
+      }
+      xs.sort((p, q) => p - q);
+      for (let k = 0; k + 1 < xs.length; k += 2) {
+        let u = xs[k] + r() * 2.5;
+        const end = xs[k + 1];
+        while (end - u > 4) {
+          const L = Math.min(end - u, len[0] + r() * (len[1] - len[0]));
+          const m = Math.max(2, Math.ceil(L / 5)), pts = [];
+          for (let s = 0; s <= m; s++) { const uu = u + (L * s) / m; pts.push([uu * ux + v * vx, uu * uy + v * vy]); }
+          if (!pts.some(([x, y]) => inKeep(x, y))) { d += stroke(pts, amp); n++; }
+          u += L + 1.5 + r() * 3;
+        }
+      }
+    }
+    return P(d, cls, n);
+  };
+
+  /* ————— where the ground is, and where the light is —————
+     Desktop: 0.84 H. A phone has no flank, so the horizon is placed from
+     MEASURED room: the wrap's bottom edge at this size, read now, with the
+     drawing degrading by how much of the screen is left under it. */
+  let hz = H * 0.84;
   let free = H - hz;
   let room = 3;
   if (narrow) {
@@ -7680,91 +7800,57 @@ function buildDawnscape() {
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
   const tall = !narrow;
+  const sR = (narrow ? 15 : 26) * (narrow ? 1 : vs);
+  const sun = { x: X(narrow ? 0.26 : 0.265), y: hz + sR * 0.15, r: sR };
+  /* THE CLEARING. The words' column, with the sky above it that the head of
+     the station reads in, and the halo round the sun: density is zero inside
+     and climbs to full 160px out. Every tick-field is thinned by it, so the
+     ground thins toward the words the way an etcher leaves the paper bare
+     where the light is. */
+  const clear = tall ? [X(0.22), Y(0.20), X(0.78), hz - 2] : [0, 0, W, hz - 2];
+  const dens = (x, y) => {
+    const ds = Math.hypot(x - sun.x, y - sun.y);
+    const fs = ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
+    if (x > clear[0] && x < clear[2] && y > clear[1] && y < clear[3]) return 0;
+    const dx = Math.max(clear[0] - x, x - clear[2], 0), dy = Math.max(clear[1] - y, y - clear[3], 0);
+    return fs * clamp((Math.hypot(dx, dy) - 24) / 136, 0, 1);
+  };
+
   /* what the sky and the ground's events will need to find, in viewport px;
      a rebuild starts every roamer from where it is drawn again */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null;
   for (const k of Object.keys(roam)) delete roam[k];
   if (room < 0) {
     svg.innerHTML = "";
-    SCAPE.built = true; SCAPE.hz = 0; SCAPE.groups = 0;
-    window.__world.scape = { W, H, hz: 0, free: Math.round(free), room, groups: 0 };
+    SCAPE.built = true; SCAPE.hz = 0; SCAPE.groups = 0; SCAPE.strokes = 0;
+    window.__world.scape = { W, H, hz: 0, free: Math.round(free), room, groups: 0, strokes: 0 };
     return;
   }
 
-  let far = "", ground = "", near = "";
+  let far = "", ground = "", mid = "", near = "";
   let groups = 0;
 
-  /* ————— far: the mountain and the hill ————— */
-  if (tall) {
-    const mtn = curve([[-3, H * 0.745], [W * 0.02, H * 0.705], [W * 0.048, H * 0.655], [W * 0.075, H * 0.695],
-      [W * 0.11, H * 0.755], [W * 0.15, H * 0.81], [W * 0.183, hz - 1.5]]);
-    far += P(stroke(mtn, 1.4), "ds-far w1");
-    /* the crest drawn twice, a shade above, the way a hand goes back over it */
-    far += P(stroke(seg(mtn, W * 0.034, W * 0.066).map(([x, y]) => [x, y - 1.8]), 0.8), "ds-far w1");
-    const hill = curve([[-3, H * 0.81], [W * 0.035, H * 0.785], [W * 0.085, H * 0.766], [W * 0.125, H * 0.795], [W * 0.16, hz - 1]]);
-    far += P(stroke(hill, 1.3), "ds-far w1");
-  }
+  /* ————— mark 5: a clump of reed-pen ticks, thinned by where it lands ————— */
+  const ticks = (cx, cy, rx, ry, n, cls, h0, h1, lean = 0.3) => {
+    let d = "", k = 0;
+    for (let i = 0; i < n; i++) {
+      const t = r() * 6.2832, q = Math.sqrt(r());
+      const bx = cx + Math.cos(t) * rx * q, by = cy + Math.sin(t) * ry * q;
+      if (r() > dens(bx, by) || inKeep(bx, by)) continue;
+      const h = h0 + r() * (h1 - h0), ln = lean + (r() - 0.5) * 0.7;
+      d += stroke(curve([[bx, by], [bx + h * ln * 0.3, by - h * 0.55], [bx + h * ln, by - h]], 3), 0.25);
+      k++;
+    }
+    return P(d, cls, k);
+  };
 
-  /* ————— the sun, under the wash's glow ————— */
-  if (room >= 1) {
-    const sR = (narrow ? 15 : 26) * (narrow ? 1 : vs);
-    const sx = W * (narrow ? 0.26 : 0.27), sy = hz + sR * 0.2;
-    const a0 = Math.PI + 0.2014, a1 = 2 * Math.PI - 0.2014;
-    far += P(stroke(arc(sx, sy, sR, sR, a0, a1), 0.9), "ds-ink w12");
-    far += P(stroke(arc(sx, sy, sR + 1.6, sR + 1.6, a0 + 0.9, a0 + 1.9), 0.6), "ds-ink w1");
-    SCAPE.sun = { x: sx, y: sy, r: sR };
-  }
-
-  /* ————— the horizon, with its pen lifts, trailing off before the corner ————— */
-  const hzEnd = W * (narrow ? 0.95 : 0.88);
-  const line = curve([[-4, hz], [W * 0.25, hz + 1], [W * 0.5, hz - 1], [W * 0.75, hz + 0.5], [hzEnd, hz]]);
-  if (tall) {
-    const cuts = [0.30, 0.57, 0.78].map((f) => f * hzEnd + (r() - 0.5) * 40);
-    ground += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
-    /* the tail is lighter and broken: the line lets go rather than stopping */
-    ground += P(stroke(seg(line, cuts[2] + 9, hzEnd - W * 0.035), 1.3), "ds-ink w1");
-    ground += P(stroke(seg(line, hzEnd - W * 0.022, hzEnd), 1.1), "ds-far w1");
-  } else {
-    /* one lift on a phone: four on a 390px line read as a dashed rule */
-    const cut = hzEnd * 0.6 + (r() - 0.5) * 30;
-    ground += P(stroke(seg(line, -4, cut - 3), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, cut + 5, hzEnd - W * 0.06), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, hzEnd - W * 0.04, hzEnd), 1), "ds-far w1");
-  }
-  if (tall) {
-    const echo = line.map(([x, y]) => [x, y + 5 + Math.sin(x * 0.004) * 1.2]);
-    ground += P(stroke(seg(echo, W * 0.07, W * 0.31), 1.2), "ds-far w1");
-    ground += P(stroke(seg(echo, W * 0.41, W * 0.59), 1.2), "ds-far w1");
-  }
-
-  /* ————— a tree: an open trunk, three branch strokes, a broken crown ————— */
-  const tree = (x, h, lean, cls) => {
-    SCAPE.trees.push({ x, h, top: hz - h * 1.02 });
-    const tl = stroke(curve([[x - 2.4, hz + 1], [x - 2.0, hz - h * 0.28], [x - 1.2, hz - h * 0.56]]), 0.9);
-    const tr = stroke(curve([[x + 2.6, hz + 1], [x + 2.1, hz - h * 0.30], [x + 1.4, hz - h * 0.54]]), 0.9);
-    let crown = "";
-    /* limbs: two that fork, one that runs up the middle; the secondaries thinner */
-    const fy = hz - h * 0.52;
-    const limbs = [
-      [[[x - 1, fy], [x - h * 0.07, hz - h * 0.60], [x - h * 0.13, hz - h * 0.66]], "w12"],
-      [[[x - h * 0.13, hz - h * 0.66], [x - h * 0.19, hz - h * 0.73], [x - h * 0.23, hz - h * 0.80]], "w1"],
-      [[[x - h * 0.13, hz - h * 0.66], [x - h * 0.10, hz - h * 0.75], [x - h * 0.08, hz - h * 0.84]], "w1"],
-      [[[x + 1, fy], [x + h * 0.06, hz - h * 0.59], [x + h * 0.11, hz - h * 0.65]], "w12"],
-      [[[x + h * 0.11, hz - h * 0.65], [x + h * 0.17, hz - h * 0.71], [x + h * 0.21, hz - h * 0.78]], "w1"],
-      [[[x + h * 0.11, hz - h * 0.65], [x + h * 0.08, hz - h * 0.76], [x + h * 0.06, hz - h * 0.85]], "w1"],
-      [[[x, hz - h * 0.55], [x + h * 0.01, hz - h * 0.72], [x + h * 0.02, hz - h * 0.90]], "w1"],
-    ];
-    for (const [b, w] of limbs) crown += P(stroke(curve(b), 0.6), "ds-ink " + w);
-    /* THE CROWN IS LOBES, NOT A CIRCLE. Five circles of unequal size, off
-       centre, and the outline is the union of them sampled round the crown's
-       centre — so the silhouette has the concavities a real crown has where
-       one mass of leaves meets the next. A single ellipse of arcs, however
-       broken, was a balloon on a stick. */
-    const cy = hz - h * 0.70;
-    const lobes = [[-0.15, 0.02, 0.17], [0.13, 0.0, 0.16], [-0.02, -0.15, 0.17], [0.04, 0.12, 0.13], [-0.10, -0.10, 0.13]]
-      .map(([lx, ly, lr]) => [lx * h + (r() - 0.5) * 0.04 * h, ly * h + (r() - 0.5) * 0.04 * h, lr * h * (0.92 + r() * 0.16)]);
+  /* ————— mark 4: a leaf mass —————
+     The union of a few lobes round a centre, its edge bitten by the hand into
+     notches every 4–9px so it is foliage and not a cloud, closed and filled
+     with the bird's ink. The light is one or two curved cut-lines through the
+     upper half, inside the mass with a margin, subtracted by the fill rule.
+     A mass that would touch the chrome shrinks until it clears. */
+  const ring = (cx, cy, lobes, step = 2.5) => {
     const R = (a) => {
       const ux = Math.cos(a), uy = Math.sin(a);
       let best = 0;
@@ -7774,53 +7860,392 @@ function buildDawnscape() {
       }
       return best;
     };
-    const n = Math.ceil((2 * Math.PI * h * 0.3) / 5);
-    const ring = [];
-    for (let i = 0; i <= n; i++) { const a = (2 * Math.PI * i) / n; const d = R(a); ring.push([x + Math.cos(a) * d, cy + Math.sin(a) * d]); }
-    /* five pen lifts round the outline, so it is drawn and not traced */
-    const lifts = [0.05, 0.25, 0.45, 0.62, 0.82].map((f) => f + (r() - 0.5) * 0.08);
-    let from = 0;
-    for (const f of lifts) {
-      const to = Math.floor(f * n) - 1;
-      if (to - from > 2) crown += P(stroke(ring.slice(from, to), 1.1, 0.55), "ds-ink w12");
-      from = to + 2;
+    const rmax = Math.max(...lobes.map((l) => Math.hypot(l[0], l[1]) + l[2]));
+    const n = Math.ceil((2 * Math.PI * rmax) / step), out = [];
+    for (let i = 0; i < n; i++) { const a = (2 * Math.PI * i) / n, d = R(a); out.push([cx + Math.cos(a) * d, cy + Math.sin(a) * d]); }
+    return out;
+  };
+  /* the edge: fine notches most of the way, a deep bite one time in six and
+     a leaf-tip standing out one time in eight, so no two masses share a rim
+     and none of them scallops like a cloud */
+  const leafEdge = (pts, amp, tooth) => {
+    const w = hand(amp), nm = normals(pts);
+    let s = 0, d = "", next = 3 + r() * 4, t0 = -10, tl = 4, dep = tooth;
+    for (let i = 0; i < pts.length; i++) {
+      const [x, y] = pts[i];
+      if (i) s += Math.hypot(x - pts[i - 1][0], y - pts[i - 1][1]);
+      if (s >= next) {
+        t0 = s;
+        const kind = r();
+        tl = kind < 0.16 ? 6 + r() * 5 : 3 + r() * 4;
+        dep = kind < 0.16 ? tooth * (2 + r() * 1.2) : kind < 0.28 ? -tooth * (0.8 + r() * 0.8) : tooth * (0.4 + r() * 0.8);
+        next = s + tl + 1 + r() * 5;
+      }
+      const tt = clamp((s - t0) / tl, 0, 1);
+      const o = w(s) + (tt < 1 ? dep * Math.pow(1 - Math.abs(2 * tt - 1), 1.4) : 0);
+      d += `${i ? "L" : "M"}${F(x + nm[i][0] * o)} ${F(y + nm[i][1] * o)}`;
     }
-    crown += P(stroke(ring.slice(from), 1.1, 0.55), "ds-ink w12");
-    /* two short scribbles inside the crown, in the far ink: a mass of
-       leaves, not a hollow outline */
-    for (let i = 0; i < 2; i++) {
-      const [lx, ly, lr] = lobes[i * 2];
-      const a0 = r() * 6.28;
-      crown += P(stroke(arc(x + lx, cy + ly, lr * 0.55, lr * 0.5, a0, a0 + 2 + r()), 0.9, 0.5), "ds-far w1");
+    return d + "Z";
+  };
+  const ribbon = (pts, w) => {
+    const a = offset(pts, w / 2), b = offset(pts, -w / 2).reverse();
+    return `M${a.map(([x, y]) => `${F(x)} ${F(y)}`).join("L")}L${b.map(([x, y]) => `${F(x)} ${F(y)}`).join("L")}Z`;
+  };
+  const fills = [];
+  /* a mass is wider than it is tall, the way a cluster of leaves spreads
+     from a twig; its cuts follow the rims of its own lobes, short, so they
+     read as the light on one cluster against the next and never as a mark */
+  const mass = (cx, cy, rr) => {
+    for (let tries = 0; tries < 6 && rr > 10; tries++) {
+      let hit = false;
+      for (let a = 0; a < 6.28 && !hit; a += 0.4) hit = inKeep(cx + Math.cos(a) * (rr + 4), cy + Math.sin(a) * (rr + 4) * 0.85);
+      if (!hit && !inKeep(cx, cy)) break;
+      rr *= 0.8;
     }
-    if (cls) groups++;
-    return `<g class="ds-tree" transform="rotate(${lean} ${F(x)} ${F(hz)})">${P(tl, "ds-ink w14")}${P(tr, "ds-ink w14")}` +
-      `<g class="ds-canopy ${cls}" style="transform-origin:${F(x)}px ${F(hz)}px;--ph:${phase(x, 14.6)}">${crown}</g></g>`;
+    if (rr <= 10) return "";
+    const lobes = [[0, 0, rr * 0.66]];
+    const k = 3 + Math.floor(r() * 3);
+    for (let i = 0; i < k; i++) { const a = r() * 6.28, dd = rr * (0.2 + r() * 0.34); lobes.push([Math.cos(a) * dd, Math.sin(a) * dd * 0.7, rr * (0.5 + r() * 0.3)]); }
+    const sq = (p) => [p[0], cy + (p[1] - cy) * 0.85];
+    let d = leafEdge(ring(cx, cy, lobes, 2).map(sq), 0.9, 2.2);
+    let cuts = 0;
+    for (const [lx, ly, lr] of lobes.slice(1)) {
+      if (lr < 15 || cuts >= 3 || r() < 0.3) continue;
+      const a0 = Math.atan2(ly, lx) - 0.9 + r() * 0.6;
+      d += ribbon(wob(arc(cx + lx, cy + ly * 0.85, lr * 0.5, lr * 0.42, a0, a0 + 0.9 + r() * 0.6, 3).map(sq), 0.3), 1.9);
+      cuts++;
+    }
+    fills.push([cx, cy, rr]);
+    nS++;
+    return `<path class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
+  };
+  /* a few loose leaves hanging off a mass's lower rim, drawn, in the foliage
+     family: the overstacking that makes a solid read as leaves */
+  const leaves = (cx, cy, rr, n) => {
+    let d = "", k = 0;
+    for (let i = 0; i < n; i++) {
+      const a = 0.3 + r() * 2.5, dd = rr * (0.85 + r() * 0.4);
+      const x = cx + Math.cos(a) * dd, y = cy + Math.sin(a) * dd;
+      if (inKeep(x, y)) continue;
+      const la = 0.6 + r() * 1.0, ll = 6 + r() * 8;
+      d += stroke(curve([[x, y], [x + Math.cos(la) * ll * 0.5 - 1.5, y + Math.sin(la) * ll * 0.5], [x + Math.cos(la) * ll, y + Math.sin(la) * ll]], 3), 0.4);
+      k++;
+    }
+    return P(d, "ds-ink w1", k);
+  };
+  /* the shade under a mass: a crescent hugging its lower rim, foliage family */
+  const shade = (cx, cy, rr, cls = "ds-ink w08") => hatch([
+    [cx - rr * 0.9, cy + rr * 0.3], [cx - rr * 0.5, cy + rr * 0.85], [cx + rr * 0.3, cy + rr * 0.98],
+    [cx + rr * 0.9, cy + rr * 0.55], [cx + rr * 0.5, cy + rr * 0.45], [cx, cy + rr * 0.55], [cx - rr * 0.45, cy + rr * 0.4],
+  ], 55, 3.4, cls, 0.3, [8, 22]);
+
+  if (tall) {
+    /* ————— far: the mountain and the hill, behind the trunk ————— */
+    const mtn = curve([[-3, Y(0.745)], [X(0.02), Y(0.705)], [X(0.048), Y(0.655)], [X(0.075), Y(0.695)],
+      [X(0.11), Y(0.755)], [X(0.15), Y(0.81)], [X(0.183), hz - 1.5]]);
+    far += P(stroke(mtn, 1.4), "ds-far w1");
+    far += P(stroke(seg(mtn, X(0.034), X(0.066)).map(([x, y]) => [x, y - 1.8]), 0.8), "ds-far w1");
+    far += hatch([[-3, Y(0.75)], [X(0.02), Y(0.71)], [X(0.046), Y(0.66)], [X(0.05), Y(0.70)], [X(0.03), Y(0.76)], [-3, Y(0.80)]], -18, 4.2, "ds-far w1", 0.3);
+    const hill = curve([[-3, Y(0.81)], [X(0.035), Y(0.785)], [X(0.085), Y(0.766)], [X(0.125), Y(0.795)], [X(0.16), hz - 1]]);
+    far += P(stroke(hill, 1.3), "ds-far w1");
+
+    /* ————— the etched sky: long horizontals between the crown and the bough —————
+       Twelve lines, hair-strong, each laid in two or three pen-lengths, the
+       lower ones starting further east where the crown reaches; they break
+       around the run state and die west of the sun's column. */
+    for (let y = Y(0.035), i = 0; y < Y(0.17); y += 7 + r() * 8, i++) {
+      let x = X(0.31) + (y > Y(0.09) ? X(0.04) : 0) + r() * X(0.05);
+      /* the upper lines run on east under the bough's reach, so the top edge
+         is never bare for long between the crown and the bough */
+      const x1 = X(y < Y(0.07) ? 0.70 : 0.60) + r() * X(0.11);
+      const pieces = r() < 0.4 ? 1 : 2 + Math.floor(r() * 2);
+      for (let p = 0; p < pieces && x1 - x > 50; p++) {
+        const L = Math.min(x1 - x, 60 + r() * 200);
+        far += strokes(curve([[x, y], [x + L * 0.5, y + (r() - 0.5) * 1.5], [x + L, y]], 6), 1.0, "ds-far w1");
+        x += L + 16 + r() * 40;
+      }
+    }
+    /* …and it turns the corner down the right edge in pairs, short, hugging
+       the edge so the birds' room inboard stays open */
+    for (let y = Y(0.20); y < Y(0.46); y += 50 + r() * 16) {
+      for (let p = 0; p < 2; p++) {
+        const L = 26 + r() * 60, yy = y + p * (6 + r() * 3);
+        far += strokes(curve([[W - L, yy + (r() - 0.5) * 3], [W - L * 0.5, yy + (r() - 0.5) * 1.5], [W + 3, yy]], 6), 0.8, "ds-far w1");
+      }
+    }
+
+    /* the same sky enters at the left edge under the crown, three short lines
+       between the lowest clump and the mountain's crest */
+    for (let y = Y(0.34); y < Y(0.48); y += 46 + r() * 14) {
+      const L = 40 + r() * 50;
+      far += strokes(curve([[-3, y], [L * 0.5, y + (r() - 0.5) * 2], [L, y + (r() - 0.5) * 4]], 6), 0.8, "ds-far w1");
+    }
+
+    /* ————— the right bank: a shoulder off the edge, drawn once above, three
+       times below, meeting the horizon at 0.84 W, with one fold inside it ————— */
+    const bank = curve([[W + 4, Y(0.47)], [X(0.982), Y(0.492)], [X(0.962), Y(0.53)], [X(0.95), Y(0.60)], [X(0.93), Y(0.66)], [X(0.905), Y(0.71)], [X(0.885), Y(0.77)], [X(0.862), Y(0.81)], [X(0.84), hz]]);
+    far += P(stroke(bank, 1.2), "ds-far w1");
+    far += P(stroke(curve([[W + 4, Y(0.63)], [X(0.975), Y(0.66)], [X(0.95), Y(0.72)], [X(0.925), Y(0.78)], [X(0.905), Y(0.815)]]), 1.1), "ds-far w1");
+    const bankLow = (f) => bank.filter(([, y]) => y >= Y(f));
+    mid += P(stroke(offset(bankLow(0.58), 1.6), 1.0), "ds-ink w1");
+    mid += contour(bankLow(0.635), 1.0, "ds-ink", ["w12", "w1", "w14"]);
+    /* its face, in shadow toward the reader: a strip inside the lip, then the
+       broader tone further in, then the one cross-hatch pocket under the lip */
+    const lip = bankLow(0.62);
+    const inner = (w) => offset(lip, -w).reverse();
+    mid += hatch([...lip, ...inner(34)], -18, 3.8, "ds-ink w08", 0.3);
+    mid += hatch([...inner(30), ...offset(lip, -78)], -18, 5.2, "ds-far w1", 0.3);
+    const pocket3 = [...lip.filter(([, y]) => y >= Y(0.65) && y <= Y(0.75)), ...offset(lip.filter(([, y]) => y >= Y(0.65) && y <= Y(0.75)), -22).reverse()];
+    mid += hatch(pocket3, 38, 3.4, "ds-ink w06", 0.25, [8, 18]);
+    far += ticks(X(0.89), hz - 22, X(0.05), 16, 26, "ds-far w1", 4, 9, 0.2);
+  }
+
+  /* ————— the sun, under the wash's glow: two arcs and a crown pass, no rays ————— */
+  if (room >= 1) {
+    const a0 = Math.PI + 0.16, a1 = 2 * Math.PI - 0.16;
+    ground += P(stroke(arc(sun.x, sun.y, sun.r, sun.r, a0, a1), 0.9), "ds-ink w12");
+    ground += P(stroke(arc(sun.x, sun.y, sun.r + 1.8, sun.r + 1.8, a0 + 0.7, a1 - 0.5), 0.6), "ds-ink w1");
+    ground += P(stroke(arc(sun.x, sun.y, sun.r - 1.3, sun.r - 1.3, a0 + 1.15, a0 + 1.85), 0.5), "ds-ink w1");
+    SCAPE.sun = { x: sun.x, y: sun.y, r: sun.r };
+  }
+
+  /* ————— the horizon, drawn twice, lifted three times, letting go before the corner —————
+     The segment carrying the sun is a weight class lighter: light thins ink. */
+  const hzEnd = X(narrow ? 0.95 : 0.88);
+  const line = curve([[-4, hz], [X(0.25), hz + 1], [X(0.5), hz - 1], [X(0.75), hz + 0.5], [hzEnd, hz]]);
+  if (tall) {
+    const cuts = [X(0.19), X(0.36), X(0.60), X(0.78)].map((c) => c + (r() - 0.5) * 30);
+    ground += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
+    ground += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.3), "ds-ink w1");
+    ground += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
+    ground += P(stroke(seg(line, cuts[2] + 8, cuts[3] - 4), 1.5), "ds-ink w12");
+    ground += P(stroke(seg(line, cuts[3] + 9, hzEnd - X(0.03)), 1.3), "ds-ink w1");
+    ground += P(stroke(seg(line, hzEnd - X(0.02), hzEnd), 1.1), "ds-far w1");
+    /* the second pass: three lifted pieces a shade below, the hand going back */
+    const echo = line.map(([x, y]) => [x, y + 3.5 + Math.sin(x * 0.004) * 1.2]);
+    ground += P(stroke(seg(echo, X(0.02), X(0.17)), 1.2), "ds-ink w1");
+    ground += P(stroke(seg(echo, X(0.40), X(0.56)), 1.2), "ds-far w1");
+    ground += P(stroke(seg(echo, X(0.63), X(0.83)), 1.2), "ds-ink w1");
+  } else {
+    /* one lift on a phone: four on a 390px line read as a dashed rule */
+    const cut0 = hzEnd * 0.6 + (r() - 0.5) * 30;
+    ground += P(stroke(seg(line, -4, cut0 - 3), 1.3), "ds-ink w12");
+    ground += P(stroke(seg(line, cut0 + 5, hzEnd - X(0.06)), 1.3), "ds-ink w12");
+    ground += P(stroke(seg(line, hzEnd - X(0.04), hzEnd), 1), "ds-far w1");
+  }
+
+  /* ————— the great tree —————
+     Trunk up the left flank, two passes a side and bark ticks, its shadow
+     side hatched along the grain; a root flare into the corner with the
+     second cross-hatch pocket; seven limbs from the crotch, eleven leaf
+     masses on their ends filling the corner along both edges, a drawn
+     envelope round them, loose leaves, three shade patches, and the two
+     darkest pockets on the page where the crown meets the trunk. The crown is
+     two layers so the wind can move the outer boughs more than the inner. */
+  const bigTree = () => {
+    const cr = [X(0.088), Y(0.30)];
+    const left = curve([[X(0.036), hz + 3], [X(0.054), hz - Y(0.04)], [X(0.060), Y(0.66)], [X(0.062), Y(0.50)], [X(0.068), Y(0.38)], [X(0.068), Y(0.31)]]);
+    const right = curve([[X(0.128), hz + 3], [X(0.110), hz - Y(0.04)], [X(0.103), Y(0.64)], [X(0.100), Y(0.50)], [X(0.104), Y(0.38)], [X(0.108), Y(0.32)]]);
+    let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
+    /* roots: two each side, the outer ones reaching for the corner */
+    for (const rt of [
+      [[X(0.062), hz - Y(0.05)], [X(0.048), hz - Y(0.02)], [X(0.028), hz + 2]],
+      [[X(0.060), hz - Y(0.025)], [X(0.052), hz - 6], [X(0.046), hz + 3]],
+      [[X(0.106), hz - Y(0.05)], [X(0.118), hz - Y(0.02)], [X(0.138), hz + 2]],
+      [[X(0.108), hz - Y(0.022)], [X(0.116), hz - 5], [X(0.122), hz + 3]],
+    ]) d += contour(curve(rt), 0.8, "ds-ink", ["w12", "w1", "w12"]);
+    /* the shadow side, hatched with the grain, dense at the edge and thinning
+       toward the middle; the light is east of the trunk */
+    const across = (f) => left.map(([x, y], i) => [x + (right[Math.min(i, right.length - 1)][0] - x) * f, y]);
+    const low = (pts) => pts.filter(([, y]) => y > Y(0.34));
+    d += hatch([...low(left), ...low(across(0.2)).reverse()], 84, 2.8, "ds-ink w08", 0.35, [18, 60]);
+    d += hatch([...low(across(0.17)), ...low(across(0.46)).reverse()], 84, 4.6, "ds-ink w06", 0.35, [14, 40]);
+    /* bark: short ticks bowed across the cylinder, most on the shadow side */
+    let bd = "", bk = 0;
+    for (let i = 0; i < 26; i++) {
+      const t = 0.08 + r() * 0.86, li = Math.floor(t * (left.length - 1));
+      const lx = left[li][0], rx = right[Math.min(li, right.length - 1)][0], y = left[li][1];
+      const f0 = r() < 0.65 ? 0.05 + r() * 0.3 : 0.45 + r() * 0.35, f1 = f0 + 0.18 + r() * 0.25;
+      const x0 = lx + (rx - lx) * f0, x1 = lx + (rx - lx) * Math.min(f1, 0.96);
+      bd += stroke(curve([[x0, y], [(x0 + x1) / 2, y + 1.6], [x1, y + 0.5]], 3), 0.3);
+      bk++;
+    }
+    d += P(bd, "ds-ink w1", bk);
+    /* pocket 2: the root flare's shadow, ground family crossed */
+    const p2 = [[X(0.030), hz + 1], [X(0.046), hz - Y(0.035)], [X(0.062), hz - Y(0.055)], [X(0.066), hz - Y(0.02)], [X(0.060), hz + 1]];
+    d += hatch(p2, -18, 3.2, "ds-ink w08", 0.3, [8, 22]) + hatch(p2, 40, 3.4, "ds-ink w06", 0.25, [8, 18]);
+    /* pocket 1: the crotch, where the limbs leave and no light reaches: it
+       starts inside the trunk's top and rises between L1 and L3 */
+    const p1 = [[X(0.068), Y(0.35)], [X(0.070), Y(0.30)], [X(0.080), Y(0.255)], [X(0.088), Y(0.235)], [X(0.097), Y(0.255)], [X(0.107), Y(0.30)], [X(0.104), Y(0.35)]];
+    d += hatch(p1, 84, 2.8, "ds-ink w08", 0.3, [10, 30]) + hatch(p1, 30, 4.4, "ds-ink w06", 0.25, [8, 18]);
+
+    /* THE LIMBS ARE CROOKED AND THEY FORK, the way an oak's do, and every
+       one of them ends INSIDE a mass: a limb that ends in the air is a stick
+       with a ball on it. Four from the crotch, three forks. */
+    const limbs = {
+      L1: [[X(0.078), Y(0.31)], [X(0.062), Y(0.265)], [X(0.045), Y(0.215)], [X(0.040), Y(0.17)], [X(0.028), Y(0.125)], [X(0.020), Y(0.075)]],
+      L1b: [[X(0.045), Y(0.215)], [X(0.030), Y(0.195)], [X(0.010), Y(0.18)]],
+      L2: [[X(0.088), Y(0.30)], [X(0.096), Y(0.245)], [X(0.112), Y(0.20)], [X(0.118), Y(0.155)], [X(0.14), Y(0.115)], [X(0.15), Y(0.075)], [X(0.166), Y(0.035)]],
+      L2b: [[X(0.118), Y(0.155)], [X(0.10), Y(0.13)], [X(0.088), Y(0.105)]],
+      L3: [[X(0.098), Y(0.31)], [X(0.128), Y(0.27)], [X(0.165), Y(0.235)], [X(0.20), Y(0.19)], [X(0.235), Y(0.165)], [X(0.262), Y(0.135)], [X(0.288), Y(0.105)]],
+      L3b: [[X(0.20), Y(0.19)], [X(0.215), Y(0.15)], [X(0.222), Y(0.10)], [X(0.238), Y(0.06)]],
+      L4: [[X(0.104), Y(0.33)], [X(0.14), Y(0.315)], [X(0.175), Y(0.31)], [X(0.205), Y(0.29)], [X(0.225), Y(0.265)], [X(0.238), Y(0.245)]],
+    };
+    const inner = {}, outer = {};
+    inner.limbs = contour(curve(limbs.L1), 0.9, "ds-ink", ["w14", "w12", "w14"]) + contour(curve(limbs.L1b), 0.7, "ds-ink", ["w12", "w1", "w12"]);
+    outer.limbs = contour(curve(limbs.L2), 0.9, "ds-ink", ["w14", "w12", "w14"]) + contour(curve(limbs.L3), 0.9, "ds-ink", ["w14", "w12", "w14"])
+      + contour(curve(limbs.L4), 0.8, "ds-ink", ["w12", "w1", "w12"]) + contour(curve(limbs.L3b), 0.7, "ds-ink", ["w12", "w1", "w12"])
+      + contour(curve(limbs.L2b), 0.7, "ds-ink", ["w12", "w1", "w12"]);
+    /* twigs off the limbs, the drawn hairs the masses hang on */
+    const twigs = (pts, n) => {
+      let t = "";
+      for (let i = 0; i < n; i++) {
+        const q = pts[Math.floor((0.4 + r() * 0.55) * (pts.length - 1))];
+        const a = -1.0 - r() * 1.8, l = 12 + r() * 18;
+        t += strokes(curve([q, [q[0] + Math.cos(a) * l * 0.5, q[1] + Math.sin(a) * l * 0.5 + 2], [q[0] + Math.cos(a) * l, q[1] + Math.sin(a) * l]], 4), 0.5, "ds-ink w1");
+      }
+      return t;
+    };
+    inner.limbs += twigs(curve(limbs.L1), 3);
+    outer.limbs += twigs(curve(limbs.L2), 3) + twigs(curve(limbs.L3), 4) + twigs(curve(limbs.L3b), 2) + twigs(curve(limbs.L4), 2);
+    /* THE CANOPY IS ONE THING: seventeen masses overlapping into a foliage
+       that fills the corner along both edges, the sky showing through where
+       the limbs cross it, the nameplate in the one window the masses leave.
+       Inner (the edge column, on L1) and outer (the top and the reach, on
+       L2–L4) are two layers so the wind can move them at two amplitudes. */
+    /* CLUMPS, NOT DOTS. Evenly sized masses evenly spaced along the limbs read
+       as beads on a string; a crown is a few irregular clumps of overlapping
+       masses of every size, each on its limb, with small satellites at the
+       rim. Six clumps here: the edge column (on L1), the corner tip, the
+       top run right of the nameplate's window (on L2 and L3b), the middle
+       (where L2 and L3 cross), the reach (L3's end) and the low bough (L4). */
+    const K = 0.82 * Math.max(vs, 0.8);
+    /* a clump: a centre in viewport fractions, members as pixel offsets from
+       it, close enough that their masses overlap into one silhouette */
+    const clump = (fx, fy, members) => members.map(([dx, dy, rr]) => [X(fx) + dx * K, Y(fy) + dy * K, rr * K]);
+    const inMasses = [
+      ...clump(0.012, 0.15, [[-14, -52, 46], [6, -18, 50], [-8, 26, 44], [26, -34, 30], [24, 16, 36], [42, -4, 18]]),
+      ...clump(0.0, 0.03, [[0, 0, 30], [22, 26, 20]]),
+      ...clump(0.02, 0.265, [[-20, 0, 36], [14, 14, 30], [36, -16, 26], [52, 10, 16]]),
+    ];
+    const outMasses = [
+      ...clump(0.23, 0.03, [[-64, -24, 40], [-28, 4, 52], [16, -24, 46], [54, 4, 40], [-4, 40, 36], [40, 40, 30], [84, 26, 18], [-48, 34, 16]]),
+      ...clump(0.17, 0.155, [[-36, 0, 40], [4, -18, 44], [38, 12, 34], [-68, 26, 28], [2, 26, 26], [52, -14, 18], [-90, -10, 14]]),
+      ...clump(0.285, 0.14, [[-18, -10, 36], [20, 20, 30], [4, -38, 20]]),
+      ...clump(0.235, 0.25, [[0, 0, 26], [-30, 14, 18]]),
+    ];
+    const build = (ms) => ms.map((a) => mass(...a)).join("") + ms.map((a) => leaves(a[0], a[1], a[2], 2 + Math.floor(r() * 2))).join("");
+    /* tone first, then the masses over it: the shade under the lowest mass of
+       a clump, and pocket 4, the crown's own depth: the shadow the middle
+       clump throws down between the limbs, drawn from inside its mass so it
+       hangs from the foliage rather than floating under it */
+    inner.tone = shade(...inMasses[2]) + shade(...inMasses[8]);
+    outer.tone = shade(...outMasses[12]) + shade(...outMasses[16]);
+    const [mx, my, mr0] = outMasses[9], mr = mr0 * 0.75;
+    const p4 = [[mx - mr * 0.9, my + mr * 0.4], [mx - mr * 0.5, my + mr * 1.1], [mx + mr * 0.3, my + mr * 1.45], [mx + mr * 1.0, my + mr * 1.0], [mx + mr * 0.9, my + mr * 0.5], [mx, my + mr * 0.6]];
+    outer.tone += hatch(p4, 55, 3.0, "ds-ink w08", 0.3, [8, 22]) + hatch(p4, 5, 3.4, "ds-ink w06", 0.25, [8, 18]);
+    inner.fills = build(inMasses);
+    outer.fills = build(outMasses);
+    groups += 2;
+    SCAPE.trees.push({ x: X(0.20), h: Y(0.30), top: 0 });
+    return `<g class="ds-tree">${d}` +
+      `<g class="ds-canopy sway-c2" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
+      `<g class="ds-canopy sway-c1" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
   };
 
-  /* ————— the doe: contour only, ears up, standing on the line ————— */
-  const deer = (x) => {
-    const k = 0.9 * vs;
-    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
-    const back = stroke(curve(T([[18, -27], [12, -29.5], [4, -30], [-4, -29]])), 0.5);
-    const belly = stroke(curve(T([[-7, -21], [-2, -18.5], [6, -18.5], [11, -20]])), 0.4);
-    const rump = stroke(curve(T([[18, -27], [19, -23], [16, -19.5]])), 0.4);
-    const chest = stroke(curve(T([[-9, -27], [-9.5, -23], [-7, -21]])), 0.4);
-    const legs = [
-      [[-6.5, -21], [-7, -12], [-7.5, 0]], [[-3, -21], [-3.5, -12], [-4, 0]],
-      [[13, -20], [15, -11], [14, 0]], [[9.5, -19], [11, -10], [10.5, 0]],
-    ].map((l) => P(stroke(curve(T(l)), 0.3), "ds-ink w1")).join("");
-    const tail = P(stroke(T([[18, -28], [21, -25]]), 0.2), "ds-ink w1");
-    const neck = stroke(curve(T([[-4, -29], [-8, -33], [-13, -41], [-14, -44]])), 0.4);
-    const throat = stroke(curve(T([[-9, -27], [-10, -32], [-13, -37]])), 0.4);
-    const head = stroke(curve(T([[-14, -44], [-18, -45], [-23, -43], [-24, -40.5], [-19, -39], [-15, -37.5]])), 0.4);
-    const earL = stroke(T([[-15, -45], [-13, -52]]), 0.2), earR = stroke(T([[-18.5, -45.5], [-20, -52]]), 0.2);
-    const [ox, oy] = T([[-4, -29]])[0];
+  /* ————— the perch bough: in from the top-right, lighter than the crown —————
+     A limb off a tree that is out of the frame, drooping to 0.72 W, three
+     masses hanging under it, a bare twig rising near its tip where a bird
+     can land (the socket the sky's perch outcome fills). */
+  const bough = () => {
+    const main = curve([[W + 6, Y(0.062)], [X(0.965), Y(0.078)], [X(0.925), Y(0.10)], [X(0.885), Y(0.108)], [X(0.85), Y(0.118)], [X(0.81), Y(0.135)], [X(0.775), Y(0.155)], [X(0.745), Y(0.165)]]);
+    const fork = curve([[X(0.885), Y(0.108)], [X(0.86), Y(0.086)], [X(0.838), Y(0.062)], [X(0.822), Y(0.042)]]);
+    let d = contour(main, 0.9, "ds-ink", ["w12", "w1", "w12"]) + contour(fork, 0.7, "ds-ink", ["w12", "w1", "w12"]);
+    /* the masses sit on the limb, over and under it, the limb running through */
+    /* four clumps: the corner under the chip, the middle of the limb, the
+       fork's end, and the tip by the perch; the limb runs through them */
+    const M = [
+      [0.985, 0.13, 40], [0.955, 0.15, 34], [0.975, 0.095, 24], [0.94, 0.11, 18],
+      [0.885, 0.135, 38], [0.855, 0.12, 30], [0.905, 0.165, 26], [0.87, 0.10, 16],
+      [0.828, 0.055, 30], [0.81, 0.08, 22], [0.84, 0.03, 14],
+      [0.79, 0.145, 28], [0.765, 0.162, 20], [0.80, 0.175, 14],
+    ].map(([fx, fy, rr]) => [X(fx), Y(fy), rr * 0.8 * Math.max(vs, 0.8)]);
+    for (const i of [0, 4, 6, 11]) {
+      const [mx, my, mr] = M[i];
+      const t = main.reduce((b, p) => (Math.abs(p[0] - mx) < Math.abs(b[0] - mx) ? p : b));
+      d += strokes(curve([t, [(t[0] + mx) / 2 + 3, (t[1] + my) / 2], [mx, my + mr * 0.3]]), 0.5, "ds-ink w1");
+    }
+    d += shade(...M[1]) + shade(...M[6]);
+    let f = "";
+    for (const mm of M) f += mass(...mm) + leaves(mm[0], mm[1], mm[2], 3);
+    const pz = [X(0.752), Y(0.098)];
+    const twig = curve([[X(0.782), Y(0.147)], [X(0.77), Y(0.125)], [X(0.758), Y(0.108)], pz]);
+    const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
+    SCAPE.perch = { x: pz[0], y: pz[1] };
     groups++;
-    return `<g class="ds-deer" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px">` +
-      `${P(back, "ds-ink w12")}${P(belly, "ds-ink w12")}${P(rump, "ds-ink w12")}${P(chest, "ds-ink w12")}${legs}${tail}` +
-      `<g class="ds-head" style="transform-origin:${F(ox)}px ${F(oy)}px;--ph:${(-9 - r() * 6).toFixed(2)}s">${P(neck, "ds-ink w12")}${P(throat, "ds-ink w12")}` +
-      `${P(head, "ds-ink w12")}${P(earL, "ds-ink w1")}${P(earR, "ds-ink w1")}</g></g>`;
+    return `<g class="ds-bough sway-b" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
+      `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
+  };
+
+  /* ————— a sapling: a slender two-pass trunk, five branches, leaf ticks, no fills ————— */
+  const sapling = (bx, by, h, lean, cls) => {
+    const tr = curve([[bx, by], [bx + lean * h * 0.3 + (r() - 0.5) * 6, by - h * 0.5], [bx + lean * h, by - h]]);
+    let d = P(stroke(tr, 0.8), "ds-ink w1") + P(stroke(offset(tr.slice(Math.floor(tr.length * 0.25)), 1.1), 0.6), "ds-ink w1");
+    for (let i = 0; i < 5; i++) {
+      const t = 0.34 + i * 0.13 + r() * 0.06, p = tr[Math.floor(t * (tr.length - 1))];
+      const side = i % 2 ? 1 : -1, bl = h * (0.16 + r() * 0.12) * (1.1 - t * 0.6);
+      const ang = -Math.PI / 2 + side * (0.55 + r() * 0.35);
+      const br = curve([p, [p[0] + Math.cos(ang) * bl * 0.5, p[1] + Math.sin(ang) * bl * 0.5 + 2], [p[0] + Math.cos(ang) * bl, p[1] + Math.sin(ang) * bl]], 4);
+      d += P(stroke(br, 0.5), "ds-ink w1");
+      let ld = "", lk = 0;
+      for (let j = 0, n = 3 + Math.floor(r() * 3); j < n; j++) {
+        const q = br[Math.floor((0.4 + r() * 0.6) * (br.length - 1))];
+        const la = ang + (r() < 0.5 ? 1 : -1) * (0.9 + r() * 0.5), ll = 5 + r() * 5;
+        ld += stroke([q, [q[0] + Math.cos(la) * ll * 0.5, q[1] + Math.sin(la) * ll * 0.5], [q[0] + Math.cos(la) * ll, q[1] + Math.sin(la) * ll]], 0.4);
+        lk++;
+      }
+      d += P(ld, "ds-ink w1", lk);
+    }
+    const top = tr[tr.length - 1];
+    let td = "";
+    for (let j = 0; j < 3; j++) { const la = -Math.PI / 2 + (j - 1) * 0.7 + (r() - 0.5) * 0.3, ll = 6 + r() * 5; td += stroke([top, [top[0] + Math.cos(la) * ll, top[1] + Math.sin(la) * ll]], 0.3); }
+    d += P(td, "ds-ink w1", 3);
+    if (cls) groups++;
+    return `<g class="ds-sap ${cls}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
+  };
+
+  /* ————— the doe: a solid silhouette, the bird's own language —————
+     One closed outline, ears up, facing west, no eye; the light cut out of
+     her as two white lines, haunch from belly and shoulder from neck, gaps of
+     1.8px so they survive a device pixel. Her legs are the read: long, thin,
+     the hind pair set back, the far pair a gap apart from the near. */
+  const doe = (x) => {
+    const k = 0.95 * vs;
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
+    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
+    const outline = [
+      ...c([[-6, -41], [2, -43], [10, -43.5], [17, -42], [22, -38.5]]),
+      ...l([[23.5, -37], [26, -34.5], [23, -33.5]]),
+      ...c([[22.5, -31], [21.5, -26], [21, -21]]),
+      ...l([[21, -16], [19.5, -9], [18.5, -1], [18.5, 0], [15.5, 0], [15.5, -1], [16, -9], [16.5, -14], [15, -19]]),
+      ...l([[13.5, -18], [12, -10], [11.5, -1], [11.5, 0], [8.5, 0], [8.5, -1], [9, -10], [9.5, -17]]),
+      ...c([[8, -20], [2, -23.5], [-5, -24]]),
+      ...l([[-6, -23], [-6.5, -12], [-7, -1], [-7, 0], [-10, 0], [-10, -1], [-9.5, -12], [-9.5, -21]]),
+      ...l([[-11.5, -21], [-12.5, -12], [-13, -1], [-13, 0], [-16, 0], [-16, -1], [-15.5, -12], [-15.5, -22]]),
+      ...c([[-16.5, -27], [-17.5, -33], [-19, -39], [-22, -44], [-25.5, -48], [-29.5, -50.5], [-34, -52], [-38.5, -53.5], [-40.5, -55], [-38, -57], [-32, -58.5], [-27.5, -59]]),
+      ...l([[-27, -59.5], [-29, -68], [-25, -61.5]]),
+      ...l([[-23.5, -61.5], [-21, -68.5], [-19.5, -61]]),
+      ...c([[-18, -59.5], [-15, -55.5], [-12, -50.5], [-8.5, -45], [-6, -41]]),
+    ];
+    let d = path(wob(outline, 0.22)) + "Z";
+    d += ribbon(wob(curve(T([[14, -24.5], [17, -29.5], [19.5, -35]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
+    d += ribbon(wob(curve(T([[-8, -27], [-10, -32], [-11, -37]]), 2), 0.2), 1.9 * Math.max(k, 0.95));
+    fills.push([x, hz - 30 * k, 30 * k]);
+    nS++;
+    /* her shadow, three raked strokes, and two ticks at her feet */
+    const sh = hatch([[x - 22 * k, hz + 2], [x + 24 * k, hz + 2], [x + 20 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
+    groups++;
+    return `<g class="ds-deer" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -7835,6 +8260,8 @@ function buildDawnscape() {
     const legs = `M${T(-1, -2.4)} L${T(-1.6, 0)} M${T(2.4, -2.4)} L${T(3, 0)}`;
     const ox = x - 4.5 * k * dir, oy = y - 7.5 * k;
     groups++;
+    nS += 3;
+    fills.push([x, y - 6 * k, 12 * k]);
     /* the peck turns the head down toward the beak's side, so its sign is
        the bird's facing; its phase is random so the two never peck together */
     const ph = `--ph:${(-r() * 5).toFixed(2)}s;--pk:${dir > 0 ? -52 : 52}deg`;
@@ -7842,7 +8269,7 @@ function buildDawnscape() {
       `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
-  /* ————— a tuft: four to six blades, one path, most leaning a little east ————— */
+  /* ————— a tuft: four to seven blades, one path, most leaning a little east ————— */
   const tuft = (x, h, cls, n) => {
     let d = "";
     for (let i = 0; i < n; i++) {
@@ -7852,36 +8279,59 @@ function buildDawnscape() {
       d += stroke(curve([[bx, hz + 1.5], [bx + bh * lean * 0.35, hz + 1 - bh * 0.55], [bx + bh * lean, hz + 1 - bh]]), 0.35);
     }
     groups++;
-    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px;--ph:${phase(x, 7.3)}"><path class="ds-ink w1" d="${d}"/></g>`;
+    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px">${P(d, "ds-ink w1", n)}</g>`;
   };
 
   /* ————— the composition ————— */
   if (tall) {
-    near += tree(W * 0.075, H * 0.24, 0, "sway-c1");
-    near += tree(W * 0.125, H * 0.185, 3, "sway-c2");
-    near += tree(W * 0.165, H * 0.09, -2, "");
-    near += tuft(W * 0.045, 22 * vs, "sway-m", 5);
-    near += tuft(W * 0.145, 26 * vs, "sway-l", 6);
-    near += deer(W * 0.20);
-    near += tuft(W * 0.20 + 3 * vs, 27 * vs, "sway-m", 7);
-    near += tuft(W * 0.62, 10, "sway-s", 4);
-    near += tuft(W * 0.80, 20 * vs, "sway-l", 5);
-    near += gull(W * 0.55, H * 0.875, -1, "peck-a", "a");
-    near += gull(W * 0.72, H * 0.885, 1, "peck-b", "b");
+    /* the far ticks above the line, hair-strong: the meadow behind the doe
+       and the foot of the bank */
+    far += ticks(X(0.14), hz - 14, X(0.035), 12, 22, "ds-far w1", 4, 9, 0.2);
+    far += ticks(X(0.60), hz - 8, X(0.06), 6, 12, "ds-far w1", 3, 6, 0.2);
+    near += bigTree();
+    near += bough();
+    mid += sapling(X(0.958), Y(0.60), Y(0.21), -0.05, "sway-sap");
+    mid += sapling(X(0.986), Y(0.50), Y(0.15), -0.08, "sway-sap");
+    mid += sapling(X(0.912), Y(0.70), Y(0.13), 0.04, "");
+    /* the meadow's tick-fields, dense at the corners, thinning under the words */
+    const field = [
+      [X(0.05), hz + 40, X(0.06), 34, 70, 7, 16], [X(0.14), hz + 70, X(0.07), 36, 44, 6, 14], [X(0.09), hz + 118, X(0.10), 22, 44, 6, 13],
+      [X(0.22), hz + 30, X(0.05), 22, 18, 5, 11], [X(0.33), hz + 70, X(0.07), 40, 16, 5, 11],
+      [X(0.48), hz + 85, X(0.10), 42, 18, 5, 10], [X(0.62), hz + 60, X(0.08), 40, 16, 5, 10],
+      [X(0.78), hz + 35, X(0.06), 24, 20, 6, 12], [X(0.86), hz + 75, X(0.07), 40, 34, 6, 14],
+      [X(0.95), hz + 38, X(0.05), 34, 60, 7, 16], [X(0.93), hz + 115, X(0.08), 22, 44, 6, 13],
+    ];
+    for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
+    /* and the reed pen's flow lines: a few long low curves through the corner
+       fields, the lie of the grass, hair-strong */
+    for (const [fx, fy, L] of [[0.02, 0.93, 90], [0.06, 0.97, 120], [0.11, 0.905, 70], [0.86, 0.94, 80], [0.90, 0.975, 110], [0.94, 0.90, 60]])
+      near += P(stroke(curve([[X(fx), Y(fy)], [X(fx) + L * 0.5, Y(fy) - 4 - r() * 5], [X(fx) + L, Y(fy) + 2]]), 1.3), "ds-far w1");
+    near += doe(X(0.17));
+    near += tuft(X(0.035), 24 * vs, "sway-m", 5);
+    near += tuft(X(0.147), 26 * vs, "sway-l", 6);
+    near += tuft(X(0.34), 13, "sway-s", 4);
+    near += tuft(X(0.63), 10, "sway-s", 4);
+    near += tuft(X(0.80), 22 * vs, "sway-l", 5);
+    near += tuft(X(0.935), 27 * vs, "sway-m", 6);
+    near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
+    near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
   } else {
     /* the phone's strip: no flank, so what survives is what fits under the
        last line, out of the column's x-range where it can be taller */
-    if (room >= 2) near += tree(W * 0.09, Math.min(64, hz - (H - free) - 30), 2, "sway-c1");
-    near += tuft(W * 0.06, room >= 1 ? 16 : 9, "sway-m", 4);
-    if (room >= 1) near += tuft(W * 0.44, 8, "sway-s", 4);
-    near += tuft(W * 0.87, room >= 1 ? 14 : 9, "sway-l", 4);
-    if (room >= 1 && hz + 18 <= H - 4) near += gull(W * 0.63, hz + 14, 1, "peck-a", "a");
+    if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
+    near += ticks(X(0.08), hz + 22, X(0.07), 14, 18, "ds-ink w1", 4, 9);
+    near += ticks(X(0.90), hz + 22, X(0.08), 14, 18, "ds-ink w1", 4, 9);
+    near += tuft(X(0.06), room >= 1 ? 16 : 9, "sway-m", 4);
+    if (room >= 1) near += tuft(X(0.44), 8, "sway-s", 4);
+    near += tuft(X(0.87), room >= 1 ? 14 : 9, "sway-l", 4);
+    if (room >= 1 && hz + 18 <= H - 4) near += gull(X(0.63), hz + 14, 1, "peck-a", "a");
   }
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  svg.innerHTML = `<g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-front">${near}</g>`;
-  SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups;
-  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups }; /* probe hook */
+  svg.innerHTML = `<g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`;
+  SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups; SCAPE.strokes = nS;
+  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch }; /* probe hook */
 }
 addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
 
@@ -8322,7 +8772,7 @@ function settleScape() {
   groundTimer = setTimeout(groundLife, at(24000));
 }
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
-  if (e.propertyName === "opacity" && atMorning) settleScape();
+  if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();
 });
 
 /* the gate lets them go, FROM THE RING. The socket is the thread's own
