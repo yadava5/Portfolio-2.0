@@ -522,6 +522,14 @@ test.describe("Daylight Study — working paper", () => {
       const plate = artifactPlate(page, artifact.label);
       await expect(plate).toBeVisible();
 
+      /* EVERY PAGE THIS CONTEXT OPENS, collected from here on. The URL
+         assertions below cannot see a stray tab — see the note at the
+         click — and a context-level `page` event fires for one whatever
+         `rel="noopener"` does to the opener relationship, which `popup`
+         does not promise on every engine. */
+      const openedPages: Page[] = [];
+      page.context().on("page", (opened) => openedPages.push(opened));
+
       /* The plate is a real link to the artifact and the viewer is layered
          over it, so the href is asserted BEFORE the click: it is what a
          reader gets when the script never arrives. Resolved rather than
@@ -530,6 +538,15 @@ test.describe("Daylight Study — working paper", () => {
          layer holds the site-absolute form. */
       const expectedHref = new URL(artifact.href, startingUrl).toString();
       await expect(plate).toHaveJSProperty("href", expectedHref);
+
+      /* Armed BEFORE the click, so a tab that opens instantly is still
+         caught. It rejects on timeout when nothing opens — which is the
+         passing case, hence the catch. */
+      const strayTab = page
+        .context()
+        .waitForEvent("page", { timeout: 1200 })
+        .then((opened) => opened.url())
+        .catch(() => null);
 
       await plate.click();
 
@@ -546,6 +563,17 @@ test.describe("Daylight Study — working paper", () => {
       /* The plate's own navigation is prevented while the viewer is up —
          opening a figure must not cost the reader their place in the file. */
       expect(page.url()).toBe(startingUrl);
+      /* AND THAT URL CHECK ALONE WENT BLIND AT b8c04af, which gave the
+         plate `target="_blank"` — the no-script path, so the reader whose
+         script never arrives keeps the case file behind the image. Since
+         then a lost `preventDefault` does not navigate this page at all:
+         it opens the artifact in a SECOND TAB. The viewer still shows, the
+         URL above still reads the case file, and the reader has still lost
+         their place — the exact defect the assertion is named for, now
+         invisible to it. So the tab is asserted too, by URL rather than by
+         count, so a red says which artifact escaped. */
+      expect(await strayTab).toBeNull();
+      expect(openedPages.map((opened) => opened.url())).toEqual([]);
 
       await viewer.getByRole("button", { name: /close/i }).click();
       await expect(viewer).toBeHidden();
@@ -575,6 +603,12 @@ test.describe("Daylight Study — working paper", () => {
       await page.keyboard.press("Escape");
       await expect(viewer).toBeHidden();
       expect(page.url()).toBe(startingUrl);
+
+      /* The other three clicks, asked once and for nothing: the listener
+         has been collecting since before the first one, and the awaits
+         between here and them are the slack a `page` event needs to
+         arrive. No second timeout is spent to ask it. */
+      expect(openedPages.map((opened) => opened.url())).toEqual([]);
     });
   }
 

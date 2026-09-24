@@ -41,10 +41,20 @@ const OUT_EXPLICIT = outArg > -1 || Boolean(process.env.CHECK_LINKS_OUT);
 const CONCURRENCY = 8;
 
 /* ── THE GLYPH CONTRACT (F41) ─────────────────────────────────────────
- * `↗` means the link LEAVES this site. `⟶` means it goes deeper into it.
- * A reader learns that distinction from about the third link and then
- * trusts it, which is exactly why a wrong one costs more than no glyph
- * at all: it promises a new tab and delivers a scroll, or the reverse.
+ * `↗` means the link goes OFF THIS ORIGIN. `⟶` means it stays on it and
+ * goes deeper. A reader learns that distinction from about the third link
+ * and then trusts it, which is exactly why a wrong one costs more than no
+ * glyph at all: it names the wrong place, and the reader believes it.
+ *
+ * THE ARROW DOES NOT PROMISE A TAB, and this comment claimed it did until
+ * 2026-09-23 — a wrong `↗`, it read, "promises a new tab and delivers a
+ * scroll, or the reverse". That conflated two questions the site answers
+ * separately. WHERE a link opens is G8's target rule below, and it is
+ * decided by the back button rather than by the origin: everything that
+ * leaves the RUN opens away, and so does every file, on this origin or any
+ * other. So the archive's `résumé (pdf) ⟶` and the case files' own plates
+ * are right twice over — same origin, so `⟶`; a file, so a new tab. A `⟶`
+ * that opens in a new tab is the two rules working, not a broken promise.
  *
  * Checked as a RULE over the link's origin, never as a fix-list. On
  * 2026-08-05 the run had nine same-origin links printing `↗`; a list
@@ -218,12 +228,14 @@ if (!usingBuild) {
 }
 
 /* ── G8 · AND WHERE THE LINK OPENS ────────────────────────────────────
- * The glyph promises; `target` delivers. Until 2026-09-23 not one link on
- * the RUN carried a `target` — the archive's off-origin links had carried
- * one since it was generated — while THE GLYPH CONTRACT above said a wrong
- * `↗` "promises a new tab and delivers a scroll". So all 26 of the run's
- * `↗` were that broken promise, and the gate that named the defect could
- * not see it.
+ * The glyph names the place; `target` decides the tab. Until 2026-09-23 not
+ * one link on the RUN carried a `target` — the archive's off-origin links
+ * had carried one since it was generated — while THE GLYPH CONTRACT above
+ * said, until this commit, that a wrong `↗` "promises a new tab and
+ * delivers a scroll". So all 26 of the run's `↗` read as that broken
+ * promise, and the gate that named the defect could not see it. The arrow
+ * never owed a tab; that sentence is corrected where it lives, so this one
+ * quotes a claim the file no longer makes.
  *
  * The owner's ruling widened it past the glyph: "opening systems card and
  * resume in the same tab makes it hard to go back". Nothing replaces the
@@ -257,8 +269,9 @@ if (!usingBuild) {
  * is left behind when it does.
  *
  * EXEMPT: anything carrying `download`. It does not navigate, so there is
- * no page for a tab to replace. Today that is the run's two `proof/*.json`
- * receipts and the case files' raw ledgers.
+ * no page for a tab to replace. Today that is six: the run's two
+ * `proof/*.json` receipts, /evidence's two self-hosted `.json` sources, and
+ * the raw ledger on each of the two case files that ship one.
  *
  * THIS RULE AND THE GLYPH CONTRACT DISAGREE ON PURPOSE, about
  * `ayush-yadav.com/projects/glyph/` and about every local plate. The arrow
