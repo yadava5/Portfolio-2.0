@@ -2444,7 +2444,12 @@ body{font-synthesis:none}
    It is a separate element from #manifest on purpose: the panel is a
    disclosure that MAY cover prose once asked for (G4's own positive control
    depends on that), and this one is uninvited, so it must never cover
-   anything. Measured clear of every text box at 1512, 1440 and 1280. */
+   anything. THAT IS NOT A PROPERTY OF THIS RULE. The corner is clear at
+   1512 and 1440 and is NOT clear at 1280 and below, where the nameplate's
+   last character passes through it — and no other top in this column is
+   clear either, because ¶01's rows run out past it lower down. The rule
+   places the line; the script at the foot of the page decides when it may
+   be seen, by measuring its own box against every word in <main>. */
 /* right:var(--pad-x), not the panel's own inset: the rule under this line
    points at the chip, so it has to hang from the chip's right edge. The
    panel sits 42px further out at 1512 and aligning to that read as float. */
@@ -2457,6 +2462,14 @@ body{font-synthesis:none}
 #mpeek i{font-family:var(--mono); font-style:normal; color:var(--clay);
   font-variant-numeric:tabular-nums}
 #mpeek.on{opacity:1; transform:none}
+/* WHEN A WORD ARRIVES UNDER IT THE LINE DOES NOT FADE ACROSS THAT WORD.
+   The half-second withdrawal is right for the ordinary exit — the reader has
+   read it, or moved on — and wrong for the one case it was added for: at
+   1024 and below the nameplate's last character reaches this corner, and a
+   fade still sitting at 0.9 opacity over the "v" is exactly the thing the
+   guard exists to prevent. `.cut` is set only on that exit, and wins on
+   specificity over the transition below. */
+#mpeek.cut{transition:none}
 @media (prefers-reduced-motion: no-preference){
   #mpeek{transition:opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)}
 }
@@ -2686,7 +2699,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
      long the paper is and when it ends, and withdraws. It is NOT the panel:
      the panel is 12 rows and would land on the nameplate at 1512, and a thing
      that covers the name uninvited is a popup. One line, right-aligned under
-     the chip it explains, pointer-events:none, and it never returns. -->
+     the chip it explains, pointer-events:none, and it never returns. It shows
+     only on a scroll where its own box is measurably clear of every word, and
+     the scroll that brings a word under it takes it away. -->
 <p id="mpeek" aria-hidden="true">twelve stops &middot; the last at <i>22:41</i></p>
 
 <div id="mscrim" hidden></div>
@@ -7888,11 +7903,95 @@ boot();
      data-arrive is set, the baseline is re-taken rather than fired on.
 
      It leaves on whichever comes first of four seconds, 300 more px of
-     scroll, or any intent event. Under reduced motion it still appears;
-     only the transition is dropped, by the media query on #mpeek. */
+     scroll, a word arriving under it, or any intent event. Under reduced
+     motion it still appears; only the transition is dropped, by the media
+     query on #mpeek. */
   var peek = document.getElementById("mpeek");
   if (!peek || matchMedia("(max-width:820px)").matches) return;
-  var de = document.documentElement, base = scrollY, shown = false, timer = 0;
+  var de = document.documentElement, base = scrollY, shown = false, timer = 0, pending = 0;
+  var main = document.querySelector("main");
+
+  /* ── NEVER OVER A WORD, AND MEASURED RATHER THAN ASSUMED ──────────────
+     This line hangs in the masthead's right corner, and from 1280 down the
+     nameplate's last character passes THROUGH that corner on its way up:
+     at 1280 the "v" of "Yadav" reaches x 1059 while this line starts at
+     1044, so between roughly 250 and 450px of scroll the hint sat on the
+     name. The corner cannot be moved out of the way — scanning every
+     candidate top in this column against every text rect over 0–1500px of
+     scroll finds NO top at 1280 that is clear, because ¶01's own rows run
+     out to x 1234 lower down. So the line keeps its place by design and
+     earns its APPEARANCE by measurement: it shows only on a scroll where
+     its own box lands on no word, and the scroll that puts a word under it
+     takes it away again.
+
+     The rects, the 0.05 opacity floor and the 1px tolerance are G4's own
+     (`MANIFEST_PROBE`, tests/playwright/reading-gates.spec.ts), so the page
+     and the gate that judges it agree by construction and not by luck.
+
+     SCROLL ONLY, deliberately. A timer that re-measured while the line was
+     up would also fire during G4's own positive control, which moves the
+     peek onto the nameplate and then — with no scroll after it — asks the
+     probe whether the peek is still on screen. Nothing here moves under a
+     still page: the nameplate's descent is driven by scroll position. */
+  function box() {
+    /* The resting (.on) box is this one with the entry transform undone.
+       Take the union of both, so a measurement made mid-transition is still
+       conservative and nothing has to toggle the class — a toggle would
+       start a real transition and then reverse it, on screen. */
+    var r = peek.getBoundingClientRect(), dx = 0, dy = 0;
+    var m = getComputedStyle(peek).transform.match(/matrix\(([^)]+)\)/);
+    if (m) { var p = m[1].split(","); dx = parseFloat(p[4]) || 0; dy = parseFloat(p[5]) || 0; }
+    return { left: Math.min(r.left, r.left - dx), top: Math.min(r.top, r.top - dy),
+             right: Math.max(r.right, r.right - dx), bottom: Math.max(r.bottom, r.bottom - dy) };
+  }
+  function effOpacity(el) {
+    var o = 1, n = el;
+    while (n && n.nodeType === 1) {
+      var cs = getComputedStyle(n);
+      if (cs.display === "none" || cs.visibility === "hidden") return 0;
+      var v = parseFloat(cs.opacity);
+      if (!isNaN(v)) o *= v;
+      n = n.parentElement;
+    }
+    return o;
+  }
+  function nodeUnder(node, b) {
+    if (!(node.nodeValue || "").trim()) return false;
+    var el = node.parentElement;
+    if (!el || peek.contains(el)) return false;
+    var tag = el.tagName.toLowerCase();
+    if (tag === "script" || tag === "style") return false;
+    if (effOpacity(el) <= 0.05) return false;
+    var range = document.createRange();
+    range.selectNodeContents(node);
+    var rects = range.getClientRects();
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.width < 1 || r.height < 1) continue;
+      if (r.left < b.right - 1 && r.right > b.left + 1 &&
+          r.top < b.bottom - 1 && r.bottom > b.top + 1) return true;
+    }
+    return false;
+  }
+  /* <main>'s direct children are filtered by rect first, so a station
+     nowhere near the corner costs one rect instead of a walk of its whole
+     subtree. A bare text child of <main> is tested on its own — G4's probe
+     walks all of <main>, so this one has to reach everything it does. */
+  function covers() {
+    if (!main) return false;
+    var b = box(), kids = main.childNodes;
+    for (var k = 0; k < kids.length; k++) {
+      var kid = kids[k];
+      if (kid.nodeType === 3) { if (nodeUnder(kid, b)) return true; continue; }
+      if (kid.nodeType !== 1) continue;
+      var kr = kid.getBoundingClientRect();
+      if (kr.bottom <= b.top || kr.top >= b.bottom ||
+          kr.right <= b.left || kr.left >= b.right) continue;
+      var tw = document.createTreeWalker(kid, NodeFilter.SHOW_TEXT), node;
+      while ((node = tw.nextNode())) if (nodeUnder(node, b)) return true;
+    }
+    return false;
+  }
   /* pointerdown and keydown ONLY. wheel and touchstart belong to the very
      gesture that raised it — a continuous scroll would have fired the next
      wheel tick 16ms later and taken the line away before it was read. The
@@ -7900,18 +7999,41 @@ boot();
   var ACTS = ["pointerdown", "keydown"];
   function teardown() {
     clearTimeout(timer);
+    if (pending) { cancelAnimationFrame(pending); pending = 0; }
     removeEventListener("scroll", watch);
     for (var i = 0; i < ACTS.length; i++) removeEventListener(ACTS[i], hide);
   }
-  function hide() {
+  /* `cut === true`, not a truthiness test: hide IS the listener for
+     pointerdown and keydown, so its first argument is usually an Event and
+     every Event is truthy. Only the clearance guard passes the literal. */
+  function hide(cut) {
     if (!shown) return;
     shown = false;
+    if (cut === true) peek.classList.add("cut");
     peek.classList.remove("on");
     teardown();
   }
+  /* A SCROLL EVENT IS TOO EARLY TO MEASURE ANYTHING. The nameplate is placed
+     by the world's own rAF, so at the moment `scroll` fires its box is still
+     last frame's — the first cut of this guard read a stale nameplate and let
+     the line stand on the "v" for one stop at 1280, 1024, 900 and 821. Two
+     frames later the page has been laid out and painted with the scroll the
+     reader just made, and that is the geometry the reader is looking at.
+     Events that arrive while a decision is pending are coalesced into it;
+     scrollY is read when the decision runs, not when the event fired. */
   function watch() {
+    if (pending) return;
+    pending = requestAnimationFrame(function () {
+      pending = requestAnimationFrame(function () { pending = 0; decide(); });
+    });
+  }
+  function decide() {
     if (de.hasAttribute("data-arrive")) { base = scrollY; return; }
-    if (shown) { if (Math.abs(scrollY - base) > 300) hide(); return; }
+    if (shown) {
+      if (covers()) { hide(true); return; }
+      if (Math.abs(scrollY - base) > 300) hide();
+      return;
+    }
     if (Math.abs(scrollY - base) < 60) return;
     /* IT ONLY BELONGS AT THE START. The line says how long the paper is,
        which is a question a reader has before they commit, not one they have
@@ -7921,6 +8043,10 @@ boot();
        lands the first scroll event well down the page; when it does, the
        moment has passed and the peek retires without ever showing. */
     if (scrollY > innerHeight) { teardown(); return; }
+    /* NOT YET, rather than not at all: the reader is still inside the first
+       screen, so keep watching. The next scroll that takes the name out of
+       this corner is the one that shows the line. */
+    if (covers()) return;
     shown = true; base = scrollY;
     peek.classList.add("on");
     timer = setTimeout(hide, 4000);
