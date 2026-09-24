@@ -1130,6 +1130,10 @@ if (location.hash.length > 1) {
   .dawnhead{place-self:center; width:100%; max-width:54rem; margin:0 auto 5vh}
   .dawnfoot{width:100%; max-width:46rem; margin:0 auto}
   .dawnfoot .dawnsay{margin-top:0}
+  /* three exits on one line, the one way back in on its own: with "résumé"
+     alone the row would fit one line and run wider than the quote, out
+     toward the sun's crown and the bank */
+  .dawnfoot .dawnrow a:last-child{flex-basis:100%}
   .bdawn .dawnrun{position:absolute; right:6vw; bottom:9vh; margin:0; text-align:right}
   /* …and no transition either: the arrival rule transitions transform over
      1s, and a rect read the instant the class lands would still see the
@@ -3176,7 +3180,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <li><span>languages</span><b>typescript · python · java · c++ · sql</b></li>
             <li><span>degree</span><b>b.s. computer science · miami university, may 2026</b></li>
             <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
-            <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">pdf · one page &#10230;</a></b></li>
+            <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
             <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
           </ul>
         </div>
@@ -3710,7 +3714,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
         <span class="reach">
           <a href="mailto:aesh.03.23@gmail.com">email</a> ·
-          <a href="resume.pdf" target="_blank" rel="noopener">résumé (pdf) &#10230;</a> ·
+          <a href="resume.pdf" target="_blank" rel="noopener">résumé &#10230;</a> ·
           <a href="https://github.com/yadava5" target="_blank" rel="noopener">github &#8599;</a> ·
           <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin &#8599;</a>
         </span>
@@ -3763,8 +3767,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <a href="https://github.com/yadava5" target="_blank" rel="noopener">github &#8599;</a>
           <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin &#8599;</a>
           <!-- same origin, so &#10230; and not &#8599; — this row is three
-               exits and one way back in, and the glyphs have to say which. -->
-          <a href="resume.pdf" target="_blank" rel="noopener">résumé · pdf · one page &#10230;</a>
+               exits and one way back in, and the glyphs have to say which.
+               "résumé" alone: the owner ruled that pdf and one page are a
+               given and are not to be said anywhere. -->
+          <a href="resume.pdf" target="_blank" rel="noopener">résumé &#10230;</a>
           <a href="https://ayush-yadav.com/evidence/" target="_blank" rel="noopener">the working paper &#10230;</a>
         </div>
         </div>
@@ -8089,14 +8095,36 @@ function buildDawnscape() {
   ], 55, 3.4, cls, 0.3, [8, 22]);
 
   if (tall) {
-    /* ————— far: the mountain and the hill, behind the trunk ————— */
-    const mtn = curve([[-3, Y(0.745)], [X(0.02), Y(0.705)], [X(0.048), Y(0.655)], [X(0.075), Y(0.695)],
-      [X(0.11), Y(0.755)], [X(0.15), Y(0.81)], [X(0.183), hz - 1.5]]);
-    far += P(stroke(mtn, 1.4), "ds-far w1");
-    far += P(stroke(seg(mtn, X(0.034), X(0.066)).map(([x, y]) => [x, y - 1.8]), 0.8), "ds-far w1");
-    far += hatch([[-3, Y(0.75)], [X(0.02), Y(0.71)], [X(0.046), Y(0.66)], [X(0.05), Y(0.70)], [X(0.03), Y(0.76)], [-3, Y(0.80)]], -18, 4.2, "ds-far w1", 0.3);
-    const hill = curve([[-3, Y(0.81)], [X(0.035), Y(0.785)], [X(0.085), Y(0.766)], [X(0.125), Y(0.795)], [X(0.16), hz - 1]]);
-    far += P(stroke(hill, 1.3), "ds-far w1");
+    /* ————— far: the range, two ridges behind the trunk —————
+       The near ridge's crest stands on the cream LEFT of the trunk at
+       (0.03 W, 0.50 H), so there is a peak to see, and its east flank runs
+       behind the trunk and comes out the other side to die toward the sun's
+       halo by 0.19 W. Its west flank, away from the light, is hatched with
+       fall-line strokes, its own plane's family (-65°), dissolving toward
+       the foot; the ridgeline is drawn twice with a crest emphasis. The far
+       ridge is lower and lighter, one w06 pass, its crest behind the trunk
+       and its shoulder showing on the right between the two. Aerial
+       perspective by weight, never opacity. No base line: the feet dissolve
+       into the far tick clumps. */
+    const ridge = curve([[-3, Y(0.70)], [X(0.008), Y(0.63)], [X(0.016), Y(0.615)], [X(0.03), Y(0.50)], [X(0.045), Y(0.53)], [X(0.07), Y(0.60)], [X(0.10), Y(0.66)], [X(0.14), Y(0.735)], [X(0.17), Y(0.795)], [X(0.185), hz - 8]]);
+    far += P(stroke(ridge, 1.3), "ds-far w1");
+    far += P(stroke(offset(ridge.slice(2, Math.floor(ridge.length * 0.62)), 1.7), 1.0), "ds-far w1");
+    far += P(stroke(seg(ridge, X(0.018), X(0.044)).map(([x, y]) => [x, y - 1.6]), 0.7), "ds-far w12");
+    /* the ridge is wooded: sparse tree-ticks along its crest, 4–9px, thinning
+       east, so the near tree reads as one of the far thousands come close */
+    let rt = "", rk = 0;
+    for (const [x, y] of ridge) {
+      if (x < X(0.02) || x > X(0.17) || r() > 0.55 - (x / X(0.17)) * 0.3) continue;
+      const th = 4 + r() * 5;
+      rt += stroke([[x, y + 1], [x + (r() - 0.5) * 1.2, y - th]], 0.2);
+      rk++;
+    }
+    far += P(rt, "ds-far w1", rk);
+    const flank = [[-3, Y(0.70)], [X(0.012), Y(0.60)], [X(0.03), Y(0.50)], [X(0.034), Y(0.56)], [X(0.024), Y(0.65)], [X(0.010), Y(0.73)], [-3, Y(0.78)]];
+    far += hatch(flank, -65, 4.4, "ds-far w1", 0.35, [10, 30], (x, y) => 1.25 - (y - Y(0.50)) / Y(0.26));
+    const ridge2 = curve([[X(0.05), Y(0.665)], [X(0.08), Y(0.59)], [X(0.10), Y(0.568)], [X(0.125), Y(0.585)], [X(0.15), Y(0.63)], [X(0.168), Y(0.69)], [X(0.182), Y(0.755)]]);
+    far += P(stroke(ridge2, 1.1), "ds-far w06");
+    far += hatch([[X(0.112), Y(0.575)], [X(0.125), Y(0.585)], [X(0.15), Y(0.63)], [X(0.16), Y(0.67)], [X(0.14), Y(0.66)], [X(0.12), Y(0.62)]], -65, 6, "ds-far w06", 0.3, [6, 16], (x, y) => 1.2 - (y - Y(0.575)) / Y(0.12));
 
     /* ————— the etched sky: long horizontals between the crown and the bough —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
@@ -8111,11 +8139,16 @@ function buildDawnscape() {
     const skyPiece = (x0, x1, y) => {
       let out = "";
       const boxes = keep.filter(([l, t, rt, bt]) => y >= t && y <= bt && x1 > l && x0 < rt);
-      const spans = [[x0, x1]];
+      /* every span less every box it crosses, each end its own distance off */
+      let spans = [[x0, x1]];
       for (const [l, , rt] of boxes) {
-        const s = spans.pop();
-        if (s[0] < l - 14) spans.push([s[0], l - 14 - r() * 50]);
-        if (s[1] > rt + 14) spans.push([rt + 14 + r() * 50, s[1]]);
+        const next = [];
+        for (const [a, b] of spans) {
+          if (b <= l || a >= rt) { next.push([a, b]); continue; }
+          if (a < l - 14) next.push([a, l - 14 - r() * 50]);
+          if (b > rt + 14) next.push([rt + 14 + r() * 50, b]);
+        }
+        spans = next;
       }
       for (const [a, b] of spans) if (b - a > 36) out += P(stroke(curve([[a, y], [(a + b) / 2, y + (r() - 0.5) * 1.6], [b, y]], 6), 1.0), "ds-far w1");
       return out;
@@ -8402,6 +8435,14 @@ function buildDawnscape() {
     let td = "";
     for (let j = 0; j < 3; j++) { const la = -Math.PI / 2 + (j - 1) * 0.7 + (r() - 0.5) * 0.3, ll = 6 + r() * 5; td += stroke([top, [top[0] + Math.cos(la) * ll, top[1] + Math.sin(la) * ll]], 0.3); }
     d += P(td, "ds-ink w1", 3);
+    /* and leaves: five to eight small solid tufts at the branch ends, so a
+       sapling is a young tree on a spring morning and not a winter twig */
+    for (let j = 0, n = 5 + Math.floor(r() * 4); j < n; j++) {
+      const t = 0.42 + r() * 0.58, p = tr[Math.floor(t * (tr.length - 1))];
+      const side = r() < 0.5 ? -1 : 1, reach = h * (0.08 + r() * 0.14);
+      d += mass(p[0] + side * reach, p[1] - reach * 0.5 - r() * 6, 11 + r() * 4);
+    }
+    d += mass(top[0] + (r() - 0.5) * 6, top[1] - 4, 12 + r() * 3);
     if (cls) groups++;
     return `<g class="ds-sap ${cls}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
   };
@@ -8499,17 +8540,112 @@ function buildDawnscape() {
       `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${cls}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
-  /* ————— a tuft: four to seven blades, one path, most leaning a little east ————— */
-  const tuft = (x, h, cls, n) => {
+  /* ————— the grass, in the engraving's language —————
+     Not wire ticks. A solid tuft is five to nine tapered blades fused at
+     the base into ONE silhouette (a single outline, so the fill rule can cut
+     two or three cream blades out of its mass), with loose blades escaping
+     in two passes (a w12 base, a w1 tip, never w06), seed heads on w1
+     stems standing proud, and three to five shadow ticks on its east foot,
+     because the light is at 0.26 W and grass that throws no shadow floats.
+     Outline tufts in hair-strong stand behind for depth. The fill holds
+     still; the loose blades and the stems are the group that will move. */
+  const spine = (bx, by, h, lean, bend = 0) => curve([[bx, by], [bx + h * lean * 0.35 + bend, by - h * 0.5], [bx + h * lean, by - h]], 3);
+  const shadowFoot = (x, y, w) => hatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18, 2.6, "ds-far w1", 0.3, [5, 12]);
+  const seedHead = (x, y, h) => {
+    const sp = spine(x, y + 1, h, (r() - 0.5) * 0.5 + 0.1, (r() - 0.5) * 4);
+    const tip = sp[sp.length - 1], prev = sp[sp.length - 3] || sp[0];
+    const a = Math.atan2(tip[1] - prev[1], tip[0] - prev[0]);
+    const head = arc(tip[0] + Math.cos(a) * 2, tip[1] + Math.sin(a) * 2, 2.6, 1.5, 0, 6.3, 1.2).map(([px, py]) => {
+      const dx = px - tip[0] - Math.cos(a) * 2, dy = py - tip[1] - Math.sin(a) * 2;
+      return [tip[0] + Math.cos(a) * 2 + dx * Math.cos(a) - dy * Math.sin(a), tip[1] + Math.sin(a) * 2 + dx * Math.sin(a) + dy * Math.cos(a)];
+    });
+    nS += 2;
+    return `<path class="ds-ink w1" d="${stroke(sp, 0.3)}"/><path class="ds-fill" d="${path(head)}Z"/>`;
+  };
+  const solidTuft = (x, y, h, n, cls = "", seeds = 0) => {
+    const blades = [];
+    for (let i = 0; i < n; i++) {
+      const t = n > 1 ? (i - (n - 1) / 2) / (n - 1) : 0;
+      const bx = x + t * n * 1.5;
+      const bh = h * (0.55 + 0.45 * (1 - Math.abs(t) * 1.3) + r() * 0.15);
+      const lean = t * 1.0 + 0.1 + (r() - 0.5) * 0.3;
+      const sp = spine(bx, y + 1, bh, lean, (r() - 0.5) * 3);
+      blades.push({ bx, bh, sp, nm: normals(sp), w0: 2.0 + r() * 0.8 });
+    }
+    blades.sort((a, b) => a.bx - b.bx);
+    const edge = (b, side) => b.sp.map((p, i) => { const f = 1 - i / (b.sp.length - 1); const w = b.w0 * (0.1 + 0.9 * f); return [p[0] + b.nm[i][0] * w * side, p[1] + b.nm[i][1] * w * side]; });
+    const crotches = blades.slice(0, -1).map((b, k) => y + 1 - Math.min(b.bh, blades[k + 1].bh) * (0.3 + r() * 0.15));
+    const pts = [];
+    for (let k = 0; k < blades.length; k++) {
+      const b = blades[k];
+      const startY = k ? crotches[k - 1] : y + 1, endY = k < blades.length - 1 ? crotches[k] : y + 1;
+      pts.push(...edge(b, -1).filter((p) => p[1] <= startY));
+      pts.push(...edge(b, 1).reverse().filter((p) => p[1] <= endY));
+    }
+    let d = path(wob(pts, 0.2)) + "Z";
+    /* the cream blades: cut up the fused mass along inner spines */
+    const inner = blades.slice(1, -1);
+    const nc = Math.min(3, inner.length);
+    for (let c = 0; c < nc; c++) {
+      const b = inner[Math.floor(((c + 0.5) * inner.length) / nc)];
+      const sg = b.sp.filter((p) => p[1] <= y - 1.5 && p[1] >= y + 1 - b.bh * 0.5);
+      if (sg.length > 2) d += ribbon(sg, 1.7);
+    }
+    fills.push([x, y - h / 2, h / 2]);
+    nS++;
+    let base = "", tip = "";
+    const nl = 3 + Math.floor(r() * 4);
+    for (let i = 0; i < nl; i++) {
+      const bx = x + (r() - 0.5) * n * 2.4, bh = h * (0.7 + r() * 0.6), lean = (r() - 0.5) * 1.4 + 0.15;
+      const sp = spine(bx, y + 1, bh, lean, (r() - 0.5) * 5);
+      base += stroke(sp.slice(0, Math.ceil(sp.length * 0.7)), 0.3);
+      tip += stroke(sp.slice(Math.floor(sp.length * 0.45)), 0.3);
+    }
+    let sd = "";
+    for (let s = 0; s < seeds; s++) sd += seedHead(x + (r() - 0.5) * n * 2, y, h * (1.05 + r() * 0.3));
+    if (cls) groups++;
+    return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-blades ${cls}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
+  };
+  /* an outline tuft: the drawn blades alone, hair-strong, behind the solids */
+  const tuft = (x, y, h, n) => {
     let d = "";
     for (let i = 0; i < n; i++) {
       const bx = x + (i - (n - 1) / 2) * (2.2 + r() * 1.4);
       const bh = h * (0.55 + r() * 0.45);
       const lean = (r() - 0.5) * 0.9 + 0.15;
-      d += stroke(curve([[bx, hz + 1.5], [bx + bh * lean * 0.35, hz + 1 - bh * 0.55], [bx + bh * lean, hz + 1 - bh]]), 0.35);
+      d += stroke(spine(bx, y + 1.5, bh, lean), 0.35);
     }
+    return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px">${P(d, "ds-far w1", n)}</g>`;
+  };
+
+  /* ————— the fawn: the doe's silhouette at two thirds, legs a little too long,
+     the head a little too big, and three cream spots on the haunch ————— */
+  const fawn = (x) => {
+    const k = 0.66 * vs;
+    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
+    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
+    const outline = [
+      ...c([[-4, -40], [2, -42], [8, -42], [13, -40], [16, -36]]),
+      ...l([[17, -35], [19, -32.5], [16.5, -31.5]]),
+      ...c([[16, -29], [15.5, -24], [15, -20]]),
+      ...l([[15, -14], [14.5, -7], [14, 0], [11.5, 0], [11.5, -7], [12, -14], [11, -19]]),
+      ...l([[9.5, -18], [9, -8], [9, 0], [6.5, 0], [6.5, -8], [7, -17]]),
+      ...c([[6, -20], [1, -23], [-4, -23.5]]),
+      ...l([[-4.5, -22], [-5, -10], [-5.5, 0], [-8, 0], [-8, -10], [-8, -20]]),
+      ...l([[-9.5, -20], [-10.5, -10], [-11, 0], [-13.5, 0], [-13.5, -10], [-13, -21]]),
+      ...c([[-13.5, -26], [-14, -31], [-15, -36], [-17.5, -41], [-20.5, -44.5], [-24.5, -46.5], [-28.5, -48], [-30.5, -49.5], [-29, -51.5], [-24.5, -52.5], [-21, -53]]),
+      ...l([[-20.5, -53.5], [-22, -62], [-18, -55]]),
+      ...l([[-16.5, -55], [-14, -62.5], [-12.5, -54]]),
+      ...c([[-11, -52.5], [-8.5, -48.5], [-6, -43.5], [-4, -40]]),
+    ];
+    let d = path(wob(outline, 0.2)) + "Z";
+    for (const [sx, sy] of [[11, -28], [7.5, -33], [13, -35]]) d += path(arc(...T([[sx, sy]])[0], 1.7, 1.7, 0, 6.3, 1)) + "Z";
+    fills.push([x, hz - 20 * k, 20 * k]);
+    nS++;
+    const sh = hatch([[x - 14 * k, hz + 2], [x + 16 * k, hz + 2], [x + 13 * k, hz + 7], [x - 10 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
     groups++;
-    return `<g class="ds-tuft ${cls}" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px">${P(d, "ds-ink w1", n)}</g>`;
+    return `<g class="ds-fawn" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(hz)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>${sh}</g>`;
   };
 
   /* ————— the composition ————— */
@@ -8523,13 +8659,14 @@ function buildDawnscape() {
     mid += sapling(X(0.958), Y(0.60), Y(0.21), -0.05, "sway-sap");
     mid += sapling(X(0.986), Y(0.50), Y(0.15), -0.08, "sway-sap");
     mid += sapling(X(0.912), Y(0.70), Y(0.13), 0.04, "");
-    /* the meadow's tick-fields, dense at the corners, thinning under the words */
+    /* the meadow's ground: a stipple of short ticks, half what round 8 had
+       and shorter, thinning under the words; the grass itself is the tufts */
     const field = [
-      [X(0.05), hz + 40, X(0.06), 34, 70, 7, 16], [X(0.14), hz + 70, X(0.07), 36, 44, 6, 14], [X(0.09), hz + 118, X(0.10), 22, 44, 6, 13],
-      [X(0.22), hz + 30, X(0.05), 22, 18, 5, 11], [X(0.33), hz + 70, X(0.07), 40, 16, 5, 11],
-      [X(0.48), hz + 85, X(0.10), 42, 18, 5, 10], [X(0.62), hz + 60, X(0.08), 40, 16, 5, 10],
-      [X(0.78), hz + 35, X(0.06), 24, 20, 6, 12], [X(0.86), hz + 75, X(0.07), 40, 34, 6, 14],
-      [X(0.95), hz + 38, X(0.05), 34, 60, 7, 16], [X(0.93), hz + 115, X(0.08), 22, 44, 6, 13],
+      [X(0.05), hz + 40, X(0.06), 34, 34, 4, 9], [X(0.14), hz + 70, X(0.07), 36, 22, 4, 8], [X(0.09), hz + 118, X(0.10), 22, 22, 4, 8],
+      [X(0.22), hz + 30, X(0.05), 22, 9, 4, 8], [X(0.33), hz + 70, X(0.07), 40, 8, 4, 8],
+      [X(0.48), hz + 85, X(0.10), 42, 9, 4, 7], [X(0.62), hz + 60, X(0.08), 40, 8, 4, 7],
+      [X(0.78), hz + 35, X(0.06), 24, 10, 4, 8], [X(0.86), hz + 75, X(0.07), 40, 17, 4, 8],
+      [X(0.95), hz + 38, X(0.05), 34, 30, 4, 9], [X(0.93), hz + 115, X(0.08), 22, 22, 4, 8],
     ];
     for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
     /* and the reed pen's flow lines: a few long low curves through the corner
@@ -8538,16 +8675,29 @@ function buildDawnscape() {
     for (const [fx, fy, L] of [[0.02, 0.93, 90], [0.06, 0.97, 120], [0.11, 0.905, 70], [0.86, 0.94, 80], [0.90, 0.975, 110], [0.94, 0.90, 60]])
       near += strokes(curve([[X(fx), Y(fy)], [X(fx) + L * 0.5, Y(fy) - 4 - r() * 5], [X(fx) + L, Y(fy) + 2]]), 1.3, "ds-far w1");
     cutPad = 4;
-    near += doe(X(0.17));
-    near += tuft(X(0.035), 24 * vs, "sway-m", 5);
-    near += tuft(X(0.147), 26 * vs, "sway-l", 6);
-    near += tuft(X(0.34), 13, "sway-s", 4);
-    near += tuft(X(0.63), 10, "sway-s", 4);
-    near += tuft(X(0.745), 16 * vs, "sway-l", 5);
-    near += tuft(X(0.975), 27 * vs, "sway-m", 6);
+    /* outline tufts first, behind everything */
+    for (const [fx, fy, h, n] of [[0.03, 0, 30, 5], [0.085, 0, 28, 5], [0.16, 0, 24, 5], [0.35, 0.885, 16, 4], [0.49, 0.90, 14, 4], [0.64, 0.88, 16, 4], [0.75, 0, 20, 5], [0.80, 0.98, 14, 4], [0.93, 0.975, 16, 4], [0.985, 0, 34, 6]])
+      near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
+    near += fawn(X(0.122));
+    near += doe(X(0.165));
+    /* the solid tufts: three stands of three at the bottom corners and by
+       the doe, the swale of taller grass across the mid-ground in an S, and
+       grass round the hare in the near foreground below the signature */
+    const S3 = Math.max(vs, 0.8);
+    near += solidTuft(X(0.02), hz, 48 * S3, 8, "sway-m", 1) + solidTuft(X(0.045), hz, 54 * S3, 9, "", 2) + solidTuft(X(0.07), hz, 42 * S3, 7, "sway-l", 0);
+    near += solidTuft(X(0.105), hz, 26 * S3, 6, "", 0) + solidTuft(X(0.147), hz, 34 * S3, 7, "sway-l", 1);
+    /* the swale: pairs and singles of unequal size along an S, with outline
+       tufts between, so it reads as a swathe of grass and not a row of stamps */
+    for (const [fx, fy, h, n, sd] of [[0.35, 0.876, 26, 8, 1], [0.372, 0.886, 15, 5, 0], [0.405, 0.897, 22, 7, 0], [0.44, 0.906, 13, 5, 0], [0.458, 0.90, 24, 8, 1],
+      [0.52, 0.902, 17, 6, 0], [0.575, 0.89, 28, 9, 1], [0.60, 0.895, 14, 5, 0], [0.655, 0.878, 21, 7, 0], [0.685, 0.87, 16, 6, 1]])
+      near += solidTuft(X(fx), Y(fy), h * S3, n, "", sd);
+    for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
+      near += tuft(X(fx), Y(fy), h * vs, n);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
     near += hare(X(0.86), Y(0.97));
+    near += solidTuft(X(0.83), Y(0.985), 18 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 20 * S3, 6, "sway-s", 0);
+    near += solidTuft(X(0.962), hz, 44 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 52 * S3, 9, "", 2) + solidTuft(X(0.993), hz, 40 * S3, 7, "sway-m", 0);
     /* where a leaf may fall from and where it may land: the crown's left
        half down the trunk's side, short of the sun's halo, and the bough
        down the right edge, short of the signature's air. The clearance gate
@@ -8568,9 +8718,9 @@ function buildDawnscape() {
     if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
     near += ticks(X(0.08), hz + 22, X(0.07), 14, 18, "ds-ink w1", 4, 9);
     near += ticks(X(0.90), hz + 22, X(0.08), 14, 18, "ds-ink w1", 4, 9);
-    near += tuft(X(0.06), room >= 1 ? 16 : 9, "sway-m", 4);
-    if (room >= 1) near += tuft(X(0.44), 8, "sway-s", 4);
-    near += tuft(X(0.87), room >= 1 ? 14 : 9, "sway-l", 4);
+    near += solidTuft(X(0.06), hz, room >= 1 ? 16 : 9, 5, "sway-m", 0);
+    if (room >= 1) near += tuft(X(0.44), hz, 8, 4);
+    near += solidTuft(X(0.87), hz, room >= 1 ? 14 : 9, 5, "sway-l", 0);
     if (room >= 1 && hz + 18 <= H - 4) near += gull(X(0.63), hz + 14, 1, "peck-a", "a");
   }
 

@@ -1038,13 +1038,21 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
           for (const r of rg.getClientRects()) if (r.width) runRects.push(r);
         }
         const colL = Math.min(...runRects.map((r) => r.left)) - CLEAR,
-          colR = Math.max(...runRects.map((r) => r.right)) + CLEAR;
+          colR = Math.max(...runRects.map((r) => r.right)) + CLEAR,
+          colB = Math.max(...runRects.map((r) => r.bottom));
+        /* a tuft standing wholly below the signature is not under it */
         const tallUnder = [...svg.querySelectorAll(".ds-tuft")]
-          .map((el) => ({
-            x: +(el as SVGGElement).dataset.x!,
-            h: el.getBoundingClientRect().height,
-          }))
-          .filter((t) => t.x >= colL && t.x <= colR && t.h > CAP + 1.5);
+          .map((el) => {
+            const b = el.getBoundingClientRect();
+            return {
+              x: +(el as SVGGElement).dataset.x!,
+              h: b.height,
+              top: b.top,
+            };
+          })
+          .filter(
+            (t) => t.x >= colL && t.x <= colR && t.top < colB && t.h > CAP + 1.5
+          );
         return {
           ...worst,
           tallUnder,

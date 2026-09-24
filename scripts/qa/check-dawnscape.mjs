@@ -289,7 +289,7 @@ try {
         const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
         samples++;
         if (sun && !onLine) {
-          const d = Math.hypot(q.x - sun.x, q.y - sun.y);
+          const d = Math.hypot(q.x - sun.x, q.y - sun.y) - range;
           if (d < halo.d) halo = { d: +d.toFixed(1), sub };
         }
         for (const t of texts) {
@@ -323,10 +323,19 @@ try {
       for (const r of rg.getClientRects()) if (r.width) runRects.push(r);
     }
     const colL = Math.min(...runRects.map((r) => r.left)) - CLEAR_PX,
-      colR = Math.max(...runRects.map((r) => r.right)) + CLEAR_PX;
+      colR = Math.max(...runRects.map((r) => r.right)) + CLEAR_PX,
+      colB = Math.max(...runRects.map((r) => r.bottom));
+    /* a tuft in the near foreground, standing wholly BELOW the signature, is
+       not under it; the clearance measure holds its 24px like any mark */
     const tallUnder = [...svg.querySelectorAll(".ds-tuft")]
-      .map((el) => ({ x: +el.dataset.x, h: el.getBoundingClientRect().height }))
-      .filter((t) => t.x >= colL && t.x <= colR && t.h > GRASS_CAP + 1.5);
+      .map((el) => {
+        const b = el.getBoundingClientRect();
+        return { x: +el.dataset.x, h: b.height, top: b.top };
+      })
+      .filter(
+        (t) =>
+          t.x >= colL && t.x <= colR && t.top < colB && t.h > GRASS_CAP + 1.5
+      );
     const anims = document
       .getAnimations()
       .filter(
