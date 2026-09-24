@@ -3666,6 +3666,51 @@ function cacheGeometry() {
              yFlipAbs + vh - kickOff + 24) - bDusk.top);
   if (Math.abs(need - bDusk.h) > 2) bDusk.el.style.minHeight = need + "px";
   measure();
+
+  /* THE LIFEQUEST PLATE FINISHED DRAWING WHERE NOBODY COULD SEE IT. The
+     owner: "the animation … finishes displaying full thing when we past
+     scroll that section". Measured at b29f7a6, at the scroll pixel where the
+     plate's last held tag switches on:
+
+       1512x982  effective opacity 0.50, plate centre 0.29vh
+       1440x900  0.68, 0.28vh
+       1280x800  0.84, 0.28vh
+        390x844  1.00, 0.71vh
+
+     On a laptop the shared dusk curtain is already half over it and it is
+     sliding off the top edge; on a phone it completes with the plate near the
+     bottom of the screen. Nothing was wrong with the drawing — its own clock
+     lands everything by .415 — the fault is that .415 of BEAT 7 is a position
+     in a beat sized by the dusk chain, and that chain grew.
+
+     So the scroll is remapped onto the drawing's clock rather than the clock
+     being retuned: yB is the scroll at which the plate sits centred, pulled
+     back if the curtain would reach it first, and yA is far enough above it
+     that the drawing is never a flick. CLIMB_INK and the drawing order are
+     untouched.
+
+     This sits AFTER the write-back and the second measure(), not beside Y1:
+     bDusk.h is rewritten 4 lines up, and pOf divides by it. Computed before
+     the re-measure, every window here would be scaled by a stale beat
+     height. */
+  {
+    const plate8 = climb.svg.closest("figure"), f8 = fx.find((f) => f.el === plate8);
+    const top8 = absTop(plate8), h8 = plate8.offsetHeight;
+    const yIn = f8.spec.in[1] * (vh + f8.h) - vh + f8.top;           /* entrance done */
+    /* 0.50 and not 0.52, and the 0.02 is bought rather than taste: the last
+       boot-time cacheGeometry runs against a layout that still grows about
+       33px under it (measured at 1512 — the live plate centre is 6694 and the
+       cached one 6661; a forced resize makes them agree). Every derived
+       window on this page carries that staleness and it is not this change's
+       to fix, so the target is placed high enough in the band that 33px of it
+       lands nowhere near the edge. */
+    const yB = Math.min(top8 + h8 / 2 - 0.50 * vh, Y1 - 0.08 * vh);  /* centred, before the curtain */
+    const yA = Math.min(yIn, yB - 0.22 * vh);                        /* never a flick */
+    const pOf = (y) => (y + vh * READ_LINE - bDusk.top) / bDusk.h;
+    climbWin.a = pOf(yA); climbWin.b = pOf(yB);
+    window.__world.climbWin = { a: climbWin.a, b: climbWin.b, yA, yB, yIn }; /* probe hook */
+  }
+
   /* hand the darkening window to arcColor, as fractions of the beat */
   dusk7.start = (yDark + vh * READ_LINE - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
@@ -5422,6 +5467,13 @@ const climb = { svg: $("questFig"), g: null, ground: null, ghost: null,
   blocks: [], foot: [], tok: null, ring: null, leads: [], cut: null, stops: [] };
 /* the three ink windows, hoisted: this array is read every frame */
 const CLIMB_INK = [[0.1, 0.18], [0.16, 0.24], [0.22, 0.32]];
+/* WHERE THE DRAWING PLAYS, in beat-7 progress. The plate's own clock (below)
+   is unchanged — the last held tag still lands at .415 — but the stretch of
+   SCROLL that clock is laid over is derived in cacheGeometry instead of being
+   whatever fraction of the beat happened to fall there. The defaults are the
+   identity remap, so a settle before the first geometry pass draws exactly
+   what it drew before. See the derivation for the numbers that forced it. */
+const climbWin = { a: 0.02, b: 0.415 };
 function buildClimb(tight) {
   const s = climb.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
@@ -5612,9 +5664,14 @@ function scrubClimb(p) {
   climb.ticks.forEach((t, i) => on(t, tp >= i + 1));
   /* the holds, last. The ledger they used to run a hair ahead of was deleted
      from the DOM; its scrubber is gone now too, and these keep the timing,
-     which was always the drawing's own. Everything on this plate is landed
-     by .415, and the shared dusk curtain takes the figure to opacity 0 from
-     .48 — the shipping plate's own last event was the ring at .42. */
+     which was always the drawing's own. Everything on this plate is landed by
+     .415, and that is the whole of the plate's clock: p .415 is the last
+     event, not the ring at .42 and not a curtain at .48. The previous version
+     of this note quoted both of those against a dusk chain that has since
+     been rederived twice, and it was what made "the drawing finishes off
+     screen" look like a timing that was already correct. WHERE .415 falls in
+     the reader's scroll is climbWin's job, in cacheGeometry; nothing on this
+     plate should ever be tuned to compensate for it. */
   climb.blocks.forEach((b, i) => { for (const t of b) on(t, p >= 0.38 + i * 0.035); });
 }
 
@@ -6234,7 +6291,13 @@ function work(y) {
      its bench is a settled record. Beat 6 keeps scrubJet, which is the
      drawing; only its bench pair left. */
   if (Math.abs(beat - 6) <= 1) scrubJet(beat < 6 ? 0 : beat > 6 ? 1 : bp);
-  if (Math.abs(beat - 7) <= 1) { const p7 = beat < 7 ? 0 : beat > 7 ? 1 : bp; scrubClimb(p7); }
+  /* beat 7's plate runs on its own window (climbWin), not on the beat's
+     progress: the beat is sized by the dusk chain and the drawing is not */
+  if (Math.abs(beat - 7) <= 1) {
+    const p7 = beat < 7 ? 0 : beat > 7 ? 1
+      : clamp(0.02 + ((bp - climbWin.a) / (climbWin.b - climbWin.a)) * 0.395, 0, 1);
+    scrubClimb(p7);
+  }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
   if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
