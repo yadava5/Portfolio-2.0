@@ -459,14 +459,20 @@ const MONO_ALLOW: { sel: string; why: string }[] = [
   { sel: "#mpeek i", why: "the run's closing time, in the first-scroll hint" },
   { sel: "#manifest .mt", why: "each stop's departure time in the timetable" },
   { sel: "#manifest .foot i", why: "the run's closing time" },
-  { sel: ".ladder", why: "the gate ladder: each station's time and verdict" },
+  { sel: ".ladder", why: "the gate timetable: each stop's departure time" },
+  { sel: ".approvebar .lt", why: "the last stop's own departure time, 22:41" },
   { sel: ".figsvg text", why: "figure labels — annotation on a drawing" },
   { sel: "#net text", why: "the network figure's layer and class labels" },
   { sel: "#netwrap .verdictline", why: "the classifier's live readout" },
   { sel: ".bench .brow span", why: "a benchmark lane, its value and unit" },
-  { sel: "#gatesFig .gname", why: "the gate register: which rule ran" },
-  { sel: "#gatesFig .gword", why: "the gate register: its verdict" },
-  { sel: "#gatesFig .gtail span", why: "the register's unsigned row" },
+  /* `#gatesFig .gname` and `#gatesFig .gtail span` were listed here until
+     round 4. Fig. 10's gate names are now set in the text face — a
+     thirty-character name did not fit a mono column at 230px — and its
+     unsigned tail is an italic word on the drawing, not a mono label. Both
+     entries are REMOVED rather than left standing: an allowlist entry
+     nothing uses is an entry nobody is watching, and if either goes back to
+     mono this gate should say so. */
+  { sel: "#gatesFig .gword", why: "the gate register: its verdict, stamped" },
   { sel: "#cadWeek .hd span", why: "the week grid's day columns" },
   { sel: "#slotWhen", why: "the slot the parse found, as a time" },
   { sel: ".chip", why: "the fields a parse produced" },
@@ -1002,6 +1008,12 @@ test.describe("G9 · no tap target under 24×24 on the phone", () => {
 const RAIL_WIDTHS: [number, number][] = [
   [1512, 982],
   [1440, 900],
+  /* 1375×800 joined the set with round 4's ending: it is the narrowest seat
+     that still lays the gate out in two columns, so it is where the corridor
+     into ¶12 swings furthest (about 43px) and where the ceilings are closest
+     to being reached. Measured there at the time it was added: slope 1.55,
+     bend24 19.6, kink2 4.3. */
+  [1375, 800],
   [1280, 800],
 ];
 const RAIL_CEIL = { maxSlope: 1.58, bend24: 24.1, kink2: 16.2 };
@@ -1155,5 +1167,147 @@ test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () =
     );
     await arrive(page);
     expect(await railRun(page)).toContain("destination-out");
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   G10b · the rail ends ON the socket, and it never touches the timetable
+
+   G10 measures the line's SHAPE and would stay green if the whole rail
+   moved 40px left, or if it stopped 30px short of the mark it is drawn to,
+   or if it ran straight down a column of type. Round 4 put the terminus
+   inside the timetable's own lane, so all three became possible in one
+   change, and all three are things the owner judges by eye and I cannot.
+
+   The four claims:
+     · the last 40px of the line are the socket's x, to within half a pixel
+       (the wobble is tapered to zero there by `steady`, and LOCK is that
+       stretch. The spec asked for 96px; 96 is where the TAPER begins, and
+       between 96 and 40 the line is still wandering by design, which is
+       what makes it look drawn. 40 is the part that is actually straight.)
+     · the last sample is the socket's centre
+     · nothing carries on past it (measured: the line's own y comes from
+       layout and the socket's from a client rect, so the two agree to about
+       a pixel and the guard is set at 1.5 rather than 0)
+     · no sample comes within 16px of any word in the timetable
+
+   The control injects the old behaviour — beat 11's x taken from stx as a
+   percentage of the viewport instead of from the dock — and the lane
+   assertion has to go red, because 24% of 1512 lands the envelope inside
+   the stop-name column.
+   ══════════════════════════════════════════════════════════════════════ */
+const RAIL_LANE_MIN = 16; /* px · envelope to any timetable word */
+
+async function railTerminus(page: Page) {
+  return page.evaluate(() => {
+    const s = (
+      window as unknown as {
+        __rail: () => { x: number; y: number; L: number }[];
+      }
+    ).__rail();
+    const sq = document
+      .querySelector("#gateDock i")!
+      .getBoundingClientRect();
+    const cx = sq.left + sq.width / 2;
+    const cy = sq.top + window.scrollY + sq.height / 2;
+    let lock = 0,
+      beyond = 0;
+    for (const p of s) {
+      if (p.y > cy - 40) lock = Math.max(lock, Math.abs(p.x - cx));
+      /* 1.5px, for the same reason the y assertion below carries it: the
+         line's terminus is a layout measurement and the socket's centre is a
+         client rect, and at 1512 they disagree by 0.94px on a square whose
+         height is an odd number of device pixels. Anything that overruns the
+         dock overruns it by the length of a sample step, which is 4. */
+      if (p.y > cy + 1.5) beyond++;
+    }
+    /* the lane: every word in the timetable against every sample that shares
+       its band of the page. Boxes, not glyph runs — a box is the conservative
+       reading and the grid's columns are what the lane was measured against. */
+    let nearest = Infinity;
+    let who = "";
+    for (const el of document.querySelectorAll(".ladder li > span")) {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !(el.textContent || "").trim()) continue;
+      const a = r.top + window.scrollY - 4;
+      const b = r.bottom + window.scrollY + 4;
+      for (const p of s) {
+        if (p.y < a || p.y > b) continue;
+        const dx =
+          p.x < r.left ? r.left - p.x : p.x > r.right ? p.x - r.right : 0;
+        if (dx < nearest) {
+          nearest = dx;
+          who = (el.textContent || "").trim().slice(0, 24);
+        }
+      }
+    }
+    const last = s[s.length - 1];
+    return {
+      cx,
+      cy,
+      lastX: last.x,
+      lastY: last.y,
+      lock,
+      beyond,
+      nearest: nearest === Infinity ? -1 : nearest,
+      who,
+      n: s.length,
+    };
+  });
+}
+
+test.describe("G10b · the rail docks, and it keeps out of the timetable", () => {
+  for (const [w, h] of RAIL_WIDTHS) {
+    test(`at ${w}`, async ({ page }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await arrive(page);
+      const r = await railTerminus(page);
+      expect(r.n, "the rail was sampled").toBeGreaterThan(200);
+      expect(r.lock, `the last 40px hold the socket's x at ${w}`).toBeLessThanOrEqual(0.5);
+      expect(
+        Math.abs(r.lastX - r.cx),
+        `the last sample's x is the socket's at ${w}`
+      ).toBeLessThanOrEqual(0.5);
+      /* 1.5, not 0.5, and the difference is a measurement and not a slack:
+         the rail's y comes from absTop (layout) and the socket's from a
+         client rect, and the two round subpixel heights differently. */
+      expect(
+        Math.abs(r.lastY - r.cy),
+        `the last sample's y is the socket's at ${w}`
+      ).toBeLessThanOrEqual(1.5);
+      expect(r.beyond, `nothing is drawn past the socket at ${w}`).toBe(0);
+      expect(
+        r.nearest,
+        `the rail's nearest approach to "${r.who}" at ${w}`
+      ).toBeGreaterThanOrEqual(RAIL_LANE_MIN);
+    });
+  }
+
+  test("positive control: a rail that ignores the dock is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1512, height: 982 });
+    await page.route(
+      (u) => new URL(u).pathname === "/",
+      async (route) => {
+        const res = await route.fetch();
+        /* the pre-round-4 behaviour: beat 11's x is stx[11] percent of the
+           viewport, and the final two anchors still snap to the dock — so the
+           line arrives in the right place having crossed the wrong column. */
+        const body = (await res.text()).replace(
+          "mobile ? RAIL_X_MOBILE : i === RUN_BEATS - 1 ? dockX : (stx[i] / 100) * vw",
+          "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
+        );
+        await route.fulfill({ response: res, body });
+      }
+    );
+    await arrive(page);
+    const r = await railTerminus(page);
+    expect(
+      r.nearest,
+      "a rail down the stop-name column must be caught"
+    ).toBeLessThan(RAIL_LANE_MIN);
   });
 });

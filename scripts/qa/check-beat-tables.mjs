@@ -81,6 +81,25 @@ if (ladder.length !== runBeats) {
   pass.push(`ladder: ${ladder.length} rungs, one per stop of the run` +
     (nextRun ? ` (${nextRun} beat outside the run, not laddered)` : ""));
 }
+/* DEPLOY IS LAST IN THE DOCUMENT, and that is a second, independent claim.
+   `DEPLOY_PH = phases.length - 1` derives the never-light rung from a
+   querySelectorAll, which returns DOCUMENT ORDER — so the rule is only
+   correct while the deploy rung is the last `<li data-ph=` in the file.
+   Round 4 split the ladder into two lists (the timetable, then deploy on its
+   own under a rule) and moved both into a wrapper; either could be reordered
+   by a later layout change without anything else going red, and the effect
+   would be that scrolling lights "deploy · yours" and the rung that does get
+   deployed never lights. */
+const lastPh = ladder.length ? ladder[ladder.length - 1] : -1;
+if (lastPh !== Math.max(...ladder)) {
+  fail.push(
+    `the last <li data-ph=…> in the document is ${lastPh}, not the highest (${Math.max(...ladder)}) — ` +
+      `DEPLOY_PH is phases.length - 1 in document order, so it now points at the wrong rung`
+  );
+} else {
+  pass.push(`deploy (ph ${lastPh}) is the last rung in the document, which is what DEPLOY_PH indexes`);
+}
+
 if (/if \(i === DEPLOY_PH\) return;/.test(src) && /const DEPLOY_PH = phases\.length - 1;/.test(src)) {
   pass.push("deploy rung derived from phases.length — cannot invert when a stop is inserted");
 } else if (/if \(i === \d+\) return;/.test(src)) {

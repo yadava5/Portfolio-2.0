@@ -462,6 +462,18 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      measurement. `.gbench` is the class fig. 10's miniature wears, and every
      colour-bearing rule of that drawing carries it.
 
+     `.approvebar` AND `.gateway` JOINED THE SCAN with round 4's ending. ¶12
+     draws in two places now — the way on, which is a line on the thread's own
+     canvas taking its ink from the `inkC` tokens the engine reads off :root,
+     and the socket, the time and the door, which are markup. The markup half
+     is the half a redraw can quietly re-colour, so it is measured here
+     against the same floors as a figure's. The door leaf's stroke is
+     deliberately NOT in one of those selectors (`#gateDoor .leaf`) and the
+     reason is written beside it: a closed door's panel is the page's own
+     paper, not a stroke on the field, and the graphics floor does not reach
+     it. Shown red before it was shown green, on a temp copy with the door's
+     jamb set to --hair.
+
      WHY NOT SCAN ALL OF `#gatesFig`, which is the obvious fix: measured, it
      goes red at HEAD on a correct answer. `.gates .grow` and `.gates .gclose`
      draw `--hair` — 1.66:1 on #43372f — as the hairline SEPARATOR between
@@ -473,7 +485,7 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      miniature drawn outside `.figsvg` has to add its own class here, which is
      a visible cost rather than a silent exemption. */
   const figureCss = [
-    ...runHtml.matchAll(/(?:\.figsvg|\.gbench)[^{]*\{([^}]*)\}/g),
+    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar|\.gateway)[^{]*\{([^}]*)\}/g),
   ]
     .map((m) => m[1])
     .join(";");
