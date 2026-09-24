@@ -58,6 +58,22 @@ declare global {
       /* the round-6 fields, declared so their ABSENCE can be asserted */
       boom?: number;
       armed?: boolean;
+      /* round 8: the morning's ground and sky, published by the code that
+         draws them */
+      scape?: {
+        W: number;
+        H: number;
+        hz: number;
+        free: number;
+        room: number;
+        groups: number;
+      };
+      sky?: {
+        spawned: number;
+        live: number;
+        entries: { entry: string; n: number; t: number }[];
+      };
+      ground?: { id: string; dx: number; x_off: number }[];
     };
     __onwardPath?: () => { x: number; y: number; L: number }[];
     __rail?: () => { x: number; y: number }[];
@@ -89,9 +105,10 @@ const geometryOnly = (testInfo: TestInfo): void => {
   );
 };
 
-/** to the gate, with every builder run on the way down, and never a resize */
-async function toTheGate(page: Page): Promise<void> {
-  await page.goto("/");
+/** to the gate, with every builder run on the way down, and never a resize.
+    `path` carries the run's own perf-lab flags, `?pace=0.25` for a sit. */
+async function toTheGate(page: Page, path = "/"): Promise<void> {
+  await page.goto(path);
   await page.evaluate(() => document.fonts.ready);
   await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
   const doc = await page.evaluate(() => document.documentElement.scrollHeight);
@@ -888,5 +905,263 @@ test.describe("¶12 · reduced motion goes straight to the morning", () => {
        and the waiting mark on the button is behind a no-preference query */
     expect(rm.birds, "no birds are ever built").toBe(0);
     expect(rm.running, "nothing is left animating").toBe(0);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the morning has a ground and a sky (round 8)
+   The owner asked for a sketch landscape under the last page's words and for
+   the birds to fly again once the morning lands. What that may not do is
+   also an assertion: the words keep their air from the drawing, nothing
+   under reduced motion moves, every bird stays inside the frame the reader
+   can see, and every roamer stays within a hand's width of where it was
+   drawn. check-dawnscape holds the same claims at seven seats in
+   verify:portfolio; these are the long sit and the per-seat air, on the
+   engine the geometry is measured on.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the morning has a ground and a sky", () => {
+  const CLEAR_PX = 24;
+  const RANGE_PX = 30;
+
+  /** the words' own ink against every subject's box, roamers over their
+      whole range: the number the owner's eye would object to first */
+  const clearance = (page: Page) =>
+    page.evaluate((RANGE) => {
+      const svg = document.querySelector(".dawnscape")!;
+      const walker = document.createTreeWalker(
+        document.querySelector(".dawnwrap")!,
+        NodeFilter.SHOW_TEXT
+      );
+      const texts: [number, number, number, number, string][] = [];
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent!.trim()) continue;
+        const rg = document.createRange();
+        rg.selectNodeContents(n);
+        for (const r of rg.getClientRects())
+          if (r.width && r.height)
+            texts.push([
+              r.left,
+              r.top,
+              r.right,
+              r.bottom,
+              n.textContent!.trim().slice(0, 20),
+            ]);
+      }
+      const box = (el: Element, pad: number) => {
+        const r = el.getBoundingClientRect();
+        return [r.left - pad, r.top, r.right + pad, r.bottom] as const;
+      };
+      const subs = [
+        ...[...svg.querySelectorAll(".ds-tree, .ds-tuft, .ds-back path")].map(
+          (el) => box(el, 0)
+        ),
+        ...[...svg.querySelectorAll(".ds-deer, .ds-gull")].map((el) =>
+          box(el, RANGE)
+        ),
+      ];
+      let gap = Infinity;
+      let at = "";
+      for (const t of texts)
+        for (const s of subs) {
+          const g = Math.max(
+            Math.max(s[0] - t[2], t[0] - s[2]),
+            Math.max(s[1] - t[3], t[1] - s[3])
+          );
+          if (g < gap) {
+            gap = g;
+            at = t[4];
+          }
+        }
+      return {
+        gap,
+        at,
+        paths: svg.querySelectorAll("path").length,
+        scape: window.__world.scape,
+      };
+    }, RANGE_PX);
+
+  for (const [w, h] of [...SEATS, ...PHONES]) {
+    test.describe(`the words keep their air at ${w}×${h}`, () => {
+      test.use({ viewport: { width: w, height: h } });
+      // eslint-disable-next-line no-empty-pattern
+      test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+      test(`no drawn subject comes within ${CLEAR_PX}px of the words`, async ({
+        page,
+      }, testInfo) => {
+        testInfo.setTimeout(150_000);
+        await toTheGate(page, "/?pace=0.25");
+        await page.locator("#approve").click();
+        await page.waitForFunction(
+          () =>
+            document.body.classList.contains("atmorning") &&
+            !document.body.classList.contains("carrying"),
+          null,
+          { timeout: 30_000 }
+        );
+        await page.waitForTimeout(300);
+        const c = await clearance(page);
+        expect(c.scape, "the ground was built").toBeTruthy();
+        if (c.scape!.room < 0) {
+          /* no room under the column at this seat: nothing may be drawn */
+          expect(c.paths, "nothing drawn where there is no ground").toBe(0);
+          return;
+        }
+        expect(c.paths, "the ground is drawn").toBeGreaterThan(5);
+        expect(
+          c.gap,
+          `"${c.at}" keeps ${CLEAR_PX}px from the drawing at ${w}×${h}`
+        ).toBeGreaterThanOrEqual(CLEAR_PX);
+      });
+    });
+  }
+
+  test.describe("at his seat", () => {
+    test.use({ viewport: { width: 1456, height: 949 } });
+    // eslint-disable-next-line no-empty-pattern
+    test.beforeEach(({}, testInfo) => geometryOnly(testInfo));
+
+    test("the sky stays alive and in frame through a sit, and the ground keeps its range", async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(240_000);
+      const PACE = 0.25;
+      await toTheGate(page, `/?pace=${PACE}`);
+      await page.locator("#approve").click();
+      await page.waitForFunction(
+        () => document.body.classList.contains("morninglive"),
+        null,
+        { timeout: 30_000 }
+      );
+      const W = 1456;
+      const H = 949;
+      const READ = () => {
+        const out: [number, number, number, number, number][] = [];
+        for (const el of document.querySelectorAll<HTMLElement>(".bird")) {
+          const svg = el.querySelector("svg");
+          if (!svg) continue;
+          const r = svg.getBoundingClientRect();
+          let o = 1;
+          let n: HTMLElement | null = el;
+          while (n && n.nodeType === 1) {
+            const v = parseFloat(getComputedStyle(n).opacity);
+            if (!Number.isNaN(v)) o *= v;
+            n = n.parentElement;
+          }
+          if (
+            o < 0.05 ||
+            r.width < 1 ||
+            getComputedStyle(el).visibility === "hidden"
+          )
+            continue;
+          out.push([
+            el.classList.contains("far") ? 1 : 0,
+            r.left,
+            r.top,
+            r.right,
+            r.bottom,
+          ]);
+        }
+        return {
+          birds: out,
+          t: performance.now() - window.__world.departure.t0,
+        };
+      };
+      /* 90s of wall clock is six minutes of the page's own morning */
+      const tLand = await page.evaluate(
+        () => performance.now() - window.__world.departure.t0
+      );
+      let first: number | null = null;
+      let gapFrom: number | null = null;
+      let worstGap = 0;
+      const escapes: string[] = [];
+      let maxFar = 0;
+      for (let t = 0; t < 90_000; t += 2000) {
+        const { birds, t: now } = await page.evaluate(READ);
+        if (birds.length && first === null) first = now - tLand;
+        maxFar = Math.max(maxFar, birds.filter((b) => b[0]).length);
+        for (const [, l, tp, r, b] of birds)
+          if (l < 8 || tp < 8 || r > W - 8 || b > H - 8)
+            escapes.push(
+              `t=${Math.round(now)}: [${Math.round(l)},${Math.round(tp)},${Math.round(r)},${Math.round(b)}]`
+            );
+        if (!birds.length) {
+          if (gapFrom === null) gapFrom = now;
+          worstGap = Math.max(worstGap, now - gapFrom + 2000);
+        } else gapFrom = null;
+        await page.waitForTimeout(2000);
+      }
+      const fin = await page.evaluate(() => ({
+        sky: window.__world.sky,
+        ground: window.__world.ground || [],
+        tf: [
+          ...document.querySelectorAll<SVGGElement>(
+            ".dawnscape .ds-gull, .dawnscape .ds-deer"
+          ),
+        ].map((el) => [el.dataset.id || "deer", el.style.transform] as const),
+      }));
+      /* the morning lands with birds in it: 2s of the page's clock */
+      expect(first, "a bird was visible during the sit").not.toBeNull();
+      expect(first!, "a bird within 2s of landing").toBeLessThanOrEqual(
+        2000 * PACE + 500
+      );
+      expect(
+        worstGap / PACE,
+        "no empty-sky gap over 40s of the page's clock"
+      ).toBeLessThanOrEqual(40_000);
+      expect(escapes, "no visible bird within 8px of an edge").toEqual([]);
+      expect(maxFar, "never more than three far birds").toBeLessThanOrEqual(3);
+      expect(fin.sky!.spawned, "the sky kept spawning").toBeGreaterThanOrEqual(
+        4
+      );
+      /* the home range, in the author's frame: the log's worst offset, and
+         one roamer's drawn transform against what the log says of it */
+      const maxOff: Record<string, number> = {};
+      for (const g of fin.ground)
+        maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
+      for (const [id, off] of Object.entries(maxOff))
+        expect(off, `${id} stays within ±${RANGE_PX}px`).toBeLessThanOrEqual(
+          RANGE_PX
+        );
+      expect(fin.ground.length, "the ground had events").toBeGreaterThan(0);
+      for (const [id, tf] of fin.tf) {
+        const last = [...fin.ground].reverse().find((g) => g.id === id);
+        if (!last) continue;
+        const shown = parseFloat(tf.replace(/^translate\(/, "")) || 0;
+        expect(
+          Math.abs(shown - last.x_off),
+          `${id} is drawn where the log says (${shown} vs ${last.x_off})`
+        ).toBeLessThanOrEqual(0.6);
+      }
+    });
+
+    test("reduced motion: the ground is there, and still", async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto("/");
+      await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+      await page.locator("#approve").scrollIntoViewIfNeeded();
+      await page.locator("#approve").click();
+      await page.waitForTimeout(600);
+      const rm = await page.evaluate(() => {
+        const svg = document.querySelector(".dawnscape")!;
+        return {
+          paths: svg.querySelectorAll("path").length,
+          op: getComputedStyle(svg).opacity,
+          anims: document
+            .getAnimations()
+            .filter((a) => svg.contains((a.effect as KeyframeEffect).target!))
+            .length,
+          live: document.body.classList.contains("morninglive"),
+          scape: window.__world.marks.scape,
+          flock: getComputedStyle(document.getElementById("flock")!).display,
+        };
+      });
+      expect(rm.paths, "the ground is drawn").toBeGreaterThan(5);
+      expect(rm.op, "and simply there").toBe("1");
+      expect(rm.anims, "nothing inside it animates").toBe(0);
+      expect(rm.live, "the wind is never switched on").toBe(false);
+      expect(rm.scape, "the ground still reports settled").toBeDefined();
+      expect(rm.flock, "the flock layer is hidden").toBe("none");
+    });
   });
 });

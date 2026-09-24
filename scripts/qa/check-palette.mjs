@@ -499,9 +499,21 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      already declines a `--clay-g` rule for the same reason. So the scan
      follows the DRAWING, not the plate that contains it — and the next
      miniature drawn outside `.figsvg` has to add its own class here, which is
-     a visible cost rather than a silent exemption. */
+     a visible cost rather than a silent exemption.
+
+     `.dawnscape` IS THAT NEXT MINIATURE. Round 8 drew ¶13's ground — a
+     horizon, a copse, a doe, gulls, the sun — as an inline svg the builder
+     fills at runtime, and it is deliberately NOT classed `.figsvg`: it is
+     scenery under the morning's words, not a numbered figure, and its text
+     rules (`.figsvg text`) would be wrong on it. Its strokes are held here to
+     the same floors as a figure's. The owner said no colour, so the rules
+     draw with --ink-2 for subjects and --hair-strong for far structure and
+     nothing else; check-dawnscape holds that allow-list, and this scan holds
+     the contrast of whatever the rules actually name. Shown red on a temp
+     copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
+     under the 2.0 hairline floor and the file exits 1. */
   const figureRules = [
-    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar)[^{]*\{([^}]*)\}/g),
+    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar|\.dawnscape)[^{]*\{([^}]*)\}/g),
   ].map((m) => m[1]);
   /* the pairs first, so their two tokens do not also enter the stroke set */
   const groundPairs = [];

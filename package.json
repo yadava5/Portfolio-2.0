@@ -35,6 +35,7 @@
     "test:stations": "node scripts/qa/check-stations.mjs",
     "test:links": "node scripts/qa/check-links.mjs",
     "test:dashes": "node scripts/qa/check-dashes.mjs",
+    "test:dawnscape": "node scripts/qa/check-dawnscape.mjs",
     "test:live-surfaces": "node scripts/qa/check-live-surfaces.mjs",
     "test:crosswalk": "node scripts/qa/check-crosswalk.mjs out",
     "test:beat-tables": "node scripts/qa/check-beat-tables.mjs",
