@@ -4239,6 +4239,27 @@ function onwardAt(L) {
   return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
 }
 
+/* ————— the departure —————
+   Everything after the press is one clock. `release.t0` is the press, and the
+   canvas reads its own position off performance.now() rather than off a tween,
+   so a dropped frame costs a frame and not a whole choreography.
+
+   Speed is the viewport's: 0.75vw per second, floored at 480 and capped at
+   1150, so the run to the door reads the same at 390 as at 1512 — about a
+   second either way — instead of crawling on a phone and flicking past on a
+   laptop. The 280ms ramp is what makes it a departure: a standing start. */
+const release = { t0: 0, v: 0, tHead: 0, tTail: 0, done: false };
+const RAMP = 280; /* ms of acceleration off the socket */
+const railDist = (t) => {
+  if (t <= 0) return 0;
+  const v = release.v / 1000; /* px per ms */
+  return t < RAMP ? (v * t * t) / (2 * RAMP) : (v * RAMP) / 2 + v * (t - RAMP);
+};
+const railTime = (d) => {
+  const v = release.v / 1000, ramped = (v * RAMP) / 2;
+  return d <= ramped ? Math.sqrt((2 * RAMP * d) / v) : RAMP + (d - ramped) / v;
+};
+const DEPART = 180; /* ms · the stamp lands, the rings turn, then it moves */
 function idxAtY(y) {
   let lo = 0, hi = samples.length - 1;
   while (hi - lo > 1) { const m = (lo + hi) >> 1; (samples[m].y <= y ? (lo = m) : (hi = m)); }
@@ -4651,6 +4672,13 @@ function drawOnward(scroll, halted) {
   if (!onward.ready) return;
   if (onward.maxY - scroll < -80 || onward.minY - scroll > vh + 80) return;
 
+  const t = release.t0 ? performance.now() - release.t0 : 0;
+  const gone = release.t0 > 0;
+  const head = release.done
+    ? onward.len
+    : gone ? Math.min(onward.len, railDist(t - DEPART)) : 0;
+  const arrived = head >= onward.len - 0.5;
+
   const run = (from, to, close) => {
     const p = onward.pts;
     tctx.beginPath();
@@ -4667,10 +4695,29 @@ function drawOnward(scroll, halted) {
 
   /* the road ahead, and it is the same dash the rail draws ahead of the token
      at every station on the page: [2,7], one weight down, faint */
-  tctx.strokeStyle = inkC["--thread-ahead"]; tctx.lineWidth = 1.4;
-  tctx.setLineDash([2, 7]);
-  run(0, onward.len, null);
-  tctx.setLineDash([]);
+  if (!arrived) {
+    tctx.strokeStyle = inkC["--thread-ahead"]; tctx.lineWidth = 1.4;
+    tctx.setLineDash([2, 7]); tctx.lineDashOffset = -head % 9;
+    run(head, onward.len, null);
+    tctx.setLineDash([]);
+  }
+  /* and the road behind it, inked. 2px, the day's own weight, in the colour
+     the gate turned when a hand signed for it. */
+  if (head > 0) {
+    tctx.strokeStyle = inkC["--pine"]; tctx.lineWidth = 2;
+    tctx.lineCap = "round"; tctx.lineJoin = "round";
+    run(0, head, onwardAt(head));
+    tctx.lineCap = "butt";
+  }
+  /* the bead: the run itself, carrying on. It is the same 4.5px mark that has
+     been descending the page since the nameplate — drawn here only while it is
+     actually travelling, so the socket keeps its own mark before and the door
+     keeps it after. */
+  if (gone && !arrived && t > DEPART) {
+    const h = onwardAt(head);
+    tctx.fillStyle = inkC["--ink"];
+    tctx.beginPath(); tctx.arc(h.x, h.y - scroll, 4.5, 0, 7); tctx.fill();
+  }
 
   /* THE SOCKET, RINGED TWICE. One ring is the page's mark for a deliberate
      hold and it is used at three stations; two rings is this one — the end of
@@ -4690,7 +4737,10 @@ function drawOnward(scroll, halted) {
 function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
   drawOnward(scroll, halted);
   const tp = pointAtLen(tokenL), ty = tp.y - scroll;
-  if (ty > -30 && ty < vh + 30) {
+  /* the bead is on the day's rail until the run leaves the socket; after that
+     it is on the way on, and drawing it twice would be two runs */
+  const left = release.t0 > 0 && performance.now() - release.t0 > DEPART;
+  if (!left && ty > -30 && ty < vh + 30) {
     tctx.fillStyle = inkC["--ink"];
     tctx.beginPath(); tctx.arc(tp.x, ty, 4.5, 0, 7); tctx.fill();
   }
@@ -6617,10 +6667,16 @@ window.__prof = [];
 function frame() {
   const y = scrollY;
   const changed = y !== lastY;
-  if (changed) { lastY = y; stillFrames = 0; } else { stillFrames++; }
+  /* THE ONE THING THAT MOVES WITHOUT A SCROLL. The engine stops when the page
+     is still, which is the property that makes this page cost nothing to
+     leave open — so the departure has to hold the loop open for exactly as
+     long as it runs, and not one frame longer. */
+  const departing =
+    release.t0 > 0 && performance.now() < release.t0 + release.tTail + 150;
+  if (changed || departing) { lastY = y; stillFrames = 0; } else { stillFrames++; }
   if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
   requestAnimationFrame(frame);
-  if (!changed) return;
+  if (!changed && !departing) return;
   if (PROF) {
     const t0 = performance.now();
     work(y);
@@ -7143,15 +7199,25 @@ $("approve").addEventListener("click", () => {
   document.body.classList.add("approved");
   setTimeout(() => phases.forEach((li) => { li.style.transitionDelay = ""; }), 1500);
 
-  /* the gate lets the birds go, and the door they leave by opens with the
-     press. What runs BETWEEN the socket and that door is the next commit. */
-  $("gateDoor").classList.add("open");
-  releaseFlock();
+  /* ————— and the run leaves the yard —————
+     The route is set, the couplers drop, the train runs to the door, the door
+     opens, and the birds go from the doorway. Only then does the page carry
+     the reader into the morning. Every time below is derived from the boxes
+     this build measured, not declared: the distance the train has to cover is
+     whatever the viewport made it. */
+  startDeparture();
+  const T = release.tHead;
+  if (!RM) {
+    /* the leaf swings before the lead car reaches it, or the train would be
+       drawn going through a shut door for a frame */
+    setTimeout(() => $("gateDoor").classList.add("open"), Math.max(0, T - 90));
+    setTimeout(releaseFlock, T);
+  }
 
   /* and the reader is a passenger from here to the morning: the departure,
      then 7s of carry, then a second of slack, with the hard timer as the
      backstop; the carry's own completion normally releases it sooner. */
-  holdScroll(RM ? 0 : 9500);
+  holdScroll(RM ? 0 : T + 9360);
 
   /* REDUCED MOTION HAS TO BE GIVEN THE MORNING, not left to find it.
      `wake()` returns immediately under RM, so the rAF loop never starts and
@@ -7185,8 +7251,33 @@ $("approve").addEventListener("click", () => {
     buildThread();
     wake(true);
     setTimeout(carryToMorning, RM ? 0 : 260);
-  }, RM ? 0 : 1000);
+  }, RM ? 0 : T + 1100);
 });
+
+/* The yard's clock starts here. Under reduced motion there is no departure to
+   watch: the door is already open, the track is already pine, and the cars —
+   which are the only thing that ever moves on this canvas without a scroll —
+   are never drawn at all. That is the same information, held still. */
+function startDeparture() {
+  buildOnward();
+  if (!onward.ready) return;
+  /* 0.75vw a second, floored at 560 so the phone's wind does not crawl and
+     capped at 1150 so a wide desktop does not flick past */
+  release.v = clamp(0.75 * vw, 560, 1150);
+  release.tHead = DEPART + railTime(onward.len);
+  /* nothing trails the bead, so the line is complete when it arrives; the
+     150ms the frame loop holds after tTail is what lets the last frame land */
+  release.tTail = release.tHead;
+  /* probe hook: the harness reads the run's own timetable rather than
+     re-deriving it from a viewport width and a speed it cannot see */
+  window.__world.departure = release;
+  if (RM) {
+    release.done = true;
+    $("gateDoor").classList.add("open");
+    return;
+  }
+  release.t0 = performance.now();
+}
 
 function carryToMorning() {
   const sec = $("nextmorning");
