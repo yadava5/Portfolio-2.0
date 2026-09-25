@@ -17,6 +17,17 @@
  *      range, and for a swaying group the amplitude at that radius, so the
  *      wind cannot carry a leaf into a halo. Under the signature the grass
  *      is capped at 10px. At every one of the seven seats.
+ *   6. THE PLANES' MATERIALS (round 10.5). Every depth has its own
+ *      material and no plane's marks may touch another's silhouette. Inside
+ *      .ds-p2 (the massifs) nothing is a stroke but the declared structural
+ *      lines (.ds-ridge, at most 24): every other element is a .ds-tone
+ *      field, so a hatch field can never fuse with the tree's again. The
+ *      tone's cover is COMPUTED from the pattern defs (dot area over tile
+ *      area): the lit levels at most 12%, every level at most 22%, the far
+ *      range at most 5%. And the reserves: the builder registers every near
+ *      mass with the bare paper it casts into each plane behind it, and the
+ *      masks' <use> children must be exactly that registry, each resolving
+ *      to a live element, each dilated by twice its registered width.
  *   2. THE WIND'S CENSUS. Once body.morninglive is on, the continuously
  *      animated groups inside .dawnscape are CSS animations (transitions
  *      and Web Animations are transients and are not counted), and they
@@ -424,7 +435,7 @@ try {
         for (let i = 0; i < bins.length; i++) {
           if (bins[i]) continue;
           const a = i * 40 + 20;
-          for (const d of [18, 45, 82]) {
+          for (const d of [18, 45, 88]) {
             const p =
               name === "top"
                 ? [a, d]
@@ -485,8 +496,63 @@ try {
             leafWorst = { margin: +margin.toFixed(1), env: k, text: t[5] };
         }
       }
+    /* the planes' materials: what is inside P2, what the tiles cover, and
+       whether the masks carry the registry */
+    const p2 = svg.querySelector(".ds-p2");
+    const p2paths = p2 ? [...p2.querySelectorAll("path")] : [];
+    const p2bad = p2paths.filter(
+      (p) =>
+        !(p.classList.contains("ds-tone") || p.classList.contains("ds-ridge"))
+    ).length;
+    const p2lines = p2paths.filter((p) =>
+      p.classList.contains("ds-ridge")
+    ).length;
+    const patterns = {};
+    for (const pat of svg.querySelectorAll("defs pattern")) {
+      const w = +pat.getAttribute("width"),
+        h = +pat.getAttribute("height");
+      let area = 0;
+      for (const c of pat.querySelectorAll("circle"))
+        area += Math.PI * (+c.getAttribute("r")) ** 2;
+      patterns[pat.id] = +(area / (w * h)).toFixed(4);
+    }
+    const reg = (scape && scape.reserves) || [];
+    const masks = {};
+    for (const [id, plane] of [
+      ["mL", "massif"],
+      ["mR", "massif"],
+      ["mB", "bank"],
+      ["mG", "grass"],
+    ]) {
+      const mk = svg.querySelector(`mask#${id}`);
+      if (!mk) continue;
+      const uses = [...mk.querySelectorAll("use")];
+      const expect = reg.filter((q) => q[plane] > 0);
+      const missing = expect
+        .filter((q) => !uses.some((u) => u.getAttribute("href") === "#" + q.id))
+        .map((q) => q.id);
+      const orphan = uses.filter(
+        (u) => !svg.querySelector(u.getAttribute("href"))
+      ).length;
+      const widthOff = uses.filter((u) => {
+        const q = expect.find((e) => "#" + e.id === u.getAttribute("href"));
+        return (
+          q && Math.abs(parseFloat(u.style.strokeWidth) - 2 * q[plane]) > 0.01
+        );
+      }).length;
+      masks[id] = {
+        uses: uses.length,
+        expect: expect.length,
+        missing,
+        orphan,
+        widthOff,
+      };
+    }
     return {
       scape,
+      p2: p2 ? { paths: p2paths.length, bad: p2bad, lines: p2lines } : null,
+      patterns,
+      masks,
       paths: svg.querySelectorAll("path").length,
       worst,
       halo,
@@ -573,6 +639,63 @@ try {
         fail(
           `${seat}: grass under the column at ${m.tallUnder.map((t) => `${t.h.toFixed(1)}px @x${t.x}`).join(", ")} — capped at ${GRASS_CAP}px`
         );
+      /* 6 · the planes' materials */
+      if (m.p2) {
+        if (m.p2.bad)
+          fail(
+            `${seat}: ${m.p2.bad} element(s) inside .ds-p2 that are neither tone nor a declared line — no hatch in the massifs' plane`
+          );
+        if (m.p2.lines > 40)
+          fail(
+            `${seat}: ${m.p2.lines} structural line pieces in .ds-p2 — at most 40 (a dozen lines per massif, each in up to three pieces)`
+          );
+        const lit = ["stip1", "stip2"],
+          levels = ["stip1", "stip2", "stip3", "stip4"];
+        for (const k of levels)
+          if (m.patterns[k] === undefined)
+            fail(`${seat}: pattern ${k} is missing from the defs`);
+        for (const [k, c] of Object.entries(m.patterns)) {
+          if (k.startsWith("feath")) continue;
+          if (lit.includes(k) && c > 0.12)
+            fail(
+              `${seat}: ${k} covers ${(c * 100).toFixed(1)}% — a lit level is at most 12%`
+            );
+          if (k === "stipC" && c > 0.05)
+            fail(
+              `${seat}: the far range's stipple covers ${(c * 100).toFixed(1)}% — at most 5%`
+            );
+          if (c > 0.22)
+            fail(
+              `${seat}: ${k} covers ${(c * 100).toFixed(1)}% — no tone level above 22%`
+            );
+        }
+        for (const [id, mk] of Object.entries(m.masks)) {
+          if (mk.missing.length)
+            fail(
+              `${seat}: mask ${id} is missing the reserve(s) ${mk.missing.join(", ")} the builder registered`
+            );
+          if (mk.orphan)
+            fail(
+              `${seat}: mask ${id} has ${mk.orphan} reserve(s) pointing at nothing`
+            );
+          if (mk.widthOff)
+            fail(
+              `${seat}: mask ${id} has ${mk.widthOff} reserve(s) dilated off their registered width`
+            );
+        }
+        if (
+          !fails.some(
+            (f) => f.startsWith(seat) && /ds-p2|pattern|covers|mask/.test(f)
+          )
+        )
+          note(
+            `${seat}: P2 is ${m.p2.paths - m.p2.lines} tone fields and ${m.p2.lines} lines; covers ${["stip1", "stip2", "stip3", "stip4", "stipC", "stipS"].map((k) => (m.patterns[k] * 100).toFixed(1)).join("/")}%; masks ${Object.entries(
+              m.masks
+            )
+              .map(([k, v]) => `${k} ${v.uses}/${v.expect}`)
+              .join(", ")}`
+          );
+      }
       const n = m.census.length;
       const table = new Set(m.decl.map((d) => d.ms));
       const expected = m.decl.reduce((s, d) => s + d.n, 0);
