@@ -1131,11 +1131,11 @@ if (location.hash.length > 1) {
      where they will land. */
   .dawnwrap{width:100%; height:100%; max-width:none; margin:0; text-align:center;
     position:relative; z-index:1; display:grid; grid-template-rows:max-content max-content;
-    align-content:start; padding:40vh 0 0; box-sizing:border-box}
+    align-content:start; padding:var(--dawn-top, 40vh) 0 0; box-sizing:border-box}
   /* one group, head, quote and foot together on the plain: round 9 pushed
      the foot to the bottom and at a MacBook's own seats the middle of the
      sheet became a void; the words hang together in the light */
-  .dawnhead{width:100%; max-width:54rem; margin:0 auto 1.5rem}
+  .dawnhead{width:100%; max-width:54rem; margin:0 auto var(--dawn-gap, 1.5rem)}
   .dawnfoot{width:100%; max-width:60rem; margin:0 auto}
   .dawnfoot .dawnsay{margin-top:0}
   .bdawn .dawnrun{position:absolute; right:6vw; bottom:9vh; margin:0; text-align:right}
@@ -1403,13 +1403,13 @@ if (location.hash.length > 1) {
 
   /* wide enough that each line of the poem is one line: at 38rem the
      column broke it mid-clause and the <br> stopped meaning anything */
-  .bdawn .endquote{position:relative; margin:1.5rem auto 0; max-width:54rem}
+  .bdawn .endquote{position:relative; margin:var(--dawn-gap, 1.5rem) auto 0; max-width:54rem}
   .bdawn .endquote blockquote{margin:0; font-family:var(--display);
     font-style:italic; font-weight:400; color:var(--ink);
     font-size:clamp(1.2rem, 2.5vw, 1.95rem); line-height:1.38;
     letter-spacing:-.004em; text-wrap:balance;
     font-variation-settings:"opsz" 144, "SOFT" 40, "WONK" 0, "wght" 420}
-  .bdawn .endquote figcaption{margin-top:1.15rem; font-family:var(--mono);
+  .bdawn .endquote figcaption{margin-top:calc(1.15rem * var(--dawn-small, 1)); font-family:var(--mono);
     font-size:.68rem; letter-spacing:.055em; color:var(--ink-2)}
 
   /* ————— the skein —————
@@ -1577,7 +1577,7 @@ if (location.hash.length > 1) {
   .dawnsay{margin:3.2rem auto 0; font-family:var(--body);
     font-size:clamp(1rem,1.5vw,1.12rem); color:var(--ink); max-width:40rem}
   .dawnrow{display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center;
-    margin-top:1.1rem; font-size:.72rem; letter-spacing:.05em}
+    margin-top:calc(1.1rem * var(--dawn-small, 1)); font-size:.72rem; letter-spacing:.05em}
   /* THE LAST LINE OF THE PAPER WAS THE LEAST READABLE THING ON IT. It was
      set uppercase and tracked out at .14em, and then held at opacity .55 —
      a partial opacity no contrast gate can see, over --ink-2 that already
@@ -7903,9 +7903,124 @@ function birdRng(seed) {
 const RANGE = {
   /* the board: 2400 × 440 units, summits from y 38, the foot at 404 */
   w: 2400, h: 440, top: 38, foot: 404, cx: 1160,
+  /* the lowest mark per 10-unit column from x -160, -1 where there is none */
+  floor: { x0: -160, dx: 10, all: [-1,398,401,400,393,399,395,401,400,393,399,395,401,400,393,399,396,401,400,394,399,397,401,400,396,396,399,398,401,398,396,399,398,401,400,396,399,398,401,400,396,399,398,401,400,396,399,398,401,400,396,399,398,401,400,396,399,398,401,400,396,399,398,394,357,318,281,260,238,214,187,159,123,109,115,135,144,132,139,145,151,157,163,169,175,200,205,194,200,206,212,218,224,230,236,242,248,265,272,266,272,277,353,350,345,339,335,329,324,319,314,309,304,300,295,291,288,286,281,275,269,260,264,262,276,274,236,229,223,215,207,217,211,192,177,170,211,175,157,153,149,143,160,155,140,220,202,179,156,132,103,124,116,87,76,81,69,49,95,127,155,180,196,223,244,261,282,304,317,339,360,378,380,380,380,380,384,384,396,399,398,401,400,399,396,398,401,397,399,398,401,400,397,397,400,399,402,400,394,397,400,399,399,402,400,397,400,396,399,402,400,397,400,396,399,402,400,396,397,400,399,400,393,396,399,398,401,400,396,399,398,401,400,396,399,398,400,401,396,398,399,398,401,400,396,399,398,401,400,396,399,398,401,400,396,399,396,399,377,-1], ridge: [-1,398,396,393,391,388,386,383,381,378,375,372,368,365,362,359,356,352,348,345,341,337,334,329,326,322,318,314,310,306,302,298,294,290,286,281,276,271,267,262,258,253,248,243,238,233,228,223,218,213,208,203,198,194,188,183,179,174,170,165,160,156,153,147,141,135,127,123,238,214,187,159,123,109,115,120,126,132,139,145,151,157,163,169,175,182,188,194,200,206,212,218,224,230,236,242,248,254,260,266,272,277,353,350,345,339,335,329,324,319,314,309,304,300,295,291,288,286,281,275,269,260,250,245,276,274,236,229,223,215,207,199,192,184,177,170,211,175,157,153,149,143,137,130,124,220,202,179,156,132,103,100,93,87,76,67,57,49,95,127,155,180,195,223,244,261,138,174,198,215,117,123,128,131,134,136,137,140,143,146,183,204,222,239,254,255,194,200,207,215,222,229,235,241,247,253,259,265,271,278,284,290,296,300,308,313,319,324,329,334,340,345,350,356,361,364,246,152,158,163,168,174,179,184,189,194,199,204,209,214,218,222,226,230,234,238,242,245,248,252,255,259,262,265,268,271,275,278,281,284,287,289,292,294,297,299,302,304,304,-1] },
   summits: [{"name":"principal","layer":1,"peak":[1420,40],"crest":[[770,398],[820,374],[870,350],[916,326],[956,306],[992,290],[1016,284],[1036,272],[1060,250],[1082,238],[1100,236],[1122,222],[1146,202],[1170,184],[1190,170],[1214,159],[1236,151],[1258,139],[1284,121],[1306,105],[1322,98],[1338,104],[1352,99],[1366,90],[1384,73],[1400,57],[1420,40],[1436,52],[1452,66],[1470,82],[1488,94],[1500,98],[1512,91],[1526,100],[1544,114],[1566,126],[1590,134],[1616,138],[1640,146],[1662,160],[1690,180],[1722,202],[1756,226],[1790,248],[1830,272],[1872,298],[1916,322],[1962,346],[2010,372],[2060,398]],"faces":[[[1420,40],[1424,70],[1432,104],[1444,140],[1458,176],[1476,216],[1496,258],[1518,300],[1540,340],[1558,378],[1624,386],[1608,352],[1584,310],[1558,262],[1536,214],[1518,170],[1508,130],[1512,92],[1512,91],[1500,98],[1488,94],[1470,82],[1452,66],[1436,52],[1420,40]],[[1512,92],[1508,130],[1518,170],[1536,214],[1558,262],[1584,310],[1608,352],[1624,386],[1624,404],[1766,404],[1766,380],[1748,340],[1716,292],[1680,240],[1652,190],[1640,147],[1640,146],[1616,138],[1590,134],[1566,126],[1544,114],[1526,100],[1512,91]],[[1640,147],[1652,190],[1680,240],[1716,292],[1748,340],[1766,380],[1766,404],[2060,404],[2060,398],[2010,372],[1962,346],[1916,322],[1872,298],[1830,272],[1790,248],[1756,226],[1722,202],[1690,180],[1662,160],[1640,146]]],"snow":[[[1421,42],[1434,52],[1448,64],[1460,76],[1452,82],[1446,92],[1440,106],[1433,100],[1428,84],[1423,64]],[[1548,118],[1570,128],[1596,136],[1622,140],[1644,148],[1650,158],[1634,160],[1612,168],[1592,172],[1576,164],[1560,150],[1550,134]]]},{"name":"west","layer":2,"peak":[564,102],"crest":[[-150,398],[-70,378],[10,352],[90,322],[170,290],[240,258],[300,228],[356,200],[406,176],[440,160],[466,150],[492,134],[512,122],[528,112],[538,116],[546,122],[554,112],[564,102],[578,108],[596,118],[622,134],[654,154],[690,176],[730,200],[772,226],[816,252],[860,278],[904,304],[950,332],[1000,362],[1050,392]],"faces":[[[-150,398],[-70,378],[10,352],[90,322],[170,290],[240,258],[300,228],[356,200],[406,176],[440,160],[466,150],[492,134],[512,122],[528,112],[538,116],[546,122],[554,112],[564,102],[564,102],[558,134],[546,172],[530,214],[512,258],[496,300],[484,340],[476,374],[476,404],[-150,404]]]},{"name":"east","layer":2,"peak":[1972,132],"crest":[[1700,340],[1760,290],[1810,246],[1856,206],[1900,174],[1936,150],[1956,140],[1972,132],[1990,138],[2016,150],[2050,168],[2092,190],[2140,214],[2200,238],[2270,262],[2340,284],[2420,304]],"faces":[[[1972,132],[1980,170],[1992,214],[2006,262],[2022,310],[2034,352],[2042,384],[2042,404],[2420,404],[2420,304],[2340,284],[2270,262],[2200,238],[2140,214],[2092,190],[2050,168],[2016,150],[1990,138],[1972,132]]]},{"name":"notch","layer":3,"peak":[1024,176],"crest":[[930,250],[962,224],[990,198],[1010,184],[1024,176],[1040,186],[1066,204],[1100,226],[1140,250]],"faces":[]},{"name":"farwest","layer":3,"peak":[230,190],"crest":[[120,262],[160,236],[200,208],[230,190],[262,204],[300,226],[340,250]],"faces":[]}],
   markup: "<g class=\"ds-summit\" data-name=\"principal\" data-layer=\"1\" data-facets=\"3\"><path class=\"ds-ink w1 ds-ridge\" d=\"M864.7 352.5L870 350L916 326L956 306L992 290L1016 284L1036 272L1060 250L1062.4 248.7M1070.3 244.4L1082 238L1100 236L1122 222L1146 202L1170 184L1190 170L1214 159L1236 151L1258 139L1284 121L1306 105L1322 98L1333.1 102.2M1341.6 102.7L1352 99L1366 90L1384 73L1400 57L1420 40L1433.8 50.4M1440.7 56.1L1452 66L1470 82L1488 94L1500 98L1512 91L1526 100L1544 114L1566 126L1590 134L1616 138L1640 146L1662 160L1673.4 168.1M1680.7 173.4L1690 180L1722 202L1756 226L1790 248L1830 272L1872 298L1874.4 299.3M1882.4 303.6L1916 322L1962 346L1993.6 363.1M1420 40L1424 70L1432 104L1444 140L1458 176L1466.1 194.1M1475.2 214.2L1476 216L1496 258L1497.3 260.6M1510.7 104.7L1508 130L1518 170L1536 214L1536.5 215\"/><path class=\"ds-ink w08 ds-ridge\" d=\"M1242.6 146.1L1257.4 138.1L1283.4 120.1L1305.4 104.1L1322 96.9L1338 102.9L1351.5 98L1365.3 89.1L1383.2 72.2L1399.2 56.2L1403.9 52.3M1438.9 55.9L1451.3 66.7L1469.4 82.8L1487.5 94.9L1500.1 99L1511.9 92L1525.4 100.8L1537 109.8M1591.7 133.4L1616.2 137.1L1640.4 145.2L1662.5 159.2L1673.9 167.4M1640 147L1652 190L1680 240L1690.3 254.9M1338 104L1330 132L1318.4 161.1M1312.9 173.4L1302 198L1293.8 220M1214 159L1206 192L1200.9 210.3M1100 236L1094 262L1089.5 275.4\"/><g class=\"ds-facet\" data-poly=\"1420,40 1424,70 1432,104 1444,140 1458,176 1476,216 1496,258 1518,300 1540,340 1558,378 1624,386 1608,352 1584,310 1558,262 1536,214 1518,170 1508,130 1512,92 1512,91 1500,98 1488,94 1470,82 1452,66 1436,52 1420,40\"><path class=\"ds-ink w06 ds-hatch\" d=\"M1508.1 93.3L1509.2 95.7M1505.5 94.8L1508.6 101.5M1502.9 96.3L1508 107.3M1500.3 97.8L1507.4 113.1M1496.5 96.8L1506.8 118.9M1492.6 95.5L1506.2 124.7M1488.7 94.2L1505.8 130.9M1484 91.4L1509.6 146.2M1479.2 88.1L1513.4 161.4M1589.1 323.7L1613.7 376.5M1474.4 84.9L1524.9 193.2M1567.6 284.7L1613.6 383.4M1469.6 81.6L1605.3 372.8M1463.9 76.6L1607.2 384M1458.2 71.5L1599 373.4M1452.6 66.5L1454.4 70.4M1457.8 77.7L1598.5 379.5M1447 61.6L1448.2 64.2M1455.3 79.5L1589.3 366.7M1441.4 56.7L1442.7 59.4M1452.9 81.3L1590.2 375.7M1435.8 51.9L1437.1 54.7M1450.8 84L1496.9 182.8M1499.3 188.1L1588.7 379.7M1448.9 87.1L1489.9 174.9M1496.2 188.5L1580.1 368.4M1447.1 90.2L1484.8 171.1M1493.1 188.9L1580.3 375.9M1445.3 93.6L1479.7 167.3M1488.9 186.9L1570.4 361.7M1443.7 97.3L1474.6 163.5M1484.1 183.7L1571.6 371.4M1442.2 101L1469.6 159.8M1479.3 180.5L1572.2 379.7M1440.6 104.7L1465.5 158.1M1474.5 177.3L1568.6 379.3M1426.9 82.5L1428.7 86.4M1436.5 103L1461.4 156.4M1469.7 174.1L1565.1 378.9M1430.3 96.8L1457.3 154.7M1464.9 171.1L1561.6 378.4M1436.2 116.5L1453.2 153M1460.3 168.2L1558.1 378M1444.9 142.3L1449.1 151.3M1455.6 165.3L1520.8 305.1\"/></g><g class=\"ds-facet\" data-poly=\"1512,92 1508,130 1518,170 1536,214 1558,262 1584,310 1608,352 1624,386 1624,404 1766,404 1766,380 1748,340 1716,292 1680,240 1652,190 1640,147 1640,146 1616,138 1590,134 1566,126 1544,114 1526,100 1512,91\"><path class=\"ds-ink w06 ds-hatch\" d=\"M1638.4 159.5L1644.2 168.8M1634.7 159.9L1647.5 180.4M1631.3 161L1654.2 197.6M1707.4 282.8L1753.4 356.3M1628 162.2L1763.7 379.2M1624.8 163.4L1758.4 377.1M1621.5 164.5L1763 391M1618.2 165.7L1753.6 382.4M1615 166.9L1756.1 392.8M1611.7 168.1L1756.4 399.6M1608.1 168.8L1670.5 268.7M1674 274.3L1746.4 390.1M1604.6 169.5L1664.1 264.7M1671.7 277L1749.2 400.9M1601 170.2L1657.6 260.7M1668.5 278.2L1739.2 391.4M1597.4 170.9L1651.1 256.8M1662.5 275L1739.1 397.6M1593.9 171.6L1644.6 252.8M1656.5 271.9L1727.8 386M1589.2 170.6L1638.4 249.3M1650.5 268.7L1729.3 394.8M1583.4 167.7L1632.8 246.8M1644.5 265.5L1727.9 398.9M1546.8 115.5L1548.5 118.2M1577.6 164.8L1627.2 244.3M1638.5 262.3L1717.5 388.7M1539.8 110.7L1548.9 125.4M1569.5 158.3L1621.6 241.7M1632.3 258.8L1718.2 396.2M1532 104.6L1549.9 133.4M1560.7 150.6L1616.1 239.2M1626 255.1L1706.1 383.3M1524.4 99L1610.5 236.7M1619.7 251.4L1708 392.8M1517.7 94.7L1604.9 234.2M1613.3 247.7L1708.3 399.6M1513.4 94.1L1600.3 233.2M1607 243.9L1698.3 390.1M1512.8 99.6L1701.1 400.9M1512.2 105.1L1691.1 391.4M1511.6 110.6L1690.9 397.6M1511.1 116.1L1679.7 386M1510.5 121.6L1681.2 394.8M1509.9 127.1L1679.8 398.9M1510.9 135.1L1669.4 388.7M1513.6 145.8L1670.1 396.2M1516.3 156.5L1658 383.3M1518.9 167.2L1659.9 392.8M1525.5 184.1L1660.1 399.6M1533.1 202.7L1650.2 390.1M1542.2 223.6L1653 400.9M1553.2 247.7L1643 391.4M1570.8 282.3L1642.8 397.6M1604.3 342.3L1631.6 386M1620.2 374.2L1633.1 394.8M1624 386.7L1631.7 398.9\"/></g><g class=\"ds-facet\" data-poly=\"1640,147 1652,190 1680,240 1716,292 1748,340 1766,380 1766,404 2060,404 2060,398 2010,372 1962,346 1916,322 1872,298 1830,272 1790,248 1756,226 1722,202 1690,180 1662,160 1640,146\"><path class=\"ds-ink w06 ds-hatch\" d=\"M2055.4 395.6L2058.8 399.7M2036.8 386L2047.1 398.2M2027.6 381.1L2033.1 387.8M2018.3 376.3L2034.6 395.7M2009 371.5L2032.5 399.4M1999.4 366.3L2019.5 390.2M1989.9 361.1L2020 397M1980.3 355.9L2005 385.3M1970.7 350.7L2006.9 393.9M1961.2 345.6L2006.9 400M1951.9 340.7L1994.4 391.4M1942.6 335.9L1997.5 401.2M1933.3 331L1985 392.7M1924 326.2L1984.4 398.2M1914.7 321.3L1970.5 387.8M1905.1 316L1971.9 395.7M1895.4 310.8L1969.8 399.4M1885.8 305.5L1956.9 390.2M1876.2 300.3L1957.3 397M1865.9 294.2L1942.3 385.3M1855 287.5L1944.3 393.9M1844.1 280.7L1944.2 400M1833.3 274L1931.8 391.4M1822.6 267.6L1934.8 401.2M1812.1 261.3L1922.4 392.7M1801.6 255L1921.8 398.2M1791.1 248.7L1907.8 387.8M1779.8 241.4L1909.3 395.7M1768.3 234L1907.1 399.4M1756.9 226.6L1894.2 390.2M1744.2 217.7L1894.6 397M1731.4 208.6L1879.6 385.3M1718.7 199.7L1881.6 393.9M1706.4 191.3L1881.5 400M1694 182.8L1869.1 391.4M1681.2 173.7L1872.1 401.2M1668.2 164.4L1859.7 392.7M1656.1 156.3L1859.1 398.2M1644.9 149.1L1845.2 387.8M1647.4 158.3L1846.6 395.7M1645.5 162.3L1844.5 399.4M1648.1 171.6L1831.5 390.2M1650.7 180.9L1832 397M1653.9 190.9L1817 385.3M1664.4 209.7L1819 393.9M1674.9 228.4L1818.9 400M1691.2 254.1L1806.5 391.4M1715.8 289.6L1809.5 401.2M1736.2 320.2L1797.1 392.7M1751.2 344.3L1796.5 398.2M1757.3 357.7L1782.5 387.8M1763.3 371.1L1784 395.7M1766 380.5L1781.8 399.4M1766 386.8L1768.9 390.2M1766 393L1769.3 397\"/></g><g class=\"ds-hachure\"><path class=\"ds-ink w08\" d=\"M1399.4 58.9L1393.4 80.1M1401.3 64.7L1397.7 77.4M1365.3 91.9L1353.7 123.8M1366.8 97.7L1359.8 116.9M1283.3 122.9L1268.3 159.9M1284.5 128.8L1275.5 151M1169.2 185.8L1155.4 216.9M1170.3 191.8L1162 210.4M1081.1 239.8L1069.7 263.2M1082 245.8L1075.1 259.8\"/></g></g><g class=\"ds-summit\" data-name=\"west\" data-layer=\"2\" data-facets=\"1\"><path class=\"ds-far w12 ds-ridge\" d=\"M-150 398L-70 378L10 352L90 322L170 290L231.4 261.9M238.8 258.6L240 258L300 228L356 200L406 176L440 160L466 150L492 134L497.9 130.4M504.9 126.3L512 122L528 112L538 116L546 122L554 112L564 102L578 108L596 118L622 134L654 154L690 176L702.1 183.3M709.1 187.5L730 200L772 226L816 252L860 278L904 304L922.7 315.4\"/><path class=\"ds-far w1 ds-ridge\" d=\"M376.4 189.1L405.6 175.1L439.6 159.1L465.6 149.1L491.5 133.1L497.4 129.6M564 102L558 134L546 172L530 214L520.2 238\"/><g class=\"ds-facet\" data-poly=\"-150,398 -70,378 10,352 90,322 170,290 240,258 300,228 356,200 406,176 440,160 466,150 492,134 512,122 528,112 538,116 546,122 554,112 564,102 564,102 558,134 546,172 530,214 512,258 496,300 484,340 476,374 476,404 -150,404\"><path class=\"ds-far w1 ds-hatch\" d=\"M476 382.3L468.8 397.2M476.2 373.3L470.5 384.9M480.1 356.6L461.7 394.3M484.1 339.8L455.4 398.6M490.8 317.3L456.4 387.8M499.5 290.8L448.3 395.7M515.8 248.7L450.8 382.1M535.3 200L441.6 392.1M548.3 164.8L433.9 399.3M556 140.2L434.6 389.3M553.9 135.9L424.7 400.8M551.1 133.1L425.4 390.7M548.7 129.3L516.4 195.5M513.6 201.3L418 397.2M551.1 115.6L549.1 119.7M546.5 125L512.7 194.4M509.9 200.1L419.8 384.9M544.4 120.8L509.1 193.2M506.2 199L411 394.3M541.3 118.5L505.4 192.1M502.6 197.9L404.6 398.6M538.2 116.1L501.7 190.9M498.9 196.7L405.7 387.8M534.7 114.7L498 189.8M495.2 195.6L397.6 395.7M531.1 113.3L494.4 188.6M491.5 194.5L400 382.1M527.3 112.4L490.7 187.5M487.3 194.4L390.9 392.1M521.2 116.2L487 186.3M482.7 195.2L383.2 399.3M515.1 120L482.7 186.6M478.1 196L383.8 389.3M509.1 123.7L478.1 187.4M473.5 196.8L374 400.8M503.1 127.3L473.4 188.2M468.9 197.5L374.7 390.7M497.2 130.9L468.8 189M464.3 198.3L367.3 397.2M491.2 134.5L464.2 189.9M459.7 199.1L369 384.9M485.1 138.2L459.6 190.7M454.6 200.8L360.2 394.3M479.1 141.9L454.9 191.5M449.6 202.5L353.9 398.6M473 145.7L450 192.9M444.5 204.2L354.9 387.8M467 149.4L444.5 195.4M439.5 205.8L346.9 395.7M461.7 151.7L439.1 198M434.4 207.5L349.3 382.1M456.5 153.7L433.6 200.5M429.7 208.6L340.2 392.1M451.3 155.7L428.2 203M427 205.3L332.4 399.3M446.1 157.7L333.1 389.3M440.8 159.7L323.3 400.8M435.4 162.2L323.9 390.7M429.9 164.7L316.6 397.2M424.4 167.3L318.3 384.9M418.9 169.9L309.5 394.3M413.5 172.5L303.2 398.6M408 175.1L304.2 387.8M402.5 177.7L296.1 395.7M396.9 180.3L298.6 382.1M391.4 183L289.4 392.1M385.9 185.6L281.7 399.3M380.4 188.3L282.4 389.3M374.9 190.9L272.5 400.8M369.3 193.6L273.2 390.7M363.8 196.2L265.8 397.2M358.3 198.9L267.6 384.9M352.7 201.6L258.8 394.3M347.1 204.4L252.4 398.6M341.6 207.2L253.5 387.8M336 210L245.4 395.7M330.4 212.8L247.8 382.1M324.8 215.6L238.7 392.1M319.2 218.4L230.9 399.3M313.6 221.2L231.6 389.3M308 224L221.8 400.8M302.4 226.8L222.5 390.7M296.8 229.6L215.1 397.2M291.2 232.4L216.8 384.9M285.6 235.2L208 394.3M280 238L201.7 398.6M274.5 240.8L202.7 387.8M268.9 243.6L194.7 395.7M263.3 246.4L197.1 382.1M257.7 249.2L187.9 392.1M252.1 252L180.2 399.3M246.5 254.7L180.9 389.3M240.9 257.5L171.1 400.8M235.4 260.1L171.7 390.7M230 262.6L164.4 397.2M224.6 265.1L166.1 384.9M219.1 267.5L157.3 394.3M213.7 270L151 398.6M208.2 272.5L152 387.8M202.8 275L143.9 395.7M197.4 277.5L146.4 382.1M191.9 280L137.2 392.1M186.5 282.5L129.5 399.3M181 285L130.2 389.3M175.6 287.4L120.3 400.8M170.2 289.9L121 390.7M164.9 292L113.6 397.2M159.6 294.1L115.4 384.9M154.4 296.2L106.6 394.3M149.1 298.3L100.2 398.6M143.9 300.4L101.3 387.8M138.6 302.5L93.2 395.7M133.4 304.6L95.6 382.1M128.1 306.8L86.5 392.1M122.9 308.9L78.7 399.3M117.6 311L79.4 389.3M112.4 313.1L69.6 400.8M107.1 315.2L70.3 390.7M101.9 317.3L62.9 397.2M96.6 319.4L64.6 384.9M91.4 321.5L55.8 394.3M86.2 323.4L49.5 398.6M81 325.4L50.5 387.8M75.8 327.3L42.4 395.7M70.6 329.3L44.9 382.1M65.5 331.2L35.7 392.1M60.3 333.1L28 399.3M55.1 335.1L28.7 389.3M49.9 337L18.9 400.8M44.8 339L19.5 390.7M39.6 340.9L12.2 397.2M34.4 342.8L13.9 384.9M29.2 344.8L5.1 394.3M24.1 346.7L-1.2 398.6M18.9 348.7L-0.2 387.8M13.7 350.6L-8.3 395.7M8.6 352.5L-5.9 382.1M3.6 354.1L-15 392.1M-1.5 355.7L-22.7 399.3M-6.5 357.4L-22 389.3M-11.5 359L-31.9 400.8M-16.5 360.6L-31.2 390.7M-21.6 362.3L-38.6 397.2M-26.6 363.9L-36.9 384.9M-31.6 365.5L-45.6 394.3M-36.6 367.2L-52 398.6M-41.7 368.8L-50.9 387.8M-46.7 370.4L-59 395.7M-51.7 372.1L-56.6 382.1M-56.7 373.7L-65.7 392.1M-61.8 375.3L-73.5 399.3M-66.8 377L-72.8 389.3M-71.7 378.4L-82.6 400.8M-76.5 379.6L-81.9 390.7M-81.4 380.8L-89.3 397.2M-86.2 382L-87.6 384.9M-91 383.2L-96.4 394.3M-95.8 384.4L-102.7 398.6M-105.4 386.9L-109.8 395.7M-115.1 389.3L-116.5 392.1M-119.9 390.5L-124.2 399.3M-129.5 392.9L-133.4 400.8\"/></g><g class=\"ds-hachure\"><path class=\"ds-far w1\" d=\"M596.8 119.8L607.4 143.6M595.7 125.8L602.1 140M690.9 177.8L705 204.3M690.3 183.8L698.7 199.7M817 253.7L827 271.1M816.6 259.8L822.6 270.2\"/></g></g><g class=\"ds-summit\" data-name=\"east\" data-layer=\"2\" data-facets=\"1\"><path class=\"ds-far w12 ds-ridge\" d=\"M1805.6 249.9L1810 246L1856 206L1889.9 181.4M1893.9 178.4L1900 174L1936 150L1956 140L1972 132L1990 138L2016 150L2050 168L2071.4 179.2M2075.8 181.5L2092 190L2140 214L2200 238L2270 262L2340 284L2420 304\"/><path class=\"ds-far w1 ds-ridge\" d=\"M1959.5 137.1L1972 131L1990.4 137.1L2016.4 149.1L2050 166.9M1972 132L1980 170L1992 214L2001.3 246\"/><g class=\"ds-facet\" data-poly=\"1972,132 1980,170 1992,214 2006,262 2022,310 2034,352 2042,384 2042,404 2420,404 2420,304 2340,284 2270,262 2200,238 2140,214 2092,190 2050,168 2016,150 1990,138 1972,132\"><path class=\"ds-far w1 ds-hatch\" d=\"M2417.4 303.4L2420 307.8M2412.3 302.1L2420 315.4M2407.2 300.8L2420 323M2402.1 299.5L2420 330.6M2396.9 298.2L2420 338.2M2391.8 296.9L2420 345.8M2386.7 295.7L2420 353.4M2381.5 294.4L2420 361M2376.4 293.1L2420 368.6M2371.3 291.8L2420 376.2M2366.2 290.5L2419.2 382.4M2361 289.3L2413.6 380.3M2355.9 288L2419.7 398.5M2350.8 286.7L2411.1 391.2M2345.6 285.4L2410.3 397.4M2340.5 284.1L2399.1 385.6M2335.2 282.5L2399.9 394.6M2329.8 280.8L2397.9 398.8M2324.5 279.1L2387.6 388.4M2319.1 277.4L2387.6 396M2313.7 275.7L2375.6 382.9M2308.4 274.1L2376.8 392.6M2303 272.4L2376.4 399.5M2297.7 270.7L2366.4 389.8M2292.3 269L2368.4 400.9M2286.9 267.3L2358.4 391.2M2281.6 265.6L2357.7 397.4M2276.2 264L2346.5 385.6M2270.9 262.3L2347.3 394.6M2265.4 260.4L2345.3 398.8M2259.9 258.5L2334.9 388.4M2254.5 256.7L2334.9 396M2249 254.8L2322.9 382.9M2243.5 252.9L2324.1 392.6M2238 251L2323.8 399.5M2232.6 249.2L2313.8 389.8M2227.1 247.3L2315.8 400.9M2221.6 245.4L2305.8 391.2M2216.2 243.5L2305 397.4M2210.7 241.7L2293.8 385.6M2205.2 239.8L2294.6 394.6M2199.7 237.9L2292.6 398.8M2194 235.6L2282.3 388.4M2188.3 233.3L2282.3 396M2182.6 231L2270.3 382.9M2176.9 228.8L2271.5 392.6M2171.2 226.5L2271.1 399.5M2165.5 224.2L2261.1 389.8M2159.8 221.9L2263.1 400.9M2154.1 219.6L2253.1 391.2M2148.4 217.4L2252.3 397.4M2142.7 215.1L2241.2 385.6M2136.7 212.4L2242 394.6M2130.6 209.3L2240 398.8M2124.4 206.2L2229.6 388.4M2118.2 203.1L2229.6 396M2112.1 200L2217.6 382.9M2105.9 196.9L2218.8 392.6M2099.7 193.9L2218.4 399.5M2093.6 190.8L2208.5 389.8M2087.3 187.5L2210.5 400.9M2081 184.2L2200.5 391.2M2074.7 180.9L2199.7 397.4M2068.4 177.6L2188.5 385.6M2062.1 174.4L2189.3 394.6M2055.8 171.1L2187.3 398.8M2049.5 167.8L2176.9 388.4M2043.2 164.4L2177 396M2036.9 161.1L2165 382.9M2030.6 157.7L2166.2 392.6M2024.3 154.4L2165.8 399.5M2018 151L2155.8 389.8M2011.9 148.1L2157.8 400.9M2005.9 145.3L2147.8 391.2M1999.9 142.6L2002.1 146.4M2006.1 153.2L2147 397.4M1993.9 139.8L1995.3 142.3M2003.8 157L2135.9 385.6M2001.4 160.4L2136.7 394.6M1998.1 162.3L2134.7 398.8M1994.9 164.3L2124.3 388.4M1991.7 166.4L2124.3 396M1989.4 169.9L2112.3 382.9M1987 173.5L2113.5 392.6M1979.6 168.3L1981.7 171.8M1984.7 177L2113.1 399.5M1983.4 182.3L2103.1 389.8M1987.3 196.7L2105.2 400.9M1991.2 211.1L2095.2 391.2M1995.6 226.3L2094.4 397.4M2000.1 241.7L2083.2 385.6M2004.5 257L2084 394.6M2010 274.1L2082 398.8M2016 292.1L2071.6 388.4M2022 310.1L2071.6 396M2026.3 325.1L2059.7 382.9M2030.6 340.2L2059.9 390.9M2034.7 354.9L2053.5 387.5M2038.1 368.3L2046.7 383.2\"/></g><g class=\"ds-hachure\"><path class=\"ds-far w1\" d=\"M1935.2 151.8L1924.6 175.6M1936.3 157.8L1929.9 172M1855.1 207.8L1842.9 230.7M1855.7 213.8L1848.4 227.6\"/></g></g><g class=\"ds-summit\" data-name=\"notch\" data-layer=\"3\" data-facets=\"0\"><path class=\"ds-far w1 ds-ridge\" d=\"M930 250L962 224L990 198L1010 184L1024 176L1040 186L1042.3 187.6M1043.6 188.5L1066 204L1100 226L1101.7 227M1024 176L1030 204L1040 232\"/></g><g class=\"ds-summit\" data-name=\"farwest\" data-layer=\"3\" data-facets=\"0\"><path class=\"ds-far w1 ds-ridge\" d=\"M120 262L160 236L200 208L230 190L262 204L294.8 223M230 190L238 216\"/></g>",
 };
+/* THE SUN'S SEAT. Low on the horizon at 0.265 W, where the range's lit
+   faces turn; but never so close to the doe (at 0.165 W, her tail 28 units
+   of her scale east of her, roaming 30px) that she stands inside its clear
+   zone of 3.5 radii, which a 1024-wide sheet did. Shared by the builder and
+   the layout, because the words have to keep off it too. */
+const morningSun = (W, hz, narrow) => {
+  const vs = clamp(W / 1500, 0.44, 1.2), r = narrow ? 15 : 26 * vs;
+  const x = narrow ? W * 0.26 : Math.max(W * 0.265, W * 0.165 + 28 * 0.95 * vs + 30 + 3.5 * r + 4);
+  return { x, y: hz + r * 0.15, r };
+};
+/* ————— THE WORDS AND THE RANGE SHARE THE HEIGHT, BY CONSTRUCTION —————
+   A fixed 40vh top and ~310px of fixed-size type ran into the horizon, the
+   sun and the crown on every sheet under ~800px tall. So the station's
+   block is placed by measured room: its top as high as the rock above it
+   allows (every mark of the range keeps 64px from each line of the words,
+   read off the range's own floor profile over that line's span), its
+   bottom as low as the horizon and the sun's cap allow (24px, and 4 for
+   the line's wobble), centred in that room when it fits. When it does not,
+   the range gives up height first: its foot rises and its scale shrinks
+   with it, down to the scale where the hatch still reads (0.5; the phone's
+   B study smeared at 0.29), and never narrower than the sheet. Then the
+   two gaps between the groups tighten from 1.5rem toward 0.6rem. Then the
+   hatch goes, as on the phone, and the ridge alone may shrink to 0.3.
+   Returns the foot, the scale's floor mode and the words' placement, which
+   buildDawnscape draws to. */
+const GAP_MAX = 24, GAP_MIN = 9.6, SMALL_MIN = 0.55;
+function layMorning(wrap, W, H, hz) {
+  wrap.style.setProperty("--dawn-gap", `${GAP_MAX}px`);
+  wrap.style.setProperty("--dawn-small", "1");
+  wrap.classList.add("measuring");
+  /* in the panel's frame: the build runs while the carry is still moving it */
+  const oy = wrap.parentElement.getBoundingClientRect().top;
+  const px = (el, prop) => parseFloat(getComputedStyle(el)[prop]) || 0;
+  const cap = wrap.querySelector(".endquote figcaption"), rowEl = wrap.querySelector(".dawnrow");
+  const capGap = cap ? px(cap, "marginTop") : 0, rowGap = rowEl ? px(rowEl, "marginTop") : 0;
+  const lines = [];
+  for (const el of wrap.querySelectorAll(".kicker, .hourline, .endquote blockquote, .endquote figcaption, .dawnsay, .dawnrow")) {
+    const rg = document.createRange();
+    rg.selectNodeContents(el);
+    const rs = [...rg.getClientRects()].filter((q) => q.width && q.height);
+    if (!rs.length) continue;
+    /* what each line gains when the stack tightens by t: the big gaps above
+       it (head to quote, quote to foot) and the small ones (the caption's,
+       the row's) */
+    const foot = !!el.closest(".dawnfoot");
+    const big = foot ? 2 : el.closest(".endquote") ? 1 : 0;
+    const small = (el === cap || foot ? capGap : 0) + (el === rowEl ? rowGap : 0);
+    const gain = (t) => t * (big * (GAP_MAX - GAP_MIN) + small * (1 - SMALL_MIN));
+    const byLine = new Map();
+    for (const q of rs) { const k = Math.round(q.top); const b = byLine.get(k) || [Infinity, q.top - oy, -Infinity, q.bottom - oy]; byLine.set(k, [Math.min(b[0], q.left), Math.min(b[1], q.top - oy), Math.max(b[2], q.right), Math.max(b[3], q.bottom - oy)]); }
+    for (const [l, t, rt, bt] of byLine.values()) lines.push({ l, t, rt, bt, gain });
+  }
+  const pad0 = px(wrap, "paddingTop");
+  wrap.classList.remove("measuring");
+  if (!lines.length) return null;
+  const top0 = Math.min(...lines.map((q) => q.t));
+  const last = lines.reduce((a, q) => (q.bt > a.bt ? q : a));
+  const heightAt = (t) => last.bt - last.gain(t) - top0;
+  /* the floor: the horizon less 24 and its wobble, and the sun's cap less
+     24 where the lowest line spans the sun */
+  const sun = morningSun(W, hz, false);
+  const overSun = last.l < sun.x + sun.r && last.rt > sun.x - sun.r;
+  let B0 = Math.min(hz - 28, overSun ? sun.y - sun.r - 26 : Infinity);
+  /* and the doe and the fawn standing on the horizon, with their 30px home
+     range, where the lowest line spans them (at 1024 wide the contact row
+     came down on the doe's ears) */
+  const vs = clamp(W / 1500, 0.44, 1.2);
+  for (const [cx, k, w0, w1, h] of [[W * 0.165, 0.95 * vs, 41, 28, 69], [W * 0.112, 0.62 * vs, 28, 41, 73]])
+    if (last.l < cx + w1 * k + 30 + 24 && last.rt > cx - w0 * k - 30 - 24) B0 = Math.min(B0, hz - h * k - 27);
+  /* THE PRINCIPAL CLEARS THE RUN STATE. Its summit's hatch keeps the
+     chrome's 48px: at a small scale the board's centre put the peak under
+     "run 042 · 06:12 · the next morning", so the peak is held at least 50px
+     east of it, the board still covering the sheet's west edge */
+  const state = document.querySelector("#mast .state");
+  const stateR = state ? state.getBoundingClientRect().right : 0;
+  const peakX = RANGE.summits.find((q) => q.name === "principal").peak[0];
+  /* the rock: for a foot F, the seat, and the highest top the words may
+     take so that every line keeps 64px from every mark over its own span */
+  const seatOf = (F) => { const s = Math.max((F - H * 0.082) / (RANGE.foot - RANGE.top), W / 2350); const tx = Math.min(Math.max(W / 2 - RANGE.cx * s, stateR + 50 - peakX * s), 150 * s), ty = H * 0.082 - RANGE.top * s; return { s, tx, ty, F: ty + RANGE.foot * s }; };
+  const floorOver = (st, x0, x1, ridgeOnly) => {
+    const fl = RANGE.floor, prof = ridgeOnly ? fl.ridge : fl.all;
+    let low = -1;
+    for (let k = Math.max(0, Math.floor(((x0 - st.tx) / st.s - fl.x0) / fl.dx)); k <= Math.min(prof.length - 1, Math.floor(((x1 - st.tx) / st.s - fl.x0) / fl.dx)); k++) low = Math.max(low, prof[k]);
+    return low < 0 ? -Infinity : st.ty + low * st.s;
+  };
+  const topFor = (st, t, ridgeOnly) => Math.max(...lines.map((q) => floorOver(st, q.l - 66, q.rt + 66, ridgeOnly) + 67 - (q.t - q.gain(t) - top0)));
+  const fits = (st, t, ridgeOnly) => topFor(st, t, ridgeOnly) + heightAt(t) <= B0;
+  const F0 = H * 0.375, fAt = (s) => H * 0.082 + (RANGE.foot - RANGE.top) * s;
+  const hatchS = Math.max(0.5, W / 2350), ridgeS = Math.max(0.3, W / 2350);
+  let st = seatOf(F0), t = 0, ridgeOnly = false, stage = "fits";
+  if (!fits(st, t, false)) {
+    stage = "range";
+    for (let F = F0; F >= fAt(hatchS) - 0.5; F -= 2) { st = seatOf(F); if (fits(st, t, false)) break; }
+    if (!fits(st, t, false)) {
+      stage = "gaps";
+      while (t < 1 && !fits(st, t, false)) t = Math.min(1, t + 0.05);
+      if (!fits(st, t, false)) {
+        stage = "ridge";
+        ridgeOnly = true;
+        for (let F = st.F; F >= fAt(ridgeS) - 0.5; F -= 2) { st = seatOf(F); if (fits(st, t, true)) break; }
+      }
+    }
+  }
+  const lo = topFor(st, t, ridgeOnly), hi = B0 - heightAt(t);
+  const K = hi >= lo ? (lo + hi) / 2 : lo;
+  wrap.style.setProperty("--dawn-gap", `${(GAP_MAX - t * (GAP_MAX - GAP_MIN)).toFixed(1)}px`);
+  wrap.style.setProperty("--dawn-small", (1 - t * (1 - SMALL_MIN)).toFixed(3));
+  wrap.style.setProperty("--dawn-top", `${(pad0 + K - top0).toFixed(1)}px`);
+  return { F: st.F, s: st.s, tx: st.tx, tight: +t.toFixed(2), top: Math.round(K), bottom: Math.round(K + heightAt(t)), floor: Math.round(B0), room: Math.round(hi - lo), stage, ridgeOnly };
+}
+/* a phone's column is laid by its own rules: a sheet narrowed to one
+   forgets what the wide one set */
+const unlayMorning = (wrap) => { for (const v of ["--dawn-gap", "--dawn-small", "--dawn-top"]) wrap.style.removeProperty(v); };
 const SCAPE = { built: false, hz: 0, groups: 0 };
 /* the live record the sky, the ground's events and the gate read. The
    builder writes a COPY and publishes it in one breath at the end (see
@@ -8058,6 +8173,9 @@ function* drawDawnscape() {
      density ramps to nothing across it, so the words are always on bare
      paper wherever the seat puts them. */
   const wrap = stick.querySelector(".dawnwrap");
+  /* the words take their place from the room before anything reads them */
+  if (narrow) unlayMorning(wrap);
+  SCAPE.lay = !narrow ? layMorning(wrap, W, H, H * 0.84) : null;
   const words = [];
   wrap.classList.add("measuring");
   const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
@@ -8164,8 +8282,7 @@ function* drawDawnscape() {
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
   const tall = !narrow;
-  const sR = (narrow ? 15 : 26) * (narrow ? 1 : vs);
-  const sun = { x: X(narrow ? 0.26 : 0.265), y: hz + sR * 0.15, r: sR };
+  const sun = morningSun(W, hz, narrow);
   /* THE TREE STANDS BELOW EVERY SUMMIT. "tree's can't be as high as
      mountain": the great tree is drawn in its own frame, as approved, and
      set down at 0.78 of that size about its root, so its crown tops out
@@ -8177,6 +8294,13 @@ function* drawDawnscape() {
   const TK = 0.78, tcx = X(0.082);
   const TT = ([x, y]) => [tcx + (x - tcx) * TK, hz + (y - hz) * TK];
   const treeT = `translate(${F(tcx * (1 - TK))} ${F(hz * (1 - TK))}) scale(${TK})`;
+  /* what is drawn in the tree's frame reads the keep-outs in that frame: at
+     a narrow sheet the crown's froth reached the quote's air because its
+     lobes were tested against words 22% away from where they are drawn */
+  const inTreeFrame = (fn) => {
+    const saved = keep.splice(0, keep.length, ...keep.map(([l, t, rt, bt]) => [tcx + (l - tcx) / TK, hz + (t - hz) / TK, tcx + (rt - tcx) / TK, hz + (bt - hz) / TK]));
+    try { return fn(); } finally { keep.splice(0, keep.length, ...saved); }
+  };
   /* THE CLEARING. The words' column, with the sky above it that the head of
      the station reads in, and the halo round the sun: density is zero inside
      and climbs to full 160px out. Every tick-field is thinned by it, so the
@@ -8502,9 +8626,12 @@ function* drawDawnscape() {
        1920×1080 would put the principal under the masthead. The guard on
        W / 2350 keeps a frame wider than 2:1 covered edge to edge. Its
        strokes are non-scaling, so the pen is the same at every seat. */
-    const rs = Math.max(((0.375 - 0.082) * H) / (RANGE.foot - RANGE.top), W / 2350);
-    const rtx = W / 2 - RANGE.cx * rs, rty = Y(0.082) - RANGE.top * rs;
-    const seat = seatRange(null, rs, rtx, rty);
+    /* seated where the layout left it: 0.375 H when the sheet has the room,
+       higher and smaller when the words needed it */
+    const lay = SCAPE.lay || { s: Math.max(((0.375 - 0.082) * H) / (RANGE.foot - RANGE.top), W / 2350), ridgeOnly: false };
+    const rs = lay.s;
+    const rtx = lay.tx !== undefined ? lay.tx : W / 2 - RANGE.cx * rs, rty = Y(0.082) - RANGE.top * rs;
+    const seat = seatRange(null, rs, rtx, rty, { ridgeOnly: lay.ridgeOnly });
     const FOOT = seat.FOOT;
     far += seat.markup;
 
@@ -8589,12 +8716,12 @@ function* drawDawnscape() {
        between the valley floor and the meadow, so the sheet's flanks carry
        ink at every height of frame (the trunk stands 90px in now); far
        material, so they take the trunk's reserve with the rest */
-    for (const [fa, fb, fy] of [[-0.01, 0.05, 0.56], [-0.01, 0.06, 0.60], [-0.01, 0.045, 0.64], [-0.01, 0.05, 0.68], [-0.01, 0.05, 0.705], [-0.01, 0.04, 0.73], [-0.01, 0.035, 0.755], [-0.01, 0.06, 0.80],
+    for (const [fa, fb, fy] of [[-0.01, 0.05, 0.56], [-0.01, 0.06, 0.60], [-0.01, 0.045, 0.64], [-0.01, 0.05, 0.68], [-0.01, 0.05, 0.705], [-0.01, 0.04, 0.73], [-0.01, 0.035, 0.755], [-0.01, 0.05, 0.778], [-0.01, 0.06, 0.80],
       [0.96, 1.01, 0.68], [0.955, 1.01, 0.72], [0.965, 1.01, 0.77], [0.94, 1.01, 0.81]])
     {
       /* each wisp its own length, start and tilt, so a flank of them never
          stacks into a ruled block */
-      const a0 = X(fa) + (fa < 0.5 ? vr() * X(0.018) : 0), b0 = X(fb) - (fa < 0.5 ? vr() * X(0.022) : vr() * X(0.02)), y0 = Y(fy) + (vr() - 0.5) * 8, tilt = (vr() - 0.5) * 6;
+      const a0 = X(fa) + (fa < 0.5 ? vr() * 12 : 0), b0 = X(fb) - (fa < 0.5 ? vr() * X(0.018) : vr() * X(0.02)), y0 = Y(fy) + (vr() - 0.5) * 6, tilt = (vr() - 0.5) * 6;
       for (const run of cut(curve([[a0, y0], [(a0 + b0) / 2, y0 - 1.5 + vr() * 3], [b0, y0 + tilt]], 6))) vale += P(path(run), "ds-far w06");
     }
     far += `<g class="ds-vale" mask="url(#mR)">${vale}</g>`;
@@ -9242,7 +9369,7 @@ function* drawDawnscape() {
     d += P(wv, "ds-ink w1", 7);
     /* the cup is the tree's and rides its frame; the socket and its sitter
        are the bird's, at the bird's own size, where the cup now is */
-    d = `<g transform="${treeT}">${d}</g>`;
+    d = `<g transform="${treeT}">${inTreeFrame(() => d)}</g>`;
     const [snx, sny] = TT([nx, ny - nw * 0.5]);
     SCAPE.nest = { x: snx, y: sny };
     SCAPE.nestMarkup = perchBird(snx, sny + 2, 1, 0.8 * Math.max(vs, 0.8));
@@ -9323,7 +9450,7 @@ function* drawDawnscape() {
     far += ticks(X(0.14), hz - 14, X(0.035), 12, 22, "ds-far w1", 4, 9, 0.2);
     far += ticks(X(0.60), hz - 8, X(0.06), 6, 12, "ds-far w1", 3, 6, 0.2);
     const res0 = reserves.length, disc0 = SCAPE.reserveCircles.length;
-    near += `<g class="ds-treeframe" transform="${treeT}">${bigTree()}</g>`;
+    near += `<g class="ds-treeframe" transform="${treeT}">${inTreeFrame(bigTree)}</g>`;
     for (const q of reserves.slice(res0)) q.tf = treeT;
     SCAPE.reserveCircles = [...SCAPE.reserveCircles.slice(0, disc0), ...SCAPE.reserveCircles.slice(disc0).map(([x, y, rr]) => [...TT([x, y]), rr * TK])];
     for (const t of SCAPE.trees) { const [x, top] = TT([t.x, t.top]); Object.assign(t, { x, top, h: t.h * TK }); }
@@ -9411,10 +9538,16 @@ function* drawDawnscape() {
       near += solidTuft(X(fx), Y(fy), h * S3, n, cls, sd);
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
-    near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
-    near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
-    near += gull(X(0.642), Y(0.955) + 4, 1, "peck-c", "c");
-    near += hare(X(0.885), Y(0.97));
+    /* the cast on the meadow keeps the words' air with its whole home range:
+       a gull or the hare whose box, 30px either way, would enter a word's
+       halo is set down further west, 8px at a time (at 1024×768 the walking
+       gull strayed into "run 043"'s bay) */
+    const clearOfWords = (x, y, hw, h) => { let gx = x; for (let i = 0; i < 24 && words.some(([l, t, rt, bt]) => gx + hw + 30 > l && gx - hw - 30 < rt && y + 4 > t && y - h - 2 < bt); i++) gx -= 8; return gx; };
+    const gk = 1.15 * Math.max(vs, 0.7);
+    near += gull(clearOfWords(X(0.55), Y(0.875), 15 * gk, 13 * gk), Y(0.875), -1, "peck-a", "a");
+    near += gull(clearOfWords(X(0.72), Y(0.885), 15 * gk, 13 * gk), Y(0.885), 1, "peck-b", "b");
+    near += gull(clearOfWords(X(0.642), Y(0.955) + 4, 15 * gk, 23 * gk), Y(0.955) + 4, 1, "peck-c", "c");
+    near += hare(clearOfWords(X(0.885), Y(0.97), 13 * Math.max(vs, 0.77), 26.5 * Math.max(vs, 0.77)), Y(0.97));
     near += details();
     /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
@@ -9489,13 +9622,9 @@ function* drawDawnscape() {
         }
         far += `<g class="ds-vale" mask="url(#mR)">${ph}</g>`;
       }
-      const bmain = curve([[W + 4, Y(0.125)], [X(0.92), Y(0.135)], [X(0.84), Y(0.15)], [X(0.76), Y(0.165)], [X(0.70), Y(0.178)]]);
-      cutPad = 10;
-      let bd = contour(bmain, 0.7, "ds-ink", ["w12", "w1", "w12"]);
-      for (const [fx, fy, rr] of [[0.94, 0.185, 17], [0.81, 0.19, 15], [0.985, 0.115, 12]]) { const m = mass(X(fx), Y(fy), rr); bd += m + (m ? leaves(X(fx), Y(fy), rr * 0.8, 2) : ""); }
-      cutPad = 4;
-      groups++;
-      mid += `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.125))}px;--ph:${phase(W, 14.6)}">${bd}</g>`;
+      /* the phone's small bough is gone: a long bare limb carrying two leaf
+         blobs is the "islands on bare limbs" the owner called autumn, and
+         the band is the principal's now */
       for (let i = 0; i < 4; i++) {
         const y = Y(0.075 + i * 0.022) + (r() - 0.5) * 4;
         const a = X(0.04 + r() * 0.08), bnd = Math.min(a + 60 + r() * 120, X(0.62));
@@ -9578,7 +9707,7 @@ function* drawDawnscape() {
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
-    near: (SCAPE.reserveCircles || []).map((c) => c.map((v) => Math.round(v))), band: narrow ? SCAPE.band || null : null }; /* probe hook */
+    near: (SCAPE.reserveCircles || []).map((c) => c.map((v) => Math.round(v))), band: narrow ? SCAPE.band || null : null, lay: SCAPE.lay || null }; /* probe hook */
 }
 /* the driver. The first chunk runs in the caller's own task, where the
    whole build used to run, so the measurements it takes are taken at the
@@ -9894,7 +10023,15 @@ function fitRoute(f, W, H) {
   if (f.land) { for (const b of [0.6, 0.2, -0.3]) { f.bow = b; if (routeClear(f, W, H)) return; } return; }
   for (let k = 0; k < 5 && !routeClear(f, W, H); k++) f.ey = Math.max(0.045, f.ey - 0.015);
   if (routeClear(f, W, H)) return;
-  f.ex = 0.44 + (sky.spawned % 5) * 0.03; f.ey = 0.07; f.exit = "pass";
+  /* then the pass, and a later climb: a bird out of the crown under the
+     west peak's hatched face flies east low over the tree first and climbs
+     over the lit flank (at 1366×768 the early climb crossed the face) */
+  const ey0 = f.ey, bow0 = f.bow;
+  for (const [ex, ey, bow, pass] of [[f.ex, ey0, 0.3, false], [f.ex, ey0, -0.4, false], [0.44 + (sky.spawned % 5) * 0.03, 0.07, bow0, true], [0.46, 0.08, 0.3, true], [0.48, 0.09, -0.4, true], [0.5, 0.1, -0.8, true]]) {
+    f.ex = ex; f.ey = ey; f.bow = bow;
+    if (pass) f.exit = "pass";
+    if (routeClear(f, W, H)) return;
+  }
 }
 
 function placeFar(f, parent, elapsed) {
@@ -10002,10 +10139,13 @@ function spawnFar() {
       f.ox = g.x / W; f.oy = (g.y - 6) / H;
       f.ang = ((26 + r() * 8) * Math.PI) / 180;
     } else {
-      /* noticed high on the left: over the west peak's lit flank, not
-         its hatched face, which is where 0.05–0.15 W now is */
-      f.ox = narrow ? 0.06 + r() * 0.06 : 0.26 + r() * 0.08;
-      f.oy = narrow ? 0.15 + r() * 0.02 : 0.10 + r() * 0.06;
+      /* noticed high on the left: in the sky over the notch between the
+         west peak and the principal, never on the west peak's hatched face
+         (which a fixed 0.26–0.34 W found once a short sheet drew the range
+         small and the peaks closed in toward the middle) */
+      const notch = !narrow && SCAPE.massifs && SCAPE.massifs.summits && SCAPE.massifs.summits.find((q) => q.name === "notch");
+      f.ox = narrow ? 0.06 + r() * 0.06 : notch ? (notch.peak[0] + (r() - 0.5) * 40) / W : 0.26 + r() * 0.08;
+      f.oy = narrow ? 0.15 + r() * 0.02 : notch ? (notch.peak[1] - 40 - r() * 20) / H : 0.10 + r() * 0.06;
       f.ang = ((narrow ? 4 : 6) * Math.PI) / 180;
     }
     f.ex = 0.86 + r() * 0.05;
