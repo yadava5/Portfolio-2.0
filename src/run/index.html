@@ -1219,7 +1219,7 @@ if (location.hash.length > 1) {
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
   .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
-  .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl{transform-box:view-box}
+  .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth{transform-box:view-box}
   .dawnscape .squirrel-tail{--amp:10deg}
   .dawnscape .ds-spider{transform-box:view-box}
   .dawnscape .spider{--amp:.5deg}
@@ -1241,8 +1241,10 @@ if (location.hash.length > 1) {
   .dawnscape .sway-c2{--amp:1.1deg}
   .dawnscape .sway-b{--amp:1.3deg}
   .dawnscape .sway-sap{--amp:2deg}
-  .dawnscape .flut-1, .dawnscape .flut-2{--amp:3deg}
-  .dawnscape .flut-3, .dawnscape .flut-4, .dawnscape .flut-5{--amp:2deg}
+  /* the froth (perimeter leaves and leaf pairs) flutters; the compound
+     masses ride only the slow sway */
+  .dawnscape .flut-1, .dawnscape .flut-2, .dawnscape .flut-3{--amp:4deg}
+  .dawnscape .flut-4, .dawnscape .flut-5{--amp:2deg}
   .dawnscape .spray-a, .dawnscape .spray-b{--amp:4deg}
   .dawnscape .shim-a, .dawnscape .shim-b{--amp:3deg}
   .dawnscape .doe-head{--amp:-38deg}
@@ -8207,6 +8209,14 @@ function buildDawnscape() {
      this at the end, by <use>, so the gate can hold mask children to the
      registry. Branches and twigs are not masses and cast nothing. */
   const reserves = [];
+  /* THE CUT-LINES OF A DENSE CANOPY. In spring the lobes fuse into one
+     foliage, and a cut-line drawn as a hole in one mass only reveals the
+     mass beneath it, the same ink. So each leafed layer collects its cuts
+     and carries a mask of them: white paper, black cut-lines along every
+     cluster's rim, and blossom as black dots cut from the lit tops,
+     sparingly. A drawing, not a blot. */
+  const cutMasks = {};
+  let cutTarget = null;
   let massN = 0, resDil = { massif: 12, bank: 0, grass: 0 };
   /* a mass is wider than it is tall, the way a cluster of leaves spreads
      from a twig; its cuts follow the rims of its own lobes, short, so they
@@ -8236,6 +8246,70 @@ function buildDawnscape() {
     const id = `m${massN++}`;
     if (rr >= 10) reserves.push({ id, ...resDil });
     return `<path id="${id}" class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
+  };
+  /* ONE CONNECTED CANOPY. Twelve to eighteen lobes fused into one compound
+     fill, the union sampled round the cluster's centre, its edge bitten
+     into leaves, covering the crown's hull with three to five sky holes
+     where a branch shows through; the structure inside is the cut-lines
+     along each lobe's rim and the blossom, both in the layer's mask. */
+  const compound = (cx0, cy0, members, holes, layerCuts) => {
+    /* the union is sampled radially, so it is only right for a compact
+       cluster: the lobes are grouped by nearness first and each group is
+       unioned round its own centre, the groups overlapping into one canopy;
+       a far lobe sampled from one centroid would be a spike */
+    const groups = [];
+    for (const m of [...members].sort((p, q) => q[2] - p[2])) {
+      const g = groups.find((gr) => Math.hypot(gr.cx - m[0], gr.cy - m[1]) < Math.max(gr.r0 * 1.25, 36));
+      if (g) g.ms.push(m); else groups.push({ cx: m[0], cy: m[1], r0: m[2], ms: [m] });
+    }
+    let out = "";
+    groups.forEach((g, gi) => {
+      const cx = g.ms.reduce((t, m) => t + m[0], 0) / g.ms.length, cy = g.ms.reduce((t, m) => t + m[1], 0) / g.ms.length;
+      const lobes = g.ms.map(([x, y, rr]) => [x - cx, y - cy, rr]);
+      let rim = ring(cx, cy, lobes, 2.5);
+      for (let tries = 0; tries < 8 && rim.some(([x, y]) => inKeep(x, y, cutPad + 6)); tries++) { for (const l of lobes) l[2] *= 0.94; rim = ring(cx, cy, lobes, 2.5); }
+      let d = leafEdge(rim, 0.9, 2.2);
+      const nh = Math.round((holes * g.ms.length) / members.length);
+      for (let k = 0; k < nh; k++) {
+        const m = g.ms[Math.floor(r() * g.ms.length)], a = r() * 6.28;
+        const hx = m[0] + Math.cos(a) * m[2] * 0.7, hy = m[1] + Math.sin(a) * m[2] * 0.55, hr = m[2] * (0.22 + r() * 0.1);
+        if (inKeep(hx, hy)) continue;
+        d += path(wob(arc(hx, hy, hr, hr * 0.7, 0, 6.3, 2), 1.2)) + "Z";
+      }
+      if (layerCuts) {
+        for (const [x, y, rr] of g.ms) {
+          if (rr < 13) continue;
+          const a0 = 3.3 + r() * 0.6;
+          layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [] });
+        }
+        const dots = [];
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + (r() - 0.5) * m[2] * 1.1, m[1] - m[2] * (0.15 + r() * 0.6), 1.2 + r() * 0.6]); }
+        layerCuts.push({ cp: [], dots });
+      }
+      fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
+      nS++;
+      const id = `m${massN++}`;
+      reserves.push({ id, ...resDil });
+      out += `<path id="${id}" class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
+    });
+    return out;
+  };
+  /* THE FROTH carries the life: loose leaf strokes and detached leaf pairs
+     floating off the rim, one group per layer, fluttering on its own short
+     clock while the compound mass rides only the slow sway */
+  const froth = (ms, ox, oy, cls) => {
+    let d = "";
+    for (const [x, y, rr] of ms) {
+      d += leaves(x, y, rr * 1.05, 2);
+      for (let k = 0, n = 1 + Math.floor(r() * 2); k < n; k++) {
+        const a = r() * 6.28, dd = rr + 4 + r() * 10, px = x + Math.cos(a) * dd, py = y + Math.sin(a) * dd;
+        if (inKeep(px, py)) continue;
+        d += `<path class="ds-fill" d="${path(arc(px, py, 2.2, 1.3, 0, 6.3, 1.2))}Z${path(arc(px + 5, py + 3, 2, 1.2, 0, 6.3, 1.2))}Z"/>`;
+        nS++;
+      }
+    }
+    groups++;
+    return `<g class="ds-froth ${live(cls)}" style="transform-origin:${F(ox)}px ${F(oy)}px;--ph:${phase(ox, PERIOD[cls] / 1000)}">${d}</g>`;
   };
   /* a few loose leaves hanging off a mass's lower rim, drawn, in the foliage
      family: the overstacking that makes a solid read as leaves */
@@ -8743,19 +8817,24 @@ function buildDawnscape() {
     const [mx, my, mr0] = outMasses[9], mr = mr0 * 0.75;
     const p4 = [[mx - mr * 0.9, my + mr * 0.4], [mx - mr * 0.5, my + mr * 1.1], [mx + mr * 0.3, my + mr * 1.45], [mx + mr * 1.0, my + mr * 1.0], [mx + mr * 0.9, my + mr * 0.5], [mx, my + mr * 0.6]];
     outer.tone += hatch(p4, 55, 3.0, "ds-ink w08", 0.3, [8, 22]) + hatch(p4, 5, 3.4, "ds-ink w06", 0.25, [8, 18]);
-    inner.fills = build(inMasses);
-    /* the four windward masses flutter: the two big ones of the top run,
-       the middle clump's centre, the reach's largest; the sprays of the top
-       run and the middle clump turn */
-    outer.fills = build(outMasses.slice(0, 8), [[1, "flut-1"], [3, "flut-2"]], "spray-a") +
-      build(outMasses.slice(8, 15), [[1, "flut-3"]], "spray-b") +
-      build(outMasses.slice(15, 18), [[0, "flut-4"]]) + build(outMasses.slice(18));
+    /* SPRING: the inner layer is one compound canopy, the outer two (the
+       top run, and the middle with the reach), each with its froth; the
+       compound masses ride only the layer's slow sway */
+    const cen = (ms) => [ms.reduce((a, m) => a + m[0], 0) / ms.length, ms.reduce((a, m) => a + m[1], 0) / ms.length];
+    cutTarget = cutMasks.mC1 = [];
+    const [icx, icy] = cen(inMasses);
+    inner.fills = compound(icx, icy, inMasses, 3, cutTarget) + froth(inMasses, icx, icy, "flut-3");
+    cutTarget = cutMasks.mC2 = [];
+    const topRun = outMasses.slice(0, 8), reach = outMasses.slice(8);
+    const [tcx, tcy] = cen(topRun), [rcx, rcy] = cen(reach);
+    outer.fills = compound(tcx, tcy, topRun, 4, cutTarget) + compound(rcx, rcy, reach, 5, cutTarget) + froth(outMasses, (tcx + rcx) / 2, (tcy + rcy) / 2, "flut-1");
+    cutTarget = null;
     groups += 2;
     cutPad = 4;
     SCAPE.trees.push({ x: X(0.20), h: Y(0.33), top: CY(0) });
     return `<g class="ds-tree">${d}` +
-      `<g class="ds-canopy ${live("sway-c2")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
-      `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
+      `<g class="ds-canopy ${live("sway-c2")}" mask="url(#mC1)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
+      `<g class="ds-canopy ${live("sway-c1")}" mask="url(#mC2)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
   };
 
   const perchBird = (x, y, dir, k) => {
@@ -8788,6 +8867,11 @@ function buildDawnscape() {
       [0.828, 0.16, 30], [0.81, 0.185, 22], [0.84, 0.135, 14],
       [0.79, 0.25, 28], [0.765, 0.267, 20], [0.80, 0.28, 14],
     ].map(([fx, fy, rr]) => [X(fx), Y(fy), rr * 0.74 * Math.max(vs, 0.8)]);
+    /* in leaf along its whole length: a sibling to every mass, and masses
+       filling the bare stretches of the limb; the perch twig stays bare */
+    M.push(...M.map(([x, y, rr]) => { const a = r() * 6.28; return [x + Math.cos(a) * rr * 0.6, y + Math.sin(a) * rr * 0.45, rr * 0.8]; }));
+    for (const t of [0.12, 0.3, 0.48, 0.66, 0.84]) { const p = main[Math.floor(t * (main.length - 1))]; M.push([p[0] + (r() - 0.5) * 10, p[1] - 4 + (r() - 0.5) * 10, (16 + r() * 8) * Math.max(vs, 0.8)]); }
+    cutTarget = cutMasks.mBo = [];
     for (const i of [0, 4, 6, 11]) {
       const [mx, my, mr] = M[i];
       const t = main.reduce((b, p) => (Math.abs(p[0] - mx) < Math.abs(b[0] - mx) ? p : b));
@@ -8795,11 +8879,10 @@ function buildDawnscape() {
     }
     d += shade(...M[1]) + shade(...M[6]);
     let f = "";
-    M.forEach((mm, i) => {
-      const m = mass(...mm);
-      f += i === 0 && m ? `<g class="${live("flut-5")}" style="transform-origin:${F(mm[0])}px ${F(mm[1] + mm[2] * 0.8)}px;--ph:${phase(mm[0], 4.1)}">${m}</g>` : m;
-      f += leaves(mm[0], mm[1], mm[2], 3);
-    });
+    for (const mm of M) f += mass(...mm);
+    const bcx = M.reduce((a, m) => a + m[0], 0) / M.length, bcy = M.reduce((a, m) => a + m[1], 0) / M.length;
+    f += froth(M.slice(0, 14), bcx, bcy, "flut-2");
+    cutTarget = null;
     const pz = [X(0.752), Y(0.203)];
     const twig = curve([[X(0.782), Y(0.252)], [X(0.77), Y(0.23)], [X(0.758), Y(0.213)], pz]);
     const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
@@ -8811,17 +8894,18 @@ function buildDawnscape() {
     SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
     groups++;
     cutPad = 4;
-    return `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.167))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
+    return `<g class="ds-bough ${live("sway-b")}" mask="url(#mBo)" style="transform-origin:${F(W)}px ${F(Y(0.167))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
       `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
   };
 
   /* ————— a sapling: a slender two-pass trunk, five branches, leaf ticks, no fills ————— */
+  let sapN = 0;
   const sapling = (bx, by, h, lean, cls) => {
     const tr = curve([[bx, by], [bx + lean * h * 0.3 + (r() - 0.5) * 6, by - h * 0.5], [bx + lean * h, by - h]]);
     let d = P(stroke(tr, 0.8), "ds-ink w1") + P(stroke(offset(tr.slice(Math.floor(tr.length * 0.25)), 1.1), 0.6), "ds-ink w1");
     for (let i = 0; i < 5; i++) {
-      const t = 0.34 + i * 0.13 + r() * 0.06, p = tr[Math.floor(t * (tr.length - 1))];
-      const side = i % 2 ? 1 : -1, bl = h * (0.16 + r() * 0.12) * (1.1 - t * 0.6);
+      const t = 0.52 + i * 0.09 + r() * 0.05, p = tr[Math.floor(t * (tr.length - 1))];
+      const side = i % 2 ? 1 : -1, bl = h * (0.14 + r() * 0.1) * (1.1 - t * 0.6);
       const ang = -Math.PI / 2 + side * (0.55 + r() * 0.35);
       const br = curve([p, [p[0] + Math.cos(ang) * bl * 0.5, p[1] + Math.sin(ang) * bl * 0.5 + 2], [p[0] + Math.cos(ang) * bl, p[1] + Math.sin(ang) * bl]], 4);
       d += P(stroke(br, 0.5), "ds-ink w1");
@@ -8840,16 +8924,22 @@ function buildDawnscape() {
     d += P(td, "ds-ink w1", 3);
     /* and leaves: five to eight small solid tufts at the branch ends, so a
        sapling is a young tree on a spring morning and not a winter twig */
+    /* A YOUNG TREE, NOT A TWIG WITH BLOBS: one compound crown of eight to
+       ten lobes about the top of the stem at sixty percent of the big
+       tree's density, loose leaves at its rim, its cut-lines and blossom in
+       the sapling's own mask */
     resDil = { massif: 12, bank: 8, grass: 0 };
-    for (let j = 0, n = 5 + Math.floor(r() * 4); j < n; j++) {
-      const t = 0.42 + r() * 0.58, p = tr[Math.floor(t * (tr.length - 1))];
-      const side = r() < 0.5 ? -1 : 1, reach = h * (0.08 + r() * 0.14);
-      d += mass(p[0] + side * reach, p[1] - reach * 0.5 - r() * 6, 11 + r() * 4);
-    }
-    d += mass(top[0] + (r() - 0.5) * 6, top[1] - 4, 12 + r() * 3);
+    const sid = `mS${++sapN}`;
+    cutTarget = cutMasks[sid] = [];
+    const ccx = top[0] + lean * 4, ccy = top[1] + h * 0.14, R = h * 0.3;
+    const sm = [];
+    for (let j = 0, n = 7 + Math.floor(r() * 3); j < n; j++) { const a = r() * 6.28, dist = R * Math.sqrt(r()) * 0.75; sm.push([ccx + Math.cos(a) * dist, ccy + Math.sin(a) * dist * 0.85, R * (0.34 + r() * 0.2)]); }
+    sm.push([ccx, ccy - R * 0.5, R * 0.42]);
+    d += compound(ccx, ccy, sm, 2, cutTarget) + leaves(ccx, ccy, R, 5);
+    cutTarget = null;
     resDil = { massif: 12, bank: 0, grass: 0 };
     if (cls) groups++;
-    return `<g class="ds-sap ${live(cls)}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
+    return `<g class="ds-sap ${live(cls)}" mask="url(#${sid})" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
   };
 
   /* ————— the doe: a solid silhouette, the bird's own language —————
@@ -9014,7 +9104,7 @@ function buildDawnscape() {
     for (let i = 0; i < n; i++) {
       const t = n > 1 ? (i - (n - 1) / 2) / (n - 1) : 0;
       const bx = x + t * n * 1.5;
-      const bh = h * (0.55 + 0.45 * (1 - Math.abs(t) * 1.3) + r() * 0.15);
+      const bh = h * (0.5 + 0.4 * (1 - Math.abs(t) * 1.3) + r() * 0.1);
       const lean = t * 1.0 + 0.1 + (r() - 0.5) * 0.3;
       const sp = spine(bx, y + 1, bh, lean, (r() - 0.5) * 3);
       blades.push({ bx, bh, sp, nm: normals(sp), w0: 2.0 + r() * 0.8 });
@@ -9043,7 +9133,7 @@ function buildDawnscape() {
     let base = "", tip = "";
     const nl = 3 + Math.floor(r() * 4);
     for (let i = 0; i < nl; i++) {
-      const bx = x + (r() - 0.5) * n * 2.4, bh = h * (0.7 + r() * 0.6), lean = (r() - 0.5) * 1.4 + 0.15;
+      const bx = x + (r() - 0.5) * n * 2.4, bh = h * (0.6 + r() * 0.4), lean = (r() - 0.5) * 1.4 + 0.15;
       const sp = spine(bx, y + 1, bh, lean, (r() - 0.5) * 5);
       base += stroke(sp.slice(0, Math.ceil(sp.length * 0.7)), 0.3);
       tip += stroke(sp.slice(Math.floor(sp.length * 0.45)), 0.3);
@@ -9051,10 +9141,10 @@ function buildDawnscape() {
     /* seed heads: in the blade group, or, at the corners, their own fast
        shimmer on top of the gust */
     let sd = "";
-    for (let s = 0; s < seeds; s++) sd += seedHead(x + (r() - 0.5) * n * 2, y, h * (1.05 + r() * 0.3));
+    for (let s = 0; s < seeds; s++) sd += seedHead(x + (r() - 0.5) * n * 2, y, Math.min(16 * vs, h * (0.9 + r() * 0.2)));
     if (shim && sd) sd = `<g class="${live(shim)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${(-r() * 2).toFixed(2)}s">${sd}</g>`;
     if (cls) groups++;
-    return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+    return `<g class="ds-tuft" data-x="${F(x)}" data-y="${F(y)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
       `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
   };
   /* an outline tuft: the drawn blades alone, hair-strong, behind the solids */
@@ -9066,7 +9156,7 @@ function buildDawnscape() {
       const lean = (r() - 0.5) * 0.9 + 0.15;
       d += stroke(spine(bx, y + 1.5, bh, lean), 0.35);
     }
-    return `<g class="ds-tuft" data-x="${F(x)}" style="transform-origin:${F(x)}px ${F(y)}px">${P(d, "ds-far w1", n)}</g>`;
+    return `<g class="ds-tuft" data-x="${F(x)}" data-y="${F(y)}" style="transform-origin:${F(x)}px ${F(y)}px">${P(d, "ds-far w1", n)}</g>`;
   };
 
   /* ————— the squirrel: on the trunk's lit edge, head up, the tail proud —————
@@ -9215,9 +9305,10 @@ function buildDawnscape() {
     far += ticks(X(0.60), hz - 8, X(0.06), 6, 12, "ds-far w1", 3, 6, 0.2);
     near += bigTree();
     near += bough();
-    mid += sapling(X(0.958), Y(0.60), Y(0.21), -0.05, "sway-sap");
-    mid += sapling(X(0.986), Y(0.50), Y(0.15), -0.08, "sway-sap");
-    mid += sapling(X(0.912), Y(0.70), Y(0.13), 0.04, "");
+    /* young trees of the mid class: 110–150px, on the bank */
+    mid += sapling(X(0.958), Y(0.60), Y(0.15), -0.05, "sway-sap");
+    mid += sapling(X(0.986), Y(0.50), Y(0.13), -0.08, "sway-sap");
+    mid += sapling(X(0.912), Y(0.70), Y(0.12), 0.04, "");
     /* the meadow's ground: a stipple of short ticks, half what round 8 had
        and shorter, thinning under the words; the grass itself is the tufts */
     const field = [
@@ -9265,7 +9356,7 @@ function buildDawnscape() {
       shadowOf("fawn", X(0.112), hz + 2, 14 * vs, 40 * vs) + shadowOf("boulder", X(0.918), Y(0.982), 9, 12) + shadowOf("hare", X(0.885), Y(0.97), 10, 26) + `</g>`;
     /* outline tufts first, behind everything */
     near += `<g class="ds-grass" mask="url(#mG)">`;
-    for (const [fx, fy, h, n] of [[0.03, 0, 30, 5], [0.085, 0, 28, 5], [0.16, 0, 24, 5], [0.35, 0.885, 16, 4], [0.49, 0.90, 14, 4], [0.64, 0.88, 16, 4], [0.75, 0, 20, 5], [0.80, 0.98, 14, 4], [0.93, 0.975, 16, 4], [0.985, 0, 34, 6]])
+    for (const [fx, fy, h, n] of [[0.03, 0, 18, 5], [0.085, 0, 17, 5], [0.16, 0, 15, 5], [0.35, 0.885, 12, 4], [0.49, 0.90, 11, 4], [0.64, 0.88, 12, 4], [0.75, 0, 14, 5], [0.80, 0.98, 11, 4], [0.93, 0.975, 12, 4], [0.985, 0, 19, 6]])
       near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
     near += `</g>`;
     near += fawn(X(0.112));
@@ -9277,14 +9368,18 @@ function buildDawnscape() {
     /* ten blade groups take the gust in three amplitude classes, phased by x
        so it combs through a stand blade-group by blade-group; the two corner
        stands' seed heads shimmer on their own fast clocks */
-    near += solidTuft(X(0.02), hz, 48 * S3, 8, "sway-m", 1, "shim-a") + solidTuft(X(0.045), hz, 54 * S3, 9, "sway-s", 2) + solidTuft(X(0.07), hz, 42 * S3, 7, "sway-l", 0);
+    /* GRASS IS GRASS-SIZED AGAINST THE CAST: the owner saw blades taller
+       than the doe. Nothing on the meadow stands taller than a third of her
+       (64px): common blades 12–16, at most 20, the corner stands 22–24, seed
+       heads 16, the swale under 20. The gate holds it against her height. */
+    near += solidTuft(X(0.02), hz, 22 * S3, 8, "sway-m", 1, "shim-a") + solidTuft(X(0.045), hz, 24 * S3, 9, "sway-s", 2) + solidTuft(X(0.07), hz, 20 * S3, 7, "sway-l", 0);
     /* grass may cross legs below the knee only, never a body: the tufts
        at the pair's feet stay under 12 and 18px */
-    near += solidTuft(X(0.103), hz, 12 * S3, 5, "", 0) + solidTuft(X(0.152), hz, 18 * S3, 6, "sway-l", 0);
+    near += solidTuft(X(0.103), hz, 11 * S3, 5, "", 0) + solidTuft(X(0.152), hz, 15 * S3, 6, "sway-l", 0);
     /* the swale: pairs and singles of unequal size along an S, with outline
        tufts between, so it reads as a swathe of grass and not a row of stamps */
-    for (const [fx, fy, h, n, sd, cls] of [[0.35, 0.876, 26, 8, 1, "sway-m"], [0.372, 0.886, 15, 5, 0, ""], [0.405, 0.897, 22, 7, 0, "sway-s"], [0.44, 0.906, 13, 5, 0, ""], [0.458, 0.90, 24, 8, 1, "sway-l"],
-      [0.52, 0.902, 17, 6, 0, ""], [0.575, 0.89, 28, 9, 1, "sway-m"], [0.60, 0.895, 14, 5, 0, ""], [0.655, 0.878, 21, 7, 0, "sway-s"], [0.685, 0.87, 16, 6, 1, ""]])
+    for (const [fx, fy, h, n, sd, cls] of [[0.35, 0.876, 19, 8, 1, "sway-m"], [0.372, 0.886, 11, 5, 0, ""], [0.405, 0.897, 16, 7, 0, "sway-s"], [0.44, 0.906, 10, 5, 0, ""], [0.458, 0.90, 17, 8, 1, "sway-l"],
+      [0.52, 0.902, 12, 6, 0, ""], [0.575, 0.89, 20, 9, 1, "sway-m"], [0.60, 0.895, 10, 5, 0, ""], [0.655, 0.878, 15, 7, 0, "sway-s"], [0.685, 0.87, 12, 6, 1, ""]])
       near += solidTuft(X(fx), Y(fy), h * S3, n, cls, sd);
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
@@ -9302,8 +9397,8 @@ function buildDawnscape() {
     const owlHome = RM || (typeof sky !== "undefined" && sky.owl);
     if (owlHome) { live("owl-head"); groups++; }
     near += `<g class="ds-owl${owlHome ? " on" : ""}" data-x="${F(owlAt[0])}">${owlHome ? SCAPE.owlMarkup : ""}</g>`;
-    near += solidTuft(X(0.83), Y(0.985), 18 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 20 * S3, 6, "", 0);
-    near += solidTuft(X(0.962), hz, 44 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 52 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 40 * S3, 7, "", 0);
+    near += solidTuft(X(0.83), Y(0.985), 13 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 14 * S3, 6, "", 0);
+    near += solidTuft(X(0.962), hz, 21 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 24 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 19 * S3, 7, "", 0);
     /* where a leaf may fall from and where it may land: the crown's left
        half down the trunk's side, short of the sun's halo, and the bough
        down the right edge, short of the signature's air. The clearance gate
@@ -9381,12 +9476,18 @@ function buildDawnscape() {
   };
   const useRes = (plane) => reserves.filter((q) => q[plane] > 0).map((q) => `<use href="#${q.id}" style="fill:#000;stroke:#000;stroke-width:${q[plane] * 2};stroke-linejoin:round"/>`).join("");
   const maskOf = (id, sil, cuts, plane) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><path d="${sil}" style="fill:#fff"/>${cuts}${useRes(plane)}</mask>`;
+  /* the leaf masks: white paper, the cut-lines black, the blossom black */
+  const leafMasks = Object.entries(cutMasks).map(([id, cuts]) =>
+    `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect x="0" y="0" width="${W}" height="${H}" style="fill:#fff"/>` +
+    cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
+      dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
+  SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
   const defs = tile("stip1", 23, 10, 0.8, 8) + tile("stip2", 29, 38, 0.8, -7) + tile("stip3", 23, 40, 0.8, 5) + tile("stip4", 29, 92, 0.8, -11) +
     tile("stipC", 29, 12, 0.7, 5) + tile("stipS", 23, 22, 0.85, -12) + tile("feathA", 17, 30, 1.2, 3, true) + tile("feathB", 19, 10, 1.2, -5, true) +
     (SCAPE.trunkSil ? `<path id="trunkSil" d="${SCAPE.trunkSil}" style="fill:none"/>` : "") +
     (SCAPE.sil ? maskOf("mL", SCAPE.sil.mL, SCAPE.maskCuts.mL + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") + maskOf("mR", SCAPE.sil.mR, SCAPE.maskCuts.mR + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") : "") +
     (SCAPE.bankSil ? maskOf("mB", SCAPE.bankSil, "", "bank") : "") +
-    maskOf("mG", `M-4 ${F(hz - 60)}H${W + 4}V${H + 4}H-4Z`, "", "grass");
+    maskOf("mG", `M-4 ${F(hz - 60)}H${W + 4}V${H + 4}H-4Z`, "", "grass") + leafMasks;
   SCAPE.reserves = reserves;
   svg.innerHTML = `<defs>${defs}</defs><g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`;
   /* a rebuild mid-dwell puts a sitting bird back in its socket */

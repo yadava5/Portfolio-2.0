@@ -402,6 +402,18 @@ try {
           t.x >= colL && t.x <= colR && t.top < colB && t.h > GRASS_CAP + 1.5
       );
     const decl = (scape && scape.census) || [];
+    /* the meadow at the cast's scale: no tuft rises above a third of the
+       doe, measured from its own base to its bbox top against her height
+       from the ground line to her ears (4px for the hand and the sway) */
+    const deerEl = svg.querySelector(".ds-deer");
+    const doeH =
+      deerEl && scape ? scape.hz - deerEl.getBoundingClientRect().top : 0;
+    const meadow = [...svg.querySelectorAll(".ds-tuft[data-y]")]
+      .map((el) => ({
+        x: +el.dataset.x,
+        rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
+      }))
+      .filter((t) => doeH && t.rise > doeH / 3 + 4);
     const anims = document
       .getAnimations()
       .filter(
@@ -551,6 +563,8 @@ try {
     return {
       scape,
       p2: p2 ? { paths: p2paths.length, bad: p2bad, lines: p2lines } : null,
+      doeH: +doeH.toFixed(1),
+      meadow,
       patterns,
       masks,
       paths: svg.querySelectorAll("path").length,
@@ -638,6 +652,10 @@ try {
       if (m.tallUnder.length)
         fail(
           `${seat}: grass under the column at ${m.tallUnder.map((t) => `${t.h.toFixed(1)}px @x${t.x}`).join(", ")} — capped at ${GRASS_CAP}px`
+        );
+      if (m.meadow.length)
+        fail(
+          `${seat}: grass taller than a third of the doe (${m.doeH}px) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
         );
       /* 6 · the planes' materials */
       if (m.p2) {
