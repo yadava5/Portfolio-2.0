@@ -1125,9 +1125,12 @@ if (location.hash.length > 1) {
      the instant the words' rects are read, so the clearing is derived from
      where they will land. */
   .dawnwrap{width:100%; height:100%; max-width:none; margin:0; text-align:center;
-    position:relative; z-index:1; display:grid; grid-template-rows:1fr max-content;
-    padding:calc(4vh + 48px) 0 20vh; box-sizing:border-box}
-  .dawnhead{place-self:center; width:100%; max-width:54rem; margin:0 auto 5vh}
+    position:relative; z-index:1; display:grid; grid-template-rows:max-content max-content;
+    align-content:center; padding:calc(4vh + 48px) 0 20vh; box-sizing:border-box}
+  /* one centred group, head, quote and foot together in the valley: round
+     9 pushed the foot to the bottom and at a MacBook's own seats the middle
+     of the sheet became a void; the words hang together in the light now */
+  .dawnhead{width:100%; max-width:54rem; margin:0 auto 3.4rem}
   .dawnfoot{width:100%; max-width:46rem; margin:0 auto}
   .dawnfoot .dawnsay{margin-top:0}
   /* three exits on one line, the one way back in on its own: with "résumé"
@@ -7865,7 +7868,7 @@ function buildDawnscape() {
   svg.style.left = `${(-sr.left).toFixed(1)}px`;
   svg.style.width = `${W}px`;
   const r = birdRng(0xda11);
-  const vs = clamp(W / 1500, 0.44, 1);
+  const vs = clamp(W / 1500, 0.44, 1.2);
   const narrow = W < 760;
   const F = (v) => (Math.round(v * 10) / 10).toString();
   const X = (f) => W * f, Y = (f) => H * f;
@@ -8028,7 +8031,7 @@ function buildDawnscape() {
   /* `fade(x, y)` is the chance a piece is laid at all: a pocket dissolves into
      the plane around it instead of stopping at a polygon's edge, because no
      shadow on the page may have a straight edge that is not a contour */
-  const hatch = (poly, deg, gap, cls, amp = 0.35, len = [12, 40], fade = null) => {
+  const hatch = (poly, deg, gap, cls, amp = 0.35, len = [12, 40], fade = null, scatter = 0) => {
     const a = (deg * Math.PI) / 180, ux = Math.cos(a), uy = Math.sin(a), vx = -uy, vy = ux;
     const pu = poly.map(([x, y]) => x * ux + y * uy), pv = poly.map(([x, y]) => x * vx + y * vy);
     const v0 = Math.min(...pv), v1 = Math.max(...pv);
@@ -8047,9 +8050,12 @@ function buildDawnscape() {
           const L = Math.min(end - u, len[0] + r() * (len[1] - len[0]));
           const m = Math.max(2, Math.ceil(L / 5)), pts = [];
           for (let s = 0; s <= m; s++) { const uu = u + (L * s) / m; pts.push([uu * ux + v * vx, uu * uy + v * vy]); }
-          const mid = pts[Math.floor(pts.length / 2)];
-          if (!pts.some(([x, y]) => inKeep(x, y)) && (!fade || r() < fade(mid[0], mid[1]))) { d += stroke(pts, amp); n++; }
-          u += L + 1.5 + r() * 3;
+          const mid = pts[Math.floor(pts.length / 2)], p0 = pts[0], p1 = pts[pts.length - 1];
+          /* judged at both ends as well as the middle, so a fade's edge is a
+             fade and not a row of stroke tips */
+          const chance = fade ? Math.min(fade(mid[0], mid[1]), fade(p0[0], p0[1]), fade(p1[0], p1[1])) : 1;
+          if (!pts.some(([x, y]) => inKeep(x, y)) && (!fade || r() < chance)) { d += stroke(pts, amp); n++; }
+          u += L + 1.5 + r() * 3 + scatter * (0.4 + r());
         }
       }
     }
@@ -8244,52 +8250,124 @@ function buildDawnscape() {
   };
 
   if (tall) {
-    /* ————— far: the range, two ridges behind the trunk —————
-       The near ridge's crest stands on the cream LEFT of the trunk at
-       (0.03 W, 0.50 H), so there is a peak to see, and its east flank runs
-       behind the trunk and comes out the other side to die toward the sun's
-       halo by 0.19 W. Its west flank, away from the light, is hatched with
-       fall-line strokes, its own plane's family (-65°), dissolving toward
-       the foot; the ridgeline is drawn twice with a crest emphasis. The far
-       ridge is lower and lighter, one w06 pass, its crest behind the trunk
-       and its shoulder showing on the right between the two. Aerial
-       perspective by weight, never opacity. No base line: the feet dissolve
-       into the far tick clumps. */
-    /* A RANGE, NOT A SPIKE: the main summit at 0.038 W with shoulders that
-       run off the left edge and down behind the trunk, a col hidden by the
-       trunk, and a secondary summit coming out the other side at 0.128 W
-       before the slope dies toward the meadow. At half height the profile
-       spans the whole of 0–0.157 W. The last of the east slope is a lighter
-       pass that lets go before the horizon: no base line. */
-    const ridge = curve([[-3, Y(0.64)], [X(0.012), Y(0.585)], [X(0.025), Y(0.535)], [X(0.038), Y(0.505)], [X(0.05), Y(0.52)], [X(0.065), Y(0.56)], [X(0.08), Y(0.60)],
-      [X(0.10), Y(0.60)], [X(0.115), Y(0.585)], [X(0.128), Y(0.575)], [X(0.14), Y(0.60)], [X(0.155), Y(0.66)], [X(0.17), Y(0.735)], [X(0.183), Y(0.79)]]);
-    far += P(stroke(ridge.filter(([x]) => x <= X(0.168)), 1.3), "ds-far w1");
-    far += P(stroke(ridge.filter(([x]) => x >= X(0.158)), 1.1), "ds-far w06");
-    far += P(stroke(offset(ridge.slice(2, Math.floor(ridge.length * 0.5)), 1.7), 1.0), "ds-far w1");
-    far += P(stroke(seg(ridge, X(0.024), X(0.052)).map(([x, y]) => [x, y - 1.6]), 0.7), "ds-far w12");
-    far += P(stroke(seg(ridge, X(0.116), X(0.138)).map(([x, y]) => [x, y - 1.4]), 0.6), "ds-far w1");
-    /* the ridge is wooded: sparse tree-ticks along its crest, 4–9px, thinning
-       east, so the near tree reads as one of the far thousands come close */
-    let rt = "", rk = 0;
-    for (const [x, y] of ridge) {
-      if (x < X(0.01) || x > X(0.165) || r() > 0.55 - (x / X(0.17)) * 0.3) continue;
-      const th = 4 + r() * 5;
-      rt += stroke([[x, y + 1], [x + (r() - 0.5) * 1.2, y - th]], 0.2);
-      rk++;
-    }
-    far += P(rt, "ds-far w1", rk);
-    /* the west flanks, away from the light, in fall-lines that follow the
-       slope and dissolve toward the foot: the main summit's, broad, and the
-       secondary's, a lighter patch */
-    const flank = [[-3, Y(0.64)], [X(0.012), Y(0.585)], [X(0.025), Y(0.535)], [X(0.038), Y(0.505)], [X(0.046), Y(0.56)], [X(0.04), Y(0.64)], [X(0.028), Y(0.72)], [X(0.012), Y(0.78)], [-3, Y(0.80)]];
-    far += hatch(flank, -65, 4.4, "ds-far w1", 0.35, [10, 30], (x, y) => 1.3 - (y - Y(0.505)) / Y(0.27));
-    const flank2 = [[X(0.105), Y(0.60)], [X(0.115), Y(0.585)], [X(0.128), Y(0.575)], [X(0.134), Y(0.61)], [X(0.128), Y(0.66)], [X(0.118), Y(0.69)], [X(0.108), Y(0.66)]];
-    far += hatch(flank2, -65, 5.2, "ds-far w06", 0.3, [6, 16], (x, y) => 1.2 - (y - Y(0.575)) / Y(0.13));
-    /* the far ridge, lower and lighter, showing east of the secondary
-       summit and letting go well short of the sun's halo */
-    const ridge2 = curve([[X(0.10), Y(0.66)], [X(0.13), Y(0.625)], [X(0.155), Y(0.612)], [X(0.175), Y(0.63)], [X(0.195), Y(0.675)], [X(0.212), Y(0.73)]]);
-    far += P(stroke(ridge2, 1.1), "ds-far w06");
-    far += hatch([[X(0.14), Y(0.62)], [X(0.155), Y(0.612)], [X(0.165), Y(0.64)], [X(0.16), Y(0.68)], [X(0.148), Y(0.67)]], -65, 6.5, "ds-far w06", 0.3, [6, 14], (x, y) => 1.1 - (y - Y(0.612)) / Y(0.08));
+    /* ————— THE VALLEY OF LIGHT: two massifs own the top corners —————
+       The owner: "how can mountains be behind a tree, they look small,
+       a mountain can be as big as the entire screen". So the tree comes
+       down and the mountains go up. Two massifs rise to the top corners,
+       their crests at 0.05 and 0.095 H, the tallest things in the frame;
+       the left one rises behind and above the tree, the right one carries
+       the perch bough in front of it and comes down to the meadow as the
+       bank, one landform; a far range shows through the gap between them,
+       its saddle dipping low behind the words, so the words hang in a
+       valley the dawn light comes down. Perspective in one sentence: near
+       is dark, detailed and moving; far is light, sparse and still; the
+       tree is made of ink, the mountains of air.
+
+       THE HATCH FOLLOWS THE FALL LINE IN FACETS: patches whose stroke
+       direction changes per facet, spacing 5–7px on the west (shadow)
+       faces and about half that density on the east (lit) faces, lengths
+       20–60px, w06–w1, all hair-strong. Distance is weight and spacing,
+       never opacity. First light on the summits is drawn by absence: cream
+       wedges along the fall line on the east-facing summit facets where no
+       hatch is laid. Every facet's hatch fades to nothing over 120–260px
+       from the station's words (the words sit in light, not in a stencil),
+       stays 48px clear of the chrome's text, is zero in the valley mouth
+       (x 0.18–0.34 W below 0.55 H, where the wash's glow comes down to the
+       drawn sun) and in the sun's halo, and stops 40–60px above the
+       horizon behind a broken haze line. */
+    const inPoly = ([px, py], poly) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const [xi, yi] = poly[i], [xj, yj] = poly[j];
+        if (yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) inside = !inside;
+      }
+      return inside;
+    };
+    const FP = (pts) => pts.map(([fx, fy]) => [X(fx), Y(fy)]);
+    const wedges = [
+      FP([[0.16, 0.055], [0.19, 0.085], [0.178, 0.12], [0.156, 0.095]]), FP([[0.20, 0.10], [0.225, 0.15], [0.207, 0.168], [0.19, 0.128]]),
+      FP([[0.865, 0.10], [0.895, 0.125], [0.887, 0.162], [0.864, 0.142]]), FP([[0.905, 0.13], [0.93, 0.16], [0.922, 0.20], [0.90, 0.172]]),
+    ];
+    const chromeRects = keep.slice(0, 3);
+    const hatchFade = (x, y) => {
+      for (const [l, t, rt, bt] of chromeRects) if (x >= l - 24 && x <= rt + 24 && y >= t - 24 && y <= bt + 24) return 0;
+      if (x >= X(0.18) && x <= X(0.34) && y >= Y(0.55)) return 0;
+      for (const w of wedges) if (inPoly([x, y], w)) return 0;
+      let f = clamp((hz - 45 - y) / 55, 0, 1);
+      const ds = Math.hypot(x - sun.x, y - sun.y);
+      f *= ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
+      for (const [l, t, rt, bt, halo] of words) {
+        const dx = Math.max(l - x, x - rt, 0), dy = Math.max(t - y, y - bt, 0);
+        f = Math.min(f, clamp((Math.hypot(dx, dy) - (120 - halo)) / 140, 0, 1));
+      }
+      return f;
+    };
+    const facet = (poly, deg, gap, dense) => {
+      /* ROCK, NOT RAIN: one angle across a whole face is striping. The face
+         is cut into patches about 70px across, each laid at its own angle
+         within 20° of the fall line, its strokes short (14–40px) and
+         scattered with room between them, the hand's amplitude up, so a
+         face reads as broken rock catching light. */
+      const P2 = FP(poly);
+      const xs = P2.map((p) => p[0]), ys = P2.map((p) => p[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+      const cell = 70 * vs;
+      let out = "";
+      const faceFade = (x, y) => (inPoly([x, y], P2) ? hatchFade(x, y) : 0);
+      for (let cy = y0; cy < y1; cy += cell) for (let cx = x0; cx < x1; cx += cell) {
+        const jx = (r() - 0.5) * 20, jy = (r() - 0.5) * 20;
+        const rect = [[cx + jx, cy + jy], [cx + cell + jx, cy + jy], [cx + cell + jx, cy + cell + jy], [cx + jx, cy + cell + jy]];
+        if (!rect.some((p) => inPoly(p, P2)) && !inPoly([cx + cell / 2, cy + cell / 2], P2)) continue;
+        out += hatch(rect, deg + (r() - 0.5) * 40, gap * vs * (0.85 + r() * 0.3), dense ? "ds-far w1 ds-hatch" : "ds-far w06 ds-hatch", 0.8, [14, 40], faceFade, 14);
+      }
+      return out;
+    };
+    /* a ridgeline: drawn twice with lifts, a short emphasis at the crest */
+    const ridgeLine = (pts, crestX, cls = "ds-ink w1") => {
+      const c = curve(FP(pts));
+      let d = strokes(c, 1.3, cls);
+      const n = c.length, s2 = Math.floor(r() * 0.3 * n);
+      d += strokes(offset(c.slice(s2, s2 + Math.floor(0.55 * n)), 1.6), 1.0, "ds-far w1");
+      if (crestX != null) {
+        d += strokes(seg(c, X(crestX) - 22, X(crestX) + 22).map(([x, y]) => [x, y - 1.5]), 0.7, "ds-far w12");
+        d += strokes(seg(c, X(crestX) - 60, X(crestX) + 8).map(([x, y]) => [x - 1, y + 1.2]), 0.6, "ds-ink w1");
+      }
+      return d;
+    };
+    /* the left massif: crest beside the nameplate, the west face in shadow
+       off the left edge, the east face falling behind the tree's crown to
+       dissolve into the valley mouth */
+    far += ridgeLine([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155);
+    far += strokes(curve(FP([[0.29, 0.52], [0.30, 0.58], [0.315, 0.63]])), 1.1, "ds-far w06");
+    far += facet([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.135, 0.15], [0.07, 0.22], [-0.01, 0.26]], -31, 5.2, true);
+    far += facet([[-0.01, 0.26], [0.07, 0.22], [0.135, 0.15], [0.11, 0.30], [0.045, 0.40], [-0.01, 0.44]], -40, 5.6, true);
+    far += facet([[-0.01, 0.44], [0.045, 0.40], [0.11, 0.30], [0.10, 0.48], [0.035, 0.62], [-0.01, 0.68]], -50, 6.2, true);
+    far += facet([[0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.19, 0.20], [0.135, 0.15]], 55, 8.5, false);
+    far += facet([[0.135, 0.15], [0.19, 0.20], [0.235, 0.17], [0.26, 0.30], [0.21, 0.34], [0.11, 0.30]], 60, 9, false);
+    far += facet([[0.11, 0.30], [0.21, 0.34], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52], [0.21, 0.54], [0.10, 0.48]], 65, 9.5, false);
+    /* the right massif: the perch bough hangs in front of it; its west face
+       falls toward the words and dissolves; its body descends to the bank */
+    far += ridgeLine([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]], 0.86);
+    far += strokes(curve(FP([[0.715, 0.48], [0.705, 0.53], [0.69, 0.57]])), 1.1, "ds-far w06");
+    far += facet([[0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.80, 0.22], [0.86, 0.18]], -35, 5.2, true);
+    far += facet([[0.78, 0.16], [0.755, 0.22], [0.735, 0.30], [0.76, 0.36], [0.82, 0.30], [0.80, 0.22]], -40, 5.6, true);
+    far += facet([[0.735, 0.30], [0.725, 0.40], [0.715, 0.48], [0.74, 0.56], [0.80, 0.48], [0.76, 0.36]], -45, 6.2, true);
+    far += facet([[0.865, 0.09], [0.86, 0.18], [0.90, 0.24], [0.94, 0.20], [0.915, 0.128], [0.885, 0.118]], 55, 8.5, false);
+    far += facet([[0.915, 0.128], [0.94, 0.105], [0.97, 0.135], [1.01, 0.125], [1.01, 0.32], [0.97, 0.30], [0.94, 0.20]], 50, 9, false);
+    far += facet([[0.80, 0.48], [0.74, 0.56], [0.78, 0.66], [0.86, 0.72], [0.94, 0.60], [1.01, 0.47], [1.01, 0.32], [0.97, 0.30], [0.90, 0.24], [0.86, 0.18], [0.82, 0.30], [0.76, 0.36]], 60, 7.5, false);
+    /* the far range through the gap: one broken line, the saddle dipping
+       low behind the kicker, a quarter-density hatch on two shoulders */
+    const farR = curve(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 4);
+    for (const [f0, f1] of [[0, 0.33], [0.37, 0.66], [0.70, 1]]) far += strokes(farR.slice(Math.floor(f0 * farR.length), Math.floor(f1 * farR.length)), 1.1, "ds-far w1");
+    far += hatch(FP([[0.33, 0.23], [0.37, 0.185], [0.41, 0.15], [0.40, 0.21], [0.355, 0.26]]), -40, 9.5 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => 0.3 * hatchFade(x, y), 10);
+    far += hatch(FP([[0.57, 0.145], [0.61, 0.185], [0.64, 0.24], [0.61, 0.27], [0.575, 0.22]]), 50, 10 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => 0.3 * hatchFade(x, y), 10);
+    /* the haze line the hatch stops behind: broken, at the massifs' feet,
+       never through the valley mouth */
+    for (const [fx0, fx1] of [[-0.01, 0.06], [0.08, 0.17], [0.64, 0.73], [0.75, 0.84]])
+      far += strokes(curve([[X(fx0), hz - 48 + (r() - 0.5) * 6], [X((fx0 + fx1) / 2), hz - 50 + (r() - 0.5) * 4], [X(fx1), hz - 47 + (r() - 0.5) * 6]], 6), 1.0, "ds-far w1");
+    SCAPE.massifs = { left: FP([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]]),
+      right: FP([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]]),
+      far: FP([[0.29, 0.31], [0.345, 0.20], [0.445, 0.122], [0.53, 0.112], [0.60, 0.19], [0.67, 0.31]]), valley: [X(0.18), Y(0.55), X(0.34), H] };
 
     /* ————— the etched sky: long horizontals between the crown and the bough —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
@@ -8302,17 +8380,22 @@ function buildDawnscape() {
        cross the run state ends short of it and picks up past it, each end its
        own distance from the text so the halo is never a ruled margin. */
     let prevA = -1, prevB = -1;
-    for (let i = 0; i < 8; i++) {
-      const t = i / 7;
-      const y = Y(0.155 - t * 0.115) + (r() - 0.5) * Y(0.05);
-      let a = X(0.31 + t * 0.22) + r() * X(0.08);
+    for (let i = 0; i < 6; i++) {
+      const t = i / 5;
+      const y = Y(0.105 - t * 0.09) + (r() - 0.5) * Y(0.02);
+      let a = X(0.36 + t * 0.10) + r() * X(0.06);
       if (Math.abs(a - prevA) < 40) a += 60 + r() * 40;
-      let b = Math.min(a + 60 + r() * 240, X(0.75));
+      let b = Math.min(a + 60 + r() * 200, X(0.64));
       if (Math.abs(b - prevB) < 40) b -= 50 + r() * 40;
       /* a second short piece after a lift, one time in two */
       far += skyPiece(a, b, y);
       if (r() < 0.5 && b + 80 < X(0.75)) { const c = b + 24 + r() * 50; far += skyPiece(c, Math.min(c + 60 + r() * 120, X(0.75)), y + (r() - 0.5) * 3); }
       prevA = a; prevB = b;
+    }
+    /* lenticulars over the saddle: stacked shortening horizontals */
+    for (const [fx, fy, L] of [[0.42, 0.045, 170], [0.55, 0.075, 120], [0.47, 0.095, 90]]) {
+      const cx = X(fx) + (r() - 0.5) * 40, cy = Y(fy);
+      for (let k = 0; k < 3; k++) { const l = L * (1 - k * 0.32), yy = cy + k * 4.2; far += skyPiece(cx - l / 2 + (r() - 0.5) * 8, cx + l / 2, yy); }
     }
     /* …and it turns the corner down the right edge in pairs, short, hugging
        the edge so the birds' room inboard stays open */
@@ -8345,8 +8428,8 @@ function buildDawnscape() {
        diagonal contour runs on below the line, and the meadow is not the bank */
     const above = (pts) => pts.map(([x, y]) => [x, Math.min(y, hz - 3)]);
     const inner = (w) => above(offset(lip, -w)).reverse();
-    mid += hatch([...lip, ...inner(34)], -18, 3.8, "ds-ink w08", 0.3);
-    mid += hatch([...inner(30), ...above(offset(lip, -78))], -18, 5.2, "ds-far w1", 0.3);
+    mid += hatch([...lip, ...inner(34)], -45, 3.2 * vs, "ds-ink w08", 0.3);
+    mid += hatch([...inner(30), ...above(offset(lip, -78))], -45, 4.4 * vs, "ds-far w1", 0.3);
     const lipS = lip.filter(([, y]) => y >= Y(0.63) && y <= Y(0.78));
     const pocket3 = [...lipS, ...above(offset(lipS, -24)).reverse()];
     mid += hatch(pocket3, 38, 3.4, "ds-ink w06", 0.25, [8, 18], (x, y) => 1.4 - Math.abs(y - Y(0.705)) / Y(0.06));
@@ -8396,10 +8479,14 @@ function buildDawnscape() {
      darkest pockets on the page where the crown meets the trunk. The crown is
      two layers so the wind can move the outer boughs more than the inner. */
   const bigTree = () => {
-    const cr = [X(0.088), Y(0.30)];
+    /* the crown's own frame: what was drawn in 0–0.30 H now sits in
+       0.14–0.47 H, under the left massif's crest; the massif is the tallest
+       thing in the frame and the tree is one of the far thousands come close */
+    const CY = (f) => Y(0.14 + f * 1.1);
+    const cr = [X(0.088), CY(0.30)];
     cutPad = 14; /* the crown sways ±1.1° about the crotch: up to 9px at its reach */
-    const left = curve([[X(0.036), hz + 3], [X(0.054), hz - Y(0.04)], [X(0.060), Y(0.66)], [X(0.062), Y(0.50)], [X(0.068), Y(0.38)], [X(0.068), Y(0.31)]]);
-    const right = curve([[X(0.128), hz + 3], [X(0.110), hz - Y(0.04)], [X(0.103), Y(0.64)], [X(0.100), Y(0.50)], [X(0.104), Y(0.38)], [X(0.108), Y(0.32)]]);
+    const left = curve([[X(0.036), hz + 3], [X(0.054), hz - Y(0.04)], [X(0.060), Y(0.72)], [X(0.062), Y(0.62)], [X(0.066), Y(0.54)], [X(0.068), CY(0.31)]]);
+    const right = curve([[X(0.128), hz + 3], [X(0.110), hz - Y(0.04)], [X(0.103), Y(0.72)], [X(0.100), Y(0.62)], [X(0.104), Y(0.54)], [X(0.108), CY(0.32)]]);
     let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
     /* roots: two each side, the outer ones reaching for the corner */
     for (const rt of [
@@ -8411,7 +8498,7 @@ function buildDawnscape() {
     /* the shadow side, hatched with the grain, dense at the edge and thinning
        toward the middle; the light is east of the trunk */
     const across = (f) => left.map(([x, y], i) => [x + (right[Math.min(i, right.length - 1)][0] - x) * f, y]);
-    const low = (pts) => pts.filter(([, y]) => y > Y(0.34));
+    const low = (pts) => pts.filter(([, y]) => y > CY(0.34));
     const lit = (x, y) => { const i = Math.min(left.length - 1, Math.max(0, Math.round(((y - left[0][1]) / (left[left.length - 1][1] - left[0][1])) * (left.length - 1)))); const lx = left[i][0], rx = right[Math.min(i, right.length - 1)][0]; return (x - lx) / (rx - lx); };
     d += hatch([...low(left), ...low(across(0.24)).reverse()], 84, 2.8, "ds-ink w08", 0.35, [18, 60], (x, y) => 1.3 - lit(x, y) * 3.5);
     d += hatch([...low(across(0.15)), ...low(across(0.52)).reverse()], 84, 4.6, "ds-ink w06", 0.35, [14, 40], (x, y) => 1.25 - lit(x, y) * 2.2);
@@ -8434,21 +8521,21 @@ function buildDawnscape() {
        sides are the trunk's own contour, its top a point between L1 and L3,
        and its foot has no edge: the pieces thin out downward into the bark's
        grain and rightward into the lit side. */
-    const p1 = [[X(0.066), Y(0.40)], [X(0.068), Y(0.31)], [X(0.080), Y(0.255)], [X(0.088), Y(0.235)], [X(0.097), Y(0.255)], [X(0.107), Y(0.31)], [X(0.106), Y(0.40)]];
-    const p1f = (x, y) => { const v = clamp((Y(0.40) - y) / Y(0.07), 0, 1), h = 1.25 - lit(x, y) * 1.1; return Math.min(1, v * h + 0.05); };
+    const p1 = [[X(0.066), CY(0.40)], [X(0.068), CY(0.31)], [X(0.080), CY(0.255)], [X(0.088), CY(0.235)], [X(0.097), CY(0.255)], [X(0.107), CY(0.31)], [X(0.106), CY(0.40)]];
+    const p1f = (x, y) => { const v = clamp((CY(0.40) - y) / Y(0.07), 0, 1), h = 1.25 - lit(x, y) * 1.1; return Math.min(1, v * h + 0.05); };
     d += hatch(p1, 84, 2.8, "ds-ink w08", 0.3, [10, 30], p1f) + hatch(p1, 30, 4.2, "ds-ink w06", 0.25, [8, 18], (x, y) => p1f(x, y) * (1.1 - lit(x, y)));
 
     /* THE LIMBS ARE CROOKED AND THEY FORK, the way an oak's do, and every
        one of them ends INSIDE a mass: a limb that ends in the air is a stick
        with a ball on it. Four from the crotch, three forks. */
     const limbs = {
-      L1: [[X(0.078), Y(0.31)], [X(0.062), Y(0.265)], [X(0.045), Y(0.215)], [X(0.040), Y(0.17)], [X(0.028), Y(0.125)], [X(0.020), Y(0.075)]],
-      L1b: [[X(0.045), Y(0.215)], [X(0.030), Y(0.195)], [X(0.010), Y(0.18)]],
-      L2: [[X(0.088), Y(0.30)], [X(0.096), Y(0.245)], [X(0.112), Y(0.20)], [X(0.118), Y(0.155)], [X(0.14), Y(0.115)], [X(0.15), Y(0.075)], [X(0.166), Y(0.035)]],
-      L2b: [[X(0.118), Y(0.155)], [X(0.10), Y(0.13)], [X(0.088), Y(0.105)]],
-      L3: [[X(0.098), Y(0.31)], [X(0.128), Y(0.27)], [X(0.165), Y(0.235)], [X(0.20), Y(0.19)], [X(0.235), Y(0.165)], [X(0.262), Y(0.135)], [X(0.288), Y(0.105)]],
-      L3b: [[X(0.20), Y(0.19)], [X(0.215), Y(0.15)], [X(0.222), Y(0.10)], [X(0.238), Y(0.06)]],
-      L4: [[X(0.104), Y(0.33)], [X(0.14), Y(0.315)], [X(0.175), Y(0.31)], [X(0.205), Y(0.29)], [X(0.225), Y(0.265)], [X(0.238), Y(0.245)]],
+      L1: [[X(0.078), CY(0.31)], [X(0.062), CY(0.265)], [X(0.045), CY(0.215)], [X(0.040), CY(0.17)], [X(0.028), CY(0.125)], [X(0.020), CY(0.075)]],
+      L1b: [[X(0.045), CY(0.215)], [X(0.030), CY(0.195)], [X(0.010), CY(0.18)]],
+      L2: [[X(0.088), CY(0.30)], [X(0.096), CY(0.245)], [X(0.112), CY(0.20)], [X(0.118), CY(0.155)], [X(0.14), CY(0.115)], [X(0.15), CY(0.075)], [X(0.166), CY(0.035)]],
+      L2b: [[X(0.118), CY(0.155)], [X(0.10), CY(0.13)], [X(0.088), CY(0.105)]],
+      L3: [[X(0.098), CY(0.31)], [X(0.128), CY(0.27)], [X(0.165), CY(0.235)], [X(0.20), CY(0.19)], [X(0.235), CY(0.165)], [X(0.245), CY(0.13)], [X(0.262), CY(0.10)]],
+      L3b: [[X(0.20), CY(0.19)], [X(0.215), CY(0.15)], [X(0.222), CY(0.10)], [X(0.238), CY(0.06)]],
+      L4: [[X(0.104), CY(0.33)], [X(0.14), CY(0.315)], [X(0.175), CY(0.31)], [X(0.205), CY(0.29)], [X(0.215), CY(0.265)], [X(0.225), CY(0.245)]],
     };
     const inner = {}, outer = {};
     inner.limbs = contour(curve(limbs.L1), 0.9, "ds-ink", ["w14", "w12", "w14"]) + contour(curve(limbs.L1b), 0.7, "ds-ink", ["w12", "w1", "w12"]);
@@ -8481,7 +8568,7 @@ function buildDawnscape() {
     const K = 0.78 * Math.max(vs, 0.8);
     /* a clump: a centre in viewport fractions, members as pixel offsets from
        it, close enough that their masses overlap into one silhouette */
-    const clump = (fx, fy, members) => members.map(([dx, dy, rr]) => [X(fx) + dx * K, Y(fy) + dy * K, rr * K]);
+    const clump = (fx, fy, members) => members.map(([dx, dy, rr]) => [X(fx) + dx * K, CY(fy) + dy * K, rr * K]);
     const inMasses = [
       ...clump(0.012, 0.15, [[-14, -52, 46], [6, -18, 50], [-8, 26, 44], [26, -34, 30], [24, 16, 36], [42, -4, 18]]),
       ...clump(0.0, 0.03, [[0, 0, 30], [22, 26, 20]]),
@@ -8490,8 +8577,8 @@ function buildDawnscape() {
     const outMasses = [
       ...clump(0.23, 0.03, [[-64, -24, 40], [-28, 4, 52], [16, -24, 46], [54, 4, 40], [-4, 40, 36], [40, 40, 30], [84, 26, 18], [-48, 34, 16]]),
       ...clump(0.17, 0.155, [[-36, 0, 40], [4, -18, 44], [38, 12, 34], [-68, 26, 28], [2, 26, 26], [52, -14, 18], [-90, -10, 14]]),
-      ...clump(0.285, 0.14, [[-18, -10, 36], [20, 20, 30], [4, -38, 20]]),
-      ...clump(0.235, 0.25, [[0, 0, 26], [-30, 14, 18]]),
+      ...clump(0.255, 0.14, [[-18, -10, 36], [16, 18, 28], [4, -38, 20]]),
+      ...clump(0.222, 0.25, [[0, 0, 26], [-30, 14, 18]]),
     ];
     /* THE WIND IS IN THE LEAVES, not only in the bough: the windward masses
        flutter, a skew about each mass's branch attachment on its own short
@@ -8528,7 +8615,7 @@ function buildDawnscape() {
       build(outMasses.slice(15, 18), [[0, "flut-4"]]) + build(outMasses.slice(18));
     groups += 2;
     cutPad = 4;
-    SCAPE.trees.push({ x: X(0.20), h: Y(0.30), top: 0 });
+    SCAPE.trees.push({ x: X(0.20), h: Y(0.33), top: CY(0) });
     return `<g class="ds-tree">${d}` +
       `<g class="ds-canopy ${live("sway-c2")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
       `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
@@ -8900,6 +8987,9 @@ function buildDawnscape() {
       [X(0.95), hz + 38, X(0.05), 34, 30, 4, 9], [X(0.93), hz + 115, X(0.08), 22, 22, 4, 8],
     ];
     for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
+    /* and a low stipple along the sheet's own bottom edge, corner to corner,
+       thinning under the words but never nothing: the edge is drawn */
+    for (let fx = 0.04; fx < 1; fx += 0.08) near += ticks(X(fx), H - 16, X(0.045), 12, 7, "ds-ink w1", 3, 7);
     /* and the reed pen's flow lines: a few long low curves through the corner
        fields, the lie of the grass, hair-strong */
     cutPad = 12;
@@ -8933,8 +9023,8 @@ function buildDawnscape() {
     near += hare(X(0.86), Y(0.97));
     /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
-    near += squirrel(X(0.165), Y(0.311) - 1);
-    const owlAt = [X(0.232), Y(0.168)];
+    near += squirrel(X(0.165), Y(0.14 + 0.312 * 1.1) - 1);
+    const owlAt = [X(0.222), Y(0.14 + 0.168 * 1.1)];
     SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
     SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
     const owlHome = RM || (typeof sky !== "undefined" && sky.owl);
@@ -8952,7 +9042,7 @@ function buildDawnscape() {
       return Math.max(hz + 8, f);
     };
     SCAPE.leaf = {
-      crownSrc: [X(0.05), Y(0.10), X(0.16), Y(0.30)], crownEnv: [X(0.02), Y(0.10), X(0.19), floorUnder(X(0.02), X(0.19), hz + 42)],
+      crownSrc: [X(0.05), Y(0.25), X(0.16), Y(0.47)], crownEnv: [X(0.02), Y(0.25), X(0.19), floorUnder(X(0.02), X(0.19), hz + 42)],
       boughSrc: [X(0.76), Y(0.10), X(0.86), Y(0.17)], boughEnv: [X(0.76), Y(0.10), X(0.97), floorUnder(X(0.76), X(0.97), hz + 22)],
     };
   } else {
@@ -8966,6 +9056,8 @@ function buildDawnscape() {
     {
       /* under the chrome band (the stop chip owns the top-right corner on a
          phone), above the kicker */
+      far += strokes(curve([[-3, Y(0.16)], [X(0.10), Y(0.13)], [X(0.22), Y(0.10)], [X(0.30), Y(0.12)], [X(0.40), Y(0.17)], [X(0.50), Y(0.21)]]), 1.2, "ds-far w1");
+      far += strokes(curve([[X(0.38), Y(0.22)], [X(0.52), Y(0.185)], [X(0.66), Y(0.20)], [X(0.80), Y(0.24)]]), 1.0, "ds-far w06");
       const bmain = curve([[W + 4, Y(0.125)], [X(0.92), Y(0.135)], [X(0.84), Y(0.15)], [X(0.76), Y(0.165)], [X(0.70), Y(0.178)]]);
       cutPad = 10;
       let bd = contour(bmain, 0.7, "ds-ink", ["w12", "w1", "w12"]);
