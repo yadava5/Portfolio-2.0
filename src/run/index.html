@@ -7066,8 +7066,16 @@ function work(y) {
   const short = gatePageY - (yEnd + vh * 0.55);
   if (short > 0) tokenY = clamp(tokenY + short * smooth((y - (yEnd - vh * 0.5)) / (vh * 0.5)), 0, gatePageY);
   const tokenL = lenAtY(tokenY);
-  const halted = tokenL >= pathLen - 2;
+  /* THE HALT IS THE READER BEING AT THE END, within the scroll's own
+     rounding. Measured at 390×844 and 393×851 (labrat, three commits, a
+     fresh checkout): the reachable maximum scrollY is 14750 while
+     docH − vh is 14752, so the token's last glide ends 2.0px short of the
+     gate and `>= pathLen − 2` failed by 0.01px: the ring was never drawn
+     on a phone. Four pixels of path is the tolerance that rounding needs
+     and no more; the ring itself is drawn at gatePageY, not at the token. */
+  const halted = tokenL >= pathLen - 4;
   window.__world.halted = halted;
+  window.__world.token = { y: +tokenY.toFixed(2), gate: +gatePageY.toFixed(2), pathEndY: samples.length ? +samples[samples.length - 1].y.toFixed(2) : null, tokenL: +tokenL.toFixed(2), pathLen: +pathLen.toFixed(2), docH, yEnd: +yEnd.toFixed(1), short: +short.toFixed(1) }; /* probe hook */
   if (!FLAGS.has("nothread")) drawThread(y, tokenY, tokenL, halted);
 
   /* stations scrub only near their own beat */
@@ -8125,7 +8133,7 @@ function buildDawnscape() {
   let groups = 0;
 
   /* ————— mark 5: a clump of reed-pen ticks, thinned by where it lands ————— */
-  const ticks = (cx, cy, rx, ry, n, cls, h0, h1, lean = 0.3) => {
+  const ticks = (cx, cy, rx, ry, n, cls, h0, h1, lean = 0.3, raw = false) => {
     let d = "", k = 0;
     for (let i = 0; i < n; i++) {
       const t = r() * 6.2832, q = Math.sqrt(r());
@@ -8133,7 +8141,7 @@ function buildDawnscape() {
       const h = h0 + r() * (h1 - h0), ln = lean + (r() - 0.5) * 0.7;
       /* judged at the blade's tip as well as its foot, and a pen-length wide
          of the words: a tick leans, and its curve bows past its own points */
-      if (r() > dens(bx, by - h * 0.6) || inKeep(bx, by, 12) || inKeep(bx + h * ln, by - h, 12)) continue;
+      if ((!raw && r() > dens(bx, by - h * 0.6)) || inKeep(bx, by, 12) || inKeep(bx + h * ln, by - h, 12)) continue;
       d += stroke(curve([[bx, by], [bx + h * ln * 0.3, by - h * 0.55], [bx + h * ln, by - h]], 3), 0.25);
       k++;
     }
@@ -8303,8 +8311,10 @@ function buildDawnscape() {
     const quoteBottom = Math.max(...words.filter((w) => w[4] === 64).map((w) => w[3]), 0);
     /* the hard zones, judged per stroke */
     const hardZero = (x, y) => {
-      for (const [l, t, rt, bt] of chromeRects) if (x >= l - 24 && x <= rt + 24 && y >= t - 24 && y <= bt + 24) return true;
-      if (x >= X(0.18) && x <= X(0.34) && y >= Y(0.55)) return true;
+      /* 48 from the chrome's text (the rects carry 24 already) plus the
+         hand's wobble, so a stroke judged at its points cannot bow inside */
+      for (const [l, t, rt, bt] of chromeRects) if (x >= l - 28 && x <= rt + 28 && y >= t - 28 && y <= bt + 28) return true;
+      if (x >= X(0.18) - 24 && x <= X(0.34) + 24 && y >= Y(0.55) - 24) return true;
       if (Math.hypot(x - sun.x, y - sun.y) < 90) return true;
       return false;
     };
@@ -8316,7 +8326,7 @@ function buildDawnscape() {
       for (const [l, t, rt, bt, halo] of words) {
         const dx = Math.max(l - x, x - rt, 0), dy = Math.max(t - y, y - bt, 0), d = Math.hypot(dx, dy);
         const foot = t > quoteBottom + 8;
-        f = Math.min(f, foot ? clamp((d - (100 - halo)) / 60, 0, 1) : clamp((d - (120 - halo)) / 140, 0, 1));
+        f = Math.min(f, foot ? clamp((d - (120 - halo)) / 60, 0, 1) : clamp((d - (120 - halo)) / 140, 0, 1));
       }
       return f;
     };
@@ -8336,10 +8346,18 @@ function buildDawnscape() {
           out.push([x + nx * a, y + ny * a]);
         }
       }
-      return out;
+      /* densified to 5px: the keep-out cut tests points, and a 54px piece
+         could clip a halo corner between two kept vertices */
+      const dense = [];
+      for (let k = 0; k + 1 < out.length; k++) {
+        const [x0, y0] = out[k], [x1, y1] = out[k + 1], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 5));
+        for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]);
+      }
+      dense.push(out[out.length - 1]);
+      return dense;
     };
     const profileLine = (pts, crestX) => {
-      let d = strokes(pts, 0.35, "ds-ink w1");
+      let d = strokes(pts, 0.35, "ds-ink w1 ds-ridge");
       const n = pts.length, s2 = Math.floor(r() * 0.3 * n);
       d += strokes(offset(pts.slice(s2, s2 + Math.floor(0.5 * n)), 1.6), 0.5, "ds-far w1");
       d += strokes(seg(pts, X(crestX) - 30, X(crestX) + 30).map(([x, y]) => [x, y - 1.4]), 0.4, "ds-far w12");
@@ -8381,7 +8399,7 @@ function buildDawnscape() {
         if (!inside) continue;
         let f = softFade(c[0], c[1]);
         /* down the mountain into the haze */
-        f *= Math.pow(clamp((hz - 45 - c[1]) / (hz - 45 - y0), 0, 1), 0.6);
+        f *= 0.3 + 0.7 * Math.pow(clamp((hz - 45 - c[1]) / (hz - 45 - y0), 0, 1), 0.6);
         /* the lit summit is almost bare */
         if (kind === "lit") f *= 0.25 + 0.75 * clamp((c[1] - y0) / (y1 - y0), 0, 1);
         if (f < 0.3) continue;
@@ -8401,18 +8419,18 @@ function buildDawnscape() {
       if (f < 0.3) return "";
       /* converging: the strokes come INTO the spur at an angle, the way
          water and scree run into a gully, never along it like a rail */
-      return hatch(strip, a - side * 32, 3.4 * vs, "ds-far w1 ds-hatch", 0.6, [8, 18], (x, y) => (hardZero(x, y) ? 0 : f), 5);
+      return hatch(strip, a - side * 32, 3.4 * vs, "ds-far w1 ds-hatch", 0.6, [8, 18], (x, y) => (hardZero(x, y) || softFade(x, y) < 0.25 ? 0 : f), 5);
     };
     const haze = hz - 48;
 
     /* ————— the left massif ————— */
-    const Lprof = jag([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155, 11, 4);
+    const Lprof = jag([[-0.01, 0.058], [0.02, 0.09], [0.045, 0.105], [0.075, 0.10], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155, 11, 4);
     const Lfoot = (xa, xb) => [[xa, haze], [xb, haze]];
     const LS1 = spur(Lprof, 0.055, [[0.03, 0.22], [0.0, 0.36]]);
     const LS2 = spur(Lprof, 0.115, [[0.095, 0.24], [0.07, 0.42], [0.055, 0.62]]);
     const LS3 = spur(Lprof, 0.155, [[0.175, 0.20], [0.19, 0.36], [0.205, 0.52]]);
     const LS4 = spur(Lprof, 0.205, [[0.235, 0.24], [0.255, 0.38], [0.27, 0.50]]);
-    const Ledge = [[X(-0.01), Y(0.13)], [X(-0.01), haze]];
+    const Ledge = [[X(-0.01), Y(0.058)], [X(-0.01), haze]];
     far += profileLine(Lprof, 0.155);
     far += spurLine(LS1) + spurLine(LS2) + spurLine(LS3) + spurLine(LS4);
     const Lwedge = [FP([[0.158, 0.055], [0.185, 0.082], [0.176, 0.118], [0.157, 0.095]]), FP([[0.20, 0.10], [0.222, 0.145], [0.206, 0.165], [0.19, 0.128]])];
@@ -8426,7 +8444,7 @@ function buildDawnscape() {
     /* ————— the right massif: the perch bough hangs in front of it, its west
        face falls toward the words and dissolves, its spine comes down into
        the bank so the bank's strata are its foothill ————— */
-    const Rprof = jag([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.082], [0.848, 0.095], [0.83, 0.06], [0.815, 0.10], [0.80, 0.125], [0.79, 0.16], [0.775, 0.205], [0.762, 0.25], [0.75, 0.30], [0.754, 0.335], [0.738, 0.40], [0.728, 0.44], [0.715, 0.48]], 0.83, 11, 4);
+    const Rprof = jag([[1.01, 0.062], [0.985, 0.078], [0.96, 0.115], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.066], [0.848, 0.08], [0.83, 0.06], [0.815, 0.10], [0.80, 0.125], [0.79, 0.16], [0.775, 0.205], [0.762, 0.25], [0.75, 0.30], [0.754, 0.335], [0.738, 0.40], [0.728, 0.44], [0.715, 0.48]], 0.83, 11, 4);
     /* three spurs fanning from the crest: one sweeping west toward the
        valley, the spine coming down into the bank's lip, one east to the
        right edge; each curves, none is a vertical */
@@ -8442,15 +8460,21 @@ function buildDawnscape() {
     far += facet([...Rprof.filter(([x]) => x <= X(0.775)).reverse(), ...Rfoot.slice(0, 3), ...[...RS0].reverse()], -48, "shadow");
     far += facet([...RS0, [X(0.78), haze], ...[...RS1].reverse(), ...between(Rprof, RS1[0][0], RS0[0][0])], -75, "shadow", { gapMul: 1.2 });
     far += facet([...RS1, [X(0.86), haze], [X(0.905), Y(0.71)], [X(0.93), Y(0.66)], [X(0.95), Y(0.60)], ...[...RS2].reverse(), ...between(Rprof, RS2[0][0], RS1[0][0])], 40, "mid", { wedges: Rwedge });
-    far += facet([...RS2, [X(0.982), Y(0.492)], [X(1.01), Y(0.47)], [X(1.01), Y(0.125)], ...between(Rprof, X(1.01), RS2[0][0])], 72, "lit", { scree: true });
+    far += facet([...RS2, [X(0.982), Y(0.492)], [X(1.01), Y(0.47)], [X(1.01), Y(0.062)], ...between(Rprof, X(1.01), RS2[0][0])], 72, "lit", { scree: true });
     far += gully(RS0, -1) + gully(RS1, -1) + gully(RS2, 1);
 
     /* ————— the far range through the gap: peaks flanking the kicker, the
        saddle above its halo; a lower, fainter line behind it for depth ————— */
-    const farR = curve(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 4);
-    for (const [f0, f1] of [[0, 0.33], [0.37, 0.66], [0.70, 1]]) far += strokes(farR.slice(Math.floor(f0 * farR.length), Math.floor(f1 * farR.length)), 1.1, "ds-far w1");
-    const farR2 = curve(FP([[0.31, 0.33], [0.35, 0.27], [0.385, 0.24], [0.42, 0.22], [0.46, 0.20], [0.50, 0.195], [0.545, 0.21], [0.585, 0.235], [0.62, 0.27], [0.655, 0.32]]), 4);
-    for (const [f0, f1] of [[0, 0.3], [0.36, 0.62], [0.68, 1]]) far += strokes(farR2.slice(Math.floor(f0 * farR2.length), Math.floor(f1 * farR2.length)), 1.0, "ds-far w06");
+    /* the saddle keeps 64px above the kicker wherever this seat put it: any
+       point within 70px of the kicker's span is held above its top less 70 */
+    const kick = wrap.querySelector(".kicker");
+    const kb = kick ? kick.getBoundingClientRect() : null;
+    const capY = kb ? kb.top - sr.top - 70 : Y(0.15), capL = kb ? kb.left - 70 : 0, capR = kb ? kb.right + 70 : 0;
+    const belowKick = (pts, lift) => pts.map(([x, y]) => [x, x > capL && x < capR ? Math.min(y, capY - lift) : y]);
+    const farR = curve(belowKick(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 12), 4);
+    for (const [f0, f1] of [[0, 0.33], [0.37, 0.66], [0.70, 1]]) far += strokes(farR.slice(Math.floor(f0 * farR.length), Math.floor(f1 * farR.length)), 1.1, "ds-far w1 ds-ridge");
+    const farR2 = curve(belowKick(FP([[0.31, 0.33], [0.35, 0.27], [0.385, 0.235], [0.415, 0.19], [0.45, 0.15], [0.50, 0.14], [0.55, 0.15], [0.585, 0.19], [0.62, 0.24], [0.655, 0.30]]), 0), 4);
+    for (const [f0, f1] of [[0, 0.3], [0.36, 0.62], [0.68, 1]]) far += strokes(farR2.slice(Math.floor(f0 * farR2.length), Math.floor(f1 * farR2.length)), 1.0, "ds-far w06 ds-ridge");
     far += hatch(FP([[0.33, 0.23], [0.37, 0.185], [0.41, 0.15], [0.40, 0.21], [0.355, 0.26]]), -40, 9.5 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => (hardZero(x, y) ? 0 : 0.3 * softFade(x, y)), 10);
     far += hatch(FP([[0.57, 0.145], [0.61, 0.185], [0.64, 0.24], [0.61, 0.27], [0.575, 0.22]]), 50, 10 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => (hardZero(x, y) ? 0 : 0.3 * softFade(x, y)), 10);
     /* the haze line the hatch stops behind: broken, at the massifs' feet,
@@ -8474,13 +8498,14 @@ function buildDawnscape() {
     for (let i = 0; i < 6; i++) {
       const t = i / 5;
       const y = Y(0.105 - t * 0.09) + (r() - 0.5) * Y(0.02);
-      let a = X(0.36 + t * 0.10) + r() * X(0.06);
+      let a = X(0.17 + (1 - t) * 0.16) + r() * X(0.03);
       if (Math.abs(a - prevA) < 40) a += 60 + r() * 40;
-      let b = Math.min(a + 60 + r() * 200, X(0.64));
+      let b = Math.min(a + 180 + r() * 320, X(0.81));
       if (Math.abs(b - prevB) < 40) b -= 50 + r() * 40;
       /* a second short piece after a lift, one time in two */
       far += skyPiece(a, b, y);
-      if (r() < 0.5 && b + 80 < X(0.75)) { const c = b + 24 + r() * 50; far += skyPiece(c, Math.min(c + 60 + r() * 120, X(0.75)), y + (r() - 0.5) * 3); }
+      /* on east in pieces, each its own length, until the gap is crossed */
+      for (let k = 0; k < 3 && b + 80 < X(0.81); k++) { const c = b + 24 + r() * 50; b = Math.min(c + 120 + r() * 220, X(0.81)); far += skyPiece(c, b, y + (r() - 0.5) * 3); }
       prevA = a; prevB = b;
     }
     /* lenticulars over the saddle: stacked shortening horizontals */
@@ -9156,7 +9181,7 @@ function buildDawnscape() {
     }
     /* the spider's line: one catenary from the bough's tip to the sapling's
        top, a lift where the sun catches it; it sways on its own clock */
-    const s0 = [X(0.748), Y(0.278)], s1 = [X(0.945), Y(0.39)];
+    const s0 = [X(0.764), Y(0.286)], s1 = [X(0.945), Y(0.39)];
     const cat = [];
     for (let i = 0; i <= 40; i++) { const t = i / 40; cat.push([s0[0] + (s1[0] - s0[0]) * t, s0[1] + (s1[1] - s0[1]) * t + Math.sin(t * Math.PI) * 26]); }
     const g = Math.floor(40 * 0.3);
@@ -9179,16 +9204,16 @@ function buildDawnscape() {
     /* the meadow's ground: a stipple of short ticks, half what round 8 had
        and shorter, thinning under the words; the grass itself is the tufts */
     const field = [
-      [X(0.05), hz + 40, X(0.06), 34, 34, 4, 9], [X(0.14), hz + 70, X(0.07), 36, 22, 4, 8], [X(0.09), hz + 118, X(0.10), 22, 22, 4, 8],
+      [X(0.05), hz + 40, X(0.06), 34, 52, 4, 9], [X(0.14), hz + 70, X(0.07), 36, 22, 4, 8], [X(0.09), hz + 118, X(0.10), 22, 22, 4, 8], [X(0.03), hz + 78, X(0.04), 40, 26, 4, 8],
       [X(0.22), hz + 30, X(0.05), 22, 9, 4, 8], [X(0.33), hz + 70, X(0.07), 40, 8, 4, 8],
       [X(0.48), hz + 85, X(0.10), 42, 9, 4, 7], [X(0.62), hz + 60, X(0.08), 40, 8, 4, 7],
       [X(0.78), hz + 35, X(0.06), 24, 10, 4, 8], [X(0.86), hz + 75, X(0.07), 40, 17, 4, 8],
-      [X(0.95), hz + 38, X(0.05), 34, 30, 4, 9], [X(0.93), hz + 115, X(0.08), 22, 22, 4, 8],
+      [X(0.95), hz + 38, X(0.05), 34, 44, 4, 9], [X(0.93), hz + 115, X(0.08), 22, 22, 4, 8], [X(0.975), hz + 80, X(0.035), 40, 26, 4, 8],
     ];
     for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
     /* and a low stipple along the sheet's own bottom edge, corner to corner,
        thinning under the words but never nothing: the edge is drawn */
-    for (let fx = 0.04; fx < 1; fx += 0.08) near += ticks(X(fx), H - 16, X(0.045), 12, 7, "ds-ink w1", 3, 7);
+    for (let fx = 0.025; fx < 1; fx += 0.05) near += ticks(X(fx), H - 8, X(0.03), 7, 13, "ds-ink w1", 3, 7, 0.3, true);
     /* and the reed pen's flow lines: a few long low curves through the corner
        fields, the lie of the grass, hair-strong */
     cutPad = 12;
@@ -9198,8 +9223,8 @@ function buildDawnscape() {
     /* outline tufts first, behind everything */
     for (const [fx, fy, h, n] of [[0.03, 0, 30, 5], [0.085, 0, 28, 5], [0.16, 0, 24, 5], [0.35, 0.885, 16, 4], [0.49, 0.90, 14, 4], [0.64, 0.88, 16, 4], [0.75, 0, 20, 5], [0.80, 0.98, 14, 4], [0.93, 0.975, 16, 4], [0.985, 0, 34, 6]])
       near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
-    near += fawn(X(0.116));
-    near += doe(X(0.168));
+    near += fawn(X(0.112));
+    near += doe(X(0.165));
     /* the solid tufts: three stands of three at the bottom corners and by
        the doe, the swale of taller grass across the mid-ground in an S, and
        grass round the hare in the near foreground below the signature */

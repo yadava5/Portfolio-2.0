@@ -74,6 +74,9 @@ const SEATS = [
   [1440, 900],
   [1375, 800],
   [1280, 800],
+  [1728, 1117],
+  [1800, 1169],
+  [1920, 1080],
   [390, 844],
   [320, 720],
 ].filter(([w, h]) => !ONLY || ONLY === `${w}x${h}`);
@@ -225,7 +228,13 @@ try {
       if (!n.textContent.trim()) continue;
       const rg = document.createRange();
       rg.selectNodeContents(n);
-      const halo = n.parentElement.closest(".endquote") ? 64 : CLEAR_PX;
+      const quote = !!n.parentElement.closest(".endquote");
+      const kind = quote
+        ? "quote"
+        : n.parentElement.closest(".kicker")
+          ? "kicker"
+          : "word";
+      const halo = quote ? 64 : CLEAR_PX;
       for (const r of rg.getClientRects())
         if (r.width && r.height)
           texts.push([
@@ -235,6 +244,7 @@ try {
             r.bottom,
             halo,
             n.textContent.trim().slice(0, 20),
+            kind,
           ]);
     }
     for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
@@ -242,14 +252,17 @@ try {
       if (!el) continue;
       const r = el.getBoundingClientRect();
       if (r.width && r.height && getComputedStyle(el).visibility !== "hidden")
-        texts.push([r.left, r.top, r.right, r.bottom, CLEAR_PX, sel]);
+        texts.push([r.left, r.top, r.right, r.bottom, CLEAR_PX, sel, "chrome"]);
     }
     /* the ink: every path sampled along its length through its screen
        matrix, plus what could move the point: a roamer's range, a sway's
        amplitude at that radius */
     const pt = svg.createSVGPoint();
     let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
-    let samples = 0;
+    let samples = 0,
+      inValley = 0;
+    /* every sampled point, kept for the edge walk */
+    const pts = [];
     /* the sun's halo: nothing but the horizon and the sun's own arcs (the
        .ds-line plane) within 90px of its centre */
     const sun = scape && scape.sun;
@@ -283,6 +296,12 @@ try {
         p.className.baseVal ||
         "path"
       ).trim();
+      /* round 10's classes: hatch keeps 120px from the station's words and
+         48px from the chrome's; a ridgeline keeps 64px from the quote and
+         the kicker; hatch never enters the valley mouth */
+      const isHatch = p.classList.contains("ds-hatch");
+      const isRidge = p.classList.contains("ds-ridge");
+      const valley = scape && scape.massifs && scape.massifs.valley;
       const step = L > 3000 ? 10 : 6;
       for (let s = 0; s <= L; s += step) {
         const q = p.getPointAtLength(s);
@@ -291,6 +310,16 @@ try {
         const v = pt.matrixTransform(m);
         const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
         samples++;
+        pts.push([v.x, v.y]);
+        if (
+          isHatch &&
+          valley &&
+          q.x >= valley[0] &&
+          q.x <= valley[2] &&
+          q.y >= valley[1] &&
+          q.y <= valley[3]
+        )
+          inValley++;
         if (sun && !onLine) {
           const d = Math.hypot(q.x - sun.x, q.y - sun.y) - range;
           if (d < halo.d) halo = { d: +d.toFixed(1), sub };
@@ -300,7 +329,13 @@ try {
           const dx = Math.max(t[0] - v.x, v.x - t[2], 0) - (axisY ? 0 : range);
           const dy = Math.max(t[1] - v.y, v.y - t[3], 0) - (axisY ? range : 0);
           const gap = Math.max(dx, dy, 0);
-          const need = t[4] + sway;
+          const need = isHatch
+            ? t[6] === "chrome"
+              ? 48
+              : 120
+            : isRidge && (t[6] === "quote" || t[6] === "kicker")
+              ? 64 + sway
+              : t[4] + sway;
           if (gap - need < worst.margin)
             worst = {
               margin: +(gap - need).toFixed(1),
@@ -349,6 +384,51 @@ try {
       const d = decl.find((c) => el.classList.contains(c.cls));
       return d ? d.cls : "?";
     };
+    /* THE EDGE WALK: every 40px of every edge has ink within 90px inboard,
+       except where the chrome's text reserves the edge (its halo boxes) */
+    const vw = innerWidth,
+      vh = innerHeight;
+    const chromeBoxes = scape && scape.keep ? scape.keep.slice(0, 3) : [];
+    const edgeGaps = {};
+    if (vw >= 760)
+      for (const [name, along, inboard, len] of [
+        ["top", (q) => q[0], (q) => q[1], vw],
+        ["bottom", (q) => q[0], (q) => vh - q[1], vw],
+        ["left", (q) => q[1], (q) => q[0], vh],
+        ["right", (q) => q[1], (q) => vw - q[0], vh],
+      ]) {
+        const bins = new Array(Math.ceil(len / 40)).fill(false);
+        for (const q of pts)
+          if (inboard(q) <= 90 && inboard(q) >= -2) {
+            const i = Math.floor(along(q) / 40);
+            if (i >= 0 && i < bins.length) bins[i] = true;
+          }
+        for (const [l, t, r, b] of chromeBoxes) {
+          const touches =
+            name === "top"
+              ? t <= 90
+              : name === "bottom"
+                ? b >= vh - 90
+                : name === "left"
+                  ? l <= 90
+                  : r >= vw - 90;
+          if (!touches) continue;
+          const a0 = name === "top" || name === "bottom" ? l : t,
+            a1 = name === "top" || name === "bottom" ? r : b;
+          for (let i = Math.floor(a0 / 40); i <= Math.floor(a1 / 40); i++)
+            if (i >= 0 && i < bins.length) bins[i] = true;
+        }
+        const runs = [];
+        let start = null;
+        bins.forEach((v, i) => {
+          if (!v && start === null) start = i;
+          if ((v || i === bins.length - 1) && start !== null) {
+            runs.push(`${start * 40}–${Math.min((v ? i : i + 1) * 40, len)}`);
+            start = null;
+          }
+        });
+        if (runs.length) edgeGaps[name] = runs;
+      }
     /* where a leaf may fall: both envelopes keep every word's halo */
     let leafWorst = { margin: Infinity, env: "", text: "" };
     if (scape && scape.leaf)
@@ -368,6 +448,8 @@ try {
       worst,
       halo,
       leafWorst,
+      inValley,
+      edgeGaps,
       texts: texts.length,
       samples,
       tallUnder,
@@ -425,6 +507,20 @@ try {
       if (m.scape.sun && m.halo.d < m.scape.sun.r * 3.5)
         fail(
           `${seat}: ${m.halo.sub} is ${m.halo.d}px from the sun — nothing but the horizon and the sun's arcs within 3.5 radii (${(m.scape.sun.r * 3.5).toFixed(0)}px) of it`
+        );
+      if (m.inValley)
+        fail(
+          `${seat}: ${m.inValley} hatch point(s) inside the valley mouth — the light comes down bare`
+        );
+      if (Object.keys(m.edgeGaps).length)
+        fail(
+          `${seat}: the sheet's edge is bare for more than 40px at ${Object.entries(
+            m.edgeGaps
+          )
+            .map(([e, r]) => `${e} ${r.join(", ")}`)
+            .join(
+              "; "
+            )} — every edge carries ink within 90px, the chrome's halos excepted`
         );
       if (m.scape.leaf && m.leafWorst.margin < 0)
         fail(
@@ -581,6 +677,9 @@ try {
         airborne: document.querySelectorAll(".dawnscape .ds-leaf.airborne")
           .length,
         flies: document.querySelectorAll(".dawnscape .ds-fly").length,
+        nested: document.querySelectorAll(
+          ".dawnscape .ds-nestsock path.ds-fill"
+        ).length,
       };
     };
     const SIT_MS = 30000; /* 30s of wall clock is two minutes of the page's own */
@@ -591,6 +690,7 @@ try {
       maxFar = 0,
       samples = 0,
       twoPerched = 0,
+      twoNested = 0,
       twoLeaves = 0,
       twoFlies = 0;
     const tLand = await page.evaluate(
@@ -603,9 +703,11 @@ try {
         perched,
         airborne,
         flies,
+        nested,
       } = await page.evaluate(READ);
       samples++;
       if (perched > 1) twoPerched++;
+      if (nested > 1) twoNested++;
       if (airborne > 1) twoLeaves++;
       if (flies > 1) twoFlies++;
       if (birds.length && first === null) first = now - tLand;
@@ -622,6 +724,10 @@ try {
     const fin = await page.evaluate(() => ({
       sky: window.__world.sky,
       perch: window.__world.perch || { lands: 0, leaves: 0, perched: 0 },
+      nest: window.__world.nest || { lands: 0, leaves: 0, perched: 0 },
+      nestedNow: document.querySelectorAll(
+        ".dawnscape .ds-nestsock path.ds-fill"
+      ).length,
       perchedNow: document.querySelectorAll(".dawnscape .ds-perch path.ds-fill")
         .length,
       leaves: window.__world.leaves || { shed: 0, landed: 0, airborne: 0 },
@@ -670,6 +776,18 @@ try {
       fail(
         `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
       );
+    if (twoNested)
+      fail(
+        `${seat}: two birds in the nest in ${twoNested} sample(s) — capacity one`
+      );
+    if (fin.nestedNow !== fin.nest.lands - fin.nest.leaves)
+      fail(
+        `${seat}: ${fin.nestedNow} bird(s) drawn in the nest, but the log says ${fin.nest.lands} landed and ${fin.nest.leaves} left`
+      );
+    if (!fin.sky.entries.some((e) => e.exit === "pass"))
+      fail(
+        `${seat}: no crossing left through the pass in the sit — the second canopy crossing does`
+      );
     if (fin.perch.lands < 1)
       fail(
         `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
@@ -713,6 +831,21 @@ try {
     }
     /* the log against the ink: one roamer's computed translate must be what
        the log says its offset is */
+    /* every DECLARED roamer, moved or not: its drawn offset within its range */
+    for (const [id, tf, axis] of fin.tf) {
+      const nums0 = tf
+        ? tf
+            .replace(/^translate\(/, "")
+            .split(",")
+            .map(parseFloat)
+        : [0, 0];
+      const shown0 = Math.abs(axis === "y" ? nums0[1] || 0 : nums0[0] || 0);
+      const lim0 = roamers[id] ? roamers[id].range : RANGE_PX;
+      if (shown0 > lim0 + 0.6)
+        fail(
+          `${seat}: ${id} is drawn ${shown0.toFixed(1)}px from home — its declared range is ±${lim0}px`
+        );
+    }
     for (const [id, tf, axis] of fin.tf) {
       const last = [...fin.ground].reverse().find((g) => g.id === id);
       const nums = tf
@@ -739,7 +872,7 @@ try {
         `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
           `max ${maxFar} far at once, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
           `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
-          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies`
+          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
       );
     await ctx.close();
   }

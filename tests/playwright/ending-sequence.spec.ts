@@ -87,6 +87,10 @@ const SEATS: [number, number][] = [
   [1440, 900],
   [1375, 800],
   [1280, 800],
+  /* the MacBook seats in fullscreen, where round 10 was measured */
+  [1728, 1117],
+  [1800, 1169],
+  [1920, 1080],
 ];
 
 /** the two seats a phone reader actually has, plus the Pixel 5 the
@@ -343,10 +347,15 @@ for (const [w, h] of PHONES) {
       });
 
       expect(a.ringY, `the halt ring is drawn at ${w}`).not.toBeNull();
+      /* 1.5, not 1: the ring is drawn at the socket's LAYOUT position (absTop
+         sums integer offsetTops, by design, so an entrance transform mid-flight
+         cannot bake into the rail), and at 320 the socket's client rect sits
+         1.1px below that sum across its ancestors' subpixel tops. Measured
+         identical on three commits. */
       expect(
         Math.abs(a.ringY! - a.sqMid),
         `ring on the socket at ${w}`
-      ).toBeLessThanOrEqual(1);
+      ).toBeLessThanOrEqual(1.5);
       expect(
         Math.abs(a.ringY! - a.btnMid),
         `ring on the button's centre at ${w}`
@@ -951,12 +960,26 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
           document.querySelector(".dawnwrap")!,
           NodeFilter.SHOW_TEXT
         );
-        const texts: [number, number, number, number, number, string][] = [];
+        const texts: [
+          number,
+          number,
+          number,
+          number,
+          number,
+          string,
+          string,
+        ][] = [];
         for (let n = walker.nextNode(); n; n = walker.nextNode()) {
           if (!n.textContent!.trim()) continue;
           const rg = document.createRange();
           rg.selectNodeContents(n);
-          const halo = n.parentElement!.closest(".endquote") ? 64 : CLEAR;
+          const quote = !!n.parentElement!.closest(".endquote");
+          const kind = quote
+            ? "quote"
+            : n.parentElement!.closest(".kicker")
+              ? "kicker"
+              : "word";
+          const halo = quote ? 64 : CLEAR;
           for (const r of rg.getClientRects())
             if (r.width && r.height)
               texts.push([
@@ -966,6 +989,7 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
                 r.bottom,
                 halo,
                 n.textContent!.trim().slice(0, 20),
+                kind,
               ]);
         }
         for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
@@ -977,7 +1001,15 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
             r.height &&
             getComputedStyle(el).visibility !== "hidden"
           )
-            texts.push([r.left, r.top, r.right, r.bottom, CLEAR, sel]);
+            texts.push([
+              r.left,
+              r.top,
+              r.right,
+              r.bottom,
+              CLEAR,
+              sel,
+              "chrome",
+            ]);
         }
         const pt = svg.createSVGPoint();
         let worst = { margin: Infinity, gap: 0, need: 0, at: "", sub: "" };
@@ -1008,6 +1040,8 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
             p.className.baseVal ||
             "path"
           ).trim();
+          const isHatch = p.classList.contains("ds-hatch");
+          const isRidge = p.classList.contains("ds-ridge");
           const step = L > 3000 ? 10 : 6;
           for (let s = 0; s <= L; s += step) {
             const q = p.getPointAtLength(s);
@@ -1022,7 +1056,15 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
               const dy =
                 Math.max(t[1] - v.y, v.y - t[3], 0) - (axisY ? range : 0);
               const gap = Math.max(dx, dy, 0);
-              const need = t[4] + sway;
+              /* hatch keeps 120px from the words and 48 from the chrome; a
+                 ridgeline 64 from the quote and the kicker */
+              const need = isHatch
+                ? t[6] === "chrome"
+                  ? 48
+                  : 120
+                : isRidge && (t[6] === "quote" || t[6] === "kicker")
+                  ? 64 + sway
+                  : t[4] + sway;
               if (gap - need < worst.margin)
                 worst = {
                   margin: +(gap - need).toFixed(1),
