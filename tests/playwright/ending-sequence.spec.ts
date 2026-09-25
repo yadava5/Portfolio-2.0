@@ -1014,6 +1014,9 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
         const pt = svg.createSVGPoint();
         let worst = { margin: Infinity, gap: 0, need: 0, at: "", sub: "" };
         for (const p of svg.querySelectorAll("path")) {
+          /* a mask's or a pattern's path is a hole or a tile, not a mark;
+             a tone field's outline is not a mark either */
+          if (p.closest("defs") || p.classList.contains("ds-tone")) continue;
           const L = p.getTotalLength();
           if (!L) continue;
           const m = p.getScreenCTM()!;

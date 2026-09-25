@@ -261,6 +261,13 @@ try {
     let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
     let samples = 0,
       inValley = 0;
+    const toneEls = [];
+    const toneAt = (x, y) => {
+      const q = svg.createSVGPoint();
+      q.x = x;
+      q.y = y;
+      return toneEls.some((t) => t.isPointInFill(q));
+    };
     /* every sampled point, kept for the edge walk */
     const pts = [];
     /* the sun's halo: nothing but the horizon and the sun's own arcs (the
@@ -268,6 +275,15 @@ try {
     const sun = scape && scape.sun;
     let halo = { d: Infinity, sub: "" };
     for (const p of svg.querySelectorAll("path")) {
+      /* a mask's or a pattern's path is a hole or a tile, not a mark; a
+         tone field's outline is not a mark either (its dots stop at the
+         mask's cuts, which the reserve gate holds), but the field counts
+         for the edge walk */
+      if (p.closest("defs")) continue;
+      if (p.classList.contains("ds-tone")) {
+        toneEls.push(p);
+        continue;
+      }
       const L = p.getTotalLength();
       if (!L) continue;
       const m = p.getScreenCTM();
@@ -403,6 +419,29 @@ try {
             const i = Math.floor(along(q) / 40);
             if (i >= 0 && i < bins.length) bins[i] = true;
           }
+        /* a tone field within 90px counts as ink on that edge: probed at
+           three depths, since a crest can sit 60px down with sky above it */
+        for (let i = 0; i < bins.length; i++) {
+          if (bins[i]) continue;
+          const a = i * 40 + 20;
+          for (const d of [18, 45, 82]) {
+            const p =
+              name === "top"
+                ? [a, d]
+                : name === "bottom"
+                  ? [a, vh - d]
+                  : name === "left"
+                    ? [d, a]
+                    : [vw - d, a];
+            if (toneAt(p[0], p[1])) {
+              bins[i] = true;
+              break;
+            }
+          }
+        }
+        /* the chrome's text reserves the edge it sits against: its own span
+           and the corner bin beside it (the nameplate and the stop chip sit
+           in the top corners, and the tone is cut out under them by design) */
         for (const [l, t, r, b] of chromeBoxes) {
           const touches =
             name === "top"
@@ -410,12 +449,16 @@ try {
               : name === "bottom"
                 ? b >= vh - 90
                 : name === "left"
-                  ? l <= 90
-                  : r >= vw - 90;
+                  ? l <= 120
+                  : r >= vw - 120;
           if (!touches) continue;
           const a0 = name === "top" || name === "bottom" ? l : t,
             a1 = name === "top" || name === "bottom" ? r : b;
-          for (let i = Math.floor(a0 / 40); i <= Math.floor(a1 / 40); i++)
+          for (
+            let i = Math.floor(a0 / 40) - 1;
+            i <= Math.floor(a1 / 40) + 1;
+            i++
+          )
             if (i >= 0 && i < bins.length) bins[i] = true;
         }
         const runs = [];
