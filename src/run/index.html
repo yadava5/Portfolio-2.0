@@ -8251,30 +8251,39 @@ function buildDawnscape() {
 
   if (tall) {
     /* ————— THE VALLEY OF LIGHT: two massifs own the top corners —————
-       The owner: "how can mountains be behind a tree, they look small,
-       a mountain can be as big as the entire screen". So the tree comes
-       down and the mountains go up. Two massifs rise to the top corners,
-       their crests at 0.05 and 0.095 H, the tallest things in the frame;
-       the left one rises behind and above the tree, the right one carries
-       the perch bough in front of it and comes down to the meadow as the
-       bank, one landform; a far range shows through the gap between them,
-       its saddle dipping low behind the words, so the words hang in a
-       valley the dawn light comes down. Perspective in one sentence: near
-       is dark, detailed and moving; far is light, sparse and still; the
-       tree is made of ink, the mountains of air.
+       The owner: "how can mountains be behind a tree, they look small, a
+       mountain can be as big as the entire screen". So the tree comes down
+       and the mountains go up. Two massifs rise to the top corners, their
+       crests at 0.05 and 0.09 H, the tallest things in the frame; the left
+       rises behind and above the tree, the right carries the perch bough in
+       front of it and comes down to the meadow as the bank, one landform; a
+       far range shows through the gap between them, its saddle dipping low
+       behind the words, so the words hang in a valley the dawn light comes
+       down. Near is dark, detailed and moving; far is light, sparse and
+       still; the tree is made of ink, the mountains of air.
 
-       THE HATCH FOLLOWS THE FALL LINE IN FACETS: patches whose stroke
-       direction changes per facet, spacing 5–7px on the west (shadow)
-       faces and about half that density on the east (lit) faces, lengths
-       20–60px, w06–w1, all hair-strong. Distance is weight and spacing,
-       never opacity. First light on the summits is drawn by absence: cream
-       wedges along the fall line on the east-facing summit facets where no
-       hatch is laid. Every facet's hatch fades to nothing over 120–260px
-       from the station's words (the words sit in light, not in a stencil),
-       stays 48px clear of the chrome's text, is zero in the valley mouth
-       (x 0.18–0.34 W below 0.55 H, where the wash's glow comes down to the
-       drawn sun) and in the sun's halo, and stops 40–60px above the
-       horizon behind a broken haze line. */
+       ROCK, DRAWN THE WAY AN ETCHER DRAWS THE ALPS. A massif is a PROFILE
+       broken into rock (sub-peaks and notches of 20–60px at the crest, one
+       steep side, shoulders that step; no smooth arc longer than 120px),
+       SPURS descending from the crest that split the face into FACETS, and
+       the hatch draws the facets, not texture: each facet's strokes run
+       down its own fall line, adjacent facets 30–60° apart meeting along the
+       spurs, gullies as denser converging strokes on each spur's shadow
+       side, the west (shadow) facets two to three times the density of the
+       east (lit) ones, the lit summit facets almost bare with the first
+       light cut out of them as cream wedges. Strokes are long on a smooth
+       face and short and broken on scree; density grades down the mountain
+       into the haze band above the meadow. Distance is weight and spacing,
+       never opacity: all of it hair-strong, w06–w1.
+
+       The hatch fades to nothing over 120–260px from the station's head and
+       quote (the words sit in light, not in a stencil) and 100–160px from
+       the foot (that band was written for hatch under the words, not beside
+       them), stays 48px clear of the chrome's text, is zero in the valley
+       mouth (x 0.18–0.34 W below 0.55 H, where the wash's glow comes down to
+       the drawn sun) and in the sun's halo. It thins by PATCH: a patch whose
+       centre is in the fade goes as a whole, so no stroke is ever orphaned
+       inside the clearing. */
     const inPoly = ([px, py], poly) => {
       let inside = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -8284,90 +8293,167 @@ function buildDawnscape() {
       return inside;
     };
     const FP = (pts) => pts.map(([fx, fy]) => [X(fx), Y(fy)]);
-    const wedges = [
-      FP([[0.16, 0.055], [0.19, 0.085], [0.178, 0.12], [0.156, 0.095]]), FP([[0.20, 0.10], [0.225, 0.15], [0.207, 0.168], [0.19, 0.128]]),
-      FP([[0.865, 0.10], [0.895, 0.125], [0.887, 0.162], [0.864, 0.142]]), FP([[0.905, 0.13], [0.93, 0.16], [0.922, 0.20], [0.90, 0.172]]),
-    ];
     const chromeRects = keep.slice(0, 3);
-    const hatchFade = (x, y) => {
-      for (const [l, t, rt, bt] of chromeRects) if (x >= l - 24 && x <= rt + 24 && y >= t - 24 && y <= bt + 24) return 0;
-      if (x >= X(0.18) && x <= X(0.34) && y >= Y(0.55)) return 0;
-      for (const w of wedges) if (inPoly([x, y], w)) return 0;
-      let f = clamp((hz - 45 - y) / 55, 0, 1);
+    const quoteBottom = Math.max(...words.filter((w) => w[4] === 64).map((w) => w[3]), 0);
+    /* the hard zones, judged per stroke */
+    const hardZero = (x, y) => {
+      for (const [l, t, rt, bt] of chromeRects) if (x >= l - 24 && x <= rt + 24 && y >= t - 24 && y <= bt + 24) return true;
+      if (x >= X(0.18) && x <= X(0.34) && y >= Y(0.55)) return true;
+      if (Math.hypot(x - sun.x, y - sun.y) < 90) return true;
+      return false;
+    };
+    /* the soft grade, judged per patch */
+    const softFade = (x, y) => {
+      let f = 1;
       const ds = Math.hypot(x - sun.x, y - sun.y);
-      f *= ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
+      f *= ds > 260 ? 1 : clamp((ds - 90) / 170, 0, 1);
       for (const [l, t, rt, bt, halo] of words) {
-        const dx = Math.max(l - x, x - rt, 0), dy = Math.max(t - y, y - bt, 0);
-        f = Math.min(f, clamp((Math.hypot(dx, dy) - (120 - halo)) / 140, 0, 1));
+        const dx = Math.max(l - x, x - rt, 0), dy = Math.max(t - y, y - bt, 0), d = Math.hypot(dx, dy);
+        const foot = t > quoteBottom + 8;
+        f = Math.min(f, foot ? clamp((d - (100 - halo)) / 60, 0, 1) : clamp((d - (120 - halo)) / 140, 0, 1));
       }
       return f;
     };
-    const facet = (poly, deg, gap, dense) => {
-      /* ROCK, NOT RAIN: one angle across a whole face is striping. The face
-         is cut into patches about 70px across, each laid at its own angle
-         within 20° of the fall line, its strokes short (14–40px) and
-         scattered with room between them, the hand's amplitude up, so a
-         face reads as broken rock catching light. */
-      const P2 = FP(poly);
-      const xs = P2.map((p) => p[0]), ys = P2.map((p) => p[1]);
-      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-      const cell = 70 * vs;
-      let out = "";
-      const faceFade = (x, y) => (inPoly([x, y], P2) ? hatchFade(x, y) : 0);
-      for (let cy = y0; cy < y1; cy += cell) for (let cx = x0; cx < x1; cx += cell) {
-        const jx = (r() - 0.5) * 20, jy = (r() - 0.5) * 20;
-        const rect = [[cx + jx, cy + jy], [cx + cell + jx, cy + jy], [cx + cell + jx, cy + cell + jy], [cx + jx, cy + cell + jy]];
-        if (!rect.some((p) => inPoly(p, P2)) && !inPoly([cx + cell / 2, cy + cell / 2], P2)) continue;
-        out += hatch(rect, deg + (r() - 0.5) * 40, gap * vs * (0.85 + r() * 0.3), dense ? "ds-far w1 ds-hatch" : "ds-far w06 ds-hatch", 0.8, [14, 40], faceFade, 14);
+    /* a profile broken into rock: every segment cut into 20–60px pieces,
+       each joint pushed off the line, hard at the crest and gentle on the
+       shoulders; straight pieces between, never an arc */
+    const jag = (anchors, crestX, hard, soft) => {
+      const P2 = FP(anchors), out = [P2[0]];
+      for (let k = 0; k + 1 < P2.length; k++) {
+        const [x0, y0] = P2[k], [x1, y1] = P2[k + 1];
+        const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / (24 + r() * 30)));
+        const nx = -(y1 - y0) / L, ny = (x1 - x0) / L;
+        for (let i = 1; i <= n; i++) {
+          const t = i / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t;
+          const near = clamp(1 - Math.abs(x - X(crestX)) / X(0.12), 0, 1);
+          const a = i === n ? 0 : (r() - 0.5) * 2 * (soft + (hard - soft) * near);
+          out.push([x + nx * a, y + ny * a]);
+        }
       }
       return out;
     };
-    /* a ridgeline: drawn twice with lifts, a short emphasis at the crest */
-    const ridgeLine = (pts, crestX, cls = "ds-ink w1") => {
-      const c = curve(FP(pts));
-      let d = strokes(c, 1.3, cls);
-      const n = c.length, s2 = Math.floor(r() * 0.3 * n);
-      d += strokes(offset(c.slice(s2, s2 + Math.floor(0.55 * n)), 1.6), 1.0, "ds-far w1");
-      if (crestX != null) {
-        d += strokes(seg(c, X(crestX) - 22, X(crestX) + 22).map(([x, y]) => [x, y - 1.5]), 0.7, "ds-far w12");
-        d += strokes(seg(c, X(crestX) - 60, X(crestX) + 8).map(([x, y]) => [x - 1, y + 1.2]), 0.6, "ds-ink w1");
-      }
+    const profileLine = (pts, crestX) => {
+      let d = strokes(pts, 0.35, "ds-ink w1");
+      const n = pts.length, s2 = Math.floor(r() * 0.3 * n);
+      d += strokes(offset(pts.slice(s2, s2 + Math.floor(0.5 * n)), 1.6), 0.5, "ds-far w1");
+      d += strokes(seg(pts, X(crestX) - 30, X(crestX) + 30).map(([x, y]) => [x, y - 1.4]), 0.4, "ds-far w12");
       return d;
     };
-    /* the left massif: crest beside the nameplate, the west face in shadow
-       off the left edge, the east face falling behind the tree's crown to
-       dissolve into the valley mouth */
-    far += ridgeLine([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155);
+    /* a spur: a secondary ridge from a point on the crest down the face,
+       broken like the profile, drawn once in hair-strong with lifts */
+    const spur = (profile, topX, anchors) => {
+      const top = profile.reduce((b, p) => (Math.abs(p[0] - X(topX)) < Math.abs(b[0] - X(topX)) ? p : b));
+      const pts = jag([[top[0] / W, top[1] / H], ...anchors], -1, 0, 4);
+      return pts;
+    };
+    const spurLine = (pts) => {
+      let d = "";
+      const n = pts.length;
+      for (const [f0, f1] of [[0.05, 0.42], [0.5, 0.78], [0.84, 1]]) d += strokes(pts.slice(Math.floor(f0 * n), Math.max(Math.floor(f0 * n) + 2, Math.floor(f1 * n))), 0.3, "ds-far w1");
+      return d;
+    };
+    /* the polygon a facet fills: down spur A, along the foot, up spur B,
+       back along the crest */
+    const between = (profile, xa, xb) => profile.filter(([x]) => (xa < xb ? x >= xa && x <= xb : x >= xb && x <= xa));
+    const facetOf = (profile, A, B, foot) => [...A, ...foot, ...[...B].reverse(), ...between(profile, B[0][0], A[0][0])];
+    /* a facet's hatch: patches of about 60–90px, each at its own small
+       variation of the facet's fall line, thinned as a whole by the soft
+       grade at its centre, its strokes long or short by kind, the density
+       grading toward the haze band */
+    const facet = (poly, deg, kind, opts = {}) => {
+      const gap = (kind === "shadow" ? 4.6 : kind === "lit" ? 12 : 8) * vs * (opts.gapMul || 1);
+      const len = opts.scree ? [8, 22] : kind === "shadow" ? [24, 64] : [18, 48];
+      const xs = poly.map((p) => p[0]), ys = poly.map((p) => p[1]);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+      const cell = 78 * vs;
+      let out = "";
+      for (let cy = y0; cy < y1; cy += cell) for (let cx = x0; cx < x1; cx += cell) {
+        const jx = (r() - 0.5) * 24, jy = (r() - 0.5) * 24;
+        const rect = [[cx + jx, cy + jy], [cx + cell + jx, cy + jy], [cx + cell + jx, cy + cell + jy], [cx + jx, cy + cell + jy]];
+        const c = [cx + cell / 2 + jx, cy + cell / 2 + jy];
+        const inside = rect.filter((p) => inPoly(p, poly)).length + (inPoly(c, poly) ? 1 : 0);
+        if (!inside) continue;
+        let f = softFade(c[0], c[1]);
+        /* down the mountain into the haze */
+        f *= Math.pow(clamp((hz - 45 - c[1]) / (hz - 45 - y0), 0, 1), 0.6);
+        /* the lit summit is almost bare */
+        if (kind === "lit") f *= 0.25 + 0.75 * clamp((c[1] - y0) / (y1 - y0), 0, 1);
+        if (f < 0.3) continue;
+        const per = (x, y) => (hardZero(x, y) || !inPoly([x, y], poly) || (opts.wedges || []).some((w) => inPoly([x, y], w)) ? 0 : f);
+        out += hatch(rect, deg + (r() - 0.5) * 16, gap / Math.max(f, 0.5), kind === "shadow" ? "ds-far w1 ds-hatch" : "ds-far w06 ds-hatch", 0.9, len, per, opts.scree ? 10 : 6);
+      }
+      return out;
+    };
+    /* a gully: dense converging strokes on a spur's shadow side, its lower
+       two thirds, in the spur's own direction */
+    const gully = (pts, side) => {
+      const lo = pts.slice(Math.floor(pts.length * 0.3));
+      const strip = [...offset(lo, side * 2), ...offset(lo, side * 14).reverse()];
+      const a = Math.atan2(lo[lo.length - 1][1] - lo[0][1], lo[lo.length - 1][0] - lo[0][0]) * (180 / Math.PI);
+      const c = lo[Math.floor(lo.length / 2)];
+      const f = softFade(c[0], c[1]);
+      if (f < 0.3) return "";
+      /* converging: the strokes come INTO the spur at an angle, the way
+         water and scree run into a gully, never along it like a rail */
+      return hatch(strip, a - side * 32, 3.4 * vs, "ds-far w1 ds-hatch", 0.6, [8, 18], (x, y) => (hardZero(x, y) ? 0 : f), 5);
+    };
+    const haze = hz - 48;
+
+    /* ————— the left massif ————— */
+    const Lprof = jag([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155, 11, 4);
+    const Lfoot = (xa, xb) => [[xa, haze], [xb, haze]];
+    const LS1 = spur(Lprof, 0.055, [[0.03, 0.22], [0.0, 0.36]]);
+    const LS2 = spur(Lprof, 0.115, [[0.095, 0.24], [0.07, 0.42], [0.055, 0.62]]);
+    const LS3 = spur(Lprof, 0.155, [[0.175, 0.20], [0.19, 0.36], [0.205, 0.52]]);
+    const LS4 = spur(Lprof, 0.205, [[0.235, 0.24], [0.255, 0.38], [0.27, 0.50]]);
+    const Ledge = [[X(-0.01), Y(0.13)], [X(-0.01), haze]];
+    far += profileLine(Lprof, 0.155);
+    far += spurLine(LS1) + spurLine(LS2) + spurLine(LS3) + spurLine(LS4);
+    const Lwedge = [FP([[0.158, 0.055], [0.185, 0.082], [0.176, 0.118], [0.157, 0.095]]), FP([[0.20, 0.10], [0.222, 0.145], [0.206, 0.165], [0.19, 0.128]])];
+    far += facet([...Ledge, ...Lfoot(X(-0.01), LS1[LS1.length - 1][0]), ...[...LS1].reverse(), ...between(Lprof, LS1[0][0], X(-0.01))], -28, "shadow", { scree: true });
+    far += facet(facetOf(Lprof, LS1, LS2, Lfoot(LS1[LS1.length - 1][0], LS2[LS2.length - 1][0])), -68, "shadow");
+    far += facet(facetOf(Lprof, LS2, LS3, Lfoot(LS2[LS2.length - 1][0], LS3[LS3.length - 1][0])), -40, "shadow", { gapMul: 1.25 });
+    far += facet(facetOf(Lprof, LS3, LS4, [[LS3[LS3.length - 1][0], LS3[LS3.length - 1][1]], [LS4[LS4.length - 1][0], LS4[LS4.length - 1][1]]]), 62, "lit", { wedges: Lwedge });
+    far += facet([...LS4, [X(0.30), Y(0.52)], ...[...Lprof.filter(([x]) => x >= LS4[0][0])].reverse()], 34, "mid", { scree: true });
+    far += gully(LS2, -1) + gully(LS3, -1) + gully(LS4, -1);
     far += strokes(curve(FP([[0.29, 0.52], [0.30, 0.58], [0.315, 0.63]])), 1.1, "ds-far w06");
-    far += facet([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.135, 0.15], [0.07, 0.22], [-0.01, 0.26]], -31, 5.2, true);
-    far += facet([[-0.01, 0.26], [0.07, 0.22], [0.135, 0.15], [0.11, 0.30], [0.045, 0.40], [-0.01, 0.44]], -40, 5.6, true);
-    far += facet([[-0.01, 0.44], [0.045, 0.40], [0.11, 0.30], [0.10, 0.48], [0.035, 0.62], [-0.01, 0.68]], -50, 6.2, true);
-    far += facet([[0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.19, 0.20], [0.135, 0.15]], 55, 8.5, false);
-    far += facet([[0.135, 0.15], [0.19, 0.20], [0.235, 0.17], [0.26, 0.30], [0.21, 0.34], [0.11, 0.30]], 60, 9, false);
-    far += facet([[0.11, 0.30], [0.21, 0.34], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52], [0.21, 0.54], [0.10, 0.48]], 65, 9.5, false);
-    /* the right massif: the perch bough hangs in front of it; its west face
-       falls toward the words and dissolves; its body descends to the bank */
-    far += ridgeLine([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]], 0.86);
+
+    /* ————— the right massif: the perch bough hangs in front of it, its west
+       face falls toward the words and dissolves, its spine comes down into
+       the bank so the bank's strata are its foothill ————— */
+    const Rprof = jag([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]], 0.865, 11, 4);
+    /* three spurs fanning from the crest: one sweeping west toward the
+       valley, the spine coming down into the bank's lip, one east to the
+       right edge; each curves, none is a vertical */
+    const RS0 = spur(Rprof, 0.845, [[0.815, 0.22], [0.78, 0.34], [0.755, 0.46], [0.745, 0.58]]);
+    const RS1 = spur(Rprof, 0.885, [[0.875, 0.22], [0.855, 0.36], [0.83, 0.50], [0.81, 0.62], [0.80, 0.72]]);
+    const RS2 = spur(Rprof, 0.94, [[0.95, 0.22], [0.965, 0.34], [0.975, 0.44]]);
+    const Rfoot = [[X(0.715), Y(0.50)], [X(0.735), Y(0.62)], [X(0.76), Y(0.72)], [X(0.80), haze], [X(0.85), haze]];
+    far += profileLine(Rprof, 0.865);
+    far += spurLine(RS1) + spurLine(RS2) + spurLine(RS0);
+    const Rwedge = [FP([[0.868, 0.095], [0.895, 0.122], [0.887, 0.16], [0.866, 0.14]]), FP([[0.905, 0.128], [0.93, 0.158], [0.922, 0.198], [0.90, 0.17]])];
+    /* the silhouette face, from the west skyline to the first spur: shadow */
+    far += facet([...Rprof.filter(([x]) => x <= X(0.845)).reverse(), ...Rfoot.slice(0, 3), ...[...RS0].reverse()], -48, "shadow");
+    far += facet([...RS0, [X(0.78), haze], ...[...RS1].reverse(), ...between(Rprof, RS1[0][0], RS0[0][0])], -75, "shadow", { gapMul: 1.2 });
+    far += facet([...RS1, [X(0.86), haze], [X(0.905), Y(0.71)], [X(0.93), Y(0.66)], [X(0.95), Y(0.60)], ...[...RS2].reverse(), ...between(Rprof, RS2[0][0], RS1[0][0])], 40, "mid", { wedges: Rwedge });
+    far += facet([...RS2, [X(0.982), Y(0.492)], [X(1.01), Y(0.47)], [X(1.01), Y(0.125)], ...between(Rprof, X(1.01), RS2[0][0])], 72, "lit", { scree: true });
+    far += gully(RS0, -1) + gully(RS1, -1) + gully(RS2, 1);
     far += strokes(curve(FP([[0.715, 0.48], [0.705, 0.53], [0.69, 0.57]])), 1.1, "ds-far w06");
-    far += facet([[0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.80, 0.22], [0.86, 0.18]], -35, 5.2, true);
-    far += facet([[0.78, 0.16], [0.755, 0.22], [0.735, 0.30], [0.76, 0.36], [0.82, 0.30], [0.80, 0.22]], -40, 5.6, true);
-    far += facet([[0.735, 0.30], [0.725, 0.40], [0.715, 0.48], [0.74, 0.56], [0.80, 0.48], [0.76, 0.36]], -45, 6.2, true);
-    far += facet([[0.865, 0.09], [0.86, 0.18], [0.90, 0.24], [0.94, 0.20], [0.915, 0.128], [0.885, 0.118]], 55, 8.5, false);
-    far += facet([[0.915, 0.128], [0.94, 0.105], [0.97, 0.135], [1.01, 0.125], [1.01, 0.32], [0.97, 0.30], [0.94, 0.20]], 50, 9, false);
-    far += facet([[0.80, 0.48], [0.74, 0.56], [0.78, 0.66], [0.86, 0.72], [0.94, 0.60], [1.01, 0.47], [1.01, 0.32], [0.97, 0.30], [0.90, 0.24], [0.86, 0.18], [0.82, 0.30], [0.76, 0.36]], 60, 7.5, false);
-    /* the far range through the gap: one broken line, the saddle dipping
-       low behind the kicker, a quarter-density hatch on two shoulders */
+
+    /* ————— the far range through the gap: peaks flanking the kicker, the
+       saddle above its halo; a lower, fainter line behind it for depth ————— */
     const farR = curve(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 4);
     for (const [f0, f1] of [[0, 0.33], [0.37, 0.66], [0.70, 1]]) far += strokes(farR.slice(Math.floor(f0 * farR.length), Math.floor(f1 * farR.length)), 1.1, "ds-far w1");
-    far += hatch(FP([[0.33, 0.23], [0.37, 0.185], [0.41, 0.15], [0.40, 0.21], [0.355, 0.26]]), -40, 9.5 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => 0.3 * hatchFade(x, y), 10);
-    far += hatch(FP([[0.57, 0.145], [0.61, 0.185], [0.64, 0.24], [0.61, 0.27], [0.575, 0.22]]), 50, 10 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => 0.3 * hatchFade(x, y), 10);
+    const farR2 = curve(FP([[0.31, 0.33], [0.35, 0.27], [0.385, 0.24], [0.42, 0.22], [0.46, 0.20], [0.50, 0.195], [0.545, 0.21], [0.585, 0.235], [0.62, 0.27], [0.655, 0.32]]), 4);
+    for (const [f0, f1] of [[0, 0.3], [0.36, 0.62], [0.68, 1]]) far += strokes(farR2.slice(Math.floor(f0 * farR2.length), Math.floor(f1 * farR2.length)), 1.0, "ds-far w06");
+    far += hatch(FP([[0.33, 0.23], [0.37, 0.185], [0.41, 0.15], [0.40, 0.21], [0.355, 0.26]]), -40, 9.5 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => (hardZero(x, y) ? 0 : 0.3 * softFade(x, y)), 10);
+    far += hatch(FP([[0.57, 0.145], [0.61, 0.185], [0.64, 0.24], [0.61, 0.27], [0.575, 0.22]]), 50, 10 * vs, "ds-far w06 ds-hatch", 0.3, [14, 36], (x, y) => (hardZero(x, y) ? 0 : 0.3 * softFade(x, y)), 10);
     /* the haze line the hatch stops behind: broken, at the massifs' feet,
        never through the valley mouth */
     for (const [fx0, fx1] of [[-0.01, 0.06], [0.08, 0.17], [0.64, 0.73], [0.75, 0.84]])
-      far += strokes(curve([[X(fx0), hz - 48 + (r() - 0.5) * 6], [X((fx0 + fx1) / 2), hz - 50 + (r() - 0.5) * 4], [X(fx1), hz - 47 + (r() - 0.5) * 6]], 6), 1.0, "ds-far w1");
-    SCAPE.massifs = { left: FP([[-0.01, 0.13], [0.035, 0.115], [0.075, 0.105], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.078], [0.20, 0.086], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]]),
-      right: FP([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]]),
-      far: FP([[0.29, 0.31], [0.345, 0.20], [0.445, 0.122], [0.53, 0.112], [0.60, 0.19], [0.67, 0.31]]), valley: [X(0.18), Y(0.55), X(0.34), H] };
+      far += strokes(curve([[X(fx0), haze + (r() - 0.5) * 6], [X((fx0 + fx1) / 2), haze - 2 + (r() - 0.5) * 4], [X(fx1), haze + 1 + (r() - 0.5) * 6]], 6), 1.0, "ds-far w1");
+    SCAPE.massifs = { left: Lprof.map(([x, y]) => [Math.round(x), Math.round(y)]), right: Rprof.map(([x, y]) => [Math.round(x), Math.round(y)]),
+      far: farR.filter((_, i) => i % 6 === 0).map(([x, y]) => [Math.round(x), Math.round(y)]), valley: [X(0.18), Y(0.55), X(0.34), H] };
 
     /* ————— the etched sky: long horizontals between the crown and the bough —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
