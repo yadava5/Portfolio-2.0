@@ -3839,7 +3839,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
            the far side of a button. Nobody who is deciding whether to write to
            someone presses "approve run 042" first. So the colophon carries the
            four ways in, and the gate keeps the last screen. -->
-      <footer data-fx="in .03 .16 y 5 | out 2 2.5 | drift 0">
+      <!-- in .03 .12, not .16: at 1800×1169 and 1920×1080 the page ends before
+           a .16 window completes and the footer sat 1.5 and 0.5px low with
+           its entrance transform still on (measured); the two columns close
+           on one line by the composition's own claim, so the entrance ends
+           where every seat can reach -->
+      <footer data-fx="in .03 .12 y 5 | out 2 2.5 | drift 0">
         <span class="reach">
           <a href="mailto:aesh.03.23@gmail.com">email</a> ·
           <a href="resume.pdf" target="_blank" rel="noopener">résumé &#10230;</a> ·
@@ -7947,6 +7952,7 @@ function buildDawnscape() {
   };
   const offset = (pts, o) => { const nm = normals(pts); return pts.map(([x, y], i) => [x + nm[i][0] * o, y + nm[i][1] * o]); };
   const path = (pts) => pts.map(([x, y], i) => `${i ? "L" : "M"}${F(x)} ${F(y)}`).join("");
+  const closed = (pts) => path(pts) + "Z";
   const stroke = (pts, amp, quick = 0) => path(wob(pts, amp, quick));
   /* every element goes through P, which keeps the stroke census: a batched
      path says how many strokes it carries */
@@ -8217,6 +8223,9 @@ function buildDawnscape() {
      sparingly. A drawing, not a blot. */
   const cutMasks = {};
   let cutTarget = null;
+  /* every near mass as a circle, and the trunk as a polygon, for the
+     range's pen lifts */
+  SCAPE.reserveCircles = [];
   let massN = 0, resDil = { massif: 12, bank: 0, grass: 0 };
   /* a mass is wider than it is tall, the way a cluster of leaves spreads
      from a twig; its cuts follow the rims of its own lobes, short, so they
@@ -8245,6 +8254,7 @@ function buildDawnscape() {
     nS++;
     const id = `m${massN++}`;
     if (rr >= 10) reserves.push({ id, ...resDil });
+    if (resDil.massif) SCAPE.reserveCircles.push([cx, cy, rr * 0.9]);
     return `<path id="${id}" class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
   };
   /* ONE CONNECTED CANOPY. Twelve to eighteen lobes fused into one compound
@@ -8266,6 +8276,7 @@ function buildDawnscape() {
     groups.forEach((g, gi) => {
       const cx = g.ms.reduce((t, m) => t + m[0], 0) / g.ms.length, cy = g.ms.reduce((t, m) => t + m[1], 0) / g.ms.length;
       const lobes = g.ms.map(([x, y, rr]) => [x - cx, y - cy, rr]);
+      if (resDil.massif) for (const [x, y, rr] of g.ms) SCAPE.reserveCircles.push([x, y, rr * 0.9]);
       let rim = ring(cx, cy, lobes, 2.5);
       for (let tries = 0; tries < 8 && rim.some(([x, y]) => inKeep(x, y, cutPad + 6)); tries++) { for (const l of lobes) l[2] *= 0.94; rim = ring(cx, cy, lobes, 2.5); }
       let d = leafEdge(rim, 0.9, 2.2);
@@ -8283,7 +8294,8 @@ function buildDawnscape() {
           layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [] });
         }
         const dots = [];
-        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + (r() - 0.5) * m[2] * 1.1, m[1] - m[2] * (0.15 + r() * 0.6), 1.2 + r() * 0.6]); }
+        /* blossom: light on the lit tops, toward the sun, small */
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] - r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 0.6 + r() * 0.3]); }
         layerCuts.push({ cp: [], dots });
       }
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
@@ -8361,34 +8373,29 @@ function buildDawnscape() {
   };
 
   if (tall) {
-    /* ————— THE VALLEY OF LIGHT: two massifs own the top corners —————
-       The owner: "the tree and mountain look built into each other". They
-       were: the same material at the same rhythm, with no reserve between
-       them. The law now is that EVERY DEPTH HAS ITS OWN MATERIAL AND NO
-       PLANE'S MARKS MAY TOUCH ANOTHER PLANE'S SILHOUETTE. Far tone is
-       stipple, mid is line, near is line plus solid mass, and every near
-       mass casts a bare-paper reserve into everything behind it.
+    /* ————— THE FOURTH MOUNTAIN: alpine light, Hokusai economy —————
+       Three mountains failed the owner's eye: scattered hatch read as rain,
+       stipple as wallpaper, and both ran base-to-corner like canyon walls.
+       This one is a RANGE per side, drawn the way an alpine engraver draws
+       it: a crisp jagged ridgeline, the shadow facets away from the 0.26 W
+       light as dense parallel hatch with a hard edge at the ridge and at
+       the terminator, the lit faces bare but for a gully hachure dropping
+       from a notch, snow as the hatch stopping along a crisp shape. Four
+       summits a side recede into each other: the nearest highest and
+       heaviest (ink-2 on the right, hair-strong on the left), the ones
+       behind lower and lighter and hidden where a nearer silhouette stands
+       in front, a low fore-ridge in front of each principal's foot so no
+       flank ever runs as one line to the ground. The whole range floats on
+       a haze line at 0.66 H: nothing of any peak descends below it. High
+       base and a footprint at least as wide as the height say FAR, whatever
+       the summit's height; the tallest summits (0.12 and 0.095 H) stand
+       above the crown, so the mountain outranks the tree on the page.
 
-       AQUATINT. Each massif is one closed silhouette (its jagged ridgeline
-       down to the haze line) filled with a stipple pattern: stipA, a 9px
-       tile of four hand-jittered hair-strong dots at r .8 turned 8°, about
-       10% cover on the lit faces; the shadow faces take an overlay in stipB,
-       an 11px tile turned -7° with dots at r .9, so the two together stay
-       under 22%. Two prime tiles at two rotations, so the eye cannot find
-       the grid. The far range through the gap stays a broken line with a
-       third, sparser stipple on its crest shadows only. Far is the lightest
-       made thing on the sheet.
-
-       LIGHT IS HOLES, NEVER PAINT. Each massif carries one black-and-white
-       mask: the ridgeline just inside the silhouette, the spurs that break
-       the faces, the first-light wedges on the lit summit facets, two or
-       three haze bands at the foot (the range rises out of layered morning
-       haze and never touches the meadow), the valley mouth where the wash's
-       glow comes down, a hand-edged band round the station's words, the
-       bank's face, and every near mass dilated by 12px: all cut OUT of the
-       tone. Branches and twigs cross the tone free; a thin dark line over a
-       pale dot field is clean classical drawing. Nothing in this plane
-       animates, and nothing here is a stroke. */
+       THE RESERVES ARE PEN LIFTS. Every line and every hatch stroke of the
+       range breaks 12px short of a near mass (the crown's lobes, the bough's
+       masses, the saplings' crowns, the trunk), of the bank, of the words'
+       halo and of the chrome. No mask, no rectangle: the geometry is
+       computed here, the drawing waits until the near masses exist. */
     const inPoly = ([px, py], poly) => {
       let inside = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -8397,173 +8404,151 @@ function buildDawnscape() {
       }
       return inside;
     };
-    const FP = (pts) => pts.map(([fx, fy]) => [X(fx), Y(fy)]);
-    const haze = hz - 48;
-    /* a profile broken into rock: every segment cut into 24–54px pieces,
-       each joint pushed off the line, hard at the crest and gentle on the
-       shoulders; straight pieces between, densified to 5px */
-    const jag = (anchors, crestX, hard, soft) => {
-      const P2 = FP(anchors), out = [P2[0]];
+    const HAZE = Y(0.66);
+    const dense3 = (pts, step = 3) => { const out = []; for (let k = 0; k + 1 < pts.length; k++) { const [x0, y0] = pts[k], [x1, y1] = pts[k + 1], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / step)); for (let i = 0; i < n; i++) out.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); } out.push(pts[pts.length - 1]); return out; };
+    /* a jagged crest: every segment cut into pieces, the joints pushed off
+       it, hard near the summit and gentle low down */
+    const jag = (anchors, hard, soft) => {
+      const P2 = anchors.map(([fx, fy]) => [X(fx), Y(fy)]), out = [P2[0]];
       for (let k = 0; k + 1 < P2.length; k++) {
         const [x0, y0] = P2[k], [x1, y1] = P2[k + 1];
-        const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / (24 + r() * 30)));
+        const L = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(L / (14 + r() * 18)));
         const nx = -(y1 - y0) / L, ny = (x1 - x0) / L;
-        for (let i = 1; i <= n; i++) {
-          const t = i / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t;
-          const near = clamp(1 - Math.abs(x - X(crestX)) / X(0.12), 0, 1);
-          const am = i === n ? 0 : (r() - 0.5) * 2 * (soft + (hard - soft) * near);
-          out.push([x + nx * am, y + ny * am]);
+        for (let i = 1; i <= n; i++) { const t = i / n, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t; const near = Math.max(0, 1 - (y - Y(0.09)) / Y(0.25)); const am = i === n ? 0 : (r() - 0.5) * 2 * (soft + (hard - soft) * near); out.push([x + nx * am, y + ny * am]); }
+      }
+      return dense3(out, 3);
+    };
+    const silOf = (crest) => [...crest, [crest[crest.length - 1][0], HAZE + 2], [crest[0][0], HAZE + 2]];
+    const snowShape = (cx, cy, rx, ry, rot) => { const pts = []; for (let i = 0; i < 18; i++) { const t = (i / 18) * 6.2832, rr = 1 + (r() - 0.5) * 0.5; pts.push([cx + Math.cos(t) * rx * rr * Math.cos(rot) - Math.sin(t) * ry * rr * Math.sin(rot), cy + Math.cos(t) * rx * rr * Math.sin(rot) + Math.sin(t) * ry * rr * Math.cos(rot)]); } return pts; };
+    /* the two ranges: nearest first, so each is drawn against the
+       silhouettes of the ones in front of it. Flanks at or under 50°
+       except the summit's last stretch; every footprint at least as wide
+       as its height above the haze. */
+    const RIGHT = [
+      { name: "fore", crest: [[0.54, 0.66], [0.56, 0.52], [0.59, 0.44], [0.62, 0.42], [0.655, 0.45], [0.69, 0.52], [0.72, 0.60], [0.74, 0.66]], line: "ds-ink w1 ds-ridge", hatch: "ds-ink w08 ds-hatch", amp: 0.45, hard: 3, spacing: 2.5,
+        facets: [{ at: 0.62, to: 0.74, spur: [[0.65, 0.52], [0.675, 0.60], [0.69, 0.66]], deg: 50, line: true }], hachures: [[0.59, 0.44, 118]] },
+      { name: "principal", crest: [[0.545, 0.44], [0.565, 0.38], [0.61, 0.29], [0.65, 0.21], [0.685, 0.16], [0.70, 0.12], [0.72, 0.16], [0.745, 0.19], [0.775, 0.25], [0.80, 0.28], [0.83, 0.36], [0.86, 0.42], [0.895, 0.54], [0.93, 0.66]],
+        line: "ds-ink w1 ds-ridge", hatch: "ds-ink w08 ds-hatch", amp: 0.45, hard: 5, spacing: 2.5,
+        facets: [{ at: 0.70, to: 0.80, spur: [[0.735, 0.24], [0.77, 0.40], [0.80, 0.56], [0.815, 0.66]], deg: 44, line: true }, { at: 0.80, to: 0.93, spur: [[0.84, 0.40], [0.875, 0.52], [0.905, 0.62], [0.915, 0.66]], deg: 64 }],
+        hachures: [[0.685, 0.16, 118], [0.65, 0.215, 118], [0.61, 0.29, 122]], snow: [[0.70, 0.135, 22, 12, 0.3], [0.745, 0.20, 10, 6, -0.2]] },
+      { name: "second", crest: [[0.78, 0.40], [0.815, 0.30], [0.845, 0.255], [0.86, 0.24], [0.885, 0.27], [0.915, 0.36], [0.945, 0.50], [0.97, 0.66]], line: "ds-ink w08 ds-ridge", hatch: "ds-ink w06 ds-hatch", amp: 0.4, hard: 4, spacing: 3.6,
+        facets: [{ at: 0.86, to: 0.97, spur: [[0.885, 0.34], [0.91, 0.48], [0.93, 0.66]], deg: 52, line: true }], hachures: [[0.845, 0.255, 120]] },
+      { name: "third", crest: [[0.90, 0.44], [0.925, 0.37], [0.945, 0.35], [0.965, 0.40], [0.975, 0.46]], line: "ds-far w1 ds-ridge", amp: 0.4, hard: 3, facets: [] },
+    ];
+    const LEFT = [
+      { name: "fore", crest: [[0.19, 0.66], [0.21, 0.56], [0.24, 0.47], [0.275, 0.43], [0.31, 0.45], [0.345, 0.53], [0.37, 0.62], [0.38, 0.66]], line: "ds-far w12 ds-ridge", hatch: "ds-far w1 ds-hatch", amp: 0.45, hard: 3, spacing: 2.6,
+        facets: [{ at: 0.275, to: 0.19, spur: [[0.25, 0.52], [0.225, 0.60], [0.21, 0.66]], deg: 128, line: true }], hachures: [[0.31, 0.45, 62]] },
+      { name: "principal", crest: [[-0.01, 0.34], [0.04, 0.27], [0.07, 0.235], [0.095, 0.19], [0.125, 0.135], [0.15, 0.095], [0.165, 0.12], [0.19, 0.14], [0.215, 0.20], [0.245, 0.29], [0.27, 0.35], [0.31, 0.44], [0.33, 0.54], [0.345, 0.66]],
+        line: "ds-far w12 ds-ridge", hatch: "ds-far w1 ds-hatch", amp: 0.45, hard: 5, spacing: 2.6,
+        facets: [{ at: 0.15, to: 0.07, spur: [[0.12, 0.22], [0.095, 0.38], [0.075, 0.54], [0.065, 0.66]], deg: 134, line: true }, { at: 0.07, to: -0.01, spur: [[0.04, 0.34], [0.02, 0.48], [0.005, 0.66]], deg: 112 }],
+        hachures: [[0.19, 0.14, 60], [0.215, 0.20, 62], [0.245, 0.29, 66]], snow: [[0.15, 0.11, 18, 10, -0.25]] },
+      { name: "second", crest: [[0.20, 0.40], [0.235, 0.30], [0.26, 0.26], [0.275, 0.245], [0.30, 0.28], [0.33, 0.36], [0.36, 0.48], [0.38, 0.58], [0.385, 0.66]], line: "ds-far w1 ds-ridge", hatch: "ds-far w1 ds-hatch", amp: 0.4, hard: 4, spacing: 3.8,
+        facets: [{ at: 0.275, to: 0.20, spur: [[0.25, 0.34], [0.23, 0.48], [0.215, 0.66]], deg: 124, line: true }], hachures: [[0.30, 0.28, 60]] },
+      { name: "third", crest: [[0.32, 0.45], [0.345, 0.38], [0.365, 0.36], [0.38, 0.40], [0.39, 0.46]], line: "ds-far w1 ds-ridge", amp: 0.4, hard: 3, facets: [] },
+      { name: "far", crest: [[-0.01, 0.27], [0.025, 0.22], [0.05, 0.20], [0.08, 0.24], [0.095, 0.27]], line: "ds-far w1 ds-ridge", amp: 0.4, hard: 3, facets: [] },
+    ];
+    /* the geometry now: crests and silhouettes, so the sky can keep off them */
+    for (const g of [RIGHT, LEFT]) for (const sm of g) { sm.c = jag(sm.crest, sm.hard, 1.5); sm.sil = silOf(sm.c); sm.snowPolys = (sm.snow || []).map(([fx, fy, rx, ry, rot]) => snowShape(X(fx), Y(fy), rx * vs, ry * vs, rot)); }
+    const allSils = [...RIGHT, ...LEFT].map((sm) => sm.sil);
+    SCAPE.inMassif = (x, y, pad = 12) => [[0, 0], [pad, 0], [-pad, 0], [0, pad], [0, -pad]].some(([dx, dy]) => allSils.some((sl) => inPoly([x + dx, y + dy], sl)));
+    SCAPE.massifs = { haze: Math.round(HAZE), summits: [...RIGHT, ...LEFT].map((sm) => ({ name: sm.name, crest: sm.c.filter((_, i) => i % 6 === 0).map(([x, y]) => [Math.round(x), Math.round(y)]) })) };
+    far += "<!--RANGE-->";
+    /* the bank, as the range sees it: its silhouette 12px proud */
+    const bankOccl = [[W + 4, Y(0.47) - 12], [X(0.982) - 10, Y(0.492) - 10], [X(0.962) - 10, Y(0.53) - 8], [X(0.95) - 10, Y(0.60) - 6], [X(0.93) - 10, Y(0.66) - 6], [X(0.905) - 10, Y(0.71) - 4], [X(0.86), Y(0.80)], [W + 4, Y(0.80)]];
+    SCAPE.renderRange = () => {
+      const occlBase = [bankOccl];
+      const circles = SCAPE.reserveCircles || [];
+      const trunk = SCAPE.trunkPoly ? SCAPE.trunkPoly.map(([x, y]) => [x, y]) : null;
+      /* THE OCCLUSION MASKS. Two offscreen canvases the size of the sky
+         above the haze: the near masses (their circles 12px proud), the
+         trunk 12px proud, the bank, and the keep-out (8px pad for lines,
+         28 for hatch, and for hatch every word's rect 100px proud, which is
+         124 from the ink). A point is hidden if its pixel is painted. Each
+         summit's silhouette is painted in after it is drawn. */
+      const MH = Math.ceil(HAZE + 6);
+      const mk = () => { const cv = document.createElement("canvas"); cv.width = Math.ceil(W); cv.height = MH; const g = cv.getContext("2d", { willReadFrequently: true }); g.fillStyle = "#000"; return { cv, g, data: null }; };
+      const mL = mk(), mHt = mk();
+      const fillPoly = (g, poly) => { g.beginPath(); poly.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.fill(); };
+      const paintBase = ({ g }, pad, wordBand) => {
+        for (const o of occlBase) fillPoly(g, o);
+        for (const [cx, cy, cr] of circles) { g.beginPath(); g.arc(cx, cy, cr + 12, 0, 6.2832); g.fill(); }
+        if (trunk) { fillPoly(g, trunk); g.lineWidth = 24; g.strokeStyle = "#000"; g.lineJoin = "round"; g.beginPath(); trunk.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.stroke(); }
+        for (const [l, t, rt, bt] of keep) g.fillRect(l - pad, t - pad, rt - l + 2 * pad, bt - t + 2 * pad);
+        if (wordBand) for (const [l, t, rt, bt, halo] of words) { const e = 124 - halo; g.fillRect(l - e, t - e, rt - l + 2 * e, bt - t + 2 * e); }
+      };
+      paintBase(mL, 8, false);
+      paintBase(mHt, 28, true);
+      const snap = (m) => { m.data = m.g.getImageData(0, 0, m.cv.width, MH).data; };
+      snap(mL); snap(mHt);
+      const painted = (m, x, y) => { const xi = Math.round(x), yi = Math.round(y); if (yi < 0 || yi >= MH || xi < 0 || xi >= m.cv.width) return yi >= MH; return m.data[(yi * m.cv.width + xi) * 4 + 3] > 0; };
+      const addOccluder = (poly) => { fillPoly(mL.g, poly); fillPoly(mHt.g, poly); snap(mL); snap(mHt); };
+      /* the snow is per summit and small: a polygon test */
+      const visible = (pts, snow, forHatch = false) => { const m = forHatch ? mHt : mL; const runs = []; let cur = []; for (const p of pts) { if (painted(m, p[0], p[1]) || snow.some((o) => inPoly(p, o))) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(p); } if (cur.length > 1) runs.push(cur); return runs; };
+      const line = (pts, snow, cls, amp, lifts = [[0, 0.38], [0.41, 0.74], [0.77, 1]]) => visible(pts, snow).map((run) => (run.length > 40 ? lifts.map(([a0, b0]) => P(stroke(run.slice(Math.floor(a0 * run.length), Math.max(Math.floor(a0 * run.length) + 2, Math.floor(b0 * run.length))), amp), cls)).join("") : P(stroke(run, amp), cls))).join("");
+      /* a facet: dense parallel strokes along the fall line, clipped hard to
+         the polygon, stopping inside the snow and behind what is in front */
+      const facet = (poly, deg, gap, cls, snow) => {
+        const a0 = (deg * Math.PI) / 180, ux = Math.cos(a0), uy = Math.sin(a0), vx = -uy, vy = ux;
+        const pu = poly.map(([x, y]) => x * ux + y * uy), pv = poly.map(([x, y]) => x * vx + y * vy);
+        let d = "";
+        for (let v = Math.min(...pv) + gap * 0.5; v < Math.max(...pv); v += gap * (0.9 + r() * 0.2)) {
+          const xs = [];
+          for (let i = 0; i < poly.length; i++) { const j = (i + 1) % poly.length, q0 = pv[i] - v, q1 = pv[j] - v; if ((q0 <= 0 && q1 > 0) || (q1 <= 0 && q0 > 0)) xs.push(pu[i] + ((pu[j] - pu[i]) * q0) / (q0 - q1)); }
+          xs.sort((p, q) => p - q);
+          for (let k = 0; k + 1 < xs.length; k += 2) {
+            let u = xs[k];
+            const end = xs[k + 1];
+            while (end - u > 3) {
+              const L = Math.min(end - u, 30 + r() * 60), n = Math.max(2, Math.ceil(L / 4)), pts = [];
+              for (let sI = 0; sI <= n; sI++) { const uu = u + (L * sI) / n; pts.push([uu * ux + v * vx, uu * uy + v * vy]); }
+              for (const run of visible(pts, snow, true)) d += P(stroke(run, 0.25), cls);
+              u += L + 1;
+            }
+          }
         }
-      }
-      const dense = [];
-      for (let k = 0; k + 1 < out.length; k++) {
-        const [x0, y0] = out[k], [x1, y1] = out[k + 1], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 5));
-        for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]);
-      }
-      dense.push(out[out.length - 1]);
-      return dense;
+        return `<g class="ds-facet" data-poly="${poly.map((p) => F(p[0]) + "," + F(p[1])).join(" ")}">${d}</g>`;
+      };
+      const hachure = (x, y, deg, cls, snow) => { let d = ""; const a0 = (deg * Math.PI) / 180; for (let i = 0; i < 4; i++) { const off = (i - 1.5) * 2.6, L = (9 + r() * 9) * vs; const p0 = [x + off * Math.cos(a0 + 1.57), y + off * Math.sin(a0 + 1.57)]; const pts = dense3([p0, [p0[0] + Math.cos(a0) * L - off * 0.3, p0[1] + Math.sin(a0) * L]], 2); for (const run of visible(pts, snow)) d += P(stroke(run, 0.25), cls); } return `<g class="ds-hachure">${d}</g>`; };
+      const spur = (from, anchors) => dense3([from, ...anchors.map(([fx, fy]) => [X(fx), Y(fy)])], 3);
+      const between = (crest, xa, xb) => crest.filter(([x]) => x >= Math.min(xa, xb) && x <= Math.max(xa, xb));
+      const drawRange = (group) => {
+        let out = "";
+        for (const sm of group) {
+          const c = sm.c, stops = sm.snowPolys;
+          let d = line(c, [], sm.line, sm.amp);
+          sm.facets.forEach((f, fi) => {
+            const top = c.reduce((bb, p) => (Math.abs(p[0] - X(f.at)) < Math.abs(bb[0] - X(f.at)) ? p : bb));
+            const sp = spur(top, f.spur);
+            const nextTop = c.reduce((bb, p) => (Math.abs(p[0] - X(f.to)) < Math.abs(bb[0] - X(f.to)) ? p : bb));
+            /* the far bound is the next facet's spur, so adjacent facets
+               meet along it; the last facet ends at the crest's own foot */
+            const nf = sm.facets[fi + 1];
+            const sp2 = nf && nf.at === f.to ? spur(nextTop, nf.spur) : [nextTop, [nextTop[0], HAZE]];
+            const poly = [...sp, [sp[sp.length - 1][0], HAZE], [sp2[sp2.length - 1][0], HAZE], ...[...sp2].reverse(), ...(f.at < f.to ? between(c, f.to, f.at).reverse() : between(c, f.at, f.to))];
+            d += facet(poly, f.deg, sm.spacing * vs, sm.hatch, stops);
+            if (f.line) d += line(sp, stops, sm.line, 0.4, [[0, 0.45], [0.5, 1]]);
+          });
+          for (const h of sm.hachures || []) d += hachure(X(h[0]), Y(h[1]), h[2], sm.line.replace(" ds-ridge", ""), stops);
+          out += `<g class="ds-summit" data-name="${sm.name}" data-facets="${sm.facets.length}">${d}</g>`;
+          addOccluder(sm.sil);
+        }
+        return out;
+      };
+      /* the L1 recession through the gap, lines only, the saddle held above the kicker */
+      const kick = wrap.querySelector(".kicker");
+      const kb = kick ? kick.getBoundingClientRect() : null;
+      const capY = kb ? kb.top - sr.top - 70 : Y(0.15), capL = kb ? kb.left - 70 : 0, capR = kb ? kb.right + 70 : 0;
+      const belowKick = (pts, lift) => pts.map(([x, y]) => [x, x > capL && x < capR ? Math.min(y, capY - lift) : y]);
+      const far1 = dense3(belowKick([[X(0.31), Y(0.31)], [X(0.36), Y(0.275)], [X(0.41), Y(0.26)], [X(0.46), Y(0.285)], [X(0.52), Y(0.27)], [X(0.585), Y(0.31)]], 12), 4);
+      const far2 = dense3(belowKick([[X(0.34), Y(0.375)], [X(0.40), Y(0.35)], [X(0.46), Y(0.36)], [X(0.53), Y(0.345)], [X(0.59), Y(0.37)]], 0), 4);
+      let hazeLines = "";
+      for (const [fa, fb] of [[-0.01, 0.12], [0.16, 0.29], [0.44, 0.58], [0.62, 0.76], [0.80, 0.93]]) hazeLines += strokes(curve([[X(fa), HAZE + (r() - 0.5) * 4], [X((fa + fb) / 2), HAZE - 2 + r() * 3], [X(fb), HAZE + (r() - 0.5) * 4]], 6), 0.8, "ds-far w1");
+      const rightOut = drawRange(RIGHT);
+      mL.g.clearRect(0, 0, mL.cv.width, MH); mHt.g.clearRect(0, 0, mHt.cv.width, MH);
+      paintBase(mL, 8, false); paintBase(mHt, 28, true); snap(mL); snap(mHt);
+      const leftOut = drawRange(LEFT);
+      return `<g class="ds-p2">${rightOut}${leftOut}${line(far1, [], "ds-far w1 ds-ridge", 0.9, [[0, 0.3], [0.36, 0.66], [0.72, 1]])}${line(far2, [], "ds-far w06 ds-ridge", 0.9, [[0, 0.45], [0.52, 1]])}</g>${hazeLines}`;
     };
-    const spur = (profile, topX, anchors) => {
-      const top = profile.reduce((bb, p) => (Math.abs(p[0] - X(topX)) < Math.abs(bb[0] - X(topX)) ? p : bb));
-      return jag([[top[0] / W, top[1] / H], ...anchors], -1, 0, 4);
-    };
-    /* the kicker's cap for the far range */
-    const kick = wrap.querySelector(".kicker");
-    const kb = kick ? kick.getBoundingClientRect() : null;
-    const capY = kb ? kb.top - sr.top - 70 : Y(0.15), capL = kb ? kb.left - 70 : 0, capR = kb ? kb.right + 70 : 0;
-    const belowKick = (pts, lift) => pts.map(([x, y]) => [x, x > capL && x < capR ? Math.min(y, capY - lift) : y]);
-
-    /* the two profiles and their spurs */
-    const Lprof = jag([[-0.01, 0.058], [0.02, 0.09], [0.045, 0.105], [0.075, 0.10], [0.105, 0.078], [0.13, 0.092], [0.155, 0.05], [0.172, 0.074], [0.20, 0.072], [0.218, 0.128], [0.235, 0.17], [0.248, 0.235], [0.26, 0.30], [0.275, 0.42], [0.29, 0.52]], 0.155, 11, 4);
-    const LS1 = spur(Lprof, 0.055, [[0.03, 0.22], [0.0, 0.36]]);
-    const LS2 = spur(Lprof, 0.115, [[0.095, 0.24], [0.07, 0.42], [0.055, 0.62]]);
-    const LS3 = spur(Lprof, 0.155, [[0.175, 0.20], [0.19, 0.36], [0.205, 0.52]]);
-    const LS4 = spur(Lprof, 0.205, [[0.235, 0.24], [0.255, 0.38], [0.27, 0.50]]);
-    const Rprof = jag([[1.01, 0.062], [0.985, 0.078], [0.96, 0.115], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.066], [0.848, 0.08], [0.83, 0.06], [0.815, 0.10], [0.80, 0.125], [0.79, 0.16], [0.775, 0.205], [0.762, 0.25], [0.75, 0.30], [0.754, 0.335], [0.738, 0.40], [0.728, 0.44], [0.715, 0.48]], 0.83, 11, 4);
-    const RS0 = spur(Rprof, 0.775, [[0.785, 0.30], [0.79, 0.42], [0.79, 0.54], [0.785, 0.64]]);
-    const RS1 = spur(Rprof, 0.83, [[0.845, 0.22], [0.845, 0.36], [0.83, 0.50], [0.815, 0.62], [0.805, 0.72]]);
-    const RS2 = spur(Rprof, 0.94, [[0.95, 0.22], [0.965, 0.34], [0.975, 0.44]]);
-    const RSa = spur(Rprof, 0.865, [[0.875, 0.16], [0.885, 0.24]]);
-    /* the silhouettes: the profile, then down to the haze and back */
-    const Lfootline = jag([[0.29, 0.52], [0.295, 0.57], [0.305, 0.63], [0.31, 0.70], [0.32, haze / H]], -1, 0, 5);
-    const Lsil = [...Lprof, ...Lfootline.slice(1), [X(-0.02), haze]];
-    const Rfootline = jag([[0.715, 0.48], [0.728, 0.53], [0.735, 0.56], [0.752, 0.62], [0.77, 0.68], [0.785, 0.74], [0.80, haze / H]], -1, 0, 5);
-    const Rsil = [...Rprof, ...Rfootline.slice(1), [X(1.02), haze]];
-    /* the shadow faces: west of the crest spurs */
-    /* THE FACETS: the tone has levels that follow the form. Each face
-       between two spurs is its own region, filled at its own density: the
-       lit east faces at the low end, the west shadow faces at the high end,
-       the summit lightest; the lower slope takes a sparse overlay so the
-       density rises down the mountain to the haze. A slab has one density;
-       a mountain has four. */
-    const footY = haze;
-    const spurFacet = (A, Bsp, profBetween) => [...A, [A[A.length - 1][0], footY], [Bsp[Bsp.length - 1][0], footY], ...[...Bsp].reverse(), ...profBetween];
-    const Lbetween = (xa, xb) => Lprof.filter(([x]) => x >= Math.min(xa, xb) && x <= Math.max(xa, xb)).reverse();
-    const Lfacets = [
-      [[[X(-0.02), Lprof[0][1]], ...Lprof.filter(([x]) => x <= LS1[0][0]), ...LS1, [LS1[LS1.length - 1][0], footY], [X(-0.02), footY]], 4],
-      [spurFacet(LS1, LS2, Lbetween(LS1[0][0], LS2[0][0])), 4],
-      [spurFacet(LS2, LS3, Lbetween(LS2[0][0], LS3[0][0])), 3],
-      [spurFacet(LS3, LS4, Lbetween(LS3[0][0], LS4[0][0])), 1],
-      [[...LS4, [LS4[LS4.length - 1][0], footY], [X(0.32), footY], ...[...Lfootline.slice(1)].reverse(), ...Lprof.filter(([x]) => x >= LS4[0][0]).reverse()], 2],
-    ];
-    const Rbetween = (xa, xb) => Rprof.filter(([x]) => x >= Math.min(xa, xb) && x <= Math.max(xa, xb));
-    const Rfacets = [
-      [[...Rprof.filter(([x]) => x <= RS0[0][0]), ...Rfootline.slice(1), ...[...RS0].reverse()], 4],
-      [spurFacet(RS0, RS1, Rbetween(RS0[0][0], RS1[0][0])), 3],
-      [spurFacet(RS1, RS2, Rbetween(RS1[0][0], RS2[0][0])), 1],
-      [[...RS2, [RS2[RS2.length - 1][0], footY], [X(1.02), footY], [X(1.02), Rprof[0][1]], ...Rprof.filter(([x]) => x >= RS2[0][0])], 2],
-    ];
-    /* the lower slope: a sparse overlay below 0.42 H raises the density
-       toward the haze */
-    const lowerL = [[X(-0.02), Y(0.42)], [X(0.34), Y(0.42)], [X(0.34), footY], [X(-0.02), footY]];
-    const lowerR = [[X(0.68), Y(0.42)], [X(1.02), Y(0.42)], [X(1.02), footY], [X(0.68), footY]];
-    const closed = (pts) => path(pts) + "Z";
-    const inMassif = (x, y, pad = 12) => [[0, 0], [pad, 0], [-pad, 0], [0, pad], [0, -pad]].some(([dx, dy]) => inPoly([x + dx, y + dy], Lsil) || inPoly([x + dx, y + dy], Rsil));
-    const Rshade = Rfacets[0][0];
-    SCAPE.massifs = { left: Lprof.map(([x, y]) => [Math.round(x), Math.round(y)]), right: Rprof.map(([x, y]) => [Math.round(x), Math.round(y)]),
-      valley: [X(0.18), Y(0.55), X(0.34), H], haze: Math.round(haze) };
-    SCAPE.inMassif = inMassif;
-    /* THE MASKS: white silhouette, black cuts. Kept as strings until the
-       end, when the registry is complete. */
-    const mk = { black: (d, w = 0) => `<path d="${d}" style="fill:#000${w ? `;stroke:#000;stroke-width:${w};stroke-linejoin:round;stroke-linecap:round` : ""}"/>` };
-    const cutLine = (pts, w) => `<path d="${stroke(pts, 0.8)}" style="fill:none;stroke:#000;stroke-width:${w};stroke-linecap:round"/>`;
-    const wedge = (poly) => mk.black(closed(FP(poly)));
-    const hazeBands = (x0, x1) => {
-      let d = "";
-      for (const [dy, w] of [[-3, 12], [-22, 6], [-40, 4]]) d += cutLine(curve([[x0, haze + dy], [(x0 + x1) / 2, haze + dy - 3 + r() * 6], [x1, haze + dy + (r() - 0.5) * 4]], 8), w);
-      return d;
-    };
-    /* the band round the words: a hand-edged hole at 120px from the ink, so
-       the words sit in light and not in a stencil */
-    const wordCuts = () => {
-      let d = "";
-      for (const [l, t, rt, bt, halo] of words) {
-        const g = 120 - halo;
-        const rect = [[l - g, t - g], [rt + g, t - g], [rt + g, bt + g], [l - g, bt + g]];
-        const dense = [];
-        for (let k = 0; k < 4; k++) { const [x0, y0] = rect[k], [x1, y1] = rect[(k + 1) % 4], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 8); for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); }
-        d += mk.black(path(wob(dense, 5)) + "Z");
-      }
-      return d;
-    };
-    /* every cut has the hand's edge: no straight line in the tone that is
-       not a ridge */
-    const wobRect = (l, t, rt, bt, amp) => {
-      const rect = [[l, t], [rt, t], [rt, bt], [l, bt]], dense = [];
-      for (let k = 0; k < 4; k++) { const [x0, y0] = rect[k], [x1, y1] = rect[(k + 1) % 4], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 8); for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); }
-      return mk.black(path(wob(dense, amp)) + "Z");
-    };
-    /* EVERY EDGE OF A TONE REGION IS HAND-EDGED. A cut is a black shape
-       with two pattern-painted strokes round it, black dots at ~46% then
-       ~15% cover, so the stipple thins over 30–60px into the hole instead of
-       stopping at a ruled line. Flanks get the same feather along their
-       polyline. */
-    const feather = (d) => `<path d="${d}" style="fill:none;stroke:url(#feathA);stroke-width:44;stroke-linejoin:round"/><path d="${d}" style="fill:none;stroke:url(#feathB);stroke-width:92;stroke-linejoin:round"/>`;
-    const wobRectD = (l, t, rt, bt, amp) => {
-      const rect = [[l, t], [rt, t], [rt, bt], [l, bt]], dense = [];
-      for (let k = 0; k < 4; k++) { const [x0, y0] = rect[k], [x1, y1] = rect[(k + 1) % 4], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 8); for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); }
-      return path(wob(dense, amp)) + "Z";
-    };
-    const vd = wobRectD(X(0.18) - 10, Y(0.55) - 10, X(0.34) + 10, H + 10, 7);
-    const valleyCut = mk.black(vd) + feather(vd);
-    const flankFeather = (pts) => `<path d="${path(pts)}" style="fill:none;stroke:url(#feathA);stroke-width:30;stroke-linecap:round"/><path d="${path(pts)}" style="fill:none;stroke:url(#feathB);stroke-width:60;stroke-linecap:round"/>`;
-    /* the sun's halo is bare in the tone as it is in every other plane */
-    const sunD = path(wob(arc(sun.x, sun.y, 100, 100, 0, 6.3, 4), 5)) + "Z";
-    const sunCut = mk.black(sunD) + feather(sunD);
-    const chromeCuts = keep.slice(0, 3).map(([l, t, rt, bt]) => { const d = wobRectD(l - 12, t - 12, rt + 12, bt + 12, 4); return mk.black(d) + feather(d); }).join("");
-    const Lwedges = [[[0.157, 0.052], [0.198, 0.09], [0.184, 0.145], [0.155, 0.11]], [[0.20, 0.10], [0.235, 0.16], [0.21, 0.19], [0.187, 0.135]]].map(wedge).join("");
-    const Rwedges = [[[0.832, 0.062], [0.868, 0.098], [0.856, 0.15], [0.83, 0.12]], [[0.87, 0.085], [0.905, 0.125], [0.893, 0.175], [0.865, 0.145]]].map(wedge).join("");
-    const Lcuts = cutLine(offset(Lprof, 4), 4) + [LS1, LS2, LS3, LS4].map((sp) => cutLine(sp.slice(2), 3.5)).join("") + flankFeather(Lfootline) + Lwedges + hazeBands(X(-0.02), X(0.34)) + valleyCut + chromeCuts + sunCut;
-    const Rcuts = cutLine(offset(Rprof, -4), 4) + [RS0, RS1, RS2, RSa].map((sp) => cutLine(sp.slice(2), 3.5)).join("") + flankFeather(Rfootline) + Rwedges + hazeBands(X(0.68), X(1.02)) + chromeCuts + sunCut;
-    SCAPE.maskCuts = { mL: Lcuts, mR: Rcuts };
-    SCAPE.sil = { mL: closed(Lsil), mR: closed(Rsil) };
-    /* the tone fields themselves */
-    const tone = (poly, lvl) => `<path class="ds-tone" style="fill:url(#stip${lvl})" d="${closed(poly)}"/>`;
-    far += `<g class="ds-p2"><g mask="url(#mL)">${Lfacets.map(([p, l]) => tone(p, l)).join("")}${tone(lowerL, 1)}</g>` +
-      `<g mask="url(#mR)">${Rfacets.map(([p, l]) => tone(p, l)).join("")}${tone(lowerR, 1)}</g>`;
-    nS += Lfacets.length + Rfacets.length + 2;
-    /* STRUCTURE IN LINE: a dozen long hair-strong strokes per massif over
-       the dot field, the way an aquatint is drawn: the ridgeline, the spurs
-       with lifts, one gully beside each main spur converging into it. Never
-       a hatch field in this plane. */
-    const spurLine = (pts) => { const n = pts.length; let d = ""; for (const [f0, f1] of [[0.06, 0.44], [0.52, 0.8], [0.86, 1]]) d += strokes(pts.slice(Math.floor(f0 * n), Math.max(Math.floor(f0 * n) + 2, Math.floor(f1 * n))), 0.35, "ds-far w1 ds-ridge"); return d; };
-    const gullyLine = (pts, side) => { const lo = pts.slice(Math.floor(pts.length * 0.35)); const g = lo.map(([x, y], i) => [x + side * (4 + 10 * (1 - i / lo.length)), y + 2]); return strokes(g, 0.4, "ds-far w06 ds-ridge"); };
-    far += strokes(Lprof, 0.35, "ds-far w1 ds-ridge") + [LS1, LS2, LS3, LS4].map(spurLine).join("") + gullyLine(LS2, -1) + gullyLine(LS3, -1) + gullyLine(LS4, 1);
-    far += strokes(Rprof, 0.35, "ds-far w1 ds-ridge") + [RS0, RS1, RS2, RSa].map(spurLine).join("") + gullyLine(RS0, -1) + gullyLine(RS1, -1) + gullyLine(RS2, 1);
-    far += `</g>`;
-    nS += 22;
-    /* the far range through the gap: a broken line, its crest shadows in
-       the sparsest stipple, its saddle held above the kicker */
-    const farR = curve(belowKick(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 12), 4);
-    for (const [f0, f1] of [[0, 0.33], [0.37, 0.66], [0.70, 1]]) far += strokes(farR.slice(Math.floor(f0 * farR.length), Math.floor(f1 * farR.length)), 1.1, "ds-far w1 ds-ridge");
-    const farR2 = curve(belowKick(FP([[0.31, 0.33], [0.35, 0.27], [0.385, 0.235], [0.415, 0.19], [0.45, 0.15], [0.50, 0.14], [0.55, 0.15], [0.585, 0.19], [0.62, 0.24], [0.655, 0.30]]), 0), 4);
-    for (const [f0, f1] of [[0, 0.3], [0.36, 0.62], [0.68, 1]]) far += strokes(farR2.slice(Math.floor(f0 * farR2.length), Math.floor(f1 * farR2.length)), 1.0, "ds-far w06 ds-ridge");
-    far += `<g class="ds-p1">` + [[[0.33, 0.23], [0.345, 0.20], [0.365, 0.215], [0.36, 0.26], [0.335, 0.27]], [[0.585, 0.16], [0.60, 0.19], [0.625, 0.225], [0.62, 0.25], [0.59, 0.21]]]
-      .map((p) => `<path class="ds-tone" style="fill:url(#stipC)" d="${closed(belowKick(FP(p), 12))}"/>`).join("") + `</g>`;
-    nS += 2;
-    /* the haze line the tone stops behind: broken, at the massifs' feet */
-    for (const [fx0, fx1] of [[-0.01, 0.06], [0.08, 0.17], [0.64, 0.73], [0.75, 0.84]])
-      far += strokes(curve([[X(fx0), haze + (r() - 0.5) * 6], [X((fx0 + fx1) / 2), haze - 2 + (r() - 0.5) * 4], [X(fx1), haze + 1 + (r() - 0.5) * 6]], 6), 1.0, "ds-far w1");
 
     /* ————— the etched sky: long horizontals between the crown and the bough —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
@@ -8579,7 +8564,7 @@ function buildDawnscape() {
     for (let i = 0; i < 6; i++) {
       const t = i / 5;
       const y = Y(0.105 - t * 0.09) + (r() - 0.5) * Y(0.02);
-      let a = X(0.17 + (1 - t) * 0.16) + r() * X(0.03);
+      let a = X(0.12 + (1 - t) * 0.18) + r() * X(0.03);
       if (Math.abs(a - prevA) < 40) a += 60 + r() * 40;
       let b = Math.min(a + 180 + r() * 320, X(0.81));
       if (Math.abs(b - prevB) < 40) b -= 50 + r() * 40;
@@ -8691,6 +8676,7 @@ function buildDawnscape() {
     let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
     /* the trunk's silhouette, never drawn, only cast: its reserve into the massif */
     SCAPE.trunkSil = path([...left, ...[...right].reverse()]) + "Z";
+    SCAPE.trunkPoly = [...left, ...[...right].reverse()];
     reserves.push({ id: "trunkSil", massif: 12, bank: 0, grass: 0 });
     /* roots: two each side, the outer ones reaching for the corner */
     for (const rt of [
@@ -8784,12 +8770,21 @@ function buildDawnscape() {
       ...clump(0.012, 0.15, [[-14, -52, 46], [6, -18, 50], [-8, 26, 44], [26, -34, 30], [24, 16, 36], [42, -4, 18]]),
       ...clump(0.0, 0.03, [[0, 0, 30], [22, 26, 20]]),
       ...clump(0.02, 0.265, [[-20, 0, 36], [14, 14, 30], [36, -16, 26], [52, 10, 16]]),
+      /* the bridges: between the top and the middle, the middle and the low,
+         so the layer is one connected canopy and not three islands */
+      ...clump(0.012, 0.085, [[-6, 0, 26], [20, 10, 22]]),
+      ...clump(0.03, 0.215, [[-8, 0, 24], [20, -6, 20]]),
     ];
     const outMasses = [
       ...clump(0.23, 0.03, [[-64, -24, 40], [-28, 4, 52], [16, -24, 46], [54, 4, 40], [-4, 40, 36], [40, 40, 30], [84, 26, 18], [-48, 34, 16]]),
       ...clump(0.17, 0.155, [[-36, 0, 40], [4, -18, 44], [38, 12, 34], [-68, 26, 28], [2, 26, 26], [52, -14, 18], [-90, -10, 14]]),
       ...clump(0.255, 0.14, [[-18, -10, 36], [16, 18, 28], [4, -38, 20]]),
       ...clump(0.222, 0.25, [[0, 0, 26], [-30, 14, 18]]),
+      /* the bridges: the top run to the middle, the middle to the reach,
+         the middle to the low bough */
+      ...clump(0.19, 0.085, [[-24, 0, 27], [14, 10, 25], [40, -8, 20]]),
+      ...clump(0.225, 0.15, [[-10, 0, 30], [24, 8, 26]]),
+      ...clump(0.20, 0.21, [[-16, 0, 30], [18, 6, 26]]),
     ];
     /* THE WIND IS IN THE LEAVES, not only in the bough: the windward masses
        flutter, a skew about each mass's branch attachment on its own short
@@ -8825,7 +8820,7 @@ function buildDawnscape() {
     const [icx, icy] = cen(inMasses);
     inner.fills = compound(icx, icy, inMasses, 3, cutTarget) + froth(inMasses, icx, icy, "flut-3");
     cutTarget = cutMasks.mC2 = [];
-    const topRun = outMasses.slice(0, 8), reach = outMasses.slice(8);
+    const topRun = outMasses.slice(0, 16), reach = outMasses.slice(16);
     const [tcx, tcy] = cen(topRun), [rcx, rcy] = cen(reach);
     outer.fills = compound(tcx, tcy, topRun, 4, cutTarget) + compound(rcx, rcy, reach, 5, cutTarget) + froth(outMasses, (tcx + rcx) / 2, (tcy + rcy) / 2, "flut-1");
     cutTarget = null;
@@ -9352,8 +9347,7 @@ function buildDawnscape() {
       return `<path class="ds-tone ds-shadow" data-id="${id}" style="fill:url(#stipS)" d="${path(wob(poly, 4))}Z"/>`;
     };
     SCAPE.shadows = [];
-    near += `<g class="ds-light">` + shadowOf("tree", X(0.082), hz + 2, X(0.04), Y(0.42)) + shadowOf("doe", X(0.165), hz + 2, 22 * vs, 60 * vs) +
-      shadowOf("fawn", X(0.112), hz + 2, 14 * vs, 40 * vs) + shadowOf("boulder", X(0.918), Y(0.982), 9, 12) + shadowOf("hare", X(0.885), Y(0.97), 10, 26) + `</g>`;
+    void shadowOf;
     /* outline tufts first, behind everything */
     near += `<g class="ds-grass" mask="url(#mG)">`;
     for (const [fx, fy, h, n] of [[0.03, 0, 18, 5], [0.085, 0, 17, 5], [0.16, 0, 15, 5], [0.35, 0.885, 12, 4], [0.49, 0.90, 11, 4], [0.64, 0.88, 12, 4], [0.75, 0, 14, 5], [0.80, 0.98, 11, 4], [0.93, 0.975, 12, 4], [0.985, 0, 19, 6]])
@@ -9470,7 +9464,7 @@ function buildDawnscape() {
       spec.push([+gx.toFixed(1), +gy.toFixed(1), rad]);
       i++;
     }
-    SCAPE.patterns = SCAPE.patterns || {};
+    SCAPE.patterns = SCAPE.patterns || {}; void 0;
     SCAPE.patterns[id] = { size, dots: spec, cover: +((n * Math.PI * rad * rad) / (size * size)).toFixed(4) };
     return `<pattern id="${id}" patternUnits="userSpaceOnUse" width="${size}" height="${size}" patternTransform="rotate(${rot})">${dots}</pattern>`;
   };
@@ -9482,10 +9476,9 @@ function buildDawnscape() {
     cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
-  const defs = tile("stip1", 23, 10, 0.8, 8) + tile("stip2", 29, 38, 0.8, -7) + tile("stip3", 23, 40, 0.8, 5) + tile("stip4", 29, 92, 0.8, -11) +
-    tile("stipC", 29, 12, 0.7, 5) + tile("stipS", 23, 22, 0.85, -12) + tile("feathA", 17, 30, 1.2, 3, true) + tile("feathB", 19, 10, 1.2, -5, true) +
-    (SCAPE.trunkSil ? `<path id="trunkSil" d="${SCAPE.trunkSil}" style="fill:none"/>` : "") +
-    (SCAPE.sil ? maskOf("mL", SCAPE.sil.mL, SCAPE.maskCuts.mL + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") + maskOf("mR", SCAPE.sil.mR, SCAPE.maskCuts.mR + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") : "") +
+  void tile;
+  far = far.replace("<!--RANGE-->", "<g class=\"ds-range-slot\"></g>");
+  const defs = (SCAPE.trunkSil ? `<path id="trunkSil" d="${SCAPE.trunkSil}" style="fill:none"/>` : "") +
     (SCAPE.bankSil ? maskOf("mB", SCAPE.bankSil, "", "bank") : "") +
     maskOf("mG", `M-4 ${F(hz - 60)}H${W + 4}V${H + 4}H-4Z`, "", "grass") + leafMasks;
   SCAPE.reserves = reserves;
@@ -9494,6 +9487,23 @@ function buildDawnscape() {
   if (sky.sock) {
     if (sky.sock.perch.taken === true && SCAPE.perchMarkup) { const g = svg.querySelector(".ds-perch"); g.innerHTML = SCAPE.perchMarkup; g.classList.add("on"); g.parentElement.classList.add("laden"); }
     if (sky.sock.nest.taken === true && SCAPE.nestMarkup) { const g = svg.querySelector(".ds-nestsock"); if (g) { g.innerHTML = SCAPE.nestMarkup; g.classList.add("on"); } }
+  }
+  /* the range, one frame later: its geometry was needed above (the sky
+     keeps off its silhouettes), its ~850 marks are not, and the carry is
+     still running; the build stays under its budget for the frame it runs
+     in. A rebuild on resize cancels a pending slot fill. */
+  if (SCAPE.renderRange) {
+    cancelAnimationFrame(SCAPE.rangeRaf || 0);
+    const gen = (SCAPE.gen = (SCAPE.gen || 0) + 1);
+    SCAPE.rangeRaf = requestAnimationFrame(() => {
+      if (gen !== SCAPE.gen) return;
+      const t0 = performance.now();
+      const slot = svg.querySelector(".ds-range-slot");
+      if (slot) slot.outerHTML = SCAPE.renderRange();
+      window.__world.scape.paths = svg.querySelectorAll("path").length;
+      window.__world.scape.rangeMs = +(performance.now() - t0).toFixed(1);
+      window.__world.scape.rangeDrawn = true;
+    });
   }
   SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups; SCAPE.strokes = nS;
   /* the declaration the gate binds to: every continuous class emitted, its
@@ -9506,7 +9516,10 @@ function buildDawnscape() {
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs }; /* probe hook */
 }
-addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
+/* one rebuild per frame: a window drag fires resize dozens of times a
+   second and the build is tens of milliseconds */
+let scapeRaf = 0;
+addEventListener("resize", () => { if (SCAPE.built && !scapeRaf) scapeRaf = requestAnimationFrame(() => { scapeRaf = 0; buildDawnscape(); }); });
 
 /* where they leave from, as a fraction of the viewport — captured when the
    gate is approved so a resize mid-flight rebuilds the same departure */

@@ -91,7 +91,15 @@ test.describe("accessibility", () => {
      it names — rather than as the presence of a string. */
   test("the archive's skip link is the first stop for a keyboard", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    /* macOS WebKit leaves links out of the Tab order unless Full Keyboard
+       Access is on, so Tab lands past the link there; chromium and firefox
+       reach it, and the markup is the same for all three. An environment
+       fact, not a product one (labrat, 2026-09-25). */
+    test.skip(
+      /webkit/.test(testInfo.project.name),
+      "WebKit tabs past links without Full Keyboard Access"
+    );
     await page.goto("/projects/automl/");
     await page.waitForLoadState("domcontentloaded");
 

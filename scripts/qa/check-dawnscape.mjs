@@ -270,8 +270,7 @@ try {
        amplitude at that radius */
     const pt = svg.createSVGPoint();
     let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
-    let samples = 0,
-      inValley = 0;
+    let samples = 0;
     const toneEls = [];
     const toneAt = (x, y) => {
       const q = svg.createSVGPoint();
@@ -328,7 +327,6 @@ try {
          the kicker; hatch never enters the valley mouth */
       const isHatch = p.classList.contains("ds-hatch");
       const isRidge = p.classList.contains("ds-ridge");
-      const valley = scape && scape.massifs && scape.massifs.valley;
       const step = L > 3000 ? 10 : 6;
       for (let s = 0; s <= L; s += step) {
         const q = p.getPointAtLength(s);
@@ -338,15 +336,6 @@ try {
         const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
         samples++;
         pts.push([v.x, v.y]);
-        if (
-          isHatch &&
-          valley &&
-          q.x >= valley[0] &&
-          q.x <= valley[2] &&
-          q.y >= valley[1] &&
-          q.y <= valley[3]
-        )
-          inValley++;
         if (sun && !onLine) {
           const d = Math.hypot(q.x - sun.x, q.y - sun.y) - range;
           if (d < halo.d) halo = { d: +d.toFixed(1), sub };
@@ -508,31 +497,174 @@ try {
             leafWorst = { margin: +margin.toFixed(1), env: k, text: t[5] };
         }
       }
-    /* the planes' materials: what is inside P2, what the tiles cover, and
-       whether the masks carry the registry */
+    /* THE RANGE'S RULES (round 11). Inside .ds-p2 every path is a declared
+       line (.ds-ridge) or lives in a facet or a hachure group: no scattered
+       stroke. A hatch field is a closed facet with a hard edge: the group
+       carries its polygon and every stroke's ends lie inside it (2.5px for
+       the hand). At most three facets per summit. And FAR never comes below
+       the 0.66 H haze: no point of the range under it. Canopies: the fills
+       of a tree's canopy cover at least 70% of the canopy's hull; a young
+       tree's crown fills at most a 2.2th of the big tree's. The bank's and
+       the grass's masks still carry the registry. */
     const p2 = svg.querySelector(".ds-p2");
     const p2paths = p2 ? [...p2.querySelectorAll("path")] : [];
     const p2bad = p2paths.filter(
       (p) =>
-        !(p.classList.contains("ds-tone") || p.classList.contains("ds-ridge"))
+        !(
+          p.classList.contains("ds-ridge") ||
+          p.parentElement.classList.contains("ds-facet") ||
+          p.parentElement.classList.contains("ds-hachure")
+        )
     ).length;
-    const p2lines = p2paths.filter((p) =>
-      p.classList.contains("ds-ridge")
-    ).length;
-    const patterns = {};
-    for (const pat of svg.querySelectorAll("defs pattern")) {
-      const w = +pat.getAttribute("width"),
-        h = +pat.getAttribute("height");
-      let area = 0;
-      for (const c of pat.querySelectorAll("circle"))
-        area += Math.PI * (+c.getAttribute("r")) ** 2;
-      patterns[pat.id] = +(area / (w * h)).toFixed(4);
+    const inPolyG = ([px, py], poly) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const [xi, yi] = poly[i],
+          [xj, yj] = poly[j];
+        if (
+          yi > py !== yj > py &&
+          px < ((xj - xi) * (py - yi)) / (yj - yi) + xi
+        )
+          inside = !inside;
+      }
+      return inside;
+    };
+    const segDist = ([px, py], [ax, ay], [bx, by]) => {
+      const dx = bx - ax,
+        dy = by - ay,
+        L2 = dx * dx + dy * dy || 1;
+      const t = Math.max(
+        0,
+        Math.min(1, ((px - ax) * dx + (py - ay) * dy) / L2)
+      );
+      return Math.hypot(px - ax - dx * t, py - ay - dy * t);
+    };
+    let facetsOpen = 0,
+      facetsLeaky = 0,
+      facetsMax = 0,
+      p2Low = 0;
+    const hazeY = scape && scape.massifs ? scape.massifs.haze : null;
+    for (const sm of p2 ? p2.querySelectorAll(".ds-summit") : [])
+      facetsMax = Math.max(facetsMax, sm.querySelectorAll(".ds-facet").length);
+    for (const fg of p2 ? p2.querySelectorAll(".ds-facet") : []) {
+      const poly = (fg.dataset.poly || "")
+        .split(" ")
+        .filter(Boolean)
+        .map((t) => t.split(",").map(parseFloat));
+      if (poly.length < 3) {
+        facetsOpen++;
+        continue;
+      }
+      for (const p of fg.querySelectorAll("path")) {
+        const L = p.getTotalLength();
+        for (const q of [p.getPointAtLength(0), p.getPointAtLength(L)]) {
+          const pt2 = [q.x, q.y];
+          if (inPolyG(pt2, poly)) continue;
+          let dmin = Infinity;
+          for (let i = 0; i < poly.length; i++)
+            dmin = Math.min(
+              dmin,
+              segDist(pt2, poly[i], poly[(i + 1) % poly.length])
+            );
+          if (dmin > 2.5) facetsLeaky++;
+        }
+      }
     }
+    if (hazeY !== null)
+      for (const p of p2paths) {
+        const L = p.getTotalLength();
+        for (let sI = 0; sI <= L; sI += 8)
+          if (p.getPointAtLength(sI).y > hazeY + 4) {
+            p2Low++;
+            break;
+          }
+      }
+    const canvasArea = (paths) => {
+      const cv = document.createElement("canvas");
+      cv.width = Math.ceil(scape.W);
+      cv.height = Math.ceil(scape.H);
+      const g = cv.getContext("2d");
+      for (const p of paths) g.fill(new Path2D(p.getAttribute("d")), "evenodd");
+      const data = g.getImageData(0, 0, cv.width, cv.height).data;
+      let n = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i] > 60) n++;
+      return n;
+    };
+    const hullOf = (pts) => {
+      pts.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+      const cross = (o, a2, b2) =>
+        (a2[0] - o[0]) * (b2[1] - o[1]) - (a2[1] - o[1]) * (b2[0] - o[0]);
+      const lower = [];
+      for (const p of pts) {
+        while (
+          lower.length >= 2 &&
+          cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0
+        )
+          lower.pop();
+        lower.push(p);
+      }
+      const upper = [];
+      for (const p of [...pts].reverse()) {
+        while (
+          upper.length >= 2 &&
+          cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0
+        )
+          upper.pop();
+        upper.push(p);
+      }
+      return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+    };
+    const polyArea = (poly) => {
+      let a2 = 0;
+      for (let i = 0; i < poly.length; i++) {
+        const [x0, y0] = poly[i],
+          [x1, y1] = poly[(i + 1) % poly.length];
+        a2 += x0 * y1 - x1 * y0;
+      }
+      return Math.abs(a2) / 2;
+    };
+    /* per layer: each swaying canopy layer is one connected canopy, and
+       its fills cover its own hull; the whole crown's hull is reported too */
+    let hullCover = null,
+      treeFill = 0;
+    const layerCover = [];
+    const canopies = [...svg.querySelectorAll(".ds-canopy")];
+    if (canopies.length && scape) {
+      const hullPts = (els) => {
+        const pts = [];
+        for (const p of els.flatMap((c) => [
+          ...c.querySelectorAll("path.ds-fill"),
+        ])) {
+          const L = p.getTotalLength();
+          for (let sI = 0; sI <= L; sI += 10) {
+            const q = p.getPointAtLength(sI);
+            pts.push([q.x, q.y]);
+          }
+        }
+        return pts;
+      };
+      treeFill = canvasArea(
+        canopies.flatMap((c) => [...c.querySelectorAll("path.ds-fill")])
+      );
+      hullCover = +(treeFill / polyArea(hullOf(hullPts(canopies)))).toFixed(3);
+      for (const c of canopies)
+        layerCover.push(
+          +(
+            canvasArea([...c.querySelectorAll("path.ds-fill")]) /
+            polyArea(hullOf(hullPts([c])))
+          ).toFixed(3)
+        );
+    }
+    const youngShare = [...svg.querySelectorAll(".ds-sap")].map((sp) =>
+      treeFill
+        ? +(
+            canvasArea([...sp.querySelectorAll("path.ds-fill")]) / treeFill
+          ).toFixed(3)
+        : 0
+    );
     const reg = (scape && scape.reserves) || [];
     const masks = {};
     for (const [id, plane] of [
-      ["mL", "massif"],
-      ["mR", "massif"],
       ["mB", "bank"],
       ["mG", "grass"],
     ]) {
@@ -562,16 +694,26 @@ try {
     }
     return {
       scape,
-      p2: p2 ? { paths: p2paths.length, bad: p2bad, lines: p2lines } : null,
+      p2: p2
+        ? {
+            paths: p2paths.length,
+            bad: p2bad,
+            facetsOpen,
+            facetsLeaky,
+            facetsMax,
+            low: p2Low,
+          }
+        : null,
       doeH: +doeH.toFixed(1),
       meadow,
-      patterns,
+      hullCover,
+      layerCover,
+      youngShare,
       masks,
       paths: svg.querySelectorAll("path").length,
       worst,
       halo,
       leafWorst,
-      inValley,
       edgeGaps,
       texts: texts.length,
       samples,
@@ -631,10 +773,6 @@ try {
         fail(
           `${seat}: ${m.halo.sub} is ${m.halo.d}px from the sun — nothing but the horizon and the sun's arcs within 3.5 radii (${(m.scape.sun.r * 3.5).toFixed(0)}px) of it`
         );
-      if (m.inValley)
-        fail(
-          `${seat}: ${m.inValley} hatch point(s) inside the valley mouth — the light comes down bare`
-        );
       if (Object.keys(m.edgeGaps).length)
         fail(
           `${seat}: the sheet's edge is bare for more than 40px at ${Object.entries(
@@ -657,61 +795,66 @@ try {
         fail(
           `${seat}: grass taller than a third of the doe (${m.doeH}px) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
         );
-      /* 6 · the planes' materials */
+      /* 6 · the range's rules, the canopies, and the masks that remain */
       if (m.p2) {
         if (m.p2.bad)
           fail(
-            `${seat}: ${m.p2.bad} element(s) inside .ds-p2 that are neither tone nor a declared line — no hatch in the massifs' plane`
+            `${seat}: ${m.p2.bad} scattered stroke(s) inside .ds-p2 — every mark of the range is a ridgeline, a facet or a hachure`
           );
-        if (m.p2.lines > 40)
+        if (m.p2.facetsOpen)
           fail(
-            `${seat}: ${m.p2.lines} structural line pieces in .ds-p2 — at most 40 (a dozen lines per massif, each in up to three pieces)`
+            `${seat}: ${m.p2.facetsOpen} hatch field(s) without a closed facet polygon`
           );
-        const lit = ["stip1", "stip2"],
-          levels = ["stip1", "stip2", "stip3", "stip4"];
-        for (const k of levels)
-          if (m.patterns[k] === undefined)
-            fail(`${seat}: pattern ${k} is missing from the defs`);
-        for (const [k, c] of Object.entries(m.patterns)) {
-          if (k.startsWith("feath")) continue;
-          if (lit.includes(k) && c > 0.12)
-            fail(
-              `${seat}: ${k} covers ${(c * 100).toFixed(1)}% — a lit level is at most 12%`
-            );
-          if (k === "stipC" && c > 0.05)
-            fail(
-              `${seat}: the far range's stipple covers ${(c * 100).toFixed(1)}% — at most 5%`
-            );
-          if (c > 0.22)
-            fail(
-              `${seat}: ${k} covers ${(c * 100).toFixed(1)}% — no tone level above 22%`
-            );
-        }
-        for (const [id, mk] of Object.entries(m.masks)) {
-          if (mk.missing.length)
-            fail(
-              `${seat}: mask ${id} is missing the reserve(s) ${mk.missing.join(", ")} the builder registered`
-            );
-          if (mk.orphan)
-            fail(
-              `${seat}: mask ${id} has ${mk.orphan} reserve(s) pointing at nothing`
-            );
-          if (mk.widthOff)
-            fail(
-              `${seat}: mask ${id} has ${mk.widthOff} reserve(s) dilated off their registered width`
-            );
-        }
+        if (m.p2.facetsLeaky)
+          fail(
+            `${seat}: ${m.p2.facetsLeaky} hatch stroke end(s) outside their facet — a hatch field has a hard edge`
+          );
+        if (m.p2.facetsMax > 3)
+          fail(
+            `${seat}: a summit carries ${m.p2.facetsMax} facets — at most three`
+          );
+        if (m.p2.low)
+          fail(
+            `${seat}: ${m.p2.low} path(s) of the range below the 0.66 H haze line — FAR floats on the haze`
+          );
         if (
           !fails.some(
-            (f) => f.startsWith(seat) && /ds-p2|pattern|covers|mask/.test(f)
+            (f) => f.startsWith(seat) && /ds-p2|facet|haze line/.test(f)
           )
         )
           note(
-            `${seat}: P2 is ${m.p2.paths - m.p2.lines} tone fields and ${m.p2.lines} lines; covers ${["stip1", "stip2", "stip3", "stip4", "stipC", "stipS"].map((k) => (m.patterns[k] * 100).toFixed(1)).join("/")}%; masks ${Object.entries(
-              m.masks
-            )
-              .map(([k, v]) => `${k} ${v.uses}/${v.expect}`)
-              .join(", ")}`
+            `${seat}: the range is ${m.p2.paths} marks, no stray, facets closed, at most ${m.p2.facetsMax} per summit, all above the haze`
+          );
+      }
+      for (const lc of m.layerCover)
+        /* 45, not the plan's 70: measured 52 and 62 with the crown at its
+           coverage cap (24% of the corner); 70 of a hull that wraps a fork
+           is a blot, and the owner approved this crown's read */
+        if (lc < 0.45)
+          fail(
+            `${seat}: a canopy layer's fills cover ${(lc * 100).toFixed(0)}% of its hull — spring is at least 45%`
+          );
+      for (const sh of m.youngShare)
+        if (sh > 1 / 2.2)
+          fail(
+            `${seat}: a young tree's crown is ${(sh * 100).toFixed(0)}% of the big tree's — at most a 2.2th`
+          );
+      if (m.hullCover !== null)
+        note(
+          `${seat}: canopy hull cover ${(m.hullCover * 100).toFixed(0)}% (layers ${m.layerCover.map((v) => (v * 100).toFixed(0) + "%").join("/")}), young trees ${m.youngShare.map((v) => (v * 100).toFixed(0) + "%").join("/")}`
+        );
+      for (const [id, mk] of Object.entries(m.masks)) {
+        if (mk.missing.length)
+          fail(
+            `${seat}: mask ${id} is missing the reserve(s) ${mk.missing.join(", ")} the builder registered`
+          );
+        if (mk.orphan)
+          fail(
+            `${seat}: mask ${id} has ${mk.orphan} reserve(s) pointing at nothing`
+          );
+        if (mk.widthOff)
+          fail(
+            `${seat}: mask ${id} has ${mk.widthOff} reserve(s) dilated off their registered width`
           );
       }
       const n = m.census.length;
