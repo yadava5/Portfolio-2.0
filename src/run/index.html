@@ -1546,12 +1546,15 @@ if (location.hash.length > 1) {
   /* the perch: the bird comes up on the twig as the flyer's ink goes, and
      the twig takes its weight; a leaf that has landed and is the sixth on
      the ground fades while the next one falls. All transients. */
-  .dawnscape .ds-perch{opacity:0}
-  .dawnscape .ds-perch.on{opacity:1}
+  .dawnscape .ds-perch, .dawnscape .ds-nestsock{opacity:0}
+  .dawnscape .ds-perch.on, .dawnscape .ds-nestsock.on{opacity:1}
+  /* the den: the squirrel is inside the hollow, and not drawn */
+  .dawnscape .ds-squirrel.denned{opacity:0}
   .dawnscape .ds-twig.laden{transform:translateY(2.5px)}
   .dawnscape .ds-leaf.gone{opacity:0}
   @media (prefers-reduced-motion: no-preference){
-    .dawnscape .ds-perch{transition:opacity .4s ease}
+    .dawnscape .ds-perch, .dawnscape .ds-nestsock{transition:opacity .4s ease}
+    .dawnscape .ds-squirrel{transition:opacity .25s ease}
     .dawnscape .ds-owl{transition:opacity .5s ease}
     .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-leaf{transition:opacity 2s ease}
@@ -7760,7 +7763,7 @@ function releaseScroll() {
   /* and the morning comes alive here, not at the press: the wind on the
      ground waits until the page has stopped carrying the reader, so nothing
      composites during the carry and nothing moves during the stagger */
-  if (atMorning) { document.body.classList.add("morninglive"); mark("wind"); }
+  if (atMorning) { document.body.classList.add("morninglive"); mark("wind"); sky.windAt = performance.now(); }
   removeEventListener("wheel", eatScroll);
   removeEventListener("touchmove", eatScroll);
   removeEventListener("keydown", eatKeys);
@@ -8717,6 +8720,15 @@ function buildDawnscape() {
       `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
   };
 
+  const perchBird = (x, y, dir, k) => {
+    const Tp = (px, py) => `${F(x + px * k * dir)} ${F(y + py * k)}`;
+    return `<path class="ds-fill" d="M${Tp(-6, -6)} C${Tp(-6, -9)} ${Tp(-1, -11)} ${Tp(3, -10)} C${Tp(7, -9.5)} ${Tp(9, -8)} ${Tp(12, -5)}` +
+      ` C${Tp(9, -4)} ${Tp(6, -2.4)} ${Tp(2, -2.2)} C${Tp(-2, -2.2)} ${Tp(-6, -3.4)} ${Tp(-6, -6)} Z` +
+      ` M${Tp(-4, -8)} C${Tp(-6, -10)} ${Tp(-8, -12.5)} ${Tp(-9.5, -13)} C${Tp(-11, -13.4)} ${Tp(-12, -12.4)} ${Tp(-12, -11.4)}` +
+      ` L${Tp(-15, -10.8)} L${Tp(-11.6, -10)} C${Tp(-11, -9)} ${Tp(-9, -8)} ${Tp(-7, -7)} Z"/>` +
+      `<path class="ds-ink w1" d="M${Tp(-1, -2.4)} L${Tp(-1.6, 0)} M${Tp(2.4, -2.4)} L${Tp(3, 0)}"/>`;
+  };
+
   /* ————— the perch bough: in from the top-right, lighter than the crown —————
      A limb off a tree that is out of the frame, drooping to 0.72 W, three
      masses hanging under it, a bare twig rising near its tip where a bird
@@ -8756,15 +8768,9 @@ function buildDawnscape() {
     SCAPE.perch = { x: pz[0], y: pz[1] };
     /* the bird that lands here: the ground gull's own body and head, wings
        folded, facing west into the sky it crossed, its feet on the twig's
-       tip. Built now so a landing and a rebuild both draw the same bird. */
-    {
-      const k = 0.9 * Math.max(vs, 0.8), Tp = (px, py) => `${F(pz[0] + px * k)} ${F(pz[1] + py * k)}`;
-      SCAPE.perchMarkup = `<path class="ds-fill" d="M${Tp(-6, -6)} C${Tp(-6, -9)} ${Tp(-1, -11)} ${Tp(3, -10)} C${Tp(7, -9.5)} ${Tp(9, -8)} ${Tp(12, -5)}` +
-        ` C${Tp(9, -4)} ${Tp(6, -2.4)} ${Tp(2, -2.2)} C${Tp(-2, -2.2)} ${Tp(-6, -3.4)} ${Tp(-6, -6)} Z` +
-        ` M${Tp(-4, -8)} C${Tp(-6, -10)} ${Tp(-8, -12.5)} ${Tp(-9.5, -13)} C${Tp(-11, -13.4)} ${Tp(-12, -12.4)} ${Tp(-12, -11.4)}` +
-        ` L${Tp(-15, -10.8)} L${Tp(-11.6, -10)} C${Tp(-11, -9)} ${Tp(-9, -8)} ${Tp(-7, -7)} Z"/>` +
-        `<path class="ds-ink w1" d="M${Tp(-1, -2.4)} L${Tp(-1.6, 0)} M${Tp(2.4, -2.4)} L${Tp(3, 0)}"/>`;
-    }
+       tip. Built now so a landing and a rebuild both draw the same bird;
+       the nest's sitter is the same bird facing east. */
+    SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
     groups++;
     cutPad = 4;
     return `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.167))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
@@ -9089,8 +9095,10 @@ function buildDawnscape() {
     for (let i = 0; i < 7; i++) { const a = 0.3 + r() * 2.5, x = nx + Math.cos(a) * nw * 0.75, y = ny + Math.sin(a) * nw * 0.32; wv += stroke([[x - 5, y + 1.5], [x + 4, y - 2.5]], 0.3); }
     d += P(wv, "ds-ink w1", 7);
     SCAPE.nest = { x: nx, y: ny - nw * 0.5 };
+    SCAPE.nestMarkup = perchBird(nx, ny - nw * 0.5 + 2, 1, 0.8 * Math.max(vs, 0.8));
+    d += `<g class="ds-nestsock" data-x="${F(nx)}" data-y="${F(ny - nw * 0.5)}"></g>`;
     /* the trunk hollow: a dark pocket with a cream rim, the squirrel's den */
-    const hx = X(0.083), hy = Y(0.55), rx = 6.5 * vs, ry = 9 * vs;
+    const hx = X(0.097), hy = Y(0.515), rx = 6.5 * vs, ry = 9 * vs;
     const rim = arc(hx, hy, rx, ry, 0, 6.3, 2);
     d += P(stroke(rim, 0.35), "ds-ink w1");
     const inner = arc(hx, hy, rx - 2.4, ry - 2.6, 0, 6.3, 2);
@@ -9109,7 +9117,7 @@ function buildDawnscape() {
     d += hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
     SCAPE.log = { x0: lx0, x1: lx1, y: ly - 5 };
     /* the lichened boulder beside the hare */
-    const bx = X(0.905), by = Y(0.982);
+    const bx = X(0.918), by = Y(0.982);
     const rock = curve([[bx - 9, by], [bx - 8, by - 5], [bx - 3, by - 8], [bx + 4, by - 7], [bx + 9, by - 3], [bx + 8, by], [bx - 9, by]], 2);
     d += contour(rock, 0.5, "ds-ink", ["w12", "w1", "w12"]);
     let li = "";
@@ -9212,12 +9220,12 @@ function buildDawnscape() {
       near += tuft(X(fx), Y(fy), h * vs, n);
     near += gull(X(0.55), Y(0.875), -1, "peck-a", "a");
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
-    near += gull(X(0.63), Y(0.887), 1, "peck-c", "c");
-    near += hare(X(0.86), Y(0.97));
+    near += gull(X(0.642), Y(0.955) + 4, 1, "peck-c", "c");
+    near += hare(X(0.885), Y(0.97));
     near += details();
     /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
-    near += squirrel(X(0.165), Y(0.14 + 0.312 * 1.1) - 1);
+    near += squirrel(X(0.138), Y(0.14 + 0.316 * 1.1) - 1);
     const owlAt = [X(0.022), Y(0.14 + 0.246 * 1.1) - 2];
     SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
     SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
@@ -9279,12 +9287,10 @@ function buildDawnscape() {
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = `<g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`;
-  /* a rebuild mid-dwell puts the perched bird back on the new twig */
-  if (sky.perched && SCAPE.perchMarkup) {
-    const g = svg.querySelector(".ds-perch");
-    g.innerHTML = SCAPE.perchMarkup;
-    g.classList.add("on");
-    g.parentElement.classList.add("laden");
+  /* a rebuild mid-dwell puts a sitting bird back in its socket */
+  if (sky.sock) {
+    if (sky.sock.perch.taken === true && SCAPE.perchMarkup) { const g = svg.querySelector(".ds-perch"); g.innerHTML = SCAPE.perchMarkup; g.classList.add("on"); g.parentElement.classList.add("laden"); }
+    if (sky.sock.nest.taken === true && SCAPE.nestMarkup) { const g = svg.querySelector(".ds-nestsock"); if (g) { g.innerHTML = SCAPE.nestMarkup; g.classList.add("on"); } }
   }
   SCAPE.built = true; SCAPE.hz = hz; SCAPE.groups = groups; SCAPE.strokes = nS;
   /* the declaration the gate binds to: every continuous class emitted, its
@@ -9293,7 +9299,7 @@ function buildDawnscape() {
   SCAPE.roamers = {};
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null, massifs: SCAPE.massifs || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])) }; /* probe hook */
 }
 addEventListener("resize", () => { if (SCAPE.built) buildDawnscape(); });
@@ -9518,7 +9524,8 @@ const BIRD_SVG = (() => {
    is logged so a resize mid-flight rebuilds it where it had got to. */
 const farLog = [];
 const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), lastGround: -Infinity, lastDeer: -Infinity, lastStep: -Infinity, lastHare: -Infinity,
-  lastFawn: -Infinity, lastDart: -Infinity, lastWalk: -Infinity, perched: false, perch: { lands: 0, leaves: 0 }, owl: false };
+  lastFawn: -Infinity, lastDart: -Infinity, lastWalk: -Infinity, lastDen: -Infinity, lastLog: -Infinity,
+  sock: { perch: { taken: false, lands: 0, leaves: 0 }, nest: { taken: false, lands: 0, leaves: 0 } }, owl: false, windAt: 0 };
 let farTimer = null, groundTimer = null;
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
@@ -9545,11 +9552,11 @@ function farPath(f, W, H) {
 
 function placeFar(f, parent, elapsed) {
   /* a landing that finished while the sheet was being rebuilt has landed */
-  if (f.start + f.dur <= elapsed) { if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else perchArrive(); } return false; }
+  if (f.start + f.dur <= elapsed) { if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else socketArrive(f.sock || "perch"); } return false; }
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
   const el = document.createElement("div");
-  el.className = "bird far" + (f.land ? " landing" : "") + (f.ex < f.ox ? " west" : "");
+  el.className = "bird far" + (f.land ? " landing" : "") + (f.ex < f.ox ? " west" : "") + (f.speck ? " speck" : "");
   el.dataset.entry = f.entry;
   el.style.offsetPath = farPath(f, W, H);
   el.style.setProperty("--dur", f.dur.toFixed(2) + "s");
@@ -9563,7 +9570,7 @@ function placeFar(f, parent, elapsed) {
     if (e.animationName !== "farcross" && e.animationName !== "farland") return;
     el.classList.add("gone");
     el.remove();
-    if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else perchArrive(); }
+    if (f.land && !f.done) { f.done = true; if (f.owl) owlArrive(); else socketArrive(f.sock || "perch"); }
   });
   parent.appendChild(el);
   return true;
@@ -9582,7 +9589,7 @@ function spawnFar() {
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
   const narrow = W < 760;
   const now = performance.now();
-  const live = host.querySelectorAll(".bird.far:not(.gone)").length;
+  const live = host.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
   sky.live = live;
   /* not while the reader is back at the gate, and never more than three */
   if (!atMorning || live >= 3) { farTimer = setTimeout(spawnFar, at(6000)); return; }
@@ -9603,8 +9610,24 @@ function spawnFar() {
      always (a sitter sees a landing inside the first minute), only from a
      canopy (a bird off the ground cannot climb to it inside the frame) and
      only while the twig is free; the twig is taken from this moment */
-  const land = entry === "canopy" && !!SCAPE.perch && !sky.perched && (sky.spawned === 0 || r() < 0.2);
-  if (land) sky.perched = true;
+  /* one canopy crossing in five ends on the bough's bare twig (the first
+     always), one in seven at the nest in L1's fork, each only while that
+     socket is free; the socket is taken from this moment */
+  /* staged so a sitter sees each of them inside the first minutes (the
+     seeded crossing draws happen to give none in the first ten): the first
+     canopy crossing lands on the perch, the second leaves through the
+     pass, the third lands at the nest; after that, their own chances from
+     their own generator */
+  let sock = null, viaPass = false;
+  if (entry === "canopy") {
+    sky.canopies = (sky.canopies || 0) + 1;
+    const rp = birdRng(0x9a55 + sky.canopies * 977);
+    if (SCAPE.perch && !sky.sock.perch.taken && (sky.canopies === 1 || rp() < 0.2)) sock = "perch";
+    else if (SCAPE.nest && !sky.sock.nest.taken && (sky.canopies === 3 || rp() < 0.15)) sock = "nest";
+    else if (!narrow && (sky.canopies === 2 || rp() < 0.3)) viaPass = true;
+  }
+  const land = !!sock;
+  if (land) sky.sock[sock].taken = "coming";
   const count = entry === "canopy" && !land && r() < 0.45 ? 2 : 1;
   const elapsed = (now - releasedAt) / 1000;
   for (let i = 0; i < count; i++) {
@@ -9635,8 +9658,11 @@ function spawnFar() {
       f.ang = ((narrow ? 4 : 6) * Math.PI) / 180;
     }
     f.ex = 0.86 + r() * 0.05;
-    f.ey = narrow ? 0.10 : 0.08 + r() * 0.05;
-    if (land) { f.land = true; f.ex = SCAPE.perch.x / W; f.ey = (SCAPE.perch.y - 7 * vs) / H; }
+    /* birds high: crossings end in the top band; three in ten leave
+       through the saddle between the massifs, the pass */
+    f.ey = narrow ? 0.10 : 0.05 + r() * 0.08;
+    if (viaPass) { f.ex = 0.42 + r() * 0.16; f.ey = 0.06 + r() * 0.04; f.exit = "pass"; }
+    if (land) { const at2 = SCAPE[sock]; f.land = true; f.sock = sock; f.ex = at2.x / W; f.ey = (at2.y - 7 * vs) / H; }
     f.bow = entry === "fade" ? 0.3 : entry === "takeoff" ? 0.9 : 1;
     f.sc = (narrow ? 0.5 : 0.4 + r() * 0.15) * vs;
     f.op = entry === "fade" ? 0.13 + r() * 0.02 : 0.14 + r() * 0.05;
@@ -9648,62 +9674,104 @@ function spawnFar() {
     sky.spawned++;
   }
   sky.last = entry;
-  sky.entries.push({ entry, n: count, t: +(now - release.t0).toFixed(0) });
+  sky.entries.push({ entry, n: count, t: +(now - release.t0).toFixed(0), exit: farLog[farLog.length - 1].exit || "east" });
+  window.__world.crossings = farLog.map((c) => ({ entry: c.entry, ex: +c.ex.toFixed(2), ey: +c.ey.toFixed(2), exit: c.exit || "" })); /* probe hook */
   mark("farbird");
   window.__world.sky = { spawned: sky.spawned, live: live + count, entries: sky.entries };
   farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
 }
 
-/* ····· the perch ·····
-   Capacity one. The flyer's last second fades on the twig and the perched
-   bird, the ground gull's own silhouette at 20px, comes up in its place as
-   the twig dips under it. It stays 20 to 70 seconds and leaves as a new
-   crossing, west, back over the sky; the socket is emptied once the flyer
-   has its ink, so there is never a moment with two birds and never one
-   with an orphan. Both ends are logged for the gate. */
-let perchTimer = null;
-function perchArrive() {
-  const g = document.querySelector(".dawnscape .ds-perch");
-  if (!g || !SCAPE.perchMarkup) { sky.perched = false; return; }
-  g.innerHTML = SCAPE.perchMarkup;
+/* ····· the sockets: the perch and the nest ·····
+   Capacity one each. The flyer's last second fades at the socket and the
+   sitting bird, the ground gull's own silhouette, comes up in its place
+   (the perch's twig dips under it). It stays 20 to 70 seconds and leaves
+   as a new crossing: from the perch west, back over the sky; from the
+   nest east, up over the crown toward the saddle. The socket is emptied
+   once the flyer has its ink, so there is never a moment with two birds
+   and never one with an orphan. Both ends of both are logged. */
+const SOCKETS = {
+  perch: { sel: ".ds-perch", laden: true, dir: -1, ex: () => 0.33, ey: () => 0.035, mark: "perch" },
+  nest: { sel: ".ds-nestsock", laden: false, dir: 1, ex: () => 0.36, ey: () => 0.05, mark: "nest" },
+};
+const sockTimers = { perch: null, nest: null };
+function socketArrive(key) {
+  const S = SOCKETS[key], st = sky.sock[key];
+  const g = document.querySelector(`.dawnscape ${S.sel}`);
+  const markup = key === "perch" ? SCAPE.perchMarkup : SCAPE.nestMarkup;
+  if (!g || !markup) { st.taken = false; return; }
+  g.innerHTML = markup;
   requestAnimationFrame(() => g.classList.add("on"));
-  g.parentElement.classList.add("laden");
-  sky.perched = true;
-  sky.perch.lands++;
-  mark("perch");
-  const r = birdRng(0x7e5c + sky.perch.lands * 977);
-  clearTimeout(perchTimer);
-  perchTimer = setTimeout(leavePerch, at(20000 + r() * 50000));
-  window.__world.perch = { lands: sky.perch.lands, leaves: sky.perch.leaves, perched: 1 };
+  if (S.laden) g.parentElement.classList.add("laden");
+  st.taken = true;
+  st.lands++;
+  mark(S.mark);
+  const r = birdRng(0x7e5c + st.lands * 977 + (key === "nest" ? 31 : 0));
+  clearTimeout(sockTimers[key]);
+  sockTimers[key] = setTimeout(() => leaveSocket(key), at(20000 + r() * 50000));
+  window.__world[key] = { lands: st.lands, leaves: st.leaves, perched: 1 };
 }
-function leavePerch() {
-  perchTimer = null;
-  const g = document.querySelector(".dawnscape .ds-perch");
-  if (!g || !sky.perched || RM) return;
-  if (!atMorning) { perchTimer = setTimeout(leavePerch, at(6000)); return; }
+function leaveSocket(key) {
+  const S = SOCKETS[key], st = sky.sock[key];
+  sockTimers[key] = null;
+  const g = document.querySelector(`.dawnscape ${S.sel}`);
+  if (!g || st.taken !== true || RM) return;
+  if (!atMorning) { sockTimers[key] = setTimeout(() => leaveSocket(key), at(6000)); return; }
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
   const now = performance.now();
   const r = birdRng(0x9e2c + sky.spawned * 6007);
   const vs = clamp(W / 1500, 0.44, 1);
   g.classList.remove("on");
-  g.parentElement.classList.remove("laden");
-  sky.perched = false;
-  sky.perch.leaves++;
-  setTimeout(() => { if (!sky.perched) g.innerHTML = ""; }, at(450));
+  if (S.laden) g.parentElement.classList.remove("laden");
+  st.taken = false;
+  st.leaves++;
+  setTimeout(() => { if (st.taken !== true) g.innerHTML = ""; }, at(450));
+  const at2 = SCAPE[key];
   const f = {
-    entry: "perch", start: (now - releasedAt) / 1000, ox: SCAPE.perch.x / W, oy: (SCAPE.perch.y - 7 * vs) / H,
-    ex: 0.33 + r() * 0.05, ey: 0.035 + r() * 0.02, ang: ((8 + r() * 4) * Math.PI) / 180, bow: 0.8,
+    entry: key, start: (now - releasedAt) / 1000, ox: at2.x / W, oy: (at2.y - 7 * vs) / H,
+    ex: S.ex() + r() * 0.05, ey: S.ey() + r() * 0.02, ang: ((8 + r() * 4) * Math.PI) / 180, bow: 0.8,
     sc: (0.4 + r() * 0.15) * vs, op: 0.14 + r() * 0.05, dur: (21 + r() * 9) * PACE, beat: 0.64 + r() * 0.16, wphase: -r() * 0.6,
   };
   farLog.push(f);
   placeFar(f, host, f.start);
   sky.spawned++;
-  sky.last = "perch";
-  sky.entries.push({ entry: "perch", n: 1, t: +(now - release.t0).toFixed(0) });
-  mark("perchleave");
-  window.__world.sky = { spawned: sky.spawned, live: host.querySelectorAll(".bird.far:not(.gone)").length, entries: sky.entries };
-  window.__world.perch = { lands: sky.perch.lands, leaves: sky.perch.leaves, perched: 0 };
+  sky.last = key;
+  sky.entries.push({ entry: key, n: 1, t: +(now - release.t0).toFixed(0), exit: S.dir < 0 ? "west" : "east" });
+  mark(S.mark + "leave");
+  window.__world.sky = { spawned: sky.spawned, live: host.querySelectorAll(".bird.far:not(.gone):not(.speck)").length, entries: sky.entries };
+  window.__world[key] = { lands: st.lands, leaves: st.leaves, perched: 0 };
+}
+
+/* ····· the far-far crossing ·····
+   Every 90–180s a speck flock, five to seven birds at a fifth of the far
+   birds' size and fainter, crosses the gap between the massifs high over
+   the saddle, in twenty-six to thirty-four seconds. Scheduled, never
+   painted static; not counted against the three far birds (it is one
+   thing, and far beyond them). */
+let speckTimer = null;
+function speckFlock() {
+  speckTimer = null;
+  if (RM || !releasedAt) return;
+  const host = document.getElementById("flock");
+  const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
+  if (!atMorning || W < 760) { speckTimer = setTimeout(speckFlock, at(9000)); return; }
+  const now = performance.now();
+  const r = birdRng(0x5bec + sky.spawned * 6007);
+  const vs = clamp(W / 1500, 0.44, 1);
+  const n = 5 + Math.floor(r() * 3), elapsed = (now - releasedAt) / 1000;
+  for (let i = 0; i < n; i++) {
+    const f = {
+      entry: "speck", speck: true, start: elapsed + i * (0.25 + r() * 0.3), ox: 0.33 + r() * 0.02 - i * 0.004, oy: 0.115 + r() * 0.02 + (i % 2) * 0.008,
+      ex: 0.60 + r() * 0.04, ey: 0.10 + r() * 0.02, ang: (2 * Math.PI) / 180, bow: 0.2,
+      sc: 0.2 * vs, op: 0.11 + r() * 0.02, dur: (26 + r() * 8) * PACE, beat: 0.5 + r() * 0.1, wphase: -r() * 0.5,
+    };
+    farLog.push(f);
+    placeFar(f, host, elapsed);
+  }
+  sky.entries.push({ entry: "speck", n, t: +(now - release.t0).toFixed(0), exit: "east" });
+  mark("speck");
+  window.__world.sky = { spawned: sky.spawned, live: host.querySelectorAll(".bird.far:not(.gone):not(.speck)").length, entries: sky.entries };
+  speckTimer = setTimeout(speckFlock, at(90000 + r() * 90000));
 }
 
 /* ····· the owl comes home ·····
@@ -9752,9 +9820,48 @@ function owlArrive() {
 /* ····· the squirrel's darts ·····
    Stop-start along its limb: 20–40px in 400–700ms, then frozen, every
    15–40s, within ±30px of where it was drawn, logged like every roamer. */
+/* the den: a dart to the trunk end of the limb, then into the hollow,
+   gone for 20–60s, out again where it went in */
+function den(r) {
+  const el = document.querySelector(".dawnscape .ds-squirrel");
+  if (!el || el.classList.contains("denned")) return;
+  const off = roam.squirrel || 0;
+  const dx = -30 - off;
+  if (Math.abs(dx) > 0.5) logGround("squirrel", dx);
+  el.style.transition = "transform 520ms cubic-bezier(.2,.8,.3,1)";
+  el.style.transform = "translate(-30px, 0)";
+  setTimeout(() => {
+    el.classList.add("denned");
+    (window.__world.den = window.__world.den || { entries: 0, exits: 0, inside: 0 }).entries++;
+    window.__world.den.inside = 1;
+    mark("den");
+    setTimeout(() => {
+      el.classList.remove("denned");
+      window.__world.den.exits++;
+      window.__world.den.inside = 0;
+    }, at(20000 + r() * 40000));
+  }, 600);
+}
+/* the log patrol: the walker hops up on the fallen bough, stands a while,
+   hops down and drifts home */
+function logVisit(r) {
+  const el = document.querySelector('.dawnscape .ds-gull[data-id="c"]');
+  if (!el || !SCAPE.log) return;
+  const off = roam.c || 0;
+  const dx = 22 - off;
+  if (Math.abs(dx) > 0.5) logGround("c", dx);
+  el.style.transition = "transform 320ms ease-out";
+  el.style.transform = "translate(22px, -10px)";
+  (window.__world.logVisits = (window.__world.logVisits || 0) + 1);
+  mark("log");
+  setTimeout(() => {
+    el.style.transition = "transform 260ms ease-in";
+    el.style.transform = "translate(22px, 0)";
+  }, at(8000 + r() * 12000));
+}
 function dart(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
-  if (!el) return;
+  if (!el || el.classList.contains("denned")) return;
   const off = roam.squirrel || 0;
   let dir = r() < 0.5 ? -1 : 1;
   if (Math.abs(off) > 20) dir = off > 0 ? -1 : 1;
@@ -9863,7 +9970,21 @@ function shedLeaf() {
   const r = birdRng(0x1eaf + leaves.shed * 4099);
   const L = SCAPE.leaf, crown = r() < 0.7;
   const src = crown ? L.crownSrc : L.boughSrc, env = crown ? L.crownEnv : L.boughEnv;
+  leafTimer = setTimeout(shedLeaf, at(30000 + r() * 50000));
   const x0 = src[0] + r() * (src[2] - src[0]), y0 = src[1] + r() * (src[3] - src[1]);
+  /* the leaf lets go when the gust reaches its bough: the gust's crest at
+     x is (x/W)·1.9s plus 30% of the 7.3s cycle after the wind's own start,
+     so the shedding waits for the next crest there */
+  const svgW = +document.querySelector(".dawnscape").getAttribute("viewBox").split(" ")[2];
+  const per = 7300, crest = (x0 / svgW) * 1900 + 0.3 * per;
+  const since = performance.now() - (sky.windAt || performance.now());
+  const wait = (((crest - since) % per) + per) % per;
+  leafLive = true;
+  setTimeout(() => shedNow(x0, y0, crown, env, r), wait);
+}
+function shedNow(x0, y0, crown, env, r) {
+  const front = document.querySelector(".dawnscape .ds-front");
+  if (!front) { leafLive = null; return; }
   const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
   const swings = 2 + Math.floor(r() * 2), amp = 20 + r() * 20, drift = 10 + r() * 20;
   const turns = (1.5 + r()) * 360 * (r() < 0.5 ? -1 : 1);
@@ -9903,7 +10024,6 @@ function shedLeaf() {
     window.__world.leaves = { shed: leaves.shed, landed: leaves.landed.length, airborne: 0 };
   };
   window.__world.leaves = { shed: leaves.shed, landed: leaves.landed.length, airborne: 1 };
-  leafTimer = setTimeout(shedLeaf, at(30000 + r() * 50000));
 }
 
 /* ····· the ground's own events ·····
@@ -9990,11 +10110,15 @@ function groundLife() {
     const fawnDue = SCAPE.deer && now - sky.lastFawn > at(40000) && now - sky.lastStep > at(6000);
     const hareDue = SCAPE.hare && now - sky.lastHare > at(30000);
     const dartDue = document.querySelector(".dawnscape .ds-squirrel") && now - sky.lastDart > at(15000);
+    const denDue = SCAPE.den && dartDue && now - sky.lastDen > at(60000);
+    const logDue = SCAPE.log && gulls.some((g) => g.id === "c") && now - sky.lastLog > at(50000);
     const walkDue = gulls.some((g) => g.id === "c") && now - sky.lastWalk > at(12000);
     if (stepDue && pick < 0.3) { sky.lastStep = now + deerStep(r); sky.lastGround = sky.lastStep; }
     else if (fawnDue && pick < 0.6) { hopWalk(document.querySelector(".dawnscape .ds-fawn"), "fawn", r, 2, [4, 7], 3, 240); sky.lastFawn = now; sky.lastGround = now; }
     else if (hareDue && pick < 0.72) { hopWalk(document.querySelector(".dawnscape .ds-hare"), "hare", r, 2 + Math.floor(r() * 3), [3, 5], 2.5, 260); sky.lastHare = now; sky.lastGround = now; }
+    else if (denDue && pick < 0.78) { den(r); sky.lastDen = now; sky.lastDart = now; sky.lastGround = now; }
     else if (dartDue && pick < 0.84) { dart(r); sky.lastDart = now; sky.lastGround = now; }
+    else if (logDue && pick < 0.90) { logVisit(r); sky.lastLog = now; sky.lastWalk = now; sky.lastGround = now; }
     else if (walkDue && pick < 0.93) { hopWalk(document.querySelector('.dawnscape .ds-gull[data-id="c"]'), "c", r, 4 + Math.floor(r() * 5), [3, 3], 1, 340); sky.lastWalk = now; sky.lastGround = now; }
     else if (gulls.length) {
       const g = gulls[Math.floor(r() * gulls.length)];
@@ -10016,6 +10140,7 @@ function settleScape() {
   groundTimer = setTimeout(groundLife, at(24000));
   leafTimer = setTimeout(shedLeaf, at(20000 + 10000 * birdRng(0x1eaf)()));
   owlTimer = setTimeout(owlHome, at(60000 + 120000 * birdRng(0x0071)()));
+  speckTimer = setTimeout(speckFlock, at(40000 + 50000 * birdRng(0x5bec)()));
   flyTimer = setTimeout(butterfly, at(30000 + 30000 * birdRng(0xb0f1)()));
   gustTimer = setTimeout(gustReactions, 7300);
 }

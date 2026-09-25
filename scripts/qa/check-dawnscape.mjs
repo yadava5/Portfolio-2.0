@@ -564,7 +564,9 @@ try {
         )
           continue;
         out.push([
-          el.classList.contains("far") ? 1 : 0,
+          el.classList.contains("far") && !el.classList.contains("speck")
+            ? 1
+            : 0,
           r.left,
           r.top,
           r.right,
