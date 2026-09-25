@@ -1216,6 +1216,8 @@ if (location.hash.length > 1) {
   .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
   .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl{transform-box:view-box}
   .dawnscape .squirrel-tail{--amp:10deg}
+  .dawnscape .ds-spider{transform-box:view-box}
+  .dawnscape .spider{--amp:.5deg}
   .dawnscape .owl-head{--amp:20deg}
   /* the owl's socket: empty until it comes home, then simply there */
   .dawnscape .ds-owl{opacity:0}
@@ -1273,6 +1275,7 @@ if (location.hash.length > 1) {
     body.morninglive .dawnscape .fawn-tail{animation:flick 2.8s ease-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-c{animation:peck 4.3s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .squirrel-tail{animation:curl 3.1s ease-in-out var(--ph, 0s) infinite}
+    body.morninglive .dawnscape .spider{animation:bough 4.7s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .owl-head{animation:turn 11.3s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
@@ -7950,7 +7953,7 @@ function buildDawnscape() {
     "flut-1": 2300, "flut-2": 2600, "flut-3": 2900, "flut-4": 3700, "flut-5": 4100, "spray-a": 3300, "spray-b": 4400,
     "doe-head": 9700, "doe-ear": 4700, "doe-tail": 3500, "fawn-head": 5300, "fawn-ear": 3900, "fawn-tail": 2800,
     "hare-head": 5900, "hare-ear": 7900, "peck-a": 5200, "peck-b": 6100, "peck-c": 4300,
-    "squirrel-tail": 3100, "owl-head": 11300, "perch-head": 8300,
+    "squirrel-tail": 3100, "owl-head": 11300, "perch-head": 8300, "spider": 4700,
   };
   const tally = {};
   const live = (cls) => { if (!cls) return ""; if (!(cls in PERIOD)) throw new Error(`undeclared period for ${cls}`); tally[cls] = (tally[cls] || 0) + 1; return cls; };
@@ -8379,7 +8382,7 @@ function buildDawnscape() {
         /* the lit summit is almost bare */
         if (kind === "lit") f *= 0.25 + 0.75 * clamp((c[1] - y0) / (y1 - y0), 0, 1);
         if (f < 0.3) continue;
-        const per = (x, y) => (hardZero(x, y) || !inPoly([x, y], poly) || (opts.wedges || []).some((w) => inPoly([x, y], w)) ? 0 : f);
+        const per = (x, y) => (hardZero(x, y) || !inPoly([x, y], poly) || softFade(x, y) < 0.25 || (opts.wedges || []).some((w) => inPoly([x, y], w)) ? 0 : f);
         out += hatch(rect, deg + (r() - 0.5) * 16, gap / Math.max(f, 0.5), kind === "shadow" ? "ds-far w1 ds-hatch" : "ds-far w06 ds-hatch", 0.9, len, per, opts.scree ? 10 : 6);
       }
       return out;
@@ -8416,29 +8419,28 @@ function buildDawnscape() {
     far += facet(facetOf(Lprof, LS3, LS4, [[LS3[LS3.length - 1][0], LS3[LS3.length - 1][1]], [LS4[LS4.length - 1][0], LS4[LS4.length - 1][1]]]), 62, "lit", { wedges: Lwedge });
     far += facet([...LS4, [X(0.30), Y(0.52)], ...[...Lprof.filter(([x]) => x >= LS4[0][0])].reverse()], 34, "mid", { scree: true });
     far += gully(LS2, -1) + gully(LS3, -1) + gully(LS4, -1);
-    far += strokes(curve(FP([[0.29, 0.52], [0.30, 0.58], [0.315, 0.63]])), 1.1, "ds-far w06");
 
     /* ————— the right massif: the perch bough hangs in front of it, its west
        face falls toward the words and dissolves, its spine comes down into
        the bank so the bank's strata are its foothill ————— */
-    const Rprof = jag([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.09], [0.845, 0.128], [0.82, 0.132], [0.795, 0.165], [0.775, 0.22], [0.755, 0.28], [0.74, 0.36], [0.73, 0.42], [0.715, 0.48]], 0.865, 11, 4);
+    const Rprof = jag([[1.01, 0.125], [0.97, 0.135], [0.94, 0.105], [0.915, 0.128], [0.885, 0.118], [0.865, 0.082], [0.848, 0.095], [0.83, 0.06], [0.815, 0.10], [0.80, 0.125], [0.79, 0.16], [0.775, 0.205], [0.762, 0.25], [0.75, 0.30], [0.754, 0.335], [0.738, 0.40], [0.728, 0.44], [0.715, 0.48]], 0.83, 11, 4);
     /* three spurs fanning from the crest: one sweeping west toward the
        valley, the spine coming down into the bank's lip, one east to the
        right edge; each curves, none is a vertical */
-    const RS0 = spur(Rprof, 0.845, [[0.815, 0.22], [0.78, 0.34], [0.755, 0.46], [0.745, 0.58]]);
-    const RS1 = spur(Rprof, 0.885, [[0.875, 0.22], [0.855, 0.36], [0.83, 0.50], [0.81, 0.62], [0.80, 0.72]]);
+    const RS0 = spur(Rprof, 0.775, [[0.785, 0.30], [0.79, 0.42], [0.79, 0.54], [0.785, 0.64]]);
+    const RS1 = spur(Rprof, 0.83, [[0.845, 0.22], [0.845, 0.36], [0.83, 0.50], [0.815, 0.62], [0.805, 0.72]]);
     const RS2 = spur(Rprof, 0.94, [[0.95, 0.22], [0.965, 0.34], [0.975, 0.44]]);
+    const RSa = spur(Rprof, 0.865, [[0.875, 0.16], [0.885, 0.24]]);
     const Rfoot = [[X(0.715), Y(0.50)], [X(0.735), Y(0.62)], [X(0.76), Y(0.72)], [X(0.80), haze], [X(0.85), haze]];
-    far += profileLine(Rprof, 0.865);
-    far += spurLine(RS1) + spurLine(RS2) + spurLine(RS0);
-    const Rwedge = [FP([[0.868, 0.095], [0.895, 0.122], [0.887, 0.16], [0.866, 0.14]]), FP([[0.905, 0.128], [0.93, 0.158], [0.922, 0.198], [0.90, 0.17]])];
+    far += profileLine(Rprof, 0.83);
+    far += spurLine(RS1) + spurLine(RS2) + spurLine(RS0) + spurLine(RSa);
+    const Rwedge = [FP([[0.833, 0.065], [0.858, 0.092], [0.85, 0.13], [0.832, 0.11]]), FP([[0.87, 0.088], [0.895, 0.118], [0.888, 0.158], [0.868, 0.135]])];
     /* the silhouette face, from the west skyline to the first spur: shadow */
-    far += facet([...Rprof.filter(([x]) => x <= X(0.845)).reverse(), ...Rfoot.slice(0, 3), ...[...RS0].reverse()], -48, "shadow");
+    far += facet([...Rprof.filter(([x]) => x <= X(0.775)).reverse(), ...Rfoot.slice(0, 3), ...[...RS0].reverse()], -48, "shadow");
     far += facet([...RS0, [X(0.78), haze], ...[...RS1].reverse(), ...between(Rprof, RS1[0][0], RS0[0][0])], -75, "shadow", { gapMul: 1.2 });
     far += facet([...RS1, [X(0.86), haze], [X(0.905), Y(0.71)], [X(0.93), Y(0.66)], [X(0.95), Y(0.60)], ...[...RS2].reverse(), ...between(Rprof, RS2[0][0], RS1[0][0])], 40, "mid", { wedges: Rwedge });
     far += facet([...RS2, [X(0.982), Y(0.492)], [X(1.01), Y(0.47)], [X(1.01), Y(0.125)], ...between(Rprof, X(1.01), RS2[0][0])], 72, "lit", { scree: true });
     far += gully(RS0, -1) + gully(RS1, -1) + gully(RS2, 1);
-    far += strokes(curve(FP([[0.715, 0.48], [0.705, 0.53], [0.69, 0.57]])), 1.1, "ds-far w06");
 
     /* ————— the far range through the gap: peaks flanking the kicker, the
        saddle above its halo; a lower, fainter line behind it for depth ————— */
@@ -8510,6 +8512,7 @@ function buildDawnscape() {
     /* its face, in shadow toward the reader: a strip inside the lip, then the
        broader tone further in, then the one cross-hatch pocket under the lip */
     const lip = bankLow(0.62);
+    SCAPE.bankLip = lip;
     /* the face is inside the lip and ABOVE the horizon: an offset of a
        diagonal contour runs on below the line, and the meadow is not the bank */
     const above = (pts) => pts.map(([x, y]) => [x, Math.min(y, hz - 3)]);
@@ -8586,8 +8589,12 @@ function buildDawnscape() {
     const across = (f) => left.map(([x, y], i) => [x + (right[Math.min(i, right.length - 1)][0] - x) * f, y]);
     const low = (pts) => pts.filter(([, y]) => y > CY(0.34));
     const lit = (x, y) => { const i = Math.min(left.length - 1, Math.max(0, Math.round(((y - left[0][1]) / (left[left.length - 1][1] - left[0][1])) * (left.length - 1)))); const lx = left[i][0], rx = right[Math.min(i, right.length - 1)][0]; return (x - lx) / (rx - lx); };
-    d += hatch([...low(left), ...low(across(0.24)).reverse()], 84, 2.8, "ds-ink w08", 0.35, [18, 60], (x, y) => 1.3 - lit(x, y) * 3.5);
-    d += hatch([...low(across(0.15)), ...low(across(0.52)).reverse()], 84, 4.6, "ds-ink w06", 0.35, [14, 40], (x, y) => 1.25 - lit(x, y) * 2.2);
+    /* bark, not rain: short strokes bowed by the hand, scattered, and two
+       cream bands where the bark is bare (a cut of light across the shaft) */
+    const bands = [Y(0.60), Y(0.725)];
+    const band = (y) => bands.some((b) => Math.abs(y - b) < 5);
+    d += hatch([...low(left), ...low(across(0.24)).reverse()], 84, 3.0, "ds-ink w08", 1.3, [12, 34], (x, y) => (band(y) ? 0 : 1.3 - lit(x, y) * 3.5), 5);
+    d += hatch([...low(across(0.15)), ...low(across(0.52)).reverse()], 84, 4.8, "ds-ink w06", 1.2, [10, 28], (x, y) => (band(y) ? 0 : 1.25 - lit(x, y) * 2.2), 6);
     /* bark: short ticks bowed across the cylinder, most on the shadow side */
     let bd = "", bk = 0;
     for (let i = 0; i < 26; i++) {
@@ -8639,6 +8646,9 @@ function buildDawnscape() {
       return t;
     };
     inner.limbs += twigs(curve(limbs.L1), 3);
+    /* a dead limb low on the west side: bare, two passes, the owl's roost */
+    const dead = curve([[X(0.052), CY(0.215)], [X(0.036), CY(0.228)], [X(0.02), CY(0.25)], [X(0.008), CY(0.275)]]);
+    inner.limbs += contour(dead, 0.7, "ds-ink", ["w12", "w1", "w12"]) + twigs(dead, 2);
     outer.limbs += twigs(curve(limbs.L2), 3) + twigs(curve(limbs.L3), 4) + twigs(curve(limbs.L3b), 2) + twigs(curve(limbs.L4), 2);
     /* THE CANOPY IS ONE THING: seventeen masses overlapping into a foliage
        that fills the corner along both edges, the sky showing through where
@@ -8713,18 +8723,21 @@ function buildDawnscape() {
      can land (the socket the sky's perch outcome fills). */
   const bough = () => {
     cutPad = 16; /* ±1.3° about the right edge: up to 10px at the tip */
-    const main = curve([[W + 6, Y(0.062)], [X(0.965), Y(0.078)], [X(0.925), Y(0.10)], [X(0.885), Y(0.108)], [X(0.85), Y(0.118)], [X(0.81), Y(0.135)], [X(0.775), Y(0.155)], [X(0.745), Y(0.165)]]);
-    const fork = curve([[X(0.885), Y(0.108)], [X(0.86), Y(0.086)], [X(0.838), Y(0.062)], [X(0.822), Y(0.042)]]);
+    /* NEAR OVER FAR, NOT NEAR ON FAR: the bough hangs from 0.17 to 0.27 H,
+       well under the right massif's crest, so the summit rock shows above
+       it with clear sky between, and a bough is never a tree on a summit */
+    const main = curve([[W + 6, Y(0.167)], [X(0.965), Y(0.183)], [X(0.925), Y(0.205)], [X(0.885), Y(0.213)], [X(0.85), Y(0.223)], [X(0.81), Y(0.24)], [X(0.775), Y(0.26)], [X(0.745), Y(0.27)]]);
+    const fork = curve([[X(0.885), Y(0.213)], [X(0.86), Y(0.191)], [X(0.838), Y(0.167)], [X(0.822), Y(0.147)]]);
     let d = contour(main, 0.9, "ds-ink", ["w12", "w1", "w12"]) + contour(fork, 0.7, "ds-ink", ["w12", "w1", "w12"]);
     /* the masses sit on the limb, over and under it, the limb running through */
     /* four clumps: the corner under the chip, the middle of the limb, the
        fork's end, and the tip by the perch; the limb runs through them */
     const M = [
-      [0.985, 0.13, 40], [0.955, 0.15, 34], [0.975, 0.095, 24], [0.94, 0.11, 18],
-      [0.885, 0.135, 38], [0.855, 0.12, 30], [0.905, 0.165, 26], [0.87, 0.10, 16],
-      [0.828, 0.055, 30], [0.81, 0.08, 22], [0.84, 0.03, 14],
-      [0.79, 0.145, 28], [0.765, 0.162, 20], [0.80, 0.175, 14],
-    ].map(([fx, fy, rr]) => [X(fx), Y(fy), rr * 0.8 * Math.max(vs, 0.8)]);
+      [0.985, 0.235, 40], [0.955, 0.255, 34], [0.975, 0.20, 24], [0.94, 0.215, 18],
+      [0.885, 0.24, 38], [0.855, 0.225, 30], [0.905, 0.27, 26], [0.87, 0.205, 16],
+      [0.828, 0.16, 30], [0.81, 0.185, 22], [0.84, 0.135, 14],
+      [0.79, 0.25, 28], [0.765, 0.267, 20], [0.80, 0.28, 14],
+    ].map(([fx, fy, rr]) => [X(fx), Y(fy), rr * 0.74 * Math.max(vs, 0.8)]);
     for (const i of [0, 4, 6, 11]) {
       const [mx, my, mr] = M[i];
       const t = main.reduce((b, p) => (Math.abs(p[0] - mx) < Math.abs(b[0] - mx) ? p : b));
@@ -8737,8 +8750,8 @@ function buildDawnscape() {
       f += i === 0 && m ? `<g class="${live("flut-5")}" style="transform-origin:${F(mm[0])}px ${F(mm[1] + mm[2] * 0.8)}px;--ph:${phase(mm[0], 4.1)}">${m}</g>` : m;
       f += leaves(mm[0], mm[1], mm[2], 3);
     });
-    const pz = [X(0.752), Y(0.098)];
-    const twig = curve([[X(0.782), Y(0.147)], [X(0.77), Y(0.125)], [X(0.758), Y(0.108)], pz]);
+    const pz = [X(0.752), Y(0.203)];
+    const twig = curve([[X(0.782), Y(0.252)], [X(0.77), Y(0.23)], [X(0.758), Y(0.213)], pz]);
     const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
     SCAPE.perch = { x: pz[0], y: pz[1] };
     /* the bird that lands here: the ground gull's own body and head, wings
@@ -8754,7 +8767,7 @@ function buildDawnscape() {
     }
     groups++;
     cutPad = 4;
-    return `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.062))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
+    return `<g class="ds-bough ${live("sway-b")}" style="transform-origin:${F(W)}px ${F(Y(0.167))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
       `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
   };
 
@@ -8943,7 +8956,10 @@ function buildDawnscape() {
       return [tip[0] + Math.cos(a) * 2 + dx * Math.cos(a) - dy * Math.sin(a), tip[1] + Math.sin(a) * 2 + dx * Math.sin(a) + dy * Math.cos(a)];
     });
     nS += 2;
-    return `<path class="ds-ink w1" d="${stroke(sp, 0.3)}"/><path class="ds-fill" d="${path(head)}Z"/>`;
+    /* dew: a cream gap mid-stem on half of them, the drop the light finds */
+    const mid = Math.floor(sp.length * (0.45 + r() * 0.2));
+    const stem = r() < 0.5 && sp.length > 6 ? stroke(sp.slice(0, mid), 0.3) + stroke(sp.slice(mid + 1), 0.3) : stroke(sp, 0.3);
+    return `<path class="ds-ink w1" d="${stem}"/><path class="ds-fill" d="${path(head)}Z"/>`;
   };
   const solidTuft = (x, y, h, n, cls = "", seeds = 0, shim = "") => {
     const blades = [];
@@ -9052,6 +9068,95 @@ function buildDawnscape() {
 
 
 
+  /* ————— the portrait's details —————
+     Things a person finds when they look: each belongs to an object or a
+     creature's story, none inside the clearing or the sun's halo, every one
+     readable in its own 2x crop. The nest is where a parent's crossing
+     will end, the hollow is where the squirrel's dart will vanish, the
+     fallen bough is what the walking gull patrols, the boulder is the
+     hare's home-range centre, the stump is what the fawn's skitter orbits,
+     the dead limb is the owl's roost (R10-3 wires the visits). No human
+     artefact anywhere: no post, fence, path, wire or smoke. */
+  const details = () => {
+    let d = "";
+    /* the nest, a woven cup in L3's fork */
+    const nx = X(0.047), ny = Y(0.14 + 0.212 * 1.1) + 2, nw = 16 * vs;
+    d += P(stroke(arc(nx, ny - 2, nw, nw * 0.5, 0.15, Math.PI - 0.15), 0.8), "ds-ink w14");
+    d += P(stroke(arc(nx + 1, ny, nw * 0.92, nw * 0.44, 0.3, Math.PI - 0.2), 0.7), "ds-ink w12");
+    d += P(stroke(arc(nx - 1, ny + 2, nw * 0.8, nw * 0.38, 0.5, Math.PI - 0.4), 0.7), "ds-ink w1");
+    d += P(stroke(arc(nx, ny - 4, nw * 0.7, nw * 0.3, Math.PI + 0.3, 2 * Math.PI - 0.3), 0.6), "ds-ink w1");
+    let wv = "";
+    for (let i = 0; i < 7; i++) { const a = 0.3 + r() * 2.5, x = nx + Math.cos(a) * nw * 0.75, y = ny + Math.sin(a) * nw * 0.32; wv += stroke([[x - 5, y + 1.5], [x + 4, y - 2.5]], 0.3); }
+    d += P(wv, "ds-ink w1", 7);
+    SCAPE.nest = { x: nx, y: ny - nw * 0.5 };
+    /* the trunk hollow: a dark pocket with a cream rim, the squirrel's den */
+    const hx = X(0.083), hy = Y(0.55), rx = 6.5 * vs, ry = 9 * vs;
+    const rim = arc(hx, hy, rx, ry, 0, 6.3, 2);
+    d += P(stroke(rim, 0.35), "ds-ink w1");
+    const inner = arc(hx, hy, rx - 2.4, ry - 2.6, 0, 6.3, 2);
+    d += hatch(inner, 84, 2.2, "ds-ink w1", 0.25, [4, 14]) + hatch(inner, 20, 2.6, "ds-ink w08", 0.25, [4, 12]);
+    SCAPE.den = { x: hx, y: hy };
+    /* the fallen bough in the right meadow: two-pass contour, three dead
+       twigs, its shadow */
+    const lx0 = X(0.655), lx1 = X(0.70), ly = Y(0.955);
+    const top = curve([[lx0, ly - 3], [lx0 + (lx1 - lx0) * 0.5, ly - 6], [lx1, ly - 4]]);
+    const bot = curve([[lx0 + 2, ly + 3], [lx0 + (lx1 - lx0) * 0.5, ly + 2], [lx1 - 1, ly + 1]]);
+    d += contour(top, 0.8, "ds-ink", ["w12", "w1", "w12"]) + P(stroke(bot, 0.7), "ds-ink w1") + P(stroke([[lx0, ly - 3], [lx0 + 2, ly + 3]], 0.3), "ds-ink w1");
+    for (const [fx, ang, len] of [[0.25, -1.9, 12], [0.55, -2.4, 9], [0.8, -1.4, 10]]) {
+      const px = lx0 + (lx1 - lx0) * fx, py = ly - 5;
+      d += P(stroke(curve([[px, py], [px + Math.cos(ang) * len * 0.5 + 1, py + Math.sin(ang) * len * 0.5], [px + Math.cos(ang) * len, py + Math.sin(ang) * len]], 3), 0.4), "ds-ink w1");
+    }
+    d += hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
+    SCAPE.log = { x0: lx0, x1: lx1, y: ly - 5 };
+    /* the lichened boulder beside the hare */
+    const bx = X(0.905), by = Y(0.982);
+    const rock = curve([[bx - 9, by], [bx - 8, by - 5], [bx - 3, by - 8], [bx + 4, by - 7], [bx + 9, by - 3], [bx + 8, by], [bx - 9, by]], 2);
+    d += contour(rock, 0.5, "ds-ink", ["w12", "w1", "w12"]);
+    let li = "";
+    for (let i = 0; i < 5; i++) { const x = bx - 6 + r() * 12, y = by - 6 + r() * 4; li += stroke([[x, y], [x + 2 + r() * 2, y - 0.5]], 0.2); }
+    d += P(li, "ds-far w1", 5) + hatch([[bx + 2, by], [bx + 12, by], [bx + 10, by + 4], [bx + 3, by + 4]], -18, 2.6, "ds-far w1", 0.3, [4, 10]);
+    SCAPE.boulder = { x: bx, y: by };
+    /* mushrooms at the root flare: caps with a gill-cut */
+    let mu = "";
+    for (const [fx, cw, ch] of [[0.052, 4.5, 3], [0.057, 3.2, 2.2], [0.063, 5.5, 3.4], [0.068, 3.8, 2.6]]) {
+      const mx = X(fx) + (r() - 0.5) * 3, my = hz - 1;
+      const cap = arc(mx, my - ch - 2, cw, ch, Math.PI, 2 * Math.PI, 1.5);
+      const capD = path([...cap, [mx + cw, my - ch - 2], [mx - cw, my - ch - 2]]) + "Z" + ribbon([[mx - cw * 0.7, my - ch - 1.2], [mx + cw * 0.7, my - ch - 1.2]], 1.6);
+      mu += `<path class="ds-fill" fill-rule="evenodd" d="${capD}"/>`;
+      d += P(stroke([[mx, my - ch - 1], [mx + 0.3, my]], 0.2), "ds-ink w1");
+      fills.push([mx, my - ch, cw]);
+      nS++;
+    }
+    d += mu;
+    /* two molehills in the meadow */
+    for (const [fx, fy] of [[0.40, 0.935], [0.57, 0.955]]) {
+      const mx = X(fx), my = Y(fy);
+      for (let i = 0; i < 3; i++) d += P(stroke(arc(mx, my + i * 1.4, 4 + i * 1.6, 2.2 + i * 0.5, Math.PI + 0.15, 2 * Math.PI - 0.15, 1.5), 0.3), i ? "ds-far w1" : "ds-ink w1");
+    }
+    /* bank strata and two root tangles at the lip */
+    if (SCAPE.bankLip) {
+      for (const off of [14, 30, 46]) {
+        const st = offset(SCAPE.bankLip, -off).filter(([, y]) => y < hz - 6);
+        const n = st.length;
+        for (const [f0, f1] of [[0.05, 0.4], [0.5, 0.9]]) d += strokes(st.slice(Math.floor(f0 * n), Math.floor(f1 * n)), 0.9, "ds-far w1");
+      }
+      for (const [fx, fy] of [[0.955, 0.605], [0.912, 0.705]]) {
+        let rt = "";
+        for (let i = 0; i < 4; i++) { const a = 2.6 + r() * 1.2, L = 8 + r() * 8, x = X(fx) + (r() - 0.5) * 8, y = Y(fy) + 2; rt += stroke(curve([[x, y], [x + Math.cos(a) * L * 0.5, y + Math.sin(a) * L * 0.5 + 2], [x + Math.cos(a) * L, y + Math.sin(a) * L + 1]], 3), 0.6); }
+        d += P(rt, "ds-ink w1", 4);
+      }
+    }
+    /* the spider's line: one catenary from the bough's tip to the sapling's
+       top, a lift where the sun catches it; it sways on its own clock */
+    const s0 = [X(0.748), Y(0.278)], s1 = [X(0.945), Y(0.39)];
+    const cat = [];
+    for (let i = 0; i <= 40; i++) { const t = i / 40; cat.push([s0[0] + (s1[0] - s0[0]) * t, s0[1] + (s1[1] - s0[1]) * t + Math.sin(t * Math.PI) * 26]); }
+    const g = Math.floor(40 * 0.3);
+    d += `<g class="ds-spider ${live("spider")}" style="transform-origin:${F(s0[0])}px ${F(s0[1])}px;--ph:-1.7s">${P(stroke(cat.slice(0, g), 0.25), "ds-far w06")}${P(stroke(cat.slice(g + 4), 0.25), "ds-far w06")}</g>`;
+    groups++;
+    return d;
+  };
+
   /* ————— the composition ————— */
   if (tall) {
     /* the far ticks above the line, hair-strong: the meadow behind the doe
@@ -9095,7 +9200,9 @@ function buildDawnscape() {
        so it combs through a stand blade-group by blade-group; the two corner
        stands' seed heads shimmer on their own fast clocks */
     near += solidTuft(X(0.02), hz, 48 * S3, 8, "sway-m", 1, "shim-a") + solidTuft(X(0.045), hz, 54 * S3, 9, "sway-s", 2) + solidTuft(X(0.07), hz, 42 * S3, 7, "sway-l", 0);
-    near += solidTuft(X(0.105), hz, 26 * S3, 6, "", 0) + solidTuft(X(0.147), hz, 34 * S3, 7, "sway-l", 1);
+    /* grass may cross legs below the knee only, never a body: the tufts
+       at the pair's feet stay under 12 and 18px */
+    near += solidTuft(X(0.103), hz, 12 * S3, 5, "", 0) + solidTuft(X(0.152), hz, 18 * S3, 6, "sway-l", 0);
     /* the swale: pairs and singles of unequal size along an S, with outline
        tufts between, so it reads as a swathe of grass and not a row of stamps */
     for (const [fx, fy, h, n, sd, cls] of [[0.35, 0.876, 26, 8, 1, "sway-m"], [0.372, 0.886, 15, 5, 0, ""], [0.405, 0.897, 22, 7, 0, "sway-s"], [0.44, 0.906, 13, 5, 0, ""], [0.458, 0.90, 24, 8, 1, "sway-l"],
@@ -9107,10 +9214,11 @@ function buildDawnscape() {
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
     near += gull(X(0.63), Y(0.887), 1, "peck-c", "c");
     near += hare(X(0.86), Y(0.97));
+    near += details();
     /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
     near += squirrel(X(0.165), Y(0.14 + 0.312 * 1.1) - 1);
-    const owlAt = [X(0.222), Y(0.14 + 0.168 * 1.1)];
+    const owlAt = [X(0.022), Y(0.14 + 0.246 * 1.1) - 2];
     SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
     SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
     const owlHome = RM || (typeof sky !== "undefined" && sky.owl);
@@ -9129,7 +9237,7 @@ function buildDawnscape() {
     };
     SCAPE.leaf = {
       crownSrc: [X(0.05), Y(0.25), X(0.16), Y(0.47)], crownEnv: [X(0.02), Y(0.25), X(0.19), floorUnder(X(0.02), X(0.19), hz + 42)],
-      boughSrc: [X(0.76), Y(0.10), X(0.86), Y(0.17)], boughEnv: [X(0.76), Y(0.10), X(0.97), floorUnder(X(0.76), X(0.97), hz + 22)],
+      boughSrc: [X(0.76), Y(0.205), X(0.86), Y(0.275)], boughEnv: [X(0.76), Y(0.205), X(0.97), floorUnder(X(0.76), X(0.97), hz + 22)],
     };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
