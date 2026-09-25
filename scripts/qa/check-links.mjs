@@ -516,32 +516,58 @@ if (urls.length === 0) {
 
 const dead = [];
 let i = 0;
-async function worker() {
-  while (i < urls.length) {
-    const url = urls[i++];
-    let status = 0;
-    try {
-      /* HEAD first; GitHub answers it for blob/tree. Fall back to GET,
-         because a 405 is about the method, not the artifact.
 
-         AND A 5xx IS ALSO ABOUT THE METHOD. Measured 2026-08-14: HEAD on
-         applied@36a2f54 backend/tests/test_gmail_oauth_cloud.py returned 504
-         three times in a row while GET on the same URL returned 200, and the
-         Contents API served the blob (48,544 bytes) without complaint. HEAD
-         on the sibling README at the same sha was 200, so it is that one
-         file's blob view timing out, not the repo, the sha or a rate limit.
-         A reader issues GET, so GET is both the stricter probe and the
-         truthful one — falling back on 5xx removes a red that no visitor
-         would ever have experienced. It cannot mask a real 404: a missing
-         artifact answers 404 to GET too. */
-      let res = await fetch(url, { method: "HEAD", redirect: "follow" });
-      if (res.status === 405 || res.status === 403 || res.status >= 500) {
-        res = await fetch(url, { method: "GET", redirect: "follow" });
-      }
-      status = res.status;
+/* One probe of one URL. HEAD first; GitHub answers it for blob/tree. Fall
+   back to GET, because a 405 is about the method, not the artifact.
+
+   AND A 5xx IS ALSO ABOUT THE METHOD. Measured 2026-08-14: HEAD on
+   applied@36a2f54 backend/tests/test_gmail_oauth_cloud.py returned 504
+   three times in a row while GET on the same URL returned 200, and the
+   Contents API served the blob (48,544 bytes) without complaint. HEAD on
+   the sibling README at the same sha was 200, so it is that one file's blob
+   view timing out, not the repo, the sha or a rate limit. A reader issues
+   GET, so GET is both the stricter probe and the truthful one — falling
+   back on 5xx removes a red that no visitor would ever have experienced. It
+   cannot mask a real 404: a missing artifact answers 404 to GET too. */
+async function probe(url) {
+  let res = await fetch(url, { method: "HEAD", redirect: "follow" });
+  if (res.status === 405 || res.status === 403 || res.status >= 500) {
+    res = await fetch(url, { method: "GET", redirect: "follow" });
+  }
+  return res.status;
+}
+
+/* AND THE WHOLE PROBE IS RETRIED, because the network is not the artifact.
+   This check is one step of a 34-minute verify run, and a single GitHub
+   hiccup — a 502 from the blob view, or a `fetch failed` from a dropped
+   connection — failed the run at "pinned artifact links" with nothing wrong
+   with the site. Before today a 5xx bought one retry (the GET fallback
+   above) and a network error bought none at all.
+   So: four attempts, backing off 1s, 2s, 4s, on a 5xx or a thrown fetch
+   only. A 404 is the finding this check exists for and returns at once —
+   retrying it would only make a red run slower. Nothing else is widened:
+   403 and 429 are a rate limit or a permission, not a hiccup, and they
+   still answer on the first attempt. */
+const BACKOFF = [1000, 2000, 4000];
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function resolves(url) {
+  for (let attempt = 0; ; attempt++) {
+    let status;
+    try {
+      status = await probe(url);
     } catch (err) {
       status = `network: ${err.message}`;
     }
+    const hiccup = typeof status === "string" || status >= 500;
+    if (!hiccup || attempt === BACKOFF.length) return status;
+    await sleep(BACKOFF[attempt]);
+  }
+}
+
+async function worker() {
+  while (i < urls.length) {
+    const url = urls[i++];
+    const status = await resolves(url);
     if (status !== 200) dead.push({ url, status, pages: [...links.get(url)] });
   }
 }
