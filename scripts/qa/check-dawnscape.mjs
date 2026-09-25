@@ -466,11 +466,10 @@ try {
           if (!touches) continue;
           const a0 = name === "top" || name === "bottom" ? l : t,
             a1 = name === "top" || name === "bottom" ? r : b;
-          for (
-            let i = Math.floor(a0 / 40) - 1;
-            i <= Math.floor(a1 / 40) + 1;
-            i++
-          )
+          /* a chrome box within 120px of the sheet's end owns its corner */
+          const i0 = a0 < 120 ? 0 : Math.floor(a0 / 40) - 1,
+            i1 = a1 > len - 120 ? bins.length - 1 : Math.floor(a1 / 40) + 1;
+          for (let i = i0; i <= i1; i++)
             if (i >= 0 && i < bins.length) bins[i] = true;
         }
         const runs = [];
