@@ -114,6 +114,15 @@ const SEATS = [
   [1728, 1117],
   [1800, 1169],
   [1920, 1080],
+  /* the short sheets: his own window at 125% zoom, the recruiters' 1366 and
+     1536 laptops, and two lower still. The words-on-the-plain layout ran
+     into the horizon, the sun and the crown at every one of them until the
+     layout was derived from the room (layMorning) */
+  [1165, 759],
+  [1366, 768],
+  [1536, 864],
+  [1280, 720],
+  [1024, 768],
   [390, 844],
   [393, 851],
   [320, 720],

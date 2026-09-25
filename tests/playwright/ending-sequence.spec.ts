@@ -93,6 +93,17 @@ const SEATS: [number, number][] = [
   [1920, 1080],
 ];
 
+/** the short desktop sheets ¶13 must hold up at: the owner's own window at
+    125% zoom (~1165×759), the 1366×768 and 1536×864 laptops recruiters use,
+    and two lower still; check-dawnscape holds the same five */
+const SHORT: [number, number][] = [
+  [1165, 759],
+  [1366, 768],
+  [1536, 864],
+  [1280, 720],
+  [1024, 768],
+];
+
 /** the two seats a phone reader actually has, plus the Pixel 5 the
     chromium-mobile project emulates — 393×851, which is neither of them */
 const PHONES: [number, number][] = [
@@ -1120,7 +1131,7 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
       { RANGE: RANGE_PX, CLEAR: CLEAR_PX, CAP: GRASS_CAP }
     );
 
-  for (const [w, h] of [...SEATS, ...PHONES]) {
+  for (const [w, h] of [...SEATS, ...SHORT, ...PHONES]) {
     test.describe(`the words keep their air at ${w}×${h}`, () => {
       test.use({ viewport: { width: w, height: h } });
       // eslint-disable-next-line no-empty-pattern
