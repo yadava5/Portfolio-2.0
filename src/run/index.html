@@ -8371,14 +8371,41 @@ function buildDawnscape() {
     const RS2 = spur(Rprof, 0.94, [[0.95, 0.22], [0.965, 0.34], [0.975, 0.44]]);
     const RSa = spur(Rprof, 0.865, [[0.875, 0.16], [0.885, 0.24]]);
     /* the silhouettes: the profile, then down to the haze and back */
-    const Lsil = [...Lprof, [X(0.30), Y(0.60)], [X(0.32), haze], [X(-0.02), haze]];
+    const Lfootline = jag([[0.29, 0.52], [0.295, 0.57], [0.305, 0.63], [0.31, 0.70], [0.32, haze / H]], -1, 0, 5);
+    const Lsil = [...Lprof, ...Lfootline.slice(1), [X(-0.02), haze]];
     const Rfootline = jag([[0.715, 0.48], [0.728, 0.53], [0.735, 0.56], [0.752, 0.62], [0.77, 0.68], [0.785, 0.74], [0.80, haze / H]], -1, 0, 5);
     const Rsil = [...Rprof, ...Rfootline.slice(1), [X(1.02), haze]];
     /* the shadow faces: west of the crest spurs */
-    const Lshade = [...Lprof.filter(([x]) => x <= LS3[0][0]), ...LS3, [X(0.20), haze], [X(-0.02), haze]];
-    const Rshade = [...Rprof.filter(([x]) => x <= RS1[0][0]).reverse(), ...RS1, [X(0.80), haze], ...[...Rfootline.slice(1)].reverse()];
+    /* THE FACETS: the tone has levels that follow the form. Each face
+       between two spurs is its own region, filled at its own density: the
+       lit east faces at the low end, the west shadow faces at the high end,
+       the summit lightest; the lower slope takes a sparse overlay so the
+       density rises down the mountain to the haze. A slab has one density;
+       a mountain has four. */
+    const footY = haze;
+    const spurFacet = (A, Bsp, profBetween) => [...A, [A[A.length - 1][0], footY], [Bsp[Bsp.length - 1][0], footY], ...[...Bsp].reverse(), ...profBetween];
+    const Lbetween = (xa, xb) => Lprof.filter(([x]) => x >= Math.min(xa, xb) && x <= Math.max(xa, xb)).reverse();
+    const Lfacets = [
+      [[[X(-0.02), Lprof[0][1]], ...Lprof.filter(([x]) => x <= LS1[0][0]), ...LS1, [LS1[LS1.length - 1][0], footY], [X(-0.02), footY]], 4],
+      [spurFacet(LS1, LS2, Lbetween(LS1[0][0], LS2[0][0])), 4],
+      [spurFacet(LS2, LS3, Lbetween(LS2[0][0], LS3[0][0])), 3],
+      [spurFacet(LS3, LS4, Lbetween(LS3[0][0], LS4[0][0])), 1],
+      [[...LS4, [LS4[LS4.length - 1][0], footY], [X(0.32), footY], ...[...Lfootline.slice(1)].reverse(), ...Lprof.filter(([x]) => x >= LS4[0][0]).reverse()], 2],
+    ];
+    const Rbetween = (xa, xb) => Rprof.filter(([x]) => x >= Math.min(xa, xb) && x <= Math.max(xa, xb));
+    const Rfacets = [
+      [[...Rprof.filter(([x]) => x <= RS0[0][0]), ...Rfootline.slice(1), ...[...RS0].reverse()], 4],
+      [spurFacet(RS0, RS1, Rbetween(RS0[0][0], RS1[0][0])), 3],
+      [spurFacet(RS1, RS2, Rbetween(RS1[0][0], RS2[0][0])), 1],
+      [[...RS2, [RS2[RS2.length - 1][0], footY], [X(1.02), footY], [X(1.02), Rprof[0][1]], ...Rprof.filter(([x]) => x >= RS2[0][0])], 2],
+    ];
+    /* the lower slope: a sparse overlay below 0.42 H raises the density
+       toward the haze */
+    const lowerL = [[X(-0.02), Y(0.42)], [X(0.34), Y(0.42)], [X(0.34), footY], [X(-0.02), footY]];
+    const lowerR = [[X(0.68), Y(0.42)], [X(1.02), Y(0.42)], [X(1.02), footY], [X(0.68), footY]];
     const closed = (pts) => path(pts) + "Z";
     const inMassif = (x, y, pad = 12) => [[0, 0], [pad, 0], [-pad, 0], [0, pad], [0, -pad]].some(([dx, dy]) => inPoly([x + dx, y + dy], Lsil) || inPoly([x + dx, y + dy], Rsil));
+    const Rshade = Rfacets[0][0];
     SCAPE.massifs = { left: Lprof.map(([x, y]) => [Math.round(x), Math.round(y)]), right: Rprof.map(([x, y]) => [Math.round(x), Math.round(y)]),
       valley: [X(0.18), Y(0.55), X(0.34), H], haze: Math.round(haze) };
     SCAPE.inMassif = inMassif;
@@ -8389,7 +8416,7 @@ function buildDawnscape() {
     const wedge = (poly) => mk.black(closed(FP(poly)));
     const hazeBands = (x0, x1) => {
       let d = "";
-      for (const [dy, w] of [[-6, 7], [-22, 5], [-40, 3]]) d += cutLine(curve([[x0, haze + dy], [(x0 + x1) / 2, haze + dy - 3 + r() * 6], [x1, haze + dy + (r() - 0.5) * 4]], 8), w);
+      for (const [dy, w] of [[-3, 12], [-22, 6], [-40, 4]]) d += cutLine(curve([[x0, haze + dy], [(x0 + x1) / 2, haze + dy - 3 + r() * 6], [x1, haze + dy + (r() - 0.5) * 4]], 8), w);
       return d;
     };
     /* the band round the words: a hand-edged hole at 120px from the ink, so
@@ -8412,21 +8439,45 @@ function buildDawnscape() {
       for (let k = 0; k < 4; k++) { const [x0, y0] = rect[k], [x1, y1] = rect[(k + 1) % 4], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 8); for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); }
       return mk.black(path(wob(dense, amp)) + "Z");
     };
-    const valleyCut = wobRect(X(0.18) - 10, Y(0.55) - 10, X(0.34) + 10, H + 10, 7);
+    /* EVERY EDGE OF A TONE REGION IS HAND-EDGED. A cut is a black shape
+       with two pattern-painted strokes round it, black dots at ~46% then
+       ~15% cover, so the stipple thins over 30–60px into the hole instead of
+       stopping at a ruled line. Flanks get the same feather along their
+       polyline. */
+    const feather = (d) => `<path d="${d}" style="fill:none;stroke:url(#feathA);stroke-width:44;stroke-linejoin:round"/><path d="${d}" style="fill:none;stroke:url(#feathB);stroke-width:92;stroke-linejoin:round"/>`;
+    const wobRectD = (l, t, rt, bt, amp) => {
+      const rect = [[l, t], [rt, t], [rt, bt], [l, bt]], dense = [];
+      for (let k = 0; k < 4; k++) { const [x0, y0] = rect[k], [x1, y1] = rect[(k + 1) % 4], n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 8); for (let i = 0; i < n; i++) dense.push([x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n]); }
+      return path(wob(dense, amp)) + "Z";
+    };
+    const vd = wobRectD(X(0.18) - 10, Y(0.55) - 10, X(0.34) + 10, H + 10, 7);
+    const valleyCut = mk.black(vd) + feather(vd);
+    const flankFeather = (pts) => `<path d="${path(pts)}" style="fill:none;stroke:url(#feathA);stroke-width:30;stroke-linecap:round"/><path d="${path(pts)}" style="fill:none;stroke:url(#feathB);stroke-width:60;stroke-linecap:round"/>`;
     /* the sun's halo is bare in the tone as it is in every other plane */
-    const sunCut = mk.black(closed(arc(sun.x, sun.y, 100, 100, 0, 6.3, 4)));
-    const chromeCuts = keep.slice(0, 3).map(([l, t, rt, bt]) => wobRect(l - 12, t - 12, rt + 12, bt + 12, 4)).join("");
-    const Lwedges = [[[0.158, 0.055], [0.185, 0.082], [0.176, 0.118], [0.157, 0.095]], [[0.20, 0.10], [0.222, 0.145], [0.206, 0.165], [0.19, 0.128]]].map(wedge).join("");
-    const Rwedges = [[[0.833, 0.065], [0.858, 0.092], [0.85, 0.13], [0.832, 0.11]], [[0.87, 0.088], [0.895, 0.118], [0.888, 0.158], [0.868, 0.135]]].map(wedge).join("");
-    const Lcuts = cutLine(offset(Lprof, 4), 3) + [LS1, LS2, LS3, LS4].map((sp) => cutLine(sp.slice(2), 3)).join("") + Lwedges + hazeBands(X(-0.02), X(0.34)) + valleyCut + chromeCuts + sunCut;
-    const Rcuts = cutLine(offset(Rprof, -4), 3) + [RS0, RS1, RS2, RSa].map((sp) => cutLine(sp.slice(2), 3)).join("") + Rwedges + hazeBands(X(0.68), X(1.02)) + chromeCuts + sunCut;
+    const sunD = path(wob(arc(sun.x, sun.y, 100, 100, 0, 6.3, 4), 5)) + "Z";
+    const sunCut = mk.black(sunD) + feather(sunD);
+    const chromeCuts = keep.slice(0, 3).map(([l, t, rt, bt]) => { const d = wobRectD(l - 12, t - 12, rt + 12, bt + 12, 4); return mk.black(d) + feather(d); }).join("");
+    const Lwedges = [[[0.157, 0.052], [0.198, 0.09], [0.184, 0.145], [0.155, 0.11]], [[0.20, 0.10], [0.235, 0.16], [0.21, 0.19], [0.187, 0.135]]].map(wedge).join("");
+    const Rwedges = [[[0.832, 0.062], [0.868, 0.098], [0.856, 0.15], [0.83, 0.12]], [[0.87, 0.085], [0.905, 0.125], [0.893, 0.175], [0.865, 0.145]]].map(wedge).join("");
+    const Lcuts = cutLine(offset(Lprof, 4), 4) + [LS1, LS2, LS3, LS4].map((sp) => cutLine(sp.slice(2), 3.5)).join("") + flankFeather(Lfootline) + Lwedges + hazeBands(X(-0.02), X(0.34)) + valleyCut + chromeCuts + sunCut;
+    const Rcuts = cutLine(offset(Rprof, -4), 4) + [RS0, RS1, RS2, RSa].map((sp) => cutLine(sp.slice(2), 3.5)).join("") + flankFeather(Rfootline) + Rwedges + hazeBands(X(0.68), X(1.02)) + chromeCuts + sunCut;
     SCAPE.maskCuts = { mL: Lcuts, mR: Rcuts };
     SCAPE.sil = { mL: closed(Lsil), mR: closed(Rsil) };
     /* the tone fields themselves */
-    far += `<g class="ds-p2"><g mask="url(#mL)"><path class="ds-tone" style="fill:url(#stipA)" d="${closed(Lsil)}"/><path class="ds-tone" style="fill:url(#stipB)" d="${closed(Lshade)}"/></g>` +
-      `<g mask="url(#mR)"><path class="ds-tone" style="fill:url(#stipA)" d="${closed(Rsil)}"/><path class="ds-tone" style="fill:url(#stipB)" d="${closed(Rshade)}"/></g></g>`;
-    far += strokes(Lprof, 0.35, "ds-far w06 ds-ridge") + strokes(Rprof, 0.35, "ds-far w06 ds-ridge");
-    nS += 6;
+    const tone = (poly, lvl) => `<path class="ds-tone" style="fill:url(#stip${lvl})" d="${closed(poly)}"/>`;
+    far += `<g class="ds-p2"><g mask="url(#mL)">${Lfacets.map(([p, l]) => tone(p, l)).join("")}${tone(lowerL, 1)}</g>` +
+      `<g mask="url(#mR)">${Rfacets.map(([p, l]) => tone(p, l)).join("")}${tone(lowerR, 1)}</g>`;
+    nS += Lfacets.length + Rfacets.length + 2;
+    /* STRUCTURE IN LINE: a dozen long hair-strong strokes per massif over
+       the dot field, the way an aquatint is drawn: the ridgeline, the spurs
+       with lifts, one gully beside each main spur converging into it. Never
+       a hatch field in this plane. */
+    const spurLine = (pts) => { const n = pts.length; let d = ""; for (const [f0, f1] of [[0.06, 0.44], [0.52, 0.8], [0.86, 1]]) d += strokes(pts.slice(Math.floor(f0 * n), Math.max(Math.floor(f0 * n) + 2, Math.floor(f1 * n))), 0.35, "ds-far w1 ds-ridge"); return d; };
+    const gullyLine = (pts, side) => { const lo = pts.slice(Math.floor(pts.length * 0.35)); const g = lo.map(([x, y], i) => [x + side * (4 + 10 * (1 - i / lo.length)), y + 2]); return strokes(g, 0.4, "ds-far w06 ds-ridge"); };
+    far += strokes(Lprof, 0.35, "ds-far w1 ds-ridge") + [LS1, LS2, LS3, LS4].map(spurLine).join("") + gullyLine(LS2, -1) + gullyLine(LS3, -1) + gullyLine(LS4, 1);
+    far += strokes(Rprof, 0.35, "ds-far w1 ds-ridge") + [RS0, RS1, RS2, RSa].map(spurLine).join("") + gullyLine(RS0, -1) + gullyLine(RS1, -1) + gullyLine(RS2, 1);
+    far += `</g>`;
+    nS += 22;
     /* the far range through the gap: a broken line, its crest shadows in
        the sparsest stipple, its saddle held above the kicker */
     const farR = curve(belowKick(FP([[0.29, 0.31], [0.32, 0.245], [0.345, 0.20], [0.365, 0.215], [0.395, 0.175], [0.415, 0.155], [0.445, 0.122], [0.465, 0.15], [0.495, 0.14], [0.53, 0.112], [0.55, 0.15], [0.575, 0.16], [0.60, 0.19], [0.625, 0.225], [0.645, 0.26], [0.67, 0.31]]), 12), 4);
@@ -9310,18 +9361,28 @@ function buildDawnscape() {
      the cover is what the gate computes from these numbers. The masks take
      the silhouette in white and every cut and reserve in black; a reserve
      is the mass itself, by <use>, dilated by its registered width. */
-  const tile = (id, size, n, rad, rot) => {
-    const rt = birdRng(0x5717 + size);
+  const tile = (id, size, n, rad, rot, black = false) => {
+    /* dots placed by the seeded hand with a minimum spacing, never on a
+       grid: two prime tile sizes at two rotations, and the eye finds no row */
+    const rt = birdRng(0x5717 + size * 7 + n);
     let dots = "";
     const spec = [];
-    for (let i = 0; i < n; i++) { const gx = ((i % 2) + 0.5) * (size / 2) + (rt() - 0.5) * size * 0.3, gy = (Math.floor(i / 2) + 0.5) * (size / 2) + (rt() - 0.5) * size * 0.3; dots += `<circle class="ds-dot" cx="${F(gx)}" cy="${F(gy)}" r="${rad}"/>`; spec.push([+gx.toFixed(1), +gy.toFixed(1), rad]); }
+    const minD = Math.max(2.2, Math.sqrt((size * size) / n) * 0.55);
+    for (let i = 0, tries = 0; i < n && tries < n * 60; tries++) {
+      const gx = rt() * size, gy = rt() * size;
+      if (spec.some(([px, py]) => { const dx = Math.min(Math.abs(px - gx), size - Math.abs(px - gx)), dy = Math.min(Math.abs(py - gy), size - Math.abs(py - gy)); return Math.hypot(dx, dy) < minD; })) continue;
+      dots += black ? `<circle cx="${F(gx)}" cy="${F(gy)}" r="${rad}" style="fill:#000"/>` : `<circle class="ds-dot" cx="${F(gx)}" cy="${F(gy)}" r="${rad}"/>`;
+      spec.push([+gx.toFixed(1), +gy.toFixed(1), rad]);
+      i++;
+    }
     SCAPE.patterns = SCAPE.patterns || {};
     SCAPE.patterns[id] = { size, dots: spec, cover: +((n * Math.PI * rad * rad) / (size * size)).toFixed(4) };
     return `<pattern id="${id}" patternUnits="userSpaceOnUse" width="${size}" height="${size}" patternTransform="rotate(${rot})">${dots}</pattern>`;
   };
   const useRes = (plane) => reserves.filter((q) => q[plane] > 0).map((q) => `<use href="#${q.id}" style="fill:#000;stroke:#000;stroke-width:${q[plane] * 2};stroke-linejoin:round"/>`).join("");
   const maskOf = (id, sil, cuts, plane) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><path d="${sil}" style="fill:#fff"/>${cuts}${useRes(plane)}</mask>`;
-  const defs = tile("stipA", 9, 4, 0.8, 8) + tile("stipB", 11, 4, 0.9, -7) + tile("stipC", 13, 3, 0.7, 5) + tile("stipS", 11, 4, 0.85, -12) +
+  const defs = tile("stip1", 23, 10, 0.8, 8) + tile("stip2", 29, 38, 0.8, -7) + tile("stip3", 23, 40, 0.8, 5) + tile("stip4", 29, 92, 0.8, -11) +
+    tile("stipC", 29, 12, 0.7, 5) + tile("stipS", 23, 22, 0.85, -12) + tile("feathA", 17, 30, 1.2, 3, true) + tile("feathB", 19, 10, 1.2, -5, true) +
     (SCAPE.trunkSil ? `<path id="trunkSil" d="${SCAPE.trunkSil}" style="fill:none"/>` : "") +
     (SCAPE.sil ? maskOf("mL", SCAPE.sil.mL, SCAPE.maskCuts.mL + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") + maskOf("mR", SCAPE.sil.mR, SCAPE.maskCuts.mR + (SCAPE.bankSil ? `<path d="${SCAPE.bankSil}" style="fill:#000;stroke:#000;stroke-width:16"/>` : ""), "massif") : "") +
     (SCAPE.bankSil ? maskOf("mB", SCAPE.bankSil, "", "bank") : "") +
