@@ -1236,7 +1236,7 @@ if (location.hash.length > 1) {
   .dawnscape .spray-a, .dawnscape .spray-b{--amp:4deg}
   .dawnscape .shim-a, .dawnscape .shim-b{--amp:3deg}
   .dawnscape .doe-head{--amp:-38deg}
-  .dawnscape .fawn-head{--amp:-34deg}
+  .dawnscape .fawn-head{--amp:26deg} /* mirrored, so a dip is positive: a nuzzle toward her */
   .dawnscape .hare-head{--amp:14deg}
   .dawnscape .doe-ear, .dawnscape .fawn-ear{--amp:12deg}
   .dawnscape .hare-ear{--amp:22deg}
@@ -8255,25 +8255,41 @@ function buildDawnscape() {
        and its shoulder showing on the right between the two. Aerial
        perspective by weight, never opacity. No base line: the feet dissolve
        into the far tick clumps. */
-    const ridge = curve([[-3, Y(0.70)], [X(0.008), Y(0.63)], [X(0.016), Y(0.615)], [X(0.03), Y(0.50)], [X(0.045), Y(0.53)], [X(0.07), Y(0.60)], [X(0.10), Y(0.66)], [X(0.14), Y(0.735)], [X(0.17), Y(0.795)], [X(0.185), hz - 8]]);
-    far += P(stroke(ridge, 1.3), "ds-far w1");
-    far += P(stroke(offset(ridge.slice(2, Math.floor(ridge.length * 0.62)), 1.7), 1.0), "ds-far w1");
-    far += P(stroke(seg(ridge, X(0.018), X(0.044)).map(([x, y]) => [x, y - 1.6]), 0.7), "ds-far w12");
+    /* A RANGE, NOT A SPIKE: the main summit at 0.038 W with shoulders that
+       run off the left edge and down behind the trunk, a col hidden by the
+       trunk, and a secondary summit coming out the other side at 0.128 W
+       before the slope dies toward the meadow. At half height the profile
+       spans the whole of 0–0.157 W. The last of the east slope is a lighter
+       pass that lets go before the horizon: no base line. */
+    const ridge = curve([[-3, Y(0.64)], [X(0.012), Y(0.585)], [X(0.025), Y(0.535)], [X(0.038), Y(0.505)], [X(0.05), Y(0.52)], [X(0.065), Y(0.56)], [X(0.08), Y(0.60)],
+      [X(0.10), Y(0.60)], [X(0.115), Y(0.585)], [X(0.128), Y(0.575)], [X(0.14), Y(0.60)], [X(0.155), Y(0.66)], [X(0.17), Y(0.735)], [X(0.183), Y(0.79)]]);
+    far += P(stroke(ridge.filter(([x]) => x <= X(0.168)), 1.3), "ds-far w1");
+    far += P(stroke(ridge.filter(([x]) => x >= X(0.158)), 1.1), "ds-far w06");
+    far += P(stroke(offset(ridge.slice(2, Math.floor(ridge.length * 0.5)), 1.7), 1.0), "ds-far w1");
+    far += P(stroke(seg(ridge, X(0.024), X(0.052)).map(([x, y]) => [x, y - 1.6]), 0.7), "ds-far w12");
+    far += P(stroke(seg(ridge, X(0.116), X(0.138)).map(([x, y]) => [x, y - 1.4]), 0.6), "ds-far w1");
     /* the ridge is wooded: sparse tree-ticks along its crest, 4–9px, thinning
        east, so the near tree reads as one of the far thousands come close */
     let rt = "", rk = 0;
     for (const [x, y] of ridge) {
-      if (x < X(0.02) || x > X(0.17) || r() > 0.55 - (x / X(0.17)) * 0.3) continue;
+      if (x < X(0.01) || x > X(0.165) || r() > 0.55 - (x / X(0.17)) * 0.3) continue;
       const th = 4 + r() * 5;
       rt += stroke([[x, y + 1], [x + (r() - 0.5) * 1.2, y - th]], 0.2);
       rk++;
     }
     far += P(rt, "ds-far w1", rk);
-    const flank = [[-3, Y(0.70)], [X(0.012), Y(0.60)], [X(0.03), Y(0.50)], [X(0.034), Y(0.56)], [X(0.024), Y(0.65)], [X(0.010), Y(0.73)], [-3, Y(0.78)]];
-    far += hatch(flank, -65, 4.4, "ds-far w1", 0.35, [10, 30], (x, y) => 1.25 - (y - Y(0.50)) / Y(0.26));
-    const ridge2 = curve([[X(0.05), Y(0.665)], [X(0.08), Y(0.59)], [X(0.10), Y(0.568)], [X(0.125), Y(0.585)], [X(0.15), Y(0.63)], [X(0.168), Y(0.69)], [X(0.182), Y(0.755)]]);
+    /* the west flanks, away from the light, in fall-lines that follow the
+       slope and dissolve toward the foot: the main summit's, broad, and the
+       secondary's, a lighter patch */
+    const flank = [[-3, Y(0.64)], [X(0.012), Y(0.585)], [X(0.025), Y(0.535)], [X(0.038), Y(0.505)], [X(0.046), Y(0.56)], [X(0.04), Y(0.64)], [X(0.028), Y(0.72)], [X(0.012), Y(0.78)], [-3, Y(0.80)]];
+    far += hatch(flank, -65, 4.4, "ds-far w1", 0.35, [10, 30], (x, y) => 1.3 - (y - Y(0.505)) / Y(0.27));
+    const flank2 = [[X(0.105), Y(0.60)], [X(0.115), Y(0.585)], [X(0.128), Y(0.575)], [X(0.134), Y(0.61)], [X(0.128), Y(0.66)], [X(0.118), Y(0.69)], [X(0.108), Y(0.66)]];
+    far += hatch(flank2, -65, 5.2, "ds-far w06", 0.3, [6, 16], (x, y) => 1.2 - (y - Y(0.575)) / Y(0.13));
+    /* the far ridge, lower and lighter, showing east of the secondary
+       summit and letting go well short of the sun's halo */
+    const ridge2 = curve([[X(0.10), Y(0.66)], [X(0.13), Y(0.625)], [X(0.155), Y(0.612)], [X(0.175), Y(0.63)], [X(0.195), Y(0.675)], [X(0.212), Y(0.73)]]);
     far += P(stroke(ridge2, 1.1), "ds-far w06");
-    far += hatch([[X(0.112), Y(0.575)], [X(0.125), Y(0.585)], [X(0.15), Y(0.63)], [X(0.16), Y(0.67)], [X(0.14), Y(0.66)], [X(0.12), Y(0.62)]], -65, 6, "ds-far w06", 0.3, [6, 16], (x, y) => 1.2 - (y - Y(0.575)) / Y(0.12));
+    far += hatch([[X(0.14), Y(0.62)], [X(0.155), Y(0.612)], [X(0.165), Y(0.64)], [X(0.16), Y(0.68)], [X(0.148), Y(0.67)]], -65, 6.5, "ds-far w06", 0.3, [6, 14], (x, y) => 1.1 - (y - Y(0.612)) / Y(0.08));
 
     /* ————— the etched sky: long horizontals between the crown and the bough —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
@@ -8616,13 +8632,15 @@ function buildDawnscape() {
      own short clock at their bases, the tail flicks at the rump. Every part
      travels 2px or more at 1456, or it is not alive. `k` is the scale, and
      the doe and the fawn share the grammar. */
-  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots) => {
-    const T = (pts) => pts.map(([px, py]) => [x + px * k, hz + 1 + py * k]);
+  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots, mx = 1, lift = 0) => {
+    /* mx mirrors the animal to face east; lift lengthens the legs by that
+       many units, the body and head riding up on them */
+    const T = (pts) => pts.map(([px, py]) => [x + px * k * mx, hz + 1 + (py <= -20 ? py - lift : (py * (20 + lift)) / 20) * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
     const outline = (segs) => segs.flatMap(([kind, pts]) => (kind === "c" ? c(pts) : l(pts)));
     let d = path(wob(outline(body), 0.22)) + "Z";
     for (const cut of spots.cuts) d += ribbon(wob(curve(T(cut), 2), 0.2), 1.9 * Math.max(k, 0.95));
-    for (const [sx, sy] of spots.dots) d += path(arc(...T([[sx, sy]])[0], 1.7, 1.7, 0, 6.3, 1)) + "Z";
+    for (const [sx, sy] of spots.dots) d += path(arc(...T([[sx, sy]])[0], 2.3 * k, 2.3 * k, 0, 6.3, 1)) + "Z";
     const hd = path(wob(outline(head), 0.22)) + "Z";
     const earD = ears.map((e) => path(wob(l(e.pts), 0.15)) + "Z");
     const tl = path(wob(l(tail.pts), 0.15)) + "Z";
@@ -8636,9 +8654,10 @@ function buildDawnscape() {
       `<g class="ds-tail ${live(cls + "-tail")}" style="transform-origin:${J(tailJoint)};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" d="${tl}"/></g>` +
       `<g class="ds-head ${live(cls + "-head")}" style="transform-origin:${J(joint)};--ph:${(-r() * 9).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>`;
   };
-  const doe = (x) => {
-    const k = 0.95 * vs;
-    /* the body ends at the neck's base and the tail is its own piece */
+  /* the doe's parts, in her own units: the body ends at the neck's base and
+     the tail is its own piece; the fawn is these same parts at two thirds */
+  const DOE = {};
+  {
     const body = [
       ["c", [[-6, -41], [2, -43], [10, -43.5], [17, -42], [21, -39]]],
       ["c", [[22.5, -34], [21.5, -26], [21, -21]]],
@@ -8658,11 +8677,24 @@ function buildDawnscape() {
       { pts: [[-24.5, -60], [-23.5, -61.5], [-21, -68.5], [-19.5, -61], [-19, -59]], joint: [-21.5, -60.5] },
     ];
     const tail = { pts: [[20.5, -40], [24, -36.5], [28, -33], [24.5, -31.5], [21, -35.5]] };
-    const parts = ungulate(x, k, "doe", body, head, ears, tail, [-13, -40], [21, -37], {
-      cuts: [[[14, -24.5], [17, -29.5], [19.5, -35]], [[-8, -27], [-10, -32], [-11, -37]]], dots: [] });
+    Object.assign(DOE, { body, head, ears, tail, joint: [-13, -40], tailJoint: [21, -37],
+      cuts: [[[14, -24.5], [17, -29.5], [19.5, -35]], [[-8, -27], [-10, -32], [-11, -37]]] });
+  }
+  const doe = (x) => {
+    const k = 0.95 * vs;
+    const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] });
     /* her shadow, three raked strokes at her feet */
-    const sh = hatch([[x - 22 * k, hz + 2], [x + 24 * k, hz + 2], [x + 20 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
+    const sh = hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
     return `<g class="ds-deer" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+  };
+  /* ————— the fawn: the doe's own silhouette at two thirds, mirrored to face
+     her, its legs four units too long (the fawn's tell), two cut-dots on
+     the haunch well away from the head ————— */
+  const fawn = (x) => {
+    const k = 0.62 * vs;
+    const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4);
+    const sh = hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
   };
 
   /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
@@ -8806,24 +8838,27 @@ function buildDawnscape() {
      own group curling at the rump. Its roam is the trunk's axis, up and
      down, ±44px, declared on the group. */
   const squirrel = (x, y) => {
-    const k = 0.82 * Math.max(vs, 0.8);
+    const k = 1.0 * Math.max(vs, 0.8);
     const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
-    const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
-    const body = [
-      ...c([[-1, -26], [2, -24], [2.5, -20], [3.5, -15], [4, -10], [3, -6], [5, -4], [2.5, -3.5], [1.5, 0]]),
-      ...l([[-1.5, 0], [-1.5, -3]]),
-      ...c([[-3, -6], [-3.5, -12], [-4, -18], [-3.5, -22], [-2.5, -24]]),
-      ...l([[-3.5, -27.5], [-1, -26]]),
-    ];
-    const tail = [...c([[2, -5], [7, -2], [12, -4], [15, -9], [14.5, -15], [12, -20], [8, -22], [6, -19], [9, -16], [11, -12], [9, -8], [5, -7], [2, -8]])];
+    const c = (pts) => curve(T(pts), 2);
+    /* in profile on the lowest limb against bare sky, running toward the
+       trunk: a horizontal body with a distinct head, snout and one ear, the
+       haunch behind, and the tail its own S curled up over the back, nearly
+       as tall as the body is long, with a cream cut at its root */
+    const body = [...c([[-14, -6], [-12.5, -9], [-10.5, -11], [-9.5, -13.5], [-8, -11.5], [-4, -11.5], [1, -11.5], [5, -10], [8, -6.5], [7.5, -2.5], [6, 0], [3, 0], [3, -2], [-1, -2.5], [-5, -2], [-6.5, 0], [-9.5, 0], [-9.5, -2.5], [-12, -3.5], [-14, -6]])];
+    const tail = [...c([[7, -7.5], [10.5, -6], [13.5, -9], [14.5, -14], [12.5, -19], [8.5, -21.5], [4, -20.5], [5, -18], [8.5, -18.5], [11, -15.5], [11, -11], [9.5, -8.5], [7, -7.5]])];
+    let td = path(wob(tail, 0.15)) + "Z";
+    td += ribbon(wob(curve(T([[8.5, -7], [10, -9.5], [10.5, -12.5]]), 2), 0.12), 1.9 * Math.max(k, 0.95));
     const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
-    fills.push([x + 6 * k, y - 12 * k, 12 * k]);
+    fills.push([x, y - 10 * k, 14 * k]);
     nS += 2;
     groups += 2;
-    return `<g class="ds-squirrel" data-x="${F(x)}" data-axis="y" data-range="44" style="transform-origin:${F(x)}px ${F(y)}px">` +
-      `<g class="ds-tail ${live("squirrel-tail")}" style="transform-origin:${J([3, -6])};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" d="${path(wob(tail, 0.18))}Z"/></g>` +
+    return `<g class="ds-squirrel" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px">` +
+      `<g class="ds-tail ${live("squirrel-tail")}" style="transform-origin:${J([7, -7.5])};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" fill-rule="evenodd" d="${td}"/></g>` +
       `<path class="ds-fill" d="${path(wob(body, 0.15))}Z"/></g>`;
   };
+
+
 
   /* ————— the owl: an ear-tuft silhouette in the crown's notch —————
      Built as markup for the socket on L3, rendered at build under reduced
@@ -8842,32 +8877,7 @@ function buildDawnscape() {
       `<g class="ds-head owl-head" style="transform-origin:${J([0, -15])};--ph:${(-r() * 8).toFixed(2)}s"><path class="ds-fill" d="${path(wob(head, 0.15))}Z"/></g>`;
   };
 
-  /* ————— the fawn: the doe's silhouette at two thirds, legs a little too long,
-     the head a little too big, and three cream spots on the haunch ————— */
-  const fawn = (x) => {
-    const k = 0.66 * vs;
-    const body = [
-      ["c", [[-4, -40], [2, -42], [8, -42], [13, -40], [15.5, -37]]],
-      ["c", [[16, -32], [15.5, -24], [15, -20]]],
-      ["l", [[15, -14], [14.5, -7], [14, 0], [11.5, 0], [11.5, -7], [12, -14], [11, -19]]],
-      ["l", [[9.5, -18], [9, -8], [9, 0], [6.5, 0], [6.5, -8], [7, -17]]],
-      ["c", [[6, -20], [1, -23], [-4, -23.5]]],
-      ["l", [[-4.5, -22], [-5, -10], [-5.5, 0], [-8, 0], [-8, -10], [-8, -20]]],
-      ["l", [[-9.5, -20], [-10.5, -10], [-11, 0], [-13.5, 0], [-13.5, -10], [-13, -21]]],
-      ["c", [[-13.5, -26], [-14, -31], [-14.5, -35], [-9, -42.5], [-6, -42], [-4, -40]]],
-    ];
-    const head = [
-      ["c", [[-12, -32], [-15, -36], [-17.5, -41], [-20.5, -44.5], [-24.5, -46.5], [-28.5, -48], [-30.5, -49.5], [-29, -51.5], [-24.5, -52.5], [-20.5, -53.5], [-12.5, -54], [-11, -52.5], [-8.5, -48.5], [-6, -43.5], [-4, -39]]],
-    ];
-    const ears = [
-      { pts: [[-22, -52], [-20.5, -53.5], [-22, -62], [-18, -55], [-17.5, -52.5]], joint: [-20, -53] },
-      { pts: [[-17.5, -53], [-16.5, -55], [-14, -62.5], [-12.5, -54], [-12, -52]], joint: [-14.5, -54] },
-    ];
-    const tail = { pts: [[14.5, -38], [17.5, -34.5], [20.5, -31.5], [17.5, -30.5], [15, -33.5]] };
-    const parts = ungulate(x, k, "fawn", body, head, ears, tail, [-11, -38], [15.5, -35], { cuts: [], dots: [[11, -28], [7.5, -33], [13, -35]] });
-    const sh = hatch([[x - 14 * k, hz + 2], [x + 16 * k, hz + 2], [x + 13 * k, hz + 7], [x - 10 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
-    return `<g class="ds-fawn" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
-  };
+
 
   /* ————— the composition ————— */
   if (tall) {
@@ -8899,8 +8909,8 @@ function buildDawnscape() {
     /* outline tufts first, behind everything */
     for (const [fx, fy, h, n] of [[0.03, 0, 30, 5], [0.085, 0, 28, 5], [0.16, 0, 24, 5], [0.35, 0.885, 16, 4], [0.49, 0.90, 14, 4], [0.64, 0.88, 16, 4], [0.75, 0, 20, 5], [0.80, 0.98, 14, 4], [0.93, 0.975, 16, 4], [0.985, 0, 34, 6]])
       near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
-    near += fawn(X(0.122));
-    near += doe(X(0.165));
+    near += fawn(X(0.116));
+    near += doe(X(0.168));
     /* the solid tufts: three stands of three at the bottom corners and by
        the doe, the swale of taller grass across the mid-ground in an S, and
        grass round the hare in the near foreground below the signature */
@@ -8921,9 +8931,9 @@ function buildDawnscape() {
     near += gull(X(0.72), Y(0.885), 1, "peck-b", "b");
     near += gull(X(0.63), Y(0.887), 1, "peck-c", "c");
     near += hare(X(0.86), Y(0.97));
-    /* the squirrel on the trunk's lit edge; the owl's notch on L3, empty
+    /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
-    near += squirrel(X(0.101), Y(0.60));
+    near += squirrel(X(0.165), Y(0.311) - 1);
     const owlAt = [X(0.232), Y(0.168)];
     SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
     SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
@@ -9454,19 +9464,18 @@ function owlArrive() {
 }
 
 /* ····· the squirrel's darts ·····
-   Stop-start along the trunk's axis: 30–60px in 400–700ms, then frozen,
-   every 15–40s, within ±44px of where it was drawn, logged like every
-   roamer (its offset is along y). */
+   Stop-start along its limb: 20–40px in 400–700ms, then frozen, every
+   15–40s, within ±30px of where it was drawn, logged like every roamer. */
 function dart(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
   if (!el) return;
   const off = roam.squirrel || 0;
   let dir = r() < 0.5 ? -1 : 1;
   if (Math.abs(off) > 20) dir = off > 0 ? -1 : 1;
-  const dy = clamp(dir * (30 + r() * 30), -44 - off, 44 - off);
-  logGround("squirrel", dy);
+  const dx = clamp(dir * (20 + r() * 20), -30 - off, 30 - off);
+  logGround("squirrel", dx);
   el.style.transition = `transform ${(400 + r() * 300).toFixed(0)}ms cubic-bezier(.2,.8,.3,1)`;
-  el.style.transform = `translate(0px, ${(off + dy).toFixed(1)}px)`;
+  el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
 }
 
 /* ····· the butterfly ·····
