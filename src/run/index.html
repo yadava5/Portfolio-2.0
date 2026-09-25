@@ -8486,7 +8486,9 @@ function buildDawnscape() {
       paintBase(mHt, 28, true);
       const snap = (m) => { m.data = m.g.getImageData(0, 0, m.cv.width, MH).data; };
       snap(mL); snap(mHt);
-      const painted = (m, x, y) => { const xi = Math.round(x), yi = Math.round(y); if (yi < 0 || yi >= MH || xi < 0 || xi >= m.cv.width) return yi >= MH; return m.data[(yi * m.cv.width + xi) * 4 + 3] > 0; };
+      /* below the mask (under the haze line, where only the wisps go) a point
+         is hidden by the bank and the reserve circles alone */
+      const painted = (m, x, y) => { const xi = Math.round(x), yi = Math.round(y); if (yi >= MH) return occlBase.some((o) => inPoly([x, y], o)) || circles.some((c) => Math.hypot(x - c[0], y - c[1]) < c[2] + 12); if (yi < 0 || xi < 0 || xi >= m.cv.width) return false; return m.data[(yi * m.cv.width + xi) * 4 + 3] > 0; };
       const addOccluder = (poly) => { fillPoly(mL.g, poly); fillPoly(mHt.g, poly); snap(mL); snap(mHt); };
       /* the snow is per summit and small: a polygon test */
       const visible = (pts, snow, forHatch = false) => { const m = forHatch ? mHt : mL; const runs = []; let cur = []; for (const p of pts) { if (painted(m, p[0], p[1]) || snow.some((o) => inPoly(p, o))) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(p); } if (cur.length > 1) runs.push(cur); return runs; };
