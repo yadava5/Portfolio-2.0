@@ -8135,6 +8135,17 @@ function buildDawnscape() {
   const tall = !narrow;
   const sR = (narrow ? 15 : 26) * (narrow ? 1 : vs);
   const sun = { x: X(narrow ? 0.26 : 0.265), y: hz + sR * 0.15, r: sR };
+  /* THE TREE STANDS BELOW EVERY SUMMIT. "tree's can't be as high as
+     mountain": the great tree is drawn in its own frame, as approved, and
+     set down at 0.78 of that size about its root, so its crown tops out
+     near 0.275 H, under the lowest summit on the sheet at every seat. A
+     transform and not a redraw, so every stroke of it is the stroke that
+     was approved. What lives in it (the nest, the hollow, the squirrel's
+     limb, the owl's notch, the leaves' source, the reserves it casts, the
+     canopy the far birds leave from) is carried through the same map. */
+  const TK = 0.78, tcx = X(0.082);
+  const TT = ([x, y]) => [tcx + (x - tcx) * TK, hz + (y - hz) * TK];
+  const treeT = `translate(${F(tcx * (1 - TK))} ${F(hz * (1 - TK))}) scale(${TK})`;
   /* THE CLEARING. The words' column, with the sky above it that the head of
      the station reads in, and the halo round the sun: density is zero inside
      and climbs to full 160px out. Every tick-field is thinned by it, so the
@@ -8591,9 +8602,8 @@ function buildDawnscape() {
      darkest pockets on the page where the crown meets the trunk. The crown is
      two layers so the wind can move the outer boughs more than the inner. */
   const bigTree = () => {
-    /* the crown's own frame: what was drawn in 0–0.30 H now sits in
-       0.14–0.47 H, under the left massif's crest; the massif is the tallest
-       thing in the frame and the tree is one of the far thousands come close */
+    /* the crown's own frame: what was drawn in 0–0.30 H sits in 0.14–0.47 H
+       of the tree's frame, which treeT then sets down under the range */
     const CY = (f) => Y(0.14 + f * 1.1);
     const cr = [X(0.088), CY(0.30)];
     cutPad = 14; /* the crown sways ±1.1° about the crotch: up to 9px at its reach */
@@ -8602,7 +8612,6 @@ function buildDawnscape() {
     let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
     /* the trunk's silhouette, never drawn, only cast: its reserve into the massif */
     SCAPE.trunkSil = path([...left, ...[...right].reverse()]) + "Z";
-    SCAPE.trunkPoly = [...left, ...[...right].reverse()];
     reserves.push({ id: "trunkSil", massif: 12, bank: 0, grass: 0 });
     /* roots: two each side, the outer ones reaching for the corner */
     for (const rt of [
@@ -8767,61 +8776,9 @@ function buildDawnscape() {
       `<path class="ds-ink w1" d="M${Tp(-1, -2.4)} L${Tp(-1.6, 0)} M${Tp(2.4, -2.4)} L${Tp(3, 0)}"/>`;
   };
 
-  /* ————— the perch bough: in from the top-right, lighter than the crown —————
-     A limb off a tree that is out of the frame, drooping to 0.72 W, three
-     masses hanging under it, a bare twig rising near its tip where a bird
-     can land (the socket the sky's perch outcome fills). */
-  const bough = () => {
-    cutPad = 16; /* ±1.3° about the right edge: up to 10px at the tip */
-    /* NEAR OVER FAR, NOT NEAR ON FAR: the bough hangs from 0.17 to 0.27 H,
-       well under the right massif's crest, so the summit rock shows above
-       it with clear sky between, and a bough is never a tree on a summit */
-    const main = curve([[W + 6, Y(0.167)], [X(0.965), Y(0.183)], [X(0.925), Y(0.205)], [X(0.885), Y(0.213)], [X(0.85), Y(0.223)], [X(0.81), Y(0.24)], [X(0.775), Y(0.26)], [X(0.745), Y(0.27)]]);
-    const fork = curve([[X(0.885), Y(0.213)], [X(0.86), Y(0.191)], [X(0.838), Y(0.167)], [X(0.822), Y(0.147)]]);
-    let d = contour(main, 0.9, "ds-ink", ["w12", "w1", "w12"]) + contour(fork, 0.7, "ds-ink", ["w12", "w1", "w12"]);
-    /* the masses sit on the limb, over and under it, the limb running through */
-    /* four clumps: the corner under the chip, the middle of the limb, the
-       fork's end, and the tip by the perch; the limb runs through them */
-    const M = [
-      [0.985, 0.235, 40], [0.955, 0.255, 34], [0.975, 0.20, 24], [0.94, 0.215, 18],
-      [0.885, 0.24, 38], [0.855, 0.225, 30], [0.905, 0.27, 26], [0.87, 0.205, 16],
-      [0.828, 0.16, 30], [0.81, 0.185, 22], [0.84, 0.135, 14],
-      [0.79, 0.25, 28], [0.765, 0.267, 20], [0.80, 0.28, 14],
-    ].map(([fx, fy, rr]) => [X(fx), Y(fy), rr * 0.74 * Math.max(vs, 0.8)]);
-    /* in leaf along its whole length: a sibling to every mass, and masses
-       filling the bare stretches of the limb; the perch twig stays bare */
-    M.push(...M.map(([x, y, rr]) => { const a = r() * 6.28; return [x + Math.cos(a) * rr * 0.6, y + Math.sin(a) * rr * 0.45, rr * 0.8]; }));
-    for (const t of [0.12, 0.3, 0.48, 0.66, 0.84]) { const p = main[Math.floor(t * (main.length - 1))]; M.push([p[0] + (r() - 0.5) * 10, p[1] - 4 + (r() - 0.5) * 10, (16 + r() * 8) * Math.max(vs, 0.8)]); }
-    cutTarget = cutMasks.mBo = [];
-    for (const i of [0, 4, 6, 11]) {
-      const [mx, my, mr] = M[i];
-      const t = main.reduce((b, p) => (Math.abs(p[0] - mx) < Math.abs(b[0] - mx) ? p : b));
-      d += strokes(curve([t, [(t[0] + mx) / 2 + 3, (t[1] + my) / 2], [mx, my + mr * 0.3]]), 0.5, "ds-ink w1");
-    }
-    d += shade(...M[1]) + shade(...M[6]);
-    let f = "";
-    for (const mm of M) f += mass(...mm);
-    const bcx = M.reduce((a, m) => a + m[0], 0) / M.length, bcy = M.reduce((a, m) => a + m[1], 0) / M.length;
-    f += froth(M.slice(0, 14), bcx, bcy, "flut-2");
-    cutTarget = null;
-    const pz = [X(0.752), Y(0.203)];
-    const twig = curve([[X(0.782), Y(0.252)], [X(0.77), Y(0.23)], [X(0.758), Y(0.213)], pz]);
-    const twigD = P(stroke(twig, 0.5), "ds-ink w1") + P(stroke(offset(twig.slice(3), 0.9), 0.4), "ds-ink w1");
-    SCAPE.perch = { x: pz[0], y: pz[1] };
-    /* the bird that lands here: the ground gull's own body and head, wings
-       folded, facing west into the sky it crossed, its feet on the twig's
-       tip. Built now so a landing and a rebuild both draw the same bird;
-       the nest's sitter is the same bird facing east. */
-    SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
-    groups++;
-    cutPad = 4;
-    return `<g class="ds-bough ${live("sway-b")}" mask="url(#mBo)" style="transform-origin:${F(W)}px ${F(Y(0.167))}px;--ph:${phase(W, 14.6)}">${d}${f}` +
-      `<g class="ds-twig">${twigD}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g></g>`;
-  };
-
   /* ————— a sapling: a slender two-pass trunk, five branches, leaf ticks, no fills ————— */
   let sapN = 0;
-  const sapling = (bx, by, h, lean, cls) => {
+  const sapling = (bx, by, h, lean, cls, perch = false) => {
     const tr = curve([[bx, by], [bx + lean * h * 0.3 + (r() - 0.5) * 6, by - h * 0.5], [bx + lean * h, by - h]]);
     let d = P(stroke(tr, 0.8), "ds-ink w1") + P(stroke(offset(tr.slice(Math.floor(tr.length * 0.25)), 1.1), 0.6), "ds-ink w1");
     for (let i = 0; i < 5; i++) {
@@ -8859,8 +8816,25 @@ function buildDawnscape() {
     d += compound(ccx, ccy, sm, 2, cutTarget) + leaves(ccx, ccy, R, 5);
     cutTarget = null;
     resDil = { massif: 12, bank: 0, grass: 0 };
+    /* THE PERCH. The bough that carried it hung across the principal's
+       shadow face, dark foliage on dark hatch, the fusion the owner
+       rejected, and it is retired. The perch is a bare twig out of this
+       young tree's crown, on paper under the range's foot, so a bird that
+       lands ends on bare paper and never over the rock; it sways with the
+       tree and dips under the bird as the bough's twig did. */
+    let perchG = "";
+    if (perch) {
+      const pz = [top[0] - 1, top[1] - h * 0.3];
+      const twig = curve([[top[0] + lean * 2, top[1] - h * 0.02], [top[0] + 1.5, top[1] - h * 0.16], pz], 4);
+      perchG = `<g class="ds-twig">${P(path(twig), "ds-ink w1")}${P(path(offset(twig.slice(2), 0.8)), "ds-ink w06")}<g class="ds-perch" data-x="${F(pz[0])}" data-y="${F(pz[1])}"></g></g>`;
+      SCAPE.perch = { x: pz[0], y: pz[1] };
+      /* the bird that lands here: the ground gull's own body and head, wings
+         folded, facing west into the sky it crossed; the nest's sitter is
+         the same bird facing east */
+      SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
+    }
     if (cls) groups++;
-    return `<g class="ds-sap ${live(cls)}" mask="url(#${sid})" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}</g>`;
+    return `<g class="ds-sap ${live(cls)}" mask="url(#${sid})" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}${perchG}</g>`;
   };
 
   /* ————— the doe: a solid silhouette, the bird's own language —————
@@ -9147,16 +9121,20 @@ function buildDawnscape() {
     let wv = "";
     for (let i = 0; i < 7; i++) { const a = 0.3 + r() * 2.5, x = nx + Math.cos(a) * nw * 0.75, y = ny + Math.sin(a) * nw * 0.32; wv += stroke([[x - 5, y + 1.5], [x + 4, y - 2.5]], 0.3); }
     d += P(wv, "ds-ink w1", 7);
-    SCAPE.nest = { x: nx, y: ny - nw * 0.5 };
-    SCAPE.nestMarkup = perchBird(nx, ny - nw * 0.5 + 2, 1, 0.8 * Math.max(vs, 0.8));
-    d += `<g class="ds-nestsock" data-x="${F(nx)}" data-y="${F(ny - nw * 0.5)}"></g>`;
+    /* the cup is the tree's and rides its frame; the socket and its sitter
+       are the bird's, at the bird's own size, where the cup now is */
+    d = `<g transform="${treeT}">${d}</g>`;
+    const [snx, sny] = TT([nx, ny - nw * 0.5]);
+    SCAPE.nest = { x: snx, y: sny };
+    SCAPE.nestMarkup = perchBird(snx, sny + 2, 1, 0.8 * Math.max(vs, 0.8));
+    d += `<g class="ds-nestsock" data-x="${F(snx)}" data-y="${F(sny)}"></g>`;
     /* the trunk hollow: a dark pocket with a cream rim, the squirrel's den */
     const hx = X(0.097), hy = Y(0.515), rx = 6.5 * vs, ry = 9 * vs;
     const rim = arc(hx, hy, rx, ry, 0, 6.3, 2);
-    d += P(stroke(rim, 0.35), "ds-ink w1");
     const inner = arc(hx, hy, rx - 2.4, ry - 2.6, 0, 6.3, 2);
-    d += hatch(inner, 84, 2.2, "ds-ink w1", 0.25, [4, 14]) + hatch(inner, 20, 2.6, "ds-ink w08", 0.25, [4, 12]);
-    SCAPE.den = { x: hx, y: hy };
+    d += `<g transform="${treeT}">${P(stroke(rim, 0.35), "ds-ink w1")}${hatch(inner, 84, 2.2, "ds-ink w1", 0.25, [4, 14]) + hatch(inner, 20, 2.6, "ds-ink w08", 0.25, [4, 12])}</g>`;
+    const [shx, shy] = TT([hx, hy]);
+    SCAPE.den = { x: shx, y: shy };
     /* the fallen bough in the right meadow: two-pass contour, three dead
        twigs, its shadow */
     const lx0 = X(0.655), lx1 = X(0.70), ly = Y(0.955);
@@ -9180,7 +9158,7 @@ function buildDawnscape() {
     /* mushrooms at the root flare: caps with a gill-cut */
     let mu = "";
     for (const [fx, cw, ch] of [[0.052, 4.5, 3], [0.057, 3.2, 2.2], [0.063, 5.5, 3.4], [0.068, 3.8, 2.6]]) {
-      const mx = X(fx) + (r() - 0.5) * 3, my = hz - 1;
+      const mx = TT([X(fx), hz])[0] + (r() - 0.5) * 3, my = hz - 1;
       const cap = arc(mx, my - ch - 2, cw, ch, Math.PI, 2 * Math.PI, 1.5);
       const capD = path([...cap, [mx + cw, my - ch - 2], [mx - cw, my - ch - 2]]) + "Z" + ribbon([[mx - cw * 0.7, my - ch - 1.2], [mx + cw * 0.7, my - ch - 1.2]], 1.6);
       mu += `<path class="ds-fill" fill-rule="evenodd" d="${capD}"/>`;
@@ -9207,11 +9185,12 @@ function buildDawnscape() {
         d += P(rt, "ds-ink w1", 4);
       }
     }
-    /* the spider's line: one catenary from the bough's tip to the sapling's
-       top, a lift where the sun catches it; it sways on its own clock */
-    const s0 = [X(0.764), Y(0.286)], s1 = [X(0.945), Y(0.39)];
+    /* the spider's line: one catenary from the perch tree's stem to the
+       low young tree's crown, a lift where the sun catches it; it sways on
+       its own clock */
+    const s0 = [X(0.953), Y(0.53)], s1 = [X(0.918), Y(0.585)];
     const cat = [];
-    for (let i = 0; i <= 40; i++) { const t = i / 40; cat.push([s0[0] + (s1[0] - s0[0]) * t, s0[1] + (s1[1] - s0[1]) * t + Math.sin(t * Math.PI) * 26]); }
+    for (let i = 0; i <= 40; i++) { const t = i / 40; cat.push([s0[0] + (s1[0] - s0[0]) * t, s0[1] + (s1[1] - s0[1]) * t + Math.sin(t * Math.PI) * 12 * vs]); }
     const g = Math.floor(40 * 0.3);
     d += `<g class="ds-spider ${live("spider")}" style="transform-origin:${F(s0[0])}px ${F(s0[1])}px;--ph:-1.7s">${P(stroke(cat.slice(0, g), 0.25), "ds-far w06")}${P(stroke(cat.slice(g + 4), 0.25), "ds-far w06")}</g>`;
     groups++;
@@ -9224,10 +9203,14 @@ function buildDawnscape() {
        and the foot of the bank */
     far += ticks(X(0.14), hz - 14, X(0.035), 12, 22, "ds-far w1", 4, 9, 0.2);
     far += ticks(X(0.60), hz - 8, X(0.06), 6, 12, "ds-far w1", 3, 6, 0.2);
-    near += bigTree();
-    near += bough();
-    /* young trees of the mid class: 110–150px, on the bank */
-    mid += sapling(X(0.958), Y(0.60), Y(0.15), -0.05, "sway-sap");
+    const res0 = reserves.length, disc0 = SCAPE.reserveCircles.length;
+    near += `<g class="ds-treeframe" transform="${treeT}">${bigTree()}</g>`;
+    for (const q of reserves.slice(res0)) q.tf = treeT;
+    SCAPE.reserveCircles = [...SCAPE.reserveCircles.slice(0, disc0), ...SCAPE.reserveCircles.slice(disc0).map(([x, y, rr]) => [...TT([x, y]), rr * TK])];
+    for (const t of SCAPE.trees) { const [x, top] = TT([t.x, t.top]); Object.assign(t, { x, top, h: t.h * TK }); }
+    /* young trees of the mid class: 110–150px, on the bank; the nearest
+       carries the perch */
+    mid += sapling(X(0.958), Y(0.60), Y(0.15), -0.05, "sway-sap", true);
     mid += sapling(X(0.986), Y(0.50), Y(0.13), -0.08, "sway-sap");
     mid += sapling(X(0.912), Y(0.70), Y(0.12), 0.04, "");
     /* the meadow's ground: a stipple of short ticks, half what round 8 had
@@ -9310,8 +9293,10 @@ function buildDawnscape() {
     near += details();
     /* the squirrel on the lowest limb; the owl's notch on L3, empty
        until it comes home (reduced motion: home from the start) */
-    near += squirrel(X(0.138), Y(0.14 + 0.316 * 1.1) - 1);
-    const owlAt = [X(0.022), Y(0.14 + 0.246 * 1.1) - 2];
+    near += `<g class="ds-treeframe" transform="${treeT}">${squirrel(X(0.138), Y(0.14 + 0.316 * 1.1) - 1)}</g>`;
+    /* the owl comes home at its own size, to where the notch now is */
+    const owlNotch = TT([X(0.022), Y(0.14 + 0.246 * 1.1)]);
+    const owlAt = [owlNotch[0], owlNotch[1] - 2];
     SCAPE.owl = { x: owlAt[0], y: owlAt[1] };
     SCAPE.owlMarkup = owlMarkup(owlAt[0], owlAt[1]);
     const owlHome = RM || (typeof sky !== "undefined" && sky.owl);
@@ -9320,18 +9305,16 @@ function buildDawnscape() {
     near += solidTuft(X(0.83), Y(0.985), 13 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 14 * S3, 6, "", 0);
     near += solidTuft(X(0.962), hz, 21 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 24 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 19 * S3, 7, "", 0);
     /* where a leaf may fall from and where it may land: the crown's left
-       half down the trunk's side, short of the sun's halo, and the bough
-       down the right edge, short of the signature's air. The clearance gate
-       holds both envelopes clear of every word. */
+       half down the trunk's side, short of the sun's halo (the bough that
+       shed the rest is retired). The clearance gate holds the envelope
+       clear of every word. */
     const floorUnder = (x0, x1, want) => {
       let f = want;
       for (const [l, t, rt] of words) if (rt > x0 && l < x1 && t - 2 < f) f = t - 2;
       return Math.max(hz + 8, f);
     };
-    SCAPE.leaf = {
-      crownSrc: [X(0.05), Y(0.25), X(0.16), Y(0.47)], crownEnv: [X(0.02), Y(0.25), X(0.19), floorUnder(X(0.02), X(0.19), hz + 42)],
-      boughSrc: [X(0.76), Y(0.205), X(0.86), Y(0.275)], boughEnv: [X(0.76), Y(0.205), X(0.97), floorUnder(X(0.76), X(0.97), hz + 22)],
-    };
+    const [sx0, sy0] = TT([X(0.05), Y(0.25)]), [sx1, sy1] = TT([X(0.16), Y(0.47)]), [ex0, ey0] = TT([X(0.02), Y(0.25)]), [ex1] = TT([X(0.19), 0]);
+    SCAPE.leaf = { crownSrc: [sx0, sy0, sx1, sy1], crownEnv: [ex0, ey0, ex1, floorUnder(ex0, ex1, hz + 42)] };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
     /* THE PHONE HAS TWO BANDS AND BARE GUTTERS. No flank to draw on, so the
@@ -9398,9 +9381,12 @@ function buildDawnscape() {
      is cast through the same transform */
   const useRes = (plane) => reserves.filter((q) => q[plane] > 0).map((q) => { const u = `<use href="#${q.id}" style="fill:#000;stroke:#000;stroke-width:${q[plane] * 2};stroke-linejoin:round"/>`; return q.tf ? `<g transform="${q.tf}">${u}</g>` : u; }).join("");
   const maskOf = (id, sil, cuts, plane) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><path d="${sil}" style="fill:#fff"/>${cuts}${useRes(plane)}</mask>`;
-  /* the leaf masks: white paper, the cut-lines black, the blossom black */
+  /* the leaf masks: white paper, the cut-lines black, the blossom black;
+     three sheets wide, because a mask's box is in the frame of what it
+     masks and the crown's frame is scaled into place (at one sheet the
+     crown's west lobes were cut on a straight line) */
   const leafMasks = Object.entries(cutMasks).map(([id, cuts]) =>
-    `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect x="0" y="0" width="${W}" height="${H}" style="fill:#fff"/>` +
+    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}"><rect x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}" style="fill:#fff"/>` +
     cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
@@ -9831,6 +9817,8 @@ function socketArrive(key) {
   g.innerHTML = markup;
   requestAnimationFrame(() => g.classList.add("on"));
   if (S.laden) g.parentElement.classList.add("laden");
+  /* the hare below the young tree looks up at the bird that lands on it */
+  if (key === "perch") hareSitsUp();
   st.taken = true;
   st.lands++;
   mark(S.mark);
@@ -10083,8 +10071,7 @@ function gustReactions() {
 
 /* ····· the falling leaf ·····
    A transient, not census: one leaf every 30 to 80 seconds, never two in
-   the air, from the crown's left half seven times in ten and the bough
-   otherwise, falling three to five seconds with two or three swings and a
+   the air, from the crown's left half, falling three to five seconds with two or three swings and a
    little drift east (the one wind), tumbling. Web Animations, not a CSS
    animation, so the census stays exactly thirteen by construction. A leaf
    that lands stays; the sixth on the ground fades while the next falls. */
@@ -10097,8 +10084,7 @@ function shedLeaf() {
   const front = document.querySelector(".dawnscape .ds-front");
   if (!front) return;
   const r = birdRng(0x1eaf + leaves.shed * 4099);
-  const L = SCAPE.leaf, crown = r() < 0.7;
-  const src = crown ? L.crownSrc : L.boughSrc, env = crown ? L.crownEnv : L.boughEnv;
+  const L = SCAPE.leaf, src = L.crownSrc, env = L.crownEnv;
   leafTimer = setTimeout(shedLeaf, at(30000 + r() * 50000));
   const x0 = src[0] + r() * (src[2] - src[0]), y0 = src[1] + r() * (src[3] - src[1]);
   /* the leaf lets go when the gust reaches its bough: the gust's crest at
@@ -10109,9 +10095,9 @@ function shedLeaf() {
   const since = performance.now() - (sky.windAt || performance.now());
   const wait = (((crest - since) % per) + per) % per;
   leafLive = true;
-  setTimeout(() => shedNow(x0, y0, crown, env, r), wait);
+  setTimeout(() => shedNow(x0, y0, env, r), wait);
 }
-function shedNow(x0, y0, crown, env, r) {
+function shedNow(x0, y0, env, r) {
   const front = document.querySelector(".dawnscape .ds-front");
   if (!front) { leafLive = null; return; }
   const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
@@ -10146,7 +10132,6 @@ function shedNow(x0, y0, crown, env, r) {
   anim.onfinish = () => {
     anim.commitStyles();
     anim.cancel();
-    if (!crown) hareSitsUp();
     el.classList.remove("airborne");
     leaves.landed.push(el);
     leafLive = null;
