@@ -8169,7 +8169,7 @@ function buildDawnscape() {
 
   /* what the sky and the ground's events will need to find, in viewport px;
      a rebuild starts every roamer from where it is drawn again */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = [];
   for (const k of Object.keys(roam)) delete roam[k];
   if (room < 0) {
     svg.innerHTML = "";
@@ -9412,7 +9412,8 @@ function buildDawnscape() {
     paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
-    faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [] }; /* probe hook */
+    faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
+    near: (SCAPE.reserveCircles || []).map((c) => c.map((v) => Math.round(v))) }; /* probe hook */
 }
 /* one rebuild per frame: a window drag fires resize dozens of times a
    second and the build is tens of milliseconds */
@@ -9649,7 +9650,7 @@ let farTimer = null, groundTimer = null;
    flock, and the bow follows the same profile at a fraction of its lift.
    A crossing that LANDS ends exactly on the perch, and one that leaves the
    perch runs west, back over the sky it came across. */
-function farPath(f, W, H) {
+function farPts(f, W, H) {
   const x0 = f.ox * W, y0 = f.oy * H;
   const padX = 46 * f.sc, padY = 20 * f.sc;
   const dir = f.ex < f.ox ? -1 : 1;
@@ -9658,11 +9659,57 @@ function farPath(f, W, H) {
   const climb = clamp(run * Math.tan(f.ang), 0, Math.max(0, y0 - f.ey * H));
   const y1 = f.land ? f.ey * H : Math.max(padY + 2, y0 - climb);
   const bow = f.bow;
-  const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
   const pt = (fx, a) => [x0 + dir * run * fx, y0 - (y0 - y1) * (fx + bow * (a - fx))];
   /* the near flock's own profile: 72% of the climb by half the run */
-  const [c1, c2, c3, c4, c5] = [pt(0.2, 0.28), pt(0.52, 0.72), pt(0.64, 0.84), pt(0.78, 0.94), pt(0.9, 0.98)];
-  return `path("M ${P(x0, y0)} C ${P(...c1)} ${P(...c2)} ${P(...c3)} C ${P(...c4)} ${P(...c5)} ${P(x1, y1)}")`;
+  return [[x0, y0], pt(0.2, 0.28), pt(0.52, 0.72), pt(0.64, 0.84), pt(0.78, 0.94), pt(0.9, 0.98), [x1, y1]];
+}
+function farPath(f, W, H) {
+  const P = (x, y) => `${Math.round(x)} ${Math.round(y)}`;
+  const [p0, c1, c2, c3, c4, c5, p1] = farPts(f, W, H);
+  return `path("M ${P(...p0)} C ${P(...c1)} ${P(...c2)} ${P(...c3)} C ${P(...c4)} ${P(...c5)} ${P(...p1)}")`;
+}
+
+/* THE ROCK'S SHADOW IS NOT SKY. A far bird is ink at a sixth of its
+   strength, and over the principal's hatch it vanished (measured: the
+   landing crossing sat on the east face from +24s to +28s and was a grey
+   smudge). So every crossing is sampled along its own path before it
+   flies and keeps 10px off every shadow face of the range, except where a
+   near mass stands in front of the rock (the crown it leaves from, whose
+   reserve already bares the paper round it). Lit faces and the sky above
+   and between the summits are open. */
+function routeClear(f, W, H) {
+  const faces = SCAPE.faces;
+  if (!faces || !faces.length) return true;
+  const near = SCAPE.reserveCircles || [];
+  const [p0, c1, c2, c3, c4, c5, p1] = farPts(f, W, H);
+  const bez = (a, b, c, d, t) => { const u = 1 - t; return [0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]); };
+  const inside = ([px, py], poly) => {
+    let hit = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if (yi > py !== yj > py && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) hit = !hit;
+      const dx = xj - xi, dy = yj - yi, t = clamp(((px - xi) * dx + (py - yi) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+      if (Math.hypot(px - xi - t * dx, py - yi - t * dy) < 10) return true;
+    }
+    return hit;
+  };
+  for (const [a, b, c, d] of [[p0, c1, c2, c3], [c3, c4, c5, p1]])
+    for (let i = 0; i <= 24; i++) {
+      const p = bez(a, b, c, d, i / 24);
+      if (near.some(([x, y, rr]) => Math.hypot(p[0] - x, p[1] - y) < rr + 12)) continue;
+      if (faces.some((fc) => inside(p, fc))) return false;
+    }
+  return true;
+}
+/* a crossing that would pass over the rock is refitted without a draw from
+   its generator, so the seeded sky is the same sky: a landing tries a
+   flatter bow; any other raises its end, then leaves by the pass */
+function fitRoute(f, W, H) {
+  if (routeClear(f, W, H)) return;
+  if (f.land) { for (const b of [0.6, 0.2, -0.3]) { f.bow = b; if (routeClear(f, W, H)) return; } return; }
+  for (let k = 0; k < 5 && !routeClear(f, W, H); k++) f.ey = Math.max(0.045, f.ey - 0.015);
+  if (routeClear(f, W, H)) return;
+  f.ex = 0.44 + (sky.spawned % 5) * 0.03; f.ey = 0.07; f.exit = "pass";
 }
 
 function placeFar(f, parent, elapsed) {
@@ -9674,6 +9721,8 @@ function placeFar(f, parent, elapsed) {
   el.className = "bird far" + (f.land ? " landing" : "") + (f.ex < f.ox ? " west" : "") + (f.speck ? " speck" : "");
   el.dataset.entry = f.entry;
   el.style.offsetPath = farPath(f, W, H);
+  /* probe hook: every route flown, for the gate's own sampling */
+  (window.__world.routes = window.__world.routes || []).push({ entry: f.entry, land: !!f.land, path: el.style.offsetPath, W, H });
   el.style.setProperty("--dur", f.dur.toFixed(2) + "s");
   el.style.setProperty("--start", (f.start - elapsed).toFixed(2) + "s");
   el.style.setProperty("--s", f.sc.toFixed(3));
@@ -9768,8 +9817,10 @@ function spawnFar() {
       f.ox = g.x / W; f.oy = (g.y - 6) / H;
       f.ang = ((26 + r() * 8) * Math.PI) / 180;
     } else {
-      f.ox = narrow ? 0.06 + r() * 0.06 : 0.05 + r() * 0.1;
-      f.oy = narrow ? 0.15 + r() * 0.02 : 0.12 + r() * 0.1;
+      /* noticed high on the left: over the west peak's lit flank, not
+         its hatched face, which is where 0.05–0.15 W now is */
+      f.ox = narrow ? 0.06 + r() * 0.06 : 0.26 + r() * 0.08;
+      f.oy = narrow ? 0.15 + r() * 0.02 : 0.10 + r() * 0.06;
       f.ang = ((narrow ? 4 : 6) * Math.PI) / 180;
     }
     f.ex = 0.86 + r() * 0.05;
@@ -9784,6 +9835,7 @@ function spawnFar() {
     f.dur = (21 + r() * 9) * PACE;
     f.beat = 0.64 + r() * 0.16;
     f.wphase = -r() * 0.6;
+    if (!narrow) fitRoute(f, W, H);
     farLog.push(f);
     placeFar(f, host, elapsed);
     sky.spawned++;
@@ -9805,8 +9857,11 @@ function spawnFar() {
    once the flyer has its ink, so there is never a moment with two birds
    and never one with an orphan. Both ends of both are logged. */
 const SOCKETS = {
-  perch: { sel: ".ds-perch", laden: true, dir: -1, ex: () => 0.33, ey: () => 0.035, mark: "perch" },
-  nest: { sel: ".ds-nestsock", laden: false, dir: 1, ex: () => 0.36, ey: () => 0.05, mark: "nest" },
+  /* the perch is on a young tree under the range's foot now: its bird goes
+     home west to the great tree, low under the principal's shadow face and
+     rising only once the lit flank is over it (a back-loaded bow) */
+  perch: { sel: ".ds-perch", laden: true, dir: -1, ex: () => 0.22, ey: () => 0.36, bow: -1, mark: "perch" },
+  nest: { sel: ".ds-nestsock", laden: false, dir: 1, ex: () => 0.36, ey: () => 0.05, bow: 0.8, mark: "nest" },
 };
 const sockTimers = { perch: null, nest: null };
 function socketArrive(key) {
@@ -9846,9 +9901,10 @@ function leaveSocket(key) {
   const at2 = SCAPE[key];
   const f = {
     entry: key, start: (now - releasedAt) / 1000, ox: at2.x / W, oy: (at2.y - 7 * vs) / H,
-    ex: S.ex() + r() * 0.05, ey: S.ey() + r() * 0.02, ang: ((8 + r() * 4) * Math.PI) / 180, bow: 0.8,
+    ex: S.ex() + r() * 0.05, ey: S.ey() + r() * 0.02, ang: ((8 + r() * 4) * Math.PI) / 180, bow: S.bow,
     sc: (0.4 + r() * 0.15) * vs, op: 0.14 + r() * 0.05, dur: (21 + r() * 9) * PACE, beat: 0.64 + r() * 0.16, wphase: -r() * 0.6,
   };
+  if (!routeClear(f, W, H)) for (const ey of key === "perch" ? [0.37, 0.38] : [0.1, 0.15, 0.2, 0.25]) { f.ey = ey; if (routeClear(f, W, H)) break; }
   farLog.push(f);
   placeFar(f, host, f.start);
   sky.spawned++;
@@ -9882,6 +9938,7 @@ function speckFlock() {
       ex: 0.60 + r() * 0.04, ey: 0.10 + r() * 0.02, ang: (2 * Math.PI) / 180, bow: 0.2,
       sc: 0.2 * vs, op: 0.11 + r() * 0.02, dur: (26 + r() * 8) * PACE, beat: 0.5 + r() * 0.1, wphase: -r() * 0.5,
     };
+    fitRoute(f, W, H);
     farLog.push(f);
     placeFar(f, host, elapsed);
   }
@@ -9893,7 +9950,8 @@ function speckFlock() {
 
 /* ····· the owl comes home ·····
    Not drawn at first. Once per sit, at settle + 60–180s, a crossing from
-   high on the east runs WEST and ends in the crown's notch on L3, and the
+   high on the east (or over the pass, when the summit is in its way) runs
+   WEST and ends in the crown's notch on L3, and the
    owl is there from then on, its head turning on its own slow clock. Dawn
    becomes an event. Reduced motion draws it home from the start. */
 let owlTimer = null;
@@ -9912,6 +9970,10 @@ function owlHome() {
     ex: SCAPE.owl.x / W, ey: (SCAPE.owl.y - 10 * vs) / H, ang: ((6 + r() * 4) * Math.PI) / 180, bow: 0.6, land: true, owl: true,
     sc: (0.45 + r() * 0.1) * vs, op: 0.16 + r() * 0.04, dur: (17 + r() * 6) * PACE, beat: 0.7 + r() * 0.1, wphase: -r() * 0.6,
   };
+  /* from high on the east when that sky is clear of the rock; the
+     principal's summit usually stands in the way, and then it comes from
+     over the pass */
+  for (const [ox, oy] of [[0.5, 0.09], [0.42, 0.1], [0.34, 0.11]]) { if (routeClear(f, W, H)) break; f.ox = ox; f.oy = oy; }
   farLog.push(f);
   placeFar(f, host, f.start);
   sky.spawned++;
