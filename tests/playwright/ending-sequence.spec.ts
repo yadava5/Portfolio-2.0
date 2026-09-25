@@ -1061,12 +1061,15 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
               const dy =
                 Math.max(t[1] - v.y, v.y - t[3], 0) - (axisY ? range : 0);
               const gap = Math.max(dx, dy, 0);
-              /* hatch keeps 120px from the words and 48 from the chrome; a
-                 ridgeline 64 from the quote and the kicker */
+              /* hatch keeps the quote's own 64px from every word and 48
+                 from the chrome; a ridgeline 64 from the quote and the
+                 kicker (round 12: the range stands above the words now,
+                 across its valley floor, and check-dawnscape holds the
+                 same numbers) */
               const need = isHatch
                 ? t[6] === "chrome"
                   ? 48
-                  : 120
+                  : 64
                 : isRidge && (t[6] === "quote" || t[6] === "kicker")
                   ? 64 + sway
                   : t[4] + sway;

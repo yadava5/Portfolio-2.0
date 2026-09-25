@@ -17,17 +17,27 @@
  *      range, and for a swaying group the amplitude at that radius, so the
  *      wind cannot carry a leaf into a halo. Under the signature the grass
  *      is capped at 10px. At every one of the seven seats.
- *   6. THE PLANES' MATERIALS (round 10.5). Every depth has its own
- *      material and no plane's marks may touch another's silhouette. Inside
- *      .ds-p2 (the massifs) nothing is a stroke but the declared structural
- *      lines (.ds-ridge, at most 24): every other element is a .ds-tone
- *      field, so a hatch field can never fuse with the tree's again. The
- *      tone's cover is COMPUTED from the pattern defs (dot area over tile
- *      area): the lit levels at most 12%, every level at most 22%, the far
- *      range at most 5%. And the reserves: the builder registers every near
- *      mass with the bare paper it casts into each plane behind it, and the
- *      masks' <use> children must be exactly that registry, each resolving
- *      to a live element, each dilated by twice its registered width.
+ *   6. THE PLANES' MATERIALS (round 12). The range is fixed path data
+ *      (RANGE), and .ds-p2 may hold nothing else: every path is a declared
+ *      ridge line (.ds-ridge), a facet's hatch (inside a .ds-facet that
+ *      carries its closed polygon, every stroke's ends on or inside it) or
+ *      a hachure, all inside a .ds-summit, at most three facets a summit,
+ *      and no solid or tone at all: far is line and hatch, near is solid.
+ *      Nothing of the range comes below its FOOT (the valley floor it
+ *      stands on, massifs.haze). And the reserves: the builder registers
+ *      every near mass with the bare paper it casts into each plane behind
+ *      it; the masks' <use> children (mR for the range and its valley
+ *      floor, mB, mG) must be exactly that registry, each resolving to a
+ *      live element, each dilated by twice its registered width, and a
+ *      reserve cast by the tree must be cast through the tree's own
+ *      transform, so its paper is where its crown is.
+ *   7. THE TREE STANDS BELOW EVERY SUMMIT (round 12, the owner: "tree's
+ *      can't be as high as mountain"). The great tree's crown and every
+ *      young tree's top sit at least 40px under the lowest summit on the
+ *      sheet (peaks off the sheet do not count). And THE ROCK'S SHADOW IS
+ *      NOT SKY: every far crossing flown in the sit, sampled along its own
+ *      offset path, keeps 6px off every shadow face of the range except
+ *      where a near mass stands in front of it.
  *   2. THE WIND'S CENSUS. Once body.morninglive is on, the continuously
  *      animated groups inside .dawnscape are CSS animations (transitions
  *      and Web Animations are transients and are not counted), and they
@@ -63,6 +73,22 @@
  *   · a `.dawnscape .ds-far{stroke:var(--hair)}` rule → (4) fails
  *   · `farTimer = setTimeout(spawnFar, at(1500))` removed → (5) fails, gap
  *   · the hop range 30 → 70 and hop size 4–8 → 40–48 → (5) fails, x_off
+ * Round 12, each on a temp copy with --only 1456x949:
+ *   · a stray `<path class="ds-far w1" d="M0 0L40 40"/>` put into RANGE's
+ *     markup outside any summit → (6) fails, a scattered stroke
+ *   · a hatch facet put into the notch peak 36px over the kicker → (1)
+ *     fails on the hatch rule alone, 35.7 of 64px from ds-facet
+ *   · a .ds-fill put into a summit → (6) fails, solid in the far plane
+ *   · the range seated with its foot at 0.46 H instead of 0.375 → (1)
+ *     fails, a ridge in the kicker's 64px (61.7), and (7) two crossings
+ *   · FOOT read 40 board units high → (6) fails, range below its foot
+ *   · mR built from the grass plane instead of the massif plane → (6)
+ *     fails, reserves missing from mR
+ *   · the tree's reserves cast outside its transform → (6) fails, 19
+ *     reserves off their frame
+ *   · mask="url(#mR)" taken off the valley floor → (6) fails, unmasked
+ *   · the tree's scale 0.78 → 1 → (7) fails, crown above the summits
+ *   · routeClear returning true → (7) fails, a crossing over a face
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -89,6 +115,7 @@ const SEATS = [
   [1800, 1169],
   [1920, 1080],
   [390, 844],
+  [393, 851],
   [320, 720],
 ].filter(([w, h]) => !ONLY || ONLY === `${w}x${h}`);
 
@@ -322,9 +349,10 @@ try {
         p.className.baseVal ||
         "path"
       ).trim();
-      /* round 10's classes: hatch keeps 120px from the station's words and
-         48px from the chrome's; a ridgeline keeps 64px from the quote and
-         the kicker; hatch never enters the valley mouth */
+      /* hatch keeps the quote's own 64px from every word and 48px from
+         the chrome; a ridgeline keeps 64px from the quote and the kicker.
+         (Round 10's 120 was set for hatch fields flanking the column; the
+         range stands above it now, across its valley floor.) */
       const isHatch = p.classList.contains("ds-hatch");
       const isRidge = p.classList.contains("ds-ridge");
       const step = L > 3000 ? 10 : 6;
@@ -348,7 +376,7 @@ try {
           const need = isHatch
             ? t[6] === "chrome"
               ? 48
-              : 120
+              : 64
             : isRidge && (t[6] === "quote" || t[6] === "kicker")
               ? 64 + sway
               : t[4] + sway;
@@ -486,7 +514,9 @@ try {
     /* where a leaf may fall: both envelopes keep every word's halo */
     let leafWorst = { margin: Infinity, env: "", text: "" };
     if (scape && scape.leaf)
-      for (const k of ["crownEnv", "boughEnv"]) {
+      for (const k of Object.keys(scape.leaf).filter((n) =>
+        n.endsWith("Env")
+      )) {
         const e = scape.leaf[k];
         for (const t of texts) {
           const dx = Math.max(t[0] - e[2], e[0] - t[2], 0);
@@ -509,12 +539,19 @@ try {
     const p2paths = p2 ? [...p2.querySelectorAll("path")] : [];
     const p2bad = p2paths.filter(
       (p) =>
+        !p.closest(".ds-summit") ||
         !(
           p.classList.contains("ds-ridge") ||
           p.parentElement.classList.contains("ds-facet") ||
           p.parentElement.classList.contains("ds-hachure")
         )
     ).length;
+    /* far is line and hatch; a solid or a tone inside the range is near
+       material in the far plane */
+    const p2solid = p2
+      ? p2.querySelectorAll(".ds-fill, .ds-tone, [fill]:not([fill=none])")
+          .length
+      : 0;
     const inPolyG = ([px, py], poly) => {
       let inside = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -569,15 +606,57 @@ try {
         }
       }
     }
+    /* the range's paths are in its board's frame and seated by a
+       transform: read them through their screen matrix */
     if (hazeY !== null)
       for (const p of p2paths) {
-        const L = p.getTotalLength();
-        for (let sI = 0; sI <= L; sI += 8)
-          if (p.getPointAtLength(sI).y > hazeY + 4) {
+        const L = p.getTotalLength(),
+          mx = p.getScreenCTM(),
+          q2 = svg.createSVGPoint();
+        for (let sI = 0; sI <= L; sI += 8) {
+          const q = p.getPointAtLength(sI);
+          q2.x = q.x;
+          q2.y = q.y;
+          if (q2.matrixTransform(mx).y > hazeY + 4) {
             p2Low++;
             break;
           }
+        }
       }
+    /* 7 · the tree below every summit: the crown's and each young tree's
+       top against the lowest peak on the sheet */
+    const peaks = ((scape && scape.massifs && scape.massifs.summits) || [])
+      .map((m) => m.peak)
+      .filter(([x]) => x >= 0 && x <= innerWidth);
+    const lowestPeak = peaks.length
+      ? Math.max(...peaks.map((p) => p[1]))
+      : null;
+    const tops = [
+      ...[...svg.querySelectorAll(".ds-tree")].map((g) => [
+        "the crown",
+        g.getBoundingClientRect().top,
+      ]),
+      ...[...svg.querySelectorAll(".ds-sap")].map((g, i) => [
+        `young tree ${i + 1}`,
+        g.getBoundingClientRect().top,
+      ]),
+    ];
+    /* a tree's reserve is cast through the tree's own frame */
+    const treeT = svg.querySelector(".ds-treeframe")
+      ? svg.querySelector(".ds-treeframe").getAttribute("transform")
+      : null;
+    let treeResOff = 0;
+    for (const u of svg.querySelectorAll("mask#mR use")) {
+      const el = svg.querySelector(u.getAttribute("href"));
+      const inTree =
+        el &&
+        (el.closest(".ds-treeframe") || u.getAttribute("href") === "#trunkSil");
+      const tf = u.parentElement.getAttribute("transform");
+      if (inTree ? tf !== treeT : tf) treeResOff++;
+    }
+    const unmasked = [...svg.querySelectorAll(".ds-p2, .ds-vale")].filter(
+      (g) => g.getAttribute("mask") !== "url(#mR)"
+    ).length;
     const canvasArea = (paths) => {
       const cv = document.createElement("canvas");
       cv.width = Math.ceil(scape.W);
@@ -664,6 +743,7 @@ try {
     const reg = (scape && scape.reserves) || [];
     const masks = {};
     for (const [id, plane] of [
+      ["mR", "massif"],
       ["mB", "bank"],
       ["mG", "grass"],
     ]) {
@@ -701,8 +781,13 @@ try {
             facetsLeaky,
             facetsMax,
             low: p2Low,
+            solid: p2solid,
+            unmasked,
+            treeResOff,
           }
         : null,
+      lowestPeak,
+      tops: tops.map(([n, t]) => [n, +t.toFixed(1)]),
       doeH: +doeH.toFixed(1),
       meadow,
       hullCover,
@@ -814,15 +899,39 @@ try {
           );
         if (m.p2.low)
           fail(
-            `${seat}: ${m.p2.low} path(s) of the range below the 0.66 H haze line — FAR floats on the haze`
+            `${seat}: ${m.p2.low} path(s) of the range below its foot (${m.scape.massifs.haze}px) — the range stands on its valley floor`
+          );
+        if (m.p2.solid)
+          fail(
+            `${seat}: ${m.p2.solid} solid or tone element(s) inside .ds-p2 — far is line and hatch`
+          );
+        if (m.p2.unmasked)
+          fail(
+            `${seat}: ${m.p2.unmasked} of the range's groups not masked by mR — the near masses must bare the paper behind them`
+          );
+        if (m.p2.treeResOff)
+          fail(
+            `${seat}: ${m.p2.treeResOff} reserve(s) in mR cast outside the frame of what casts them — the tree's paper must be where its crown is`
           );
         if (
           !fails.some(
-            (f) => f.startsWith(seat) && /ds-p2|facet|haze line/.test(f)
+            (f) => f.startsWith(seat) && /ds-p2|facet|its foot|mR/.test(f)
           )
         )
           note(
-            `${seat}: the range is ${m.p2.paths} marks, no stray, facets closed, at most ${m.p2.facetsMax} per summit, all above the haze`
+            `${seat}: the range is ${m.p2.paths} marks, no stray, no solid, facets closed, at most ${m.p2.facetsMax} per summit, all above its foot at ${m.scape.massifs.haze}px, masked by mR`
+          );
+      }
+      /* 7 · the tree below every summit */
+      if (m.lowestPeak !== null) {
+        const high = m.tops.filter(([, t]) => t < m.lowestPeak + 40);
+        if (high.length)
+          fail(
+            `${seat}: ${high.map(([n, t]) => `${n} tops out at ${t}px`).join(", ")}, not 40px under the lowest summit at ${m.lowestPeak}px — trees can't be as high as the mountains`
+          );
+        else
+          note(
+            `${seat}: every tree tops out at least 40px under the lowest summit (${m.lowestPeak}px): ${m.tops.map(([n, t]) => `${n} ${t}`).join(", ")}`
           );
       }
       for (const lc of m.layerCover)
@@ -1047,6 +1156,68 @@ try {
       } else gapFrom = null;
       await page.waitForTimeout(1000);
     }
+    /* 7 · every crossing flown, sampled along its own offset path against
+       the shadow faces, near masses excepted */
+    const routes = await page.evaluate(() => {
+      const s = window.__world.scape,
+        faces = s.faces || [],
+        near = s.near || [];
+      const inside = ([px, py], poly) => {
+        let hit = false;
+        for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+          const [xi, yi] = poly[i],
+            [xj, yj] = poly[j];
+          if (
+            yi > py !== yj > py &&
+            px < ((xj - xi) * (py - yi)) / (yj - yi) + xi
+          )
+            hit = !hit;
+          const dx = xj - xi,
+            dy = yj - yi,
+            t = Math.max(
+              0,
+              Math.min(
+                1,
+                ((px - xi) * dx + (py - yi) * dy) / (dx * dx + dy * dy || 1)
+              )
+            );
+          if (Math.hypot(px - xi - t * dx, py - yi - t * dy) < 6) return true;
+        }
+        return hit;
+      };
+      return (window.__world.routes || []).map((r) => {
+        const n = r.path.match(/-?\d+(\.\d+)?/g).map(Number);
+        const P = [];
+        for (let i = 0; i + 1 < n.length; i += 2) P.push([n[i], n[i + 1]]);
+        const bez = (a, b, c, d, t) => {
+          const u = 1 - t;
+          return [0, 1].map(
+            (k) =>
+              u * u * u * a[k] +
+              3 * u * u * t * b[k] +
+              3 * u * t * t * c[k] +
+              t * t * t * d[k]
+          );
+        };
+        let hit = null;
+        for (const [a, b, c, d] of [
+          [P[0], P[1], P[2], P[3]],
+          [P[3], P[4], P[5], P[6]],
+        ])
+          for (let i = 0; i <= 40 && !hit; i++) {
+            const q = bez(a, b, c, d, i / 40);
+            if (
+              near.some(
+                ([x, y, rr]) => Math.hypot(q[0] - x, q[1] - y) < rr + 12
+              )
+            )
+              continue;
+            if (faces.some((f) => inside(q, f))) hit = q.map(Math.round);
+          }
+        return { entry: r.entry, hit };
+      });
+    });
+    const overRock = routes.filter((r) => r.hit);
     const fin = await page.evaluate(() => ({
       sky: window.__world.sky,
       perch: window.__world.perch || { lands: 0, leaves: 0, perched: 0 },
@@ -1092,6 +1263,12 @@ try {
       );
     if (maxFar > 3)
       fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
+    if (!routes.length)
+      fail(`${seat}: no route was logged — window.__world.routes is gone`);
+    if (overRock.length)
+      fail(
+        `${seat}: ${overRock.length} of ${routes.length} crossings pass over a shadow face of the range (${overRock.map((r) => `${r.entry} at ${r.hit}`).join(", ")}) — the rock's shadow is not sky`
+      );
     /* the perch: capacity one, and the socket agrees with the log: a bird
        that landed and has not left is on the twig, and no other */
     if (twoPerched)
@@ -1196,7 +1373,7 @@ try {
     if (!fails.some((f) => f.startsWith(seat)))
       note(
         `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
-          `max ${maxFar} far at once, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
+          `max ${maxFar} far at once, ${routes.length} routes flown and none over the rock, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
           `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
           `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
       );

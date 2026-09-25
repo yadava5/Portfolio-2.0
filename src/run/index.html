@@ -8486,6 +8486,12 @@ function buildDawnscape() {
       }
     }
     far += `<g class="ds-vale" mask="url(#mR)">${vale}</g>`;
+    /* the morning haze lying in the valley: short wisps at both edges,
+       between the valley floor and the meadow, so the sheet's flanks carry
+       ink at every height of frame (the trunk stands 90px in now) */
+    for (const [fa, fb, fy] of [[-0.01, 0.05, 0.56], [-0.01, 0.06, 0.60], [-0.01, 0.045, 0.64], [-0.01, 0.05, 0.68], [-0.01, 0.05, 0.705], [-0.01, 0.04, 0.73], [-0.01, 0.035, 0.755], [-0.01, 0.06, 0.80],
+      [0.96, 1.01, 0.68], [0.955, 1.01, 0.72], [0.965, 1.01, 0.77], [0.94, 1.01, 0.81]])
+      for (const run of cut(curve([[X(fa), Y(fy) + (vr() - 0.5) * 3], [X((fa + fb) / 2), Y(fy) - 1.5 + vr() * 3], [X(fb), Y(fy) + (vr() - 0.5) * 3]], 6))) far += P(path(run), "ds-far w06");
 
     /* ————— the etched sky: long horizontals above and between the summits —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
@@ -8521,7 +8527,7 @@ function buildDawnscape() {
     const offRock = (pts) => { const runs = []; let cur = []; for (const p of pts) { if (SCAPE.inMassif(p[0], p[1])) { if (cur.length > 2) runs.push(cur); cur = []; } else cur.push(p); } if (cur.length > 2) runs.push(cur); return runs; };
     /* …and it turns the corner down the right edge in pairs, short, hugging
        the edge so the birds' room inboard stays open */
-    for (let y = Y(0.20); y < Y(0.46); y += 50 + r() * 16) {
+    for (let y = Y(0.09); y < Y(0.46); y += 44 + r() * 16) {
       for (let p = 0; p < 2; p++) {
         const L = 26 + r() * 60, yy = y + p * (6 + r() * 3);
         for (const run of offRock(curve([[W - L, yy + (r() - 0.5) * 3], [W - L * 0.5, yy + (r() - 0.5) * 1.5], [W + 3, yy]], 6))) far += strokes(run, 0.8, "ds-far w1");
@@ -8530,7 +8536,7 @@ function buildDawnscape() {
 
     /* the same sky enters at the left edge above the crown, short lines
        between the chrome and the west peak's crest */
-    for (let y = Y(0.07); y < Y(0.27); y += 40 + r() * 14) {
+    for (let y = Y(0.07); y < Y(0.30); y += 30 + r() * 12) {
       const L = 40 + r() * 50;
       for (const run of offRock(curve([[-3, y], [L * 0.5, y + (r() - 0.5) * 2], [L, y + (r() - 0.5) * 4]], 6))) far += strokes(run, 0.8, "ds-far w1");
     }
