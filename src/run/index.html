@@ -8456,6 +8456,13 @@ function buildDawnscape() {
        with the words' own 24px, and it is masked by the same reserves as
        the range. Its own seeded stream, so adding it moved nothing else. */
     const vr = birdRng(0x7a1e);
+    /* THE CLEARING. Over the kicker the far forest opens: no stand and no
+       haze across its span with its 24px halo and 16px more, so the
+       station's first line reads on open ground with the forest running
+       on along both sides of it. Only the line that stands at the foot:
+       opening over the hourline and the quote as well took the floor out
+       from under the whole middle of the range, and it floated again */
+    const opening = (x) => words.some(([l, t, rt]) => t < FOOT + 20 && x > l - 16 && x < rt + 16);
     let tl = "", tn = 0;
     /* a stand is a run of ticks at uneven pitch with a ragged top, the odd
        spire over it, their feet at the facets' feathered ends so the rock
@@ -8469,7 +8476,7 @@ function buildDawnscape() {
         hPrev = clamp(hPrev + (vr() - 0.5) * 3.2, 4, 8.5);
         const h = 4 + (hPrev - 4) * edge + (vr() < 0.08 ? 2 : 0);
         const b0 = base + vr() * 1.6, lean = (vr() - 0.5) * 0.8;
-        if (!inKeep(tx, b0, 0) && !inKeep(tx, b0 - h, 0)) {
+        if (!opening(tx) && !inKeep(tx, b0, 0) && !inKeep(tx, b0 - h, 0)) {
           tl += `M${F(tx)} ${F(b0)}L${F(tx + lean)} ${F(b0 - h)}`;
           tn++;
         }
@@ -8481,17 +8488,23 @@ function buildDawnscape() {
     for (const [dy, x0, x1, l0, l1, g0, g1] of [[8, -0.01, 0.36, 40, 120, 50, 130], [8, 0.64, 1.01, 40, 120, 50, 130], [15, 0.04, 0.3, 30, 90, 80, 160]]) {
       for (let x = X(x0) + vr() * 20; x < X(x1); ) {
         const bx = Math.min(x + l0 + vr() * (l1 - l0), X(x1)), y = FOOT + dy + (vr() - 0.5) * 2;
-        for (const run of cut(curve([[x, y], [(x + bx) / 2, y + (vr() - 0.5) * 2.4], [bx, y + (vr() - 0.5) * 1.2]], 6))) vale += P(path(run), "ds-far w06");
+        for (const run of cut(curve([[x, y], [(x + bx) / 2, y + (vr() - 0.5) * 2.4], [bx, y + (vr() - 0.5) * 1.2]], 6).filter(([px]) => !opening(px)))) vale += P(path(run), "ds-far w06");
         x = bx + g0 + vr() * (g1 - g0);
       }
     }
-    far += `<g class="ds-vale" mask="url(#mR)">${vale}</g>`;
     /* the morning haze lying in the valley: short wisps at both edges,
        between the valley floor and the meadow, so the sheet's flanks carry
-       ink at every height of frame (the trunk stands 90px in now) */
+       ink at every height of frame (the trunk stands 90px in now); far
+       material, so they take the trunk's reserve with the rest */
     for (const [fa, fb, fy] of [[-0.01, 0.05, 0.56], [-0.01, 0.06, 0.60], [-0.01, 0.045, 0.64], [-0.01, 0.05, 0.68], [-0.01, 0.05, 0.705], [-0.01, 0.04, 0.73], [-0.01, 0.035, 0.755], [-0.01, 0.06, 0.80],
       [0.96, 1.01, 0.68], [0.955, 1.01, 0.72], [0.965, 1.01, 0.77], [0.94, 1.01, 0.81]])
-      for (const run of cut(curve([[X(fa), Y(fy) + (vr() - 0.5) * 3], [X((fa + fb) / 2), Y(fy) - 1.5 + vr() * 3], [X(fb), Y(fy) + (vr() - 0.5) * 3]], 6))) far += P(path(run), "ds-far w06");
+    {
+      /* each wisp its own length, start and tilt, so a flank of them never
+         stacks into a ruled block */
+      const a0 = X(fa) + (fa < 0.5 ? vr() * X(0.018) : 0), b0 = X(fb) - (fa < 0.5 ? vr() * X(0.022) : vr() * X(0.02)), y0 = Y(fy) + (vr() - 0.5) * 8, tilt = (vr() - 0.5) * 6;
+      for (const run of cut(curve([[a0, y0], [(a0 + b0) / 2, y0 - 1.5 + vr() * 3], [b0, y0 + tilt]], 6))) vale += P(path(run), "ds-far w06");
+    }
+    far += `<g class="ds-vale" mask="url(#mR)">${vale}</g>`;
 
     /* ————— the etched sky: long horizontals above and between the summits —————
        Twelve lines, hair-strong, each laid in two or three pen-lengths, the
