@@ -1110,13 +1110,18 @@ if (location.hash.length > 1) {
   body.gateopen .bdawn{height:auto; min-height:300vh; overflow:visible}
   .dawnstick{position:sticky; top:0; height:100vh; display:flex;
     align-items:center; justify-content:center; padding:0 var(--pad-x)}
-  /* ————— the words in the clearing —————
+  /* ————— the words on the plain —————
      The wrap is the whole panel now, a two-row grid over the drawing (z-index
-     on the wrap is what keeps a canopy stroke from ever crossing a letter):
-     the station's head and its quote centred in the sky the drawing leaves,
-     biased up a little by margin (never transform: the arrival owns that),
-     and the foot, "Thank you…" and the contact row, low, clear of the
-     meadow by the 20vh the horizon needs. "run 043 · not yet begun" leaves
+     on the wrap is what keeps a canopy stroke from ever crossing a letter).
+     THE WORDS STAND ON THE PLAIN IN FRONT OF THE RANGE. Four mountain
+     rounds kept them at 0.21–0.68 H with the summits above them, which left
+     ~510px of relief in a ~437px gutter: any flank gentler than 65° ran into
+     the column, so the only mountain that could be drawn was a spire. The
+     block now starts at 0.40 H, just under the range's foot at 0.375 H, and
+     is tight (the head's gaps at 1.5rem, the thank-you on one line, the
+     contact row on one line where it fits), so it ends above the meadow's
+     horizon at 0.84 H at every desktop seat and the range has the whole
+     width above it. "run 043 · not yet begun" leaves
      the flow and signs the plate, bottom right in the meadow's bay, where
      the ticks thin to nothing round it. The kicker and the hourline stay
      with the quote: they are its station label, and 60px under the chrome's
@@ -1126,17 +1131,13 @@ if (location.hash.length > 1) {
      where they will land. */
   .dawnwrap{width:100%; height:100%; max-width:none; margin:0; text-align:center;
     position:relative; z-index:1; display:grid; grid-template-rows:max-content max-content;
-    align-content:center; padding:calc(4vh + 48px) 0 20vh; box-sizing:border-box}
-  /* one centred group, head, quote and foot together in the valley: round
-     9 pushed the foot to the bottom and at a MacBook's own seats the middle
-     of the sheet became a void; the words hang together in the light now */
-  .dawnhead{width:100%; max-width:54rem; margin:0 auto 3.4rem}
-  .dawnfoot{width:100%; max-width:46rem; margin:0 auto}
+    align-content:start; padding:40vh 0 0; box-sizing:border-box}
+  /* one group, head, quote and foot together on the plain: round 9 pushed
+     the foot to the bottom and at a MacBook's own seats the middle of the
+     sheet became a void; the words hang together in the light */
+  .dawnhead{width:100%; max-width:54rem; margin:0 auto 1.5rem}
+  .dawnfoot{width:100%; max-width:60rem; margin:0 auto}
   .dawnfoot .dawnsay{margin-top:0}
-  /* three exits on one line, the one way back in on its own: with "résumé"
-     alone the row would fit one line and run wider than the quote, out
-     toward the sun's crown and the bank */
-  .dawnfoot .dawnrow a:last-child{flex-basis:100%}
   .bdawn .dawnrun{position:absolute; right:6vw; bottom:9vh; margin:0; text-align:right}
   /* …and no transition either: the arrival rule transitions transform over
      1s, and a rect read the instant the class lands would still see the
@@ -1402,7 +1403,7 @@ if (location.hash.length > 1) {
 
   /* wide enough that each line of the poem is one line: at 38rem the
      column broke it mid-clause and the <br> stopped meaning anything */
-  .bdawn .endquote{position:relative; margin:3.4rem auto 0; max-width:54rem}
+  .bdawn .endquote{position:relative; margin:1.5rem auto 0; max-width:54rem}
   .bdawn .endquote blockquote{margin:0; font-family:var(--display);
     font-style:italic; font-weight:400; color:var(--ink);
     font-size:clamp(1.2rem, 2.5vw, 1.95rem); line-height:1.38;
@@ -1574,7 +1575,7 @@ if (location.hash.length > 1) {
   }
 
   .dawnsay{margin:3.2rem auto 0; font-family:var(--body);
-    font-size:clamp(1rem,1.5vw,1.12rem); color:var(--ink); max-width:34rem}
+    font-size:clamp(1rem,1.5vw,1.12rem); color:var(--ink); max-width:40rem}
   .dawnrow{display:flex; gap:1.4rem; flex-wrap:wrap; justify-content:center;
     margin-top:1.1rem; font-size:.72rem; letter-spacing:.05em}
   /* THE LAST LINE OF THE PAPER WAS THE LEAST READABLE THING ON IT. It was
@@ -1597,6 +1598,8 @@ if (location.hash.length > 1) {
     .dawnwrap{display:block; height:auto; padding:0}
     .dawnhead{margin:0 auto}
     .dawnfoot .dawnsay{margin-top:2.4rem}
+    /* three exits on one line, the one way back in on its own, as before */
+    .dawnfoot .dawnrow a:last-child{flex-basis:100%}
     .bdawn .dawnrun{position:static; text-align:center; margin-top:2.4rem}
     /* MEASURED at 390×844: the column ran 722.1px inside an 844 panel and was
        centred in it, so its top edge landed at 60.9 — under the masthead's
