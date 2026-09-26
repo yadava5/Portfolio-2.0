@@ -9671,12 +9671,19 @@ function* drawDawnscape() {
      is cast through the same transform */
   const useRes = (plane) => reserves.filter((q) => q[plane] > 0).map((q) => { const u = `<use href="#${q.id}" style="fill:#000;stroke:#000;stroke-width:${q[plane] * 2};stroke-linejoin:round"/>`; return q.tf ? `<g transform="${q.tf}">${u}</g>` : u; }).join("");
   const maskOf = (id, sil, cuts, plane) => `<mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><path d="${sil}" style="fill:#fff"/>${cuts}${useRes(plane)}</mask>`;
-  /* the leaf masks: white paper, the cut-lines black, the blossom black;
-     three sheets wide, because a mask's box is in the frame of what it
-     masks and the crown's frame is scaled into place (at one sheet the
-     crown's west lobes were cut on a straight line) */
+  /* the leaf masks: white paper, the cut-lines black, the blossom black.
+     The mask's box is the box of what it masks, a tenth over on each side,
+     and never the sheet. A mask on a group that sways is in the group's
+     own frame, so it moves with it and is drawn again on every frame of
+     the wind: at three sheets wide (the old box, sized so the scaled
+     crown's west lobes were not cut on a straight line) that was nine
+     screens of mask a frame, Chrome fell behind, and the crowns and the
+     young trees blinked out, whole or by the tile, a few times a second.
+     Sized to the crown it keeps up, and it can never cut a lobe, because
+     it is measured from the lobes. The white rect may stay three sheets:
+     the box clips it */
   const leafMasks = Object.entries(cutMasks).map(([id, cuts]) =>
-    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}"><rect x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}" style="fill:#fff"/>` +
+    `<mask id="${id}" maskUnits="objectBoundingBox" x="-.1" y="-.1" width="1.2" height="1.2"><rect x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}" style="fill:#fff"/>` +
     cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));

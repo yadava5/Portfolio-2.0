@@ -52,6 +52,12 @@
  *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
  *      --ink-2 and --hair-strong and nothing else. No --hair (a hard red for
  *      check-palette), no clay, no pine, no ember: the owner said no colour.
+ *   8. A MASK THAT MOVES IS THE SIZE OF WHAT IT MASKS. A mask on a group
+ *      that sways (or inside one) is in that group's frame, so it is drawn
+ *      again on every frame of the wind; its box, measured against the
+ *      masked group's own bounding box, may be at most 2x its area. The
+ *      leaf masks were three sheets square (about 110x the crown) and the
+ *      owner saw the crowns and young trees blink, whole or by the tile.
  *   5. THE SKY IS ALIVE AND IN FRAME. A pace-compressed sit at his seat: a
  *      bird at visible ink within 2s of landing, no empty-sky gap over 40s of
  *      the page's own clock, no bird box within 8px of a viewport edge while
@@ -89,6 +95,9 @@
  *   · mask="url(#mR)" taken off the valley floor → (6) fails, unmasked
  *   · the tree's scale 0.78 → 1 → (7) fails, crown above the summits
  *   · routeClear returning true → (7) fails, a crossing over a face
+ * Check 8, on the build of 7e8d916 (the leaf masks three sheets square):
+ *   · (8) fails on all four moving masks at 1456x949, mC1 278x, mC2 112x,
+ *     mS1 711x, mS2 1278x; the builder's own box measures 1.44x
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -133,6 +142,9 @@ const RANGE_PX = 30;
 const GRASS_CAP = 10;
 const PHONE_MAX = 8;
 const PATHS_FLOOR = 6;
+/* the box a mask may carry over what it masks, when the two move together:
+   the builder's is a tenth over each side, 1.44x */
+const MOVING_MASK_MAX = 2;
 
 const fails = [];
 const notes = [];
@@ -780,8 +792,36 @@ try {
         widthOff,
       };
     }
+    /* 8 · a mask on anything that moves is the size of what it masks */
+    const moving = (el) => {
+      for (let e = el; e && e !== svg; e = e.parentElement)
+        if (e.getAnimations().some((a) => a.playState === "running"))
+          return true;
+      return false;
+    };
+    const frac = (v, d) =>
+      v == null ? d : v.trim().endsWith("%") ? parseFloat(v) / 100 : +v;
+    const movingMasks = [...svg.querySelectorAll("[mask]")]
+      .filter(moving)
+      .map((el) => {
+        const id = (el.getAttribute("mask").match(/#([^)"']+)/) || [])[1];
+        const mk = id && svg.querySelector(`mask#${CSS.escape(id)}`);
+        const b = el.getBBox();
+        if (!mk || !b.width || !b.height) return { id, ratio: Infinity };
+        const obb =
+          (mk.getAttribute("maskUnits") || "objectBoundingBox") ===
+          "objectBoundingBox";
+        const w = obb
+          ? frac(mk.getAttribute("width"), 1.2) * b.width
+          : frac(mk.getAttribute("width"), 1.2 * svg.viewBox.baseVal.width);
+        const h = obb
+          ? frac(mk.getAttribute("height"), 1.2) * b.height
+          : frac(mk.getAttribute("height"), 1.2 * svg.viewBox.baseVal.height);
+        return { id, ratio: +((w * h) / (b.width * b.height)).toFixed(2) };
+      });
     return {
       scape,
+      movingMasks,
       p2: p2
         ? {
             paths: p2paths.length,
@@ -974,6 +1014,18 @@ try {
             `${seat}: mask ${id} has ${mk.widthOff} reserve(s) dilated off their registered width`
           );
       }
+      /* 8 · a mask that moves is drawn again every frame, so its box is
+         paid for every frame: sized to the sheet it blinked the crowns out */
+      for (const mm of m.movingMasks.filter(
+        (q) => !(q.ratio <= MOVING_MASK_MAX)
+      ))
+        fail(
+          `${seat}: mask ${mm.id} rides a moving group at ${mm.ratio}x the area of what it masks — at most ${MOVING_MASK_MAX}x, or Chrome falls behind redrawing it and the group blinks`
+        );
+      if (m.movingMasks.length)
+        note(
+          `${seat}: ${m.movingMasks.length} masks move with the wind, the largest ${Math.max(...m.movingMasks.map((q) => q.ratio))}x what it masks`
+        );
       const n = m.census.length;
       const table = new Set(m.decl.map((d) => d.ms));
       const expected = m.decl.reduce((s, d) => s + d.n, 0);
