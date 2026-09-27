@@ -151,11 +151,20 @@
  *     the other way — at twice the author's amplitude. A signed tangent
  *     would have made that group's clearance requirement SMALLER the faster
  *     it turned, and nothing else here would have noticed
- * Round 14:
- *   · the graze head's `getAnimations()[0].currentTime` forced to 0.4·9700
- *     before MEASURE at 1456×949: the doe's live box top drops about 11px,
- *     which moved the meadow rule's own third by 3.4px. The declared height
- *     (scape.doeH) does not move, which is why the check reads it now
+ * Round 14. The first line here is a correction as much as a probe: the
+ * audit that asked for the declared height predicted an 11px swing in the
+ * doe's live box across her graze, and the measurement is 2.4px.
+ *   · her box top stepped over the whole cycle at 1456×949 measures 60.6 to
+ *     63.0, so the rule's own third ran 24.20 to 25.00 by the frame the
+ *     gate happened to sample, against a tallest blade of 22.4: the flake
+ *     was latent with 1.8px to spare, not live. The declaration does not
+ *     move, which is the reason to read it
+ *   · the pose dependency shown, on a copy with the corner stand raised to
+ *     a rise of 24.5 (h 27.5): the OLD measure fires with the graze held at
+ *     0.24 of its cycle (her box 60.8, cap 24.27) and is silent with it
+ *     held at 0.56 (63.2, cap 25.07); the declared measure (cap 24.73) is
+ *     silent at both. The margins are 0.23 and 0.57px, which is the whole
+ *     size of the effect
  *   · a tuft raised to `doeH/3 + 8` → the meadow check fails
  *   · the phone pair declared range 12 with the hop still clamped at the
  *     old literal 30 → the per-seat roamer check fails at 390×844
@@ -559,11 +568,13 @@ try {
     /* the meadow at the cast's scale: no tuft rises above a third of the
        doe, measured from its own base to its bbox top against her height
        from the ground line to her ears (4px for the hand and the sway).
-       HER HEIGHT IS THE BUILDER'S DECLARATION, not her live box: the graze
-       dips her head 38°, which drops her box top by about 11px at the
-       bottom of the cycle and tightened this rule by 3.4px at his seat
-       while she ate. A gate that moves with the pose it measures is a
-       flake waiting for a slow frame. */
+       HER HEIGHT IS THE BUILDER'S DECLARATION, not her live box. Measured
+       over the whole graze at 1456×949: her box top runs 60.6 to 63.0, so
+       this rule's own third ran 24.20 to 25.00 by the frame the gate
+       sampled, against a tallest blade of 22.4. The swing is 0.8px and not
+       the 11px the round 14 audit estimated — the ears turn about the neck
+       joint, so dipping her head 38° barely lowers their tips — but a gate
+       that moves with the pose it measures cannot be read either way. */
     const doeH = (scape && scape.doeH) || 0;
     const meadow = [...svg.querySelectorAll(".ds-tuft[data-y]")]
       .map((el) => ({

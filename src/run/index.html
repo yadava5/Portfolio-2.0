@@ -9586,11 +9586,16 @@ function* drawDawnscape() {
     const k = 0.95 * vs;
     /* HER HEIGHT IS DECLARED, NOT MEASURED. The meadow's scale rule is "no
        blade over a third of the doe", and the gate read her LIVE bounding
-       box for that third — which the graze dips 38° at the bottom of her
-       cycle, dropping her box top by about 11px and tightening the rule on
-       the grass by 3.4px at his seat while she ate. Her ear tip stands
-       68.5 of her own units over the ground line and her feet are 1 under
-       it, so her height is arithmetic, at whatever scale she is drawn. */
+       box for that third — a number that moves while she eats. Measured
+       over her whole graze at 1456×949, stepping the cycle in twenty-five:
+       her box top runs 60.6 to 63.0, so the rule's own third ran 24.20 to
+       25.00 depending on which frame the gate happened to sample, against
+       a tallest blade of 22.4. The swing is 0.8px, not the 11px the audit
+       estimated: the ears turn about the neck joint, so dipping her head
+       38° barely lowers their tips. A small flake is still a flake, and a
+       gate that moves with the pose it measures cannot be read. Her ear
+       tip stands 68.5 of her own units over the ground line and her feet
+       are 1 under it, so her height is arithmetic at any scale. */
     SCAPE.doeH = +(68.5 * k - 1).toFixed(1);
     const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] }, 1, 0, still);
     /* her shadow, three raked strokes at her feet */
