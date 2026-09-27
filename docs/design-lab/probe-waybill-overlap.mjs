@@ -45,6 +45,13 @@
  * `n: 2` to `n: 1` removed a `j === 1` that had never printed text. The
  * measurement was right and the criterion was wrong.
  *
+ * REOPENED 2026-09-27, by the first trigger above. Corridor 6 measures 19/48
+ * at 1440×900, identically at 779098b (round 13) and on round 14's figure
+ * branch, so it rose before round 14 and was not caught because nothing
+ * gates this number. The corridor labels have also shifted since the table
+ * above was written. The ceiling is not raised to match; the overlap is an
+ * open finding until someone decides it.
+ *
  *   node docs/design-lab/probe-waybill-overlap.mjs [outDir]
  */
 import { createServer } from "node:http";
