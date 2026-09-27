@@ -8586,11 +8586,17 @@ function* drawDawnscape() {
   let groups = 0;
 
   /* ————— mark 5: a clump of reed-pen ticks, thinned by where it lands ————— */
-  const ticks = (cx, cy, rx, ry, n, cls, h0, h1, lean = 0.3, raw = false) => {
+  /* `even` spreads the feet across the cluster's width in n equal lanes, a
+     random place in each, so a row of clusters has no gap wider than a lane:
+     the bottom edge's stipple drew a 40px bare stretch at 1728x1117 once the
+     sun's code moved the seed. It draws the same number of r() as the free
+     scatter, so nothing seeded after it moves. */
+  const ticks = (cx, cy, rx, ry, n, cls, h0, h1, lean = 0.3, raw = false, even = false) => {
     let d = "", k = 0;
     for (let i = 0; i < n; i++) {
       const t = r() * 6.2832, q = Math.sqrt(r());
-      const bx = cx + Math.cos(t) * rx * q, by = cy + Math.sin(t) * ry * q;
+      const bx = even ? cx + (((i + q) / n) * 2 - 1) * rx : cx + Math.cos(t) * rx * q,
+        by = cy + Math.sin(t) * ry * q;
       const h = h0 + r() * (h1 - h0), ln = lean + (r() - 0.5) * 0.7;
       /* judged at the blade's tip as well as its foot, and a pen-length wide
          of the words: a tick leans, and its curve bows past its own points */
@@ -9850,7 +9856,7 @@ function* drawDawnscape() {
     for (const [cx, cy, rx, ry, n, h0, h1] of field) near += ticks(cx, cy, rx, ry, n, "ds-ink w1", h0, h1);
     /* and a low stipple along the sheet's own bottom edge, corner to corner,
        thinning under the words but never nothing: the edge is drawn */
-    for (let fx = 0.025; fx < 1; fx += 0.05) near += ticks(X(fx), H - 8, X(0.03), 7, 13, "ds-ink w1", 3, 7, 0.3, true);
+    for (let fx = 0.025; fx < 1; fx += 0.05) near += ticks(X(fx), H - 8, X(0.03), 7, 13, "ds-ink w1", 3, 7, 0.3, true, true);
     /* and the reed pen's flow lines: a few long low curves through the corner
        fields, the lie of the grass, hair-strong */
     cutPad = 12;

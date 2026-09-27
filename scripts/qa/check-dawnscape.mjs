@@ -1319,7 +1319,9 @@ try {
     /* 7 · every crossing flown, sampled along its own offset path against
        the shadow faces, near masses excepted */
     const routes = await page.evaluate(() => {
-      const s = window.__world.scape,
+      /* no scape is check 1's failure, already reported; this one must not
+         crash over it and hide the rest of the seat */
+      const s = window.__world.scape || {},
         faces = s.faces || [],
         near = s.near || [];
       const inside = ([px, py], poly) => {
@@ -1394,7 +1396,7 @@ try {
         .length,
       flies: window.__world.flies || 0,
       ground: window.__world.ground || [],
-      roamers: window.__world.scape.roamers,
+      roamers: (window.__world.scape || {}).roamers,
       tf: [...document.querySelectorAll(".dawnscape [data-range]")].map(
         (el) => [
           el.dataset.id ||
