@@ -9704,9 +9704,14 @@ function* drawDawnscape() {
        are 1 under it, so her height is arithmetic at any scale. */
     SCAPE.doeH = +(68.5 * k - 1).toFixed(1);
     const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] }, 1, 0, still);
-    /* her shadow, three raked strokes at her feet */
-    const sh = hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
-    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    /* her shadow WAS three raked strokes centred under her, which is a
+       shadow at noon and reads as a second one beside the rake. Burned:
+       drawn from the main stream and dropped, so nothing after her moves. */
+    const nSd = nS;
+    hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
+    nS = nSd;
+    const sh = rake(x, hz + 2, 20 * k, 62 * k);
+    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
   };
   /* ————— the fawn: the doe's own silhouette at two thirds, mirrored to face
      her, its legs four units too long (the fawn's tell), two cut-dots on
@@ -9714,8 +9719,11 @@ function* drawDawnscape() {
   const fawn = (x, still = {}) => {
     const k = 0.62 * vs;
     const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4, still);
-    const sh = hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
-    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    const nSf = nS;
+    hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    nS = nSf;
+    const sh = rake(x, hz + 2, 13 * k, 44 * k);
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
   };
 
   /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
@@ -9742,13 +9750,16 @@ function* drawDawnscape() {
     fills.push([x, y - 13 * k, 13 * k]);
     nS += 4;
     groups += 3;
-    const sh = hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    const nSh = nS;
+    hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    nS = nSh;
+    const sh = rake(x, y + 1, 10 * k, 24 * k);
     let td = "";
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
     reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6 });
-    return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px"><path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${sh}${P(td, "ds-ink w1", 2)}</g>`;
+    return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">${sh}<path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${P(td, "ds-ink w1", 2)}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -9797,6 +9808,35 @@ function* drawDawnscape() {
      `lend`). nS is the strokes that are KEPT. */
   const castRng = birdRng(0xda57);
   const footHatch = (poly, deg) => hatch(poly, deg, 2.6, "ds-far w1 ds-castshadow", 0.3, [5, 12]);
+  /* FIRST LIGHT ON THE GROUND. shadowOf has been authored in this page
+     since round 10 and deliberately never called, because its material was
+     stipple and stipple is the material the owner rejected for the range.
+     This is the same lobed reach in the sheet's own hatch: raked ALONG the
+     shadow's own direction, fading out at its far end, so it is a shadow
+     that was drawn rather than a tone that was filled. It is quiet on
+     purpose — a low sun, not a stain.
+     Whatever it is cast by declares it (data-x), so check 9 holds it to the
+     far side of that thing from the light like any other cast mark, and a
+     roamer's rake is drawn INSIDE the roamer's own group so it goes where
+     the creature goes. Its own stream. */
+  const rakeRng = birdRng(0x5add);
+  const rake = (bx, by, halfW, height) => lend(rakeRng, () => {
+    if (!sun) return "";
+    const dx = bx - sun.x;
+    const dir = [Math.sign(dx || -1) * Math.cos(0.42), Math.sin(0.42)];
+    const len = 2.2 * height, nrm = [-dir[1], dir[0]];
+    const lobes = [];
+    for (let i = 0; i <= 6; i++) {
+      const t = i / 6, w = halfW * (1 - 0.45 * t) * (0.85 + 0.3 * Math.sin(t * 9));
+      lobes.push([[bx + dir[0] * len * t + nrm[0] * w, by + dir[1] * len * t + nrm[1] * w],
+        [bx + dir[0] * len * t - nrm[0] * w, by + dir[1] * len * t - nrm[1] * w]]);
+    }
+    const poly = [...lobes.map((l) => l[0]), ...lobes.map((l) => l[1]).reverse()]
+      .map(([x, y]) => [clamp(x, -4, W + 4), Math.max(y, hz + 2)]);
+    const deg = (Math.atan2(dir[1], dir[0]) * 180) / Math.PI;
+    return caster(hatch(poly, deg, 2.7, "ds-far w1 ds-castshadow", 0.3, [18, 58],
+      (x, y) => 1.05 - 0.75 * Math.min(1, Math.hypot(x - bx, y - by) / len)), bx);
+  });
   const shadowFoot = (x, y, w) => {
     const n0 = nS;
     const east = footHatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18);
@@ -10105,6 +10145,10 @@ function* drawDawnscape() {
     };
     SCAPE.shadows = [];
     void shadowOf;
+    /* the tree throws the longest shadow on the sheet, down its own flank
+       into the corner the light never reaches; drawn before the grass so
+       every blade stands in front of it */
+    near += rake(X(0.082), hz + 2, 26 * vs, 150 * vs);
     /* outline tufts first, behind everything */
     near += `<g class="ds-grass" mask="url(#mG)">`;
     for (const [fx, fy, h, n] of [[0.03, 0, 18, 5], [0.085, 0, 17, 5], [0.16, 0, 15, 5], [0.35, 0.885, 12, 4], [0.49, 0.90, 11, 4], [0.64, 0.88, 12, 4], [0.75, 0, 14, 5], [0.80, 0.98, 11, 4], [0.93, 0.975, 12, 4], [0.985, 0, 19, 6]])

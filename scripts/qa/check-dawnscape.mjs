@@ -717,8 +717,20 @@ try {
     if (sun)
       for (const el of svg.querySelectorAll(".ds-castshadow")) {
         const b = el.getBoundingClientRect();
-        const from = +el.dataset.x;
+        let from = +el.dataset.x;
         if (!b.width || !Number.isFinite(from)) continue;
+        /* a roamer's rake is drawn inside the roamer, so it travels with
+           it: home is where the creature IS, not where it was drawn, or a
+           hare at the far end of its range casts what reads as a shadow on
+           the wrong side of itself */
+        const rg = el.closest("[data-range]");
+        if (rg && rg.dataset.axis !== "y") {
+          const n = (rg.style.transform || "")
+            .replace(/^translate\(/, "")
+            .split(",")
+            .map(parseFloat);
+          from += n[0] || 0;
+        }
         const away = (b.left + b.right) / 2 - from;
         casts.push({
           from: +from.toFixed(1),
