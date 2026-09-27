@@ -1598,3 +1598,103 @@ test.describe("G10d · the junction stubs land on the rail", () => {
     });
   }
 });
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE CONTROLS FOR G10c AND G10d.
+
+   Each one puts back a defect the round actually had and asserts the gate
+   sees it. They inject through `page.route`, which is the pattern G10b's own
+   control uses: the served `out/` is never edited, so a control can never
+   leave the owner's preview broken — the failure mode
+   `never-break-the-served-artifact` records. Every one asserts its injection
+   point was FOUND before drawing a conclusion, because a replace that matches
+   nothing fulfils the real page and a control that passes on the real page is
+   a control reporting that it works.
+   ══════════════════════════════════════════════════════════════════════════ */
+async function inject(page: Page, from: string, to: string) {
+  const state = { hit: false };
+  await page.route(
+    (u) => new URL(u).pathname === "/",
+    async (route) => {
+      const res = await route.fetch();
+      const src = await res.text();
+      state.hit = src.includes(from);
+      await route.fulfill({ response: res, body: src.replace(from, to) });
+    }
+  );
+  return state;
+}
+
+test.describe("G10c / G10d · positive controls", () => {
+  test("control: without the prose-corner waypoint the rail is back in ¶10's paragraph", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    /* 1375x800 and not his own seat: the clearance is not monotonic in width
+       and this is where the measured minimum was 10.47px. */
+    await page.setViewportSize({ width: 1375, height: 800 });
+    const TARGET = "if (i !== 9 || stacked || !prose10) return null;";
+    const hit = await inject(
+      page,
+      TARGET,
+      "if (i !== 9 || stacked || !prose10 || 1) return null;"
+    );
+    await arrive(page);
+    expect(
+      hit.hit,
+      `the waypoint's own guard "${TARGET}" is still in the run`
+    ).toBe(true);
+    const { out } = await inkClearance(page, ["#review .prose"]);
+    expect(
+      out[0].min,
+      "a corridor that crosses the paragraph must be caught"
+    ).toBeLessThan(G10C_FLOOR);
+  });
+
+  test("control: beat 9 back on the percentage table is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1456, height: 949 });
+    const TARGET = "i === 9 && !stacked && gatesPlate";
+    const hit = await inject(
+      page,
+      TARGET,
+      "i === 9 && !stacked && !gatesPlate"
+    );
+    await arrive(page);
+    expect(
+      hit.hit,
+      `deskX's fig. 10 branch "${TARGET}" is still in the run`
+    ).toBe(true);
+    const { out } = await inkClearance(page, ["#gatesFig"]);
+    expect(
+      out[0].min,
+      "a rail down 30% of the viewport runs through the docket's own words"
+    ).toBeLessThan(G10C_FLOOR);
+  });
+
+  test("control: a seating pass that does nothing leaves no stubs", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1456, height: 949 });
+    const TARGET = "function seatFigures() {";
+    const hit = await inject(
+      page,
+      TARGET,
+      "function seatFigures() { if (1) return;"
+    );
+    await arrive(page);
+    expect(hit.hit, `"${TARGET}" is still in the run`).toBe(true);
+    const n = await page.evaluate(
+      () =>
+        document.querySelectorAll("#gatesFig [data-j], #signsFig [data-j]")
+          .length
+    );
+    expect(
+      n,
+      "no seating means no stubs, and G10d's count is what sees it"
+    ).toBe(0);
+  });
+});
