@@ -231,6 +231,9 @@ const BLOSSOM_MIN = 1.2;
 /* the share of the sheet coloured ink may paint. Set from what round 14
    ships with a wide margin, not from a round number: see check 10. */
 const COLOUR_CAP = 0.006;
+/* the longest unbroken run of ink the ground plane may carry, as a share of
+   the sheet's width. The ruled horizon this replaces measured 0.24 W. */
+const RULED_RUN = 0.2;
 /* the box a mask may carry over what it masks, when the two move together:
    the builder's is a tenth over each side, 1.44x */
 const MOVING_MASK_MAX = 2;
@@ -665,6 +668,35 @@ try {
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* 11 · THE HORIZON IS DRAWN, NOT RULED. It was one full-width line in
+       six pieces and it was the only ruled thing on a sheet that is
+       otherwise all marks. What holds the replacement is not "there are
+       ticks" — that is a rule made of ticks — but the length of the longest
+       CONTIGUOUS run of ink in the ground plane: a subpath, not a batched
+       path, because every mark here is batched (one path carries a whole
+       clump, or a whole hatch field) and their totals mean nothing. The old
+       line's longest run measured 0.24 W; the brow's longest is an edge
+       piece at 0.14 W. */
+    let runLong = { len: 0, of: "" };
+    const lineG = svg.querySelector(".ds-line");
+    if (lineG) {
+      const probe = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      svg.appendChild(probe);
+      for (const p of lineG.querySelectorAll("path")) {
+        const d = p.getAttribute("d") || "";
+        for (const piece of d.split(/(?=M)/)) {
+          if (piece.length < 4) continue;
+          probe.setAttribute("d", piece);
+          const L = probe.getTotalLength();
+          if (L > runLong.len)
+            runLong = { len: +L.toFixed(1), of: p.className.baseVal || "path" };
+        }
+      }
+      probe.remove();
+    }
     /* THE BLOSSOM IS A HOLE, AND A HOLE UNDER A DEVICE PIXEL IS NOTHING.
        The florets are cut out of each canopy's own mask, and they were
        authored at r 0.6–0.9: 1.2 to 1.8px across, which at DPR 1 is under
@@ -1108,6 +1140,7 @@ try {
       casts: casts.length,
       wrongSide,
       colourFrac: +(colourPx / (innerWidth * innerHeight)).toFixed(5),
+      runLong,
       florets: florets.length,
       floretMin: florets.length ? Math.min(...florets) : null,
       hullCover,
@@ -1233,6 +1266,14 @@ try {
       if (m.meadow.length)
         fail(
           `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+        );
+      if (m.runLong && m.runLong.len > RULED_RUN * W)
+        fail(
+          `${seat}: the ground plane carries a ${m.runLong.len}px run of unbroken ink (${m.runLong.of}), ${(m.runLong.len / W).toFixed(3)} of the sheet's width — the horizon is drawn, and the cap on any one run is ${RULED_RUN} W`
+        );
+      else if (m.runLong && m.runLong.len)
+        note(
+          `${seat}: longest unbroken run in the ground plane ${m.runLong.len}px (${(m.runLong.len / W).toFixed(3)} W, cap ${RULED_RUN})`
         );
       if (m.floretMin !== null && m.floretMin < BLOSSOM_MIN)
         fail(

@@ -8327,9 +8327,13 @@ function* drawDawnscape() {
   const rMain = birdRng(0xda11);
   let rLent = null;
   const r = () => (rLent || rMain)();
+  /* reentrant on purpose: the first lent mark that calls a builder which
+     lends its own stream would otherwise hand the rest of the outer block
+     back to the main one, silently */
   const lend = (rng, fn) => {
+    const prev = rLent;
     rLent = rng;
-    try { return fn(); } finally { rLent = null; }
+    try { return fn(); } finally { rLent = prev; }
   };
   const vs = clamp(W / 1500, 0.44, 1.2);
   /* the pen's scale for what the transients draw at their own time (the
@@ -9293,31 +9297,73 @@ function* drawDawnscape() {
   /* the sun is drawn with the range, in the back plane, because that is
      where it is: behind it. See drawSun. */
 
-  /* ————— the horizon, drawn twice, lifted three times, letting go before the corner —————
-     One segment is a weight class lighter where the light used to break the
-     line; the lift stays, because a horizon drawn at one weight from corner
-     to corner is a rule rather than a hand. */
+  /* ————— the horizon: a grassy brow, not a ruled line —————
+     It was one full-width line in six pieces, and it was the only ruled
+     thing on a sheet that is otherwise all marks: the owner's doodle ruling
+     reaches it. The land's far edge is a low brow now — a wavering crest
+     carried by clumps of reed-pen ticks, with a fine hatch on its front,
+     which is the face turned away from the light, and the edge itself
+     showing only where the clumps leave a gap. The clumps thin toward the
+     middle of the sheet so the eye still runs out to the sun, and the hatch
+     is strongest at the flanks for the same reason.
+     The old line is still DRAWN from the main stream and thrown away, so
+     everything seeded after the horizon is the drawing that was approved;
+     the brow comes off its own stream (see `lend`). The phone gets the same
+     treatment: a 390px sheet with a rule across it is the same defect, and
+     the pair now stands on that edge. */
   const hzEnd = X(narrow ? 0.95 : 0.88);
   const line = curve([[-4, hz], [X(0.25), hz + 1], [X(0.5), hz - 1], [X(0.75), hz + 0.5], [hzEnd, hz]]);
-  if (tall) {
-    const cuts = [X(0.19), X(0.36), X(0.60), X(0.78)].map((c) => c + (r() - 0.5) * 30);
-    ground += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.3), "ds-ink w1");
-    ground += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[2] + 8, cuts[3] - 4), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[3] + 9, hzEnd - X(0.03)), 1.3), "ds-ink w1");
-    ground += P(stroke(seg(line, hzEnd - X(0.02), hzEnd), 1.1), "ds-far w1");
-    /* the second pass: three lifted pieces a shade below, the hand going back */
-    const echo = line.map(([x, y]) => [x, y + 3.5 + Math.sin(x * 0.004) * 1.2]);
-    ground += P(stroke(seg(echo, X(0.02), X(0.17)), 1.2), "ds-ink w1");
-    ground += P(stroke(seg(echo, X(0.40), X(0.56)), 1.2), "ds-far w1");
-    ground += P(stroke(seg(echo, X(0.63), X(0.83)), 1.2), "ds-ink w1");
-  } else {
-    /* one lift on a phone: four on a 390px line read as a dashed rule */
-    const cut0 = hzEnd * 0.6 + (r() - 0.5) * 30;
-    ground += P(stroke(seg(line, -4, cut0 - 3), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, cut0 + 5, hzEnd - X(0.06)), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, hzEnd - X(0.04), hzEnd), 1), "ds-far w1");
+  {
+    let burn = "";
+    const nS0 = nS;
+    if (tall) {
+      const cuts = [X(0.19), X(0.36), X(0.60), X(0.78)].map((c) => c + (r() - 0.5) * 30);
+      burn += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.3), "ds-ink w1");
+      burn += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[2] + 8, cuts[3] - 4), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[3] + 9, hzEnd - X(0.03)), 1.3), "ds-ink w1");
+      burn += P(stroke(seg(line, hzEnd - X(0.02), hzEnd), 1.1), "ds-far w1");
+      const echo = line.map(([x, y]) => [x, y + 3.5 + Math.sin(x * 0.004) * 1.2]);
+      burn += P(stroke(seg(echo, X(0.02), X(0.17)), 1.2), "ds-ink w1");
+      burn += P(stroke(seg(echo, X(0.40), X(0.56)), 1.2), "ds-far w1");
+      burn += P(stroke(seg(echo, X(0.63), X(0.83)), 1.2), "ds-ink w1");
+    } else {
+      const cut0 = hzEnd * 0.6 + (r() - 0.5) * 30;
+      burn += P(stroke(seg(line, -4, cut0 - 3), 1.3), "ds-ink w12");
+      burn += P(stroke(seg(line, cut0 + 5, hzEnd - X(0.06)), 1.3), "ds-ink w12");
+      burn += P(stroke(seg(line, hzEnd - X(0.04), hzEnd), 1), "ds-far w1");
+    }
+    /* the strokes that are KEPT are the brow's, not the line's */
+    void burn;
+    nS = nS0;
+    const browRng = birdRng(0xb70e);
+    ground += lend(browRng, () => {
+      let d = "";
+      const crest = (f) => hz + Math.sin(f * 7.1 + 0.6) * 2.4 + Math.sin(f * 19) * 0.9;
+      const clumps = narrow ? 18 : 30;
+      for (let i = 0; i < clumps; i++) {
+        const f = (i + 0.3 * browRng()) / clumps;
+        if (browRng() < (narrow ? 0.07 : 0.16)) continue;
+        /* a rule made of ticks is still a rule: the clumps thin toward the
+           middle of the sheet, where the eye is meant to run out to the
+           light. Not on a phone, where the light is in the top band and a
+           thinned middle is just a gap in the ground the pair stands on. */
+        const open = narrow ? 1 : 1 - 0.62 * Math.pow(Math.cos((f - 0.5) * Math.PI), 3);
+        const x = -6 + (hzEnd + 10) * f;
+        d += ticks(x, crest(f) + 1, 11 * Math.max(vs, 0.6), 1.4, Math.max(1, Math.round((2 + browRng() * 3) * open)),
+          i % 4 === 0 ? "ds-far w1" : "ds-ink w1", 3, 6.5 + browRng() * 2.5, 0.25, true, true);
+      }
+      const front = [];
+      for (let i = 0; i <= 24; i++) front.push([-6 + ((hzEnd + 10) * i) / 24, crest(i / 24) + 1.5]);
+      const back = front.map(([x, y]) => [x, y + 7]).reverse();
+      d += hatch([...front, ...back], -18, 3.6, "ds-far w1", 0.3, [10, 30], (x) => 0.35 + 0.6 * Math.abs(x / W - 0.5) * 2);
+      /* the edge, only where the clumps leave a gap, and never long */
+      const edge = front.map(([x, y]) => [x, y - 0.5]);
+      for (const [a2, b2] of [[0.19, 0.33], [0.46, 0.60], [0.79, 0.95]])
+        d += P(stroke(seg(edge, X(a2), Math.min(X(b2), hzEnd)), 1.0), b2 > 0.9 ? "ds-far w1" : "ds-ink w1");
+      return d;
+    });
   }
 
   /* ————— the great tree —————
