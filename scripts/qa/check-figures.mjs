@@ -879,20 +879,35 @@ const FIGURES = [
     [
       "pathFig",
       "fig. 03",
-      ["97 percent", "97%", "compliance", "61 projects", "legacy laravel", "etl feed", "37 month", "teamdynamix"],
+      [
+        "97 percent",
+        "97%",
+        "compliance",
+        "61 projects",
+        "legacy laravel",
+        "etl feed",
+        "37 month",
+        "teamdynamix",
+      ],
       "the compliance story the owner ruled out of this plate in round 13",
     ],
   ];
   for (const [id, fig, words, why] of RETIRED) {
-    const tag = run.match(new RegExp(`<svg id="${id}"[^>]*>`))?.[0] ?? "";
+    const tag = runHtml.match(new RegExp(`<svg id="${id}"[^>]*>`))?.[0] ?? "";
     const label = tag.match(/aria-label="([^"]*)"/)?.[1] ?? "";
     /* the builder's own body for this plate: from its function to the next
-       top-level comment banner */
-    const body = run.match(/function buildPath\(tight\)[\s\S]*?\n}\n/)?.[0] ?? "";
+       top-level closing brace */
+    const body =
+      runHtml.match(/function buildPath\(tight\)[\s\S]*?\n}\n/)?.[0] ?? "";
+    if (!tag || !body)
+      fails.push(
+        `  ✗ ${fig}: the retired-words check found no ${tag ? "buildPath body" : `<svg id="${id}">`} to read`
+      );
     for (const w of words) {
+      const esc = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const where = label.toLowerCase().includes(w.toLowerCase())
         ? "its label"
-        : new RegExp(`["'\`][^"'\`]*${w.replace(/[.*+?^${}()|[\]\\]/g, "\\  for (const [id, fig, tokens, why] of DRAWING_TOKENS) {")}`, "i").test(body)
+        : new RegExp(`["'\`][^"'\`]*${esc}`, "i").test(body)
           ? "its drawing"
           : null;
       if (where)

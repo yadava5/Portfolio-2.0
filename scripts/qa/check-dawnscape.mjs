@@ -251,7 +251,10 @@ async function serve() {
     fail(
       `--sun-g is named by ${sunRules.length} .dawnscape rules — it is the sun's colour and it gets exactly one selector`
     );
-  else if (tokens.has("--sun-g") && sunRules[0][1].trim() !== ".dawnscape .ds-sun")
+  else if (
+    tokens.has("--sun-g") &&
+    sunRules[0][1].trim() !== ".dawnscape .ds-sun"
+  )
     fail(
       `--sun-g is drawn by "${sunRules[0][1].trim()}" — only ".dawnscape .ds-sun" may carry the light's colour`
     );

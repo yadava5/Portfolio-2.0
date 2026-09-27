@@ -169,7 +169,7 @@ if (location.hash.length > 1) {
                                 figure token as NIGHT[t] ?? DAY[t] over the night fields, and
                                 the day ochre reads 2.88:1 there. Stating a night value is
                                 cheaper and more honest than teaching the scan an exception.
-                                measured: #e0b25c on #43372f — 5.85:1 / Lc 57.3, and on
+                                measured: #e0b25c on #43372f — 5.85:1 / Lc 57.0, and on
                                 #2c2622 — 7.60:1 / Lc 61.4. */
     --hair:rgba(246,239,226,.18);
     --hair-strong:rgba(246,239,226,.45); /* .40 composited to EXACTLY the 3.0
@@ -5802,7 +5802,7 @@ function buildPath(tight) {
     const doors = ROAD.map((y) => [y - 12, y + 12]);
     vrule(WKS, 46, 240, doors);
     vrule(292, 46, 240, doors);
-    el("text", { x: 188, y: 148 }).textContent = "python · sql";
+    el("text", { x: 188, y: 148 }).textContent = "Python · SQL";
     ROAD.forEach((y, i) => {
       /* the source's two rows and the product's two rows are THE SAME two
          rows: the reader gets `1.6M+ OAS query logs ⟶ usage table`
@@ -5881,7 +5881,7 @@ function buildPath(tight) {
          road runs through, which is the wide plate's corridor rotated */
       el("path", { d: `M 12 ${Y + 44} H 26 M 42 ${Y + 44} H 56`, class: "lane" });
       el("path", { d: `M 12 ${Y + 68} H 26 M 42 ${Y + 68} H 56`, class: "lane" });
-      if (i === 0) el("text", { x: 64, y: Y + 60 }).textContent = "python · sql";
+      if (i === 0) el("text", { x: 64, y: Y + 60 }).textContent = "Python · SQL";
       const filed = i === FILED;
       const box = { class: "prod",
         /* the floor's break is sized to the words that sit in it, measured

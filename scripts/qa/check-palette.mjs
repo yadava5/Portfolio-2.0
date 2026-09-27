@@ -523,7 +523,9 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
      under the 2.0 hairline floor and the file exits 1. */
   const figureRules = [
-    ...runHtml.matchAll(/(?:\.figsvg|\.gbench|\.approvebar|\.dawnscape)[^{]*\{([^}]*)\}/g),
+    ...runHtml.matchAll(
+      /(?:\.figsvg|\.gbench|\.approvebar|\.dawnscape)[^{]*\{([^}]*)\}/g
+    ),
   ].map((m) => m[1]);
   /* the pairs first, so their two tokens do not also enter the stroke set */
   const groundPairs = [];
@@ -531,7 +533,9 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
   for (const body of figureRules) {
     /* `[;\s]` before the property name, or `border-color:var(--clay)` is
        read as the label's own colour and the pair measures clay on clay */
-    const bg = body.match(/(?:^|[;\s])background(?:-color)?:\s*var\(--([\w-]+)\)/);
+    const bg = body.match(
+      /(?:^|[;\s])background(?:-color)?:\s*var\(--([\w-]+)\)/
+    );
     const fg = body.match(/(?:^|[;\s])color:\s*var\(--([\w-]+)\)/);
     if (bg && fg) {
       groundPairs.push([`--${fg[1]}`, `--${bg[1]}`]);
@@ -551,11 +555,15 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
     .map((t) => `--${t}`)
     .filter((t) => NIGHT[t] || DAY[t]);
   for (const [fgT, bgT] of groundPairs) {
-    for (const [world, map] of [["day", DAY], ["night", NIGHT]]) {
+    for (const [world, map] of [
+      ["day", DAY],
+      ["night", NIGHT],
+    ]) {
       const fg = map[fgT] ?? DAY[fgT];
       const bg = map[bgT] ?? DAY[bgT];
       if (!/^#[0-9a-f]{6}$/i.test(fg) || !/^#[0-9a-f]{6}$/i.test(bg)) continue;
-      const w = contrast(fg, bg), l = lc(fg, bg);
+      const w = contrast(fg, bg),
+        l = lc(fg, bg);
       if (w < TEXT.wcag || l < TEXT.lc)
         fail(
           `${fgT} on its own ${bgT} ground draws at ${w.toFixed(2)}:1 / Lc ${l.toFixed(1)}\n` +
