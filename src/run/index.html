@@ -10168,7 +10168,14 @@ function* drawDawnscape() {
        the whole pair keeps its 24px with its 12px range taken off.
        They are drawn LAST, so they stand in front of the ground's stipple,
        and their ears are fills rather than hinges: a 390 sheet may run
-       eight continuous groups in all, and this is exactly eight. */
+       eight continuous groups in all, and this is exactly eight.
+       EIGHT IS SAFE BECAUSE ROOM NEVER REACHES 2. The ninth would be the
+       sapling, and `free` (the space under the column) measures 61px at
+       390×844, 393×851, 412×915, 414×896, 428×926, 430×932 and 360×800,
+       and 18 at 375×667 and 320×568: the column fills the panel, so the
+       tail under it is the same on every phone and room is 1 or −1, never
+       2. At 360 and under, the band is too short for the principal and the
+       census is 6. */
     if (room >= 1) {
       near += fawn(X(0.065), { ears: true, tail: true });
       near += doe(X(0.165), { ears: true });
