@@ -6574,6 +6574,13 @@ function buildSigns(js) {
   signs.svg = svg; signs.spx = spx; signs.rows = [];
   const rows = [...host.querySelectorAll(".srow")];
   const railless = plate.classList.contains("railless");
+  /* the figure's own spine, for the reader whose arc never arrives: under
+     reduced motion the night beats carry opaque resting grounds and the rail
+     is painted over, so the lanes would run to nothing. Never clay — this is
+     the mark of where the line is, not the line. */
+  if (railless && rows.length)
+    add(svg, dPath("s-spine", seg(spx, rows[0].offsetTop + 8, spx,
+      rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8)));
   host.querySelector(".sdigit")?.remove();
   rows.forEach((row, i) => {
     const g = el("g", {});
