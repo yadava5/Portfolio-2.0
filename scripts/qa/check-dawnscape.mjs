@@ -125,6 +125,11 @@
  *   · `--amp` raised on `.ds-rays` from 1.4deg to 6deg without re-breaking
  *     the rays → (1) fails at 1280x720, where the crown's margin over the
  *     run state's halo is 4.5px and 6deg buys about 11px of travel
+ *   · the same on `.ds-rays2`, whose --amp is NEGATIVE (-1deg → -6deg) →
+ *     (1) fails too. This one is the probe for the check's own arithmetic
+ *     rather than for the drawing: a signed tangent would have made the
+ *     second crown group's clearance requirement smaller the faster it
+ *     turned, and nothing else here would have noticed
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -425,8 +430,14 @@ try {
           .map(parseFloat);
         ox = o[0];
         oy = o[1];
-        const amp =
-          parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0;
+        /* ABSOLUTE. --amp carries a direction as well as a size — the sun's
+           second crown group turns -1deg against the first — and a signed
+           tangent makes every clearance LOOSER for the group that turns the
+           other way, which is a gate arguing itself down. A mark's travel is
+           the same either way round. */
+        const amp = Math.abs(
+          parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0
+        );
         tanA = Math.tan((amp * Math.PI) / 180);
       }
       const g = p.parentElement;

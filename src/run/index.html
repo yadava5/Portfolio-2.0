@@ -7054,6 +7054,14 @@ function dawnArc(p) {
     rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
     night: a[0] === 1,
     sun: a[0] === 1 ? 7 : lerp(0, DAWN_HOLD, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
+    /* THIS ARC IS ¶13'S AND NOBODY ELSE'S. arcColor returns it for beat 12
+       alone; every other beat runs the day or the dusk, where `sun` is the
+       whole day's crossing (0..5) rather than the dawn's climb (0..0.62).
+       washSeat keys on this flag because it cannot key on the value: an
+       approved reader can scroll back, and a day beat's sun of 3 read
+       through the dawn's ramp clamps to 1 — which would have pinned the
+       field's glow to ¶13's seat over ¶05 at noon. */
+    dawn: true,
   };
 }
 
@@ -7066,11 +7074,11 @@ function dawnArc(p) {
    raises the dawn, so it ARRIVES on the disc rather than jumping onto it when
    the build publishes; the arc's own `sun` value is untouched, because it
    also drives the fallback's path, the glow's strength and ¶13's prose about
-   where the birds go. Only under body.gateopen, which is exactly the stretch
-   where ¶13's dawn runs and the dawnscape exists. */
+   where the birds go. Only on the DAWN ARC — ¶13's own, which arcColor
+   returns for beat 12 and nothing else — because body.gateopen persists
+   after the approval and an approved reader may scroll back up the run. */
 function washSeat(arc) {
-  if (arc.night || !SCAPE.built || !SCAPE.sun) return null;
-  if (!document.body.classList.contains("gateopen")) return null;
+  if (!arc.dawn || arc.night || !SCAPE.built || !SCAPE.sun) return null;
   const w = innerWidth || 1, h = innerHeight || 1;
   const p = clamp(arc.sun / 5, 0, 1), t = clamp(arc.sun / DAWN_HOLD, 0, 1);
   return [
@@ -8414,13 +8422,14 @@ function* drawDawnscape() {
   if (narrow) {
     const wrapB = stick.querySelector(".dawnwrap").getBoundingClientRect().bottom - sr.top;
     free = H - wrapB;
-    /* the ladder, by measured room under the last line. The 34px used to be
-       what the GROUND SUN needed — its cap rose 0.8 r above the line and the
-       text kept 24px of air — and the sun has gone up behind the range; the
-       gap stays at 34 because it is now what the horizon needs to read as a
-       line the grass stands on rather than an underscore. Under 20px there
-       is no ground to draw on (320×720 measures -24: the column already
-       overflows the panel there) and nothing is drawn. */
+    /* the ladder, by measured room under the last line. The 34px was what
+       the GROUND SUN needed — its cap rose 0.8 r above the line and the text
+       kept 24px of air, measured at 390×844 — and that sun has gone up
+       behind the range. The number is INHERITED rather than re-derived: it
+       is not what the horizon alone would need, and nobody has measured what
+       that is. Under 20px there is no ground to draw on (320×720 measures
+       -24: the column already overflows the panel there) and nothing is
+       drawn. */
     room = free >= 90 ? 2 : free >= 40 ? 1 : free >= 20 ? 0 : -1;
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
@@ -8774,9 +8783,16 @@ function* drawDawnscape() {
      which is not new — it MOVES onto this seat, so the page has one sun
      instead of two (see drawWash).
 
-     ITS OWN HAND. The sun draws from its own seeded stream, so the morning
-     behind it is drawn by exactly the sequence that drew it before the sun
-     existed and a future re-cut of the crown cannot re-roll the meadow. */
+     ITS OWN HAND, AND WHAT THAT DOES AND DOES NOT BUY. The sun draws from
+     its own seeded stream, so a future re-cut of the crown cannot re-roll
+     the meadow. It does NOT mean this round left the morning untouched: the
+     three ground-sun arcs that went took 15 draws out of the head of chunk
+     2, the pen-lifts added in skyPiece, offRock and cut add their own, and
+     dens() and the words' new floor change which ticks are skipped. The
+     horizon's cuts, the crown's lobes and the meadow are all drawn by a
+     different part of the stream than they were, and the golden hash is
+     re-recorded because of it. What the separate stream protects is the
+     NEXT change to the sun, not this one. */
   const sunRng = birdRng(0xda11 ^ 0x5c1a);
   const sunHand = (amp) => {
     const p1 = sunRng() * 6.28, p2 = sunRng() * 6.28;
@@ -10483,8 +10499,23 @@ function spawnFar() {
          the old entry sat 120px from the disc against a 121px clearing, so
          the flock was being noticed inside the sunrise. */
       const notch = !narrow && SCAPE.massifs && SCAPE.massifs.summits && SCAPE.massifs.summits.find((q) => q.name === "notch");
-      f.ox = narrow ? 0.06 + r() * 0.06 : notch ? (notch.peak[0] - 30 - r() * 40) / W : 0.26 + r() * 0.08;
-      f.oy = narrow ? 0.15 + r() * 0.02 : notch ? (notch.peak[1] - 44 - r() * 20) / H : 0.10 + r() * 0.06;
+      /* THE PHONE'S BAND IS 48px TALL AND THE SUN IS IN IT. Its crossing was
+         noticed at 0.06–0.12 W, 0.15–0.17 H — measured against the seat the
+         sun takes now, (92, 130) with a 56px clearing at 390×844, that is a
+         bird starting 45px west of the disc and flying east at 4°: straight
+         through it. Measured before this, one far crossing came within
+         1.5px of the sun's centre. It is noticed EAST of the light now and
+         just over the band's own top, which is the only sky a phone has that
+         is neither the rock nor the clearing: it leaves the sunrise behind
+         it, which is what the whole flock does on every other seat.
+         fitRoute could not have saved it — it moves an exit and a bow, and
+         this route began inside the light. */
+      const bandTop = narrow && SCAPE.band ? SCAPE.band.top : 0;
+      const lit = narrow && SCAPE.sun && bandTop;
+      f.ox = narrow ? (lit ? (SCAPE.sun.x + SCAPE.sun.crown + 20 + r() * 24) / W : 0.06 + r() * 0.06)
+        : notch ? (notch.peak[0] - 30 - r() * 40) / W : 0.26 + r() * 0.08;
+      f.oy = narrow ? (lit ? (bandTop + 4 + r() * 8) / H : 0.15 + r() * 0.02)
+        : notch ? (notch.peak[1] - 44 - r() * 20) / H : 0.10 + r() * 0.06;
       f.ang = ((narrow ? 4 : 6) * Math.PI) / 180;
     }
     f.ex = 0.86 + r() * 0.05;
