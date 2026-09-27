@@ -3677,7 +3677,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A capstone platform where an AI agent trains models, with human sign-off</p>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">An AI agent can run a notebook from raw data to a trained model. Unchecked, it can go wrong quietly.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Two of us built it. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a person to approve the training plan and any risky data cleaning step. Nothing deploys unless a person starts it. I was the backend developer and built the service that scores every trained model.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Shree and I built it, as we did Glyph. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a human to approve the training plan and any risky data cleaning step. Nothing deploys unless someone starts it. I was the backend developer and built the service that scores every trained model.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">2,523</b> automated tests, all passing: 1,445 backend · 985 frontend · 93 landing<br>
           <b class="mv">44 agent tools</b>, 12 over MCP · the LLM&rsquo;s Python runs in a Docker sandbox, locked down</p>
         <p class="prov mono">TypeScript · Express · React · PostgreSQL · Docker</p>
@@ -3816,8 +3816,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <div class="ghead">
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate · <i>22:41</i></p>
         <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
-        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.6vw,4.2rem); letter-spacing:-.017em; line-height:1.06; text-wrap:balance">Some calls should stay with a person.</h2>
-        <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">Applied asks you about the emails it isn&rsquo;t sure of. AutoML waits for a person before it trains a model. This one waits for you.</p>
+        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.6vw,4.2rem); letter-spacing:-.017em; line-height:1.06; text-wrap:balance">Some calls should stay with a human.</h2>
+        <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">Applied asks you about the emails it isn&rsquo;t sure of. AutoML waits for a human before it trains a model. This one waits for you.</p>
       </div>
       <!-- `y 0` / `s 1`, and it is load-bearing in a new way: the card no
            longer holds the dock, but it does hold the stamp, and a card that
@@ -6813,7 +6813,7 @@ function scrubAml(p) {
      no number the run has not drawn. */
   let si = 0;
   for (let i = 0; i < 6; i++) if (xb > aml.phx[i]) si = i;
-  const st = e >= 1 ? "state · held for a person" : `state · ${AML_PHASES[si]}`;
+  const st = e >= 1 ? "state · held for a human" : `state · ${AML_PHASES[si]}`;
   if (aml._st !== st) { aml._st = st; aml.state.textContent = st; }
   aml.plabels.forEach((l, i) => {
     if (i === 6) return; /* deploy never lights */

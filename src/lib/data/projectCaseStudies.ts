@@ -1150,7 +1150,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       href: `https://github.com/yadava5/ai-augmented-auto-ml-toolchain/tree/${AUTOML_SHA}`,
     },
     summary:
-      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions, and the generated training plan waits for a person’s approval every time before a run begins.",
+      "A public agentic AutoML platform. Datasets and domain documents become auditable pipeline decisions, and the generated training plan waits for a human’s approval every time before a run begins.",
     /* This aside was the last sentence of the private era, and it outlived
        it by a week. The repo went public on 2026-07-30: `repoPin` was set
        (which is what removed the PRIVATE REPOSITORY stamp), receipt 01 was
