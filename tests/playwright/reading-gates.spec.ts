@@ -1420,16 +1420,24 @@ const G10C_SEATS: [number, number][] = [
   [1250, 800],
 ];
 const G10C_FLOOR = 16; /* px · the same envelope G10b holds at the timetable */
-const G10C_BOXES = [
-  "#review .prose",
-  "#cosigners .prose",
-  "#gatesFig",
-  "#signsFig",
-  /* the captions sit outside the plates' own boxes and were unmeasured:
-     fig. 11's runs 1 to 1.5px closer to the rail than anything above */
-  "#review figure figcaption",
-  "#cosigners figure figcaption",
+/* [selector, fewest line boxes it must yield, what its text must begin with]
+   The floor is a guard against an EMPTY walk, not a count of the lines a
+   container holds: 2 for the prose and the plates (a redraw that moved a
+   row's words into the svg would empty it), 1 for a caption. It does not
+   notice a container losing most of its ink; the text pin and the
+   positive control below are what bind the captions. The pin exists
+   because `querySelector` takes the first match, and "#cosigners figure
+   figcaption" first matched a quote's attribution at 480px while fig. 11's
+   own caption sat at 31px, unread. */
+const G10C_BOXES: [string, number, RegExp | null][] = [
+  ["#review .prose", 2, null],
+  ["#cosigners .prose", 2, null],
+  ["#gatesFig", 2, null],
+  ["#signsFig", 2, null],
+  ["#review figure.plate > figcaption", 1, /^fig\. 10 /],
+  ["#cosigners figure.plate > figcaption", 1, /^fig\. 11 /],
 ];
+const G10C_SELS = G10C_BOXES.map(([sel]) => sel);
 
 async function inkClearance(page: Page, selectors: string[]) {
   return page.evaluate((sels) => {
@@ -1449,7 +1457,15 @@ async function inkClearance(page: Page, selectors: string[]) {
     const out = sels.map((sel) => {
       const host = document.querySelector(sel);
       if (!host)
-        return { sel, found: false, nodes: 0, rects: 0, min: -1, worst: "" };
+        return {
+          sel,
+          found: false,
+          text: "",
+          nodes: 0,
+          rects: 0,
+          min: -1,
+          worst: "",
+        };
       const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
       const nodes: Text[] = [];
       for (let n = tw.nextNode(); n; n = tw.nextNode())
@@ -1481,6 +1497,7 @@ async function inkClearance(page: Page, selectors: string[]) {
       return {
         sel,
         found: true,
+        text: (host.textContent || "").trim().slice(0, 40),
         nodes: nodes.length,
         rects,
         min: min === Infinity ? -1 : +min.toFixed(2),
@@ -1500,13 +1517,16 @@ test.describe("G10c · the rail keeps clear of every line of ink it passes", () 
       testInfo.setTimeout(120_000);
       await page.setViewportSize({ width: w, height: h });
       await arrive(page);
-      const { dirty, out } = await inkClearance(page, G10C_BOXES);
+      const { dirty, out } = await inkClearance(page, G10C_SELS);
       expect(
         dirty,
         "the transform override took: a residual matrix means every rect below is in the wrong space"
       ).toBe(0);
-      for (const r of out) {
+      for (const [i, r] of out.entries()) {
+        const [, fewest, starts] = G10C_BOXES[i];
         expect(r.found, `${r.sel} exists at ${w}`).toBe(true);
+        if (starts)
+          expect(r.text, `${r.sel} is the element it names`).toMatch(starts);
         /* A CONTAINER THAT YIELDS NO LINE BOXES IS A GATE THAT CANNOT FAIL.
            Both plates build their line work in an svg with no text in it, so
            a redraw that moved a row's words into the drawing would empty this
@@ -1516,7 +1536,7 @@ test.describe("G10c · the rail keeps clear of every line of ink it passes", () 
         expect(
           r.rects,
           `${r.sel} yields line boxes to measure at ${w} (${r.nodes} text nodes)`
-        ).toBeGreaterThanOrEqual(2);
+        ).toBeGreaterThanOrEqual(fewest);
         expect(
           r.min,
           `the rail's nearest approach to "${r.worst}" in ${r.sel} at ${w}x${h}`
@@ -1524,6 +1544,31 @@ test.describe("G10c · the rail keeps clear of every line of ink it passes", () 
       }
     });
   }
+});
+
+test("G10c control · a caption pushed onto the rail is read, and fails", async ({
+  page,
+}, testInfo) => {
+  /* The two caption entries were added after the plates, and the first
+     version of them measured the wrong element and could not fail. This
+     moves fig. 11's own caption onto the line (a `left` offset, not a
+     transform, since inkClearance strips transforms) and asserts that the
+     gate's measurement of THAT element falls under the floor. */
+  testInfo.setTimeout(120_000);
+  await page.setViewportSize({ width: 1456, height: 949 });
+  await arrive(page);
+  await page.addStyleTag({
+    content:
+      "#cosigners figure.plate > figcaption{position:relative; left:-240px}",
+  });
+  const { out } = await inkClearance(page, [
+    "#cosigners figure.plate > figcaption",
+  ]);
+  expect(out[0].text).toMatch(/^fig\. 11 /);
+  expect(
+    out[0].min,
+    "fig. 11's caption, moved onto the rail, reads under the floor"
+  ).toBeLessThan(G10C_FLOOR);
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
