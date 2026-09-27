@@ -945,7 +945,7 @@ test.describe("¶12 · reduced motion goes straight to the morning", () => {
    also an assertion: the words keep their air from the drawing, nothing
    under reduced motion moves, every bird stays inside the frame the reader
    can see, and every roamer stays within a hand's width of where it was
-   drawn. check-dawnscape holds the same claims at seven seats in
+   drawn. check-dawnscape holds the same claims at sixteen seats in
    verify:portfolio; these are the long sit and the per-seat air, on the
    engine the geometry is measured on.
    ══════════════════════════════════════════════════════════════════════ */

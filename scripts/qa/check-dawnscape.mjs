@@ -17,7 +17,7 @@
  *      range, and for a swaying group the amplitude at that radius, so the
  *      wind cannot carry a leaf into a halo — the sun's two crown groups
  *      turn and are measured the same way. Under the signature the grass
- *      is capped at 10px. At every one of the seven seats.
+ *      is capped at 10px. At every one of the sixteen seats.
  *      And THE LIGHT'S CLEARING (round 13): the sun rises behind the range,
  *      so the only things that may stand inside the crown's circle are the
  *      sun's own marks and the rock in front of it. Everything else lifts
@@ -68,8 +68,11 @@
  *      bird at visible ink within 2s of landing, no empty-sky gap over 40s of
  *      the page's own clock, no bird box within 8px of a viewport edge while
  *      it is visible, never more than three far birds at once; and on the
- *      ground, no roamer further than 30px from where it was drawn, with the
- *      doe's computed transform agreeing with the log that claims it.
+ *      ground, no roamer further from where it was drawn than the range it
+ *      declares on its own group (data-range, which the runtime's clamps
+ *      read back), with the doe's computed transform agreeing with the log
+ *      that claims it. The drawn offset is held against the declaration at
+ *      EVERY seat, not only at the seat the sit runs at.
  *
  * SHOWN RED BEFORE GREEN, each on a temp copy of out/ (never on out/ itself),
  * with `--root <dir>`:
@@ -104,32 +107,58 @@
  * Check 8, on the build of 7e8d916 (the leaf masks three sheets square):
  *   · (8) fails on all four moving masks at 1456x949, mC1 278x, mC2 112x,
  *     mS1 711x, mS2 1278x; the builder's own box measures 1.44x
- * Round 13, the sun behind the range. TODO(labrat): run each of these on a
- * temp copy of out/ and record the measured line here, the way every entry
- * above records one. Written by the author of the checks, who cannot run
- * them:
- *   · `.dawnscape .ds-tuft{stroke:var(--sun-g)}` added → (4) fails, two
- *     rules name --sun-g
- *   · the sun's rule reselected to `.dawnscape .ds-ink` → (4) fails, the
- *     light's colour on another selector
- *   · `--sun-g` deleted from `:root[data-night]` → check-palette fails: the
- *     day ochre measures 2.88:1 on #43372f, under the 3.0 graphic floor
- *   · class "ds-sun" put on one grass blade in `tuft()` → (1) fails,
- *     a path wearing .ds-sun outside the sun's groups
- *   · the `inLight` term dropped from `skyPiece` → (1) fails, an etched sky
- *     line inside the crown's clearing (it draws straight through the disc)
- *   · the `inLight` term dropped from `cut` → (1) fails on the phone, where
- *     the band's haze runs under the disc
- *   · `"ds-rays"` removed from PERIOD → the builder throws at live(), the
- *     scape never publishes and (1) fails with no drawing
+ * Round 13, the sun behind the range. Run by labrat on 2026-09-26 against
+ * r13/merge at 51b6691, each on a temp copy of out/, with the measured line
+ * recorded here; the positive controls (check-palette and check-figures on
+ * the unmodified copies) exit 0:
+ *   · `.dawnscape .ds-tuft{stroke:var(--sun-g)}` added → (4) fails: "--sun-g
+ *     is named by 2 .dawnscape rules — it is the sun's colour and it gets
+ *     exactly one selector"
+ *   · the sun's rule reselected to `.dawnscape .ds-ink` → (4) fails:
+ *     "--sun-g is drawn by ".dawnscape .ds-ink" — only ".dawnscape .ds-sun"
+ *     may carry the light's colour"
+ *   · `--sun-g` deleted from `:root[data-night]` → check-palette fails: a
+ *     figure stroke in --sun-g draws at 2.88:1 / Lc 27.0 on the night field
+ *     #43372f, under the 3:1 graphic floor — the 2.88 the author predicted
+ *   · class "ds-sun" put on one grass blade in `tuft()` → (1) fails at
+ *     1456×949: "17 path(s) wear .ds-sun outside the sun's own groups"
+ *   · the `inLight` term dropped from `skyPiece` → (1) fails at 1456×949:
+ *     "ds-back stands 87.5px from the sun", of the crown's 122px clearing
+ *   · the `inLight` term dropped from `cut` → (1) fails at 390×844:
+ *     "ds-vale stands 29.5px from the sun", of a 56px clearing — on the
+ *     phone, as predicted
+ *   · `"ds-rays"` removed from PERIOD → red, but BY CRASH and not by the
+ *     intended message: the builder throws at live(), the scape never
+ *     publishes, and check 7 then dies in page.evaluate reading `faces` of
+ *     undefined, which hid the rest of the seat. Guarded in 05450ca; the
+ *     probe is owed again on a build that carries the guard
  *   · `--amp` raised on `.ds-rays` from 1.4deg to 6deg without re-breaking
- *     the rays → (1) fails at 1280x720, where the crown's margin over the
- *     run state's halo is 4.5px and 6deg buys about 11px of travel
- *   · the same on `.ds-rays2`, whose --amp is NEGATIVE (-1deg → -6deg) →
- *     (1) fails too. This one is the probe for the check's own arithmetic
- *     rather than for the drawing: a signed tangent would have made the
- *     second crown group's clearance requirement smaller the faster it
- *     turned, and nothing else here would have noticed
+ *     the rays → (1) fails, but NOT at the seat the author predicted: at
+ *     1280×720 the crown clears by 2.4px (33.3px of the 30.9px owed) and
+ *     6deg is not enough. It fires at 1375×800 (31.4 of 33.7), 1165×759
+ *     (31.1 of 32.4) and 1366×768 (32 of 32.5); at 1280×720 it takes 12deg
+ *     (33.3 of 38) or 24deg (33.3 of 53.3)
+ *   · the same on `.ds-rays2`, whose --amp is NEGATIVE: -1deg → -6deg is
+ *     SILENT at all sixteen seats, and -12deg is the one that fires, at
+ *     1280×720 ("#mast .state" is 36px from ds-rays2 and needs 36.5px);
+ *     -24deg needs 50.1px. So the probe does what it was written for — the
+ *     check's Math.abs on --amp (below) is sound for the group that turns
+ *     the other way — at twice the author's amplitude. A signed tangent
+ *     would have made that group's clearance requirement SMALLER the faster
+ *     it turned, and nothing else here would have noticed
+ * Round 14:
+ *   · the graze head's `getAnimations()[0].currentTime` forced to 0.4·9700
+ *     before MEASURE at 1456×949: the doe's live box top drops about 11px,
+ *     which moved the meadow rule's own third by 3.4px. The declared height
+ *     (scape.doeH) does not move, which is why the check reads it now
+ *   · a tuft raised to `doeH/3 + 8` → the meadow check fails
+ *   · the phone pair declared range 12 with the hop still clamped at the
+ *     old literal 30 → the per-seat roamer check fails at 390×844
+ *   · the mirror reverted in `shadowFoot` → the cast-shadow check fails on
+ *     every tuft west of the sun
+ *   · each petal emitted as its own `.ds-leaf.airborne` → the sit's
+ *     "never two leaves in the air" fails
+ *   · a blossom radius of 0.6 → the blossom floor fails
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -521,16 +550,41 @@ try {
     const decl = (scape && scape.census) || [];
     /* the meadow at the cast's scale: no tuft rises above a third of the
        doe, measured from its own base to its bbox top against her height
-       from the ground line to her ears (4px for the hand and the sway) */
-    const deerEl = svg.querySelector(".ds-deer");
-    const doeH =
-      deerEl && scape ? scape.hz - deerEl.getBoundingClientRect().top : 0;
+       from the ground line to her ears (4px for the hand and the sway).
+       HER HEIGHT IS THE BUILDER'S DECLARATION, not her live box: the graze
+       dips her head 38°, which drops her box top by about 11px at the
+       bottom of the cycle and tightened this rule by 3.4px at his seat
+       while she ate. A gate that moves with the pose it measures is a
+       flake waiting for a slow frame. */
+    const doeH = (scape && scape.doeH) || 0;
     const meadow = [...svg.querySelectorAll(".ds-tuft[data-y]")]
       .map((el) => ({
         x: +el.dataset.x,
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* EVERY DECLARED ROAMER, AT EVERY SEAT: drawn no further from home than
+       the range it declares. The sky sit holds this too (below), but only
+       at his own seat and only for a creature something moved in the sit —
+       a phone roamer is never stepped there, so the phone's own declaration
+       was unheld until this round wrote one. */
+    const strayed = [...svg.querySelectorAll("[data-range]")]
+      .map((el) => {
+        const n = (el.style.transform || "")
+          .replace(/^translate\(/, "")
+          .split(",")
+          .map(parseFloat);
+        return {
+          id:
+            el.dataset.id ||
+            el.className.baseVal.split(" ")[0].replace("ds-", ""),
+          shown: +Math.abs(
+            (el.dataset.axis === "y" ? n[1] : n[0]) || 0
+          ).toFixed(1),
+          range: +el.dataset.range,
+        };
+      })
+      .filter((q) => q.shown > q.range + 0.6);
     const anims = document
       .getAnimations()
       .filter(
@@ -918,6 +972,7 @@ try {
       tops: tops.map(([n, t]) => [n, +t.toFixed(1)]),
       doeH: +doeH.toFixed(1),
       meadow,
+      strayed,
       hullCover,
       layerCover,
       youngShare,
@@ -1025,7 +1080,11 @@ try {
         );
       if (m.meadow.length)
         fail(
-          `${seat}: grass taller than a third of the doe (${m.doeH}px) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+          `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+        );
+      if (m.strayed && m.strayed.length)
+        fail(
+          `${seat}: ${m.strayed.map((q) => `${q.id} is drawn ${q.shown}px from home, range ±${q.range}px`).join(", ")} — a roamer is drawn inside the range it declares`
         );
       /* 6 · the range's rules, the canopies, and the masks that remain */
       if (m.p2) {

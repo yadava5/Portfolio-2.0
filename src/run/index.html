@@ -8496,6 +8496,13 @@ function* drawDawnscape() {
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
   const tall = !narrow;
+  /* THE HOME RANGE, DECLARED ONCE. Every roamer wears it as data-range, the
+     gates read it there, the runtime clamps read it back off the element,
+     and the cast is set down clear of the words with it. It used to be the
+     literal 30 in five places, three of them in code the builder cannot
+     see, so the drawn range and the declared range could drift apart
+     silently. */
+  const HOME = 30;
   /* THE BOARD'S SEAT, read before anything is drawn, because the sun sits ON
      it and the clearing is measured FROM the sun. The phone's band is seated
      from measured chrome much later, so its sun is seated there. */
@@ -8562,7 +8569,7 @@ function* drawDawnscape() {
      band too short to carry the principal) would otherwise publish the
      previous seat's, and the field's glow and the birds' avoid region would
      both be keeping off a sun that is not on the page. */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
@@ -9530,10 +9537,18 @@ function* drawDawnscape() {
   }
   const doe = (x) => {
     const k = 0.95 * vs;
+    /* HER HEIGHT IS DECLARED, NOT MEASURED. The meadow's scale rule is "no
+       blade over a third of the doe", and the gate read her LIVE bounding
+       box for that third — which the graze dips 38° at the bottom of her
+       cycle, dropping her box top by about 11px and tightening the rule on
+       the grass by 3.4px at his seat while she ate. Her ear tip stands
+       68.5 of her own units over the ground line and her feet are 1 under
+       it, so her height is arithmetic, at whatever scale she is drawn. */
+    SCAPE.doeH = +(68.5 * k - 1).toFixed(1);
     const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] });
     /* her shadow, three raked strokes at her feet */
     const sh = hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
-    return `<g class="ds-deer" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
   };
   /* ————— the fawn: the doe's own silhouette at two thirds, mirrored to face
      her, its legs four units too long (the fawn's tell), two cut-dots on
@@ -9542,7 +9557,7 @@ function* drawDawnscape() {
     const k = 0.62 * vs;
     const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4);
     const sh = hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
-    return `<g class="ds-fawn" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
   };
 
   /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
@@ -9574,7 +9589,7 @@ function* drawDawnscape() {
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
     reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6 });
-    return `<g class="ds-hare" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+    return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px"><path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
       `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${sh}${P(td, "ds-ink w1", 2)}</g>`;
   };
 
@@ -9595,7 +9610,7 @@ function* drawDawnscape() {
     /* the peck turns the head down toward the beak's side, so its sign is
        the bird's facing; its phase is random so the two never peck together */
     const ph = `--ph:${(-r() * 5).toFixed(2)}s;--pk:${dir > 0 ? -52 : 52}deg`;
-    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
+    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
       `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${live(cls)}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
@@ -9706,7 +9721,7 @@ function* drawDawnscape() {
     fills.push([x, y - 10 * k, 14 * k]);
     nS += 2;
     groups += 2;
-    return `<g class="ds-squirrel" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px">` +
+    return `<g class="ds-squirrel" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">` +
       `<g class="ds-tail ${live("squirrel-tail")}" style="transform-origin:${J([7, -7.5])};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" fill-rule="evenodd" d="${td}"/></g>` +
       `<path class="ds-fill" d="${path(wob(body, 0.15))}Z"/></g>`;
   };
@@ -9933,7 +9948,7 @@ function* drawDawnscape() {
        a gull or the hare whose box, 30px either way, would enter a word's
        halo is set down further west, 8px at a time (at 1024×768 the walking
        gull strayed into "run 043"'s bay) */
-    const clearOfWords = (x, y, hw, h) => { let gx = x; for (let i = 0; i < 24 && words.some(([l, t, rt, bt]) => gx + hw + 30 > l && gx - hw - 30 < rt && y + 4 > t && y - h - 2 < bt); i++) gx -= 8; return gx; };
+    const clearOfWords = (x, y, hw, h) => { let gx = x; for (let i = 0; i < 24 && words.some(([l, t, rt, bt]) => gx + hw + HOME > l && gx - hw - HOME < rt && y + 4 > t && y - h - 2 < bt); i++) gx -= 8; return gx; };
     const gk = 1.15 * Math.max(vs, 0.7);
     near += gull(clearOfWords(X(0.55), Y(0.875), 15 * gk, 13 * gk), Y(0.875), -1, "peck-a", "a");
     near += gull(clearOfWords(X(0.72), Y(0.885), 15 * gk, 13 * gk), Y(0.885), 1, "peck-b", "b");
@@ -10108,7 +10123,7 @@ function* drawDawnscape() {
   SCAPE.roamers = {};
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
-  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers,
+  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
     paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
@@ -10761,17 +10776,18 @@ function owlArrive() {
 
 /* ····· the squirrel's darts ·····
    Stop-start along its limb: 20–40px in 400–700ms, then frozen, every
-   15–40s, within ±30px of where it was drawn, logged like every roamer. */
+   15–40s, within its declared home range of where it was drawn, logged like every roamer. */
 /* the den: a dart to the trunk end of the limb, then into the hollow,
    gone for 20–60s, out again where it went in */
 function den(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
   if (!el || el.classList.contains("denned")) return;
   const off = roam.squirrel || 0;
-  const dx = -30 - off;
+  const range = homeRange(el);
+  const dx = -range - off;
   if (Math.abs(dx) > 0.5) logGround("squirrel", dx);
   el.style.transition = "transform 520ms cubic-bezier(.2,.8,.3,1)";
-  el.style.transform = "translate(-30px, 0)";
+  el.style.transform = `translate(${-range}px, 0)`;
   setTimeout(() => {
     el.classList.add("denned");
     (window.__world.den = window.__world.den || { entries: 0, exits: 0, inside: 0 }).entries++;
@@ -10805,9 +10821,10 @@ function dart(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
   if (!el || el.classList.contains("denned")) return;
   const off = roam.squirrel || 0;
+  const range = homeRange(el);
   let dir = r() < 0.5 ? -1 : 1;
-  if (Math.abs(off) > 20) dir = off > 0 ? -1 : 1;
-  const dx = clamp(dir * (20 + r() * 20), -30 - off, 30 - off);
+  if (Math.abs(off) > (range * 2) / 3) dir = off > 0 ? -1 : 1;
+  const dx = clamp(dir * (20 + r() * 20), -range - off, range - off);
   logGround("squirrel", dx);
   el.style.transition = `transform ${(400 + r() * 300).toFixed(0)}ms cubic-bezier(.2,.8,.3,1)`;
   el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
@@ -10972,12 +10989,17 @@ function shedNow(x0, y0, env, r) {
    the same way, smaller: 3–5px, two to four of them; the fawn skitters two
    hops, never within 6s of a doe step. The doe grazes continuously (her
    head group dips at the neck on its own clock, see the wind) and, rarer,
-   takes a step or two of 10–14px, only while she is looking up. Every roamer stays within 30px
-   of where it was drawn, and every move is logged to window.__world.ground
+   takes a step or two of 10–14px, only while she is looking up. Every roamer
+   stays inside the range it declares on its own group (data-range, read back
+   by homeRange), and every move is logged to window.__world.ground
    so a gate can hold the range in the author's own frame. Nothing here is a
    continuous animation: it is event JS setting a translate the CSS
    transitions. No two ground events within 12s of each other. */
 const roam = {};
+/* the range is the builder's, written on the group it belongs to: every
+   clamp below reads it back off the element rather than repeating it, so a
+   creature that declares one range to the gates cannot walk another */
+const homeRange = (el) => (el && +el.dataset.range) || 30;
 function logGround(id, dx) {
   roam[id] = (roam[id] || 0) + dx;
   (window.__world.ground = window.__world.ground || []).push({ id, dx: +dx.toFixed(1), x_off: +roam[id].toFixed(1) });
@@ -10985,13 +11007,14 @@ function logGround(id, dx) {
 /* a hop-walk: `el` translates, `size` is the hop, `lift` the height */
 function hopWalk(el, id, r, hops, size, lift, ms0) {
   if (!el) return;
+  const range = homeRange(el);
   let k = 0;
   const hop = () => {
     if (k++ >= hops) return;
     const off = roam[id] || 0;
     let dir = r() < 0.5 ? -1 : 1;
-    if (Math.abs(off) > 15) dir = off > 0 ? -1 : 1;
-    const dx = clamp(dir * (size[0] + r() * (size[1] - size[0])), -30 - off, 30 - off);
+    if (Math.abs(off) > range / 2) dir = off > 0 ? -1 : 1;
+    const dx = clamp(dir * (size[0] + r() * (size[1] - size[0])), -range - off, range - off);
     logGround(id, dx);
     const ms = ms0 + r() * 80;
     el.style.transition = `transform ${(ms / 2).toFixed(0)}ms ease-out`;
@@ -11019,14 +11042,15 @@ function deerStep(r) {
 }
 function doeSteps(el, r) {
   const steps = r() < 0.6 ? 1 : 2;
+  const range = homeRange(el);
   const off0 = roam.deer || 0;
   let dir = r() < 0.5 ? -1 : 1;
-  if (Math.abs(off0) > 15) dir = off0 > 0 ? -1 : 1;
+  if (Math.abs(off0) > range / 2) dir = off0 > 0 ? -1 : 1;
   let k = 0;
   const step = () => {
     if (k++ >= steps) return;
     const off = roam.deer || 0;
-    const dx = clamp(dir * (10 + r() * 4), -30 - off, 30 - off);
+    const dx = clamp(dir * (10 + r() * 4), -range - off, range - off);
     logGround("deer", dx);
     el.style.transition = "transform 800ms ease-in-out";
     el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, -1px)`;
