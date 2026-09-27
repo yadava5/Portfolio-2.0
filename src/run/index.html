@@ -1818,10 +1818,11 @@ if (location.hash.length > 1) {
   .litany .mline p em{font-style:normal; color:var(--clay)}
   .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
   .litany .mline .rct a{color:var(--pine)}
-  /* --gtc  the text column · --gpx the press's centre · --grh the row's height.
-     All three are read by calc() in the rules below, so the phone re-seats the
+  /* --gtc  the text column · --gpx the press's centre · --grh the row's height
+     · --gjy the track's y inside a row, which is where the rail meets it.
+     All four are read by calc() in the rules below, so the phone re-seats the
      whole drawing by writing two numbers instead of re-authoring it. */
-  .gates{--gtc:230px; --gpx:72px; --grh:84px;
+  .gates{--gtc:230px; --gpx:72px; --grh:84px; --gjy:72px;
     font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
   /* 1px --ink, not a hairline: the head is the plate's own top rule and the
      three beds below it are the same weight of statement. */
@@ -1843,6 +1844,27 @@ if (location.hash.length > 1) {
      scan's scope below, which is written where the next rule is safe. */
   .gates .grow{position:relative; padding:0;
     border-bottom:1px solid var(--hair)}
+
+  /* ————— the junction markers, .gj and .sj —————
+     ROUND 14 RUNS THE DAY'S RAIL DOWN BOTH NIGHT PLATES, and a junction is a
+     MEASUREMENT before it is ever a drawing: `seatFigures()` reads each
+     marker's own layout top, asks the rail where it is at that y, and writes
+     the row's `--jx`. Phase A stops there — nothing is stroked yet.
+
+     They carry no ink, no words and no accessible content. Zero width so
+     they cannot widen a row, and out of flow so they cannot add one: .srow
+     is a grid and an in-flow third child there would have grown ¶11's plate
+     and, with it, the station the rail's whole geometry is measured against.
+
+     --gjy is the track's y inside the row, declared with the other three
+     numbers above. Phase A's row is 84px tall and Phase B's is 112; the
+     number stays the TRACK's, so the junction moves with the drawing rather
+     than with an edit here. */
+  .gates .grow .gj{position:absolute; left:0; width:0; height:1.4px;
+    top:calc(var(--gjy) - .7px)}
+  .signs .srow{position:relative}
+  .signs .srow .sj{position:absolute; left:0; width:0; height:1.4px;
+    top:calc(50% - .7px)}
 
   /* ————— fig. 10's drawing: .gbench — three presses on one level —————
      A gate is a press and a verdict is a stamp, so the drawing is the press:
@@ -3755,13 +3777,13 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                order they stack in, back to front. -->
           <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate · Applied</span>
             <span class="gwhy">1 wrong in 96, above the 0.95 floor</span>
-            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span></span></div>
+            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span></span><i class="gj" aria-hidden="true"></i></div>
           <div class="grow gbench declined" data-g="1"><span class="gname">quote check · PolicyBot</span>
             <span class="gwhy">1 of 20 answers went past its sources</span>
-            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">caught</span></span></span></div>
+            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">caught</span></span></span><i class="gj" aria-hidden="true"></i></div>
           <div class="grow gbench declined" data-g="2"><span class="gname">measured again · Glyph</span>
             <span class="gwhy">a variance claim I had never measured</span>
-            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">retracted</span></span></span></div>
+            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">retracted</span></span></span><i class="gj" aria-hidden="true"></i></div>
           <p class="gclose">the next stop is a person.</p>
         </div>
         <figcaption>fig. 10 · three checks on my own work: one passed, two said no.</figcaption>
@@ -3769,13 +3791,28 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:32 · the references -->
-  <section id="cosigners" class="beat station bsign" data-beat="10">
+  <!-- ¶ 11 · 22:32 · the references
+
+       THIS STATION FLIPS, and ¶10 is the reason. The owner: "10, and 11
+       station, both have figures on right side". Two figure plates on the
+       same side in consecutive stops is the alternation breaking at the one
+       place the reader is most tired, and the rail has to cross the whole
+       page twice to visit both. ¶10 keeps the right, ¶11 takes the left.
+       NOT ¶10, and that was measured rather than chosen: ¶12 already puts
+       its object — the timetable, the rail's lane and the socket — on the
+       LEFT with its words on the right, so flipping ¶10 would put ¶09 and
+       ¶10 both on the left and move the collision one stop up. ¶11 on the
+       left hands the rail straight down the same column ¶12 ends in, which
+       is the route round 14 is built on: the line leaves fig. 10, crosses
+       the gutter once, and arrives already on the dock's own x.
+       The prose keeps every word; only the fx x signs mirror, the way ¶09's
+       do on its own flip. -->
+  <section id="cosigners" class="beat station flip bsign" data-beat="10">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
-        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">My internship manager, and my teammate on Glyph and the capstone.</p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x 6 | out .96 1.06 y -4 | drift 16">My internship manager, and my teammate on Glyph and the capstone.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
           <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
@@ -3789,16 +3826,18 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on LinkedIn, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/" target="_blank" rel="noopener">the recommendations, in full &#8599;</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <div class="signs">
+      <figure class="plate" data-fx="in .04 .44 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+        <div class="signs" id="signsFig">
           <div class="shead"><span>the references</span></div>
           <div class="srow">
             <span class="sname">Randall Vollen</span>
             <span class="srole">his manager, station 03</span>
+            <i class="sj" aria-hidden="true"></i>
           </div>
           <div class="srow">
             <span class="sname">Shree Chaturvedi</span>
             <span class="srole">teammate, stations 06 and 09</span>
+            <i class="sj" aria-hidden="true"></i>
           </div>
         </div>
         <figcaption>fig. 11 · each reference sits beside the station that person worked on.</figcaption>
@@ -4517,6 +4556,7 @@ const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 window.__rail = () => samples; /* probe hook: G10 reads the rail's shape off the real path */
 let pathLen = 0, gatePageY = 0, dockX = 0;
+let railAnchorX = [];          /* px per beat — buildThread's own x, for the seating pass */
 /* run 042 owns beats 0..11; ¶13 is the next run's first light */
 const RUN_BEATS = 12;
 /* how far into ¶13 the morning has fully arrived. The station is 300vh and
@@ -4574,10 +4614,29 @@ function sizeThread() {
 function buildThread() {
   /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
      glyph(N), jetpack(F), lifequest(N), automl(F), the review(N),
-     the co-signers(N), gate. Normal stations keep the thread by the prose
-     margin; flips cross it. The last two x's walk IN toward the ladder
-     column — 30 → 27 → 24 — so the line arrives at the gate along the
-     margin, never slashing across the ledger card.
+     the co-signers(F), gate. Normal stations keep the thread by the prose
+     margin; flips cross it.
+
+     THE LAST THREE X'S ARE NO LONGER PERCENTAGES, and the reason is the
+     round-14 route. The old tail walked IN toward the ladder column — 30 →
+     27 → 24 — which kept the line off ¶12's ledger card but left it running
+     down the empty middle of ¶10 and ¶11, beside two figures it had nothing
+     to do with. It now runs THROUGH them:
+
+       ¶10 · the line comes down fig. 10's own spine, SPINE_IN inside the
+             plate, and the three checks meet it as tracks.
+       ¶11 · the line is already on the dock's x when it enters the flipped
+             station, so fig. 11's two branches arrive on the same lane the
+             gate ends in and the corridor into ¶12 is straight.
+
+     Both are MEASURED off the plates, not declared as a fraction of the
+     viewport, because `beat-inner` caps at 1180px: a percentage holds its
+     distance from the window's edge while the plate holds the column's, so
+     the two drift apart by half of everything over 1180 and the spine was
+     never on the spine at a wide seat. The percentages stay for every
+     station above, where the line's job is to keep clear of the prose.
+     A side effect worth the ink: the widest swing in the tail drops, since
+     ¶11 and ¶12 now share one x instead of stepping 27 → 24.
 
      One entry per beat, and that is load-bearing: this array is indexed by
      beat, so a short one makes stx[last] undefined, every anchor NaN from
@@ -4637,8 +4696,22 @@ function buildThread() {
             absTop(npEl) + npEl.offsetHeight * 0.12,
             absTop(npEl) + npEl.offsetHeight * 0.75)
     : beats[0].top + beats[0].h * 0.42;
-  const beatX = (i) =>
-    mobile ? RAIL_X_MOBILE : i === RUN_BEATS - 1 ? dockX : (stx[i] / 100) * vw;
+  /* px inside fig. 10's plate. The knob is 48–96: below 48 the spine sits on
+     the plate's own left edge and reads as a border, above 96 the row text
+     that starts 44px right of it loses its column. G10c measures the
+     clearance between the line and every text box in both plates, and this
+     is the number it moves. */
+  const SPINE_IN = 56;
+  const gatesPlate = $("gatesFig")?.closest("figure");
+  /* every seat but the phone asks where THIS beat's line runs; the phone has
+     one lane for the whole run and nothing to negotiate with */
+  const deskX = (i) =>
+    i === RUN_BEATS - 1 || i === 10
+      ? dockX /* ¶11 rides the dock's own line into ¶12 */
+      : i === 9 && !stacked && gatesPlate
+        ? absLeft(gatesPlate) + SPINE_IN /* ¶10 rides fig. 10's spine */
+        : (stx[i] / 100) * vw;
+  const beatX = (i) => (mobile ? RAIL_X_MOBILE : deskX(i));
   const anchors = [];
   anchors.push([beatX(0), mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
   for (let i = 0; i < RUN_BEATS; i++) {
@@ -4713,8 +4786,18 @@ function buildThread() {
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
   pathLen = L;
+  /* THE ANCHORS ARE PUBLISHED, not recomputed downstream. seatFigures needs
+     the exact x this pass used, and two places deriving it from the layout
+     is how the figure and the line come to disagree at one seat and agree at
+     every other — the class of defect ¶12's dock spent three rounds on. */
+  railAnchorX = Array.from({ length: RUN_BEATS }, (_, i) => beatX(i));
+  window.__world.railAnchors = railAnchorX.map((x, i) => ({ i, x: +x.toFixed(1) })); /* probe hook */
   sizeThread();
   refreshInk();
+  /* the rail moved, so the two night plates re-seat on it. Here rather than
+     at the six call sites: every one of them wants it, including the dock
+     watchdog's rebuild, and a seventh caller added later would not know. */
+  seatFigures();
 }
 
 /* ————— the halt ring —————
@@ -4783,6 +4866,17 @@ function lenAtY(y) {
   const i = idxAtY(y), a = samples[i], b = samples[i + 1];
   return lerp(a.L, b.L, b.y > a.y ? (y - a.y) / (b.y - a.y) : 0);
 }
+/* the rail's x at a page y — what a junction has to reach. lenAtY's
+   interpolation on the other axis; samples are STEP px apart, so the lerp
+   between two of them IS the path rather than an approximation of it. */
+function xAtY(y) {
+  if (!samples.length) return 0;
+  const last = samples[samples.length - 1];
+  if (y <= samples[0].y) return samples[0].x;
+  if (y >= last.y) return last.x;
+  const i = idxAtY(y), a = samples[i], b = samples[i + 1];
+  return lerp(a.x, b.x, b.y > a.y ? (y - a.y) / (b.y - a.y) : 0);
+}
 function pointAtLen(L) {
   L = clamp(L, 0, pathLen);
   let lo = 0, hi = samples.length - 1;
@@ -4790,6 +4884,63 @@ function pointAtLen(L) {
   const a = samples[lo], b = samples[hi];
   const t = b.L > a.L ? (L - a.L) / (b.L - a.L) : 0;
   return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
+}
+
+/* ————— seating the two night plates on the rail —————
+   ROUND 14'S ROUTE IS ONLY HALF IN buildThread. The line now runs down fig.
+   10's spine and fig. 11's dock lane, and the half that makes that read
+   rather than collide is the figure knowing where the line is: `--spx` is
+   the spine's x INSIDE the plate, and `--jx` is where the rail actually is
+   at each junction's own y, wobble included.
+
+   IT IS A MEASUREMENT AT EVERY SEAT, not two authored editions. The spine is
+   56px inside fig. 10's plate on a wide seat, about 230 inside fig. 11's
+   (the socket's x falls in the flipped station's left column), and negative
+   on the phone, where the lane is 26px and the plate starts further in. One
+   derivation covers all three, and it is `railAnchorX` — the x buildThread
+   itself used, never re-derived here.
+
+   LAYOUT SPACE, never a client rect. Both plates carry an entrance
+   transform, and a junction measured mid-flight bakes that frame's translate
+   into the geometry until something happens to rebuild it. Same reason ¶12's
+   dock is read with absTop.
+
+   PHASE A DRAWS NOTHING, and `stubX` is published null rather than echoed
+   back from `railX` for a reason: a record that agrees with itself by
+   construction is a gate that cannot fail, and G10d's whole job is to catch
+   a stub that has drifted off the line. It has to recompute the rail's x
+   from `__rail()` at the junction's y and compare THAT to the drawn path. */
+const RAILLESS = () => RM;   /* Tier 0 (§13) adds `|| beat === 9` here, and nowhere else */
+/* the caches the scrubs read: one entry per junction, in row order */
+let J10 = [], J11 = [], EXIT11 = 0;
+function seatFigures() {
+  if (!samples.length || !beats.length) return;
+  const junctions = [];
+  const seat = (hostId, markSel, beat, fig) => {
+    const host = $(hostId), plate = host?.closest("figure");
+    if (!plate || railAnchorX[beat] === undefined) return [];
+    const px = absLeft(plate), spx = railAnchorX[beat] - px;
+    plate.style.setProperty("--spx", spx.toFixed(1) + "px");
+    plate.classList.toggle("railless", RAILLESS(beat));
+    /* the marker IS the track's seat, so the junction's y and the stub's y
+       are one number read once — offsetTop rounds, and two reads of the same
+       place rounding differently is the half pixel G10d would report. */
+    return [...host.querySelectorAll(markSel)].map((m, i) => {
+      const y = absTop(m) + m.offsetHeight / 2;
+      const railX = xAtY(y);
+      m.parentElement.style.setProperty("--jx", (railX - px).toFixed(1) + "px");
+      const rec = { fig, i, y: +y.toFixed(1), railX: +railX.toFixed(1),
+        spx: +spx.toFixed(1), stubX: null };
+      junctions.push(rec);
+      return rec;
+    });
+  };
+  J10 = seat("gatesFig", ".grow .gj", 9, 10);
+  J11 = seat("signsFig", ".srow .sj", 10, 11);
+  /* where the pages have left as the corridor-10 cargo */
+  EXIT11 = beats[10].top + beats[10].h * 0.74;
+  window.__world.junctions = junctions;      /* probe hook */
+  window.__world.exit11 = +EXIT11.toFixed(1);
 }
 
 /* travellers: freight ABOUT a station ARRIVES AT that station. A corridor
