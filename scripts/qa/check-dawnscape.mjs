@@ -208,6 +208,9 @@ const RANGE_PX = 30;
 const GRASS_CAP = 10;
 const PHONE_MAX = 8;
 const PATHS_FLOOR = 6;
+/* the smallest radius a blossom hole may be cut at: under 1.2 it is 2.4px
+   across, and a cut narrower than that is a device pixel at DPR 1 */
+const BLOSSOM_MIN = 1.2;
 /* the box a mask may carry over what it masks, when the two move together:
    the builder's is a tenth over each side, 1.44x */
 const MOVING_MASK_MAX = 2;
@@ -568,6 +571,15 @@ try {
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* THE BLOSSOM IS A HOLE, AND A HOLE UNDER A DEVICE PIXEL IS NOTHING.
+       The florets are cut out of each canopy's own mask, and they were
+       authored at r 0.6–0.9: 1.2 to 1.8px across, which at DPR 1 is under
+       one device pixel, so the spring tree the owner asked for carried
+       blossom nobody could see. Nothing cut into a leaf mask is smaller
+       than 1.2. (A pattern's dots are tone, not a cut, and are not here.) */
+    const florets = [...svg.querySelectorAll("defs mask circle")].map(
+      (c) => +c.getAttribute("r")
+    );
     /* 9 · A CAST MARK FALLS AWAY FROM THE LIGHT. Every mark that claims to
        be a shadow wears .ds-castshadow and the x of the thing that casts
        it, and its own centre must sit on the far side of that caster from
@@ -1001,6 +1013,8 @@ try {
       strayed,
       casts: casts.length,
       wrongSide,
+      florets: florets.length,
+      floretMin: florets.length ? Math.min(...florets) : null,
       hullCover,
       layerCover,
       youngShare,
@@ -1110,6 +1124,12 @@ try {
         fail(
           `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
         );
+      if (m.floretMin !== null && m.floretMin < BLOSSOM_MIN)
+        fail(
+          `${seat}: a floret is cut at r ${m.floretMin} (${(m.floretMin * 2).toFixed(1)}px across) — blossom under ${(BLOSSOM_MIN * 2).toFixed(1)}px is a hole nobody sees at DPR 1`
+        );
+      else if (m.florets)
+        note(`${seat}: ${m.florets} florets cut, smallest r ${m.floretMin}`);
       if (m.wrongSide && m.wrongSide.length)
         fail(
           `${seat}: ${m.wrongSide.length} of ${m.casts} cast mark(s) fall toward the light — ${m.wrongSide

@@ -1263,7 +1263,7 @@ if (location.hash.length > 1) {
   .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-bough, .dawnscape .ds-sap,
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
-  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
+  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape .ds-petal, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
   .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth,
   .dawnscape .ds-rays, .dawnscape .ds-rays2{transform-box:view-box}
   /* THE CROWN TURNS; THE DISC DOES NOT. The disc is arcs cut at the skyline,
@@ -8288,6 +8288,9 @@ function* drawDawnscape() {
     try { return fn(); } finally { rLent = null; }
   };
   const vs = clamp(W / 1500, 0.44, 1.2);
+  /* the pen's scale for what the transients draw at their own time (the
+     petals), published because they are built long after this build ran */
+  SCAPE.leafK = +Math.max(vs, 0.8).toFixed(3);
   const narrow = W < 760;
   const F = (v) => (Math.round(v * 10) / 10).toString();
   const X = (f) => W * f, Y = (f) => H * f;
@@ -8546,10 +8549,19 @@ function* drawDawnscape() {
   /* what is drawn in the tree's frame reads the keep-outs in that frame: at
      a narrow sheet the crown's froth reached the quote's air because its
      lobes were tested against words 22% away from where they are drawn */
+  let inTree = false;
   const inTreeFrame = (fn) => {
     const saved = keep.splice(0, keep.length, ...keep.map(([l, t, rt, bt]) => [tcx + (l - tcx) / TK, hz + (t - hz) / TK, tcx + (rt - tcx) / TK, hz + (bt - hz) / TK]));
-    try { return fn(); } finally { keep.splice(0, keep.length, ...saved); }
+    inTree = true;
+    try { return fn(); } finally { inTree = false; keep.splice(0, keep.length, ...saved); }
   };
+  /* WHERE THE LIGHT IS, IN THE FRAME BEING DRAWN IN. The great tree draws
+     inside its own transform, so a mark in it that asks which side of the
+     sun it stands on must ask in that frame: a screen x is 22% further
+     from the tree's axis there. The gate's clearance check records the
+     same trap — comparing raw path coordinates against the sun's screen
+     point was measuring board units against viewport pixels. */
+  const litX = () => (!sun ? null : inTree ? tcx + (sun.x - tcx) / TK : sun.x);
   /* THE CLEARING. The words' column, with the sky above it that the head of
      the station reads in, and the halo round the sun: density is zero inside
      and climbs to full 160px out. Every tick-field is thinned by it, so the
@@ -8767,8 +8779,16 @@ function* drawDawnscape() {
           layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [] });
         }
         const dots = [];
-        /* blossom: light on the lit tops, toward the sun, small */
-        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] - r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 0.6 + r() * 0.3]); }
+        /* BLOSSOM ON THE LIT TOPS, AND BIG ENOUGH TO SEE. These are holes
+           cut in the canopy's mask, and at r 0.6–0.9 they were 1.2 to
+           1.8px across: under a device pixel at DPR 1, so a spring tree's
+           blossom was authored and invisible. They are 2.6 to 3.6px now.
+           And the side they sit on follows the light instead of always
+           biasing west: a crown west of the sun wears its blossom on its
+           east face. Same count, same draws — only the numbers move. */
+        const lit = litX();
+        const bias = lit !== null && cx < lit ? 1 : -1;
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 1.3 + r() * 0.5]); }
         layerCuts.push({ cp: [], dots });
       }
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
@@ -10014,16 +10034,21 @@ function* drawDawnscape() {
     near += `<g class="ds-owl${owlHome ? " on" : ""}" data-x="${F(owlAt[0])}">${owlHome ? SCAPE.owlMarkup : ""}</g>`;
     near += solidTuft(X(0.83), Y(0.985), 13 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 14 * S3, 6, "", 0);
     near += solidTuft(X(0.962), hz, 21 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 24 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 19 * S3, 7, "", 0);
-    /* where a leaf may fall from and where it may land: the crown's left
-       half down the trunk's side, short of the sun's halo (the bough that
-       shed the rest is retired). The clearance gate holds the envelope
-       clear of every word. */
+    /* where the petals let go and where they may land. They used to let go
+       from INSIDE the crown's west half and come down the trunk's own side:
+       a 4px open outline is invisible both on a solid leaf mass and on 84°
+       bark hatch, and the solid leaf it replaces was invisible on the mass
+       for the same reason. The source is the crown's lower west rim now —
+       the underside of a cluster, where the paper below begins — so the
+       whole fall is read against bare paper. The envelope is unchanged,
+       still short of the sun's halo (the bough that shed the rest is
+       retired), and the clearance gate holds it clear of every word. */
     const floorUnder = (x0, x1, want) => {
       let f = want;
       for (const [l, t, rt] of words) if (rt > x0 && l < x1 && t - 2 < f) f = t - 2;
       return Math.max(hz + 8, f);
     };
-    const [sx0, sy0] = TT([X(0.05), Y(0.25)]), [sx1, sy1] = TT([X(0.16), Y(0.47)]), [ex0, ey0] = TT([X(0.02), Y(0.25)]), [ex1] = TT([X(0.19), 0]);
+    const [sx0, sy0] = TT([X(0.02), Y(0.50)]), [sx1, sy1] = TT([X(0.10), Y(0.56)]), [ex0, ey0] = TT([X(0.02), Y(0.25)]), [ex1] = TT([X(0.19), 0]);
     SCAPE.leaf = { crownSrc: [sx0, sy0, sx1, sy1], crownEnv: [ex0, ey0, ex1, floorUnder(ex0, ex1, hz + 42)] };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
@@ -10957,12 +10982,19 @@ function gustReactions() {
   gustTimer = setTimeout(gustReactions, 7300);
 }
 
-/* ····· the falling leaf ·····
-   A transient, not census: one leaf every 30 to 80 seconds, never two in
-   the air, from the crown's left half, falling three to five seconds with two or three swings and a
-   little drift east (the one wind), tumbling. Web Animations, not a CSS
-   animation, so the census stays exactly thirteen by construction. A leaf
-   that lands stays; the sixth on the ground fades while the next falls. */
+/* ····· the falling petals ·····
+   A transient, not census: one fall every 30 to 80 seconds, never two in
+   the air, from the crown's left half, five to eight seconds with three or
+   four swings and a little drift east (the one wind). Web Animations, not a
+   CSS animation, so the census stays exactly thirteen by construction. What
+   falls stays where it lands; the sixth on the ground fades while the next
+   one comes down.
+   IT WAS A LEAF, AND THE SHEET IS RULED SPRING. One solid dark leaf 7 to
+   10px across, tumbling end over end and piling up five deep, is the autumn
+   the owner rejected in the crowns. It is two or three blossom petals now,
+   drawn the way everything else here is drawn rather than stamped: closed
+   outlines, no fill, each within a few px of the group's own path and
+   turning on its own, so they drift apart as they come down. */
 let leafTimer = null, leafLive = null;
 const leaves = { shed: 0, landed: [] };
 function shedLeaf() {
@@ -10986,25 +11018,46 @@ function shedLeaf() {
   setTimeout(() => shedNow(x0, y0, env, r), wait);
 }
 function shedNow(x0, y0, env, r) {
+  const NS = "http://www.w3.org/2000/svg";
   const front = document.querySelector(".dawnscape .ds-front");
   if (!front) { leafLive = null; return; }
   const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
-  const swings = 2 + Math.floor(r() * 2), amp = 20 + r() * 20, drift = 10 + r() * 20;
-  const turns = (1.5 + r()) * 360 * (r() < 0.5 ? -1 : 1);
-  const s = 7 + r() * 3;
-  const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  el.setAttribute("class", "ds-fill ds-leaf airborne");
-  /* a pointed oval with one notch, drawn about its own centre */
-  el.setAttribute("d", `M0 ${(-s / 2).toFixed(1)} C${(s * 0.45).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(s * 0.45).toFixed(1)} ${(s * 0.3).toFixed(1)} 0 ${(s / 2).toFixed(1)}` +
-    ` C${(-s * 0.2).toFixed(1)} ${(s * 0.3).toFixed(1)} ${(-s * 0.45).toFixed(1)} ${(s * 0.12).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.04).toFixed(1)}` +
-    ` L${(-s * 0.12).toFixed(1)} 0 C${(-s * 0.4).toFixed(1)} ${(-s * 0.18).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.4).toFixed(1)} 0 ${(-s / 2).toFixed(1)}Z`);
+  const swings = 3 + Math.floor(r() * 2), amp = 14 + r() * 10, drift = 10 + r() * 20;
+  const k = SCAPE.leafK || 1;
+  /* ONE FALL, TWO OR THREE PETALS. The group carries the fall, so the
+     clearance envelope the gate holds is the one envelope it always was,
+     and the sit still counts one thing in the air. */
+  const el = document.createElementNS(NS, "g");
+  el.setAttribute("class", "ds-leaf airborne");
+  const spins = [];
+  for (let i = 0, n = 2 + Math.floor(r() * 2); i < n; i++) {
+    /* a teardrop about its own centre: a point at the top, a round base */
+    const L = (3.2 + r() * 1.4) * k, w = (2 + r() * 0.8) * k;
+    /* spaced round a small ring rather than scattered in a box: two petals
+       that land on the same 4px are one blob, and three petals are the
+       whole point of a blossom fall */
+    const a = (i / n) * 6.283 + r() * 1.1, rr = 3 + r() * 1.5;
+    const ox = Math.cos(a) * rr, oy = Math.sin(a) * rr;
+    const F1 = (v) => v.toFixed(1);
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("class", "ds-ink w1 ds-petal");
+    /* the control points are pushed out by four thirds: a cubic reaches
+       about three quarters of the way to its own handle, so a teardrop
+       drawn with handles at w/2 comes out a third narrower than the width
+       it claims — which is how these first measured 1.7px across */
+    p.setAttribute("d", `M${F1(ox)} ${F1(oy - L / 2)} C${F1(ox + w * 0.73)} ${F1(oy - L * 0.1)} ${F1(ox + w * 0.67)} ${F1(oy + L * 0.35)} ${F1(ox)} ${F1(oy + L / 2)}` +
+      ` C${F1(ox - w * 0.67)} ${F1(oy + L * 0.35)} ${F1(ox - w * 0.73)} ${F1(oy - L * 0.1)} ${F1(ox)} ${F1(oy - L / 2)}Z`);
+    p.style.transformOrigin = `${F1(ox)}px ${F1(oy)}px`;
+    el.appendChild(p);
+    spins.push([p, (0.7 + r() * 1.1) * 360 * (r() < 0.5 ? -1 : 1)]);
+  }
   const frames = [];
   const N = 14;
   for (let i = 0; i <= N; i++) {
     const t = i / N;
     const y = y0 + (yEnd - y0) * Math.pow(t, 1.15);
     const x = clamp(x0 + drift * t + amp * Math.sin(t * swings * 2 * Math.PI) * (1 - 0.3 * t), env[0] + 6, env[2] - 6);
-    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(turns * t).toFixed(1)}deg)` });
+    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)` });
   }
   front.appendChild(el);
   leafLive = el;
@@ -11016,8 +11069,14 @@ function shedNow(x0, y0, env, r) {
     old.classList.add("gone");
     setTimeout(() => old.remove(), at(2200));
   }
-  const anim = el.animate(frames, { duration: at(3000 + r() * 2000), easing: "ease-in-out", fill: "forwards" });
+  const ms = at(5000 + r() * 3000);
+  const anim = el.animate(frames, { duration: ms, easing: "ease-in-out", fill: "forwards" });
+  /* each petal turns on its own, finite and committed where it lands: a
+     petal still spinning on the grass is a petal nobody dropped */
+  const turns = spins.map(([p, deg]) =>
+    p.animate([{ transform: "rotate(0)" }, { transform: `rotate(${deg.toFixed(0)}deg)` }], { duration: ms, easing: "linear", fill: "forwards" }));
   anim.onfinish = () => {
+    for (const t of turns) { t.commitStyles(); t.cancel(); }
     anim.commitStyles();
     anim.cancel();
     el.classList.remove("airborne");
