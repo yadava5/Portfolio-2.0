@@ -335,3 +335,77 @@ test.describe("7.4 · the replay control stops lying about being hidden", () => 
     await expect(replay).toBeVisible();
   });
 });
+
+test.describe("r13 · a date never breaks, and never leaves its column", () => {
+  /* Every date and date range on the run sits in a `.nw` span
+     (white-space:nowrap), a leading "·" included, so a line breaks before
+     the date and never inside it. Nowrap has a cost the class alone cannot
+     see: a date that cannot break can run out of its column instead. So
+     each `.nw` is held to both halves, at the three seats the copy was
+     fitted to: exactly one line box, and a right edge inside its
+     container's content box.
+
+     Proven red on a temp copy of out/ (never the served one) with a planted
+     long `.nw` in ¶03's provenance line: it overflowed at 390 with the rule
+     in place, and broke onto two lines with the rule removed. */
+  const SEATS = [
+    { width: 390, height: 844 },
+    { width: 1024, height: 768 },
+    { width: 1456, height: 949 },
+  ];
+  /* Measured 2026-09-26: thirteen dates on the run. A floor rather than an
+     equality, so adding a date needs no edit here, and a selector that
+     silently stops matching cannot pass on an empty set. */
+  const FLOOR = 13;
+  for (const seat of SEATS) {
+    test(`every .nw is one line inside its box at ${seat.width}×${seat.height}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(seat);
+      /* reduced motion, so every block is at its settled geometry rather
+         than mid-entrance */
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto("/");
+      await expect(page.locator("body")).toHaveClass(/\bsettled\b/);
+      await page.evaluate(() => document.fonts.ready);
+
+      const found = await page.evaluate(() => {
+        const out: { text: string; lines: number; over: number }[] = [];
+        for (const el of document.querySelectorAll<HTMLElement>("main .nw")) {
+          const rects = [...el.getClientRects()].filter((r) => r.width > 0);
+          if (!rects.length) continue; /* not rendered at this seat */
+          let box: HTMLElement | null = el.parentElement;
+          while (box && getComputedStyle(box).display.startsWith("inline"))
+            box = box.parentElement;
+          if (!box) continue;
+          const cs = getComputedStyle(box);
+          const b = box.getBoundingClientRect();
+          const contentRight =
+            b.right -
+            parseFloat(cs.borderRightWidth) -
+            parseFloat(cs.paddingRight);
+          const right = Math.max(...rects.map((r) => r.right));
+          out.push({
+            text: (el.textContent ?? "").trim(),
+            lines: new Set(rects.map((r) => Math.round(r.top))).size,
+            over: Math.round((right - contentRight) * 10) / 10,
+          });
+        }
+        return out;
+      });
+
+      expect(
+        found.length,
+        `read ${found.length} rendered .nw dates, floor ${FLOOR}: a broken selector would pass on nothing`
+      ).toBeGreaterThanOrEqual(FLOOR);
+      expect(
+        found
+          .filter((d) => d.lines !== 1 || d.over > 0.5)
+          .map(
+            (d) => `"${d.text}": ${d.lines} line(s), ${d.over}px past its box`
+          ),
+        "a date must be one line box and end inside its container"
+      ).toEqual([]);
+    });
+  }
+});
