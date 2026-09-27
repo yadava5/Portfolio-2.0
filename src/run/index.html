@@ -4699,8 +4699,8 @@ function buildThread() {
   /* px inside fig. 10's plate. The knob is 48–96: below 48 the spine sits on
      the plate's own left edge and reads as a border, above 96 the row text
      that starts 44px right of it loses its column. G10c measures the
-     clearance between the line and every text box in both plates, and this
-     is the number it moves. */
+     clearance between the line and every line of ink in both plates, and
+     this is the number it moves. */
   const SPINE_IN = 56;
   const gatesPlate = $("gatesFig")?.closest("figure");
   /* every seat but the phone asks where THIS beat's line runs; the phone has
@@ -4712,16 +4712,78 @@ function buildThread() {
         ? absLeft(gatesPlate) + SPINE_IN /* ¶10 rides fig. 10's spine */
         : (stx[i] / 100) * vw;
   const beatX = (i) => (mobile ? RAIL_X_MOBILE : deskX(i));
+  /* ————— the crossing out of fig. 10 goes ROUND ¶10's words —————
+     Every beat holds its x from 18% to 52% of its own height and swings
+     through the corridor between, and the corridor's only other anchor is
+     its own midpoint. For eleven of the twelve crossings that is right. The
+     one out of ¶10 is measured, because round 14's rail-to-ink reading found
+     it grazing the paragraph it passes:
+
+       at 1375×800 it came within 10.47px of the glyphs of ¶10's last litany
+       line, and the clearance across eight two-column seats ran
+       31.5 / 15.8 / 13.4 / 0 / 5.3 / 2.3 / 9.1 as the window narrowed — NOT
+       monotonic, so no seat stands in for its neighbour and no fraction of a
+       station is safe at all of them.
+
+     THE CORNER OF THE PROSE IS THE ANCHOR. The crossing now passes through
+     the bottom right corner of ¶10's prose column, held off it by the gate's
+     own floor plus the hand's own wobble, and the corridor midpoint stands
+     down for it: that point IS the midpoint, and a second one beside it
+     makes a steeper piece between the two.
+
+     WHY THE CORNER AND NOT A LATER START, which was the first fix tried and
+     measured. Holding the spine until below the last line clears the words
+     too, but it shortens the corridor by a third, and a shorter corridor is
+     a steeper one: worst slope in corridors 7–11 went 0.994 → 1.360 and
+     worst bend24 12.04° → 21.07° (1280×720), against ceilings of 1.58 and
+     24.1°. Inside the gate, and the wrong direction — the round's whole ask
+     was a smoother transition, so the line goes round the corner instead and
+     keeps its length.
+
+     THE WOBBLE IS IN THE NUMBER, and leaving it out is how a clearance
+     computed off anchors reads 16px and renders 8px inside the column: the
+     hand's two sines reach 1.5·amp either side of the anchor at any y.
+     Everything is read in LAYOUT space at build, the same as dockX. */
+  const PROSE_GAP = 16;  /* px · G10c's floor, and the gate that reads it */
+  const ROW_LEAD = 56;   /* px · straight before fig. 11's first branch */
+  const amp = mobile ? 3 : stacked ? 8 : 16; /* the hand, see the wobble below */
+  const prose10 = $("review")?.querySelector(".prose");
+  const lead11 = $("cosigners")?.querySelector(".cosign blockquote");
+  /* ¶11's hold starts where fig. 11 does. Its two branches are seated at the
+     vertical centres of the quotes they belong to, so the first of them is
+     bound to the first blockquote and nothing else — and the line has to be
+     straight before a branch arrives on it, or the branch meets a diagonal.
+     Later than 18% wherever the quotes allow it, which is the corridor length
+     the crossing above spends on clearing ¶10's words. */
+  const holdA = (i) => {
+    const b = beats[i];
+    return i === 10 && !stacked && lead11
+      ? clamp(absTop(lead11) - ROW_LEAD, b.top + b.h * 0.18, b.top + b.h * 0.46)
+      : b.top + b.h * 0.18;
+  };
+  const holdB = (i) => beats[i].top + beats[i].h * 0.52;
+  /* the one measured waypoint. Null unless it is genuinely inside the
+     corridor AND genuinely a descent — an override that inverts the line's
+     direction is a corner, and a guard is cheaper than the gate that would
+     have to find it. */
+  const corridorVia = (i) => {
+    if (i !== 9 || stacked || !prose10) return null;
+    const y = absTop(prose10) + prose10.offsetHeight + PROSE_GAP;
+    const x = absLeft(prose10) + prose10.offsetWidth + PROSE_GAP + amp * 1.5;
+    return y > holdB(i) && y < holdA(i + 1) && x < beatX(i) && x > beatX(i + 1)
+      ? [x, y]
+      : null;
+  };
   const anchors = [];
   anchors.push([beatX(0), mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
   for (let i = 0; i < RUN_BEATS; i++) {
-    const b = beats[i], x = beatX(i);
-    if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
-    anchors.push([x, b.top + b.h * 0.52]);
+    const x = beatX(i);
+    if (i > 0) anchors.push([x, holdA(i)]);
+    anchors.push([x, holdB(i)]);
     if (i < RUN_BEATS - 1) {
-      const nb = beats[i + 1];
-      anchors.push([lerp(x, beatX(i + 1), 0.5),
-        lerp(b.top + b.h * 0.52, nb.top + nb.h * 0.18, 0.5)]);
+      const via = corridorVia(i);
+      anchors.push(via ?? [lerp(x, beatX(i + 1), 0.5),
+        lerp(holdB(i), holdA(i + 1), 0.5)]);
     }
   }
   /* Terminate at the gate dock (the clay square in the ladder). The line used
@@ -4750,8 +4812,11 @@ function buildThread() {
 
      WHY SAMPLED BY LENGTH. 22px steps in y were fine while the line was
      near vertical; on a swing they became 50px chords, visible as a
-     polyline. Each step is now at most STEP px of path. */
-  const amp = mobile ? 3 : stacked ? 8 : 16;
+     polyline. Each step is now at most STEP px of path.
+
+     `amp` is declared with the anchors above, because the corridor-9 waypoint
+     has to hold its clearance against the hand's full reach and a second copy
+     of the number here is the copy that would drift. */
   /* SMOOTHSTEP, and the linear ramp it replaces is why the old arrival had a
      corner in it: the wobble's amplitude changed slope discontinuously at
      exactly gatePageY - APPROACH, which the rail reads as a kink because the
