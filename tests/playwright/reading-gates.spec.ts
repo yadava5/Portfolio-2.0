@@ -1611,38 +1611,54 @@ test.describe("G10d · the junction stubs land on the rail", () => {
    nothing fulfils the real page and a control that passes on the real page is
    a control reporting that it works.
    ══════════════════════════════════════════════════════════════════════════ */
-async function inject(page: Page, from: string, to: string) {
-  const state = { hit: false };
+/* One handler, N edits, each reporting whether it matched. Two `page.route`
+   calls would NOT compose: handlers stack, and the later one re-fetches the
+   pristine document, so the earlier edit is thrown away. */
+async function inject(page: Page, edits: [string, string][]) {
+  const marks = edits.map(() => ({ hit: false }));
   await page.route(
     (u) => new URL(u).pathname === "/",
     async (route) => {
       const res = await route.fetch();
-      const src = await res.text();
-      state.hit = src.includes(from);
-      await route.fulfill({ response: res, body: src.replace(from, to) });
+      let src = await res.text();
+      edits.forEach(([from, to], i) => {
+        marks[i].hit = src.includes(from);
+        src = src.replace(from, to);
+      });
+      await route.fulfill({ response: res, body: src });
     }
   );
-  return state;
+  return marks;
 }
 
 test.describe("G10c / G10d · positive controls", () => {
-  test("control: without the prose-corner waypoint the rail is back in ¶10's paragraph", async ({
+  test("control: the round-13 tail puts the rail back in ¶10's paragraph", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
     /* 1375x800 and not his own seat: the clearance is not monotonic in width
-       and this is where the measured minimum was 10.47px. */
+       and this is where the measured minimum was 10.47px.
+
+       BOTH MEASUREMENTS ARE REVERTED, and that is not belt and braces — it is
+       what the red was measured on. Put back one at a time and 1375x800 is
+       green either way: the waypoint alone reads 49.76px and ¶11's
+       blockquote-derived hold alone reads 26.63px, because a later hold makes
+       the corridor longer and the line is further right when it passes the
+       paragraph's foot. Revert both and it is 10.47px again, to the hundredth
+       of labrat's own reading of the same geometry. The two do different
+       work: the waypoint clears the words, the hold buys back the corridor
+       length that clearing them would otherwise cost. */
     await page.setViewportSize({ width: 1375, height: 800 });
-    const TARGET = "if (i !== 9 || stacked || !prose10) return null;";
-    const hit = await inject(
-      page,
-      TARGET,
-      "if (i !== 9 || stacked || !prose10 || 1) return null;"
-    );
+    const VIA = "if (i !== 9 || stacked || !prose10) return null;";
+    const HOLD = "return i === 10 && !stacked && lead11";
+    const marks = await inject(page, [
+      [VIA, "if (i !== 9 || stacked || !prose10 || 1) return null;"],
+      [HOLD, "return i === 10 && !stacked && !lead11"],
+    ]);
     await arrive(page);
     expect(
-      hit.hit,
-      `the waypoint's own guard "${TARGET}" is still in the run`
+      marks.every((m) => m.hit),
+      `both injection points are still in the run: "${VIA}" / "${HOLD}"`
     ).toBe(true);
     const { out } = await inkClearance(page, ["#review .prose"]);
     expect(
@@ -1657,20 +1673,23 @@ test.describe("G10c / G10d · positive controls", () => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1456, height: 949 });
     const TARGET = "i === 9 && !stacked && gatesPlate";
-    const hit = await inject(
-      page,
-      TARGET,
-      "i === 9 && !stacked && !gatesPlate"
-    );
+    const [mark] = await inject(page, [
+      [TARGET, "i === 9 && !stacked && !gatesPlate"],
+    ]);
     await arrive(page);
     expect(
-      hit.hit,
+      mark.hit,
       `deskX's fig. 10 branch "${TARGET}" is still in the run`
     ).toBe(true);
-    const { out } = await inkClearance(page, ["#gatesFig"]);
+    /* ¶10'S PROSE, NOT THE DOCKET. At 30% of 1456 the rail is x 437, inside a
+       prose column running 138 to 618 — which is `779098b`'s own geometry and
+       where its clearance measured 0.00. The plate is then 230px away and
+       reads perfectly clean, so asserting on #gatesFig would assert that the
+       control does nothing. */
+    const { out } = await inkClearance(page, ["#review .prose"]);
     expect(
       out[0].min,
-      "a rail down 30% of the viewport runs through the docket's own words"
+      "a rail holding its column inside the paragraph must be caught"
     ).toBeLessThan(G10C_FLOOR);
   });
 
@@ -1680,13 +1699,11 @@ test.describe("G10c / G10d · positive controls", () => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1456, height: 949 });
     const TARGET = "function seatFigures() {";
-    const hit = await inject(
-      page,
-      TARGET,
-      "function seatFigures() { if (1) return;"
-    );
+    const [mark] = await inject(page, [
+      [TARGET, "function seatFigures() { if (1) return;"],
+    ]);
     await arrive(page);
-    expect(hit.hit, `"${TARGET}" is still in the run`).toBe(true);
+    expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
     const n = await page.evaluate(
       () =>
         document.querySelectorAll("#gatesFig [data-j], #signsFig [data-j]")

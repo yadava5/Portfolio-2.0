@@ -3858,13 +3858,13 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                the far end, agentic automl at 22:05 nearer the line. -->
           <div class="srow" data-s="0">
             <span class="sname">Randall Vollen</span>
-            <span class="smark" data-m="0"><span class="sstop">the yard</span><span class="sclock">07:52</span></span>
+            <span class="smark" data-m="0"><span class="sstop">the yard</span><span class="sclock" data-machine>07:52</span></span>
             <i class="sj" aria-hidden="true"></i>
           </div>
           <div class="srow" data-s="1">
             <span class="sname">Shree Chaturvedi</span>
-            <span class="smark" data-m="0"><span class="sstop">glyph</span><span class="sclock">15:23</span></span>
-            <span class="smark" data-m="1"><span class="sstop">agentic automl</span><span class="sclock">22:05</span></span>
+            <span class="smark" data-m="0"><span class="sstop">glyph</span><span class="sclock" data-machine>15:23</span></span>
+            <span class="smark" data-m="1"><span class="sstop">agentic automl</span><span class="sclock" data-machine>22:05</span></span>
             <i class="sj" aria-hidden="true"></i>
           </div>
         </div>
@@ -6528,6 +6528,9 @@ function buildSigns(js) {
       if (glyphDigit !== null) {
         const d = document.createElement("span");
         d.className = "sdigit";
+        /* a clock and a read digit are machine values, and G3's allowlist
+           takes the explicit opt-in rather than another selector to watch */
+        d.setAttribute("data-machine", "");
         d.textContent = glyphDigit;
         d.style.setProperty("--dx", pad.toFixed(1) + "px");
         d.style.setProperty("--dy", (y - 9).toFixed(1) + "px");
