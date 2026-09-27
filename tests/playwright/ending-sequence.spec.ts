@@ -74,6 +74,8 @@ declare global {
         entries: { entry: string; n: number; t: number }[];
       };
       ground?: { id: string; dx: number; x_off: number }[];
+      /* round 14: every time the morning answered the reader */
+      notice?: { who: string; what: string; t: number }[];
     };
     __onwardPath?: () => { x: number; y: number; L: number }[];
     __rail?: () => { x: number; y: number }[];
@@ -1326,5 +1328,256 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
       expect(rm.scape, "the ground still reports settled").toBeDefined();
       expect(rm.flock, "the flock layer is hidden").toBe("none");
     });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the morning notices you (round 14, item 6)
+   Everything else on this sheet cycles. This is the only thing that answers
+   the person reading, so what it may NOT do matters as much as what it
+   does: not from a keyboard, not during the carry, not under reduced
+   motion, and never because a pointer is on its way to a link. At 1024×768
+   the email link sits 30px from the doe and at 1280×720 the résumé link
+   sits 41px from a gull, measured, so the keep guard is load-bearing at the
+   seats a recruiter reads at.
+
+   Every window in the controller is WALL time, not the page's paced clock:
+   a reader's hand does not speed up with the pace flag. That is why these
+   drive a real pointer and wait in real milliseconds.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the morning notices you", () => {
+  /** land the morning with the mouse, the way a reader does */
+  async function landByHand(page: Page) {
+    await toTheGate(page);
+    const b = await page.evaluate(() => {
+      const r = document.getElementById("approve")!.getBoundingClientRect();
+      return { x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2 };
+    });
+    await page.mouse.move(b.x, b.y);
+    await page.mouse.click(b.x, b.y);
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    return b;
+  }
+  const notices = (page: Page) =>
+    page.evaluate(() => window.__world.notice ?? []);
+  const centre = (page: Page, sel: string) =>
+    page.evaluate((s) => {
+      const e = document.querySelector(s);
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      return {
+        x: (r.left + r.right) / 2,
+        y: (r.top + r.bottom) / 2,
+        top: r.top,
+        left: r.left,
+      };
+    }, sel);
+
+  test("a · the hand that pressed is still there, and she looks up", async ({
+    page,
+  }, testInfo: TestInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* she waits for her own graze to lift her head, so this is not an
+       instant: the look is scheduled at at(2500) and then joins the next
+       up window of a 9.7s cycle */
+    await page.waitForFunction(
+      () => (window.__world.notice ?? []).some((n) => n.who === "deer"),
+      null,
+      { timeout: 20_000 }
+    );
+    const n = await notices(page);
+    expect(
+      n.some(
+        (q) => q.who === "deer" && (q.what === "look" || q.what === "tail")
+      ),
+      "the doe noticed the hand that pressed"
+    ).toBe(true);
+  });
+
+  test("a2 · a keyboard press is not a hand", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    /* .click() from script carries detail 0, which is what a keyboard
+       activation reports, and there is no pointer to notice */
+    await page.evaluate(() =>
+      (document.getElementById("approve") as HTMLButtonElement).click()
+    );
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    await page.waitForTimeout(4000);
+    expect(await notices(page), "nothing looked at a keyboard").toEqual([]);
+  });
+
+  test("b · a pointer at a ground bird, and the same bird twice", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* past the landing look and past the 1.2s the busy lock keeps between
+       any two reactions at all */
+    await page.waitForTimeout(3000);
+    const g = await centre(page, '.dawnscape .ds-gull[data-id="a"]');
+    expect(g, "a gull to walk up to").not.toBeNull();
+    await page.mouse.move(g!.x, g!.top - 14);
+    await page.waitForTimeout(1200);
+    const first = await notices(page);
+    expect(
+      first.some((q) => q.who === "gull-a"),
+      "it put its head up"
+    ).toBe(true);
+    /* away, out of every creature's reach, and back inside four seconds */
+    await page.mouse.move(g!.x, g!.top - 400);
+    await page.waitForTimeout(300);
+    await page.mouse.move(g!.x, g!.top - 14);
+    await page.waitForTimeout(1600);
+    const again = await notices(page);
+    expect(
+      again.some((q) => q.what === "takeoff" || q.what === "hops"),
+      "coming back at it moved it"
+    ).toBe(true);
+  });
+
+  test("c · the swivel's peak keeps the words' air", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await landByHand(page);
+    await page.waitForTimeout(1500);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    await page.mouse.move(d!.x, d!.top - 18);
+    await page
+      .waitForFunction(
+        () => (window.__world.notice ?? []).some((n) => n.who === "deer"),
+        null,
+        { timeout: 20_000 }
+      )
+      .catch(() => {});
+    await page.waitForTimeout(500);
+    const worst = await page.evaluate(() => {
+      const svg = document.querySelector(".dawnscape")!;
+      const wrap = document.querySelector(".dawnwrap")!;
+      const texts: number[][] = [];
+      const w = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) {
+        if (!n.textContent!.trim()) continue;
+        const rg = document.createRange();
+        rg.selectNodeContents(n);
+        const quote = !!(n.parentElement as Element).closest(".endquote");
+        for (const r of rg.getClientRects())
+          if (r.width && r.height)
+            texts.push([r.left, r.top, r.right, r.bottom, quote ? 64 : 24]);
+      }
+      let m = Infinity;
+      for (const g of svg.querySelectorAll(
+        ".ds-deer .ds-ear, .ds-deer .ds-tail, .ds-deer .ds-head, .ds-fawn .ds-ear"
+      )) {
+        const b = g.getBoundingClientRect();
+        for (const t of texts) {
+          const dx = Math.max(t[0] - b.right, b.left - t[2], 0);
+          const dy = Math.max(t[1] - b.bottom, b.top - t[3], 0);
+          m = Math.min(m, Math.max(dx, dy, 0) - t[4]);
+        }
+      }
+      return m;
+    });
+    /* the reaction is additive on joints the gust already moves by the same
+       amount every 7.3s, so this is the drawing's own reach, measured at
+       the peak of the swivel rather than at rest */
+    expect(worst, "her air at the peak of the look").toBeGreaterThan(0);
+  });
+
+  test("d · a link within reach of a creature wakes nothing", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    /* 1024×768 is the seat where the email link measures 30px from the doe */
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await landByHand(page);
+    /* past the landing look AND past the doe's own six second cooldown, or
+       this passes because she is resting rather than because the guard
+       held: with the keep guard removed and this wait at three seconds, the
+       probe could not make it fail */
+    await page.waitForTimeout(8000);
+    const before = (await notices(page)).length;
+    const l = await centre(page, '.dawnwrap a[href^="mailto"]');
+    expect(l, "the email link is on the page").not.toBeNull();
+    await page.mouse.move(l!.x, l!.y);
+    await page.waitForTimeout(2500);
+    expect(
+      (await notices(page)).length,
+      "a pointer on its way to a link is not a visitor"
+    ).toBe(before);
+  });
+
+  test("e · reduced motion is never noticed", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForTimeout(800);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    if (d) {
+      await page.mouse.move(d.x, d.y);
+      await page.waitForTimeout(1500);
+    }
+    const out = await page.evaluate(() => {
+      const svg = document.querySelector(".dawnscape")!;
+      return {
+        n: (window.__world.notice ?? []).length,
+        anims: document
+          .getAnimations()
+          .filter((a) => svg.contains((a.effect as KeyframeEffect).target!))
+          .length,
+      };
+    });
+    expect(out.n, "nothing noticed").toBe(0);
+    expect(out.anims, "and nothing moved").toBe(0);
+  });
+
+  /* HELD BY CONSTRUCTION, four times over, and that is worth writing down:
+     during the carry there is no listener (releaseScroll wires it), no
+     body.morninglive, scrollHeld is set, and no scape has published yet. A
+     probe that removed two of the four still could not make this fail. It
+     stays as the regression guard for the change that wires the controller
+     earlier, which is the only way it could ever go red. */
+  test("f · nothing is noticed during the carry", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page
+      .waitForFunction(
+        () => document.body.classList.contains("carrying"),
+        null,
+        {
+          timeout: 10_000,
+        }
+      )
+      .catch(() => {});
+    for (let i = 0; i < 10; i++) {
+      await page.mouse.move(200 + i * 8, 700 + i * 4);
+      await page.waitForTimeout(120);
+    }
+    const during = await page.evaluate(() => ({
+      carrying: document.body.classList.contains("carrying"),
+      n: (window.__world.notice ?? []).length,
+    }));
+    expect(during.carrying, "still carrying the reader").toBe(true);
+    expect(during.n, "the page is doing the moving, not the reader").toBe(0);
   });
 });
