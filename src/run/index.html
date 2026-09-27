@@ -1944,6 +1944,22 @@ if (location.hash.length > 1) {
   .sline .s-ring{stroke:var(--clay-g); stroke-width:1.6}
   .sline .s-pad{stroke:var(--ink-2); stroke-width:1}
   .sline .s-spine{stroke:var(--ink-2); stroke-width:1.4}
+  /* THE PAGES ARE ALIVE WHILE THEY WAIT. Two written pages standing perfectly
+     still on a branch read as printed; a slow lean says they are paper a hand
+     has just put down. It is its own group INSIDE the one the slide writes,
+     because two authors of one transform is how a scrubbed position and an
+     idle animation cancel each other. Compositor only, no mask, and it stops
+     the moment the page couples: a coupled page is freight, and freight on a
+     line does not flutter. */
+  .sline .s-flutter{transform-box:fill-box; transform-origin:50% 50%}
+  @media (prefers-reduced-motion: no-preference){
+    .sline .s-carry:not(.coupled) .s-flutter{
+      animation:pageleaf var(--fl, 5.6s) ease-in-out infinite}
+  }
+  @keyframes pageleaf{
+    0%,100%{transform:rotate(-0.8deg)}
+    50%{transform:rotate(0.8deg)}
+  }
 
   /* ═══════ fig. 11 · two branches, seated against the words ═══════
      --sby is the branch's y inside a row, and the junction's. --s0 is where
@@ -3764,8 +3780,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                as ninety six boxes is ninety six boxes to maintain.
                It is NOT `.figsvg`: the drawing count on this page is six and
                this is a docket's line work, not a seventh figure. Its colour
-               lives in `.gline` rules in the stylesheet, never on an
-               attribute, because that is where check-palette can measure it.
+               lives in the stylesheet under the drawing's own class, never on
+               an attribute, because that is where check-palette measures it.
 
                THREE DIRECTIONS FROM ONE JUNCTION, and that is the whole
                reading. What passes moves LEFT and couples to the line. What
@@ -4998,6 +5014,17 @@ function seatFigures() {
     const host = $(hostId), plate = host?.closest("figure");
     if (!plate || railAnchorX[beat] === undefined) return [];
     const px = absLeft(plate), spx = railAnchorX[beat] - px;
+    /* THE PLATE'S LEFT IS AN INTEGER AND ITS RENDERED LEFT IS NOT. absLeft
+       sums offsetLeft, which rounds, so a plate sitting at 640.62 is read as
+       641 and every stub inside it is drawn that much off the line it claims
+       to join — measured at 1375×800 as 0.77px, which G10d's half pixel
+       catches and a reader never would. The anchors stay in layout space,
+       because that is what survives an entrance transform; only the
+       DRAWING's own offset takes the residue, and it is clamped to ±2 so a
+       transform reintroduced on this plate one day cannot bake itself in
+       through this line instead of failing loudly. */
+    const raw = plate.getBoundingClientRect().left + scrollX - px;
+    const sub = Math.abs(raw) < 2 ? raw : 0;
     plate.style.setProperty("--spx", spx.toFixed(1) + "px");
     /* CLAMPED INTO THE PLATE. On the phone the rail runs in the 26px gutter
        and the spine is OUTSIDE the figure, so spx is about -30 and the raw
@@ -5015,7 +5042,7 @@ function seatFigures() {
       const railX = xAtY(y);
       m.parentElement.style.setProperty("--jx", (railX - px).toFixed(1) + "px");
       const rec = { fig, i, y: +y.toFixed(1), railX: +railX.toFixed(1),
-        spx: +spx.toFixed(1), stubX: null };
+        jx: +(railX - px - sub).toFixed(2), spx: +spx.toFixed(1), stubX: null };
       junctions.push(rec);
       return rec;
     });
@@ -6248,9 +6275,10 @@ function scrubPath(p) {
    WHAT IS SVG AND WHAT IS NOT. The svg holds line work and nothing else: no
    text node is ever created in it. Every word a reader meets is HTML, styled
    by the stylesheet, found by check-figures and read by a screen reader in
-   document order. Colour is declared in `.gline` / `.sline` rules for the
-   same reason: a stroke set with setAttribute is a stroke check-palette
-   cannot measure, and this page has lost four strokes to exactly that.
+   document order. Colour is declared in the stylesheet, under each
+   drawing's own class, for the same reason: a stroke set with setAttribute
+   is a stroke check-palette cannot measure, and this page has lost four
+   strokes to exactly that.
 
    THE COUNTS ARE DRAWN AS COUNTS. Ninety six ticks are ninety six ticks, one
    of them tilted; twenty answers are twenty outlines. A reader who counts
@@ -6321,7 +6349,14 @@ function buildGates(js) {
        stopped end 8px short of it. The difference is small and it is the
        only place the three tracks are not identical. */
     g.appendChild(hline("g-track", T, T + A + (i === 0 ? 8 : 0), y));
-    const stub = hline("g-stub", spx, T, y);
+    /* THE STUB STARTS WHERE THE RAIL ACTUALLY IS, not where its anchor is.
+       The hand's two sines put the line up to 1.5 x amp either side of the
+       anchor, so a stub drawn from `spx` misses by as much as 24px and the
+       docket reads as three tracks floating beside the line. Under
+       `.railless` there is no rail to meet and the figure's own spine is the
+       thing to reach. G10d recomputes this from __rail() rather than trusting
+       it. */
+    const stub = hline("g-stub", railless ? spx : (js?.[i]?.jx ?? spx), T, y);
     stub.setAttribute("data-j", i);
     g.appendChild(stub);
     /* TWO Y'S, AND THEY ARE NOT INTERCHANGEABLE. `y` is inside the svg,
@@ -6509,19 +6544,22 @@ function buildSigns(js) {
     const solid = hline("s-branch", start, W - 12, y);
     const dash = hline("s-dash", T, start, y);
     g.appendChild(solid); g.appendChild(dash);
-    const stub = hline("s-branch", spx, T, y);
+    const stub = hline("s-branch", railless ? spx : (js?.[i]?.jx ?? spx), T, y);
     stub.setAttribute("data-j", i);
     g.appendChild(stub);
     g.appendChild(pth("s-tick", [T - 9, y, T - 3, y]));
     /* the page, drawn exactly as the corridor cargo draws it */
     const page = el("g", { class: "s-carry" });
+    const leaf = el("g", { class: "s-flutter",
+      style: `--fl:${i === 0 ? "5.2s" : "6.1s"}` });
+    page.appendChild(leaf);
     const pw = PW, ph = PH, px0 = start, py = y - ph / 2;
-    page.appendChild(el("rect", { class: "s-page", x: px0, y: py,
+    leaf.appendChild(el("rect", { class: "s-page", x: px0, y: py,
       width: pw, height: ph, rx: 3 }));
-    page.appendChild(hline("s-rule", px0 + 6, px0 + 26, y - 6));
-    page.appendChild(hline("s-rule", px0 + 6, px0 + 30, y));
-    page.appendChild(hline("s-rule", px0 + 6, px0 + 22, y + 6));
-    page.appendChild(el("rect", { class: "s-quote", x: px0 + 30, y: py + 3,
+    leaf.appendChild(hline("s-rule", px0 + 6, px0 + 26, y - 6));
+    leaf.appendChild(hline("s-rule", px0 + 6, px0 + 30, y));
+    leaf.appendChild(hline("s-rule", px0 + 6, px0 + 22, y + 6));
+    leaf.appendChild(el("rect", { class: "s-quote", x: px0 + 30, y: py + 3,
       width: 3, height: 5 }));
     g.appendChild(page);
     svg.appendChild(g);
@@ -6590,6 +6628,7 @@ function scrubSigns(tokenY, settled) {
     r.solid.setAttribute("d", `M${split} ${yy} L${r.right.toFixed(2)} ${yy}`);
     r.dash.setAttribute("d", `M${r.dashLeft.toFixed(2)} ${yy} L${split} ${yy}`);
     r.page.style.opacity = gone;
+    r.page.classList.toggle("coupled", slide >= 0.98);
     r.g.style.setProperty("--tick", slide >= 0.98 && gone === "1" ? "1" : "0");
   }
 }

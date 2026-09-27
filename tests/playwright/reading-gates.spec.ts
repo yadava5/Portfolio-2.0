@@ -1380,3 +1380,221 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
     ).toBeLessThan(RAIL_LANE_MIN);
   });
 });
+
+/* ══════════════════════════════════════════════════════════════════════════
+   G10c · THE LINE DOES NOT STRIKE THROUGH THE NOTES.
+
+   The owner's round-2 ruling, made a number. Round 14 runs the day's rail
+   down both night plates, so for the first time the line and the words share
+   a column, and the distance between them is the whole question.
+
+   MEASURED ON INK, NOT ON BOXES, and that is main's ruling after both were
+   measured. A paragraph's box runs to the column's edge; its last line does
+   not. At 779098b's successor the box reading put seven of eight two-column
+   seats under the floor on pages a reader would call clean — the rail sitting
+   in the right margin, past the end of every line — while the ink reading
+   found the one seat where it genuinely crossed the words. A gate that fires
+   on the right answer is worse than the honest gap. So: one rect per line
+   box, from `Range.getClientRects()` over every text node a `TreeWalker`
+   finds, and the minimum distance from any of them to any rail sample.
+
+   TRANSFORMS ARE NEUTRALISED AND THE NEUTRALISATION IS ASSERTED. `__rail()`
+   lives in layout space; a client rect plus scrollY only equals layout space
+   if nothing above the node carries a transform, and both stations' prose and
+   plates carry entrance transforms. The residual count is checked to be 0, so
+   a stylesheet that stopped taking cannot quietly move every number.
+
+   TWO-COLUMN SEATS ONLY, and that is not a convenience: below 1250 the
+   stations stack, the rail necessarily shares the single column, and the
+   floor is unsatisfiable by construction. The stacked seats read 0 and always
+   will; asserting there would be asserting that the design is different.
+   ══════════════════════════════════════════════════════════════════════════ */
+const G10C_SEATS: [number, number][] = [
+  [1512, 982],
+  [1456, 949],
+  [1440, 900],
+  [1375, 800],
+  [1366, 768],
+  [1280, 800],
+  [1280, 720],
+  [1250, 800],
+];
+const G10C_FLOOR = 16; /* px · the same envelope G10b holds at the timetable */
+const G10C_BOXES = [
+  "#review .prose",
+  "#cosigners .prose",
+  "#gatesFig",
+  "#signsFig",
+];
+
+async function inkClearance(page: Page, selectors: string[]) {
+  return page.evaluate((sels) => {
+    const st = document.createElement("style");
+    st.textContent =
+      "#review,#review *,#cosigners,#cosigners *{transform:none !important}";
+    document.head.appendChild(st);
+    const dirty = [
+      ...document.querySelectorAll("#review *,#cosigners *"),
+    ].filter((e) => {
+      const t = getComputedStyle(e).transform;
+      return t && t !== "none";
+    }).length;
+    const rail = (
+      window as unknown as { __rail: () => { x: number; y: number }[] }
+    ).__rail();
+    const out = sels.map((sel) => {
+      const host = document.querySelector(sel);
+      if (!host)
+        return { sel, found: false, nodes: 0, rects: 0, min: -1, worst: "" };
+      const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+      const nodes: Text[] = [];
+      for (let n = tw.nextNode(); n; n = tw.nextNode())
+        if (n.textContent && n.textContent.trim()) nodes.push(n as Text);
+      let min = Infinity,
+        worst = "",
+        rects = 0;
+      for (const n of nodes) {
+        const r = document.createRange();
+        r.selectNodeContents(n);
+        for (const lr of r.getClientRects()) {
+          if (!lr.width || !lr.height) continue;
+          rects++;
+          const L = lr.left,
+            R = lr.right,
+            T = lr.top + scrollY,
+            B = lr.bottom + scrollY;
+          for (const p of rail) {
+            const dx = p.x < L ? L - p.x : p.x > R ? p.x - R : 0;
+            const dy = p.y < T ? T - p.y : p.y > B ? p.y - B : 0;
+            const d = Math.hypot(dx, dy);
+            if (d < min) {
+              min = d;
+              worst = (n.textContent || "").trim().slice(0, 34);
+            }
+          }
+        }
+      }
+      return {
+        sel,
+        found: true,
+        nodes: nodes.length,
+        rects,
+        min: min === Infinity ? -1 : +min.toFixed(2),
+        worst,
+      };
+    });
+    st.remove();
+    return { dirty, out };
+  }, selectors);
+}
+
+test.describe("G10c · the rail keeps clear of every line of ink it passes", () => {
+  for (const [w, h] of G10C_SEATS) {
+    test(`${w}x${h}: no rail sample within ${G10C_FLOOR}px of ¶10's or ¶11's ink`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await arrive(page);
+      const { dirty, out } = await inkClearance(page, G10C_BOXES);
+      expect(
+        dirty,
+        "the transform override took: a residual matrix means every rect below is in the wrong space"
+      ).toBe(0);
+      for (const r of out) {
+        expect(r.found, `${r.sel} exists at ${w}`).toBe(true);
+        /* A CONTAINER THAT YIELDS NO LINE BOXES IS A GATE THAT CANNOT FAIL.
+           Both plates build their line work in an svg with no text in it, so
+           a redraw that moved a row's words into the drawing would empty this
+           walk and pass. The floor is the plate's own smallest reading: two
+           lines for ¶11's two names, four for ¶10's three rows plus its
+           close. */
+        expect(
+          r.rects,
+          `${r.sel} yields line boxes to measure at ${w} (${r.nodes} text nodes)`
+        ).toBeGreaterThanOrEqual(2);
+        expect(
+          r.min,
+          `the rail's nearest approach to "${r.worst}" in ${r.sel} at ${w}x${h}`
+        ).toBeGreaterThanOrEqual(G10C_FLOOR);
+      }
+    });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   G10d · EVERY JUNCTION STUB REACHES THE LINE IT CLAIMS TO JOIN.
+
+   Both night plates hang their tracks off the rail, and the rail wobbles:
+   the hand's two sines put it up to 1.5 x amp either side of the anchor, so a
+   stub drawn at the spine instead of at the measured x misses the line by up
+   to 24px and the figure reads as three tracks floating beside it.
+
+   THE RAIL'S X IS RECOMPUTED HERE, from `__rail()` at the stub's own y, and
+   compared to the DRAWN path. It is deliberately not read from
+   `window.__world.junctions`: that record is what `seatFigures` believed, and
+   a gate that checks a belief against itself passes when the seating pass is
+   skipped entirely. The stub's y comes from the drawn line too, for the same
+   reason.
+
+   THE COUNT IS ASSERTED FIRST. Three stubs in fig. 10 and two in fig. 11; a
+   seating pass that did nothing leaves zero, and zero stubs all agree with
+   the rail vacuously.
+   ══════════════════════════════════════════════════════════════════════════ */
+test.describe("G10d · the junction stubs land on the rail", () => {
+  for (const [w, h] of G10C_SEATS.slice(0, 4)) {
+    test(`${w}x${h}: 3 + 2 stubs, each within 0.5px of the rail at its own y`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await arrive(page);
+      const r = await page.evaluate(() => {
+        const rail = (
+          window as unknown as { __rail: () => { x: number; y: number }[] }
+        ).__rail();
+        const xAt = (y: number) => {
+          if (y <= rail[0].y) return rail[0].x;
+          if (y >= rail[rail.length - 1].y) return rail[rail.length - 1].x;
+          let lo = 0,
+            hi = rail.length - 1;
+          while (hi - lo > 1) {
+            const m = (lo + hi) >> 1;
+            rail[m].y <= y ? (lo = m) : (hi = m);
+          }
+          const a = rail[lo],
+            b = rail[lo + 1];
+          const t = b.y > a.y ? (y - a.y) / (b.y - a.y) : 0;
+          return a.x + (b.x - a.x) * t;
+        };
+        const read = (host: string) =>
+          [
+            ...document.querySelectorAll<SVGPathElement>(`#${host} [data-j]`),
+          ].map((p) => {
+            const svg = p.ownerSVGElement!;
+            const box = svg.getBoundingClientRect();
+            /* the drawn path's own first point, in page space */
+            const m = (p.getAttribute("d") || "").match(
+              /M(-?[\d.]+) (-?[\d.]+)/
+            );
+            const x = box.left + scrollX + parseFloat(m?.[1] ?? "NaN");
+            const y = box.top + scrollY + parseFloat(m?.[2] ?? "NaN");
+            return { x, y, railX: xAt(y), gap: Math.abs(x - xAt(y)) };
+          });
+        return { g: read("gatesFig"), s: read("signsFig") };
+      });
+      expect(r.g.length, `fig. 10 draws one stub per row at ${w}`).toBe(3);
+      expect(r.s.length, `fig. 11 draws one stub per branch at ${w}`).toBe(2);
+      for (const [fig, list] of [
+        ["10", r.g],
+        ["11", r.s],
+      ] as const)
+        list.forEach((j, i) => {
+          expect(
+            j.gap,
+            `fig. ${fig} junction ${i} at ${w}: stub starts at x ${j.x.toFixed(2)}, the rail is at ${j.railX.toFixed(2)}`
+          ).toBeLessThanOrEqual(0.5);
+        });
+    });
+  }
+});

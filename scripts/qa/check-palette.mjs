@@ -462,12 +462,15 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
   /* What the figures actually draw with, read off the run's own CSS rather
      than listed by eye — a token added to a figure rule joins this set.
 
-     `.gbench` IS SCANNED ALONGSIDE `.figsvg`, and the narrowness is the whole
-     point. §4b named this hole: fig. 10 is a night station whose drawing is
-     styled under `#gatesFig`, which a `.figsvg`-only scan never reads, so the
-     night-contrast rule was an INSTRUCTION for that one figure rather than a
-     measurement. `.gbench` is the class fig. 10's miniature wears, and every
-     colour-bearing rule of that drawing carries it.
+     THE DRAWING'S OWN CLASS IS SCANNED ALONGSIDE `.figsvg`, and the
+     narrowness is the whole point. §4b named this hole: fig. 10 is a night
+     station whose drawing is styled under `#gatesFig`, which a
+     `.figsvg`-only scan never reads, so the night-contrast rule was an
+     INSTRUCTION for that one figure rather than a measurement. Round 14
+     redrew both night plates and the two classes their line work wears
+     replaced the retired press's; every colour-bearing rule of either
+     drawing carries one of them, and the per-class floor below is what
+     stops a rename from quietly emptying the scan.
 
      `.approvebar` JOINED THE SCAN with round 4's ending and stayed through
      round 7's. ¶12's own ink is markup — the socket, the hour, and the one
@@ -522,11 +525,33 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      contrast of whatever the rules actually name. Shown red on a temp
      copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
      under the 2.0 hairline floor and the file exits 1. */
+  const SCANNED = [
+    "\\.figsvg",
+    "\\.gline",
+    "\\.sline",
+    "\\.approvebar",
+    "\\.dawnscape",
+  ];
   const figureRules = [
     ...runHtml.matchAll(
-      /(?:\.figsvg|\.gbench|\.approvebar|\.dawnscape)[^{]*\{([^}]*)\}/g
+      new RegExp(`(?:${SCANNED.join("|")})[^{]*\\{([^}]*)\\}`, "g")
     ),
   ].map((m) => m[1]);
+  /* A SCAN SELECTOR THAT MATCHES NOTHING IS A GATE THAT CANNOT FAIL, and this
+     file has already retired one class (`.gateway`) for exactly that. Round 14
+     replaced `.gbench` with two classes at once, so the floor is per class
+     rather than over the set: a typo in one of them would otherwise hide
+     behind the other four still matching. */
+  for (const cls of SCANNED) {
+    const n = [...runHtml.matchAll(new RegExp(`${cls}[^{]*\\{`, "g"))].length;
+    if (n < 1)
+      fail(
+        `the night-figure scan looks for ${cls.replace(/\\/g, "")} and the run declares no rule with it.\n` +
+          `      A selector that matches nothing measures nothing and prints green. Either the class\n` +
+          `      was renamed and this list did not follow, or the drawing it scanned has been retired\n` +
+          `      and the entry belongs out of the list rather than left pointing at nothing.`
+      );
+  }
   /* the pairs first, so their two tokens do not also enter the stroke set */
   const groundPairs = [];
   const strokeBodies = [];
