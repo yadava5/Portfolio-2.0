@@ -1547,138 +1547,152 @@ try {
       ),
     }));
     const seat = `sky 1456×949`;
-    /* clocks: the sit is wall time; the page's own is PACE times shorter */
-    const gapCode = worstGap / PACE;
-    if (first === null)
-      fail(`${seat}: no bird was ever visible in ${SIT_MS}ms of sitting`);
-    else if (first > 2000 * PACE + 500)
-      fail(
-        `${seat}: first visible bird ${(first / PACE).toFixed(0)}ms after landing on the page's clock — the morning lands with birds in it (2s)`
-      );
-    if (gapCode > 40000)
-      fail(
-        `${seat}: empty sky for ${(gapCode / 1000).toFixed(1)}s of the page's clock — the cap is 40s`
-      );
-    if (escapes)
-      fail(
-        `${seat}: ${escapes} samples with a visible bird within 8px of the viewport's edge`
-      );
-    if (maxFar > 3)
-      fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
-    if (!routes.length)
-      fail(`${seat}: no route was logged — window.__world.routes is gone`);
-    if (overRock.length)
-      fail(
-        `${seat}: ${overRock.length} of ${routes.length} crossings pass over a shadow face of the range (${overRock.map((r) => `${r.entry} at ${r.hit}`).join(", ")}) — the rock's shadow is not sky`
-      );
-    /* the perch: capacity one, and the socket agrees with the log: a bird
+    /* a morning that never built publishes no sky, and every read below
+       would die on it with a TypeError, which reports nothing. Check 1
+       has already said why (the missing scape); say it here too, once,
+       and let the seat close. */
+    sit: {
+      if (!fin.sky) {
+        fail(
+          `${seat}: window.__world.sky is missing — the morning never built, so there is no sky to sit under`
+        );
+        break sit;
+      }
+      /* clocks: the sit is wall time; the page's own is PACE times shorter */
+      const gapCode = worstGap / PACE;
+      if (first === null)
+        fail(`${seat}: no bird was ever visible in ${SIT_MS}ms of sitting`);
+      else if (first > 2000 * PACE + 500)
+        fail(
+          `${seat}: first visible bird ${(first / PACE).toFixed(0)}ms after landing on the page's clock — the morning lands with birds in it (2s)`
+        );
+      if (gapCode > 40000)
+        fail(
+          `${seat}: empty sky for ${(gapCode / 1000).toFixed(1)}s of the page's clock — the cap is 40s`
+        );
+      if (escapes)
+        fail(
+          `${seat}: ${escapes} samples with a visible bird within 8px of the viewport's edge`
+        );
+      if (maxFar > 3)
+        fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
+      if (!routes.length)
+        fail(`${seat}: no route was logged — window.__world.routes is gone`);
+      if (overRock.length)
+        fail(
+          `${seat}: ${overRock.length} of ${routes.length} crossings pass over a shadow face of the range (${overRock.map((r) => `${r.entry} at ${r.hit}`).join(", ")}) — the rock's shadow is not sky`
+        );
+      /* the perch: capacity one, and the socket agrees with the log: a bird
        that landed and has not left is on the twig, and no other */
-    if (twoPerched)
-      fail(
-        `${seat}: two birds on the perch in ${twoPerched} sample(s) — capacity one`
-      );
-    if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
-      fail(
-        `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
-      );
-    if (twoNested)
-      fail(
-        `${seat}: two birds in the nest in ${twoNested} sample(s) — capacity one`
-      );
-    if (fin.nestedNow !== fin.nest.lands - fin.nest.leaves)
-      fail(
-        `${seat}: ${fin.nestedNow} bird(s) drawn in the nest, but the log says ${fin.nest.lands} landed and ${fin.nest.leaves} left`
-      );
-    if (!fin.sky.entries.some((e) => e.exit === "pass"))
-      fail(
-        `${seat}: no crossing left through the pass in the sit — the second canopy crossing does`
-      );
-    if (fin.perch.lands < 1)
-      fail(
-        `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
-      );
-    if (
-      fin.perch.leaves >= 1 &&
-      !fin.sky.entries.some((e) => e.entry === "perch")
-    )
-      fail(`${seat}: a bird left the perch but no "perch" entry was logged`);
-    if (twoLeaves)
-      fail(
-        `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
-      );
-    if (twoFlies)
-      fail(`${seat}: two butterflies in ${twoFlies} sample(s) — one at a time`);
-    /* the owl: drawn if and only if it has come home; an "owl" entry logged
-       when it set out */
-    if ((fin.owl.state === "home") !== fin.owlDrawn > 0)
-      fail(
-        `${seat}: the owl is ${fin.owl.state} but ${fin.owlDrawn} owl fill(s) are drawn in the notch`
-      );
-    if (
-      fin.owl.state !== "away" &&
-      !fin.sky.entries.some((e) => e.entry === "owl")
-    )
-      fail(`${seat}: the owl set out but no "owl" entry was logged`);
-    if (!fin.sky || fin.sky.spawned < 2)
-      fail(
-        `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
-      );
-    const maxOff = {};
-    for (const g of fin.ground)
-      maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
-    const roamers = fin.roamers || {};
-    for (const [id, off] of Object.entries(maxOff)) {
-      const lim = roamers[id] ? roamers[id].range : RANGE_PX;
-      if (off > lim)
+      if (twoPerched)
         fail(
-          `${seat}: ${id} strayed ${off}px from where it was drawn — its declared home range is ±${lim}px`
+          `${seat}: two birds on the perch in ${twoPerched} sample(s) — capacity one`
         );
-    }
-    /* the log against the ink: one roamer's computed translate must be what
-       the log says its offset is */
-    /* every DECLARED roamer, moved or not: its drawn offset within its range */
-    for (const [id, tf, axis] of fin.tf) {
-      const nums0 = tf
-        ? tf
-            .replace(/^translate\(/, "")
-            .split(",")
-            .map(parseFloat)
-        : [0, 0];
-      const shown0 = Math.abs(axis === "y" ? nums0[1] || 0 : nums0[0] || 0);
-      const lim0 = roamers[id] ? roamers[id].range : RANGE_PX;
-      if (shown0 > lim0 + 0.6)
+      if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
         fail(
-          `${seat}: ${id} is drawn ${shown0.toFixed(1)}px from home — its declared range is ±${lim0}px`
+          `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
         );
-    }
-    for (const [id, tf, axis] of fin.tf) {
-      const last = [...fin.ground].reverse().find((g) => g.id === id);
-      const nums = tf
-        ? tf
-            .replace(/^translate\(/, "")
-            .split(",")
-            .map(parseFloat)
-        : [0, 0];
-      const shown = axis === "y" ? nums[1] || 0 : nums[0] || 0;
-      /* a move is logged whole as it starts and drawn in two halves, so a
-         sample mid-hop sits at the previous offset plus half the step */
-      const mid = last ? last.x_off - last.dx / 2 : 0;
+      if (twoNested)
+        fail(
+          `${seat}: two birds in the nest in ${twoNested} sample(s) — capacity one`
+        );
+      if (fin.nestedNow !== fin.nest.lands - fin.nest.leaves)
+        fail(
+          `${seat}: ${fin.nestedNow} bird(s) drawn in the nest, but the log says ${fin.nest.lands} landed and ${fin.nest.leaves} left`
+        );
+      if (!fin.sky.entries.some((e) => e.exit === "pass"))
+        fail(
+          `${seat}: no crossing left through the pass in the sit — the second canopy crossing does`
+        );
+      if (fin.perch.lands < 1)
+        fail(
+          `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
+        );
       if (
-        last &&
-        Math.abs(shown - last.x_off) > 0.6 &&
-        Math.abs(shown - mid) > 0.6
+        fin.perch.leaves >= 1 &&
+        !fin.sky.entries.some((e) => e.entry === "perch")
       )
+        fail(`${seat}: a bird left the perch but no "perch" entry was logged`);
+      if (twoLeaves)
         fail(
-          `${seat}: ${id} is drawn at ${shown}px but the log says ${last.x_off}px`
+          `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
+        );
+      if (twoFlies)
+        fail(
+          `${seat}: two butterflies in ${twoFlies} sample(s) — one at a time`
+        );
+      /* the owl: drawn if and only if it has come home; an "owl" entry logged
+       when it set out */
+      if ((fin.owl.state === "home") !== fin.owlDrawn > 0)
+        fail(
+          `${seat}: the owl is ${fin.owl.state} but ${fin.owlDrawn} owl fill(s) are drawn in the notch`
+        );
+      if (
+        fin.owl.state !== "away" &&
+        !fin.sky.entries.some((e) => e.entry === "owl")
+      )
+        fail(`${seat}: the owl set out but no "owl" entry was logged`);
+      if (!fin.sky || fin.sky.spawned < 2)
+        fail(
+          `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
+        );
+      const maxOff = {};
+      for (const g of fin.ground)
+        maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
+      const roamers = fin.roamers || {};
+      for (const [id, off] of Object.entries(maxOff)) {
+        const lim = roamers[id] ? roamers[id].range : RANGE_PX;
+        if (off > lim)
+          fail(
+            `${seat}: ${id} strayed ${off}px from where it was drawn — its declared home range is ±${lim}px`
+          );
+      }
+      /* the log against the ink: one roamer's computed translate must be what
+       the log says its offset is */
+      /* every DECLARED roamer, moved or not: its drawn offset within its range */
+      for (const [id, tf, axis] of fin.tf) {
+        const nums0 = tf
+          ? tf
+              .replace(/^translate\(/, "")
+              .split(",")
+              .map(parseFloat)
+          : [0, 0];
+        const shown0 = Math.abs(axis === "y" ? nums0[1] || 0 : nums0[0] || 0);
+        const lim0 = roamers[id] ? roamers[id].range : RANGE_PX;
+        if (shown0 > lim0 + 0.6)
+          fail(
+            `${seat}: ${id} is drawn ${shown0.toFixed(1)}px from home — its declared range is ±${lim0}px`
+          );
+      }
+      for (const [id, tf, axis] of fin.tf) {
+        const last = [...fin.ground].reverse().find((g) => g.id === id);
+        const nums = tf
+          ? tf
+              .replace(/^translate\(/, "")
+              .split(",")
+              .map(parseFloat)
+          : [0, 0];
+        const shown = axis === "y" ? nums[1] || 0 : nums[0] || 0;
+        /* a move is logged whole as it starts and drawn in two halves, so a
+         sample mid-hop sits at the previous offset plus half the step */
+        const mid = last ? last.x_off - last.dx / 2 : 0;
+        if (
+          last &&
+          Math.abs(shown - last.x_off) > 0.6 &&
+          Math.abs(shown - mid) > 0.6
+        )
+          fail(
+            `${seat}: ${id} is drawn at ${shown}px but the log says ${last.x_off}px`
+          );
+      }
+      if (!fails.some((f) => f.startsWith(seat)))
+        note(
+          `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
+            `max ${maxFar} far at once, ${routes.length} routes flown and none over the rock, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
+            `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
+            `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
         );
     }
-    if (!fails.some((f) => f.startsWith(seat)))
-      note(
-        `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
-          `max ${maxFar} far at once, ${routes.length} routes flown and none over the rock, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
-          `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
-          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
-      );
     await ctx.close();
   }
 } finally {
