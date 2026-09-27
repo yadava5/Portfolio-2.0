@@ -15,8 +15,14 @@
  *      6px, through its screen matrix, and it is those points that keep
  *      their distance — plus what could move them: a roamer's ±30px home
  *      range, and for a swaying group the amplitude at that radius, so the
- *      wind cannot carry a leaf into a halo. Under the signature the grass
+ *      wind cannot carry a leaf into a halo — the sun's two crown groups
+ *      turn and are measured the same way. Under the signature the grass
  *      is capped at 10px. At every one of the seven seats.
+ *      And THE LIGHT'S CLEARING (round 13): the sun rises behind the range,
+ *      so the only things that may stand inside the crown's circle are the
+ *      sun's own marks and the rock in front of it. Everything else lifts
+ *      off it, which is what this drawing has instead of a glow. The sun's
+ *      colour is held to its own class there too: .ds-sun and nowhere else.
  *   6. THE PLANES' MATERIALS (round 12). The range is fixed path data
  *      (RANGE), and .ds-p2 may hold nothing else: every path is a declared
  *      ridge line (.ds-ridge), a facet's hatch (inside a .ds-facet that
@@ -98,6 +104,32 @@
  * Check 8, on the build of 7e8d916 (the leaf masks three sheets square):
  *   · (8) fails on all four moving masks at 1456x949, mC1 278x, mC2 112x,
  *     mS1 711x, mS2 1278x; the builder's own box measures 1.44x
+ * Round 13, the sun behind the range. TODO(labrat): run each of these on a
+ * temp copy of out/ and record the measured line here, the way every entry
+ * above records one. Written by the author of the checks, who cannot run
+ * them:
+ *   · `.dawnscape .ds-tuft{stroke:var(--sun-g)}` added → (4) fails, two
+ *     rules name --sun-g
+ *   · the sun's rule reselected to `.dawnscape .ds-ink` → (4) fails, the
+ *     light's colour on another selector
+ *   · `--sun-g` deleted from `:root[data-night]` → check-palette fails: the
+ *     day ochre measures 2.88:1 on #43372f, under the 3.0 graphic floor
+ *   · class "ds-sun" put on one grass blade in `tuft()` → (1) fails,
+ *     a path wearing .ds-sun outside the sun's groups
+ *   · the `inLight` term dropped from `skyPiece` → (1) fails, an etched sky
+ *     line inside the crown's clearing (it draws straight through the disc)
+ *   · the `inLight` term dropped from `cut` → (1) fails on the phone, where
+ *     the band's haze runs under the disc
+ *   · `"ds-rays"` removed from PERIOD → the builder throws at live(), the
+ *     scape never publishes and (1) fails with no drawing
+ *   · `--amp` raised on `.ds-rays` from 1.4deg to 6deg without re-breaking
+ *     the rays → (1) fails at 1280x720, where the crown's margin over the
+ *     run state's halo is 4.5px and 6deg buys about 11px of travel
+ *   · the same on `.ds-rays2`, whose --amp is NEGATIVE (-1deg → -6deg) →
+ *     (1) fails too. This one is the probe for the check's own arithmetic
+ *     rather than for the drawing: a signed tangent would have made the
+ *     second crown group's clearance requirement smaller the faster it
+ *     turned, and nothing else here would have noticed
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -196,19 +228,37 @@ async function serve() {
   for (const body of rules)
     for (const m of body.matchAll(/var\(--([\w-]+)\)/g))
       tokens.add(`--${m[1]}`);
-  const allowed = new Set(["--ink", "--ink-2", "--hair-strong"]);
+  /* THREE INKS AND ONE LIGHT. The sheet was ruled ink-only and the owner
+     lifted that ruling for the sun alone in round 13, so --sun-g joins the
+     list with a leash: it may appear in exactly ONE rule, and that rule's
+     selector must be the sun's own class. The drawing side of the same rule
+     — that no path wears .ds-sun outside the sun's groups — is held at the
+     clearance check, which reads the shipped DOM. */
+  const allowed = new Set(["--ink", "--ink-2", "--hair-strong", "--sun-g"]);
   const off = [...tokens].filter((t) => !allowed.has(t));
+  const sunRules = [...html.matchAll(/(\.dawnscape[^{]*)\{([^}]*)\}/g)].filter(
+    (m2) => /var\(--sun-g\)/.test(m2[2])
+  );
   if (!rules.length)
     fail(
       "no .dawnscape rules in out/index.html: the ground is not styled, or the class moved"
     );
   if (off.length)
     fail(
-      `the dawnscape draws with ${off.join(", ")} — only --ink, --ink-2 and --hair-strong may appear in its rules`
+      `the dawnscape draws with ${off.join(", ")} — only --ink, --ink-2, --hair-strong and --sun-g may appear in its rules`
+    );
+  else if (tokens.has("--sun-g") && sunRules.length !== 1)
+    fail(
+      `--sun-g is named by ${sunRules.length} .dawnscape rules — it is the sun's colour and it gets exactly one selector`
+    );
+  else if (tokens.has("--sun-g") && sunRules[0][1].trim() !== ".dawnscape .ds-sun")
+    fail(
+      `--sun-g is drawn by "${sunRules[0][1].trim()}" — only ".dawnscape .ds-sun" may carry the light's colour`
     );
   else
     note(
-      `palette: ${rules.length} .dawnscape rules draw with ${[...tokens].join(", ")}`
+      `palette: ${rules.length} .dawnscape rules draw with ${[...tokens].join(", ")}` +
+        (tokens.has("--sun-g") ? ", --sun-g on .ds-sun alone" : "")
     );
   /* THE WIND MUST LIVE INSIDE THE NO-PREFERENCE QUERY, and this has to be
      read off the source, because a browser cannot see it: under reduced
@@ -328,10 +378,23 @@ try {
     };
     /* every sampled point, kept for the edge walk */
     const pts = [];
-    /* the sun's halo: nothing but the horizon and the sun's own arcs (the
-       .ds-line plane) within 90px of its centre */
+    /* THE LIGHT'S CLEARING. The sun used to sit on the meadow and the rule
+       was "nothing but the horizon and its own arcs" — the .ds-line plane —
+       within 3.5 radii. It rises behind the rock now, so the two things that
+       may stand inside its clearing are ITS OWN MARKS and THE RANGE, which
+       is in front of it; everything else (the etched sky, the haze, the
+       vale, the tree, the meadow, a creature) lifts off it, because bare
+       paper is what this drawing has instead of a glow.
+       Measured on the SCREEN point, not the raw one: the tree and the range
+       are drawn inside their own transforms, so a raw path coordinate is in
+       a different frame from scape.sun and the old comparison was measuring
+       board units against viewport pixels. */
     const sun = scape && scape.sun;
     let halo = { d: Infinity, sub: "" };
+    /* every path wearing the sun's token, and where it is: the token is
+       allowed on the sun and nowhere else, and check (4) holds the rule that
+       says so — this holds the drawing that obeys it */
+    let sunOff = [];
     for (const p of svg.querySelectorAll("path")) {
       /* a mask's or a pattern's path is a hole or a tile, not a mark; a
          tone field's outline is not a mark either (its dots stop at the
@@ -345,12 +408,19 @@ try {
       const L = p.getTotalLength();
       if (!L) continue;
       const m = p.getScreenCTM();
-      const onLine = !!p.closest(".ds-line");
+      const inSun = !!p.closest(".ds-sundisc, .ds-rays, .ds-rays2");
+      const inRock = !!p.closest(".ds-p2");
+      /* the sun's token, wherever it ended up */
+      if (p.classList.contains("ds-sun") && !inSun)
+        sunOff.push(p.className.baseVal || "path");
       /* a roamer declares its own axis and range on its group */
       const roamer = p.closest("[data-range]");
       const range = roamer ? +roamer.dataset.range : 0;
       const axisY = roamer && roamer.dataset.axis === "y";
-      const sw = p.closest("[class*=sway-]");
+      /* a group that turns about its own origin: every sway- class, and the
+         sun's two crown groups, which declare --amp the same way and would
+         otherwise be measured as if they never moved */
+      const sw = p.closest("[class*=sway-], [class*=ds-rays]");
       let ox = 0,
         oy = 0,
         tanA = 0;
@@ -360,8 +430,14 @@ try {
           .map(parseFloat);
         ox = o[0];
         oy = o[1];
-        const amp =
-          parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0;
+        /* ABSOLUTE. --amp carries a direction as well as a size — the sun's
+           second crown group turns -1deg against the first — and a signed
+           tangent makes every clearance LOOSER for the group that turns the
+           other way, which is a gate arguing itself down. A mark's travel is
+           the same either way round. */
+        const amp = Math.abs(
+          parseFloat(getComputedStyle(sw).getPropertyValue("--amp")) || 0
+        );
         tanA = Math.tan((amp * Math.PI) / 180);
       }
       const g = p.parentElement;
@@ -385,8 +461,8 @@ try {
         const sway = tanA ? Math.hypot(q.x - ox, q.y - oy) * tanA : 0;
         samples++;
         pts.push([v.x, v.y]);
-        if (sun && !onLine) {
-          const d = Math.hypot(q.x - sun.x, q.y - sun.y) - range;
+        if (sun && !inSun && !inRock) {
+          const d = Math.hypot(v.x - sun.x, v.y - sun.y) - range - sway;
           if (d < halo.d) halo = { d: +d.toFixed(1), sub };
         }
         for (const t of texts) {
@@ -846,6 +922,7 @@ try {
       paths: svg.querySelectorAll("path").length,
       worst,
       halo,
+      sunOff,
       leafWorst,
       edgeGaps,
       texts: texts.length,
@@ -902,9 +979,28 @@ try {
         note(
           `${seat}: clearance margin ${m.worst.margin}px ("${m.worst.text}" vs ${m.worst.sub}, ${m.worst.gap}px of ${m.worst.need}px), ${m.texts} text rects vs ${m.samples} sampled points`
         );
-      if (m.scape.sun && m.halo.d < m.scape.sun.r * 3.5)
+      /* THE CLEARING, and the tolerance in it. The builder lifts every other
+         mark at the crown's own radius (2.75 r); a polyline is cut at its
+         SAMPLES, so a segment between two cut points can graze the boundary
+         by a pixel — measured 149.8 against 150.2 at 1920×1080. The gate
+         holds 0.95 of the crown, which is a real clearing and not a
+         rounding argument: a sky line drawn straight through the sun
+         measures near zero, not 149. */
+      if (m.scape.sun) {
+        const crown = m.scape.sun.crown || m.scape.sun.r * 2.75;
+        if (m.halo.d < crown * 0.95)
+          fail(
+            `${seat}: ${m.halo.sub} stands ${m.halo.d}px from the sun — nothing but the sun's own marks and the rock it rises behind may stand inside the crown's clearing (${crown.toFixed(0)}px)`
+          );
+        else
+          note(
+            `${seat}: the crown's clearing holds — nearest other ink ${m.halo.d}px out of ${crown.toFixed(0)} (${m.halo.sub}), sun at ${m.scape.sun.x},${m.scape.sun.y} r${m.scape.sun.r} with ${m.scape.sun.rays} rays`
+          );
+      }
+      /* the one coloured mark on the sheet is on the sun and nowhere else */
+      if (m.sunOff && m.sunOff.length)
         fail(
-          `${seat}: ${m.halo.sub} is ${m.halo.d}px from the sun — nothing but the horizon and the sun's arcs within 3.5 radii (${(m.scape.sun.r * 3.5).toFixed(0)}px) of it`
+          `${seat}: ${m.sunOff.length} path(s) wear .ds-sun outside the sun's own groups (${m.sunOff.slice(0, 3).join(", ")}) — the token draws the light and nothing else`
         );
       if (Object.keys(m.edgeGaps).length)
         fail(

@@ -122,6 +122,19 @@ if (location.hash.length > 1) {
                                 any waypoint. Nothing could have said so; check-palette can. */
     --clay-g:#c4532e;        /* clay as graphic — measured: #c4532e on #f2e4c9 — 3.62:1 / Lc 55.7 */
     --pine:#2f5d50;
+    --sun-g:#a8760c;         /* RESERVED: ¶13's sun and nothing else. Graphics only, never
+                                text, the way --clay-g is. The one colour on a drawing that
+                                was ruled ink-only, and it is on the LIGHT rather than on the
+                                object: the disc's rim is --ink-2 and this is the second pass
+                                over it, plus the rays.
+                                measured: #a8760c on #fbf3e7, the morning field the dawnscape
+                                is the only thing that renders on — 3.63:1 / Lc 60.0; on
+                                #f2e4c9, the tightest day field, still 3.18:1 / Lc 52.0, so it
+                                clears the 3.0 graphic floor on every waypoint rather than
+                                only on its own. Measured again off the shipped pixels at DPR
+                                1, 2 and 3: the stroke's core reaches #a8760c exactly (w12 and
+                                w14 do not dilute), and against the paper beside it — which
+                                the wash's own glow lifts to #fdfdf0 — 3.89:1 / Lc 65.2. */
     --ember:#f57a3e;         /* RESERVED: the inked APPROVED stamp only */
     --hair:rgba(38,35,28,.16);
     --hair-strong:rgba(38,35,28,.34);
@@ -150,6 +163,14 @@ if (location.hash.length > 1) {
                                 graphics keep the darker clay */
     --clay-g:#e08a5f;
     --pine:#aecfc0;          /* measured: #aecfc0 on #43372f — 6.84:1 / Lc 65.3 */
+    --sun-g:#e0b25c;         /* the sun, at night. A formality a reader never sees — the
+                                dawnscape draws only under body.atmorning, which is the day
+                                world — and declared anyway because check-palette measures a
+                                figure token as NIGHT[t] ?? DAY[t] over the night fields, and
+                                the day ochre reads 2.88:1 there. Stating a night value is
+                                cheaper and more honest than teaching the scan an exception.
+                                measured: #e0b25c on #43372f — 5.85:1 / Lc 57.3, and on
+                                #2c2622 — 7.60:1 / Lc 61.4. */
     --hair:rgba(246,239,226,.18);
     --hair-strong:rgba(246,239,226,.45); /* .40 composited to EXACTLY the 3.0
                                 non-text floor on the settled night field — the
@@ -1148,8 +1169,8 @@ if (location.hash.length > 1) {
   /* ————— the dawnscape —————
      ¶13's own ground, drawn in the page's own ink: a horizon, one far hill
      and one far mountain on the left, a copse of three open-line trees, a
-     doe, five tufts of grass, two gulls on the ground, and the sun where the
-     wash puts its light. Sketched, not filled, because the figures on this
+     doe, five tufts of grass, two gulls on the ground, and the sun coming up
+     behind the range. Sketched, not filled, because the figures on this
      page are hairline drawings with a hand's wobble and the morning has to
      be in the same hand. It lives in the sticky panel, behind the words and
      in front of the flock (main is z 2, .flock is z 1), so a bird that
@@ -1165,11 +1186,19 @@ if (location.hash.length > 1) {
     pointer-events:none; opacity:0; contain:strict; overflow:hidden}
   body.atmorning .dawnscape{opacity:1}
   .dawnscape path{fill:none; stroke-linecap:round; stroke-linejoin:round}
-  /* three inks, and only three: the subjects in --ink-2, the far structure in
+  /* three inks and one light: the subjects in --ink-2, the far structure in
      --hair-strong. Faintness is a token, never an element opacity, because
      check-palette reads tokens and cannot see an opacity. */
   .dawnscape .ds-ink{stroke:var(--ink-2)}
   .dawnscape .ds-far{stroke:var(--hair-strong)}
+  /* THE ONE COLOURED MARK ON THIS SHEET. The page was drawn ink-only by
+     ruling, and the owner lifted that ruling for the sun alone — so the
+     colour is on the LIGHT, never on the object: the disc's rim is drawn
+     in --ink-2 like everything else that was drawn, and this is the second
+     pass over it plus the rays. One selector carries the token, and
+     check-dawnscape (4) holds both halves of that: the rule, and the fact
+     that every path wearing the class is inside the sun's own groups. */
+  .dawnscape .ds-sun{stroke:var(--sun-g); fill:none}
   .dawnscape .ds-fill{fill:var(--ink-2); stroke:none}
   /* the aquatint: the massifs are tone fields of hair-strong dots in two
      prime tiles; the fields, the masks and the first-light shadows carry
@@ -1195,10 +1224,21 @@ if (location.hash.length > 1) {
   .dawnscape .ds-back, .dawnscape .ds-line, .dawnscape .ds-mid, .dawnscape .ds-front{opacity:0}
   body.atmorning .dawnscape .ds-back, body.atmorning .dawnscape .ds-line,
   body.atmorning .dawnscape .ds-mid, body.atmorning .dawnscape .ds-front{opacity:1}
+  /* THE LIGHT ARRIVES A BEAT AFTER THE SHAPE IT BELONGS TO. The disc comes up
+     with the back plane, the crown lifts 5px and inks a moment behind it —
+     a transition, keyed to body.atmorning like every other plane here, and
+     deliberately NOT an animation: an animation keyed to body.morninglive
+     would stand the crown on the page through the whole carry, snap it to
+     nothing the instant the class landed, and then play. Reduced motion gets
+     the end state, as everywhere on this canvas. */
+  .dawnscape .ds-rays, .dawnscape .ds-rays2{opacity:0; transform:translateY(5px)}
+  body.atmorning .dawnscape .ds-rays, body.atmorning .dawnscape .ds-rays2{opacity:1; transform:none}
   @media (prefers-reduced-motion: no-preference){
     .dawnscape .ds-back{transition:opacity 1.6s ease .1s}
     .dawnscape .ds-line, .dawnscape .ds-mid{transition:opacity 1.9s ease .5s}
     .dawnscape .ds-front{transition:opacity 2.2s ease .9s}
+    .dawnscape .ds-rays, .dawnscape .ds-rays2{
+      transition:opacity 1.5s ease .9s, transform 1.5s cubic-bezier(.22,.62,.42,1) .9s}
   }
   /* ————— the wind —————
      ONE WIND, and everything on the ground answers to it. A gust every 7.3s,
@@ -1224,7 +1264,17 @@ if (location.hash.length > 1) {
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
   .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
-  .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth{transform-box:view-box}
+  .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth,
+  .dawnscape .ds-rays, .dawnscape .ds-rays2{transform-box:view-box}
+  /* THE CROWN TURNS; THE DISC DOES NOT. The disc is arcs cut at the skyline,
+     so a disc that moved would slide its own cut off the ridge it was cut
+     against. The rays are two interleaved groups on two periods turning
+     opposite ways, which is the crown's own two-layer device: the fan opens
+     and closes. Rotation ONLY, no scale — check-dawnscape derives a moving
+     mark's reach from --amp, so a scale would be travel the gate cannot see,
+     and the builder breaks each ray at the chrome's halo PLUS this turn. */
+  .dawnscape .ds-rays{--amp:1.4deg}
+  .dawnscape .ds-rays2{--amp:-1deg}
   .dawnscape .squirrel-tail{--amp:10deg}
   .dawnscape .ds-spider{transform-box:view-box}
   .dawnscape .spider{--amp:.5deg}
@@ -1291,6 +1341,17 @@ if (location.hash.length > 1) {
     body.morninglive .dawnscape .owl-head{animation:turn 11.3s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-a{animation:peck 5.2s ease-in-out var(--ph, 0s) infinite}
     body.morninglive .dawnscape .peck-b{animation:peck 6.1s ease-in-out var(--ph, 0s) infinite}
+    /* the crown, on two clocks that share no multiple with the gusts or the
+       pecks, starting after the arrival transition has landed (0.9 + 1.5s)
+       so the turn never fights the lift */
+    body.morninglive .dawnscape .ds-rays{animation:sunturn 11.3s ease-in-out 2.6s infinite}
+    body.morninglive .dawnscape .ds-rays2{animation:sunturn 14.9s ease-in-out 2.6s infinite}
+  }
+  @keyframes sunturn{
+    0%{transform:rotate(0)}
+    40%{transform:rotate(var(--amp))}
+    70%{transform:rotate(calc(var(--amp) * -.3))}
+    100%{transform:rotate(0)}
   }
   @keyframes gust{
     0%{transform:rotate(0)}
@@ -1447,12 +1508,14 @@ if (location.hash.length > 1) {
      the long way back across the page; they leave the socket now — which is
      in the left column at every desktop seat and in the phone's own gutter —
      and east is where the room is. (An earlier note here had the sun on the
-     right, reading FLIP_POS, a scroll position, as a screen x. Measured at
-     drawWash: the dawn hold pins sun=0.62, so the glow sits at 0.26 W, 0.62 H,
-     low and LEFT of centre, for the whole of the morning. The birds fly out
-     of the sunrise into the open half of the sky.) Two rules that mirrored
-     them went with the reason for them: a mirror nothing sets is a mirror
-     nobody watches. */
+     right, reading FLIP_POS, a scroll position, as a screen x. Then it had
+     the glow low and left at 0.26 W, 0.62 H, which is where drawWash put it
+     before ¶13 drew a sun of its own. Measured at the seat the drawing takes
+     now: 0.503 W, 0.195 H — up on the principal's west ridge, and the field's
+     glow travels to meet it, so there is one light and the birds cross the
+     open sky east of it. routeClear keeps every route off its clearing.)
+     Two rules that mirrored them went with the reason for them: a mirror
+     nothing sets is a mirror nobody watches. */
 
   /* A BIRD LEAVES THE GROUND FAST. The old curve held 98% of its ink for
      the middle of a 9 to 15 second crossing, and measured against the frame
@@ -1717,14 +1780,13 @@ if (location.hash.length > 1) {
   .figsvg .prod{fill:none; stroke:var(--ink); stroke-width:1.4}
   .figsvg .rec{fill:none; stroke:var(--ink); stroke-width:1.2}
   .figsvg .rec.landed{stroke:var(--pine)}
-  .figsvg .meter{fill:none; stroke:var(--hair-strong); stroke-width:1}
-  .figsvg .meterfill{fill:var(--pine)}
-  .figsvg .meterlbl{fill:var(--ink)}
-  /* the three products' dispositions, and the meter's signature riser.
-     A check for what was filed, a strike for what was not, and clay for that
-     pair because a disposition of record is the gate register — §4b's amended
-     rule 5. (¶10 used to carry the same 1.5 round stroke as a drawn mark; its
-     verdicts are stamps on slips now, so this is the only place it is left.) */
+  /* the two products' dispositions. A check for what was filed, a strike for
+     what was not, and clay for that pair because a disposition of record is
+     the gate register — §4b's amended rule 5. (¶10 used to carry the same 1.5
+     round stroke as a drawn mark; its verdicts are stamps on slips now, so
+     this is the only place it is left.)
+     The meter's three rules stood here until round 13, when the owner ruled
+     the compliance story out of the figure; they went with the bar. */
   .figsvg .tickp{fill:none; stroke:var(--pine); stroke-width:1.5; stroke-linecap:round}
   .figsvg .tickp.withheld{stroke:var(--clay-g)}
   .schoolrec{max-width:1180px; margin:clamp(2.2rem,5vh,4rem) auto 0; width:100%;
@@ -1935,7 +1997,7 @@ if (location.hash.length > 1) {
        overrides (#e08a5f / #9dbfb0) measured Lc 43–56 as kicker and
        link text on these grounds, under the 60 floor; #f4b090/#aecfc0
        measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
-    .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0;
+    .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0; --sun-g:#e0b25c;
       --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.45);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
@@ -3353,8 +3415,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <svg id="pathFig" class="figsvg" viewBox="0 0 560 388" role="img" aria-label="Three feeder roads, carrying 1.6 million OAS query logs, the Tableau and Workday records, and a legacy Laravel reporter, run through one Python and SQL works and park inside their products, where they stay; the three products merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid and checked in, and the other two are drawn dashed and not checked in, because they are read off Miami's own systems. Beneath the third, a compliance meter stands settled at 97 percent across 61 projects. It does not fill as you scroll; only its riser and numeral ink in."></svg>
-        <figcaption>fig. 03 · three messy sources in, three products out.</figcaption>
+        <svg id="pathFig" class="figsvg" viewBox="0 0 560 278" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API. Both run through one Python and SQL works and park inside their products, where they stay; both products then merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid, checked with a tick, and checked in; the usage table of 57.8 million rows is drawn dashed, struck, and stays with IT Services."></svg>
+        <figcaption>fig. 03 · two messy sources in, two products out.</figcaption>
       </figure>
     </div>
     <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
@@ -4126,11 +4188,13 @@ void main(){
   size();
   addEventListener("resize", size);
   window.__hasGL = true;
-  drawWash = (rgb, scrollNorm, sunArc, nightF) => {
-    /* sun: rises east, crests at noon, sets west, gone by dusk */
+  drawWash = (rgb, scrollNorm, sunArc, nightF, at) => {
+    /* sun: rises east, crests at noon, sets west, gone by dusk — unless the
+       page has drawn one, in which case the glow is wherever that one is
+       (see washSeat: at the morning the drawing owns the light's place) */
     const t = clamp(sunArc / 5, 0, 1);
-    const sx = lerp(0.18, 0.85, t);
-    const sy = 0.9 - Math.sin(t * Math.PI) * 0.75;
+    const sx = at ? at[0] : lerp(0.18, 0.85, t);
+    const sy = at ? at[1] : 0.9 - Math.sin(t * Math.PI) * 0.75;
     const str = sunArc < 4.6 ? 0.9 : clamp(1 - (sunArc - 4.6) / 0.75, 0, 1) * 0.9;
     gl.uniform2f(uR, washCanvas.width, washCanvas.height);
     gl.uniform3f(uC, rgb[0], rgb[1], rgb[2]);
@@ -5600,11 +5664,22 @@ function scrubWho(p) {
 }
 
 /* ····· fig. 03 · the yard · the ITSM job as freight ·····
-   Three feeders (1.6m query logs, the Tableau/Workday silos, a legacy
-   Laravel reporter) run through one python·sql works and land in their
-   products; the products merge onto the main line. Records travel and
-   LAND — unlike jet's blocks they stay put, because the yard's whole
-   point is what the freight became.
+   Two feeders (1.6M+ query logs, the Tableau/Workday silos) run through one
+   python·sql works and land in their products; both products merge onto the
+   main line. Records travel and LAND — unlike jet's blocks they stay put,
+   because the yard's whole point is what the freight became.
+
+   ROUND 13 TOOK THE THIRD ROAD OUT. The owner ruled the compliance story
+   out of this figure: the legacy Laravel reporter, the ETL feed, the
+   37-month dashboard and the 97% meter are gone, and what is left is the
+   two sources and the two things they became. The plate was NOT left with
+   a hole where the third band was — it is re-laid: the columns are
+   re-measured off the labels that remain, the two stitches now curve to a
+   switch halfway between the roads instead of one running straight through,
+   and the height comes down from 388 to 278 (wide) and 550 to 392 (tight).
+   The disposition moved to its own row under each box, because "stays with
+   IT Services" is 176 units against a 186-unit box and would have eaten the
+   floor it was set into.
 
    fig. 09's three devices, inherited, and what each answers here:
 
@@ -5615,10 +5690,9 @@ function scrubWho(p) {
    2 STRUCTURE IS ONE REGISTER: --hair-strong at 1, dash as the
      sub-register. Dash carries the disposition the station's own handoff
      line states out loud: only the inventory is checked in, so its box
-     is solid and the other two are drawn dashed. No element-level
-     opacity is used anywhere on this plate — the only opacity written
-     is 0/1, on a record before it enters and on the meter's numeral
-     before it is signed.
+     is solid and the other is drawn dashed. No element-level opacity is
+     used anywhere on this plate — the only opacity written is 0/1, on a
+     record before it enters.
    3 A GATE A THING PASSES THROUGH GETS A FORM THAT SWINGS — and this
      plate is the one where that device does not apply, which was worth
      finding out by drawing it. A boom was built here and removed. On a
@@ -5629,36 +5703,37 @@ function scrubWho(p) {
      because its lifted bars take pine. Here all three works gates truly
      opened — there is no contrast to read against — and pine is barred,
      because pine is THIS plate's landed register (records, stitches,
-     the meter, the filed mark) and three pine sticks would say "these
-     landed" about a gate. The settled state is the design, and that
-     settled state said nothing. So the works keeps the form it has —
-     two walls with a doorway at each road, which IS a threshold you
-     pass through — and the clay register goes where this plate's real
-     gate is: the three products' DISPOSITIONS. One was filed and two
-     were withheld, drawn in the reviewer's own marks from ¶10, a check
-     and a strike. §4b's amended rule 5 permits exactly this: a
-     disposition of record may repeat in clay, because the cap binds
-     emphasis a composition adds, not facts it records.
+     the filed mark) and pine sticks would say "these landed" about a
+     gate. The settled state is the design, and that settled state said
+     nothing. So the works keeps the form it has — two walls with a
+     doorway at each road, which IS a threshold you pass through — and
+     the clay register goes where this plate's real gate is: the two
+     products' DISPOSITIONS. One was filed and one was withheld, drawn in
+     the reviewer's own marks from ¶10, a check and a strike. §4b's
+     amended rule 5 permits exactly this: a disposition of record may
+     repeat in clay, because the cap binds emphasis a composition adds,
+     not facts it records.
 
-   THE CONGESTION, and how the room was bought. §4b: three feeder label
+   THE CONGESTION, and how the room was bought — the note that earned this
+   plate its shape when it carried three roads. §4b: three feeder label
    pairs, three product boxes and the meter shared one 330-unit height
    while the stitch curves crossed the label zone. Nothing was dropped
-   to fix it. The feeder labels moved INTO their band, onto the same two
-   rows as the product they become, so the source name and the product
-   name read across; the road IS the siding the records park on, so no
-   box needs a third row; the meter hangs off the product it is about
-   instead of floating in the gutter; and the rest is height (330 ⟶
-   388), which the label-size gate does not read. The width is
-   untouched: 12 × 515 ÷ 560 = 11.04px, exactly as it ships.
+   to fix it then. The feeder labels moved INTO their band, onto the same
+   two rows as the product they become, so the source name and the product
+   name read across; the road IS the siding the records park on; and the
+   rest was height. Every one of those devices is still here, carrying two
+   roads instead of three, which is why the plate did not have to be
+   re-invented when the third one went. The width is untouched:
+   12 × 515 ÷ 560 = 11.04px, exactly as it ships.
 
-   THE METER DOES NOT FILL — §4b, and a correctness fix rather than
-   polish. It stood animated from width 0 to 97% of its own scale under
-   a label reading `0% ⟶ 97%`: a gauge filling as you watch over a
-   committed figure, the class the bench ruling removed twice. It stands
-   drawn at its 97% now — the 3 it does not reach is visible at the
-   track's end — and what answers the scroll is the signature: the riser
-   drawing and the numeral being written. A mark being drawn misstates
-   no magnitude. Wide 560×388/12px; tight 240×550/11px.
+   THE METER IS GONE, with the story it measured. It had already been
+   corrected once — §4b stopped it filling from 0 to 97% under the reader's
+   scroll, because a gauge filling as you watch over a committed figure is
+   the class the bench ruling removed twice — and round 13 removed the
+   claim itself from the drawing. The correction is worth keeping in the
+   record even though the object is not: what answered the scroll was a
+   mark being DRAWN, never a magnitude being counted up.
+   Wide 560×278/12px; tight 240×392/11px.
 
    EVERY LABEL BELOW IS BUDGETED AT 8.01 UNITS/CHAR WIDE AND 7.13 TIGHT,
    read off getComputedTextLength() in the browser rather than estimated.
@@ -5672,24 +5747,24 @@ function scrubWho(p) {
    one that declined. The same hand files and withholds here. */
 const D_FILED = "M1.5 5.6 C3.2 7.4 4.2 8.2 5 8 C6.6 5.8 9.4 2.6 12.8 1.2";
 const D_HELD = "M1.2 5.8 C4.6 4.6 9.2 5.4 12.9 4.6";
-const yard = { svg: $("pathFig"), recs: [], marks: [], trunk: null,
-  sig: null, signum: null, shapedT: 0.68 };
+const yard = { svg: $("pathFig"), recs: [], marks: [], trunk: null, shapedT: 0.68 };
 function buildPath(tight) {
   const s = yard.svg, el = svgIn(s);
   s.textContent = ""; s.classList.toggle("tight", !!tight);
   yard.recs = []; yard.marks = [];
   /* fresh elements: the diff cache must not skip them after a rebuild */
-  yard._sig = null; yard._mk = null;
+  yard._mk = null;
   const src = [
-    ["1.6m+ oas query logs", "5 yrs · 1,153 users"],
-    ["tableau + workday", "hash dedup · rest api"],
-    ["legacy laravel", "teamdynamix · gitlab"],
+    ["1.6M+ OAS query logs", "5 yrs · 1,153 users"],
+    ["Tableau + Workday", "hash dedup · REST API"],
   ];
   const prod = [
-    ["field usage table", "sqlite · 57.8m rows"],
+    ["usage table", "57.8M rows"],
     ["master inventory", "10,453 × 35 fields"],
-    ["etl feed", "37 month dashboard"],
   ];
+  /* each product's disposition, in its own words rather than in a negation
+     of the other's: one leaves the site's boundary, one does not */
+  const disp = ["stays with IT Services", "checked in"];
   const FILED = 1; /* the master inventory — the one product checked in */
   /* a rule with a gap wherever a label seats on it or a road crosses it */
   const hrule = (y, x0, x1, gaps) => {
@@ -5705,73 +5780,71 @@ function buildPath(tight) {
     el("path", { d: d.trim(), class: "lane" });
   };
   if (!tight) {
-    /* the columns are sized off the LONGEST measured label in each:
-       freight 8..184 ("hash dedup · rest api" = 168.3 from x 8), works
-       192..300 (its own nameplate, 96.1), products 308..476 ("sqlite ·
-       57.8m rows" = 152.2 from x 316, ending 468.2), and the merge
-       corridor 484..552, which every stitch stays inside so no label is
-       ever set over a curve. Two names carry the header; the works is
-       the one column that is a machine rather than a state, so it wears
-       its nameplate inside itself, in the silence between two roads. */
-    s.setAttribute("viewBox", "0 0 560 388");
-    /* the works exit is 93% of the record's third segment, so that is
-       where a record stops being raw freight and starts being a product */
-    yard.shapedT = 0.73;
-    const ROAD = [92, 184, 276], WKS = 192, BX0 = 308, BX1 = 476, SW = 508, BUF = 448;
+    /* THE COLUMNS ARE SIZED OFF THE LONGEST MEASURED LABEL IN EACH, and they
+       moved when the third road went: freight 8..178 ("hash dedup · REST API"
+       = 168.2 from x 8), works 182..284 (its own nameplate, 96.1 from 186),
+       products 300..486 — wide enough for "stays with IT Services" (176.2)
+       set back from the box's right edge, which is what sets this width —
+       and the merge corridor 494..552, which every stitch stays inside so no
+       label is ever set over a curve. Two names carry the header; the works
+       is the one column that is a machine rather than a state, so it wears
+       its nameplate inside itself, in the silence between the two roads. */
+    s.setAttribute("viewBox", "0 0 560 272");
+    /* the works exit as a fraction of the deepest record's whole polyline:
+       32 + 174 + 110 of 456 units, which is where a record stops being raw
+       freight and starts being a product */
+    yard.shapedT = 0.69;
+    const ROAD = [92, 196], WKS = 182, BX0 = 300, BX1 = 486, SW = 516, BUF = 452, TRUNK = 144;
     el("text", { x: 8, y: 38 }).textContent = "";
-    el("text", { x: 308, y: 38 }).textContent = "";
     el("text", { x: 552, y: 38, "text-anchor": "end" }).textContent = "main line";
-    hrule(34, 102, 552, [[302, 410], [474, 558]]);
+    hrule(34, 102, 552, [[472, 558]]);
     /* ——— the works: two walls, with a doorway at every road ——— */
     const doors = ROAD.map((y) => [y - 12, y + 12]);
-    vrule(192, 46, 328, doors);
-    vrule(300, 46, 328, doors);
-    el("text", { x: 196, y: 134, class: "lit" }).textContent = "";
-    el("text", { x: 196, y: 148 }).textContent = "python · sql";
+    vrule(WKS, 46, 240, doors);
+    vrule(292, 46, 240, doors);
+    el("text", { x: 188, y: 148 }).textContent = "python · sql";
     ROAD.forEach((y, i) => {
       /* the source's two rows and the product's two rows are THE SAME two
-         rows: the reader gets `1.6m+ oas query logs ⟶ field usage table`
+         rows: the reader gets `1.6M+ OAS query logs ⟶ usage table`
          across the plate without the plate having to draw the arrow. */
       el("text", { x: 8, y: y - 26, class: "lit" }).textContent = src[i][0];
       el("text", { x: 8, y: y - 12 }).textContent = src[i][1];
       el("path", { d: `M 8 ${y} H ${BUF}`, class: "lane" });
       el("path", { d: `M ${BUF} ${y - 6} V ${y + 6}`, class: "lane" }); /* the buffer stop */
       /* the box is open toward the merge and open at the corner its own
-         road comes in by — a product is what leaves, not a container.
-         Its bottom edge breaks for the disposition it carries. */
+         road comes in by — a product is what leaves, not a container. Its
+         floor breaks for the reviewer's mark, which straddles it: the stamp
+         is on the box, not beside it. (The floor used to break for the whole
+         disposition, which worked while both of them were two words. "stays
+         with IT Services" is 176 units and a box is 186, so the words sit on
+         their own row under the floor now and the mark stands over the end
+         of them, at the corner the product leaves by: the floor runs to the
+         stamp and stops, and what is past it is open toward the merge.) */
       const filed = i === FILED;
       const box = { class: "prod",
-        d: `M ${BX1} ${y - 40} H ${BX0} V ${y - 10} M ${BX0} ${y + 12} H ${filed ? 371 : 339}` };
+        d: `M ${BX1} ${y - 40} H ${BX0} V ${y - 10} M ${BX0} ${y + 12} H 436` };
       if (!filed) box["stroke-dasharray"] = "5 6";
       el("path", box);
-      el("text", { x: 316, y: y - 26, class: "lit" }).textContent = prod[i][0];
-      el("text", { x: 316, y: y - 12 }).textContent = prod[i][1];
+      el("text", { x: 308, y: y - 26, class: "lit" }).textContent = prod[i][0];
+      el("text", { x: 308, y: y - 12 }).textContent = prod[i][1];
       /* the station's own words, not a coinage: the handoff line says only
-         the inventory is checked in. A shorter tag would leave the box a
-         longer bottom edge and would be saying something the run does not. */
+         the inventory is checked in, and the other product stays inside the
+         system it was read from. */
       yard.marks.push(el("path", { d: filed ? D_FILED : D_HELD,
         class: filed ? "tickp" : "tickp withheld",
-        transform: `translate(${filed ? 377 : 345} ${y + 4}) scale(1.2)` }));
-      el("text", { x: BX1, y: y + 16, "text-anchor": "end", class: filed ? "lit" : "" })
-        .textContent = filed ? "checked in" : "not checked in";
+        transform: `translate(440 ${y + 3}) scale(1.5)` }));
+      el("text", { x: BX1, y: y + 28, "text-anchor": "end", class: filed ? "lit" : "" })
+        .textContent = disp[i];
+      /* both products merge, so both stitches curve to the same switch */
       el("path", { class: "stitch",
-        d: i === 1 ? `M ${BX1} ${y} H ${SW}` : `M ${BX1} ${y} C 494 ${y} 492 ${ROAD[1]} ${SW} ${ROAD[1]}` });
+        d: `M ${BX1} ${y} C 504 ${y} 502 ${TRUNK} ${SW} ${TRUNK}` });
     });
-    el("path", { d: `M ${SW} ${ROAD[1] - 14} V ${ROAD[1] + 14}`, class: "lane" }); /* the switch stand */
-    yard.trunk = el("path", { d: `M ${SW} ${ROAD[1]} H 540`, class: "stitch" });
-    el("path", { d: `M 540 ${ROAD[1] - 6} L 552 ${ROAD[1]} L 540 ${ROAD[1] + 6} Z`,
+    el("path", { d: `M ${SW} ${TRUNK - 14} V ${TRUNK + 14}`, class: "lane" }); /* the switch stand */
+    yard.trunk = el("path", { d: `M ${SW} ${TRUNK} H 540`, class: "stitch" });
+    el("path", { d: `M 540 ${TRUNK - 6} L 552 ${TRUNK} L 540 ${TRUNK + 6} Z`,
       fill: "var(--pine)", stroke: "none" });
-    /* ——— the meter, hung off the product it is about ——— */
-    el("path", { d: `M 316 ${ROAD[2] + 12} V 312`, class: "lane" });
-    el("rect", { x: BX0, y: 312, width: 168, height: 6, class: "meter" });
-    el("rect", { x: BX0, y: 312, width: 162.9, height: 6, class: "meterfill" }); /* 97%, authored */
-    yard.sig = el("path", { d: "M 470.9 304 V 326", class: "tickp" });
-    yard.signum = el("text", { x: 466, y: 304, "text-anchor": "end", class: "meterlbl", opacity: 0 });
-    yard.signum.textContent = "97%";
-    el("text", { x: BX0, y: 344, class: "meterlbl" }).textContent = "compliance across 61 projects";
-    el("text", { x: 8, y: 370 }).textContent = "";
-    hrule(366, 376, 552, []);
-    const lanes = [0, 1, 2, 0, 1, 0, 2, 1], slot = [0, 0, 0];
+    hrule(248, 376, 552, []);
+    const lanes = [0, 1, 0, 1, 0, 1], slot = [0, 0];
     lanes.forEach((ln, i) => {
       const y = ROAD[ln];
       /* a siding fills from its far end, so the first arrival parks
@@ -5791,10 +5864,12 @@ function buildPath(tight) {
        left the way fig. 09's tight rail runs — so the boom is the same
        bar on the same hinge, and every label has the full 240 to itself.
        Measured at 11 + .03em: the longest feeder label is 21 chars =
-       149.7 units, the longest product label 19 = 135.5 from x 54. */
-    s.setAttribute("viewBox", "0 0 240 550");
+       149.7 units, the longest product label 18 = 128.3 from x 54, and the
+       longest disposition 22 = 156.9 from x 30, which the full width of
+       this plate carries without moving anything. */
+    s.setAttribute("viewBox", "0 0 240 392");
     yard.shapedT = 0.48; /* the works' far wall, as a fraction of this polyline */
-    const BAND = [26, 168, 310], RX = 34, BX1 = 212, CX = 224;
+    const BAND = [26, 168], RX = 34, BX1 = 212, CX = 224;
     el("text", { x: 8, y: 14 }).textContent = "";
     hrule(10, 94, 232, []);
     BAND.forEach((Y, i) => {
@@ -5809,7 +5884,11 @@ function buildPath(tight) {
       if (i === 0) el("text", { x: 64, y: Y + 60 }).textContent = "python · sql";
       const filed = i === FILED;
       const box = { class: "prod",
-        d: `M ${BX1} ${Y + 84} H 42 M 26 ${Y + 84} H 8 V ${Y + 128} M ${filed ? 108 : 136} ${Y + 128} H ${BX1}` };
+        /* the floor's break is sized to the words that sit in it, measured
+           at 7.13 units/char: "checked in" is 71.3 from x 30 and "stays
+           with IT Services" is 156.9, which is why the two breaks differ by
+           86 units rather than by the 28 the old pair of tags needed */
+        d: `M ${BX1} ${Y + 84} H 42 M 26 ${Y + 84} H 8 V ${Y + 128} M ${filed ? 110 : 195} ${Y + 128} H ${BX1}` };
       if (!filed) box["stroke-dasharray"] = "5 6";
       el("path", box);
       el("text", { x: 54, y: Y + 100, class: "lit" }).textContent = prod[i][0];
@@ -5819,7 +5898,7 @@ function buildPath(tight) {
         class: filed ? "tickp" : "tickp withheld",
         transform: `translate(12 ${Y + (filed ? 121 : 123)}) scale(1.05)` }));
       el("text", { x: 30, y: Y + 132, class: filed ? "lit" : "" })
-        .textContent = filed ? "checked in" : "not checked in";
+        .textContent = disp[i];
       el("path", { d: `M ${BX1} ${Y + 106} H ${CX}`, class: "stitch" });
       const g = el("g", { class: "recg" });
       const r = el("rect", { x: -4.5, y: -3.2, width: 9, height: 6.4, class: "rec" }, g);
@@ -5827,23 +5906,14 @@ function buildPath(tight) {
         line: [[RX, Y + 34], [RX, Y + 56], [RX, Y + 84], [RX, Y + 110]] });
     });
     /* the merge, drawn: the tight plate used to state it in a text arrow */
-    yard.trunk = el("path", { d: `M ${CX} ${BAND[0] + 106} V 508`, class: "stitch" });
-    el("path", { d: `M ${CX - 6} 508 L ${CX} 520 L ${CX + 6} 508 Z`, fill: "var(--pine)", stroke: "none" });
-    el("path", { d: `M 16 ${BAND[2] + 128} V 460`, class: "lane" });
-    el("rect", { x: 8, y: 460, width: 192, height: 6, class: "meter" });
-    el("rect", { x: 8, y: 460, width: 186.2, height: 6, class: "meterfill" }); /* 97%, authored */
-    yard.sig = el("path", { d: "M 194.2 452 V 474", class: "tickp" });
-    yard.signum = el("text", { x: 190, y: 452, "text-anchor": "end", class: "meterlbl", opacity: 0 });
-    yard.signum.textContent = "97%";
-    el("text", { x: 8, y: 486, class: "meterlbl" }).textContent = "compliance across 61 projects";
-    el("text", { x: 8, y: 508 }).textContent = "";
-    el("text", { x: 8, y: 522 }).textContent = "";
-    el("text", { x: 232, y: 542, "text-anchor": "end" }).textContent = "the main line";
+    yard.trunk = el("path", { d: `M ${CX} ${BAND[0] + 106} V 340`, class: "stitch" });
+    el("path", { d: `M ${CX - 6} 340 L ${CX} 352 L ${CX + 6} 340 Z`, fill: "var(--pine)", stroke: "none" });
+    el("text", { x: 232, y: 374, "text-anchor": "end" }).textContent = "the main line";
   }
   /* everything that inks in, measured once at build. getTotalLength on a
      transformed path returns USER-space length, which is what the dash
      array wants — the scale rides along with it. */
-  for (const q of [yard.trunk, yard.sig, ...yard.marks]) {
+  for (const q of [yard.trunk, ...yard.marks]) {
     const L = q.getTotalLength();
     q.style.strokeDasharray = L; q.style.strokeDashoffset = L; q._len = L;
   }
@@ -5861,23 +5931,11 @@ function scrubPath(p) {
     const t = smooth((p - 0.34) / 0.24);
     yard.trunk.style.strokeDashoffset = (yard.trunk._len * (1 - t)).toFixed(1);
   }
-  /* THE SIGNATURE, which is all the meter does. The bar is drawn at its
-     committed 97% before the reader arrives; the riser and the numeral
-     are what the scroll writes, and a mark being written states nothing
-     on the way. The numeral is 0 or 1 — never a partial opacity, which
-     no palette gate can see. */
-  const sg = smooth((p - 0.52) / 0.14);
-  const soff = (yard.sig._len * (1 - sg)).toFixed(1);
-  if (yard._sig !== soff) {
-    yard._sig = soff;
-    yard.sig.style.strokeDashoffset = soff;
-    yard.signum.setAttribute("opacity", sg >= 1 ? 1 : 0);
-  }
   /* the dispositions are signed in band order, as the last records
-     arrive — mark 0 completes at .76 and the eighth record lands at .835,
+     arrive — mark 0 completes at .76 and the sixth record lands at .79,
      so the docket is written across the end of the run rather than after
      it. A mark being signed is the one motion the bench ruling allows
-     over a record, and all three stand complete at scrub 1. */
+     over a record, and both stand complete at scrub 1. */
   const mk = yard.marks.map((m, i) => {
     const t = smooth((p - 0.64 - i * 0.05) / 0.12);
     return (m._len * (1 - t)).toFixed(1);
@@ -6976,6 +7034,9 @@ function setMast(beat, p) {
    — precisely so the ink never renders across the mid band where neither cream
    nor dark holds contrast. Reversing it inherits that guarantee rather than
    re-deriving it: the same jump, taken upward. */
+/* where the dawn's light stops climbing: the arc value ¶13 holds at, and the
+   ramp the field's glow travels to the drawn sun on */
+const DAWN_HOLD = 0.62;
 const DAWN_STOPS = [
   [1, 0.3471, 0.0218, 55.56], [1, 0.3679, 0.0244, 56.67],
   [1, 0.3886, 0.0269, 57.78], [1, 0.4093, 0.0295, 58.89], [1, 0.43, 0.032, 60],
@@ -6996,8 +7057,38 @@ function dawnArc(p) {
   return {
     rgb: oklchToRgb(lerp(a[1], b[1], t), lerp(a[2], b[2], t), lerp(a[3], b[3], t)),
     night: a[0] === 1,
-    sun: a[0] === 1 ? 7 : lerp(0, 0.62, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
+    sun: a[0] === 1 ? 7 : lerp(0, DAWN_HOLD, clamp((f - 5) / (DAWN_STOPS.length - 6), 0, 1)),
+    /* THIS ARC IS ¶13'S AND NOBODY ELSE'S. arcColor returns it for beat 12
+       alone; every other beat runs the day or the dusk, where `sun` is the
+       whole day's crossing (0..5) rather than the dawn's climb (0..0.62).
+       washSeat keys on this flag because it cannot key on the value: an
+       approved reader can scroll back, and a day beat's sun of 3 read
+       through the dawn's ramp clamps to 1 — which would have pinned the
+       field's glow to ¶13's seat over ¶05 at noon. */
+    dawn: true,
   };
+}
+
+/* ————— ONE SUN —————
+   The field's glow used to sit where the arc's own path put it: measured at
+   the morning's hold, (0.263 W, 0.615 H) — which is in the VALLEY, a quarter
+   of the sheet below the range's foot, while ¶13's drawing has its sun up on
+   the principal's west ridge. Two suns, and the page said so.
+   The drawn one is the truth. The glow travels to it over the same ramp that
+   raises the dawn, so it ARRIVES on the disc rather than jumping onto it when
+   the build publishes; the arc's own `sun` value is untouched, because it
+   also drives the fallback's path, the glow's strength and ¶13's prose about
+   where the birds go. Only on the DAWN ARC — ¶13's own, which arcColor
+   returns for beat 12 and nothing else — because body.gateopen persists
+   after the approval and an approved reader may scroll back up the run. */
+function washSeat(arc) {
+  if (!arc.dawn || arc.night || !SCAPE.built || !SCAPE.sun) return null;
+  const w = innerWidth || 1, h = innerHeight || 1;
+  const p = clamp(arc.sun / 5, 0, 1), t = clamp(arc.sun / DAWN_HOLD, 0, 1);
+  return [
+    lerp(lerp(0.18, 0.85, p), SCAPE.sun.x / w, t),
+    lerp(0.9 - Math.sin(p * Math.PI) * 0.75, SCAPE.sun.y / h, t),
+  ];
 }
 
 /* one applier, so nothing can write the field behind the arc's back */
@@ -7017,7 +7108,7 @@ function applyArc(arc, scrollFrac) {
       refreshInk(); repaintPad();
     }
   }
-  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0);
+  if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0, washSeat(arc));
 }
 
 /* ————— the engine ————— */
@@ -7067,8 +7158,11 @@ function work(y) {
   if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
   if (document.body.classList.contains("no-gl")) {
     const t = clamp(arc.sun / 5, 0, 1);
+    /* the fallback sun takes the same seat as the wash's: one sun holds
+       whether or not the shader ran */
+    const at = washSeat(arc);
     $("sun").style.transform =
-      `translate(${(lerp(0.18, 0.85, t) * vw).toFixed(0)}px, ${((0.9 - Math.sin(t * Math.PI) * 0.75) * vh).toFixed(0)}px)`;
+      `translate(${((at ? at[0] : lerp(0.18, 0.85, t)) * vw).toFixed(0)}px, ${((at ? at[1] : 0.9 - Math.sin(t * Math.PI) * 0.75) * vh).toFixed(0)}px)`;
     $("sun").style.opacity = arc.sun < 4.6 ? 1 : clamp(1 - (arc.sun - 4.6) / 0.75, 0, 1);
   }
 
@@ -7905,12 +7999,12 @@ function birdRng(seed) {
    from the top-right corner; the etched sky runs between them. Down the right
    edge the sky turns the corner in short breaking horizontals, then a hatched
    bank rises off the edge carrying three slender saplings, and the meadow
-   runs the bottom edge corner to corner. The sun breaks the horizon under the
-   wash's glow, and the doe stands backlit between the trunk and the light,
-   facing west, the one thing on the page that looks back. Density is highest
-   at the four corners, each a different weight, and falls to nothing at the
-   words and at the sun: the clearing and the halo are drawn by everything
-   else stopping.
+   runs the bottom edge corner to corner. The sun comes up BEHIND THE RANGE,
+   on the principal's west ridge, which cuts a chord across its disc, and the
+   doe stands backlit between the trunk and the light, facing west, the one
+   thing on the page that looks back. Density is highest at the four corners,
+   each a different weight, and falls to nothing at the words and at the sun:
+   the clearing and the halo are drawn by everything else stopping.
 
    SIX MARKS, ONE HAND. Every line goes through the page's seeded hand (two
    slow sines pushed perpendicular to the stroke, the rail's own wobble), so
@@ -7933,9 +8027,12 @@ function birdRng(seed) {
         under the drawing is the wash, not a flat
      5. reed-pen tick-fields — some 240 short curved ticks in seeded clumps,
         graded dense at the bottom corners to a floor under the words
-     6. bare paper as light — nothing but the horizon and its own arcs
-        within 90px of the sun, hatch thinning to nothing by 260px; no ink
-        inside the clearing the words derive; no rays
+     6. bare paper as light — the sky lifts off the sun's crown the way it
+        lifts off the rock, and the tick fields thin to nothing 90px from it
+        and back to full by 260; no ink inside the clearing the words
+        derive. The rays are the one thing DRAWN in the light rather than
+        left blank, and they are strokes: uneven, bent, some broken, in the
+        sheet's only colour. Nothing here is a glow
 
    EVERYTHING IS BUILT, NOT PLACED, from viewport fractions and pixels,
    seeded, so every load draws the same morning and a screenshot can be a
@@ -7953,7 +8050,8 @@ function birdRng(seed) {
    passed first time, the flock bird and the doe, were drawn ONCE as fixed
    path data and placed; so is the range now. Board units, 2400 × 440: five
    summits in three depths, the principal right of centre with its lit west
-   face turned to the valley's light at 0.26 W and its shadow east face as
+   face turned to the valley's light — which round 13 put ON that face's own
+   ridge, where the hatch always said it was — and its shadow east face as
    dense parallel hatch, hard at the ridge and at the terminator, snow as
    the hatch stopping at a crisp shape; the west and east peaks behind it in
    --hair-strong, two far peaks in line only. Every mark is a ridge line
@@ -7970,15 +8068,51 @@ const RANGE = {
   summits: [{"name":"principal","layer":1,"peak":[1420,40],"crest":[[770,398],[820,374],[870,350],[916,326],[956,306],[992,290],[1016,284],[1036,272],[1060,250],[1082,238],[1100,236],[1122,222],[1146,202],[1170,184],[1190,170],[1214,159],[1236,151],[1258,139],[1284,121],[1306,105],[1322,98],[1338,104],[1352,99],[1366,90],[1384,73],[1400,57],[1420,40],[1436,52],[1452,66],[1470,82],[1488,94],[1500,98],[1512,91],[1526,100],[1544,114],[1566,126],[1590,134],[1616,138],[1640,146],[1662,160],[1690,180],[1722,202],[1756,226],[1790,248],[1830,272],[1872,298],[1916,322],[1962,346],[2010,372],[2060,398]],"faces":[[[1420,40],[1424,70],[1432,104],[1444,140],[1458,176],[1476,216],[1496,258],[1518,300],[1540,340],[1558,378],[1624,386],[1608,352],[1584,310],[1558,262],[1536,214],[1518,170],[1508,130],[1512,92],[1512,91],[1500,98],[1488,94],[1470,82],[1452,66],[1436,52],[1420,40]],[[1512,92],[1508,130],[1518,170],[1536,214],[1558,262],[1584,310],[1608,352],[1624,386],[1624,404],[1766,404],[1766,380],[1748,340],[1716,292],[1680,240],[1652,190],[1640,147],[1640,146],[1616,138],[1590,134],[1566,126],[1544,114],[1526,100],[1512,91]],[[1640,147],[1652,190],[1680,240],[1716,292],[1748,340],[1766,380],[1766,404],[2060,404],[2060,398],[2010,372],[1962,346],[1916,322],[1872,298],[1830,272],[1790,248],[1756,226],[1722,202],[1690,180],[1662,160],[1640,146]]],"snow":[[[1421,42],[1434,52],[1448,64],[1460,76],[1452,82],[1446,92],[1440,106],[1433,100],[1428,84],[1423,64]],[[1548,118],[1570,128],[1596,136],[1622,140],[1644,148],[1650,158],[1634,160],[1612,168],[1592,172],[1576,164],[1560,150],[1550,134]]]},{"name":"west","layer":2,"peak":[564,102],"crest":[[-150,398],[-70,378],[10,352],[90,322],[170,290],[240,258],[300,228],[356,200],[406,176],[440,160],[466,150],[492,134],[512,122],[528,112],[538,116],[546,122],[554,112],[564,102],[578,108],[596,118],[622,134],[654,154],[690,176],[730,200],[772,226],[816,252],[860,278],[904,304],[950,332],[1000,362],[1050,392]],"faces":[[[-150,398],[-70,378],[10,352],[90,322],[170,290],[240,258],[300,228],[356,200],[406,176],[440,160],[466,150],[492,134],[512,122],[528,112],[538,116],[546,122],[554,112],[564,102],[564,102],[558,134],[546,172],[530,214],[512,258],[496,300],[484,340],[476,374],[476,404],[-150,404]]]},{"name":"east","layer":2,"peak":[1972,132],"crest":[[1700,340],[1760,290],[1810,246],[1856,206],[1900,174],[1936,150],[1956,140],[1972,132],[1990,138],[2016,150],[2050,168],[2092,190],[2140,214],[2200,238],[2270,262],[2340,284],[2420,304]],"faces":[[[1972,132],[1980,170],[1992,214],[2006,262],[2022,310],[2034,352],[2042,384],[2042,404],[2420,404],[2420,304],[2340,284],[2270,262],[2200,238],[2140,214],[2092,190],[2050,168],[2016,150],[1990,138],[1972,132]]]},{"name":"notch","layer":3,"peak":[1024,176],"crest":[[930,250],[962,224],[990,198],[1010,184],[1024,176],[1040,186],[1066,204],[1100,226],[1140,250]],"faces":[]},{"name":"farwest","layer":3,"peak":[230,190],"crest":[[120,262],[160,236],[200,208],[230,190],[262,204],[300,226],[340,250]],"faces":[]}],
   markup: "<g class=\"ds-summit\" data-name=\"principal\" data-layer=\"1\" data-facets=\"3\"><path class=\"ds-ink w1 ds-ridge\" d=\"M864.7 352.5L870 350L916 326L956 306L992 290L1016 284L1036 272L1060 250L1062.4 248.7M1070.3 244.4L1082 238L1100 236L1122 222L1146 202L1170 184L1190 170L1214 159L1236 151L1258 139L1284 121L1306 105L1322 98L1333.1 102.2M1341.6 102.7L1352 99L1366 90L1384 73L1400 57L1420 40L1433.8 50.4M1440.7 56.1L1452 66L1470 82L1488 94L1500 98L1512 91L1526 100L1544 114L1566 126L1590 134L1616 138L1640 146L1662 160L1673.4 168.1M1680.7 173.4L1690 180L1722 202L1756 226L1790 248L1830 272L1872 298L1874.4 299.3M1882.4 303.6L1916 322L1962 346L1993.6 363.1M1420 40L1424 70L1432 104L1444 140L1458 176L1466.1 194.1M1475.2 214.2L1476 216L1496 258L1497.3 260.6M1510.7 104.7L1508 130L1518 170L1536 214L1536.5 215\"/><path class=\"ds-ink w08 ds-ridge\" d=\"M1242.6 146.1L1257.4 138.1L1283.4 120.1L1305.4 104.1L1322 96.9L1338 102.9L1351.5 98L1365.3 89.1L1383.2 72.2L1399.2 56.2L1403.9 52.3M1438.9 55.9L1451.3 66.7L1469.4 82.8L1487.5 94.9L1500.1 99L1511.9 92L1525.4 100.8L1537 109.8M1591.7 133.4L1616.2 137.1L1640.4 145.2L1662.5 159.2L1673.9 167.4M1640 147L1652 190L1680 240L1690.3 254.9M1338 104L1330 132L1318.4 161.1M1312.9 173.4L1302 198L1293.8 220M1214 159L1206 192L1200.9 210.3M1100 236L1094 262L1089.5 275.4\"/><g class=\"ds-facet\" data-poly=\"1420,40 1424,70 1432,104 1444,140 1458,176 1476,216 1496,258 1518,300 1540,340 1558,378 1624,386 1608,352 1584,310 1558,262 1536,214 1518,170 1508,130 1512,92 1512,91 1500,98 1488,94 1470,82 1452,66 1436,52 1420,40\"><path class=\"ds-ink w06 ds-hatch\" d=\"M1508.1 93.3L1509.2 95.7M1505.5 94.8L1508.6 101.5M1502.9 96.3L1508 107.3M1500.3 97.8L1507.4 113.1M1496.5 96.8L1506.8 118.9M1492.6 95.5L1506.2 124.7M1488.7 94.2L1505.8 130.9M1484 91.4L1509.6 146.2M1479.2 88.1L1513.4 161.4M1589.1 323.7L1613.7 376.5M1474.4 84.9L1524.9 193.2M1567.6 284.7L1613.6 383.4M1469.6 81.6L1605.3 372.8M1463.9 76.6L1607.2 384M1458.2 71.5L1599 373.4M1452.6 66.5L1454.4 70.4M1457.8 77.7L1598.5 379.5M1447 61.6L1448.2 64.2M1455.3 79.5L1589.3 366.7M1441.4 56.7L1442.7 59.4M1452.9 81.3L1590.2 375.7M1435.8 51.9L1437.1 54.7M1450.8 84L1496.9 182.8M1499.3 188.1L1588.7 379.7M1448.9 87.1L1489.9 174.9M1496.2 188.5L1580.1 368.4M1447.1 90.2L1484.8 171.1M1493.1 188.9L1580.3 375.9M1445.3 93.6L1479.7 167.3M1488.9 186.9L1570.4 361.7M1443.7 97.3L1474.6 163.5M1484.1 183.7L1571.6 371.4M1442.2 101L1469.6 159.8M1479.3 180.5L1572.2 379.7M1440.6 104.7L1465.5 158.1M1474.5 177.3L1568.6 379.3M1426.9 82.5L1428.7 86.4M1436.5 103L1461.4 156.4M1469.7 174.1L1565.1 378.9M1430.3 96.8L1457.3 154.7M1464.9 171.1L1561.6 378.4M1436.2 116.5L1453.2 153M1460.3 168.2L1558.1 378M1444.9 142.3L1449.1 151.3M1455.6 165.3L1520.8 305.1\"/></g><g class=\"ds-facet\" data-poly=\"1512,92 1508,130 1518,170 1536,214 1558,262 1584,310 1608,352 1624,386 1624,404 1766,404 1766,380 1748,340 1716,292 1680,240 1652,190 1640,147 1640,146 1616,138 1590,134 1566,126 1544,114 1526,100 1512,91\"><path class=\"ds-ink w06 ds-hatch\" d=\"M1638.4 159.5L1644.2 168.8M1634.7 159.9L1647.5 180.4M1631.3 161L1654.2 197.6M1707.4 282.8L1753.4 356.3M1628 162.2L1763.7 379.2M1624.8 163.4L1758.4 377.1M1621.5 164.5L1763 391M1618.2 165.7L1753.6 382.4M1615 166.9L1756.1 392.8M1611.7 168.1L1756.4 399.6M1608.1 168.8L1670.5 268.7M1674 274.3L1746.4 390.1M1604.6 169.5L1664.1 264.7M1671.7 277L1749.2 400.9M1601 170.2L1657.6 260.7M1668.5 278.2L1739.2 391.4M1597.4 170.9L1651.1 256.8M1662.5 275L1739.1 397.6M1593.9 171.6L1644.6 252.8M1656.5 271.9L1727.8 386M1589.2 170.6L1638.4 249.3M1650.5 268.7L1729.3 394.8M1583.4 167.7L1632.8 246.8M1644.5 265.5L1727.9 398.9M1546.8 115.5L1548.5 118.2M1577.6 164.8L1627.2 244.3M1638.5 262.3L1717.5 388.7M1539.8 110.7L1548.9 125.4M1569.5 158.3L1621.6 241.7M1632.3 258.8L1718.2 396.2M1532 104.6L1549.9 133.4M1560.7 150.6L1616.1 239.2M1626 255.1L1706.1 383.3M1524.4 99L1610.5 236.7M1619.7 251.4L1708 392.8M1517.7 94.7L1604.9 234.2M1613.3 247.7L1708.3 399.6M1513.4 94.1L1600.3 233.2M1607 243.9L1698.3 390.1M1512.8 99.6L1701.1 400.9M1512.2 105.1L1691.1 391.4M1511.6 110.6L1690.9 397.6M1511.1 116.1L1679.7 386M1510.5 121.6L1681.2 394.8M1509.9 127.1L1679.8 398.9M1510.9 135.1L1669.4 388.7M1513.6 145.8L1670.1 396.2M1516.3 156.5L1658 383.3M1518.9 167.2L1659.9 392.8M1525.5 184.1L1660.1 399.6M1533.1 202.7L1650.2 390.1M1542.2 223.6L1653 400.9M1553.2 247.7L1643 391.4M1570.8 282.3L1642.8 397.6M1604.3 342.3L1631.6 386M1620.2 374.2L1633.1 394.8M1624 386.7L1631.7 398.9\"/></g><g class=\"ds-facet\" data-poly=\"1640,147 1652,190 1680,240 1716,292 1748,340 1766,380 1766,404 2060,404 2060,398 2010,372 1962,346 1916,322 1872,298 1830,272 1790,248 1756,226 1722,202 1690,180 1662,160 1640,146\"><path class=\"ds-ink w06 ds-hatch\" d=\"M2055.4 395.6L2058.8 399.7M2036.8 386L2047.1 398.2M2027.6 381.1L2033.1 387.8M2018.3 376.3L2034.6 395.7M2009 371.5L2032.5 399.4M1999.4 366.3L2019.5 390.2M1989.9 361.1L2020 397M1980.3 355.9L2005 385.3M1970.7 350.7L2006.9 393.9M1961.2 345.6L2006.9 400M1951.9 340.7L1994.4 391.4M1942.6 335.9L1997.5 401.2M1933.3 331L1985 392.7M1924 326.2L1984.4 398.2M1914.7 321.3L1970.5 387.8M1905.1 316L1971.9 395.7M1895.4 310.8L1969.8 399.4M1885.8 305.5L1956.9 390.2M1876.2 300.3L1957.3 397M1865.9 294.2L1942.3 385.3M1855 287.5L1944.3 393.9M1844.1 280.7L1944.2 400M1833.3 274L1931.8 391.4M1822.6 267.6L1934.8 401.2M1812.1 261.3L1922.4 392.7M1801.6 255L1921.8 398.2M1791.1 248.7L1907.8 387.8M1779.8 241.4L1909.3 395.7M1768.3 234L1907.1 399.4M1756.9 226.6L1894.2 390.2M1744.2 217.7L1894.6 397M1731.4 208.6L1879.6 385.3M1718.7 199.7L1881.6 393.9M1706.4 191.3L1881.5 400M1694 182.8L1869.1 391.4M1681.2 173.7L1872.1 401.2M1668.2 164.4L1859.7 392.7M1656.1 156.3L1859.1 398.2M1644.9 149.1L1845.2 387.8M1647.4 158.3L1846.6 395.7M1645.5 162.3L1844.5 399.4M1648.1 171.6L1831.5 390.2M1650.7 180.9L1832 397M1653.9 190.9L1817 385.3M1664.4 209.7L1819 393.9M1674.9 228.4L1818.9 400M1691.2 254.1L1806.5 391.4M1715.8 289.6L1809.5 401.2M1736.2 320.2L1797.1 392.7M1751.2 344.3L1796.5 398.2M1757.3 357.7L1782.5 387.8M1763.3 371.1L1784 395.7M1766 380.5L1781.8 399.4M1766 386.8L1768.9 390.2M1766 393L1769.3 397\"/></g><g class=\"ds-hachure\"><path class=\"ds-ink w08\" d=\"M1399.4 58.9L1393.4 80.1M1401.3 64.7L1397.7 77.4M1365.3 91.9L1353.7 123.8M1366.8 97.7L1359.8 116.9M1283.3 122.9L1268.3 159.9M1284.5 128.8L1275.5 151M1169.2 185.8L1155.4 216.9M1170.3 191.8L1162 210.4M1081.1 239.8L1069.7 263.2M1082 245.8L1075.1 259.8\"/></g></g><g class=\"ds-summit\" data-name=\"west\" data-layer=\"2\" data-facets=\"1\"><path class=\"ds-far w12 ds-ridge\" d=\"M-150 398L-70 378L10 352L90 322L170 290L231.4 261.9M238.8 258.6L240 258L300 228L356 200L406 176L440 160L466 150L492 134L497.9 130.4M504.9 126.3L512 122L528 112L538 116L546 122L554 112L564 102L578 108L596 118L622 134L654 154L690 176L702.1 183.3M709.1 187.5L730 200L772 226L816 252L860 278L904 304L922.7 315.4\"/><path class=\"ds-far w1 ds-ridge\" d=\"M376.4 189.1L405.6 175.1L439.6 159.1L465.6 149.1L491.5 133.1L497.4 129.6M564 102L558 134L546 172L530 214L520.2 238\"/><g class=\"ds-facet\" data-poly=\"-150,398 -70,378 10,352 90,322 170,290 240,258 300,228 356,200 406,176 440,160 466,150 492,134 512,122 528,112 538,116 546,122 554,112 564,102 564,102 558,134 546,172 530,214 512,258 496,300 484,340 476,374 476,404 -150,404\"><path class=\"ds-far w1 ds-hatch\" d=\"M476 382.3L468.8 397.2M476.2 373.3L470.5 384.9M480.1 356.6L461.7 394.3M484.1 339.8L455.4 398.6M490.8 317.3L456.4 387.8M499.5 290.8L448.3 395.7M515.8 248.7L450.8 382.1M535.3 200L441.6 392.1M548.3 164.8L433.9 399.3M556 140.2L434.6 389.3M553.9 135.9L424.7 400.8M551.1 133.1L425.4 390.7M548.7 129.3L516.4 195.5M513.6 201.3L418 397.2M551.1 115.6L549.1 119.7M546.5 125L512.7 194.4M509.9 200.1L419.8 384.9M544.4 120.8L509.1 193.2M506.2 199L411 394.3M541.3 118.5L505.4 192.1M502.6 197.9L404.6 398.6M538.2 116.1L501.7 190.9M498.9 196.7L405.7 387.8M534.7 114.7L498 189.8M495.2 195.6L397.6 395.7M531.1 113.3L494.4 188.6M491.5 194.5L400 382.1M527.3 112.4L490.7 187.5M487.3 194.4L390.9 392.1M521.2 116.2L487 186.3M482.7 195.2L383.2 399.3M515.1 120L482.7 186.6M478.1 196L383.8 389.3M509.1 123.7L478.1 187.4M473.5 196.8L374 400.8M503.1 127.3L473.4 188.2M468.9 197.5L374.7 390.7M497.2 130.9L468.8 189M464.3 198.3L367.3 397.2M491.2 134.5L464.2 189.9M459.7 199.1L369 384.9M485.1 138.2L459.6 190.7M454.6 200.8L360.2 394.3M479.1 141.9L454.9 191.5M449.6 202.5L353.9 398.6M473 145.7L450 192.9M444.5 204.2L354.9 387.8M467 149.4L444.5 195.4M439.5 205.8L346.9 395.7M461.7 151.7L439.1 198M434.4 207.5L349.3 382.1M456.5 153.7L433.6 200.5M429.7 208.6L340.2 392.1M451.3 155.7L428.2 203M427 205.3L332.4 399.3M446.1 157.7L333.1 389.3M440.8 159.7L323.3 400.8M435.4 162.2L323.9 390.7M429.9 164.7L316.6 397.2M424.4 167.3L318.3 384.9M418.9 169.9L309.5 394.3M413.5 172.5L303.2 398.6M408 175.1L304.2 387.8M402.5 177.7L296.1 395.7M396.9 180.3L298.6 382.1M391.4 183L289.4 392.1M385.9 185.6L281.7 399.3M380.4 188.3L282.4 389.3M374.9 190.9L272.5 400.8M369.3 193.6L273.2 390.7M363.8 196.2L265.8 397.2M358.3 198.9L267.6 384.9M352.7 201.6L258.8 394.3M347.1 204.4L252.4 398.6M341.6 207.2L253.5 387.8M336 210L245.4 395.7M330.4 212.8L247.8 382.1M324.8 215.6L238.7 392.1M319.2 218.4L230.9 399.3M313.6 221.2L231.6 389.3M308 224L221.8 400.8M302.4 226.8L222.5 390.7M296.8 229.6L215.1 397.2M291.2 232.4L216.8 384.9M285.6 235.2L208 394.3M280 238L201.7 398.6M274.5 240.8L202.7 387.8M268.9 243.6L194.7 395.7M263.3 246.4L197.1 382.1M257.7 249.2L187.9 392.1M252.1 252L180.2 399.3M246.5 254.7L180.9 389.3M240.9 257.5L171.1 400.8M235.4 260.1L171.7 390.7M230 262.6L164.4 397.2M224.6 265.1L166.1 384.9M219.1 267.5L157.3 394.3M213.7 270L151 398.6M208.2 272.5L152 387.8M202.8 275L143.9 395.7M197.4 277.5L146.4 382.1M191.9 280L137.2 392.1M186.5 282.5L129.5 399.3M181 285L130.2 389.3M175.6 287.4L120.3 400.8M170.2 289.9L121 390.7M164.9 292L113.6 397.2M159.6 294.1L115.4 384.9M154.4 296.2L106.6 394.3M149.1 298.3L100.2 398.6M143.9 300.4L101.3 387.8M138.6 302.5L93.2 395.7M133.4 304.6L95.6 382.1M128.1 306.8L86.5 392.1M122.9 308.9L78.7 399.3M117.6 311L79.4 389.3M112.4 313.1L69.6 400.8M107.1 315.2L70.3 390.7M101.9 317.3L62.9 397.2M96.6 319.4L64.6 384.9M91.4 321.5L55.8 394.3M86.2 323.4L49.5 398.6M81 325.4L50.5 387.8M75.8 327.3L42.4 395.7M70.6 329.3L44.9 382.1M65.5 331.2L35.7 392.1M60.3 333.1L28 399.3M55.1 335.1L28.7 389.3M49.9 337L18.9 400.8M44.8 339L19.5 390.7M39.6 340.9L12.2 397.2M34.4 342.8L13.9 384.9M29.2 344.8L5.1 394.3M24.1 346.7L-1.2 398.6M18.9 348.7L-0.2 387.8M13.7 350.6L-8.3 395.7M8.6 352.5L-5.9 382.1M3.6 354.1L-15 392.1M-1.5 355.7L-22.7 399.3M-6.5 357.4L-22 389.3M-11.5 359L-31.9 400.8M-16.5 360.6L-31.2 390.7M-21.6 362.3L-38.6 397.2M-26.6 363.9L-36.9 384.9M-31.6 365.5L-45.6 394.3M-36.6 367.2L-52 398.6M-41.7 368.8L-50.9 387.8M-46.7 370.4L-59 395.7M-51.7 372.1L-56.6 382.1M-56.7 373.7L-65.7 392.1M-61.8 375.3L-73.5 399.3M-66.8 377L-72.8 389.3M-71.7 378.4L-82.6 400.8M-76.5 379.6L-81.9 390.7M-81.4 380.8L-89.3 397.2M-86.2 382L-87.6 384.9M-91 383.2L-96.4 394.3M-95.8 384.4L-102.7 398.6M-105.4 386.9L-109.8 395.7M-115.1 389.3L-116.5 392.1M-119.9 390.5L-124.2 399.3M-129.5 392.9L-133.4 400.8\"/></g><g class=\"ds-hachure\"><path class=\"ds-far w1\" d=\"M596.8 119.8L607.4 143.6M595.7 125.8L602.1 140M690.9 177.8L705 204.3M690.3 183.8L698.7 199.7M817 253.7L827 271.1M816.6 259.8L822.6 270.2\"/></g></g><g class=\"ds-summit\" data-name=\"east\" data-layer=\"2\" data-facets=\"1\"><path class=\"ds-far w12 ds-ridge\" d=\"M1805.6 249.9L1810 246L1856 206L1889.9 181.4M1893.9 178.4L1900 174L1936 150L1956 140L1972 132L1990 138L2016 150L2050 168L2071.4 179.2M2075.8 181.5L2092 190L2140 214L2200 238L2270 262L2340 284L2420 304\"/><path class=\"ds-far w1 ds-ridge\" d=\"M1959.5 137.1L1972 131L1990.4 137.1L2016.4 149.1L2050 166.9M1972 132L1980 170L1992 214L2001.3 246\"/><g class=\"ds-facet\" data-poly=\"1972,132 1980,170 1992,214 2006,262 2022,310 2034,352 2042,384 2042,404 2420,404 2420,304 2340,284 2270,262 2200,238 2140,214 2092,190 2050,168 2016,150 1990,138 1972,132\"><path class=\"ds-far w1 ds-hatch\" d=\"M2417.4 303.4L2420 307.8M2412.3 302.1L2420 315.4M2407.2 300.8L2420 323M2402.1 299.5L2420 330.6M2396.9 298.2L2420 338.2M2391.8 296.9L2420 345.8M2386.7 295.7L2420 353.4M2381.5 294.4L2420 361M2376.4 293.1L2420 368.6M2371.3 291.8L2420 376.2M2366.2 290.5L2419.2 382.4M2361 289.3L2413.6 380.3M2355.9 288L2419.7 398.5M2350.8 286.7L2411.1 391.2M2345.6 285.4L2410.3 397.4M2340.5 284.1L2399.1 385.6M2335.2 282.5L2399.9 394.6M2329.8 280.8L2397.9 398.8M2324.5 279.1L2387.6 388.4M2319.1 277.4L2387.6 396M2313.7 275.7L2375.6 382.9M2308.4 274.1L2376.8 392.6M2303 272.4L2376.4 399.5M2297.7 270.7L2366.4 389.8M2292.3 269L2368.4 400.9M2286.9 267.3L2358.4 391.2M2281.6 265.6L2357.7 397.4M2276.2 264L2346.5 385.6M2270.9 262.3L2347.3 394.6M2265.4 260.4L2345.3 398.8M2259.9 258.5L2334.9 388.4M2254.5 256.7L2334.9 396M2249 254.8L2322.9 382.9M2243.5 252.9L2324.1 392.6M2238 251L2323.8 399.5M2232.6 249.2L2313.8 389.8M2227.1 247.3L2315.8 400.9M2221.6 245.4L2305.8 391.2M2216.2 243.5L2305 397.4M2210.7 241.7L2293.8 385.6M2205.2 239.8L2294.6 394.6M2199.7 237.9L2292.6 398.8M2194 235.6L2282.3 388.4M2188.3 233.3L2282.3 396M2182.6 231L2270.3 382.9M2176.9 228.8L2271.5 392.6M2171.2 226.5L2271.1 399.5M2165.5 224.2L2261.1 389.8M2159.8 221.9L2263.1 400.9M2154.1 219.6L2253.1 391.2M2148.4 217.4L2252.3 397.4M2142.7 215.1L2241.2 385.6M2136.7 212.4L2242 394.6M2130.6 209.3L2240 398.8M2124.4 206.2L2229.6 388.4M2118.2 203.1L2229.6 396M2112.1 200L2217.6 382.9M2105.9 196.9L2218.8 392.6M2099.7 193.9L2218.4 399.5M2093.6 190.8L2208.5 389.8M2087.3 187.5L2210.5 400.9M2081 184.2L2200.5 391.2M2074.7 180.9L2199.7 397.4M2068.4 177.6L2188.5 385.6M2062.1 174.4L2189.3 394.6M2055.8 171.1L2187.3 398.8M2049.5 167.8L2176.9 388.4M2043.2 164.4L2177 396M2036.9 161.1L2165 382.9M2030.6 157.7L2166.2 392.6M2024.3 154.4L2165.8 399.5M2018 151L2155.8 389.8M2011.9 148.1L2157.8 400.9M2005.9 145.3L2147.8 391.2M1999.9 142.6L2002.1 146.4M2006.1 153.2L2147 397.4M1993.9 139.8L1995.3 142.3M2003.8 157L2135.9 385.6M2001.4 160.4L2136.7 394.6M1998.1 162.3L2134.7 398.8M1994.9 164.3L2124.3 388.4M1991.7 166.4L2124.3 396M1989.4 169.9L2112.3 382.9M1987 173.5L2113.5 392.6M1979.6 168.3L1981.7 171.8M1984.7 177L2113.1 399.5M1983.4 182.3L2103.1 389.8M1987.3 196.7L2105.2 400.9M1991.2 211.1L2095.2 391.2M1995.6 226.3L2094.4 397.4M2000.1 241.7L2083.2 385.6M2004.5 257L2084 394.6M2010 274.1L2082 398.8M2016 292.1L2071.6 388.4M2022 310.1L2071.6 396M2026.3 325.1L2059.7 382.9M2030.6 340.2L2059.9 390.9M2034.7 354.9L2053.5 387.5M2038.1 368.3L2046.7 383.2\"/></g><g class=\"ds-hachure\"><path class=\"ds-far w1\" d=\"M1935.2 151.8L1924.6 175.6M1936.3 157.8L1929.9 172M1855.1 207.8L1842.9 230.7M1855.7 213.8L1848.4 227.6\"/></g></g><g class=\"ds-summit\" data-name=\"notch\" data-layer=\"3\" data-facets=\"0\"><path class=\"ds-far w1 ds-ridge\" d=\"M930 250L962 224L990 198L1010 184L1024 176L1040 186L1042.3 187.6M1043.6 188.5L1066 204L1100 226L1101.7 227M1024 176L1030 204L1040 232\"/></g><g class=\"ds-summit\" data-name=\"farwest\" data-layer=\"3\" data-facets=\"0\"><path class=\"ds-far w1 ds-ridge\" d=\"M120 262L160 236L200 208L230 190L262 204L294.8 223M230 190L238 216\"/></g>",
 };
-/* THE SUN'S SEAT. Low on the horizon at 0.265 W, where the range's lit
-   faces turn; but never so close to the doe (at 0.165 W, her tail 28 units
-   of her scale east of her, roaming 30px) that she stands inside its clear
-   zone of 3.5 radii, which a 1024-wide sheet did. Shared by the builder and
-   the layout, because the words have to keep off it too. */
-const morningSun = (W, hz, narrow) => {
-  const vs = clamp(W / 1500, 0.44, 1.2), r = narrow ? 15 : 26 * vs;
-  const x = narrow ? W * 0.26 : Math.max(W * 0.265, W * 0.165 + 28 * 0.95 * vs + 30 + 3.5 * r + 4);
-  return { x, y: hz + r * 0.15, r };
+/* THE SUN'S SEAT — IT RISES BEHIND THE RANGE.
+   It used to be a half-disc on the meadow at 0.265 W, which drew a sun that
+   had already cleared the mountains and then sat on the grass in front of
+   them. It sits on the PRINCIPAL'S OWN WEST RIDGE now, a fraction of the way
+   down its relief, pushed out along that ridge's normal by an eighth of a
+   radius, so the ridge cuts a chord across the disc and about three fifths
+   of it shows: a sun coming up from behind the rock.
+
+   WEST, BECAUSE THE ROCK SAYS WEST. Every hatched face on the board points
+   away from the middle — the west summit's west flank, the principal's east
+   flank, the east summit's east flank — so the light has to stand between
+   board x 564 and x 1420. This seat is board x ≈1240. (The page has no cast
+   shadows to contradict either: shadowOf is authored and deliberately not
+   called, below.)
+
+   A FRACTION OF RELIEF, NOT A FRACTION OF THE SHEET. The board is seated by
+   its own relief — summits at 0.082 H, foot at 0.375 H — so a seat taken off
+   the ridge lands at the same place on every sheet: measured 0.503 W / 0.195 H
+   at 1456×949 and at 1920×1080, 0.525–0.531 W at the short seats. A fixed
+   screen fraction would have drifted across the ridge as the board rescaled.
+
+   THE PHONE HAS ONE SUMMIT, so it has no saddle and no choice: the same rule
+   reads the same ridge, lower (half the relief) and smaller, because at the
+   sheet's own radius the disc was as tall as the whole 47px band and broke
+   the nameplate's air.
+
+   Pure in its seat: the layout and the builder both call it, before anything
+   is drawn, from the seat the board is about to take. */
+const SUN = { relief: 0.38, relief_narrow: 0.5, k: 1.75, k_narrow: 1.35, out: 0.12 };
+const sunSeat = (st, W, narrow) => {
+  const vs = clamp(W / 1500, 0.44, 1.2);
+  const r = (narrow ? 15 * SUN.k_narrow : 26 * vs * SUN.k);
+  const RP = ([x, y]) => [st.tx + x * st.s, st.ty + y * st.s];
+  const pr = RANGE.summits.find((q) => q.name === "principal");
+  const want = pr.peak[1] + (RANGE.foot - pr.peak[1]) * (narrow ? SUN.relief_narrow : SUN.relief);
+  const flank = pr.crest.filter((p) => p[0] < pr.peak[0]);
+  let i = 0;
+  for (let k = 1; k < flank.length; k++) if (Math.abs(flank[k][1] - want) < Math.abs(flank[i][1] - want)) i = k;
+  const a = RP(flank[Math.max(0, i - 1)]), b = RP(flank[Math.min(flank.length - 1, i + 1)]), c = RP(flank[i]);
+  const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1;
+  /* the normal that points into the sky: the crest descends to the west, so
+     the rock is below it and the sky is above */
+  let n = [dy / l, -dx / l];
+  if (n[1] > 0) n = [-n[0], -n[1]];
+  return { x: c[0] + n[0] * r * SUN.out, y: c[1] + n[1] * r * SUN.out, r };
 };
 /* ————— THE WORDS AND THE RANGE SHARE THE HEIGHT, BY CONSTRUCTION —————
    A fixed 40vh top and ~310px of fixed-size type ran into the horizon, the
@@ -8028,11 +8162,14 @@ function layMorning(wrap, W, H, hz) {
   const top0 = Math.min(...lines.map((q) => q.t));
   const last = lines.reduce((a, q) => (q.bt > a.bt ? q : a));
   const heightAt = (t) => last.bt - last.gain(t) - top0;
-  /* the floor: the horizon less 24 and its wobble, and the sun's cap less
-     24 where the lowest line spans the sun */
-  const sun = morningSun(W, hz, false);
-  const overSun = last.l < sun.x + sun.r && last.rt > sun.x - sun.r;
-  let B0 = Math.min(hz - 28, overSun ? sun.y - sun.r - 26 : Infinity);
+  /* the floor: the horizon less 24 and its wobble. The sun's cap used to be
+     the other term here — `sun.y - sun.r - 26`, which was BINDING at three
+     measured seats (1456: 749.7 against a 750 floor; 1165: 594.4 / 594;
+     1280: 559.9 / 560) — and it goes with the half-disc it reserved room
+     for. The sun stands above the ridge now, which is the ceiling's
+     business, not the floor's; the words drop about 10px at 1456 as a
+     result, and the short seats get their room back. */
+  let B0 = hz - 28;
   /* and the doe and the fawn standing on the horizon, with their 30px home
      range, where the lowest line spans them (at 1024 wide the contact row
      came down on the doe's ears) */
@@ -8055,7 +8192,16 @@ function layMorning(wrap, W, H, hz) {
     for (let k = Math.max(0, Math.floor(((x0 - st.tx) / st.s - fl.x0) / fl.dx)); k <= Math.min(prof.length - 1, Math.floor(((x1 - st.tx) / st.s - fl.x0) / fl.dx)); k++) low = Math.max(low, prof[k]);
     return low < 0 ? -Infinity : st.ty + low * st.s;
   };
-  const topFor = (st, t, ridgeOnly) => Math.max(...lines.map((q) => floorOver(st, q.l - 66, q.rt + 66, ridgeOnly) + 67 - (q.t - q.gain(t) - top0)));
+  /* THE SUN COUNTS AS ROCK when the words look up. Today this is a no-op at
+     every seat — the disc sits above the ridge it rises behind, so the
+     lowest mark over its columns is the range's own — and it is written
+     anyway: it is the term that would have caught a re-seat that dropped the
+     crown into the quote, and a no-op guard costs a line. */
+  const sunLow = (st, x0, x1) => {
+    const sn = sunSeat(st, W, false);
+    return x1 < sn.x - sn.r || x0 > sn.x + sn.r ? -Infinity : sn.y + sn.r;
+  };
+  const topFor = (st, t, ridgeOnly) => Math.max(...lines.map((q) => Math.max(floorOver(st, q.l - 66, q.rt + 66, ridgeOnly), sunLow(st, q.l - 66, q.rt + 66)) + 67 - (q.t - q.gain(t) - top0)));
   const fits = (st, t, ridgeOnly) => topFor(st, t, ridgeOnly) + heightAt(t) <= B0;
   const F0 = H * 0.375, fAt = (s) => H * 0.082 + (RANGE.foot - RANGE.top) * s;
   const hatchS = Math.max(0.5, W / 2350), ridgeS = Math.max(0.3, W / 2350);
@@ -8211,6 +8357,8 @@ function* drawDawnscape() {
     "doe-head": 9700, "doe-ear": 4700, "doe-tail": 3500, "fawn-head": 5300, "fawn-ear": 3900, "fawn-tail": 2800,
     "hare-head": 5900, "hare-ear": 7900, "peck-a": 5200, "peck-b": 6100, "peck-c": 4300,
     "squirrel-tail": 3100, "owl-head": 11300, "perch-head": 8300, "spider": 4700,
+    /* the sun's crown, in two interleaved groups turning opposite ways */
+    "ds-rays": 11300, "ds-rays2": 14900,
   };
   const tally = {};
   const live = (cls) => { if (!cls) return ""; if (!(cls in PERIOD)) throw new Error(`undeclared period for ${cls}`); tally[cls] = (tally[cls] || 0) + 1; return cls; };
@@ -8262,7 +8410,8 @@ function* drawDawnscape() {
     const runs = [];
     let cur = [];
     for (const p of pts) {
-      if (inKeep(p[0], p[1])) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(p);
+      /* the words' air and the light's clearing break a line alike */
+      if (inKeep(p[0], p[1]) || inLight(p[0], p[1])) { if (cur.length > 1) runs.push(cur); cur = []; } else cur.push(p);
     }
     if (cur.length > 1) runs.push(cur);
     return runs;
@@ -8335,16 +8484,33 @@ function* drawDawnscape() {
   if (narrow) {
     const wrapB = stick.querySelector(".dawnwrap").getBoundingClientRect().bottom - sr.top;
     free = H - wrapB;
-    /* the ladder, by measured room under the last line. 34px is what the
-       sun needs: its cap rises 0.8 r above the line and the text keeps 24px
-       of clear air, measured at 390×844 where the sun sits under "run 043".
-       Under 20px there is no ground to draw on (320×720 measures -24: the
-       column already overflows the panel there) and nothing is drawn. */
+    /* the ladder, by measured room under the last line. The 34px was what
+       the GROUND SUN needed — its cap rose 0.8 r above the line and the text
+       kept 24px of air, measured at 390×844 — and that sun has gone up
+       behind the range. The number is INHERITED rather than re-derived: it
+       is not what the horizon alone would need, and nobody has measured what
+       that is. Under 20px there is no ground to draw on (320×720 measures
+       -24: the column already overflows the panel there) and nothing is
+       drawn. */
     room = free >= 90 ? 2 : free >= 40 ? 1 : free >= 20 ? 0 : -1;
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
   const tall = !narrow;
-  const sun = morningSun(W, hz, narrow);
+  /* THE BOARD'S SEAT, read before anything is drawn, because the sun sits ON
+     it and the clearing is measured FROM the sun. The phone's band is seated
+     from measured chrome much later, so its sun is seated there. */
+  const laySeat = tall ? (() => {
+    const lay = SCAPE.lay || { s: Math.max(((0.375 - 0.082) * H) / (RANGE.foot - RANGE.top), W / 2350), ridgeOnly: false };
+    return { s: lay.s, tx: lay.tx !== undefined ? lay.tx : W / 2 - RANGE.cx * lay.s,
+      ty: Y(0.082) - RANGE.top * lay.s, ridgeOnly: lay.ridgeOnly };
+  })() : null;
+  let sun = laySeat ? sunSeat(laySeat, W, false) : null;
+  /* the crown's clearing — a ray's reach plus its own hand. Every mark on
+     this canvas that is not the sun's own and not the rock in front of it
+     lifts off this circle, which is what the drawing has instead of a glow:
+     bare paper. Declared here because `cut` reads it. */
+  const SUN_CROWN = 2.75;
+  const inLight = (x, y) => !!sun && Math.hypot(x - sun.x, y - sun.y) < sun.r * SUN_CROWN;
   /* THE TREE STANDS BELOW EVERY SUMMIT. "tree's can't be as high as
      mountain": the great tree is drawn in its own frame, as approved, and
      set down at 0.78 of that size about its root, so its crown tops out
@@ -8370,7 +8536,12 @@ function* drawDawnscape() {
      where the light is. */
   const clear = tall ? [X(0.22), Y(0.20), X(0.78), hz - 2] : [0, 0, W, hz - 2];
   const dens = (x, y) => {
-    const ds = Math.hypot(x - sun.x, y - sun.y);
+    /* the halo goes where the light goes: it lies on the sky and the rock
+       now rather than on the meadow, so the bare pocket that used to sit
+       beside the doe closes and the valley's treeline runs the width. A
+       seat with no rock to rise behind (the shortest phone band) has no
+       sun, and then there is no halo to thin by. */
+    const ds = sun ? Math.hypot(x - sun.x, y - sun.y) : Infinity;
     const fs = ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
     if (x > clear[0] && x < clear[2] && y > clear[1] && y < clear[3]) return 0;
     const dx = Math.max(clear[0] - x, x - clear[2], 0), dy = Math.max(clear[1] - y, y - clear[3], 0);
@@ -8386,7 +8557,12 @@ function* drawDawnscape() {
 
   /* what the sky and the ground's events will need to find, in viewport px;
      a rebuild starts every roamer from where it is drawn again */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = [];
+  /* SCAPE.sun is cleared with them, and it matters more than the rest: the
+     stage is a COPY of the live one, so a seat that draws no sun (a phone
+     band too short to carry the principal) would otherwise publish the
+     previous seat's, and the field's glow and the birds' avoid region would
+     both be keeping off a sun that is not on the page. */
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
@@ -8632,14 +8808,159 @@ function* drawDawnscape() {
     for (const [a, b] of spans) {
       if (b - a <= 36) continue;
       const line = curve([[a, y], [(a + b) / 2, y + (r() - 0.5) * 1.6], [b, y]], 6);
-      /* the sky is P0: it stops 12px short of a massif's silhouette */
+      /* the sky is P0: it stops 12px short of a massif's silhouette — and
+         short of the sun's crown, which is the same lift for the same
+         reason. Bare paper is what this drawing has instead of a glow. */
       const runs = [];
       let cur = [];
-      for (const p of line) { if (SCAPE.inMassif && SCAPE.inMassif(p[0], p[1])) { if (cur.length > 2) runs.push(cur); cur = []; } else cur.push(p); }
+      for (const p of line) { if ((SCAPE.inMassif && SCAPE.inMassif(p[0], p[1])) || inLight(p[0], p[1])) { if (cur.length > 2) runs.push(cur); cur = []; } else cur.push(p); }
       if (cur.length > 2) runs.push(cur);
       for (const run of runs) out += P(stroke(run, 1.0), "ds-far w1");
     }
     return out;
+  };
+
+  /* ————— THE SUN, RISING BEHIND THE RANGE —————
+     Round 13. It was a half-disc on the meadow: a sun that had already
+     cleared the mountains and then sat down on the grass in front of them.
+     It is seated on the principal's own west ridge now (see sunSeat), and
+     everything below follows from one rule — THE ROCK IS IN FRONT OF THE
+     LIGHT. The disc is ARCS THAT STOP AT THE SKYLINE, sampled and cut
+     against the seated crests; no clipPath and no mask, because a clip
+     hands the clearance gate a full circle to measure under the ridge, and
+     because a mask on the group that turns is the crown-blink defect this
+     canvas already paid for once. The rays stop at the same skyline, so no
+     light is ever painted over the rock standing in front of it.
+
+     THE COLOUR IS ON THE LIGHT. The rim is drawn in --ink-2 like every other
+     thing on this sheet that was drawn, and the sun's own token is the
+     SECOND PASS over it — the page's overstroke, a pen-lift outside the line
+     and short at both ends — plus the rays. A rim drawn only in the new
+     colour was built and rejected: with nothing of the page's own ink in it
+     the sun stops being a drawn object and becomes a decal.
+
+     NO GLOW, AND NOTHING SOFT ADDED. The radiance is bare paper: the etched
+     sky takes the same pen-lift off the crown that it already takes off the
+     rock. The one soft element on the page is the wash's own radial term,
+     which is not new — it MOVES onto this seat, so the page has one sun
+     instead of two (see drawWash).
+
+     ITS OWN HAND, AND WHAT THAT DOES AND DOES NOT BUY. The sun draws from
+     its own seeded stream, so a future re-cut of the crown cannot re-roll
+     the meadow. It does NOT mean this round left the morning untouched: the
+     three ground-sun arcs that went took 15 draws out of the head of chunk
+     2, the pen-lifts added in skyPiece, offRock and cut add their own, and
+     dens() and the words' new floor change which ticks are skipped. The
+     horizon's cuts, the crown's lobes and the meadow are all drawn by a
+     different part of the stream than they were, and the golden hash is
+     re-recorded because of it. What the separate stream protects is the
+     NEXT change to the sun, not this one. */
+  const sunRng = birdRng(0xda11 ^ 0x5c1a);
+  const sunHand = (amp) => {
+    const p1 = sunRng() * 6.28, p2 = sunRng() * 6.28;
+    const f1 = 0.09 + sunRng() * 0.05, f2 = 0.022 + sunRng() * 0.012;
+    return (s) => (Math.sin(s * f1 + p1) * 0.45 + Math.sin(s * f2 + p2)) * amp;
+  };
+  const sunStroke = (pts, amp) => {
+    const w = sunHand(amp), nm = normals(pts);
+    let s = 0;
+    return path(pts.map(([x, y], i) => {
+      if (i) s += Math.hypot(x - pts[i - 1][0], y - pts[i - 1][1]);
+      const o = w(s);
+      return [x + nm[i][0] * o, y + nm[i][1] * o];
+    }));
+  };
+  /* uneven on purpose: a comic crown is not a protractor. Long, short, long,
+     short — three of the long ones broken, and every long one drawn twice. */
+  const RAY_LEN = [2.35, 1.5, 1.95, 1.45, 2.5, 1.55, 2.05, 1.48, 2.25, 1.6, 1.9, 1.42, 2.4];
+  const drawSun = (crests) => {
+    if (!sun) return "";
+    /* the skyline: the upper envelope of the seated crests */
+    const sky = (x) => {
+      let y = null;
+      for (const c of crests)
+        for (let i = 0; i < c.length - 1; i++) {
+          const [x0, y0] = c[i], [x1, y1] = c[i + 1];
+          if ((x - x0) * (x - x1) > 0) continue;
+          const t = x1 === x0 ? 0 : (x - x0) / (x1 - x0);
+          const v = y0 + (y1 - y0) * t;
+          if (y === null || v < y) y = v;
+        }
+      return y;
+    };
+    const inRock = (x, y) => { const s = sky(x); return s !== null && y > s + 0.5; };
+    const cx = sun.x, cy = sun.y, R = sun.r;
+    /* A MARK KEEPS THE AIR AND ITS OWN TURN. The crown rotates ±1.4°, so a
+       tip at radius d travels d·sin(1.4°); the break is the halo plus that,
+       which is the same sum the clearance gate takes. At the two short
+       seats the raw crown came within 15.9px and 5.6px of the run state,
+       where 24 is owed; with the turn in the break they measure 28.0 and
+       27.9. */
+    const turn = Math.sin((1.4 * Math.PI) / 180);
+    const inAir = (x, y) => inKeep(x, y, Math.hypot(x - cx, y - cy) * turn + 4);
+    const runs = (rr, a0 = 0.5 * Math.PI, a1 = 2.5 * Math.PI) => {
+      const out = [];
+      let cur = [];
+      for (let a = a0; a <= a1; a += 0.02) {
+        const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+        if (!inRock(x, y) && !inAir(x, y) && y > 2) cur.push([x, y]);
+        else { if (cur.length > 4) out.push(cur); cur = []; }
+      }
+      if (cur.length > 4) out.push(cur);
+      return out;
+    };
+    let disc = "";
+    for (const run of runs(R)) {
+      disc += P(sunStroke(run, 0.85), "ds-ink w12");
+      const k = Math.max(4, Math.round(run.length * 0.14));
+      const lit = run.slice(k, run.length - k).map(([x, y]) => {
+        const a = Math.atan2(y - cy, x - cx);
+        return [x + Math.cos(a) * 2.1, y + Math.sin(a) * 2.1];
+      });
+      if (lit.length > 4) disc += P(sunStroke(lit, 0.7), "ds-sun w12");
+    }
+    /* one inner arc, as the ground sun carried: the disc has a belly */
+    for (const run of runs(R - 4.5, 3.35, 4.05)) disc += P(sunStroke(run, 0.5), "ds-ink w1");
+    const fan = ["", ""];
+    let rays = 0;
+    for (let i = 0; i < RAY_LEN.length; i++) {
+      const a = -Math.PI * (0.97 - (0.94 * i) / (RAY_LEN.length - 1)) + (sunRng() - 0.5) * 0.07;
+      const dir = [Math.cos(a), Math.sin(a)], nm = [-dir[1], dir[0]];
+      const base = R * 1.2 + sunRng() * 3;
+      const len = R * (RAY_LEN[i] + (sunRng() - 0.5) * 0.14);
+      const at = (t, off) => [cx + dir[0] * t + nm[0] * off, cy + dir[1] * t + nm[1] * off];
+      const b0 = at(base, 0);
+      if (inRock(b0[0], b0[1]) || inAir(b0[0], b0[1])) continue;
+      const bend = (sunRng() - 0.5) * len * 0.1;
+      const line = (t0, t1, off, bk) => {
+        const pts = [];
+        const m = Math.max(3, Math.round((t1 - t0) / 5));
+        for (let k = 0; k <= m; k++) {
+          const t = t0 + ((t1 - t0) * k) / m, u = (t - t0) / (t1 - t0);
+          const q = at(t, off + bk * Math.sin(u * Math.PI));
+          if (inRock(q[0], q[1]) || inAir(q[0], q[1])) break;
+          pts.push(q);
+        }
+        return pts.length > 2 ? pts : null;
+      };
+      const long = len > R * 1.8, g = i % 2;
+      const put = (pts, cls) => { if (pts) fan[g] += P(sunStroke(pts, 0.6), cls); };
+      if (i % 4 === 1 && long) {
+        const cut = base + (len - base) * (0.52 + sunRng() * 0.08);
+        put(line(base, cut, 0, bend), "ds-sun w14");
+        put(line(cut + 4 + sunRng() * 4, len, 0, bend), "ds-sun w14");
+      } else {
+        put(line(base, len, 0, bend), `ds-sun ${long ? "w14" : "w12"}`);
+      }
+      if (long) put(line(base + (len - base) * 0.22, len - (len - base) * 0.12, 1.7 + sunRng(), bend), "ds-sun w1");
+      rays++;
+    }
+    SCAPE.sun = { x: +cx.toFixed(1), y: +cy.toFixed(1), r: +R.toFixed(1),
+      crown: +(R * SUN_CROWN).toFixed(1), rays };
+    const org = `transform-origin:${F(cx)}px ${F(cy)}px`;
+    return `<g class="ds-sundisc">${disc}</g>` +
+      `<g class="${live("ds-rays")}" style="${org}">${fan[0]}</g>` +
+      `<g class="${live("ds-rays2")}" style="${org}">${fan[1]}</g>`;
   };
 
   /* ————— the range, seated —————
@@ -8690,12 +9011,11 @@ function* drawDawnscape() {
        strokes are non-scaling, so the pen is the same at every seat. */
     /* seated where the layout left it: 0.375 H when the sheet has the room,
        higher and smaller when the words needed it */
-    const lay = SCAPE.lay || { s: Math.max(((0.375 - 0.082) * H) / (RANGE.foot - RANGE.top), W / 2350), ridgeOnly: false };
-    const rs = lay.s;
-    const rtx = lay.tx !== undefined ? lay.tx : W / 2 - RANGE.cx * rs, rty = Y(0.082) - RANGE.top * rs;
-    const seat = seatRange(null, rs, rtx, rty, { ridgeOnly: lay.ridgeOnly });
+    const seat = seatRange(null, laySeat.s, laySeat.tx, laySeat.ty, { ridgeOnly: laySeat.ridgeOnly });
     const FOOT = seat.FOOT;
     far += seat.markup;
+    /* and the light it rises behind, cut against the crests just seated */
+    far += drawSun(SCAPE.massifs.summits.map((q) => q.crest));
 
     /* ————— the far valley floor —————
        Without land under it the range floated on a few haze dashes. The
@@ -8819,7 +9139,7 @@ function* drawDawnscape() {
     }
     /* the sky's short strokes at the edges stop where the rock begins, the
        same 12px short as the long ones */
-    const offRock = (pts) => { const runs = []; let cur = []; for (const p of pts) { if (SCAPE.inMassif(p[0], p[1])) { if (cur.length > 2) runs.push(cur); cur = []; } else cur.push(p); } if (cur.length > 2) runs.push(cur); return runs; };
+    const offRock = (pts) => { const runs = []; let cur = []; for (const p of pts) { if (SCAPE.inMassif(p[0], p[1]) || inLight(p[0], p[1])) { if (cur.length > 2) runs.push(cur); cur = []; } else cur.push(p); } if (cur.length > 2) runs.push(cur); return runs; };
     /* …and it turns the corner down the right edge in pairs, short, hugging
        the edge so the birds' room inboard stays open */
     for (let y = Y(0.09); y < Y(0.46); y += 44 + r() * 16) {
@@ -8867,17 +9187,13 @@ function* drawDawnscape() {
      1920×1080, the single most expensive thing on this canvas ····· */
   yield;
 
-  /* ————— the sun, under the wash's glow: two arcs and a crown pass, no rays ————— */
-  if (room >= 1) {
-    const a0 = Math.PI + 0.16, a1 = 2 * Math.PI - 0.16;
-    ground += P(stroke(arc(sun.x, sun.y, sun.r, sun.r, a0, a1), 0.9), "ds-ink w12");
-    ground += P(stroke(arc(sun.x, sun.y, sun.r + 1.8, sun.r + 1.8, a0 + 0.7, a1 - 0.5), 0.6), "ds-ink w1");
-    ground += P(stroke(arc(sun.x, sun.y, sun.r - 1.3, sun.r - 1.3, a0 + 1.15, a0 + 1.85), 0.5), "ds-ink w1");
-    SCAPE.sun = { x: sun.x, y: sun.y, r: sun.r };
-  }
+  /* the sun is drawn with the range, in the back plane, because that is
+     where it is: behind it. See drawSun. */
 
   /* ————— the horizon, drawn twice, lifted three times, letting go before the corner —————
-     The segment carrying the sun is a weight class lighter: light thins ink. */
+     One segment is a weight class lighter where the light used to break the
+     line; the lift stays, because a horizon drawn at one weight from corner
+     to corner is a rule rather than a hand. */
   const hzEnd = X(narrow ? 0.95 : 0.88);
   const line = curve([[-4, hz], [X(0.25), hz + 1], [X(0.5), hz - 1], [X(0.75), hz + 0.5], [hzEnd, hz]]);
   if (tall) {
@@ -9283,7 +9599,8 @@ function* drawDawnscape() {
      two or three cream blades out of its mass), with loose blades escaping
      in two passes (a w12 base, a w1 tip, never w06), seed heads on w1
      stems standing proud, and three to five shadow ticks on its east foot,
-     because the light is at 0.26 W and grass that throws no shadow floats.
+     because the light comes from the east of them and grass that throws no
+     shadow floats.
      Outline tufts in hair-strong stand behind for depth. The fill holds
      still; the loose blades and the stems are the group that will move. */
   const spine = (bx, by, h, lean, bend = 0) => curve([[bx, by], [bx + h * lean * 0.35 + bend, by - h * 0.5], [bx + h * lean, by - h]], 3);
@@ -9546,7 +9863,13 @@ function* drawDawnscape() {
        write to the page are the last ····· */
     yield;
 
-    /* FIRST LIGHT, DRAWN ON THE GROUND. The sun sits low at 0.265 W, so
+    /* FIRST LIGHT, DRAWN ON THE GROUND — authored, and deliberately never
+       called (`void shadowOf`, below). Kept because the geometry is right
+       and the decision not to draw it is the finding. It reads the sun's
+       point for its direction, so it follows the seat wherever the seat
+       goes; the sun is up on the ridge now and the light reaching the
+       valley is still raking, because the ridge is far away.
+       The sun sits west of the meadow's east half, so
        everything standing casts a long morning shadow, and the stipple is
        the material to draw it: soft lobed bands at about 8% cover, 2.2
        times the object's height, pointing AWAY from the sun's point on the
@@ -9675,8 +9998,16 @@ function* drawDawnscape() {
       if (relief >= 40) {
         const ps = relief / (RANGE.foot - RANGE.top);
         const pk = RANGE.summits.find((sm) => sm.name === "principal").peak;
-        const seat = seatRange(["principal"], ps, X(0.34) - pk[0] * ps, pTop - RANGE.top * ps, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
+        const bandSeat = { s: ps, tx: X(0.34) - pk[0] * ps, ty: pTop - RANGE.top * ps };
+        const seat = seatRange(["principal"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
         far += seat.markup;
+        /* the phone's band is seated from measured chrome, so its sun is
+           seated here rather than with the sheet's. A band too short to
+           carry the principal carries no sunrise either: there is no rock
+           for the light to come up behind, and a disc on its own would be
+           the sticker this round removed. */
+        sun = sunSeat(bandSeat, W, true);
+        far += drawSun(SCAPE.massifs.summits.map((q) => q.crest));
         let ph = "";
         for (const [a, b, dy] of [[0.0, 0.16, 2], [0.2, 0.46, 4], [0.52, 0.7, 1.5]]) {
           const y = seat.FOOT + dy;
@@ -9817,10 +10148,13 @@ function buildFlock() {
 
   const svg = BIRD_SVG;
 
-  /* THEY GO EAST, out of the light rather than into it: the wash sun holds
-     at (0.26 W, 0.62 H) after the carry, low on the left, and the launch is
-     the socket, which is in the left-hand column at every desktop seat and
-     in the phone's own 26px gutter — so east is where the room is, and the
+  /* THEY GO EAST, and the light is no longer behind them: the sun sits on
+     the principal's west ridge at 0.503 W, 0.195 H after the carry (it used
+     to be the wash's own glow at 0.26 W, 0.62 H, low on the left), and the
+     launch is the socket, which is in the left-hand column at every desktop
+     seat and in the phone's own 26px gutter — so east is still where the
+     room is. They cross under and east of the light rather than through it:
+     routeClear holds every far crossing off the crown's clearing, and the
      right half of the sky is kept open for them by the dawnscape too. */
   const ox = W * flockFrom.fx;
   const oy = H * flockFrom.fy;
@@ -10061,8 +10395,14 @@ function farPath(f, W, H) {
    reserve already bares the paper round it). Lit faces and the sky above
    and between the summits are open. */
 function routeClear(f, W, H) {
-  const faces = SCAPE.faces;
-  if (!faces || !faces.length) return true;
+  const faces = SCAPE.faces || [];
+  /* THE LIGHT IS A PLACE TO KEEP OFF, exactly as the hatched faces are. The
+     crown's clearing is bare paper — that is what this drawing has instead
+     of a glow — and a bird crossing it puts ink back in. Measured before
+     this test existed: at pace 0.25 a crossing came within 63px of the
+     disc's centre, which is through the rays. */
+  const light = SCAPE.sun;
+  if (!faces.length && !light) return true;
   const near = SCAPE.reserveCircles || [];
   const [p0, c1, c2, c3, c4, c5, p1] = farPts(f, W, H);
   const bez = (a, b, c, d, t) => { const u = 1 - t; return [0, 1].map((k) => u * u * u * a[k] + 3 * u * u * t * b[k] + 3 * u * t * t * c[k] + t * t * t * d[k]); };
@@ -10079,6 +10419,7 @@ function routeClear(f, W, H) {
   for (const [a, b, c, d] of [[p0, c1, c2, c3], [c3, c4, c5, p1]])
     for (let i = 0; i <= 24; i++) {
       const p = bez(a, b, c, d, i / 24);
+      if (light && Math.hypot(p[0] - light.x, p[1] - light.y) < light.crown + 10) return false;
       if (near.some(([x, y, rr]) => Math.hypot(p[0] - x, p[1] - y) < rr + 12)) continue;
       if (faces.some((fc) => inside(p, fc))) return false;
     }
@@ -10094,9 +10435,13 @@ function fitRoute(f, W, H) {
   if (routeClear(f, W, H)) return;
   /* then the pass, and a later climb: a bird out of the crown under the
      west peak's hatched face flies east low over the tree first and climbs
-     over the lit flank (at 1366×768 the early climb crossed the face) */
+     over the lit flank (at 1366×768 the early climb crossed the face).
+     THE PASS MOVED WEST in round 13: it used to leave at 0.44–0.50 W, which
+     is the sun's own column now — measured at 1456, x 640–728 against a
+     disc at 733 with a 121px clearing, so every one of those options landed
+     inside the light. The saddle west of the notch is the pass now. */
   const ey0 = f.ey, bow0 = f.bow;
-  for (const [ex, ey, bow, pass] of [[f.ex, ey0, 0.3, false], [f.ex, ey0, -0.4, false], [0.44 + (sky.spawned % 5) * 0.03, 0.07, bow0, true], [0.46, 0.08, 0.3, true], [0.48, 0.09, -0.4, true], [0.5, 0.1, -0.8, true]]) {
+  for (const [ex, ey, bow, pass] of [[f.ex, ey0, 0.3, false], [f.ex, ey0, -0.4, false], [0.4 - (sky.spawned % 5) * 0.01, 0.07, bow0, true], [0.42, 0.08, 0.3, true], [0.38, 0.09, -0.4, true], [0.36, 0.1, -0.8, true]]) {
     f.ex = ex; f.ey = ey; f.bow = bow;
     if (pass) f.exit = "pass";
     if (routeClear(f, W, H)) return;
@@ -10211,17 +10556,35 @@ function spawnFar() {
       /* noticed high on the left: in the sky over the notch between the
          west peak and the principal, never on the west peak's hatched face
          (which a fixed 0.26–0.34 W found once a short sheet drew the range
-         small and the peaks closed in toward the middle) */
+         small and the peaks closed in toward the middle) — and WEST of the
+         light, which the notch's own column no longer is: measured at 1456,
+         the old entry sat 120px from the disc against a 121px clearing, so
+         the flock was being noticed inside the sunrise. */
       const notch = !narrow && SCAPE.massifs && SCAPE.massifs.summits && SCAPE.massifs.summits.find((q) => q.name === "notch");
-      f.ox = narrow ? 0.06 + r() * 0.06 : notch ? (notch.peak[0] + (r() - 0.5) * 40) / W : 0.26 + r() * 0.08;
-      f.oy = narrow ? 0.15 + r() * 0.02 : notch ? (notch.peak[1] - 40 - r() * 20) / H : 0.10 + r() * 0.06;
+      /* THE PHONE'S BAND IS 48px TALL AND THE SUN IS IN IT. Its crossing was
+         noticed at 0.06–0.12 W, 0.15–0.17 H — measured against the seat the
+         sun takes now, (92, 130) with a 56px clearing at 390×844, that is a
+         bird starting 45px west of the disc and flying east at 4°: straight
+         through it. Measured before this, one far crossing came within
+         1.5px of the sun's centre. It is noticed EAST of the light now and
+         just over the band's own top, which is the only sky a phone has that
+         is neither the rock nor the clearing: it leaves the sunrise behind
+         it, which is what the whole flock does on every other seat.
+         fitRoute could not have saved it — it moves an exit and a bow, and
+         this route began inside the light. */
+      const bandTop = narrow && SCAPE.band ? SCAPE.band.top : 0;
+      const lit = narrow && SCAPE.sun && bandTop;
+      f.ox = narrow ? (lit ? (SCAPE.sun.x + SCAPE.sun.crown + 20 + r() * 24) / W : 0.06 + r() * 0.06)
+        : notch ? (notch.peak[0] - 30 - r() * 40) / W : 0.26 + r() * 0.08;
+      f.oy = narrow ? (lit ? (bandTop + 4 + r() * 8) / H : 0.15 + r() * 0.02)
+        : notch ? (notch.peak[1] - 44 - r() * 20) / H : 0.10 + r() * 0.06;
       f.ang = ((narrow ? 4 : 6) * Math.PI) / 180;
     }
     f.ex = 0.86 + r() * 0.05;
     /* birds high: crossings end in the top band; three in ten leave
        through the saddle between the massifs, the pass */
     f.ey = narrow ? 0.10 : 0.05 + r() * 0.08;
-    if (viaPass) { f.ex = 0.42 + r() * 0.16; f.ey = 0.06 + r() * 0.04; f.exit = "pass"; }
+    if (viaPass) { f.ex = 0.36 + r() * 0.08; f.ey = 0.06 + r() * 0.04; f.exit = "pass"; }
     if (land) { const at2 = SCAPE[sock]; f.land = true; f.sock = sock; f.ex = at2.x / W; f.ey = (at2.y - 7 * vs) / H; }
     f.bow = entry === "fade" ? 0.3 : entry === "takeoff" ? 0.9 : 1;
     f.sc = (narrow ? 0.5 : 0.4 + r() * 0.15) * vs;
