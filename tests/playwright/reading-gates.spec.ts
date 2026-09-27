@@ -1055,6 +1055,12 @@ const RAIL_WIDTHS: [number, number][] = [
      bend24 19.6, kink2 4.3. */
   [1375, 800],
   [1280, 800],
+  /* 1456×949 is the seat the owner actually reads the page at, and until
+     round 14 no rail gate measured it. It joins the set with the route
+     through figs. 10 and 11, because that route's widest swing — ¶10's spine
+     to the dock — is a function of where `beat-inner` caps, and 1456 is the
+     first width where the cap and the viewport disagree by a whole column. */
+  [1456, 949],
 ];
 const RAIL_CEIL = { maxSlope: 1.58, bend24: 24.1, kink2: 16.2 };
 
@@ -1330,37 +1336,43 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
   }, testInfo) => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1512, height: 982 });
+    /* the pre-round-4 behaviour: beat 11's x is stx[11] percent of the
+       viewport, and the final two anchors still snap to the dock — so the
+       line arrives in the right place having crossed the wrong column.
+       ROUND 14 MOVED THE TARGET. `beatX` is now two functions: the phone's
+       single lane, and `deskX`, which answers dockX for ¶11 and ¶12 and fig.
+       10's own plate left for ¶10. Injecting the percentage over `deskX(i)`
+       reproduces the same defect — every beat back on stx, including the two
+       that now ride measurements — and it is one line, so a later reformat of
+       `deskX` cannot silently stop matching.
+       WHETHER IT MATCHED IS ASSERTED, and outside the handler: a replace that
+       finds nothing fulfils the UNMODIFIED page, the control passes, and a
+       positive control that passes is the gate reporting that it works. An
+       `expect` thrown inside a route handler surfaces as a navigation that
+       never resolves, which names the wrong defect. */
+    const TARGET = "mobile ? RAIL_X_MOBILE : deskX(i)";
+    let injected = false;
     await page.route(
       (u) => new URL(u).pathname === "/",
       async (route) => {
         const res = await route.fetch();
-        /* the pre-round-4 behaviour: beat 11's x is stx[11] percent of the
-           viewport, and the final two anchors still snap to the dock — so the
-           line arrives in the right place having crossed the wrong column.
-           ROUND 14 MOVED THE TARGET. `beatX` is now two functions: the phone's
-           single lane, and `deskX`, which answers dockX for ¶11 and ¶12 and
-           fig. 10's own plate left for ¶10. Injecting the percentage over
-           `deskX(i)` reproduces the same defect — every beat back on stx,
-           including the two that now ride measurements — and it is one line,
-           so a later reformat of `deskX` cannot silently stop matching.
-           The assert is the point: a replace that finds nothing fulfils the
-           UNMODIFIED page, the control passes, and a positive control that
-           passes is the gate reporting that it works. */
         const src = await res.text();
-        const TARGET = "mobile ? RAIL_X_MOBILE : deskX(i)";
-        expect(
-          src.includes(TARGET),
-          `the control's injection point "${TARGET}" is still in the run — if buildThread's ` +
-            `beatX was rewritten, this control silently serves the real page and proves nothing`
-        ).toBe(true);
-        const body = src.replace(
-          TARGET,
-          "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
-        );
-        await route.fulfill({ response: res, body });
+        injected = src.includes(TARGET);
+        await route.fulfill({
+          response: res,
+          body: src.replace(
+            TARGET,
+            "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
+          ),
+        });
       }
     );
     await arrive(page);
+    expect(
+      injected,
+      `the control's injection point "${TARGET}" is still in the run — if buildThread's ` +
+        `beatX was rewritten, this control silently serves the real page and proves nothing`
+    ).toBe(true);
     const r = await railTerminus(page);
     expect(
       r.nearest,
