@@ -668,6 +668,28 @@ try {
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* 12 · THE RIM LIGHT IS ON THE LIT SIDE. The canopy's cut-lines are the
+       light on the foliage, and they always began on the upper WEST of a
+       lobe whatever the hour. Each one records the lobe it belongs to and
+       where the light was IN ITS OWN FRAME (the tree draws inside its own
+       transform), so this is check 9 read the other way round: the midpoint
+       of the cut sits on the same side of its lobe as the light, by 1px.
+       Measured on the geometry, not the box: these paths live in a mask. */
+    const rims = [...svg.querySelectorAll("defs mask path[data-x]")]
+      .map((p) => {
+        const L = p.getTotalLength();
+        if (!L) return null;
+        const at = +p.dataset.x,
+          lit = parseFloat(p.dataset.lit);
+        if (!Number.isFinite(at) || !Number.isFinite(lit)) return null;
+        return {
+          at,
+          lit,
+          away: +(p.getPointAtLength(L / 2).x - at).toFixed(1),
+        };
+      })
+      .filter(Boolean);
+    const rimDark = rims.filter((q) => q.away * Math.sign(q.lit - q.at) <= 1);
     /* 11 · THE HORIZON IS DRAWN, NOT RULED. It was one full-width line in
        six pieces and it was the only ruled thing on a sheet that is
        otherwise all marks. What holds the replacement is not "there are
@@ -1153,6 +1175,8 @@ try {
       wrongSide,
       colourFrac: +(colourPx / (innerWidth * innerHeight)).toFixed(5),
       runLong,
+      rims: rims.length,
+      rimDark,
       florets: florets.length,
       floretMin: florets.length ? Math.min(...florets) : null,
       hullCover,
@@ -1279,6 +1303,18 @@ try {
         fail(
           `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
         );
+      if (m.rimDark && m.rimDark.length)
+        fail(
+          `${seat}: ${m.rimDark.length} of ${m.rims} rim light(s) cut on the dark side of their lobe (${m.rimDark
+            .slice(0, 3)
+            .map(
+              (q) =>
+                `lobe x${q.at}, cut ${q.away}px ${q.away < 0 ? "west" : "east"}, light at ${q.lit}`
+            )
+            .join("; ")}) — the light on the foliage faces the light`
+        );
+      else if (m.rims)
+        note(`${seat}: ${m.rims} rim lights, every one on its lobe's lit side`);
       if (m.runLong && m.runLong.len > RULED_RUN * W)
         fail(
           `${seat}: the ground plane carries a ${m.runLong.len}px run of unbroken ink (${m.runLong.of}), ${(m.runLong.len / W).toFixed(3)} of the sheet's width — the horizon is drawn, and the cap on any one run is ${RULED_RUN} W`

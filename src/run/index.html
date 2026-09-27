@@ -8822,10 +8822,17 @@ function* drawDawnscape() {
         d += path(wob(arc(hx, hy, hr, hr * 0.7, 0, 6.3, 2), 1.2)) + "Z";
       }
       if (layerCuts) {
+        /* THE RIM LIGHT FOLLOWS THE SUN. These cut-lines are the light ON
+           the foliage and they always began upper WEST, whatever the hour;
+           a crown west of the sun is lit on its east face. Each one records
+           the lobe it belongs to and where the light was in its own frame,
+           so the check can hold it to the lit side the way check 9 holds a
+           cast mark to the dark one. */
+        const lit0 = litX();
         for (const [x, y, rr] of g.ms) {
           if (rr < 13) continue;
-          const a0 = 3.3 + r() * 0.6;
-          layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [] });
+          const a0 = (lit0 !== null && x < lit0 ? 4.95 : 3.3) + r() * 0.6;
+          layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [], at: x, lit: lit0 });
         }
         const dots = [];
         /* BLOSSOM ON THE LIT TOPS, AND BIG ENOUGH TO SEE. These are holes
@@ -10374,7 +10381,7 @@ function* drawDawnscape() {
      the box clips it */
   const leafMasks = Object.entries(cutMasks).map(([id, cuts]) =>
     `<mask id="${id}" maskUnits="objectBoundingBox" x="-.1" y="-.1" width="1.2" height="1.2"><rect x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}" style="fill:#fff"/>` +
-    cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
+    cuts.map(({ cp, dots, at, lit }) => (cp.length > 1 ? `<path${at === undefined ? "" : ` data-x="${F(at)}" data-lit="${lit === null || lit === undefined ? "" : F(lit)}"`} d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
   void tile;
