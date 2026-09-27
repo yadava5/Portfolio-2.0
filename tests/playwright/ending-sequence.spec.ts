@@ -76,6 +76,8 @@ declare global {
       ground?: { id: string; dx: number; x_off: number }[];
       /* round 14: every time the morning answered the reader */
       notice?: { who: string; what: string; t: number }[];
+      /* when a swivel actually started, as opposed to when it was logged */
+      swivelAt?: number;
     };
     __onwardPath?: () => { x: number; y: number; L: number }[];
     __rail?: () => { x: number; y: number }[];
@@ -1452,19 +1454,23 @@ test.describe("¶13 · the morning notices you", () => {
     page,
   }, testInfo) => {
     test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
-    await page.setViewportSize({ width: 1024, height: 768 });
+    /* 1165×759 is the seat where her tail measures 2.1px from the email
+       line at rest, which is the tightest air any of this has */
+    await page.setViewportSize({ width: 1165, height: 759 });
     await landByHand(page);
     await page.waitForTimeout(1500);
     const d = await centre(page, ".dawnscape .ds-deer");
     await page.mouse.move(d!.x, d!.top - 18);
+    /* WAIT FOR THE SWIVEL, NOT FOR THE LOG. The log line is written when
+       the reaction is scheduled and she can be Most of a 9.7s graze away
+       from having her head up; __world.swivelAt is stamped when the
+       animation actually starts. 480ms in is inside its hold. */
     await page
-      .waitForFunction(
-        () => (window.__world.notice ?? []).some((n) => n.who === "deer"),
-        null,
-        { timeout: 20_000 }
-      )
+      .waitForFunction(() => window.__world.swivelAt !== undefined, null, {
+        timeout: 25_000,
+      })
       .catch(() => {});
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(480);
     const worst = await page.evaluate(() => {
       const svg = document.querySelector(".dawnscape")!;
       const wrap = document.querySelector(".dawnwrap")!;
@@ -1479,17 +1485,28 @@ test.describe("¶13 · the morning notices you", () => {
           if (r.width && r.height)
             texts.push([r.left, r.top, r.right, r.bottom, quote ? 64 : 24]);
       }
+      /* the INK, sampled through its own screen matrix, not the group's
+         box: a box round a rotated ear is bigger than the ear */
       let m = Infinity;
+      const pt = (svg as SVGSVGElement).createSVGPoint();
       for (const g of svg.querySelectorAll(
-        ".ds-deer .ds-ear, .ds-deer .ds-tail, .ds-deer .ds-head, .ds-fawn .ds-ear"
-      )) {
-        const b = g.getBoundingClientRect();
-        for (const t of texts) {
-          const dx = Math.max(t[0] - b.right, b.left - t[2], 0);
-          const dy = Math.max(t[1] - b.bottom, b.top - t[3], 0);
-          m = Math.min(m, Math.max(dx, dy, 0) - t[4]);
+        ".ds-deer .ds-ear, .ds-deer .ds-tail, .ds-deer .ds-head, .ds-fawn .ds-ear, .ds-fawn .ds-tail"
+      ))
+        for (const p of g.querySelectorAll("path")) {
+          const L = (p as SVGPathElement).getTotalLength();
+          const mx = (p as SVGPathElement).getScreenCTM()!;
+          for (let sI = 0; sI <= L; sI += 4) {
+            const q = (p as SVGPathElement).getPointAtLength(sI);
+            pt.x = q.x;
+            pt.y = q.y;
+            const v = pt.matrixTransform(mx);
+            for (const t of texts) {
+              const dx = Math.max(t[0] - v.x, v.x - t[2], 0);
+              const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+              m = Math.min(m, Math.max(dx, dy, 0) - t[4]);
+            }
+          }
         }
-      }
       return m;
     });
     /* the reaction is additive on joints the gust already moves by the same

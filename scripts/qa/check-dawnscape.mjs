@@ -21,8 +21,10 @@
  *      And THE LIGHT'S CLEARING (round 13): the sun rises behind the range,
  *      so the only things that may stand inside the crown's circle are the
  *      sun's own marks and the rock in front of it. Everything else lifts
- *      off it, which is what this drawing has instead of a glow. The sun's
- *      colour is held to its own class there too: .ds-sun and nowhere else.
+ *      off it, which is what this drawing has instead of a glow. And every
+ *      mark wearing an ACCENT class is inside the group that class belongs
+ *      to: the light on .ds-sun, .ds-glit and .ds-eye, growth on .ds-tip,
+ *      blossom on .ds-floret and .ds-petal, each in its own home.
  *   6. THE PLANES' MATERIALS (round 12). The range is fixed path data
  *      (RANGE), and .ds-p2 may hold nothing else: every path is a declared
  *      ridge line (.ds-ridge), a facet's hatch (inside a .ds-facet that
@@ -55,9 +57,24 @@
  *      The phone is capped at 8 on top of its own declaration.
  *   3. REDUCED MOTION. The drawing is there, at opacity 1, with its paths;
  *      nothing inside it animates; the flock layer is display:none.
- *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
- *      --ink-2 and --hair-strong and nothing else. No --hair (a hard red for
- *      check-palette), no clay, no pine, no ember: the owner said no colour.
+ *   4. PALETTE, AS A REGISTRY. Three inks draw freely (--ink, --ink-2,
+ *      --hair-strong; never --hair, which is a hard red for check-palette,
+ *      and never clay, pine or ember). Round 14's owner opened the palette
+ *      for touches — "colors are allowed, just not the entire canvas to be
+ *      colors" — so every colour token must be DECLARED with the classes it
+ *      may appear on, an accent on any other selector is a finding, a token
+ *      nobody declared is a finding, and a declared class whose rule has
+ *      gone is a finding too, so the registry cannot rot into a comment.
+ *  10. NOT THE ENTIRE CANVAS. The painted area of every coloured mark, a
+ *      stroke by its length times its width and a fill by its box, against
+ *      the sheet, at every seat. That is the owner's condition as a number:
+ *      round 14 ships 0.10% to 0.19% and the cap is 0.6%.
+ *  11. THE HORIZON IS DRAWN, NOT RULED. The longest CONTIGUOUS run of ink
+ *      in the ground plane, subpath by subpath because every mark here is
+ *      batched, stays under 0.2 W. The line this replaced measured 0.224.
+ *  12. THE RIM LIGHT IS NOT ON THE DARK SIDE. Every canopy cut-line
+ *      records its lobe and where the light was in its own frame, and the
+ *      mean of the arc sits on the lit side of that lobe.
  *   9. A CAST FALLS AWAY FROM THE LIGHT. Every mark that claims to be a
  *      shadow (.ds-castshadow) carries the x of what casts it, and its own
  *      centre sits on the far side of that caster from the sun, by 2px.
@@ -181,6 +198,22 @@
  *   · each petal emitted as its own `.ds-leaf.airborne` → the sit's
  *     "never two leaves in the air" fails
  *   · a blossom radius of 0.6 → the blossom floor fails
+ * Round 14 phase B, each verified by picasso with its own instrument and
+ * owed to labrat against the gate itself:
+ *   · the ruled horizon put back beside the brow → (11) fails, 325.9px of
+ *     unbroken ink at 1456×949, which is 0.224 W against a cap of 0.2
+ *   · the rim light turned back west whatever the hour → (12) fails on 39
+ *     of 65 cut-lines
+ *   · an accent painted on a class it is not declared for (--bloom-p on
+ *     .ds-far) → (4) fails, the colour is off its registry
+ *   · one floret blown up to r 200 → (10) fails at 48.97% of the sheet
+ *   · a daisy on a 40px stem → the meadow rule fails at fourteen flowers,
+ *     rise 43.5 against a cap of 24.73
+ *   · the daisies built closed → the reduced-motion seat fails, 0 of 14
+ *   · the daisies opened with a one-iteration @keyframes → the census
+ *   · NOTE for round 13's P1, P2 and P4: all three still fire, but the
+ *     wording they matched has changed with the registry, so their recorded
+ *     lines are owed a re-run rather than a re-read
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */

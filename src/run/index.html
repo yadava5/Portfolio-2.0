@@ -122,7 +122,10 @@ if (location.hash.length > 1) {
                                 any waypoint. Nothing could have said so; check-palette can. */
     --clay-g:#c4532e;        /* clay as graphic — measured: #c4532e on #f2e4c9 — 3.62:1 / Lc 55.7 */
     --pine:#2f5d50;
-    --sun-g:#a8760c;         /* RESERVED: ¶13's sun and nothing else. Graphics only, never
+    --sun-g:#a8760c;         /* ¶13's LIGHT: its sun, the light on water and the heart of
+                                a flower (round 14 opened the palette; the classes each
+                                accent may appear on are declared in check-dawnscape 4).
+                                Graphics only, never
                                 text, the way --clay-g is. The one colour on a drawing that
                                 was ruled ink-only, and it is on the LIGHT rather than on the
                                 object: the disc's rim is --ink-2 and this is the second pass
@@ -2055,6 +2058,7 @@ if (location.hash.length > 1) {
        link text on these grounds, under the 60 floor; #f4b090/#aecfc0
        measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
     .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0; --sun-g:#e0b25c;
+      --leaf-g:#a8c46a; --bloom-p:#eda6b2;
       --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.45);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
@@ -11135,7 +11139,10 @@ function spawnFar(want, wantGull) {
   window.__world.crossings = farLog.map((c) => ({ entry: c.entry, ex: +c.ex.toFixed(2), ey: +c.ey.toFixed(2), exit: c.exit || "" })); /* probe hook */
   mark("farbird");
   window.__world.sky = { spawned: sky.spawned, live: live + count, entries: sky.entries };
-  farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
+  /* a crossing the POINTER asked for does not re-arm the sky's own clock:
+     the timer it would overwrite is still pending, and the spawn rate
+     would grow by one chain with every bird a reader startled */
+  if (!want) farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
 }
 
 /* ····· the sockets: the perch and the nest ·····
@@ -11488,13 +11495,19 @@ function lookAt(px, who = "deer", capMs = 2500) {
     if (!noticeOn()) return;
     const b = g.getBoundingClientRect();
     const dir = px > (b.left + b.right) / 2 ? 1 : -1;
-    if (ears.length) {
-      for (const e of ears) oneShot(e, dir * 11, at(1600), 0.45);
-    } else if (head) {
-      /* the phone: a lift, not a hinge */
-      oneShot(head, dir * 5, at(1500), 0.4);
-    }
-    if (tail) oneShot(tail, dir * 13, at(520));
+    /* ONE ONE-SHOT PER JOINT. These are additive, so a swivel laid over a
+       gust flick that is still running would reach twice the angle either
+       was measured at — and the gust's own ±16° is what the drawing's
+       clearance was measured with. A joint that is already carrying a
+       Web Animation keeps the one it has. */
+    const free = (el) => el && !el.getAnimations().some((q) => !(q instanceof CSSAnimation));
+    for (const e of ears) if (free(e)) oneShot(e, dir * 11, at(1600), 0.45);
+    if (!ears.length && free(head)) oneShot(head, dir * 5, at(1500), 0.4);
+    if (free(tail)) oneShot(tail, dir * 13, at(520));
+    /* the moment the reaction actually starts, for the test that measures
+       the air at its peak: the log line is written when it is SCHEDULED,
+       and the wait for her head to come up can be most of a cycle */
+    window.__world.swivelAt = Math.round(mt());
   }, wait);
   return "look";
 }
@@ -11610,6 +11623,10 @@ function considerNotice(x, y) {
   reactNear(near, x, y, lingering, fresh);
 }
 function onPoint(e) {
+  /* A FINGER DRAGGING THE PAGE IS NOT A VISITOR. Touch fires pointermove
+     all the way through a scroll, so the controller takes MOUSE movement
+     only; a finger reaches it through onUp, and only as a tap. */
+  if (e.pointerType && e.pointerType !== "mouse") return;
   if (!noticeOn()) return;
   noticePt = [e.clientX, e.clientY];
   if (noticeRaf) return;
