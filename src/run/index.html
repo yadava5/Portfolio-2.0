@@ -7457,7 +7457,6 @@ function repaintPad() {
   for (const st of strokes) tracePath(padCtx, st, s);
 }
 const off = document.createElement("canvas"); off.width = off.height = PAD;
-const small = document.createElement("canvas"); small.width = small.height = GRID;
 /* ————— the pad normalises the way MNIST does —————
    It used to rasterise the strokes at their RAW pad coordinates and scale
    the whole 280² buffer to 28², which is none of the three things the
@@ -7471,10 +7470,27 @@ const small = document.createElement("canvas"); small.width = small.height = GRI
 
    So, MNIST's own three steps: crop to the ink's bounding box, scale the
    long side to 20px keeping the aspect ratio, and paste it into 28×28 so
-   the CENTRE OF MASS — not the box centre — lands at (14,14). The brush
-   and the antialias are unchanged: the strokes are still drawn at BRUSH on
-   the 280² buffer and the downscale is still the canvas's own, so a digit
-   drawn large and centred rasterises exactly as it did before. */
+   the CENTRE OF MASS — not the box centre — lands at (14,14). The brush is
+   unchanged: the strokes are still drawn at BRUSH on the 280² buffer.
+
+   THE DOWNSCALE IS NO LONGER THE CANVAS'S OWN. It was `drawImage` from a
+   ~250px crop to 20px, and at the default smoothing that is a bilinear
+   read of the few source pixels nearest each target centre — no area
+   averaging — so a digit drawn large, the way the hint asks, arrived as a
+   jagged 1–2px line with gaps where a sample fell between the stroke's
+   edges. It was also the RENDERER's filter: replaying the same 70 recorded
+   strokes, headless Chromium and desktop Chrome handed the network tensors
+   that differed by up to 0.16 in a cell. MNIST's "anti-aliased" is an area
+   average, so that is what this now does, in plain arithmetic: each pad
+   pixel's square is scaled into the 28-grid and its ink shared among the
+   cells it overlaps, by overlap area. The strokes themselves are still the
+   canvas's, so two renderers can still disagree, but by 0.04 at most on the
+   same replay. Measured on 1,500 held-out large draws through the same
+   network, errors went 19 → 12. It is a fidelity fix, not a cure for any
+   one digit: the 2s moved within noise (+5 on one split, −5 on the other).
+   What a 2 still gets wrong is the network's own. MNIST's 2s are wide
+   (median ink aspect 0.95, 0.6% under 0.6), so a tall narrow 2 is a shape
+   it was never shown, and it reads some of those as 1. */
 const PAD_INK = 16; /* 6% of white: past the antialiased skirt, under any stroke */
 function extractPixels() {
   const oc = off.getContext("2d");
@@ -7500,29 +7516,38 @@ function extractPixels() {
 
   const bw = x1 - x0 + 1, bh = y1 - y0 + 1;
   const s = 20 / Math.max(bw, bh);
-  const dw = Math.max(1, Math.round(bw * s)), dh = Math.max(1, Math.round(bh * s));
-  const sc = small.getContext("2d");
-  /* pass 1 places the scaled box at the origin only so its centre of mass
-     can be read at the resolution the network sees; nothing is kept from it
-     except cx/cy. Measuring the centroid on the 280² buffer instead would
-     answer a different question — the resample moves ink. */
-  sc.fillStyle = "#000"; sc.fillRect(0, 0, GRID, GRID);
-  sc.drawImage(off, x0, y0, bw, bh, 0, 0, dw, dh);
-  const first = sc.getImageData(0, 0, GRID, GRID).data;
+  /* the centre of mass is read on the 280² buffer, before the resample.
+     That used to be the wrong place (a filtered resample moves ink), but an
+     area average spreads each pixel's ink evenly over its scaled square, and
+     that square's centre is where the pixel's centre maps — so the centroid
+     survives the resample exactly and can be placed at (14,14) directly,
+     to the fraction of a cell, with no second pass. */
   let m = 0, mx = 0, my = 0;
-  for (let y = 0; y < GRID; y++) {
-    for (let x = 0; x < GRID; x++) {
-      const v = first[(y * GRID + x) * 4];
-      if (!v) continue;
+  for (let y = 0; y < bh; y++) {
+    for (let x = 0; x < bw; x++) {
+      const v = full[((y0 + y) * PAD + x0 + x) * 4];
       m += v; mx += v * (x + 0.5); my += v * (y + 0.5);
     }
   }
-  const cx = m ? mx / m : dw / 2, cy = m ? my / m : dh / 2;
-  sc.fillStyle = "#000"; sc.fillRect(0, 0, GRID, GRID);
-  sc.drawImage(off, x0, y0, bw, bh,
-    Math.round(GRID / 2 - cx), Math.round(GRID / 2 - cy), dw, dh);
-  const { data } = sc.getImageData(0, 0, GRID, GRID);
-  for (let i = 0, j = 0; i < data.length; i += 4, j++) px[j] = data[i] / 255;
+  const ox = GRID / 2 - (m ? mx / m : bw / 2) * s, oy = GRID / 2 - (m ? my / m : bh / 2) * s;
+  /* ink that lands outside the 28-grid is dropped, as MNIST's own was: a
+     20px box centred on a lopsided mass (a 7's heavy bar) can overhang */
+  const acc = new Float64Array(GRID * GRID);
+  for (let y = 0; y < bh; y++) {
+    const t0 = oy + y * s, t1 = t0 + s;
+    for (let x = 0; x < bw; x++) {
+      const v = full[((y0 + y) * PAD + x0 + x) * 4];
+      if (!v) continue;
+      const u0 = ox + x * s, u1 = u0 + s;
+      for (let gy = Math.max(0, Math.floor(t0)); gy < Math.min(GRID, Math.ceil(t1)); gy++) {
+        const hy = Math.min(t1, gy + 1) - Math.max(t0, gy);
+        for (let gx = Math.max(0, Math.floor(u0)); gx < Math.min(GRID, Math.ceil(u1)); gx++) {
+          acc[gy * GRID + gx] += v * hy * (Math.min(u1, gx + 1) - Math.max(u0, gx));
+        }
+      }
+    }
+  }
+  for (let j = 0; j < px.length; j++) px[j] = Math.min(1, acc[j] / 255);
   return px;
 }
 let timer = null, busy = false, again = false;
