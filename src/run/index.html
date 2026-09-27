@@ -575,6 +575,7 @@ if (location.hash.length > 1) {
   #net .on .bar{fill:var(--ink-2)}
   #net .on.win text{fill:var(--clay); font-size:16.5px}
   #net .on.win .bar{fill:var(--clay-g)}
+  #net.reading .on{opacity:.3} /* pen down: the outputs wait for the lift */
   #net.tight .on text{font-size:11px}
   #net.tight .on.win text{font-size:12.5px}
   #net .ed{stroke:var(--ink); fill:none}
@@ -7399,8 +7400,14 @@ function buildNet(tight) {
   if (net.lastLight) lightNet(...net.lastLight); /* a rebuild keeps your read */
 }
 
-function lightNet(px, hidden, conf, pred) {
-  net.lastLight = [px, hidden, conf, pred];
+/* `live` is a read taken with the pen still down: it lights the input and
+   the hidden layer, which are the network working, and leaves the ten
+   outputs alone, which are its answer. A half-drawn 2 is a 7 to this
+   network (the hook and the diagonal: 29 of 30 held-out 2s, paused at the
+   corner, read 7 there), and a bar that grows and turns clay under "7" is that
+   wrong answer stated with confidence, just smaller than the big digit. */
+function lightNet(px, hidden, conf, pred, live = false) {
+  if (!live) net.lastLight = [px, hidden, conf, pred];
   const ctx = net.inCtx;
   const img = ctx.createImageData(28, 28);
   const night = document.documentElement.hasAttribute("data-night");
@@ -7412,6 +7419,10 @@ function lightNet(px, hidden, conf, pred) {
   ctx.putImageData(img, 0, 0);
   const hMax = Math.max(1e-6, ...hidden);
   net.hn.forEach((n, i) => n.setAttribute("opacity", (0.12 + 0.88 * hidden[i] / hMax).toFixed(2)));
+  if (live) {
+    for (const e of net.ed) if (e.kind === 0) e.el.setAttribute("opacity", clamp(0.05 + hidden[e.a] / hMax * 0.6, 0.05, 0.7).toFixed(2));
+    return;
+  }
   net.on.forEach((o, d) => {
     if (net.tight) { /* rising bars: anchor at the 262 baseline */
       const h = Math.max(1, conf[d] * 66);
@@ -7563,12 +7574,24 @@ async function classifyNow() {
     const conf = Array.from(r.confidence);
     const hidden = Array.from(r.hidden_activations);
     const p = Number(r.prediction);
+    /* THE VERDICT IS STAMPED ONLY WITH THE PEN UP. Reads used to land on a
+       120ms pause mid-stroke and stamp the big digit, the traveller and the
+       gate's "your sample" line with whatever the half-drawn shape was.
+       Measured on 89 held-out draws with a pause at the lowest corner: 51
+       showed a wrong digit before the pen lifted, 29 of the 30 twos a
+       clay "7". The final read was right, but a reader who glances at the
+       verdict while finishing the bar has already been told "7". So a read
+       taken while `current` is open lights the network and nothing else;
+       lift() takes the read that counts, and every lift takes one, so a 4
+       or a crossed 7 is re-read after each of its strokes. */
+    if (current) { lightNet(px, hidden, conf, p, true); return; }
     const v = $("verdict");
     v.textContent = String(p);
     v.classList.remove("idle", "stamp"); void v.offsetWidth; v.classList.add("stamp");
     $("conf").textContent = (conf[p] * 100).toFixed(1) + "%";
     $("fwd").textContent = ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms";
     lightNet(px, hidden, conf, p);
+    $("net").classList.remove("reading");
     setGlyphTraveller(p);
     const lm = $("liveSampleM");
     lm.textContent = `read “${p}” in this tab · ${(conf[p] * 100).toFixed(1)}% · ${ms < 1 ? (ms * 1000).toFixed(0) + " µs" : ms.toFixed(1) + " ms"}`;
@@ -7578,9 +7601,11 @@ async function classifyNow() {
     /* the card grew a line: the cached page geometry (fx windows, the
        thread's anchors, the b6 dusk contract) must follow the truth */
     cacheGeometry(); buildThread();
-  } catch { /* status line reports load failure */ }
-  busy = false;
-  if (again) { again = false; classifyNow(); }
+  } catch { /* status line reports load failure */ } finally {
+    /* in `finally` because the pen-down read above returns early */
+    busy = false;
+    if (again) { again = false; classifyNow(); }
+  }
 }
 const queueClassify = () => { clearTimeout(timer); timer = setTimeout(classifyNow, 120); };
 function toPadXY(ev) {
@@ -7594,13 +7619,22 @@ pad.addEventListener("pointerdown", (ev) => {
   pad.setPointerCapture(ev.pointerId);
   current = [toPadXY(ev)]; strokes.push(current);
   $("padhint").classList.add("gone");
+  /* the pen is down, so the last answer is no longer an answer to what is
+     on the pad: the big digit and its conf go back to the idle "·" they
+     wear after clear, and the ten outputs dim (#net.reading) until lift */
+  const v = $("verdict"); v.textContent = "·"; v.classList.remove("stamp"); v.classList.add("idle");
+  $("conf").textContent = "·"; $("fwd").textContent = "·";
+  $("net").classList.add("reading");
+  for (const o of net.on) o.g.classList.remove("win");
   repaintPad();
 });
 pad.addEventListener("pointermove", (ev) => {
   if (!current) return;
   current.push(toPadXY(ev)); repaintPad(); queueClassify();
 });
-const lift = () => { if (current) { current = null; classifyNow(); } };
+/* a lift cancels the pending pen-down read: it would only re-stamp the
+   same strokes 120ms later and replay the stamp animation */
+const lift = () => { if (current) { current = null; clearTimeout(timer); classifyNow(); } };
 pad.addEventListener("pointerup", lift);
 pad.addEventListener("pointercancel", lift);
 $("clear").addEventListener("click", () => {
