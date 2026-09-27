@@ -16,6 +16,19 @@
  *
  * Each entry names WHERE the truth came from, because the lesson of that
  * audit was that prose about evidence goes stale while the evidence does not.
+ *
+ * Round 13 added clause 2b, WHAT A FIGURE MAY NO LONGER SAY. A ruling that
+ * takes a claim OUT of a drawing is the kind that comes back, because the
+ * words stay true elsewhere in the run and nothing reads as a lie when a
+ * later redraw restores them. It is checked against the label and against
+ * the builder's own drawing code, since fig. 03's meter lived in the
+ * drawing rather than in the alt text.
+ * Dry-run against HEAD while writing it: silent on the shipped figure, and
+ * shown able to fail on a body with `"compliance across 61 projects"` put
+ * back and a label carrying "97 percent" — 3 hits.
+ * TODO(labrat): run check-figures on a temp copy with that string restored
+ * and record the measured line here; I author the checks and cannot run
+ * them.
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -696,25 +709,23 @@ const FIGURES = [
       "pathFig",
       "fig. 03",
       [
-        "97 percent",
-        /* §4b's meter ruling, made gate-enforceable. `scrubPath` used to fill
-           .meterfill from width 0 to 97% under the reader's scroll, inside a
-           scale reading "compliance 0% ⟶ 97%" — a gauge with a scale filling
-           as you watch, over a committed figure, which is the class §5.5's
-           bench ruling condemned. The bar is now authored at 97% of its track
-           and only its riser and numeral ink in. "97 percent" alone could not
-           see that: it survives BOTH wordings, which is exactly why the old
-           label could say "fills from zero to 97 percent" with every gate
-           green. This clause is the one that cannot. */
-        "stands settled at 97 percent",
-        /* The plate's new fact. ¶03's own handoff line has always said "only
-           the inventory is checked in — the rest are read off miami's own
-           systems and cannot be published" (:1591); the drawing was silent
-           about it until now, and a redraw that keeps the boxes and loses the
-           dispositions turns three products into three equals. */
-        "read off Miami's own systems",
+        /* THE DISPOSITIONS, which are what this plate is for. ¶03's own
+           handoff line says "only the master inventory is published; the rest
+           stays on miami's own systems", and the drawing says the same thing
+           in the reviewer's two marks: a check on the solid box, a strike on
+           the dashed one. A redraw that keeps both boxes and loses this turns
+           two products into two equals.
+           The wording is the PRODUCT'S, not a negation of the other's: the
+           pair used to read "checked in" / "not checked in", which made the
+           withheld one sound like a failure to file rather than a thing that
+           belongs to somebody else. */
+        "checked in",
+        "stays with IT Services",
+        /* the two sources, so a redraw cannot quietly drop one of them the
+           way round 13 dropped the third */
+        "Two feeder roads",
       ],
-      "the meter that no longer fills, and the dispositions the run states in prose",
+      "the two sources, and the dispositions the run states in prose",
     ],
     [
       "appliedFig",
@@ -835,6 +846,40 @@ const FIGURES = [
       "the staging disclosure, the gate that never opens, and the containment the run claims in prose",
     ],
   ];
+  /* ── 2b · WHAT A FIGURE MAY NO LONGER SAY. A ruling that removes a claim
+     from a drawing is the kind that comes back: the words are still true
+     somewhere else in the run, so nothing reads as a lie when a later redraw
+     restores them. Round 13: the owner ruled the compliance story out of
+     fig. 03 — the legacy Laravel reporter, the ETL feed, the 37-month
+     dashboard and the 97% meter — and the figure now carries two feeders and
+     two products. These strings are checked against the label AND against
+     the builder's own source, because the meter lived in the drawing rather
+     than in the alt text. */
+  const RETIRED = [
+    [
+      "pathFig",
+      "fig. 03",
+      ["97 percent", "97%", "compliance", "61 projects", "legacy laravel", "etl feed", "37 month", "teamdynamix"],
+      "the compliance story the owner ruled out of this plate in round 13",
+    ],
+  ];
+  for (const [id, fig, words, why] of RETIRED) {
+    const tag = run.match(new RegExp(`<svg id="${id}"[^>]*>`))?.[0] ?? "";
+    const label = tag.match(/aria-label="([^"]*)"/)?.[1] ?? "";
+    /* the builder's own body for this plate: from its function to the next
+       top-level comment banner */
+    const body = run.match(/function buildPath\(tight\)[\s\S]*?\n}\n/)?.[0] ?? "";
+    for (const w of words) {
+      const where = label.toLowerCase().includes(w.toLowerCase())
+        ? "its label"
+        : new RegExp(`["'\`][^"'\`]*${w.replace(/[.*+?^${}()|[\]\\]/g, "\\  for (const [id, fig, tokens, why] of DRAWING_TOKENS) {")}`, "i").test(body)
+          ? "its drawing"
+          : null;
+      if (where)
+        fails.push(`  ✗ ${fig} says "${w}" again, in ${where}\n      ${why}`);
+    }
+  }
+
   for (const [id, fig, tokens, why] of DRAWING_TOKENS) {
     const tag = drawings.find((t) => t.includes(`id="${id}"`));
     if (!tag) {
