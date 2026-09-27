@@ -1983,8 +1983,8 @@ if (location.hash.length > 1) {
   /* --s0 is the lead the rail's own samples measure; --sday is where the
      day strip hangs under the last lane; --sfoot is the room the strip and
      its clocks need under it. */
-  .signs{--srh:158px; --sby:106px; --s0:110px; --s1:0px; --sday:58px;
-    --sfoot:96px;
+  .signs{--srh:152px; --sby:104px; --s0:110px; --s1:0px; --sday:38px;
+    --sfoot:80px;
     position:relative; padding-top:var(--s0); padding-bottom:var(--sfoot);
     color:var(--ink-2)}
   .signs .srow{position:relative; height:var(--srh)}
@@ -2194,7 +2194,7 @@ if (location.hash.length > 1) {
     .gates .gname{top:0}
     .gates .gwhy{top:24px; right:0; width:auto}
     .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
-    .signs{--srh:158px; --sby:106px; --sday:52px; --sfoot:86px}
+    .signs{--srh:152px; --sby:104px; --sday:34px; --sfoot:74px}
     .signs .sname{top:calc(var(--sby) - 46px)}
   }
   /* 320. Both dockets grow one more line of row, because at 222px of plate
@@ -6418,7 +6418,7 @@ function buildGates(js) {
     const g = el("g", {});
     const mark = row.querySelector(".gj");
     const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
-    const D = T + (tight ? 16 : 26);            /* where the evidence begins */
+    const D = T + (tight ? 22 : 34);            /* where the evidence begins */
     const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y };
     const stub = dPath("g-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
     stub.setAttribute("data-j", i);
@@ -6442,8 +6442,8 @@ function buildGates(js) {
       }
       add(rank, dPath("g-load", d));
       add(rank, dPath("g-wrong", w));
+      add(rank, dPath("g-legs", seg(D, y - 12.4, D, y)));
       g.appendChild(rank);
-      add(g, dPath("g-legs", seg(D, y - 12 - 0.4, D, y)));
       /* the lane runs ON, past the plate's own edge */
       add(g, dPath("g-lane", seg(T, y, T + A + 8, y)));
       add(g, dPath("g-lane", seg(T + A, y - 4, T + A + 8, y) + seg(T + A, y + 4, T + A + 8, y)));
@@ -6464,8 +6464,8 @@ function buildGates(js) {
       }
       add(keep, dPath("g-card", out));
       add(keep, dPath("g-tick", tk));
+      add(keep, dPath("g-legs", seg(D, y - 16, D, y)));
       g.appendChild(keep);
-      add(g, dPath("g-legs", seg(D, y - 16, D, y)));
       const lane1 = T + A * (tight ? 0.9 : 0.78);
       add(g, dPath("g-lane", seg(T, y, lane1, y)));
       add(g, dPath("g-lane", seg(lane1, y - 5, lane1, y + 5)));
@@ -6486,7 +6486,14 @@ function buildGates(js) {
       add(caught, dPath("g-flag", box(cx + cw - 5, cy - ch - 5, 5, 5)));
       g.appendChild(caught);
       rec.keep = keep; rec.caught = caught;
-      rec.lift = tight ? 16 : 22; rec.run = Math.max(30, bx + 26 - cx);
+      /* IT STOPS AT THE CARD, NOT ON IT. The first cut sent the caught cell
+         `bx + 26 - cx` to the right, which is the card's own left edge PLUS
+         its width: the cell came to rest across the replacement's two clay
+         bars, and since every reduced-motion reader gets the settled frame,
+         that is the frame most readers get. It rides the branch up to the
+         level of the served card and halts against its edge. */
+      rec.lift = y - 16 - (by + 10);
+      rec.run = Math.max(24, bx + 26 - cw - cx);
     } else {
       /* the claim, its tag, and the stop it was drawn back to */
       const cw = tight ? 62 : 96, ch = tight ? 24 : 32;
