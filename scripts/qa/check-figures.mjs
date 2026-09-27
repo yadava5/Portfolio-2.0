@@ -82,7 +82,10 @@ const surfaceText = Object.fromEntries(
 const FIGURES = [
   {
     figure: "jetpack · parallel speed-up",
-    run: /6\.4× faster than single-threaded java\.util\.zip/,
+    /* r13: the run no longer says "single-threaded" (no new hyphens), so
+       the baseline is bound in the words it now uses. Same truth: 6.4× over
+       java.util.zip on ONE thread. projects.ts keeps its own phrasing. */
+    run: /6\.4× faster than java\.util\.zip on one thread/,
     data: { projects: /6\.4× vs single-threaded java\.util\.zip/ },
     source: "benchmarks/jmh-results-rigorous.json — 422.0 / 66.2 = 6.378",
   },
@@ -94,7 +97,8 @@ const FIGURES = [
   },
   {
     figure: "jetpack · Adler-32 vs scalar",
-    run: /adler-32 vectorised 2\.8× scalar/i,
+    /* American spelling since r13: vectorized */
+    run: /adler-32 vectorized 2\.8× scalar/i,
     data: { projects: /2\.8× vs scalar/ },
     source: "benchmarks/jmh-results-rigorous.json — 4256.6 / 1518.2 = 2.804",
   },
@@ -227,7 +231,9 @@ const FIGURES = [
        the rule the two-form era taught is kept as a rule rather than as a
        dead regex: if the split is ever stated twice again, both get bound,
        because a regex that finds one says nothing about the other. */
-    run: /635 frontend \+ 551 backend/,
+    /* r13: the run's split is now parenthesised, "(635 frontend, 551
+       backend)"; same two parts, same total. The case file keeps its "+". */
+    run: /\(635 frontend, 551 backend\)/,
     data: { cases: /635 frontend \+ 551 backend/ },
     source: "same run; the split must agree with the total it sums to",
   },
@@ -259,7 +265,11 @@ const FIGURES = [
     figure: "Glyph · kernel speed-up",
     /* Tags are stripped before matching, so the <b> around 3.5× is gone
        by the time this runs — match the prose, not the markup. */
-    run: /parallel dot-256 kernel 3\.5× vs -O3/,
+    /* r13: "dot-256" was the benchmark's name, not a reader's word. It is
+       benchDot/256, a 256×256 matrix product (glyph bench_matrix.cpp:36-46),
+       and the run now says so; the ratio, the core count and the -O3
+       baseline are all still bound. */
+    run: /256×256 matrix product: 3\.5× faster on 10 cores than one core at -O3/,
     /* FOUR SURFACES, because the number is stated on four. Until 2026-08-06
        this entry named one regex, projects.ts satisfied it, and the case
        file and its plate were never asked — which is how they went four days
@@ -285,7 +295,10 @@ const FIGURES = [
        present, and that one proves the retired one is gone, which is the
        assertion a reword cannot walk around. */
     figure: "Glyph · what earns the 3.5×",
-    run: /parallelism carries all of it; the simd is in both builds/,
+    /* r13: the run's attribution is now its muted line, which names OpenMP
+       as what earned the 3.5× on the one matrix product. The SIMD aside is
+       gone from home; the case file still carries it and is still bound. */
+    run: /across 10 cores with OpenMP, and one 256×256 matrix product got 3\.5× faster/,
     data: {
       projects:
         /the 3\.5× is openmp against the -O3 baseline; the SIMD is compiled into both/,
@@ -298,7 +311,11 @@ const FIGURES = [
   },
   {
     figure: "Applied · eval set",
-    run: /1 wrong out of 96 labelled emails \(0\.990 macro-f1\)/,
+    /* r13: American spelling, cased unit, and the stage qualifier moves
+       into the binding: "the rules stage, not the cascade" became "rules
+       alone", and a 0.990 without it credits the cascade with the rules'
+       score. */
+    run: /1 wrong out of 96 labeled emails \(0\.990 macro-F1\), rules alone/,
     /* Was a bare /96/ over the concatenation, which matched `#2496ed` in
        projects.ts's tech-stack colours. Scoping it to the file that states
        the claim is the reform; naming the noun is what makes the scoping
@@ -310,7 +327,8 @@ const FIGURES = [
   },
   {
     figure: "Applied · rule count",
-    run: /220 regex rules/,
+    /* r13: the count now lives in the muted line, "220 rules I wrote" */
+    run: /220 rules I wrote/,
     /* Same defect, worse: a bare /201/ matched `U+201C/201D` in this file's
        own typographic-law header, so the entry would have stayed green with
        the rule count deleted. Bound to the phrase the file actually uses.
@@ -342,7 +360,8 @@ const FIGURES = [
        to its source is precisely the kind that drifts unnoticed, so all
        three surfaces are pinned to the byte literals instead. */
     figure: "Applied · int8 ONNX export size",
-    run: /90 ⟶ 23 mb/,
+    /* r13: ⟶ is kept for links to this site; the size change is words now */
+    run: /90 MB to 23 MB/,
     data: {
       projects: /int8 ONNX export, 90 to 23 MB/,
       cases: /int8 ONNX export of the same model, 90 to 23 MB/,
@@ -830,7 +849,8 @@ const FIGURES = [
            fact in the drawing and therefore the one a later edit drops
            silently: a redraw that keeps the paths and loses the containment
            says the model reaches into the runtime. */
-        "inside a docker sandbox",
+        /* cased since r13: Docker is a proper noun */
+        "inside a Docker sandbox",
       ],
       "the staging disclosure, the gate that never opens, and the containment the run claims in prose",
     ],
@@ -858,7 +878,9 @@ const FIGURES = [
         /* the em dash became a middle dot in the 2026-09-23 dash sweep; the
            claim is the degree, the school and the date, not the punctuation
            between them */
-        "b.s. computer science · miami university, may 2026",
+        /* r13: cased, and the date sits in a no-wrap span, so claims are
+           matched with tags stripped (see the loop below) */
+        "B.S. Computer Science · Miami University, May 2026",
       ],
       /* THE REASON THE NEGATIVE EXISTS. role="img" makes descendants
          presentational, and these two links work. */
@@ -883,8 +905,12 @@ const FIGURES = [
            skimmer read as failure — which inverted the whole claim of the
            plate. The sentence keeps its job and loses the word that was
            fighting it. */
-        "a stopped gate is the system working",
-        "the gate stopped the run",
+        /* r13 (owner's copy ruling): the ghead slogan, the legend and the
+           "unsigned" tail are cut. What they protected was that two of the
+           three checks did NOT pass and that the line goes on to a person.
+           The first is now the caption's own count, the second the close. */
+        "three checks on my own work: one passed, two said no.",
+        "the next stop is a person.",
         /* §4b's commission, made checkable. The marks used to float beside
            the gate names; they are now inked INSIDE a frame standing on a
            line that runs down the register, and below the third gate that
@@ -894,18 +920,20 @@ const FIGURES = [
            three glyphs with no subject, which is what FIGURES.md called
            unresolved in the first place. Kept in the LEG rather than only in
            the figcaption because the leg is inside the plate. */
-        "the line runs on dashed and unsigned, to a person",
       ],
       /* one stamp per disposition, and all three are asserted: two rows
          saying the same word is the state this plate had before, when both
          non-passing gates read "refused" and the difference between a gate
          that declined and a check that caught something was lost. */
-      exposed: [/>passed<\/span>/, />declined<\/span>/, />caught<\/span>/],
+      /* r13: PolicyBot's quote check "caught", Glyph's claim "retracted" */
+      exposed: [/>passed<\/span>/, />caught<\/span>/, />retracted<\/span>/],
     },
     {
       fig: "11",
       what: "the references",
-      claims: ["three of the twelve stops carry a name that is not mine"],
+      /* r13: the summary line is cut; the plate still ties each name to the
+         stations that person worked on, and that is what is bound now. */
+      claims: ["his manager, station 03", "teammate, stations 06 and 09"],
       exposed: [/>Randall Vollen</, />Shree Chaturvedi</],
     },
   ];
@@ -918,8 +946,9 @@ const FIGURES = [
           `      That makes every descendant presentational. This plate's accessible\n` +
           `      experience IS its text, and fig. 02's two links would stop existing.`
       );
+    const blockText = block.replace(/<[^>]*>/g, "");
     for (const c of p.claims)
-      if (!block.includes(c))
+      if (!blockText.includes(c))
         fails.push(`  ✗ fig. ${p.fig} (${p.what}) no longer states "${c}"`);
     for (const re of p.exposed) {
       const m = block.match(re);
@@ -950,8 +979,11 @@ const FIGURES = [
 /* Claims the run must NOT make bare, because their source qualifies them. */
 const QUALIFIED = [
   {
-    figure: "policybot cited-source sweep",
-    bare: /19\/20 cited-source sweep(?!,? self-reported)/i,
+    /* r13: the row is now "19/20 answers passed my quote check, unaudited".
+       Same rule in the new words: a 19/20 not followed by that qualifier is
+       bare. */
+    figure: "policybot quote check",
+    bare: /19\/20(?! answers passed my quote check, unaudited)/,
     why: "the case file calls 19/20 and 17/25 disclosed self-reports — the grader and per-case pass criteria are not published",
   },
 ];

@@ -2481,37 +2481,6 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         date: "2026-06",
         visibility: "private-safe",
       },
-      {
-        /* #v-master-inventory-5 IS DELIBERATELY UNREACHED, and this is where
-           that ruling lives because this is the row it is about.
-
-           Until Phase 4 it had exactly one way in: `StoryShell.tsx`, the React
-           home page, which linked it as the "1M+" metric. Measured as a set
-           difference at the Phase 2 checkpoint, it was the ONLY one of the
-           archive's 53 receipt anchors whose sole inbound link died with that
-           page — the run links four and /evidence links ten, and between them
-           they cover every other anchor StoryShell reached.
-
-           It is not restored, for the reason the row itself states: `artifacts`
-           is empty, `date` is null and `visibility` is local-only. It is the
-           one receipt on this site that terminates in nothing a reader can
-           open. A deep link into it would promise a receipt and deliver a
-           description — the exact move the honesty engine exists to prevent.
-           The run instead links the case FILE from ¶03, in the same sentence
-           that says out loud "only the inventory is checked in — the rest are
-           read off miami's own systems and cannot be published". That sentence
-           is the honest way in, and it is already there.
-
-           If this row ever gains a publishable artifact, it gains a way in too.
-           Until then the absence is the argument. */
-        claim:
-          "More than one million operational records ran through the Python/SQL transforms behind OAS and Tableau reporting in this same role.",
-        method:
-          "role scope, jun 2025 to may 2026, institutional ITSM data integration",
-        artifacts: [],
-        date: null,
-        visibility: "local-only",
-      },
     ],
     outcomes: [
       {
@@ -2525,13 +2494,17 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     ],
     notClaiming: [
       "This file shows counts, schema shape, and architecture only; raw CSV rows, owners, report names, PAT values, and institutional exports stay private.",
-      "The 1M+ record transforms are role-scope work with no public artifact, verifiable in interview, not on this page.",
     ],
     corrections: [
       {
         date: "2026-09-23",
         kind: "erratum",
         text: "The home page drew this work as one arrow chain: a legacy Laravel reporter into an ETL feed into a 37-month Tableau dashboard, and compliance 0% into 97%. Each figure is real and read off Miami\u2019s own systems, but the chain reads as a causal claim, and the rise is not mine to claim. Most of that rise was already under way before the June 2025 start, so the honest statement is the one the r\u00e9sum\u00e9 makes: a 37-month Tableau dashboard tracking code compliance across 61 projects, 0% in 2023 to 97% now. The numbers stay; what goes is the punctuation that turns them into a chain of cause. Recorded here rather than quietly reworded because the defect was in the punctuation doing argumentative work, which is the kind a claim audit is least likely to catch: every figure in the sentence was true.",
+      },
+      {
+        date: "2026-09-26",
+        kind: "erratum",
+        text: "The note above is withdrawn. The compliance figures and the reporting systems it names belong to the team, not to work this file can source, so they are off the site. A receipt that counted operational records in this role is removed as well: it had no artifact, no date and no source.",
       },
     ],
     ledger: {

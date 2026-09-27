@@ -523,7 +523,10 @@ const floors = [
   ["internal links in the run", runInternal.length, 12],
   ["receipt fragments checked from the run", runFragments, 4],
   ["ledger receipt links", ledgerHrefs.length, 11],
-  ["receipt anchors emitted, id by id", receiptIds, 53],
+  /* 52 since r13: master-inventory's fifth receipt ("more than one million
+     operational records") had no artifact, no date and no source, and was
+     deleted with its row. The set check above still proves every id. */
+  ["receipt anchors emitted, id by id", receiptIds, 52],
   ["case files rejoining the line", rejoins, 7],
   /* Five, not seven: `policybot` and `visual-assist` have no station to
      consign them. That asymmetry is the archive's, not a shortfall — see the
