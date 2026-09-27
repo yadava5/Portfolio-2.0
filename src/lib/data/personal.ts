@@ -84,7 +84,7 @@ export const personalInfo = {
   /** Bio paragraphs for about section */
   bio: [
     "Computer Science graduate focused on data pipelines, applied machine learning, and reliable software systems end-to-end.",
-    "As an ITSM Data Integration Intern at Miami University from June 2025 to May 2026, I built Python and data pipelines for Tableau/OAS and operational reporting, translated messy records into trusted datasets, and shipped dashboards and automations for real team workflows.",
+    "From June 2025 to May 2026 I was an ITSM Data Integration Intern in IT Services at Miami University, where I built Python pipelines that traced five years of reporting usage so my team could decide what to keep and what to drop before moving to a new data platform.",
     "I enjoy backend/full-stack engineering, data engineering, and ML-adjacent product work, especially where performance, reliability, and clear user impact matter.",
   ],
 
