@@ -160,14 +160,22 @@
  *     was latent with 1.8px to spare, not live. The declaration does not
  *     move, which is the reason to read it
  *   · the pose dependency shown, on a copy with the corner stand raised to
- *     a rise of 24.5 (h 27.5): the OLD measure fires with the graze held at
- *     0.24 of its cycle (her box 60.8, cap 24.27) and is silent with it
- *     held at 0.56 (63.2, cap 25.07); the declared measure (cap 24.73) is
- *     silent at both. The margins are 0.23 and 0.57px, which is the whole
- *     size of the effect
+ *     a rise of 24.50 (h 27.5) and held still: the OLD measure fires with
+ *     the graze held at 0.24 of its cycle (her box 60.59, cap 24.20) and is
+ *     silent with it held at 0.56 (62.97, cap 24.99); the declared measure
+ *     (cap 24.73) is silent at both. The margins are 0.30, 0.49 and 0.23px,
+ *     which is the whole size of the effect. Both poses are HELD at
+ *     playbackRate 0 rather than paused, because check 2 fails an animation
+ *     that is not running, and only the doe and that one stand are held,
+ *     because an animation held at its own local time 0 drops out of
+ *     getAnimations() and would take the census two short
  *   · a tuft raised to `doeH/3 + 8` → the meadow check fails
- *   · the phone pair declared range 12 with the hop still clamped at the
- *     old literal 30 → the per-seat roamer check fails at 390×844
+ *   · the phone doe declared range 12 and then drawn 28px from home → the
+ *     per-seat roamer check fails at 390×844. (Held there by a script in
+ *     the copy, not by the hop: hopWalk is module-scoped and cannot be
+ *     called from outside. What the probe proves is the CHECK, which is
+ *     what makes the declaration binding on the phone at all — the sky sit
+ *     that used to hold this runs at 1456×949 only.)
  *   · the mirror reverted in `shadowFoot` → the cast-shadow check fails on
  *     every tuft west of the sun
  *   · each petal emitted as its own `.ds-leaf.airborne` → the sit's
