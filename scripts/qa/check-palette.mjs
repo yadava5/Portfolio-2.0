@@ -323,6 +323,13 @@ const PAIRS = [
   ["--pine", TEXT],
   ["--clay-g", GRAPHIC],
   ["--thread", GRAPHIC],
+  /* ¶13's sun, round 13. A graphic by the same classification as --clay-g,
+     and measured over EVERY day field rather than only the morning one it
+     renders on: the dawnscape is the one drawing that lives on a single
+     waypoint, and a token that only clears the floor on its own waypoint is
+     a token nobody can move. #a8760c measures 3.63:1 on the morning field
+     #fbf3e7 and 3.18:1 on #f2e4c9, the tightest day field. */
+  ["--sun-g", GRAPHIC],
 ];
 
 function measureSet(label, set, fields) {
@@ -507,9 +514,12 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      scenery under the morning's words, not a numbered figure, and its text
      rules (`.figsvg text`) would be wrong on it. Its strokes are held here to
      the same floors as a figure's. The owner said no colour, so the rules
-     draw with --ink-2 for subjects and --hair-strong for far structure and
-     nothing else; check-dawnscape holds that allow-list, and this scan holds
-     the contrast of whatever the rules actually name. Shown red on a temp
+     draw with --ink-2 for subjects and --hair-strong for far structure —
+     and, since round 13, --sun-g on the sun's rim-pass and rays, which is
+     the one place he lifted that ruling. check-dawnscape holds the
+     allow-list AND the leash on it (one rule, one selector, and no path
+     wearing .ds-sun outside the sun's own groups); this scan holds the
+     contrast of whatever the rules actually name. Shown red on a temp
      copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
      under the 2.0 hairline floor and the file exits 1. */
   const figureRules = [
