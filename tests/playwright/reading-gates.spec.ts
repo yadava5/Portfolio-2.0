@@ -1425,6 +1425,10 @@ const G10C_BOXES = [
   "#cosigners .prose",
   "#gatesFig",
   "#signsFig",
+  /* the captions sit outside the plates' own boxes and were unmeasured:
+     fig. 11's runs 1 to 1.5px closer to the rail than anything above */
+  "#review figure figcaption",
+  "#cosigners figure figcaption",
 ];
 
 async function inkClearance(page: Page, selectors: string[]) {
@@ -1560,7 +1564,8 @@ test.describe("G10d · the junction stubs land on the rail", () => {
             hi = rail.length - 1;
           while (hi - lo > 1) {
             const m = (lo + hi) >> 1;
-            rail[m].y <= y ? (lo = m) : (hi = m);
+            if (rail[m].y <= y) lo = m;
+            else hi = m;
           }
           const a = rail[lo],
             b = rail[lo + 1];

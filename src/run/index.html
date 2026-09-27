@@ -4983,8 +4983,8 @@ function pointAtLen(L) {
    ROUND 14'S ROUTE IS ONLY HALF IN buildThread. The line now runs down fig.
    10's spine and fig. 11's dock lane, and the half that makes that read
    rather than collide is the figure knowing where the line is: `--spx` is
-   the spine's x INSIDE the plate, and `--jx` is where the rail actually is
-   at each junction's own y, wobble included.
+   the spine's x INSIDE the plate, and each junction's record carries `jx`,
+   where the rail actually is at that junction's own y, wobble included.
 
    IT IS A MEASUREMENT AT EVERY SEAT, not two authored editions. The spine is
    56px inside fig. 10's plate on a wide seat, about 230 inside fig. 11's
@@ -5040,7 +5040,6 @@ function seatFigures() {
     return [...host.querySelectorAll(markSel)].map((m, i) => {
       const y = absTop(m) + m.offsetHeight / 2;
       const railX = xAtY(y);
-      m.parentElement.style.setProperty("--jx", (railX - px).toFixed(1) + "px");
       const rec = { fig, i, y: +y.toFixed(1), railX: +railX.toFixed(1),
         jx: +(railX - px - sub).toFixed(2), spx: +spx.toFixed(1), stubX: null };
       junctions.push(rec);
