@@ -260,7 +260,7 @@ const DERIVED = [
     what: "jetpack parallel speed-up",
     value: (score(R.par) / score(R.one)).toFixed(1),
     expect: "6.4",
-    run: /6\.4× faster than single-threaded java\.util\.zip/,
+    run: /6\.4× faster than java\.util\.zip on one thread/,
     data: /6\.4× vs single-threaded java\.util\.zip/,
     how: "parallelVirtualThreads ÷ singleThreadedJdk, 1 dp",
   },
@@ -276,7 +276,7 @@ const DERIVED = [
     what: "jetpack Adler-32 vs scalar",
     value: (score(R.vec) / score(R.sca)).toFixed(1),
     expect: "2.8",
-    run: /adler-32 vectorised 2\.8× scalar/i,
+    run: /adler-32 vectorized 2\.8× scalar/i,
     data: /2\.8× vs scalar/,
     how: "vector ÷ scalar, 1 dp",
   },
@@ -292,7 +292,7 @@ const DERIVED = [
     what: "Glyph dot-256 kernel speed-up, as the page rounds it",
     value: null, // filled below
     expect: "3.5",
-    run: /parallel dot-256 kernel 3\.5× vs -O3/,
+    run: /256×256 matrix product: 3\.5× faster on 10 cores than one core at -O3/,
     data: /3\.5× parallel dot kernel/,
     how: "benchDot/256_median baseline ÷ openmp-native, 1 dp",
   },
@@ -354,8 +354,9 @@ if (!forks.every((f) => f === 3))
 /* "3-fork jmh" became "jmh, 3 forks" in the 2026-09-23 compound-hyphen
    sweep. The assertion is that the run DISCLOSES the fork count the record
    reports — three, above — so it binds the number and the tool rather than
-   the word order the copy happens to use this month. */ else if (
-  !/(?:3-fork jmh|jmh, 3 forks)/.test(runProse)
+   the word order the copy happens to use this month. Case-insensitive since
+   r13, which cased the tool's name: "JMH, 3 forks". */ else if (
+  !/(?:3-fork jmh|jmh, 3 forks)/i.test(runProse)
 )
   fail(`the record is 3 forks and the run no longer says so`);
 else
@@ -375,7 +376,8 @@ const ciOk = Object.values(R).every(
 );
 if (!ciOk)
   fail(`a rigorous benchmark reports no interval bracketing its own score`);
-else if (!/99\.9% ci/.test(runProse))
+/* r13 spells the abbreviation out: "99.9% confidence" */
+else if (!/99\.9% confidence/.test(runProse))
   fail(
     `the record carries confidence intervals and the run no longer cites them`
   );
@@ -511,8 +513,9 @@ if (
   const VALS = [
     [vals[0], "1×", "Glyph baseline"],
     [vals[1], `${glyphX}×`, "Glyph parallel"],
-    [vals[2], `${MB(R.one)} mb/s`, "jetpack single-threaded"],
-    [vals[3], `${MB(R.par)} mb/s`, "jetpack parallel"],
+    /* units cased since r13: MB/s */
+    [vals[2], `${MB(R.one)} MB/s`, "jetpack single-threaded"],
+    [vals[3], `${MB(R.par)} MB/s`, "jetpack parallel"],
   ];
   for (const [got, want, what] of VALS)
     if (got !== want)
@@ -531,14 +534,18 @@ if (
      times and checked once. All three are held to the record here. */
   const glyphSites = [
     [
-      new RegExp(`parallel dot-256 kernel ${glyphX}× vs -O3`),
+      new RegExp(
+        `256×256 matrix product: ${glyphX}× faster on 10 cores than one core at -O3`
+      ),
       "¶06's provenance line",
     ],
     [
       /* the em dash went in the 2026-09-23 dash sweep; the figure, its
          subject and its baseline are what this binds, so the separator is
          optional rather than required */
-      new RegExp(`parallel dot kernel (?:— )?${glyphX}× over -O3`),
+      /* r13: the receipt now pairs the step with the network it did not
+         speed up, and both halves are bound */
+      new RegExp(`one step ${glyphX}× faster, the whole network no faster`),
       "¶10's litany receipt",
     ],
   ];

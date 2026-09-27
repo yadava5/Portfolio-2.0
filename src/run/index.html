@@ -2562,6 +2562,9 @@ body{font-synthesis:none}
    the row: a first draft put white-space:nowrap on .schoolrec .srow b and the
    school record's right edge measured 460px inside a 390px band. */
 .uv{white-space:nowrap}
+/* A date never breaks inside itself, and a leading "·" travels with it.
+   Bound by clarity-fixes.spec.ts: every .nw is one line box, inside its box. */
+.nw{white-space:nowrap}
 /* a station name is a station name: "jetpack-" / "compress" was the last
    measured break. CSS, not a span · check-stations matches this string
    verbatim with tags intact, so a wrapper here would go red. */
@@ -2598,6 +2601,10 @@ body{font-synthesis:none}
 .mv, b.mv, .prose .prov b.mv, .schoolrec .srow b.mv{
   font-family:var(--mono); font-size:var(--fs-small); letter-spacing:.02em;
   word-spacing:normal; white-space:nowrap}
+/* r13: a value that is a phrase may part between its words. ¶04's
+   "1 wrong out of 96 labeled emails" held whole ran 1.4px past a 320px
+   screen (check-nameplate); from 360 up it sits on one line regardless. */
+.prose .prov b.mv.phrase{white-space:normal}
 #slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
 /* SVG figure labels keep Fragment Mono and their authored px: check-figures'
    arithmetic floor was fitted to this face's advances. */
@@ -3124,6 +3131,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
   font-size:var(--fs-note); line-height:1.4; color:var(--ink-2);
   margin-top:.2rem; max-width:40ch;
 }
+/* r13: the role is two lines, the title and then where and when. The title
+   takes the ink and a step up; its details stay at the credential's size. */
+.codename.role{max-width:none}
+.codename.role b{font-weight:400; color:var(--ink); font-size:1.08em}
 
 /* ── ¶10's gate reasons ─────────────────────────────────────────────────
    .gwhy says WHY each gate decided what it did. It is the sentence the row
@@ -3224,7 +3235,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     <li><a class="mrow" href="#path"><i class="mt">07:52</i><b>the yard</b></a></li>
     <li data-proj="1"><a class="mrow" href="#work"><i class="mt">08:47</i><b>applied</b><span class="mnoun">gmail job tracker</span><span class="m">1 wrong in <b class="mv">96</b></span></a></li>
     <li data-proj="2"><a class="mrow" href="#cadence"><i class="mt">12:06</i><b>cadence</b><span class="mnoun">calendar in plain english</span><span class="m"><b class="mv">1,186</b> tests pass</span></a></li>
-    <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><b>glyph</b><span class="mnoun">digit reader in c++</span><span class="m"><b class="mv">3.5×</b> faster kernel</span></a></li>
+    <li data-proj="3"><a class="mrow" href="#glyph"><i class="mt">15:23</i><b>glyph</b><span class="mnoun">digit reader in c++</span><span class="m"><b class="mv">9,701</b> of 10,000 right</span></a></li>
     <li data-proj="4"><a class="mrow" href="#jetpack-compress"><i class="mt">19:36</i><b>jetpack-compress</b><span class="mnoun">parallel java gzip</span><span class="m"><b class="mv">6.4×</b> faster</span></a></li>
     <li data-proj="5"><a class="mrow" href="#lifequest"><i class="mt">21:07</i><b>lifequest</b><span class="mnoun">job hunting prototype</span><span class="m"><b class="mv">3 of 5</b> built</span></a></li>
     <li data-proj="6"><a class="mrow" href="#automl"><i class="mt">22:05</i><b>agentic automl</b><span class="mnoun">capstone ml agent</span><span class="m"><b class="mv">2,523</b> tests pass</span></a></li>
@@ -3298,7 +3309,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 02 · who · <i>06:58</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Who<span style="color:var(--clay)">.</span></h2>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">A record of what I&rsquo;ve built, and how I checked it.</p>
-        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I finished a B.S. in Computer Science at Miami University in May 2026, after a year as its ITSM data integration intern. Three of the six projects below had teammates. Every project number links to its proof, or says why it can&rsquo;t.</p>
+        <p class="prov" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14" style="font-family:var(--body); line-height:1.65; max-width:52ch">I finished a B.S. in Computer Science at Miami University in <span class="nw">May 2026</span>. During my final year, I also worked as a data intern in IT Services. Three of the six projects below had teammates. Every project number links to its proof, or says why it can&rsquo;t.</p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="engcard">
@@ -3309,10 +3320,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <p class="sigrole">answers for every claim on this page</p>
           </div>
           <ul class="engrows">
-            <li><span>base</span><b>cincinnati, oh</b></li>
-            <li><span>builds</span><b>web apps · apis · data pipelines · ml</b></li>
-            <li><span>languages</span><b>typescript · python · java · c++ · sql</b></li>
-            <li><span>degree</span><b>b.s. computer science · miami university, may 2026</b></li>
+            <li><span>base</span><b>Cincinnati, OH</b></li>
+            <li><span>builds</span><b>web apps · APIs · data pipelines · ML</b></li>
+            <li><span>languages</span><b>TypeScript · Python · Java · C++ · SQL</b></li>
+            <li><span>degree</span><b>B.S. Computer Science · Miami University, <span class="nw">May 2026</span></b></li>
             <li><span>email</span><b><a href="mailto:aesh.03.23@gmail.com">aesh.03.23@gmail.com</a></b></li>
             <li><span>résumé</span><b><a href="resume.pdf" target="_blank" rel="noopener">open &#10230;</a></b></li>
             <li><span>handles</span><span><a href="https://github.com/yadava5" target="_blank" rel="noopener">github ↗</a> · <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin ↗</a></span></li>
@@ -3333,12 +3344,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 03 · the internship · <i>07:52</i></p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">The path<span style="color:var(--clay)">.</span></h2><p class="codename">the yard</p>
-        <p class="codename">ITSM Data Integration Intern, Miami University, Jun 2025 to May 2026</p>
-        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Miami was moving its dashboards to Tableau and needed to know which fields were still in use.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I built a Python pipeline that flags every dashboard field still in use.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1.6m+</b> query logs, five years of dashboard use ⟶ one usage table of <b>57.8m rows</b> (sqlite)<br>
-          code compliance across 61 projects: <b class="mv">0%</b> in 2023, <b class="mv">97%</b> now</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ only the master inventory is published; the rest stays on miami&rsquo;s own systems</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
+        <p class="codename role"><b><abbr title="IT service management">ITSM</abbr> Data Integration Intern</b><br>IT Services, Miami University <span class="nw">· Jun 2025 to May 2026</span></p>
+        <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Before moving off an old Oracle reporting system, my team had to decide what to keep and what to drop.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I wrote a Python pipeline that traced five years of queries on the old system to every table and column they read, so the team could see what was still in use and what nobody had touched.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1.6M+</b> logged queries from 1,153 users, <span class="nw">Jul 2020 to Jul 2025</span> · <b>57.8M</b> rows, one for each time a query named a column<br>
+          also: a master inventory of Tableau and Workday reports, <b>10,453</b> rows × 35 fields, duplicates removed</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 388" role="img" aria-label="Three feeder roads, carrying 1.6 million OAS query logs, the Tableau and Workday records, and a legacy Laravel reporter, run through one Python and SQL works and park inside their products, where they stay; the three products merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid and checked in, and the other two are drawn dashed and not checked in, because they are read off Miami's own systems. Beneath the third, a compliance meter stands settled at 97 percent across 61 projects. It does not fill as you scroll; only its riser and numeral ink in."></svg>
@@ -3348,8 +3359,8 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     <div class="schoolrec" data-fx="in .0 .25 y 6 | out .84 1.0 y -5 | drift 10">
       <div class="shead"><span>the school record</span></div>
       <div class="srows">
-        <div class="srow"><span class="sk">degree</span><span><b>b.s. computer science</b> · major gpa <b class="mv">3.65</b> · dean&rsquo;s list: fall 2023, spring 2025, fall 2025</span></div>
-        <div class="srow"><span class="sk">feb 2025</span><span><b>finalist, mucat design innovation</b> · lidar visual assistance proposal · <b class="mv">$2,500</b> prototyping grant</span></div>
+        <div class="srow"><span class="sk">degree</span><span><b>B.S. Computer Science</b> · major GPA <b class="mv">3.65</b> · Dean&rsquo;s List: <span class="nw">Fall 2023</span>, <span class="nw">Spring 2025</span>, <span class="nw">Fall 2025</span></span></div>
+        <div class="srow"><span class="sk"><span class="nw">Feb 2025</span></span><span><b>finalist, MUCAT Design Innovation</b> · LiDAR visual assistance proposal · <b class="mv">$2,500</b> prototyping grant</span></div>
       </div>
     </div>
   </section>
@@ -3362,12 +3373,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Applied<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A job application tracker that reads your Gmail</p>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Your inbox already knows where you applied.</p>
-        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">Applied sorts each message into one of 8 categories, files what it&rsquo;s sure of, and asks you about the borderline ones.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">1 wrong out of 96</b> labelled emails (0.990 macro-f1) · the rules stage, not the cascade<br>
-          220 regex rules ⟶ e5 embeddings ⟶ <span class="uv">setfit, fine tuned</span> · ci blocks the build below 0.95 macro-f1<br>
-          built an int8 onnx export for inference in the browser: <span class="uv">90 ⟶ 23 mb</span>, measured 2026-08-03</p>
-        <p class="prov mono">next.js · python · postgresql</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://getapplied.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a> · <a href="https://github.com/yadava5/applied" target="_blank" rel="noopener">source ↗</a> · <a href="https://ayush-yadav.com/projects/jobtracker/" target="_blank" rel="noopener">the case file ⟶</a></p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">I built it when I lost track of my own job applications. It sorts each reply into one of 8 kinds with 220 rules I wrote, and asks you about the borderline ones. I chose rules over an AI service, so your mail never goes to an AI company and sorting an email costs nothing.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv phrase">1 wrong out of 96 labeled emails</b> (0.990 macro-F1), rules alone · a change that scores below 0.95 macro-F1 fails the build<br>
+          two small models take the hard cases in the full pipeline; the hosted app runs rules alone, because the model stack is too big for a Vercel function<br>
+          built an int8 ONNX export for inference in the browser: <span class="uv">90 MB to 23 MB</span>, measured <span class="nw">2026-08-03</span></p>
+        <p class="prov mono">Next.js · Python · PostgreSQL</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/jobtracker/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/applied" target="_blank" rel="noopener">source ↗</a> · <a href="https://getapplied.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group", NOT role="img", and fig. 07 is the same case. A
@@ -3380,7 +3391,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              is still what a reader gets for the plate, but the four desk
              controls inside it now exist. Each carries its own name.
              `check-figures.mjs` §1 encodes the pair of rules. -->
-        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; e5 similarity at 0.85 and up, unless a rule says no; and gated setfit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under e5 similarity; pending application under gated setfit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
+        <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; E5 similarity at 0.85 and up, unless a rule says no; and gated SetFit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under E5 similarity; pending application under gated SetFit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
         <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i>tap or hover a desk for its verdicts.</i></figcaption>
       </figure>
     </div>
@@ -3395,10 +3406,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="codename">A calendar you can type to in plain English</p>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">Adding a plan to a calendar usually means a form.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">In Cadence you type the plan as you’d say it, and it becomes the event, attendees and Meet link included.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">1,186 passed · 0 skipped</b>, every automated test green · 635 frontend + 551 backend<br>
-          <b class="mv">36 routes</b> packed into one serverless function to stay under vercel&rsquo;s limit of 12 functions</p>
-        <p class="prov mono">react · typescript · postgresql · google calendar api</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/taskflow-calendar/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence" target="_blank" rel="noopener">source ↗</a> · <a href="https://usecadenceapp.vercel.app" target="_blank" rel="noopener">live build ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">no AI model: four parsers read each plan, two open source and two I wrote · <b class="mv">1,186 passed · 0 skipped</b> (635 frontend, 551 backend)</p>
+        <p class="prov mono">React · TypeScript · PostgreSQL · Google Calendar API</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/taskflow-calendar/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence" target="_blank" rel="noopener">source ↗</a> · <a href="https://usecadenceapp.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
@@ -3431,19 +3441,19 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · project 3 of 6 · <i>15:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A handwritten digit reader, running in this tab</p>
-        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Glyph began as an existing C++ network with 2 layers that did all its math on one core.</p>
-        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">I made its core matrix kernel 3.5× faster with OpenMP on a laptop with 10 cores. It scores 97.01% on the standard handwriting test, about what a network this size should score; the work was the speed. Try it below.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">9,701 of 10,000</b> mnist test digits right (macro-f1 0.9698)<br>
-          parallel dot-256 kernel <b class="mv">3.5×</b> vs -O3 · parallelism carries all of it; the simd is in both builds</p>
-        <p class="prov mono">c++ · openmp · webassembly · react</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph" target="_blank" rel="noopener">source ↗</a> · <a href="https://getglyph.vercel.app" target="_blank" rel="noopener">live build ↗</a> · <a href="https://getglyph.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Glyph started as a small C++ neural network from a course, doing all its math on one core.</p>
+        <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">My classmate Shree and I spread its matrix math across 10 cores with OpenMP, and one 256×256 matrix product got 3.5× faster. The benchmark I built showed the whole network got no faster, so the page gives both. I got it running in your browser, where it reads 97.01% of the standard handwriting test correctly. Try it below.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">9,701 of 10,000</b> MNIST test digits right (macro-F1 0.9698)<br>
+          256×256 matrix product: <b class="mv">3.5×</b> faster on 10 cores than one core at -O3 · the whole network: no faster (0.995×)</p>
+        <p class="prov mono">C++ · OpenMP · WebAssembly · React</p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph" target="_blank" rel="noopener">source ↗</a> · <a href="https://getglyph.vercel.app" target="_blank" rel="noopener">live demo ↗</a> · <a href="https://getglyph.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
           <div class="padcard">
             <div class="padwell">
               <canvas id="pad" aria-label="drawing pad: draw a digit from 0 to 9"></canvas>
-              <div class="padhint" id="padhint">draw one digit, large and centred</div>
+              <div class="padhint" id="padhint">draw one digit, large and centered</div>
             </div>
             <div class="padbar">
               <span class="st"><i>●</i> <span id="glyphStatus">waking…</span></span>
@@ -3472,10 +3482,10 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              stays a FRACTION in the markup — the browser does the division and
              check-bench-artifacts matches numerator against denominator with no
              float parsing at all. -->
-        <div class="bench" role="group" aria-label="the committed dot-256 benchmark, filed">
-          <div class="shead"><span>the committed bench · dot-256 kernel</span><span>filed 2026-08-02 · <a href="https://ayush-yadav.com/evidence/#fast-mnist-benchmark" target="_blank" rel="noopener">on file @ 001e9b4 ⟶</a></span></div>
+        <div class="bench" role="group" aria-label="the committed 256×256 matrix product benchmark, filed">
+          <div class="shead"><span>the committed bench · 256×256 matrix product</span><span>filed <span class="nw">2026-08-02</span> · <a href="https://ayush-yadav.com/evidence/#fast-mnist-benchmark" target="_blank" rel="noopener">on file @ 001e9b4 ⟶</a></span></div>
           <div class="brow"><span>one thread, -O3</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(1 / 3.5))"></span></span><span class="bval">1×</span></div>
-          <div class="brow simd"><span>openmp threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">3.5×</span></div>
+          <div class="brow simd"><span>OpenMP threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">3.5×</span></div>
           <p class="bfoot">committed, not run in this tab · <a href="proof/glyph-dot256-openmp-native-001e9b4.json" download>the raw run record (json) ⟶</a></p>
         </div>
         <figcaption>fig. 06 · Glyph&rsquo;s C++ network, compiled to WebAssembly.</figcaption>
@@ -3491,9 +3501,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">jetpack-compress<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A parallel gzip engine for Java</p>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">The gzip that ships with Java compresses on one core, however many the machine has.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I built an engine compatible with gzip on JDK 25 that compresses blocks in parallel and stitches them into one valid file. DEFLATE’s entropy coding stays with zlib, by design.</p>
-        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">422 vs <span class="uv">66&#8202;mb/s</span> on 1 gib: <b class="mv">6.4×</b> faster than single-threaded java.util.zip (jmh, 3 forks · 99.9% ci)<br>
-          <b class="mv">72 tests, 0 failures</b> · adler-32 vectorised <b class="mv">2.8×</b> scalar (<span class="uv">4.26&#8202;gb/s</span>), and honestly not faster than the jdk intrinsic (<span class="uv">14.06&#8202;gb/s</span>)</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I built an engine on JDK 25 that splits a file into blocks, compresses them on every core at once, and stitches them into one valid gzip file. On a laptop with 10 cores it runs 6.4× faster than Java&rsquo;s own.</p>
+        <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">422 vs 66 MB/s</b> on <span class="uv">32 MiB</span> of generated text: 6.4× faster than java.util.zip on one thread (JMH, 3 forks, 99.9% confidence)<br>
+          <b class="mv">72 tests, 0 failures</b> · Adler-32 vectorized <b class="mv">2.8×</b> scalar (<span class="uv">4.26&#8202;GB/s</span>), still slower than the JDK&rsquo;s own (<span class="uv">14.06&#8202;GB/s</span>)</p>
         <!-- THE GZIP DEMO IS GONE, and its absence is the point. A button here
              ran the BROWSER's CompressionStream over 8 KB of this page and
              printed a ratio. It demonstrated the browser, not jetpack: single
@@ -3533,7 +3543,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              station ever DOES carry the anchor, so the day the card is
              refreshed the exemption retires itself instead of rotting into a
              permanent false claim. -->
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">live build ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">project page ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group" for the reason fig. 04 states: the four lane
@@ -3544,7 +3554,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              are drawn settled. The date is the commit's, not the run's — JMH
              writes no date into its JSON, and inventing one would be the class
              of thing this plate exists to refuse. -->
-        <div class="bench jet" role="group" aria-label="the committed one-gibibyte gzip benchmark, filed">
+        <div class="bench jet" role="group" aria-label="the committed 32 MiB gzip benchmark, filed">
           <!-- THE SLIP IS NOT DECORATION AND IT COMES BACK. The copy cut took
                this shead's second span for length, which left the one bench
                block on the page that states a 6.4× and does not say where the
@@ -3553,9 +3563,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                cannot drop the terminator from the biggest number on it. Six
                words, and check-bench-artifacts pairs the sha here against the
                sha in the vendored filename below, so the two cannot drift. -->
-          <div class="shead"><span>the committed bench · 1&#8202;gib, gzip</span><span>filed 2026-07-27 · <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">on file @ 2caacd0 ↗</a></span></div>
-          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(66 / 422))"></span></span><span class="bval"><span class="uv">66&#8202;mb/s</span></span></div>
-          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;mb/s</span></div>
+          <div class="shead"><span>the committed bench · <span class="uv">32 MiB</span>, gzip</span><span>filed <span class="nw">2026-07-27</span> · <a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">on file @ 2caacd0 ↗</a></span></div>
+          <div class="brow"><span>java.util.zip · 1 thread</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(calc(66 / 422))"></span></span><span class="bval"><span class="uv">66&#8202;MB/s</span></span></div>
+          <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;MB/s</span></div>
           <p class="bfoot">committed, not run in this tab · both committed runs span 6.38 to 6.89× · <a href="proof/jetpack-jmh-rigorous-2caacd0.json" download>the raw run record (json) ⟶</a></p>
         </div>
         <figcaption>fig. 07 · split, compress in parallel, stitch into one gzip file. <i>tap or hover a lane for its blocks.</i></figcaption>
@@ -3584,7 +3594,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <blockquote>&ldquo;Plan to throw one away; you will, anyhow.&rdquo;</blockquote>
           <figcaption>Frederick&nbsp;P.&nbsp;Brooks&nbsp;Jr., 1975</figcaption>
         </figure>
-        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">LifeQuest turns the grind of job hunting into missions, on a real backend. It was born at Social Innovation Weekend in March 2025 with a team of seven, in React and NestJS. Scaling it would need a partner.</p>
+        <p class="mutedln" data-fx="in .1 .36 y 5 | out .48 .58 y 4 | drift 12" data-fx-sync="dusk" style="font-style:italic; color:var(--ink-2); margin-top:.6rem; max-width:52ch">LifeQuest turns the grind of job hunting into missions. It began with a team of seven at Social Innovation Weekend in <span class="nw">March 2025</span>, and I later rebuilt it on my own in React and NestJS. The missions, tiers and backend all work. It isn&rsquo;t built to scale, and I don&rsquo;t call it finished.</p>
         <!-- Same ruling as ¶07's handoff: no case file, so the card is the
              document of record. -->
         <p class="handoff" data-fx="in .14 .4 y 3 | out .48 .58 y 4" data-fx-sync="dusk"><span class="dep">↳ no case file: a prototype has nothing to argue yet</span> · <a href="https://github.com/yadava5/lifequest" target="_blank" rel="noopener">source ↗</a> · <a href="https://getlifequest.vercel.app" target="_blank" rel="noopener">live prototype ↗</a> · <a href="https://getlifequest.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
@@ -3604,16 +3614,16 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A capstone platform where an AI agent trains models, with human sign-off</p>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">An AI agent can run a notebook from raw data to a trained model. Unchecked, it can go wrong quietly.</p>
-        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Two of us built it. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a person to approve the training plan and any risky data cleaning step. Nothing deploys unless a person starts it. My seat was the backend, including the model scoring service.</p>
+        <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Two of us built it. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a person to approve the training plan and any risky data cleaning step. Nothing deploys unless a person starts it. I was the backend developer and built the service that scores every trained model.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">2,523</b> automated tests, all passing: 1,445 backend · 985 frontend · 93 landing<br>
-          <b class="mv">44 agent tools</b>, 12 over mcp · the llm&rsquo;s python runs in a docker sandbox, locked down</p>
-        <p class="prov mono">typescript · express · react · postgresql · docker</p>
+          <b class="mv">44 agent tools</b>, 12 over MCP · the LLM&rsquo;s Python runs in a Docker sandbox, locked down</p>
+        <p class="prov mono">TypeScript · Express · React · PostgreSQL · Docker</p>
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="margin-top:.5rem; max-width:44ch">no accuracy figure is quoted: no committed evaluation earns one.</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/automl/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md" target="_blank" rel="noopener">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app" target="_blank" rel="noopener">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
-        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom standing across the rail. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Deploy carries a heavy boom that never lifts, over a phase label which never lights, because nothing in the graph can start a deployment; the rail runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the rail and the run passes straight through them."></svg>
-        <figcaption>fig. 09 · the 12 mcp tools in source order, timing staged. the run halts before deploy.</figcaption>
+        <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a Docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom standing across the rail. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Deploy carries a heavy boom that never lifts, over a phase label which never lights, because nothing in the graph can start a deployment; the rail runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the rail and the run passes straight through them."></svg>
+        <figcaption>fig. 09 · the 12 MCP tools in source order, timing staged. the run halts before deploy.</figcaption>
       </figure>
     </div>
   </section>
@@ -3642,16 +3652,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              goes after it — a decision, not an accident. This sentence
              already described the seam, so it keeps its words and the ledger
              gets its door. -->
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">Every record is in one place: <a href="https://ayush-yadav.com/evidence/" target="_blank" rel="noopener">the evidence index ⟶</a> Numbers last checked September 2026.</p>
-        <figure class="borrowed" data-fx="in .09 .3 y 5 | drift 12">
-          <blockquote>&ldquo;The first principle is that you must not fool yourself &mdash; and you are the easiest person to fool.&rdquo;</blockquote>
-          <figcaption>Richard&nbsp;P.&nbsp;Feynman, 1974</figcaption>
-        </figure>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">Every record is in one place: <a href="https://ayush-yadav.com/evidence/" target="_blank" rel="noopener">the evidence index ⟶</a> Numbers last checked <span class="nw">September 2026</span>.</p>
         <div class="litany" data-fx="in .09 .28 y 5 | drift 14">
           <div class="mline"><p>Make it learn.</p>
             <p class="rct"><a href="https://ayush-yadav.com/projects/jobtracker/#v-jobtracker-4" target="_blank" rel="noopener">3,747 passed · 0 skipped · 13 expected failures, Applied&rsquo;s backend suite ⟶</a></p></div>
           <div class="mline"><p>Make it fast.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/#v-fast-mnist-nn-2" target="_blank" rel="noopener">parallel dot kernel 3.5× over -O3, Glyph&rsquo;s committed benchmark ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/#v-fast-mnist-nn-2" target="_blank" rel="noopener">one step 3.5× faster, the whole network no faster · Glyph&rsquo;s committed benchmark ⟶</a></p></div>
           <!-- Third, not fourth. "honest" carries the wonk axis and hands
                straight to the ledger beside it, where two of my own checks
                declined · that is the paragraph's close and nothing goes after
@@ -3661,14 +3667,13 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                iOS runtime. Installing it and running xcodebuild twice is what
                turned a census into a receipt, which is the discipline. -->
           <div class="mline"><p>Make it hold up.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/visual-assist/#v-visual-assist-1" target="_blank" rel="noopener">71 passed · 0 skipped · Visual Assist, an iOS accessibility app ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/visual-assist/#v-visual-assist-1" target="_blank" rel="noopener">71 passed · 0 skipped · Visual Assist, an iOS accessibility app I built alone ⟶</a></p></div>
           <div class="mline wonk"><p>Make it <em>honest</em>.</p>
-            <p class="rct"><a href="https://ayush-yadav.com/projects/policybot/#v-policybot-1" target="_blank" rel="noopener">19/20 cited-source sweep, self-reported · PolicyBot, a policy assistant that cites its sources ⟶</a></p></div>
+            <p class="rct"><a href="https://ayush-yadav.com/projects/policybot/#v-policybot-1" target="_blank" rel="noopener">19/20 answers passed my quote check, unaudited · PolicyBot, a policy chatbot from my internship ⟶</a></p></div>
         </div>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="gates" id="gatesFig">
-          <div class="ghead"><span>a stopped gate is the system working.</span></div>
           <!-- THE PRESS IS DRAWN IN EMPTY BOXES. Each <i> is one rectangle of
                the machine — bed, post, beam, rod, ram, buffer stop — seated by
                calc() off the row's own --gpx, so the phone moves the whole
@@ -3678,17 +3683,16 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
                order they stack in, back to front. -->
           <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate · Applied</span>
             <span class="gwhy">1 wrong in 96, above the 0.95 floor</span>
-            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span><!-- Hidden from assistive tech because the legend below says it in words: the drawing may not be the only place a reader can learn where the line goes. --><span class="gtail" aria-hidden="true">unsigned</span></span></div>
-          <div class="grow gbench declined" data-g="1"><span class="gname">cited-source sweep · PolicyBot</span>
-            <span class="gwhy">4 answers it couldn&rsquo;t cite</span>
-            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">declined</span></span></span></div>
-          <div class="grow gbench declined" data-g="2"><span class="gname">benchmark suite · Glyph</span>
-            <span class="gwhy">a variance claim nobody had measured</span>
+            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span></span></div>
+          <div class="grow gbench declined" data-g="1"><span class="gname">quote check · PolicyBot</span>
+            <span class="gwhy">1 of 20 answers added examples its sources did not hold</span>
             <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">caught</span></span></span></div>
-          <p class="gleg">a slip left in its press: the gate stopped the run · the line runs on dashed and unsigned, to a person</p>
-          <p class="gclose">two of my own checks stopped my own work. the next stop is a person.</p>
+          <div class="grow gbench declined" data-g="2"><span class="gname">measured again · Glyph</span>
+            <span class="gwhy">a variance claim I had never measured</span>
+            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">retracted</span></span></span></div>
+          <p class="gclose">the next stop is a person.</p>
         </div>
-        <figcaption>fig. 10 · three real gates and what each decided.</figcaption>
+        <figcaption>fig. 10 · three checks on my own work: one passed, two said no.</figcaption>
       </figure>
     </div>
   </section>
@@ -3699,19 +3703,19 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">My manager at Miami and my teammate on Glyph and the capstone.</p>
+        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">My internship manager, and my teammate on Glyph and the capstone.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
           <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
-          <figcaption><b>Randall Vollen</b><span>&middot;&nbsp;applied AI &amp; data principal, cbts</span></figcaption>
+          <figcaption><b>Randall Vollen</b><span>&middot;&nbsp;managed my internship; now Applied AI &amp; Data Principal, CBTS</span></figcaption>
         </figure>
 
         <figure class="cosign" data-fx="in .14 .38 y 6 | out .94 1.04 y -5 | drift 11">
           <blockquote>&ldquo;I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work.&rdquo;</blockquote>
-          <figcaption><b>Shree Chaturvedi</b><span>&middot;&nbsp;b.s. computer science, miami university, 2026</span></figcaption>
+          <figcaption><b>Shree Chaturvedi</b><span>&middot;&nbsp;B.S. Computer Science, Miami University, 2026</span></figcaption>
         </figure>
 
-        <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on linkedin, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/" target="_blank" rel="noopener">the recommendations, in full &#8599;</a></p>
+        <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on LinkedIn, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/" target="_blank" rel="noopener">the recommendations, in full &#8599;</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div class="signs">
@@ -3724,7 +3728,6 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <span class="sname">Shree Chaturvedi</span>
             <span class="srole">teammate, stations 06 and 09</span>
           </div>
-          <p class="sclose">three of the twelve stops carry a name that is not mine.</p>
         </div>
         <figcaption>fig. 11 · each reference sits beside the station that person worked on.</figcaption>
       </figure>
@@ -3749,9 +3752,9 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     <div class="beat-inner">
       <div class="ghead">
         <p class="kicker" data-fx="in .04 .26 y 4 | out 2 2.5 | drift 0">¶ 12 · the approval gate · <i>22:41</i></p>
-        <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left, and it was never going to be the machine&rsquo;s.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
-        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.6vw,4.2rem); letter-spacing:-.017em; line-height:1.06; text-wrap:balance">Every pipeline I build ends with a human decision.</h2>
-        <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one ends with yours.</p>
+        <p class="hourline dawnline" data-fx="in .05 .24 y 3 | out .94 1.04 y -3 | drift 8"><span class="hl-night">dark. one decision left.</span><span class="hl-dawn">and the light came back, the way it does.</span></p>
+        <h2 data-fx="in .06 .3 y 5 | out 2 2.5 | drift 0" style="font-family:var(--display); font-weight:430; font-size:clamp(2.1rem,4.6vw,4.2rem); letter-spacing:-.017em; line-height:1.06; text-wrap:balance">Applied asks you about the emails it isn&rsquo;t sure of. AutoML waits for a person before it trains a model, and never deploys one on its own.</h2>
+        <p class="mutedln" data-fx="in .09 .34 y 5 | out 2 2.5 | drift 0" style="font-style:italic; color:var(--ink-2); margin-top:.7rem; font-size:1.15rem">This one waits for you.</p>
       </div>
       <!-- `y 0` / `s 1`, and it is load-bearing in a new way: the card no
            longer holds the dock, but it does hold the stamp, and a card that
@@ -3772,7 +3775,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              is the approver. "one approval missing", not "one signature": the
              thing that is missing is the press, and the page should name the
              act it is asking for. -->
-        <p class="mono">five proofs and one honest prototype · one approval missing<br>
+        <p class="mono">five projects and one prototype · one approval missing<br>
           042 is the day&rsquo;s serial, not a visit counter.</p>
         <!-- reserved, so a reader who draws a digit on ¶07's pad and comes back
              here does not watch the card grow a line under them. The sample is
@@ -3812,7 +3815,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <li data-ph="2"><span class="lt">07:52</span><span class="st">the yard</span></li>
         <li data-ph="3"><span class="lt">08:47</span><span class="st">applied</span><span class="pr">1 wrong in <b class="mv">96</b></span></li>
         <li data-ph="4"><span class="lt">12:06</span><span class="st">cadence</span><span class="pr"><b class="mv">1,186</b> tests pass</span></li>
-        <li data-ph="5"><span class="lt">15:23</span><span class="st">glyph</span><span class="pr"><b class="mv">3.5×</b> faster kernel</span></li>
+        <li data-ph="5"><span class="lt">15:23</span><span class="st">glyph</span><span class="pr"><b class="mv">9,701</b> of 10,000 right</span></li>
         <li data-ph="6"><span class="lt">19:36</span><span class="st">jetpack-compress</span><span class="pr"><b class="mv">6.4×</b> faster</span></li>
         <li data-ph="7"><span class="lt">21:07</span><span class="st">lifequest</span><span class="pr"><b class="mv">3 of 5</b> built</span></li>
         <li data-ph="8"><span class="lt">22:05</span><span class="st">agentic automl</span><span class="pr"><b class="mv">2,523</b> tests pass</span></li>
@@ -3857,7 +3860,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <a href="https://github.com/yadava5" target="_blank" rel="noopener">github &#8599;</a> ·
           <a href="https://www.linkedin.com/in/ayush-yadav-developer" target="_blank" rel="noopener">linkedin &#8599;</a>
         </span>
-        &copy; 2026 ayush yadav · cincinnati, oh<br>
+        &copy; 2026 Ayush Yadav · Cincinnati, OH<br>
         set by hand &middot; zero dependencies
       </footer>
     </div>
@@ -5248,8 +5251,8 @@ const applied = { marks: [], svg: $("appliedFig"), maxLen: 1 };
    has_negative_signals`, then CONFIDENCE_MIN_CLASSIFICATION = 0.70 */
 const APPLIED_DESKS = [
   ["220 regex rules", "settles 0.90 and up", ""],
-  ["e5 similarity", "settles 0.85 and up", "unless a rule says no"],
-  ["gated setfit", "settles 0.70 and up", ""],
+  ["E5 similarity", "settles 0.85 and up", "unless a rule says no"],
+  ["gated SetFit", "settles 0.70 and up", ""],
 ];
 /* [the desk that settles it, the verdict key it lands under]. Desk 3 is no
    desk at all — it is the hold. Order is ENTRY order, so the piece that goes
@@ -6548,8 +6551,8 @@ function buildAml(tight) {
     el("text", { x: 524, y: 162, "text-anchor": "middle", class: "fsm" }).textContent = "returns";
     /* ——— the supervisor, and the phase it is in ——— */
     el("rect", { x: 24, y: 16, width: 448, height: 52, rx: 3, class: "lane" });
-    el("text", { x: 38, y: 40, class: "lit" }).textContent = "langgraph supervisor";
-    el("text", { x: 38, y: 58, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    el("text", { x: 38, y: 40, class: "lit" }).textContent = "LangGraph supervisor";
+    el("text", { x: 38, y: 58, class: "fsm" }).textContent = "agentic core · GPT-5.4";
     /* built with the content scrubAml(0) would write, never empty: a
        resize across the 515 seat rebuilds the plate (chooseEditions) and
        the next scrub frame may be a scroll away */
@@ -6561,7 +6564,7 @@ function buildAml(tight) {
     /* ——— the registry — the real twelve, source order down the columns ———
        the columns fall on the split a reader can see in the names: four
        that read the data, then eight whose names all end in _cell(s) */
-    el("text", { x: 24, y: 104, class: "lit" }).textContent = "mcp registry ×12";
+    el("text", { x: 24, y: 104, class: "lit" }).textContent = "MCP registry ×12";
     hrule(100, 162, 500, [[293, 307]]);
     const COL = [24, 200, 330];
     for (let i = 0; i < 12; i++) {
@@ -6584,7 +6587,7 @@ function buildAml(tight) {
       d: "M 24 242 H 31 M 143 242 H 329 M 343 242 H 500 M 500 242 V 402 M 24 242 V 402 M 24 402 H 163 M 493 402 H 500" });
     el("text", { x: 38, y: 246, class: "lit" }).textContent = "the notebook";
     el("text", { x: 486, y: 406, "text-anchor": "end", class: "fsm" })
-      .textContent = "docker sandbox · no root · fs read only";
+      .textContent = "Docker sandbox · no root · fs read only";
     for (let i = 0; i < 6; i++) {
       const y = 252 + i * 24;
       el("rect", { x: 72, y, width: 396, height: 18, class: "cellr" });
@@ -6638,14 +6641,14 @@ function buildAml(tight) {
     el("path", { d: "M 218 26 l 8 -4 v 8 z", class: "wiretip" });
     el("text", { x: 236, y: 196, "text-anchor": "end", class: "fsm" }).textContent = "returns";
     el("rect", { x: 8, y: 8, width: 210, height: 56, rx: 3, class: "lane" });
-    el("text", { x: 18, y: 26, class: "lit" }).textContent = "langgraph supervisor";
-    el("text", { x: 18, y: 42, class: "fsm" }).textContent = "agentic core · gpt-5.4";
+    el("text", { x: 18, y: 26, class: "lit" }).textContent = "LangGraph supervisor";
+    el("text", { x: 18, y: 42, class: "fsm" }).textContent = "agentic core · GPT-5.4";
     aml.state = el("text", { x: 18, y: 58, class: "lit" });
     aml.state.textContent = `state · ${AML_PHASES[0]}`;
     el("path", { d: "M 178 64 V 82", class: "lane" });
     tipDown(178, 90);
     el("text", { x: 186, y: 78, class: "fsm" }).textContent = "calls";
-    el("text", { x: 8, y: 88, class: "lit" }).textContent = "mcp registry ×12";
+    el("text", { x: 8, y: 88, class: "lit" }).textContent = "MCP registry ×12";
     hrule(84, 131, 220, [[171, 185]]);
     for (let i = 0; i < 12; i++) {
       const y = 106 + i * 14;
@@ -6664,7 +6667,7 @@ function buildAml(tight) {
       d: "M 8 302 H 13 M 113 302 H 153 M 167 302 H 220 M 220 302 V 454 M 8 302 V 454 M 8 454 H 13 M 207 454 H 220" });
     el("text", { x: 20, y: 306, class: "lit" }).textContent = "the notebook";
     el("text", { x: 200, y: 458, "text-anchor": "end", class: "fsm" })
-      .textContent = "docker sandbox · no root";
+      .textContent = "Docker sandbox · no root";
     for (let i = 0; i < 6; i++) {
       const y = 310 + i * 23;
       el("rect", { x: 46, y, width: 150, height: 17, class: "cellr" });
