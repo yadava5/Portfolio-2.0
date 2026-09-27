@@ -8272,7 +8272,21 @@ function* drawDawnscape() {
      last chunk, so a rebuild never stretches the standing drawing into a
      new width for a frame */
   const svgLeft = `${(-sr.left).toFixed(1)}px`, svgWidth = `${W}px`;
-  const r = birdRng(0xda11);
+  /* ONE HAND, AND A WAY TO LEND IT. r() is the sheet's own stream, and the
+     whole drawing is a function of the order it is drawn in. A mark that
+     has to change WITHOUT moving the marks after it takes a lent stream
+     instead: the main stream still draws the mark it replaces, that draw is
+     thrown away, and every seeded mark downstream is the one that was
+     approved. Burning by drawing is the only exact way to do it here,
+     because a piece the keep-out eats is five hand draws the stream never
+     takes, so the count cannot be predicted without drawing it. */
+  const rMain = birdRng(0xda11);
+  let rLent = null;
+  const r = () => (rLent || rMain)();
+  const lend = (rng, fn) => {
+    rLent = rng;
+    try { return fn(); } finally { rLent = null; }
+  };
   const vs = clamp(W / 1500, 0.44, 1.2);
   const narrow = W < 760;
   const F = (v) => (Math.round(v * 10) / 10).toString();
@@ -9625,7 +9639,27 @@ function* drawDawnscape() {
      Outline tufts in hair-strong stand behind for depth. The fill holds
      still; the loose blades and the stems are the group that will move. */
   const spine = (bx, by, h, lean, bend = 0) => curve([[bx, by], [bx + h * lean * 0.35 + bend, by - h * 0.5], [bx + h * lean, by - h]], 3);
-  const shadowFoot = (x, y, w) => hatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18, 2.6, "ds-far w1", 0.3, [5, 12]);
+  /* A CAST MARK FALLS AWAY FROM THE LIGHT, and says what casts it: the gate
+     holds every one of them to the far side of its caster from the sun. */
+  const caster = (markup, x) => markup.replace("<path ", `<path data-x="${F(x)}" `);
+  /* THE FOOT USED TO HATCH EAST WHATEVER THE HOUR. Its comment said the
+     light came from the east of the grass; the sun stands at 0.503 W, so
+     every solid west of it — the two corner stands, the tufts at the pair's
+     feet, the swale's west half — threw its shadow TOWARD the light. West
+     of the sun the foot is mirrored about the tuft's own base and its hatch
+     angle negated, which is the same mark seen from the other side.
+     It comes off the cast stream, and the east foot is still drawn from the
+     main stream and dropped, so the meadow after it is untouched (see
+     `lend`). nS is the strokes that are KEPT. */
+  const castRng = birdRng(0xda57);
+  const footHatch = (poly, deg) => hatch(poly, deg, 2.6, "ds-far w1 ds-castshadow", 0.3, [5, 12]);
+  const shadowFoot = (x, y, w) => {
+    const n0 = nS;
+    const east = footHatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18);
+    if (!sun || x >= sun.x) return caster(east, x);
+    nS = n0;
+    return caster(lend(castRng, () => footHatch([[x - 1, y + 1], [x - w, y + 1], [x - w + 2, y + 6], [x + 1, y + 6]], 18)), x);
+  };
   const seedHead = (x, y, h) => {
     const sp = spine(x, y + 1, h, (r() - 0.5) * 0.5 + 0.1, (r() - 0.5) * 4);
     const tip = sp[sp.length - 1], prev = sp[sp.length - 3] || sp[0];
@@ -9791,7 +9825,17 @@ function* drawDawnscape() {
       const px = lx0 + (lx1 - lx0) * fx, py = ly - 5;
       d += P(stroke(curve([[px, py], [px + Math.cos(ang) * len * 0.5 + 1, py + Math.sin(ang) * len * 0.5], [px + Math.cos(ang) * len, py + Math.sin(ang) * len]], 3), 0.4), "ds-ink w1");
     }
-    d += hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
+    /* the bough's shadow lay directly under it, which is a shadow at noon.
+       It runs off its east end now, away from the light, in the same low
+       hatch; the old one is drawn from the main stream and dropped so the
+       mushrooms and the molehills after it do not move (see `lend`) */
+    {
+      const n0 = nS;
+      hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
+      nS = n0;
+      const lw = lx1 - lx0;
+      d += caster(lend(castRng, () => hatch([[lx0 + lw * 0.45, ly + 3], [lx1 + 16, ly + 2], [lx1 + 12, ly + 8], [lx0 + lw * 0.5, ly + 9]], -18, 2.8, "ds-far w1 ds-castshadow", 0.3, [6, 14])), (lx0 + lx1) / 2);
+    }
     SCAPE.log = { x0: lx0, x1: lx1, y: ly - 5 };
     /* the lichened boulder beside the hare */
     const bx = X(0.918), by = Y(0.982);
@@ -9799,7 +9843,9 @@ function* drawDawnscape() {
     d += contour(rock, 0.5, "ds-ink", ["w12", "w1", "w12"]);
     let li = "";
     for (let i = 0; i < 5; i++) { const x = bx - 6 + r() * 12, y = by - 6 + r() * 4; li += stroke([[x, y], [x + 2 + r() * 2, y - 0.5]], 0.2); }
-    d += P(li, "ds-far w1", 5) + hatch([[bx + 2, by], [bx + 12, by], [bx + 10, by + 4], [bx + 3, by + 4]], -18, 2.6, "ds-far w1", 0.3, [4, 10]);
+    /* the boulder already threw east, which is away from the light where it
+       stands: it takes the class and its caster's x, and not a new mark */
+    d += P(li, "ds-far w1", 5) + caster(hatch([[bx + 2, by], [bx + 12, by], [bx + 10, by + 4], [bx + 3, by + 4]], -18, 2.6, "ds-far w1 ds-castshadow", 0.3, [4, 10]), bx);
     SCAPE.boulder = { x: bx, y: by };
     /* mushrooms at the root flare: caps with a gill-cut */
     let mu = "";

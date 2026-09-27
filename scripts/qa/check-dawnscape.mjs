@@ -58,6 +58,11 @@
  *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
  *      --ink-2 and --hair-strong and nothing else. No --hair (a hard red for
  *      check-palette), no clay, no pine, no ember: the owner said no colour.
+ *   9. A CAST FALLS AWAY FROM THE LIGHT. Every mark that claims to be a
+ *      shadow (.ds-castshadow) carries the x of what casts it, and its own
+ *      centre sits on the far side of that caster from the sun, by 2px.
+ *      The grass's feet all hatched east whatever the hour, so the west
+ *      half of a meadow lit from 0.503 W threw its shadows at the light.
  *   8. A MASK THAT MOVES IS THE SIZE OF WHAT IT MASKS. A mask on a group
  *      that sways (or inside one) is in that group's frame, so it is drawn
  *      again on every frame of the wind; its box, measured against the
@@ -563,6 +568,27 @@ try {
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* 9 · A CAST MARK FALLS AWAY FROM THE LIGHT. Every mark that claims to
+       be a shadow wears .ds-castshadow and the x of the thing that casts
+       it, and its own centre must sit on the far side of that caster from
+       the sun — by 2px, so a foot that merely lies UNDER its caster is a
+       finding too. The tufts' feet all hatched east whatever the hour, and
+       the sun is at 0.503 W, so the west half of the meadow was throwing
+       its shadows toward the light. */
+    const casts = [];
+    if (sun)
+      for (const el of svg.querySelectorAll(".ds-castshadow")) {
+        const b = el.getBoundingClientRect();
+        const from = +el.dataset.x;
+        if (!b.width || !Number.isFinite(from)) continue;
+        const away = (b.left + b.right) / 2 - from;
+        casts.push({
+          from: +from.toFixed(1),
+          away: +away.toFixed(1),
+          lit: Math.sign(from - sun.x),
+        });
+      }
+    const wrongSide = casts.filter((c) => c.away * c.lit <= 2);
     /* EVERY DECLARED ROAMER, AT EVERY SEAT: drawn no further from home than
        the range it declares. The sky sit holds this too (below), but only
        at his own seat and only for a creature something moved in the sit —
@@ -973,6 +999,8 @@ try {
       doeH: +doeH.toFixed(1),
       meadow,
       strayed,
+      casts: casts.length,
+      wrongSide,
       hullCover,
       layerCover,
       youngShare,
@@ -1081,6 +1109,20 @@ try {
       if (m.meadow.length)
         fail(
           `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+        );
+      if (m.wrongSide && m.wrongSide.length)
+        fail(
+          `${seat}: ${m.wrongSide.length} of ${m.casts} cast mark(s) fall toward the light — ${m.wrongSide
+            .slice(0, 3)
+            .map(
+              (c) =>
+                `the one cast by x${c.from} lies ${Math.abs(c.away)}px ${c.away < 0 ? "west" : "east"} of it and the sun is ${c.lit < 0 ? "east" : "west"}`
+            )
+            .join(", ")} — a shadow falls away from the light`
+        );
+      else if (m.casts)
+        note(
+          `${seat}: ${m.casts} cast marks, every one away from the light at ${m.scape.sun ? m.scape.sun.x : "?"}`
         );
       if (m.strayed && m.strayed.length)
         fail(
