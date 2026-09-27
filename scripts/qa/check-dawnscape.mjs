@@ -228,6 +228,9 @@ const PATHS_FLOOR = 6;
 /* the smallest radius a blossom hole may be cut at: under 1.2 it is 2.4px
    across, and a cut narrower than that is a device pixel at DPR 1 */
 const BLOSSOM_MIN = 1.2;
+/* the share of the sheet coloured ink may paint. Set from what round 14
+   ships with a wide margin, not from a round number: see check 10. */
+const COLOUR_CAP = 0.006;
 /* the box a mask may carry over what it masks, when the two move together:
    the builder's is a tenth over each side, 1.44x */
 const MOVING_MASK_MAX = 2;
@@ -282,40 +285,79 @@ async function serve() {
   for (const body of rules)
     for (const m of body.matchAll(/var\(--([\w-]+)\)/g))
       tokens.add(`--${m[1]}`);
-  /* THREE INKS AND ONE LIGHT. The sheet was ruled ink-only and the owner
-     lifted that ruling for the sun alone in round 13, so --sun-g joins the
-     list with a leash: it may appear in exactly ONE rule, and that rule's
-     selector must be the sun's own class. The drawing side of the same rule
-     — that no path wears .ds-sun outside the sun's groups — is held at the
-     clearance check, which reads the shipped DOM. */
-  const allowed = new Set(["--ink", "--ink-2", "--hair-strong", "--sun-g"]);
-  const off = [...tokens].filter((t) => !allowed.has(t));
-  const sunRules = [...html.matchAll(/(\.dawnscape[^{]*)\{([^}]*)\}/g)].filter(
-    (m2) => /var\(--sun-g\)/.test(m2[2])
+  /* THE ACCENT REGISTRY. The sheet was ruled ink-only; round 13 lifted the
+     ruling for the sun; round 14's owner lifted it for touches anywhere
+     they make the morning feel real, with one condition — "not the entire
+     canvas to be colors". So the old leash (one rule, one selector, for the
+     sun alone) is replaced rather than deleted, by two things that say the
+     same thing about a bigger palette:
+       (a) THIS registry. Three inks draw freely. Every colour token must be
+           declared here with the classes it is allowed on, the rule for
+           each declared class must exist, and an accent on any other
+           selector is a finding. A token nobody declared is a finding too.
+       (b) A COVERAGE CAP, measured in the browser at every seat (check 10),
+           which is the owner's condition as a number instead of a promise.
+     The drawing side — no element wearing an accent class outside the group
+     that class belongs to — is held at the clearance check, which reads the
+     shipped DOM. */
+  const INKS = new Set(["--ink", "--ink-2", "--hair-strong"]);
+  const ACCENTS = {
+    /* the LIGHT: the sun's own rim and rays, the light on water, and the
+       heart of a flower, which is the thing the light opens */
+    "--sun-g": [
+      ".dawnscape .ds-sun",
+      ".dawnscape .ds-glit",
+      ".dawnscape .ds-eye",
+    ],
+    /* NEW GROWTH: a living blade's tip, and a daisy's stem */
+    "--leaf-g": [".dawnscape .ds-tip"],
+    /* BLOSSOM: a floret in the crown, and a petal on its way down */
+    "--bloom-p": [".dawnscape .ds-floret", ".dawnscape .ds-petal"],
+  };
+  const ruleBy = [...html.matchAll(/(\.dawnscape[^{]*)\{([^}]*)\}/g)].map(
+    (m2) => [m2[1].trim(), m2[2]]
+  );
+  const strays = [];
+  const declaredUsed = new Set();
+  for (const [sel, body] of ruleBy)
+    for (const m2 of body.matchAll(/var\(--([\w-]+)\)/g)) {
+      const t = `--${m2[1]}`;
+      if (INKS.has(t)) continue;
+      if (!ACCENTS[t]) {
+        strays.push(`${t} is not in the accent registry (on "${sel}")`);
+        continue;
+      }
+      if (!ACCENTS[t].includes(sel))
+        strays.push(`${t} is drawn by "${sel}", which it is not declared for`);
+      else declaredUsed.add(`${t}|${sel}`);
+    }
+  /* the registry reads both ways: a declared class whose rule has gone is a
+     claim about a colour nobody paints any more */
+  const dead = Object.entries(ACCENTS).flatMap(([t, sels]) =>
+    sels
+      .filter((s) => !declaredUsed.has(`${t}|${s}`))
+      .map((s) => `${t} on ${s}`)
   );
   if (!rules.length)
     fail(
       "no .dawnscape rules in out/index.html: the ground is not styled, or the class moved"
     );
-  if (off.length)
+  if (strays.length)
     fail(
-      `the dawnscape draws with ${off.join(", ")} — only --ink, --ink-2, --hair-strong and --sun-g may appear in its rules`
+      `the dawnscape's colour is off its registry — ${strays.join("; ")}. Three inks draw freely; a colour draws only where it is declared`
     );
-  else if (tokens.has("--sun-g") && sunRules.length !== 1)
+  else if (dead.length)
     fail(
-      `--sun-g is named by ${sunRules.length} .dawnscape rules — it is the sun's colour and it gets exactly one selector`
-    );
-  else if (
-    tokens.has("--sun-g") &&
-    sunRules[0][1].trim() !== ".dawnscape .ds-sun"
-  )
-    fail(
-      `--sun-g is drawn by "${sunRules[0][1].trim()}" — only ".dawnscape .ds-sun" may carry the light's colour`
+      `the registry declares ${dead.join(", ")}, and no .dawnscape rule paints it — a colour claim nobody draws`
     );
   else
     note(
-      `palette: ${rules.length} .dawnscape rules draw with ${[...tokens].join(", ")}` +
-        (tokens.has("--sun-g") ? ", --sun-g on .ds-sun alone" : "")
+      `palette: ${rules.length} .dawnscape rules, inks ${[...tokens].filter((t) => INKS.has(t)).join(", ")}, accents ${Object.keys(
+        ACCENTS
+      )
+        .filter((t) => tokens.has(t))
+        .map((t) => `${t} on ${ACCENTS[t].length}`)
+        .join(", ")} declared class(es) each`
     );
   /* THE WIND MUST LIVE INSIDE THE NO-PREFERENCE QUERY, and this has to be
      read off the source, because a browser cannot see it: under reduced
@@ -448,10 +490,44 @@ try {
        board units against viewport pixels. */
     const sun = scape && scape.sun;
     let halo = { d: Infinity, sub: "" };
-    /* every path wearing the sun's token, and where it is: the token is
-       allowed on the sun and nowhere else, and check (4) holds the rule that
-       says so — this holds the drawing that obeys it */
+    /* EVERY MARK THAT WEARS AN ACCENT, AND WHERE IT IS. Check (4) holds the
+       rule that says which class may carry which colour; this holds the
+       drawing that obeys it, one home per class. A blush petal in the
+       canopy or a gold ray on the grass would pass the stylesheet and be a
+       different drawing. */
+    const ACCENT_HOME = {
+      "ds-sun": ".ds-sundisc, .ds-rays, .ds-rays2",
+      "ds-glit": ".ds-pool",
+      "ds-eye": ".ds-daisy",
+      "ds-tip": ".ds-blades, .ds-daisy",
+      "ds-floret": ".ds-canopy, .ds-sap",
+      "ds-petal": ".ds-leaf",
+    };
     let sunOff = [];
+    let colourPx = 0;
+    for (const el of svg.querySelectorAll(
+      ".ds-sun, .ds-glit, .ds-eye, .ds-tip, .ds-floret, .ds-petal"
+    )) {
+      const cls = Object.keys(ACCENT_HOME).find((c) =>
+        el.classList.contains(c)
+      );
+      if (cls && !el.closest(ACCENT_HOME[cls]))
+        sunOff.push(`${cls} outside ${ACCENT_HOME[cls]}`);
+      /* and its painted area, in screen px: a stroke is its length times
+         its width, a fill is its box, both through the element's own
+         screen matrix (the tree draws at 0.78). The box overstates a disc
+         by 4/π, which is the right direction for a cap. */
+      const mm = el.getScreenCTM();
+      const sc = mm ? Math.abs(mm.a * mm.d - mm.b * mm.c) : 1;
+      const cs = getComputedStyle(el);
+      const sw = parseFloat(cs.strokeWidth) || 0;
+      if (cs.stroke !== "none" && sw && el.getTotalLength)
+        colourPx += el.getTotalLength() * sw * sc;
+      if (cs.fill !== "none") {
+        const bb = el.getBBox();
+        colourPx += bb.width * bb.height * sc;
+      }
+    }
     for (const p of svg.querySelectorAll("path")) {
       /* a mask's or a pattern's path is a hole or a tile, not a mark; a
          tone field's outline is not a mark either (its dots stop at the
@@ -467,9 +543,8 @@ try {
       const m = p.getScreenCTM();
       const inSun = !!p.closest(".ds-sundisc, .ds-rays, .ds-rays2");
       const inRock = !!p.closest(".ds-p2");
-      /* the sun's token, wherever it ended up */
-      if (p.classList.contains("ds-sun") && !inSun)
-        sunOff.push(p.className.baseVal || "path");
+      /* (the accent classes are walked above, over every element rather
+         than over paths alone, because a floret is a circle) */
       /* a roamer declares its own axis and range on its group */
       const roamer = p.closest("[data-range]");
       const range = roamer ? +roamer.dataset.range : 0;
@@ -1032,6 +1107,7 @@ try {
       strayed,
       casts: casts.length,
       wrongSide,
+      colourFrac: +(colourPx / (innerWidth * innerHeight)).toFixed(5),
       florets: florets.length,
       floretMin: florets.length ? Math.min(...florets) : null,
       hullCover,
@@ -1116,10 +1192,25 @@ try {
             `${seat}: the crown's clearing holds — nearest other ink ${m.halo.d}px out of ${crown.toFixed(0)} (${m.halo.sub}), sun at ${m.scape.sun.x},${m.scape.sun.y} r${m.scape.sun.r} with ${m.scape.sun.rays} rays`
           );
       }
-      /* the one coloured mark on the sheet is on the sun and nowhere else */
+      /* every accent stays in the group its class belongs to */
       if (m.sunOff && m.sunOff.length)
         fail(
-          `${seat}: ${m.sunOff.length} path(s) wear .ds-sun outside the sun's own groups (${m.sunOff.slice(0, 3).join(", ")}) — the token draws the light and nothing else`
+          `${seat}: ${m.sunOff.length} coloured mark(s) drawn outside the group their class belongs to (${[...new Set(m.sunOff)].slice(0, 3).join(", ")}) — a colour draws where it is declared and nowhere else`
+        );
+      /* 10 · NOT THE ENTIRE CANVAS. The owner lifted the ink-only ruling
+         with one condition, and this is that condition as a number: the
+         painted area of every coloured mark, stroke length times width and
+         fill by its box, against the sheet. Measured on what round 14
+         ships (0.10% to 0.20% across the seats) and capped with headroom,
+         so a wash, a filled field or an accent that grew into one is a
+         finding and a drawing that gains a few more touches is not. */
+      if (m.colourFrac > COLOUR_CAP)
+        fail(
+          `${seat}: coloured ink covers ${(m.colourFrac * 100).toFixed(3)}% of the sheet — the cap is ${(COLOUR_CAP * 100).toFixed(2)}%, and colour on this drawing is an accent on ink, never a field`
+        );
+      else
+        note(
+          `${seat}: coloured ink covers ${(m.colourFrac * 100).toFixed(3)}% of the sheet (cap ${(COLOUR_CAP * 100).toFixed(2)}%)`
         );
       if (Object.keys(m.edgeGaps).length)
         fail(

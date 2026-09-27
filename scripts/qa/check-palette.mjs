@@ -330,6 +330,18 @@ const PAIRS = [
      a token nobody can move. #a8760c measures 3.63:1 on the morning field
      #fbf3e7 and 3.18:1 on #f2e4c9, the tightest day field. */
   ["--sun-g", GRAPHIC],
+  /* ¶13's other two accents, round 14. The owner lifted the ink-only ruling
+     for touches that make the morning feel real, so the sheet's palette is
+     the light, new growth and blossom — three graphics by the same
+     classification as --clay-g and --sun-g, none of them ever text, each
+     measured over EVERY day field rather than only the morning one they
+     render on. #5c7a2e measures 3.91:1 and #b95f70 3.39:1 on #f2e4c9, the
+     tightest day field, where --sun-g itself measures 3.18. Which classes
+     may carry them is not this gate's business: check-dawnscape 4 holds
+     that registry, and check 10 holds how much of the sheet they may
+     paint. */
+  ["--leaf-g", GRAPHIC],
+  ["--bloom-p", GRAPHIC],
 ];
 
 function measureSet(label, set, fields) {

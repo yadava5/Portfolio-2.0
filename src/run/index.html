@@ -135,6 +135,32 @@ if (location.hash.length > 1) {
                                 1, 2 and 3: the stroke's core reaches #a8760c exactly (w12 and
                                 w14 do not dilute), and against the paper beside it — which
                                 the wash's own glow lifts to #fdfdf0 — 3.89:1 / Lc 65.2. */
+    /* ¶13'S ACCENTS, round 14. The sheet was ruled ink-only, then the owner
+       lifted the ruling for the sun, then for touches anywhere they make the
+       morning feel real: "colors are allowed, just not the entire canvas to
+       be colors". So the drawing is still an ink drawing and colour is an
+       ACCENT ON IT — three tokens, each with one meaning and each confined
+       to the classes it is declared for (check-dawnscape 4 holds the
+       registry, and a coverage cap in the browser holds "not the entire
+       canvas" as a number rather than a promise).
+         --sun-g   the LIGHT: the sun's rim and rays, the light on water,
+                   and the heart of a flower, which is what opens it
+         --leaf-g  NEW GROWTH: the living blades' tips and a daisy's stem
+         --bloom-p BLOSSOM: the florets in the crown and a falling petal
+       All three are GRAPHICS, never text, and all three are measured over
+       every day field rather than only the morning one they render on. They
+       carry the same luminance profile in both themes and differ only in
+       hue, which is why they read as one palette. */
+    --leaf-g:#5c7a2e;        /* measured: #5c7a2e on #fbf3e7 — 4.46:1 / Lc 67.3, and on
+                                #f2e4c9, the tightest day field — 3.91:1 / Lc 58.7 */
+    --bloom-p:#b95f70;       /* a blossom that must read on cream cannot be a pale pink:
+                                every tint light enough to look like one measures under
+                                the 3.0 graphic floor on #f2e4c9 (#c4707f is 2.80, #cc7382
+                                is 2.64). This is the deepest rose that clears it, and the
+                                floret sits in a hole cut in the canopy, so a paper rim
+                                separates it from the ink either way.
+                                measured: #b95f70 on #fbf3e7 — 3.87:1 / Lc 62.4, and on
+                                #f2e4c9 — 3.39:1 / Lc 53.9 */
     --ember:#f57a3e;         /* RESERVED: the inked APPROVED stamp only */
     --hair:rgba(38,35,28,.16);
     --hair-strong:rgba(38,35,28,.34);
@@ -171,6 +197,14 @@ if (location.hash.length > 1) {
                                 cheaper and more honest than teaching the scan an exception.
                                 measured: #e0b25c on #43372f — 5.85:1 / Lc 57.0, and on
                                 #2c2622 — 7.60:1 / Lc 61.4. */
+    /* the other two accents, by the same formality and on purpose at the
+       same value as the light: a reader never sees ¶13 at night, and a
+       palette whose members differ only in hue is a palette rather than
+       three decisions */
+    --leaf-g:#a8c46a;        /* measured: #a8c46a on #43372f — 5.90:1 / Lc 57.3, and on
+                                #2c2622 — 7.65:1 / Lc 61.7 */
+    --bloom-p:#eda6b2;       /* measured: #eda6b2 on #43372f — 5.86:1 / Lc 57.0, and on
+                                #2c2622 — 7.60:1 / Lc 61.4 */
     --hair:rgba(246,239,226,.18);
     --hair-strong:rgba(246,239,226,.45); /* .40 composited to EXACTLY the 3.0
                                 non-text floor on the settled night field — the
@@ -1199,6 +1233,16 @@ if (location.hash.length > 1) {
      check-dawnscape (4) holds both halves of that: the rule, and the fact
      that every path wearing the class is inside the sun's own groups. */
   .dawnscape .ds-sun{stroke:var(--sun-g); fill:none}
+  /* the same light, twice more: on water, and in the heart of a flower the
+     light is what opens. One token, three classes, all declared */
+  .dawnscape .ds-glit{stroke:var(--sun-g); fill:none}
+  .dawnscape .ds-eye{fill:var(--sun-g); stroke:none}
+  /* new growth: a living blade's tip and a daisy's stem. The fused mass of
+     a tuft stays ink — the colour is on what is growing, not on the clump */
+  .dawnscape .ds-tip{stroke:var(--leaf-g)}
+  /* blossom: a floret in the crown, and a petal on its way down */
+  .dawnscape .ds-floret{fill:var(--bloom-p); stroke:none}
+  .dawnscape .ds-petal{stroke:var(--bloom-p); fill:none}
   .dawnscape .ds-fill{fill:var(--ink-2); stroke:none}
   /* the aquatint: the massifs are tone fields of hair-strong dots in two
      prime tiles; the fields, the masks and the first-light shadows carry
@@ -8789,7 +8833,7 @@ function* drawDawnscape() {
            east face. Same count, same draws — only the numbers move. */
         const lit = litX();
         const bias = lit !== null && cx < lit ? 1 : -1;
-        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 1.3 + r() * 0.5]); }
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 1.5 + r() * 0.5]); }
         layerCuts.push({ cp: [], dots });
       }
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
@@ -8800,6 +8844,17 @@ function* drawDawnscape() {
     });
     return out;
   };
+  /* THE BLOSSOM IS PAINTED NOW, NOT ONLY CUT. Each floret is a hole in the
+     layer's own mask, so bare paper shows through the foliage; a blush disc
+     a little smaller than that hole sits in it, in the SAME swaying group
+     but OUTSIDE the mask, so it rides the same wind and keeps its place in
+     the hole. The paper rim left between the two is what separates the
+     colour from the ink: blush on ink measures about 2:1 and blush on this
+     paper measures 3.87:1, so the rim is doing the reading. */
+  const florets = (cuts) =>
+    (cuts || []).flatMap((c) => c.dots || [])
+      .map(([x, y, rd]) => `<circle class="ds-floret" cx="${F(x)}" cy="${F(y)}" r="${Math.max(0.7, (rd || 1.5) - 0.4).toFixed(1)}"/>`)
+      .join("");
   /* THE FROTH carries the life: loose leaf strokes and detached leaf pairs
      floating off the rim, one group per layer, fluttering on its own short
      clock while the compound mass rides only the slow sway */
@@ -9434,9 +9489,13 @@ function* drawDawnscape() {
     groups += 2;
     cutPad = 4;
     SCAPE.trees.push({ x: X(0.20), h: Y(0.33), top: CY(0) });
+    /* the mask moves one level in, so the florets can ride the layer's sway
+       without being cut out of it by the very holes they fill */
     return `<g class="ds-tree">${d}` +
-      `<g class="ds-canopy ${live("sway-c2")}" mask="url(#mC1)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
-      `<g class="ds-canopy ${live("sway-c1")}" mask="url(#mC2)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
+      `<g class="ds-canopy ${live("sway-c2")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">` +
+      `<g mask="url(#mC1)">${inner.limbs}${inner.tone}${inner.fills}</g>${florets(cutMasks.mC1)}</g>` +
+      `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">` +
+      `<g mask="url(#mC2)">${outer.limbs}${outer.tone}${outer.fills}</g>${florets(cutMasks.mC2)}</g></g>`;
   };
 
   const perchBird = (x, y, dir, k) => {
@@ -9506,7 +9565,8 @@ function* drawDawnscape() {
       SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
     }
     if (cls) groups++;
-    return `<g class="ds-sap ${live(cls)}" mask="url(#${sid})" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}${perchG}</g>`;
+    return `<g class="ds-sap ${live(cls)}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">` +
+      `<g mask="url(#${sid})">${d}${perchG}</g>${florets(cutMasks[sid])}</g>`;
   };
 
   /* ————— the doe: a solid silhouette, the bird's own language —————
@@ -9758,7 +9818,7 @@ function* drawDawnscape() {
     if (shim && sd) sd = `<g class="${live(shim)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${(-r() * 2).toFixed(2)}s">${sd}</g>`;
     if (cls) groups++;
     return `<g class="ds-tuft" data-x="${F(x)}" data-y="${F(y)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
+      `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-tip w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
   };
   /* an outline tuft: the drawn blades alone, hair-strong, behind the solids */
   const tuft = (x, y, h, n) => {
@@ -11100,7 +11160,7 @@ function shedNow(x0, y0, env, r) {
     const ox = Math.cos(a) * rr, oy = Math.sin(a) * rr;
     const F1 = (v) => v.toFixed(1);
     const p = document.createElementNS(NS, "path");
-    p.setAttribute("class", "ds-ink w1 ds-petal");
+    p.setAttribute("class", "ds-petal w1");
     /* the control points are pushed out by four thirds: a cubic reaches
        about three quarters of the way to its own handle, so a teardrop
        drawn with handles at w/2 comes out a third narrower than the width
