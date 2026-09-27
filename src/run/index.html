@@ -8486,7 +8486,12 @@ function* drawDawnscape() {
 
   /* what the sky and the ground's events will need to find, in viewport px;
      a rebuild starts every roamer from where it is drawn again */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = [];
+  /* SCAPE.sun is cleared with them, and it matters more than the rest: the
+     stage is a COPY of the live one, so a seat that draws no sun (a phone
+     band too short to carry the principal) would otherwise publish the
+     previous seat's, and the field's glow and the birds' avoid region would
+     both be keeping off a sun that is not on the page. */
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
