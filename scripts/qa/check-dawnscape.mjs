@@ -672,8 +672,14 @@ try {
        light on the foliage, and they always began on the upper WEST of a
        lobe whatever the hour. Each one records the lobe it belongs to and
        where the light was IN ITS OWN FRAME (the tree draws inside its own
-       transform), so this is check 9 read the other way round: the midpoint
-       of the cut sits on the same side of its lobe as the light, by 1px.
+       transform), so this is check 9 read the other way round: a rim light
+       is never cut on the DARK side of its lobe, by more than a pixel.
+       Not "is on the lit side": measured, a west cut that runs the long end
+       of its span sweeps from due west over the top and comes back almost
+       symmetric in x, so the strong form reports five false findings a seat
+       on the saplings' small lobes. What the turn actually changed is the
+       east cuts, and they measure 0.71 to 0.90 of a radius toward the
+       light; the old west ones measure 0.03 to 0.47 the other way.
        Measured on the geometry, not the box: these paths live in a mask. */
     const rims = [...svg.querySelectorAll("defs mask path[data-x]")]
       .map((p) => {
@@ -682,14 +688,18 @@ try {
         const at = +p.dataset.x,
           lit = parseFloat(p.dataset.lit);
         if (!Number.isFinite(at) || !Number.isFinite(lit)) return null;
-        return {
-          at,
-          lit,
-          away: +(p.getPointAtLength(L / 2).x - at).toFixed(1),
-        };
+        /* the MEAN of the arc, not its midpoint: a cut that sweeps from the
+           west round to the top has its midpoint over the lobe's own
+           centre, where x says nothing at all. Nine samples say which half
+           of the lobe the light is on. (Measured the hard way: the midpoint
+           form reported 1 to 5 false findings a seat, all on small lobes
+           whose cut ends near the top.) */
+        let sx = 0;
+        for (let i = 0; i <= 8; i++) sx += p.getPointAtLength((L * i) / 8).x;
+        return { at, lit, away: +(sx / 9 - at).toFixed(1) };
       })
       .filter(Boolean);
-    const rimDark = rims.filter((q) => q.away * Math.sign(q.lit - q.at) <= 1);
+    const rimDark = rims.filter((q) => q.away * Math.sign(q.lit - q.at) < -1);
     /* 11 · THE HORIZON IS DRAWN, NOT RULED. It was one full-width line in
        six pieces and it was the only ruled thing on a sheet that is
        otherwise all marks. What holds the replacement is not "there are

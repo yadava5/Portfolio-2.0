@@ -8644,7 +8644,7 @@ function* drawDawnscape() {
      band too short to carry the principal) would otherwise publish the
      previous seat's, and the field's glow and the birds' avoid region would
      both be keeping off a sun that is not on the page. */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0; SCAPE.pool = null;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
@@ -10161,6 +10161,57 @@ function* drawDawnscape() {
     for (const [fx, fy, h, n] of [[0.03, 0, 18, 5], [0.085, 0, 17, 5], [0.16, 0, 15, 5], [0.35, 0.885, 12, 4], [0.49, 0.90, 11, 4], [0.64, 0.88, 12, 4], [0.75, 0, 14, 5], [0.80, 0.98, 11, 4], [0.93, 0.975, 12, 4], [0.985, 0, 19, 6]])
       near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
     near += `</g>`;
+    /* ————— THE POOL, AND THE LIGHT ON IT —————
+       The owner opened the palette: "colors are allowed, just not the
+       entire canvas to be colors". So the one place the light touches the
+       ground is drawn — a lens of still water directly under the sun, with
+       the sun's own path across it.
+       Ink first: a lighter far lip and a stronger near one, because a pool
+       read at this angle is an edge you look across and not a ring; three
+       surface lines that stop short of the lips; a hatched near bank. Then
+       the path, in the light's own token on its own class, in short uneven
+       dashes that widen toward the reader the way a glitter path does,
+       some of them broken, the whole run leaning a little off the pool's
+       axis. A ruler of gold rungs would be a pennant, not a light.
+       It stands down where the words reach it, and it takes its own
+       stream, so adding it moved nothing else on the sheet. */
+    if (sun) {
+      const px = sun.x, py = hz + 16, pw = 78 * vs, ph = 13 * vs;
+      const boxed = [px - pw - 6, py - ph - 8, px + pw + 6, py + ph + 12];
+      const hitsWord = words.some(([l, t, rt, bt]) => boxed[2] + 24 > l && boxed[0] - 24 < rt && boxed[3] + 24 > t && boxed[1] - 24 < bt);
+      if (!hitsWord) {
+        const poolRng = birdRng(0x9a7e);
+        near += lend(poolRng, () => {
+          let d = P(stroke(arc(px, py, pw, ph, Math.PI + 0.1, 2 * Math.PI - 0.1, 3), 0.5), "ds-far w06");
+          d += P(stroke(arc(px, py, pw, ph, 0.12, Math.PI - 0.12, 3), 0.5), "ds-ink w1");
+          d += P(stroke(arc(px, py + 1.2, pw * 0.94, ph * 0.9, 0.3, Math.PI - 0.5, 3), 0.5), "ds-ink w06");
+          for (let i = 0; i < 4; i++) {
+            const t = -0.55 + i * 0.33, yy = py + t * ph * 0.9;
+            const half = pw * Math.sqrt(Math.max(0, 1 - (t * 0.9) ** 2)) * 0.82;
+            d += P(stroke(curve([[px - half, yy], [px, yy + 0.8], [px + half, yy]], 6), 0.4), i % 2 ? "ds-far w1" : "ds-ink w06");
+          }
+          d += hatch([[px - pw * 0.75, py + ph * 0.55], [px + pw * 0.75, py + ph * 0.55], [px + pw * 0.6, py + ph + 6], [px - pw * 0.6, py + ph + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+          let g2 = "";
+          for (let i = 0; i < 9; i++) {
+            /* uneven down the path as well as across it: evenly spaced
+               rungs are a ladder */
+            const t = i / 8, yy = py - ph * 0.78 + (t + (poolRng() - 0.5) * 0.09) * ph * 1.62;
+            const half = (2 + t * 8.5 + poolRng() * 3.2) * vs;
+            const cx2 = px + (t - 0.5) * 6 + (poolRng() - 0.5) * 4;
+            const w2 = t > 0.45 ? "ds-glit w12" : "ds-glit w1";
+            if (t > 0.35 && poolRng() < 0.55) {
+              const gap = (1.5 + poolRng() * 3) * vs;
+              g2 += P(stroke([[cx2 - half, yy], [cx2 - gap, yy]], 0.3), w2);
+              g2 += P(stroke([[cx2 + gap, yy], [cx2 + half * (0.7 + poolRng() * 0.5), yy]], 0.3), w2);
+            } else {
+              g2 += P(stroke([[cx2 - half, yy], [cx2 + half * (0.75 + poolRng() * 0.5), yy]], 0.3), w2);
+            }
+          }
+          SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: +pw.toFixed(1) };
+          return `<g class="ds-pool">${d}${g2}</g>`;
+        });
+      }
+    }
     near += fawn(X(0.112));
     near += doe(X(0.165));
     /* the solid tufts: three stands of three at the bottom corners and by
@@ -10407,7 +10458,7 @@ function* drawDawnscape() {
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
