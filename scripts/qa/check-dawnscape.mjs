@@ -1566,6 +1566,17 @@ try {
         `${seat}: ${rm.daisiesOpen} of ${rm.daisies} daisies are open under reduced motion — the end state is built, not waited for`
       );
     else if (rm.daisies) note(`${seat}: all ${rm.daisies} daisies built open`);
+    /* and the nest is a parent and three raised chicks, built: an end state
+       with an empty nest over three raised heads is a story with its middle
+       missing, and the sit's invariant has to hold on every path */
+    if (rm.chicks && !rm.chicksUp)
+      fail(
+        `${seat}: the chicks are in the cup and down under reduced motion — the end state is built`
+      );
+    if (rm.chicksUp && !rm.nested)
+      fail(
+        `${seat}: the chicks are up under reduced motion with an empty nest — they rise to a parent`
+      );
     if (!fails.some((f) => f.startsWith(seat)))
       note(
         `${seat}: ground present at opacity 1 (${m.paths} paths), 0 animations, flock hidden, scape mark ${rm.scape}ms`

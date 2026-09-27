@@ -1307,7 +1307,8 @@ if (location.hash.length > 1) {
   .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-bough, .dawnscape .ds-sap,
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
-  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape .ds-petal, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
+  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape .ds-petal,
+  .dawnscape .ds-chicks, .dawnscape .ds-chick, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
   .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth,
   .dawnscape .ds-rays, .dawnscape .ds-rays2{transform-box:view-box}
   /* THE CROWN TURNS; THE DISC DOES NOT. The disc is arcs cut at the skyline,
@@ -1667,6 +1668,9 @@ if (location.hash.length > 1) {
      the ground fades while the next one falls. All transients. */
   .dawnscape .ds-perch, .dawnscape .ds-nestsock{opacity:0}
   .dawnscape .ds-perch.on, .dawnscape .ds-nestsock.on{opacity:1}
+  /* the chicks: down in the cup until a parent is on the rim */
+  .dawnscape .ds-chicks{opacity:0; transform:translateY(3px)}
+  .dawnscape .ds-chicks.up{opacity:1; transform:none}
   /* the den: the squirrel is inside the hollow, and not drawn */
   .dawnscape .ds-squirrel.denned{opacity:0}
   .dawnscape .ds-twig.laden{transform:translateY(2.5px)}
@@ -1679,6 +1683,7 @@ if (location.hash.length > 1) {
   .dawnscape .ds-daisy.open .ds-bloomg{opacity:1}
   @media (prefers-reduced-motion: no-preference){
     .dawnscape .ds-perch, .dawnscape .ds-nestsock{transition:opacity .4s ease}
+    .dawnscape .ds-chicks{transition:opacity .35s ease, transform .35s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-squirrel{transition:opacity .25s ease}
     .dawnscape .ds-owl{transition:opacity .5s ease}
     .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
@@ -7805,8 +7810,15 @@ $("clear").addEventListener("click", () => {
    The note is a role="status" line and its standing sentence is in the
    markup, where a reader with no JS gets it too. The engine writes that line
    exactly once, with the time of the reader's own press. */
-$("approve").addEventListener("click", () => {
+$("approve").addEventListener("click", (e) => {
   if (window.__world.approved) return;
+  /* WHERE THE HAND WAS. At his own window the button sits 42px from the
+     doe, so the pointer that pressed it is already standing beside her when
+     the morning lands; measured, it is inside 110*vs at 1456, 1512, 1728,
+     1280x720 and 1024x768, and outside it at 1920, where the pair is
+     further from the button than the look's reach. e.detail is 0 for a
+     keyboard press, and a keyboard has no pointer to notice. */
+  approvedAt = e && e.detail ? { x: e.clientX, y: e.clientY } : null;
   $("stamp").classList.add("inked");
   $("approve").disabled = true;
   const now = new Date();
@@ -7970,6 +7982,8 @@ function carryToMorning() {
    the carry's own duration. A lock whose only exit is code that might not
    run is a trap, and this one is over the whole document. */
 let scrollHeld = false, holdT = null;
+/* the point the reader pressed at, and whether the hand has moved since */
+let approvedAt = null;
 const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End",
   "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
 const eatScroll = (e) => { if (scrollHeld) e.preventDefault(); };
@@ -7997,7 +8011,27 @@ function releaseScroll() {
   /* and the morning comes alive here, not at the press: the wind on the
      ground waits until the page has stopped carrying the reader, so nothing
      composites during the carry and nothing moves during the stagger */
-  if (atMorning) { document.body.classList.add("morninglive"); mark("wind"); sky.windAt = performance.now(); }
+  if (atMorning) {
+    document.body.classList.add("morninglive");
+    mark("wind");
+    sky.windAt = performance.now();
+    wireNotice();
+    /* THE LANDING LOOK. If the hand that pressed is still where it pressed
+       and the pair is inside the look's reach, she notices it two and a
+       half seconds after the morning arrives — long enough that it reads as
+       the doe looking up, not as the page reacting to a click. */
+    if (approvedAt)
+      setTimeout(() => {
+        const sc = window.__world.scape;
+        if (!sc || !approvedAt || !noticeOn()) return;
+        const moved = noticePt && Math.hypot(noticePt[0] - approvedAt.x, noticePt[1] - approvedAt.y) > 6;
+        if (moved) return;
+        const vs = clamp(sc.W / 1500, 0.44, 1.2);
+        const pair = creaturesNow().filter((c) => c.who === "deer" || c.who === "fawn");
+        const d = Math.min(...pair.map((c) => gapTo(c.b, approvedAt.x, approvedAt.y)), Infinity);
+        if (d <= 110 * vs) doeLooks(approvedAt.x, 10000);
+      }, at(2500));
+  }
   removeEventListener("wheel", eatScroll);
   removeEventListener("touchmove", eatScroll);
   removeEventListener("keydown", eatKeys);
@@ -10006,7 +10040,47 @@ function* drawDawnscape() {
     const [snx, sny] = TT([nx, ny - nw * 0.5]);
     SCAPE.nest = { x: snx, y: sny };
     SCAPE.nestMarkup = perchBird(snx, sny + 2, 1, 0.8 * Math.max(vs, 0.8));
-    d += `<g class="ds-nestsock" data-x="${F(snx)}" data-y="${F(sny)}"></g>`;
+    /* ————— AND THREE HEADS IN THE CUP —————
+       The nest fills and empties and nothing in it ever changes; this is
+       what the parent is coming back TO. Three heads on the rim, each a
+       solid with a two-stroke open beak, drawn BEHIND the sitter and
+       deliberately NOT inside .ds-nestsock: that socket's fills are how the
+       sky sit counts birds in the nest, and a chick is not a bird that
+       landed. They are down and invisible until a parent arrives.
+       Their own stream, so putting them in moved nothing else. */
+    const chickRng = birdRng(0xc41c);
+    const chicks = lend(chickRng, () => {
+      const ck = 0.8 * Math.max(vs, 0.8);
+      let out = "";
+      for (let i = 0; i < 3; i++) {
+        /* on the cup's rim rather than down in it, and wider apart than
+           the parent is broad: three heads behind a sitting bird, at this
+           size, are one shape */
+        const cx2 = snx + (i - 1) * 6.4 * ck + (chickRng() - 0.5) * 1.4, cy2 = sny - 1.2 * ck;
+        const rr = 2.4 * ck, dir = i === 1 ? 1 : i === 0 ? -1 : 1;
+        /* A SOLID ON A SOLID IS NOTHING. The cup sits on a leaf mass, so a
+           dark head drawn over it disappears; what separates a mass from a
+           mass on this sheet is the cut, the engraver's white line. Each
+           chick is ONE evenodd fill: a head, a beak that sticks out of it,
+           a cream crescent under the head that lifts it off whatever is
+           behind, and the open mouth as a cut through the beak. */
+        const head = path(arc(cx2, cy2, rr, rr, 0, 6.3, 1)) + "Z";
+        const tip = [cx2 + dir * (rr + 2.3 * ck), cy2 - rr * 0.15];
+        const beak = `M${F(cx2 + dir * rr * 0.45)} ${F(cy2 - rr * 0.62)}L${F(tip[0])} ${F(tip[1])}L${F(cx2 + dir * rr * 0.5)} ${F(cy2 + rr * 0.42)}Z`;
+        const gape = ribbon([[cx2 + dir * rr * 0.55, cy2 - rr * 0.08], tip], 1.5 * Math.max(ck, 0.9));
+        const lift = ribbon(wob(arc(cx2, cy2 + rr * 0.2, rr * 1.02, rr * 1.02, 0.5, Math.PI - 0.3, 1.2), 0.1), 1.6 * Math.max(ck, 0.9));
+        nS += 2;
+        out += `<g class="ds-chick" style="transform-origin:${F(cx2)}px ${F(cy2 + rr)}px">` +
+          `<path class="ds-fill" fill-rule="evenodd" d="${head}${beak}${gape}${lift}"/></g>`;
+      }
+      return out;
+    });
+    /* under reduced motion the parent is home, the way the owl is: an end
+       state with an empty nest over three raised chicks is a story with its
+       middle missing, and "up implies the nest is taken" has to hold on
+       every path or it is not an invariant */
+    d += `<g class="ds-chicks${RM ? " up" : ""}" data-x="${F(snx)}">${chicks}</g>`;
+    d += `<g class="ds-nestsock${RM ? " on" : ""}" data-x="${F(snx)}" data-y="${F(sny)}">${RM ? SCAPE.nestMarkup : ""}</g>`;
     /* the trunk hollow: a dark pocket with a cream rim, the squirrel's den */
     const hx = X(0.097), hy = Y(0.515), rx = 6.5 * vs, ry = 9 * vs;
     const rim = arc(hx, hy, rx, ry, 0, 6.3, 2);
@@ -10931,8 +11005,12 @@ function placeFar(f, parent, elapsed) {
    on the left. A phone has no copse and no ground to leave from, so its
    crossings are the exception only, one bird, in the band under the
    masthead, which is the only sky a phone has. */
-function spawnFar() {
-  farTimer = null;
+/* `want` and `wantGull` are the pointer's: a reader who comes at the same
+   ground bird twice inside four seconds gets the takeoff the sky already
+   knows how to fly, rather than a second kind of leaving invented for it.
+   Everything else about the crossing is the seeded one it would have been. */
+function spawnFar(want, wantGull) {
+  if (!want) farTimer = null;
   if (RM || !releasedAt) return;
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
@@ -10941,13 +11019,13 @@ function spawnFar() {
   const live = host.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
   sky.live = live;
   /* not while the reader is back at the gate, and never more than three */
-  if (!atMorning || live >= 3) { farTimer = setTimeout(spawnFar, at(6000)); return; }
+  if (!atMorning || live >= 3) { if (!want) farTimer = setTimeout(spawnFar, at(6000)); return; }
   const r = birdRng(0xfa12 + sky.spawned * 6007);
   const vs = clamp(W / 1500, 0.44, 1);
   const trees = SCAPE.trees || [];
   const gulls = (SCAPE.gulls || []).filter((g) => !sky.flown.has(g.id));
-  let entry = "fade";
-  if (!narrow) {
+  let entry = want || "fade";
+  if (!narrow && !want) {
     const pick = r();
     const groundOk = gulls.length && now - sky.lastGround > at(12000);
     if (pick < 0.6 && trees.length) entry = "canopy";
@@ -10990,7 +11068,8 @@ function spawnFar() {
          than crossing the quote on a long diagonal */
       f.ang = ((30 + r() * 6) * Math.PI) / 180;
     } else if (entry === "takeoff") {
-      const g = gulls[Math.floor(r() * gulls.length)];
+      const g = (wantGull && gulls.find((q) => q.id === wantGull)) || gulls[Math.floor(r() * gulls.length)];
+      if (!g) return;
       sky.flown.add(g.id);
       sky.lastGround = now;
       const el = document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`);
@@ -11075,6 +11154,49 @@ const SOCKETS = {
   nest: { sel: ".ds-nestsock", laden: false, dir: 1, ex: () => 0.36, ey: () => 0.05, bow: 0.8, mark: "nest" },
 };
 const sockTimers = { perch: null, nest: null };
+/* ····· the chicks rise to the parent ·····
+   They come up when a parent lands on the rim, beg twice apiece 120ms
+   apart, sink, and do it again every five to eight seconds while the parent
+   stays. The rise and the sink are a transition on a class; the begging is
+   a Web Animation, so neither is census. Every timer looks the group up
+   again when it fires, because a resize replaces the whole drawing. */
+let begTimer = null;
+function chicksBeg() {
+  begTimer = null;
+  const g = document.querySelector(".dawnscape .ds-chicks.up");
+  if (!g || RM || !sky.sock.nest.taken) return;
+  const r = birdRng(0xc41c + (window.__world.chicks ? window.__world.chicks.begs : 0) * 977);
+  [...g.querySelectorAll(".ds-chick")].forEach((c, i) => {
+    setTimeout(() => {
+      c.animate([{ transform: "rotate(0)" }, { transform: `rotate(${(r() < 0.5 ? -1 : 1) * 12}deg)`, offset: 0.25 },
+        { transform: "rotate(0)", offset: 0.5 }, { transform: `rotate(${(r() < 0.5 ? -1 : 1) * 12}deg)`, offset: 0.75 },
+        { transform: "rotate(0)" }], { duration: at(2500), easing: "ease-in-out", composite: "add" });
+    }, i * 120);
+  });
+  const w = window.__world.chicks || { up: true, begs: 0 };
+  window.__world.chicks = { up: true, begs: w.begs + 1 };
+  mark("beg");
+  begTimer = setTimeout(chicksBeg, at(5000 + r() * 3000));
+}
+function chicksUp(up) {
+  clearTimeout(begTimer);
+  begTimer = null;
+  const g = document.querySelector(".dawnscape .ds-chicks");
+  if (!g || RM) return;
+  if (!up) {
+    g.classList.remove("up");
+    window.__world.chicks = { up: false, begs: (window.__world.chicks || { begs: 0 }).begs };
+    return;
+  }
+  setTimeout(() => {
+    const g2 = document.querySelector(".dawnscape .ds-chicks");
+    if (!g2 || !sky.sock.nest.taken) return;
+    g2.classList.add("up");
+    window.__world.chicks = { up: true, begs: (window.__world.chicks || { begs: 0 }).begs };
+    begTimer = setTimeout(chicksBeg, at(400));
+  }, at(600));
+}
+
 function socketArrive(key) {
   const S = SOCKETS[key], st = sky.sock[key];
   const g = document.querySelector(`.dawnscape ${S.sel}`);
@@ -11085,6 +11207,9 @@ function socketArrive(key) {
   if (S.laden) g.parentElement.classList.add("laden");
   /* the hare below the young tree looks up at the bird that lands on it */
   if (key === "perch") hareSitsUp();
+  /* and in the nest, three heads come up to it */
+  if (key === "nest") chicksUp(true);
+  if (key === "perch") sky.perchAt = performance.now();
   st.taken = true;
   st.lands++;
   mark(S.mark);
@@ -11106,6 +11231,7 @@ function leaveSocket(key) {
   const vs = clamp(W / 1500, 0.44, 1);
   g.classList.remove("on");
   if (S.laden) g.parentElement.classList.remove("laden");
+  if (key === "nest") chicksUp(false);
   st.taken = false;
   st.leaves++;
   setTimeout(() => { if (st.taken !== true) g.innerHTML = ""; }, at(450));
@@ -11261,6 +11387,254 @@ function dart(r) {
   logGround("squirrel", dx);
   el.style.transition = `transform ${(400 + r() * 300).toFixed(0)}ms cubic-bezier(.2,.8,.3,1)`;
   el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
+}
+
+/* ····· THEY NOTICE YOU ·····
+   Everything else on this sheet cycles: the perch fills and empties, the
+   gulls leave and come back, the squirrel dens and comes out. Only the owl
+   coming home changes anything for good, and nothing at all answers the
+   person reading. This is the answer. The doe is the one thing on the page
+   that looks back, and at his own window the approve button he just pressed
+   sits 42px from her — so the first thing that happens is that she notices
+   the hand that is still there.
+
+   WHAT IT MAY NOT DO. It may not run while the page is carrying the reader,
+   it may not run under reduced motion, it may not fire from a keyboard
+   press, and it may not fire because a pointer is on its way to a link: any
+   point inside the words' or the chrome's own air is ignored, which matters
+   because at 1024x768 the email link sits 30px from the doe and at 1280x720
+   the résumé link sits 41px from a gull. Every reaction is additive and no
+   larger than the gust already applies to the same joint every 7.3s, so
+   nothing here enlarges the reach the clearance gate measures. One passive
+   listener, rAF throttled, and a busy lock so the morning never looks
+   startled: 6s per creature, 1.2s between any two reactions at all. */
+const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null };
+const noticeOn = () => !RM && atMorning && !scrollHeld && document.body.classList.contains("morninglive");
+/* THE READER'S CLOCK IS NOT THE PAGE'S. Every window here — the gap
+   between any two reactions, a creature's own cooldown, what counts as
+   coming back at it, how long a pointer has to rest to be lingering — is
+   about the person, so all of it is WALL time. The pace flag compresses
+   the morning's own schedule, and a reader's hand does not speed up with
+   it. (Measured the hard way: with at() on the 4s repeat, a second
+   approach at pace 0.25 had to arrive inside a second, and the test that
+   drove a real pointer could not make it.) */
+function canNotice(who, cool = 6000) {
+  if (!noticeOn()) return false;
+  const now = performance.now();
+  if (now - NOTICE.last < 1200) return false;
+  if (now - (NOTICE.busy[who] || -Infinity) < cool) return false;
+  return true;
+}
+function noticed(who, what) {
+  const now = performance.now();
+  NOTICE.last = now;
+  NOTICE.busy[who] = now;
+  sky.lastGround = now;
+  (window.__world.notice = window.__world.notice || []).push({ who, what, t: Math.round(mt()) });
+}
+/* where a creature is, and how far the pointer is from its ink */
+function creaturesNow() {
+  const svg = document.querySelector(".dawnscape");
+  if (!svg) return [];
+  const out = [];
+  for (const [sel, who] of [[".ds-deer", "deer"], [".ds-fawn", "fawn"], [".ds-hare", "hare"],
+    [".ds-squirrel:not(.denned)", "squirrel"], [".ds-owl.on", "owl"], [".ds-perch.on", "perch"]]) {
+    const el = svg.querySelector(sel);
+    if (el) out.push({ who, el, b: el.getBoundingClientRect() });
+  }
+  for (const el of svg.querySelectorAll(".ds-gull:not(.flown)"))
+    out.push({ who: `gull-${el.dataset.id}`, el, b: el.getBoundingClientRect() });
+  return out.filter((c) => c.b.width);
+}
+const gapTo = (b, x, y) => Math.hypot(Math.max(b.left - x, x - b.right, 0), Math.max(b.top - y, y - b.bottom, 0));
+/* the phase of a creature's own idle, so a reaction joins it instead of
+   fighting it: the graze's head is up from 68% of its cycle and the ears
+   are at rest from 62% of theirs */
+const phaseOf = (el, T) => {
+  const a = el && el.getAnimations()[0];
+  return a && a.currentTime != null ? ((a.currentTime % T) + T) % T / T : 1;
+};
+function whenUp(el, T, from, cap) {
+  const ph = phaseOf(el, T);
+  if (ph >= from) return 0;
+  const wait = (from - ph) * T;
+  return wait > cap ? -1 : wait;
+}
+/* THE LOOK. Both ears swivel toward the pointer and the tail flicks once;
+   the fawn follows 300ms later. Additive, so the ear keeps its own twitch
+   underneath, and never longer than 1.6s. On a phone the ears are fills
+   rather than hinges, so it is a head lift of at most 6 degrees instead. */
+function lookAt(px, who = "deer", capMs = 2500) {
+  const svg = document.querySelector(".dawnscape");
+  const g = svg && svg.querySelector(who === "fawn" ? ".ds-fawn" : ".ds-deer");
+  if (!g || !noticeOn()) return false;
+  const head = g.querySelector(".ds-head"), tail = g.querySelector(".ds-tail");
+  const ears = [...g.querySelectorAll(".ds-ear")];
+  const T = who === "fawn" ? 5300 : 9700;
+  /* WAIT FOR HER HEAD TO BE UP, IN WALL TIME. The graze is a CSS animation
+     and runs at 9.7s whatever the pace flag says, so a cap written in the
+     page's own paced clock (at(1500) is 375ms at pace 0.25) asks for a
+     window that is almost never open and the look simply never happens.
+     The landing look is given a whole cycle, because a doe who lifts her
+     head and then notices you is the reading; a pointer reaction is given
+     2.5s and flicks her tail instead if the window is further off than
+     that, which is what a grazing deer does with a sound it half-heard. */
+  const wait = whenUp(head, T, 0.68, capMs);
+  if (wait < 0) {
+    if (tail) oneShot(tail, px > g.getBoundingClientRect().left ? 13 : -13, at(520));
+    return "tail";
+  }
+  setTimeout(() => {
+    if (!noticeOn()) return;
+    const b = g.getBoundingClientRect();
+    const dir = px > (b.left + b.right) / 2 ? 1 : -1;
+    if (ears.length) {
+      for (const e of ears) oneShot(e, dir * 11, at(1600), 0.45);
+    } else if (head) {
+      /* the phone: a lift, not a hinge */
+      oneShot(head, dir * 5, at(1500), 0.4);
+    }
+    if (tail) oneShot(tail, dir * 13, at(520));
+  }, wait);
+  return "look";
+}
+function doeLooks(px, capMs) {
+  if (!canNotice("deer")) return;
+  const what = lookAt(px, "deer", capMs);
+  if (!what) return;
+  noticed("deer", what);
+  setTimeout(() => { if (noticeOn()) lookAt(px, "fawn", capMs); }, at(300));
+}
+/* the rest of them, each in its own language */
+function reactNear(c, px, py, lingering, fresh) {
+  const [kind] = c.who.split("-");
+  if (kind === "deer" || kind === "fawn") {
+    if (lingering && canNotice("deer-step", 9000)) {
+      const el = document.querySelector(".dawnscape .ds-deer");
+      const r = birdRng(0xd0e1 + (window.__world.notice || []).length * 733);
+      if (el) { doeSteps(el, r); noticed("deer-step", "away"); }
+    } else doeLooks(px);
+    return;
+  }
+  if (kind === "hare") {
+    if (!canNotice("hare")) return;
+    for (const e of c.el.querySelectorAll(".ds-ear")) oneShot(e, -14, at(900), 0.5);
+    noticed("hare", "ears");
+    if (lingering) {
+      const r = birdRng(0xda6e + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, "hare", r, 2, [4, 6], 3, 260);
+      noticed("hare", "hops");
+    }
+    return;
+  }
+  if (kind === "gull") {
+    const id = c.who.slice(5);
+    const now = performance.now();
+    /* AN APPROACH IS AN ARRIVAL, not a sample: the pointer has to have
+       left this bird's reach and come back. Judged before the creature's
+       own cooldown, because "come at it twice and it goes" is exactly the
+       reaction a six second cooldown would swallow. */
+    const again = fresh && now - (NOTICE.approach[c.who] || -Infinity) < 4000;
+    if (fresh) NOTICE.approach[c.who] = now;
+    const far = document.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
+    if (again && far < 3 && !sky.flown.has(id) && canNotice(`${c.who}!`, 20000)) {
+      spawnFar("takeoff", id);
+      noticed(`${c.who}!`, "takeoff");
+      return;
+    }
+    if (!canNotice(c.who)) return;
+    const head = c.el.querySelector(".ds-gullhead");
+    const pk = +(head && head.style.getPropertyValue("--pk").replace("deg", "")) || 0;
+    oneShot(head, -pk * 0.6, at(1100), 0.45);
+    noticed(c.who, "head");
+    if (lingering) {
+      const r = birdRng(0x9111 + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, id, r, 2, [4, 7], 2, 280);
+      noticed(c.who, "hops");
+    }
+    return;
+  }
+  if (kind === "squirrel") {
+    if (!lingering || !canNotice("squirrel", 12000)) return;
+    const r = birdRng(0x5c11 + (window.__world.notice || []).length * 733);
+    dart(r);
+    noticed("squirrel", "dart");
+    setTimeout(() => { if (noticeOn()) { den(r); } }, at(1200));
+    return;
+  }
+  if (kind === "owl") {
+    if (!canNotice("owl", 10000)) return;
+    oneShot(c.el.querySelector(".ds-head"), px > (c.b.left + c.b.right) / 2 ? 18 : -18, at(1800), 0.5);
+    noticed("owl", "head");
+    return;
+  }
+  if (kind === "perch") {
+    /* a bird that has only just landed is not leaving because you moved */
+    if (!canNotice("perch", 12000)) return;
+    const st = sky.sock.perch;
+    if (st.taken !== true || performance.now() - (sky.perchAt || 0) < 5000) return;
+    clearTimeout(sockTimers.perch);
+    sockTimers.perch = null;
+    leaveSocket("perch");
+    noticed("perch", "leaves");
+  }
+}
+let noticeRaf = 0, noticePt = null;
+function considerNotice(x, y) {
+  if (!noticeOn()) return;
+  const scape = window.__world.scape;
+  if (!scape) return;
+  /* the words' and the chrome's own air is not the meadow. A pointer that
+     goes there has LEFT every creature, which matters: coming back is what
+     makes a second approach a second approach, and a pointer that crossed
+     the text column without this would still count as standing where it
+     was. */
+  if ((scape.keep || []).some(([l, t, r2, b2]) => x >= l && x <= r2 && y >= t && y <= b2)) {
+    NOTICE.inRange = null;
+    NOTICE.dwellOn = null;
+    return;
+  }
+  const vs = clamp(scape.W / 1500, 0.44, 1.2);
+  const near = creaturesNow()
+    .map((c) => ({ ...c, d: gapTo(c.b, x, y) }))
+    .sort((p2, q) => p2.d - q.d)[0];
+  if (!near || near.d > 110 * vs) { NOTICE.dwellOn = null; NOTICE.inRange = null; return; }
+  const now = performance.now();
+  const fresh = NOTICE.inRange !== near.who;
+  NOTICE.inRange = near.who;
+  if (NOTICE.dwellOn !== near.who || near.d > 55 * vs) {
+    NOTICE.dwellOn = near.d <= 55 * vs ? near.who : null;
+    NOTICE.dwellFrom = now;
+  }
+  const lingering = NOTICE.dwellOn === near.who && now - NOTICE.dwellFrom > 600;
+  reactNear(near, x, y, lingering, fresh);
+}
+function onPoint(e) {
+  if (!noticeOn()) return;
+  noticePt = [e.clientX, e.clientY];
+  if (noticeRaf) return;
+  noticeRaf = requestAnimationFrame(() => {
+    noticeRaf = 0;
+    if (noticePt) considerNotice(noticePt[0], noticePt[1]);
+  });
+}
+/* touch is a TAP, never a scroll passing over the meadow */
+let tapFrom = null;
+function onDown(e) { if (e.pointerType !== "mouse") tapFrom = { x: e.clientX, y: e.clientY, t: performance.now() }; }
+function onUp(e) {
+  if (e.pointerType === "mouse" || !tapFrom) return;
+  const near = e.target && e.target.closest && e.target.closest("a, button");
+  const quick = performance.now() - tapFrom.t < 350 && Math.hypot(e.clientX - tapFrom.x, e.clientY - tapFrom.y) < 10;
+  tapFrom = null;
+  if (!near && quick) considerNotice(e.clientX, e.clientY);
+}
+let noticeWired = false;
+function wireNotice() {
+  if (noticeWired || RM) return;
+  noticeWired = true;
+  addEventListener("pointermove", onPoint, { passive: true });
+  addEventListener("pointerdown", onDown, { passive: true });
+  addEventListener("pointerup", onUp, { passive: true });
 }
 
 /* ····· the daisies open ·····
