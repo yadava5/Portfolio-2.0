@@ -1839,7 +1839,7 @@ if (location.hash.length > 1) {
      the measurement and put every row's first letter three pixels from the
      rail. The fallback belongs at the use site, where `var(--gtext, 44px)`
      only applies if nothing above ever set it. */
-  .gates{--grh:146px; --gjy:106px; position:relative; color:var(--ink-2)}
+  .gates{--grh:146px; --gjy:110px; position:relative; color:var(--ink-2)}
   .gates .grow{position:relative; padding:0; display:block; height:var(--grh)}
   /* Baselines: the name's line box sits above the reason's, and the track
      runs under both. One row, one baseline, and no box around anything. */
@@ -1919,90 +1919,52 @@ if (location.hash.length > 1) {
     pointer-events:none}
   .gline{fill:none; stroke-linecap:butt}
   .sline{fill:none; stroke-linecap:round}
-  /* fig. 10 · the road, the ground under it, and what stands on it.
-     STRUCTURE IS --ink, GROUND AND TONE ARE --ink-2, and the only colour is
-     the three dispositions: a raised arm in pine, a seal, a strike and the
-     one wrong in clay. No --hair anywhere: it is 1.66:1 on the night field
-     and every stroke below is a drawn object held to the graphics floor. */
-  .gline .g-track{stroke:var(--ink); stroke-width:1.1}
+  /* THE TWO NIGHT PLATES DRAW IN THE WORKING STATIONS' TOKENS AND NOTHING
+     ELSE: --ink for structure, --ink-2 for what is secondary, and the only
+     colour is the decisive mark — the same discipline fig. 09 keeps, where a
+     whole plate of line work carries one clay ring at the thing that stopped
+     the run. No --hair anywhere below: it is 1.66:1 on the night field and
+     every stroke here is a drawn object held to the graphics floor. */
+  .gline .g-lane{stroke:var(--ink); stroke-width:1.1}
   .gline .g-stub{stroke:var(--ink); stroke-width:1.4}
-  .gline .g-sleeper{stroke:var(--ink-2); stroke-width:.8}
-  .gline .g-ballast{stroke:var(--ink-2); stroke-width:1.2; stroke-linecap:round}
-  .gline .g-post{stroke:var(--ink); stroke-width:1.1; fill:none}
-  .gline .g-armup{fill:var(--pine); stroke:none}
-  .gline .g-armdn{fill:var(--clay-g); stroke:none}
-  .gline .g-load{fill:var(--ink); stroke:none}
-  .gline .g-wrong{fill:var(--clay-g); stroke:none}
-  .gline .g-link{fill:var(--ink); stroke:none; opacity:var(--link, 0)}
-  .gline .g-card{stroke:var(--ink); stroke-width:1}
-  .gline .g-cardtone{stroke:var(--ink-2); stroke-width:.7}
-  .gline .g-blank{stroke:var(--ink-2); stroke-width:.9}
-  .gline .g-points{stroke:var(--ink); stroke-width:1.4}
-  .gline .g-trap{stroke:var(--ink-2); stroke-width:1.2}
-  .gline .g-sand{stroke:var(--ink-2); stroke-width:1.5; stroke-linecap:round}
-  .gline .g-bar{stroke:var(--ink); stroke-width:1.6}
-  .gline .g-flag{fill:var(--clay-g); opacity:var(--flag, 0)}
+  .gline .g-node{fill:var(--ink); stroke:none}
+  .gline .g-load{fill:var(--ink-2); stroke:none}
+  .gline .g-wrong{fill:var(--clay-g); stroke:var(--clay-g); stroke-width:1.2}
+  .gline .g-link{stroke:var(--ink); stroke-width:1.2; fill:none;
+    opacity:var(--link, 0)}
+  .gline .g-card{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .gline .g-tick{stroke:var(--ink); stroke-width:1.1; fill:none}
+  .gline .g-branch{stroke:var(--ink); stroke-width:1.1; fill:none}
+  .gline .g-blank{fill:var(--clay-g); stroke:none}
+  .gline .g-flag{fill:var(--clay-g); stroke:none; opacity:var(--flag, 0)}
   .gline .g-claim{stroke:var(--ink); stroke-width:1.2; fill:none}
-  .gline .g-claimtone{stroke:var(--ink-2); stroke-width:.8}
-  .gline .g-tag{stroke:var(--ink); stroke-width:1}
-  .gline .g-tagrule{stroke:var(--ink-2); stroke-width:.8}
-  .gline .g-buffer{stroke:var(--ink); stroke-width:1.4}
-  .gline .g-bufmass{stroke:var(--ink-2); stroke-width:.8}
+  .gline .g-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .gline .g-tag{stroke:var(--ink); stroke-width:1; fill:none}
+  .gline .g-legs{stroke:var(--ink-2); stroke-width:1}
+  .gline .g-buffer{stroke:var(--ink); stroke-width:1.4; fill:none}
   .gline .g-strike{stroke:var(--clay-g); stroke-width:2}
-  .gline .g-bank, .gline .g-bankedge{stroke:var(--ink-2)}
-  .gline .g-bank{stroke-width:.8}
-  .gline .g-bankedge{stroke-width:.9}
-  .gline .g-yard{stroke:var(--ink-2); stroke-width:1.1; stroke-linecap:round}
   .gline .g-spine{stroke:var(--ink-2); stroke-width:1.2}
-  /* fig. 11 · the road in, the distance it comes from, and the pages.
-     THE DISTANCE IS DRAWN IN --ink-2 AND NOTHING ELSE. It is the one part of
-     this plate a reader is not asked to read, so it holds the secondary ink
-     at the secondary weight and never competes with the two roads. */
-  .sline .s-haze, .sline .s-bank, .sline .s-yard{stroke:var(--ink-2)}
-  .sline .s-haze{stroke-width:.7}
-  .sline .s-bank{stroke-width:.8}
-  .sline .s-yard{stroke-width:1.1; stroke-linecap:round}
-  .sline .s-horizon, .sline .s-bankedge{stroke:var(--ink-2); stroke-width:.9}
-  .sline .s-pole{stroke:var(--ink-2); stroke-width:1}
-  .sline .s-roof{stroke:var(--ink-2); stroke-width:.9; fill:none}
-  .sline .s-wire{stroke:var(--ink-2); stroke-width:.7}
-  .sline .s-branch{stroke:var(--ink); stroke-width:1.1}
+  /* fig. 11 · the lanes, the stops on them, and the day under both */
+  .sline .s-lane{stroke:var(--ink); stroke-width:1.1}
   .sline .s-stub{stroke:var(--ink); stroke-width:1.4}
-  .sline .s-dash{stroke:var(--ink-2); stroke-width:1.2; stroke-dasharray:4 6}
-  .sline .s-sleeper{stroke:var(--ink-2); stroke-width:.8}
-  .sline .s-board{stroke:var(--ink); stroke-width:1.2}
-  .sline .s-boardtone{stroke:var(--ink-2); stroke-width:.7}
-  .sline .s-leg{stroke:var(--ink); stroke-width:1}
+  .sline .s-dash{stroke:var(--ink-2); stroke-width:1.1; stroke-dasharray:4 6}
+  .sline .s-node{fill:var(--ink); stroke:none}
+  .sline .s-card{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-leg{stroke:var(--ink-2); stroke-width:1}
   .sline .s-page{stroke:var(--ink); stroke-width:1.2; fill:none}
-  .sline .s-pagetone{stroke:var(--ink-2); stroke-width:.7}
-  .sline .s-rule{stroke:var(--ink-2); stroke-width:.9}
-  .sline .s-quote{fill:var(--clay-g)}
+  .sline .s-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-quote{fill:var(--clay-g); stroke:none}
   .sline .s-tick{fill:var(--ink); stroke:none; opacity:var(--tick, 0)}
-  .sline .s-mark{stroke:var(--ink); stroke-width:1.2}
-  .sline .s-marktone{stroke:var(--ink-2); stroke-width:.7}
-  .sline .s-feed{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-mark{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .sline .s-feed{stroke:var(--ink-2); stroke-width:1; fill:none}
   .sline .s-field{fill:var(--pine); stroke:none}
-  .sline .s-gate{stroke:var(--pine); stroke-width:1.2}
+  .sline .s-gate{stroke:var(--pine); stroke-width:1.2; fill:none}
   .sline .s-ring{stroke:var(--clay-g); stroke-width:1.6; fill:none}
-  .sline .s-pad{stroke:var(--ink-2); stroke-width:1.1}
-  .sline .s-padtone{stroke:var(--ink-2); stroke-width:1; stroke-linecap:round}
+  .sline .s-pad{stroke:var(--ink-2); stroke-width:1.1; fill:none}
+  .sline .s-daylane{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-daytick{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-daystop{fill:var(--ink); stroke:var(--ink); stroke-width:1.1}
   .sline .s-spine{stroke:var(--ink-2); stroke-width:1.2}
-  /* THE PAGES ARE ALIVE WHILE THEY WAIT. Two written pages standing perfectly
-     still on a branch read as printed; a slow lean says they are paper a hand
-     has just put down. It is its own group INSIDE the one the slide writes,
-     because two authors of one transform is how a scrubbed position and an
-     idle animation cancel each other. Compositor only, no mask, and it stops
-     the moment the page couples: a coupled page is freight, and freight on a
-     line does not flutter. */
-  .sline .s-flutter{transform-box:fill-box; transform-origin:50% 50%}
-  @media (prefers-reduced-motion: no-preference){
-    .sline .s-carry:not(.coupled) .s-flutter{
-      animation:pageleaf var(--fl, 5.6s) ease-in-out infinite}
-  }
-  @keyframes pageleaf{
-    0%,100%{transform:rotate(-0.8deg)}
-    50%{transform:rotate(0.8deg)}
-  }
 
   /* ═══════ fig. 11 · two branches, seated against the words ═══════
      --sby is the branch's y inside a row, and the junction's. --s0 is where
@@ -2018,7 +1980,11 @@ if (location.hash.length > 1) {
      that meets a line still swinging is a road the line crosses. --sfoot is
      the near ground under the last road, which is where the plate stops
      being a diagram and becomes the night the pages came through. */
-  .signs{--srh:146px; --sby:94px; --s0:110px; --s1:0px; --sfoot:104px;
+  /* --s0 is the lead the rail's own samples measure; --sday is where the
+     day strip hangs under the last lane; --sfoot is the room the strip and
+     its clocks need under it. */
+  .signs{--srh:158px; --sby:106px; --s0:110px; --s1:0px; --sday:58px;
+    --sfoot:96px;
     position:relative; padding-top:var(--s0); padding-bottom:var(--sfoot);
     color:var(--ink-2)}
   .signs .srow{position:relative; height:var(--srh)}
@@ -2032,7 +1998,7 @@ if (location.hash.length > 1) {
   /* the stop's name is printed ON its running-in board and its clock stands
      under the freight below it, which is where a yard puts both */
   .signs .smark{position:absolute; left:var(--mx, 0px);
-    top:calc(var(--sby) - 70px); width:0; height:0;
+    top:calc(var(--sby) - 44px); width:0; height:0;
     display:flex; flex-direction:column; align-items:center;
     white-space:nowrap}
   /* ABSOLUTE, NOT A MARGIN. The stop's name picks up the label sweep's own
@@ -2043,7 +2009,10 @@ if (location.hash.length > 1) {
      `calc(var(--sby) + 26px)` the offset was added to --sby twice, because
      the box it positions in is itself seated at --sby minus seventy, and the
      clocks landed a row's height low. */
-  .signs .sclock{position:absolute; top:96px; left:0;
+  /* the clock is printed ON the day strip at its own minute, which is a
+     position seatFigures measures off `CLOCKS` and writes relative to the
+     card it belongs to */
+  .signs .sclock{position:absolute; left:var(--cx, 0px); top:var(--cy, 96px);
     transform:translateX(-50%)}
   .signs .sstop{font-family:var(--body); font-size:var(--fs-micro);
     color:var(--ink);
@@ -2225,7 +2194,7 @@ if (location.hash.length > 1) {
     .gates .gname{top:0}
     .gates .gwhy{top:24px; right:0; width:auto}
     .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
-    .signs{--srh:156px; --sby:104px; --sfoot:88px}
+    .signs{--srh:158px; --sby:106px; --sday:52px; --sfoot:86px}
     .signs .sname{top:calc(var(--sby) - 46px)}
   }
   /* 320. Both dockets grow one more line of row, because at 222px of plate
@@ -2235,7 +2204,7 @@ if (location.hash.length > 1) {
   @media (max-width:360px){
     .gates{--grh:210px; --gjy:166px}
     .gates .gslip{top:86px}
-    .signs{--srh:172px; --sby:118px}
+    .signs{--srh:164px; --sby:104px}
   }
 
   @media (min-width:821px){
@@ -5137,14 +5106,25 @@ function seatFigures() {
      there is nothing to re-author when the window changes. */
   buildGates(J10);
   buildSigns(J11);
-  /* WHERE THE PAGES HAVE LEFT, derived from the last junction rather than
-     from a fraction of the beat. 0.74 of ¶11 is above BOTH branches on the
-     phone, where the plate sits under the prose — measured at 390×844 the
-     fraction lands 130px before the first branch, so the pages would be
-     switched off before either one had coupled. */
-  EXIT11 = J11.length
-    ? J11[J11.length - 1].y + 140
-    : beats[10].top + beats[10].h * 0.74;
+  /* WHERE THE PAGES HAVE LEFT, and it is bound to the FIGURE rather than to
+     a fraction of the beat or to the last junction. 0.74 of ¶11 is above
+     both roads on the phone, where the plate sits under the prose: measured
+     at 390×844 that fraction lands 130px before the first road and the pages
+     would be switched off before either had coupled. The last junction plus
+     a margin is no better the other way — measured at 1456×949 it emptied
+     both roads by 28% of the station's scroll, which is most of the dwell,
+     and a figure whose whole subject is two pages joining the line spent
+     that dwell with neither page on it.
+     So they ride until the drawing itself is leaving: the plate's own foot,
+     plus enough of a screen that the figure is well above the reading line
+     by the time they go. The floor keeps the coupling visible on any seat
+     where the plate is short. */
+  const plate11 = $("signsFig")?.closest("figure");
+  const foot11 = plate11 ? absTop(plate11) + plate11.offsetHeight : 0;
+  EXIT11 = Math.max(
+    J11.length ? J11[J11.length - 1].y + 140 : 0,
+    foot11 ? foot11 + vh * 0.45 : beats[10].top + beats[10].h * 0.74
+  );
   signs.exit = EXIT11;
   window.__world.junctions = junctions;      /* probe hook */
   window.__world.exit11 = +EXIT11.toFixed(1);
@@ -6358,79 +6338,26 @@ const pth = (cls, pts, extra) =>
     d + (i % 2 ? " " : i ? " L" : "M") + (+v).toFixed(2), ""), ...extra });
 const hline = (cls, x0, x1, y) => pth(cls, [x0, y, x1, y]);
 
-/* ————— the ink: tone by hatch, ground by stipple, mass by many passes —————
-   ¶13's register, and the inversion is the whole of it. That drawing is dark
-   strokes on light paper: its tone comes from hatch DENSITY and its solid
-   silhouettes — the doe, the gulls — are small. Turned onto a night plate the
-   same solid shape at the same size is a lamp, and the no-list forbids one.
-   So here the tone is hatch and stipple, the structure is several overlapping
-   passes rather than one thin line, and a solid fill never gets bigger than a
-   bird. Every one of these returns a `d` string; the caller batches a whole
-   family into ONE path, which is what keeps a ninety six mark rank and a
-   ballast bed to two elements instead of six hundred. */
-let inkSeed = 20260927;
-const inkRnd = () => (inkSeed = (inkSeed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+/* ————— the plate's own pen —————
+   THE REGISTER IS THE WORKING STATIONS', and the owner ruled it so: figs. 03,
+   04, 06 and 09 are crisp plate drawings, and ¶13's sketch ink — the hatched
+   massifs, the stippled ground, the solid silhouettes — belongs to the last
+   page and stays there. A night plate's richness is INFORMATION DENSITY and
+   structure, which is what fig. 09 has: a registry of twelve named tools, six
+   numbered cells each with its tick, seven phases on a rail, a dashed
+   boundary that names itself, and exactly one clay mark at the thing that
+   stopped. Not tone.
+
+   So the pen here is short and hard: straight segments, rectangles, small
+   filled squares for an enumerated item, one accent. Everything below returns
+   a `d` string and the caller batches a whole family into ONE path, which is
+   what keeps a field of ninety six to a single element. */
 const n1 = (v) => (+v).toFixed(1);
 const seg = (x0, y0, x1, y1) => `M${n1(x0)} ${n1(y0)}L${n1(x1)} ${n1(y1)}`;
-/* one line, several passes: a drawn line, not a plotted one */
-function inkBrush(x0, y0, x1, y1, n = 3, amp = 0.8) {
-  let d = "";
-  for (let i = 0; i < n; i++) {
-    const k = n > 1 ? (i / (n - 1) - 0.5) * 2 : 0;
-    const o = k * amp + (inkRnd() - 0.5) * amp * 0.6;
-    d += `M${n1(x0)} ${n1(y0 + o)}Q${n1((x0 + x1) / 2)} ${n1((y0 + y1) / 2 + o + (inkRnd() - 0.5) * amp)} ${n1(x1)} ${n1(y1 + o)}`;
-  }
-  return d;
-}
-/* parallel hatch clipped to a polygon, in pen lengths, jittered off the rule */
-function inkHatch(poly, deg, gap, len = [6, 16], jit = 0.5) {
-  const a = (-deg * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a);
-  const rot = ([x, y]) => [x * ca - y * sa, x * sa + y * ca];
-  const inv = ([x, y]) => [x * ca + y * sa, -x * sa + y * ca];
-  const P = poly.map(rot), ys = P.map((q) => q[1]);
-  const y0 = Math.min(...ys), y1 = Math.max(...ys);
-  let d = "";
-  for (let y = y0 + gap * 0.5; y < y1; y += gap) {
-    const xs = [];
-    for (let i = 0; i < P.length; i++) {
-      const A = P[i], B = P[(i + 1) % P.length];
-      if ((A[1] <= y && B[1] > y) || (B[1] <= y && A[1] > y))
-        xs.push(A[0] + ((y - A[1]) / (B[1] - A[1])) * (B[0] - A[0]));
-    }
-    xs.sort((u, v) => u - v);
-    for (let i = 0; i + 1 < xs.length; i += 2) {
-      let x = xs[i];
-      while (x < xs[i + 1]) {
-        const w = Math.min(len[0] + inkRnd() * (len[1] - len[0]), xs[i + 1] - x);
-        if (w > 1.6) {
-          const p0 = inv([x, y + (inkRnd() - 0.5) * jit]);
-          const p1 = inv([x + w, y + (inkRnd() - 0.5) * jit]);
-          d += seg(p0[0], p0[1], p1[0], p1[1]);
-        }
-        x += w + 1 + inkRnd() * 3;
-      }
-    }
-  }
-  return d;
-}
-/* ballast, sand, ground. A zero length segment with a round cap is a dot and
-   costs a sixth of the characters an arc does; at six hundred of them per bed
-   that is the difference between a drawing and a payload. */
-function inkStip(x0, y0, x1, y1, n) {
-  let d = "";
-  for (let i = 0; i < n; i++)
-    d += `M${n1(x0 + inkRnd() * (x1 - x0))} ${n1(y0 + inkRnd() * (y1 - y0))}h.01`;
-  return d;
-}
-/* the one scale a night field takes a solid fill at: a bird, a seed, a crate
-   seen from across a yard. Ninety six of them are a rank; one is a mark. */
-function inkMark(x, y, r, a) {
-  const c = Math.cos(a), s = Math.sin(a);
-  const pts = [[-r, 0], [r * 0.34, -r * 0.5], [r * 1.5, 0], [r * 0.34, r * 0.5]];
-  return "M" + pts.map(([px, py]) =>
-    `${n1(x + px * c - py * s)} ${n1(y + px * s + py * c)}`).join("L") + "Z";
-}
-const dPath = (cls, d, extra) => d ? el("path", { class: cls, d, ...extra }) : null;
+const box = (x, y, w, h) => `M${n1(x)} ${n1(y)}h${n1(w)}v${n1(h)}h${n1(-w)}z`;
+/* fig. 09's own bullet: the mark an enumerated item wears on these plates */
+const dot = (x, y, r) => `M${n1(x - r)} ${n1(y - r)}h${n1(r * 2)}v${n1(r * 2)}h${n1(-r * 2)}z`;
+const dPath = (cls, d, extra) => (d ? el("path", { class: cls, d, ...extra }) : null);
 const add = (g, node) => { if (node) g.appendChild(node); };
 
 /* fig. 10 and fig. 11 both hang their drawing off the same host: one svg,
@@ -6447,23 +6374,26 @@ function figSvg(host, cls, w, h) {
   return svg;
 }
 
-/* ————— fig. 10 · three roads in a night yard —————
-   THE OWNER'S VERDICT ON THE FIRST CUT was that it read as three thin
-   horizontal lines with small marks on them, and it did. What replaces it is
-   the same true reading drawn with weight: every road is a ballasted bed
-   under a brush of three passes, every load is an object with tone in it, and
-   the outcome of each check is a ground signal standing at the junction where
-   the rail meets that road — arm raised on the one that passed, arm down on
-   the two that did not. Three bird-sized solid silhouettes carry the whole
-   three second reading; everything else rewards the thirty.
+/* ————— fig. 10 · the bench: three checks, their evidence, their disposition
+   THE PLATE IS READ THE WAY FIG. 09 IS READ: each check is a lane, the lane
+   carries the evidence ENUMERATED so a reader can count it, and the decisive
+   mark is the only clay on the plate. What was drawn as a thin line with a
+   few small marks on it is now a field.
 
-   THREE DIRECTIONS FROM ONE JUNCTION STILL. Ninety six move LEFT and couple,
-   drawn as ninety six: four ranks standing on the bed, with the one that was
-   wrong proud of its rank and in clay. One of twenty is switched UP and RIGHT
-   onto a trap, its face hatched out — which is the true story, since the
-   flagged answer was never served and was replaced with a refusal — and it
-   stops in sand against an end bar. The claim is pulled RIGHT off the line
-   against a buffer's hatched masonry and its tag is struck. */
+     Applied    ninety six labelled emails, drawn as ninety six, four ranks
+                of twenty four; the one that was wrong is struck in clay, and
+                the lane runs on past the plate's edge because nothing
+                stopped it.
+     PolicyBot  twenty answers as twenty numbered cells in two ranks, ticked;
+                the twentieth has no tick, and a branch rises from it to the
+                answer that was served instead — a card whose text is one
+                clay bar, because the flagged answer never went out and was
+                replaced with a refusal. The lane ends at that branch.
+     Glyph      one claim card with its tag, drawn back along the lane to a
+                stop, the tag struck. The lane ends at the stop.
+
+   Each lane ENDS WHERE ITS STORY DOES, and that is what keeps the three from
+   reading as three identical rules across the plate. */
 const gates = { rows: [], svg: null, spx: 0 };
 function buildGates(js) {
   const host = $("gatesFig");
@@ -6475,227 +6405,159 @@ function buildGates(js) {
   const cs = getComputedStyle(host);
   const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
   const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
-  const A = Math.max(120, W - T - 8);          /* the road's own length */
+  const A = Math.max(120, W - T - 8);          /* the lane's own length */
   const tight = A < 460;
-  inkSeed = 20260927;
   const svg = figSvg(host, "gline", W, H);
   gates.svg = svg; gates.spx = spx; gates.rows = [];
   const rows = [...host.querySelectorAll(".grow")];
   const railless = plate.classList.contains("railless");
   if (railless && rows.length)
-    add(svg, dPath("g-spine", inkBrush(spx, rows[0].offsetTop + 8, spx,
-      rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8, 2, 0.7)));
+    add(svg, dPath("g-spine", seg(spx, rows[0].offsetTop + 8, spx,
+      rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8)));
   rows.forEach((row, i) => {
     const g = el("g", {});
     const mark = row.querySelector(".gj");
     const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
-    const D = T + (tight ? 40 : 56);            /* where a load begins */
-    /* EACH ROAD ENDS WHERE ITS STORY DOES, and that is what stops the three
-       reading as three identical bands: the one that passed runs off the
-       plate, the one that was caught ends at its end bar, the one that was
-       retracted ends at its buffer. The bed is three passes over jittered
-       sleepers over a ballast that thins toward the open end — a bed, not a
-       strip of texture. */
-    const bedEnd = T + (i === 0 ? A + 8 : i === 1 ? A * 0.985 : A * 0.66);
-    add(g, dPath("g-track", inkBrush(T, y, bedEnd, y, 3, 0.9)));
-    let sl = "";
-    for (let x = T + 6; x < bedEnd - 4; x += 11 + inkRnd() * 3)
-      sl += seg(x, y + 2, x - 1.4, y + 4.5 + inkRnd() * 2.4);
-    add(g, dPath("g-sleeper", sl));
-    let bal = "";
-    const bw = bedEnd - T;
-    for (let b = 0; b < Math.round(bw * 0.9); b++) {
-      const t2 = inkRnd();
-      const x = T - 2 + t2 * bw;
-      if (inkRnd() > 0.35 + 0.5 * t2) continue;   /* thins toward the far end */
-      bal += `M${n1(x)} ${n1(y + 8 + inkRnd() * inkRnd() * 13)}h.01`;
-    }
-    add(g, dPath("g-ballast", bal));
+    const D = T + (tight ? 16 : 26);            /* where the evidence begins */
+    const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y };
     const stub = dPath("g-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
-    /* THE SIGNAL IS THE THREE SECOND READING. One arm raised and two down,
-       standing where the rail meets each road, at the scale a night field can
-       take a solid fill at. Everything else on the plate rewards the thirty.
-       It is left of the load and taller than it, so the eye finds the three
-       of them as a column before it finds anything else. */
-    const sx = T + 14, sy = y - 3, sh = tight ? 34 : 44;
-    add(g, dPath("g-post", inkBrush(sx, sy, sx, sy - sh, 3, 0.7)));
-    add(g, dPath("g-post", seg(sx - 5, sy, sx + 5, sy)));
-    /* a semaphore arm, notched at its end the way one is, with the spectacle
-       plate at the pivot. Raised is clear, level is danger, and those are the
-       only two positions a reader has to tell apart. */
-    const a0 = sy - sh + 5, aw = 28, ah = 6.4, dz = i === 0 ? -aw * 0.42 : 0;
-    const arm = `M${n1(sx + 2)} ${n1(a0)}` +
-      `L${n1(sx + 2 + aw * 0.72)} ${n1(a0 + dz * 0.72)}` +
-      `L${n1(sx + 2 + aw * 0.72)} ${n1(a0 + dz * 0.72 - 2.4)}` +
-      `L${n1(sx + 2 + aw)} ${n1(a0 + dz - 2.4)}` +
-      `L${n1(sx + 2 + aw)} ${n1(a0 + dz + ah + 2.4)}` +
-      `L${n1(sx + 2 + aw * 0.72)} ${n1(a0 + dz * 0.72 + ah + 2.4)}` +
-      `L${n1(sx + 2 + aw * 0.72)} ${n1(a0 + dz * 0.72 + ah)}` +
-      `L${n1(sx + 2)} ${n1(a0 + ah)}Z`;
-    add(g, dPath(i === 0 ? "g-armup" : "g-armdn", arm));
-    add(g, el("circle", { class: "g-post", cx: n1(sx), cy: n1(a0 + ah / 2), r: 3.4 }));
-    const rec = { el: row, g, y, stub, i, pageY: js?.[i]?.y ?? y };
+    /* the junction: where the rail takes this lane's answer */
+    add(g, dPath("g-node", dot(T, y, 3)));
     if (i === 0) {
-      /* ninety six, in four ranks, standing on the bed */
-      const cols = 24, pitch = tight ? 8 : 10.8, rk = 10.5, r = tight ? 3.4 : 4.2;
+      /* ninety six, four ranks of twenty four, and the one that was wrong */
+      const cols = 24, px = tight ? 7.4 : 9.6, pyy = tight ? 8 : 9.4;
+      const r = tight ? 1.5 : 1.9;
       const rank = el("g", { class: "g-set" });
-      let d = "", w = "";
+      let d = "", w = "", x1 = D;
       for (let k = 0; k < 96; k++) {
-        const c = k % cols, row2 = (k / cols) | 0;
-        /* jittered, because a rank of ninety six loose objects is not a
-           lattice; the count survives, the grid does not */
-        const x = D + c * pitch + row2 * 2.6 + (inkRnd() - 0.5) * 1.8;
-        const yy = y - 6 - row2 * rk + (inkRnd() - 0.5) * 1.6;
-        if (k === 60) w = inkMark(x + 1, yy - rk - 8, r * 1.2, -0.6);
-        else d += inkMark(x, yy, r, 0.04 + Math.sin(k * 1.7) * 0.07);
+        const c = k % cols, rk = (k / cols) | 0;
+        const x = D + c * px, yy = y - 12 - (3 - rk) * pyy;
+        if (k === 60) w = dot(x, yy, r + 0.4) +
+          seg(x - r - 3, yy - r - 3, x + r + 3, yy + r + 3) +
+          seg(x - r - 3, yy + r + 3, x + r + 3, yy - r - 3);
+        else d += dot(x, yy, r);
+        x1 = x;
       }
       add(rank, dPath("g-load", d));
       add(rank, dPath("g-wrong", w));
       g.appendChild(rank);
-      add(g, dPath("g-link", `M${n1(T + 1)} ${n1(y - 5)}h5v10h-5z`));
+      add(g, dPath("g-legs", seg(D, y - 12 - 0.4, D, y)));
+      /* the lane runs ON, past the plate's own edge */
+      add(g, dPath("g-lane", seg(T, y, T + A + 8, y)));
+      add(g, dPath("g-lane", seg(T + A, y - 4, T + A + 8, y) + seg(T + A, y + 4, T + A + 8, y)));
+      add(g, dPath("g-link", box(T + 9, y - 4.5, 8, 9)));
       rec.comb = rank;
     } else if (i === 1) {
-      /* nineteen answers standing on the bed, each with its own tone */
-      const pitch = tight ? 12 : 17, cw = tight ? 9 : 13, ch = tight ? 16 : 22;
+      /* twenty answers, two ranks of ten, nineteen ticked */
+      const cw = tight ? 15 : 21, ch = tight ? 8 : 9;
+      const px = cw + (tight ? 3 : 4), pyy = ch + 6;
       const keep = el("g", { class: "g-set" });
-      let out = "", tone = "";
+      let out = "", tk = "";
       for (let k = 0; k < 19; k++) {
-        const x = D + k * pitch;
-        out += `M${n1(x)} ${n1(y - 2)}v${n1(-ch)}h${n1(cw)}v${n1(ch)}z`;
-        tone += inkHatch([[x + 1, y - ch], [x + cw - 1, y - ch],
-          [x + cw - 1, y - 3], [x + 1, y - 3]], 62, 3, [3, 7], 0.3);
+        const c = k % 10, rk = (k / 10) | 0;
+        const x = D + c * px, yy = y - 16 - (1 - rk) * pyy;
+        out += box(x, yy - ch, cw, ch);
+        tk += seg(x + cw - 7, yy - ch / 2, x + cw - 5, yy - 2.5) +
+          seg(x + cw - 5, yy - 2.5, x + cw - 2, yy - ch + 2);
       }
       add(keep, dPath("g-card", out));
-      add(keep, dPath("g-cardtone", tone));
+      add(keep, dPath("g-tick", tk));
       g.appendChild(keep);
-      /* the points, the trap above the line, and the sand it ends in */
-      const px = D + 19 * pitch + 14;
-      const lift = tight ? 28 : 38, ty = y - lift;
-      add(g, dPath("g-points", `M${n1(px - 11)} ${n1(y)}L${n1(px)} ${n1(y)}L${n1(px + 13)} ${n1(ty)}`));
-      const bar = T + A * 0.975, sand0 = bar - (tight ? 46 : 72);
-      add(g, dPath("g-trap", inkBrush(px + 13, ty, sand0, ty, 2, 0.6)));
-      let sd = "";
-      for (let k = 0; k < (tight ? 26 : 46); k++) {
-        const t2 = inkRnd();
-        sd += `M${n1(sand0 + t2 * (bar - sand0 - 8))} ${n1(ty + (inkRnd() - 0.5) * (3 + t2 * 9))}h.01`;
-      }
-      add(g, dPath("g-sand", sd));
-      add(g, dPath("g-bar", inkBrush(bar, ty - 9, bar, ty + 9, 3, 0.7)));
-      /* THE ONE THAT WAS CAUGHT, and its face is hatched OUT. PolicyBot's
-         quote check does not flag and serve: it replaces the answer with
-         "I couldn't verify that answer against the cited policy text". The
-         blanked face is that refusal, and the clay seal is the check's mark
-         on it. */
-      const cx = D + 19 * pitch;
+      add(g, dPath("g-legs", seg(D, y - 16, D, y)));
+      const lane1 = T + A * (tight ? 0.9 : 0.78);
+      add(g, dPath("g-lane", seg(T, y, lane1, y)));
+      add(g, dPath("g-lane", seg(lane1, y - 5, lane1, y + 5)));
+      /* the branch, and the answer that was served instead */
+      const bx = D + 9 * px + cw + (tight ? 10 : 18);
+      const by = y - 16 - pyy - (tight ? 16 : 22);
+      add(g, dPath("g-branch", seg(bx - 10, y, bx, y) +
+        seg(bx, y, bx + 14, by + 10) + seg(bx + 14, by + 10, bx + 26, by + 10)));
+      add(g, dPath("g-node", dot(bx - 10, y, 2.4)));
+      const rw = tight ? 34 : 46;
+      add(g, dPath("g-card", box(bx + 26, by, rw, 20)));
+      add(g, dPath("g-blank", box(bx + 31, by + 6, rw - 10, 3.6) +
+        box(bx + 31, by + 12, rw - 18, 3.6)));
+      /* the twentieth, un-ticked, standing where its tick is not */
+      const cx = D + 9 * px, cy = y - 16;
       const caught = el("g", { class: "g-caught" });
-      add(caught, dPath("g-card", `M${n1(cx)} ${n1(y - 2)}v${n1(-ch)}h${n1(cw)}v${n1(ch)}z`));
-      add(caught, dPath("g-blank", inkHatch([[cx + 1, y - ch + 1], [cx + cw - 1, y - ch + 1],
-        [cx + cw - 1, y - 3], [cx + 1, y - 3]], 34, 2.2, [3, 8], 0.3)));
-      add(caught, dPath("g-flag", `M${n1(cx + cw - 5)} ${n1(y - ch - 5)}h5v5h-5z`));
+      add(caught, dPath("g-card", box(cx, cy - ch, cw, ch)));
+      add(caught, dPath("g-flag", box(cx + cw - 5, cy - ch - 5, 5, 5)));
       g.appendChild(caught);
       rec.keep = keep; rec.caught = caught;
-      rec.lift = lift; rec.run = Math.max(40, sand0 + 16 - cx);
+      rec.lift = tight ? 16 : 22; rec.run = Math.max(30, bx + 26 - cx);
     } else {
-      /* the claim: one card with its tag, drawn back against a buffer */
-      const cw = tight ? 58 : 86, ch = tight ? 32 : 46;
+      /* the claim, its tag, and the stop it was drawn back to */
+      const cw = tight ? 62 : 96, ch = tight ? 24 : 32;
       const car = el("g", { class: "g-caraft" });
-      add(car, dPath("g-claim", `M${n1(D)} ${n1(y - 2)}v${n1(-ch)}h${n1(cw)}v${n1(ch)}z`));
-      add(car, dPath("g-claimtone", inkHatch([[D + 2, y - ch + 2], [D + cw - 2, y - ch + 2],
-        [D + cw - 2, y - 4], [D + 2, y - 4]], 24, 4.2, [5, 14], 0.45)));
-      for (const wx of [D + cw * 0.24, D + cw * 0.76])
-        add(car, el("circle", { class: "g-claim", cx: n1(wx), cy: n1(y + 2.4), r: 3 }));
-      const tx = D + cw + 6, tw2 = tight ? 30 : 42, th2 = tight ? 13 : 17;
-      add(car, dPath("g-tag", `M${n1(tx)} ${n1(y - 6)}v${n1(-th2)}h${n1(tw2)}v${n1(th2)}z`));
-      add(car, dPath("g-tagrule", seg(tx + 4, y - 15, tx + tw2 - 5, y - 15) +
-        seg(tx + 4, y - 10, tx + tw2 - 11, y - 10)));
-      const strike = dPath("g-strike",
-        inkBrush(tx + 2, y - 5, tx + tw2 - 2, y - th2 - 4, 3, 0.9));
+      add(car, dPath("g-claim", box(D, y - 8 - ch, cw, ch)));
+      let rl = "";
+      for (let k = 0; k < 3; k++)
+        rl += seg(D + 7, y - 8 - ch + 8 + k * 8, D + cw - 9 - k * (tight ? 9 : 16),
+          y - 8 - ch + 8 + k * 8);
+      add(car, dPath("g-rule", rl));
+      const tx = D + cw + 8, tw2 = tight ? 34 : 46, th2 = tight ? 15 : 18;
+      add(car, dPath("g-tag", box(tx, y - 8 - th2, tw2, th2)));
+      add(car, dPath("g-rule", seg(tx + 5, y - 8 - th2 + 6, tx + tw2 - 6, y - 8 - th2 + 6) +
+        seg(tx + 5, y - 8 - th2 + 12, tx + tw2 - 12, y - 8 - th2 + 12)));
+      add(car, dPath("g-legs", seg(D + cw * 0.3, y - 8, D + cw * 0.3, y) +
+        seg(D + cw * 0.7, y - 8, D + cw * 0.7, y) +
+        seg(tx + tw2 * 0.5, y - 8, tx + tw2 * 0.5, y)));
+      const strike = dPath("g-strike", seg(tx + 3, y - 10, tx + tw2 - 3, y - 6 - th2));
       add(car, strike);
       g.appendChild(car);
-      /* the buffer: a bar on a hatched masonry block, which is the mass that
-         says the road ends here rather than merely stopping */
-      const bx = T + A * 0.64;
-      add(g, dPath("g-buffer", inkBrush(bx, y - 30, bx, y + 2, 3, 0.8)));
-      add(g, dPath("g-bufmass", inkHatch([[bx, y - 26], [bx + 34, y + 2], [bx, y + 2]],
-        118, 3.2, [4, 12], 0.45)));
-      add(g, dPath("g-buffer", seg(bx, y - 26, bx + 34, y + 2)));
-      add(g, dPath("g-link", `M${n1(T + 1)} ${n1(y - 5)}h5v10h-5z`));
+      const bx = T + A * (tight ? 0.86 : 0.7);
+      add(g, dPath("g-lane", seg(T, y, bx, y)));
+      add(g, dPath("g-buffer", seg(bx, y - 13, bx, y + 5) + seg(bx + 7, y - 9, bx + 7, y + 5) +
+        seg(bx, y - 13, bx + 7, y - 9)));
+      add(g, dPath("g-link", box(T + 9, y - 4.5, 8, 9)));
       rec.car = car; rec.strike = strike;
-      rec.roll = Math.max(40, bx - 16 - (tx + tw2));
-      const len = Math.hypot(tw2 - 4, th2 - 1) * 1.02;
+      rec.roll = Math.max(30, bx - 12 - (tx + tw2));
+      const len = Math.hypot(tw2 - 6, th2 - 4) * 1.02;
       strike.setAttribute("stroke-dasharray", len.toFixed(2));
       rec.strikeLen = len;
     }
     svg.appendChild(g);
     gates.rows.push(rec);
   });
-  /* the yard floor, in the band the close leaves for it: the same bank and
-     the same stippled ground fig. 11 stands on, one stop down the line */
-  const lastRow = rows[rows.length - 1];
-  if (lastRow) {
-    const bot = lastRow.offsetTop + lastRow.offsetHeight;
-    const g0 = lastRow.offsetTop + (parseFloat(cs.getPropertyValue("--gjy")) || 86) + 20;
-    if (bot - g0 > 14) {
-      const fg = el("g", { class: "g-near" });
-      add(fg, dPath("g-bank", inkHatch([[6, g0 + 2], [W, g0 - 2], [W, g0 + 7], [6, g0 + 11]],
-        0, 5, [12, 34], 1)));
-      add(fg, dPath("g-bankedge", inkBrush(6, g0 + 11, W, g0 + 7, 2, 0.7)));
-      let floor = "";
-      for (let k = 0; k < Math.round(W * 0.55); k++) {
-        const t2 = inkRnd();
-        floor += `M${n1(6 + inkRnd() * (W - 6))} ${n1(g0 + 13 + t2 * t2 * (bot - g0 - 14))}h.01`;
-      }
-      add(fg, dPath("g-yard", floor));
-      svg.appendChild(fg);
-    }
-  }
 }
 
-/* ————— fig. 11 · the night road in —————
-   THE OWNER'S VERDICT was that it was one line with two small icons and a
-   dead lower half, and it was. The plate is one night scene now, top to
-   bottom: the far distance at the head, where the rail is still arriving;
-   two roads across the middle, each carrying a written page in from the
-   stops where that person saw the work; and the near ground under them,
-   a hatched bank with the telegraph running away into the dark over a
-   stippled yard. Nothing in the lower half is decoration — it is the
-   distance those pages come from, and it is the only part of the figure a
-   reader is not asked to read.
+/* ————— fig. 11 · the references, and the day they were earned in —————
+   THE DEAD HALF IS THE DAY. ¶11's plate used to be one line with two small
+   marks on it and nothing under them. What fills it now is not scenery: it
+   is the run's OWN clock table, drawn as the timetable strip fig. 09 draws
+   its seven phases as — twelve stops on a line, with the three a reference
+   came out of raised and named. Every minute on it is `CLOCKS`, which is the
+   same table the masthead reads, so nothing here is authored twice.
 
-   THE MARKS ARE STILL QUOTATIONS. Each road begins at a running-in board
-   carrying the stop's name in HTML, and under the board stands the freight
-   the rail already carries out of that station, redrawn at about twice the
-   size with the same pen: the yard's merge, glyph's pad, agentic automl's
-   six gates and the ring on the seventh. Nobody signs anything. */
+   Each writer has a lane. At the far end of the lane stand the stops that
+   person saw the work at, each a framed card carrying the freight the rail
+   already hauls out of that station, quoted at about twice the size: the
+   yard's merge, glyph's 28×28 pad, agentic automl's six gates and the ring
+   on the seventh. Down the lane comes the written page, drawn as the
+   corridor cargo draws it, solid behind and dashed ahead. Nobody signs. */
 const signs = { rows: [], svg: null, spx: 0, exit: 0 };
 const MARKS = {
-  yard: { w: 52, draw: (g, cx, cy) => {
+  yard: { w: 60, h: 46, draw: (g, cx, cy) => {
     for (const [x0, y0, qx, qy, x1, y1] of [
-      [-20, 20, -15, 11, -8, 5], [0, 20, 0, 12, 0, 5], [20, 20, 15, 11, 8, 5]])
+      [-20, 19, -15, 11, -8, 5], [0, 19, 0, 12, 0, 5], [20, 19, 15, 11, 8, 5]])
       add(g, el("path", { class: "s-feed",
         d: `M${n1(cx + x0)} ${n1(cy + y0)}Q${n1(cx + qx)} ${n1(cy + qy)} ${n1(cx + x1)} ${n1(cy + y1)}` }));
-    add(g, dPath("s-marktone", inkHatch([[cx - 12, cy - 13], [cx + 12, cy - 13],
-      [cx + 12, cy + 5], [cx - 12, cy + 5]], 0, 3.4, [4, 10], 0.35)));
-    add(g, dPath("s-mark", `M${n1(cx - 12)} ${n1(cy - 13)}h24v18h-24z`));
-    add(g, dPath("s-rule", seg(cx - 12, cy - 6, cx + 12, cy - 6) +
-      seg(cx - 4, cy - 13, cx - 4, cy + 5) + seg(cx + 4, cy - 13, cx + 4, cy + 5)));
-    add(g, dPath("s-field", `M${n1(cx + 5)} ${n1(cy - 12)}h6v4h-6z`));
+    add(g, dPath("s-mark", box(cx - 13, cy - 14, 26, 19)));
+    add(g, dPath("s-rule", seg(cx - 13, cy - 7, cx + 13, cy - 7) +
+      seg(cx - 4.4, cy - 14, cx - 4.4, cy + 5) + seg(cx + 4.4, cy - 14, cx + 4.4, cy + 5)));
+    add(g, dPath("s-field", box(cx + 5.4, cy - 13, 6.6, 4.4)));
   } },
-  pad: { w: 44, draw: (g, cx, cy, digit) => {
-    add(g, dPath("s-pad", digit === null
-      ? `M${n1(cx - 17)} ${n1(cy - 17)}h34v34h-34z`
-      : `M${n1(cx - 19)} ${n1(cy - 19)}h38v38h-38z`, digit === null
-      ? { "stroke-dasharray": "3 3" } : {}));
-    if (digit === null)
-      add(g, dPath("s-padtone", inkStip(cx - 14, cy - 14, cx + 14, cy + 14, 26)));
+  pad: { w: 52, h: 46, draw: (g, cx, cy, digit) => {
+    add(g, dPath("s-pad", box(cx - 18, cy - 18, 36, 36),
+      digit === null ? { "stroke-dasharray": "3 3" } : {}));
   } },
-  automl: { w: 104, draw: (g, cx, cy) => {
-    for (let k = 0; k < 6; k++)
-      add(g, dPath("s-gate", inkBrush(cx - 36 + k * 6.6, cy - 11,
-        cx - 36 + k * 6.6, cy + 11, 2, 0.5)));
-    add(g, el("circle", { class: "s-ring", cx: n1(cx + 18), cy: n1(cy), r: 7.6 }));
+  automl: { w: 112, h: 46, draw: (g, cx, cy) => {
+    let d = "";
+    for (let k = 0; k < 6; k++) d += seg(cx - 38 + k * 7, cy - 12, cx - 38 + k * 7, cy + 12);
+    add(g, dPath("s-gate", d));
+    add(g, el("circle", { class: "s-ring", cx: n1(cx + 20), cy: n1(cy), r: 8 }));
   } },
 };
 function buildSigns(js) {
@@ -6708,173 +6570,124 @@ function buildSigns(js) {
   const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
   const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
   const tight = W - T < 420;
-  inkSeed = 4120993;
   const svg = figSvg(host, "sline", W, H);
   signs.svg = svg; signs.spx = spx; signs.rows = [];
   const rows = [...host.querySelectorAll(".srow")];
   const railless = plate.classList.contains("railless");
-  const last = rows[rows.length - 1];
-  const foot = last ? last.offsetTop + last.offsetHeight : H;
-  /* ————— the far distance, above the first road ————— */
-  const sky = el("g", { class: "s-far" });
-  const top = rows.length ? rows[0].offsetTop : 0;
-  /* THE SCENE RUNS THE PLATE'S FULL WIDTH, across the column the rail holds,
-     because a yard the line passes through is the truth and a yard that stops
-     politely at the line is a diagram. It is drawn in the secondary ink at
-     under a pixel, so the clay reads straight through it. */
-  const X0 = 6;
-  /* TWO PLANES, because one band is a stripe and two are a distance: a far
-     horizon high in the lead, and a nearer ridge the boards stand against.
-     How much sky there is to fill is the rail's own answer — see the lead
-     seatFigures measures — and not a number written here. */
-  if (top > 54) {
-    const far = Math.max(26, Math.round(top * 0.3));
-    add(sky, dPath("s-haze", inkHatch([[X0, far - 14], [W, far - 22], [W, far], [X0, far]],
-      0, 11, [26, 74], 1.6)));
-    add(sky, dPath("s-horizon", inkBrush(X0, far, W, far - 8, 2, 0.6)));
-    /* THE NEAR PLANE HAS A PROFILE, and that is the difference between a
-       distance and a second stripe: the far side of the yard, a run of low
-       roofs and two chimneys, in outline with the ground hatched under it.
-       Profile is what makes ¶13's mountains read as mountains at a glance,
-       and a flat band never will. */
-    const near = top + 4;
-    let roof = "", stack = "";
-    let rx = X0 - 10;
-    while (rx < W) {
-      const rw = 34 + inkRnd() * 62, rh = 12 + inkRnd() * 22;
-      const pitch = inkRnd() > 0.55;
-      roof += `M${n1(rx)} ${n1(near)}L${n1(rx)} ${n1(near - rh)}` +
-        (pitch
-          ? `L${n1(rx + rw / 2)} ${n1(near - rh - 7)}L${n1(rx + rw)} ${n1(near - rh)}`
-          : `L${n1(rx + rw)} ${n1(near - rh)}`) +
-        `L${n1(rx + rw)} ${n1(near)}`;
-      if (inkRnd() > 0.68) {
-        const cx2 = rx + rw * 0.72;
-        stack += `M${n1(cx2)} ${n1(near - rh)}L${n1(cx2)} ${n1(near - rh - 16 - inkRnd() * 10)}`;
-      }
-      rx += rw + 3 + inkRnd() * 16;
-    }
-    add(sky, dPath("s-haze", inkHatch([[X0, near - 16], [W, near - 20], [W, near], [X0, near]],
-      0, 4, [10, 30], 0.9)));
-    add(sky, dPath("s-roof", roof));
-    add(sky, dPath("s-roof", stack));
-    add(sky, dPath("s-horizon", inkBrush(X0, near, W, near - 3, 2, 0.7)));
-  }
-  svg.appendChild(sky);
-  /* ————— the near ground, under the last road ————— */
-  const ground = el("g", { class: "s-near" });
-  if (H - foot > 40) {
-    const g0 = foot + 10, g1 = H - 6;
-    add(ground, dPath("s-bank", inkHatch([[X0, g0 + 18], [W, g0], [W, g0 + 30], [X0, g0 + 50]],
-      0, 7, [16, 46], 1.2)));
-    add(ground, dPath("s-bankedge", inkBrush(X0, g0 + 50, W, g0 + 30, 3, 0.9)));
-    /* the telegraph running away into the dark: poles diminishing, the wire
-       slung between them. Depth, and the only thing on the page that says
-       how far these pages have come. */
-    const n = tight ? 4 : 7;
-    let prev = null, wire = "", poles = "", arms = "";
-    for (let k = 0; k < n; k++) {
-      const t2 = k / (n - 1);
-      const x = X0 + 30 + t2 * (W - X0 - 60);
-      const base = g0 + 44 - t2 * 16;
-      const h = (tight ? 30 : 42) - t2 * 16;
-      poles += inkBrush(x, base, x, base - h, 2, 0.4);
-      arms += seg(x - 7 + t2 * 3, base - h + 5, x + 7 - t2 * 3, base - h + 5);
-      if (prev) wire += `M${n1(prev[0])} ${n1(prev[1])}Q${n1((prev[0] + x) / 2)} ${n1((prev[1] + base - h + 5) / 2 + 5)} ${n1(x)} ${n1(base - h + 5)}`;
-      prev = [x, base - h + 5];
-    }
-    add(ground, dPath("s-pole", poles));
-    add(ground, dPath("s-pole", arms));
-    add(ground, dPath("s-wire", wire));
-    let yard = "";
-    for (let k = 0; k < (tight ? 200 : 460); k++) {
-      const t2 = inkRnd();
-      yard += `M${n1(X0 + inkRnd() * (W - X0))} ${n1(g0 + 48 + t2 * t2 * (g1 - g0 - 48))}h.01`;
-    }
-    add(ground, dPath("s-yard", yard));
-  }
-  svg.appendChild(ground);
   host.querySelector(".sdigit")?.remove();
   rows.forEach((row, i) => {
     const g = el("g", {});
     const mark = row.querySelector(".sj");
     const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
+    /* glyph at the far end and agentic automl nearer the line, which is the
+       order the markup prints them in and the order the day ran */
     const kinds = i === 0 ? ["yard"] : ["pad", "automl"];
     const boxes = [...row.querySelectorAll(".smark")];
-    /* seated from the far edge inward, latest stop nearest the line */
-    let edge = W - 14;
-    const centres = kinds.map((k, n2) => {
-      const c = edge - MARKS[k].w / 2;
-      edge = c - MARKS[k].w / 2 - (tight ? 26 : 62);
-      boxes[n2]?.style.setProperty("--mx", c.toFixed(1) + "px");
-      return c;
-    });
-    /* the running-in board each road begins at: a plate on two legs, with the
-       stop's name printed on it in HTML */
-    /* EVERY BOARD IS CUT TO ITS OWN NAME, measured off the HTML that prints
-       on it. A fixed plate clipped "agentic automl" at 1456 and would clip
-       whatever a later station is called. The tone is a band UNDER the
-       letters, never behind them: hatch through a 12.8px name is a name
-       nobody reads. */
-    centres.forEach((c, n2) => {
+    /* the stops stand at the far end of the lane, seated from the edge in */
+    let edge = W - 10;
+    const cards = kinds.map((k, n2) => {
       const lab = boxes[n2]?.querySelector(".sstop");
-      const half = Math.max(34, Math.round((lab?.getBoundingClientRect().width || 60) / 2) + 11);
-      add(g, dPath("s-board", `M${n1(c - half)} ${n1(y - 76)}h${half * 2}v26h${-half * 2}z`));
-      add(g, dPath("s-boardtone", inkHatch([[c - half + 1, y - 54], [c + half - 1, y - 54],
-        [c + half - 1, y - 50], [c - half + 1, y - 50]], 0, 1.8, [4, 12], 0.3)));
-      add(g, dPath("s-leg", inkBrush(c - half * 0.6, y - 50, c - half * 0.6, y - 24, 2, 0.5) +
-        inkBrush(c + half * 0.6, y - 50, c + half * 0.6, y - 24, 2, 0.5)));
-      boxes[n2]?.style.setProperty("--mw", half * 2 + "px");
+      const half = Math.max(MARKS[k].w / 2,
+        Math.round((lab?.getBoundingClientRect().width || 60) / 2) + 10);
+      const c = edge - half;
+      edge = c - half - (tight ? 10 : 18);
+      boxes[n2]?.style.setProperty("--mx", c.toFixed(1) + "px");
+      return { k, c, half };
     });
-    for (let n2 = kinds.length - 1; n2 >= 0; n2--)
-      MARKS[kinds[n2]].draw(g, centres[n2], y - 2, glyphDigit);
+    for (const { k, c, half } of cards) {
+      /* the card: a frame, the quoted freight in it, the name printed under
+         the freight in HTML, and one leg down to the lane it feeds */
+      /* the card holds the freight ABOVE its name, because a name printed
+         over a drawing is neither. 78px of card: the quoted mark in the top
+         two thirds, the stop's own name in HTML across the bottom. */
+      add(g, dPath("s-card", box(c - half, y - 96, half * 2, 78)));
+      MARKS[k].draw(g, c, y - 68, glyphDigit);
+      add(g, dPath("s-leg", seg(c, y - 18, c, y)));
+      add(g, dPath("s-node", dot(c, y, 2.6)));
+    }
     if (i === 1 && glyphDigit !== null) {
-      const pad = centres[kinds.indexOf("pad")];
+      const pad = cards.find((c2) => c2.k === "pad");
       const d = document.createElement("span");
       d.className = "sdigit";
       d.setAttribute("data-machine", "");
       d.textContent = glyphDigit;
-      d.style.setProperty("--dx", pad.toFixed(1) + "px");
-      d.style.setProperty("--dy", (y - 13).toFixed(1) + "px");
+      d.style.setProperty("--dx", pad.c.toFixed(1) + "px");
+      d.style.setProperty("--dy", (y - 79).toFixed(1) + "px");
       host.appendChild(d);
     }
-    /* the road: three passes over its own sleepers, solid behind the page and
-       dashed ahead of it. [4,6] is its own dash — the rail owns [2,7]. */
-    const PW = tight ? 40 : 52, PH = tight ? 28 : 34;
-    const start = edge - PW;
-    const solid = dPath("s-branch", inkBrush(start, y, W - 14, y, 3, 0.8));
+    const PW = tight ? 42 : 56, PH = tight ? 26 : 32;
+    const start = Math.max(T + PW + 10, edge) - PW;
+    add(g, dPath("s-node", dot(T, y, 3)));
+    const solid = dPath("s-lane", seg(start, y, W - 10, y));
     const dash = dPath("s-dash", seg(T, y, start, y));
     add(g, solid); add(g, dash);
-    let sl = "";
-    for (let x = T + 6; x < W - 16; x += 12 + inkRnd() * 3)
-      sl += seg(x, y + 2, x - 1.4, y + 4.5 + inkRnd() * 2.2);
-    add(g, dPath("s-sleeper", sl));
     const stub = dPath("s-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
-    add(g, dPath("s-tick", `M${n1(T - 10)} ${n1(y - 5)}h5v10h-5z`));
-    /* the page, drawn as the corridor cargo draws it and given its own tone */
+    add(g, dPath("s-tick", box(T - 11, y - 4, 7, 8)));
+    /* the page, drawn as the corridor cargo draws it */
     const page = el("g", { class: "s-carry" });
     const leaf = el("g", { class: "s-flutter",
       style: `--fl:${i === 0 ? "5.2s" : "6.1s"}` });
     page.appendChild(leaf);
     const px0 = start, py = y - PH / 2;
-    add(leaf, dPath("s-pagetone", inkHatch([[px0 + 2, py + 2], [px0 + PW - 2, py + 2],
-      [px0 + PW - 2, py + PH - 2], [px0 + 2, py + PH - 2]], 74, 4.4, [5, 14], 0.4)));
     add(leaf, el("rect", { class: "s-page", x: n1(px0), y: n1(py),
-      width: PW, height: PH, rx: 3 }));
+      width: PW, height: PH, rx: 2 }));
     let rules = "";
-    for (let k = 0; k < 5; k++)
-      rules += seg(px0 + 7, py + 7 + k * 5, px0 + PW - 9 - ((k * 13) % 17), py + 7 + k * 5);
+    for (let k = 0; k < 4; k++)
+      rules += seg(px0 + 7, py + 8 + k * 6, px0 + PW - 10 - ((k * 11) % 15), py + 8 + k * 6);
     add(leaf, dPath("s-rule", rules));
-    add(leaf, dPath("s-quote", `M${n1(px0 + PW - 9)} ${n1(py + 4)}h4v6h-4z`));
+    add(leaf, dPath("s-quote", box(px0 + PW - 10, py + 4, 4, 6)));
     g.appendChild(page);
     svg.appendChild(g);
     signs.rows.push({ el: row, g, y, page, solid, dash, stub, i,
       pageY: js?.[i]?.y ?? y,
-      start: px0, right: W - 14, dashLeft: T,
+      start: px0, right: W - 10, dashLeft: T,
       travel: Math.max(30, px0 - T) });
   });
+  /* ————— the day, as the run's own table keeps it —————
+     Twelve stops on one line, from the first light of run 042 to the hour it
+     halts at. The three a reference came out of are filled and named; the
+     other nine are the day they sit in. Read straight off CLOCKS, so a stop
+     that moves takes this strip with it. */
+  const last = rows[rows.length - 1];
+  const strip = el("g", { class: "s-day" });
+  if (last) {
+    const sy = last.offsetTop + last.offsetHeight +
+      (parseFloat(cs.getPropertyValue("--sday")) || 60);
+    const x0 = T, x1 = W - 10;
+    const mins = CLOCKS.slice(0, RUN_BEATS);
+    const at = (m) => x0 + ((m - mins[0]) / (mins[mins.length - 1] - mins[0])) * (x1 - x0);
+    add(strip, dPath("s-daylane", seg(x0, sy, x1, sy)));
+    /* WHICH STOPS ARE RAISED IS READ OFF THE CLOCKS THEMSELVES, not from a
+       list of beat numbers kept in step by hand: every printed clock is
+       parsed to minutes and looked up in the run's own table. A clock that
+       matched nothing would raise nothing, and check-figures binds all three
+       of them to stations.ts, so the two gates close over each other. */
+    const sbyv = parseFloat(cs.getPropertyValue("--sby")) || 0;
+    const raised = new Set();
+    for (const c2 of host.querySelectorAll(".sclock")) {
+      const m = /^(\d{1,2}):(\d{2})$/.exec(c2.textContent.trim());
+      if (!m) continue;
+      const k = mins.indexOf(+m[1] * 60 + +m[2]);
+      if (k < 0) continue;
+      raised.add(k);
+      const r2 = c2.closest(".srow"), mk = c2.closest(".smark");
+      const mx = parseFloat(mk?.style.getPropertyValue("--mx")) || 0;
+      c2.style.setProperty("--cx", (at(mins[k]) - mx).toFixed(1) + "px");
+      c2.style.setProperty("--cy",
+        (sy + 9 - (r2.offsetTop + sbyv - 44)).toFixed(1) + "px");
+    }
+    let ticks = "", marks = "";
+    mins.forEach((m, k) => {
+      const x = at(m);
+      if (raised.has(k)) marks += dot(x, sy, 3.4) + seg(x, sy - 13, x, sy - 4);
+      else ticks += seg(x, sy - 5, x, sy);
+    });
+    add(strip, dPath("s-daytick", ticks));
+    add(strip, dPath("s-daystop", marks));
+  }
+  svg.appendChild(strip);
 }
 
 /* ————— the bead is the clock for both plates —————
