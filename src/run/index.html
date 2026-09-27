@@ -11415,7 +11415,7 @@ function dart(r) {
    nothing here enlarges the reach the clearance gate measures. One passive
    listener, rAF throttled, and a busy lock so the morning never looks
    startled: 6s per creature, 1.2s between any two reactions at all. */
-const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null };
+const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null, retry: null };
 const noticeOn = () => !RM && atMorning && !scrollHeld && document.body.classList.contains("morninglive");
 /* THE READER'S CLOCK IS NOT THE PAGE'S. Every window here — the gap
    between any two reactions, a creature's own cooldown, what counts as
@@ -11530,14 +11530,15 @@ function reactNear(c, px, py, lingering, fresh) {
     return;
   }
   if (kind === "hare") {
+    if (lingering && canNotice("hare-hop", 9000)) {
+      const r = birdRng(0xda6e + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, "hare", r, 2, [4, 6], 3, 260);
+      noticed("hare-hop", "hops");
+      return;
+    }
     if (!canNotice("hare")) return;
     for (const e of c.el.querySelectorAll(".ds-ear")) oneShot(e, -14, at(900), 0.5);
     noticed("hare", "ears");
-    if (lingering) {
-      const r = birdRng(0xda6e + (window.__world.notice || []).length * 733);
-      hopWalk(c.el, "hare", r, 2, [4, 6], 3, 260);
-      noticed("hare", "hops");
-    }
     return;
   }
   if (kind === "gull") {
@@ -11555,16 +11556,22 @@ function reactNear(c, px, py, lingering, fresh) {
       noticed(`${c.who}!`, "takeoff");
       return;
     }
+    /* THE LINGER IS ITS OWN REACTION, on its own key. It used to live
+       inside the head's branch, behind the head's own six second cooldown,
+       and a pointer that arrives and then stays always trips the head
+       first — so the hop could never happen. labrat found it by writing a
+       probe for it that nothing could reach. */
+    if (lingering && canNotice(`${c.who}-hop`, 9000)) {
+      const r = birdRng(0x9111 + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, id, r, 2, [4, 7], 2, 280);
+      noticed(`${c.who}-hop`, "hops");
+      return;
+    }
     if (!canNotice(c.who)) return;
     const head = c.el.querySelector(".ds-gullhead");
     const pk = +(head && head.style.getPropertyValue("--pk").replace("deg", "")) || 0;
     oneShot(head, -pk * 0.6, at(1100), 0.45);
     noticed(c.who, "head");
-    if (lingering) {
-      const r = birdRng(0x9111 + (window.__world.notice || []).length * 733);
-      hopWalk(c.el, id, r, 2, [4, 7], 2, 280);
-      noticed(c.who, "hops");
-    }
     return;
   }
   if (kind === "squirrel") {
@@ -11620,6 +11627,20 @@ function considerNotice(x, y) {
     NOTICE.dwellFrom = now;
   }
   const lingering = NOTICE.dwellOn === near.who && now - NOTICE.dwellFrom > 600;
+  /* A STILL POINTER GETS ONE CHANCE, and that is not enough. Reactions are
+     evaluated from pointermove, so a hand that arrives inside another
+     creature's 1.2s gap and then stops moving was never noticed at all:
+     labrat measured exactly that, on the landing look's own lock. The lock
+     stays; what changes is that a refusal schedules ONE retry for the
+     moment it lifts, from the point the hand is actually at. */
+  const wait = 1200 - (now - NOTICE.last);
+  if (wait > 0 && wait <= 1200) {
+    clearTimeout(NOTICE.retry);
+    NOTICE.retry = setTimeout(() => {
+      NOTICE.retry = null;
+      if (noticePt) considerNotice(noticePt[0], noticePt[1]);
+    }, wait + 30);
+  }
   reactNear(near, x, y, lingering, fresh);
 }
 function onPoint(e) {

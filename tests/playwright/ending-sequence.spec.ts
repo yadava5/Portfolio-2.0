@@ -1334,6 +1334,57 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
 });
 
 /* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the daisies open over the first minute, and a rebuild keeps them
+   The one thing on this sheet that changes for a reader who stays. Each
+   daisy carries the moment it is due, in page ms of the morning's own
+   clock, so the builder can render whatever is already out as already out:
+   a resize replaces the whole drawing, and without that the meadow would
+   shut every time the window moved.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the daisies keep their morning", () => {
+  test("a rebuild does not shut them", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    test.slow();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    const read = () =>
+      page.evaluate(() => ({
+        all: document.querySelectorAll(".dawnscape .ds-daisy").length,
+        open: document.querySelectorAll(".dawnscape .ds-daisy.open").length,
+      }));
+    /* a minute of the morning's own clock, at pace 1 */
+    await page.waitForTimeout(60_000);
+    const before = await read();
+    expect(before.all, "there are daisies").toBeGreaterThan(0);
+    expect(before.open, "and most of them are out by a minute").toBeGreaterThan(
+      before.all / 2
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(1500);
+    const mid = await read();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await page.waitForTimeout(1500);
+    const after = await read();
+    /* the counts can only RISE: the clock keeps running through both
+       rebuilds, and a seat change can draw a different number of flowers */
+    expect(
+      mid.open / Math.max(1, mid.all),
+      "the share that is out survives the resize"
+    ).toBeGreaterThanOrEqual(before.open / before.all - 0.01);
+    expect(
+      after.open,
+      "and coming back does not shut them either"
+    ).toBeGreaterThanOrEqual(before.open);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
    ¶13 · the morning notices you (round 14, item 6)
    Everything else on this sheet cycles. This is the only thing that answers
    the person reading, so what it may NOT do matters as much as what it
@@ -1438,7 +1489,10 @@ test.describe("¶13 · the morning notices you", () => {
       first.some((q) => q.who === "gull-a"),
       "it put its head up"
     ).toBe(true);
-    /* away, out of every creature's reach, and back inside four seconds */
+    /* away, out of every creature's reach, and back — past the head's own
+       1.2s lock and still inside the four seconds that make this a SECOND
+       approach rather than another first one */
+    await page.waitForTimeout(400);
     await page.mouse.move(g!.x, g!.top - 400);
     await page.waitForTimeout(300);
     await page.mouse.move(g!.x, g!.top - 14);
@@ -1528,10 +1582,25 @@ test.describe("¶13 · the morning notices you", () => {
        probe could not make it fail */
     await page.waitForTimeout(8000);
     const before = (await notices(page)).length;
-    const l = await centre(page, '.dawnwrap a[href^="mailto"]');
+    const l = await page.evaluate(() => {
+      const e = document.querySelector('.dawnwrap a[href^="mailto"]');
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      /* THE CORNER OF THE LINK NEAREST HER, inside its own rect. The link
+         is 197px wide, and its CENTRE measures 116.3px from the doe against
+         a 75.1px reach: a pointer there wakes nothing whatever the guard
+         does, which is why this test passed on a build with the guard
+         removed. labrat measured this corner at 30.2px, inside the reach,
+         and red on the notice-keep probe. */
+      return { x: r.left + 1, y: r.bottom - 1 };
+    });
     expect(l, "the email link is on the page").not.toBeNull();
-    await page.mouse.move(l!.x, l!.y);
-    await page.waitForTimeout(2500);
+    /* and DWELL there, the way a hand on its way to a link does */
+    for (let i = 0; i < 10; i++) {
+      await page.mouse.move(l!.x + (i % 2 ? 0.5 : -0.5), l!.y);
+      await page.waitForTimeout(150);
+    }
+    await page.waitForTimeout(1500);
     expect(
       (await notices(page)).length,
       "a pointer on its way to a link is not a visitor"

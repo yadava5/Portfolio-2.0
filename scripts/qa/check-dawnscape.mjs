@@ -210,7 +210,12 @@
  *   · a daisy on a 40px stem → the meadow rule fails at fourteen flowers,
  *     rise 43.5 against a cap of 24.73
  *   · the daisies built closed → the reduced-motion seat fails, 0 of 14
- *   · the daisies opened with a one-iteration @keyframes → the census
+ *   · the daisies opened with a one-iteration @keyframes → (4)'s arc rule
+ *     fails at the source. NOT the census, and labrat measured why: the
+ *     census is taken a few hundred ms after landing and the first daisy is
+ *     due at 6s, so at the moment it counts, 0 of 14 are open and the
+ *     animation it would have counted does not exist yet. A gate that can
+ *     only see a defect three seconds after it stops looking is not a gate
  *   · NOTE for round 13's P1, P2 and P4: all three still fire, but the
  *     wording they matched has changed with the registry, so their recorded
  *     lines are owed a re-run rather than a re-read
@@ -402,6 +407,39 @@ async function serve() {
      reader is shown. Shown green on exactly that negative before this
      check existed. So every body.morninglive .dawnscape selector is counted
      against the ones found inside a brace-matched no-preference block. */
+  /* AN ARC IS A TRANSITION, NOT AN ANIMATION. Everything on this sheet
+     that happens ONCE — a daisy opening, the chicks rising, a socket
+     filling, a leaf fading, the owl arriving — changes state by adding a
+     class and letting a transition carry it. A one-iteration @keyframes
+     would look identical and be counted by nothing: the census reads
+     CSSAnimation, and it is taken a few hundred ms after landing, when the
+     first daisy is still eight seconds from opening. So this is held at the
+     SOURCE, the way the wind's own no-preference rule is: no .dawnscape
+     rule may put `animation` on a class that carries an arc. */
+  const ARC_CLASSES = [
+    "ds-daisy",
+    "ds-budg",
+    "ds-bloomg",
+    "ds-chicks",
+    "ds-leaf",
+    "ds-perch",
+    "ds-nestsock",
+    "ds-owl",
+    "ds-twig",
+  ];
+  const arcAnim = [];
+  for (const [sel, body] of ruleBy)
+    if (/(^|[^-])animation\s*:/.test(body))
+      for (const c of ARC_CLASSES)
+        if (sel.includes(c)) arcAnim.push(`${sel} { animation … }`);
+  if (arcAnim.length)
+    fail(
+      `${arcAnim.length} .dawnscape rule(s) animate a one-time arc — ${arcAnim.slice(0, 3).join("; ")}. An arc is a class and a transition: a one-iteration @keyframes reads the same and is counted by nothing, because the census is taken before the first of them is due`
+    );
+  else
+    note(
+      `no .dawnscape rule animates any of the ${ARC_CLASSES.length} arc classes`
+    );
   const live = [...html.matchAll(/body\.morninglive \.dawnscape/g)].length;
   let guarded = 0;
   const head = "@media (prefers-reduced-motion: no-preference){";
@@ -1665,10 +1703,12 @@ try {
         nested: document.querySelectorAll(
           ".dawnscape .ds-nestsock path.ds-fill"
         ).length,
+        chicksUp: document.querySelectorAll(".dawnscape .ds-chicks.up").length,
       };
     };
     const SIT_MS = 30000; /* 30s of wall clock is two minutes of the page's own */
     let first = null,
+      orphanBeg = 0,
       gapFrom = null,
       worstGap = 0,
       escapes = 0,
@@ -1689,9 +1729,13 @@ try {
         airborne,
         flies,
         nested,
+        chicksUp,
       } = await page.evaluate(READ);
       samples++;
       if (perched > 1) twoPerched++;
+      /* the chicks rise TO a parent: up over an empty cup is a beg at
+         nobody, and it is the shape a stale timer after a rebuild takes */
+      if (chicksUp && !nested) orphanBeg++;
       if (nested > 1) twoNested++;
       if (airborne > 1) twoLeaves++;
       if (flies > 1) twoFlies++;
@@ -1841,6 +1885,10 @@ try {
       if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
         fail(
           `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
+        );
+      if (orphanBeg)
+        fail(
+          `${seat}: the chicks were up with an empty nest in ${orphanBeg} sample(s) — they rise to a parent`
         );
       if (twoNested)
         fail(
