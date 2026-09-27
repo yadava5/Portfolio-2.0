@@ -1671,12 +1671,20 @@ if (location.hash.length > 1) {
   .dawnscape .ds-squirrel.denned{opacity:0}
   .dawnscape .ds-twig.laden{transform:translateY(2.5px)}
   .dawnscape .ds-leaf.gone{opacity:0}
+  /* the daisies: both states in the DOM from the start, and only opacity
+     between them. A transition is not a CSS animation, so the census does
+     not see one, and under reduced motion the open state is simply built */
+  .dawnscape .ds-daisy .ds-bloomg{opacity:0}
+  .dawnscape .ds-daisy.open .ds-budg{opacity:0}
+  .dawnscape .ds-daisy.open .ds-bloomg{opacity:1}
   @media (prefers-reduced-motion: no-preference){
     .dawnscape .ds-perch, .dawnscape .ds-nestsock{transition:opacity .4s ease}
     .dawnscape .ds-squirrel{transition:opacity .25s ease}
     .dawnscape .ds-owl{transition:opacity .5s ease}
     .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-leaf{transition:opacity 2s ease}
+    .dawnscape .ds-daisy .ds-budg{transition:opacity .8s ease}
+    .dawnscape .ds-daisy .ds-bloomg{transition:opacity 1.4s ease .3s}
   }
   @media (prefers-reduced-motion: reduce){
     .flock{display:none}
@@ -8644,7 +8652,7 @@ function* drawDawnscape() {
      band too short to carry the principal) would otherwise publish the
      previous seat's, and the field's glow and the birds' avoid region would
      both be keeping off a sun that is not on the page. */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0; SCAPE.pool = null;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0; SCAPE.pool = null; SCAPE.daisies = 0;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
@@ -10236,6 +10244,85 @@ function* drawDawnscape() {
       near += solidTuft(X(fx), Y(fy), h * S3, n, cls, sd);
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
+
+    /* ————— THE DAISIES, WHICH OPEN OVER THE FIRST MINUTE —————
+       The one thing on this sheet that CHANGES for a reader who stays. The
+       morning lands with fourteen to eighteen buds in the grass and they
+       open in the order the light reaches them, ranked by their distance
+       from the sun's own column, all of them out by about seventy seconds.
+       Nothing announces it; a reader who stays finds the meadow in flower
+       and a reader who leaves never knows it was going to happen.
+       Both states are in the DOM from the start and only opacity moves
+       between them (the census counts CSS animations, and a transition is
+       not one), so under reduced motion the end state is simply built.
+       Each one carries the moment it is due on its own group, so a rebuild
+       mid-morning renders every daisy that is already out, already out.
+       Its own stream, and its stem is the same green as the blades. */
+    const daisyRng = birdRng(0xda15);
+    if (tall) near += lend(daisyRng, () => {
+      const dk = Math.max(vs, 0.85);
+      /* where a daisy may stand: the swale's gaps, the stand by the pair,
+         the bank's lip (outside the bank's own masked group) and the rough
+         ground by the hare and the boulder. Never in the thin grass under
+         the words, and never inside a word's own air. */
+      const spots = [
+        [0.362, 0.879], [0.392, 0.889], [0.422, 0.9], [0.451, 0.903], [0.489, 0.898],
+        [0.548, 0.895], [0.59, 0.893], [0.632, 0.885], [0.668, 0.873],
+        [0.032, 0.995], [0.058, 0.985], [0.092, 0.975],
+        [0.928, 0.952], [0.952, 0.94], [0.974, 0.928],
+        [0.869, 0.978], [0.902, 0.966], [0.935, 0.986],
+      ];
+      const made = [];
+      let d = "";
+      for (const [fx, fy] of spots) {
+        const x = X(fx) + (daisyRng() - 0.5) * 10, y = Y(fy);
+        /* out of the thin ground under the words, out of every halo, and
+           6px clear of anything solid already standing there */
+        /* 0.2, not the plan's 0.35: dens() is zero inside the words'
+           column and climbs over 136px, so the swale — which stands 40px
+           under the clearing's own foot — measures about 0.25 and the rule
+           as written rejected the first place the plan asks for. What
+           actually has to hold is the words' air, which inKeep holds, at
+           the flower's foot and at its head. */
+        if (dens(x, y) < 0.2 || inKeep(x, y, 12) || inKeep(x, y - 14, 12)) continue;
+        if (fills.some(([cx, cy, rr]) => Math.hypot(x - cx, y - cy) < rr + 6)) continue;
+        const h = (5 + daisyRng() * 3) * Math.max(vs, 0.8);
+        const sp = spine(x, y, h, (daisyRng() - 0.5) * 0.4, (daisyRng() - 0.5) * 2);
+        const tip = sp[sp.length - 1];
+        const stem = P(stroke(sp, 0.25), "ds-tip w1");
+        /* the bud: a small closed head, 2.2 by 3.6 across */
+        const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 1.8 * dk, 1.1 * dk, 1.8 * dk, 0, 6.3, 1.2))}Z"/>`;
+        /* the bloom: six to eight fat lobes, squashed, with a cut eye —
+           seven thin ones read as an asterisk at this size — and the
+           light's own colour in the eye, because the light is what opened
+           it. The cut leaves paper under the gold. */
+        const nl = 6 + Math.floor(daisyRng() * 3), R = (3.25 + daisyRng() * 0.75) * dk;
+        const cy2 = tip[1] - 1.2 * dk;
+        const star = [];
+        for (let i = 0; i <= nl * 8; i++) {
+          const a2 = (i / (nl * 8)) * 6.2832;
+          const rr2 = R * (0.55 + 0.45 * Math.abs(Math.cos((a2 * nl) / 2)));
+          star.push([tip[0] + Math.cos(a2) * rr2, cy2 + Math.sin(a2) * rr2 * 0.75]);
+        }
+        const eyeR = 0.95 * dk;
+        const bloom = `<path class="ds-fill" fill-rule="evenodd" d="${path(wob(star, 0.25))}Z${path(arc(tip[0], cy2, eyeR, eyeR * 0.8, 0, 6.3, 0.8))}Z"/>` +
+          `<circle class="ds-eye" cx="${F(tip[0])}" cy="${F(cy2)}" r="${(eyeR * 0.78).toFixed(1)}"/>`;
+        nS += 3;
+        fills.push([tip[0], cy2, R]);
+        made.push({ x, y, stem, bud, bloom });
+      }
+      /* the order the light reaches them, and the moment each is due */
+      const byLight = [...made].sort((p2, q) => Math.abs(p2.x - sun.x) - Math.abs(q.x - sun.x));
+      const n0 = Math.max(1, byLight.length - 1);
+      byLight.forEach((m, i) => {
+        m.t = Math.max(1500, Math.round(6000 + (64000 * i) / n0 + (daisyRng() - 0.5) * 3000));
+      });
+      SCAPE.daisies = made.length;
+      for (const m of made)
+        d += `<g class="ds-daisy${RM || m.t <= mt() ? " open" : ""}" data-x="${F(m.x)}" data-y="${F(m.y)}" data-t="${m.t}">` +
+          `${m.stem}<g class="ds-budg">${m.bud}</g><g class="ds-bloomg">${m.bloom}</g></g>`;
+      return d;
+    });
     /* the cast on the meadow keeps the words' air with its whole home range:
        a gull or the hare whose box, 30px either way, would enter a word's
        halo is set down further west, 8px at a time (at 1024×768 the walking
@@ -10458,7 +10545,7 @@ function* drawDawnscape() {
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
@@ -10715,6 +10802,13 @@ const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), last
   lastFawn: -Infinity, lastDart: -Infinity, lastWalk: -Infinity, lastDen: -Infinity, lastLog: -Infinity,
   sock: { perch: { taken: false, lands: 0, leaves: 0 }, nest: { taken: false, lands: 0, leaves: 0 } }, owl: false, windAt: 0 };
 let farTimer = null, groundTimer = null;
+/* THE MORNING'S OWN CLOCK, in page ms: how long this morning has been
+   alive, undone by the pace flag the way at() does it. Everything that
+   UNFOLDS over the morning is scheduled against it and stamps its due
+   moment on its own element, so a rebuild mid-morning renders what has
+   already happened as having happened, instead of starting it again.
+   A resize replaces the whole drawing; this is what survives it. */
+const mt = () => (sky.windAt ? (performance.now() - sky.windAt) / PACE : 0);
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
    angle is what a phone and a laptop have in common, so the climb is
@@ -11169,6 +11263,28 @@ function dart(r) {
   el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
 }
 
+/* ····· the daisies open ·····
+   Every daisy carries the moment it is due, in page ms of the morning's own
+   clock, and this walks the DOM rather than holding a list: a resize
+   replaces the whole drawing, and the builder re-renders whatever is
+   already out as already out, so the only thing this has to do is catch up
+   and re-arm. Idempotent by construction — opening an open daisy is a
+   no-op — which is what a timer that can be armed twice needs to be. */
+let daisyTimer = null;
+function openDaisies() {
+  daisyTimer = null;
+  if (RM || !SCAPE.built) return;
+  const now = mt();
+  let next = Infinity, open = 0;
+  for (const el of document.querySelectorAll(".dawnscape .ds-daisy[data-t]")) {
+    const T = +el.dataset.t;
+    if (T <= now) { el.classList.add("open"); open++; }
+    else next = Math.min(next, T);
+  }
+  window.__world.daisies = { open, due: next === Infinity ? null : Math.round(next) };
+  if (next < Infinity) daisyTimer = setTimeout(openDaisies, Math.max(150, at(next - now)));
+}
+
 /* ····· the butterfly ·····
    A rare transient: a 9px twin-triangle meandering low over the swale for
    3–6s every 40–90s, wings beating on their own Web Animation, never over
@@ -11203,8 +11319,38 @@ function butterfly() {
     y = clamp(y + (r() - 0.5) * 22, SCAPE.hz + 14, H * 0.93);
   }
   const a = g.animate(frames, { duration: dur, easing: "ease-in-out" });
-  wing.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(.15)" }, { transform: "scaleX(1)" }], { duration: 140, iterations: Infinity });
-  a.onfinish = () => { g.remove(); flyLive = null; };
+  const beat = (ms) => wing.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(.15)" }, { transform: "scaleX(1)" }], { duration: ms, iterations: Infinity });
+  let wingA = beat(140);
+  const gone = () => { g.remove(); flyLive = null; };
+  /* AND IT ENDS ON A FLOWER. A butterfly that meanders and then evaporates
+     is a path; one that settles on a daisy that opened while the reader
+     watched is the two slow things on this sheet meeting. It only happens
+     if a daisy inside its own envelope is out — early in the morning there
+     is none, and then it leaves as it always did. */
+  a.onfinish = () => {
+    const open = [...document.querySelectorAll(".dawnscape .ds-daisy.open")]
+      .map((el) => [+el.dataset.x, +el.dataset.y])
+      .filter(([dx, dy]) => dx > W * 0.32 && dx < W * 0.7 && dy > SCAPE.hz + 10 && dy < H * 0.95);
+    if (!open.length) { gone(); return; }
+    const [tx, ty] = open[Math.floor(r() * open.length)];
+    const land = g.animate([{ transform: frames[frames.length - 1].transform }, { transform: `translate(${tx.toFixed(1)}px, ${(ty - 5).toFixed(1)}px)` }],
+      { duration: at(1100), easing: "ease-in-out", fill: "forwards" });
+    land.onfinish = () => {
+      /* settled: the wings go slow */
+      wingA.cancel();
+      wingA = beat(700);
+      window.__world.flyLanded = (window.__world.flyLanded || 0) + 1;
+      mark("flyland");
+      setTimeout(() => {
+        wingA.cancel();
+        wingA = beat(140);
+        const off = g.animate([{ transform: `translate(${tx.toFixed(1)}px, ${(ty - 5).toFixed(1)}px)`, opacity: 1 },
+          { transform: `translate(${(tx + 40 + r() * 30).toFixed(1)}px, ${(ty - 60 - r() * 30).toFixed(1)}px)`, opacity: 0 }],
+          { duration: at(2200), easing: "ease-in", fill: "forwards" });
+        off.onfinish = gone;
+      }, at(1500 + r() * 1500));
+    };
+  };
   flyTimer = setTimeout(butterfly, at(40000 + r() * 50000));
 }
 
@@ -11479,6 +11625,8 @@ function settleScape() {
   speckTimer = setTimeout(speckFlock, at(40000 + 50000 * birdRng(0x5bec)()));
   flyTimer = setTimeout(butterfly, at(30000 + 30000 * birdRng(0xb0f1)()));
   gustTimer = setTimeout(gustReactions, 7300);
+  clearTimeout(daisyTimer);
+  daisyTimer = setTimeout(openDaisies, at(800));
 }
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
   if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();

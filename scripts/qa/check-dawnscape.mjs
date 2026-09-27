@@ -662,7 +662,11 @@ try {
        joint, so dipping her head 38° barely lowers their tips — but a gate
        that moves with the pose it measures cannot be read either way. */
     const doeH = (scape && scape.doeH) || 0;
-    const meadow = [...svg.querySelectorAll(".ds-tuft[data-y]")]
+    /* the daisies stand in the same meadow and answer to the same rule:
+       a flower taller than a third of the doe is not a daisy */
+    const meadow = [
+      ...svg.querySelectorAll(".ds-tuft[data-y], .ds-daisy[data-y]"),
+    ]
       .map((el) => ({
         x: +el.dataset.x,
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
@@ -1521,6 +1525,9 @@ try {
     await page.waitForTimeout(700);
     const m = await page.evaluate(MEASURE, { CLEAR_PX, RANGE_PX, GRASS_CAP });
     const rm = await page.evaluate(() => ({
+      daisies: document.querySelectorAll(".dawnscape .ds-daisy").length,
+      daisiesOpen: document.querySelectorAll(".dawnscape .ds-daisy.open")
+        .length,
       atmorning: document.body.classList.contains("atmorning"),
       live: document.body.classList.contains("morninglive"),
       settled: document.querySelector(".dawnscape").dataset.settled,
@@ -1550,6 +1557,15 @@ try {
       fail(
         `${seat}: mark("scape") never recorded — settleScape did not run on the reduced-motion path`
       );
+    /* THE DAISIES ARE OUT AT BUILD. They open over the morning's first
+       minute on a timer, and settleScape returns before any timer under
+       reduced motion, so a reader who asked for stillness would be given a
+       meadow of buds that never opens. The end state is built instead. */
+    if (rm.daisies && rm.daisiesOpen !== rm.daisies)
+      fail(
+        `${seat}: ${rm.daisiesOpen} of ${rm.daisies} daisies are open under reduced motion — the end state is built, not waited for`
+      );
+    else if (rm.daisies) note(`${seat}: all ${rm.daisies} daisies built open`);
     if (!fails.some((f) => f.startsWith(seat)))
       note(
         `${seat}: ground present at opacity 1 (${m.paths} paths), 0 animations, flock hidden, scape mark ${rm.scape}ms`
