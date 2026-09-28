@@ -929,6 +929,32 @@ const FIGURES = [
 
   /* ── 3 · THE TEXT PLATES, ASSERTED AS TEXT. Their claims verbatim, and a
      NEGATIVE assertion that nobody "fixes" them into images later. */
+  /* fig. 11's stops, read out of the data layer. THE FLOOR IS EXACTLY THREE
+     and it is not a round number: Randall's branch starts at one stop and
+     Shree's at two, so a parse that finds fewer has silently stopped binding
+     one of them, and a parse that finds more is matching something that is
+     not a station record. Either way every regex built below would be built
+     from the wrong thing. */
+  const reEsc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const stationsSrc = read("src/lib/data/stations.ts");
+  const FIG11_STOPS = ["path", "glyph", "automl"]
+    .map((id) => {
+      const from = stationsSrc.indexOf(`id: "${id}"`);
+      if (from < 0) return null;
+      const block = stationsSrc.slice(from, from + 900);
+      const name = block.match(/name:\s*"([^"]+)"/)?.[1];
+      const clock = block.match(/clock:\s*"([^"]+)"/)?.[1];
+      return name && clock ? { id, name, clock } : null;
+    })
+    .filter(Boolean);
+  if (FIG11_STOPS.length !== 3)
+    fails.push(
+      `  ✗ fig. 11's stops could not be derived from stations.ts — found ` +
+        `${FIG11_STOPS.length} of 3 (path, glyph, automl).\n` +
+        `      Every name and clock the figure is checked against is built from these, so a\n` +
+        `      short read here checks nothing and prints the same green line as a clean file.`
+    );
+
   const TEXT_PLATES = [
     {
       fig: "02",
@@ -991,10 +1017,26 @@ const FIGURES = [
     {
       fig: "11",
       what: "the references",
-      /* r13: the summary line is cut; the plate still ties each name to the
-         stations that person worked on, and that is what is bound now. */
-      claims: ["his manager, station 03", "teammate, stations 06 and 09"],
-      exposed: [/>Randall Vollen</, />Shree Chaturvedi</],
+      /* r14: the plate stopped describing who these people are and started
+         saying WHERE they saw the work. Each branch begins at the stops that
+         person was at, and those stops' names and clocks are `stations.ts`'s
+         own, DERIVED here rather than typed — rename a station or move its
+         clock and the figure comes with it or this goes red.
+         Bound as `exposed` rather than as claims, and that is the difference
+         between a gate and a decoration: claims are matched against the
+         block with its tags stripped, so "the yard" still passes when the
+         plate says "the yards". A tag-delimited match cannot. */
+      claims: [
+        "each reference joins the line from the stops where its writer saw me work.",
+      ],
+      exposed: [
+        />Randall Vollen</,
+        />Shree Chaturvedi</,
+        ...FIG11_STOPS.flatMap((st) => [
+          new RegExp(`>${reEsc(st.name)}<`),
+          new RegExp(`>${reEsc(st.clock)}<`),
+        ]),
+      ],
     },
   ];
   for (const p of TEXT_PLATES) {

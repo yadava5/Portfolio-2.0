@@ -1055,6 +1055,12 @@ const RAIL_WIDTHS: [number, number][] = [
      bend24 19.6, kink2 4.3. */
   [1375, 800],
   [1280, 800],
+  /* 1456×949 is the seat the owner actually reads the page at, and until
+     round 14 no rail gate measured it. It joins the set with the route
+     through figs. 10 and 11, because that route's widest swing — ¶10's spine
+     to the dock — is a function of where `beat-inner` caps, and 1456 is the
+     first width where the cap and the viewport disagree by a whole column. */
+  [1456, 949],
 ];
 const RAIL_CEIL = { maxSlope: 1.58, bend24: 24.1, kink2: 16.2 };
 
@@ -1330,25 +1336,432 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
   }, testInfo) => {
     testInfo.setTimeout(120_000);
     await page.setViewportSize({ width: 1512, height: 982 });
+    /* the pre-round-4 behaviour: beat 11's x is stx[11] percent of the
+       viewport, and the final two anchors still snap to the dock — so the
+       line arrives in the right place having crossed the wrong column.
+       ROUND 14 MOVED THE TARGET. `beatX` is now two functions: the phone's
+       single lane, and `deskX`, which answers dockX for ¶11 and ¶12 and fig.
+       10's own plate left for ¶10. Injecting the percentage over `deskX(i)`
+       reproduces the same defect — every beat back on stx, including the two
+       that now ride measurements — and it is one line, so a later reformat of
+       `deskX` cannot silently stop matching.
+       WHETHER IT MATCHED IS ASSERTED, and outside the handler: a replace that
+       finds nothing fulfils the UNMODIFIED page, the control passes, and a
+       positive control that passes is the gate reporting that it works. An
+       `expect` thrown inside a route handler surfaces as a navigation that
+       never resolves, which names the wrong defect. */
+    const TARGET = "mobile ? RAIL_X_MOBILE : deskX(i)";
+    let injected = false;
     await page.route(
       (u) => new URL(u).pathname === "/",
       async (route) => {
         const res = await route.fetch();
-        /* the pre-round-4 behaviour: beat 11's x is stx[11] percent of the
-           viewport, and the final two anchors still snap to the dock — so the
-           line arrives in the right place having crossed the wrong column. */
-        const body = (await res.text()).replace(
-          "mobile ? RAIL_X_MOBILE : i === RUN_BEATS - 1 ? dockX : (stx[i] / 100) * vw",
-          "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
-        );
-        await route.fulfill({ response: res, body });
+        const src = await res.text();
+        injected = src.includes(TARGET);
+        await route.fulfill({
+          response: res,
+          body: src.replace(
+            TARGET,
+            "mobile ? RAIL_X_MOBILE : (stx[i] / 100) * vw"
+          ),
+        });
       }
     );
     await arrive(page);
+    expect(
+      injected,
+      `the control's injection point "${TARGET}" is still in the run — if buildThread's ` +
+        `beatX was rewritten, this control silently serves the real page and proves nothing`
+    ).toBe(true);
     const r = await railTerminus(page);
     expect(
       r.nearest,
       "a rail down the stop-name column must be caught"
     ).toBeLessThan(RAIL_LANE_MIN);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   G10c · THE LINE DOES NOT STRIKE THROUGH THE NOTES.
+
+   The owner's round-2 ruling, made a number. Round 14 runs the day's rail
+   down both night plates, so for the first time the line and the words share
+   a column, and the distance between them is the whole question.
+
+   MEASURED ON INK, NOT ON BOXES, and that is main's ruling after both were
+   measured. A paragraph's box runs to the column's edge; its last line does
+   not. At 779098b's successor the box reading put seven of eight two-column
+   seats under the floor on pages a reader would call clean — the rail sitting
+   in the right margin, past the end of every line — while the ink reading
+   found the one seat where it genuinely crossed the words. A gate that fires
+   on the right answer is worse than the honest gap. So: one rect per line
+   box, from `Range.getClientRects()` over every text node a `TreeWalker`
+   finds, and the minimum distance from any of them to any rail sample.
+
+   TRANSFORMS ARE NEUTRALISED AND THE NEUTRALISATION IS ASSERTED. `__rail()`
+   lives in layout space; a client rect plus scrollY only equals layout space
+   if nothing above the node carries a transform, and both stations' prose and
+   plates carry entrance transforms. The residual count is checked to be 0, so
+   a stylesheet that stopped taking cannot quietly move every number.
+
+   TWO-COLUMN SEATS ONLY, and that is not a convenience: below 1250 the
+   stations stack, the rail necessarily shares the single column, and the
+   floor is unsatisfiable by construction. The stacked seats read 0 and always
+   will; asserting there would be asserting that the design is different.
+   ══════════════════════════════════════════════════════════════════════════ */
+const G10C_SEATS: [number, number][] = [
+  [1512, 982],
+  [1456, 949],
+  [1440, 900],
+  [1375, 800],
+  [1366, 768],
+  [1280, 800],
+  [1280, 720],
+  [1250, 800],
+];
+const G10C_FLOOR = 16; /* px · the same envelope G10b holds at the timetable */
+/* [selector, fewest line boxes it must yield, what its text must begin with]
+   The floor is a guard against an EMPTY walk, not a count of the lines a
+   container holds: 2 for the prose and the plates (a redraw that moved a
+   row's words into the svg would empty it), 1 for a caption. It does not
+   notice a container losing most of its ink; the text pin and the
+   positive control below are what bind the captions. The pin exists
+   because `querySelector` takes the first match, and "#cosigners figure
+   figcaption" first matched a quote's attribution at 480px while fig. 11's
+   own caption sat at 31px, unread. */
+const G10C_BOXES: [string, number, RegExp | null][] = [
+  ["#review .prose", 2, null],
+  ["#cosigners .prose", 2, null],
+  ["#gatesFig", 2, null],
+  ["#signsFig", 2, null],
+  ["#review figure.plate > figcaption", 1, /^fig\. 10 /],
+  ["#cosigners figure.plate > figcaption", 1, /^fig\. 11 /],
+];
+const G10C_SELS = G10C_BOXES.map(([sel]) => sel);
+
+async function inkClearance(page: Page, selectors: string[]) {
+  return page.evaluate((sels) => {
+    const st = document.createElement("style");
+    st.textContent =
+      "#review,#review *,#cosigners,#cosigners *{transform:none !important}";
+    document.head.appendChild(st);
+    const dirty = [
+      ...document.querySelectorAll("#review *,#cosigners *"),
+    ].filter((e) => {
+      const t = getComputedStyle(e).transform;
+      return t && t !== "none";
+    }).length;
+    const rail = (
+      window as unknown as { __rail: () => { x: number; y: number }[] }
+    ).__rail();
+    const out = sels.map((sel) => {
+      const host = document.querySelector(sel);
+      if (!host)
+        return {
+          sel,
+          found: false,
+          text: "",
+          nodes: 0,
+          rects: 0,
+          min: -1,
+          worst: "",
+        };
+      const tw = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+      const nodes: Text[] = [];
+      for (let n = tw.nextNode(); n; n = tw.nextNode())
+        if (n.textContent && n.textContent.trim()) nodes.push(n as Text);
+      let min = Infinity,
+        worst = "",
+        rects = 0;
+      for (const n of nodes) {
+        const r = document.createRange();
+        r.selectNodeContents(n);
+        for (const lr of r.getClientRects()) {
+          if (!lr.width || !lr.height) continue;
+          rects++;
+          const L = lr.left,
+            R = lr.right,
+            T = lr.top + scrollY,
+            B = lr.bottom + scrollY;
+          for (const p of rail) {
+            const dx = p.x < L ? L - p.x : p.x > R ? p.x - R : 0;
+            const dy = p.y < T ? T - p.y : p.y > B ? p.y - B : 0;
+            const d = Math.hypot(dx, dy);
+            if (d < min) {
+              min = d;
+              worst = (n.textContent || "").trim().slice(0, 34);
+            }
+          }
+        }
+      }
+      return {
+        sel,
+        found: true,
+        text: (host.textContent || "").trim().slice(0, 40),
+        nodes: nodes.length,
+        rects,
+        min: min === Infinity ? -1 : +min.toFixed(2),
+        worst,
+      };
+    });
+    st.remove();
+    return { dirty, out };
+  }, selectors);
+}
+
+test.describe("G10c · the rail keeps clear of every line of ink it passes", () => {
+  for (const [w, h] of G10C_SEATS) {
+    test(`${w}x${h}: no rail sample within ${G10C_FLOOR}px of ¶10's or ¶11's ink`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await arrive(page);
+      const { dirty, out } = await inkClearance(page, G10C_SELS);
+      expect(
+        dirty,
+        "the transform override took: a residual matrix means every rect below is in the wrong space"
+      ).toBe(0);
+      for (const [i, r] of out.entries()) {
+        const [, fewest, starts] = G10C_BOXES[i];
+        expect(r.found, `${r.sel} exists at ${w}`).toBe(true);
+        if (starts)
+          expect(r.text, `${r.sel} is the element it names`).toMatch(starts);
+        /* A CONTAINER THAT YIELDS NO LINE BOXES IS A GATE THAT CANNOT FAIL.
+           Both plates build their line work in an svg with no text in it, so
+           a redraw that moved a row's words into the drawing would empty this
+           walk and pass. The floor is the plate's own smallest reading: two
+           lines for ¶11's two names, four for ¶10's three rows plus its
+           close. */
+        expect(
+          r.rects,
+          `${r.sel} yields line boxes to measure at ${w} (${r.nodes} text nodes)`
+        ).toBeGreaterThanOrEqual(fewest);
+        expect(
+          r.min,
+          `the rail's nearest approach to "${r.worst}" in ${r.sel} at ${w}x${h}`
+        ).toBeGreaterThanOrEqual(G10C_FLOOR);
+      }
+    });
+  }
+});
+
+test("G10c control · a caption pushed onto the rail is read, and fails", async ({
+  page,
+}, testInfo) => {
+  /* The two caption entries were added after the plates, and the first
+     version of them measured the wrong element and could not fail. This
+     moves fig. 11's own caption onto the line (a `left` offset, not a
+     transform, since inkClearance strips transforms) and asserts that the
+     gate's measurement of THAT element falls under the floor. */
+  testInfo.setTimeout(120_000);
+  await page.setViewportSize({ width: 1456, height: 949 });
+  await arrive(page);
+  await page.addStyleTag({
+    content:
+      "#cosigners figure.plate > figcaption{position:relative; left:-240px}",
+  });
+  const { out } = await inkClearance(page, [
+    "#cosigners figure.plate > figcaption",
+  ]);
+  expect(out[0].text).toMatch(/^fig\. 11 /);
+  expect(
+    out[0].min,
+    "fig. 11's caption, moved onto the rail, reads under the floor"
+  ).toBeLessThan(G10C_FLOOR);
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   G10d · EVERY JUNCTION STUB REACHES THE LINE IT CLAIMS TO JOIN.
+
+   Both night plates hang their tracks off the rail, and the rail wobbles:
+   the hand's two sines put it up to 1.5 x amp either side of the anchor, so a
+   stub drawn at the spine instead of at the measured x misses the line by up
+   to 24px and the figure reads as three tracks floating beside it.
+
+   THE RAIL'S X IS RECOMPUTED HERE, from `__rail()` at the stub's own y, and
+   compared to the DRAWN path. It is deliberately not read from
+   `window.__world.junctions`: that record is what `seatFigures` believed, and
+   a gate that checks a belief against itself passes when the seating pass is
+   skipped entirely. The stub's y comes from the drawn line too, for the same
+   reason.
+
+   THE COUNT IS ASSERTED FIRST. Three stubs in fig. 10 and two in fig. 11; a
+   seating pass that did nothing leaves zero, and zero stubs all agree with
+   the rail vacuously.
+   ══════════════════════════════════════════════════════════════════════════ */
+test.describe("G10d · the junction stubs land on the rail", () => {
+  for (const [w, h] of G10C_SEATS.slice(0, 4)) {
+    test(`${w}x${h}: 3 + 2 stubs, each within 0.5px of the rail at its own y`, async ({
+      page,
+    }, testInfo) => {
+      testInfo.setTimeout(120_000);
+      await page.setViewportSize({ width: w, height: h });
+      await arrive(page);
+      const r = await page.evaluate(() => {
+        const rail = (
+          window as unknown as { __rail: () => { x: number; y: number }[] }
+        ).__rail();
+        const xAt = (y: number) => {
+          if (y <= rail[0].y) return rail[0].x;
+          if (y >= rail[rail.length - 1].y) return rail[rail.length - 1].x;
+          let lo = 0,
+            hi = rail.length - 1;
+          while (hi - lo > 1) {
+            const m = (lo + hi) >> 1;
+            if (rail[m].y <= y) lo = m;
+            else hi = m;
+          }
+          const a = rail[lo],
+            b = rail[lo + 1];
+          const t = b.y > a.y ? (y - a.y) / (b.y - a.y) : 0;
+          return a.x + (b.x - a.x) * t;
+        };
+        const read = (host: string) =>
+          [
+            ...document.querySelectorAll<SVGPathElement>(`#${host} [data-j]`),
+          ].map((p) => {
+            const svg = p.ownerSVGElement!;
+            const box = svg.getBoundingClientRect();
+            /* the drawn path's own first point, in page space */
+            const m = (p.getAttribute("d") || "").match(
+              /M(-?[\d.]+) (-?[\d.]+)/
+            );
+            const x = box.left + scrollX + parseFloat(m?.[1] ?? "NaN");
+            const y = box.top + scrollY + parseFloat(m?.[2] ?? "NaN");
+            return { x, y, railX: xAt(y), gap: Math.abs(x - xAt(y)) };
+          });
+        return { g: read("gatesFig"), s: read("signsFig") };
+      });
+      expect(r.g.length, `fig. 10 draws one stub per row at ${w}`).toBe(3);
+      expect(r.s.length, `fig. 11 draws one stub per branch at ${w}`).toBe(2);
+      for (const [fig, list] of [
+        ["10", r.g],
+        ["11", r.s],
+      ] as const)
+        list.forEach((j, i) => {
+          expect(
+            j.gap,
+            `fig. ${fig} junction ${i} at ${w}: stub starts at x ${j.x.toFixed(2)}, the rail is at ${j.railX.toFixed(2)}`
+          ).toBeLessThanOrEqual(0.5);
+        });
+    });
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE CONTROLS FOR G10c AND G10d.
+
+   Each one puts back a defect the round actually had and asserts the gate
+   sees it. They inject through `page.route`, which is the pattern G10b's own
+   control uses: the served `out/` is never edited, so a control can never
+   leave the owner's preview broken — the failure mode
+   `never-break-the-served-artifact` records. Every one asserts its injection
+   point was FOUND before drawing a conclusion, because a replace that matches
+   nothing fulfils the real page and a control that passes on the real page is
+   a control reporting that it works.
+   ══════════════════════════════════════════════════════════════════════════ */
+/* One handler, N edits, each reporting whether it matched. Two `page.route`
+   calls would NOT compose: handlers stack, and the later one re-fetches the
+   pristine document, so the earlier edit is thrown away. */
+async function inject(page: Page, edits: [string, string][]) {
+  const marks = edits.map(() => ({ hit: false }));
+  await page.route(
+    (u) => new URL(u).pathname === "/",
+    async (route) => {
+      const res = await route.fetch();
+      let src = await res.text();
+      edits.forEach(([from, to], i) => {
+        marks[i].hit = src.includes(from);
+        src = src.replace(from, to);
+      });
+      await route.fulfill({ response: res, body: src });
+    }
+  );
+  return marks;
+}
+
+test.describe("G10c / G10d · positive controls", () => {
+  test("control: the round-13 tail puts the rail back in ¶10's paragraph", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    /* 1375x800 and not his own seat: the clearance is not monotonic in width
+       and this is where the measured minimum was 10.47px.
+
+       BOTH MEASUREMENTS ARE REVERTED, and that is not belt and braces — it is
+       what the red was measured on. Put back one at a time and 1375x800 is
+       green either way: the waypoint alone reads 49.76px and ¶11's
+       blockquote-derived hold alone reads 26.63px, because a later hold makes
+       the corridor longer and the line is further right when it passes the
+       paragraph's foot. Revert both and it is 10.47px again, to the hundredth
+       of labrat's own reading of the same geometry. The two do different
+       work: the waypoint clears the words, the hold buys back the corridor
+       length that clearing them would otherwise cost. */
+    await page.setViewportSize({ width: 1375, height: 800 });
+    const VIA = "if (i !== 9 || stacked || !prose10) return null;";
+    const HOLD = "return i === 10 && !stacked && lead11";
+    const marks = await inject(page, [
+      [VIA, "if (i !== 9 || stacked || !prose10 || 1) return null;"],
+      [HOLD, "return i === 10 && !stacked && !lead11"],
+    ]);
+    await arrive(page);
+    expect(
+      marks.every((m) => m.hit),
+      `both injection points are still in the run: "${VIA}" / "${HOLD}"`
+    ).toBe(true);
+    const { out } = await inkClearance(page, ["#review .prose"]);
+    expect(
+      out[0].min,
+      "a corridor that crosses the paragraph must be caught"
+    ).toBeLessThan(G10C_FLOOR);
+  });
+
+  test("control: beat 9 back on the percentage table is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1456, height: 949 });
+    const TARGET = "i === 9 && !stacked && gatesPlate";
+    const [mark] = await inject(page, [
+      [TARGET, "i === 9 && !stacked && !gatesPlate"],
+    ]);
+    await arrive(page);
+    expect(
+      mark.hit,
+      `deskX's fig. 10 branch "${TARGET}" is still in the run`
+    ).toBe(true);
+    /* ¶10'S PROSE, NOT THE DOCKET. At 30% of 1456 the rail is x 437, inside a
+       prose column running 138 to 618 — which is `779098b`'s own geometry and
+       where its clearance measured 0.00. The plate is then 230px away and
+       reads perfectly clean, so asserting on #gatesFig would assert that the
+       control does nothing. */
+    const { out } = await inkClearance(page, ["#review .prose"]);
+    expect(
+      out[0].min,
+      "a rail holding its column inside the paragraph must be caught"
+    ).toBeLessThan(G10C_FLOOR);
+  });
+
+  test("control: a seating pass that does nothing leaves no stubs", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    await page.setViewportSize({ width: 1456, height: 949 });
+    const TARGET = "function seatFigures() {";
+    const [mark] = await inject(page, [
+      [TARGET, "function seatFigures() { if (1) return;"],
+    ]);
+    await arrive(page);
+    expect(mark.hit, `"${TARGET}" is still in the run`).toBe(true);
+    const n = await page.evaluate(
+      () =>
+        document.querySelectorAll("#gatesFig [data-j], #signsFig [data-j]")
+          .length
+    );
+    expect(
+      n,
+      "no seating means no stubs, and G10d's count is what sees it"
+    ).toBe(0);
   });
 });

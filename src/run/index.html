@@ -626,7 +626,7 @@ if (location.hash.length > 1) {
      frame. Above the rule, the live instrument (read locally · no server);
      below it, the filed record. */
   .bench{margin-top:1.1rem; border-top:1px solid var(--hair); padding-top:.8rem}
-  /* The filing header. `.schoolrec .shead` and `.signs .shead` put clay on
+  /* The filing header. `.schoolrec .shead` and `.bench .shead` put clay on
      their <i>; this one must not. FIGURES.md rule 5 is one clay moment per
      plate, and on this plate the clay is the parallel bar
      (`.brow.simd .bfill`). A second accent here and neither reads as the
@@ -1818,166 +1818,213 @@ if (location.hash.length > 1) {
   .litany .mline p em{font-style:normal; color:var(--clay)}
   .litany .mline .rct{font-family:var(--mono); font-size:.72rem; letter-spacing:.05em; color:var(--ink-2); margin-top:.35rem}
   .litany .mline .rct a{color:var(--pine)}
-  /* --gtc  the text column · --gpx the press's centre · --grh the row's height.
-     All three are read by calc() in the rules below, so the phone re-seats the
-     whole drawing by writing two numbers instead of re-authoring it. */
-  .gates{--gtc:230px; --gpx:72px; --grh:84px;
-    font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
-  /* 1px --ink, not a hairline: the head is the plate's own top rule and the
-     three beds below it are the same weight of statement. */
-  .gates .ghead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
-    padding-bottom:.6rem; border-bottom:1px solid var(--ink)}
-  .gates .ghead i{font-style:normal; color:var(--clay)}
-  /* THE REGISTER IS THREE PRESSES ON ONE LEVEL. The stamps used to sit in a
-     gutter with the line running down it, and the round-3 redraw stood the
-     three presses side by side and dropped the passed slip DOWN out of its
-     press — which the owner read as misaligned, and it was: a fall is what a
-     failed gate looks like, and this one passed.
-     Each gate is a row now, on its own bed, and the three beds are the only
-     horizontals on the plate. Nothing travels downward but the ram's strike.
-     The row separator keeps --hair and keeps it out of the drawing's own
-     selectors: check-palette scans those against the graphics floor, and a
-     text plate's row rule is furniture, not a drawn object. Its scan is a
-     regex over selector text, so naming the drawing's class in a comment
-     ABOVE this rule would hand it --hair to measure; see the note on the
-     scan's scope below, which is written where the next rule is safe. */
-  .gates .grow{position:relative; padding:0;
-    border-bottom:1px solid var(--hair)}
+  /* ═══════ fig. 10 · the docket, and the three tracks off the rail ═══════
+     --gtext is where every word in both night plates begins: 44px right of
+     the spine the page's own rail runs down. It is the one number G10c
+     measures against, and it is written once here rather than per rule.
+     --grh the row's height · --gjy the track's y inside a row, which IS the
+     junction's y and what seatFigures reads off the marker.
 
-  /* ————— fig. 10's drawing: .gbench — three presses on one level —————
-     A gate is a press and a verdict is a stamp, so the drawing is the press:
-     a frame standing on a bed, a ram hanging from its beam, and a slip of
-     paper under the ram. The ram comes down 17px, the verdict is on the slip,
-     the ram lifts. Two of the three slips stay under their rams against a
-     buffer stop — that is what a stopped gate looks like — and the one that
-     passed slides OUT of its press to the right and parks on the same bed,
-     where the line runs on dashed and unsigned, to a person.
-
-     ONE LEVEL, and it is the whole correction. The round-3 drawing stood the
-     three presses side by side and dropped the passed slip downward; the
-     owner read that as misaligned. A drop is the shape of a failure, and it
-     was drawn on the one gate that succeeded. Everything is horizontal now:
-     three beds at one y inside their rows, one direction of travel, and the
-     only vertical movement on the plate is the strike itself.
-
-     NOT a seventh figure, on purpose: no .figsvg, no role="img", no
-     aria-label. check-figures asserts exactly six drawings and asserts that
-     THIS plate's words stay its accessible content, so the apparatus joins
-     the argument and the docket keeps making it. Every rule below is written
-     with `.gbench` in the selector because check-palette scopes its night
-     scan to figure classes — extend that scan to .gbench, not to #gatesFig,
-     whose --hair row separators are text furniture and correct as they are.
-
-     Colour, under §4b rule 5 as amended: the bed, the frame and the ram are
-     STRUCTURE at --ink; the slip and the dashed tail are secondary at
-     --ink-2; the only colour is the three dispositions, pine and clay as
-     they already were. No element opacity anywhere except the stamps, which
-     switch between 0 and 1 — the gate cannot see a partial one, and that is
-     what has hidden four sub-floor strokes before.
-
-     DRAWN IN BOXES, NOT IN SVG. Every part of the press is an axis-aligned
-     rectangle, so a div lands each one on whole device pixels at any zoom,
-     and the press re-seats itself from `--gpx` with calc() instead of a
-     second set of authored coordinates for the phone. The <i> elements are
-     empty and carry no accessible content; the slip is not hidden, because
-     the verdict inside it is the row's own reading. */
-  .gates .grow.gbench{display:block; height:var(--grh)}
-  /* Baselines, measured in the browser at the shipped sizes (Newsreader 14
-     and 13): the name's sits at 34 and the reason's at 56, which is also the
-     bed. One row, one baseline — E1. */
-  .gates .gbench .gname{position:absolute; left:0; top:20px; width:var(--gtc);
-    font-family:var(--body); letter-spacing:0; word-spacing:.12em; color:var(--ink)}
-  .gates .gbench .gwhy{position:absolute; left:0; top:44px; width:var(--gtc)}
-  .gates .gbench .gpress{position:absolute; left:calc(var(--gtc) + 20px); right:0;
-    top:0; height:68px; overflow-x:clip}
-  /* ONE SET OF NUMBERS, WRITTEN ONCE. --gph is the frame's half width, --grw
-     the ram, --gpk how far the freed slip travels. Everything below is a
-     calc() off those and --gpx, so a narrower seat re-proportions the press
-     instead of overlapping its own parts — which is what a second hand-drawn
-     phone edition would eventually do. The slip is 10px inside the frame and
-     parks 8px clear of the right post: no two strokes ever share an x. */
-  .gates .gbench{--gph:58px; --grw:76px; --gpk:114px}
-  .gates .gbench .gbed,
-  .gates .gbench .gdash{position:absolute; top:55.3px; height:1.4px}
-  .gates .gbench .gbed{left:0; background:var(--ink);
-    width:calc(var(--gpx) + var(--gph) + 15.4px)}
-  /* [6,6], the run's dash for "not signed" — the day's rail owns [2,7] and
-     nothing else uses it. It starts at the parked slip's right edge. */
-  .gates .gbench .gdash{left:calc(var(--gpx) + 48px + var(--gpk)); right:0;
-    background-image:repeating-linear-gradient(to right,
-      var(--ink-2) 0 6px, transparent 6px 12px)}
-  .gates .gbench.passed .gbed{width:calc(var(--gpx) + 48px + var(--gpk))}
-  .gates .gbench .gpost,
-  .gates .gbench .gbeam,
-  .gates .gbench .grod,
-  .gates .gbench .gram,
-  .gates .gbench .gbuf{position:absolute; background:var(--ink)}
-  .gates .gbench .gpost{top:0; height:56px; width:1.4px}
-  .gates .gbench .gpost.pa{left:calc(var(--gpx) - var(--gph))}
-  .gates .gbench .gpost.pb{left:calc(var(--gpx) + var(--gph) - 1.4px)}
-  .gates .gbench .gbeam{top:0; left:calc(var(--gpx) - var(--gph));
-    width:calc(var(--gph) * 2); height:1.4px}
-  /* the rod hangs the ram off the beam and is the part that says the ram is a
-     moving thing: it stretches on the strike, so the ram never reads as
-     drifting free of its frame. --gs is the strike, 0 to 1, and it is the
-     only number scrubHow writes — the geometry stays here. */
-  .gates .gbench .grod{top:1.4px; left:calc(var(--gpx) - .7px); width:1.4px;
-    height:calc(4.6px + 17px * var(--gs, 0))}
-  .gates .gbench .gram{top:0; height:9px; width:var(--grw);
-    left:calc(var(--gpx) - var(--grw) / 2);
-    transform:translateY(calc(6px + 17px * var(--gs, 0)))}
-  /* the buffer stop the bed ends against, just outside the press: the way out
-     is barred, which is why the two halted slips are still under their rams */
-  .gates .gbench .gbuf{top:42px; width:1.4px; height:14px;
-    left:calc(var(--gpx) + var(--gph) + 14px)}
-  .gates .gbench .gslip{position:absolute; top:32px; left:calc(var(--gpx) - 48px);
+     THE ROW RULES ARE GONE, and that is a measurement, not a taste. They
+     drew --hair, which is 1.66:1 on the night field, and round 14 puts the
+     drawing's own line work at that same y: a separator and a track at one
+     weight in one row is two lines saying different things. The docket is
+     held together by its baselines now. */
+  /* --gtext is WRITTEN BY seatFigures ON THE FIGURE, in resolved px: it is
+     a function of a measurement — 44px right of the spine on a two-column
+     seat, 28 on the phone, never left of the plate's own edge — and a calc()
+     here would be a second author for one distance.
+     IT IS NOT DECLARED ON `.gates` OR `.signs`. A custom property declared on
+     a descendant SHADOWS the inherited one, so a fallback written here beat
+     the measurement and put every row's first letter three pixels from the
+     rail. The fallback belongs at the use site, where `var(--gtext, 44px)`
+     only applies if nothing above ever set it. */
+  .gates{--grh:146px; --gjy:110px; position:relative; color:var(--ink-2)}
+  .gates .grow{position:relative; padding:0; display:block; height:var(--grh)}
+  /* Baselines: the name's line box sits above the reason's, and the track
+     runs under both. One row, one baseline, and no box around anything. */
+  .gates .gname{position:absolute; left:var(--gtext, 44px); top:14px;
+    font-family:var(--body); font-size:var(--fs-label); line-height:1.4;
+    letter-spacing:0; word-spacing:.12em; color:var(--ink)}
+  .gates .gwhy{position:absolute; left:var(--gtext, 44px); top:36px;
+    font-family:var(--body); font-style:italic; font-size:var(--fs-small);
+    line-height:1.45; letter-spacing:0; word-spacing:.12em; color:var(--ink-2)}
+  /* THE SLIP IS THE ONLY BOX ON THE PLATE. A ruled stamp inside a ruled slip
+     was two rectangles of almost the same size; the slip is the paper and the
+     word is the ink on it, and the crooked angle is what says a hand put it
+     there. It sits on the name's line, at the docket's right edge, so the
+     three verdicts read as one column without a rule to make them one. */
+  /* THE SLIP ARRIVES WITH ITS WORD, not before it. Standing alone at the
+     docket's right edge an empty ruled box reads as a mistake rather than as
+     paper waiting, which is what it read as inside the old press. One object,
+     one switch, and the switch is 0 or 1 like every other opacity here. */
+  .gates .gslip{position:absolute; right:0; top:8px;
     width:96px; height:24px; border:1px solid var(--ink-2);
     display:flex; align-items:center; justify-content:center;
-    transform:translateX(calc(var(--gpk) * var(--gt, 0)))}
-  /* THE SLIP IS THE ONLY BOX. A ruled stamp inside a ruled slip was two
-     rectangles of almost the same size, one crossing the other's edge at
-     every rotation — the muddiest thing on the plate. The slip is the paper,
-     the word is the ink on it, and the crooked angle is what says a hand put
-     it there. */
-  .gates .gbench .gword{display:block; font-size:var(--fs-micro);
-    line-height:1.2; opacity:var(--gw, 0)}
-  .gates .gbench.passed .gword{color:var(--pine)}
-  .gates .gbench.declined .gword{color:var(--clay)}
+    opacity:var(--gw, 0)}
+  .gates .gword{display:block; font-family:var(--mono); letter-spacing:.04em;
+    word-spacing:normal; font-size:var(--fs-micro); line-height:1.2}
+  .gates .passed .gword{color:var(--pine)}
+  .gates .declined .gword{color:var(--clay)}
   /* a hand stamps crooked, and no two the same way */
-  .gates .gbench[data-g="0"] .gword{transform:rotate(-4deg)}
-  .gates .gbench[data-g="1"] .gword{transform:rotate(3deg)}
-  .gates .gbench[data-g="2"] .gword{transform:rotate(-2.5deg)}
-  /* where the line leaves the docket: 8px clear of the parked slip, and its
-     baseline sits 8px above the bed so the dashes never cross the word */
-  .gates .gbench .gtail{position:absolute; top:35px;
-    left:calc(var(--gpx) + 56px + var(--gpk));
-    font-family:var(--body); font-style:italic;
-    font-size:var(--fs-small); letter-spacing:0; color:var(--ink-2)}
-  /* no transition on the ram or the slip: the scrub IS the motion, and its
-     easing is in the curves scrubHow() runs, not in a duration that would
-     arrive a frame late behind the reader's own scroll. */
-  /* ¶11's plate. Same docket grammar as .gates. It carries NO signature
-     mark: nobody signed anything here. Two people wrote recommendations on
-     LinkedIn, in public, under their own names — so the plate is a citation
-     card, and drawing a "signature" for a named real person would be a
-     fabricated artifact attributed to them. It was, briefly, and it is not. */
-  .signs{font-family:var(--mono); font-size:.76rem; letter-spacing:.05em; color:var(--ink-2)}
-  .signs .shead{display:flex; justify-content:space-between; gap:1rem; color:var(--ink);
-    padding-bottom:.55rem; border-bottom:1px solid var(--hair-strong)}
-  .signs .shead i{font-style:normal; color:var(--clay)}
-  .signs .srow{display:grid; grid-template-columns:1fr auto; gap:.35rem .7rem;
-    padding:.85rem 0; border-bottom:1px solid var(--hair)}
-  .signs .srow .sname{color:var(--ink)}
-  .signs .srow .srole{grid-column:1 / -1; font-size:.7rem; color:var(--ink-2)}
-  .signs .srow .swhen{color:var(--ink-2); text-align:right; white-space:nowrap}
-  .signs .sclose{margin-top:1.1rem; padding-top:.7rem; border-top:1px solid var(--hair);
-    font-size:.7rem; line-height:1.9}
-  /* .35rem, not .7 — the unsigned tail now stands between the last row and
-     this key, and carries the air the old margin was providing. */
-  .gates .gleg{margin-top:.35rem; font-size:.7rem; line-height:1.9}
-  .gates .gclose{margin-top:1.1rem; padding-top:.7rem;
-    font-size:.76rem; line-height:1.9; color:var(--ink-2)}
+  .gates .grow[data-g="0"] .gword{transform:rotate(-4deg)}
+  .gates .grow[data-g="1"] .gword{transform:rotate(3deg)}
+  .gates .grow[data-g="2"] .gword{transform:rotate(-2.5deg)}
+  /* where the line leaves the docket. No top border: the close is a sentence
+     the rail passes, not a footer under a rule. */
+  /* FIG. 10'S HEIGHT IS BOUNDED BY THE RAIL'S ARRIVAL, and it took a
+     measurement to see it: `.beat-inner` centres its two columns, so every
+     pixel this plate grows lifts its TOP by half a pixel — into the stretch
+     where the line is still coming in from ¶09 and is well right of the
+     spine. A 48px band of ground under the last road read beautifully and
+     took the clearance at row 0's own name from 29.4px to 13.9 at 1366x768.
+     So the yard floor costs no height at all: it is drawn inside the last
+     road's own ballast band, between the bed and the row's foot. */
+  .gates .gclose{margin-top:1.2rem;
+    margin-left:var(--gtext, 44px); color:var(--ink-2); font-style:italic}
+  /* the captions of both night plates start on the same column as the rows.
+     Scoped to the plate so ¶11's quote attributions, which are figcaptions
+     inside the prose, keep their own margin. */
+  #review .plate>figcaption, #cosigners .plate>figcaption{
+    margin-left:var(--gtext, 44px)}
   .gates .gclose b{font-weight:400; color:var(--ink)}
+
+  /* ————— the junction markers, .gj and .sj —————
+     A JUNCTION IS A MEASUREMENT BEFORE IT IS A DRAWING. seatFigures reads
+     each marker's own layout top, asks the rail where it is at that y, and
+     builds that row's stub from the answer. The markers carry no ink, no
+     words and no accessible content; zero width so they cannot widen a row,
+     out of flow so they cannot add one. They are the single source for the
+     junction's y, so the stub and the gate that checks it cannot round the
+     same place two different ways. */
+  .gates .grow .gj{position:absolute; left:0; width:0; height:1.4px;
+    top:calc(var(--gjy) - .7px)}
+  .signs .srow .sj{position:absolute; left:0; width:0; height:1.4px;
+    top:calc(var(--sby) - .7px)}
+
+  /* ————— the line work of both plates —————
+     ONE SVG PER FIGURE, BUILT IN JS AT SEAT TIME, IN CSS PIXELS, HOLDING NO
+     WORDS. It is aria-hidden and it is deliberately NOT `.figsvg`: the count
+     of drawings on this page is six, and a docket's tracks are not a seventh
+     figure. `overflow:visible` is load-bearing on the phone, where the rail
+     runs in the 26px gutter and the stubs reach out of the plate to meet it.
+
+     EVERY COLOUR IS DECLARED HERE, never on an attribute and never from JS.
+     check-palette scans the stylesheet for `.gline` and `.sline` rules and
+     measures each token it finds against the night fields; a stroke set with
+     setAttribute is a stroke the gate cannot see. --hair appears nowhere
+     below on purpose: it is 1.66:1 on #2c2622 and these are drawn objects,
+     held to the graphics floor. */
+  .gline, .sline{position:absolute; left:0; top:0; overflow:visible;
+    pointer-events:none}
+  .gline{fill:none; stroke-linecap:butt}
+  .sline{fill:none; stroke-linecap:round}
+  /* THE TWO NIGHT PLATES DRAW IN THE WORKING STATIONS' TOKENS AND NOTHING
+     ELSE: --ink for structure, --ink-2 for what is secondary, and the only
+     colour is the decisive mark — the same discipline fig. 09 keeps, where a
+     whole plate of line work carries one clay ring at the thing that stopped
+     the run. No --hair anywhere below: it is 1.66:1 on the night field and
+     every stroke here is a drawn object held to the graphics floor. */
+  .gline .g-lane{stroke:var(--ink); stroke-width:1.1}
+  .gline .g-stub{stroke:var(--ink); stroke-width:1.4}
+  .gline .g-node{fill:var(--ink); stroke:none}
+  .gline .g-load{fill:var(--ink-2); stroke:none}
+  .gline .g-wrong{fill:var(--clay-g); stroke:var(--clay-g); stroke-width:1.2}
+  .gline .g-link{stroke:var(--ink); stroke-width:1.2; fill:none;
+    opacity:var(--link, 0)}
+  .gline .g-card{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .gline .g-tick{stroke:var(--ink); stroke-width:1.1; fill:none}
+  .gline .g-branch{stroke:var(--ink); stroke-width:1.1; fill:none}
+  .gline .g-blank{fill:var(--clay-g); stroke:none}
+  .gline .g-flag{fill:var(--clay-g); stroke:none; opacity:var(--flag, 0)}
+  .gline .g-claim{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .gline .g-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .gline .g-tag{stroke:var(--ink); stroke-width:1; fill:none}
+  .gline .g-legs{stroke:var(--ink-2); stroke-width:1}
+  .gline .g-buffer{stroke:var(--ink); stroke-width:1.4; fill:none}
+  .gline .g-strike{stroke:var(--clay-g); stroke-width:2}
+  .gline .g-spine{stroke:var(--ink-2); stroke-width:1.2}
+  /* fig. 11 · the lanes, the stops on them, and the day under both */
+  .sline .s-lane{stroke:var(--ink); stroke-width:1.1}
+  .sline .s-stub{stroke:var(--ink); stroke-width:1.4}
+  .sline .s-dash{stroke:var(--ink-2); stroke-width:1.1; stroke-dasharray:4 6}
+  .sline .s-node{fill:var(--ink); stroke:none}
+  .sline .s-card{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-leg{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-page{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .sline .s-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-quote{fill:var(--clay-g); stroke:none}
+  .sline .s-tick{fill:var(--ink); stroke:none; opacity:var(--tick, 0)}
+  .sline .s-mark{stroke:var(--ink); stroke-width:1.2; fill:none}
+  .sline .s-feed{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-field{fill:var(--pine); stroke:none}
+  .sline .s-gate{stroke:var(--pine); stroke-width:1.2; fill:none}
+  .sline .s-ring{stroke:var(--clay-g); stroke-width:1.6; fill:none}
+  .sline .s-pad{stroke:var(--ink-2); stroke-width:1.1; fill:none}
+  .sline .s-daylane{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-daytick{stroke:var(--ink-2); stroke-width:1}
+  .sline .s-daystop{fill:var(--ink); stroke:var(--ink); stroke-width:1.1}
+  .sline .s-spine{stroke:var(--ink-2); stroke-width:1.2}
+
+  /* ═══════ fig. 11 · two branches, seated against the words ═══════
+     --sby is the branch's y inside a row, and the junction's. --s0 is where
+     the first row starts and --s1 the gap to the second: seatFigures writes
+     both so each branch lands at the vertical centre of the quote its writer
+     wrote. The rows stay in NORMAL FLOW — an absolutely positioned row would
+     need the plate stretched, and a stretched plate puts the caption half a
+     column below the last branch. The fallbacks are what the phone uses,
+     where there is nothing to align to. */
+  /* --s0 is the FAR DISTANCE, and it is a measurement: seatFigures reads the
+     rail's own samples for the first y at which the line has finished
+     arriving on the dock's column, and seats the first road below it. A road
+     that meets a line still swinging is a road the line crosses. --sfoot is
+     the near ground under the last road, which is where the plate stops
+     being a diagram and becomes the night the pages came through. */
+  /* --s0 is the lead the rail's own samples measure; --sday is where the
+     day strip hangs under the last lane; --sfoot is the room the strip and
+     its clocks need under it. */
+  .signs{--srh:152px; --sby:104px; --s0:110px; --s1:0px; --sday:38px;
+    --sfoot:80px;
+    position:relative; padding-top:var(--s0); padding-bottom:var(--sfoot);
+    color:var(--ink-2)}
+  .signs .srow{position:relative; height:var(--srh)}
+  .signs .srow + .srow{margin-top:var(--s1)}
+  .signs .sname{position:absolute; left:var(--gtext, 44px);
+    top:calc(var(--sby) - 42px);
+    font-family:var(--body); font-size:var(--fs-note); line-height:1.4;
+    letter-spacing:0; word-spacing:.12em; color:var(--ink)}
+  /* the label under a mark: the stop's name in the text face, its clock in
+     mono, because a clock is a machine value and a station's name is not */
+  /* the stop's name is printed ON its running-in board and its clock stands
+     under the freight below it, which is where a yard puts both */
+  .signs .smark{position:absolute; left:var(--mx, 0px);
+    top:calc(var(--sby) - 44px); width:0; height:0;
+    display:flex; flex-direction:column; align-items:center;
+    white-space:nowrap}
+  /* ABSOLUTE, NOT A MARGIN. The stop's name picks up the label sweep's own
+     line height further down this sheet, so a margin measured against it
+     lands the clock wherever that sweep last changed. The clock belongs 26px
+     under the freight, which is a position, so it is written as one. */
+  /* 96px BELOW THE MARK'S OWN TOP, and relative to it. Written as
+     `calc(var(--sby) + 26px)` the offset was added to --sby twice, because
+     the box it positions in is itself seated at --sby minus seventy, and the
+     clocks landed a row's height low. */
+  /* the clock is printed ON the day strip at its own minute, which is a
+     position seatFigures measures off `CLOCKS` and writes relative to the
+     card it belongs to */
+  .signs .sclock{position:absolute; left:var(--cx, 0px); top:var(--cy, 96px);
+    transform:translateX(-50%)}
+  .signs .sstop{font-family:var(--body); font-size:var(--fs-micro);
+    color:var(--ink);
+    line-height:1.3; letter-spacing:0; word-spacing:.12em; color:var(--ink-2)}
+  .signs .sclock{font-family:var(--mono); font-size:var(--fs-micro);
+    line-height:1.3; letter-spacing:.04em; color:var(--ink-2)}
+  /* the reader's own digit, when the classifier has read one: the pad on
+     Shree's branch quotes glyph's cargo, and glyph's cargo prints the digit */
+  .signs .sdigit{position:absolute; left:var(--dx, 0px); top:var(--dy, 0px);
+    width:0; display:flex; justify-content:center;
+    font-family:var(--mono); font-size:var(--fs-label); line-height:1;
+    letter-spacing:0; color:var(--ink)}
 
   /* ————— fx: only the JS world hides pre-entrance ————— */
   .js body:not(.settled) [data-fx]{opacity:0}
@@ -1990,14 +2037,23 @@ if (location.hash.length > 1) {
     .cue .a{animation:none}
     .sig{clip-path:none} /* the settled world: the name is written */
     #manifest li{transform:none; opacity:1; transition:none}
-    /* dusk beats carry their own resting colors (the thread passes behind) */
+    /* dusk beats carry their own resting colors (the thread passes behind)
+
+       .bsign IS IN BOTH LISTS, and round 14 is where it arrived. ¶11 is a
+       night station between two night stations, and it was in neither rule:
+       a reduced-motion reader got the dawn paper and the DAY ink for the
+       references, with ¶10 and ¶12 dark either side of it. Nothing measured
+       it, because both rules named their beats by hand — so the derived
+       assertion in check-palette now binds the run's own night span (the
+       dusk-curtained beat through the last beat of the run) to these two
+       selectors, and a beat that is night in the arc and absent here is red. */
     .b6{background:#43372f}
-    .b7,.bhow,.b8{background:#2c2622}
+    .b7,.bhow,.bsign,.b8{background:#2c2622}
     /* clay/pine take the LIVE night-world text inks — the round-3 RM
        overrides (#e08a5f / #9dbfb0) measured Lc 43–56 as kicker and
        link text on these grounds, under the 60 floor; #f4b090/#aecfc0
        measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
-    .b6,.b7,.bhow,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0; --sun-g:#e0b25c;
+    .b6,.b7,.bhow,.bsign,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0; --sun-g:#e0b25c;
       --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.45);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
@@ -2125,27 +2181,30 @@ if (location.hash.length > 1) {
        26px gutter: one column width, plus the 34 that centres the 8px square
        on x 26. The line arrives straight instead of swinging to meet it. */
     .ladder li.approvebar .gsq2{left:calc(-56px - 34px)}
-    /* fig. 10 on the phone: the press moves under its own row rather than
-       beside it, and the row goes back to normal flow so a reason that wraps
-       pushes the drawing down instead of printing into it. Only --gpx moves;
-       the press itself is the same machine at the same size. */
-    .gates{--gpx:66px}
-    .gates .grow.gbench{height:auto; padding:.7rem 0 .6rem}
-    .gates .gbench .gname,
-    .gates .grow .gwhy{position:static; display:block; width:auto}
-    .gates .grow .gwhy{margin-top:.1rem}
-    .gates .gbench .gpress{position:relative; left:auto; right:auto; top:auto;
-      display:block; margin-top:.55rem}
-
+    /* BOTH NIGHT PLATES ON THE PHONE. The rail runs in the 26px gutter, so
+       the spine is OUTSIDE the plate and --spx is negative: the text offset
+       is clamped to the plate's own edge and the stubs reach out to meet the
+       line, which `.plate.bare`'s contain:layout permits. The rows keep
+       their absolute seats — a reason that wrapped into the drawing was the
+       old press's problem, and the drawing is under the text now — but they
+       are taller, because a 316px column wraps the longer reasons.
+       The stamp drops to the reason's line: 96px of slip and 150px of name
+       do not share a 316px row. */
+    .gates{--grh:184px; --gjy:140px}
+    .gates .gname{top:0}
+    .gates .gwhy{top:24px; right:0; width:auto}
+    .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
+    .signs{--srh:152px; --sby:104px; --sday:34px; --sfoot:74px}
+    .signs .sname{top:calc(var(--sby) - 46px)}
   }
-  /* 320. The press, the parked slip and the word "unsigned" do not all fit
-     inside a 222px plate, so the label goes and the dashed run stays: the
-     legend under the rows says "the line runs on dashed and unsigned, to a
-     person" in words, which is where a screen reader has always read it. */
+  /* 320. Both dockets grow one more line of row, because at 222px of plate
+     every reason wraps to two. Nothing is dropped: the drawing lays itself
+     out from the track's own length, so a narrower plate gets a tighter comb
+     and a shorter trap rather than a missing one. */
   @media (max-width:360px){
-    .gates{--gpx:50px}
-    .gates .gbench{--gph:50px; --grw:68px; --gpk:104px}
-    .gates .gbench .gtail{display:none}
+    .gates{--grh:210px; --gjy:166px}
+    .gates .gslip{top:86px}
+    .signs{--srh:164px; --sby:104px}
   }
 
   @media (min-width:821px){
@@ -2554,9 +2613,14 @@ h1[data-np-measuring] .np-ch {
      none to spare. Measured: recovers ~60px, which is what 1440x800 was
      short by. */
   @media (max-height: 880px){
-    /* fig. 10 gives back 8px a row on a short window; the press keeps its
-       own 68px, so only the air under the bed is spent. */
-    .gates{--grh:76px}
+    /* `.gates{--grh:76px}` STOOD HERE and was tuned to a drawing that no
+       longer exists: it gave back the air under the old press's bed. The
+       round-14 docket puts its track at --gjy inside the row, so 76 pulled
+       the junction out of the row it belongs to and collapsed fig. 10 to
+       307px at 1280x720 while --gjy stayed at 86. It is also the wrong
+       lever for what this block is for: the height a short window is short
+       by is ¶12's, and ¶10 is a different station three screens above it.
+       The rest of the block, which IS ¶12's, stays. */
     .b8{padding-top:2vh; padding-bottom:1.4vh}
     .endlight{margin:.7rem 0 .1rem; padding:3.9rem 0 .1rem}
     .endlight::before{top:3.5rem}
@@ -2601,7 +2665,7 @@ body{font-synthesis:none}
 /* machine values keep the mono and gain tabular figures where they sit in
    running text; everything a person reads moves to the text face. */
 .mono, .prose .prov, .kicker, .plate figcaption, .borrowed figcaption,
-.b8 footer, .signs .srole, .signs .sclose, .cosign figcaption, .sigrole,
+.b8 footer, .signs .sstop, .cosign figcaption, .sigrole,
 .nb, #manifest .foot, .handoff, .litany .mline .rct, .schoolrec .srow,
 .schoolrec .shead, .engcard header, .engrows li, .gates,
 .bench .bfoot, .bench .shead, .dawnrow, .dawnrun{
@@ -2615,7 +2679,7 @@ body{font-synthesis:none}
 /* …and the values inside them stay machine values. */
 .prose .prov b, .bench .brow span, .bench .bval, .gl li .gm, #manifest li .m,
 #manifest li .idx, .kicker i,
-.ladder li span, .gates .gbench span, #mclock, #conf, #fwd, #verdict,
+.ladder li span, #mclock, #conf, #fwd, #verdict,
 .engcard header i, .dawnrow a[href^="mailto"]{
   font-family:var(--mono); letter-spacing:.04em; word-spacing:normal;
   font-variant-numeric:normal;
@@ -2648,7 +2712,7 @@ body{font-synthesis:none}
   font-size:var(--fs-label); line-height:1.8; color:var(--ink)}
 .b8 footer .reach a{color:inherit; text-decoration:underline;
   text-underline-offset:3px; text-decoration-thickness:from-font}
-.signs .srole, .signs .sclose, .cosign figcaption, .cosign figcaption .rel,
+.signs .sstop, .cosign figcaption, .cosign figcaption .rel,
 .sigrole, .nb, #manifest .foot, .gates,
 .litany .mline .rct, .handoff, .schoolrec .srow, .schoolrec .shead,
 .engcard header{font-size:var(--fs-label); line-height:1.6}
@@ -2678,8 +2742,7 @@ body{font-synthesis:none}
    Grande in the serif ones; ↓ is Fragment Mono in mono and Apple Symbols in
    serif. Both are pinned to mono where they sit. (⟶ ↗ ↳ ⟲ need no rule:
    all four resolve to Apple Symbols in every stack, same advance.) */
-.gates .gleg .gtick, .cue .a{
-  font-family:var(--mono); letter-spacing:normal; word-spacing:normal}
+.cue .a{font-family:var(--mono); letter-spacing:normal; word-spacing:normal}
 
 /* ── controls are text a finger has to find ──────────────────────────────*/
 .padbar{flex-wrap:wrap; gap:.5rem; align-items:center}
@@ -2926,8 +2989,7 @@ body{font-synthesis:none}
    p.mono still carrying an inline font-size, and ¶13's Eliot
    figcaption, which sits outside .borrowed. All three are one-liners. */
 #cadWeek .grid i#slotWhen, #cadWeek .hd span, #cadWeek .tu{font-size:var(--fs-micro)}
-.gatecard .note, .gates .gleg, .gates .gclose, .signs .srow .srole,
-.signs .sclose, .cosign figcaption .rel,
+.gatecard .note, .gates .gclose, .cosign figcaption .rel,
 .bench .bfoot, .bench .shead span, .bench .shead a{
   font-family:var(--body); font-size:var(--fs-label); letter-spacing:0;
   word-spacing:.12em; line-height:1.6}
@@ -3065,9 +3127,7 @@ body{font-synthesis:none}
   font-family:var(--body); font-size:var(--fs-small); letter-spacing:0}
 .gl li b{font-size:var(--fs-label)}
 /* missed by the sweep above, found by the harness's effective-px pass */
-.padbar .st, .padbar .st i, .padbar .st span,
-.signs .shead span, .signs .shead span i, .signs .srow .sname,
-.signs .srow .swhen, #chWho, #chWhen, #chMeet,
+.padbar .st, .padbar .st i, .padbar .st span, #chWho, #chWhen, #chMeet,
 .gatecard p.mono, #automl .prose p.mono{
   font-size:var(--fs-micro)}
 .gatecard p.mono, #automl .prose p.mono{font-family:var(--body); font-size:var(--fs-small)}
@@ -3091,8 +3151,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
    of band while the letters read a touch larger. */
 .signs{font-family:var(--body); font-size:var(--fs-note);
   letter-spacing:0; word-spacing:.12em}
-.signs .shead span, .signs .shead span i, .signs .srow .sname{
-  font-family:var(--body); font-size:var(--fs-note);
+.signs .sname{font-family:var(--body); font-size:var(--fs-note);
   letter-spacing:0; word-spacing:.12em}
 /* 12.8 × 1.230 = 15.7, and 15 is the top of the scale */
 #mphase{font-family:var(--body); font-size:var(--fs-note);
@@ -3735,24 +3794,41 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             <p class="rct"><a href="https://ayush-yadav.com/projects/policybot/#v-policybot-1" target="_blank" rel="noopener">19/20 answers passed my quote check, unaudited · PolicyBot, a policy chatbot from my internship ⟶</a></p></div>
         </div>
       </div>
-      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <!-- fx WITHOUT x, y OR s, and that is round 14's rule for both night
+           plates. The rail now runs down this figure's own spine and the
+           three tracks are seated against the rail's measured samples; a
+           plate that arrives on a translate is a plate whose junctions were
+           measured somewhere it no longer is. It fades in; it does not move.
+           Same lesson the gate card learned two rounds ago. -->
+      <figure class="plate bare" data-fx="in .04 .30 | out .80 .97 | drift 0">
         <div class="gates" id="gatesFig">
-          <!-- THE PRESS IS DRAWN IN EMPTY BOXES. Each <i> is one rectangle of
-               the machine — bed, post, beam, rod, ram, buffer stop — seated by
-               calc() off the row's own --gpx, so the phone moves the whole
-               press by changing that one number. They carry no text and no
-               role, and nothing in here is aria-hidden: the slip holds the
-               verdict, and the verdict is the row's reading. The order is the
-               order they stack in, back to front. -->
-          <div class="grow gbench passed" data-g="0"><span class="gname">classifier gate · Applied</span>
+          <!-- THE DRAWING IS ONE SVG, BUILT AT SEAT TIME, AND IT HOLDS NO
+               WORDS. Every word in this figure is HTML: the gate's name, why
+               it fired, the stamp on it and the close. The svg carries the
+               line work — the tracks off the rail, the comb of ninety six,
+               the twenty answers, the trap and its sand, the claim car and
+               its buffer — because those are the counts, and a count drawn
+               as ninety six boxes is ninety six boxes to maintain.
+               It is NOT `.figsvg`: the drawing count on this page is six and
+               this is a docket's line work, not a seventh figure. Its colour
+               lives in the stylesheet under the drawing's own class, never on
+               an attribute, because that is where check-palette measures it.
+
+               THREE DIRECTIONS FROM ONE JUNCTION, and that is the whole
+               reading. What passes moves LEFT and couples to the line. What
+               is caught goes UP and RIGHT onto a trap stub and stops in
+               sand. What is retracted is pulled RIGHT, away from the line,
+               against a buffer, and its tag is struck. A reader who never
+               reads a stamp still sees one load join and two kept off. -->
+          <div class="grow passed" data-g="0"><span class="gname">classifier gate · Applied</span>
             <span class="gwhy">1 wrong in 96, above the 0.95 floor</span>
-            <span class="gpress"><i class="gbed"></i><i class="gdash"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><span class="gslip"><span class="gword">passed</span></span></span></div>
-          <div class="grow gbench declined" data-g="1"><span class="gname">quote check · PolicyBot</span>
+            <span class="gslip"><span class="gword">passed</span></span><i class="gj" aria-hidden="true"></i></div>
+          <div class="grow declined" data-g="1"><span class="gname">quote check · PolicyBot</span>
             <span class="gwhy">1 of 20 answers went past its sources</span>
-            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">caught</span></span></span></div>
-          <div class="grow gbench declined" data-g="2"><span class="gname">measured again · Glyph</span>
+            <span class="gslip"><span class="gword">caught</span></span><i class="gj" aria-hidden="true"></i></div>
+          <div class="grow declined" data-g="2"><span class="gname">measured again · Glyph</span>
             <span class="gwhy">a variance claim I had never measured</span>
-            <span class="gpress"><i class="gbed"></i><i class="gpost pa"></i><i class="gpost pb"></i><i class="gbeam"></i><i class="grod"></i><i class="gram"></i><i class="gbuf"></i><span class="gslip"><span class="gword">retracted</span></span></span></div>
+            <span class="gslip"><span class="gword">retracted</span></span><i class="gj" aria-hidden="true"></i></div>
           <p class="gclose">the next stop is a person.</p>
         </div>
         <figcaption>fig. 10 · three checks on my own work: one passed, two said no.</figcaption>
@@ -3760,13 +3836,28 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     </div>
   </section>
 
-  <!-- ¶ 11 · 22:32 · the references -->
-  <section id="cosigners" class="beat station bsign" data-beat="10">
+  <!-- ¶ 11 · 22:32 · the references
+
+       THIS STATION FLIPS, and ¶10 is the reason. The owner: "10, and 11
+       station, both have figures on right side". Two figure plates on the
+       same side in consecutive stops is the alternation breaking at the one
+       place the reader is most tired, and the rail has to cross the whole
+       page twice to visit both. ¶10 keeps the right, ¶11 takes the left.
+       NOT ¶10, and that was measured rather than chosen: ¶12 already puts
+       its object — the timetable, the rail's lane and the socket — on the
+       LEFT with its words on the right, so flipping ¶10 would put ¶09 and
+       ¶10 both on the left and move the collision one stop up. ¶11 on the
+       left hands the rail straight down the same column ¶12 ends in, which
+       is the route round 14 is built on: the line leaves fig. 10, crosses
+       the gutter once, and arrives already on the dock's own x.
+       The prose keeps every word; only the fx x signs mirror, the way ¶09's
+       do on its own flip. -->
+  <section id="cosigners" class="beat station flip bsign" data-beat="10">
     <div class="beat-inner">
       <div class="prose">
-        <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
-        <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
-        <p class="mutedln" data-fx="in .08 .29 x -6 | out .96 1.06 y -4 | drift 16">My internship manager, and my teammate on Glyph and the capstone.</p>
+        <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 11 · the references · <i>22:32</i></p>
+        <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Two people wrote this down in public<span style="color:var(--clay)">.</span></h2>
+        <p class="mutedln" data-fx="in .08 .29 x 6 | out .96 1.06 y -4 | drift 16">My internship manager, and my teammate on Glyph and the capstone.</p>
 
         <figure class="cosign" data-fx="in .10 .32 y 6 | out .94 1.04 y -5 | drift 14">
           <blockquote>&ldquo;From the start, he operated above intern level&hellip; He built data pipelines used to analyze Oracle Analytics Server usage&hellip; He understood intent, not just requirements.&rdquo;</blockquote>
@@ -3780,19 +3871,35 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
 
         <p class="prov mono" data-fx="in .18 .42 y 4 | drift 9">both written on LinkedIn, unedited except where an ellipsis marks a cut &middot; <a href="https://www.linkedin.com/in/ayush-yadav-developer/" target="_blank" rel="noopener">the recommendations, in full &#8599;</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .44 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
-        <div class="signs">
-          <div class="shead"><span>the references</span></div>
-          <div class="srow">
+      <figure class="plate bare" data-fx="in .04 .30 | out .80 .97 | drift 0">
+        <div class="signs" id="signsFig">
+          <!-- TWO BRANCHES, AND THE MARKS ON THEM ARE QUOTATIONS. Each one
+               redraws, at about twice the size, the freight the rail already
+               carries out of that station: the yard's merge, glyph's 28×28
+               pad, agentic automl's six gates and the ring on the seventh.
+               The stops are where that person saw the work, so the mark is
+               the day's own cargo rather than a new symbol for it, and the
+               names and clocks come from stations.ts.
+               NOBODY SIGNS. Two people wrote recommendations in public,
+               under their own names; a drawn signature for a named real
+               person is a fabricated artifact attributed to them. What
+               travels down each branch is the written page, drawn exactly
+               as the corridor cargo draws it, and it leaves as that cargo.
+               Shree's branch reads right to left in time: glyph at 15:23 at
+               the far end, agentic automl at 22:05 nearer the line. -->
+          <div class="srow" data-s="0">
             <span class="sname">Randall Vollen</span>
-            <span class="srole">his manager, station 03</span>
+            <span class="smark" data-m="0"><span class="sstop">the yard</span><span class="sclock" data-machine>07:52</span></span>
+            <i class="sj" aria-hidden="true"></i>
           </div>
-          <div class="srow">
+          <div class="srow" data-s="1">
             <span class="sname">Shree Chaturvedi</span>
-            <span class="srole">teammate, stations 06 and 09</span>
+            <span class="smark" data-m="0"><span class="sstop">glyph</span><span class="sclock" data-machine>15:23</span></span>
+            <span class="smark" data-m="1"><span class="sstop">agentic automl</span><span class="sclock" data-machine>22:05</span></span>
+            <i class="sj" aria-hidden="true"></i>
           </div>
         </div>
-        <figcaption>fig. 11 · each reference sits beside the station that person worked on.</figcaption>
+        <figcaption>fig. 11 · each reference joins the line from the stops where its writer saw me work.</figcaption>
       </figure>
     </div>
   </section>
@@ -4508,6 +4615,7 @@ const threadCv = $("thread"), tctx = threadCv.getContext("2d");
 let samples = [];              /* {x, y, L} — y and L both ascending */
 window.__rail = () => samples; /* probe hook: G10 reads the rail's shape off the real path */
 let pathLen = 0, gatePageY = 0, dockX = 0;
+let railAnchorX = [];          /* px per beat — buildThread's own x, for the seating pass */
 /* run 042 owns beats 0..11; ¶13 is the next run's first light */
 const RUN_BEATS = 12;
 /* how far into ¶13 the morning has fully arrived. The station is 300vh and
@@ -4565,10 +4673,29 @@ function sizeThread() {
 function buildThread() {
   /* twelve stops: arrival, who(N), the yard(F), applied(N), cadence(F),
      glyph(N), jetpack(F), lifequest(N), automl(F), the review(N),
-     the co-signers(N), gate. Normal stations keep the thread by the prose
-     margin; flips cross it. The last two x's walk IN toward the ladder
-     column — 30 → 27 → 24 — so the line arrives at the gate along the
-     margin, never slashing across the ledger card.
+     the co-signers(F), gate. Normal stations keep the thread by the prose
+     margin; flips cross it.
+
+     THE LAST THREE X'S ARE NO LONGER PERCENTAGES, and the reason is the
+     round-14 route. The old tail walked IN toward the ladder column — 30 →
+     27 → 24 — which kept the line off ¶12's ledger card but left it running
+     down the empty middle of ¶10 and ¶11, beside two figures it had nothing
+     to do with. It now runs THROUGH them:
+
+       ¶10 · the line comes down fig. 10's own spine, SPINE_IN inside the
+             plate, and the three checks meet it as tracks.
+       ¶11 · the line is already on the dock's x when it enters the flipped
+             station, so fig. 11's two branches arrive on the same lane the
+             gate ends in and the corridor into ¶12 is straight.
+
+     Both are MEASURED off the plates, not declared as a fraction of the
+     viewport, because `beat-inner` caps at 1180px: a percentage holds its
+     distance from the window's edge while the plate holds the column's, so
+     the two drift apart by half of everything over 1180 and the spine was
+     never on the spine at a wide seat. The percentages stay for every
+     station above, where the line's job is to keep clear of the prose.
+     A side effect worth the ink: the widest swing in the tail drops, since
+     ¶11 and ¶12 now share one x instead of stepping 27 → 24.
 
      One entry per beat, and that is load-bearing: this array is indexed by
      beat, so a short one makes stx[last] undefined, every anchor NaN from
@@ -4628,18 +4755,94 @@ function buildThread() {
             absTop(npEl) + npEl.offsetHeight * 0.12,
             absTop(npEl) + npEl.offsetHeight * 0.75)
     : beats[0].top + beats[0].h * 0.42;
-  const beatX = (i) =>
-    mobile ? RAIL_X_MOBILE : i === RUN_BEATS - 1 ? dockX : (stx[i] / 100) * vw;
+  /* px inside fig. 10's plate. The knob is 48–96: below 48 the spine sits on
+     the plate's own left edge and reads as a border, above 96 the row text
+     that starts 44px right of it loses its column. G10c measures the
+     clearance between the line and every line of ink in both plates, and
+     this is the number it moves. */
+  const SPINE_IN = 56;
+  const gatesPlate = $("gatesFig")?.closest("figure");
+  /* every seat but the phone asks where THIS beat's line runs; the phone has
+     one lane for the whole run and nothing to negotiate with */
+  const deskX = (i) =>
+    i === RUN_BEATS - 1 || i === 10
+      ? dockX /* ¶11 rides the dock's own line into ¶12 */
+      : i === 9 && !stacked && gatesPlate
+        ? absLeft(gatesPlate) + SPINE_IN /* ¶10 rides fig. 10's spine */
+        : (stx[i] / 100) * vw;
+  const beatX = (i) => (mobile ? RAIL_X_MOBILE : deskX(i));
+  /* ————— the crossing out of fig. 10 goes ROUND ¶10's words —————
+     Every beat holds its x from 18% to 52% of its own height and swings
+     through the corridor between, and the corridor's only other anchor is
+     its own midpoint. For eleven of the twelve crossings that is right. The
+     one out of ¶10 is measured, because round 14's rail-to-ink reading found
+     it grazing the paragraph it passes:
+
+       at 1375×800 it came within 10.47px of the glyphs of ¶10's last litany
+       line, and the clearance across eight two-column seats ran
+       31.5 / 15.8 / 13.4 / 0 / 5.3 / 2.3 / 9.1 as the window narrowed — NOT
+       monotonic, so no seat stands in for its neighbour and no fraction of a
+       station is safe at all of them.
+
+     THE CORNER OF THE PROSE IS THE ANCHOR. The crossing now passes through
+     the bottom right corner of ¶10's prose column, held off it by the gate's
+     own floor plus the hand's own wobble, and the corridor midpoint stands
+     down for it: that point IS the midpoint, and a second one beside it
+     makes a steeper piece between the two.
+
+     WHY THE CORNER AND NOT A LATER START, which was the first fix tried and
+     measured. Holding the spine until below the last line clears the words
+     too, but it shortens the corridor by a third, and a shorter corridor is
+     a steeper one: worst slope in corridors 7–11 went 0.994 → 1.360 and
+     worst bend24 12.04° → 21.07° (1280×720), against ceilings of 1.58 and
+     24.1°. Inside the gate, and the wrong direction — the round's whole ask
+     was a smoother transition, so the line goes round the corner instead and
+     keeps its length.
+
+     THE WOBBLE IS IN THE NUMBER, and leaving it out is how a clearance
+     computed off anchors reads 16px and renders 8px inside the column: the
+     hand's two sines reach 1.5·amp either side of the anchor at any y.
+     Everything is read in LAYOUT space at build, the same as dockX. */
+  const PROSE_GAP = 16;  /* px · G10c's floor, and the gate that reads it */
+  const ROW_LEAD = 56;   /* px · straight before fig. 11's first branch */
+  const amp = mobile ? 3 : stacked ? 8 : 16; /* the hand, see the wobble below */
+  const prose10 = $("review")?.querySelector(".prose");
+  const lead11 = $("cosigners")?.querySelector(".cosign blockquote");
+  /* ¶11's hold starts where fig. 11 does. Its two branches are seated at the
+     vertical centres of the quotes they belong to, so the first of them is
+     bound to the first blockquote and nothing else — and the line has to be
+     straight before a branch arrives on it, or the branch meets a diagonal.
+     Later than 18% wherever the quotes allow it, which is the corridor length
+     the crossing above spends on clearing ¶10's words. */
+  const holdA = (i) => {
+    const b = beats[i];
+    return i === 10 && !stacked && lead11
+      ? clamp(absTop(lead11) - ROW_LEAD, b.top + b.h * 0.18, b.top + b.h * 0.46)
+      : b.top + b.h * 0.18;
+  };
+  const holdB = (i) => beats[i].top + beats[i].h * 0.52;
+  /* the one measured waypoint. Null unless it is genuinely inside the
+     corridor AND genuinely a descent — an override that inverts the line's
+     direction is a corner, and a guard is cheaper than the gate that would
+     have to find it. */
+  const corridorVia = (i) => {
+    if (i !== 9 || stacked || !prose10) return null;
+    const y = absTop(prose10) + prose10.offsetHeight + PROSE_GAP;
+    const x = absLeft(prose10) + prose10.offsetWidth + PROSE_GAP + amp * 1.5;
+    return y > holdB(i) && y < holdA(i + 1) && x < beatX(i) && x > beatX(i + 1)
+      ? [x, y]
+      : null;
+  };
   const anchors = [];
   anchors.push([beatX(0), mobile ? beats[0].top + beats[0].h * 0.42 : firstY]);
   for (let i = 0; i < RUN_BEATS; i++) {
-    const b = beats[i], x = beatX(i);
-    if (i > 0) anchors.push([x, b.top + b.h * 0.18]);
-    anchors.push([x, b.top + b.h * 0.52]);
+    const x = beatX(i);
+    if (i > 0) anchors.push([x, holdA(i)]);
+    anchors.push([x, holdB(i)]);
     if (i < RUN_BEATS - 1) {
-      const nb = beats[i + 1];
-      anchors.push([lerp(x, beatX(i + 1), 0.5),
-        lerp(b.top + b.h * 0.52, nb.top + nb.h * 0.18, 0.5)]);
+      const via = corridorVia(i);
+      anchors.push(via ?? [lerp(x, beatX(i + 1), 0.5),
+        lerp(holdB(i), holdA(i + 1), 0.5)]);
     }
   }
   /* Terminate at the gate dock (the clay square in the ladder). The line used
@@ -4668,8 +4871,11 @@ function buildThread() {
 
      WHY SAMPLED BY LENGTH. 22px steps in y were fine while the line was
      near vertical; on a swing they became 50px chords, visible as a
-     polyline. Each step is now at most STEP px of path. */
-  const amp = mobile ? 3 : stacked ? 8 : 16;
+     polyline. Each step is now at most STEP px of path.
+
+     `amp` is declared with the anchors above, because the corridor-9 waypoint
+     has to hold its clearance against the hand's full reach and a second copy
+     of the number here is the copy that would drift. */
   /* SMOOTHSTEP, and the linear ramp it replaces is why the old arrival had a
      corner in it: the wobble's amplitude changed slope discontinuously at
      exactly gatePageY - APPROACH, which the rail reads as a kink because the
@@ -4704,8 +4910,18 @@ function buildThread() {
   }
   put(anchors[anchors.length - 1][0], anchors[anchors.length - 1][1]);
   pathLen = L;
+  /* THE ANCHORS ARE PUBLISHED, not recomputed downstream. seatFigures needs
+     the exact x this pass used, and two places deriving it from the layout
+     is how the figure and the line come to disagree at one seat and agree at
+     every other — the class of defect ¶12's dock spent three rounds on. */
+  railAnchorX = Array.from({ length: RUN_BEATS }, (_, i) => beatX(i));
+  window.__world.railAnchors = railAnchorX.map((x, i) => ({ i, x: +x.toFixed(1) })); /* probe hook */
   sizeThread();
   refreshInk();
+  /* the rail moved, so the two night plates re-seat on it. Here rather than
+     at the six call sites: every one of them wants it, including the dock
+     watchdog's rebuild, and a seventh caller added later would not know. */
+  seatFigures();
 }
 
 /* ————— the halt ring —————
@@ -4774,6 +4990,17 @@ function lenAtY(y) {
   const i = idxAtY(y), a = samples[i], b = samples[i + 1];
   return lerp(a.L, b.L, b.y > a.y ? (y - a.y) / (b.y - a.y) : 0);
 }
+/* the rail's x at a page y — what a junction has to reach. lenAtY's
+   interpolation on the other axis; samples are STEP px apart, so the lerp
+   between two of them IS the path rather than an approximation of it. */
+function xAtY(y) {
+  if (!samples.length) return 0;
+  const last = samples[samples.length - 1];
+  if (y <= samples[0].y) return samples[0].x;
+  if (y >= last.y) return last.x;
+  const i = idxAtY(y), a = samples[i], b = samples[i + 1];
+  return lerp(a.x, b.x, b.y > a.y ? (y - a.y) / (b.y - a.y) : 0);
+}
 function pointAtLen(L) {
   L = clamp(L, 0, pathLen);
   let lo = 0, hi = samples.length - 1;
@@ -4781,6 +5008,135 @@ function pointAtLen(L) {
   const a = samples[lo], b = samples[hi];
   const t = b.L > a.L ? (L - a.L) / (b.L - a.L) : 0;
   return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) };
+}
+
+/* ————— seating the two night plates on the rail —————
+   ROUND 14'S ROUTE IS ONLY HALF IN buildThread. The line now runs down fig.
+   10's spine and fig. 11's dock lane, and the half that makes that read
+   rather than collide is the figure knowing where the line is: `--spx` is
+   the spine's x INSIDE the plate, and each junction's record carries `jx`,
+   where the rail actually is at that junction's own y, wobble included.
+
+   IT IS A MEASUREMENT AT EVERY SEAT, not two authored editions. The spine is
+   56px inside fig. 10's plate on a wide seat, about 230 inside fig. 11's
+   (the socket's x falls in the flipped station's left column), and negative
+   on the phone, where the lane is 26px and the plate starts further in. One
+   derivation covers all three, and it is `railAnchorX` — the x buildThread
+   itself used, never re-derived here.
+
+   LAYOUT SPACE, never a client rect. Both plates carry an entrance
+   transform, and a junction measured mid-flight bakes that frame's translate
+   into the geometry until something happens to rebuild it. Same reason ¶12's
+   dock is read with absTop.
+
+   PHASE A DRAWS NOTHING, and `stubX` is published null rather than echoed
+   back from `railX` for a reason: a record that agrees with itself by
+   construction is a gate that cannot fail, and G10d's whole job is to catch
+   a stub that has drifted off the line. It has to recompute the rail's x
+   from `__rail()` at the junction's y and compare THAT to the drawn path. */
+const RAILLESS = () => RM;   /* Tier 0 (§13) adds `|| beat === 9` here, and nowhere else */
+const TEXT_IN = { wide: 44, phone: 28 }; /* px right of the spine, G10c's subject */
+/* the caches the scrubs read: one entry per junction, in row order */
+let J10 = [], J11 = [], EXIT11 = 0;
+function seatFigures() {
+  if (!samples.length || !beats.length) return;
+  const junctions = [];
+  const seat = (hostId, markSel, beat, fig) => {
+    const host = $(hostId), plate = host?.closest("figure");
+    if (!plate || railAnchorX[beat] === undefined) return [];
+    const px = absLeft(plate), spx = railAnchorX[beat] - px;
+    /* THE PLATE'S LEFT IS AN INTEGER AND ITS RENDERED LEFT IS NOT. absLeft
+       sums offsetLeft, which rounds, so a plate sitting at 640.62 is read as
+       641 and every stub inside it is drawn that much off the line it claims
+       to join — measured at 1375×800 as 0.77px, which G10d's half pixel
+       catches and a reader never would. The anchors stay in layout space,
+       because that is what survives an entrance transform; only the
+       DRAWING's own offset takes the residue, and it is clamped to ±2 so a
+       transform reintroduced on this plate one day cannot bake itself in
+       through this line instead of failing loudly. */
+    const raw = plate.getBoundingClientRect().left + scrollX - px;
+    const sub = Math.abs(raw) < 2 ? raw : 0;
+    plate.style.setProperty("--spx", spx.toFixed(1) + "px");
+    /* CLAMPED INTO THE PLATE. On the phone the rail runs in the 26px gutter
+       and the spine is OUTSIDE the figure, so spx is about -30 and the raw
+       offset would set the first letter of every row two pixels past the
+       plate's left edge. The stubs may reach into the gutter; the words may
+       not. */
+    plate.style.setProperty("--gtext",
+      Math.max(0, spx + (mobile ? TEXT_IN.phone : TEXT_IN.wide)).toFixed(1) + "px");
+    plate.classList.toggle("railless", RAILLESS(beat));
+    /* the marker IS the track's seat, so the junction's y and the stub's y
+       are one number read once — offsetTop rounds, and two reads of the same
+       place rounding differently is the half pixel G10d would report. */
+    return [...host.querySelectorAll(markSel)].map((m, i) => {
+      const y = absTop(m) + m.offsetHeight / 2;
+      const railX = xAtY(y);
+      const rec = { fig, i, y: +y.toFixed(1), railX: +railX.toFixed(1),
+        jx: +(railX - px - sub).toFixed(2), spx: +spx.toFixed(1), stubX: null };
+      junctions.push(rec);
+      return rec;
+    });
+  };
+  /* ¶11'S FIRST ROAD IS SEATED WHERE THE LINE HAS FINISHED ARRIVING, and
+     that is a measurement off the rail's own samples rather than a fraction
+     or a quote's position. The crossing out of fig. 10 is still settling onto
+     the dock's column at the top of this plate; a road drawn up there is a
+     road the line cuts across, and G10c would say so. So the lead is the
+     distance from the plate's top to the first sample whose x is inside the
+     hand's own band around the column, plus a margin — and that lead is not
+     dead space, it is the far distance the drawing opens on.
+     Seated BEFORE the junctions are read, because it moves the rows. */
+  const signsHost = $("signsFig");
+  if (signsHost) {
+    const plate11 = signsHost.closest("figure");
+    const px11 = absLeft(plate11), top11 = absTop(signsHost);
+    const col = railAnchorX[10] ?? px11;
+    let lead = 56;
+    for (const smp of samples) {
+      if (smp.y < top11) continue;
+      if (Math.abs(smp.x - col) <= 26) { lead = smp.y - top11 + 24; break; }
+      if (smp.y > top11 + 320) break;
+    }
+    signsHost.style.setProperty("--s0", clamp(lead, 56, 176).toFixed(1) + "px");
+  }
+  J10 = seat("gatesFig", ".grow .gj", 9, 10);
+  J11 = seat("signsFig", ".srow .sj", 10, 11);
+  /* the drawings are rebuilt from the seat they were just given: the track's
+     length, the spine's x and each row's junction are all measurements, so
+     there is nothing to re-author when the window changes. */
+  buildGates(J10);
+  buildSigns(J11);
+  /* WHERE THE PAGES HAVE LEFT, and it is bound to the FIGURE rather than to
+     a fraction of the beat or to the last junction. 0.74 of ¶11 is above
+     both roads on the phone, where the plate sits under the prose: measured
+     at 390×844 that fraction lands 130px before the first road and the pages
+     would be switched off before either had coupled. The last junction plus
+     a margin is no better the other way — measured at 1456×949 it emptied
+     both roads by 28% of the station's scroll, which is most of the dwell,
+     and a figure whose whole subject is two pages joining the line spent
+     that dwell with neither page on it.
+     So they ride until the drawing itself is leaving: the plate's own foot,
+     plus enough of a screen that the figure is well above the reading line
+     by the time they go. The floor keeps the coupling visible on any seat
+     where the plate is short. */
+  const plate11 = $("signsFig")?.closest("figure");
+  const foot11 = plate11 ? absTop(plate11) + plate11.offsetHeight : 0;
+  EXIT11 = Math.max(
+    J11.length ? J11[J11.length - 1].y + 140 : 0,
+    foot11 ? foot11 + vh * 0.45 : beats[10].top + beats[10].h * 0.74
+  );
+  signs.exit = EXIT11;
+  window.__world.junctions = junctions;      /* probe hook */
+  window.__world.exit11 = +EXIT11.toFixed(1);
+  /* the frame the reader is on, redrawn onto the drawing that just replaced
+     the old one — a rebuild mid-scroll otherwise leaves both plates at u 0 */
+  if (booted) {
+    if (RM) { scrubGates(Infinity); scrubSigns(Infinity, true); }
+    else {
+      const ty = window.__world.token ? window.__world.token.y : scrollY + vh * 0.55;
+      scrubGates(ty); scrubSigns(ty);
+    }
+  }
 }
 
 /* travellers: freight ABOUT a station ARRIVES AT that station. A corridor
@@ -5947,53 +6303,468 @@ function scrubPath(p) {
   }
 }
 
-/* The review — three presses on one level. Each row's ram comes down on its
-   slip, the verdict is on the slip, the ram lifts; the one gate that passed
-   then slides its slip out of the press to the right, onto the same bed. The
-   rows carry the words, the machine is markup, and the only thing this writes
-   is one transform per moving part — so there is no settled frame for it to
-   fail to build, and nothing here is a gauge.
+/* ═══════════════════════════════════════════════════════════════════════
+   THE TWO NIGHT PLATES, DRAWN AGAINST THE RAIL.
 
-   SCRUBBED BY THE PLATE'S OWN POSITION, not by the beat. ¶10 is a tall
-   station and its beat progress spends most of its range with the plate off
-   screen: the presses used to finish striking before the drawing was in view.
-   `s` runs as the plate's centre travels from 0.82vh to 0.5vh, which is the
-   window a reader actually watches it in — the same correction fig. 08 took.
-   p >= 1 is the settled and reduced-motion frame, and it is the truthful one:
-   every gate decided, and the passed slip is out. */
-const how = {
-  plate: document.getElementById("gatesFig"),
-  rows: [...document.querySelectorAll("#gatesFig .grow.gbench")].map((row) => ({
-    el: row,
-    /* only one slip ever travels, and it is the one that was let out; how FAR
-       it travels is --gpk, in the stylesheet, so the phone re-seats it */
-    slide: row.classList.contains("passed") ? 1 : 0,
-  })),
+   Both figures are built here, in CSS pixels, from three numbers the seating
+   pass has already measured: the plate's own width, `--spx` (where the page's
+   rail runs INSIDE the plate) and each row's junction y. There are no
+   authored editions. A 316px phone plate and a 632px laptop plate run the
+   same code with a different track length, because the alternative — two sets
+   of coordinates for one drawing — is two drawings to keep true.
+
+   WHAT IS SVG AND WHAT IS NOT. The svg holds line work and nothing else: no
+   text node is ever created in it. Every word a reader meets is HTML, styled
+   by the stylesheet, found by check-figures and read by a screen reader in
+   document order. Colour is declared in the stylesheet, under each
+   drawing's own class, for the same reason: a stroke set with setAttribute
+   is a stroke check-palette cannot measure, and this page has lost four
+   strokes to exactly that.
+
+   THE COUNTS ARE DRAWN AS COUNTS. Ninety six ticks are ninety six ticks, one
+   of them tilted; twenty answers are twenty outlines. A reader who counts
+   them gets the number the row claims, which is the whole discipline of this
+   page — and it is why the comb's pitch, not its count, is what narrows.
+   ═══════════════════════════════════════════════════════════════════════ */
+const NS = "http://www.w3.org/2000/svg";
+const el = (n, a) => {
+  const e = document.createElementNS(NS, n);
+  for (const k in a) e.setAttribute(k, a[k]);
+  return e;
 };
-function howWindow() {
-  if (!how.plate) return 1;
-  const r = how.plate.getBoundingClientRect();
-  return clamp((vh * 0.82 - (r.top + r.height / 2)) / (vh * 0.32), 0, 1);
+/* a polyline path from flat [x,y,…] pairs — the one shape this file needs */
+const pth = (cls, pts, extra) =>
+  el("path", { class: cls, d: pts.reduce((d, v, i) =>
+    d + (i % 2 ? " " : i ? " L" : "M") + (+v).toFixed(2), ""), ...extra });
+const hline = (cls, x0, x1, y) => pth(cls, [x0, y, x1, y]);
+
+/* ————— the plate's own pen —————
+   THE REGISTER IS THE WORKING STATIONS', and the owner ruled it so: figs. 03,
+   04, 06 and 09 are crisp plate drawings, and ¶13's sketch ink — the hatched
+   massifs, the stippled ground, the solid silhouettes — belongs to the last
+   page and stays there. A night plate's richness is INFORMATION DENSITY and
+   structure, which is what fig. 09 has: a registry of twelve named tools, six
+   numbered cells each with its tick, seven phases on a rail, a dashed
+   boundary that names itself, and exactly one clay mark at the thing that
+   stopped. Not tone.
+
+   So the pen here is short and hard: straight segments, rectangles, small
+   filled squares for an enumerated item, one accent. Everything below returns
+   a `d` string and the caller batches a whole family into ONE path, which is
+   what keeps a field of ninety six to a single element. */
+const n1 = (v) => (+v).toFixed(1);
+const seg = (x0, y0, x1, y1) => `M${n1(x0)} ${n1(y0)}L${n1(x1)} ${n1(y1)}`;
+const box = (x, y, w, h) => `M${n1(x)} ${n1(y)}h${n1(w)}v${n1(h)}h${n1(-w)}z`;
+/* fig. 09's own bullet: the mark an enumerated item wears on these plates */
+const dot = (x, y, r) => `M${n1(x - r)} ${n1(y - r)}h${n1(r * 2)}v${n1(r * 2)}h${n1(-r * 2)}z`;
+const dPath = (cls, d, extra) => (d ? el("path", { class: cls, d, ...extra }) : null);
+const add = (g, node) => { if (node) g.appendChild(node); };
+
+/* fig. 10 and fig. 11 both hang their drawing off the same host: one svg,
+   absolutely over the plate's content box, rebuilt whenever the seat moves */
+function figSvg(host, cls, w, h) {
+  let svg = host.querySelector("." + cls);
+  if (!svg) {
+    svg = el("svg", { class: cls, "aria-hidden": "true", focusable: "false" });
+    host.insertBefore(svg, host.firstChild);
+  }
+  svg.setAttribute("width", Math.max(1, Math.round(w)));
+  svg.setAttribute("height", Math.max(1, Math.round(h)));
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  return svg;
 }
-function scrubHow(p) {
-  const s = p >= 1 ? 1 : howWindow();
-  how.rows.forEach((row, i) => {
-    const u = clamp((s - 0.22 * i) / 0.56, 0, 1);
-    /* the strike accelerates into the slip and the lift eases off it: a ram
-       falls and is drawn back up, and the two are not the same curve */
-    const down = clamp((u - 0.3) / 0.12, 0, 1);
-    const up = clamp((u - 0.42) / 0.16, 0, 1);
-    const gs = clamp(down * down - (1 - Math.pow(1 - up, 3)), 0, 1);
-    const gt = row.slide * smooth((u - 0.66) / 0.26);
-    const key = gs.toFixed(3) + "|" + gt.toFixed(3) + "|" + (u >= 0.42 ? 1 : 0);
-    if (key === row._k) return;
-    row._k = key;
-    row.el.style.setProperty("--gs", gs.toFixed(3));
-    row.el.style.setProperty("--gt", gt.toFixed(3));
-    /* 0 or 1, never between: a partial opacity is a stroke the palette gate
-       cannot see, and this page has lost four strokes to one before. */
-    row.el.style.setProperty("--gw", u >= 0.42 ? "1" : "0");
+
+/* ————— fig. 10 · the bench: three checks, their evidence, their disposition
+   THE PLATE IS READ THE WAY FIG. 09 IS READ: each check is a lane, the lane
+   carries the evidence ENUMERATED so a reader can count it, and the decisive
+   mark is the only clay on the plate. What was drawn as a thin line with a
+   few small marks on it is now a field.
+
+     Applied    ninety six labelled emails, drawn as ninety six, four ranks
+                of twenty four; the one that was wrong is struck in clay, and
+                the lane runs on past the plate's edge because nothing
+                stopped it.
+     PolicyBot  twenty answers as twenty numbered cells in two ranks, ticked;
+                the twentieth has no tick, and a branch rises from it to the
+                answer that was served instead — a card whose text is one
+                clay bar, because the flagged answer never went out and was
+                replaced with a refusal. The lane ends at that branch.
+     Glyph      one claim card with its tag, drawn back along the lane to a
+                stop, the tag struck. The lane ends at the stop.
+
+   Each lane ENDS WHERE ITS STORY DOES, and that is what keeps the three from
+   reading as three identical rules across the plate. */
+const gates = { rows: [], svg: null, spx: 0 };
+function buildGates(js) {
+  const host = $("gatesFig");
+  const plate = host?.closest("figure");
+  if (!plate) return;
+  const W = host.clientWidth;
+  const H = host.offsetHeight;
+  if (W < 40 || H < 40) return;
+  const cs = getComputedStyle(host);
+  const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
+  const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
+  const A = Math.max(120, W - T - 8);          /* the lane's own length */
+  const tight = A < 460;
+  const svg = figSvg(host, "gline", W, H);
+  gates.svg = svg; gates.spx = spx; gates.rows = [];
+  const rows = [...host.querySelectorAll(".grow")];
+  const railless = plate.classList.contains("railless");
+  if (railless && rows.length)
+    add(svg, dPath("g-spine", seg(spx, rows[0].offsetTop + 8, spx,
+      rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8)));
+  rows.forEach((row, i) => {
+    const g = el("g", {});
+    const mark = row.querySelector(".gj");
+    const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
+    const D = T + (tight ? 22 : 34);            /* where the evidence begins */
+    const rec = { el: row, g, y, i, pageY: js?.[i]?.y ?? y };
+    const stub = dPath("g-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
+    stub.setAttribute("data-j", i);
+    add(g, stub);
+    /* the junction: where the rail takes this lane's answer */
+    add(g, dPath("g-node", dot(T, y, 3)));
+    if (i === 0) {
+      /* ninety six, four ranks of twenty four, and the one that was wrong */
+      const cols = 24, px = tight ? 7.4 : 9.6, pyy = tight ? 8 : 9.4;
+      const r = tight ? 1.5 : 1.9;
+      const rank = el("g", { class: "g-set" });
+      let d = "", w = "", x1 = D;
+      for (let k = 0; k < 96; k++) {
+        const c = k % cols, rk = (k / cols) | 0;
+        const x = D + c * px, yy = y - 12 - (3 - rk) * pyy;
+        if (k === 60) w = dot(x, yy, r + 0.4) +
+          seg(x - r - 3, yy - r - 3, x + r + 3, yy + r + 3) +
+          seg(x - r - 3, yy + r + 3, x + r + 3, yy - r - 3);
+        else d += dot(x, yy, r);
+        x1 = x;
+      }
+      add(rank, dPath("g-load", d));
+      add(rank, dPath("g-wrong", w));
+      add(rank, dPath("g-legs", seg(D, y - 12.4, D, y)));
+      g.appendChild(rank);
+      /* the lane runs ON, past the plate's own edge */
+      add(g, dPath("g-lane", seg(T, y, T + A + 8, y)));
+      add(g, dPath("g-lane", seg(T + A, y - 4, T + A + 8, y) + seg(T + A, y + 4, T + A + 8, y)));
+      add(g, dPath("g-link", box(T + 9, y - 4.5, 8, 9)));
+      rec.comb = rank;
+    } else if (i === 1) {
+      /* twenty answers, two ranks of ten, nineteen ticked */
+      const cw = tight ? 15 : 21, ch = tight ? 8 : 9;
+      const px = cw + (tight ? 3 : 4), pyy = ch + 6;
+      const keep = el("g", { class: "g-set" });
+      let out = "", tk = "";
+      for (let k = 0; k < 19; k++) {
+        const c = k % 10, rk = (k / 10) | 0;
+        const x = D + c * px, yy = y - 16 - (1 - rk) * pyy;
+        out += box(x, yy - ch, cw, ch);
+        tk += seg(x + cw - 7, yy - ch / 2, x + cw - 5, yy - 2.5) +
+          seg(x + cw - 5, yy - 2.5, x + cw - 2, yy - ch + 2);
+      }
+      add(keep, dPath("g-card", out));
+      add(keep, dPath("g-tick", tk));
+      add(keep, dPath("g-legs", seg(D, y - 16, D, y)));
+      g.appendChild(keep);
+      const lane1 = T + A * (tight ? 0.9 : 0.78);
+      add(g, dPath("g-lane", seg(T, y, lane1, y)));
+      add(g, dPath("g-lane", seg(lane1, y - 5, lane1, y + 5)));
+      /* the branch, and the answer that was served instead */
+      const bx = D + 9 * px + cw + (tight ? 10 : 18);
+      const by = y - 16 - pyy - (tight ? 16 : 22);
+      add(g, dPath("g-branch", seg(bx - 10, y, bx, y) +
+        seg(bx, y, bx + 14, by + 10) + seg(bx + 14, by + 10, bx + 26, by + 10)));
+      add(g, dPath("g-node", dot(bx - 10, y, 2.4)));
+      const rw = tight ? 34 : 46;
+      add(g, dPath("g-card", box(bx + 26, by, rw, 20)));
+      add(g, dPath("g-blank", box(bx + 31, by + 6, rw - 10, 3.6) +
+        box(bx + 31, by + 12, rw - 18, 3.6)));
+      /* the twentieth, un-ticked, standing where its tick is not */
+      const cx = D + 9 * px, cy = y - 16;
+      const caught = el("g", { class: "g-caught" });
+      add(caught, dPath("g-card", box(cx, cy - ch, cw, ch)));
+      add(caught, dPath("g-flag", box(cx + cw - 5, cy - ch - 5, 5, 5)));
+      g.appendChild(caught);
+      rec.keep = keep; rec.caught = caught;
+      /* IT STOPS AT THE CARD, NOT ON IT. The first cut sent the caught cell
+         `bx + 26 - cx` to the right, which is the card's own left edge PLUS
+         its width: the cell came to rest across the replacement's two clay
+         bars, and since every reduced-motion reader gets the settled frame,
+         that is the frame most readers get. It rides the branch up to the
+         level of the served card and halts against its edge. */
+      rec.lift = y - 16 - (by + 10);
+      rec.run = Math.max(24, bx + 26 - cw - cx);
+    } else {
+      /* the claim, its tag, and the stop it was drawn back to */
+      const cw = tight ? 62 : 96, ch = tight ? 24 : 32;
+      const car = el("g", { class: "g-caraft" });
+      add(car, dPath("g-claim", box(D, y - 8 - ch, cw, ch)));
+      let rl = "";
+      for (let k = 0; k < 3; k++)
+        rl += seg(D + 7, y - 8 - ch + 8 + k * 8, D + cw - 9 - k * (tight ? 9 : 16),
+          y - 8 - ch + 8 + k * 8);
+      add(car, dPath("g-rule", rl));
+      const tx = D + cw + 8, tw2 = tight ? 34 : 46, th2 = tight ? 15 : 18;
+      add(car, dPath("g-tag", box(tx, y - 8 - th2, tw2, th2)));
+      add(car, dPath("g-rule", seg(tx + 5, y - 8 - th2 + 6, tx + tw2 - 6, y - 8 - th2 + 6) +
+        seg(tx + 5, y - 8 - th2 + 12, tx + tw2 - 12, y - 8 - th2 + 12)));
+      add(car, dPath("g-legs", seg(D + cw * 0.3, y - 8, D + cw * 0.3, y) +
+        seg(D + cw * 0.7, y - 8, D + cw * 0.7, y) +
+        seg(tx + tw2 * 0.5, y - 8, tx + tw2 * 0.5, y)));
+      const strike = dPath("g-strike", seg(tx + 3, y - 10, tx + tw2 - 3, y - 6 - th2));
+      add(car, strike);
+      g.appendChild(car);
+      const bx = T + A * (tight ? 0.86 : 0.7);
+      add(g, dPath("g-lane", seg(T, y, bx, y)));
+      add(g, dPath("g-buffer", seg(bx, y - 13, bx, y + 5) + seg(bx + 7, y - 9, bx + 7, y + 5) +
+        seg(bx, y - 13, bx + 7, y - 9)));
+      add(g, dPath("g-link", box(T + 9, y - 4.5, 8, 9)));
+      rec.car = car; rec.strike = strike;
+      rec.roll = Math.max(30, bx - 12 - (tx + tw2));
+      const len = Math.hypot(tw2 - 6, th2 - 4) * 1.02;
+      strike.setAttribute("stroke-dasharray", len.toFixed(2));
+      rec.strikeLen = len;
+    }
+    svg.appendChild(g);
+    gates.rows.push(rec);
   });
+}
+
+/* ————— fig. 11 · the references, and the day they were earned in —————
+   THE DEAD HALF IS THE DAY. ¶11's plate used to be one line with two small
+   marks on it and nothing under them. What fills it now is not scenery: it
+   is the run's OWN clock table, drawn as the timetable strip fig. 09 draws
+   its seven phases as — twelve stops on a line, with the three a reference
+   came out of raised and named. Every minute on it is `CLOCKS`, which is the
+   same table the masthead reads, so nothing here is authored twice.
+
+   Each writer has a lane. At the far end of the lane stand the stops that
+   person saw the work at, each a framed card carrying the freight the rail
+   already hauls out of that station, quoted at about twice the size: the
+   yard's merge, glyph's 28×28 pad, agentic automl's six gates and the ring
+   on the seventh. Down the lane comes the written page, drawn as the
+   corridor cargo draws it, solid behind and dashed ahead. Nobody signs. */
+const signs = { rows: [], svg: null, spx: 0, exit: 0 };
+const MARKS = {
+  yard: { w: 60, h: 46, draw: (g, cx, cy) => {
+    for (const [x0, y0, qx, qy, x1, y1] of [
+      [-20, 19, -15, 11, -8, 5], [0, 19, 0, 12, 0, 5], [20, 19, 15, 11, 8, 5]])
+      add(g, el("path", { class: "s-feed",
+        d: `M${n1(cx + x0)} ${n1(cy + y0)}Q${n1(cx + qx)} ${n1(cy + qy)} ${n1(cx + x1)} ${n1(cy + y1)}` }));
+    add(g, dPath("s-mark", box(cx - 13, cy - 14, 26, 19)));
+    add(g, dPath("s-rule", seg(cx - 13, cy - 7, cx + 13, cy - 7) +
+      seg(cx - 4.4, cy - 14, cx - 4.4, cy + 5) + seg(cx + 4.4, cy - 14, cx + 4.4, cy + 5)));
+    add(g, dPath("s-field", box(cx + 5.4, cy - 13, 6.6, 4.4)));
+  } },
+  pad: { w: 52, h: 46, draw: (g, cx, cy, digit) => {
+    add(g, dPath("s-pad", box(cx - 18, cy - 18, 36, 36),
+      digit === null ? { "stroke-dasharray": "3 3" } : {}));
+  } },
+  automl: { w: 112, h: 46, draw: (g, cx, cy) => {
+    let d = "";
+    for (let k = 0; k < 6; k++) d += seg(cx - 38 + k * 7, cy - 12, cx - 38 + k * 7, cy + 12);
+    add(g, dPath("s-gate", d));
+    add(g, el("circle", { class: "s-ring", cx: n1(cx + 20), cy: n1(cy), r: 8 }));
+  } },
+};
+function buildSigns(js) {
+  const host = $("signsFig");
+  const plate = host?.closest("figure");
+  if (!plate) return;
+  const W = host.clientWidth, H = host.offsetHeight;
+  if (W < 40 || H < 40) return;
+  const cs = getComputedStyle(host);
+  const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
+  const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
+  const tight = W - T < 420;
+  const svg = figSvg(host, "sline", W, H);
+  signs.svg = svg; signs.spx = spx; signs.rows = [];
+  const rows = [...host.querySelectorAll(".srow")];
+  const railless = plate.classList.contains("railless");
+  /* the figure's own spine, for the reader whose arc never arrives: under
+     reduced motion the night beats carry opaque resting grounds and the rail
+     is painted over, so the lanes would run to nothing. Never clay — this is
+     the mark of where the line is, not the line. */
+  if (railless && rows.length)
+    add(svg, dPath("s-spine", seg(spx, rows[0].offsetTop + 8, spx,
+      rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight - 8)));
+  host.querySelector(".sdigit")?.remove();
+  rows.forEach((row, i) => {
+    const g = el("g", {});
+    const mark = row.querySelector(".sj");
+    const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
+    /* glyph at the far end and agentic automl nearer the line, which is the
+       order the markup prints them in and the order the day ran */
+    const kinds = i === 0 ? ["yard"] : ["pad", "automl"];
+    const boxes = [...row.querySelectorAll(".smark")];
+    /* the stops stand at the far end of the lane, seated from the edge in */
+    let edge = W - 10;
+    const cards = kinds.map((k, n2) => {
+      const lab = boxes[n2]?.querySelector(".sstop");
+      const half = Math.max(MARKS[k].w / 2,
+        Math.round((lab?.getBoundingClientRect().width || 60) / 2) + 10);
+      const c = edge - half;
+      edge = c - half - (tight ? 10 : 18);
+      boxes[n2]?.style.setProperty("--mx", c.toFixed(1) + "px");
+      return { k, c, half };
+    });
+    for (const { k, c, half } of cards) {
+      /* the card: a frame, the quoted freight in it, the name printed under
+         the freight in HTML, and one leg down to the lane it feeds */
+      /* the card holds the freight ABOVE its name, because a name printed
+         over a drawing is neither. 78px of card: the quoted mark in the top
+         two thirds, the stop's own name in HTML across the bottom. */
+      add(g, dPath("s-card", box(c - half, y - 96, half * 2, 78)));
+      MARKS[k].draw(g, c, y - 68, glyphDigit);
+      add(g, dPath("s-leg", seg(c, y - 18, c, y)));
+      add(g, dPath("s-node", dot(c, y, 2.6)));
+    }
+    if (i === 1 && glyphDigit !== null) {
+      const pad = cards.find((c2) => c2.k === "pad");
+      const d = document.createElement("span");
+      d.className = "sdigit";
+      d.setAttribute("data-machine", "");
+      d.textContent = glyphDigit;
+      d.style.setProperty("--dx", pad.c.toFixed(1) + "px");
+      d.style.setProperty("--dy", (y - 79).toFixed(1) + "px");
+      host.appendChild(d);
+    }
+    const PW = tight ? 42 : 56, PH = tight ? 26 : 32;
+    const start = Math.max(T + PW + 10, edge) - PW;
+    add(g, dPath("s-node", dot(T, y, 3)));
+    const solid = dPath("s-lane", seg(start, y, W - 10, y));
+    const dash = dPath("s-dash", seg(T, y, start, y));
+    add(g, solid); add(g, dash);
+    const stub = dPath("s-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
+    stub.setAttribute("data-j", i);
+    add(g, stub);
+    add(g, dPath("s-tick", box(T - 11, y - 4, 7, 8)));
+    /* the page, drawn as the corridor cargo draws it */
+    const page = el("g", { class: "s-carry" });
+    const leaf = el("g", { class: "s-flutter",
+      style: `--fl:${i === 0 ? "5.2s" : "6.1s"}` });
+    page.appendChild(leaf);
+    const px0 = start, py = y - PH / 2;
+    add(leaf, el("rect", { class: "s-page", x: n1(px0), y: n1(py),
+      width: PW, height: PH, rx: 2 }));
+    let rules = "";
+    for (let k = 0; k < 4; k++)
+      rules += seg(px0 + 7, py + 8 + k * 6, px0 + PW - 10 - ((k * 11) % 15), py + 8 + k * 6);
+    add(leaf, dPath("s-rule", rules));
+    add(leaf, dPath("s-quote", box(px0 + PW - 10, py + 4, 4, 6)));
+    g.appendChild(page);
+    svg.appendChild(g);
+    signs.rows.push({ el: row, g, y, page, solid, dash, stub, i,
+      pageY: js?.[i]?.y ?? y,
+      start: px0, right: W - 10, dashLeft: T,
+      travel: Math.max(30, px0 - T) });
+  });
+  /* ————— the day, as the run's own table keeps it —————
+     Twelve stops on one line, from the first light of run 042 to the hour it
+     halts at. The three a reference came out of are filled and named; the
+     other nine are the day they sit in. Read straight off CLOCKS, so a stop
+     that moves takes this strip with it. */
+  const last = rows[rows.length - 1];
+  const strip = el("g", { class: "s-day" });
+  if (last) {
+    const sy = last.offsetTop + last.offsetHeight +
+      (parseFloat(cs.getPropertyValue("--sday")) || 60);
+    const x0 = T, x1 = W - 10;
+    const mins = CLOCKS.slice(0, RUN_BEATS);
+    const at = (m) => x0 + ((m - mins[0]) / (mins[mins.length - 1] - mins[0])) * (x1 - x0);
+    add(strip, dPath("s-daylane", seg(x0, sy, x1, sy)));
+    /* WHICH STOPS ARE RAISED IS READ OFF THE CLOCKS THEMSELVES, not from a
+       list of beat numbers kept in step by hand: every printed clock is
+       parsed to minutes and looked up in the run's own table. A clock that
+       matched nothing would raise nothing, and check-figures binds all three
+       of them to stations.ts, so the two gates close over each other. */
+    const sbyv = parseFloat(cs.getPropertyValue("--sby")) || 0;
+    const raised = new Set();
+    for (const c2 of host.querySelectorAll(".sclock")) {
+      const m = /^(\d{1,2}):(\d{2})$/.exec(c2.textContent.trim());
+      if (!m) continue;
+      const k = mins.indexOf(+m[1] * 60 + +m[2]);
+      if (k < 0) continue;
+      raised.add(k);
+      const r2 = c2.closest(".srow"), mk = c2.closest(".smark");
+      const mx = parseFloat(mk?.style.getPropertyValue("--mx")) || 0;
+      c2.style.setProperty("--cx", (at(mins[k]) - mx).toFixed(1) + "px");
+      c2.style.setProperty("--cy",
+        (sy + 9 - (r2.offsetTop + sbyv - 44)).toFixed(1) + "px");
+    }
+    let ticks = "", marks = "";
+    mins.forEach((m, k) => {
+      const x = at(m);
+      if (raised.has(k)) marks += dot(x, sy, 3.4) + seg(x, sy - 13, x, sy - 4);
+      else ticks += seg(x, sy - 5, x, sy);
+    });
+    add(strip, dPath("s-daytick", ticks));
+    add(strip, dPath("s-daystop", marks));
+  }
+  svg.appendChild(strip);
+}
+
+/* ————— the bead is the clock for both plates —————
+   u runs 0 to 1 over the 150px the bead takes to reach and pass a junction,
+   opening 90px before it, so a row acts as the line reaches it rather than
+   when the beat says so. One transform per moving part per frame, and every
+   opacity is 0 or 1: a partial one is a stroke the palette gate cannot see. */
+const beadU = (tokenY, j) => clamp((tokenY - (j - 90)) / 150, 0, 1);
+function scrubGates(tokenY) {
+  for (const r of gates.rows) {
+    const u = beadU(tokenY, r.pageY);
+    let key = "";
+    if (r.i === 0) {
+      const couple = smooth((u - 0.35) / 0.25);
+      key = couple.toFixed(3) + (u >= 0.5 ? "|1" : "|0");
+      if (key === r._k) continue;
+      r.comb.style.transform = `translateX(${(-10 * couple).toFixed(2)}px)`;
+      r.g.style.setProperty("--link", couple >= 0.98 ? "1" : "0");
+    } else if (r.i === 1) {
+      const t = smooth((u - 0.25) / 0.45);
+      const lift = -r.lift * clamp(t / 0.2, 0, 1);
+      const run = r.run * clamp((t - 0.2) / 0.8, 0, 1);
+      const close = smooth((u - 0.62) / 0.25);
+      key = t.toFixed(3) + "|" + close.toFixed(3) + (u >= 0.55 ? "|1" : "|0");
+      if (key === r._k) continue;
+      r.caught.style.transform =
+        `translate(${run.toFixed(2)}px, ${lift.toFixed(2)}px)`;
+      r.keep.style.transform = `translateX(${(-13 * close).toFixed(2)}px)`;
+      r.g.style.setProperty("--flag", t >= 0.995 ? "1" : "0");
+    } else {
+      const roll = r.roll * (1 - Math.pow(1 - clamp((u - 0.2) / 0.5, 0, 1), 3));
+      const cut = clamp((u - 0.72) / 0.18, 0, 1);
+      key = roll.toFixed(2) + "|" + cut.toFixed(3) + (u >= 0.8 ? "|1" : "|0");
+      if (key === r._k) continue;
+      r.car.style.transform = `translateX(${roll.toFixed(2)}px)`;
+      r.strike.setAttribute("stroke-dashoffset",
+        (r.strikeLen * (1 - cut)).toFixed(2));
+      r.g.style.setProperty("--link", u >= 0.15 ? "0" : "1");
+    }
+    r._k = key;
+    r.el.style.setProperty("--gw",
+      u >= (r.i === 0 ? 0.5 : r.i === 1 ? 0.55 : 0.8) ? "1" : "0");
+  }
+}
+function scrubSigns(tokenY, settled) {
+  for (const r of signs.rows) {
+    const u = beadU(tokenY, r.pageY);
+    const slide = smooth((u - 0.1) / 0.7);
+    const d = r.travel * slide;
+    const gone = !settled && tokenY >= signs.exit ? "0" : "1";
+    const key = d.toFixed(2) + "|" + gone;
+    if (key === r._k) continue;
+    r._k = key;
+    r.page.style.transform = `translateX(${(-d).toFixed(2)}px)`;
+    /* the split follows the page: solid is the run it has covered, dashed
+       the run still ahead of it */
+    const split = (r.start - d).toFixed(2), yy = r.y.toFixed(2);
+    r.solid.setAttribute("d", `M${split} ${yy} L${r.right.toFixed(2)} ${yy}`);
+    r.dash.setAttribute("d", `M${r.dashLeft.toFixed(2)} ${yy} L${split} ${yy}`);
+    r.page.style.opacity = gone;
+    r.page.classList.toggle("coupled", slide >= 0.98);
+    r.g.style.setProperty("--tick", slide >= 0.98 && gone === "1" ? "1" : "0");
+  }
 }
 
 /* Cadence — the parse. Chips fly measured word → measured slot. */
@@ -7211,7 +7982,13 @@ function work(y) {
     scrubClimb(p7);
   }
   if (Math.abs(beat - 8) <= 1) scrubAml(beat < 8 ? 0 : beat > 8 ? 1 : bp);
-  if (Math.abs(beat - 9) <= 1) scrubHow(beat < 9 ? 0 : beat > 9 ? 1 : bp);
+  /* BOTH NIGHT PLATES RUN OFF THE BEAD, NOT THE BEAT. scrubHow stood here
+     and took the beat's own progress, which is why it used to finish striking
+     while the drawing was still off screen: ¶10 is a tall station and most of
+     its range has the plate nowhere near the reading line. The junctions are
+     measured page positions now, so the row acts as the line reaches it. */
+  if (Math.abs(beat - 9) <= 1) scrubGates(tokenY);
+  if (Math.abs(beat - 10) <= 1) scrubSigns(tokenY);
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
 
   /* manifest stamps: one line as each station completes (reversible).
@@ -11129,7 +11906,13 @@ function settleAll() {
      truthful form of a record is the settled one. Every reader gets it now,
      so there is nothing left here to settle. */
   scrubJet(1);
-  scrubClimb(1); scrubAml(1); scrubHow(1); scrubGate(1);
+  scrubClimb(1); scrubAml(1); scrubGate(1);
+  /* Infinity, not 1: both night plates are clocked by the bead's page y, and
+     the settled world is the one where it has passed every junction. The
+     second argument holds fig. 11's pages ON the line rather than letting
+     them leave as cargo, because in the settled frame there is no corridor
+     for them to be riding. */
+  scrubGates(Infinity); scrubSigns(Infinity, true);
   /* The still frame shows the run COMPLETE, held at the gate for a signature —
      which is what an RM reader is offered, the approve button needing no
      scroll. It reached 22:41 as the far endpoint of setMast(10, 1), so the hour

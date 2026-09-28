@@ -462,12 +462,15 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
   /* What the figures actually draw with, read off the run's own CSS rather
      than listed by eye — a token added to a figure rule joins this set.
 
-     `.gbench` IS SCANNED ALONGSIDE `.figsvg`, and the narrowness is the whole
-     point. §4b named this hole: fig. 10 is a night station whose drawing is
-     styled under `#gatesFig`, which a `.figsvg`-only scan never reads, so the
-     night-contrast rule was an INSTRUCTION for that one figure rather than a
-     measurement. `.gbench` is the class fig. 10's miniature wears, and every
-     colour-bearing rule of that drawing carries it.
+     THE DRAWING'S OWN CLASS IS SCANNED ALONGSIDE `.figsvg`, and the
+     narrowness is the whole point. §4b named this hole: fig. 10 is a night
+     station whose drawing is styled under `#gatesFig`, which a
+     `.figsvg`-only scan never reads, so the night-contrast rule was an
+     INSTRUCTION for that one figure rather than a measurement. Round 14
+     redrew both night plates and the two classes their line work wears
+     replaced the retired press's; every colour-bearing rule of either
+     drawing carries one of them, and the per-class floor below is what
+     stops a rename from quietly emptying the scan.
 
      `.approvebar` JOINED THE SCAN with round 4's ending and stayed through
      round 7's. ¶12's own ink is markup — the socket, the hour, and the one
@@ -522,11 +525,33 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      contrast of whatever the rules actually name. Shown red on a temp
      copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
      under the 2.0 hairline floor and the file exits 1. */
+  const SCANNED = [
+    "\\.figsvg",
+    "\\.gline",
+    "\\.sline",
+    "\\.approvebar",
+    "\\.dawnscape",
+  ];
   const figureRules = [
     ...runHtml.matchAll(
-      /(?:\.figsvg|\.gbench|\.approvebar|\.dawnscape)[^{]*\{([^}]*)\}/g
+      new RegExp(`(?:${SCANNED.join("|")})[^{]*\\{([^}]*)\\}`, "g")
     ),
   ].map((m) => m[1]);
+  /* A SCAN SELECTOR THAT MATCHES NOTHING IS A GATE THAT CANNOT FAIL, and this
+     file has already retired one class (`.gateway`) for exactly that. Round 14
+     replaced `.gbench` with two classes at once, so the floor is per class
+     rather than over the set: a typo in one of them would otherwise hide
+     behind the other four still matching. */
+  for (const cls of SCANNED) {
+    const n = [...runHtml.matchAll(new RegExp(`${cls}[^{]*\\{`, "g"))].length;
+    if (n < 1)
+      fail(
+        `the night-figure scan looks for ${cls.replace(/\\/g, "")} and the run declares no rule with it.\n` +
+          `      A selector that matches nothing measures nothing and prints green. Either the class\n` +
+          `      was renamed and this list did not follow, or the drawing it scanned has been retired\n` +
+          `      and the entry belongs out of the list rather than left pointing at nothing.`
+      );
+  }
   /* the pairs first, so their two tokens do not also enter the stroke set */
   const groundPairs = [];
   const strokeBodies = [];
@@ -740,8 +765,8 @@ if (usedFigureTokens.length && DAY_FIELDS.length === 5) {
 
    `paletteBlock()` matches `:root[data-night]{…}`, and that is not the only
    place the run declares a night palette. A reduced-motion reader never gets
-   the arc at all: the run gives them `settleAll()` and four beats carrying
-   their own resting grounds, with the night tokens RE-DECLARED inside
+   the arc at all: the run gives them `settleAll()` and the night beats
+   carrying their own resting grounds, with the night tokens RE-DECLARED inside
    `@media (prefers-reduced-motion: reduce)`. Every measurement above is blind
    to that block — so raising the night `--hair-strong` alpha in `:root` and
    not in the override would leave reduced-motion readers on the old hairline
@@ -785,22 +810,141 @@ if (usedFigureTokens.length && DAY_FIELDS.length === 5) {
     }
     reduceBlocks.push(runHtml.slice(i, j + 1));
   }
-  const SETTLED = ".b6,.b7,.bhow,.b8{";
-  const owning = reduceBlocks.filter((b) => b.includes(SETTLED));
+  /* NOTHING HERE NAMES THE BEATS ANY MORE, and round 14 is why. The override's
+     selector used to be the literal `.b6,.b7,.bhow,.b8{`, written out three
+     times — once to pick the reduce block, twice more in hand-written regexes
+     for the body and the two grounds — and `.bsign` was in none of them while
+     ¶11 was a night station. Worse, the literal was BOTH the block's key and
+     the thing under test, so a selector edit reported "could not read the
+     reduced-motion night world" instead of naming the beat that fell out.
+
+     The block is keyed on the SHAPE of the override instead: the one rule in
+     any reduce block that re-declares the night ink and the night plate
+     together. Its selector is then read rather than asserted, and the class
+     lists are what the assertions below compare. */
+  const SEL = String.raw`(?:\.[\w-]+,)*\.[\w-]+`;
+  const NIGHT_RULE = new RegExp(
+    `(?:^|[\\s;}])(${SEL})\\{(--ink:[^{}]*--plate:[^{}]*)\\}`
+  );
+  const owning = reduceBlocks.filter((b) => NIGHT_RULE.test(b));
   const rm = owning.length === 1 ? owning[0] : null;
-  const body = rm?.match(/\.b6,\.b7,\.bhow,\.b8\{([^}]*)\}/)?.[1];
-  const g1 = rm?.match(/\.b6\{background:(#[0-9a-f]{6})\}/)?.[1];
-  const g2 = rm?.match(/\.b7,\.bhow,\.b8\{background:(#[0-9a-f]{6})\}/)?.[1];
-  if (!rm || !body || !g1 || !g2) {
+  const tokenRule = rm?.match(NIGHT_RULE);
+  const body = tokenRule?.[2];
+  /* THE RESTING GROUNDS ARE READ TOO. Every `{background:#hex}` rule in this
+     block is a beat's resting ground; they are collected in document order and
+     compared to NIGHT_FIELDS, which is the order the arc puts them in. */
+  const groundRules = rm
+    ? [
+        ...rm.matchAll(
+          new RegExp(
+            `(?:^|[\\s;}])(${SEL})\\{background:(#[0-9a-f]{6})\\}`,
+            "g"
+          )
+        ),
+      ]
+    : [];
+  if (!rm || !body || groundRules.length !== NIGHT_FIELDS.length) {
     fail(
       `could not read the reduced-motion night world out of ${RUN} — ${reduceBlocks.length} reduce blocks,\n` +
-        `      ${owning.length} declaring "${SETTLED}…" (expected exactly 1), token override: ${body ? "yes" : "NO"},\n` +
-        `      resting grounds: ${g1 && g2 ? "yes" : "NO"}.\n` +
+        `      ${owning.length} re-declaring --ink and --plate together (expected exactly 1),\n` +
+        `      resting grounds: ${groundRules.length} (expected ${NIGHT_FIELDS.length}).\n` +
         `      A broken parse here measures nothing and prints the same green line as a clean file.`
     );
   } else {
     const RM = tokens(body.endsWith(";") ? body : `${body};`);
-    const grounds = [g1, g2];
+    const grounds = groundRules.map((m) => m[2]);
+    /* ══════════════════════════════════════════════════════════════════
+       EVERY NIGHT BEAT IS IN BOTH RULES, DERIVED.
+
+       ¶11 was in neither. `.bsign` is the co-signers' beat class, it sits
+       between two night stations, and under reduced motion it rendered the
+       DAY ink on the dawn paper — the one station a reduced-motion reader met
+       in the wrong world. Nothing here could say so, because both selectors
+       were lists a human kept in step by hand and every ratio below was
+       measured over the grounds those lists happened to name.
+
+       So the span is derived from the run rather than listed: it opens at the
+       beat whose plate rides the dusk curtain (`data-fx-sync="dusk"` — the
+       beat where the darkening happens, asserted to exist further up this
+       file) and closes at the last beat of the run, `RUN_BEATS - 1`. Neither
+       end is a number written here.
+
+       Two claims, and they fail for different reasons:
+         · the token rule and the ground rules cover the SAME set of classes.
+           Drop a class from one and the beats are measured over a field the
+           reader is not on.
+         · every b-class on a section inside the span is in that set. Add a
+           night station, or reclass one, and it is caught the same round
+           rather than at the next reduced-motion screenshot.
+       ══════════════════════════════════════════════════════════════════ */
+    const classesOf = (sel) => sel.split(",").map((s) => s.trim().slice(1));
+    const tokenSet = classesOf(tokenRule[1]);
+    const groundSet = groundRules.flatMap((m) => classesOf(m[1]));
+    const missingGround = tokenSet.filter((c) => !groundSet.includes(c));
+    const missingToken = groundSet.filter((c) => !tokenSet.includes(c));
+    if (missingGround.length || missingToken.length)
+      fail(
+        `the reduced-motion night world's two rules name different beats —\n` +
+          `      tokens but no resting ground: ${missingGround.join(" ") || "none"}\n` +
+          `      a resting ground but no tokens: ${missingToken.join(" ") || "none"}\n` +
+          `      A beat with a night ground and day tokens is dark-on-dark prose; a beat with\n` +
+          `      night tokens and no ground is light ink on the dawn paper. Both shipped once.`
+      );
+    /* the span, and then the sections inside it */
+    const runBeats = +(runHtml.match(/const RUN_BEATS = (\d+);/)?.[1] ?? 0);
+    const sects = [
+      ...runHtml.matchAll(
+        /<section[^>]*\bid="([\w-]+)"[^>]*\bclass="([^"]*)"[^>]*\bdata-beat="(\d+)"/g
+      ),
+    ].map((m) => ({
+      id: m[1],
+      classes: m[2].split(/\s+/),
+      beat: +m[3],
+      at: m.index,
+    }));
+    /* The dusk beat owns the first night ground. Which section that is comes
+       from the MATCH INDEX, not from indexOf(`id="…"`): the manifest's ladder
+       links every station by fragment, so an id's first occurrence in the
+       file is an href, not the section it names. */
+    const duskAt = runHtml.search(
+      /<figure class="plate bare"[^>]*data-fx-sync="dusk"/
+    );
+    const duskBeat = sects
+      .filter((s) => s.at < duskAt)
+      .map((s) => s.beat)
+      .pop();
+    if (!runBeats || duskAt < 0 || duskBeat === undefined) {
+      fail(
+        `the night span could not be derived — RUN_BEATS ${runBeats || "NOT FOUND"}, dusk-curtained\n` +
+          `      plate ${duskAt < 0 ? "NOT FOUND" : `at ${duskAt}`}, opening beat ${duskBeat ?? "NOT FOUND"}.\n` +
+          `      Undervived, this assertion passes on any selector list at all.`
+      );
+    } else {
+      const span = sects.filter(
+        (s) => s.beat >= duskBeat && s.beat <= runBeats - 1
+      );
+      /* `beat` is every station's own class and carries no ground; every
+         other b-class on these sections is a beat ground class. */
+      const absent = span.flatMap((s) =>
+        s.classes
+          .filter((c) => /^b[\w-]+$/.test(c) && c !== "beat")
+          .filter((c) => !tokenSet.includes(c))
+          .map((c) => `${c} (#${s.id}, beat ${s.beat})`)
+      );
+      if (absent.length)
+        fail(
+          `these beats are night in the arc and absent from the reduced-motion rules:\n` +
+            absent.map((a) => `      ${a}`).join("\n") +
+            `\n      A reduced-motion reader gets no arc at all — only these rules. A night station\n` +
+            `      missing from them renders day ink on the dawn paper between two dark ones,\n` +
+            `      which is exactly what ¶11 did until round 14.`
+        );
+      else
+        note(
+          `the reduced-motion night span is beats ${duskBeat}–${runBeats - 1} (${span.length} sections, ` +
+            `derived from the dusk curtain and RUN_BEATS): every one in both rules`
+        );
+    }
     if (JSON.stringify(grounds) !== JSON.stringify(NIGHT_FIELDS))
       fail(
         `the reduced-motion beats rest on ${grounds.join(" ")} but the arc's night fields are\n` +
