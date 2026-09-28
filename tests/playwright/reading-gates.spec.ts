@@ -1170,8 +1170,44 @@ test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () =
   }
 
   /* THE CONTROLS. A ceiling nothing can reach and an op watcher that sees
-     nothing both read green; these break the page on purpose. Coarse 40px
-     chords are the segmented rail; a destination-out in drawThread is the dip. */
+     nothing both read green; these break the page on purpose. Coarse 200px
+     chords are the segmented rail; a destination-out in drawThread is the dip.
+
+     200 AND NOT 60, RE-MEASURED ON BOTH PLATFORMS 2026-09-28. At STEP = 60
+     this control cleared the 16.2° ceiling by 2.20° on macOS and by 0.40°
+     under Linux — a control four tenths of a degree from reporting that the
+     gate works. The relation is not monotonic, because a coarse step ALIASES
+     the hand's two sines rather than simply straightening them, so no "a bit
+     coarser" is safe by argument and each candidate was read: at this seat,
+     and then at 1440×900 and 1280×800 as well, because a control chosen on
+     its own seat alone is exactly how the ¶10 control below came to be red in
+     CI and green here.
+
+       STEP                60      120      160      200    ceiling 16.2
+       1512×982  macOS  18.40    25.46    23.91    27.80
+       1512×982  linux  16.60    24.44    24.51    28.32
+       worst of six      15.17    17.28    23.91    27.80
+                           ↑ BELOW the ceiling, at 1440×900 on macOS
+
+     So 60 is not merely thin: at one of the three seats it is a segmentation
+     this ceiling cannot see at all, and the only reason the control passed
+     was that it happened to be seated where it could. 120 clears the worst of
+     the six readings by 1.08° and 160 by 7.71°. 200 clears it by 11.60°, and
+     at this seat the two platforms agree about it to within half a degree —
+     which is the property a control wants: both engines saying the broken
+     page is broken by the same amount.
+
+     The linux column was read in mcr.microsoft.com/playwright:v1.62.1-noble
+     over this same out/. That is NOT CI's own runner — the image here is
+     arm64 and ubuntu-latest is amd64 — but it reproduces the number CI failed
+     on below, 16.59, to the hundredth, which is the most this bench can
+     honestly claim for itself.
+
+     This control needs no "did the replace match" assertion, and that is a
+     property rather than an omission: a replace that finds nothing serves the
+     REAL page, whose kink2 is 1.61, and 1.61 is not greater than 16.2. It
+     fails toward red. The clearance controls below do need theirs, because
+     for them the unmodified page passes. */
   test("positive control: a segmented rail is caught", async ({
     page,
   }, testInfo) => {
@@ -1183,14 +1219,14 @@ test.describe("G10 · the Mac rail stays as smooth and as solid as it was", () =
         const res = await route.fetch();
         const body = (await res.text()).replace(
           "const STEP = 4;",
-          "const STEP = 60;"
+          "const STEP = 200;"
         );
         await route.fulfill({ response: res, body });
       }
     );
     await arrive(page);
     const r = await railShape(page);
-    expect(r.kink2, "60px chords must read as corners").toBeGreaterThan(
+    expect(r.kink2, "200px chords must read as corners").toBeGreaterThan(
       RAIL_CEIL.kink2
     );
   });
@@ -1709,19 +1745,70 @@ test.describe("G10c / G10d · positive controls", () => {
     page,
   }, testInfo) => {
     testInfo.setTimeout(120_000);
-    /* 1375x800 and not his own seat: the clearance is not monotonic in width
-       and this is where the measured minimum was 10.47px.
+    /* 1366×720, RE-SEATED 2026-09-28. It was 1375×800, where the measured
+       minimum was 10.47px when round 14 wrote it, and round 15's Huxley
+       epigraph at ¶10 moved the crossing out from under it.
 
-       BOTH MEASUREMENTS ARE REVERTED, and that is not belt and braces — it is
-       what the red was measured on. Put back one at a time and 1375x800 is
-       green either way: the waypoint alone reads 49.76px and ¶11's
-       blockquote-derived hold alone reads 26.63px, because a later hold makes
-       the corridor longer and the line is further right when it passes the
-       paragraph's foot. Revert both and it is 10.47px again, to the hundredth
-       of labrat's own reading of the same geometry. The two do different
-       work: the waypoint clears the words, the hold buys back the corridor
-       length that clearing them would otherwise cost. */
-    await page.setViewportSize({ width: 1375, height: 800 });
+       THE OLD SEAT WENT RED ON CI AND ONLY THERE, which is the whole lesson.
+       At 1375×800 the reverted route reads 0.00 on macOS and 16.59 on
+       ubuntu-latest — OVER the 16px floor — so this control passed locally and
+       failed in run 36477151555, on both retries, saying "a corridor that
+       crosses the paragraph must be caught" about a corridor that, there, did
+       not cross it.
+
+       THE CAUSE IS MEASURED, NOT INFERRED, and it is not the one to two
+       pixels of rasterisation anybody would assume. The same Newsreader
+       VARIABLE webfont — the same woff2, served 200, `document.fonts` reports
+       it loaded on both, and the fallback measures identically on both at
+       354.42px — sets 4.1% wider under Linux: 391.00px against 375.48px for
+       one of ¶10's own lines at 18px. That gives ¶10 28 line boxes instead of
+       27, makes its column 798.9px tall instead of 776.5, and leaves the whole
+       document 73px longer, so the corridor crosses somewhere else entirely.
+       A macOS-only reading of ANY geometry on this page can be tens of pixels
+       out from the runner that gates it.
+
+       SO THE NEW SEAT IS READ ON BOTH, in mcr.microsoft.com/playwright:v1.62.1-noble
+       over this same out/ — an image that reproduces CI's 16.59 to the
+       hundredth, which is what makes it evidence rather than a second opinion:
+
+         reverted, #review .prose        macOS    linux     floor 16
+           1375×800  (the old seat)       0.00    16.59     ← the CI red
+           1366×720  (this one)           0.00     0.00
+           1366×700                       0.00     2.47
+           1366×768                       0.00     6.58
+
+       The control is a full 16px clear of the floor at its own seat on both
+       engines. 1366 is a width the gate already seats at, and 720 is chosen
+       for WHERE IN THE BAND IT SITS, not for how far into the words the line
+       reaches — which is worth stating plainly, because the second reading is
+       the tempting one and it does not survive the platform: at 1366×720 the
+       reverted corridor crosses 4 of ¶10's line boxes by up to 29.5px on
+       macOS but only 2 of them by 2.59px under Linux. It is still an edge
+       graze there. What makes the seat safe is that it is the FLOOR of the
+       trough on both engines rather than a flank of it — at 1366 the linux
+       reading runs 15.29 at 650, 9.18 at 680, 2.47 at 700, 0.00 at 720 and at
+       740, 6.58 at 768, 15.52 at 800 — so the reading stays at least 9.4px
+       clear across the 68px of viewport height either side, and a later round
+       that lengthens ¶10 again has room in both directions. 1375×800 had
+       neither: it sat on the rising flank, and it had already gone over.
+
+       AND THE SEAT IS CHOSEN FOR MARGIN, NOT BECAUSE THE GATE'S OWN LIST
+       WOULD MISS THIS. Reverted, four of `G10C_SEATS`' eight seats are under
+       the floor on BOTH engines — 1366×768 at 0.00/6.58, 1250×800 at
+       0.00/6.87, 1280×720 at 0.00/8.29, 1280×800 at 0.00/8.88 — so G10c goes
+       red where it actually seats. This control simply stands where the
+       measurement is furthest from the line, which is what a control is for.
+
+       BOTH MEASUREMENTS ARE REVERTED, because the round-13 tail was both. What
+       each does ALONE is no longer symmetric, and the numbers say so rather
+       than a story: at this seat the waypoint alone reads 0.00 on macOS and
+       16.99 on linux — red on one engine, green by a whisker on the other —
+       while ¶11's blockquote-derived hold alone reads 49.10 / 80.84 and is
+       clear on both. Only the pair is red on both, which is the thing the tail
+       actually was. The two still do different work: the waypoint clears the
+       words, the hold buys back the corridor length that clearing them would
+       otherwise cost. */
+    await page.setViewportSize({ width: 1366, height: 720 });
     const VIA = "if (i !== 9 || stacked || !prose10) return null;";
     const HOLD = "return i === 10 && !stacked && lead11";
     const marks = await inject(page, [
