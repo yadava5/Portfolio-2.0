@@ -427,11 +427,17 @@ async function serve() {
     "ds-owl",
     "ds-twig",
   ];
+  /* ONE ENTRY PER RULE, not one per class it happens to name: a selector
+     like `.ds-daisy.open .ds-bloomg` carries two arc classes and was
+     counted twice, so the gate said "2 rules" over one rule printed
+     twice. */
   const arcAnim = [];
   for (const [sel, body] of ruleBy)
-    if (/(^|[^-])animation\s*:/.test(body))
-      for (const c of ARC_CLASSES)
-        if (sel.includes(c)) arcAnim.push(`${sel} { animation … }`);
+    if (
+      /(^|[^-])animation\s*:/.test(body) &&
+      ARC_CLASSES.some((c) => sel.includes(c))
+    )
+      arcAnim.push(`${sel} { animation … }`);
   if (arcAnim.length)
     fail(
       `${arcAnim.length} .dawnscape rule(s) animate a one-time arc — ${arcAnim.slice(0, 3).join("; ")}. An arc is a class and a transition: a one-iteration @keyframes reads the same and is counted by nothing, because the census is taken before the first of them is due`
