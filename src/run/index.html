@@ -2677,6 +2677,10 @@ h1[data-np-measuring] .np-ch {
   .borrowed{margin:1.3rem 0 0; padding:0 0 0 1.1rem; border-left:1px solid var(--hair-strong)}
   .borrowed blockquote{margin:0; font-family:var(--display); font-style:italic;
     font-size:clamp(.98rem,1.35vw,1.1rem); line-height:1.5; color:var(--ink-2)}
+  /* EMPHASIS INSIDE AN ITALIC FACE IS ROMAN, and Carroll's "here" and "you"
+     are the only place on the page that needs it: an <i> nested in a
+     blockquote that is already italic renders as no emphasis at all. */
+  .borrowed blockquote i{font-style:normal}
   .borrowed figcaption{margin-top:.45rem; font:400 .68rem/1.5 var(--mono);
     letter-spacing:.04em; color:var(--ink-2); opacity:.85}
 
@@ -3661,6 +3665,17 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 06 · project 3 of 6 · <i>15:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">Glyph<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A handwritten digit reader, running in this tab</p>
+        <!-- The Red Queen, and she is here because this station's own number
+             says what she says: ten cores, one matrix product 3.5x faster,
+             and the whole network no faster at all. The caption stays the
+             work and its year; naming the speaker would be reading the
+             quotation for the reader. Carroll's italics on "here" and "you"
+             are his, so they are kept as emphasis — set roman, because
+             emphasis inside an italic face is roman. -->
+        <figure class="borrowed" data-fx="in .07 .29 x -6 | drift 12">
+          <blockquote>&ldquo;Now, <i>here</i>, <i>you</i> see, it takes all the running you can do, to keep in the same place.&rdquo;</blockquote>
+          <figcaption>Lewis&nbsp;Carroll &middot; <i>Through the Looking-Glass</i>,&nbsp;1871</figcaption>
+        </figure>
         <p class="bright" data-fx="in .08 .29 x -7 | out .96 1.06 y -4 | drift 18">Glyph started as a small C++ neural network from a course, doing all its math on one core.</p>
         <p class="mutedln" data-fx="in .1 .31 x -6 | out .96 1.06 y -4 | drift 16">My classmate Shree and I spread its matrix math across 10 cores with OpenMP, and one 256×256 matrix product got 3.5× faster. The benchmark I built showed the whole network got no faster, so the page gives both. I got it running in your browser, where it reads 97.01% of the standard handwriting test correctly. Try it below.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">9,701 of 10,000</b> MNIST test digits right (macro-F1 0.9698)<br>
@@ -3833,6 +3848,15 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="kicker" data-fx="in .04 .22 x 7 | out .96 1.06 y -4">¶ 09 · project 6 of 6 · <i>22:05</i></p>
         <h2 data-fx="in .06 .26 x 9 | out .96 1.06 y -4 | drift 22">Agentic AutoML<span style="color:var(--clay)">.</span></h2>
         <p class="codename">A capstone platform where an AI agent trains models, with human sign-off</p>
+        <!-- Two lines of Frost, and they are the gate's own question: the
+             three booms on fig. 09 are walls, and the plate's whole claim is
+             that somebody decided what each one was walling in. Set as verse
+             with a <br>, the way the hero's Machado is, and the second line
+             ends where the source ends — no full stop after "out". -->
+        <figure class="borrowed" data-fx="in .07 .29 x 6 | drift 12">
+          <blockquote>Before I built a wall I&rsquo;d ask to know<br>What I was walling in or walling out</blockquote>
+          <figcaption>Robert&nbsp;Frost &middot; <i>Mending Wall</i>,&nbsp;1914</figcaption>
+        </figure>
         <p class="bright" data-fx="in .08 .29 x 7 | out .96 1.06 y -4 | drift 18">An AI agent can run a notebook from raw data to a trained model. Unchecked, it can go wrong quietly.</p>
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">Shree and I built it, as we did Glyph. A LangGraph agent profiles the data, writes and runs the notebook cells, and waits for a person to approve the training plan and any risky data cleaning step. Nothing deploys unless someone starts it. I was the backend developer and built the service that scores every trained model.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">2,523</b> automated tests, all passing: 1,445 backend · 985 frontend · 93 landing<br>
@@ -3858,6 +3882,17 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       <div class="prose">
         <p class="kicker" data-fx="in .04 .22 x -7 | out .96 1.06 y -4">¶ 10 · the review · <i>22:23</i></p>
         <h2 data-fx="in .06 .26 x -9 | out .96 1.06 y -4 | drift 22">How I work<span style="color:var(--clay)">.</span></h2>
+        <!-- Huxley to Kingsley, and it is the sentence fig. 10 draws: one
+             check passed, two said no, and one of the two was a claim of my
+             own I had never measured. The caption is the letter and its year
+             rather than a book, because that is what the source is. The
+             year is bound to the name before it: at 390 this caption wraps,
+             and a year left alone on the second line is the shape the
+             round-13 ruling forbids. -->
+        <figure class="borrowed" data-fx="in .07 .29 x -6 | drift 12">
+          <blockquote>&ldquo;Sit down before fact as a little child, be prepared to give up every preconceived notion, follow humbly wherever and to whatever abysses nature leads, or you shall learn nothing.&rdquo;</blockquote>
+          <figcaption>Thomas&nbsp;Henry&nbsp;Huxley &middot; letter to Charles&nbsp;Kingsley,&nbsp;1860</figcaption>
+        </figure>
         <!-- THE WAY INTO THE LEDGER GOES HERE, NOT IN THE LITANY. Measured
              2026-08-06: this page links /evidence/ exactly ZERO times, while
              the evidence index reaches TEN distinct receipt anchors against
