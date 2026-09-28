@@ -457,7 +457,7 @@ export const projects: Project[] = [
     highlights: [
       "Plain-English input parsed into events and tasks (chrono-node + compromise)",
       "Schedules Google Meet meetings with multi-attendee Gmail invites + Meet links",
-      "1,159 passed and 11 skipped (635 frontend + 524 backend), re-run 2026-08-02 at the public head",
+      "1,430 passed and 0 skipped (772 frontend + 658 backend), read off CI at the public head, 2026-08-11",
       "React 19 + serverless + PostgreSQL (Supabase), CA-pinned TLS",
     ],
     isPrivate: false,
@@ -535,7 +535,10 @@ export const projects: Project[] = [
          than by reading BENCHMARKS.md: on arm64 the `baseline` and
          `native` binaries are byte-identical, so the hand-written NEON
          path is in both and the entire 3.5× is OpenMP's. */
-      { label: "Kernel Speedup", value: "3.5× parallel dot kernel" },
+      {
+        label: "Kernel Speedup",
+        value: "3.5× on the 256×256 matrix product",
+      },
     ],
     /* W5 e-07 split: the kernel claim is earned (BENCHMARKS.md); the
        accuracy claim traces to its own HELD manifest entry (README-
