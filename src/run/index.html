@@ -11555,11 +11555,14 @@ function canNotice(who, cool = 6000) {
   if (now - (NOTICE.busy[who] || -Infinity) < cool) return false;
   return true;
 }
-function noticed(who, what) {
+/* `seen` is whether the reader can see it YET. Every reaction here starts
+   the moment it is logged except the doe's swivel, which waits for her own
+   graze to lift her head: that one stamps itself when it starts. */
+function noticed(who, what, seen = true) {
   const now = performance.now();
   NOTICE.last = now;
   NOTICE.busy[who] = now;
-  NOTICE.met[who] = now;
+  if (seen) NOTICE.met[who] = now;
   sky.lastGround = now;
   (window.__world.notice = window.__world.notice || []).push({ who, what, t: Math.round(mt()) });
 }
@@ -11571,7 +11574,10 @@ function noticed(who, what) {
    fleeing, and put its head up at no point in between. So the linger waits
    until this creature has given its head to THIS approach — a fresh arrival
    stamps NOTICE.visit and every reaction stamps its own key. The squirrel
-   is not held by it: the dart is the only answer it has. */
+   is not held by it: the dart is the only answer it has. And the stamp is a
+   look the READER SAW, not one that has been scheduled — the doe's makes
+   itself when her head comes up (lookAt), because hers is the one reaction
+   on this sheet that can be logged seconds before it is drawn. */
 const hasLooked = (who) => (NOTICE.met[who] || -Infinity) >= NOTICE.visit;
 /* where a creature is, and how far the pointer is from its ink */
 function creaturesNow() {
@@ -11623,6 +11629,8 @@ function lookAt(px, who = "deer", capMs = 2500) {
   const wait = whenUp(head, T, 0.68, capMs);
   if (wait < 0) {
     if (tail) oneShot(tail, px > g.getBoundingClientRect().left ? 13 : -13, at(520));
+    /* the flick is the look she has time for, and it is drawn now */
+    if (who === "deer" && tail) NOTICE.met.deer = performance.now();
     return "tail";
   }
   setTimeout(() => {
@@ -11640,7 +11648,10 @@ function lookAt(px, who = "deer", capMs = 2500) {
     if (free(tail)) oneShot(tail, dir * 13, at(520));
     /* the moment the reaction actually starts, for the test that measures
        the air at its peak: the log line is written when it is SCHEDULED,
-       and the wait for her head to come up can be most of a cycle */
+       and the wait for her head to come up can be most of a cycle. Which is
+       also why the linger's "has she looked at me" stamp is made HERE: a
+       look the reader has not seen yet may not be what she steps away on. */
+    if (who === "deer") NOTICE.met.deer = performance.now();
     window.__world.swivelAt = Math.round(mt());
   }, wait);
   return "look";
@@ -11649,7 +11660,8 @@ function doeLooks(px, capMs) {
   if (!canNotice("deer")) return;
   const what = lookAt(px, "deer", capMs);
   if (!what) return;
-  noticed("deer", what);
+  /* not `seen`: hers is stamped by the swivel itself, or by the flick */
+  noticed("deer", what, false);
   setTimeout(() => { if (noticeOn()) lookAt(px, "fawn", capMs); }, at(300));
 }
 /* the rest of them, each in its own language */

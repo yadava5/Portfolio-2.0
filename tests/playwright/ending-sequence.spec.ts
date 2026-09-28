@@ -1652,6 +1652,81 @@ test.describe("¶13 · the morning notices you", () => {
     expect(worst, "her air at the peak of the look").toBeGreaterThan(0);
   });
 
+  /* c2 · HER STEP WAITS FOR HER HEAD, NOT FOR THE LOG. Every other reaction
+     on this sheet begins the moment it is logged. Hers does not: the swivel
+     waits for her own graze to lift her head, up to 2.5s, and the log line
+     is written when it is scheduled. The linger asks "has this creature
+     looked at me yet", so a stamp made at the schedule lets her step away
+     with her head still down — a look the reader never saw, counting as
+     one. The window is real and narrow: the wait clears the 1.2s lock only
+     for phases 0.42 to 0.56 of a 9.7s cycle, about an eighth of it. So this
+     test puts her there on purpose rather than waiting for luck, by seeking
+     her graze — the same device the probes use, and the only way this path
+     is deterministic. */
+  test("c2 · she steps when her head is up, not when the look is logged", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    /* 27.8s of a 30s default on a quiet machine, and none of the waits below
+       can shrink: the landing swivel's own window is the long one */
+    test.slow();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* past the landing look, past her own 6s cooldown, and past the swivel
+       that look SCHEDULED: with its 10s cap that one can start as late as
+       9.1s, and a stale __world.swivelAt would let this pass on a build
+       that never lifted her head at all */
+    await page.waitForTimeout(11_000);
+    const pinned = await page.evaluate(() => {
+      const seek = (sel: string, T: number, ph: number) => {
+        const h = document.querySelector(`${sel} .ds-head`);
+        const a = h && h.getAnimations()[0];
+        if (!a) return false;
+        a.currentTime = ph * T;
+        return true;
+      };
+      /* her head comes up at 0.68 of the graze, so from 0.45 the look is
+         2.2s off — over the lock, which is the whole point. The fawn is
+         held at 0.05, where its own wait is past its 2.5s cap and it flicks
+         its tail instead of swivelling: nothing but her stamps swivelAt. */
+      return {
+        doe: seek(".dawnscape .ds-deer", 9700, 0.45),
+        fawn: seek(".dawnscape .ds-fawn", 5300, 0.05),
+      };
+    });
+    expect(pinned.doe, "her graze is a running animation to seek").toBe(true);
+    expect(pinned.fawn, "and the fawn's is too").toBe(true);
+    const base = await page.evaluate(() => window.__world.swivelAt);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    expect(d, "the doe is on the page").not.toBeNull();
+    /* a hand resting on her: the look first, then the step the linger owes */
+    let step: { who: string; what: string; t: number } | undefined;
+    let swivelAt: number | undefined;
+    for (let i = 0; i < 40; i++) {
+      await page.mouse.move(d!.x + (i % 2 ? 0.5 : -0.5), d!.top - 14);
+      await page.waitForTimeout(150);
+      const now = await page.evaluate(() => ({
+        n: window.__world.notice ?? [],
+        s: window.__world.swivelAt,
+      }));
+      step = now.n.find((q) => q.who === "deer-step");
+      if (step) {
+        swivelAt = now.s;
+        break;
+      }
+    }
+    expect(step, "a hand that rests on her makes her step away").toBeTruthy();
+    expect(
+      swivelAt,
+      "her head was up before she stepped, not merely due to come up"
+    ).not.toBe(base);
+    /* one clock: both are Math.round(mt()) */
+    expect(
+      swivelAt!,
+      `she looked up at ${swivelAt} and stepped at ${step!.t}`
+    ).toBeLessThanOrEqual(step!.t);
+  });
+
   test("d · a link within reach of a creature wakes nothing", async ({
     page,
   }, testInfo) => {
