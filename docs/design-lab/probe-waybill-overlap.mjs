@@ -52,6 +52,42 @@
  * above was written. The ceiling is not raised to match; the overlap is an
  * open finding until someone decides it.
  *
+ * CLOSED ON CORRIDOR 6, 2026-09-28 (round 15), AND STILL OPEN ON CORRIDOR 1.
+ * Both triggers had fired on corridor 6: the number was over the ceiling and
+ * the owner read it — "the ticket sits on missions". The cause was not the
+ * label, it was the LINE: ¶08's hold was 33% of the viewport against a column
+ * capped at 1180, so the rail and its cargo stood inside the paragraph.
+ * buildThread now measures ¶08's own prose box and holds the line in the
+ * gutter, and the waybill goes with it. Measured here at 1440×900, before
+ * and after, on the same tree:
+ *
+ *     corridor 6, distinct stops over prose          19 → 0
+ *     corridor 6, that label's own count             19 → 0
+ *     corridor 1, distinct stops over prose          19 → 19   (untouched)
+ *     every other corridor                           ±1        (sampling)
+ *
+ * THREE THINGS THIS RUN CHANGED IN THE PROBE, because the old reading could
+ * not have answered the question:
+ *   · DISTINCT STOPS per corridor, as well as per label. Corridor 1 carries
+ *     two waybills at 12 and 13 stops; added up that is 25 of 48, and a
+ *     reader is at one scroll position at a time. Its real number is 19.
+ *   · A SECOND READING over the figures' own drawn labels, which the prose
+ *     selector list cannot see. ¶08's waybill now crosses fig. 08's plate,
+ *     so the question "did it just move onto the drawing" has to be
+ *     answerable. It measures NONE at every sampled stop: the label crosses
+ *     the building's linework, where the painter's cartographic halo is the
+ *     answer, and misses every one of the plate's own words.
+ *   · Both readings print even when empty, so a silent zero is a measurement
+ *     rather than a probe that stopped finding its subject.
+ *
+ * CORRIDOR 1 IS THE OPEN ONE NOW, at 19 of 48 distinct stops over ¶02's and
+ * ¶03's prose, unchanged by round 15 and above the 11 ceiling. It is the same
+ * shape of defect — the line holds inside a column — and the same fix is
+ * available and NOT taken here, because ¶02 and ¶03 are two of the eight
+ * stations whose crossings are the page's own idiom (see buildThread's
+ * round-15 erratum: moving them all costs either the sweep or the slope
+ * ceiling). Decide it with the owner, not in a probe.
+ *
  *   node docs/design-lab/probe-waybill-overlap.mjs [outDir]
  */
 import { createServer } from "node:http";
@@ -124,29 +160,49 @@ for (let i = 0; i < beats.length - 1; i++) {
       return p.filter((d) => d.scrollY === window.scrollY);
     });
     if (!drawn.length) continue;
-    const boxes = await page.evaluate(() =>
-      [...document.querySelectorAll("main p, main li, main figcaption, main h1, main h2, main blockquote, main span")]
-        .filter((el) => {
-          const r = el.getBoundingClientRect();
-          if (r.bottom < 0 || r.top > innerHeight || r.width === 0) return false;
-          const st = getComputedStyle(el);
-          return +st.opacity > 0.05 && st.visibility !== "hidden" && el.textContent.trim();
-        })
-        .map((el) => {
-          const r = el.getBoundingClientRect();
-          return { left: r.left, right: r.right, top: r.top, bottom: r.bottom,
-                   what: el.textContent.trim().slice(0, 44) };
-        })
-    );
-    for (const d of drawn) {
-      for (const b of boxes) {
+    /* TWO READINGS, because moving a line can move a label off the words and
+       onto a drawing. `prose` is the ceiling's own definition, unchanged
+       since round 2. `drawn ink` is the figures' SVG text and their plate
+       boxes, which the first selector list cannot see at all — corridor 6's
+       waybill left ¶08's paragraph in round 15 and began crossing fig. 08. */
+    const { boxes, marks } = await page.evaluate(() => {
+      const vis = (el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight || r.width === 0) return null;
+        const st = getComputedStyle(el);
+        if (!(+st.opacity > 0.05) || st.visibility === "hidden") return null;
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom };
+      };
+      const take = (sel, label) =>
+        [...document.querySelectorAll(sel)]
+          .map((el) => {
+            const r = vis(el);
+            if (!r || !(el.textContent || "").trim()) return null;
+            return { ...r, what: label(el) };
+          })
+          .filter(Boolean);
+      return {
+        boxes: take(
+          "main p, main li, main figcaption, main h1, main h2, main blockquote, main span",
+          (el) => el.textContent.trim().slice(0, 44)
+        ),
+        marks: take("main figure.plate svg text, main figure.plate svg tspan",
+          (el) => "svg: " + el.textContent.trim().slice(0, 38)),
+      };
+    });
+    const over = (d, list) => {
+      for (const b of list) {
         const ox = Math.min(d.right, b.right) - Math.max(d.left, b.left);
         const oy = Math.min(d.bottom, b.bottom) - Math.max(d.top, b.top);
-        if (ox > 6 && oy > 4) {
-          hits.push({ corridor: i, label: d.text, over: b.what, ox: Math.round(ox), oy: Math.round(oy) });
-          break;
-        }
+        if (ox > 6 && oy > 4) return b;
       }
+      return null;
+    };
+    for (const d of drawn) {
+      const b = over(d, boxes);
+      if (b) hits.push({ kind: "prose", corridor: i, stop: y, label: d.text, over: b.what });
+      const m = over(d, marks);
+      if (m) hits.push({ kind: "svg", corridor: i, stop: y, label: d.text, over: m.what });
     }
   }
 }
@@ -154,13 +210,33 @@ for (let i = 0; i < beats.length - 1; i++) {
 await browser.close();
 server.close();
 
-const byKey = new Map();
-for (const h of hits) {
-  const k = JSON.stringify([h.corridor, h.label]);
-  byKey.set(k, (byKey.get(k) ?? 0) + 1);
-}
-if (!byKey.size) console.log("no waybill printed through prose at 1440×900");
-for (const [k, n] of [...byKey].sort()) {
-  const [corridor, label] = JSON.parse(k);
-  console.log(`  corridor ${corridor}  "${label}"  overlapped prose at ${n} of 48 sampled stops`);
-}
+/* PER LABEL, and PER STOP. The ceiling ("11 of 48") was written when every
+   corridor carried one waybill; two labels in one corridor can overlap at the
+   same scroll position and count twice, which reads as a corridor twice as
+   bad as the reader's own experience of it. Both are printed. */
+const report = (kind, what) => {
+  const byLabel = new Map(), byStop = new Map();
+  for (const h of hits.filter((x) => x.kind === kind)) {
+    const k = JSON.stringify([h.corridor, h.label]);
+    byLabel.set(k, (byLabel.get(k) ?? 0) + 1);
+    const s = JSON.stringify([h.corridor, h.stop]);
+    byStop.set(s, true);
+  }
+  console.log(`\n  ── waybills over ${what}, per label`);
+  if (!byLabel.size) console.log("     none at 1440×900");
+  for (const [k, n] of [...byLabel].sort()) {
+    const [corridor, label] = JSON.parse(k);
+    console.log(`     corridor ${corridor}  "${label}"  ${n} of 48 sampled stops`);
+  }
+  const perCorridor = new Map();
+  for (const s of byStop.keys()) {
+    const [corridor] = JSON.parse(s);
+    perCorridor.set(corridor, (perCorridor.get(corridor) ?? 0) + 1);
+  }
+  console.log(`  ── distinct stops per corridor, over ${what}`);
+  if (!perCorridor.size) console.log("     none");
+  for (const [corridor, n] of [...perCorridor].sort((a, b) => a[0] - b[0]))
+    console.log(`     corridor ${corridor}  ${n} of 48`);
+};
+report("prose", "prose (the ceiling's own reading)");
+report("svg", "a figure's own drawn labels");
