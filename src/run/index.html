@@ -2010,21 +2010,35 @@ if (location.hash.length > 1) {
   .sline .s-dash{stroke:var(--ink-2); stroke-width:1.1; stroke-dasharray:4 6}
   .sline .s-node{fill:var(--ink); stroke:none}
   .sline .s-card{stroke:var(--ink-2); stroke-width:1; fill:none}
+  .sline .s-card.near{stroke:var(--ink); stroke-width:1.3}
   .sline .s-leg{stroke:var(--ink-2); stroke-width:1}
   .sline .s-page{stroke:var(--ink); stroke-width:1.2; fill:none}
   .sline .s-rule{stroke:var(--ink-2); stroke-width:1; fill:none}
   .sline .s-quote{fill:var(--clay-g); stroke:none}
-  .sline .s-tick{fill:var(--ink); stroke:none; opacity:var(--tick, 0)}
+  /* the card's board rule: heavier than the frame, because a running-in
+     board is the one line on a station that a passing reader is meant to
+     find. No fill, so no new ground/ink pair to measure. */
+  .sline .s-board{stroke:var(--ink); stroke-width:1.4}
   .sline .s-mark{stroke:var(--ink); stroke-width:1.2; fill:none}
   .sline .s-feed{stroke:var(--ink-2); stroke-width:1; fill:none}
   .sline .s-field{fill:var(--pine); stroke:none}
-  .sline .s-gate{stroke:var(--pine); stroke-width:1.2; fill:none}
-  .sline .s-ring{stroke:var(--clay-g); stroke-width:1.6; fill:none}
+  .sline .s-gate{stroke:var(--pine); stroke-width:1.4; fill:none}
+  .sline .s-railline{stroke:var(--ink-2); stroke-width:1.1}
+  .sline .s-halt{stroke:var(--ink); stroke-width:2.2}
+  .sline .s-ring{stroke:var(--clay-g); stroke-width:1.8; fill:none}
   .sline .s-pad{stroke:var(--ink-2); stroke-width:1.1; fill:none}
-  .sline .s-daylane{stroke:var(--ink-2); stroke-width:1}
-  .sline .s-daytick{stroke:var(--ink-2); stroke-width:1}
-  .sline .s-daystop{fill:var(--ink); stroke:var(--ink); stroke-width:1.1}
+  .sline .s-reg{stroke:var(--ink); stroke-width:1.4; fill:none}
   .sline .s-spine{stroke:var(--ink-2); stroke-width:1.2}
+  /* ————— the points, and the one thing on this plate that moves —————
+     The blade lies off the stock rail until the written page runs down to
+     it, and then it closes onto it. It carries no transform and no
+     transition: its `d` is rewritten by scrubSigns from the same slide the
+     page rides, so the whole plate stays a pure function of scroll and
+     reduced motion gets the settled state for free, since
+     scrubSigns(Infinity, true) has already run every row to coupled. */
+  .sline .s-blade{stroke:var(--ink); stroke-width:1.6; fill:none}
+  .sline .s-tie{stroke:var(--ink-2); stroke-width:1.2}
+  .sline .s-lever{stroke:var(--ink-2); stroke-width:1}
 
   /* ═══════ fig. 11 · two branches, seated against the words ═══════
      --sby is the branch's y inside a row, and the junction's. --s0 is where
@@ -2040,50 +2054,64 @@ if (location.hash.length > 1) {
      that meets a line still swinging is a road the line crosses. --sfoot is
      the near ground under the last road, which is where the plate stops
      being a diagram and becomes the night the pages came through. */
-  /* --s0 is the lead the rail's own samples measure; --sday is where the
-     day strip hangs under the last lane; --sfoot is the room the strip and
-     its clocks need under it. */
-  .signs{--srh:152px; --sby:104px; --s0:110px; --s1:0px; --sday:38px;
-    --sfoot:80px;
+  /* ROUND 15. --sby is CARD_H + CARD_LEG: the branch is where the card's leg
+     lands, so the card stands in the --sby px above its own lane. --srh is
+     --sby plus the room a lane needs under it. The two blockquotes' centres
+     are 178px apart at every two-column seat, so --s1 resolves to 10 there
+     and the declared pair is the drawing's own geometry rather than a number
+     that happened to fit. The 34px a lane keeps above the next row's boards
+     is deliberate: the travelling page is 44 tall and centred on the lane,
+     so it clears the boards below it by 12. --s0 and --s1 are both WRITTEN by seatFigures now; the
+     declared values are what a stacked seat uses, where the quotes are above
+     the plate and there is nothing beside it to align to.
+     --sfoot is the clearance under the last lane. It was 80 while the day
+     strip hung there; the strip went in round 15 and took 40 of it. */
+  .signs{--srh:168px; --sby:144px; --s0:106px; --s1:10px; --sfoot:28px;
     position:relative; padding-top:var(--s0); padding-bottom:var(--sfoot);
     color:var(--ink-2)}
   .signs .srow{position:relative; height:var(--srh)}
   .signs .srow + .srow{margin-top:var(--s1)}
-  .signs .sname{position:absolute; left:var(--gtext, 44px);
-    top:calc(var(--sby) - 42px);
+  /* THE WRITER'S NAME STANDS ON THE OTHER SIDE OF THE LINE, and it is there
+     for room rather than for effect: the two stops on Shree's branch fill
+     her lane end to end, so a name at the lane's head sat on the near card.
+     Left of the line it labels the junction the way a signal box does, and
+     it fills the one band of this plate that was genuinely blank at every
+     two-column seat. It is set right-aligned into `--spx - 54`: G10c's 16px
+     floor plus the hand's full 24px reach plus 14 of margin, so the line
+     cannot reach the words at any wobble.
+     The phone has no such band — the rail runs in the 26px gutter and --spx
+     is negative — so it keeps the head of its own lane; see the 820 block. */
+  .signs .sname{position:absolute; left:0;
+    width:max(0px, calc(var(--spx, 230px) - 54px)); text-align:right;
+    top:calc(var(--sby) - 30px);
     font-family:var(--body); font-size:var(--fs-note); line-height:1.4;
     letter-spacing:0; word-spacing:.12em; color:var(--ink)}
   /* the label under a mark: the stop's name in the text face, its clock in
-     mono, because a clock is a machine value and a station's name is not */
-  /* the stop's name is printed ON its running-in board and its clock stands
-     under the freight below it, which is where a yard puts both */
+     mono, because a clock is a machine value and a station's name is not.
+     Both stand UNDER the board rule at the card's foot, which is where a
+     station puts its name and its time.
+     ONE OFFSET, AND THE TWO LINES FLOW. --sby - 68 is the card's top plus
+     the drawing's own share of it (CARD_MARK), so the block starts exactly
+     on the board. The clock used to be positioned absolutely at --cx/--cy
+     because it was printed out on the day strip at its own minute; the strip
+     went in round 15 and the clock came home. The old note is kept here
+     because its bug is easy to re-introduce: an offset written as
+     `calc(var(--sby) + 26px)` adds --sby twice, since the box it positions
+     in is itself seated relative to --sby. */
   .signs .smark{position:absolute; left:var(--mx, 0px);
-    top:calc(var(--sby) - 44px); width:0; height:0;
+    top:calc(var(--sby) - 64px); width:0; height:0;
     display:flex; flex-direction:column; align-items:center;
     white-space:nowrap}
-  /* ABSOLUTE, NOT A MARGIN. The stop's name picks up the label sweep's own
-     line height further down this sheet, so a margin measured against it
-     lands the clock wherever that sweep last changed. The clock belongs 26px
-     under the freight, which is a position, so it is written as one. */
-  /* 96px BELOW THE MARK'S OWN TOP, and relative to it. Written as
-     `calc(var(--sby) + 26px)` the offset was added to --sby twice, because
-     the box it positions in is itself seated at --sby minus seventy, and the
-     clocks landed a row's height low. */
-  /* the clock is printed ON the day strip at its own minute, which is a
-     position seatFigures measures off `CLOCKS` and writes relative to the
-     card it belongs to */
-  .signs .sclock{position:absolute; left:var(--cx, 0px); top:var(--cy, 96px);
-    transform:translateX(-50%)}
-  .signs .sstop{font-family:var(--body); font-size:var(--fs-micro);
-    color:var(--ink);
-    line-height:1.3; letter-spacing:0; word-spacing:.12em; color:var(--ink-2)}
+  .signs .sstop{font-family:var(--body); font-size:var(--fs-label);
+    line-height:1.4; letter-spacing:0; word-spacing:.12em; color:var(--ink)}
   .signs .sclock{font-family:var(--mono); font-size:var(--fs-micro);
     line-height:1.3; letter-spacing:.04em; color:var(--ink-2)}
   /* the reader's own digit, when the classifier has read one: the pad on
-     Shree's branch quotes glyph's cargo, and glyph's cargo prints the digit */
+     Shree's branch quotes glyph's cargo, and glyph's cargo prints the digit.
+     It is centred in the pad, so its own half-line is taken off the top. */
   .signs .sdigit{position:absolute; left:var(--dx, 0px); top:var(--dy, 0px);
-    width:0; display:flex; justify-content:center;
-    font-family:var(--mono); font-size:var(--fs-label); line-height:1;
+    width:0; height:0; display:flex; justify-content:center; align-items:center;
+    font-family:var(--mono); font-size:2.2rem; line-height:1;
     letter-spacing:0; color:var(--ink)}
 
   /* ————— fx: only the JS world hides pre-entrance ————— */
@@ -2255,8 +2283,18 @@ if (location.hash.length > 1) {
     .gates .gname{top:0}
     .gates .gwhy{top:24px; right:0; width:auto}
     .gates .gslip{top:62px; right:auto; left:var(--gtext, 44px)}
-    .signs{--srh:152px; --sby:104px; --sday:34px; --sfoot:74px}
-    .signs .sname{top:calc(var(--sby) - 46px)}
+    /* the phone keeps the desktop's card, because the card is what the stop
+       IS and a 316px column still holds one: the scale falls out of the lane
+       the row has, not out of a second edition of the geometry.
+       THE WRITER'S NAME IS THE ONE THING THAT CANNOT STAY. There is no band
+       left of the line here — the rail runs in the 26px gutter and --spx is
+       negative — and the two boards on Shree's branch fill the phone's lane
+       end to end, so the name goes ABOVE its own row's boards and the rows
+       take the 34px that needs. Measured at 390x844: the name sat across
+       "agentic automl" and its clock without it. */
+    .signs{--s1:34px}
+    .signs .sname{left:0; width:auto; text-align:left;
+      top:calc(var(--sby) - 168px)}
   }
   /* 320. Both dockets grow one more line of row, because at 222px of plate
      every reason wraps to two. Nothing is dropped: the drawing lays itself
@@ -2265,7 +2303,6 @@ if (location.hash.length > 1) {
   @media (max-width:360px){
     .gates{--grh:210px; --gjy:166px}
     .gates .gslip{top:86px}
-    .signs{--srh:164px; --sby:104px}
   }
 
   @media (min-width:821px){
@@ -3934,13 +3971,16 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
       </div>
       <figure class="plate bare" data-fx="in .04 .30 | out .80 .97 | drift 0">
         <div class="signs" id="signsFig">
-          <!-- TWO BRANCHES, AND THE MARKS ON THEM ARE QUOTATIONS. Each one
-               redraws, at about twice the size, the freight the rail already
-               carries out of that station: the yard's merge, glyph's 28×28
-               pad, agentic automl's six gates and the ring on the seventh.
-               The stops are where that person saw the work, so the mark is
-               the day's own cargo rather than a new symbol for it, and the
-               names and clocks come from stations.ts.
+          <!-- TWO BRANCHES, AND THE MARKS ON THEM ARE QUOTATIONS. Each stop
+               is a running-in board carrying, at up to 1.9× the size the
+               rail draws it, the freight that rail already hauls out of that
+               station: the yard's sources feeding one checked-in table,
+               glyph's 28×28 pad, agentic automl's phases with the seventh
+               ringed. The stops are where that person saw the work, so the
+               mark is the day's own cargo rather than a new symbol for it,
+               and the names and clocks come from stations.ts. Each branch
+               joins the run's line through a set of points that closes as
+               the written page couples.
                NOBODY SIGNS. Two people wrote recommendations in public,
                under their own names; a drawn signature for a named real
                person is a fabricated artifact attributed to them. What
@@ -5198,19 +5238,32 @@ function seatFigures() {
       return rec;
     });
   };
-  /* ¶11'S FIRST ROAD IS SEATED WHERE THE LINE HAS FINISHED ARRIVING, and
-     that is a measurement off the rail's own samples rather than a fraction
-     or a quote's position. The crossing out of fig. 10 is still settling onto
-     the dock's column at the top of this plate; a road drawn up there is a
-     road the line cuts across, and G10c would say so. So the lead is the
-     distance from the plate's top to the first sample whose x is inside the
-     hand's own band around the column, plus a margin — and that lead is not
-     dead space, it is the far distance the drawing opens on.
+  /* ¶11'S ROADS LEAVE THE LINE LEVEL WITH THE WORDS THAT EARNED THEM.
+     The stylesheet has claimed since it was written that each branch lands
+     at the vertical centre of the quote its writer wrote, and until round 15
+     nothing wrote the numbers that would do it: at 1440 the first branch
+     stood at y 192 against a quote centred on 254. Both --s0 and --s1 are
+     measurements now, off the blockquotes' own boxes, in LAYOUT space
+     (absTop, never a client rect — the prose carries an entrance transform
+     and a seat read mid-flight bakes that frame in).
+
+     THE RAIL'S ARRIVAL IS A FLOOR ON THEM, NOT THE SEAT ITSELF. The crossing
+     out of fig. 10 is still settling onto the dock's column at the top of
+     this plate, and a road drawn up there is a road the line cuts across.
+     So the first sample whose x is inside the hand's own band around the
+     column is a floor under the first branch; measured at every seat, the
+     quotes already sit below it, which is why this is written as a guard and
+     not as a fallback. On a stacked seat the quotes are ABOVE the plate and
+     there is nothing beside it to align to, so the declared values stand and
+     the floor does the whole job.
      Seated BEFORE the junctions are read, because it moves the rows. */
   const signsHost = $("signsFig");
   if (signsHost) {
     const plate11 = signsHost.closest("figure");
     const px11 = absLeft(plate11), top11 = absTop(signsHost);
+    const cs11 = getComputedStyle(signsHost);
+    const sby = parseFloat(cs11.getPropertyValue("--sby")) || 144;
+    const srh = parseFloat(cs11.getPropertyValue("--srh")) || 168;
     const col = railAnchorX[10] ?? px11;
     let lead = 56;
     for (const smp of samples) {
@@ -5218,7 +5271,20 @@ function seatFigures() {
       if (Math.abs(smp.x - col) <= 26) { lead = smp.y - top11 + 24; break; }
       if (smp.y > top11 + 320) break;
     }
-    signsHost.style.setProperty("--s0", clamp(lead, 56, 176).toFixed(1) + "px");
+    const quotes = [...($("cosigners")?.querySelectorAll(".cosign blockquote") ?? [])];
+    if (!stacked && quotes.length === signsHost.querySelectorAll(".srow").length) {
+      const mid = quotes.map((q) => absTop(q) + q.offsetHeight / 2 - top11);
+      const b0 = Math.max(mid[0], lead + sby - 50);
+      signsHost.style.setProperty("--s0", clamp(b0 - sby, 8, 240).toFixed(1) + "px");
+      signsHost.style.setProperty("--s1",
+        clamp(mid[1] - b0 - srh, 0, 220).toFixed(1) + "px");
+    } else {
+      /* REMOVED, not set to zero: the phone declares its own --s1 in the 820
+         block to make room for a name above each row's boards, and an inline
+         0 written on a wide seat would survive a resize down into it. */
+      signsHost.style.setProperty("--s0", clamp(lead, 56, 176).toFixed(1) + "px");
+      signsHost.style.removeProperty("--s1");
+    }
   }
   J10 = seat("gatesFig", ".grow .gj", 9, 10);
   J11 = seat("signsFig", ".srow .sj", 10, 11);
@@ -6657,41 +6723,94 @@ function buildGates(js) {
   });
 }
 
-/* ————— fig. 11 · the references, and the day they were earned in —————
-   THE DEAD HALF IS THE DAY. ¶11's plate used to be one line with two small
-   marks on it and nothing under them. What fills it now is not scenery: it
-   is the run's OWN clock table, drawn as the timetable strip fig. 09 draws
-   its seven phases as — twelve stops on a line, with the three a reference
-   came out of raised and named. Every minute on it is `CLOCKS`, which is the
-   same table the masthead reads, so nothing here is authored twice.
+/* ————— fig. 11 · the references, and the stops they were earned at —————
+   THE DAY STRIP IS GONE, round 15, on the owner's own reading: "remove this!
+   it is redundant!" It was the run's twelve clocks drawn as a ruled line
+   under the two lanes, with the three a reference came out of raised and
+   named — and ¶12's timetable is the same twelve stops one screen later. A
+   figure that answers a question the next figure asks better is not filling
+   space, it is spending it.
 
-   Each writer has a lane. At the far end of the lane stand the stops that
-   person saw the work at, each a framed card carrying the freight the rail
-   already hauls out of that station, quoted at about twice the size: the
-   yard's merge, glyph's 28×28 pad, agentic automl's six gates and the ring
-   on the seventh. Down the lane comes the written page, drawn as the
-   corridor cargo draws it, solid behind and dashed ahead. Nobody signs. */
+   WHAT TOOK THE ROOM IS THE DRAWING ITSELF. The stops used to be 78px cards
+   carrying 46px marks in a plate 628 wide, with two thirds of every lane
+   bare rule. They are running-in boards now: a 128px plate, the stop's own
+   freight drawn across the top two thirds at up to 1.9× the old size, a
+   board rule, and the stop's name and clock printed under it. One scale
+   serves all three cards and it is measured off the lane that has two of
+   them, so the family never breaks and nothing ever has to be dropped at a
+   narrow seat.
+
+   THE BRANCHES ARE SEATED ON THE QUOTES THEY BELONG TO, which is what this
+   plate's stylesheet has claimed since it was written and what it had never
+   actually done: at 1440 the first branch stood at y 192 against a quote
+   whose centre is 254. seatFigures writes both --s0 and --s1 now, off the
+   blockquotes' own boxes, so each road leaves the line level with the words
+   its writer wrote.
+
+   AND THE JUNCTION IS A JUNCTION. Where a branch meets the run's line there
+   is a set of points: a stock rail, a blade lying off it, a tie bar and a
+   lever. The blade CLOSES when the written page couples — the same signal
+   the old tick box carried, given the shape the thing actually has. A
+   reference is somebody else setting the road for you, and that is the one
+   bold mark on this plate; everything else stays quiet.
+
+   Nobody signs. What travels down each branch is the written page, drawn
+   exactly as the corridor cargo draws it, solid behind and dashed ahead. */
 const signs = { rows: [], svg: null, spx: 0, exit: 0 };
+/* the card, in px at scale 1: the drawing's share, the board's, and the leg
+   that stands the card on its lane. SBY in the stylesheet is CARD_H + LEG,
+   because the branch is where the leg lands. */
+const CARD_H = 120, CARD_MARK = 80, CARD_LEG = 24;
+/* Each mark quotes the freight the rail already hauls out of that station,
+   at the size a card can carry it: the yard's two sources feeding one
+   checked-in table, glyph's 28×28 pad with the reader's own digit in it,
+   and agentic automl's six phases open with the seventh ringed. `w` is the
+   drawing's natural width; the card is never narrower than its own name. */
 const MARKS = {
-  yard: { w: 60, h: 46, draw: (g, cx, cy) => {
-    for (const [x0, y0, qx, qy, x1, y1] of [
-      [-20, 19, -15, 11, -8, 5], [0, 19, 0, 12, 0, 5], [20, 19, 15, 11, 8, 5]])
-      add(g, el("path", { class: "s-feed",
-        d: `M${n1(cx + x0)} ${n1(cy + y0)}Q${n1(cx + qx)} ${n1(cy + qy)} ${n1(cx + x1)} ${n1(cy + y1)}` }));
-    add(g, dPath("s-mark", box(cx - 13, cy - 14, 26, 19)));
-    add(g, dPath("s-rule", seg(cx - 13, cy - 7, cx + 13, cy - 7) +
-      seg(cx - 4.4, cy - 14, cx - 4.4, cy + 5) + seg(cx + 4.4, cy - 14, cx + 4.4, cy + 5)));
-    add(g, dPath("s-field", box(cx + 5.4, cy - 13, 6.6, 4.4)));
+  yard: { w: 250, draw: (g, cx, cy, s) => {
+    const q = (x0, y0, qx, qy, x1, y1) => add(g, el("path", { class: "s-feed",
+      d: `M${n1(cx + x0 * s)} ${n1(cy + y0 * s)}Q${n1(cx + qx * s)} ${n1(cy + qy * s)} ` +
+         `${n1(cx + x1 * s)} ${n1(cy + y1 * s)}` }));
+    /* two messy sources in, three roads feeding one table */
+    q(-104, 30, -70, 26, -30, 14); q(-104, 12, -66, 12, -30, 8);
+    q(104, 30, 70, 26, 30, 14); q(104, 12, 66, 12, 30, 8);
+    const W2 = 60 * s, H2 = 44 * s, x = cx - W2 / 2, y = cy - 30 * s;
+    add(g, dPath("s-mark", box(x, y, W2, H2)));
+    let r = seg(x, y + 12 * s, x + W2, y + 12 * s);          /* the heading rule */
+    for (let k = 1; k < 4; k++) r += seg(x + 4 * s, y + (12 + k * 8) * s, x + W2 - 4 * s, y + (12 + k * 8) * s);
+    r += seg(x + W2 / 3, y + 12 * s, x + W2 / 3, y + H2);
+    r += seg(x + (W2 * 2) / 3, y + 12 * s, x + (W2 * 2) / 3, y + H2);
+    add(g, dPath("s-rule", r));
+    add(g, dPath("s-field", box(x + W2 - 16 * s, y + 3 * s, 12 * s, 6 * s)));
   } },
-  pad: { w: 52, h: 46, draw: (g, cx, cy, digit) => {
-    add(g, dPath("s-pad", box(cx - 18, cy - 18, 36, 36),
-      digit === null ? { "stroke-dasharray": "3 3" } : {}));
+  pad: { w: 104, draw: (g, cx, cy, s, digit) => {
+    const R2 = 32 * s;
+    add(g, dPath("s-pad", box(cx - R2, cy - R2, R2 * 2, R2 * 2),
+      digit === null ? { "stroke-dasharray": "4 4" } : {}));
+    /* the pad's own registration: four corner ticks, the way a 28×28 frame
+       is marked up, so an empty pad still reads as a pad and not a box */
+    let t = "";
+    for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]])
+      t += seg(cx + sx * R2, cy + sy * (R2 - 9 * s), cx + sx * R2, cy + sy * R2) +
+           seg(cx + sx * (R2 - 9 * s), cy + sy * R2, cx + sx * R2, cy + sy * R2);
+    add(g, dPath("s-reg", t));
   } },
-  automl: { w: 112, h: 46, draw: (g, cx, cy) => {
-    let d = "";
-    for (let k = 0; k < 6; k++) d += seg(cx - 38 + k * 7, cy - 12, cx - 38 + k * 7, cy + 12);
-    add(g, dPath("s-gate", d));
-    add(g, el("circle", { class: "s-ring", cx: n1(cx + 20), cy: n1(cy), r: 8 }));
+  automl: { w: 190, draw: (g, cx, cy, s) => {
+    /* fig. 09, quoted: seven phases lie along a rail, three of them gate, and
+       the run stands halted in front of the last one wearing this run's clay
+       ring. The conditional gate is dashed and the one that never lifts is
+       heavy, which is the same three weights fig. 09 draws them at. */
+    const step = 24 * s, x0 = cx - step * 3, base = cy + 18 * s;
+    add(g, dPath("s-railline", seg(x0 - 12 * s, base, x0 + step * 6 + 12 * s, base)));
+    let ticks = "";
+    for (let k = 0; k < 7; k++) ticks += seg(x0 + k * step, base, x0 + k * step, base + 6 * s);
+    add(g, dPath("s-railline", ticks));
+    add(g, dPath("s-gate", seg(x0 + step * 2, base - 26 * s, x0 + step * 2, base + 4 * s),
+      { "stroke-dasharray": "4 3" }));
+    add(g, dPath("s-gate", seg(x0 + step * 4, base - 26 * s, x0 + step * 4, base + 4 * s)));
+    add(g, dPath("s-halt", seg(x0 + step * 6, base - 28 * s, x0 + step * 6, base + 6 * s)));
+    add(g, el("circle", { class: "s-ring", cx: n1(x0 + step * 5), cy: n1(base),
+      r: n1(9 * s) }));
   } },
 };
 function buildSigns(js) {
@@ -6703,11 +6822,38 @@ function buildSigns(js) {
   const cs = getComputedStyle(host);
   const spx = parseFloat(cs.getPropertyValue("--spx")) || 0;
   const T = parseFloat(cs.getPropertyValue("--gtext")) || 44;
-  const tight = W - T < 420;
+  const R = W - 10, lane = R - T;
+  const tight = lane < 300;
+  const GAP = tight ? 12 : 18;
   const svg = figSvg(host, "sline", W, H);
   signs.svg = svg; signs.spx = spx; signs.rows = [];
   const rows = [...host.querySelectorAll(".srow")];
   const railless = plate.classList.contains("railless");
+  /* ————— ONE SCALE FOR EVERY CARD, and it is measured —————
+     The row with two stops on it is the one that runs out of lane first, so
+     the scale is solved there and spent everywhere: three cards that shrink
+     together stay one family, and a narrow seat gets a smaller drawing
+     rather than a missing one. A card is never narrower than the name it
+     carries — the stop's own label is measured with getBoundingClientRect
+     here and never guessed from a per-character budget, which is the rule
+     [[figure-label-budget-constant]] cost a sitewide 10% to learn. */
+  const labW = (row, n) => {
+    const l = row.querySelectorAll(".sstop")[n];
+    return l ? Math.round(l.getBoundingClientRect().width) + 16 : 76;
+  };
+  const kindsOf = (i) => (i === 0 ? ["yard"] : ["pad", "automl"]);
+  const cardW = (row, kinds, s) =>
+    kinds.map((k, n) => Math.max(MARKS[k].w * s, labW(row, n)));
+  let S = 1;
+  if (rows[1]) {
+    const kinds = kindsOf(1);
+    for (let it = 0; it < 14 && S > 0.5; it++) {
+      const ws = cardW(rows[1], kinds, S);
+      if (ws.reduce((a, b) => a + b, 0) + GAP * (ws.length - 1) <= lane) break;
+      S -= 0.05;
+    }
+    S = Math.max(S, 0.5);
+  }
   /* the figure's own spine, for the reader whose arc never arrives: under
      reduced motion the night beats carry opaque resting grounds and the rail
      is painted over, so the lanes would run to nothing. Never clay — this is
@@ -6722,28 +6868,31 @@ function buildSigns(js) {
     const y = row.offsetTop + (mark ? mark.offsetTop + mark.offsetHeight / 2 : 0);
     /* glyph at the far end and agentic automl nearer the line, which is the
        order the markup prints them in and the order the day ran */
-    const kinds = i === 0 ? ["yard"] : ["pad", "automl"];
+    const kinds = kindsOf(i);
     const boxes = [...row.querySelectorAll(".smark")];
+    const ws = cardW(row, kinds, S);
     /* the stops stand at the far end of the lane, seated from the edge in */
-    let edge = W - 10;
+    let edge = R;
     const cards = kinds.map((k, n2) => {
-      const lab = boxes[n2]?.querySelector(".sstop");
-      const half = Math.max(MARKS[k].w / 2,
-        Math.round((lab?.getBoundingClientRect().width || 60) / 2) + 10);
-      const c = edge - half;
-      edge = c - half - (tight ? 10 : 18);
+      const w2 = ws[n2], c = edge - w2 / 2;
+      edge = c - w2 / 2 - GAP;
       boxes[n2]?.style.setProperty("--mx", c.toFixed(1) + "px");
-      return { k, c, half };
+      return { k, c, w: w2 };
     });
-    for (const { k, c, half } of cards) {
-      /* the card: a frame, the quoted freight in it, the name printed under
-         the freight in HTML, and one leg down to the lane it feeds */
-      /* the card holds the freight ABOVE its name, because a name printed
-         over a drawing is neither. 78px of card: the quoted mark in the top
-         two thirds, the stop's own name in HTML across the bottom. */
-      add(g, dPath("s-card", box(c - half, y - 96, half * 2, 78)));
-      MARKS[k].draw(g, c, y - 68, glyphDigit);
-      add(g, dPath("s-leg", seg(c, y - 18, c, y)));
+    const top = y - CARD_LEG - CARD_H;
+    for (const { k, c, w: w2 } of cards) {
+      /* the card: a frame, the quoted freight across its top two thirds, a
+         board rule, and the stop's own name and clock printed under it in
+         HTML — a name drawn over a drawing is neither. One leg stands the
+         card on the lane that carries its writer's page away. */
+      /* the nearer board is the later stop and the heavier frame: on
+         Shree's branch agentic automl at 22:05 stands in front of glyph at
+         15:23, and depth here is weight, never opacity. */
+      add(g, dPath(k === cards[cards.length - 1].k ? "s-card near" : "s-card",
+        box(c - w2 / 2, top, w2, CARD_H)));
+      MARKS[k].draw(g, c, top + CARD_MARK / 2, S, glyphDigit);
+      add(g, dPath("s-board", seg(c - w2 / 2, top + CARD_MARK, c + w2 / 2, top + CARD_MARK)));
+      add(g, dPath("s-leg", seg(c, y - CARD_LEG, c, y)));
       add(g, dPath("s-node", dot(c, y, 2.6)));
     }
     if (i === 1 && glyphDigit !== null) {
@@ -6753,19 +6902,48 @@ function buildSigns(js) {
       d.setAttribute("data-machine", "");
       d.textContent = glyphDigit;
       d.style.setProperty("--dx", pad.c.toFixed(1) + "px");
-      d.style.setProperty("--dy", (y - 79).toFixed(1) + "px");
+      d.style.setProperty("--dy", (top + CARD_MARK / 2).toFixed(1) + "px");
       host.appendChild(d);
     }
-    const PW = tight ? 42 : 56, PH = tight ? 26 : 32;
-    const start = Math.max(T + PW + 10, edge) - PW;
+    const PW = tight ? 56 : 72, PH = tight ? 34 : 44;
+    /* THE PAGE RUNS THE WHOLE LANE, and it can because the boards do not
+       stand on it — they stand OVER it, 26px of leg clear of the line, so
+       the only thing the page passes is a post. The old seat kept it clear
+       of the cards' boxes as well, which cost most of the lane and is what
+       held the boards to 78px in the first place. It leaves from the far
+       end, which is the stop furthest back in the day: Randall's yard at
+       07:52, Shree's glyph at 15:23. */
+    const start = Math.max(T + 40, R - PW - 4);
     add(g, dPath("s-node", dot(T, y, 3)));
-    const solid = dPath("s-lane", seg(start, y, W - 10, y));
+    const solid = dPath("s-lane", seg(start, y, R, y));
     const dash = dPath("s-dash", seg(T, y, start, y));
     add(g, solid); add(g, dash);
-    const stub = dPath("s-stub", seg(railless ? spx : (js?.[i]?.jx ?? spx), y, T, y));
+    const jx = railless ? spx : (js?.[i]?.jx ?? spx);
+    const stub = dPath("s-stub", seg(jx, y, T, y));
     stub.setAttribute("data-j", i);
     add(g, stub);
-    add(g, dPath("s-tick", box(T - 11, y - 4, 7, 8)));
+    /* ————— THE POINTS, where this branch joins the run's line —————
+       A stock rail, a blade lying off it, a tie bar and a lever. The blade
+       CLOSES onto the stock rail as the written page runs down to it, which
+       is the signal the old 7x8 tick box carried without looking like
+       anything.
+
+       IT IS SCRUBBED, NOT TRANSITIONED, and that is not a preference. The
+       blade's `d` is recomputed from the same slide the page rides, so the
+       points stay a pure function of scroll like everything else here — and
+       a CSS transform with a transition on this group computes to a live
+       matrix INSIDE G10c's own transform neutraliser, whose residual count
+       must be zero. Measured at 1456x949: two `g.s-set` elements held
+       `matrix(1, 0, 0, 1, 0, 0)` through the override, so the gate would
+       have gone red on a decoration. The scroll-driven blade is both truer
+       to this page and green.
+       Drawn from `jx` — the rail's measured x at this branch's own y, wobble
+       included — so the points sit on the line and not beside it. */
+    const blade = dPath("s-blade", seg(jx + 4, y, jx + 54, y - 11));
+    add(g, blade);
+    add(g, dPath("s-tie", seg(jx + 44, y - 14, jx + 44, y + 6)));
+    add(g, dPath("s-lever", seg(jx + 44, y + 6, jx + 57, y + 16)));
+    add(g, dPath("s-node", dot(jx + 57, y + 16, 2.4)));
     /* the page, drawn as the corridor cargo draws it */
     const page = el("g", { class: "s-carry" });
     const leaf = el("g", { class: "s-flutter",
@@ -6775,60 +6953,20 @@ function buildSigns(js) {
     add(leaf, el("rect", { class: "s-page", x: n1(px0), y: n1(py),
       width: PW, height: PH, rx: 2 }));
     let rules = "";
-    for (let k = 0; k < 4; k++)
-      rules += seg(px0 + 7, py + 8 + k * 6, px0 + PW - 10 - ((k * 11) % 15), py + 8 + k * 6);
+    for (let k = 0; k < 5; k++)
+      rules += seg(px0 + 8, py + 9 + k * 7, px0 + PW - 12 - ((k * 13) % 19), py + 9 + k * 7);
     add(leaf, dPath("s-rule", rules));
-    add(leaf, dPath("s-quote", box(px0 + PW - 10, py + 4, 4, 6)));
+    add(leaf, dPath("s-quote", box(px0 + PW - 12, py + 5, 5, 7)));
     g.appendChild(page);
     svg.appendChild(g);
-    signs.rows.push({ el: row, g, y, page, solid, dash, stub, i,
+    signs.rows.push({ el: row, g, y, page, solid, dash, stub, blade, jx, i,
       pageY: js?.[i]?.y ?? y,
-      start: px0, right: W - 10, dashLeft: T,
-      travel: Math.max(30, px0 - T) });
+      start: px0, right: R, dashLeft: T,
+      /* it comes to rest CLEAR OF THE POINTS, not on them: the blade, the
+         tie bar and the lever occupy the 57px right of the junction, and a
+         coupled page parked over them reads as one tangled mark. */
+      travel: Math.max(30, px0 - T - 20) });
   });
-  /* ————— the day, as the run's own table keeps it —————
-     Twelve stops on one line, from the first light of run 042 to the hour it
-     halts at. The three a reference came out of are filled and named; the
-     other nine are the day they sit in. Read straight off CLOCKS, so a stop
-     that moves takes this strip with it. */
-  const last = rows[rows.length - 1];
-  const strip = el("g", { class: "s-day" });
-  if (last) {
-    const sy = last.offsetTop + last.offsetHeight +
-      (parseFloat(cs.getPropertyValue("--sday")) || 60);
-    const x0 = T, x1 = W - 10;
-    const mins = CLOCKS.slice(0, RUN_BEATS);
-    const at = (m) => x0 + ((m - mins[0]) / (mins[mins.length - 1] - mins[0])) * (x1 - x0);
-    add(strip, dPath("s-daylane", seg(x0, sy, x1, sy)));
-    /* WHICH STOPS ARE RAISED IS READ OFF THE CLOCKS THEMSELVES, not from a
-       list of beat numbers kept in step by hand: every printed clock is
-       parsed to minutes and looked up in the run's own table. A clock that
-       matched nothing would raise nothing, and check-figures binds all three
-       of them to stations.ts, so the two gates close over each other. */
-    const sbyv = parseFloat(cs.getPropertyValue("--sby")) || 0;
-    const raised = new Set();
-    for (const c2 of host.querySelectorAll(".sclock")) {
-      const m = /^(\d{1,2}):(\d{2})$/.exec(c2.textContent.trim());
-      if (!m) continue;
-      const k = mins.indexOf(+m[1] * 60 + +m[2]);
-      if (k < 0) continue;
-      raised.add(k);
-      const r2 = c2.closest(".srow"), mk = c2.closest(".smark");
-      const mx = parseFloat(mk?.style.getPropertyValue("--mx")) || 0;
-      c2.style.setProperty("--cx", (at(mins[k]) - mx).toFixed(1) + "px");
-      c2.style.setProperty("--cy",
-        (sy + 9 - (r2.offsetTop + sbyv - 44)).toFixed(1) + "px");
-    }
-    let ticks = "", marks = "";
-    mins.forEach((m, k) => {
-      const x = at(m);
-      if (raised.has(k)) marks += dot(x, sy, 3.4) + seg(x, sy - 13, x, sy - 4);
-      else ticks += seg(x, sy - 5, x, sy);
-    });
-    add(strip, dPath("s-daytick", ticks));
-    add(strip, dPath("s-daystop", marks));
-  }
-  svg.appendChild(strip);
 }
 
 /* ————— the bead is the clock for both plates —————
@@ -6890,7 +7028,9 @@ function scrubSigns(tokenY, settled) {
     r.dash.setAttribute("d", `M${r.dashLeft.toFixed(2)} ${yy} L${split} ${yy}`);
     r.page.style.opacity = gone;
     r.page.classList.toggle("coupled", slide >= 0.98);
-    r.g.style.setProperty("--tick", slide >= 0.98 && gone === "1" ? "1" : "0");
+    /* the points close under the page that is running down onto them */
+    r.blade.setAttribute("d",
+      `M${n1(r.jx + 4)} ${yy}L${n1(r.jx + 54)} ${n1(r.y - 11 * (1 - slide))}`);
   }
 }
 
