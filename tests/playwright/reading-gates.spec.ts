@@ -1386,7 +1386,21 @@ test.describe("G10b · the rail docks, and it keeps out of the timetable", () =>
 
    The owner's round-2 ruling, made a number. Round 14 runs the day's rail
    down both night plates, so for the first time the line and the words share
-   a column, and the distance between them is the whole question.
+   a column, and the distance between them is the whole question. Round 15
+   added ¶08, where he found the line inside the words rather than beside
+   them.
+
+   IT IS NOT A WHOLE-PAGE GATE, and the omission is deliberate rather than
+   unfinished. Measured on ink at these eight seats, the rail strikes the
+   prose of every station from ¶02 to ¶09, because each hold is a percentage
+   of the viewport while every column is half of a 1180px cap. The three
+   stations here are the three whose hold was MOVED off the words and can
+   therefore hold a floor; asserting the floor at the other six would assert
+   that the page has a different design, since the only x's clear of both
+   columns are a 72px gutter and the outer margin, and putting every station
+   in one of them either flattens the sweep from 533px to 140 or takes the
+   whole rail past its slope ceiling. The full table is in buildThread's
+   round-15 erratum.
 
    MEASURED ON INK, NOT ON BOXES, and that is main's ruling after both were
    measured. A paragraph's box runs to the column's edge; its last line does
@@ -1430,6 +1444,14 @@ const G10C_FLOOR = 16; /* px · the same envelope G10b holds at the timetable */
    figcaption" first matched a quote's attribution at 480px while fig. 11's
    own caption sat at 31px, unread. */
 const G10C_BOXES: [string, number, RegExp | null][] = [
+  /* ¶08 joined in round 15. The owner read the line through its heading and
+     down its italic paragraph at 1440×900; `stx[7]` was 33% of the viewport
+     against a column capped at 1180, so the hold stood 135px inside the
+     words. The heading is its own entry rather than part of the prose walk so
+     a failure names which of the two it is — the display line and the body
+     fail for different reasons and take different fixes. */
+  ["#lifequest .prose", 2, null],
+  ["#lifequest h2", 1, /^LifeQuest/],
   ["#review .prose", 2, null],
   ["#cosigners .prose", 2, null],
   ["#gatesFig", 2, null],
@@ -1443,10 +1465,11 @@ async function inkClearance(page: Page, selectors: string[]) {
   return page.evaluate((sels) => {
     const st = document.createElement("style");
     st.textContent =
-      "#review,#review *,#cosigners,#cosigners *{transform:none !important}";
+      "#lifequest,#lifequest *,#review,#review *,#cosigners,#cosigners *" +
+      "{transform:none !important}";
     document.head.appendChild(st);
     const dirty = [
-      ...document.querySelectorAll("#review *,#cosigners *"),
+      ...document.querySelectorAll("#lifequest *,#review *,#cosigners *"),
     ].filter((e) => {
       const t = getComputedStyle(e).transform;
       return t && t !== "none";
@@ -1511,7 +1534,7 @@ async function inkClearance(page: Page, selectors: string[]) {
 
 test.describe("G10c · the rail keeps clear of every line of ink it passes", () => {
   for (const [w, h] of G10C_SEATS) {
-    test(`${w}x${h}: no rail sample within ${G10C_FLOOR}px of ¶10's or ¶11's ink`, async ({
+    test(`${w}x${h}: no rail sample within ${G10C_FLOOR}px of ¶08's, ¶10's or ¶11's ink`, async ({
       page,
     }, testInfo) => {
       testInfo.setTimeout(120_000);
@@ -1740,6 +1763,40 @@ test.describe("G10c / G10d · positive controls", () => {
     expect(
       out[0].min,
       "a rail holding its column inside the paragraph must be caught"
+    ).toBeLessThan(G10C_FLOOR);
+  });
+
+  test("control: beat 7 back on the percentage table is caught", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    /* 1440×900, because that is the seat the defect was reported at: the
+       hold stood at x 475 in a column running 130..610 and the rail struck
+       53 samples of the paragraph over 352px of descent, the heading 23 over
+       59. Reverting the branch puts `(stx[7] / 100) * vw` back and with it
+       exactly that geometry. Both entries are asserted, because the heading
+       and the body are separate G10c rows and a fix that saved only one of
+       them would otherwise read as a whole fix. */
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const TARGET = "i === 7 && !stacked && prose8";
+    const [mark] = await inject(page, [
+      [TARGET, "i === 7 && !stacked && !prose8"],
+    ]);
+    await arrive(page);
+    expect(mark.hit, `deskX's ¶08 branch "${TARGET}" is still in the run`).toBe(
+      true
+    );
+    const { out } = await inkClearance(page, [
+      "#lifequest .prose",
+      "#lifequest h2",
+    ]);
+    expect(
+      out[0].min,
+      "a rail holding its column inside ¶08's paragraph must be caught"
+    ).toBeLessThan(G10C_FLOOR);
+    expect(
+      out[1].min,
+      "a rail through ¶08's display heading must be caught"
     ).toBeLessThan(G10C_FLOOR);
   });
 

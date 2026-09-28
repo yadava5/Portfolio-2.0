@@ -4753,10 +4753,32 @@ function buildThread() {
      viewport, because `beat-inner` caps at 1180px: a percentage holds its
      distance from the window's edge while the plate holds the column's, so
      the two drift apart by half of everything over 1180 and the spine was
-     never on the spine at a wide seat. The percentages stay for every
-     station above, where the line's job is to keep clear of the prose.
+     never on the spine at a wide seat. ¶08 joined them in round 15, in the
+     gutter rather than on a plate; see its own note below.
      A side effect worth the ink: the widest swing in the tail drops, since
      ¶11 and ¶12 now share one x instead of stepping 27 → 24.
+
+     ERRATUM, round 15, and it is the reason ¶08 moved. This note used to end
+     "the percentages stay for every station above, where the line's job is
+     to keep clear of the prose." The second half was never true at any seat.
+     Measured on ink at eight two-column seats, the rail strikes the prose of
+     every station from ¶02 to ¶09, because each hold is a percentage of the
+     viewport and each prose column is half of a 1180px cap: at 1440 the
+     holds stand at 432/1008/446/994/475/965/475/965 against columns running
+     130..610 and 830..1310, which puts every one of them 135–180px inside
+     its own words. Worst first, as samples over the y they cover:
+     ¶09 102/688 · ¶03 98/592 · ¶07 94/539 · ¶05 80/432 · ¶04 52/392 ·
+     ¶08 53/352 · ¶06 41/323 · ¶02 25/137.
+     THE PAGE-WIDE FIX IS REFUSED, and that is a measurement too, not
+     caution: the only x's clear of both columns' ink are the 72px gutter and
+     the outer margin. Holding every station in a gutter takes the sweep from
+     533px of x to 140 and the line stops being a line through the page;
+     holding them in the margins takes the whole rail to slope 1.63–1.83
+     against a 1.58 ceiling. So the crossings stay — a line that crosses a
+     column on the diagonal is this page's own idiom and predates the build
+     the owner signed off — and what gets fixed is a hold that SITS in the
+     words. ¶08 is the one he read, and it is the one that also carries a
+     waybill over the same paragraph.
 
      One entry per beat, and that is load-bearing: this array is indexed by
      beat, so a short one makes stx[last] undefined, every anchor NaN from
@@ -4823,6 +4845,46 @@ function buildThread() {
      this is the number it moves. */
   const SPINE_IN = 56;
   const gatesPlate = $("gatesFig")?.closest("figure");
+  /* THE THREE NUMBERS THE ROUTE IS MEASURED WITH, declared before the route
+     rather than beside the wobble they were written for: ¶08's lane and
+     ¶10's crossing both hold their clearance against the hand's full reach,
+     and a second copy of `amp` here is the copy that would drift. */
+  const PROSE_GAP = 16;  /* px · G10c's floor, and the gate that reads it */
+  const ROW_LEAD = 56;   /* px · straight before fig. 11's first branch */
+  const amp = mobile ? 3 : stacked ? 8 : 16; /* the hand, see the wobble below */
+  const prose10 = $("review")?.querySelector(".prose");
+  const lead11 = $("cosigners")?.querySelector(".cosign blockquote");
+  /* ————— ¶08 HOLDS IN THE GUTTER, AND IT IS A MEASUREMENT —————
+     Round 15. The owner read the line through ¶08's heading and down its
+     italic paragraph at 1440×900, with the ticket parked on "missions". He
+     was reading a real number: `stx[7]` is 33% of the VIEWPORT while
+     `beat-inner` caps at 1180px, so above 1180 the two stop meaning the same
+     thing. At 1440 the hold stood at x 475 with ¶08's prose column running
+     130..610 — 135px inside its own words, and held there for a third of the
+     station's height. Read on ink at the eight two-column seats, the rail
+     struck that prose at 48–53 samples over 339–352px of descent, and the
+     display heading at 18–23 samples over 45–61px.
+
+     THE GUTTER IS THE LANE. ¶08's prose ends at 610 and its plate begins at
+     682 (1440); the road between them is where a line belongs, and the
+     number is the one `corridorVia` already uses for ¶10 — the prose box,
+     plus G10c's own floor, plus the hand's full reach. Measured after: 57.5px
+     of clearance to the nearest glyph at 1440 and 30.3 at the narrowest
+     two-column seat, against a 16px floor.
+
+     AND IT COSTS THE RAIL NOTHING, which is why it is this and not a longer
+     hold. The swings out of ¶07 and into ¶09 get SHORTER, so corridors 6 and
+     7 get gentler rather than steeper — corridor 7 slope 0.924 → 0.601 and
+     bend24 9.4° → 6.0° at 1440 — and the whole rail's three numbers do not
+     move (1.444 / 19.1° / 1.8°). The same move made to the OUTER margin,
+     x 90, was measured and refused: it takes the whole rail to slope
+     1.63–1.83 against a 1.58 ceiling, and it does not even clear the words,
+     striking the column's left edge at 41–80 samples instead.
+
+     NOT A FRACTION, because a fraction is what broke. ¶08's own prose box is
+     read at build in LAYOUT space, the same as dockX, so an entrance
+     transform mid-flight cannot bake itself into the geometry. */
+  const prose8 = $("lifequest")?.querySelector(".prose");
   /* every seat but the phone asks where THIS beat's line runs; the phone has
      one lane for the whole run and nothing to negotiate with */
   const deskX = (i) =>
@@ -4830,7 +4892,9 @@ function buildThread() {
       ? dockX /* ¶11 rides the dock's own line into ¶12 */
       : i === 9 && !stacked && gatesPlate
         ? absLeft(gatesPlate) + SPINE_IN /* ¶10 rides fig. 10's spine */
-        : (stx[i] / 100) * vw;
+        : i === 7 && !stacked && prose8
+          ? absLeft(prose8) + prose8.offsetWidth + PROSE_GAP + amp * 1.5
+          : (stx[i] / 100) * vw;
   const beatX = (i) => (mobile ? RAIL_X_MOBILE : deskX(i));
   /* ————— the crossing out of fig. 10 goes ROUND ¶10's words —————
      Every beat holds its x from 18% to 52% of its own height and swings
@@ -4863,12 +4927,8 @@ function buildThread() {
      THE WOBBLE IS IN THE NUMBER, and leaving it out is how a clearance
      computed off anchors reads 16px and renders 8px inside the column: the
      hand's two sines reach 1.5·amp either side of the anchor at any y.
-     Everything is read in LAYOUT space at build, the same as dockX. */
-  const PROSE_GAP = 16;  /* px · G10c's floor, and the gate that reads it */
-  const ROW_LEAD = 56;   /* px · straight before fig. 11's first branch */
-  const amp = mobile ? 3 : stacked ? 8 : 16; /* the hand, see the wobble below */
-  const prose10 = $("review")?.querySelector(".prose");
-  const lead11 = $("cosigners")?.querySelector(".cosign blockquote");
+     Everything is read in LAYOUT space at build, the same as dockX, and the
+     four numbers it needs are declared above, with the route. */
   /* ¶11's hold starts where fig. 11 does. Its two branches are seated at the
      vertical centres of the quotes they belong to, so the first of them is
      bound to the first blockquote and nothing else — and the line has to be
@@ -5627,18 +5687,24 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
       tctx.textAlign = right ? "right" : "left";
       const tx = right ? pt.x - 20 : pt.x + 20, ty2 = y - 12;
       /* THE HALO, and it is what a map does. The rail runs down the middle
-         of the reading column at several stations — at ¶08 it passes through
-         the prose measure itself — so a waybill sooner or later prints over
-         a sentence. The B1 answer to that was to dim the line under text,
-         and the owner reversed it: the rail is one ink at one weight from
-         the name to the gate. A label cannot be dimmed either, for the same
-         reason it cannot be moved to the far side (there is no far side when
-         the line is inside the column).
+         of the reading column at several stations, so a waybill sooner or
+         later prints over a sentence. The B1 answer to that was to dim the
+         line under text, and the owner reversed it: the rail is one ink at
+         one weight from the name to the gate. A label cannot be dimmed
+         either, for the same reason it cannot be moved to the far side
+         (there is no far side when the line is inside the column).
          So the label carries its own paper instead: the ground colour
          stroked under the glyphs at 4px with round joins, the standard
          cartographic halo for a name crossing a contour. The rail's opacity
          and path are untouched; the only thing that changed is that the
-         label now sits ON the page rather than in it. */
+         label now sits ON the page rather than in it.
+         ROUND 15 MOVED ¶08'S LINE INTO THE GUTTER and the label went with
+         it: corridor 6's waybill stopped printing over the italic paragraph
+         and began crossing fig. 08's drawing instead, on the plate side.
+         Neither side is free there — 235px of label does not fit a 72px
+         gutter — and a name with a halo crossing a drawing is what a map
+         is, so the side rule stands and the halo does the work it was cut
+         for. */
       tctx.save();
       tctx.lineWidth = 4;
       tctx.lineJoin = "round";
