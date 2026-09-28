@@ -8890,7 +8890,7 @@ function* drawDawnscape() {
            east face. Same count, same draws — only the numbers move. */
         const lit = litX();
         const bias = lit !== null && cx < lit ? 1 : -1;
-        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 1.5 + r() * 0.5]); }
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 2.3 + r() * 0.7]); }
         layerCuts.push({ cp: [], dots });
       }
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
@@ -8910,7 +8910,7 @@ function* drawDawnscape() {
      paper measures 3.87:1, so the rim is doing the reading. */
   const florets = (cuts) =>
     (cuts || []).flatMap((c) => c.dots || [])
-      .map(([x, y, rd]) => `<circle class="ds-floret" cx="${F(x)}" cy="${F(y)}" r="${Math.max(0.7, (rd || 1.5) - 0.4).toFixed(1)}"/>`)
+      .map(([x, y, rd]) => `<circle class="ds-floret" cx="${F(x)}" cy="${F(y)}" r="${Math.max(0.7, (rd || 1.5) - 0.55).toFixed(1)}"/>`)
       .join("");
   /* THE FROTH carries the life: loose leaf strokes and detached leaf pairs
      floating off the rim, one group per layer, fluttering on its own short
@@ -10264,19 +10264,65 @@ function* drawDawnscape() {
     if (sun) {
       const px = sun.x, py = hz + 16, pw = 78 * vs, ph = 13 * vs;
       const boxed = [px - pw - 6, py - ph - 8, px + pw + 6, py + ph + 12];
-      const hitsWord = words.some(([l, t, rt, bt]) => boxed[2] + 24 > l && boxed[0] - 24 < rt && boxed[3] + 24 > t && boxed[1] - 24 < bt);
+      /* boxed is the pool's own reach and the words already carry their
+         halo, so no second pad */
+      const hitsWord = words.some(([l, t, rt, bt]) => boxed[2] > l && boxed[0] < rt && boxed[3] > t && boxed[1] < bt);
       if (!hitsWord) {
         const poolRng = birdRng(0x9a7e);
         near += lend(poolRng, () => {
-          let d = P(stroke(arc(px, py, pw, ph, Math.PI + 0.1, 2 * Math.PI - 0.1, 3), 0.5), "ds-far w06");
+          /* THE FAR BANK FIRST, so the water is read against something:
+             a low brow of its own behind the pool, with three reeds
+             standing on it. Then the lips, then the surface, then the near
+             bank the reader stands on. */
+          const bank = [];
+          for (let i = 0; i <= 16; i++) {
+            const t = i / 16;
+            bank.push([px - pw * 1.22 + pw * 2.44 * t, py - ph - 5 + Math.sin(t * 5.2 + 1.1) * 1.8]);
+          }
+          let d = P(stroke(bank, 0.6), "ds-far w06");
+          d += hatch([...bank, ...bank.map(([x2, y2]) => [x2, y2 + 5]).reverse()], -18, 3.2, "ds-far w1", 0.25, [7, 18]);
+          /* the reeds, and what the water does with them: a broken,
+             wobbling echo under each, shorter than the reed and fading */
+          const reeds = [];
+          for (const rf of [-0.62, -0.18, 0.44]) {
+            const rx = px + pw * rf + (poolRng() - 0.5) * 8;
+            const ry = py - ph - 4 + Math.sin((rf + 1.22) * 2.6) * 1.4;
+            const rh = (9 + poolRng() * 7) * Math.max(vs, 0.8);
+            let rd = "";
+            for (let k = 0, n2 = 2 + Math.floor(poolRng() * 2); k < n2; k++) {
+              const bh = rh * (0.6 + poolRng() * 0.5), ln = (poolRng() - 0.5) * 0.7;
+              rd += stroke(spine(rx + (poolRng() - 0.5) * 3, ry, bh, ln, (poolRng() - 0.5) * 3), 0.3);
+            }
+            d += P(rd, "ds-ink w1", 3);
+            reeds.push([rx, ry, rh]);
+          }
+          d += P(stroke(arc(px, py, pw, ph, Math.PI + 0.1, 2 * Math.PI - 0.1, 3), 0.5), "ds-far w06");
           d += P(stroke(arc(px, py, pw, ph, 0.12, Math.PI - 0.12, 3), 0.5), "ds-ink w1");
           d += P(stroke(arc(px, py + 1.2, pw * 0.94, ph * 0.9, 0.3, Math.PI - 0.5, 3), 0.5), "ds-ink w06");
-          for (let i = 0; i < 4; i++) {
-            const t = -0.55 + i * 0.33, yy = py + t * ph * 0.9;
-            const half = pw * Math.sqrt(Math.max(0, 1 - (t * 0.9) ** 2)) * 0.82;
+          /* THE REFLECTION. Not a mirror: a few broken vertical strokes
+             under each reed, a third of its height, wobbling more the
+             further down they go, and stopping short of the near lip */
+          let refl = "";
+          for (const [rx, ry, rh] of reeds) {
+            const drop = Math.min(rh * 0.42, ph * 1.5);
+            for (let k = 0; k < 3; k++) {
+              const x2 = rx + (poolRng() - 0.5) * 3.4;
+              const y0 = py - ph * 0.5 + poolRng() * 2, y1 = y0 + drop * (0.5 + poolRng() * 0.6);
+              if (y1 > py + ph * 0.75) continue;
+              refl += stroke([[x2, y0], [x2 + (poolRng() - 0.5) * 2.4, y1]], 0.8);
+            }
+            void ry;
+          }
+          d += P(refl, "ds-far w1", 6);
+          /* the surface, in lines that close up toward the far lip */
+          for (let i = 0; i < 5; i++) {
+            const t = -0.62 + i * 0.3 + i * i * 0.02, yy = py + t * ph * 0.92;
+            const half = pw * Math.sqrt(Math.max(0, 1 - (t * 0.92) ** 2)) * 0.84;
             d += P(stroke(curve([[px - half, yy], [px, yy + 0.8], [px + half, yy]], 6), 0.4), i % 2 ? "ds-far w1" : "ds-ink w06");
           }
-          d += hatch([[px - pw * 0.75, py + ph * 0.55], [px + pw * 0.75, py + ph * 0.55], [px + pw * 0.6, py + ph + 6], [px - pw * 0.6, py + ph + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+          /* the near bank, with the ground falling to it */
+          d += hatch([[px - pw * 0.78, py + ph * 0.5], [px + pw * 0.78, py + ph * 0.5], [px + pw * 0.62, py + ph + 9], [px - pw * 0.62, py + ph + 9]], -18, 2.8, "ds-far w1", 0.3, [8, 22]);
+          d += P(stroke(curve([[px - pw * 1.05, py + ph + 3], [px - pw * 0.5, py + ph + 7], [px + pw * 0.4, py + ph + 6], [px + pw * 1.02, py + ph + 2]], 6), 0.9), "ds-far w06");
           let g2 = "";
           for (let i = 0; i < 9; i++) {
             /* uneven down the path as well as across it: evenly spaced
@@ -10352,8 +10398,23 @@ function* drawDawnscape() {
       ];
       const made = [];
       let d = "";
+      /* IN CLUMPS, AND BIG ENOUGH TO SEE. Fourteen lone specks at true
+         scale are a thing you have to zoom in to find: the owner asked for
+         flowers he can see at his own window. So each spot carries one to
+         three flowers at slightly different heights, and the head is about
+         11px across instead of 7 — three times life size against a 62px
+         doe, which is the trade legibility takes from scale here, and it
+         is a trade rather than an oversight. Each flower is still its own
+         group and opens on its own clock, so a clump comes out over a few
+         seconds rather than all at once. */
+      const seats = [];
       for (const [fx, fy] of spots) {
-        const x = X(fx) + (daisyRng() - 0.5) * 10, y = Y(fy);
+        const n2 = 1 + (daisyRng() < 0.6 ? 1 : 0) + (daisyRng() < 0.3 ? 1 : 0);
+        for (let k = 0; k < n2; k++)
+          seats.push([fx, fy, (daisyRng() - 0.5) * 13, (daisyRng() - 0.5) * 5]);
+      }
+      for (const [fx, fy, ox2, oy2] of seats) {
+        const x = X(fx) + ox2, y = Y(fy) + oy2;
         /* out of the thin ground under the words, out of every halo, and
            6px clear of anything solid already standing there */
         /* 0.2, not the plan's 0.35: dens() is zero inside the words'
@@ -10369,12 +10430,12 @@ function* drawDawnscape() {
         const tip = sp[sp.length - 1];
         const stem = P(stroke(sp, 0.25), "ds-tip w1");
         /* the bud: a small closed head, 2.2 by 3.6 across */
-        const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 1.8 * dk, 1.1 * dk, 1.8 * dk, 0, 6.3, 1.2))}Z"/>`;
+        const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 2.2 * dk, 1.5 * dk, 2.4 * dk, 0, 6.3, 1.2))}Z"/>`;
         /* the bloom: six to eight fat lobes, squashed, with a cut eye —
            seven thin ones read as an asterisk at this size — and the
            light's own colour in the eye, because the light is what opened
            it. The cut leaves paper under the gold. */
-        const nl = 6 + Math.floor(daisyRng() * 3), R = (3.25 + daisyRng() * 0.75) * dk;
+        const nl = 6 + Math.floor(daisyRng() * 3), R = (5.0 + daisyRng() * 1.1) * dk;
         const cy2 = tip[1] - 1.2 * dk;
         const star = [];
         for (let i = 0; i <= nl * 8; i++) {
@@ -10382,7 +10443,7 @@ function* drawDawnscape() {
           const rr2 = R * (0.55 + 0.45 * Math.abs(Math.cos((a2 * nl) / 2)));
           star.push([tip[0] + Math.cos(a2) * rr2, cy2 + Math.sin(a2) * rr2 * 0.75]);
         }
-        const eyeR = 0.95 * dk;
+        const eyeR = 1.45 * dk;
         const bloom = `<path class="ds-fill" fill-rule="evenodd" d="${path(wob(star, 0.25))}Z${path(arc(tip[0], cy2, eyeR, eyeR * 0.8, 0, 6.3, 0.8))}Z"/>` +
           `<circle class="ds-eye" cx="${F(tip[0])}" cy="${F(cy2)}" r="${(eyeR * 0.78).toFixed(1)}"/>`;
         nS += 3;
@@ -10488,9 +10549,12 @@ function* drawDawnscape() {
            The east summit comes with it: it seats inside the band by its
            own relief (its peak lands about 0.53 W, its crest runs off the
            east edge), it is layer 2 so it draws in hair-strong and reads
-           as the farther rock, and it puts a saddle in the skyline. It
-           stands clear of the light's clearing, which ends at 148px. */
-        const seat = seatRange(["principal", "east"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
+           as the farther rock, and it puts a saddle in the skyline. The
+           west summit comes with it for the same reason and fills the
+           corner the sun rises out of, so the band is a RANGE across the
+           whole width rather than a hill with a light behind it. Both are
+           inside .ds-p2, which is what the light's clearing exempts. */
+        const seat = seatRange(["principal", "east", "west"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
         far += seat.markup;
         /* the easternmost peak the band seated: a far crossing is noticed
            east of it, because east of it is the only sky on a phone that is
@@ -10519,6 +10583,19 @@ function* drawDawnscape() {
         far += skyPiece(a, bnd, y);
         if (r() < 0.5 && bnd + 50 < X(0.66)) { const c2 = bnd + 18 + r() * 30; far += skyPiece(c2, Math.min(c2 + 40 + r() * 70, X(0.66)), y + (r() - 0.5) * 2); }
       }
+      /* and the air between the range's foot and the kicker: three low
+         hazes across the gap the band leaves, each breaking around the
+         words the way every other stroke here does. Sixty-eight pixels of
+         bare cream between a drawing and a paragraph reads as a margin;
+         with these it reads as distance. */
+      if (SCAPE.band && SCAPE.band.relief >= 40) {
+        const gap0 = SCAPE.band.foot + 10, gap1 = Math.max(gap0 + 12, kickInk - 16);
+        for (let i = 0; i < 3 && gap0 + 8 < gap1; i++) {
+          const y = gap0 + ((gap1 - gap0) * (i + 0.4)) / 3.2 + (r() - 0.5) * 3;
+          const a2 = X(0.05 + r() * 0.1), b2 = Math.min(a2 + 70 + r() * 150, X(0.92));
+          far += skyPiece(a2, b2, y);
+        }
+      }
     }
     /* the bottom band: what fits under the last line, out of the column's
        x-range where it can be taller */
@@ -10531,8 +10608,54 @@ function* drawDawnscape() {
        And the west stand moves out of the pair's corner. */
     near += solidTuft(X(0.26), hz, room >= 1 ? 10 : 8, 5, "sway-m", 0);
     if (room >= 1) near += tuft(X(0.44), hz, 8, 4);
-    near += solidTuft(X(0.87), hz, room >= 1 ? 9 : 8, 5, "sway-l", 0);
+    /* STILL, and it buys the tree its slot: a phone may run eight
+       continuous groups and the tree that frames the corner is worth more
+       than a second swaying tuft */
+    near += solidTuft(X(0.84), hz, room >= 1 ? 9 : 8, 5, "", 0);
     if (room >= 1 && hz + 18 <= H - 4) near += gull(X(0.63), hz + 14, 1, "peck-a", "a");
+    /* ————— A TREE FRAMES THE EAST EDGE —————
+       The phone had a band at the top, a strip at the bottom and six
+       hundred pixels of cream between them. This is the sheet's own great
+       tree at a phone's scale: a young one on the east edge, its crown
+       hanging over the corner, so the bottom band reads as a place rather
+       than a rule with animals on it. Its masses shrink themselves out of
+       any word's air (that is what mass() does with inKeep), and it sways
+       on the slot the still tuft gave up. */
+    if (room >= 1) mid += sapling(X(0.93), hz + 1, 95, -0.06, "sway-sap");
+    /* and a pool in the near ground, with the light on it: the one place
+       the morning's colour reaches the phone's meadow */
+    if (room >= 1 && sun) {
+      /* 27px of ground is what a phone has: the lens sits close under the
+         brow and its bank takes four of them */
+      const px = X(0.45), py = hz + 10, pw = 44, ph = 5;
+      /* the words' boxes ALREADY carry their halo (words.push adds it), so
+         this is the pool's own box against them and nothing more: padding
+         it again put the lens 26px inside the signature's air and the
+         phone's pool silently never drew */
+      const hitsWord = words.some(([l, t, rt, bt]) => px + pw > l && px - pw < rt && py + ph + 4 > t && py - ph < bt);
+      if (!hitsWord && py + ph + 4 < H - 2) {
+        const poolRng = birdRng(0x9a7e);
+        near += lend(poolRng, () => {
+          let d = P(stroke(arc(px, py, pw, ph, Math.PI + 0.12, 2 * Math.PI - 0.12, 2), 0.4), "ds-far w06");
+          d += P(stroke(arc(px, py, pw, ph, 0.14, Math.PI - 0.14, 2), 0.4), "ds-ink w1");
+          for (let i = 0; i < 3; i++) {
+            const yy = py + (-0.42 + i * 0.4) * ph;
+            d += P(stroke([[px - pw * 0.62, yy], [px + pw * 0.62, yy]], 0.3), "ds-far w06");
+          }
+          /* the bank the reader stands on, so it is a hollow and not a
+             line: the phone has 27px of ground and this is 6 of them */
+          d += hatch([[px - pw * 0.8, py + ph * 0.5], [px + pw * 0.8, py + ph * 0.5], [px + pw * 0.62, py + ph + 4], [px - pw * 0.62, py + ph + 4]], -18, 2.6, "ds-far w1", 0.3, [6, 16]);
+          let g2 = "";
+          for (let i = 0; i < 5; i++) {
+            const t = i / 4, yy = py - ph * 0.7 + t * ph * 1.5;
+            const half = 1.6 + t * 5.2 + poolRng() * 1.6;
+            g2 += P(stroke([[px - half, yy], [px + half * (0.7 + poolRng() * 0.5), yy]], 0.25), t > 0.4 ? "ds-glit w12" : "ds-glit w1");
+          }
+          SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: pw };
+          return `<g class="ds-pool">${d}${g2}</g>`;
+        });
+      }
+    }
     /* THE PAIR, IN THE CORNER THE SIGNATURE DOES NOT REACH. A phone had a
        horizon, three tufts and a gull on it: no subject at all, and the one
        thing on this page that looks back was desktop-only. The doe faces
