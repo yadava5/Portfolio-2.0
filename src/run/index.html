@@ -122,7 +122,10 @@ if (location.hash.length > 1) {
                                 any waypoint. Nothing could have said so; check-palette can. */
     --clay-g:#c4532e;        /* clay as graphic — measured: #c4532e on #f2e4c9 — 3.62:1 / Lc 55.7 */
     --pine:#2f5d50;
-    --sun-g:#a8760c;         /* RESERVED: ¶13's sun and nothing else. Graphics only, never
+    --sun-g:#a8760c;         /* ¶13's LIGHT: its sun, the light on water and the heart of
+                                a flower (round 14 opened the palette; the classes each
+                                accent may appear on are declared in check-dawnscape 4).
+                                Graphics only, never
                                 text, the way --clay-g is. The one colour on a drawing that
                                 was ruled ink-only, and it is on the LIGHT rather than on the
                                 object: the disc's rim is --ink-2 and this is the second pass
@@ -135,6 +138,32 @@ if (location.hash.length > 1) {
                                 1, 2 and 3: the stroke's core reaches #a8760c exactly (w12 and
                                 w14 do not dilute), and against the paper beside it — which
                                 the wash's own glow lifts to #fdfdf0 — 3.89:1 / Lc 65.2. */
+    /* ¶13'S ACCENTS, round 14. The sheet was ruled ink-only, then the owner
+       lifted the ruling for the sun, then for touches anywhere they make the
+       morning feel real: "colors are allowed, just not the entire canvas to
+       be colors". So the drawing is still an ink drawing and colour is an
+       ACCENT ON IT — three tokens, each with one meaning and each confined
+       to the classes it is declared for (check-dawnscape 4 holds the
+       registry, and a coverage cap in the browser holds "not the entire
+       canvas" as a number rather than a promise).
+         --sun-g   the LIGHT: the sun's rim and rays, the light on water,
+                   and the heart of a flower, which is what opens it
+         --leaf-g  NEW GROWTH: the living blades' tips and a daisy's stem
+         --bloom-p BLOSSOM: the florets in the crown and a falling petal
+       All three are GRAPHICS, never text, and all three are measured over
+       every day field rather than only the morning one they render on. They
+       carry the same luminance profile in both themes and differ only in
+       hue, which is why they read as one palette. */
+    --leaf-g:#5c7a2e;        /* measured: #5c7a2e on #fbf3e7 — 4.46:1 / Lc 67.3, and on
+                                #f2e4c9, the tightest day field — 3.91:1 / Lc 58.7 */
+    --bloom-p:#b95f70;       /* a blossom that must read on cream cannot be a pale pink:
+                                every tint light enough to look like one measures under
+                                the 3.0 graphic floor on #f2e4c9 (#c4707f is 2.80, #cc7382
+                                is 2.64). This is the deepest rose that clears it, and the
+                                floret sits in a hole cut in the canopy, so a paper rim
+                                separates it from the ink either way.
+                                measured: #b95f70 on #fbf3e7 — 3.87:1 / Lc 62.4, and on
+                                #f2e4c9 — 3.39:1 / Lc 53.9 */
     --ember:#f57a3e;         /* RESERVED: the inked APPROVED stamp only */
     --hair:rgba(38,35,28,.16);
     --hair-strong:rgba(38,35,28,.34);
@@ -171,6 +200,14 @@ if (location.hash.length > 1) {
                                 cheaper and more honest than teaching the scan an exception.
                                 measured: #e0b25c on #43372f — 5.85:1 / Lc 57.0, and on
                                 #2c2622 — 7.60:1 / Lc 61.4. */
+    /* the other two accents, by the same formality and on purpose at the
+       same value as the light: a reader never sees ¶13 at night, and a
+       palette whose members differ only in hue is a palette rather than
+       three decisions */
+    --leaf-g:#a8c46a;        /* measured: #a8c46a on #43372f — 5.90:1 / Lc 57.3, and on
+                                #2c2622 — 7.65:1 / Lc 61.7 */
+    --bloom-p:#eda6b2;       /* measured: #eda6b2 on #43372f — 5.86:1 / Lc 57.0, and on
+                                #2c2622 — 7.60:1 / Lc 61.4 */
     --hair:rgba(246,239,226,.18);
     --hair-strong:rgba(246,239,226,.45); /* .40 composited to EXACTLY the 3.0
                                 non-text floor on the settled night field — the
@@ -1199,6 +1236,16 @@ if (location.hash.length > 1) {
      check-dawnscape (4) holds both halves of that: the rule, and the fact
      that every path wearing the class is inside the sun's own groups. */
   .dawnscape .ds-sun{stroke:var(--sun-g); fill:none}
+  /* the same light, twice more: on water, and in the heart of a flower the
+     light is what opens. One token, three classes, all declared */
+  .dawnscape .ds-glit{stroke:var(--sun-g); fill:none}
+  .dawnscape .ds-eye{fill:var(--sun-g); stroke:none}
+  /* new growth: a living blade's tip and a daisy's stem. The fused mass of
+     a tuft stays ink — the colour is on what is growing, not on the clump */
+  .dawnscape .ds-tip{stroke:var(--leaf-g)}
+  /* blossom: a floret in the crown, and a petal on its way down */
+  .dawnscape .ds-floret{fill:var(--bloom-p); stroke:none}
+  .dawnscape .ds-petal{stroke:var(--bloom-p); fill:none}
   .dawnscape .ds-fill{fill:var(--ink-2); stroke:none}
   /* the aquatint: the massifs are tone fields of hair-strong dots in two
      prime tiles; the fields, the masks and the first-light shadows carry
@@ -1263,7 +1310,8 @@ if (location.hash.length > 1) {
   .dawnscape .ds-tuft, .dawnscape .ds-canopy, .dawnscape .ds-bough, .dawnscape .ds-sap,
   .dawnscape .ds-twig, .dawnscape .ds-gullhead, .dawnscape .ds-deer, .dawnscape .ds-gull,
   .dawnscape .ds-fawn, .dawnscape .ds-hare, .dawnscape .ds-blades, .dawnscape .ds-head,
-  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
+  .dawnscape .ds-ear, .dawnscape .ds-tail, .dawnscape .ds-petal,
+  .dawnscape .ds-chicks, .dawnscape .ds-chick, .dawnscape [class*="flut-"], .dawnscape [class*="spray-"],
   .dawnscape [class*="shim-"], .dawnscape .ds-squirrel, .dawnscape .ds-owl, .dawnscape .ds-froth,
   .dawnscape .ds-rays, .dawnscape .ds-rays2{transform-box:view-box}
   /* THE CROWN TURNS; THE DISC DOES NOT. The disc is arcs cut at the skyline,
@@ -1623,16 +1671,28 @@ if (location.hash.length > 1) {
      the ground fades while the next one falls. All transients. */
   .dawnscape .ds-perch, .dawnscape .ds-nestsock{opacity:0}
   .dawnscape .ds-perch.on, .dawnscape .ds-nestsock.on{opacity:1}
+  /* the chicks: down in the cup until a parent is on the rim */
+  .dawnscape .ds-chicks{opacity:0; transform:translateY(3px)}
+  .dawnscape .ds-chicks.up{opacity:1; transform:none}
   /* the den: the squirrel is inside the hollow, and not drawn */
   .dawnscape .ds-squirrel.denned{opacity:0}
   .dawnscape .ds-twig.laden{transform:translateY(2.5px)}
   .dawnscape .ds-leaf.gone{opacity:0}
+  /* the daisies: both states in the DOM from the start, and only opacity
+     between them. A transition is not a CSS animation, so the census does
+     not see one, and under reduced motion the open state is simply built */
+  .dawnscape .ds-daisy .ds-bloomg{opacity:0}
+  .dawnscape .ds-daisy.open .ds-budg{opacity:0}
+  .dawnscape .ds-daisy.open .ds-bloomg{opacity:1}
   @media (prefers-reduced-motion: no-preference){
     .dawnscape .ds-perch, .dawnscape .ds-nestsock{transition:opacity .4s ease}
+    .dawnscape .ds-chicks{transition:opacity .35s ease, transform .35s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-squirrel{transition:opacity .25s ease}
     .dawnscape .ds-owl{transition:opacity .5s ease}
     .dawnscape .ds-twig{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
     .dawnscape .ds-leaf{transition:opacity 2s ease}
+    .dawnscape .ds-daisy .ds-budg{transition:opacity .8s ease}
+    .dawnscape .ds-daisy .ds-bloomg{transition:opacity 1.4s ease .3s}
   }
   @media (prefers-reduced-motion: reduce){
     .flock{display:none}
@@ -2054,6 +2114,7 @@ if (location.hash.length > 1) {
        link text on these grounds, under the 60 floor; #f4b090/#aecfc0
        measure 60.6–69.7 here. --clay-g stays #e08a5f: graphics only. */
     .b6,.b7,.bhow,.bsign,.b8{--ink:#f6efe2; --ink-2:#d4cabb; --clay:#f4b090; --clay-g:#e08a5f; --pine:#aecfc0; --sun-g:#e0b25c;
+      --leaf-g:#a8c46a; --bloom-p:#eda6b2;
       --hair:rgba(246,239,226,.18); --hair-strong:rgba(246,239,226,.45);
       --plate:rgba(24,20,17,.34); --plate-line:rgba(246,239,226,.16);
       color:var(--ink)} /* re-apply: body's inherited color resolved the DAY
@@ -8530,8 +8591,15 @@ $("clear").addEventListener("click", () => {
    The note is a role="status" line and its standing sentence is in the
    markup, where a reader with no JS gets it too. The engine writes that line
    exactly once, with the time of the reader's own press. */
-$("approve").addEventListener("click", () => {
+$("approve").addEventListener("click", (e) => {
   if (window.__world.approved) return;
+  /* WHERE THE HAND WAS. At his own window the button sits 42px from the
+     doe, so the pointer that pressed it is already standing beside her when
+     the morning lands; measured, it is inside 110*vs at 1456, 1512, 1728,
+     1280x720 and 1024x768, and outside it at 1920, where the pair is
+     further from the button than the look's reach. e.detail is 0 for a
+     keyboard press, and a keyboard has no pointer to notice. */
+  approvedAt = e && e.detail ? { x: e.clientX, y: e.clientY } : null;
   $("stamp").classList.add("inked");
   $("approve").disabled = true;
   const now = new Date();
@@ -8695,6 +8763,8 @@ function carryToMorning() {
    the carry's own duration. A lock whose only exit is code that might not
    run is a trap, and this one is over the whole document. */
 let scrollHeld = false, holdT = null;
+/* the point the reader pressed at, and whether the hand has moved since */
+let approvedAt = null;
 const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End",
   "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
 const eatScroll = (e) => { if (scrollHeld) e.preventDefault(); };
@@ -8722,7 +8792,27 @@ function releaseScroll() {
   /* and the morning comes alive here, not at the press: the wind on the
      ground waits until the page has stopped carrying the reader, so nothing
      composites during the carry and nothing moves during the stagger */
-  if (atMorning) { document.body.classList.add("morninglive"); mark("wind"); sky.windAt = performance.now(); }
+  if (atMorning) {
+    document.body.classList.add("morninglive");
+    mark("wind");
+    sky.windAt = performance.now();
+    wireNotice();
+    /* THE LANDING LOOK. If the hand that pressed is still where it pressed
+       and the pair is inside the look's reach, she notices it two and a
+       half seconds after the morning arrives — long enough that it reads as
+       the doe looking up, not as the page reacting to a click. */
+    if (approvedAt)
+      setTimeout(() => {
+        const sc = window.__world.scape;
+        if (!sc || !approvedAt || !noticeOn()) return;
+        const moved = noticePt && Math.hypot(noticePt[0] - approvedAt.x, noticePt[1] - approvedAt.y) > 6;
+        if (moved) return;
+        const vs = clamp(sc.W / 1500, 0.44, 1.2);
+        const pair = creaturesNow().filter((c) => c.who === "deer" || c.who === "fawn");
+        const d = Math.min(...pair.map((c) => gapTo(c.b, approvedAt.x, approvedAt.y)), Infinity);
+        if (d <= 110 * vs) doeLooks(approvedAt.x, 10000);
+      }, at(2500));
+  }
   removeEventListener("wheel", eatScroll);
   removeEventListener("touchmove", eatScroll);
   removeEventListener("keydown", eatKeys);
@@ -9049,8 +9139,29 @@ function* drawDawnscape() {
      last chunk, so a rebuild never stretches the standing drawing into a
      new width for a frame */
   const svgLeft = `${(-sr.left).toFixed(1)}px`, svgWidth = `${W}px`;
-  const r = birdRng(0xda11);
+  /* ONE HAND, AND A WAY TO LEND IT. r() is the sheet's own stream, and the
+     whole drawing is a function of the order it is drawn in. A mark that
+     has to change WITHOUT moving the marks after it takes a lent stream
+     instead: the main stream still draws the mark it replaces, that draw is
+     thrown away, and every seeded mark downstream is the one that was
+     approved. Burning by drawing is the only exact way to do it here,
+     because a piece the keep-out eats is five hand draws the stream never
+     takes, so the count cannot be predicted without drawing it. */
+  const rMain = birdRng(0xda11);
+  let rLent = null;
+  const r = () => (rLent || rMain)();
+  /* reentrant on purpose: the first lent mark that calls a builder which
+     lends its own stream would otherwise hand the rest of the outer block
+     back to the main one, silently */
+  const lend = (rng, fn) => {
+    const prev = rLent;
+    rLent = rng;
+    try { return fn(); } finally { rLent = prev; }
+  };
   const vs = clamp(W / 1500, 0.44, 1.2);
+  /* the pen's scale for what the transients draw at their own time (the
+     petals), published because they are built long after this build ran */
+  SCAPE.leafK = +Math.max(vs, 0.8).toFixed(3);
   const narrow = W < 760;
   const F = (v) => (Math.round(v * 10) / 10).toString();
   const X = (f) => W * f, Y = (f) => H * f;
@@ -9273,6 +9384,14 @@ function* drawDawnscape() {
     hz = wrapB + (room >= 1 ? 34 : 16);
   }
   const tall = !narrow;
+  /* THE HOME RANGE, DECLARED ONCE. Every roamer wears it as data-range, the
+     gates read it there, the runtime clamps read it back off the element,
+     and the cast is set down clear of the words with it. It used to be the
+     literal 30 in five places, three of them in code the builder cannot
+     see, so the drawn range and the declared range could drift apart
+     silently. A phone gets 12: thirty pixels is eight percent of a 390
+     sheet, and the pair in its corner has to stay in its corner. */
+  const HOME = narrow ? 12 : 30;
   /* THE BOARD'S SEAT, read before anything is drawn, because the sun sits ON
      it and the clearing is measured FROM the sun. The phone's band is seated
      from measured chrome much later, so its sun is seated there. */
@@ -9302,10 +9421,19 @@ function* drawDawnscape() {
   /* what is drawn in the tree's frame reads the keep-outs in that frame: at
      a narrow sheet the crown's froth reached the quote's air because its
      lobes were tested against words 22% away from where they are drawn */
+  let inTree = false;
   const inTreeFrame = (fn) => {
     const saved = keep.splice(0, keep.length, ...keep.map(([l, t, rt, bt]) => [tcx + (l - tcx) / TK, hz + (t - hz) / TK, tcx + (rt - tcx) / TK, hz + (bt - hz) / TK]));
-    try { return fn(); } finally { keep.splice(0, keep.length, ...saved); }
+    inTree = true;
+    try { return fn(); } finally { inTree = false; keep.splice(0, keep.length, ...saved); }
   };
+  /* WHERE THE LIGHT IS, IN THE FRAME BEING DRAWN IN. The great tree draws
+     inside its own transform, so a mark in it that asks which side of the
+     sun it stands on must ask in that frame: a screen x is 22% further
+     from the tree's axis there. The gate's clearance check records the
+     same trap — comparing raw path coordinates against the sun's screen
+     point was measuring board units against viewport pixels. */
+  const litX = () => (!sun ? null : inTree ? tcx + (sun.x - tcx) / TK : sun.x);
   /* THE CLEARING. The words' column, with the sky above it that the head of
      the station reads in, and the halo round the sun: density is zero inside
      and climbs to full 160px out. Every tick-field is thinned by it, so the
@@ -9339,7 +9467,7 @@ function* drawDawnscape() {
      band too short to carry the principal) would otherwise publish the
      previous seat's, and the field's glow and the birds' avoid region would
      both be keeping off a sun that is not on the page. */
-  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null;
+  SCAPE.trees = []; SCAPE.gulls = []; SCAPE.deer = tall; SCAPE.perch = null; SCAPE.faces = []; SCAPE.sun = null; SCAPE.doeH = 0; SCAPE.pool = null; SCAPE.daisies = 0;
   /* the stage goes live here and nowhere else, beside the drawing itself.
      `settled` is the one field the builder does not own — settleScape writes
      it, and a stale copy carried back would re-arm every timer it starts —
@@ -9517,14 +9645,29 @@ function* drawDawnscape() {
         d += path(wob(arc(hx, hy, hr, hr * 0.7, 0, 6.3, 2), 1.2)) + "Z";
       }
       if (layerCuts) {
+        /* THE RIM LIGHT FOLLOWS THE SUN. These cut-lines are the light ON
+           the foliage and they always began upper WEST, whatever the hour;
+           a crown west of the sun is lit on its east face. Each one records
+           the lobe it belongs to and where the light was in its own frame,
+           so the check can hold it to the lit side the way check 9 holds a
+           cast mark to the dark one. */
+        const lit0 = litX();
         for (const [x, y, rr] of g.ms) {
           if (rr < 13) continue;
-          const a0 = 3.3 + r() * 0.6;
-          layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [] });
+          const a0 = (lit0 !== null && x < lit0 ? 4.95 : 3.3) + r() * 0.6;
+          layerCuts.push({ cp: wob(arc(x, y, rr * 0.58, rr * 0.46, a0, a0 + 1.2 + r() * 0.5, 3), 0.3), dots: [], at: x, lit: lit0 });
         }
         const dots = [];
-        /* blossom: light on the lit tops, toward the sun, small */
-        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] - r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 0.6 + r() * 0.3]); }
+        /* BLOSSOM ON THE LIT TOPS, AND BIG ENOUGH TO SEE. These are holes
+           cut in the canopy's mask, and at r 0.6–0.9 they were 1.2 to
+           1.8px across: under a device pixel at DPR 1, so a spring tree's
+           blossom was authored and invisible. They are 2.6 to 3.6px now.
+           And the side they sit on follows the light instead of always
+           biasing west: a crown west of the sun wears its blossom on its
+           east face. Same count, same draws — only the numbers move. */
+        const lit = litX();
+        const bias = lit !== null && cx < lit ? 1 : -1;
+        for (let i = 0, n = Math.max(2, Math.round((8 * g.ms.length) / members.length)); i < n; i++) { const m = g.ms[Math.floor(r() * g.ms.length)]; dots.push([m[0] + bias * r() * m[2] * 0.5 + (r() - 0.5) * m[2] * 0.4, m[1] - m[2] * (0.45 + r() * 0.45), 2.3 + r() * 0.7]); }
         layerCuts.push({ cp: [], dots });
       }
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
@@ -9535,6 +9678,17 @@ function* drawDawnscape() {
     });
     return out;
   };
+  /* THE BLOSSOM IS PAINTED NOW, NOT ONLY CUT. Each floret is a hole in the
+     layer's own mask, so bare paper shows through the foliage; a blush disc
+     a little smaller than that hole sits in it, in the SAME swaying group
+     but OUTSIDE the mask, so it rides the same wind and keeps its place in
+     the hole. The paper rim left between the two is what separates the
+     colour from the ink: blush on ink measures about 2:1 and blush on this
+     paper measures 3.87:1, so the rim is doing the reading. */
+  const florets = (cuts) =>
+    (cuts || []).flatMap((c) => c.dots || [])
+      .map(([x, y, rd]) => `<circle class="ds-floret" cx="${F(x)}" cy="${F(y)}" r="${Math.max(0.7, (rd || 1.5) - 0.55).toFixed(1)}"/>`)
+      .join("");
   /* THE FROTH carries the life: loose leaf strokes and detached leaf pairs
      floating off the rim, one group per layer, fluttering on its own short
      clock while the compound mass rides only the slow sway */
@@ -9973,31 +10127,73 @@ function* drawDawnscape() {
   /* the sun is drawn with the range, in the back plane, because that is
      where it is: behind it. See drawSun. */
 
-  /* ————— the horizon, drawn twice, lifted three times, letting go before the corner —————
-     One segment is a weight class lighter where the light used to break the
-     line; the lift stays, because a horizon drawn at one weight from corner
-     to corner is a rule rather than a hand. */
+  /* ————— the horizon: a grassy brow, not a ruled line —————
+     It was one full-width line in six pieces, and it was the only ruled
+     thing on a sheet that is otherwise all marks: the owner's doodle ruling
+     reaches it. The land's far edge is a low brow now — a wavering crest
+     carried by clumps of reed-pen ticks, with a fine hatch on its front,
+     which is the face turned away from the light, and the edge itself
+     showing only where the clumps leave a gap. The clumps thin toward the
+     middle of the sheet so the eye still runs out to the sun, and the hatch
+     is strongest at the flanks for the same reason.
+     The old line is still DRAWN from the main stream and thrown away, so
+     everything seeded after the horizon is the drawing that was approved;
+     the brow comes off its own stream (see `lend`). The phone gets the same
+     treatment: a 390px sheet with a rule across it is the same defect, and
+     the pair now stands on that edge. */
   const hzEnd = X(narrow ? 0.95 : 0.88);
   const line = curve([[-4, hz], [X(0.25), hz + 1], [X(0.5), hz - 1], [X(0.75), hz + 0.5], [hzEnd, hz]]);
-  if (tall) {
-    const cuts = [X(0.19), X(0.36), X(0.60), X(0.78)].map((c) => c + (r() - 0.5) * 30);
-    ground += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.3), "ds-ink w1");
-    ground += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[2] + 8, cuts[3] - 4), 1.5), "ds-ink w12");
-    ground += P(stroke(seg(line, cuts[3] + 9, hzEnd - X(0.03)), 1.3), "ds-ink w1");
-    ground += P(stroke(seg(line, hzEnd - X(0.02), hzEnd), 1.1), "ds-far w1");
-    /* the second pass: three lifted pieces a shade below, the hand going back */
-    const echo = line.map(([x, y]) => [x, y + 3.5 + Math.sin(x * 0.004) * 1.2]);
-    ground += P(stroke(seg(echo, X(0.02), X(0.17)), 1.2), "ds-ink w1");
-    ground += P(stroke(seg(echo, X(0.40), X(0.56)), 1.2), "ds-far w1");
-    ground += P(stroke(seg(echo, X(0.63), X(0.83)), 1.2), "ds-ink w1");
-  } else {
-    /* one lift on a phone: four on a 390px line read as a dashed rule */
-    const cut0 = hzEnd * 0.6 + (r() - 0.5) * 30;
-    ground += P(stroke(seg(line, -4, cut0 - 3), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, cut0 + 5, hzEnd - X(0.06)), 1.3), "ds-ink w12");
-    ground += P(stroke(seg(line, hzEnd - X(0.04), hzEnd), 1), "ds-far w1");
+  {
+    let burn = "";
+    const nS0 = nS;
+    if (tall) {
+      const cuts = [X(0.19), X(0.36), X(0.60), X(0.78)].map((c) => c + (r() - 0.5) * 30);
+      burn += P(stroke(seg(line, -4, cuts[0] - 3), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[0] + 6, cuts[1] - 3), 1.3), "ds-ink w1");
+      burn += P(stroke(seg(line, cuts[1] + 7, cuts[2] - 4), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[2] + 8, cuts[3] - 4), 1.5), "ds-ink w12");
+      burn += P(stroke(seg(line, cuts[3] + 9, hzEnd - X(0.03)), 1.3), "ds-ink w1");
+      burn += P(stroke(seg(line, hzEnd - X(0.02), hzEnd), 1.1), "ds-far w1");
+      const echo = line.map(([x, y]) => [x, y + 3.5 + Math.sin(x * 0.004) * 1.2]);
+      burn += P(stroke(seg(echo, X(0.02), X(0.17)), 1.2), "ds-ink w1");
+      burn += P(stroke(seg(echo, X(0.40), X(0.56)), 1.2), "ds-far w1");
+      burn += P(stroke(seg(echo, X(0.63), X(0.83)), 1.2), "ds-ink w1");
+    } else {
+      const cut0 = hzEnd * 0.6 + (r() - 0.5) * 30;
+      burn += P(stroke(seg(line, -4, cut0 - 3), 1.3), "ds-ink w12");
+      burn += P(stroke(seg(line, cut0 + 5, hzEnd - X(0.06)), 1.3), "ds-ink w12");
+      burn += P(stroke(seg(line, hzEnd - X(0.04), hzEnd), 1), "ds-far w1");
+    }
+    /* the strokes that are KEPT are the brow's, not the line's */
+    void burn;
+    nS = nS0;
+    const browRng = birdRng(0xb70e);
+    ground += lend(browRng, () => {
+      let d = "";
+      const crest = (f) => hz + Math.sin(f * 7.1 + 0.6) * 2.4 + Math.sin(f * 19) * 0.9;
+      const clumps = narrow ? 18 : 30;
+      for (let i = 0; i < clumps; i++) {
+        const f = (i + 0.3 * browRng()) / clumps;
+        if (browRng() < (narrow ? 0.07 : 0.16)) continue;
+        /* a rule made of ticks is still a rule: the clumps thin toward the
+           middle of the sheet, where the eye is meant to run out to the
+           light. Not on a phone, where the light is in the top band and a
+           thinned middle is just a gap in the ground the pair stands on. */
+        const open = narrow ? 1 : 1 - 0.62 * Math.pow(Math.cos((f - 0.5) * Math.PI), 3);
+        const x = -6 + (hzEnd + 10) * f;
+        d += ticks(x, crest(f) + 1, 11 * Math.max(vs, 0.6), 1.4, Math.max(1, Math.round((2 + browRng() * 3) * open)),
+          i % 4 === 0 ? "ds-far w1" : "ds-ink w1", 3, 6.5 + browRng() * 2.5, 0.25, true, true);
+      }
+      const front = [];
+      for (let i = 0; i <= 24; i++) front.push([-6 + ((hzEnd + 10) * i) / 24, crest(i / 24) + 1.5]);
+      const back = front.map(([x, y]) => [x, y + 7]).reverse();
+      d += hatch([...front, ...back], -18, 3.6, "ds-far w1", 0.3, [10, 30], (x) => 0.35 + 0.6 * Math.abs(x / W - 0.5) * 2);
+      /* the edge, only where the clumps leave a gap, and never long */
+      const edge = front.map(([x, y]) => [x, y - 0.5]);
+      for (const [a2, b2] of [[0.19, 0.33], [0.46, 0.60], [0.79, 0.95]])
+        d += P(stroke(seg(edge, X(a2), Math.min(X(b2), hzEnd)), 1.0), b2 > 0.9 ? "ds-far w1" : "ds-ink w1");
+      return d;
+    });
   }
 
   /* ————— the great tree —————
@@ -10169,9 +10365,13 @@ function* drawDawnscape() {
     groups += 2;
     cutPad = 4;
     SCAPE.trees.push({ x: X(0.20), h: Y(0.33), top: CY(0) });
+    /* the mask moves one level in, so the florets can ride the layer's sway
+       without being cut out of it by the very holes they fill */
     return `<g class="ds-tree">${d}` +
-      `<g class="ds-canopy ${live("sway-c2")}" mask="url(#mC1)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">${inner.limbs}${inner.tone}${inner.fills}</g>` +
-      `<g class="ds-canopy ${live("sway-c1")}" mask="url(#mC2)" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">${outer.limbs}${outer.tone}${outer.fills}</g></g>`;
+      `<g class="ds-canopy ${live("sway-c2")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0], 14.6)}">` +
+      `<g mask="url(#mC1)">${inner.limbs}${inner.tone}${inner.fills}</g>${florets(cutMasks.mC1)}</g>` +
+      `<g class="ds-canopy ${live("sway-c1")}" style="transform-origin:${F(cr[0])}px ${F(cr[1])}px;--ph:${phase(cr[0] + 80, 14.6)}">` +
+      `<g mask="url(#mC2)">${outer.limbs}${outer.tone}${outer.fills}</g>${florets(cutMasks.mC2)}</g></g>`;
   };
 
   const perchBird = (x, y, dir, k) => {
@@ -10241,7 +10441,8 @@ function* drawDawnscape() {
       SCAPE.perchMarkup = perchBird(pz[0], pz[1], -1, 0.9 * Math.max(vs, 0.8));
     }
     if (cls) groups++;
-    return `<g class="ds-sap ${live(cls)}" mask="url(#${sid})" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">${d}${perchG}</g>`;
+    return `<g class="ds-sap ${live(cls)}" style="transform-origin:${F(bx)}px ${F(by)}px;--ph:${phase(bx, 7.3)}">` +
+      `<g mask="url(#${sid})">${d}${perchG}</g>${florets(cutMasks[sid])}</g>`;
   };
 
   /* ————— the doe: a solid silhouette, the bird's own language —————
@@ -10256,9 +10457,14 @@ function* drawDawnscape() {
      own short clock at their bases, the tail flicks at the rump. Every part
      travels 2px or more at 1456, or it is not alive. `k` is the scale, and
      the doe and the fawn share the grammar. */
-  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots, mx = 1, lift = 0) => {
+  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots, mx = 1, lift = 0, still = {}) => {
     /* mx mirrors the animal to face east; lift lengthens the legs by that
-       many units, the body and head riding up on them */
+       many units, the body and head riding up on them.
+       `still` is the phone's: a 390 sheet may run eight continuous groups
+       in all, and a doe and a fawn drawn with every joint alive are seven
+       of them. Their ears become fills carried by the head group, which
+       still turns, so nothing on the sheet is frozen — it simply has fewer
+       hinges. */
     const T = (pts) => pts.map(([px, py]) => [x + px * k * mx, hz + 1 + (py <= -20 ? py - lift : (py * (20 + lift)) / 20) * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
     const outline = (segs) => segs.flatMap(([kind, pts]) => (kind === "c" ? c(pts) : l(pts)));
@@ -10271,12 +10477,19 @@ function* drawDawnscape() {
     fills.push([x, hz - 30 * k, 30 * k]);
     nS += 3 + ears.length;
     const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
-    groups += 3 + ears.length;
-    const earG = ears.map((e, i) => `<g class="ds-ear ${live(cls + "-ear")}" style="transform-origin:${J(e.joint)};--ph:${(-r() * 4 - i * 1.3).toFixed(2)}s">` +
-      `<path class="ds-fill" d="${earD[i]}"/></g>`).join("");
+    groups += 3 + (still.ears ? 0 : ears.length) - (still.tail ? 1 : 0);
+    /* the hand's draws are taken either way, so a still ear and a hinged
+       ear are the same mark on the same paper */
+    const earG = ears.map((e, i) => {
+      const ph = `--ph:${(-r() * 4 - i * 1.3).toFixed(2)}s`;
+      return still.ears ? `<path class="ds-fill" d="${earD[i]}"/>`
+        : `<g class="ds-ear ${live(cls + "-ear")}" style="transform-origin:${J(e.joint)};${ph}"><path class="ds-fill" d="${earD[i]}"/></g>`;
+    }).join("");
+    const tailPh = `--ph:${(-r() * 3).toFixed(2)}s`;
+    const tailG = still.tail ? `<path class="ds-fill" d="${tl}"/>`
+      : `<g class="ds-tail ${live(cls + "-tail")}" style="transform-origin:${J(tailJoint)};${tailPh}"><path class="ds-fill" d="${tl}"/></g>`;
     reserves.push({ id: cls + "Body", massif: 0, bank: 0, grass: 6 });
-    return `<path id="${cls}Body" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-tail ${live(cls + "-tail")}" style="transform-origin:${J(tailJoint)};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" d="${tl}"/></g>` +
+    return `<path id="${cls}Body" class="ds-fill" fill-rule="evenodd" d="${d}"/>${tailG}` +
       `<g class="ds-head ${live(cls + "-head")}" style="transform-origin:${J(joint)};--ph:${(-r() * 9).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>`;
   };
   /* the doe's parts, in her own units: the body ends at the neck's base and
@@ -10305,21 +10518,42 @@ function* drawDawnscape() {
     Object.assign(DOE, { body, head, ears, tail, joint: [-13, -40], tailJoint: [21, -37],
       cuts: [[[14, -24.5], [17, -29.5], [19.5, -35]], [[-8, -27], [-10, -32], [-11, -37]]] });
   }
-  const doe = (x) => {
+  const doe = (x, still = {}) => {
     const k = 0.95 * vs;
-    const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] });
-    /* her shadow, three raked strokes at her feet */
-    const sh = hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
-    return `<g class="ds-deer" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    /* HER HEIGHT IS DECLARED, NOT MEASURED. The meadow's scale rule is "no
+       blade over a third of the doe", and the gate read her LIVE bounding
+       box for that third — a number that moves while she eats. Measured
+       over her whole graze at 1456×949, stepping the cycle in twenty-five:
+       her box top runs 60.6 to 63.0, so the rule's own third ran 24.20 to
+       25.00 depending on which frame the gate happened to sample, against
+       a tallest blade of 22.4. The swing is 0.8px, not the 11px the audit
+       estimated: the ears turn about the neck joint, so dipping her head
+       38° barely lowers their tips. A small flake is still a flake, and a
+       gate that moves with the pose it measures cannot be read. Her ear
+       tip stands 68.5 of her own units over the ground line and her feet
+       are 1 under it, so her height is arithmetic at any scale. */
+    SCAPE.doeH = +(68.5 * k - 1).toFixed(1);
+    const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] }, 1, 0, still);
+    /* her shadow WAS three raked strokes centred under her, which is a
+       shadow at noon and reads as a second one beside the rake. Burned:
+       drawn from the main stream and dropped, so nothing after her moves. */
+    const nSd = nS;
+    hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
+    nS = nSd;
+    const sh = rake(x, hz + 2, 20 * k, 62 * k);
+    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
   };
   /* ————— the fawn: the doe's own silhouette at two thirds, mirrored to face
      her, its legs four units too long (the fawn's tell), two cut-dots on
      the haunch well away from the head ————— */
-  const fawn = (x) => {
+  const fawn = (x, still = {}) => {
     const k = 0.62 * vs;
-    const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4);
-    const sh = hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
-    return `<g class="ds-fawn" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(hz)}px">${parts}${sh}</g>`;
+    const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4, still);
+    const nSf = nS;
+    hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    nS = nSf;
+    const sh = rake(x, hz + 2, 13 * k, 44 * k);
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
   };
 
   /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
@@ -10346,13 +10580,16 @@ function* drawDawnscape() {
     fills.push([x, y - 13 * k, 13 * k]);
     nS += 4;
     groups += 3;
-    const sh = hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    const nSh = nS;
+    hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    nS = nSh;
+    const sh = rake(x, y + 1, 10 * k, 24 * k);
     let td = "";
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
     reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6 });
-    return `<g class="ds-hare" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${sh}${P(td, "ds-ink w1", 2)}</g>`;
+    return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">${sh}<path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
+      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${P(td, "ds-ink w1", 2)}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -10372,7 +10609,7 @@ function* drawDawnscape() {
     /* the peck turns the head down toward the beak's side, so its sign is
        the bird's facing; its phase is random so the two never peck together */
     const ph = `--ph:${(-r() * 5).toFixed(2)}s;--pk:${dir > 0 ? -52 : 52}deg`;
-    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
+    return `<g class="ds-gull" data-id="${id}" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" d="${body}"/>` +
       `<path class="ds-ink w1" d="${legs}"/><g class="ds-gullhead ${live(cls)}" style="transform-origin:${F(ox)}px ${F(oy)}px;${ph}"><path class="ds-fill" d="${head}"/></g></g>`;
   };
 
@@ -10387,7 +10624,56 @@ function* drawDawnscape() {
      Outline tufts in hair-strong stand behind for depth. The fill holds
      still; the loose blades and the stems are the group that will move. */
   const spine = (bx, by, h, lean, bend = 0) => curve([[bx, by], [bx + h * lean * 0.35 + bend, by - h * 0.5], [bx + h * lean, by - h]], 3);
-  const shadowFoot = (x, y, w) => hatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18, 2.6, "ds-far w1", 0.3, [5, 12]);
+  /* A CAST MARK FALLS AWAY FROM THE LIGHT, and says what casts it: the gate
+     holds every one of them to the far side of its caster from the sun. */
+  const caster = (markup, x) => markup.replace("<path ", `<path data-x="${F(x)}" `);
+  /* THE FOOT USED TO HATCH EAST WHATEVER THE HOUR. Its comment said the
+     light came from the east of the grass; the sun stands at 0.503 W, so
+     every solid west of it — the two corner stands, the tufts at the pair's
+     feet, the swale's west half — threw its shadow TOWARD the light. West
+     of the sun the foot is mirrored about the tuft's own base and its hatch
+     angle negated, which is the same mark seen from the other side.
+     It comes off the cast stream, and the east foot is still drawn from the
+     main stream and dropped, so the meadow after it is untouched (see
+     `lend`). nS is the strokes that are KEPT. */
+  const castRng = birdRng(0xda57);
+  const footHatch = (poly, deg) => hatch(poly, deg, 2.6, "ds-far w1 ds-castshadow", 0.3, [5, 12]);
+  /* FIRST LIGHT ON THE GROUND. shadowOf has been authored in this page
+     since round 10 and deliberately never called, because its material was
+     stipple and stipple is the material the owner rejected for the range.
+     This is the same lobed reach in the sheet's own hatch: raked ALONG the
+     shadow's own direction, fading out at its far end, so it is a shadow
+     that was drawn rather than a tone that was filled. It is quiet on
+     purpose — a low sun, not a stain.
+     Whatever it is cast by declares it (data-x), so check 9 holds it to the
+     far side of that thing from the light like any other cast mark, and a
+     roamer's rake is drawn INSIDE the roamer's own group so it goes where
+     the creature goes. Its own stream. */
+  const rakeRng = birdRng(0x5add);
+  const rake = (bx, by, halfW, height) => lend(rakeRng, () => {
+    if (!sun) return "";
+    const dx = bx - sun.x;
+    const dir = [Math.sign(dx || -1) * Math.cos(0.42), Math.sin(0.42)];
+    const len = 2.2 * height, nrm = [-dir[1], dir[0]];
+    const lobes = [];
+    for (let i = 0; i <= 6; i++) {
+      const t = i / 6, w = halfW * (1 - 0.45 * t) * (0.85 + 0.3 * Math.sin(t * 9));
+      lobes.push([[bx + dir[0] * len * t + nrm[0] * w, by + dir[1] * len * t + nrm[1] * w],
+        [bx + dir[0] * len * t - nrm[0] * w, by + dir[1] * len * t - nrm[1] * w]]);
+    }
+    const poly = [...lobes.map((l) => l[0]), ...lobes.map((l) => l[1]).reverse()]
+      .map(([x, y]) => [clamp(x, -4, W + 4), Math.max(y, hz + 2)]);
+    const deg = (Math.atan2(dir[1], dir[0]) * 180) / Math.PI;
+    return caster(hatch(poly, deg, 2.7, "ds-far w1 ds-castshadow", 0.3, [18, 58],
+      (x, y) => 1.05 - 0.75 * Math.min(1, Math.hypot(x - bx, y - by) / len)), bx);
+  });
+  const shadowFoot = (x, y, w) => {
+    const n0 = nS;
+    const east = footHatch([[x + 1, y + 1], [x + w, y + 1], [x + w - 2, y + 6], [x - 1, y + 6]], -18);
+    if (!sun || x >= sun.x) return caster(east, x);
+    nS = n0;
+    return caster(lend(castRng, () => footHatch([[x - 1, y + 1], [x - w, y + 1], [x - w + 2, y + 6], [x + 1, y + 6]], 18)), x);
+  };
   const seedHead = (x, y, h) => {
     const sp = spine(x, y + 1, h, (r() - 0.5) * 0.5 + 0.1, (r() - 0.5) * 4);
     const tip = sp[sp.length - 1], prev = sp[sp.length - 3] || sp[0];
@@ -10448,7 +10734,7 @@ function* drawDawnscape() {
     if (shim && sd) sd = `<g class="${live(shim)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${(-r() * 2).toFixed(2)}s">${sd}</g>`;
     if (cls) groups++;
     return `<g class="ds-tuft" data-x="${F(x)}" data-y="${F(y)}" style="transform-origin:${F(x)}px ${F(y)}px"><path class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-ink w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
+      `<g class="ds-blades ${live(cls)}" style="transform-origin:${F(x)}px ${F(y)}px;--ph:${phase(x, 7.3)}">${P(base, "ds-ink w12", nl)}${P(tip, "ds-tip w1", nl)}${sd}</g>${shadowFoot(x, y, n * 1.6 + 8)}</g>`;
   };
   /* an outline tuft: the drawn blades alone, hair-strong, behind the solids */
   const tuft = (x, y, h, n) => {
@@ -10483,7 +10769,7 @@ function* drawDawnscape() {
     fills.push([x, y - 10 * k, 14 * k]);
     nS += 2;
     groups += 2;
-    return `<g class="ds-squirrel" data-x="${F(x)}" data-range="30" style="transform-origin:${F(x)}px ${F(y)}px">` +
+    return `<g class="ds-squirrel" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">` +
       `<g class="ds-tail ${live("squirrel-tail")}" style="transform-origin:${J([7, -7.5])};--ph:${(-r() * 3).toFixed(2)}s"><path class="ds-fill" fill-rule="evenodd" d="${td}"/></g>` +
       `<path class="ds-fill" d="${path(wob(body, 0.15))}Z"/></g>`;
   };
@@ -10535,7 +10821,47 @@ function* drawDawnscape() {
     const [snx, sny] = TT([nx, ny - nw * 0.5]);
     SCAPE.nest = { x: snx, y: sny };
     SCAPE.nestMarkup = perchBird(snx, sny + 2, 1, 0.8 * Math.max(vs, 0.8));
-    d += `<g class="ds-nestsock" data-x="${F(snx)}" data-y="${F(sny)}"></g>`;
+    /* ————— AND THREE HEADS IN THE CUP —————
+       The nest fills and empties and nothing in it ever changes; this is
+       what the parent is coming back TO. Three heads on the rim, each a
+       solid with a two-stroke open beak, drawn BEHIND the sitter and
+       deliberately NOT inside .ds-nestsock: that socket's fills are how the
+       sky sit counts birds in the nest, and a chick is not a bird that
+       landed. They are down and invisible until a parent arrives.
+       Their own stream, so putting them in moved nothing else. */
+    const chickRng = birdRng(0xc41c);
+    const chicks = lend(chickRng, () => {
+      const ck = 0.8 * Math.max(vs, 0.8);
+      let out = "";
+      for (let i = 0; i < 3; i++) {
+        /* on the cup's rim rather than down in it, and wider apart than
+           the parent is broad: three heads behind a sitting bird, at this
+           size, are one shape */
+        const cx2 = snx + (i - 1) * 6.4 * ck + (chickRng() - 0.5) * 1.4, cy2 = sny - 1.2 * ck;
+        const rr = 2.4 * ck, dir = i === 1 ? 1 : i === 0 ? -1 : 1;
+        /* A SOLID ON A SOLID IS NOTHING. The cup sits on a leaf mass, so a
+           dark head drawn over it disappears; what separates a mass from a
+           mass on this sheet is the cut, the engraver's white line. Each
+           chick is ONE evenodd fill: a head, a beak that sticks out of it,
+           a cream crescent under the head that lifts it off whatever is
+           behind, and the open mouth as a cut through the beak. */
+        const head = path(arc(cx2, cy2, rr, rr, 0, 6.3, 1)) + "Z";
+        const tip = [cx2 + dir * (rr + 2.3 * ck), cy2 - rr * 0.15];
+        const beak = `M${F(cx2 + dir * rr * 0.45)} ${F(cy2 - rr * 0.62)}L${F(tip[0])} ${F(tip[1])}L${F(cx2 + dir * rr * 0.5)} ${F(cy2 + rr * 0.42)}Z`;
+        const gape = ribbon([[cx2 + dir * rr * 0.55, cy2 - rr * 0.08], tip], 1.5 * Math.max(ck, 0.9));
+        const lift = ribbon(wob(arc(cx2, cy2 + rr * 0.2, rr * 1.02, rr * 1.02, 0.5, Math.PI - 0.3, 1.2), 0.1), 1.6 * Math.max(ck, 0.9));
+        nS += 2;
+        out += `<g class="ds-chick" style="transform-origin:${F(cx2)}px ${F(cy2 + rr)}px">` +
+          `<path class="ds-fill" fill-rule="evenodd" d="${head}${beak}${gape}${lift}"/></g>`;
+      }
+      return out;
+    });
+    /* under reduced motion the parent is home, the way the owl is: an end
+       state with an empty nest over three raised chicks is a story with its
+       middle missing, and "up implies the nest is taken" has to hold on
+       every path or it is not an invariant */
+    d += `<g class="ds-chicks${RM ? " up" : ""}" data-x="${F(snx)}">${chicks}</g>`;
+    d += `<g class="ds-nestsock${RM ? " on" : ""}" data-x="${F(snx)}" data-y="${F(sny)}">${RM ? SCAPE.nestMarkup : ""}</g>`;
     /* the trunk hollow: a dark pocket with a cream rim, the squirrel's den */
     const hx = X(0.097), hy = Y(0.515), rx = 6.5 * vs, ry = 9 * vs;
     const rim = arc(hx, hy, rx, ry, 0, 6.3, 2);
@@ -10553,7 +10879,17 @@ function* drawDawnscape() {
       const px = lx0 + (lx1 - lx0) * fx, py = ly - 5;
       d += P(stroke(curve([[px, py], [px + Math.cos(ang) * len * 0.5 + 1, py + Math.sin(ang) * len * 0.5], [px + Math.cos(ang) * len, py + Math.sin(ang) * len]], 3), 0.4), "ds-ink w1");
     }
-    d += hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
+    /* the bough's shadow lay directly under it, which is a shadow at noon.
+       It runs off its east end now, away from the light, in the same low
+       hatch; the old one is drawn from the main stream and dropped so the
+       mushrooms and the molehills after it do not move (see `lend`) */
+    {
+      const n0 = nS;
+      hatch([[lx0 + 4, ly + 3], [lx1, ly + 2], [lx1 - 2, ly + 8], [lx0 + 6, ly + 9]], -18, 2.8, "ds-far w1", 0.3, [6, 14]);
+      nS = n0;
+      const lw = lx1 - lx0;
+      d += caster(lend(castRng, () => hatch([[lx0 + lw * 0.45, ly + 3], [lx1 + 16, ly + 2], [lx1 + 12, ly + 8], [lx0 + lw * 0.5, ly + 9]], -18, 2.8, "ds-far w1 ds-castshadow", 0.3, [6, 14])), (lx0 + lx1) / 2);
+    }
     SCAPE.log = { x0: lx0, x1: lx1, y: ly - 5 };
     /* the lichened boulder beside the hare */
     const bx = X(0.918), by = Y(0.982);
@@ -10561,7 +10897,9 @@ function* drawDawnscape() {
     d += contour(rock, 0.5, "ds-ink", ["w12", "w1", "w12"]);
     let li = "";
     for (let i = 0; i < 5; i++) { const x = bx - 6 + r() * 12, y = by - 6 + r() * 4; li += stroke([[x, y], [x + 2 + r() * 2, y - 0.5]], 0.2); }
-    d += P(li, "ds-far w1", 5) + hatch([[bx + 2, by], [bx + 12, by], [bx + 10, by + 4], [bx + 3, by + 4]], -18, 2.6, "ds-far w1", 0.3, [4, 10]);
+    /* the boulder already threw east, which is away from the light where it
+       stands: it takes the class and its caster's x, and not a new mark */
+    d += P(li, "ds-far w1", 5) + caster(hatch([[bx + 2, by], [bx + 12, by], [bx + 10, by + 4], [bx + 3, by + 4]], -18, 2.6, "ds-far w1 ds-castshadow", 0.3, [4, 10]), bx);
     SCAPE.boulder = { x: bx, y: by };
     /* mushrooms at the root flare: caps with a gill-cut */
     let mu = "";
@@ -10677,11 +11015,112 @@ function* drawDawnscape() {
     };
     SCAPE.shadows = [];
     void shadowOf;
+    /* the tree throws the longest shadow on the sheet, down its own flank
+       into the corner the light never reaches; drawn before the grass so
+       every blade stands in front of it */
+    near += rake(X(0.082), hz + 2, 26 * vs, 150 * vs);
     /* outline tufts first, behind everything */
     near += `<g class="ds-grass" mask="url(#mG)">`;
     for (const [fx, fy, h, n] of [[0.03, 0, 18, 5], [0.085, 0, 17, 5], [0.16, 0, 15, 5], [0.35, 0.885, 12, 4], [0.49, 0.90, 11, 4], [0.64, 0.88, 12, 4], [0.75, 0, 14, 5], [0.80, 0.98, 11, 4], [0.93, 0.975, 12, 4], [0.985, 0, 19, 6]])
       near += tuft(X(fx), fy ? Y(fy) : hz, h * vs, n);
     near += `</g>`;
+    /* ————— THE POOL, AND THE LIGHT ON IT —————
+       The owner opened the palette: "colors are allowed, just not the
+       entire canvas to be colors". So the one place the light touches the
+       ground is drawn — a lens of still water directly under the sun, with
+       the sun's own path across it.
+       Ink first: a lighter far lip and a stronger near one, because a pool
+       read at this angle is an edge you look across and not a ring; three
+       surface lines that stop short of the lips; a hatched near bank. Then
+       the path, in the light's own token on its own class, in short uneven
+       dashes that widen toward the reader the way a glitter path does,
+       some of them broken, the whole run leaning a little off the pool's
+       axis. A ruler of gold rungs would be a pennant, not a light.
+       It stands down where the words reach it, and it takes its own
+       stream, so adding it moved nothing else on the sheet. */
+    if (sun) {
+      const px = sun.x, py = hz + 16, pw = 78 * vs, ph = 13 * vs;
+      const boxed = [px - pw - 6, py - ph - 8, px + pw + 6, py + ph + 12];
+      /* boxed is the pool's own reach and the words already carry their
+         halo, so no second pad */
+      const hitsWord = words.some(([l, t, rt, bt]) => boxed[2] > l && boxed[0] < rt && boxed[3] > t && boxed[1] < bt);
+      if (!hitsWord) {
+        const poolRng = birdRng(0x9a7e);
+        near += lend(poolRng, () => {
+          /* THE FAR BANK FIRST, so the water is read against something:
+             a low brow of its own behind the pool, with three reeds
+             standing on it. Then the lips, then the surface, then the near
+             bank the reader stands on. */
+          const bank = [];
+          for (let i = 0; i <= 16; i++) {
+            const t = i / 16;
+            bank.push([px - pw * 1.22 + pw * 2.44 * t, py - ph - 5 + Math.sin(t * 5.2 + 1.1) * 1.8]);
+          }
+          let d = P(stroke(bank, 0.6), "ds-far w06");
+          d += hatch([...bank, ...bank.map(([x2, y2]) => [x2, y2 + 5]).reverse()], -18, 3.2, "ds-far w1", 0.25, [7, 18]);
+          /* the reeds, and what the water does with them: a broken,
+             wobbling echo under each, shorter than the reed and fading */
+          const reeds = [];
+          for (const rf of [-0.62, -0.18, 0.44]) {
+            const rx = px + pw * rf + (poolRng() - 0.5) * 8;
+            const ry = py - ph - 4 + Math.sin((rf + 1.22) * 2.6) * 1.4;
+            const rh = (9 + poolRng() * 7) * Math.max(vs, 0.8);
+            let rd = "";
+            for (let k = 0, n2 = 2 + Math.floor(poolRng() * 2); k < n2; k++) {
+              const bh = rh * (0.6 + poolRng() * 0.5), ln = (poolRng() - 0.5) * 0.7;
+              rd += stroke(spine(rx + (poolRng() - 0.5) * 3, ry, bh, ln, (poolRng() - 0.5) * 3), 0.3);
+            }
+            d += P(rd, "ds-ink w1", 3);
+            reeds.push([rx, ry, rh]);
+          }
+          d += P(stroke(arc(px, py, pw, ph, Math.PI + 0.1, 2 * Math.PI - 0.1, 3), 0.5), "ds-far w06");
+          d += P(stroke(arc(px, py, pw, ph, 0.12, Math.PI - 0.12, 3), 0.5), "ds-ink w1");
+          d += P(stroke(arc(px, py + 1.2, pw * 0.94, ph * 0.9, 0.3, Math.PI - 0.5, 3), 0.5), "ds-ink w06");
+          /* THE REFLECTION. Not a mirror: a few broken vertical strokes
+             under each reed, a third of its height, wobbling more the
+             further down they go, and stopping short of the near lip */
+          let refl = "";
+          for (const [rx, ry, rh] of reeds) {
+            const drop = Math.min(rh * 0.42, ph * 1.5);
+            for (let k = 0; k < 3; k++) {
+              const x2 = rx + (poolRng() - 0.5) * 3.4;
+              const y0 = py - ph * 0.5 + poolRng() * 2, y1 = y0 + drop * (0.5 + poolRng() * 0.6);
+              if (y1 > py + ph * 0.75) continue;
+              refl += stroke([[x2, y0], [x2 + (poolRng() - 0.5) * 2.4, y1]], 0.8);
+            }
+            void ry;
+          }
+          d += P(refl, "ds-far w1", 6);
+          /* the surface, in lines that close up toward the far lip */
+          for (let i = 0; i < 5; i++) {
+            const t = -0.62 + i * 0.3 + i * i * 0.02, yy = py + t * ph * 0.92;
+            const half = pw * Math.sqrt(Math.max(0, 1 - (t * 0.92) ** 2)) * 0.84;
+            d += P(stroke(curve([[px - half, yy], [px, yy + 0.8], [px + half, yy]], 6), 0.4), i % 2 ? "ds-far w1" : "ds-ink w06");
+          }
+          /* the near bank, with the ground falling to it */
+          d += hatch([[px - pw * 0.78, py + ph * 0.5], [px + pw * 0.78, py + ph * 0.5], [px + pw * 0.62, py + ph + 9], [px - pw * 0.62, py + ph + 9]], -18, 2.8, "ds-far w1", 0.3, [8, 22]);
+          d += P(stroke(curve([[px - pw * 1.05, py + ph + 3], [px - pw * 0.5, py + ph + 7], [px + pw * 0.4, py + ph + 6], [px + pw * 1.02, py + ph + 2]], 6), 0.9), "ds-far w06");
+          let g2 = "";
+          for (let i = 0; i < 9; i++) {
+            /* uneven down the path as well as across it: evenly spaced
+               rungs are a ladder */
+            const t = i / 8, yy = py - ph * 0.78 + (t + (poolRng() - 0.5) * 0.09) * ph * 1.62;
+            const half = (2 + t * 8.5 + poolRng() * 3.2) * vs;
+            const cx2 = px + (t - 0.5) * 6 + (poolRng() - 0.5) * 4;
+            const w2 = t > 0.45 ? "ds-glit w12" : "ds-glit w1";
+            if (t > 0.35 && poolRng() < 0.55) {
+              const gap = (1.5 + poolRng() * 3) * vs;
+              g2 += P(stroke([[cx2 - half, yy], [cx2 - gap, yy]], 0.3), w2);
+              g2 += P(stroke([[cx2 + gap, yy], [cx2 + half * (0.7 + poolRng() * 0.5), yy]], 0.3), w2);
+            } else {
+              g2 += P(stroke([[cx2 - half, yy], [cx2 + half * (0.75 + poolRng() * 0.5), yy]], 0.3), w2);
+            }
+          }
+          SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: +pw.toFixed(1) };
+          return `<g class="ds-pool">${d}${g2}</g>`;
+        });
+      }
+    }
     near += fawn(X(0.112));
     near += doe(X(0.165));
     /* the solid tufts: three stands of three at the bottom corners and by
@@ -10706,11 +11145,105 @@ function* drawDawnscape() {
       near += solidTuft(X(fx), Y(fy), h * S3, n, cls, sd);
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
+
+    /* ————— THE DAISIES, WHICH OPEN OVER THE FIRST MINUTE —————
+       The one thing on this sheet that CHANGES for a reader who stays. The
+       morning lands with fourteen to eighteen buds in the grass and they
+       open in the order the light reaches them, ranked by their distance
+       from the sun's own column, all of them out by about seventy seconds.
+       Nothing announces it; a reader who stays finds the meadow in flower
+       and a reader who leaves never knows it was going to happen.
+       Both states are in the DOM from the start and only opacity moves
+       between them (the census counts CSS animations, and a transition is
+       not one), so under reduced motion the end state is simply built.
+       Each one carries the moment it is due on its own group, so a rebuild
+       mid-morning renders every daisy that is already out, already out.
+       Its own stream, and its stem is the same green as the blades. */
+    const daisyRng = birdRng(0xda15);
+    if (tall) near += lend(daisyRng, () => {
+      const dk = Math.max(vs, 0.85);
+      /* where a daisy may stand: the swale's gaps, the stand by the pair,
+         the bank's lip (outside the bank's own masked group) and the rough
+         ground by the hare and the boulder. Never in the thin grass under
+         the words, and never inside a word's own air. */
+      const spots = [
+        [0.362, 0.879], [0.392, 0.889], [0.422, 0.9], [0.451, 0.903], [0.489, 0.898],
+        [0.548, 0.895], [0.59, 0.893], [0.632, 0.885], [0.668, 0.873],
+        [0.032, 0.995], [0.058, 0.985], [0.092, 0.975],
+        [0.928, 0.952], [0.952, 0.94], [0.974, 0.928],
+        [0.869, 0.978], [0.902, 0.966], [0.935, 0.986],
+      ];
+      const made = [];
+      let d = "";
+      /* IN CLUMPS, AND BIG ENOUGH TO SEE. Fourteen lone specks at true
+         scale are a thing you have to zoom in to find: the owner asked for
+         flowers he can see at his own window. So each spot carries one to
+         three flowers at slightly different heights, and the head is about
+         11px across instead of 7 — three times life size against a 62px
+         doe, which is the trade legibility takes from scale here, and it
+         is a trade rather than an oversight. Each flower is still its own
+         group and opens on its own clock, so a clump comes out over a few
+         seconds rather than all at once. */
+      const seats = [];
+      for (const [fx, fy] of spots) {
+        const n2 = 1 + (daisyRng() < 0.6 ? 1 : 0) + (daisyRng() < 0.3 ? 1 : 0);
+        for (let k = 0; k < n2; k++)
+          seats.push([fx, fy, (daisyRng() - 0.5) * 13, (daisyRng() - 0.5) * 5]);
+      }
+      for (const [fx, fy, ox2, oy2] of seats) {
+        const x = X(fx) + ox2, y = Y(fy) + oy2;
+        /* out of the thin ground under the words, out of every halo, and
+           6px clear of anything solid already standing there */
+        /* 0.2, not the plan's 0.35: dens() is zero inside the words'
+           column and climbs over 136px, so the swale — which stands 40px
+           under the clearing's own foot — measures about 0.25 and the rule
+           as written rejected the first place the plan asks for. What
+           actually has to hold is the words' air, which inKeep holds, at
+           the flower's foot and at its head. */
+        if (dens(x, y) < 0.2 || inKeep(x, y, 12) || inKeep(x, y - 14, 12)) continue;
+        if (fills.some(([cx, cy, rr]) => Math.hypot(x - cx, y - cy) < rr + 6)) continue;
+        const h = (5 + daisyRng() * 3) * Math.max(vs, 0.8);
+        const sp = spine(x, y, h, (daisyRng() - 0.5) * 0.4, (daisyRng() - 0.5) * 2);
+        const tip = sp[sp.length - 1];
+        const stem = P(stroke(sp, 0.25), "ds-tip w1");
+        /* the bud: a small closed head, 2.2 by 3.6 across */
+        const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 2.2 * dk, 1.5 * dk, 2.4 * dk, 0, 6.3, 1.2))}Z"/>`;
+        /* the bloom: six to eight fat lobes, squashed, with a cut eye —
+           seven thin ones read as an asterisk at this size — and the
+           light's own colour in the eye, because the light is what opened
+           it. The cut leaves paper under the gold. */
+        const nl = 6 + Math.floor(daisyRng() * 3), R = (5.0 + daisyRng() * 1.1) * dk;
+        const cy2 = tip[1] - 1.2 * dk;
+        const star = [];
+        for (let i = 0; i <= nl * 8; i++) {
+          const a2 = (i / (nl * 8)) * 6.2832;
+          const rr2 = R * (0.55 + 0.45 * Math.abs(Math.cos((a2 * nl) / 2)));
+          star.push([tip[0] + Math.cos(a2) * rr2, cy2 + Math.sin(a2) * rr2 * 0.75]);
+        }
+        const eyeR = 1.45 * dk;
+        const bloom = `<path class="ds-fill" fill-rule="evenodd" d="${path(wob(star, 0.25))}Z${path(arc(tip[0], cy2, eyeR, eyeR * 0.8, 0, 6.3, 0.8))}Z"/>` +
+          `<circle class="ds-eye" cx="${F(tip[0])}" cy="${F(cy2)}" r="${(eyeR * 0.78).toFixed(1)}"/>`;
+        nS += 3;
+        fills.push([tip[0], cy2, R]);
+        made.push({ x, y, stem, bud, bloom });
+      }
+      /* the order the light reaches them, and the moment each is due */
+      const byLight = [...made].sort((p2, q) => Math.abs(p2.x - sun.x) - Math.abs(q.x - sun.x));
+      const n0 = Math.max(1, byLight.length - 1);
+      byLight.forEach((m, i) => {
+        m.t = Math.max(1500, Math.round(6000 + (64000 * i) / n0 + (daisyRng() - 0.5) * 3000));
+      });
+      SCAPE.daisies = made.length;
+      for (const m of made)
+        d += `<g class="ds-daisy${RM || m.t <= mt() ? " open" : ""}" data-x="${F(m.x)}" data-y="${F(m.y)}" data-t="${m.t}">` +
+          `${m.stem}<g class="ds-budg">${m.bud}</g><g class="ds-bloomg">${m.bloom}</g></g>`;
+      return d;
+    });
     /* the cast on the meadow keeps the words' air with its whole home range:
        a gull or the hare whose box, 30px either way, would enter a word's
        halo is set down further west, 8px at a time (at 1024×768 the walking
        gull strayed into "run 043"'s bay) */
-    const clearOfWords = (x, y, hw, h) => { let gx = x; for (let i = 0; i < 24 && words.some(([l, t, rt, bt]) => gx + hw + 30 > l && gx - hw - 30 < rt && y + 4 > t && y - h - 2 < bt); i++) gx -= 8; return gx; };
+    const clearOfWords = (x, y, hw, h) => { let gx = x; for (let i = 0; i < 24 && words.some(([l, t, rt, bt]) => gx + hw + HOME > l && gx - hw - HOME < rt && y + 4 > t && y - h - 2 < bt); i++) gx -= 8; return gx; };
     const gk = 1.15 * Math.max(vs, 0.7);
     near += gull(clearOfWords(X(0.55), Y(0.875), 15 * gk, 13 * gk), Y(0.875), -1, "peck-a", "a");
     near += gull(clearOfWords(X(0.72), Y(0.885), 15 * gk, 13 * gk), Y(0.885), 1, "peck-b", "b");
@@ -10730,16 +11263,21 @@ function* drawDawnscape() {
     near += `<g class="ds-owl${owlHome ? " on" : ""}" data-x="${F(owlAt[0])}">${owlHome ? SCAPE.owlMarkup : ""}</g>`;
     near += solidTuft(X(0.83), Y(0.985), 13 * S3, 6, "", 1) + solidTuft(X(0.885), Y(0.99), 14 * S3, 6, "", 0);
     near += solidTuft(X(0.962), hz, 21 * S3, 8, "sway-s", 1) + solidTuft(X(0.978), hz, 24 * S3, 9, "sway-l", 2, "shim-b") + solidTuft(X(0.993), hz, 19 * S3, 7, "", 0);
-    /* where a leaf may fall from and where it may land: the crown's left
-       half down the trunk's side, short of the sun's halo (the bough that
-       shed the rest is retired). The clearance gate holds the envelope
-       clear of every word. */
+    /* where the petals let go and where they may land. They used to let go
+       from INSIDE the crown's west half and come down the trunk's own side:
+       a 4px open outline is invisible both on a solid leaf mass and on 84°
+       bark hatch, and the solid leaf it replaces was invisible on the mass
+       for the same reason. The source is the crown's lower west rim now —
+       the underside of a cluster, where the paper below begins — so the
+       whole fall is read against bare paper. The envelope is unchanged,
+       still short of the sun's halo (the bough that shed the rest is
+       retired), and the clearance gate holds it clear of every word. */
     const floorUnder = (x0, x1, want) => {
       let f = want;
       for (const [l, t, rt] of words) if (rt > x0 && l < x1 && t - 2 < f) f = t - 2;
       return Math.max(hz + 8, f);
     };
-    const [sx0, sy0] = TT([X(0.05), Y(0.25)]), [sx1, sy1] = TT([X(0.16), Y(0.47)]), [ex0, ey0] = TT([X(0.02), Y(0.25)]), [ex1] = TT([X(0.19), 0]);
+    const [sx0, sy0] = TT([X(0.02), Y(0.50)]), [sx1, sy1] = TT([X(0.10), Y(0.56)]), [ex0, ey0] = TT([X(0.02), Y(0.25)]), [ex1] = TT([X(0.19), 0]);
     SCAPE.leaf = { crownSrc: [sx0, sy0, sx1, sy1], crownEnv: [ex0, ey0, ex1, floorUnder(ex0, ex1, hz + 42)] };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
@@ -10782,8 +11320,23 @@ function* drawDawnscape() {
         const ps = relief / (RANGE.foot - RANGE.top);
         const pk = RANGE.summits.find((sm) => sm.name === "principal").peak;
         const bandSeat = { s: ps, tx: X(0.34) - pk[0] * ps, ty: pTop - RANGE.top * ps };
-        const seat = seatRange(["principal"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
+        /* A RANGE, NOT A HILL. The band carried the principal alone, which
+           on a 390 sheet is one triangle with the sun behind it and bare
+           sky for the whole right half of the only drawn band a phone has.
+           The east summit comes with it: it seats inside the band by its
+           own relief (its peak lands about 0.53 W, its crest runs off the
+           east edge), it is layer 2 so it draws in hair-strong and reads
+           as the farther rock, and it puts a saddle in the skyline. The
+           west summit comes with it for the same reason and fills the
+           corner the sun rises out of, so the band is a RANGE across the
+           whole width rather than a hill with a light behind it. Both are
+           inside .ds-p2, which is what the light's clearing exempts. */
+        const seat = seatRange(["principal", "east", "west"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
         far += seat.markup;
+        /* the easternmost peak the band seated: a far crossing is noticed
+           east of it, because east of it is the only sky on a phone that is
+           neither the rock nor the sunrise */
+        SCAPE.band.peakE = Math.max(...SCAPE.massifs.summits.map((q) => q.peak[0]));
         /* the phone's band is seated from measured chrome, so its sun is
            seated here rather than with the sheet's. A band too short to
            carry the principal carries no sunrise either: there is no rock
@@ -10807,16 +11360,100 @@ function* drawDawnscape() {
         far += skyPiece(a, bnd, y);
         if (r() < 0.5 && bnd + 50 < X(0.66)) { const c2 = bnd + 18 + r() * 30; far += skyPiece(c2, Math.min(c2 + 40 + r() * 70, X(0.66)), y + (r() - 0.5) * 2); }
       }
+      /* and the air between the range's foot and the kicker: three low
+         hazes across the gap the band leaves, each breaking around the
+         words the way every other stroke here does. Sixty-eight pixels of
+         bare cream between a drawing and a paragraph reads as a margin;
+         with these it reads as distance. */
+      if (SCAPE.band && SCAPE.band.relief >= 40) {
+        const gap0 = SCAPE.band.foot + 10, gap1 = Math.max(gap0 + 12, kickInk - 16);
+        for (let i = 0; i < 3 && gap0 + 8 < gap1; i++) {
+          const y = gap0 + ((gap1 - gap0) * (i + 0.4)) / 3.2 + (r() - 0.5) * 3;
+          const a2 = X(0.05 + r() * 0.1), b2 = Math.min(a2 + 70 + r() * 150, X(0.92));
+          far += skyPiece(a2, b2, y);
+        }
+      }
     }
     /* the bottom band: what fits under the last line, out of the column's
        x-range where it can be taller */
     if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
     near += ticks(X(0.08), hz + 22, X(0.07), 14, 18, "ds-ink w1", 4, 9);
     near += ticks(X(0.90), hz + 22, X(0.08), 14, 18, "ds-ink w1", 4, 9);
-    near += solidTuft(X(0.06), hz, room >= 1 ? 16 : 9, 5, "sway-m", 0);
+    /* GRASS IS GRASS-SIZED HERE TOO. The phone's tufts were 16 and 14px
+       against a sheet that had no cast on it to measure them by; the doe
+       stands on it now at 27.6px to her ears, so a blade may reach 13.2.
+       And the west stand moves out of the pair's corner. */
+    near += solidTuft(X(0.26), hz, room >= 1 ? 10 : 8, 5, "sway-m", 0);
     if (room >= 1) near += tuft(X(0.44), hz, 8, 4);
-    near += solidTuft(X(0.87), hz, room >= 1 ? 14 : 9, 5, "sway-l", 0);
+    /* STILL, and it buys the tree its slot: a phone may run eight
+       continuous groups and the tree that frames the corner is worth more
+       than a second swaying tuft */
+    near += solidTuft(X(0.84), hz, room >= 1 ? 9 : 8, 5, "", 0);
     if (room >= 1 && hz + 18 <= H - 4) near += gull(X(0.63), hz + 14, 1, "peck-a", "a");
+    /* ————— A TREE FRAMES THE EAST EDGE —————
+       The phone had a band at the top, a strip at the bottom and six
+       hundred pixels of cream between them. This is the sheet's own great
+       tree at a phone's scale: a young one on the east edge, its crown
+       hanging over the corner, so the bottom band reads as a place rather
+       than a rule with animals on it. Its masses shrink themselves out of
+       any word's air (that is what mass() does with inKeep), and it sways
+       on the slot the still tuft gave up. */
+    if (room >= 1) mid += sapling(X(0.93), hz + 1, 95, -0.06, "sway-sap");
+    /* and a pool in the near ground, with the light on it: the one place
+       the morning's colour reaches the phone's meadow */
+    if (room >= 1 && sun) {
+      /* 27px of ground is what a phone has: the lens sits close under the
+         brow and its bank takes four of them */
+      const px = X(0.45), py = hz + 10, pw = 44, ph = 5;
+      /* the words' boxes ALREADY carry their halo (words.push adds it), so
+         this is the pool's own box against them and nothing more: padding
+         it again put the lens 26px inside the signature's air and the
+         phone's pool silently never drew */
+      const hitsWord = words.some(([l, t, rt, bt]) => px + pw > l && px - pw < rt && py + ph + 4 > t && py - ph < bt);
+      if (!hitsWord && py + ph + 4 < H - 2) {
+        const poolRng = birdRng(0x9a7e);
+        near += lend(poolRng, () => {
+          let d = P(stroke(arc(px, py, pw, ph, Math.PI + 0.12, 2 * Math.PI - 0.12, 2), 0.4), "ds-far w06");
+          d += P(stroke(arc(px, py, pw, ph, 0.14, Math.PI - 0.14, 2), 0.4), "ds-ink w1");
+          for (let i = 0; i < 3; i++) {
+            const yy = py + (-0.42 + i * 0.4) * ph;
+            d += P(stroke([[px - pw * 0.62, yy], [px + pw * 0.62, yy]], 0.3), "ds-far w06");
+          }
+          /* the bank the reader stands on, so it is a hollow and not a
+             line: the phone has 27px of ground and this is 6 of them */
+          d += hatch([[px - pw * 0.8, py + ph * 0.5], [px + pw * 0.8, py + ph * 0.5], [px + pw * 0.62, py + ph + 4], [px - pw * 0.62, py + ph + 4]], -18, 2.6, "ds-far w1", 0.3, [6, 16]);
+          let g2 = "";
+          for (let i = 0; i < 5; i++) {
+            const t = i / 4, yy = py - ph * 0.7 + t * ph * 1.5;
+            const half = 1.6 + t * 5.2 + poolRng() * 1.6;
+            g2 += P(stroke([[px - half, yy], [px + half * (0.7 + poolRng() * 0.5), yy]], 0.25), t > 0.4 ? "ds-glit w12" : "ds-glit w1");
+          }
+          SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: pw };
+          return `<g class="ds-pool">${d}${g2}</g>`;
+        });
+      }
+    }
+    /* THE PAIR, IN THE CORNER THE SIGNATURE DOES NOT REACH. A phone had a
+       horizon, three tufts and a gull on it: no subject at all, and the one
+       thing on this page that looks back was desktop-only. The doe faces
+       west and the fawn east, nose to nose on the horizon at the bottom
+       left; her tail stands 74px west of the signature's first letter, and
+       the whole pair keeps its 24px with its 12px range taken off.
+       They are drawn LAST, so they stand in front of the ground's stipple,
+       and their ears are fills rather than hinges: a 390 sheet may run
+       eight continuous groups in all, and this is exactly eight.
+       EIGHT IS SAFE BECAUSE ROOM NEVER REACHES 2. The ninth would be the
+       sapling, and `free` (the space under the column) measures 61px at
+       390×844, 393×851, 412×915, 414×896, 428×926, 430×932 and 360×800,
+       and 18 at 375×667 and 320×568: the column fills the panel, so the
+       tail under it is the same on every phone and room is 1 or −1, never
+       2. At 360 and under, the band is too short for the principal and the
+       census is 6. */
+    if (room >= 1) {
+      near += fawn(X(0.065), { ears: true, tail: true });
+      near += doe(X(0.165), { ears: true });
+      SCAPE.deer = true;
+    }
   }
 
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
@@ -10860,7 +11497,7 @@ function* drawDawnscape() {
      the box clips it */
   const leafMasks = Object.entries(cutMasks).map(([id, cuts]) =>
     `<mask id="${id}" maskUnits="objectBoundingBox" x="-.1" y="-.1" width="1.2" height="1.2"><rect x="${-W}" y="${-H}" width="${3 * W}" height="${3 * H}" style="fill:#fff"/>` +
-    cuts.map(({ cp, dots }) => (cp.length > 1 ? `<path d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
+    cuts.map(({ cp, dots, at, lit }) => (cp.length > 1 ? `<path${at === undefined ? "" : ` data-x="${F(at)}" data-lit="${lit === null || lit === undefined ? "" : F(lit)}"`} d="${path(cp)}" style="fill:none;stroke:#000;stroke-width:1.9;stroke-linecap:round"/>` : "") +
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
   void tile;
@@ -10885,8 +11522,8 @@ function* drawDawnscape() {
   SCAPE.roamers = {};
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
-  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
+  window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
+    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
@@ -11143,6 +11780,13 @@ const sky = { spawned: 0, live: 0, last: "", entries: [], flown: new Set(), last
   lastFawn: -Infinity, lastDart: -Infinity, lastWalk: -Infinity, lastDen: -Infinity, lastLog: -Infinity,
   sock: { perch: { taken: false, lands: 0, leaves: 0 }, nest: { taken: false, lands: 0, leaves: 0 } }, owl: false, windAt: 0 };
 let farTimer = null, groundTimer = null;
+/* THE MORNING'S OWN CLOCK, in page ms: how long this morning has been
+   alive, undone by the pace flag the way at() does it. Everything that
+   UNFOLDS over the morning is scheduled against it and stamps its due
+   moment on its own element, so a rebuild mid-morning renders what has
+   already happened as having happened, instead of starting it again.
+   A resize replaces the whole drawing; this is what survives it. */
+const mt = () => (sky.windAt ? (performance.now() - sky.windAt) / PACE : 0);
 
 /* a far bird's flight, from two points in viewport fractions: the chord's
    angle is what a phone and a laptop have in common, so the climb is
@@ -11265,8 +11909,12 @@ function placeFar(f, parent, elapsed) {
    on the left. A phone has no copse and no ground to leave from, so its
    crossings are the exception only, one bird, in the band under the
    masthead, which is the only sky a phone has. */
-function spawnFar() {
-  farTimer = null;
+/* `want` and `wantGull` are the pointer's: a reader who comes at the same
+   ground bird twice inside four seconds gets the takeoff the sky already
+   knows how to fly, rather than a second kind of leaving invented for it.
+   Everything else about the crossing is the seeded one it would have been. */
+function spawnFar(want, wantGull) {
+  if (!want) farTimer = null;
   if (RM || !releasedAt) return;
   const host = document.getElementById("flock");
   const W = host.clientWidth || innerWidth, H = host.clientHeight || innerHeight;
@@ -11275,13 +11923,13 @@ function spawnFar() {
   const live = host.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
   sky.live = live;
   /* not while the reader is back at the gate, and never more than three */
-  if (!atMorning || live >= 3) { farTimer = setTimeout(spawnFar, at(6000)); return; }
+  if (!atMorning || live >= 3) { if (!want) farTimer = setTimeout(spawnFar, at(6000)); return; }
   const r = birdRng(0xfa12 + sky.spawned * 6007);
   const vs = clamp(W / 1500, 0.44, 1);
   const trees = SCAPE.trees || [];
   const gulls = (SCAPE.gulls || []).filter((g) => !sky.flown.has(g.id));
-  let entry = "fade";
-  if (!narrow) {
+  let entry = want || "fade";
+  if (!narrow && !want) {
     const pick = r();
     const groundOk = gulls.length && now - sky.lastGround > at(12000);
     if (pick < 0.6 && trees.length) entry = "canopy";
@@ -11324,7 +11972,8 @@ function spawnFar() {
          than crossing the quote on a long diagonal */
       f.ang = ((30 + r() * 6) * Math.PI) / 180;
     } else if (entry === "takeoff") {
-      const g = gulls[Math.floor(r() * gulls.length)];
+      const g = (wantGull && gulls.find((q) => q.id === wantGull)) || gulls[Math.floor(r() * gulls.length)];
+      if (!g) return;
       sky.flown.add(g.id);
       sky.lastGround = now;
       const el = document.querySelector(`.dawnscape .ds-gull[data-id="${g.id}"]`);
@@ -11354,10 +12003,15 @@ function spawnFar() {
          is neither the rock nor the clearing: it leaves the sunrise behind
          it, which is what the whole flock does on every other seat.
          fitRoute could not have saved it — it moves an exit and a bow, and
-         this route began inside the light. */
+         this route began inside the light.
+         AND EAST OF THE ROCK AS WELL AS EAST OF THE LIGHT, now that the
+         band seats a second summit: past the clearing the bird was still
+         starting 36px west of the east summit's peak and flying east at
+         4°, which walks it into the rock about where the crest is. */
       const bandTop = narrow && SCAPE.band ? SCAPE.band.top : 0;
       const lit = narrow && SCAPE.sun && bandTop;
-      f.ox = narrow ? (lit ? (SCAPE.sun.x + SCAPE.sun.crown + 20 + r() * 24) / W : 0.06 + r() * 0.06)
+      const clearOfRock = lit ? Math.max(SCAPE.sun.x + SCAPE.sun.crown, SCAPE.band.peakE || 0) : 0;
+      f.ox = narrow ? (lit ? (clearOfRock + 20 + r() * 24) / W : 0.06 + r() * 0.06)
         : notch ? (notch.peak[0] - 30 - r() * 40) / W : 0.26 + r() * 0.08;
       f.oy = narrow ? (lit ? (bandTop + 4 + r() * 8) / H : 0.15 + r() * 0.02)
         : notch ? (notch.peak[1] - 44 - r() * 20) / H : 0.10 + r() * 0.06;
@@ -11385,7 +12039,10 @@ function spawnFar() {
   window.__world.crossings = farLog.map((c) => ({ entry: c.entry, ex: +c.ex.toFixed(2), ey: +c.ey.toFixed(2), exit: c.exit || "" })); /* probe hook */
   mark("farbird");
   window.__world.sky = { spawned: sky.spawned, live: live + count, entries: sky.entries };
-  farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
+  /* a crossing the POINTER asked for does not re-arm the sky's own clock:
+     the timer it would overwrite is still pending, and the spawn rate
+     would grow by one chain with every bird a reader startled */
+  if (!want) farTimer = setTimeout(spawnFar, at(18000 + r() * 22000));
 }
 
 /* ····· the sockets: the perch and the nest ·····
@@ -11404,6 +12061,49 @@ const SOCKETS = {
   nest: { sel: ".ds-nestsock", laden: false, dir: 1, ex: () => 0.36, ey: () => 0.05, bow: 0.8, mark: "nest" },
 };
 const sockTimers = { perch: null, nest: null };
+/* ····· the chicks rise to the parent ·····
+   They come up when a parent lands on the rim, beg twice apiece 120ms
+   apart, sink, and do it again every five to eight seconds while the parent
+   stays. The rise and the sink are a transition on a class; the begging is
+   a Web Animation, so neither is census. Every timer looks the group up
+   again when it fires, because a resize replaces the whole drawing. */
+let begTimer = null;
+function chicksBeg() {
+  begTimer = null;
+  const g = document.querySelector(".dawnscape .ds-chicks.up");
+  if (!g || RM || !sky.sock.nest.taken) return;
+  const r = birdRng(0xc41c + (window.__world.chicks ? window.__world.chicks.begs : 0) * 977);
+  [...g.querySelectorAll(".ds-chick")].forEach((c, i) => {
+    setTimeout(() => {
+      c.animate([{ transform: "rotate(0)" }, { transform: `rotate(${(r() < 0.5 ? -1 : 1) * 12}deg)`, offset: 0.25 },
+        { transform: "rotate(0)", offset: 0.5 }, { transform: `rotate(${(r() < 0.5 ? -1 : 1) * 12}deg)`, offset: 0.75 },
+        { transform: "rotate(0)" }], { duration: at(2500), easing: "ease-in-out", composite: "add" });
+    }, i * 120);
+  });
+  const w = window.__world.chicks || { up: true, begs: 0 };
+  window.__world.chicks = { up: true, begs: w.begs + 1 };
+  mark("beg");
+  begTimer = setTimeout(chicksBeg, at(5000 + r() * 3000));
+}
+function chicksUp(up) {
+  clearTimeout(begTimer);
+  begTimer = null;
+  const g = document.querySelector(".dawnscape .ds-chicks");
+  if (!g || RM) return;
+  if (!up) {
+    g.classList.remove("up");
+    window.__world.chicks = { up: false, begs: (window.__world.chicks || { begs: 0 }).begs };
+    return;
+  }
+  setTimeout(() => {
+    const g2 = document.querySelector(".dawnscape .ds-chicks");
+    if (!g2 || !sky.sock.nest.taken) return;
+    g2.classList.add("up");
+    window.__world.chicks = { up: true, begs: (window.__world.chicks || { begs: 0 }).begs };
+    begTimer = setTimeout(chicksBeg, at(400));
+  }, at(600));
+}
+
 function socketArrive(key) {
   const S = SOCKETS[key], st = sky.sock[key];
   const g = document.querySelector(`.dawnscape ${S.sel}`);
@@ -11414,6 +12114,9 @@ function socketArrive(key) {
   if (S.laden) g.parentElement.classList.add("laden");
   /* the hare below the young tree looks up at the bird that lands on it */
   if (key === "perch") hareSitsUp();
+  /* and in the nest, three heads come up to it */
+  if (key === "nest") chicksUp(true);
+  if (key === "perch") sky.perchAt = performance.now();
   st.taken = true;
   st.lands++;
   mark(S.mark);
@@ -11435,6 +12138,7 @@ function leaveSocket(key) {
   const vs = clamp(W / 1500, 0.44, 1);
   g.classList.remove("on");
   if (S.laden) g.parentElement.classList.remove("laden");
+  if (key === "nest") chicksUp(false);
   st.taken = false;
   st.leaves++;
   setTimeout(() => { if (st.taken !== true) g.innerHTML = ""; }, at(450));
@@ -11538,17 +12242,18 @@ function owlArrive() {
 
 /* ····· the squirrel's darts ·····
    Stop-start along its limb: 20–40px in 400–700ms, then frozen, every
-   15–40s, within ±30px of where it was drawn, logged like every roamer. */
+   15–40s, within its declared home range of where it was drawn, logged like every roamer. */
 /* the den: a dart to the trunk end of the limb, then into the hollow,
    gone for 20–60s, out again where it went in */
 function den(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
   if (!el || el.classList.contains("denned")) return;
   const off = roam.squirrel || 0;
-  const dx = -30 - off;
+  const range = homeRange(el);
+  const dx = -range - off;
   if (Math.abs(dx) > 0.5) logGround("squirrel", dx);
   el.style.transition = "transform 520ms cubic-bezier(.2,.8,.3,1)";
-  el.style.transform = "translate(-30px, 0)";
+  el.style.transform = `translate(${-range}px, 0)`;
   setTimeout(() => {
     el.classList.add("denned");
     (window.__world.den = window.__world.den || { entries: 0, exits: 0, inside: 0 }).entries++;
@@ -11582,12 +12287,341 @@ function dart(r) {
   const el = document.querySelector(".dawnscape .ds-squirrel");
   if (!el || el.classList.contains("denned")) return;
   const off = roam.squirrel || 0;
+  const range = homeRange(el);
   let dir = r() < 0.5 ? -1 : 1;
-  if (Math.abs(off) > 20) dir = off > 0 ? -1 : 1;
-  const dx = clamp(dir * (20 + r() * 20), -30 - off, 30 - off);
+  if (Math.abs(off) > (range * 2) / 3) dir = off > 0 ? -1 : 1;
+  const dx = clamp(dir * (20 + r() * 20), -range - off, range - off);
   logGround("squirrel", dx);
   el.style.transition = `transform ${(400 + r() * 300).toFixed(0)}ms cubic-bezier(.2,.8,.3,1)`;
   el.style.transform = `translate(${(off + dx).toFixed(1)}px, 0)`;
+}
+
+/* ····· THEY NOTICE YOU ·····
+   Everything else on this sheet cycles: the perch fills and empties, the
+   gulls leave and come back, the squirrel dens and comes out. Only the owl
+   coming home changes anything for good, and nothing at all answers the
+   person reading. This is the answer. The doe is the one thing on the page
+   that looks back, and at his own window the approve button he just pressed
+   sits 42px from her — so the first thing that happens is that she notices
+   the hand that is still there.
+
+   WHAT IT MAY NOT DO. It may not run while the page is carrying the reader,
+   it may not run under reduced motion, it may not fire from a keyboard
+   press, and it may not fire because a pointer is on its way to a link: any
+   point inside the words' or the chrome's own air is ignored, which matters
+   because at 1024x768 the email link sits 30px from the doe and at 1280x720
+   the résumé link sits 41px from a gull. Every reaction is additive and no
+   larger than the gust already applies to the same joint every 7.3s, so
+   nothing here enlarges the reach the clearance gate measures. One passive
+   listener, rAF throttled, and a busy lock so the morning never looks
+   startled: 6s per creature, 1.2s between any two reactions at all. */
+const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null, retry: null, met: {}, visit: 0 };
+const noticeOn = () => !RM && atMorning && !scrollHeld && document.body.classList.contains("morninglive");
+/* THE READER'S CLOCK IS NOT THE PAGE'S. Every window here — the gap
+   between any two reactions, a creature's own cooldown, what counts as
+   coming back at it, how long a pointer has to rest to be lingering — is
+   about the person, so all of it is WALL time. The pace flag compresses
+   the morning's own schedule, and a reader's hand does not speed up with
+   it. (Measured the hard way: with at() on the 4s repeat, a second
+   approach at pace 0.25 had to arrive inside a second, and the test that
+   drove a real pointer could not make it.) */
+function canNotice(who, cool = 6000) {
+  if (!noticeOn()) return false;
+  const now = performance.now();
+  if (now - NOTICE.last < 1200) return false;
+  if (now - (NOTICE.busy[who] || -Infinity) < cool) return false;
+  return true;
+}
+/* `seen` is whether the reader can see it YET. Every reaction here starts
+   the moment it is logged except the doe's swivel, which waits for her own
+   graze to lift her head: that one stamps itself when it starts. */
+function noticed(who, what, seen = true) {
+  const now = performance.now();
+  NOTICE.last = now;
+  NOTICE.busy[who] = now;
+  if (seen) NOTICE.met[who] = now;
+  sky.lastGround = now;
+  (window.__world.notice = window.__world.notice || []).push({ who, what, t: Math.round(mt()) });
+}
+/* LOOK BEFORE YOU HOP. A creature's first answer to a visit is its head —
+   never the bigger reaction the linger unlocks. It has to be said here
+   because a hand that arrives inside another creature's 1.2s gap is
+   answered by the retry, and by then it has been resting long enough to be
+   lingering: without this the gull went straight from ignoring you to
+   fleeing, and put its head up at no point in between. So the linger waits
+   until this creature has given its head to THIS approach — a fresh arrival
+   stamps NOTICE.visit and every reaction stamps its own key. The squirrel
+   is not held by it: the dart is the only answer it has. And the stamp is a
+   look the READER SAW, not one that has been scheduled — the doe's makes
+   itself when her head comes up (lookAt), because hers is the one reaction
+   on this sheet that can be logged seconds before it is drawn. */
+const hasLooked = (who) => (NOTICE.met[who] || -Infinity) >= NOTICE.visit;
+/* where a creature is, and how far the pointer is from its ink */
+function creaturesNow() {
+  const svg = document.querySelector(".dawnscape");
+  if (!svg) return [];
+  const out = [];
+  for (const [sel, who] of [[".ds-deer", "deer"], [".ds-fawn", "fawn"], [".ds-hare", "hare"],
+    [".ds-squirrel:not(.denned)", "squirrel"], [".ds-owl.on", "owl"], [".ds-perch.on", "perch"]]) {
+    const el = svg.querySelector(sel);
+    if (el) out.push({ who, el, b: el.getBoundingClientRect() });
+  }
+  for (const el of svg.querySelectorAll(".ds-gull:not(.flown)"))
+    out.push({ who: `gull-${el.dataset.id}`, el, b: el.getBoundingClientRect() });
+  return out.filter((c) => c.b.width);
+}
+const gapTo = (b, x, y) => Math.hypot(Math.max(b.left - x, x - b.right, 0), Math.max(b.top - y, y - b.bottom, 0));
+/* the phase of a creature's own idle, so a reaction joins it instead of
+   fighting it: the graze's head is up from 68% of its cycle and the ears
+   are at rest from 62% of theirs */
+const phaseOf = (el, T) => {
+  const a = el && el.getAnimations()[0];
+  return a && a.currentTime != null ? ((a.currentTime % T) + T) % T / T : 1;
+};
+function whenUp(el, T, from, cap) {
+  const ph = phaseOf(el, T);
+  if (ph >= from) return 0;
+  const wait = (from - ph) * T;
+  return wait > cap ? -1 : wait;
+}
+/* THE LOOK. Both ears swivel toward the pointer and the tail flicks once;
+   the fawn follows 300ms later. Additive, so the ear keeps its own twitch
+   underneath, and never longer than 1.6s. On a phone the ears are fills
+   rather than hinges, so it is a head lift of at most 6 degrees instead. */
+function lookAt(px, who = "deer", capMs = 2500) {
+  const svg = document.querySelector(".dawnscape");
+  const g = svg && svg.querySelector(who === "fawn" ? ".ds-fawn" : ".ds-deer");
+  if (!g || !noticeOn()) return false;
+  const head = g.querySelector(".ds-head"), tail = g.querySelector(".ds-tail");
+  const ears = [...g.querySelectorAll(".ds-ear")];
+  const T = who === "fawn" ? 5300 : 9700;
+  /* WAIT FOR HER HEAD TO BE UP, IN WALL TIME. The graze is a CSS animation
+     and runs at 9.7s whatever the pace flag says, so a cap written in the
+     page's own paced clock (at(1500) is 375ms at pace 0.25) asks for a
+     window that is almost never open and the look simply never happens.
+     The landing look is given a whole cycle, because a doe who lifts her
+     head and then notices you is the reading; a pointer reaction is given
+     2.5s and flicks her tail instead if the window is further off than
+     that, which is what a grazing deer does with a sound it half-heard. */
+  const wait = whenUp(head, T, 0.68, capMs);
+  if (wait < 0) {
+    if (tail) oneShot(tail, px > g.getBoundingClientRect().left ? 13 : -13, at(520));
+    /* the flick is the look she has time for, and it is drawn now */
+    if (who === "deer" && tail) NOTICE.met.deer = performance.now();
+    return "tail";
+  }
+  setTimeout(() => {
+    if (!noticeOn()) return;
+    const b = g.getBoundingClientRect();
+    const dir = px > (b.left + b.right) / 2 ? 1 : -1;
+    /* ONE ONE-SHOT PER JOINT. These are additive, so a swivel laid over a
+       gust flick that is still running would reach twice the angle either
+       was measured at — and the gust's own ±16° is what the drawing's
+       clearance was measured with. A joint that is already carrying a
+       Web Animation keeps the one it has. */
+    const free = (el) => el && !el.getAnimations().some((q) => !(q instanceof CSSAnimation));
+    for (const e of ears) if (free(e)) oneShot(e, dir * 11, at(1600), 0.45);
+    if (!ears.length && free(head)) oneShot(head, dir * 5, at(1500), 0.4);
+    if (free(tail)) oneShot(tail, dir * 13, at(520));
+    /* the moment the reaction actually starts, for the test that measures
+       the air at its peak: the log line is written when it is SCHEDULED,
+       and the wait for her head to come up can be most of a cycle. Which is
+       also why the linger's "has she looked at me" stamp is made HERE: a
+       look the reader has not seen yet may not be what she steps away on. */
+    if (who === "deer") NOTICE.met.deer = performance.now();
+    window.__world.swivelAt = Math.round(mt());
+  }, wait);
+  return "look";
+}
+function doeLooks(px, capMs) {
+  if (!canNotice("deer")) return;
+  const what = lookAt(px, "deer", capMs);
+  if (!what) return;
+  /* not `seen`: hers is stamped by the swivel itself, or by the flick */
+  noticed("deer", what, false);
+  setTimeout(() => { if (noticeOn()) lookAt(px, "fawn", capMs); }, at(300));
+}
+/* the rest of them, each in its own language */
+function reactNear(c, px, py, lingering, fresh) {
+  const [kind] = c.who.split("-");
+  if (kind === "deer" || kind === "fawn") {
+    if (lingering && hasLooked("deer") && canNotice("deer-step", 9000)) {
+      const el = document.querySelector(".dawnscape .ds-deer");
+      const r = birdRng(0xd0e1 + (window.__world.notice || []).length * 733);
+      if (el) { doeSteps(el, r); noticed("deer-step", "away"); }
+    } else doeLooks(px);
+    return;
+  }
+  if (kind === "hare") {
+    if (lingering && hasLooked("hare") && canNotice("hare-hop", 9000)) {
+      const r = birdRng(0xda6e + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, "hare", r, 2, [4, 6], 3, 260);
+      noticed("hare-hop", "hops");
+      return;
+    }
+    if (!canNotice("hare")) return;
+    for (const e of c.el.querySelectorAll(".ds-ear")) oneShot(e, -14, at(900), 0.5);
+    noticed("hare", "ears");
+    return;
+  }
+  if (kind === "gull") {
+    const id = c.who.slice(5);
+    const now = performance.now();
+    /* AN APPROACH IS AN ARRIVAL, not a sample: the pointer has to have
+       left this bird's reach and come back. Judged before the creature's
+       own cooldown, because "come at it twice and it goes" is exactly the
+       reaction a six second cooldown would swallow. */
+    const again = fresh && now - (NOTICE.approach[c.who] || -Infinity) < 4000;
+    if (fresh) NOTICE.approach[c.who] = now;
+    const far = document.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
+    if (again && far < 3 && !sky.flown.has(id) && canNotice(`${c.who}!`, 20000)) {
+      spawnFar("takeoff", id);
+      noticed(`${c.who}!`, "takeoff");
+      return;
+    }
+    /* THE LINGER IS ITS OWN REACTION, on its own key. It used to live
+       inside the head's branch, behind the head's own six second cooldown,
+       and a pointer that arrives and then stays always trips the head
+       first — so the hop could never happen. labrat found it by writing a
+       probe for it that nothing could reach. It comes SECOND, though: a
+       bird that has not yet looked at this approach looks first, whichever
+       of the two is due (hasLooked). */
+    if (lingering && hasLooked(c.who) && canNotice(`${c.who}-hop`, 9000)) {
+      const r = birdRng(0x9111 + (window.__world.notice || []).length * 733);
+      hopWalk(c.el, id, r, 2, [4, 7], 2, 280);
+      noticed(`${c.who}-hop`, "hops");
+      return;
+    }
+    if (!canNotice(c.who)) return;
+    const head = c.el.querySelector(".ds-gullhead");
+    const pk = +(head && head.style.getPropertyValue("--pk").replace("deg", "")) || 0;
+    oneShot(head, -pk * 0.6, at(1100), 0.45);
+    noticed(c.who, "head");
+    return;
+  }
+  if (kind === "squirrel") {
+    if (!lingering || !canNotice("squirrel", 12000)) return;
+    const r = birdRng(0x5c11 + (window.__world.notice || []).length * 733);
+    dart(r);
+    noticed("squirrel", "dart");
+    setTimeout(() => { if (noticeOn()) { den(r); } }, at(1200));
+    return;
+  }
+  if (kind === "owl") {
+    if (!canNotice("owl", 10000)) return;
+    oneShot(c.el.querySelector(".ds-head"), px > (c.b.left + c.b.right) / 2 ? 18 : -18, at(1800), 0.5);
+    noticed("owl", "head");
+    return;
+  }
+  if (kind === "perch") {
+    /* a bird that has only just landed is not leaving because you moved */
+    if (!canNotice("perch", 12000)) return;
+    const st = sky.sock.perch;
+    if (st.taken !== true || performance.now() - (sky.perchAt || 0) < 5000) return;
+    clearTimeout(sockTimers.perch);
+    sockTimers.perch = null;
+    leaveSocket("perch");
+    noticed("perch", "leaves");
+  }
+}
+let noticeRaf = 0, noticePt = null;
+function considerNotice(x, y) {
+  if (!noticeOn()) return;
+  const scape = window.__world.scape;
+  if (!scape) return;
+  /* the words' and the chrome's own air is not the meadow. A pointer that
+     goes there has LEFT every creature, which matters: coming back is what
+     makes a second approach a second approach, and a pointer that crossed
+     the text column without this would still count as standing where it
+     was. */
+  if ((scape.keep || []).some(([l, t, r2, b2]) => x >= l && x <= r2 && y >= t && y <= b2)) {
+    NOTICE.inRange = null;
+    NOTICE.dwellOn = null;
+    return;
+  }
+  const vs = clamp(scape.W / 1500, 0.44, 1.2);
+  const near = creaturesNow()
+    .map((c) => ({ ...c, d: gapTo(c.b, x, y) }))
+    .sort((p2, q) => p2.d - q.d)[0];
+  if (!near || near.d > 110 * vs) { NOTICE.dwellOn = null; NOTICE.inRange = null; return; }
+  const now = performance.now();
+  const fresh = NOTICE.inRange !== near.who;
+  /* the visit this creature's head is owed to: an arrival, not a sample */
+  if (fresh) NOTICE.visit = now;
+  NOTICE.inRange = near.who;
+  if (NOTICE.dwellOn !== near.who || near.d > 55 * vs) {
+    NOTICE.dwellOn = near.d <= 55 * vs ? near.who : null;
+    NOTICE.dwellFrom = now;
+  }
+  const lingering = NOTICE.dwellOn === near.who && now - NOTICE.dwellFrom > 600;
+  /* A STILL POINTER GETS ONE CHANCE, and that is not enough. Reactions are
+     evaluated from pointermove, so a hand that arrives inside another
+     creature's 1.2s gap and then stops moving was never noticed at all:
+     labrat measured exactly that, on the landing look's own lock. The lock
+     stays; what changes is that a refusal schedules ONE retry for the
+     moment it lifts, from the point the hand is actually at. */
+  const wait = 1200 - (now - NOTICE.last);
+  if (wait > 0 && wait <= 1200) {
+    clearTimeout(NOTICE.retry);
+    NOTICE.retry = setTimeout(() => {
+      NOTICE.retry = null;
+      if (noticePt) considerNotice(noticePt[0], noticePt[1]);
+    }, wait + 30);
+  }
+  reactNear(near, x, y, lingering, fresh);
+}
+function onPoint(e) {
+  /* A FINGER DRAGGING THE PAGE IS NOT A VISITOR. Touch fires pointermove
+     all the way through a scroll, so the controller takes MOUSE movement
+     only; a finger reaches it through onUp, and only as a tap. */
+  if (e.pointerType && e.pointerType !== "mouse") return;
+  if (!noticeOn()) return;
+  noticePt = [e.clientX, e.clientY];
+  if (noticeRaf) return;
+  noticeRaf = requestAnimationFrame(() => {
+    noticeRaf = 0;
+    if (noticePt) considerNotice(noticePt[0], noticePt[1]);
+  });
+}
+/* touch is a TAP, never a scroll passing over the meadow */
+let tapFrom = null;
+function onDown(e) { if (e.pointerType !== "mouse") tapFrom = { x: e.clientX, y: e.clientY, t: performance.now() }; }
+function onUp(e) {
+  if (e.pointerType === "mouse" || !tapFrom) return;
+  const near = e.target && e.target.closest && e.target.closest("a, button");
+  const quick = performance.now() - tapFrom.t < 350 && Math.hypot(e.clientX - tapFrom.x, e.clientY - tapFrom.y) < 10;
+  tapFrom = null;
+  if (!near && quick) considerNotice(e.clientX, e.clientY);
+}
+let noticeWired = false;
+function wireNotice() {
+  if (noticeWired || RM) return;
+  noticeWired = true;
+  addEventListener("pointermove", onPoint, { passive: true });
+  addEventListener("pointerdown", onDown, { passive: true });
+  addEventListener("pointerup", onUp, { passive: true });
+}
+
+/* ····· the daisies open ·····
+   Every daisy carries the moment it is due, in page ms of the morning's own
+   clock, and this walks the DOM rather than holding a list: a resize
+   replaces the whole drawing, and the builder re-renders whatever is
+   already out as already out, so the only thing this has to do is catch up
+   and re-arm. Idempotent by construction — opening an open daisy is a
+   no-op — which is what a timer that can be armed twice needs to be. */
+let daisyTimer = null;
+function openDaisies() {
+  daisyTimer = null;
+  if (RM || !SCAPE.built) return;
+  const now = mt();
+  let next = Infinity, open = 0;
+  for (const el of document.querySelectorAll(".dawnscape .ds-daisy[data-t]")) {
+    const T = +el.dataset.t;
+    if (T <= now) { el.classList.add("open"); open++; }
+    else next = Math.min(next, T);
+  }
+  window.__world.daisies = { open, due: next === Infinity ? null : Math.round(next) };
+  if (next < Infinity) daisyTimer = setTimeout(openDaisies, Math.max(150, at(next - now)));
 }
 
 /* ····· the butterfly ·····
@@ -11624,8 +12658,38 @@ function butterfly() {
     y = clamp(y + (r() - 0.5) * 22, SCAPE.hz + 14, H * 0.93);
   }
   const a = g.animate(frames, { duration: dur, easing: "ease-in-out" });
-  wing.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(.15)" }, { transform: "scaleX(1)" }], { duration: 140, iterations: Infinity });
-  a.onfinish = () => { g.remove(); flyLive = null; };
+  const beat = (ms) => wing.animate([{ transform: "scaleX(1)" }, { transform: "scaleX(.15)" }, { transform: "scaleX(1)" }], { duration: ms, iterations: Infinity });
+  let wingA = beat(140);
+  const gone = () => { g.remove(); flyLive = null; };
+  /* AND IT ENDS ON A FLOWER. A butterfly that meanders and then evaporates
+     is a path; one that settles on a daisy that opened while the reader
+     watched is the two slow things on this sheet meeting. It only happens
+     if a daisy inside its own envelope is out — early in the morning there
+     is none, and then it leaves as it always did. */
+  a.onfinish = () => {
+    const open = [...document.querySelectorAll(".dawnscape .ds-daisy.open")]
+      .map((el) => [+el.dataset.x, +el.dataset.y])
+      .filter(([dx, dy]) => dx > W * 0.32 && dx < W * 0.7 && dy > SCAPE.hz + 10 && dy < H * 0.95);
+    if (!open.length) { gone(); return; }
+    const [tx, ty] = open[Math.floor(r() * open.length)];
+    const land = g.animate([{ transform: frames[frames.length - 1].transform }, { transform: `translate(${tx.toFixed(1)}px, ${(ty - 5).toFixed(1)}px)` }],
+      { duration: at(1100), easing: "ease-in-out", fill: "forwards" });
+    land.onfinish = () => {
+      /* settled: the wings go slow */
+      wingA.cancel();
+      wingA = beat(700);
+      window.__world.flyLanded = (window.__world.flyLanded || 0) + 1;
+      mark("flyland");
+      setTimeout(() => {
+        wingA.cancel();
+        wingA = beat(140);
+        const off = g.animate([{ transform: `translate(${tx.toFixed(1)}px, ${(ty - 5).toFixed(1)}px)`, opacity: 1 },
+          { transform: `translate(${(tx + 40 + r() * 30).toFixed(1)}px, ${(ty - 60 - r() * 30).toFixed(1)}px)`, opacity: 0 }],
+          { duration: at(2200), easing: "ease-in", fill: "forwards" });
+        off.onfinish = gone;
+      }, at(1500 + r() * 1500));
+    };
+  };
   flyTimer = setTimeout(butterfly, at(40000 + r() * 50000));
 }
 
@@ -11671,12 +12735,19 @@ function gustReactions() {
   gustTimer = setTimeout(gustReactions, 7300);
 }
 
-/* ····· the falling leaf ·····
-   A transient, not census: one leaf every 30 to 80 seconds, never two in
-   the air, from the crown's left half, falling three to five seconds with two or three swings and a
-   little drift east (the one wind), tumbling. Web Animations, not a CSS
-   animation, so the census stays exactly thirteen by construction. A leaf
-   that lands stays; the sixth on the ground fades while the next falls. */
+/* ····· the falling petals ·····
+   A transient, not census: one fall every 30 to 80 seconds, never two in
+   the air, from the crown's left half, five to eight seconds with three or
+   four swings and a little drift east (the one wind). Web Animations, not a
+   CSS animation, so the census stays exactly thirteen by construction. What
+   falls stays where it lands; the sixth on the ground fades while the next
+   one comes down.
+   IT WAS A LEAF, AND THE SHEET IS RULED SPRING. One solid dark leaf 7 to
+   10px across, tumbling end over end and piling up five deep, is the autumn
+   the owner rejected in the crowns. It is two or three blossom petals now,
+   drawn the way everything else here is drawn rather than stamped: closed
+   outlines, no fill, each within a few px of the group's own path and
+   turning on its own, so they drift apart as they come down. */
 let leafTimer = null, leafLive = null;
 const leaves = { shed: 0, landed: [] };
 function shedLeaf() {
@@ -11700,25 +12771,46 @@ function shedLeaf() {
   setTimeout(() => shedNow(x0, y0, env, r), wait);
 }
 function shedNow(x0, y0, env, r) {
+  const NS = "http://www.w3.org/2000/svg";
   const front = document.querySelector(".dawnscape .ds-front");
   if (!front) { leafLive = null; return; }
   const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
-  const swings = 2 + Math.floor(r() * 2), amp = 20 + r() * 20, drift = 10 + r() * 20;
-  const turns = (1.5 + r()) * 360 * (r() < 0.5 ? -1 : 1);
-  const s = 7 + r() * 3;
-  const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  el.setAttribute("class", "ds-fill ds-leaf airborne");
-  /* a pointed oval with one notch, drawn about its own centre */
-  el.setAttribute("d", `M0 ${(-s / 2).toFixed(1)} C${(s * 0.45).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(s * 0.45).toFixed(1)} ${(s * 0.3).toFixed(1)} 0 ${(s / 2).toFixed(1)}` +
-    ` C${(-s * 0.2).toFixed(1)} ${(s * 0.3).toFixed(1)} ${(-s * 0.45).toFixed(1)} ${(s * 0.12).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.04).toFixed(1)}` +
-    ` L${(-s * 0.12).toFixed(1)} 0 C${(-s * 0.4).toFixed(1)} ${(-s * 0.18).toFixed(1)} ${(-s * 0.3).toFixed(1)} ${(-s * 0.4).toFixed(1)} 0 ${(-s / 2).toFixed(1)}Z`);
+  const swings = 3 + Math.floor(r() * 2), amp = 14 + r() * 10, drift = 10 + r() * 20;
+  const k = SCAPE.leafK || 1;
+  /* ONE FALL, TWO OR THREE PETALS. The group carries the fall, so the
+     clearance envelope the gate holds is the one envelope it always was,
+     and the sit still counts one thing in the air. */
+  const el = document.createElementNS(NS, "g");
+  el.setAttribute("class", "ds-leaf airborne");
+  const spins = [];
+  for (let i = 0, n = 2 + Math.floor(r() * 2); i < n; i++) {
+    /* a teardrop about its own centre: a point at the top, a round base */
+    const L = (3.2 + r() * 1.4) * k, w = (2 + r() * 0.8) * k;
+    /* spaced round a small ring rather than scattered in a box: two petals
+       that land on the same 4px are one blob, and three petals are the
+       whole point of a blossom fall */
+    const a = (i / n) * 6.283 + r() * 1.1, rr = 3 + r() * 1.5;
+    const ox = Math.cos(a) * rr, oy = Math.sin(a) * rr;
+    const F1 = (v) => v.toFixed(1);
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("class", "ds-petal w1");
+    /* the control points are pushed out by four thirds: a cubic reaches
+       about three quarters of the way to its own handle, so a teardrop
+       drawn with handles at w/2 comes out a third narrower than the width
+       it claims — which is how these first measured 1.7px across */
+    p.setAttribute("d", `M${F1(ox)} ${F1(oy - L / 2)} C${F1(ox + w * 0.73)} ${F1(oy - L * 0.1)} ${F1(ox + w * 0.67)} ${F1(oy + L * 0.35)} ${F1(ox)} ${F1(oy + L / 2)}` +
+      ` C${F1(ox - w * 0.67)} ${F1(oy + L * 0.35)} ${F1(ox - w * 0.73)} ${F1(oy - L * 0.1)} ${F1(ox)} ${F1(oy - L / 2)}Z`);
+    p.style.transformOrigin = `${F1(ox)}px ${F1(oy)}px`;
+    el.appendChild(p);
+    spins.push([p, (0.7 + r() * 1.1) * 360 * (r() < 0.5 ? -1 : 1)]);
+  }
   const frames = [];
   const N = 14;
   for (let i = 0; i <= N; i++) {
     const t = i / N;
     const y = y0 + (yEnd - y0) * Math.pow(t, 1.15);
     const x = clamp(x0 + drift * t + amp * Math.sin(t * swings * 2 * Math.PI) * (1 - 0.3 * t), env[0] + 6, env[2] - 6);
-    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${(turns * t).toFixed(1)}deg)` });
+    frames.push({ transform: `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)` });
   }
   front.appendChild(el);
   leafLive = el;
@@ -11730,8 +12822,14 @@ function shedNow(x0, y0, env, r) {
     old.classList.add("gone");
     setTimeout(() => old.remove(), at(2200));
   }
-  const anim = el.animate(frames, { duration: at(3000 + r() * 2000), easing: "ease-in-out", fill: "forwards" });
+  const ms = at(5000 + r() * 3000);
+  const anim = el.animate(frames, { duration: ms, easing: "ease-in-out", fill: "forwards" });
+  /* each petal turns on its own, finite and committed where it lands: a
+     petal still spinning on the grass is a petal nobody dropped */
+  const turns = spins.map(([p, deg]) =>
+    p.animate([{ transform: "rotate(0)" }, { transform: `rotate(${deg.toFixed(0)}deg)` }], { duration: ms, easing: "linear", fill: "forwards" }));
   anim.onfinish = () => {
+    for (const t of turns) { t.commitStyles(); t.cancel(); }
     anim.commitStyles();
     anim.cancel();
     el.classList.remove("airborne");
@@ -11749,12 +12847,17 @@ function shedNow(x0, y0, env, r) {
    the same way, smaller: 3–5px, two to four of them; the fawn skitters two
    hops, never within 6s of a doe step. The doe grazes continuously (her
    head group dips at the neck on its own clock, see the wind) and, rarer,
-   takes a step or two of 10–14px, only while she is looking up. Every roamer stays within 30px
-   of where it was drawn, and every move is logged to window.__world.ground
+   takes a step or two of 10–14px, only while she is looking up. Every roamer
+   stays inside the range it declares on its own group (data-range, read back
+   by homeRange), and every move is logged to window.__world.ground
    so a gate can hold the range in the author's own frame. Nothing here is a
    continuous animation: it is event JS setting a translate the CSS
    transitions. No two ground events within 12s of each other. */
 const roam = {};
+/* the range is the builder's, written on the group it belongs to: every
+   clamp below reads it back off the element rather than repeating it, so a
+   creature that declares one range to the gates cannot walk another */
+const homeRange = (el) => (el && +el.dataset.range) || 30;
 function logGround(id, dx) {
   roam[id] = (roam[id] || 0) + dx;
   (window.__world.ground = window.__world.ground || []).push({ id, dx: +dx.toFixed(1), x_off: +roam[id].toFixed(1) });
@@ -11762,13 +12865,14 @@ function logGround(id, dx) {
 /* a hop-walk: `el` translates, `size` is the hop, `lift` the height */
 function hopWalk(el, id, r, hops, size, lift, ms0) {
   if (!el) return;
+  const range = homeRange(el);
   let k = 0;
   const hop = () => {
     if (k++ >= hops) return;
     const off = roam[id] || 0;
     let dir = r() < 0.5 ? -1 : 1;
-    if (Math.abs(off) > 15) dir = off > 0 ? -1 : 1;
-    const dx = clamp(dir * (size[0] + r() * (size[1] - size[0])), -30 - off, 30 - off);
+    if (Math.abs(off) > range / 2) dir = off > 0 ? -1 : 1;
+    const dx = clamp(dir * (size[0] + r() * (size[1] - size[0])), -range - off, range - off);
     logGround(id, dx);
     const ms = ms0 + r() * 80;
     el.style.transition = `transform ${(ms / 2).toFixed(0)}ms ease-out`;
@@ -11796,14 +12900,15 @@ function deerStep(r) {
 }
 function doeSteps(el, r) {
   const steps = r() < 0.6 ? 1 : 2;
+  const range = homeRange(el);
   const off0 = roam.deer || 0;
   let dir = r() < 0.5 ? -1 : 1;
-  if (Math.abs(off0) > 15) dir = off0 > 0 ? -1 : 1;
+  if (Math.abs(off0) > range / 2) dir = off0 > 0 ? -1 : 1;
   let k = 0;
   const step = () => {
     if (k++ >= steps) return;
     const off = roam.deer || 0;
-    const dx = clamp(dir * (10 + r() * 4), -30 - off, 30 - off);
+    const dx = clamp(dir * (10 + r() * 4), -range - off, range - off);
     logGround("deer", dx);
     el.style.transition = "transform 800ms ease-in-out";
     el.style.transform = `translate(${(off + dx / 2).toFixed(1)}px, -1px)`;
@@ -11859,6 +12964,8 @@ function settleScape() {
   speckTimer = setTimeout(speckFlock, at(40000 + 50000 * birdRng(0x5bec)()));
   flyTimer = setTimeout(butterfly, at(30000 + 30000 * birdRng(0xb0f1)()));
   gustTimer = setTimeout(gustReactions, 7300);
+  clearTimeout(daisyTimer);
+  daisyTimer = setTimeout(openDaisies, at(800));
 }
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
   if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();

@@ -17,12 +17,14 @@
  *      range, and for a swaying group the amplitude at that radius, so the
  *      wind cannot carry a leaf into a halo — the sun's two crown groups
  *      turn and are measured the same way. Under the signature the grass
- *      is capped at 10px. At every one of the seven seats.
+ *      is capped at 10px. At every one of the sixteen seats.
  *      And THE LIGHT'S CLEARING (round 13): the sun rises behind the range,
  *      so the only things that may stand inside the crown's circle are the
  *      sun's own marks and the rock in front of it. Everything else lifts
- *      off it, which is what this drawing has instead of a glow. The sun's
- *      colour is held to its own class there too: .ds-sun and nowhere else.
+ *      off it, which is what this drawing has instead of a glow. And every
+ *      mark wearing an ACCENT class is inside the group that class belongs
+ *      to: the light on .ds-sun, .ds-glit and .ds-eye, growth on .ds-tip,
+ *      blossom on .ds-floret and .ds-petal, each in its own home.
  *   6. THE PLANES' MATERIALS (round 12). The range is fixed path data
  *      (RANGE), and .ds-p2 may hold nothing else: every path is a declared
  *      ridge line (.ds-ridge), a facet's hatch (inside a .ds-facet that
@@ -55,9 +57,29 @@
  *      The phone is capped at 8 on top of its own declaration.
  *   3. REDUCED MOTION. The drawing is there, at opacity 1, with its paths;
  *      nothing inside it animates; the flock layer is display:none.
- *   4. PALETTE. The .dawnscape rules in the shipped page draw with --ink,
- *      --ink-2 and --hair-strong and nothing else. No --hair (a hard red for
- *      check-palette), no clay, no pine, no ember: the owner said no colour.
+ *   4. PALETTE, AS A REGISTRY. Three inks draw freely (--ink, --ink-2,
+ *      --hair-strong; never --hair, which is a hard red for check-palette,
+ *      and never clay, pine or ember). Round 14's owner opened the palette
+ *      for touches — "colors are allowed, just not the entire canvas to be
+ *      colors" — so every colour token must be DECLARED with the classes it
+ *      may appear on, an accent on any other selector is a finding, a token
+ *      nobody declared is a finding, and a declared class whose rule has
+ *      gone is a finding too, so the registry cannot rot into a comment.
+ *  10. NOT THE ENTIRE CANVAS. The painted area of every coloured mark, a
+ *      stroke by its length times its width and a fill by its box, against
+ *      the sheet, at every seat. That is the owner's condition as a number:
+ *      round 14 ships 0.10% to 0.19% and the cap is 0.6%.
+ *  11. THE HORIZON IS DRAWN, NOT RULED. The longest CONTIGUOUS run of ink
+ *      in the ground plane, subpath by subpath because every mark here is
+ *      batched, stays under 0.2 W. The line this replaced measured 0.224.
+ *  12. THE RIM LIGHT IS NOT ON THE DARK SIDE. Every canopy cut-line
+ *      records its lobe and where the light was in its own frame, and the
+ *      mean of the arc sits on the lit side of that lobe.
+ *   9. A CAST FALLS AWAY FROM THE LIGHT. Every mark that claims to be a
+ *      shadow (.ds-castshadow) carries the x of what casts it, and its own
+ *      centre sits on the far side of that caster from the sun, by 2px.
+ *      The grass's feet all hatched east whatever the hour, so the west
+ *      half of a meadow lit from 0.503 W threw its shadows at the light.
  *   8. A MASK THAT MOVES IS THE SIZE OF WHAT IT MASKS. A mask on a group
  *      that sways (or inside one) is in that group's frame, so it is drawn
  *      again on every frame of the wind; its box, measured against the
@@ -68,8 +90,11 @@
  *      bird at visible ink within 2s of landing, no empty-sky gap over 40s of
  *      the page's own clock, no bird box within 8px of a viewport edge while
  *      it is visible, never more than three far birds at once; and on the
- *      ground, no roamer further than 30px from where it was drawn, with the
- *      doe's computed transform agreeing with the log that claims it.
+ *      ground, no roamer further from where it was drawn than the range it
+ *      declares on its own group (data-range, which the runtime's clamps
+ *      read back), with the doe's computed transform agreeing with the log
+ *      that claims it. The drawn offset is held against the declaration at
+ *      EVERY seat, not only at the seat the sit runs at.
  *
  * SHOWN RED BEFORE GREEN, each on a temp copy of out/ (never on out/ itself),
  * with `--root <dir>`:
@@ -104,32 +129,96 @@
  * Check 8, on the build of 7e8d916 (the leaf masks three sheets square):
  *   · (8) fails on all four moving masks at 1456x949, mC1 278x, mC2 112x,
  *     mS1 711x, mS2 1278x; the builder's own box measures 1.44x
- * Round 13, the sun behind the range. TODO(labrat): run each of these on a
- * temp copy of out/ and record the measured line here, the way every entry
- * above records one. Written by the author of the checks, who cannot run
- * them:
- *   · `.dawnscape .ds-tuft{stroke:var(--sun-g)}` added → (4) fails, two
- *     rules name --sun-g
- *   · the sun's rule reselected to `.dawnscape .ds-ink` → (4) fails, the
- *     light's colour on another selector
- *   · `--sun-g` deleted from `:root[data-night]` → check-palette fails: the
- *     day ochre measures 2.88:1 on #43372f, under the 3.0 graphic floor
- *   · class "ds-sun" put on one grass blade in `tuft()` → (1) fails,
- *     a path wearing .ds-sun outside the sun's groups
- *   · the `inLight` term dropped from `skyPiece` → (1) fails, an etched sky
- *     line inside the crown's clearing (it draws straight through the disc)
- *   · the `inLight` term dropped from `cut` → (1) fails on the phone, where
- *     the band's haze runs under the disc
- *   · `"ds-rays"` removed from PERIOD → the builder throws at live(), the
- *     scape never publishes and (1) fails with no drawing
+ * Round 13, the sun behind the range. Run by labrat on 2026-09-26 against
+ * r13/merge at 51b6691, each on a temp copy of out/, with the measured line
+ * recorded here; the positive controls (check-palette and check-figures on
+ * the unmodified copies) exit 0:
+ *   · `.dawnscape .ds-tuft{stroke:var(--sun-g)}` added → (4) fails: "--sun-g
+ *     is named by 2 .dawnscape rules — it is the sun's colour and it gets
+ *     exactly one selector"
+ *   · the sun's rule reselected to `.dawnscape .ds-ink` → (4) fails:
+ *     "--sun-g is drawn by ".dawnscape .ds-ink" — only ".dawnscape .ds-sun"
+ *     may carry the light's colour"
+ *   · `--sun-g` deleted from `:root[data-night]` → check-palette fails: a
+ *     figure stroke in --sun-g draws at 2.88:1 / Lc 27.0 on the night field
+ *     #43372f, under the 3:1 graphic floor — the 2.88 the author predicted
+ *   · class "ds-sun" put on one grass blade in `tuft()` → (1) fails at
+ *     1456×949: "17 path(s) wear .ds-sun outside the sun's own groups"
+ *   · the `inLight` term dropped from `skyPiece` → (1) fails at 1456×949:
+ *     "ds-back stands 87.5px from the sun", of the crown's 122px clearing
+ *   · the `inLight` term dropped from `cut` → (1) fails at 390×844:
+ *     "ds-vale stands 29.5px from the sun", of a 56px clearing — on the
+ *     phone, as predicted
+ *   · `"ds-rays"` removed from PERIOD → red, but BY CRASH and not by the
+ *     intended message: the builder throws at live(), the scape never
+ *     publishes, and check 7 then dies in page.evaluate reading `faces` of
+ *     undefined, which hid the rest of the seat. Guarded in 05450ca; the
+ *     probe is owed again on a build that carries the guard
  *   · `--amp` raised on `.ds-rays` from 1.4deg to 6deg without re-breaking
- *     the rays → (1) fails at 1280x720, where the crown's margin over the
- *     run state's halo is 4.5px and 6deg buys about 11px of travel
- *   · the same on `.ds-rays2`, whose --amp is NEGATIVE (-1deg → -6deg) →
- *     (1) fails too. This one is the probe for the check's own arithmetic
- *     rather than for the drawing: a signed tangent would have made the
- *     second crown group's clearance requirement smaller the faster it
- *     turned, and nothing else here would have noticed
+ *     the rays → (1) fails, but NOT at the seat the author predicted: at
+ *     1280×720 the crown clears by 2.4px (33.3px of the 30.9px owed) and
+ *     6deg is not enough. It fires at 1375×800 (31.4 of 33.7), 1165×759
+ *     (31.1 of 32.4) and 1366×768 (32 of 32.5); at 1280×720 it takes 12deg
+ *     (33.3 of 38) or 24deg (33.3 of 53.3)
+ *   · the same on `.ds-rays2`, whose --amp is NEGATIVE: -1deg → -6deg is
+ *     SILENT at all sixteen seats, and -12deg is the one that fires, at
+ *     1280×720 ("#mast .state" is 36px from ds-rays2 and needs 36.5px);
+ *     -24deg needs 50.1px. So the probe does what it was written for — the
+ *     check's Math.abs on --amp (below) is sound for the group that turns
+ *     the other way — at twice the author's amplitude. A signed tangent
+ *     would have made that group's clearance requirement SMALLER the faster
+ *     it turned, and nothing else here would have noticed
+ * Round 14. The first line here is a correction as much as a probe: the
+ * audit that asked for the declared height predicted an 11px swing in the
+ * doe's live box across her graze, and the measurement is 2.4px.
+ *   · her box top stepped over the whole cycle at 1456×949 measures 60.6 to
+ *     63.0, so the rule's own third ran 24.20 to 25.00 by the frame the
+ *     gate happened to sample, against a tallest blade of 22.4: the flake
+ *     was latent with 1.8px to spare, not live. The declaration does not
+ *     move, which is the reason to read it
+ *   · the pose dependency shown, on a copy with the corner stand raised to
+ *     a rise of 24.50 (h 27.5) and held still: the OLD measure fires with
+ *     the graze held at 0.24 of its cycle (her box 60.59, cap 24.20) and is
+ *     silent with it held at 0.56 (62.97, cap 24.99); the declared measure
+ *     (cap 24.73) is silent at both. The margins are 0.30, 0.49 and 0.23px,
+ *     which is the whole size of the effect. Both poses are HELD at
+ *     playbackRate 0 rather than paused, because check 2 fails an animation
+ *     that is not running, and only the doe and that one stand are held,
+ *     because an animation held at its own local time 0 drops out of
+ *     getAnimations() and would take the census two short
+ *   · a tuft raised to `doeH/3 + 8` → the meadow check fails
+ *   · the phone doe declared range 12 and then drawn 28px from home → the
+ *     per-seat roamer check fails at 390×844. (Held there by a script in
+ *     the copy, not by the hop: hopWalk is module-scoped and cannot be
+ *     called from outside. What the probe proves is the CHECK, which is
+ *     what makes the declaration binding on the phone at all — the sky sit
+ *     that used to hold this runs at 1456×949 only.)
+ *   · the mirror reverted in `shadowFoot` → the cast-shadow check fails on
+ *     every tuft west of the sun
+ *   · each petal emitted as its own `.ds-leaf.airborne` → the sit's
+ *     "never two leaves in the air" fails
+ *   · a blossom radius of 0.6 → the blossom floor fails
+ * Round 14 phase B, each verified by picasso with its own instrument and
+ * owed to labrat against the gate itself:
+ *   · the ruled horizon put back beside the brow → (11) fails, 325.9px of
+ *     unbroken ink at 1456×949, which is 0.224 W against a cap of 0.2
+ *   · the rim light turned back west whatever the hour → (12) fails on 39
+ *     of 65 cut-lines
+ *   · an accent painted on a class it is not declared for (--bloom-p on
+ *     .ds-far) → (4) fails, the colour is off its registry
+ *   · one floret blown up to r 200 → (10) fails at 48.97% of the sheet
+ *   · a daisy on a 40px stem → the meadow rule fails at fourteen flowers,
+ *     rise 43.5 against a cap of 24.73
+ *   · the daisies built closed → the reduced-motion seat fails, 0 of 14
+ *   · the daisies opened with a one-iteration @keyframes → (4)'s arc rule
+ *     fails at the source. NOT the census, and labrat measured why: the
+ *     census is taken a few hundred ms after landing and the first daisy is
+ *     due at 6s, so at the moment it counts, 0 of 14 are open and the
+ *     animation it would have counted does not exist yet. A gate that can
+ *     only see a defect three seconds after it stops looking is not a gate
+ *   · NOTE for round 13's P1, P2 and P4: all three still fire, but the
+ *     wording they matched has changed with the registry, so their recorded
+ *     lines are owed a re-run rather than a re-read
  *
  *   node scripts/qa/check-dawnscape.mjs [--root out] [--only 1456x949]
  */
@@ -174,6 +263,15 @@ const RANGE_PX = 30;
 const GRASS_CAP = 10;
 const PHONE_MAX = 8;
 const PATHS_FLOOR = 6;
+/* the smallest radius a blossom hole may be cut at: under 1.2 it is 2.4px
+   across, and a cut narrower than that is a device pixel at DPR 1 */
+const BLOSSOM_MIN = 1.2;
+/* the share of the sheet coloured ink may paint. Set from what round 14
+   ships with a wide margin, not from a round number: see check 10. */
+const COLOUR_CAP = 0.006;
+/* the longest unbroken run of ink the ground plane may carry, as a share of
+   the sheet's width. The ruled horizon this replaces measured 0.24 W. */
+const RULED_RUN = 0.2;
 /* the box a mask may carry over what it masks, when the two move together:
    the builder's is a tenth over each side, 1.44x */
 const MOVING_MASK_MAX = 2;
@@ -228,40 +326,79 @@ async function serve() {
   for (const body of rules)
     for (const m of body.matchAll(/var\(--([\w-]+)\)/g))
       tokens.add(`--${m[1]}`);
-  /* THREE INKS AND ONE LIGHT. The sheet was ruled ink-only and the owner
-     lifted that ruling for the sun alone in round 13, so --sun-g joins the
-     list with a leash: it may appear in exactly ONE rule, and that rule's
-     selector must be the sun's own class. The drawing side of the same rule
-     — that no path wears .ds-sun outside the sun's groups — is held at the
-     clearance check, which reads the shipped DOM. */
-  const allowed = new Set(["--ink", "--ink-2", "--hair-strong", "--sun-g"]);
-  const off = [...tokens].filter((t) => !allowed.has(t));
-  const sunRules = [...html.matchAll(/(\.dawnscape[^{]*)\{([^}]*)\}/g)].filter(
-    (m2) => /var\(--sun-g\)/.test(m2[2])
+  /* THE ACCENT REGISTRY. The sheet was ruled ink-only; round 13 lifted the
+     ruling for the sun; round 14's owner lifted it for touches anywhere
+     they make the morning feel real, with one condition — "not the entire
+     canvas to be colors". So the old leash (one rule, one selector, for the
+     sun alone) is replaced rather than deleted, by two things that say the
+     same thing about a bigger palette:
+       (a) THIS registry. Three inks draw freely. Every colour token must be
+           declared here with the classes it is allowed on, the rule for
+           each declared class must exist, and an accent on any other
+           selector is a finding. A token nobody declared is a finding too.
+       (b) A COVERAGE CAP, measured in the browser at every seat (check 10),
+           which is the owner's condition as a number instead of a promise.
+     The drawing side — no element wearing an accent class outside the group
+     that class belongs to — is held at the clearance check, which reads the
+     shipped DOM. */
+  const INKS = new Set(["--ink", "--ink-2", "--hair-strong"]);
+  const ACCENTS = {
+    /* the LIGHT: the sun's own rim and rays, the light on water, and the
+       heart of a flower, which is the thing the light opens */
+    "--sun-g": [
+      ".dawnscape .ds-sun",
+      ".dawnscape .ds-glit",
+      ".dawnscape .ds-eye",
+    ],
+    /* NEW GROWTH: a living blade's tip, and a daisy's stem */
+    "--leaf-g": [".dawnscape .ds-tip"],
+    /* BLOSSOM: a floret in the crown, and a petal on its way down */
+    "--bloom-p": [".dawnscape .ds-floret", ".dawnscape .ds-petal"],
+  };
+  const ruleBy = [...html.matchAll(/(\.dawnscape[^{]*)\{([^}]*)\}/g)].map(
+    (m2) => [m2[1].trim(), m2[2]]
+  );
+  const strays = [];
+  const declaredUsed = new Set();
+  for (const [sel, body] of ruleBy)
+    for (const m2 of body.matchAll(/var\(--([\w-]+)\)/g)) {
+      const t = `--${m2[1]}`;
+      if (INKS.has(t)) continue;
+      if (!ACCENTS[t]) {
+        strays.push(`${t} is not in the accent registry (on "${sel}")`);
+        continue;
+      }
+      if (!ACCENTS[t].includes(sel))
+        strays.push(`${t} is drawn by "${sel}", which it is not declared for`);
+      else declaredUsed.add(`${t}|${sel}`);
+    }
+  /* the registry reads both ways: a declared class whose rule has gone is a
+     claim about a colour nobody paints any more */
+  const dead = Object.entries(ACCENTS).flatMap(([t, sels]) =>
+    sels
+      .filter((s) => !declaredUsed.has(`${t}|${s}`))
+      .map((s) => `${t} on ${s}`)
   );
   if (!rules.length)
     fail(
       "no .dawnscape rules in out/index.html: the ground is not styled, or the class moved"
     );
-  if (off.length)
+  if (strays.length)
     fail(
-      `the dawnscape draws with ${off.join(", ")} — only --ink, --ink-2, --hair-strong and --sun-g may appear in its rules`
+      `the dawnscape's colour is off its registry — ${strays.join("; ")}. Three inks draw freely; a colour draws only where it is declared`
     );
-  else if (tokens.has("--sun-g") && sunRules.length !== 1)
+  else if (dead.length)
     fail(
-      `--sun-g is named by ${sunRules.length} .dawnscape rules — it is the sun's colour and it gets exactly one selector`
-    );
-  else if (
-    tokens.has("--sun-g") &&
-    sunRules[0][1].trim() !== ".dawnscape .ds-sun"
-  )
-    fail(
-      `--sun-g is drawn by "${sunRules[0][1].trim()}" — only ".dawnscape .ds-sun" may carry the light's colour`
+      `the registry declares ${dead.join(", ")}, and no .dawnscape rule paints it — a colour claim nobody draws`
     );
   else
     note(
-      `palette: ${rules.length} .dawnscape rules draw with ${[...tokens].join(", ")}` +
-        (tokens.has("--sun-g") ? ", --sun-g on .ds-sun alone" : "")
+      `palette: ${rules.length} .dawnscape rules, inks ${[...tokens].filter((t) => INKS.has(t)).join(", ")}, accents ${Object.keys(
+        ACCENTS
+      )
+        .filter((t) => tokens.has(t))
+        .map((t) => `${t} on ${ACCENTS[t].length}`)
+        .join(", ")} declared class(es) each`
     );
   /* THE WIND MUST LIVE INSIDE THE NO-PREFERENCE QUERY, and this has to be
      read off the source, because a browser cannot see it: under reduced
@@ -270,6 +407,45 @@ async function serve() {
      reader is shown. Shown green on exactly that negative before this
      check existed. So every body.morninglive .dawnscape selector is counted
      against the ones found inside a brace-matched no-preference block. */
+  /* AN ARC IS A TRANSITION, NOT AN ANIMATION. Everything on this sheet
+     that happens ONCE — a daisy opening, the chicks rising, a socket
+     filling, a leaf fading, the owl arriving — changes state by adding a
+     class and letting a transition carry it. A one-iteration @keyframes
+     would look identical and be counted by nothing: the census reads
+     CSSAnimation, and it is taken a few hundred ms after landing, when the
+     first daisy is still eight seconds from opening. So this is held at the
+     SOURCE, the way the wind's own no-preference rule is: no .dawnscape
+     rule may put `animation` on a class that carries an arc. */
+  const ARC_CLASSES = [
+    "ds-daisy",
+    "ds-budg",
+    "ds-bloomg",
+    "ds-chicks",
+    "ds-leaf",
+    "ds-perch",
+    "ds-nestsock",
+    "ds-owl",
+    "ds-twig",
+  ];
+  /* ONE ENTRY PER RULE, not one per class it happens to name: a selector
+     like `.ds-daisy.open .ds-bloomg` carries two arc classes and was
+     counted twice, so the gate said "2 rules" over one rule printed
+     twice. */
+  const arcAnim = [];
+  for (const [sel, body] of ruleBy)
+    if (
+      /(^|[^-])animation\s*:/.test(body) &&
+      ARC_CLASSES.some((c) => sel.includes(c))
+    )
+      arcAnim.push(`${sel} { animation … }`);
+  if (arcAnim.length)
+    fail(
+      `${arcAnim.length} .dawnscape rule(s) animate a one-time arc — ${arcAnim.slice(0, 3).join("; ")}. An arc is a class and a transition: a one-iteration @keyframes reads the same and is counted by nothing, because the census is taken before the first of them is due`
+    );
+  else
+    note(
+      `no .dawnscape rule animates any of the ${ARC_CLASSES.length} arc classes`
+    );
   const live = [...html.matchAll(/body\.morninglive \.dawnscape/g)].length;
   let guarded = 0;
   const head = "@media (prefers-reduced-motion: no-preference){";
@@ -394,10 +570,44 @@ try {
        board units against viewport pixels. */
     const sun = scape && scape.sun;
     let halo = { d: Infinity, sub: "" };
-    /* every path wearing the sun's token, and where it is: the token is
-       allowed on the sun and nowhere else, and check (4) holds the rule that
-       says so — this holds the drawing that obeys it */
+    /* EVERY MARK THAT WEARS AN ACCENT, AND WHERE IT IS. Check (4) holds the
+       rule that says which class may carry which colour; this holds the
+       drawing that obeys it, one home per class. A blush petal in the
+       canopy or a gold ray on the grass would pass the stylesheet and be a
+       different drawing. */
+    const ACCENT_HOME = {
+      "ds-sun": ".ds-sundisc, .ds-rays, .ds-rays2",
+      "ds-glit": ".ds-pool",
+      "ds-eye": ".ds-daisy",
+      "ds-tip": ".ds-blades, .ds-daisy",
+      "ds-floret": ".ds-canopy, .ds-sap",
+      "ds-petal": ".ds-leaf",
+    };
     let sunOff = [];
+    let colourPx = 0;
+    for (const el of svg.querySelectorAll(
+      ".ds-sun, .ds-glit, .ds-eye, .ds-tip, .ds-floret, .ds-petal"
+    )) {
+      const cls = Object.keys(ACCENT_HOME).find((c) =>
+        el.classList.contains(c)
+      );
+      if (cls && !el.closest(ACCENT_HOME[cls]))
+        sunOff.push(`${cls} outside ${ACCENT_HOME[cls]}`);
+      /* and its painted area, in screen px: a stroke is its length times
+         its width, a fill is its box, both through the element's own
+         screen matrix (the tree draws at 0.78). The box overstates a disc
+         by 4/π, which is the right direction for a cap. */
+      const mm = el.getScreenCTM();
+      const sc = mm ? Math.abs(mm.a * mm.d - mm.b * mm.c) : 1;
+      const cs = getComputedStyle(el);
+      const sw = parseFloat(cs.strokeWidth) || 0;
+      if (cs.stroke !== "none" && sw && el.getTotalLength)
+        colourPx += el.getTotalLength() * sw * sc;
+      if (cs.fill !== "none") {
+        const bb = el.getBBox();
+        colourPx += bb.width * bb.height * sc;
+      }
+    }
     for (const p of svg.querySelectorAll("path")) {
       /* a mask's or a pattern's path is a hole or a tile, not a mark; a
          tone field's outline is not a mark either (its dots stop at the
@@ -413,9 +623,8 @@ try {
       const m = p.getScreenCTM();
       const inSun = !!p.closest(".ds-sundisc, .ds-rays, .ds-rays2");
       const inRock = !!p.closest(".ds-p2");
-      /* the sun's token, wherever it ended up */
-      if (p.classList.contains("ds-sun") && !inSun)
-        sunOff.push(p.className.baseVal || "path");
+      /* (the accent classes are walked above, over every element rather
+         than over paths alone, because a floret is a circle) */
       /* a roamer declares its own axis and range on its group */
       const roamer = p.closest("[data-range]");
       const range = roamer ? +roamer.dataset.range : 0;
@@ -521,16 +730,150 @@ try {
     const decl = (scape && scape.census) || [];
     /* the meadow at the cast's scale: no tuft rises above a third of the
        doe, measured from its own base to its bbox top against her height
-       from the ground line to her ears (4px for the hand and the sway) */
-    const deerEl = svg.querySelector(".ds-deer");
-    const doeH =
-      deerEl && scape ? scape.hz - deerEl.getBoundingClientRect().top : 0;
-    const meadow = [...svg.querySelectorAll(".ds-tuft[data-y]")]
+       from the ground line to her ears (4px for the hand and the sway).
+       HER HEIGHT IS THE BUILDER'S DECLARATION, not her live box. Measured
+       over the whole graze at 1456×949: her box top runs 60.6 to 63.0, so
+       this rule's own third ran 24.20 to 25.00 by the frame the gate
+       sampled, against a tallest blade of 22.4. The swing is 0.8px and not
+       the 11px the round 14 audit estimated — the ears turn about the neck
+       joint, so dipping her head 38° barely lowers their tips — but a gate
+       that moves with the pose it measures cannot be read either way. */
+    const doeH = (scape && scape.doeH) || 0;
+    /* the daisies stand in the same meadow and answer to the same rule:
+       a flower taller than a third of the doe is not a daisy */
+    const meadow = [
+      ...svg.querySelectorAll(".ds-tuft[data-y], .ds-daisy[data-y]"),
+    ]
       .map((el) => ({
         x: +el.dataset.x,
         rise: +(+el.dataset.y - el.getBoundingClientRect().top).toFixed(1),
       }))
       .filter((t) => doeH && t.rise > doeH / 3 + 4);
+    /* 12 · THE RIM LIGHT IS ON THE LIT SIDE. The canopy's cut-lines are the
+       light on the foliage, and they always began on the upper WEST of a
+       lobe whatever the hour. Each one records the lobe it belongs to and
+       where the light was IN ITS OWN FRAME (the tree draws inside its own
+       transform), so this is check 9 read the other way round: a rim light
+       is never cut on the DARK side of its lobe, by more than a pixel.
+       Not "is on the lit side": measured, a west cut that runs the long end
+       of its span sweeps from due west over the top and comes back almost
+       symmetric in x, so the strong form reports five false findings a seat
+       on the saplings' small lobes. What the turn actually changed is the
+       east cuts, and they measure 0.71 to 0.90 of a radius toward the
+       light; the old west ones measure 0.03 to 0.47 the other way.
+       Measured on the geometry, not the box: these paths live in a mask. */
+    const rims = [...svg.querySelectorAll("defs mask path[data-x]")]
+      .map((p) => {
+        const L = p.getTotalLength();
+        if (!L) return null;
+        const at = +p.dataset.x,
+          lit = parseFloat(p.dataset.lit);
+        if (!Number.isFinite(at) || !Number.isFinite(lit)) return null;
+        /* the MEAN of the arc, not its midpoint: a cut that sweeps from the
+           west round to the top has its midpoint over the lobe's own
+           centre, where x says nothing at all. Nine samples say which half
+           of the lobe the light is on. (Measured the hard way: the midpoint
+           form reported 1 to 5 false findings a seat, all on small lobes
+           whose cut ends near the top.) */
+        let sx = 0;
+        for (let i = 0; i <= 8; i++) sx += p.getPointAtLength((L * i) / 8).x;
+        return { at, lit, away: +(sx / 9 - at).toFixed(1) };
+      })
+      .filter(Boolean);
+    const rimDark = rims.filter((q) => q.away * Math.sign(q.lit - q.at) < -1);
+    /* 11 · THE HORIZON IS DRAWN, NOT RULED. It was one full-width line in
+       six pieces and it was the only ruled thing on a sheet that is
+       otherwise all marks. What holds the replacement is not "there are
+       ticks" — that is a rule made of ticks — but the length of the longest
+       CONTIGUOUS run of ink in the ground plane: a subpath, not a batched
+       path, because every mark here is batched (one path carries a whole
+       clump, or a whole hatch field) and their totals mean nothing. The old
+       line's longest run measured 0.24 W; the brow's longest is an edge
+       piece at 0.14 W. */
+    let runLong = { len: 0, of: "" };
+    const lineG = svg.querySelector(".ds-line");
+    if (lineG) {
+      const probe = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      svg.appendChild(probe);
+      for (const p of lineG.querySelectorAll("path")) {
+        const d = p.getAttribute("d") || "";
+        for (const piece of d.split(/(?=M)/)) {
+          if (piece.length < 4) continue;
+          probe.setAttribute("d", piece);
+          const L = probe.getTotalLength();
+          if (L > runLong.len)
+            runLong = { len: +L.toFixed(1), of: p.className.baseVal || "path" };
+        }
+      }
+      probe.remove();
+    }
+    /* THE BLOSSOM IS A HOLE, AND A HOLE UNDER A DEVICE PIXEL IS NOTHING.
+       The florets are cut out of each canopy's own mask, and they were
+       authored at r 0.6–0.9: 1.2 to 1.8px across, which at DPR 1 is under
+       one device pixel, so the spring tree the owner asked for carried
+       blossom nobody could see. Nothing cut into a leaf mask is smaller
+       than 1.2. (A pattern's dots are tone, not a cut, and are not here.) */
+    const florets = [...svg.querySelectorAll("defs mask circle")].map(
+      (c) => +c.getAttribute("r")
+    );
+    /* 9 · A CAST MARK FALLS AWAY FROM THE LIGHT. Every mark that claims to
+       be a shadow wears .ds-castshadow and the x of the thing that casts
+       it, and its own centre must sit on the far side of that caster from
+       the sun — by 2px, so a foot that merely lies UNDER its caster is a
+       finding too. The tufts' feet all hatched east whatever the hour, and
+       the sun is at 0.503 W, so the west half of the meadow was throwing
+       its shadows toward the light. */
+    const casts = [];
+    if (sun)
+      for (const el of svg.querySelectorAll(".ds-castshadow")) {
+        const b = el.getBoundingClientRect();
+        let from = +el.dataset.x;
+        if (!b.width || !Number.isFinite(from)) continue;
+        /* a roamer's rake is drawn inside the roamer, so it travels with
+           it: home is where the creature IS, not where it was drawn, or a
+           hare at the far end of its range casts what reads as a shadow on
+           the wrong side of itself */
+        const rg = el.closest("[data-range]");
+        if (rg && rg.dataset.axis !== "y") {
+          const n = (rg.style.transform || "")
+            .replace(/^translate\(/, "")
+            .split(",")
+            .map(parseFloat);
+          from += n[0] || 0;
+        }
+        const away = (b.left + b.right) / 2 - from;
+        casts.push({
+          from: +from.toFixed(1),
+          away: +away.toFixed(1),
+          lit: Math.sign(from - sun.x),
+        });
+      }
+    const wrongSide = casts.filter((c) => c.away * c.lit <= 2);
+    /* EVERY DECLARED ROAMER, AT EVERY SEAT: drawn no further from home than
+       the range it declares. The sky sit holds this too (below), but only
+       at his own seat and only for a creature something moved in the sit —
+       a phone roamer is never stepped there, so the phone's own declaration
+       was unheld until this round wrote one. */
+    const strayed = [...svg.querySelectorAll("[data-range]")]
+      .map((el) => {
+        const n = (el.style.transform || "")
+          .replace(/^translate\(/, "")
+          .split(",")
+          .map(parseFloat);
+        return {
+          id:
+            el.dataset.id ||
+            el.className.baseVal.split(" ")[0].replace("ds-", ""),
+          shown: +Math.abs(
+            (el.dataset.axis === "y" ? n[1] : n[0]) || 0
+          ).toFixed(1),
+          range: +el.dataset.range,
+        };
+      })
+      .filter((q) => q.shown > q.range + 0.6);
     const anims = document
       .getAnimations()
       .filter(
@@ -918,6 +1261,15 @@ try {
       tops: tops.map(([n, t]) => [n, +t.toFixed(1)]),
       doeH: +doeH.toFixed(1),
       meadow,
+      strayed,
+      casts: casts.length,
+      wrongSide,
+      colourFrac: +(colourPx / (innerWidth * innerHeight)).toFixed(5),
+      runLong,
+      rims: rims.length,
+      rimDark,
+      florets: florets.length,
+      floretMin: florets.length ? Math.min(...florets) : null,
       hullCover,
       layerCover,
       youngShare,
@@ -1000,10 +1352,25 @@ try {
             `${seat}: the crown's clearing holds — nearest other ink ${m.halo.d}px out of ${crown.toFixed(0)} (${m.halo.sub}), sun at ${m.scape.sun.x},${m.scape.sun.y} r${m.scape.sun.r} with ${m.scape.sun.rays} rays`
           );
       }
-      /* the one coloured mark on the sheet is on the sun and nowhere else */
+      /* every accent stays in the group its class belongs to */
       if (m.sunOff && m.sunOff.length)
         fail(
-          `${seat}: ${m.sunOff.length} path(s) wear .ds-sun outside the sun's own groups (${m.sunOff.slice(0, 3).join(", ")}) — the token draws the light and nothing else`
+          `${seat}: ${m.sunOff.length} coloured mark(s) drawn outside the group their class belongs to (${[...new Set(m.sunOff)].slice(0, 3).join(", ")}) — a colour draws where it is declared and nowhere else`
+        );
+      /* 10 · NOT THE ENTIRE CANVAS. The owner lifted the ink-only ruling
+         with one condition, and this is that condition as a number: the
+         painted area of every coloured mark, stroke length times width and
+         fill by its box, against the sheet. Measured on what round 14
+         ships (0.10% to 0.20% across the seats) and capped with headroom,
+         so a wash, a filled field or an accent that grew into one is a
+         finding and a drawing that gains a few more touches is not. */
+      if (m.colourFrac > COLOUR_CAP)
+        fail(
+          `${seat}: coloured ink covers ${(m.colourFrac * 100).toFixed(3)}% of the sheet — the cap is ${(COLOUR_CAP * 100).toFixed(2)}%, and colour on this drawing is an accent on ink, never a field`
+        );
+      else
+        note(
+          `${seat}: coloured ink covers ${(m.colourFrac * 100).toFixed(3)}% of the sheet (cap ${(COLOUR_CAP * 100).toFixed(2)}%)`
         );
       if (Object.keys(m.edgeGaps).length)
         fail(
@@ -1025,7 +1392,51 @@ try {
         );
       if (m.meadow.length)
         fail(
-          `${seat}: grass taller than a third of the doe (${m.doeH}px) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+          `${seat}: grass taller than a third of the doe (${m.doeH}px, the builder's declared height) at ${m.meadow.map((t) => `${t.rise}px @x${t.x}`).join(", ")} — grass is grass-sized against the cast`
+        );
+      if (m.rimDark && m.rimDark.length)
+        fail(
+          `${seat}: ${m.rimDark.length} of ${m.rims} rim light(s) cut on the dark side of their lobe (${m.rimDark
+            .slice(0, 3)
+            .map(
+              (q) =>
+                `lobe x${q.at}, cut ${q.away}px ${q.away < 0 ? "west" : "east"}, light at ${q.lit}`
+            )
+            .join("; ")}) — the light on the foliage faces the light`
+        );
+      else if (m.rims)
+        note(`${seat}: ${m.rims} rim lights, every one on its lobe's lit side`);
+      if (m.runLong && m.runLong.len > RULED_RUN * W)
+        fail(
+          `${seat}: the ground plane carries a ${m.runLong.len}px run of unbroken ink (${m.runLong.of}), ${(m.runLong.len / W).toFixed(3)} of the sheet's width — the horizon is drawn, and the cap on any one run is ${RULED_RUN} W`
+        );
+      else if (m.runLong && m.runLong.len)
+        note(
+          `${seat}: longest unbroken run in the ground plane ${m.runLong.len}px (${(m.runLong.len / W).toFixed(3)} W, cap ${RULED_RUN})`
+        );
+      if (m.floretMin !== null && m.floretMin < BLOSSOM_MIN)
+        fail(
+          `${seat}: a floret is cut at r ${m.floretMin} (${(m.floretMin * 2).toFixed(1)}px across) — blossom under ${(BLOSSOM_MIN * 2).toFixed(1)}px is a hole nobody sees at DPR 1`
+        );
+      else if (m.florets)
+        note(`${seat}: ${m.florets} florets cut, smallest r ${m.floretMin}`);
+      if (m.wrongSide && m.wrongSide.length)
+        fail(
+          `${seat}: ${m.wrongSide.length} of ${m.casts} cast mark(s) fall toward the light — ${m.wrongSide
+            .slice(0, 3)
+            .map(
+              (c) =>
+                `the one cast by x${c.from} lies ${Math.abs(c.away)}px ${c.away < 0 ? "west" : "east"} of it and the sun is ${c.lit < 0 ? "east" : "west"}`
+            )
+            .join(", ")} — a shadow falls away from the light`
+        );
+      else if (m.casts)
+        note(
+          `${seat}: ${m.casts} cast marks, every one away from the light at ${m.scape.sun ? m.scape.sun.x : "?"}`
+        );
+      if (m.strayed && m.strayed.length)
+        fail(
+          `${seat}: ${m.strayed.map((q) => `${q.id} is drawn ${q.shown}px from home, range ±${q.range}px`).join(", ")} — a roamer is drawn inside the range it declares`
         );
       /* 6 · the range's rules, the canopies, and the masks that remain */
       if (m.p2) {
@@ -1191,6 +1602,9 @@ try {
     await page.waitForTimeout(700);
     const m = await page.evaluate(MEASURE, { CLEAR_PX, RANGE_PX, GRASS_CAP });
     const rm = await page.evaluate(() => ({
+      daisies: document.querySelectorAll(".dawnscape .ds-daisy").length,
+      daisiesOpen: document.querySelectorAll(".dawnscape .ds-daisy.open")
+        .length,
       atmorning: document.body.classList.contains("atmorning"),
       live: document.body.classList.contains("morninglive"),
       settled: document.querySelector(".dawnscape").dataset.settled,
@@ -1219,6 +1633,26 @@ try {
     if (rm.scape === undefined)
       fail(
         `${seat}: mark("scape") never recorded — settleScape did not run on the reduced-motion path`
+      );
+    /* THE DAISIES ARE OUT AT BUILD. They open over the morning's first
+       minute on a timer, and settleScape returns before any timer under
+       reduced motion, so a reader who asked for stillness would be given a
+       meadow of buds that never opens. The end state is built instead. */
+    if (rm.daisies && rm.daisiesOpen !== rm.daisies)
+      fail(
+        `${seat}: ${rm.daisiesOpen} of ${rm.daisies} daisies are open under reduced motion — the end state is built, not waited for`
+      );
+    else if (rm.daisies) note(`${seat}: all ${rm.daisies} daisies built open`);
+    /* and the nest is a parent and three raised chicks, built: an end state
+       with an empty nest over three raised heads is a story with its middle
+       missing, and the sit's invariant has to hold on every path */
+    if (rm.chicks && !rm.chicksUp)
+      fail(
+        `${seat}: the chicks are in the cup and down under reduced motion — the end state is built`
+      );
+    if (rm.chicksUp && !rm.nested)
+      fail(
+        `${seat}: the chicks are up under reduced motion with an empty nest — they rise to a parent`
       );
     if (!fails.some((f) => f.startsWith(seat)))
       note(
@@ -1275,10 +1709,12 @@ try {
         nested: document.querySelectorAll(
           ".dawnscape .ds-nestsock path.ds-fill"
         ).length,
+        chicksUp: document.querySelectorAll(".dawnscape .ds-chicks.up").length,
       };
     };
     const SIT_MS = 30000; /* 30s of wall clock is two minutes of the page's own */
     let first = null,
+      orphanBeg = 0,
       gapFrom = null,
       worstGap = 0,
       escapes = 0,
@@ -1299,9 +1735,13 @@ try {
         airborne,
         flies,
         nested,
+        chicksUp,
       } = await page.evaluate(READ);
       samples++;
       if (perched > 1) twoPerched++;
+      /* the chicks rise TO a parent: up over an empty cup is a beg at
+         nobody, and it is the shape a stale timer after a rebuild takes */
+      if (chicksUp && !nested) orphanBeg++;
       if (nested > 1) twoNested++;
       if (airborne > 1) twoLeaves++;
       if (flies > 1) twoFlies++;
@@ -1407,138 +1847,156 @@ try {
       ),
     }));
     const seat = `sky 1456×949`;
-    /* clocks: the sit is wall time; the page's own is PACE times shorter */
-    const gapCode = worstGap / PACE;
-    if (first === null)
-      fail(`${seat}: no bird was ever visible in ${SIT_MS}ms of sitting`);
-    else if (first > 2000 * PACE + 500)
-      fail(
-        `${seat}: first visible bird ${(first / PACE).toFixed(0)}ms after landing on the page's clock — the morning lands with birds in it (2s)`
-      );
-    if (gapCode > 40000)
-      fail(
-        `${seat}: empty sky for ${(gapCode / 1000).toFixed(1)}s of the page's clock — the cap is 40s`
-      );
-    if (escapes)
-      fail(
-        `${seat}: ${escapes} samples with a visible bird within 8px of the viewport's edge`
-      );
-    if (maxFar > 3)
-      fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
-    if (!routes.length)
-      fail(`${seat}: no route was logged — window.__world.routes is gone`);
-    if (overRock.length)
-      fail(
-        `${seat}: ${overRock.length} of ${routes.length} crossings pass over a shadow face of the range (${overRock.map((r) => `${r.entry} at ${r.hit}`).join(", ")}) — the rock's shadow is not sky`
-      );
-    /* the perch: capacity one, and the socket agrees with the log: a bird
+    /* a morning that never built publishes no sky, and every read below
+       would die on it with a TypeError, which reports nothing. Check 1
+       has already said why (the missing scape); say it here too, once,
+       and let the seat close. */
+    sit: {
+      if (!fin.sky) {
+        fail(
+          `${seat}: window.__world.sky is missing — the morning never built, so there is no sky to sit under`
+        );
+        break sit;
+      }
+      /* clocks: the sit is wall time; the page's own is PACE times shorter */
+      const gapCode = worstGap / PACE;
+      if (first === null)
+        fail(`${seat}: no bird was ever visible in ${SIT_MS}ms of sitting`);
+      else if (first > 2000 * PACE + 500)
+        fail(
+          `${seat}: first visible bird ${(first / PACE).toFixed(0)}ms after landing on the page's clock — the morning lands with birds in it (2s)`
+        );
+      if (gapCode > 40000)
+        fail(
+          `${seat}: empty sky for ${(gapCode / 1000).toFixed(1)}s of the page's clock — the cap is 40s`
+        );
+      if (escapes)
+        fail(
+          `${seat}: ${escapes} samples with a visible bird within 8px of the viewport's edge`
+        );
+      if (maxFar > 3)
+        fail(`${seat}: ${maxFar} far birds at once — the cap is three`);
+      if (!routes.length)
+        fail(`${seat}: no route was logged — window.__world.routes is gone`);
+      if (overRock.length)
+        fail(
+          `${seat}: ${overRock.length} of ${routes.length} crossings pass over a shadow face of the range (${overRock.map((r) => `${r.entry} at ${r.hit}`).join(", ")}) — the rock's shadow is not sky`
+        );
+      /* the perch: capacity one, and the socket agrees with the log: a bird
        that landed and has not left is on the twig, and no other */
-    if (twoPerched)
-      fail(
-        `${seat}: two birds on the perch in ${twoPerched} sample(s) — capacity one`
-      );
-    if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
-      fail(
-        `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
-      );
-    if (twoNested)
-      fail(
-        `${seat}: two birds in the nest in ${twoNested} sample(s) — capacity one`
-      );
-    if (fin.nestedNow !== fin.nest.lands - fin.nest.leaves)
-      fail(
-        `${seat}: ${fin.nestedNow} bird(s) drawn in the nest, but the log says ${fin.nest.lands} landed and ${fin.nest.leaves} left`
-      );
-    if (!fin.sky.entries.some((e) => e.exit === "pass"))
-      fail(
-        `${seat}: no crossing left through the pass in the sit — the second canopy crossing does`
-      );
-    if (fin.perch.lands < 1)
-      fail(
-        `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
-      );
-    if (
-      fin.perch.leaves >= 1 &&
-      !fin.sky.entries.some((e) => e.entry === "perch")
-    )
-      fail(`${seat}: a bird left the perch but no "perch" entry was logged`);
-    if (twoLeaves)
-      fail(
-        `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
-      );
-    if (twoFlies)
-      fail(`${seat}: two butterflies in ${twoFlies} sample(s) — one at a time`);
-    /* the owl: drawn if and only if it has come home; an "owl" entry logged
-       when it set out */
-    if ((fin.owl.state === "home") !== fin.owlDrawn > 0)
-      fail(
-        `${seat}: the owl is ${fin.owl.state} but ${fin.owlDrawn} owl fill(s) are drawn in the notch`
-      );
-    if (
-      fin.owl.state !== "away" &&
-      !fin.sky.entries.some((e) => e.entry === "owl")
-    )
-      fail(`${seat}: the owl set out but no "owl" entry was logged`);
-    if (!fin.sky || fin.sky.spawned < 2)
-      fail(
-        `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
-      );
-    const maxOff = {};
-    for (const g of fin.ground)
-      maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
-    const roamers = fin.roamers || {};
-    for (const [id, off] of Object.entries(maxOff)) {
-      const lim = roamers[id] ? roamers[id].range : RANGE_PX;
-      if (off > lim)
+      if (twoPerched)
         fail(
-          `${seat}: ${id} strayed ${off}px from where it was drawn — its declared home range is ±${lim}px`
+          `${seat}: two birds on the perch in ${twoPerched} sample(s) — capacity one`
         );
-    }
-    /* the log against the ink: one roamer's computed translate must be what
-       the log says its offset is */
-    /* every DECLARED roamer, moved or not: its drawn offset within its range */
-    for (const [id, tf, axis] of fin.tf) {
-      const nums0 = tf
-        ? tf
-            .replace(/^translate\(/, "")
-            .split(",")
-            .map(parseFloat)
-        : [0, 0];
-      const shown0 = Math.abs(axis === "y" ? nums0[1] || 0 : nums0[0] || 0);
-      const lim0 = roamers[id] ? roamers[id].range : RANGE_PX;
-      if (shown0 > lim0 + 0.6)
+      if (fin.perchedNow !== fin.perch.lands - fin.perch.leaves)
         fail(
-          `${seat}: ${id} is drawn ${shown0.toFixed(1)}px from home — its declared range is ±${lim0}px`
+          `${seat}: ${fin.perchedNow} bird(s) drawn on the perch, but the log says ${fin.perch.lands} landed and ${fin.perch.leaves} left — an orphan or a missing bird`
         );
-    }
-    for (const [id, tf, axis] of fin.tf) {
-      const last = [...fin.ground].reverse().find((g) => g.id === id);
-      const nums = tf
-        ? tf
-            .replace(/^translate\(/, "")
-            .split(",")
-            .map(parseFloat)
-        : [0, 0];
-      const shown = axis === "y" ? nums[1] || 0 : nums[0] || 0;
-      /* a move is logged whole as it starts and drawn in two halves, so a
-         sample mid-hop sits at the previous offset plus half the step */
-      const mid = last ? last.x_off - last.dx / 2 : 0;
+      if (orphanBeg)
+        fail(
+          `${seat}: the chicks were up with an empty nest in ${orphanBeg} sample(s) — they rise to a parent`
+        );
+      if (twoNested)
+        fail(
+          `${seat}: two birds in the nest in ${twoNested} sample(s) — capacity one`
+        );
+      if (fin.nestedNow !== fin.nest.lands - fin.nest.leaves)
+        fail(
+          `${seat}: ${fin.nestedNow} bird(s) drawn in the nest, but the log says ${fin.nest.lands} landed and ${fin.nest.leaves} left`
+        );
+      if (!fin.sky.entries.some((e) => e.exit === "pass"))
+        fail(
+          `${seat}: no crossing left through the pass in the sit — the second canopy crossing does`
+        );
+      if (fin.perch.lands < 1)
+        fail(
+          `${seat}: no bird landed on the perch in the sit — the first canopy crossing lands`
+        );
       if (
-        last &&
-        Math.abs(shown - last.x_off) > 0.6 &&
-        Math.abs(shown - mid) > 0.6
+        fin.perch.leaves >= 1 &&
+        !fin.sky.entries.some((e) => e.entry === "perch")
       )
+        fail(`${seat}: a bird left the perch but no "perch" entry was logged`);
+      if (twoLeaves)
         fail(
-          `${seat}: ${id} is drawn at ${shown}px but the log says ${last.x_off}px`
+          `${seat}: two leaves in the air in ${twoLeaves} sample(s) — never two`
+        );
+      if (twoFlies)
+        fail(
+          `${seat}: two butterflies in ${twoFlies} sample(s) — one at a time`
+        );
+      /* the owl: drawn if and only if it has come home; an "owl" entry logged
+       when it set out */
+      if ((fin.owl.state === "home") !== fin.owlDrawn > 0)
+        fail(
+          `${seat}: the owl is ${fin.owl.state} but ${fin.owlDrawn} owl fill(s) are drawn in the notch`
+        );
+      if (
+        fin.owl.state !== "away" &&
+        !fin.sky.entries.some((e) => e.entry === "owl")
+      )
+        fail(`${seat}: the owl set out but no "owl" entry was logged`);
+      if (!fin.sky || fin.sky.spawned < 2)
+        fail(
+          `${seat}: only ${fin.sky ? fin.sky.spawned : 0} far crossings in ${(SIT_MS / PACE / 1000).toFixed(0)}s of morning`
+        );
+      const maxOff = {};
+      for (const g of fin.ground)
+        maxOff[g.id] = Math.max(maxOff[g.id] || 0, Math.abs(g.x_off));
+      const roamers = fin.roamers || {};
+      for (const [id, off] of Object.entries(maxOff)) {
+        const lim = roamers[id] ? roamers[id].range : RANGE_PX;
+        if (off > lim)
+          fail(
+            `${seat}: ${id} strayed ${off}px from where it was drawn — its declared home range is ±${lim}px`
+          );
+      }
+      /* the log against the ink: one roamer's computed translate must be what
+       the log says its offset is */
+      /* every DECLARED roamer, moved or not: its drawn offset within its range */
+      for (const [id, tf, axis] of fin.tf) {
+        const nums0 = tf
+          ? tf
+              .replace(/^translate\(/, "")
+              .split(",")
+              .map(parseFloat)
+          : [0, 0];
+        const shown0 = Math.abs(axis === "y" ? nums0[1] || 0 : nums0[0] || 0);
+        const lim0 = roamers[id] ? roamers[id].range : RANGE_PX;
+        if (shown0 > lim0 + 0.6)
+          fail(
+            `${seat}: ${id} is drawn ${shown0.toFixed(1)}px from home — its declared range is ±${lim0}px`
+          );
+      }
+      for (const [id, tf, axis] of fin.tf) {
+        const last = [...fin.ground].reverse().find((g) => g.id === id);
+        const nums = tf
+          ? tf
+              .replace(/^translate\(/, "")
+              .split(",")
+              .map(parseFloat)
+          : [0, 0];
+        const shown = axis === "y" ? nums[1] || 0 : nums[0] || 0;
+        /* a move is logged whole as it starts and drawn in two halves, so a
+         sample mid-hop sits at the previous offset plus half the step */
+        const mid = last ? last.x_off - last.dx / 2 : 0;
+        if (
+          last &&
+          Math.abs(shown - last.x_off) > 0.6 &&
+          Math.abs(shown - mid) > 0.6
+        )
+          fail(
+            `${seat}: ${id} is drawn at ${shown}px but the log says ${last.x_off}px`
+          );
+      }
+      if (!fails.some((f) => f.startsWith(seat)))
+        note(
+          `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
+            `max ${maxFar} far at once, ${routes.length} routes flown and none over the rock, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
+            `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
+            `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
         );
     }
-    if (!fails.some((f) => f.startsWith(seat)))
-      note(
-        `${seat}: first bird ${first.toFixed(0)}ms after landing, worst gap ${(gapCode / 1000).toFixed(1)}s (page clock), 0 escapes in ${samples} samples, ` +
-          `max ${maxFar} far at once, ${routes.length} routes flown and none over the rock, ${fin.sky.spawned} crossings (${fin.sky.entries.map((e) => e.entry).join("/")}), ${fin.ground.length} ground events, ` +
-          `max |x_off| ${JSON.stringify(maxOff)}, perch ${fin.perch.lands}/${fin.perch.leaves} (on twig now: ${fin.perchedNow}), ` +
-          `leaves ${fin.leaves.shed} shed / ${fin.leaves.landed} on the ground, owl ${fin.owl.state}, ${fin.flies} butterflies, nest ${fin.nest.lands}/${fin.nest.leaves}, ${fin.sky.entries.filter((e) => e.exit === "pass").length} by the pass`
-      );
     await ctx.close();
   }
 } finally {

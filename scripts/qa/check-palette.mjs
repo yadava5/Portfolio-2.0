@@ -330,6 +330,18 @@ const PAIRS = [
      a token nobody can move. #a8760c measures 3.63:1 on the morning field
      #fbf3e7 and 3.18:1 on #f2e4c9, the tightest day field. */
   ["--sun-g", GRAPHIC],
+  /* ¶13's other two accents, round 14. The owner lifted the ink-only ruling
+     for touches that make the morning feel real, so the sheet's palette is
+     the light, new growth and blossom — three graphics by the same
+     classification as --clay-g and --sun-g, none of them ever text, each
+     measured over EVERY day field rather than only the morning one they
+     render on. #5c7a2e measures 3.91:1 and #b95f70 3.39:1 on #f2e4c9, the
+     tightest day field, where --sun-g itself measures 3.18. Which classes
+     may carry them is not this gate's business: check-dawnscape 4 holds
+     that registry, and check 10 holds how much of the sheet they may
+     paint. */
+  ["--leaf-g", GRAPHIC],
+  ["--bloom-p", GRAPHIC],
 ];
 
 function measureSet(label, set, fields) {
@@ -516,12 +528,14 @@ if (NIGHT_FIELDS.length === 2 && WAY.length === 7) {
      fills at runtime, and it is deliberately NOT classed `.figsvg`: it is
      scenery under the morning's words, not a numbered figure, and its text
      rules (`.figsvg text`) would be wrong on it. Its strokes are held here to
-     the same floors as a figure's. The owner said no colour, so the rules
-     draw with --ink-2 for subjects and --hair-strong for far structure —
-     and, since round 13, --sun-g on the sun's rim-pass and rays, which is
-     the one place he lifted that ruling. check-dawnscape holds the
-     allow-list AND the leash on it (one rule, one selector, and no path
-     wearing .ds-sun outside the sun's own groups); this scan holds the
+     the same floors as a figure's. The sheet is an ink drawing with
+     three accents on it — round 14's owner lifted the ink-only ruling for
+     touches that make the morning feel real, "just not the entire canvas
+     to be colors" — so the rules draw with --ink-2 for subjects,
+     --hair-strong for far structure, and --sun-g, --leaf-g and --bloom-p
+     where a colour is declared for the class that carries it. WHICH class
+     may carry WHICH token is check-dawnscape 4's registry, and how much of
+     the sheet colour may paint at all is its check 10; this scan holds the
      contrast of whatever the rules actually name. Shown red on a temp
      copy with `.ds-far{stroke:var(--hair)}`: --hair on the day fields is
      under the 2.0 hairline floor and the file exits 1. */

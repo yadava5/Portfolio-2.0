@@ -74,6 +74,10 @@ declare global {
         entries: { entry: string; n: number; t: number }[];
       };
       ground?: { id: string; dx: number; x_off: number }[];
+      /* round 14: every time the morning answered the reader */
+      notice?: { who: string; what: string; t: number }[];
+      /* when a swivel actually started, as opposed to when it was logged */
+      swivelAt?: number;
     };
     __onwardPath?: () => { x: number; y: number; L: number }[];
     __rail?: () => { x: number; y: number }[];
@@ -945,7 +949,7 @@ test.describe("¶12 · reduced motion goes straight to the morning", () => {
    also an assertion: the words keep their air from the drawing, nothing
    under reduced motion moves, every bird stays inside the frame the reader
    can see, and every roamer stays within a hand's width of where it was
-   drawn. check-dawnscape holds the same claims at seven seats in
+   drawn. check-dawnscape holds the same claims at sixteen seats in
    verify:portfolio; these are the long sit and the per-seat air, on the
    engine the geometry is measured on.
    ══════════════════════════════════════════════════════════════════════ */
@@ -1326,5 +1330,498 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
       expect(rm.scape, "the ground still reports settled").toBeDefined();
       expect(rm.flock, "the flock layer is hidden").toBe("none");
     });
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the daisies open over the first minute, and a rebuild keeps them
+   The one thing on this sheet that changes for a reader who stays. Each
+   daisy carries the moment it is due, in page ms of the morning's own
+   clock, so the builder can render whatever is already out as already out:
+   a resize replaces the whole drawing, and without that the meadow would
+   shut every time the window moved.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the daisies keep their morning", () => {
+  test("a rebuild does not shut them", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    test.slow();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    const read = () =>
+      page.evaluate(() => ({
+        all: document.querySelectorAll(".dawnscape .ds-daisy").length,
+        open: document.querySelectorAll(".dawnscape .ds-daisy.open").length,
+      }));
+    /* a minute of the morning's own clock, at pace 1 */
+    await page.waitForTimeout(60_000);
+    const before = await read();
+    expect(before.all, "there are daisies").toBeGreaterThan(0);
+    expect(before.open, "and most of them are out by a minute").toBeGreaterThan(
+      before.all / 2
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForTimeout(1500);
+    const mid = await read();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await page.waitForTimeout(1500);
+    const after = await read();
+    /* the counts can only RISE: the clock keeps running through both
+       rebuilds, and a seat change can draw a different number of flowers */
+    expect(
+      mid.open / Math.max(1, mid.all),
+      "the share that is out survives the resize"
+    ).toBeGreaterThanOrEqual(before.open / before.all - 0.01);
+    expect(
+      after.open,
+      "and coming back does not shut them either"
+    ).toBeGreaterThanOrEqual(before.open);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════════
+   ¶13 · the morning notices you (round 14, item 6)
+   Everything else on this sheet cycles. This is the only thing that answers
+   the person reading, so what it may NOT do matters as much as what it
+   does: not from a keyboard, not during the carry, not under reduced
+   motion, and never because a pointer is on its way to a link. At 1024×768
+   the email link sits 30px from the doe and at 1280×720 the résumé link
+   sits 41px from a gull, measured, so the keep guard is load-bearing at the
+   seats a recruiter reads at.
+
+   Every window in the controller is WALL time, not the page's paced clock:
+   a reader's hand does not speed up with the pace flag. That is why these
+   drive a real pointer and wait in real milliseconds.
+   ══════════════════════════════════════════════════════════════════════ */
+test.describe("¶13 · the morning notices you", () => {
+  /** land the morning with the mouse, the way a reader does */
+  async function landByHand(page: Page) {
+    await toTheGate(page);
+    const b = await page.evaluate(() => {
+      const r = document.getElementById("approve")!.getBoundingClientRect();
+      return { x: (r.left + r.right) / 2, y: (r.top + r.bottom) / 2 };
+    });
+    await page.mouse.move(b.x, b.y);
+    await page.mouse.click(b.x, b.y);
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    return b;
+  }
+  const notices = (page: Page) =>
+    page.evaluate(() => window.__world.notice ?? []);
+  const centre = (page: Page, sel: string) =>
+    page.evaluate((s) => {
+      const e = document.querySelector(s);
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      return {
+        x: (r.left + r.right) / 2,
+        y: (r.top + r.bottom) / 2,
+        top: r.top,
+        left: r.left,
+      };
+    }, sel);
+
+  test("a · the hand that pressed is still there, and she looks up", async ({
+    page,
+  }, testInfo: TestInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* she waits for her own graze to lift her head, so this is not an
+       instant: the look is scheduled at at(2500) and then joins the next
+       up window of a 9.7s cycle */
+    await page.waitForFunction(
+      () => (window.__world.notice ?? []).some((n) => n.who === "deer"),
+      null,
+      { timeout: 20_000 }
+    );
+    const n = await notices(page);
+    expect(
+      n.some(
+        (q) => q.who === "deer" && (q.what === "look" || q.what === "tail")
+      ),
+      "the doe noticed the hand that pressed"
+    ).toBe(true);
+  });
+
+  test("a2 · a keyboard press is not a hand", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    /* .click() from script carries detail 0, which is what a keyboard
+       activation reports, and there is no pointer to notice */
+    await page.evaluate(() =>
+      (document.getElementById("approve") as HTMLButtonElement).click()
+    );
+    await page.waitForFunction(
+      () => document.body.classList.contains("morninglive"),
+      null,
+      { timeout: 30_000 }
+    );
+    await page.waitForTimeout(4000);
+    expect(await notices(page), "nothing looked at a keyboard").toEqual([]);
+  });
+
+  test("b · a pointer at a ground bird, and the same bird twice", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* past the landing look and past the 1.2s the busy lock keeps between
+       any two reactions at all */
+    await page.waitForTimeout(3000);
+    const g = await centre(page, '.dawnscape .ds-gull[data-id="a"]');
+    expect(g, "a gull to walk up to").not.toBeNull();
+    await page.mouse.move(g!.x, g!.top - 14);
+    await page.waitForTimeout(1200);
+    const first = await notices(page);
+    expect(
+      first.some((q) => q.who === "gull-a"),
+      "it put its head up"
+    ).toBe(true);
+    /* away, out of every creature's reach, and back. The return has to land
+       inside a window with two edges: after the 1.2s gap the head it just
+       gave holds against every other reaction, and inside the four seconds
+       that make this a SECOND approach rather than another first one. The
+       head lands around 3.7s (the pointer arrives inside the landing look's
+       own lock, and the retry answers it when that lifts), so the window is
+       roughly 4.9s to 7.0s and this returns near 5.8s. It used to wait
+       400ms and arrive within 60ms of the lock — and nobody could see that,
+       because the assertion below read the WHOLE log and was already
+       satisfied by the first approach's own entry. */
+    await page.waitForTimeout(1200);
+    await page.mouse.move(g!.x, g!.top - 400);
+    await page.waitForTimeout(300);
+    /* everything logged from here on is the second approach's answer */
+    const mark = (await notices(page)).length;
+    await page.mouse.move(g!.x, g!.top - 14);
+    await page.waitForTimeout(1600);
+    const again = (await notices(page)).slice(mark);
+    expect(
+      again.some((q) => q.what === "takeoff" || q.what === "hops"),
+      "coming back at it moved it"
+    ).toBe(true);
+  });
+
+  /* b2 · THE LINGER, AND THE GROUND LOG IT IS DRAWN BY. A hand that arrives
+     and then rests is the reading the linger exists for, and the order is
+     the whole of it: the bird puts its head up first, and only then hops
+     away. It is also the one reaction that MOVES a creature, so it is where
+     the roam contract is owed a test — every hop is logged to
+     __world.ground, the bird has to be DRAWN where the log says, and the
+     walk has to stay inside the range its own group declares (data-range,
+     30 at a desktop seat). A test that read the log alone would pass on a
+     bird drawn anywhere at all. */
+  test("b2 · a hand that stays makes it hop, drawn where the log says", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    await page.waitForTimeout(3000);
+    const g = await centre(page, '.dawnscape .ds-gull[data-id="a"]');
+    expect(g, "a gull to walk up to").not.toBeNull();
+    /* A HAND AT REST STILL MOVES. Reactions are evaluated from pointermove,
+       so a pointer parked on one coordinate is evaluated once and never
+       again; this is a hand resting on the bird with its own tremor, half a
+       pixel at a time, and it stops the moment the bird goes. */
+    for (let i = 0; i < 30; i++) {
+      await page.mouse.move(g!.x + (i % 2 ? 0.5 : -0.5), g!.top - 14);
+      await page.waitForTimeout(150);
+      const soFar = await notices(page);
+      if (soFar.some((q) => q.who === "gull-a-hop")) break;
+    }
+    const log = await notices(page);
+    const looked = log.findIndex((q) => q.who === "gull-a");
+    const hopped = log.findIndex(
+      (q) => q.who === "gull-a-hop" && q.what === "hops"
+    );
+    expect(looked, "it put its head up").toBeGreaterThan(-1);
+    expect(hopped, "and a hand that stayed made it hop").toBeGreaterThan(-1);
+    expect(looked, "the head came first: it looks before it hops").toBeLessThan(
+      hopped
+    );
+    /* out of reach, so nothing new starts, and long enough for the last
+       hop's own transition to land: the drawn position is read from the
+       computed transform, which is where the bird actually is */
+    await page.mouse.move(g!.x, g!.top - 400);
+    await page.waitForTimeout(1400);
+    const out = await page.evaluate(() => {
+      const el = document.querySelector(
+        '.dawnscape .ds-gull[data-id="a"]'
+      ) as SVGGElement;
+      const t = getComputedStyle(el).transform;
+      const m = new DOMMatrixReadOnly(t === "none" ? undefined : t);
+      const mine = (window.__world.ground ?? []).filter((q) => q.id === "a");
+      return {
+        drawn: +m.e.toFixed(1),
+        lift: +m.f.toFixed(1),
+        log: mine.length ? mine[mine.length - 1].x_off : null,
+        peak: mine.reduce((p, q) => Math.max(p, Math.abs(q.x_off)), 0),
+        range: +el.dataset.range!,
+        hops: mine.length,
+      };
+    });
+    expect(out.hops, "the hops are in the ground log").toBeGreaterThan(0);
+    expect(out.range, "the bird declares its home range").toBe(30);
+    expect(out.lift, "and it is back down on the ground").toBe(0);
+    expect(
+      Math.abs(out.drawn - (out.log ?? NaN)),
+      `drawn at ${out.drawn}px, logged at ${out.log}px`
+    ).toBeLessThanOrEqual(0.6);
+    /* the PEAK of the walk, not where it happened to stop: two hops of the
+       same size in opposite directions net to nothing */
+    expect(
+      out.peak,
+      `the walk keeps the range it declares (peak ${out.peak}px of ${out.range}px)`
+    ).toBeLessThanOrEqual(out.range);
+  });
+
+  test("c · the swivel's peak keeps the words' air", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    /* 1165×759 is the seat where her tail measures 2.1px from the email
+       line at rest, which is the tightest air any of this has */
+    await page.setViewportSize({ width: 1165, height: 759 });
+    await landByHand(page);
+    await page.waitForTimeout(1500);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    await page.mouse.move(d!.x, d!.top - 18);
+    /* WAIT FOR THE SWIVEL, NOT FOR THE LOG. The log line is written when
+       the reaction is scheduled and she can be Most of a 9.7s graze away
+       from having her head up; __world.swivelAt is stamped when the
+       animation actually starts. 480ms in is inside its hold. */
+    await page
+      .waitForFunction(() => window.__world.swivelAt !== undefined, null, {
+        timeout: 25_000,
+      })
+      .catch(() => {});
+    await page.waitForTimeout(480);
+    const worst = await page.evaluate(() => {
+      const svg = document.querySelector(".dawnscape")!;
+      const wrap = document.querySelector(".dawnwrap")!;
+      const texts: number[][] = [];
+      const w = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) {
+        if (!n.textContent!.trim()) continue;
+        const rg = document.createRange();
+        rg.selectNodeContents(n);
+        const quote = !!(n.parentElement as Element).closest(".endquote");
+        for (const r of rg.getClientRects())
+          if (r.width && r.height)
+            texts.push([r.left, r.top, r.right, r.bottom, quote ? 64 : 24]);
+      }
+      /* the INK, sampled through its own screen matrix, not the group's
+         box: a box round a rotated ear is bigger than the ear */
+      let m = Infinity;
+      const pt = (svg as SVGSVGElement).createSVGPoint();
+      for (const g of svg.querySelectorAll(
+        ".ds-deer .ds-ear, .ds-deer .ds-tail, .ds-deer .ds-head, .ds-fawn .ds-ear, .ds-fawn .ds-tail"
+      ))
+        for (const p of g.querySelectorAll("path")) {
+          const L = (p as SVGPathElement).getTotalLength();
+          const mx = (p as SVGPathElement).getScreenCTM()!;
+          for (let sI = 0; sI <= L; sI += 4) {
+            const q = (p as SVGPathElement).getPointAtLength(sI);
+            pt.x = q.x;
+            pt.y = q.y;
+            const v = pt.matrixTransform(mx);
+            for (const t of texts) {
+              const dx = Math.max(t[0] - v.x, v.x - t[2], 0);
+              const dy = Math.max(t[1] - v.y, v.y - t[3], 0);
+              m = Math.min(m, Math.max(dx, dy, 0) - t[4]);
+            }
+          }
+        }
+      return m;
+    });
+    /* the reaction is additive on joints the gust already moves by the same
+       amount every 7.3s, so this is the drawing's own reach, measured at
+       the peak of the swivel rather than at rest */
+    expect(worst, "her air at the peak of the look").toBeGreaterThan(0);
+  });
+
+  /* c2 · HER STEP WAITS FOR HER HEAD, NOT FOR THE LOG. Every other reaction
+     on this sheet begins the moment it is logged. Hers does not: the swivel
+     waits for her own graze to lift her head, up to 2.5s, and the log line
+     is written when it is scheduled. The linger asks "has this creature
+     looked at me yet", so a stamp made at the schedule lets her step away
+     with her head still down — a look the reader never saw, counting as
+     one. The window is real and narrow: the wait clears the 1.2s lock only
+     for phases 0.42 to 0.56 of a 9.7s cycle, about an eighth of it. So this
+     test puts her there on purpose rather than waiting for luck, by seeking
+     her graze — the same device the probes use, and the only way this path
+     is deterministic. */
+  test("c2 · she steps when her head is up, not when the look is logged", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    /* 27.8s of a 30s default on a quiet machine, and none of the waits below
+       can shrink: the landing swivel's own window is the long one */
+    test.slow();
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    /* past the landing look, past her own 6s cooldown, and past the swivel
+       that look SCHEDULED: with its 10s cap that one can start as late as
+       9.1s, and a stale __world.swivelAt would let this pass on a build
+       that never lifted her head at all */
+    await page.waitForTimeout(11_000);
+    const pinned = await page.evaluate(() => {
+      const seek = (sel: string, T: number, ph: number) => {
+        const h = document.querySelector(`${sel} .ds-head`);
+        const a = h && h.getAnimations()[0];
+        if (!a) return false;
+        a.currentTime = ph * T;
+        return true;
+      };
+      /* her head comes up at 0.68 of the graze, so from 0.45 the look is
+         2.2s off — over the lock, which is the whole point. The fawn is
+         held at 0.05, where its own wait is past its 2.5s cap and it flicks
+         its tail instead of swivelling: nothing but her stamps swivelAt. */
+      return {
+        doe: seek(".dawnscape .ds-deer", 9700, 0.45),
+        fawn: seek(".dawnscape .ds-fawn", 5300, 0.05),
+      };
+    });
+    expect(pinned.doe, "her graze is a running animation to seek").toBe(true);
+    expect(pinned.fawn, "and the fawn's is too").toBe(true);
+    const base = await page.evaluate(() => window.__world.swivelAt);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    expect(d, "the doe is on the page").not.toBeNull();
+    /* a hand resting on her: the look first, then the step the linger owes */
+    let step: { who: string; what: string; t: number } | undefined;
+    let swivelAt: number | undefined;
+    for (let i = 0; i < 40; i++) {
+      await page.mouse.move(d!.x + (i % 2 ? 0.5 : -0.5), d!.top - 14);
+      await page.waitForTimeout(150);
+      const now = await page.evaluate(() => ({
+        n: window.__world.notice ?? [],
+        s: window.__world.swivelAt,
+      }));
+      step = now.n.find((q) => q.who === "deer-step");
+      if (step) {
+        swivelAt = now.s;
+        break;
+      }
+    }
+    expect(step, "a hand that rests on her makes her step away").toBeTruthy();
+    expect(
+      swivelAt,
+      "her head was up before she stepped, not merely due to come up"
+    ).not.toBe(base);
+    /* one clock: both are Math.round(mt()) */
+    expect(
+      swivelAt!,
+      `she looked up at ${swivelAt} and stepped at ${step!.t}`
+    ).toBeLessThanOrEqual(step!.t);
+  });
+
+  test("d · a link within reach of a creature wakes nothing", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    /* 1024×768 is the seat where the email link measures 30px from the doe */
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await landByHand(page);
+    /* past the landing look AND past the doe's own six second cooldown, or
+       this passes because she is resting rather than because the guard
+       held: with the keep guard removed and this wait at three seconds, the
+       probe could not make it fail */
+    await page.waitForTimeout(8000);
+    const before = (await notices(page)).length;
+    const l = await page.evaluate(() => {
+      const e = document.querySelector('.dawnwrap a[href^="mailto"]');
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      /* THE CORNER OF THE LINK NEAREST HER, inside its own rect. The link
+         is 197px wide, and its CENTRE measures 116.3px from the doe against
+         a 75.1px reach: a pointer there wakes nothing whatever the guard
+         does, which is why this test passed on a build with the guard
+         removed. labrat measured this corner at 30.2px, inside the reach,
+         and red on the notice-keep probe. */
+      return { x: r.left + 1, y: r.bottom - 1 };
+    });
+    expect(l, "the email link is on the page").not.toBeNull();
+    /* and DWELL there, the way a hand on its way to a link does */
+    for (let i = 0; i < 10; i++) {
+      await page.mouse.move(l!.x + (i % 2 ? 0.5 : -0.5), l!.y);
+      await page.waitForTimeout(150);
+    }
+    await page.waitForTimeout(1500);
+    expect(
+      (await notices(page)).length,
+      "a pointer on its way to a link is not a visitor"
+    ).toBe(before);
+  });
+
+  test("e · reduced motion is never noticed", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page.waitForTimeout(800);
+    const d = await centre(page, ".dawnscape .ds-deer");
+    if (d) {
+      await page.mouse.move(d.x, d.y);
+      await page.waitForTimeout(1500);
+    }
+    const out = await page.evaluate(() => {
+      const svg = document.querySelector(".dawnscape")!;
+      return {
+        n: (window.__world.notice ?? []).length,
+        anims: document
+          .getAnimations()
+          .filter((a) => svg.contains((a.effect as KeyframeEffect).target!))
+          .length,
+      };
+    });
+    expect(out.n, "nothing noticed").toBe(0);
+    expect(out.anims, "and nothing moved").toBe(0);
+  });
+
+  /* HELD BY CONSTRUCTION, four times over, and that is worth writing down:
+     during the carry there is no listener (releaseScroll wires it), no
+     body.morninglive, scrollHeld is set, and no scape has published yet. A
+     probe that removed two of the four still could not make this fail. It
+     stays as the regression guard for the change that wires the controller
+     earlier, which is the only way it could ever go red. */
+  test("f · nothing is noticed during the carry", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await toTheGate(page);
+    await page.locator("#approve").click();
+    await page
+      .waitForFunction(
+        () => document.body.classList.contains("carrying"),
+        null,
+        {
+          timeout: 10_000,
+        }
+      )
+      .catch(() => {});
+    for (let i = 0; i < 10; i++) {
+      await page.mouse.move(200 + i * 8, 700 + i * 4);
+      await page.waitForTimeout(120);
+    }
+    const during = await page.evaluate(() => ({
+      carrying: document.body.classList.contains("carrying"),
+      n: (window.__world.notice ?? []).length,
+    }));
+    expect(during.carrying, "still carrying the reader").toBe(true);
+    expect(during.n, "the page is doing the moving, not the reader").toBe(0);
   });
 });
