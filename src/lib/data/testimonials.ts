@@ -133,18 +133,12 @@ export const testimonials: Testimonial[] = [
       "Ayush was my teammate for our senior design project (capstone). He always brought good energy in meetings and came up with his own ideas. He showed strong aptitude and willingness to learn and adapt to new problem domains. I was particularly impressed with his ability to work under pressure or strict deadlines and still deliver high quality work. I'm confident he would be a valuable member in any development team.",
     date: "2026-01",
     linkedInUrl: "https://www.linkedin.com/in/chaturs/",
-    /* Deliberately NOT surfaced, and the reason belongs on the record.
-       It is a real recommendation from a real person and nothing about
-       it is doubted — but it is a capstone teammate writing about his
-       capstone teammate, which is the one reference shape a hiring
-       reader discounts on sight, because the incentives are symmetric
-       and both parties know it. Printed beside a manager's specific
-       account of delivered work it would not add a second reference; it
-       would put a question mark over the first. The site has just cut a
-       ledger row for padding (CRITIC-LEDGER F54) — doing the opposite
-       two chapters later would be an argument against itself. One
-       reference, the strongest one on file, is the same editorial rule
-       every other surface here runs on. */
+    /* Surfaced: ¶11 prints this recommendation beside Randall's and names
+       the stations each writer saw (Glyph and the AutoML capstone for
+       this one). A note here used to say it was deliberately kept off the
+       page, which stopped being true when ¶11 began printing it. The
+       quote is bound verbatim by check-figures, run for run of six words
+       or more. */
   },
 ];
 

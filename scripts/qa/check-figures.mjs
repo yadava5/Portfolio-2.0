@@ -336,7 +336,7 @@ const FIGURES = [
        the provenance note. */
     data: { cases: /96 (messages|samples)/ },
     source:
-      "classifier_eval_v3.jsonl counted 2026-08-02 — 96 samples, 8 classes, 12 each; gate reported 2 misclassified",
+      "classifier_eval_v3.jsonl counted 2026-08-02 — 96 samples, 8 classes, 12 each; baseline_rules_v3.json (applied@bf1b1d03, 2026-09-07) reports 1 misclassified, macro-F1 0.9896. It read 2 misclassified on 2026-08-02, before the rules moved.",
   },
   {
     figure: "Applied · rule count",
