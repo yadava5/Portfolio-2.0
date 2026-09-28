@@ -200,7 +200,14 @@ const FIGURES = [
     // then "now 1,185 here" in its own closing sentence. Both phrasings are
     // bound now, via an array (see the loop below): a surface that states a
     // figure twice is two claims.
+    // A FOURTH HOLE, and the same one a fourth time: `projects` was never
+    // declared here, so projects.ts's own highlight -- the string the case
+    // cards and the atlas read -- was never asked. Added 2026-09-28 with the
+    // split inside the same regex, because on that surface the count and its
+    // two parts are one sentence and binding half of it is what this entry's
+    // own history is a list of.
     data: {
+      projects: /1,430 passed and 0 skipped \(772 frontend \+ 658 backend\)/,
       cases: /1,430 tests passing under vitest, with 0 skipped/,
       manifest: [
         /1,430 tests, 0 skipped/,
@@ -249,6 +256,45 @@ const FIGURES = [
     run: /\(772 frontend, 658 backend\)/,
     data: { cases: /772 frontend \+ 658 backend/ },
     source: "same run; the split must agree with the total it sums to",
+  },
+  /* ── THE RUN STATES THIS COUNT THREE TIMES, AND UNTIL 2026-09-28 ONE OF
+     THEM WAS BOUND. ¶05's provenance line is the entry above. The other two
+     are ladders — the stops menu at the top of the page and ¶12's timetable
+     at the bottom — and they say the figure in the same four words, so
+     reverting either to 1,186 left every gate in the tree green and shipped a
+     stale number to a reader-visible surface. That is labrat's measurement
+     rather than an inference and rather than mine — its round-15 integration
+     report §9.1 put `1,186` back on each ladder in turn, BUILT the tree, and
+     recorded check-figures, check-stations, check-beat-tables and
+     check-crosswalk over the built out/ all at exit 0 with `1,186` present in
+     the shipped html. What is measured here is the other half: that each
+     binding below goes red on that same revert, one entry per ladder.
+
+     TWO ENTRIES AND NOT ONE `run` REGEX, for the reason this file keeps
+     relearning: the two strings are IDENTICAL once the tags are stripped, so
+     a single regex is satisfied by whichever comes first and certifies the
+     other unread — the precise defect the `manifest` array above exists for,
+     and the precise defect that let the architecture node label sit two
+     revisions behind the receipt beside it. Each is anchored on the words to
+     its left, which is the only thing that tells them apart in prose, and each
+     is its own entry so a failure NAMES which ladder went stale rather than
+     saying "run: MISSING" about one of two. */
+  {
+    figure: "Cadence · suite, the stops menu",
+    run: /calendar in plain English 1,430 tests pass/,
+    data: { projects: /1,430 passed and 0 skipped/ },
+    source:
+      "same CI run 31464527681; the stops menu must agree with projects.ts's highlight",
+  },
+  {
+    figure: "Cadence · suite, the ¶12 timetable",
+    /* "cadence 1,430" adjacent is what the stops menu does NOT say — it puts
+       the noun ("calendar in plain English") between them — so this regex
+       cannot be satisfied by the menu above. */
+    run: /12:06 cadence 1,430 tests pass/,
+    data: { projects: /1,430 passed and 0 skipped/ },
+    source:
+      "same CI run 31464527681; the timetable must agree with projects.ts's highlight",
   },
   {
     figure: "Glyph · MNIST correct count",
@@ -323,6 +369,38 @@ const FIGURES = [
     },
     source:
       "all three configurations BUILT rather than read out of BENCHMARKS.md: on arm64 the `baseline` and `native` binaries are byte-identical (-march=native is an x86 flag clang does not act on here), so the NEON path is in both sides of the comparison and the whole ratio is OpenMP's — which is also why a SIMD-alone measurement sits at ~1.0, comparing a binary with itself",
+  },
+  {
+    /* THE NAME OF THE THING MEASURED, bound on its own because round 15
+       renamed it and the rename reached three surfaces no gate could see.
+       "dot-256" was the benchmark's function name, not a reader's word; the
+       run, the case file and the plates all say "256×256 matrix product"
+       now. The two entries above bind the RATIO and what EARNS it, and both
+       are satisfied by sentences that never repeat the subject — so with the
+       subject reverted on all three of these surfaces at once, every gate in
+       the tree stayed green and the page shipped two names for one benchmark.
+       That is the same shape as the Cadence ladders: agreement between the
+       surfaces a gate happens to read is not coverage of the surfaces a
+       reader reaches.
+
+       Three surfaces, one figure. The run's bench block heading is the
+       visible one on home; the plate carries it twice, once in the alt text
+       a screen reader gets for fig. 1 and once as lettering inside the
+       drawing, which no other gate reads at all — the same place fig. 03's
+       compliance meter hid from clause 2b. The drawn label's DATE is left
+       loose on purpose: it is the commit the bench was filed at, a different
+       fact with a different source, and pinning it here would make a legitimate
+       re-file read as a rename. */
+    figure: "Glyph · the 256×256 subject name",
+    run: /the committed bench · 256×256 matrix product/,
+    data: {
+      plates: [
+        /the 256×256 matrix product measured under OpenMP/,
+        /"256×256 · committed \d{4}-\d{2}-\d{2}"/,
+      ],
+    },
+    source:
+      "glyph bench_matrix.cpp:36-46 — benchDot/256 is a 256×256 matrix product; the reader-facing name follows the run on every surface since r15",
   },
   {
     figure: "Applied · eval set",
