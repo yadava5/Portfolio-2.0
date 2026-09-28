@@ -169,11 +169,20 @@ function figGlyph() {
       t(8, 322, "openmp, all cores · 3.5×") +
       `<rect x="8" y="328" width="224" height="5" class="bark clay"/>` +
       /* r15: "dot-256" was the benchmark's internal name, not a reader's
-         word; the run says "256×256 matrix product" and the alt-text above
+         word; the run says "256×256 matrix product" and the alt text above
          now spells it out in full. The plate has no room for the full
-         phrase — budgeted per the rule at the head of this file, 30 glyphs
-         with `·` and `×` counting two each is 32 × 6.6 = 211 units from
-         x 8, inside the 232-unit line; the full phrase would be 265. */
+         phrase, so the label carries the size alone.
+
+         MEASURED, not budgeted: getComputedTextLength() on the built page
+         reads this label at 213.77 units, right edge 221.77, inside the
+         232-unit line by 10.2. The retired label was the same 30 glyphs and
+         so the same width, which is why nothing moved. The per-char rule at
+         the head of this file is wrong twice over and the measurement says
+         so: the real advance is 7.13 units per glyph rather than 6.6, and
+         `·` and `×` do NOT count double, they are one glyph each like any
+         other. Read together those two errors nearly cancel here, which is
+         exactly why nobody caught either. The full phrase would be 45
+         glyphs, about 321 units, off the plate entirely. */
       t(8, 344, "256×256 · committed 2025-12-26"),
   };
 }

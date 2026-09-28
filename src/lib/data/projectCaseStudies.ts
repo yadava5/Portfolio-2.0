@@ -410,8 +410,12 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    serves today and 21 commits past `abaaea8`, which is an ancestor of it.
    CI run 31464527681 of 2026-08-11, all six jobs green: Frontend Tests 772
    passing across 69 files, Backend Tests 658 across 33, no skip in either
-   summary. 1,186 becomes 1,430, and the 244 are the lockout, data safety and
-   correctness work of PR #19 plus the serverless boot repair behind it. The
+   summary. 1,186 becomes 1,430. The +244 is a NET, read per commit off the
+   intermediate CI runs rather than off commit titles: #19 took the suite to
+   772 + 664 = 1,436 at `2905c0e`, a revert dropped it to 1,186 at `629f308`,
+   the restore returned it to 1,436 at `00696bd`, and 6 backend tests left
+   with a dead attachments cleanup route at `c39484f`. The serverless boot
+   repair added none, which the titles would have told you it did. The
    old pin was 51 days stale while the page went on publishing its number,
    which is the drift this block exists to catch and did not. */
 const CADENCE_SUITE_SHA = "6d09ee4";
@@ -2027,7 +2031,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I read the suite off CI at this head: 772 frontend + 658 backend = 1,430 tests passing under vitest, with 0 skipped. On 2026-08-08 it read 635 + 551 = 1,186, and on 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the 244 tests added since 1,186 arrived with the lockout, data safety and correctness work of PR #19.",
+          "I read the suite off CI at this head: 772 frontend + 658 backend = 1,430 tests passing under vitest, with 0 skipped. On 2026-08-08 it read 635 + 551 = 1,186, and on 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, The 244 added since 1,186 is a net figure: PR #19, the lockout, data safety and correctness work, took it to 1,436, and 6 backend tests went out with a dead attachments cleanup route.",
         method:
           "CI at the pinned head, not a local run: GitHub Actions run 31464527681 of 2026-08-11 on `main`, whose Frontend Tests job reports 772 passed across 69 files and Backend Tests 658 across 33. CI is the instrument on purpose: the zero is read off a run anyone can open rather than off my own terminal, and a locally skipped-but-green backend run is how this number drifted twice before.",
         artifacts: [
