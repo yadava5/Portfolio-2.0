@@ -11538,7 +11538,7 @@ function dart(r) {
    nothing here enlarges the reach the clearance gate measures. One passive
    listener, rAF throttled, and a busy lock so the morning never looks
    startled: 6s per creature, 1.2s between any two reactions at all. */
-const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null, retry: null };
+const NOTICE = { last: -Infinity, busy: {}, dwellOn: null, dwellFrom: 0, approach: {}, inRange: null, retry: null, met: {}, visit: 0 };
 const noticeOn = () => !RM && atMorning && !scrollHeld && document.body.classList.contains("morninglive");
 /* THE READER'S CLOCK IS NOT THE PAGE'S. Every window here — the gap
    between any two reactions, a creature's own cooldown, what counts as
@@ -11559,9 +11559,20 @@ function noticed(who, what) {
   const now = performance.now();
   NOTICE.last = now;
   NOTICE.busy[who] = now;
+  NOTICE.met[who] = now;
   sky.lastGround = now;
   (window.__world.notice = window.__world.notice || []).push({ who, what, t: Math.round(mt()) });
 }
+/* LOOK BEFORE YOU HOP. A creature's first answer to a visit is its head —
+   never the bigger reaction the linger unlocks. It has to be said here
+   because a hand that arrives inside another creature's 1.2s gap is
+   answered by the retry, and by then it has been resting long enough to be
+   lingering: without this the gull went straight from ignoring you to
+   fleeing, and put its head up at no point in between. So the linger waits
+   until this creature has given its head to THIS approach — a fresh arrival
+   stamps NOTICE.visit and every reaction stamps its own key. The squirrel
+   is not held by it: the dart is the only answer it has. */
+const hasLooked = (who) => (NOTICE.met[who] || -Infinity) >= NOTICE.visit;
 /* where a creature is, and how far the pointer is from its ink */
 function creaturesNow() {
   const svg = document.querySelector(".dawnscape");
@@ -11645,7 +11656,7 @@ function doeLooks(px, capMs) {
 function reactNear(c, px, py, lingering, fresh) {
   const [kind] = c.who.split("-");
   if (kind === "deer" || kind === "fawn") {
-    if (lingering && canNotice("deer-step", 9000)) {
+    if (lingering && hasLooked("deer") && canNotice("deer-step", 9000)) {
       const el = document.querySelector(".dawnscape .ds-deer");
       const r = birdRng(0xd0e1 + (window.__world.notice || []).length * 733);
       if (el) { doeSteps(el, r); noticed("deer-step", "away"); }
@@ -11653,7 +11664,7 @@ function reactNear(c, px, py, lingering, fresh) {
     return;
   }
   if (kind === "hare") {
-    if (lingering && canNotice("hare-hop", 9000)) {
+    if (lingering && hasLooked("hare") && canNotice("hare-hop", 9000)) {
       const r = birdRng(0xda6e + (window.__world.notice || []).length * 733);
       hopWalk(c.el, "hare", r, 2, [4, 6], 3, 260);
       noticed("hare-hop", "hops");
@@ -11683,8 +11694,10 @@ function reactNear(c, px, py, lingering, fresh) {
        inside the head's branch, behind the head's own six second cooldown,
        and a pointer that arrives and then stays always trips the head
        first — so the hop could never happen. labrat found it by writing a
-       probe for it that nothing could reach. */
-    if (lingering && canNotice(`${c.who}-hop`, 9000)) {
+       probe for it that nothing could reach. It comes SECOND, though: a
+       bird that has not yet looked at this approach looks first, whichever
+       of the two is due (hasLooked). */
+    if (lingering && hasLooked(c.who) && canNotice(`${c.who}-hop`, 9000)) {
       const r = birdRng(0x9111 + (window.__world.notice || []).length * 733);
       hopWalk(c.el, id, r, 2, [4, 7], 2, 280);
       noticed(`${c.who}-hop`, "hops");
@@ -11744,6 +11757,8 @@ function considerNotice(x, y) {
   if (!near || near.d > 110 * vs) { NOTICE.dwellOn = null; NOTICE.inRange = null; return; }
   const now = performance.now();
   const fresh = NOTICE.inRange !== near.who;
+  /* the visit this creature's head is owed to: an arrival, not a sample */
+  if (fresh) NOTICE.visit = now;
   NOTICE.inRange = near.who;
   if (NOTICE.dwellOn !== near.who || near.d > 55 * vs) {
     NOTICE.dwellOn = near.d <= 55 * vs ? near.who : null;

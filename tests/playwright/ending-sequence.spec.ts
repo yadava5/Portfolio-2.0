@@ -1489,19 +1489,102 @@ test.describe("¶13 · the morning notices you", () => {
       first.some((q) => q.who === "gull-a"),
       "it put its head up"
     ).toBe(true);
-    /* away, out of every creature's reach, and back — past the head's own
-       1.2s lock and still inside the four seconds that make this a SECOND
-       approach rather than another first one */
-    await page.waitForTimeout(400);
+    /* away, out of every creature's reach, and back. The return has to land
+       inside a window with two edges: after the 1.2s gap the head it just
+       gave holds against every other reaction, and inside the four seconds
+       that make this a SECOND approach rather than another first one. The
+       head lands around 3.7s (the pointer arrives inside the landing look's
+       own lock, and the retry answers it when that lifts), so the window is
+       roughly 4.9s to 7.0s and this returns near 5.8s. It used to wait
+       400ms and arrive within 60ms of the lock — and nobody could see that,
+       because the assertion below read the WHOLE log and was already
+       satisfied by the first approach's own entry. */
+    await page.waitForTimeout(1200);
     await page.mouse.move(g!.x, g!.top - 400);
     await page.waitForTimeout(300);
+    /* everything logged from here on is the second approach's answer */
+    const mark = (await notices(page)).length;
     await page.mouse.move(g!.x, g!.top - 14);
     await page.waitForTimeout(1600);
-    const again = await notices(page);
+    const again = (await notices(page)).slice(mark);
     expect(
       again.some((q) => q.what === "takeoff" || q.what === "hops"),
       "coming back at it moved it"
     ).toBe(true);
+  });
+
+  /* b2 · THE LINGER, AND THE GROUND LOG IT IS DRAWN BY. A hand that arrives
+     and then rests is the reading the linger exists for, and the order is
+     the whole of it: the bird puts its head up first, and only then hops
+     away. It is also the one reaction that MOVES a creature, so it is where
+     the roam contract is owed a test — every hop is logged to
+     __world.ground, the bird has to be DRAWN where the log says, and the
+     walk has to stay inside the range its own group declares (data-range,
+     30 at a desktop seat). A test that read the log alone would pass on a
+     bird drawn anywhere at all. */
+  test("b2 · a hand that stays makes it hop, drawn where the log says", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium-desktop", "one engine");
+    await page.setViewportSize({ width: 1456, height: 949 });
+    await landByHand(page);
+    await page.waitForTimeout(3000);
+    const g = await centre(page, '.dawnscape .ds-gull[data-id="a"]');
+    expect(g, "a gull to walk up to").not.toBeNull();
+    /* A HAND AT REST STILL MOVES. Reactions are evaluated from pointermove,
+       so a pointer parked on one coordinate is evaluated once and never
+       again; this is a hand resting on the bird with its own tremor, half a
+       pixel at a time, and it stops the moment the bird goes. */
+    for (let i = 0; i < 30; i++) {
+      await page.mouse.move(g!.x + (i % 2 ? 0.5 : -0.5), g!.top - 14);
+      await page.waitForTimeout(150);
+      const soFar = await notices(page);
+      if (soFar.some((q) => q.who === "gull-a-hop")) break;
+    }
+    const log = await notices(page);
+    const looked = log.findIndex((q) => q.who === "gull-a");
+    const hopped = log.findIndex(
+      (q) => q.who === "gull-a-hop" && q.what === "hops"
+    );
+    expect(looked, "it put its head up").toBeGreaterThan(-1);
+    expect(hopped, "and a hand that stayed made it hop").toBeGreaterThan(-1);
+    expect(looked, "the head came first: it looks before it hops").toBeLessThan(
+      hopped
+    );
+    /* out of reach, so nothing new starts, and long enough for the last
+       hop's own transition to land: the drawn position is read from the
+       computed transform, which is where the bird actually is */
+    await page.mouse.move(g!.x, g!.top - 400);
+    await page.waitForTimeout(1400);
+    const out = await page.evaluate(() => {
+      const el = document.querySelector(
+        '.dawnscape .ds-gull[data-id="a"]'
+      ) as SVGGElement;
+      const t = getComputedStyle(el).transform;
+      const m = new DOMMatrixReadOnly(t === "none" ? undefined : t);
+      const mine = (window.__world.ground ?? []).filter((q) => q.id === "a");
+      return {
+        drawn: +m.e.toFixed(1),
+        lift: +m.f.toFixed(1),
+        log: mine.length ? mine[mine.length - 1].x_off : null,
+        peak: mine.reduce((p, q) => Math.max(p, Math.abs(q.x_off)), 0),
+        range: +el.dataset.range!,
+        hops: mine.length,
+      };
+    });
+    expect(out.hops, "the hops are in the ground log").toBeGreaterThan(0);
+    expect(out.range, "the bird declares its home range").toBe(30);
+    expect(out.lift, "and it is back down on the ground").toBe(0);
+    expect(
+      Math.abs(out.drawn - (out.log ?? NaN)),
+      `drawn at ${out.drawn}px, logged at ${out.log}px`
+    ).toBeLessThanOrEqual(0.6);
+    /* the PEAK of the walk, not where it happened to stop: two hops of the
+       same size in opposite directions net to nothing */
+    expect(
+      out.peak,
+      `the walk keeps the range it declares (peak ${out.peak}px of ${out.range}px)`
+    ).toBeLessThanOrEqual(out.range);
   });
 
   test("c · the swivel's peak keeps the words' air", async ({
