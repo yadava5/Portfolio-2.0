@@ -169,7 +169,7 @@ const FIGURES = [
      reader's discovery. */
   {
     figure: "Cadence · suite",
-    run: /1,186 passed · 0 skipped/,
+    run: /1,430 passed · 0 skipped/,
     // THIS ENTRY IS THE ONE THE APPLIED TWIN ABOVE WARNED ABOUT, and it went on
     // to fail in exactly the way that comment describes -- one number shipping
     // as THREE values with the gate green:
@@ -201,14 +201,14 @@ const FIGURES = [
     // bound now, via an array (see the loop below): a surface that states a
     // figure twice is two claims.
     data: {
-      cases: /1,186 tests passing under vitest, with 0 skipped/,
+      cases: /1,430 tests passing under vitest, with 0 skipped/,
       manifest: [
-        /1,186 tests, 0 skipped/,
-        /then 1,185 at dbabc74, now 1,186 here/,
+        /1,430 tests, 0 skipped/,
+        /then 1,186 at abaaea8, now 1,430 here/,
       ],
     },
     source:
-      "CI run 31233308044 at head abaaea8, 2026-08-08 — 635 frontend + 551 backend, 0 skipped",
+      "CI run 31464527681 at head 6d09ee4, 2026-08-11 — 772 frontend + 658 backend, 0 skipped",
   },
   {
     /* The architecture figure's own node label, which is a separate string in
@@ -219,7 +219,7 @@ const FIGURES = [
        the case file's diagram to the same number as the case file's receipt. */
     figure: "Cadence · architecture node label",
     run: null,
-    data: { cases: /label: "1,186 tests"/ },
+    data: { cases: /label: "1,430 tests"/ },
     source: "same CI run; the diagram must agree with the receipt beside it",
   },
   {
@@ -246,8 +246,8 @@ const FIGURES = [
        because a regex that finds one says nothing about the other. */
     /* r13: the run's split is now parenthesised, "(635 frontend, 551
        backend)"; same two parts, same total. The case file keeps its "+". */
-    run: /\(635 frontend, 551 backend\)/,
-    data: { cases: /635 frontend \+ 551 backend/ },
+    run: /\(772 frontend, 658 backend\)/,
+    data: { cases: /772 frontend \+ 658 backend/ },
     source: "same run; the split must agree with the total it sums to",
   },
   {
@@ -288,9 +288,11 @@ const FIGURES = [
        file and its plate were never asked — which is how they went four days
        crediting a different cause for the same measurement. */
     data: {
-      projects: /3\.5× parallel dot kernel/,
+      /* r15: the reader-facing name follows the run everywhere now, so the
+         data layer states the subject once and states it the same way. */
+      projects: /3\.5× on the 256×256 matrix product/,
       cases: /3\.5× faster under OpenMP than the -O3 baseline/,
-      manifest: /3\.5× parallel dot kernel/,
+      manifest: /3\.5× on the 256×256 matrix product/,
       plates: /3\.5 times the single-thread -O3 baseline/,
     },
     source:

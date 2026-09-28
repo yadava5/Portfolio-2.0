@@ -203,7 +203,7 @@ export const EXPECTED_PROOF_ARTIFACTS = {
   // passing and the passing test kept the prose unexamined. Paired below with
   // a NEGATIVE assertion on the retired wording, which a reword cannot defeat.
   fastMnistSpeedup:
-    "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline",
+    "The 256×256 matrix product runs 3.5× faster under OpenMP than the -O3 baseline",
   fastMnistRetiredAttribution: "openmp+simd",
   masterInventoryRows:
     "3,731 Tableau rows and 6,743 Workday rows consolidated into a deduplicated master_inventory.csv of 10,453 rows.",

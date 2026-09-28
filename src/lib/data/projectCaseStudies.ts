@@ -404,8 +404,17 @@ const TASKFLOW_TREE = `https://github.com/yadava5/cadence/tree/${TASKFLOW_SHA}`;
    2026-08-08: re-pinned again to `abaaea8`, 1,185 -> 1,186. Not drift — the
    suite grew by exactly one test, and that test is the one that would have
    caught GET /api/tags returning 500 in production for every user since the
-   service was written. Number and sha moved together, as always. */
-const CADENCE_SUITE_SHA = "abaaea8";
+   service was written. Number and sha moved together, as always.
+
+   2026-09-28: re-read at cadence main `6d09ee4`, the head the repository
+   serves today and 21 commits past `abaaea8`, which is an ancestor of it.
+   CI run 31464527681 of 2026-08-11, all six jobs green: Frontend Tests 772
+   passing across 69 files, Backend Tests 658 across 33, no skip in either
+   summary. 1,186 becomes 1,430, and the 244 are the lockout, data safety and
+   correctness work of PR #19 plus the serverless boot repair behind it. The
+   old pin was 51 days stale while the page went on publishing its number,
+   which is the drift this block exists to catch and did not. */
+const CADENCE_SUITE_SHA = "6d09ee4";
 const CADENCE_SUITE_TREE = `https://github.com/yadava5/cadence/tree/${CADENCE_SUITE_SHA}`;
 /* CADENCE — the second pin on the same file, and the reason for it.
 
@@ -1968,7 +1977,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
              days rendering 1,159 — twice — on a page whose own receipt
              said 1,185 and whose /evidence entry said 1,179. Now 1,186: the tags
              fix added the regression test that would have caught it. */
-          label: "1,186 tests",
+          label: "1,430 tests",
           detail: "Frontend, backend, integration",
           kind: "validation",
         },
@@ -2018,16 +2027,16 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
     receipts: [
       {
         claim:
-          "I measured the suite on 2026-08-08: 635 frontend + 551 backend = 1,186 tests passing under vitest, with 0 skipped. On 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the cutover rehearsal added six more.",
+          "I read the suite off CI at this head: 772 frontend + 658 backend = 1,430 tests passing under vitest, with 0 skipped. On 2026-08-08 it read 635 + 551 = 1,186, and on 2026-08-02 it read 635 + 524 = 1,159 with 11 skipped; the 11 were the Postgres row-level-security module, which waited on a database URL no workflow supplied. They now provision their own postgres:16 and run, and the 244 tests added since 1,186 arrived with the lockout, data safety and correctness work of PR #19.",
         method:
-          "CI at the pinned head, not a local run: GitHub Actions run 31233308044 on `main`, whose Backend Tests job reports 551 passed across 25 files and Frontend Tests 635 across 58. CI is the instrument on purpose: it fails the build on any skip, so a green run proves the 0 skipped rather than asserting it, and a locally skipped-but-green backend run is how this number drifted twice before.",
+          "CI at the pinned head, not a local run: GitHub Actions run 31464527681 of 2026-08-11 on `main`, whose Frontend Tests job reports 772 passed across 69 files and Backend Tests 658 across 33. CI is the instrument on purpose: the zero is read off a run anyone can open rather than off my own terminal, and a locally skipped-but-green backend run is how this number drifted twice before.",
         artifacts: [
           {
             label: `cadence @ ${CADENCE_SUITE_SHA}`,
             href: CADENCE_SUITE_TREE,
           },
         ],
-        date: "2026-08-02",
+        date: "2026-08-11",
         visibility: "public",
       },
       {
@@ -2291,6 +2300,11 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         kind: "erratum",
         text: "The home page said Cadence packs 37 routes into one serverless function. It packs 36. Counted at the definition site rather than from memory: `git show 6d09ee4:api/index.ts`, the ROUTES array at :55-98, 36 entries, at a commit that `git merge-base --is-ancestor` puts on main. The claim about the Vercel function cap is untouched and still the point of the row; only the count was wrong. This is the second time the figure has drifted, and it drifted because nothing bound it: no check-figures entry names it, so there was no gate to go red, and a number with no gate is a number waiting to be stale.",
       },
+      {
+        date: "2026-09-28",
+        kind: "erratum",
+        text: "1,186 becomes 1,430, and this one is staleness rather than drift: the number was right at `abaaea8` and the page kept publishing it for 51 days while cadence main moved 21 commits past that pin. Re-read at `6d09ee4`, CI run 31464527681 of 2026-08-11, all six jobs green: 772 frontend across 69 files + 658 backend across 33 = 1,430 passing, 0 skipped. The receipt, the architecture node label, the /evidence entry and the run's own three statements of the figure all move together, and both CADENCE_SUITE_SHA pins move with them. Two things this register should say out loud. First, every gate on this number was green the whole time, because they bind the four surfaces to each other and none of them can see the other repository; agreement is not freshness, and no gate here can supply it. Second, the /evidence entry claimed CI fails if the suite reports any skip. The guard in cadence's ci.yml is narrower: it fails when the Postgres enforcement suites run zero tests or report a skip. The zero is read off the two job summaries, and that sentence is corrected in the same pass.",
+      },
     ],
     artifacts: [
       {
@@ -2499,12 +2513,17 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-09-23",
         kind: "erratum",
-        text: "The home page drew this work as one arrow chain: a legacy Laravel reporter into an ETL feed into a 37-month Tableau dashboard, and compliance 0% into 97%. Each figure is real and read off Miami\u2019s own systems, but the chain reads as a causal claim, and the rise is not mine to claim. Most of that rise was already under way before the June 2025 start, so the honest statement is the one the r\u00e9sum\u00e9 makes: a 37-month Tableau dashboard tracking code compliance across 61 projects, 0% in 2023 to 97% now. The numbers stay; what goes is the punctuation that turns them into a chain of cause. Recorded here rather than quietly reworded because the defect was in the punctuation doing argumentative work, which is the kind a claim audit is least likely to catch: every figure in the sentence was true.",
+        text: "The home page drew this work as one arrow chain: a legacy Laravel reporter into an ETL feed into a dashboard, and a compliance series rising across it. Every figure in that sentence was true and was read off Miami\u2019s own systems, but the chain reads as a causal claim, and the rise is not mine to claim: most of it was already under way before the June 2025 start. Recorded here rather than quietly reworded because the defect was in the punctuation doing argumentative work, which is the kind a claim audit is least likely to catch. Superseded three days later, when the figures came off the site altogether: see the entry below, and the 2026-09-28 entry recording how this note was itself corrected.",
       },
       {
         date: "2026-09-26",
         kind: "erratum",
-        text: "The note above is withdrawn. The compliance figures and the reporting systems it names belong to the team, not to work this file can source, so they are off the site. A receipt that counted operational records in this role is removed as well: it had no artifact, no date and no source.",
+        text: "The note above is withdrawn. The compliance figures and the reporting systems it names belong to the team, not to work this file can source, so they are off the site: the month count, the project count and both ends of the percentage range are retracted rather than restated anywhere on this site. A receipt that counted operational records in this role is removed as well: it had no artifact, no date and no source.",
+      },
+      {
+        date: "2026-09-28",
+        kind: "erratum",
+        text: "The 2026-09-23 note above has itself been corrected. It went on quoting the retracted compliance percentages as the honest form of the claim, one entry above the note that withdrew them, so this register was still publishing the figure it had retracted, and the built page carried it. The sentence that restated them is gone. What that note records, an arrow chain whose punctuation argued a cause the work did not earn, is unchanged, because that is the part it exists to keep. Written down rather than edited in silence, because an erratum corrected without a record is not an erratum.",
       },
     ],
     ledger: {
@@ -2975,7 +2994,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
         {
           label: "metric",
           value:
-            "openmp+native dot kernel vs the -O3 baseline ⟶ 3.5× at dot 256",
+            "openmp+native 256×256 matrix product (benchDot/256) vs the -O3 baseline ⟶ 3.5×",
         },
         {
           label: "run",
@@ -3042,7 +3061,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
            2026-08-06 this row credited an "openmp+simd" kernel, which reads
            as though the vectorisation earns part of the number. */
         claim:
-          "The dot-256 kernel runs 3.5× faster under OpenMP than the -O3 baseline, and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
+          "The 256×256 matrix product runs 3.5× faster under OpenMP than the -O3 baseline, and the parallelism carries all of it: all three configurations were built, and on arm64 the baseline and native binaries are byte-identical, so the hand-written NEON path sits in both sides of the comparison. Committed benchmark data, not a live run.",
         method:
           "committed 2026-08-02 benchmark run, 20 repetitions; protocol in the method slip",
         artifacts: [
@@ -3117,7 +3136,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       },
     ],
     notClaiming: [
-      "No AVX-512 inference-speedup claim survives here; see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline at dot 256; the SIMD is in both builds and earns none of it.",
+      "No AVX-512 inference-speedup claim survives here; see the corrections register below. The verified number is OpenMP’s 3.5× over the -O3 baseline on the 256×256 matrix product; the SIMD is in both builds and earns none of it.",
       "The landing screenshot is the deployed page, but its ledger figures are the committed 2 August 2026 benchmark run rather than anything measured in that capture; only the scalar-vs-simd128 timing and the verdict were live in the capturing browser.",
       "The two-layer MLP itself is not claimed here: it is a course network that already existed, and this file is about what was done to it. The SIMD kernels were written with Shree Chaturvedi on a two-person project; the product, the landing page and the benchmark discipline are mine.",
     ],
@@ -3140,7 +3159,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-07",
         kind: "note",
-        text: "Attribution tightened, number unchanged: the committed 3.5× (dot 256) is the openmp+native configuration measured against the -O3 baseline, and the earlier site copy that credited the speedup to SIMD alone is retired. BENCHMARKS.md’s own analysis records that -march=native alone barely moves the needle. This note then named the winning side “openmp+simd”, which reads as though the vectorisation earns part of the number — a second wrong attribution, corrected by the 2026-08-06 erratum at the end of this register.",
+        text: "Attribution tightened, number unchanged: the committed 3.5× (the 256×256 matrix product) is the openmp+native configuration measured against the -O3 baseline, and the earlier site copy that credited the speedup to SIMD alone is retired. BENCHMARKS.md’s own analysis records that -march=native alone barely moves the needle. This note then named the winning side “openmp+simd”, which reads as though the vectorisation earns part of the number — a second wrong attribution, corrected by the 2026-08-06 erratum at the end of this register.",
       },
       {
         date: "2026-07-30",
@@ -3170,7 +3189,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-08-02",
         kind: "note",
-        text: "Provenance audit: the MNIST evaluation was re-run from source on an Apple M1 Pro against the standard 10,000-image test set. The regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro-F1 0.969822, the same model sha256. The dot-256 kernel benchmark was rebuilt and re-measured at 3.536× — the median of 20 repetitions, committed as docs/benchmarks/runs/bench-20260802-dot20x-{baseline,openmp-native}.json — against the 3.504× December record, which was taken on a different machine (a 4-performance-core M2 Air) and is history rather than the reference. The 3.520× this line used to cite had no committed JSON, and Glyph's own two records disagreed about how it was taken: ENVIRONMENT.md called it a single-repetition re-run, the audit log called it three repetitions. One caveat surfaced and is recorded at the receipt: apps/eval_model.cpp has no add_executable in CMakeLists.txt, so the generator has to be compiled by hand rather than through the project’s own build.",
+        text: "Provenance audit: the MNIST evaluation was re-run from source on an Apple M1 Pro against the standard 10,000-image test set. The regenerated mnist_eval.json and mnist_misclassified.csv are byte-identical to the committed artifacts — 9,701 correct, 299 wrong, macro-F1 0.969822, the same model sha256. The 256×256 matrix product benchmark was rebuilt and re-measured at 3.536× — the median of 20 repetitions, committed as docs/benchmarks/runs/bench-20260802-dot20x-{baseline,openmp-native}.json — against the 3.504× December record, which was taken on a different machine (a 4-performance-core M2 Air) and is history rather than the reference. The 3.520× this line used to cite had no committed JSON, and Glyph's own two records disagreed about how it was taken: ENVIRONMENT.md called it a single-repetition re-run, the audit log called it three repetitions. One caveat surfaced and is recorded at the receipt: apps/eval_model.cpp has no add_executable in CMakeLists.txt, so the generator has to be compiled by hand rather than through the project’s own build.",
       },
       {
         date: "2026-08-06",

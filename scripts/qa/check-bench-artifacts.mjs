@@ -293,7 +293,7 @@ const DERIVED = [
     value: null, // filled below
     expect: "3.5",
     run: /256×256 matrix product: 3\.5× faster on 10 cores than one core at -O3/,
-    data: /3\.5× parallel dot kernel/,
+    data: /3\.5× on the 256×256 matrix product/,
     how: "benchDot/256_median baseline ÷ openmp-native, 1 dp",
   },
   {
@@ -405,6 +405,52 @@ if (reps !== 20)
 else if (!/median of 20 repetitions/.test(dataLayer))
   fail(`the record is 20 repetitions and the register no longer says so`);
 else note(`20 repetitions behind the Glyph median, and the register says so`);
+
+/* r15 · THE VARIANCE SENTENCE, AND THE SCOPE IT WAS MISSING. /evidence stated a
+   spread for "the dot family" with no repetition count on it. The two records
+   vendored beside it are the 20-repetition pair and give 0.1% to 0.9%; the
+   10-repetition pair, which is NOT vendored here, gives 2.6% and 1.6% on the
+   openmp+native side for dot 128 and dot 256. A spread without its scope is
+   therefore a different claim from the one the record supports, and the reader
+   has no way to tell which one is on the page. Both the range and the words
+   "At 20 repetitions" are required, and the range is DERIVED from the records
+   rather than typed, so a re-vendored artifact moves the gate and not the
+   prose. The assertion is positive, so an unreadable data layer fails it
+   rather than passing over an empty string. */
+const dotCvs = ["benchDot/32", "benchDot/64", "benchDot/128", "benchDot/256"]
+  .flatMap((n) =>
+    [A.glyphBaseline, A.glyphOpenmp].map(
+      (run) => run.benchmarks?.find((b) => b.name === `${n}_cv`)?.real_time
+    )
+  )
+  .filter((v) => typeof v === "number");
+if (dotCvs.length !== 8)
+  fail(
+    `expected 8 dot-family _cv rows across the two Glyph records, found ${dotCvs.length}`
+  );
+else {
+  const lo = (Math.min(...dotCvs) * 100).toFixed(1);
+  const hi = (Math.max(...dotCvs) * 100).toFixed(1);
+  const esc = (v) => v.replace(".", "\\.");
+  const scoped = new RegExp(
+    `At 20 repetitions[^.]*between ${esc(lo)}% and ${esc(hi)}%`
+  );
+  const load = A.glyphBaseline.context?.load_avg?.[0]?.toFixed(2);
+  if (!scoped.test(dataLayer))
+    fail(
+      `the 20-repetition records give a dot-family spread of ${lo}% to ${hi}%, and ` +
+        `no surface states that range scoped to "At 20 repetitions"`
+    );
+  else if (load && !new RegExp(`load_avg ${esc(load)}`).test(dataLayer))
+    fail(
+      `the 20-repetition record was taken at load_avg ${load} and the variance ` +
+        `sentence no longer cites it`
+    );
+  else
+    note(
+      `the dot-family spread is ${lo}% to ${hi}% at 20 repetitions, derived, and said so`
+    );
+}
 
 const ctx = A.glyphBaseline.context ?? {};
 if (ctx.num_cpus !== 10)

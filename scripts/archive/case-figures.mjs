@@ -141,7 +141,7 @@ function figGlyph() {
   }
   return {
     viewBox: "0 0 240 346",
-    alt: "The 784–100–10 network at rest — a dashed, empty 28-by-28 input square, the hidden layer’s hundred dots, ten readout slots — and beneath it the committed record: 97.01 percent on the 10,000-image MNIST test set, and the dot-256 kernel measured under OpenMP at 3.5 times the single-thread -O3 baseline, the hand-written vector path being compiled into both.",
+    alt: "The 784–100–10 network at rest — a dashed, empty 28-by-28 input square, the hidden layer’s hundred dots, ten readout slots — and beneath it the committed record: 97.01 percent on the 10,000-image MNIST test set, and the 256×256 matrix product measured under OpenMP at 3.5 times the single-thread -O3 baseline, the hand-written vector path being compiled into both.",
     caption: "fig. 1: the network at rest, over its committed record.",
     captionNote:
       "the input square stays blank: the live read belongs to the line, at ¶ 06.",
@@ -168,7 +168,13 @@ function figGlyph() {
          26 × 6.6 = 172 units from x 8, inside the 232-unit line. */
       t(8, 322, "openmp, all cores · 3.5×") +
       `<rect x="8" y="328" width="224" height="5" class="bark clay"/>` +
-      t(8, 344, "dot-256 · committed 2025-12-26"),
+      /* r15: "dot-256" was the benchmark's internal name, not a reader's
+         word; the run says "256×256 matrix product" and the alt-text above
+         now spells it out in full. The plate has no room for the full
+         phrase — budgeted per the rule at the head of this file, 30 glyphs
+         with `·` and `×` counting two each is 32 × 6.6 = 211 units from
+         x 8, inside the 232-unit line; the full phrase would be 265. */
+      t(8, 344, "256×256 · committed 2025-12-26"),
   };
 }
 
