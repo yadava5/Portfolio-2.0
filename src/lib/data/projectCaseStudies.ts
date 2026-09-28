@@ -2522,7 +2522,7 @@ export const projectCaseStudies: ProjectCaseStudy[] = [
       {
         date: "2026-09-26",
         kind: "erratum",
-        text: "The note above is withdrawn. The compliance figures and the reporting systems it names belong to the team, not to work this file can source, so they are off the site: the month count, the project count and both ends of the percentage range are retracted rather than restated anywhere on this site. A receipt that counted operational records in this role is removed as well: it had no artifact, no date and no source.",
+        text: "The note above is withdrawn. The compliance figures and the reporting systems it names belong to the team, not to work this file can source, so they are off the site: the month count, the project count and both ends of the percentage range are retracted rather than restated in the run or its case files. A receipt that counted operational records in this role is removed as well: it had no artifact, no date and no source.",
       },
       {
         date: "2026-09-28",
