@@ -972,7 +972,8 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
   const clearance = (page: Page) =>
     page.evaluate(
       ({ RANGE, CLEAR, CAP }) => {
-        const svg = document.querySelector(".dawnscape") as SVGSVGElement;
+        /* the host, not a sheet: the drawing is two svgs inside it */
+        const svg = document.querySelector(".dawnscape")!;
         const walker = document.createTreeWalker(
           document.querySelector(".dawnwrap")!,
           NodeFilter.SHOW_TEXT
@@ -1028,7 +1029,13 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
               "chrome",
             ]);
         }
-        const pt = svg.createSVGPoint();
+        /* .dawnscape is the host div and the drawing is the two sheets in
+           it (.ds-paper, written once; .ds-wind, what moves): the host
+           still reads the whole drawing, and the point factory comes from
+           the paper, which carries the viewBox both sheets share */
+        const pt = (
+          document.querySelector(".dawnscape .ds-paper") as SVGSVGElement
+        ).createSVGPoint();
         let worst = { margin: Infinity, gap: 0, need: 0, at: "", sub: "" };
         for (const p of svg.querySelectorAll("path")) {
           /* a mask's or a pattern's path is a hole or a tile, not a mark;
@@ -1625,7 +1632,9 @@ test.describe("¶13 · the morning notices you", () => {
       /* the INK, sampled through its own screen matrix, not the group's
          box: a box round a rotated ear is bigger than the ear */
       let m = Infinity;
-      const pt = (svg as SVGSVGElement).createSVGPoint();
+      const pt = (
+        document.querySelector(".dawnscape .ds-paper") as SVGSVGElement
+      ).createSVGPoint();
       for (const g of svg.querySelectorAll(
         ".ds-deer .ds-ear, .ds-deer .ds-tail, .ds-deer .ds-head, .ds-fawn .ds-ear, .ds-fawn .ds-tail"
       ))

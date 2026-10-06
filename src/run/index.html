@@ -1216,11 +1216,37 @@ if (location.hash.length > 1) {
      same morning. It shows with the station: opacity follows body.atmorning
      and the fade is a shade slower than the text stagger, so the ground is
      there before the last line lands on it. */
-  /* max-width:none, because the page's media rule caps an svg at its
+  /* ————— TWO SHEETS, ONE DRAWING —————
+     THE DRAWING IS PAINTED ONCE AND THEN ONLY COMPOSITED. Any change inside
+     an svg repaints that svg's whole layer, and this one is 1126 elements
+     and 750 paths: with 58 animations in it something changed every frame,
+     so the whole sheet was rasterised every frame at 1512x836 @2x. Measured
+     2026-10-06, frame by frame, Safari 26.6.2 and headless WebKit agreeing:
+     moving p50 54ms / p95 99, and 30ms AT REST, not scrolling. Every
+     ablation that left the marks and the motion in one svg was worthless
+     (css animations off, web animations off, the flock off, sticky to
+     relative, position:fixed, contain:none, will-change alone: no help);
+     will-change AND all inner motion silenced measured 18 moving / 17 idle.
+     So .dawnscape is a HOST now, and the drawing is two sibling svgs inside
+     it: .ds-paper, which is written once and never touched again, and
+     .ds-wind, which carries everything that moves. A nested svg does not get
+     its own layer and a sibling does, which is the whole reason they are
+     siblings. Both sheets take the host's exact box and the same viewBox, so
+     every transform-origin the builder emits, every screen matrix the gate
+     samples and every mask in user space mean what they always meant, and
+     the sixteen seats are unchanged by construction.
+     max-width:none, because the page's media rule caps an svg at its
      container and the phone's panel is narrower than the screen: capped,
      the viewBox scaled to 81% and floated 80px up the page (measured). */
   .dawnscape{position:absolute; inset:0; width:100%; height:100%; max-width:none;
     pointer-events:none; opacity:0; contain:strict; overflow:hidden}
+  .dawnscape .ds-sheet{position:absolute; inset:0; width:100%; height:100%;
+    max-width:none; display:block; overflow:visible}
+  /* the promotion, both sheets: the paper so a scroll composites it instead
+     of rasterising 750 paths, the wind so its own frames never reach the
+     paper's layer. Only once the station exists — before the gate opens the
+     host is empty and there is nothing to promote. */
+  body.gateopen .dawnscape .ds-sheet{will-change:transform}
   body.atmorning .dawnscape{opacity:1}
   .dawnscape path{fill:none; stroke-linecap:round; stroke-linejoin:round}
   /* three inks and one light: the subjects in --ink-2, the far structure in
@@ -1395,6 +1421,26 @@ if (location.hash.length > 1) {
     body.morninglive .dawnscape .ds-rays{animation:sunturn 11.3s ease-in-out 2.6s infinite}
     body.morninglive .dawnscape .ds-rays2{animation:sunturn 14.9s ease-in-out 2.6s infinite}
   }
+  /* ————— AND THE MORNING HOLDS STILL WHEN NOBODY IS IN IT —————
+     The wind costs a repaint of the wind sheet on every frame of it, and
+     that was being paid by a reader who had scrolled back to ¶08 and by a
+     tab nobody was looking at. The reading that opens ¶13 is the one that
+     stops it: body.morningheld goes on the moment atMorning goes off (and
+     on visibilitychange), and holdMorning() takes the Web Animations this
+     rule cannot reach. A RULE and not a sweep, because a group the builder
+     writes while the morning is held is then born paused too.
+     Play state only, never a rebuild: the poses hold where they stood, so
+     a reader who comes back finds the morning where she left it rather
+     than snapped to the top of every cycle.
+     THE FLOCK IS NOT IN THIS RULE. #flock is fixed to the viewport and
+     crosses both stations, so a bird held mid-crossing would hang in the
+     sky over ¶08; its spawner is parked on atMorning already, and seven
+     composited birds finishing the crossing they are on cost nothing.
+     !important because every rule above sets the `animation` SHORTHAND,
+     which resets play-state to running and outranks any selector this one
+     could carry: measured, the hold landed, the class was on the body and
+     all 37 groups still read "running". */
+  body.morningheld .bdawn *{animation-play-state:paused !important}
   @keyframes sunturn{
     0%{transform:rotate(0)}
     40%{transform:rotate(var(--amp))}
@@ -4195,8 +4241,12 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
     <div class="dawnstick">
       <!-- the ground, drawn by buildDawnscape() once the gate is open. The
            element is here so the fade is a state of one thing that persists,
-           and a rebuild on resize refills it without replaying the entrance. -->
-      <svg class="dawnscape" aria-hidden="true" focusable="false"></svg>
+           and a rebuild on resize refills it without replaying the entrance.
+           It is the HOST, and the builder puts two sheets in it: the paper,
+           painted once, and the wind, which carries what moves. A host and
+           not the sheet itself because a sibling svg gets its own
+           compositing layer and a nested one does not. -->
+      <div class="dawnscape" aria-hidden="true"></div>
       <div class="dawnwrap">
         <div class="dawnhead">
         <p class="kicker">¶ 13 · the next morning · <i>06:12</i></p>
@@ -8318,7 +8368,9 @@ function work(y) {
   document.body.classList.toggle("atgate", beat === 11 && bp > 0.3 && !window.__world.approved);
   /* ¶13 opens once the light is genuinely up, not on first pixel */
   const morn = beat >= RUN_BEATS && bp > 0.16;
-  if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); }
+  /* and the morning holds still the moment it is off the screen: the same
+     reading that opens it is the one that stops its wind (holdMorning) */
+  if (morn !== atMorning) { atMorning = morn; document.body.classList.toggle("atmorning", morn); holdMorning(!morn || document.hidden); }
   /* The masthead is the ONLY thing the kicker anchoring feeds — `beat`/`bp`
      stay the beat-box reading that the light, the dusk contract, the manifest
      and every fx window are derived from, all of which are separately measured
@@ -9359,6 +9411,117 @@ const SCAPE_LIVE = SCAPE;
    that was there before. A reduced-motion reader is given the end state
    rather than the journey to it, here as everywhere: every chunk runs in
    the same breath (schedule() calls settleScape() straight after openGate). */
+/* ————— THE LIFT: WHAT MOVES LEAVES THE PAPER —————
+   The drawing is one hand and one coordinate system, and it is still built
+   as one string — splitting the builder would have split the composition.
+   The split is made on the DOM the builder just wrote: every mark that
+   moves after the morning arrives is carried, in document order, out of
+   the paper sheet and into the wind sheet, under a SHALLOW CLONE of its
+   own ancestors, so the plane it fades with, the tree's 0.78 frame and the
+   reserve masks it is cut by all still apply, byte for byte, where they
+   did. Nothing is redrawn and nothing is re-seeded: these are the same
+   nodes, moved.
+   Measured 2026-10-06: 58 animations in one svg of 750 paths rasterised
+   the whole sheet every frame, 30ms at rest. What is left on the paper
+   after this never changes again, so it is painted once. */
+const PLANES = new Set(["ds-back", "ds-line", "ds-mid", "ds-front"]);
+function liftTheLiving(host, declared) {
+  const paper = host.querySelector(".ds-paper"), wind = host.querySelector(".ds-wind");
+  if (!paper || !wind) return 0;
+  /* WHAT MOVES, DERIVED AND NOT LISTED TWICE: every class the builder
+     declared continuous (PERIOD, which is also what the gate's census
+     binds to, so this cannot drift from the wind), plus the groups the
+     runtime writes to by hand — a roamer that hops, the owl's socket, the
+     chicks, a daisy that opens, the two sockets a bird lands in. */
+  const sel = declared.map((c) => "." + c).join(",") +
+    ",[data-range],.ds-owl,.ds-chicks,.ds-daisy,.ds-perch,.ds-nestsock";
+  const box = (el) => { try { return el.getBBox(); } catch { return null; } };
+  /* THE UNIT IS THE BIGGEST PIECE THAT CAN TRAVEL WHOLE: up from the mark
+     that moves to the last ancestor inside its own plane, stopping under
+     any frame that would have to be reproduced by hand — a mask, a
+     transform — because those are cloned instead. A tuft travels with its
+     clump and its cast, not as a bare blade group, so the order INSIDE a
+     subject is exactly the order it was drawn in. */
+  const unitOf = (el) => {
+    let u = el;
+    for (let p = el.parentElement; p && p !== paper; p = p.parentElement) {
+      if (PLANES.has(p.classList[0]) || p.hasAttribute("mask") || p.hasAttribute("transform")) break;
+      u = p;
+    }
+    return u;
+  };
+  const units = new Set();
+  for (const el of paper.querySelectorAll(sel)) units.add(unitOf(el));
+  /* a unit inside another unit travels with it: the perch's twig is in the
+     sapling that sways, and the sapling is what is carried */
+  for (const u of [...units])
+    for (let p = u.parentElement; p && p !== paper; p = p.parentElement)
+      if (units.has(p)) { units.delete(u); break; }
+  /* AND WHAT STANDS IN FRONT OF THEM TRAVELS TOO. A lifted mark is painted
+     above the whole paper, so a static mark drawn AFTER it that overlaps it
+     would drop behind it: the small tuft that stands in front of the fawn
+     is the case this is written for. One level, among siblings, in the
+     frame they share. The sun's crown is exempt and has to be — its box is
+     a third of the sky, and check-dawnscape (1) already holds that nothing
+     but the range stands inside the crown's clearing, with the range drawn
+     before it. */
+  for (const parent of new Set([...units].map((u) => u.parentElement))) {
+    if (!parent || parent === paper) continue;
+    const front = [];
+    for (const kid of parent.children) {
+      if (units.has(kid)) {
+        const b = kid.classList.contains("ds-rays") || kid.classList.contains("ds-rays2") ? null : box(kid);
+        if (b && b.width) front.push(b);
+        continue;
+      }
+      if (!front.length) continue;
+      const b = box(kid);
+      if (b && b.width && front.some((q) => b.x < q.x + q.width && q.x < b.x + b.width && b.y < q.y + q.height && q.y < b.y + b.height))
+        units.add(kid);
+    }
+  }
+  /* the ancestors, shallow: class (the plane's own fade), mask, transform,
+     everything but the children */
+  const chains = new Map();
+  const chainOf = (src) => {
+    if (!src || src === paper) return wind;
+    let dst = chains.get(src);
+    if (dst) return dst;
+    dst = src.cloneNode(false);
+    dst.removeAttribute("id");
+    chainOf(src.parentElement).appendChild(dst);
+    chains.set(src, dst);
+    return dst;
+  };
+  let n = 0;
+  /* in document order, so the drawing's own order survives the move */
+  for (const el of paper.querySelectorAll("*")) {
+    if (!units.has(el)) continue;
+    chainOf(el.parentElement).appendChild(el);
+    n++;
+  }
+  return n;
+}
+/* the wind's own plane, for the marks the runtime draws after the build: a
+   shed leaf, a butterfly. document.querySelector would hand back the
+   paper's plane, which is the one sheet they must never be drawn on. */
+function windPlane(cls) {
+  const wind = document.querySelector(".dawnscape .ds-wind");
+  if (!wind) return null;
+  let g = wind.querySelector("." + cls);
+  if (!g) {
+    g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("class", cls);
+    wind.appendChild(g);
+  }
+  return g;
+}
+/* the sheet the coordinates are in: the paper carries the viewBox, and
+   both sheets take the same one */
+const scapeVB = () => {
+  const p = document.querySelector(".dawnscape .ds-paper");
+  return (p ? p.getAttribute("viewBox") : "0 0 0 0").split(" ").map(Number);
+};
 function* drawDawnscape() {
   /* the stage. A deliberate shadow of the module's SCAPE: every builder
      below writes this copy, and it is carried onto the live one at the end.
@@ -11697,7 +11860,6 @@ function* drawDawnscape() {
     }
   }
 
-  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   /* THE DEFS: the stipple tiles and the masks. Every tile's dots are laid
      by the hand (jittered off a grid), two prime sizes at two rotations;
      the cover is what the gate computes from these numbers. The masks take
@@ -11747,10 +11909,49 @@ function* drawDawnscape() {
     maskOf("mG", `M-4 ${F(hz - 60)}H${W + 4}V${H + 4}H-4Z`, "", "grass") +
     maskOf("mR", `M-4 -4H${W + 4}V${H + 4}H-4Z`, "", "massif") + leafMasks;
   SCAPE.reserves = reserves;
-  /* ————— and the whole drawing arrives at once ————— */
+  /* ————— and the whole drawing arrives at once —————
+     On two sheets: the paper, with the defs and the four planes, and the
+     wind, empty until the lift pulls what moves out of the paper and into
+     it. One innerHTML still, in one breath, and the lift runs before
+     anything is published, so no reader and no probe ever sees the drawing
+     half split. */
   svg.style.left = svgLeft;
   svg.style.width = svgWidth;
-  svg.innerHTML = `<defs>${defs}</defs><g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`;
+  const sheet = (cls, body) => `<svg class="ds-sheet ${cls}" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">${body}</svg>`;
+  svg.innerHTML =
+    sheet("ds-paper", `<defs>${defs}</defs><g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`) +
+    sheet("ds-wind", "");
+  SCAPE.lifted = liftTheLiving(svg, Object.keys(PERIOD));
+  /* ————— AND THE RESERVES ARE CAST FROM SILHOUETTES THAT NEVER MOVE —————
+     A reserve is bare paper, taken out of a mask by <use> of the mass that
+     stands in front of it — and after the lift most of those masses are on
+     the WIND sheet, while the mask they cut (mR, mB, mG) is used by the
+     range, the bank and the meadow, which are on the PAPER. A <use> clones
+     the element and not its ancestors' frames (which is exactly why the
+     tree's reserves are wrapped in the tree's own transform by hand), so
+     the geometry it casts is already static; this takes the question away
+     from the engine rather than trusting its invalidation: the id moves to
+     a copy in the paper's defs, where nothing is ever animated, moved or
+     rewritten, and the drawn mark keeps the paint. 31 of the 32 reserves
+     at 1456x949 cast from the wind without it. The copy is the same node
+     with the same classes, so what the mask reads is byte for byte what it
+     read before — every one of them is a bare <path class="ds-fill">, with
+     no accent class and no data of its own to carry into the defs.
+     THE MASS KEEPS THE NAME ON data-res. The id is what the mask resolves
+     and it has to be on the silhouette, but WHERE A RESERVE IS DRAWN is
+     still a claim about the drawing — the tree's are cast through the
+     tree's own frame — and check-dawnscape (6) can only hold that against
+     the mass itself. */
+  const paperDefs = svg.querySelector(".ds-paper defs");
+  if (paperDefs)
+    for (const q of reserves) {
+      const el = svg.querySelector(`#${q.id}`);
+      if (!el || !el.closest(".ds-wind")) continue;
+      const sil = el.cloneNode(true);
+      el.removeAttribute("id");
+      el.setAttribute("data-res", q.id);
+      paperDefs.appendChild(sil);
+    }
   /* a rebuild mid-dwell puts a sitting bird back in its socket */
   if (sky.sock) {
     if (sky.sock.perch.taken === true && SCAPE.perchMarkup) { const g = svg.querySelector(".ds-perch"); g.innerHTML = SCAPE.perchMarkup; g.classList.add("on"); g.parentElement.classList.add("laden"); }
@@ -11764,7 +11965,7 @@ function* drawDawnscape() {
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
-    paths: svg.querySelectorAll("path").length, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
+    paths: svg.querySelectorAll("path").length, lifted: SCAPE.lifted, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
@@ -12874,10 +13075,9 @@ function butterfly() {
   flyTimer = null;
   if (RM || !SCAPE.built) return;
   if (!atMorning || flyLive || !SCAPE.hz) { flyTimer = setTimeout(butterfly, at(8000)); return; }
-  const front = document.querySelector(".dawnscape .ds-front");
-  const svg = document.querySelector(".dawnscape");
+  const front = windPlane("ds-front");
   if (!front) return;
-  const W = +svg.getAttribute("viewBox").split(" ")[2], H = +svg.getAttribute("viewBox").split(" ")[3];
+  const [, , W, H] = scapeVB();
   const r = birdRng(0xb0f1 + (window.__world.flies || 0) * 733);
   const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
   g.setAttribute("class", "ds-fly");
@@ -12963,7 +13163,7 @@ function gustReactions() {
   gustTimer = null;
   if (RM || !SCAPE.built || !atMorning) { gustTimer = setTimeout(gustReactions, at(7300)); return; }
   const svg = document.querySelector(".dawnscape");
-  const W = +svg.getAttribute("viewBox").split(" ")[2];
+  const [, , W] = scapeVB();
   const r = birdRng(0x9a57 + Math.floor(performance.now() / 7300));
   for (const g of svg.querySelectorAll(".ds-deer, .ds-fawn, .ds-hare")) {
     if (r() > 0.3) continue;
@@ -12995,7 +13195,7 @@ function shedLeaf() {
   leafTimer = null;
   if (RM || !SCAPE.built) return;
   if (!atMorning || !SCAPE.leaf || leafLive) { leafTimer = setTimeout(shedLeaf, at(8000)); return; }
-  const front = document.querySelector(".dawnscape .ds-front");
+  const front = windPlane("ds-front");
   if (!front) return;
   const r = birdRng(0x1eaf + leaves.shed * 4099);
   const L = SCAPE.leaf, src = L.crownSrc, env = L.crownEnv;
@@ -13004,7 +13204,7 @@ function shedLeaf() {
   /* the leaf lets go when the gust reaches its bough: the gust's crest at
      x is (x/W)·1.9s plus 30% of the 7.3s cycle after the wind's own start,
      so the shedding waits for the next crest there */
-  const svgW = +document.querySelector(".dawnscape").getAttribute("viewBox").split(" ")[2];
+  const svgW = scapeVB()[2];
   const per = 7300, crest = (x0 / svgW) * 1900 + 0.3 * per;
   const since = performance.now() - (sky.windAt || performance.now());
   const wait = (((crest - since) % per) + per) % per;
@@ -13013,7 +13213,7 @@ function shedLeaf() {
 }
 function shedNow(x0, y0, env, r) {
   const NS = "http://www.w3.org/2000/svg";
-  const front = document.querySelector(".dawnscape .ds-front");
+  const front = windPlane("ds-front");
   if (!front) { leafLive = null; return; }
   const yEnd = SCAPE.hz + 4 + r() * (env[3] - SCAPE.hz - 8);
   const swings = 3 + Math.floor(r() * 2), amp = 14 + r() * 10, drift = 10 + r() * 20;
@@ -13211,6 +13411,44 @@ function settleScape() {
 document.querySelector(".dawnscape").addEventListener("transitionend", (e) => {
   if (e.propertyName === "opacity" && atMorning && e.target.classList.contains("ds-front")) settleScape();
 });
+
+/* ————— THE MORNING HOLDS STILL WHEN NOBODY IS IN IT —————
+   The wind costs a repaint of the wind sheet on every frame of it, and
+   that was still being paid by a reader who had scrolled back to ¶08 and
+   by a tab in the background. The ground's own clocks were already parked:
+   every scheduler here (the far birds, the ground's events, the leaf, the
+   owl, the butterfly, the gusts, the notice) is guarded on atMorning,
+   which the beat clears the moment ¶13 leaves the screen. What ran on
+   regardless was the declared wind and the Web Animations under it, so
+   this is the half that was missing.
+   PLAY STATE ONLY, never a rebuild: the poses hold where they stood and a
+   reader who comes back finds the morning where she left it rather than
+   snapped to the top of every cycle. The CSS half is a rule
+   (body.morningheld), so a group the builder writes while it is held is
+   born paused too; this sweep takes the Web Animations the rule cannot
+   reach. Transitions are left alone — the arrival is a transition, and a
+   held transition is a station frozen half-lit. */
+const heldAnims = new Set();
+let morningHeld = false;
+function holdMorning(on) {
+  /* nothing to hold until the carry has let go: the flock is still in the
+     air between the gate and the morning, and it is not ¶13's to pause */
+  if (on && !document.body.classList.contains("morninglive")) return;
+  if (on === morningHeld) return;
+  morningHeld = on;
+  document.body.classList.toggle("morningheld", on);
+  const host = document.querySelector(".dawnscape");
+  if (on) {
+    for (const a of host ? host.getAnimations({ subtree: true }) : [])
+      if (!(a instanceof CSSAnimation) && !(a instanceof CSSTransition) && a.playState === "running") { a.pause(); heldAnims.add(a); }
+  } else {
+    /* only the ones this held: play() on an animation that had finished
+       would run it again */
+    for (const a of heldAnims) if (a.playState === "paused") a.play();
+    heldAnims.clear();
+  }
+}
+addEventListener("visibilitychange", () => holdMorning(document.hidden || !atMorning));
 
 /* the gate lets them go, FROM THE RING. The socket is the thread's own
    terminus — the mark the line has been carrying toward for twelve stations,

@@ -36,9 +36,12 @@
  *      every near mass with the bare paper it casts into each plane behind
  *      it; the masks' <use> children (mR for the range and its valley
  *      floor, mB, mG) must be exactly that registry, each resolving to a
- *      live element, each dilated by twice its registered width, and a
- *      reserve cast by the tree must be cast through the tree's own
- *      transform, so its paper is where its crown is.
+ *      live element, each dilated by twice its registered width, and each
+ *      cast through the frame the registry declares for it (the tree's
+ *      0.78, so its paper is where its crown is). The silhouettes they
+ *      cast from are kept in the PAPER'S defs: the masses themselves are
+ *      on the wind sheet now, and a mask the paper is cut by may not have
+ *      a source anything can redraw.
  *   7. THE TREE STANDS BELOW EVERY SUMMIT (round 12, the owner: "tree's
  *      can't be as high as mountain"). The great tree's crown and every
  *      young tree's top sit at least 40px under the lowest summit on the
@@ -55,6 +58,15 @@
  *      duration to that table. Nothing is hand-synced twice: a class emitted
  *      without a declaration, or a duration off the table, is a finding.
  *      The phone is capped at 8 on top of its own declaration.
+ *      AND THEY ALL MOVE ON THE WIND SHEET. .dawnscape is a host div with
+ *      two sibling svgs in it: .ds-paper, written once by the builder and
+ *      never touched again, and .ds-wind, which carries every mark that
+ *      moves. An animation on the paper drags all 750 paths through a
+ *      raster every frame, which is the defect the split was made to end
+ *      (measured 2026-10-06: 54ms p50 while moving and 30ms AT REST, the
+ *      owner's Safari 26.6.2 and headless WebKit agreeing), so one
+ *      animation on the paper is a finding, and a build that lifted
+ *      nothing is a finding.
  *   3. REDUCED MOTION. The drawing is there, at opacity 1, with its paths;
  *      nothing inside it animates; the flock layer is display:none.
  *   4. PALETTE, AS A REGISTRY. Three inks draw freely (--ink, --ink-2,
@@ -198,6 +210,31 @@
  *   · each petal emitted as its own `.ds-leaf.airborne` → the sit's
  *     "never two leaves in the air" fails
  *   · a blossom radius of 0.6 → the blossom floor fails
+ * Round 16, THE LAYER SPLIT, owed to labrat against the gate itself:
+ *   · the lift's selector cut back to drop one declared class (say
+ *     `.ds-rays`) -> (2) fails on the paper sheet, 2 animations left on
+ *     it; the census itself stays green, which is why the second measure
+ *     is here at all
+ *   · liftTheLiving returning 0 before it moves anything -> (2) fails,
+ *     nothing lifted, at every seat
+ *   · round 12's two reserve probes are owed again, because the thing they
+ *     read moved: the mass is found by data-res now and the silhouette
+ *     lives in defs. Both are PREDICTED red, neither is measured: the
+ *     tree's frame dropped from useRes (the wrapper goes, the mass is
+ *     still inside .ds-treeframe), and the registration itself deleted
+ *     (`for (const q of reserves.slice(res0)) q.tf = treeT`, which drops
+ *     the same wrapper from the other end). A gate bound to reserves[].tf
+ *     would have been silent on the second one, which is why it is not
+ *     bound to it. The 18-off figure measured during this round was the
+ *     OLD DOM test read against the split build, not either probe
+ *   · the silhouettes left in the drawing instead of defs -> green here,
+ *     and that is the limit of this gate: whether the paper's layer is
+ *     rebuilt is a frame-time measurement, not a DOM one
+ *   · the overlap pass dropped (the companion `units.add(kid)`) -> nothing
+ *     in this gate goes red: it is a paint-order claim, and what holds it
+ *     is the reduced-motion screenshot diff against the build before the
+ *     split, which is where this drawing's "same marks, same places" has
+ *     always been measured
  * Round 14 phase B, each verified by picasso with its own instrument and
  * owed to labrat against the gate itself:
  *   · the ruled horizon put back beside the brow → (11) fails, 325.9px of
@@ -506,7 +543,17 @@ try {
   /* the measurement, in the page: text ink vs subject boxes, the grass cap,
      and the animation census */
   const MEASURE = ({ CLEAR_PX, RANGE_PX, GRASS_CAP }) => {
+    /* THE HOST, AND THE TWO SHEETS IN IT. .dawnscape is a div now: the
+       drawing is two sibling <svg>s inside it, .ds-paper (written once,
+       never touched again, so a scroll composites it instead of
+       rasterising 750 paths) and .ds-wind (everything that moves). Every
+       selector below reads the whole drawing through the host exactly as
+       it did when the host WAS the svg; the point factory is the paper's,
+       which carries the viewBox both sheets are drawn in — the same one,
+       so every screen matrix and every transform-origin here means what it
+       always meant. */
     const svg = document.querySelector(".dawnscape");
+    const sheet = document.querySelector(".dawnscape .ds-paper");
     const wrap = document.querySelector(".dawnwrap");
     const scape = window.__world.scape;
     /* the words: each text node's own rects with its halo, and the chrome */
@@ -545,12 +592,12 @@ try {
     /* the ink: every path sampled along its length through its screen
        matrix, plus what could move the point: a roamer's range, a sway's
        amplitude at that radius */
-    const pt = svg.createSVGPoint();
+    const pt = sheet.createSVGPoint();
     let worst = { margin: Infinity, gap: 0, need: 0, text: "", sub: "" };
     let samples = 0;
     const toneEls = [];
     const toneAt = (x, y) => {
-      const q = svg.createSVGPoint();
+      const q = sheet.createSVGPoint();
       q.x = x;
       q.y = y;
       return toneEls.some((t) => t.isPointInFill(q));
@@ -1055,7 +1102,7 @@ try {
       for (const p of p2paths) {
         const L = p.getTotalLength(),
           mx = p.getScreenCTM(),
-          q2 = svg.createSVGPoint();
+          q2 = sheet.createSVGPoint();
         for (let sI = 0; sI <= L; sI += 8) {
           const q = p.getPointAtLength(sI);
           q2.x = q.x;
@@ -1084,16 +1131,25 @@ try {
         g.getBoundingClientRect().top,
       ]),
     ];
-    /* a tree's reserve is cast through the tree's own frame */
+    /* A TREE'S RESERVE IS CAST THROUGH THE TREE'S OWN FRAME. The <use>
+       resolves to the silhouette in the paper's defs now (the masses
+       themselves are on the wind sheet, and a mask the paper is cut by may
+       not cast from something that sways), so the id alone no longer says
+       where the mass is DRAWN: the mass keeps its name on data-res, and
+       that is what this follows. Deliberately not the builder's own
+       reserves[].tf — useRes emits the wrapper FROM that field, so a check
+       written against it would be comparing the markup with the data that
+       made it and would stay green if the registration were lost. */
     const treeT = svg.querySelector(".ds-treeframe")
       ? svg.querySelector(".ds-treeframe").getAttribute("transform")
       : null;
     let treeResOff = 0;
     for (const u of svg.querySelectorAll("mask#mR use")) {
-      const el = svg.querySelector(u.getAttribute("href"));
+      const id = (u.getAttribute("href") || "").slice(1);
+      const drawn =
+        svg.querySelector(`[data-res="${id}"]`) || svg.querySelector(`#${id}`);
       const inTree =
-        el &&
-        (el.closest(".ds-treeframe") || u.getAttribute("href") === "#trunkSil");
+        drawn && (drawn.closest(".ds-treeframe") || id === "trunkSil");
       const tf = u.parentElement.getAttribute("transform");
       if (inTree ? tf !== treeT : tf) treeResOff++;
     }
@@ -1275,6 +1331,22 @@ try {
       youngShare,
       masks,
       paths: svg.querySelectorAll("path").length,
+      /* THE PAPER IS PAINTED ONCE. Anything that animates on the paper
+         sheet drags all 750 paths through a raster every frame, which is
+         the whole defect this layer split was made to end — a transition
+         is excluded because the planes' own arrival fade is still landing
+         when this is measured. */
+      paperAnim: document
+        .getAnimations()
+        .filter(
+          (a) =>
+            a.effect &&
+            a.effect.target &&
+            a.effect.target.closest &&
+            a.effect.target.closest(".ds-paper") &&
+            !(a instanceof CSSTransition)
+        ).length,
+      lifted: (scape && scape.lifted) || 0,
       worst,
       halo,
       sunOff,
@@ -1567,6 +1639,21 @@ try {
       if (idle.length)
         fail(
           `${seat}: ${idle.length} animations not running (${idle.map(([k]) => k).join(", ")})`
+        );
+      /* and every one of them is on the wind sheet. The census above says
+         the right number of groups move; this says they move where the
+         repaint is cheap. */
+      if (!m.lifted)
+        fail(
+          `${seat}: nothing was lifted onto the wind sheet — the morning is one layer again, and every frame of the wind rasterises the whole drawing`
+        );
+      if (m.paperAnim)
+        fail(
+          `${seat}: ${m.paperAnim} animation(s) run on the paper sheet — the paper is written once and only composited, and what moves belongs on the wind`
+        );
+      if (!m.paperAnim && m.lifted)
+        note(
+          `${seat}: ${m.lifted} group(s) on the wind sheet, nothing animating on the paper`
         );
       if (!bad.length && !off.length && n === expected)
         note(
