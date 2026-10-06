@@ -9884,10 +9884,16 @@ function* drawDawnscape() {
   if (room < 0) {
     svg.style.left = svgLeft;
     svg.style.width = svgWidth;
-    svg.innerHTML = "";
-    SCAPE.built = true; SCAPE.hz = 0; SCAPE.groups = 0; SCAPE.strokes = 0;
+    /* no ground to draw on, but the host keeps its two sheets, empty: the
+       gate's point factory and every selector that reads the drawing read
+       the paper, drawn on or not (the first run of the split DOM found a
+       bare host at 320×720 and had nothing to measure with) */
+    svg.innerHTML =
+      `<svg class="ds-sheet ds-paper" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false"></svg>` +
+      `<svg class="ds-sheet ds-wind" viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false"></svg>`;
+    SCAPE.built = true; SCAPE.hz = 0; SCAPE.groups = 0; SCAPE.strokes = 0; SCAPE.lifted = 0;
     publish();
-    window.__world.scape = { W, H, hz: 0, free: Math.round(free), room, groups: 0, strokes: 0 };
+    window.__world.scape = { W, H, hz: 0, free: Math.round(free), room, groups: 0, strokes: 0, lifted: 0 };
     return;
   }
 

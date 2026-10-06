@@ -538,6 +538,23 @@ try {
       null,
       { timeout: 30000 }
     );
+    /* and the drawing itself. The sheets are written by a build that runs
+       a chunk per frame, and beside a full suite it can outlast the
+       sequence that sets morninglive: the first run of this gate on the
+       split DOM measured a host with no sheets in it and crashed on the
+       point factory. Wait for the paper, then measure; a seat that never
+       gets one is a finding below, not an exception here. */
+    await page
+      .waitForFunction(
+        () =>
+          !!(
+            window.__world.scape &&
+            document.querySelector(".dawnscape .ds-paper")
+          ),
+        null,
+        { timeout: 30000 }
+      )
+      .catch(() => {});
   }
 
   /* the measurement, in the page: text ink vs subject boxes, the grass cap,
@@ -556,6 +573,8 @@ try {
     const sheet = document.querySelector(".dawnscape .ds-paper");
     const wrap = document.querySelector(".dawnwrap");
     const scape = window.__world.scape;
+    /* no sheet, no point factory: report it as the finding it is */
+    if (!sheet) return { scape: null, nosheet: true };
     /* the words: each text node's own rects with its halo, and the chrome */
     const texts = [];
     const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
@@ -1381,7 +1400,9 @@ try {
     if (errs.length) fail(`${seat}: page errors — ${errs.join(" | ")}`);
     if (!m.scape)
       fail(
-        `${seat}: window.__world.scape is missing — buildDawnscape never ran`
+        m.nosheet
+          ? `${seat}: .dawnscape has no .ds-paper sheet — buildDawnscape never wrote the host`
+          : `${seat}: window.__world.scape is missing — buildDawnscape never ran`
       );
     else if (m.scape.room < 0) {
       /* no ground to draw on: the column already overflows the panel */
