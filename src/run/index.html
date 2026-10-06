@@ -3573,7 +3573,13 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">I wrote a Python pipeline that traced five years of queries on the old system to every table and column they read, so the team could see what was still in use and what nobody had touched.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b>1.6M+</b> logged queries from 1,153 users, <span class="nw">Jul 2020 to Jul 2025</span> · <b>57.8M</b> rows, one for each time a query named a column<br>
           also: a master inventory of Tableau and Workday reports, <b>10,453</b> rows × 35 fields, duplicates removed</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
+        <!-- phone 240, not the engine's 500: the handoff is the run's
+             navigation and a reader stops wherever the flick stops. 240px of
+             scroll settles the links while they are still low on the screen,
+             the way `in .0 .11` settles them on a desktop, so nobody is ever
+             asked to tap a row that is halfway lit. Every handoff row below
+             carries the same budget. -->
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><span class="dep">↳ the usage data stays with IT Services</span> · <a href="https://ayush-yadav.com/projects/master-inventory/" target="_blank" rel="noopener">the inventory&rsquo;s case file ⟶</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .45 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <svg id="pathFig" class="figsvg" viewBox="0 0 560 278" role="img" aria-label="Two feeder roads, one carrying 1.6 million OAS query logs from five years and 1,153 users, the other the Tableau and Workday records, hash-deduplicated over a REST API. Both run through one Python and SQL works and park inside their products, where they stay; both products then merge onto one main line. Each product carries its disposition in the reviewer's own marks: the master inventory is drawn solid, checked with a tick, and checked in; the usage table of 57.8 million rows is drawn dashed, struck, and stays with IT Services."></svg>
@@ -3602,7 +3608,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           two small models take the hard cases in the full pipeline; the hosted app runs rules alone, because the model stack is too big for a Vercel function<br>
           built an int8 ONNX export for inference in the browser: <span class="uv">90 MB to 23 MB</span>, measured <span class="nw">2026-08-03</span></p>
         <p class="prov mono">Next.js · Python · PostgreSQL</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/jobtracker/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/applied" target="_blank" rel="noopener">source ↗</a> · <a href="https://getapplied.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/jobtracker/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/applied" target="_blank" rel="noopener">source ↗</a> · <a href="https://getapplied.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://getapplied.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x 10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group", NOT role="img", and fig. 07 is the same case. A
@@ -3632,7 +3638,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="mutedln" data-fx="in .1 .31 x 6 | out .96 1.06 y -4 | drift 16">In Cadence you type the plan as you’d say it, and it becomes the event, attendees and Meet link included.</p>
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14">no AI model: four parsers read each plan, two open source and two I wrote · <b class="mv">1,430 passed · 0 skipped</b> (772 frontend, 658 backend)</p>
         <p class="prov mono">React · TypeScript · PostgreSQL · Google Calendar API</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/taskflow-calendar/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence" target="_blank" rel="noopener">source ↗</a> · <a href="https://usecadenceapp.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/taskflow-calendar/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/cadence" target="_blank" rel="noopener">source ↗</a> · <a href="https://usecadenceapp.vercel.app" target="_blank" rel="noopener">the live app ↗</a> · <a href="https://usecadenceapp.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .43 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <div id="cadFig">
@@ -3681,7 +3687,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="prov mono" data-fx="in .1 .3 y 4 | out .84 1.02 y -4 | drift 14"><b class="mv">9,701 of 10,000</b> MNIST test digits right (macro-F1 0.9698)<br>
           256×256 matrix product: <b class="mv">3.5×</b> faster on 10 cores than one core at -O3 · the whole network: no faster (0.995×)</p>
         <p class="prov mono">C++ · OpenMP · WebAssembly · React</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph" target="_blank" rel="noopener">source ↗</a> · <a href="https://getglyph.vercel.app" target="_blank" rel="noopener">live demo ↗</a> · <a href="https://getglyph.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph" target="_blank" rel="noopener">source ↗</a> · <a href="https://getglyph.vercel.app" target="_blank" rel="noopener">live demo ↗</a> · <a href="https://getglyph.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
@@ -3778,7 +3784,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              station ever DOES carry the anchor, so the day the card is
              refreshed the exemption retires itself instead of rotting into a
              permanent false claim. -->
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">project page ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">project page ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group" for the reason fig. 04 states: the four lane
@@ -3863,7 +3869,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <b class="mv">44 agent tools</b>, 12 over MCP · the LLM&rsquo;s Python runs in a Docker sandbox, locked down</p>
         <p class="prov mono">TypeScript · Express · React · PostgreSQL · Docker</p>
         <p class="mono" data-fx="in .03 .12 y 3 | out .9 1.02 y -3 | drift 10" style="margin-top:.5rem; max-width:44ch">no accuracy figure is quoted: no committed evaluation earns one.</p>
-        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10"><a href="https://ayush-yadav.com/projects/automl/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md" target="_blank" rel="noopener">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app" target="_blank" rel="noopener">live build ↗</a></p>
+        <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/automl/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/ai-augmented-auto-ml-toolchain/blob/5e42233/README.md" target="_blank" rel="noopener">the repo, gpl-3.0 ↗</a> · <a href="https://agentic-automl-platform.vercel.app" target="_blank" rel="noopener">live build ↗</a></p>
       </div>
       <figure class="plate" data-fx="in .04 .46 x -10 y 8 s .968 | out .74 .96 y -7 s .985 | drift 12">
         <svg id="amlFig" class="figsvg" viewBox="0 0 560 532" role="img" aria-label="A closed loop, drawn: a LangGraph supervisor calls the twelve MCP-registered tools, the notebook subset of the platform's 44; the tools work a drawn notebook inside a Docker sandbox, and the notebook returns to the supervisor. The tools light in the registry as the run advances (their order is the source file's, their timing staged for the drawing), and the notebook's cells take their gutter numbers as they run. Below, seven lifecycle phases lie along a rail: ingest, explore, preprocess, engineer, train, experiments and deploy. Only three of them gate, and each is drawn as a boom standing across the rail. Preprocess carries a dashed boom, because that gate is conditional and is only set when the data profile flags a risky cleaning step. Train carries a solid boom, because a person approves the training plan every time. Deploy carries a heavy boom that never lifts, over a phase label which never lights, because nothing in the graph can start a deployment; the rail runs on dashed behind it and the run stands halted in front of it, wearing a clay ring. The remaining four phases have nothing across the rail and the run passes straight through them."></svg>
@@ -4481,18 +4487,43 @@ let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false
    Round 4's version of this comment said "Nothing parks" while eight
    elements declared otherwise — the census caught the ninth, which
    parked at op 0 by bug, not by declaration. */
+
+/* AN ARRIVAL IS DECLARED AS A FRACTION AND READ AS A DISTANCE, and on a
+   phone those two stop agreeing. `in .1 .3` is 0.2 of (vh + h): about 210px
+   at 1512×900, which a trackpad takes 100–350ms to cross, and 190–230px at
+   390×844, which a thumb crosses in 3–12 frames. Recorded frame by frame on
+   the owner's iPhone Air (iOS 26, 2026-10-06): the frame times were fine —
+   p95 21ms against the 60Hz cap — and the page still read as "the entire
+   animation appearing at once, no flow", because the flick runs at a p95 of
+   18px per frame and peaks at 40–70. The window was never a duration. It is
+   a distance, and the phone covers it two and a half times faster.
+   So the phone's half of the contract is declared in the unit the defect is
+   in: `phone N` gives this element N PIXELS OF SCROLL to arrive in, and
+   PHONE_ARRIVE is what the other eighty-odd get without asking. The apply
+   loop turns that back into a window against the element's own height; a
+   desktop never reads it, and no declared number moves. */
+const PHONE_ARRIVE = 500;
 const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
   const spec = { in: [0.06, 0.32, 0, 5, 0, 1], out: [0.76, 0.98, 0, -4, 0, 1], drift: 10 };
+  let arrive = PHONE_ARRIVE;
   for (const clause of el.dataset.fx.split("|")) {
     const t = clause.trim().split(/\s+/).filter(Boolean);
     if (!t.length) continue;
     if (t[0] === "drift") { spec.drift = parseFloat(t[1]); continue; }
+    if (t[0] === "phone") { arrive = parseFloat(t[1]); continue; }
     const k = t[0]; /* in | out */
     const o = { a: parseFloat(t[1]), b: parseFloat(t[2]), x: 0, y: 0, r: 0, s: 1 };
     for (let i = 3; i < t.length; i += 2) o[t[i]] = parseFloat(t[i + 1]);
     spec[k] = [o.a, o.b, o.x, o.y, o.r, o.s];
   }
-  return { el, spec, top: 0, h: 0, near: true };
+  /* `synced` is the dusk chain. cacheGeometry derives those windows from
+     measured geometry — the fold, the shared corridor, the curtain — so a
+     phone budget there would overwrite a contract rather than a taste
+     number, and they are exempt below. Read once, here: the attribute is
+     authored, never assigned. `inA`/`inB` are the window the last frame was
+     actually drawn from, for the same reason __fx exists. */
+  return { el, spec, arrive, synced: !!el.dataset.fxSync,
+           top: 0, h: 0, near: true, inA: spec.in[0], inB: spec.in[1] };
 });
 
 window.__fx = fx; /* probe hook */
@@ -8336,7 +8367,49 @@ function work(y) {
     if (p < -0.1 || p > 1.1) continue;
     const [ia, ib, ix, iy, ir, is] = f.spec.in;
     const [oa, ob, ox, oy, or_, os] = f.spec.out;
-    const ein = smooth((p - ia) / (ib - ia));
+    /* THE PHONE BUYS THE ARRIVAL ITS PIXELS BACK (PHONE_ARRIVE, up by the
+       parser, has the measurement). The WINDOW is rewritten here and the
+       spec never is: cacheGeometry writes the dusk chain into f.spec.in and
+       the probe reads it, so both have to go on seeing what was declared.
+       Three things decide it, and only for a window that is short in px:
+         · it starts at the fold. The front of a gesture that happens below
+           the screen is a gesture the reader is shown the middle of, and
+           the author's note in cacheGeometry says the same of its own
+           entrances: never before its top is on screen, that reads as a pop.
+         · it ends f.arrive pixels later. Both ends are in units of (vh + h),
+           so that end is the same SCREEN position for every element however
+           tall it is: a settle horizon vh − f.arrive from the top — 344px
+           down an 844 screen — with the settled world above it and the
+           arriving one below. The ladders stay legible because the horizon
+           is shared, not because each window was tuned.
+         · and it is clamped by the three things that can leave an arrival
+           uncompletable, each of which parks an element mid-fade for good:
+           a page too short to finish it (¶13's footer carries a hand-rolled
+           version of this already — see its "in .03 .12, not .16" note), an
+           exit that would open first, and a viewport too short to settle it
+           on screen. That last one is not only a phone on its side: 500px
+           needs 833px of viewport, and the upright phone cacheGeometry
+           measures is 664 once the browser's own chrome is counted, where
+           the budget comes out at 398 and the horizon at 266.
+       If a clamp bites harder than the declaration, the declaration wins
+       whole: a shortened arrival is not an improvement.
+       AND THE OPENING FRAME IS COMPOSED, NOT ANIMATED. An element whose top
+       is inside the first viewport belongs to the frame the page loads at —
+       ¶01's cue, the nameplate — and keeps the window and the axis it
+       declares. Everything the reader scrolls INTO gets the budget, and all
+       of that is below the fold at op 0 when y is 0, so the phone's first
+       frame stays the frame the desktop recorded, element for element. */
+    let ia2 = ia, ib2 = ib;
+    const phoned = mobile && !f.synced && f.top >= vh;
+    if (phoned) {
+      const need = Math.min(f.arrive, vh * 0.6) / (vh + f.h);
+      if (ib - ia < need) {
+        const e = Math.min(need, (docH - f.top) / (vh + f.h) - 0.08, oa - 0.1);
+        if (e > ib) { ia2 = 0; ib2 = e; }
+      }
+    }
+    f.inA = ia2; f.inB = ib2; /* the window this frame was drawn from */
+    const ein = smooth((p - ia2) / (ib2 - ia2));
     const eout = smooth((p - oa) / (ob - oa));
     /* NO HORIZONTAL FX ON A PHONE, and this is a layout rule, not a taste
        one. `x` is a percentage of the VIEWPORT: a desktop's polite "x 10"
@@ -8346,12 +8419,26 @@ function work(y) {
        element carrying an x window used to sit far below the fold at scroll
        0 and was never drawn in its entry state. Now ¶02 starts on the first
        screen: measured at 390 the record card sat at translateX(39px) and
-       pushed the body 16px sideways, and 10px at 320. The vertical drift
-       and the fade say the same thing and cost the reader nothing. */
+       pushed the body 16px sideways, and 10px at 320.
+       THE SLIDE CHANGES AXIS RATHER THAN VANISHING. Round 5 could let the
+       drift and the fade stand in for it, and over a 200px window they did;
+       over 500 a bare fade is exactly the stretched fade the wider window
+       exists to avoid, and thirty of the eighty-four specs are x-only — on
+       a phone they had no gesture left at all. Carried on y, `x 9` is the
+       same 35px journey at 390 in the direction the column has room for,
+       and the magnitudes the markup composed survive it. The swap tops out
+       at 9: every `x 10` in the file declares `y 8` beside it and so never
+       reaches here, which keeps the lift inside the range the y-class
+       already spends at the same seat — 74px against y 8's 82 at 820×1024.
+       It rides `phoned`, so the opening frame and the dusk chain are
+       untouched, and it only ever moves a gesture that was declared:
+       `in .04 .30` with no x and no y is a plate that was told to hold
+       still, and it still holds still. */
+    const iyp = phoned && !iy && ix ? Math.abs(ix) * vw / vh : iy;
     const tx = mobile
       ? 0
       : lerp(ix, 0, ein) * vw / 100 + lerp(0, ox, eout) * vw / 100;
-    const ty = lerp(iy, 0, ein) * vh / 100 + lerp(0, oy, eout) * vh / 100
+    const ty = lerp(iyp, 0, ein) * vh / 100 + lerp(0, oy, eout) * vh / 100
       + (0.5 - p) * f.spec.drift;
     const r = lerp(ir, 0, ein) + lerp(0, or_, eout);
     const s = lerp(is, 1, ein) * lerp(1, os, eout);
