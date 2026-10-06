@@ -4265,6 +4265,35 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 
+/* THE VIEWPORT THE PAGE IS LAID OUT IN, not the one the toolbar leaves.
+   On a phone the browser's chrome collapses and expands with the scroll and
+   innerHeight follows it: fourteen distinct values in one session on the
+   owner's iPhone (2026-10-06), each one a resize event, and each resize a
+   full geometry rebuild — beats, fx windows, the rail's path, the wash
+   buffer, the dawnscape and the flock — so positions shifted under the
+   reader's thumb mid-flick (frames with an innerHeight change: p95 47 ms).
+   The stylesheet never saw any of it: 100vh is the LARGE viewport (iOS
+   15.4+), which is what every section is sized in. So the engine measures
+   the same thing. This probe is 100vw × 100vh in px, the engine's vw and vh
+   are its size, and a toolbar transition, or a pinch (which changes
+   innerWidth but not the layout viewport), changes neither; a window drag,
+   a rotation or a zoom changes one or both and the full path runs. Anchored
+   right, so a classic scrollbar's width overflows to the left, where nothing
+   scrolls. */
+const seatProbe = document.createElement("div");
+seatProbe.setAttribute("aria-hidden", "true");
+seatProbe.style.cssText = "position:absolute;right:0;top:0;width:100vw;height:100vh;visibility:hidden;pointer-events:none;contain:strict";
+document.body.appendChild(seatProbe);
+const seat = { w: seatProbe.offsetWidth || innerWidth, h: seatProbe.offsetHeight || innerHeight };
+/* decided once per resize event, before any listener reads it: the wash,
+   the engine, the dawnscape and the flock all listen, in that order */
+let seatChanged = true;
+addEventListener("resize", () => {
+  const w = seatProbe.offsetWidth || innerWidth, h = seatProbe.offsetHeight || innerHeight;
+  seatChanged = w !== seat.w || h !== seat.h;
+  seat.w = w; seat.h = h;
+});
+
 window.__world = { arc: 0, beat: 0, beatP: 0, stamped: 0, night: false,
   halted: false, approved: false, ring: null, marks: {} };
 window.__demo = { last: null, ready: null };
@@ -4426,19 +4455,25 @@ void main(){
   gl_FragColor=vec4(col,1.);
 }`;
   const mk = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
-  const pr = gl.createProgram();
-  gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs));
-  gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs));
-  gl.linkProgram(pr); gl.useProgram(pr);
-  const b = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, b);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, "p");
-  gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const uR = gl.getUniformLocation(pr, "R"), uC = gl.getUniformLocation(pr, "C"),
-        uS = gl.getUniformLocation(pr, "S"), uP = gl.getUniformLocation(pr, "P"),
-        uN = gl.getUniformLocation(pr, "N");
+  /* a function, not straight-line setup, because the context can be taken
+     away and given back (below) and the program has to be made again */
+  let uR, uC, uS, uP, uN;
+  function setup() {
+    const pr = gl.createProgram();
+    gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs));
+    gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(pr); gl.useProgram(pr);
+    const b = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, "p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    uR = gl.getUniformLocation(pr, "R"); uC = gl.getUniformLocation(pr, "C");
+    uS = gl.getUniformLocation(pr, "S"); uP = gl.getUniformLocation(pr, "P");
+    uN = gl.getUniformLocation(pr, "N");
+  }
+  setup();
   /* the last draw's inputs: the engine runs on for a tail of still frames
      and through the departure, and a draw of the same five values is GPU
      work for the same pixels. Bit-identical only — no quantising, which
@@ -4452,9 +4487,9 @@ void main(){
     last = null;
   }
   size();
-  addEventListener("resize", size);
+  addEventListener("resize", () => { if (seatChanged) size(); });
   window.__hasGL = true;
-  drawWash = (rgb, scrollNorm, sunArc, nightF, at) => {
+  const draw = (rgb, scrollNorm, sunArc, nightF, at) => {
     const ax = at ? at[0] : -1, ay = at ? at[1] : -1, n = nightF || 0;
     if (last && last[0] === rgb[0] && last[1] === rgb[1] && last[2] === rgb[2] &&
         last[3] === scrollNorm && last[4] === sunArc && last[5] === n && last[6] === ax && last[7] === ay) return;
@@ -4473,8 +4508,28 @@ void main(){
     gl.uniform1f(uN, nightF || 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
+  drawWash = draw;
+  /* THE CONTEXT CAN BE TAKEN AWAY. On iOS the GPU process is killed under
+     memory pressure and every WebGL context on the page is lost; without a
+     handler the wash would freeze on its last frame for good, with the sky
+     scrubbing on around it. preventDefault is what makes the restore event
+     come at all. Lost: the CSS sun takes over (the no-gl path work() already
+     drives) and applyArc stops calling in. Restored: the program is made
+     again and the next frame draws. */
+  washCanvas.addEventListener("webglcontextlost", (e) => {
+    e.preventDefault();
+    drawWash = null; last = null;
+    document.body.classList.add("no-gl");
+    wake(true);
+  });
+  washCanvas.addEventListener("webglcontextrestored", () => {
+    setup(); size();
+    document.body.classList.remove("no-gl");
+    drawWash = draw;
+    wake(true);
+  });
   /* paint dawn NOW — an undrawn opaque-context canvas composites black */
-  drawWash(oklchToRgb(WAY[0][0], WAY[0][1], WAY[0][2]), 0, 0, 0);
+  draw(oklchToRgb(WAY[0][0], WAY[0][1], WAY[0][2]), 0, 0, 0);
 })();
 
 /* ————— geometry caches ————— */
@@ -4541,7 +4596,7 @@ function seatContour() {
   if (!moves) $("contour").style.transform = "";
 }
 function cacheGeometry() {
-  vw = innerWidth; vh = innerHeight; mobile = vw <= 820; stacked = vw <= 1249;
+  vw = seat.w; vh = seat.h; mobile = vw <= 820; stacked = vw <= 1249;
   seatContour();
   const measure = () => {
     docH = document.documentElement.scrollHeight;
@@ -8481,7 +8536,10 @@ addEventListener("resize", () => {
      at 1300, which is a rail arriving next to its own terminus. The rebuild
      costs 1.2–1.5ms median and 6.3ms worst across 390–1920, against a reflow
      the resize has already paid for, so there is nothing to save by waiting.
-     The debounced pass below still does the parts that are not the rail. */
+     The debounced pass below still does the parts that are not the rail.
+     Unless the layout viewport is where it was (see seatProbe): a phone's
+     toolbar sliding away is a resize event with nothing to rebuild. */
+  if (!seatChanged) return;
   cacheGeometry(); buildThread(); wake(true);
   clearTimeout(resizeT);
   resizeT = setTimeout(() => {
@@ -11873,7 +11931,7 @@ function buildDawnscape() {
 /* one rebuild per frame: a window drag fires resize dozens of times a
    second and the build is tens of milliseconds */
 let scapeRaf = 0;
-addEventListener("resize", () => { if ((SCAPE.built || scapeIter) && !scapeRaf) scapeRaf = requestAnimationFrame(() => { scapeRaf = 0; buildDawnscape(); }); });
+addEventListener("resize", () => { if (seatChanged && (SCAPE.built || scapeIter) && !scapeRaf) scapeRaf = requestAnimationFrame(() => { scapeRaf = 0; buildDawnscape(); }); });
 
 /* where they leave from, as a fraction of the viewport — captured when the
    gate is approved so a resize mid-flight rebuilds the same departure */
@@ -13322,7 +13380,7 @@ function releaseFlock() {
   document.body.classList.add("flying");
   mark("bird");
 }
-addEventListener("resize", () => { if (flockFrom) buildFlock(); });
+addEventListener("resize", () => { if (seatChanged && flockFrom) buildFlock(); });
 
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */
