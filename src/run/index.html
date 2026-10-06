@@ -1257,8 +1257,14 @@ if (location.hash.length > 1) {
      the viewBox scaled to 81% and floated 80px up the page (measured). */
   .dawnscape{position:absolute; inset:0; width:100%; height:100%; max-width:none;
     pointer-events:none; opacity:0; contain:strict; overflow:hidden}
+  /* contain:strict on each sheet measured idle 20 / moving 22-23 on its own
+     (2026-10-06, headless WebKit 1512x836 @2), and it costs nothing to look
+     at: the sheet's box is the host's box to the pixel, and the host already
+     holds contain:strict and overflow:hidden, so the clip the containment
+     brings is the clip that was always there. The sheet keeps overflow
+     visible for the same reason — there is nothing beyond the host to show. */
   .dawnscape .ds-sheet{position:absolute; inset:0; width:100%; height:100%;
-    max-width:none; display:block; overflow:visible}
+    max-width:none; display:block; overflow:visible; contain:strict}
   /* the promotion, both sheets: the paper so a scroll composites it instead
      of rasterising 750 paths, the wind so its own frames never reach the
      paper's layer. Only once the station exists — before the gate opens the
@@ -9650,6 +9656,13 @@ const SCAPE_LIVE = SCAPE;
    the whole sheet every frame, 30ms at rest. What is left on the paper
    after this never changes again, so it is painted once. */
 const PLANES = new Set(["ds-back", "ds-line", "ds-mid", "ds-front"]);
+/* WHAT MOVES AFTER THE MORNING ARRIVES, in one place: every class the
+   builder declared continuous, plus the groups the runtime writes to by
+   hand. The lift carries these onto the wind sheet and the cut refuses to
+   take any of them apart, so neither may have its own idea of them. */
+const livingSel = (declared) =>
+  declared.map((c) => "." + c).join(",") +
+  ",[data-range],.ds-owl,.ds-chicks,.ds-daisy,.ds-perch,.ds-nestsock";
 function liftTheLiving(host, declared) {
   const paper = host.querySelector(".ds-paper"), wind = host.querySelector(".ds-wind");
   if (!paper || !wind) return 0;
@@ -9658,19 +9671,21 @@ function liftTheLiving(host, declared) {
      binds to, so this cannot drift from the wind), plus the groups the
      runtime writes to by hand — a roamer that hops, the owl's socket, the
      chicks, a daisy that opens, the two sockets a bird lands in. */
-  const sel = declared.map((c) => "." + c).join(",") +
-    ",[data-range],.ds-owl,.ds-chicks,.ds-daisy,.ds-perch,.ds-nestsock";
+  const sel = livingSel(declared);
   const box = (el) => { try { return el.getBBox(); } catch { return null; } };
   /* THE UNIT IS THE BIGGEST PIECE THAT CAN TRAVEL WHOLE: up from the mark
      that moves to the last ancestor inside its own plane, stopping under
      any frame that would have to be reproduced by hand — a mask, a
      transform — because those are cloned instead. A tuft travels with its
      clump and its cast, not as a bare blade group, so the order INSIDE a
-     subject is exactly the order it was drawn in. */
+     subject is exactly the order it was drawn in. A run the cut left
+     unmasked (data-cut) stops it too: it is one of its plane's own groups
+     with the mask taken off, and without the stop it would be the biggest
+     piece that can travel and would carry its static marks with it. */
   const unitOf = (el) => {
     let u = el;
     for (let p = el.parentElement; p && p !== paper; p = p.parentElement) {
-      if (PLANES.has(p.classList[0]) || p.hasAttribute("mask") || p.hasAttribute("transform")) break;
+      if (PLANES.has(p.classList[0]) || p.hasAttribute("mask") || p.hasAttribute("transform") || p.hasAttribute("data-cut")) break;
       u = p;
     }
     return u;
@@ -9726,6 +9741,155 @@ function liftTheLiving(host, declared) {
     n++;
   }
   return n;
+}
+/* ————— THE CUT: A RESERVE IS PAID FOR WHERE IT FALLS —————
+   A mask makes the engine draw the group it is on into a buffer the size of
+   that group's box, and draw it again every time the layer the group sits
+   in repaints — under a sticky panel, every scrolled frame. Measured
+   2026-10-06 on the split, headless WebKit 1512x836 @2, frames in beat 12:
+   mask:none on the wind sheet alone took the moving p50 from 38-40ms to 22,
+   on the paper sheet alone to 30, on both to 16 (idle 16, p95 29) — every
+   target met with nothing else on the page touched. Hiding the morning
+   entirely measures the same 17/17, so after the split the masks are all
+   that is left of ¶13's cost. The same trap as round 14's leaf masks, from
+   the other end: there it was a mask that moved, here it is a mask the
+   scroll moves.
+   And the masks are the RESERVES: bare paper taken out of the far planes
+   where a near mass stands. A reserve reaches a few score pixels round one
+   mass; the groups it cuts are two whole sheets of range, valley floor and
+   meadow. So each group whose mask is only a cut is split, in paint order,
+   into runs — a run of marks that meets no reserve is drawn beside the
+   others with no mask at all, a run that meets one keeps the mask it
+   always had — and a group that meets a reserve in one corner is opened
+   one level further rather than paying for its whole box. The mask
+   definitions, the <use> registry and the dilations are untouched; so are
+   the marks, their classes and their order. What shrinks is the box the
+   engine rasterises twice a frame.
+   WHY THE LOOK CANNOT MOVE. These masks are in the sheet's own user space,
+   so where a mark is drawn decides what the mask does to it, not which
+   group it sits in; a mark only leaves when its box is inside the mask's
+   silhouette and clear of every dilated reserve, which is the whole of
+   what the mask would have done to it. Both tests are made wide — the
+   reserve by its registered width, the mark's own box by 2px for the pen
+   and the sway — and anything that cannot be read keeps its mask.
+   THE SHELLS ARE MARKED. data-cut is what the lift stops at: a free shell
+   carries its plane's class and no frame of its own, and without the mark
+   it would read as the biggest piece that can travel whole and carry every
+   static mark in it onto the wind sheet. */
+function thinTheReserves(host, cuts, reserves, living) {
+  const paper = host.querySelector(".ds-paper");
+  if (!paper) return 0;
+  const root = new DOMMatrix();
+  const boxOf = (el, m) => {
+    let b;
+    try { b = el.getBBox(); } catch { return null; }
+    if (!b.width && !b.height) return null;
+    const xs = [], ys = [];
+    for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) {
+      const p = m.transformPoint(new DOMPoint(x, y));
+      xs.push(p.x); ys.push(p.y);
+    }
+    return [Math.min(...xs) - 2, Math.min(...ys) - 2, Math.max(...xs) + 2, Math.max(...ys) + 2];
+  };
+  /* the element's own frame, multiplied out by hand: consolidate() would
+     rewrite the transform attribute it reads, and the gate holds the
+     tree's frame against the string the mask casts its reserves through */
+  const own = (el) => {
+    const list = el.transform && el.transform.baseVal;
+    let m = null;
+    for (let i = 0; i < (list ? list.numberOfItems : 0); i++) {
+      const x = list.getItem(i).matrix;
+      const one = new DOMMatrix([x.a, x.b, x.c, x.d, x.e, x.f]);
+      m = m ? m.multiply(one) : one;
+    }
+    return m;
+  };
+  const meets = (b, r) => b[0] < r[2] && r[0] < b[2] && b[1] < r[3] && r[1] < b[3];
+  const within = (b, s) => b[0] >= s[0] && b[1] >= s[1] && b[2] <= s[2] && b[3] <= s[3];
+  /* only the part of a mark that is ON the sheet is in question: a mask's
+     region is the sheet, and what it would have cut off there the host
+     clips anyway, to the same box. The range's west summit runs 150 board
+     units off the west edge and would otherwise never leave its mask. */
+  const vb = paper.viewBox.baseVal;
+  const SHEET = [vb.x, vb.y, vb.x + vb.width, vb.y + vb.height];
+  const onSheet = (b) => {
+    const v = [Math.max(b[0], SHEET[0]), Math.max(b[1], SHEET[1]), Math.min(b[2], SHEET[2]), Math.min(b[3], SHEET[3])];
+    return v[0] < v[2] && v[1] < v[3] ? v : null;
+  };
+  let freed = 0;
+  for (const [id, plane, sil] of cuts) {
+    const field = [];
+    let blind = false;
+    for (const q of reserves) {
+      if (!(q[plane] > 0)) continue;
+      if (!q.box) { blind = true; break; }
+      const d = q[plane] * (q.k || 1);
+      field.push([q.box[0] - d, q.box[1] - d, q.box[2] + d, q.box[3] + d]);
+    }
+    if (blind) continue;
+    /* the runs of one container, in the order it drew them */
+    const runsOf = (parent, m) => {
+      const kids = [...parent.children];
+      const ms = kids.map((k) => { const o = own(k); return o ? m.multiply(o) : m; });
+      const wholes = kids.map((k, i) => boxOf(k, ms[i]));
+      /* AND WHAT OVERLAPS IS NOT PARTED. The lift repairs paint order among
+         SIBLINGS — a static mark drawn after a lifted one that covers it
+         travels too — and it can only see the ones it shares a parent with.
+         Where nothing in the container moves there is nothing to repair and
+         it is cut freely; where something does, it is cut only if no two of
+         its marks overlap at all. The ten outline tufts of the meadow are
+         75px apart and the range and the valley floor never move, so this
+         costs nothing today; what it buys is that a group that one day
+         holds an overlapping pair keeps its mask instead of quietly
+         dropping one of them behind the wind. */
+      if (kids.some((k) => k.matches(living) || k.querySelector(living)) &&
+          wholes.some((b, i) => b && wholes.some((c, j) => j > i && c && meets(b, c))))
+        return [{ masked: true, nodes: kids }];
+      const out = [];
+      const add = (masked, node) => {
+        const last = out[out.length - 1];
+        if (last && last.masked === masked) last.nodes.push(node);
+        else out.push({ masked, nodes: [node] });
+      };
+      kids.forEach((kid, i) => {
+        const whole = wholes[i];
+        const b = whole && onSheet(whole);
+        if (whole && (!b || (within(b, sil) && !field.some((r) => meets(b, r))))) { add(false, kid); return; }
+        /* it stands in a reserve somewhere: open it rather than pay for all
+           of it — unless it is a single mark, carries a mask of its own, or
+           is itself one of the things that move, whose shell would be a
+           second group wearing a declared class and a second animation */
+        if (b && kid.tagName === "g" && !kid.hasAttribute("mask") && kid.children.length > 1 && !kid.matches(living)) {
+          for (const r of runsOf(kid, ms[i])) {
+            const shell = kid.cloneNode(false);
+            shell.removeAttribute("id");
+            shell.setAttribute("data-cut", r.masked ? "res" : "free");
+            for (const n of r.nodes) shell.appendChild(n);
+            add(r.masked, shell);
+          }
+          return;
+        }
+        add(true, kid);
+      });
+      return out;
+    };
+    for (const g of [...paper.querySelectorAll(`[mask="url(#${id})"]`)]) {
+      const gm = own(g);
+      const runs = runsOf(g, gm ? root.multiply(gm) : root);
+      if (!runs.length || (runs.length === 1 && runs[0].masked)) continue;
+      const frag = document.createDocumentFragment();
+      for (const r of runs) {
+        const shell = g.cloneNode(false);
+        shell.removeAttribute("id");
+        shell.setAttribute("data-cut", r.masked ? "res" : "free");
+        if (!r.masked) { shell.removeAttribute("mask"); freed++; }
+        for (const n of r.nodes) shell.appendChild(n);
+        frag.appendChild(shell);
+      }
+      g.replaceWith(frag);
+    }
+  }
+  return freed;
 }
 /* the wind's own plane, for the marks the runtime draws after the build: a
    shed leaf, a butterfly. document.querySelector would hand back the
@@ -9849,6 +10013,29 @@ function* drawDawnscape() {
   const offset = (pts, o) => { const nm = normals(pts); return pts.map(([x, y], i) => [x + nm[i][0] * o, y + nm[i][1] * o]); };
   const path = (pts) => pts.map(([x, y], i) => `${i ? "L" : "M"}${F(x)} ${F(y)}`).join("");
   const closed = (pts) => path(pts) + "Z";
+  /* THE BOX A MARK OCCUPIES, READ OFF ITS OWN DATA. Only the reserves need
+     this, and only at the end, to say where on the sheet each one bares the
+     paper; the hand writes absolute M/L/Q/C/T/S/Z and nothing else, and a
+     curve is bounded by its control points, so the box is never small. A d
+     this cannot read gives back null, and a reserve with no box keeps its
+     mask on everything — the drawing is never the thing that gives way. */
+  const dBox = (d) => {
+    const arity = { M: 2, L: 2, T: 2, Q: 4, S: 4, C: 6, Z: 0 };
+    const tk = d.match(/[A-Za-z]|-?\d*\.?\d+(?:e[-+]?\d+)?/g) || [];
+    let cmd = "M", i = 0, x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    while (i < tk.length) {
+      if (/[A-Za-z]/.test(tk[i])) { cmd = tk[i++]; if (!(cmd in arity)) return null; continue; }
+      const n = arity[cmd];
+      if (!n || i + n > tk.length) return null;
+      for (let k = 0; k < n; k += 2) {
+        const x = +tk[i + k], y = +tk[i + k + 1];
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+      i += n;
+    }
+    return x1 < x0 ? null : [x0, y0, x1, y1];
+  };
   const stroke = (pts, amp, quick = 0) => path(wob(pts, amp, quick));
   /* every element goes through P, which keeps the stroke census: a batched
      path says how many strokes it carries */
@@ -10199,7 +10386,11 @@ function* drawDawnscape() {
      paper it casts into the planes behind it: 12px into the massifs' tone,
      8px into the bank's hatch, 6px into the grass. The masks are built from
      this at the end, by <use>, so the gate can hold mask children to the
-     registry. Branches and twigs are not masses and cast nothing. */
+     registry. Branches and twigs are not masses and cast nothing.
+     Each one records the box it bares as well as the width, because a
+     reserve reaches a few score pixels and the plane it cuts is a whole
+     sheet: thinTheReserves reads these to leave the mask only on the runs
+     a mass actually stands in front of. */
   const reserves = [];
   /* THE CUT-LINES OF A DENSE CANOPY. In spring the lobes fuse into one
      foliage, and a cut-line drawn as a hole in one mass only reveals the
@@ -10239,7 +10430,7 @@ function* drawDawnscape() {
     fills.push([cx, cy, rr]);
     nS++;
     const id = `m${massN++}`;
-    if (rr >= 10) reserves.push({ id, ...resDil });
+    if (rr >= 10) reserves.push({ id, ...resDil, box: dBox(d) });
     if (resDil.massif) SCAPE.reserveCircles.push([cx, cy, rr * 0.9]);
     return `<path id="${id}" class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
   };
@@ -10308,7 +10499,7 @@ function* drawDawnscape() {
       fills.push([cx, cy, Math.max(...g.ms.map((m) => Math.hypot(m[0] - cx, m[1] - cy) + m[2]))]);
       nS++;
       const id = `m${massN++}`;
-      reserves.push({ id, ...resDil });
+      reserves.push({ id, ...resDil, box: dBox(d) });
       out += `<path id="${id}" class="ds-fill" fill-rule="evenodd" d="${d}"/>`;
     });
     return out;
@@ -10850,7 +11041,7 @@ function* drawDawnscape() {
     let d = contour(left, 1.2, "ds-ink", ["w14", "w12", "w14"]) + contour(right, 1.2, "ds-ink", ["w14", "w12", "w14"]);
     /* the trunk's silhouette, never drawn, only cast: its reserve into the massif */
     SCAPE.trunkSil = path([...left, ...[...right].reverse()]) + "Z";
-    reserves.push({ id: "trunkSil", massif: 12, bank: 0, grass: 0 });
+    reserves.push({ id: "trunkSil", massif: 12, bank: 0, grass: 0, box: dBox(SCAPE.trunkSil) });
     /* roots: two each side, the outer ones reaching for the corner */
     for (const rt of [
       [[X(0.062), hz - Y(0.05)], [X(0.048), hz - Y(0.02)], [X(0.028), hz + 2]],
@@ -11123,7 +11314,7 @@ function* drawDawnscape() {
     const tailPh = `--ph:${(-r() * 3).toFixed(2)}s`;
     const tailG = still.tail ? `<path class="ds-fill" d="${tl}"/>`
       : `<g class="ds-tail ${live(cls + "-tail")}" style="transform-origin:${J(tailJoint)};${tailPh}"><path class="ds-fill" d="${tl}"/></g>`;
-    reserves.push({ id: cls + "Body", massif: 0, bank: 0, grass: 6 });
+    reserves.push({ id: cls + "Body", massif: 0, bank: 0, grass: 6, box: dBox(d) });
     return `<path id="${cls}Body" class="ds-fill" fill-rule="evenodd" d="${d}"/>${tailG}` +
       `<g class="ds-head ${live(cls + "-head")}" style="transform-origin:${J(joint)};--ph:${(-r() * 9).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>`;
   };
@@ -11222,7 +11413,7 @@ function* drawDawnscape() {
     let td = "";
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
-    reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6 });
+    reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6, box: dBox(d) });
     return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">${sh}<path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
       `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${P(td, "ds-ink w1", 2)}</g>`;
   };
@@ -11586,7 +11777,14 @@ function* drawDawnscape() {
     far += ticks(X(0.60), hz - 8, X(0.06), 6, 12, "ds-far w1", 3, 6, 0.2);
     const res0 = reserves.length, disc0 = SCAPE.reserveCircles.length;
     near += `<g class="ds-treeframe" transform="${treeT}">${inTreeFrame(bigTree)}</g>`;
-    for (const q of reserves.slice(res0)) q.tf = treeT;
+    /* and the paper they bare travels with them: a reserve cast through the
+       tree's frame is dilated inside it too, so on the sheet it reaches TK
+       of the width it registered, around a box in the same frame */
+    for (const q of reserves.slice(res0)) {
+      q.tf = treeT;
+      q.k = TK;
+      if (q.box) q.box = [...TT([q.box[0], q.box[1]]), ...TT([q.box[2], q.box[3]])];
+    }
     SCAPE.reserveCircles = [...SCAPE.reserveCircles.slice(0, disc0), ...SCAPE.reserveCircles.slice(disc0).map(([x, y, rr]) => [...TT([x, y]), rr * TK])];
     for (const t of SCAPE.trees) { const [x, top] = TT([t.x, t.top]); Object.assign(t, { x, top, h: t.h * TK }); }
     /* young trees of the mid class: 110–150px, on the bank; the nearest
@@ -12135,10 +12333,19 @@ function* drawDawnscape() {
       dots.map(([x, y, rd]) => `<circle cx="${F(x)}" cy="${F(y)}" r="${(rd || 1.5).toFixed(1)}" style="fill:#000"/>`).join("")).join("") + `</mask>`).join("");
   SCAPE.leafMasks = Object.fromEntries(Object.entries(cutMasks).map(([k, v]) => [k, v.length]));
   void tile;
+  /* TWO OF THE THREE MASKS ARE ONLY A CUT. mR's silhouette is the whole
+     sheet and mG's is a box from 60px above the horizon down, so a mark
+     inside that box and clear of every reserve is drawn exactly the same
+     with the mask on it or off it — which is what thinTheReserves takes
+     out. The box is declared once and read twice, by the mask and by the
+     cut, so the two can never drift apart. mB is not one of these: its
+     silhouette is the bank's own outline and the bank is a corner. */
+  const RSIL = [-4, -4, W + 4, H + 4], GSIL = [-4, hz - 60, W + 4, H + 4];
+  const silPath = ([a, b, c, e]) => `M${F(a)} ${F(b)}H${F(c)}V${F(e)}H${F(a)}Z`;
   const defs = (SCAPE.trunkSil ? `<path id="trunkSil" d="${SCAPE.trunkSil}" style="fill:none"/>` : "") +
     (SCAPE.bankSil ? maskOf("mB", SCAPE.bankSil, "", "bank") : "") +
-    maskOf("mG", `M-4 ${F(hz - 60)}H${W + 4}V${H + 4}H-4Z`, "", "grass") +
-    maskOf("mR", `M-4 -4H${W + 4}V${H + 4}H-4Z`, "", "massif") + leafMasks;
+    maskOf("mG", silPath(GSIL), "", "grass") +
+    maskOf("mR", silPath(RSIL), "", "massif") + leafMasks;
   SCAPE.reserves = reserves;
   /* ————— and the whole drawing arrives at once —————
      On two sheets: the paper, with the defs and the four planes, and the
@@ -12152,6 +12359,9 @@ function* drawDawnscape() {
   svg.innerHTML =
     sheet("ds-paper", `<defs>${defs}</defs><g class="ds-back">${far}</g><g class="ds-line">${ground}</g><g class="ds-mid">${mid}</g><g class="ds-front">${near}</g>`) +
     sheet("ds-wind", "");
+  /* the cut runs before the lift, so a tuft that sways out of a run the
+     mask left behind travels under a shallow clone of THAT run */
+  SCAPE.freed = thinTheReserves(svg, [["mR", "massif", RSIL], ["mG", "grass", GSIL]], reserves, livingSel(Object.keys(PERIOD)));
   SCAPE.lifted = liftTheLiving(svg, Object.keys(PERIOD));
   /* ————— AND THE RESERVES ARE CAST FROM SILHOUETTES THAT NEVER MOVE —————
      A reserve is bare paper, taken out of a mask by <use> of the mass that
@@ -12196,7 +12406,7 @@ function* drawDawnscape() {
   for (const el of svg.querySelectorAll("[data-range]")) SCAPE.roamers[el.dataset.id || el.className.baseVal.split(" ")[0].replace("ds-", "")] = { axis: el.dataset.axis || "x", range: +el.dataset.range };
   publish();
   window.__world.scape = { W, H, hz: +hz.toFixed(1), free: Math.round(free), room, groups, strokes: nS, fills: fills.length, census: SCAPE.census, roamers: SCAPE.roamers, doeH: SCAPE.doeH,
-    paths: svg.querySelectorAll("path").length, lifted: SCAPE.lifted, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
+    paths: svg.querySelectorAll("path").length, lifted: SCAPE.lifted, freed: SCAPE.freed, keep: keep.map((b) => b.map(Math.round)), sun: SCAPE.sun, pool: SCAPE.pool || null, daisies: SCAPE.daisies || 0, perch: SCAPE.perch, owl: SCAPE.owl || null, nest: SCAPE.nest || null, den: SCAPE.den || null, log: SCAPE.log || null, boulder: SCAPE.boulder || null,
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],

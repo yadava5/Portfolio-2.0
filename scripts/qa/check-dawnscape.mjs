@@ -42,6 +42,19 @@
  *      cast from are kept in the PAPER'S defs: the masses themselves are
  *      on the wind sheet now, and a mask the paper is cut by may not have
  *      a source anything can redraw.
+ *      AND THE RESERVES ARE BARE PAPER WHEREVER THE CUT LEFT THE MASK
+ *      BEHIND (round 16). A mask is redrawn every time the layer under it
+ *      repaints, so mR's and mG's planes are drawn in runs and only the
+ *      runs a near mass stands in front of carry one. "Every .ds-p2 and
+ *      .ds-vale is masked" is therefore no longer the claim; this is: no
+ *      mark of a cut plane is drawn where its mask would have taken it
+ *      away. Each reserve's reach is measured from the MASK — the <use> is
+ *      cloned into the sheet with its own dilation and its own frame and
+ *      the browser is asked where it lands — and so is the silhouette,
+ *      because a mark may only leave a mask that would have clipped it if
+ *      it stands inside it. Only the part of a mark that is on the sheet
+ *      counts: a mask's region is the sheet's box and the host clips to
+ *      the same box.
  *   7. THE TREE STANDS BELOW EVERY SUMMIT (round 12, the owner: "tree's
  *      can't be as high as mountain"). The great tree's crown and every
  *      young tree's top sit at least 40px under the lowest summit on the
@@ -135,7 +148,10 @@
  *     fails, reserves missing from mR
  *   · the tree's reserves cast outside its transform → (6) fails, 19
  *     reserves off their frame
- *   · mask="url(#mR)" taken off the valley floor → (6) fails, unmasked
+ *   · mask="url(#mR)" taken off the valley floor → (6) failed on the old
+ *     "unmasked" count. Round 16 replaced that claim, and its own probe
+ *     replaces this one: see the two below, which fail for the reason the
+ *     old one was written to catch
  *   · the tree's scale 0.78 → 1 → (7) fails, crown above the summits
  *   · routeClear returning true → (7) fails, a crossing over a face
  * Check 8, on the build of 7e8d916 (the leaf masks three sheets square):
@@ -235,6 +251,26 @@
  *     is the reduced-motion screenshot diff against the build before the
  *     split, which is where this drawing's "same marks, same places" has
  *     always been measured
+ * Round 16 phase C, THE CUT. Written with the probes, measured by nobody
+ * here — this agent cannot drive a browser, so every line below is OWED to
+ * labrat and none of it is a recorded result:
+ *   · one far stroke put back through a reserve, unmasked: after the
+ *     `far += <g class="ds-vale" mask="url(#mR)">…</g>` of the valley
+ *     floor, add `far += '<g class="ds-vale">' + P(path([[X(0.02),
+ *     Y(0.52)], [X(0.17), Y(0.52)]]), "ds-far w1") + '</g>'`, which runs
+ *     straight through the great tree's crown -> (6) fails, 1 mark of a
+ *     cut plane standing where its mask would have taken it away. It is
+ *     the probe the old "unmasked" count existed for, and it fires for
+ *     the thing that was actually at stake rather than for the attribute
+ *   · the cut let off its leash — `within(b, sil)` dropped from
+ *     thinTheReserves, so a tuft above mG's silhouette may leave the mask
+ *     -> (6) fails on the grass if any tuft stands over the line. If it
+ *     is silent, that is a real answer too: no tuft reaches 60px above
+ *     the horizon at that seat, and the test is the one that says so
+ *   · thinTheReserves returning 0 before it cuts anything -> green here,
+ *     and that is the limit of this gate as it was for the lift: the look
+ *     is what it holds, and whether the mask is still being paid for
+ *     every frame is a frame-time measurement
  * Round 14 phase B, each verified by picasso with its own instrument and
  * owed to labrat against the gate itself:
  *   · the ruled horizon put back beside the brow → (11) fails, 325.9px of
@@ -1044,8 +1080,15 @@ try {
        of a tree's canopy cover at least 70% of the canopy's hull; a young
        tree's crown fills at most a 2.2th of the big tree's. The bank's and
        the grass's masks still carry the registry. */
-    const p2 = svg.querySelector(".ds-p2");
-    const p2paths = p2 ? [...p2.querySelectorAll("path")] : [];
+    /* ROUND 16: the range is drawn in runs. Only the runs a near mass
+       stands in front of carry mR, so .ds-p2 is several shells of the same
+       group rather than one, and the material rules read every shell. The
+       facet count is taken per summit NAME, not per element, because one
+       summit's facets can fall either side of a cut. */
+    const p2all = [...svg.querySelectorAll(".ds-p2")];
+    const p2 = p2all[0] || null;
+    const p2q = (sel) => p2all.flatMap((g) => [...g.querySelectorAll(sel)]);
+    const p2paths = p2q("path");
     const p2bad = p2paths.filter(
       (p) =>
         !p.closest(".ds-summit") ||
@@ -1057,10 +1100,7 @@ try {
     ).length;
     /* far is line and hatch; a solid or a tone inside the range is near
        material in the far plane */
-    const p2solid = p2
-      ? p2.querySelectorAll(".ds-fill, .ds-tone, [fill]:not([fill=none])")
-          .length
-      : 0;
+    const p2solid = p2q(".ds-fill, .ds-tone, [fill]:not([fill=none])").length;
     const inPolyG = ([px, py], poly) => {
       let inside = false;
       for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -1089,9 +1129,14 @@ try {
       facetsMax = 0,
       p2Low = 0;
     const hazeY = scape && scape.massifs ? scape.massifs.haze : null;
-    for (const sm of p2 ? p2.querySelectorAll(".ds-summit") : [])
-      facetsMax = Math.max(facetsMax, sm.querySelectorAll(".ds-facet").length);
-    for (const fg of p2 ? p2.querySelectorAll(".ds-facet") : []) {
+    const facetsBy = {};
+    for (const sm of p2q(".ds-summit")) {
+      const nm = sm.dataset.name || "?";
+      facetsBy[nm] =
+        (facetsBy[nm] || 0) + sm.querySelectorAll(".ds-facet").length;
+    }
+    facetsMax = Math.max(0, ...Object.values(facetsBy));
+    for (const fg of p2q(".ds-facet")) {
       const poly = (fg.dataset.poly || "")
         .split(" ")
         .filter(Boolean)
@@ -1172,9 +1217,96 @@ try {
       const tf = u.parentElement.getAttribute("transform");
       if (inTree ? tf !== treeT : tf) treeResOff++;
     }
-    const unmasked = [...svg.querySelectorAll(".ds-p2, .ds-vale")].filter(
-      (g) => g.getAttribute("mask") !== "url(#mR)"
-    ).length;
+    /* THE RESERVES, WHERE THEY FALL (round 16). A mask is redrawn every
+       time the layer under it repaints, so the planes are cut into runs and
+       only the runs a near mass stands in front of carry one; "every .ds-p2
+       and .ds-vale is masked" is no longer the claim. What the look rests on
+       is this: NO MARK OF A CUT PLANE IS DRAWN WHERE ITS MASK WOULD HAVE
+       TAKEN IT AWAY. The reserve's reach is measured from the mask itself —
+       each <use> is cloned into the sheet with its own dilation and its own
+       frame, and the browser is asked where it lands — so this is the paper
+       the engine really bares and not the builder's note of it. The
+       silhouette is measured the same way, because a mark may also only
+       leave a mask that would have clipped it if it stands inside it. */
+    /* a pixel off every reserve, for the wind: these boxes are read live
+       and a blade freed by the builder is clear of the reserve by the 2px
+       the builder pads every mark with, which is more than the sway of
+       anything that stands in the meadow. The probe below overlaps by
+       tens of pixels, so the pixel costs nothing it was written to catch. */
+    const bare = (b, q) =>
+      b.left < q.right - 1 &&
+      q.left + 1 < b.right &&
+      b.top < q.bottom - 1 &&
+      q.top + 1 < b.bottom;
+    const paperSheet = svg.querySelector(".ds-paper");
+    const bared = [];
+    /* AND WHAT THE CUT LEFT BEHIND, as a number: the marks still under a
+       mask, the groups they are in, and the share of the sheet those
+       groups' boxes cover — which is what the engine rasterises twice on
+       every scrolled frame, and so the only honest measure of whether the
+       cut did anything. Before it, this was two sheets over. */
+    const cut = { masked: 0, free: 0, groups: 0, area: 0 };
+    for (const [id, sel] of [
+      ["mR", ".ds-p2, .ds-vale"],
+      ["mG", ".ds-grass"],
+    ]) {
+      const mk = svg.querySelector(`mask#${id}`);
+      if (!mk || !paperSheet) continue;
+      const probe = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      paperSheet.appendChild(probe);
+      const put = (node, tf) => {
+        const holder = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "g"
+        );
+        if (tf) holder.setAttribute("transform", tf);
+        holder.appendChild(node.cloneNode(true));
+        probe.appendChild(holder);
+        return holder.getBoundingClientRect();
+      };
+      const silEl = mk.querySelector("path");
+      const sil = silEl ? put(silEl, null) : null;
+      const rects = [];
+      for (const u of mk.querySelectorAll("use")) {
+        const r = put(u, u.parentElement.getAttribute("transform"));
+        if (r.width && r.height) rects.push(r);
+      }
+      /* a mark is only in question where it is ON the sheet: a mask's
+         region is the sheet's own box, and what it would have cut off
+         beyond that the host clips anyway, to the same box */
+      const box = paperSheet.getBoundingClientRect();
+      for (const g of svg.querySelectorAll(sel)) {
+        const marks = g.querySelectorAll("path, circle").length;
+        if (g.getAttribute("mask") === `url(#${id})`) {
+          const r = g.getBoundingClientRect();
+          cut.masked += marks;
+          cut.groups++;
+          cut.area += r.width * r.height;
+          continue;
+        }
+        cut.free += marks;
+        for (const p of g.querySelectorAll("path, circle")) {
+          const r = p.getBoundingClientRect();
+          if (!r.width && !r.height) continue;
+          const b = {
+            left: Math.max(r.left, box.left),
+            top: Math.max(r.top, box.top),
+            right: Math.min(r.right, box.right),
+            bottom: Math.min(r.bottom, box.bottom),
+          };
+          if (b.left >= b.right || b.top >= b.bottom) continue;
+          const out =
+            sil &&
+            (b.left < sil.left - 0.5 ||
+              b.top < sil.top - 0.5 ||
+              b.right > sil.right + 0.5 ||
+              b.bottom > sil.bottom + 0.5);
+          if (out || rects.some((q) => bare(b, q)))
+            bared.push(`${id}/${p.getAttribute("class") || p.tagName}`);
+        }
+      }
+      probe.remove();
+    }
     const canvasArea = (paths) => {
       const cv = document.createElement("canvas");
       cv.width = Math.ceil(scape.W);
@@ -1308,17 +1440,36 @@ try {
         const obb =
           (mk.getAttribute("maskUnits") || "objectBoundingBox") ===
           "objectBoundingBox";
+        /* the sheet the element is on, not .dawnscape: the host is a div
+           now and a div has no viewBox, so the default for a mask in user
+           space read NaN and this check could not have fired for one */
+        const vb = el.ownerSVGElement
+          ? el.ownerSVGElement.viewBox.baseVal
+          : { width: 0, height: 0 };
         const w = obb
           ? frac(mk.getAttribute("width"), 1.2) * b.width
-          : frac(mk.getAttribute("width"), 1.2 * svg.viewBox.baseVal.width);
+          : frac(mk.getAttribute("width"), 1.2 * vb.width);
         const h = obb
           ? frac(mk.getAttribute("height"), 1.2) * b.height
-          : frac(mk.getAttribute("height"), 1.2 * svg.viewBox.baseVal.height);
+          : frac(mk.getAttribute("height"), 1.2 * vb.height);
         return { id, ratio: +((w * h) / (b.width * b.height)).toFixed(2) };
       });
     return {
       scape,
       movingMasks,
+      /* the bared marks stand on their own: the grass is cut on a phone
+         that seats no range at all, and a null p2 would drop the claim */
+      bared: { n: bared.length, first: bared.slice(0, 3) },
+      cut: {
+        ...cut,
+        share: paperSheet
+          ? +(
+              cut.area /
+              (paperSheet.getBoundingClientRect().width *
+                paperSheet.getBoundingClientRect().height)
+            ).toFixed(3)
+          : null,
+      },
       p2: p2
         ? {
             paths: p2paths.length,
@@ -1328,7 +1479,6 @@ try {
             facetsMax,
             low: p2Low,
             solid: p2solid,
-            unmasked,
             treeResOff,
           }
         : null,
@@ -1557,10 +1707,6 @@ try {
           fail(
             `${seat}: ${m.p2.solid} solid or tone element(s) inside .ds-p2 — far is line and hatch`
           );
-        if (m.p2.unmasked)
-          fail(
-            `${seat}: ${m.p2.unmasked} of the range's groups not masked by mR — the near masses must bare the paper behind them`
-          );
         if (m.p2.treeResOff)
           fail(
             `${seat}: ${m.p2.treeResOff} reserve(s) in mR cast outside the frame of what casts them — the tree's paper must be where its crown is`
@@ -1571,9 +1717,19 @@ try {
           )
         )
           note(
-            `${seat}: the range is ${m.p2.paths} marks, no stray, no solid, facets closed, at most ${m.p2.facetsMax} per summit, all above its foot at ${m.scape.massifs.haze}px, masked by mR`
+            `${seat}: the range is ${m.p2.paths} marks, no stray, no solid, facets closed, at most ${m.p2.facetsMax} per summit, all above its foot at ${m.scape.massifs.haze}px`
           );
       }
+      /* 6 · and the reserves are still bare paper, wherever the cut left
+         the mask behind */
+      if (m.bared.n)
+        fail(
+          `${seat}: ${m.bared.n} mark(s) of a cut plane stand where their mask would have taken them away (${m.bared.first.join(", ")}) — a run drawn without mR or mG must meet no reserve`
+        );
+      else
+        note(
+          `${seat}: ${(m.scape && m.scape.freed) || 0} run(s) of the cut planes are drawn without a mask and not one stands in a reserve; ${m.cut.masked} of ${m.cut.masked + m.cut.free} marks stay under one, in ${m.cut.groups} group(s) covering ${(m.cut.share * 100).toFixed(1)}% of the sheet`
+        );
       /* 7 · the tree below every summit */
       if (m.lowestPeak !== null) {
         const high = m.tops.filter(([, t]) => t < m.lowestPeak + 40);
