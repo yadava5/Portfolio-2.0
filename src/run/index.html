@@ -252,11 +252,28 @@ if (location.hash.length > 1) {
   .no-gl #sun{display:block}
   .no-gl #wash{display:none}
   #contour{ /* promoted: the un-promoted layer repainted per frame (measured) */
-    position:absolute; left:0; top:0; width:100%; height:320vh;
+    position:absolute; left:0; top:0; width:100%;
+    /* ONE VIEWPORT PLUS ONE TILE, not 320vh. The texture rides at 7% of the
+       scroll, and the layer used to be tall enough to carry that travel in
+       one piece. WebKit tiles any layer taller than 2048 CSS px (1280 on
+       iOS), and translating a tiled layer every frame is what Safari paid
+       for: on the owner's Mac, moving frames p50 25 ms / p95 54 with this
+       layer at 320vh, 17 / 22 with it hidden, and nothing else on the page
+       within noise of it (safari-keys batch, 2026-10-06). The pattern is a
+       620 px tile, so a layer one tile taller than the viewport, translated
+       by the travel MODULO 620, shows the same pixels the tall one did and
+       stays under the tiling line on every seat up to 1,280 px tall (the
+       guard in seatContour; taller seats and touch devices get `still`). */
+    height:calc(100% + 620px);
     will-change:transform;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620' viewBox='0 0 620 620'%3E%3Cg fill='none' stroke='%2326231c' stroke-width='1'%3E%3Cpath d='M60 310c40-90 150-130 250-110s190 90 250 60' opacity='.5'/%3E%3Cpath d='M20 420c70-60 180-40 280-70s160-120 300-90' opacity='.35'/%3E%3Cpath d='M100 150c90 10 140 80 240 70s170-60 260-30' opacity='.4'/%3E%3C/g%3E%3C/svg%3E");
     opacity:.05;
   }
+  /* `still`: the engine never writes a transform here. Set by cacheGeometry
+     where the moving layer would cost more than its 7% parallax is worth —
+     touch devices (iOS tiles at 1280 and the toolbar resizes the viewport)
+     and seats so tall that viewport + tile crosses 2048 anyway. */
+  #contour.still{height:100%; transform:none}
   :root[data-night] #contour{filter:invert(1)}
   #grain{
     position:absolute; inset:0;
@@ -4422,16 +4439,26 @@ void main(){
   const uR = gl.getUniformLocation(pr, "R"), uC = gl.getUniformLocation(pr, "C"),
         uS = gl.getUniformLocation(pr, "S"), uP = gl.getUniformLocation(pr, "P"),
         uN = gl.getUniformLocation(pr, "N");
+  /* the last draw's inputs: the engine runs on for a tail of still frames
+     and through the departure, and a draw of the same five values is GPU
+     work for the same pixels. Bit-identical only — no quantising, which
+     would step a slow scroll. A resize invalidates (the buffer changed). */
+  let last = null;
   function size() { /* half-res, DPR-capped: a wash, not a picture */
     const dpr = Math.min(devicePixelRatio || 1, 1.5) * 0.5;
     washCanvas.width = Math.max(2, Math.round(innerWidth * dpr));
     washCanvas.height = Math.max(2, Math.round(innerHeight * dpr));
     gl.viewport(0, 0, washCanvas.width, washCanvas.height);
+    last = null;
   }
   size();
   addEventListener("resize", size);
   window.__hasGL = true;
   drawWash = (rgb, scrollNorm, sunArc, nightF, at) => {
+    const ax = at ? at[0] : -1, ay = at ? at[1] : -1, n = nightF || 0;
+    if (last && last[0] === rgb[0] && last[1] === rgb[1] && last[2] === rgb[2] &&
+        last[3] === scrollNorm && last[4] === sunArc && last[5] === n && last[6] === ax && last[7] === ay) return;
+    last = [rgb[0], rgb[1], rgb[2], scrollNorm, sunArc, n, ax, ay];
     /* sun: rises east, crests at noon, sets west, gone by dusk — unless the
        page has drawn one, in which case the glow is wherever that one is
        (see washSeat: at the morning the drawing owns the light's place) */
@@ -4496,8 +4523,26 @@ const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
 });
 
 window.__fx = fx; /* probe hook */
+/* Does the contour move? Its layer is one viewport plus one 620px tile (see
+   the CSS), which stays under WebKit's 2048px tiling line only while the
+   viewport is under 1,428px tall; measured headless at 1500 (layer 2120)
+   the moving layer cost p50 25 / p95 37 against 17 / 20 still, at 1300
+   (1920) both read 17 / 19. The 1900 line (vh ≤ 1280) keeps a margin under
+   2048 and covers every laptop and 1440p desktop seat. Touch devices
+   go still too: iOS tiles at 1280, and the toolbar resizes the viewport
+   mid-flick, which is the wrong moment to re-tile a layer. maxTouchPoints,
+   not the UA — iPadOS reports a Mac. */
+let contourMoves = true;
+function seatContour() {
+  const moves = (navigator.maxTouchPoints || 0) <= 1 && vh + 620 <= 1900;
+  if (moves === contourMoves) return;
+  contourMoves = moves;
+  $("contour").classList.toggle("still", !moves);
+  if (!moves) $("contour").style.transform = "";
+}
 function cacheGeometry() {
   vw = innerWidth; vh = innerHeight; mobile = vw <= 820; stacked = vw <= 1249;
+  seatContour();
   const measure = () => {
     docH = document.documentElement.scrollHeight;
     for (const b of beats) {
@@ -8171,8 +8216,13 @@ function applyArc(arc, scrollFrac) {
     lastArcKey = key;
     $("field").style.background = rgbCss(arc.rgb);
     /* the masthead scrim keeps step with the field, so exiting elements
-       pass BEHIND the chrome instead of printing over its text */
-    document.documentElement.style.setProperty("--scrim-c", rgbCss(arc.rgb));
+       pass BEHIND the chrome instead of printing over its text. Written on
+       the masthead, whose ::before is the only reader: a custom property
+       changed on the root is an inherited change WebKit resolves across the
+       whole document (its fast path covers only color and visibility), and
+       with the morning's 1,100 elements in the tree that is paid per colour
+       step. The :root declaration stays as the value before the first frame. */
+    $("mast").style.setProperty("--scrim-c", rgbCss(arc.rgb));
     /* and the thread canvas, which cannot read the cascade — see groundRgb */
     groundRgb = arc.rgb;
     if (arc.night !== window.__world.night) {
@@ -8228,7 +8278,12 @@ function work(y) {
   const arc = arcColor(beat, bp);
   applyArc(arc, y / Math.max(1, docH - vh));
   window.__world.arc = +(beat + bp).toFixed(3);
-  if (!FLAGS.has("noarc")) $("contour").style.transform = `translateY(${(-y * 0.07).toFixed(1)}px)`;
+  /* the travel modulo one tile: the layer is only one tile taller than the
+     viewport, and the pattern repeats every 620px, so the wrapped position
+     shows the pixels the full travel would. toFixed(1) bounds the seam to
+     0.1px; the double modulo keeps a rubber-band negative y on the tile. */
+  if (contourMoves && !FLAGS.has("noarc"))
+    $("contour").style.transform = `translateY(${(-(((y * 0.07) % 620) + 620) % 620).toFixed(1)}px)`;
   if (document.body.classList.contains("no-gl")) {
     const t = clamp(arc.sun / 5, 0, 1);
     /* the fallback sun takes the same seat as the wash's: one sun holds
@@ -8376,7 +8431,32 @@ function wake(force) {
   running = true; stillFrames = 0; lastY = -1;
   requestAnimationFrame(frame);
 }
-addEventListener("scroll", wake, { passive: true });
+/* THE FIRST SCROLLED FRAME AFTER A PAUSE USED TO SHOW THE PREVIOUS ONE'S
+   RAIL. The engine stops when the page is still; the scroll that restarts
+   it arrives as an event, and the frame that event schedules lands one
+   display frame later — measured, work ran in the scroll's own frame 1/12
+   on WebKit and 0/12 on Chromium, so the page moved ~80px with the token,
+   figures and fx drawn for where it had been. Every flick on a phone
+   starts from a pause. So a scroll that finds the engine STOPPED does the
+   frame's work here, before the browser paints the frame carrying the
+   scroll, and tells the loop that y is already drawn. Only from stopped:
+   while running, frame() owns y (the approval carry scrolls per frame
+   with the engine held open, and must not be re-entered from here). */
+addEventListener("scroll", () => {
+  if (RM) return;
+  if (!running && booted) {
+    const y = scrollY;
+    if (PROF) {
+      const t0 = performance.now();
+      work(y);
+      if (window.__prof.length < 30000) window.__prof.push(performance.now() - t0);
+    } else work(y);
+    wake();
+    lastY = y;
+    return;
+  }
+  wake();
+}, { passive: true });
 addEventListener("pointermove", () => { if (running) stillFrames = 0; }, { passive: true });
 
 /* near-view gating for fx (a cheap census, not a per-frame rect read).
