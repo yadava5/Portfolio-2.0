@@ -37,11 +37,15 @@
  *
  * THE MARK, and why it is this one (2026-10-07, every claim rasterised in
  * Chromium at 16, 32 and 48 before choosing). The field is the hour, the
- * seam is the path the page's sun travels across the day, and the disc on
- * the seam is the reader. Why the arch has the proportions it has, why there
- * are seven stitches and not thirteen, and why the pigment is picked off the
- * field's own luminance rather than off the night flag, are all argued where
- * the drawing lives, with the rasters that decided each one.
+ * seam is the path the page's sun travels across the day, and the disc IS
+ * that sun, held still at the top of the arch with the seam threaded behind
+ * it: the 48px entry of the ICO below is what a search row shows beside the
+ * owner's name, and a row is recognised, not read, so the mark has to be one
+ * silhouette rather than a scene. Why the arch has the proportions it has,
+ * why there are seven stitches and not thirteen, why the pigment is picked
+ * off the field's own luminance rather than off the night flag, and why the
+ * still is the frame with the thread at rest, are all argued where the
+ * drawing lives, with the rasters that decided each one.
  *
  * Colour: the still is the text clay #a03f20 on the dawn paper #fbf3e7,
  * measured on the icon's own ground at 5.91:1 / APCA Lc 74.9. There IS a

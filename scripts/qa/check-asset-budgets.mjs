@@ -35,17 +35,20 @@ if (!fs.existsSync(path.join(ogDir, "home.png"))) {
 
 // The site mark. An icon is requested on every page view, before anything
 // else in the head resolves, so it must stay a trivial fetch: measured at
-// 509 / 2,032 / 3,187 bytes, budgeted with room for a re-cut of the mark
+// 545 / 2,001 / 3,250 bytes, budgeted with room for a re-cut of the mark
 // but not for a resurrected 256px ICO frame (the retired one was 25,931
-// bytes). The budgets have not moved: the mark stopped being a drawn glyph
-// on 2026-10-07 and became a field, a stitched arc and a disc, drawn by
-// `markSvg` in src/run/index.html — 509 bytes on disk against the pilcrow's
-// 1,268 (388 of drawing and a line of provenance; 411 is the largest the
-// function emits anywhere on the arc), while the rasters grew (1,540 → 2,032 and
-// 2,194 → 3,187) because an arc of stitches on a full-bleed field gives
-// PNG far more to encode than one clay glyph on flat paper. Both are still
-// half their budget. `npm run assets:render-favicons` writes all three; the
-// SVG is derived from the page, so the mark cannot be edited here.
+// bytes). The budgets have not moved through two re-cuts on 2026-10-07: the
+// mark stopped being a drawn glyph and became a field, a stitched arc and a
+// disc; then the disc grew into the mark itself, one silhouette a search row
+// can be recognised by, and the seam began sewing on its own clock. Drawn by
+// `markSvg` in src/run/index.html — 545 bytes on disk against the pilcrow's
+// 1,268 (424 of drawing and a line of provenance; 425 is the largest the
+// function emits anywhere on the arc, at the phases whose dashoffset needs a
+// fourth digit). The ICO fell to 2,001 from 2,032 and the touch icon rose to
+// 3,250 from 3,187: a solid disc costs PNG less to encode than the stitches
+// it covers, and more the larger the tile gets. All three are still half
+// their budget. `npm run assets:render-favicons` writes them; the SVG is
+// derived from the page, so the mark cannot be edited here.
 budgets.push(["public/favicon.svg", 4_000]);
 budgets.push(["public/favicon.ico", 4_000]);
 budgets.push(["public/apple-touch-icon.png", 6_000]);

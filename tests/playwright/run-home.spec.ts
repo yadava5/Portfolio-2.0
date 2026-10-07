@@ -495,18 +495,21 @@ test.describe("the home page is the run", () => {
 });
 
 /**
- * The tab mark: the page in a 16px window.
+ * The tab mark: the page in a 16px window, sewn on its own clock.
  *
- * public/favicon.svg is not authored. It is `markSvg(arcColor(0, 0))`, the
- * page's own drawing at dawn, written out by render-favicons.mjs, and the
- * live layer swaps the icon's href to the same function's output as the
- * reader moves. Two things can rot quietly and both are pinned here: the
- * still can drift from the function (someone edits markSvg and does not
- * re-render, so every bookmark shows yesterday's mark while the tab shows
- * today's, and the first swap after load visibly jumps), and the live layer
- * can stop following the page (a swap that never comes, or one that carries
- * a state the page is not in). The reduced-motion case is the third: the
- * icon's one promise there is to stand still.
+ * public/favicon.svg is not authored. It is `markSvg({...arcColor(0, 0),
+ * phase: 0})`, the page's own drawing at dawn with the thread at rest,
+ * written out by render-favicons.mjs; and that file's 48 px ICO sibling is
+ * what Google shows beside the owner's name, so the still IS the brand.
+ * The live layer swaps the icon's href to the same function's output: the
+ * seam is pulled one step every half second on the wall clock, and the
+ * field follows the reader. Four things can rot quietly and are pinned
+ * here: the still can drift from the function (a bookmark showing
+ * yesterday's mark while the tab shows today's, and the first swap after
+ * load visibly jumping); the ticker can stop (the owner's ruling is that
+ * the icon is alive on its own, not only on scroll); the live layer can
+ * stop following the page into the night; and under reduced motion the
+ * icon's one promise is to stand still.
  *
  * WebKit is skipped for the live cases by design, not by accident: Safari
  * takes no SVG icon and is reported to ignore href swaps, so the page does
@@ -518,19 +521,46 @@ test.describe("the tab mark is the page in a 16px window", () => {
       .replace(/^\s*<\?xml[^>]*>\s*/, "")
       .replace(/^\s*<!--[\s\S]*?-->\s*/, "")
       .trim();
+  type Mark = {
+    live: boolean;
+    swaps: number;
+    key: string;
+    svg: string;
+    phase: number;
+    rate: number;
+  };
+  const readMark = (page: import("@playwright/test").Page) =>
+    page.evaluate(() => {
+      const w = window as unknown as {
+        __world: { beat: number; night: boolean; mark: Mark };
+      };
+      return {
+        href: document
+          .querySelector('link[rel="icon"][type="image/svg+xml"]')!
+          .getAttribute("href"),
+        beat: w.__world.beat,
+        night: w.__world.night,
+        ...w.__world.mark,
+      };
+    });
+  const dataUri = (svg: string) =>
+    "data:image/svg+xml," + encodeURIComponent(svg);
 
-  test("the still is the page's own drawing at dawn", async ({ page }) => {
+  test("the still is the page's own drawing at dawn, thread at rest", async ({
+    page,
+  }) => {
     await page.goto("/");
     const still: string = await page.evaluate(() =>
       (window as unknown as { __mark: { still: () => string } }).__mark.still()
     );
     expect(still.startsWith("<svg")).toBe(true);
+    expect(still).toContain("stroke-dashoffset");
     expect(drawingOf(readFileSync("public/favicon.svg", "utf8"))).toBe(
       still.trim()
     );
   });
 
-  test("it follows the reader into the night", async ({
+  test("it sews on its own, two steps a second, and the tab carries exactly the engine's frame", async ({
     page,
     browserName,
   }) => {
@@ -539,51 +569,42 @@ test.describe("the tab mark is the page in a 16px window", () => {
       "Safari takes no SVG icon; the live layer is off there by design"
     );
     await page.goto("/");
-    const read = () =>
-      page.evaluate(() => {
-        const w = window as unknown as {
-          __world: {
-            beat: number;
-            night: boolean;
-            mark: { swaps: number; key: string; svg: string };
-          };
-        };
-        return {
-          href: document
-            .querySelector('link[rel="icon"][type="image/svg+xml"]')!
-            .getAttribute("href"),
-          swaps: w.__world.mark.swaps,
-          key: w.__world.mark.key,
-          svg: w.__world.mark.svg,
-          beat: w.__world.beat,
-          night: w.__world.night,
-        };
-      });
-    /* At the top the reading line already sits part way into ¶01, so the
-       page's rest state is a little past the dawn still and the engine may
-       swap once on load. What is pinned is that whatever the tab shows IS
-       the page's state: the href carries exactly the drawing the engine
-       last produced, never a stale or foreign one. */
-    await page.waitForTimeout(400);
-    const top = await read();
+    await page.waitForTimeout(1300);
+    const a = await readMark(page);
+    expect(a.live).toBe(true);
+    expect(a.beat).toBe(0);
+    expect(a.rate).toBe(500);
+    /* nothing scrolled, and the seam still moved: at least two swaps in
+       the first 1.3 s, each carrying the engine's own last drawing */
+    expect(a.swaps).toBeGreaterThanOrEqual(2);
+    expect(a.href).toBe(dataUri(a.svg));
+    await page.waitForTimeout(1100);
+    const b = await readMark(page);
+    expect(b.swaps).toBeGreaterThan(a.swaps);
+    expect(b.phase).not.toBe(a.phase);
+    expect(b.href).toBe(dataUri(b.svg));
+    expect(b.svg).toContain("stroke-dashoffset");
+  });
+
+  test("it follows the reader into the night", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName === "webkit", "no live layer in WebKit");
+    await page.goto("/");
+    await page.waitForTimeout(600);
+    const top = await readMark(page);
     expect(top.beat).toBe(0);
-    expect(top.swaps).toBeLessThanOrEqual(1);
-    if (top.swaps === 1)
-      expect(top.href).toBe(
-        "data:image/svg+xml," + encodeURIComponent(top.svg)
-      );
-    else expect(top.href).toMatch(/\/favicon\.svg$/);
+    expect(top.night).toBe(false);
     await page.evaluate(() =>
       document.getElementById("automl")!.scrollIntoView()
     );
-    await expect.poll(async () => (await read()).night).toBe(true);
-    await page.waitForTimeout(400); /* the trailing swap lands within 250 ms */
-    const night = await read();
+    await expect.poll(async () => (await readMark(page)).night).toBe(true);
+    await page.waitForTimeout(600);
+    const night = await readMark(page);
     expect(night.swaps).toBeGreaterThan(top.swaps);
-    expect(night.key).not.toBe(top.key);
-    expect(night.href).toBe(
-      "data:image/svg+xml," + encodeURIComponent(night.svg)
-    );
+    expect(night.key.startsWith("n")).toBe(true);
+    expect(night.href).toBe(dataUri(night.svg));
   });
 
   test("under reduced motion the icon stands still", async ({
@@ -596,16 +617,10 @@ test.describe("the tab mark is the page in a 16px window", () => {
     await page.evaluate(() =>
       document.getElementById("automl")!.scrollIntoView()
     );
-    await page.waitForTimeout(600);
-    await expect(
-      page.locator('link[rel="icon"][type="image/svg+xml"]')
-    ).toHaveAttribute("href", /\/favicon\.svg$/);
-    expect(
-      await page.evaluate(
-        () =>
-          (window as unknown as { __world: { mark: { live: boolean } } })
-            .__world.mark.live
-      )
-    ).toBe(false);
+    await page.waitForTimeout(1500);
+    const m = await readMark(page);
+    expect(m.live).toBe(false);
+    expect(m.swaps).toBe(0);
+    expect(m.href).toMatch(/\/favicon\.svg$/);
   });
 });

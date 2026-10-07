@@ -201,3 +201,23 @@ clone. A darker, richer world is permitted **as the arc's night end** — which 
 already law at `--waypoint-06 #43372f` and `--waypoint-07 #2c2622`, ink flipping
 cream at 12.8:1. A static dark default is not permitted: it would delete the
 differentiator and trade a live canvas for a dead one.
+
+### F6 · The tab mark ticks — narrows F3 for one timer (owner decision, 2026-10-07)
+
+F3's acceptance test stands: no rAF runs on an idle frame, and the count of
+idle rAF callbacks must not rise. What is added is one sanctioned idle
+**timer**, and only one: the favicon. The owner, shown a mark that moved only
+with the scroll, ruled "alive means, it should constantly doing something! not
+just move when scrolled!" So the tab mark's seam is sewn on the wall clock —
+one 4-unit pull every 500 ms, halved to one a second after three minutes
+without a scroll, a key or a pointer, never stopped — through `markTick()` in
+`src/run/index.html`, which builds a ~400-byte SVG string and writes one
+`<link rel=icon>` href. Measured page-side cost is at the timer's resolution
+floor; the decode and the tab-strip repaint are the browser's, off the main
+thread. It is off under `prefers-reduced-motion`, off in WebKit (which takes
+no SVG icon), off with `?nomark`, and a hidden tab runs it at whatever the
+browser clamps timers to. Nothing on the **page** moves for it.
+
+**Still banned, unchanged:** any second rAF loop, any idle animation of page
+content, and any favicon motion that is decoration rather than the mark doing
+what it is (the seam is a seam; it is sewn).
