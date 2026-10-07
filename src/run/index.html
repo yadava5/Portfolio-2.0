@@ -436,7 +436,31 @@ if (location.hash.length > 1) {
   }
 
   /* station beats — prose one side, plate the other */
-  .station{min-height:128vh; display:flex; align-items:center; padding-top:6vh; padding-bottom:6vh}
+  /* THE ARRIVAL SLIDE IS A PERCENTAGE OF THE VIEWPORT, so it leaves the page
+     sideways on the seats where the gutter is narrowest. `x 10` is 144px at
+     1440 and 136.6 at 1366, and it is spent on a plate that already reaches
+     the right margin: measured at the parked reading positions,
+     documentElement.scrollWidth ran 1443/1440 at 1440x900, 1400/1366 at
+     1366x768 and 1335/1280 at 1280x720 — the plates of ¶02, ¶04 and ¶06 plus
+     every h2 and .bright carrying an x window. AND IT WAS REACHABLE, THOUGH
+     NOT BY A GESTURE, which is the part worth being exact about: parked at
+     ¶05's reading position, a horizontal wheel left `scrollX` at 0 at every
+     seat in Chromium and in WebKit, because `body{overflow-x:clip}` above
+     propagates to the viewport and a viewport clip refuses a user scroll —
+     that is why no scrollbar was ever seen. `scrollTo(400, y)` reached 3 at
+     1440x900, 33 at 1366x768 and 53 at 1280x720, the whole of the overflow
+     each time. So what was left was a page the engine could still be moved
+     sideways on — a focus scroll, `scrollIntoView`, an assistive agent — over
+     ink that had nothing to the right of it. The clip belongs on the station,
+     not on .beat-inner: .beat's
+     own `padding:0 var(--pad-x)` makes the station's padding box exactly the
+     viewport's width, so the clip edge IS the screen edge and nothing a
+     reader can see is lost, whereas clipping at .beat-inner would cut the
+     settle drift off at the text column. clip, not hidden: it creates no
+     scroll container, so no sticky or fixed descendant is disturbed, and
+     overflow-y stays visible — the departure lift still leaves the box. */
+  .station{min-height:128vh; display:flex; align-items:center; padding-top:6vh; padding-bottom:6vh;
+    overflow-x:clip}
   .b4{min-height:148vh} /* the interactive station earns its dwell */
   .station .beat-inner{
     display:grid; grid-template-columns:minmax(0,30rem) minmax(0,1fr);
@@ -464,6 +488,20 @@ if (location.hash.length > 1) {
   }
   .plate figcaption{font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ink-2); margin-top:.9rem}
   .plate figcaption i{font-style:normal; color:var(--clay)}
+  /* ONE TRUE THING EACH. Three captions read "tap or hover a desk / a chip /
+     a lane", and on a coarse pointer `matchMedia("(any-hover: hover)")` is
+     false — measured at 420x786 — so half of each sentence named an
+     affordance the device does not have. The verb is switched, not invented:
+     the same words, one of them shown. The two queries are exhaustive (the
+     `hover` feature computes to `hover` or `none` and nothing else), so
+     exactly one verb is ever on screen and no reader sees both.
+     NOTE FOR A LATER EDIT: there is deliberately NO whitespace between the two
+     spans in the markup. check-figures strips tags and asserts fig. 05 still
+     states "hover a chip to see its words", which the stripped
+     "taphover a chip to see its words." contains. A space between the spans
+     would turn that gate red. */
+  @media (hover: hover){ .plate figcaption .p-tap{display:none} }
+  @media (hover: none){ .plate figcaption .p-hov{display:none} }
 
   /* — station figures (SVG shares the ink vocabulary) —
      Two authored editions per figure. The wide one assumes a seat of
@@ -2385,10 +2423,13 @@ if (location.hash.length > 1) {
     .gates{--grh:210px; --gjy:166px}
     .gates .gslip{top:86px}
   }
-
-  @media (min-width:821px){
-    #mtoggle{pointer-events:none}
-  }
+  /* `@media (min-width:821px){#mtoggle{pointer-events:none}}` STOOD HERE and
+     is deliberately gone. It was dead — #np-css below re-asserts
+     `pointer-events:auto` on the same selector at equal specificity and wins
+     on document order — but it was dead code that read like a live bug, and it
+     was filed as one twice: the toggle's click lands and `aria-expanded` goes
+     false → true at 1440x900 and at 420x786, measured both before and after
+     this deletion. */
 </style>
 
 <style id="np-css">
@@ -3117,7 +3158,24 @@ body{font-synthesis:none}
        near-miss that passes a reading and fails a ruler. */
     padding-block:.97rem}
   #approve{min-height:44px; padding-block:.75rem}
-  #clear, .padbar button{min-height:44px}
+  /* 45, not 44: `#clear` sits inside ¶06's plate, and the plate carries the
+     fx engine's settled scale. Declared at 44 it measured 51.9x43.3 at
+     420x786 — short by the same seven tenths the `.97rem` note above was
+     written about. At 45 it measures 44.3. */
+  #clear, .padbar button{min-height:45px}
+  /* THE NAMEPLATE IS THE MASTHEAD'S REASON TO EXIST and on a phone it was
+     98.5x25.9: the one link on the page a reader reaches for first, and the
+     shortest target on it. Padding plus the negative margin that cancels it,
+     the same pair `#mclose` below uses — the flex line's cross size is the
+     OUTER height, so the band does not grow by a pixel and the shed above
+     keeps its measured 452px arithmetic. Phone only: `#mast a` at 1440x900 is
+     a 1.8px-clearance control against the thread and its box must not move. */
+  #mast>a{padding-block:.58rem; margin-block:-.58rem}
+  /* and the ¶12 footer's `email` was 32.2 wide against a 45 tall: the one
+     target on this page whose short side is the horizontal one. Horizontal
+     padding DOES enter inline layout, so it is cancelled by its own negative
+     margin and the row's words stay where they were. */
+  .b8 footer .reach a[href^="mailto"]{padding-inline:.42rem; margin-inline:-.42rem}
   #mclose{min-height:44px; padding:.62rem .5rem .62rem .7rem;
     margin:-.62rem 0 -.62rem -.7rem}
 }
@@ -3703,7 +3761,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              controls inside it now exist. Each carries its own name.
              `check-figures.mjs` §1 encodes the pair of rules. -->
         <svg id="appliedFig" class="figsvg" viewBox="0 0 560 392" role="group" aria-label="Eight pieces of the morning post ride one belt past three reading desks: 220 regex rules, which settle anything at 0.90 and up; E5 similarity at 0.85 and up, unless a rule says no; and gated SetFit at 0.70 and up. Each piece leaves at the first desk that clears it and drops into that desk's own column, where its verdict is written beside it. One piece is drawn per verdict, and which desk takes which verdict is drawn, not measured: as drawn, applied, rejection, interview and offer sit under the rules; assessment and other under E5 similarity; pending application under gated SetFit. The eighth piece clears nothing at all. It rides the whole belt, keeps the rules' own first guess, and is held below in a clay ring, still filed under its category and only flagged. A person reviews it if its confidence is 0.70 or more; below that, the hosted pipeline sets it aside. On the hosted build only the rules desk runs."></svg>
-        <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i>tap or hover a desk for its verdicts.</i></figcaption>
+        <figcaption>fig. 04 · the sorting line; the eighth email waits for review. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a desk for its verdicts.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -3740,7 +3798,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <span class="chip" id="chWhen" data-w="when">tue · 12:00</span>
           <span class="chip meet" id="chMeet" data-w="meet">+ meet link</span>
         </div>
-        <figcaption>fig. 05 · a scripted parse, not a live call. <i>tap or hover a chip to see its words.</i></figcaption>
+        <figcaption>fig. 05 · a scripted parse, not a live call. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a chip to see its words.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -3890,7 +3948,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
           <div class="brow simd"><span>jetpack · virtual threads</span><span class="btrack" aria-hidden="true"><span class="bfill" style="transform:scaleX(1)"></span></span><span class="bval">422&#8202;MB/s</span></div>
           <p class="bfoot">committed, not run in this tab · both committed runs span 6.38 to 6.89× · <a href="proof/jetpack-jmh-rigorous-2caacd0.json" download>the raw run record (json) ⟶</a></p>
         </div>
-        <figcaption>fig. 07 · split, compress in parallel, stitch into one gzip file. <i>tap or hover a lane for its blocks.</i></figcaption>
+        <figcaption>fig. 07 · split, compress in parallel, stitch into one gzip file. <i><span class="p-tap">tap</span><span class="p-hov">hover</span> a lane for its blocks.</i></figcaption>
       </figure>
     </div>
   </section>
@@ -6328,6 +6386,30 @@ function traceOn(svg, labels, marks, key, name) {
     return w > 0 && vb[2] > 0 ? vb[2] / w : 1;
   })();
   const FLOOR = 26 * perPx; /* 26, not 24: one clear unit over the line */
+  /* AND 46 TALL ON THE PORTRAIT PLATES, because those are the one place on
+     this page where a reader is TOLD to tap — all three captions say so — and
+     26 was what the finger actually got: measured at 420x786, the four fig. 04
+     desks stood 125.6x25.7 and the four fig. 07 lanes 36.4x25.7. 46 and not 44
+     because the plate carries the fx engine's settled scale of ~0.985, the
+     same 0.985 `.figsvg.tight`'s 276px seat is sized against, so a 44 floor
+     renders at 43.3 and misses by the width of the ruler; 46 renders at 45.4.
+     `tight` IS the portrait recomposition — chooseEditions() sets it off the
+     measured seat and clears it on a desktop one — so no pointer control on
+     the laptop moves by a sub-pixel.
+
+     AND IT IS CLAMPED, BECAUSE A TARGET'S WIDTH IS NOT ITS OWN BUSINESS. The
+     four fig. 07 lanes share one y and sit 44 user units apart: measured
+     pre-change, that is 50.1 CSS px of pitch at 420x786 and at 402x754, and
+     only 39.8 at 320x568, where `.figsvg.tight` falls under its 276px cap
+     (the figure renders 217.2 wide there, not 276). A flat 46 would have made
+     two adjacent targets overlap at 320, and an ambiguous tap is a worse
+     defect than a narrow one. So the width grows to the floor and is then held
+     one CSS px short of touching whichever label shares its vertical band,
+     which is why the boxes are read in a pass of their own before any of them
+     is drawn. Nothing shares a band on the wide plates, and the drawn width
+     dominates the floor there anyway, so the clamp never bites on a laptop and
+     the arithmetic reduces to the -2/+4 pair it replaces. */
+  const FLOOR_H = (svg.classList.contains("tight") ? 46 : 26) * perPx;
   const wire = (g, id) => {
     g.addEventListener("pointerenter", () => on(id));
     g.addEventListener("pointerleave", off);
@@ -6342,31 +6424,55 @@ function traceOn(svg, labels, marks, key, name) {
       if (e.key === "Escape") off();
     });
   };
-  for (const [lbl, id] of labels) {
+  /* PASS 1 · every box, before a single target is drawn. getBBox throws on an
+     element with no layout box; if the plate is not rendered yet the control
+     still works, it just does not get the drawn target, which is the right way
+     round to fail. */
+  const items = labels.map(([lbl, id]) => {
+    let box = null;
+    try { box = lbl.getBBox(); } catch { box = null; }
+    return { lbl, id, box: box && box.width ? box : null };
+  });
+  /* centre to centre, to the nearest label whose vertical band this one
+     overlaps · Infinity when it stands alone on its line, which is every
+     label on both wide plates and all four fig. 04 desks */
+  const room = (i) => {
+    const a = items[i].box;
+    let d = Infinity;
+    items.forEach((o, j) => {
+      if (j === i || !o.box) return;
+      const b = o.box;
+      if (a.y < b.y + b.height && b.y < a.y + a.height)
+        d = Math.min(d, Math.abs(a.x + a.width / 2 - (b.x + b.width / 2)));
+    });
+    return d;
+  };
+  /* PASS 2 · the control, and the target behind it */
+  items.forEach(({ lbl, id, box }, i) => {
     const g = document.createElementNS(NS, "g");
     g.setAttribute("tabindex", "0");
     g.setAttribute("role", "button");
     g.setAttribute("class", "tracebtn");
     g.setAttribute("aria-label", name(lbl, id));
     lbl.parentNode.insertBefore(g, lbl);
-    /* getBBox throws on an element with no layout box. If the plate is not
-       rendered yet the control still works — it just does not get the drawn
-       target, which is the right way round to fail. */
-    let box = null;
-    try { box = lbl.getBBox(); } catch { box = null; }
-    if (!box || !box.width) { g.appendChild(lbl); wire(g, id); continue; }
-    const h = Math.max(box.height, FLOOR);
+    if (!box) { g.appendChild(lbl); wire(g, id); return; }
+    const h = Math.max(box.height, FLOOR_H);
+    const drawn = Math.max(box.width + 4 * perPx, FLOOR);
+    /* never narrower than the drawn footprint, never wider than its neighbour
+       leaves · grown about the label's own centre, so the target sits ON the
+       words rather than off to one side of them */
+    const w = Math.max(drawn, Math.min(Math.max(drawn, FLOOR_H), room(i) - 2 * perPx));
     const hit = document.createElementNS(NS, "rect");
-    hit.setAttribute("x", (box.x - 2 * perPx).toFixed(2));
+    hit.setAttribute("x", (box.x - (w - box.width) / 2).toFixed(2));
     hit.setAttribute("y", (box.y - (h - box.height) / 2).toFixed(2));
-    hit.setAttribute("width", Math.max(box.width + 4 * perPx, FLOOR).toFixed(2));
+    hit.setAttribute("width", w.toFixed(2));
     hit.setAttribute("height", h.toFixed(2));
     hit.setAttribute("fill", "transparent");
     hit.setAttribute("aria-hidden", "true");
     g.appendChild(hit);
     g.appendChild(lbl);
     wire(g, id);
-  }
+  });
   document.addEventListener("click", (e) => { if (!svg.contains(e.target)) off(); });
 }
 function buildApplied(tight) {
