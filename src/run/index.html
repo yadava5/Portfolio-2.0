@@ -4485,6 +4485,122 @@ function arcColor(beat, p) {
   return dawnArc(dawnProgress(p));
 }
 
+/* ————— the tab mark: the page in a 16px window —————
+   Not a letter. Two glyph marks have died here — an "AY" that never rendered
+   in the face it named, and a pilcrow the owner read as a reversed P — so the
+   icon is the run itself: the field is the hour the reader is in, the seam is
+   the path this page's own sun travels across the day, and the disc on the
+   seam is where the reader has got to. ONE drawing, two callers. The still
+   that ships as public/favicon.svg is rendered out of this very function by
+   scripts/asset-truth/render-favicons.mjs, and the live layer redraws it from
+   the same arc as you scroll, so nothing jumps when the live icon takes over
+   from the file.
+
+   THE ARCH KEEPS THE PAGE'S PROPORTIONS, NOT ITS NUMBERS. The sun's seat is
+   viewport-normalised — x = lerp(0.18, 0.85, t), y = 0.9 - sin(t·π)·0.75,
+   washSeat's own line — and dropping those fractions straight into a square
+   tile builds an arch 42.9 wide and 48 tall, taller than it is wide, which
+   rasterised at 16px as a capital A: the one shape this icon must not be,
+   twice over. On the seat the page is actually read at, that path is WIDE —
+   1013 × 737 at a 1512×982 viewport, H/W 0.727 — so the arch here is 46 ×
+   33.4 in the 64 box, which is that ratio, and it reads as an arc. Two cubics
+   mirrored about the apex carry it: fitted against the sine the page computes,
+   they sit within 0.011 units of it, so the disc drawn from the formula lands
+   on the stroke rather than beside it.
+
+   SEVEN STITCHES, NOT THIRTEEN. One per station was the wish, and it does not
+   fit: pathLength normalises the arc to 84 units, and thirteen stitches at
+   the 6-unit stroke width — the thinnest mark that survives 16px at all — is
+   78 units of dash, leaving 0.5 of a unit per gap, an eighth of a pixel.
+   Rasterised, it is not a seam at any size: a solid arc at 16, 32 and 48.
+   Shortening the dash to buy gaps only trades the defect: at dash 4.5 the
+   gaps (0.53px) still close at 16, and at 3.5 the stitch is thinner than the
+   stroke is wide, which is a row of dots rather than stitching. Seven is what
+   survives: 7 dashes of 8 and 6 gaps of 4.67 fill the 84 exactly, so the seam
+   begins and ends ON a stitch rather than trailing off into a gap. Seven is
+   odd on purpose — the middle stitch sits on the apex, where an even count
+   leaves a notch and the arch goes back to looking like a letter. Stroke 6 is
+   1.5px at 16, dash 2px, gap 1.17px. The gap is under the 1.5px the brief
+   asked for, and deliberately: at 1.5px the stitches stop cohering into a
+   curve and scatter into beads. The caps are butt because round ones add half
+   the stroke width at each end — added to these dashes they close every gap
+   and the seam becomes one stroke, and compensated for (dash 3, gap 11) they
+   leave blurred dots that lose the arc at 16. Both were rasterised.
+
+   THE PIGMENT IS CHOSEN BY THE FIELD IT LANDS ON, not by `night`. That flag
+   turns true only once the field is all the way across the terminator, and
+   the crossing is exactly where the clay dies: at beat 7 p .72 the field is
+   #a8927d and the clay reads 2.19:1 / Lc 23.3, and a tenth of the beat later
+   on #746151 it is 1.11:1 / Lc 0.0, which is not dim, it is gone. The page may
+   enter that band because its curtain has taken every element to opacity 0
+   before the band opens; an icon in a tab strip has nowhere to hide, least of
+   all with the tab hidden and the reader's wall clock driving it. So the mark
+   runs the site's own law one step earlier than the prose does: clay while
+   clay clears 4.5:1 on the field (which is a field luminance of 0.676 by day
+   and 0.0773 by night), and the ink of the moment through the band, crossing
+   between the two inks at 0.198 where they are equal. The worst contrast
+   anywhere on the whole arc is 3.70:1, at that crossing.
+     measured: #a03f20 on #fbf3e7 — 5.91:1 / Lc 74.9
+     measured: #a03f20 on #f2e4c9 — 5.18:1 / Lc 66.4
+     measured: #f4b090 on #43372f — 6.28:1 / Lc 60.7
+     measured: #f4b090 on #2c2622 — 8.14:1 / Lc 65.1
+   Those are the TEXT clays and not the graphic ones, which is the opposite of
+   the rule everywhere else on this site, for a reason that is only true here:
+   a 1.5px stitch in a 16px window is the thinnest mark the site draws
+   anywhere, and the graphic clay — measured: #c4532e on #fbf3e7 — 4.13:1 /
+   Lc 64.2 — rasterised visibly paler beside it at that size. No rim either:
+   the field is full bleed and the mark carries on both tab strips without
+   one, at 6.51:1 against a white strip and 8.79:1 against Chrome's #202124.
+   ONE pigment, and that includes the disc: through the band the whole mark
+   goes to ink together, so ¶13's climb draws a dark sun on a tan field. That
+   is the drawing in silhouette rather than a sun that has changed colour —
+   the alternative, keeping clay on the disc alone, measures 2.00:1 there,
+   and a 14-unit disc under the 3.0 graphic floor is a bigger lie than a dark
+   one. It is 4.1% of the arc; the clay has the other 95.9%.
+
+   THE DISC IS THREADED ON THE SEAM, not painted over it. One pigment for the
+   whole drawing is what makes the mark read as one thing, and it costs the
+   sun its edge: drawn flat on the stitches it fused with them, and at midday
+   and mid-morning, where it lands between two stitches, the three became one
+   amorphous mass at 32px. So the disc carries a ring of the field 2.4 units
+   wide — it occupies its place on the thread the way a bead does, instead of
+   covering it. Measured on the rasters: 1.6 was invisible at 32 and 3.2 bit
+   a hole out of the neighbouring stitch. The ring is the field's own colour,
+   so it costs nothing at night and needs no second decision.
+
+   The sun leaves the way the page's own sun leaves — fading from arc 4.6 over
+   the next 0.75, bead and ring together as one group so the seam comes back
+   through as it goes — and `night` is read as the arc's own statement that
+   the light has gone, so no future change to that ramp can leave a disc
+   burning after dark. ————— */
+const MARK_SEAM = "M9 48C16.4 31.2 23.6 14.6 32 14.6C40.4 14.6 47.6 31.2 55 48";
+const markLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+function markSvg({ rgb, night, sun }) {
+  const y = 0.2126 * markLin(rgb[0]) + 0.7152 * markLin(rgb[1]) + 0.0722 * markLin(rgb[2]);
+  const pig = y >= 0.676 ? "#a03f20" : y <= 0.0773 ? "#f4b090" : y >= 0.198 ? "#26231c" : "#f6efe2";
+  const t = clamp(sun / 5, 0, 1);
+  const op = night ? 0 : clamp(1 - (sun - 4.6) / 0.75, 0, 1);
+  const field = rgbCss(rgb);
+  const cx = (9 + 46 * t).toFixed(1), cy = (48 - 33.4 * Math.sin(t * Math.PI)).toFixed(1);
+  const disc =
+    op < 0.05
+      ? ""
+      : `<circle cx="${cx}" cy="${cy}" r="9.4" fill="${field}"/>` +
+        `<circle cx="${cx}" cy="${cy}" r="7" fill="${pig}"/>`;
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+    `<rect width="64" height="64" fill="${field}"/>` +
+    `<path d="${MARK_SEAM}" pathLength="84" fill="none" stroke="${pig}"` +
+    ` stroke-width="6" stroke-dasharray="8 4.67"/>` +
+    (!disc || op > 0.95 ? disc : `<g opacity="${op.toFixed(1)}">${disc}</g>`) +
+    "</svg>"
+  );
+}
+/* the one handle both callers come through. `still` is the mark at the top of
+   the page, which is where a reader who has not scrolled yet actually is —
+   the file on disk and the first live frame are the same drawing. */
+window.__mark = { svg: markSvg, still: () => markSvg(arcColor(0, 0)) };
+
 /* ————— the wash: raw WebGL, warm fbm on the arc's own color.
    Draws ONLY when the scroll position (or size) has changed. ————— */
 const washCanvas = $("wash");
@@ -8374,7 +8490,93 @@ function applyArc(arc, scrollFrac) {
     }
   }
   if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0, washSeat(arc));
+  markArc = arc;
+  if (!document.hidden) tabMark(arc);
 }
+
+/* ————— the tab mark, live —————
+   THE TAB IS A WINDOW ONTO THE PAGE. markSvg (with the arc, above) draws the
+   run in 64 units: the field in the arc's colour, the seam the sun travels,
+   the sun where the reader is. The static favicon.svg IS that drawing at
+   dawn, written by scripts/asset-truth/render-favicons.mjs from the same
+   function, so the first swap changes nothing a reader can see, and at the
+   top of the page there is no swap at all (the still already shows it).
+
+   It has no clock of its own while the page is visible: it rides applyArc,
+   which runs only on frames where the arc moved, and it swaps only when the
+   QUANTISED state moved (the sun by a fifth of its scale, under half a
+   pixel at 16 px, and the colour by 32 levels a channel) and at most four
+   times a second, with a trailing
+   swap so the last state always lands. A swap is one image decode and one
+   tab-strip repaint, both the browser's and off this thread; the page side
+   was measured at 0.2 ms for a 64 px PNG in Chromium and at the timer's
+   floor for this SVG string, which needs no raster at all.
+
+   WHILE THE TAB IS HIDDEN the paper keeps the real time of day. A sixty
+   second timer maps the wall clock onto the station clocks (06:12 to 22:41;
+   the gate holds the night until the next 06:12) through the same arcColor,
+   so from another tab the icon shows the hour in the paper's own light.
+   Sixty seconds is the rate Chrome throttles a hidden tab's timers to after
+   five minutes anyway, and the seam is 43 units long over sixteen and a
+   half hours, under a pixel an hour at 16 px, so the rate loses nothing.
+   The moment the tab is visible again the page's position takes over.
+
+   Off under prefers-reduced-motion (the still stands), off in WebKit
+   (Safari takes no SVG icon and keeps the ICO; the swap would address
+   nothing), and off with ?nomark for the harness. */
+const markLink = (() => {
+  let l = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+  if (!l) { /* the raw page, served without build-home's head */
+    l = document.createElement("link"); l.rel = "icon"; l.type = "image/svg+xml";
+    document.head.appendChild(l);
+  }
+  return l;
+})();
+const MARK_LIVE = !RM && !FLAGS.has("nomark") && navigator.vendor !== "Apple Computer, Inc.";
+const MARK_GAP = 250;
+const markQuant = (arc) => {
+  const q = (x) => Math.round(x * 31);
+  return `${arc.night ? "n" : "d"}${(Math.round(arc.sun * 5) / 5).toFixed(1)}:${q(arc.rgb[0])},${q(arc.rgb[1])},${q(arc.rgb[2])}`;
+};
+let markKey = markQuant(arcColor(0, 0)), markAt = -1e9, markTimer = 0, markNext = null, markWall = 0, markArc = null;
+window.__world.mark = { live: MARK_LIVE, swaps: 0, key: markKey, svg: "", wall: false };
+function markFlush() {
+  markTimer = 0;
+  if (!markNext) return;
+  const arc = markNext; markNext = null;
+  markAt = performance.now();
+  const svg = markSvg(arc);
+  markLink.href = "data:image/svg+xml," + encodeURIComponent(svg);
+  const m = window.__world.mark; m.swaps++; m.key = markKey; m.svg = svg;
+}
+function tabMark(arc) {
+  if (!MARK_LIVE) return;
+  const key = markQuant(arc);
+  if (key === markKey) return;
+  markKey = key; markNext = arc;
+  if (markTimer) return;
+  const wait = MARK_GAP - (performance.now() - markAt);
+  if (wait <= 0) markFlush(); else markTimer = setTimeout(markFlush, wait);
+}
+/* the wall clock, read in station time: the page's own day, nothing else */
+function wallArc() {
+  const d = new Date(), m = d.getHours() * 60 + d.getMinutes();
+  if (m < CLOCKS[0] || m >= CLOCKS[GATE_BEAT]) return arcColor(GATE_BEAT, 0);
+  let i = 0;
+  while (i < GATE_BEAT - 1 && m >= CLOCKS[i + 1]) i++;
+  return arcColor(i, (m - CLOCKS[i]) / (CLOCKS[i + 1] - CLOCKS[i]));
+}
+addEventListener("visibilitychange", () => {
+  if (!MARK_LIVE) return;
+  window.__world.mark.wall = document.hidden;
+  if (document.hidden) {
+    tabMark(wallArc());
+    markWall = setInterval(() => tabMark(wallArc()), 60000);
+  } else {
+    clearInterval(markWall); markWall = 0;
+    if (markArc) tabMark(markArc);
+  }
+});
 
 /* ————— the engine ————— */
 let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = false, atMorning = false;

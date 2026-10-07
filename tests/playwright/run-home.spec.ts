@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 /**
@@ -490,5 +491,121 @@ test.describe("the home page is the run", () => {
       .locator("#nextmorning")
       .evaluate((el) => el.getBoundingClientRect().height);
     expect(h).toBe(0);
+  });
+});
+
+/**
+ * The tab mark: the page in a 16px window.
+ *
+ * public/favicon.svg is not authored. It is `markSvg(arcColor(0, 0))`, the
+ * page's own drawing at dawn, written out by render-favicons.mjs, and the
+ * live layer swaps the icon's href to the same function's output as the
+ * reader moves. Two things can rot quietly and both are pinned here: the
+ * still can drift from the function (someone edits markSvg and does not
+ * re-render, so every bookmark shows yesterday's mark while the tab shows
+ * today's, and the first swap after load visibly jumps), and the live layer
+ * can stop following the page (a swap that never comes, or one that carries
+ * a state the page is not in). The reduced-motion case is the third: the
+ * icon's one promise there is to stand still.
+ *
+ * WebKit is skipped for the live cases by design, not by accident: Safari
+ * takes no SVG icon and is reported to ignore href swaps, so the page does
+ * not attempt them there and keeps the ICO.
+ */
+test.describe("the tab mark is the page in a 16px window", () => {
+  const drawingOf = (file: string) =>
+    file
+      .replace(/^\s*<\?xml[^>]*>\s*/, "")
+      .replace(/^\s*<!--[\s\S]*?-->\s*/, "")
+      .trim();
+
+  test("the still is the page's own drawing at dawn", async ({ page }) => {
+    await page.goto("/");
+    const still: string = await page.evaluate(() =>
+      (window as unknown as { __mark: { still: () => string } }).__mark.still()
+    );
+    expect(still.startsWith("<svg")).toBe(true);
+    expect(drawingOf(readFileSync("public/favicon.svg", "utf8"))).toBe(
+      still.trim()
+    );
+  });
+
+  test("it follows the reader into the night", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(
+      browserName === "webkit",
+      "Safari takes no SVG icon; the live layer is off there by design"
+    );
+    await page.goto("/");
+    const read = () =>
+      page.evaluate(() => {
+        const w = window as unknown as {
+          __world: {
+            beat: number;
+            night: boolean;
+            mark: { swaps: number; key: string; svg: string };
+          };
+        };
+        return {
+          href: document
+            .querySelector('link[rel="icon"][type="image/svg+xml"]')!
+            .getAttribute("href"),
+          swaps: w.__world.mark.swaps,
+          key: w.__world.mark.key,
+          svg: w.__world.mark.svg,
+          beat: w.__world.beat,
+          night: w.__world.night,
+        };
+      });
+    /* At the top the reading line already sits part way into ¶01, so the
+       page's rest state is a little past the dawn still and the engine may
+       swap once on load. What is pinned is that whatever the tab shows IS
+       the page's state: the href carries exactly the drawing the engine
+       last produced, never a stale or foreign one. */
+    await page.waitForTimeout(400);
+    const top = await read();
+    expect(top.beat).toBe(0);
+    expect(top.swaps).toBeLessThanOrEqual(1);
+    if (top.swaps === 1)
+      expect(top.href).toBe(
+        "data:image/svg+xml," + encodeURIComponent(top.svg)
+      );
+    else expect(top.href).toMatch(/\/favicon\.svg$/);
+    await page.evaluate(() =>
+      document.getElementById("automl")!.scrollIntoView()
+    );
+    await expect.poll(async () => (await read()).night).toBe(true);
+    await page.waitForTimeout(400); /* the trailing swap lands within 250 ms */
+    const night = await read();
+    expect(night.swaps).toBeGreaterThan(top.swaps);
+    expect(night.key).not.toBe(top.key);
+    expect(night.href).toBe(
+      "data:image/svg+xml," + encodeURIComponent(night.svg)
+    );
+  });
+
+  test("under reduced motion the icon stands still", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName === "webkit", "no live layer in WebKit");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page.evaluate(() =>
+      document.getElementById("automl")!.scrollIntoView()
+    );
+    await page.waitForTimeout(600);
+    await expect(
+      page.locator('link[rel="icon"][type="image/svg+xml"]')
+    ).toHaveAttribute("href", /\/favicon\.svg$/);
+    expect(
+      await page.evaluate(
+        () =>
+          (window as unknown as { __world: { mark: { live: boolean } } })
+            .__world.mark.live
+      )
+    ).toBe(false);
   });
 });
