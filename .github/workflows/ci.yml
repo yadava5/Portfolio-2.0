@@ -325,7 +325,7 @@ jobs:
       # chosen because two builds in one workflow can disagree, and then the
       # link gate would be asserting against a tree no other job checked.
       - name: Download the static export
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: static-export
           path: out
