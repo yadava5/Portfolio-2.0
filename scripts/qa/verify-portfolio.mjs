@@ -428,7 +428,7 @@ step("no dashes in visible text", "test:dashes", {
    and no roamer leaves its range. Behaviour, so it runs here with the other
    browser reads and not in the source block. */
 step("¶13 · the dawnscape", "test:dawnscape", {
-  reads: "out/ in a real browser at sixteen seats, plus a 30s sit at 1456",
+  reads: "out/ in a real browser at eighteen seats, plus a 30s sit at 1456",
 });
 step("og cards", "assets:check-og", { reads: "public/og + the data layer" });
 step("palette ⇄ the light it is read under", "test:palette", {

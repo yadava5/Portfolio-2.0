@@ -108,9 +108,13 @@ const SHORT: [number, number][] = [
   [1024, 768],
 ];
 
-/** the two seats a phone reader actually has, plus the Pixel 5 the
-    chromium-mobile project emulates — 393×851, which is neither of them */
+/** the owner's own phone first — an iPhone Air on iOS 26, 420pt wide, whose
+    sticky panel is the large viewport, 786 once Safari's bars are counted
+    (measured on the 26.5 simulator, 2026-10-07) — then the two seats a
+    phone reader is usually given, the Pixel 5 the chromium-mobile project
+    emulates (393×851, which is neither of them), and the 320 floor */
 const PHONES: [number, number][] = [
+  [420, 786],
   [390, 844],
   [393, 851],
   [320, 720],
@@ -1165,7 +1169,11 @@ test.describe("¶13 · the morning has a ground and a sky", () => {
         const c = await clearance(page);
         expect(c.scape, "the ground was built").toBeTruthy();
         if (c.scape!.room < 0) {
-          /* no room under the column at this seat: nothing may be drawn */
+          /* the column itself does not fit the panel: nothing may be drawn.
+             The floor, not a seat's expected state — the phone's sheet is
+             laid by budget now (layPhone), 320×720 draws a meadow, and no
+             seat in PHONES lands here; a seat that does, with ink on the
+             sheet, is still a failure */
           expect(c.paths, "nothing drawn where there is no ground").toBe(0);
           return;
         }

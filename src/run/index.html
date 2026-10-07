@@ -1784,75 +1784,83 @@ if (location.hash.length > 1) {
   .dawnrun{margin-top:3.4rem; font-size:var(--fs-small); color:var(--ink-2)}
 
   @media (max-width: 720px){
-    .bdawn .endquote{margin-top:2.4rem}
-    .dawnsay{margin-top:2.4rem}
-    .dawnrun{margin-top:2.4rem}
-    /* one column on a phone: no grid, no bay, the signature back in the flow */
-    .dawnwrap{display:block; height:auto; padding:0}
+    /* THE PHONE'S GAPS ARE THE LAPTOP'S OWN. The three big gaps (head → quote,
+       quote → foot, row → signature) were a fixed 2.4rem, 38.4px — more air
+       than the laptop's 24px maximum — on the one sheet that has the least
+       height to spend. They are --dawn-gap now, which layPhone sets the way
+       layMorning does: 24px when the sheet has the room, tightening toward
+       9.6 when it has not, and the caption's and the row's small gaps follow
+       on --dawn-small. One rhythm on every sheet, and the budget below is
+       what spends it. */
+    .bdawn .endquote{margin-top:var(--dawn-gap, 24px)}
+    .dawnsay{margin-top:var(--dawn-gap, 24px)}
+    .dawnrun{margin-top:var(--dawn-gap, 24px)}
+    /* ONE COLUMN, CENTRED ON THE SCREEN. No grid, no bay, the signature back
+       in the flow. The panel sits inside the rail's lane (.beat pads the
+       lane and the gutter; .dawnstick pads the gutter again), so a column
+       centred in the panel stood 19px right of the screen's own centre at
+       every phone width (measured 74 left / 36 right at 390, 420 and 320).
+       The lane is given back here: the wrap's left margin is minus the
+       lane, its width auto, so it runs gutter to gutter and the screen's
+       centre is the column's. The drawing is already pulled out to the
+       viewport by the builder, so the words and the ground share one axis
+       again. --dawn-top is the padding layPhone sets; the stick is a block
+       so the column's top is exactly that number. */
+    .dawnwrap{display:block; height:auto; width:auto; margin-left:calc(-1 * var(--rail));
+      padding:var(--dawn-top, 0px) 0 0}
+    .dawnstick{display:block; padding-bottom:0}
     .dawnhead{margin:0 auto}
-    .dawnfoot .dawnsay{margin-top:2.4rem}
-    /* three exits on one line, the one way back in on its own, as before */
-    .dawnfoot .dawnrow a:last-child{flex-basis:100%}
-    .bdawn .dawnrun{position:static; text-align:center; margin-top:2.4rem}
-    /* MEASURED at 390×844: the column ran 722.1px inside an 844 panel and was
-       centred in it, so its top edge landed at 60.9 — under the masthead's
-       scrim, which is opaque to the mast's own lower edge (60) and only fades
-       out 2.4rem below it (98.4). The kicker was printed inside that band. At
-       320×720 the same column measured 767.5 in a 720 panel: .dawnwrap ran
-       from -23.8 to 743.8, off the panel at BOTH ends, and buildDawnscape read
-       room -1 and drew no ground at all.
-
-       Two fifths of that height is this row. It wraps to four lines on a
-       phone, and each link is a FLEX ITEM, so it is blockified — which is what
-       the ≤820 tap-target rule does not expect. `padding-block:.97rem` was
-       fitted there to INLINE links in prose, whose rect is the 13.7px text box
-       plus the two paddings (44.7px, the 44 target). On a blockified item the
-       25.5px LINE BOX carries the padding instead: 56.5px, and then
-       `gap:1.4rem` adds 22.4 between lines — a 79px pitch for a 15px line.
-       .6rem puts the target back on the 44.7px the ≤820 rule was measured for,
-       and the row-gap goes with it: the two paddings already hold 38.4px of
-       air between one line's ink and the next. Row 293.3 → 178.8, column
-       722.1 → 607.6 at 390 and 767.5 → 653 at 320. */
-    .dawnrow{row-gap:0}
-    .bdawn .dawnrow a{padding-block:.6rem}
-    /* …and the column hangs from the ground rather than floating in the middle
-       of the panel, because the air it just gave back has to go to the SKY.
-       The dawnscape's horizon is placed from .dawnwrap's MEASURED bottom edge
-       (free = panel − wrapB, then the 90/40/20 room ladder), so a centred
-       column would have opened 118px under itself at 390 and stepped the
-       ladder to room 2: 11 paths become 23 and a 4.9px tree appears at x33 —
-       a morning the approval never saw. Hung at 3.8rem the bottom edge stays
-       at 783.2 (it was 783.1), free stays 61 and room stays 1, so the drawing
-       at 390 is the drawing that was approved, and the kicker moves to 175.6,
-       clear of the scrim by 77px. At 320 the column fits the panel for the
-       first time; what the short panel does about the ground is the rule
-       below. The padding does not touch the drawing: .dawnscape
-       is absolute with inset:0, and an absolutely positioned child resolves
-       its offsets against the PADDING box — measured 0..844 either way. */
-    .dawnstick{align-items:flex-end; padding-bottom:3.8rem}
+    .dawnfoot .dawnsay{margin-top:var(--dawn-gap, 24px)}
+    .bdawn .dawnrun{position:static; text-align:center; margin-top:var(--dawn-gap, 24px)}
+    /* THE ROW IS A COMPOSED THING. It used to wrap as flex wraps: at 390 the
+       address alone, then "github · linkedin · résumé", then "the working
+       paper"; at 420 "aesh… · github", then "linkedin · résumé", then "the
+       working paper" — three ragged lines that changed shape with the width,
+       which is what the owner saw as "not aligned". One line of four was
+       tried first and measured: the four exits are 341px of text at this
+       size against a 348px column at 420, and 318 at 390, so they never
+       fit. So the row is a table: the address on its own line (the one
+       machine value in the row, and it keeps its mono), and the four exits
+       two by two under it ON A SPINE: two equal columns, the left pair
+       ending at the gutter and the right pair starting from it, so the
+       gutter's centre is the axis every other line of the column obeys and
+       the outer edges rag the way the centred quote's own do. Centred in
+       their halves they did not line up either — "linkedin ↗" floated over
+       the wider "the working paper ⟶" and the right column shared no edge,
+       which is what the owner saw first. Three lines still, but three lines
+       that line up.
+       THE GUTTER IS WHAT THE WIDEST EXIT LEAVES. "the working paper ⟶" is
+       140px at this size and starts half a gutter east of the axis, so it
+       stays inside the column only while the gutter is under
+       W − 2·36 − 2·140 = 100vw − 352px: 68 at 420, 38 at 390, 23 at 375.
+       Capped at 2.5rem where the sheet is wide; under 360 the spine cannot
+       be centred at all (the gutter would be negative), and the rule below
+       falls back to each exit centred in its half.
+       Each link is a GRID ITEM, so it is blockified, and the ≤820 tap-target
+       rule's `padding-block:.97rem` was fitted to INLINE links in prose
+       (13.7px text box plus two paddings, 44.7px). On a blockified item the
+       25.5px line box carries the padding: .6rem puts the target back on
+       44.7, and the row-gap is 0 because the paddings already hold 38px of
+       air between one line's ink and the next. nowrap, because at 320 a
+       column is 115px and "the working paper ⟶" is 140: the 1fr track
+       grows to its min-content instead of breaking the link in two. */
+    .dawnfoot .dawnrow{display:grid; grid-template-columns:1fr 1fr; row-gap:0; align-items:center;
+      column-gap:clamp(1.25rem, 100vw - 352px, 2.5rem)}
+    .bdawn .dawnrow a{padding-block:.6rem; white-space:nowrap}
+    .dawnfoot .dawnrow a:first-child{grid-column:1 / -1; justify-self:center}
+    .dawnfoot .dawnrow a:nth-child(2n){justify-self:end}
+    .dawnfoot .dawnrow a:nth-child(2n+1):not(:first-child){justify-self:start}
+    /* the attribution at 320 orphaned "1942" on its own line: 277px of text
+       in a 248px box. A tracking trim buys 12 and a notch down to 12px buys
+       21 — it would take both, and land the caption on the page's own
+       floor for a seat nobody holds. Balanced instead: two lines of a
+       length each, "…Little Gidding V," over "Four Quartets, 1942", no
+       size and no tracking touched; a one-line caption stays one line. */
+    .bdawn .endquote figcaption{text-wrap:balance}
   }
-  /* THE SHORT PANEL KEEPS ITS EMPTY GROUND, and check-dawnscape is what found
-     it. Hung from the bottom, .dawnwrap's bottom edge IS the panel's edge less
-     this padding — a column too tall for the panel spills UPWARD, so the
-     height of the column cannot move it — and the dawnscape reads its room
-     from exactly that edge (free = panel − wrapB). The padding alone is the
-     room, on every engine.
-     At 3.8rem, 320×720 fitted for the first time and read free 61, which is
-     room 1 — and room 1 draws the sun. Its cap landed 23.6px under "run 043"
-     against the 24px of clear air the words keep, and no padding fixes that:
-     the horizon is placed at wrapB + 34, so the column and the sun move
-     together and the gap is invariant. The rung below draws exactly five
-     paths (a horizon and two tufts) and ending-sequence's "the words keep
-     their air" asks for more than five.
-     So the short panel keeps the state it has today: 1.125rem is 18px, free
-     18, room -1, nothing drawn, which is the branch both gates already take
-     at this seat — and the column still fits, closing 18px above the panel's
-     edge with the kicker at 49. `16 ≤ padding < 20` is exact by construction,
-     not a measured tolerance: 16 is the fit, 20 is the ladder's lowest rung.
-     Keyed on HEIGHT, because that is the variable: 390×844 and 393×851 never
-     enter, and their drawing is untouched (free 61, room 1, 11 paths). */
-  @media (max-width: 720px) and (max-height: 760px){
-    .dawnstick{padding-bottom:1.125rem}
+  @media (max-width: 359px){
+    .dawnfoot .dawnrow{column-gap:1.1rem}
+    .dawnfoot .dawnrow a:nth-child(n+2){justify-self:center}
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -4785,6 +4793,9 @@ let vw = innerWidth, vh = innerHeight, docH = 0, mobile = false, stacked = false
    loop turns that back into a window against the element's own height; a
    desktop never reads it, and no declared number moves. */
 const PHONE_ARRIVE = 500;
+/* the phone fade's ease-out exponent: cubic by default, quartic behind
+   ?arrive=q4 (see the apply loop) */
+const ARRIVE_Q = FLAGS.get("arrive") === "q4" ? 4 : 3;
 const fx = [...document.querySelectorAll("[data-fx]")].map((el) => {
   const spec = { in: [0.06, 0.32, 0, 5, 0, 1], out: [0.76, 0.98, 0, -4, 0, 1], drift: 10 };
   let arrive = PHONE_ARRIVE;
@@ -8831,14 +8842,40 @@ function work(y) {
     let ia2 = ia, ib2 = ib;
     const phoned = mobile && !f.synced && f.top >= vh;
     if (phoned) {
-      const need = Math.min(f.arrive, vh * 0.6) / (vh + f.h);
+      /* HALF THE SCREEN, NOT 0.6 OF IT. Measured 2026-10-07 on the build
+         that shipped the 500px budget (a slow 6px/frame scroll, all 84
+         elements): a phone block settled with its top at 0.43 of the
+         screen against the laptop's 0.71, and a reader who stopped
+         anywhere saw a half-faded block in the middle of the screen 65% of
+         the time against the laptop's 39%. The budget was right about the
+         distance the fade needs at flick speed and wrong about where it
+         should end: 0.6 of the screen puts the settle horizon above the
+         line a person reads at. 0.5 keeps the window long (393px on the
+         owner's 786 panel, still twice the laptop's) and lands the horizon
+         where the laptop's is, together with the fade's own curve below. */
+      const need = Math.min(f.arrive, vh * 0.5) / (vh + f.h);
       if (ib - ia < need) {
         const e = Math.min(need, (docH - f.top) / (vh + f.h) - 0.08, oa - 0.1);
         if (e > ib) { ia2 = 0; ib2 = e; }
       }
     }
     f.inA = ia2; f.inB = ib2; /* the window this frame was drawn from */
-    const ein = smooth((p - ia2) / (ib2 - ia2));
+    const uin = clamp((p - ia2) / (ib2 - ia2), 0, 1);
+    const ein = smooth(uin);
+    /* THE PHONE'S FADE IS FRONT-LOADED; ITS DRIFT IS NOT. On the long
+       window a symmetric ease spends its middle — the only part a reader
+       sees as "half there" — across the middle of the screen. The opacity
+       takes a cubic ease-out on the phone: 0.95 by 0.63 of the window,
+       which puts the block readable with its top at about 0.69 of the
+       screen (the laptop settles at 0.71), while the drift keeps the
+       symmetric ease over the whole window so the motion still flows at
+       flick speed, which is what the budget was approved for. The laptop
+       reads ein for both, as it always did.
+       ?arrive=q4 is the next lever, pre-armed and not shipped: a quartic
+       ease-out reaches .95 by 0.53 of the window, for the day his thumb
+       says "at once" again — the exponent, not the window, is what moves
+       then. The harness reads it; a reader never does. */
+    const efade = phoned ? 1 - (1 - uin) ** ARRIVE_Q : ein;
     const eout = smooth((p - oa) / (ob - oa));
     /* NO HORIZONTAL FX ON A PHONE, and this is a layout rule, not a taste
        one. `x` is a percentage of the VIEWPORT: a desktop's polite "x 10"
@@ -8873,7 +8910,7 @@ function work(y) {
     const s = lerp(is, 1, ein) * lerp(1, os, eout);
     /* quantized (0.5px / 0.1deg / 0.005 / 0.02): settled elements drift
        ~0.2px per frame, so most frames become skipped writes */
-    const op = (Math.round(ein * (1 - eout) * 50) / 50).toFixed(2);
+    const op = (Math.round(efade * (1 - eout) * 50) / 50).toFixed(2);
     const qx = Math.round(tx * 2) / 2, qy = Math.round(ty * 2) / 2;
     const qr = Math.round(r * 10) / 10, qs = Math.round(s * 200) / 200;
     const tf =
@@ -9749,9 +9786,13 @@ const RANGE = {
    Pure in its seat: the layout and the builder both call it, before anything
    is drawn, from the seat the board is about to take. */
 const SUN = { relief: 0.38, relief_narrow: 0.5, k: 1.75, k_narrow: 1.35, out: 0.12 };
-const sunSeat = (st, W, narrow) => {
+/* `k` is the phone's: its disc was sized for a 47px band and the band is
+   placed by room now, so a tall band carries a bigger sun (layPhone passes
+   the band's relief over the hatch floor, capped). A laptop never passes
+   it and reads 1. */
+const sunSeat = (st, W, narrow, k = 1) => {
   const vs = clamp(W / 1500, 0.44, 1.2);
-  const r = (narrow ? 15 * SUN.k_narrow : 26 * vs * SUN.k);
+  const r = (narrow ? 15 * SUN.k_narrow * k : 26 * vs * SUN.k);
   const RP = ([x, y]) => [st.tx + x * st.s, st.ty + y * st.s];
   const pr = RANGE.summits.find((q) => q.name === "principal");
   const want = pr.peak[1] + (RANGE.foot - pr.peak[1]) * (narrow ? SUN.relief_narrow : SUN.relief);
@@ -9878,9 +9919,99 @@ function layMorning(wrap, W, H, hz) {
   wrap.style.setProperty("--dawn-top", `${(pad0 + K - top0).toFixed(1)}px`);
   return { F: st.F, s: st.s, tx: st.tx, tight: +t.toFixed(2), top: Math.round(K), bottom: Math.round(K + heightAt(t)), floor: Math.round(B0), room: Math.round(hi - lo), stage, ridgeOnly };
 }
-/* a phone's column is laid by its own rules: a sheet narrowed to one
-   forgets what the wide one set */
-const unlayMorning = (wrap) => { for (const v of ["--dawn-gap", "--dawn-small", "--dawn-top"]) wrap.style.removeProperty(v); };
+/* ————— THE PHONE'S SHEET: THREE BANDS, ONE BUDGET —————
+   A portrait sheet has no flanks, so the laptop's three planes stack: the
+   range with the sun across the top, the words in the clear air, the meadow
+   at the foot. The column was HUNG FROM THE BOTTOM of the panel and the
+   horizon read off its bottom edge through a ladder of fixed rungs (free
+   90/40/20), so the sky got whatever the column's height left over — which
+   at the owner's own phone (an iPhone Air: 420 wide, a 786px panel once
+   Safari's bars are counted) was a band 4px tall: four stray lines, no
+   range, no sun, and a 27px strip of ground. Under 760 it drew nothing.
+   Everything is one budget now, spent by rung. pTop is the band's top
+   (the chrome's halo, or the masthead's scrim fading out 2.4rem under the
+   mast plus 10, whichever is lower); the range owes the kicker 66 (a ridge
+   and a hatch keep 64 from the words); the horizon owes the signature 34
+   (its 24 and the brow's ticks); and the bottom PHONE_FRINGE of the panel
+   is foreground only — 100vh is the LARGE viewport on iOS, so at rest the
+   last 40px of the panel sit under Safari's floating tab bar (measured on
+   the 26.5 simulator: panel 786, innerHeight 746, no safe-area inset to
+   read). The spare, S, goes to the ground and the relief in this order,
+   each rung taking what it needs before the next: the strip (26), the
+   ridge and so the sun (40), the meadow the pair can stand in (60), the
+   hatch on the rock (70), depth (110), the range at its best (0.16 H), and
+   what is left is air between the foot and the kicker, which the hazes
+   stretch into. If full gaps cannot reach the hatch and the meadow, the
+   gaps tighten first (the laptop's own order: the range gives up height,
+   then the gaps, then the hatch); if even tight gaps cannot seat a ridge
+   over a strip, the range goes and the kicker takes the scrim's edge, so
+   the meadow gets everything — a morning without its sunrise is the floor,
+   and it is still a morning. Nothing drawn is kept only for a column that
+   does not fit the panel at all (320×568), which no phone the owner holds
+   and no gate seat is. */
+const PHONE_FRINGE = 40, PHONE_STRIP = 26, PHONE_MEADOW = 60, PHONE_DEPTH = 110, RIDGE_MIN = 40, HATCH_MIN = 70;
+function layPhone(wrap, W, H) {
+  wrap.style.setProperty("--dawn-gap", `${GAP_MAX}px`);
+  wrap.style.setProperty("--dawn-small", "1");
+  wrap.style.setProperty("--dawn-top", "0px");
+  wrap.classList.add("measuring");
+  const oy = wrap.parentElement.getBoundingClientRect().top;
+  const px = (el, prop) => parseFloat(getComputedStyle(el)[prop]) || 0;
+  const cap = wrap.querySelector(".endquote figcaption"), rowEl = wrap.querySelector(".dawnrow");
+  const capGap = cap ? px(cap, "marginTop") : 0, rowGap = rowEl ? px(rowEl, "marginTop") : 0;
+  /* the column at full gaps and no offset: its box, and where the kicker's
+     ink begins inside it (the range's foot is placed from the INK) */
+  const box = wrap.getBoundingClientRect();
+  const C0 = box.height;
+  const rg = document.createRange();
+  rg.selectNodeContents(wrap.querySelector(".kicker"));
+  const kr = [...rg.getClientRects()].filter((q) => q.width && q.height);
+  const kickOff = (kr.length ? Math.min(...kr.map((q) => q.top)) : box.top) - box.top;
+  wrap.classList.remove("measuring");
+  /* the chrome's floor, as the band read it: the chrome's halo and the
+     scrim's fade, whichever is lower, and 10 more. The chrome is fixed to
+     the viewport and the panel IS the viewport once the morning lands, so
+     its rects are read as they are (as the keep-out reads them) — not in
+     the panel's frame, which is still moving under the carry when this
+     runs (read that way, the band seated under the masthead). */
+  let chromeB = 0;
+  for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
+    const el = document.querySelector(sel);
+    const b = el && el.getBoundingClientRect();
+    if (b && b.width && b.height && getComputedStyle(el).visibility !== "hidden") chromeB = Math.max(chromeB, b.bottom + 24);
+  }
+  const mast = document.getElementById("mast");
+  if (mast) chromeB = Math.max(chromeB, mast.getBoundingClientRect().bottom + 38.4);
+  const pTop = chromeB + 10;
+  const hv = H - PHONE_FRINGE;
+  const gainMax = 3 * (GAP_MAX - GAP_MIN) + (capGap + rowGap) * (1 - SMALL_MIN);
+  const heightAt = (t) => C0 - t * gainMax;
+  /* the spare, with the range (66 above the kicker's ink) and without */
+  const spareR = (t) => hv - pTop - 66 - (heightAt(t) - kickOff) - 34;
+  const spare0 = (t) => hv - pTop - (heightAt(t) - kickOff) - 34;
+  const need = PHONE_STRIP + RIDGE_MIN, want = PHONE_MEADOW + HATCH_MIN;
+  let t = 0;
+  while (t < 1 && spareR(t) < want) t = Math.min(1, +(t + 0.05).toFixed(2));
+  const range = spareR(t) >= need;
+  if (!range) { t = 0; while (t < 1 && spare0(t) < PHONE_MEADOW) t = Math.min(1, +(t + 0.05).toFixed(2)); }
+  const S = range ? spareR(t) : spare0(t);
+  let rest = Math.max(0, S), G = 0, R = 0;
+  const take = (n) => { const d = Math.max(0, Math.min(rest, n)); rest -= d; return d; };
+  G += take(PHONE_STRIP);
+  if (range) R += take(RIDGE_MIN);
+  G += take(PHONE_MEADOW - G);
+  if (range) R += take(HATCH_MIN - R);
+  G += take(PHONE_DEPTH - G);
+  if (range) R += take(Math.max(0, Math.round(H * 0.16) - R));
+  const air = rest;
+  const top = pTop + (range ? R + 66 : 0) + air;
+  wrap.style.setProperty("--dawn-gap", `${(GAP_MAX - t * (GAP_MAX - GAP_MIN)).toFixed(1)}px`);
+  wrap.style.setProperty("--dawn-small", (1 - t * (1 - SMALL_MIN)).toFixed(3));
+  wrap.style.setProperty("--dawn-top", `${(top - kickOff).toFixed(1)}px`);
+  const stage = !range ? "meadow" : R < HATCH_MIN ? "ridge" : t > 0 ? "gaps" : "fits";
+  return { pTop: Math.round(pTop), foot: range ? Math.round(pTop + R) : null, relief: Math.round(R), ground: Math.round(G), air: Math.round(air),
+    hv, fringe: PHONE_FRINGE, tight: +t.toFixed(2), top: Math.round(top), bottom: Math.round(top - kickOff + heightAt(t)), spare: Math.round(S), stage };
+}
 const SCAPE = { built: false, hz: 0, groups: 0 };
 /* the live record the sky, the ground's events and the gate read. The
    builder writes a COPY and publishes it in one breath at the end (see
@@ -10348,9 +10479,11 @@ function* drawDawnscape() {
      density ramps to nothing across it, so the words are always on bare
      paper wherever the seat puts them. */
   const wrap = stick.querySelector(".dawnwrap");
-  /* the words take their place from the room before anything reads them */
-  if (narrow) unlayMorning(wrap);
-  SCAPE.lay = !narrow ? layMorning(wrap, W, H, H * 0.84) : null;
+  /* the words take their place from the room before anything reads them:
+     a laptop's column between the rock and the horizon, a phone's by the
+     three-band budget (layPhone), which also decides the band's relief and
+     the ground's depth that the composition below draws to */
+  SCAPE.lay = narrow ? layPhone(wrap, W, H) : layMorning(wrap, W, H, H * 0.84);
   const words = [];
   wrap.classList.add("measuring");
   const walker = document.createTreeWalker(wrap, NodeFilter.SHOW_TEXT);
@@ -10441,24 +10574,23 @@ function* drawDawnscape() {
 
   /* ————— where the ground is, and where the light is —————
      Desktop: 0.84 H. A phone has no flank, so the horizon is placed from
-     MEASURED room: the wrap's bottom edge at this size, read now, with the
-     drawing degrading by how much of the screen is left under it. */
+     MEASURED room: the wrap's bottom edge at this size, read now — the
+     edge layPhone just placed — and the ground is what lies between it and
+     the visible floor (the panel less the fringe under Safari's bar). The
+     34 is the signature's 24 and the brow's ticks. `room` summarises the
+     depth for the gates: -1 nothing (the column does not fit the panel),
+     0 the brow alone, 1 the strip, 2 the meadow the pair stands in, 3 depth. */
   let hz = H * 0.84;
   let free = H - hz;
   let room = 3;
+  /* the phone's ground, in px above the visible floor; 0 on a laptop */
+  let G = 0;
   if (narrow) {
     const wrapB = stick.querySelector(".dawnwrap").getBoundingClientRect().bottom - sr.top;
     free = H - wrapB;
-    /* the ladder, by measured room under the last line. The 34px was what
-       the GROUND SUN needed — its cap rose 0.8 r above the line and the text
-       kept 24px of air, measured at 390×844 — and that sun has gone up
-       behind the range. The number is INHERITED rather than re-derived: it
-       is not what the horizon alone would need, and nobody has measured what
-       that is. Under 20px there is no ground to draw on (320×720 measures
-       -24: the column already overflows the panel there) and nothing is
-       drawn. */
-    room = free >= 90 ? 2 : free >= 40 ? 1 : free >= 20 ? 0 : -1;
-    hz = wrapB + (room >= 1 ? 34 : 16);
+    hz = wrapB + 34;
+    G = Math.round(SCAPE.lay.hv - hz);
+    room = G < 12 ? -1 : G < PHONE_STRIP ? 0 : G < PHONE_MEADOW ? 1 : G < PHONE_DEPTH ? 2 : 3;
   }
   const tall = !narrow;
   /* THE HOME RANGE, DECLARED ONCE. Every roamer wears it as data-range, the
@@ -10517,6 +10649,13 @@ function* drawDawnscape() {
      ground thins toward the words the way an etcher leaves the paper bare
      where the light is. */
   const clear = tall ? [X(0.22), Y(0.20), X(0.78), hz - 2] : [0, 0, W, hz - 2];
+  /* the ramp out of the clearing: 160px on a laptop, whose fields sit in
+     the corners beside the column and read their distance sideways. The
+     phone's clearing is the whole sheet above the horizon, so its meadow's
+     only distance is downward, and at 24 + 136 a field 30px under the brow
+     was thinned to nothing (measured: the strip's two tick fields drew 0 and
+     2 ticks). Its ramp is 8 + 40. */
+  const RAMP = tall ? [24, 136] : [8, 40];
   const dens = (x, y) => {
     /* the halo goes where the light goes: it lies on the sky and the rock
        now rather than on the meadow, so the bare pocket that used to sit
@@ -10527,7 +10666,7 @@ function* drawDawnscape() {
     const fs = ds < 90 ? 0 : ds > 260 ? 1 : (ds - 90) / 170;
     if (x > clear[0] && x < clear[2] && y > clear[1] && y < clear[3]) return 0;
     const dx = Math.max(clear[0] - x, x - clear[2], 0), dy = Math.max(clear[1] - y, y - clear[3], 0);
-    let f = fs * clamp((Math.hypot(dx, dy) - 24) / 136, 0, 1);
+    let f = fs * clamp((Math.hypot(dx, dy) - RAMP[0]) / RAMP[1], 0, 1);
     /* and the words themselves, wherever this seat put them: zero inside a
        halo, full again 70px past it */
     for (const [l, t, rt, bt] of words) {
@@ -11025,31 +11164,21 @@ function* drawDawnscape() {
     return { FOOT, markup: `<g class="ds-p2" mask="url(#mR)"><g transform="translate(${F(rtx)} ${F(rty)}) scale(${rs.toFixed(5)})">${groups.join("")}</g></g>` };
   };
 
-  if (tall) {
-    /* ————— the range: seated by its relief —————
-       The summits sit at 0.082 H and the foot at 0.375 H at every seat, so
-       the board is scaled by the relief it has to span, not by the width,
-       and centred on its own x 1160 with the sides cropped: scaled by width,
-       1920×1080 would put the principal under the masthead. The guard on
-       W / 2350 keeps a frame wider than 2:1 covered edge to edge. Its
-       strokes are non-scaling, so the pen is the same at every seat. */
-    /* seated where the layout left it: 0.375 H when the sheet has the room,
-       higher and smaller when the words needed it */
-    const seat = seatRange(null, laySeat.s, laySeat.tx, laySeat.ty, { ridgeOnly: laySeat.ridgeOnly });
-    const FOOT = seat.FOOT;
-    far += seat.markup;
-    /* and the light it rises behind, cut against the crests just seated */
-    far += drawSun(SCAPE.massifs.summits.map((q) => q.crest));
-
-    /* ————— the far valley floor —————
-       Without land under it the range floated on a few haze dashes. The
-       floor is a distant treeline of fine hair-strong ticks, 4 to 10px,
-       in clusters with gaps, along the whole foot, and two broken haze
-       strokes under it; the lowest flanks and the facets' feathered feet
-       run down into it rather than stopping. It breaks behind the kicker
-       with the words' own 24px, and it is masked by the same reserves as
-       the range. Its own seeded stream, so adding it moved nothing else. */
-    const vr = birdRng(0x7a1e);
+  /* ————— the far valley floor —————
+     Without land under it the range floated on a few haze dashes. The
+     floor is a distant treeline of fine hair-strong ticks, 4 to 10px,
+     in clusters with gaps, along the whole foot, and two broken haze
+     strokes under it; the lowest flanks and the facets' feathered feet
+     run down into it rather than stopping. It breaks behind the kicker
+     with the words' own 24px, and it is masked by the same reserves as
+     the range. Its own seeded stream, so adding it moved nothing else.
+     ONE WOOD FOR BOTH SHEETS: the phone's band used to stand on three haze
+     dashes, which is the defect this paragraph describes, so the wood is a
+     function of its foot now and the band calls it too. The laptop's draws
+     are the draws they were — the stream is created in the same place and
+     read in the same order. */
+  const vr = birdRng(0x7a1e);
+  const farWood = (FOOT) => {
     /* THE CLEARING. Over the kicker the far forest opens: no stand and no
        haze across its span with its 24px halo and 16px more, so the
        station's first line reads on open ground with the forest running
@@ -11063,7 +11192,12 @@ function* drawDawnscape() {
        copse on its own short ground line that breaks and undulates; the
        copses thin and shrink toward the valley's mouth over the words. At
        even pitch on one straight base line the round-12 ticks read as a
-       barcode, and a far wood is masses, not a comb. */
+       barcode, and a far wood is masses, not a comb.
+       And no crown inside the light's clearing: on a laptop the sun stands
+       0.62 of the relief above the foot and its crown never reaches the
+       wood, so this term is a no-op there (the identity hashes say so); on
+       the phone's band the disc sits mid-flank and the crown reaches 20px
+       under the foot. */
     const kick = words.filter(([, t]) => t < FOOT + 20);
     const mouth = kick.length ? (Math.min(...kick.map((w) => w[0])) + Math.max(...kick.map((w) => w[2]))) / 2 : W / 2;
     const thick = (x) => clamp(Math.abs(x - mouth) / X(0.34), 0.28, 1);
@@ -11076,7 +11210,7 @@ function* drawDawnscape() {
       if (vr() < 0.16) {
         /* a lone tall tree in the open floor */
         const h = 9 + vr() * 3, b = FOOT + Math.sin(x / 83) * 1.6;
-        if (!opening(x) && !inKeep(x, b, 0) && !inKeep(x, b - h, 0)) {
+        if (!opening(x) && !inKeep(x, b, 0) && !inKeep(x, b - h, 0) && !inLight(x, b - h * 0.6)) {
           tl += crownAt(x, b, 4 + vr() * 1.5, h, true) + `M${F(x)} ${F(b - h * 0.15)}L${F(x)} ${F(b + 0.5)}`;
           tn += 2;
         }
@@ -11092,7 +11226,7 @@ function* drawDawnscape() {
         const h = 3 + (5 + vr() * 4) * env * (0.55 + 0.45 * t);
         const w = 4 + vr() * 3.5 + h * 0.3;
         const b = base + Math.sin(cx / 21) * 0.9 + (vr() - 0.5) * 0.8;
-        if (!opening(cx) && !inKeep(cx, b, 0) && !inKeep(cx, b - h, 0)) {
+        if (!opening(cx) && !inKeep(cx, b, 0) && !inKeep(cx, b - h, 0) && !inLight(cx, b - h * 0.6)) {
           tl += crownAt(cx, b, w, h, vr() < 0.3);
           tn++;
           /* a stem or the shade under one crown in three */
@@ -11110,7 +11244,29 @@ function* drawDawnscape() {
       }
       x = cx + (6 + vr() * 26) / t;
     }
-    let vale = P(tl, "ds-far w1", tn) + P(gl, "ds-far w06");
+    return P(tl, "ds-far w1", tn) + P(gl, "ds-far w06");
+  };
+
+  if (tall) {
+    /* ————— the range: seated by its relief —————
+       The summits sit at 0.082 H and the foot at 0.375 H at every seat, so
+       the board is scaled by the relief it has to span, not by the width,
+       and centred on its own x 1160 with the sides cropped: scaled by width,
+       1920×1080 would put the principal under the masthead. The guard on
+       W / 2350 keeps a frame wider than 2:1 covered edge to edge. Its
+       strokes are non-scaling, so the pen is the same at every seat. */
+    /* seated where the layout left it: 0.375 H when the sheet has the room,
+       higher and smaller when the words needed it */
+    const seat = seatRange(null, laySeat.s, laySeat.tx, laySeat.ty, { ridgeOnly: laySeat.ridgeOnly });
+    const FOOT = seat.FOOT;
+    far += seat.markup;
+    /* and the light it rises behind, cut against the crests just seated */
+    far += drawSun(SCAPE.massifs.summits.map((q) => q.crest));
+
+    /* the far wood on the valley floor, then the hazes under it, which open
+       over the kicker the way the wood does */
+    let vale = farWood(FOOT);
+    const opening = (x) => words.some(([l, t, rt]) => t < FOOT + 20 && x > l - 16 && x < rt + 16);
     for (const [dy, x0, x1, l0, l1, g0, g1] of [[8, -0.01, 0.36, 40, 120, 50, 130], [8, 0.64, 1.01, 40, 120, 50, 130], [15, 0.04, 0.3, 30, 90, 80, 160]]) {
       for (let x = X(x0) + vr() * 20; x < X(x1); ) {
         const bx = Math.min(x + l0 + vr() * (l1 - l0), X(x1)), y = FOOT + dy + (vr() - 0.5) * 2;
@@ -11544,15 +11700,16 @@ function* drawDawnscape() {
      own short clock at their bases, the tail flicks at the rump. Every part
      travels 2px or more at 1456, or it is not alive. `k` is the scale, and
      the doe and the fawn share the grammar. */
-  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots, mx = 1, lift = 0, still = {}) => {
+  const ungulate = (x, k, cls, body, head, ears, tail, joint, tailJoint, spots, mx = 1, lift = 0, still = {}, gy = hz) => {
     /* mx mirrors the animal to face east; lift lengthens the legs by that
        many units, the body and head riding up on them.
        `still` is the phone's: a 390 sheet may run eight continuous groups
        in all, and a doe and a fawn drawn with every joint alive are seven
        of them. Their ears become fills carried by the head group, which
        still turns, so nothing on the sheet is frozen — it simply has fewer
-       hinges. */
-    const T = (pts) => pts.map(([px, py]) => [x + px * k * mx, hz + 1 + (py <= -20 ? py - lift : (py * (20 + lift)) / 20) * k]);
+       hinges. `gy` is the ground under the feet: the horizon unless the
+       phone sets the pair down in its near meadow. */
+    const T = (pts) => pts.map(([px, py]) => [x + px * k * mx, gy + 1 + (py <= -20 ? py - lift : (py * (20 + lift)) / 20) * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
     const outline = (segs) => segs.flatMap(([kind, pts]) => (kind === "c" ? c(pts) : l(pts)));
     let d = path(wob(outline(body), 0.22)) + "Z";
@@ -11561,7 +11718,7 @@ function* drawDawnscape() {
     const hd = path(wob(outline(head), 0.22)) + "Z";
     const earD = ears.map((e) => path(wob(l(e.pts), 0.15)) + "Z");
     const tl = path(wob(l(tail.pts), 0.15)) + "Z";
-    fills.push([x, hz - 30 * k, 30 * k]);
+    fills.push([x, gy - 30 * k, 30 * k]);
     nS += 3 + ears.length;
     const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
     groups += 3 + (still.ears ? 0 : ears.length) - (still.tail ? 1 : 0);
@@ -11605,8 +11762,7 @@ function* drawDawnscape() {
     Object.assign(DOE, { body, head, ears, tail, joint: [-13, -40], tailJoint: [21, -37],
       cuts: [[[14, -24.5], [17, -29.5], [19.5, -35]], [[-8, -27], [-10, -32], [-11, -37]]] });
   }
-  const doe = (x, still = {}) => {
-    const k = 0.95 * vs;
+  const doe = (x, still = {}, gy = hz, k = 0.95 * vs) => {
     /* HER HEIGHT IS DECLARED, NOT MEASURED. The meadow's scale rule is "no
        blade over a third of the doe", and the gate read her LIVE bounding
        box for that third — a number that moves while she eats. Measured
@@ -11620,31 +11776,33 @@ function* drawDawnscape() {
        tip stands 68.5 of her own units over the ground line and her feet
        are 1 under it, so her height is arithmetic at any scale. */
     SCAPE.doeH = +(68.5 * k - 1).toFixed(1);
-    const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] }, 1, 0, still);
+    const parts = ungulate(x, k, "doe", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: DOE.cuts, dots: [] }, 1, 0, still, gy);
     /* her shadow WAS three raked strokes centred under her, which is a
        shadow at noon and reads as a second one beside the rake. Burned:
        drawn from the main stream and dropped, so nothing after her moves. */
     const nSd = nS;
-    hatch([[x - 22 * k, hz + 2], [x + 20 * k, hz + 2], [x + 17 * k, hz + 9], [x - 16 * k, hz + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
+    hatch([[x - 22 * k, gy + 2], [x + 20 * k, gy + 2], [x + 17 * k, gy + 9], [x - 16 * k, gy + 9]], -18, 3.2, "ds-far w1", 0.3, [10, 30]);
     nS = nSd;
-    const sh = rake(x, hz + 2, 20 * k, 62 * k);
-    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
+    const sh = rake(x, gy + 2, 20 * k, 62 * k);
+    return `<g class="ds-deer" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(gy)}px">${sh}${parts}</g>`;
   };
   /* ————— the fawn: the doe's own silhouette at two thirds, mirrored to face
      her, its legs four units too long (the fawn's tell), two cut-dots on
      the haunch well away from the head ————— */
-  const fawn = (x, still = {}) => {
-    const k = 0.62 * vs;
-    const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4, still);
+  const fawn = (x, still = {}, gy = hz, k = 0.62 * vs) => {
+    const parts = ungulate(x, k, "fawn", DOE.body, DOE.head, DOE.ears, DOE.tail, DOE.joint, DOE.tailJoint, { cuts: [], dots: [[13, -31], [17, -36]] }, -1, 4, still, gy);
     const nSf = nS;
-    hatch([[x - 16 * k, hz + 2], [x + 14 * k, hz + 2], [x + 10 * k, hz + 7], [x - 13 * k, hz + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
+    hatch([[x - 16 * k, gy + 2], [x + 14 * k, gy + 2], [x + 10 * k, gy + 7], [x - 13 * k, gy + 7]], -18, 3, "ds-far w1", 0.3, [8, 22]);
     nS = nSf;
-    const sh = rake(x, hz + 2, 13 * k, 44 * k);
-    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(hz)}px">${sh}${parts}</g>`;
+    const sh = rake(x, gy + 2, 13 * k, 44 * k);
+    return `<g class="ds-fawn" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(gy)}px">${sh}${parts}</g>`;
   };
 
-  /* ————— the hare: seated, ears up, facing west, in the meadow's foreground ————— */
-  const hare = (x, y) => {
+  /* ————— the hare: seated, ears up, facing west, in the meadow's foreground —————
+     `still` is the phone's, as the pair's is: its head and ears become fills
+     (the hand's draws are taken either way) so the sheet's eight live groups
+     stay where they were spent. */
+  const hare = (x, y, still = false) => {
     const k = Math.max(vs, 0.77);
     const T = (pts) => pts.map(([px, py]) => [x + px * k, y + py * k]);
     const c = (pts) => curve(T(pts), 2), l = (pts) => T(pts);
@@ -11663,10 +11821,13 @@ function* drawDawnscape() {
     d += ribbon(wob(curve(T([[1, -3], [3.5, -8], [5, -13]]), 2), 0.15), 1.9 * Math.max(k, 0.95));
     const hd = path(wob(head, 0.15)) + "Z";
     const J = (p) => { const [px, py] = T([p])[0]; return `${F(px)}px ${F(py)}px`; };
-    const earG = ears.map((e, i) => `<g class="ds-ear ${live("hare-ear")}" style="transform-origin:${J(e.joint)};--ph:${(-r() * 6 - i * 0.9).toFixed(2)}s"><path class="ds-fill" d="${path(wob(l(e.pts), 0.12))}Z"/></g>`).join("");
+    const earG = ears.map((e, i) => {
+      const ph = `--ph:${(-r() * 6 - i * 0.9).toFixed(2)}s`, ed = path(wob(l(e.pts), 0.12)) + "Z";
+      return still ? `<path class="ds-fill" d="${ed}"/>` : `<g class="ds-ear ${live("hare-ear")}" style="transform-origin:${J(e.joint)};${ph}"><path class="ds-fill" d="${ed}"/></g>`;
+    }).join("");
     fills.push([x, y - 13 * k, 13 * k]);
     nS += 4;
-    groups += 3;
+    groups += still ? 0 : 3;
     const nSh = nS;
     hatch([[x - 11 * k, y + 1], [x + 11 * k, y + 1], [x + 9 * k, y + 6], [x - 8 * k, y + 6]], -18, 3, "ds-far w1", 0.3, [8, 22]);
     nS = nSh;
@@ -11675,8 +11836,9 @@ function* drawDawnscape() {
     for (const dx of [-13, 12]) td += stroke(curve([[x + dx * k, y + 1], [x + dx * k + 1.5, y - 3], [x + dx * k + 3, y - 6]], 3), 0.25);
     SCAPE.hare = { x, y };
     reserves.push({ id: "hareBody", massif: 0, bank: 0, grass: 6, box: dBox(d) });
+    const headPh = `--ph:${(-r() * 5).toFixed(2)}s`;
     return `<g class="ds-hare" data-x="${F(x)}" data-range="${HOME}" style="transform-origin:${F(x)}px ${F(y)}px">${sh}<path id="hareBody" class="ds-fill" fill-rule="evenodd" d="${d}"/>` +
-      `<g class="ds-head ${live("hare-head")}" style="transform-origin:${J([-5, -12])};--ph:${(-r() * 5).toFixed(2)}s"><path class="ds-fill" d="${hd}"/>${earG}</g>${P(td, "ds-ink w1", 2)}</g>`;
+      `<g class="ds-head${still ? "" : " " + live("hare-head")}" style="transform-origin:${J([-5, -12])};${headPh}"><path class="ds-fill" d="${hd}"/>${earG}</g>${P(td, "ds-ink w1", 2)}</g>`;
   };
 
   /* ————— a gull on the ground, the flock's own bird with its wings folded ————— */
@@ -11881,6 +12043,93 @@ function* drawDawnscape() {
   };
 
 
+
+  /* ————— THE DAISIES, WHICH OPEN OVER THE FIRST MINUTE —————
+     The one thing on this sheet that CHANGES for a reader who stays. The
+     morning lands with fourteen to eighteen buds in the grass and they
+     open in the order the light reaches them, ranked by their distance
+     from the sun's own column, all of them out by about seventy seconds.
+     Nothing announces it; a reader who stays finds the meadow in flower
+     and a reader who leaves never knows it was going to happen.
+     Both states are in the DOM from the start and only opacity moves
+     between them (the census counts CSS animations, and a transition is
+     not one), so under reduced motion the end state is simply built.
+     Each one carries the moment it is due on its own group, so a rebuild
+     mid-morning renders every daisy that is already out, already out.
+     Its own stream, and its stem is the same green as the blades.
+     Two functions, called inside lend(daisyRng): the laptop's swale and
+     the phone's near meadow seed the same flowers from their own spots. */
+  /* IN CLUMPS, AND BIG ENOUGH TO SEE. Fourteen lone specks at true
+     scale are a thing you have to zoom in to find: the owner asked for
+     flowers he can see at his own window. So each spot carries one to
+     three flowers at slightly different heights, and the head is about
+     11px across instead of 7 — three times life size against a 62px
+     doe, which is the trade legibility takes from scale here, and it
+     is a trade rather than an oversight. Each flower is still its own
+     group and opens on its own clock, so a clump comes out over a few
+     seconds rather than all at once. */
+  const daisySeats = (spots) => {
+    const seats = [];
+    for (const [x, y] of spots) {
+      const n2 = 1 + (r() < 0.6 ? 1 : 0) + (r() < 0.3 ? 1 : 0);
+      for (let k = 0; k < n2; k++)
+        seats.push([x + (r() - 0.5) * 13, y + (r() - 0.5) * 5]);
+    }
+    return seats;
+  };
+  const daisyField = (seats, dk) => {
+    const made = [];
+    let d = "";
+    for (const [x, y] of seats) {
+      /* out of the thin ground under the words, out of every halo, and
+         6px clear of anything solid already standing there */
+      /* 0.2, not the plan's 0.35: dens() is zero inside the words'
+         column and climbs over 136px, so the swale — which stands 40px
+         under the clearing's own foot — measures about 0.25 and the rule
+         as written rejected the first place the plan asks for. What
+         actually has to hold is the words' air, which inKeep holds, at
+         the flower's foot and at its head. */
+      if (dens(x, y) < 0.2 || inKeep(x, y, 12) || inKeep(x, y - 14, 12)) continue;
+      if (fills.some(([cx, cy, rr]) => Math.hypot(x - cx, y - cy) < rr + 6)) continue;
+      const h = (5 + r() * 3) * Math.max(vs, 0.8);
+      const sp = spine(x, y, h, (r() - 0.5) * 0.4, (r() - 0.5) * 2);
+      const tip = sp[sp.length - 1];
+      const stem = P(stroke(sp, 0.25), "ds-tip w1");
+      /* the bud: a small closed head, 2.2 by 3.6 across */
+      const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 2.2 * dk, 1.5 * dk, 2.4 * dk, 0, 6.3, 1.2))}Z"/>`;
+      /* the bloom: six to eight fat lobes, squashed, with a cut eye —
+         seven thin ones read as an asterisk at this size — and the
+         light's own colour in the eye, because the light is what opened
+         it. The cut leaves paper under the gold. */
+      const nl = 6 + Math.floor(r() * 3), R = (5.0 + r() * 1.1) * dk;
+      const cy2 = tip[1] - 1.2 * dk;
+      const star = [];
+      for (let i = 0; i <= nl * 8; i++) {
+        const a2 = (i / (nl * 8)) * 6.2832;
+        const rr2 = R * (0.55 + 0.45 * Math.abs(Math.cos((a2 * nl) / 2)));
+        star.push([tip[0] + Math.cos(a2) * rr2, cy2 + Math.sin(a2) * rr2 * 0.75]);
+      }
+      const eyeR = 1.45 * dk;
+      const bloom = `<path class="ds-fill" fill-rule="evenodd" d="${path(wob(star, 0.25))}Z${path(arc(tip[0], cy2, eyeR, eyeR * 0.8, 0, 6.3, 0.8))}Z"/>` +
+        `<circle class="ds-eye" cx="${F(tip[0])}" cy="${F(cy2)}" r="${(eyeR * 0.78).toFixed(1)}"/>`;
+      nS += 3;
+      fills.push([tip[0], cy2, R]);
+      made.push({ x, y, stem, bud, bloom });
+    }
+    /* the order the light reaches them, and the moment each is due; a
+       sheet without a sun (the phone's floor) opens them west to east */
+    const lx = sun ? sun.x : 0;
+    const byLight = [...made].sort((p2, q) => Math.abs(p2.x - lx) - Math.abs(q.x - lx));
+    const n0 = Math.max(1, byLight.length - 1);
+    byLight.forEach((m, i) => {
+      m.t = Math.max(1500, Math.round(6000 + (64000 * i) / n0 + (r() - 0.5) * 3000));
+    });
+    SCAPE.daisies = made.length;
+    for (const m of made)
+      d += `<g class="ds-daisy${RM || m.t <= mt() ? " open" : ""}" data-x="${F(m.x)}" data-y="${F(m.y)}" data-t="${m.t}">` +
+        `${m.stem}<g class="ds-budg">${m.bud}</g><g class="ds-bloomg">${m.bloom}</g></g>`;
+    return d;
+  };
 
   /* ————— the portrait's details —————
      Things a person finds when they look: each belongs to an object or a
@@ -12240,19 +12489,7 @@ function* drawDawnscape() {
     for (const [fx, fy, h, n] of [[0.36, 0.905, 14, 4], [0.49, 0.892, 16, 5], [0.63, 0.90, 13, 4], [0.06, 0.93, 14, 4], [0.12, 0.96, 12, 4], [0.90, 0.95, 12, 4], [0.965, 0.94, 14, 4]])
       near += tuft(X(fx), Y(fy), h * vs, n);
 
-    /* ————— THE DAISIES, WHICH OPEN OVER THE FIRST MINUTE —————
-       The one thing on this sheet that CHANGES for a reader who stays. The
-       morning lands with fourteen to eighteen buds in the grass and they
-       open in the order the light reaches them, ranked by their distance
-       from the sun's own column, all of them out by about seventy seconds.
-       Nothing announces it; a reader who stays finds the meadow in flower
-       and a reader who leaves never knows it was going to happen.
-       Both states are in the DOM from the start and only opacity moves
-       between them (the census counts CSS animations, and a transition is
-       not one), so under reduced motion the end state is simply built.
-       Each one carries the moment it is due on its own group, so a rebuild
-       mid-morning renders every daisy that is already out, already out.
-       Its own stream, and its stem is the same green as the blades. */
+    /* ————— the daisies (daisyField, above): the laptop's spots ————— */
     const daisyRng = birdRng(0xda15);
     if (tall) near += lend(daisyRng, () => {
       const dk = Math.max(vs, 0.85);
@@ -12267,71 +12504,7 @@ function* drawDawnscape() {
         [0.928, 0.952], [0.952, 0.94], [0.974, 0.928],
         [0.869, 0.978], [0.902, 0.966], [0.935, 0.986],
       ];
-      const made = [];
-      let d = "";
-      /* IN CLUMPS, AND BIG ENOUGH TO SEE. Fourteen lone specks at true
-         scale are a thing you have to zoom in to find: the owner asked for
-         flowers he can see at his own window. So each spot carries one to
-         three flowers at slightly different heights, and the head is about
-         11px across instead of 7 — three times life size against a 62px
-         doe, which is the trade legibility takes from scale here, and it
-         is a trade rather than an oversight. Each flower is still its own
-         group and opens on its own clock, so a clump comes out over a few
-         seconds rather than all at once. */
-      const seats = [];
-      for (const [fx, fy] of spots) {
-        const n2 = 1 + (daisyRng() < 0.6 ? 1 : 0) + (daisyRng() < 0.3 ? 1 : 0);
-        for (let k = 0; k < n2; k++)
-          seats.push([fx, fy, (daisyRng() - 0.5) * 13, (daisyRng() - 0.5) * 5]);
-      }
-      for (const [fx, fy, ox2, oy2] of seats) {
-        const x = X(fx) + ox2, y = Y(fy) + oy2;
-        /* out of the thin ground under the words, out of every halo, and
-           6px clear of anything solid already standing there */
-        /* 0.2, not the plan's 0.35: dens() is zero inside the words'
-           column and climbs over 136px, so the swale — which stands 40px
-           under the clearing's own foot — measures about 0.25 and the rule
-           as written rejected the first place the plan asks for. What
-           actually has to hold is the words' air, which inKeep holds, at
-           the flower's foot and at its head. */
-        if (dens(x, y) < 0.2 || inKeep(x, y, 12) || inKeep(x, y - 14, 12)) continue;
-        if (fills.some(([cx, cy, rr]) => Math.hypot(x - cx, y - cy) < rr + 6)) continue;
-        const h = (5 + daisyRng() * 3) * Math.max(vs, 0.8);
-        const sp = spine(x, y, h, (daisyRng() - 0.5) * 0.4, (daisyRng() - 0.5) * 2);
-        const tip = sp[sp.length - 1];
-        const stem = P(stroke(sp, 0.25), "ds-tip w1");
-        /* the bud: a small closed head, 2.2 by 3.6 across */
-        const bud = `<path class="ds-fill ds-bud" d="${path(arc(tip[0], tip[1] - 2.2 * dk, 1.5 * dk, 2.4 * dk, 0, 6.3, 1.2))}Z"/>`;
-        /* the bloom: six to eight fat lobes, squashed, with a cut eye —
-           seven thin ones read as an asterisk at this size — and the
-           light's own colour in the eye, because the light is what opened
-           it. The cut leaves paper under the gold. */
-        const nl = 6 + Math.floor(daisyRng() * 3), R = (5.0 + daisyRng() * 1.1) * dk;
-        const cy2 = tip[1] - 1.2 * dk;
-        const star = [];
-        for (let i = 0; i <= nl * 8; i++) {
-          const a2 = (i / (nl * 8)) * 6.2832;
-          const rr2 = R * (0.55 + 0.45 * Math.abs(Math.cos((a2 * nl) / 2)));
-          star.push([tip[0] + Math.cos(a2) * rr2, cy2 + Math.sin(a2) * rr2 * 0.75]);
-        }
-        const eyeR = 1.45 * dk;
-        const bloom = `<path class="ds-fill" fill-rule="evenodd" d="${path(wob(star, 0.25))}Z${path(arc(tip[0], cy2, eyeR, eyeR * 0.8, 0, 6.3, 0.8))}Z"/>` +
-          `<circle class="ds-eye" cx="${F(tip[0])}" cy="${F(cy2)}" r="${(eyeR * 0.78).toFixed(1)}"/>`;
-        nS += 3;
-        fills.push([tip[0], cy2, R]);
-        made.push({ x, y, stem, bud, bloom });
-      }
-      /* the order the light reaches them, and the moment each is due */
-      const byLight = [...made].sort((p2, q) => Math.abs(p2.x - sun.x) - Math.abs(q.x - sun.x));
-      const n0 = Math.max(1, byLight.length - 1);
-      byLight.forEach((m, i) => {
-        m.t = Math.max(1500, Math.round(6000 + (64000 * i) / n0 + (daisyRng() - 0.5) * 3000));
-      });
-      SCAPE.daisies = made.length;
-      for (const m of made)
-        d += `<g class="ds-daisy${RM || m.t <= mt() ? " open" : ""}" data-x="${F(m.x)}" data-y="${F(m.y)}" data-t="${m.t}">` +
-          `${m.stem}<g class="ds-budg">${m.bud}</g><g class="ds-bloomg">${m.bloom}</g></g>`;
-      return d;
+      return daisyField(daisySeats(spots.map(([fx, fy]) => [X(fx), Y(fy)])), dk);
     });
     /* the cast on the meadow keeps the words' air with its whole home range:
        a gull or the hare whose box, 30px either way, would enter a word's
@@ -12375,178 +12548,310 @@ function* drawDawnscape() {
     SCAPE.leaf = { crownSrc: [sx0, sy0, sx1, sy1], crownEnv: [ex0, ey0, ex1, floorUnder(ex0, ex1, hz + 42)] };
   } else {
     SCAPE.leaf = null; SCAPE.hare = null;
-    /* THE PHONE HAS TWO BANDS AND BARE GUTTERS. No flank to draw on, so the
-       sheet is a top band under the chrome and a bottom band under the last
-       line, by measured room. The top band: a small bough in from the
-       top-right corner with two leaf masses, swaying, and four etched sky
-       lines that break around the chrome and the kicker (the keep-out is
-       the same measured set). The bottom band is the strip as before. */
+    /* ————— THE PHONE'S SHEET, DRAWN TO THE BUDGET —————
+       layPhone placed the column and decided the band's relief and the
+       ground's depth (its note has the budget); this draws to them. The
+       laptop's composition, stacked: the range and the sun in the band
+       under the chrome with the far wood at its foot and the sky etched
+       between the summits; the words in the clear air; and the meadow in
+       front of the horizon — the pair, the pool with the light on it, a
+       gull, the young tree on the east edge with its crown in the corner
+       beside the signature, grass, daisies — closer than the laptop's,
+       because a narrow field of view is a nearer standpoint. The bottom
+       PHONE_FRINGE of the sheet is foreground only: at rest it sits under
+       Safari's floating bar. */
+    const lay = SCAPE.lay;
+    const floorY = lay.hv;
+    const kickInk = words.length ? Math.min(...words.map((w) => w[1] + w[4])) : lay.top;
+    /* the signature's own ink, and the row's box above it: the corner the
+       tree's crown rises into is bounded by both */
+    const lastB = words.length ? Math.max(...words.map((w) => w[3])) : hz - 34;
+    const sig = words.filter((w) => w[3] > lastB - 30);
+    const sigL = sig.length ? Math.min(...sig.map((w) => w[0] + w[4])) : W * 0.3;
+    const sigR = sig.length ? Math.max(...sig.map((w) => w[2] - w[4])) : W * 0.7;
+    const rowEl = wrap.querySelector(".dawnrow");
+    const rowB = rowEl ? rowEl.getBoundingClientRect().bottom - sr.top : lastB - 40;
     {
-      /* under the chrome band (the stop chip owns the top-right corner on a
-         phone), above the kicker */
-      /* THE PRINCIPAL, ON A PHONE. The r10 profile lines are gone; the band
-         between the chrome and the kicker carries the sheet's own principal
-         from the same fixed path data, cropped to itself, its peak at 0.34 W
-         with its lit face to the light, the small bough clear of it at the
-         right. Its foot keeps the kicker's 64px (a ridge and a hatch keep
-         that from the words), its top the chrome's 24 and the scrim's own fade, and 10 more. Relief
-         70px and up carries the hatch, thinned to one rule in n so the 3x
-         screen does not close it into a grey; 40 to 70 carries the ridge
-         and the snow only; under 40, sky strokes only. */
-      let chromeB = 0;
-      for (const sel of ["#mast a", "#mast .state", "#mtoggle"]) {
-        const el = document.querySelector(sel);
-        const b = el && el.getBoundingClientRect();
-        if (b && b.width && b.height && getComputedStyle(el).visibility !== "hidden") chromeB = Math.max(chromeB, b.bottom + 24);
-      }
-      /* the chrome is fixed to the viewport, and the panel is the viewport
-         once the morning lands, so its rects are read as they are (as the
-         keep-out reads them); and the masthead's scrim, opaque to the mast's
-         lower edge and fading
-         out 2.4rem under it (measured 98.4 at 390×844): a peak under it is
-         a peak cut off by the page's own chrome */
-      const mast = document.getElementById("mast");
-      if (mast) chromeB = Math.max(chromeB, mast.getBoundingClientRect().bottom + 38.4);
-      const kickInk = words.length ? Math.min(...words.map((w) => w[1] + w[4])) : Y(0.22);
-      const pTop = chromeB + 10, pFoot = kickInk - 66, relief = pFoot - pTop;
-      SCAPE.band = { top: Math.round(pTop), foot: Math.round(pFoot), relief: Math.round(relief) };
-      if (relief >= 40) {
+      /* ————— the band: the range, seated by the relief it was given —————
+         THE PRINCIPAL, ON A PHONE. The band between the chrome and the
+         kicker carries the sheet's own principal from the same fixed path
+         data, cropped to itself, its peak at 0.34 W with its lit face to
+         the light. A RANGE, NOT A HILL: the principal alone on a 390 sheet
+         is one triangle with the sun behind it and bare sky for the whole
+         right half of the only drawn band a phone has. The east summit
+         comes with it (its peak lands about 0.53 W, its crest runs off the
+         east edge; it is layer 2 so it draws in hair-strong and reads as
+         the farther rock, and it puts a saddle in the skyline) and the west
+         summit fills the corner the sun rises out of. Both are inside
+         .ds-p2, which is what the light's clearing exempts. Relief 70 and
+         up carries the hatch, thinned to one rule in n so the 3x screen
+         does not close it into a grey; 40 to 70 the ridge and the snow
+         only; under 40 no rock — and no sunrise either, because there is
+         nothing for the light to come up behind, and a disc on its own is
+         the sticker round 13 removed. */
+      const pTop = lay.pTop, relief = lay.relief;
+      const foot = lay.foot === null ? pTop : lay.foot;
+      SCAPE.band = { top: pTop, foot, relief, ground: lay.ground, air: lay.air, stage: lay.stage, fringe: lay.fringe, floor: Math.round(floorY) };
+      if (relief >= RIDGE_MIN) {
         const ps = relief / (RANGE.foot - RANGE.top);
-        const pk = RANGE.summits.find((sm) => sm.name === "principal").peak;
-        const bandSeat = { s: ps, tx: X(0.34) - pk[0] * ps, ty: pTop - RANGE.top * ps };
-        /* A RANGE, NOT A HILL. The band carried the principal alone, which
-           on a 390 sheet is one triangle with the sun behind it and bare
-           sky for the whole right half of the only drawn band a phone has.
-           The east summit comes with it: it seats inside the band by its
-           own relief (its peak lands about 0.53 W, its crest runs off the
-           east edge), it is layer 2 so it draws in hair-strong and reads
-           as the farther rock, and it puts a saddle in the skyline. The
-           west summit comes with it for the same reason and fills the
-           corner the sun rises out of, so the band is a RANGE across the
-           whole width rather than a hill with a light behind it. Both are
-           inside .ds-p2, which is what the light's clearing exempts. */
-        const seat = seatRange(["principal", "east", "west"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < 70 });
+        /* SEATED BY THE LIGHT, NOT BY THE PEAK. The band used to pin the
+           principal's peak at 0.34 W, and the sun sits on its west flank at
+           a fixed board point — so the taller the band, the further west
+           the sun slid: at 430×932 it stood at 0.13 W with its crown cut by
+           the edge. The disc is seated at 0.27 W now and the board is set
+           down around it; the peak lands at 0.41 W on a 70px band and 0.45
+           on a 90, with its lit face still to the light, and the east
+           summit stays on the sheet. sunSeat is pure in its seat, so it is
+           asked once with the board at the origin to learn where the disc
+           falls, and once more on the seat that answer gives. The disc
+           grows with the band over the hatch floor, to one and a half
+           times at 105px. */
+        const sk = clamp(relief / HATCH_MIN, 1, 1.5), ty = pTop - RANGE.top * ps;
+        const bandSeat = { s: ps, tx: X(0.27) - sunSeat({ s: ps, tx: 0, ty }, W, true, sk).x, ty };
+        const seat = seatRange(["principal", "east", "west"], ps, bandSeat.tx, bandSeat.ty, { every: Math.max(1, Math.ceil(0.55 / ps)), ridgeOnly: relief < HATCH_MIN });
         far += seat.markup;
-        /* the easternmost peak the band seated: a far crossing is noticed
-           east of it, because east of it is the only sky on a phone that is
-           neither the rock nor the sunrise */
-        SCAPE.band.peakE = Math.max(...SCAPE.massifs.summits.map((q) => q.peak[0]));
-        /* the phone's band is seated from measured chrome, so its sun is
-           seated here rather than with the sheet's. A band too short to
-           carry the principal carries no sunrise either: there is no rock
-           for the light to come up behind, and a disc on its own would be
-           the sticker this round removed. */
-        sun = sunSeat(bandSeat, W, true);
+        /* the easternmost peak the band seated ON THE SHEET: a far crossing
+           is noticed east of it, because east of it is the only sky on a
+           phone that is neither the rock nor the sunrise; a peak off the
+           east edge would send the bird off with it */
+        SCAPE.band.peakE = Math.max(0, ...SCAPE.massifs.summits.map((q) => q.peak[0]).filter((x) => x < W - 40));
+        /* the phone's band is seated from the budget, so its sun is seated
+           here rather than with the sheet's */
+        sun = sunSeat(bandSeat, W, true, sk);
         far += drawSun(SCAPE.massifs.summits.map((q) => q.crest));
-        let ph = "";
+        /* the valley floor under the foot: the laptop's own far wood, then
+           three hazes, all lifting off the light and the words as every
+           other stroke here does */
+        let vale = farWood(seat.FOOT);
         for (const [a, b, dy] of [[0.0, 0.16, 2], [0.2, 0.46, 4], [0.52, 0.7, 1.5]]) {
           const y = seat.FOOT + dy;
-          for (const run of cut(curve([[X(a), y], [X((a + b) / 2), y - 1.2], [X(b), y + 0.6]], 6))) ph += P(path(run), "ds-far w06");
+          for (const run of cut(curve([[X(a), y], [X((a + b) / 2), y - 1.2], [X(b), y + 0.6]], 6))) vale += P(path(run), "ds-far w06");
         }
-        far += `<g class="ds-vale" mask="url(#mR)">${ph}</g>`;
-      }
-      /* the phone's small bough is gone: a long bare limb carrying two leaf
-         blobs is the "islands on bare limbs" the owner called autumn, and
-         the band is the principal's now */
-      for (let i = 0; i < 4; i++) {
-        const y = Y(0.075 + i * 0.022) + (r() - 0.5) * 4;
-        const a = X(0.04 + r() * 0.08), bnd = Math.min(a + 60 + r() * 120, X(0.62));
-        far += skyPiece(a, bnd, y);
-        if (r() < 0.5 && bnd + 50 < X(0.66)) { const c2 = bnd + 18 + r() * 30; far += skyPiece(c2, Math.min(c2 + 40 + r() * 70, X(0.66)), y + (r() - 0.5) * 2); }
-      }
-      /* and the air between the range's foot and the kicker: three low
-         hazes across the gap the band leaves, each breaking around the
-         words the way every other stroke here does. Sixty-eight pixels of
-         bare cream between a drawing and a paragraph reads as a margin;
-         with these it reads as distance. */
-      if (SCAPE.band && SCAPE.band.relief >= 40) {
-        const gap0 = SCAPE.band.foot + 10, gap1 = Math.max(gap0 + 12, kickInk - 16);
-        for (let i = 0; i < 3 && gap0 + 8 < gap1; i++) {
-          const y = gap0 + ((gap1 - gap0) * (i + 0.4)) / 3.2 + (r() - 0.5) * 3;
-          const a2 = X(0.05 + r() * 0.1), b2 = Math.min(a2 + 70 + r() * 150, X(0.92));
-          far += skyPiece(a2, b2, y);
+        far += `<g class="ds-vale" mask="url(#mR)">${vale}</g>`;
+        /* the etched sky: five lines across the band, none the same length,
+           each lifting off the rock and the crown (skyPiece) so what is
+           left is the sky between the summits and over the lower ones */
+        for (let i = 0; i < 5; i++) {
+          const y = pTop + relief * (0.06 + i * 0.19) + (r() - 0.5) * 4;
+          const a = X(0.02 + r() * 0.1), bnd = Math.min(a + 70 + r() * 160, X(0.98));
+          far += skyPiece(a, bnd, y);
+          if (r() < 0.5 && bnd + 40 < X(0.98)) { const c2 = bnd + 18 + r() * 30; far += skyPiece(c2, Math.min(c2 + 40 + r() * 90, X(0.98)), y + (r() - 0.5) * 2); }
         }
       }
-    }
-    /* the bottom band: what fits under the last line, out of the column's
-       x-range where it can be taller */
-    if (room >= 2) mid += sapling(X(0.09), hz + 1, Math.min(64, hz - (H - free) - 30), 0.05, "sway-sap");
-    near += ticks(X(0.08), hz + 22, X(0.07), 14, 18, "ds-ink w1", 4, 9);
-    near += ticks(X(0.90), hz + 22, X(0.08), 14, 18, "ds-ink w1", 4, 9);
-    /* GRASS IS GRASS-SIZED HERE TOO. The phone's tufts were 16 and 14px
-       against a sheet that had no cast on it to measure them by; the doe
-       stands on it now at 27.6px to her ears, so a blade may reach 13.2.
-       And the west stand moves out of the pair's corner. */
-    near += solidTuft(X(0.26), hz, room >= 1 ? 10 : 8, 5, "sway-m", 0);
-    if (room >= 1) near += tuft(X(0.44), hz, 8, 4);
-    /* STILL, and it buys the tree its slot: a phone may run eight
-       continuous groups and the tree that frames the corner is worth more
-       than a second swaying tuft */
-    near += solidTuft(X(0.84), hz, room >= 1 ? 9 : 8, 5, "", 0);
-    if (room >= 1 && hz + 18 <= H - 4) near += gull(X(0.63), hz + 14, 1, "peck-a", "a");
-    /* ————— A TREE FRAMES THE EAST EDGE —————
-       The phone had a band at the top, a strip at the bottom and six
-       hundred pixels of cream between them. This is the sheet's own great
-       tree at a phone's scale: a young one on the east edge, its crown
-       hanging over the corner, so the bottom band reads as a place rather
-       than a rule with animals on it. Its masses shrink themselves out of
-       any word's air (that is what mass() does with inKeep), and it sways
-       on the slot the still tuft gave up. */
-    if (room >= 1) mid += sapling(X(0.93), hz + 1, 95, -0.06, "sway-sap");
-    /* and a pool in the near ground, with the light on it: the one place
-       the morning's colour reaches the phone's meadow */
-    if (room >= 1 && sun) {
-      /* 27px of ground is what a phone has: the lens sits close under the
-         brow and its bank takes four of them */
-      const px = X(0.45), py = hz + 10, pw = 44, ph = 5;
-      /* the words' boxes ALREADY carry their halo (words.push adds it), so
-         this is the pool's own box against them and nothing more: padding
-         it again put the lens 26px inside the signature's air and the
-         phone's pool silently never drew */
-      const hitsWord = words.some(([l, t, rt, bt]) => px + pw > l && px - pw < rt && py + ph + 4 > t && py - ph < bt);
-      if (!hitsWord && py + ph + 4 < H - 2) {
-        const poolRng = birdRng(0x9a7e);
-        near += lend(poolRng, () => {
-          let d = P(stroke(arc(px, py, pw, ph, Math.PI + 0.12, 2 * Math.PI - 0.12, 2), 0.4), "ds-far w06");
-          d += P(stroke(arc(px, py, pw, ph, 0.14, Math.PI - 0.14, 2), 0.4), "ds-ink w1");
-          for (let i = 0; i < 3; i++) {
-            const yy = py + (-0.42 + i * 0.4) * ph;
-            d += P(stroke([[px - pw * 0.62, yy], [px + pw * 0.62, yy]], 0.3), "ds-far w06");
-          }
-          /* the bank the reader stands on, so it is a hollow and not a
-             line: the phone has 27px of ground and this is 6 of them */
-          d += hatch([[px - pw * 0.8, py + ph * 0.5], [px + pw * 0.8, py + ph * 0.5], [px + pw * 0.62, py + ph + 4], [px - pw * 0.62, py + ph + 4]], -18, 2.6, "ds-far w1", 0.3, [6, 16]);
-          let g2 = "";
-          for (let i = 0; i < 5; i++) {
-            const t = i / 4, yy = py - ph * 0.7 + t * ph * 1.5;
-            const half = 1.6 + t * 5.2 + poolRng() * 1.6;
-            g2 += P(stroke([[px - half, yy], [px + half * (0.7 + poolRng() * 0.5), yy]], 0.25), t > 0.4 ? "ds-glit w12" : "ds-glit w1");
-          }
-          SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: pw };
-          return `<g class="ds-pool">${d}${g2}</g>`;
-        });
+      /* and the air between the range's foot (or the scrim's edge) and the
+         kicker: low hazes across it, each breaking around the words the way
+         every other stroke here does. Sixty-eight pixels of bare cream
+         between a drawing and a paragraph reads as a margin; with these it
+         reads as distance. One more when the budget left the band air. */
+      const gap0 = foot + 10, gap1 = Math.max(gap0 + 12, kickInk - 16);
+      const nH = gap1 - gap0 > 70 ? 4 : 3;
+      for (let i = 0; i < nH && gap0 + 8 < gap1; i++) {
+        const y = gap0 + ((gap1 - gap0) * (i + 0.4)) / (nH + 0.2) + (r() - 0.5) * 3;
+        const a2 = X(0.05 + r() * 0.1), b2 = Math.min(a2 + 70 + r() * 150, X(0.92));
+        far += skyPiece(a2, b2, y);
       }
     }
-    /* THE PAIR, IN THE CORNER THE SIGNATURE DOES NOT REACH. A phone had a
-       horizon, three tufts and a gull on it: no subject at all, and the one
-       thing on this page that looks back was desktop-only. The doe faces
-       west and the fawn east, nose to nose on the horizon at the bottom
-       left; her tail stands 74px west of the signature's first letter, and
-       the whole pair keeps its 24px with its 12px range taken off.
-       They are drawn LAST, so they stand in front of the ground's stipple,
-       and their ears are fills rather than hinges: a 390 sheet may run
-       eight continuous groups in all, and this is exactly eight.
-       EIGHT IS SAFE BECAUSE ROOM NEVER REACHES 2. The ninth would be the
-       sapling, and `free` (the space under the column) measures 61px at
-       390×844, 393×851, 412×915, 414×896, 428×926, 430×932 and 360×800,
-       and 18 at 375×667 and 320×568: the column fills the panel, so the
-       tail under it is the same on every phone and room is 1 or −1, never
-       2. At 360 and under, the band is too short for the principal and the
-       census is 6. */
+
+    /* ————— the meadow ————— */
+    /* the sheet's own bottom edge, corner to corner, in the fringe: there
+       when Safari's bar lifts, and the ground's texture meanwhile */
+    for (let fx = 0.03; fx < 1; fx += 0.06) near += ticks(X(fx), H - 7, X(0.035), 6, 11, "ds-ink w1", 3, 6, 0.3, true, true);
+    const S3 = Math.max(vs, 0.8);
+    if (room === 0) {
+      /* the brow alone, and two tufts on it */
+      near += solidTuft(X(0.12), hz + G * 0.7, 8, 4, "sway-m", 0) + tuft(X(0.82), hz + G * 0.8, 8, 4);
+    }
     if (room >= 1) {
-      near += fawn(X(0.065), { ears: true, tail: true });
-      near += doe(X(0.165), { ears: true });
-      SCAPE.deer = true;
+      /* ————— THE YOUNG TREE ON THE EAST EDGE —————
+         The sheet's own great tree at a phone's scale: a young one with its
+         foot near the bottom of the meadow and its crown rising into the
+         corner beside the signature, so the meadow reads as a place rather
+         than a rule with animals on it. Its height is what the corner
+         allows: the crown's top stays under the row's halo with the sway,
+         its west rim clear of the signature's, and the whole of it inside
+         the frame — about 100px at the owner's seat, against the 95 that
+         used to stand in a 27px strip. Its masses shrink themselves out
+         of any word's air besides (mass and compound read inKeep).
+         ITS FOOT IS IN THE FRINGE, 24px under the visible floor: a
+         foreground trunk running under the frame's edge is what a near
+         tree does, and it buys the crown the 30px that turned a lollipop
+         into a tree at the shorter seats (62 → 90 at 420×786). A creature
+         is never set down there — a doe cut off at the knee is a defect —
+         which is the whole difference between the fringe and the ground. */
+      const tfoot = Math.min(H - 12, floorY + 24);
+      const treeTop = rowB + 24 + 8;
+      const treeH = Math.min((tfoot - treeTop) / 1.25, (W - 34 - sigR) / 0.78, 125);
+      if (treeH >= 36) mid += sapling(W - 10 - 0.35 * treeH, tfoot, treeH, -0.04, "sway-sap");
+      /* ————— THE POOL, AND THE LIGHT ON IT —————
+         The one place the morning's colour reaches the meadow, in the sun's
+         own column where the meadow has it (the column is clamped east of
+         the pair's reach), sized to the depth: a pool with reeds and their
+         reflections when the meadow is deep, a lens when it is not, and on
+         the strip the pool seen EDGE-ON — a flat ellipse 7px tall with
+         three gold dashes on it, past the pair. The words' boxes already
+         carry their halo, so the lens is held against them and nothing
+         more. Its own stream.
+         THE LIGHT IS THE LAST THING TO GO. A sheet too short for the band
+         carries no sunrise, and it used to carry no warm ink at all: doe,
+         gull and tree under a kicker that says "first light again · 06:12"
+         is a pre-dawn wearing the sunrise's caption. The edge-on pool is
+         what every seat that draws anything carries: the light that the
+         sheet cannot show, caught on the water. It stands at 0.56 W when
+         there is no sun to stand under. */
+      const edgeOn = G < 40;
+      if (room >= 1) {
+        const px = sun ? clamp(sun.x + 24, X(0.4), X(0.6)) : X(0.56), py = hz + (edgeOn ? 12 : clamp(G * 0.3, 10, 44));
+        const pw = edgeOn ? 34 : clamp(G * 0.62, 44, 72), ph = edgeOn ? 3.5 : clamp(pw * 0.12, 5, 9);
+        /* the 20 above the lens is the reeds', and only a pool has reeds */
+        const hitsWord = words.some(([l, t, rt, bt]) => px + pw > l && px - pw < rt && py + ph + 4 > t && py - ph - (pw >= 56 ? 20 : 0) < bt);
+        if (!hitsWord && py + ph + 4 < floorY - 2) {
+          const poolRng = birdRng(0x9a7e);
+          near += lend(poolRng, () => {
+            let d = "";
+            const reeds = [];
+            if (pw >= 56) {
+              /* the far bank first, with two reeds on it, so the water is
+                 read against something */
+              const bank = [];
+              for (let i = 0; i <= 12; i++) { const t = i / 12; bank.push([px - pw * 1.15 + pw * 2.3 * t, py - ph - 4 + Math.sin(t * 5.2 + 1.1) * 1.4]); }
+              d += P(stroke(bank, 0.5), "ds-far w06");
+              for (const rf of [-0.5, 0.38]) {
+                const rx = px + pw * rf + (poolRng() - 0.5) * 6, ry = py - ph - 3, rh = (8 + poolRng() * 5) * S3;
+                let rd = "";
+                for (let k = 0, n2 = 2; k < n2; k++) rd += stroke(spine(rx + (poolRng() - 0.5) * 3, ry, rh * (0.6 + poolRng() * 0.5), (poolRng() - 0.5) * 0.7, (poolRng() - 0.5) * 3), 0.3);
+                d += P(rd, "ds-ink w1", 2);
+                reeds.push([rx, ry, rh]);
+              }
+            }
+            d += P(stroke(arc(px, py, pw, ph, Math.PI + 0.12, 2 * Math.PI - 0.12, 2), 0.4), "ds-far w06");
+            d += P(stroke(arc(px, py, pw, ph, 0.14, Math.PI - 0.14, 2), 0.4), "ds-ink w1");
+            /* the reflection: broken verticals under each reed, a third of
+               its height, stopping short of the near lip */
+            let refl = "";
+            for (const [rx, , rh] of reeds)
+              for (let k = 0; k < 2; k++) { const x2 = rx + (poolRng() - 0.5) * 3; const y0 = py - ph * 0.5 + poolRng() * 2, y1 = Math.min(y0 + rh * 0.4 * (0.5 + poolRng() * 0.6), py + ph * 0.7); refl += stroke([[x2, y0], [x2 + (poolRng() - 0.5) * 2, y1]], 0.6); }
+            if (refl) d += P(refl, "ds-far w1", reeds.length * 2);
+            for (let i = 0; i < 3; i++) {
+              const yy = py + (-0.42 + i * 0.4) * ph;
+              d += P(stroke([[px - pw * 0.62, yy], [px + pw * 0.62, yy]], 0.3), "ds-far w06");
+            }
+            /* the bank the reader stands on, so it is a hollow and not a line */
+            d += hatch([[px - pw * 0.8, py + ph * 0.5], [px + pw * 0.8, py + ph * 0.5], [px + pw * 0.62, py + ph + 4], [px - pw * 0.62, py + ph + 4]], -18, 2.6, "ds-far w1", 0.3, [6, 16]);
+            let g2 = "";
+            const nr = pw >= 56 ? 7 : edgeOn ? 3 : 5;
+            for (let i = 0; i < nr; i++) {
+              /* uneven down the path as well as across it: evenly spaced
+                 rungs are a ladder */
+              const t = i / (nr - 1), yy = py - ph * 0.7 + (t + (poolRng() - 0.5) * 0.08) * ph * 1.5;
+              const half = 1.6 + t * (pw * 0.12) + poolRng() * 1.6;
+              const cx2 = px + (t - 0.5) * 4 + (poolRng() - 0.5) * 3;
+              const w2 = t > 0.4 ? "ds-glit w12" : "ds-glit w1";
+              if (t > 0.35 && poolRng() < 0.5) {
+                const gap = 1.5 + poolRng() * 2.5;
+                g2 += P(stroke([[cx2 - half, yy], [cx2 - gap, yy]], 0.25), w2) + P(stroke([[cx2 + gap, yy], [cx2 + half * (0.7 + poolRng() * 0.5), yy]], 0.25), w2);
+              } else g2 += P(stroke([[cx2 - half, yy], [cx2 + half * (0.7 + poolRng() * 0.5), yy]], 0.25), w2);
+            }
+            SCAPE.pool = { x: +px.toFixed(1), y: +py.toFixed(1), w: +pw.toFixed(1), kind: pw >= 56 ? "pool" : edgeOn ? "edge" : "lens" };
+            return `<g class="ds-pool">${d}${g2}</g>`;
+          });
+        }
+      }
+      /* ————— THE PAIR —————
+         The doe faces west and the fawn east, nose to nose. With 40px of
+         meadow and more they stand IN it, in front of the brow, at the
+         size the depth allows — up to 58px to her ears against the 28 the
+         strip gave her — because the near meadow has the whole width and
+         the corner beside the signature has 64px at 390. Her ears keep
+         the signature's 24 by construction (gy and k are chosen so they
+         cannot rise above hz − 10). On the shallow strip they stand on the
+         horizon in the corner as before, at the size the corner holds, and
+         a corner too narrow for the doe has no pair at all rather than a
+         pair in the signature's air. Drawn after the pool so they stand
+         in front of its far bank; their ears are fills, which is what
+         keeps the sheet at eight live groups. */
+      const meadowK = clamp((G * 0.62 + 8) / 68.5, 0.5, 0.85);
+      /* the corner: the pair is 113.3 of her units wide from the fawn's
+         rump to her tail, the doe alone 68.5, and both keep the signature's
+         24 and the 12px range east of them; and her ears stay under the
+         ROW's halo, which the corner's height is measured from (the
+         signature's line and the gap above it) */
+      const cornerH = (34 + (hz - 34 - rowB) - 26) / 68.5;
+      const pairK = Math.min((sigL - 50) / 113.3, cornerH), doeK = Math.min((sigL - 40) / 68.5, cornerH);
+      if (G >= 40) {
+        const gy = hz + Math.round(G * 0.62), k = meadowK, x = 16 + 85.3 * k;
+        near += fawn(x - 67 * k - 6, { ears: true, tail: true }, gy, 0.65 * k);
+        near += doe(x, { ears: true }, gy, k);
+        SCAPE.deer = true;
+      } else if (pairK >= 0.42) {
+        const k = Math.min(pairK, 0.75), x = 14 + 85.3 * k;
+        near += fawn(x - 67 * k - 6, { ears: true, tail: true }, hz, 0.65 * k);
+        near += doe(x, { ears: true }, hz, k);
+        SCAPE.deer = true;
+      } else if (doeK >= 0.42) {
+        /* a corner too narrow for the pair holds the doe alone (320 wide:
+           the pair would be 28px to fit, she is 41) */
+        const k = Math.min(doeK, 0.75);
+        near += doe(4 + 40.5 * k, { ears: true }, hz, k);
+        SCAPE.deer = true;
+      }
+      /* ————— the grass, grass-sized against the cast —————
+         nothing taller than a third of the doe; the one live tuft is the
+         corner stand, and the rest hold still. Outline tufts behind the
+         solids take the cast's reserves, as the laptop's do. */
+      const capH = SCAPE.doeH ? clamp(SCAPE.doeH / 3 - 2, 8, 18) : 10;
+      near += `<g class="ds-grass" mask="url(#mG)">`;
+      for (const [fx, fy, h, n] of [[0.3, 0.55, 0.8, 4], [0.58, 0.45, 0.7, 4], [0.86, 0.5, 0.75, 4], [0.07, 0.95, 0.85, 5], [0.5, 0.98, 0.7, 4]])
+        near += tuft(X(fx), Math.min(hz + G * fy, floorY - 2), capH * h, n);
+      near += `</g>`;
+      near += solidTuft(X(0.04), Math.min(hz + G * 0.92, floorY - 2), capH, 7, "sway-m", 1);
+      near += solidTuft(X(0.33), hz + G * 0.78, capH * 0.7, 5, "", 0);
+      near += solidTuft(X(0.66), hz + G * 0.62, capH * 0.6, 5, "", 0);
+      near += solidTuft(W - 22, Math.min(hz + G * 0.96, floorY - 2), capH * 0.65, 5, "", 0);
+      /* in the fringe, blades rising into the visible band when the bar
+         lifts: the near foreground the reader stands in */
+      for (const [fx, h, n] of [[0.14, 0.8, 5], [0.47, 0.6, 4], [0.76, 0.7, 5]]) near += solidTuft(X(fx), H - 6, capH * h, n, "", 0);
+      /* the ground's texture: low tick fields across the near meadow,
+         thinned toward the words' column by dens */
+      if (G >= PHONE_MEADOW) {
+        near += ticks(X(0.5), hz + G * 0.5, X(0.42), G * 0.22, 26, "ds-ink w1", 3, 7);
+        near += ticks(X(0.2), hz + G * 0.9, X(0.12), G * 0.08, 10, "ds-ink w1", 3, 6);
+        /* the reed pen's flow lines, the lie of the grass, hair-strong */
+        cutPad = 12;
+        for (const [fx, fy, L] of [[0.02, 0.78, 70], [0.6, 0.9, 80]]) near += strokes(curve([[X(fx), hz + G * fy], [X(fx) + L * 0.5, hz + G * fy - 3 - r() * 4], [X(fx) + L, hz + G * fy + 2]]), 1.3, "ds-far w1");
+        cutPad = 4;
+      }
+      /* ————— THE DAISIES, in the near meadow, from 80px of depth —————
+         the same flowers as the laptop's, three to five clumps along the
+         near foreground, opening over the first minute for a reader who
+         stays. Their own stream. */
+      if (G >= 80) {
+        const daisyRng = birdRng(0xda15);
+        near += lend(daisyRng, () => daisyField(daisySeats([[X(0.3), hz + G * 0.98], [X(0.46), hz + G * 0.86], [X(0.6), hz + G * 0.72], [X(0.74), hz + G * 0.95], [X(0.56), hz + G * 0.99]].map(([x, y]) => [x, Math.min(y, floorY - 4)])), Math.max(vs, 0.85)));
+      }
+      /* ————— the gulls: one pecking by the water, and in a deep meadow a
+         second standing still in the near foreground ————— */
+      const gk = 1.15 * Math.max(vs, 0.7);
+      const gy1 = hz + clamp(G * 0.45, 12, 60);
+      const gx1 = clamp((SCAPE.pool ? SCAPE.pool.x + SCAPE.pool.w + 10 + 15 * gk : X(0.63)), X(0.55), W - 60 - 15 * gk);
+      near += gull(gx1, gy1, -1, "peck-a", "a");
+      if (room >= 3) near += gull(X(0.4), hz + G * 0.9, 1, "", "b");
+      /* ————— the hare under the tree, and its boulder, when the meadow
+         has depth: seated, facing west, head and ears still ————— */
+      if (room >= 3 && treeH >= 36) {
+        const hk = Math.max(vs, 0.77), hx = W - 14 - 0.35 * treeH - 30 * hk, hy = Math.min(hz + G * 0.94, floorY - 3);
+        near += hare(hx, hy, true);
+        const bx = hx - 26 * hk, by = hy + 1;
+        const rock = curve([[bx - 8, by], [bx - 7, by - 4.5], [bx - 2.5, by - 7], [bx + 3.5, by - 6], [bx + 8, by - 2.5], [bx + 7, by], [bx - 8, by]], 2);
+        let li = "";
+        for (let i = 0; i < 4; i++) { const x2 = bx - 5 + r() * 10, y2 = by - 5 + r() * 3; li += stroke([[x2, y2], [x2 + 2 + r() * 2, y2 - 0.5]], 0.2); }
+        /* its shadow falls away from the light, which on this sheet stands
+           west of it, so the foot hatches east; a sheet without a sun has
+           no cast marks at all (rake and shadowFoot say the same) */
+        const west = sun && bx < sun.x;
+        near += contour(rock, 0.5, "ds-ink", ["w12", "w1", "w12"]) + P(li, "ds-far w1", 4);
+        if (sun) near += caster(lend(castRng, () => hatch(west ? [[bx - 2, by], [bx - 11, by], [bx - 9, by + 3.5], [bx - 3, by + 3.5]] : [[bx + 2, by], [bx + 11, by], [bx + 9, by + 3.5], [bx + 3, by + 3.5]], west ? 18 : -18, 2.6, "ds-far w1 ds-castshadow", 0.3, [4, 10])), bx);
+        SCAPE.boulder = { x: bx, y: by };
+      }
     }
   }
 
@@ -12671,7 +12976,10 @@ function* drawDawnscape() {
     leaf: SCAPE.leaf && Object.fromEntries(Object.entries(SCAPE.leaf).map(([k, v]) => [k, v.map(Math.round)])),
     patterns: SCAPE.patterns, reserves: SCAPE.reserves, shadows: SCAPE.shadows, massifs: SCAPE.massifs,
     faces: tall && SCAPE.faces ? SCAPE.faces.map((f) => f.map((p) => p.map((v) => Math.round(v)))) : [],
-    near: (SCAPE.reserveCircles || []).map((c) => c.map((v) => Math.round(v))), band: narrow ? SCAPE.band || null : null, lay: SCAPE.lay || null }; /* probe hook */
+    near: (SCAPE.reserveCircles || []).map((c) => c.map((v) => Math.round(v))), band: narrow ? SCAPE.band || null : null, lay: SCAPE.lay || null,
+    /* the phone's ground, and only the phone's: a laptop's record is the
+       record it was, byte for byte (the identity hashes hold it so) */
+    ...(narrow ? { ground: { g: G, floor: Math.round(SCAPE.lay.hv), fringe: PHONE_FRINGE, pool: SCAPE.pool ? SCAPE.pool.kind : null } } : {}) }; /* probe hook */
 }
 /* the driver. The first chunk runs in the caller's own task, where the
    whole build used to run, so the measurements it takes are taken at the
@@ -13072,6 +13380,14 @@ function spawnFar(want, wantGull) {
   const vs = clamp(W / 1500, 0.44, 1);
   const trees = SCAPE.trees || [];
   const gulls = (SCAPE.gulls || []).filter((g) => !sky.flown.has(g.id));
+  /* A PHONE WITHOUT A BAND HAS NO SKY TO BE NOTICED IN. The phone's one
+     crossing is seated against the band — east of the rock and the light,
+     just over the band's top — and a sheet too short for the band seats
+     the kicker straight under the scrim: the old fallback (0.06–0.12 W,
+     0.15–0.17 H, east at 4°) flew a lone grey chevron across the kicker's
+     own line at 320×720 and 375×667. No band, no crossing; the timer is
+     kept so a rotation that seats one picks up where it left off. */
+  if (narrow && !(SCAPE.sun && SCAPE.band && SCAPE.band.relief >= 40)) { if (!want) farTimer = setTimeout(spawnFar, at(18000)); return; }
   let entry = want || "fade";
   if (!narrow && !want) {
     const pick = r();
@@ -13618,7 +13934,13 @@ function reactNear(c, px, py, lingering, fresh) {
     const again = fresh && now - (NOTICE.approach[c.who] || -Infinity) < 4000;
     if (fresh) NOTICE.approach[c.who] = now;
     const far = document.querySelectorAll(".bird.far:not(.gone):not(.speck)").length;
-    if (again && far < 3 && !sky.flown.has(id) && canNotice(`${c.who}!`, 20000)) {
+    /* NOT FROM A PHONE'S MEADOW. The takeoff flies the sky's own route —
+       east and up at 26–34° to 0.1 H — and from a gull standing at the
+       foot of a portrait sheet that route climbs straight through the
+       words. A second tap on the phone is answered on the ground, with
+       the head and then the hop, which is what the hand gets elsewhere. */
+    const phone = (window.__world.scape || {}).W < 760;
+    if (again && !phone && far < 3 && !sky.flown.has(id) && canNotice(`${c.who}!`, 20000)) {
       spawnFar("takeoff", id);
       noticed(`${c.who}!`, "takeoff");
       return;

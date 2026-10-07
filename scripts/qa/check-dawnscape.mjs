@@ -17,7 +17,7 @@
  *      range, and for a swaying group the amplitude at that radius, so the
  *      wind cannot carry a leaf into a halo — the sun's two crown groups
  *      turn and are measured the same way. Under the signature the grass
- *      is capped at 10px. At every one of the sixteen seats.
+ *      is capped at 10px. At every one of the eighteen seats.
  *      And THE LIGHT'S CLEARING (round 13): the sun rises behind the range,
  *      so the only things that may stand inside the crown's circle are the
  *      sun's own marks and the rock in front of it. Everything else lifts
@@ -189,7 +189,7 @@
  *     (31.1 of 32.4) and 1366×768 (32 of 32.5); at 1280×720 it takes 12deg
  *     (33.3 of 38) or 24deg (33.3 of 53.3)
  *   · the same on `.ds-rays2`, whose --amp is NEGATIVE: -1deg → -6deg is
- *     SILENT at all sixteen seats, and -12deg is the one that fires, at
+ *     SILENT at all eighteen seats, and -12deg is the one that fires, at
  *     1280×720 ("#mast .state" is 36px from ds-rays2 and needs 36.5px);
  *     -24deg needs 50.1px. So the probe does what it was written for — the
  *     check's Math.abs on --amp (below) is sound for the group that turns
@@ -326,6 +326,15 @@ const SEATS = [
   [1536, 864],
   [1280, 720],
   [1024, 768],
+  /* the phones. 420×786 is the owner's own (an iPhone Air on iOS 26: 420pt
+     wide, and the sticky panel is the LARGE viewport, 786 once Safari's bars
+     are counted — measured on the 26.5 simulator, 2026-10-07) and 402×754
+     an iPhone 17 Pro's; the round that laid the phone's sheet by budget
+     (layPhone) was made for exactly these two, which the old ladder drew
+     as a bare strip. 390×844 and 393×851 are the Pixel-class seats the
+     Playwright project emulates; 320×720 is the floor, and it draws now. */
+  [420, 786],
+  [402, 754],
   [390, 844],
   [393, 851],
   [320, 720],
@@ -1555,7 +1564,13 @@ try {
           : `${seat}: window.__world.scape is missing — buildDawnscape never ran`
       );
     else if (m.scape.room < 0) {
-      /* no ground to draw on: the column already overflows the panel */
+      /* no ground to draw on: the column itself does not fit the panel.
+         Since the phone's sheet is laid by budget this arm is the floor and
+         not a seat's expected state — 320×720 used to take it (free 18,
+         nothing drawn) and draws a meadow now; only a column taller than the
+         panel (320×568) still lands here, and none of the seats above does.
+         Kept falsifiable: a seat that reports room -1 with ink on the sheet
+         is still a finding. */
       if (m.paths !== 0)
         fail(
           `${seat}: ${m.paths} paths drawn with ${m.scape.free}px under the column — nothing may be drawn under 20px`
