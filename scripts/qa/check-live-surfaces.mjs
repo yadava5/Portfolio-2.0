@@ -50,6 +50,15 @@ import { readFile } from "node:fs/promises";
 const SOURCE = "src/lib/data/projects.ts";
 const CONCURRENCY = 6;
 const TIMEOUT_MS = 25_000;
+/* One retry, and only for a fetch that THREW. Measured 2026-10-06, minutes
+   after the owner paid Vercel and the twelve suspended surfaces came back:
+   the Cadence root threw a TypeError in 79 ms with nothing read while its
+   System Card on the same host answered 200, and curl plus a second fetch
+   got 200 from the root seconds later. That is a connection dropped while
+   the deploy woke, not a dead citation, and a gate that goes red on it is
+   a coin flip. An HTTP status is never retried: a 404 or a 5xx is the
+   host's answer, and asking twice does not change what a reader gets. */
+const RETRY_AFTER_MS = 2_000;
 
 const src = await readFile(SOURCE, "utf8");
 
@@ -167,7 +176,7 @@ const titleOf = (html) =>
     .replace(/\s+/g, " ")
     .trim() ?? "";
 
-async function probe(url) {
+async function probe(url, attempt = 1) {
   const started = Date.now();
   try {
     const res = await fetch(url, {
@@ -208,6 +217,13 @@ async function probe(url) {
       titleNote,
     };
   } catch (err) {
+    if (attempt === 1) {
+      console.log(
+        `  retry      ${String(err.name).padEnd(12)} ${String(Date.now() - started).padStart(5)}ms  once, after ${RETRY_AFTER_MS} ms: ${url}`
+      );
+      await new Promise((r) => setTimeout(r, RETRY_AFTER_MS));
+      return probe(url, 2);
+    }
     return {
       url,
       ok: false,
