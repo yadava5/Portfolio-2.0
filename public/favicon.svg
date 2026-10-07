@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8b5cf6"/>
-      <stop offset="100%" stop-color="#d946ef"/>
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="8" fill="#0a0a0f"/>
-  <text x="16" y="23" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="700" font-size="16" fill="url(#g)">AY</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<!-- The site mark: the pilcrow that opens every station and the OG card's
+     kicker, cut as a path from the run's own Fraunces at the masthead's axes
+     (opsz 40, SOFT 30; weight 900 so the counter survives 16px). Clay #a03f20
+     on the dawn paper #fbf3e7, measured 5.91:1 / APCA Lc 74.9. Full bleed, no
+     night variant. Why, what lost at 16px, and the rasters' drift gate:
+     scripts/asset-truth/render-favicons.mjs -->
+<rect width="64" height="64" fill="#fbf3e7"/>
+<path transform="translate(4.2752 58.88) scale(0.0384 -0.0384)" fill="#a03f20" d="M1014 261V1138Q1014 1177 995 1202Q976 1227 930 1227Q886 1227 867 1200Q847 1172 847 1138V261Q847 228 867 201Q886 174 930 174Q976 174 995 199Q1014 224 1014 261ZM1335 0H475Q447 0 428 17Q410 34 410 62Q410 97 427 119Q445 141 471 150L531 168Q567 179 583 196Q599 212 599 237V554Q568 548 540 544Q512 539 482 539Q269 539 145 650Q22 760 22 947Q22 1083 84 1185Q146 1286 258 1343Q369 1400 518 1400H1342Q1371 1400 1396 1383Q1421 1366 1421 1331Q1421 1303 1408 1285Q1395 1267 1375 1257L1323 1233Q1293 1220 1278 1200Q1262 1180 1262 1149V251Q1262 220 1275 199Q1287 178 1315 168L1368 150Q1393 140 1407 123Q1422 105 1422 75Q1422 36 1393 18Q1364 0 1335 0Z"/>
 </svg>

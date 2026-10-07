@@ -101,8 +101,9 @@ export function head({
     `<meta name="twitter:title" content="${esc(title)}">`,
     `<meta name="twitter:description" content="${esc(description)}">`,
     `<meta name="twitter:image" content="${esc(imageUrl)}">`,
-    `<link rel="shortcut icon" href="${esc(seo.absoluteSiteUrl("/favicon.ico"))}">`,
-    `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.svg"))}">`,
+    `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.svg"))}" type="image/svg+xml">`,
+    `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.ico"))}" sizes="32x32">`,
+    `<link rel="apple-touch-icon" href="${esc(seo.absoluteSiteUrl("/apple-touch-icon.png"))}">`,
     `<script type="application/ld+json">${seo.jsonLdHtml(jsonLd)}</script>`,
   ];
   return `${tags.join("\n    ")}${extraHead ? `\n    ${extraHead}` : ""}`;

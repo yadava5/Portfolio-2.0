@@ -347,6 +347,14 @@ jobs:
       - name: Check og cards (rendered footer URL casing + freshness)
         run: npm run assets:check-og
 
+      # The same drift pair as the cards above, on the site mark. It belongs
+      # here rather than in browser-quality because the check re-hashes and
+      # never re-renders: the rasters are derived from public/favicon.svg, so
+      # editing the mark without re-running the renderer leaves every tab on
+      # the internet showing the previous logo, and nothing else would say so.
+      - name: Check the site mark (favicon.svg → ico + touch icon)
+        run: npm run assets:check-favicons
+
       # These four existed and had never run on a pull request. The
       # 2026-08-02 provenance audit is what surfaced it: check-figures.mjs
       # was written in July specifically to stop the run and the data layer

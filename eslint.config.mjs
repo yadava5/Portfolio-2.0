@@ -54,6 +54,12 @@ export default defineConfig([
        `no-undef` errors and nothing true; linted without one they would still
        be a style opinion about a finished record. */
     "docs/**",
+    /* Agent worktrees. A subagent given an isolated checkout gets it under
+       .claude/worktrees/, with its own out/ and docs/ inside, and `eslint .`
+       walks into it: one leftover tree put 2,230 errors on a clean run on
+       2026-10-06, none of them in this repository's source. CI never sees
+       the directory; this keeps the local gate saying the same thing. */
+    ".claude/**",
   ]),
   js.configs.recommended,
   ...tseslint.configs.recommended,

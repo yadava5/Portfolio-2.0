@@ -286,6 +286,19 @@ const emitted = {
     `<meta name="twitter:description" content="${esc(siteMetadata.description)}"/>`,
     `<meta name="twitter:image" content="${esc(ogImage)}"/>`,
   ].join("\n    "),
+  /* The site mark, absolute like everything else in this head. The home page
+     carried NO icon link at all until now — the archive pages emitted two and
+     this one emitted none — so every browser fell back to requesting
+     /favicon.ico by default, and every tab on the site showed the retired
+     Next-era disc no matter what public/favicon.svg said. The vector is
+     offered first and the ICO second, so a browser that reads both is given
+     the one that scales; the ICO is the floor for the ones that do not.
+     scripts/archive/html.mjs emits the same three, in this same order. */
+  icons: [
+    `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.svg"))}" type="image/svg+xml"/>`,
+    `<link rel="icon" href="${esc(seo.absoluteSiteUrl("/favicon.ico"))}" sizes="32x32"/>`,
+    `<link rel="apple-touch-icon" href="${esc(seo.absoluteSiteUrl("/apple-touch-icon.png"))}"/>`,
+  ].join("\n    "),
   "JSON-LD": `<script type="application/ld+json">${seo.jsonLdHtml(seo.siteGraph())}</script>`,
 };
 
@@ -309,12 +322,13 @@ if (!/<meta name="description"/.test(html)) {
 }
 const inject = [
   emitted.canonical,
+  emitted.icons,
   emitted["og:*"],
   emitted["twitter:*"],
   emitted["JSON-LD"],
 ].join("\n    ");
 html = html.replace("</head>", `    ${inject}\n  </head>`);
-console.log("  · head: canonical + og + twitter + JSON-LD written");
+console.log("  · head: canonical + icons + og + twitter + JSON-LD written");
 
 /* ── The nameplate machines, compiled from their single source ─────── */
 execFileSync(

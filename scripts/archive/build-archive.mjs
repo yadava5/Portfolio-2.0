@@ -111,10 +111,10 @@ function countFiles(dir) {
   return n;
 }
 const PUBLIC = resolve(root, "public");
-if (!existsSync(PUBLIC)) fail("no public/ — resume.pdf, the OG cards and both favicons live there");
+if (!existsSync(PUBLIC)) fail("no public/ — resume.pdf, the OG cards and the three site-mark files live there");
 const publicCount = countFiles(PUBLIC);
 cpSync(PUBLIC, BUILD_ROOT, { recursive: true });
-for (const rel of ["resume.pdf", "favicon.ico", "favicon.svg", "og/home.png"]) {
+for (const rel of ["resume.pdf", "favicon.ico", "favicon.svg", "apple-touch-icon.png", "og/home.png"]) {
   const path = join(BUILD_ROOT, rel);
   if (!existsSync(path) || statSync(path).size === 0) {
     fail(`public/${rel} did not land in the output root`);

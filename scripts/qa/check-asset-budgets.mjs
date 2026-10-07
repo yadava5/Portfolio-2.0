@@ -33,6 +33,16 @@ if (!fs.existsSync(path.join(ogDir, "home.png"))) {
   process.exitCode = 1;
 }
 
+// The site mark. An icon is requested on every page view, before anything
+// else in the head resolves, so it must stay a trivial fetch: measured at
+// 1,268 / 1,540 / 2,194 bytes, budgeted with room for a re-cut of the
+// glyph but not for a resurrected 256px ICO frame (the retired one was
+// 25,931 bytes). The rasters are derived from the SVG by
+// `npm run assets:render-favicons`.
+budgets.push(["public/favicon.svg", 4_000]);
+budgets.push(["public/favicon.ico", 4_000]);
+budgets.push(["public/apple-touch-icon.png", 6_000]);
+
 for (const [file, maxBytes] of budgets) {
   const size = fs.statSync(file).size;
   if (size > maxBytes) {
