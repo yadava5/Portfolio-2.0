@@ -26,6 +26,19 @@
  * is about third parties, not about your own hosts. A non-200 here means a
  * reader following a citation from the run lands on nothing.
  *
+ * ONE STATUS IS EXEMPT, BY THE OWNER'S RULING. On 2026-10-06 all twelve
+ * Vercel surfaces began answering 402 Payment Required — 78 bytes each, no
+ * <title> — because Vercel had suspended those projects over billing. The
+ * owner, told the gate was red on main for that reason, said: "if the url
+ * for live sites gives 402 or like can't be deployed for the projects dont
+ * mind it, as it's a payment issue and not related to the portfolio". So a
+ * 402 is REPORTED, every run, on its own line and as a workflow warning, and
+ * it does not fail the job. Nothing else is exempt: a 404, a 5xx, a timeout
+ * or a wrong title still reds this, because those are the portfolio's own
+ * citations rotting, and that is what this gate exists for. The exemption
+ * is a status code, not a host list, so the day the bill is paid the twelve
+ * fall straight back under the full check with no edit here.
+ *
  * It deliberately does NOT run inside `verify-portfolio.mjs`. That validator is
  * what `deploy.yml` executes, and wiring six third-party hosts into the deploy
  * path means a transient Vercel blip stops the portfolio from shipping. This
@@ -164,10 +177,13 @@ async function probe(url) {
     });
     const body = await res.arrayBuffer();
     const expectName = CARD_TITLE[url];
+    const unpaid = res.status === 402;
     let title = "";
     let titleNote = "";
     let titleOk = true;
-    if (expectName !== undefined) {
+    /* A 402 body is Vercel's suspension page, not the card, so its title
+       proves nothing either way and is not read. */
+    if (expectName !== undefined && !unpaid) {
       title = titleOf(new TextDecoder().decode(body));
       if (!title) {
         titleOk = false;
@@ -183,6 +199,7 @@ async function probe(url) {
     return {
       url,
       ok: res.status === 200 && titleOk,
+      unpaid,
       status: res.status,
       bytes: body.byteLength,
       etag: res.headers.get("etag") ?? "-",
@@ -194,6 +211,7 @@ async function probe(url) {
     return {
       url,
       ok: false,
+      unpaid: false,
       status: `ERR ${err.name}`,
       bytes: 0,
       etag: "-",
@@ -215,13 +233,25 @@ results.sort((a, b) => a.url.localeCompare(b.url));
 
 for (const r of results) {
   console.log(
-    `${r.ok ? "  ok " : "DEAD "}${String(r.status).padEnd(6)} ${String(r.bytes).padStart(7)}B  ${String(r.ms).padStart(5)}ms  ${r.etag.slice(0, 18).padEnd(20)} ${r.url}` +
+    `${r.ok ? "  ok " : r.unpaid ? "UNPAID " : "DEAD "}${String(r.status).padEnd(6)} ${String(r.bytes).padStart(7)}B  ${String(r.ms).padStart(5)}ms  ${r.etag.slice(0, 18).padEnd(20)} ${r.url}` +
       (r.title ? `\n        title: ${r.title}` : "") +
       (r.titleNote ? `\n        ✗ ${r.titleNote}` : "")
   );
 }
 
-const dead = results.filter((r) => !r.ok);
+const unpaid = results.filter((r) => r.unpaid);
+if (unpaid.length) {
+  /* Loud, not fatal. `::warning::` is the GitHub Actions annotation syntax,
+     so the run's summary page shows it without anyone opening the log; on a
+     terminal it is just a line. */
+  const list = unpaid.map((r) => r.url).join(", ");
+  console.log(
+    `\n::warning title=check-live-surfaces::${unpaid.length} of ${results.length} surfaces answer 402 Payment Required ` +
+      `(Vercel billing on those projects, not the portfolio — the owner's ruling, 2026-10-06): ${list}`
+  );
+}
+
+const dead = results.filter((r) => !r.ok && !r.unpaid);
 if (dead.length) {
   const notServing = dead.filter((r) => r.status !== 200);
   const wrongTitle = dead.filter((r) => r.status === 200 && r.titleNote);
@@ -239,7 +269,11 @@ if (dead.length) {
 }
 
 const checkedTitles = results.filter((r) => r.title).length;
+const answered = results.length - unpaid.length;
 console.log(
-  `\ncheck-live-surfaces: ${results.length} live + system-card URLs all answered 200, ` +
-    `and ${checkedTitles} card titles name their own project and a booklet edition.`
+  `\ncheck-live-surfaces: ${answered} of ${results.length} live + system-card URLs answered 200, ` +
+    `and ${checkedTitles} card titles name their own project and a booklet edition` +
+    (unpaid.length
+      ? `; ${unpaid.length} answered 402 and are reported above, not failed.`
+      : ".")
 );
