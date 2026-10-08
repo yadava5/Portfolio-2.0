@@ -2474,26 +2474,33 @@ if (location.hash.length > 1) {
      the copies go the moment the roll ends. CSS animates; JS toggles. The
      blur is the only one on the page besides the hero's and exists only
      where this does, on a fine pointer (NO-LIST F7). */
+  /* THE COPIES ARE ELEMENTS NO PAGE RULE NAMES. They were spans, and
+     `.bench .shead span{line-height:1.6}` reached into the link and seated
+     every copy 4px low (measured: cell top 418.81, glyph 422.81), so the
+     roll's first frame did not match the link it replaced. */
   .roll-live{position:relative; -webkit-text-fill-color:transparent}
-  .roll-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
+  roll-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
     -webkit-user-select:none; user-select:none}
-  .roll-c{position:absolute; overflow:hidden}
-  .roll-c > span{position:absolute; top:0; height:100%; white-space:pre;
+  roll-c{position:absolute; overflow:hidden}
+  roll-c > roll-g{position:absolute; top:0; height:100%; white-space:pre;
     -webkit-text-fill-color:currentColor;
     animation:.3s cubic-bezier(.55,0,.2,1) var(--d) both}
-  .roll-c > .ro{animation-name:roll-out}
-  .roll-c > .ri{animation-name:roll-in}
-  .roll-c.e > .ro{animation-name:roll-out-e}
-  .roll-c.e > .ri{animation-name:roll-in-e}
-  .roll-c.ne > .ro{animation-name:roll-out-ne}
-  .roll-c.ne > .ri{animation-name:roll-in-ne}
+  roll-c > .ro{animation-name:roll-out}
+  roll-c > .ri{animation-name:roll-in}
+  roll-c.e > .ro{animation-name:roll-out-e}
+  roll-c.e > .ri{animation-name:roll-in-e}
+  roll-c.ne > .ro{animation-name:roll-out-ne}
+  roll-c.ne > .ri{animation-name:roll-in-ne}
   @keyframes roll-out{45%{transform:translateY(-55%) scaleY(1.2); filter:blur(.8px)} to{transform:translateY(-110%)}}
   @keyframes roll-in{from{transform:translateY(110%)} 55%{transform:translateY(45%) scaleY(1.2); filter:blur(.8px)} to{transform:none}}
-  @keyframes roll-out-e{45%{transform:translateX(55%) scaleX(1.15); filter:blur(.8px)} to{transform:translateX(110%)}}
-  @keyframes roll-in-e{from{transform:translateX(-110%)} 55%{transform:translateX(-45%) scaleX(1.15); filter:blur(.8px)} to{transform:none}}
-  @keyframes roll-out-ne{45%{transform:translate(55%,-55%); filter:blur(.8px)} to{transform:translate(110%,-110%)}}
-  @keyframes roll-in-ne{from{transform:translate(-110%,110%)} 55%{transform:translate(-45%,45%); filter:blur(.8px)} to{transform:none}}
-  @media print{ .roll-l{display:none} .roll-live{-webkit-text-fill-color:inherit} }
+  /* an arrow's cell is padded by --p on every side, so its head (which the
+     fallback faces draw past their own box) is not cut at rest, and its
+     twin waits one width plus both paddings away, wholly outside the cell */
+  @keyframes roll-out-e{45%{transform:translateX(calc(50% + var(--p))) scaleX(1.15); filter:blur(.8px)} to{transform:translateX(calc(100% + 2 * var(--p)))}}
+  @keyframes roll-in-e{from{transform:translateX(calc(-100% - 2 * var(--p)))} 55%{transform:translateX(calc(-50% - var(--p))) scaleX(1.15); filter:blur(.8px)} to{transform:none}}
+  @keyframes roll-out-ne{45%{transform:translate(calc(50% + var(--p)),calc(-50% - var(--p))); filter:blur(.8px)} to{transform:translate(calc(100% + 2 * var(--p)),calc(-100% - 2 * var(--p)))}}
+  @keyframes roll-in-ne{from{transform:translate(calc(-100% - 2 * var(--p)),calc(100% + 2 * var(--p)))} 55%{transform:translate(calc(-50% - var(--p)),calc(50% + var(--p))); filter:blur(.8px)} to{transform:none}}
+  @media print{ roll-l{display:none} .roll-live{-webkit-text-fill-color:inherit} }
 
   /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the presses ═══════
      The gate's approve is the one decision on the page, so it presses like
@@ -14877,7 +14884,7 @@ function glyphBoxes(el) {
   const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   const rg = document.createRange();
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
-    if (n.parentElement?.closest(".ink-l, .roll-l")) continue;
+    if (n.parentElement?.closest(".ink-l, roll-l")) continue;
     const t = n.data;
     for (let i = 0; i < t.length; ) {
       const cp = t.codePointAt(i), len = cp > 0xffff ? 2 : 1, ch = t.slice(i, i + len);
@@ -14956,8 +14963,7 @@ function rollLink(el) {
   if (el.classList.contains("roll-live")) return;
   const G = glyphBoxes(el);
   if (!G.length) return;
-  const layer = document.createElement("span");
-  layer.className = "roll-l";
+  const layer = document.createElement("roll-l");
   layer.setAttribute("aria-hidden", "true");
   /* the containing block of an inline link is its FIRST fragment's padding
      box, which the 44px targets' padding moves, and a plate may carry a
@@ -14977,14 +14983,20 @@ function rollLink(el) {
   G.forEach((q, j) => {
     let c = color.get(q.src);
     if (!c) { c = getComputedStyle(q.src).color; color.set(q.src, c); }
-    const pad = q.h * 0.18;
-    const cell = document.createElement("span");
-    cell.className = "roll-c" + (q.ch === "⟶" ? " e" : q.ch === "↗" ? " ne" : "");
+    /* a glyph's ink may overhang its advance, so a cell is padded at the
+       sides; an arrow's on every side (its head overhangs its box: cut at
+       rest when it was not padded), and its twin is sent past the padding
+       too, or it showed in it (filmed: a stray dot before the arrow) */
+    const dir = q.ch === "⟶" ? "e" : q.ch === "↗" ? "ne" : "";
+    const pad = q.h * (dir ? 0.3 : 0.18), padY = dir ? pad : 0;
+    const cell = document.createElement("roll-c");
+    if (dir) cell.className = dir;
     cell.style.cssText =
-      `left:${((q.x - o.left) / kx - pad).toFixed(2)}px;top:${((q.y - o.top) / ky).toFixed(2)}px;` +
-      `width:${(q.w / kx + 2 * pad).toFixed(2)}px;height:${(q.h / ky).toFixed(2)}px;` +
-      `line-height:${(q.h / ky).toFixed(2)}px;color:${c};--d:${Math.round(j * step)}ms`;
-    cell.innerHTML = `<span class="ro" style="left:${pad.toFixed(2)}px"></span><span class="ri" style="left:${pad.toFixed(2)}px"></span>`;
+      `left:${((q.x - o.left) / kx - pad).toFixed(2)}px;top:${((q.y - o.top) / ky - padY).toFixed(2)}px;` +
+      `width:${(q.w / kx + 2 * pad).toFixed(2)}px;height:${(q.h / ky + 2 * padY).toFixed(2)}px;` +
+      `line-height:${(q.h / ky).toFixed(2)}px;color:${c};--d:${Math.round(j * step)}ms;--p:${pad.toFixed(2)}px`;
+    const at = `left:${pad.toFixed(2)}px;top:${padY.toFixed(2)}px;height:${(q.h / ky).toFixed(2)}px`;
+    cell.innerHTML = `<roll-g class="ro" style="${at}"></roll-g><roll-g class="ri" style="${at}"></roll-g>`;
     cell.firstChild.textContent = cell.lastChild.textContent = q.ch;
     layer.appendChild(cell);
   });
