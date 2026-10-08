@@ -621,6 +621,10 @@ if (location.hash.length > 1) {
   }
   .chip.meet{border-color:var(--clay-g); color:var(--clay)}
   .chip:hover{border-color:var(--ink)}
+  /* the chips are controls now (role=button, tabindex), so the keyboard needs
+     the ring the drawn figure controls already get · outline takes no space,
+     so nothing on this plate moves for it */
+  .chip:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
 
   /* glyph — the pad + the drawn net */
   .glyphrow{display:flex; gap:clamp(1rem, 2vw, 1.6rem); align-items:stretch; flex-wrap:wrap}
@@ -7452,10 +7456,103 @@ function scrubCadence(p) {
     if (c.w === "when") $("slotWhen").classList.toggle("on", t > 0.5);
   }
 }
-for (const id of ["chWho", "chWhen", "chMeet"]) {
+/* THE CHIPS ANSWER A FINGER NOW. fig. 05's caption tells a phone reader to
+   "tap a chip to see its words", and until this the chips carried mouseenter
+   and mouseleave and nothing else — the same defect `traceOn` was written for
+   on fig. 04 and fig. 07, left standing on the one plate that does not use it.
+   Measured with a real tap before this change: 420x786 lit a chip in Chromium
+   and NOT in WebKit, 402x754 lit nothing in either, and 320x568 in WebKit lit
+   the NEIGHBOUR. What a tap got was whatever compatibility mouse event the
+   engine felt like synthesising. The two hover lines below are untouched and
+   the mouse path stays what it was; everything under them is new.
+
+   THE TAP IS RESOLVED ON THE PLATE, NOT ON THE CHIP, and that is the whole
+   point of it. The chips are absolutely positioned on one stack: measured at
+   320x568 they are 42.4x31.0 on a 27px pitch, so their boxes OVERLAP, and an
+   overlapping stack hands a tap to whichever box paints last rather than to the
+   one under the finger. One pointerup on the figure picks the chip whose box
+   contains the point AND whose centre is nearest it, which is the resolution a
+   reader means. A pointerup on the plate with no chip under it clears, because
+   a touch reveal has to have a way back.
+
+   AN INVISIBLE CHIP IS NOT A TARGET. `.chip` authors `opacity:0` and
+   scrubCadence writes the real value inline from the scroll, so a chip that
+   has not flown yet is still hit-testable and must not be lit. The floor is
+   0.05 and not 0.5 on purpose: the test is "has this begun to appear", not
+   "is it fully arrived", and a chip caught mid-fade is a chip a reader can
+   see and is reaching for.
+
+   AND THE ENGINE TAKES ITS SYNTHETIC HOVER BACK. This is the bug that cost the
+   first cut of this block, and no amount of reading could have found it: on a
+   tap Chromium runs pointerup, then the compatibility mouse events, and then
+   DROPS the synthetic hover, which fires `mouseleave`. So the tap lit the chip
+   (aria-pressed went true, measured) and the engine's own mouseleave put it out
+   again three events later: data-hl null with aria-pressed true, at every seat
+   in Chromium. WebKit keeps the synthetic hover and never fired it. So a tap
+   and a key LATCH, and `mouseleave` stands down while anything is latched —
+   which leaves the mouse path exactly what it was, because a mouse never
+   latches: `chipLatch` is null for every mouse-only sequence this plate can
+   see. */
+const CHIP_IDS = ["chWho", "chWhen", "chMeet"];
+const chipEls = CHIP_IDS.map((id) => $(id));
+let chipLatch = null;
+const chipShow = (el) => {
+  cad.fig.setAttribute("data-hl", el.dataset.w);
+  for (const c of chipEls) c.setAttribute("aria-pressed", String(c === el));
+};
+const chipClear = () => {
+  chipLatch = null;
+  cad.fig.removeAttribute("data-hl");
+  for (const c of chipEls) c.setAttribute("aria-pressed", "false");
+};
+/* a finger and a keyboard latch; the toggle is read off the latch and not off
+   data-hl, so a hover preview underneath one is never mistaken for a press */
+const chipToggle = (el) => {
+  if (chipLatch === el) return chipClear();
+  chipLatch = el;
+  chipShow(el);
+};
+/* the mouse path, unchanged in behaviour: enter previews, leave puts it out.
+   The only new clause is that leave stands down while a latch is up, and a
+   mouse-only sequence never raises one. */
+for (const id of CHIP_IDS) {
   $(id).addEventListener("mouseenter", () => cad.fig.setAttribute("data-hl", $(id).dataset.w));
-  $(id).addEventListener("mouseleave", () => cad.fig.removeAttribute("data-hl"));
+  $(id).addEventListener("mouseleave", () => { if (!chipLatch) chipClear(); });
 }
+const chipAt = (x, y) => {
+  let best = null, bd = Infinity;
+  for (const c of chipEls) {
+    if (parseFloat(getComputedStyle(c).opacity) < 0.05) continue;
+    const r = c.getBoundingClientRect();
+    if (!r.width || x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+    const d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
+    if (d < bd) { bd = d; best = c; }
+  }
+  return best;
+};
+for (const el of chipEls) {
+  el.setAttribute("role", "button");
+  el.setAttribute("tabindex", "0");
+  el.setAttribute("aria-pressed", "false");
+  /* no focus/blur pair here, deliberately. On a tap the order is pointerup
+     THEN focus, so a focus that lights the chip would hand pointerup a chip
+     already lit and the toggle would put it straight back out. Tab to it and
+     press; that is what role="button" promises. */
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chipToggle(el); }
+    if (e.key === "Escape") chipClear();
+  });
+}
+cad.fig.addEventListener("pointerup", (e) => {
+  const c = chipAt(e.clientX, e.clientY);
+  if (!c) return chipClear();
+  /* A MOUSE IS ALREADY SHOWING THIS CHIP, because it is hovering it to click
+     it. So a mouse SETS and a finger TOGGLES: toggling on mouseup would put
+     out the light the hover just lit, with the cursor still on the chip, and
+     the laptop's behaviour has to stay what it was. The same branch is what
+     lets a mouse plugged into a tablet, and a synthetic click, work at all. */
+  e.pointerType === "mouse" ? chipShow(c) : chipToggle(c);
+});
 
 /* ····· fig. 07 · jetpack-compress · one stream, many threads, one member ·····
    The plate falls in BOTH editions now. The wide one used to run left to
