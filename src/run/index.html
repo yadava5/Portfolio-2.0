@@ -2589,7 +2589,10 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
    depend on that layout accident, take the offsets from the measured
    type box — set under the same freeze as the geometry, so they describe
    where the letters come to rest. */
-.np-mech {
+/* .np-ans: the machines' answers to the hand (v4) take the same box, under
+   their own class so check-nameplate never counts one as a performance */
+.np-mech,
+.np-ans {
   position: absolute;
   inset: 0;
   width: 100%;

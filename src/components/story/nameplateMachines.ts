@@ -331,9 +331,9 @@ function el<K extends keyof SVGElementTagNameMap>(
   return n;
 }
 
-function mkOverlay(plate: HTMLElement, g: G): SVGSVGElement {
+function mkOverlay(plate: HTMLElement, g: G, cls = "np-mech"): SVGSVGElement {
   const svg = el("svg", {
-    class: "np-mech",
+    class: cls,
     viewBox: `0 0 ${g.W.toFixed(1)} ${g.H.toFixed(1)}`,
     "aria-hidden": "true",
     focusable: "false",
@@ -1506,6 +1506,10 @@ export type HandProbe = {
   level: number[];
   /** every span's style attribute is byte-for-byte its pre-mount self */
   rest: boolean;
+  /** answers fired, by machine, and the most overlays ever live at once */
+  fired: Record<string, number>;
+  answering: number;
+  maxLive: number;
 };
 
 /* THE NAME IS A STRING OF BEADS (v4, 2026-10-08).
@@ -1619,6 +1623,7 @@ const AXES = Array.from({ length: SOAK + 1 }, (_, l) => soakAxes(l));
 
 /** Every property the hand writes, so rest removes exactly these. */
 const OWN = [
+  "opacity",
   "translate",
   "rotate",
   "scale",
@@ -1633,6 +1638,17 @@ const rgbOf = (css: string): number[] => {
   const m = css.match(/[\d.]+/g);
   return m ? m.slice(0, 3).map(Number) : [0x26, 0x23, 0x1c];
 };
+
+/* The answers cut the letters along the SAME polygons the opening uses
+   (scan-letterform9), so a machine answers in its own pieces. */
+const LEG_L: [number, number][] = [[-0.15, -0.3], [0.435, -0.3], [0.435, 0.578], [0.282, 0.578], [0.25, 0.686], [0.435, 0.686], [0.435, 1.12], [-0.15, 1.12]];
+const LEG_R: [number, number][] = [[0.435, -0.3], [1.2, -0.3], [1.2, 1.12], [0.435, 1.12], [0.435, 0.686], [0.625, 0.686], [0.59, 0.578], [0.435, 0.578]];
+const BAR: [number, number][] = [[0.24, 0.572], [0.635, 0.572], [0.635, 0.688], [0.24, 0.688]];
+const BOWL: [number, number][] = [[-0.08, 0.465], [0.72, 0.465], [0.72, 1.1], [-0.08, 1.1]];
+const SHOULDER: [number, number][] = [[-0.08, -0.1], [1.12, -0.1], [1.12, 0.475], [-0.08, 0.475]];
+const STEM: [number, number][] = [[0.575, 0.465], [1.12, 0.465], [1.12, 1.1], [0.575, 1.1]];
+const V_L: [number, number][] = [[-0.2, -0.12], [0.622, -0.12], [0.622, 0.78], [0.74, 1.0], [0.74, 1.14], [-0.2, 1.14]];
+const V_R: [number, number][] = [[0.622, -0.12], [1.2, -0.12], [1.2, 1.14], [0.4, 1.14], [0.622, 0.78]];
 
 /**
  * Mount the hand on a settled nameplate.
@@ -1730,6 +1746,264 @@ export function mountNameHand(
   const lift = new Float64Array(N);
   const wrote = letters.map(() => ({ tr: "", rot: "", sc: "", lv: 0 }));
 
+  /* ── THE MACHINES ANSWER ─────────────────────────────────────────────
+     The crest reaching a machine letter fires that letter's machine, in
+     the opening's own vocabulary and pieces: the A's dividers open and
+     close on their hinge, the s is re-run by its bead, the dial takes the
+     a's bowl and spins with the hand's speed down its detents to a catch,
+     the runner hops, the v's strokes beat once as wings. Each answer is
+     an overlay (class np-ans, never np-mech: check-nameplate counts
+     np-mech as performances) whose outer group is moved EVERY FRAME from
+     the same pose the letter gets, while WAAPI drives only the pieces
+     inside it, so the machine rides the string with its letter. Its text
+     carries the letter's current soak, so the swap in and out is
+     invisible. One live answer per machine: a scribble cannot stack
+     them, and a machine re-arms only once its letter has calmed. */
+  type Answer = {
+    svg: SVGSVGElement;
+    outer: SVGGElement;
+    texts: SVGTextElement[];
+    end: number;
+    lv: number;
+  };
+  const answers: (Answer | null)[] = letters.map(() => null);
+  const armed = letters.map(() => true);
+  const fired: Record<string, number> = {};
+  let maxLive = 0;
+  let hop = { t0: -1, dir: 1, h: 0 };
+  let handSpeed = 0;
+  let handDir = 1;
+  const FIRE = 0.7;
+  const REARM = 0.25;
+  const HOP_MS = 440;
+
+  type Made = { ms: number; texts: SVGTextElement[] };
+  const hinge = (n: SVGElement, x: number, yy: number) => {
+    n.style.transformOrigin = `${x}px ${yy}px`;
+    n.style.transformBox = "view-box";
+  };
+  /** the dividers: the stems open on their hinge, the heavy leg first,
+   *  the crossbar lets go while they are apart and ties them again */
+  const answerDividers = (svg: SVGSVGElement, outer: SVGGElement, k: number): Made => {
+    const b = g.box[0];
+    const px = b.x + 0.473 * b.w;
+    const py = g.base - g.capH - 0.109 * g.capH;
+    const legL = clipped(svg, g, letters, 0, LEG_L, "cap");
+    const legR = clipped(svg, g, letters, 0, LEG_R, "cap");
+    const bar = clipped(svg, g, letters, 0, BAR, "cap");
+    for (const q of [legL, legR, bar]) outer.appendChild(q.gRot);
+    const boss = stroke(el("circle", { cx: px, cy: py, r: g.fs * 0.058 }, outer), g.sw * 0.55);
+    const pin = el("circle", { cx: px, cy: py, r: g.fs * 0.03, fill: INK_WET }, outer);
+    hinge(legL.gRot, px, py);
+    hinge(legR.gRot, px, py);
+    const ov = 5 + 3 * k;
+    const open = (sg: number, f: number): Keyframe[] => [
+      { transform: "rotate(0deg)", easing: "cubic-bezier(.3,.7,.3,1)" },
+      { transform: `rotate(${(sg * ov * f).toFixed(2)}deg)`, offset: 0.36, easing: "cubic-bezier(.45,.05,.3,1)" },
+      { transform: `rotate(${(-sg * ov * f * 0.18).toFixed(2)}deg)`, offset: 0.74, easing: "cubic-bezier(.35,.1,.3,1)" },
+      { transform: "rotate(0deg)" },
+    ];
+    legR.gRot.animate(open(-1, 1), { duration: 640, fill: "both" });
+    legL.gRot.animate(open(1, 0.9), { duration: 600, delay: 50, fill: "both" });
+    bar.gRot.animate(
+      [{ opacity: 1 }, { opacity: 0, offset: 0.14 }, { opacity: 0, offset: 0.6 }, { opacity: 1, offset: 0.84 }, { opacity: 1 }],
+      { duration: 650, fill: "both" }
+    );
+    for (const n of [boss, pin])
+      n.animate(
+        [{ opacity: 0 }, { opacity: 1, offset: 0.16 }, { opacity: 1, offset: 0.58 }, { opacity: 0 }],
+        { duration: 650, fill: "both" }
+      );
+    return { ms: 700, texts: [legL.text, legR.text, bar.text] };
+  };
+  /** the road: the s is run again by its bead and inks on behind it,
+   *  over a ghost of its old ink. Filmed without the ghost, the s simply
+   *  vanished for the run and the word read "Ayu h". */
+  const answerRoad = (svg: SVGSVGElement, outer: SVGGElement): Made => {
+    const d = sPathD(g);
+    const gG = el("g", {}, outer);
+    const ghost = mkText(gG, g, letters, 3);
+    gG.animate([{ opacity: 1 }, { opacity: 0.3, offset: 0.12 }, { opacity: 0.3 }], { duration: 430, fill: "both" });
+    const gT = el("g", {}, outer);
+    const t = mkText(gT, g, letters, 3);
+    const rw = wipe(svg, g, gT, d, 0.52 * g.box[3].w);
+    const bead = el("circle", { r: g.beadR, fill: INK_WET }, outer);
+    bead.style.offsetPath = `path("${d}")`;
+    bead.style.offsetRotate = "0deg";
+    const run: KeyframeAnimationOptions = { duration: 430, fill: "both", easing: "cubic-bezier(.4,.06,.2,1)" };
+    rw.s.animate([{ strokeDashoffset: rw.L }, { strokeDashoffset: 0 }], run);
+    bead.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], run);
+    bead.animate(
+      [{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.84 }, { opacity: 0 }],
+      { duration: 480, fill: "both" }
+    );
+    return { ms: 500, texts: [ghost, t] };
+  };
+  /** the dial: the bowl gives way to the dial, the needle spins with the
+   *  hand's speed down its seven detents to a catch, and the bowl inks
+   *  back on from its own bowl–stem junction */
+  const answerDial = (svg: SVGSVGElement, outer: SVGGElement, k: number, dir: number): Made => {
+    const d = dialGeom(g, 7);
+    const bowl = clipped(svg, g, letters, 7, BOWL, "x");
+    const sk: string[] = [];
+    for (let q = 0; q <= 30; q++) {
+      const [x, yy] = d.pt(1.0, d.rest - (q * 360) / 30);
+      sk.push(`${x.toFixed(1)} ${yy.toFixed(1)}`);
+    }
+    const bowlW = wipe(svg, g, bowl.gCl, "M " + sk.join(" L "), 0.44 * d.w);
+    const shoulder = clipped(svg, g, letters, 7, SHOULDER, "x");
+    const stemP = clipped(svg, g, letters, 7, STEM, "x");
+    for (const q of [bowl, shoulder, stemP]) outer.appendChild(q.gRot);
+    const gF = el("g", {}, outer);
+    stroke(el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, gF), g.sw * 0.5);
+    el("circle", { cx: d.cx, cy: d.cy, r: g.fs * 0.02, fill: INK_WET }, gF);
+    for (let q = 0; q < 7; q++) {
+      const a = (q * 360) / 7 + d.rest;
+      const [xa, ya] = d.pt(1.2, a);
+      const [xb, yb] = d.pt(q === 0 ? 1.46 : 1.32, a);
+      stroke(
+        el("path", { d: `M ${xa.toFixed(1)} ${ya.toFixed(1)} L ${xb.toFixed(1)} ${yb.toFixed(1)}` }, gF),
+        q === 0 ? g.sw * 0.5 : Math.max(1, g.sw * 0.28)
+      );
+    }
+    const gN = el("g", {}, gF);
+    el("path", { d: needleD(g, d, d.rest), fill: INK_WET }, gN);
+    hinge(gN, d.cx, d.cy);
+    hinge(gF, d.cx, d.cy);
+    /* detents, decaying: the faster the hand, the more of them */
+    const DET = 360 / 7;
+    const n = Math.max(4, Math.min(14, Math.round(4 + 9 * k)));
+    const ivs: number[] = [];
+    let iv = 1;
+    for (let q = 0; q < n; q++) {
+      ivs.push(iv);
+      iv *= 1.2;
+    }
+    const T = ivs.reduce((x, z) => x + z, 0);
+    const kf: Keyframe[] = [{ transform: `rotate(${-dir * n * DET}deg)`, offset: 0 }];
+    let acc2 = 0;
+    for (let q = 1; q <= n; q++) {
+      acc2 += ivs[q - 1];
+      const off = acc2 / T;
+      const ang = -dir * (n - q) * DET;
+      if (q === n) {
+        kf.push({ transform: `rotate(${(dir * 4.2).toFixed(2)}deg)`, offset: Math.max(0, off - 0.05) });
+        kf.push({ transform: `rotate(${(-dir * 0.9).toFixed(2)}deg)`, offset: Math.max(0, off - 0.02) });
+        kf.push({ transform: "rotate(0deg)", offset: 1 });
+      } else if (q >= n - 2) {
+        kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.99, off) });
+        kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.995, off + 0.012) });
+      } else kf.push({ transform: `rotate(${ang}deg)`, offset: off });
+    }
+    /* bounded: the intervals decay geometrically, so a length read off
+       them grew to 1.75s at thirteen detents and held the loop open */
+    const spin = 380 + 40 * n;
+    gF.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "scale(1)" }], {
+      duration: 90,
+      fill: "both",
+      easing: "ease-out",
+    });
+    gN.animate(kf, { duration: spin, delay: 50, fill: "both", easing: "linear" });
+    gF.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, delay: 50 + spin, fill: "forwards", easing: "ease" });
+    bowlW.s.animate([{ strokeDashoffset: bowlW.L }, { strokeDashoffset: 0 }], {
+      duration: 360,
+      delay: 20 + spin,
+      fill: "both",
+      easing: "cubic-bezier(.35,.05,.25,1)",
+    });
+    return { ms: 50 + spin + 400, texts: [bowl.text, shoulder.text, stemP.text] };
+  };
+  /** the bird: the v's strokes, hinged at the vertex, beat once, down
+   *  and out into open wings, a short upstroke past the stance, and fold
+   *  back to the v. Up-first was filmed: at the raised pose the two
+   *  strokes close into one solid wedge. */
+  const answerBird = (svg: SVGSVGElement, outer: SVGGElement, k: number): Made => {
+    const bg = birdGeom(g);
+    const lockL = clipped(svg, g, letters, 10, V_L, "x");
+    const lockR = clipped(svg, g, letters, 10, V_R, "x");
+    for (const q of [lockL, lockR]) {
+      outer.appendChild(q.gRot);
+      hinge(q.gRot, bg.vx, bg.vy);
+    }
+    const up = 1 + 0.4 * k;
+    const down = 10 + 6 * k;
+    const beat = (raise: number, sg: number): Keyframe[] => [
+      { transform: "rotate(0deg)", easing: "cubic-bezier(.25,.7,.3,1)" },
+      { transform: `rotate(${(sg * down).toFixed(2)}deg)`, offset: 0.34, easing: "cubic-bezier(.45,.05,.3,1)" },
+      { transform: `rotate(${(raise * 0.35 * up).toFixed(2)}deg)`, offset: 0.66, easing: "cubic-bezier(.35,.1,.3,1)" },
+      { transform: "rotate(0deg)" },
+    ];
+    lockL.gRot.animate(beat(-12 - bg.tiltL, -1), { duration: 640, fill: "both" });
+    lockR.gRot.animate(beat(14 - bg.tiltR, 1), { duration: 640, delay: 30, fill: "both" });
+    return { ms: 700, texts: [lockL.text, lockR.text] };
+  };
+  /** the letter's last pose, so an answer that fires between frames is
+   *  placed on it at once rather than at the letter's rest */
+  const pose = letters.map(() => ({ tx: 0, ty: 0, th: 0, sc: 1 }));
+  const track = (i: number) => {
+    const a = answers[i];
+    if (!a) return;
+    const b = g.box[i];
+    const ox = b.x + b.w / 2;
+    const oy = g.base;
+    const q = pose[i];
+    a.outer.setAttribute(
+      "transform",
+      `translate(${(ox + q.tx * fs).toFixed(2)} ${(oy + q.ty * fs).toFixed(2)}) ` +
+        `rotate(${q.th.toFixed(2)}) scale(${q.sc.toFixed(4)}) translate(${(-ox).toFixed(2)} ${(-oy).toFixed(2)})`
+    );
+    if (a.lv !== level[i]) {
+      a.lv = level[i];
+      for (const t of a.texts) {
+        t.style.setProperty("font-variation-settings", AXES[a.lv]);
+        t.setAttribute("fill", ink[a.lv]);
+      }
+    }
+  };
+  const fire = (i: number, k: number, now: number) => {
+    const kind = MACHINE[i];
+    if (!kind || answers[i] || stale || dead) return;
+    armed[i] = false;
+    fired[kind] = (fired[kind] ?? 0) + 1;
+    if (kind === "runner") {
+      if (hop.t0 < 0) hop = { t0: now, dir: handDir, h: 0.045 + 0.03 * k };
+      return;
+    }
+    const svg = mkOverlay(plate, g, "np-ans");
+    const outer = el("g", {}, svg);
+    const made =
+      kind === "dividers"
+        ? answerDividers(svg, outer, k)
+        : kind === "road"
+          ? answerRoad(svg, outer)
+          : kind === "dial"
+            ? answerDial(svg, outer, k, handDir)
+            : answerBird(svg, outer, k);
+    answers[i] = { svg, outer, texts: made.texts, end: now + made.ms, lv: -1 };
+    letters[i].style.setProperty("opacity", "0");
+    track(i);
+    maxLive = Math.max(maxLive, answers.filter(Boolean).length);
+  };
+  /** the runner's one hop, on top of the string: up and forward, a
+   *  landing squash, a small second bound, planted past upright */
+  const hopPose = (now: number) => {
+    const u = (now - hop.t0) / HOP_MS;
+    if (hop.t0 < 0 || u >= 1) return { ty: 0, th: 0, sy: 1 };
+    const AIR = 0.58;
+    if (u < AIR) {
+      const a = u / AIR;
+      return { ty: -hop.h * 4 * a * (1 - a), th: hop.dir * 6 * Math.sin(Math.PI * a), sy: 1 };
+    }
+    const w = (u - AIR) / (1 - AIR);
+    const squash = w < 0.3 ? 1 - 0.018 * Math.sin((Math.PI * w) / 0.3) : 1;
+    const b = w > 0.3 && w < 0.8 ? (w - 0.3) / 0.5 : -1;
+    return {
+      ty: b >= 0 ? -hop.h * 0.2 * 4 * b * (1 - b) : 0,
+      th: -hop.dir * 1.4 * Math.sin(Math.PI * w) * (1 - w),
+      sy: squash,
+    };
+  };
+
   const sub = (dt: number) => {
     const c0 = 2 * BEAD.zeta * BEAD.w0;
     const w2 = BEAD.w0 * BEAD.w0;
@@ -1753,12 +2027,16 @@ export function mountNameHand(
 
   const clearAll = () => {
     for (let i = 0; i < N; i++) {
+      answers[i]?.svg.remove();
+      answers[i] = null;
+      armed[i] = true;
       for (const p of OWN) letters[i].style.removeProperty(p);
       wrote[i].tr = wrote[i].rot = wrote[i].sc = "";
       wrote[i].lv = 0;
       level[i] = 0;
       lift[i] = 0;
     }
+    hop.t0 = -1;
     pinned = false;
   };
 
@@ -1778,7 +2056,7 @@ export function mountNameHand(
     }
   };
 
-  const draw = () => {
+  const draw = (now: number) => {
     if (!pinned) {
       pinned = true;
       for (let i = 0; i < N; i++) {
@@ -1805,9 +2083,18 @@ export function mountNameHand(
          of ink under itself, and only a swoosh throws the wave */
       const lv = Math.round(Math.sqrt(e) * SOAK);
       level[i] = lv;
-      const tr = `${shift[i][lv].toFixed(4)}em ${yd.toFixed(4)}em`;
-      const rot = `${th.toFixed(2)}deg`;
-      const sc = (1 + BEAD.swell * e).toFixed(4);
+      const hp = i === 9 ? hopPose(now) : null;
+      const q = pose[i];
+      q.tx = shift[i][lv];
+      q.ty = yd + (hp ? hp.ty : 0);
+      q.th = th + (hp ? hp.th : 0);
+      q.sc = 1 + BEAD.swell * e;
+      const tr = `${q.tx.toFixed(4)}em ${q.ty.toFixed(4)}em`;
+      const rot = `${q.th.toFixed(2)}deg`;
+      const sc =
+        hp && hp.sy !== 1
+          ? `${q.sc.toFixed(4)} ${(q.sc * hp.sy).toFixed(4)}`
+          : q.sc.toFixed(4);
       const w = wrote[i];
       const st = letters[i].style;
       if (tr !== w.tr) st.setProperty("translate", (w.tr = tr));
@@ -1823,6 +2110,7 @@ export function mountNameHand(
           st.setProperty("color", ink[lv]);
         }
       }
+      track(i);
     }
   };
 
@@ -1854,11 +2142,31 @@ export function mountNameHand(
       mv = Math.max(mv, Math.abs(v[i]));
     }
     peak = Math.max(peak, my);
-    if (my < BEAD.restY && mv < BEAD.restV && !due.length) {
+    let busy = hop.t0 >= 0 && now - hop.t0 < HOP_MS;
+    if (!busy) hop.t0 = -1;
+    for (let i = 0; i < N; i++) {
+      const a = answers[i];
+      if (a && now >= a.end) {
+        a.svg.remove();
+        letters[i].style.removeProperty("opacity");
+        answers[i] = null;
+      }
+      if (answers[i]) busy = true;
+      if (!MACHINE[i]) continue;
+      /* fire on the RISING crest only, so a press's dip never sets off
+         the neighbours; re-arm once the letter has calmed */
+      const e = Math.hypot(v[i] / BEAD.w0, y[i]) / BEAD.full;
+      if (e < REARM) armed[i] = true;
+      else if (armed[i] && e > FIRE && y[i] < 0 && v[i] < 0 && !answers[i]) {
+        fire(i, Math.min(1, Math.max(0, (handSpeed - 4) / 16)), now);
+        if (answers[i] || hop.t0 >= 0) busy = true;
+      }
+    }
+    if (my < BEAD.restY && mv < BEAD.restV && !due.length && !busy) {
       settle();
       return false;
     }
-    draw();
+    draw(now);
     return true;
   };
 
@@ -1895,7 +2203,9 @@ export function mountNameHand(
     const dy = p1.y - p0.y;
     const len = Math.hypot(dx, dy);
     if (len < 1e-4 || dt <= 0) return;
-    let speed = Math.min(BEAD.vmax, len / dt) - BEAD.vmin;
+    handSpeed = Math.min(BEAD.vmax, len / dt);
+    if (Math.abs(dx) > 1e-3) handDir = dx > 0 ? 1 : -1;
+    let speed = handSpeed - BEAD.vmin;
     if (speed <= 0) return;
     if (speed > BEAD.vref) speed = BEAD.vref * Math.sqrt(speed / BEAD.vref);
     const ahead = Math.max(-BEAD.leadMax, Math.min(BEAD.leadMax, (BEAD.lead * dx) / dt));
@@ -1970,6 +2280,7 @@ export function mountNameHand(
           dv: BEAD.press * Math.pow(BEAD.rho, Math.abs(i - best)),
         });
     presses++;
+    if (MACHINE[best]) fire(best, 0.25, t0);
     go();
   };
   /* a mouse or pen presses on the way down; a finger presses only once it
@@ -2031,6 +2342,9 @@ export function mountNameHand(
       lift: Array.from(lift, (x) => +x.toFixed(4)),
       level: Array.from(level),
       rest: letters.every((l, i) => l.style.cssText === snap[i]),
+      fired: { ...fired },
+      answering: answers.filter(Boolean).length + (hop.t0 >= 0 ? 1 : 0),
+      maxLive,
     }),
   };
 }
