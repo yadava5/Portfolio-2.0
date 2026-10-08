@@ -241,10 +241,24 @@ function pinnedCommitAgrees(baseline) {
     );
     return;
   }
+  /* maxBuffer, because spawnSync's default is 1 MiB and src/run/index.html
+     passed it (1,096,811 bytes on living/integrate): the read came back
+     ENOBUFS with status null and stdout cut at 1,064,960 bytes, this hashed
+     the partial read, and the error below then named the wrong cause. A
+     read that did not complete is a failure of its own. */
   const at = spawnSync("git", ["cat-file", "blob", blob], {
     cwd: root,
     encoding: "buffer",
+    maxBuffer: 1 << 26,
   });
+  if (at.error || at.status !== 0) {
+    throw new Error(
+      `could not read src/run/index.html at the pinned commit ${baseline.commit.slice(0, 8)}: ` +
+        (at.error
+          ? at.error.code || String(at.error)
+          : `git exited ${at.status}`)
+    );
+  }
   const there = createHash("sha256").update(at.stdout).digest("hex");
   if (there !== baseline.runSourceSha256) {
     throw new Error(
