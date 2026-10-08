@@ -2430,6 +2430,34 @@ if (location.hash.length > 1) {
      was filed as one twice: the toggle's click lands and `aria-expanded` goes
      false → true at 1440x900 and at 420x786, measured both before and after
      this deletion. */
+
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the headings soak ═══════
+     A heading does not move under the hand and does not get bolder: one
+     pass of ink soaks through it from the side the hand came in, SOFT up
+     and the optical size down, so the hairlines thicken and the terminals
+     round and then dry again. Fraunces' axes move the advance, so the real
+     text is never touched (kerning and wrap are the browser's own): the
+     pass runs on aria-hidden copies laid at each glyph's measured box, the
+     real glyphs are only hidden (fill, not layout) while the copies live,
+     and the copies are removed the moment the pass ends, so nothing on an
+     idle page differs from the page without them. JS builds the copies and
+     toggles one class; the pass itself is CSS. */
+  .ink-live{position:relative; -webkit-text-fill-color:transparent}
+  .ink-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
+    -webkit-user-select:none; user-select:none}
+  .ink-c{position:absolute; white-space:pre; transform:translateX(-50%);
+    -webkit-text-fill-color:currentColor; font-variation-settings:var(--fv0);
+    animation:ink-pass .62s linear both; animation-delay:var(--d)}
+  /* A FRONT, NOT A STATE. Filmed with a symmetric pass the whole word sat
+     soaked at once and "Applied." read as going bold; a fast wetting and a
+     slow dry keep only the glyph the front has just reached at full soak,
+     the ones behind it drying, so the word is never all heavier at once. */
+  @keyframes ink-pass{
+    0%{font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+    16%{font-variation-settings:var(--fv1); animation-timing-function:cubic-bezier(.45,.05,.4,1)}
+    100%{font-variation-settings:var(--fv0)}
+  }
+  @media print{ .ink-l{display:none} .ink-live{-webkit-text-fill-color:inherit} }
 </style>
 
 <style id="np-css">
@@ -14751,6 +14779,102 @@ function releaseFlock() {
   mark("bird");
 }
 addEventListener("resize", () => { if (seatChanged && flockFrom) buildFlock(); });
+
+/* ————— THE TYPE ANSWERS THE HAND (v4): the headings soak —————
+   Fine pointers only (a phone has no hover, and nothing here may take a
+   tap), never under reduced motion, never with ?notype. TRIGGER HYGIENE:
+   content scrolling under a still cursor fires pointerenter in Chromium,
+   and WebKit fires zero-movement pointermoves as it does, so a heading
+   answers only a hand that has really moved in the last 100ms and a page
+   that has not scrolled in the last 150ms. */
+const TYPE_HAND = !RM && !FLAGS.has("notype") && matchMedia("(hover: hover) and (pointer: fine)").matches;
+let handMovedAt = -1e9, pageScrolledAt = -1e9, handAtX = NaN, handAtY = NaN;
+if (TYPE_HAND) {
+  addEventListener("pointermove", (e) => {
+    if (e.clientX === handAtX && e.clientY === handAtY) return;
+    handAtX = e.clientX; handAtY = e.clientY; handMovedAt = performance.now();
+  }, { passive: true });
+  addEventListener("scroll", () => { pageScrolledAt = performance.now(); }, { passive: true });
+}
+const handIsReal = () => {
+  const t = performance.now();
+  return t - handMovedAt <= 100 && t - pageScrolledAt >= 150;
+};
+/* every glyph of an element's own text as a box in client px, by Range,
+   which is the browser's own layout: kerning, ligatures and wrap included.
+   A code point whose box is empty is the tail of a ligature and rides with
+   the glyph before it. */
+function glyphBoxes(el) {
+  const out = [];
+  const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const rg = document.createRange();
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    if (n.parentElement?.closest(".ink-l, .roll-l")) continue;
+    const t = n.data;
+    for (let i = 0; i < t.length; ) {
+      const cp = t.codePointAt(i), len = cp > 0xffff ? 2 : 1, ch = t.slice(i, i + len);
+      rg.setStart(n, i); rg.setEnd(n, i + len);
+      const r = [...rg.getClientRects()].find((q) => q.width > 0);
+      if (r && !/\s/.test(ch)) out.push({ ch, x: r.left, y: r.top, w: r.width, h: r.height, src: n.parentElement });
+      else if (!r && out.length && !/\s/.test(ch)) out[out.length - 1].ch += ch;
+      i += len;
+    }
+  }
+  return out;
+}
+/* the soak, read off the heading's own axes: SOFT to 100, and the optical
+   size 30 lower only where the heading names one (a heading left on the
+   automatic optical size keeps it, so the copies match it exactly) */
+function soakOf(fvs) {
+  const ax = {};
+  if (fvs && fvs !== "normal") for (const m of fvs.matchAll(/"(\w{4})"\s+(-?[\d.]+)/g)) ax[m[1]] = +m[2];
+  const at = { ...ax, SOFT: 100 };
+  if ("opsz" in ax) at.opsz = Math.max(9, ax.opsz - 30);
+  if (!("SOFT" in ax)) ax.SOFT = 0;
+  const str = (o) => Object.entries(o).map(([k, v]) => `"${k}" ${v}`).join(", ");
+  return [str(ax), str(at)];
+}
+function inkPass(el, hx) {
+  if (el.classList.contains("ink-live")) return;
+  const G = glyphBoxes(el);
+  if (!G.length) return;
+  const r = el.getBoundingClientRect();
+  const k = r.width / (el.offsetWidth || r.width) || 1;
+  const lo = Math.min(...G.map((q) => q.x)), hi = Math.max(...G.map((q) => q.x + q.w));
+  const fromRight = hx > (lo + hi) / 2;
+  /* the front runs at a quick hand's speed and crosses any heading in at
+     most 640ms, so a short word is crossed slowly and a long line quickly */
+  const span = Math.max(1, hi - lo), speed = Math.max(0.35, span / 640);
+  const at = (q) => (fromRight ? hi - (q.x + q.w) : q.x - lo) / speed;
+  const cs = new Map();
+  const layer = document.createElement("span");
+  layer.className = "ink-l";
+  layer.setAttribute("aria-hidden", "true");
+  let last = 0;
+  G.forEach((q) => {
+    let c = cs.get(q.src);
+    if (!c) { const s = getComputedStyle(q.src); c = { color: s.color, style: s.fontStyle, fv: soakOf(s.fontVariationSettings) }; cs.set(q.src, c); }
+    const e = document.createElement("span");
+    e.className = "ink-c";
+    e.textContent = q.ch;
+    e.style.cssText =
+      `left:${((q.x + q.w / 2 - r.left) / k).toFixed(2)}px;top:${((q.y - r.top) / k).toFixed(2)}px;` +
+      `line-height:${(q.h / k).toFixed(2)}px;color:${c.color};font-style:${c.style};` +
+      `--fv0:${c.fv[0]};--fv1:${c.fv[1]};--d:${Math.round(at(q))}ms`;
+    last = Math.max(last, at(q));
+    layer.appendChild(e);
+  });
+  el.classList.add("ink-live");
+  el.appendChild(layer);
+  setTimeout(() => { layer.remove(); el.classList.remove("ink-live"); }, Math.round(last) + 680);
+}
+if (TYPE_HAND) {
+  for (const el of document.querySelectorAll("main h2, .litany .mline > p:not(.rct)")) {
+    if (el.closest("#nextmorning")) continue;
+    el.addEventListener("pointerenter", (e) => { if (handIsReal()) inkPass(el, e.clientX); });
+  }
+}
+window.__world.inkLive = () => document.querySelectorAll(".ink-live").length; /* probe hook */
 
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */
