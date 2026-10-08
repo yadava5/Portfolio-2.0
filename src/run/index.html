@@ -2729,9 +2729,21 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
    depend on that layout accident, take the offsets from the measured
    type box — set under the same freeze as the geometry, so they describe
    where the letters come to rest. */
+.np-mech {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
 /* .np-ans: the machines' answers to the hand (v4) take the same box, under
-   their own class so check-nameplate never counts one as a performance */
-.np-mech,
+   their own class so check-nameplate never counts one as a performance.
+   A rule of its own, not a second selector on the rule above: the
+   nameplate's negative gate breaks .np-mech's sizing by that rule's own
+   text, to prove check-nameplate can see an overlay sized from the wrong
+   box, and a shared selector list hid its target (the injection stopped
+   landing and the gate went red as "proves nothing"). */
 .np-ans {
   position: absolute;
   inset: 0;
