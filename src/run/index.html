@@ -724,6 +724,9 @@ if (location.hash.length > 1) {
     #net.tight .on .bar{transition:height .5s cubic-bezier(.22,1,.36,1), y .5s cubic-bezier(.22,1,.36,1)}
     #net .l2{transition-delay:.1s}
     #net .l3{transition-delay:.22s}
+    /* a finished read rewires the lines (routeEdges): they are cut at the old
+       routes with no fade, then come in from nothing on the new ones */
+    #net.rewire .ed{transition:none}
   }
   #inCanvas{image-rendering:pixelated; border:1px solid var(--hair); background:transparent}
   .verdictline{display:flex; gap:1.4rem; align-items:baseline; margin-top:.7rem; flex-wrap:wrap;
@@ -9724,6 +9727,9 @@ function lightNet(px, hidden, conf, pred, live = false, who = "you") {
   ctx.putImageData(img, 0, 0);
   const hMax = Math.max(1e-6, ...hidden);
   net.hn.forEach((n, i) => n.setAttribute("opacity", (0.12 + 0.88 * hidden[i] / hMax).toFixed(2)));
+  /* the card now holds the reader's ink, pen down or up, so the line naming
+     the sample comes off with the first read of theirs, not at the lift */
+  if (who !== "sample") for (const t of net.sampleTx) t.setAttribute("display", "none");
   if (live) {
     /* the pen is down, so the lines keep the routes of the last finished
        read and only say how hard each one's unit is working right now */
@@ -9740,7 +9746,21 @@ function lightNet(px, hidden, conf, pred, live = false, who = "you") {
   });
   const kinds = [net.ed.filter((e) => e.kind === 0), net.ed.filter((e) => e.kind === 1)];
   net.edges = netEdges(px, hidden, kinds[0].length, kinds[1].length);
+  /* NEW WIRING COMES IN AS NEW INK. Moving 116 lines to new routes in one
+     frame while their opacity was still easing from the last read's made a
+     lift flicker (filmed: the old fan jumped, then faded). So the lines are
+     cut at their old routes, moved while they are at nothing, and fade in
+     on the new ones with the plate's own stagger, input lines first. One
+     forced style flush; no frame is scheduled. */
+  const s = $("net");
+  if (!RM) { /* under reduced motion there is no fade to stage */
+    s.classList.add("rewire");
+    for (const e of net.ed) e.el.setAttribute("opacity", 0);
+    void s.getBoundingClientRect();
+  }
   routeEdges(kinds, net.edges);
+  if (!RM) s.classList.remove("rewire");
+  for (const e of net.ed) e.el.setAttribute("opacity", e.to);
   net.read = { px, hidden, conf, pred, who };
   for (const t of net.sampleTx) t.setAttribute("display", who === "sample" ? "inline" : "none");
   seatDeep();
@@ -9818,14 +9838,16 @@ const netUnit = (j) => { const [x, y, p] = net.geo.hid; return [x + (j % 10) * p
 function routeEdges([k0, k1], { e1, e2 }) {
   const [fx, fy, fw] = net.geo.fo, m = 1.5, rim = net.r0 + 0.8;
   const box = [fx - m, fy - m, fx + fw + m, fy - m, fx + fw + m, fy + fw + m, fx - m, fy + fw + m];
+  /* endpoints only; each line's ink is left in e.to for the caller, which
+     sets it once the line has moved (see lightNet) */
   const put = (e, x1, y1, x2, y2, s) => {
     e.el.setAttribute("x1", x1.toFixed(1)); e.el.setAttribute("y1", y1.toFixed(1));
     e.el.setAttribute("x2", x2.toFixed(1)); e.el.setAttribute("y2", y2.toFixed(1));
-    e.el.setAttribute("opacity", (0.05 + 0.6 * s).toFixed(2));
+    e.to = (0.05 + 0.6 * s).toFixed(2);
   };
   k0.forEach((e, i) => {
     const r = e1[i];
-    if (!r) { e.el.setAttribute("opacity", 0); return; }
+    if (!r) { e.to = 0; return; }
     const [px, py] = netPix(r.k), [hx, hy] = netUnit(r.j), l = Math.hypot(hx - px, hy - py) || 1;
     const t = (DEPTH.span(px, py, hx, hy, box) || [0, 0])[1];
     e.a = r.j;
@@ -9833,7 +9855,7 @@ function routeEdges([k0, k1], { e1, e2 }) {
   });
   k1.forEach((e, i) => {
     const r = e2[i];
-    if (!r) { e.el.setAttribute("opacity", 0); return; }
+    if (!r) { e.to = 0; return; }
     const [hx, hy] = netUnit(r.j), [ox, oy] = net.geo.out(r.o), l = Math.hypot(ox - hx, oy - hy) || 1;
     e.a = r.j; e.b = r.o;
     put(e, hx + (ox - hx) / l * rim, hy + (oy - hy) / l * rim, ox, oy, r.s);
