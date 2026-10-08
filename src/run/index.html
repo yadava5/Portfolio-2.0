@@ -581,7 +581,7 @@ if (location.hash.length > 1) {
   /* a lane's words fade with the room it has, but never under a keyboard */
   #jetFig .tracebtn:focus .jlab{opacity:1}
   @media print{ #jetFig .depth{display:none} #jetFig .jflat{opacity:1 !important}
-    #jetFig .lane3{transform:none !important} #jetFig .jlab{opacity:1 !important} }
+    #jetFig .lane3, #jetFig .jlab{transform:none !important} #jetFig .jlab{opacity:1 !important} }
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
      nothing here is a partial alpha the palette gate cannot see. */
@@ -8097,14 +8097,20 @@ function drawDeepJet(a) {
   /* each lane, upright at its own depth; its words once it has room */
   N.lanes.forEach((l, k) => {
     const i = w.A[k], s = S[i];
-    const tf = `matrix(${r2(s)} 0 0 ${r2(s)} ${r1(U[i] - l.x * s)} ${r1(V[i] - w.railY * s)})`;
+    /* THE CSS PROPERTY, NOT THE ATTRIBUTE: print has to be able to put the
+       sheets back, and in WebKit a stylesheet's transform:none does not beat
+       an SVG transform attribute (measured: lane 3 printed at x 305.5 against
+       its authored 434 mid-reveal; Chromium honoured the rule). On an SVG
+       element the property's px are user units and its origin is the user
+       origin, so the matrix means what the attribute meant. */
+    const tf = `matrix(${r2(s)}, 0, 0, ${r2(s)}, ${r1(U[i] - l.x * s)}, ${r1(V[i] - w.railY * s)})`;
     if (l._tf !== tf) {
-      l._tf = tf; l.g.setAttribute("transform", tf);
+      l._tf = tf; l.g.style.transform = tf;
       /* the words stand at their own size on a sheet that is not: a far lane
          at 0.94 would have set its label at 11.9px on the 390 seat, under the
          reading gate's 12, so the label takes the sheet's scale back off */
       const k = 1 / r2(s), ly = w.railY - 18;
-      l.lab.setAttribute("transform", `matrix(${r2(k)} 0 0 ${r2(k)} ${r1(l.x * (1 - k))} ${r1(ly * (1 - k))})`);
+      l.lab.style.transform = `matrix(${r2(k)}, 0, 0, ${r2(k)}, ${r1(l.x * (1 - k))}, ${r1(ly * (1 - k))})`;
     }
     let room = Infinity;
     for (const m of [k - 1, k + 1]) if (w.A[m] !== undefined) room = Math.min(room, Math.abs(U[w.A[m]] - U[i]));
@@ -8135,8 +8141,8 @@ function setDeepJet(on) {
        opacity on any word, every target back */
     N.flat.removeAttribute("opacity");
     for (const l of N.lanes) {
-      l.g.removeAttribute("transform"); l.g.removeAttribute("pointer-events");
-      l.lab.removeAttribute("opacity"); l.lab.removeAttribute("transform");
+      l.g.style.transform = ""; l.g.removeAttribute("style"); l.g.removeAttribute("pointer-events");
+      l.lab.removeAttribute("opacity"); l.lab.style.transform = ""; l.lab.removeAttribute("style");
       l._tf = l._op = undefined;
     }
   }
