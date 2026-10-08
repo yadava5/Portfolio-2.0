@@ -14831,9 +14831,16 @@ if (TYPE_HAND) {
   }, { passive: true });
   addEventListener("scroll", () => { pageScrolledAt = performance.now(); }, { passive: true });
 }
-const handIsReal = () => {
+/* A boundary event comes BEFORE the move that caused it, so a hand that
+   jumps onto a heading after a pause would read the move before the pause
+   and be refused (caught by a probe that moved twice, 200ms apart). The
+   enter's own position is the better witness: a hand that moved it is at
+   a new place; a page scrolled under a still cursor leaves it where the
+   last move put it. */
+const handIsReal = (e) => {
   const t = performance.now();
-  return t - handMovedAt <= 100 && t - pageScrolledAt >= 150;
+  const moved = e && (e.clientX !== handAtX || e.clientY !== handAtY);
+  return (moved || t - handMovedAt <= 100) && t - pageScrolledAt >= 150;
 };
 /* every glyph of an element's own text as a box in client px, by Range,
    which is the browser's own layout: kerning, ligatures and wrap included.
@@ -14910,7 +14917,7 @@ function inkPass(el, hx) {
 if (TYPE_HAND) {
   for (const el of document.querySelectorAll("main h2, .litany .mline > p:not(.rct)")) {
     if (el.closest("#nextmorning")) continue;
-    el.addEventListener("pointerenter", (e) => { if (handIsReal()) inkPass(el, e.clientX); });
+    el.addEventListener("pointerenter", (e) => { if (handIsReal(e)) inkPass(el, e.clientX); });
   }
 }
 window.__world.inkLive = () => document.querySelectorAll(".ink-live").length; /* probe hook */
@@ -14968,7 +14975,7 @@ if (TYPE_HAND) {
   const LINKS = ".handoff a, .bench .shead a, .bench .bfoot a, .litany .mline .rct a, .prose .mutedln a, #mast > a";
   for (const el of document.querySelectorAll(LINKS)) {
     if (el.closest("#nextmorning")) continue;
-    el.addEventListener("pointerenter", () => { if (handIsReal()) rollLink(el); });
+    el.addEventListener("pointerenter", (e) => { if (handIsReal(e)) rollLink(el); });
   }
 }
 window.__world.rollLive = () => document.querySelectorAll(".roll-live").length; /* probe hook */
