@@ -8725,6 +8725,7 @@ function applyArc(arc, scrollFrac) {
     $("mast").style.setProperty("--scrim-c", rgbCss(arc.rgb));
     /* and the thread canvas, which cannot read the cascade — see groundRgb */
     groundRgb = arc.rgb;
+    mastInk(arc);
     if (arc.night !== window.__world.night) {
       document.documentElement.toggleAttribute("data-night", arc.night);
       window.__world.night = arc.night;
@@ -8734,6 +8735,60 @@ function applyArc(arc, scrollFrac) {
   if (drawWash && !FLAGS.has("nowash")) drawWash(arc.rgb, scrollFrac, arc.sun, arc.night ? 1 : 0, washSeat(arc));
   markArc = arc;
   if (!document.hidden) tabMark(arc);
+}
+
+/* THE MASTHEAD KEEPS ITS WORDS THROUGH THE DUSK. Its inks are the root's,
+   and the root flips only when the field's luminance reaches .079, so for
+   the whole crossing before that the day's inks stand on a field that is
+   already dark. Measured on main's build, headless Chromium, every 20px
+   across the crossing: at 1440x900 the state line fell to 1.03:1 (scroll
+   7260), the clay phase word to 1.02:1 and the name to 1.95:1; at 420x786
+   the state line to 1.01:1 and the name to 1.93:1. The name on every screen
+   of the run was, for a stretch of the dusk, very nearly not there.
+   So the masthead alone takes the side the field is on, in four stops by the
+   field's luminance, written on #mast for the scrim's own reason (a custom
+   property changed on :root is resolved across the whole document in
+   WebKit). The stops are measurements, not taste:
+     >= .760  the day: nothing written; WAY[4], the darkest day waypoint, is
+              .786, so this is crossed inside the darkening and nowhere else
+     >= .198  the day's primary ink for all three words; .198 is where #26231c
+              and #f6efe2 hold the same ratio against the field (3.70:1),
+              markSvg's own constant for the same reason
+     >= .147  the night's primary ink for all three
+     <  .147  the night's ink and secondary (#d9d0c3 is back to 3.50:1 there),
+              the clay word still in the primary until the root flips; from
+              the flip on nothing is written and the root's night is main's
+   Both sides are read once off their own declarations, so no hex is written
+   twice. Colour only: no box moves. */
+const MAST_DUSK = 0.76, MAST_CROSS = 0.198, MAST_NIGHT = 0.147;
+const fieldLum = (rgb) => 0.2126 * markLin(rgb[0]) + 0.7152 * markLin(rgb[1]) + 0.0722 * markLin(rgb[2]);
+let mastSides = null, mastStop = 0;
+function mastSide(n) {
+  if (!mastSides) {
+    const root = document.documentElement, was = root.hasAttribute("data-night");
+    mastSides = [false, true].map((night) => {
+      root.toggleAttribute("data-night", night);
+      const cs = getComputedStyle(root);
+      return { ink: cs.getPropertyValue("--ink").trim(), ink2: cs.getPropertyValue("--ink-2").trim() };
+    });
+    root.toggleAttribute("data-night", was);
+  }
+  return mastSides[n];
+}
+function mastInk(arc) {
+  const y = fieldLum(arc.rgb);
+  /* once the root has flipped, its own night inks are the right ones (main's
+     night, unchanged); before the dusk stop the day's are (main's day) */
+  const st = arc.night || y >= MAST_DUSK ? 0 : y >= MAST_CROSS ? 1 : y >= MAST_NIGHT ? 2 : 3;
+  if (st === mastStop) return;
+  mastStop = st;
+  window.__world.mastStop = st;
+  const m = $("mast").style;
+  if (st === 0) { for (const t of ["--ink", "--ink-2", "--clay"]) m.removeProperty(t); return; }
+  const p = mastSide(st >= 2 ? 1 : 0);
+  m.setProperty("--ink", p.ink);
+  m.setProperty("--ink-2", st === 3 ? p.ink2 : p.ink);
+  m.setProperty("--clay", p.ink);
 }
 
 /* ————— the tab mark, live —————
