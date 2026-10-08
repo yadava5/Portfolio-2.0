@@ -327,7 +327,10 @@ if (location.hash.length > 1) {
     #mast::before{display:none} /* nothing exits in the settled world */
   }
   #mast a{pointer-events:auto; color:var(--ink); text-decoration:none; font-family:var(--display); font-size:.98rem; letter-spacing:.01em; font-variation-settings:"opsz" 40, "SOFT" 30}
-  #mast a:hover{font-variation-settings:"opsz" 40, "SOFT" 100}
+  /* not where the roll is armed (v4): the glove widens the advance over .5s
+     while the roll's copies are laid at the advance it had when the hand
+     arrived, so the two would part company under the reader's eye */
+  html:not(.roll-armed) #mast a:hover{font-variation-settings:"opsz" 40, "SOFT" 100}
   @media (prefers-reduced-motion: no-preference){ #mast a{transition:font-variation-settings .5s ease} }
   #mast .state b{font-weight:400; color:var(--ink)}
   #mast .state i{font-style:normal; color:var(--clay)}
@@ -831,7 +834,8 @@ if (location.hash.length > 1) {
   .btn:disabled{cursor:default}
   @media (prefers-reduced-motion: no-preference){
     .btn::before{transition:transform .35s cubic-bezier(.22,1,.36,1)}
-    .btn:active{transform:scale(.97)}
+    /* the press is .pressing now (v4, the presses, below): a weighted
+       dip that runs whole even on a click too quick to hold :active */
   }
 
   /* beat 7 — agentic automl: the notebook worked by tools, at night */
@@ -2430,6 +2434,98 @@ if (location.hash.length > 1) {
      was filed as one twice: the toggle's click lands and `aria-expanded` goes
      false → true at 1440x900 and at 420x786, measured both before and after
      this deletion. */
+
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the headings soak ═══════
+     A heading does not move under the hand and does not get bolder: one
+     pass of ink soaks through it from the side the hand came in, SOFT up
+     and the optical size down, so the hairlines thicken and the terminals
+     round and then dry again. Fraunces' axes move the advance, so the real
+     text is never touched (kerning and wrap are the browser's own): the
+     pass runs on aria-hidden copies laid at each glyph's measured box, the
+     real glyphs are only hidden (fill, not layout) while the copies live,
+     and the copies are removed the moment the pass ends, so nothing on an
+     idle page differs from the page without them. JS builds the copies and
+     toggles one class; the pass itself is CSS. */
+  .ink-live{position:relative; -webkit-text-fill-color:transparent}
+  .ink-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
+    -webkit-user-select:none; user-select:none}
+  .ink-c{position:absolute; white-space:pre; transform:translateX(-50%);
+    -webkit-text-fill-color:currentColor; font-variation-settings:var(--fv0);
+    animation:ink-pass .62s linear both; animation-delay:var(--d)}
+  /* A FRONT, NOT A STATE. Filmed with a symmetric pass the whole word sat
+     soaked at once and "Applied." read as going bold; a fast wetting and a
+     slow dry keep only the glyph the front has just reached at full soak,
+     the ones behind it drying, so the word is never all heavier at once. */
+  @keyframes ink-pass{
+    0%{font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+    16%{font-variation-settings:var(--fv1); animation-timing-function:cubic-bezier(.45,.05,.4,1)}
+    100%{font-variation-settings:var(--fv0)}
+  }
+  @media print{ .ink-l{display:none} .ink-live{-webkit-text-fill-color:inherit} }
+
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the links roll ═══════
+     A link swishes: every glyph rolls up out of its line while its twin
+     rolls in from below, stretched and a hair blurred in flight, the
+     arrow leaving the way it points and coming back from behind, and the
+     underline holding still. Built on hover from aria-hidden copies at the
+     glyphs' measured boxes, inside the link, so the link's text, name,
+     wrap and box are the browser's own throughout; the real glyphs are
+     hidden by fill (the underline is drawn in `color`, so it stays) and
+     the copies go the moment the roll ends. CSS animates; JS toggles. The
+     blur is the only one on the page besides the hero's and exists only
+     where this does, on a fine pointer (NO-LIST F7). */
+  /* THE COPIES ARE ELEMENTS NO PAGE RULE NAMES. They were spans, and
+     `.bench .shead span{line-height:1.6}` reached into the link and seated
+     every copy 4px low (measured: cell top 418.81, glyph 422.81), so the
+     roll's first frame did not match the link it replaced. */
+  .roll-live{position:relative; -webkit-text-fill-color:transparent}
+  roll-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
+    -webkit-user-select:none; user-select:none}
+  roll-c{position:absolute; overflow:hidden}
+  roll-c > roll-g{position:absolute; top:0; height:100%; white-space:pre;
+    -webkit-text-fill-color:currentColor;
+    animation:.3s cubic-bezier(.55,0,.2,1) var(--d) both}
+  roll-c > .ro{animation-name:roll-out}
+  roll-c > .ri{animation-name:roll-in}
+  roll-c.e > .ro{animation-name:roll-out-e}
+  roll-c.e > .ri{animation-name:roll-in-e}
+  roll-c.ne > .ro{animation-name:roll-out-ne}
+  roll-c.ne > .ri{animation-name:roll-in-ne}
+  @keyframes roll-out{45%{transform:translateY(-55%) scaleY(1.2); filter:blur(.8px)} to{transform:translateY(-110%)}}
+  @keyframes roll-in{from{transform:translateY(110%)} 55%{transform:translateY(45%) scaleY(1.2); filter:blur(.8px)} to{transform:none}}
+  /* an arrow's cell is padded by --p on every side, so its head (which the
+     fallback faces draw past their own box) is not cut at rest, and its
+     twin waits one width plus both paddings away, wholly outside the cell */
+  @keyframes roll-out-e{45%{transform:translateX(calc(50% + var(--p))) scaleX(1.15); filter:blur(.8px)} to{transform:translateX(calc(100% + 2 * var(--p)))}}
+  @keyframes roll-in-e{from{transform:translateX(calc(-100% - 2 * var(--p)))} 55%{transform:translateX(calc(-50% - var(--p))) scaleX(1.15); filter:blur(.8px)} to{transform:none}}
+  @keyframes roll-out-ne{45%{transform:translate(calc(50% + var(--p)),calc(-50% - var(--p))); filter:blur(.8px)} to{transform:translate(calc(100% + 2 * var(--p)),calc(-100% - 2 * var(--p)))}}
+  @keyframes roll-in-ne{from{transform:translate(calc(-100% - 2 * var(--p)),calc(100% + 2 * var(--p)))} 55%{transform:translate(calc(-50% - var(--p)),calc(50% + var(--p))); filter:blur(.8px)} to{transform:none}}
+  @media print{ roll-l{display:none} .roll-live{-webkit-text-fill-color:inherit} }
+
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the presses ═══════
+     The gate's approve is the one decision on the page, so it presses like
+     one: down fast as if it had weight, 2px and a hair smaller, and back
+     firmly with no overshoot and no squash. The pad's clear presses
+     lighter. Both are a class the press toggles, so a click too quick to
+     hold :active still gets the whole dip. "watch it again" turns its
+     arrow once, the way the arrow points. */
+  .np-turn{display:inline-block}
+  @media (prefers-reduced-motion: no-preference){
+    .pressing{animation:press-weight .34s both}
+    #clear.pressing{animation-name:press-light; animation-duration:.26s}
+    .np-replay.turning .np-turn{animation:np-turn .62s cubic-bezier(.3,.6,.25,1)}
+  }
+  @keyframes press-weight{
+    0%{transform:none; animation-timing-function:cubic-bezier(.5,0,.75,0)}
+    22%{transform:translateY(2px) scale(.985); animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+    100%{transform:none}
+  }
+  @keyframes press-light{
+    0%{transform:none; animation-timing-function:cubic-bezier(.5,0,.75,0)}
+    25%{transform:translateY(1px) scale(.97); animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+    100%{transform:none}
+  }
+  @keyframes np-turn{to{transform:rotate(-360deg)}}
 </style>
 
 <style id="np-css">
@@ -2561,6 +2657,10 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
   white-space: nowrap;
   width: max-content;
   max-width: 100%;
+  /* the hand listens for a tap here (a phone's press), and iOS Safari
+     flashes its grey tap box over any element that listens for clicks:
+     the name would go grey under every finger */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .np-ch {
@@ -2589,7 +2689,10 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
    depend on that layout accident, take the offsets from the measured
    type box — set under the same freeze as the geometry, so they describe
    where the letters come to rest. */
-.np-mech {
+/* .np-ans: the machines' answers to the hand (v4) take the same box, under
+   their own class so check-nameplate never counts one as a performance */
+.np-mech,
+.np-ans {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -2723,6 +2826,12 @@ html[data-np-ready] .np-replay {
 h1[data-np-measuring] .np-ch {
   animation: none !important;
   transform: none !important;
+  /* the hand moves the letters through these three, which `transform`
+     does not reach; it is unmounted before any measure, and this is the
+     freeze saying so too */
+  translate: none !important;
+  rotate: none !important;
+  scale: none !important;
   font-variation-settings:
     "opsz" 144,
     "SOFT" 50,
@@ -3650,7 +3759,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
            then scaled by 0.833 and centred, shifting every machine 70px right.
            That is the A landing on the y. Nothing may share this box. -->
       <p class="roleline" data-fx="in .0 .24 y 4 | out .94 1.04 y -3 | drift 14">Software engineer</p>
-      <button type="button" class="np-replay" data-np-replay hidden>watch it again ⟲</button>
+      <button type="button" class="np-replay" data-np-replay hidden>watch it again <span class="np-turn">⟲</span></button>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
            at or before y 0): a hero that assembles itself costs LCP and
            reads as a loading screen, and the census showed the thesis at
@@ -8935,6 +9044,7 @@ function stirAll(now) {
   for (const step of stirring) if (!step(now)) stirring.delete(step);
 }
 window.__world.hand = () => stirring.size;
+window.__stir = stir; /* the nameplate's module mounts its own hand and has no other way into this loop */
 
 function frame() {
   const y = scrollY;
@@ -14797,6 +14907,206 @@ function releaseFlock() {
 }
 addEventListener("resize", () => { if (seatChanged && flockFrom) buildFlock(); });
 
+/* ————— THE TYPE ANSWERS THE HAND (v4): the headings soak —————
+   Fine pointers only (a phone has no hover, and nothing here may take a
+   tap), never under reduced motion, never with ?notype. TRIGGER HYGIENE:
+   content scrolling under a still cursor fires pointerenter in Chromium,
+   and WebKit fires zero-movement pointermoves as it does, so a heading
+   answers only a hand that has really moved in the last 100ms and a page
+   that has not scrolled in the last 150ms. */
+const TYPE_HAND = !RM && !FLAGS.has("notype") && matchMedia("(hover: hover) and (pointer: fine)").matches;
+let handMovedAt = -1e9, pageScrolledAt = -1e9, handAtX = NaN, handAtY = NaN;
+if (TYPE_HAND) {
+  addEventListener("pointermove", (e) => {
+    if (e.clientX === handAtX && e.clientY === handAtY) return;
+    handAtX = e.clientX; handAtY = e.clientY; handMovedAt = performance.now();
+  }, { passive: true });
+  addEventListener("scroll", () => { pageScrolledAt = performance.now(); }, { passive: true });
+}
+/* A boundary event comes BEFORE the move that caused it, so a hand that
+   jumps onto a heading after a pause would read the move before the pause
+   and be refused (caught by a probe that moved twice, 200ms apart). The
+   enter's own position is the better witness: a hand that moved it is at
+   a new place; a page scrolled under a still cursor leaves it where the
+   last move put it. */
+const handIsReal = (e) => {
+  const t = performance.now();
+  const moved = e && (e.clientX !== handAtX || e.clientY !== handAtY);
+  return (moved || t - handMovedAt <= 100) && t - pageScrolledAt >= 150;
+};
+/* every glyph of an element's own text as a box in client px, by Range,
+   which is the browser's own layout: kerning, ligatures and wrap included.
+   A code point whose box is empty is the tail of a ligature and rides with
+   the glyph before it. */
+function glyphBoxes(el) {
+  const out = [];
+  const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const rg = document.createRange();
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    if (n.parentElement?.closest(".ink-l, roll-l")) continue;
+    const t = n.data;
+    for (let i = 0; i < t.length; ) {
+      const cp = t.codePointAt(i), len = cp > 0xffff ? 2 : 1, ch = t.slice(i, i + len);
+      rg.setStart(n, i); rg.setEnd(n, i + len);
+      const r = [...rg.getClientRects()].find((q) => q.width > 0);
+      if (r && !/\s/.test(ch)) out.push({ ch, x: r.left, y: r.top, w: r.width, h: r.height, src: n.parentElement });
+      else if (!r && out.length && !/\s/.test(ch)) out[out.length - 1].ch += ch;
+      i += len;
+    }
+  }
+  return out;
+}
+/* the soak, read off the heading's own axes: SOFT to 100, and the optical
+   size 30 lower only where the heading names one (a heading left on the
+   automatic optical size keeps it, so the copies match it exactly) */
+function soakOf(fvs) {
+  const ax = {};
+  if (fvs && fvs !== "normal") for (const m of fvs.matchAll(/"(\w{4})"\s+(-?[\d.]+)/g)) ax[m[1]] = +m[2];
+  const at = { ...ax, SOFT: 100 };
+  if ("opsz" in ax) at.opsz = Math.max(9, ax.opsz - 30);
+  if (!("SOFT" in ax)) ax.SOFT = 0;
+  const str = (o) => Object.entries(o).map(([k, v]) => `"${k}" ${v}`).join(", ");
+  return [str(ax), str(at)];
+}
+function inkPass(el, hx) {
+  if (el.classList.contains("ink-live")) return;
+  const G = glyphBoxes(el);
+  if (!G.length) return;
+  const r = el.getBoundingClientRect();
+  const k = r.width / (el.offsetWidth || r.width) || 1;
+  const lo = Math.min(...G.map((q) => q.x)), hi = Math.max(...G.map((q) => q.x + q.w));
+  const fromRight = hx > (lo + hi) / 2;
+  /* the front runs at a quick hand's speed and crosses any heading in at
+     most 640ms, so a short word is crossed slowly and a long line quickly */
+  const span = Math.max(1, hi - lo), speed = Math.max(0.35, span / 640);
+  const at = (q) => (fromRight ? hi - (q.x + q.w) : q.x - lo) / speed;
+  const cs = new Map();
+  const layer = document.createElement("span");
+  layer.className = "ink-l";
+  layer.setAttribute("aria-hidden", "true");
+  let last = 0;
+  G.forEach((q) => {
+    let c = cs.get(q.src);
+    if (!c) { const s = getComputedStyle(q.src); c = { color: s.color, style: s.fontStyle, fv: soakOf(s.fontVariationSettings) }; cs.set(q.src, c); }
+    const e = document.createElement("span");
+    e.className = "ink-c";
+    e.textContent = q.ch;
+    e.style.cssText =
+      `left:${((q.x + q.w / 2 - r.left) / k).toFixed(2)}px;top:${((q.y - r.top) / k).toFixed(2)}px;` +
+      `line-height:${(q.h / k).toFixed(2)}px;color:${c.color};font-style:${c.style};` +
+      `--fv0:${c.fv[0]};--fv1:${c.fv[1]};--d:${Math.round(at(q))}ms`;
+    last = Math.max(last, at(q));
+    layer.appendChild(e);
+  });
+  el.classList.add("ink-live");
+  el.appendChild(layer);
+  setTimeout(() => {
+    layer.remove();
+    el.classList.remove("ink-live");
+    if (!el.classList.length) el.removeAttribute("class"); /* not even class="" */
+  }, Math.round(last) + 680);
+}
+if (TYPE_HAND) {
+  for (const el of document.querySelectorAll("main h2, .litany .mline > p:not(.rct)")) {
+    if (el.closest("#nextmorning")) continue;
+    el.addEventListener("pointerenter", (e) => { if (handIsReal(e)) inkPass(el, e.clientX); });
+  }
+}
+window.__world.inkLive = () => document.querySelectorAll(".ink-live").length; /* probe hook */
+/* ————— THE TYPE ANSWERS THE HAND (v4): the links roll —————
+   The artifact links (handoffs, the bench's records, the litany's
+   receipts, the evidence index) and the masthead's name, which is a link
+   and so rolls rather than waves. ¶13 is not touched. Same hygiene and
+   the same worlds as the headings. */
+function rollLink(el) {
+  if (el.classList.contains("roll-live")) return;
+  const G = glyphBoxes(el);
+  if (!G.length) return;
+  const layer = document.createElement("roll-l");
+  layer.setAttribute("aria-hidden", "true");
+  /* the containing block of an inline link is its FIRST fragment's padding
+     box, which the 44px targets' padding moves, and a plate may carry a
+     settled scale: so the origin and the scale are read, not assumed */
+  layer.innerHTML = '<i style="position:absolute;left:100px;top:100px"></i>';
+  /* the underline holds: Blink paints a currentColor decoration in the
+     text's FILL colour, so hiding the fill took the underline with it
+     (filmed); pinned to its resolved colour for as long as the roll runs */
+  el.style.textDecorationColor = getComputedStyle(el).textDecorationColor;
+  el.classList.add("roll-live");
+  el.appendChild(layer);
+  const o = layer.getBoundingClientRect(), u = layer.firstChild.getBoundingClientRect();
+  const kx = (u.left - o.left) / 100 || 1, ky = (u.top - o.top) / 100 || 1;
+  layer.textContent = "";
+  const step = Math.min(15, 120 / G.length);
+  const color = new Map();
+  G.forEach((q, j) => {
+    let c = color.get(q.src);
+    if (!c) { c = getComputedStyle(q.src).color; color.set(q.src, c); }
+    /* a glyph's ink may overhang its advance, so a cell is padded at the
+       sides; an arrow's on every side (its head overhangs its box: cut at
+       rest when it was not padded), and its twin is sent past the padding
+       too, or it showed in it (filmed: a stray dot before the arrow) */
+    const dir = q.ch === "⟶" ? "e" : q.ch === "↗" ? "ne" : "";
+    const pad = q.h * (dir ? 0.3 : 0.18), padY = dir ? pad : 0;
+    const cell = document.createElement("roll-c");
+    if (dir) cell.className = dir;
+    cell.style.cssText =
+      `left:${((q.x - o.left) / kx - pad).toFixed(2)}px;top:${((q.y - o.top) / ky - padY).toFixed(2)}px;` +
+      `width:${(q.w / kx + 2 * pad).toFixed(2)}px;height:${(q.h / ky + 2 * padY).toFixed(2)}px;` +
+      `line-height:${(q.h / ky).toFixed(2)}px;color:${c};--d:${Math.round(j * step)}ms;--p:${pad.toFixed(2)}px`;
+    const at = `left:${pad.toFixed(2)}px;top:${padY.toFixed(2)}px;height:${(q.h / ky).toFixed(2)}px`;
+    cell.innerHTML = `<roll-g class="ro" style="${at}"></roll-g><roll-g class="ri" style="${at}"></roll-g>`;
+    cell.firstChild.textContent = cell.lastChild.textContent = q.ch;
+    layer.appendChild(cell);
+  });
+  setTimeout(() => {
+    layer.remove();
+    el.classList.remove("roll-live");
+    if (!el.classList.length) el.removeAttribute("class");
+    el.style.removeProperty("text-decoration-color");
+    if (!el.getAttribute("style")) el.removeAttribute("style");
+  }, Math.round((G.length - 1) * step) + 340);
+}
+if (TYPE_HAND) {
+  document.documentElement.classList.add("roll-armed");
+  const LINKS = ".handoff a, .bench .shead a, .bench .bfoot a, .litany .mline .rct a, .prose .mutedln a, #mast > a";
+  for (const el of document.querySelectorAll(LINKS)) {
+    if (el.closest("#nextmorning")) continue;
+    el.addEventListener("pointerenter", (e) => { if (handIsReal(e)) rollLink(el); });
+  }
+}
+window.__world.rollLive = () => document.querySelectorAll(".roll-live").length; /* probe hook */
+/* ————— THE TYPE ANSWERS THE HAND (v4): the presses —————
+   Every pointer and the keyboard (a click with e.detail 0), because a
+   press is the button answering the press, not a hover; passive, so it
+   never takes a tap. The class goes when its animation ends, and the
+   attribute with it if it is all that was there. */
+if (!RM && !FLAGS.has("notype")) {
+  const once = (el, cls, names) => {
+    const go = () => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+    el.addEventListener("animationend", (e) => {
+      if (!names.includes(e.animationName)) return;
+      el.classList.remove(cls);
+      if (!el.classList.length) el.removeAttribute("class");
+    });
+    return go;
+  };
+  for (const el of [$("approve"), $("clear")]) {
+    if (!el) continue;
+    const press = once(el, "pressing", ["press-weight", "press-light"]);
+    el.addEventListener("pointerdown", press, { passive: true });
+    el.addEventListener("click", (e) => { if (!e.detail) press(); });
+  }
+  const rp = document.querySelector("[data-np-replay]");
+  if (rp) {
+    const turn = once(rp, "turning", ["np-turn"]);
+    rp.addEventListener("pointerenter", (e) => { if (TYPE_HAND && e.pointerType !== "touch" && handIsReal(e)) turn(); });
+    rp.addEventListener("click", turn);
+  }
+}
+
+
+
 /* ————— boot ————— */
 /* if the module ever dies, the story must still read: settle everything */
 addEventListener("error", () => document.body.classList.add("settled"));
@@ -14927,6 +15237,19 @@ boot();
       const M = await import("./run/components/story/nameplateMachines.js");
       const letters = Array.from(h1.querySelectorAll(".np-ch"));
       let running = false;
+      /* THE HAND (v4): the settled name answers the pointer. It mounts in
+         perform()'s finally, on the same line that says the name reads
+         whole, and it comes off as the FIRST thing rebuild() does, because
+         a MutationObserver on data-np-ready would run as a microtask, after
+         applyKern and measureSettled had already read type the hand was
+         still moving (cloneNode carries its inline styles into the probe).
+         `geo` is the geometry this performance measured under its freeze:
+         the hand is cut to it and never measures a live name itself.
+         ?notype leaves the name as it was. */
+      let hand = null;
+      let geo = null;
+      const NOTYPE = new URLSearchParams(location.search).has("notype");
+      if (window.__world) window.__world.name = () => (hand ? hand.probe() : null);
       const perform = async () => {
         if (running) return;
         running = true;
@@ -14936,6 +15259,7 @@ boot();
           h1.setAttribute("data-np-measuring", "");
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
+          geo = g;
           h1.removeAttribute("data-np-measuring");
           /* THE SWEEP STARTS WHEN THE PERFORMANCE DOES, and says so.
              It started here before this line existed, because the measuring
@@ -14949,7 +15273,6 @@ boot();
              its animation cancelled and restarted anyway. */
           plate.setAttribute("data-np-go", "");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
-          M.mountHoverAnswers?.(plate, h1, letters, g);
         } finally {
           running = false;
           /* RE-BASELINE, and this is what stops the loop.
@@ -14971,6 +15294,8 @@ boot();
              display rule still gates the reveal on data-np-ready, which is
              set on the line above, so this shows it no sooner. */
           if (replay) { replay.hidden = false; replay.disabled = false; }
+          if (geo && !hand && !NOTYPE && window.__stir && M.mountNameHand)
+            hand = M.mountNameHand(plate, h1, letters, geo, window.__stir);
         }
       };
       /* REBUILD WHEN THE PLATE RESIZES.
@@ -14988,6 +15313,8 @@ boot();
          the plate box, but a rebuild loop here would be invisible and
          expensive. */
       const rebuild = () => {
+        hand?.unmount();
+        hand = null;
         plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
         /* the attribute means "the name reads whole"; a replay is a name
            that does not, until perform()'s finally sets it again */

@@ -221,3 +221,35 @@ browser clamps timers to. Nothing on the **page** moves for it.
 **Still banned, unchanged:** any second rAF loop, any idle animation of page
 content, and any favicon motion that is decoration rather than the mark doing
 what it is (the seam is a seam; it is sewn).
+
+### F7 · The type answers the hand; the figures assemble in depth — narrows §A "3D-tilt cards" and §E "the only blur" (owner decision, 2026-10-08)
+
+The owner asked for text that answers the pointer, in his words "really good
+shadcn quality ... not just get bold ... swish effect or motion or blurry or a
+bubbly effect, different effects when hovering over text", for his name to
+answer "after the opening animation ... if someone swoosh or move the cursor
+over the text", and for "the 3D assembly of the figures ... figures coming from
+three dimensions". Three things the list as written forbids or leaves unsaid
+are therefore permitted, each bounded:
+
+1. **Pointer-driven type physics.** The settled nameplate's letters may move
+   under the hand (a bead chain driven by the pointer's speed, the five
+   letter-machines answering its crest), and headings, links and buttons may
+   answer a hover or a press. Bounds: real type throughout (selectable,
+   accessible, layout-neutral: the h1 box and every heading and link rect
+   unchanged, measured); driven by a REAL pointer's speed or a press, never by
+   where a cursor rests and never by content scrolling under a still one; no
+   tilt toward the pointer, no glare, no magnetic pull, no custom cursor, no
+   idle motion; one stepper on the engine's own loop and back at exactly zero
+   once the hand has gone (F3 stands); nothing mounts under reduced motion.
+2. **One more blur.** §E's "hero de-blur is the only blur on the page" is
+   narrowed by exactly one: the link roll's mid-flight blur, under 1px, for
+   300ms, on fine pointers only. Never on a phone, never on a resting glyph.
+3. **Figures assembled in true 3D by the scroll** inside a plate that never
+   moves on its own: one camera, scroll-pure (the same y gives the same frame),
+   rigid planes, true perspective. Not a tilt card: nothing follows the pointer.
+
+**Still banned, unchanged:** tilt cards, glare and holo, magnetic buttons,
+particles and constellations, text scramble and typewriter effects, shimmer
+sweeps, glow of any kind, gradient text, custom cursors, idle animation of page
+content, blur on mobile, and any second rAF loop.
