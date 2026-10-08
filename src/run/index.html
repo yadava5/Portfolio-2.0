@@ -575,6 +575,16 @@ if (location.hash.length > 1) {
      which is why the trailer also keeps its lettering and its place at the end
      of the member — the colour is the third cue here and never the only one. */
   #jetFig .crc.sealed{stroke:var(--clay-g); stroke-width:1.4}
+  /* fig. 07's depth reveal (jet3): the plane drawn through the camera, in the
+     plane's own inks, filled because each line is a sliver as wide as its
+     own depth makes it. It is display:none at a = 1 like fig. 06's. */
+  #jetFig .depth{pointer-events:none}
+  #jetFig .depth .jkline{fill:var(--hair-strong)}
+  #jetFig .depth .jkbox{fill:var(--ink)}
+  /* a lane's words fade with the room it has, but never under a keyboard */
+  #jetFig .tracebtn:focus .jlab{opacity:1}
+  @media print{ #jetFig .depth{display:none} #jetFig .jflat{opacity:1 !important}
+    #jetFig .lane3, #jetFig .jlab{transform:none !important} #jetFig .jlab{opacity:1 !important} }
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
      nothing here is a partial alpha the palette gate cannot see. */
@@ -699,6 +709,17 @@ if (location.hash.length > 1) {
   #net.tight .on text{font-size:11px}
   #net.tight .on.win text{font-size:12.5px}
   #net .ed{stroke:var(--ink); fill:none}
+  /* fig. 06's depth layer (net3): the plate's own inks and nothing else. The
+     depth is in the geometry and in each path's lightness, never a shadow or
+     a glow; while it is up the figure may draw a little outside its own box,
+     inside the plate's padding, and at a = 1 it is display:none. */
+  #net.indepth{overflow:visible}
+  #net .depth path{fill:var(--ink); stroke:none}
+  #net .depth .dkbar{fill:var(--ink-2)}
+  #net .depth .dkwin{fill:var(--clay-g)}
+  /* print is the drawing: the layer goes, and the flat figure it may be
+     standing in for (opacity 0 anywhere above the window) comes back */
+  @media print{ #net .depth{display:none} #net .flat{opacity:1 !important} }
   @media (prefers-reduced-motion: no-preference){
     #net .hn{transition:opacity .45s ease}
     #net .ed{transition:opacity .5s ease}
@@ -706,6 +727,9 @@ if (location.hash.length > 1) {
     #net.tight .on .bar{transition:height .5s cubic-bezier(.22,1,.36,1), y .5s cubic-bezier(.22,1,.36,1)}
     #net .l2{transition-delay:.1s}
     #net .l3{transition-delay:.22s}
+    /* a finished read rewires the lines (routeEdges): they are cut at the old
+       routes with no fade, then come in from nothing on the new ones */
+    #net.rewire .ed{transition:none}
   }
   #inCanvas{image-rendering:pixelated; border:1px solid var(--hair); background:transparent}
   .verdictline{display:flex; gap:1.4rem; align-items:baseline; margin-top:.7rem; flex-wrap:wrap;
@@ -3937,7 +3961,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
         <p class="prov mono">C++ · OpenMP · WebAssembly · React</p>
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://ayush-yadav.com/projects/fast-mnist-nn/" target="_blank" rel="noopener">the case file ⟶</a> · <a href="https://github.com/yadava5/glyph" target="_blank" rel="noopener">source ↗</a> · <a href="https://getglyph.vercel.app" target="_blank" rel="noopener">live demo ↗</a> · <a href="https://getglyph.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .48 x 10 y 8 s .968 | out .76 .98 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .0 .09 | out .76 .98 y -7 s .985 | drift 12">
         <div class="glyphrow">
           <div class="padcard">
             <div class="padwell">
@@ -3950,7 +3974,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
             </div>
           </div>
           <div id="netwrap">
-            <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: your 28 by 28 input, one hidden layer, ten output classes with confidence bars."></svg>
+            <svg id="net" viewBox="0 0 460 300" role="img" aria-label="The 784-100-10 network drawn in ink: a 28 by 28 input, showing MNIST test digit 9370 until you draw your own, one hidden layer, ten output classes with confidence bars, and lines for the strongest pushes the read made."></svg>
             <div class="verdictline">
               <span class="big idle" id="verdict">·</span>
               <span>conf <b id="conf">·</b></span>
@@ -4034,7 +4058,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              permanent false claim. -->
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">project page ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .0 .09 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group" for the reason fig. 04 states: the four lane
              controls traceOn() injects are focusable, and a labelled image's
              descendants are presentational. -->
@@ -5252,6 +5276,26 @@ function cacheGeometry() {
   dusk7.start = (yDark + vh * READ_LINE - bDusk.top) / bDusk.h;
   dusk7.span = darkSpan / bDusk.h;
   window.__world.beats = beats.map((b) => ({ top: b.top, h: b.h, kick: b.kick })); /* probe hook — kick is the masthead clock's anchor */
+  /* fig. 06 assembles from the net's top at 0.90 of the screen to its centre
+     on the reading line, off its LAYOUT box: absTop never sees the plate's
+     arrival transform, and the svg's height is its seat times its viewBox's
+     aspect. THE READING LINE AND NOT 0.52, which is what the plan said and
+     what a centred park cannot afford: WebKit's scrollIntoView({block:
+     "center"}) lands a phone figure low (measured: the net's centre at 444
+     of 786 at 420×786 and 454 of 844 at 390×844, where Chromium puts it at
+     393 and 422), so a window ending at 0.52 left that park at a = 0.93 with
+     the depth layer up. 0.62 clears WebKit's worst by 43px. */
+  const nw = $("netwrap");
+  net3.top = absTop(nw); net3.h = nw.clientWidth * net.vbh / net.vbw;
+  net3.yA = net3.top - 0.9 * vh; net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
+  window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
+  /* fig. 07's reveal: the same window off its svg's layout box (the plate's
+     first child, under its padding), and the blocks' clock reads its end */
+  const jp = jet.svg.parentElement, jvb = jet.svg.viewBox.baseVal;
+  jet3.top = absTop(jp) + jp.clientTop + parseFloat(getComputedStyle(jp).paddingTop);
+  jet3.h = jet.svg.clientWidth * jvb.height / jvb.width;
+  jet3.yA = jet3.top - 0.9 * vh; jet3.yB = jet3.top + jet3.h / 2 - READ_LINE * vh; jet3.a = -1;
+  window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
@@ -6332,6 +6376,101 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
     }
   }
 }
+
+/* ————— DEPTH: one camera, true perspective, and no library —————
+   (v4, 2026-10-08.) Two figures assemble in three dimensions as the reader
+   arrives at them, fig. 06's network and fig. 07's lanes, and what keeps them
+   off the round the owner threw out is a rule rather than a taste: there is
+   ONE camera, each drawing is a rigid object, and the camera is the only
+   thing that moves. That round faked depth with scale (boxes growing as they
+   came "nearer"), dropped parts in from above and hung shadows under them,
+   and at reading scale it read as boxes changing size. Here every point goes
+   through a real perspective divide, so a plane seen at an angle keystones, a
+   line running into depth tapers, and two planes at different depths slide
+   past each other as the camera turns: the three things scale cannot fake.
+   CSS 3D is not the instrument. On inline SVG children Chromium 151 and
+   WebKit 26.5 both flatten preserve-3d and ignore translateZ (measured in the
+   last round), so the projection is done here and drawn as path data. Every
+   function below is pure in the pose; a frame allocates nothing but the
+   strings it writes. */
+const r1 = (v) => Math.round(v * 10) / 10;
+const r2 = (v) => Math.round(v * 100) / 100;
+const cubicInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+const DEPTH = {
+  /* yaw turns the camera round the pivot's vertical, pitch tips it over its
+     own horizontal; `dist` is camera to pivot and `focal` is in the figure's
+     own units, so focal === dist draws the pivot's plane at exactly 1:1 */
+  pose(yaw, pitch, dist, focal, pivot) {
+    return { cy: Math.cos(yaw), sy: Math.sin(yaw), cp: Math.cos(pitch), sp: Math.sin(pitch),
+      dist, focal, px: pivot[0], py: pivot[1], pz: pivot[2] };
+  },
+  /* n packed xyz points to screen u, v (the figure's units) and s, the
+     perspective scale at each. The pivot is drawn at its own (x, y). */
+  project(c, P, n, U, V, S) {
+    for (let i = 0, j = 0; i < n; i++, j += 3) {
+      const x = P[j] - c.px, y = P[j + 1] - c.py, z = P[j + 2] - c.pz;
+      const x1 = x * c.cy - z * c.sy, z1 = x * c.sy + z * c.cy;
+      const y2 = y * c.cp - z1 * c.sp, z2 = y * c.sp + z1 * c.cp;
+      const s = c.focal / (z2 + c.dist);
+      U[i] = c.px + x1 * s; V[i] = c.py + y2 * s; S[i] = s;
+    }
+  },
+  /* ANAMORPHIC SEATING. A point authored at (u, v) on a plane pushed to depth
+     z is grown about the final camera's axis by (D + z) / D, which is exactly
+     what that depth will take back off it. So from the face-on pose the solid
+     object draws onto the flat figure to the unit, and the handover to the
+     authored SVG has nothing to jump: the drawing is a sculpture that only
+     resolves into the plate from where the reader ends up standing. */
+  seat(P, i, u, v, z, D, cx, cy) {
+    const k = (D + z) / D;
+    P[i * 3] = cx + (u - cx) * k; P[i * 3 + 1] = cy + (v - cy) * k; P[i * 3 + 2] = z;
+  },
+  /* the part of a segment inside a convex quad Q (u0 v0 … u3 v3, either
+     winding) as [tIn, tOut], or null when it misses (Cyrus–Beck) */
+  span(u0, v0, u1, v1, Q) {
+    let area = 0;
+    for (let i = 0; i < 4; i++) { const j = (i + 1) & 3; area += Q[i * 2] * Q[j * 2 + 1] - Q[j * 2] * Q[i * 2 + 1]; }
+    const sg = area > 0 ? 1 : -1, du = u1 - u0, dv = v1 - v0;
+    let tIn = 0, tOut = 1;
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) & 3, nx = -(Q[j * 2 + 1] - Q[i * 2 + 1]) * sg, ny = (Q[j * 2] - Q[i * 2]) * sg;
+      const num = nx * (u0 - Q[i * 2]) + ny * (v0 - Q[i * 2 + 1]), den = nx * du + ny * dv;
+      if (den === 0) { if (num < 0) return null; continue; }
+      const t = -num / den;
+      if (den > 0) { if (t > tIn) tIn = t; } else if (t < tOut) tOut = t;
+      if (tIn > tOut) return null;
+    }
+    return [tIn, tOut];
+  },
+  /* is (u, v) inside the convex quad Q: every edge turns the same way */
+  inside(u, v, Q) {
+    let pos = 0, neg = 0;
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) & 3, c = (Q[j * 2] - Q[i * 2]) * (v - Q[i * 2 + 1]) - (Q[j * 2 + 1] - Q[i * 2 + 1]) * (u - Q[i * 2]);
+      if (c > 0) pos++; else if (c < 0) neg++;
+    }
+    return !(pos && neg);
+  },
+  /* path atoms, rounded to a tenth of a unit (0.09 CSS px on the widest
+     seat) so equal poses write equal strings, which is what lets a frame
+     skip its own write */
+  quad(U, V, a, b, c, d) {
+    return `M${r1(U[a])} ${r1(V[a])}L${r1(U[b])} ${r1(V[b])}L${r1(U[c])} ${r1(V[c])}L${r1(U[d])} ${r1(V[d])}Z`;
+  },
+  dot(u, v, r) {
+    const rr = r1(r), d = r1(2 * r);
+    return `M${r1(u - r)} ${r1(v)}a${rr} ${rr} 0 1 0 ${d} 0a${rr} ${rr} 0 1 0 ${-d} 0Z`;
+  },
+  /* a line in depth is a sliver: w0 wide where it starts and w1 where it
+     ends, each its own end's perspective, so one path can hold a hundred of
+     them at true widths. Hundredths here, because a 0.6-unit line rounded to
+     tenths at each corner comes out anywhere from 0.4 to 0.8 wide. */
+  taper(u0, v0, w0, u1, v1, w1) {
+    const du = u1 - u0, dv = v1 - v0, l = Math.hypot(du, dv) || 1;
+    const nx = -dv / l, ny = du / l, h0 = w0 / 2, h1 = w1 / 2;
+    return `M${r2(u0 + nx * h0)} ${r2(v0 + ny * h0)}L${r2(u1 + nx * h1)} ${r2(v1 + ny * h1)}L${r2(u1 - nx * h1)} ${r2(v1 - ny * h1)}L${r2(u0 - nx * h0)} ${r2(v0 - ny * h0)}Z`;
+  },
+};
 
 /* ————— station figures ————— */
 
@@ -7835,10 +7974,18 @@ const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0 }
 const JET_OUT_WIDE = [25, 32, 20, 28, 23, 18, 30, 24];
 const JET_OUT_TIGHT = [14, 18, 11, 16, 13, 10, 17, 14];
 function buildJet(tight) {
-  const s = jet.svg, el = svgIn(s);
-  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  const s = jet.svg, at = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight); s.classList.remove("indepth");
   jet.blocks = []; jet.crc = null;
-  const jlabs = [];
+  const jlabs = [], lanes = [];
+  /* three parts, for the depth reveal (jet3): the depth layer; `flat`, the
+     plane's own ink (rails, member, words), which that layer stands in for
+     while the camera is round; and over both, the four lane sheets and the
+     eight blocks, which are drawn where they stand and moved, never redrawn.
+     `el` makes plane ink unless it is handed a parent. */
+  const deep = at("g", { class: "depth", "aria-hidden": "true", display: "none" });
+  const flat = at("g", { class: "jflat" });
+  const el = (t, a, parent) => at(t, a, parent || flat);
   /* One geometry per edition and one drawing below it. Nothing here is set
      over a line, so no label needs a rule to break for it. Every label is
      budgeted at 8.012 units/char wide (12px + .05em) and 7.125 tight
@@ -7880,6 +8027,7 @@ function buildJet(tight) {
                [282, ""],
                [302, "the lane assignment and the block sizes are drawn, not measured"]] };
   s.setAttribute("viewBox", g.vb);
+  jet.railY = g.railY; jet.stitchY = g.stitchY;
   const [dTop, dSh, dThr, dBot] = g.dieY;
   jet.dieTop = dTop; jet.dieThroat = dThr;
   for (const [x, y, words, end] of g.heads) {
@@ -7891,15 +8039,18 @@ function buildJet(tight) {
   el("path", { d: `M ${g.railX0} ${g.railY} H ${g.railX1}`, class: "lane" });
   el("path", { d: `M ${g.railX1} ${g.railY - 8} V ${g.railY + 8}`, class: "lane" });
   g.laneX.forEach((lx, i) => {
-    el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane" });
-    el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die" });
-    el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die" });
+    /* one sheet per lane, which the reveal holds upright at its own depth */
+    const lw = at("g", { class: "lane3" });
+    el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane", "aria-hidden": "true" }, lw);
+    el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
+    el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
     /* centred ABOVE the rail, where no block ever travels — beside the lane it
        sat inside the raw block's own footprint at every width. The 18 is the
        block's half-height plus clearance, checked by walking the scrub in a
        browser rather than at the settled frame, where the rail is empty. */
-    const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" });
+    const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" }, lw);
     t.textContent = `vt-${i}`; jlabs.push([t, i]);
+    lanes.push({ g: lw, x: lx, lab: t });
   });
   /* the deflate register: the word at the left, and the four throats sharing
      one y. Wide runs a leader from the word to the first die because its
@@ -7939,7 +8090,7 @@ function buildJet(tight) {
     /* opacity 0 at BUILD, not only at scrub: a rebuild that is not followed by
        a scrub — a resize into the other edition — otherwise paints eight
        blocks stacked at the origin */
-    const bg = el("g", { class: "blk", opacity: 0 });
+    const bg = at("g", { class: "blk", opacity: 0 });
     const r = el("rect", { x: -g.raw / 2, y: -g.bh / 2, width: g.raw, height: g.bh, class: "mk" }, bg);
     jet.blocks.push({
       g: bg, r, i, lane, raw: g.raw, out: g.out[i], delay: i * 0.05,
@@ -7954,6 +8105,7 @@ function buildJet(tight) {
   traceOn(s, jlabs, jet.blocks, "lane", (lbl) =>
     `show which blocks lane ${lbl.textContent} carried`);
   hideDrawnFromAT(s);
+  buildDeepJet(s, deep, flat, lanes);
 }
 function scrubJet(p) {
   const span = jet.dieThroat - jet.dieTop;
@@ -7983,6 +8135,146 @@ function scrubJet(p) {
     }
   }
 }
+
+/* ————— fig. 07 in depth: four lanes that are one stream until you come round —————
+   (v4, 2026-10-08.) The plate's argument is that one stream is four lanes
+   underneath, so that is what the camera shows: it starts nearly end-on to
+   the row of lanes, where the four dies stand one behind another and read as
+   a single stream, and it comes round until they stand side by side. It is
+   a camera move and nothing else: the lanes are sheets at their real x,
+   each held facing the camera (the brief's weak perspective, a sheet scaled
+   by its own depth), the rails and the member are the plane they stand on,
+   drawn through the same camera point for point, and no block moves until
+   the reveal is over (jetBlocks). Yaw only, never pitch: with the camera
+   level a lane's own vertical line keeps one depth from end to end, so a
+   sheet held upright meets both rails exactly where the projected rails are.
+   The lane controls are the authored ones inside each sheet, so a tap, a
+   hover and keyboard focus all keep working while it moves; their words
+   wait until the lanes have come far enough apart to be read. */
+const jet3 = { g: null, flat: null, paths: [], labs: [], lanes: [], on: false,
+  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null };
+/* the camera: exactly end-on, at three plate widths. Closer than that, or
+   a few degrees off the row, and the four dies stand at visibly different
+   depths and offsets and interleave into a tangle (measured by eye at 84
+   degrees and 1.4 widths); from here they coincide to within a few units,
+   one stream drawn a little heavy, and part as the camera comes round. */
+const JET3_POSE = { yaw: Math.PI / 2, dist: 3 };
+function buildDeepJet(s, deep, flat, lanes) {
+  jet3.g = null; jet3.on = false; jet3.a = -1; jet3.flat = flat; jet3.lanes = lanes;
+  if (RM) { deep.remove(); return; }
+  const mk = svgIn(s);
+  jet3.paths = ["jkline", "jkbox"].map((c) => mk("path", { class: c, d: "" }, deep));
+  jet3.labs = [...flat.querySelectorAll("text")].map((t) => {
+    const c = t.cloneNode(true);
+    c.setAttribute("opacity", 0);
+    deep.appendChild(c);
+    return { el: c, x: +t.getAttribute("x"), y: +t.getAttribute("y") };
+  });
+  /* the plane's ink, read back off the drawing so there is one geometry:
+     every flat path here is an H or V run, every box a rect */
+  const lines = [], boxes = [];
+  for (const p of flat.querySelectorAll("path")) {
+    const m = p.getAttribute("d").match(/^M (-?[\d.]+) (-?[\d.]+) ([HV]) (-?[\d.]+)$/);
+    if (m) lines.push(m[3] === "H" ? [+m[1], +m[2], +m[4], +m[2]] : [+m[1], +m[2], +m[1], +m[4]]);
+  }
+  for (const r of flat.querySelectorAll("rect")) boxes.push(["x", "y", "width", "height"].map((k) => +r.getAttribute(k)));
+  const vb = s.viewBox.baseVal, railY = jet.railY, n = lines.length * 2 + boxes.length * 4 + jet3.labs.length + lanes.length;
+  const P = new Float64Array(n * 3);
+  let i = 0;
+  const put = (x, y) => { P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = 0; return i++; };
+  const L = lines.map(([x1, y1, x2, y2]) => [put(x1, y1), put(x2, y2)]);
+  const B = boxes.map(([x, y, w, h]) => [put(x, y), put(x + w, y), put(x + w, y + h), put(x, y + h)]);
+  const T = jet3.labs.map((l) => put(l.x, l.y));
+  const A = lanes.map((l) => put(l.x, railY));
+  const cx = lanes.reduce((t, l) => t + l.x, 0) / lanes.length;
+  jet3.w = { P, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n), n, L, B, T, A, railY,
+    vbw: vb.width, pivot: [cx, (railY + jet.stitchY) / 2, 0],
+    labW: (s.classList.contains("tight") ? 7.125 : 8.012) * 4 };
+  jet3.g = deep;
+}
+function drawDeepJet(a) {
+  const N = jet3, w = N.w, { U, V, S } = w;
+  /* the camera comes round over .15–.90, slow out of end-on and slow into
+     face-on, so the moment the one stream becomes four is mid-screen */
+  const cam = cubicInOut(clamp((a - 0.15) / 0.75, 0, 1)), D = w.vbw * JET3_POSE.dist;
+  DEPTH.project(DEPTH.pose(JET3_POSE.yaw * (1 - cam), 0, D, D, w.pivot), w.P, w.n, U, V, S);
+  const out = ["", ""];
+  const run = (p, i, j, wd) => { out[p] += DEPTH.taper(U[i], V[i], wd * S[i], U[j], V[j], wd * S[j]); };
+  for (const [i, j] of w.L) run(0, i, j, 1);
+  for (const q of w.B) for (let e = 0; e < 4; e++) run(1, q[e], q[(e + 1) & 3], 1.2);
+  N.paths.forEach((p, k) => { if (p._d !== out[k]) { p._d = out[k]; p.setAttribute("d", out[k]); } });
+  /* each lane, upright at its own depth; its words once it has room */
+  N.lanes.forEach((l, k) => {
+    const i = w.A[k], s = S[i];
+    /* THE CSS PROPERTY, NOT THE ATTRIBUTE: print has to be able to put the
+       sheets back, and in WebKit a stylesheet's transform:none does not beat
+       an SVG transform attribute (measured: lane 3 printed at x 305.5 against
+       its authored 434 mid-reveal; Chromium honoured the rule). On an SVG
+       element the property's px are user units and its origin is the user
+       origin, so the matrix means what the attribute meant. */
+    const tf = `matrix(${r2(s)}, 0, 0, ${r2(s)}, ${r1(U[i] - l.x * s)}, ${r1(V[i] - w.railY * s)})`;
+    if (l._tf !== tf) {
+      l._tf = tf; l.g.style.transform = tf;
+      /* the words stand at their own size on a sheet that is not: a far lane
+         at 0.94 would have set its label at 11.9px on the 390 seat, under the
+         reading gate's 12, so the label takes the sheet's scale back off */
+      const k = 1 / r2(s), ly = w.railY - 18;
+      l.lab.style.transform = `matrix(${r2(k)}, 0, 0, ${r2(k)}, ${r1(l.x * (1 - k))}, ${r1(ly * (1 - k))})`;
+    }
+    let room = Infinity;
+    for (const m of [k - 1, k + 1]) if (w.A[m] !== undefined) room = Math.min(room, Math.abs(U[w.A[m]] - U[i]));
+    const op = r2(smooth((room - 1.05 * w.labW) / (0.4 * w.labW)));
+    if (l._op !== op) {
+      l._op = op; l.lab.setAttribute("opacity", op);
+      /* a word nobody can see is not a target: the sheet stops taking taps
+         until its label is half there, and keeps its focus either way */
+      if (op < 0.5) l.g.setAttribute("pointer-events", "none"); else l.g.removeAttribute("pointer-events");
+    }
+  });
+  /* the plane's words, upright, as the camera arrives */
+  const cap = r2(smooth((cam - 0.82) / 0.15));
+  N.labs.forEach((l, k) => {
+    const i = w.T[k], x = r1(U[i]), y = r1(V[i]);
+    if (l._x !== x) { l._x = x; l.el.setAttribute("x", x); }
+    if (l._y !== y) { l._y = y; l.el.setAttribute("y", y); }
+    if (l._op !== cap) { l._op = cap; l.el.setAttribute("opacity", cap); }
+  });
+}
+function setDeepJet(on) {
+  const N = jet3;
+  N.on = on; N.a = -1;
+  N.g.setAttribute("display", on ? "inline" : "none");
+  if (on) N.flat.setAttribute("opacity", 0);
+  else {
+    /* a = 1 is the authored plate exactly: no transform on any sheet, no
+       opacity on any word, every target back */
+    N.flat.removeAttribute("opacity");
+    for (const l of N.lanes) {
+      l.g.style.transform = ""; l.g.removeAttribute("style"); l.g.removeAttribute("pointer-events");
+      l.lab.removeAttribute("opacity"); l.lab.style.transform = ""; l.lab.removeAttribute("style");
+      l._tf = l._op = undefined;
+    }
+  }
+  jet.svg.classList.toggle("indepth", on);
+}
+function deepJet(y) {
+  const N = jet3;
+  if (!N.g) return;
+  const a = DEPTH_PIN !== null ? DEPTH_PIN : clamp((y - N.yA) / Math.max(1, N.yB - N.yA), 0, 1);
+  const show = a < 1;
+  if (show !== N.on) setDeepJet(show);
+  if (show && a !== N.a) { N.a = a; drawDeepJet(a); }
+  window.__world.jet3 = { a: +a.toFixed(4), on: N.on }; /* probe hook */
+}
+/* SCRUBJET'S CLOCK. The blocks used to run off beat 6's own progress, from
+   0.2 of the beat to 0.95 of it, and that landed the last one as the plate
+   left: measured, with the figure's centre at -0.02 of the screen at
+   1440×900 and 0.02 at 420×786, where the first had set off with the centre
+   still under the fold (1.26). They now wait for the reveal and run over the
+   next 0.32 of a screen: first block with the centre on the reading line,
+   last with it at 0.32, the whole figure in view throughout. The same p in,
+   the same drawing out: scrubJet itself is untouched. */
+const jetBlocks = (y) => (y < jet3.yB ? 0 : 0.2 + 0.8 * clamp((y - jet3.yB) / (0.32 * vh), 0, 1));
 
 /* LifeQuest — the climb, drawn in section. The stair is the ledger beside it:
    five steps sketched in pencil, three of them built. What makes the drawing
@@ -9145,7 +9437,7 @@ function work(y) {
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
      its bench is a settled record. Beat 6 keeps scrubJet, which is the
      drawing; only its bench pair left. */
-  if (Math.abs(beat - 6) <= 1) scrubJet(beat < 6 ? 0 : beat > 6 ? 1 : bp);
+  if (Math.abs(beat - 6) <= 1) scrubJet(jetBlocks(y));
   /* beat 7's plate runs on its own window (climbWin), not on the beat's
      progress: the beat is sized by the dusk chain and the drawing is not */
   if (Math.abs(beat - 7) <= 1) {
@@ -9162,6 +9454,9 @@ function work(y) {
   if (Math.abs(beat - 9) <= 1) scrubGates(tokenY);
   if (Math.abs(beat - 10) <= 1) scrubSigns(tokenY);
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
+  /* fig. 06 in depth runs off the net's own position, not the beat's */
+  deepNet(y);
+  deepJet(y);
 
   /* manifest stamps: one line as each station completes (reversible).
      The six stations ride beats 3–8 now. */
@@ -9453,6 +9748,7 @@ const ready = (async () => {
   const bytes = new Uint8Array(await resp.arrayBuffer());
   const c = new instance.WasmClassifier();
   c.loadWeightsFromBinary(bytes);
+  netWeights(bytes); /* the same bytes, for the edges the figure draws */
   return c;
 })();
 window.__demo.ready = ready;
@@ -9461,15 +9757,27 @@ ready.then(
   () => { $("glyphStatus").textContent = "serve over http to run"; }
 );
 
-/* the drawn net: input canvas + 100 hidden dots + 10 outputs, seeded
-   sparse edges. Lit by REAL activations on classify. Wide reads left to
-   right with horizontal confidence bars; tight (240) stacks input over
-   hidden over ten RISING bars with their digits beneath. */
-const net = { hn: [], on: [], ed: [], inCtx: null, tight: false, vbw: 460, vbh: 300, r0: 3.2 };
+/* the drawn net: input canvas + 100 hidden dots + 10 outputs, and the
+   strongest pushes of the read it is showing as its edges (netEdges). Lit by
+   REAL activations on classify. Wide reads left to right with horizontal
+   confidence bars; tight (240) stacks input over hidden over ten RISING bars
+   with their digits beneath. Everything authored goes in `g.flat`, which is
+   the drawing; fig. 06's depth layer (net3, below) is its sibling and only
+   ever stands in for it while the figure assembles. */
+const net = { hn: [], on: [], ed: [], inCtx: null, tight: false, vbw: 460, vbh: 300, r0: 3.2,
+  geo: null, labs: [], sampleTx: [], read: null, edges: null, W1: null, W2: null };
 function buildNet(tight) {
-  const s = $("net"), el = svgIn(s);
-  s.textContent = ""; s.classList.toggle("tight", !!tight);
-  net.hn = []; net.on = []; net.ed = []; net.tight = !!tight;
+  const s = $("net"), mk = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight); s.classList.remove("indepth");
+  net.hn = []; net.on = []; net.ed = []; net.tight = !!tight; net.labs = []; net.sampleTx = [];
+  const flat = mk("g", { class: "flat" });
+  const el = (t, a, parent) => mk(t, a, parent || flat);
+  /* `layer` is which plane of the network the label stands on: 0 input,
+     1 hidden, 2 output. The depth layer holds each one upright on its plane. */
+  const lab = (x, y, words, layer, a = {}, parent) => {
+    const t = el("text", { x, y, ...a }, parent);
+    t.textContent = words; net.labs.push([t, layer]); return t;
+  };
   let seed = 11;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   if (!tight) {
@@ -9481,20 +9789,23 @@ function buildNet(tight) {
     cv.style.width = "96px"; cv.style.height = "96px";
     fo.appendChild(cv);
     net.inCtx = cv.getContext("2d");
-    el("text", { x: 14, y: 208, class: "l1" }).textContent = "input 28×28";
+    lab(14, 208, "input 28×28", 0, { class: "l1" });
+    net.sampleTx = [lab(14, 226, "mnist test", 0), lab(14, 244, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, 0)];
     for (let i = 0; i < 100; i++) {
       const r = Math.floor(i / 10), c = i % 10;
       net.hn.push(el("circle", { cx: 190 + c * 13, cy: 78 + r * 13, r: 3.2, class: "hn l2", opacity: 0.12 }));
     }
-    el("text", { x: 190, y: 232 }).textContent = "hidden ×100";
+    lab(190, 232, "hidden ×100", 1);
     for (let d = 0; d < 10; d++) {
       const g = el("g", { class: "on l3" });
       const y = 42 + d * 24;
-      el("text", { x: 356, y: y + 4, "text-anchor": "end" }, g).textContent = d;
+      lab(356, y + 4, d, 2, { "text-anchor": "end" }, g);
       el("rect", { x: 364, y: y - 3, width: 0, height: 6, class: "bar" }, g);
       net.on.push({ g, bar: g.querySelector(".bar") });
     }
-    el("text", { x: 356, y: 292, "text-anchor": "end" }).textContent = "softmax ×10";
+    lab(356, 292, "softmax ×10", 2, { "text-anchor": "end" });
+    /* the seeded positions are only the IDLE drawing, before any read; the
+       first read routes every line to a push it actually made */
     for (let k = 0; k < 46; k++) { /* input region → hidden */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const iy = 92 + rnd() * 88;
@@ -9505,6 +9816,8 @@ function buildNet(tight) {
       const o = Math.floor(rnd() * 10);
       net.ed.push({ el: el("line", { x1: 190 + hc * 13 + 4, y1: 78 + hr * 13, x2: 340, y2: 42 + o * 24, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
     }
+    net.geo = { fo: [14, 88, 96], hid: [190, 78, 13], out: (d) => [340, 42 + d * 24],
+      bar: (d, len) => [364, 39 + d * 24, 364 + len, 45 + d * 24], barMax: 88, rise: false };
   } else {
     net.vbw = 240; net.vbh = 310; net.r0 = 2.6;
     s.setAttribute("viewBox", "0 0 240 310");
@@ -9514,17 +9827,18 @@ function buildNet(tight) {
     cv.style.width = "72px"; cv.style.height = "72px";
     fo.appendChild(cv);
     net.inCtx = cv.getContext("2d");
-    el("text", { x: 8, y: 118 }).textContent = "input 28×28";
+    lab(8, 118, "input 28×28", 0);
+    net.sampleTx = [lab(8, 134, "mnist test", 0), lab(8, 150, `#${GLYPH_SAMPLE.i}, label ${GLYPH_SAMPLE.label}`, 0)];
     for (let i = 0; i < 100; i++) {
       const r = Math.floor(i / 10), c = i % 10;
       net.hn.push(el("circle", { cx: 128 + c * 10.8, cy: 24 + r * 10.8, r: 2.6, class: "hn l2", opacity: 0.12 }));
     }
-    el("text", { x: 128, y: 142 }).textContent = "hidden ×100";
+    lab(128, 142, "hidden ×100", 1);
     for (let d = 0; d < 10; d++) {
       const g = el("g", { class: "on l3" });
       const x = 10 + d * 22.6;
       el("rect", { x, y: 262, width: 9, height: 0, class: "bar" }, g);
-      el("text", { x: x + 4.5, y: 282, "text-anchor": "middle" }, g).textContent = d;
+      lab(x + 4.5, 282, d, 2, { "text-anchor": "middle" }, g);
       net.on.push({ g, bar: g.querySelector(".bar") });
     }
     /* D-4 · BESIDE ITS OWN LAYER, like the other two. This label was
@@ -9533,7 +9847,7 @@ function buildNet(tight) {
        a reader met "softmax ×10" most of a screen above any softmax. The
        input and hidden labels both sit under their layer; this one now does
        too, below the digit row rather than adrift above it. */
-    el("text", { x: 8, y: 300 }).textContent = "softmax ×10";
+    lab(8, 300, "softmax ×10", 2);
     for (let k = 0; k < 34; k++) { /* input region → hidden */
       const h = Math.floor(rnd() * 100), hr = Math.floor(h / 10), hc = h % 10;
       const iy = 32 + rnd() * 60;
@@ -9544,9 +9858,13 @@ function buildNet(tight) {
       const o = Math.floor(rnd() * 10);
       net.ed.push({ el: el("line", { x1: 128 + hc * 10.8, y1: 24 + hr * 10.8 + 3, x2: 10 + o * 22.6 + 4.5, y2: 236, class: "ed l3", opacity: 0.05, "stroke-width": .6 }), a: h, b: o, kind: 1 });
     }
+    net.geo = { fo: [8, 26, 72], hid: [128, 24, 10.8], out: (d) => [14.5 + d * 22.6, 236],
+      bar: (d, len) => [10 + d * 22.6, 262 - len, 19 + d * 22.6, 262], barMax: 66, rise: true };
   }
+  for (const t of net.sampleTx) t.setAttribute("display", "none");
   /* micro: hidden nodes answer the pointer (event-driven, no idle loop) */
   s.addEventListener("pointermove", (ev) => {
+    if (net3.on) return; /* the drawn dots are not the ones on screen */
     const r = s.getBoundingClientRect();
     const x = ((ev.clientX - r.left) / r.width) * net.vbw, y = ((ev.clientY - r.top) / r.height) * net.vbh;
     for (const n of net.hn) {
@@ -9555,6 +9873,7 @@ function buildNet(tight) {
     }
   }, { passive: true });
   s.addEventListener("pointerleave", () => { for (const n of net.hn) n.setAttribute("r", net.r0); });
+  buildDeep(s, flat);
   if (net.lastLight) lightNet(...net.lastLight); /* a rebuild keeps your read */
 }
 
@@ -9563,9 +9882,11 @@ function buildNet(tight) {
    outputs alone, which are its answer. A half-drawn 2 is a 7 to this
    network (the hook and the diagonal: 29 of 30 held-out 2s, paused at the
    corner, read 7 there), and a bar that grows and turns clay under "7" is that
-   wrong answer stated with confidence, just smaller than the big digit. */
-function lightNet(px, hidden, conf, pred, live = false) {
-  if (!live) net.lastLight = [px, hidden, conf, pred];
+   wrong answer stated with confidence, just smaller than the big digit.
+   `who` is whose read it is: "you" for the pad, "sample" for the MNIST test
+   digit the figure shows until the reader draws (lightSample). */
+function lightNet(px, hidden, conf, pred, live = false, who = "you") {
+  if (!live) net.lastLight = [px, hidden, conf, pred, false, who];
   const ctx = net.inCtx;
   const img = ctx.createImageData(28, 28);
   const night = document.documentElement.hasAttribute("data-night");
@@ -9577,7 +9898,12 @@ function lightNet(px, hidden, conf, pred, live = false) {
   ctx.putImageData(img, 0, 0);
   const hMax = Math.max(1e-6, ...hidden);
   net.hn.forEach((n, i) => n.setAttribute("opacity", (0.12 + 0.88 * hidden[i] / hMax).toFixed(2)));
+  /* the card now holds the reader's ink, pen down or up, so the line naming
+     the sample comes off with the first read of theirs, not at the lift */
+  if (who !== "sample") for (const t of net.sampleTx) t.setAttribute("display", "none");
   if (live) {
+    /* the pen is down, so the lines keep the routes of the last finished
+       read and only say how hard each one's unit is working right now */
     for (const e of net.ed) if (e.kind === 0) e.el.setAttribute("opacity", clamp(0.05 + hidden[e.a] / hMax * 0.6, 0.05, 0.7).toFixed(2));
     return;
   }
@@ -9589,10 +9915,400 @@ function lightNet(px, hidden, conf, pred, live = false) {
     } else o.bar.setAttribute("width", Math.max(1, conf[d] * 88).toFixed(1));
     o.g.classList.toggle("win", d === pred);
   });
-  for (const e of net.ed) {
-    const act = e.kind === 0 ? hidden[e.a] / hMax : (hidden[e.a] / hMax) * conf[e.b] * 2;
-    e.el.setAttribute("opacity", clamp(0.05 + act * 0.6, 0.05, 0.7).toFixed(2));
+  const kinds = [net.ed.filter((e) => e.kind === 0), net.ed.filter((e) => e.kind === 1)];
+  net.edges = netEdges(px, hidden, kinds[0].length, kinds[1].length);
+  /* NEW WIRING COMES IN AS NEW INK. Moving 116 lines to new routes in one
+     frame while their opacity was still easing from the last read's made a
+     lift flicker (filmed: the old fan jumped, then faded). So the lines are
+     cut at their old routes, moved while they are at nothing, and fade in
+     on the new ones with the plate's own stagger, input lines first. One
+     forced style flush; no frame is scheduled. */
+  const s = $("net");
+  if (!RM) { /* under reduced motion there is no fade to stage */
+    s.classList.add("rewire");
+    for (const e of net.ed) e.el.setAttribute("opacity", 0);
+    void s.getBoundingClientRect();
   }
+  routeEdges(kinds, net.edges);
+  if (!RM) s.classList.remove("rewire");
+  for (const e of net.ed) e.el.setAttribute("opacity", e.to);
+  net.read = { px, hidden, conf, pred, who };
+  for (const t of net.sampleTx) t.setAttribute("display", who === "sample" ? "inline" : "none");
+  seatDeep();
+}
+
+/* THE LOADER'S OWN LAYOUT, which is not the one anybody would guess from the
+   header: NeuralNet::loadBinary (glyph, src/NeuralNet.cpp) reads the 24-byte
+   header, then EVERY layer's biases, then every layer's weights, each row one
+   unit's incoming weights. So W1 is 100 rows of 784 starting after the 110
+   biases, and W2 is 10 rows of 100 after it. Checked by running this layout's
+   forward pass over all of t10k in node: 9,701 of 10,000, the count ¶06
+   prints. Read off the same bytes the classifier was handed, so the drawing's
+   edges and the reader's verdict come from one file. */
+function netWeights(bytes) {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const I = dv.getUint32(12, true), H = dv.getUint32(16, true), O = dv.getUint32(20, true);
+  if (dv.getUint32(8, true) !== 3 || I !== 784 || H !== 100 || O !== 10) return;
+  const f = new Float32Array(bytes.buffer, bytes.byteOffset + 24, H + O + H * I + O * H);
+  net.W1 = f.subarray(H + O, H + O + H * I);
+  net.W2 = f.subarray(H + O + H * I);
+}
+/* THE EDGES ARE THE READ'S OWN. These lines were 116 seeded-random pairs
+   whose opacity followed the units' activations: a picture of "some
+   connections", which the depth layer would have had to swap for real ones at
+   the handover. Both now draw the same thing, the strongest positive pushes
+   this read actually made. Pixel to unit is W1[j][k]·x[k], into the units the
+   read lights (h > 0.5), at most four into any unit and two out of any pixel,
+   so one thick stroke cannot take every line. Unit to class is W2[o][j]·h[j],
+   at most two out of any unit and nothing under a tenth of the strongest:
+   with three and a twentieth, the tight plate's tall middle became a web of
+   57 lines, seven of them carrying under a tenth. Measured on t10k #9370
+   (wide): 46 lines from 36 pixels into 18 of the 21 units it lights, and 39
+   unit lines, 13 of them into the 3. Lines the read has no push for are
+   hidden rather than invented. */
+function netEdges(px, hidden, n1, n2) {
+  const { W1, W2 } = net, e1 = [], e2 = [];
+  if (!W1) return { e1, e2 };
+  const c1 = [];
+  for (let j = 0; j < 100; j++) {
+    if (hidden[j] < 0.5) continue;
+    for (let k = 0, row = j * 784; k < 784; k++) {
+      if (px[k] <= 0.05) continue;
+      const c = W1[row + k] * px[k];
+      if (c > 0) c1.push([c, j, k]);
+    }
+  }
+  c1.sort((p, q) => q[0] - p[0]);
+  const perU = new Uint8Array(100), perK = new Uint8Array(784);
+  for (const [c, j, k] of c1) {
+    if (e1.length >= n1) break;
+    if (perU[j] >= 4 || perK[k] >= 2) continue;
+    perU[j]++; perK[k]++;
+    e1.push({ k, j, s: c / c1[0][0] });
+  }
+  const c2 = [];
+  for (let o = 0; o < 10; o++) for (let j = 0; j < 100; j++) {
+    const d = W2[o * 100 + j] * hidden[j];
+    if (d > 0) c2.push([d, j, o]);
+  }
+  c2.sort((p, q) => q[0] - p[0]);
+  const perU2 = new Uint8Array(100);
+  for (const [d, j, o] of c2) {
+    if (e2.length >= n2 || d < c2[0][0] * 0.1) break;
+    if (perU2[j] >= 2) continue;
+    perU2[j]++;
+    e2.push({ j, o, s: d / c2[0][0] });
+  }
+  return { e1, e2 };
+}
+/* where the authored figure has things, in its own units: a pixel's centre,
+   a unit's centre, a class's line end; and the box a line leaves the input
+   card through, 1.5 outside the card's own edge as the seeded lines were */
+const netPix = (k) => { const [x, y, w] = net.geo.fo, c = (w - 2) / 28; return [x + 1 + (k % 28 + 0.5) * c, y + 1 + (Math.floor(k / 28) + 0.5) * c]; };
+const netUnit = (j) => { const [x, y, p] = net.geo.hid; return [x + (j % 10) * p, y + Math.floor(j / 10) * p]; };
+function routeEdges([k0, k1], { e1, e2 }) {
+  const [fx, fy, fw] = net.geo.fo, m = 1.5, rim = net.r0 + 0.8;
+  const box = [fx - m, fy - m, fx + fw + m, fy - m, fx + fw + m, fy + fw + m, fx - m, fy + fw + m];
+  /* endpoints only; each line's ink is left in e.to for the caller, which
+     sets it once the line has moved (see lightNet) */
+  const put = (e, x1, y1, x2, y2, s) => {
+    e.el.setAttribute("x1", x1.toFixed(1)); e.el.setAttribute("y1", y1.toFixed(1));
+    e.el.setAttribute("x2", x2.toFixed(1)); e.el.setAttribute("y2", y2.toFixed(1));
+    e.to = (0.05 + 0.6 * s).toFixed(2);
+  };
+  k0.forEach((e, i) => {
+    const r = e1[i];
+    if (!r) { e.to = 0; return; }
+    const [px, py] = netPix(r.k), [hx, hy] = netUnit(r.j), l = Math.hypot(hx - px, hy - py) || 1;
+    const t = (DEPTH.span(px, py, hx, hy, box) || [0, 0])[1];
+    e.a = r.j;
+    put(e, px + (hx - px) * t, py + (hy - py) * t, hx - (hx - px) / l * rim, hy - (hy - py) / l * rim, r.s);
+  });
+  k1.forEach((e, i) => {
+    const r = e2[i];
+    if (!r) { e.to = 0; return; }
+    const [hx, hy] = netUnit(r.j), [ox, oy] = net.geo.out(r.o), l = Math.hypot(ox - hx, oy - hy) || 1;
+    e.a = r.j; e.b = r.o;
+    put(e, hx + (ox - hx) / l * rim, hy + (oy - hy) / l * rim, ox, oy, r.s);
+  });
+}
+
+/* ————— fig. 06 in depth: the network, seen from behind its own input —————
+   (v4, 2026-10-08, the owner: "choose some of the figures to be assembled in
+   3D with the scroll ... maybe something like to do with neural network".)
+   As the plate comes up the screen the reader is looking down the network
+   from behind its input: the 28×28 sheet near and large, the hundred units
+   behind it, the ten classes furthest off, and the camera comes round until
+   the three planes stand side by side as the authored figure. Over the same
+   scroll the read runs forward through it: the digit inks in, the pushes it
+   made travel along their lines into the units they light, those vote into
+   the classes, the bars grow, the winner turns clay. Scrolling up runs it all
+   backwards, because every frame is a pure function of scrollY.
+
+   THE OBJECT IS RIGID AND REAL. The planes stand at real depths (input
+   nearest, classes furthest) and are seated anamorphically (DEPTH.seat), so
+   the only thing that moves is the camera and the face-on pose is the plate
+   to the unit. Plan v4 had the layers coplanar and spread 1.5× along the
+   axis; a coplanar figure under any camera is a homography of a flat card,
+   which is a tilted plate by another name, so the planes got depth instead.
+   The input card is paper: the lines from its pixels run back into the
+   network behind it, so the card hides them until they clear its edge,
+   which is the authored figure's own "lines leave the canvas at its edge"
+   arrived at by occlusion rather than by drawing.
+
+   WHAT IS DRAWN IS THE READ, and the read is real: before the reader draws,
+   it is MNIST t10k #9370, a 3, read by the classifier in this tab
+   (lightSample); after, it is theirs. The lines are the read's own pushes
+   (netEdges), the same ones the authored figure routes, so the handover
+   at a = 1 swaps a drawing for itself.
+
+   TWELVE PATHS, back to front and never re-sorted: the pose never turns
+   the camera behind a plane, so painter's order holds at every frame. Depth
+   is in the geometry (keystone, radii, each line's two widths) and in ink
+   lightness; there is no shadow, no glow and no leader. Labels are the
+   authored ones held upright at their own size, and they show only once
+   their plane has come to within a few percent of full size, because a
+   reading gate measures SVG type through the CTM every half viewport and a
+   label riding a plane at 0.7 would be 0.7 of its size. */
+/* MNIST t10k record 9370, label 3: the 20×20 box its ink occupies, at (3, 5)
+   on the 28 grid, 8 bits a pixel exactly as the test file stores them (no
+   ink falls outside the box). The shipped weights read it 3 at 99.8% (node,
+   this commit); lightSample asks the classifier in the tab and shows it only
+   if the tab agrees. */
+const GLYPH_SAMPLE = { i: 9370, label: 3, x: 3, y: 5, w: 20,
+  ink: "AAAAIIWo/tCFhYANCwAAAAAAAAAADmTa/f39/f39/v3uewcAAAAAABnU/f394dnZ2dna7v39mxoAAAAAb/393XcUAAAAAAAxn+395SAAAAAEjXYYAAAAAAAAAAAAqf39TQAAAAAAAAAAAAAAAAAAB5Tq/f1MAAAAAAAAAAAAAAAAUs/S/f395SAAAAAAAAAAAAAAAADy/v39/f1NAAAAAAAAAAAAAAAAAPL+/f39/ckVAAAAAAAAAAAAAAAAf/79/f39/fRcAAAAAAAAAAAAAAAAAAAAAFjW/P6QBgAAAAAAAAAAAAAAAAAAAACA+v0XAAAAAAAAAAAAAAAAAAAAAADJ/YQAAAAAAAAAEwUAAAAAAAAAAGL9hAAAAAAAABXAvH0eAAAAAAAVwP2EAAAAAAAAVf39/dlCAAAAALH9/WIAAAAAAAAQuP39/vnOzrGx9P39CwAAAAAAAAA8xv3+/f39/f392GkCAAAAAAAAAAAKGJb9/f39/f1pAAAAAAAAAAAAAAAAAReE1f2gXAIAAA==" };
+function samplePixels() {
+  const px = new Array(784).fill(0), b = atob(GLYPH_SAMPLE.ink), { x, y, w } = GLYPH_SAMPLE;
+  for (let r = 0; r < w; r++) for (let c = 0; c < w; c++) px[(y + r) * 28 + x + c] = b.charCodeAt(r * w + c) / 255;
+  return px;
+}
+const net3 = { g: null, flat: null, paths: [], labs: [], on: false, armed: false, ready: false,
+  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, bounds: null };
+/* ?depth=0.4 holds the assembly at one pose whatever the scroll: a probe's
+   still, never a reader's */
+const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : null;
+/* the camera per edition, in radians and in the figure's own units: the
+   start pose looks down the network's axis from beside its input (wide) or
+   down the stack from above it (tight, where the classes are under the
+   units); D is 2.6 figure widths, Z each plane's depth off the units' */
+const NET3_POSE = { wide: { yaw: 0.52, pitch: 0.31, Z: 110, dist: 1.5 }, tight: { yaw: 0.26, pitch: 0.61, Z: 90, dist: 1.6 } };
+/* the twelve paths, back to front; the number is each one's ink. The
+   faint one is --hair's own ink (16% of --ink), so the card's edge and the
+   lines a read has not reached yet are drawn in it as slivers. */
+const NET3_PATHS = [["dkfaint", 0.16], ["dkbar", 1], ["dkwin", 1], ["dke2", 0.34], ["dkdim", 0.2],
+  ["dkmid", 0.55], ["dklit", 0.95], ["dke1w", 0.28], ["dke1s", 0.52], ["dkpx1", 0.25], ["dkpx2", 0.55], ["dkpx3", 0.97]];
+function buildDeep(s, flat) {
+  net3.g = null; net3.on = false; net3.a = -1; net3.ready = false; net3.flat = flat;
+  if (RM) return;
+  const mk = svgIn(s);
+  const g = mk("g", { class: "depth", "aria-hidden": "true", display: "none" });
+  net3.paths = NET3_PATHS.map(([c, o]) => mk("path", { class: c, opacity: o, d: "" }, g));
+  /* the authored labels, cloned: a digit keeps its `.on` wrapper so the
+     clay and the size of the winner come from the same rule as the plate's,
+     and the wrappers go in BEHIND the units, because the classes' plane is
+     the furthest one and painter's order is the only occlusion text gets */
+  const units = net3.paths[4];
+  net3.labs = net.labs.map(([t, layer]) => {
+    const digit = t.parentNode.classList.contains("on");
+    const wrap = digit ? g.insertBefore(document.createElementNS("http://www.w3.org/2000/svg", "g"), units) : g;
+    if (digit) wrap.setAttribute("class", "on");
+    const c = t.cloneNode(true);
+    c.setAttribute("opacity", 0);
+    c.removeAttribute("display"); /* the sample lines are cloned hidden; the clone answers to opacity */
+    wrap.appendChild(c);
+    return { el: c, wrap, layer, x: +t.getAttribute("x"), y: +t.getAttribute("y"), sample: net.sampleTx.includes(t) };
+  });
+  net3.g = g;
+  seatDeep();
+}
+/* the world for the read on show: every point the frame will project, seated
+   on its plane, in one buffer. Rebuilt per read, never per frame. */
+function seatDeep() {
+  const N = net3, R = net.read, E = net.edges;
+  N.ready = false; N.a = -1;
+  if (!N.g || !R || !E) return;
+  const G = net.geo, W = net.vbw, H = net.vbh, pose = NET3_POSE[net.tight ? "tight" : "wide"];
+  const D = W * pose.dist, Z = pose.Z, cx = W / 2, cy = H / 2, zs = [-Z, 0, Z];
+  const [fx, fy, fw] = G.fo, cell = (fw - 2) / 28;
+  const iOcc = 4, iLat = 8, iNode = iLat + 841, iOut = iNode + 100, iE1 = iOut + 10;
+  const iBar = iE1 + E.e1.length, iLab = iBar + 40, iCtr = iLab + N.labs.length, n = iCtr + 3;
+  const P = new Float64Array(n * 3), seat = (i, u, v, layer) => DEPTH.seat(P, i, u, v, zs[layer], D, cx, cy);
+  const m = 1.5;
+  [[fx, fy], [fx + fw, fy], [fx + fw, fy + fw], [fx, fy + fw]].forEach(([u, v], i) => seat(i, u, v, 0));
+  [[fx - m, fy - m], [fx + fw + m, fy - m], [fx + fw + m, fy + fw + m], [fx - m, fy + fw + m]].forEach(([u, v], i) => seat(iOcc + i, u, v, 0));
+  for (let j = 0; j < 29; j++) for (let i = 0; i < 29; i++) seat(iLat + j * 29 + i, fx + 1 + i * cell, fy + 1 + j * cell, 0);
+  for (let j = 0; j < 100; j++) seat(iNode + j, ...netUnit(j), 1);
+  for (let d = 0; d < 10; d++) seat(iOut + d, ...G.out(d), 2);
+  E.e1.forEach((e, i) => seat(iE1 + i, ...netPix(e.k), 0));
+  N.labs.forEach((l, i) => seat(iLab + i, l.x, l.y, l.layer));
+  seat(iCtr, fx + fw / 2, fy + fw / 2, 0);
+  seat(iCtr + 1, ...netUnit(44), 1);
+  seat(iCtr + 2, ...G.out(5), 2);
+  const hMax = Math.max(1e-6, ...R.hidden);
+  const cells = [];
+  for (let k = 0; k < 784; k++) if (R.px[k] > 0.02) cells.push([k, R.px[k], iLat + Math.floor(k / 28) * 29 + (k % 28)]);
+  N.w = { P, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n), n, D, Z, cx, cy, zs,
+    yaw: pose.yaw, pitch: pose.pitch, iOcc, iLat, iNode, iOut, iE1, iBar, iLab, iCtr, cells,
+    lit: R.hidden.map((h) => h / hMax), seat };
+  N.ready = true;
+}
+/* one frame of the assembly at a in [0, 1) */
+function drawDeep(a) {
+  const N = net3, w = N.w, R = net.read, E = net.edges, G = net.geo;
+  const { P, U, V, S, D, Z, iOcc, iNode, iOut, iE1, iBar, iLab, iCtr } = w;
+  /* the camera holds while the figure comes up the screen (at 1440×900 the
+     net is whole on screen only from a = 0.37, at 420×786 from 0.66), comes
+     round over .30–.85, and the read runs forward over .55–.95, so the last
+     of the turn and the first of the pass overlap */
+  const cam = cubicInOut(clamp((a - 0.3) / 0.55, 0, 1));
+  const f = clamp((a - 0.55) / 0.4, 0, 1);
+  const grow = smooth((f - 0.7) / 0.22);
+  for (let d = 0; d < 10; d++) {
+    const len = Math.max(1, R.conf[d] * G.barMax) * grow, [x0, y0, x1, y1] = G.bar(d, len), i = iBar + d * 4;
+    w.seat(i, x0, y0, 2); w.seat(i + 1, x1, y0, 2); w.seat(i + 2, x1, y1, 2); w.seat(i + 3, x0, y1, 2);
+  }
+  DEPTH.project(DEPTH.pose(w.yaw * (1 - cam), w.pitch * (1 - cam), D, D, [w.cx, w.cy, 0]), P, w.n, U, V, S);
+  /* ink lightness for depth: the far plane at 55% while the camera is round,
+     nothing at all face-on, where the drawing must be the plate's */
+  const fogK = 0.45 * (1 - cam), fog = (i) => 1 - fogK * clamp((D / S[i] - (D - Z)) / (2 * Z), 0, 1);
+  const k = w.zs.map((z) => (D + z) / D);
+  const Q = [U[iOcc], V[iOcc], U[iOcc + 1], V[iOcc + 1], U[iOcc + 2], V[iOcc + 2], U[iOcc + 3], V[iOcc + 3]];
+  const inside = (i) => DEPTH.inside(U[i], V[i], Q);
+  const out = NET3_PATHS.map(() => "");
+  let u0 = Infinity, v0 = Infinity, u1 = -Infinity, v1 = -Infinity;
+  const grab = (i) => { if (U[i] < u0) u0 = U[i]; if (U[i] > u1) u1 = U[i]; if (V[i] < v0) v0 = V[i]; if (V[i] > v1) v1 = V[i]; };
+  /* a line from point i to point j, drawn over [ta, tb] of its length, each
+     end as wide as its own perspective makes 0.6 authored units */
+  const sliver = (p, i, j, ki, kj, ta, tb, wd) => {
+    if (tb - ta < 0.004) return;
+    const du = U[j] - U[i], dv = V[j] - V[i], wi = wd * ki * S[i], wj = wd * kj * S[j];
+    out[p] += DEPTH.taper(U[i] + du * ta, V[i] + dv * ta, lerp(wi, wj, ta), U[i] + du * tb, V[i] + dv * tb, lerp(wi, wj, tb));
+  };
+  /* the visible part of i→j after the card: [t0, t1] minus the card's span */
+  const pieces = (i, j, t0, t1) => {
+    const sp = DEPTH.span(U[i], V[i], U[j], V[j], Q);
+    if (!sp || sp[1] <= t0 || sp[0] >= t1) return [[t0, t1]];
+    const r = [];
+    if (sp[0] > t0) r.push([t0, sp[0]]);
+    if (sp[1] < t1) r.push([sp[1], t1]);
+    return r;
+  };
+  const along = (p, i, j, ki, kj, segs, upto, wd) => {
+    for (const [ta, tb] of segs) if (upto > ta) sliver(p, i, j, ki, kj, ta, Math.min(tb, upto), wd);
+  };
+  /* 1 · the lines. Faint whole, then dark up to where the read has got */
+  const g1 = smooth((f - 0.12) / 0.33), g2 = smooth((f - 0.5) / 0.25);
+  const rimOf = (j) => (net.r0 + 0.8) * k[1] * S[iNode + j];
+  E.e1.forEach((e, n) => {
+    const i = iE1 + n, j = iNode + e.j, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
+    const t1 = 1 - rimOf(e.j) / l, vis = pieces(i, j, 0, t1);
+    along(0, i, j, k[0], k[1], vis, 1, 0.5);
+    if (g1 > 0) { const t0 = vis.length ? vis[0][0] : t1; along(e.s >= 0.7 ? 8 : 7, i, j, k[0], k[1], vis, lerp(t0, t1, g1), 0.6); }
+  });
+  E.e2.forEach((e) => {
+    const i = iNode + e.j, j = iOut + e.o, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
+    const segs = pieces(i, j, rimOf(e.j) / l, 1);
+    along(0, i, j, k[1], k[2], segs, 1, 0.5);
+    if (g2 > 0 && e.s >= 0.25) along(3, i, j, k[1], k[2], segs, lerp(segs.length ? segs[0][0] : 1, 1, g2), 0.6);
+    grab(j);
+  });
+  /* 2 · the bars, on the far plane; the winner's is clay once the pass lands */
+  if (grow > 0) for (let d = 0; d < 10; d++) {
+    const i = iBar + d * 4;
+    out[d === R.pred && f >= 0.93 ? 2 : 1] += DEPTH.quad(U, V, i, i + 1, i + 2, i + 3);
+    grab(i + 1); grab(i + 2);
+  }
+  /* 3 · the units: dim until the pass reaches them, then their own level.
+     The unlit ink starts a little above the plate's 0.12 so the lattice
+     reads as a plane while it is still dark, and settles to it as the
+     pass lands, so face-on they are the authored dots' ink */
+  const nl = smooth((f - 0.35) / 0.2), dim = r2(lerp(0.2, 0.13, nl));
+  if (N.paths[4]._o !== dim) { N.paths[4]._o = dim; N.paths[4].setAttribute("opacity", dim); }
+  for (let j = 0; j < 100; j++) {
+    const i = iNode + j;
+    grab(i);
+    if (inside(i)) continue;
+    const lv = (0.12 + 0.88 * w.lit[j] * nl) * fog(i);
+    out[lv < 0.35 ? 4 : lv < 0.75 ? 5 : 6] += DEPTH.dot(U[i], V[i], net.r0 * k[1] * S[i]);
+  }
+  /* 4 · the card: its edge, one authored unit wide at each corner's own
+     depth, then its ink, pencil-light until the pass starts */
+  for (let i = 0; i < 4; i++) { sliver(0, i, (i + 1) & 3, k[0], k[0], 0, 1, 1); grab(i); }
+  const ink = lerp(0.45, 1, smooth(f / 0.18));
+  for (const [kk, v, t] of w.cells) {
+    const lv = v * ink * fog(t);
+    if (lv < 0.06) continue;
+    out[lv < 0.36 ? 9 : lv < 0.7 ? 10 : 11] += DEPTH.quad(U, V, t, t + 1, t + 30, t + 29);
+  }
+  N.paths.forEach((p, n) => { if (p._d !== out[n]) { p._d = out[n]; p.setAttribute("d", out[n]); } });
+  /* 5 · the labels, upright, at their own size, once their plane is */
+  /* the ten digits ARE the output plane (the wide plate draws no node for a
+     class), so they stand on it from the first frame; the captions are
+     words about the planes and wait for the camera to be nearly round */
+  const sig = [k[0] * S[iCtr], k[1] * S[iCtr + 1], k[2] * S[iCtr + 2]], cap = smooth((cam - 0.8) / 0.15);
+  N.labs.forEach((l, n) => {
+    const i = iLab + n, digit = l.wrap !== N.g;
+    const fit = 1 - smooth((Math.abs(sig[l.layer] - 1) - (digit ? 0.2 : 0.025)) / 0.05);
+    const op = l.sample && R.who !== "sample" ? 0 : r2(fit * (digit ? 1 : cap));
+    if (l._op !== op) { l._op = op; l.el.setAttribute("opacity", op); }
+    /* written even while it is hidden, so the frame is the pose's and never
+       the history's: a label that kept its last shown place made the same y
+       two different DOMs, one coming down and one going up */
+    const x = r1(U[i]), y = r1(V[i]);
+    if (l._x !== x) { l._x = x; l.el.setAttribute("x", x); }
+    if (l._y !== y) { l._y = y; l.el.setAttribute("y", y); }
+    if (op > 0) grab(i);
+    const win = l.wrap !== N.g && l.el.textContent === String(R.pred) && f >= 0.93;
+    if (l._win !== win) { l._win = win; l.wrap.classList.toggle("win", win); }
+  });
+  N.bounds = [r1(u0), r1(v0), r1(u1), r1(v1)];
+}
+/* THE HANDOVER IS A SWAP, at a = 1, and not a crossfade. Two half-opaque
+   copies of one ink composite lighter than either: measured, the winner's
+   clay bar went salmon at the midpoint and the swap's RMSE rose from 2.4% to
+   2.7%; holding the authored figure at full under a fading layer doubled
+   the partial inks instead (4.5%). Face-on the layer IS the drawing, so the
+   swap changes 0.25% of the figure's pixels by more than 6% (antialiasing,
+   mostly), which is less than either fade shows. */
+function setDeep(on) {
+  const N = net3;
+  N.on = on; N.a = -1;
+  N.g.setAttribute("display", on ? "inline" : "none");
+  if (on) N.flat.setAttribute("opacity", 0);
+  else { N.flat.removeAttribute("opacity"); N.bounds = null; }
+  $("net").classList.toggle("indepth", on);
+  window.__world.net3 = { a: N.a, on, armed: N.armed, bounds: N.bounds }; /* probe hook */
+}
+/* called every frame by work(y). Arming is what keeps the switch between
+   the flat figure and the depth layer off the screen: the layer may take the
+   figure only once a read exists AND the net has been out of view since, so
+   a read that lands, or a pen that lifts, while the reader is looking at the
+   plate never turns it into a different picture under them. */
+function deepNet(y) {
+  const N = net3;
+  if (!N.g) return;
+  const a = DEPTH_PIN !== null ? DEPTH_PIN : clamp((y - N.yA) / Math.max(1, N.yB - N.yA), 0, 1);
+  if (!N.armed && N.ready && (y + vh < N.top || y > N.top + N.h)) N.armed = true;
+  const show = N.armed && N.ready && a < 1;
+  if (show !== N.on) setDeep(show);
+  if (show && a !== N.a) { N.a = a; drawDeep(a); }
+  window.__world.net3 = { a: +a.toFixed(4), on: N.on, armed: N.armed, bounds: N.bounds }; /* probe hook */
+}
+/* THE FIGURE SHOWS A READ BEFORE THE READER MAKES ONE, because the depth
+   layer has nothing to assemble without one, and an empty network seen from
+   behind is a lattice of dots. It is asked of the classifier in this tab,
+   after the name has finished arriving (one classify() is 6–15ms of main
+   thread, measured in both engines, and the nameplate is the one thing on
+   the first screen that moves), and only if the reader has not drawn. */
+function lightSample() {
+  if (net.lastLight || current || strokes.length) return;
+  ready.then((c) => {
+    if (net.lastLight || current || strokes.length) return;
+    const px = samplePixels(), r = c.classify(px), p = Number(r.prediction);
+    if (p !== GLYPH_SAMPLE.label) return;
+    lightNet(px, Array.from(r.hidden_activations), Array.from(r.confidence), p, false, "sample");
+    wake(true);
+  }, () => {});
 }
 
 /* the pad (stroke capture identical to the shipped fast-mnist demo) */
@@ -9777,6 +10493,8 @@ pad.addEventListener("pointerdown", (ev) => {
   pad.setPointerCapture(ev.pointerId);
   current = [toPadXY(ev)]; strokes.push(current);
   $("padhint").classList.add("gone");
+  /* fig. 06 is never in depth under a pen: see deepNet */
+  net3.armed = false; if (net3.on) setDeep(false);
   /* the pen is down, so the last answer is no longer an answer to what is
      on the pad: the big digit and its conf go back to the idle "·" they
      wear after clear, and the ten outputs dim (#net.reading) until lift */
@@ -9802,6 +10520,17 @@ $("clear").addEventListener("click", () => {
   $("conf").textContent = "·"; $("fwd").textContent = "·";
   window.__demo.last = null;
 });
+/* the sample read waits for the name: see lightSample */
+{
+  const de = document.documentElement;
+  if (RM || de.hasAttribute("data-np-ready")) lightSample();
+  else {
+    const mo = new MutationObserver(() => { if (de.hasAttribute("data-np-ready")) { mo.disconnect(); lightSample(); } });
+    mo.observe(de, { attributes: true, attributeFilter: ["data-np-ready"] });
+    /* a performance that never comes must not keep the sample out */
+    setTimeout(() => { mo.disconnect(); lightSample(); }, 8000);
+  }
+}
 
 /* ————— the gate: only a press resolves it —————
    ONE PATH, AND NO ARMING. The button used to sit hollow and refuse the press
