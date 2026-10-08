@@ -14866,7 +14866,11 @@ function inkPass(el, hx) {
   });
   el.classList.add("ink-live");
   el.appendChild(layer);
-  setTimeout(() => { layer.remove(); el.classList.remove("ink-live"); }, Math.round(last) + 680);
+  setTimeout(() => {
+    layer.remove();
+    el.classList.remove("ink-live");
+    if (!el.classList.length) el.removeAttribute("class"); /* not even class="" */
+  }, Math.round(last) + 680);
 }
 if (TYPE_HAND) {
   for (const el of document.querySelectorAll("main h2, .litany .mline > p:not(.rct)")) {
