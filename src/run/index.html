@@ -5176,9 +5176,16 @@ function cacheGeometry() {
      of 786 at 420×786 and 454 of 844 at 390×844, where Chromium puts it at
      393 and 422), so a window ending at 0.52 left that park at a = 0.93 with
      the depth layer up. 0.62 clears WebKit's worst by 43px. */
-  const nw = $("netwrap");
+  /* AND IT OPENS WHEN THE OPENING CAN BE SEEN: when 60% of the opening
+     pose's own height is on screen, not when the box's top reaches 0.90.
+     The tight net is 415px of a 786 screen, so the old start had it whole
+     on screen only from a = 0.79 and the opening was played below the
+     fold; this seats a = 0 by the pose's projected bounds, the same rule on
+     every seat, and never lets the window shrink under a quarter screen. */
+  const nw = $("netwrap"), sc = nw.clientWidth / net.vbw, [o0, o1] = netOpening();
   net3.top = absTop(nw); net3.h = nw.clientWidth * net.vbh / net.vbw;
-  net3.yA = net3.top - 0.9 * vh; net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
+  net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
+  net3.yA = Math.min(net3.top + sc * (o0 + 0.6 * (o1 - o0)) - vh, net3.yB - 0.25 * vh);
   window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
   /* fig. 07's reveal: the same window off its svg's layout box (the plate's
      first child, under its padding), and the blocks' clock reads its end */
@@ -6341,6 +6348,17 @@ const DEPTH = {
       if (c > 0) pos++; else if (c < 0) neg++;
     }
     return !(pos && neg);
+  },
+  /* how far (u, v) stands outside the convex quad Q, negative inside: the
+     nearest edge's distance, signed by inside() */
+  gap(u, v, Q) {
+    let d = Infinity;
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) & 3, x0 = Q[i * 2], y0 = Q[i * 2 + 1], ex = Q[j * 2] - x0, ey = Q[j * 2 + 1] - y0;
+      const t = clamp(((u - x0) * ex + (v - y0) * ey) / (ex * ex + ey * ey || 1), 0, 1);
+      d = Math.min(d, Math.hypot(u - x0 - ex * t, v - y0 - ey * t));
+    }
+    return DEPTH.inside(u, v, Q) ? -d : d;
   },
   /* path atoms, rounded to a tenth of a unit (0.09 CSS px on the widest
      seat) so equal poses write equal strings, which is what lets a frame
@@ -9922,11 +9940,20 @@ const net3 = { g: null, flat: null, paths: [], labs: [], on: false, armed: false
 /* ?depth=0.4 holds the assembly at one pose whatever the scroll: a probe's
    still, never a reader's */
 const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : null;
-/* the camera per edition, in radians and in the figure's own units: the
-   start pose looks down the network's axis from beside its input (wide) or
-   down the stack from above it (tight, where the classes are under the
-   units); D is 2.6 figure widths, Z each plane's depth off the units' */
-const NET3_POSE = { wide: { yaw: 0.52, pitch: 0.31, Z: 110, dist: 1.5 }, tight: { yaw: 0.26, pitch: 0.61, Z: 90, dist: 1.6 } };
+/* THE OPENING IS THE MOMENT: three planes standing apart in space before
+   the camera comes round. Per edition, in radians and the figure's units
+   (yaw, pitch, each plane's depth Z off the units', camera distance in
+   figure widths). Filmed against the first cut (30, 18, 110, 1.5), which
+   read as a figure tilted a little: at 53 degrees the camera stands past
+   the network's own axis, so the card is nearest at the right, the lattice
+   behind it and the ten classes furthest at the left, clear of the lattice
+   (all ten; at 50 degrees six of them sat behind it), with the lines
+   running the depth between them. 1.25 widths gives the keystone; Z 240
+   keeps the three planes apart without the classes leaving the box. The
+   tight plate is narrower than its +8% allowance, its padding clips at 8
+   units, so it looks down the stack from above instead (45 degrees of
+   pitch) and turns only 19. */
+const NET3_POSE = { wide: { yaw: 0.925, pitch: 0.244, Z: 240, dist: 1.25 }, tight: { yaw: 0.332, pitch: 0.785, Z: 110, dist: 1.45 } };
 /* the twelve paths, back to front; the number is each one's ink. The
    faint one is --hair's own ink (16% of --ink), so the card's edge and the
    lines a read has not reached yet are drawn in it as slivers. */
@@ -9987,16 +10014,34 @@ function seatDeep() {
     lit: R.hidden.map((h) => h / hMax), seat };
   N.ready = true;
 }
+/* where the opening pose draws, top to bottom in the figure's units: the
+   card's and the lattice's corners and the class anchors, seated and
+   projected the way seatDeep and drawDeep do it. No read is needed, so the
+   window can be laid before one exists. */
+function netOpening() {
+  const G = net.geo, W = net.vbw, H = net.vbh, pose = NET3_POSE[net.tight ? "tight" : "wide"];
+  const D = W * pose.dist, cx = W / 2, cy = H / 2, zs = [-pose.Z, 0, pose.Z], [fx, fy, fw] = G.fo;
+  const pts = [[fx, fy, 0], [fx + fw, fy, 0], [fx + fw, fy + fw, 0], [fx, fy + fw, 0],
+    [...netUnit(0), 1], [...netUnit(9), 1], [...netUnit(90), 1], [...netUnit(99), 1]];
+  for (let d = 0; d < 10; d++) pts.push([...G.out(d), 2]);
+  const P = new Float64Array(pts.length * 3), U = new Float64Array(pts.length), V = new Float64Array(pts.length), S = new Float64Array(pts.length);
+  pts.forEach(([u, v, l], i) => DEPTH.seat(P, i, u, v, zs[l], D, cx, cy));
+  DEPTH.project(DEPTH.pose(pose.yaw, pose.pitch, D, D, [cx, cy, 0]), P, pts.length, U, V, S);
+  let v0 = Infinity, v1 = -Infinity;
+  for (let i = 0; i < pts.length; i++) { v0 = Math.min(v0, V[i] - (i >= 8 ? 14 : 0)); v1 = Math.max(v1, V[i]); }
+  return [v0, v1];
+}
 /* one frame of the assembly at a in [0, 1) */
 function drawDeep(a) {
   const N = net3, w = N.w, R = net.read, E = net.edges, G = net.geo;
   const { P, U, V, S, D, Z, iOcc, iNode, iOut, iE1, iBar, iLab, iCtr } = w;
-  /* the camera holds while the figure comes up the screen (at 1440×900 the
-     net is whole on screen only from a = 0.37, at 420×786 from 0.66), comes
-     round over .30–.85, and the read runs forward over .55–.95, so the last
-     of the turn and the first of the pass overlap */
-  const cam = cubicInOut(clamp((a - 0.3) / 0.55, 0, 1));
-  const f = clamp((a - 0.55) / 0.4, 0, 1);
+  /* the camera holds the opening while the figure comes up the screen,
+     comes round over .38–.90 on a smoothstep (a cubic in-out passed the
+     planes through each other in about 25px of scroll at 1440, too fast to
+     read as anything but a snap), and the read runs forward over .60–.95,
+     so the last of the turn and the first of the pass overlap */
+  const cam = smooth((a - 0.38) / 0.52);
+  const f = clamp((a - 0.6) / 0.35, 0, 1);
   const grow = smooth((f - 0.7) / 0.22);
   for (let d = 0; d < 10; d++) {
     const len = Math.max(1, R.conf[d] * G.barMax) * grow, [x0, y0, x1, y1] = G.bar(d, len), i = iBar + d * 4;
@@ -10081,10 +10126,23 @@ function drawDeep(a) {
      class), so they stand on it from the first frame; the captions are
      words about the planes and wait for the camera to be nearly round */
   const sig = [k[0] * S[iCtr], k[1] * S[iCtr + 1], k[2] * S[iCtr + 2]], cap = smooth((cam - 0.8) / 0.15);
+  /* A DIGIT STANDS ONLY WHERE IT STANDS CLEAR. Billboards are drawn at full
+     size on a plane seen in depth, and early on the classes' plane sits
+     behind the lattice: the reviewer's frames at 1440 had 0 to 9 printed
+     over its right-hand columns. So a digit is held at nothing until its
+     glyph clears the lattice (its four corner units, grown by a dot) and
+     the card, and fades up over the next 6 units of daylight. */
+  const rr = net.r0 * k[1] * Math.max(S[iNode], S[iNode + 99]);
+  const grid = [U[iNode], V[iNode], U[iNode + 9], V[iNode + 9], U[iNode + 99], V[iNode + 99], U[iNode + 90], V[iNode + 90]];
   N.labs.forEach((l, n) => {
     const i = iLab + n, digit = l.wrap !== N.g;
     const fit = 1 - smooth((Math.abs(sig[l.layer] - 1) - (digit ? 0.2 : 0.025)) / 0.05);
-    const op = l.sample && R.who !== "sample" ? 0 : r2(fit * (digit ? 1 : cap));
+    let clear = 1;
+    if (digit) {
+      const cu = U[i] + (G.rise ? 0 : -4.5), cv = V[i] - 4.5, half = 7;
+      clear = smooth((Math.min(DEPTH.gap(cu, cv, grid) - rr, DEPTH.gap(cu, cv, Q)) - half) / 6);
+    }
+    const op = l.sample && R.who !== "sample" ? 0 : r2(fit * clear * (digit ? 1 : cap));
     if (l._op !== op) { l._op = op; l.el.setAttribute("opacity", op); }
     /* written even while it is hidden, so the frame is the pose's and never
        the history's: a label that kept its last shown place made the same y
