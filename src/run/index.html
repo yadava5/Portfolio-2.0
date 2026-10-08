@@ -2459,11 +2459,16 @@ if (location.hash.length > 1) {
      false → true at 1440x900 and at 420x786, measured both before and after
      this deletion. */
 
-  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the headings soak ═══════
-     A heading does not move under the hand and does not get bolder: one
-     pass of ink soaks through it from the side the hand came in, SOFT up
-     and the optical size down, so the hairlines thicken and the terminals
-     round and then dry again. Fraunces' axes move the advance, so the real
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the headings bubble ═══════
+     The heading is the bubbly one, and nothing like the name's tilting
+     crest: a swell rolls through the word from the side the hand came in,
+     as if a bubble passed under the letters. The glyph the swell is under
+     grows about its own baseline-centre and settles back on a spring, its
+     ink soaking as it swells (SOFT up, the optical size down) and drying as
+     it settles; nothing tilts and nothing slides sideways. The full stop
+     takes the last and smallest swell, with no bounce and no drop. A soak
+     alone was filmed first and read at reading scale as almost nothing, or
+     as "it got bold for a moment", which is the one thing asked against. Fraunces' axes move the advance, so the real
      text is never touched (kerning and wrap are the browser's own): the
      pass runs on aria-hidden copies laid at each glyph's measured box, the
      real glyphs are only hidden (fill, not layout) while the copies live,
@@ -2473,17 +2478,28 @@ if (location.hash.length > 1) {
   .ink-live{position:relative; -webkit-text-fill-color:transparent}
   .ink-l{position:absolute; left:0; top:0; width:0; height:0; pointer-events:none;
     -webkit-user-select:none; user-select:none}
-  .ink-c{position:absolute; white-space:pre; transform:translateX(-50%);
+  /* centred with the `translate` property, not `transform`, so `scale`
+     composes about the glyph's own centre and its measured baseline (--bl)
+     and the swell never moves the glyph sideways */
+  .ink-c{position:absolute; white-space:pre; translate:-50% 0; transform-origin:50% var(--bl);
     -webkit-text-fill-color:currentColor; font-variation-settings:var(--fv0);
-    animation:ink-pass .62s linear both; animation-delay:var(--d)}
-  /* A FRONT, NOT A STATE. Filmed with a symmetric pass the whole word sat
-     soaked at once and "Applied." read as going bold; a fast wetting and a
-     slow dry keep only the glyph the front has just reached at full soak,
-     the ones behind it drying, so the word is never all heavier at once. */
-  @keyframes ink-pass{
-    0%{font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.2,.7,.3,1)}
-    16%{font-variation-settings:var(--fv1); animation-timing-function:cubic-bezier(.45,.05,.4,1)}
-    100%{font-variation-settings:var(--fv0)}
+    animation:ink-swell .76s linear both; animation-delay:var(--d)}
+  .ink-c.stop{animation-name:ink-stop; animation-duration:.52s}
+  /* a damped spring: up fast with the soak, under once, over a little,
+     home; the soak is dry again by the first undershoot */
+  @keyframes ink-swell{
+    0%{scale:1; translate:-50% 0; font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+    19%{scale:var(--s); translate:-50% calc(var(--l) * -1); font-variation-settings:var(--fv1); animation-timing-function:cubic-bezier(.45,0,.35,1)}
+    42%{scale:calc(1 - (var(--s) - 1) * .3); translate:-50% 0; font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.4,0,.4,1)}
+    62%{scale:calc(1 + (var(--s) - 1) * .12); animation-timing-function:cubic-bezier(.4,0,.4,1)}
+    80%{scale:calc(1 - (var(--s) - 1) * .04); animation-timing-function:cubic-bezier(.4,0,.4,1)}
+    100%{scale:1; translate:-50% 0; font-variation-settings:var(--fv0)}
+  }
+  /* the full stop: one small swell and home, no undershoot, no lift */
+  @keyframes ink-stop{
+    0%{scale:1; font-variation-settings:var(--fv0); animation-timing-function:cubic-bezier(.3,.6,.3,1)}
+    36%{scale:var(--s); font-variation-settings:var(--fv1); animation-timing-function:cubic-bezier(.45,0,.4,1)}
+    100%{scale:1; font-variation-settings:var(--fv0)}
   }
   @media print{ .ink-l{display:none} .ink-live{-webkit-text-fill-color:inherit} }
 
@@ -15686,13 +15702,14 @@ function glyphBoxes(el) {
   return out;
 }
 /* the soak, read off the heading's own axes: SOFT to 100, and the optical
-   size 30 lower only where the heading names one (a heading left on the
+   size 16 lower only where the heading names one (it was 30, and on film
+   the weight it added was what read as bold; the swell carries it now) (a heading left on the
    automatic optical size keeps it, so the copies match it exactly) */
 function soakOf(fvs) {
   const ax = {};
   if (fvs && fvs !== "normal") for (const m of fvs.matchAll(/"(\w{4})"\s+(-?[\d.]+)/g)) ax[m[1]] = +m[2];
   const at = { ...ax, SOFT: 100 };
-  if ("opsz" in ax) at.opsz = Math.max(9, ax.opsz - 30);
+  if ("opsz" in ax) at.opsz = Math.max(9, ax.opsz - 16);
   if (!("SOFT" in ax)) ax.SOFT = 0;
   const str = (o) => Object.entries(o).map(([k, v]) => `"${k}" ${v}`).join(", ");
   return [str(ax), str(at)];
@@ -15713,27 +15730,51 @@ function inkPass(el, hx) {
   const layer = document.createElement("span");
   layer.className = "ink-l";
   layer.setAttribute("aria-hidden", "true");
-  let last = 0;
+  el.classList.add("ink-live");
+  el.appendChild(layer);
+  /* the baseline inside a copy's box, read off a copy-shaped probe (a 0x0
+     inline-block sits on the baseline), so each glyph swells from the line
+     it stands on and not from the middle of its box */
+  const baseline = (h) => {
+    const p = document.createElement("span");
+    p.className = "ink-c";
+    p.style.cssText = `left:0;top:0;line-height:${h.toFixed(2)}px;visibility:hidden;animation:none`;
+    p.innerHTML = '<i style="display:inline-block;width:0;height:0"></i>';
+    layer.appendChild(p);
+    const bl = (p.firstChild.getBoundingClientRect().bottom - p.getBoundingClientRect().top) / k;
+    p.remove();
+    return bl;
+  };
+  /* a heading's closing stop swells last, whichever side the hand came in */
+  const end = G[G.length - 1];
+  const closes = end.ch === ".";
+  const others = G.filter((q) => !(closes && q === end));
+  const lastOther = Math.max(0, ...others.map(at));
+  let done = 0;
   G.forEach((q) => {
-    let c = cs.get(q.src);
-    if (!c) { const s = getComputedStyle(q.src); c = { color: s.color, style: s.fontStyle, fv: soakOf(s.fontVariationSettings) }; cs.set(q.src, c); }
+    const h = q.h / k;
+    const key = q.src;
+    let c = cs.get(key);
+    if (!c) { const s = getComputedStyle(q.src); c = { color: s.color, style: s.fontStyle, fv: soakOf(s.fontVariationSettings), bl: new Map() }; cs.set(key, c); }
+    if (!c.bl.has(h)) c.bl.set(h, baseline(h));
+    const stop = q.ch === ".";
+    const d = closes && q === end ? lastOther + 90 : at(q);
     const e = document.createElement("span");
-    e.className = "ink-c";
+    e.className = stop ? "ink-c stop" : "ink-c";
     e.textContent = q.ch;
     e.style.cssText =
       `left:${((q.x + q.w / 2 - r.left) / k).toFixed(2)}px;top:${((q.y - r.top) / k).toFixed(2)}px;` +
-      `line-height:${(q.h / k).toFixed(2)}px;color:${c.color};font-style:${c.style};` +
-      `--fv0:${c.fv[0]};--fv1:${c.fv[1]};--d:${Math.round(at(q))}ms`;
-    last = Math.max(last, at(q));
+      `line-height:${h.toFixed(2)}px;color:${c.color};font-style:${c.style};` +
+      `--fv0:${c.fv[0]};--fv1:${c.fv[1]};--d:${Math.round(d)}ms;--bl:${c.bl.get(h).toFixed(2)}px;` +
+      (stop ? "--s:1.035;--l:0em" : "--s:1.08;--l:.025em");
+    done = Math.max(done, d + (stop ? 520 : 760));
     layer.appendChild(e);
   });
-  el.classList.add("ink-live");
-  el.appendChild(layer);
   setTimeout(() => {
     layer.remove();
     el.classList.remove("ink-live");
     if (!el.classList.length) el.removeAttribute("class"); /* not even class="" */
-  }, Math.round(last) + 680);
+  }, Math.round(done) + 60);
 }
 if (TYPE_HAND) {
   for (const el of document.querySelectorAll("main h2, .litany .mline > p:not(.rct)")) {
