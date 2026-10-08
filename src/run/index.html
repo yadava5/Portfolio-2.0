@@ -2723,6 +2723,12 @@ html[data-np-ready] .np-replay {
 h1[data-np-measuring] .np-ch {
   animation: none !important;
   transform: none !important;
+  /* the hand moves the letters through these three, which `transform`
+     does not reach; it is unmounted before any measure, and this is the
+     freeze saying so too */
+  translate: none !important;
+  rotate: none !important;
+  scale: none !important;
   font-variation-settings:
     "opsz" 144,
     "SOFT" 50,
@@ -8880,6 +8886,7 @@ function stirAll(now) {
   for (const step of stirring) if (!step(now)) stirring.delete(step);
 }
 window.__world.hand = () => stirring.size;
+window.__stir = stir; /* the nameplate's module mounts its own hand and has no other way into this loop */
 
 function frame() {
   const y = scrollY;
@@ -14872,6 +14879,19 @@ boot();
       const M = await import("./run/components/story/nameplateMachines.js");
       const letters = Array.from(h1.querySelectorAll(".np-ch"));
       let running = false;
+      /* THE HAND (v4): the settled name answers the pointer. It mounts in
+         perform()'s finally, on the same line that says the name reads
+         whole, and it comes off as the FIRST thing rebuild() does, because
+         a MutationObserver on data-np-ready would run as a microtask, after
+         applyKern and measureSettled had already read type the hand was
+         still moving (cloneNode carries its inline styles into the probe).
+         `geo` is the geometry this performance measured under its freeze:
+         the hand is cut to it and never measures a live name itself.
+         ?notype leaves the name as it was. */
+      let hand = null;
+      let geo = null;
+      const NOTYPE = new URLSearchParams(location.search).has("notype");
+      if (window.__world) window.__world.name = () => (hand ? hand.probe() : null);
       const perform = async () => {
         if (running) return;
         running = true;
@@ -14881,6 +14901,7 @@ boot();
           h1.setAttribute("data-np-measuring", "");
           M.applyKern(h1, letters);
           const g = M.measureSettled(plate, h1, letters);
+          geo = g;
           h1.removeAttribute("data-np-measuring");
           /* THE SWEEP STARTS WHEN THE PERFORMANCE DOES, and says so.
              It started here before this line existed, because the measuring
@@ -14894,7 +14915,6 @@ boot();
              its animation cancelled and restarted anyway. */
           plate.setAttribute("data-np-go", "");
           await M.performEnsemble(plate, h1, letters, g, () => ({ alive: true }));
-          M.mountHoverAnswers?.(plate, h1, letters, g);
         } finally {
           running = false;
           /* RE-BASELINE, and this is what stops the loop.
@@ -14916,6 +14936,8 @@ boot();
              display rule still gates the reveal on data-np-ready, which is
              set on the line above, so this shows it no sooner. */
           if (replay) { replay.hidden = false; replay.disabled = false; }
+          if (geo && !hand && !NOTYPE && window.__stir && M.mountNameHand)
+            hand = M.mountNameHand(plate, h1, letters, geo, window.__stir);
         }
       };
       /* REBUILD WHEN THE PLATE RESIZES.
@@ -14933,6 +14955,8 @@ boot();
          the plate box, but a rebuild loop here would be invisible and
          expensive. */
       const rebuild = () => {
+        hand?.unmount();
+        hand = null;
         plate.querySelectorAll("svg.np-mech").forEach((n) => n.remove());
         /* the attribute means "the name reads whole"; a replay is a name
            that does not, until perform()'s finally sets it again */
