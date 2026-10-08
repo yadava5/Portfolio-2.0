@@ -834,7 +834,8 @@ if (location.hash.length > 1) {
   .btn:disabled{cursor:default}
   @media (prefers-reduced-motion: no-preference){
     .btn::before{transition:transform .35s cubic-bezier(.22,1,.36,1)}
-    .btn:active{transform:scale(.97)}
+    /* the press is .pressing now (v4, the presses, below): a weighted
+       dip that runs whole even on a click too quick to hold :active */
   }
 
   /* beat 7 — agentic automl: the notebook worked by tools, at night */
@@ -2493,6 +2494,31 @@ if (location.hash.length > 1) {
   @keyframes roll-out-ne{45%{transform:translate(55%,-55%); filter:blur(.8px)} to{transform:translate(110%,-110%)}}
   @keyframes roll-in-ne{from{transform:translate(-110%,110%)} 55%{transform:translate(-45%,45%); filter:blur(.8px)} to{transform:none}}
   @media print{ .roll-l{display:none} .roll-live{-webkit-text-fill-color:inherit} }
+
+  /* ═══════ THE TYPE ANSWERS THE HAND (v4) · the presses ═══════
+     The gate's approve is the one decision on the page, so it presses like
+     one: down fast as if it had weight, 2px and a hair smaller, and back
+     firmly with no overshoot and no squash. The pad's clear presses
+     lighter. Both are a class the press toggles, so a click too quick to
+     hold :active still gets the whole dip. "watch it again" turns its
+     arrow once, the way the arrow points. */
+  .np-turn{display:inline-block}
+  @media (prefers-reduced-motion: no-preference){
+    .pressing{animation:press-weight .34s both}
+    #clear.pressing{animation-name:press-light; animation-duration:.26s}
+    .np-replay.turning .np-turn{animation:np-turn .62s cubic-bezier(.3,.6,.25,1)}
+  }
+  @keyframes press-weight{
+    0%{transform:none; animation-timing-function:cubic-bezier(.5,0,.75,0)}
+    22%{transform:translateY(2px) scale(.985); animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+    100%{transform:none}
+  }
+  @keyframes press-light{
+    0%{transform:none; animation-timing-function:cubic-bezier(.5,0,.75,0)}
+    25%{transform:translateY(1px) scale(.97); animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+    100%{transform:none}
+  }
+  @keyframes np-turn{to{transform:rotate(-360deg)}}
 </style>
 
 <style id="np-css">
@@ -3722,7 +3748,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
            then scaled by 0.833 and centred, shifting every machine 70px right.
            That is the A landing on the y. Nothing may share this box. -->
       <p class="roleline" data-fx="in .0 .24 y 4 | out .94 1.04 y -3 | drift 14">Software engineer</p>
-      <button type="button" class="np-replay" data-np-replay hidden>watch it again ⟲</button>
+      <button type="button" class="np-replay" data-np-replay hidden>watch it again <span class="np-turn">⟲</span></button>
       <!-- the whole opening frame is complete AT LOAD (in-windows resolve
            at or before y 0): a hero that assembles itself costs LCP and
            reads as a loading screen, and the census showed the thesis at
@@ -14979,6 +15005,35 @@ if (TYPE_HAND) {
   }
 }
 window.__world.rollLive = () => document.querySelectorAll(".roll-live").length; /* probe hook */
+/* ————— THE TYPE ANSWERS THE HAND (v4): the presses —————
+   Every pointer and the keyboard (a click with e.detail 0), because a
+   press is the button answering the press, not a hover; passive, so it
+   never takes a tap. The class goes when its animation ends, and the
+   attribute with it if it is all that was there. */
+if (!RM && !FLAGS.has("notype")) {
+  const once = (el, cls, names) => {
+    const go = () => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+    el.addEventListener("animationend", (e) => {
+      if (!names.includes(e.animationName)) return;
+      el.classList.remove(cls);
+      if (!el.classList.length) el.removeAttribute("class");
+    });
+    return go;
+  };
+  for (const el of [$("approve"), $("clear")]) {
+    if (!el) continue;
+    const press = once(el, "pressing", ["press-weight", "press-light"]);
+    el.addEventListener("pointerdown", press, { passive: true });
+    el.addEventListener("click", (e) => { if (!e.detail) press(); });
+  }
+  const rp = document.querySelector("[data-np-replay]");
+  if (rp) {
+    const turn = once(rp, "turning", ["np-turn"]);
+    rp.addEventListener("pointerenter", (e) => { if (TYPE_HAND && e.pointerType !== "touch" && handIsReal(e)) turn(); });
+    rp.addEventListener("click", turn);
+  }
+}
+
 
 
 /* ————— boot ————— */
