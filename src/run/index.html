@@ -8856,6 +8856,30 @@ let lastY = -1, lastArcKey = "", running = false, stillFrames = 0, booted = fals
 const PROF = FLAGS.has("prof"); /* ?prof — the harness reads the app's own
    per-frame scripting cost from __prof, separated from raster/composite */
 window.__prof = [];
+window.__profHand = []; /* the same, for frames that carry a hand and no scroll */
+
+/* ————— THE HAND: the other thing that moves without a scroll —————
+   (v4, 2026-10-08.) The type that answers the pointer and a figure opened
+   in depth both move while the page is still, for exactly as long as a hand
+   is on them. They do not get a loop of their own (F3, one rAF loop): each
+   hands the engine a stepper, `stir(step)`, and the loop stays open while
+   any stepper reports that it is still moving. A frame that carries no
+   scroll runs the steppers and nothing else; a frame that carries a scroll
+   runs work(y) first and the steppers after it, so a pose drawn by hand is
+   always composed on the scroll's latest state. A stepper returns false
+   when it has come exactly to rest and is dropped then; when the last one
+   goes, the engine stops twelve frames later, as it always has, and an
+   idle page schedules nothing. Under reduced motion nothing registers. */
+const stirring = new Set();
+function stir(step) {
+  if (RM) return;
+  stirring.add(step);
+  wake();
+}
+function stirAll(now) {
+  for (const step of stirring) if (!step(now)) stirring.delete(step);
+}
+window.__world.hand = () => stirring.size;
 
 function frame() {
   const y = scrollY;
@@ -8866,15 +8890,24 @@ function frame() {
      long as it runs, and not one frame longer. */
   const departing =
     release.t0 > 0 && performance.now() < release.t0 + release.tTail + 150;
-  if (changed || departing) { lastY = y; stillFrames = 0; } else { stillFrames++; }
+  const hand = stirring.size > 0;
+  if (changed || departing || hand) { lastY = y; stillFrames = 0; } else { stillFrames++; }
   if (stillFrames > 12) { running = false; return; } /* the page is still: stop */
   requestAnimationFrame(frame);
-  if (!changed && !departing) return;
-  if (PROF) {
-    const t0 = performance.now();
-    work(y);
-    if (window.__prof.length < 30000) window.__prof.push(performance.now() - t0);
-  } else work(y);
+  if (changed || departing) {
+    if (PROF) {
+      const t0 = performance.now();
+      work(y);
+      if (window.__prof.length < 30000) window.__prof.push(performance.now() - t0);
+    } else work(y);
+  }
+  if (hand) {
+    if (PROF) {
+      const t0 = performance.now();
+      stirAll(t0);
+      if (window.__profHand.length < 30000) window.__profHand.push(performance.now() - t0);
+    } else stirAll(performance.now());
+  }
 }
 
 function work(y) {
