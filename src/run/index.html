@@ -2657,6 +2657,10 @@ html[data-motion-ready]:not([data-motion-off]) .np-rule[data-np-seated] {
   white-space: nowrap;
   width: max-content;
   max-width: 100%;
+  /* the hand listens for a tap here (a phone's press), and iOS Safari
+     flashes its grey tap box over any element that listens for clicks:
+     the name would go grey under every finger */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .np-ch {
