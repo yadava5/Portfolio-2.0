@@ -6224,6 +6224,101 @@ function drawTokenAndTravellers(scroll, tokenY, tokenL, halted) {
   }
 }
 
+/* ————— DEPTH: one camera, true perspective, and no library —————
+   (v4, 2026-10-08.) Two figures assemble in three dimensions as the reader
+   arrives at them, fig. 06's network and fig. 07's lanes, and what keeps them
+   off the round the owner threw out is a rule rather than a taste: there is
+   ONE camera, each drawing is a rigid object, and the camera is the only
+   thing that moves. That round faked depth with scale (boxes growing as they
+   came "nearer"), dropped parts in from above and hung shadows under them,
+   and at reading scale it read as boxes changing size. Here every point goes
+   through a real perspective divide, so a plane seen at an angle keystones, a
+   line running into depth tapers, and two planes at different depths slide
+   past each other as the camera turns: the three things scale cannot fake.
+   CSS 3D is not the instrument. On inline SVG children Chromium 151 and
+   WebKit 26.5 both flatten preserve-3d and ignore translateZ (measured in the
+   last round), so the projection is done here and drawn as path data. Every
+   function below is pure in the pose; a frame allocates nothing but the
+   strings it writes. */
+const r1 = (v) => Math.round(v * 10) / 10;
+const r2 = (v) => Math.round(v * 100) / 100;
+const cubicInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+const DEPTH = {
+  /* yaw turns the camera round the pivot's vertical, pitch tips it over its
+     own horizontal; `dist` is camera to pivot and `focal` is in the figure's
+     own units, so focal === dist draws the pivot's plane at exactly 1:1 */
+  pose(yaw, pitch, dist, focal, pivot) {
+    return { cy: Math.cos(yaw), sy: Math.sin(yaw), cp: Math.cos(pitch), sp: Math.sin(pitch),
+      dist, focal, px: pivot[0], py: pivot[1], pz: pivot[2] };
+  },
+  /* n packed xyz points to screen u, v (the figure's units) and s, the
+     perspective scale at each. The pivot is drawn at its own (x, y). */
+  project(c, P, n, U, V, S) {
+    for (let i = 0, j = 0; i < n; i++, j += 3) {
+      const x = P[j] - c.px, y = P[j + 1] - c.py, z = P[j + 2] - c.pz;
+      const x1 = x * c.cy - z * c.sy, z1 = x * c.sy + z * c.cy;
+      const y2 = y * c.cp - z1 * c.sp, z2 = y * c.sp + z1 * c.cp;
+      const s = c.focal / (z2 + c.dist);
+      U[i] = c.px + x1 * s; V[i] = c.py + y2 * s; S[i] = s;
+    }
+  },
+  /* ANAMORPHIC SEATING. A point authored at (u, v) on a plane pushed to depth
+     z is grown about the final camera's axis by (D + z) / D, which is exactly
+     what that depth will take back off it. So from the face-on pose the solid
+     object draws onto the flat figure to the unit, and the handover to the
+     authored SVG has nothing to jump: the drawing is a sculpture that only
+     resolves into the plate from where the reader ends up standing. */
+  seat(P, i, u, v, z, D, cx, cy) {
+    const k = (D + z) / D;
+    P[i * 3] = cx + (u - cx) * k; P[i * 3 + 1] = cy + (v - cy) * k; P[i * 3 + 2] = z;
+  },
+  /* the part of a segment inside a convex quad Q (u0 v0 … u3 v3, either
+     winding) as [tIn, tOut], or null when it misses (Cyrus–Beck) */
+  span(u0, v0, u1, v1, Q) {
+    let area = 0;
+    for (let i = 0; i < 4; i++) { const j = (i + 1) & 3; area += Q[i * 2] * Q[j * 2 + 1] - Q[j * 2] * Q[i * 2 + 1]; }
+    const sg = area > 0 ? 1 : -1, du = u1 - u0, dv = v1 - v0;
+    let tIn = 0, tOut = 1;
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) & 3, nx = -(Q[j * 2 + 1] - Q[i * 2 + 1]) * sg, ny = (Q[j * 2] - Q[i * 2]) * sg;
+      const num = nx * (u0 - Q[i * 2]) + ny * (v0 - Q[i * 2 + 1]), den = nx * du + ny * dv;
+      if (den === 0) { if (num < 0) return null; continue; }
+      const t = -num / den;
+      if (den > 0) { if (t > tIn) tIn = t; } else if (t < tOut) tOut = t;
+      if (tIn > tOut) return null;
+    }
+    return [tIn, tOut];
+  },
+  /* is (u, v) inside the convex quad Q: every edge turns the same way */
+  inside(u, v, Q) {
+    let pos = 0, neg = 0;
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) & 3, c = (Q[j * 2] - Q[i * 2]) * (v - Q[i * 2 + 1]) - (Q[j * 2 + 1] - Q[i * 2 + 1]) * (u - Q[i * 2]);
+      if (c > 0) pos++; else if (c < 0) neg++;
+    }
+    return !(pos && neg);
+  },
+  /* path atoms, rounded to a tenth of a unit (0.09 CSS px on the widest
+     seat) so equal poses write equal strings, which is what lets a frame
+     skip its own write */
+  quad(U, V, a, b, c, d) {
+    return `M${r1(U[a])} ${r1(V[a])}L${r1(U[b])} ${r1(V[b])}L${r1(U[c])} ${r1(V[c])}L${r1(U[d])} ${r1(V[d])}Z`;
+  },
+  dot(u, v, r) {
+    const rr = r1(r), d = r1(2 * r);
+    return `M${r1(u - r)} ${r1(v)}a${rr} ${rr} 0 1 0 ${d} 0a${rr} ${rr} 0 1 0 ${-d} 0Z`;
+  },
+  /* a line in depth is a sliver: w0 wide where it starts and w1 where it
+     ends, each its own end's perspective, so one path can hold a hundred of
+     them at true widths. Hundredths here, because a 0.6-unit line rounded to
+     tenths at each corner comes out anywhere from 0.4 to 0.8 wide. */
+  taper(u0, v0, w0, u1, v1, w1) {
+    const du = u1 - u0, dv = v1 - v0, l = Math.hypot(du, dv) || 1;
+    const nx = -dv / l, ny = du / l, h0 = w0 / 2, h1 = w1 / 2;
+    return `M${r2(u0 + nx * h0)} ${r2(v0 + ny * h0)}L${r2(u1 + nx * h1)} ${r2(v1 + ny * h1)}L${r2(u1 - nx * h1)} ${r2(v1 - ny * h1)}L${r2(u0 - nx * h0)} ${r2(v0 - ny * h0)}Z`;
+  },
+};
+
 /* ————— station figures ————— */
 
 /* Applied — the sorting line. 8 marks, each with its own polyline
