@@ -572,6 +572,16 @@ if (location.hash.length > 1) {
      which is why the trailer also keeps its lettering and its place at the end
      of the member — the colour is the third cue here and never the only one. */
   #jetFig .crc.sealed{stroke:var(--clay-g); stroke-width:1.4}
+  /* fig. 07's depth reveal (jet3): the plane drawn through the camera, in the
+     plane's own inks, filled because each line is a sliver as wide as its
+     own depth makes it. It is display:none at a = 1 like fig. 06's. */
+  #jetFig .depth{pointer-events:none}
+  #jetFig .depth .jkline{fill:var(--hair-strong)}
+  #jetFig .depth .jkbox{fill:var(--ink)}
+  /* a lane's words fade with the room it has, but never under a keyboard */
+  #jetFig .tracebtn:focus .jlab{opacity:1}
+  @media print{ #jetFig .depth{display:none} #jetFig .jflat{opacity:1 !important}
+    #jetFig .lane3{transform:none !important} #jetFig .jlab{opacity:1 !important} }
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
      nothing here is a partial alpha the palette gate cannot see. */
@@ -3936,7 +3946,7 @@ figure.borrowed>figcaption, figure.borrowed>figcaption i,
              permanent false claim. -->
         <p class="handoff" data-fx="in .0 .11 y 3 | out .9 1.02 y -3 | drift 10 | phone 240"><a href="https://github.com/yadava5/jetpack-compress/blob/2caacd0/benchmarks/README.md" target="_blank" rel="noopener">the benchmark ledger @ 2caacd0 ↗</a> · <a href="https://github.com/yadava5/jetpack-compress" target="_blank" rel="noopener">source ↗</a> · <a href="https://jetpack-compress.vercel.app" target="_blank" rel="noopener">project page ↗</a> · <a href="https://jetpack-compress.vercel.app/system-card" target="_blank" rel="noopener">system card ↗</a></p>
       </div>
-      <figure class="plate" data-fx="in .04 .47 x -10 y 8 s .968 | out .74 .97 y -7 s .985 | drift 12">
+      <figure class="plate" data-fx="in .0 .09 | out .74 .97 y -7 s .985 | drift 12">
         <!-- role="group" for the reason fig. 04 states: the four lane
              controls traceOn() injects are focusable, and a labelled image's
              descendants are presentational. -->
@@ -5167,6 +5177,13 @@ function cacheGeometry() {
   net3.top = absTop(nw); net3.h = nw.clientWidth * net.vbh / net.vbw;
   net3.yA = net3.top - 0.9 * vh; net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
   window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
+  /* fig. 07's reveal: the same window off its svg's layout box (the plate's
+     first child, under its padding), and the blocks' clock reads its end */
+  const jp = jet.svg.parentElement, jvb = jet.svg.viewBox.baseVal;
+  jet3.top = absTop(jp) + jp.clientTop + parseFloat(getComputedStyle(jp).paddingTop);
+  jet3.h = jet.svg.clientWidth * jvb.height / jvb.width;
+  jet3.yA = jet3.top - 0.9 * vh; jet3.yB = jet3.top + jet3.h / 2 - READ_LINE * vh; jet3.a = -1;
+  window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
 }
 
 /* ————— the thread: one wobbled ink line down the whole run.
@@ -7845,10 +7862,18 @@ const jet = { svg: $("jetFig"), blocks: [], crc: null, dieTop: 0, dieThroat: 0 }
 const JET_OUT_WIDE = [25, 32, 20, 28, 23, 18, 30, 24];
 const JET_OUT_TIGHT = [14, 18, 11, 16, 13, 10, 17, 14];
 function buildJet(tight) {
-  const s = jet.svg, el = svgIn(s);
-  s.textContent = ""; s.classList.toggle("tight", !!tight);
+  const s = jet.svg, at = svgIn(s);
+  s.textContent = ""; s.classList.toggle("tight", !!tight); s.classList.remove("indepth");
   jet.blocks = []; jet.crc = null;
-  const jlabs = [];
+  const jlabs = [], lanes = [];
+  /* three parts, for the depth reveal (jet3): the depth layer; `flat`, the
+     plane's own ink (rails, member, words), which that layer stands in for
+     while the camera is round; and over both, the four lane sheets and the
+     eight blocks, which are drawn where they stand and moved, never redrawn.
+     `el` makes plane ink unless it is handed a parent. */
+  const deep = at("g", { class: "depth", "aria-hidden": "true", display: "none" });
+  const flat = at("g", { class: "jflat" });
+  const el = (t, a, parent) => at(t, a, parent || flat);
   /* One geometry per edition and one drawing below it. Nothing here is set
      over a line, so no label needs a rule to break for it. Every label is
      budgeted at 8.012 units/char wide (12px + .05em) and 7.125 tight
@@ -7890,6 +7915,7 @@ function buildJet(tight) {
                [282, ""],
                [302, "the lane assignment and the block sizes are drawn, not measured"]] };
   s.setAttribute("viewBox", g.vb);
+  jet.railY = g.railY; jet.stitchY = g.stitchY;
   const [dTop, dSh, dThr, dBot] = g.dieY;
   jet.dieTop = dTop; jet.dieThroat = dThr;
   for (const [x, y, words, end] of g.heads) {
@@ -7901,15 +7927,18 @@ function buildJet(tight) {
   el("path", { d: `M ${g.railX0} ${g.railY} H ${g.railX1}`, class: "lane" });
   el("path", { d: `M ${g.railX1} ${g.railY - 8} V ${g.railY + 8}`, class: "lane" });
   g.laneX.forEach((lx, i) => {
-    el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane" });
-    el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die" });
-    el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die" });
+    /* one sheet per lane, which the reveal holds upright at its own depth */
+    const lw = at("g", { class: "lane3" });
+    el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane", "aria-hidden": "true" }, lw);
+    el("path", { d: `M ${lx - g.mouth} ${dTop} V ${dSh} L ${lx - g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
+    el("path", { d: `M ${lx + g.mouth} ${dTop} V ${dSh} L ${lx + g.throat} ${dThr} V ${dBot}`, class: "die", "aria-hidden": "true" }, lw);
     /* centred ABOVE the rail, where no block ever travels — beside the lane it
        sat inside the raw block's own footprint at every width. The 18 is the
        block's half-height plus clearance, checked by walking the scrub in a
        browser rather than at the settled frame, where the rail is empty. */
-    const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" });
+    const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" }, lw);
     t.textContent = `vt-${i}`; jlabs.push([t, i]);
+    lanes.push({ g: lw, x: lx, lab: t });
   });
   /* the deflate register: the word at the left, and the four throats sharing
      one y. Wide runs a leader from the word to the first die because its
@@ -7949,7 +7978,7 @@ function buildJet(tight) {
     /* opacity 0 at BUILD, not only at scrub: a rebuild that is not followed by
        a scrub — a resize into the other edition — otherwise paints eight
        blocks stacked at the origin */
-    const bg = el("g", { class: "blk", opacity: 0 });
+    const bg = at("g", { class: "blk", opacity: 0 });
     const r = el("rect", { x: -g.raw / 2, y: -g.bh / 2, width: g.raw, height: g.bh, class: "mk" }, bg);
     jet.blocks.push({
       g: bg, r, i, lane, raw: g.raw, out: g.out[i], delay: i * 0.05,
@@ -7964,6 +7993,7 @@ function buildJet(tight) {
   traceOn(s, jlabs, jet.blocks, "lane", (lbl) =>
     `show which blocks lane ${lbl.textContent} carried`);
   hideDrawnFromAT(s);
+  buildDeepJet(s, deep, flat, lanes);
 }
 function scrubJet(p) {
   const span = jet.dieThroat - jet.dieTop;
@@ -7993,6 +8023,140 @@ function scrubJet(p) {
     }
   }
 }
+
+/* ————— fig. 07 in depth: four lanes that are one stream until you come round —————
+   (v4, 2026-10-08.) The plate's argument is that one stream is four lanes
+   underneath, so that is what the camera shows: it starts nearly end-on to
+   the row of lanes, where the four dies stand one behind another and read as
+   a single stream, and it comes round until they stand side by side. It is
+   a camera move and nothing else: the lanes are sheets at their real x,
+   each held facing the camera (the brief's weak perspective, a sheet scaled
+   by its own depth), the rails and the member are the plane they stand on,
+   drawn through the same camera point for point, and no block moves until
+   the reveal is over (jetBlocks). Yaw only, never pitch: with the camera
+   level a lane's own vertical line keeps one depth from end to end, so a
+   sheet held upright meets both rails exactly where the projected rails are.
+   The lane controls are the authored ones inside each sheet, so a tap, a
+   hover and keyboard focus all keep working while it moves; their words
+   wait until the lanes have come far enough apart to be read. */
+const jet3 = { g: null, flat: null, paths: [], labs: [], lanes: [], on: false,
+  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null };
+/* the camera: exactly end-on, at three plate widths. Closer than that, or
+   a few degrees off the row, and the four dies stand at visibly different
+   depths and offsets and interleave into a tangle (measured by eye at 84
+   degrees and 1.4 widths); from here they coincide to within a few units,
+   one stream drawn a little heavy, and part as the camera comes round. */
+const JET3_POSE = { yaw: Math.PI / 2, dist: 3 };
+function buildDeepJet(s, deep, flat, lanes) {
+  jet3.g = null; jet3.on = false; jet3.a = -1; jet3.flat = flat; jet3.lanes = lanes;
+  if (RM) { deep.remove(); return; }
+  const mk = svgIn(s);
+  jet3.paths = ["jkline", "jkbox"].map((c) => mk("path", { class: c, d: "" }, deep));
+  jet3.labs = [...flat.querySelectorAll("text")].map((t) => {
+    const c = t.cloneNode(true);
+    c.setAttribute("opacity", 0);
+    deep.appendChild(c);
+    return { el: c, x: +t.getAttribute("x"), y: +t.getAttribute("y") };
+  });
+  /* the plane's ink, read back off the drawing so there is one geometry:
+     every flat path here is an H or V run, every box a rect */
+  const lines = [], boxes = [];
+  for (const p of flat.querySelectorAll("path")) {
+    const m = p.getAttribute("d").match(/^M (-?[\d.]+) (-?[\d.]+) ([HV]) (-?[\d.]+)$/);
+    if (m) lines.push(m[3] === "H" ? [+m[1], +m[2], +m[4], +m[2]] : [+m[1], +m[2], +m[1], +m[4]]);
+  }
+  for (const r of flat.querySelectorAll("rect")) boxes.push(["x", "y", "width", "height"].map((k) => +r.getAttribute(k)));
+  const vb = s.viewBox.baseVal, railY = jet.railY, n = lines.length * 2 + boxes.length * 4 + jet3.labs.length + lanes.length;
+  const P = new Float64Array(n * 3);
+  let i = 0;
+  const put = (x, y) => { P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = 0; return i++; };
+  const L = lines.map(([x1, y1, x2, y2]) => [put(x1, y1), put(x2, y2)]);
+  const B = boxes.map(([x, y, w, h]) => [put(x, y), put(x + w, y), put(x + w, y + h), put(x, y + h)]);
+  const T = jet3.labs.map((l) => put(l.x, l.y));
+  const A = lanes.map((l) => put(l.x, railY));
+  const cx = lanes.reduce((t, l) => t + l.x, 0) / lanes.length;
+  jet3.w = { P, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n), n, L, B, T, A, railY,
+    vbw: vb.width, pivot: [cx, (railY + jet.stitchY) / 2, 0],
+    labW: (s.classList.contains("tight") ? 7.125 : 8.012) * 4 };
+  jet3.g = deep;
+}
+function drawDeepJet(a) {
+  const N = jet3, w = N.w, { U, V, S } = w;
+  /* the camera comes round over .15–.90, slow out of end-on and slow into
+     face-on, so the moment the one stream becomes four is mid-screen */
+  const cam = cubicInOut(clamp((a - 0.15) / 0.75, 0, 1)), D = w.vbw * JET3_POSE.dist;
+  DEPTH.project(DEPTH.pose(JET3_POSE.yaw * (1 - cam), 0, D, D, w.pivot), w.P, w.n, U, V, S);
+  const out = ["", ""];
+  const run = (p, i, j, wd) => { out[p] += DEPTH.taper(U[i], V[i], wd * S[i], U[j], V[j], wd * S[j]); };
+  for (const [i, j] of w.L) run(0, i, j, 1);
+  for (const q of w.B) for (let e = 0; e < 4; e++) run(1, q[e], q[(e + 1) & 3], 1.2);
+  N.paths.forEach((p, k) => { if (p._d !== out[k]) { p._d = out[k]; p.setAttribute("d", out[k]); } });
+  /* each lane, upright at its own depth; its words once it has room */
+  N.lanes.forEach((l, k) => {
+    const i = w.A[k], s = S[i];
+    const tf = `matrix(${r2(s)} 0 0 ${r2(s)} ${r1(U[i] - l.x * s)} ${r1(V[i] - w.railY * s)})`;
+    if (l._tf !== tf) {
+      l._tf = tf; l.g.setAttribute("transform", tf);
+      /* the words stand at their own size on a sheet that is not: a far lane
+         at 0.94 would have set its label at 11.9px on the 390 seat, under the
+         reading gate's 12, so the label takes the sheet's scale back off */
+      const k = 1 / r2(s), ly = w.railY - 18;
+      l.lab.setAttribute("transform", `matrix(${r2(k)} 0 0 ${r2(k)} ${r1(l.x * (1 - k))} ${r1(ly * (1 - k))})`);
+    }
+    let room = Infinity;
+    for (const m of [k - 1, k + 1]) if (w.A[m] !== undefined) room = Math.min(room, Math.abs(U[w.A[m]] - U[i]));
+    const op = r2(smooth((room - 1.05 * w.labW) / (0.4 * w.labW)));
+    if (l._op !== op) {
+      l._op = op; l.lab.setAttribute("opacity", op);
+      /* a word nobody can see is not a target: the sheet stops taking taps
+         until its label is half there, and keeps its focus either way */
+      if (op < 0.5) l.g.setAttribute("pointer-events", "none"); else l.g.removeAttribute("pointer-events");
+    }
+  });
+  /* the plane's words, upright, as the camera arrives */
+  const cap = r2(smooth((cam - 0.82) / 0.15));
+  N.labs.forEach((l, k) => {
+    const i = w.T[k], x = r1(U[i]), y = r1(V[i]);
+    if (l._x !== x) { l._x = x; l.el.setAttribute("x", x); }
+    if (l._y !== y) { l._y = y; l.el.setAttribute("y", y); }
+    if (l._op !== cap) { l._op = cap; l.el.setAttribute("opacity", cap); }
+  });
+}
+function setDeepJet(on) {
+  const N = jet3;
+  N.on = on; N.a = -1;
+  N.g.setAttribute("display", on ? "inline" : "none");
+  if (on) N.flat.setAttribute("opacity", 0);
+  else {
+    /* a = 1 is the authored plate exactly: no transform on any sheet, no
+       opacity on any word, every target back */
+    N.flat.removeAttribute("opacity");
+    for (const l of N.lanes) {
+      l.g.removeAttribute("transform"); l.g.removeAttribute("pointer-events");
+      l.lab.removeAttribute("opacity"); l.lab.removeAttribute("transform");
+      l._tf = l._op = undefined;
+    }
+  }
+  jet.svg.classList.toggle("indepth", on);
+}
+function deepJet(y) {
+  const N = jet3;
+  if (!N.g) return;
+  const a = DEPTH_PIN !== null ? DEPTH_PIN : clamp((y - N.yA) / Math.max(1, N.yB - N.yA), 0, 1);
+  const show = a < 1;
+  if (show !== N.on) setDeepJet(show);
+  if (show && a !== N.a) { N.a = a; drawDeepJet(a); }
+  window.__world.jet3 = { a: +a.toFixed(4), on: N.on }; /* probe hook */
+}
+/* SCRUBJET'S CLOCK. The blocks used to run off beat 6's own progress, from
+   0.2 of the beat to 0.95 of it, and that landed the last one as the plate
+   left: measured, with the figure's centre at -0.02 of the screen at
+   1440×900 and 0.02 at 420×786, where the first had set off with the centre
+   still under the fold (1.26). They now wait for the reveal and run over the
+   next 0.32 of a screen: first block with the centre on the reading line,
+   last with it at 0.32, the whole figure in view throughout. The same p in,
+   the same drawing out: scrubJet itself is untouched. */
+const jetBlocks = (y) => (y < jet3.yB ? 0 : 0.2 + 0.8 * clamp((y - jet3.yB) / (0.32 * vh), 0, 1));
 
 /* LifeQuest — the climb, drawn in section. The stair is the ledger beside it:
    five steps sketched in pencil, three of them built. What makes the drawing
@@ -9099,7 +9263,7 @@ function work(y) {
   /* beat 5 has nothing to scrub any more — fig. 06's classifier is live and
      its bench is a settled record. Beat 6 keeps scrubJet, which is the
      drawing; only its bench pair left. */
-  if (Math.abs(beat - 6) <= 1) scrubJet(beat < 6 ? 0 : beat > 6 ? 1 : bp);
+  if (Math.abs(beat - 6) <= 1) scrubJet(jetBlocks(y));
   /* beat 7's plate runs on its own window (climbWin), not on the beat's
      progress: the beat is sized by the dusk chain and the drawing is not */
   if (Math.abs(beat - 7) <= 1) {
@@ -9118,6 +9282,7 @@ function work(y) {
   if (beat >= 10) scrubGate(beat < 11 ? 0 : bp);
   /* fig. 06 in depth runs off the net's own position, not the beat's */
   deepNet(y);
+  deepJet(y);
 
   /* manifest stamps: one line as each station completes (reversible).
      The six stations ride beats 3–8 now. */
