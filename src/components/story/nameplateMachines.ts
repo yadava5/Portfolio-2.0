@@ -1895,23 +1895,26 @@ export function mountNameHand(
         kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.995, off + 0.012) });
       } else kf.push({ transform: `rotate(${ang}deg)`, offset: off });
     }
-    /* bounded: the intervals decay geometrically, so a length read off
-       them grew to 1.75s at thirteen detents and held the loop open */
-    const spin = 380 + 40 * n;
+    /* a faster hand spins it FASTER, not longer: more detents in nearly
+       the same time. The length was read off the decaying intervals once
+       (1.75s at thirteen detents), then bounded at 380 + 40 a detent, and
+       still held the loop open 1.41s after a flung pass; at 300 + 25 the
+       whole answer ends inside a second of the crest */
+    const spin = 300 + 25 * n;
     gF.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "scale(1)" }], {
       duration: 90,
       fill: "both",
       easing: "ease-out",
     });
     gN.animate(kf, { duration: spin, delay: 50, fill: "both", easing: "linear" });
-    gF.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, delay: 50 + spin, fill: "forwards", easing: "ease" });
+    gF.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, delay: 50 + spin, fill: "forwards", easing: "ease" });
     bowlW.s.animate([{ strokeDashoffset: bowlW.L }, { strokeDashoffset: 0 }], {
-      duration: 360,
+      duration: 340,
       delay: 20 + spin,
       fill: "both",
       easing: "cubic-bezier(.35,.05,.25,1)",
     });
-    return { ms: 50 + spin + 400, texts: [bowl.text, shoulder.text, stemP.text] };
+    return { ms: spin + 380, texts: [bowl.text, shoulder.text, stemP.text] };
   };
   /** the bird: the v's strokes, hinged at the vertex, beat once, down
    *  and out into open wings, a short upstroke past the stance, and fold
