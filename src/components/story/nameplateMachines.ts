@@ -1641,14 +1641,65 @@ const rgbOf = (css: string): number[] => {
 
 /* The answers cut the letters along the SAME polygons the opening uses
    (scan-letterform9), so a machine answers in its own pieces. */
-const LEG_L: [number, number][] = [[-0.15, -0.3], [0.435, -0.3], [0.435, 0.578], [0.282, 0.578], [0.25, 0.686], [0.435, 0.686], [0.435, 1.12], [-0.15, 1.12]];
-const LEG_R: [number, number][] = [[0.435, -0.3], [1.2, -0.3], [1.2, 1.12], [0.435, 1.12], [0.435, 0.686], [0.625, 0.686], [0.59, 0.578], [0.435, 0.578]];
-const BAR: [number, number][] = [[0.24, 0.572], [0.635, 0.572], [0.635, 0.688], [0.24, 0.688]];
-const BOWL: [number, number][] = [[-0.08, 0.465], [0.72, 0.465], [0.72, 1.1], [-0.08, 1.1]];
-const SHOULDER: [number, number][] = [[-0.08, -0.1], [1.12, -0.1], [1.12, 0.475], [-0.08, 0.475]];
-const STEM: [number, number][] = [[0.575, 0.465], [1.12, 0.465], [1.12, 1.1], [0.575, 1.1]];
-const V_L: [number, number][] = [[-0.2, -0.12], [0.622, -0.12], [0.622, 0.78], [0.74, 1.0], [0.74, 1.14], [-0.2, 1.14]];
-const V_R: [number, number][] = [[0.622, -0.12], [1.2, -0.12], [1.2, 1.14], [0.4, 1.14], [0.622, 0.78]];
+const LEG_L: [number, number][] = [
+  [-0.15, -0.3],
+  [0.435, -0.3],
+  [0.435, 0.578],
+  [0.282, 0.578],
+  [0.25, 0.686],
+  [0.435, 0.686],
+  [0.435, 1.12],
+  [-0.15, 1.12],
+];
+const LEG_R: [number, number][] = [
+  [0.435, -0.3],
+  [1.2, -0.3],
+  [1.2, 1.12],
+  [0.435, 1.12],
+  [0.435, 0.686],
+  [0.625, 0.686],
+  [0.59, 0.578],
+  [0.435, 0.578],
+];
+const BAR: [number, number][] = [
+  [0.24, 0.572],
+  [0.635, 0.572],
+  [0.635, 0.688],
+  [0.24, 0.688],
+];
+const BOWL: [number, number][] = [
+  [-0.08, 0.465],
+  [0.72, 0.465],
+  [0.72, 1.1],
+  [-0.08, 1.1],
+];
+const SHOULDER: [number, number][] = [
+  [-0.08, -0.1],
+  [1.12, -0.1],
+  [1.12, 0.475],
+  [-0.08, 0.475],
+];
+const STEM: [number, number][] = [
+  [0.575, 0.465],
+  [1.12, 0.465],
+  [1.12, 1.1],
+  [0.575, 1.1],
+];
+const V_L: [number, number][] = [
+  [-0.2, -0.12],
+  [0.622, -0.12],
+  [0.622, 0.78],
+  [0.74, 1.0],
+  [0.74, 1.14],
+  [-0.2, 1.14],
+];
+const V_R: [number, number][] = [
+  [0.622, -0.12],
+  [1.2, -0.12],
+  [1.2, 1.14],
+  [0.4, 1.14],
+  [0.622, 0.78],
+];
 
 /**
  * Mount the hand on a settled nameplate.
@@ -1707,7 +1758,9 @@ export function mountNameHand(
     h1.appendChild(box);
     const pr = plate.getBoundingClientRect();
     const rects = letters.map((l) => l.getBoundingClientRect());
-    const w = cells.map((row) => row.map((s) => s.getBoundingClientRect().width));
+    const w = cells.map((row) =>
+      row.map((s) => s.getBoundingClientRect().width)
+    );
     box.remove();
     /* +0.004px before the em: Blink and WebKit truncate a length to 1/64px,
        and an em that lands a hair under the rest width would shed one */
@@ -1784,7 +1837,11 @@ export function mountNameHand(
   };
   /** the dividers: the stems open on their hinge, the heavy leg first,
    *  the crossbar lets go while they are apart and ties them again */
-  const answerDividers = (svg: SVGSVGElement, outer: SVGGElement, k: number): Made => {
+  const answerDividers = (
+    svg: SVGSVGElement,
+    outer: SVGGElement,
+    k: number
+  ): Made => {
     const b = g.box[0];
     const px = b.x + 0.473 * b.w;
     const py = g.base - g.capH - 0.109 * g.capH;
@@ -1792,26 +1849,52 @@ export function mountNameHand(
     const legR = clipped(svg, g, letters, 0, LEG_R, "cap");
     const bar = clipped(svg, g, letters, 0, BAR, "cap");
     for (const q of [legL, legR, bar]) outer.appendChild(q.gRot);
-    const boss = stroke(el("circle", { cx: px, cy: py, r: g.fs * 0.058 }, outer), g.sw * 0.55);
-    const pin = el("circle", { cx: px, cy: py, r: g.fs * 0.03, fill: INK_WET }, outer);
+    const boss = stroke(
+      el("circle", { cx: px, cy: py, r: g.fs * 0.058 }, outer),
+      g.sw * 0.55
+    );
+    const pin = el(
+      "circle",
+      { cx: px, cy: py, r: g.fs * 0.03, fill: INK_WET },
+      outer
+    );
     hinge(legL.gRot, px, py);
     hinge(legR.gRot, px, py);
     const ov = 5 + 3 * k;
     const open = (sg: number, f: number): Keyframe[] => [
       { transform: "rotate(0deg)", easing: "cubic-bezier(.3,.7,.3,1)" },
-      { transform: `rotate(${(sg * ov * f).toFixed(2)}deg)`, offset: 0.36, easing: "cubic-bezier(.45,.05,.3,1)" },
-      { transform: `rotate(${(-sg * ov * f * 0.18).toFixed(2)}deg)`, offset: 0.74, easing: "cubic-bezier(.35,.1,.3,1)" },
+      {
+        transform: `rotate(${(sg * ov * f).toFixed(2)}deg)`,
+        offset: 0.36,
+        easing: "cubic-bezier(.45,.05,.3,1)",
+      },
+      {
+        transform: `rotate(${(-sg * ov * f * 0.18).toFixed(2)}deg)`,
+        offset: 0.74,
+        easing: "cubic-bezier(.35,.1,.3,1)",
+      },
       { transform: "rotate(0deg)" },
     ];
     legR.gRot.animate(open(-1, 1), { duration: 640, fill: "both" });
     legL.gRot.animate(open(1, 0.9), { duration: 600, delay: 50, fill: "both" });
     bar.gRot.animate(
-      [{ opacity: 1 }, { opacity: 0, offset: 0.14 }, { opacity: 0, offset: 0.6 }, { opacity: 1, offset: 0.84 }, { opacity: 1 }],
+      [
+        { opacity: 1 },
+        { opacity: 0, offset: 0.14 },
+        { opacity: 0, offset: 0.6 },
+        { opacity: 1, offset: 0.84 },
+        { opacity: 1 },
+      ],
       { duration: 650, fill: "both" }
     );
     for (const n of [boss, pin])
       n.animate(
-        [{ opacity: 0 }, { opacity: 1, offset: 0.16 }, { opacity: 1, offset: 0.58 }, { opacity: 0 }],
+        [
+          { opacity: 0 },
+          { opacity: 1, offset: 0.16 },
+          { opacity: 1, offset: 0.58 },
+          { opacity: 0 },
+        ],
         { duration: 650, fill: "both" }
       );
     return { ms: 700, texts: [legL.text, legR.text, bar.text] };
@@ -1823,18 +1906,30 @@ export function mountNameHand(
     const d = sPathD(g);
     const gG = el("g", {}, outer);
     const ghost = mkText(gG, g, letters, 3);
-    gG.animate([{ opacity: 1 }, { opacity: 0.3, offset: 0.12 }, { opacity: 0.3 }], { duration: 430, fill: "both" });
+    gG.animate(
+      [{ opacity: 1 }, { opacity: 0.3, offset: 0.12 }, { opacity: 0.3 }],
+      { duration: 430, fill: "both" }
+    );
     const gT = el("g", {}, outer);
     const t = mkText(gT, g, letters, 3);
     const rw = wipe(svg, g, gT, d, 0.52 * g.box[3].w);
     const bead = el("circle", { r: g.beadR, fill: INK_WET }, outer);
     bead.style.offsetPath = `path("${d}")`;
     bead.style.offsetRotate = "0deg";
-    const run: KeyframeAnimationOptions = { duration: 430, fill: "both", easing: "cubic-bezier(.4,.06,.2,1)" };
+    const run: KeyframeAnimationOptions = {
+      duration: 430,
+      fill: "both",
+      easing: "cubic-bezier(.4,.06,.2,1)",
+    };
     rw.s.animate([{ strokeDashoffset: rw.L }, { strokeDashoffset: 0 }], run);
     bead.animate([{ offsetDistance: "0%" }, { offsetDistance: "100%" }], run);
     bead.animate(
-      [{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.84 }, { opacity: 0 }],
+      [
+        { opacity: 0 },
+        { opacity: 1, offset: 0.08 },
+        { opacity: 1, offset: 0.84 },
+        { opacity: 0 },
+      ],
       { duration: 480, fill: "both" }
     );
     return { ms: 500, texts: [ghost, t] };
@@ -1842,7 +1937,12 @@ export function mountNameHand(
   /** the dial: the bowl gives way to the dial, the needle spins with the
    *  hand's speed down its seven detents to a catch, and the bowl inks
    *  back on from its own bowl–stem junction */
-  const answerDial = (svg: SVGSVGElement, outer: SVGGElement, k: number, dir: number): Made => {
+  const answerDial = (
+    svg: SVGSVGElement,
+    outer: SVGGElement,
+    k: number,
+    dir: number
+  ): Made => {
     const d = dialGeom(g, 7);
     const bowl = clipped(svg, g, letters, 7, BOWL, "x");
     const sk: string[] = [];
@@ -1855,14 +1955,23 @@ export function mountNameHand(
     const stemP = clipped(svg, g, letters, 7, STEM, "x");
     for (const q of [bowl, shoulder, stemP]) outer.appendChild(q.gRot);
     const gF = el("g", {}, outer);
-    stroke(el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, gF), g.sw * 0.5);
+    stroke(
+      el("ellipse", { cx: d.cx, cy: d.cy, rx: d.rx, ry: d.ry }, gF),
+      g.sw * 0.5
+    );
     el("circle", { cx: d.cx, cy: d.cy, r: g.fs * 0.02, fill: INK_WET }, gF);
     for (let q = 0; q < 7; q++) {
       const a = (q * 360) / 7 + d.rest;
       const [xa, ya] = d.pt(1.2, a);
       const [xb, yb] = d.pt(q === 0 ? 1.46 : 1.32, a);
       stroke(
-        el("path", { d: `M ${xa.toFixed(1)} ${ya.toFixed(1)} L ${xb.toFixed(1)} ${yb.toFixed(1)}` }, gF),
+        el(
+          "path",
+          {
+            d: `M ${xa.toFixed(1)} ${ya.toFixed(1)} L ${xb.toFixed(1)} ${yb.toFixed(1)}`,
+          },
+          gF
+        ),
         q === 0 ? g.sw * 0.5 : Math.max(1, g.sw * 0.28)
       );
     }
@@ -1880,19 +1989,33 @@ export function mountNameHand(
       iv *= 1.2;
     }
     const T = ivs.reduce((x, z) => x + z, 0);
-    const kf: Keyframe[] = [{ transform: `rotate(${-dir * n * DET}deg)`, offset: 0 }];
+    const kf: Keyframe[] = [
+      { transform: `rotate(${-dir * n * DET}deg)`, offset: 0 },
+    ];
     let acc2 = 0;
     for (let q = 1; q <= n; q++) {
       acc2 += ivs[q - 1];
       const off = acc2 / T;
       const ang = -dir * (n - q) * DET;
       if (q === n) {
-        kf.push({ transform: `rotate(${(dir * 4.2).toFixed(2)}deg)`, offset: Math.max(0, off - 0.05) });
-        kf.push({ transform: `rotate(${(-dir * 0.9).toFixed(2)}deg)`, offset: Math.max(0, off - 0.02) });
+        kf.push({
+          transform: `rotate(${(dir * 4.2).toFixed(2)}deg)`,
+          offset: Math.max(0, off - 0.05),
+        });
+        kf.push({
+          transform: `rotate(${(-dir * 0.9).toFixed(2)}deg)`,
+          offset: Math.max(0, off - 0.02),
+        });
         kf.push({ transform: "rotate(0deg)", offset: 1 });
       } else if (q >= n - 2) {
-        kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.99, off) });
-        kf.push({ transform: `rotate(${ang}deg)`, offset: Math.min(0.995, off + 0.012) });
+        kf.push({
+          transform: `rotate(${ang}deg)`,
+          offset: Math.min(0.99, off),
+        });
+        kf.push({
+          transform: `rotate(${ang}deg)`,
+          offset: Math.min(0.995, off + 0.012),
+        });
       } else kf.push({ transform: `rotate(${ang}deg)`, offset: off });
     }
     /* a faster hand spins it FASTER, not longer: more detents in nearly
@@ -1901,13 +2024,29 @@ export function mountNameHand(
        still held the loop open 1.41s after a flung pass; at 300 + 25 the
        whole answer ends inside a second of the crest */
     const spin = 300 + 25 * n;
-    gF.animate([{ opacity: 0, transform: "scale(.96)" }, { opacity: 1, transform: "scale(1)" }], {
-      duration: 90,
+    gF.animate(
+      [
+        { opacity: 0, transform: "scale(.96)" },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      {
+        duration: 90,
+        fill: "both",
+        easing: "ease-out",
+      }
+    );
+    gN.animate(kf, {
+      duration: spin,
+      delay: 50,
       fill: "both",
-      easing: "ease-out",
+      easing: "linear",
     });
-    gN.animate(kf, { duration: spin, delay: 50, fill: "both", easing: "linear" });
-    gF.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, delay: 50 + spin, fill: "forwards", easing: "ease" });
+    gF.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 220,
+      delay: 50 + spin,
+      fill: "forwards",
+      easing: "ease",
+    });
     bowlW.s.animate([{ strokeDashoffset: bowlW.L }, { strokeDashoffset: 0 }], {
       duration: 340,
       delay: 20 + spin,
@@ -1920,7 +2059,11 @@ export function mountNameHand(
    *  and out into open wings, a short upstroke past the stance, and fold
    *  back to the v. Up-first was filmed: at the raised pose the two
    *  strokes close into one solid wedge. */
-  const answerBird = (svg: SVGSVGElement, outer: SVGGElement, k: number): Made => {
+  const answerBird = (
+    svg: SVGSVGElement,
+    outer: SVGGElement,
+    k: number
+  ): Made => {
     const bg = birdGeom(g);
     const lockL = clipped(svg, g, letters, 10, V_L, "x");
     const lockR = clipped(svg, g, letters, 10, V_R, "x");
@@ -1932,12 +2075,27 @@ export function mountNameHand(
     const down = 10 + 6 * k;
     const beat = (raise: number, sg: number): Keyframe[] => [
       { transform: "rotate(0deg)", easing: "cubic-bezier(.25,.7,.3,1)" },
-      { transform: `rotate(${(sg * down).toFixed(2)}deg)`, offset: 0.34, easing: "cubic-bezier(.45,.05,.3,1)" },
-      { transform: `rotate(${(raise * 0.35 * up).toFixed(2)}deg)`, offset: 0.66, easing: "cubic-bezier(.35,.1,.3,1)" },
+      {
+        transform: `rotate(${(sg * down).toFixed(2)}deg)`,
+        offset: 0.34,
+        easing: "cubic-bezier(.45,.05,.3,1)",
+      },
+      {
+        transform: `rotate(${(raise * 0.35 * up).toFixed(2)}deg)`,
+        offset: 0.66,
+        easing: "cubic-bezier(.35,.1,.3,1)",
+      },
       { transform: "rotate(0deg)" },
     ];
-    lockL.gRot.animate(beat(-12 - bg.tiltL, -1), { duration: 640, fill: "both" });
-    lockR.gRot.animate(beat(14 - bg.tiltR, 1), { duration: 640, delay: 30, fill: "both" });
+    lockL.gRot.animate(beat(-12 - bg.tiltL, -1), {
+      duration: 640,
+      fill: "both",
+    });
+    lockR.gRot.animate(beat(14 - bg.tiltR, 1), {
+      duration: 640,
+      delay: 30,
+      fill: "both",
+    });
     return { ms: 700, texts: [lockL.text, lockR.text] };
   };
   /** the letter's last pose, so an answer that fires between frames is
@@ -1995,7 +2153,11 @@ export function mountNameHand(
     const AIR = 0.58;
     if (u < AIR) {
       const a = u / AIR;
-      return { ty: -hop.h * 4 * a * (1 - a), th: hop.dir * 6 * Math.sin(Math.PI * a), sy: 1 };
+      return {
+        ty: -hop.h * 4 * a * (1 - a),
+        th: hop.dir * 6 * Math.sin(Math.PI * a),
+        sy: 1,
+      };
     }
     const w = (u - AIR) / (1 - AIR);
     const squash = w < 0.3 ? 1 - 0.018 * Math.sin((Math.PI * w) / 0.3) : 1;
@@ -2078,7 +2240,10 @@ export function mountNameHand(
       const l = i > 0 ? i - 1 : i;
       const r = i < N - 1 ? i + 1 : i;
       const slope = (shown(r) - shown(l)) / (cx[r] - cx[l] || 1);
-      const th = Math.max(-BEAD.rot, Math.min(BEAD.rot, (Math.atan(slope) * 180) / Math.PI));
+      const th = Math.max(
+        -BEAD.rot,
+        Math.min(BEAD.rot, (Math.atan(slope) * 180) / Math.PI)
+      );
       const e = Math.min(1, Math.hypot(v[i] / BEAD.w0, y[i]) / BEAD.full);
       /* the soak answers the root of the energy, the lift answers it
          linearly: a hand only reading across the name barely moves it
@@ -2120,7 +2285,9 @@ export function mountNameHand(
   const step = (now: number): boolean => {
     if (dead) return false;
     steps++;
-    const dtF = last ? Math.min(0.05, Math.max(0, (now - last) / 1000)) : BEAD.dt;
+    const dtF = last
+      ? Math.min(0.05, Math.max(0, (now - last) / 1000))
+      : BEAD.dt;
     last = now;
     if (due.length) {
       for (const q of due) if (q.t <= now) v[q.i] += q.dv;
@@ -2211,7 +2378,10 @@ export function mountNameHand(
     let speed = handSpeed - BEAD.vmin;
     if (speed <= 0) return;
     if (speed > BEAD.vref) speed = BEAD.vref * Math.sqrt(speed / BEAD.vref);
-    const ahead = Math.max(-BEAD.leadMax, Math.min(BEAD.leadMax, (BEAD.lead * dx) / dt));
+    const ahead = Math.max(
+      -BEAD.leadMax,
+      Math.min(BEAD.leadMax, (BEAD.lead * dx) / dt)
+    );
     const n = Math.min(40, Math.ceil(len / 0.08));
     const ds = len / n;
     const s2 = 2 * BEAD.sigma * BEAD.sigma;
