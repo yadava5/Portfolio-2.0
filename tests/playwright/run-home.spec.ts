@@ -624,3 +624,401 @@ test.describe("the tab mark is the page in a 16px window", () => {
     expect(m.href).toMatch(/\/favicon\.svg$/);
   });
 });
+
+/* THE TYPE ANSWERS THE HAND (v4, 2026-10-08). The owner asked for type that
+   answers the pointer ("not just get bold ... swish ... motion ... blurry ...
+   bubbly"), his name above all, once its opening performance has settled.
+   What can go wrong is not taste, it is the four ways a hover effect rots a
+   page like this one, and each test is one of them: it moves nothing (dead
+   code: the hover answers that shipped before this were exactly that), it
+   never comes back exactly to rest (an idle page that keeps painting, or a
+   name left a pixel off its machines), it answers a cursor that is not
+   moving (a page scrolled under a parked pointer), or it leaves copies of the
+   text behind (find-in-page and the accessibility tree see the word twice). */
+test.describe("the type answers the hand, and comes back to rest", () => {
+  type Name = {
+    live: boolean;
+    kicks: number;
+    presses: number;
+    peak: number;
+    rest: boolean;
+    fired: Record<string, number>;
+    answering: number;
+  };
+  type W = {
+    __world: {
+      name?: () => Name | null;
+      hand: () => number;
+      inkLive: () => number;
+      rollLive: () => number;
+    };
+    __rafN: number;
+  };
+  const name = (page: import("@playwright/test").Page) =>
+    page.evaluate(() => (window as unknown as W).__world.name?.() ?? null);
+  const counting = async (page: import("@playwright/test").Page) => {
+    await page.addInitScript(() => {
+      const raf = window.requestAnimationFrame.bind(window);
+      (window as unknown as W).__rafN = 0;
+      window.requestAnimationFrame = (cb) => {
+        (window as unknown as W).__rafN++;
+        return raf(cb);
+      };
+    });
+  };
+  const box = (page: import("@playwright/test").Page, sel: string) =>
+    page.evaluate((s) => {
+      const r = document.querySelector(s)!.getBoundingClientRect();
+      return { x: r.x, y: r.y, w: r.width, h: r.height };
+    }, sel);
+  /* a real hand: many small moves, fast, through the x-height band */
+  const sweep = async (
+    page: import("@playwright/test").Page,
+    b: { x: number; y: number; w: number; h: number },
+    n = 40
+  ) => {
+    const y = b.y + b.h * 0.55;
+    await page.mouse.move(b.x - 60, y);
+    for (let i = 0; i <= n; i++)
+      await page.mouse.move(b.x - 60 + ((b.w + 120) * i) / n, y);
+  };
+
+  test("a swoosh across the name moves it and wakes its machines, then nothing is left", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "a phone has no hover; the press is tested below");
+    await counting(page);
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    await page.waitForTimeout(500);
+    const before = await box(page, "h1.nameplate");
+    const styles = await page.evaluate(() =>
+      [...document.querySelectorAll("h1.nameplate .np-ch")].map(
+        (l) =>
+          getComputedStyle(l).fontVariationSettings +
+          "|" +
+          getComputedStyle(l).translate +
+          "|" +
+          getComputedStyle(l).rotate
+      )
+    );
+    await sweep(page, before);
+    const mid = await name(page);
+    expect(mid?.live).toBe(true);
+    /* it moved: the bead chain lifted by a visible fraction of an em */
+    expect(mid!.peak).toBeGreaterThan(0.02);
+    /* and the machines that built the letters answered the crest */
+    expect(
+      Object.values(mid!.fired).reduce((a, b) => a + b, 0)
+    ).toBeGreaterThan(0);
+    await page.mouse.move(before.x + before.w + 300, before.y + 400);
+    await expect
+      .poll(
+        () => page.evaluate(() => (window as unknown as W).__world.hand()),
+        {
+          timeout: 5000,
+        }
+      )
+      .toBe(0);
+    const after = await name(page);
+    expect(after!.rest).toBe(true);
+    expect(after!.answering).toBe(0);
+    await expect(page.locator(".np-plate .np-ans")).toHaveCount(0);
+    /* every letter is exactly where and what it was, and the box never moved */
+    expect(
+      await page.evaluate(() =>
+        [...document.querySelectorAll("h1.nameplate .np-ch")].map(
+          (l) =>
+            getComputedStyle(l).fontVariationSettings +
+            "|" +
+            getComputedStyle(l).translate +
+            "|" +
+            getComputedStyle(l).rotate
+        )
+      )
+    ).toEqual(styles);
+    const end = await box(page, "h1.nameplate");
+    expect(Math.abs(end.x - before.x)).toBeLessThan(0.1);
+    expect(Math.abs(end.w - before.w)).toBeLessThan(0.1);
+    /* and an idle page schedules nothing: the engine runs its twelve still
+       frames after the last stepper goes (by design, measured: twelve calls,
+       all from frame()), then stops, and nothing is scheduled after that */
+    const rafN = () => page.evaluate(() => (window as unknown as W).__rafN);
+    await expect
+      .poll(
+        async () => {
+          const a = await rafN();
+          await page.waitForTimeout(350);
+          return (await rafN()) - a;
+        },
+        { timeout: 5000 }
+      )
+      .toBe(0);
+    const r0 = await rafN();
+    await page.waitForTimeout(1000);
+    expect(await rafN()).toBe(r0);
+  });
+
+  test("a pointer parked on the name, and the page scrolled under it, move nothing", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "no pointer to park on a phone");
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    await page.waitForTimeout(500);
+    const b = await box(page, "h1.nameplate");
+    await page.mouse.move(b.x + b.w * 0.4, b.y + b.h * 0.55);
+    await expect
+      .poll(
+        () => page.evaluate(() => (window as unknown as W).__world.hand()),
+        {
+          timeout: 5000,
+        }
+      )
+      .toBe(0);
+    const parked = await name(page);
+    /* a scroll under the parked pointer, and the zero-movement moves a
+       browser sends while it does (WebKit sends them for real; headless
+       engines send none on their own, so they are replayed here, during the
+       scroll and after it, at the same point) */
+    const px = b.x + b.w * 0.4,
+      py = b.y + b.h * 0.55;
+    await page.mouse.wheel(0, 360);
+    await page.mouse.move(px, py);
+    await page.waitForTimeout(400);
+    await page.mouse.move(px, py);
+    await page.mouse.wheel(0, -360);
+    await page.mouse.move(px, py);
+    await page.waitForTimeout(900);
+    await page.mouse.move(px, py);
+    await page.waitForTimeout(300);
+    const scrolled = await name(page);
+    expect(scrolled!.kicks).toBe(parked!.kicks);
+    expect(scrolled!.peak).toBe(parked!.peak);
+    expect(scrolled!.rest).toBe(true);
+  });
+
+  test("a tap on a phone presses the name, and it comes back to rest", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "the desktop's hand is tested above");
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    await page.waitForTimeout(500);
+    await page.locator("h1.nameplate .np-ch").nth(3).tap();
+    await expect
+      .poll(async () => (await name(page))?.presses ?? 0)
+      .toBeGreaterThan(0);
+    await expect
+      .poll(
+        () => page.evaluate(() => (window as unknown as W).__world.hand()),
+        {
+          timeout: 5000,
+        }
+      )
+      .toBe(0);
+    expect((await name(page))!.rest).toBe(true);
+  });
+
+  test("a heading soaks under the hand and is only its own text again after", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "headings answer a hover, and a phone has none");
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    await page.evaluate(() =>
+      document.querySelector("#glyph h2")!.scrollIntoView({ block: "center" })
+    );
+    await page.waitForTimeout(1200);
+    const html0 = await page.locator("#glyph h2").innerHTML();
+    const b = await box(page, "#glyph h2");
+    await page.mouse.move(b.x - 40, b.y + b.h / 2);
+    await page.mouse.move(b.x + 10, b.y + b.h / 2, { steps: 4 });
+    await expect
+      .poll(() =>
+        page.evaluate(() => (window as unknown as W).__world.inkLive())
+      )
+      .toBeGreaterThan(0);
+    await page.mouse.move(b.x + b.w + 200, b.y + 300, { steps: 4 });
+    await expect
+      .poll(
+        () => page.evaluate(() => (window as unknown as W).__world.inkLive()),
+        {
+          timeout: 4000,
+        }
+      )
+      .toBe(0);
+    expect(await page.locator("#glyph h2").innerHTML()).toBe(html0);
+    await expect(page.locator(".ink-l")).toHaveCount(0);
+    const e = await box(page, "#glyph h2");
+    expect(Math.abs(e.x - b.x) + Math.abs(e.w - b.w)).toBeLessThan(0.5);
+  });
+
+  test("a link rolls, keeps its name while it does, and is its own markup after", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "links roll on a hover, and a phone has none");
+    await page.goto("/");
+    await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+    const link = page.locator("#glyph .handoff a").first();
+    await link.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1200);
+    const html0 = await link.evaluate((a) => a.outerHTML);
+    const label = (await link.textContent())!.trim();
+    const b = await link.boundingBox();
+    await page.mouse.move(b!.x - 30, b!.y + b!.height / 2);
+    await page.mouse.move(b!.x + 8, b!.y + b!.height / 2, { steps: 4 });
+    await expect
+      .poll(() =>
+        page.evaluate(() => (window as unknown as W).__world.rollLive())
+      )
+      .toBeGreaterThan(0);
+    /* mid-roll the link is still one link with its own name */
+    await expect(
+      page.getByRole("link", { name: label, exact: true }).first()
+    ).toBeVisible();
+    await page.mouse.move(b!.x + 400, b!.y + 300, { steps: 4 });
+    await expect
+      .poll(
+        () => page.evaluate(() => (window as unknown as W).__world.rollLive()),
+        {
+          timeout: 4000,
+        }
+      )
+      .toBe(0);
+    expect(await link.evaluate((a) => a.outerHTML)).toBe(html0);
+  });
+});
+
+/* THE FIGURES ASSEMBLE IN DEPTH WITH THE SCROLL (v4, 2026-10-08): fig. 06's
+   network and fig. 07's four lanes are drawn by a camera while they arrive,
+   and are their authored drawings once they are being read. The two ways
+   that rots: a frame that depends on how the reader got there (the scroll
+   is the only clock this page has, so the same y must give the same
+   drawing coming down and going back up), and a figure still in depth
+   where a reader reads it, or where the text gates measure it. */
+test.describe("the figures assemble in depth with the scroll", () => {
+  type Deep = { a: number; on: boolean; armed?: boolean };
+  type Win = { top: number; h: number; yA: number; yB: number };
+  const frames = (page: import("@playwright/test").Page, n = 3) =>
+    page.evaluate(
+      (k) =>
+        new Promise<void>((done) => {
+          const step = (i: number) =>
+            i ? requestAnimationFrame(() => step(i - 1)) : done();
+          step(k);
+        }),
+      n
+    );
+  const go = async (page: import("@playwright/test").Page, y: number) => {
+    await page.evaluate(
+      (yy) => window.scrollTo({ top: yy, behavior: "instant" }),
+      y
+    );
+    await frames(page);
+  };
+  const snap = (
+    page: import("@playwright/test").Page,
+    key: string,
+    id: string
+  ) =>
+    page.evaluate(
+      ([k, i]) => {
+        const w = (window as unknown as { __world: Record<string, unknown> })
+          .__world;
+        return {
+          ...(w[k + "3"] as Deep),
+          /* canonical, not innerHTML: a lane's pointer-events is taken
+             off after the reveal and put back before it, which reorders
+             the attribute without changing the drawing */
+          html: [...document.getElementById(i)!.querySelectorAll("*")]
+            .map(
+              (e) =>
+                e.tagName +
+                "|" +
+                [...e.attributes]
+                  .map((a) => a.name + "=" + a.value)
+                  .sort()
+                  .join(",") +
+                "|" +
+                (e.children.length ? "" : e.textContent)
+            )
+            .join("\n"),
+          deep: document.getElementById(i)!.classList.contains("indepth"),
+        };
+      },
+      [key, id]
+    );
+  for (const [key, id] of [
+    ["net", "net"],
+    ["jet", "jetFig"],
+  ] as const) {
+    test(`#${id} is a pure function of the scroll, and its authored drawing once it is read`, async ({
+      page,
+    }) => {
+      await page.goto("/");
+      await page.waitForSelector("html[data-np-ready]", { timeout: 45000 });
+      /* the network takes the depth layer only once its sample has been
+         read and it has been out of view since (no switch under the eye) */
+      if (key === "net")
+        await expect
+          .poll(
+            () =>
+              page.evaluate(
+                () =>
+                  (window as unknown as { __world: { net3?: Deep } }).__world
+                    .net3?.armed ?? false
+              ),
+            { timeout: 15000 }
+          )
+          .toBe(true);
+      const win = (await page.evaluate(
+        (k) =>
+          (window as unknown as { __world: Record<string, unknown> }).__world[
+            k + "3win"
+          ],
+        key
+      )) as Win;
+      expect(win.yB).toBeGreaterThan(win.yA);
+      const ys = [0.2, 0.5, 0.8].map((f) =>
+        Math.round(win.yA + f * (win.yB - win.yA))
+      );
+      const down: Awaited<ReturnType<typeof snap>>[] = [];
+      for (const y of ys) {
+        await go(page, y);
+        down.push(await snap(page, key, id));
+      }
+      await go(page, Math.round(win.yB + 600));
+      const up: Awaited<ReturnType<typeof snap>>[] = [];
+      for (const y of [...ys].reverse()) {
+        await go(page, y);
+        up.unshift(await snap(page, key, id));
+      }
+      for (let i = 0; i < ys.length; i++) {
+        expect(down[i].on, `in depth at ${ys[i]}`).toBe(true);
+        expect(down[i].a).toBeLessThan(1);
+        expect(up[i].a).toBe(down[i].a);
+        expect(up[i].html, `the same drawing at ${ys[i]} both ways`).toBe(
+          down[i].html
+        );
+      }
+      await page.evaluate(
+        (i) =>
+          document
+            .getElementById(i)!
+            .scrollIntoView({ block: "center", behavior: "instant" }),
+        id
+      );
+      await frames(page);
+      const read = await snap(page, key, id);
+      expect(read.a).toBe(1);
+      expect(read.on).toBe(false);
+      expect(read.deep).toBe(false);
+    });
+  }
+});

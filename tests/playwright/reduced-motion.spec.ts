@@ -86,4 +86,92 @@ test.describe("reduced motion and keyboard access", () => {
     await page.goto("/#gate");
     await expect(page.locator("#gate")).toBeInViewport();
   });
+
+  /* v4 (2026-10-08): the type that answers the hand and the figures that
+     assemble in depth are motion, so a reader who asked for stillness gets
+     neither: the name, the headings and the links do not answer a hover,
+     and both figures are their authored drawings at every scroll. */
+  test("the type does not answer the hand, and no figure is drawn in depth", async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto("/");
+    await page.locator('[data-beat="0"]').waitFor({ state: "attached" });
+    await page.waitForTimeout(800);
+    type W = {
+      __world: {
+        name?: () => { live: boolean } | null;
+        inkLive?: () => number;
+        rollLive?: () => number;
+        hand?: () => number;
+        net3?: { on: boolean };
+        jet3?: { on: boolean };
+      };
+    };
+    if (!isMobile) {
+      const b = await page
+        .locator("h1.nameplate")
+        .evaluate((h) => h.getBoundingClientRect().toJSON());
+      await page.mouse.move(b.x - 40, b.y + b.height / 2);
+      for (let i = 0; i <= 30; i++)
+        await page.mouse.move(
+          b.x - 40 + ((b.width + 80) * i) / 30,
+          b.y + b.height / 2
+        );
+      const t = await page.evaluate(() => {
+        const w = (window as unknown as W).__world;
+        return {
+          name: w.name?.()?.live ?? false,
+          hand: w.hand?.() ?? 0,
+        };
+      });
+      expect(t.name).toBe(false);
+      expect(t.hand).toBe(0);
+      /* a heading and a link under a moving hand: no swell, no roll */
+      for (const sel of ["#glyph h2", "#glyph .handoff a"]) {
+        await page.evaluate(
+          (s) =>
+            document
+              .querySelector(s)!
+              .scrollIntoView({ block: "center", behavior: "instant" }),
+          sel
+        );
+        await page.waitForTimeout(300);
+        const r = await page
+          .locator(sel)
+          .first()
+          .evaluate((e) => e.getBoundingClientRect().toJSON());
+        await page.mouse.move(r.x - 40, r.y + r.height / 2);
+        for (let i = 0; i <= 12; i++)
+          await page.mouse.move(
+            r.x - 40 + ((r.width + 80) * i) / 12,
+            r.y + r.height / 2
+          );
+        const live = await page.evaluate(() => {
+          const w = (window as unknown as W).__world;
+          return (w.inkLive?.() ?? 0) + (w.rollLive?.() ?? 0);
+        });
+        expect(live, sel).toBe(0);
+      }
+    }
+    for (const id of ["net", "jetFig"]) {
+      await page.evaluate(
+        (i) =>
+          document
+            .getElementById(i)!
+            .scrollIntoView({ block: "end", behavior: "instant" }),
+        id
+      );
+      await page.waitForTimeout(300);
+      const d = await page.evaluate(() => {
+        const w = (window as unknown as W).__world;
+        return {
+          net: w.net3?.on ?? false,
+          jet: w.jet3?.on ?? false,
+          deep: document.querySelectorAll(".indepth").length,
+        };
+      });
+      expect(d).toEqual({ net: false, jet: false, deep: 0 });
+    }
+  });
 });
