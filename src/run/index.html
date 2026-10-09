@@ -16440,9 +16440,20 @@ async function boot() {
     $("field").style.background = "#fbf3e7";
     return;
   }
+  /* THE FIRST FRAME IS DRAWN IN THE FRAME THAT BUILT THE PAGE. boot() runs
+     at the top of an animation frame now (one after the fonts), and wake()
+     defers the loop's first work() to the next frame: measured, every WebKit
+     load painted the figures one frame before the rail (5 of 5). So the work
+     is done here, before this frame paints, the way a scroll that finds the
+     engine stopped does it, and the loop is told this y is already drawn. */
+  const y0 = scrollY;
+  if (PROF) {
+    const t0 = performance.now();
+    work(y0);
+    if (window.__prof.length < 30000) window.__prof.push(performance.now() - t0);
+  } else work(y0);
   wake();
-  /* first frame even before any scroll */
-  lastY = -1;
+  lastY = y0;
 }
 boot();
 </script>
