@@ -581,9 +581,49 @@ if (location.hash.length > 1) {
   #jetFig .depth{pointer-events:none}
   #jetFig .depth .jkline{fill:var(--hair-strong)}
   #jetFig .depth .jkbox{fill:var(--ink)}
+  /* THE INK FLOOR, AND WHY IT IS A SECOND PATH OVER THE FIRST. In flight the
+     plane's rules have to carry from a scroll, and --hair-strong over this
+     plate is 2.01:1 on the tightest day field — a 1-unit sliver nobody sees.
+     So the same geometry is laid twice: the authored hair below, and --ink
+     above it draining to 0 ON THE DEPTH CURVE, one settle and not a tail.
+     Zero is exactly zero in both themes, which is why the drain is an
+     opacity on a second path and not an alpha tuned to one theme's
+     --hair-strong: a = 0.90 has to land on the authored ink to the channel.
+     MEASURED over the composited day plate (--plate on #f2e4c9 = #f9f2e2):
+     the pair compose --ink at 0.703 — #656057, 5.60:1 / Lc 73.6, against
+     2.03:1 / Lc 37.2 for the hairline alone; night (--plate on #43372f =
+     #342b25), 0.7525 — 7.52:1 / |Lc| 63.6 against 3.71:1.
+     OFF THE SHIPPED PIXELS at 1440 DPR 1 the rule reaches 2.88:1 at the far
+     end of the delivery rail and 3.43:1 at the near, not the 5.60 the tokens
+     compose, because a 1-unit sliver is about one device pixel and a line
+     thinner than its pixel dilutes across two. The settled plate's own
+     hairline is 1.39:1 there by the same arithmetic, so the floor is still
+     roughly double the ink the reader would otherwise get, and the taper is
+     left alone: on these rails the width IS the depth. */
+  #jetFig .depth .jkfloor{fill:var(--ink)}
+  /* A LANE IS A SHEET, and the sheet is what makes four of them read as four
+     while they are still one stream. Paper and edge in one path per lane,
+     interleaved with the lane groups so painter's order IS the DOM's and
+     nothing is ever sorted: sheet k is drawn after lane k-1 and hides it.
+     The paper is --plate, which measures 1.051:1 over this plate (Lc 0.0)
+     and is therefore not a tint — it is there to occlude, and it does:
+     a --hair-strong line behind one sheet falls from 2.03:1 to 1.33:1,
+     behind two to 1.13:1, behind three to 1.06:1, so the deck's own order
+     is readable from how far back a line has gone. The edge is --ink at the
+     flight floor and measured 3.39:1 / Lc 57.9 (near) and 3.44:1 / Lc 58.4
+     (far) off the shipped pixels. Both drain to 0 on the depth curve, so
+     the settled plate has no sheet in it: the edge is ink that belongs to
+     the flight and to nothing else.
+     OUT OF THE RENDER TREE WHEN THERE IS NO FLIGHT, and that is measured
+     rather than tidy: leaving four empty paths standing between the lane
+     groups DOUBLED the identity hold's difference from the settled plate
+     (MAE 0.0104 to 0.0194 at 1440 Chromium) by changing how the labels and
+     the member edges batch. An empty path paints nothing and is not free. */
+  #jetFig .jsheet{display:none}
+  #jetFig.indepth .jsheet{display:inline; fill:var(--plate); stroke:var(--ink)}
   /* a lane's words fade with the room it has, but never under a keyboard */
   #jetFig .tracebtn:focus .jlab{opacity:1}
-  @media print{ #jetFig .depth{display:none} #jetFig .jflat{opacity:1 !important}
+  @media print{ #jetFig .depth{display:none} #jetFig .jsheet{display:none !important} #jetFig .jflat{opacity:1 !important}
     #jetFig .lane3, #jetFig .jlab{transform:none !important} #jetFig .jlab{opacity:1 !important} }
   /* the hold, in fig. 08's own mark: a clay ring is a deliberate hold, not a
      fall. It is this plate's ONE clay moment — rule 5 — and it is 0 or 1, so
@@ -5324,12 +5364,20 @@ function cacheGeometry() {
   net3.yB = net3.top + net3.h / 2 - READ_LINE * vh; net3.a = -1;
   net3.yA = Math.min(net3.top + sc * (o0 + 0.6 * (o1 - o0)) - vh, net3.yB - 0.25 * vh);
   window.__world.net3win = { top: +net3.top.toFixed(1), h: +net3.h.toFixed(1), yA: +net3.yA.toFixed(1), yB: +net3.yB.toFixed(1) }; /* probe hook */
-  /* fig. 07's reveal: the same window off its svg's layout box (the plate's
-     first child, under its padding), and the blocks' clock reads its end */
+  /* fig. 07's reveal: the same law as fig. 06, off its svg's layout box (the
+     plate's first child, under its padding), and the blocks' clock reads its
+     end. a = 0 WHEN THE OPENING'S OWN TOP EDGE REACHES 0.98 vh, not when the
+     box's does: the near sheet stands above the lane row and the box's top
+     says nothing about where the ink is. Floored at yB − 0.52 vh so the
+     window is never a flick, and a = 1 at the centre on the reading line, so
+     every centred park in both engines lands on the authored plate. */
   const jp = jet.svg.parentElement, jvb = jet.svg.viewBox.baseVal;
   jet3.top = absTop(jp) + jp.clientTop + parseFloat(getComputedStyle(jp).paddingTop);
   jet3.h = jet.svg.clientWidth * jvb.height / jvb.width;
-  jet3.yA = jet3.top - 0.9 * vh; jet3.yB = jet3.top + jet3.h / 2 - READ_LINE * vh; jet3.a = -1;
+  jet3.yB = jet3.top + jet3.h / 2 - READ_LINE * vh;
+  jet3.yA = Math.min(jet3.top + (jet3.w ? (jet.svg.clientWidth / jvb.width) * jet3.w.vTop : 0) - 0.98 * vh,
+    jet3.yB - 0.52 * vh);
+  jet3.a = -1;
   window.__world.jet3win = { top: +jet3.top.toFixed(1), h: +jet3.h.toFixed(1), yA: +jet3.yA.toFixed(1), yB: +jet3.yB.toFixed(1) }; /* probe hook */
 }
 
@@ -8085,6 +8133,13 @@ function buildJet(tight) {
   el("path", { d: `M ${g.railX0} ${g.railY} H ${g.railX1}`, class: "lane" });
   el("path", { d: `M ${g.railX1} ${g.railY - 8} V ${g.railY + 8}`, class: "lane" });
   g.laneX.forEach((lx, i) => {
+    /* THE LANE'S OWN SHEET, and it is a sibling in front of the lane rather
+       than a child of it, for two reasons. It has to be drawn through the
+       camera point for point (a child would inherit the lane's affine
+       matrix and lose the keystone), and it has to sit BETWEEN lane i-1 and
+       lane i so that painter's order is the DOM's: sheet, lane, sheet,
+       lane. Only the depth reveal ever shows it. */
+    const sheet = at("path", { class: "jsheet", "aria-hidden": "true", d: "" });
     /* one sheet per lane, which the reveal holds upright at its own depth */
     const lw = at("g", { class: "lane3" });
     el("path", { d: `M ${lx} ${g.railY} V ${g.stitchY}`, class: "lane", "aria-hidden": "true" }, lw);
@@ -8096,7 +8151,17 @@ function buildJet(tight) {
        browser rather than at the settled frame, where the rail is empty. */
     const t = el("text", { x: lx, y: g.railY - 18, "text-anchor": "middle", class: "jlab" }, lw);
     t.textContent = `vt-${i}`; jlabs.push([t, i]);
-    lanes.push({ g: lw, x: lx, lab: t });
+    /* THE SHEET'S OWN RECTANGLE, in the plate's units: the lane's share of
+       the manifold — half a pitch each side, so the four tile the delivery
+       rail exactly — running from the rail it hangs off to the gathering
+       rail it feeds. Drawn at the die's mouth instead it came out 64 of 86
+       units wide, and the opening's whole deck measured 136px of a 575px
+       plate: a small cluster in a large empty box. A lane is not its die, it
+       is the channel the die sits in, and at this width the four sheets meet
+       where the drawing says they meet. The label is not on it — it stands
+       above the rail, where no block travels, and the reveal billboards it. */
+    lanes.push({ g: lw, x: lx, lab: t, sheet, w: (g.laneX[1] - g.laneX[0]) / 2,
+      y0: g.railY, y1: g.stitchY });
   });
   /* the deflate register: the word at the left, and the four throats sharing
      one y. Wide runs a leader from the word to the first die because its
@@ -8182,34 +8247,84 @@ function scrubJet(p) {
   }
 }
 
-/* ————— fig. 07 in depth: four lanes that are one stream until you come round —————
-   (v4, 2026-10-08.) The plate's argument is that one stream is four lanes
-   underneath, so that is what the camera shows: it starts nearly end-on to
-   the row of lanes, where the four dies stand one behind another and read as
-   a single stream, and it comes round until they stand side by side. It is
-   a camera move and nothing else: the lanes are sheets at their real x,
-   each held facing the camera (the brief's weak perspective, a sheet scaled
-   by its own depth), the rails and the member are the plane they stand on,
-   drawn through the same camera point for point, and no block moves until
-   the reveal is over (jetBlocks). Yaw only, never pitch: with the camera
-   level a lane's own vertical line keeps one depth from end to end, so a
-   sheet held upright meets both rails exactly where the projected rails are.
+/* ————— fig. 07 in depth: four sheets, fanning apart as their depth closes —————
+   (v4, 2026-10-08; rebuilt v4.2, 2026-10-09.) The plate's argument is that
+   one stream is four lanes underneath, so that is what the camera shows: the
+   four lane sheets start at their AUTHORED x, staggered in depth about the
+   drawing plane, and the scroll presses that depth to zero while the camera
+   comes face-on. The separation IS the depth closing — no lane ever travels
+   along x, and the last frame is the authored plate to the unit.
+
+   WHAT THE FIRST CUT GOT WRONG, and it is worth keeping on the record. It
+   put the camera exactly end-on at three plate widths, which projects the
+   whole lane row onto a two-stroke smudge: measured on the shipped build,
+   fig. 07 was ONE HAIRLINE for about 40% of its window, which reads as a
+   missing figure rather than as one stream. And it held each lane FACING the
+   camera, scaled by its own depth, which is depth drawn as size — the one
+   cue this page is not allowed to lean on. Both are gone. The camera yaws
+   only, so a lane's sheet foreshortens honestly by cos(yaw) and nothing
+   shears, and the row is read by overlap, occlusion, keystone and relative
+   size together.
+
+   Yaw only, never pitch: with the camera level a lane's own vertical line
+   keeps one depth from end to end, so the lane's affine matrix is EXACT in v
+   (checked at 201 positions, both editions: zero error) and only its one
+   horizontal scale is an approximation — see the chord note in drawDeepJet.
    The lane controls are the authored ones inside each sheet, so a tap, a
    hover and keyboard focus all keep working while it moves; their words
-   wait until the lanes have come far enough apart to be read. */
+   wait until the lanes have come far enough apart to be read, and no block
+   moves until the reveal is over (jetBlocks). */
 const jet3 = { g: null, flat: null, paths: [], labs: [], lanes: [], on: false,
-  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null };
-/* the camera: exactly end-on, at three plate widths. Closer than that, or
-   a few degrees off the row, and the four dies stand at visibly different
-   depths and offsets and interleave into a tangle (measured by eye at 84
-   degrees and 1.4 widths); from here they coincide to within a few units,
-   one stream drawn a little heavy, and part as the camera comes round. */
-const JET3_POSE = { yaw: Math.PI / 2, dist: 3 };
+  top: 0, h: 0, yA: 0, yB: 1, a: -1, w: null, ident: false };
+/* THE OPENING, in the three numbers a reader actually reads, with the stagger
+   and the camera distance following from them by arithmetic.
+
+   The camera stands to the RIGHT of the plate's normal (a negative yaw) and
+   that is not a preference. The lane groups are authored left to right and
+   nothing here ever re-sorts them, so lane 3 is painted last and lane 3 has
+   to be the NEAR one, which is what a right-hand camera gives. Mirrored, the
+   SAME stagger spreads the row instead of closing it — step 1.31 to 1.55 of
+   a sheet's width against 0.54 to 0.64 here — and reversing the stagger to
+   close it again puts lane 0 in front, against the paint order. The mirror
+   also loses the framing: it throws the plate's left edge to u −139 of a box
+   that allows −101, where this turn recedes the left half, where every long
+   line of this drawing is set, and holds the whole opening inside
+   u[125.9, 424.5] v[34.0, 248.2].
+
+   STEP is the one the eye reads: how far the next sheet's centre stands
+     along, as a fraction of a sheet's own projected width. 0.58 is four
+     sheets each showing most of itself and each clearly behind the next.
+   REL is the near sheet over the far one. 1.55 is relative size you can see
+     at a glance and still a sheet rather than a billboard.
+   YAW sets how much of each sheet you see edgewise.
+
+   With the lanes at their authored x, a sheet's step is pitch·(cos y −
+   q·sin y) and its width 2·half·cos y, so q = (1 − STEP·2·half/pitch)/tan y;
+   the stagger opens ±1.5·pitch·(sin y + q·cos y) of depth, and the distance
+   that turns that into REL is (rel + 1)/(rel − 1) of it. A sheet is its
+   lane's half-pitch each side, so 2·half/pitch is 1 at BOTH editions and the
+   stagger is one number: 0.42 pitches per lane step, ±0.63 at the ends.
+   Only the distance differs, because the plates do: 600.5 units (1.07 W)
+   wide, 307.3 (1.28 W) tight. FILMED at both seats (tmp/v42/D2) and measured
+   off the page: the near sheet opens 89×185px of a 575px plate at 1440 and
+   51×198px of a 276px plate at 420, and the deck spans 184px and 106px. The
+   critique's 62 degrees was a starting value and does not survive the
+   projection: under this same law it draws a 120-unit deck, 123px of that
+   575px plate, and 61 units / 71px on the phone — most of the way back to
+   the defect this replaces. */
+const JET3 = { yaw: (45 * Math.PI) / 180, step: 0.58, rel: 1.55 };
+/* the ink floor in flight, as a fraction of --ink: the flight path over the
+   authored hairline, and the sheets' own edges. The critique set 0.55 and
+   the measurement holds it — see the .jkfloor and .jsheet rules for what it
+   composes to on each theme's worst field and for what it renders at. */
+const JET3_FLOOR = 0.55;
 function buildDeepJet(s, deep, flat, lanes) {
   jet3.g = null; jet3.on = false; jet3.a = -1; jet3.flat = flat; jet3.lanes = lanes;
-  if (RM) { deep.remove(); return; }
+  if (RM) { deep.remove(); for (const l of lanes) l.sheet.remove(); return; }
   const mk = svgIn(s);
-  jet3.paths = ["jkline", "jkbox"].map((c) => mk("path", { class: c, d: "" }, deep));
+  /* the hairline, its flight ink over it, and the full-ink boxes. jkfloor
+     carries jkline's own geometry, so one string is built and written twice. */
+  jet3.paths = ["jkline", "jkfloor", "jkbox"].map((c) => mk("path", { class: c, d: "" }, deep));
   jet3.labs = [...flat.querySelectorAll("text")].map((t) => {
     const c = t.cloneNode(true);
     c.setAttribute("opacity", 0);
@@ -8224,52 +8339,178 @@ function buildDeepJet(s, deep, flat, lanes) {
     if (m) lines.push(m[3] === "H" ? [+m[1], +m[2], +m[4], +m[2]] : [+m[1], +m[2], +m[1], +m[4]]);
   }
   for (const r of flat.querySelectorAll("rect")) boxes.push(["x", "y", "width", "height"].map((k) => +r.getAttribute(k)));
-  const vb = s.viewBox.baseVal, railY = jet.railY, n = lines.length * 2 + boxes.length * 4 + jet3.labs.length + lanes.length;
-  const P = new Float64Array(n * 3);
+  const vb = s.viewBox.baseVal, railY = jet.railY;
+  const n = lines.length * 2 + boxes.length * 4 + jet3.labs.length + lanes.length * 5;
+  /* Z0 is the point's stagger: the model z it stands at while the depth is
+     fully open. The plane's own ink is 0 and stays 0 — the rails and the
+     member ARE the page, and only the lanes come off it. Every frame writes
+     Z0 × one scalar into P's z, which is what makes the depth one curve. */
+  const P = new Float64Array(n * 3), Z0 = new Float64Array(n);
   let i = 0;
-  const put = (x, y) => { P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = 0; return i++; };
+  const put = (x, y, z) => { P[i * 3] = x; P[i * 3 + 1] = y; Z0[i] = z || 0; return i++; };
   const L = lines.map(([x1, y1, x2, y2]) => [put(x1, y1), put(x2, y2)]);
   const B = boxes.map(([x, y, w, h]) => [put(x, y), put(x + w, y), put(x + w, y + h), put(x, y + h)]);
-  const T = jet3.labs.map((l) => put(l.x, l.y));
-  const A = lanes.map((l) => put(l.x, railY));
+  const A = [], Q = [];
+  const pitch = lanes[1].x - lanes[0].x, half = lanes[0].w;
+  const stag = (1 - (JET3.step * 2 * half) / pitch) / Math.tan(JET3.yaw);
+  lanes.forEach((l, k) => {
+    const z = -(k - 1.5) * stag * pitch;
+    A.push(put(l.x, railY, z));
+    Q.push([put(l.x - l.w, l.y0, z), put(l.x + l.w, l.y0, z),
+      put(l.x + l.w, l.y1, z), put(l.x - l.w, l.y1, z)]);
+  });
+  /* the plane's words last, because the opening's own top edge is read off
+     the ink and the words are at opacity 0 until the camera has nearly
+     arrived — an anchor's projected baseline is not an edge anybody sees */
+  const tFrom = i, T = jet3.labs.map((l) => put(l.x, l.y));
   const cx = lanes.reduce((t, l) => t + l.x, 0) / lanes.length;
-  jet3.w = { P, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n), n, L, B, T, A, railY,
-    vbw: vb.width, pivot: [cx, (railY + jet.stitchY) / 2, 0],
+  /* the distance that turns the stagger's own depth into JET3.rel */
+  const dist = 1.5 * pitch * (Math.sin(JET3.yaw) + stag * Math.cos(JET3.yaw))
+    * ((JET3.rel + 1) / (JET3.rel - 1));
+  const w = { P, Z0, U: new Float64Array(n), V: new Float64Array(n), S: new Float64Array(n),
+    n, tFrom, L, B, T, A, Q, railY, vbw: vb.width, dist, stag,
+    pivot: [cx, (railY + jet.stitchY) / 2, 0],
     labW: (s.classList.contains("tight") ? 7.125 : 8.012) * 4 };
+  /* the opening's own top edge, in figure units: cacheGeometry opens the
+     window on it rather than on the box, because the near sheet stands a
+     third of a box above the lane row and the box's top says nothing about
+     where the ink is */
+  for (let j = 0; j < n; j++) P[j * 3 + 2] = Z0[j];
+  DEPTH.project(DEPTH.pose(-JET3.yaw, 0, dist, dist, w.pivot), P, n, w.U, w.V, w.S);
+  w.vTop = Infinity;
+  for (let j = 0; j < tFrom; j++) if (w.V[j] < w.vTop) w.vTop = w.V[j];
+  jet3.w = w;
   jet3.g = deep;
 }
 function drawDeepJet(a) {
-  const N = jet3, w = N.w, { U, V, S } = w;
-  /* the camera comes round over .15–.90, slow out of end-on and slow into
-     face-on, so the moment the one stream becomes four is mid-screen */
-  const cam = cubicInOut(clamp((a - 0.15) / 0.75, 0, 1)), D = w.vbw * JET3_POSE.dist;
-  DEPTH.project(DEPTH.pose(JET3_POSE.yaw * (1 - cam), 0, D, D, w.pivot), w.P, w.n, U, V, S);
+  const N = jet3, w = N.w, { P, U, V, S } = w;
+  /* ONE CAMERA, ONE DEPTH SCALAR, AND THE DEPTH CLOSES LAST. The opening is
+     held over [0, 0.45] while the figure climbs the screen — the first half
+     of this window plays below the fold, so a pose spent there is a pose
+     nobody sees. The camera then comes round over [0.45, 0.90] and the depth
+     closes over [0.52, 0.90]: later than the camera and never after it,
+     because any depth left once the camera is face-on is a uniform scale,
+     and boxes changing size on the reading line is the one arrival this page
+     has already rejected. Both are finished at 0.90 and stay finished to 1:
+     yaw 0 with every z at 0 is S = 1 at every point, so [0.90, 1] is the
+     authored drawing to the unit and the swap has nothing to jump. */
+  const cam = cubicInOut(clamp((a - 0.45) / 0.45, 0, 1));
+  const dep = 1 - smooth(clamp((a - 0.52) / 0.38, 0, 1));
+  for (let i = 0; i < w.n; i++) P[i * 3 + 2] = w.Z0[i] * dep;
+  const yaw = JET3.yaw * (1 - cam), cyaw = Math.cos(yaw);
+  DEPTH.project(DEPTH.pose(-yaw, 0, w.dist, w.dist, w.pivot), P, w.n, U, V, S);
+  /* the assertion, not the assumption: identity is every scale being exactly
+     1, read off the frame that was drawn rather than off the clock */
+  let ident = true;
+  for (let i = 0; i < w.n; i++) if (S[i] !== 1) { ident = false; break; }
+  N.ident = ident;
   const out = ["", ""];
   const run = (p, i, j, wd) => { out[p] += DEPTH.taper(U[i], V[i], wd * S[i], U[j], V[j], wd * S[j]); };
   for (const [i, j] of w.L) run(0, i, j, 1);
   for (const q of w.B) for (let e = 0; e < 4; e++) run(1, q[e], q[(e + 1) & 3], 1.2);
-  N.paths.forEach((p, k) => { if (p._d !== out[k]) { p._d = out[k]; p.setAttribute("d", out[k]); } });
-  /* each lane, upright at its own depth; its words once it has room */
+  /* hair, flight ink over it, boxes — jkfloor repeats jkline's own string,
+     and gives its own up once it has drained, so the identity hold carries
+     no invisible paint. Hygiene rather than a fix: unlike the sheets below,
+     dropping it did not move the hold's difference from the settled plate
+     (MAE 0.0103813 either way at 1440 Chromium). */
+  const flr = r2(JET3_FLOOR * dep);
+  const ds = [out[0], flr ? out[0] : "", out[1]];
+  N.paths.forEach((p, k) => { if (p._d !== ds[k]) { p._d = ds[k]; p.setAttribute("d", ds[k]); } });
+  if (N.paths[1]._f !== flr) { N.paths[1]._f = flr; N.paths[1].setAttribute("opacity", flr); }
+  /* THE SHEETS, back to front in the DOM's own order. The paper holds its
+     strength while the sheets still overlap — measured, the row is clear of
+     itself by dep 0.4 — and then drains with the edge, so the last frame of
+     the flight has no sheet left in it to hand over. */
+  const paper = r2(smooth(dep / 0.4));
+  /* THE WORDS WAIT FOR THE ROW, not for their own lane. Four names read as
+     one thing, and the middle lanes sit nearest the drawing plane, so on a
+     per-lane gate vt-1 lit to 0.22 at a = 0.675 while vt-0 and vt-3 were
+     still flying (measured). This is the row's worst scale, so the names
+     arrive together once every sheet is within 5% of settled. */
+  let far = 0;
+  for (const i of w.A) far = Math.max(far, Math.abs(S[i] - 1));
+  const settle = (0.06 - far) / 0.045;
+  /* each lane: its sheet, then the lane itself upright on it, then its word
+     once the row has opened far enough to read one */
   N.lanes.forEach((l, k) => {
-    const i = w.A[k], s = S[i];
-    /* THE CSS PROPERTY, NOT THE ATTRIBUTE: print has to be able to put the
+    const i = w.A[k], s = S[i], qd = w.Q[k];
+    /* THE SHEET'S OWN CHORD, not the tangent at its middle. The matrix can
+       only be affine (print and WebKit want the CSS property, and a property
+       cannot carry perspective), so the only question is where its one
+       horizontal scale is taken. s·cos(yaw) is the slope at the lane's line,
+       and over an 86-unit sheet it leaves the outer die wall 5.28px from
+       where the camera puts it and the sheet's own corner 7.86px — the frame
+       and the thing drawn on it disagreeing by a visible margin. Taking the
+       scale across the sheet instead pins the corners exactly (0px, so the
+       quad below IS the content's own box, keystone and all) and leaves the
+       die wall at 1.35px wide / 0.44px tight, for 2.87px / 1.64px of drift
+       on the lane's line, which meets nothing while the sheet is off the
+       page. Both are exact at identity: the chord of an unturned sheet is 1. */
+    const uL = U[qd[0]], uR = U[qd[1]];
+    const sx = r2((uR - uL) / (2 * l.w)), sy = r2(s);
+    /* nothing of the flight survives into the identity hold, not even a
+       shape at zero alpha: an invisible path between two lane groups is
+       still a paint the settled plate does not have */
+    const d = ident ? "" : DEPTH.quad(U, V, qd[0], qd[1], qd[2], qd[3]);
+    if (l._d !== d) { l._d = d; l.sheet.setAttribute("d", d); }
+    if (l._pa !== paper) { l._pa = paper; l.sheet.setAttribute("fill-opacity", paper); }
+    /* THE EDGE CARRIES ITS DEPTH BUT NEVER DILUTES OUT OF SIGHT. At 0.9·s
+       the far sheet's edge came out 0.74 units — 0.76 of a device pixel at
+       1440 — and measured 2.35:1 against the plate off the shipped pixels,
+       under the 3.0 non-text floor, while the near one made 2.93:1. A line
+       thinner than the pixel it lands on is not a lighter line, it is a
+       diluted one. So 1.2 at the plate's own box weight, scaled by depth,
+       with a floor just over one device pixel on the widest seat. */
+    const ew = r2(Math.max(1.05, 1.2 * s));
+    if (l._ew !== ew) { l._ew = ew; l.sheet.setAttribute("stroke-width", ew); }
+    /* the edge is this flight's own ink and has no authored counterpart, so
+       its drain ends at zero rather than at a token: stroke-opacity is the
+       alpha check-palette cannot composite, and it is honest here only
+       because the number that matters is its PEAK, measured in the .jsheet
+       rule, and because it reaches exactly 0 before the handover */
+    if (l._eo !== flr) { l._eo = flr; l.sheet.setAttribute("stroke-opacity", flr); }
+    /* FORESHORTENED, NOT SCALED. The camera yaws only, so the sheet's own
+       width comes off with cos(yaw) and its height does not — holding it
+       facing the camera and scaling it by depth, which is what the first cut
+       did, draws depth as size and nothing else.
+       THE CSS PROPERTY, NOT THE ATTRIBUTE: print has to be able to put the
        sheets back, and in WebKit a stylesheet's transform:none does not beat
        an SVG transform attribute (measured: lane 3 printed at x 305.5 against
        its authored 434 mid-reveal; Chromium honoured the rule). On an SVG
        element the property's px are user units and its origin is the user
        origin, so the matrix means what the attribute meant. */
-    const tf = `matrix(${r2(s)}, 0, 0, ${r2(s)}, ${r1(U[i] - l.x * s)}, ${r1(V[i] - w.railY * s)})`;
+    /* AND AT IDENTITY, NO MATRIX AT ALL. matrix(1,0,0,1,0,0) is identity in
+       arithmetic and not in rasterisation — Chromium composites a
+       transformed group on its own, and the die walls' diagonals came back
+       a shade different from the authored ones over the whole [0.90, 1]
+       hold. The settled lane is the authored element, untouched. */
+    const tf = ident ? ""
+      : `matrix(${sx}, 0, 0, ${sy}, ${r1((uL + uR) / 2 - l.x * sx)}, ${r1(V[i] - w.railY * sy)})`;
     if (l._tf !== tf) {
-      l._tf = tf; l.g.style.transform = tf;
+      l._tf = tf;
+      if (!tf) { l.g.removeAttribute("style"); l.lab.removeAttribute("style"); } else {
+      l.g.style.transform = tf;
       /* the words stand at their own size on a sheet that is not: a far lane
          at 0.94 would have set its label at 11.9px on the 390 seat, under the
-         reading gate's 12, so the label takes the sheet's scale back off */
-      const k = 1 / r2(s), ly = w.railY - 18;
-      l.lab.style.transform = `matrix(${r2(k)}, 0, 0, ${r2(k)}, ${r1(l.x * (1 - k))}, ${r1(ly * (1 - k))})`;
+         reading gate's 12, so the label takes the sheet's scale back off —
+         BOTH axes of it, or the billboard comes out condensed by cos(yaw).
+         Inverted against the ROUNDED matrix, so the pair compose to exactly
+         1 and the settled label is the authored one. */
+      const bx = r2(1 / sx), by = r2(1 / sy), ly = w.railY - 18;
+      l.lab.style.transform = `matrix(${bx}, 0, 0, ${by}, ${r1(l.x * (1 - bx))}, ${r1(ly * (1 - by))})`;
+      }
     }
     let room = Infinity;
     for (const m of [k - 1, k + 1]) if (w.A[m] !== undefined) room = Math.min(room, Math.abs(U[w.A[m]] - U[i]));
-    const op = r2(smooth((room - 1.05 * w.labW) / (0.4 * w.labW)));
+    /* A WORD COMES WITH ITS SHEET, and room alone does not say so. The end
+       lanes have one neighbour and the most perspective, so at the opening
+       lane 3 stood 36.1 units off lane 2 against a 32.05-unit word and lit
+       to 0.09 — a ghost word over a deck that is still a deck. So the gate
+       is the plan's own: the row within about 5% of settled size AND this
+       lane clear of the sheets beside it. Ramped over 30px of scroll rather
+       than the 11px a hard 5% gave, because four words arriving inside one
+       flick is a pop and not an arrival. */
+    const op = r2(smooth(Math.min((room - 1.05 * w.labW) / (0.4 * w.labW), settle)));
     if (l._op !== op) {
       l._op = op; l.lab.setAttribute("opacity", op);
       /* a word nobody can see is not a target: the sheet stops taking taps
@@ -8298,7 +8539,11 @@ function setDeepJet(on) {
     for (const l of N.lanes) {
       l.g.style.transform = ""; l.g.removeAttribute("style"); l.g.removeAttribute("pointer-events");
       l.lab.removeAttribute("opacity"); l.lab.style.transform = ""; l.lab.removeAttribute("style");
-      l._tf = l._op = undefined;
+      /* the sheet is the flight's own paper and leaves nothing behind: the
+         class alone would hide it, and a stale d would still be a shape in
+         the DOM the settled plate never drew */
+      for (const k of ["d", "fill-opacity", "stroke-width", "stroke-opacity"]) l.sheet.removeAttribute(k);
+      l._tf = l._op = l._d = l._pa = l._ew = l._eo = undefined;
     }
   }
   jet.svg.classList.toggle("indepth", on);
@@ -8310,8 +8555,21 @@ function deepJet(y) {
   const show = a < 1;
   if (show !== N.on) setDeepJet(show);
   if (show && a !== N.a) { N.a = a; drawDeepJet(a); }
-  window.__world.jet3 = { a: +a.toFixed(4), on: N.on }; /* probe hook */
+  /* ident is the identity assertion [0.90, 1] is held to: every scale 1, so
+     the depth layer is drawing the authored plate and not an approach to it */
+  window.__world.jet3 = { a: +a.toFixed(4), on: N.on, ident: N.on ? N.ident : true }; /* probe hook */
 }
+/* probe hook: this frame's four sheet depths, computed on CALL so the loop
+   pays nothing for it. Camera depth, not model z — painter's order is about
+   where a sheet is from the camera, and scale is the only honest reading of
+   that (s = focal / (z + dist), so rank by s descending is rank by depth). */
+window.__jet3 = () => {
+  const w = jet3.w;
+  if (!w) return null;
+  return { a: jet3.a, ident: jet3.ident, on: jet3.on,
+    s: w.A.map((i) => w.S[i]), z: w.A.map((i) => w.dist / w.S[i] - w.dist),
+    u: w.A.map((i) => w.U[i]), stag: w.stag, dist: w.dist, vTop: w.vTop };
+};
 /* SCRUBJET'S CLOCK. The blocks used to run off beat 6's own progress, from
    0.2 of the beat to 0.95 of it, and that landed the last one as the plate
    left: measured, with the figure's centre at -0.02 of the screen at
