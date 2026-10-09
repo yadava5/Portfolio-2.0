@@ -1037,4 +1037,49 @@ test.describe("the figures assemble in depth with the scroll", () => {
       expect(read.deep).toBe(false);
     });
   }
+  /* the network assembles for a reader who does not wait for the name.
+     Its depth layer needs a read and may only take the figure while the
+     figure is out of sight, so a read that waited for the name (5s and
+     more after navigation) arrived after a fast reader, with the net in
+     view, and the network stayed flat. The classifier's own load is
+     awaited first, so this measures the page's choice and not the
+     runner's speed. */
+  test("#net is in depth for a reader who scrolls straight down to it", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "load" });
+    await page.evaluate(
+      () =>
+        (window as unknown as { __demo: { ready: Promise<unknown> } }).__demo
+          .ready
+    );
+    const r = await page.evaluate(async () => {
+      const w = (window as unknown as { __world: Record<string, unknown> })
+        .__world;
+      const win = w.net3win as Win;
+      const to = Math.round(win.yA + 0.3 * (win.yB - win.yA));
+      for (let y = 0; y < to; ) {
+        y = Math.min(to, y + 60);
+        window.scrollTo(0, y);
+        await new Promise((ok) => requestAnimationFrame(ok));
+      }
+      await new Promise((ok) =>
+        requestAnimationFrame(() => requestAnimationFrame(ok))
+      );
+      return {
+        settled: document.documentElement.hasAttribute("data-np-ready"),
+        ...(w.net3 as Deep),
+      };
+    });
+    test.skip(
+      r.settled,
+      "the name settled before the reader arrived; the early read was not exercised"
+    );
+    expect(r.a).toBeGreaterThan(0);
+    expect(r.a).toBeLessThan(1);
+    expect(r.armed, "the read was there before the net came into view").toBe(
+      true
+    );
+    expect(r.on, "the network is in depth on arrival").toBe(true);
+  });
 });
