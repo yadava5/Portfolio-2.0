@@ -10807,7 +10807,12 @@ function lightSample() {
     if (net.lastLight || current || strokes.length) return;
     const px = samplePixels(), r = c.classify(px), p = Number(r.prediction);
     if (p !== GLYPH_SAMPLE.label) return;
-    lightNet(px, Array.from(r.hidden_activations), Array.from(r.confidence), p, false, "sample");
+    const read = [px, Array.from(r.hidden_activations), Array.from(r.confidence), p, false, "sample"];
+    /* the classifier can be ready before boot has drawn the net (under
+       reduced motion the read is asked at once): keep the read, and
+       buildNet lights it as it draws the figure */
+    if (!net.inCtx) { net.lastLight = read; return; }
+    lightNet(...read);
     wake(true);
   }, () => {});
 }
@@ -16401,6 +16406,15 @@ function settleAll() {
 }
 async function boot() {
   await document.fonts.ready.catch(() => {});
+  /* BUILD ON THE NEXT FRAME, NOT IN THE FONTS' MICROTASK. WebKit settles
+     fonts.ready inside a rendering update, after it has delivered <main>'s
+     resize observation, so this continuation ran in that delivery's
+     microtask checkpoint: under reduced motion settleAll() grew <main> by
+     705px there, the update's second layout found it resized again, and
+     WebKit raised "ResizeObserver loop completed with undelivered
+     notifications" as a page error. At the top of a frame the page is
+     built before anything is observed. */
+  await new Promise((r) => requestAnimationFrame(r));
   chooseEditions(); /* build every figure on the plate its seat earns */
   cacheGeometry(); buildThread(); cacheCadence(); fitPad();
   booted = true;
