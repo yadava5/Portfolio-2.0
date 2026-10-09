@@ -3179,6 +3179,13 @@ body{font-synthesis:none}
 /* the reveal figures get a focus path and a touch verb (defect 7) */
 .figsvg [tabindex]{cursor:pointer}
 .figsvg [tabindex]:focus-visible{outline:2px solid var(--clay-g); outline-offset:2px}
+/* WEBKIT PAINTS NO OUTLINE ON AN SVG <g>, so in Safari a keyboard reader
+   tabbed through fig. 04's desks and fig. 07's lanes with nothing to show
+   where focus was. A control with a drawn target rings that target
+   instead, in every engine, so the ring is the same everywhere: 2 CSS px
+   at any viewBox scale, round the box a finger gets. */
+.figsvg .tracebtn.ringed:focus-visible{outline:none}
+.figsvg .tracebtn.ringed:focus-visible > .hit{stroke:var(--clay-g); stroke-width:2px; vector-effect:non-scaling-stroke}
 
 /* ── the manifest: chrome in the reserved band, ledger on request ────────
    Measured: at 1440 no corner of the viewport is free · an always-on
@@ -6818,6 +6825,8 @@ function traceOn(svg, labels, marks, key, name) {
     hit.setAttribute("height", h.toFixed(2));
     hit.setAttribute("fill", "transparent");
     hit.setAttribute("aria-hidden", "true");
+    hit.setAttribute("class", "hit");
+    g.classList.add("ringed");
     g.appendChild(hit);
     g.appendChild(lbl);
     wire(g, id);
