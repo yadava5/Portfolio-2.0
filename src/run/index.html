@@ -10787,11 +10787,14 @@ function deepNet(y) {
 /* THE FIGURE SHOWS A READ BEFORE THE READER MAKES ONE, because the depth
    layer has nothing to assemble without one, and an empty network seen from
    behind is a lattice of dots. It is asked of the classifier in this tab,
-   after the name has finished arriving (one classify() is 6–15ms of main
-   thread, measured in both engines, and the nameplate is the one thing on
-   the first screen that moves), and only if the reader has not drawn. */
+   once, after the name has finished arriving or as soon as the reader has
+   left it (one classify() is 6–15ms of main thread, measured in both
+   engines, and the nameplate is the one thing on the first screen that
+   moves), and only if the reader has not drawn. */
+let sampleAsked = false;
 function lightSample() {
-  if (net.lastLight || current || strokes.length) return;
+  if (sampleAsked || net.lastLight || current || strokes.length) return;
+  sampleAsked = true;
   ready.then((c) => {
     if (net.lastLight || current || strokes.length) return;
     const px = samplePixels(), r = c.classify(px), p = Number(r.prediction);
@@ -11010,15 +11013,26 @@ $("clear").addEventListener("click", () => {
   $("conf").textContent = "·"; $("fwd").textContent = "·";
   window.__demo.last = null;
 });
-/* the sample read waits for the name: see lightSample */
+/* the sample read waits for the name: see lightSample. AND ONLY WHILE THE
+   READER IS STILL WITH THE NAME. The name finishes arriving 5.0 to 5.3s after
+   navigation (measured cold, Chromium and WebKit, 1440x900 and 420x786), and a
+   reader who lands and scrolls straight down can reach fig. 06 inside that:
+   the read then arrived with the net in view, the depth layer never armed
+   (it may only take the figure while the figure is out of sight), and the
+   network stayed flat until the reader scrolled away and back. Half a screen
+   down the name is behind them, so the 6 to 15ms of one classify() lands on
+   a scroll, not on the performance, and the read is asked then. */
 {
   const de = document.documentElement;
   if (RM || de.hasAttribute("data-np-ready")) lightSample();
   else {
-    const mo = new MutationObserver(() => { if (de.hasAttribute("data-np-ready")) { mo.disconnect(); lightSample(); } });
+    const ask = () => { mo.disconnect(); removeEventListener("scroll", left); lightSample(); };
+    const left = () => { if (scrollY > 0.5 * innerHeight) ask(); };
+    const mo = new MutationObserver(() => { if (de.hasAttribute("data-np-ready")) ask(); });
     mo.observe(de, { attributes: true, attributeFilter: ["data-np-ready"] });
+    addEventListener("scroll", left, { passive: true });
     /* a performance that never comes must not keep the sample out */
-    setTimeout(() => { mo.disconnect(); lightSample(); }, 8000);
+    setTimeout(ask, 8000);
   }
 }
 
