@@ -6500,20 +6500,14 @@ const DEPTH = {
       U[i] = c.px + x1 * s; V[i] = c.py + y2 * s; S[i] = s;
     }
   },
-  /* ANAMORPHIC SEATING, kept for fig. 07's lane deck and RETIRED for fig. 06.
-     It grows a point authored at (u, v) on a plane at depth z by (D + z) / D,
-     which is exactly what that depth takes back off it, so a figure whose
-     depth never closes still hands over to the plate to the unit. Once the
-     depth DOES close the handover is exact anyway (z = 0 ⇒ s = 1), and the
-     seat cancels relative size, which is the strongest depth cue a reader
-     gets at a glance: a near plane that is not bigger than a far one is not
-     near. fig. 06 now places its points at their authored (u, v, z) and
-     closes z with press(), below. */
-  seat(P, i, u, v, z, D, cx, cy) {
-    const k = (D + z) / D;
-    P[i * 3] = cx + (u - cx) * k; P[i * 3 + 1] = cy + (v - cy) * k; P[i * 3 + 2] = z;
-  },
-  /* DEPTH IS ONE SCALAR. Every plane's authored depth, times k, every frame:
+  /* NO ANAMORPHIC SEAT, and none is needed (v4.2). v4 grew a point on a
+     plane at depth z by (D + z) / D so that a depth that never closed still
+     handed over to the plate to the unit; it also cancelled relative size,
+     the strongest depth cue a reader gets at a glance (a near plane that is
+     not bigger than a far one is not near). Both figures now place their
+     points at their authored (u, v, z) and close z with press(), and once
+     the depth has closed the handover is exact anyway: z = 0 ⇒ s = 1.
+     DEPTH IS ONE SCALAR. Every plane's authored depth, times k, every frame:
      one curve, monotonic, into the page. That is what separates a press from
      a drop-in — no part has a private arrival — and it is what makes the
      painter's order provable, since scaling every z by the same k cannot
@@ -8409,7 +8403,7 @@ function drawDeepJet(a) {
      authored drawing to the unit and the swap has nothing to jump. */
   const cam = cubicInOut(clamp((a - 0.45) / 0.45, 0, 1));
   const dep = 1 - smooth(clamp((a - 0.52) / 0.38, 0, 1));
-  for (let i = 0; i < w.n; i++) P[i * 3 + 2] = w.Z0[i] * dep;
+  DEPTH.press(P, w.Z0, w.n, dep);
   const yaw = JET3.yaw * (1 - cam), cyaw = Math.cos(yaw);
   DEPTH.project(DEPTH.pose(-yaw, 0, w.dist, w.dist, w.pivot), P, w.n, U, V, S);
   /* the assertion, not the assumption: identity is every scale being exactly
