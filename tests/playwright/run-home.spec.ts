@@ -903,7 +903,7 @@ test.describe("the type answers the hand, and comes back to rest", () => {
    drawing coming down and going back up), and a figure still in depth
    where a reader reads it, or where the text gates measure it. */
 test.describe("the figures assemble in depth with the scroll", () => {
-  type Deep = { a: number; on: boolean; armed?: boolean };
+  type Deep = { a: number; on: boolean; armed?: boolean; ident?: boolean };
   type Win = { top: number; h: number; yA: number; yB: number };
   const frames = (page: import("@playwright/test").Page, n = 3) =>
     page.evaluate(
@@ -1005,6 +1005,22 @@ test.describe("the figures assemble in depth with the scroll", () => {
         expect(up[i].a).toBe(down[i].a);
         expect(up[i].html, `the same drawing at ${ys[i]} both ways`).toBe(
           down[i].html
+        );
+      }
+      /* the last tenth of the window is the authored drawing held still:
+         the camera face-on and every depth closed, so every perspective
+         scale is exactly 1 (the page asserts it per frame as `ident`). Any
+         depth left there would arrive on the reading line as a uniform
+         scale, the "boxes changing size" the owner rejected, and the swap
+         at a = 1 would have something to jump. */
+      for (const f of [0.92, 0.97]) {
+        await go(page, Math.round(win.yA + f * (win.yB - win.yA)));
+        const held = await snap(page, key, id);
+        expect(held.on, `still the depth layer at ${f} of the window`).toBe(
+          true
+        );
+        expect(held.ident, `the authored drawing at ${f} of the window`).toBe(
+          true
         );
       }
       await page.evaluate(
