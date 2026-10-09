@@ -10444,10 +10444,18 @@ const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : nu
    stand laterally OUTSIDE the card's own x span, or no face of its slab turns
    toward the reader and the one solid cue draws nothing. And the card's
    centre must not swing out and come back, which reads as a part travelling
-   rather than a camera turning: it crosses 71 units on its way to its place
-   and 64.8 of those are the journey, so the overshoot is 6 units (5.5px).
-   Filmed against four rivals, including a 154px near plane with a gentler
-   keystone, which lost: at reading scale the bigger card is the figure. The tight plate has only 8.3 units of horizontal slack
+   rather than a camera turning. Filmed against four rivals, including a
+   154px near plane with a gentler keystone, which lost: at reading scale the
+   bigger card is the figure. Two rules were added once integration had
+   looked: the first pose's card KISSED THE DRAW PAD's border at 1440 (0.1px
+   in 2 of 118 frames, 1.1px of air at 1280), so the PAINTED box (getBBox of
+   the shown paths, not the projected centrelines, which ran 1.7 units
+   narrower than the ink) keeps at least 12px off the pad at every frame:
+   15.5px at 1440 and 16.0 at 1280 for this pose. And the card may hide at
+   most about a fifth of the hundred units behind it, because the widest
+   card the pad rule allowed (201px) ate the figure: 18 of 100 hidden reads
+   as a network, 70 to 80 does not, and no width measure could tell them
+   apart. This pose hides 20. The tight plate has only 8.3 units of horizontal slack
    before its own paint containment clips (measured at 420x786, 9.2 at
    390x844) against 87% of a viewBox vertically, so it spends its depth on
    pitch and looks down the stack. */
