@@ -10188,27 +10188,34 @@ const DEPTH_PIN = FLAGS.has("depth") ? clamp(+FLAGS.get("depth"), 0, 0.999) : nu
    projected bounds inside the box + 8% at every step of the whole camera
    path, no class anchor behind the card or the lattice, reading order left
    to right, the painter's order never changing — for the widest near plane
-   that still keystones. Two things the search had to be told: the card's
-   centre must not slide left and come back (a camera move that reads as a
-   part travelling), and the eye must stand laterally OUTSIDE the card's own
-   x span or no face of its slab turns toward the reader and the one solid
-   cue draws nothing. The tight plate has only 8.3 units of horizontal slack
+   that still keystones. Two things the search had to be told. The eye must
+   stand laterally OUTSIDE the card's own x span, or no face of its slab turns
+   toward the reader and the one solid cue draws nothing. And the card's
+   centre must not swing out and come back, which reads as a part travelling
+   rather than a camera turning: it crosses 71 units on its way to its place
+   and 64.8 of those are the journey, so the overshoot is 6 units (5.5px).
+   Filmed against four rivals, including a 154px near plane with a gentler
+   keystone, which lost: at reading scale the bigger card is the figure. The tight plate has only 8.3 units of horizontal slack
    before its own paint containment clips (measured at 420x786, 9.2 at
    390x844) against 87% of a viewBox vertically, so it spends its depth on
    pitch and looks down the stack. */
 const NET3_POSE = {
-  wide: { yaw: 32, pitch: 14, dist: 0.58, px: 140, py: 128, zc: -0.36, zl: -0.12, zo: -0.08, lip: 6 },
+  wide: { yaw: 26, pitch: 14, dist: 0.55, px: 115, py: 155, zc: -0.48, zl: -0.12, zo: -0.08, lip: 6 },
   tight: { yaw: 18, pitch: 40, dist: 1.10, px: 60, py: 125, zc: -0.34, zl: -0.03, zo: -0.10, lip: 5 },
 };
 /* in flight nothing is lighter than this fraction of --ink; it drains to the
    authored inks on the depth curve */
 const INK_FLOOR = 0.55;
 /* the twelve paths, back to front; the number is each one's authored ink,
-   which is where it lands. The faint one is --hair's own ink (16% of --ink):
-   the card's edge converges to the authored 1px canvas border drawn in it,
-   and the lines a read has not reached yet are drawn in it as slivers. */
-const NET3_PATHS = [["dkfaint", 0.16], ["dkbar", 1], ["dkwin", 1], ["dke2", 0.34], ["dkdim", 0.2],
-  ["dkmid", 0.55], ["dklit", 0.95], ["dke1w", 0.28], ["dke1s", 0.52], ["dkpx1", 0.25], ["dkpx2", 0.55], ["dkpx3", 0.97]];
+   which is where it lands. The three line buckets are MEASURED off the read
+   the figure shows (t10k #9370, the 85 lines it routes): input-to-hidden
+   averages 0.419 of --ink over 46 lines and hidden-to-class 0.281 over 39,
+   and split at the strength the layer splits at, the buckets are 0.55, 0.37
+   and 0.30. The faint one is --hair's own ink (16% of --ink): the card's edge
+   converges to the authored 1px canvas border drawn in it, and so do the
+   lines a read has no push for. */
+const NET3_PATHS = [["dkfaint", 0.16], ["dkbar", 1], ["dkwin", 1], ["dke2", 0.3], ["dkdim", 0.2],
+  ["dkmid", 0.55], ["dklit", 0.95], ["dke1w", 0.37], ["dke1s", 0.55], ["dkpx1", 0.25], ["dkpx2", 0.55], ["dkpx3", 0.97]];
 function buildDeep(s, flat) {
   net3.g = null; net3.on = false; net3.a = -1; net3.ready = false; net3.flat = flat;
   if (RM) return;
@@ -10340,11 +10347,12 @@ function drawDeep(a) {
   };
   /* a weight x activation edge is a BUNDLE in flight: up to 2.1 authored
      units, tapering with nothing but its own perspective. Measured at
-     1440x900: 2.53px where the strongest one leaves the card, and where both
-     halves of the pass are drawn, 1.95px at the card to 0.71px at the classes
-     (2.75:1). It thins to the authored 0.6 units (0.53px) on the depth curve,
-     so the handover has nothing to jump. The baseline measured 0.89px and
-     0.87px: a 1.02:1 "taper" is a line, not a thing running into the page. */
+     1440x900: 2.67px where the strongest one leaves the card, and at the
+     frame where both halves of the pass are drawn, 2.07px at the card to
+     0.72px at the classes (2.88:1). It thins to the authored 0.6 units
+     (0.53px) on the depth curve, so the handover has nothing to jump. The
+     round before this measured 0.89px and 0.87px: a 1.02:1 "taper" is a
+     line, not a thing running into the page. */
   const wd = (s) => lerp(0.6 + 1.5 * s, 0.6, press);
   const Q = [U[iOcc], V[iOcc], U[iOcc + 1], V[iOcc + 1], U[iOcc + 2], V[iOcc + 2], U[iOcc + 3], V[iOcc + 3]];
   const inside = (i) => DEPTH.inside(U[i], V[i], Q);
@@ -10370,21 +10378,35 @@ function drawDeep(a) {
   const along = (p, i, j, segs, upto, wide) => {
     for (const [ta, tb] of segs) if (upto > ta) sliver(p, i, j, ta, Math.min(tb, upto), wide);
   };
-  /* 1 · the lines. Faint whole, then the bundle up to where the read has got */
+  const after = (p, i, j, segs, from, wide) => {
+    for (const [ta, tb] of segs) if (tb > Math.max(ta, from)) sliver(p, i, j, Math.max(ta, from), tb, wide);
+  };
+  /* 1 · THE LINES, AND EACH PIXEL OF THEM IS ONE FILL. The bundle runs from
+     the start to wherever the read has got; the pale line carries the rest.
+     v4 laid the pale line down whole and the bundle on top, and two fills of
+     one ink composite heavier than either, so the bucket ink and the overlap
+     were both guessing at the same number. With each pixel of a line drawn
+     once and the buckets measured off the read (above), the swap at a = 1
+     moves 2.57% of the figure's pixels by more than 6% at 1440x900 and 3.73%
+     at 420x786, against 2.84% and 4.81% before this round. What is left is
+     the digit: 110 cell quads antialias at every shared edge, where the
+     authored canvas is one pixelated bitmap. */
   const g1 = smooth((f - 0.08) / 0.32), g2 = smooth((f - 0.42) / 0.3);
   const thin = lerp(0.85, 0.5, press);
   const rimOf = (j) => (net.r0 + 0.8) * S[iNode + j];
   E.e1.forEach((e, n) => {
     const i = iE1 + n, j = iNode + e.j, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
     const t1 = 1 - rimOf(e.j) / l, vis = pieces(i, j, 0, t1);
-    along(0, i, j, vis, 1, thin);
-    if (g1 > 0) { const t0 = vis.length ? vis[0][0] : t1; along(e.s >= 0.7 ? 8 : 7, i, j, vis, lerp(t0, t1, g1), wd(e.s)); }
+    const t0 = vis.length ? vis[0][0] : t1, front = g1 > 0 ? lerp(t0, t1, g1) : 0;
+    after(0, i, j, vis, front, thin);
+    if (g1 > 0) along(e.s >= 0.7 ? 8 : 7, i, j, vis, front, wd(e.s));
   });
   E.e2.forEach((e) => {
     const i = iNode + e.j, j = iOut + e.o, l = Math.hypot(U[j] - U[i], V[j] - V[i]) || 1;
     const segs = pieces(i, j, rimOf(e.j) / l, 1);
-    along(0, i, j, segs, 1, thin);
-    if (g2 > 0 && e.s >= 0.25) along(3, i, j, segs, lerp(segs.length ? segs[0][0] : 1, 1, g2), wd(e.s));
+    const lit = g2 > 0 && e.s >= 0.25, front = lit ? lerp(segs.length ? segs[0][0] : 1, 1, g2) : 0;
+    after(0, i, j, segs, front, thin);
+    if (lit) along(3, i, j, segs, front, wd(e.s));
     grab(j);
   });
   /* 2 · the bars, on the far plane; the winner's is clay once the pass lands */
